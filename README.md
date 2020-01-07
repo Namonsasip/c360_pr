@@ -1,5 +1,9 @@
 # project-samudra
 
+Code repo for Customer 360 
+
+Please dont push directly to `master`. Create your own branch
+
 ## Overview
 
 This is your new Kedro project, which was generated using `Kedro 0.15.5` by running:
