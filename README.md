@@ -2,7 +2,7 @@
 
 Code repo for Customer 360 
 
-Please dont push directly to `master`. Create your own branch
+Please create your own branch! Dont push directly to `master`. Restriction is applied!
 
 ## Overview
 
