@@ -8,5 +8,5 @@ _List the changes_
 
 # Checklist
 
-[ ] Run unit test
+[ ] Run `kedro test`
 [ ] Test in Dev Databricks Cluster
