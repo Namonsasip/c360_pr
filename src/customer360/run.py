@@ -61,7 +61,7 @@ class ProjectContext(KedroContext):
         """A hook for changing the creation of a DataCatalog instance.
 
         Returns:
-            DataCatalog defined in `catalog.yml`.
+            DataCatalog defined in `conf/base`.
 
         """
         conf_catalog = self.config_loader.get("catalog*", "catalog*/**", "*/**")
