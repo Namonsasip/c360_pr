@@ -35,6 +35,11 @@ from kedro.pipeline import Pipeline
 
 from customer360.pipeline import create_pipelines
 
+from kedro.io import DataCatalog
+from kedro.versioning import Journal
+
+import findspark
+findspark.init()
 
 class ProjectContext(KedroContext):
     """Users can override the remaining methods from the parent class here,
@@ -46,6 +51,26 @@ class ProjectContext(KedroContext):
 
     def _get_pipelines(self) -> Dict[str, Pipeline]:
         return create_pipelines()
+
+    def _get_catalog(
+            self,
+            save_version: str = None,
+            journal: Journal = None,
+            load_versions: Dict[str, str] = None,
+    ) -> DataCatalog:
+        """A hook for changing the creation of a DataCatalog instance.
+
+        Returns:
+            DataCatalog defined in `catalog.yml`.
+
+        """
+        conf_catalog = self.config_loader.get("catalog*", "catalog*/**", "*/**")
+        conf_creds = self._get_config_credentials()
+        catalog = self._create_catalog(
+            conf_catalog, conf_creds, save_version, journal, load_versions
+        )
+        catalog.add_feed_dict(self._get_feed_dict())
+        return catalog
 
 
 def run_package():
