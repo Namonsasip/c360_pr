@@ -32,6 +32,9 @@ from typing import Dict
 
 from kedro.context import KedroContext, load_context
 from kedro.pipeline import Pipeline
+from kedro.config import MissingConfigException
+from warnings import warn
+from typing import Any, Dict
 
 from customer360.pipeline import create_pipelines
 
@@ -52,6 +55,26 @@ class ProjectContext(KedroContext):
     def _get_pipelines(self) -> Dict[str, Pipeline]:
         return create_pipelines()
 
+    @property
+    def params(self) -> Dict[str, Any]:
+        """Read-only property referring to Kedro's parameters for this context.
+
+        Returns:
+            Parameters defined in `parameters.yml` with the addition of any
+                extra parameters passed at initialization.
+        """
+        try:
+            params = self.config_loader.get("parameters*", "parameters*/**", "*/**/parameter*")
+        except MissingConfigException as exc:
+            warn(
+                "Parameters not found in your Kedro project config.\n{}".format(
+                    str(exc)
+                )
+            )
+            params = {}
+        params.update(self._extra_params or {})
+        return params
+
     def _get_catalog(
             self,
             save_version: str = None,
@@ -64,7 +87,7 @@ class ProjectContext(KedroContext):
             DataCatalog defined in `conf/base`.
 
         """
-        conf_catalog = self.config_loader.get("catalog*", "catalog*/**", "*/**")
+        conf_catalog = self.config_loader.get("catalog*", "catalog*/**", "*/**/catalog*")
         conf_creds = self._get_config_credentials()
         catalog = self._create_catalog(
             conf_catalog, conf_creds, save_version, journal, load_versions
