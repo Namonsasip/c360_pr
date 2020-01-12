@@ -3,6 +3,3 @@
 # remove the example pipeline from pipeline.py and the example nodes in
 # `src/pipelines/`
 
-example_num_train_iter: 10000
-example_learning_rate: 0.01
-
