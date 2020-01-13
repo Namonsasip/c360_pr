@@ -9,7 +9,7 @@ class QueryGenerator:
             feature_list = table_params["feature_list"]
             if feature_list != "":
                 for (key, val) in feature_list.items():
-                    features.append(val)
+                    features.append("{} as {}".format(val, key))
 
             # if don't want to use where clause then put empty string "" in query_parameters.yaml
             where_clause = table_params["where_clause"]
