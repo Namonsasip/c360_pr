@@ -2,6 +2,6 @@
 l1_billing_and_payments_rt_t_recharge_daily:
     where_clause: ""
     feature_list:
-        feature_name1: "count(*) as number_of_top_ups"
-        feature_name2: "sum(face_value) as top_up_volume"
+        number_of_top_ups: "count(*)"
+        top_up_volume: "sum(face_value)"
     granularity: "date(recharge_date),access_method_num,date(register_date)"
