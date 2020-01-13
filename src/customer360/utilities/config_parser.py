@@ -1,3 +1,7 @@
+
+from pyspark.sql import SparkSession, DataFrame
+
+
 # Query generator class
 class QueryGenerator:
 
@@ -27,3 +31,14 @@ class QueryGenerator:
         except Exception as e:
             print(str(e))
             print("Table parameters are missing.")
+
+
+def node_from_config(input_df, config) -> DataFrame:
+    table_name = "input_table"
+    input_df.createOrReplaceTempView(table_name)
+    sql_stmt = QueryGenerator.aggregate(table_name, config)
+
+    spark = SparkSession.builder.getOrCreate()
+
+    df = spark.sql(sql_stmt)
+    return df

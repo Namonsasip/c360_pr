@@ -33,7 +33,7 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 
-from .nodes import split_data, l0_l1_from_config
+from src.customer360.utilities.config_parser import node_from_config
 
 
 def create_pipeline(**kwargs):
@@ -50,7 +50,7 @@ def create_pipeline(**kwargs):
             #     ),
             # )
             node(
-                l0_l1_from_config,
+                node_from_config,
                 ["l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly",
                  "params:l1_customer_profile_age"],
                 "l4_customer_profile_subscriber_tenure"
