@@ -34,6 +34,20 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 from typing import Any, Dict
 
 import pandas as pd
+from kedro.config import ConfigLoader
+from pyspark.sql import SparkSession, DataFrame
+from src.customer360.utilities import QueryGenerator
+
+
+def l0_l1_from_config(input_df, config) -> DataFrame:
+    table_name = "input_table"
+    input_df.createOrReplaceTempView(table_name)
+    sql_stmt = QueryGenerator.QueryGenerator.aggregate(table_name, config)
+
+    spark = SparkSession.builder.getOrCreate()
+
+    df = spark.sql(sql_stmt)
+    return df
 
 
 def split_data(data: pd.DataFrame, example_test_data_ratio: float) -> Dict[str, Any]:
