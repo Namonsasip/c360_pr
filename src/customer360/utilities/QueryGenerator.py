@@ -21,7 +21,7 @@ class QueryGenerator:
             # if don't want to use group by then put empty string "" in query_parameters.yaml
             granularity = table_params["granularity"] if projection != "*" else ""
 
-            query = "Select " + projection + " from " + table_name + " " + where_clause + " " + granularity + ";"
+            query = "Select {} from {} {} {};".format(projection, table_name, where_clause, granularity)
             return query
 
         except Exception as e:
