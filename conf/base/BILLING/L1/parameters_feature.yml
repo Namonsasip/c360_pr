@@ -1,9 +1,7 @@
 # Config file for query generator
-customer:
-    where_clause: "where active_customer = 'Y'"
+l1_billing_and_payments_rt_t_recharge_daily:
+    where_clause: ""
     feature_list:
-        feature_name1: "max(source_column)"
-        feature_name2: "min(source_column)"
-        feature_name3: "count(source_column)"
-        feature_name4: "count(Distinct source_column)"
-    granularity: "group by col1, col2"
+        feature_name1: "count(*) as number_of_top_ups"
+        feature_name2: "sum(face_value) as top_up_volume"
+    granularity: "date(recharge_date),access_method_num,date(register_date)"
