@@ -33,21 +33,27 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 
-from .nodes import split_data
+from src.customer360.utilities.config_parser import node_from_config
 
 
 def create_pipeline(**kwargs):
     return Pipeline(
         [
+            # node(
+            #     split_data,
+            #     ["example_iris_data", "params:example_test_data_ratio"],
+            #     dict(
+            #         train_x="example_train_x",
+            #         train_y="example_train_y",
+            #         test_x="example_test_x",
+            #         test_y="example_test_y",
+            #     ),
+            # )
             node(
-                split_data,
-                ["example_iris_data", "params:example_test_data_ratio"],
-                dict(
-                    train_x="example_train_x",
-                    train_y="example_train_y",
-                    test_x="example_test_x",
-                    test_y="example_test_y",
-                ),
+                node_from_config,
+                ["l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly",
+                 "params:l1_customer_profile_age"],
+                "l4_customer_profile_subscriber_tenure"
             )
         ]
     )
