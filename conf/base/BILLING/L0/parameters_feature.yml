@@ -1,5 +1,4 @@
-# Config file for query generator
-l1_billing_and_payments_rt_t_recharge_daily:
+l0_billing_and_payment_feature_top_up_and_count:
     where_clause: ""
     feature_list:
         number_of_top_ups: "count(*)"

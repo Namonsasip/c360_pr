@@ -1,0 +1,4 @@
+l0_billing_and_payments_rt_t_recharge_daily:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/01_raw/BILLING/billing_rt_t_recharge_daily/part-00000-tid-3998936290439968669-8ac9935e-f835-4ce6-80f7-585e213cb481-3809-1-c000.snappy.parquet
+  file_format: parquet
