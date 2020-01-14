@@ -125,7 +125,12 @@
 l1_billing_and_payments_topup_and_volume:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/BILLING/l1_features/billing_rt_t_recharge_daily/
+  filepath: /mnt/customer360-blob-data/C360/BILLING/l1_features/billing_and_payments_topup_and_volume/
+
+l1_billing_and_payments_topup_time_diff:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/BILLING/l1_features/billing_and_payments_topup_time_diff/
 
 
 
