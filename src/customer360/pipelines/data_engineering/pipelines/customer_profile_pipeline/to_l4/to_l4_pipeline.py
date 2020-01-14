@@ -29,16 +29,22 @@
 from kedro.pipeline import Pipeline, node
 
 from src.customer360.utilities.config_parser import node_from_config
+from src.customer360.pipelines.data_engineering.nodes.customer_profile_nodes.to_l4.to_l4_nodes import create_subscriber_tenure
 
 
 def customer_profile_to_l4_pipeline(**kwargs):
     return Pipeline(
         [
+            # node(
+            #     node_from_config,
+            #     ["l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly",
+            #      "params:l4_customer_profile_age_gender"],
+            #     "l4_customer_profile_age_gender"
+            # ),
             node(
-                node_from_config,
-                ["l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly",
-                 "params:l1_customer_profile_age"],
+                create_subscriber_tenure,
+                ["l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly"],
                 "l4_customer_profile_subscriber_tenure"
-            )
+            ),
         ]
     )
