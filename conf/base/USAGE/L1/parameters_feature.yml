@@ -27,8 +27,8 @@ l0_usage_ru_a_voice_usg_daily:
         usg_outgoing_roaming_sms_number: "sum(case when call_type_code = 65 AND roaming_flag_cd = 99
                                          THEN call_duration else 0 end)"
         usg_outgoing_number_calls: "sum(case when call_type_code = 1 THEN number_of_call else 0 end)"
-        usg_outgoing_roaming_number_calls: "sum(case when service_type = 'VOICE' AND roaming_flag_cd = 99
-                                            THEN call_duration else 0 end)"
+        usg_outgoing_roaming_number_calls: "sum(case when call_type_code = 1 AND roaming_flag_cd = 99
+                                            THEN number_of_call else 0 end)"
     granularity: "registered_date, access_method_id, usg_date"
 
 l0_usage_ru_a_gprs_cbs_usage_daily:
