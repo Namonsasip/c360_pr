@@ -1,9 +1,0 @@
-# Config file for query generator
-customer:
-    where_clause: "where active_customer = 'Y'"
-    feature_list:
-        feature_name1: "max(source_column)"
-        feature_name2: "min(source_column)"
-        feature_name3: "count(source_column)"
-        feature_name4: "count(Distinct source_column)"
-    granularity: "col1, col2"
