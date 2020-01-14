@@ -6,4 +6,4 @@ customer:
         feature_name2: "min(source_column)"
         feature_name3: "count(source_column)"
         feature_name4: "count(Distinct source_column)"
-    granularity: "group by col1, col2"
+    granularity: "col1, col2"
