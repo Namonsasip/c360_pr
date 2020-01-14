@@ -50,6 +50,7 @@ from customer360.pipelines import data_science as ds
 #
 # $ kedro run
 
+from .pipelines.data_engineering import create_pipeline
 
 def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
     """Create the project's pipeline.
@@ -68,11 +69,12 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
     # PLEASE DELETE THIS PIPELINE ONCE YOU START WORKING ON YOUR OWN PROJECT AS
     # WELL AS pipelines/data_science AND pipelines/data_engineering
     # -------------------------------------------------------------------------
-    data_engineering_pipeline = de.create_pipeline()
-    data_science_pipeline = ds.create_pipeline()
+    data_engineering_pipeline = create_pipeline()
+    #data_science_pipeline = ds.create_pipeline()
 
     return {
-        "de": data_engineering_pipeline,
-        "__default__": data_engineering_pipeline + data_science_pipeline,
+        "__default__": data_engineering_pipeline
+        # "de": data_engineering_pipeline,
+        # "__default__": data_engineering_pipeline + data_science_pipeline,
     }
 
