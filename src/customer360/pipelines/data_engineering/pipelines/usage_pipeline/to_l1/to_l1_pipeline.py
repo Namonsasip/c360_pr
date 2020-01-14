@@ -33,9 +33,23 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 
-from .pipelines.usage_pipeline.to_l1 import usage_to_l1_pipeline
+from src.customer360.utilities.config_parser import node_from_config
 
 
-def create_pipeline(**kwargs):
-    return Pipeline(usage_to_l1_pipeline().nodes, name="usage_pipeline")
-
+def usage_to_l1_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                node_from_config,
+                ["l0_usage_ru_f_cbs_prepaid_call_daily",
+                 "params:l0_usage_ru_f_cbs_prepaid_call_daily"],
+                "l1_usage_ru_f_cbs_prepaid_call_daily"
+            ),
+            node(
+                node_from_config,
+                ["l0_usage_ru_a_voice_usg_daily",
+                 "params:l0_usage_ru_a_voice_usg_daily"],
+                "l1_usage_ru_a_voice_usg_daily"
+            )
+        ]
+    )
