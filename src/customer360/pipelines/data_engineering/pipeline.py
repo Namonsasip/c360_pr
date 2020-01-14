@@ -33,27 +33,13 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 
-from src.customer360.utilities.config_parser import node_from_config
+import customer360.pipelines.data_engineering.nodes.billing_nodes.l0_to_l1.pipeline as billing_top_up_and_volume
 
 
-def create_pipeline(**kwargs):
-    return Pipeline(
-        [
-            # node(
-            #     split_data,
-            #     ["example_iris_data", "params:example_test_data_ratio"],
-            #     dict(
-            #         train_x="example_train_x",
-            #         train_y="example_train_y",
-            #         test_x="example_test_x",
-            #         test_y="example_test_y",
-            #     ),
-            # )
-            node(
-                node_from_config,
-                ["l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly",
-                 "params:l1_customer_profile_age"],
-                "l4_customer_profile_subscriber_tenure"
-            )
-        ]
-    )
+def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
+    data_engineering_pipeline = billing_top_up_and_volume.create_pipeline()
+    pipeline_all = data_engineering_pipeline
+    return {
+        "de": data_engineering_pipeline,
+        "__default__": pipeline_all
+    }
