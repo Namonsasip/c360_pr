@@ -23,9 +23,14 @@ class QueryGenerator:
             projection = ','.join(features) if len(features) != 0 else "*"
 
             # if don't want to use group by then put empty string "" in query_parameters.yaml
-            granularity = table_params["granularity"] if projection != "*" else ""
-            
-            query = "Select {},{} from {} {} group by {}".format(granularity, projection, table_name, where_clause, granularity)
+
+            granularity = table_params["granularity"]
+
+            if granularity!="":
+                query = "Select {},{} from {} {} group by {}".format(granularity, projection, table_name, where_clause, granularity)
+            else:
+                query = "Select {} from {} {}".format(projection, table_name, where_clause)
+
             return query
 
         except Exception as e:
