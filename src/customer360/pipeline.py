@@ -52,6 +52,8 @@ from customer360.pipelines import data_science as ds
 
 from .pipelines.data_engineering import create_pipeline
 
+from src.customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l4 import customer_profile_to_l4_pipeline
+
 def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
     """Create the project's pipeline.
 
@@ -73,7 +75,8 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
     #data_science_pipeline = ds.create_pipeline()
 
     return {
-        "__default__": data_engineering_pipeline
+        "__default__": data_engineering_pipeline,
+        'customer_pipeline': customer_profile_to_l4_pipeline()
         # "de": data_engineering_pipeline,
         # "__default__": data_engineering_pipeline + data_science_pipeline,
     }
