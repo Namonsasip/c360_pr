@@ -7,13 +7,13 @@ class QueryGenerator:
 
     # accept table_name as string, table_params as dict
     @staticmethod
-    def aggregate(table_name,table_params):
+    def aggregate(table_name, table_params):
         try:
             features = []
             feature_list = table_params["feature_list"]
             if feature_list != "":
                 for (key, val) in feature_list.items():
-                    features.append(val)
+                    features.append("{} as {}".format(val, key))
 
             # if don't want to use where clause then put empty string "" in query_parameters.yaml
             where_clause = table_params["where_clause"]
@@ -24,8 +24,8 @@ class QueryGenerator:
 
             # if don't want to use group by then put empty string "" in query_parameters.yaml
             granularity = table_params["granularity"] if projection != "*" else ""
-
-            query = "Select {} from {} {} {}".format(projection, table_name, where_clause, granularity)
+            
+            query = "Select {},{} from {} {} group by {}".format(granularity, projection, table_name, where_clause, granularity)
             return query
 
         except Exception as e:
