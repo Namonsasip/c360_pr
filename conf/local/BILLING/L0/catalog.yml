@@ -1,4 +1,4 @@
 l0_billing_and_payments_rt_t_recharge_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/01_raw/BILLING/billing_rt_t_recharge_daily/
+  filepath: data/L0/BILLING/billing_rt_t_recharge_daily/
