@@ -121,10 +121,11 @@
 
 # This is a data set used by the example pipeline provided with the projected
 # template. Please feel free to remove it once you remove the example pipeline.
+
 l1_billing_and_payments_topup_and_volume:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: data/04_features/BILLING/
-  file_format: parquet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/BILLING/l1_features/billing_rt_t_recharge_daily/
 
 
 
