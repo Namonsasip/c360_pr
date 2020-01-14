@@ -33,8 +33,8 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 from .pipelines.usage_pipeline.to_l1 import usage_to_l1_pipeline
-from .pipelines.billing_pipeline.l0_to_l1.to_l1_pipeline import billing_to_l1_pipeline
+
 
 
 def create_pipeline(**kwargs):
-    return Pipeline(usage_to_l1_pipeline().nodes)
+    return Pipeline(usage_to_l1_pipeline().nodes, name="usage_pipeline")
