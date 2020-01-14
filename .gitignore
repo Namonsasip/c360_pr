@@ -21,7 +21,7 @@ results/**
 !.gitkeep
 
 # keep also the example dataset
-!data/01_raw/iris.csv
+!data/L0/iris.csv
 
 
 ##########################
