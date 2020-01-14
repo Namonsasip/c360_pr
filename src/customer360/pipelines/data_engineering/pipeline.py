@@ -36,4 +36,4 @@ from .pipelines.usage_pipeline.to_l1 import usage_to_l1_pipeline
 
 
 def create_pipeline(**kwargs):
-    return Pipeline(usage_to_l1_pipeline().nodes, name="usage_pipeline")
+    return Pipeline(usage_to_l1_pipeline().nodes)

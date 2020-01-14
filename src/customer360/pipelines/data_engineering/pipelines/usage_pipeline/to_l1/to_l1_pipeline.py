@@ -51,5 +51,5 @@ def usage_to_l1_pipeline(**kwargs):
                  "params:l0_usage_ru_a_voice_usg_daily"],
                 "l1_usage_ru_a_voice_usg_daily"
             )
-        ]
+        ], name="usage_to_l1_pipeline"
     )
