@@ -8,7 +8,7 @@
 #
 #cars.csv:
 #  type: CSVLocalDataSet # https://kedro.readthedocs.io/en/latest/kedro.io.CSVLocalDataSet.html
-#  filepath: data/01_raw/company/cars.csv
+#  filepath: data/L0/company/cars.csv
 #  load_args: # https://pandas.pydata.org/pandas-docs/stable/generated/pandas.read_csv.html
 #    sep: ','
 #    skiprows: 0
@@ -23,7 +23,7 @@
 #
 #cars.csv.s3:
 #  type: CSVS3DataSet # https://kedro.readthedocs.io/en/latest/kedro.io.CSVS3DataSet.html
-#  filepath: data/02_intermediate/company/cars.csv
+#  filepath: data/L1/company/cars.csv
 #  bucket_name: my_bucket
 #  credentials: dev_s3
 #  load_args: # https://pandas.pydata.org/pandas-docs/stable/generated/pandas.read_csv.html
@@ -39,7 +39,7 @@
 #
 #cars.hdf:
 #  type: HDFLocalDataSet  # https://kedro.readthedocs.io/en/latest/kedro.io.HDFLocalDataSet.html
-#  filepath: data/02_intermediate/cars.hdf
+#  filepath: data/L1/cars.hdf
 #  key: name
 #  load_args:  # https://pandas.pydata.org/pandas-docs/stable/generated/pandas.read_hdf.html
 #    columns: ['engine', 'name']
@@ -51,7 +51,7 @@
 #
 #cars.hdf.s3:
 #  type: HDFS3DataSet  # https://kedro.readthedocs.io/en/latest/kedro.io.HDFS3DataSet.html
-#  filepath: data/02_intermediate/cars.hdf
+#  filepath: data/L1/cars.hdf
 #  bucket_name: my_bucket
 #  key: hdf_key
 #  credentials: dev_s3
@@ -60,7 +60,7 @@
 #
 #cars.parquet:
 #  type: ParquetLocalDataSet  # https://kedro.readthedocs.io/en/latest/kedro.io.ParquetLocalDataSet.html
-#  filepath: data/02_intermediate/cars.parquet
+#  filepath: data/L1/cars.parquet
 #  load_args:
 #    columns: ['name', 'gear','disp', 'wt']
 #  save_args:
@@ -101,13 +101,13 @@
 #
 #raw_banana_trials:
 #  <<: *csv
-#  filepath: "s3a://supermarket/01_raw/Banana/trials.csv"
+#  filepath: "s3a://supermarket/L0/Banana/trials.csv"
 #
 ## Transcoding
 #
 #cars@parquet:
 #  type: ParquetLocalDataSet  # https://kedro.readthedocs.io/en/latest/kedro.io.ParquetLocalDataSet.html
-#  filepath: data/02_intermediate/cars.parquet
+#  filepath: data/L1/cars.parquet
 #  load_args:
 #    columns: ['name', 'gear','disp', 'wt']
 #  save_args:
@@ -115,7 +115,7 @@
 #
 #cars@spark:
 #  type: kedro.contrib.io.pyspark.SparkDataSet  # https://kedro.readthedocs.io/en/latest/kedro.contrib.io.pyspark.SparkDataSet.html
-#  filepath: data/02_intermediate/cars.parquet
+#  filepath: data/L1/cars.parquet
 
 
 
