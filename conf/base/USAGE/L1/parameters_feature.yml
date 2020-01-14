@@ -7,12 +7,12 @@ l0_usage_ru_f_cbs_prepaid_call_daily:
                                              roaming_flag_cd = 99 THEN total_second else 0 end)"
         usg_outgoing_local_call_duration: "sum(case when service_type = 'VOICE' AND
                                            region_destinate = 'XX' THEN total_second else 0 end)"
-        usg_outgoing_sms_number: "sum(case when service_type = 'SMS' total_second else 0 end)"
+        usg_outgoing_sms_number: "sum(case when service_type = 'SMS' THEN total_second else 0 end)"
         usg_outgoing_roaming_sms_number: "sum(case when service_type = 'SMS' AND
                                           roaming_flag_cd = 99 THEN total_second else 0 end)"
-        usg_outgoing_number_calls: "sum(case when service_type = 'VOICE' THEN number_of_call else 0 end)"
+        usg_outgoing_number_calls: "sum(case when service_type = 'VOICE' THEN total_call else 0 end)"
         usg_outgoing_roaming_number_calls: "sum(case when service_type = 'VOICE' AND roaming_flag_cd = 99
-                                            THEN number_of_call else 0 end)"
+                                            THEN total_call else 0 end)"
     granularity: "access_method_num, day_id"
 
 l0_usage_ru_a_voice_usg_daily:
