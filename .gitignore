@@ -2,8 +2,6 @@
 # KEDRO PROJECT
 
 # ignore all local configuration
-conf/local/**
-!conf/local/.gitkeep
 
 # ignore potentially sensitive credentials files
 conf/**/*credentials*
@@ -23,7 +21,7 @@ results/**
 !.gitkeep
 
 # keep also the example dataset
-!data/01_raw/iris.csv
+!data/L0/iris.csv
 
 
 ##########################

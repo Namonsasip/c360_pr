@@ -1,0 +1,9 @@
+# Config file for query generator
+l1_customer_profile_age:
+#    where_clause: "where partition_month = '201908'"
+    where_clause: ""
+    feature_list:
+        age: "floor(months_between(current_date(), to_date(birth_date))/12) as age"
+#        age: "floor(months_between(to_date(cast(partition_month as STRING), 'yyyyMM'), to_date(birth_date))/12)"
+    granularity: "mobile_status, register_date"
+

@@ -1,3 +1,7 @@
+
+from pyspark.sql import SparkSession, DataFrame
+
+
 # Query generator class
 class QueryGenerator:
 
@@ -19,14 +23,27 @@ class QueryGenerator:
             projection = ','.join(features) if len(features) != 0 else "*"
 
             # if don't want to use group by then put empty string "" in query_parameters.yaml
+
             granularity = table_params["granularity"]
 
             if granularity!="":
                 query = "Select {},{} from {} {} group by {}".format(granularity, projection, table_name, where_clause, granularity)
             else:
                 query = "Select {} from {} {}".format(projection, table_name, where_clause)
+
             return query
 
         except Exception as e:
             print(str(e))
             print("Table parameters are missing.")
+
+
+def node_from_config(input_df, config) -> DataFrame:
+    table_name = "input_table"
+    input_df.createOrReplaceTempView(table_name)
+    sql_stmt = QueryGenerator.aggregate(table_name, config)
+
+    spark = SparkSession.builder.getOrCreate()
+
+    df = spark.sql(sql_stmt)
+    return df
