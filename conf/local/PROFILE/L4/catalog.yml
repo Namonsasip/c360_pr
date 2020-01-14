@@ -1,6 +1,14 @@
 
+l4_customer_profile_age_gender:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L4_FEATURES/CUSTOMER_PROFILE/age_gender/
+  file_format: "parquet"
+  save_args:
+    mode: "overwrite"
 
 l4_customer_profile_subscriber_tenure:
   type: kedro.contrib.io.pyspark.SparkDataSet
   filepath: data/L4_FEATURES/CUSTOMER_PROFILE/subscriber_tenure/
   file_format: "parquet"
+  save_args:
+    mode: "overwrite"

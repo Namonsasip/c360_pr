@@ -1,0 +1,6 @@
+
+
+l4_customer_profile_subscriber_tenure:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: /mnt/customer360-blob-data/C360/CUSTOMER_PROFILE/l4_features/subscriber_tenure/
+  file_format: "parquet"
