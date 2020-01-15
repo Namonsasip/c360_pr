@@ -100,7 +100,7 @@ def run_package():
     # entry point for running pip-install projects
     # using `<project_package>` command
     project_context = load_context(Path.cwd())
-    project_context.run(pipeline_name='billing_pipeline_l3')
+    project_context.run()
 
 
 if __name__ == "__main__":
