@@ -1,0 +1,6 @@
+l3_billing_and_payment_arpu:
+    where_clause: ""
+    feature_list:
+        avg_arpu: "avg(norms_net_revenue)"
+        avg_arpu_vas: "avg(norms_net_revenue_vas)"
+    granularity: "access_method_num,date(register_date)"
