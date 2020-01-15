@@ -3,4 +3,6 @@ l3_billing_and_payment_arpu:
     feature_list:
         avg_arpu: "avg(norms_net_revenue)"
         avg_arpu_vas: "avg(norms_net_revenue_vas)"
+        avg_arpu_gprs: "avg(norms_net_revenue_gprs)"
+        avg_arpu_voice: "avg(norms_net_revenue_voice)"
     granularity: "access_method_num,date(register_date)"
