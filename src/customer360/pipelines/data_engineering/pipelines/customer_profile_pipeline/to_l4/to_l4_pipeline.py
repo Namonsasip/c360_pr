@@ -66,5 +66,5 @@ def customer_profile_to_l4_pipeline(**kwargs):
                  "l0_customer_profile_profile_customer_profile_post_non_mobile_current_non_mobile_current"],
                 "int_l4_customer_profile_city_of_residence"
             )
-        ]
+        ], tags=["customer_profile_to_l4_pipeline"]
     )
