@@ -31,14 +31,40 @@ from kedro.pipeline import Pipeline, node
 from src.customer360.utilities.config_parser import node_from_config
 
 
+def city_of_residence(
+        cust_pre,
+        cust_post,
+        cust_non_mobile
+):
+    columns = [
+        "subscription_identifier",
+        "mobile_no",
+        "register_date",
+        "zipcode"
+    ]
+
+    df = cust_pre.select(columns) \
+        .union(cust_post.select(columns)) \
+        .union(cust_non_mobile.select(columns))
+
+    return df
+
+
 def customer_profile_to_l4_pipeline(**kwargs):
     return Pipeline(
         [
             node(
                 node_from_config,
                 ["l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly",
-                 "params:l4_customer_profile_age_gender_subscriber_tenure"],
-                "l4_customer_profile_age_gender_subscriber_tenure"
+                 "params:int_l4_customer_profile_basic_features"],
+                "int_l4_customer_profile_basic_features"
+            ),
+            node(
+                city_of_residence,
+                ["l0_customer_profile_profile_customer_profile_pre_current",
+                 "l0_customer_profile_profile_customer_profile_post_current",
+                 "l0_customer_profile_profile_customer_profile_post_non_mobile_current_non_mobile_current"],
+                "int_l4_customer_profile_city_of_residence"
             )
         ]
     )
