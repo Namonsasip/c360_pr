@@ -35,16 +35,10 @@ from src.customer360.pipelines.data_engineering.nodes.customer_profile_nodes.to_
 def customer_profile_to_l4_pipeline(**kwargs):
     return Pipeline(
         [
-            # node(
-            #     node_from_config,
-            #     ["l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly",
-            #      "params:l4_customer_profile_age_gender"],
-            #     "l4_customer_profile_age_gender"
-            # ),
             node(
                 create_subscriber_tenure,
                 ["l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly"],
                 "l4_customer_profile_subscriber_tenure"
-            ),
-        ]
+            )
+        ], tags=["customer_profile_to_l4_pipeline"]
     )

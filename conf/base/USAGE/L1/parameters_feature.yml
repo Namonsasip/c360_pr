@@ -3,10 +3,45 @@ l0_usage_ru_f_cbs_prepaid_call_daily:
     where_clause: ""
     feature_list:
         usg_outgoing_call_duration: "sum(case when service_type = 'VOICE' THEN total_second else 0 end)"
+        usg_outgoing_roaming_call_duration: "sum(case when service_type = 'VOICE' AND
+                                             roaming_flag_cd = 99 THEN total_second else 0 end)"
+        usg_outgoing_local_call_duration: "sum(case when service_type = 'VOICE' AND
+                                           region_destinate = 'XX' THEN total_second else 0 end)"
+        usg_outgoing_sms_number: "sum(case when service_type = 'SMS' THEN total_second else 0 end)"
+        usg_outgoing_roaming_sms_number: "sum(case when service_type = 'SMS' AND
+                                          roaming_flag_cd = 99 THEN total_second else 0 end)"
+        usg_outgoing_number_calls: "sum(case when service_type = 'VOICE' THEN total_call else 0 end)"
+        usg_outgoing_roaming_number_calls: "sum(case when service_type = 'VOICE' AND roaming_flag_cd = 99
+                                            THEN total_call else 0 end)"
     granularity: "access_method_num, day_id"
 
 l0_usage_ru_a_voice_usg_daily:
     where_clause: ""
     feature_list:
         usg_outgoing_call_duration: "sum(case when call_type_code = 1 THEN call_duration else 0 end)"
+        usg_outgoing_roaming_call_duration: "sum(case when call_type_code = 1 AND
+                                             roaming_flag_cd = 99 THEN call_duration else 0 end)"
+        usg_outgoing_local_call_duration:  "sum(case when call_type_code = 1 AND
+                                             term_region_id = 'XX' THEN call_duration else 0 end)"
+        usg_outgoing_sms_number: "sum(case when call_type_code = 65 THEN call_duration else 0 end)"
+        usg_outgoing_roaming_sms_number: "sum(case when call_type_code = 65 AND roaming_flag_cd = 99
+                                         THEN call_duration else 0 end)"
+        usg_outgoing_number_calls: "sum(case when call_type_code = 1 THEN number_of_call else 0 end)"
+        usg_outgoing_roaming_number_calls: "sum(case when call_type_code = 1 AND roaming_flag_cd = 99
+                                            THEN number_of_call else 0 end)"
     granularity: "registered_date, access_method_id, usg_date"
+
+l0_usage_ru_a_gprs_cbs_usage_daily:
+    where_clause: ""
+    feature_list:
+        usg_outgoing_data_volumne: "sum(data_upload_amt)"
+        usg_outgoing_roaming_data_volumne: "sum(case when cdr_subtype_cd = 'ROAMING' then data_upload_amt else 0 end)"
+        usg_outgoing_local_data_volumne: "sum(case when cdr_subtype_cd = 'DOMESTIC' then data_upload_amt else 0 end)"
+    granularity: "access_method_num, call_start_dt"
+
+l0_usage_ru_a_vas_postpaid_usg_daily:
+    where_clause: ""
+    feature_list:
+        usg_outgoing_data_volumne: ""
+        usg_outgoing_roaming_data_volumne: ""
+    granularity: "access_method_num, call_start_dt"
