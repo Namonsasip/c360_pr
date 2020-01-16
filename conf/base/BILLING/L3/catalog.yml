@@ -1,0 +1,4 @@
+l3_billing_and_payments_arpu:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_arpu/

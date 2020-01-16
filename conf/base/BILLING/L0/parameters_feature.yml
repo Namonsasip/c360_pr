@@ -13,3 +13,4 @@ l0_billing_and_payment_feature_topup_time_diff:
         recharge_time: "recharge_time"
         topup_time_difference: "DATEDIFF(date(recharge_time),date(lag(recharge_time,1) over(partition by access_method_num,register_date order by recharge_time asc)))"
     granularity: ""
+

@@ -1,14 +1,15 @@
 
-l4_customer_profile_age_gender:
+int_l4_customer_profile_basic_features:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: data/L4_FEATURES/CUSTOMER_PROFILE/age_gender/
+  filepath: data/L4_FEATURES/CUSTOMER_PROFILE/age_gender_subscriber_tenure/
   file_format: "parquet"
   save_args:
     mode: "overwrite"
 
-l4_customer_profile_subscriber_tenure:
+int_l4_customer_profile_city_of_residence:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: data/L4_FEATURES/CUSTOMER_PROFILE/subscriber_tenure/
+  filepath: data/L4_FEATURES/CUSTOMER_PROFILE/city_of_residence/
   file_format: "parquet"
   save_args:
     mode: "overwrite"
+
