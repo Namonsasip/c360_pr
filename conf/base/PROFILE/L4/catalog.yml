@@ -1,13 +1,5 @@
 
-int_l4_customer_profile_basic_features:
+l4_customer_profile_features:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: /mnt/customer360-blob-data/C360/CUSTOMER_PROFILE/l4_features/age_gender_subscriber_tenure/
+  filepath: /mnt/customer360-blob-data/C360/CUSTOMER_PROFILE/l4_features/customer_profile_features/
   file_format: "parquet"
-
-
-int_l4_customer_profile_city_of_residence:
-  type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: /mnt/customer360-blob-data/C360/CUSTOMER_PROFILE/l4_features/city_of_residence/
-  file_format: "parquet"
-  save_args:
-    mode: "overwrite"
