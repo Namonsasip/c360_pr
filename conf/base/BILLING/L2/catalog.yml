@@ -1,0 +1,9 @@
+l2_billing_and_payments_weekly_topup_and_volume:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/BILLING/l2_features/billing_and_payments_weekly_topup_and_volume/
+
+l2_billing_and_payments_weekly_topup_time_diff:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/BILLING/l2_features/billing_and_payments_weekly_topup_time_diff/

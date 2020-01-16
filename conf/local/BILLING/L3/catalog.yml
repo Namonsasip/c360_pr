@@ -1,6 +1,20 @@
-l3_billing_and_payments_arpu:
+l3_billing_and_payments_monthly_arpu:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
   filepath: data/L3_MONTHLY/BILLING/billing_and_payments_arpu/
+  save_args:
+    mode: "overwrite"
+
+l3_billing_and_payments_monthly_topup_and_volume:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L3_MONTHLY/BILLING/billing_and_payments_monthly_topup_and_volume/
+  save_args:
+    mode: "overwrite"
+
+l3_billing_and_payments_monthly_topup_time_diff:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L3_MONTHLY/BILLING/billing_and_payments_monthly_topup_time_diff/
   save_args:
     mode: "overwrite"

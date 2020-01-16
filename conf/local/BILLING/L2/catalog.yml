@@ -1,0 +1,14 @@
+l2_billing_and_payments_weekly_topup_and_volume:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L2_WEEKLY/BILLING/billing_and_payments_weekly_topup_and_volume/
+  save_args:
+    mode: "overwrite"
+
+l2_billing_and_payments_weekly_topup_time_diff:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L2_WEEKLY/BILLING/billing_and_payments_weekly_topup_time_diff/
+  save_args:
+    mode: "overwrite"
+

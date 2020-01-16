@@ -5,12 +5,4 @@ l0_billing_and_payment_feature_top_up_and_count:
         top_up_volume: "sum(face_value)"
     granularity: "date(recharge_date),access_method_num,date(register_date)"
 
-l0_billing_and_payment_feature_topup_time_diff:
-    where_clause: ""
-    feature_list:
-        access_method_num: "access_method_num"
-        register_date: "date(register_date)"
-        recharge_time: "recharge_time"
-        topup_time_difference: "DATEDIFF(date(recharge_time),date(lag(recharge_time,1) over(partition by access_method_num,register_date order by recharge_time asc)))"
-    granularity: ""
 
