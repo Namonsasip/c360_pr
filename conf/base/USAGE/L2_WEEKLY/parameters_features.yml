@@ -11,8 +11,6 @@ l2_usage_ru_f_cbs_prepaid_call_daily:
     min: ["usg_outgoing_call_duration","usg_outgoing_roaming_call_duration", "usg_outgoing_local_call_duration",
           "usg_outgoing_sms_number", "usg_outgoing_roaming_sms_number", "usg_outgoing_number_calls",
           "usg_outgoing_roaming_number_calls"]
-    stdev: [""]
-    sum: [""]
   granularity: "week_of_year, year, access_method_num"
 
 
