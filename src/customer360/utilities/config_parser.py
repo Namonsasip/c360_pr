@@ -39,7 +39,7 @@ class QueryGenerator:
 
     # accept table_name as string, table_params as dict
     @staticmethod
-    def expantion(table_name, table_params):
+    def feature_expansion(table_name, table_params):
         try:
             features = []
             feature_list = table_params["feature_list"]
@@ -76,6 +76,23 @@ def node_from_config(input_df, config) -> DataFrame:
     table_name = "input_table"
     input_df.createOrReplaceTempView(table_name)
     sql_stmt = QueryGenerator.aggregate(table_name, config)
+
+    spark = SparkSession.builder.getOrCreate()
+
+    df = spark.sql(sql_stmt)
+    return df
+
+
+def expansion(input_df, config) -> DataFrame:
+    """
+    This function will expand the base feature based on parameters
+    :param input_df:
+    :param config:
+    :return:
+    """
+    table_name = "input_table"
+    input_df.createOrReplaceTempView(table_name)
+    sql_stmt = QueryGenerator.feature_expansion(table_name, config)
 
     spark = SparkSession.builder.getOrCreate()
 

@@ -1,6 +1,4 @@
 l2_usage_ru_f_cbs_prepaid_call_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/USAGE/l2_features/l2_usage_ru_f_cbs_prepaid_call_daily/
-  save_args:
-    mode: "overwrite"
+  filepath: /mnt/customer360-blob-data/C360/USAGE/l2_features/l2_usage_ru_f_cbs_prepaid_call_daily/
