@@ -17,13 +17,10 @@ l0_usage_ru_a_voice_usg_daily:
     where_clause: ""
     feature_list:
         usg_total_call_duration: "sum(case when call_type_code IN (1, 68) THEN call_duration else 0 end)"
-
         usg_total_local_call_duration:  "sum(case when call_type_code = 1 THEN call_duration else 0 end)"
         usg_total_sms_number: "sum(case when call_type_code IN (4, 5) THEN number_of_call else 0 end)"
-
         usg_total_number_calls: "sum(case when call_type_code IN (1, 68) THEN number_of_call else 0 end)"
         usg_total_local_number_calls: "sum(case when call_type_code IN (1) THEN number_of_call else 0 end)"
-
     granularity: "registered_date, access_method_id, usg_date"
 
 l0_usage_ru_a_gprs_cbs_usage_daily:
