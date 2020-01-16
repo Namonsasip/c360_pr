@@ -46,8 +46,9 @@ class QueryGenerator:
             level = table_params["type"]
             if feature_list != "":
                 for (key, val) in feature_list.items():
-                    for col in val:
-                        features.append("{}({}) as {}".format(key,col,col+"_"+key+"_"+level))
+                    if len(val)!=0:
+                        for col in val:
+                            features.append("{}({}) as {}".format(key,col,col+"_"+key+"_"+level))
 
             # if don't want to use where clause then put empty string "" in query_parameters.yaml
             where_clause = table_params["where_clause"]
