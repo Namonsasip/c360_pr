@@ -55,5 +55,5 @@ def customer_profile_to_l4_pipeline(**kwargs):
                  'int_l4_customer_profile_basic_features'],
                 "l4_customer_profile_features"
             )
-        ], tags=["customer_profile_to_l4_pipeline"]
+        ]
     )
