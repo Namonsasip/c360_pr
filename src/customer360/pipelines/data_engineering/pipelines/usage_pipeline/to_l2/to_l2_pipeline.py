@@ -35,7 +35,7 @@ from kedro.pipeline import Pipeline, node
 
 from src.customer360.utilities.config_parser import expansion
 from src.customer360.pipelines.data_engineering.nodes.usage_nodes.to_l2 import prepare_prepaid_call_data \
-    , prepare_postpaid_call_data
+    , prepare_postpaid_call_data, prepare_prepaid_gprs_data
 
 
 def usage_to_l2_pipeline(**kwargs):
@@ -59,6 +59,15 @@ def usage_to_l2_pipeline(**kwargs):
                 ["l1_usage_ru_a_voice_usg_daily_stg",
                  "params:l2_usage_ru_a_voice_usg_daily"],
                 "l2_usage_ru_a_voice_usg_daily"
+            ),
+            node(
+                prepare_prepaid_gprs_data, 'l1_usage_ru_a_gprs_cbs_usage_daily',
+                'l1_usage_ru_a_gprs_cbs_usage_daily_stg'),
+            node(
+                expansion,
+                ["l1_usage_ru_a_gprs_cbs_usage_daily_stg",
+                 "params:l2_usage_ru_a_gprs_cbs_usage_daily"],
+                "l2_usage_ru_a_gprs_cbs_usage_daily"
             ),
 
 

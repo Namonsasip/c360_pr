@@ -34,3 +34,17 @@ l2_usage_ru_a_voice_usg_daily:
           "usg_outgoing_roaming_number_calls"]
 
   granularity: "access_method_id, registered_date, week_of_year, month_of_year, year"
+
+
+l2_usage_ru_a_gprs_cbs_usage_daily:
+  where_clause: ""
+  type: "week"
+  feature_list:
+    avg: ["usg_outgoing_data_volumne", "usg_outgoing_roaming_data_volumne", "usg_outgoing_local_data_volumne"]
+
+    max: ["usg_outgoing_data_volumne", "usg_outgoing_roaming_data_volumne", "usg_outgoing_local_data_volumne",
+         "last_data_dt"]
+
+    min: ["usg_outgoing_data_volumne", "usg_outgoing_roaming_data_volumne", "usg_outgoing_local_data_volumne"]
+
+  granularity: "access_method_num, week_of_year, month_of_year, year"
