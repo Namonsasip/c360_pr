@@ -1,50 +1,66 @@
-l2_usage_ru_f_cbs_prepaid_call_daily:
+l2_usage_ru_f_cbs_prepaid_call_weekly:
   where_clause: ""
   type: "week"
   feature_list:
-    avg: ["usg_outgoing_call_duration","usg_outgoing_roaming_call_duration", "usg_outgoing_local_call_duration",
-          "usg_outgoing_sms_number", "usg_outgoing_roaming_sms_number", "usg_outgoing_number_calls",
-          "usg_outgoing_roaming_number_calls"]
+    avg: ["usg_total_call_duration", "usg_total_roaming_call_duration", "usg_total_local_call_duration",
+          "usg_total_sms_number", "usg_total_roaming_sms_number", "usg_total_local_sms_number", "usg_total_number_calls",
+          "usg_total_roaming_number_calls", "usg_total_local_number_calls"]
 
-    max: ["usg_outgoing_call_duration","usg_outgoing_roaming_call_duration", "usg_outgoing_local_call_duration",
-          "usg_outgoing_sms_number", "usg_outgoing_roaming_sms_number", "usg_outgoing_number_calls",
-          "usg_outgoing_roaming_number_calls", "last_call_dt"]
+    max: ["usg_total_call_duration", "usg_total_roaming_call_duration", "usg_total_local_call_duration",
+          "usg_total_sms_number", "usg_total_roaming_sms_number", "usg_total_local_sms_number", "usg_total_number_calls",
+          "usg_total_roaming_number_calls", "usg_total_local_number_calls", "last_call_dt"]
 
-    min: ["usg_outgoing_call_duration","usg_outgoing_roaming_call_duration", "usg_outgoing_local_call_duration",
-          "usg_outgoing_sms_number", "usg_outgoing_roaming_sms_number", "usg_outgoing_number_calls",
-          "usg_outgoing_roaming_number_calls"]
+    min: ["usg_total_call_duration", "usg_total_roaming_call_duration", "usg_total_local_call_duration",
+          "usg_total_sms_number", "usg_total_roaming_sms_number", "usg_total_local_sms_number", "usg_total_number_calls",
+          "usg_total_roaming_number_calls", "usg_total_local_number_calls"]
 
   granularity: "week_of_year, month_of_year, year, access_method_num"
 
-l2_usage_ru_a_voice_usg_daily:
+l2_usage_ru_a_voice_usg_weekly:
   where_clause: ""
   type: "week"
   feature_list:
-    avg: ["usg_outgoing_call_duration", "usg_outgoing_roaming_call_duration", "usg_outgoing_local_call_duration",
-           "usg_outgoing_sms_number", "usg_outgoing_roaming_sms_number", "usg_outgoing_number_calls",
-          "usg_outgoing_roaming_number_calls"]
+    avg: ["usg_total_call_duration", "usg_total_local_call_duration", "usg_total_sms_number",
+          "usg_total_number_calls", "usg_total_local_number_calls"]
 
+    max: ["usg_total_call_duration", "usg_total_local_call_duration", "usg_total_sms_number",
+          "usg_total_number_calls", "usg_total_local_number_calls", "last_call_dt"]
 
-    max: ["usg_outgoing_call_duration", "usg_outgoing_roaming_call_duration", "usg_outgoing_local_call_duration",
-          "usg_outgoing_sms_number", "usg_outgoing_roaming_sms_number", "usg_outgoing_number_calls",
-          "usg_outgoing_roaming_number_calls", "last_call_dt"]
-
-    min: ["usg_outgoing_call_duration", "usg_outgoing_roaming_call_duration", "usg_outgoing_local_call_duration",
-          "usg_outgoing_sms_number", "usg_outgoing_roaming_sms_number", "usg_outgoing_number_calls",
-          "usg_outgoing_roaming_number_calls"]
+    min: ["usg_total_call_duration", "usg_total_local_call_duration", "usg_total_sms_number",
+          "usg_total_number_calls", "usg_total_local_number_calls"]
 
   granularity: "access_method_id, registered_date, week_of_year, month_of_year, year"
 
 
-l2_usage_ru_a_gprs_cbs_usage_daily:
+l2_usage_ru_a_gprs_cbs_usage_weekly:
   where_clause: ""
   type: "week"
   feature_list:
-    avg: ["usg_outgoing_data_volumne", "usg_outgoing_roaming_data_volumne", "usg_outgoing_local_data_volumne"]
+    avg: ["usg_outgoing_data_volume_kb", "usg_outgoing_roaming_data_volume_kb", "usg_outgoing_local_data_volume_kb",
+          "usg_incoming_data_volume_kb" ,"usg_incoming_roaming_data_volume_kb", "usg_incoming_local_data_volume_kb",
+          "usg_incoming_data_volume_4G_kb", "usg_incoming_roaming_data_volume_4G_kb",
+          "usg_incoming_local_data_volume_4G_kb"]
 
-    max: ["usg_outgoing_data_volumne", "usg_outgoing_roaming_data_volumne", "usg_outgoing_local_data_volumne",
-         "last_data_dt"]
+    max: ["usg_outgoing_data_volume_kb", "usg_outgoing_roaming_data_volume_kb", "usg_outgoing_local_data_volume_kb",
+          "usg_incoming_data_volume_kb", "usg_incoming_roaming_data_volume_kb", "usg_incoming_local_data_volume_kb",
+          "usg_incoming_data_volume_4G_kb", "usg_incoming_roaming_data_volume_4G_kb",
+          "usg_incoming_local_data_volume_4G_kb", "last_data_dt"]
 
-    min: ["usg_outgoing_data_volumne", "usg_outgoing_roaming_data_volumne", "usg_outgoing_local_data_volumne"]
+    min: ["usg_outgoing_data_volume_kb", "usg_outgoing_roaming_data_volume_kb", "usg_outgoing_local_data_volume_kb",
+          "usg_incoming_data_volume_kb", "usg_incoming_roaming_data_volume_kb", "usg_incoming_local_data_volume_kb",
+          "usg_incoming_data_volume_4G_kb", "usg_incoming_roaming_data_volume_4G_kb",
+          "usg_incoming_local_data_volume_4G_kb"]
+
+  granularity: "access_method_num, week_of_year, month_of_year, year"
+
+l2_usage_ru_a_vas_postpaid_usg_weekly:
+  where_clause: ""
+  type: "week"
+  feature_list:
+    avg: ["usg_total_data_volumne_kb"]
+
+    max: ["usg_total_data_volumne_kb", "last_data_dt"]
+
+    min: ["usg_total_data_volumne_kb"]
 
   granularity: "access_method_num, week_of_year, month_of_year, year"

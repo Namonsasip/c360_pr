@@ -57,11 +57,11 @@ def usage_to_l1_pipeline(**kwargs):
                  "params:l0_usage_ru_a_gprs_cbs_usage_daily"],
                 "l1_usage_ru_a_gprs_cbs_usage_daily"
             ),
-        node(
-            node_from_config,
-            ["l0_usage_ru_a_vas_postpaid_usg_daily",
-             "params:l0_usage_ru_a_vas_postpaid_usg_daily"],
-            "l1_usage_ru_a_vas_postpaid_usg_daily"
-        ),
+            node(
+                node_from_config,
+                ["l0_usage_ru_a_vas_postpaid_usg_daily",
+                 "params:l0_usage_ru_a_vas_postpaid_usg_daily"],
+                "l1_usage_ru_a_vas_postpaid_usg_daily"
+            ),
         ], name="usage_to_l1_pipeline"
     )

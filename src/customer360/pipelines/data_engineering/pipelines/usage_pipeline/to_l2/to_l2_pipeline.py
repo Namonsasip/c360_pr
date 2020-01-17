@@ -35,7 +35,7 @@ from kedro.pipeline import Pipeline, node
 
 from src.customer360.utilities.config_parser import expansion
 from src.customer360.pipelines.data_engineering.nodes.usage_nodes.to_l2 import prepare_prepaid_call_data \
-    , prepare_postpaid_call_data, prepare_prepaid_gprs_data
+    , prepare_postpaid_call_data, prepare_prepaid_gprs_data, prepare_postpaid_gprs_data
 
 
 def usage_to_l2_pipeline(**kwargs):
@@ -47,8 +47,8 @@ def usage_to_l2_pipeline(**kwargs):
             node(
                 expansion,
                 ["l1_usage_ru_f_cbs_prepaid_call_daily_stg",
-                 "params:l2_usage_ru_f_cbs_prepaid_call_daily"],
-                "l2_usage_ru_f_cbs_prepaid_call_daily"
+                 "params:l2_usage_ru_f_cbs_prepaid_call_weekly"],
+                "l2_usage_ru_f_cbs_prepaid_call_weekly"
             ),
             node(
                 prepare_postpaid_call_data, 'l1_usage_ru_a_voice_usg_daily'
@@ -57,8 +57,8 @@ def usage_to_l2_pipeline(**kwargs):
             node(
                 expansion,
                 ["l1_usage_ru_a_voice_usg_daily_stg",
-                 "params:l2_usage_ru_a_voice_usg_daily"],
-                "l2_usage_ru_a_voice_usg_daily"
+                 "params:l2_usage_ru_a_voice_usg_weekly"],
+                "l2_usage_ru_a_voice_usg_weekly"
             ),
             node(
                 prepare_prepaid_gprs_data, 'l1_usage_ru_a_gprs_cbs_usage_daily',
@@ -66,28 +66,18 @@ def usage_to_l2_pipeline(**kwargs):
             node(
                 expansion,
                 ["l1_usage_ru_a_gprs_cbs_usage_daily_stg",
-                 "params:l2_usage_ru_a_gprs_cbs_usage_daily"],
-                "l2_usage_ru_a_gprs_cbs_usage_daily"
+                 "params:l2_usage_ru_a_gprs_cbs_usage_weekly"],
+                "l2_usage_ru_a_gprs_cbs_usage_weekly"
+            ),
+            node(
+                prepare_postpaid_gprs_data, 'l1_usage_ru_a_vas_postpaid_usg_daily',
+                'l1_usage_ru_a_vas_postpaid_usg_daily_stg'),
+            node(
+                expansion,
+                ["l1_usage_ru_a_vas_postpaid_usg_daily_stg",
+                 "params:l2_usage_ru_a_vas_postpaid_usg_weekly"],
+                "l2_usage_ru_a_vas_postpaid_usg_weekly"
             ),
 
-
-            # node(
-            #     node_from_config,
-            #     ["l0_usage_ru_a_voice_usg_daily",
-            #      "params:l0_usage_ru_a_voice_usg_daily"],
-            #     "l1_usage_ru_a_voice_usg_daily"
-            # ),
-            # node(
-            #     node_from_config,
-            #     ["l0_usage_ru_a_gprs_cbs_usage_daily",
-            #      "params:l0_usage_ru_a_gprs_cbs_usage_daily"],
-            #     "l1_usage_ru_a_gprs_cbs_usage_daily"
-            # ),
-            # node(
-            #     node_from_config,
-            #     ["l0_usage_ru_a_vas_postpaid_usg_daily",
-            #      "params:l0_usage_ru_a_vas_postpaid_usg_daily"],
-            #     "l1_usage_ru_a_vas_postpaid_usg_daily"
-            # ),
         ], name="usage_to_l2_pipeline"
     )

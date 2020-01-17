@@ -1,27 +1,27 @@
-l2_usage_ru_f_cbs_prepaid_call_daily:
+l2_usage_ru_f_cbs_prepaid_call_weekly:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/USAGE/l2_features/l2_usage_ru_f_cbs_prepaid_call_daily/
+  filepath: /mnt/customer360-blob-data/C360/USAGE/l2_features/l2_usage_ru_f_cbs_prepaid_call_weekly/
   save_args:
     mode: "append"
 
-l2_usage_ru_a_voice_usg_daily:
+l2_usage_ru_a_voice_usg_weekly:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/USAGE/l2_features/l2_usage_ru_a_voice_usg_daily/
+  filepath: /mnt/customer360-blob-data/C360/USAGE/l2_features/l2_usage_ru_a_voice_usg_weekly/
   save_args:
     mode: "append"
 
-l2_usage_ru_a_gprs_cbs_usage_daily:
+l2_usage_ru_a_gprs_cbs_usage_weekly:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/l2_usage_ru_a_gprs_cbs_usage_daily/
+  filepath: /mnt/customer360-blob-data/C360/USAGE/l2_features/l2_usage_ru_a_gprs_cbs_usage_weekly/
   save_args:
     mode: "append"
 
-l2_usage_ru_a_vas_postpaid_usg_daily:
+l2_usage_ru_a_vas_postpaid_usg_weekly:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/l2_usage_ru_a_vas_postpaid_usg_daily/
+  filepath: /mnt/customer360-blob-data/C360/USAGE/l2_features/l2_usage_ru_a_vas_postpaid_usg_weekly/
   save_args:
     mode: "append"
