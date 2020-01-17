@@ -5,4 +5,14 @@ l4_customer_profile_features:
   file_format: "parquet"
   save_args:
     mode: "overwrite"
+    partitionBy: ["partition_month"]
+
+
+l4_customer_profile_billing_level_features:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L4_FEATURES/CUSTOMER_PROFILE/billing_level_features/
+  file_format: "parquet"
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["partition_month"]
 
