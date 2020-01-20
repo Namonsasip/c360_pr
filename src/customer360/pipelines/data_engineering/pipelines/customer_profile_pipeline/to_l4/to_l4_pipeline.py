@@ -50,10 +50,35 @@ def customer_profile_to_l4_pipeline(**kwargs):
                 "int_l4_customer_profile_union_features"
             ),
             node(
+                node_from_config,
+                ["int_l4_customer_profile_union_features",
+                 "params:int_l4_customer_profile_processed_features"],
+                "int_l4_customer_profile_processed_union_features"
+            ),
+            node(
                 merge_union_and_basic_features,
-                ['int_l4_customer_profile_union_features',
+                ['int_l4_customer_profile_processed_union_features',
                  'int_l4_customer_profile_basic_features'],
                 "l4_customer_profile_features"
             )
-        ], tags=["customer_profile_to_l4_pipeline"]
+        ]
+    )
+
+
+def customer_profile_billing_level_to_l4_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                node_from_config,
+                ['l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly',
+                 "params:l4_customer_profile_billing_level_number_of_mobile_devices"],
+                "l4_customer_profile_billing_level_number_of_mobile_devices"
+            ),
+            node(
+                node_from_config,
+                ['l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly',
+                 'params:l4_customer_profile_billing_level_number_of_sims'],
+                "l4_customer_profile_billing_level_number_of_sims"
+            )
+        ]
     )
