@@ -33,7 +33,7 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 
-from src.customer360.utilities.config_parser import node_from_config
+from customer360.utilities.config_parser import node_from_config
 
 
 def usage_to_l1_pipeline(**kwargs):

@@ -33,8 +33,8 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 
-from src.customer360.utilities.config_parser import expansion
-from src.customer360.pipelines.data_engineering.nodes.usage_nodes.to_l2 import prepare_prepaid_call_data \
+from customer360.utilities.config_parser import expansion
+from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l2 import prepare_prepaid_call_data \
     , prepare_postpaid_call_data, prepare_prepaid_gprs_data, prepare_postpaid_gprs_data
 
 
