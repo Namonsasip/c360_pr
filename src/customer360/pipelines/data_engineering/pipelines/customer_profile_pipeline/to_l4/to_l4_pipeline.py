@@ -73,6 +73,12 @@ def customer_profile_billing_level_to_l4_pipeline(**kwargs):
                 ['l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly',
                  "params:l4_customer_profile_billing_level_number_of_mobile_devices"],
                 "l4_customer_profile_billing_level_number_of_mobile_devices"
+            ),
+            node(
+                node_from_config,
+                ['l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly',
+                 'params:l4_customer_profile_billing_level_number_of_sims'],
+                "l4_customer_profile_billing_level_number_of_sims"
             )
         ]
     )

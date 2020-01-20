@@ -15,3 +15,12 @@ l4_customer_profile_billing_level_number_of_mobile_devices:
   save_args:
     mode: "overwrite"
     partitionBy: ["partition_month"]
+
+
+l4_customer_profile_billing_level_number_of_sims:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L4_FEATURES/CUSTOMER_PROFILE/billing_level_number_of_sims/
+  file_format: "parquet"
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["partition_month"]

@@ -57,3 +57,10 @@ l4_customer_profile_billing_level_number_of_mobile_devices:
 
     granularity: "ba_id, partition_month"
 
+
+l4_customer_profile_billing_level_number_of_sims:
+    where_clause: "where sim_serial_no is not null"
+    feature_list:
+        number_of_mobile_devices: "count(*)"
+
+    granularity: "ba_id, partition_month"
