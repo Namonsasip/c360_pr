@@ -8,6 +8,7 @@ int_l4_customer_profile_basic_features:
         crm_sub_id: "crm_sub_id"
         charge_type: "charge_type"
         partition_month: "partition_month"
+        subscription_status: "mobile_status"
 
         # these are the rest of the features
         age: "floor(months_between(last_day(to_date(cast(partition_month as STRING), 'yyyyMM')), to_date(birth_date))/12)"
@@ -47,4 +48,12 @@ int_l4_customer_profile_processed_features:
 union_customer_profile_column_to_extract:
   - "zipcode"
   - "prefer_language"
+
+
+l4_customer_profile_billing_level_number_of_mobile_devices:
+    where_clause: "where imei is not null"
+    feature_list:
+        number_of_mobile_devices: "count(*)"
+
+    granularity: "ba_id, partition_month"
 

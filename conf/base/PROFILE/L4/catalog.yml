@@ -7,9 +7,9 @@ l4_customer_profile_features:
     partitionBy: ["partition_month"]
 
 
-l4_customer_profile_billing_level_features:
+l4_customer_profile_billing_level_number_of_mobile_devices:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: /mnt/customer360-blob-data/C360/CUSTOMER_PROFILE/l4_features/billing_level_features/
+  filepath: /mnt/customer360-blob-data/C360/CUSTOMER_PROFILE/l4_features/billing_level_number_of_mobile_devices/
   file_format: "parquet"
   save_args:
     partitionBy: ["partition_month"]
