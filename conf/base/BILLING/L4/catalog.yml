@@ -1,0 +1,4 @@
+l0_billing_statement_history_billshock:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: /mnt/customer360-blob-data/C360/BILLING/l4_features/billing_and_payments_billshock/
+  file_format: parquet

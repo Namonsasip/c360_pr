@@ -1,0 +1,6 @@
+l0_billing_statement_history_billshock:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L4_FEATURES/BILLING/billing_and_payments_billshock/
+  file_format: parquet
+  save_args:
+    mode: "overwrite"
