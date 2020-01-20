@@ -1,0 +1,46 @@
+# Config file for query generator
+l0_usage_ru_f_cbs_prepaid_call_daily:
+    where_clause: ""
+    feature_list:
+        usg_total_call_duration: "sum(case when service_type IN ('VOICE', 'IR', 'INTER') THEN total_second else 0 end)"
+        usg_total_roaming_call_duration: "sum(case when service_type = 'IR' THEN total_second else 0 end)"
+        usg_total_local_call_duration: "sum(case when service_type = 'VOICE' THEN total_second else 0 end)"
+        usg_total_sms_number: "sum(case when service_type IN ('SMS', 'SMSIR') THEN total_call else 0 end)"
+        usg_total_roaming_sms_number: "sum(case when service_type = 'SMSIR' THEN total_call else 0 end)"
+        usg_total_local_sms_number: "sum(case when service_type = 'SMS' THEN total_call else 0 end)"
+        usg_total_number_calls: "sum(case when service_type IN ('VOICE', 'IR', 'INTER') THEN total_call else 0 end)"
+        usg_total_roaming_number_calls: "sum(case when service_type = 'IR' THEN total_call else 0 end)"
+        usg_total_local_number_calls: "sum(case when service_type = 'VOICE' THEN total_call else 0 end)"
+    granularity: "access_method_num, day_id"
+
+l0_usage_ru_a_voice_usg_daily:
+    where_clause: ""
+    feature_list:
+        usg_total_call_duration: "sum(case when call_type_code IN (1, 68) THEN call_duration else 0 end)"
+        usg_total_local_call_duration:  "sum(case when call_type_code = 1 THEN call_duration else 0 end)"
+        usg_total_sms_number: "sum(case when call_type_code IN (4, 5) THEN number_of_call else 0 end)"
+        usg_total_number_calls: "sum(case when call_type_code IN (1, 68) THEN number_of_call else 0 end)"
+        usg_total_local_number_calls: "sum(case when call_type_code IN (1) THEN number_of_call else 0 end)"
+    granularity: "registered_date, access_method_id, usg_date"
+
+l0_usage_ru_a_gprs_cbs_usage_daily:
+    where_clause: ""
+    feature_list:
+        usg_outgoing_data_volumne_kb: "sum(data_upload_amt)"
+        usg_outgoing_roaming_data_volumne_kb: "sum(case when cdr_subtype_cd = 'ROAMING' then data_upload_amt else 0 end)"
+        usg_outgoing_local_data_volumne_kb: "sum(case when cdr_subtype_cd = 'DOMESTIC' then data_upload_amt else 0 end)"
+        usg_incoming_data_volumne_kb: "sum(data_download_amt)"
+        usg_incoming_roaming_data_volumne_kb: "sum(case when cdr_subtype_cd = 'ROAMING' then data_download_amt else 0 end)"
+        usg_incoming_local_data_volumne_kb: "sum(case when cdr_subtype_cd = 'DOMESTIC' then data_download_amt else 0 end)"
+        usg_incoming_data_volumne_4G_kb: "sum(case when rat_type = '4G' then data_download_amt else 0 end)"
+        usg_incoming_roaming_data_volumne_4G_kb: "sum(case when rat_type = '4G' and cdr_subtype_cd = 'ROAMING'
+                                              then data_download_amt else 0 end)"
+        usg_incoming_local_data_volumne_4G_kb: "sum(case when rat_type = '4G' and cdr_subtype_cd = 'DOMESTIC'
+                                              then data_download_amt else 0 end)"
+    granularity: "access_method_num, call_start_dt"
+
+l0_usage_ru_a_vas_postpaid_usg_daily:
+    where_clause: ""
+    feature_list:
+        usg_total_data_volumne_kb: "sum(download_volume_kb)"
+    granularity: "access_method_num, day_id"
