@@ -49,11 +49,11 @@ class QueryGenerator:
 
     @staticmethod
     def __add_start_of_week(feature_list, event_date_column):
-        feature_list.append("date_trunc('week', {}) as start_of_week".format(event_date_column))
+        feature_list.append("date(date_trunc('week', {})) as start_of_week".format(event_date_column))
 
     @staticmethod
     def __add_start_of_month(feature_list, event_date_column):
-        feature_list.append("max(date_trunc('month', {})) as start_of_month".format(event_date_column))
+        feature_list.append("date(date_trunc('month', {})) as start_of_month".format(event_date_column))
 
     @staticmethod
     def normal_feature_listing(feature_list, **kwargs):
