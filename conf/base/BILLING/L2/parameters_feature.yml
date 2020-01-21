@@ -1,0 +1,8 @@
+l2_billing_and_payment_feature_top_up_and_count_weekly:
+    where_clause: ""
+    feature_list:
+      sum_top_ups: "sum(top_ups)"
+      sum_top_up_volume: "sum(top_up_volume)"
+      avg_top_ups: "sum(top_ups)/7.0"
+      avg_top_up_volume: "sum(top_up_volume)/7.0"
+    granularity: "start_of_month,start_of_week,access_method_num,register_date"

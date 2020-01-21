@@ -1,0 +1,12 @@
+l1_billing_and_payment_feature_top_up_and_count:
+    where_clause: ""
+    feature_list:
+        top_ups: "count(*)"
+        top_up_volume: "sum(face_value)"
+    granularity: "date(recharge_date),access_method_num,date(register_date)"
+    event_date_column: "date(recharge_date)"
+
+
+
+
+

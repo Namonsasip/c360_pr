@@ -9,8 +9,8 @@ def billing_to_l1_pipeline(**kwargs):
             node(
                 node_from_config,
                 ["l0_billing_and_payments_rt_t_recharge_daily",
-                 "params:l0_billing_and_payment_feature_top_up_and_count"],
-                "l1_billing_and_payments_topup_and_volume"
+                 "params:l1_billing_and_payment_feature_top_up_and_count"],
+                "l1_billing_and_payments_daily_topup_and_volume"
             ),
         ]
     )

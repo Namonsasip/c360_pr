@@ -1,16 +1,6 @@
 import pyspark.sql.functions as f
 from pyspark.sql import Window
 
-def top_up_monthly_converted_data(input_df):
-    output_df = input_df.withColumn("year", f.year("recharge_date"))\
-        .withColumn("month", f.month("recharge_date")) \
-        .groupBy("year", "month", "access_method_num", f.to_date("register_date").alias("register_date"))\
-        .agg(f.sum("number_of_top_ups").alias("monthly_top_ups"),
-             f.sum("top_up_volume").alias("monthly_top_up_volume"))\
-        .drop("recharge_date")
-
-    return output_df
-
 def arpu_monthly_converted_data(input_df):
     output_df = input_df.withColumn("year", f.year("month_id"))\
         .withColumn("month", f.month("month_id")) \

@@ -12,3 +12,11 @@ l0_billing_statement_history_monthly:
   file_format: "parquet"
   save_args:
     mode: "overwrite"
+
+
+l0_billing_pc_t_payment_daily:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L0/BILLING/billing_pc_t_payment_daily
+  file_format: parquet
+  save_args:
+    mode: "overwrite"

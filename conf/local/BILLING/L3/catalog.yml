@@ -4,6 +4,7 @@ l3_billing_and_payments_monthly_arpu:
   filepath: data/L3_MONTHLY/BILLING/billing_and_payments_arpu/
   save_args:
     mode: "overwrite"
+    partitionBy: ["partition_month"]
 
 l3_billing_and_payments_monthly_topup_and_volume:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -11,6 +12,7 @@ l3_billing_and_payments_monthly_topup_and_volume:
   filepath: data/L3_MONTHLY/BILLING/billing_and_payments_monthly_topup_and_volume/
   save_args:
     mode: "overwrite"
+    partitionBy: ["start_of_month"]
 
 l3_billing_and_payments_monthly_topup_time_diff:
   type: kedro.contrib.io.pyspark.SparkDataSet
