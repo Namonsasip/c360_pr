@@ -1,16 +1,33 @@
-l1_usage_ru_f_cbs_prepaid_call_daily:
-  type: kedro.contrib.io.pyspark.SparkDataSet
-  file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/usage_ru_f_cbs_prepaid_call_daily/
-  save_args:
-    mode: "append"
+#l1_usage_ru_f_cbs_prepaid_call_daily:
+#  type: kedro.contrib.io.pyspark.SparkDataSet
+#  file_format: "parquet"
+#  filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/usage_ru_f_cbs_prepaid_call_daily/
+#  save_args:
+#    mode: "append"
+#
+#l1_usage_ru_a_voice_usg_daily:
+#  type: kedro.contrib.io.pyspark.SparkDataSet
+#  file_format: "parquet"
+#  filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/usage_ru_a_voice_usg_daily/
+#  save_args:
+#    mode: "append"
 
-l1_usage_ru_a_voice_usg_daily:
+
+l1_usage_call_relation_sum_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/usage_ru_a_voice_usg_daily/
+  filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/usage_call_relation_sum_daily/
   save_args:
     mode: "append"
+    partition_by: ["event_partition_dt"]
+
+l1_usage_call_relation_sum_ir_daily:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/usage_call_relation_sum_ir_daily/
+  save_args:
+    mode: "append"
+    partition_by: ["event_partition_dt"]
 
 l1_usage_ru_a_gprs_cbs_usage_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -18,6 +35,7 @@ l1_usage_ru_a_gprs_cbs_usage_daily:
   filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/usage_ru_a_gprs_cbs_usage_daily/
   save_args:
     mode: "append"
+    partition_by: ["event_partition_dt"]
 
 l1_usage_ru_a_vas_postpaid_usg_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -25,3 +43,4 @@ l1_usage_ru_a_vas_postpaid_usg_daily:
   filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/usage_ru_a_vas_postpaid_usg_daily/
   save_args:
     mode: "append"
+    partition_by: ["event_partition_dt"]

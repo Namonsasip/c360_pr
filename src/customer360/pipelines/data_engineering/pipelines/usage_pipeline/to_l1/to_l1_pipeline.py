@@ -39,29 +39,41 @@ from customer360.utilities.config_parser import node_from_config
 def usage_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
+            # node(
+            #     node_from_config,
+            #     ["l0_usage_ru_f_cbs_prepaid_call_daily",
+            #      "params:l0_usage_ru_f_cbs_prepaid_call_daily"],
+            #     "l1_usage_ru_f_cbs_prepaid_call_daily"
+            # ),
+            # node(
+            #     node_from_config,
+            #     ["l0_usage_ru_a_voice_usg_daily",
+            #      "params:l0_usage_ru_a_voice_usg_daily"],
+            #     "l1_usage_ru_a_voice_usg_daily"
+            # ),
             node(
                 node_from_config,
-                ["l0_usage_ru_f_cbs_prepaid_call_daily",
-                 "params:l0_usage_ru_f_cbs_prepaid_call_daily"],
-                "l1_usage_ru_f_cbs_prepaid_call_daily"
+                ["l0_usage_call_relation_sum_daily",
+                 "params:l0_usage_outgoing_call_relation_sum_daily"],
+                "l1_usage_outgoing_call_relation_sum_daily_stg"
             ),
             node(
                 node_from_config,
-                ["l0_usage_ru_a_voice_usg_daily",
-                 "params:l0_usage_ru_a_voice_usg_daily"],
-                "l1_usage_ru_a_voice_usg_daily"
+                ["l0_usage_call_relation_sum_daily",
+                 "params:l0_usage_incoming_call_relation_sum_daily"],
+                "l1_usage_incoming_call_relation_sum_daily_stg"
             ),
-            node(
-                node_from_config,
-                ["l0_usage_ru_a_gprs_cbs_usage_daily",
-                 "params:l0_usage_ru_a_gprs_cbs_usage_daily"],
-                "l1_usage_ru_a_gprs_cbs_usage_daily"
-            ),
-            node(
-                node_from_config,
-                ["l0_usage_ru_a_vas_postpaid_usg_daily",
-                 "params:l0_usage_ru_a_vas_postpaid_usg_daily"],
-                "l1_usage_ru_a_vas_postpaid_usg_daily"
-            ),
+            # node(
+            #     node_from_config,
+            #     ["l0_usage_ru_a_gprs_cbs_usage_daily",
+            #      "params:l0_usage_ru_a_gprs_cbs_usage_daily"],
+            #     "l1_usage_ru_a_gprs_cbs_usage_daily"
+            # ),
+            # node(
+            #     node_from_config,
+            #     ["l0_usage_ru_a_vas_postpaid_usg_daily",
+            #      "params:l0_usage_ru_a_vas_postpaid_usg_daily"],
+            #     "l1_usage_ru_a_vas_postpaid_usg_daily"
+            # ),
         ], name="usage_to_l1_pipeline"
     )
