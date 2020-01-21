@@ -1,9 +1,9 @@
-l3_billing_and_payments_monthly_arpu:
+l3_billing_and_payments_monthly_rpu:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_monthly_arpu/
+  filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_monthly_rpu/
   save_args:
-    partitionBy: ["partition_month"]
+    partitionBy: ["start_of_month"]
 
 l3_billing_and_payments_monthly_topup_and_volume:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -16,3 +16,5 @@ l3_billing_and_payments_monthly_topup_time_diff:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_monthly_topup_time_diff/
+  save_args:
+    partitionBy: ["start_of_month"]

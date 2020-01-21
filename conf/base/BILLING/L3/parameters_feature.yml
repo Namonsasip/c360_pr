@@ -5,17 +5,27 @@ l3_billing_and_payment_feature_top_up_and_count_monthly:
       sum_top_up_volume: "sum(sum_top_up_volume)"
       avg_top_ups: "sum(sum_top_ups)/(DAY(LAST_DAY(start_of_month))*1.0)"
       avg_top_up_volume: "sum(sum_top_up_volume)/(DAY(LAST_DAY(start_of_month))*1.0)"
-    granularity: "start_of_month,access_method_num,register_date"
+    granularity: "start_of_month,access_method_num,date(register_date)"
 
 
-l3_billing_and_payment_arpu_features:
+l3_billing_and_payment_revenue_per_user_monthly:
     where_clause: ""
     feature_list:
-      partition_month: "max(concat(cast(year(month_id) as string),cast(month(month_id) as string)))"
-      arpu_monthly: "avg(norms_net_revenue)"
-      arpu_gprs_monthly: "avg(norms_net_revenue_gprs)"
-      arpu_vas_monthly: "avg(norms_net_revenue_vas)"
-      arpu_voice_monthly: "avg(norms_net_revenue_voice)"
+      start_of_month: "date(date_trunc('month', month_id))"
+      sum_rpu: "sum(norms_net_revenue)"
+      sum_rpu_gprs: "sum(norms_net_revenue_gprs)"
+      sum_rpu_vas: "sum(norms_net_revenue_vas)"
+      sum_rpu_voice: "sum(norms_net_revenue_voice)"
     granularity: "month_id,access_method_num,date(register_date)"
+
+
+l3_billing_and_payment_time_diff_bw_topups_monthly:
+    where_clause: ""
+    feature_list:
+      max_time_diff: "max(max_time_diff)"
+      min_time_diff: "min(min_time_diff)"
+      sum_time_diff: "sum(sum_time_diff)"
+      avg_time_diff: "sum(sum_time_diff)/(DAY(LAST_DAY(start_of_month))*1.0)"
+    granularity: "start_of_month,access_method_num,date(register_date)"
 
 
