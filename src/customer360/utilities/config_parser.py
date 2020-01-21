@@ -7,13 +7,19 @@ class QueryGenerator:
 
     # accept table_name as string, table_params as dict
     @staticmethod
-    def aggregate(table_name, table_params):
+    def aggregate(table_name, table_params, column_function, **kwargs):
         try:
-            features = []
+
             feature_list = table_params["feature_list"]
-            if feature_list != "":
-                for (key, val) in feature_list.items():
-                    features.append("{} as {}".format(val, key))
+
+            features = column_function(feature_list, **kwargs)
+
+            event_date_column = table_params.get('event_date_column')
+
+            if event_date_column is not None:
+                QueryGenerator.__add_start_of_week(features, event_date_column)
+                QueryGenerator.__add_start_of_month(features, event_date_column)
+                QueryGenerator.__add_event_partition_date(features, event_date_column)
 
             # if don't want to use where clause then put empty string "" in query_parameters.yaml
             where_clause = table_params["where_clause"]
@@ -37,46 +43,44 @@ class QueryGenerator:
             print(str(e))
             print("Table parameters are missing.")
 
-    # accept table_name as string, table_params as dict
     @staticmethod
-    def feature_expansion(table_name, table_params):
-        try:
-            features = []
-            feature_list = table_params["feature_list"]
-            level = table_params["type"]
-            if feature_list != "":
-                for (key, val) in feature_list.items():
-                    if len(val)!=0:
-                        for col in val:
-                            features.append("{}({}) as {}".format(key,col,col+"_"+key+"_"+level))
+    def __add_event_partition_date(feature_list, event_date_column):
+        feature_list.append("date({}) as event_partition_date".format(event_date_column))
 
-            # if don't want to use where clause then put empty string "" in query_parameters.yaml
-            where_clause = table_params["where_clause"]
+    @staticmethod
+    def __add_start_of_week(feature_list, event_date_column):
+        feature_list.append("date_trunc('week', {}) as start_of_week".format(event_date_column))
 
-            # if features are not listed we can assume it to be *
-            # or can raise a exception
-            projection = ','.join(features) if len(features) != 0 else "*"
+    @staticmethod
+    def __add_start_of_month(feature_list, event_date_column):
+        feature_list.append("max(date_trunc('month', {})) as start_of_month".format(event_date_column))
 
-            # if don't want to use group by then put empty string "" in query_parameters.yaml
+    @staticmethod
+    def normal_feature_listing(feature_list, **kwargs):
+        features = []
 
-            granularity = table_params["granularity"]
+        for (key, val) in feature_list.items():
+            features.append("{} as {}".format(val, key))
 
-            if granularity!="":
-                query = "Select {},{} from {} {} group by {}".format(granularity, projection, table_name, where_clause, granularity)
-            else:
-                query = "Select {} from {} {}".format(projection, table_name, where_clause)
+        return features
 
-            return query
+    @staticmethod
+    def expansion_feature_listing(feature_list, **kwargs):
+        features = []
 
-        except Exception as e:
-            print(str(e))
-            print("Table parameters are missing.")
+        for (key, val) in feature_list.items():
+            for col in val:
+                features.append("{}({}) as {}".format(key, col, col + "_" + key + "_" + kwargs['level']))
 
 
 def node_from_config(input_df, config) -> DataFrame:
     table_name = "input_table"
     input_df.createOrReplaceTempView(table_name)
-    sql_stmt = QueryGenerator.aggregate(table_name, config)
+
+    sql_stmt = QueryGenerator.aggregate(
+        table_name=table_name,
+        table_params=config,
+        column_function=QueryGenerator.normal_feature_listing)
 
     spark = SparkSession.builder.getOrCreate()
 
@@ -93,7 +97,13 @@ def expansion(input_df, config) -> DataFrame:
     """
     table_name = "input_table"
     input_df.createOrReplaceTempView(table_name)
-    sql_stmt = QueryGenerator.feature_expansion(table_name, config)
+
+    sql_stmt = QueryGenerator.aggregate(
+        table_name=table_name,
+        table_params=config,
+        column_function=QueryGenerator.expansion_feature_listing,
+        level=config['type']
+    )
 
     spark = SparkSession.builder.getOrCreate()
 
