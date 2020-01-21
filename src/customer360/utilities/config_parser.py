@@ -11,8 +11,15 @@ class QueryGenerator:
         try:
 
             feature_list = table_params["feature_list"]
-            if feature_list != "":
-                features = column_function(feature_list, **kwargs)
+
+            features = column_function(feature_list, **kwargs)
+
+            event_date_column = table_params.get('event_date_column')
+
+            if event_date_column is not None:
+                QueryGenerator.__add_start_of_week(features, event_date_column)
+                QueryGenerator.__add_start_of_month(features, event_date_column)
+                QueryGenerator.__add_event_partition_date(features, event_date_column)
 
             # if don't want to use where clause then put empty string "" in query_parameters.yaml
             where_clause = table_params["where_clause"]
@@ -37,6 +44,18 @@ class QueryGenerator:
             print("Table parameters are missing.")
 
     @staticmethod
+    def __add_event_partition_date(feature_list, event_date_column):
+        feature_list.append("date({}) as event_partition_date".format(event_date_column))
+
+    @staticmethod
+    def __add_start_of_week(feature_list, event_date_column):
+        feature_list.append("date_trunc('week', {}) as start_of_week".format(event_date_column))
+
+    @staticmethod
+    def __add_start_of_month(feature_list, event_date_column):
+        feature_list.append("max(date_trunc('month', {})) as start_of_month".format(event_date_column))
+
+    @staticmethod
     def normal_feature_listing(feature_list, **kwargs):
         features = []
 
@@ -57,6 +76,7 @@ class QueryGenerator:
 def node_from_config(input_df, config) -> DataFrame:
     table_name = "input_table"
     input_df.createOrReplaceTempView(table_name)
+
     sql_stmt = QueryGenerator.aggregate(
         table_name=table_name,
         table_params=config,
