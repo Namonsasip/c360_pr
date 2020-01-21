@@ -16,11 +16,14 @@ l1_usage_call_relation_sum_daily:
   filepath: data/USAGE/l1_features/usage_call_relation_sum_daily/
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
+  save_args:
+    mode: "overwrite"
 
 l1_usage_call_relation_sum_ir_daily:
   filepath: data/USAGE/l1_features/usage_call_relation_sum_ir_daily/
   type: kedro.contrib.io.pyspark.SparkDataSet
-  file_format: "parquet"
+  save_args:
+    mode: "overwrite"
 
 l1_usage_ru_a_gprs_cbs_usage_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet

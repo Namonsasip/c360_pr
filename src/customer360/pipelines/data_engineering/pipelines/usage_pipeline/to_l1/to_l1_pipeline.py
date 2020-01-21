@@ -34,6 +34,7 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 from kedro.pipeline import Pipeline, node
 
 from customer360.utilities.config_parser import node_from_config
+from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1 import merge_incoming_outgoing_calls
 
 
 def usage_to_l1_pipeline(**kwargs):
@@ -63,6 +64,11 @@ def usage_to_l1_pipeline(**kwargs):
                  "params:l0_usage_incoming_call_relation_sum_daily"],
                 "l1_usage_incoming_call_relation_sum_daily_stg"
             ),
+            node(
+                merge_incoming_outgoing_calls, ['l1_usage_outgoing_call_relation_sum_daily_stg',
+                                                'l1_usage_incoming_call_relation_sum_daily_stg'],
+                'l1_usage_call_relation_sum_daily'
+            )
             # node(
             #     node_from_config,
             #     ["l0_usage_ru_a_gprs_cbs_usage_daily",

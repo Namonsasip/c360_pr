@@ -29,25 +29,7 @@
 from kedro.pipeline import Pipeline, node
 
 from src.customer360.utilities.config_parser import node_from_config
-
-
-def city_of_residence(
-        cust_pre,
-        cust_post,
-        cust_non_mobile
-):
-    columns = [
-        "subscription_identifier",
-        "mobile_no",
-        "register_date",
-        "zipcode"
-    ]
-
-    df = cust_pre.select(columns) \
-        .union(cust_post.select(columns)) \
-        .union(cust_non_mobile.select(columns))
-
-    return df
+from src.customer360.pipelines.data_engineering.nodes.customer_profile_nodes.to_l4.to_l4_nodes import *
 
 
 def customer_profile_to_l4_pipeline(**kwargs):
@@ -60,11 +42,43 @@ def customer_profile_to_l4_pipeline(**kwargs):
                 "int_l4_customer_profile_basic_features"
             ),
             node(
-                city_of_residence,
+                union_daily_cust_profile,
                 ["l0_customer_profile_profile_customer_profile_pre_current",
                  "l0_customer_profile_profile_customer_profile_post_current",
-                 "l0_customer_profile_profile_customer_profile_post_non_mobile_current_non_mobile_current"],
-                "int_l4_customer_profile_city_of_residence"
+                 "l0_customer_profile_profile_customer_profile_post_non_mobile_current_non_mobile_current",
+                 "params:union_customer_profile_column_to_extract"],
+                "int_l4_customer_profile_union_features"
+            ),
+            node(
+                node_from_config,
+                ["int_l4_customer_profile_union_features",
+                 "params:int_l4_customer_profile_processed_features"],
+                "int_l4_customer_profile_processed_union_features"
+            ),
+            node(
+                merge_union_and_basic_features,
+                ['int_l4_customer_profile_processed_union_features',
+                 'int_l4_customer_profile_basic_features'],
+                "l4_customer_profile_features"
             )
-        ], tags=["customer_profile_to_l4_pipeline"]
+        ]
+    )
+
+
+def customer_profile_billing_level_to_l4_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                node_from_config,
+                ['l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly',
+                 "params:l4_customer_profile_billing_level_number_of_mobile_devices"],
+                "l4_customer_profile_billing_level_number_of_mobile_devices"
+            ),
+            node(
+                node_from_config,
+                ['l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly',
+                 'params:l4_customer_profile_billing_level_number_of_sims'],
+                "l4_customer_profile_billing_level_number_of_sims"
+            )
+        ]
     )
