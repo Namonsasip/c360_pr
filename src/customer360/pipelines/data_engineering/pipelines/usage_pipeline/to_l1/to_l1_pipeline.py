@@ -56,13 +56,13 @@ def usage_to_l1_pipeline(**kwargs):
             node(
                 node_from_config,
                 ["l0_usage_call_relation_sum_daily",
-                 "params:l0_usage_outgoing_call_relation_sum_daily"],
+                 "params:l1_usage_outgoing_call_relation_sum_daily"],
                 "l1_usage_outgoing_call_relation_sum_daily_stg"
             ),
             node(
                 node_from_config,
                 ["l0_usage_call_relation_sum_daily",
-                 "params:l0_usage_incoming_call_relation_sum_daily"],
+                 "params:l1_usage_incoming_call_relation_sum_daily"],
                 "l1_usage_incoming_call_relation_sum_daily_stg"
             ),
             node(
@@ -73,13 +73,13 @@ def usage_to_l1_pipeline(**kwargs):
             node(
                 node_from_config,
                 ["l0_usage_ru_a_gprs_cbs_usage_daily",
-                 "params:l0_usage_ru_a_gprs_cbs_usage_daily"],
+                 "params:l1_usage_ru_a_gprs_cbs_usage_daily"],
                 "l1_usage_ru_a_gprs_cbs_usage_daily_stg"
             ),
             node(
                 node_from_config,
                 ["l0_usage_ru_a_vas_postpaid_usg_daily",
-                 "params:l0_usage_ru_a_vas_postpaid_usg_daily"],
+                 "params:l1_usage_ru_a_vas_postpaid_usg_daily"],
                 "l1_usage_ru_a_vas_postpaid_usg_daily_stg"
             ),
             node(
@@ -91,13 +91,13 @@ def usage_to_l1_pipeline(**kwargs):
             node(
                 node_from_config,
                 ["l0_usage_call_relation_sum_ir_daily",
-                 "params:l0_usage_outgoing_call_relation_sum_ir_daily"],
+                 "params:l1_usage_outgoing_call_relation_sum_ir_daily"],
                 "l1_usage_outgoing_call_relation_sum_ir_daily_stg"
             ),
             node(
                 node_from_config,
                 ["l0_usage_call_relation_sum_ir_daily",
-                 "params:l0_usage_incoming_call_relation_sum_ir_daily"],
+                 "params:l1_usage_incoming_call_relation_sum_ir_daily"],
                 "l1_usage_incoming_call_relation_sum_ir_daily_stg"
             ),
 

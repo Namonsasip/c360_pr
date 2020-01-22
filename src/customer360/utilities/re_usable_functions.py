@@ -1,6 +1,7 @@
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 from functools import reduce
+from pyspark.sql import SparkSession
 
 
 def union_dataframes_with_missing_cols(df_input_or_list, *args):
@@ -22,3 +23,18 @@ def union_dataframes_with_missing_cols(df_input_or_list, *args):
 
     df_list_updated = [add_missing_cols(df, col_list) for df in df_list]
     return reduce(DataFrame.union, df_list_updated)
+
+
+def execute_sql(data_frame, table_name, sql_str):
+    """
+
+    :param data_frame:
+    :param table_name:
+    :param sql_str:
+    :return:
+    """
+    ss = SparkSession.builder.getOrCreate()
+    data_frame.registerTempTable(table_name)
+    return ss.sql(sql_str)
+
+

@@ -34,7 +34,6 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 from kedro.pipeline import Pipeline, node
 
 from src.customer360.utilities.config_parser import expansion, l4_rolling_window
-from src.customer360.pipelines.data_engineering.nodes.usage_nodes.to_l2 import prepare_prepaid_call_data
 
 
 def usage_to_l4_pipeline(**kwargs):

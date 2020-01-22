@@ -101,6 +101,7 @@ def run_package():
     # using `<project_package>` command
     project_context = load_context(Path.cwd())
     project_context.run(pipeline_name="usage_to_l1_pipeline")
+    project_context.run(pipeline_name="usage_to_l2_pipeline")
 
     # Replace line above with below to run on databricks cluster
     # and Dont forget to clear state for every git pull in notebook

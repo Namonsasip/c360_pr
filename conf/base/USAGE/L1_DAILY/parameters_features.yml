@@ -1,5 +1,5 @@
 # Config file for query generator
-l0_usage_outgoing_call_relation_sum_daily:
+l1_usage_outgoing_call_relation_sum_daily:
     where_clause: "where call_type IN ('MO')"
     feature_list:
         msisdn: "max(caller_no)"
@@ -56,11 +56,11 @@ l0_usage_outgoing_call_relation_sum_daily:
         usg_outgoing_number_calls_over_30_mins: "sum(case when service_type IN ('VOICE')
                                                 AND total_durations > 1800 THEN total_successful_call else 0 end)"
 
-        usg_outgoing_date_of_last_call: "max(case when service_type IN ('VOICE') THEN date(day_id) else null end)"
+        usg_outgoing_last_call_date: "max(case when service_type IN ('VOICE') THEN date(day_id) else null end)"
 
-        usg_date_of_last_call: "max(case when service_type IN ('VOICE') THEN date(day_id) else null end)"
+        usg_last_call_date: "max(case when service_type IN ('VOICE') THEN date(day_id) else null end)"
 
-        usg_outgoing_date_of_last_sms: "max(case when service_type IN ('SMS') THEN date(day_id) else null end)"
+        usg_outgoing_last_sms_date: "max(case when service_type IN ('SMS') THEN date(day_id) else null end)"
 
         usg_call_sms_last_action_date: "max(date(day_id))"
 
@@ -268,7 +268,7 @@ l0_usage_outgoing_call_relation_sum_daily:
     granularity: "caller_no, day_id"
     event_date_column: "date(day_id)"
 
-l0_usage_incoming_call_relation_sum_daily:
+l1_usage_incoming_call_relation_sum_daily:
     where_clause: "where call_type IN ('MT')"
     feature_list:
         msisdn: "max(called_no)"
@@ -283,11 +283,11 @@ l0_usage_incoming_call_relation_sum_daily:
         usg_incoming_local_number_calls: "sum(case when service_type IN ('VOICE')
                                         AND idd_flag = 'N' THEN total_successful_call else 0 end)"
 
-        usg_incmoing_ais_local_calls_duration: "sum(case when service_type IN ('VOICE')
+        usg_incoming_ais_local_calls_duration: "sum(case when service_type IN ('VOICE')
                                                 AND caller_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS')
                                                 THEN total_durations else 0 end)"
 
-        usg_incmoing_ais_local_number_calls: "sum(case when service_type IN ('VOICE')
+        usg_incoming_ais_local_number_calls: "sum(case when service_type IN ('VOICE')
                                                 AND caller_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS')
                                                 THEN total_successful_call else 0 end)"
 
@@ -326,7 +326,9 @@ l0_usage_incoming_call_relation_sum_daily:
         usg_incoming_number_calls_over_30_mins: "sum(case when service_type IN ('VOICE')
                                                  AND total_durations > 1800 THEN total_successful_call else 0 end)"
 
-        usg_incoming_date_of_last_call: "max(case when service_type IN ('VOICE') THEN date(day_id) else null end)"
+        usg_incoming_last_call_date: "max(case when service_type IN ('VOICE') THEN date(day_id) else null end)"
+
+        usg_last_call_date: "max(case when service_type IN ('VOICE') THEN date(day_id) else null end)"
 
         usg_call_sms_last_action_date: "max(date(day_id))"
 
@@ -531,7 +533,7 @@ l0_usage_incoming_call_relation_sum_daily:
     granularity: "called_no, day_id"
     event_date_column: "date(day_id)"
 
-l0_usage_ru_a_gprs_cbs_usage_daily:
+l1_usage_ru_a_gprs_cbs_usage_daily:
     where_clause: ""
     feature_list:
         msisdn: "max(access_method_num)"
@@ -609,7 +611,7 @@ l0_usage_ru_a_gprs_cbs_usage_daily:
     granularity: "access_method_num, call_start_dt"
     event_date_column: "date(call_start_dt)"
 
-l0_usage_ru_a_vas_postpaid_usg_daily:
+l1_usage_ru_a_vas_postpaid_usg_daily:
     where_clause: ""
     feature_list:
         msisdn: "max(access_method_num)"
@@ -643,7 +645,7 @@ l0_usage_ru_a_vas_postpaid_usg_daily:
     event_date_column: "date(day_id)"
 
 
-l0_usage_outgoing_call_relation_sum_ir_daily:
+l1_usage_outgoing_call_relation_sum_ir_daily:
     where_clause: "where call_type IN ('MO')"
     feature_list:
         msisdn: "max(caller_no)"
@@ -654,7 +656,7 @@ l0_usage_outgoing_call_relation_sum_ir_daily:
     granularity: "caller_no, day_id"
     event_date_column: "date(day_id)"
 
-l0_usage_incoming_call_relation_sum_ir_daily:
+l1_usage_incoming_call_relation_sum_ir_daily:
     where_clause: "where call_type IN ('MT')"
     feature_list:
         msisdn: "max(called_no)"
