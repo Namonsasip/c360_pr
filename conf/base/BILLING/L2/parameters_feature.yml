@@ -1,8 +1,8 @@
 l2_billing_and_payment_feature_top_up_and_count_weekly:
     where_clause: ""
     feature_list:
-      sum_top_ups: "sum(top_ups)"
-      sum_top_up_volume: "sum(top_up_volume)"
+      top_ups: "sum(top_ups)"
+      top_up_volume: "sum(top_up_volume)"
       avg_top_ups: "sum(top_ups)/7.0"
       avg_top_up_volume: "sum(top_up_volume)/7.0"
     granularity: "start_of_month,start_of_week,access_method_num,date(register_date)"
@@ -13,6 +13,13 @@ l2_billing_and_payment_feature_time_diff_bw_topups_weekly:
     feature_list:
       max_time_diff: "max(time_diff)"
       min_time_diff: "min(time_diff)"
-      sum_time_diff: "sum(time_diff)"
+      time_diff: "sum(time_diff)"
       avg_time_diff: "sum(time_diff)/7.0"
     granularity: "start_of_month,start_of_week,access_method_num,date(register_date)"
+
+l2_billing_and_payment_feature_rpu_roaming_weekly:
+    where_clause: ""
+    feature_list:
+      rpu_roaming: "sum(rpu_roaming)"
+      avg_rpu_roaming: "sum(rpu_roaming)/7.0"
+    granularity: "start_of_month,start_of_week,access_method_number,mobile_register_date"

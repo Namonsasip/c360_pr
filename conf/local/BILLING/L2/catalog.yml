@@ -17,7 +17,15 @@ l2_billing_and_payments_weekly_topup_time_diff:
 l2_billing_weekly_automated_payments:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/L2_WEEKLY/BILLING/l2_features/billing_automated_payments/
+  filepath: data/L2_WEEKLY/BILLING/l2_features/billing_and_payments_weekly_automated_payments/
   save_args:
     mode: "overwrite"
     partitionBy: ["start_of_week"]
+
+l2_billing_weekly_rpu_roaming:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L2_WEEKLY/BILLING/l2_features/billing_and_payments_weekly_rpu_roaming/
+  save_args:
+    partitionBy: ["start_of_week"]
+    mode: "overwrite"

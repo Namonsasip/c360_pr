@@ -88,9 +88,12 @@ def l4_rolling_window(input_df, config):
     features = []
 
     features.extend(config["partition_by"])
-    features.extend(["start_of_week", "start_of_month"])
+    features.append("start_of_month")
 
     read_from = config.get("read_from")
+
+    if read_from == 'l2':
+        features.append("start_of_week")
 
     for each_feature_column in config["feature_column"]:
         if read_from == 'l2':

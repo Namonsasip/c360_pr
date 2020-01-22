@@ -1,6 +1,7 @@
 from kedro.pipeline import Pipeline, node
 
 from src.customer360.utilities.config_parser import *
+from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l3.to_l3_nodes import automated_payment_monthly
 
 def billing_to_l3_pipeline(**kwargs):
     return Pipeline(
@@ -19,6 +20,17 @@ def billing_to_l3_pipeline(**kwargs):
                 node_from_config,
                 ["l2_billing_and_payments_weekly_topup_time_diff","params:l3_billing_and_payment_time_diff_bw_topups_monthly"],
                 "l3_billing_and_payments_monthly_topup_time_diff"
+            ),
+            node(
+                node_from_config,
+                ["l2_billing_weekly_rpu_roaming",
+                 "params:l3_billing_and_payment_feature_rpu_roaming_monthly"],
+                "l3_billing_monthly_rpu_roaming"
+            ),
+            node(
+                automated_payment_monthly,
+                ["l0_billing_pc_t_payment_daily"],
+                "l3_billing_monthly_automated_payments"
             ),
         ]
     )
