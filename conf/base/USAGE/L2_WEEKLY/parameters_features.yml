@@ -1,20 +1,31 @@
-l2_usage_ru_f_cbs_prepaid_call_weekly:
+l2_usage_ru_f_cbs_prepaid_call_daily:
   where_clause: ""
   type: "week"
   feature_list:
-    avg: ["usg_total_call_duration", "usg_total_roaming_call_duration", "usg_total_local_call_duration",
-          "usg_total_sms_number", "usg_total_roaming_sms_number", "usg_total_local_sms_number", "usg_total_number_calls",
-          "usg_total_roaming_number_calls", "usg_total_local_number_calls"]
-
-    max: ["usg_total_call_duration", "usg_total_roaming_call_duration", "usg_total_local_call_duration",
-          "usg_total_sms_number", "usg_total_roaming_sms_number", "usg_total_local_sms_number", "usg_total_number_calls",
-          "usg_total_roaming_number_calls", "usg_total_local_number_calls", "last_call_dt"]
-
-    min: ["usg_total_call_duration", "usg_total_roaming_call_duration", "usg_total_local_call_duration",
-          "usg_total_sms_number", "usg_total_roaming_sms_number", "usg_total_local_sms_number", "usg_total_number_calls",
-          "usg_total_roaming_number_calls", "usg_total_local_number_calls"]
-
-  granularity: "week_of_year, month_of_year, year, access_method_num"
+    sum: ["usg_total_call_duration",
+          "usg_total_roaming_call_duration",
+          "usg_total_local_call_duration",
+          "usg_total_sms_number",
+          "usg_total_roaming_sms_number",
+          "usg_total_local_sms_number",
+          "usg_total_number_calls",
+          "usg_total_roaming_number_calls",
+          "usg_total_local_number_calls"]
+#    max: ["usg_outgoing_call_duration",
+#          "usg_outgoing_roaming_call_duration",
+#          "usg_outgoing_local_call_duration",
+#          "usg_outgoing_sms_number",
+#          "usg_outgoing_roaming_sms_number",
+#          "usg_outgoing_number_calls",
+#          "usg_outgoing_roaming_number_calls"]
+#    min: ["usg_outgoing_call_duration",
+#          "usg_outgoing_roaming_call_duration",
+#          "usg_outgoing_local_call_duration",
+#          "usg_outgoing_sms_number",
+#          "usg_outgoing_roaming_sms_number",
+#          "usg_outgoing_number_calls",
+#          "usg_outgoing_roaming_number_calls"]
+  granularity: "access_method_num, start_of_week, start_of_month"
 
 l2_usage_ru_a_voice_usg_weekly:
   where_clause: ""

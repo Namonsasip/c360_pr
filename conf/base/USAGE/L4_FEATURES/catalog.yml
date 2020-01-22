@@ -1,0 +1,8 @@
+
+l4_usage_rolling_window_features:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/USAGE/l4_features/usage_rolling_window/
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["start_of_week"]
