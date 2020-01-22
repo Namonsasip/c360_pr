@@ -72,6 +72,109 @@ class QueryGenerator:
             for col in val:
                 features.append("{}({}) as {}".format(key, col, col + "_" + key + "_" + kwargs['level']))
 
+        return features
+
+
+def l4_rolling_window(input_df, config):
+    table_name = "input_table"
+    input_df.createOrReplaceTempView(table_name)
+
+    sql_stmt = """
+        select 
+            {}
+        from input_table
+    """
+
+    features = []
+
+    features.extend(config["partition_by"])
+    features.extend(["start_of_week", "start_of_month"])
+
+    read_from = config.get("read_from")
+
+    for each_feature_column in config["feature_column"]:
+        if read_from == 'l2':
+            features.append("sum({feature_column}) over ({window}) as {column_name}".format(
+                feature_column=each_feature_column,
+                window=create_weekly_lookback_window(1, config["partition_by"]),
+                column_name="sum_{}_last_week".format(each_feature_column)
+            ))
+
+            features.append("sum({feature_column}) over ({window}) as {column_name}".format(
+                feature_column=each_feature_column,
+                window=create_weekly_lookback_window(2, config["partition_by"]),
+                column_name="sum_{}_last_two_week".format(each_feature_column)
+            ))
+
+        features.append("sum({feature_column}) over ({window}) as {column_name}".format(
+            feature_column=each_feature_column,
+            window=create_monthly_lookback_window(1, config["partition_by"]),
+            column_name="sum_{}_last_month".format(each_feature_column)
+        ))
+
+        features.append("sum({feature_column}) over ({window}) as {column_name}".format(
+            feature_column=each_feature_column,
+            window=create_monthly_lookback_window(2, config["partition_by"]),
+            column_name="sum_{}_last_two_months".format(each_feature_column)
+        ))
+
+    sql_stmt = sql_stmt.format(',\n'.join(features))
+
+    spark = SparkSession.builder.getOrCreate()
+    df = spark.sql(sql_stmt)
+
+    return df
+
+
+def create_monthly_lookback_window(
+        num_of_month,
+        partition_column,
+        order_by_column="start_of_month"
+):
+    max_seconds_in_month = 31 * 24 * 60 * 60
+
+    window_statement = create_window_statement(
+        partition_column=partition_column,
+        order_by_column=order_by_column,
+        start_interval="{} preceding".format(num_of_month * max_seconds_in_month),
+        end_interval="1 preceding"
+    )
+
+    return window_statement
+
+
+def create_weekly_lookback_window(
+        num_of_week,
+        partition_column,
+        order_by_column="start_of_week"
+):
+    seconds_in_week = 7 * 24 * 60 * 60
+
+    window_statement = create_window_statement(
+        partition_column=partition_column,
+        order_by_column=order_by_column,
+        start_interval="{} preceding".format(num_of_week * seconds_in_week),
+        end_interval="current row"
+    )
+
+    return window_statement
+
+
+def create_window_statement(
+        partition_column,
+        order_by_column,
+        start_interval,
+        end_interval
+):
+    return """
+            partition by {partition_column} 
+            order by cast(cast({order_by_column} as timestamp) as long) asc
+            range between {start_interval} and {end_interval}
+            """.format(partition_column=','.join(partition_column),
+                       order_by_column=order_by_column,
+                       start_interval=start_interval,
+                       end_interval=end_interval)
+
 
 def node_from_config(input_df, config) -> DataFrame:
     table_name = "input_table"
