@@ -34,7 +34,8 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 from kedro.pipeline import Pipeline, node
 
 from customer360.utilities.config_parser import node_from_config
-from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1 import merge_incoming_outgoing_calls
+from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1 import merge_incoming_outgoing_calls, \
+    merge_prepaid_postpaid_data_usage, merge_roaming_incoming_outgoing_calls
 
 
 def usage_to_l1_pipeline(**kwargs):
@@ -68,18 +69,42 @@ def usage_to_l1_pipeline(**kwargs):
                 merge_incoming_outgoing_calls, ['l1_usage_outgoing_call_relation_sum_daily_stg',
                                                 'l1_usage_incoming_call_relation_sum_daily_stg'],
                 'l1_usage_call_relation_sum_daily'
-            )
-            # node(
-            #     node_from_config,
-            #     ["l0_usage_ru_a_gprs_cbs_usage_daily",
-            #      "params:l0_usage_ru_a_gprs_cbs_usage_daily"],
-            #     "l1_usage_ru_a_gprs_cbs_usage_daily"
-            # ),
-            # node(
-            #     node_from_config,
-            #     ["l0_usage_ru_a_vas_postpaid_usg_daily",
-            #      "params:l0_usage_ru_a_vas_postpaid_usg_daily"],
-            #     "l1_usage_ru_a_vas_postpaid_usg_daily"
-            # ),
+            ),
+            node(
+                node_from_config,
+                ["l0_usage_ru_a_gprs_cbs_usage_daily",
+                 "params:l0_usage_ru_a_gprs_cbs_usage_daily"],
+                "l1_usage_ru_a_gprs_cbs_usage_daily_stg"
+            ),
+            node(
+                node_from_config,
+                ["l0_usage_ru_a_vas_postpaid_usg_daily",
+                 "params:l0_usage_ru_a_vas_postpaid_usg_daily"],
+                "l1_usage_ru_a_vas_postpaid_usg_daily_stg"
+            ),
+            node(
+                merge_prepaid_postpaid_data_usage, ['l1_usage_ru_a_gprs_cbs_usage_daily_stg',
+                                                    'l1_usage_ru_a_vas_postpaid_usg_daily_stg'],
+                'l1_usage_data_prepaid_postpaid_daily'
+
+            ),
+            node(
+                node_from_config,
+                ["l0_usage_call_relation_sum_ir_daily",
+                 "params:l0_usage_outgoing_call_relation_sum_ir_daily"],
+                "l1_usage_outgoing_call_relation_sum_ir_daily_stg"
+            ),
+            node(
+                node_from_config,
+                ["l0_usage_call_relation_sum_ir_daily",
+                 "params:l0_usage_incoming_call_relation_sum_ir_daily"],
+                "l1_usage_incoming_call_relation_sum_ir_daily_stg"
+            ),
+
+            node(
+                merge_roaming_incoming_outgoing_calls, ['l1_usage_outgoing_call_relation_sum_ir_daily_stg',
+                                                        'l1_usage_incoming_call_relation_sum_ir_daily_stg'],
+                'l1_usage_call_relation_sum_ir_daily'
+            ),
         ], name="usage_to_l1_pipeline"
     )

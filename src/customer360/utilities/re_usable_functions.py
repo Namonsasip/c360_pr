@@ -2,6 +2,7 @@ from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 from functools import reduce
 
+
 def union_dataframes_with_missing_cols(df_input_or_list, *args):
     if type(df_input_or_list) is list:
         df_list = df_input_or_list
