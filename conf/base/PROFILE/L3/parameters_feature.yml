@@ -1,5 +1,5 @@
 # Config file for query generator
-int_l4_customer_profile_basic_features:
+int_l3_customer_profile_basic_features:
     where_clause: ""
     feature_list:
         # this is mandatory for joining to union_features table
@@ -26,7 +26,7 @@ int_l4_customer_profile_basic_features:
     granularity: ""
 
 
-int_l4_customer_profile_processed_features:
+int_l3_customer_profile_processed_features:
     where_clause: ""
     feature_list:
         # this is mandatory for joining to basic_features table
@@ -50,7 +50,7 @@ union_customer_profile_column_to_extract:
   - "prefer_language"
 
 
-l4_customer_profile_billing_level_number_of_mobile_devices:
+l3_customer_profile_billing_level_number_of_mobile_devices:
     where_clause: "where imei is not null"
     feature_list:
         number_of_mobile_devices: "count(*)"
@@ -58,7 +58,7 @@ l4_customer_profile_billing_level_number_of_mobile_devices:
     granularity: "ba_id, partition_month"
 
 
-l4_customer_profile_billing_level_number_of_sims:
+l3_customer_profile_billing_level_number_of_sims:
     where_clause: "where sim_serial_no is not null"
     feature_list:
         number_of_mobile_devices: "count(*)"
