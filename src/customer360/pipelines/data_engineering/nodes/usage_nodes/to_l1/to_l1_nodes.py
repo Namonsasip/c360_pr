@@ -18,7 +18,7 @@ def merge_incoming_outgoing_calls(df1: DataFrame, df2: DataFrame) -> DataFrame:
     :return:
     """
     drop_cols = ['called_no', 'caller_no', 'day_id']
-    group_cols = ['msisdn', 'event_partition_date']
+    group_cols = ['msisdn', 'event_partition_date', 'start_of_week', 'start_of_month']
     final_df = union_dataframes_with_missing_cols([df1, df2])
     final_df = final_df.drop(*drop_cols)
 
@@ -36,7 +36,7 @@ def merge_prepaid_postpaid_data_usage(df1: DataFrame, df2: DataFrame) -> DataFra
     :return:
     """
     drop_cols = ["access_method_num"]
-    group_cols = ['msisdn', 'event_partition_date']
+    group_cols = ['msisdn', 'event_partition_date', 'start_of_week', 'start_of_month']
     final_df = union_dataframes_with_missing_cols([df1, df2])
     final_df = final_df.drop(*drop_cols)
 
@@ -54,7 +54,7 @@ def merge_roaming_incoming_outgoing_calls(df1: DataFrame, df2: DataFrame) -> Dat
     :return:
     """
     drop_cols = ['called_no', 'caller_no', 'day_id']
-    group_cols = ['msisdn', 'event_partition_date']
+    group_cols = ['msisdn', 'event_partition_date', 'start_of_week', 'start_of_month']
     final_df = union_dataframes_with_missing_cols([df1, df2])
     final_df = final_df.drop(*drop_cols)
 

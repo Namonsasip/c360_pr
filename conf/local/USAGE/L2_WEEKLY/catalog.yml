@@ -33,16 +33,16 @@ l2_usage_call_relation_sum_weekly:
   save_args:
     mode: "overwrite"
 
-l2_usage_call_relation_sum_ir_daily:
+l2_usage_call_relation_sum_ir_weekly:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/USAGE/l2_features/usage_call_relation_sum_ir_daily/
+  filepath: data/USAGE/l2_features/usage_call_relation_sum_ir_weekly/
   save_args:
     mode: "overwrite"
 
-l2_usage_data_prepaid_postpaid_daily:
+l2_usage_data_prepaid_postpaid_weekly:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/USAGE/l2_features/usage_data_prepaid_postpaid_daily/
+  filepath: data/USAGE/l2_features/usage_data_prepaid_postpaid_weekly/
   save_args:
     mode: "overwrite"

@@ -43,5 +43,4 @@ l1_usage_data_prepaid_postpaid_daily:
   file_format: "parquet"
   filepath: data/USAGE/l1_features/usage_data_prepaid_postpaid_daily/
   save_args:
-    mode: "append"
-    partition_by: ["event_partition_dt"]
+    mode: "overwrite"
