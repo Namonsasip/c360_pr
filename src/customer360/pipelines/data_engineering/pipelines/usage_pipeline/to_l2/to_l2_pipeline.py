@@ -82,6 +82,18 @@ def usage_to_l2_pipeline(**kwargs):
                  "params:l2_usage_call_relation_sum_weekly"],
                 "l2_usage_call_relation_sum_weekly"
             ),
+            node(
+                expansion,
+                ["l1_usage_call_relation_sum_ir_daily",
+                 "params:l2_usage_call_relation_sum_ir_weekly"],
+                "l2_usage_call_relation_sum_ir_weekly"
+            ),
+            node(
+                expansion,
+                ["l1_usage_data_prepaid_postpaid_daily",
+                 "params:l2_usage_data_prepaid_postpaid_weekly"],
+                "l2_usage_data_prepaid_postpaid_weekly"
+            ),
 
         ], name="usage_to_l2_pipeline"
     )

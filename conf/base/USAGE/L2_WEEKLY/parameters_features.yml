@@ -445,3 +445,126 @@ l2_usage_call_relation_sum_weekly:
       'usg_outgoing_weekend_number_sms'
     ]
   granularity: "msisdn, start_of_week, start_of_month"
+
+l2_usage_call_relation_sum_ir_weekly:
+  where_clause: ""
+  type: "week"
+  feature_list:
+    sum: [
+        "usg_incoming_roaming_call_duration",
+        "usg_incoming_roaming_number_calls",
+        "usg_incoming_roaming_total_sms",
+        "usg_outgoing_roaming_call_duration",
+        "usg_outgoing_roaming_number_calls",
+        "usg_outgoing_roaming_total_sms"
+        ]
+    max: [
+      "usg_incoming_roaming_call_duration",
+      "usg_incoming_roaming_number_calls",
+      "usg_incoming_roaming_total_sms",
+      "usg_outgoing_roaming_call_duration",
+      "usg_outgoing_roaming_number_calls",
+      "usg_outgoing_roaming_total_sms"
+    ]
+    min: [
+      "usg_incoming_roaming_call_duration",
+      "usg_incoming_roaming_number_calls",
+      "usg_incoming_roaming_total_sms",
+      "usg_outgoing_roaming_call_duration",
+      "usg_outgoing_roaming_number_calls",
+      "usg_outgoing_roaming_total_sms"
+    ]
+  granularity: "msisdn, start_of_week, start_of_month"
+
+l2_usage_data_prepaid_postpaid_weekly:
+  where_clause: ""
+  type: "week"
+  feature_list:
+    sum: ['usg_data_friday_usage',
+          'usg_data_monday_usage',
+          'usg_data_saturday_usage',
+          'usg_data_sunday_usage',
+          'usg_data_thursday_usage',
+          'usg_data_tuesday_usage',
+          'usg_data_wednesday_usage',
+          'usg_incoming_data_volume',
+          'usg_incoming_data_volume_2G_3G',
+          'usg_incoming_data_volume_4G',
+          'usg_incoming_local_data_volume',
+          'usg_incoming_local_data_volume_2G_3G',
+          'usg_incoming_local_data_volume_4G',
+          'usg_incoming_roaming_data_volume',
+          'usg_incoming_roaming_data_volume_2G_3G',
+          'usg_incoming_roaming_data_volume_4G',
+          'usg_outgoing_data_volume',
+          'usg_outgoing_data_volume_2G_3G',
+          'usg_outgoing_data_volume_4G',
+          'usg_outgoing_local_data_volume',
+          'usg_outgoing_local_data_volume_2G_3G',
+          'usg_outgoing_local_data_volume_4G',
+          'usg_outgoing_roaming_data_volume',
+          'usg_outgoing_roaming_data_volume_2G_3G',
+          'usg_outgoing_roaming_data_volume_4G',
+          'usg_total_data_monday_usage',
+          'usg_total_data_volume',
+          'usg_total_vas_data_volume'
+    ]
+    max: ['usg_data_friday_usage',
+          'usg_data_monday_usage',
+          'usg_data_saturday_usage',
+          'usg_data_sunday_usage',
+          'usg_data_thursday_usage',
+          'usg_data_tuesday_usage',
+          'usg_data_wednesday_usage',
+          'usg_incoming_data_volume',
+          'usg_incoming_data_volume_2G_3G',
+          'usg_incoming_data_volume_4G',
+          'usg_incoming_local_data_volume',
+          'usg_incoming_local_data_volume_2G_3G',
+          'usg_incoming_local_data_volume_4G',
+          'usg_incoming_roaming_data_volume',
+          'usg_incoming_roaming_data_volume_2G_3G',
+          'usg_incoming_roaming_data_volume_4G',
+          'usg_outgoing_data_volume',
+          'usg_outgoing_data_volume_2G_3G',
+          'usg_outgoing_data_volume_4G',
+          'usg_outgoing_local_data_volume',
+          'usg_outgoing_local_data_volume_2G_3G',
+          'usg_outgoing_local_data_volume_4G',
+          'usg_outgoing_roaming_data_volume',
+          'usg_outgoing_roaming_data_volume_2G_3G',
+          'usg_outgoing_roaming_data_volume_4G',
+          'usg_total_data_monday_usage',
+          'usg_total_data_volume',
+          'usg_total_vas_data_volume'
+    ]
+    min: ['usg_data_friday_usage',
+          'usg_data_monday_usage',
+          'usg_data_saturday_usage',
+          'usg_data_sunday_usage',
+          'usg_data_thursday_usage',
+          'usg_data_tuesday_usage',
+          'usg_data_wednesday_usage',
+          'usg_incoming_data_volume',
+          'usg_incoming_data_volume_2G_3G',
+          'usg_incoming_data_volume_4G',
+          'usg_incoming_local_data_volume',
+          'usg_incoming_local_data_volume_2G_3G',
+          'usg_incoming_local_data_volume_4G',
+          'usg_incoming_roaming_data_volume',
+          'usg_incoming_roaming_data_volume_2G_3G',
+          'usg_incoming_roaming_data_volume_4G',
+          'usg_outgoing_data_volume',
+          'usg_outgoing_data_volume_2G_3G',
+          'usg_outgoing_data_volume_4G',
+          'usg_outgoing_local_data_volume',
+          'usg_outgoing_local_data_volume_2G_3G',
+          'usg_outgoing_local_data_volume_4G',
+          'usg_outgoing_roaming_data_volume',
+          'usg_outgoing_roaming_data_volume_2G_3G',
+          'usg_outgoing_roaming_data_volume_4G',
+          'usg_total_data_monday_usage',
+          'usg_total_data_volume',
+          'usg_total_vas_data_volume'
+    ]
+  granularity: "msisdn, start_of_week, start_of_month"
