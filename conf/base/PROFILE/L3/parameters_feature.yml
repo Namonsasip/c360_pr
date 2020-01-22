@@ -25,6 +25,9 @@ int_l3_customer_profile_basic_features:
         current_package_id: "main_promo_id"
         corporate_flag: "case when lower(customer_type) = 'B' then 'Y' else 'N' end"
         company_type: "moc_cust_type"
+
+        # for L4 LTV calculation
+        norms_net_revenue: norms_net_revenue
     granularity: ""
 
 
