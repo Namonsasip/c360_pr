@@ -23,6 +23,8 @@ int_l3_customer_profile_basic_features:
         activation_region: "first_act_region"
         current_package_name: "main_promo_name"
         current_package_id: "main_promo_id"
+        corporate_flag: "case when lower(customer_type) = 'B' then 'Y' else 'N' end"
+        company_type: "moc_cust_type"
     granularity: ""
 
 
@@ -46,8 +48,29 @@ int_l3_customer_profile_processed_features:
 
 
 union_customer_profile_column_to_extract:
-  - "zipcode"
-  - "prefer_language"
+  customer_pre:
+    subscription_identifier: "subscription_identifier"
+    mobile_no: "mobile_no"
+    activation_date: "activation_date"
+    zipcode: "zipcode"
+    prefer_language: "prefer_language"
+    company_size: null
+
+  customer_post:
+    subscription_identifier: "subscription_identifier"
+    mobile_no: "mobile_no"
+    activation_date: "register_date"
+    zipcode: "zipcode"
+    prefer_language: "prefer_language"
+    company_size: "corp_account_size"
+
+  customer_non_mobile:
+    subscription_identifier: "subscription_id"
+    mobile_no: "mobile_no"
+    activation_date: "activation_date"
+    zipcode: "zipcode"
+    prefer_language: "prefer_language"
+    company_size: "corp_account_size"
 
 
 l3_customer_profile_billing_level_number_of_mobile_devices:
@@ -64,3 +87,5 @@ l3_customer_profile_billing_level_number_of_sims:
         number_of_mobile_devices: "count(*)"
 
     granularity: "ba_id, partition_month"
+
+
