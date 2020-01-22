@@ -20,3 +20,4 @@ l2_billing_weekly_automated_payments:
   filepath: data/L2_WEEKLY/BILLING/l2_features/billing_automated_payments/
   save_args:
     mode: "overwrite"
+    partitionBy: ["start_of_week"]

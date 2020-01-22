@@ -4,6 +4,7 @@ l2_billing_and_payments_weekly_topup_and_volume:
   filepath: /mnt/customer360-blob-data/C360/BILLING/l2_features/billing_and_payments_weekly_topup_and_volume/
   save_args:
     partitionBy: ["start_of_week"]
+    mode: "append"
 
 l2_billing_and_payments_weekly_topup_time_diff:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -11,8 +12,12 @@ l2_billing_and_payments_weekly_topup_time_diff:
   filepath: /mnt/customer360-blob-data/C360/BILLING/l2_features/billing_and_payments_weekly_topup_time_diff/
   save_args:
     partitionBy: ["start_of_week"]
+    mode: "append"
 
 l2_billing_weekly_automated_payments:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l2_features/billing_automated_payments/
+  save_args:
+    partitionBy: ["start_of_week"]
+    mode: "append"

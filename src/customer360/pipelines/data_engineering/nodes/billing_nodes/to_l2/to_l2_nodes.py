@@ -21,13 +21,14 @@ def automated_payment_weekly(input_df):
     spark = SparkSession.builder.getOrCreate()
     input_df.createOrReplaceTempView("input_df")
 
-    df = spark.sql("""select year(payment_date) as year, weekofyear(payment_date) as week, account_identifier,
+    df = spark.sql("""select date(date_trunc('month',payment_date)) as start_of_month, date(date_trunc('week',payment_date)) as start_of_week, account_identifier,
     case when channel_identifier in ('PM_13','PM_14') then 1 else 0 end as automatic_pay_flag from input_df""")
-    df2 = df.groupBy("year","week","account_identifier")\
+
+    df2 = df.groupBy("start_of_month","start_of_week","account_identifier")\
         .agg(f.sum("automatic_pay_flag").alias("sum_automated_pay_flag"))
 
-    output_df = df2.withColumn("automatic_payment",f.when(df2.sum_automated_pay_flag > 0 , 'YES').otherwise('NO'))\
-        .drop(df2.sum_automated_pay_flag,df2.automatic_pay_flag)
+    output_df = df2.withColumn("automated_payment_flag",f.when(df2.sum_automated_pay_flag > 0 , 'YES').otherwise('NO'))\
+        .drop(df2.sum_automated_pay_flag)
 
     return output_df
 

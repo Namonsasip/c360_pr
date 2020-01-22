@@ -6,11 +6,16 @@ l0_billing_and_payments_rt_t_recharge_daily:
 
 l0_billing_statement_history_monthly:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_statement_history_monthly
+  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_statement_history_monthly/
   file_format: parquet
 
 
 l0_billing_pc_t_payment_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_pc_t_payment_daily
+  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_pc_t_payment_daily/
+  file_format: parquet
+
+l0_billing_ir_a_usg_daily:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_ir_a_usg_daily/
   file_format: parquet

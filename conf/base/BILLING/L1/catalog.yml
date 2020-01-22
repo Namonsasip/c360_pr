@@ -128,6 +128,15 @@ l1_billing_and_payments_daily_topup_and_volume:
   filepath: /mnt/customer360-blob-data/C360/BILLING/l1_features/billing_and_payments_topup_and_volume/
   save_args:
     partitionBy: ["event_partition_date"]
+    mode: "append"
+
+l1_billing_and_payments_daily_rpu_roaming:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/BILLING/l1_features/billing_and_payments_rpu_roaming/
+  save_args:
+    partitionBy: ["event_partition_date"]
+    mode: "append"
 
 
 
