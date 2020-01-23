@@ -33,7 +33,7 @@ l1_usage_call_relation_sum_daily:
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/usage_call_relation_sum_daily/
   save_args:
-    mode: "append"
+    mode: "overwrite"
     partition_by: ["event_partition_dt"]
 
 l1_usage_call_relation_sum_ir_daily:
@@ -41,7 +41,7 @@ l1_usage_call_relation_sum_ir_daily:
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/usage_call_relation_sum_ir_daily/
   save_args:
-    mode: "append"
+    mode: "overwrite"
     partition_by: ["event_partition_dt"]
 
 l1_usage_data_prepaid_postpaid_daily:
@@ -49,6 +49,6 @@ l1_usage_data_prepaid_postpaid_daily:
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/usage_data_prepaid_postpaid_daily/
   save_args:
-    mode: "append"
+    mode: "overwrite"
     partition_by: ["event_partition_dt"]
 

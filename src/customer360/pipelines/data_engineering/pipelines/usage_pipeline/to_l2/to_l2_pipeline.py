@@ -39,43 +39,6 @@ from customer360.utilities.config_parser import expansion
 def usage_to_l2_pipeline(**kwargs):
     return Pipeline(
         [
-            # node(
-            #     prepare_prepaid_call_data, 'l1_usage_ru_f_cbs_prepaid_call_daily',
-            #     'l1_usage_ru_f_cbs_prepaid_call_daily_stg'),
-            # node(
-            #     expansion,
-            #     ["l1_usage_ru_f_cbs_prepaid_call_daily_stg",
-            #      "params:l2_usage_ru_f_cbs_prepaid_call_weekly"],
-            #     "l2_usage_ru_f_cbs_prepaid_call_weekly"
-            # ),
-            # node(
-            #     prepare_postpaid_call_data, 'l1_usage_ru_a_voice_usg_daily'
-            #     , 'l1_usage_ru_a_voice_usg_daily_stg'
-            # ),
-            # node(
-            #     expansion,
-            #     ["l1_usage_ru_a_voice_usg_daily_stg",
-            #      "params:l2_usage_ru_a_voice_usg_weekly"],
-            #     "l2_usage_ru_a_voice_usg_weekly"
-            # ),
-            # node(
-            #     prepare_prepaid_gprs_data, 'l1_usage_ru_a_gprs_cbs_usage_daily',
-            #     'l1_usage_ru_a_gprs_cbs_usage_daily_stg'),
-            # node(
-            #     expansion,
-            #     ["l1_usage_ru_a_gprs_cbs_usage_daily_stg",
-            #      "params:l2_usage_ru_a_gprs_cbs_usage_weekly"],
-            #     "l2_usage_ru_a_gprs_cbs_usage_weekly"
-            # ),
-            # node(
-            #     prepare_postpaid_gprs_data, 'l1_usage_ru_a_vas_postpaid_usg_daily',
-            #     'l1_usage_ru_a_vas_postpaid_usg_daily_stg'),
-            # node(
-            #     expansion,
-            #     ["l1_usage_ru_a_vas_postpaid_usg_daily_stg",
-            #      "params:l2_usage_ru_a_vas_postpaid_usg_weekly"],
-            #     "l2_usage_ru_a_vas_postpaid_usg_weekly"
-            # ),
             node(
                 expansion,
                 ["l1_usage_call_relation_sum_daily",
