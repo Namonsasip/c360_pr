@@ -1,7 +1,7 @@
 l4_usage_call_relation_features:
   partition_by: ["msisdn"]
   feature_list:
-         min: ['usg_incoming_afternoon_number_sms_min',
+       min: ['usg_incoming_afternoon_number_sms_min',
                'usg_incoming_afternoon_time_call_min',
                'usg_incoming_ais_local_calls_duration_min',
                'usg_incoming_ais_local_number_calls_min',
