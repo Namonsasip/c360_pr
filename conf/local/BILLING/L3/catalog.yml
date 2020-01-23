@@ -1,6 +1,55 @@
-l3_billing_and_payments_arpu:
+l3_billing_and_payments_monthly_rpu:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/L3_MONTHLY/BILLING/billing_and_payments_arpu/
+  filepath: data/L3_MONTHLY/BILLING/billing_and_payments_rpu/
   save_args:
+    mode: "overwrite"
+    partitionBy: ["start_of_month"]
+
+l3_billing_and_payments_monthly_topup_and_volume:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L3_MONTHLY/BILLING/billing_and_payments_monthly_topup_and_volume/
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["start_of_month"]
+
+l3_billing_and_payments_monthly_topup_time_diff:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L3_MONTHLY/BILLING/billing_and_payments_monthly_topup_time_diff/
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["start_of_month"]
+
+l3_billing_monthly_rpu_roaming:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L3_MONTHLY/BILLING/billing_and_payments_monthly_rpu_roaming/
+  save_args:
+    partitionBy: ["start_of_month"]
+    mode: "overwrite"
+
+l3_billing_monthly_automated_payments:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L3_MONTHLY/BILLING/billing_and_payments_monthly_automated_payments/
+  save_args:
+    partitionBy: ["start_of_month"]
+    mode: "overwrite"
+
+l3_billing_and_payments_monthly_before_top_up_balance:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L3_MONTHLY/BILLING/billing_and_payments_before_top_up_balance/
+  save_args:
+    partitionBy: ["start_of_month"]
+    mode: "overwrite"
+
+l3_billing_and_payments_monthly_top_up_channels:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L3_MONTHLY/BILLING/billing_and_payments_top_up_channels/
+  save_args:
+    partitionBy: ["start_of_month"]
     mode: "overwrite"

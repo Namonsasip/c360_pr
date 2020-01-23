@@ -100,14 +100,7 @@ def run_package():
     # entry point for running pip-install projects
     # using `<project_package>` command
     project_context = load_context(Path.cwd())
-    project_context.run(pipeline_name="customer_profile_to_l4_pipeline")
-
-    # Replace line above with below to run on databricks cluster
-    # and Dont forget to clear state for every git pull in notebook
-    # (change the pipeline name to your pipeline name)
-    #
-    # project_context = load_context(Path.cwd(), env='base')
-    # project_context.run(pipeline_name="customer_profile_to_l4_pipeline")
+    project_context.run()
 
 
 if __name__ == "__main__":
