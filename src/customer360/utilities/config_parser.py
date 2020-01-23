@@ -96,30 +96,35 @@ def l4_rolling_window(input_df, config):
         features.append("start_of_week")
 
     for each_feature_column in config["feature_column"]:
-        if read_from == 'l2':
-            features.append("sum({feature_column}) over ({window}) as {column_name}".format(
+        for each_function in config["function"]:
+            if read_from == 'l2':
+                features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
+                    function=each_function,
+                    feature_column=each_feature_column,
+                    window=create_weekly_lookback_window(1, config["partition_by"]),
+                    column_name="{}_{}_last_week".format(each_function, each_feature_column)
+                ))
+
+                features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
+                    function=each_function,
+                    feature_column=each_feature_column,
+                    window=create_weekly_lookback_window(2, config["partition_by"]),
+                    column_name="{}_{}_last_two_week".format(each_function, each_feature_column)
+                ))
+
+            features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
+                function=each_function,
                 feature_column=each_feature_column,
-                window=create_weekly_lookback_window(1, config["partition_by"]),
-                column_name="sum_{}_last_week".format(each_feature_column)
+                window=create_monthly_lookback_window(1, config["partition_by"]),
+                column_name="{}_{}_last_month".format(each_function, each_feature_column)
             ))
 
-            features.append("sum({feature_column}) over ({window}) as {column_name}".format(
+            features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
+                function=each_function,
                 feature_column=each_feature_column,
-                window=create_weekly_lookback_window(2, config["partition_by"]),
-                column_name="sum_{}_last_two_week".format(each_feature_column)
+                window=create_monthly_lookback_window(2, config["partition_by"]),
+                column_name="{}_{}_last_two_month".format(each_function, each_feature_column)
             ))
-
-        features.append("sum({feature_column}) over ({window}) as {column_name}".format(
-            feature_column=each_feature_column,
-            window=create_monthly_lookback_window(1, config["partition_by"]),
-            column_name="sum_{}_last_month".format(each_feature_column)
-        ))
-
-        features.append("sum({feature_column}) over ({window}) as {column_name}".format(
-            feature_column=each_feature_column,
-            window=create_monthly_lookback_window(2, config["partition_by"]),
-            column_name="sum_{}_last_two_months".format(each_feature_column)
-        ))
 
     sql_stmt = sql_stmt.format(',\n'.join(features))
 
