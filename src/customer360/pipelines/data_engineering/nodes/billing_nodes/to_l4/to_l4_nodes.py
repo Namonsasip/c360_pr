@@ -25,3 +25,12 @@ def bill_shock(input_df):
         .drop("last_6_months_avg")
 
     return output_df
+
+def dynamics_topups_and_volume(df):
+
+    output_df = df.withColumn("week_dynamics_top_up_no",df.sum_top_ups_last_week/df.sum_top_ups_last_two_week)\
+        .withColumn("month_dynamics_top_up_no",df.sum_top_ups_last_month/df.sum_top_ups_last_two_months)\
+        .withColumn("week_dynamics_top_up_volume",df.sum_top_up_volume_last_week/df.sum_top_up_volume_last_two_week)\
+        .withColumn("month_dynamics_top_up_volume",df.sum_top_up_volume_last_month/df.sum_top_up_volume_last_two_months)
+
+    return output_df

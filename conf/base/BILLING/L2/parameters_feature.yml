@@ -23,3 +23,10 @@ l2_billing_and_payment_feature_rpu_roaming_weekly:
       rpu_roaming: "sum(rpu_roaming)"
       avg_rpu_roaming: "avg(rpu_roaming)"
     granularity: "start_of_month,start_of_week,crm_sub_id,access_method_number,mobile_register_date"
+
+l2_billing_and_payment_feature_balance_trend_weekly:
+    where_clause: ""
+    feature_list:
+      balance: "sum(balance_amt)"
+      avg_rpu_roaming: "avg(rpu_roaming)"
+    granularity: "start_of_month,start_of_week,subscription_identifier,mobile_no,register_date"

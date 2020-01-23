@@ -1,6 +1,6 @@
 from kedro.pipeline import Pipeline, node
 
-from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l4.to_l4_nodes import bill_shock
+from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l4.to_l4_nodes import bill_shock, dynamics_topups_and_volume
 from src.customer360.utilities.config_parser import l4_rolling_window
 
 def billing_to_l4_pipeline(**kwargs):
@@ -16,6 +16,11 @@ def billing_to_l4_pipeline(**kwargs):
                 l4_rolling_window,
                 ["l2_billing_and_payments_weekly_topup_and_volume",
                  "params:l4_billing_topup_and_volume"],
+                "l4_billing_rolling_window_topup_and_volume_intermediate"
+            ),
+            node(
+                dynamics_topups_and_volume,
+                ["l4_billing_rolling_window_topup_and_volume_intermediate"],
                 "l4_billing_rolling_window_topup_and_volume"
             ),
             node(
