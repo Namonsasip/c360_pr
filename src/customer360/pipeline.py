@@ -33,8 +33,6 @@ from kedro.pipeline import Pipeline
 from customer360.pipelines import data_engineering as de
 from customer360.pipelines import data_science as ds
 
-
-
 # Here you can define your data-driven pipeline by importing your functions
 # and adding them to the pipeline as follows:
 #
@@ -59,6 +57,8 @@ from src.customer360.pipelines.data_engineering.pipelines.customer_profile_pipel
     customer_profile_to_l4_pipeline
 from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l1.to_l1_pipeline import billing_to_l1_pipeline
 from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l3.to_l3_pipeline import billing_to_l3_pipeline
+from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l2.to_l2_pipeline import billing_to_l2_pipeline
+from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4.to_l4_pipline import billing_to_l4_pipeline
 from .pipelines.data_engineering.pipelines.usage_pipeline.to_l2 import usage_to_l2_pipeline
 from .pipelines.data_engineering.pipelines.usage_pipeline.to_l4.to_l4_pipeline import usage_to_l4_pipeline
 
@@ -90,7 +90,8 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         "customer_profile_to_l4_pipeline": customer_profile_to_l4_pipeline(),
         "usage_to_l1_pipeline": usage_to_l1_pipeline(),
         'billing_to_l1_pipeline': billing_to_l1_pipeline(),
-        'billing_to_l3_pipeline': billing_to_l3_pipeline()
+        'billing_to_l3_pipeline': billing_to_l3_pipeline(),
+        'billing_to_l2_pipeline': billing_to_l2_pipeline(),
+        'billing_to_l4_pipeline': billing_to_l4_pipeline()
         # "de": data_engineering_pipeline,
     }
-

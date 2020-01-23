@@ -1,0 +1,44 @@
+l1_billing_and_payment_feature_top_up_and_count:
+    where_clause: ""
+    feature_list:
+        top_ups: "count(*)"
+        top_up_volume: "sum(face_value)"
+    granularity: "date(recharge_date),access_method_num,date(register_date)"
+    event_date_column: "date(recharge_date)"
+
+l1_billing_and_payment_rpu_roaming:
+    where_clause: ""
+    feature_list:
+        rpu_roaming: "sum(ir_call_charge_amount)"
+    granularity: "date(date_id),access_method_number,date(mobile_register_date),crm_sub_id"
+    event_date_column: "date(date_id)"
+
+l1_billing_and_payment_before_top_up_balance:
+    where_clause: ""
+    feature_list:
+        before_top_up_balance: "avg(pre_bal_amt)"
+    granularity: "date(recharge_date),account_id,access_method_num"
+    event_date_column: "date(recharge_date)"
+
+l1_billing_and_payment_top_up_channels:
+    where_clause: ""
+    feature_list:
+        top_ups_by_bank_atm_cdm: "sum(case when recharge_type in ('4','B6','B3','B1','B4','B5','B7','B8','41','B2','B9','44','B58','B53','B10','B11') then 1 else 0 end)"
+        top_up_vol_by_bank_atm_cdm: "sum(case when recharge_type in ('4','B6','B3','B1','B4','B5','B7','B8','41','B2','B9','44','B58','B53','B10','B11') then face_value else 0 end)"
+        top_ups_by_cash_card: "sum(case when recharge_type in ('3','B0') then 1 else 0 end)"
+        top_up_vol_by_cash_card: "sum(case when recharge_type in ('3','B0') then face_value else 0 end)"
+        top_ups_by_digital_online_self_service: "sum(case when recharge_type in ('6','7','8','32','43','16','33','65','37','55','31','36','63','45','B43','B38','B26','B24','B22','B59','B25','B30','B72','B27','B76','B44','B40','B23','B57','B74','B33','B13','B41','B29','B17','B32','B21','B28','B35','B20','B42','B12','B31','B15','B36','B34') then 1 else 0 end)"
+        top_up_vol_by_digital_online_self_service: "sum(case when recharge_type in ('6','7','8','32','43','16','33','65','37','55','31','36','63','45','B43','B38','B26','B24','B22','B59','B25','B30','B72','B27','B76','B44','B40','B23','B57','B74','B33','B13','B41','B29','B17','B32','B21','B28','B35','B20','B42','B12','B31','B15','B36','B34') then face_value else 0 end)"
+        top_ups_by_epin_slip: "sum(case when recharge_type in ('1') then 1 else 0 end)"
+        top_up_vol_by_epin_slip: "sum(case when recharge_type in ('1') then face_value else 0 end)"
+        top_ups_by_epos: "sum(case when recharge_type in ('5','18','19','46','53','48','B47','B49','B39','B46','B55','B69','B48') then 1 else 0 end)"
+        top_up_vol_by_epos: "sum(case when recharge_type in ('5','18','19','46','53','48','B47','B49','B39','B46','B55','B69','B48') then face_value else 0 end)"
+        top_ups_by_rom: "sum(case when recharge_type in ('B50','51') then 1 else 0 end)"
+        top_up_vol_by_rom: "sum(case when recharge_type in ('B50','51') then face_value else 0 end)"
+    granularity: "date(recharge_date),access_method_num,date(register_date)"
+    event_date_column: "date(recharge_date)"
+
+
+
+
+
