@@ -50,14 +50,8 @@ def customer_profile_to_l3_pipeline(**kwargs):
                 "int_l3_customer_profile_union_features"
             ),
             node(
-                node_from_config,
-                ["int_l3_customer_profile_union_features",
-                 "params:int_l3_customer_profile_processed_features"],
-                "int_l3_customer_profile_processed_union_features"
-            ),
-            node(
                 merge_union_and_basic_features,
-                ['int_l3_customer_profile_processed_union_features',
+                ['int_l3_customer_profile_union_features',
                  'int_l3_customer_profile_basic_features'],
                 "l3_customer_profile_features"
             )

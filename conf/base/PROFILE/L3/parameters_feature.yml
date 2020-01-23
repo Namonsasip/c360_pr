@@ -23,30 +23,10 @@ int_l3_customer_profile_basic_features:
         activation_region: "first_act_region"
         current_package_name: "main_promo_name"
         current_package_id: "main_promo_id"
-        corporate_flag: "case when lower(customer_type) = 'B' then 'Y' else 'N' end"
         company_type: "moc_cust_type"
 
         # for L4 LTV calculation
         norms_net_revenue: norms_net_revenue
-    granularity: ""
-
-
-int_l3_customer_profile_processed_features:
-    where_clause: ""
-    feature_list:
-        # this is mandatory for joining to basic_features table
-        subscription_identifier: "subscription_identifier"
-        mobile_no: "mobile_no"
-        activation_date: "activation_date"
-
-        # these are the rest of the features
-        zipcode: "zipcode"
-        prefer_language_eng: "case when lower(prefer_language) like 'eng%' then 'Y' else 'N' end"
-        prefer_language_thai: "case when lower(prefer_language) like 'thai%' then 'Y' else 'N' end"
-        prefer_language_other: >
-                               case when lower(prefer_language) not like 'thai%' or
-                                        lower(prefer_language) not like 'eng%'
-                                        then 'Y' else 'N' end
     granularity: ""
 
 
@@ -57,7 +37,14 @@ union_customer_profile_column_to_extract:
     activation_date: "activation_date"
     zipcode: "zipcode"
     prefer_language: "prefer_language"
-    company_size: null
+    company_size: "null"
+    corporate_flag: "case when (upper(cust_type) = 'B') then 'Y' else 'N' end"
+    prefer_language_eng: "case when lower(prefer_language) like 'eng%' then 'Y' else 'N' end"
+    prefer_language_thai: "case when lower(prefer_language) like 'thai%' then 'Y' else 'N' end"
+    prefer_language_other: >
+                          case when lower(prefer_language) not like 'thai%' or
+                                   lower(prefer_language) not like 'eng%'
+                                   then 'Y' else 'N' end
 
   customer_post:
     subscription_identifier: "subscription_identifier"
@@ -66,6 +53,13 @@ union_customer_profile_column_to_extract:
     zipcode: "zipcode"
     prefer_language: "prefer_language"
     company_size: "corp_account_size"
+    corporate_flag: "case when (upper(cust_type) = 'B') or (upper(cust_type) = 'R' and upper(rsme_flag) = 'Y') then 'Y' else 'N' end"
+    prefer_language_eng: "case when lower(prefer_language) like 'eng%' then 'Y' else 'N' end"
+    prefer_language_thai: "case when lower(prefer_language) like 'thai%' then 'Y' else 'N' end"
+    prefer_language_other: >
+                          case when lower(prefer_language) not like 'thai%' or
+                                   lower(prefer_language) not like 'eng%'
+                                   then 'Y' else 'N' end
 
   customer_non_mobile:
     subscription_identifier: "subscription_id"
@@ -74,6 +68,13 @@ union_customer_profile_column_to_extract:
     zipcode: "zipcode"
     prefer_language: "prefer_language"
     company_size: "corp_account_size"
+    corporate_flag: "case when (upper(cust_type) = 'B') or (upper(cust_type) = 'R' and upper(rsme_flag) = 'Y') then 'Y' else 'N' end"
+    prefer_language_eng: "case when lower(prefer_language) like 'eng%' then 'Y' else 'N' end"
+    prefer_language_thai: "case when lower(prefer_language) like 'thai%' then 'Y' else 'N' end"
+    prefer_language_other: >
+                          case when lower(prefer_language) not like 'thai%' or
+                                   lower(prefer_language) not like 'eng%'
+                                   then 'Y' else 'N' end
 
 
 l3_customer_profile_billing_level_number_of_mobile_devices:
