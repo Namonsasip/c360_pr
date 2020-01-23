@@ -78,7 +78,7 @@ union_customer_profile_column_to_extract:
 
 
 l3_customer_profile_billing_level_number_of_mobile_devices:
-    where_clause: "where imei is not null"
+    where_clause: "where imei is not null and ba_id is not null"
     feature_list:
         number_of_mobile_devices: "count(*)"
 
@@ -86,10 +86,22 @@ l3_customer_profile_billing_level_number_of_mobile_devices:
 
 
 l3_customer_profile_billing_level_number_of_sims:
-    where_clause: "where sim_serial_no is not null"
+    where_clause: "where sim_serial_no is not null and ba_id is not null"
     feature_list:
         number_of_mobile_devices: "count(*)"
 
     granularity: "ba_id, partition_month"
 
 
+l3_customer_profile_billing_level_number_of_active_contracts:
+  where_clause: "where ba_id is not null"
+  feature_list:
+    number_of_active_contracts: "count(*)"
+  granularity: "ba_id, partition_month"
+
+
+l3_customer_profile_billing_level_volume_of_active_contracts:
+  where_clause: ""
+  feature_list:
+    volume_of_active_contracts: "sum(bill_stmt_tot_invoiced_amt)"
+  granularity: "account_num, partition_month"

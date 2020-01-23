@@ -22,3 +22,19 @@ l3_customer_profile_billing_level_number_of_sims:
   save_args:
     mode: "overwrite"
     partitionBy: ["partition_month"]
+
+l3_customer_profile_billing_level_number_of_active_contracts:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: /mnt/customer360-blob-data/C360/CUSTOMER_PROFILE/l3_features/number_of_active_contracts/
+  file_format: "parquet"
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["partition_month"]
+
+l3_customer_profile_billing_level_volume_of_active_contracts:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: /mnt/customer360-blob-data/C360/CUSTOMER_PROFILE/l3_features/volume_of_active_contracts/
+  file_format: "parquet"
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["partition_month"]
