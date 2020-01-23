@@ -2,4 +2,5 @@
 l4_usage_all_features:
   partition_by: ["access_method_num"]
   feature_column: ["usg_total_call_duration_sum_week"]
+  function: ["sum", "max", "min", "avg"]
   read_from: "l2"
