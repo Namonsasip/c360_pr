@@ -35,5 +35,11 @@ def billing_to_l3_pipeline(**kwargs):
                 ["l0_billing_pc_t_payment_daily"],
                 "l3_billing_monthly_automated_payments"
             ),
+            node(
+                node_from_config,
+                ["l2_billing_and_payments_weekly_before_top_up_balance",
+                 "params:l3_billing_and_payment_before_top_up_balance_monthly"],
+                "l3_billing_and_payments_monthly_before_top_up_balance"
+            ),
         ]
     )

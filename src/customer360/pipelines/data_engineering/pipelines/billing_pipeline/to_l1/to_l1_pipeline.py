@@ -18,5 +18,11 @@ def billing_to_l1_pipeline(**kwargs):
                  "params:l1_billing_and_payment_rpu_roaming"],
                 "l1_billing_and_payments_daily_rpu_roaming"
             ),
+            node(
+                node_from_config,
+                ["l0_billing_sa_t_account_recharge_daily",
+                 "params:l1_billing_and_payment_before_top_up_balance"],
+                "l1_billing_and_payments_daily_before_top_up_balance"
+            ),
         ]
     )

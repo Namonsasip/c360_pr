@@ -1,19 +1,29 @@
 l4_billing_topup_and_volume:
   partition_by: ["access_method_num","register_date"]
-  feature_column: ["top_ups","top_up_volume"]
+  sum: ["top_ups","top_up_volume"]
+  avg: ["top_ups_avg","top_up_volume_avg"]
   read_from: "l2"
 
 l4_billing_rpu:
   partition_by: ["access_method_num","register_date","crm_sub_id"]
-  feature_column: ["rpu","rpu_gprs","rpu_vas","rpu_voice"]
+  sum: ["rpu","rpu_gprs","rpu_vas","rpu_voice"]
+  avg: ["rpu","rpu_gprs","rpu_vas","rpu_voice"]
   read_from: "l3"
 
 l4_billing_rpu_roaming:
   partition_by: ["access_method_number","mobile_register_date","crm_sub_id"]
-  feature_column: ["rpu_roaming"]
+  sum: ["rpu_roaming"]
+  avg: ["rpu_roaming_avg"]
   read_from: "l2"
 
 l4_billing_time_diff_bw_topups:
   partition_by: ["access_method_num","register_date"]
-  feature_column: ["time_diff"]
+  sum: ["time_diff"]
+  avg: ["time_diff_avg"]
+  read_from: "l2"
+
+l4_billing_before_top_up_balance:
+  partition_by: ["access_method_num","account_id"]
+  sum: ["before_top_up_balance"]
+  avg: ["before_top_up_balance"]
   read_from: "l2"

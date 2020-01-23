@@ -28,9 +28,26 @@ def bill_shock(input_df):
 
 def dynamics_topups_and_volume(df):
 
-    output_df = df.withColumn("week_dynamics_top_up_no",df.sum_top_ups_last_week/df.sum_top_ups_last_two_week)\
-        .withColumn("month_dynamics_top_up_no",df.sum_top_ups_last_month/df.sum_top_ups_last_two_months)\
-        .withColumn("week_dynamics_top_up_volume",df.sum_top_up_volume_last_week/df.sum_top_up_volume_last_two_week)\
-        .withColumn("month_dynamics_top_up_volume",df.sum_top_up_volume_last_month/df.sum_top_up_volume_last_two_months)
+    output_df = df.withColumn("week_dynamics_top_up_no",df.avg_top_ups_avg_last_week/df.avg_top_ups_avg_last_two_week)\
+        .withColumn("month_dynamics_top_up_no",df.avg_top_ups_avg_last_month/df.avg_top_ups_avg_last_two_months)\
+        .withColumn("week_dynamics_top_up_volume",df.avg_top_up_volume_avg_last_week/df.avg_top_up_volume_avg_last_two_week)\
+        .withColumn("month_dynamics_top_up_volume",df.avg_top_up_volume_avg_last_month/df.avg_top_up_volume_avg_last_two_months)
+
+    return output_df
+
+def last_3_topup_volume(df):
+
+    spark = SparkSession.builder.getOrCreate()
+    df.createOrReplaceTempView("df")
+
+    output_df = spark.sql("""select date(date_trunc('month', recharge_date)) as start_of_month,
+                          date(date_trunc('week', recharge_date)) as start_of_week,
+                          access_method_num,
+                          date(register_date),
+                          recharge_time,
+                          sum(face_value)
+                          over(partition by access_method_num,date(register_date) order by recharge_time 
+                          rows between 2 PRECEDING and current row) as last_3_top_up_volume from df
+                          """)
 
     return output_df

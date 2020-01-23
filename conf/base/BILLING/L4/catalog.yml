@@ -4,14 +4,14 @@ l4_billing_statement_history_billshock:
   file_format: parquet
   save_args:
     partitionBy: ["start_of_month"]
-    mode: "append"
+    mode: "overwrite"
 
 l4_billing_rolling_window_topup_and_volume:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l4_features/billing_rolling_window_topup_and_volume/
   save_args:
-    mode: "append"
+    mode: "overwrite"
     partitionBy: ["start_of_week"]
 
 l4_billing_rolling_window_rpu:
@@ -19,7 +19,7 @@ l4_billing_rolling_window_rpu:
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l4_features/billing_rolling_window_rpu/
   save_args:
-    mode: "append"
+    mode: "overwrite"
     partitionBy: ["start_of_month"]
 
 l4_billing_rolling_window_rpu_roaming:
@@ -27,7 +27,7 @@ l4_billing_rolling_window_rpu_roaming:
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l4_features/billing_rolling_window_rpu_roaming/
   save_args:
-    mode: "append"
+    mode: "overwrite"
     partitionBy: ["start_of_week"]
 
 l4_billing_rolling_window_time_diff_bw_top_ups:
@@ -35,5 +35,23 @@ l4_billing_rolling_window_time_diff_bw_top_ups:
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l4_features/billing_rolling_window_time_diff_bw_top_ups/
   save_args:
-    mode: "append"
+    mode: "overwrite"
     partitionBy: ["start_of_week"]
+
+l4_billing_rolling_window_last_3_top_up_volume:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/BILLING/l4_features/billing_rolling_window_last_3_top_up_volume/
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["start_of_week"]
+
+l4_billing_rolling_window_before_top_up_balance:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/BILLING/l4_features/billing_and_payments_before_top_up_balance/
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["start_of_week"]
+
+
