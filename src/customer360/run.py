@@ -42,7 +42,6 @@ from kedro.io import DataCatalog
 from kedro.versioning import Journal
 
 import findspark
-
 findspark.init()
 
 
