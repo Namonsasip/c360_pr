@@ -37,3 +37,11 @@ l2_billing_and_payments_weekly_before_top_up_balance:
   save_args:
     partitionBy: ["start_of_week"]
     mode: "overwrite"
+
+l2_billing_and_payments_weekly_top_up_channels:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L2_WEEKLY/BILLING/l2_features/billing_and_payments_top_up_channels/
+  save_args:
+    partitionBy: ["start_of_week"]
+    mode: "overwrite"

@@ -24,5 +24,11 @@ def billing_to_l1_pipeline(**kwargs):
                  "params:l1_billing_and_payment_before_top_up_balance"],
                 "l1_billing_and_payments_daily_before_top_up_balance"
             ),
+            node(
+                node_from_config,
+                ["l0_billing_and_payments_rt_t_recharge_daily",
+                 "params:l1_billing_and_payment_top_up_channels"],
+                "l1_billing_and_payments_daily_top_up_channels"
+            ),
         ]
     )

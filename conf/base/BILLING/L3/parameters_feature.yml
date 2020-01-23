@@ -42,4 +42,33 @@ l3_billing_and_payment_before_top_up_balance_monthly:
       before_top_up_balance: "avg(before_top_up_balance)"
     granularity: "start_of_month,access_method_num,account_id"
 
+l3_billing_and_payment_top_up_channels_monthly:
+    where_clause: ""
+    feature_list:
+        top_ups_by_bank_atm_cdm: "sum(top_ups_by_bank_atm_cdm)"
+        top_up_vol_by_bank_atm_cdm: "sum(top_up_vol_by_bank_atm_cdm)"
+        top_ups_by_cash_card: "sum(top_ups_by_cash_card)"
+        top_up_vol_by_cash_card: "sum(top_up_vol_by_cash_card)"
+        top_ups_by_digital_online_self_service: "sum(top_ups_by_digital_online_self_service)"
+        top_up_vol_by_digital_online_self_service: "sum(top_up_vol_by_digital_online_self_service)"
+        top_ups_by_epin_slip: "sum(top_ups_by_epin_slip)"
+        top_up_vol_by_epin_slip: "sum(top_up_vol_by_epin_slip)"
+        top_ups_by_epos: "sum(top_ups_by_epos)"
+        top_up_vol_by_epos: "sum(top_up_vol_by_epos)"
+        top_ups_by_rom: "sum(top_ups_by_rom)"
+        top_up_vol_by_rom: "sum(top_up_vol_by_rom)"
+        top_ups_avg_by_bank_atm_cdm: "avg(top_ups_avg_by_bank_atm_cdm)"
+        top_up_vol_avg_by_bank_atm_cdm: "avg(top_up_vol_avg_by_bank_atm_cdm)"
+        top_ups_avg_by_cash_card: "avg(top_ups_avg_by_cash_card)"
+        top_up_vol_avg_by_cash_card: "avg(top_up_vol_avg_by_cash_card)"
+        top_ups_avg_by_digital_online_self_service: "avg(top_ups_avg_by_digital_online_self_service)"
+        top_up_vol_avg_by_digital_online_self_service: "avg(top_up_vol_avg_by_digital_online_self_service)"
+        top_ups_avg_by_epin_slip: "avg(top_ups_avg_by_epin_slip)"
+        top_up_vol_avg_by_epin_slip: "avg(top_up_vol_avg_by_epin_slip)"
+        top_ups_avg_by_epos: "avg(top_ups_avg_by_epos)"
+        top_up_vol_avg_by_epos: "avg(top_up_vol_avg_by_epos)"
+        top_ups_avg_by_rom: "avg(top_ups_avg_by_rom)"
+        top_up_vol_avg_by_rom: "avg(top_up_vol_avg_by_rom)"
+    granularity: "start_of_month,access_method_num,date(register_date)"
+
 

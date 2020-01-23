@@ -27,6 +27,11 @@ def billing_to_l4_pipeline(**kwargs):
                 l4_rolling_window,
                 ["l3_billing_and_payments_monthly_rpu",
                  "params:l4_billing_rpu"],
+                "l4_billing_rolling_window_rpu_intermediate"
+            ),
+            node(
+                dynamics_rpu,
+                ["l4_billing_rolling_window_rpu_intermediate"],
                 "l4_billing_rolling_window_rpu"
             ),
             node(
@@ -51,6 +56,12 @@ def billing_to_l4_pipeline(**kwargs):
                 ["l2_billing_and_payments_weekly_before_top_up_balance",
                  "params:l4_billing_before_top_up_balance"],
                 "l4_billing_rolling_window_before_top_up_balance"
+            ),
+            node(
+                l4_rolling_window,
+                ["l2_billing_and_payments_weekly_top_up_channels",
+                 "params:l4_billing_top_up_channels"],
+                "l4_billing_rolling_window_top_up_channels"
             ),
         ]
     )

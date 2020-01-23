@@ -29,9 +29,15 @@ def bill_shock(input_df):
 def dynamics_topups_and_volume(df):
 
     output_df = df.withColumn("week_dynamics_top_up_no",df.avg_top_ups_avg_last_week/df.avg_top_ups_avg_last_two_week)\
-        .withColumn("month_dynamics_top_up_no",df.avg_top_ups_avg_last_month/df.avg_top_ups_avg_last_two_months)\
+        .withColumn("month_dynamics_top_up_no",df.avg_top_ups_avg_last_month/df.avg_top_ups_avg_last_two_month)\
         .withColumn("week_dynamics_top_up_volume",df.avg_top_up_volume_avg_last_week/df.avg_top_up_volume_avg_last_two_week)\
-        .withColumn("month_dynamics_top_up_volume",df.avg_top_up_volume_avg_last_month/df.avg_top_up_volume_avg_last_two_months)
+        .withColumn("month_dynamics_top_up_volume",df.avg_top_up_volume_avg_last_month/df.avg_top_up_volume_avg_last_two_month)
+
+    return output_df
+
+def dynamics_rpu(df):
+
+    output_df = df.withColumn("month_dynamics_arpu",df.avg_rpu_last_month/df.avg_rpu_last_two_month)
 
     return output_df
 

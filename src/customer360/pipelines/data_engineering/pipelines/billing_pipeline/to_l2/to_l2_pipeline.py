@@ -33,5 +33,11 @@ def billing_to_l2_pipeline(**kwargs):
                  "params:l2_billing_and_payment_before_top_up_balance_weekly"],
                 "l2_billing_and_payments_weekly_before_top_up_balance"
             ),
+            node(
+                node_from_config,
+                ["l1_billing_and_payments_daily_top_up_channels",
+                 "params:l2_billing_and_payment_top_up_channels_weekly"],
+                "l2_billing_and_payments_weekly_top_up_channels"
+            ),
         ]
     )

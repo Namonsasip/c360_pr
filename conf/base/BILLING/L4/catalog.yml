@@ -54,4 +54,12 @@ l4_billing_rolling_window_before_top_up_balance:
     mode: "overwrite"
     partitionBy: ["start_of_week"]
 
+l4_billing_rolling_window_top_up_channels:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/BILLING/l4_features/billing_and_payments_top_up_channels/
+  save_args:
+    partitionBy: ["start_of_week"]
+    mode: "overwrite"
+
 
