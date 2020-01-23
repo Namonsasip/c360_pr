@@ -70,7 +70,7 @@ class QueryGenerator:
 
         for (key, val) in feature_list.items():
             for col in val:
-                features.append("{}({}) as {}".format(key, col, col + "_" + key + "_" + kwargs['level']))
+                features.append("{}({}) as {}".format(key, col, col + "_" + key))
 
         return features
 
