@@ -1,7 +1,7 @@
 l4_usage_call_relation_features:
   partition_by: ["msisdn"]
   feature_list:
-         min: ['usg_incoming_afternoon_number_sms_min',
+    min: ['usg_incoming_afternoon_number_sms_min',
                'usg_incoming_afternoon_time_call_min',
                'usg_incoming_ais_local_calls_duration_min',
                'usg_incoming_ais_local_number_calls_min',
@@ -144,7 +144,7 @@ l4_usage_call_relation_features:
                'usg_outgoing_weekend_calls_duration_min',
                'usg_outgoing_weekend_number_calls_min',
                'usg_outgoing_weekend_number_sms_min']
-       max: [
+    max: [
               'usg_call_sms_last_action_date_max',
               'usg_incoming_last_call_date_max',
               'usg_last_call_date_max',
@@ -292,7 +292,7 @@ l4_usage_call_relation_features:
               'usg_outgoing_weekday_number_sms_max',
               'usg_outgoing_weekend_calls_duration_max',
               'usg_outgoing_weekend_number_calls_max']
-       sum: ['usg_incoming_afternoon_number_sms_sum',
+    sum: ['usg_incoming_afternoon_number_sms_sum',
              'usg_incoming_afternoon_time_call_sum',
              'usg_incoming_ais_local_calls_duration_sum',
              'usg_incoming_ais_local_number_calls_sum',
@@ -436,7 +436,7 @@ l4_usage_call_relation_features:
              'usg_outgoing_weekend_number_calls_sum',
              'usg_outgoing_weekend_number_sms_sum']
 
-       avg: ['usg_incoming_afternoon_number_sms_min',
+    avg: ['usg_incoming_afternoon_number_sms_min',
                     'usg_incoming_afternoon_time_call_min',
                     'usg_incoming_ais_local_calls_duration_min',
                     'usg_incoming_ais_local_number_calls_min',
@@ -865,6 +865,4 @@ l4_usage_call_relation_features:
                     'usg_outgoing_weekend_calls_duration_sum',
                     'usg_outgoing_weekend_number_calls_sum',
                     'usg_outgoing_weekend_number_sms_sum']
-
-
   read_from: "l2"
