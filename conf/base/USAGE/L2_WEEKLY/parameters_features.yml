@@ -3,7 +3,6 @@ l2_usage_call_relation_sum_weekly:
   type: "week"
   feature_list:
     sum: [
-
       'usg_incoming_afternoon_number_sms',
       'usg_incoming_afternoon_time_call',
       'usg_incoming_ais_local_calls_duration',
