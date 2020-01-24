@@ -946,7 +946,10 @@ l4_usage_data_prepaid_postpaid_features:
           'usg_total_data_monday_usage_min',
           'usg_total_data_volume_min',
           'usg_total_vas_data_volume_min']
-    max: ['usg_data_friday_usage_max',
+    max: ['usg_total_data_last_action_date_max',
+          'usg_total_data_vas_last_action_date_max',
+          'usg_data_last_action_date_max',
+          'usg_data_friday_usage_max',
           'usg_data_monday_usage_max',
           'usg_data_saturday_usage_max',
           'usg_data_sunday_usage_max',
