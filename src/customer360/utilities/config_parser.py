@@ -1,4 +1,4 @@
-
+import logging
 from pyspark.sql import SparkSession, DataFrame
 
 
@@ -36,6 +36,8 @@ class QueryGenerator:
                 query = "Select {},{} from {} {} group by {}".format(granularity, projection, table_name, where_clause, granularity)
             else:
                 query = "Select {} from {} {}".format(projection, table_name, where_clause)
+
+            logging.info("SQL QUERY {}".format(query))
 
             return query
 
@@ -128,6 +130,8 @@ def l4_rolling_window(input_df, config):
 
     sql_stmt = sql_stmt.format(',\n'.join(features))
 
+    logging.info("SQL QUERY {}".format(sql_stmt))
+
     spark = SparkSession.builder.getOrCreate()
     df = spark.sql(sql_stmt)
 
@@ -215,6 +219,8 @@ def expansion(input_df, config) -> DataFrame:
         column_function=QueryGenerator.expansion_feature_listing,
         level=config['type']
     )
+
+    logging.info("SQL QUERY {}".format(sql_stmt))
 
     spark = SparkSession.builder.getOrCreate()
 

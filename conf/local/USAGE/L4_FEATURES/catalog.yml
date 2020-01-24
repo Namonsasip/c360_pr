@@ -1,7 +1,23 @@
 l4_usage_call_relation_features:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/USAGE/l4_features/l4_usage_call_relation_features/
+  filepath: data/USAGE/l4_features/usage_call_relation_features/
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["start_of_week"]
+
+l4_usage_call_relation_ir_features:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/USAGE/l4_features/usage_call_relation_ir_features/
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["start_of_week"]
+
+l4_usage_data_prepaid_postpaid_features:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/USAGE/l4_features/usage_data_prepaid_postpaid_features/
   save_args:
     mode: "overwrite"
     partitionBy: ["start_of_week"]

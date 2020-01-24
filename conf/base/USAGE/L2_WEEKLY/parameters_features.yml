@@ -662,6 +662,9 @@ l2_usage_data_prepaid_postpaid_weekly:
           'usg_total_vas_data_volume'
     ]
     max: ['usg_data_friday_usage',
+          'usg_total_data_last_action_date',
+          'usg_total_data_vas_last_action_date',
+          'usg_data_last_action_date',
           'usg_data_monday_usage',
           'usg_data_saturday_usage',
           'usg_data_sunday_usage',
