@@ -1,5 +1,5 @@
 # Config file for query generator
-int_l4_customer_profile_basic_features:
+l4_customer_profile_ltv_to_date:
     where_clause: ""
     feature_list:
         # this is mandatory for joining to union_features table
@@ -10,57 +10,10 @@ int_l4_customer_profile_basic_features:
         partition_month: "partition_month"
         subscription_status: "mobile_status"
 
-        # these are the rest of the features
-        age: "floor(months_between(last_day(to_date(cast(partition_month as STRING), 'yyyyMM')), to_date(birth_date))/12)"
-        gender: "gender"
-        contract_expiry: "contract_end_month"
-        time_with_current_package: "months_between(last_day(to_date(cast(partition_month as STRING), 'yyyyMM')), contract_start_month)"
-        customer_segment: "mobile_segment"
-        serenade_status: "mobile_segment"
-        network_type: "network_type"
-        acquisition_channel: "trade_cmd_channel_type"
-        subscriber_tenure: "months_between(last_day(to_date(cast(partition_month as STRING), 'yyyyMM')), to_date(register_date))"
-        activation_region: "first_act_region"
-        current_package_name: "main_promo_name"
-        current_package_id: "main_promo_id"
+        ltv_to_date: >
+                    sum(norms_net_revenue) over (
+                          partition by crm_sub_id,
+                                       access_method_num,
+                                       register_date
+                          order by partition_month asc )
     granularity: ""
-
-
-int_l4_customer_profile_processed_features:
-    where_clause: ""
-    feature_list:
-        # this is mandatory for joining to basic_features table
-        subscription_identifier: "subscription_identifier"
-        mobile_no: "mobile_no"
-        activation_date: "activation_date"
-
-        # these are the rest of the features
-        zipcode: "zipcode"
-        prefer_language_eng: "case when lower(prefer_language) like 'eng%' then 'Y' else 'N' end"
-        prefer_language_thai: "case when lower(prefer_language) like 'thai%' then 'Y' else 'N' end"
-        prefer_language_other: >
-                               case when lower(prefer_language) not like 'thai%' or
-                                        lower(prefer_language) not like 'eng%'
-                                        then 'Y' else 'N' end
-    granularity: ""
-
-
-union_customer_profile_column_to_extract:
-  - "zipcode"
-  - "prefer_language"
-
-
-l4_customer_profile_billing_level_number_of_mobile_devices:
-    where_clause: "where imei is not null"
-    feature_list:
-        number_of_mobile_devices: "count(*)"
-
-    granularity: "ba_id, partition_month"
-
-
-l4_customer_profile_billing_level_number_of_sims:
-    where_clause: "where sim_serial_no is not null"
-    feature_list:
-        number_of_mobile_devices: "count(*)"
-
-    granularity: "ba_id, partition_month"

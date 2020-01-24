@@ -1,4 +1,5 @@
-from pyspark.sql import SparkSession
+from pyspark.sql import SparkSession, functions as F
+from pyspark.sql.types import StringType
 
 
 def union_daily_cust_profile(
@@ -7,30 +8,31 @@ def union_daily_cust_profile(
         cust_non_mobile,
         column_to_extract
 ):
-    columns_map ={
-        "customer_pre": [
-            "subscription_identifier",
-            "mobile_no",
-            "activation_date"
-        ],
-        "customer_post": [
-            "subscription_identifier",
-            "mobile_no",
-            "register_date"
-        ],
-        "customer_non_mobile": [
-            "subscription_id",
-            "mobile_no",
-            "activation_date"
-        ]
-    }
+    cust_pre.createOrReplaceTempView("cust_pre")
+    cust_post.createOrReplaceTempView("cust_post")
+    cust_non_mobile.createOrReplaceTempView("cust_non_mobile")
 
-    for each_table_columns in columns_map.values():
-        each_table_columns.extend(column_to_extract)
+    sql_stmt = """
+        select {cust_pre_columns} from cust_pre
+        union all
+        select {cust_post_columns} from cust_post
+        union all
+        select {cust_non_mobile_columns} from cust_non_mobile
+    """
 
-    df = cust_pre.select(columns_map['customer_pre']) \
-        .union(cust_post.select(columns_map['customer_post'])) \
-        .union(cust_non_mobile.select(columns_map['customer_non_mobile']))
+    def setup_column_to_extract(key):
+        columns = []
+
+        for alias, each_col in column_to_extract[key].items():
+            columns.append("{} as {}".format(each_col, alias))
+
+        return ','.join(columns)
+
+    sql_stmt = sql_stmt.format(cust_pre_columns=setup_column_to_extract("customer_pre"),
+                               cust_post_columns=setup_column_to_extract("customer_post"),
+                               cust_non_mobile_columns=setup_column_to_extract("customer_non_mobile"))
+
+    df = SparkSession.builder.getOrCreate().sql(sql_stmt)
 
     return df
 

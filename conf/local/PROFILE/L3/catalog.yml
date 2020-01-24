@@ -1,0 +1,44 @@
+
+l3_customer_profile_features:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L3_MONTHLY/CUSTOMER_PROFILE/customer_profile_features/
+  file_format: "parquet"
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["partition_month"]
+
+
+l3_customer_profile_billing_level_number_of_mobile_devices:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L3_MONTHLY/CUSTOMER_PROFILE/billing_level_number_of_mobile_devices/
+  file_format: "parquet"
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["partition_month"]
+
+
+l3_customer_profile_billing_level_number_of_sims:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L3_MONTHLY/CUSTOMER_PROFILE/billing_level_number_of_sims/
+  file_format: "parquet"
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["partition_month"]
+
+
+l3_customer_profile_billing_level_number_of_active_contracts:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L3_MONTHLY/CUSTOMER_PROFILE/number_of_active_contracts/
+  file_format: "parquet"
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["partition_month"]
+
+
+l3_customer_profile_billing_level_volume_of_active_contracts:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L3_MONTHLY/CUSTOMER_PROFILE/volume_of_active_contracts/
+  file_format: "parquet"
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["partition_month"]

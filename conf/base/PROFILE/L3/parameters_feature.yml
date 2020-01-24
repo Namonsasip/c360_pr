@@ -1,0 +1,107 @@
+# Config file for query generator
+int_l3_customer_profile_basic_features:
+    where_clause: ""
+    feature_list:
+        # this is mandatory for joining to union_features table
+        access_method_num: "access_method_num"
+        register_date: "register_date"
+        crm_sub_id: "crm_sub_id"
+        charge_type: "charge_type"
+        partition_month: "partition_month"
+        subscription_status: "mobile_status"
+
+        # these are the rest of the features
+        age: "floor(months_between(last_day(to_date(cast(partition_month as STRING), 'yyyyMM')), to_date(birth_date))/12)"
+        gender: "gender"
+        contract_expiry: "contract_end_month"
+        time_with_current_package: "months_between(last_day(to_date(cast(partition_month as STRING), 'yyyyMM')), contract_start_month)"
+        customer_segment: "mobile_segment"
+        serenade_status: "mobile_segment"
+        network_type: "network_type"
+        acquisition_channel: "trade_cmd_channel_type"
+        subscriber_tenure: "months_between(last_day(to_date(cast(partition_month as STRING), 'yyyyMM')), to_date(register_date))"
+        activation_region: "first_act_region"
+        current_package_name: "main_promo_name"
+        current_package_id: "main_promo_id"
+        company_type: "moc_cust_type"
+
+        # for L4 LTV calculation
+        norms_net_revenue: norms_net_revenue
+    granularity: ""
+
+
+union_customer_profile_column_to_extract:
+  customer_pre:
+    subscription_identifier: "subscription_identifier"
+    mobile_no: "mobile_no"
+    activation_date: "activation_date"
+    zipcode: "zipcode"
+    prefer_language: "prefer_language"
+    company_size: "null"
+    corporate_flag: "case when (upper(cust_type) = 'B') then 'Y' else 'N' end"
+    prefer_language_eng: "case when lower(prefer_language) like 'eng%' then 'Y' else 'N' end"
+    prefer_language_thai: "case when lower(prefer_language) like 'thai%' then 'Y' else 'N' end"
+    prefer_language_other: >
+                          case when lower(prefer_language) not like 'thai%' or
+                                   lower(prefer_language) not like 'eng%'
+                                   then 'Y' else 'N' end
+
+  customer_post:
+    subscription_identifier: "subscription_identifier"
+    mobile_no: "mobile_no"
+    activation_date: "register_date"
+    zipcode: "zipcode"
+    prefer_language: "prefer_language"
+    company_size: "corp_account_size"
+    corporate_flag: "case when (upper(cust_type) = 'B') or (upper(cust_type) = 'R' and upper(rsme_flag) = 'Y') then 'Y' else 'N' end"
+    prefer_language_eng: "case when lower(prefer_language) like 'eng%' then 'Y' else 'N' end"
+    prefer_language_thai: "case when lower(prefer_language) like 'thai%' then 'Y' else 'N' end"
+    prefer_language_other: >
+                          case when lower(prefer_language) not like 'thai%' or
+                                   lower(prefer_language) not like 'eng%'
+                                   then 'Y' else 'N' end
+
+  customer_non_mobile:
+    subscription_identifier: "subscription_id"
+    mobile_no: "mobile_no"
+    activation_date: "activation_date"
+    zipcode: "zipcode"
+    prefer_language: "prefer_language"
+    company_size: "corp_account_size"
+    corporate_flag: "case when (upper(cust_type) = 'B') or (upper(cust_type) = 'R' and upper(rsme_flag) = 'Y') then 'Y' else 'N' end"
+    prefer_language_eng: "case when lower(prefer_language) like 'eng%' then 'Y' else 'N' end"
+    prefer_language_thai: "case when lower(prefer_language) like 'thai%' then 'Y' else 'N' end"
+    prefer_language_other: >
+                          case when lower(prefer_language) not like 'thai%' or
+                                   lower(prefer_language) not like 'eng%'
+                                   then 'Y' else 'N' end
+
+
+l3_customer_profile_billing_level_number_of_mobile_devices:
+    where_clause: "where imei is not null and ba_id is not null"
+    feature_list:
+        number_of_mobile_devices: "count(*)"
+
+    granularity: "ba_id, partition_month"
+
+
+l3_customer_profile_billing_level_number_of_sims:
+    where_clause: "where sim_serial_no is not null and ba_id is not null"
+    feature_list:
+        number_of_mobile_devices: "count(*)"
+
+    granularity: "ba_id, partition_month"
+
+
+l3_customer_profile_billing_level_number_of_active_contracts:
+  where_clause: "where ba_id is not null"
+  feature_list:
+    number_of_active_contracts: "count(*)"
+  granularity: "ba_id, partition_month"
+
+
+l3_customer_profile_billing_level_volume_of_active_contracts:
+  where_clause: ""
+  feature_list:
+    volume_of_active_contracts: "sum(bill_stmt_tot_invoiced_amt)"
+  granularity: "account_num, partition_month"
