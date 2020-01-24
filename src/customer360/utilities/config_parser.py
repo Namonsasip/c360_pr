@@ -124,8 +124,8 @@ def l4_rolling_window(input_df, config):
             features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
                 function=agg_function,
                 feature_column=each_feature_column,
-                window=create_monthly_lookback_window(2, config["partition_by"]),
-                column_name="{}_{}_last_two_month".format(agg_function, each_feature_column)
+                window=create_monthly_lookback_window(3, config["partition_by"]),
+                column_name="{}_{}_last_three_month".format(agg_function, each_feature_column)
             ))
 
     sql_stmt = sql_stmt.format(',\n'.join(features))
