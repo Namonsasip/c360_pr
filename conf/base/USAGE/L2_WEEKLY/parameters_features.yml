@@ -664,7 +664,6 @@ l2_usage_data_prepaid_postpaid_weekly:
     max: ['usg_data_friday_usage',
           'usg_total_data_last_action_date_max',
           'usg_total_data_vas_last_action_date_max',
-          'usg_total_data_last_action_date_max',
           'usg_data_last_action_date_max',
           'usg_data_monday_usage',
           'usg_data_saturday_usage',
