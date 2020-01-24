@@ -43,3 +43,10 @@ l4_billing_top_up_channels:
           "top_ups_avg_by_digital_online_self_service","top_up_vol_avg_by_digital_online_self_service","top_ups_avg_by_epin_slip",
           "top_up_vol_avg_by_epin_slip","top_ups_avg_by_epos","top_up_vol_avg_by_epos","top_ups_avg_by_rom","top_up_vol_avg_by_rom"]
   read_from: "l2"
+
+l4_payments_bill_volume:
+  partition_by: ["account_identifier"]
+  feature_list:
+    sum: ["bill_volume"]
+    avg: ["bill_volume"]
+  read_from: "l3"

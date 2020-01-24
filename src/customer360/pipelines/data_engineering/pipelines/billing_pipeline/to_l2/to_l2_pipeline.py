@@ -1,7 +1,7 @@
 from kedro.pipeline import Pipeline, node
 
 from src.customer360.utilities.config_parser import *
-from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l2.to_l2_nodes import top_up_time_diff_weekly_data
+from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l2.to_l2_nodes import *
 
 def billing_to_l2_pipeline(**kwargs):
 
@@ -38,6 +38,16 @@ def billing_to_l2_pipeline(**kwargs):
                 ["l1_billing_and_payments_daily_top_up_channels",
                  "params:l2_billing_and_payment_top_up_channels_weekly"],
                 "l2_billing_and_payments_weekly_top_up_channels"
+            ),
+            node(
+                popular_top_up_channel_with_rank,
+                ["l1_billing_and_payments_daily_most_popular_top_up_channel"],
+                "l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate"
+            ),
+            node(
+                most_popular_top_up_channel,
+                ["l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate"],
+                "l2_billing_and_payments_weekly_most_popular_top_up_channel"
             ),
         ]
     )

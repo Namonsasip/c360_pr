@@ -41,6 +41,12 @@ def dynamics_rpu(df):
 
     return output_df
 
+def dynamics_bill_volume(df):
+
+    output_df = df.withColumn("month_dynamics_bill_volume",df.avg_bill_volume_last_month/df.avg_bill_volume_last_two_month)
+
+    return output_df
+
 def last_3_topup_volume(df):
 
     spark = SparkSession.builder.getOrCreate()

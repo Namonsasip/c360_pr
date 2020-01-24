@@ -62,3 +62,11 @@ l4_billing_rolling_window_top_up_channels:
   save_args:
     partitionBy: ["start_of_week"]
     mode: "overwrite"
+
+l4_billing_rolling_window_bill_volume:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L4_FEATURES/BILLING/billing_and_payments_monthly_bill_volume/
+  save_args:
+    partitionBy: ["start_of_month"]
+    mode: "overwrite"
