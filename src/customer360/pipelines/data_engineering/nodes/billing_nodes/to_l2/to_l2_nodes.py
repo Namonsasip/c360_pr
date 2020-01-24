@@ -31,12 +31,18 @@ def popular_top_up_channel_with_rank(input_df):
     register_date,
     top_up_channel,
     sum(total_top_up) as total_top_up
-    from input_df group by start_of_month,start_of_week,access_method_num,register_date,top_up_channel order by total_top_up desc""")
+    from input_df group by start_of_month,
+    start_of_week,
+    access_method_num,
+    register_date,
+    top_up_channel order by total_top_up desc""")
 
     df.createOrReplaceTempView("df")
 
     output_df = spark.sql("""select *,
-    row_number() over(partition by start_of_week,access_method_num,register_date order by total_top_up desc) as rank from df""")
+    row_number() over(partition by start_of_week,
+    access_method_num,
+    register_date order by total_top_up desc) as rank from df""")
 
     return output_df
 
