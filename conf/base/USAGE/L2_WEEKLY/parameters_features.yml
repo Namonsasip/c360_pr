@@ -183,12 +183,6 @@ l2_usage_call_relation_sum_weekly:
       'usg_incoming_true_call_duration',
       'usg_incoming_true_number_calls',
       'usg_incoming_true_number_sms',
-      'usg_incoming_weekday_calls_duration',
-      'usg_incoming_weekday_number_calls',
-      'usg_incoming_weekday_number_sms',
-      'usg_incoming_weekend_calls_duration',
-      'usg_incoming_weekend_number_calls',
-      'usg_incoming_weekend_number_sms',
       'usg_outgoing_afternoon_number_calls',
       'usg_outgoing_afternoon_number_sms',
       'usg_outgoing_ais_local_calls_duration',
@@ -220,12 +214,6 @@ l2_usage_call_relation_sum_weekly:
       'usg_outgoing_true_call_duration',
       'usg_outgoing_true_number_calls',
       'usg_outgoing_true_number_sms',
-      'usg_outgoing_weekday_calls_duration',
-      'usg_outgoing_weekday_number_calls',
-      'usg_outgoing_weekday_number_sms',
-      'usg_outgoing_weekend_calls_duration',
-      'usg_outgoing_weekend_number_calls',
-      'usg_outgoing_weekend_number_sms'
     ]
     min: [
       'usg_incoming_afternoon_number_sms',
@@ -258,12 +246,6 @@ l2_usage_call_relation_sum_weekly:
       'usg_incoming_true_call_duration',
       'usg_incoming_true_number_calls',
       'usg_incoming_true_number_sms',
-      'usg_incoming_weekday_calls_duration',
-      'usg_incoming_weekday_number_calls',
-      'usg_incoming_weekday_number_sms',
-      'usg_incoming_weekend_calls_duration',
-      'usg_incoming_weekend_number_calls',
-      'usg_incoming_weekend_number_sms',
       'usg_outgoing_afternoon_number_calls',
       'usg_outgoing_afternoon_number_sms',
       'usg_outgoing_ais_local_calls_duration',
@@ -294,13 +276,7 @@ l2_usage_call_relation_sum_weekly:
       'usg_outgoing_total_sms',
       'usg_outgoing_true_call_duration',
       'usg_outgoing_true_number_calls',
-      'usg_outgoing_true_number_sms',
-      'usg_outgoing_weekday_calls_duration',
-      'usg_outgoing_weekday_number_calls',
-      'usg_outgoing_weekday_number_sms',
-      'usg_outgoing_weekend_calls_duration',
-      'usg_outgoing_weekend_number_calls',
-      'usg_outgoing_weekend_number_sms'
+      'usg_outgoing_true_number_sms'
     ]
     avg: [
       'usg_incoming_ais_local_calls_duration',
@@ -332,13 +308,6 @@ l2_usage_call_relation_sum_weekly:
       'usg_incoming_true_call_duration',
       'usg_incoming_true_number_calls',
       'usg_incoming_true_number_sms',
-
-      'usg_incoming_weekday_calls_duration',
-      'usg_incoming_weekday_number_calls',
-      'usg_incoming_weekday_number_sms',
-      'usg_incoming_weekend_calls_duration',
-      'usg_incoming_weekend_number_calls',
-      'usg_incoming_weekend_number_sms',
       'usg_outgoing_afternoon_number_calls',
       'usg_outgoing_afternoon_number_sms',
       'usg_outgoing_ais_local_calls_duration',
@@ -370,12 +339,6 @@ l2_usage_call_relation_sum_weekly:
       'usg_outgoing_true_call_duration',
       'usg_outgoing_true_number_calls',
       'usg_outgoing_true_number_sms',
-      'usg_outgoing_weekday_calls_duration',
-      'usg_outgoing_weekday_number_calls',
-      'usg_outgoing_weekday_number_sms',
-      'usg_outgoing_weekend_calls_duration',
-      'usg_outgoing_weekend_number_calls',
-      'usg_outgoing_weekend_number_sms'
     ]
   granularity: "msisdn, start_of_week, start_of_month"
 
