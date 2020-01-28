@@ -12,7 +12,7 @@ def popular_top_up_channel(input_df):
     date(date_trunc('week',date(recharge_date))) as start_of_week,
     date(register_date),
     date(recharge_date) as event_partition_date,
-    recharge_type,
+    recharge_type as top_up_channel,
     count(*) as total_top_up
     from input_df group by access_method_num,
     date(register_date),

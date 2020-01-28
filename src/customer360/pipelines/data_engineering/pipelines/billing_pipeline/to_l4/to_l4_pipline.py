@@ -74,5 +74,10 @@ def billing_to_l4_pipeline(**kwargs):
                 ["l4_billing_rolling_window_bill_volume_intermediate"],
                 "l4_billing_rolling_window_bill_volume"
             ),
+            node(
+                most_popular_topup_channel,
+                ["l3_billing_and_payments_monthly_most_popular_top_up_channel_intermediate"],
+                "l4_billing_rolling_window_most_popular_topup_channel"
+            ),
         ]
     )

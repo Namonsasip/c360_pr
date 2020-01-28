@@ -41,7 +41,7 @@ def billing_to_l2_pipeline(**kwargs):
             ),
             node(
                 popular_top_up_channel_with_rank,
-                ["l1_billing_and_payments_daily_most_popular_top_up_channel"],
+                ["l1_billing_and_payments_daily_most_popular_top_up_channel","l0_billing_topup_type"],
                 "l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate"
             ),
             node(

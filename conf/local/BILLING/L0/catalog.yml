@@ -28,3 +28,8 @@ l0_billing_sa_t_account_recharge_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
   filepath: data/L0/BILLING/billing_sa_t_account_recharge_daily/
   file_format: parquet
+
+l0_billing_topup_type:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L0/BILLING/billing_recharge_topup_event_type_current/
+  file_format: parquet

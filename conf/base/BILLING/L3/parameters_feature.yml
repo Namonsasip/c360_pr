@@ -33,7 +33,7 @@ l3_billing_and_payment_feature_rpu_roaming_monthly:
     where_clause: ""
     feature_list:
       rpu_roaming: "sum(rpu_roaming)"
-      rpu_roaming_avg: "avg(rpu_roaming_avg)"
+      arpu_roaming_avg: "avg(arpu_roaming_avg)"
     granularity: "start_of_month,access_method_number,mobile_register_date,crm_sub_id"
 
 l3_billing_and_payment_before_top_up_balance_monthly:

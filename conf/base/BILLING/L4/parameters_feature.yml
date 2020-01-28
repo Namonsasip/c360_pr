@@ -16,7 +16,7 @@ l4_billing_rpu_roaming:
   partition_by: ["access_method_number","mobile_register_date","crm_sub_id"]
   feature_list:
     sum: ["rpu_roaming"]
-    avg: ["rpu_roaming_avg"]
+    avg: ["arpu_roaming_avg"]
   read_from: "l2"
 
 l4_billing_time_diff_bw_topups:

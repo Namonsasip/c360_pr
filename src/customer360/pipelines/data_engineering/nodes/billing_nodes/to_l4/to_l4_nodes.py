@@ -63,3 +63,36 @@ def last_3_topup_volume(df):
                           """)
 
     return output_df
+
+def most_popular_topup_channel(df):
+
+    spark = SparkSession.builder.getOrCreate()
+    df.createOrReplaceTempView("df")
+
+    output_df = spark.sql(""" with table_with_sum as 
+    (select start_of_month,
+            access_method_num,
+            register_date,
+            top_up_channel, 
+            sum(total_top_up) over 
+            (partition by access_method_num,
+                          register_date,
+                          top_up_channel
+                          order by cast(cast(start_of_month as timestamp) as long) asc
+                          range between 90 * 24 * 60 * 60 preceding and current row) as sum_last_three_months
+    from df),
+    
+    table_with_rank_on_sum as 
+    (select *,
+            rank() over 
+            (partition by access_method_num,
+                          register_date,
+                          start_of_month
+                          order by sum_last_three_months desc) as rank
+    from table_with_sum)
+    
+    select * from table_with_rank_on_sum where rank = 1 """)
+
+    return output_df
+
+
