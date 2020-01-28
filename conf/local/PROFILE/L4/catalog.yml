@@ -1,26 +1,7 @@
 
-l4_customer_profile_features:
+l4_customer_profile_ltv_to_date:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: data/L4_FEATURES/CUSTOMER_PROFILE/customer_profile_features/
+  filepath: data/L4_FEATURES/CUSTOMER_PROFILE/ltv_to_date/
   file_format: "parquet"
   save_args:
-    mode: "overwrite"
-    partitionBy: ["partition_month"]
-
-
-l4_customer_profile_billing_level_number_of_mobile_devices:
-  type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: data/L4_FEATURES/CUSTOMER_PROFILE/billing_level_number_of_mobile_devices/
-  file_format: "parquet"
-  save_args:
-    mode: "overwrite"
-    partitionBy: ["partition_month"]
-
-
-l4_customer_profile_billing_level_number_of_sims:
-  type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: data/L4_FEATURES/CUSTOMER_PROFILE/billing_level_number_of_sims/
-  file_format: "parquet"
-  save_args:
-    mode: "overwrite"
     partitionBy: ["partition_month"]
