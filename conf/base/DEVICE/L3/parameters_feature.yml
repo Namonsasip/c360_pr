@@ -1,0 +1,42 @@
+l3_device_handset_summary_with_configuration:
+    where_clause: ""
+    feature_list:
+        start_of_month: "start_of_month"
+        mobile_no: "mobile_no"
+        register_date: "register_date"
+        device_last_use_time: "device_last_use_time"
+        device_brand_code: "first_value(device_brand_code)
+                            over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        device_model_code: "first_value(device_model_code)
+                            over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        device_brand_name: "first_value(device_brand_name)
+                            over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        device_model_name: "first_value(device_model_name)
+                            over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        device_imei: "first_value(device_imei)
+                      over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        device_type: "first_value(device_type)
+                      over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        device_supports_umts: "first_value(device_supports_umts)
+                               over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        device_supports_wds: "first_value(device_supports_wds)
+                              over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        device_channel: "first_value(device_channel)
+                         over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        device_supports_dual_sim: "first_value(device_supports_dual_sim)
+                                   over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        device_supports_lte: "first_value(device_supports_lte)
+                              over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        devices_uses_both_sim_slot: "first_value(devices_uses_both_sim_slot)
+                                     over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        device_supports_hsdpa: "first_value(device_supports_hsdpa)
+                                over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        device_supports_video_call: "first_value(device_supports_video_call)
+                                     over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        device_operating_system: "first_value(device_operating_system)
+                                  over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        device_supports_gprs: "first_value(device_supports_gprs)
+                               over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        device_supports_google_map: "first_value(device_supports_google_map)
+                                     over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+    granularity: ""

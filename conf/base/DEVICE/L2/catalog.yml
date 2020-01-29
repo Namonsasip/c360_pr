@@ -1,0 +1,7 @@
+l2_device_handset_summary_with_configuration_weekly:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DEVICE/l2_features/device_handset_summary_with_configuration/
+  save_args:
+    partitionBy: ["start_of_week"]
+    mode: "overwrite"
