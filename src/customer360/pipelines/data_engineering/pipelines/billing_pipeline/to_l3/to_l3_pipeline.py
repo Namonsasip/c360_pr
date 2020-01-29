@@ -2,7 +2,7 @@ from kedro.pipeline import Pipeline, node
 
 from src.customer360.utilities.config_parser import *
 from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l3.to_l3_nodes import *
-from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l2.to_l2_nodes import most_popular_top_up_channel
+
 
 def billing_to_l3_pipeline(**kwargs):
     return Pipeline(
@@ -48,20 +48,20 @@ def billing_to_l3_pipeline(**kwargs):
                  "params:l3_billing_and_payment_top_up_channels_monthly"],
                 "l3_billing_and_payments_monthly_top_up_channels"
             ),
-            node(
-                popular_top_up_channel_with_rank,
-                ["l2_billing_and_payments_weekly_most_popular_top_up_channel"],
-                "l3_billing_and_payments_monthly_most_popular_top_up_channel_intermediate"
-            ),
-            node(
-                most_popular_top_up_channel,
-                ["l3_billing_and_payments_monthly_most_popular_top_up_channel_intermediate"],
-                "l3_billing_and_payments_monthly_most_popular_top_up_channel"
-            ),
-            node(
-                bill_volume,
-                ["l0_billing_statement_history_monthly"],
-                "l3_billing_and_payments_monthly_bill_volume"
-            ),
+             node(
+                 popular_top_up_channel_with_rank,
+                 ["l2_billing_and_payments_weekly_most_popular_top_up_channel"],
+                 "l3_billing_and_payments_monthly_most_popular_top_up_channel_intermediate"
+             ),
+             node(
+                 node_from_config,
+                 ["l3_billing_and_payments_monthly_most_popular_top_up_channel_intermediate","params:l3_most_popular_topup_channel"],
+                 "l3_billing_and_payments_monthly_most_popular_top_up_channel"
+             ),
+             node(
+                 bill_volume,
+                 ["l0_billing_statement_history_monthly"],
+                 "l3_billing_and_payments_monthly_bill_volume"
+             ),
         ]
     )

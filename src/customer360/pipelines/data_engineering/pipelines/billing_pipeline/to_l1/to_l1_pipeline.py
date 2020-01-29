@@ -1,7 +1,7 @@
 from kedro.pipeline import Pipeline, node
 
 from src.customer360.utilities.config_parser import node_from_config
-from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l1.to_l1_nodes import popular_top_up_channel
+
 
 
 def billing_to_l1_pipeline(**kwargs):
@@ -32,8 +32,8 @@ def billing_to_l1_pipeline(**kwargs):
                 "l1_billing_and_payments_daily_top_up_channels"
             ),
             node(
-                popular_top_up_channel,
-                ["l0_billing_and_payments_rt_t_recharge_daily"],
+                node_from_config,
+                ["l0_billing_and_payments_rt_t_recharge_daily","params:l1_billing_and_payment_most_popular_topup_channel"],
                 "l1_billing_and_payments_daily_most_popular_top_up_channel"
             ),
         ]

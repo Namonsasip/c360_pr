@@ -38,6 +38,13 @@ l1_billing_and_payment_top_up_channels:
     granularity: "date(recharge_date),access_method_num,date(register_date)"
     event_date_column: "date(recharge_date)"
 
+l1_billing_and_payment_most_popular_topup_channel:
+    where_clause: ""
+    feature_list:
+        total_top_up: "count(*)"
+    granularity: "date(recharge_date),date(register_date),access_method_num,recharge_type"
+    event_date_column: "date(recharge_date)"
+
 
 
 

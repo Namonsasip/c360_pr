@@ -7,6 +7,17 @@ l2_billing_and_payment_feature_top_up_and_count_weekly:
       top_up_volume_avg: "avg(top_up_volume)"
     granularity: "start_of_month,start_of_week,access_method_num,date(register_date)"
 
+l2_billing_and_payment_feature_time_diff_bw_topups_weekly_intermdeiate:
+    where_clause: ""
+    feature_list:
+      start_of_month: "date(date_trunc('month',recharge_date))"
+      start_of_week: "date(date_trunc('week',recharge_date))"
+      recharge_time: "recharge_time"
+      access_method_num: "access_method_num"
+      register_date: "register_date"
+      time_diff: "datediff(recharge_time,lag(recharge_time,1) over(partition by date(date_trunc('month',recharge_date)),
+      date(date_trunc('week',recharge_date)),access_method_num,register_date order by recharge_time))"
+    granularity: ""
 
 l2_billing_and_payment_feature_time_diff_bw_topups_weekly:
     where_clause: ""
@@ -58,3 +69,14 @@ l2_billing_and_payment_top_up_channels_weekly:
         top_ups_avg_by_rom: "avg(top_ups_by_rom)"
         top_up_vol_avg_by_rom: "avg(top_up_vol_by_rom)"
     granularity: "start_of_month,start_of_week,access_method_num,date(register_date)"
+
+l2_most_popular_topup_channel:
+    where_clause: "where rank = 1"
+    feature_list:
+      start_of_month: "start_of_month"
+      start_of_week: "start_of_week"
+      access_method_num: "access_method_num"
+      register_date: "register_date"
+      top_up_channel: "top_up_channel"
+      total_top_up: "total_top_up"
+    granularity: ""

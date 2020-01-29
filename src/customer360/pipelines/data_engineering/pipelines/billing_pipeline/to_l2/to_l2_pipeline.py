@@ -13,8 +13,8 @@ def billing_to_l2_pipeline(**kwargs):
                 "l2_billing_and_payments_weekly_topup_and_volume"
             ),
             node(
-                top_up_time_diff_weekly_data,
-                ["l0_billing_and_payments_rt_t_recharge_daily"],
+                node_from_config,
+                ["l0_billing_and_payments_rt_t_recharge_daily","params:l2_billing_and_payment_feature_time_diff_bw_topups_weekly_intermdeiate"],
                 "l2_billing_and_payments_weekly_topup_diff_time_intermediate"
             ),
             node(
@@ -45,8 +45,8 @@ def billing_to_l2_pipeline(**kwargs):
                 "l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate"
             ),
             node(
-                most_popular_top_up_channel,
-                ["l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate"],
+                node_from_config,
+                ["l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate","params:l2_most_popular_topup_channel"],
                 "l2_billing_and_payments_weekly_most_popular_top_up_channel"
             ),
         ]

@@ -71,4 +71,14 @@ l3_billing_and_payment_top_up_channels_monthly:
         top_up_vol_avg_by_rom: "avg(top_up_vol_avg_by_rom)"
     granularity: "start_of_month,access_method_num,date(register_date)"
 
+l3_most_popular_topup_channel:
+    where_clause: "where rank = 1"
+    feature_list:
+      start_of_month: "start_of_month"
+      access_method_num: "access_method_num"
+      register_date: "register_date"
+      top_up_channel: "top_up_channel"
+      total_top_up: "total_top_up"
+    granularity: ""
+
 
