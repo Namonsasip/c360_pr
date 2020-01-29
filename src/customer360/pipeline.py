@@ -82,7 +82,16 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
     # -------------------------------------------------------------------------
 
     return {
-        "__default__": usage_to_l2_pipeline(),
+        "__default__": usage_to_l1_pipeline()
+                       + usage_to_l2_pipeline()
+                       + usage_to_l4_pipeline()
+                       + customer_profile_to_l3_pipeline()
+                       + customer_profile_to_l4_pipeline()
+                       + customer_profile_billing_level_to_l3_pipeline()
+                       + billing_to_l1_pipeline()
+                       + billing_to_l2_pipeline()
+                       + billing_to_l3_pipeline()
+                       + billing_to_l4_pipeline(),
         "usage_to_l2_pipeline": usage_to_l2_pipeline(),
         "usage_to_l4_pipeline": usage_to_l4_pipeline(),
         "customer_profile_to_l3_pipeline": customer_profile_to_l3_pipeline(),

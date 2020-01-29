@@ -65,20 +65,8 @@ def customer_profile_billing_level_to_l3_pipeline(**kwargs):
             node(
                 node_from_config,
                 ['l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly',
-                 "params:l3_customer_profile_billing_level_number_of_mobile_devices"],
-                "l3_customer_profile_billing_level_number_of_mobile_devices"
-            ),
-            node(
-                node_from_config,
-                ['l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly',
-                 'params:l3_customer_profile_billing_level_number_of_sims'],
-                "l3_customer_profile_billing_level_number_of_sims"
-            ),
-            node(
-                node_from_config,
-                ['l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly',
-                 'params:l3_customer_profile_billing_level_number_of_active_contracts'],
-                "l3_customer_profile_billing_level_number_of_active_contracts"
+                 "params:l3_customer_profile_billing_level_features"],
+                "l3_customer_profile_billing_level_features"
             ),
             node(
                 node_from_config,
