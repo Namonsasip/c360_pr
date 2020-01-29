@@ -49,5 +49,10 @@ def billing_to_l2_pipeline(**kwargs):
                 ["l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate","params:l2_most_popular_topup_channel"],
                 "l2_billing_and_payments_weekly_most_popular_top_up_channel"
             ),
+            node(
+                last_top_up_channel,
+                ["l0_billing_and_payments_rt_t_recharge_daily","l0_billing_topup_type"],
+                "l2_billing_and_payments_weekly_last_top_up_channel"
+            ),
         ]
     )

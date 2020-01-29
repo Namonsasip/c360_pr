@@ -80,3 +80,5 @@ l2_most_popular_topup_channel:
       top_up_channel: "top_up_channel"
       total_top_up: "total_top_up"
     granularity: ""
+
+

@@ -63,5 +63,10 @@ def billing_to_l3_pipeline(**kwargs):
                  ["l0_billing_statement_history_monthly"],
                  "l3_billing_and_payments_monthly_bill_volume"
              ),
+            node(
+                last_top_up_channel,
+                ["l2_billing_and_payments_weekly_last_top_up_channel"],
+                "l3_billing_and_payments_monthly_last_top_up_channel"
+            ),
         ]
     )

@@ -56,3 +56,16 @@ def bill_volume(input_df):
 
     return output_df
 
+def last_top_up_channel(input_df):
+    spark = SparkSession.builder.getOrCreate()
+    input_df.createOrReplaceTempView("input_df")
+
+    df = spark.sql("""select *,
+    row_number() over(partition by start_of_month,
+      access_method_num,
+      register_date
+      order by recharge_time desc) as rank from input_df""")
+
+    output_df = df.where("rank = 1").drop("rank")
+
+    return output_df
