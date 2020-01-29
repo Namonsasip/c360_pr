@@ -36,27 +36,15 @@ from kedro.pipeline import Pipeline, node
 from src.customer360.utilities.config_parser import l4_rolling_window
 
 
-def usage_to_l4_pipeline(**kwargs):
+def revenue_to_l4_pipeline(**kwargs):
     return Pipeline(
         [
             node(
                 l4_rolling_window,
-                ["l2_usage_call_relation_sum_weekly",
-                 "params:l4_usage_call_relation_features"],
-                "l4_usage_call_relation_features"
-            ),
-            node(
-                l4_rolling_window,
-                ["l2_usage_call_relation_sum_ir_weekly",
-                 "params:l4_usage_call_relation_ir_features"],
-                "l4_usage_call_relation_ir_features"
-            ),
-            node(
-                l4_rolling_window,
-                ["l2_usage_data_prepaid_postpaid_weekly",
-                 "params:l4_usage_data_prepaid_postpaid_features"],
-                "l4_usage_data_prepaid_postpaid_features"
+                ["l3_revenue_ru_f_sum_revenue_by_service_monthly",
+                 "params:l4_revenue_ru_f_sum_revenue_by_service_monthly"],
+                "l4_revenue_ru_f_sum_revenue_by_service_monthly"
             ),
 
-        ], name="usage_to_l4_pipeline"
+        ], name="revenue_to_l4_pipeline"
     )
