@@ -27,19 +27,19 @@ def popular_top_up_channel_with_rank(input_df):
     df = spark.sql("""select start_of_month,
     access_method_num,
     register_date,
-    top_up_channel,
-    sum(total_top_up) as total_top_up
+    payments_top_up_channel,
+    sum(payments_total_top_up) as payments_total_top_up
     from input_df group by start_of_month,
     access_method_num,
     register_date,
-    top_up_channel order by total_top_up desc""")
+    payments_top_up_channel order by payments_total_top_up desc""")
 
     df.createOrReplaceTempView("df")
 
     output_df = spark.sql("""select *,
     row_number() over(partition by start_of_month,
     access_method_num,
-    register_date order by total_top_up desc) as rank
+    register_date order by payments_total_top_up desc) as rank
     from df""")
 
     return output_df
@@ -50,7 +50,7 @@ def bill_volume(input_df):
 
     output_df = spark.sql("""select date(date_trunc('month',billing_stmt_period_eff_date)) as start_of_month,
     account_identifier,
-    sum(bill_stmt_tot_invoiced_amt) as bill_volume
+    sum(bill_stmt_tot_invoiced_amt) as payments_bill_volume
     from input_df group by date(date_trunc('month',billing_stmt_period_eff_date)),
     account_identifier""")
 

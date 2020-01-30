@@ -1,54 +1,54 @@
 l4_billing_topup_and_volume:
   partition_by: ["access_method_num","register_date"]
   feature_list:
-    sum: ["top_ups","top_up_volume"]
-    avg: ["top_ups_avg","top_up_volume_avg"]
+    sum: ["payments_top_ups","payments_top_up_volume"]
+    avg: ["payments_top_ups_avg","payments_top_up_volume_avg"]
   read_from: "l2"
 
 l4_billing_rpu:
   partition_by: ["access_method_num","register_date","crm_sub_id"]
   feature_list:
-    sum: ["rpu","rpu_gprs","rpu_vas","rpu_voice"]
-    avg: ["rpu","rpu_gprs","rpu_vas","rpu_voice"]
+    sum: ["payments_rpu","payments_rpu_gprs","payments_rpu_vas","payments_rpu_voice"]
+    avg: ["payments_rpu","payments_rpu_gprs","payments_rpu_vas","payments_rpu_voice"]
   read_from: "l3"
 
 l4_billing_rpu_roaming:
   partition_by: ["access_method_number","mobile_register_date","crm_sub_id"]
   feature_list:
-    sum: ["rpu_roaming"]
-    avg: ["arpu_roaming_avg"]
+    sum: ["payments_rpu_roaming"]
+    avg: ["payments_arpu_roaming_avg"]
   read_from: "l2"
 
 l4_billing_time_diff_bw_topups:
   partition_by: ["access_method_num","register_date"]
   feature_list:
-    sum: ["time_diff"]
-    avg: ["time_diff_avg"]
+    sum: ["payments_time_diff"]
+    avg: ["payments_time_diff_avg"]
   read_from: "l2"
 
 l4_billing_before_top_up_balance:
   partition_by: ["access_method_num","account_id"]
   feature_list:
-    sum: ["before_top_up_balance"]
-    avg: ["before_top_up_balance"]
+    sum: ["payments_before_top_up_balance"]
+    avg: ["payments_before_top_up_balance"]
   read_from: "l2"
 
 l4_billing_top_up_channels:
   partition_by: ["access_method_num","register_date"]
   feature_list:
-    sum: ["top_ups_by_bank_atm_cdm","top_up_vol_by_bank_atm_cdm","top_ups_by_cash_card","top_up_vol_by_cash_card",
-          "top_ups_by_digital_online_self_service","top_up_vol_by_digital_online_self_service","top_ups_by_epin_slip",
-          "top_up_vol_by_epin_slip","top_ups_by_epos","top_up_vol_by_epos","top_ups_by_rom","top_up_vol_by_rom"]
-    avg: ["top_ups_avg_by_bank_atm_cdm","top_up_vol_avg_by_bank_atm_cdm","top_ups_avg_by_cash_card","top_up_vol_avg_by_cash_card",
-          "top_ups_avg_by_digital_online_self_service","top_up_vol_avg_by_digital_online_self_service","top_ups_avg_by_epin_slip",
-          "top_up_vol_avg_by_epin_slip","top_ups_avg_by_epos","top_up_vol_avg_by_epos","top_ups_avg_by_rom","top_up_vol_avg_by_rom"]
+    sum: ["payments_top_ups_by_bank_atm_cdm","payments_top_up_vol_by_bank_atm_cdm","payments_top_ups_by_cash_card","payments_top_up_vol_by_cash_card",
+          "payments_top_ups_by_digital_online_self_service","payments_top_up_vol_by_digital_online_self_service","payments_top_ups_by_epin_slip",
+          "payments_top_up_vol_by_epin_slip","payments_top_ups_by_epos","payments_top_up_vol_by_epos","payments_top_ups_by_rom","payments_top_up_vol_by_rom"]
+    avg: ["payments_top_ups_avg_by_bank_atm_cdm","payments_top_up_vol_avg_by_bank_atm_cdm","payments_top_ups_avg_by_cash_card","payments_top_up_vol_avg_by_cash_card",
+          "payments_top_ups_avg_by_digital_online_self_service","payments_top_up_vol_avg_by_digital_online_self_service","payments_top_ups_avg_by_epin_slip",
+          "payments_top_up_vol_avg_by_epin_slip","payments_top_ups_avg_by_epos","payments_top_up_vol_avg_by_epos","payments_top_ups_avg_by_rom","payments_top_up_vol_avg_by_rom"]
   read_from: "l2"
 
 l4_payments_bill_volume:
   partition_by: ["account_identifier"]
   feature_list:
-    sum: ["bill_volume"]
-    avg: ["bill_volume"]
+    sum: ["payments_bill_volume"]
+    avg: ["payments_bill_volume"]
   read_from: "l3"
 
 l4_payments_bill_shock:
@@ -70,7 +70,7 @@ l4_last_3_top_up_volume:
         access_method_num: "access_method_num"
         register_date: "date(register_date)"
         recharge_time: "recharge_time"
-        last_3_top_up_volume: "sum(face_value)
+        payments_last_3_top_up_volume: "sum(face_value)
            over(partition by access_method_num,date(register_date) order by recharge_time
            rows between 2 PRECEDING and current row)"
     granularity: ""
@@ -82,17 +82,17 @@ l4_last_top_up_channel:
         start_of_week: "start_of_week"
         access_method_num: "access_method_num"
         register_date: "register_date"
-        last_top_up_channel_last_week: "last_top_up_channel"
-        last_top_up_channel_last_two_week: "first_value(last_top_up_channel)
-           over(partition by start_of_month,start_of_week,access_method_num,register_date
+        payments_last_top_up_channel_last_week: "payments_last_top_up_channel"
+        payments_last_top_up_channel_last_two_week: "first_value(payments_last_top_up_channel)
+           over(partition by access_method_num,register_date
            order by cast(cast(start_of_week as timestamp) as long)
            range between 14*24*60*60 PRECEDING and current row)"
-        last_top_up_channel_last_month: "first_value(last_top_up_channel)
-           over(partition by start_of_month,start_of_week,access_method_num,register_date
-           order by cast(cast(start_of_week as timestamp) as long)
+        payments_last_top_up_channel_last_month: "first_value(payments_last_top_up_channel)
+           over(partition by access_method_num,register_date
+           order by cast(cast(start_of_month as timestamp) as long)
            range between 30*24*60*60 PRECEDING and current row)"
-        last_top_up_channel_last_three_month: "first_value(last_top_up_channel)
-           over(partition by start_of_month,start_of_week,access_method_num,register_date
-           order by cast(cast(start_of_week as timestamp) as long)
+        payments_last_top_up_channel_last_three_month: "first_value(payments_last_top_up_channel)
+           over(partition by access_method_num,register_date
+           order by cast(cast(start_of_month as timestamp) as long)
            range between 90*24*60*60 PRECEDING and current row)"
     granularity: ""
