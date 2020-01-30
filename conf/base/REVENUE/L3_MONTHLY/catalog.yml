@@ -1,7 +1,7 @@
 l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/REVENUE/l3_features/l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly/
+  filepath: /mnt/customer360-blob-data/C360/REVENUE/l3_features/l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly/partition_month=201908/
   save_args:
     mode: "overwrite"
     partitionBy: ["start_of_month"]
