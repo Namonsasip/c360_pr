@@ -17,11 +17,27 @@ l3_device_handset_summary_with_configuration:
                       over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
         device_type: "first_value(device_type)
                       over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        SmartPhone_device: "first_value(SmartPhone_device)
+                            over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        FeaturePhone_device: "first_value(FeaturePhone_device)
+                              over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        Tablet_device: "first_value(Tablet_device)
+                        over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        Modem_device: "first_value(Modem_device)
+                       over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        SmartWatch_device: "first_value(SmartWatch_device)
+                            over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        Unknown_device: "first_value(Unknown_device)
+                         over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        device_launch_price: "first_value(device_launch_price)
+                      over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        device_sale_price: "first_value(device_sale_price)
+                      over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
         device_supports_umts: "first_value(device_supports_umts)
                                over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
         device_supports_wds: "first_value(device_supports_wds)
                               over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
-        device_channel: "first_value(device_channel)
+        is_ais_customer: "first_value(is_ais_customer)
                          over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
         device_supports_dual_sim: "first_value(device_supports_dual_sim)
                                    over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"

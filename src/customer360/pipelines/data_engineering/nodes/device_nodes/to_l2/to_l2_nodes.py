@@ -15,7 +15,7 @@ def device_features_with_config(hs_summary,hs_configs):
                                   (hs_summary.handset_model_code == hs_configs.hs_model_code) &
                                   (hs_summary.start_of_month == hs_configs.start_of_month), "left")\
         .drop(hs_configs.start_of_month)\
-        .drop(hs_configs.handset_type)\
+        .drop(hs_summary.handset_type)\
         .drop(hs_configs.dual_sim)\
         .drop(hs_configs.hs_support_lte_1800)
 
@@ -33,9 +33,27 @@ def device_features_with_config(hs_summary,hs_configs):
     handset_model_name as device_model_name,
     handset_imei as device_imei,
     handset_type as device_type,
+    case when handset_type in ('SmartPhone','smartphone','Smart Phone','Smart phone','Smartphone','Phablet') 
+    then 'Y' else 'N' end as SmartPhone_device,
+    case when handset_type in ('StandardPhone','standardphone','Standard Phone','Standard phone','Standardphone',
+    'LegacyPhone','legacyphone','Legacy Phone','Legacy phone','Legacyphone') 
+    then 'Y' else 'N' end as FeaturePhone_device,
+    case when handset_type in ('Tablet','tablet') 
+    then 'Y' else 'N' end as Tablet_device,
+    case when handset_type in ('Modem','modem','WirelessRouter','wirelessrouter','Wireless Router','Wireless router',
+    'Wirelessrouter','AirCard/Dongle') 
+    then 'Y' else 'N' end as Modem_device,
+    case when handset_type in ('WatchPhone','watchphone','Watch Phone','Watch phone','Watchphone','SmartWatch',
+    'smartwatch','Smart Watch','Smart watch','Smartwatch') 
+    then 'Y' else 'N' end as SmartWatch_device,
+    case when handset_type is null 
+    then 'Y' else 'N' end as Unknown_device,
+    launchprice as device_launch_price,
+    saleprice as device_sale_price,
     handset_support_3g_2100_yn as device_supports_umts,
     handset_wds_flag as device_supports_wds,
-    handset_channel as device_channel,
+    case when handset_channel='AIS' then 'Y' 
+    else 'N' end as is_ais_customer,
     dual_sim as device_supports_dual_sim,
     hs_support_lte_1800 as device_supports_lte,
     dual_user_yn as devices_uses_both_sim_slot,

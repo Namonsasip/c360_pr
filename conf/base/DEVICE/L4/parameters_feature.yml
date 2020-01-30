@@ -22,13 +22,37 @@ l4_device_handset_summary_with_configuration:
         device_type: "first_value(device_type)
                       over(partition by mobile_no,register_date order by cast(cast(start_of_month as timestamp) as long)
                       range between 90*24*60*60 preceding and current row)"
+        SmartPhone_device: "first_value(SmartPhone_device)
+                            over(partition by mobile_no,register_date order by cast(cast(start_of_month as timestamp) as long)
+                            range between 90*24*60*60 preceding and current row)"
+        FeaturePhone_device: "first_value(FeaturePhone_device)
+                              over(partition by mobile_no,register_date order by cast(cast(start_of_month as timestamp) as long)
+                              range between 90*24*60*60 preceding and current row)"
+        Tablet_device: "first_value(Tablet_device)
+                        over(partition by mobile_no,register_date order by cast(cast(start_of_month as timestamp) as long)
+                        range between 90*24*60*60 preceding and current row)"
+        Modem_device: "first_value(Modem_device)
+                       over(partition by mobile_no,register_date order by cast(cast(start_of_month as timestamp) as long)
+                       range between 90*24*60*60 preceding and current row)"
+        SmartWatch_device: "first_value(SmartWatch_device)
+                            over(partition by mobile_no,register_date order by cast(cast(start_of_month as timestamp) as long)
+                            range between 90*24*60*60 preceding and current row)"
+        Unknown_device: "first_value(Unknown_device)
+                         over(partition by mobile_no,register_date order by cast(cast(start_of_month as timestamp) as long)
+                         range between 90*24*60*60 preceding and current row)"
+        device_launch_price: "first_value(device_launch_price)
+                              over(partition by mobile_no,register_date order by cast(cast(start_of_month as timestamp) as long)
+                              range between 90*24*60*60 preceding and current row)"
+        device_sale_price: "first_value(device_sale_price)
+                            over(partition by mobile_no,register_date order by cast(cast(start_of_month as timestamp) as long)
+                            range between 90*24*60*60 preceding and current row)"
         device_supports_umts: "first_value(device_supports_umts)
                                over(partition by mobile_no,register_date order by cast(cast(start_of_month as timestamp) as long)
                                range between 90*24*60*60 preceding and current row)"
         device_supports_wds: "first_value(device_supports_wds)
                               over(partition by mobile_no,register_date order by cast(cast(start_of_month as timestamp) as long)
                               range between 90*24*60*60 preceding and current row)"
-        device_channel: "first_value(device_channel)
+        is_ais_customer: "first_value(is_ais_customer)
                          over(partition by mobile_no,register_date order by cast(cast(start_of_month as timestamp) as long)
                          range between 90*24*60*60 preceding and current row)"
         device_supports_dual_sim: "first_value(device_supports_dual_sim)

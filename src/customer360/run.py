@@ -101,7 +101,7 @@ def run_package():
     # entry point for running pip-install projects
     # using `<project_package>` command
     project_context = load_context(Path.cwd())
-    project_context.run()
+    project_context.run(pipeline_name='device_to_l4_pipeline')
 
 
     # Replace line above with below to run on databricks cluster
