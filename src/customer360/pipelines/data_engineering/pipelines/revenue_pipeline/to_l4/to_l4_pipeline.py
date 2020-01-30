@@ -36,6 +36,10 @@ from kedro.pipeline import Pipeline, node
 from src.customer360.utilities.config_parser import l4_rolling_window
 
 
+def print_df(df):
+    df.show()
+
+
 def revenue_to_l4_pipeline(**kwargs):
     return Pipeline(
         [
@@ -43,8 +47,9 @@ def revenue_to_l4_pipeline(**kwargs):
                 l4_rolling_window,
                 ["l3_revenue_ru_f_sum_revenue_by_service_monthly",
                  "params:l4_revenue_ru_f_sum_revenue_by_service_monthly"],
-                "l4_revenue_ru_f_sum_revenue_by_service_monthly"
+                "l4_revenue_ru_f_sum_revenue_by_service_monthly_stg"
             ),
+            node(print_df, 'l4_revenue_ru_f_sum_revenue_by_service_monthly_stg', None)
 
         ], name="revenue_to_l4_pipeline"
     )
