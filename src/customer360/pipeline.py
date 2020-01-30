@@ -63,6 +63,7 @@ from .pipelines.data_engineering.pipelines.usage_pipeline.to_l2 import usage_to_
 from .pipelines.data_engineering.pipelines.usage_pipeline.to_l4.to_l4_pipeline import usage_to_l4_pipeline
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l1.to_l1_pipeline import streaming_to_l1_pipeline
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l2.to_l2_pipeline import streaming_to_l2_pipeline
+from .pipelines.data_engineering.pipelines.stream_pipeline.to_l3.to_l3_pipeline import streaming_to_l3_pipeline
 
 
 def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
@@ -106,5 +107,6 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         'billing_to_l4_pipeline': billing_to_l4_pipeline(),
         "streaming_to_l1_pipeline": streaming_to_l1_pipeline(),
         "streaming_to_l2_pipeline": streaming_to_l2_pipeline(),
+        "streaming_to_l3_pipeline": streaming_to_l3_pipeline(),
         # "de": data_engineering_pipeline,
     }
