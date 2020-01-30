@@ -1,7 +1,7 @@
-l4_revenue_ru_f_sum_revenue_by_service_monthly:
+l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_features:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/REVENUE/l4_features/revenue_ru_f_sum_revenue_by_service_monthly/
+  filepath: data/REVENUE/l4_features/revenue_postpaid_ru_f_sum_revenue_by_service_monthly_features/
   save_args:
     mode: "overwrite"
     partitionBy: ["start_of_month"]

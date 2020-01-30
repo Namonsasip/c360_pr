@@ -1,5 +1,5 @@
 # Config file for query generator
-l3_revenue_ru_f_sum_revenue_by_service_monthly:
+l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly:
     where_clause: ""
     feature_list:
         rev_arpu_total_revenue: "sum(total_net_revenue)"
