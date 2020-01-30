@@ -5,3 +5,11 @@ l3_device_handset_summary_with_configuration_monthly:
   save_args:
     partitionBy: ["start_of_month"]
     mode: "overwrite"
+
+l3_previous_device_handset_summary_with_configuration_monthly:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L3_MONTHLY/DEVICE/l3_features/previous_device_handset_summary_with_configuration/
+  save_args:
+    partitionBy: ["start_of_month"]
+    mode: "overwrite"
