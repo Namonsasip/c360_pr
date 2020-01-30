@@ -5,7 +5,7 @@ int_l1_streaming_content_type_features:
   file_format: parquet
   save_args:
     mode: "overwrite"
-    partitionBy: ["day_id"]
+    partitionBy: ["event_partition_date"]
 
 l1_streaming_fav_content_group_by_volume:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -23,7 +23,7 @@ int_l1_streaming_tv_channel_features:
   file_format: parquet
   save_args:
     mode: "overwrite"
-    partitionBy: ["day_id"]
+    partitionBy: ["event_partition_date"]
 
 l1_streaming_fav_tv_channel_by_volume:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -35,9 +35,10 @@ l1_streaming_fav_tv_channel_by_volume:
 
 
 
-int_l1_streaming_tv_show_features:
+
+int_l0_streaming_vimmi_table:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: data/L1_DAILY/STREAM/int_l1_streaming_tv_show_features/
+  filepath: data/L1_DAILY/STREAM/int_l0_streaming_vimmi_table/
   file_format: parquet
   save_args:
     mode: "overwrite"

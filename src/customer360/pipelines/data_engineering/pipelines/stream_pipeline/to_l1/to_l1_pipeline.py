@@ -34,6 +34,7 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 from kedro.pipeline import Pipeline, node
 
 from customer360.utilities.config_parser import node_from_config
+from customer360.utilities.re_usable_functions import add_start_of_week_and_month
 
 
 def streaming_to_l1_pipeline(**kwargs):
@@ -67,7 +68,12 @@ def streaming_to_l1_pipeline(**kwargs):
                 "l1_streaming_fav_tv_channel_by_volume"
             ),
 
-            # TV S
+            # TV Show features
+            node(
+                add_start_of_week_and_month,
+                ["l0_streaming_ru_a_onair_vimmi_usage_daily"],
+                "int_l0_streaming_vimmi_table"
+            ),
             node(
                 node_from_config,
                 ["l0_streaming_ru_a_onair_vimmi_usage_daily",

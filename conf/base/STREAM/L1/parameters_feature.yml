@@ -9,6 +9,7 @@ int_l1_streaming_content_type_features:
 #                                    order by sum(duration) desc)" # duration column is not ingested currently
         traffic_volume_sum: "sum(volume_mb)"
     granularity: "access_method_num, date(register_date), day_id, content_group"
+    event_date_column: "day_id"
 
 l1_streaming_fav_content_group_by_volume:
     where_clause: "where traffic_rank = 1"
@@ -29,6 +30,7 @@ int_l1_streaming_tv_channel_features:
                                                     order by sum(volume_mb) desc)"
         traffic_volume_sum: "sum(volume_mb)"
     granularity: "access_method_num, date(register_date), day_id, title"
+    event_date_column: "day_id"
 
 l1_streaming_fav_tv_channel_by_volume:
     where_clause: "where tv_channel_rank = 1"
@@ -47,8 +49,9 @@ int_l1_streaming_tv_show_features:
     feature_list:
         num_of_episode_watched_rank: "row_number() over (partition by access_method_num, date(register_date), day_id
                                                     order by count(distinct title) desc)"
-        distinct_title_watched_count: "count(distinct title)"
+
     granularity: "access_method_num, date(register_date), day_id, series_title"
+    event_date_column: "day_id"
 
 l1_streaming_fav_tv_show_by_episode_watched:
     where_clause: "where num_of_episode_watched_rank = 1"
