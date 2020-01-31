@@ -1,21 +1,12 @@
 import pyspark.sql.functions as f
 from pyspark.sql import SparkSession, Window
 
-def previous_device_features_with_config(hs_summary):
+def derive_month(input_df):
 
-    spark = SparkSession.builder.getOrCreate()
+    output_df = input_df.withColumn("start_of_month", f.to_date(f.date_trunc('month', "date_id")))
+    return  output_df
 
-    hs_summary = hs_summary.withColumn("start_of_month",f.date_trunc('month',"date_id"))
+def previous_device_features_with_config_sort(input_df):
 
-    output_df = hs_summary.groupBy("start_of_month",
-                            "mobile_no",
-                            f.to_date("register_date").alias("register_date"),
-                            "handset_imei",
-                            "handset_brand_code",
-                            "handset_model_code",
-                            "handset_brand_name",
-                            "handset_model_name")\
-        .agg(f.max("handset_last_use_time").alias("device_last_use_time"))\
-        .orderBy(f.col("device_last_use_time").desc())
-
-    return output_df
+    output_df = input_df.orderBy(f.col("device_last_use_time").desc())
+    return  output_df

@@ -13,3 +13,19 @@ l3_previous_device_handset_summary_with_configuration_monthly:
   save_args:
     partitionBy: ["start_of_month"]
     mode: "overwrite"
+
+l3_device_most_used_intermediate_monthly:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DEVICE/l3_features/device_most_used_intermediate/
+  save_args:
+    partitionBy: ["start_of_month"]
+    mode: "overwrite"
+
+l3_device_most_used_monthly:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DEVICE/l3_features/device_most_used/
+  save_args:
+    partitionBy: ["start_of_month"]
+    mode: "overwrite"

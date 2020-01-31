@@ -10,6 +10,16 @@ def device_to_l2_pipeline(**kwargs):
             node(
                 device_features_with_config,
                 ["l0_devices_summary_customer_handset", "l0_devices_handset_configurations"],
+                "l2_device_handset_summary_with_configuration_weekly_1"
+            ),
+            node(
+                node_from_config,
+                ["l2_device_handset_summary_with_configuration_weekly_1", "params:l2_device_handset_summary_with_configuration"],
+                "l2_device_handset_summary_with_configuration_weekly_2"
+            ),
+            node(
+                filter,
+                ["l2_device_handset_summary_with_configuration_weekly_2"],
                 "l2_device_handset_summary_with_configuration_weekly"
             ),
         ]
