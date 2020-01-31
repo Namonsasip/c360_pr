@@ -1,0 +1,4 @@
+l0_revenue_ru_f_sum_revenue_by_service_monthly:
+  filepath: /mnt/customer360-blob-data/C360/REVENUE/revenue_ru_f_sum_revenue_by_service_monthly/partition_month=201908/
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
