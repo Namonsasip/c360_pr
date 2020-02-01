@@ -40,22 +40,17 @@ from customer360.utilities.re_usable_functions import union_dataframes_with_miss
 def revenue_to_l3_pipeline(**kwargs):
     return Pipeline(
         [
+            # node(
+            #     node_from_config,
+            #     ["l0_revenue_postpaid_ru_f_sum_revenue_by_service_monthly",
+            #      "params:l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly"],
+            #     "l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly"
+            # ),
             node(
                 node_from_config,
-                ["l0_revenue_postpaid_ru_f_sum_revenue_by_service_monthly",
-                 "params:l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly"],
-                "l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly"
+                ["l0_revenue_prepos_ru_f_sum_revenue_by_service_monthly",
+                 "params:l3_revenue_prepos_ru_f_sum_revenue_by_service_monthly"],
+                "l3_revenue_prepos_ru_f_sum_revenue_by_service_monthly"
             ),
-            node(
-                node_from_config,
-                ["l0_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
-                 "params:l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"],
-                "l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"
-            ),
-            node
-            (union_dataframes_with_missing_cols, ['l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly',
-                                                  'l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly'],
-             'l3_revenue_prepos_ru_f_sum_revenue_by_service_monthly'
-             ),
         ], name="revenue_to_l3_pipeline"
     )
