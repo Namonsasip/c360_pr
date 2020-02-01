@@ -38,7 +38,41 @@ To run the tests, run ``kedro test``.
 
 
 class TestUsage:
-    def test_l1_granularity(self, project_context):
-        granular_cols = ['msisdn', 'event_partition_date']
+    granular_daily_cols = ['msisdn', 'event_partition_date']
+    granular_weekly_cols = ['msisdn', 'start_of_week']
+
+    def test_l1_call_local(self, project_context):
         df = project_context.catalog.load("l1_usage_call_relation_sum_daily")
-        assert df.count() == df.select(granular_cols).distinct().count()
+        assert df.count() == df.select(self.granular_daily_cols).distinct().count()
+        assert df.where("msisdn is null").count() == 0
+        assert df.where("event_partition_date is null").count() == 0
+
+    def test_l1_call_ir(self, project_context):
+        df = project_context.catalog.load("l1_usage_call_relation_sum_ir_daily")
+        assert df.count() == df.select(self.granular_daily_cols).distinct().count()
+        assert df.where("msisdn is null").count() == 0
+        assert df.where("event_partition_date is null").count() == 0
+
+    def test_l1_data_prepaid_prepaid(self, project_context):
+        df = project_context.catalog.load("l1_usage_data_prepaid_postpaid_daily")
+        assert df.count() == df.select(self.granular_daily_cols).distinct().count()
+        assert df.where("msisdn is null").count() == 0
+        assert df.where("event_partition_date is null").count() == 0
+
+    def test_l2_call_local(self, project_context):
+        df = project_context.catalog.load("l2_usage_call_relation_sum_weekly")
+        assert df.count() == df.select(self.granular_weekly_cols).distinct().count()
+        assert df.where("msisdn is null").count() == 0
+        assert df.where("start_of_week is null").count() == 0
+
+    def test_l2_call_ir(self, project_context):
+        df = project_context.catalog.load("l2_usage_call_relation_sum_ir_weekly")
+        assert df.count() == df.select(self.granular_weekly_cols).distinct().count()
+        assert df.where("msisdn is null").count() == 0
+        assert df.where("start_of_week is null").count() == 0
+
+    def test_l2_data(self, project_context):
+        df = project_context.catalog.load("l2_usage_call_relation_sum_ir_weekly")
+        assert df.count() == df.select(self.granular_weekly_cols).distinct().count()
+        assert df.where("msisdn is null").count() == 0
+        assert df.where("start_of_week is null").count() == 0
