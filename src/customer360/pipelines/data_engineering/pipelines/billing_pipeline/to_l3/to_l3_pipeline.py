@@ -32,8 +32,13 @@ def billing_to_l3_pipeline(**kwargs):
                 "l3_billing_monthly_rpu_roaming"
             ),
             node(
-                automated_payment_monthly,
+                derive_month_automated_payment,
                 ["l0_billing_pc_t_payment_daily"],
+                "l3_billing_monthly_automated_payments_1"
+            ),
+            node(
+                node_from_config,
+                ["l3_billing_monthly_automated_payments_1","params:l3_automated_flag"],
                 "l3_billing_monthly_automated_payments"
             ),
             node(
@@ -49,23 +54,38 @@ def billing_to_l3_pipeline(**kwargs):
                 "l3_billing_and_payments_monthly_top_up_channels"
             ),
              node(
-                 popular_top_up_channel_with_rank,
-                 ["l2_billing_and_payments_weekly_most_popular_top_up_channel"],
-                 "l3_billing_and_payments_monthly_most_popular_top_up_channel_intermediate"
+                 node_from_config,
+                 ["l2_billing_and_payments_weekly_most_popular_top_up_channel","params:l3_popular_topup_channel_1"],
+                 "l3_billing_and_payments_monthly_most_popular_top_up_channel_intermediate_1"
              ),
+            node(
+                node_from_config,
+                ["l3_billing_and_payments_monthly_most_popular_top_up_channel_intermediate_1", "params:l3_popular_topup_channel_2"],
+                "l3_billing_and_payments_monthly_most_popular_top_up_channel_intermediate"
+            ),
              node(
                  node_from_config,
                  ["l3_billing_and_payments_monthly_most_popular_top_up_channel_intermediate","params:l3_most_popular_topup_channel"],
                  "l3_billing_and_payments_monthly_most_popular_top_up_channel"
              ),
              node(
-                 bill_volume,
+                 derive_month_bill_volume,
                  ["l0_billing_statement_history_monthly"],
-                 "l3_billing_and_payments_monthly_bill_volume"
+                 "l3_billing_and_payments_monthly_bill_volume_1"
              ),
             node(
-                last_top_up_channel,
-                ["l2_billing_and_payments_weekly_last_top_up_channel"],
+                node_from_config,
+                ["l3_billing_and_payments_monthly_bill_volume_1","params:l3_bill_volume"],
+                "l3_billing_and_payments_monthly_bill_volume"
+            ),
+            node(
+                node_from_config,
+                ["l2_billing_and_payments_weekly_last_top_up_channel","params:l3_last_topup_channel_1"],
+                "l3_billing_and_payments_monthly_last_top_up_channel_1"
+            ),
+            node(
+                node_from_config,
+                ["l3_billing_and_payments_monthly_last_top_up_channel_1", "params:l3_last_topup_channel_2"],
                 "l3_billing_and_payments_monthly_last_top_up_channel"
             ),
         ]

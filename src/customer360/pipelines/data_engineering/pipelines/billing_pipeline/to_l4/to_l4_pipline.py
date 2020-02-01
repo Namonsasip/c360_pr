@@ -19,8 +19,8 @@ def billing_to_l4_pipeline(**kwargs):
                 "l4_billing_rolling_window_topup_and_volume_intermediate"
             ),
             node(
-                dynamics_topups_and_volume,
-                ["l4_billing_rolling_window_topup_and_volume_intermediate"],
+                node_from_config,
+                ["l4_billing_rolling_window_topup_and_volume_intermediate","params:l4_dynamics_topups_and_volume"],
                 "l4_billing_rolling_window_topup_and_volume"
             ),
             node(
@@ -30,8 +30,8 @@ def billing_to_l4_pipeline(**kwargs):
                 "l4_billing_rolling_window_rpu_intermediate"
             ),
             node(
-                dynamics_rpu,
-                ["l4_billing_rolling_window_rpu_intermediate"],
+                node_from_config,
+                ["l4_billing_rolling_window_rpu_intermediate","params:l4_dynamics_arpu"],
                 "l4_billing_rolling_window_rpu"
             ),
             node(
@@ -70,13 +70,25 @@ def billing_to_l4_pipeline(**kwargs):
                 "l4_billing_rolling_window_bill_volume_intermediate"
             ),
             node(
-                dynamics_bill_volume,
-                ["l4_billing_rolling_window_bill_volume_intermediate"],
+                node_from_config,
+                ["l4_billing_rolling_window_bill_volume_intermediate","params:l4_dynamics_bill_volume"],
                 "l4_billing_rolling_window_bill_volume"
             ),
             node(
-                most_popular_topup_channel,
-                ["l3_billing_and_payments_monthly_most_popular_top_up_channel_intermediate"],
+                node_from_config,
+                ["l3_billing_and_payments_monthly_most_popular_top_up_channel_intermediate","params:l4_most_popular_topup_channel_1"],
+                "l4_billing_rolling_window_most_popular_topup_channel_1"
+            ),
+            node(
+                node_from_config,
+                ["l4_billing_rolling_window_most_popular_topup_channel_1",
+                 "params:l4_most_popular_topup_channel_2"],
+                "l4_billing_rolling_window_most_popular_topup_channel_2"
+            ),
+            node(
+                node_from_config,
+                ["l4_billing_rolling_window_most_popular_topup_channel_2",
+                 "params:l4_most_popular_topup_channel_3"],
                 "l4_billing_rolling_window_most_popular_topup_channel"
             ),
             node(

@@ -40,8 +40,19 @@ def billing_to_l2_pipeline(**kwargs):
                 "l2_billing_and_payments_weekly_top_up_channels"
             ),
             node(
-                popular_top_up_channel_with_rank,
+                top_up_channel_joined_data,
                 ["l1_billing_and_payments_daily_most_popular_top_up_channel","l0_billing_topup_type"],
+                "l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate_1"
+            ),
+            node(
+                node_from_config,
+                ["l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate_1", "params:l2_popular_top_up_channel_1"],
+                "l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate_2"
+            ),
+            node(
+                node_from_config,
+                ["l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate_2",
+                 "params:l2_popular_top_up_channel_2"],
                 "l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate"
             ),
             node(
@@ -50,8 +61,18 @@ def billing_to_l2_pipeline(**kwargs):
                 "l2_billing_and_payments_weekly_most_popular_top_up_channel"
             ),
             node(
-                last_top_up_channel,
+                top_up_channel_joined_data,
                 ["l0_billing_and_payments_rt_t_recharge_daily","l0_billing_topup_type"],
+                "l2_billing_and_payments_weekly_last_top_up_channel_1"
+            ),
+            node(
+                node_from_config,
+                ["l2_billing_and_payments_weekly_last_top_up_channel_1", "params:l2_last_topup_channel_1"],
+                "l2_billing_and_payments_weekly_last_top_up_channel_2"
+            ),
+            node(
+                node_from_config,
+                ["l2_billing_and_payments_weekly_last_top_up_channel_2", "params:l2_last_topup_channel_2"],
                 "l2_billing_and_payments_weekly_last_top_up_channel"
             ),
         ]
