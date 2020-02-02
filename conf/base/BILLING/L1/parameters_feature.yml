@@ -9,7 +9,7 @@ l1_billing_and_payment_feature_top_up_and_count:
 l1_billing_and_payment_rpu_roaming:
     where_clause: ""
     feature_list:
-        payments_rpu_roaming: "sum(ir_call_charge_amount)"
+        payments_arpu_roaming: "sum(ir_call_charge_amount)"
     granularity: "date(date_id),access_method_number,date(mobile_register_date),crm_sub_id"
     event_date_column: "date(date_id)"
 

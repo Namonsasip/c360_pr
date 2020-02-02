@@ -37,8 +37,8 @@ l4_dynamics_topups_and_volume:
 l4_billing_rpu:
   partition_by: ["access_method_num","register_date","crm_sub_id"]
   feature_list:
-    sum: ["payments_rpu","payments_rpu_gprs","payments_rpu_vas","payments_rpu_voice"]
-    avg: ["payments_rpu","payments_rpu_gprs","payments_rpu_vas","payments_rpu_voice"]
+    sum: ["payments_arpu","payments_arpu_gprs","payments_arpu_vas","payments_arpu_voice"]
+    avg: ["payments_arpu","payments_arpu_gprs","payments_arpu_vas","payments_arpu_voice"]
   read_from: "l3"
 
 l4_dynamics_arpu:
@@ -48,29 +48,29 @@ l4_dynamics_arpu:
         access_method_num: "access_method_num"
         register_date: "register_date"
         crm_sub_id: "crm_sub_id"
-        sum_payments_rpu_last_month: "sum_payments_rpu_last_month"
-        sum_payments_rpu_last_three_month: "sum_payments_rpu_last_three_month"
-        sum_payments_rpu_gprs_last_month: "sum_payments_rpu_gprs_last_month"
-        sum_payments_rpu_gprs_last_three_month: "sum_payments_rpu_gprs_last_three_month"
-        sum_payments_rpu_vas_last_month: "sum_payments_rpu_vas_last_month"
-        sum_payments_rpu_vas_last_three_month: "sum_payments_rpu_vas_last_three_month"
-        sum_payments_rpu_voice_last_month: "sum_payments_rpu_voice_last_month"
-        sum_payments_rpu_voice_last_three_month: "sum_payments_rpu_voice_last_three_month"
-        avg_payments_rpu_last_month: "avg_payments_rpu_last_month"
-        avg_payments_rpu_last_three_month: "avg_payments_rpu_last_three_month"
-        avg_payments_rpu_gprs_last_month: "avg_payments_rpu_gprs_last_month"
-        avg_payments_rpu_gprs_last_three_month: "avg_payments_rpu_gprs_last_three_month"
-        avg_payments_rpu_vas_last_month: "avg_payments_rpu_vas_last_month"
-        avg_payments_rpu_vas_last_three_month: "avg_payments_rpu_vas_last_three_month"
-        avg_payments_rpu_voice_last_month: "avg_payments_rpu_voice_last_month"
-        avg_payments_rpu_voice_last_three_month: "avg_payments_rpu_voice_last_three_month"
-        month_dynamics_arpu: "avg_payments_rpu_last_month/avg_payments_rpu_last_three_month"
+        sum_payments_arpu_last_month: "sum_payments_arpu_last_month"
+        sum_payments_arpu_last_three_month: "sum_payments_arpu_last_three_month"
+        sum_payments_arpu_gprs_last_month: "sum_payments_arpu_gprs_last_month"
+        sum_payments_arpu_gprs_last_three_month: "sum_payments_arpu_gprs_last_three_month"
+        sum_payments_arpu_vas_last_month: "sum_payments_arpu_vas_last_month"
+        sum_payments_arpu_vas_last_three_month: "sum_payments_arpu_vas_last_three_month"
+        sum_payments_arpu_voice_last_month: "sum_payments_arpu_voice_last_month"
+        sum_payments_arpu_voice_last_three_month: "sum_payments_arpu_voice_last_three_month"
+        avg_payments_arpu_last_month: "avg_payments_arpu_last_month"
+        avg_payments_arpu_last_three_month: "avg_payments_arpu_last_three_month"
+        avg_payments_arpu_gprs_last_month: "avg_payments_arpu_gprs_last_month"
+        avg_payments_arpu_gprs_last_three_month: "avg_payments_arpu_gprs_last_three_month"
+        avg_payments_arpu_vas_last_month: "avg_payments_arpu_vas_last_month"
+        avg_payments_arpu_vas_last_three_month: "avg_payments_arpu_vas_last_three_month"
+        avg_payments_arpu_voice_last_month: "avg_payments_arpu_voice_last_month"
+        avg_payments_arpu_voice_last_three_month: "avg_payments_arpu_voice_last_three_month"
+        month_dynamics_arpu: "avg_payments_arpu_last_month/avg_payments_arpu_last_three_month"
     granularity: ""
 
 l4_billing_rpu_roaming:
   partition_by: ["access_method_number","mobile_register_date","crm_sub_id"]
   feature_list:
-    sum: ["payments_rpu_roaming"]
+    sum: ["payments_arpu_roaming"]
     avg: ["payments_arpu_roaming_avg"]
   read_from: "l2"
 
@@ -110,7 +110,7 @@ l4_dynamics_bill_volume:
     where_clause: ""
     feature_list:
         start_of_month: "start_of_month"
-        start_of_week: "account_identifier"
+        account_identifier: "account_identifier"
         sum_payments_bill_volume_last_month: "sum_payments_bill_volume_last_month"
         sum_payments_bill_volume_last_three_month: "sum_payments_bill_volume_last_three_month"
         avg_payments_bill_volume_last_month: "avg_payments_bill_volume_last_month"
@@ -132,8 +132,6 @@ l4_payments_bill_shock:
 l4_last_3_top_up_volume:
     where_clause: ""
     feature_list:
-        start_of_month: "date(date_trunc('month', recharge_date))"
-        start_of_week: "date(date_trunc('week', recharge_date))"
         access_method_num: "access_method_num"
         register_date: "date(register_date)"
         recharge_time: "recharge_time"
@@ -141,6 +139,7 @@ l4_last_3_top_up_volume:
            over(partition by access_method_num,date(register_date) order by recharge_time
            rows between 2 PRECEDING and current row)"
     granularity: ""
+    event_date_column: "recharge_date"
 
 l4_last_top_up_channel:
     where_clause: ""

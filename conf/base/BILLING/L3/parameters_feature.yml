@@ -11,12 +11,12 @@ l3_billing_and_payment_feature_top_up_and_count_monthly:
 l3_billing_and_payment_revenue_per_user_monthly:
     where_clause: ""
     feature_list:
-      start_of_month: "date(date_trunc('month', month_id))"
-      payments_rpu: "sum(norms_net_revenue)"
-      payments_rpu_gprs: "sum(norms_net_revenue_gprs)"
-      payments_rpu_vas: "sum(norms_net_revenue_vas)"
-      payments_rpu_voice: "sum(norms_net_revenue_voice)"
+      payments_arpu: "sum(norms_net_revenue)"
+      payments_arpu_gprs: "sum(norms_net_revenue_gprs)"
+      payments_arpu_vas: "sum(norms_net_revenue_vas)"
+      payments_arpu_voice: "sum(norms_net_revenue_voice)"
     granularity: "month_id,access_method_num,date(register_date),crm_sub_id"
+    event_date_column: "date(month_id)"
 
 
 l3_billing_and_payment_time_diff_bw_topups_monthly:
@@ -32,7 +32,7 @@ l3_billing_and_payment_time_diff_bw_topups_monthly:
 l3_billing_and_payment_feature_rpu_roaming_monthly:
     where_clause: ""
     feature_list:
-      payments_rpu_roaming: "sum(payments_rpu_roaming)"
+      payments_arpu_roaming: "sum(payments_arpu_roaming)"
       payments_arpu_roaming_avg: "avg(payments_arpu_roaming_avg)"
     granularity: "start_of_month,access_method_number,mobile_register_date,crm_sub_id"
 
