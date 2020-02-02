@@ -121,13 +121,13 @@ l4_dynamics_bill_volume:
 l4_payments_bill_shock:
     where_clause: ""
     feature_list:
-        start_of_month: "to_date(cast(partition_month as STRING), 'yyyyMM')"
         account_identifier: "account_identifier"
         bill_stmt_tot_balance_due_amt: "bill_stmt_tot_balance_due_amt"
         bill_shock_flag: "case when bill_stmt_tot_balance_due_amt > (2 * avg(bill_stmt_tot_balance_due_amt)
-        over(partition by account_identifier order by cast(cast(to_date(cast(partition_month as STRING), 'yyyyMM') as timestamp) as long) asc
+        over(partition by account_identifier order by cast(cast(date(billing_stmt_period_eff_date) as timestamp) as long) asc
         RANGE BETWEEN 6*30*24*60*60 PRECEDING AND 1 PRECEDING)) then 'Y' else 'N' end"
     granularity: ""
+    event_date_column: "date(billing_stmt_period_eff_date)"
 
 l4_last_3_top_up_volume:
     where_clause: ""
