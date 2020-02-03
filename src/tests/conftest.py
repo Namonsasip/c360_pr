@@ -35,11 +35,13 @@ named ``test_*`` which test a unit of logic.
 
 To run the tests, run ``kedro test``.
 """
+from pathlib import Path
+
+import pytest
+
+from customer360.run import ProjectContext
 
 
-class TestProjectContext:
-    def test_project_name(self, project_context):
-        assert project_context.project_name == "project-samudra"
-
-    def test_project_version(self, project_context):
-        assert project_context.project_version == "0.15.5"
+@pytest.fixture(scope="module")
+def project_context():
+    return ProjectContext(str(Path.cwd()))
