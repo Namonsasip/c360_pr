@@ -86,5 +86,47 @@ def streaming_to_l1_pipeline(**kwargs):
                  "params:l1_streaming_fav_tv_show_by_episode_watched"],
                 "l1_streaming_fav_tv_show_by_episode_watched"
             ),
+
+            # fav video service by download traffic
+            node(
+                node_from_config,
+                ["l0_streaming_soc_mobile_app_daily",
+                 "params:int_l1_streaming_video_service_feature"],
+                "int_l1_streaming_video_service_feature"
+            ),
+            node(
+                node_from_config,
+                ["int_l1_streaming_video_service_feature",
+                 "params:l1_streaming_fav_video_service_by_download_feature"],
+                "l1_streaming_fav_video_service_by_download_feature"
+            ),
+
+            # fav music service by download traffic
+            node(
+                node_from_config,
+                ["l0_streaming_soc_mobile_app_daily",
+                 "params:int_l1_streaming_music_service_feature"],
+                "int_l1_streaming_music_service_feature"
+            ),
+            node(
+                node_from_config,
+                ["int_l1_streaming_music_service_feature",
+                 "params:l1_streaming_fav_music_service_by_download_feature"],
+                "l1_streaming_fav_music_service_by_download_feature"
+            ),
+
+            # fav esport service by download traffic
+            node(
+                node_from_config,
+                ["l0_streaming_soc_mobile_app_daily",
+                 "params:int_l1_streaming_esport_service_feature"],
+                "int_l1_streaming_esport_service_feature"
+            ),
+            node(
+                node_from_config,
+                ["int_l1_streaming_esport_service_feature",
+                 "params:l1_streaming_fav_esport_service_by_download_feature"],
+                "l1_streaming_fav_esport_service_by_download_feature"
+            ),
         ], name="streaming_to_l1_pipeline"
     )
