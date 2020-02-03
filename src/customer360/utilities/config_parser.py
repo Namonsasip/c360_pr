@@ -104,28 +104,32 @@ def l4_rolling_window(input_df, config):
                     function=agg_function,
                     feature_column=each_feature_column,
                     window=create_weekly_lookback_window(1, config["partition_by"]),
-                    column_name="{}_{}_last_week".format(agg_function, each_feature_column)
+                    column_name="{}_{}_weekly_last_week".format(agg_function, each_feature_column)
                 ))
 
                 features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
                     function=agg_function,
                     feature_column=each_feature_column,
                     window=create_weekly_lookback_window(2, config["partition_by"]),
-                    column_name="{}_{}_last_two_week".format(agg_function, each_feature_column)
+                    column_name="{}_{}_weekly_last_two_week".format(agg_function, each_feature_column)
                 ))
 
             features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
                 function=agg_function,
                 feature_column=each_feature_column,
                 window=create_monthly_lookback_window(1, config["partition_by"]),
-                column_name="{}_{}_last_month".format(agg_function, each_feature_column)
+                column_name="{}_{}_{}_last_month".format(agg_function,
+                                                         each_feature_column,
+                                                         "weekly" if read_from == "l2" else "monthly")
             ))
 
             features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
                 function=agg_function,
                 feature_column=each_feature_column,
                 window=create_monthly_lookback_window(3, config["partition_by"]),
-                column_name="{}_{}_last_three_month".format(agg_function, each_feature_column)
+                column_name="{}_{}_{}_last_three_month".format(agg_function,
+                                                               each_feature_column,
+                                                               "weekly" if read_from == "l2" else "monthly")
             ))
 
     sql_stmt = sql_stmt.format(',\n'.join(features))
