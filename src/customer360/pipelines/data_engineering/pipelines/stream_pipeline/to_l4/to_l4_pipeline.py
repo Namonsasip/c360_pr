@@ -33,11 +33,8 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 
-from src.customer360.utilities.re_usable_functions import execute_sql
-from src.customer360.utilities.config_parser import l4_rolling_window, node_from_config
-from pyspark.sql import SparkSession, functions as F
-from pyspark.sql.types import *
-from collections import defaultdict
+from src.customer360.utilities.config_parser import \
+    l4_rolling_window, node_from_config, l4_rolling_ranked_window_first_rank
 
 
 def streaming_to_l4_pipeline(**kwargs):
@@ -52,39 +49,14 @@ def streaming_to_l4_pipeline(**kwargs):
             ),
             # this will calculate the rank based on content_group
             node(
-                node_from_config,
+                l4_rolling_ranked_window_first_rank,
                 ["int_l4_streaming_content_type_features",
-                 "params:int_l4_streaming_fav_content_group_by_volume"],
-                "int_l4_streaming_fav_content_group_by_volume"
-            ),
-            # this will get most favourite last week
-            node(
-                node_from_config,
-                ["int_l4_streaming_fav_content_group_by_volume",
-                 "params:l4_streaming_fav_content_group_by_volume_last_week"],
-                "l4_streaming_fav_content_group_by_volume_last_week"
-            ),
-            # this will get most favourite last two week
-            node(
-                node_from_config,
-                ["int_l4_streaming_fav_content_group_by_volume",
-                 "params:l4_streaming_fav_content_group_by_volume_last_two_week"],
-                "l4_streaming_fav_content_group_by_volume_last_two_week"
+                 "params:l4_streaming_fav_content_group_by_volume"],
+                {"last_week": "l4_streaming_fav_content_group_by_volume_last_week",
+                 "last_two_week": "l4_streaming_fav_content_group_by_volume_last_two_week",
+                 "last_month": "l4_streaming_fav_content_group_by_volume_last_month",
+                 "last_three_month": "l4_streaming_fav_content_group_by_volume_last_three_month"}
             ),
 
-            # this will get most favourite last month
-            node(
-                node_from_config,
-                ["int_l4_streaming_fav_content_group_by_volume",
-                 "params:l4_streaming_fav_content_group_by_volume_last_month"],
-                "l4_streaming_fav_content_group_by_volume_last_month"
-            ),
-            # this will get most favourite last three month
-            node(
-                node_from_config,
-                ["int_l4_streaming_fav_content_group_by_volume",
-                 "params:l4_streaming_fav_content_group_by_volume_last_three_month"],
-                "l4_streaming_fav_content_group_by_volume_last_three_month"
-            )
         ], name="streaming_to_l4_pipeline"
     )
