@@ -8,7 +8,7 @@ int_l2_streaming_content_type_features:
 #        duration_rank: "row_number() over (partition by access_method_num, date(register_date), start_of_week
 #                                    order by sum(duration) desc)" # duration column is not ingested currently
         traffic_volume_sum: "sum(traffic_volume_sum)"
-    granularity: "access_method_num, date(register_date), start_of_week, content_group"
+    granularity: "access_method_num, date(register_date), start_of_week, start_of_month, content_group"
 
 l2_streaming_fav_content_group_by_volume:
     where_clause: "where traffic_rank = 1"

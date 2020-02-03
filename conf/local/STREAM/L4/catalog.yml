@@ -1,0 +1,39 @@
+int_l4_streaming_fav_content_group_by_volume:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L4_FEATURES/STREAM/int_l4_streaming_fav_content_group_by_volume/
+  file_format: parquet
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["start_of_week"]
+
+l4_streaming_fav_content_group_by_volume_last_week:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L4_FEATURES/STREAM/l4_streaming_fav_content_group_by_volume_last_week/
+  file_format: parquet
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["start_of_week"]
+
+l4_streaming_fav_content_group_by_volume_last_two_week:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L4_FEATURES/STREAM/l4_streaming_fav_content_group_by_volume_last_two_week/
+  file_format: parquet
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["start_of_week"]
+
+l4_streaming_fav_content_group_by_volume_last_month:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L4_FEATURES/STREAM/l4_streaming_fav_content_group_by_volume_last_month/
+  file_format: parquet
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["start_of_week"]
+
+l4_streaming_fav_content_group_by_volume_last_three_month:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L4_FEATURES/STREAM/l4_streaming_fav_content_group_by_volume_last_three_month/
+  file_format: parquet
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["start_of_week"]
