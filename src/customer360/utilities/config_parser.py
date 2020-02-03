@@ -1,5 +1,6 @@
 import logging
-from pyspark.sql import SparkSession, DataFrame
+from typing import *
+from pyspark.sql import SparkSession, DataFrame, functions as F
 
 
 # Query generator class
@@ -85,6 +86,7 @@ def l4_rolling_window(input_df, config):
         select 
             {}
         from input_table
+        {}
     """
 
     features = []
@@ -132,7 +134,8 @@ def l4_rolling_window(input_df, config):
                                                                "weekly" if read_from == "l2" else "monthly")
             ))
 
-    sql_stmt = sql_stmt.format(',\n'.join(features))
+    sql_stmt = sql_stmt.format(',\n'.join(features),
+                               config.get("where_clause", ""))
 
     logging.info("SQL QUERY {}".format(sql_stmt))
 
@@ -230,3 +233,100 @@ def expansion(input_df, config) -> DataFrame:
 
     df = spark.sql(sql_stmt)
     return df
+
+
+def l4_rolling_ranked_window(
+        input_df,
+        config
+) -> DataFrame:
+
+    table_name = "input_table"
+    input_df.createOrReplaceTempView(table_name)
+
+    sql_stmt = """
+        select 
+            {}
+        from input_table
+        {}
+    """
+
+    features = []
+
+    features.extend(config["partition_by"])
+    features.append("start_of_month")
+
+    read_from = config.get("read_from")
+
+    if read_from == 'l2':
+        features.append("start_of_week")
+
+    for alias, col_name in config["feature_column"].items():
+        features.append("{} as {}".format(col_name, alias))
+
+    if read_from == 'l2':
+        features.append("""
+            row_number() over (partition by {partition_column} 
+            order by {order_column}) as weekly_rank_last_week
+            """.format(
+            partition_column=','.join(config["partition_by"]),
+            order_column="{}_weekly_last_week".format(config["order_by_column_prefix"])
+        ))
+
+        features.append("""
+            row_number() over (partition by {partition_column} 
+            order by {order_column}) as weekly_rank_last_two_week
+            """.format(
+            partition_column=','.join(config["partition_by"]),
+            order_column="{}_weekly_last_two_week".format(config["order_by_column_prefix"])
+        ))
+
+    features.append("""
+        row_number() over (partition by {partition_column} 
+        order by {order_column}) as {grouping}_rank_last_month
+        """.format(
+        partition_column=','.join(config["partition_by"]),
+        order_column="{}_{}_last_month".format(config["order_by_column_prefix"],
+                                               "weekly" if read_from == 'l2' else "monthly"),
+        grouping="weekly" if read_from == 'l2' else "monthly"
+    ))
+
+    features.append("""
+        row_number() over (partition by {partition_column} 
+        order by {order_column}) as {grouping}_rank_last_three_month
+        """.format(
+        partition_column=','.join(config["partition_by"]),
+        order_column="{}_{}_last_three_month".format(config["order_by_column_prefix"],
+                                                     "weekly" if read_from == 'l2' else "monthly"),
+        grouping="weekly" if read_from == 'l2' else "monthly"
+    ))
+
+    sql_stmt = sql_stmt.format(',\n'.join(set(features)),
+                               config.get("where_clause", ""))
+
+    logging.info("SQL QUERY {}".format(sql_stmt))
+
+    spark = SparkSession.builder.getOrCreate()
+    df = spark.sql(sql_stmt)
+
+    return df
+
+
+def l4_rolling_ranked_window_first_rank(
+        input_df,
+        config
+) -> Dict[str, DataFrame]:
+
+    ranked_df = l4_rolling_ranked_window(input_df, config)
+
+    result_df = {}
+    read_from = config["read_from"]
+
+    if read_from == 'l2':
+        result_df["last_week"] = ranked_df.where(F.col("weekly_rank_last_week") == 1)
+        result_df["last_two_week"] = ranked_df.where(F.col("weekly_rank_last_two_week") == 1)
+
+    grouping = "weekly" if read_from == 'l2' else "monthly"
+    result_df["last_month"] = ranked_df.where(F.col("{}_rank_last_month".format(grouping)) == 1)
+    result_df["last_three_month"] = ranked_df.where(F.col("{}_rank_last_three_month".format(grouping)) == 1)
+
+    return result_df

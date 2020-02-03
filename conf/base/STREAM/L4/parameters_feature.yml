@@ -1,0 +1,57 @@
+
+int_l4_streaming_content_type_features:
+  partition_by: ["access_method_num", "date(register_date)", "content_group"]
+  feature_list:
+    sum: ["traffic_volume_sum"]
+  read_from: "l2"
+
+l4_streaming_fav_content_group_by_volume:
+  where_clause: ""
+  feature_column:
+    fav_content_group_by_volume: "content_group"
+
+  partition_by: ["access_method_num", "date(register_date)", "start_of_week"]
+  order_by_column_prefix: "sum_traffic_volume_sum"
+  read_from: "l2"
+
+
+int_l4_streaming_tv_channel_features:
+  partition_by: ["access_method_num", "date(register_date)", "title"]
+  feature_list:
+    sum: ["traffic_volume_sum"]
+  read_from: "l2"
+
+l4_streaming_fav_tv_channel_by_volume:
+  where_clause: ""
+  feature_column:
+    fav_tv_channel_by_volume: "title"
+
+  partition_by: ["access_method_num", "date(register_date)", "start_of_week"]
+  order_by_column_prefix: "sum_traffic_volume_sum"
+  read_from: "l2"
+
+
+int_l4_streaming_tv_show_features_1:
+  partition_by: ["access_method_num", "date(register_date)", "series_title"]
+  feature_list:
+    approx_count_distinct: ["title"] # because distinct cannot be used over window
+  read_from: "l2"
+  where_clause: "where lower(content_group) = 'episode'"
+
+int_l4_streaming_tv_show_features_2:
+  where_clause: ""
+  feature_list:
+    approx_count_distinct_title_weekly_last_week: max(approx_count_distinct_title_weekly_last_week)
+    approx_count_distinct_title_weekly_last_two_week: max(approx_count_distinct_title_weekly_last_two_week)
+    approx_count_distinct_title_weekly_last_month: max(approx_count_distinct_title_weekly_last_month)
+    approx_count_distinct_title_weekly_last_three_month: max(approx_count_distinct_title_weekly_last_three_month)
+  granularity: "access_method_num, date(register_date), start_of_week, start_of_month, series_title"
+
+l4_streaming_fav_tv_show_by_episode_watched:
+  where_clause: ""
+  feature_column:
+    fav_tv_show_by_episode_watched: "series_title"
+
+  partition_by: ["access_method_num", "date(register_date)", "start_of_week"]
+  order_by_column_prefix: "approx_count_distinct_title"
+  read_from: "l2"
