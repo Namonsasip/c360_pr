@@ -9,20 +9,23 @@ int_l4_streaming_content_type_features:
 int_l4_streaming_fav_content_group_by_volume:
     where_clause: ""
     feature_list:
-        traffic_rank_last_week: "row_number() over (partition by access_method_num, date(register_date)
-                                      order by sum(sum_traffic_volume_sum_last_week) desc) "
+        start_of_week: "start_of_week"
+        access_method_num: "access_method_num"
+        register_date: "register_date"
+        content_group: "content_group"
+        traffic_rank_last_week: "row_number() over (partition by access_method_num, date(register_date), start_of_week
+                                      order by sum_traffic_volume_sum_last_week desc) "
 
-        traffic_rank_last_two_week: "row_number() over (partition by access_method_num, date(register_date)
-                                      order by sum(sum_traffic_volume_sum_last_two_week) desc) "
+        traffic_rank_last_two_week: "row_number() over (partition by access_method_num, date(register_date), start_of_week
+                                      order by sum_traffic_volume_sum_last_two_week desc) "
 
-        traffic_rank_last_month: "row_number() over (partition by access_method_num, date(register_date)
-                                      order by sum(sum_traffic_volume_sum_last_month) desc) "
+        traffic_rank_last_month: "row_number() over (partition by access_method_num, date(register_date), start_of_week
+                                      order by sum_traffic_volume_sum_last_month desc) "
 
-        traffic_rank_last_three_month: "row_number() over (partition by access_method_num, date(register_date)
-                                      order by sum(sum_traffic_volume_sum_last_three_month) desc) "
+        traffic_rank_last_three_month: "row_number() over (partition by access_method_num, date(register_date), start_of_week
+                                      order by sum_traffic_volume_sum_last_three_month desc) "
 
-    granularity: "access_method_num, date(register_date), content_group, start_of_week"
-
+    granularity: ""
 
 l4_streaming_fav_content_group_by_volume_last_week:
     where_clause: "where traffic_rank_last_week = 1"
