@@ -86,6 +86,7 @@ def l4_rolling_window(input_df, config):
         select 
             {}
         from input_table
+        {}
     """
 
     features = []
@@ -133,7 +134,8 @@ def l4_rolling_window(input_df, config):
                                                                "weekly" if read_from == "l2" else "monthly")
             ))
 
-    sql_stmt = sql_stmt.format(',\n'.join(features))
+    sql_stmt = sql_stmt.format(',\n'.join(features),
+                               config.get("where_clause", ""))
 
     logging.info("SQL QUERY {}".format(sql_stmt))
 

@@ -47,7 +47,6 @@ def streaming_to_l4_pipeline(**kwargs):
                  "params:int_l4_streaming_content_type_features"],
                 "int_l4_streaming_content_type_features"
             ),
-            # this will calculate the rank based on content_group
             node(
                 l4_rolling_ranked_window_first_rank,
                 ["int_l4_streaming_content_type_features",
@@ -57,6 +56,45 @@ def streaming_to_l4_pipeline(**kwargs):
                  "last_month": "l4_streaming_fav_content_group_by_volume_last_month",
                  "last_three_month": "l4_streaming_fav_content_group_by_volume_last_three_month"}
             ),
+
+            node(
+                l4_rolling_window,
+                ["int_l2_streaming_tv_channel_features",
+                 "params:int_l4_streaming_tv_channel_features"],
+                "int_l4_streaming_tv_channel_features"
+            ),
+            node(
+                l4_rolling_ranked_window_first_rank,
+                ["int_l4_streaming_tv_channel_features",
+                 "params:l4_streaming_fav_tv_channel_by_volume"],
+                {"last_week": "l4_streaming_fav_tv_channel_by_volume_last_week",
+                 "last_two_week": "l4_streaming_fav_tv_channel_by_volume_last_two_week",
+                 "last_month": "l4_streaming_fav_tv_channel_by_volume_last_month",
+                 "last_three_month": "l4_streaming_fav_tv_channel_by_volume_last_three_month"}
+            ),
+
+            node(
+                l4_rolling_window,
+                ["int_l0_streaming_vimmi_table",
+                 "params:int_l4_streaming_tv_show_features_1"],
+                "int_l4_streaming_tv_show_features_1"
+            ),
+            # group it per week because we read directly from L1
+            node(
+                node_from_config,
+                ["int_l4_streaming_tv_show_features_1",
+                 "params:int_l4_streaming_tv_show_features_2"],
+                "int_l4_streaming_tv_show_features_2"
+            ),
+            node(
+                l4_rolling_ranked_window_first_rank,
+                ["int_l4_streaming_tv_show_features_2",
+                 "params:l4_streaming_fav_tv_show_by_episode_watched"],
+                {"last_week": "l4_streaming_fav_tv_show_by_episode_watched_last_week",
+                 "last_two_week": "l4_streaming_fav_tv_show_by_episode_watched_last_two_week",
+                 "last_month": "l4_streaming_fav_tv_show_by_episode_watched_last_month",
+                 "last_three_month": "l4_streaming_fav_tv_show_by_episode_watched_last_three_month"}
+            )
 
         ], name="streaming_to_l4_pipeline"
     )

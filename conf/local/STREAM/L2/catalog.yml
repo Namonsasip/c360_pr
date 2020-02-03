@@ -1,4 +1,12 @@
 
+int_l2_streaming_content_type_features:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L2_WEEKLY/STREAM/int_l2_streaming_content_type_features/
+  file_format: parquet
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["start_of_week"]
+
 l2_streaming_fav_content_group_by_volume:
   type: kedro.contrib.io.pyspark.SparkDataSet
   filepath: data/L2_WEEKLY/STREAM/l2_streaming_fav_content_group_by_volume/
@@ -8,14 +16,13 @@ l2_streaming_fav_content_group_by_volume:
     partitionBy: ["start_of_week"]
 
 
-int_l2_streaming_content_type_features:
+int_l2_streaming_tv_channel_features:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: data/L2_WEEKLY/STREAM/int_l2_streaming_content_type_features/
+  filepath: data/L2_WEEKLY/STREAM/int_l2_streaming_tv_channel_features/
   file_format: parquet
   save_args:
     mode: "overwrite"
     partitionBy: ["start_of_week"]
-
 
 l2_streaming_fav_tv_channel_by_volume:
   type: kedro.contrib.io.pyspark.SparkDataSet

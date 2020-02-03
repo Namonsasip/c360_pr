@@ -28,7 +28,7 @@ int_l2_streaming_tv_channel_features:
         tv_channel_rank: "row_number() over (partition by access_method_num, date(register_date), start_of_week
                                                     order by sum(traffic_volume_sum) desc)"
         traffic_volume_sum: "sum(traffic_volume_sum)"
-    granularity: "access_method_num, date(register_date), start_of_week, title"
+    granularity: "access_method_num, date(register_date), start_of_week, start_of_month, title"
 
 l2_streaming_fav_tv_channel_by_volume:
     where_clause: "where tv_channel_rank = 1"

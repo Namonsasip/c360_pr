@@ -1,24 +1,26 @@
+# Fav Content Group Table
 int_l4_streaming_fav_content_group_by_volume:
   type: kedro.contrib.io.pyspark.SparkDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/int_l4_streaming_fav_content_group_by_volume/
   file_format: parquet
-
+  save_args:
+    mode: "append"
+    partitionBy: ["start_of_week"]
 
 l4_streaming_fav_content_group_by_volume_last_week:
   type: kedro.contrib.io.pyspark.SparkDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_content_group_by_volume_last_week/
   file_format: parquet
   save_args:
-    mode: "overwrite"
+    mode: "append"
     partitionBy: ["start_of_week"]
-
 
 l4_streaming_fav_content_group_by_volume_last_two_week:
   type: kedro.contrib.io.pyspark.SparkDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_content_group_by_volume_last_two_week/
   file_format: parquet
   save_args:
-    mode: "overwrite"
+    mode: "append"
     partitionBy: ["start_of_week"]
 
 l4_streaming_fav_content_group_by_volume_last_month:
@@ -26,7 +28,7 @@ l4_streaming_fav_content_group_by_volume_last_month:
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_content_group_by_volume_last_month/
   file_format: parquet
   save_args:
-    mode: "overwrite"
+    mode: "append"
     partitionBy: ["start_of_week"]
 
 l4_streaming_fav_content_group_by_volume_last_three_month:
@@ -34,5 +36,72 @@ l4_streaming_fav_content_group_by_volume_last_three_month:
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_content_group_by_volume_last_three_month/
   file_format: parquet
   save_args:
-    mode: "overwrite"
+    mode: "append"
+    partitionBy: ["start_of_week"]
+
+# Fav tv show by volume tables
+l4_streaming_fav_tv_channel_by_volume_last_week:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_tv_channel_by_volume_last_week/
+  file_format: parquet
+  save_args:
+    mode: "append"
+    partitionBy: ["start_of_week"]
+
+l4_streaming_fav_tv_channel_by_volume_last_two_week:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_tv_channel_by_volume_last_two_week/
+  file_format: parquet
+  save_args:
+    mode: "append"
+    partitionBy: ["start_of_week"]
+
+l4_streaming_fav_tv_channel_by_volume_last_month:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_tv_channel_by_volume_last_three_month/
+  file_format: parquet
+  save_args:
+    mode: "append"
+    partitionBy: ["start_of_week"]
+
+l4_streaming_fav_tv_channel_by_volume_last_three_month:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_tv_channel_by_volume_last_three_month/
+  file_format: parquet
+  save_args:
+    mode: "append"
+    partitionBy: ["start_of_week"]
+
+
+# Fav tv show by number of episode watched tables
+l4_streaming_fav_tv_show_by_episode_watched_last_week:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_tv_show_by_episode_watched_last_week/
+  file_format: parquet
+  save_args:
+    mode: "append"
+    partitionBy: ["start_of_week"]
+
+l4_streaming_fav_tv_show_by_episode_watched_last_two_week:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_tv_show_by_episode_watched_last_two_week/
+  file_format: parquet
+  save_args:
+    mode: "append"
+    partitionBy: ["start_of_week"]
+
+l4_streaming_fav_tv_show_by_episode_watched_last_month:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_tv_show_by_episode_watched_last_month/
+  file_format: parquet
+  save_args:
+    mode: "append"
+    partitionBy: ["start_of_week"]
+
+l4_streaming_fav_tv_show_by_episode_watched_last_three_month:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_tv_show_by_episode_watched_last_three_month/
+  file_format: parquet
+  save_args:
+    mode: "append"
     partitionBy: ["start_of_week"]
