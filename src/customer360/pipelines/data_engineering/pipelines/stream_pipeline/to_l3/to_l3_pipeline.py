@@ -86,13 +86,13 @@ def streaming_to_l3_pipeline(**kwargs):
             node(
                 node_from_config,
                 ["int_l2_streaming_video_service_feature",
-                 "params:int_l3_streaming_video_service_feature"],
+                 "params:int_l3_streaming_service_feature"],
                 "int_l3_streaming_video_service_feature"
             ),
             node(
                 node_from_config,
                 ["int_l3_streaming_video_service_feature",
-                 "params:l3_streaming_fav_video_service_by_download_feature"],
+                 "params:l3_streaming_fav_service_by_download_feature"],
                 "l3_streaming_fav_video_service_by_download_feature"
             ),
 
@@ -100,13 +100,13 @@ def streaming_to_l3_pipeline(**kwargs):
             node(
                 node_from_config,
                 ["int_l2_streaming_music_service_feature",
-                 "params:int_l3_streaming_music_service_feature"],
+                 "params:int_l3_streaming_service_feature"],
                 "int_l3_streaming_music_service_feature"
             ),
             node(
                 node_from_config,
                 ["int_l3_streaming_music_service_feature",
-                 "params:l3_streaming_fav_music_service_by_download_feature"],
+                 "params:l3_streaming_fav_service_by_download_feature"],
                 "l3_streaming_fav_music_service_by_download_feature"
             ),
 
@@ -114,13 +114,13 @@ def streaming_to_l3_pipeline(**kwargs):
             node(
                 node_from_config,
                 ["int_l2_streaming_esport_service_feature",
-                 "params:int_l3_streaming_esport_service_feature"],
+                 "params:int_l3_streaming_service_feature"],
                 "int_l3_streaming_esport_service_feature"
             ),
             node(
                 node_from_config,
                 ["int_l3_streaming_esport_service_feature",
-                 "params:l3_streaming_fav_esport_service_by_download_feature"],
+                 "params:l3_streaming_fav_service_by_download_feature"],
                 "l3_streaming_fav_esport_service_by_download_feature"
             ),
         ], name="streaming_to_l3_pipeline"

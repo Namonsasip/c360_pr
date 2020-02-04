@@ -59,8 +59,8 @@ l2_streaming_fav_tv_show_by_episode_watched:
     granularity: ""
 
 
- # Fav video service by download traffic
-int_l2_streaming_video_service_feature:
+ # Fav service by download traffic (reused for video, music, and esport)
+int_l2_streaming_service_feature:
     feature_list:
         sum_download_kb_traffic_rank: "row_number() over (partition by mobile_no, application_group, start_of_week
                                                     order by sum(sum_download_kb_traffic) desc)"
@@ -68,7 +68,7 @@ int_l2_streaming_video_service_feature:
     granularity: "mobile_no, application, application_group, start_of_week, start_of_month"
     
 
-l2_streaming_fav_video_service_by_download_feature:
+l2_streaming_fav_service_by_download_feature:
     where_clause: "where sum_download_kb_traffic_rank = 1"
     feature_list:
         mobile_no: "mobile_no"
@@ -76,44 +76,13 @@ l2_streaming_fav_video_service_by_download_feature:
         sum_download_kb_traffic: "sum_download_kb_traffic"
         start_of_week: "start_of_week"
     granularity: ""
-    
 
 
- # Fav music service by download traffic
-int_l2_streaming_music_service_feature:
-    feature_list:
-        sum_download_kb_traffic_rank: "row_number() over (partition by mobile_no, application_group, start_of_week
-                                                    order by sum(sum_download_kb_traffic) desc)"
-        sum_download_kb_traffic: "sum(sum_download_kb_traffic)"
-    granularity: "mobile_no, application, application_group, start_of_week, start_of_month"
-    
-
-l2_streaming_fav_music_service_by_download_feature:
-    where_clause: "where sum_download_kb_traffic_rank = 1"
+l2_streaming_2nd_fav_service_by_download_feature:
+    where_clause: "where sum_download_kb_traffic_rank = 2"
     feature_list:
         mobile_no: "mobile_no"
         fav_video_service_by_download_kb_traffic: "application"
         sum_download_kb_traffic: "sum_download_kb_traffic"
         start_of_week: "start_of_week"
     granularity: ""
-    
-
-
- # Fav esport service by download traffic
-int_l2_streaming_esport_service_feature:
-    feature_list:
-        sum_download_kb_traffic_rank: "row_number() over (partition by mobile_no, application_group, start_of_week
-                                                    order by sum(sum_download_kb_traffic) desc)"
-        sum_download_kb_traffic: "sum(sum_download_kb_traffic)"
-    granularity: "mobile_no, application, application_group, start_of_week, start_of_month"
-    
-
-l2_streaming_fav_esport_service_by_download_feature:
-    where_clause: "where sum_download_kb_traffic_rank = 1"
-    feature_list:
-        mobile_no: "mobile_no"
-        fav_video_service_by_download_kb_traffic: "application"
-        sum_download_kb_traffic: "sum_download_kb_traffic"
-        start_of_week: "start_of_week"
-    granularity: ""
-    
