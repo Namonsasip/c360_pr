@@ -615,32 +615,48 @@ l1_usage_ru_a_vas_postpaid_usg_daily:
     where_clause: ""
     feature_list:
         msisdn: "max(access_method_num)"
-        usg_total_data_volume: "sum(download_volume_kb)"
-        usg_total_vas_data_volume: "sum(case when service_type_cd = 'VAS' then download_volume_kb else 0 end)"
+        usg_outgoing_data_volume: "sum(case when call_type_cd IN (3, 64) then uplink_volume_kb else 0 end)"
+
+        usg_outgoing_data_volume_4G: "sum(case when call_type_cd IN (3, 64) AND
+                                      rat_type = '4G' then uplink_volume_kb else 0 end)"
+
+        usg_outgoing_data_volume_2G_3G: "sum(case when call_type_cd IN (3, 64) AND
+                                         rat_type IN ('2G', '3G') then uplink_volume_kb else 0 end)"
+
+        usg_incoming_data_volume: "sum(case when call_type_cd IN (3, 64) then downlink_volume_kb else 0 end)"
+
+        usg_incoming_data_volume_4G: "sum(case when call_type_cd IN (3, 64) AND
+                                      rat_type = '4G' then downlink_volume_kb else 0 end)"
+
+        usg_incoming_data_volume_2G_3G: "sum(case when call_type_cd IN (3, 64) AND
+                                        rat_type IN ('2G', '3G') then downlink_volume_kb else 0 end)"
+
+        usg_data_last_action_date: "max(date(day_id))"
+
+        usg_data_monday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Monday') AND call_type_cd IN (3, 64)
+                                        THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
+
+        usg_data_tuesday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Tuesday') AND call_type_cd IN (3, 64)
+                                        THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
+
+        usg_data_wednesday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Wednesday') AND call_type_cd IN (3, 64)
+                                        THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
+
+        usg_data_thursday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Thursday') AND call_type_cd IN (3, 64)
+                                        THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
+
+        usg_data_friday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Friday') AND call_type_cd IN (3, 64)
+                                        THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
+
+        usg_data_saturday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Saturday') AND call_type_cd IN (3, 64)
+                                        THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
+
+        usg_data_sunday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Sunday') AND call_type_cd IN (3, 64)
+                                        THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
+
+        usg_total_data_volume: "sum(uplink_volume_kb + downlink_volume_kb)"
+
         usg_total_data_last_action_date: "max(date(day_id))"
-        usg_total_data_vas_last_action_date: "max(case when service_type_cd = 'VAS' then date(day_id) else null end)"
-        usg_total_data_monday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Monday')
-                                        THEN (download_volume_kb) else 0 end)"
-        usg_data_monday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Monday')
-                                        THEN (download_volume_kb) else 0 end)"
-
-        usg_data_tuesday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Tuesday')
-                                        THEN (download_volume_kb) else 0 end)"
-
-        usg_data_wednesday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Wednesday')
-                                        THEN (download_volume_kb) else 0 end)"
-
-        usg_data_thursday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Thursday')
-                                        THEN (download_volume_kb) else 0 end)"
-
-        usg_data_friday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Friday')
-                                        THEN (download_volume_kb) else 0 end)"
-
-        usg_data_saturday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Saturday')
-                                        THEN (download_volume_kb) else 0 end)"
-
-        usg_data_sunday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Sunday')
-                                        THEN (download_volume_kb) else 0 end)"
     granularity: "access_method_num, day_id"
     event_date_column: "date(day_id)"
 
@@ -666,62 +682,3 @@ l1_usage_incoming_call_relation_sum_ir_daily:
 
     granularity: "called_no, day_id"
     event_date_column: "date(day_id)"
-
-#l0_usage_ru_f_cbs_prepaid_call_daily:
-#    where_clause: ""
-#    feature_list:
-#        usg_total_call_duration: "sum(case when service_type IN ('VOICE', 'IR', 'INTER', 'NOTH', 'VOLTE', 'VOWIFI')
-#                                  THEN total_second else 0 end)"
-#        usg_total_call_duration_upto_5_min: "sum(case when service_type IN ('VOICE', 'IR', 'INTER')
-#                                               AND total_second <= 300 THEN total_second else 0 end)"
-#        usg_total_call_duration_upto_10_min: "sum(case when service_type IN ('VOICE', 'IR', 'INTER')
-#                                               AND total_second <= 600 THEN total_second else 0 end)"
-#        usg_total_call_duration_upto_15_min: "sum(case when service_type IN ('VOICE', 'IR', 'INTER')
-#                                               AND total_second <= 900 THEN total_second else 0 end)"
-#        usg_total_call_duration_upto_20_min: "sum(case when service_type IN ('VOICE', 'IR', 'INTER')
-#                                               AND total_second <= 1200 THEN total_second else 0 end)"
-#        usg_total_call_duration_upto_30_min: "sum(case when service_type IN ('VOICE', 'IR', 'INTER')
-#                                               AND total_second <= 1800 THEN total_second else 0 end)"
-#        usg_total_call_duration_over_30_min: "sum(case when service_type IN ('VOICE', 'IR', 'INTER')
-#                                               AND total_second > 1800 THEN total_second else 0 end)"
-#        usg_total_roaming_call_duration: "sum(case when service_type = 'IR' THEN total_second else 0 end)"
-#        usg_total_local_call_duration: "sum(case when service_type = 'VOICE' THEN total_second else 0 end)"
-#        usg_total_local_ais_call_duration: "sum(case when service_type = 'VOICE' AND
-#                                            network_type_b_no IN ('InternalAWN', 'AWN') THEN total_second else 0 end)"
-#        usg_total_local_offnet_call_duration: "sum(case when service_type = 'VOICE' AND
-#                                        network_type_b_no NOT IN ('InternalAWN', 'AWN') THEN total_second else 0 end)"
-#        usg_total_sms_number: "sum(case when service_type IN ('SMS', 'SMSIR', 'SMSI') THEN total_call else 0 end)"
-#        usg_total_local_ais_sms_number: "sum(case when service_type IN ('SMS') AND
-#                                      network_type_b_no IN ('InternalAWN', 'AWN')THEN total_call else 0 end)"
-#        usg_total_roaming_sms_number: "sum(case when service_type = 'SMSIR' THEN total_call else 0 end)"
-#        usg_total_local_sms_number: "sum(case when service_type = 'SMS' THEN total_call else 0 end)"
-#        usg_total_number_calls: "sum(case when service_type IN ('VOICE', 'IR', 'INTER') THEN total_call else 0 end)"
-#        usg_total_roaming_number_calls: "sum(case when service_type = 'IR' THEN total_call else 0 end)"
-#        usg_total_local_number_calls: "sum(case when service_type = 'VOICE' THEN total_call else 0 end)"
-#        usg_total_local_ais_number_calls: "sum(case when service_type = 'VOICE' AND network_type_b_no
-#                                        IN ('InternalAWN', 'AWN') THEN total_call else 0 end)"
-#        usg_total_local_offnet_number_calls: "sum(case when service_type = 'VOICE'
-#                                            AND network_type_b_no IN ('InternalAWN', 'AWN') THEN total_call else 0 end)"
-#    granularity: "access_method_num, day_id"
-#
-#l0_usage_ru_a_voice_usg_daily:
-#    where_clause: ""
-#    feature_list:
-#        usg_total_call_duration: "sum(case when call_type_code IN (1, 65, 68) THEN call_duration else 0 end)"
-#        usg_total_call_duration_upto_5_min: "sum(case when call_type_code IN (1, 68)
-#                                             AND call_duration <= 300 THEN call_duration else 0 end)"
-#        usg_total_call_duration_upto_10_min: "sum(case when call_type_code IN (1, 68)
-#                                             AND call_duration <= 600 THEN call_duration else 0 end)"
-#        usg_total_call_duration_upto_15_min: "sum(case when call_type_code IN (1, 68)
-#                                             AND call_duration <= 900 THEN call_duration else 0 end)"
-#        usg_total_call_duration_upto_20_min: "sum(case when call_type_code IN (1, 68)
-#                                             AND call_duration <= 1200 THEN call_duration else 0 end)"
-#        usg_total_call_duration_upto_30_min: "sum(case when call_type_code IN (1, 68)
-#                                             AND call_duration <= 1800 THEN call_duration else 0 end)"
-#        usg_total_call_duration_over_30_min: "sum(case when call_type_code IN (1, 68)
-#                                             AND call_duration > 1800 THEN call_duration else 0 end)"
-#        usg_total_local_call_duration:  "sum(case when call_type_code = 1 THEN call_duration else 0 end)"
-#        usg_total_sms_number: "sum(case when call_type_code IN (4, 5) THEN number_of_call else 0 end)"
-#        usg_total_number_calls: "sum(case when call_type_code IN (1, 68) THEN number_of_call else 0 end)"
-#        usg_total_local_number_calls: "sum(case when call_type_code IN (1) THEN number_of_call else 0 end)"
-#    granularity: "registered_date, access_method_id, usg_date"
