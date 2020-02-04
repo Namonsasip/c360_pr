@@ -34,7 +34,9 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 from kedro.pipeline import Pipeline, node
 
 from src.customer360.utilities.config_parser import \
-    l4_rolling_window, node_from_config, l4_rolling_ranked_window_first_rank
+    l4_rolling_window, \
+    node_from_config, \
+    l4_rolling_ranked_window
 
 
 def streaming_to_l4_pipeline(**kwargs):
@@ -49,7 +51,7 @@ def streaming_to_l4_pipeline(**kwargs):
             ),
             # this will get all the first rank of the group
             node(
-                l4_rolling_ranked_window_first_rank,
+                l4_rolling_ranked_window,
                 ["int_l4_streaming_content_type_features",
                  "params:l4_streaming_fav_content_group_by_volume"],
                 {"last_week": "l4_streaming_fav_content_group_by_volume_last_week",
@@ -65,7 +67,7 @@ def streaming_to_l4_pipeline(**kwargs):
                 "int_l4_streaming_tv_channel_features"
             ),
             node(
-                l4_rolling_ranked_window_first_rank,
+                l4_rolling_ranked_window,
                 ["int_l4_streaming_tv_channel_features",
                  "params:l4_streaming_fav_tv_channel_by_volume"],
                 {"last_week": "l4_streaming_fav_tv_channel_by_volume_last_week",
@@ -88,7 +90,7 @@ def streaming_to_l4_pipeline(**kwargs):
                 "int_l4_streaming_tv_show_features_2"
             ),
             node(
-                l4_rolling_ranked_window_first_rank,
+                l4_rolling_ranked_window,
                 ["int_l4_streaming_tv_show_features_2",
                  "params:l4_streaming_fav_tv_show_by_episode_watched"],
                 {"last_week": "l4_streaming_fav_tv_show_by_episode_watched_last_week",
@@ -105,13 +107,22 @@ def streaming_to_l4_pipeline(**kwargs):
                 "int_l4_streaming_video_service_feature"
             ),
             node(
-                l4_rolling_ranked_window_first_rank,
+                l4_rolling_ranked_window,
                 ["int_l4_streaming_video_service_feature",
                  "params:l4_streaming_fav_service_by_download_feature"],
                 {"last_week": "l4_streaming_fav_video_service_by_download_feature_last_week",
                  "last_two_week": "l4_streaming_fav_video_service_by_download_feature_last_two_week",
                  "last_month": "l4_streaming_fav_video_service_by_download_feature_last_month",
                  "last_three_month": "l4_streaming_fav_video_service_by_download_feature_last_three_month"}
+            ),
+            node(
+                l4_rolling_ranked_window,
+                ["int_l4_streaming_video_service_feature",
+                 "params:l4_streaming_2nd_fav_service_by_download_feature"],
+                {"last_week": "l4_streaming_2nd_fav_video_service_by_download_feature_last_week",
+                 "last_two_week": "l4_streaming_2nd_fav_video_service_by_download_feature_last_two_week",
+                 "last_month": "l4_streaming_2nd_fav_video_service_by_download_feature_last_month",
+                 "last_three_month": "l4_streaming_2nd_fav_video_service_by_download_feature_last_three_month"}
             ),
 
             # fav music service feature
@@ -122,13 +133,22 @@ def streaming_to_l4_pipeline(**kwargs):
                 "int_l4_streaming_music_service_feature"
             ),
             node(
-                l4_rolling_ranked_window_first_rank,
+                l4_rolling_ranked_window,
                 ["int_l4_streaming_music_service_feature",
                  "params:l4_streaming_fav_service_by_download_feature"],
                 {"last_week": "l4_streaming_fav_music_service_by_download_feature_last_week",
                  "last_two_week": "l4_streaming_fav_music_service_by_download_feature_last_two_week",
                  "last_month": "l4_streaming_fav_music_service_by_download_feature_last_month",
                  "last_three_month": "l4_streaming_fav_music_service_by_download_feature_last_three_month"}
+            ),
+            node(
+                l4_rolling_ranked_window,
+                ["int_l4_streaming_video_service_feature",
+                 "params:l4_streaming_2nd_fav_service_by_download_feature"],
+                {"last_week": "l4_streaming_2nd_fav_music_service_by_download_feature_last_week",
+                 "last_two_week": "l4_streaming_2nd_fav_music_service_by_download_feature_last_two_week",
+                 "last_month": "l4_streaming_2nd_fav_music_service_by_download_feature_last_month",
+                 "last_three_month": "l4_streaming_2nd_fav_music_service_by_download_feature_last_three_month"}
             ),
 
             # fav esport service feature
@@ -139,13 +159,22 @@ def streaming_to_l4_pipeline(**kwargs):
                 "int_l4_streaming_esport_service_feature"
             ),
             node(
-                l4_rolling_ranked_window_first_rank,
+                l4_rolling_ranked_window,
                 ["int_l4_streaming_esport_service_feature",
                  "params:l4_streaming_fav_service_by_download_feature"],
                 {"last_week": "l4_streaming_fav_esport_service_by_download_feature_last_week",
                  "last_two_week": "l4_streaming_fav_esport_service_by_download_feature_last_two_week",
                  "last_month": "l4_streaming_fav_esport_service_by_download_feature_last_month",
                  "last_three_month": "l4_streaming_fav_esport_service_by_download_feature_last_three_month"}
+            ),
+            node(
+                l4_rolling_ranked_window,
+                ["int_l4_streaming_video_service_feature",
+                 "params:l4_streaming_2nd_fav_service_by_download_feature"],
+                {"last_week": "l4_streaming_2nd_fav_esport_service_by_download_feature_last_week",
+                 "last_two_week": "l4_streaming_2nd_fav_esport_service_by_download_feature_last_two_week",
+                 "last_month": "l4_streaming_2nd_fav_esport_service_by_download_feature_last_month",
+                 "last_three_month": "l4_streaming_2nd_fav_esport_service_by_download_feature_last_three_month"}
             ),
 
         ], name="streaming_to_l4_pipeline"

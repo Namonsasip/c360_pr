@@ -235,7 +235,7 @@ def expansion(input_df, config) -> DataFrame:
     return df
 
 
-def l4_rolling_ranked_window(
+def __generate_l4_rolling_ranked_column(
         input_df,
         config
 ) -> DataFrame:
@@ -311,22 +311,32 @@ def l4_rolling_ranked_window(
     return df
 
 
-def l4_rolling_ranked_window_first_rank(
-        input_df,
+def __generate_l4_filtered_ranked_table(
+        ranked_df,
         config
-) -> Dict[str, DataFrame]:
-
-    ranked_df = l4_rolling_ranked_window(input_df, config)
+):
 
     result_df = {}
     read_from = config["read_from"]
 
+    rank = config.get("rank", 1)
+
     if read_from == 'l2':
-        result_df["last_week"] = ranked_df.where(F.col("weekly_rank_last_week") == 1)
-        result_df["last_two_week"] = ranked_df.where(F.col("weekly_rank_last_two_week") == 1)
+        result_df["last_week"] = ranked_df.where(F.col("weekly_rank_last_week") == rank)
+    result_df["last_two_week"] = ranked_df.where(F.col("weekly_rank_last_two_week") == rank)
 
     grouping = "weekly" if read_from == 'l2' else "monthly"
-    result_df["last_month"] = ranked_df.where(F.col("{}_rank_last_month".format(grouping)) == 1)
-    result_df["last_three_month"] = ranked_df.where(F.col("{}_rank_last_three_month".format(grouping)) == 1)
+    result_df["last_month"] = ranked_df.where(F.col("{}_rank_last_month".format(grouping)) == rank)
+    result_df["last_three_month"] = ranked_df.where(F.col("{}_rank_last_three_month".format(grouping)) == rank)
 
+    return result_df
+
+
+def l4_rolling_ranked_window(
+        input_df,
+        config
+) -> Dict[str, DataFrame]:
+
+    ranked_df = __generate_l4_rolling_ranked_column(input_df, config)
+    result_df = __generate_l4_filtered_ranked_table(ranked_df, config)
     return result_df

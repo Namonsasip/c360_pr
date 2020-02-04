@@ -61,6 +61,14 @@ l2_streaming_fav_video_service_by_download_feature:
   save_args:
     mode: "append"
     partitionBy: ["start_of_week"]
+
+l2_streaming_2nd_fav_video_service_by_download_feature:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l2_features/l2_streaming_2nd_fav_video_service_by_download_feature/
+  file_format: parquet
+  save_args:
+    mode: "append"
+    partitionBy: ["start_of_week"]
     
 
 int_l2_streaming_music_service_feature:
@@ -78,6 +86,14 @@ l2_streaming_fav_music_service_by_download_feature:
   save_args:
     mode: "append"
     partitionBy: ["start_of_week"]
+
+l2_streaming_2nd_fav_music_service_by_download_feature:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l2_features/l2_streaming_2nd_fav_music_service_by_download_feature/
+  file_format: parquet
+  save_args:
+    mode: "append"
+    partitionBy: ["start_of_week"]
     
 
 int_l2_streaming_esport_service_feature:
@@ -91,6 +107,14 @@ int_l2_streaming_esport_service_feature:
 l2_streaming_fav_esport_service_by_download_feature:
   type: kedro.contrib.io.pyspark.SparkDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l2_features/l2_streaming_fav_esport_service_by_download_feature/
+  file_format: parquet
+  save_args:
+    mode: "append"
+    partitionBy: ["start_of_week"]
+
+l2_streaming_2nd_fav_esport_service_by_download_feature:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l2_features/l2_streaming_2nd_fav_esport_service_by_download_feature/
   file_format: parquet
   save_args:
     mode: "append"

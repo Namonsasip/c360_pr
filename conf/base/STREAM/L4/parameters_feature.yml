@@ -67,8 +67,18 @@ int_l4_streaming_service_feature:
 l4_streaming_fav_service_by_download_feature:
   where_clause: ""
   feature_column:
-    fav_video_service_by_download_kb: "application"
+    fav_service_by_download_kb: "application"
 
   partition_by: ["mobile_no", "start_of_week"]
   order_by_column_prefix: "sum_sum_download_kb_traffic"
+  read_from: "l2"
+
+l4_streaming_2nd_fav_service_by_download_feature:
+  where_clause: ""
+  feature_column:
+    second_fav_service_by_download_kb: "application"
+
+  partition_by: ["mobile_no", "start_of_week"]
+  order_by_column_prefix: "sum_sum_download_kb_traffic"
+  rank: 2
   read_from: "l2"

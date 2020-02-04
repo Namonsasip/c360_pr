@@ -73,9 +73,17 @@ l3_streaming_fav_service_by_download_feature:
     where_clause: "where sum_download_kb_traffic_rank = 1"
     feature_list:
         mobile_no: "mobile_no"
-        fav_video_service_by_download_kb_traffic: "application"
+        fav_service_by_download_kb_traffic: "application"
         sum_download_kb_traffic: "sum_download_kb_traffic"
         start_of_month: "start_of_month"
     granularity: ""
 
+l3_streaming_2nd_fav_service_by_download_feature:
+    where_clause: "where sum_download_kb_traffic_rank = 2"
+    feature_list:
+        mobile_no: "mobile_no"
+        fav_service_by_download_kb_traffic: "application"
+        sum_download_kb_traffic: "sum_download_kb_traffic"
+        start_of_month: "start_of_month"
+    granularity: ""
     
