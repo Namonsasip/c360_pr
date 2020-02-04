@@ -37,9 +37,8 @@ To run the tests, run ``kedro test``.
 """
 
 
-class TestProjectContext:
-    def test_project_name(self, project_context):
-        assert project_context.project_name == "project-samudra"
-
-    def test_project_version(self, project_context):
-        assert project_context.project_version == "0.15.5"
+class TestUsage:
+    def test_l1_granularity(self, project_context):
+        granular_cols = ['msisdn', 'event_partition_date']
+        df = project_context.catalog.load("l1_usage_call_relation_sum_daily")
+        assert df.count() == df.select(granular_cols).distinct().count()
