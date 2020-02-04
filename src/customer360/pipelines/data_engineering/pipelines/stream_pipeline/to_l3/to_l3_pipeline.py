@@ -42,7 +42,7 @@ def streaming_to_l3_pipeline(**kwargs):
             # Content Type Features
             node(
                 node_from_config,
-                ["int_l1_streaming_content_type_features",
+                ["int_l2_streaming_content_type_features",
                  "params:int_l3_streaming_content_type_features"],
                 "int_l3_streaming_content_type_features"
             ),
@@ -56,7 +56,7 @@ def streaming_to_l3_pipeline(**kwargs):
             # TV Channel features
             node(
                 node_from_config,
-                ["int_l1_streaming_tv_channel_features",
+                ["int_l2_streaming_tv_channel_features",
                  "params:int_l3_streaming_tv_channel_features"],
                 "int_l3_streaming_tv_channel_features"
             ),
@@ -85,7 +85,7 @@ def streaming_to_l3_pipeline(**kwargs):
             # fav video service by download traffic
             node(
                 node_from_config,
-                ["int_l1_streaming_video_service_feature",
+                ["int_l2_streaming_video_service_feature",
                  "params:int_l3_streaming_video_service_feature"],
                 "int_l3_streaming_video_service_feature"
             ),
@@ -99,7 +99,7 @@ def streaming_to_l3_pipeline(**kwargs):
             # fav music service by download traffic
             node(
                 node_from_config,
-                ["int_l1_streaming_music_service_feature",
+                ["int_l2_streaming_music_service_feature",
                  "params:int_l3_streaming_music_service_feature"],
                 "int_l3_streaming_music_service_feature"
             ),
@@ -113,7 +113,7 @@ def streaming_to_l3_pipeline(**kwargs):
             # fav esport service by download traffic
             node(
                 node_from_config,
-                ["int_l1_streaming_esport_service_feature",
+                ["int_l2_streaming_esport_service_feature",
                  "params:int_l3_streaming_esport_service_feature"],
                 "int_l3_streaming_esport_service_feature"
             ),
