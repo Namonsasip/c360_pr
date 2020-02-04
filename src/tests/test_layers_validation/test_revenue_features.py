@@ -38,17 +38,31 @@ To run the tests, run ``kedro test``.
 
 
 class TestRevenue:
-    l3_granular_monthly_cols = ['access_method_number', 'start_of_month']
-    l4_granular_monthly_cols = ['msisdn', 'start_of_month']
+    l3_postpiad_granular_monthly_cols = ['sub_id', 'start_of_month']
+    l3_prepiad_granular_monthly_cols = ['access_method_num', 'register_date', 'start_of_month']
+
+    l4_postpaid_granular_monthly_cols = ['sub_id', 'start_of_month']
+    l4_prepaid_granular_monthly_cols = ['access_method_num', 'register_date', 'start_of_month']
+
+    postpaid_data = 'l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly'
+    prepaid_data = 'l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly'
 
     def test_l3_revenue(self, project_context):
-        df = project_context.catalog.load("l3_revenue_prepos_ru_f_sum_revenue_by_service_monthly")
-        assert df.count() == df.select(self.l3_granular_monthly_cols).distinct().count()
-        assert df.where("access_method_number is null").count() == 0
-        assert df.where("start_of_month is null").count() == 0
+        postpaid = project_context.catalog.load(self.postpaid_data)
+        prepaid = project_context.catalog.load(self.prepaid_data)
+
+        assert postpaid.count() == postpaid.select(self.l3_postpiad_granular_monthly_cols).distinct().count()
+        assert postpaid.where("sub_id is null").count() == 0
+
+        assert prepaid.count() == prepaid.select(self.l3_prepiad_granular_monthly_cols).distinct().count()
+        assert prepaid.where("access_method_num is null").count() == 0
 
     def test_l4_revenue(self, project_context):
-        df = project_context.catalog.load("l4_revenue_prepos_ru_f_sum_revenue_by_service_monthly")
-        assert df.count() == df.select(self.l4_granular_monthly_cols).distinct().count()
-        assert df.where("msisdn is null").count() == 0
-        assert df.where("start_of_month is null").count() == 0
+        postpaid = project_context.catalog.load(self.postpaid_data)
+        prepaid = project_context.catalog.load(self.prepaid_data)
+
+        assert postpaid.count() == postpaid.select(self.l4_postpaid_granular_monthly_cols).distinct().count()
+        assert postpaid.where("sub_id is null").count() == 0
+
+        assert prepaid.count() == prepaid.select(self.l4_prepaid_granular_monthly_cols).distinct().count()
+        assert prepaid.where("access_method_num is null").count() == 0
