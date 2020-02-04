@@ -23,7 +23,7 @@ class QueryGenerator:
                 QueryGenerator.__add_event_partition_date(features, event_date_column)
 
             # if don't want to use where clause then put empty string "" in query_parameters.yaml
-            where_clause = table_params["where_clause"]
+            where_clause = table_params.get("where_clause", "")
 
             # if features are not listed we can assume it to be *
             # or can raise a exception
