@@ -66,6 +66,10 @@ int_l3_streaming_service_feature:
         sum_download_kb_traffic_rank: "row_number() over (partition by mobile_no, application_group, start_of_month
                                                     order by sum(sum_download_kb_traffic) desc)"
         sum_download_kb_traffic: "sum(sum_download_kb_traffic)"
+
+        visit_count: "sum(visit_count)"
+        visit_count_rank: "row_number() over (partition by mobile_no, application_group, start_of_month
+                                                    order by sum(visit_count) desc)"
     granularity: "mobile_no, application, application_group, start_of_month"
     
 
@@ -82,8 +86,16 @@ l3_streaming_2nd_fav_service_by_download_feature:
     where_clause: "where sum_download_kb_traffic_rank = 2"
     feature_list:
         mobile_no: "mobile_no"
-        fav_service_by_download_kb_traffic: "application"
+        second_fav_service_by_download_kb_traffic: "application"
         sum_download_kb_traffic: "sum_download_kb_traffic"
         start_of_month: "start_of_month"
     granularity: ""
-    
+
+l3_streaming_fav_service_by_visit_count_feature:
+    where_clause: "where visit_count_rank = 1"
+    feature_list:
+        mobile_no: "mobile_no"
+        fav_service_by_visit_count: "application"
+        visit_count: "visit_count"
+        start_of_month: "start_of_month"
+    granularity: ""

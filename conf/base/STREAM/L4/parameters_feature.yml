@@ -61,7 +61,8 @@ l4_streaming_fav_tv_show_by_episode_watched:
 int_l4_streaming_service_feature:
   partition_by: ["mobile_no", "application"]
   feature_list:
-    sum: ["sum_download_kb_traffic"]
+    sum: ["sum_download_kb_traffic",
+          "visit_count"]
   read_from: "l2"
 
 l4_streaming_fav_service_by_download_feature:
@@ -81,4 +82,13 @@ l4_streaming_2nd_fav_service_by_download_feature:
   partition_by: ["mobile_no", "start_of_week"]
   order_by_column_prefix: "sum_sum_download_kb_traffic"
   rank: 2
+  read_from: "l2"
+
+l4_streaming_fav_service_by_visit_count_feature:
+  where_clause: ""
+  feature_column:
+    fav_service_by_visit_count: "application"
+
+  partition_by: ["mobile_no", "start_of_week"]
+  order_by_column_prefix: "sum_visit_count"
   read_from: "l2"
