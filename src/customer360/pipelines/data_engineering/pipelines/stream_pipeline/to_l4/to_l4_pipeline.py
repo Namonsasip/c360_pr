@@ -47,6 +47,7 @@ def streaming_to_l4_pipeline(**kwargs):
                  "params:int_l4_streaming_content_type_features"],
                 "int_l4_streaming_content_type_features"
             ),
+            # this will get all the first rank of the group
             node(
                 l4_rolling_ranked_window_first_rank,
                 ["int_l4_streaming_content_type_features",
@@ -94,7 +95,56 @@ def streaming_to_l4_pipeline(**kwargs):
                  "last_two_week": "l4_streaming_fav_tv_show_by_episode_watched_last_two_week",
                  "last_month": "l4_streaming_fav_tv_show_by_episode_watched_last_month",
                  "last_three_month": "l4_streaming_fav_tv_show_by_episode_watched_last_three_month"}
-            )
+            ),
+
+
+            node(
+                l4_rolling_window,
+                ["int_l2_streaming_video_service_feature",
+                 "params:int_l4_streaming_video_service_feature"],
+                "int_l4_streaming_video_service_feature"
+            ),
+            node(
+                l4_rolling_ranked_window_first_rank,
+                ["int_l4_streaming_video_service_feature",
+                 "params:l4_streaming_fav_video_service_by_download_feature"],
+                {"last_week": "l4_streaming_fav_video_service_by_download_feature_last_week",
+                 "last_two_week": "l4_streaming_fav_video_service_by_download_feature_last_two_week",
+                 "last_month": "l4_streaming_fav_video_service_by_download_feature_last_month",
+                 "last_three_month": "l4_streaming_fav_video_service_by_download_feature_last_three_month"}
+            ),
+
+            node(
+                l4_rolling_window,
+                ["int_l2_streaming_music_service_feature",
+                 "params:int_l4_streaming_music_service_feature"],
+                "int_l4_streaming_music_service_feature"
+            ),
+            node(
+                l4_rolling_ranked_window_first_rank,
+                ["int_l4_streaming_music_service_feature",
+                 "params:l4_streaming_fav_music_service_by_download_feature"],
+                {"last_week": "l4_streaming_fav_music_service_by_download_feature_last_week",
+                 "last_two_week": "l4_streaming_fav_music_service_by_download_feature_last_two_week",
+                 "last_month": "l4_streaming_fav_music_service_by_download_feature_last_month",
+                 "last_three_month": "l4_streaming_fav_music_service_by_download_feature_last_three_month"}
+            ),
+
+            node(
+                l4_rolling_window,
+                ["int_l2_streaming_esport_service_feature",
+                 "params:int_l4_streaming_esport_service_feature"],
+                "int_l4_streaming_esport_service_feature"
+            ),
+            node(
+                l4_rolling_ranked_window_first_rank,
+                ["int_l4_streaming_esport_service_feature",
+                 "params:l4_streaming_fav_esport_service_by_download_feature"],
+                {"last_week": "l4_streaming_fav_esport_service_by_download_feature_last_week",
+                 "last_two_week": "l4_streaming_fav_esport_service_by_download_feature_last_two_week",
+                 "last_month": "l4_streaming_fav_esport_service_by_download_feature_last_month",
+                 "last_three_month": "l4_streaming_fav_esport_service_by_download_feature_last_three_month"}
+            ),
 
         ], name="streaming_to_l4_pipeline"
     )

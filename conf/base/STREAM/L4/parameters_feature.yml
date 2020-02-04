@@ -55,3 +55,54 @@ l4_streaming_fav_tv_show_by_episode_watched:
   partition_by: ["access_method_num", "date(register_date)", "start_of_week"]
   order_by_column_prefix: "approx_count_distinct_title"
   read_from: "l2"
+
+
+
+int_l4_streaming_video_service_feature:
+  partition_by: ["mobile_no", "application"]
+  feature_list:
+    sum: ["sum_download_kb_traffic"]
+  read_from: "l2"
+
+l4_streaming_fav_video_service_by_download_feature:
+  where_clause: ""
+  feature_column:
+    fav_video_service_by_download_kb: "application"
+
+  partition_by: ["mobile_no", "start_of_week"]
+  order_by_column_prefix: "sum_sum_download_kb_traffic"
+  read_from: "l2"
+
+
+
+int_l4_streaming_music_service_feature:
+  partition_by: ["mobile_no", "application"]
+  feature_list:
+    sum: ["sum_download_kb_traffic"]
+  read_from: "l2"
+
+l4_streaming_fav_music_service_by_download_feature:
+  where_clause: ""
+  feature_column:
+    fav_music_service_by_download_kb: "application"
+
+  partition_by: ["mobile_no", "start_of_week"]
+  order_by_column_prefix: "sum_sum_download_kb_traffic"
+  read_from: "l2"
+
+
+
+int_l4_streaming_esport_service_feature:
+  partition_by: ["mobile_no", "application"]
+  feature_list:
+    sum: ["sum_download_kb_traffic"]
+  read_from: "l2"
+
+l4_streaming_fav_esport_service_by_download_feature:
+  where_clause: ""
+  feature_column:
+    fav_esport_service_by_download_kb: "application"
+
+  partition_by: ["mobile_no", "start_of_week"]
+  order_by_column_prefix: "sum_sum_download_kb_traffic"
+  read_from: "l2"
