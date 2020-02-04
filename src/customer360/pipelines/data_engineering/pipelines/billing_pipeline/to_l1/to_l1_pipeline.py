@@ -36,5 +36,17 @@ def billing_to_l1_pipeline(**kwargs):
                 ["l0_billing_and_payments_rt_t_recharge_daily","params:l1_billing_and_payment_most_popular_topup_channel"],
                 "l1_billing_and_payments_daily_most_popular_top_up_channel"
             ),
+            node(
+                node_from_config,
+                ["l0_billing_and_payments_rt_t_recharge_daily",
+                 "params:l1_billing_and_payment_popular_topup_day"],
+                "l1_billing_and_payments_daily_popular_topup_day"
+            ),
+            node(
+                node_from_config,
+                ["l0_billing_and_payments_rt_t_recharge_daily",
+                 "params:l1_time_since_last_top_up"],
+                "l1_billing_and_payments_daily_time_since_last_top_up"
+            ),
         ]
     )

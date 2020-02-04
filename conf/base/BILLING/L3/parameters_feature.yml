@@ -136,4 +136,86 @@ l3_bill_volume:
     where_clause: ""
     feature_list:
       payments_bill_volume: "sum(bill_stmt_tot_invoiced_amt)"
+      payments_roaming_bill_volume: "sum(bill_stmt_tot_net_ir_mrkp_amt)"
+    granularity: "start_of_month,account_identifier"
+
+l3_missed_bills:
+    where_clause: "where bill_seq_no is null"
+    feature_list:
+      payments_missed_bills: "count(*)"
+    granularity: "start_of_month,account_identifier"
+
+l3_popular_topup_day_1:
+    where_clause: ""
+    feature_list:
+      payment_popular_day_topup_count: "sum(payment_popular_day_topup_count)"
+    granularity: "start_of_month,access_method_num,register_date,payment_popular_day"
+
+l3_popular_topup_day_2:
+    where_clause: ""
+    feature_list:
+      start_of_month: "start_of_month"
+      access_method_num: "access_method_num"
+      register_date: "register_date"
+      payment_popular_day: "payment_popular_day"
+      rank: "row_number() over(partition by start_of_month,access_method_num,register_date
+                               order by payment_popular_day_topup_count desc)"
+    granularity: ""
+
+l3_popular_topup_day_3:
+    where_clause: "where rank = 1"
+    feature_list:
+      start_of_month: "start_of_month"
+      access_method_num: "access_method_num"
+      register_date: "register_date"
+      payment_popular_day: "payment_popular_day"
+    granularity: ""
+
+l3_popular_topup_hour_1:
+    where_clause: ""
+    feature_list:
+      payment_popular_hour_topup_count: "sum(payment_popular_hour_topup_count)"
+    granularity: "start_of_month,access_method_num,register_date,payment_popular_hour"
+
+l3_popular_topup_hour_2:
+    where_clause: ""
+    feature_list:
+      start_of_month: "start_of_month"
+      access_method_num: "access_method_num"
+      register_date: "register_date"
+      payment_popular_hour: "payment_popular_hour"
+      rank: "row_number() over(partition by start_of_month,access_method_num,register_date
+                               order by payment_popular_hour_topup_count desc)"
+    granularity: ""
+
+l3_popular_topup_hour_3:
+    where_clause: "where rank = 1"
+    feature_list:
+      start_of_month: "start_of_month"
+      access_method_num: "access_method_num"
+      register_date: "register_date"
+      payment_popular_hour: "payment_popular_hour"
+    granularity: ""
+
+l3_overdue_bills:
+    where_clause: "where bill_seq_no is not null"
+    feature_list:
+      payments_over_due_bills: "sum(case when no_of_days>0 then 1 else 0 end)"
+      payments_over_due_bills_1_to_10_days: "sum(case when no_of_days>0 and no_of_days<=10 then 1 else 0 end)"
+      payments_over_due_bills_10_to_30_days: "sum(case when no_of_days>10 and no_of_days<=30 then 1 else 0 end)"
+      payments_over_due_bills_30_plus_days: "sum(case when no_of_days>30 then 1 else 0 end)"
+    granularity: "start_of_month,account_identifier"
+
+l3_time_since_last_top_up:
+    where_clause: ""
+    feature_list:
+      payments_time_since_last_top_up: "datediff(last_day(start_of_month),max(payments_recharge_time))"
+      payments_recharge_time: "max(payments_recharge_time)"
+    granularity: "access_method_num,register_date,start_of_month"
+
+l3_last_overdue_bill_days_ago_and_volume:
+    where_clause: "where bill_seq_no is not null"
+    feature_list:
+      payments_last_overdue_bill_days_ago: "max(case when no_of_days>0 then no_of_days else 0 end)"
+      payments_last_overdue_bill_volume: "sum(case when no_of_days>0 then bill_stmt_tot_invoiced_amt else 0 end)"
     granularity: "start_of_month,account_identifier"

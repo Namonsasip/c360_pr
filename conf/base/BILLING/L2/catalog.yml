@@ -62,3 +62,44 @@ l2_billing_and_payments_weekly_last_top_up_channel:
   save_args:
     partitionBy: ["start_of_week"]
     mode: "overwrite"
+
+l2_billing_and_payments_weekly_popular_topup_day_intermediate:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/BILLING/l2_features/billing_and_payments_popular_topup_day_intermediate/
+  save_args:
+    partitionBy: ["start_of_week"]
+    mode: "overwrite"
+
+l2_billing_and_payments_weekly_popular_topup_day:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/BILLING/l2_features/billing_and_payments_popular_topup_day/
+  save_args:
+    partitionBy: ["start_of_week"]
+    mode: "overwrite"
+
+
+l2_billing_and_payments_weekly_popular_topup_hour_intermediate:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/BILLING/l2_features/billing_and_payments_popular_topup_hour_intermediate/
+  save_args:
+    partitionBy: ["start_of_week"]
+    mode: "overwrite"
+
+l2_billing_and_payments_weekly_popular_topup_hour:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/BILLING/l2_features/billing_and_payments_popular_topup_hour/
+  save_args:
+    partitionBy: ["start_of_week"]
+    mode: "overwrite"
+
+l2_billing_and_payments_weekly_time_since_last_top_up:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/BILLING/l2_features/billing_and_payments_time_since_last_top_up/
+  save_args:
+    partitionBy: ["start_of_week"]
+    mode: "overwrite"

@@ -75,5 +75,40 @@ def billing_to_l2_pipeline(**kwargs):
                 ["l2_billing_and_payments_weekly_last_top_up_channel_2", "params:l2_last_topup_channel_2"],
                 "l2_billing_and_payments_weekly_last_top_up_channel"
             ),
+            node(
+                node_from_config,
+                ["l1_billing_and_payments_daily_popular_topup_day", "params:l2_popular_topup_day_1"],
+                "l2_billing_and_payments_weekly_popular_topup_day_intermediate"
+            ),
+            node(
+                node_from_config,
+                ["l2_billing_and_payments_weekly_popular_topup_day_intermediate", "params:l2_popular_topup_day_2"],
+                "l2_billing_and_payments_weekly_popular_topup_day_intermediate_1"
+            ),
+            node(
+                node_from_config,
+                ["l2_billing_and_payments_weekly_popular_topup_day_intermediate_1", "params:l2_popular_topup_day_3"],
+                "l2_billing_and_payments_weekly_popular_topup_day"
+            ),
+            node(
+                node_from_config,
+                ["l1_billing_and_payments_daily_popular_topup_day", "params:l2_popular_topup_hour_1"],
+                "l2_billing_and_payments_weekly_popular_topup_hour_intermediate"
+            ),
+            node(
+                node_from_config,
+                ["l2_billing_and_payments_weekly_popular_topup_hour_intermediate", "params:l2_popular_topup_hour_2"],
+                "l2_billing_and_payments_weekly_popular_topup_hour_intermediate_1"
+            ),
+            node(
+                node_from_config,
+                ["l2_billing_and_payments_weekly_popular_topup_hour_intermediate_1", "params:l2_popular_topup_hour_3"],
+                "l2_billing_and_payments_weekly_popular_topup_hour"
+            ),
+            node(
+                node_from_config,
+                ["l1_billing_and_payments_daily_time_since_last_top_up", "params:l2_time_since_last_top_up"],
+                "l2_billing_and_payments_weekly_time_since_last_top_up"
+            ),
         ]
     )

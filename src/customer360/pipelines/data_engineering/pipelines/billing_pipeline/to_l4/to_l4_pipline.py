@@ -63,38 +63,143 @@ def billing_to_l4_pipeline(**kwargs):
                  "params:l4_billing_top_up_channels"],
                 "l4_billing_rolling_window_top_up_channels"
             ),
-            node(
-                l4_rolling_window,
-                ["l3_billing_and_payments_monthly_bill_volume",
-                 "params:l4_payments_bill_volume"],
-                "l4_billing_rolling_window_bill_volume_intermediate"
-            ),
-            node(
-                node_from_config,
-                ["l4_billing_rolling_window_bill_volume_intermediate","params:l4_dynamics_bill_volume"],
-                "l4_billing_rolling_window_bill_volume"
-            ),
-            node(
-                node_from_config,
-                ["l3_billing_and_payments_monthly_most_popular_top_up_channel_intermediate","params:l4_most_popular_topup_channel_1"],
-                "l4_billing_rolling_window_most_popular_topup_channel_1"
-            ),
-            node(
-                node_from_config,
-                ["l4_billing_rolling_window_most_popular_topup_channel_1",
-                 "params:l4_most_popular_topup_channel_2"],
-                "l4_billing_rolling_window_most_popular_topup_channel_2"
-            ),
-            node(
-                node_from_config,
-                ["l4_billing_rolling_window_most_popular_topup_channel_2",
-                 "params:l4_most_popular_topup_channel_3"],
-                "l4_billing_rolling_window_most_popular_topup_channel"
-            ),
+            # node(
+            #     l4_rolling_window,
+            #     ["l3_billing_and_payments_monthly_bill_volume",
+            #      "params:l4_payments_bill_volume"],
+            #     "l4_billing_rolling_window_bill_volume_intermediate"
+            # ),
+            # node(
+            #     node_from_config,
+            #     ["l4_billing_rolling_window_bill_volume_intermediate","params:l4_dynamics_bill_volume"],
+            #     "l4_billing_rolling_window_bill_volume"
+            # ),
             node(
                 node_from_config,
                 ["l2_billing_and_payments_weekly_last_top_up_channel","params:l4_last_top_up_channel"],
                 "l4_rolling_window_last_top_up_channel"
+            ),
+            #node(
+            #    l4_rolling_window,
+            #    ["l3_billing_and_payments_monthly_missed_bills", "params:l4_missed_bills"],
+            #    "l4_rolling_window_missed_bills"
+            #),
+            # node(
+            #    l4_rolling_window,
+            #    ["l3_billing_and_payments_monthly_overdue_bills", "params:l4_overdue_bills"],
+            #    "l4_rolling_window_overdue_bills"
+            # ),
+            node(
+                l4_rolling_window,
+                ["l2_billing_and_payments_weekly_popular_topup_day_intermediate", "params:l4_popular_topup_day_1"],
+                "l4_rolling_window_popular_topup_day_1"
+            ),
+            node(
+                node_from_config,
+                ["l4_rolling_window_popular_topup_day_1", "params:l4_popular_topup_day_with_ranks"],
+                "l4_rolling_window_popular_topup_day_2"
+            ),
+            node(
+                node_from_config,
+                ["l4_rolling_window_popular_topup_day_2", "params:l4_popular_topup_day_last_week"],
+                "l4_rolling_window_popular_topup_day_last_week"
+            ),
+            node(
+                node_from_config,
+                ["l4_rolling_window_popular_topup_day_2", "params:l4_popular_topup_day_last_two_week"],
+                "l4_rolling_window_popular_topup_day_last_two_week"
+            ),
+            node(
+                node_from_config,
+                ["l4_rolling_window_popular_topup_day_2", "params:l4_popular_topup_day_last_month"],
+                "l4_rolling_window_popular_topup_day_last_month"
+            ),
+            node(
+                node_from_config,
+                ["l4_rolling_window_popular_topup_day_2", "params:l4_popular_topup_day_last_three_month"],
+                "l4_rolling_window_popular_topup_day_last_three_month"
+            ),
+            node(
+                joined_data_for_popular_topup_day,
+                ["l4_rolling_window_popular_topup_day_last_week", "l4_rolling_window_popular_topup_day_last_two_week",
+                 "l4_rolling_window_popular_topup_day_last_month", "l4_rolling_window_popular_topup_day_last_three_month"],
+                "l4_rolling_window_popular_topup_day"
+            ),
+
+            node(
+                l4_rolling_window,
+                ["l2_billing_and_payments_weekly_popular_topup_hour_intermediate", "params:l4_popular_topup_hour_1"],
+                "l4_rolling_window_popular_topup_hour_1"
+            ),
+            node(
+                node_from_config,
+                ["l4_rolling_window_popular_topup_hour_1", "params:l4_popular_topup_hour_with_ranks"],
+                "l4_rolling_window_popular_topup_hour_2"
+            ),
+            node(
+                node_from_config,
+                ["l4_rolling_window_popular_topup_hour_2", "params:l4_popular_topup_hour_last_week"],
+                "l4_rolling_window_popular_topup_hour_last_week"
+            ),
+            node(
+                node_from_config,
+                ["l4_rolling_window_popular_topup_hour_2", "params:l4_popular_topup_hour_last_two_week"],
+                "l4_rolling_window_popular_topup_hour_last_two_week"
+            ),
+            node(
+                node_from_config,
+                ["l4_rolling_window_popular_topup_hour_2", "params:l4_popular_topup_hour_last_month"],
+                "l4_rolling_window_popular_topup_hour_last_month"
+            ),
+            node(
+                node_from_config,
+                ["l4_rolling_window_popular_topup_hour_2", "params:l4_popular_topup_hour_last_three_month"],
+                "l4_rolling_window_popular_topup_hour_last_three_month"
+            ),
+            node(
+                joined_data_for_popular_topup_hour,
+                ["l4_rolling_window_popular_topup_hour_last_week", "l4_rolling_window_popular_topup_hour_last_two_week",
+                 "l4_rolling_window_popular_topup_hour_last_month",
+                 "l4_rolling_window_popular_topup_hour_last_three_month"],
+                "l4_rolling_window_popular_topup_hour"
+            ),
+
+            node(
+                l4_rolling_window,
+                ["l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate", "params:l4_most_popular_topup_channel_1"],
+                "l4_rolling_window_most_popular_topup_channel_1"
+            ),
+            node(
+                node_from_config,
+                ["l4_rolling_window_most_popular_topup_channel_1", "params:l4_most_popular_topup_channel_with_ranks"],
+                "l4_rolling_window_most_popular_topup_channel_2"
+            ),
+            node(
+                node_from_config,
+                ["l4_rolling_window_most_popular_topup_channel_2", "params:l4_most_popular_topup_channel_last_week"],
+                "l4_rolling_window_most_popular_topup_channel_last_week"
+            ),
+            node(
+                node_from_config,
+                ["l4_rolling_window_most_popular_topup_channel_2", "params:l4_most_popular_topup_channel_last_two_week"],
+                "l4_rolling_window_most_popular_topup_channel_last_two_week"
+            ),
+            node(
+                node_from_config,
+                ["l4_rolling_window_most_popular_topup_channel_2", "params:l4_most_popular_topup_channel_last_month"],
+                "l4_rolling_window_most_popular_topup_channel_last_month"
+            ),
+            node(
+                node_from_config,
+                ["l4_rolling_window_most_popular_topup_channel_2", "params:l4_most_popular_topup_channel_last_three_month"],
+                "l4_rolling_window_most_popular_topup_channel_last_three_month"
+            ),
+            node(
+                joined_data_for_most_popular_topup_channel,
+                ["l4_rolling_window_most_popular_topup_channel_last_week", "l4_rolling_window_most_popular_topup_channel_last_two_week",
+                 "l4_rolling_window_most_popular_topup_channel_last_month",
+                 "l4_rolling_window_most_popular_topup_channel_last_three_month"],
+                "l4_billing_rolling_window_most_popular_topup_channel"
             ),
         ]
     )

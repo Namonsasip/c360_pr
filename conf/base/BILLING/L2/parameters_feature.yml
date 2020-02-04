@@ -125,3 +125,68 @@ l2_last_topup_channel_2:
       recharge_time: "recharge_time"
       payments_last_top_up_channel: "payments_last_top_up_channel"
     granularity: ""
+
+l2_popular_topup_day_1:
+    where_clause: ""
+    feature_list:
+      payment_popular_day_topup_count: "count(*)"
+    granularity: "start_of_month,start_of_week,access_method_num,register_date,payment_popular_day"
+
+l2_popular_topup_day_2:
+    where_clause: ""
+    feature_list:
+      start_of_month: "start_of_month"
+      start_of_week: "start_of_week"
+      access_method_num: "access_method_num"
+      register_date: "register_date"
+      payment_popular_day_topup_count: "payment_popular_day_topup_count"
+      payment_popular_day: "payment_popular_day"
+      rank: "row_number() over(partition by start_of_month,start_of_week,access_method_num,register_date
+                               order by payment_popular_day_topup_count desc)"
+    granularity: ""
+
+l2_popular_topup_day_3:
+    where_clause: "where rank = 1"
+    feature_list:
+      start_of_month: "start_of_month"
+      start_of_week: "start_of_week"
+      access_method_num: "access_method_num"
+      register_date: "register_date"
+      payment_popular_day: "payment_popular_day"
+    granularity: ""
+
+l2_popular_topup_hour_1:
+    where_clause: ""
+    feature_list:
+      payment_popular_hour_topup_count: "count(*)"
+    granularity: "start_of_month,start_of_week,access_method_num,register_date,payment_popular_hour"
+
+l2_popular_topup_hour_2:
+    where_clause: ""
+    feature_list:
+      start_of_month: "start_of_month"
+      start_of_week: "start_of_week"
+      access_method_num: "access_method_num"
+      register_date: "register_date"
+      payment_popular_hour_topup_count: "payment_popular_hour_topup_count"
+      payment_popular_hour: "payment_popular_hour"
+      rank: "row_number() over(partition by start_of_month,start_of_week,access_method_num,register_date
+                               order by payment_popular_hour_topup_count desc)"
+    granularity: ""
+
+l2_popular_topup_hour_3:
+    where_clause: "where rank = 1"
+    feature_list:
+      start_of_month: "start_of_month"
+      start_of_week: "start_of_week"
+      access_method_num: "access_method_num"
+      register_date: "register_date"
+      payment_popular_hour: "payment_popular_hour"
+    granularity: ""
+
+l2_time_since_last_top_up:
+    where_clause: ""
+    feature_list:
+      payments_time_since_last_top_up: "datediff(date_add(start_of_week,6),max(recharge_time))"
+      payments_recharge_time: "max(recharge_time)"
+    granularity: "access_method_num,register_date,start_of_month,start_of_week"
