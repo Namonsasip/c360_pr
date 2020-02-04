@@ -223,8 +223,7 @@ def expansion(input_df, config) -> DataFrame:
     sql_stmt = QueryGenerator.aggregate(
         table_name=table_name,
         table_params=config,
-        column_function=QueryGenerator.expansion_feature_listing,
-        level=config['type']
+        column_function=QueryGenerator.expansion_feature_listing
     )
 
     logging.info("SQL QUERY {}".format(sql_stmt))
