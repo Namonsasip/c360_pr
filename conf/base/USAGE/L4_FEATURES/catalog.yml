@@ -3,7 +3,7 @@ l4_usage_call_relation_features:
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/USAGE/l4_features/usage_call_relation_features/
   save_args:
-    mode: "overwrite"
+    mode: "append"
     partitionBy: ["start_of_week"]
 
 l4_usage_call_relation_ir_features:
@@ -11,7 +11,7 @@ l4_usage_call_relation_ir_features:
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/USAGE/l4_features/usage_call_relation_ir_features/
   save_args:
-    mode: "overwrite"
+    mode: "append"
     partitionBy: ["start_of_week"]
 
 l4_usage_data_prepaid_postpaid_features:
@@ -19,5 +19,5 @@ l4_usage_data_prepaid_postpaid_features:
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/USAGE/l4_features/usage_data_prepaid_postpaid_features/
   save_args:
-    mode: "overwrite"
+    mode: "append"
     partitionBy: ["start_of_week"]

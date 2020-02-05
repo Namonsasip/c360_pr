@@ -409,13 +409,38 @@ l2_usage_data_prepaid_postpaid_weekly:
           'usg_outgoing_roaming_data_volume',
           'usg_outgoing_roaming_data_volume_2G_3G',
           'usg_outgoing_roaming_data_volume_4G',
-          'usg_total_data_monday_usage',
           'usg_total_data_volume',
-          'usg_total_vas_data_volume'
+          'usg_data_monday_afternoon_usage',
+          'usg_data_tuesday_afternoon_usage',
+          'usg_data_wednesday_afternoon_usage',
+          'usg_data_thursday_afternoon_usage',
+          'usg_data_friday_afternoon_usage',
+          'usg_data_saturday_afternoon_usage',
+          'usg_data_sunday_afternoon_usage',
+          'usg_data_monday_morning_usage',
+          'usg_data_tuesday_morning_usage',
+          'usg_data_wednesday_morning_usage',
+          'usg_data_thursday_morning_usage',
+          'usg_data_friday_morning_usage',
+          'usg_data_saturday_morning_usage',
+          'usg_data_sunday_morning_usage',
+          'usg_data_monday_evening_usage',
+          'usg_data_tuesday_evening_usage',
+          'usg_data_wednesday_evening_usage',
+          'usg_data_thursday_evening_usage',
+          'usg_data_friday_evening_usage',
+          'usg_data_saturday_evening_usage',
+          'usg_data_sunday_evening_usage',
+          'usg_data_monday_night_usage',
+          'usg_data_tuesday_night_usage',
+          'usg_data_wednesday_night_usage',
+          'usg_data_thursday_night_usage',
+          'usg_data_friday_night_usage',
+          'usg_data_saturday_night_usage',
+          'usg_data_sunday_night_usage',
     ]
     max: [
           'usg_total_data_last_action_date',
-          'usg_total_data_vas_last_action_date',
           'usg_data_last_action_date',
           'usg_incoming_data_volume',
           'usg_incoming_data_volume_2G_3G',
@@ -436,7 +461,6 @@ l2_usage_data_prepaid_postpaid_weekly:
           'usg_outgoing_roaming_data_volume_2G_3G',
           'usg_outgoing_roaming_data_volume_4G',
           'usg_total_data_volume',
-          'usg_total_vas_data_volume'
     ]
     min: [
           'usg_incoming_data_volume',
@@ -458,7 +482,6 @@ l2_usage_data_prepaid_postpaid_weekly:
           'usg_outgoing_roaming_data_volume_2G_3G',
           'usg_outgoing_roaming_data_volume_4G',
           'usg_total_data_volume',
-          'usg_total_vas_data_volume'
     ]
     avg: [
           'usg_incoming_data_volume',
@@ -480,6 +503,5 @@ l2_usage_data_prepaid_postpaid_weekly:
           'usg_outgoing_roaming_data_volume_2G_3G',
           'usg_outgoing_roaming_data_volume_4G',
           'usg_total_data_volume',
-          'usg_total_vas_data_volume'
     ]
   granularity: "msisdn, start_of_week, start_of_month"

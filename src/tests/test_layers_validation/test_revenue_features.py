@@ -37,8 +37,32 @@ To run the tests, run ``kedro test``.
 """
 
 
-class TestUsage:
-    def test_l1_granularity(self, project_context):
-        granular_cols = ['msisdn', 'event_partition_date']
-        df = project_context.catalog.load("l1_usage_call_relation_sum_daily")
-        assert df.count() == df.select(granular_cols).distinct().count()
+class TestRevenue:
+    l3_postpiad_granular_monthly_cols = ['sub_id', 'start_of_month']
+    l3_prepiad_granular_monthly_cols = ['access_method_num', 'register_date', 'start_of_month']
+
+    l4_postpaid_granular_monthly_cols = ['sub_id', 'start_of_month']
+    l4_prepaid_granular_monthly_cols = ['access_method_num', 'register_date', 'start_of_month']
+
+    postpaid_data = 'l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly'
+    prepaid_data = 'l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly'
+
+    def test_l3_revenue(self, project_context):
+        postpaid = project_context.catalog.load(self.postpaid_data)
+        prepaid = project_context.catalog.load(self.prepaid_data)
+
+        assert postpaid.count() == postpaid.select(self.l3_postpiad_granular_monthly_cols).distinct().count()
+        assert postpaid.where("sub_id is null").count() == 0
+
+        assert prepaid.count() == prepaid.select(self.l3_prepiad_granular_monthly_cols).distinct().count()
+        assert prepaid.where("access_method_num is null").count() == 0
+
+    def test_l4_revenue(self, project_context):
+        postpaid = project_context.catalog.load(self.postpaid_data)
+        prepaid = project_context.catalog.load(self.prepaid_data)
+
+        assert postpaid.count() == postpaid.select(self.l4_postpaid_granular_monthly_cols).distinct().count()
+        assert postpaid.where("sub_id is null").count() == 0
+
+        assert prepaid.count() == prepaid.select(self.l4_prepaid_granular_monthly_cols).distinct().count()
+        assert prepaid.where("access_method_num is null").count() == 0
