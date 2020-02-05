@@ -54,10 +54,7 @@ def streaming_to_l4_pipeline(**kwargs):
                 l4_rolling_ranked_window,
                 ["int_l4_streaming_content_type_features",
                  "params:l4_streaming_fav_content_group_by_volume"],
-                {"last_week": "l4_streaming_fav_content_group_by_volume_last_week",
-                 "last_two_week": "l4_streaming_fav_content_group_by_volume_last_two_week",
-                 "last_month": "l4_streaming_fav_content_group_by_volume_last_month",
-                 "last_three_month": "l4_streaming_fav_content_group_by_volume_last_three_month"}
+                "l4_streaming_fav_content_group_by_volume"
             ),
 
             node(
@@ -70,10 +67,7 @@ def streaming_to_l4_pipeline(**kwargs):
                 l4_rolling_ranked_window,
                 ["int_l4_streaming_tv_channel_features",
                  "params:l4_streaming_fav_tv_channel_by_volume"],
-                {"last_week": "l4_streaming_fav_tv_channel_by_volume_last_week",
-                 "last_two_week": "l4_streaming_fav_tv_channel_by_volume_last_two_week",
-                 "last_month": "l4_streaming_fav_tv_channel_by_volume_last_month",
-                 "last_three_month": "l4_streaming_fav_tv_channel_by_volume_last_three_month"}
+                "l4_streaming_fav_tv_channel_by_volume"
             ),
 
             node(
@@ -93,10 +87,7 @@ def streaming_to_l4_pipeline(**kwargs):
                 l4_rolling_ranked_window,
                 ["int_l4_streaming_tv_show_features_2",
                  "params:l4_streaming_fav_tv_show_by_episode_watched"],
-                {"last_week": "l4_streaming_fav_tv_show_by_episode_watched_last_week",
-                 "last_two_week": "l4_streaming_fav_tv_show_by_episode_watched_last_two_week",
-                 "last_month": "l4_streaming_fav_tv_show_by_episode_watched_last_month",
-                 "last_three_month": "l4_streaming_fav_tv_show_by_episode_watched_last_three_month"}
+                "l4_streaming_fav_tv_show_by_episode_watched"
             ),
 
             # fav video service feature
@@ -110,28 +101,19 @@ def streaming_to_l4_pipeline(**kwargs):
                 l4_rolling_ranked_window,
                 ["int_l4_streaming_video_service_feature",
                  "params:l4_streaming_fav_service_by_download_feature"],
-                {"last_week": "l4_streaming_fav_video_service_by_download_feature_last_week",
-                 "last_two_week": "l4_streaming_fav_video_service_by_download_feature_last_two_week",
-                 "last_month": "l4_streaming_fav_video_service_by_download_feature_last_month",
-                 "last_three_month": "l4_streaming_fav_video_service_by_download_feature_last_three_month"}
+                "l4_streaming_fav_video_service_by_download_feature"
             ),
             node(
                 l4_rolling_ranked_window,
                 ["int_l4_streaming_video_service_feature",
                  "params:l4_streaming_2nd_fav_service_by_download_feature"],
-                {"last_week": "l4_streaming_2nd_fav_video_service_by_download_feature_last_week",
-                 "last_two_week": "l4_streaming_2nd_fav_video_service_by_download_feature_last_two_week",
-                 "last_month": "l4_streaming_2nd_fav_video_service_by_download_feature_last_month",
-                 "last_three_month": "l4_streaming_2nd_fav_video_service_by_download_feature_last_three_month"}
+                "l4_streaming_2nd_fav_video_service_by_download_feature"
             ),
             node(
                 l4_rolling_ranked_window,
                 ["int_l4_streaming_video_service_feature",
                  "params:l4_streaming_fav_service_by_visit_count_feature"],
-                {"last_week": "l4_streaming_fav_video_service_by_visit_count_feature_last_week",
-                 "last_two_week": "l4_streaming_fav_video_service_by_visit_count_feature_last_two_week",
-                 "last_month": "l4_streaming_fav_video_service_by_visit_count_feature_last_month",
-                 "last_three_month": "l4_streaming_fav_video_service_by_visit_count_feature_last_three_month"}
+                "l4_streaming_fav_video_service_by_visit_count_feature"
             ),
 
             # fav music service feature
@@ -145,28 +127,19 @@ def streaming_to_l4_pipeline(**kwargs):
                 l4_rolling_ranked_window,
                 ["int_l4_streaming_music_service_feature",
                  "params:l4_streaming_fav_service_by_download_feature"],
-                {"last_week": "l4_streaming_fav_music_service_by_download_feature_last_week",
-                 "last_two_week": "l4_streaming_fav_music_service_by_download_feature_last_two_week",
-                 "last_month": "l4_streaming_fav_music_service_by_download_feature_last_month",
-                 "last_three_month": "l4_streaming_fav_music_service_by_download_feature_last_three_month"}
+                "l4_streaming_fav_music_service_by_download_feature"
             ),
             node(
                 l4_rolling_ranked_window,
                 ["int_l4_streaming_music_service_feature",
                  "params:l4_streaming_2nd_fav_service_by_download_feature"],
-                {"last_week": "l4_streaming_2nd_fav_music_service_by_download_feature_last_week",
-                 "last_two_week": "l4_streaming_2nd_fav_music_service_by_download_feature_last_two_week",
-                 "last_month": "l4_streaming_2nd_fav_music_service_by_download_feature_last_month",
-                 "last_three_month": "l4_streaming_2nd_fav_music_service_by_download_feature_last_three_month"}
+                "l4_streaming_2nd_fav_music_service_by_download_feature"
             ),
             node(
                 l4_rolling_ranked_window,
                 ["int_l4_streaming_music_service_feature",
                  "params:l4_streaming_fav_service_by_visit_count_feature"],
-                {"last_week": "l4_streaming_fav_music_service_by_visit_count_feature_last_week",
-                 "last_two_week": "l4_streaming_fav_music_service_by_visit_count_feature_last_two_week",
-                 "last_month": "l4_streaming_fav_music_service_by_visit_count_feature_last_month",
-                 "last_three_month": "l4_streaming_fav_music_service_by_visit_count_feature_last_three_month"}
+                "l4_streaming_fav_music_service_by_visit_count_feature"
             ),
 
             # fav esport service feature
@@ -180,28 +153,19 @@ def streaming_to_l4_pipeline(**kwargs):
                 l4_rolling_ranked_window,
                 ["int_l4_streaming_esport_service_feature",
                  "params:l4_streaming_fav_service_by_download_feature"],
-                {"last_week": "l4_streaming_fav_esport_service_by_download_feature_last_week",
-                 "last_two_week": "l4_streaming_fav_esport_service_by_download_feature_last_two_week",
-                 "last_month": "l4_streaming_fav_esport_service_by_download_feature_last_month",
-                 "last_three_month": "l4_streaming_fav_esport_service_by_download_feature_last_three_month"}
+                "l4_streaming_fav_esport_service_by_download_feature"
             ),
             node(
                 l4_rolling_ranked_window,
                 ["int_l4_streaming_esport_service_feature",
                  "params:l4_streaming_2nd_fav_service_by_download_feature"],
-                {"last_week": "l4_streaming_2nd_fav_esport_service_by_download_feature_last_week",
-                 "last_two_week": "l4_streaming_2nd_fav_esport_service_by_download_feature_last_two_week",
-                 "last_month": "l4_streaming_2nd_fav_esport_service_by_download_feature_last_month",
-                 "last_three_month": "l4_streaming_2nd_fav_esport_service_by_download_feature_last_three_month"}
+                "l4_streaming_2nd_fav_esport_service_by_download_feature"
             ),
             node(
                 l4_rolling_ranked_window,
                 ["int_l4_streaming_esport_service_feature",
                  "params:l4_streaming_fav_service_by_visit_count_feature"],
-                {"last_week": "l4_streaming_fav_esport_service_by_visit_count_feature_last_week",
-                 "last_two_week": "l4_streaming_fav_esport_service_by_visit_count_feature_last_two_week",
-                 "last_month": "l4_streaming_fav_esport_service_by_visit_count_feature_last_month",
-                 "last_three_month": "l4_streaming_fav_esport_service_by_visit_count_feature_last_three_month"}
+                "l4_streaming_fav_esport_service_by_visit_count_feature"
             ),
 
             node(

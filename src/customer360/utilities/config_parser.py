@@ -310,6 +310,27 @@ def __generate_l4_rolling_ranked_column(
     return df
 
 
+def __join_l4_rolling_ranked_table(result_df, config):
+    feature_column = [F.col(each_col) for each_col in config["partition_by"]]
+
+    final_df = None
+    for window_range, df in result_df.items():
+
+        for each_feature_column in config["feature_column"]:
+            feature_column.append(F.col(each_feature_column)
+                                  .alias("{}_{}".format(each_feature_column, window_range)))
+
+        if final_df is None:
+            final_df = df.select(feature_column)
+            continue
+
+        # Always join on partition_by because it define the granularity
+        final_df = (final_df.join(df, config["partition_by"], how='inner')
+                    .select(feature_column))
+
+    return final_df
+
+
 def __generate_l4_filtered_ranked_table(
         ranked_df,
         config
@@ -318,15 +339,19 @@ def __generate_l4_filtered_ranked_table(
     result_df = {}
     read_from = config["read_from"]
 
+    to_join = config.get("to_join", True)
     rank = config.get("rank", 1)
 
     if read_from == 'l2':
         result_df["last_week"] = ranked_df.where(F.col("weekly_rank_last_week") == rank)
-    result_df["last_two_week"] = ranked_df.where(F.col("weekly_rank_last_two_week") == rank)
+        result_df["last_two_week"] = ranked_df.where(F.col("weekly_rank_last_two_week") == rank)
 
     grouping = "weekly" if read_from == 'l2' else "monthly"
     result_df["last_month"] = ranked_df.where(F.col("{}_rank_last_month".format(grouping)) == rank)
     result_df["last_three_month"] = ranked_df.where(F.col("{}_rank_last_three_month".format(grouping)) == rank)
+
+    if to_join:
+        return __join_l4_rolling_ranked_table(result_df, config)
 
     return result_df
 
