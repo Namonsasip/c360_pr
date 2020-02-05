@@ -111,6 +111,10 @@ l4_dynamics_bill_volume:
     feature_list:
         start_of_month: "start_of_month"
         account_identifier: "account_identifier"
+        sum_payments_roaming_bill_volume_last_month: "sum_payments_roaming_bill_volume_last_month"
+        sum_payments_roaming_bill_volume_last_three_month: "sum_payments_roaming_bill_volume_last_three_month"
+        avg_payments_roaming_bill_volume_last_month: "avg_payments_roaming_bill_volume_last_month"
+        avg_payments_roaming_bill_volume_last_three_month: "avg_payments_roaming_bill_volume_last_three_month"
         sum_payments_bill_volume_last_month: "sum_payments_bill_volume_last_month"
         sum_payments_bill_volume_last_three_month: "sum_payments_bill_volume_last_three_month"
         avg_payments_bill_volume_last_month: "avg_payments_bill_volume_last_month"

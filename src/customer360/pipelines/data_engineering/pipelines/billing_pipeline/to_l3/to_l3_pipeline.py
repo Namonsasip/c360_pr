@@ -68,16 +68,16 @@ def billing_to_l3_pipeline(**kwargs):
                  ["l3_billing_and_payments_monthly_most_popular_top_up_channel_intermediate","params:l3_most_popular_topup_channel"],
                  "l3_billing_and_payments_monthly_most_popular_top_up_channel"
              ),
-            #  node(
-            #      derive_month_bill_volume,
-            #      ["l0_billing_statement_history_monthly"],
-            #      "l3_billing_and_payments_monthly_bill_volume_1"
-            #  ),
-            # node(
-            #     node_from_config,
-            #     ["l3_billing_and_payments_monthly_bill_volume_1","params:l3_bill_volume"],
-            #     "l3_billing_and_payments_monthly_bill_volume"
-            # ),
+            node(
+                derive_month_bill_volume,
+                ["l0_billing_statement_history_monthly"],
+                "l3_billing_and_payments_monthly_bill_volume_1"
+            ),
+            node(
+                node_from_config,
+                ["l3_billing_and_payments_monthly_bill_volume_1","params:l3_bill_volume"],
+                "l3_billing_and_payments_monthly_bill_volume"
+            ),
             node(
                 node_from_config,
                 ["l2_billing_and_payments_weekly_last_top_up_channel","params:l3_last_topup_channel_1"],
@@ -88,26 +88,26 @@ def billing_to_l3_pipeline(**kwargs):
                 ["l3_billing_and_payments_monthly_last_top_up_channel_1", "params:l3_last_topup_channel_2"],
                 "l3_billing_and_payments_monthly_last_top_up_channel"
             ),
-#            node(
-#                billing_data_joined,
-#                ["l0_billing_statement_history_monthly", "l0_billing_pc_t_payment_daily"],
-#                "l3_billing_and_payments_monthly_joined"
-#            ),
-#            node(
-#                node_from_config,
-#                ["l3_billing_and_payments_monthly_joined", "params:l3_missed_bills"],
-#                "l3_billing_and_payments_monthly_missed_bills"
-#            ),
-#            node(
-#                node_from_config,
-#                ["l3_billing_and_payments_monthly_joined", "params:l3_overdue_bills"],
-#                "l3_billing_and_payments_monthly_overdue_bills"
-#            ),
-#            node(
-#                node_from_config,
-#                ["l3_billing_and_payments_monthly_joined", "params:l3_last_overdue_bill_days_ago_and_volume"],
-#                "l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume"
-#            ),
+            node(
+                billing_data_joined,
+                ["l0_billing_statement_history_monthly", "l0_billing_pc_t_payment_daily"],
+                "l3_billing_and_payments_monthly_joined"
+            ),
+            node(
+                node_from_config,
+                ["l3_billing_and_payments_monthly_joined", "params:l3_missed_bills"],
+                "l3_billing_and_payments_monthly_missed_bills"
+            ),
+            node(
+                node_from_config,
+                ["l3_billing_and_payments_monthly_joined", "params:l3_overdue_bills"],
+                "l3_billing_and_payments_monthly_overdue_bills"
+            ),
+            node(
+                node_from_config,
+                ["l3_billing_and_payments_monthly_joined", "params:l3_last_overdue_bill_days_ago_and_volume"],
+                "l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume"
+            ),
             node(
                 node_from_config,
                 ["l2_billing_and_payments_weekly_popular_topup_day_intermediate", "params:l3_popular_topup_day_1"],

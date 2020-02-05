@@ -21,9 +21,6 @@ def billing_data_joined(billing_monthly,payment_daily):
     billing_monthly = billing_monthly.withColumn("start_of_month",
                                     f.to_date(f.date_trunc('month',"billing_stmt_period_eff_date")))
 
-    print(billing_monthly.printSchema())
-    print(payment_daily.printSchema())
-
     output_df = billing_monthly.join(payment_daily,
                                      (billing_monthly.account_identifier == payment_daily.account_identifier) &
                                      (billing_monthly.billing_statement_identifier == payment_daily.billing_statement_identifier) &
