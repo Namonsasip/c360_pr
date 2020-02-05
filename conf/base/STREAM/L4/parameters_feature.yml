@@ -92,3 +92,35 @@ l4_streaming_fav_service_by_visit_count_feature:
   partition_by: ["mobile_no", "start_of_week"]
   order_by_column_prefix: "sum_visit_count"
   read_from: "l2"
+
+# number of visit and volume of download traffic
+l4_streaming_visit_count_and_download_traffic_feature:
+  partition_by: ["mobile_no"]
+  feature_list:
+    sum: ["visit_count_youtube_video_sum",
+          "visit_count_facebook_video_sum",
+          "visit_count_linetv_video_sum",
+          "visit_count_ais_play_video_sum",
+          "visit_count_netflix_video_sum",
+          "visit_count_hooq_video_sum",
+          "visit_count_iflix_video_sum",
+          "visit_count_spotify_music_sum",
+          "visit_count_joox_music_sum",
+          "visit_count_twitch_esport_sum",
+          "visit_count_bigo_esport_sum",
+          "visit_count_mixer_esport_sum",
+          "visit_count_steamtv_esport_sum",
+          "download_traffic_youtube_video_sum",
+          "download_traffic_facebook_video_sum",
+          "download_traffic_linetv_video_sum",
+          "download_traffic_ais_play_video_sum",
+          "download_traffic_netflix_video_sum",
+          "download_traffic_hooq_video_sum",
+          "download_traffic_iflix_video_sum",
+          "download_traffic_spotify_music_sum",
+          "download_traffic_joox_music_sum",
+          "download_traffic_twitch_esport_sum",
+          "download_traffic_bigo_esport_sum",
+          "download_traffic_mixer_esport_sum",
+          "download_traffic_steamtv_esport_sum"]
+  read_from: "l2"

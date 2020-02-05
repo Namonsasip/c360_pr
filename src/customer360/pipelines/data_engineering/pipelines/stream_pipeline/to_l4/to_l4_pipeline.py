@@ -204,5 +204,11 @@ def streaming_to_l4_pipeline(**kwargs):
                  "last_three_month": "l4_streaming_fav_esport_service_by_visit_count_feature_last_three_month"}
             ),
 
+            node(
+                l4_rolling_window,
+                ["l2_streaming_visit_count_and_download_traffic_feature",
+                 "params:l4_streaming_visit_count_and_download_traffic_feature"],
+                "l4_streaming_visit_count_and_download_traffic_feature"
+            )
         ], name="streaming_to_l4_pipeline"
     )

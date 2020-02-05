@@ -33,7 +33,7 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 
-from customer360.utilities.config_parser import node_from_config
+from customer360.utilities.config_parser import node_from_config, expansion
 
 
 def streaming_to_l3_pipeline(**kwargs):
@@ -80,8 +80,8 @@ def streaming_to_l3_pipeline(**kwargs):
                  "params:l3_streaming_fav_tv_show_by_episode_watched"],
                 "l3_streaming_fav_tv_show_by_episode_watched"
             ),
-            
-            
+
+
             # fav video service by download traffic/visit count
             node(
                 node_from_config,
@@ -158,6 +158,14 @@ def streaming_to_l3_pipeline(**kwargs):
                 ["int_l3_streaming_esport_service_feature",
                  "params:l3_streaming_fav_service_by_visit_count_feature"],
                 "l3_streaming_fav_esport_service_by_visit_count_feature"
+            ),
+
+            # number of visit and volume of download traffic
+            node(
+                expansion,
+                ["l1_streaming_visit_count_and_download_traffic_feature",
+                 "params:l3_streaming_visit_count_and_download_traffic_feature"],
+                "l3_streaming_visit_count_and_download_traffic_feature"
             ),
         ], name="streaming_to_l3_pipeline"
     )
