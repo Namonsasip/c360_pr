@@ -19,16 +19,36 @@ l3_device_handset_summary_with_configuration:
                       over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
         SmartPhone_device: "first_value(SmartPhone_device)
                             over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
-        FeaturePhone_device: "first_value(FeaturePhone_device)
-                              over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        StandardPhone_device: "first_value(StandardPhone_device)
+                            over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        LegacyPhone_device: "first_value(LegacyPhone_device)
+                            over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        NetBook_device: "first_value(NetBook_device)
+                            over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
         Tablet_device: "first_value(Tablet_device)
+                              over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        Phablet_device: "first_value(Phablet_device)
                         over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
-        Modem_device: "first_value(Modem_device)
+        Module_device: "first_value(Module_device)
                        over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        Handheld_device: "first_value(Handheld_device)
+                            over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        Vehicle_device: "first_value(Vehicle_device)
+                         over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        Air_card_or_dongle_device: "first_value(Air_card_or_dongle_device)
+                            over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        Modem_device: "first_value(Modem_device)
+                            over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        WirelessRouter_device: "first_value(WirelessRouter_device)
+                            over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
         SmartWatch_device: "first_value(SmartWatch_device)
                             over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        WatchPhone_device: "first_value(WatchPhone_device)
+                              over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        IotVehicle_device: "first_value(IotVehicle_device)
+                        over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
         Unknown_device: "first_value(Unknown_device)
-                         over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+                       over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
         device_launch_price: "first_value(device_launch_price)
                       over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
         device_sale_price: "first_value(device_sale_price)
@@ -60,7 +80,7 @@ l3_device_handset_summary_with_configuration:
 l3_device_most_used_1:
     where_clause: ""
     feature_list:
-        device_used_days: "count(distinct date_id)"
+        device_used_days: "sum(device_used_days)"
     granularity: "start_of_month,mobile_no,register_date,handset_brand_name"
 
 l3_device_most_used_2:

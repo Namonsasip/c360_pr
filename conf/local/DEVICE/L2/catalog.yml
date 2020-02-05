@@ -5,3 +5,19 @@ l2_device_handset_summary_with_configuration_weekly:
   save_args:
     partitionBy: ["start_of_week"]
     mode: "overwrite"
+
+l2_device_most_used_intermediate_weekly:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L2_WEEKLY/DEVICE/l2_features/device_most_used_intermediate/
+  save_args:
+    partitionBy: ["start_of_week"]
+    mode: "overwrite"
+
+l2_device_most_used_weekly:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L2_WEEKLY/DEVICE/l2_features/device_most_used/
+  save_args:
+    partitionBy: ["start_of_week"]
+    mode: "overwrite"

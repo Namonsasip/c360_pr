@@ -26,3 +26,9 @@ def filter(input_df):
     output_df = input_df.where("rank = 1").drop("rank")
 
     return output_df
+
+def derive_month_and_week(input_df):
+
+    output_df = input_df.withColumn("start_of_month", f.to_date(f.date_trunc('month', "date_id")))\
+        .withColumn("start_of_week", f.to_date(f.date_trunc('week', "date_id")))
+    return  output_df

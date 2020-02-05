@@ -22,5 +22,25 @@ def device_to_l2_pipeline(**kwargs):
                 ["l2_device_handset_summary_with_configuration_weekly_2"],
                 "l2_device_handset_summary_with_configuration_weekly"
             ),
+            node(
+                derive_month_and_week,
+                ["l0_devices_summary_customer_handset"],
+                "l2_device_most_used_intermediate_weekly_1"
+            ),
+            node(
+                node_from_config,
+                ["l2_device_most_used_intermediate_weekly_1", "params:l2_device_most_used_1"],
+                "l2_device_most_used_intermediate_weekly_2"
+            ),
+            node(
+                node_from_config,
+                ["l2_device_most_used_intermediate_weekly_2", "params:l2_device_most_used_2"],
+                "l2_device_most_used_intermediate_weekly"
+            ),
+            node(
+                node_from_config,
+                ["l2_device_most_used_intermediate_weekly", "params:l2_device_most_used"],
+                "l2_device_most_used_weekly"
+            ),
         ]
     )

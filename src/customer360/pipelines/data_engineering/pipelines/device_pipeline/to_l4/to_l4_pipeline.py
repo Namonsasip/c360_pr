@@ -10,11 +10,6 @@ def device_to_l4_pipeline(**kwargs):
         [
             node(
                 node_from_config,
-                ["l3_device_handset_summary_with_configuration_monthly","params:l4_device_handset_summary_with_configuration"],
-                "l4_device_rolling_window_handset_summary_with_configuration"
-            ),
-            node(
-                node_from_config,
                 ["l3_previous_device_handset_summary_with_configuration_monthly","params:l4_previous_device_with_config_1"],
                 "l4_previous_device_rolling_window_handset_summary_with_configuration_1"
             ),
@@ -36,27 +31,47 @@ def device_to_l4_pipeline(**kwargs):
                 "l4_previous_device_rolling_window_handset_summary_with_configuration"
             ),
             node(
-                node_from_config,
-                ["l3_device_most_used_intermediate_monthly",
+                l4_rolling_window,
+                ["l2_device_most_used_intermediate_weekly",
                  "params:l4_device_most_used_1"],
                 "l4_device_rolling_window_most_used_1"
             ),
             node(
                 node_from_config,
                 ["l4_device_rolling_window_most_used_1",
-                 "params:l4_device_most_used_2"],
+                 "params:l4_device_most_used_with_ranks"],
                 "l4_device_rolling_window_most_used_2"
             ),
             node(
                 node_from_config,
                 ["l4_device_rolling_window_most_used_2",
-                 "params:l4_device_most_used_3"],
-                "l4_device_rolling_window_most_used_3"
+                 "params:l4_device_most_used_last_week"],
+                "l4_device_rolling_window_most_used_last_week"
             ),
             node(
                 node_from_config,
-                ["l4_device_rolling_window_most_used_3",
-                 "params:l4_device_most_used"],
+                ["l4_device_rolling_window_most_used_2",
+                 "params:l4_device_most_used_last_two_week"],
+                "l4_device_rolling_window_most_used_last_two_week"
+            ),
+            node(
+                node_from_config,
+                ["l4_device_rolling_window_most_used_2",
+                 "params:l4_device_most_used_last_month"],
+                "l4_device_rolling_window_most_used_last_month"
+            ),
+            node(
+                node_from_config,
+                ["l4_device_rolling_window_most_used_2",
+                 "params:l4_device_most_used_last_three_month"],
+                "l4_device_rolling_window_most_used_last_three_month"
+            ),
+            node(
+                joined_data_for_most_used_device,
+                ["l4_device_rolling_window_most_used_last_week",
+                 "l4_device_rolling_window_most_used_last_two_week",
+                 "l4_device_rolling_window_most_used_last_month",
+                 "l4_device_rolling_window_most_used_last_three_month"],
                 "l4_device_rolling_window_most_used"
             ),
         ]
