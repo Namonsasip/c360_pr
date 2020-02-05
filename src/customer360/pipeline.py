@@ -97,7 +97,9 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
                        + billing_to_l1_pipeline()
                        + billing_to_l2_pipeline()
                        + billing_to_l3_pipeline()
-                       + billing_to_l4_pipeline(),
+                       + billing_to_l4_pipeline()
+                       + revenue_to_l3_pipeline()
+                       + revenue_to_l4_pipeline(),
         "usage_to_l2_pipeline": usage_to_l2_pipeline(),
         "usage_to_l4_pipeline": usage_to_l4_pipeline(),
         "customer_profile_to_l3_pipeline": customer_profile_to_l3_pipeline(),

@@ -34,8 +34,6 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 from kedro.pipeline import Pipeline, node
 
 from customer360.utilities.config_parser import node_from_config
-from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1 import merge_incoming_outgoing_calls, \
-    merge_prepaid_postpaid_data_usage, merge_roaming_incoming_outgoing_calls
 
 
 def revenue_to_l3_pipeline(**kwargs):
@@ -43,9 +41,15 @@ def revenue_to_l3_pipeline(**kwargs):
         [
             node(
                 node_from_config,
-                ["l0_revenue_ru_f_sum_revenue_by_service_monthly",
+                ["l0_revenue_postpaid_ru_f_sum_revenue_by_service_monthly",
                  "params:l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly"],
                 "l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly"
+            ),
+            node(
+                node_from_config,
+                ["l0_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
+                 "params:l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"],
+                "l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"
             ),
         ], name="revenue_to_l3_pipeline"
     )

@@ -46,12 +46,24 @@ def revenue_to_l4_pipeline(**kwargs):
                  "params:l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int"],
                 "l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_stg"
             ),
-
             node(
                 node_from_config,
                 ["l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_stg",
-                 "params:l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_features"],
-                "l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_features"
+                 "params:l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly"],
+                "l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly"
+            ),
+
+            node(
+                l4_rolling_window,
+                ["l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
+                 "params:l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_int"],
+                "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_stg"
+            ),
+            node(
+                node_from_config,
+                ["l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_stg",
+                 "params:l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"],
+                "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"
             ),
 
         ], name="revenue_to_l4_pipeline"

@@ -3,7 +3,7 @@ l2_usage_call_relation_sum_weekly:
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/USAGE/l2_features/usage_call_relation_sum_weekly/
   save_args:
-    mode: "overwrite"
+    mode: "append"
     partition_by: ["start_of_week"]
 
 l2_usage_call_relation_sum_ir_weekly:
@@ -11,7 +11,7 @@ l2_usage_call_relation_sum_ir_weekly:
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/USAGE/l2_features/usage_call_relation_sum_ir_weekly/
   save_args:
-    mode: "overwrite"
+    mode: "append"
     partition_by: ["start_of_week"]
 
 l2_usage_data_prepaid_postpaid_weekly:
@@ -19,5 +19,5 @@ l2_usage_data_prepaid_postpaid_weekly:
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/USAGE/l2_features/usage_data_prepaid_postpaid_weekly/
   save_args:
-    mode: "overwrite"
+    mode: "append"
     partition_by: ["start_of_week"]
