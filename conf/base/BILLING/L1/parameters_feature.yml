@@ -67,6 +67,7 @@ l1_time_since_last_top_up:
       access_method_num: "access_method_num"
       register_date: "date(register_date)"
       recharge_time: "recharge_time"
+      face_value: "face_value"
     granularity: ""
     event_date_column: "date(recharge_date)"
 

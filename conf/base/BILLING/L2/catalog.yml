@@ -103,3 +103,11 @@ l2_billing_and_payments_weekly_time_since_last_top_up:
   save_args:
     partitionBy: ["start_of_week"]
     mode: "overwrite"
+
+l2_billing_and_payments_weekly_last_three_topup_volume:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/BILLING/l2_features/billing_and_payments_last_three_topup_volume/
+  save_args:
+    partitionBy: ["start_of_week"]
+    mode: "overwrite"

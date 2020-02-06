@@ -71,6 +71,15 @@ l3_billing_and_payment_top_up_channels_monthly:
         payments_top_up_vol_avg_by_rom: "avg(payments_top_up_vol_avg_by_rom)"
     granularity: "start_of_month,access_method_num,date(register_date)"
 
+l3_popular_topup_channel:
+    where_clause: ""
+    feature_list:
+      payments_total_top_up: "sum(payments_total_top_up)"
+      rank: "row_number() over(partition by start_of_month,
+             access_method_num,
+             register_date order by sum(payments_total_top_up) desc)"
+    granularity: "start_of_month,access_method_num,register_date,payments_top_up_channel"
+
 l3_most_popular_topup_channel:
     where_clause: "where rank = 1"
     feature_list:
@@ -81,47 +90,17 @@ l3_most_popular_topup_channel:
       payments_total_top_up: "payments_total_top_up"
     granularity: ""
 
-l3_popular_topup_channel_1:
-    where_clause: ""
-    feature_list:
-      payments_total_top_up: "sum(payments_total_top_up)"
-    granularity: "start_of_month,access_method_num,register_date,payments_top_up_channel"
-
-l3_popular_topup_channel_2:
-    where_clause: ""
-    feature_list:
-      start_of_month: "start_of_month"
-      access_method_num: "access_method_num"
-      register_date: "register_date"
-      payments_top_up_channel: "payments_top_up_channel"
-      payments_total_top_up: "payments_total_top_up"
-      rank: "row_number() over(partition by start_of_month,
-             access_method_num,
-             register_date order by payments_total_top_up desc)"
-    granularity: ""
-
-l3_last_topup_channel_1:
+l3_last_topup_channel:
     where_clause: ""
     feature_list:
       start_of_month: "start_of_month"
       start_of_week: "start_of_week"
       access_method_num: "access_method_num"
       register_date: "register_date"
-      payments_last_top_up_channel: "payments_last_top_up_channel"
-      rank: "row_number() over(partition by start_of_month,
-                access_method_num,
-                register_date
-                order by recharge_time desc)"
-    granularity: ""
-
-l3_last_topup_channel_2:
-    where_clause: "where rank = 1"
-    feature_list:
-      start_of_month: "start_of_month"
-      start_of_week: "start_of_week"
-      access_method_num: "access_method_num"
-      register_date: "register_date"
-      payments_last_top_up_channel: "payments_last_top_up_channel"
+      payments_last_top_up_channel: "first_value(payments_last_top_up_channel) over(partition by start_of_month,
+                                                      access_method_num,
+                                                      register_date
+                                                      order by recharge_time desc)"
     granularity: ""
 
 l3_automated_flag:
@@ -149,20 +128,11 @@ l3_popular_topup_day_1:
     where_clause: ""
     feature_list:
       payment_popular_day_topup_count: "sum(payment_popular_day_topup_count)"
+      rank: "row_number() over(partition by start_of_month,access_method_num,register_date
+                               order by sum(payment_popular_day_topup_count) desc)"
     granularity: "start_of_month,access_method_num,register_date,payment_popular_day"
 
 l3_popular_topup_day_2:
-    where_clause: ""
-    feature_list:
-      start_of_month: "start_of_month"
-      access_method_num: "access_method_num"
-      register_date: "register_date"
-      payment_popular_day: "payment_popular_day"
-      rank: "row_number() over(partition by start_of_month,access_method_num,register_date
-                               order by payment_popular_day_topup_count desc)"
-    granularity: ""
-
-l3_popular_topup_day_3:
     where_clause: "where rank = 1"
     feature_list:
       start_of_month: "start_of_month"
@@ -175,20 +145,11 @@ l3_popular_topup_hour_1:
     where_clause: ""
     feature_list:
       payment_popular_hour_topup_count: "sum(payment_popular_hour_topup_count)"
+      rank: "row_number() over(partition by start_of_month,access_method_num,register_date
+                               order by sum(payment_popular_hour_topup_count) desc)"
     granularity: "start_of_month,access_method_num,register_date,payment_popular_hour"
 
 l3_popular_topup_hour_2:
-    where_clause: ""
-    feature_list:
-      start_of_month: "start_of_month"
-      access_method_num: "access_method_num"
-      register_date: "register_date"
-      payment_popular_hour: "payment_popular_hour"
-      rank: "row_number() over(partition by start_of_month,access_method_num,register_date
-                               order by payment_popular_hour_topup_count desc)"
-    granularity: ""
-
-l3_popular_topup_hour_3:
     where_clause: "where rank = 1"
     feature_list:
       start_of_month: "start_of_month"
@@ -219,3 +180,20 @@ l3_last_overdue_bill_days_ago_and_volume:
       payments_last_overdue_bill_days_ago: "max(case when no_of_days>0 then no_of_days else 0 end)"
       payments_last_overdue_bill_volume: "sum(case when no_of_days>0 then bill_stmt_tot_invoiced_amt else 0 end)"
     granularity: "start_of_month,account_identifier"
+
+l3_last_three_topup_volume_ranked:
+    where_clause: ""
+    feature_list:
+      start_of_month: "start_of_month"
+      access_method_num: "access_method_num"
+      register_date: "register_date"
+      face_value: "face_value"
+      rank: "row_number() over(partition by start_of_month,access_method_num,register_date
+                               order by recharge_time desc)"
+    granularity: ""
+
+l3_last_three_topup_volume:
+    where_clause: "where rank<=3"
+    feature_list:
+      payment_top_volume: "sum(face_value)"
+    granularity: "start_of_month,access_method_num,register_date"

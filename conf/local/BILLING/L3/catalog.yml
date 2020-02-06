@@ -135,3 +135,11 @@ l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume:
   save_args:
     partitionBy: ["start_of_month"]
     mode: "overwrite"
+
+l3_billing_and_payments_monthly_last_three_topup_volume:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L3_MONTHLY/BILLING/l3_features/billing_and_payments_last_three_topup_volume/
+  save_args:
+    partitionBy: ["start_of_month"]
+    mode: "overwrite"

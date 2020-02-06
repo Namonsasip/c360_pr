@@ -12,26 +12,26 @@ l4_dynamics_topups_and_volume:
         start_of_week: "start_of_week"
         access_method_num: "access_method_num"
         register_date: "register_date"
-        sum_payments_top_ups_last_week: "sum_payments_top_ups_last_week"
-        sum_payments_top_ups_last_two_week: "sum_payments_top_ups_last_two_week"
-        sum_payments_top_ups_last_month: "sum_payments_top_ups_last_month"
-        sum_payments_top_ups_last_three_month: "sum_payments_top_ups_last_three_month"
-        sum_payments_top_up_volume_last_week: "sum_payments_top_up_volume_last_week"
-        sum_payments_top_up_volume_last_two_week: "sum_payments_top_up_volume_last_two_week"
-        sum_payments_top_up_volume_last_month: "sum_payments_top_up_volume_last_month"
-        sum_payments_top_up_volume_last_three_month: "sum_payments_top_up_volume_last_three_month"
-        avg_payments_top_ups_avg_last_week: "avg_payments_top_ups_avg_last_week"
-        avg_payments_top_ups_avg_last_two_week: "avg_payments_top_ups_avg_last_two_week"
-        avg_payments_top_ups_avg_last_month: "avg_payments_top_ups_avg_last_month"
-        avg_payments_top_ups_avg_last_three_month: "avg_payments_top_ups_avg_last_three_month"
-        avg_payments_top_up_volume_avg_last_week: "avg_payments_top_up_volume_avg_last_week"
-        avg_payments_top_up_volume_avg_last_two_week: "avg_payments_top_up_volume_avg_last_two_week"
-        avg_payments_top_up_volume_avg_last_month: "avg_payments_top_up_volume_avg_last_month"
-        avg_payments_top_up_volume_avg_last_three_month: "avg_payments_top_up_volume_avg_last_three_month"
-        week_dynamics_top_up_no: "avg_payments_top_ups_avg_last_week/avg_payments_top_ups_avg_last_two_week"
-        month_dynamics_top_up_no: "avg_payments_top_ups_avg_last_month/avg_payments_top_ups_avg_last_three_month"
-        week_dynamics_top_up_volume: "avg_payments_top_up_volume_avg_last_week/avg_payments_top_up_volume_avg_last_two_week"
-        month_dynamics_top_up_volume: "avg_payments_top_up_volume_avg_last_month/avg_payments_top_up_volume_avg_last_three_month"
+        sum_payments_top_ups_last_week: "sum_payments_top_ups_weekly_last_week"
+        sum_payments_top_ups_last_two_week: "sum_payments_top_ups_weekly_last_two_week"
+        sum_payments_top_ups_last_month: "sum_payments_top_ups_monthly_last_month"
+        sum_payments_top_ups_last_three_month: "sum_payments_top_ups_monthly_last_three_month"
+        sum_payments_top_up_volume_last_week: "sum_payments_top_up_volume_weekly_last_week"
+        sum_payments_top_up_volume_last_two_week: "sum_payments_top_up_volume_weekly_last_two_week"
+        sum_payments_top_up_volume_last_month: "sum_payments_top_up_volume_monthly_last_month"
+        sum_payments_top_up_volume_last_three_month: "sum_payments_top_up_volume_monthly_last_three_month"
+        avg_payments_top_ups_avg_last_week: "avg_payments_top_ups_avg_weekly_last_week"
+        avg_payments_top_ups_avg_last_two_week: "avg_payments_top_ups_avg_weekly_last_two_week"
+        avg_payments_top_ups_avg_last_month: "avg_payments_top_ups_avg_monthly_last_month"
+        avg_payments_top_ups_avg_last_three_month: "avg_payments_top_ups_avg_monthly_last_three_month"
+        avg_payments_top_up_volume_avg_last_week: "avg_payments_top_up_volume_avg_weekly_last_week"
+        avg_payments_top_up_volume_avg_last_two_week: "avg_payments_top_up_volume_avg_weekly_last_two_week"
+        avg_payments_top_up_volume_avg_last_month: "avg_payments_top_up_volume_avg_monthly_last_month"
+        avg_payments_top_up_volume_avg_last_three_month: "avg_payments_top_up_volume_avg_monthly_last_three_month"
+        week_dynamics_top_up_no: "avg_payments_top_ups_avg_weekly_last_week/avg_payments_top_ups_avg_weekly_last_two_week"
+        month_dynamics_top_up_no: "avg_payments_top_ups_avg_monthly_last_month/avg_payments_top_ups_avg_monthly_last_three_month"
+        week_dynamics_top_up_volume: "avg_payments_top_up_volume_avg_weekly_last_week/avg_payments_top_up_volume_avg_weekly_last_two_week"
+        month_dynamics_top_up_volume: "avg_payments_top_up_volume_avg_monthly_last_month/avg_payments_top_up_volume_avg_monthly_last_three_month"
     granularity: ""
 
 l4_billing_rpu:
@@ -48,23 +48,23 @@ l4_dynamics_arpu:
         access_method_num: "access_method_num"
         register_date: "register_date"
         crm_sub_id: "crm_sub_id"
-        sum_payments_arpu_last_month: "sum_payments_arpu_last_month"
-        sum_payments_arpu_last_three_month: "sum_payments_arpu_last_three_month"
-        sum_payments_arpu_gprs_last_month: "sum_payments_arpu_gprs_last_month"
-        sum_payments_arpu_gprs_last_three_month: "sum_payments_arpu_gprs_last_three_month"
-        sum_payments_arpu_vas_last_month: "sum_payments_arpu_vas_last_month"
-        sum_payments_arpu_vas_last_three_month: "sum_payments_arpu_vas_last_three_month"
-        sum_payments_arpu_voice_last_month: "sum_payments_arpu_voice_last_month"
-        sum_payments_arpu_voice_last_three_month: "sum_payments_arpu_voice_last_three_month"
-        avg_payments_arpu_last_month: "avg_payments_arpu_last_month"
-        avg_payments_arpu_last_three_month: "avg_payments_arpu_last_three_month"
-        avg_payments_arpu_gprs_last_month: "avg_payments_arpu_gprs_last_month"
-        avg_payments_arpu_gprs_last_three_month: "avg_payments_arpu_gprs_last_three_month"
-        avg_payments_arpu_vas_last_month: "avg_payments_arpu_vas_last_month"
-        avg_payments_arpu_vas_last_three_month: "avg_payments_arpu_vas_last_three_month"
-        avg_payments_arpu_voice_last_month: "avg_payments_arpu_voice_last_month"
-        avg_payments_arpu_voice_last_three_month: "avg_payments_arpu_voice_last_three_month"
-        month_dynamics_arpu: "avg_payments_arpu_last_month/avg_payments_arpu_last_three_month"
+        sum_payments_arpu_last_month: "sum_payments_arpu_monthly_last_month"
+        sum_payments_arpu_last_three_month: "sum_payments_arpu_monthly_last_three_month"
+        sum_payments_arpu_gprs_last_month: "sum_payments_arpu_gprs_monthly_last_month"
+        sum_payments_arpu_gprs_last_three_month: "sum_payments_arpu_gprs_monthly_last_three_month"
+        sum_payments_arpu_vas_last_month: "sum_payments_arpu_vas_monthly_last_month"
+        sum_payments_arpu_vas_last_three_month: "sum_payments_arpu_vas_monthly_last_three_month"
+        sum_payments_arpu_voice_last_month: "sum_payments_arpu_voice_monthly_last_month"
+        sum_payments_arpu_voice_last_three_month: "sum_payments_arpu_voice_monthly_last_three_month"
+        avg_payments_arpu_last_month: "avg_payments_arpu_monthly_last_month"
+        avg_payments_arpu_last_three_month: "avg_payments_arpu_monthly_last_three_month"
+        avg_payments_arpu_gprs_last_month: "avg_payments_arpu_gprs_monthly_last_month"
+        avg_payments_arpu_gprs_last_three_month: "avg_payments_arpu_gprs_monthly_last_three_month"
+        avg_payments_arpu_vas_last_month: "avg_payments_arpu_vas_monthly_last_month"
+        avg_payments_arpu_vas_last_three_month: "avg_payments_arpu_vas_monthly_last_three_month"
+        avg_payments_arpu_voice_last_month: "avg_payments_arpu_voice_monthly_last_month"
+        avg_payments_arpu_voice_last_three_month: "avg_payments_arpu_voice_monthly_last_three_month"
+        month_dynamics_arpu: "avg_payments_arpu_monthly_last_month/avg_payments_arpu_monthly_last_three_month"
     granularity: ""
 
 l4_billing_rpu_roaming:
@@ -111,15 +111,15 @@ l4_dynamics_bill_volume:
     feature_list:
         start_of_month: "start_of_month"
         account_identifier: "account_identifier"
-        sum_payments_roaming_bill_volume_last_month: "sum_payments_roaming_bill_volume_last_month"
-        sum_payments_roaming_bill_volume_last_three_month: "sum_payments_roaming_bill_volume_last_three_month"
-        avg_payments_roaming_bill_volume_last_month: "avg_payments_roaming_bill_volume_last_month"
-        avg_payments_roaming_bill_volume_last_three_month: "avg_payments_roaming_bill_volume_last_three_month"
-        sum_payments_bill_volume_last_month: "sum_payments_bill_volume_last_month"
-        sum_payments_bill_volume_last_three_month: "sum_payments_bill_volume_last_three_month"
-        avg_payments_bill_volume_last_month: "avg_payments_bill_volume_last_month"
-        avg_payments_bill_volume_last_three_month: "avg_payments_bill_volume_last_three_month"
-        month_dynamics_bill_volume: "avg_payments_bill_volume_last_month/avg_payments_bill_volume_last_three_month"
+        sum_payments_roaming_bill_volume_last_month: "sum_payments_roaming_bill_volume_monthly_last_month"
+        sum_payments_roaming_bill_volume_last_three_month: "sum_payments_roaming_bill_volume_monthly_last_three_month"
+        avg_payments_roaming_bill_volume_last_month: "avg_payments_roaming_bill_volume_monthly_last_month"
+        avg_payments_roaming_bill_volume_last_three_month: "avg_payments_roaming_bill_volume_monthly_last_three_month"
+        sum_payments_bill_volume_last_month: "sum_payments_bill_volume_monthly_last_month"
+        sum_payments_bill_volume_last_three_month: "sum_payments_bill_volume_monthly_last_three_month"
+        avg_payments_bill_volume_last_month: "avg_payments_bill_volume_monthly_last_month"
+        avg_payments_bill_volume_last_three_month: "avg_payments_bill_volume_monthly_last_three_month"
+        month_dynamics_bill_volume: "avg_payments_bill_volume_monthly_last_month/avg_payments_bill_volume_monthly_last_three_month"
     granularity: ""
 
 l4_payments_bill_shock:
@@ -133,40 +133,6 @@ l4_payments_bill_shock:
     granularity: ""
     event_date_column: "date(billing_stmt_period_eff_date)"
 
-l4_last_3_top_up_volume:
-    where_clause: ""
-    feature_list:
-        access_method_num: "access_method_num"
-        register_date: "date(register_date)"
-        recharge_time: "recharge_time"
-        payments_last_3_top_up_volume: "sum(face_value)
-           over(partition by access_method_num,date(register_date) order by recharge_time
-           rows between 2 PRECEDING and current row)"
-    granularity: ""
-    event_date_column: "recharge_date"
-
-l4_last_top_up_channel:
-    where_clause: ""
-    feature_list:
-        start_of_month: "start_of_month"
-        start_of_week: "start_of_week"
-        access_method_num: "access_method_num"
-        register_date: "register_date"
-        payments_last_top_up_channel_last_week: "payments_last_top_up_channel"
-        payments_last_top_up_channel_last_two_week: "first_value(payments_last_top_up_channel)
-           over(partition by access_method_num,register_date
-           order by cast(cast(start_of_week as timestamp) as long)
-           range between 14*24*60*60 PRECEDING and current row)"
-        payments_last_top_up_channel_last_month: "first_value(payments_last_top_up_channel)
-           over(partition by access_method_num,register_date
-           order by cast(cast(start_of_month as timestamp) as long)
-           range between 30*24*60*60 PRECEDING and 1 PRECEDING)"
-        payments_last_top_up_channel_last_three_month: "first_value(payments_last_top_up_channel)
-           over(partition by access_method_num,register_date
-           order by cast(cast(start_of_month as timestamp) as long)
-           range between 90*24*60*60 PRECEDING and 1 PRECEDING)"
-    granularity: ""
-
 l4_missed_bills:
   partition_by: ["account_identifier"]
   feature_list:
@@ -174,165 +140,37 @@ l4_missed_bills:
     avg: ["payments_missed_bills"]
   read_from: "l3"
 
-l4_popular_topup_day_1:
+l4_popular_topup_day_initial:
   partition_by: ["access_method_num","register_date","payment_popular_day"]
   feature_list:
     sum: ["payment_popular_day_topup_count"]
   read_from: "l2"
 
-l4_popular_topup_day_with_ranks:
-    where_clause: ""
-    feature_list:
-        start_of_month: "start_of_month"
-        start_of_week: "start_of_week"
-        access_method_num: "access_method_num"
-        register_date: "register_date"
-        payment_popular_day: "payment_popular_day"
-        rank_last_week: "row_number() over
-                         (partition by access_method_num,
-                                      register_date,
-                                      start_of_month,
-                                      start_of_week
-                                      order by sum_payment_popular_day_topup_count_last_week desc)"
-        rank_last_two_week: "row_number() over
-                            (partition by access_method_num,
-                                      register_date,
-                                      start_of_month,
-                                      start_of_week
-                                      order by sum_payment_popular_day_topup_count_last_two_week desc)"
-        rank_last_month: "row_number() over
-                            (partition by access_method_num,
-                                      register_date,
-                                      start_of_month,
-                                      start_of_week
-                                      order by sum_payment_popular_day_topup_count_last_month desc)"
-        rank_last_three_month: "row_number() over
-                                (partition by access_method_num,
-                                      register_date,
-                                      start_of_month,
-                                      start_of_week
-                                      order by sum_payment_popular_day_topup_count_last_three_month desc)"
-    granularity: ""
+l4_popular_topup_day:
+  where_clause: ""
+  feature_column:
+    payment_popular_topup_day: "payment_popular_day"
+  partition_by: ["access_method_num", "register_date", "start_of_week"]
+  order_by_column_prefix: "sum_payment_popular_day_topup_count"
+  read_from: "l2"
+  to_join: True
+  order: desc
 
-l4_popular_topup_day_last_week:
-    where_clause: "where rank_last_week = 1"
-    feature_list:
-        start_of_month: "start_of_month"
-        start_of_week: "start_of_week"
-        access_method_num: "access_method_num"
-        register_date: "register_date"
-        payment_popular_day_last_week: "payment_popular_day"
-    granularity: ""
-
-l4_popular_topup_day_last_two_week:
-    where_clause: "where rank_last_two_week = 1"
-    feature_list:
-        start_of_month: "start_of_month"
-        start_of_week: "start_of_week"
-        access_method_num: "access_method_num"
-        register_date: "register_date"
-        payment_popular_day_last_two_week: "payment_popular_day"
-    granularity: ""
-
-l4_popular_topup_day_last_month:
-    where_clause: "where rank_last_month = 1"
-    feature_list:
-        start_of_month: "start_of_month"
-        start_of_week: "start_of_week"
-        access_method_num: "access_method_num"
-        register_date: "register_date"
-        payment_popular_day_last_month: "payment_popular_day"
-    granularity: ""
-
-l4_popular_topup_day_last_three_month:
-    where_clause: "where rank_last_three_month = 1"
-    feature_list:
-        start_of_month: "start_of_month"
-        start_of_week: "start_of_week"
-        access_method_num: "access_method_num"
-        register_date: "register_date"
-        payment_popular_day_last_three_month: "payment_popular_day"
-    granularity: ""
-
-l4_popular_topup_hour_1:
+l4_popular_topup_hour_initial:
   partition_by: ["access_method_num","register_date","payment_popular_hour"]
   feature_list:
     sum: ["payment_popular_hour_topup_count"]
   read_from: "l2"
 
-l4_popular_topup_hour_with_ranks:
-    where_clause: ""
-    feature_list:
-        start_of_month: "start_of_month"
-        start_of_week: "start_of_week"
-        access_method_num: "access_method_num"
-        register_date: "register_date"
-        payment_popular_hour: "payment_popular_hour"
-        rank_last_week: "row_number() over
-                         (partition by access_method_num,
-                                      register_date,
-                                      start_of_month,
-                                      start_of_week
-                                      order by sum_payment_popular_hour_topup_count_last_week desc)"
-        rank_last_two_week: "row_number() over
-                            (partition by access_method_num,
-                                      register_date,
-                                      start_of_month,
-                                      start_of_week
-                                      order by sum_payment_popular_hour_topup_count_last_two_week desc)"
-        rank_last_month: "row_number() over
-                            (partition by access_method_num,
-                                      register_date,
-                                      start_of_month,
-                                      start_of_week
-                                      order by sum_payment_popular_hour_topup_count_last_month desc)"
-        rank_last_three_month: "row_number() over
-                                (partition by access_method_num,
-                                      register_date,
-                                      start_of_month,
-                                      start_of_week
-                                      order by sum_payment_popular_hour_topup_count_last_three_month desc)"
-    granularity: ""
-
-l4_popular_topup_hour_last_week:
-    where_clause: "where rank_last_week = 1"
-    feature_list:
-        start_of_month: "start_of_month"
-        start_of_week: "start_of_week"
-        access_method_num: "access_method_num"
-        register_date: "register_date"
-        payment_popular_hour_last_week: "payment_popular_hour"
-    granularity: ""
-
-l4_popular_topup_hour_last_two_week:
-    where_clause: "where rank_last_two_week = 1"
-    feature_list:
-        start_of_month: "start_of_month"
-        start_of_week: "start_of_week"
-        access_method_num: "access_method_num"
-        register_date: "register_date"
-        payment_popular_hour_last_two_week: "payment_popular_hour"
-    granularity: ""
-
-l4_popular_topup_hour_last_month:
-    where_clause: "where rank_last_month = 1"
-    feature_list:
-        start_of_month: "start_of_month"
-        start_of_week: "start_of_week"
-        access_method_num: "access_method_num"
-        register_date: "register_date"
-        payment_popular_hour_last_month: "payment_popular_hour"
-    granularity: ""
-
-l4_popular_topup_hour_last_three_month:
-    where_clause: "where rank_last_three_month = 1"
-    feature_list:
-        start_of_month: "start_of_month"
-        start_of_week: "start_of_week"
-        access_method_num: "access_method_num"
-        register_date: "register_date"
-        payment_popular_hour_last_three_month: "payment_popular_hour"
-    granularity: ""
+l4_popular_topup_hour:
+  where_clause: ""
+  feature_column:
+    payment_popular_hour: "payment_popular_hour"
+  partition_by: ["access_method_num", "register_date", "start_of_week"]
+  order_by_column_prefix: "sum_payment_popular_hour_topup_count"
+  read_from: "l2"
+  to_join: True
+  order: desc
 
 l4_overdue_bills:
   partition_by: ["account_identifier"]
@@ -341,82 +179,18 @@ l4_overdue_bills:
     avg: ["payments_over_due_bills","payments_over_due_bills_1_to_10_days","payments_over_due_bills_10_to_30_days","payments_over_due_bills_30_plus_days"]
   read_from: "l3"
 
-l4_most_popular_topup_channel_1:
-  partition_by: ["access_method_num","register_date","payments_top_up_channel"]
+l4_most_popular_topup_channel_initial:
+  partition_by: ["access_method_num","register_date","recharge_topup_event_type_name"]
   feature_list:
     sum: ["payments_total_top_up"]
   read_from: "l2"
 
-l4_most_popular_topup_channel_with_ranks:
-    where_clause: ""
-    feature_list:
-        start_of_month: "start_of_month"
-        start_of_week: "start_of_week"
-        access_method_num: "access_method_num"
-        register_date: "register_date"
-        payments_top_up_channel: "payments_top_up_channel"
-        rank_last_week: "row_number() over
-                         (partition by access_method_num,
-                                      register_date,
-                                      start_of_month,
-                                      start_of_week
-                                      order by sum_payments_total_top_up_last_week desc)"
-        rank_last_two_week: "row_number() over
-                            (partition by access_method_num,
-                                      register_date,
-                                      start_of_month,
-                                      start_of_week
-                                      order by sum_payments_total_top_up_last_two_week desc)"
-        rank_last_month: "row_number() over
-                            (partition by access_method_num,
-                                      register_date,
-                                      start_of_month,
-                                      start_of_week
-                                      order by sum_payments_total_top_up_last_month desc)"
-        rank_last_three_month: "row_number() over
-                                (partition by access_method_num,
-                                      register_date,
-                                      start_of_month,
-                                      start_of_week
-                                      order by sum_payments_total_top_up_last_three_month desc)"
-    granularity: ""
-
-l4_most_popular_topup_channel_last_week:
-    where_clause: "where rank_last_week = 1"
-    feature_list:
-        start_of_month: "start_of_month"
-        start_of_week: "start_of_week"
-        access_method_num: "access_method_num"
-        register_date: "register_date"
-        payment_most_popular_topup_channel_last_week: "payments_top_up_channel"
-    granularity: ""
-
-l4_most_popular_topup_channel_last_two_week:
-    where_clause: "where rank_last_two_week = 1"
-    feature_list:
-        start_of_month: "start_of_month"
-        start_of_week: "start_of_week"
-        access_method_num: "access_method_num"
-        register_date: "register_date"
-        payment_most_popular_topup_channel_last_two_week: "payments_top_up_channel"
-    granularity: ""
-
-l4_most_popular_topup_channel_last_month:
-    where_clause: "where rank_last_month = 1"
-    feature_list:
-        start_of_month: "start_of_month"
-        start_of_week: "start_of_week"
-        access_method_num: "access_method_num"
-        register_date: "register_date"
-        payment_most_popular_topup_channel_last_month: "payments_top_up_channel"
-    granularity: ""
-
-l4_most_popular_topup_channel_last_three_month:
-    where_clause: "where rank_last_three_month = 1"
-    feature_list:
-        start_of_month: "start_of_month"
-        start_of_week: "start_of_week"
-        access_method_num: "access_method_num"
-        register_date: "register_date"
-        payment_most_popular_topup_channel_last_three_month: "payments_top_up_channel"
-    granularity: ""
+l4_most_popular_topup_channel:
+  where_clause: ""
+  feature_column:
+    payments_top_up_channel: "recharge_topup_event_type_name"
+  partition_by: ["access_method_num", "register_date", "start_of_week"]
+  order_by_column_prefix: "sum_payments_total_top_up"
+  read_from: "l2"
+  to_join: True
+  order: desc
