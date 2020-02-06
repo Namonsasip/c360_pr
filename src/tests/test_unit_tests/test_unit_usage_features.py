@@ -94,11 +94,9 @@ class TestUnitUsage:
         assert \
             final_features.where("start_of_week = '2020-03-30'").select(
                 'min_usg_vas_total_number_of_call_min_weekly_last_week').collect()[0][0] == 1
-
         assert \
             final_features.where("start_of_week = '2020-03-30'").select(
                 'min_usg_vas_total_number_of_call_min_weekly_last_two_week').collect()[0][0] == 1
-
         assert \
             final_features.where("start_of_week = '2020-03-30'").select(
                 'min_usg_vas_total_number_of_call_min_weekly_last_four_week').collect()[0][0] == 1
