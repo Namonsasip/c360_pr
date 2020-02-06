@@ -92,12 +92,13 @@ def l4_rolling_window(input_df, config):
     features = []
 
     features.extend(config["partition_by"])
-    features.append("start_of_month")
 
     read_from = config.get("read_from")
 
     if read_from == 'l2':
         features.append("start_of_week")
+    else:
+        features.append("start_of_month")
 
     for agg_function, column_list in config["feature_list"].items():
         for each_feature_column in column_list:
