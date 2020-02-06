@@ -50,13 +50,7 @@ l1_billing_and_payment_popular_topup_day:
     feature_list:
         access_method_num: "access_method_num"
         register_date: "date(register_date)"
-        payment_popular_day: "case when dayofweek(recharge_date)=1 then 'Sunday'
-                                   when dayofweek(recharge_date)=2 then 'Monday'
-                                   when dayofweek(recharge_date)=3 then 'Tuesday'
-                                   when dayofweek(recharge_date)=4 then 'Wednesday'
-                                   when dayofweek(recharge_date)=5 then 'Thursday'
-                                   when dayofweek(recharge_date)=6 then 'Friday'
-                                   else 'Saturday' end"
+        payment_popular_day: "dayofweek(recharge_date)"
         payment_popular_hour: "hour(recharge_date)"
     granularity: ""
     event_date_column: "date(recharge_date)"
