@@ -1,15 +1,15 @@
 from kedro.pipeline import Pipeline, node
 
 from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l4.to_l4_nodes import *
-from src.customer360.utilities.config_parser import l4_rolling_window
+from src.customer360.utilities.config_parser import *
 
 def billing_to_l4_pipeline(**kwargs):
 
     return Pipeline(
         [
             node(
-                bill_shock,
-                ["l0_billing_statement_history_monthly"],
+                node_from_config,
+                ["l0_billing_statement_history_monthly","params:l4_payments_bill_shock"],
                 "l4_billing_statement_history_billshock"
             ),
             node(
@@ -19,8 +19,8 @@ def billing_to_l4_pipeline(**kwargs):
                 "l4_billing_rolling_window_topup_and_volume_intermediate"
             ),
             node(
-                dynamics_topups_and_volume,
-                ["l4_billing_rolling_window_topup_and_volume_intermediate"],
+                node_from_config,
+                ["l4_billing_rolling_window_topup_and_volume_intermediate","params:l4_dynamics_topups_and_volume"],
                 "l4_billing_rolling_window_topup_and_volume"
             ),
             node(
@@ -30,8 +30,8 @@ def billing_to_l4_pipeline(**kwargs):
                 "l4_billing_rolling_window_rpu_intermediate"
             ),
             node(
-                dynamics_rpu,
-                ["l4_billing_rolling_window_rpu_intermediate"],
+                node_from_config,
+                ["l4_billing_rolling_window_rpu_intermediate","params:l4_dynamics_arpu"],
                 "l4_billing_rolling_window_rpu"
             ),
             node(
@@ -47,8 +47,8 @@ def billing_to_l4_pipeline(**kwargs):
                 "l4_billing_rolling_window_time_diff_bw_top_ups"
             ),
             node(
-                last_3_topup_volume,
-                ["l0_billing_and_payments_rt_t_recharge_daily"],
+                node_from_config,
+                ["l0_billing_and_payments_rt_t_recharge_daily","params:l4_last_3_top_up_volume"],
                 "l4_billing_rolling_window_last_3_top_up_volume"
             ),
             node(
@@ -62,6 +62,39 @@ def billing_to_l4_pipeline(**kwargs):
                 ["l2_billing_and_payments_weekly_top_up_channels",
                  "params:l4_billing_top_up_channels"],
                 "l4_billing_rolling_window_top_up_channels"
+            ),
+            node(
+                l4_rolling_window,
+                ["l3_billing_and_payments_monthly_bill_volume",
+                 "params:l4_payments_bill_volume"],
+                "l4_billing_rolling_window_bill_volume_intermediate"
+            ),
+            node(
+                node_from_config,
+                ["l4_billing_rolling_window_bill_volume_intermediate","params:l4_dynamics_bill_volume"],
+                "l4_billing_rolling_window_bill_volume"
+            ),
+            node(
+                node_from_config,
+                ["l3_billing_and_payments_monthly_most_popular_top_up_channel_intermediate","params:l4_most_popular_topup_channel_1"],
+                "l4_billing_rolling_window_most_popular_topup_channel_1"
+            ),
+            node(
+                node_from_config,
+                ["l4_billing_rolling_window_most_popular_topup_channel_1",
+                 "params:l4_most_popular_topup_channel_2"],
+                "l4_billing_rolling_window_most_popular_topup_channel_2"
+            ),
+            node(
+                node_from_config,
+                ["l4_billing_rolling_window_most_popular_topup_channel_2",
+                 "params:l4_most_popular_topup_channel_3"],
+                "l4_billing_rolling_window_most_popular_topup_channel"
+            ),
+            node(
+                node_from_config,
+                ["l2_billing_and_payments_weekly_last_top_up_channel","params:l4_last_top_up_channel"],
+                "l4_rolling_window_last_top_up_channel"
             ),
         ]
     )

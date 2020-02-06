@@ -57,6 +57,11 @@ def usage_to_l2_pipeline(**kwargs):
                  "params:l2_usage_data_prepaid_postpaid_weekly"],
                 "l2_usage_data_prepaid_postpaid_weekly"
             ),
+            node(expansion,
+                 ["l1_usage_ru_a_vas_postpaid_prepaid_daily",
+                  "params:l2_usage_ru_a_vas_postpaid_prepaid_weekly"],
+                 "l2_usage_ru_a_vas_postpaid_prepaid_weekly"
+                 )
 
         ], name="usage_to_l2_pipeline"
     )

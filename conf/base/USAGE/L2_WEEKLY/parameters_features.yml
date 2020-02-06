@@ -505,3 +505,13 @@ l2_usage_data_prepaid_postpaid_weekly:
           'usg_total_data_volume',
     ]
   granularity: "msisdn, start_of_week, start_of_month"
+
+l2_usage_ru_a_vas_postpaid_prepaid_weekly:
+  where_clause: ""
+  type: "week"
+  feature_list:
+    max: ["usg_vas_total_number_of_call"]
+    min: ["usg_vas_total_number_of_call"]
+    sum: ["usg_vas_total_number_of_call"]
+    avg: ["usg_vas_total_number_of_call"]
+  granularity: "msisdn, start_of_week, start_of_month"

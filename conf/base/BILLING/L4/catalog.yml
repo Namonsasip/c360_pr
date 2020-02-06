@@ -62,4 +62,28 @@ l4_billing_rolling_window_top_up_channels:
     partitionBy: ["start_of_week"]
     mode: "overwrite"
 
+l4_billing_rolling_window_bill_volume:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/BILLING/l4_features/billing_and_payments_monthly_bill_volume/
+  save_args:
+    partitionBy: ["start_of_month"]
+    mode: "overwrite"
+
+l4_billing_rolling_window_most_popular_topup_channel:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/BILLING/l4_features/billing_and_payments_monthly_most_popular_topup_channel/
+  save_args:
+    partitionBy: ["start_of_month"]
+    mode: "overwrite"
+
+l4_rolling_window_last_top_up_channel:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/BILLING/l4_features/billing_and_payments_last_top_up_channel/
+  save_args:
+    partitionBy: ["start_of_week"]
+    mode: "overwrite"
+
 

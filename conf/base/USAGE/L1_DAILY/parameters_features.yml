@@ -723,157 +723,149 @@ l1_usage_ru_a_gprs_cbs_usage_daily:
     event_date_column: "date(call_start_dt)"
 
 l1_usage_ru_a_vas_postpaid_usg_daily:
-    where_clause: ""
+    where_clause: "call_type_cd IN (3, 64)"
     feature_list:
         msisdn: "max(access_method_num)"
-        usg_outgoing_data_volume: "sum(case when call_type_cd IN (3, 64) then uplink_volume_kb else 0 end)"
+        usg_outgoing_data_volume: "sum(uplink_volume_kb)"
 
-        usg_outgoing_data_volume_4G: "sum(case when call_type_cd IN (3, 64) AND
-                                      rat_type = '4G' then uplink_volume_kb else 0 end)"
+        usg_outgoing_data_volume_4G: "sum(case when rat_type = '4G' then uplink_volume_kb else 0 end)"
 
-        usg_outgoing_data_volume_2G_3G: "sum(case when call_type_cd IN (3, 64) AND
-                                         rat_type IN ('2G', '3G') then uplink_volume_kb else 0 end)"
+        usg_outgoing_data_volume_2G_3G: "sum(case when rat_type IN ('2G', '3G') then uplink_volume_kb else 0 end)"
 
-        usg_incoming_data_volume: "sum(case when call_type_cd IN (3, 64) then downlink_volume_kb else 0 end)"
+        usg_incoming_data_volume: "sum(downlink_volume_kb)"
 
-        usg_incoming_data_volume_4G: "sum(case when call_type_cd IN (3, 64) AND
-                                      rat_type = '4G' then downlink_volume_kb else 0 end)"
+        usg_incoming_data_volume_4G: "sum(case when rat_type = '4G' then downlink_volume_kb else 0 end)"
 
-        usg_incoming_data_volume_2G_3G: "sum(case when call_type_cd IN (3, 64) AND
-                                        rat_type IN ('2G', '3G') then downlink_volume_kb else 0 end)"
+        usg_incoming_data_volume_2G_3G: "sum(case when rat_type IN ('2G', '3G') then downlink_volume_kb else 0 end)"
 
         usg_data_last_action_date: "max(date(day_id))"
 
-        usg_data_monday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Monday') AND call_type_cd IN (3, 64)
+        usg_data_monday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Monday') THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
+
+        usg_data_monday_morning_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Monday') AND hour_id IN (7, 8, 9, 10, 11, 12)
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_monday_morning_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Monday') AND call_type_cd IN (3, 64)
-                                        AND hour_id IN (7, 8, 9, 10, 11, 12)
+        usg_data_monday_afternoon_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Monday') AND hour_id IN (13, 14, 15, 16, 17, 18)
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_monday_afternoon_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Monday') AND call_type_cd IN (3, 64)
-                                        AND hour_id IN (13, 14, 15, 16, 17, 18)
+        usg_data_monday_evening_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Monday') AND hour_id IN (19, 20, 21, 22, 23, 0)
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_monday_evening_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Monday') AND call_type_cd IN (3, 64)
-                                        AND hour_id IN (19, 20, 21, 22, 23, 0)
-                                        THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-
-        usg_data_monday_night_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Monday') AND call_type_cd IN (3, 64)
+        usg_data_monday_night_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Monday')
                                         AND hour_id IN (1, 2, 3, 4, 5, 6)
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_tuesday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Tuesday') AND call_type_cd IN (3, 64)
+        usg_data_tuesday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Tuesday')
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_tuesday_morning_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Tuesday') AND call_type_cd IN (3, 64)
+        usg_data_tuesday_morning_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Tuesday')
                                         AND hour_id IN (7, 8, 9, 10, 11, 12)
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_tuesday_afternoon_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Tuesday') AND call_type_cd IN (3, 64)
+        usg_data_tuesday_afternoon_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Tuesday')
                                         AND hour_id IN (13, 14, 15, 16, 17, 18)
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_tuesday_evening_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Tuesday') AND call_type_cd IN (3, 64)
+        usg_data_tuesday_evening_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Tuesday')
                                         AND hour_id IN (19, 20, 21, 22, 23, 0)
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_tuesday_night_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Tuesday') AND call_type_cd IN (3, 64)
+        usg_data_tuesday_night_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Tuesday')
                                         AND hour_id IN (1, 2, 3, 4, 5, 6)
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_wednesday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Wednesday') AND call_type_cd IN (3, 64)
+        usg_data_wednesday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Wednesday')
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_wednesday_morning_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Wednesday') AND call_type_cd IN (3, 64)
+        usg_data_wednesday_morning_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Wednesday')
                                         AND hour_id IN (7, 8, 9, 10, 11, 12)
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_wednesday_afternoon_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Wednesday') AND call_type_cd IN (3, 64)
+        usg_data_wednesday_afternoon_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Wednesday')
                                         AND hour_id IN (13, 14, 15, 16, 17, 18)
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_wednesday_evening_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Wednesday') AND call_type_cd IN (3, 64)
+        usg_data_wednesday_evening_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Wednesday')
                                         AND hour_id IN (19, 20, 21, 22, 23, 0)
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_wednesday_night_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Wednesday') AND call_type_cd IN (3, 64)
+        usg_data_wednesday_night_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Wednesday')
                                         AND hour_id IN (1, 2, 3, 4, 5, 6)
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_thursday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Thursday') AND call_type_cd IN (3, 64)
+        usg_data_thursday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Thursday')
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_thursday_morning_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Thursday') AND call_type_cd IN (3, 64)
+        usg_data_thursday_morning_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Thursday')
                                         AND hour_id IN (7, 8, 9, 10, 11, 12)
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_thursday_afternoon_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Thursday') AND call_type_cd IN (3, 64)
+        usg_data_thursday_afternoon_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Thursday')
                                         AND hour_id IN (13, 14, 15, 16, 17, 18)
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_thursday_evening_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Thursday') AND call_type_cd IN (3, 64)
+        usg_data_thursday_evening_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Thursday')
                                         AND hour_id IN (19, 20, 21, 22, 23, 0)
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_thursday_night_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Thursday') AND call_type_cd IN (3, 64)
+        usg_data_thursday_night_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Thursday')
                                         AND hour_id IN (1, 2, 3, 4, 5, 6)
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_friday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Friday') AND call_type_cd IN (3, 64)
+        usg_data_friday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Friday')
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_friday_morning_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Friday') AND call_type_cd IN (3, 64)
+        usg_data_friday_morning_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Friday')
                                         AND hour_id IN (7, 8, 9, 10, 11, 12)
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_friday_afternoon_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Friday') AND call_type_cd IN (3, 64)
+        usg_data_friday_afternoon_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Friday')
                                         AND hour_id IN (13, 14, 15, 16, 17, 18)
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_friday_evening_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Friday') AND call_type_cd IN (3, 64)
+        usg_data_friday_evening_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Friday')
                                         AND hour_id IN (19, 20, 21, 22, 23, 0)
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_friday_night_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Friday') AND call_type_cd IN (3, 64)
+        usg_data_friday_night_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Friday')
                                         AND hour_id IN (1, 2, 3, 4, 5, 6)
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_saturday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Saturday') AND call_type_cd IN (3, 64)
+        usg_data_saturday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Saturday')
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_saturday_morning_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Saturday') AND call_type_cd IN (3, 64)
+        usg_data_saturday_morning_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Saturday')
                                         AND hour_id IN (7, 8, 9, 10, 11, 12)
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_saturday_afternoon_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Saturday') AND call_type_cd IN (3, 64)
+        usg_data_saturday_afternoon_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Saturday')
                                         AND hour_id IN (13, 14, 15, 16, 17, 18)
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_saturday_evening_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Saturday') AND call_type_cd IN (3, 64)
+        usg_data_saturday_evening_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Saturday')
                                         AND hour_id IN (19, 20, 21, 22, 23, 0)
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_saturday_night_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Saturday') AND call_type_cd IN (3, 64)
+        usg_data_saturday_night_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Saturday')
                                         AND hour_id IN (1, 2, 3, 4, 5, 6)
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_sunday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Sunday') AND call_type_cd IN (3, 64)
+        usg_data_sunday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Sunday')
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_sunday_morning_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Sunday') AND call_type_cd IN (3, 64)
+        usg_data_sunday_morning_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Sunday')
                                         AND hour_id IN (7, 8, 9, 10, 11, 12)
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_sunday_afternoon_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Sunday') AND call_type_cd IN (3, 64)
+        usg_data_sunday_afternoon_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Sunday')
                                         AND hour_id IN (13, 14, 15, 16, 17, 18)
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_sunday_evening_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Sunday') AND call_type_cd IN (3, 64)
+        usg_data_sunday_evening_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Sunday')
                                         AND hour_id IN (19, 20, 21, 22, 23, 0)
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
-        usg_data_sunday_night_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Sunday') AND call_type_cd IN (3, 64)
+        usg_data_sunday_night_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Sunday')
                                         AND hour_id IN (1, 2, 3, 4, 5, 6)
                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
@@ -904,4 +896,12 @@ l1_usage_incoming_call_relation_sum_ir_daily:
         usg_incoming_roaming_total_sms: "sum(case when service_type IN ('SMS') THEN total_durations else 0 end)"
 
     granularity: "called_no, day_id"
+    event_date_column: "date(day_id)"
+
+l1_usage_ru_a_vas_postpaid_prepaid_daily:
+    where_clause: ""
+    feature_list:
+        msisdn: "max(access_method_num)"
+        usg_vas_total_number_of_call: "sum(number_of_call)"
+    granularity: "access_method_num, day_id"
     event_date_column: "date(day_id)"
