@@ -49,6 +49,12 @@ l3_device_handset_summary_with_configuration:
                         over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
         Unknown_device: "first_value(Unknown_device)
                        over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        high_range_device: "first_value(high_range_device)
+                            over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        mid_range_device: "first_value(mid_range_device)
+                            over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
+        low_range_device: "first_value(low_range_device)
+                            over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
         device_launch_price: "first_value(device_launch_price)
                       over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
         device_sale_price: "first_value(device_sale_price)
@@ -77,23 +83,13 @@ l3_device_handset_summary_with_configuration:
                                      over(partition by start_of_month,mobile_no,register_date order by device_last_use_time desc)"
     granularity: ""
 
-l3_device_most_used_1:
+l3_device_most_used_initial:
     where_clause: ""
     feature_list:
         device_used_days: "sum(device_used_days)"
-    granularity: "start_of_month,mobile_no,register_date,handset_brand_name"
-
-l3_device_most_used_2:
-    where_clause: ""
-    feature_list:
-        start_of_month: "start_of_month"
-        mobile_no: "mobile_no"
-        register_date: "register_date"
-        handset_brand_name: "handset_brand_name"
-        device_used_days: "device_used_days"
         rank: "row_number() over(partition by start_of_month,mobile_no,register_date
-               order by device_used_days desc)"
-    granularity: ""
+               order by sum(device_used_days) desc)"
+    granularity: "start_of_month,mobile_no,register_date,handset_brand_name"
 
 l3_device_most_used:
     where_clause: "where rank = 1"

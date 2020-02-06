@@ -8,11 +8,15 @@ def device_to_l3_pipeline(**kwargs):
 
     return Pipeline(
         [
+            # Monthly handset configurations features
             node(
                 node_from_config,
-                ["l2_device_handset_summary_with_configuration_weekly","params:l3_device_handset_summary_with_configuration"],
+                ["l2_device_handset_summary_with_configuration_weekly",
+                 "params:l3_device_handset_summary_with_configuration"],
                 "l3_device_handset_summary_with_configuration_monthly"
             ),
+
+            # Monthly previous configurations features
             node(
                 derive_month_and_week,
                 ["l0_devices_summary_customer_handset"],
@@ -20,7 +24,8 @@ def device_to_l3_pipeline(**kwargs):
             ),
             node(
                 node_from_config,
-                ["l3_previous_device_handset_summary_with_configuration_monthly_1","params:l3_previous_device_features_with_config"],
+                ["l3_previous_device_handset_summary_with_configuration_monthly_1",
+                 "params:l3_previous_device_features_with_config"],
                 "l3_previous_device_handset_summary_with_configuration_monthly_2"
             ),
             node(
@@ -28,19 +33,18 @@ def device_to_l3_pipeline(**kwargs):
                 ["l3_previous_device_handset_summary_with_configuration_monthly_2"],
                 "l3_previous_device_handset_summary_with_configuration_monthly"
             ),
+
+            # Monthly most used device
             node(
                 node_from_config,
-                ["l2_device_most_used_intermediate_weekly","params:l3_device_most_used_1"],
-                "l3_device_most_used_intermediate_monthly_1"
-            ),
-            node(
-                node_from_config,
-                ["l3_device_most_used_intermediate_monthly_1", "params:l3_device_most_used_2"],
+                ["l2_device_most_used_intermediate_weekly",
+                 "params:l3_device_most_used_initial"],
                 "l3_device_most_used_intermediate_monthly"
             ),
             node(
                 node_from_config,
-                ["l3_device_most_used_intermediate_monthly","params:l3_device_most_used"],
+                ["l3_device_most_used_intermediate_monthly",
+                 "params:l3_device_most_used"],
                 "l3_device_most_used_monthly"
             ),
         ]

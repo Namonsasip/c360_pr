@@ -45,6 +45,12 @@ l2_device_handset_summary_with_configuration:
                       then 'Y' else 'N' end"
       Unknown_device: "case when handset_type is null
                        then 'Y' else 'N' end"
+      high_range_device: "case when coalesce(launchprice ,saleprice  ) > 14500
+                          then 'Y' else 'N' end"
+      mid_range_device: "case when coalesce(launchprice ,saleprice  ) >= 4500 and coalesce(launchprice ,saleprice  ) <= 14500
+                          then 'Y' else 'N' end"
+      low_range_device: "case when coalesce(launchprice ,saleprice  ) < 4500
+                          then 'Y' else 'N' end"
       device_launch_price: "launchprice"
       device_sale_price: "saleprice"
       device_supports_umts: "handset_support_3g_2100_yn"
@@ -64,24 +70,13 @@ l2_device_handset_summary_with_configuration:
              order by handset_last_use_time desc)"
     granularity: ""
 
-l2_device_most_used_1:
+l2_device_most_used_initial:
     where_clause: ""
     feature_list:
         device_used_days: "count(distinct date_id)"
-    granularity: "start_of_month,start_of_week,mobile_no,register_date,handset_brand_name"
-
-l2_device_most_used_2:
-    where_clause: ""
-    feature_list:
-        start_of_month: "start_of_month"
-        start_of_week: "start_of_week"
-        mobile_no: "mobile_no"
-        register_date: "register_date"
-        handset_brand_name: "handset_brand_name"
-        device_used_days: "device_used_days"
         rank: "row_number() over(partition by start_of_month,start_of_week,mobile_no,register_date
-               order by device_used_days desc)"
-    granularity: ""
+               order by count(distinct date_id) desc)"
+    granularity: "start_of_month,start_of_week,mobile_no,register_date,handset_brand_name"
 
 l2_device_most_used:
     where_clause: "where rank = 1"

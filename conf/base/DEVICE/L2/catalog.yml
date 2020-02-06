@@ -4,7 +4,7 @@ l2_device_handset_summary_with_configuration_weekly:
   filepath: /mnt/customer360-blob-data/C360/DEVICE/l2_features/device_handset_summary_with_configuration/
   save_args:
     partitionBy: ["start_of_week"]
-    mode: "overwrite"
+    mode: "append"
 
 l2_device_most_used_intermediate_weekly:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -12,7 +12,7 @@ l2_device_most_used_intermediate_weekly:
   filepath: /mnt/customer360-blob-data/C360/DEVICE/l2_features/device_most_used_intermediate/
   save_args:
     partitionBy: ["start_of_week"]
-    mode: "overwrite"
+    mode: "append"
 
 l2_device_most_used_weekly:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -20,4 +20,4 @@ l2_device_most_used_weekly:
   filepath: /mnt/customer360-blob-data/C360/DEVICE/l2_features/device_most_used/
   save_args:
     partitionBy: ["start_of_week"]
-    mode: "overwrite"
+    mode: "append"

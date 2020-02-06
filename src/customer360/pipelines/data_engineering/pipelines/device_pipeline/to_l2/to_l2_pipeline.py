@@ -7,14 +7,17 @@ def device_to_l2_pipeline(**kwargs):
 
     return Pipeline(
         [
+            # Weekly handset configuration related features
             node(
                 device_features_with_config,
-                ["l0_devices_summary_customer_handset", "l0_devices_handset_configurations"],
+                ["l0_devices_summary_customer_handset",
+                 "l0_devices_handset_configurations"],
                 "l2_device_handset_summary_with_configuration_weekly_1"
             ),
             node(
                 node_from_config,
-                ["l2_device_handset_summary_with_configuration_weekly_1", "params:l2_device_handset_summary_with_configuration"],
+                ["l2_device_handset_summary_with_configuration_weekly_1",
+                 "params:l2_device_handset_summary_with_configuration"],
                 "l2_device_handset_summary_with_configuration_weekly_2"
             ),
             node(
@@ -22,6 +25,8 @@ def device_to_l2_pipeline(**kwargs):
                 ["l2_device_handset_summary_with_configuration_weekly_2"],
                 "l2_device_handset_summary_with_configuration_weekly"
             ),
+
+            # Weekly most used device
             node(
                 derive_month_and_week,
                 ["l0_devices_summary_customer_handset"],
@@ -29,17 +34,14 @@ def device_to_l2_pipeline(**kwargs):
             ),
             node(
                 node_from_config,
-                ["l2_device_most_used_intermediate_weekly_1", "params:l2_device_most_used_1"],
-                "l2_device_most_used_intermediate_weekly_2"
-            ),
-            node(
-                node_from_config,
-                ["l2_device_most_used_intermediate_weekly_2", "params:l2_device_most_used_2"],
+                ["l2_device_most_used_intermediate_weekly_1",
+                 "params:l2_device_most_used_initial"],
                 "l2_device_most_used_intermediate_weekly"
             ),
             node(
                 node_from_config,
-                ["l2_device_most_used_intermediate_weekly", "params:l2_device_most_used"],
+                ["l2_device_most_used_intermediate_weekly",
+                 "params:l2_device_most_used"],
                 "l2_device_most_used_weekly"
             ),
         ]
