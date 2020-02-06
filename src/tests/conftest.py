@@ -41,7 +41,10 @@ import pytest
 
 from customer360.run import ProjectContext
 
+from pyspark.sql import SparkSession
+
 
 @pytest.fixture(scope="module")
 def project_context():
-    return ProjectContext(str(Path.cwd()))
+    spark = SparkSession.builder.getOrCreate()
+    return {'ProjectContext': ProjectContext(str(Path.cwd())), 'Spark': spark}

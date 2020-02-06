@@ -263,8 +263,6 @@ l1_usage_outgoing_call_relation_sum_daily:
 
         usg_outgoing_true_number_sms: "sum(case when service_type IN ('SMS')
                                          AND called_network_type = 'TRUE' THEN total_durations else 0 end)"
-
-
     granularity: "caller_no, day_id"
     event_date_column: "date(day_id)"
 
