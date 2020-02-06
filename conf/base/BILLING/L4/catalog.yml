@@ -4,14 +4,14 @@ l4_billing_statement_history_billshock:
   file_format: parquet
   save_args:
     partitionBy: ["start_of_month"]
-    mode: "overwrite"
+    mode: "append"
 
 l4_billing_rolling_window_topup_and_volume:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l4_features/billing_rolling_window_topup_and_volume/
   save_args:
-    mode: "overwrite"
+    mode: "append"
     partitionBy: ["start_of_week"]
 
 l4_billing_rolling_window_rpu:
@@ -19,7 +19,7 @@ l4_billing_rolling_window_rpu:
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l4_features/billing_rolling_window_rpu/
   save_args:
-    mode: "overwrite"
+    mode: "append"
     partitionBy: ["start_of_month"]
 
 l4_billing_rolling_window_rpu_roaming:
@@ -27,7 +27,7 @@ l4_billing_rolling_window_rpu_roaming:
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l4_features/billing_rolling_window_rpu_roaming/
   save_args:
-    mode: "overwrite"
+    mode: "append"
     partitionBy: ["start_of_week"]
 
 l4_billing_rolling_window_time_diff_bw_top_ups:
@@ -35,7 +35,7 @@ l4_billing_rolling_window_time_diff_bw_top_ups:
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l4_features/billing_rolling_window_time_diff_bw_top_ups/
   save_args:
-    mode: "overwrite"
+    mode: "append"
     partitionBy: ["start_of_week"]
 
 l4_billing_rolling_window_before_top_up_balance:
@@ -43,7 +43,7 @@ l4_billing_rolling_window_before_top_up_balance:
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l4_features/billing_and_payments_before_top_up_balance/
   save_args:
-    mode: "overwrite"
+    mode: "append"
     partitionBy: ["start_of_week"]
 
 l4_billing_rolling_window_top_up_channels:
@@ -52,7 +52,7 @@ l4_billing_rolling_window_top_up_channels:
   filepath: /mnt/customer360-blob-data/C360/BILLING/l4_features/billing_and_payments_top_up_channels/
   save_args:
     partitionBy: ["start_of_week"]
-    mode: "overwrite"
+    mode: "append"
 
 l4_billing_rolling_window_bill_volume:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -60,7 +60,7 @@ l4_billing_rolling_window_bill_volume:
   filepath: /mnt/customer360-blob-data/C360/BILLING/l4_features/billing_and_payments_monthly_bill_volume/
   save_args:
     partitionBy: ["start_of_month"]
-    mode: "overwrite"
+    mode: "append"
 
 l4_billing_rolling_window_most_popular_topup_channel:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -68,7 +68,7 @@ l4_billing_rolling_window_most_popular_topup_channel:
   filepath: /mnt/customer360-blob-data/C360/BILLING/l4_features/billing_and_payments_monthly_most_popular_topup_channel/
   save_args:
     partitionBy: ["start_of_week"]
-    mode: "overwrite"
+    mode: "append"
 
 l4_rolling_window_missed_bills:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -76,7 +76,7 @@ l4_rolling_window_missed_bills:
   filepath: /mnt/customer360-blob-data/C360/BILLING/l4_features/billing_and_payments_missed_bills/
   save_args:
     partitionBy: ["start_of_month"]
-    mode: "overwrite"
+    mode: "append"
 
 l4_rolling_window_popular_topup_day:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -84,7 +84,7 @@ l4_rolling_window_popular_topup_day:
   filepath: /mnt/customer360-blob-data/C360/BILLING/l4_features/billing_and_payments_popular_topup_day/
   save_args:
     partitionBy: ["start_of_week"]
-    mode: "overwrite"
+    mode: "append"
 
 
 l4_rolling_window_popular_topup_hour:
@@ -93,7 +93,7 @@ l4_rolling_window_popular_topup_hour:
   filepath: /mnt/customer360-blob-data/C360/BILLING/l4_features/billing_and_payments_popular_topup_hour/
   save_args:
     partitionBy: ["start_of_week"]
-    mode: "overwrite"
+    mode: "append"
 
 l4_rolling_window_overdue_bills:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -101,6 +101,6 @@ l4_rolling_window_overdue_bills:
   filepath: /mnt/customer360-blob-data/C360/BILLING/l4_features/billing_and_payments_overdue_bills/
   save_args:
     partitionBy: ["start_of_month"]
-    mode: "overwrite"
+    mode: "append"
 
 

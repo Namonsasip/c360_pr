@@ -4,7 +4,7 @@ l3_billing_and_payments_monthly_rpu:
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_monthly_rpu/
   save_args:
     partitionBy: ["start_of_month"]
-    mode: "overwrite"
+    mode: "append"
 
 l3_billing_and_payments_monthly_topup_and_volume:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -12,7 +12,7 @@ l3_billing_and_payments_monthly_topup_and_volume:
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_monthly_topup_and_volume/
   save_args:
     partitionBy: ["start_of_month"]
-    mode: "overwrite"
+    mode: "append"
 
 l3_billing_and_payments_monthly_topup_time_diff:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -20,7 +20,7 @@ l3_billing_and_payments_monthly_topup_time_diff:
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_monthly_topup_time_diff/
   save_args:
     partitionBy: ["start_of_month"]
-    mode: "overwrite"
+    mode: "append"
 
 l3_billing_monthly_rpu_roaming:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -28,7 +28,7 @@ l3_billing_monthly_rpu_roaming:
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_monthly_rpu_roaming/
   save_args:
     partitionBy: ["start_of_month"]
-    mode: "overwrite"
+    mode: "append"
 
 l3_billing_monthly_automated_payments:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -36,7 +36,7 @@ l3_billing_monthly_automated_payments:
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_monthly_automated_payments/
   save_args:
     partitionBy: ["start_of_month"]
-    mode: "overwrite"
+    mode: "append"
 
 l3_billing_and_payments_monthly_before_top_up_balance:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -44,7 +44,7 @@ l3_billing_and_payments_monthly_before_top_up_balance:
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_before_top_up_balance/
   save_args:
     partitionBy: ["start_of_month"]
-    mode: "overwrite"
+    mode: "append"
 
 
 l3_billing_and_payments_monthly_top_up_channels:
@@ -53,7 +53,7 @@ l3_billing_and_payments_monthly_top_up_channels:
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_top_up_channels/
   save_args:
     partitionBy: ["start_of_month"]
-    mode: "overwrite"
+    mode: "append"
 
 
 l3_billing_and_payments_monthly_most_popular_top_up_channel:
@@ -62,7 +62,7 @@ l3_billing_and_payments_monthly_most_popular_top_up_channel:
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_most_popular_top_up_channel/
   save_args:
     partitionBy: ["start_of_month"]
-    mode: "overwrite"
+    mode: "append"
 
 
 l3_billing_and_payments_monthly_bill_volume:
@@ -71,7 +71,7 @@ l3_billing_and_payments_monthly_bill_volume:
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_monthly_bill_volume/
   save_args:
     partitionBy: ["start_of_month"]
-    mode: "overwrite"
+    mode: "append"
 
 l3_billing_and_payments_monthly_last_top_up_channel:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -79,7 +79,7 @@ l3_billing_and_payments_monthly_last_top_up_channel:
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_last_top_up_channel/
   save_args:
     partitionBy: ["start_of_month"]
-    mode: "overwrite"
+    mode: "append"
 
 l3_billing_and_payments_monthly_missed_bills:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -87,7 +87,7 @@ l3_billing_and_payments_monthly_missed_bills:
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_missed_bills/
   save_args:
     partitionBy: ["start_of_month"]
-    mode: "overwrite"
+    mode: "append"
 
 l3_billing_and_payments_monthly_popular_topup_day:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -95,7 +95,7 @@ l3_billing_and_payments_monthly_popular_topup_day:
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_popular_topup_day/
   save_args:
     partitionBy: ["start_of_month"]
-    mode: "overwrite"
+    mode: "append"
 
 l3_billing_and_payments_monthly_popular_topup_hour:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -103,7 +103,7 @@ l3_billing_and_payments_monthly_popular_topup_hour:
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_popular_topup_hour/
   save_args:
     partitionBy: ["start_of_month"]
-    mode: "overwrite"
+    mode: "append"
 
 
 l3_billing_and_payments_monthly_overdue_bills:
@@ -112,7 +112,7 @@ l3_billing_and_payments_monthly_overdue_bills:
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_overdue_bills/
   save_args:
     partitionBy: ["start_of_month"]
-    mode: "overwrite"
+    mode: "append"
 
 l3_billing_and_payments_monthly_time_since_last_top_up:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -120,7 +120,7 @@ l3_billing_and_payments_monthly_time_since_last_top_up:
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_time_since_last_top_up/
   save_args:
     partitionBy: ["start_of_month"]
-    mode: "overwrite"
+    mode: "append"
 
 l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -128,7 +128,7 @@ l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume:
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_last_overdue_bill_days_ago_and_volume/
   save_args:
     partitionBy: ["start_of_month"]
-    mode: "overwrite"
+    mode: "append"
 
 l3_billing_and_payments_monthly_last_three_topup_volume:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -136,4 +136,4 @@ l3_billing_and_payments_monthly_last_three_topup_volume:
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_last_three_topup_volume/
   save_args:
     partitionBy: ["start_of_month"]
-    mode: "overwrite"
+    mode: "append"
