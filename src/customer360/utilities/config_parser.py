@@ -316,8 +316,26 @@ def __generate_l4_rolling_ranked_column(
     return df
 
 
+def __construct_null_safe_join_condition(
+        column_list,
+        left_alias='left',
+        right_alias='right'
+):
+    join_condition = (F.col("{}.{}".format(left_alias, column_list[0]))
+                      .eqNullSafe(F.col("{}.{}".format(right_alias, column_list[0]))))
+
+    if len(column_list) == 1:
+        return join_condition
+
+    for each_col in column_list[1:]:
+        join_condition &= (F.col("{}.{}".format(left_alias, each_col))
+                           .eqNullSafe(F.col("{}.{}".format(right_alias, each_col))))
+
+    return join_condition
+
+
 def __join_l4_rolling_ranked_table(result_df, config):
-    feature_column = [F.col(each_col) for each_col in config["partition_by"]]
+    feature_column = [F.col("left.{}".format(each_col)) for each_col in config["partition_by"]]
 
     final_df = None
     for window_range, df in result_df.items():
@@ -327,11 +345,15 @@ def __join_l4_rolling_ranked_table(result_df, config):
                                   .alias("{}_{}".format(each_feature_column, window_range)))
 
         if final_df is None:
-            final_df = df.select(feature_column)
+            final_df = df.alias("left").select(feature_column)
             continue
 
-        # Always join on partition_by because it define the granularity
-        final_df = (final_df.join(df, config["partition_by"], how='inner')
+        # Always join on partition_by because it defines the granularity
+        join_condition = __construct_null_safe_join_condition(config["partition_by"])
+
+        final_df = (final_df.alias("left").join(other=df.alias("right"),
+                                                on=join_condition,
+                                                how='inner')
                     .select(feature_column))
 
     return final_df
