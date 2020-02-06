@@ -34,7 +34,7 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 from kedro.pipeline import Pipeline, node
 
 from customer360.utilities.config_parser import node_from_config, expansion
-
+from customer360.pipelines.data_engineering.nodes.stream_nodes.to_l3.to_l3_nodes import generate_l3_fav_streaming_day
 
 def streaming_to_l3_pipeline(**kwargs):
     return Pipeline(
@@ -42,7 +42,7 @@ def streaming_to_l3_pipeline(**kwargs):
             # Content Type Features
             node(
                 node_from_config,
-                ["int_l2_streaming_content_type_features",
+                ["int_l1_streaming_content_type_features",
                  "params:int_l3_streaming_content_type_features"],
                 "int_l3_streaming_content_type_features"
             ),
@@ -56,7 +56,7 @@ def streaming_to_l3_pipeline(**kwargs):
             # TV Channel features
             node(
                 node_from_config,
-                ["int_l2_streaming_tv_channel_features",
+                ["int_l1_streaming_tv_channel_features",
                  "params:int_l3_streaming_tv_channel_features"],
                 "int_l3_streaming_tv_channel_features"
             ),
@@ -85,7 +85,7 @@ def streaming_to_l3_pipeline(**kwargs):
             # fav video service by download traffic/visit count
             node(
                 node_from_config,
-                ["int_l2_streaming_video_service_feature",
+                ["int_l1_streaming_video_service_feature",
                  "params:int_l3_streaming_service_feature"],
                 "int_l3_streaming_video_service_feature"
             ),
@@ -111,7 +111,7 @@ def streaming_to_l3_pipeline(**kwargs):
             # fav music service by download traffic/visit count
             node(
                 node_from_config,
-                ["int_l2_streaming_music_service_feature",
+                ["int_l1_streaming_music_service_feature",
                  "params:int_l3_streaming_service_feature"],
                 "int_l3_streaming_music_service_feature"
             ),
@@ -137,7 +137,7 @@ def streaming_to_l3_pipeline(**kwargs):
             # fav esport service by download traffic/visit count
             node(
                 node_from_config,
-                ["int_l2_streaming_esport_service_feature",
+                ["int_l1_streaming_esport_service_feature",
                  "params:int_l3_streaming_service_feature"],
                 "int_l3_streaming_esport_service_feature"
             ),
@@ -167,5 +167,28 @@ def streaming_to_l3_pipeline(**kwargs):
                  "params:l3_streaming_visit_count_and_download_traffic_feature"],
                 "l3_streaming_visit_count_and_download_traffic_feature"
             ),
+
+            # Favourite streaming day of week
+            # get sum per day of week
+            node(
+                expansion,
+                ["l1_streaming_visit_count_and_download_traffic_feature",
+                 "params:int_l3_streaming_sum_per_day"],
+                "int_l3_streaming_sum_per_day"
+            ),
+            # rank of day per week
+            node(
+                node_from_config,
+                ["int_l3_streaming_sum_per_day",
+                 "params:int_l3_streaming_ranked_of_day_per_month"],
+                "int_l3_streaming_ranked_of_day_per_month"
+            ),
+            # generate all the tables inside
+            node(
+                generate_l3_fav_streaming_day,
+                ["int_l3_streaming_ranked_of_day_per_month",
+                 "params:streaming_app"],
+                None
+            )
         ], name="streaming_to_l3_pipeline"
     )

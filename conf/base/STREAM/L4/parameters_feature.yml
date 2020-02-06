@@ -111,17 +111,46 @@ l4_streaming_visit_count_and_download_traffic_feature:
           "visit_count_bigo_esport_sum",
           "visit_count_mixer_esport_sum",
           "visit_count_steamtv_esport_sum",
-          "download_traffic_youtube_video_sum",
-          "download_traffic_facebook_video_sum",
-          "download_traffic_linetv_video_sum",
-          "download_traffic_ais_play_video_sum",
-          "download_traffic_netflix_video_sum",
-          "download_traffic_hooq_video_sum",
-          "download_traffic_iflix_video_sum",
-          "download_traffic_spotify_music_sum",
-          "download_traffic_joox_music_sum",
-          "download_traffic_twitch_esport_sum",
-          "download_traffic_bigo_esport_sum",
-          "download_traffic_mixer_esport_sum",
-          "download_traffic_steamtv_esport_sum"]
+          "download_kb_traffic_youtube_video_sum",
+          "download_kb_traffic_facebook_video_sum",
+          "download_kb_traffic_linetv_video_sum",
+          "download_kb_traffic_ais_play_video_sum",
+          "download_kb_traffic_netflix_video_sum",
+          "download_kb_traffic_hooq_video_sum",
+          "download_kb_traffic_iflix_video_sum",
+          "download_kb_traffic_spotify_music_sum",
+          "download_kb_traffic_joox_music_sum",
+          "download_kb_traffic_twitch_esport_sum",
+          "download_kb_traffic_bigo_esport_sum",
+          "download_kb_traffic_mixer_esport_sum",
+          "download_kb_traffic_steamtv_esport_sum"]
   read_from: "l2"
+
+int_l4_streaming_download_traffic_per_day_of_week:
+  partition_by: ["mobile_no", "day_of_week", "start_of_week"]
+  feature_list:
+    sum: ["download_kb_traffic_youtube_video_sum",
+          "download_kb_traffic_facebook_video_sum",
+          "download_kb_traffic_linetv_video_sum",
+          "download_kb_traffic_ais_play_video_sum",
+          "download_kb_traffic_netflix_video_sum",
+          "download_kb_traffic_hooq_video_sum",
+          "download_kb_traffic_iflix_video_sum",
+          "download_kb_traffic_spotify_music_sum",
+          "download_kb_traffic_joox_music_sum",
+          "download_kb_traffic_twitch_esport_sum",
+          "download_kb_traffic_bigo_esport_sum",
+          "download_kb_traffic_mixer_esport_sum",
+          "download_kb_traffic_steamtv_esport_sum"
+    ]
+  read_from: "l2"
+
+
+int_l4_streaming_ranked_of_day_per_rolling_week:
+  feature_column:
+    fav_{app}_streaming_day_of_week: "day_of_week"
+
+  partition_by: ["mobile_no", "start_of_week"]
+  order_by_column_prefix: "sum_download_kb_traffic_{app}_sum"
+  read_from: "l2"
+  to_join: False  # will be joined in generate_l4_fav_streaming_day() after custom select condition

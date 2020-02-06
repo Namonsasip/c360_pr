@@ -94,7 +94,7 @@ int_l1_streaming_music_service_feature:
   file_format: parquet
   save_args:
     mode: "overwrite"
-    partitionBy: ["event_partition_date"]
+#    partitionBy: ["event_partition_date"]
 
 l1_streaming_fav_music_service_by_download_feature:
   type: kedro.contrib.io.pyspark.SparkDataSet

@@ -34,7 +34,6 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 from kedro.pipeline import Pipeline, node
 
 from customer360.utilities.config_parser import node_from_config
-from customer360.utilities.re_usable_functions import add_start_of_week_and_month
 
 
 def streaming_to_l1_pipeline(**kwargs):
@@ -148,12 +147,11 @@ def streaming_to_l1_pipeline(**kwargs):
             ),
 
             # number of visit and volume of download traffic
-
             node(
                 node_from_config,
                 ["l0_streaming_soc_mobile_app_daily",
                  "params:l1_streaming_visit_count_and_download_traffic_feature"],
                 "l1_streaming_visit_count_and_download_traffic_feature"
-            ),
+            )
         ], name="streaming_to_l1_pipeline"
     )

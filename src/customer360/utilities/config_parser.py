@@ -265,12 +265,13 @@ def __generate_l4_rolling_ranked_column(
     features = []
 
     features.extend(config["partition_by"])
-    features.append("start_of_month")
 
     read_from = config.get("read_from")
 
     if read_from == 'l2':
         features.append("start_of_week")
+    else:
+        features.append("start_of_month")
 
     for alias, col_name in config["feature_column"].items():
         features.append("{} as {}".format(col_name, alias))
@@ -278,59 +279,73 @@ def __generate_l4_rolling_ranked_column(
     order = config.get("order", "desc")
 
     if read_from == 'l2':
+        order_column_last_week = "{}_weekly_last_week".format(config["order_by_column_prefix"])
+        order_column_last_two_week = "{}_weekly_last_two_week".format(config["order_by_column_prefix"])
+        order_column_last_four_week = "{}_weekly_last_four_week".format(config["order_by_column_prefix"])
+        order_column_last_twelve_week = "{}_weekly_last_twelve_week".format(config["order_by_column_prefix"])
+
         features.append("""
             row_number() over (partition by {partition_column} 
             order by {order_column} {order}) as weekly_rank_last_week
             """.format(
             partition_column=','.join(config["partition_by"]),
-            order_column="{}_weekly_last_week".format(config["order_by_column_prefix"]),
+            order_column=order_column_last_week,
             order=order
         ))
+        features.append(order_column_last_week)
 
         features.append("""
             row_number() over (partition by {partition_column} 
             order by {order_column} {order}) as weekly_rank_last_two_week
             """.format(
             partition_column=','.join(config["partition_by"]),
-            order_column="{}_weekly_last_two_week".format(config["order_by_column_prefix"]),
+            order_column=order_column_last_two_week,
             order=order
         ))
+        features.append(order_column_last_two_week)
 
         features.append("""
             row_number() over (partition by {partition_column} 
             order by {order_column} {order}) as weekly_rank_last_four_week
             """.format(
             partition_column=','.join(config["partition_by"]),
-            order_column="{}_weekly_last_four_week".format(config["order_by_column_prefix"]),
+            order_column=order_column_last_four_week,
             order=order
         ))
+        features.append(order_column_last_four_week)
 
         features.append("""
             row_number() over (partition by {partition_column} 
             order by {order_column} {order}) as weekly_rank_last_twelve_week
             """.format(
             partition_column=','.join(config["partition_by"]),
-            order_column="{}_weekly_last_twelve_week".format(config["order_by_column_prefix"]),
+            order_column=order_column_last_twelve_week,
             order=order
         ))
+        features.append(order_column_last_twelve_week)
     else:
+        order_column_monthly_last_month = "{}_monthly_last_month".format(config["order_by_column_prefix"])
+        order_column_monthly_last_three_month = "{}_monthly_last_three_month".format(config["order_by_column_prefix"])
+
         features.append("""
             row_number() over (partition by {partition_column} 
             order by {order_column} {order}) as rank_last_month
             """.format(
             partition_column=','.join(config["partition_by"]),
-            order_column="{}_monthly_last_month".format(config["order_by_column_prefix"]),
+            order_column=order_column_monthly_last_month,
             order=order
         ))
+        features.append(order_column_monthly_last_month)
 
         features.append("""
             row_number() over (partition by {partition_column} 
             order by {order_column} {order}) as rank_last_three_month
             """.format(
             partition_column=','.join(config["partition_by"]),
-            order_column="{}_monthly_last_three_month".format(config["order_by_column_prefix"]),
+            order_column=order_column_monthly_last_three_month,
             order=order
         ))
+        features.append(order_column_monthly_last_three_month)
 
     sql_stmt = sql_stmt.format(',\n'.join(set(features)),
                                config.get("where_clause", ""))
@@ -361,7 +376,7 @@ def __construct_null_safe_join_condition(
     return join_condition
 
 
-def __join_l4_rolling_ranked_table(result_df, config):
+def join_l4_rolling_ranked_table(result_df, config):
     feature_column = [F.col("left.{}".format(each_col)) for each_col in config["partition_by"]]
 
     final_df = None
@@ -407,7 +422,7 @@ def __generate_l4_filtered_ranked_table(
         result_df["last_three_month"] = ranked_df.where(F.col("monthly_rank_last_three_month") == rank)
 
     if to_join:
-        return __join_l4_rolling_ranked_table(result_df, config)
+        return join_l4_rolling_ranked_table(result_df, config)
 
     return result_df
 

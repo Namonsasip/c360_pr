@@ -34,6 +34,7 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 from kedro.pipeline import Pipeline, node
 
 from customer360.utilities.config_parser import node_from_config, expansion
+from customer360.pipelines.data_engineering.nodes.stream_nodes.to_l2.to_l2_nodes import generate_l2_fav_streaming_day
 
 
 def streaming_to_l2_pipeline(**kwargs):
@@ -166,5 +167,28 @@ def streaming_to_l2_pipeline(**kwargs):
                  "params:l2_streaming_visit_count_and_download_traffic_feature"],
                 "l2_streaming_visit_count_and_download_traffic_feature"
             ),
+
+            # Favourite streaming day of week
+            # get sum per day of week
+            node(
+                expansion,
+                ["l1_streaming_visit_count_and_download_traffic_feature",
+                 "params:int_l2_streaming_sum_per_day"],
+                "int_l2_streaming_sum_per_day"
+            ),
+            # rank of day per week
+            node(
+                node_from_config,
+                ["int_l2_streaming_sum_per_day",
+                 "params:int_l2_streaming_ranked_of_day_per_week"],
+                "int_l2_streaming_ranked_of_day_per_week"
+            ),
+            # generate all the tables inside
+            node(
+                generate_l2_fav_streaming_day,
+                ["int_l2_streaming_ranked_of_day_per_week",
+                 "params:streaming_app"],
+                None
+            )
         ], name="streaming_to_l2_pipeline"
     )
