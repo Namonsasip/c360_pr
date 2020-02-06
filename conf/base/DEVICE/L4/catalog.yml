@@ -4,7 +4,7 @@ l4_previous_device_rolling_window_handset_summary_with_configuration:
   filepath: /mnt/customer360-blob-data/C360/DEVICE/l4_features/previous_device_handset_summary_with_configuration/
   save_args:
     partitionBy: ["start_of_month"]
-    mode: "overwrite"
+    mode: "append"
 
 l4_device_rolling_window_most_used:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -12,4 +12,4 @@ l4_device_rolling_window_most_used:
   filepath: /mnt/customer360-blob-data/C360/DEVICE/l4_features/device_most_used/
   save_args:
     partitionBy: ["start_of_week"]
-    mode: "overwrite"
+    mode: "append"

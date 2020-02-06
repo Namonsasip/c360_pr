@@ -66,103 +66,50 @@ l4_previous_device_with_config:
                                                order by device_last_use_time_in_three_months desc)"
     granularity: ""
 
-
-l4_device_most_used_1:
+l4_device_most_used_initial:
   partition_by: ["mobile_no","register_date","handset_brand_name"]
   feature_list:
     sum: ["device_used_days"]
   read_from: "l2"
 
 l4_device_most_used_with_ranks:
-    where_clause: ""
-    feature_list:
-        start_of_month: "start_of_month"
-        start_of_week: "start_of_week"
-        mobile_no: "mobile_no"
-        register_date: "register_date"
-        handset_brand_name: "handset_brand_name"
-        rank_last_week: "row_number() over
-                         (partition by mobile_no,
-                                      register_date,
-                                      start_of_month,
-                                      start_of_week
-                                      order by sum_device_used_days_last_week desc)"
-        rank_last_two_week: "row_number() over
-                            (partition by mobile_no,
-                                      register_date,
-                                      start_of_month,
-                                      start_of_week
-                                      order by sum_device_used_days_last_two_week desc)"
-        rank_last_month: "row_number() over
-                            (partition by mobile_no,
-                                      register_date,
-                                      start_of_month,
-                                      start_of_week
-                                      order by sum_device_used_days_last_month desc)"
-        rank_last_three_month: "row_number() over
-                                (partition by mobile_no,
-                                      register_date,
-                                      start_of_month,
-                                      start_of_week
-                                      order by sum_device_used_days_last_three_month desc)"
-    granularity: ""
+  where_clause: ""
+  feature_column:
+    handset_brand_name: "handset_brand_name"
+  partition_by: ["mobile_no", "register_date", "start_of_week"]
+  order_by_column_prefix: "sum_device_used_days"
+  read_from: "l2"
+  to_join: True
+  order: desc
 
-l4_device_most_used_last_week:
-    where_clause: "where rank_last_week = 1"
-    feature_list:
-        start_of_month: "start_of_month"
-        start_of_week: "start_of_week"
-        mobile_no: "mobile_no"
-        register_date: "register_date"
-        most_used_handset_samsung_last_week: "case when handset_brand_name='SAMSUNG' then 'Y' else 'N' end"
-        most_used_handset_huawei_last_week: "case when handset_brand_name='HUAWEI' then 'Y' else 'N' end"
-        most_used_handset_oppo_last_week: "case when handset_brand_name='OPPO' then 'Y' else 'N' end"
-        most_used_handset_apple_last_week: "case when handset_brand_name='APPLE' then 'Y' else 'N' end"
-        most_used_handset_xiaomi_last_week: "case when handset_brand_name='XIAOMI' then 'Y' else 'N' end"
-        most_used_handset_others_last_week: "case when handset_brand_name not in ('SAMSUNG','HUAWEI','OPPO','APPLE','XIAOMI') then 'Y' else 'N' end"
-    granularity: ""
-
-l4_device_most_used_last_two_week:
-    where_clause: "where rank_last_two_week = 1"
-    feature_list:
-        start_of_month: "start_of_month"
-        start_of_week: "start_of_week"
-        mobile_no: "mobile_no"
-        register_date: "register_date"
-        most_used_handset_samsung_last_two_week: "case when handset_brand_name='SAMSUNG' then 'Y' else 'N' end"
-        most_used_handset_huawei_last_two_week: "case when handset_brand_name='HUAWEI' then 'Y' else 'N' end"
-        most_used_handset_oppo_last_two_week: "case when handset_brand_name='OPPO' then 'Y' else 'N' end"
-        most_used_handset_apple_last_two_week: "case when handset_brand_name='APPLE' then 'Y' else 'N' end"
-        most_used_handset_xiaomi_last_two_week: "case when handset_brand_name='XIAOMI' then 'Y' else 'N' end"
-        most_used_handset_others_last_two_week: "case when handset_brand_name not in ('SAMSUNG','HUAWEI','OPPO','APPLE','XIAOMI') then 'Y' else 'N' end"
-    granularity: ""
-
-l4_device_most_used_last_month:
-    where_clause: "where rank_last_month = 1"
-    feature_list:
-        start_of_month: "start_of_month"
-        start_of_week: "start_of_week"
-        mobile_no: "mobile_no"
-        register_date: "register_date"
-        most_used_handset_samsung_last_month: "case when handset_brand_name='SAMSUNG' then 'Y' else 'N' end"
-        most_used_handset_huawei_last_month: "case when handset_brand_name='HUAWEI' then 'Y' else 'N' end"
-        most_used_handset_oppo_last_month: "case when handset_brand_name='OPPO' then 'Y' else 'N' end"
-        most_used_handset_apple_last_month: "case when handset_brand_name='APPLE' then 'Y' else 'N' end"
-        most_used_handset_xiaomi_last_month: "case when handset_brand_name='XIAOMI' then 'Y' else 'N' end"
-        most_used_handset_others_last_month: "case when handset_brand_name not in ('SAMSUNG','HUAWEI','OPPO','APPLE','XIAOMI') then 'Y' else 'N' end"
-    granularity: ""
-
-l4_device_most_used_last_three_month:
-    where_clause: "where rank_last_three_month = 1"
-    feature_list:
-        start_of_month: "start_of_month"
-        start_of_week: "start_of_week"
-        mobile_no: "mobile_no"
-        register_date: "register_date"
-        most_used_handset_samsung_last_three_month: "case when handset_brand_name='SAMSUNG' then 'Y' else 'N' end"
-        most_used_handset_huawei_last_three_month: "case when handset_brand_name='HUAWEI' then 'Y' else 'N' end"
-        most_used_handset_oppo_last_three_month: "case when handset_brand_name='OPPO' then 'Y' else 'N' end"
-        most_used_handset_apple_last_three_month: "case when handset_brand_name='APPLE' then 'Y' else 'N' end"
-        most_used_handset_xiaomi_last_three_month: "case when handset_brand_name='XIAOMI' then 'Y' else 'N' end"
-        most_used_handset_others_last_three_month: "case when handset_brand_name not in ('SAMSUNG','HUAWEI','OPPO','APPLE','XIAOMI') then 'Y' else 'N' end"
-    granularity: ""
+l4_device_most_used:
+  where_clause: ""
+  feature_list:
+      start_of_week: "start_of_week"
+      mobile_no: "mobile_no"
+      register_date: "register_date"
+      most_used_handset_samsung_last_week: "case when handset_brand_name_last_week='SAMSUNG' then 'Y' else 'N' end"
+      most_used_handset_huawei_last_week: "case when handset_brand_name_last_week='HUAWEI' then 'Y' else 'N' end"
+      most_used_handset_oppo_last_week: "case when handset_brand_name_last_week='OPPO' then 'Y' else 'N' end"
+      most_used_handset_apple_last_week: "case when handset_brand_name_last_week='APPLE' then 'Y' else 'N' end"
+      most_used_handset_xiaomi_last_week: "case when handset_brand_name_last_week='XIAOMI' then 'Y' else 'N' end"
+      most_used_handset_others_last_week: "case when handset_brand_name_last_week not in ('SAMSUNG','HUAWEI','OPPO','APPLE','XIAOMI') then 'Y' else 'N' end"
+      most_used_handset_samsung_last_two_week: "case when handset_brand_name_last_two_week='SAMSUNG' then 'Y' else 'N' end"
+      most_used_handset_huawei_last_two_week: "case when handset_brand_name_last_two_week='HUAWEI' then 'Y' else 'N' end"
+      most_used_handset_oppo_last_two_week: "case when handset_brand_name_last_two_week='OPPO' then 'Y' else 'N' end"
+      most_used_handset_apple_last_two_week: "case when handset_brand_name_last_two_week='APPLE' then 'Y' else 'N' end"
+      most_used_handset_xiaomi_last_two_week: "case when handset_brand_name_last_two_week='XIAOMI' then 'Y' else 'N' end"
+      most_used_handset_others_last_two_week: "case when handset_brand_name_last_two_week not in ('SAMSUNG','HUAWEI','OPPO','APPLE','XIAOMI') then 'Y' else 'N' end"
+      most_used_handset_samsung_last_month: "case when handset_brand_name_last_month='SAMSUNG' then 'Y' else 'N' end"
+      most_used_handset_huawei_last_month: "case when handset_brand_name_last_month='HUAWEI' then 'Y' else 'N' end"
+      most_used_handset_oppo_last_month: "case when handset_brand_name_last_month='OPPO' then 'Y' else 'N' end"
+      most_used_handset_apple_last_month: "case when handset_brand_name_last_month='APPLE' then 'Y' else 'N' end"
+      most_used_handset_xiaomi_last_month: "case when handset_brand_name_last_month='XIAOMI' then 'Y' else 'N' end"
+      most_used_handset_others_last_month: "case when handset_brand_name_last_month not in ('SAMSUNG','HUAWEI','OPPO','APPLE','XIAOMI') then 'Y' else 'N' end"
+      most_used_handset_samsung_last_three_month: "case when handset_brand_name_last_three_month='SAMSUNG' then 'Y' else 'N' end"
+      most_used_handset_huawei_last_three_month: "case when handset_brand_name_last_three_month='HUAWEI' then 'Y' else 'N' end"
+      most_used_handset_oppo_last_three_month: "case when handset_brand_name_last_three_month='OPPO' then 'Y' else 'N' end"
+      most_used_handset_apple_last_three_month: "case when handset_brand_name_last_three_month='APPLE' then 'Y' else 'N' end"
+      most_used_handset_xiaomi_last_three_month: "case when handset_brand_name_last_three_month='XIAOMI' then 'Y' else 'N' end"
+      most_used_handset_others_last_three_month: "case when handset_brand_name_last_three_month not in ('SAMSUNG','HUAWEI','OPPO','APPLE','XIAOMI') then 'Y' else 'N' end"
+  granularity: ""

@@ -1,0 +1,134 @@
+# Content Type Features
+int_l2_streaming_content_type_features:
+    where_clause: ""
+    feature_list:
+        traffic_rank: "row_number() over (partition by access_method_num, date(register_date), start_of_week
+                                    order by sum(traffic_volume_sum) desc)"
+
+#        duration_rank: "row_number() over (partition by access_method_num, date(register_date), start_of_week
+#                                    order by sum(duration) desc)" # duration column is not ingested currently
+        traffic_volume_sum: "sum(traffic_volume_sum)"
+    granularity: "access_method_num, date(register_date), start_of_week, start_of_month, content_group"
+
+l2_streaming_fav_content_group_by_volume:
+    where_clause: "where traffic_rank = 1"
+    feature_list:
+        access_method_num: access_method_num
+        register_date: date(register_date)
+        fav_content_group_by_volume: content_group
+        start_of_week: start_of_week
+    granularity: ""
+
+
+
+# TV Channel Features
+int_l2_streaming_tv_channel_features:
+    where_clause: ""
+    feature_list:
+        tv_channel_rank: "row_number() over (partition by access_method_num, date(register_date), start_of_week
+                                                    order by sum(traffic_volume_sum) desc)"
+        traffic_volume_sum: "sum(traffic_volume_sum)"
+    granularity: "access_method_num, date(register_date), start_of_week, start_of_month, title"
+
+l2_streaming_fav_tv_channel_by_volume:
+    where_clause: "where tv_channel_rank = 1"
+    feature_list:
+        access_method_num: access_method_num
+        register_date: date(register_date)
+        fav_tv_channel_by_volume: title
+        start_of_week: start_of_week
+    granularity: ""
+
+
+# TV Show features
+int_l2_streaming_tv_show_features:
+    where_clause: "where lower(content_group) = 'episode'"
+    feature_list:
+        num_of_episode_watched_rank: "row_number() over (partition by access_method_num, date(register_date), start_of_week
+                                                    order by count(distinct title) desc)"
+
+    granularity: "access_method_num, date(register_date), start_of_week, series_title"
+
+l2_streaming_fav_tv_show_by_episode_watched:
+    where_clause: "where num_of_episode_watched_rank = 1"
+    feature_list:
+        access_method_num: "access_method_num"
+        register_date: "date(register_date)"
+        fav_tv_show_by_episode_watched: "series_title"
+        start_of_week: "start_of_week"
+    granularity: ""
+
+
+ # Fav service by download traffic (reused for video, music, and esport)
+int_l2_streaming_service_feature:
+    feature_list:
+        sum_download_kb_traffic_rank: "row_number() over (partition by mobile_no, application_group, start_of_week
+                                                    order by sum(sum_download_kb_traffic) desc)"
+        sum_download_kb_traffic: "sum(sum_download_kb_traffic)"
+
+        visit_count: "sum(visit_count)"
+        visit_count_rank: "row_number() over (partition by mobile_no, application_group, start_of_week
+                                                    order by sum(visit_count) desc)"
+    granularity: "mobile_no, application, application_group, start_of_week, start_of_month"
+    
+
+l2_streaming_fav_service_by_download_feature:
+    where_clause: "where sum_download_kb_traffic_rank = 1"
+    feature_list:
+        mobile_no: "mobile_no"
+        fav_service_by_download_kb_traffic: "application"
+        sum_download_kb_traffic: "sum_download_kb_traffic"
+        start_of_week: "start_of_week"
+    granularity: ""
+
+
+l2_streaming_2nd_fav_service_by_download_feature:
+    where_clause: "where sum_download_kb_traffic_rank = 2"
+    feature_list:
+        mobile_no: "mobile_no"
+        second_fav_service_by_download_kb_traffic: "application"
+        sum_download_kb_traffic: "sum_download_kb_traffic"
+        start_of_week: "start_of_week"
+    granularity: ""
+
+
+l2_streaming_fav_service_by_visit_count_feature:
+    where_clause: "where visit_count_rank = 1"
+    feature_list:
+        mobile_no: "mobile_no"
+        fav_service_by_visit_count: "application"
+        visit_count: "visit_count"
+        start_of_week: "start_of_week"
+    granularity: ""
+
+
+# number of visit and volume of download traffic
+l2_streaming_visit_count_and_download_traffic_feature:
+    feature_list:
+        sum: ["visit_count_youtube_video",
+              "visit_count_facebook_video",
+              "visit_count_linetv_video",
+              "visit_count_ais_play_video",
+              "visit_count_netflix_video",
+              "visit_count_hooq_video",
+              "visit_count_iflix_video",
+              "visit_count_spotify_music",
+              "visit_count_joox_music",
+              "visit_count_twitch_esport",
+              "visit_count_bigo_esport",
+              "visit_count_mixer_esport",
+              "visit_count_steamtv_esport",
+              "download_traffic_youtube_video",
+              "download_traffic_facebook_video",
+              "download_traffic_linetv_video",
+              "download_traffic_ais_play_video",
+              "download_traffic_netflix_video",
+              "download_traffic_hooq_video",
+              "download_traffic_iflix_video",
+              "download_traffic_spotify_music",
+              "download_traffic_joox_music",
+              "download_traffic_twitch_esport",
+              "download_traffic_bigo_esport",
+              "download_traffic_mixer_esport",
+              "download_traffic_steamtv_esport"]
+    granularity: "mobile_no, start_of_week, start_of_month"

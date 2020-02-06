@@ -13,11 +13,15 @@ l0_usage_ru_a_gprs_cbs_usage_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/USAGE/usage_ru_a_gprs_cbs_usage_daily/
+  load_args:
+    mergeSchema: true
 
 l0_usage_ru_a_vas_postpaid_usg_daily:
   filepath: /mnt/customer360-blob-data/C360/USAGE/usage_ru_a_vas_postpaid_usg_daily/
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
+  load_args:
+    mergeSchema: true
 
 l0_usage_call_relation_sum_daily:
   filepath: /mnt/customer360-blob-data/C360/USAGE/usage_call_relation_sum_daily/

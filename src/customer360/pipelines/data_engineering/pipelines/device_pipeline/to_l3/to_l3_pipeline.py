@@ -1,8 +1,6 @@
 from kedro.pipeline import Pipeline, node
 
 from src.customer360.utilities.config_parser import *
-from src.customer360.pipelines.data_engineering.nodes.device_nodes.to_l3.to_l3_nodes import *
-from src.customer360.pipelines.data_engineering.nodes.device_nodes.to_l2.to_l2_nodes import *
 
 def device_to_l3_pipeline(**kwargs):
 
@@ -18,19 +16,15 @@ def device_to_l3_pipeline(**kwargs):
 
             # Monthly previous configurations features
             node(
-                derive_month_and_week,
-                ["l0_devices_summary_customer_handset"],
+                node_from_config,
+                ["l2_previous_device_handset_summary_with_configuration_weekly_intermediate",
+                 "params:l3_previous_device_features_with_config_ranked"],
                 "l3_previous_device_handset_summary_with_configuration_monthly_1"
             ),
             node(
                 node_from_config,
                 ["l3_previous_device_handset_summary_with_configuration_monthly_1",
                  "params:l3_previous_device_features_with_config"],
-                "l3_previous_device_handset_summary_with_configuration_monthly_2"
-            ),
-            node(
-                previous_device_features_with_config_sort,
-                ["l3_previous_device_handset_summary_with_configuration_monthly_2"],
                 "l3_previous_device_handset_summary_with_configuration_monthly"
             ),
 

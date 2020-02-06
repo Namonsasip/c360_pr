@@ -44,5 +44,24 @@ def device_to_l2_pipeline(**kwargs):
                  "params:l2_device_most_used"],
                 "l2_device_most_used_weekly"
             ),
+
+            # Weekly previous configurations features
+            node(
+                derive_month_and_week,
+                ["l0_devices_summary_customer_handset"],
+                "l2_previous_device_handset_summary_with_configuration_weekly_intermediate"
+            ),
+            node(
+                node_from_config,
+                ["l2_previous_device_handset_summary_with_configuration_weekly_intermediate",
+                 "params:l2_previous_device_features_with_config_ranked"],
+                "l2_previous_device_handset_summary_with_configuration_weekly_1"
+            ),
+            node(
+                node_from_config,
+                ["l2_previous_device_handset_summary_with_configuration_weekly_1",
+                 "params:l2_previous_device_features_with_config"],
+                "l2_previous_device_handset_summary_with_configuration_weekly"
+            ),
         ]
     )
