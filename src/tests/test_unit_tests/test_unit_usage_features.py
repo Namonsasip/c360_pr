@@ -74,26 +74,22 @@ class TestUnitUsage:
                                 var_project_context.catalog.load('params:l2_usage_ru_a_vas_postpaid_prepaid_weekly'))
 
         # check start_of_week = 2020-03-30 and features
-        # assert \
-        #     weekly_data.where("start_of_week = '2020-03-30'").select("usg_vas_total_number_of_call_avg").collect()[0][
-        #         0] == 3.5
-        # assert \
-        #     weekly_data.where("start_of_week = '2020-03-30'").select("usg_vas_total_number_of_call_max").collect()[0][
-        #         0] == 5
-        # assert \
-        #     weekly_data.where("start_of_week = '2020-03-30'").select("usg_vas_total_number_of_call_min").collect()[0][
-        #         0] == 2
-        # assert \
-        #     weekly_data.where("start_of_week = '2020-03-30'").select("usg_vas_total_number_of_call_sum").collect()[0][
-        #         0] == 7
+        assert \
+            weekly_data.where("start_of_week = '2020-03-30'").select("usg_vas_total_number_of_call_avg").collect()[0][
+                0] > 3
+        assert \
+            weekly_data.where("start_of_week = '2020-03-30'").select("usg_vas_total_number_of_call_max").collect()[0][
+                0] == 5
+        assert \
+            weekly_data.where("start_of_week = '2020-03-30'").select("usg_vas_total_number_of_call_min").collect()[0][
+                0] == 2
+        assert \
+            weekly_data.where("start_of_week = '2020-03-30'").select("usg_vas_total_number_of_call_sum").collect()[0][
+                0] == 10
 
         # check final features
         final_features = l4_rolling_window(weekly_data, var_project_context.catalog.load(
             'params:l4_usage_ru_a_vas_postpaid_prepaid_features')).orderBy(F.col("start_of_week").desc())
-        #
-        # pd.set_option('display.max_columns', None)
-        #
-        # print(final_features.toPandas().head(2))
 
         assert \
             final_features.where("start_of_week = '2020-03-30'").select(
@@ -101,30 +97,24 @@ class TestUnitUsage:
 
         assert \
             final_features.where("start_of_week = '2020-03-30'").select(
-                'max_usg_vas_total_number_of_call_max_weekly_last_week').collect()[0][0] == 5
+                'min_usg_vas_total_number_of_call_min_weekly_last_two_week').collect()[0][0] == 1
 
+        assert \
+            final_features.where("start_of_week = '2020-03-30'").select(
+                'min_usg_vas_total_number_of_call_min_weekly_last_four_week').collect()[0][0] == 1
+        assert \
+            final_features.where("start_of_week = '2020-03-30'").select(
+                'min_usg_vas_total_number_of_call_min_weekly_last_twelve_week').collect()[0][0] == 1
+        assert \
+            final_features.where("start_of_week = '2020-03-30'").select(
+                'max_usg_vas_total_number_of_call_max_weekly_last_week').collect()[0][0] == 5
         assert \
             final_features.where("start_of_week = '2020-03-30'").select(
                 'max_usg_vas_total_number_of_call_max_weekly_last_two_week').collect()[0][0] == 5
         assert \
             final_features.where("start_of_week = '2020-03-30'").select(
-                'avg_usg_vas_total_number_of_call_avg_weekly_last_week').collect()[0][0] >= 3
-        assert \
-            final_features.where("start_of_week = '2020-03-30'").select(
-                'avg_usg_vas_total_number_of_call_avg_weekly_last_two_week').collect()[0][0] >= 3
-        assert \
-            final_features.where("start_of_week = '2020-03-30'").select(
-                'avg_usg_vas_total_number_of_call_sum_weekly_last_week').collect()[0][0] > 10
-        assert \
-            final_features.where("start_of_week = '2020-03-30'").select(
-                'avg_usg_vas_total_number_of_call_sum_weekly_last_two_week').collect()[0][0] > 12
+                'max_usg_vas_total_number_of_call_max_weekly_last_four_week').collect()[0][0] == 5
 
         # AIS DE TO ADD FEATURE HERE
-        daily_data.where("start_of_week IN ('2020-03-30', '2020-02-24')").show()
 
-        weekly_data.where("start_of_week IN ('2020-03-30', '2020-02-24')").show()
-
-        final_features.where("start_of_week IN ('2020-03-30', '2020-02-24')").show()
-
-        exit(2)
 
