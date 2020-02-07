@@ -14,7 +14,7 @@ l3_customer_profile_billing_level_features:
   file_format: "parquet"
   save_args:
     mode: "append"
-    partitionBy: ["partition_month"]
+    partitionBy: ["start_of_month"]
 
 
 l3_customer_profile_billing_level_volume_of_active_contracts:
@@ -22,5 +22,13 @@ l3_customer_profile_billing_level_volume_of_active_contracts:
   filepath: /mnt/customer360-blob-data/C360/CUSTOMER_PROFILE/l3_features/volume_of_active_contracts/
   file_format: "parquet"
   save_args:
-    mode: "overwrite"
-    partitionBy: ["partition_month"]
+    mode: "append"
+    partitionBy: ["start_of_month"]
+
+l3_customer_profile_include_1mo_non_active:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: /mnt/customer360-blob-data/C360/CUSTOMER_PROFILE/l3_features/customer_profile_include_1mo_non_active/
+  file_format: "parquet"
+  save_args:
+    mode: "append"
+    partitionBy: ["start_of_month"]
