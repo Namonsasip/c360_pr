@@ -265,12 +265,13 @@ def __generate_l4_rolling_ranked_column(
     features = []
 
     features.extend(config["partition_by"])
-    features.append("start_of_month")
 
     read_from = config.get("read_from")
 
     if read_from == 'l2':
         features.append("start_of_week")
+    else:
+        features.append("start_of_month")
 
     for alias, col_name in config["feature_column"].items():
         features.append("{} as {}".format(col_name, alias))
