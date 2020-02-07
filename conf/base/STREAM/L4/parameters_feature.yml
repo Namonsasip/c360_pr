@@ -202,18 +202,18 @@ l4_streaming_session_duration_feature:
 
     # average weekly session duration
     avg: ["sum_session_duration_youtube_video",
-#          "sum_session_duration_facebook_video",
-#          "sum_session_duration_linetv_video",
-#          "sum_session_duration_ais_play_video",
-#          "sum_session_duration_netflix_video",
-#          "sum_session_duration_hooq_video",
-#          "sum_session_duration_iflix_video",
-#          "sum_session_duration_spotify_music",
-#          "sum_session_duration_joox_music",
-#          "sum_session_duration_twitch_esport",
-#          "sum_session_duration_bigo_esport",
-#          "sum_session_duration_mixer_esport",
-#          "sum_session_duration_steamtv_esport"
+          "sum_session_duration_facebook_video",
+          "sum_session_duration_linetv_video",
+          "sum_session_duration_ais_play_video",
+          "sum_session_duration_netflix_video",
+          "sum_session_duration_hooq_video",
+          "sum_session_duration_iflix_video",
+          "sum_session_duration_spotify_music",
+          "sum_session_duration_joox_music",
+          "sum_session_duration_twitch_esport",
+          "sum_session_duration_bigo_esport",
+          "sum_session_duration_mixer_esport",
+          "sum_session_duration_steamtv_esport"
     ]
 
   read_from: "l2"
