@@ -154,3 +154,66 @@ int_l4_streaming_ranked_of_day_per_rolling_week:
   order_by_column_prefix: "sum_download_kb_traffic_{app}_sum"
   read_from: "l2"
   to_join: False  # will be joined in generate_l4_fav_streaming_day() after custom select condition
+
+l4_streaming_session_duration_feature:
+  partition_by: ["mobile_no"]
+  feature_list:
+    sum: ["sum_session_duration_youtube_video",
+          "sum_session_duration_facebook_video",
+          "sum_session_duration_linetv_video",
+          "sum_session_duration_ais_play_video",
+          "sum_session_duration_netflix_video",
+          "sum_session_duration_hooq_video",
+          "sum_session_duration_iflix_video",
+          "sum_session_duration_spotify_music",
+          "sum_session_duration_joox_music",
+          "sum_session_duration_twitch_esport",
+          "sum_session_duration_bigo_esport",
+          "sum_session_duration_mixer_esport",
+          "sum_session_duration_steamtv_esport"]
+
+    max: ["max_session_duration_youtube_video",
+          "max_session_duration_facebook_video",
+          "max_session_duration_linetv_video",
+          "max_session_duration_ais_play_video",
+          "max_session_duration_netflix_video",
+          "max_session_duration_hooq_video",
+          "max_session_duration_iflix_video",
+          "max_session_duration_spotify_music",
+          "max_session_duration_joox_music",
+          "max_session_duration_twitch_esport",
+          "max_session_duration_bigo_esport",
+          "max_session_duration_mixer_esport",
+          "max_session_duration_steamtv_esport"]
+
+    min: ["min_session_duration_youtube_video",
+          "min_session_duration_facebook_video",
+          "min_session_duration_linetv_video",
+          "min_session_duration_ais_play_video",
+          "min_session_duration_netflix_video",
+          "min_session_duration_hooq_video",
+          "min_session_duration_iflix_video",
+          "min_session_duration_spotify_music",
+          "min_session_duration_joox_music",
+          "min_session_duration_twitch_esport",
+          "min_session_duration_bigo_esport",
+          "min_session_duration_mixer_esport",
+          "min_session_duration_steamtv_esport"]
+
+    # average weekly session duration
+    avg: ["sum_session_duration_youtube_video",
+#          "sum_session_duration_facebook_video",
+#          "sum_session_duration_linetv_video",
+#          "sum_session_duration_ais_play_video",
+#          "sum_session_duration_netflix_video",
+#          "sum_session_duration_hooq_video",
+#          "sum_session_duration_iflix_video",
+#          "sum_session_duration_spotify_music",
+#          "sum_session_duration_joox_music",
+#          "sum_session_duration_twitch_esport",
+#          "sum_session_duration_bigo_esport",
+#          "sum_session_duration_mixer_esport",
+#          "sum_session_duration_steamtv_esport"
+    ]
+
+  read_from: "l2"

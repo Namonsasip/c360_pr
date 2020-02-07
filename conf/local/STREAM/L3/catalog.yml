@@ -217,3 +217,12 @@ l3_streaming_fav_steamtv_esport_streaming_day_of_week_feature:
   save_args:
     mode: "overwrite"
     partitionBy: ["start_of_month"]
+
+
+l3_streaming_session_duration_feature:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L3_MONTHLY/STREAM/l3_streaming_session_duration_feature/
+  file_format: parquet
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["start_of_month"]

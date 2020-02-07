@@ -176,18 +176,26 @@ def streaming_to_l4_pipeline(**kwargs):
             #     "l4_streaming_visit_count_and_download_traffic_feature"
             # ),
 
+            # node(
+            #     l4_rolling_window,
+            #     ["int_l2_streaming_sum_per_day",
+            #      "params:int_l4_streaming_download_traffic_per_day_of_week"],
+            #     "int_l4_streaming_download_traffic_per_day_of_week"
+            # ),
+            # node(
+            #     generate_l4_fav_streaming_day,
+            #     ["int_l4_streaming_download_traffic_per_day_of_week",
+            #      "params:int_l4_streaming_ranked_of_day_per_rolling_week",
+            #      "params:streaming_app"],
+            #     None
+            # ),
+
+            # session duration
             node(
                 l4_rolling_window,
-                ["int_l2_streaming_sum_per_day",
-                 "params:int_l4_streaming_download_traffic_per_day_of_week"],
-                "int_l4_streaming_download_traffic_per_day_of_week"
+                ["l2_streaming_session_duration_feature",
+                 "params:l4_streaming_session_duration_feature"],
+                "l4_streaming_session_duration_feature"
             ),
-            node(
-                generate_l4_fav_streaming_day,
-                ["int_l4_streaming_download_traffic_per_day_of_week",
-                 "params:int_l4_streaming_ranked_of_day_per_rolling_week",
-                 "params:streaming_app"],
-                None
-            )
         ], name="streaming_to_l4_pipeline"
     )

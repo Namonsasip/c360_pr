@@ -271,3 +271,13 @@ l2_streaming_fav_steamtv_esport_streaming_day_of_week_feature:
   save_args:
     mode: "append"
     partitionBy: ["start_of_week"]
+
+
+l2_streaming_session_duration_feature:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l2_features/l2_streaming_session_duration_feature/
+  file_format: parquet
+  save_args:
+    mode: "append"
+    partitionBy: ["start_of_week"]
+

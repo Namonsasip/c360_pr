@@ -189,3 +189,73 @@ l1_streaming_visit_count_and_download_traffic_feature:
         day_of_week: "date_format(usage_date, 'u')"
     granularity: "mobile_no, usage_date"
     event_date_column: "usage_date"
+    
+l1_streaming_session_duration_feature:
+    feature_list:
+        sum_session_duration_youtube_video: "sum(case when lower(application) in ('youtube', 'youtube_go', 'youtubebyclick') then duration else 0 end)"
+        sum_session_duration_facebook_video: "sum(case when lower(application) in ('facebook') then duration else 0 end)"
+        sum_session_duration_linetv_video: "sum(case when lower(application) in ('linetv') then duration else 0 end)"
+        sum_session_duration_ais_play_video: "sum(case when lower(application) in ('ais_play') then duration else 0 end)"
+        sum_session_duration_netflix_video: "sum(case when lower(application) in ('netflix') then duration else 0 end)"
+        sum_session_duration_hooq_video: "sum(case when lower(application) in ('hooq') then duration else 0 end)"
+        sum_session_duration_iflix_video: "sum(case when lower(application) in ('iflix') then duration else 0 end)"
+
+        sum_session_duration_spotify_music: "sum(case when lower(application) in ('spotify') then duration else 0 end)"
+        sum_session_duration_joox_music: "sum(case when lower(application) in ('jooxmusic') then duration else 0 end)"
+
+        sum_session_duration_twitch_esport: "sum(case when lower(application) in ('twitchtv') then duration else 0 end)"
+        sum_session_duration_bigo_esport: "sum(case when lower(application) in ('bigo') then duration else 0 end)"
+        sum_session_duration_mixer_esport: "sum(case when lower(application) in ('mixerbox') then duration else 0 end)"
+        sum_session_duration_steamtv_esport: "sum(case when lower(application) in ('valve_steam') then duration else 0 end)"
+
+        max_session_duration_youtube_video: "max(case when lower(application) in ('youtube', 'youtube_go', 'youtubebyclick') then duration else 0 end)"
+        max_session_duration_facebook_video: "max(case when lower(application) in ('facebook') then duration else 0 end)"
+        max_session_duration_linetv_video: "max(case when lower(application) in ('linetv') then duration else 0 end)"
+        max_session_duration_ais_play_video: "max(case when lower(application) in ('ais_play') then duration else 0 end)"
+        max_session_duration_netflix_video: "max(case when lower(application) in ('netflix') then duration else 0 end)"
+        max_session_duration_hooq_video: "max(case when lower(application) in ('hooq') then duration else 0 end)"
+        max_session_duration_iflix_video: "max(case when lower(application) in ('iflix') then duration else 0 end)"
+
+        max_session_duration_spotify_music: "max(case when lower(application) in ('spotify') then duration else 0 end)"
+        max_session_duration_joox_music: "max(case when lower(application) in ('jooxmusic') then duration else 0 end)"
+
+        max_session_duration_twitch_esport: "max(case when lower(application) in ('twitchtv') then duration else 0 end)"
+        max_session_duration_bigo_esport: "max(case when lower(application) in ('bigo') then duration else 0 end)"
+        max_session_duration_mixer_esport: "max(case when lower(application) in ('mixerbox') then duration else 0 end)"
+        max_session_duration_steamtv_esport: "max(case when lower(application) in ('valve_steam') then duration else 0 end)"
+
+        min_session_duration_youtube_video: "min(case when lower(application) in ('youtube', 'youtube_go', 'youtubebyclick') then duration else 0 end)"
+        min_session_duration_facebook_video: "min(case when lower(application) in ('facebook') then duration else 0 end)"
+        min_session_duration_linetv_video: "min(case when lower(application) in ('linetv') then duration else 0 end)"
+        min_session_duration_ais_play_video: "min(case when lower(application) in ('ais_play') then duration else 0 end)"
+        min_session_duration_netflix_video: "min(case when lower(application) in ('netflix') then duration else 0 end)"
+        min_session_duration_hooq_video: "min(case when lower(application) in ('hooq') then duration else 0 end)"
+        min_session_duration_iflix_video: "min(case when lower(application) in ('iflix') then duration else 0 end)"
+
+        min_session_duration_spotify_music: "min(case when lower(application) in ('spotify') then duration else 0 end)"
+        min_session_duration_joox_music: "min(case when lower(application) in ('jooxmusic') then duration else 0 end)"
+
+        min_session_duration_twitch_esport: "min(case when lower(application) in ('twitchtv') then duration else 0 end)"
+        min_session_duration_bigo_esport: "min(case when lower(application) in ('bigo') then duration else 0 end)"
+        min_session_duration_mixer_esport: "min(case when lower(application) in ('mixerbox') then duration else 0 end)"
+        min_session_duration_steamtv_esport: "min(case when lower(application) in ('valve_steam') then duration else 0 end)"
+
+
+        avg_duration_per_session_youtube_video: "avg(case when lower(application) in ('youtube', 'youtube_go', 'youtubebyclick') then duration else 0 end)"
+        avg_duration_per_session_facebook_video: "avg(case when lower(application) in ('facebook') then duration else 0 end)"
+        avg_duration_per_session_linetv_video: "avg(case when lower(application) in ('linetv') then duration else 0 end)"
+        avg_duration_per_session_ais_play_video: "avg(case when lower(application) in ('ais_play') then duration else 0 end)"
+        avg_duration_per_session_netflix_video: "avg(case when lower(application) in ('netflix') then duration else 0 end)"
+        avg_duration_per_session_hooq_video: "avg(case when lower(application) in ('hooq') then duration else 0 end)"
+        avg_duration_per_session_iflix_video: "avg(case when lower(application) in ('iflix') then duration else 0 end)"
+
+        avg_duration_per_session_spotify_music: "avg(case when lower(application) in ('spotify') then duration else 0 end)"
+        avg_duration_per_session_joox_music: "avg(case when lower(application) in ('jooxmusic') then duration else 0 end)"
+
+        avg_duration_per_session_twitch_esport: "avg(case when lower(application) in ('twitchtv') then duration else 0 end)"
+        avg_duration_per_session_bigo_esport: "avg(case when lower(application) in ('bigo') then duration else 0 end)"
+        avg_duration_per_session_mixer_esport: "avg(case when lower(application) in ('mixerbox') then duration else 0 end)"
+        avg_duration_per_session_steamtv_esport: "avg(case when lower(application) in ('valve_steam') then duration else 0 end)"
+
+    granularity: "mobile_no, usage_date"
+    event_date_column: "usage_date"
