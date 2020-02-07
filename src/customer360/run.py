@@ -104,7 +104,6 @@ def run_package():
     project_context.run(pipeline_name='billing_to_l4_pipeline')
 
 
-
     # Replace line above with below to run on databricks cluster
     # and Dont forget to clear state for every git pull in notebook
     # (change the pipeline name to your pipeline name)

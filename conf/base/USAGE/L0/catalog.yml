@@ -32,3 +32,10 @@ l0_usage_call_relation_sum_ir_daily:
   filepath: /mnt/customer360-blob-data/C360/USAGE/usage_call_relation_ir_sum_daily/
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
+
+l0_usage_pps_v_ru_a_vas_nonvoice_daily:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_pps_v_ru_a_vas_nonvoice_daily/
+  load_args:
+    mergeSchema: true

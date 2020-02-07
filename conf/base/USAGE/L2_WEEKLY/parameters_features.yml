@@ -340,7 +340,7 @@ l2_usage_call_relation_sum_weekly:
       'usg_outgoing_true_number_calls',
       'usg_outgoing_true_number_sms',
     ]
-  granularity: "msisdn, start_of_week, start_of_month"
+  granularity: "msisdn, start_of_week"
 
 l2_usage_call_relation_sum_ir_weekly:
   where_clause: ""
@@ -378,7 +378,7 @@ l2_usage_call_relation_sum_ir_weekly:
       "usg_outgoing_roaming_number_calls",
       "usg_outgoing_roaming_total_sms"
     ]
-  granularity: "msisdn, start_of_week, start_of_month"
+  granularity: "msisdn, start_of_week"
 
 l2_usage_data_prepaid_postpaid_weekly:
   where_clause: ""
@@ -504,4 +504,14 @@ l2_usage_data_prepaid_postpaid_weekly:
           'usg_outgoing_roaming_data_volume_4G',
           'usg_total_data_volume',
     ]
-  granularity: "msisdn, start_of_week, start_of_month"
+  granularity: "msisdn, start_of_week"
+
+l2_usage_ru_a_vas_postpaid_prepaid_weekly:
+  where_clause: ""
+  type: "week"
+  feature_list:
+    max: ["usg_vas_total_number_of_call"]
+    min: ["usg_vas_total_number_of_call"]
+    sum: ["usg_vas_total_number_of_call"]
+    avg: ["usg_vas_total_number_of_call"]
+  granularity: "msisdn, start_of_week"
