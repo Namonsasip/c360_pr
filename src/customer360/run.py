@@ -104,7 +104,7 @@ def run_package(env="local", pipelines=None):
 
     if pipelines is not None:
         for each_pipeline_name in pipelines:
-            project_context.run(each_pipeline_name)
+            project_context.run(pipeline_name=each_pipeline_name)
         return
 
 
