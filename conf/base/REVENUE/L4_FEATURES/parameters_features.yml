@@ -101,6 +101,15 @@ l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int:
           'rev_arpu_total_others_net_tariff_rev_ppu' ,
           'rev_arpu_total_ir_net_tariff_rev_ppu' ,
           'rev_arpu_total_idd_net_tariff_rev_ppu' ,]
+    stddev: ['rev_arpu_total_voice_net_tariff_rev_ppu' ,
+             'rev_arpu_total_vas_net_tariff_rev_ppu' ,
+             'rev_arpu_total_gprs_net_tariff_rev_ppu' ,
+             'rev_arpu_total_sms_net_tariff_rev_ppu' ,
+             'rev_arpu_total_mms_net_tariff_rev_ppu' ,
+             'rev_arpu_total_others_net_tariff_rev_ppu' ,
+             'rev_arpu_total_ir_net_tariff_rev_ppu' ,
+             'rev_arpu_total_idd_net_tariff_rev_ppu' ,
+            ]
   read_from: "l3"
 
 
@@ -495,6 +504,15 @@ l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_int:
                   'rev_arpu_total_others_net_tariff_rev_ppu' ,
                   'rev_arpu_total_idd_net_tariff_rev_ppu' ,
                   'rev_arpu_total_ir_net_tariff_rev_ppu', ]
+
+            stddev: ['rev_arpu_total_voice_net_tariff_rev_ppu' ,
+                     'rev_arpu_total_gprs_net_tariff_rev_ppu' ,
+                     'rev_arpu_total_sms_net_tariff_rev_ppu' ,
+                     'rev_arpu_total_mms_net_tariff_rev_ppu' ,
+                     'rev_arpu_total_others_net_tariff_rev_ppu' ,
+                     'rev_arpu_total_idd_net_tariff_rev_ppu' ,
+                     'rev_arpu_total_ir_net_tariff_rev_ppu',
+                  ]
       read_from: "l3"
 
 l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:

@@ -102,20 +102,6 @@ def run_package():
     # using `<project_package>` command
     project_context = load_context(Path.cwd())
     project_context.run()
-<<<<<<< HEAD
-=======
-    # project_context.run(pipeline_name="usage_to_l1_pipeline")
-    # project_context.run(pipeline_name="usage_to_l2_pipeline")
-    # project_context.run(pipeline_name="usage_to_l4_pipeline")
-    # project_context.run(pipeline_name="revenue_to_l3_pipeline")
-    # project_context.run(pipeline_name="revenue_to_l4_pipeline")
-    # project_context.run(pipeline_name="streaming_to_l1_pipeline")
-    # project_context.run(pipeline_name="streaming_to_l2_pipeline")
-    # project_context.run(pipeline_name="streaming_to_l3_pipeline")
-    # project_context.run(pipeline_name="streaming_to_l4_pipeline")
-    # project_context.run(pipeline_name="revenue_to_l3_pipeline")
-    # project_context.run(pipeline_name="revenue_to_l4_pipeline")
->>>>>>> f6daddb302084e457a3104ebd359fd6782d8bcd7
 
 
     # Replace line above with below to run on databricks cluster

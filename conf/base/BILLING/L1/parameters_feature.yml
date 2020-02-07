@@ -45,6 +45,26 @@ l1_billing_and_payment_most_popular_topup_channel:
     granularity: "date(recharge_date),date(register_date),access_method_num,recharge_type"
     event_date_column: "date(recharge_date)"
 
+l1_billing_and_payment_popular_topup_day:
+    where_clause: ""
+    feature_list:
+        access_method_num: "access_method_num"
+        register_date: "date(register_date)"
+        payment_popular_day: "dayofweek(recharge_date)"
+        payment_popular_hour: "hour(recharge_time)"
+    granularity: ""
+    event_date_column: "date(recharge_date)"
+
+l1_time_since_last_top_up:
+    where_clause: ""
+    feature_list:
+      access_method_num: "access_method_num"
+      register_date: "date(register_date)"
+      recharge_time: "recharge_time"
+      face_value: "face_value"
+    granularity: ""
+    event_date_column: "date(recharge_date)"
+
 
 
 
