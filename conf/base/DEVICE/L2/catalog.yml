@@ -22,13 +22,6 @@ l2_device_most_used_weekly:
     partitionBy: ["start_of_week"]
     mode: "append"
 
-l2_previous_device_handset_summary_with_configuration_weekly_intermediate:
-  type: kedro.contrib.io.pyspark.SparkDataSet
-  file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/DEVICE/l2_features/previous_device_handset_summary_with_configuration_intermediate/
-  save_args:
-    partitionBy: ["start_of_week"]
-    mode: "append"
 
 l2_previous_device_handset_summary_with_configuration_weekly:
   type: kedro.contrib.io.pyspark.SparkDataSet
