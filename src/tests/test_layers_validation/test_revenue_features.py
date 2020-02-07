@@ -48,6 +48,7 @@ class TestRevenue:
     prepaid_data = 'l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly'
 
     def test_l3_revenue(self, project_context):
+        project_context = project_context['ProjectContext']
         postpaid = project_context.catalog.load(self.postpaid_data)
         prepaid = project_context.catalog.load(self.prepaid_data)
 
@@ -58,6 +59,7 @@ class TestRevenue:
         assert prepaid.where("access_method_num is null").count() == 0
 
     def test_l4_revenue(self, project_context):
+        project_context = project_context['ProjectContext']
         postpaid = project_context.catalog.load(self.postpaid_data)
         prepaid = project_context.catalog.load(self.prepaid_data)
 

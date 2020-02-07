@@ -186,7 +186,7 @@ def create_weekly_lookback_window(
         partition_column=partition_column,
         order_by_column=order_by_column,
         start_interval="{} preceding".format(num_of_week * seconds_in_week),
-        end_interval="current row"
+        end_interval="1 preceding"
     )
 
     return window_statement
