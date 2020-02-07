@@ -146,20 +146,20 @@ def streaming_to_l1_pipeline(**kwargs):
             #     "l1_streaming_2nd_fav_esport_service_by_download_feature"
             # ),
             #
-            # # number of visit and volume of download traffic
-            # node(
-            #     node_from_config,
-            #     ["l0_streaming_soc_mobile_app_daily",
-            #      "params:l1_streaming_visit_count_and_download_traffic_feature"],
-            #     "l1_streaming_visit_count_and_download_traffic_feature"
-            # ),
-
-            # session duration
+            # number of visit and volume of download traffic
             node(
                 node_from_config,
                 ["l0_streaming_soc_mobile_app_daily",
-                 "params:l1_streaming_session_duration_feature"],
-                "l1_streaming_session_duration_feature"
-            )
+                 "params:l1_streaming_visit_count_and_download_traffic_feature"],
+                "l1_streaming_visit_count_and_download_traffic_feature"
+            ),
+
+            # session duration
+            # node(
+            #     node_from_config,
+            #     ["l0_streaming_soc_mobile_app_daily",
+            #      "params:l1_streaming_session_duration_feature"],
+            #     "l1_streaming_session_duration_feature"
+            # )
         ], name="streaming_to_l1_pipeline"
     )
