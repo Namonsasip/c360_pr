@@ -51,7 +51,7 @@ l1_billing_and_payment_popular_topup_day:
         access_method_num: "access_method_num"
         register_date: "date(register_date)"
         payment_popular_day: "dayofweek(recharge_date)"
-        payment_popular_hour: "hour(recharge_date)"
+        payment_popular_hour: "hour(recharge_time)"
     granularity: ""
     event_date_column: "date(recharge_date)"
 

@@ -135,7 +135,6 @@ def billing_to_l4_pipeline(**kwargs):
             ),
 
             # Most popular top up channel
-
             node(
                 l4_rolling_window,
                 ["l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate",

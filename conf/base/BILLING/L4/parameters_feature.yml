@@ -8,7 +8,6 @@ l4_billing_topup_and_volume:
 l4_dynamics_topups_and_volume:
     where_clause: ""
     feature_list:
-        start_of_month: "start_of_month"
         start_of_week: "start_of_week"
         access_method_num: "access_method_num"
         register_date: "register_date"
