@@ -102,12 +102,13 @@ def run_package(env="local", pipelines=None):
     # using `<project_package>` command
     project_context = load_context(Path.cwd(), env=env)
 
-    project_context.run()
-
     if pipelines is not None:
         for each_pipeline_name in pipelines:
             project_context.run(each_pipeline_name)
         return
+
+
+    # project_context.run()
     # project_context.run(pipeline_name="usage_to_l1_pipeline")
     # project_context.run(pipeline_name="usage_to_l2_pipeline")
     # project_context.run(pipeline_name="usage_to_l4_pipeline")
