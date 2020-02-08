@@ -34,8 +34,10 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 from kedro.pipeline import Pipeline, node
 
 from customer360.utilities.config_parser import node_from_config
-from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1 import merge_incoming_outgoing_calls, \
-    merge_prepaid_postpaid_data_usage, merge_roaming_incoming_outgoing_calls, build_data_for_prepaid_postpaid
+from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1 import \
+    merge_incoming_outgoing_calls_with_customer_dim, \
+    merge_prepaid_postpaid_data_usage, merge_roaming_incoming_outgoing_calls, build_data_for_prepaid_postpaid, \
+    merge_with_customer_df
 
 
 def usage_to_l1_pipeline(**kwargs):
@@ -54,8 +56,9 @@ def usage_to_l1_pipeline(**kwargs):
                 "l1_usage_incoming_call_relation_sum_daily_stg"
             ),
             node(
-                merge_incoming_outgoing_calls, ['l1_usage_outgoing_call_relation_sum_daily_stg',
-                                                'l1_usage_incoming_call_relation_sum_daily_stg'],
+                merge_incoming_outgoing_calls_with_customer_dim, ['l1_usage_outgoing_call_relation_sum_daily_stg',
+                                                                  'l1_usage_incoming_call_relation_sum_daily_stg',
+                                                                  'l3_customer_profile_include_1mo_non_active'],
                 'l1_usage_call_relation_sum_daily'
             ),
             node(
@@ -73,7 +76,8 @@ def usage_to_l1_pipeline(**kwargs):
 
             node(
                 merge_roaming_incoming_outgoing_calls, ['l1_usage_outgoing_call_relation_sum_ir_daily_stg',
-                                                        'l1_usage_incoming_call_relation_sum_ir_daily_stg'],
+                                                        'l1_usage_incoming_call_relation_sum_ir_daily_stg',
+                                                        'l3_customer_profile_include_1mo_non_active'],
                 'l1_usage_call_relation_sum_ir_daily'
             ),
             node(
@@ -90,17 +94,23 @@ def usage_to_l1_pipeline(**kwargs):
             ),
             node(
                 merge_prepaid_postpaid_data_usage, ['l1_usage_ru_a_gprs_cbs_usage_daily_stg',
-                                                    'l1_usage_ru_a_vas_postpaid_usg_daily_stg'],
+                                                    'l1_usage_ru_a_vas_postpaid_usg_daily_stg',
+                                                    'l3_customer_profile_include_1mo_non_active'],
                 'l1_usage_data_prepaid_postpaid_daily'
             ),
             node(
                 build_data_for_prepaid_postpaid, ['l0_usage_pps_v_ru_a_vas_nonvoice_daily',
                                                   'l0_usage_ru_a_vas_postpaid_usg_daily'],
-                'vas_postpaid_prepaid_merged'
+                'vas_postpaid_prepaid_merged_stg'
             ),
             node(
-                node_from_config, ['vas_postpaid_prepaid_merged',
+                node_from_config, ['vas_postpaid_prepaid_merged_stg',
                                    "params:l1_usage_ru_a_vas_postpaid_prepaid_daily"],
+                'l1_usage_ru_a_vas_postpaid_prepaid_daily_stg'
+            ),
+            node(
+                merge_with_customer_df, ['l1_usage_ru_a_vas_postpaid_prepaid_daily_stg',
+                                         "l3_customer_profile_include_1mo_non_active"],
                 'l1_usage_ru_a_vas_postpaid_prepaid_daily'
             )
 

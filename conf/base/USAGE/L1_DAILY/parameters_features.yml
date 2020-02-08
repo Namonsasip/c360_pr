@@ -2,7 +2,7 @@
 l1_usage_outgoing_call_relation_sum_daily:
     where_clause: "where call_type IN ('MO')"
     feature_list:
-        msisdn: "max(caller_no)"
+        access_method_num: "max(caller_no)"
         usg_outgoing_total_call_duration: "sum(case when service_type IN ('VOICE') THEN total_durations else 0 end)"
 
         usg_outgoing_local_call_duration: "sum(case when service_type IN ('VOICE')
@@ -269,7 +269,7 @@ l1_usage_outgoing_call_relation_sum_daily:
 l1_usage_incoming_call_relation_sum_daily:
     where_clause: "where call_type IN ('MT')"
     feature_list:
-        msisdn: "max(called_no)"
+        access_method_num: "max(called_no)"
         usg_incoming_total_call_duration: "sum(case when service_type IN ('VOICE') THEN total_durations else 0 end)"
 
         usg_incoming_local_call_duration: "sum(case when service_type IN ('VOICE')
@@ -534,8 +534,6 @@ l1_usage_incoming_call_relation_sum_daily:
 l1_usage_ru_a_gprs_cbs_usage_daily:
     where_clause: ""
     feature_list:
-        msisdn: "max(access_method_num)"
-
         usg_outgoing_data_volume: "sum(data_upload_amt)"
 
         usg_outgoing_data_volume_4G: "sum(case when rat_type = '4G' then data_upload_amt else 0 end)"
@@ -721,9 +719,8 @@ l1_usage_ru_a_gprs_cbs_usage_daily:
     event_date_column: "date(call_start_dt)"
 
 l1_usage_ru_a_vas_postpaid_usg_daily:
-    where_clause: "call_type_cd IN (3, 64)"
+    where_clause: "where call_type_cd IN (3, 64)"
     feature_list:
-        msisdn: "max(access_method_num)"
         usg_outgoing_data_volume: "sum(uplink_volume_kb)"
 
         usg_outgoing_data_volume_4G: "sum(case when rat_type = '4G' then uplink_volume_kb else 0 end)"
@@ -877,7 +874,7 @@ l1_usage_ru_a_vas_postpaid_usg_daily:
 l1_usage_outgoing_call_relation_sum_ir_daily:
     where_clause: "where call_type IN ('MO')"
     feature_list:
-        msisdn: "max(caller_no)"
+        access_method_num: "max(caller_no)"
         usg_outgoing_roaming_call_duration: "sum(case when service_type IN ('VOICE') THEN total_durations else 0 end)"
         usg_outgoing_roaming_number_calls: "sum(case when service_type IN ('VOICE') THEN total_successful_call else 0 end)"
         usg_outgoing_roaming_total_sms: "sum(case when service_type IN ('SMS') THEN total_durations else 0 end)"
@@ -888,7 +885,7 @@ l1_usage_outgoing_call_relation_sum_ir_daily:
 l1_usage_incoming_call_relation_sum_ir_daily:
     where_clause: "where call_type IN ('MT')"
     feature_list:
-        msisdn: "max(called_no)"
+        access_method_num: "max(called_no)"
         usg_incoming_roaming_call_duration: "sum(case when service_type IN ('VOICE') THEN total_durations else 0 end)"
         usg_incoming_roaming_number_calls: "sum(case when service_type IN ('VOICE') THEN total_successful_call else 0 end)"
         usg_incoming_roaming_total_sms: "sum(case when service_type IN ('SMS') THEN total_durations else 0 end)"
@@ -899,7 +896,6 @@ l1_usage_incoming_call_relation_sum_ir_daily:
 l1_usage_ru_a_vas_postpaid_prepaid_daily:
     where_clause: ""
     feature_list:
-        msisdn: "max(access_method_num)"
         usg_vas_total_number_of_call: "sum(number_of_call)"
     granularity: "access_method_num, day_id"
     event_date_column: "date(day_id)"

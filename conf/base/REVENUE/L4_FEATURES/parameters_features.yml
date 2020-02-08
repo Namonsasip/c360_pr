@@ -422,7 +422,7 @@ l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly:
 
 
 l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_int:
-      partition_by: ["access_method_num", "register_date"]
+      partition_by: ["crm_sub_id"]
       feature_list:
             min: ['rev_arpu_total_revenue' ,
                   'rev_arpu_total_gprs_net_revenue' ,
@@ -518,7 +518,7 @@ l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_int:
 l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
       where_clause: ""
       feature_list:
-            sub_id: "access_method_num, register_date"
+            crm_sub_id: "crm_sub_id"
             start_of_month: "start_of_month"
             min_rev_arpu_total_revenue_monthly_last_month: 'min_rev_arpu_total_revenue_monthly_last_month'
             min_rev_arpu_total_revenue_monthly_last_three_month: 'min_rev_arpu_total_revenue_monthly_last_three_month'

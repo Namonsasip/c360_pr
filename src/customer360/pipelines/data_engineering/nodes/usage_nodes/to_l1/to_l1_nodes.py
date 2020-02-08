@@ -11,69 +11,103 @@ def gen_max_sql(data_frame, table_name, group):
     return final_str
 
 
-def merge_incoming_outgoing_calls(df1: DataFrame, df2: DataFrame) -> DataFrame:
+def merge_with_customer_df(source_df: DataFrame,
+                           cust_df: DataFrame) -> DataFrame:
     """
-    This function will union two dataframe and will return final_df
-    :param df1:
-    :param df2:
+
+    :param source_df:
+    :param cust_df:
+    :return:
+    """
+    # This code will populate a subscriber id to the data set.
+    cust_df_cols = ['access_method_num', 'start_of_month', 'crm_sub_id']
+    join_key = ['access_method_num', 'start_of_month']
+    final_df = source_df.join(cust_df.select(cust_df_cols), join_key)
+
+    return final_df
+
+
+def merge_incoming_outgoing_calls_with_customer_dim(out_going_df: DataFrame
+                                                    , in_going_df: DataFrame
+                                                    , cust_df: DataFrame) -> DataFrame:
+    """
+
+    :param out_going_df:
+    :param in_going_df:
+    :param cust_df:
     :return:
     """
     drop_cols = ['called_no', 'caller_no', 'day_id']
-    group_cols = ['msisdn', 'event_partition_date', 'start_of_week', 'start_of_month']
-    final_df = union_dataframes_with_missing_cols([df1, df2])
+    group_cols = ['access_method_num', 'event_partition_date']
+
+    final_df = union_dataframes_with_missing_cols([out_going_df, in_going_df])
     final_df = final_df.drop(*drop_cols)
 
     final_df_str = gen_max_sql(final_df, 'incoming_outgoing_call', group_cols)
     final_df = execute_sql(data_frame=final_df, table_name='incoming_outgoing_call', sql_str=final_df_str)
 
+    final_df = merge_with_customer_df(final_df, cust_df)
+
     return final_df
 
 
-def merge_prepaid_postpaid_data_usage(df1: DataFrame, df2: DataFrame) -> DataFrame:
+def merge_prepaid_postpaid_data_usage(prepaid: DataFrame
+                                      , postpaid: DataFrame
+                                      , cust_df: DataFrame) -> DataFrame:
     """
-    This function will union two dataframe and will return final_df
-    :param df1:
-    :param df2:
+
+    :param prepaid:
+    :param postpaid:
+    :param cust_df:
     :return:
     """
-    drop_cols = ["access_method_num"]
-    group_cols = ['msisdn', 'event_partition_date', 'start_of_week', 'start_of_month']
-    final_df = union_dataframes_with_missing_cols([df1, df2])
-    final_df = final_df.drop(*drop_cols)
+    group_cols = ['access_method_num', 'event_partition_date']
+    final_df = union_dataframes_with_missing_cols([prepaid, postpaid])
 
     final_df_str = gen_max_sql(final_df, 'incoming_outgoing_data', group_cols)
     final_df = execute_sql(data_frame=final_df, table_name='incoming_outgoing_data', sql_str=final_df_str)
 
+    final_df = merge_with_customer_df(final_df, cust_df)
+
     return final_df
 
 
-def merge_roaming_incoming_outgoing_calls(df1: DataFrame, df2: DataFrame) -> DataFrame:
+def merge_roaming_incoming_outgoing_calls(outgoing: DataFrame
+                                          , incoming: DataFrame
+                                          , cust_df: DataFrame) -> DataFrame:
     """
-    This function will union two dataframe and will return final_df
-    :param df1:
-    :param df2:
+
+    :param outgoing:
+    :param incoming:
+    :param cust_df:
     :return:
     """
     drop_cols = ['called_no', 'caller_no', 'day_id']
-    group_cols = ['msisdn', 'event_partition_date', 'start_of_week', 'start_of_month']
-    final_df = union_dataframes_with_missing_cols([df1, df2])
+    group_cols = ['access_method_num', 'event_partition_date']
+    final_df = union_dataframes_with_missing_cols([outgoing, incoming])
     final_df = final_df.drop(*drop_cols)
 
     final_df_str = gen_max_sql(final_df, 'roaming_incoming_outgoing_data', group_cols)
     final_df = execute_sql(data_frame=final_df, table_name='roaming_incoming_outgoing_data', sql_str=final_df_str)
 
+    final_df = merge_with_customer_df(final_df, cust_df)
+
     return final_df
 
 
-def build_data_for_prepaid_postpaid(df1: DataFrame, df2: DataFrame) -> DataFrame:
+def build_data_for_prepaid_postpaid(prepaid: DataFrame
+                                    , postpaid: DataFrame) -> DataFrame:
     """
-    This function will union two dataframe and will return final_df
-    :param df1:
-    :param df2:
+
+    :param prepaid:
+    :param postpaid:
     :return:
     """
-    prepaid = df1.select("access_method_num", "number_of_call", 'day_id')
-    postpaid = df2.where("call_type_cd = 5") \
+    prepaid = prepaid.select("access_method_num", "number_of_call", 'day_id')
+    postpaid = postpaid.where("call_type_cd = 5") \
         .select("access_method_num", F.col("no_transaction").alias("number_of_call"), 'day_id')
 
-    return union_dataframes_with_missing_cols(prepaid, postpaid)
+    final_df = union_dataframes_with_missing_cols(prepaid, postpaid)
+
+    return final_df
+

@@ -1,5 +1,5 @@
 l4_usage_call_relation_features:
-  partition_by: ["msisdn"]
+  partition_by: ["crm_sub_id"]
   feature_list:
     min: ['usg_incoming_afternoon_number_sms_min',
                'usg_incoming_afternoon_time_call_min',
@@ -703,7 +703,7 @@ l4_usage_call_relation_features:
   read_from: "l2"
 
 l4_usage_call_relation_ir_features:
-  partition_by: ["msisdn"]
+  partition_by: ["crm_sub_id"]
   feature_list:
     min: ['usg_incoming_roaming_call_duration_min',
           'usg_incoming_roaming_number_calls_min',
@@ -750,7 +750,7 @@ l4_usage_call_relation_ir_features:
   read_from: "l2"
 
 l4_usage_data_prepaid_postpaid_features:
-  partition_by: ["msisdn"]
+  partition_by: ["crm_sub_id"]
   feature_list:
     min: ['usg_data_friday_usage_sum',
           'usg_data_monday_usage_sum',
@@ -1037,7 +1037,7 @@ l4_usage_data_prepaid_postpaid_features:
   read_from: "l2"
 
 l4_usage_ru_a_vas_postpaid_prepaid_features:
-  partition_by: ["msisdn"]
+  partition_by: ["crm_sub_id"]
   feature_list:
     min: ["usg_vas_total_number_of_call_min"]
     max: ["usg_vas_total_number_of_call_max"]
