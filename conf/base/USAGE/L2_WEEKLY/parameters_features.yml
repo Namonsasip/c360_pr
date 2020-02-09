@@ -438,6 +438,8 @@ l2_usage_data_prepaid_postpaid_weekly:
           'usg_data_friday_night_usage',
           'usg_data_saturday_night_usage',
           'usg_data_sunday_night_usage',
+          'usg_data_weekend_usage',
+          'usg_data_weekday_usage'
     ]
     max: [
           'usg_total_data_last_action_date',
@@ -510,7 +512,7 @@ l2_usage_ru_a_vas_postpaid_prepaid_weekly:
   where_clause: ""
   type: "week"
   feature_list:
-    max: ["usg_vas_total_number_of_call"]
+    max: ["usg_vas_total_number_of_call", "usg_vas_last_action_dt"]
     min: ["usg_vas_total_number_of_call"]
     sum: ["usg_vas_total_number_of_call"]
     avg: ["usg_vas_total_number_of_call"]

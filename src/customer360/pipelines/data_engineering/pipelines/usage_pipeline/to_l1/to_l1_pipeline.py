@@ -36,7 +36,7 @@ from kedro.pipeline import Pipeline, node
 from customer360.utilities.config_parser import node_from_config
 from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1 import \
     merge_incoming_outgoing_calls_with_customer_dim, \
-    merge_prepaid_postpaid_data_usage, merge_roaming_incoming_outgoing_calls, build_data_for_prepaid_postpaid, \
+    merge_prepaid_postpaid_data_usage, merge_roaming_incoming_outgoing_calls, build_data_for_prepaid_postpaid_vas, \
     merge_with_customer_df
 
 
@@ -99,8 +99,8 @@ def usage_to_l1_pipeline(**kwargs):
                 'l1_usage_data_prepaid_postpaid_daily'
             ),
             node(
-                build_data_for_prepaid_postpaid, ['l0_usage_pps_v_ru_a_vas_nonvoice_daily',
-                                                  'l0_usage_ru_a_vas_postpaid_usg_daily'],
+                build_data_for_prepaid_postpaid_vas, ['l0_usage_pps_v_ru_a_vas_nonvoice_daily',
+                                                      'l0_usage_ru_a_vas_postpaid_usg_daily'],
                 'vas_postpaid_prepaid_merged_stg'
             ),
             node(

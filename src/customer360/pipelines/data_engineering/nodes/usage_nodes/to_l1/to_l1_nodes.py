@@ -95,7 +95,7 @@ def merge_roaming_incoming_outgoing_calls(outgoing: DataFrame
     return final_df
 
 
-def build_data_for_prepaid_postpaid(prepaid: DataFrame
+def build_data_for_prepaid_postpaid_vas(prepaid: DataFrame
                                     , postpaid: DataFrame) -> DataFrame:
     """
 

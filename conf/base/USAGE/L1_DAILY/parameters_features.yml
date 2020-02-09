@@ -579,6 +579,11 @@ l1_usage_ru_a_gprs_cbs_usage_daily:
 
         usg_data_last_action_date: "max(date(call_start_dt))"
 
+        usg_data_weekend_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Saturday', 'Sunday')
+                                        THEN (data_upload_amt + data_download_amt) else 0 end)"
+        usg_data_weekday_usage: "sum(case when date_format(call_start_dt, 'EEEE') NOT IN ('Saturday', 'Sunday')
+                                        THEN (data_upload_amt + data_download_amt) else 0 end)"
+
         usg_data_monday_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Monday')
                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
 
@@ -734,6 +739,12 @@ l1_usage_ru_a_vas_postpaid_usg_daily:
         usg_incoming_data_volume_2G_3G: "sum(case when rat_type IN ('2G', '3G') then downlink_volume_kb else 0 end)"
 
         usg_data_last_action_date: "max(date(day_id))"
+
+        usg_data_weekend_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Saturday', 'Sunday')
+                                THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
+
+        usg_data_weekday_usage: "sum(case when date_format(day_id, 'EEEE') NOT IN ('Saturday', 'Sunday')
+                                    THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
         usg_data_monday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Monday') THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
@@ -897,5 +908,6 @@ l1_usage_ru_a_vas_postpaid_prepaid_daily:
     where_clause: ""
     feature_list:
         usg_vas_total_number_of_call: "sum(number_of_call)"
+        usg_vas_last_action_dt: "max(day_id)"
     granularity: "access_method_num, day_id"
     event_date_column: "date(day_id)"
