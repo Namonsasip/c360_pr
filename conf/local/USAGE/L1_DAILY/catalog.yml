@@ -51,3 +51,11 @@ l1_usage_ru_a_vas_postpaid_prepaid_daily:
   filepath: data/USAGE/l1_features/usage_ru_a_vas_postpaid_prepaid_daily/
   save_args:
     mode: "overwrite"
+
+l1_usage_postpaid_prepaid_daily:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/USAGE/l1_features/usage_postpaid_prepaid_daily/
+  save_args:
+    mode: "overwrite"
+    partition_by: ["event_partition_dt"]

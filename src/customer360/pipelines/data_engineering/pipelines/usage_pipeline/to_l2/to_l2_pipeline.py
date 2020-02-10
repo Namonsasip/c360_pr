@@ -40,35 +40,40 @@ from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l2 import usage
 def usage_to_l2_pipeline(**kwargs):
     return Pipeline(
         [
-            node(
-                expansion,
-                ["l1_usage_call_relation_sum_daily",
-                 "params:l2_usage_call_relation_sum_weekly"],
-                "l2_usage_call_relation_sum_weekly"
-            ),
-            node(
-                expansion,
-                ["l1_usage_call_relation_sum_ir_daily",
-                 "params:l2_usage_call_relation_sum_ir_weekly"],
-                "l2_usage_call_relation_sum_ir_weekly"
-            ),
-            node(
-                expansion,
-                ["l1_usage_data_prepaid_postpaid_daily",
-                 "params:l2_usage_data_prepaid_postpaid_weekly"],
-                "l2_usage_data_prepaid_postpaid_weekly"
-            ),
+            # node(
+            #     expansion,
+            #     ["l1_usage_call_relation_sum_daily",
+            #      "params:l2_usage_call_relation_sum_weekly"],
+            #     "l2_usage_call_relation_sum_weekly"
+            # ),
+            # node(
+            #     expansion,
+            #     ["l1_usage_call_relation_sum_ir_daily",
+            #      "params:l2_usage_call_relation_sum_ir_weekly"],
+            #     "l2_usage_call_relation_sum_ir_weekly"
+            # ),
+            # node(
+            #     expansion,
+            #     ["l1_usage_data_prepaid_postpaid_daily",
+            #      "params:l2_usage_data_prepaid_postpaid_weekly"],
+            #     "l2_usage_data_prepaid_postpaid_weekly"
+            # ),
+            # node(expansion,
+            #      ["l1_usage_ru_a_vas_postpaid_prepaid_daily",
+            #       "params:l2_usage_ru_a_vas_postpaid_prepaid_weekly"],
+            #      "l2_usage_ru_a_vas_postpaid_prepaid_weekly"
+            #      ),
+            # node(usage_merge_all_data, ['l2_usage_call_relation_sum_weekly',
+            #                             'l2_usage_call_relation_sum_ir_weekly',
+            #                             'l2_usage_data_prepaid_postpaid_weekly',
+            #                             'l2_usage_ru_a_vas_postpaid_prepaid_weekly'],
+            #      'l2_usage_postpaid_prepaid_weekly'
+            #      )
             node(expansion,
-                 ["l1_usage_ru_a_vas_postpaid_prepaid_daily",
-                  "params:l2_usage_ru_a_vas_postpaid_prepaid_weekly"],
-                 "l2_usage_ru_a_vas_postpaid_prepaid_weekly"
+                 ["l1_usage_postpaid_prepaid_daily",
+                  "params:l2_usage_postpaid_prepaid_daily"],
+                 "l2_usage_postpaid_prepaid_weekly"
                  ),
-            node(usage_merge_all_data, ['l2_usage_call_relation_sum_weekly',
-                                        'l2_usage_call_relation_sum_ir_weekly',
-                                        'l2_usage_data_prepaid_postpaid_weekly',
-                                        'l2_usage_ru_a_vas_postpaid_prepaid_weekly'],
-                 'l2_usage_postpaid_prepaid_weekly'
-                 )
 
         ], name="usage_to_l2_pipeline"
     )

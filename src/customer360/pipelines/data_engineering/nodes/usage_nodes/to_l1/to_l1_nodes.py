@@ -111,3 +111,42 @@ def build_data_for_prepaid_postpaid_vas(prepaid: DataFrame
 
     return final_df
 
+
+def merge_all_prepaid_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg: DataFrame,
+                                           l1_usage_incoming_call_relation_sum_daily_stg: DataFrame,
+                                           l1_usage_outgoing_call_relation_sum_ir_daily_stg: DataFrame,
+                                           l1_usage_incoming_call_relation_sum_ir_daily_stg: DataFrame,
+                                           l1_usage_ru_a_gprs_cbs_usage_daily_stg: DataFrame,
+                                           l1_usage_ru_a_vas_postpaid_usg_daily_stg: DataFrame,
+                                           l1_usage_ru_a_vas_postpaid_prepaid_daily_stg: DataFrame,
+                                           l3_customer_profile_include_1mo_non_active: DataFrame) -> DataFrame:
+    """
+    :param l1_usage_outgoing_call_relation_sum_daily_stg:
+    :param l1_usage_incoming_call_relation_sum_daily_stg:
+    :param l1_usage_outgoing_call_relation_sum_ir_daily_stg:
+    :param l1_usage_incoming_call_relation_sum_ir_daily_stg:
+    :param l1_usage_ru_a_gprs_cbs_usage_daily_stg
+    :param l1_usage_ru_a_vas_postpaid_prepaid_daily_stg:
+    :param l3_customer_profile_include_1mo_non_active:
+    :return:
+    """
+    union_df = union_dataframes_with_missing_cols([
+        l1_usage_outgoing_call_relation_sum_daily_stg,  l1_usage_incoming_call_relation_sum_daily_stg,
+        l1_usage_outgoing_call_relation_sum_ir_daily_stg, l1_usage_incoming_call_relation_sum_ir_daily_stg,
+        l1_usage_ru_a_gprs_cbs_usage_daily_stg, l1_usage_ru_a_vas_postpaid_usg_daily_stg,
+        l1_usage_ru_a_vas_postpaid_prepaid_daily_stg
+    ])
+
+    group_cols = ['access_method_num', 'event_partition_date']
+    final_df_str = gen_max_sql(union_df, 'roaming_incoming_outgoing_data', group_cols)
+    final_df = execute_sql(data_frame=union_df, table_name='roaming_incoming_outgoing_data', sql_str=final_df_str)
+
+    final_df = merge_with_customer_df(final_df, l3_customer_profile_include_1mo_non_active)
+
+    return final_df
+
+
+
+
+
+
