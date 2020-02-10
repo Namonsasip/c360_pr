@@ -53,3 +53,10 @@ l2_usage_ru_a_vas_postpaid_prepaid_weekly:
   filepath: data/USAGE/l2_features/usage_ru_a_vas_postpaid_prepaid_weekly/
   save_args:
     mode: "overwrite"
+
+l2_usage_postpaid_prepaid_weekly:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/USAGE/l2_features/usage_postpaid_prepaid_weekly/
+  save_args:
+    mode: "overwrite"

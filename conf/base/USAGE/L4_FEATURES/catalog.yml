@@ -29,3 +29,11 @@ l4_usage_ru_a_vas_postpaid_prepaid_features:
   save_args:
     mode: "append"
     partition_by: ["start_of_week"]
+
+l4_usage_postpaid_prepaid_features:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/USAGE/l4_features/usage_postpaid_prepaid_features/
+  save_args:
+    mode: "append"
+    partition_by: ["start_of_week"]
