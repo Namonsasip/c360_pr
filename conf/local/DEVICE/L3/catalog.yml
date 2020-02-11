@@ -29,3 +29,11 @@ l3_device_most_used_monthly:
   save_args:
     partitionBy: ["start_of_month"]
     mode: "overwrite"
+
+l3_device_number_of_phone_updates_monthly:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L3_MONTHLY/DEVICE/l3_features/device_number_of_phone_updates/
+  save_args:
+    partitionBy: ["start_of_month"]
+    mode: "overwrite"

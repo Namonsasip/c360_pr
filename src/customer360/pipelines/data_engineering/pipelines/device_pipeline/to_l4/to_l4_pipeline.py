@@ -28,6 +28,15 @@ def device_to_l4_pipeline(**kwargs):
                 "l4_device_rolling_window_most_used"
             ),
 
+            # Number of phone updates
+            node(
+                l4_rolling_window,
+                ["l2_device_number_of_phone_updates_weekly",
+                 "params:l4_device_number_of_phone_updates"],
+                "l4_device_rolling_window_number_phone_updates"
+            ),
+
+            # Write L2 and L3 in L4
             node(
                 read_df,
                 ["l2_device_handset_summary_with_configuration_weekly"],

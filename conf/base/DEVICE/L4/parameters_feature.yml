@@ -45,3 +45,10 @@ l4_device_most_used:
       device_most_used_handset_xiaomi_last_twelve_week: "case when handset_brand_name_last_twelve_week='XIAOMI' then 'Y' else 'N' end"
       device_most_used_handset_others_last_twelve_week: "case when handset_brand_name_last_twelve_week not in ('SAMSUNG','HUAWEI','OPPO','APPLE','XIAOMI') then 'Y' else 'N' end"
   granularity: ""
+
+l4_device_number_of_phone_updates:
+  partition_by: ["mobile_no","register_date"]
+  feature_list:
+    sum: ["device_number_of_phone_updates"]
+    avg: ["device_number_of_phone_updates"]
+  read_from: "l2"

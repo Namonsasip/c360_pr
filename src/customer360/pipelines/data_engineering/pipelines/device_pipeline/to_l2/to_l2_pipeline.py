@@ -26,6 +26,14 @@ def device_to_l2_pipeline(**kwargs):
                 "l2_device_handset_summary_with_configuration_weekly"
             ),
 
+            # Weekly number of phone updates
+            node(
+                node_from_config,
+                ["l2_device_handset_summary_with_configuration_weekly_1",
+                 "params:l2_device_number_of_phone_updates"],
+                "l2_device_number_of_phone_updates_weekly"
+            ),
+
             # Weekly most used device
             node(
                 derive_month_and_week,

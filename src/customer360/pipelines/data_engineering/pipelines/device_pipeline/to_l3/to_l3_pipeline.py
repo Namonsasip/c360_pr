@@ -26,6 +26,14 @@ def device_to_l3_pipeline(**kwargs):
                 "l3_device_handset_summary_with_configuration_monthly"
             ),
 
+            # Monthly number of phone updates
+            node(
+                node_from_config,
+                ["l3_device_handset_summary_with_configuration_monthly_1",
+                 "params:l3_device_number_of_phone_updates"],
+                "l3_device_number_of_phone_updates_monthly"
+            ),
+
             # Monthly previous configurations features
             node(
                 derive_month_and_week,
