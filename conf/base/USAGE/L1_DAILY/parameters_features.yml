@@ -14,19 +14,19 @@ l1_usage_outgoing_call_relation_sum_daily:
                                         AND idd_flag = 'N' THEN total_successful_call else 0 end)"
 
         usg_outgoing_ais_local_calls_duration: "sum(case when service_type IN ('VOICE')
-                                                AND called_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS')
+                                                AND called_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post' )
                                                 THEN total_durations else 0 end)"
 
         usg_outgoing_ais_local_number_calls: "sum(case when service_type IN ('VOICE')
-                                                AND called_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS')
+                                                AND called_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post' )
                                                 THEN total_successful_call else 0 end)"
 
         usg_outgoing_offnet_local_calls_duration: "sum(case when service_type IN ('VOICE')
-                                                   AND called_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS')
+                                                   AND called_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post' )
                                                    THEN total_durations else 0 end)"
 
         usg_outgoing_offnet_local_number_calls: "sum(case when service_type IN ('VOICE')
-                                                 AND called_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS')
+                                                 AND called_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post' )
                                                  THEN total_successful_call else 0 end)"
 
         usg_outgoing_total_sms: "sum(case when service_type IN ('SMS') THEN total_durations else 0 end)"
@@ -35,7 +35,7 @@ l1_usage_outgoing_call_relation_sum_daily:
                                 AND idd_flag = 'N' THEN total_durations else 0 end)"
 
         usg_outgoing_local_ais_sms: "sum(case when service_type IN ('SMS')
-                                     AND called_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS')
+                                     AND called_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post' )
                                      AND idd_flag = 'N' THEN total_durations else 0 end)"
 
         usg_outgoing_number_calls_upto_5_mins: "sum(case when service_type IN ('VOICE')
@@ -247,10 +247,10 @@ l1_usage_outgoing_call_relation_sum_daily:
 
         # check called_network_type DTAC/true value
         usg_outgoing_dtac_number_calls: "sum(case when service_type IN ('VOICE')
-                                         AND called_network_type = 'DTN' THEN total_successful_call else 0 end)"
+                                         AND called_network_type = 'DTAC' THEN total_successful_call else 0 end)"
 
         usg_outgoing_dtac_call_duration: "sum(case when service_type IN ('VOICE')
-                                         AND called_network_type = 'DTN' THEN total_durations else 0 end)"
+                                         AND called_network_type = 'DTAC' THEN total_durations else 0 end)"
 
         usg_outgoing_true_number_calls: "sum(case when service_type IN ('VOICE')
                                          AND called_network_type = 'TRUE' THEN total_successful_call else 0 end)"
@@ -259,7 +259,7 @@ l1_usage_outgoing_call_relation_sum_daily:
                                          AND called_network_type = 'TRUE' THEN total_durations else 0 end)"
 
         usg_outgoing_dtac_number_sms: "sum(case when service_type IN ('SMS')
-                                         AND called_network_type = 'DTN' THEN total_successful_call else 0 end)"
+                                         AND called_network_type = 'DTAC' THEN total_successful_call else 0 end)"
 
         usg_outgoing_true_number_sms: "sum(case when service_type IN ('SMS')
                                          AND called_network_type = 'TRUE' THEN total_durations else 0 end)"
@@ -282,19 +282,19 @@ l1_usage_incoming_call_relation_sum_daily:
                                         AND idd_flag = 'N' THEN total_successful_call else 0 end)"
 
         usg_incoming_ais_local_calls_duration: "sum(case when service_type IN ('VOICE')
-                                                AND caller_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS')
+                                                AND caller_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post' )
                                                 THEN total_durations else 0 end)"
 
         usg_incoming_ais_local_number_calls: "sum(case when service_type IN ('VOICE')
-                                                AND caller_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS')
+                                                AND caller_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post' )
                                                 THEN total_successful_call else 0 end)"
 
         usg_outgoing_offnet_local_calls_duration: "sum(case when service_type IN ('VOICE')
-                                                AND caller_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS')
+                                                AND caller_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post' )
                                                 THEN total_durations else 0 end)"
 
         usg_incoming_offnet_local_number_calls: "sum(case when service_type IN ('VOICE')
-                                                AND caller_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS')
+                                                AND caller_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post' )
                                                 THEN total_successful_call else 0 end)"
 
         usg_incoming_total_sms: "sum(case when service_type IN ('SMS') THEN total_durations else 0 end)"
@@ -303,7 +303,7 @@ l1_usage_incoming_call_relation_sum_daily:
                                  AND idd_flag = 'N' THEN total_durations else 0 end)"
 
         usg_incoming_local_ais_sms: "sum(case when service_type IN ('SMS')
-                                     AND caller_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS')
+                                     AND caller_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post' )
                                      AND idd_flag = 'N' THEN total_durations else 0 end)"
 
         usg_incoming_number_calls_upto_5_mins: "sum(case when service_type IN ('VOICE')
@@ -511,10 +511,10 @@ l1_usage_incoming_call_relation_sum_daily:
 
         # check called_network_type DTAC/true value
         usg_incoming_dtac_number_calls: "sum(case when service_type IN ('VOICE')
-                                         AND caller_network_type = 'DTN' THEN total_successful_call else 0 end)"
+                                         AND caller_network_type = 'DTAC' THEN total_successful_call else 0 end)"
 
         usg_incoming_dtac_call_duration: "sum(case when service_type IN ('VOICE')
-                                         AND caller_network_type = 'DTN' THEN total_durations else 0 end)"
+                                         AND caller_network_type = 'DTAC' THEN total_durations else 0 end)"
 
         usg_incoming_true_number_calls: "sum(case when service_type IN ('VOICE')
                                          AND caller_network_type = 'TRUE' THEN total_successful_call else 0 end)"
@@ -523,7 +523,7 @@ l1_usage_incoming_call_relation_sum_daily:
                                          AND caller_network_type = 'TRUE' THEN total_durations else 0 end)"
 
         usg_incoming_dtac_number_sms: "sum(case when service_type IN ('SMS')
-                                         AND caller_network_type = 'DTN' THEN total_successful_call else 0 end)"
+                                         AND caller_network_type = 'DTAC' THEN total_successful_call else 0 end)"
 
         usg_incoming_true_number_sms: "sum(case when service_type IN ('SMS')
                                          AND caller_network_type = 'TRUE' THEN total_durations else 0 end)"
@@ -899,7 +899,7 @@ l1_usage_incoming_call_relation_sum_ir_daily:
         access_method_num: "max(called_no)"
         usg_incoming_roaming_call_duration: "sum(case when service_type IN ('VOICE') THEN total_durations else 0 end)"
         usg_incoming_roaming_number_calls: "sum(case when service_type IN ('VOICE') THEN total_successful_call else 0 end)"
-        usg_incoming_roaming_total_sms: "sum(case when service_type IN ('SMS') THEN total_durations else 0 end)"
+        usg_incoming_roaming_total_sms: "sum(case when service_type IN ('SMS', 'IR_SMS') THEN total_durations else 0 end)"
 
     granularity: "called_no, day_id"
     event_date_column: "date(day_id)"
