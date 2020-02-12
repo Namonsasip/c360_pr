@@ -25,10 +25,3 @@ l3_customer_profile_billing_level_volume_of_active_contracts:
     mode: "append"
     partitionBy: ["start_of_month"]
 
-l3_customer_profile_include_1mo_non_active:
-  type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: data/L3_MONTHLY/CUSTOMER_PROFILE/customer_profile_include_1mo_non_active/
-  file_format: "parquet"
-  save_args:
-    mode: "append"
-    partitionBy: ["start_of_month"]
