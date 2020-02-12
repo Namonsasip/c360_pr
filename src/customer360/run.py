@@ -101,7 +101,17 @@ def run_package():
     # entry point for running pip-install projects
     # using `<project_package>` command
     project_context = load_context(Path.cwd())
-    project_context.run(pipeline_name='usage_to_l1_pipeline')
+
+    from pyspark.sql import SparkSession
+    spark = SparkSession.builder.getOrCreate()
+
+    # Dont delete this line. This allow spark to only overwrite the partition
+    # saved to parquet instead of entire table folder
+    spark.conf.set("spark.sql.sources.partitionOverwriteMode", "DYNAMIC")
+
+    project_context.run(pipeline_name='customer_profile_to_l1_pipeline')
+    # project_context.run(pipeline_name='customer_profile_to_l3_pipeline')
+
     # Replace line above with below to run on databricks cluster
     # and Dont forget to clear state for every git pull in notebook
     # (change the pipeline name to your pipeline name)

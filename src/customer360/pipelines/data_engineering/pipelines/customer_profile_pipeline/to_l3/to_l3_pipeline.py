@@ -42,19 +42,17 @@ def customer_profile_to_l3_pipeline(**kwargs):
                 "int_l3_customer_profile_basic_features"
             ),
             node(
-                union_daily_cust_profile,
-                ["l0_customer_profile_profile_customer_profile_pre_current",
-                 "l0_customer_profile_profile_customer_profile_post_current",
-                 "l0_customer_profile_profile_customer_profile_post_non_mobile_current_non_mobile_current",
-                 "params:union_customer_profile_column_to_extract"],
-                "int_l3_customer_profile_union_features"
+                add_last_month_inactive_user,
+                ["int_l3_customer_profile_basic_features",
+                 "params:int_l3_customer_profile_basic_features"],
+                "l3_customer_profile_include_1mo_non_active"
             ),
-            node(
-                merge_union_and_basic_features,
-                ['int_l3_customer_profile_union_features',
-                 'int_l3_customer_profile_basic_features'],
-                "l3_customer_profile_features"
-            )
+            # node(
+            #     merge_union_and_basic_features,
+            #     ['int_l3_customer_profile_union_features',
+            #      'int_l3_customer_profile_basic_features'],
+            #     "l3_customer_profile_features"
+            # )
         ]
     )
 
