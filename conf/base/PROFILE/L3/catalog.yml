@@ -1,10 +1,10 @@
 
-l3_customer_profile_features:
+l3_customer_profile_include_1mo_non_active:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: /mnt/customer360-blob-data/C360/CUSTOMER_PROFILE/l3_features/customer_profile_features/
+  filepath: /mnt/customer360-blob-data/C360/CUSTOMER_PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
   file_format: "parquet"
   save_args:
-    mode: "append"
+    mode: "overwrite"
     partitionBy: ["partition_month"]
 
 
@@ -13,7 +13,7 @@ l3_customer_profile_billing_level_features:
   filepath: /mnt/customer360-blob-data/C360/CUSTOMER_PROFILE/l3_features/billing_level_features/
   file_format: "parquet"
   save_args:
-    mode: "append"
+    mode: "overwrite"
     partitionBy: ["partition_month"]
 
 

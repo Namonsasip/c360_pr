@@ -1,7 +1,7 @@
 
-l3_customer_profile_features:
+l3_customer_profile_include_1mo_non_active:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: data/L3_MONTHLY/CUSTOMER_PROFILE/customer_profile_features/
+  filepath: data/L3_MONTHLY/CUSTOMER_PROFILE/l3_customer_profile_include_1mo_non_active/
   file_format: "parquet"
   save_args:
     mode: "overwrite"
