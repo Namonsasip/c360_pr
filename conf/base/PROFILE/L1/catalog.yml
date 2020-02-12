@@ -1,8 +1,8 @@
 
 l1_customer_profile_union_daily_feature:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: /mnt/customer360-blob-data/C360/CUSTOMER_PROFILE/l1_customer_profile_union_daily_feature/
+  filepath: /mnt/customer360-blob-data/C360/CUSTOMER_PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
   save_args:
     mode: "overwrite" # because it is a dimension, overwrite everytime we run the pipeline
-    partitionBy: ["partition_date"]
+    partitionBy: ["event_partition_date"]

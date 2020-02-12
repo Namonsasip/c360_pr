@@ -25,7 +25,7 @@ l1_customer_profile_union_daily_feature:
     serenade_status: "mobile_segment"
     network_type: "root_network_type"
 #    national_id_card: "card_no"
-    partition_date: "partition_date"
+    event_partition_date: "partition_date"
 
   customer_post:
     subscription_identifier: "subscription_identifier"
@@ -52,7 +52,7 @@ l1_customer_profile_union_daily_feature:
     serenade_status: "mobile_segment"
     network_type: "network_type"
 #    national_id_card: "card_id"
-    partition_date: "partition_date"
+    event_partition_date: "partition_date"
 
   customer_non_mobile:
     subscription_identifier: "subscription_id"
@@ -79,7 +79,7 @@ l1_customer_profile_union_daily_feature:
     serenade_status: "mobile_segment"
     network_type: "network_type"
 #    national_id_card: "card_id"
-    partition_date: "partition_date"
+    event_partition_date: "partition_date"
 
 
 l1_customer_journey_columns_to_extract:
