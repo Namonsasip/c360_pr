@@ -117,7 +117,7 @@ def usage_to_l1_pipeline(**kwargs):
                 'l1_usage_outgoing_call_relation_sum_daily_stg', 'l1_usage_incoming_call_relation_sum_daily_stg',
                 'l1_usage_outgoing_call_relation_sum_ir_daily_stg', 'l1_usage_incoming_call_relation_sum_ir_daily_stg',
                 'l1_usage_ru_a_gprs_cbs_usage_daily_stg', 'l1_usage_ru_a_vas_postpaid_usg_daily_stg',
-                'l1_usage_ru_a_vas_postpaid_prepaid_daily_stg', 'l3_customer_profile_include_1mo_non_active'
+                'l1_usage_ru_a_vas_postpaid_prepaid_daily_stg', 'l1_customer_profile_union_daily_feature'
             ],
                  'l1_usage_postpaid_prepaid_daily'
             )

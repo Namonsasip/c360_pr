@@ -20,9 +20,9 @@ def merge_with_customer_df(source_df: DataFrame,
     :return:
     """
     # This code will populate a subscriber id to the data set.
-    cust_df_cols = ['access_method_num', 'start_of_month', 'crm_sub_id']
-    join_key = ['access_method_num', 'start_of_month']
-    final_df = source_df.join(cust_df.select(cust_df_cols), join_key)
+    cust_df_cols = ['access_method_num', 'subscription_identifier', 'event_partition_date']
+    join_key = ['access_method_num', 'event_partition_date']
+    final_df = source_df.join(cust_df.select(cust_df_cols), join_key, how="left")
 
     return final_df
 
@@ -119,7 +119,7 @@ def merge_all_prepaid_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_d
                                            l1_usage_ru_a_gprs_cbs_usage_daily_stg: DataFrame,
                                            l1_usage_ru_a_vas_postpaid_usg_daily_stg: DataFrame,
                                            l1_usage_ru_a_vas_postpaid_prepaid_daily_stg: DataFrame,
-                                           l3_customer_profile_include_1mo_non_active: DataFrame) -> DataFrame:
+                                           l1_customer_profile_union_daily_feature: DataFrame) -> DataFrame:
     """
     :param l1_usage_outgoing_call_relation_sum_daily_stg:
     :param l1_usage_incoming_call_relation_sum_daily_stg:
@@ -127,7 +127,7 @@ def merge_all_prepaid_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_d
     :param l1_usage_incoming_call_relation_sum_ir_daily_stg:
     :param l1_usage_ru_a_gprs_cbs_usage_daily_stg
     :param l1_usage_ru_a_vas_postpaid_prepaid_daily_stg:
-    :param l3_customer_profile_include_1mo_non_active:
+    :param l1_customer_profile_union_daily_feature:
     :return:
     """
     union_df = union_dataframes_with_missing_cols([
@@ -141,7 +141,7 @@ def merge_all_prepaid_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_d
     final_df_str = gen_max_sql(union_df, 'roaming_incoming_outgoing_data', group_cols)
     final_df = execute_sql(data_frame=union_df, table_name='roaming_incoming_outgoing_data', sql_str=final_df_str)
 
-    final_df = merge_with_customer_df(final_df, l3_customer_profile_include_1mo_non_active)
+    final_df = merge_with_customer_df(final_df, l1_customer_profile_union_daily_feature)
 
     return final_df
 

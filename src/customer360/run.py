@@ -109,7 +109,8 @@ def run_package():
     # saved to parquet instead of entire table folder
     spark.conf.set("spark.sql.sources.partitionOverwriteMode", "DYNAMIC")
 
-    project_context.run(pipeline_name='customer_profile_to_l1_pipeline')
+    project_context.run(pipeline_name='revenue_to_l3_pipeline')
+    # project_context.run(pipeline_name='revenue_to_l4_pipeline')
     # project_context.run(pipeline_name='customer_profile_to_l3_pipeline')
 
     # Replace line above with below to run on databricks cluster
