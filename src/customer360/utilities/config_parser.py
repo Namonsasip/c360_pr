@@ -78,6 +78,22 @@ class QueryGenerator:
         return features
 
 
+def __get_l4_time_granularity_column(read_from):
+    if read_from is None:
+        raise ValueError("read_from is mandatory. Please specify either 'l1', 'l2', or 'l3'")
+
+    if read_from.lower() == 'l1':
+        return 'event_partition_date'
+
+    elif read_from.lower() == 'l2':
+        return "start_of_week"
+
+    elif read_from.lower() == 'l3':
+        return "start_of_month"
+
+    raise ValueError("Unknown value for read_from. Please specify either 'l1', 'l2', or 'l3'")
+
+
 def l4_rolling_window(input_df, config):
     table_name = "input_table"
     input_df.createOrReplaceTempView(table_name)
@@ -94,11 +110,7 @@ def l4_rolling_window(input_df, config):
     features.extend(config["partition_by"])
 
     read_from = config.get("read_from")
-
-    if read_from == 'l2':
-        features.append("start_of_week")
-    else:
-        features.append("start_of_month")
+    features.append(__get_l4_time_granularity_column(read_from))
 
     for agg_function, column_list in config["feature_list"].items():
         for each_feature_column in column_list:
@@ -312,12 +324,8 @@ def __generate_l4_rolling_ranked_column(
 
     features.extend(config["partition_by"])
 
-    read_from = config.get("read_from")
-
-    if read_from == 'l2':
-        features.append("start_of_week")
-    else:
-        features.append("start_of_month")
+    read_from = config.get("read_from", "")
+    features.append(__get_l4_time_granularity_column(read_from))
 
     for alias, col_name in config["feature_column"].items():
         features.append("{} as {}".format(col_name, alias))
