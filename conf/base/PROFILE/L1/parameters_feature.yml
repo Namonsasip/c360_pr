@@ -27,6 +27,7 @@ l1_customer_profile_union_daily_feature:
     national_id_card: "card_no"
     event_partition_date: "partition_date"
     charge_type: "charge_type"
+    billing_account_no: "null"
 
   customer_post:
     subscription_identifier: "subscription_identifier"
@@ -55,6 +56,7 @@ l1_customer_profile_union_daily_feature:
     national_id_card: "card_id"
     event_partition_date: "partition_date"
     charge_type: "charge_type"
+    billing_account_no: "account_no"
 
   customer_non_mobile:
     subscription_identifier: "subscription_id"
@@ -83,6 +85,7 @@ l1_customer_profile_union_daily_feature:
     national_id_card: "card_id"
     event_partition_date: "partition_date"
     charge_type: "charge_type"
+    billing_account_no: "account_no"
 
 
 l1_customer_journey_columns_to_extract:
