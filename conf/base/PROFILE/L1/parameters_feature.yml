@@ -14,7 +14,7 @@ l1_customer_profile_union_daily_feature:
                           case when lower(prefer_language) not like 'thai%' or
                                    lower(prefer_language) not like 'eng%'
                                    then 'Y' else 'N' end
-#    current_package_id: package_id
+    current_package_id: package_id
     current_package_name: promotion_name
     age: age
     gender: gender
@@ -24,8 +24,9 @@ l1_customer_profile_union_daily_feature:
     customer_segment: "mobile_segment"
     serenade_status: "mobile_segment"
     network_type: "root_network_type"
-#    national_id_card: "card_no"
+    national_id_card: "card_no"
     event_partition_date: "partition_date"
+    charge_type: "charge_type"
 
   customer_post:
     subscription_identifier: "subscription_identifier"
@@ -41,7 +42,7 @@ l1_customer_profile_union_daily_feature:
                           case when lower(prefer_language) not like 'thai%' or
                                    lower(prefer_language) not like 'eng%'
                                    then 'Y' else 'N' end
-#    current_package_id: current_promotion_id_ma
+    current_package_id: current_promotion_id_ma
     current_package_name: current_promotion_title_ma
     age: ma_age
     gender: ma_gender_code
@@ -51,8 +52,9 @@ l1_customer_profile_union_daily_feature:
     customer_segment: "mobile_segment"
     serenade_status: "mobile_segment"
     network_type: "network_type"
-#    national_id_card: "card_id"
+    national_id_card: "card_id"
     event_partition_date: "partition_date"
+    charge_type: "charge_type"
 
   customer_non_mobile:
     subscription_identifier: "subscription_id"
@@ -68,7 +70,7 @@ l1_customer_profile_union_daily_feature:
                           case when lower(prefer_language) not like 'thai%' or
                                    lower(prefer_language) not like 'eng%'
                                    then 'Y' else 'N' end
-#    current_package_id: current_promotion_id_ma
+    current_package_id: current_promotion_id_ma
     current_package_name: current_promotion_title_ma
     age: ma_age
     gender: ma_gender_code
@@ -78,8 +80,9 @@ l1_customer_profile_union_daily_feature:
     customer_segment: "mobile_segment"
     serenade_status: "mobile_segment"
     network_type: "network_type"
-#    national_id_card: "card_id"
+    national_id_card: "card_id"
     event_partition_date: "partition_date"
+    charge_type: "charge_type"
 
 
 l1_customer_journey_columns_to_extract:
