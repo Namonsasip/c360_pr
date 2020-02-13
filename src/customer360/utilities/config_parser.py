@@ -78,6 +78,22 @@ class QueryGenerator:
         return features
 
 
+def __get_l4_time_granularity_column(read_from):
+    if read_from is None:
+        raise ValueError("read_from is mandatory. Please specify either 'l1', 'l2', or 'l3'")
+
+    if read_from.lower() == 'l1':
+        return 'event_partition_date'
+
+    elif read_from.lower() == 'l2':
+        return "start_of_week"
+
+    elif read_from.lower() == 'l3':
+        return "start_of_month"
+
+    raise ValueError("Unknown value for read_from. Please specify either 'l1', 'l2', or 'l3'")
+
+
 def l4_rolling_window(input_df, config):
     table_name = "input_table"
     input_df.createOrReplaceTempView(table_name)
@@ -94,15 +110,40 @@ def l4_rolling_window(input_df, config):
     features.extend(config["partition_by"])
 
     read_from = config.get("read_from")
-
-    if read_from == 'l2':
-        features.append("start_of_week")
-    else:
-        features.append("start_of_month")
+    features.append(__get_l4_time_granularity_column(read_from))
 
     for agg_function, column_list in config["feature_list"].items():
         for each_feature_column in column_list:
-            if read_from == 'l2':
+            if read_from == 'l1':
+                features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
+                    function=agg_function,
+                    feature_column=each_feature_column,
+                    window=create_daily_lookback_window(7, config["partition_by"]),
+                    column_name="{}_{}_daily_last_seven_day".format(agg_function, each_feature_column)
+                ))
+
+                features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
+                    function=agg_function,
+                    feature_column=each_feature_column,
+                    window=create_daily_lookback_window(14, config["partition_by"]),
+                    column_name="{}_{}_daily_last_fourteen_day".format(agg_function, each_feature_column)
+                ))
+
+                features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
+                    function=agg_function,
+                    feature_column=each_feature_column,
+                    window=create_daily_lookback_window(30, config["partition_by"]),
+                    column_name="{}_{}_daily_last_thirty_day".format(agg_function, each_feature_column)
+                ))
+
+                features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
+                    function=agg_function,
+                    feature_column=each_feature_column,
+                    window=create_daily_lookback_window(90, config["partition_by"]),
+                    column_name="{}_{}_daily_last_ninety_day".format(agg_function, each_feature_column)
+                ))
+
+            elif read_from == 'l2':
                 features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
                     function=agg_function,
                     feature_column=each_feature_column,
@@ -156,6 +197,23 @@ def l4_rolling_window(input_df, config):
     df = spark.sql(sql_stmt)
 
     return df
+
+
+def create_daily_lookback_window(
+        num_of_days,
+        partition_column,
+        order_by_column="event_partition_date"
+):
+    max_seconds_in_day = 24 * 60 * 60
+
+    window_statement = create_window_statement(
+        partition_column=partition_column,
+        order_by_column=order_by_column,
+        start_interval="{} preceding".format(num_of_days * max_seconds_in_day),
+        end_interval="1 preceding"
+    )
+
+    return window_statement
 
 
 def create_monthly_lookback_window(
@@ -266,19 +324,51 @@ def __generate_l4_rolling_ranked_column(
 
     features.extend(config["partition_by"])
 
-    read_from = config.get("read_from")
-
-    if read_from == 'l2':
-        features.append("start_of_week")
-    else:
-        features.append("start_of_month")
+    read_from = config.get("read_from", "")
+    features.append(__get_l4_time_granularity_column(read_from))
 
     for alias, col_name in config["feature_column"].items():
         features.append("{} as {}".format(col_name, alias))
 
     order = config.get("order", "desc")
+    if read_from == 'l1':
+        features.append("""
+            row_number() over (partition by {partition_column} 
+            order by {order_column} {order}) as daily_rank_last_seven_day
+            """.format(
+            partition_column=','.join(config["partition_by"]),
+            order_column="{}_daily_last_seven_day".format(config["order_by_column_prefix"]),
+            order=order
+        ))
 
-    if read_from == 'l2':
+        features.append("""
+            row_number() over (partition by {partition_column} 
+            order by {order_column} {order}) as daily_rank_last_fourteen_day
+            """.format(
+            partition_column=','.join(config["partition_by"]),
+            order_column="{}_daily_last_fourteen_day".format(config["order_by_column_prefix"]),
+            order=order
+        ))
+
+        features.append("""
+            row_number() over (partition by {partition_column} 
+            order by {order_column} {order}) as daily_rank_last_thirty_day
+            """.format(
+            partition_column=','.join(config["partition_by"]),
+            order_column="{}_daily_last_thirty_day".format(config["order_by_column_prefix"]),
+            order=order
+        ))
+
+        features.append("""
+            row_number() over (partition by {partition_column} 
+            order by {order_column} {order}) as daily_rank_last_ninety_day
+            """.format(
+            partition_column=','.join(config["partition_by"]),
+            order_column="{}_daily_last_ninety_day".format(config["order_by_column_prefix"]),
+            order=order
+        ))
+
+    elif read_from == 'l2':
         features.append("""
             row_number() over (partition by {partition_column} 
             order by {order_column} {order}) as weekly_rank_last_week
@@ -398,7 +488,13 @@ def __generate_l4_filtered_ranked_table(
     to_join = config.get("to_join", True)
     rank = config.get("rank", 1)
 
-    if read_from == 'l2':
+    if read_from == 'l1':
+        result_df["last_seven_day"] = ranked_df.where(F.col("daily_rank_last_seven_day") == rank)
+        result_df["last_fourteen_day"] = ranked_df.where(F.col("daily_rank_last_fourteen_day") == rank)
+        result_df["last_thirty_day"] = ranked_df.where(F.col("daily_rank_last_thirty_day") == rank)
+        result_df["last_ninety_day"] = ranked_df.where(F.col("daily_rank_last_ninety_day") == rank)
+
+    elif read_from == 'l2':
         result_df["last_week"] = ranked_df.where(F.col("weekly_rank_last_week") == rank)
         result_df["last_two_week"] = ranked_df.where(F.col("weekly_rank_last_two_week") == rank)
         result_df["last_four_week"] = ranked_df.where(F.col("weekly_rank_last_four_week") == rank)

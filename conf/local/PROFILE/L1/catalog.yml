@@ -5,4 +5,4 @@ l1_customer_profile_union_daily_feature:
   file_format: "parquet"
   save_args:
     mode: "overwrite"
-    partitionBy: ["partition_date"]
+    partitionBy: ["event_partition_date"]
