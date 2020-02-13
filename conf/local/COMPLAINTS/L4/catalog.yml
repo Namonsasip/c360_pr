@@ -1,0 +1,7 @@
+l4_complaints_call_to_competitor_features:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L4_FEATURES/COMPLAINTS/l4_complaints_call_to_competitor_features/
+  save_args:
+    partitionBy: ["start_of_week"]
+    mode: "overwrite"

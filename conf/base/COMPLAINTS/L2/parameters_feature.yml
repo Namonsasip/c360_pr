@@ -1,0 +1,7 @@
+l2_complaints_call_to_competitor_features:
+  feature_list:
+    call_to_dtac_count: "sum(call_to_dtac_count)"
+    call_to_dtac_duration_sum: "sum(call_to_dtac_duration_sum)"
+    call_to_true_count: "sum(call_to_true_count)"
+    call_to_true_duration_sum: "sum(call_to_true_duration_sum)"
+  granularity: "caller_no, start_of_week"

@@ -28,17 +28,17 @@
 
 from kedro.pipeline import Pipeline, node
 
-from src.customer360.utilities.config_parser import node_from_config
+from src.customer360.utilities.config_parser import l4_rolling_window
 
 
-def complaints_to_l1_pipeline(**kwargs):
+def complaints_to_l4_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                node_from_config,
-                ["l0_usage_call_relation_sum_daily",
-                 "params:l1_complaints_call_to_competitor_features"],
-                "l1_complaints_call_to_competitor_features"
+                l4_rolling_window,
+                ["l2_complaints_call_to_competitor_features",
+                 "params:l4_complaints_call_to_competitor_features"],
+                "l4_complaints_call_to_competitor_features"
             )
         ]
     )
