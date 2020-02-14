@@ -145,7 +145,6 @@
 #               'usg_outgoing_weekend_number_calls_sum',
 #               'usg_outgoing_weekend_number_sms_sum']
 #    max: [
-#              'usg_call_sms_last_action_date_max',
 #              'usg_incoming_last_call_date_max',
 #              'usg_last_call_date_max',
 #              'usg_outgoing_last_call_date_max',
@@ -1054,7 +1053,6 @@
 #    sum: ["usg_vas_total_number_of_call_sum"]
 #  read_from: "l2"
 
-
 l4_usage_postpaid_prepaid_features:
   partition_by: ["subscription_identifier"]
   feature_list:
@@ -1264,7 +1262,12 @@ l4_usage_postpaid_prepaid_features:
           'usg_outgoing_weekend_calls_duration_sum',
           'usg_outgoing_weekend_number_calls_sum',
           'usg_outgoing_weekend_number_sms_sum']
-    max: ["usg_vas_total_number_of_call_max",
+    max: ['usg_last_sms_date_max',
+          'usg_incoming_last_sms_date_max',
+          'usg_outgoing_roaming_last_sms_date_max',
+          'usg_outgoing_roaming_last_sms_date_max',
+          'usg_last_action_date_max',
+          "usg_vas_total_number_of_call_max",
           "usg_vas_last_action_dt_max",
           'usg_total_data_last_action_date_max',
           'usg_data_last_action_date_max',
@@ -1331,7 +1334,6 @@ l4_usage_postpaid_prepaid_features:
           'usg_outgoing_roaming_call_duration_max',
           'usg_outgoing_roaming_number_calls_max',
           'usg_outgoing_roaming_total_sms_max',
-      'usg_call_sms_last_action_date_max',
       'usg_incoming_last_call_date_max',
       'usg_last_call_date_max',
       'usg_outgoing_last_call_date_max',

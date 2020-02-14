@@ -14,19 +14,19 @@ l1_usage_outgoing_call_relation_sum_daily:
                                         AND idd_flag = 'N' THEN total_successful_call else 0 end)"
 
         usg_outgoing_ais_local_calls_duration: "sum(case when service_type IN ('VOICE')
-                                                AND called_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post' )
+                                                AND called_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')
                                                 THEN total_durations else 0 end)"
 
         usg_outgoing_ais_local_number_calls: "sum(case when service_type IN ('VOICE')
-                                                AND called_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post' )
+                                                AND called_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')
                                                 THEN total_successful_call else 0 end)"
 
         usg_outgoing_offnet_local_calls_duration: "sum(case when service_type IN ('VOICE')
-                                                   AND called_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post' )
+                                                   AND called_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')
                                                    THEN total_durations else 0 end)"
 
         usg_outgoing_offnet_local_number_calls: "sum(case when service_type IN ('VOICE')
-                                                 AND called_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post' )
+                                                 AND called_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')
                                                  THEN total_successful_call else 0 end)"
 
         usg_outgoing_total_sms: "sum(case when service_type IN ('SMS') THEN total_durations else 0 end)"
@@ -35,7 +35,7 @@ l1_usage_outgoing_call_relation_sum_daily:
                                 AND idd_flag = 'N' THEN total_durations else 0 end)"
 
         usg_outgoing_local_ais_sms: "sum(case when service_type IN ('SMS')
-                                     AND called_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post' )
+                                     AND called_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')
                                      AND idd_flag = 'N' THEN total_durations else 0 end)"
 
         usg_outgoing_number_calls_upto_5_mins: "sum(case when service_type IN ('VOICE')
@@ -62,7 +62,9 @@ l1_usage_outgoing_call_relation_sum_daily:
 
         usg_outgoing_last_sms_date: "max(case when service_type IN ('SMS') THEN date(day_id) else null end)"
 
-        usg_call_sms_last_action_date: "max(date(day_id))"
+        usg_last_sms_date: "max(case when service_type IN ('SMS') THEN date(day_id) else null end)"
+
+        usg_last_action_date: "max(date(day_id))"
 
         usg_outgoing_night_time_number_calls: "sum(case when service_type IN ('VOICE')
                                             AND hour_id IN (1, 2, 3, 4, 5, 6) THEN total_successful_call else 0 end)"
@@ -282,19 +284,19 @@ l1_usage_incoming_call_relation_sum_daily:
                                         AND idd_flag = 'N' THEN total_successful_call else 0 end)"
 
         usg_incoming_ais_local_calls_duration: "sum(case when service_type IN ('VOICE')
-                                                AND caller_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post' )
+                                                AND caller_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')
                                                 THEN total_durations else 0 end)"
 
         usg_incoming_ais_local_number_calls: "sum(case when service_type IN ('VOICE')
-                                                AND caller_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post' )
+                                                AND caller_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')
                                                 THEN total_successful_call else 0 end)"
 
         usg_outgoing_offnet_local_calls_duration: "sum(case when service_type IN ('VOICE')
-                                                AND caller_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post' )
+                                                AND caller_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')
                                                 THEN total_durations else 0 end)"
 
         usg_incoming_offnet_local_number_calls: "sum(case when service_type IN ('VOICE')
-                                                AND caller_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post' )
+                                                AND caller_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')
                                                 THEN total_successful_call else 0 end)"
 
         usg_incoming_total_sms: "sum(case when service_type IN ('SMS') THEN total_durations else 0 end)"
@@ -303,7 +305,7 @@ l1_usage_incoming_call_relation_sum_daily:
                                  AND idd_flag = 'N' THEN total_durations else 0 end)"
 
         usg_incoming_local_ais_sms: "sum(case when service_type IN ('SMS')
-                                     AND caller_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post' )
+                                     AND caller_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')
                                      AND idd_flag = 'N' THEN total_durations else 0 end)"
 
         usg_incoming_number_calls_upto_5_mins: "sum(case when service_type IN ('VOICE')
@@ -328,7 +330,11 @@ l1_usage_incoming_call_relation_sum_daily:
 
         usg_last_call_date: "max(case when service_type IN ('VOICE') THEN date(day_id) else null end)"
 
-        usg_call_sms_last_action_date: "max(date(day_id))"
+        usg_last_action_date: "max(date(day_id))"
+
+        usg_incoming_last_sms_date: "max(case when service_type IN ('SMS') THEN date(day_id) else null end)"
+
+        usg_last_sms_date: "max(case when service_type IN ('SMS') THEN date(day_id) else null end)"
 
         usg_incoming_night_time_call: "sum(case when service_type IN ('VOICE')
                                        AND hour_id IN (1, 2, 3, 4, 5, 6) THEN total_successful_call else 0 end)"
@@ -579,6 +585,8 @@ l1_usage_ru_a_gprs_cbs_usage_daily:
 
         usg_data_last_action_date: "max(date(call_start_dt))"
 
+        usg_last_action_date: "max(date(call_start_dt))"
+
         usg_data_weekend_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Saturday', 'Sunday')
                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
         usg_data_weekday_usage: "sum(case when date_format(call_start_dt, 'EEEE') NOT IN ('Saturday', 'Sunday')
@@ -740,6 +748,8 @@ l1_usage_ru_a_vas_postpaid_usg_daily:
 
         usg_data_last_action_date: "max(date(day_id))"
 
+        usg_last_action_date: "max(date(day_id))"
+
         usg_data_weekend_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Saturday', 'Sunday')
                                 THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
 
@@ -889,6 +899,11 @@ l1_usage_outgoing_call_relation_sum_ir_daily:
         usg_outgoing_roaming_call_duration: "sum(case when service_type IN ('VOICE') THEN total_durations else 0 end)"
         usg_outgoing_roaming_number_calls: "sum(case when service_type IN ('VOICE') THEN total_successful_call else 0 end)"
         usg_outgoing_roaming_total_sms: "sum(case when service_type IN ('SMS') THEN total_durations else 0 end)"
+        usg_outgoing_roaming_last_sms_date: "max(case when service_type IN ('SMS') THEN date(day_id) else null end)"
+        usg_last_sms_date: "max(case when service_type IN ('SMS') THEN date(day_id) else null end)"
+        usg_last_action_date: "max(date(day_id))"
+        usg_last_call_date: "max(case when service_type IN ('VOICE') THEN date(day_id) else null end)"
+        usg_outgoing_last_call_date: "max(case when service_type IN ('VOICE') THEN date(day_id) else null end)"
 
     granularity: "caller_no, day_id"
     event_date_column: "date(day_id)"
@@ -900,6 +915,11 @@ l1_usage_incoming_call_relation_sum_ir_daily:
         usg_incoming_roaming_call_duration: "sum(case when service_type IN ('VOICE') THEN total_durations else 0 end)"
         usg_incoming_roaming_number_calls: "sum(case when service_type IN ('VOICE') THEN total_successful_call else 0 end)"
         usg_incoming_roaming_total_sms: "sum(case when service_type IN ('SMS', 'IR_SMS') THEN total_durations else 0 end)"
+        usg_incoming_roaming_last_sms_date: "max(case when service_type IN ('SMS') THEN date(day_id) else null end)"
+        usg_last_sms_date: "max(case when service_type IN ('SMS') THEN date(day_id) else null end)"
+        usg_last_action_date: "max(date(day_id))"
+        usg_last_call_date: "max(case when service_type IN ('VOICE') THEN date(day_id) else null end)"
+        usg_incoming_last_call_date: "max(case when service_type IN ('VOICE') THEN date(day_id) else null end)"
 
     granularity: "called_no, day_id"
     event_date_column: "date(day_id)"
@@ -909,5 +929,6 @@ l1_usage_ru_a_vas_postpaid_prepaid_daily:
     feature_list:
         usg_vas_total_number_of_call: "sum(number_of_call)"
         usg_vas_last_action_dt: "max(day_id)"
+        usg_last_action_date: "max(date(day_id))"
     granularity: "access_method_num, day_id"
     event_date_column: "date(day_id)"

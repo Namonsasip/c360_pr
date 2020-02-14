@@ -36,46 +36,16 @@ from kedro.pipeline import Pipeline, node
 from src.customer360.utilities.config_parser import l4_rolling_window
 
 
-def usage_to_l4_pipeline(**kwargs):
+def usage_to_l4_daily_pipeline(**kwargs):
     return Pipeline(
         [
-            # node(
-            #     l4_rolling_window,
-            #     ["l2_usage_call_relation_sum_weekly",
-            #      "params:l4_usage_call_relation_features"],
-            #     "l4_usage_call_relation_features"
-            # ),
-            # node(
-            #     l4_rolling_window,
-            #     ["l2_usage_call_relation_sum_ir_weekly",
-            #      "params:l4_usage_call_relation_ir_features"],
-            #     "l4_usage_call_relation_ir_features"
-            # ),
-            # node(
-            #     l4_rolling_window,
-            #     ["l2_usage_data_prepaid_postpaid_weekly",
-            #      "params:l4_usage_data_prepaid_postpaid_features"],
-            #     "l4_usage_data_prepaid_postpaid_features"
-            # ),
-            # node(
-            #     l4_rolling_window,
-            #     ["l2_usage_ru_a_vas_postpaid_prepaid_weekly",
-            #      "params:l4_usage_ru_a_vas_postpaid_prepaid_features"],
-            #     "l4_usage_ru_a_vas_postpaid_prepaid_features_stg"
-            # ),
-            # node(
-            #     l4_rolling_window,
-            #     ["l2_usage_ru_a_vas_postpaid_prepaid_weekly",
-            #      "params:l4_usage_ru_a_vas_postpaid_prepaid_features"],
-            #     "l4_usage_ru_a_vas_postpaid_prepaid_features"
-            # )
             node(
                 l4_rolling_window,
-                ["l2_usage_postpaid_prepaid_weekly",
-                 "params:l4_usage_postpaid_prepaid_features"],
-                "l4_usage_postpaid_prepaid_features"
+                ["l1_usage_postpaid_prepaid_daily",
+                 "params:l4_usage_prepaid_postpaid_daily_features"],
+                "l4_usage_prepaid_postpaid_daily_features"
 
             )
 
-        ], name="usage_to_l4_pipeline"
+        ], name="usage_to_l4_daily_pipeline"
     )

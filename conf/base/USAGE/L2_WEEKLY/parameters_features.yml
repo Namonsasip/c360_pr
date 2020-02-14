@@ -150,7 +150,6 @@
 #    max: [
 #      'usg_incoming_afternoon_number_sms',
 #      'usg_incoming_afternoon_time_call',
-#      'usg_call_sms_last_action_date',
 #      'usg_incoming_last_call_date',
 #      'usg_last_call_date',
 #      'usg_outgoing_last_call_date',
@@ -731,9 +730,13 @@ l2_usage_postpaid_prepaid_daily:
       "usg_vas_total_number_of_call",
     ]
     max: [
+      'usg_last_sms_date',
+      'usg_incoming_last_sms_date',
+      'usg_outgoing_roaming_last_sms_date',
+      'usg_incoming_roaming_last_sms_date',
+      'usg_last_action_date',
       'usg_incoming_afternoon_number_sms',
       'usg_incoming_afternoon_time_call',
-      'usg_call_sms_last_action_date',
       'usg_incoming_last_call_date',
       'usg_last_call_date',
       'usg_outgoing_last_call_date',
