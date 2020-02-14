@@ -1,3 +1,5 @@
+from pyspark.sql.functions import to_timestamp
+
 from customer360.utilities.config_parser import node_from_config, expansion, l4_rolling_window
 import pandas as pd
 import random
@@ -22,19 +24,34 @@ class TestUnitBilling:
         df = spark.createDataFrame(zip(random_list, my_dates), schema=['face_value', 'recharge_date']) \
             .withColumn("access_method_num", F.lit(1)) \
             .withColumn("recharge_date", F.to_date('recharge_date', 'dd-MM-yyyy')) \
-            .withColumn("register_date", F.lit('2019-01-01')) \
-
-
-        # df.orderBy('recharge_date').show()
+            .withColumn("register_date", F.lit('2019-01-01'))
 
         daily_data = node_from_config(df, var_project_context.catalog.load(
             'params:l1_billing_and_payment_feature_top_up_and_count'))
 
-        # daily_data.orderBy('recharge_date').show()
-        # daily_data.printSchema()
+        daily_data.withColumn("datetype_timestamp", F.to_timestamp(daily_data["recharge_date"]))
+
+        daily_data.orderBy('recharge_date').show()
+        daily_data.printSchema()
+
+        weekly_data = node_from_config(daily_data, var_project_context.catalog.load(
+            'params:l2_billing_and_payment_feature_top_up_and_count_weekly'))
 
         assert \
             daily_data.where("recharge_date = '2020-01-01'").select("payments_top_up_volume").collect()[0][
                 0] == 1000
+        assert \
+            daily_data.where("recharge_date = '2020-01-01'").select("payments_top_ups").collect()[0][
+                0] == 3
 
-        # exit(2)
+        weekly_data.orderBy('start_of_week').show()
+
+        assert \
+            weekly_data.where("start_of_week='2020-01-06'").select("payments_top_ups").collect()[0][0] == 21
+        assert \
+            weekly_data.where("start_of_week='2020-01-06'").select("payments_top_up_volume").collect()[0][0] == 11700
+        assert \
+            weekly_data.where("start_of_week='2020-01-06'").select("payments_top_ups_avg").collect()[0][0] == 3
+        assert \
+            int(weekly_data.where("start_of_week='2020-01-06'").select("payments_top_up_volume_avg").collect()[0][
+                    0]) == 1671

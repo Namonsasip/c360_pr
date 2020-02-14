@@ -276,6 +276,7 @@ def node_from_config(input_df, config) -> DataFrame:
         column_function=QueryGenerator.normal_feature_listing)
 
     spark = SparkSession.builder.getOrCreate()
+    spark.conf.set("spark.sql.session.timeZone", "UTC+7")
 
     df = spark.sql(sql_stmt)
     return df
