@@ -9,8 +9,9 @@ l2_billing_and_payment_feature_top_up_and_count_weekly:
     #granularity: "start_of_week,access_method_num,date(register_date)"
 
 l2_billing_and_payment_feature_time_diff_bw_topups_weekly_intermdeiate:
-    where_clause: ""
+    where_clause: "where event_partition_date is not null"
     feature_list:
+      start_of_week: "start_of_week"
       recharge_time: "recharge_time"
       access_method_num: "access_method_num"
       register_date: "register_date"
@@ -98,12 +99,13 @@ l2_most_popular_topup_channel:
 
 
 l2_last_topup_channel_1:
-    where_clause: ""
+    where_clause: "where event_partition_date is not null"
     feature_list:
       access_method_num: "access_method_num"
       register_date: "register_date"
       recharge_time: "recharge_time"
       subscription_identifier: "subscription_identifier"
+      start_of_week: "start_of_week"
       payments_last_top_up_channel: "recharge_topup_event_type_name"
       rank: "row_number() over(partition by
              start_of_week,
