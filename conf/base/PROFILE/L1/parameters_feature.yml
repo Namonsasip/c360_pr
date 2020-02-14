@@ -26,7 +26,7 @@ l1_customer_profile_union_daily_feature:
     network_type: "root_network_type"
     national_id_card: "card_no"
     event_partition_date: "partition_date"
-    charge_type: "charge_type"
+    charge_type: "'Pre-paid'" # TODO: change once we have the column in cloud
     billing_account_no: "null"
 
   customer_post:
@@ -55,7 +55,7 @@ l1_customer_profile_union_daily_feature:
     network_type: "network_type"
     national_id_card: "card_id"
     event_partition_date: "partition_date"
-    charge_type: "charge_type"
+    charge_type: "'Post-paid'" # TODO: change once we have the column in cloud
     billing_account_no: "account_no"
 
   customer_non_mobile:
@@ -84,7 +84,7 @@ l1_customer_profile_union_daily_feature:
     network_type: "network_type"
     national_id_card: "card_id"
     event_partition_date: "partition_date"
-    charge_type: "charge_type"
+    charge_type: "'Post-paid'" # TODO: change once we have the column in cloud
     billing_account_no: "account_no"
 
 
