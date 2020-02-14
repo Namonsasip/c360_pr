@@ -3,6 +3,7 @@ from kedro.pipeline import Pipeline, node
 from src.customer360.utilities.config_parser import *
 from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l3.to_l3_nodes import *
 from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l2.to_l2_nodes import *
+from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l1.to_l1_nodes import *
 
 
 def billing_to_l3_pipeline(**kwargs):
@@ -17,19 +18,35 @@ def billing_to_l3_pipeline(**kwargs):
                 "l3_billing_and_payments_monthly_topup_and_volume"
             ),
 
+            # Join monthly billing data with customer profile
+            node(
+                billing_rpu_data_with_customer_profile,
+                ["l3_customer_profile_include_1mo_non_active",
+                 "l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly"],
+                "billing_monthly_data"
+            ),
+
             # Monthly arpu vas,gprs,voice feature
             node(
                 node_from_config,
-                ["l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly",
+                ["billing_monthly_data",
                  "params:l3_billing_and_payment_revenue_per_user_monthly"],
                 "l3_billing_and_payments_monthly_rpu"
+            ),
+
+            # Join daily recharge data with customer profile
+            node(
+                daily_recharge_data_with_customer_profile,
+                ["l1_customer_profile_union_daily_feature",
+                 "l0_billing_and_payments_rt_t_recharge_daily"],
+                "recharge_daily_data"
             ),
 
             # Monthly time difference between top ups
 
             node(
                 node_from_config,
-                ["l0_billing_and_payments_rt_t_recharge_daily",
+                ["recharge_daily_data",
                  "params:l3_billing_and_payment_feature_time_diff_bw_topups_monthly_intermediate"],
                 "l3_billing_and_payments_monthly_topup_time_diff_1"
             ),
@@ -50,8 +67,9 @@ def billing_to_l3_pipeline(**kwargs):
 
             # Monthly automated payment feature
             node(
-                derive_month_automated_payment,
-                ["l0_billing_pc_t_payment_daily"],
+                bill_payment_daily_data_with_customer_profile,
+                ["l1_customer_profile_union_daily_feature",
+                 "l0_billing_pc_t_payment_daily"],
                 "l3_billing_monthly_automated_payments_1"
             ),
             node(
@@ -97,15 +115,18 @@ def billing_to_l3_pipeline(**kwargs):
                 "l3_billing_and_payments_monthly_most_popular_top_up_channel"
             ),
 
+            # Join monthly billing statement hist data with customer profile
+            node(
+                billing_statement_hist_data_with_customer_profile,
+                ["l3_customer_profile_include_1mo_non_active",
+                 "l0_billing_statement_history_monthly"],
+                "billing_stat_hist_monthly_data"
+            ),
+
             # Monthly volume of bill and roaming bills
             node(
-                derive_month_bill_volume,
-                ["l0_billing_statement_history_monthly"],
-                "l3_billing_and_payments_monthly_bill_volume_1"
-            ),
-            node(
                 node_from_config,
-                ["l3_billing_and_payments_monthly_bill_volume_1",
+                ["billing_stat_hist_monthly_data",
                  "params:l3_bill_volume"],
                 "l3_billing_and_payments_monthly_bill_volume"
             ),
@@ -114,7 +135,7 @@ def billing_to_l3_pipeline(**kwargs):
 
             node(
                 top_up_channel_joined_data,
-                ["l0_billing_and_payments_rt_t_recharge_daily",
+                ["recharge_daily_data",
                  "l0_billing_topup_type"],
                 "l3_billing_and_payments_monthly_last_top_up_channel_1"
             ),
@@ -134,7 +155,7 @@ def billing_to_l3_pipeline(**kwargs):
             # Monthly missed bills feature
             node(
                 billing_data_joined,
-                ["l0_billing_statement_history_monthly",
+                ["billing_stat_hist_monthly_data",
                  "l0_billing_pc_t_payment_daily"],
                 "l3_billing_and_payments_monthly_joined"
             ),

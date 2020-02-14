@@ -3,22 +3,25 @@ l1_billing_and_payment_feature_top_up_and_count:
     feature_list:
         payments_top_ups: "count(*)"
         payments_top_up_volume: "sum(face_value)"
-    granularity: "date(recharge_date),access_method_num,date(register_date)"
-    event_date_column: "date(recharge_date)"
+    granularity: "start_of_month,start_of_week,event_partition_date,access_method_num,date(register_date),subscription_identifier"
+    #granularity: "date(recharge_date),access_method_num,date(register_date)"
+    #event_date_column: "date(recharge_date)"
 
 l1_billing_and_payment_rpu_roaming:
     where_clause: ""
     feature_list:
         payments_arpu_roaming: "sum(ir_call_charge_amount)"
-    granularity: "date(date_id),access_method_number,date(mobile_register_date),crm_sub_id"
-    event_date_column: "date(date_id)"
+    granularity: "start_of_month,start_of_week,event_partition_date,access_method_num,date(register_date),subscription_identifier"
+    #granularity: "date(date_id),access_method_number,date(mobile_register_date),crm_sub_id"
+    #event_date_column: "date(date_id)"
 
 l1_billing_and_payment_before_top_up_balance:
     where_clause: ""
     feature_list:
         payments_before_top_up_balance: "avg(pre_bal_amt)"
-    granularity: "date(recharge_date),account_id,access_method_num"
-    event_date_column: "date(recharge_date)"
+    granularity: "start_of_month,start_of_week,event_partition_date,access_method_num,date(register_date),subscription_identifier"
+    #granularity: "date(recharge_date),account_id,access_method_num"
+    #event_date_column: "date(recharge_date)"
 
 l1_billing_and_payment_top_up_channels:
     where_clause: ""
@@ -35,35 +38,40 @@ l1_billing_and_payment_top_up_channels:
         payments_top_up_vol_by_epos: "sum(case when recharge_type in ('5','18','19','46','53','48','B47','B49','B39','B46','B55','B69','B48') then face_value else 0 end)"
         payments_top_ups_by_rom: "sum(case when recharge_type in ('B50','51') then 1 else 0 end)"
         payments_top_up_vol_by_rom: "sum(case when recharge_type in ('B50','51') then face_value else 0 end)"
-    granularity: "date(recharge_date),access_method_num,date(register_date)"
-    event_date_column: "date(recharge_date)"
+    granularity: "start_of_month,start_of_week,event_partition_date,access_method_num,date(register_date),subscription_identifier"
+    #granularity: "date(recharge_date),access_method_num,date(register_date)"
+    #event_date_column: "date(recharge_date)"
 
 l1_billing_and_payment_most_popular_topup_channel:
     where_clause: ""
     feature_list:
         payments_total_top_up: "count(*)"
-    granularity: "date(recharge_date),date(register_date),access_method_num,recharge_type"
-    event_date_column: "date(recharge_date)"
+    granularity: "start_of_month,start_of_week,event_partition_date,date(register_date),access_method_num,subscription_identifier,recharge_type"
+    #granularity: "date(recharge_date),date(register_date),access_method_num,recharge_type"
+    #event_date_column: "date(recharge_date)"
+
 
 l1_billing_and_payment_popular_topup_day:
     where_clause: ""
     feature_list:
         access_method_num: "access_method_num"
         register_date: "date(register_date)"
+        subscription_identifier: "subscription_identifier"
         payment_popular_day: "dayofweek(recharge_date)"
         payment_popular_hour: "hour(recharge_time)"
     granularity: ""
-    event_date_column: "date(recharge_date)"
+    #event_date_column: "date(recharge_date)"
 
 l1_time_since_last_top_up:
     where_clause: ""
     feature_list:
       access_method_num: "access_method_num"
       register_date: "date(register_date)"
+      subscription_identifier: "subscription_identifier"
       recharge_time: "recharge_time"
       face_value: "face_value"
     granularity: ""
-    event_date_column: "date(recharge_date)"
+    #event_date_column: "date(recharge_date)"
 
 
 
