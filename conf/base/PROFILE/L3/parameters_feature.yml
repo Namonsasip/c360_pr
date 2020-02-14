@@ -29,6 +29,7 @@ int_l3_customer_profile_basic_features:
         company_type: "moc_cust_type"
         national_id_card: "card_no"
         cust_active_this_month: "'Y'"
+        billing_account_no: "ba_id"
 
         # for L4 LTV calculainoution
         norms_net_revenue: norms_net_revenue
