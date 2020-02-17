@@ -41,6 +41,7 @@ def create_l5_cvm_users_table(
     Args:
         profile: monthly customer profiles.
         main_packs: pre-paid main packages description.
+        parameters: parameters defined in parameters.yml.
     """
 
     min_date = parameters["l5_cvm_users_table"]["min_date"]
