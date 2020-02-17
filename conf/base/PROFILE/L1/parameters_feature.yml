@@ -3,7 +3,7 @@ l1_customer_profile_union_daily_feature:
   customer_pre:
     subscription_identifier: "subscription_identifier"
     access_method_num: "mobile_no"
-    activation_date: "register_date"
+    register_date: "register_date"
     zipcode: "zipcode"
     prefer_language: "prefer_language"
     company_size: "null"
@@ -18,7 +18,7 @@ l1_customer_profile_union_daily_feature:
     current_package_name: promotion_name
     age: age
     gender: gender
-    subscriber_tenure_day: "datediff(to_date(cast(partition_date as STRING), 'yyyyMMdd'), to_date(activation_date))"
+    subscriber_tenure_day: "datediff(to_date(cast(partition_date as STRING), 'yyyyMMdd'), to_date(register_date))"
     subscriber_tenure_month: "service_month"
     subscription_status: mobile_status
     customer_segment: "mobile_segment"
@@ -61,7 +61,7 @@ l1_customer_profile_union_daily_feature:
   customer_non_mobile:
     subscription_identifier: "subscription_id"
     access_method_num: "mobile_no"
-    register_date: "activation_date"
+    register_date: "register_date"
     zipcode: "zipcode"
     prefer_language: "prefer_language"
     company_size: "corp_account_size"
@@ -76,7 +76,7 @@ l1_customer_profile_union_daily_feature:
     current_package_name: current_promotion_title_ma
     age: ma_age
     gender: ma_gender_code
-    subscriber_tenure_day: "datediff(to_date(cast(partition_date as STRING), 'yyyyMMdd'), to_date(activation_date))"
+    subscriber_tenure_day: "datediff(to_date(cast(partition_date as STRING), 'yyyyMMdd'), to_date(register_date))"
     subscriber_tenure_month: "service_month"
     subscription_status: mobile_status
     customer_segment: "mobile_segment"

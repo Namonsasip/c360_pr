@@ -12,10 +12,10 @@ l0_customer_profile_profile_customer_profile_post_current:
 
 l0_customer_profile_profile_customer_profile_post_non_mobile_current_non_mobile_current:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: data/L0/PROFILE/profile_customer_profile_post_non_mobile/
+  filepath: data/L0/PROFILE/mod_profile_customer_profile_post_non_mobile/
   file_format: "parquet"
 
 l0_customer_profile_profile_customer_profile_pre_current:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: data/L0/PROFILE/profile_customer_profile_pre/
+  filepath: data/L0/PROFILE/mod_profile_customer_profile_pre/
   file_format: "parquet"
