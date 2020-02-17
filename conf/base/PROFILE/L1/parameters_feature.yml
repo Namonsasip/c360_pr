@@ -3,7 +3,7 @@ l1_customer_profile_union_daily_feature:
   customer_pre:
     subscription_identifier: "subscription_identifier"
     access_method_num: "mobile_no"
-    register_date: "activation_date"
+    activation_date: "register_date"
     zipcode: "zipcode"
     prefer_language: "prefer_language"
     company_size: "null"
