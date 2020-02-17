@@ -2,6 +2,7 @@ from kedro.pipeline import Pipeline, node
 
 from src.customer360.utilities.config_parser import *
 from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l2.to_l2_nodes import *
+from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l1.to_l1_nodes import *
 
 def billing_to_l2_pipeline(**kwargs):
 
@@ -15,10 +16,18 @@ def billing_to_l2_pipeline(**kwargs):
                 "l2_billing_and_payments_weekly_topup_and_volume"
             ),
 
+            # Join daily recharge data with customer profile
+            node(
+                daily_recharge_data_with_customer_profile,
+                ["l1_customer_profile_union_daily_feature",
+                 "l0_billing_and_payments_rt_t_recharge_daily"],
+                "recharge_daily_data"
+            ),
+
             # Weekly Time difference between top ups
             node(
                 node_from_config,
-                ["l0_billing_and_payments_rt_t_recharge_daily",
+                ["recharge_daily_data",
                  "params:l2_billing_and_payment_feature_time_diff_bw_topups_weekly_intermdeiate"],
                 "l2_billing_and_payments_weekly_topup_diff_time_intermediate"
             ),
@@ -76,7 +85,7 @@ def billing_to_l2_pipeline(**kwargs):
             # Weekly last top up channel
             node(
                 top_up_channel_joined_data,
-                ["l0_billing_and_payments_rt_t_recharge_daily",
+                ["recharge_daily_data",
                  "l0_billing_topup_type"],
                 "l2_billing_and_payments_weekly_last_top_up_channel_1"
             ),
