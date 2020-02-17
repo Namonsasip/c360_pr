@@ -25,7 +25,7 @@ l1_customer_profile_union_daily_feature:
     serenade_status: "mobile_segment"
     network_type: "root_network_type"
     national_id_card: "card_no"
-    event_partition_date: "partition_date"
+    event_partition_date: "to_date(cast(partition_date as string), 'yyyyMMdd')"
     charge_type: "'Pre-paid'" # TODO: change once we have the column in cloud
     billing_account_no: "null"
 
@@ -54,7 +54,7 @@ l1_customer_profile_union_daily_feature:
     serenade_status: "mobile_segment"
     network_type: "network_type"
     national_id_card: "card_id"
-    event_partition_date: "partition_date"
+    event_partition_date: "to_date(cast(partition_date as string), 'yyyyMMdd')"
     charge_type: "'Post-paid'" # TODO: change once we have the column in cloud
     billing_account_no: "account_no"
 
@@ -83,7 +83,7 @@ l1_customer_profile_union_daily_feature:
     serenade_status: "mobile_segment"
     network_type: "network_type"
     national_id_card: "card_id"
-    event_partition_date: "partition_date"
+    event_partition_date: "to_date(cast(partition_date as string), 'yyyyMMdd')"
     charge_type: "'Post-paid'" # TODO: change once we have the column in cloud
     billing_account_no: "account_no"
 
