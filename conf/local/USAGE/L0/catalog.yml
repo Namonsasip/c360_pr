@@ -22,7 +22,7 @@ l0_usage_call_relation_sum_ir_daily:
 l0_usage_pps_v_ru_a_vas_nonvoice_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/L0/USAGE/usage_pps_v_ru_a_vas_nonvoice_daily/
+  filepath: data/L0/USAGE/usage_ru_a_vas_nonvoice_daily/
   load_args:
     mergeSchema: true
 
