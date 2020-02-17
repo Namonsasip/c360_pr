@@ -49,7 +49,7 @@ def add_last_month_inactive_user(input_df, config):
             ) df1
             left anti join input_df df2
             on df1.partition_month = df2.last_month
-                    and df1.crm_sub_id = df2.crm_sub_id
+                    and df1.subscription_identifier = df2.subscription_identifier
         )
         select {normal_feature_list} from input_df
         union all

@@ -5,7 +5,7 @@ int_l3_customer_profile_basic_features:
         # this is mandatory for joining to union_features table
         access_method_num: "access_method_num"
         register_date: "register_date"
-        crm_sub_id: "crm_sub_id"
+        subscription_identifier: "crm_sub_id"
         charge_type: "charge_type"
         partition_month: "to_date(cast(partition_month as STRING), 'yyyyMM')"
         last_month: "add_months(to_date(cast(partition_month as STRING), 'yyyyMM'), -1)"
