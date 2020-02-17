@@ -101,8 +101,8 @@ class ProjectContext(KedroContext):
 def run_package(node_names, env):
     # entry point for running pip-install projects
     # using `<project_package>` command
-    project_context = load_context(Path.cwd())
-    project_context.run(node_names=node_names, env=env)
+    project_context = load_context(Path.cwd(), env=env)
+    project_context.run(node_names=node_names)
 
 
 if __name__ == "__main__":
