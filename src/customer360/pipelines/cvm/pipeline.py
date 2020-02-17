@@ -36,7 +36,7 @@ from kedro.pipeline import Pipeline, node
 from .nodes import create_l5_cvm_users_table
 
 
-def create_pipeline(**kwargs):
+def create_cvm_prepare_data_pipeline(**kwargs):
     return Pipeline(
         [
             node(

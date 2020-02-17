@@ -57,6 +57,7 @@ from .pipelines.data_engineering.pipelines.revenue_pipeline.to_l3 import revenue
 from .pipelines.data_engineering.pipelines.revenue_pipeline.to_l4 import revenue_to_l4_pipeline
 from .pipelines.data_engineering.pipelines.campaign_pipeline.to_l1 import campaign_to_l1_pipeline
 from .pipelines.cvm.pipeline import create_l5_cvm_users_table
+from .pipelines.cvm.pipeline import create_cvm_prepare_data_pipeline
 
 
 def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
@@ -111,5 +112,5 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         'campaign_to_l1_pipeline': campaign_to_l1_pipeline(),
         "revenue_to_l3_pipeline": revenue_to_l3_pipeline(),
         "revenue_to_l4_pipeline": revenue_to_l4_pipeline(),
-        "cvm_prepare_data": create_l5_cvm_users_table(),
+        "cvm_prepare_data": create_cvm_prepare_data_pipeline(),
     }
