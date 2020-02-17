@@ -42,6 +42,7 @@ from kedro.io import DataCatalog
 from kedro.versioning import Journal
 
 import findspark
+
 findspark.init()
 
 
@@ -97,7 +98,7 @@ class ProjectContext(KedroContext):
         return catalog
 
 
-def run_package(env='local', pipelines=None):
+def run_package(env='base', pipelines=['usage_to_l1_pipeline']):
     # entry point for running pip-install projects
     # using `<project_package>` command
     project_context = load_context(Path.cwd(), env=env)
@@ -114,9 +115,8 @@ def run_package(env='local', pipelines=None):
             project_context.run(pipeline_name=each_pipeline)
         return
 
-    project_context.run(pipeline_name='customer_profile_to_l1_pipeline')
+    #project_context.run(pipeline_name='usage_to_l1_pipeline')
     # project_context.run(pipeline_name='customer_profile_to_l3_pipeline')
-
 
     # Replace line above with below to run on databricks cluster
     # and Dont forget to clear state for every git pull in notebook
