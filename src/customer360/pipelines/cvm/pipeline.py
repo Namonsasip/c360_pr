@@ -41,11 +41,10 @@ def create_pipeline(**kwargs):
         [
             node(
                 create_l5_cvm_users_table,
-                ["l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly",
+                ["l3_customer_profile_include_1mo_non_active",
                  "l0_product_product_pru_m_package_master_group"],
                 "l5_cvm_users_table",
                 name="create_l5_cvm_users_table"
-                ]
             )
         ]
     )
