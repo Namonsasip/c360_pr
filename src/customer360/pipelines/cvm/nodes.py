@@ -45,17 +45,18 @@ def create_l5_cvm_users_table(
     """
 
     min_date = parameters["l5_cvm_users_table"]["min_date"]
-    users = profile.filter("month_id >= '{}'".format(min_date))
-    users = users.filter("charge_type == 'Pre-paid' AND mobile_status == 'SA'")
-    users = users.filter("service_month >= 4")
+    users = profile.filter("partition_month >= '{}'".format(min_date))
+    users = users.filter(
+        "charge_type == 'Pre-paid' AND subscription_status == 'SA'")
+    users = users.filter("subscriber_tenure >= 4")
     users = users.filter("norms_net_revenue > 0")
 
     main_packs = main_packs.filter("promotion_group_tariff not in ('SIM 2 Fly',\
      'SIM NET MARATHON', 'Net SIM', 'Traveller SIM', 'Foreigner SIM')")
     main_packs = main_packs.select('package_id').\
-        withColumnRenamed('package_id', 'main_promo_id')
-    users = users.join(main_packs, ['main_promo_id'], 'inner')
-    columns_to_pick = ['month_id', 'register_date', 'customer_id']
+        withColumnRenamed('package_id', 'current_package_id')
+    users = users.join(main_packs, ['current_package_id'], 'inner')
+    columns_to_pick = ['partition_month', 'subscription_identifier']
     users = users.select(columns_to_pick)
 
     return users
