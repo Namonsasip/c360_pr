@@ -34,10 +34,8 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 from kedro.pipeline import Pipeline, node
 
 from customer360.utilities.config_parser import node_from_config
-from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1 import \
-    merge_incoming_outgoing_calls_with_customer_dim, \
-    merge_prepaid_postpaid_data_usage, merge_roaming_incoming_outgoing_calls, build_data_for_prepaid_postpaid_vas, \
-    merge_with_customer_df, merge_all_dataset_to_one_table
+from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1 import  build_data_for_prepaid_postpaid_vas, \
+     merge_all_dataset_to_one_table
 
 
 def usage_to_l1_pipeline(**kwargs):
