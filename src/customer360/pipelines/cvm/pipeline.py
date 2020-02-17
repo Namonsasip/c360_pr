@@ -33,22 +33,19 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 
-from .nodes import predict, report_accuracy, train_model
+from .nodes import create_l5_cvm_users_table
 
 
 def create_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                train_model,
-                ["example_train_x", "example_train_y", "parameters"],
-                "example_model",
-            ),
-            node(
-                predict,
-                dict(model="example_model", test_x="example_test_x"),
-                "example_predictions",
-            ),
-            node(report_accuracy, ["example_predictions", "example_test_y"], None),
+                create_l5_cvm_users_table,
+                ["l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly",
+                 "l0_product_product_pru_m_package_master_group"],
+                "l5_cvm_users_table",
+                name="create_l5_cvm_users_table"
+                ]
+            )
         ]
     )
