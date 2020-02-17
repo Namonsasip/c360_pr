@@ -14,6 +14,14 @@ l4_billing_rolling_window_topup_and_volume:
     mode: "overwrite"
     partitionBy: ["start_of_week"]
 
+l4_daily_feature_topup_and_volume:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L4_FEATURES/BILLING/daily_topup_and_volume/
+  save_args:
+    mode: "append"
+    partitionBy: ["event_partition_date"]
+
 l4_billing_rolling_window_rpu:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"

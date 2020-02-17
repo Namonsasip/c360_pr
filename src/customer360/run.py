@@ -42,7 +42,6 @@ from kedro.io import DataCatalog
 from kedro.versioning import Journal
 
 import findspark
-
 findspark.init()
 
 
@@ -98,7 +97,7 @@ class ProjectContext(KedroContext):
         return catalog
 
 
-def run_package(env='base', pipelines=['usage_to_l1_pipeline']):
+def run_package(env='local', pipelines=None):
     # entry point for running pip-install projects
     # using `<project_package>` command
     project_context = load_context(Path.cwd(), env=env)
