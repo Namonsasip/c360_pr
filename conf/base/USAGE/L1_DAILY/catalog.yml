@@ -66,7 +66,7 @@ l1_usage_outgoing_call_relation_sum_daily:
   filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/l1_usage_outgoing_call_relation_sum_daily/
   save_args:
     mode: "append"
-    partition_by: ["event_partition_dt"]
+    partition_by: ["event_partition_date"]
 
 l1_usage_incoming_call_relation_sum_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -74,7 +74,7 @@ l1_usage_incoming_call_relation_sum_daily:
   filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/l1_usage_incoming_call_relation_sum_daily/
   save_args:
     mode: "append"
-    partition_by: ["event_partition_dt"]
+    partition_by: ["event_partition_date"]
 
 l1_usage_outgoing_call_relation_sum_ir_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -82,7 +82,7 @@ l1_usage_outgoing_call_relation_sum_ir_daily:
   filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/l1_usage_outgoing_call_relation_sum_ir_daily/
   save_args:
     mode: "append"
-    partition_by: ["event_partition_dt"]
+    partition_by: ["event_partition_date"]
 
 l1_usage_incoming_call_relation_sum_ir_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -90,7 +90,7 @@ l1_usage_incoming_call_relation_sum_ir_daily:
   filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/l1_usage_incoming_call_relation_sum_ir_daily/
   save_args:
     mode: "append"
-    partition_by: ["event_partition_dt"]
+    partition_by: ["event_partition_date"]
 
 l1_usage_postpaid_prepaid_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
