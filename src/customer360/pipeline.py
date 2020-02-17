@@ -56,6 +56,7 @@ from .pipelines.data_engineering.pipelines.stream_pipeline.to_l4.to_l4_pipeline 
 from .pipelines.data_engineering.pipelines.revenue_pipeline.to_l3 import revenue_to_l3_pipeline
 from .pipelines.data_engineering.pipelines.revenue_pipeline.to_l4 import revenue_to_l4_pipeline
 from .pipelines.data_engineering.pipelines.campaign_pipeline.to_l1 import campaign_to_l1_pipeline
+from .pipelines.cvm.pipeline import create_l5_cvm_users_table
 
 
 def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
@@ -97,10 +98,10 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         "customer_profile_billing_level_to_l3_pipeline": customer_profile_billing_level_to_l3_pipeline(),
         "customer_profile_to_l4_pipeline": customer_profile_to_l4_pipeline(),
         "usage_to_l1_pipeline": usage_to_l1_pipeline(),
-        'billing_to_l1_pipeline': billing_to_l1_pipeline(),
-        'billing_to_l3_pipeline': billing_to_l3_pipeline(),
-        'billing_to_l2_pipeline': billing_to_l2_pipeline(),
-        'billing_to_l4_pipeline': billing_to_l4_pipeline(),
+        "billing_to_l1_pipeline": billing_to_l1_pipeline(),
+        "billing_to_l3_pipeline": billing_to_l3_pipeline(),
+        "billing_to_l2_pipeline": billing_to_l2_pipeline(),
+        "billing_to_l4_pipeline": billing_to_l4_pipeline(),
         "streaming_to_l1_pipeline": streaming_to_l1_pipeline(),
         "streaming_to_l2_pipeline": streaming_to_l2_pipeline(),
         "streaming_to_l3_pipeline": streaming_to_l3_pipeline(),
@@ -108,5 +109,7 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         'revenue_to_l3_pipeline': revenue_to_l3_pipeline(),
         'revenue_to_l4_pipeline': revenue_to_l4_pipeline(),
         'campaign_to_l1_pipeline': campaign_to_l1_pipeline(),
-        # "de": data_engineering_pipeline,
+        "revenue_to_l3_pipeline": revenue_to_l3_pipeline(),
+        "revenue_to_l4_pipeline": revenue_to_l4_pipeline(),
+        "cvm_prepare_data": create_l5_cvm_users_table(),
     }
