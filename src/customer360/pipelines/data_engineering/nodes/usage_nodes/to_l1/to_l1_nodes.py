@@ -125,7 +125,8 @@ def merge_all_prepaid_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_d
     :param l1_usage_incoming_call_relation_sum_daily_stg:
     :param l1_usage_outgoing_call_relation_sum_ir_daily_stg:
     :param l1_usage_incoming_call_relation_sum_ir_daily_stg:
-    :param l1_usage_ru_a_gprs_cbs_usage_daily_stg
+    :param l1_usage_ru_a_gprs_cbs_usage_daily_stg:
+    :param l1_usage_ru_a_vas_postpaid_usg_daily_stg:
     :param l1_usage_ru_a_vas_postpaid_prepaid_daily_stg:
     :param l1_customer_profile_union_daily_feature:
     :return:
