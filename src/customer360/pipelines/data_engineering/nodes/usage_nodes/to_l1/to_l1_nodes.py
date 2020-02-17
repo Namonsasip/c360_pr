@@ -112,7 +112,7 @@ def build_data_for_prepaid_postpaid_vas(prepaid: DataFrame
     return final_df
 
 
-def merge_all_prepaid_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg: DataFrame,
+def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg: DataFrame,
                                            l1_usage_incoming_call_relation_sum_daily_stg: DataFrame,
                                            l1_usage_outgoing_call_relation_sum_ir_daily_stg: DataFrame,
                                            l1_usage_incoming_call_relation_sum_ir_daily_stg: DataFrame,
