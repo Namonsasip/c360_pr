@@ -9,7 +9,7 @@ l3_billing_and_payment_feature_top_up_and_count_monthly:
 
 
 l3_billing_and_payment_revenue_per_user_monthly:
-    where_clause: ""
+    where_clause: "where start_of_month is not null"
     feature_list:
       payments_arpu: "sum(norms_net_revenue)"
       payments_arpu_gprs: "sum(norms_net_revenue_gprs)"
@@ -21,8 +21,9 @@ l3_billing_and_payment_revenue_per_user_monthly:
 
 
 l3_billing_and_payment_feature_time_diff_bw_topups_monthly_intermediate:
-    where_clause: ""
+    where_clause: "where start_of_month is not null"
     feature_list:
+      start_of_month: "start_of_month"
       recharge_time: "recharge_time"
       access_method_num: "access_method_num"
       register_date: "register_date"
@@ -106,8 +107,9 @@ l3_most_popular_topup_channel:
     granularity: ""
 
 l3_last_topup_channel_ranked:
-    where_clause: ""
+    where_clause: "where start_of_month is not null"
     feature_list:
+      start_of_month: "start_of_month"
       access_method_num: "access_method_num"
       register_date: "register_date"
       recharge_time: "recharge_time"

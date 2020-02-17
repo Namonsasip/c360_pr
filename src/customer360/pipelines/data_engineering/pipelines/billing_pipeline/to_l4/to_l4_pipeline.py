@@ -27,6 +27,13 @@ def billing_to_l4_pipeline(**kwargs):
             # Top up count and volume with dynamics
             node(
                 l4_rolling_window,
+                ["l1_billing_and_payments_daily_topup_and_volume",
+                 "params:l4_billing_topup_and_volume_daily_feature"],
+                "l4_daily_feature_topup_and_volume"
+            ),
+
+            node(
+                l4_rolling_window,
                 ["l2_billing_and_payments_weekly_topup_and_volume",
                  "params:l4_billing_topup_and_volume"],
                 "l4_billing_rolling_window_topup_and_volume_intermediate"

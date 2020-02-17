@@ -4,10 +4,12 @@ from pyspark.sql import SparkSession
 def bill_payment_daily_data_with_customer_profile(customer_prof,pc_t_data):
 
     customer_prof = customer_prof.select("access_method_num",
-                                         "billing_account_no"
+                                         "billing_account_no",
                                          "subscription_identifier",
                                          f.to_date("register_date").alias("register_date"),
-                                         "start_of_month")
+                                         "event_partition_date")
+
+    customer_prof = customer_prof.withColumn("start_of_month",f.to_date(f.date_trunc('month',customer_prof.event_partition_date)))
 
     output_df = customer_prof.join(pc_t_data,(customer_prof.billing_account_no == pc_t_data.ba_no) &
                                    (customer_prof.start_of_month == f.to_date(f.date_trunc('month',pc_t_data.payment_date))),'left')
@@ -31,9 +33,12 @@ def billing_data_joined(billing_monthly,payment_daily):
 def billing_rpu_data_with_customer_profile(customer_prof,rpu_data):
 
     customer_prof = customer_prof.select("access_method_num",
+                                         "billing_account_no",
                                          "subscription_identifier",
                                          f.to_date("register_date").alias("register_date"),
-                                         "start_of_month")
+                                         "partition_month")
+
+    customer_prof = customer_prof.withColumn("start_of_month",customer_prof.partition_month)
 
     output_df = customer_prof.join(rpu_data,(customer_prof.access_method_num == rpu_data.access_method_num) &
                                    (customer_prof.register_date.eqNullSafe(f.to_date(rpu_data.register_date))) &
@@ -50,7 +55,9 @@ def billing_statement_hist_data_with_customer_profile(customer_prof,billing_hist
                                          "billing_account_no",
                                          "subscription_identifier",
                                          f.to_date("register_date").alias("register_date"),
-                                         "start_of_month")
+                                         "partition_month")
+
+    customer_prof = customer_prof.withColumn("start_of_month",customer_prof.partition_month)
 
     output_df = customer_prof.join(billing_hist,(customer_prof.billing_account_no == billing_hist.account_num) &
                                    (customer_prof.start_of_month == f.to_date(f.date_trunc('month',billing_hist.billing_stmt_period_eff_date))),'left')
