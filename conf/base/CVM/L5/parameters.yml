@@ -1,0 +1,3 @@
+# Minimum date for l5_cvm_users_table creation:
+l5_cvm_users_table:
+  min_date: "2019-08-31"
