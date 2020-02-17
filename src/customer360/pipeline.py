@@ -30,7 +30,6 @@
 from typing import Dict
 
 from kedro.pipeline import Pipeline
-
 from .pipelines.data_engineering.pipelines.usage_pipeline.to_l1 import usage_to_l1_pipeline
 from src.customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l1.to_l1_pipeline import \
     customer_profile_to_l1_pipeline
@@ -74,7 +73,7 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
     # Here you can find an example pipeline, made of two modular pipelines.
     #
     # PLEASE DELETE THIS PIPELINE ONCE YOU START WORKING ON YOUR OWN PROJECT AS
-    # WELL AS pipelines/data_science AND pipelines/data_engineering
+    # WELL AS pipelines/cvm AND pipelines/data_engineering
     # -------------------------------------------------------------------------
 
     return {
