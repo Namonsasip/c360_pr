@@ -30,12 +30,10 @@ def merge_with_customer_postpaid_df(source_df: DataFrame,
     :return:
     """
     # This code will populate a subscriber id to the data set.
-    cust_df_cols = ['partition_month', 'crm_sub_id']
+    cust_df_cols = ['partition_month', 'subscription_identifier']
     join_key = ['subscription_identifier', 'start_of_month']
 
-    cust_df = cust_df.select(cust_df_cols) \
-        .withColumnRenamed("crm_sub_id", "subscription_identifier") \
-        .withColumnRenamed("partition_month", "start_of_month")
+    cust_df = cust_df.select(cust_df_cols).withColumnRenamed("partition_month", "start_of_month")
 
     source_df = source_df.withColumnRenamed("sub_id", "subscription_identifier")
 
