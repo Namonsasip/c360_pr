@@ -72,8 +72,8 @@ def usage_to_l4_pipeline(**kwargs):
             node(
                 l4_rolling_window,
                 ["l2_usage_postpaid_prepaid_weekly",
-                 "params:l4_usage_postpaid_prepaid_features"],
-                "l4_usage_postpaid_prepaid_features"
+                 "params:l4_usage_postpaid_prepaid_weekly_features"],
+                "l4_usage_postpaid_prepaid_weekly_features"
 
             )
 

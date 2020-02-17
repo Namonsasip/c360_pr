@@ -1,61 +1,39 @@
-#l1_usage_ru_f_cbs_prepaid_call_daily:
+#l1_usage_outgoing_call_relation_sum_daily:
 #  type: kedro.contrib.io.pyspark.SparkDataSet
 #  file_format: "parquet"
-#  filepath: data/USAGE/l1_features/usage_ru_f_cbs_prepaid_call_daily/
+#  filepath: data/USAGE/l1_features/l1_usage_outgoing_call_relation_sum_daily/
 #  save_args:
 #    mode: "overwrite"
+#    partition_by: ["event_partition_date"]
 #
-#l1_usage_ru_a_voice_usg_daily:
+#l1_usage_incoming_call_relation_sum_daily:
 #  type: kedro.contrib.io.pyspark.SparkDataSet
 #  file_format: "parquet"
-#  filepath: data/USAGE/l1_features/usage_ru_a_voice_usg_daily/
+#  filepath: data/USAGE/l1_features/l1_usage_incoming_call_relation_sum_daily/
 #  save_args:
 #    mode: "overwrite"
-#l1_usage_ru_a_gprs_cbs_usage_daily:
-#  type: kedro.contrib.io.pyspark.SparkDataSet
-#  file_format: "parquet"
-#  filepath: data/USAGE/l1_features/usage_ru_a_gprs_cbs_usage_daily/
-#  save_args:
-#    mode: "overwrite"
+#    partition_by: ["event_partition_date"]
 #
-#l1_usage_ru_a_vas_postpaid_usg_daily:
+#l1_usage_outgoing_call_relation_sum_ir_daily:
 #  type: kedro.contrib.io.pyspark.SparkDataSet
 #  file_format: "parquet"
-#  filepath: data/USAGE/l1_features/usage_ru_a_vas_postpaid_usg_daily/
+#  filepath: data/USAGE/l1_features/l1_usage_outgoing_call_relation_sum_ir_daily/
 #  save_args:
 #    mode: "overwrite"
+#    partition_by: ["event_partition_date"]
 #
-#l1_usage_call_relation_sum_daily:
-#  filepath: data/USAGE/l1_features/usage_call_relation_sum_daily/
+#l1_usage_incoming_call_relation_sum_ir_daily:
 #  type: kedro.contrib.io.pyspark.SparkDataSet
 #  file_format: "parquet"
+#  filepath: data/USAGE/l1_features/l1_usage_incoming_call_relation_sum_ir_daily/
 #  save_args:
 #    mode: "overwrite"
-#
-#l1_usage_call_relation_sum_ir_daily:
-#  filepath: data/USAGE/l1_features/usage_call_relation_sum_ir_daily/
-#  type: kedro.contrib.io.pyspark.SparkDataSet
-#  save_args:
-#    mode: "overwrite"
-#
-#l1_usage_data_prepaid_postpaid_daily:
-#  type: kedro.contrib.io.pyspark.SparkDataSet
-#  file_format: "parquet"
-#  filepath: data/USAGE/l1_features/usage_data_prepaid_postpaid_daily/
-#  save_args:
-#    mode: "overwrite"
-#
-#l1_usage_ru_a_vas_postpaid_prepaid_daily:
-#  type: kedro.contrib.io.pyspark.SparkDataSet
-#  file_format: "parquet"
-#  filepath: data/USAGE/l1_features/usage_ru_a_vas_postpaid_prepaid_daily/
-#  save_args:
-#    mode: "overwrite"
+#    partition_by: ["event_partition_date"]
 
 l1_usage_postpaid_prepaid_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/USAGE/l1_features/usage_postpaid_prepaid_daily/
+  filepath: data/USAGE/l1_features/l1_usage_postpaid_prepaid_daily/
   save_args:
     mode: "overwrite"
     partition_by: ["event_partition_date"]
