@@ -30,10 +30,10 @@
 #    mode: "overwrite"
 #    partition_by: ["start_of_week"]
 
-l4_usage_postpaid_prepaid_features:
+l4_usage_postpaid_prepaid_weekly_features:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/USAGE/l4_features/usage_postpaid_prepaid_features/
+  filepath: data/USAGE/l4_features/l4_usage_postpaid_prepaid_weekly_features/
   save_args:
     mode: "overwrite"
     partition_by: ["start_of_week"]
@@ -41,7 +41,7 @@ l4_usage_postpaid_prepaid_features:
 l4_usage_prepaid_postpaid_daily_features:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/USAGE/l4_features/usage_prepaid_postpaid_daily_features/
+  filepath: data/USAGE/l4_features/l4_usage_prepaid_postpaid_daily_features/
   save_args:
     mode: "overwrite"
     partition_by: ["event_partition_date"]
