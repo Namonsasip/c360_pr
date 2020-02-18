@@ -120,6 +120,7 @@ def create_l5_cvm_ard_monthly_targets(
             Table with single ARPU drop target.
         """
 
+        print(target_parameters)
         length = target_parameters["length"]
         drop = target_parameters["drop"]
         target_colname = target_parameters["colname"]
