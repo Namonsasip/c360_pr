@@ -30,14 +30,14 @@ def massive_processing(input_df, sql, output_df_catalog):
         add_list.append((i, j))
 
     # for first item
-    first_item = final_list_proceed[0]
+    first_item = add_list[0]
     return_df = data_frame.filter((F.col("partition_date") == first_item[0]) |
                                   (F.col("partition_date") == first_item[1]))
     return_df = node_from_config(return_df, sql)
 
     # for rest of dfs
-    final_list_proceed.remove(first_item)
-    for curr_item in mvv_array:
+    add_list.remove(first_item)
+    for curr_item in add_list:
         small_df = data_frame.filter(F.col("partition_date") == curr_item)
         output_df = node_from_config(small_df, sql)
         CNTX.catalog.save(output_df_catalog, output_df)
@@ -171,14 +171,14 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
         add_list.append((i, j))
 
     # for first item
-    first_item = final_list_proceed[0]
+    first_item = add_list[0]
     return_df = data_frame.filter((F.col("event_partition_date") == first_item[0]) |
                                   (F.col("event_partition_date") == first_item[1]))
     return_df = execute_sql(data_frame=return_df, table_name='roaming_incoming_outgoing_data', sql_str=final_df_str)
 
     # for rest of dfs
-    final_list_proceed.remove(first_item)
-    for curr_item in mvv_array:
+    add_list.remove(first_item)
+    for curr_item in add_list:
         small_df = data_frame.filter((F.col("event_partition_date") == curr_item[0]) |
                                      (F.col("event_partition_date") == curr_item[1]))
         output_df = execute_sql(data_frame=small_df, table_name='roaming_incoming_outgoing_data', sql_str=final_df_str)
