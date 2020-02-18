@@ -14,6 +14,37 @@ def gen_max_sql(data_frame, table_name, group):
     return final_str
 
 
+def massive_processing(input_df, sql, output_df_catalog):
+    """
+    :return:
+    """
+    CNTX = load_context(Path.cwd(), env='base')
+    data_frame = input_df
+    dates_list = data_frame.select('partition_date').distinct().collect()
+
+    mvv_array = [row[0] for row in dates_list]
+    final_list_proceed = zip(mvv_array[::2], mvv_array[1::2])
+    add_list = []
+
+    for i, j in final_list_proceed:
+        add_list.append((i, j))
+
+    # for first item
+    first_item = final_list_proceed[0]
+    return_df = data_frame.filter((F.col("partition_date") == first_item[0]) |
+                                  (F.col("partition_date") == first_item[1]))
+    return_df = node_from_config(return_df, sql)
+
+    # for rest of dfs
+    final_list_proceed.remove(first_item)
+    for curr_item in mvv_array:
+        small_df = data_frame.filter(F.col("partition_date") == curr_item)
+        output_df = node_from_config(small_df, sql)
+        CNTX.catalog.save(output_df_catalog, output_df)
+
+    return return_df
+
+
 def merge_with_customer_df(source_df: DataFrame,
                            cust_df: DataFrame) -> DataFrame:
     """
@@ -30,28 +61,51 @@ def merge_with_customer_df(source_df: DataFrame,
     return final_df
 
 
-def usage_data_prepaid_pipeline(input_df, sql) -> None:
+def usage_outgoing_ir_call_pipeline(input_df, sql) -> DataFrame:
     """
     :return:
     """
-    CNTX = load_context(Path.cwd(), env='base')
-    data_frame = input_df
-    dates_list = data_frame.select('partition_date').distinct().collect()
+    return_df = massive_processing(input_df, sql, "l1_usage_outgoing_call_relation_sum_ir_daily")
+    return return_df
 
-    mvv_array = [row[0] for row in dates_list]
 
-    # for first item
-    first_item = mvv_array[0]
-    return_df = data_frame.filter(F.col("partition_date") == first_item)
-    return_df = node_from_config(return_df, sql)
+def usage_incoming_ir_call_pipeline(input_df, sql) -> DataFrame:
+    """
+    :return:
+    """
+    return_df = massive_processing(input_df, sql, "l1_usage_incoming_call_relation_sum_ir_daily")
+    return return_df
 
-    # for rest of dfs
-    mvv_array.remove(first_item)
-    for curr_item in mvv_array:
-        small_df = data_frame.filter(F.col("partition_date") == curr_item)
-        output_df = node_from_config(small_df, sql)
-        CNTX.catalog.save("l1_usage_ru_a_gprs_cbs_usage_daily", output_df)
 
+def usage_outgoing_call_pipeline(input_df, sql) -> DataFrame:
+    """
+    :return:
+    """
+    return_df = massive_processing(input_df, sql, "l1_usage_outgoing_call_relation_sum_daily")
+    return return_df
+
+
+def usage_incoming_call_pipeline(input_df, sql) -> DataFrame:
+    """
+    :return:
+    """
+    return_df = massive_processing(input_df, sql, "l1_usage_incoming_call_relation_sum_daily")
+    return return_df
+
+
+def usage_data_prepaid_pipeline(input_df, sql) -> DataFrame:
+    """
+    :return:
+    """
+    return_df = massive_processing(input_df, sql, "l1_usage_ru_a_gprs_cbs_usage_daily")
+    return return_df
+
+
+def usage_data_postpaid_pipeline(input_df, sql) -> DataFrame:
+    """
+    :return:
+    """
+    return_df = massive_processing(input_df, sql, "l1_usage_ru_a_vas_postpaid_usg_daily")
     return return_df
 
 
@@ -101,10 +155,33 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
 
     group_cols = ['access_method_num', 'event_partition_date']
     final_df_str = gen_max_sql(union_df, 'roaming_incoming_outgoing_data', group_cols)
-    final_df = execute_sql(data_frame=union_df, table_name='roaming_incoming_outgoing_data', sql_str=final_df_str)
 
-    final_df = merge_with_customer_df(final_df, l1_customer_profile_union_daily_feature)
+    """
+    :return:
+    """
+    CNTX = load_context(Path.cwd(), env='base')
+    data_frame = union_df
+    dates_list = data_frame.select('event_partition_date').distinct().collect()
 
-    final_df = final_df.drop(*[drop_cols])
+    mvv_array = [row[0] for row in dates_list]
+    final_list_proceed = zip(mvv_array[::2], mvv_array[1::2])
+    add_list = []
 
-    return final_df
+    for i, j in final_list_proceed:
+        add_list.append((i, j))
+
+    # for first item
+    first_item = final_list_proceed[0]
+    return_df = data_frame.filter((F.col("event_partition_date") == first_item[0]) |
+                                  (F.col("event_partition_date") == first_item[1]))
+    return_df = execute_sql(data_frame=return_df, table_name='roaming_incoming_outgoing_data', sql_str=final_df_str)
+
+    # for rest of dfs
+    final_list_proceed.remove(first_item)
+    for curr_item in mvv_array:
+        small_df = data_frame.filter((F.col("event_partition_date") == curr_item[0]) |
+                                     (F.col("event_partition_date") == curr_item[1]))
+        output_df = execute_sql(data_frame=small_df, table_name='roaming_incoming_outgoing_data', sql_str=final_df_str)
+        CNTX.catalog.save("l1_usage_postpaid_prepaid_daily", output_df.drop(*[drop_cols]))
+
+    return return_df.drop(*[drop_cols])
