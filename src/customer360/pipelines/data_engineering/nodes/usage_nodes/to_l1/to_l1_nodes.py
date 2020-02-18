@@ -96,7 +96,7 @@ def merge_roaming_incoming_outgoing_calls(outgoing: DataFrame
 
 
 def build_data_for_prepaid_postpaid_vas(prepaid: DataFrame
-                                    , postpaid: DataFrame) -> DataFrame:
+                                        , postpaid: DataFrame) -> DataFrame:
     """
 
     :param prepaid:
@@ -113,13 +113,13 @@ def build_data_for_prepaid_postpaid_vas(prepaid: DataFrame
 
 
 def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg: DataFrame,
-                                           l1_usage_incoming_call_relation_sum_daily_stg: DataFrame,
-                                           l1_usage_outgoing_call_relation_sum_ir_daily_stg: DataFrame,
-                                           l1_usage_incoming_call_relation_sum_ir_daily_stg: DataFrame,
-                                           l1_usage_ru_a_gprs_cbs_usage_daily_stg: DataFrame,
-                                           l1_usage_ru_a_vas_postpaid_usg_daily_stg: DataFrame,
-                                           l1_usage_ru_a_vas_postpaid_prepaid_daily_stg: DataFrame,
-                                           l1_customer_profile_union_daily_feature: DataFrame) -> DataFrame:
+                                   l1_usage_incoming_call_relation_sum_daily_stg: DataFrame,
+                                   l1_usage_outgoing_call_relation_sum_ir_daily_stg: DataFrame,
+                                   l1_usage_incoming_call_relation_sum_ir_daily_stg: DataFrame,
+                                   l1_usage_ru_a_gprs_cbs_usage_daily_stg: DataFrame,
+                                   l1_usage_ru_a_vas_postpaid_usg_daily_stg: DataFrame,
+                                   l1_usage_ru_a_vas_postpaid_prepaid_daily_stg: DataFrame,
+                                   l1_customer_profile_union_daily_feature: DataFrame) -> DataFrame:
     """
     :param l1_usage_outgoing_call_relation_sum_daily_stg:
     :param l1_usage_incoming_call_relation_sum_daily_stg:
@@ -133,7 +133,7 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
     """
     drop_cols = ["access_method_num", "called_no", "caller_no"]
     union_df = union_dataframes_with_missing_cols([
-        l1_usage_outgoing_call_relation_sum_daily_stg,  l1_usage_incoming_call_relation_sum_daily_stg,
+        l1_usage_outgoing_call_relation_sum_daily_stg, l1_usage_incoming_call_relation_sum_daily_stg,
         l1_usage_outgoing_call_relation_sum_ir_daily_stg, l1_usage_incoming_call_relation_sum_ir_daily_stg,
         l1_usage_ru_a_gprs_cbs_usage_daily_stg, l1_usage_ru_a_vas_postpaid_usg_daily_stg,
         l1_usage_ru_a_vas_postpaid_prepaid_daily_stg
@@ -148,9 +148,3 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
     final_df = final_df.drop(*[drop_cols])
 
     return final_df
-
-
-
-
-
-
