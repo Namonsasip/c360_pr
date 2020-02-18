@@ -19,7 +19,7 @@ l0_usage_call_relation_sum_daily:
   file_format: "parquet"
 
 l0_usage_call_relation_sum_ir_daily:
-  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_call_relation_ir_sum_daily/partition_date=20191231/
+  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_call_relation_ir_sum_daily/
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
 
