@@ -1,0 +1,7 @@
+l1_campaign_tracking_contact_list_post_pre:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/CAMPAIGN/l1_campaign_tracking_contact_list_post_pre/
+  save_args:
+    mode: "append"
+    partition_by: ["event_partition_date"]

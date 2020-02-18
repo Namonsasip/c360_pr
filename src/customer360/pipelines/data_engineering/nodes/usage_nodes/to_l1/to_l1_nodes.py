@@ -1,7 +1,9 @@
 from pyspark.sql import DataFrame
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, execute_sql
 from pyspark.sql import functions as F
-
+from kedro.pipeline import Pipeline, node
+from customer360.utilities.config_parser import node_from_config
+from customer360.run import ProjectContext
 
 def gen_max_sql(data_frame, table_name, group):
     grp_str = ', '.join(group)
@@ -27,72 +29,19 @@ def merge_with_customer_df(source_df: DataFrame,
     return final_df
 
 
-def merge_incoming_outgoing_calls_with_customer_dim(out_going_df: DataFrame
-                                                    , in_going_df: DataFrame
-                                                    , cust_df: DataFrame) -> DataFrame:
+def usage_data_prepaid_pipeline() -> None:
     """
-
-    :param out_going_df:
-    :param in_going_df:
-    :param cust_df:
     :return:
     """
-    drop_cols = ['called_no', 'caller_no', 'day_id']
-    group_cols = ['access_method_num', 'event_partition_date']
+    data_frame = ProjectContext.catalog.load("l0_usage_ru_a_gprs_cbs_usage_daily")
+    dates_list = data_frame.select('partition_date').distinct().collect()
 
-    final_df = union_dataframes_with_missing_cols([out_going_df, in_going_df])
-    final_df = final_df.drop(*drop_cols)
+    mvv_array = [row[0] for row in dates_list]
 
-    final_df_str = gen_max_sql(final_df, 'incoming_outgoing_call', group_cols)
-    final_df = execute_sql(data_frame=final_df, table_name='incoming_outgoing_call', sql_str=final_df_str)
-
-    final_df = merge_with_customer_df(final_df, cust_df)
-
-    return final_df
-
-
-def merge_prepaid_postpaid_data_usage(prepaid: DataFrame
-                                      , postpaid: DataFrame
-                                      , cust_df: DataFrame) -> DataFrame:
-    """
-
-    :param prepaid:
-    :param postpaid:
-    :param cust_df:
-    :return:
-    """
-    group_cols = ['access_method_num', 'event_partition_date']
-    final_df = union_dataframes_with_missing_cols([prepaid, postpaid])
-
-    final_df_str = gen_max_sql(final_df, 'incoming_outgoing_data', group_cols)
-    final_df = execute_sql(data_frame=final_df, table_name='incoming_outgoing_data', sql_str=final_df_str)
-
-    final_df = merge_with_customer_df(final_df, cust_df)
-
-    return final_df
-
-
-def merge_roaming_incoming_outgoing_calls(outgoing: DataFrame
-                                          , incoming: DataFrame
-                                          , cust_df: DataFrame) -> DataFrame:
-    """
-
-    :param outgoing:
-    :param incoming:
-    :param cust_df:
-    :return:
-    """
-    drop_cols = ['called_no', 'caller_no', 'day_id']
-    group_cols = ['access_method_num', 'event_partition_date']
-    final_df = union_dataframes_with_missing_cols([outgoing, incoming])
-    final_df = final_df.drop(*drop_cols)
-
-    final_df_str = gen_max_sql(final_df, 'roaming_incoming_outgoing_data', group_cols)
-    final_df = execute_sql(data_frame=final_df, table_name='roaming_incoming_outgoing_data', sql_str=final_df_str)
-
-    final_df = merge_with_customer_df(final_df, cust_df)
-
-    return final_df
+    for curr_item in mvv_array:
+        small_df = data_frame.filter(F.col("partition_date") == curr_item)
+        output_df = node_from_config(small_df, ProjectContext.catalog.load("params:l1_usage_ru_a_gprs_cbs_usage_daily"))
+        ProjectContext.catalog.save("l1_usage_ru_a_gprs_cbs_usage_daily", output_df)
 
 
 def build_data_for_prepaid_postpaid_vas(prepaid: DataFrame

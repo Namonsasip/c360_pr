@@ -1,0 +1,8 @@
+l1_campaign_tracking_contact_list_post_pre:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/CAMPAIGN/l1_features/l1_campaign_tracking_contact_list_post_pre/
+  save_args:
+    mode: "overwrite"
+    partition_by: ["event_partition_date"]
+
