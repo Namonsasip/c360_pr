@@ -5,3 +5,12 @@ l5_cvm_users_table:
   file_format: "parquet"
   save_args:
     mode: "overwrite"
+
+
+# sample of users
+l5_cvm_users_sample_table:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_users_sample_table/
+  file_format: "parquet"
+  save_args:
+    mode: "overwrite"

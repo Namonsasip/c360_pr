@@ -60,3 +60,28 @@ def create_l5_cvm_users_table(
     users = users.select(columns_to_pick)
 
     return users
+
+def create_l5_cvm_users_sample_table(
+        users: DataFrame
+) -> DataFrame:
+    """Sample long term users to create development sample. Users with at least
+    5 months of activity and subscription_identifier ending with 'A' are chosen.
+
+    Args:
+        users: Monthly user table.
+
+    Returns:
+        Table with subscription_identifiers.
+    """
+
+    users_months_count = users.groupby("subscription_identifier").count()
+    long_term_users = users_months_count.filter("count == 5").select(
+        "subscription_identifier").distinct()
+    long_term_users = long_term_users.withColumn(
+        "subscription_identifier_last_letter",
+        long_term_users.subscription_identifier.substr(-1, 1))
+    long_term_users = long_term_users.filter(
+        "subscription_identifier_last_letter == 'A'")
+    long_term_users = long_term_users.select("subscription_identifier")
+
+    return long_term_users

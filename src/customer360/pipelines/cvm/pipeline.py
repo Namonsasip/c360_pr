@@ -33,7 +33,7 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 
-from .nodes import create_l5_cvm_users_table
+from .nodes import create_l5_cvm_users_table, create_l5_cvm_users_sample_table
 
 
 def create_cvm_prepare_data_pipeline(**kwargs):
@@ -46,6 +46,12 @@ def create_cvm_prepare_data_pipeline(**kwargs):
                  "parameters"],
                 "l5_cvm_users_table",
                 name="create_l5_cvm_users_table"
-            )
+            ),
+            node(
+                create_l5_cvm_users_sample_table,
+                "l5_cvm_users_table",
+                "l5_cvm_users_sample_table",
+                name="create_l5_cvm_users_sample_table"
+            ),
         ]
     )
