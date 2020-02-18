@@ -2,6 +2,8 @@ from pyspark.sql import DataFrame
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, execute_sql
 from pyspark.sql import functions as F
 from customer360.utilities.config_parser import node_from_config
+from kedro.context.context import load_context
+from pathlib import Path
 
 
 def gen_max_sql(data_frame, table_name, group):
@@ -32,6 +34,7 @@ def usage_data_prepaid_pipeline(input_df, sql) -> None:
     """
     :return:
     """
+    CNTX = load_context(Path.cwd(), env='base')
     data_frame = input_df
     dates_list = data_frame.select('partition_date').distinct().collect()
 
