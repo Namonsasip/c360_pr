@@ -54,13 +54,14 @@ def create_l5_cvm_users_table(
 
     main_packs = main_packs.filter("promotion_group_tariff not in ('SIM 2 Fly',\
      'SIM NET MARATHON', 'Net SIM', 'Traveller SIM', 'Foreigner SIM')")
-    main_packs = main_packs.select('package_id').\
+    main_packs = main_packs.select('package_id'). \
         withColumnRenamed('package_id', 'current_package_id')
     users = users.join(main_packs, ['current_package_id'], 'inner')
     columns_to_pick = ['partition_month', 'subscription_identifier']
     users = users.select(columns_to_pick)
 
     return users
+
 
 def create_l5_cvm_users_sample_table(
         users: DataFrame
@@ -86,6 +87,7 @@ def create_l5_cvm_users_sample_table(
     long_term_users = long_term_users.select("subscription_identifier")
 
     return long_term_users
+
 
 def create_l5_cvm_ard_monthly_targets(
         users: DataFrame,
@@ -181,8 +183,9 @@ def create_l5_cvm_ard_monthly_targets(
 
         return reve_arpu_before_after
 
-    ard_target_tables = [get_ard_targets(users, reve, parameters[targets]) for \
-                         targets in parameters]
+    local_parameters = parameters["l5_cvm_ard_monthly_targets"]
+    ard_target_tables = [get_ard_targets(users, reve, local_parameters[targets])
+                         for targets in parameters]
     join_targets = lambda df1, df2: df1.join(
         df2,
         ["start_of_month", "subscription_identifier"],
