@@ -12,30 +12,30 @@
 l0_usage_ru_a_gprs_cbs_usage_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_ru_a_gprs_cbs_usage_daily/
+  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_ru_a_gprs_cbs_usage_daily/partition_date=20200101/
   load_args:
     mergeSchema: true
 
 l0_usage_ru_a_vas_postpaid_usg_daily:
-  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_ru_a_vas_postpaid_usg_daily/
+  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_ru_a_vas_postpaid_usg_daily/partition_date=20200101/
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
   load_args:
     mergeSchema: true
 
 l0_usage_call_relation_sum_daily:
-  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_call_relation_sum_daily/
+  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_call_relation_sum_daily/partition_date=20200101/
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
 
 l0_usage_call_relation_sum_ir_daily:
-  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_call_relation_ir_sum_daily/
+  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_call_relation_ir_sum_daily/partition_date=20200101/
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
 
 l0_usage_pps_v_ru_a_vas_nonvoice_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_ru_a_vas_nonvoice_daily/
+  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_ru_a_vas_nonvoice_daily/partition_date=20200101/
   load_args:
     mergeSchema: true
