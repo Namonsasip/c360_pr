@@ -131,6 +131,7 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
     :param l1_customer_profile_union_daily_feature:
     :return:
     """
+    drop_cols = ["access_method_num", "called_no", "caller_no"]
     union_df = union_dataframes_with_missing_cols([
         l1_usage_outgoing_call_relation_sum_daily_stg,  l1_usage_incoming_call_relation_sum_daily_stg,
         l1_usage_outgoing_call_relation_sum_ir_daily_stg, l1_usage_incoming_call_relation_sum_ir_daily_stg,
@@ -143,6 +144,8 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
     final_df = execute_sql(data_frame=union_df, table_name='roaming_incoming_outgoing_data', sql_str=final_df_str)
 
     final_df = merge_with_customer_df(final_df, l1_customer_profile_union_daily_feature)
+
+    final_df = final_df.drop(*[drop_cols])
 
     return final_df
 
