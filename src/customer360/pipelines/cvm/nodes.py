@@ -85,3 +85,5 @@ def create_l5_cvm_users_sample_table(
     long_term_users = long_term_users.select("subscription_identifier")
 
     return long_term_users
+
+def create_
