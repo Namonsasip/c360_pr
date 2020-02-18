@@ -86,4 +86,21 @@ def create_l5_cvm_users_sample_table(
 
     return long_term_users
 
-def create_
+def create_l5_cvm_ard_monthly_targets(
+        users: DataFrame,
+        reve: DataFrame
+) -> DataFrame:
+    """ Create table with ARPU drop targets.
+
+    Args:
+        users: Table with users and dates to create targets for.
+        reve: Table with revenue stats.
+    Returns:
+        Table with ARD targets.
+    """
+
+    dilution_parameters = parameters["targets"]["dilution1"]
+    length = dilution_parameters["length"]
+    drop = dilution_parameters["drop"]
+    target_colname = dilution_parameters["colname"]
+
