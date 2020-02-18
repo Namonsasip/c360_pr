@@ -29,6 +29,7 @@
 from typing import Any, Dict
 from pyspark.sql import DataFrame
 import functools
+import pyspark.sql.functions as func
 
 
 def create_l5_cvm_users_table(
