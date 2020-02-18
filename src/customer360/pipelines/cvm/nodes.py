@@ -185,7 +185,7 @@ def create_l5_cvm_ard_monthly_targets(
 
     local_parameters = parameters["l5_cvm_ard_monthly_targets"]
     ard_target_tables = [get_ard_targets(users, reve, local_parameters[targets])
-                         for targets in parameters]
+                         for targets in local_parameters]
     join_targets = lambda df1, df2: df1.join(
         df2,
         ["start_of_month", "subscription_identifier"],
