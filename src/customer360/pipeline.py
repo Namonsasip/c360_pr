@@ -56,6 +56,7 @@ from .pipelines.data_engineering.pipelines.stream_pipeline.to_l3.to_l3_pipeline 
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l4.to_l4_pipeline import streaming_to_l4_pipeline
 from .pipelines.data_engineering.pipelines.revenue_pipeline.to_l3 import revenue_to_l3_pipeline
 from .pipelines.data_engineering.pipelines.revenue_pipeline.to_l4 import revenue_to_l4_pipeline
+from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l1.to_l1_pipeline import *
 
 
 def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
@@ -88,7 +89,8 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
                        + billing_to_l3_pipeline()
                        + billing_to_l4_pipeline()
                        + revenue_to_l3_pipeline()
-                       + revenue_to_l4_pipeline(),
+                       + revenue_to_l4_pipeline()
+                       + loyalty_to_l1_pipeline(),
         "usage_to_l4_daily_pipeline": usage_to_l4_daily_pipeline(),
         "usage_to_l2_pipeline": usage_to_l2_pipeline(),
         "usage_to_l4_pipeline": usage_to_l4_pipeline(),
@@ -107,5 +109,6 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         "streaming_to_l4_pipeline": streaming_to_l4_pipeline(),
         'revenue_to_l3_pipeline': revenue_to_l3_pipeline(),
         'revenue_to_l4_pipeline': revenue_to_l4_pipeline(),
+        'loyalty_to_l1_pipeline': loyalty_to_l1_pipeline(),
         # "de": data_engineering_pipeline,
     }
