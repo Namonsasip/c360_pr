@@ -1,6 +1,6 @@
 from kedro.pipeline import Pipeline, node
 
-from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l4.to_l4_nodes import *
+from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l3.to_l3_nodes import *
 from src.customer360.utilities.config_parser import *
 
 def billing_to_l4_pipeline(**kwargs):
@@ -8,15 +8,30 @@ def billing_to_l4_pipeline(**kwargs):
     return Pipeline(
         [
 
+            # Join monthly billing statement hist data with customer profile
+            node(
+                billing_statement_hist_data_with_customer_profile,
+                ["l3_customer_profile_include_1mo_non_active",
+                 "l0_billing_statement_history_monthly"],
+                "billing_stat_hist_monthly_data"
+            ),
+
             # Bill Shock feature
             node(
                 node_from_config,
-                ["l0_billing_statement_history_monthly",
+                ["billing_stat_hist_monthly_data",
                  "params:l4_payments_bill_shock"],
                 "l4_billing_statement_history_billshock"
             ),
 
             # Top up count and volume with dynamics
+            node(
+                l4_rolling_window,
+                ["l1_billing_and_payments_daily_topup_and_volume",
+                 "params:l4_billing_topup_and_volume_daily_feature"],
+                "l4_daily_feature_topup_and_volume"
+            ),
+
             node(
                 l4_rolling_window,
                 ["l2_billing_and_payments_weekly_topup_and_volume",

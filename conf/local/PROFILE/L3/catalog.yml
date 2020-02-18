@@ -1,26 +1,27 @@
 
 l3_customer_profile_include_1mo_non_active:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: data/L3_MONTHLY/CUSTOMER_PROFILE/l3_customer_profile_include_1mo_non_active/
+  filepath: data/L3_MONTHLY/PROFILE/l3_customer_profile_include_1mo_non_active/
   file_format: "parquet"
   save_args:
-    mode: "overwrite"
+    mode: "append"
     partitionBy: ["partition_month"]
 
 
 l3_customer_profile_billing_level_features:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: data/L3_MONTHLY/CUSTOMER_PROFILE/billing_level_features/
+  filepath: data/L3_MONTHLY/PROFILE/billing_level_features/
   file_format: "parquet"
   save_args:
-    mode: "overwrite"
+    mode: "append"
     partitionBy: ["partition_month"]
 
 
 l3_customer_profile_billing_level_volume_of_active_contracts:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: data/L3_MONTHLY/CUSTOMER_PROFILE/volume_of_active_contracts/
+  filepath: data/L3_MONTHLY/PROFILE/volume_of_active_contracts/
   file_format: "parquet"
   save_args:
-    mode: "overwrite"
+    mode: "append"
     partitionBy: ["partition_month"]
+
