@@ -1,7 +1,7 @@
 
 l3_customer_profile_include_1mo_non_active:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: /mnt/customer360-blob-data/C360/CUSTOMER_PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
+  filepath: /mnt/customer360-blob-data/C360/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
   file_format: "parquet"
   save_args:
     mode: "overwrite"
@@ -10,7 +10,7 @@ l3_customer_profile_include_1mo_non_active:
 
 l3_customer_profile_billing_level_features:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: /mnt/customer360-blob-data/C360/CUSTOMER_PROFILE/l3_features/billing_level_features/
+  filepath: /mnt/customer360-blob-data/C360/PROFILE/l3_features/billing_level_features/
   file_format: "parquet"
   save_args:
     mode: "overwrite"
@@ -19,7 +19,7 @@ l3_customer_profile_billing_level_features:
 
 l3_customer_profile_billing_level_volume_of_active_contracts:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: /mnt/customer360-blob-data/C360/CUSTOMER_PROFILE/l3_features/volume_of_active_contracts/
+  filepath: /mnt/customer360-blob-data/C360/PROFILE/l3_features/volume_of_active_contracts/
   file_format: "parquet"
   save_args:
     mode: "overwrite"

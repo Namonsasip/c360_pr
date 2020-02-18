@@ -114,7 +114,7 @@ def run_package(env='local', pipelines=None):
             project_context.run(pipeline_name=each_pipeline)
         return
 
-    project_context.run(pipeline_name='customer_profile_to_l1_pipeline')
+    project_context.run(pipeline_name='billing_to_l4_pipeline')
     # project_context.run(pipeline_name='customer_profile_to_l3_pipeline')
 
 
