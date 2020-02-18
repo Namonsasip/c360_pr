@@ -120,7 +120,6 @@ def create_l5_cvm_ard_monthly_targets(
             Table with single ARPU drop target.
         """
 
-        print(target_parameters)
         length = target_parameters["length"]
         drop = target_parameters["drop"]
         target_colname = target_parameters["colname"]
@@ -184,7 +183,7 @@ def create_l5_cvm_ard_monthly_targets(
 
         return reve_arpu_before_after
 
-    local_parameters = parameters["l5_cvm_ard_monthly_targets"]
+    local_parameters = parameters["l5_cvm_ard_monthly_targets"]["targets"]
     ard_target_tables = [get_ard_targets(users, reve, local_parameters[targets])
                          for targets in local_parameters]
     join_targets = lambda df1, df2: df1.join(
