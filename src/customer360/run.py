@@ -96,7 +96,8 @@ class ProjectContext(KedroContext):
         catalog.add_feed_dict(self._get_feed_dict())
         return catalog
 
-def run_package(env='local', pipelines=['usage_to_l1_pipeline']):
+
+def run_package(env='base', pipelines=['usage_to_l1_pipeline']):
     # entry point for running pip-install projects
     # using `<project_package>` command
     project_context = load_context(Path.cwd(), env=env)

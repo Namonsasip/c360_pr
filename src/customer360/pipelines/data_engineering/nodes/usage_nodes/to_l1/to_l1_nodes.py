@@ -2,7 +2,7 @@ from pyspark.sql import DataFrame
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, execute_sql
 from pyspark.sql import functions as F
 from customer360.utilities.config_parser import node_from_config
-from kedro.context.context import KedroContext
+
 
 def gen_max_sql(data_frame, table_name, group):
     grp_str = ', '.join(group)
@@ -37,12 +37,19 @@ def usage_data_prepaid_pipeline(input_df, sql) -> None:
 
     mvv_array = [row[0] for row in dates_list]
 
+    # for first item
+    first_item = mvv_array[0]
+    return_df = data_frame.filter(F.col("partition_date") == first_item)
+    return_df = node_from_config(return_df, sql)
+
+    # for rest of dfs
+    mvv_array.remove(first_item)
     for curr_item in mvv_array:
         small_df = data_frame.filter(F.col("partition_date") == curr_item)
         output_df = node_from_config(small_df, sql)
-        KedroContext.catalog.save("l1_usage_ru_a_gprs_cbs_usage_daily", output_df)
+        CNTX.catalog.save("l1_usage_ru_a_gprs_cbs_usage_daily", output_df)
 
-    return None
+    return return_df
 
 
 def build_data_for_prepaid_postpaid_vas(prepaid: DataFrame

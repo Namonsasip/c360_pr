@@ -56,8 +56,7 @@ def usage_to_l1_pipeline(**kwargs):
             node(
                 usage_data_prepaid_pipeline,
                 ["l0_usage_ru_a_gprs_cbs_usage_daily",
-                 "params:l1_usage_ru_a_gprs_cbs_usage_daily"],
-                "l1_usage_ru_a_gprs_cbs_usage_daily"
+                 "params:l1_usage_ru_a_gprs_cbs_usage_daily"], "l1_usage_ru_a_gprs_cbs_usage_daily"
             ),
             # node(
             #     node_from_config,
