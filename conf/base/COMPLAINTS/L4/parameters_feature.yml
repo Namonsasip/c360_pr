@@ -6,3 +6,4 @@ l4_complaints_call_to_competitor_features:
           "call_to_true_count",
           "call_to_true_duration_sum"]
   read_from: "l2"
+

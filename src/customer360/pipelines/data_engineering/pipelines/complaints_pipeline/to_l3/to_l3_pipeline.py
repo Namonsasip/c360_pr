@@ -39,6 +39,25 @@ def complaints_to_l3_pipeline(**kwargs):
                 ["l1_complaints_call_to_competitor_features",
                  "params:l3_complaints_call_to_competitor_features"],
                 "l3_complaints_call_to_competitor_features"
+            ),
+
+            node(
+                node_from_config,
+                ["l1_complaints_nps_after_call",
+                 "params:l3_complaints_nps_scoring"],
+                "l3_complaints_nps_after_call"
+            ),
+            node(
+                node_from_config,
+                ["l1_complaints_nps_after_chatbot",
+                 "params:l3_complaints_nps_scoring"],
+                "l3_complaints_nps_after_chatbot"
+            ),
+            node(
+                node_from_config,
+                ["l1_complaints_nps_after_store_visit",
+                 "params:l3_complaints_nps_scoring"],
+                "l3_complaints_nps_after_store_visit"
             )
         ]
     )

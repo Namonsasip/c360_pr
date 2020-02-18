@@ -6,3 +6,35 @@ l1_complaints_call_to_competitor_features:
     call_to_true_duration_sum: "sum(case when called_no = 's29uZZn8axRu9Rs.hZl.mB3O3076InFK5+lFoG792dwSDVzy3w+.02SMc5ezMMMP' then total_durations else 0 end)"
   granularity: "caller_no, day_id"
   event_date_column: "date(day_id)"
+
+l1_complaints_nps_after_call:
+  feature_list:
+    avg_nps: "avg(qsc_1)"
+    record_count: "count(*)"
+  where_clause: "where qsc_1 != '' and qsc_1 is not null" # tested with cloud data
+  granularity: "mobile_no, date(cldate)"
+  event_date_column: "date(cldate)"
+  rename_column:
+    access_method_num: mobile_no
+
+
+l1_complaints_nps_after_chatbot:
+  feature_list:
+    avg_nps: "avg(qsc_1)"
+    record_count: "count(*)"
+  where_clause: "where qsc_1 != '' and qsc_1 is not null" # tested with cloud data
+  granularity: "mobile_number, date(request_datetime)"
+  event_date_column: "date(request_datetime)"
+  rename_column:
+    access_method_num: mobile_number
+
+
+l1_complaints_nps_after_store_visit:
+  feature_list:
+    avg_nps: "avg(survey_nps_score)"
+    record_count: "count(*)"
+  where_clause: "where survey_nps_score != -1"
+  granularity: "access_metod_num, date(create_dttm)" # no typo here
+  event_date_column: "date(create_dttm)"
+  rename_column:
+    access_method_num: access_metod_num

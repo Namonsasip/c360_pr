@@ -5,3 +5,30 @@ l4_complaints_call_to_competitor_features:
   save_args:
     partitionBy: ["start_of_week"]
     mode: "overwrite"
+    
+  
+l4_complaints_nps_after_call:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L4_FEATURES/COMPLAINTS/l4_complaints_nps_after_call/
+  save_args:
+    partitionBy: ["start_of_week"]
+    mode: "overwrite"
+
+
+l4_complaints_nps_after_chatbot:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L4_FEATURES/COMPLAINTS/l4_complaints_nps_after_chatbot/
+  save_args:
+    partitionBy: ["start_of_week"]
+    mode: "overwrite"
+
+
+l4_complaints_nps_after_store_visit:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L4_FEATURES/COMPLAINTS/l4_complaints_nps_after_store_visit/
+  save_args:
+    partitionBy: ["start_of_week"]
+    mode: "overwrite"
