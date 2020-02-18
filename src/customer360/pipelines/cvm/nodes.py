@@ -181,8 +181,8 @@ def create_l5_cvm_ard_monthly_targets(
 
         return reve_arpu_before_after
 
-    ard_target_tables = [get_ard_targets(users, reve, target_parameters) for \
-                         target_parameters in parameters]
+    ard_target_tables = [get_ard_targets(users, reve, parameters[targets]) for \
+                         targets in parameters]
     join_targets = lambda df1, df2: df1.join(
         df2,
         ["start_of_month", "subscription_identifier"],
