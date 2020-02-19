@@ -1,5 +1,5 @@
 l4_device_most_used_initial:
-  partition_by: ["mobile_no","register_date","handset_brand_name"]
+  partition_by: ["access_method_num","register_date","subscription_identifier","handset_brand_name"]
   feature_list:
     sum: ["device_used_days"]
   read_from: "l2"
@@ -8,7 +8,7 @@ l4_device_most_used_with_ranks:
   where_clause: ""
   feature_column:
     handset_brand_name: "handset_brand_name"
-  partition_by: ["mobile_no", "register_date", "start_of_week"]
+  partition_by: ["access_method_num","register_date","subscription_identifier", "start_of_week"]
   order_by_column_prefix: "sum_device_used_days"
   read_from: "l2"
   to_join: True
@@ -18,8 +18,9 @@ l4_device_most_used:
   where_clause: ""
   feature_list:
       start_of_week: "start_of_week"
-      mobile_no: "mobile_no"
+      access_method_num: "access_method_num"
       register_date: "register_date"
+      subscription_identifier: "subscription_identifier"
       device_most_used_handset_samsung_last_week: "case when handset_brand_name_last_week='SAMSUNG' then 'Y' else 'N' end"
       device_most_used_handset_huawei_last_week: "case when handset_brand_name_last_week='HUAWEI' then 'Y' else 'N' end"
       device_most_used_handset_oppo_last_week: "case when handset_brand_name_last_week='OPPO' then 'Y' else 'N' end"
@@ -47,7 +48,7 @@ l4_device_most_used:
   granularity: ""
 
 l4_device_number_of_phone_updates:
-  partition_by: ["mobile_no","register_date"]
+  partition_by: ["access_method_num","register_date","subscription_identifier"]
   feature_list:
     sum: ["device_number_of_phone_updates"]
     avg: ["device_number_of_phone_updates"]

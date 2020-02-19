@@ -9,11 +9,19 @@ def device_to_l2_pipeline(**kwargs):
         [
             # Weekly handset configuration related features
             node(
-                device_features_with_config,
-                ["l0_devices_summary_customer_handset",
+                device_summary_with_customer_profile,
+                ["l1_customer_profile_union_daily_feature",
+                 "l0_devices_summary_customer_handset"],
+                "device_handset_summary_with_customer_profile"
+            ),
+
+            node(
+                device_summary_with_config,
+                ["device_handset_summary_with_customer_profile",
                  "l0_devices_handset_configurations"],
                 "l2_device_handset_summary_with_configuration_weekly_1"
             ),
+
             node(
                 node_from_config,
                 ["l2_device_handset_summary_with_configuration_weekly_1",
@@ -36,13 +44,8 @@ def device_to_l2_pipeline(**kwargs):
 
             # Weekly most used device
             node(
-                derive_month_and_week,
-                ["l0_devices_summary_customer_handset"],
-                "l2_device_most_used_intermediate_weekly_1"
-            ),
-            node(
                 node_from_config,
-                ["l2_device_most_used_intermediate_weekly_1",
+                ["device_handset_summary_with_customer_profile",
                  "params:l2_device_most_used_initial"],
                 "l2_device_most_used_intermediate_weekly"
             ),
@@ -55,13 +58,8 @@ def device_to_l2_pipeline(**kwargs):
 
             # Weekly previous configurations features
             node(
-                derive_month_and_week,
-                ["l0_devices_summary_customer_handset"],
-                "l2_previous_device_handset_summary_with_configuration_weekly_intermediate"
-            ),
-            node(
                 node_from_config,
-                ["l2_previous_device_handset_summary_with_configuration_weekly_intermediate",
+                ["device_handset_summary_with_customer_profile",
                  "params:l2_previous_device_features_with_config_ranked"],
                 "l2_previous_device_handset_summary_with_configuration_weekly_1"
             ),

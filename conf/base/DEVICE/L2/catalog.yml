@@ -12,7 +12,7 @@ l2_device_most_used_intermediate_weekly:
   filepath: /mnt/customer360-blob-data/C360/DEVICE/l2_features/device_most_used_intermediate/
   save_args:
     partitionBy: ["start_of_week"]
-    mode: "append"
+    mode: "overwrite"
 
 l2_device_most_used_weekly:
   type: kedro.contrib.io.pyspark.SparkDataSet

@@ -1,10 +1,27 @@
 import pyspark.sql.functions as f
 from pyspark.sql import SparkSession, Window
 
-def device_features_with_config(hs_summary,hs_configs):
+def device_summary_with_customer_profile(customer_prof,hs_summary):
 
-    hs_summary = hs_summary.withColumn("start_of_month",f.to_date(f.date_trunc('month',"date_id")))\
-        .withColumn("start_of_week",f.to_date(f.date_trunc('week',"date_id")))
+    customer_prof = customer_prof.select("access_method_num",
+                                         "subscription_identifier",
+                                         f.to_date("register_date").alias("register_date"),
+                                         "event_partition_date")
+
+    customer_prof = customer_prof.withColumn("start_of_month",f.to_date(f.date_trunc('month',customer_prof.event_partition_date)))\
+        .withColumn("start_of_week",f.to_date(f.date_trunc('week',customer_prof.event_partition_date)))
+
+    hs_summary_with_customer_profile = customer_prof.join(hs_summary,
+                                  (customer_prof.access_method_num == hs_summary.mobile_no) &
+                                  (customer_prof.register_date.eqNullSafe(f.to_date(hs_summary.register_date))) &
+                                  (customer_prof.event_partition_date == f.to_date(hs_summary.date_id)), "left")
+
+    hs_summary_with_customer_profile = hs_summary_with_customer_profile.drop(hs_summary.register_date)
+
+    return hs_summary_with_customer_profile
+
+
+def device_summary_with_config(hs_summary,hs_configs):
 
     hs_configs = hs_configs.withColumn("start_of_month",f.to_date(f.date_trunc('month',"month_id")))
 
@@ -17,8 +34,6 @@ def device_features_with_config(hs_summary,hs_configs):
         .drop(hs_configs.dual_sim)\
         .drop(hs_configs.hs_support_lte_1800)
 
-    joined_data.createOrReplaceTempView("joined_data")
-
     return joined_data
 
 def filter(input_df):
@@ -26,9 +41,3 @@ def filter(input_df):
     output_df = input_df.where("rank = 1").drop("rank")
 
     return output_df
-
-def derive_month_and_week(input_df):
-
-    output_df = input_df.withColumn("start_of_month", f.to_date(f.date_trunc('month', "date_id")))\
-        .withColumn("start_of_week", f.to_date(f.date_trunc('week', "date_id")))
-    return  output_df

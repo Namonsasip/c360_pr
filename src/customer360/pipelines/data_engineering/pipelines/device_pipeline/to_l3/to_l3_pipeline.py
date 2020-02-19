@@ -9,11 +9,19 @@ def device_to_l3_pipeline(**kwargs):
         [
             # Monthly handset configuration related features
             node(
-                device_features_with_config,
-                ["l0_devices_summary_customer_handset",
+                device_summary_with_customer_profile,
+                ["l1_customer_profile_union_daily_feature",
+                 "l0_devices_summary_customer_handset"],
+                "device_handset_summary_with_customer_profile"
+            ),
+
+            node(
+                device_summary_with_config,
+                ["device_handset_summary_with_customer_profile",
                  "l0_devices_handset_configurations"],
                 "l3_device_handset_summary_with_configuration_monthly_1"
             ),
+
             node(
                 node_from_config,
                 ["l3_device_handset_summary_with_configuration_monthly_1",
@@ -36,13 +44,8 @@ def device_to_l3_pipeline(**kwargs):
 
             # Monthly previous configurations features
             node(
-                derive_month_and_week,
-                ["l0_devices_summary_customer_handset"],
-                "l3_previous_device_handset_summary_with_configuration_monthly_1"
-            ),
-            node(
                 node_from_config,
-                ["l3_previous_device_handset_summary_with_configuration_monthly_1",
+                ["device_handset_summary_with_customer_profile",
                  "params:l3_previous_device_features_with_config_ranked"],
                 "l3_previous_device_handset_summary_with_configuration_monthly_2"
             ),
@@ -56,7 +59,7 @@ def device_to_l3_pipeline(**kwargs):
             # Monthly most used device
             node(
                 node_from_config,
-                ["l3_previous_device_handset_summary_with_configuration_monthly_1",
+                ["device_handset_summary_with_customer_profile",
                  "params:l3_device_most_used_initial"],
                 "l3_device_most_used_intermediate_monthly"
             ),
