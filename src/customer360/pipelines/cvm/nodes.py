@@ -195,3 +195,29 @@ def create_l5_cvm_ard_monthly_targets(
     )
 
     return functools.reduce(join_targets, ard_target_tables)
+
+
+def create_l5_cvm_monthly_train_test(
+        targets_features: DataFrame,
+        parameters: Dict[str, Any],
+) -> DataFrame:
+    """Adds train-test column to features-targets table. Train share defined in
+    parameters.
+
+    Args:
+        targets_features: Table with features and targets.
+        parameters: parameters defined in parameters.yml.
+
+    Returns:
+        targets_features table with extra column with train / test flag.
+    """
+
+    train_share = parameters["l5_cvm_monthly_train_test"]["train_share"]
+
+    # add train test flag
+    train_test = targets_features.withColumn(
+        "train_test",
+        func.when(func.rand() <= train_share, "train").otherwise("test")
+    )
+
+    return train_test
