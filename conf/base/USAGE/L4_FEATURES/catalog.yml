@@ -28,7 +28,7 @@
 #  filepath: /mnt/customer360-blob-data/C360/USAGE/l4_features/usage_ru_a_vas_postpaid_prepaid_features/
 #  save_args:
 #    mode: "append"
-#    partition_by: ["start_of_week"]
+#    partitionBy: ["start_of_week"]
 
 l4_usage_postpaid_prepaid_weekly_features:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -36,7 +36,7 @@ l4_usage_postpaid_prepaid_weekly_features:
   filepath: /mnt/customer360-blob-data/C360/USAGE/l4_features/l4_usage_postpaid_prepaid_weekly_features/
   save_args:
     mode: "append"
-    partition_by: ["start_of_week"]
+    partitionBy: ["start_of_week"]
 
 l4_usage_prepaid_postpaid_daily_features:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -44,4 +44,4 @@ l4_usage_prepaid_postpaid_daily_features:
   filepath: /mnt/customer360-blob-data/C360/USAGE/l4_features/l4_usage_prepaid_postpaid_daily_features/
   save_args:
     mode: "append"
-    partition_by: ["event_partition_date"]
+    partitionBy: ["event_partition_date"]
