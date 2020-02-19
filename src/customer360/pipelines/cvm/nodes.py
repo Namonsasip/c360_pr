@@ -60,6 +60,7 @@ def create_l5_cvm_users_table(
     users = users.join(main_packs, ['current_package_id'], 'inner')
     columns_to_pick = ['partition_month', 'subscription_identifier']
     users = users.select(columns_to_pick)
+    users = users.withColumnRenamed("partition_month", "start_of_month")
 
     return users
 
