@@ -221,3 +221,33 @@ def create_l5_cvm_monthly_train_test(
     )
 
     return train_test
+
+
+def create_l5_cvm_features_monthly_joined(
+        users: DataFrame,
+        *args: DataFrame
+) -> DataFrame:
+    """ Creates table with monthly features for given users.
+
+    Args:
+        users: Table with users and dates to join features for.
+        *args: Tables with features.
+
+    Returns:
+        Table with monthly features for given users.
+    """
+
+    feature_tables = args
+
+    # for every table make sure the month column is called 'start_of_month'
+    cols_to_be_renamed = "partition_month"
+    rename = lambda df: df.withColumnRenamed(cols_to_be_renamed,
+                                             "start_of_month")
+    feature_tables = [rename(feature_table) for feature_table in feature_tables]
+
+    # join the tables
+    keys = ["start_of_month", "subscription_identifier"]
+    join_on = lambda df1, df2: df1.join(df2, keys, "left")
+    features_joined = functools.reduce(join_on, feature_tables, users)
+
+    return features_joined
