@@ -18,7 +18,7 @@ def massive_processing(input_df, sql, output_df_catalog):
     """
     :return:
     """
-    CNTX = load_context(Path.cwd(), env='local')
+    CNTX = load_context(Path.cwd(), env='base')
     data_frame = input_df
     dates_list = data_frame.select('partition_date').distinct().collect()
 
@@ -169,7 +169,7 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
     """
     :return:
     """
-    CNTX = load_context(Path.cwd(), env='local')
+    CNTX = load_context(Path.cwd(), env='base')
     data_frame = union_df
     dates_list = data_frame.select('event_partition_date').distinct().collect()
 
