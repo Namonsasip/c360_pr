@@ -34,7 +34,8 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 from kedro.pipeline import Pipeline, node
 
 from .nodes import create_l5_cvm_users_table, create_l5_cvm_users_sample_table,\
-create_l5_cvm_ard_monthly_targets
+create_l5_cvm_ard_monthly_targets, \
+create_l5_cvm_monthly_train_test
 
 def create_cvm_prepare_data_pipeline(**kwargs):
     return Pipeline(
@@ -60,6 +61,13 @@ def create_cvm_prepare_data_pipeline(**kwargs):
                  "parameters"],
                 "l5_cvm_ard_monthly_targets",
                 name="create_l5_cvm_ard_monthly_targets"
+            ),
+            node(
+                create_l5_cvm_monthly_train_test,
+                ["l5_cvm_features_targets_monthly",
+                 "parameters"],
+                "l5_cvm_monthly_train_test",
+                name="create_l5_cvm_monthly_train_test"
             ),
         ]
     )
