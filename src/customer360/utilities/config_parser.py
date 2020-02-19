@@ -74,7 +74,6 @@ class QueryGenerator:
         for (key, val) in feature_list.items():
             for col in val:
                 features.append("{}({}) as {}".format(key, col, col + "_" + key))
-
         return features
 
 
@@ -194,6 +193,7 @@ def l4_rolling_window(input_df, config):
     logging.info("SQL QUERY {}".format(sql_stmt))
 
     spark = SparkSession.builder.getOrCreate()
+    spark.conf.set("spark.sql.session.timeZone", "UTC+7")
     df = spark.sql(sql_stmt)
 
     return df
@@ -277,7 +277,6 @@ def node_from_config(input_df, config) -> DataFrame:
 
     spark = SparkSession.builder.getOrCreate()
     spark.conf.set("spark.sql.session.timeZone", "UTC+7")
-
     df = spark.sql(sql_stmt)
     return df
 
@@ -301,6 +300,7 @@ def expansion(input_df, config) -> DataFrame:
     logging.info("SQL QUERY {}".format(sql_stmt))
 
     spark = SparkSession.builder.getOrCreate()
+    spark.conf.set("spark.sql.session.timeZone", "UTC+7")
 
     df = spark.sql(sql_stmt)
     return df
@@ -430,6 +430,7 @@ def __generate_l4_rolling_ranked_column(
     logging.info("SQL QUERY {}".format(sql_stmt))
 
     spark = SparkSession.builder.getOrCreate()
+    spark.conf.set("spark.sql.session.timeZone", "UTC+7")
     df = spark.sql(sql_stmt)
 
     return df
