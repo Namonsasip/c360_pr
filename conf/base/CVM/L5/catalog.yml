@@ -29,3 +29,11 @@ l5_cvm_monthly_train_test:
   file_format: "parquet"
   save_args:
     mode: "overwrite"
+
+# monthly features
+l5_cvm_features_monthly_joined:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_features_monthly_joined/
+  file_format: "parquet"
+  save_args:
+    mode: "overwrite"
