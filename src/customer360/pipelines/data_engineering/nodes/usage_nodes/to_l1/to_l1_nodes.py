@@ -29,8 +29,8 @@ def massive_processing(input_df, sql, output_df_catalog):
     dates_list = data_frame.select('partition_date').distinct().collect()
     mvv_array = [row[0] for row in dates_list]
 
-    mvv_array = divide_chunks(mvv_array, 14)
-    add_list = mvv_array
+    mvv_new = list(divide_chunks(mvv_array, 14))
+    add_list = mvv_new
 
     first_item = add_list[0]
     add_list.remove(first_item)
@@ -168,7 +168,7 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
     dates_list = data_frame.select('event_partition_date').distinct().collect()
     mvv_array = [row[0] for row in dates_list]
 
-    mvv_array = divide_chunks(mvv_array, 14)
+    mvv_array = list(divide_chunks(mvv_array, 14))
     add_list = mvv_array
 
     first_item = add_list[0]
