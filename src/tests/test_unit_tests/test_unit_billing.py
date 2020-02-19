@@ -30,20 +30,20 @@ class TestUnitBilling:
         df = df.withColumn("start_of_month",F.to_date(F.date_trunc('month', df.event_partition_date))) \
             .withColumn("start_of_week", F.to_date(F.date_trunc('week', df.event_partition_date)))
 
-        print('test1234')
-        df.show()
-        df.printSchema()
-        print('test3333')
-        print('L11111111111111111111111111111')
+        # print('test1234')
+        # df.show()
+        # df.printSchema()
+        # print('test3333')
+        # print('L11111111111111111111111111111')
         daily_data = node_from_config(df, var_project_context.catalog.load(
             'params:l1_billing_and_payment_feature_top_up_and_count'))
-        print('L11111111111111111111111111111end')
-        daily_data.orderBy('event_partition_date').show()
-        daily_data.printSchema()
+        # print('L11111111111111111111111111111end')
+        # daily_data.orderBy('event_partition_date').show()
+        # daily_data.printSchema()
 
         weekly_data = node_from_config(daily_data, var_project_context.catalog.load(
             'params:l2_billing_and_payment_feature_top_up_and_count_weekly'))
-        weekly_data.orderBy('start_of_week').show()
+        # weekly_data.orderBy('start_of_week').show()
         assert \
             daily_data.where("event_partition_date = '2020-01-01'").select("payments_top_up_volume").collect()[0][
                 0] == 1000
@@ -56,39 +56,38 @@ class TestUnitBilling:
         assert \
             weekly_data.where("start_of_week='2020-01-06'").select("payments_top_ups").collect()[0][0] == 21
         assert \
-            weekly_data.where("start_of_week='2020-01-06'").select("payments_top_up_volume").collect()[0][0] == 12000
+            weekly_data.where("start_of_week='2020-01-06'").select("payments_top_up_volume").collect()[0][0] == 11700
         assert \
             weekly_data.where("start_of_week='2020-01-06'").select("payments_top_ups_avg").collect()[0][0] == 3
         assert \
             int(weekly_data.where("start_of_week='2020-01-06'").select("payments_top_up_volume_avg").collect()[0][
-                    0]) == 1714
+                    0]) == 1671
 
         monthly_data = node_from_config(daily_data, var_project_context.catalog.load(
             'params:l3_billing_and_payment_feature_top_up_and_count_monthly'))
-        print('monthlydatadebug')
-        monthly_data.show()
+        # print('monthlydatadebug')
+        # monthly_data.show()
         assert \
             monthly_data.where("start_of_month='2020-02-01'").select("payments_top_ups").collect()[0][0]==87
         assert \
-            monthly_data.where("start_of_month='2020-02-01'").select("payments_top_up_volume").collect()[0][0] == 48700
+            monthly_data.where("start_of_month='2020-02-01'").select("payments_top_up_volume").collect()[0][0] == 48800
         assert \
             monthly_data.where("start_of_month='2020-02-01'").select("payments_top_ups_avg").collect()[0][0] == 3
         assert \
-            int(monthly_data.where("start_of_month='2020-02-01'").select("payments_top_up_volume_avg").collect()[0][0]) == 1679
+            int(monthly_data.where("start_of_month='2020-02-01'").select("payments_top_up_volume_avg").collect()[0][0]) == 1682
 
         final_features = l4_rolling_window(weekly_data, var_project_context.catalog.load(
             'params:l4_billing_topup_and_volume')).orderBy(F.col("start_of_week").desc())
 
-        print('finalfeatures')
+        # print('finalfeatures')
         final_features.orderBy('start_of_week').show()
         assert \
-            final_features.where("start_of_week='2020-03-23'").select("sum_payments_top_ups_weekly_last_twelve_week").collect()[0][0]==249
+            final_features.where("start_of_week='2020-03-23'").select("sum_payments_top_ups_weekly_last_twelve_week").collect()[0][0]==246
         assert \
-            final_features.where("start_of_week='2020-03-23'").select("sum_payments_top_up_volume_weekly_last_twelve_week").collect()[0][0]==132200
+            final_features.where("start_of_week='2020-03-23'").select("sum_payments_top_up_volume_weekly_last_twelve_week").collect()[0][0]==131100
         assert \
-            final_features.where("start_of_week='2020-03-23'").select("avg_payments_top_ups_weekly_last_twelve_week").collect()[0][0]==20.75
+            final_features.where("start_of_week='2020-03-23'").select("avg_payments_top_ups_weekly_last_twelve_week").collect()[0][0]==20.5
         assert \
-            int(final_features.where("start_of_week='2020-03-23'").select("avg_payments_top_up_volume_weekly_last_twelve_week").collect()[0][0])==11016
-        # sum: ["payments_top_ups", "payments_top_up_volume"]
-        # avg: ["payments_top_ups", "payments_top_up_volume"]
+            int(final_features.where("start_of_week='2020-03-23'").select("avg_payments_top_up_volume_weekly_last_twelve_week").collect()[0][0])==10925
+
         # exit(2)
