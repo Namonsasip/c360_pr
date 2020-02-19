@@ -33,9 +33,12 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 
-from .nodes import create_l5_cvm_users_table, create_l5_cvm_users_sample_table,\
-create_l5_cvm_ard_monthly_targets, \
-create_l5_cvm_monthly_train_test
+from .nodes import create_l5_cvm_users_table, \
+    create_l5_cvm_users_sample_table, \
+    create_l5_cvm_ard_monthly_targets, \
+    create_l5_cvm_features_monthly_joined, \
+    create_l5_cvm_monthly_train_test
+
 
 def create_cvm_prepare_data_pipeline(**kwargs):
     return Pipeline(
@@ -68,6 +71,14 @@ def create_cvm_prepare_data_pipeline(**kwargs):
                  "parameters"],
                 "l5_cvm_monthly_train_test",
                 name="create_l5_cvm_monthly_train_test"
+            ),
+            node(
+                create_l5_cvm_features_monthly_joined,
+                ["l5_cvm_users_table",
+                 "l3_customer_profile_include_1mo_non_active",
+                 "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"],
+                "l5_cvm_features_monthly_joined",
+                name="create_l5_cvm_features_monthly_joined"
             ),
         ]
     )
