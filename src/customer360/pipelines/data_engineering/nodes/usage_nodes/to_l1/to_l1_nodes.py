@@ -183,33 +183,42 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
     dates_list = data_frame.select('event_partition_date').distinct().collect()
 
     mvv_array = [row[0] for row in dates_list]
-    add_list = []
-    if len(mvv_array) != 1 and len(mvv_array) % 2 != 0:
-        mvv_array.append(mvv_array[0])
-    if len(mvv_array) > 1:
-        final_list_proceed = zip(mvv_array[::2], mvv_array[1::2])
-        for i, j in final_list_proceed:
-            add_list.append((i, j))
-    else:
-        add_list = mvv_array
+    # add_list = []
+    # if len(mvv_array) != 1 and len(mvv_array) % 2 != 0:
+    #     mvv_array.append(mvv_array[0])
+    # if len(mvv_array) > 1:
+    #     final_list_proceed = zip(mvv_array[::2], mvv_array[1::2])
+    #     for i, j in final_list_proceed:
+    #         add_list.append((i, j))
+    # else:
+    #     add_list = mvv_array
+    #
+    # # for first item
+    # first_item = add_list[0]
+    # if len(mvv_array) > 1:
+    #     return_df = data_frame.filter((F.col("event_partition_date") == first_item[0]) |
+    #                                   (F.col("event_partition_date") == first_item[1]))
+    #     return_df = execute_sql(data_frame=return_df, table_name='roaming_incoming_outgoing_data', sql_str=final_df_str)
+    #
+    #     # for rest of dfs
+    #     add_list.remove(first_item)
+    #     for curr_item in add_list:
+    #         small_df = data_frame.filter((F.col("event_partition_date") == curr_item[0]) |
+    #                                      (F.col("event_partition_date") == curr_item[1]))
+    #         output_df = execute_sql(data_frame=small_df, table_name='roaming_incoming_outgoing_data',
+    #                                 sql_str=final_df_str)
+    #         CNTX.catalog.save("l1_usage_postpaid_prepaid_daily", output_df.drop(*[drop_cols]))
+    # else:
+    #     return_df = data_frame.filter((F.col("event_partition_date") == first_item))
+    #     return_df = execute_sql(data_frame=return_df, table_name='roaming_incoming_outgoing_data', sql_str=final_df_str)
+    first_item = mvv_array[0]
+    return_df = data_frame.filter((F.col("event_partition_date") == first_item))
+    return_df = execute_sql(data_frame=return_df, table_name='roaming_incoming_outgoing_data', sql_str=final_df_str)
 
-    # for first item
-    first_item = add_list[0]
-    if len(mvv_array) > 1:
-        return_df = data_frame.filter((F.col("event_partition_date") == first_item[0]) |
-                                      (F.col("event_partition_date") == first_item[1]))
-        return_df = execute_sql(data_frame=return_df, table_name='roaming_incoming_outgoing_data', sql_str=final_df_str)
-
-        # for rest of dfs
-        add_list.remove(first_item)
-        for curr_item in add_list:
-            small_df = data_frame.filter((F.col("event_partition_date") == curr_item[0]) |
-                                         (F.col("event_partition_date") == curr_item[1]))
-            output_df = execute_sql(data_frame=small_df, table_name='roaming_incoming_outgoing_data',
-                                    sql_str=final_df_str)
-            CNTX.catalog.save("l1_usage_postpaid_prepaid_daily", output_df.drop(*[drop_cols]))
-    else:
-        return_df = data_frame.filter((F.col("event_partition_date") == first_item))
-        return_df = execute_sql(data_frame=return_df, table_name='roaming_incoming_outgoing_data', sql_str=final_df_str)
+    mvv_array.remove(first_item)
+    for curr_item in mvv_array:
+        small_df = data_frame.filter(F.col("event_partition_date") == curr_item)
+        output_df = execute_sql(data_frame=small_df, table_name='roaming_incoming_outgoing_data', sql_str=final_df_str)
+        CNTX.catalog.save("l1_usage_postpaid_prepaid_daily", output_df)
 
     return return_df.drop(*[drop_cols])
