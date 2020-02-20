@@ -57,7 +57,7 @@ l1_usage_ru_a_vas_postpaid_prepaid_daily:
 l1_usage_postpaid_prepaid_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/l1_usage_postpaid_prepaid_daily/
+  filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/l1_usage_postpaid_prepaid_daily/event_partition_date=2019-08-01/
   save_args:
     mode: "overwrite"
     partitionBy: ["event_partition_date"]
