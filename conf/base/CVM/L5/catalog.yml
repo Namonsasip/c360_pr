@@ -15,33 +15,33 @@ l5_cvm_users_sample_table:
     mode: "overwrite"
 
 # ARD ARPU drop targets
-l5_cvm_ard_monthly_targets:
+l5_cvm_ard_one_day_targets:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_ard_monthly_targets/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_ard_one_day_targets/
   file_format: "parquet"
   save_args:
     mode: "overwrite"
 
 # table / train sample
-l5_cvm_monthly_train_test:
+l5_cvm_one_day_train_test:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_monthly_train_test/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_one_day_train_test/
   file_format: "parquet"
   save_args:
     mode: "overwrite"
 
-# monthly features
-l5_cvm_features_monthly_joined:
+# one day features
+l5_cvm_features_one_day_joined:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_features_monthly_joined/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_features_one_day_joined/
   file_format: "parquet"
   save_args:
     mode: "overwrite"
 
-# monthly features and targets
-l5_cvm_features_targets_monthly:
+# one day features and targets
+l5_cvm_features_targets_one_day:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_features_targets_monthly/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_features_targets_one_day/
   file_format: "parquet"
   save_args:
     mode: "overwrite"

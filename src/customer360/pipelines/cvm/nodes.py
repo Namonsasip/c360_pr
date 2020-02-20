@@ -37,7 +37,7 @@ def create_l5_cvm_one_day_users_table(
         main_packs: DataFrame,
         parameters: Dict[str, Any]
 ) -> DataFrame:
-    """Create l5_cvm_one_day_users_table - monthly table of users used for training and
+    """Create l5_cvm_one_day_users_table - one day table of users used for training and
     validating.
 
     Args:
@@ -91,7 +91,7 @@ def create_l5_cvm_users_sample_table(
     return users
 
 
-def create_l5_cvm_ard_monthly_targets(
+def create_l5_cvm_ard_one_day_targets(
         users: DataFrame,
         reve: DataFrame,
         parameters: Dict[str, Any]
@@ -185,7 +185,7 @@ def create_l5_cvm_ard_monthly_targets(
 
         return reve_arpu_before_after
 
-    local_parameters = parameters["l5_cvm_ard_monthly_targets"]["targets"]
+    local_parameters = parameters["l5_cvm_ard_one_day_targets"]["targets"]
     ard_target_tables = [get_ard_targets(users, reve, local_parameters[targets])
                          for targets in local_parameters]
     join_targets = lambda df1, df2: df1.join(
@@ -197,7 +197,7 @@ def create_l5_cvm_ard_monthly_targets(
     return functools.reduce(join_targets, ard_target_tables)
 
 
-def create_l5_cvm_monthly_train_test(
+def create_l5_cvm_one_day_train_test(
         targets_features: DataFrame,
         parameters: Dict[str, Any],
 ) -> DataFrame:
@@ -212,7 +212,7 @@ def create_l5_cvm_monthly_train_test(
         targets_features table with extra column with train / test flag.
     """
 
-    train_share = parameters["l5_cvm_monthly_train_test"]["train_share"]
+    train_share = parameters["l5_cvm_one_day_train_test"]["train_share"]
 
     # add train test flag
     train_test = targets_features.withColumn(
@@ -223,18 +223,18 @@ def create_l5_cvm_monthly_train_test(
     return train_test
 
 
-def create_l5_cvm_features_monthly_joined(
+def create_l5_cvm_features_one_day_joined(
         users: DataFrame,
         *args: DataFrame
 ) -> DataFrame:
-    """ Creates table with monthly features for given users.
+    """ Creates table with one_day features for given users.
 
     Args:
         users: Table with users and dates to join features for.
         *args: Tables with features.
 
     Returns:
-        Table with monthly features for given users.
+        Table with one_day features for given users.
     """
 
     feature_tables = args
@@ -253,11 +253,11 @@ def create_l5_cvm_features_monthly_joined(
     return features_joined
 
 
-def create_l5_cvm_features_targets_monthly(
+def create_l5_cvm_features_targets_one_day(
         targets: DataFrame,
         features: DataFrame,
 ) -> DataFrame:
-    """ Create monthly table with features and targets.
+    """ Create one day table with features and targets.
 
     Args:
         targets: Table with users, dates, targets.
