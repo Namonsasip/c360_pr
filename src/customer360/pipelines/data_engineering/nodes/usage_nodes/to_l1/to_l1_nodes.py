@@ -19,6 +19,7 @@ def massive_processing(input_df, sql, output_df_catalog):
     """
     :return:
     """
+
     def divide_chunks(l, n):
 
         # looping till length l
@@ -133,8 +134,8 @@ def build_data_for_prepaid_postpaid_vas(prepaid: DataFrame
 
 def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg: DataFrame,
                                    l1_usage_incoming_call_relation_sum_daily_stg: DataFrame,
-                                   # l1_usage_outgoing_call_relation_sum_ir_daily_stg: DataFrame,
-                                   # l1_usage_incoming_call_relation_sum_ir_daily_stg: DataFrame,
+                                   l1_usage_outgoing_call_relation_sum_ir_daily_stg: DataFrame,
+                                   l1_usage_incoming_call_relation_sum_ir_daily_stg: DataFrame,
                                    l1_usage_ru_a_gprs_cbs_usage_daily_stg: DataFrame,
                                    l1_usage_ru_a_vas_postpaid_usg_daily_stg: DataFrame,
                                    l1_usage_ru_a_vas_postpaid_prepaid_daily_stg: DataFrame,
@@ -150,20 +151,25 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
     :param l1_customer_profile_union_daily_feature:
     :return:
     """
+
     def divide_chunks(l, n):
         # looping till length l
         for i in range(0, len(l), n):
             yield l[i:i + n]
+
     drop_cols = ["access_method_num", "called_no", "caller_no"]
     union_df = union_dataframes_with_missing_cols([
         l1_usage_outgoing_call_relation_sum_daily_stg, l1_usage_incoming_call_relation_sum_daily_stg,
-        # l1_usage_outgoing_call_relation_sum_ir_daily_stg, l1_usage_incoming_call_relation_sum_ir_daily_stg,
+        l1_usage_outgoing_call_relation_sum_ir_daily_stg, l1_usage_incoming_call_relation_sum_ir_daily_stg,
         l1_usage_ru_a_gprs_cbs_usage_daily_stg, l1_usage_ru_a_vas_postpaid_usg_daily_stg,
         l1_usage_ru_a_vas_postpaid_prepaid_daily_stg
     ])
 
     group_cols = ['access_method_num', 'event_partition_date']
     final_df_str = gen_max_sql(union_df, 'roaming_incoming_outgoing_data', group_cols)
+    sel_join_cols = ['access_method_num',
+                     'event_partition_date',
+                     "subscription_identifier"]
 
     """
     :return:
@@ -181,9 +187,13 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
     for curr_item in add_list:
         small_df = data_frame.filter(F.col("event_partition_date").isin(*[curr_item]))
         output_df = execute_sql(data_frame=small_df, table_name='roaming_incoming_outgoing_data', sql_str=final_df_str)
+        output_df = l1_customer_profile_union_daily_feature.select(sel_join_cols)\
+            .join(output_df,sel_join_cols, how="left")
         CNTX.catalog.save("l1_usage_postpaid_prepaid_daily", output_df.drop(*[drop_cols]))
 
     return_df = data_frame.filter(F.col("event_partition_date").isin(*[first_item]))
+    return_df = l1_customer_profile_union_daily_feature.select(sel_join_cols) \
+        .join(return_df,sel_join_cols, how="left")
     return_df = execute_sql(data_frame=return_df, table_name='roaming_incoming_outgoing_data', sql_str=final_df_str)
 
     return return_df.drop(*[drop_cols])
