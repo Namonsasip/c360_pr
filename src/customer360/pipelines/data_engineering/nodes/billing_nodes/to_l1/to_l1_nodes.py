@@ -1,6 +1,94 @@
 import pyspark.sql.functions as f
 from pyspark.sql import SparkSession, Window
+from pyspark.sql import DataFrame
+from pyspark.sql import functions as F
+from customer360.utilities.config_parser import node_from_config
+from kedro.context.context import load_context
+from pathlib import Path
+import logging
 
+def massive_processing(input_df, sql, partition_date,output_df_catalog):
+    """
+    :return:
+    """
+    def divide_chunks(l, n):
+
+        # looping till length l
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    CNTX = load_context(Path.cwd(), env='base')
+    data_frame = input_df
+    dates_list = data_frame.select(partition_date).distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+
+    mvv_new = list(divide_chunks(mvv_array, 2))
+    add_list = mvv_new
+
+    first_item = add_list[0]
+
+    add_list.remove(first_item)
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        small_df = data_frame.filter(F.col(partition_date).isin(*[curr_item]))
+        output_df = node_from_config(small_df, sql)
+        CNTX.catalog.save(output_df_catalog, output_df)
+
+    logging.info("Final date to run for {0}".format(str(first_item)))
+    return_df = data_frame.filter(F.col(partition_date).isin(*[first_item]))
+    return_df = node_from_config(return_df, sql)
+
+    return return_df
+
+def billing_topup_count_and_volume_node(input_df, sql) -> DataFrame:
+    """
+    :return:
+    """
+    return_df = massive_processing(input_df, sql, 'event_partition_date',"l1_billing_and_payments_daily_topup_and_volume")
+    return return_df
+
+def billing_daily_rpu_roaming(input_df, sql) -> DataFrame:
+    """
+    :return:
+    """
+    return_df = massive_processing(input_df, sql, 'event_partition_date',"l1_billing_and_payments_daily_rpu_roaming")
+    return return_df
+
+def billing_before_topup_balance(input_df, sql) -> DataFrame:
+    """
+    :return:
+    """
+    return_df = massive_processing(input_df, sql, 'event_partition_date',"l1_billing_and_payments_daily_before_top_up_balance")
+    return return_df
+
+def billing_topup_channels(input_df, sql) -> DataFrame:
+    """
+    :return:
+    """
+    return_df = massive_processing(input_df, sql, 'event_partition_date',"l1_billing_and_payments_daily_top_up_channels")
+    return return_df
+
+def billing_most_popular_topup_channel(input_df, sql) -> DataFrame:
+    """
+    :return:
+    """
+    return_df = massive_processing(input_df, sql, 'event_partition_date',"l1_billing_and_payments_daily_most_popular_top_up_channel")
+    return return_df
+
+def billing_popular_topup_day_hour(input_df, sql) -> DataFrame:
+    """
+    :return:
+    """
+    return_df = massive_processing(input_df, sql, 'event_partition_date',"l1_billing_and_payments_daily_popular_topup_day")
+    return return_df
+
+def billing_time_since_last_topup(input_df, sql) -> DataFrame:
+    """
+    :return:
+    """
+    return_df = massive_processing(input_df, sql, 'event_partition_date',"l1_billing_and_payments_daily_time_since_last_top_up")
+    return return_df
 
 
 def daily_recharge_data_with_customer_profile(customer_prof,recharge_data):

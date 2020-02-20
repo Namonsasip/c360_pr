@@ -18,7 +18,7 @@ def billing_to_l1_pipeline(**kwargs):
 
             # Top up count and top up volume feature
             node(
-                node_from_config,
+                billing_topup_count_and_volume_node,
                 ["recharge_daily_data",
                  "params:l1_billing_and_payment_feature_top_up_and_count"],
                 "l1_billing_and_payments_daily_topup_and_volume"
@@ -34,7 +34,7 @@ def billing_to_l1_pipeline(**kwargs):
 
             # Average revenue for roaming feature
             node(
-                node_from_config,
+                billing_daily_rpu_roaming,
                 ["roaming_daily_data",
                  "params:l1_billing_and_payment_rpu_roaming"],
                 "l1_billing_and_payments_daily_rpu_roaming"
@@ -50,7 +50,7 @@ def billing_to_l1_pipeline(**kwargs):
 
             # Balance before top up feature
             node(
-                node_from_config,
+                billing_before_topup_balance,
                 ["sa_t_account_daily_data",
                  "params:l1_billing_and_payment_before_top_up_balance"],
                 "l1_billing_and_payments_daily_before_top_up_balance"
@@ -58,7 +58,7 @@ def billing_to_l1_pipeline(**kwargs):
 
             # Top up channels feature
             node(
-                node_from_config,
+                billing_topup_channels,
                 ["recharge_daily_data",
                  "params:l1_billing_and_payment_top_up_channels"],
                 "l1_billing_and_payments_daily_top_up_channels"
@@ -66,7 +66,7 @@ def billing_to_l1_pipeline(**kwargs):
 
             # Most popular top up channel feature
             node(
-                node_from_config,
+                billing_most_popular_topup_channel,
                 ["recharge_daily_data",
                  "params:l1_billing_and_payment_most_popular_topup_channel"],
                 "l1_billing_and_payments_daily_most_popular_top_up_channel"
@@ -74,7 +74,7 @@ def billing_to_l1_pipeline(**kwargs):
 
             # Popular top up day and hour feature
             node(
-                node_from_config,
+                billing_popular_topup_day_hour,
                 ["recharge_daily_data",
                  "params:l1_billing_and_payment_popular_topup_day"],
                 "l1_billing_and_payments_daily_popular_topup_day"
@@ -82,7 +82,7 @@ def billing_to_l1_pipeline(**kwargs):
 
             # Time since last top up feature
             node(
-                node_from_config,
+                billing_time_since_last_topup,
                 ["recharge_daily_data",
                  "params:l1_time_since_last_top_up"],
                 "l1_billing_and_payments_daily_time_since_last_top_up"
