@@ -251,3 +251,23 @@ def create_l5_cvm_features_monthly_joined(
     features_joined = functools.reduce(join_on, feature_tables, users)
 
     return features_joined
+
+
+def create_l5_cvm_features_targets_monthly(
+    targets: DataFrame,
+    features: DataFrame,
+) -> DataFrame:
+    """ Create monthly table with features and targets.
+
+    Args:
+        targets: Table with users, dates, targets.
+        features: Table with users, dates, features.
+    Returns:
+        Monthly table with features and targets.
+    """
+
+    # join the tables
+    keys = ["start_of_month", "subscription_identifier"]
+    tables_joined = targets.join(features, keys, "left")
+
+    return tables_joined
