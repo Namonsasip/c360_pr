@@ -1,6 +1,6 @@
 # Minimum date for l5_cvm_users_table creation
-l5_cvm_users_table:
-  min_date: "2019-08-31"
+l5_cvm_one_day_users_table:
+  date_chosen: "2019-11-01"
 
 # Reve drop targets
 l5_cvm_ard_monthly_targets:

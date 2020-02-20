@@ -32,12 +32,12 @@ import functools
 import pyspark.sql.functions as func
 
 
-def create_l5_cvm_users_table(
+def create_l5_cvm_one_day_users_table(
         profile: DataFrame,
         main_packs: DataFrame,
         parameters: Dict[str, Any]
 ) -> DataFrame:
-    """Create l5_cvm_users_table - monthly table of users used for training and
+    """Create l5_cvm_one_day_users_table - monthly table of users used for training and
     validating.
 
     Args:
@@ -46,21 +46,20 @@ def create_l5_cvm_users_table(
         parameters: parameters defined in parameters.yml.
     """
 
-    min_date = parameters["l5_cvm_users_table"]["min_date"]
-    users = profile.filter("partition_month >= '{}'".format(min_date))
+    date_chosen = parameters["l5_cvm_one_day_users_table"]["date_chosen"]
+    users = profile.filter("partition_month == '{}'".format(date_chosen))
     users = users.filter(
         "charge_type == 'Pre-paid' AND subscription_status == 'SA'")
     users = users.filter("subscriber_tenure >= 4")
-    users = users.filter("norms_net_revenue > 0")
 
-    main_packs = main_packs.filter("promotion_group_tariff not in ('SIM 2 Fly',\
-     'SIM NET MARATHON', 'Net SIM', 'Traveller SIM', 'Foreigner SIM')")
+    main_packs = main_packs.filter(
+        "promotion_group_tariff not in ('SIM 2 Fly', \
+         'SIM NET MARATHON', 'Net SIM', 'Traveller SIM', 'Foreigner SIM')")
     main_packs = main_packs.select('package_id'). \
         withColumnRenamed('package_id', 'current_package_id')
     users = users.join(main_packs, ['current_package_id'], 'inner')
     columns_to_pick = ['partition_month', 'subscription_identifier']
     users = users.select(columns_to_pick)
-    users = users.withColumnRenamed("partition_month", "start_of_month")
 
     return users
 
@@ -254,8 +253,8 @@ def create_l5_cvm_features_monthly_joined(
 
 
 def create_l5_cvm_features_targets_monthly(
-    targets: DataFrame,
-    features: DataFrame,
+        targets: DataFrame,
+        features: DataFrame,
 ) -> DataFrame:
     """ Create monthly table with features and targets.
 
