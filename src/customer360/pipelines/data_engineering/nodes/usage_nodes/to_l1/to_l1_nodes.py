@@ -28,20 +28,22 @@ def massive_processing(input_df, sql, output_df_catalog):
     CNTX = load_context(Path.cwd(), env='base')
     data_frame = input_df
     dates_list = data_frame.select('partition_date').distinct().collect()
-    mvv_array = [row[0] for row in dates_list]
+    mvv_array = [row[0]  for row in dates_list if row[0] != "SAMPLING"]
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
 
     mvv_new = list(divide_chunks(mvv_array, 2))
     add_list = mvv_new
 
     first_item = add_list[0]
+
     add_list.remove(first_item)
-    add_list.remove("SAMPLING")
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         small_df = data_frame.filter(F.col("partition_date").isin(*[curr_item]))
         output_df = node_from_config(small_df, sql)
         CNTX.catalog.save(output_df_catalog, output_df)
 
+    logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(F.col("partition_date").isin(*[first_item]))
     return_df = node_from_config(return_df, sql)
 
