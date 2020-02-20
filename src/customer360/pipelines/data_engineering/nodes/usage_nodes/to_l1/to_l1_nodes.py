@@ -157,7 +157,7 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
         for i in range(0, len(l), n):
             yield l[i:i + n]
 
-    drop_cols = ["access_method_num", "called_no", "caller_no"]
+    drop_cols = ["access_method_num", "called_no", "caller_no", "call_start_dt", "day_id"]
     union_df = union_dataframes_with_missing_cols([
         l1_usage_outgoing_call_relation_sum_daily_stg, l1_usage_incoming_call_relation_sum_daily_stg,
         l1_usage_outgoing_call_relation_sum_ir_daily_stg, l1_usage_incoming_call_relation_sum_ir_daily_stg,
