@@ -48,7 +48,7 @@ def build_usage_l2_layer(data_frame: DataFrame, dict_obj: dict) -> DataFrame:
 
     first_item = add_list[0]
 
-    data_frame = data_frame.repartition(len(mvv_array), 'start_of_week')
+    data_frame = data_frame.repartition(200, 'start_of_week')
 
     add_list.remove(first_item)
     for curr_item in add_list:
