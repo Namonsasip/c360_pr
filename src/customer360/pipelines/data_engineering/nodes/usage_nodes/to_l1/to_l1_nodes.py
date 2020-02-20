@@ -167,9 +167,12 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
 
     group_cols = ['access_method_num', 'event_partition_date']
     final_df_str = gen_max_sql(union_df, 'roaming_incoming_outgoing_data', group_cols)
-    sel_join_cols = ['access_method_num',
-                     'event_partition_date',
-                     "subscription_identifier"]
+    sel_cols = ['access_method_num',
+                'event_partition_date',
+                "subscription_identifier"]
+
+    join_cols = ['access_method_num',
+                 'event_partition_date']
 
     """
     :return:
@@ -187,13 +190,13 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
     for curr_item in add_list:
         small_df = data_frame.filter(F.col("event_partition_date").isin(*[curr_item]))
         output_df = execute_sql(data_frame=small_df, table_name='roaming_incoming_outgoing_data', sql_str=final_df_str)
-        output_df = l1_customer_profile_union_daily_feature.select(sel_join_cols)\
-            .join(output_df,sel_join_cols, how="left")
+        output_df = l1_customer_profile_union_daily_feature.select(sel_cols) \
+            .join(output_df, join_cols, how="left")
         CNTX.catalog.save("l1_usage_postpaid_prepaid_daily", output_df.drop(*drop_cols))
 
     return_df = data_frame.filter(F.col("event_partition_date").isin(*[first_item]))
-    return_df = l1_customer_profile_union_daily_feature.select(sel_join_cols) \
-        .join(return_df,sel_join_cols, how="left")
+    return_df = l1_customer_profile_union_daily_feature.select(sel_cols) \
+        .join(return_df, join_cols, how="left")
     return_df = execute_sql(data_frame=return_df, table_name='roaming_incoming_outgoing_data', sql_str=final_df_str)
 
     return return_df.drop(*drop_cols)
