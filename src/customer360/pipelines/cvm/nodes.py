@@ -86,8 +86,9 @@ def create_l5_cvm_users_sample_table(
     long_term_users = long_term_users.filter(
         "subscription_identifier_last_letter == 'A'")
     long_term_users = long_term_users.select("subscription_identifier")
+    users = long_term_users.join(users, ["subscription_identifier"])
 
-    return long_term_users
+    return users
 
 
 def create_l5_cvm_ard_monthly_targets(
