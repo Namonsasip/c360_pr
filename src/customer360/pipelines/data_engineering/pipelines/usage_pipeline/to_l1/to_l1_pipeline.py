@@ -55,11 +55,11 @@ def usage_to_l1_pipeline(**kwargs):
             #      "params:l1_usage_incoming_call_relation_sum_ir_daily"],
             #     "l1_usage_incoming_call_relation_sum_ir_daily"
             # ),
-            node(
-                usage_data_prepaid_pipeline,
-                ["l0_usage_ru_a_gprs_cbs_usage_daily",
-                 "params:l1_usage_ru_a_gprs_cbs_usage_daily"], "l1_usage_ru_a_gprs_cbs_usage_daily"
-            ),
+            # node(
+            #     usage_data_prepaid_pipeline,
+            #     ["l0_usage_ru_a_gprs_cbs_usage_daily",
+            #      "params:l1_usage_ru_a_gprs_cbs_usage_daily"], "l1_usage_ru_a_gprs_cbs_usage_daily"
+            # ),
             node(
                 usage_data_postpaid_pipeline,
                 ["l0_usage_ru_a_vas_postpaid_usg_daily",

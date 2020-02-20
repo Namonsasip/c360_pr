@@ -4,6 +4,7 @@ from pyspark.sql import functions as F
 from customer360.utilities.config_parser import node_from_config
 from kedro.context.context import load_context
 from pathlib import Path
+import logging
 
 
 def gen_max_sql(data_frame, table_name, group):
@@ -35,6 +36,7 @@ def massive_processing(input_df, sql, output_df_catalog):
     first_item = add_list[0]
     add_list.remove(first_item)
     for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
         small_df = data_frame.filter(F.col("partition_date").isin(*[curr_item]))
         output_df = node_from_config(small_df, sql)
         CNTX.catalog.save(output_df_catalog, output_df)
