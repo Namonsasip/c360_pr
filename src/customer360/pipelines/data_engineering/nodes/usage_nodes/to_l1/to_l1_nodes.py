@@ -189,11 +189,11 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
         output_df = execute_sql(data_frame=small_df, table_name='roaming_incoming_outgoing_data', sql_str=final_df_str)
         output_df = l1_customer_profile_union_daily_feature.select(sel_join_cols)\
             .join(output_df,sel_join_cols, how="left")
-        CNTX.catalog.save("l1_usage_postpaid_prepaid_daily", output_df.drop(*[drop_cols]))
+        CNTX.catalog.save("l1_usage_postpaid_prepaid_daily", output_df.drop(*drop_cols))
 
     return_df = data_frame.filter(F.col("event_partition_date").isin(*[first_item]))
     return_df = l1_customer_profile_union_daily_feature.select(sel_join_cols) \
         .join(return_df,sel_join_cols, how="left")
     return_df = execute_sql(data_frame=return_df, table_name='roaming_incoming_outgoing_data', sql_str=final_df_str)
 
-    return return_df.drop(*[drop_cols])
+    return return_df.drop(*drop_cols)
