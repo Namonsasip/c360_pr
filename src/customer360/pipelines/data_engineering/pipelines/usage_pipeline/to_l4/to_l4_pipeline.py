@@ -34,6 +34,7 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 from kedro.pipeline import Pipeline, node
 
 from src.customer360.utilities.config_parser import l4_rolling_window
+from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l4.to_l4 import merge_all_usage_outputs
 
 
 def usage_to_l4_pipeline(**kwargs):
@@ -42,10 +43,26 @@ def usage_to_l4_pipeline(**kwargs):
             node(
                 l4_rolling_window,
                 ["l2_usage_postpaid_prepaid_weekly",
-                 "params:l4_usage_postpaid_prepaid_weekly_features"],
-                "l4_usage_postpaid_prepaid_weekly_features"
+                 "params:l4_usage_postpaid_prepaid_weekly_features_max"],
+                "l4_usage_postpaid_prepaid_weekly_features_max"
 
-            )
+            ),
+            node(
+                l4_rolling_window,
+                ["l2_usage_postpaid_prepaid_weekly",
+                 "params:l4_usage_postpaid_prepaid_weekly_features_min"],
+                "l4_usage_postpaid_prepaid_weekly_features_min"
+            ),
+            node(
+                l4_rolling_window,
+                ["l2_usage_postpaid_prepaid_weekly",
+                 "params:l4_usage_postpaid_prepaid_weekly_features_avg"],
+                "l4_usage_postpaid_prepaid_weekly_features_avg"
+            ),
+            node(merge_all_usage_outputs, ['l4_usage_postpaid_prepaid_weekly_features_max'
+                                            , 'l4_usage_postpaid_prepaid_weekly_features_min'
+                                            , 'l4_usage_postpaid_prepaid_weekly_features_avg']
+                                            , 'l4_usage_postpaid_prepaid_weekly_features')
 
         ], name="usage_to_l4_pipeline"
     )
