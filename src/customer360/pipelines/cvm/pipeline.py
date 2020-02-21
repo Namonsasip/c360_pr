@@ -54,12 +54,6 @@ def create_cvm_prepare_data_pipeline(**kwargs):
                 name="create_l5_cvm_one_day_users_table"
             ),
             node(
-                create_l5_cvm_users_sample_table,
-                "l5_cvm_one_day_users_table",
-                "l5_cvm_users_sample_table",
-                name="create_l5_cvm_users_sample_table"
-            ),
-            node(
                 create_l5_cvm_ard_one_day_targets,
                 ["l5_cvm_one_day_users_table",
                  "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
@@ -87,6 +81,57 @@ def create_cvm_prepare_data_pipeline(**kwargs):
                 ["l5_cvm_features_one_day_joined",
                  "l5_cvm_ard_one_day_targets"],
                 "l5_cvm_features_targets_one_day",
+                name="create_l5_cvm_features_targets_one_day"
+            ),
+        ]
+    )
+
+
+def create_cvm_prepare_sample_data_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                create_l5_cvm_one_day_users_table,
+                ["l3_customer_profile_include_1mo_non_active",
+                 "l0_product_product_pru_m_package_master_group",
+                 "parameters"],
+                "l5_cvm_one_day_users_table",
+                name="create_l5_cvm_one_day_users_table"
+            ),
+            node(
+                create_l5_cvm_users_sample_table,
+                "l5_cvm_one_day_users_table",
+                "l5_cvm_users_sample_table",
+                name="create_l5_cvm_users_sample_table"
+            ),
+            node(
+                create_l5_cvm_ard_one_day_targets,
+                ["l5_cvm_one_day_users_sample_table",
+                 "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
+                 "parameters"],
+                "l5_cvm_ard_one_day_targets_sample",
+                name="create_l5_cvm_ard_one_day_targets"
+            ),
+            node(
+                create_l5_cvm_one_day_train_test,
+                ["l5_cvm_features_targets_one_day_sample",
+                 "parameters"],
+                "l5_cvm_one_day_train_test_sample",
+                name="create_l5_cvm_one_day_train_test"
+            ),
+            node(
+                create_l5_cvm_features_one_day_joined,
+                ["l5_cvm_one_day_users_sample_table",
+                 "l3_customer_profile_include_1mo_non_active",
+                 "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"],
+                "l5_cvm_features_one_day_joined_sample",
+                name="create_l5_cvm_features_one_day_joined"
+            ),
+            node(
+                create_l5_cvm_features_targets_one_day,
+                ["l5_cvm_features_one_day_joined_sample",
+                 "l5_cvm_ard_one_day_targets_sample"],
+                "l5_cvm_features_targets_one_day_sample",
                 name="create_l5_cvm_features_targets_one_day"
             ),
         ]

@@ -22,10 +22,24 @@ l5_cvm_ard_one_day_targets:
   save_args:
     mode: "overwrite"
 
+l5_cvm_ard_one_day_targets_sample:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_ard_one_day_targets_sample/
+  file_format: "parquet"
+  save_args:
+    mode: "overwrite"
+
 # table / train sample
 l5_cvm_one_day_train_test:
   type: kedro.contrib.io.pyspark.SparkDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_one_day_train_test/
+  file_format: "parquet"
+  save_args:
+    mode: "overwrite"
+
+l5_cvm_one_day_train_test_sample:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_one_day_train_test_sample/
   file_format: "parquet"
   save_args:
     mode: "overwrite"
@@ -38,10 +52,24 @@ l5_cvm_features_one_day_joined:
   save_args:
     mode: "overwrite"
 
+l5_cvm_features_one_day_joined_sample:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_features_one_day_joined_sample/
+  file_format: "parquet"
+  save_args:
+    mode: "overwrite"
+
 # one day features and targets
 l5_cvm_features_targets_one_day:
   type: kedro.contrib.io.pyspark.SparkDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_features_targets_one_day/
+  file_format: "parquet"
+  save_args:
+    mode: "overwrite"
+
+l5_cvm_features_targets_one_day_sample:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_features_targets_one_day_sample/
   file_format: "parquet"
   save_args:
     mode: "overwrite"
