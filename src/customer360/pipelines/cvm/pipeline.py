@@ -91,14 +91,6 @@ def create_cvm_prepare_sample_data_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                create_l5_cvm_one_day_users_table,
-                ["l3_customer_profile_include_1mo_non_active",
-                 "l0_product_product_pru_m_package_master_group",
-                 "parameters"],
-                "l5_cvm_one_day_users_table",
-                name="create_l5_cvm_one_day_users_table"
-            ),
-            node(
                 create_l5_cvm_users_sample_table,
                 "l5_cvm_one_day_users_table",
                 "l5_cvm_users_sample_table",
@@ -110,14 +102,14 @@ def create_cvm_prepare_sample_data_pipeline(**kwargs):
                  "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
                  "parameters"],
                 "l5_cvm_ard_one_day_targets_sample",
-                name="create_l5_cvm_ard_one_day_targets"
+                name="create_l5_cvm_ard_one_day_targets_sample"
             ),
             node(
                 create_l5_cvm_one_day_train_test,
                 ["l5_cvm_features_targets_one_day_sample",
                  "parameters"],
                 "l5_cvm_one_day_train_test_sample",
-                name="create_l5_cvm_one_day_train_test"
+                name="create_l5_cvm_one_day_train_test_sample"
             ),
             node(
                 create_l5_cvm_features_one_day_joined,
@@ -125,14 +117,14 @@ def create_cvm_prepare_sample_data_pipeline(**kwargs):
                  "l3_customer_profile_include_1mo_non_active",
                  "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"],
                 "l5_cvm_features_one_day_joined_sample",
-                name="create_l5_cvm_features_one_day_joined"
+                name="create_l5_cvm_features_one_day_joined_sample"
             ),
             node(
                 create_l5_cvm_features_targets_one_day,
                 ["l5_cvm_features_one_day_joined_sample",
                  "l5_cvm_ard_one_day_targets_sample"],
                 "l5_cvm_features_targets_one_day_sample",
-                name="create_l5_cvm_features_targets_one_day"
+                name="create_l5_cvm_features_targets_one_day_sample"
             ),
         ]
     )
