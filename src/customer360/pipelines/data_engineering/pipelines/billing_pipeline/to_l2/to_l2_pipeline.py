@@ -10,7 +10,7 @@ def billing_to_l2_pipeline(**kwargs):
         [
             # Weekly top up count and top up volume
             node(
-                node_from_config,
+                billing_topup_count_and_volume_node_weekly,
                 ["l1_billing_and_payments_daily_topup_and_volume",
                  "params:l2_billing_and_payment_feature_top_up_and_count_weekly"],
                 "l2_billing_and_payments_weekly_topup_and_volume"
@@ -32,7 +32,7 @@ def billing_to_l2_pipeline(**kwargs):
                 "l2_billing_and_payments_weekly_topup_diff_time_intermediate"
             ),
             node(
-                node_from_config,
+                billing_time_diff_between_topups_weekly,
                 ["l2_billing_and_payments_weekly_topup_diff_time_intermediate",
                  "params:l2_billing_and_payment_feature_time_diff_bw_topups_weekly"],
                 "l2_billing_and_payments_weekly_topup_time_diff"
@@ -40,7 +40,7 @@ def billing_to_l2_pipeline(**kwargs):
 
             # Weekly arpu of roaming
             node(
-                node_from_config,
+                billing_arpu_roaming_weekly,
                 ["l1_billing_and_payments_daily_rpu_roaming",
                  "params:l2_billing_and_payment_feature_rpu_roaming_weekly"],
                 "l2_billing_weekly_rpu_roaming"
@@ -48,7 +48,7 @@ def billing_to_l2_pipeline(**kwargs):
 
             # Weekly balance before top up
             node(
-                node_from_config,
+                billing_before_topup_balance_weekly,
                 ["l1_billing_and_payments_daily_before_top_up_balance",
                  "params:l2_billing_and_payment_before_top_up_balance_weekly"],
                 "l2_billing_and_payments_weekly_before_top_up_balance"
@@ -56,7 +56,7 @@ def billing_to_l2_pipeline(**kwargs):
 
             # Weekly top up channels
             node(
-                node_from_config,
+                billing_top_up_channels_weekly,
                 ["l1_billing_and_payments_daily_top_up_channels",
                  "params:l2_billing_and_payment_top_up_channels_weekly"],
                 "l2_billing_and_payments_weekly_top_up_channels"
@@ -76,7 +76,7 @@ def billing_to_l2_pipeline(**kwargs):
                 "l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate"
             ),
             node(
-                node_from_config,
+                billing_most_popular_top_up_channel_weekly,
                 ["l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate",
                  "params:l2_most_popular_topup_channel"],
                 "l2_billing_and_payments_weekly_most_popular_top_up_channel"
@@ -96,7 +96,7 @@ def billing_to_l2_pipeline(**kwargs):
                 "l2_billing_and_payments_weekly_last_top_up_channel_2"
             ),
             node(
-                node_from_config,
+                billing_last_top_up_channel_weekly,
                 ["l2_billing_and_payments_weekly_last_top_up_channel_2",
                  "params:l2_last_topup_channel_2"],
                 "l2_billing_and_payments_weekly_last_top_up_channel"
@@ -110,7 +110,7 @@ def billing_to_l2_pipeline(**kwargs):
                 "l2_billing_and_payments_weekly_popular_topup_day_intermediate"
             ),
             node(
-                node_from_config,
+                billing_popular_topup_day_weekly,
                 ["l2_billing_and_payments_weekly_popular_topup_day_intermediate",
                  "params:l2_popular_topup_day_2"],
                 "l2_billing_and_payments_weekly_popular_topup_day"
@@ -124,7 +124,7 @@ def billing_to_l2_pipeline(**kwargs):
                 "l2_billing_and_payments_weekly_popular_topup_hour_intermediate"
             ),
             node(
-                node_from_config,
+                billing_popular_topup_hour_weekly,
                 ["l2_billing_and_payments_weekly_popular_topup_hour_intermediate",
                  "params:l2_popular_topup_hour_2"],
                 "l2_billing_and_payments_weekly_popular_topup_hour"
@@ -132,7 +132,7 @@ def billing_to_l2_pipeline(**kwargs):
 
             # Weekly time since last top up
             node(
-                node_from_config,
+                billing_time_since_last_topup_weekly,
                 ["l1_billing_and_payments_daily_time_since_last_top_up",
                  "params:l2_time_since_last_top_up"],
                 "l2_billing_and_payments_weekly_time_since_last_top_up"
@@ -146,7 +146,7 @@ def billing_to_l2_pipeline(**kwargs):
                 "l2_billing_and_payments_weekly_last_three_topup_volume_1"
             ),
             node(
-                node_from_config,
+                billing_last_three_topup_volume_weekly,
                 ["l2_billing_and_payments_weekly_last_three_topup_volume_1",
                  "params:l2_last_three_topup_volume"],
                 "l2_billing_and_payments_weekly_last_three_topup_volume"
