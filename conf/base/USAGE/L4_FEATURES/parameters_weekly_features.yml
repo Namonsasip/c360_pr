@@ -1087,7 +1087,7 @@ l4_usage_postpaid_prepaid_weekly_features:
           'usg_outgoing_local_data_volume_4G_min',
           'usg_outgoing_roaming_data_volume_min',
           'usg_outgoing_roaming_data_volume_2G_3G_min',
-          'usg_outgoing_roaming_data_volume_4G_min',f
+          'usg_outgoing_roaming_data_volume_4G_min',
           'usg_data_monday_afternoon_usage_sum',
           'usg_data_tuesday_afternoon_usage_sum',
           'usg_data_wednesday_afternoon_usage_sum',
