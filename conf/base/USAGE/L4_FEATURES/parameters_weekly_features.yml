@@ -1712,7 +1712,6 @@ l4_usage_postpaid_prepaid_weekly_features:
           'usg_outgoing_roaming_data_volume_avg',
           'usg_outgoing_roaming_data_volume_2G_3G_avg',
           'usg_outgoing_roaming_data_volume_4G_avg',
-          'usg_data_monday_usage_sum',
           'usg_total_data_volume_avg',
           'usg_incoming_data_volume_sum',
           'usg_incoming_data_volume_2G_3G_sum',
