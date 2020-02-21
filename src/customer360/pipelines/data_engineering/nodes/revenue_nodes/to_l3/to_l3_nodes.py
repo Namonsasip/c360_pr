@@ -19,6 +19,10 @@ def merge_with_customer_prepaid_df(source_df: DataFrame,
 
     final_df = source_df.join(cust_df, join_key)
 
+    final_df = final_df.where("subscription_identifier is not null")
+
+    final_df = final_df.drop_duplicates(subset=["subscription_identifier", "start_of_month"])
+
     return final_df
 
 
@@ -41,5 +45,9 @@ def merge_with_customer_postpaid_df(source_df: DataFrame,
     source_df = source_df.withColumnRenamed("sub_id", "subscription_identifier")
 
     final_df = source_df.join(cust_df, join_key)
+
+    final_df = final_df.where("subscription_identifier is not null")
+
+    final_df = final_df.drop_duplicates(subset=["subscription_identifier", "start_of_month"])
 
     return final_df
