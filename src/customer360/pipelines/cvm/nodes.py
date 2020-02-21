@@ -249,6 +249,7 @@ def create_l5_cvm_features_one_day_joined(
     rename = lambda df: df.withColumnRenamed(cols_to_be_renamed,
                                              "start_of_month")
     feature_tables = [rename(feature_table) for feature_table in feature_tables]
+    users = rename(users)
 
     # join the tables
     keys = ["start_of_month", "subscription_identifier"]
