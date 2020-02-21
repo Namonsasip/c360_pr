@@ -1270,7 +1270,6 @@ l4_usage_postpaid_prepaid_weekly_features:
           'usg_total_data_last_action_date_max',
           'usg_data_last_action_date_max',
           'usg_data_friday_usage_sum',
-          'usg_data_monday_usage_sum',
           'usg_data_saturday_usage_sum',
           'usg_data_sunday_usage_sum',
           'usg_data_thursday_usage_sum',
