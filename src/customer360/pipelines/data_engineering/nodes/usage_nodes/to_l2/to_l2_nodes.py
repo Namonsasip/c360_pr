@@ -1,10 +1,11 @@
 from pyspark.sql import DataFrame
-from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, execute_sql
 from pyspark.sql import functions as F
 from customer360.utilities.config_parser import expansion
 from kedro.context.context import load_context
 from pathlib import Path
-import logging
+import logging, os
+
+conf = os.environ["CONF"]
 
 
 def usage_merge_all_data(l2_usage_call_relation_sum_weekly: DataFrame,
@@ -37,7 +38,7 @@ def build_usage_l2_layer(data_frame: DataFrame, dict_obj: dict) -> DataFrame:
         for i in range(0, len(l), n):
             yield l[i:i + n]
 
-    CNTX = load_context(Path.cwd(), env='base')
+    CNTX = load_context(Path.cwd(), env=conf)
     data_frame = data_frame
     dates_list = data_frame.select('start_of_week').distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]

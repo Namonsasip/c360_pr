@@ -5,7 +5,9 @@ from customer360.utilities.config_parser import node_from_config
 from kedro.context.context import load_context
 from pathlib import Path
 import logging
+import os
 
+conf = os.environ["CONF"]
 
 def gen_max_sql(data_frame, table_name, group):
     grp_str = ', '.join(group)
@@ -21,12 +23,11 @@ def massive_processing(input_df, sql, output_df_catalog):
     """
 
     def divide_chunks(l, n):
-
         # looping till length l
         for i in range(0, len(l), n):
             yield l[i:i + n]
 
-    CNTX = load_context(Path.cwd(), env='base')
+    CNTX = load_context(Path.cwd(), env=conf)
     data_frame = input_df
     dates_list = data_frame.select('partition_date').distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
@@ -177,7 +178,7 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
     """
     :return:
     """
-    CNTX = load_context(Path.cwd(), env='base')
+    CNTX = load_context(Path.cwd(), env=conf)
     data_frame = union_df
     dates_list = data_frame.select('event_partition_date').distinct().collect()
     mvv_array = [row[0] for row in dates_list]

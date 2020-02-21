@@ -1,8 +1,10 @@
 from pyspark.sql import DataFrame
 from kedro.context import load_context
-import logging
+import logging, os
 from pathlib import Path
 from pyspark.sql import functions as F
+
+conf = os.environ["CONF"]
 
 def merge_all_usage_outputs(df1: DataFrame, df2: DataFrame, df3: DataFrame, df4: DataFrame) -> DataFrame:
     """
@@ -17,7 +19,7 @@ def merge_all_usage_outputs(df1: DataFrame, df2: DataFrame, df3: DataFrame, df4:
         for i in range(0, len(l), n):
             yield l[i:i + n]
 
-    CNTX = load_context(Path.cwd(), env='base')
+    CNTX = load_context(Path.cwd(), env=conf)
     dates_list = df1.select('start_of_week').distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     logging.info("Dates to run for {0}".format(str(mvv_array)))
