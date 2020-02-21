@@ -49,7 +49,12 @@ def create_l5_cvm_one_day_users_table(
     date_chosen = parameters["l5_cvm_one_day_users_table"]["date_chosen"]
     users = profile.filter("partition_month == '{}'".format(date_chosen))
     users = users.filter(
-        "charge_type == 'Pre-paid' AND subscription_status == 'SA'")
+        "charge_type == 'Pre-paid' \
+         AND subscription_status == 'SA' \
+         AND subscription_identifier is not null \
+         AND subscription_identifier not in ('null', 'NA') \
+         AND cust_active_this_month = 'Y'"
+    )
     users = users.filter("subscriber_tenure >= 4")
 
     main_packs = main_packs.filter(
