@@ -37,3 +37,11 @@ l4_usage_postpaid_prepaid_weekly_features_avg:
   save_args:
     mode: "overwrite"
     partitionBy: ["start_of_week"]
+
+l4_usage_postpaid_prepaid_weekly_features_sum:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/USAGE/l4_features/l4_usage_postpaid_prepaid_weekly_features_sum/
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["start_of_week"]

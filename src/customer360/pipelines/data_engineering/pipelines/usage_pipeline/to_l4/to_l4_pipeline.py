@@ -59,9 +59,16 @@ def usage_to_l4_pipeline(**kwargs):
                  "params:l4_usage_postpaid_prepaid_weekly_features_avg"],
                 "l4_usage_postpaid_prepaid_weekly_features_avg"
             ),
+            node(
+                l4_rolling_window,
+                ["l2_usage_postpaid_prepaid_weekly",
+                 "params:l4_usage_postpaid_prepaid_weekly_features_sum"],
+                "l4_usage_postpaid_prepaid_weekly_features_sum"
+            ),
             node(merge_all_usage_outputs, ['l4_usage_postpaid_prepaid_weekly_features_max'
                                             , 'l4_usage_postpaid_prepaid_weekly_features_min'
-                                            , 'l4_usage_postpaid_prepaid_weekly_features_avg']
+                                            , 'l4_usage_postpaid_prepaid_weekly_features_avg'
+                                            , 'l4_usage_postpaid_prepaid_weekly_features_sum']
                                             , 'l4_usage_postpaid_prepaid_weekly_features')
 
         ], name="usage_to_l4_pipeline"
