@@ -116,4 +116,6 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         "revenue_to_l4_pipeline": revenue_to_l4_pipeline(),
         "cvm_prepare_data": create_cvm_prepare_data_pipeline(),
         "cvm_prepare_sample_data": create_cvm_prepare_sample_data_pipeline(),
+        "cvm": create_cvm_prepare_data_pipeline() + \
+               create_cvm_prepare_sample_data_pipeline(),
     }
