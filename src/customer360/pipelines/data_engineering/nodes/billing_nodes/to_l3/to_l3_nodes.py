@@ -17,7 +17,7 @@ def massive_processing_monthly(data_frame: DataFrame, dict_obj: dict, output_df_
         # looping till length l
         for i in range(0, len(l), n):
             yield l[i:i + n]
-    CNTX = load_context(Path.cwd(), env='local')
+    CNTX = load_context(Path.cwd(), env='base')
     data_frame = data_frame
     dates_list = data_frame.select('start_of_month').distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
