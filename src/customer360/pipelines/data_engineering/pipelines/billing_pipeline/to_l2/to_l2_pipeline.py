@@ -17,12 +17,12 @@ def billing_to_l2_pipeline(**kwargs):
             # ),
 
             # Join daily recharge data with customer profile
-            node(
-                daily_recharge_data_with_customer_profile,
-                ["l1_customer_profile_union_daily_feature",
-                 "l0_billing_and_payments_rt_t_recharge_daily"],
-                "recharge_daily_data"
-            ),
+            # node(
+            #     daily_recharge_data_with_customer_profile,
+            #     ["l1_customer_profile_union_daily_feature",
+            #      "l0_billing_and_payments_rt_t_recharge_daily"],
+            #     "recharge_daily_data"
+            # ),
 
             # # Weekly Time difference between top ups
             # node(
@@ -84,20 +84,16 @@ def billing_to_l2_pipeline(**kwargs):
 
             # Weekly last top up channel
             node(
-                top_up_channel_joined_data,
-                ["recharge_daily_data",
-                 "l0_billing_topup_type"],
-                "l2_billing_and_payments_weekly_last_top_up_channel_1"
-            ),
-            node(
-                node_from_config,
-                ["l2_billing_and_payments_weekly_last_top_up_channel_1",
+                billing_time_since_last_topup_initial,
+                ["l0_billing_and_payments_rt_t_recharge_daily",
+                 "l1_customer_profile_union_daily_feature",
+                 "l0_billing_topup_type",
                  "params:l2_last_topup_channel_1"],
-                "l2_billing_and_payments_weekly_last_top_up_channel_2"
+                "l2_billing_and_payments_weekly_last_top_up_intermediate"
             ),
             node(
                 billing_last_top_up_channel_weekly,
-                ["l2_billing_and_payments_weekly_last_top_up_channel_2",
+                ["l2_billing_and_payments_weekly_last_top_up_intermediate",
                  "params:l2_last_topup_channel_2"],
                 "l2_billing_and_payments_weekly_last_top_up_channel"
             ),
