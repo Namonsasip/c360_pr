@@ -8,18 +8,28 @@ l2_billing_and_payment_feature_top_up_and_count_weekly:
     granularity: "start_of_week,access_method_num,register_date,subscription_identifier"
     #granularity: "start_of_week,access_method_num,date(register_date)"
 
+#l2_billing_and_payment_feature_time_diff_bw_topups_weekly_intermdeiate:
+#    where_clause: "where event_partition_date is not null"
+#    feature_list:
+#      start_of_week: "start_of_week"
+#      recharge_time: "recharge_time"
+#      access_method_num: "access_method_num"
+#      register_date: "register_date"
+#      subscription_identifier: "subscription_identifier"
+#      payments_time_diff: "datediff(recharge_time,lag(recharge_time,1) over(partition by start_of_week
+#      ,access_method_num,register_date,subscription_identifier order by recharge_time))"
+#    granularity: ""
+    #event_date_column: "date(recharge_date)"
+
 l2_billing_and_payment_feature_time_diff_bw_topups_weekly_intermdeiate:
-    where_clause: "where event_partition_date is not null"
+    where_clause: ""
     feature_list:
-      start_of_week: "start_of_week"
-      recharge_time: "recharge_time"
       access_method_num: "access_method_num"
       register_date: "register_date"
-      subscription_identifier: "subscription_identifier"
-      payments_time_diff: "datediff(recharge_time,lag(recharge_time,1) over(partition by start_of_week
-      ,access_method_num,register_date,subscription_identifier order by recharge_time))"
+      payments_time_diff: "datediff(recharge_time,lag(recharge_time,1) over(partition by date_trunc('week',date(recharge_date))
+      ,access_method_num,register_date order by recharge_time))"
     granularity: ""
-    #event_date_column: "date(recharge_date)"
+    event_date_column: "date(recharge_date)"
 
 l2_billing_and_payment_feature_time_diff_bw_topups_weekly:
     where_clause: ""

@@ -25,18 +25,19 @@ def billing_to_l2_pipeline(**kwargs):
             # ),
 
             # # Weekly Time difference between top ups
-            # node(
-            #     node_from_config,
-            #     ["recharge_daily_data",
-            #      "params:l2_billing_and_payment_feature_time_diff_bw_topups_weekly_intermdeiate"],
-            #     "l2_billing_and_payments_weekly_topup_diff_time_intermediate"
-            # ),
-            # node(
-            #     billing_time_diff_between_topups_weekly,
-            #     ["l2_billing_and_payments_weekly_topup_diff_time_intermediate",
-            #      "params:l2_billing_and_payment_feature_time_diff_bw_topups_weekly"],
-            #     "l2_billing_and_payments_weekly_topup_time_diff"
-            # ),
+            #  node(
+            #      node_from_config,
+            #      ["l0_billing_and_payments_rt_t_recharge_daily",
+            #       "params:l2_billing_and_payment_feature_time_diff_bw_topups_weekly_intermdeiate"],
+            #      "l2_billing_and_payments_weekly_topup_diff_time_intermediate"
+            #  ),
+            #  node(
+            #      billing_time_diff_between_topups_weekly,
+            #      ["l1_customer_profile_union_daily_feature",
+            #      "l2_billing_and_payments_weekly_topup_diff_time_intermediate",
+            #       "params:l2_billing_and_payment_feature_time_diff_bw_topups_weekly"],
+            #      "l2_billing_and_payments_weekly_topup_time_diff"
+            #  ),
             #
             # # Weekly arpu of roaming
             # node(
@@ -126,13 +127,13 @@ def billing_to_l2_pipeline(**kwargs):
             #     "l2_billing_and_payments_weekly_popular_topup_hour"
             # ),
             #
-            # # Weekly time since last top up
-            # node(
-            #     billing_time_since_last_topup_weekly,
-            #     ["l1_billing_and_payments_daily_time_since_last_top_up",
-            #      "params:l2_time_since_last_top_up"],
-            #     "l2_billing_and_payments_weekly_time_since_last_top_up"
-            # ),
+             # Weekly time since last top up
+             # node(
+             #     billing_time_since_last_topup_weekly,
+             #     ["l1_billing_and_payments_daily_time_since_last_top_up",
+             #      "params:l2_time_since_last_top_up"],
+             #     "l2_billing_and_payments_weekly_time_since_last_top_up"
+             # ),
             #
             # # Weekly last 3 top up volume
             # node(

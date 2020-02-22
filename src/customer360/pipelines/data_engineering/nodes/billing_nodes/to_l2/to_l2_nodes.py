@@ -21,7 +21,7 @@ def massive_processing_weekly(data_frame: DataFrame, dict_obj: dict, output_df_c
     dates_list = data_frame.select('start_of_week').distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     logging.info("Dates to run for {0}".format(str(mvv_array)))
-    mvv_new = list(divide_chunks(mvv_array, 2))
+    mvv_new = list(divide_chunks(mvv_array, 1))
     add_list = mvv_new
     first_item = add_list[0]
     add_list.remove(first_item)
@@ -74,7 +74,7 @@ def customized_processing(data_frame: DataFrame, cust_prof: DataFrame, recharge_
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 2))
+    mvv_new = list(divide_chunks(mvv_array, 1))
     add_list = mvv_new
 
     first_item = add_list[0]
@@ -171,12 +171,12 @@ def billing_last_top_up_channel_weekly(input_df, customer_profile_df, recharge_t
     return_df = customized_processing(input_df, customer_prof, recharge_type_df, sql, "l2_billing_and_payments_weekly_last_top_up_channel")
     return return_df
 
-# def billing_time_since_last_topup_weekly(input_df, sql) -> DataFrame:
-#     """
-#     :return:
-#     """
-#     return_df = massive_processing_weekly(input_df, sql, "l2_billing_and_payments_weekly_time_since_last_top_up")
-#     return return_df
+def billing_time_since_last_topup_weekly(input_df, sql) -> DataFrame:
+     """
+     :return:
+     """
+     return_df = massive_processing_weekly(input_df, sql, "l2_billing_and_payments_weekly_time_since_last_top_up")
+     return return_df
 
 def billing_last_three_topup_volume_weekly(input_df, sql) -> DataFrame:
     """
@@ -185,11 +185,21 @@ def billing_last_three_topup_volume_weekly(input_df, sql) -> DataFrame:
     return_df = massive_processing_weekly(input_df, sql, "l2_billing_and_payments_weekly_last_three_topup_volume")
     return return_df
 
-def billing_time_diff_between_topups_weekly(input_df, sql) -> DataFrame:
+def billing_time_diff_between_topups_weekly(customer_profile_df,input_df, sql) -> DataFrame:
     """
     :return:
     """
-    return_df = massive_processing_weekly(input_df, sql, "l2_billing_and_payments_weekly_topup_time_diff")
+    customer_prof = customer_profile_df.select("access_method_num",
+                                         "subscription_identifier",
+                                         F.to_date("register_date").alias("register_date"),
+                                         "event_partition_date")
+
+    customer_prof = customer_prof.withColumn("start_of_week",F.to_date(F.date_trunc('week',customer_prof.event_partition_date)))\
+        .drop("event_partition_date")
+
+    return_df = massive_processing(input_df,customer_prof,recharge_data_with_customer_profile_joined,sql,
+                                   'start_of_week', 'start_of_week', "l2_billing_and_payments_weekly_topup_time_diff")
+
     return return_df
 
 
