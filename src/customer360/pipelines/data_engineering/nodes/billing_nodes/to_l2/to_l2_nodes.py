@@ -114,7 +114,7 @@ def billing_time_diff_between_topups_weekly(input_df, sql) -> DataFrame:
 
 def top_up_channel_joined_data(input_df,topup_type_ref):
 
-    output_df = input_df.join(F.broadcast(topup_type_ref),input_df.recharge_type == topup_type_ref.recharge_topup_event_type_cd,'left')
+    output_df = input_df.join(topup_type_ref,input_df.recharge_type == topup_type_ref.recharge_topup_event_type_cd,'left')
 
     return output_df
 
