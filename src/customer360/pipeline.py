@@ -47,6 +47,7 @@ from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l2
     billing_to_l2_pipeline
 from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4.to_l4_pipeline import \
     billing_to_l4_pipeline
+from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4.to_l4_pipeline_daily import *
 from .pipelines.data_engineering.pipelines.usage_pipeline.to_l2 import usage_to_l2_pipeline
 from .pipelines.data_engineering.pipelines.usage_pipeline.to_l4 import usage_to_l4_pipeline
 from .pipelines.data_engineering.pipelines.usage_pipeline.to_l4 import usage_to_l4_daily_pipeline
@@ -87,6 +88,7 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
                        + billing_to_l2_pipeline()
                        + billing_to_l3_pipeline()
                        + billing_to_l4_pipeline()
+                       + billing_to_l4_pipeline_daily()
                        + revenue_to_l3_pipeline()
                        + revenue_to_l4_pipeline(),
         "usage_to_l4_daily_pipeline": usage_to_l4_daily_pipeline(),
@@ -101,6 +103,7 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         'billing_to_l3_pipeline': billing_to_l3_pipeline(),
         'billing_to_l2_pipeline': billing_to_l2_pipeline(),
         'billing_to_l4_pipeline': billing_to_l4_pipeline(),
+        'billing_to_l4_pipeline_daily': billing_to_l4_pipeline_daily(),
         "streaming_to_l1_pipeline": streaming_to_l1_pipeline(),
         "streaming_to_l2_pipeline": streaming_to_l2_pipeline(),
         "streaming_to_l3_pipeline": streaming_to_l3_pipeline(),

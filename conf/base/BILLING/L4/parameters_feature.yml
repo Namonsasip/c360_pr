@@ -9,7 +9,7 @@ l4_billing_topup_and_volume_daily_feature:
   partition_by: ["access_method_num","register_date","subscription_identifier"]
   feature_list:
     sum: ["payments_top_ups","payments_top_up_volume"]
-    avg: ["payments_top_ups_avg","payments_top_up_volume_avg"]
+    avg: ["payments_top_ups","payments_top_up_volume"]
   read_from: "l1"
 
 l4_dynamics_topups_and_volume:

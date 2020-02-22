@@ -40,13 +40,11 @@ def recharge_data_with_customer_profile_joined(customer_prof,recharge_data):
     customer_prof = customer_prof.select("access_method_num",
                                          "subscription_identifier",
                                          f.to_date("register_date").alias("register_date"),
-                                         "event_partition_date",
-                                         "start_of_week",
-                                         "start_of_month")
+                                         "start_of_week")
 
     output_df = customer_prof.join(recharge_data,(customer_prof.access_method_num == recharge_data.access_method_num) &
                                    (customer_prof.register_date.eqNullSafe(f.to_date(recharge_data.register_date))) &
-                                   (customer_prof.event_partition_date == f.to_date(recharge_data.recharge_date)),'left')
+                                   (customer_prof.start_of_week == f.to_date(recharge_data.start_of_week)),'left')
 
     output_df = output_df.drop(recharge_data.access_method_num)\
         .drop(recharge_data.register_date)\
@@ -87,18 +85,18 @@ def customized_processing(data_frame: DataFrame, cust_prof: DataFrame, recharge_
         small_df = data_frame.withColumn("start_of_week",F.to_date(F.date_trunc('week',data_frame.recharge_date)))
         small_df = small_df.filter(f.to_date('start_of_week').isin(*[curr_item]))
         customer_prof_df = cust_data_frame.filter(F.col('start_of_week').isin(*[curr_item]))
-        joined_df = recharge_data_with_customer_profile_joined(customer_prof_df,small_df)
-        joined_df_with_recharge_type = top_up_channel_joined_data(joined_df,recharge_type_df)
-        output_df = node_from_config(joined_df_with_recharge_type, sql)
+        joined_df_with_recharge_type = top_up_channel_joined_data(small_df,recharge_type_df)
+        df = node_from_config(joined_df_with_recharge_type, sql)
+        output_df = recharge_data_with_customer_profile_joined(customer_prof_df,df)
         CNTX.catalog.save(output_df_catalog, output_df)
 
     logging.info("Final date to run for {0}".format(str(first_item)))
     small_df = data_frame.withColumn("start_of_week", F.to_date(F.date_trunc('week', data_frame.recharge_date)))
     small_df = small_df.filter(f.to_date('start_of_week').isin(*[first_item]))
     customer_prof_df = cust_data_frame.filter(F.col('start_of_week').isin(*[first_item]))
-    joined_df = recharge_data_with_customer_profile_joined(customer_prof_df, small_df)
-    joined_df_with_recharge_type = top_up_channel_joined_data(joined_df, recharge_type_df)
-    output_df = node_from_config(joined_df_with_recharge_type, sql)
+    joined_df_with_recharge_type = top_up_channel_joined_data(small_df, recharge_type_df)
+    df = node_from_config(joined_df_with_recharge_type, sql)
+    output_df = recharge_data_with_customer_profile_joined(customer_prof_df, df)
 
     return output_df
 
@@ -167,8 +165,8 @@ def billing_last_top_up_channel_weekly(input_df, customer_profile_df, recharge_t
                                          F.to_date("register_date").alias("register_date"),
                                          "event_partition_date")
 
-    customer_prof = customer_prof.withColumn("start_of_month",F.to_date(F.date_trunc('month',customer_prof.event_partition_date)))\
-        .withColumn("start_of_week",F.to_date(F.date_trunc('week',customer_prof.event_partition_date)))
+    customer_prof = customer_prof.withColumn("start_of_week",F.to_date(F.date_trunc('week',customer_prof.event_partition_date)))\
+        .drop("event_partition_date")
 
     return_df = customized_processing(input_df, customer_prof, recharge_type_df, sql, "l2_billing_and_payments_weekly_last_top_up_channel")
     return return_df
