@@ -16,7 +16,7 @@ def massive_processing_weekly(data_frame: DataFrame, dict_obj: dict, output_df_c
         # looping till length l
         for i in range(0, len(l), n):
             yield l[i:i + n]
-    CNTX = load_context(Path.cwd(), env='local')
+    CNTX = load_context(Path.cwd(), env='base')
     data_frame = data_frame
     dates_list = data_frame.select('start_of_week').distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
@@ -70,7 +70,7 @@ def customized_processing(data_frame: DataFrame, cust_prof: DataFrame, recharge_
         for i in range(0, len(l), n):
             yield l[i:i + n]
 
-    CNTX = load_context(Path.cwd(), env='local')
+    CNTX = load_context(Path.cwd(), env='base')
     cust_data_frame = cust_prof
     dates_list = cust_prof.select('start_of_week').distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
