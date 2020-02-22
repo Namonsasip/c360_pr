@@ -9,28 +9,22 @@ def billing_to_l4_pipeline(**kwargs):
         [
 
             # Join monthly billing statement hist data with customer profile
-            node(
-                billing_statement_hist_data_with_customer_profile,
-                ["l3_customer_profile_include_1mo_non_active",
-                 "l0_billing_statement_history_monthly"],
-                "billing_stat_hist_monthly_data"
-            ),
+            # node(
+            #     billing_statement_hist_data_with_customer_profile,
+            #     ["l3_customer_profile_include_1mo_non_active",
+            #      "l0_billing_statement_history_monthly"],
+            #     "billing_stat_hist_monthly_data"
+            # ),
 
             # Bill Shock feature
-            node(
-                node_from_config,
-                ["billing_stat_hist_monthly_data",
-                 "params:l4_payments_bill_shock"],
-                "l4_billing_statement_history_billshock"
-            ),
+            # node(
+            #     node_from_config,
+            #     ["billing_stat_hist_monthly_data",
+            #      "params:l4_payments_bill_shock"],
+            #     "l4_billing_statement_history_billshock"
+            # ),
 
             # Top up count and volume with dynamics
-            node(
-                l4_rolling_window,
-                ["l1_billing_and_payments_daily_topup_and_volume",
-                 "params:l4_billing_topup_and_volume_daily_feature"],
-                "l4_daily_feature_topup_and_volume"
-            ),
 
             node(
                 l4_rolling_window,
@@ -46,18 +40,18 @@ def billing_to_l4_pipeline(**kwargs):
             ),
 
             # ARPU with dynamics
-            node(
-                l4_rolling_window,
-                ["l3_billing_and_payments_monthly_rpu",
-                 "params:l4_billing_rpu"],
-                "l4_billing_rolling_window_rpu_intermediate"
-            ),
-            node(
-                node_from_config,
-                ["l4_billing_rolling_window_rpu_intermediate",
-                 "params:l4_dynamics_arpu"],
-                "l4_billing_rolling_window_rpu"
-            ),
+            # node(
+            #     l4_rolling_window,
+            #     ["l3_billing_and_payments_monthly_rpu",
+            #      "params:l4_billing_rpu"],
+            #     "l4_billing_rolling_window_rpu_intermediate"
+            # ),
+            # node(
+            #     node_from_config,
+            #     ["l4_billing_rolling_window_rpu_intermediate",
+            #      "params:l4_dynamics_arpu"],
+            #     "l4_billing_rolling_window_rpu"
+            # ),
 
             # ARPU roaming
             node(
@@ -92,34 +86,34 @@ def billing_to_l4_pipeline(**kwargs):
             ),
 
             # Post paid bill volume with dynamics
-            node(
-                l4_rolling_window,
-                ["l3_billing_and_payments_monthly_bill_volume",
-                 "params:l4_payments_bill_volume"],
-                "l4_billing_rolling_window_bill_volume_intermediate"
-            ),
-            node(
-                node_from_config,
-                ["l4_billing_rolling_window_bill_volume_intermediate",
-                 "params:l4_dynamics_bill_volume"],
-                "l4_billing_rolling_window_bill_volume"
-            ),
+            # node(
+            #     l4_rolling_window,
+            #     ["l3_billing_and_payments_monthly_bill_volume",
+            #      "params:l4_payments_bill_volume"],
+            #     "l4_billing_rolling_window_bill_volume_intermediate"
+            # ),
+            # node(
+            #     node_from_config,
+            #     ["l4_billing_rolling_window_bill_volume_intermediate",
+            #      "params:l4_dynamics_bill_volume"],
+            #     "l4_billing_rolling_window_bill_volume"
+            # ),
 
             # Postpaid missed bills count
-            node(
-                l4_rolling_window,
-                ["l3_billing_and_payments_monthly_missed_bills",
-                 "params:l4_missed_bills"],
-                "l4_rolling_window_missed_bills"
-            ),
+            # node(
+            #     l4_rolling_window,
+            #     ["l3_billing_and_payments_monthly_missed_bills",
+            #      "params:l4_missed_bills"],
+            #     "l4_rolling_window_missed_bills"
+            # ),
 
             # Postpaid overdue bills count
-            node(
-                l4_rolling_window,
-                ["l3_billing_and_payments_monthly_overdue_bills",
-                 "params:l4_overdue_bills"],
-                "l4_rolling_window_overdue_bills"
-            ),
+            # node(
+            #     l4_rolling_window,
+            #     ["l3_billing_and_payments_monthly_overdue_bills",
+            #      "params:l4_overdue_bills"],
+            #     "l4_rolling_window_overdue_bills"
+            # ),
 
             # Popular top up day
             node(
