@@ -54,36 +54,36 @@ def billing_to_l4_pipeline(**kwargs):
             # ),
 
             # ARPU roaming
-            node(
-                l4_rolling_window,
-                ["l2_billing_weekly_rpu_roaming",
-                 "params:l4_billing_rpu_roaming"],
-                "l4_billing_rolling_window_rpu_roaming"
-            ),
+            # node(
+            #     l4_rolling_window,
+            #     ["l2_billing_weekly_rpu_roaming",
+            #      "params:l4_billing_rpu_roaming"],
+            #     "l4_billing_rolling_window_rpu_roaming"
+            # ),
 
             # Time difference between top ups
-            node(
-                l4_rolling_window,
-                ["l2_billing_and_payments_weekly_topup_time_diff",
-                 "params:l4_billing_time_diff_bw_topups"],
-                "l4_billing_rolling_window_time_diff_bw_top_ups"
-            ),
+            # node(
+            #     l4_rolling_window,
+            #     ["l2_billing_and_payments_weekly_topup_time_diff",
+            #      "params:l4_billing_time_diff_bw_topups"],
+            #     "l4_billing_rolling_window_time_diff_bw_top_ups"
+            # ),
 
             # Balance before top up
-            node(
-                l4_rolling_window,
-                ["l2_billing_and_payments_weekly_before_top_up_balance",
-                 "params:l4_billing_before_top_up_balance"],
-                "l4_billing_rolling_window_before_top_up_balance"
-            ),
+            # node(
+            #     l4_rolling_window,
+            #     ["l2_billing_and_payments_weekly_before_top_up_balance",
+            #      "params:l4_billing_before_top_up_balance"],
+            #     "l4_billing_rolling_window_before_top_up_balance"
+            # ),
 
             # Top up channels
-            node(
-                l4_rolling_window,
-                ["l2_billing_and_payments_weekly_top_up_channels",
-                 "params:l4_billing_top_up_channels"],
-                "l4_billing_rolling_window_top_up_channels"
-            ),
+            # node(
+            #     l4_rolling_window,
+            #     ["l2_billing_and_payments_weekly_top_up_channels",
+            #      "params:l4_billing_top_up_channels"],
+            #     "l4_billing_rolling_window_top_up_channels"
+            # ),
 
             # Post paid bill volume with dynamics
             # node(
@@ -116,45 +116,45 @@ def billing_to_l4_pipeline(**kwargs):
             # ),
 
             # Popular top up day
-            node(
-                l4_rolling_window,
-                ["l2_billing_and_payments_weekly_popular_topup_day_intermediate",
-                 "params:l4_popular_topup_day_initial"],
-                "l4_rolling_window_popular_topup_day_1"
-            ),
-            node(
-                l4_rolling_ranked_window,
-                ["l4_rolling_window_popular_topup_day_1",
-                 "params:l4_popular_topup_day"],
-                "l4_rolling_window_popular_topup_day"
-            ),
+            # node(
+            #     l4_rolling_window,
+            #     ["l2_billing_and_payments_weekly_popular_topup_day_intermediate",
+            #      "params:l4_popular_topup_day_initial"],
+            #     "l4_rolling_window_popular_topup_day_1"
+            # ),
+            # node(
+            #     l4_rolling_ranked_window,
+            #     ["l4_rolling_window_popular_topup_day_1",
+            #      "params:l4_popular_topup_day"],
+            #     "l4_rolling_window_popular_topup_day"
+            # ),
 
             # Popular top up hour
-            node(
-                l4_rolling_window,
-                ["l2_billing_and_payments_weekly_popular_topup_hour_intermediate",
-                 "params:l4_popular_topup_hour_initial"],
-                "l4_rolling_window_popular_topup_hour_1"
-            ),
-            node(
-                l4_rolling_ranked_window,
-                ["l4_rolling_window_popular_topup_hour_1",
-                 "params:l4_popular_topup_hour"],
-                "l4_rolling_window_popular_topup_hour"
-            ),
+            # node(
+            #     l4_rolling_window,
+            #     ["l2_billing_and_payments_weekly_popular_topup_hour_intermediate",
+            #      "params:l4_popular_topup_hour_initial"],
+            #     "l4_rolling_window_popular_topup_hour_1"
+            # ),
+            # node(
+            #     l4_rolling_ranked_window,
+            #     ["l4_rolling_window_popular_topup_hour_1",
+            #      "params:l4_popular_topup_hour"],
+            #     "l4_rolling_window_popular_topup_hour"
+            # ),
 
             # Most popular top up channel
-            node(
-                l4_rolling_window,
-                ["l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate",
-                 "params:l4_most_popular_topup_channel_initial"],
-                "l4_rolling_window_most_popular_topup_channel_1"
-            ),
-            node(
-                l4_rolling_ranked_window,
-                ["l4_rolling_window_most_popular_topup_channel_1",
-                 "params:l4_most_popular_topup_channel"],
-                "l4_billing_rolling_window_most_popular_topup_channel"
-            ),
+            # node(
+            #     l4_rolling_window,
+            #     ["l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate",
+            #      "params:l4_most_popular_topup_channel_initial"],
+            #     "l4_rolling_window_most_popular_topup_channel_1"
+            # ),
+            # node(
+            #     l4_rolling_ranked_window,
+            #     ["l4_rolling_window_most_popular_topup_channel_1",
+            #      "params:l4_most_popular_topup_channel"],
+            #     "l4_billing_rolling_window_most_popular_topup_channel"
+            # ),
         ]
     )
