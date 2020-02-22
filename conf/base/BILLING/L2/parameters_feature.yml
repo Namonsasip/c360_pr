@@ -98,7 +98,7 @@ l2_most_popular_topup_channel:
     granularity: ""
 
 
-l2_last_topup_channel_1:
+l2_last_topup_channel:
     where_clause: "where event_partition_date is not null"
     feature_list:
       access_method_num: "access_method_num"
@@ -106,8 +106,7 @@ l2_last_topup_channel_1:
       recharge_time: "recharge_time"
       subscription_identifier: "subscription_identifier"
       start_of_week: "start_of_week"
-      payments_last_top_up_channel: "recharge_topup_event_type_name"
-      rank: "row_number() over(partition by
+      payments_last_top_up_channel: "first_value(recharge_topup_event_type_name) over(partition by
              start_of_week,
              access_method_num,
              register_date,
@@ -115,16 +114,16 @@ l2_last_topup_channel_1:
     granularity: ""
     #event_date_column: "date(recharge_date)"
 
-l2_last_topup_channel_2:
-    where_clause: "where rank = 1"
-    feature_list:
-      start_of_week: "start_of_week"
-      access_method_num: "access_method_num"
-      register_date: "register_date"
-      subscription_identifier: "subscription_identifier"
-      recharge_time: "recharge_time"
-      payments_last_top_up_channel: "payments_last_top_up_channel"
-    granularity: ""
+#l2_last_topup_channel_2:
+#    where_clause: "where rank = 1"
+#    feature_list:
+#      start_of_week: "start_of_week"
+#      access_method_num: "access_method_num"
+#      register_date: "register_date"
+#      subscription_identifier: "subscription_identifier"
+#      recharge_time: "recharge_time"
+#      payments_last_top_up_channel: "payments_last_top_up_channel"
+#    granularity: ""
 
 l2_popular_topup_day_1:
     where_clause: ""

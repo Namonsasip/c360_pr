@@ -158,7 +158,7 @@ def billing_popular_topup_hour_weekly(input_df, sql) -> DataFrame:
     return_df = massive_processing_weekly(input_df, sql, "l2_billing_and_payments_weekly_popular_topup_hour")
     return return_df
 
-def billing_time_since_last_topup_initial(input_df, customer_profile_df, recharge_type_df,sql) -> DataFrame:
+def billing_last_top_up_channel_weekly(input_df, customer_profile_df, recharge_type_df,sql) -> DataFrame:
     """
     :return:
     """
@@ -170,15 +170,15 @@ def billing_time_since_last_topup_initial(input_df, customer_profile_df, recharg
     customer_prof = customer_prof.withColumn("start_of_month",F.to_date(F.date_trunc('month',customer_prof.event_partition_date)))\
         .withColumn("start_of_week",F.to_date(F.date_trunc('week',customer_prof.event_partition_date)))
 
-    return_df = customized_processing(input_df, customer_prof, recharge_type_df, sql, "l2_billing_and_payments_weekly_last_top_up_intermediate")
+    return_df = customized_processing(input_df, customer_prof, recharge_type_df, sql, "l2_billing_and_payments_weekly_last_top_up_channel")
     return return_df
 
-def billing_time_since_last_topup_weekly(input_df, sql) -> DataFrame:
-    """
-    :return:
-    """
-    return_df = massive_processing_weekly(input_df, sql, "l2_billing_and_payments_weekly_time_since_last_top_up")
-    return return_df
+# def billing_time_since_last_topup_weekly(input_df, sql) -> DataFrame:
+#     """
+#     :return:
+#     """
+#     return_df = massive_processing_weekly(input_df, sql, "l2_billing_and_payments_weekly_time_since_last_top_up")
+#     return return_df
 
 def billing_last_three_topup_volume_weekly(input_df, sql) -> DataFrame:
     """
