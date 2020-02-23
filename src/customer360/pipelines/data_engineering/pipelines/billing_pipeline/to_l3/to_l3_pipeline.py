@@ -57,6 +57,21 @@ def billing_to_l3_pipeline(**kwargs):
              #     "l3_billing_and_payments_monthly_topup_time_diff"
              # ),
 
+            # Weekly Time difference between top ups
+            node(
+                node_from_config,
+                ["l0_billing_and_payments_rt_t_recharge_daily",
+                 "params:l3_billing_and_payment_feature_time_diff_bw_topups_monthly_intermdeiate"],
+                "l3_billing_and_payments_monthly_topup_diff_time_intermediate"
+            ),
+            node(
+                billing_time_diff_between_topups_monthly,
+                ["l1_customer_profile_union_daily_feature",
+                 "l3_billing_and_payments_monthly_topup_diff_time_intermediate",
+                 "params:l3_billing_and_payment_feature_time_diff_bw_topups_monthly"],
+                "l3_billing_and_payments_monthly_topup_time_diff"
+            ),
+
             # Monthly arpu of roaming
             # node(
             #     billing_arpu_roaming_node_monthly,
@@ -66,18 +81,18 @@ def billing_to_l3_pipeline(**kwargs):
             # ),
 
             # Monthly automated payment feature
-            #  node(
-            #      bill_payment_daily_data_with_customer_profile,
-            #      ["l1_customer_profile_union_daily_feature",
-            #       "l0_billing_pc_t_payment_daily"],
-            #      "l3_billing_monthly_automated_payments_1"
-            #  ),
-            #  node(
-            #      node_from_config,
-            #      ["l3_billing_monthly_automated_payments_1",
-            #       "params:l3_automated_flag"],
-            #      "l3_billing_monthly_automated_payments"
-            #  ),
+             node(
+                 bill_payment_daily_data_with_customer_profile,
+                 ["l1_customer_profile_union_daily_feature",
+                  "l0_billing_pc_t_payment_daily"],
+                 "l3_billing_monthly_automated_payments_1"
+             ),
+             node(
+                 node_from_config,
+                 ["l3_billing_monthly_automated_payments_1",
+                  "params:l3_automated_flag"],
+                 "l3_billing_monthly_automated_payments"
+             ),
 
             # Monthly before top up balance feature
             # node(

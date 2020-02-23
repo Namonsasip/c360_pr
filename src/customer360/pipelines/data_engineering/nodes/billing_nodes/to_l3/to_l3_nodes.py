@@ -6,6 +6,7 @@ from customer360.utilities.config_parser import node_from_config
 from kedro.context.context import load_context
 from pathlib import Path
 import logging
+from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l1.to_l1_nodes import massive_processing
 
 def top_up_channel_joined_data(input_df,topup_type_ref):
 
@@ -71,7 +72,7 @@ def process_last_topup_channel(data_frame: DataFrame, cust_prof: DataFrame, sql:
 
     CNTX = load_context(Path.cwd(), env='base')
     cust_data_frame = cust_prof
-    dates_list = cust_prof.select('start_of_month').distinct().collect()
+    dates_list = cust_data_frame.select('start_of_month').distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
@@ -208,8 +209,26 @@ def billing_last_topup_channel_monthly(input_df,customer_df,recharge_type, sql) 
     """
     recharge_data_with_topup_channel = top_up_channel_joined_data(input_df,recharge_type)
     recharge_data_with_topup_channel = recharge_data_with_topup_channel.withColumn('start_of_month',F.to_date(F.date_trunc('month',input_df.recharge_date)))
-    customer_df = customer_df.withColumn("start_of_month", customer_df.event_partition_date)
+    customer_df = customer_df.withColumn("start_of_month",f.to_date(f.date_trunc('month',customer_df.event_partition_date)))
     return_df = process_last_topup_channel(recharge_data_with_topup_channel, customer_df, sql, "l3_billing_and_payments_monthly_last_top_up_channel")
+    return return_df
+
+
+def billing_time_diff_between_topups_monthly(customer_profile_df,input_df, sql) -> DataFrame:
+    """
+    :return:
+    """
+    customer_prof = customer_profile_df.select("access_method_num",
+                                         "subscription_identifier",
+                                         F.to_date("register_date").alias("register_date"),
+                                         "event_partition_date")
+
+    customer_prof = customer_prof.withColumn("start_of_month",F.to_date(F.date_trunc('month',customer_prof.event_partition_date)))\
+        .drop("event_partition_date")
+
+    return_df = massive_processing(input_df,customer_prof,recharge_data_with_customer_profile_joined,sql,
+                                   'start_of_month', 'start_of_month', "l3_billing_and_payments_monthly_topup_time_diff")
+
     return return_df
 
 def bill_payment_daily_data_with_customer_profile(customer_prof,pc_t_data):

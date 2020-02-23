@@ -19,19 +19,15 @@ l3_billing_and_payment_revenue_per_user_monthly:
     #granularity: "month_id,access_method_num,date(register_date),crm_sub_id"
     #event_date_column: "date(month_id)"
 
-
-l3_billing_and_payment_feature_time_diff_bw_topups_monthly_intermediate:
-    where_clause: "where start_of_month is not null"
+l3_billing_and_payment_feature_time_diff_bw_topups_monthly_intermdeiate:
+    where_clause: ""
     feature_list:
-      start_of_month: "start_of_month"
-      recharge_time: "recharge_time"
       access_method_num: "access_method_num"
       register_date: "register_date"
-      subscription_identifier: "subscription_identifier"
-      payments_time_diff: "datediff(recharge_time,lag(recharge_time,1) over(partition by start_of_month
-      ,access_method_num,register_date,subscription_identifier order by recharge_time))"
+      payments_time_diff: "datediff(recharge_time,lag(recharge_time,1) over(partition by date_trunc('month',date(recharge_date))
+      ,access_method_num,register_date order by recharge_time))"
     granularity: ""
-    #event_date_column: "date(recharge_date)"
+    event_date_column: "date(recharge_date)"
 
 l3_billing_and_payment_feature_time_diff_bw_topups_monthly:
     where_clause: ""
