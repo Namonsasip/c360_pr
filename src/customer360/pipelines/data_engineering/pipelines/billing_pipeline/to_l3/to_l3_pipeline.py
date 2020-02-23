@@ -34,30 +34,7 @@ def billing_to_l3_pipeline(**kwargs):
             #     "l3_billing_and_payments_monthly_rpu"
             # ),
 
-            # Join daily recharge data with customer profile
-            #  node(
-            #      daily_recharge_data_with_customer_profile,
-            #      ["l1_customer_profile_union_daily_feature",
-            #       "l0_billing_and_payments_rt_t_recharge_daily"],
-            #      "recharge_daily_data"
-            #  ),
-
             # Monthly time difference between top ups
-
-             # node(
-             #     node_from_config,
-             #     ["recharge_daily_data",
-             #      "params:l3_billing_and_payment_feature_time_diff_bw_topups_monthly_intermediate"],
-             #     "l3_billing_and_payments_monthly_topup_time_diff_1"
-             # ),
-             # node(
-             #     node_from_config,
-             #     ["l3_billing_and_payments_monthly_topup_time_diff_1",
-             #      "params:l3_billing_and_payment_feature_time_diff_bw_topups_monthly"],
-             #     "l3_billing_and_payments_monthly_topup_time_diff"
-             # ),
-
-            # Weekly Time difference between top ups
             node(
                 node_from_config,
                 ["l0_billing_and_payments_rt_t_recharge_daily",
@@ -83,7 +60,7 @@ def billing_to_l3_pipeline(**kwargs):
             # Monthly automated payment feature
              node(
                  bill_payment_daily_data_with_customer_profile,
-                 ["l1_customer_profile_union_daily_feature",
+                 ["l3_customer_profile_include_1mo_non_active",
                   "l0_billing_pc_t_payment_daily"],
                  "l3_billing_monthly_automated_payments_1"
              ),
@@ -147,34 +124,14 @@ def billing_to_l3_pipeline(**kwargs):
             # ),
 
             # Monthly last top up channel
-
-             # node(
-             #     top_up_channel_joined_data,
-             #     ["recharge_daily_data",
-             #      "l0_billing_topup_type"],
-             #     "l3_billing_and_payments_monthly_last_top_up_channel_1"
-             # ),
-             # node(
-             #     node_from_config,
-             #     ["l3_billing_and_payments_monthly_last_top_up_channel_1",
-             #      "params:l3_last_topup_channel_ranked"],
-             #     "l3_billing_and_payments_monthly_last_top_up_channel_2"
-             # ),
-             # node(
-             #     node_from_config,
-             #     ["l3_billing_and_payments_monthly_last_top_up_channel_2",
-             #      "params:l3_last_topup_channel"],
-             #     "l3_billing_and_payments_monthly_last_top_up_channel"
-             # ),
-
-            node(
-                billing_last_topup_channel_monthly,
-                ["l0_billing_and_payments_rt_t_recharge_daily",
-                 "l1_customer_profile_union_daily_feature",
-                 "l0_billing_topup_type",
-                 "params:l3_last_topup_channel"],
-                "l3_billing_and_payments_monthly_last_top_up_channel"
-            ),
+            # node(
+            #     billing_last_topup_channel_monthly,
+            #     ["l0_billing_and_payments_rt_t_recharge_daily",
+            #      "l1_customer_profile_union_daily_feature",
+            #      "l0_billing_topup_type",
+            #      "params:l3_last_topup_channel"],
+            #     "l3_billing_and_payments_monthly_last_top_up_channel"
+            # ),
 
 
             # Monthly missed bills feature

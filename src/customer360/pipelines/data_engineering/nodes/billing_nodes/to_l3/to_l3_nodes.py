@@ -237,9 +237,9 @@ def bill_payment_daily_data_with_customer_profile(customer_prof,pc_t_data):
                                          "billing_account_no",
                                          "subscription_identifier",
                                          f.to_date("register_date").alias("register_date"),
-                                         "event_partition_date")
+                                         "partition_month")
 
-    customer_prof = customer_prof.withColumn("start_of_month",f.to_date(f.date_trunc('month',customer_prof.event_partition_date)))
+    customer_prof = customer_prof.withColumn("start_of_month",customer_prof.partition_month)
 
     output_df = customer_prof.join(pc_t_data,(customer_prof.billing_account_no == pc_t_data.ba_no) &
                                    (customer_prof.start_of_month == f.to_date(f.date_trunc('month',pc_t_data.payment_date))),'left')
