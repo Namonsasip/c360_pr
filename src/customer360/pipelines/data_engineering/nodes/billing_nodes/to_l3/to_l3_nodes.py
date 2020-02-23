@@ -7,6 +7,12 @@ from kedro.context.context import load_context
 from pathlib import Path
 import logging
 
+def top_up_channel_joined_data(input_df,topup_type_ref):
+
+    output_df = input_df.join(topup_type_ref,input_df.recharge_type == topup_type_ref.recharge_topup_event_type_cd,'left')
+
+    return output_df
+
 def massive_processing_monthly(data_frame: DataFrame, dict_obj: dict, output_df_catalog) -> DataFrame:
     """
     :param data_frame:
@@ -35,6 +41,61 @@ def massive_processing_monthly(data_frame: DataFrame, dict_obj: dict, output_df_
     return_df = data_frame.filter(F.col("start_of_month").isin(*[first_item]))
     return_df = node_from_config(return_df, dict_obj)
     return return_df
+
+def recharge_data_with_customer_profile_joined(customer_prof,recharge_data):
+
+    customer_prof = customer_prof.select("access_method_num",
+                                         "subscription_identifier",
+                                         f.to_date("register_date").alias("register_date"),
+                                         "start_of_month")
+
+    output_df = customer_prof.join(recharge_data,(customer_prof.access_method_num == recharge_data.access_method_num) &
+                                   (customer_prof.register_date.eqNullSafe(f.to_date(recharge_data.register_date))) &
+                                   (customer_prof.start_of_month == f.to_date(recharge_data.start_of_month)),'left')
+
+    output_df = output_df.drop(recharge_data.access_method_num)\
+        .drop(recharge_data.register_date)\
+        .drop(recharge_data.start_of_month)
+
+    return output_df
+
+def process_last_topup_channel(data_frame: DataFrame, cust_prof: DataFrame, sql: dict, output_df_catalog) -> DataFrame:
+    """
+    :return:
+    """
+    def divide_chunks(l, n):
+
+        # looping till length l
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    CNTX = load_context(Path.cwd(), env='base')
+    cust_data_frame = cust_prof
+    dates_list = cust_prof.select('start_of_month').distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+
+    mvv_new = list(divide_chunks(mvv_array, 1))
+    add_list = mvv_new
+
+    first_item = add_list[0]
+
+    add_list.remove(first_item)
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        small_df = data_frame.filter(f.to_date('start_of_month').isin(*[curr_item]))
+        customer_prof_df = cust_data_frame.filter(F.col('start_of_month').isin(*[curr_item]))
+        result_df = node_from_config(small_df, sql)
+        output_df = recharge_data_with_customer_profile_joined(customer_prof_df,result_df)
+        CNTX.catalog.save(output_df_catalog, output_df)
+
+    logging.info("Final date to run for {0}".format(str(first_item)))
+    small_df = data_frame.filter(f.to_date('start_of_month').isin(*[first_item]))
+    customer_prof_df = cust_data_frame.filter(F.col('start_of_month').isin(*[first_item]))
+    result_df = node_from_config(small_df, sql)
+    output_df = recharge_data_with_customer_profile_joined(customer_prof_df, result_df)
+
+    return output_df
 
 def billing_topup_count_and_volume_node_monthly(input_df, sql) -> DataFrame:
     """
@@ -139,6 +200,16 @@ def billing_automated_payment_monthly(input_df, sql) -> DataFrame:
     :return:
     """
     return_df = massive_processing_monthly(input_df, sql, "l3_billing_and_payments_monthly_last_three_topup_volume")
+    return return_df
+
+def billing_last_topup_channel_monthly(input_df,customer_df,recharge_type, sql) -> DataFrame:
+    """
+    :return:
+    """
+    recharge_data_with_topup_channel = top_up_channel_joined_data(input_df,recharge_type)
+    recharge_data_with_topup_channel = recharge_data_with_topup_channel.withColumn('start_of_month',F.to_date(F.date_trunc('month',input_df.recharge_date)))
+    customer_df = customer_df.withColumn("start_of_month", customer_df.event_partition_date)
+    return_df = process_last_topup_channel(recharge_data_with_topup_channel, customer_df, sql, "l3_billing_and_payments_monthly_last_top_up_channel")
     return return_df
 
 def bill_payment_daily_data_with_customer_profile(customer_prof,pc_t_data):
