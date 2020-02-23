@@ -116,12 +116,12 @@ def billing_to_l3_pipeline(**kwargs):
             ),
 
             # Join monthly billing statement hist data with customer profile
-            node(
-                billing_statement_hist_data_with_customer_profile,
-                ["l3_customer_profile_include_1mo_non_active",
-                 "l0_billing_statement_history_monthly"],
-                "billing_stat_hist_monthly_data"
-            ),
+            # node(
+            #     billing_statement_hist_data_with_customer_profile,
+            #     ["l3_customer_profile_include_1mo_non_active",
+            #      "l0_billing_statement_history_monthly"],
+            #     "billing_stat_hist_monthly_data"
+            # ),
 
             # Monthly volume of bill and roaming bills
             # node(
@@ -152,35 +152,36 @@ def billing_to_l3_pipeline(**kwargs):
             #     "l3_billing_and_payments_monthly_last_top_up_channel"
             # ),
 
+
             # Monthly missed bills feature
-            node(
-                billing_data_joined,
-                ["billing_stat_hist_monthly_data",
-                 "l0_billing_pc_t_payment_daily"],
-                "l3_billing_and_payments_monthly_joined"
-            ),
-            node(
-                billing_missed_bills_monthly,
-                ["l3_billing_and_payments_monthly_joined",
-                 "params:l3_missed_bills"],
-                "l3_billing_and_payments_monthly_missed_bills"
-            ),
+            # node(
+            #     billing_data_joined,
+            #     ["billing_stat_hist_monthly_data",
+            #      "l0_billing_pc_t_payment_daily"],
+            #     "l3_billing_and_payments_monthly_joined"
+            # ),
+            # node(
+            #     billing_missed_bills_monthly,
+            #     ["l3_billing_and_payments_monthly_joined",
+            #      "params:l3_missed_bills"],
+            #     "l3_billing_and_payments_monthly_missed_bills"
+            # ),
 
             # Monthly overdue bills feature
-            node(
-                billing_overdue_bills_monthly,
-                ["l3_billing_and_payments_monthly_joined",
-                 "params:l3_overdue_bills"],
-                "l3_billing_and_payments_monthly_overdue_bills"
-            ),
+            # node(
+            #     billing_overdue_bills_monthly,
+            #     ["l3_billing_and_payments_monthly_joined",
+            #      "params:l3_overdue_bills"],
+            #     "l3_billing_and_payments_monthly_overdue_bills"
+            # ),
 
             # Monthly last overdue bill volume and days ago feature
-            node(
-                billing_last_overdue_bill_volume_monthly,
-                ["l3_billing_and_payments_monthly_joined",
-                 "params:l3_last_overdue_bill_days_ago_and_volume"],
-                "l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume"
-            ),
+            # node(
+            #     billing_last_overdue_bill_volume_monthly,
+            #     ["l3_billing_and_payments_monthly_joined",
+            #      "params:l3_last_overdue_bill_days_ago_and_volume"],
+            #     "l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume"
+            # ),
 
             # Monthly popular top up day feature
             # node(
