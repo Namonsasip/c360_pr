@@ -134,6 +134,13 @@ def billing_last_three_topup_volume_monthly(input_df, sql) -> DataFrame:
     return_df = massive_processing_monthly(input_df, sql, "l3_billing_and_payments_monthly_last_three_topup_volume")
     return return_df
 
+def billing_automated_payment_monthly(input_df, sql) -> DataFrame:
+    """
+    :return:
+    """
+    return_df = massive_processing_monthly(input_df, sql, "l3_billing_and_payments_monthly_last_three_topup_volume")
+    return return_df
+
 def bill_payment_daily_data_with_customer_profile(customer_prof,pc_t_data):
 
     customer_prof = customer_prof.select("access_method_num",
@@ -152,6 +159,8 @@ def bill_payment_daily_data_with_customer_profile(customer_prof,pc_t_data):
 
 def billing_data_joined(billing_monthly,payment_daily):
 
+    print(billing_monthly.printSchema())
+    print(payment_daily.printSchema())
     output_df = billing_monthly.join(payment_daily,
                                      (billing_monthly.account_identifier == payment_daily.account_identifier) &
                                      (billing_monthly.billing_statement_identifier == payment_daily.billing_statement_identifier) &
