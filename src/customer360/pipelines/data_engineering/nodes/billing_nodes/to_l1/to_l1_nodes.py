@@ -18,6 +18,7 @@ def massive_processing(input_df, customer_prof_input_df, join_function,sql,parti
 
     CNTX = load_context(Path.cwd(), env='base')
     data_frame = input_df
+    print("Filter "+cust_type)
     cust_data_frame = customer_prof_input_df.where("charge_type = '"+cust_type+"'")
     dates_list = data_frame.select(f.to_date(partition_date).alias(partition_date)).distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
