@@ -21,12 +21,14 @@ class TestUnitBilling:
         my_dates_list = pd.date_range(date1, date2).tolist()
         my_dates = [iTemp.date().strftime("%d-%m-%Y") for iTemp in my_dates_list]
         my_dates = my_dates * 3
+        my_dates.sort()
         random_list = [random.randint(1, 10) * 100 for iTemp in range(0, len(my_dates))]
         start_time = datetime.strptime("01/01/2020 08:35:55", '%d/%m/%Y %H:%M:%S')
         start_time_list = []
         for i in range(len(my_dates)):
-            start_time = start_time + timedelta(seconds=random.randint(1, 25200))
             start_time_list.append(start_time)
+            start_time = start_time + timedelta(seconds=random.randint(1, 432000))
+
         df = spark.createDataFrame(zip(random_list, my_dates, start_time_list),
                                    schema=['face_value', 'temp', 'recharge_time']) \
             .withColumn("access_method_num", F.lit(1)) \
@@ -34,18 +36,76 @@ class TestUnitBilling:
             .withColumn("event_partition_date", F.to_date('recharge_date', 'dd-MM-yyyy')) \
             .withColumn("register_date", F.to_date(F.lit('2019-01-01'), 'yyyy-MM-dd')) \
             .withColumn("subscription_identifier", F.lit(123))
-        df = df.withColumn("start_of_month", F.to_date(F.date_trunc('month', df.event_partition_date))) \
-            .withColumn("start_of_week", F.to_date(F.date_trunc('week', df.event_partition_date)))
+        df = df.withColumn("start_of_month", F.to_date(F.date_trunc('month', df.recharge_time))) \
+            .withColumn("start_of_week", F.to_date(F.date_trunc('week', df.recharge_time)))
+        df = df.orderBy('recharge_time')
 
-        weekly_data = node_from_config(df, var_project_context.catalog.load(
+        df.show(1000, False)
+        intermediate_data = node_from_config(df, var_project_context.catalog.load(
             'params:l2_billing_and_payment_feature_time_diff_bw_topups_weekly_intermdeiate'))
-        print('frequencydebug')
-        print(start_time_list)
-        weekly_data.orderBy('recharge_time').show()
-        # exit(2)
+
+        intermediate_data.orderBy('recharge_time').show(1000, False)
+        assert \
+            intermediate_data.where("recharge_time = '2020-10-17 12:08:09'").select("payments_time_diff").collect()[0][
+                0] == 4
+
+        weekly_data = node_from_config(intermediate_data, var_project_context.catalog.load(
+            'params:l2_billing_and_payment_feature_time_diff_bw_topups_weekly'))
+
+        assert \
+            weekly_data.where("start_of_week = '2020-10-12'").select("payments_max_time_diff").collect()[0][
+                0] == 4
+        assert \
+            weekly_data.where("start_of_week = '2020-10-12'").select("payments_min_time_diff").collect()[0][
+                0] == 1
+        assert \
+            weekly_data.where("start_of_week = '2020-10-12'").select("payments_time_diff").collect()[0][
+                0] == 6
+        assert \
+            weekly_data.where("start_of_week = '2020-10-12'").select("payments_time_diff_avg").collect()[0][
+                0] == 2
+
+        weekly_data.orderBy('start_of_week').show(1000, False)
+
+        final_features = l4_rolling_window(weekly_data, var_project_context.catalog.load(
+            'params:l4_billing_time_diff_bw_topups'))
+
+        assert \
+            final_features.where("start_of_week = '2020-10-12'").select(
+                "sum_payments_time_diff_weekly_last_week").collect()[0][
+                0] == 4
+        assert \
+            final_features.where("start_of_week = '2020-10-12'").select(
+                "sum_payments_time_diff_weekly_last_two_week").collect()[0][
+                0] == 9
+        assert \
+            final_features.where("start_of_week = '2020-10-12'").select(
+                "sum_payments_time_diff_weekly_last_four_week").collect()[0][
+                0] == 16
+        assert \
+            final_features.where("start_of_week = '2020-10-12'").select(
+                "sum_payments_time_diff_weekly_last_twelve_week").collect()[0][
+                0] == 46
+        assert \
+            final_features.where("start_of_week = '2020-10-12'").select(
+                "avg_payments_time_diff_avg_weekly_last_week").collect()[0][
+                0] == 2
+        assert \
+            final_features.where("start_of_week = '2020-10-12'").select(
+                "avg_payments_time_diff_avg_weekly_last_two_week").collect()[0][
+                0] == 2.25
+        assert \
+            final_features.where("start_of_week = '2020-10-12'").select(
+                "avg_payments_time_diff_avg_weekly_last_four_week").collect()[0][
+                0] == 2.875
+        assert \
+            final_features.where("start_of_week = '2020-10-12'").select(
+                "avg_payments_time_diff_avg_weekly_last_twelve_week").collect()[0][
+                0] == 2.522727272727273
+
+        final_features.show(100, False)
 
     def test_topup_and_volume_feature(self, project_context):
-
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
 
@@ -123,7 +183,6 @@ class TestUnitBilling:
             int(final_features.where("start_of_week='2020-03-23'").select(
                 "avg_payments_top_up_volume_weekly_last_twelve_week").collect()[0][0]) == 10925
 
-
     def test_arpu_roaming_feature(self, project_context):
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
@@ -147,7 +206,7 @@ class TestUnitBilling:
         # df.show(100, False)
         daily_data = node_from_config(df, var_project_context.catalog.load(
             'params:l1_billing_and_payment_rpu_roaming'))
-        print('L11111111111111111111111111111end')
+
         # daily_data.orderBy('event_partition_date').show()
         assert \
             daily_data.where("event_partition_date = '2020-01-01'").select("payments_arpu_roaming").collect()[0][
@@ -180,7 +239,6 @@ class TestUnitBilling:
         assert \
             int(final_features.where("start_of_week='2020-03-23'").select(
                 "avg_payments_arpu_roaming_avg_weekly_last_twelve_week").collect()[0][0]) == 1598
-
 
     def test_before_top_up_balance_feature(self, project_context):
         var_project_context = project_context['ProjectContext']
@@ -224,7 +282,7 @@ class TestUnitBilling:
 
         final_features = l4_rolling_window(weekly_data, var_project_context.catalog.load(
             'params:l4_billing_before_top_up_balance')).orderBy(F.col("start_of_week").desc())
-        print('finalfeature')
+
         final_features.orderBy('start_of_week').show()
         assert \
             int(final_features.where("start_of_week='2020-03-23'").select(
@@ -256,15 +314,14 @@ class TestUnitBilling:
             .withColumn("subscription_identifier", F.lit(123))
         df = df.withColumn("start_of_month", F.to_date(F.date_trunc('month', df.event_partition_date))) \
             .withColumn("start_of_week", F.to_date(F.date_trunc('week', df.event_partition_date)))
-        print('rawdata')
-        df.orderBy('event_partition_date').show()
 
+        df.orderBy('event_partition_date').show()
 
         # df.show()
 
         daily_data = node_from_config(df, var_project_context.catalog.load(
             'params:l1_billing_and_payment_top_up_channels'))
-        print('dailydata')
+
         daily_data.orderBy('event_partition_date').show(300, False)
 
         assert \
@@ -472,7 +529,6 @@ class TestUnitBilling:
 
         final_features = l4_rolling_window(weekly_data, var_project_context.catalog.load(
             'params:l4_billing_top_up_channels')).orderBy(F.col("start_of_week").desc())
-        print('finalfeature')
+
         # final_features.orderBy('start_of_week').show()
         # final_features.printSchema()
-
