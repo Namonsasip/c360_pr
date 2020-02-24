@@ -1,0 +1,17 @@
+
+l1_cam_post_channel_with_highest_conversion:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/CAMPAIGN/l1_cam_post_channel_with_highest_conversion/
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["event_partition_date"]
+
+
+l1_campaign_top_channel:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/CAMPAIGN/l1_campaign_top_channel/
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["event_partition_date"]
