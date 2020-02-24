@@ -61,7 +61,7 @@ def create_l5_cvm_one_day_users_table(
 
     main_packs = main_packs.filter(
         "promotion_group_tariff not in ('SIM 2 Fly', \
-         'NET MARATHON', 'Net SIM', 'Traveller SIM')")
+         'Net SIM', 'Traveller SIM')")
     main_packs = main_packs.select('package_id'). \
         withColumnRenamed('package_id', 'current_package_id')
     users = users.join(main_packs, ['current_package_id'], 'inner')
