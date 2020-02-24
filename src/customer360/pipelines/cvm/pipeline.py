@@ -119,7 +119,7 @@ def create_cvm_prepare_sample_data_pipeline(**kwargs):
                 ["l5_cvm_one_day_users_sample_table",
                  "l4_usage_prepaid_postpaid_daily_features",
                  "parameters"],
-                "l5_cvm_churn_one_day_targets",
+                "l5_cvm_churn_one_day_targets_sample",
                 name="create_l5_cvm_churn_one_day_targets_sample"
             ),
             node(
