@@ -229,7 +229,7 @@ def subs_date_join(
         Left joined tables.
     """
 
-    keys = ["key_date", "subscription_identifier"],
+    keys = ["key_date", "subscription_identifier"]
 
     def join_on(df1, df2):
         return df1.join(df2, keys, "left")
