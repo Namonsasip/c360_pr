@@ -32,7 +32,7 @@ import functools
 import pyspark.sql.functions as func
 
 from customer360.pipelines.cvm.src.targets.ard_targets import get_ard_targets
-from customer360.pipelines.cvm.src.targets.churn_targets import\
+from customer360.pipelines.cvm.src.targets.churn_targets import \
     get_churn_targets
 
 
@@ -119,11 +119,44 @@ def add_ard_targets(
     local_parameters = parameters["ard_targets"]["targets"]
     ard_target_tables = [get_ard_targets(users, reve, local_parameters[targets])
                          for targets in local_parameters]
-    join_targets = lambda df1, df2: df1.join(
-        df2,
-        ["key_date", "subscription_identifier"],
-        "full"
-    )
+
+    def join_targets(df1, df2):
+        return df1.join(
+            df2,
+            ["key_date", "subscription_identifier"],
+            "full"
+        )
+
+    return functools.reduce(join_targets, ard_target_tables)
+
+
+def add_churn_targets(
+        users: DataFrame,
+        usage: DataFrame,
+        parameters: Dict[str, Any]
+) -> DataFrame:
+    """ Create table with churn targets.
+
+    Args:
+        users: Table with users and dates to create targets for.
+        usage: Table with usage stats.
+        parameters: parameters defined in parameters.yml.
+
+    Returns:
+        Table with churn targets.
+    """
+
+    local_parameters = parameters["churn_targets"]["targets"]
+    ard_target_tables = [get_churn_targets(users, usage,
+                                           local_parameters[targets])
+                         for targets in local_parameters]
+
+    def join_targets(df1, df2):
+        return df1.join(
+                    df2,
+                    ["key_date", "subscription_identifier"],
+                    "full"
+                )
 
     return functools.reduce(join_targets, ard_target_tables)
 
