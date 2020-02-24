@@ -101,7 +101,7 @@ def create_l5_cvm_users_sample_table(
     return users
 
 
-def create_l5_cvm_ard_one_day_targets(
+def add_ard_targets(
         users: DataFrame,
         reve: DataFrame,
         parameters: Dict[str, Any]
