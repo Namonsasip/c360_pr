@@ -190,7 +190,7 @@ def create_l5_cvm_ard_one_day_targets(
 
         return reve_arpu_before_after
 
-    local_parameters = parameters["l5_cvm_ard_one_day_targets"]["targets"]
+    local_parameters = parameters["ard_targets"]["targets"]
     ard_target_tables = [get_ard_targets(users, reve, local_parameters[targets])
                          for targets in local_parameters]
     join_targets = lambda df1, df2: df1.join(
