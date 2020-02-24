@@ -36,7 +36,7 @@ def device_to_l2_pipeline(**kwargs):
 
             # Weekly number of phone updates
             node(
-                node_from_config,
+                device_number_of_phone_updates_weekly,
                 ["l2_device_handset_summary_with_configuration_weekly_1",
                  "params:l2_device_number_of_phone_updates"],
                 "l2_device_number_of_phone_updates_weekly"
@@ -50,7 +50,7 @@ def device_to_l2_pipeline(**kwargs):
                 "l2_device_most_used_intermediate_weekly"
             ),
             node(
-                node_from_config,
+                device_most_used_weekly,
                 ["l2_device_most_used_intermediate_weekly",
                  "params:l2_device_most_used"],
                 "l2_device_most_used_weekly"
@@ -64,7 +64,7 @@ def device_to_l2_pipeline(**kwargs):
                 "l2_previous_device_handset_summary_with_configuration_weekly_1"
             ),
             node(
-                node_from_config,
+                device_previous_configurations_weekly,
                 ["l2_previous_device_handset_summary_with_configuration_weekly_1",
                  "params:l2_previous_device_features_with_config"],
                 "l2_previous_device_handset_summary_with_configuration_weekly"
