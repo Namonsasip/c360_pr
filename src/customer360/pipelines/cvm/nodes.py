@@ -31,6 +31,8 @@ from pyspark.sql import DataFrame
 import functools
 import pyspark.sql.functions as func
 
+from customer360.pipelines.cvm.src.targets.ard_targets import get_ard_targets
+
 
 def create_l5_cvm_one_day_users_table(
         profile: DataFrame,
@@ -110,85 +112,6 @@ def create_l5_cvm_ard_one_day_targets(
     Returns:
         Table with ARD targets.
     """
-
-    def get_ard_targets(
-            users: DataFrame,
-            reve: DataFrame,
-            target_parameters: Dict[str, Any]
-    ) -> DataFrame:
-        """ Create table with one ARPU drop target.
-
-        Args:
-            users: Table with users and dates to create targets for.
-            reve: Table with revenue stats.
-            target_parameters: parameters for given target.
-
-        Returns:
-            Table with single ARPU drop target.
-        """
-
-        length = target_parameters["length"]
-        drop = target_parameters["drop"]
-        target_colname = target_parameters["colname"]
-
-        if length == 1:
-            arpu_col = "sum_rev_arpu_total_revenue_monthly_last_month"
-        elif length == 3:
-            arpu_col = "sum_rev_arpu_total_revenue_monthly_last_three_month"
-        else:
-            raise Exception("No implementation for length = {0}".format(length))
-
-        # Setup table with dates and arpu
-        cols_to_pick = ["subscription_identifier", "start_of_month", arpu_col]
-        users = users.withColumnRenamed("partition_month", "start_of_month")
-        reve_arpu_only = reve.select(cols_to_pick)
-        reve_arpu_only = reve_arpu_only.withColumnRenamed(arpu_col, "reve")
-        # Pick only interesting users
-        reve_arpu_only = users.join(
-            reve_arpu_only,
-            ["subscription_identifier", "start_of_month"],
-            "left"
-        )
-
-        # Setup reve before and after
-        reve_arpu_before_after = reve_arpu_only.withColumnRenamed(
-            "start_of_month", "start_of_month_before")
-        reve_arpu_before_after = reve_arpu_before_after.withColumn(
-            "start_of_month",
-            func.add_months(reve_arpu_before_after.start_of_month_before,
-                            length)
-        )
-        reve_arpu_before_after = reve_arpu_before_after.withColumnRenamed(
-            "reve", "reve_before")
-
-        reve_arpu_before_after = reve_arpu_before_after.join(
-            reve_arpu_only,
-            ["start_of_month", "subscription_identifier"]
-        )
-
-        reve_arpu_before_after = reve_arpu_before_after.drop("start_of_month")
-        reve_arpu_before_after = reve_arpu_before_after.withColumnRenamed(
-            "reve", "reve_after")
-
-        # Add the label
-        reve_arpu_before_after = reve_arpu_before_after.withColumn(
-            "reve_after_perc",
-            reve_arpu_before_after.reve_after / reve_arpu_before_after.reve_before)
-        target_col = func.when(
-            1 - reve_arpu_before_after.reve_after_perc >= drop,
-            "drop").otherwise("no_drop")
-        reve_arpu_before_after = reve_arpu_before_after.withColumn("target",
-                                                                   target_col)
-        reve_arpu_before_after = reve_arpu_before_after.withColumnRenamed(
-            "start_of_month_before", "start_of_month")
-
-        cols_to_select = ["target", "start_of_month", "subscription_identifier"]
-        reve_arpu_before_after = reve_arpu_before_after.select(cols_to_select)
-
-        reve_arpu_before_after = reve_arpu_before_after.withColumnRenamed(
-            "target", target_colname)
-
-        return reve_arpu_before_after
 
     local_parameters = parameters["ard_targets"]["targets"]
     ard_target_tables = [get_ard_targets(users, reve, local_parameters[targets])
