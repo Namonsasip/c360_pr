@@ -26,7 +26,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, Dict
+from typing import Any, Dict, List
 from pyspark.sql import DataFrame
 import functools
 import pyspark.sql.functions as func
@@ -153,10 +153,10 @@ def add_churn_targets(
 
     def join_targets(df1, df2):
         return df1.join(
-                    df2,
-                    ["key_date", "subscription_identifier"],
-                    "full"
-                )
+            df2,
+            ["key_date", "subscription_identifier"],
+            "full"
+        )
 
     return functools.reduce(join_targets, ard_target_tables)
 
@@ -218,21 +218,20 @@ def create_l5_cvm_features_one_day_joined(
     return features_joined
 
 
-def create_l5_cvm_features_targets_one_day(
-        targets: DataFrame,
-        features: DataFrame,
+def subs_date_join(
+        *args: DataFrame,
 ) -> DataFrame:
-    """ Create one day table with features and targets.
+    """ Left join all tables by given keys.
 
     Args:
-        targets: Table with users, dates, targets.
-        features: Table with users, dates, features.
+        *args: Tables to join.
     Returns:
-        Monthly table with features and targets.
+        Left joined tables.
     """
 
-    # join the tables
-    keys = ["key_date", "subscription_identifier"]
-    tables_joined = targets.join(features, keys, "left")
+    keys = ["key_date", "subscription_identifier"],
 
-    return tables_joined
+    def join_on(df1, df2):
+        return df1.join(df2, keys, "left")
+
+    return functools.reduce(join_on, args)
