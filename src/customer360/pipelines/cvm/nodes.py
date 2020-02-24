@@ -34,7 +34,7 @@ import pyspark.sql.functions as func
 from customer360.pipelines.cvm.src.targets.ard_targets import get_ard_targets
 from customer360.pipelines.cvm.src.targets.churn_targets import \
     get_churn_targets
-from customer360.pipelines.cvm.src import setup_names
+from customer360.pipelines.cvm.src.setup_names import setup_names
 
 
 def create_l5_cvm_one_day_users_table(
