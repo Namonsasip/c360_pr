@@ -39,43 +39,31 @@ from src.customer360.utilities.config_parser import l4_rolling_window
 def usage_to_l4_pipeline(**kwargs):
     return Pipeline(
         [
-            # node(
-            #     l4_rolling_window,
-            #     ["l2_usage_call_relation_sum_weekly",
-            #      "params:l4_usage_call_relation_features"],
-            #     "l4_usage_call_relation_features"
-            # ),
-            # node(
-            #     l4_rolling_window,
-            #     ["l2_usage_call_relation_sum_ir_weekly",
-            #      "params:l4_usage_call_relation_ir_features"],
-            #     "l4_usage_call_relation_ir_features"
-            # ),
-            # node(
-            #     l4_rolling_window,
-            #     ["l2_usage_data_prepaid_postpaid_weekly",
-            #      "params:l4_usage_data_prepaid_postpaid_features"],
-            #     "l4_usage_data_prepaid_postpaid_features"
-            # ),
-            # node(
-            #     l4_rolling_window,
-            #     ["l2_usage_ru_a_vas_postpaid_prepaid_weekly",
-            #      "params:l4_usage_ru_a_vas_postpaid_prepaid_features"],
-            #     "l4_usage_ru_a_vas_postpaid_prepaid_features_stg"
-            # ),
-            # node(
-            #     l4_rolling_window,
-            #     ["l2_usage_ru_a_vas_postpaid_prepaid_weekly",
-            #      "params:l4_usage_ru_a_vas_postpaid_prepaid_features"],
-            #     "l4_usage_ru_a_vas_postpaid_prepaid_features"
-            # )
             node(
                 l4_rolling_window,
                 ["l2_usage_postpaid_prepaid_weekly",
-                 "params:l4_usage_postpaid_prepaid_features"],
-                "l4_usage_postpaid_prepaid_features"
+                 "params:l4_usage_postpaid_prepaid_weekly_features_max"],
+                "l4_usage_postpaid_prepaid_weekly_features_max"
 
-            )
+            ),
+            node(
+                l4_rolling_window,
+                ["l2_usage_postpaid_prepaid_weekly",
+                 "params:l4_usage_postpaid_prepaid_weekly_features_min"],
+                "l4_usage_postpaid_prepaid_weekly_features_min"
+            ),
+            node(
+                l4_rolling_window,
+                ["l2_usage_postpaid_prepaid_weekly",
+                 "params:l4_usage_postpaid_prepaid_weekly_features_avg"],
+                "l4_usage_postpaid_prepaid_weekly_features_avg"
+            ),
+            node(
+                l4_rolling_window,
+                ["l2_usage_postpaid_prepaid_weekly",
+                 "params:l4_usage_postpaid_prepaid_weekly_features_sum"],
+                "l4_usage_postpaid_prepaid_weekly_features_sum"
+            ),
 
         ], name="usage_to_l4_pipeline"
     )
