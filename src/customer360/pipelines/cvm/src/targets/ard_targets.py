@@ -58,23 +58,23 @@ def get_ard_targets(
         raise Exception("No implementation for length = {0}".format(length))
 
     # Setup table with dates and arpu
-    cols_to_pick = ["subscription_identifier", "start_of_month", arpu_col]
-    users = users.withColumnRenamed("partition_month", "start_of_month")
+    cols_to_pick = ["subscription_identifier", "key_date", arpu_col]
+    reve = reve.withColumnRenamed("start_of_month", "key_date")
     reve_arpu_only = reve.select(cols_to_pick)
     reve_arpu_only = reve_arpu_only.withColumnRenamed(arpu_col, "reve")
     # Pick only interesting users
     reve_arpu_only = users.join(
         reve_arpu_only,
-        ["subscription_identifier", "start_of_month"],
+        ["subscription_identifier", "key_date"],
         "left"
     )
 
     # Setup reve before and after
     reve_arpu_before_after = reve_arpu_only.withColumnRenamed(
-        "start_of_month", "start_of_month_before")
+        "key_date", "key_date_before")
     reve_arpu_before_after = reve_arpu_before_after.withColumn(
-        "start_of_month",
-        func.add_months(reve_arpu_before_after.start_of_month_before,
+        "key_date",
+        func.add_months(reve_arpu_before_after.key_date_before,
                         length)
     )
     reve_arpu_before_after = reve_arpu_before_after.withColumnRenamed(
@@ -82,10 +82,10 @@ def get_ard_targets(
 
     reve_arpu_before_after = reve_arpu_before_after.join(
         reve_arpu_only,
-        ["start_of_month", "subscription_identifier"]
+        ["key_date", "subscription_identifier"]
     )
 
-    reve_arpu_before_after = reve_arpu_before_after.drop("start_of_month")
+    reve_arpu_before_after = reve_arpu_before_after.drop("key_date")
     reve_arpu_before_after = reve_arpu_before_after.withColumnRenamed(
         "reve", "reve_after")
 
@@ -99,9 +99,9 @@ def get_ard_targets(
     reve_arpu_before_after = reve_arpu_before_after.withColumn("target",
                                                                target_col)
     reve_arpu_before_after = reve_arpu_before_after.withColumnRenamed(
-        "start_of_month_before", "start_of_month")
+        "key_date_before", "key_date")
 
-    cols_to_select = ["target", "start_of_month", "subscription_identifier"]
+    cols_to_select = ["target", "key_date", "subscription_identifier"]
     reve_arpu_before_after = reve_arpu_before_after.select(cols_to_select)
 
     reve_arpu_before_after = reve_arpu_before_after.withColumnRenamed(

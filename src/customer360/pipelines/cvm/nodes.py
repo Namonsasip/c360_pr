@@ -67,6 +67,7 @@ def create_l5_cvm_one_day_users_table(
     users = users.join(main_packs, ['current_package_id'], 'inner')
     columns_to_pick = ['partition_month', 'subscription_identifier']
     users = users.select(columns_to_pick)
+    users.withColumnRenamed("partition_month", "key_date")
 
     return users
 
@@ -118,7 +119,7 @@ def create_l5_cvm_ard_one_day_targets(
                          for targets in local_parameters]
     join_targets = lambda df1, df2: df1.join(
         df2,
-        ["start_of_month", "subscription_identifier"],
+        ["key_date", "subscription_identifier"],
         "full"
     )
 
@@ -170,12 +171,12 @@ def create_l5_cvm_features_one_day_joined(
     # for every table make sure the month column is called 'start_of_month'
     cols_to_be_renamed = "partition_month"
     rename = lambda df: df.withColumnRenamed(cols_to_be_renamed,
-                                             "start_of_month")
+                                             "key_date")
     feature_tables = [rename(feature_table) for feature_table in feature_tables]
     users = rename(users)
 
     # join the tables
-    keys = ["start_of_month", "subscription_identifier"]
+    keys = ["key_date", "subscription_identifier"]
     join_on = lambda df1, df2: df1.join(df2, keys, "left")
     features_joined = functools.reduce(join_on, feature_tables, users)
 
@@ -196,7 +197,7 @@ def create_l5_cvm_features_targets_one_day(
     """
 
     # join the tables
-    keys = ["start_of_month", "subscription_identifier"]
+    keys = ["key_date", "subscription_identifier"]
     tables_joined = targets.join(features, keys, "left")
 
     return tables_joined
