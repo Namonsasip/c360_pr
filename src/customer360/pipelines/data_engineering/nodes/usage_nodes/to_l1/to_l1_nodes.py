@@ -9,6 +9,7 @@ import os
 
 conf = os.environ["CONF"]
 
+
 def gen_max_sql(data_frame, table_name, group):
     grp_str = ', '.join(group)
     col_to_iterate = ["max(" + x + ")" + " as " + x for x in data_frame.columns if x not in group]
