@@ -7,7 +7,7 @@ def billing_to_l2_pipeline(**kwargs):
 
     return Pipeline(
         [
-            # Weekly top up count and top up volume
+            # Weekly top up count and top up volume pre-paid
             node(
                 billing_topup_count_and_volume_node_weekly,
                 ["l1_billing_and_payments_daily_topup_and_volume",
@@ -15,7 +15,7 @@ def billing_to_l2_pipeline(**kwargs):
                 "l2_billing_and_payments_weekly_topup_and_volume"
             ),
 
-            # Weekly Time difference between top ups
+            # Weekly Time difference between top ups pre-paid
             node(
                 node_from_config,
                 ["l0_billing_and_payments_rt_t_recharge_daily",
@@ -30,7 +30,7 @@ def billing_to_l2_pipeline(**kwargs):
                 "l2_billing_and_payments_weekly_topup_time_diff"
             ),
 
-            # Weekly arpu of roaming
+            # Weekly arpu of roaming post-paid
             node(
                 billing_arpu_roaming_weekly,
                 ["l1_billing_and_payments_daily_rpu_roaming",
@@ -38,7 +38,7 @@ def billing_to_l2_pipeline(**kwargs):
                 "l2_billing_weekly_rpu_roaming"
             ),
 
-            # Weekly balance before top up
+            # Weekly balance before top up pre-paid
             node(
                 billing_before_topup_balance_weekly,
                 ["l1_billing_and_payments_daily_before_top_up_balance",
@@ -46,7 +46,7 @@ def billing_to_l2_pipeline(**kwargs):
                 "l2_billing_and_payments_weekly_before_top_up_balance"
             ),
 
-            # Weekly top up channels
+            # Weekly top up channels pre-paid
             node(
                 billing_top_up_channels_weekly,
                 ["l1_billing_and_payments_daily_top_up_channels",
@@ -54,7 +54,7 @@ def billing_to_l2_pipeline(**kwargs):
                 "l2_billing_and_payments_weekly_top_up_channels"
             ),
 
-            # Weekly most popular top up channel
+            # Weekly most popular top up channel pre-paid
             node(
                 top_up_channel_joined_data,
                 ["l1_billing_and_payments_daily_most_popular_top_up_channel",
@@ -74,7 +74,7 @@ def billing_to_l2_pipeline(**kwargs):
                 "l2_billing_and_payments_weekly_most_popular_top_up_channel"
             ),
 
-            # Weekly last top up channel
+            # Weekly last top up channel pre-paid
             node(
                 billing_last_top_up_channel_weekly,
                 ["l0_billing_and_payments_rt_t_recharge_daily",
@@ -84,7 +84,7 @@ def billing_to_l2_pipeline(**kwargs):
                 "l2_billing_and_payments_weekly_last_top_up_channel"
             ),
 
-            # Weekly popular top up day
+            # Weekly popular top up day pre-apid
             node(
                 node_from_config,
                 ["l1_billing_and_payments_daily_popular_topup_day",
@@ -98,7 +98,7 @@ def billing_to_l2_pipeline(**kwargs):
                 "l2_billing_and_payments_weekly_popular_topup_day"
             ),
 
-            # Weekly popular top up hour
+            # Weekly popular top up hour pre-paid
             node(
                 node_from_config,
                 ["l1_billing_and_payments_daily_popular_topup_day",
@@ -112,7 +112,7 @@ def billing_to_l2_pipeline(**kwargs):
                 "l2_billing_and_payments_weekly_popular_topup_hour"
             ),
 
-            # Weekly time since last top up
+            # Weekly time since last top up  pre-paid
             node(
                 billing_time_since_last_topup_weekly,
                 ["l1_billing_and_payments_daily_time_since_last_top_up",
@@ -120,7 +120,7 @@ def billing_to_l2_pipeline(**kwargs):
                 "l2_billing_and_payments_weekly_time_since_last_top_up"
             ),
 
-            # Weekly last 3 top up volume
+            # Weekly last 3 top up volume pre-paid
             node(
                 node_from_config,
                 ["l1_billing_and_payments_daily_time_since_last_top_up",

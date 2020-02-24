@@ -1,15 +1,13 @@
 from kedro.pipeline import Pipeline, node
 from src.customer360.utilities.config_parser import *
 from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l3.to_l3_nodes import *
-from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l2.to_l2_nodes import *
-from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l1.to_l1_nodes import *
 
 
 def billing_to_l3_pipeline(**kwargs):
     return Pipeline(
         [
 
-            # Monthly top up count and top up volume
+            # Monthly top up count and top up volume pre-paid
             node(
                 billing_topup_count_and_volume_node_monthly,
                 ["l1_billing_and_payments_daily_topup_and_volume",
@@ -25,7 +23,7 @@ def billing_to_l3_pipeline(**kwargs):
                 "billing_monthly_data"
             ),
 
-            # Monthly arpu vas,gprs,voice feature
+            # Monthly arpu vas,gprs,voice feature pre-paid,post-paid both
             node(
                 billing_arpu_node_monthly,
                 ["billing_monthly_data",
@@ -33,7 +31,7 @@ def billing_to_l3_pipeline(**kwargs):
                 "l3_billing_and_payments_monthly_rpu"
             ),
 
-            # Monthly time difference between top ups
+            # Monthly time difference between top ups pre-paid
             node(
                 node_from_config,
                 ["l0_billing_and_payments_rt_t_recharge_daily",
@@ -48,7 +46,7 @@ def billing_to_l3_pipeline(**kwargs):
                 "l3_billing_and_payments_monthly_topup_time_diff"
             ),
 
-            # Monthly arpu of roaming
+            # Monthly arpu of roaming post-paid
             node(
                 billing_arpu_roaming_node_monthly,
                 ["l1_billing_and_payments_daily_rpu_roaming",
@@ -56,7 +54,7 @@ def billing_to_l3_pipeline(**kwargs):
                 "l3_billing_monthly_rpu_roaming"
             ),
 
-            # Monthly automated payment feature
+            # Monthly automated payment feature post-paid
              node(
                  bill_payment_daily_data_with_customer_profile,
                  ["l3_customer_profile_include_1mo_non_active",
@@ -70,7 +68,7 @@ def billing_to_l3_pipeline(**kwargs):
                  "l3_billing_monthly_automated_payments"
              ),
 
-            # Monthly before top up balance feature
+            # Monthly before top up balance feature pre-paid
             node(
                 billing_before_topup_balance_node_monthly,
                 ["l1_billing_and_payments_daily_before_top_up_balance",
@@ -78,7 +76,7 @@ def billing_to_l3_pipeline(**kwargs):
                 "l3_billing_and_payments_monthly_before_top_up_balance"
             ),
 
-            # Monthly top up channels feature
+            # Monthly top up channels feature pre-paid
             node(
                 billing_topup_channels_node_monthly,
                 ["l1_billing_and_payments_daily_top_up_channels",
@@ -86,7 +84,7 @@ def billing_to_l3_pipeline(**kwargs):
                 "l3_billing_and_payments_monthly_top_up_channels"
             ),
 
-            # Monthly most popular top up channel feature
+            # Monthly most popular top up channel feature pre-paid
             node(
                 top_up_channel_joined_data,
                 ["l1_billing_and_payments_daily_most_popular_top_up_channel",
@@ -114,7 +112,7 @@ def billing_to_l3_pipeline(**kwargs):
                 "billing_stat_hist_monthly_data"
             ),
 
-            # Monthly volume of bill and roaming bills
+            # Monthly volume of bill and roaming bills post-paid
             node(
                 billing_volume_of_bills_and_roaming_bills_monthly,
                 ["billing_stat_hist_monthly_data",
@@ -122,7 +120,7 @@ def billing_to_l3_pipeline(**kwargs):
                 "l3_billing_and_payments_monthly_bill_volume"
             ),
 
-            # Monthly last top up channel
+            # Monthly last top up channel pre-paid
             node(
                 billing_last_topup_channel_monthly,
                 ["l0_billing_and_payments_rt_t_recharge_daily",
@@ -133,7 +131,7 @@ def billing_to_l3_pipeline(**kwargs):
             ),
 
 
-            # Monthly missed bills feature
+            # Monthly missed bills feature post-paid
             node(
                 billing_data_joined,
                 ["billing_stat_hist_monthly_data",
@@ -147,7 +145,7 @@ def billing_to_l3_pipeline(**kwargs):
                 "l3_billing_and_payments_monthly_missed_bills"
             ),
 
-            # Monthly overdue bills feature
+            # Monthly overdue bills feature post-paid
              node(
                 billing_overdue_bills_monthly,
                 ["l3_billing_and_payments_monthly_joined",
@@ -155,7 +153,7 @@ def billing_to_l3_pipeline(**kwargs):
                 "l3_billing_and_payments_monthly_overdue_bills"
             ),
 
-            # Monthly last overdue bill volume and days ago feature
+            # Monthly last overdue bill volume and days ago feature post-paid
             node(
                 billing_last_overdue_bill_volume_monthly,
                 ["l3_billing_and_payments_monthly_joined",
@@ -163,7 +161,7 @@ def billing_to_l3_pipeline(**kwargs):
                 "l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume"
             ),
 
-            # Monthly popular top up day feature
+            # Monthly popular top up day feature pre-paid
             node(
                 node_from_config,
                 ["l1_billing_and_payments_daily_popular_topup_day",
@@ -177,7 +175,7 @@ def billing_to_l3_pipeline(**kwargs):
                 "l3_billing_and_payments_monthly_popular_topup_day"
             ),
 
-            # Monthly popular top up hour feature
+            # Monthly popular top up hour feature pre-paid
             node(
                 node_from_config,
                 ["l1_billing_and_payments_daily_popular_topup_day",
@@ -191,7 +189,7 @@ def billing_to_l3_pipeline(**kwargs):
                 "l3_billing_and_payments_monthly_popular_topup_hour"
             ),
 
-            # Monthly time since last top up feature
+            # Monthly time since last top up feature pre-paid
             node(
                 billing_time_since_last_topup_node_monthly,
                 ["l1_billing_and_payments_daily_time_since_last_top_up",
@@ -199,7 +197,7 @@ def billing_to_l3_pipeline(**kwargs):
                 "l3_billing_and_payments_monthly_time_since_last_top_up"
             ),
 
-            # Monthly last 3 top up volume
+            # Monthly last 3 top up volume pre-paid
             node(
                 node_from_config,
                 ["l1_billing_and_payments_daily_time_since_last_top_up",
