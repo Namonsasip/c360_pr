@@ -16,8 +16,6 @@ l3_billing_and_payment_revenue_per_user_monthly:
       payments_arpu_vas: "sum(norms_net_revenue_vas)"
       payments_arpu_voice: "sum(norms_net_revenue_voice)"
     granularity: "start_of_month,access_method_num,register_date,subscription_identifier"
-    #granularity: "month_id,access_method_num,date(register_date),crm_sub_id"
-    #event_date_column: "date(month_id)"
 
 l3_billing_and_payment_feature_time_diff_bw_topups_monthly_intermdeiate:
     where_clause: ""
@@ -113,18 +111,6 @@ l3_last_topup_channel:
              access_method_num,
              register_date order by recharge_time desc)"
     granularity: ""
-    #event_date_column: "date(recharge_date)"
-
-#l3_last_topup_channel:
-#    where_clause: "where rank = 1"
-#    feature_list:
-#      start_of_month: "start_of_month"
-#      access_method_num: "access_method_num"
-#      register_date: "register_date"
-#      subscription_identifier: "subscription_identifier"
-#      recharge_time: "recharge_time"
-#      payments_last_top_up_channel: "payments_last_top_up_channel"
-#    granularity: ""
 
 l3_automated_flag:
     where_clause: ""

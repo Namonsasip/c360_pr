@@ -143,7 +143,6 @@ l4_payments_bill_shock:
         over(partition by access_method_num,register_date,subscription_identifier order by cast(cast(date(billing_stmt_period_eff_date) as timestamp) as long) asc
         RANGE BETWEEN 6*30*24*60*60 PRECEDING AND 1 PRECEDING)) then 'Y' else 'N' end"
     granularity: ""
-    #event_date_column: "date(billing_stmt_period_eff_date)"
 
 l4_missed_bills:
   partition_by: ["access_method_num","register_date","subscription_identifier"]
