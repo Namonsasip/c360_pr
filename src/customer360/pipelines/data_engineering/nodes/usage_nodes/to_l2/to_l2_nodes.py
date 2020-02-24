@@ -5,8 +5,6 @@ from kedro.context.context import load_context
 from pathlib import Path
 import logging, os
 
-conf = os.getenv("CONF", "local")
-
 
 def usage_merge_all_data(l2_usage_call_relation_sum_weekly: DataFrame,
                          l2_usage_call_relation_sum_ir_weekly: DataFrame,

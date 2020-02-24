@@ -44,7 +44,6 @@ from kedro.versioning import Journal
 import findspark
 findspark.init()
 
-conf = os.environ["CONF"]
 
 class ProjectContext(KedroContext):
     """Users can override the remaining methods from the parent class here,

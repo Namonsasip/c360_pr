@@ -4,7 +4,6 @@ import logging, os
 from pathlib import Path
 from pyspark.sql import functions as F
 
-conf = os.getenv("CONF", "local")
 
 def merge_all_usage_outputs(df1: DataFrame, df2: DataFrame, df3: DataFrame, df4: DataFrame) -> DataFrame:
     """
