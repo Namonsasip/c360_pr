@@ -20,11 +20,11 @@ def massive_processing(customer_prof, input_df, sql, is_rank, partition, output_
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = input_df
     cust_data_frame = customer_prof
-    dates_list = data_frame.select(partition).distinct().collect()
+    dates_list = cust_data_frame.select(partition).distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 2))
+    mvv_new = list(divide_chunks(mvv_array, 1))
     add_list = mvv_new
 
     first_item = add_list[0]
