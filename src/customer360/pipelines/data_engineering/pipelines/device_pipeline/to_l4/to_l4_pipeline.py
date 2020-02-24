@@ -37,26 +37,26 @@ def device_to_l4_pipeline(**kwargs):
             ),
 
             # Write L2 and L3 in L4
-            node(
-                read_df,
-                ["l2_device_handset_summary_with_configuration_weekly"],
-                "l4_device_handset_summary_with_configuration_weekly"
-            ),
-            node(
-                read_df,
-                ["l3_device_handset_summary_with_configuration_monthly"],
-                "l4_device_handset_summary_with_configuration_monthly"
-            ),
-
-            node(
-                read_df,
-                ["l2_previous_device_handset_summary_with_configuration_weekly"],
-                "l4_previous_device_handset_summary_with_configuration_weekly"
-            ),
-            node(
-                read_df,
-                ["l3_previous_device_handset_summary_with_configuration_monthly"],
-                "l4_previous_device_handset_summary_with_configuration_monthly"
-            ),
+            # node(
+            #     read_df,
+            #     ["l2_device_handset_summary_with_configuration_weekly"],
+            #     "l4_device_handset_summary_with_configuration_weekly"
+            # ),
+            # node(
+            #     read_df,
+            #     ["l3_device_handset_summary_with_configuration_monthly"],
+            #     "l4_device_handset_summary_with_configuration_monthly"
+            # ),
+            #
+            # node(
+            #     read_df,
+            #     ["l2_previous_device_handset_summary_with_configuration_weekly"],
+            #     "l4_previous_device_handset_summary_with_configuration_weekly"
+            # ),
+            # node(
+            #     read_df,
+            #     ["l3_previous_device_handset_summary_with_configuration_monthly"],
+            #     "l4_previous_device_handset_summary_with_configuration_monthly"
+            # ),
         ]
     )

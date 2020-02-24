@@ -1,5 +1,4 @@
 import pyspark.sql.functions as f
-from pyspark.sql import SparkSession, Window
 
 def device_summary_with_customer_profile(customer_prof,hs_summary):
 
