@@ -1,10 +1,10 @@
 l2_device_handset_summary_with_configuration:
-    where_clause: "where event_partition_date is not null"
+    where_clause: ""
     feature_list:
+      start_of_month: "start_of_month"
       start_of_week: "start_of_week"
-      access_method_num: "access_method_num"
+      mobile_no: "mobile_no"
       register_date: "register_date"
-      subscription_identifier: "subscription_identifier"
       device_last_use_time: "handset_last_use_time"
       device_brand_code: "handset_brand_code"
       device_model_code: "handset_model_code"
@@ -67,61 +67,54 @@ l2_device_handset_summary_with_configuration:
       device_supports_gprs: "gprs_handset_support"
       device_supports_google_map: "google_map"
       rank: "row_number()
-             over(partition by start_of_week,access_method_num,register_date,subscription_identifier
+             over(partition by start_of_month,start_of_week,mobile_no,register_date
              order by handset_last_use_time desc)"
     granularity: ""
 
-l2_device_most_used_initial:
-    where_clause: "where event_partition_date is not null"
+l2_device_number_of_phone_updates:
+    where_clause: ""
     feature_list:
-        device_used_days: "count(distinct date_id)"
-        rank: "row_number() over(partition by start_of_week,access_method_num,register_date,subscription_identifier
-               order by count(distinct date_id) desc)"
-    granularity: "start_of_week,access_method_num,register_date,subscription_identifier,handset_brand_name"
+        device_number_of_phone_updates: "count(distinct handset_imei)"
+    granularity: "start_of_month,start_of_week,mobile_no,register_date"
 
 l2_device_most_used:
-    where_clause: "where rank = 1"
+    where_clause: ""
     feature_list:
-        start_of_week: "start_of_week"
-        access_method_num: "access_method_num"
-        register_date: "register_date"
-        subscription_identifier: "subscription_identifier"
+        device_used_days: "count(distinct date_id)"
         device_most_used_handset_samsung: "case when handset_brand_name='SAMSUNG' then 'Y' else 'N' end"
         device_most_used_handset_huawei: "case when handset_brand_name='HUAWEI' then 'Y' else 'N' end"
         device_most_used_handset_oppo: "case when handset_brand_name='OPPO' then 'Y' else 'N' end"
         device_most_used_handset_apple: "case when handset_brand_name='APPLE' then 'Y' else 'N' end"
         device_most_used_handset_xiaomi: "case when handset_brand_name='XIAOMI' then 'Y' else 'N' end"
         device_most_used_handset_others: "case when handset_brand_name not in ('SAMSUNG','HUAWEI','OPPO','APPLE','XIAOMI') then 'Y' else 'N' end"
-    granularity: ""
+        rank: "row_number() over(partition by start_of_month,start_of_week,mobile_no,register_date
+               order by count(distinct date_id) desc)"
+    granularity: "start_of_month,start_of_week,mobile_no,register_date,handset_brand_name"
 
 l2_previous_device_features_with_config_ranked:
-    where_clause: "where event_partition_date is not null"
+    where_clause: ""
     feature_list:
         device_last_use_time: "max(handset_last_use_time)"
-        rank: "row_number() over( partition by start_of_week,access_method_num,register_date,subscription_identifier
+        rank: "row_number() over( partition by start_of_month,start_of_week,mobile_no,register_date
                                   order by max(handset_last_use_time) desc)"
-    granularity: "start_of_week,access_method_num,register_date,subscription_identifier,handset_imei,
+    granularity: "start_of_month,start_of_week,mobile_no,register_date,handset_imei,
     handset_brand_code,handset_model_code,handset_brand_name,handset_model_name"
 
 l2_previous_device_features_with_config:
     where_clause: "where rank<=2"
     feature_list:
+        start_of_month: "start_of_month"
         start_of_week: "start_of_week"
-        access_method_num: "access_method_num"
+        mobile_no: "mobile_no"
         register_date: "register_date"
-        subscription_identifier: "subscription_identifier"
-        device_previous_imei: "last_value(handset_imei) over( partition by start_of_week,access_method_num,register_date,subscription_identifier
+        device_previous_imei: "last_value(handset_imei) over( partition by start_of_month,start_of_week,mobile_no,register_date
                                                               order by rank)"
-        device_previous_brand_code: "last_value(handset_brand_code) over( partition by start_of_week,access_method_num,register_date,subscription_identifier
+        device_previous_brand_code: "last_value(handset_brand_code) over( partition by start_of_month,start_of_week,mobile_no,register_date
                                                                           order by rank)"
-        device_previous_brand_name: "last_value(handset_brand_name) over( partition by start_of_week,access_method_num,register_date,subscription_identifier
+        device_previous_brand_name: "last_value(handset_brand_name) over( partition by start_of_month,start_of_week,mobile_no,register_date
                                                                     order by rank)"
-        device_previous_model_name: "last_value(handset_model_name) over( partition by start_of_week,access_method_num,register_date,subscription_identifier
+        device_previous_model_name: "last_value(handset_model_name) over( partition by start_of_month,start_of_week,mobile_no,register_date
                                                                     order by rank)"
     granularity: ""
 
-l2_device_number_of_phone_updates:
-    where_clause: "where event_partition_date is not null"
-    feature_list:
-        device_number_of_phone_updates: "count(distinct handset_imei)"
-    granularity: "start_of_week,access_method_num,register_date,subscription_identifier"
+
