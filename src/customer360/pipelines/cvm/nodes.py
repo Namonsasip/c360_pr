@@ -34,6 +34,7 @@ import pyspark.sql.functions as func
 from customer360.pipelines.cvm.src.targets.ard_targets import get_ard_targets
 from customer360.pipelines.cvm.src.targets.churn_targets import \
     get_churn_targets
+from customer360.pipelines.cvm.src import setup_names
 
 
 def create_l5_cvm_one_day_users_table(
@@ -117,6 +118,7 @@ def add_ard_targets(
     """
 
     local_parameters = parameters["ard_targets"]["targets"]
+    users = setup_names(users)
     ard_target_tables = [get_ard_targets(users, reve, local_parameters[targets])
                          for targets in local_parameters]
 
@@ -147,6 +149,7 @@ def add_churn_targets(
     """
 
     local_parameters = parameters["churn_targets"]["targets"]
+    users = setup_names(users)
     ard_target_tables = [get_churn_targets(users, usage,
                                            local_parameters[targets])
                          for targets in local_parameters]
