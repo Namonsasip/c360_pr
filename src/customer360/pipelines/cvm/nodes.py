@@ -89,7 +89,7 @@ def create_l5_cvm_users_sample_table(
     """
 
     users_months_count = users.groupby("subscription_identifier").count()
-    long_term_users = users_months_count.filter("count == 5").select(
+    long_term_users = users_months_count.filter("count == 4).select(
         "subscription_identifier").distinct()
     long_term_users = long_term_users.withColumn(
         "subscription_identifier_last_letter",
