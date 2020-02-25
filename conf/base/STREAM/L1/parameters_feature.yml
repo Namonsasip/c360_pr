@@ -10,6 +10,7 @@ int_l1_streaming_content_type_features:
         traffic_volume_sum: "sum(volume_mb)"
     granularity: "access_method_num, date(register_date), day_id, content_group"
     event_date_column: "day_id"
+    output_catalog: "int_l1_streaming_content_type_features"
 
 l1_streaming_fav_content_group_by_volume:
     where_clause: "where traffic_rank = 1"
@@ -72,6 +73,7 @@ int_l1_streaming_video_service_feature:
         visit_count: "1" # counting active days
     granularity: "mobile_no, application, application_group, usage_date"
     event_date_column: "usage_date"
+    output_catalog: "int_l1_streaming_video_service_feature"
 
 l1_streaming_fav_video_service_by_download_feature:
     where_clause: "where sum_download_kb_traffic_rank = 1"
@@ -102,6 +104,7 @@ int_l1_streaming_music_service_feature:
         visit_count: "1" # counting active days
     granularity: "mobile_no, application, application_group, usage_date"
     event_date_column: "usage_date"
+    output_catalog: "int_l1_streaming_music_service_feature"
 
 l1_streaming_fav_music_service_by_download_feature:
     where_clause: "where sum_download_kb_traffic_rank = 1"
@@ -131,6 +134,7 @@ int_l1_streaming_esport_service_feature:
         visit_count: "1" # counting active days
     granularity: "mobile_no, application, application_group, usage_date"
     event_date_column: "usage_date"
+    output_catalog: "int_l1_streaming_esport_service_feature"
 
 l1_streaming_fav_esport_service_by_download_feature:
     where_clause: "where sum_download_kb_traffic_rank = 1"
@@ -189,7 +193,11 @@ l1_streaming_visit_count_and_download_traffic_feature:
         day_of_week: "date_format(usage_date, 'u')"
     granularity: "mobile_no, usage_date"
     event_date_column: "usage_date"
-    
+    output_catalog: "l1_streaming_visit_count_and_download_traffic_feature"
+#    join_column_with_cust_profile:
+#        access_method_num: mobile_no
+#        event_partition_date: event_partition_date # after aggregation
+
 l1_streaming_session_duration_feature:
     feature_list:
         sum_session_duration_youtube_video: "sum(case when lower(application) in ('youtube', 'youtube_go', 'youtubebyclick') then duration else 0 end)"
@@ -259,3 +267,8 @@ l1_streaming_session_duration_feature:
 
     granularity: "mobile_no, usage_date"
     event_date_column: "usage_date"
+#    join_column_with_cust_profile:
+#        access_method_num: mobile_no
+#        event_partition_date: event_partition_date # after aggregation
+#
+    output_catalog: "l1_streaming_session_duration_feature"

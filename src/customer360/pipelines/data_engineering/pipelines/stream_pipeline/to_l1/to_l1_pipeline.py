@@ -34,18 +34,19 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 from kedro.pipeline import Pipeline, node
 
 from customer360.utilities.config_parser import node_from_config
+from customer360.utilities.re_usable_functions import l1_massive_processing, add_start_of_week_and_month
 
 
 def streaming_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
             # # Content Type Features
-            # node(
-            #     node_from_config,
-            #     ["l0_streaming_ru_a_onair_vimmi_usage_daily",
-            #      "params:int_l1_streaming_content_type_features"],
-            #     "int_l1_streaming_content_type_features"
-            # ),
+            node(
+                l1_massive_processing,
+                ["l0_streaming_ru_a_onair_vimmi_usage_daily",
+                 "params:int_l1_streaming_content_type_features"],
+                "int_l1_streaming_content_type_features"
+            ),
             # node(
             #     node_from_config,
             #     ["int_l1_streaming_content_type_features",
@@ -68,11 +69,11 @@ def streaming_to_l1_pipeline(**kwargs):
             # ),
             #
             # # TV Show features
-            # node(
-            #     add_start_of_week_and_month,
-            #     ["l0_streaming_ru_a_onair_vimmi_usage_daily"],
-            #     "int_l0_streaming_vimmi_table"
-            # ),
+            node(
+                add_start_of_week_and_month,
+                ["l0_streaming_ru_a_onair_vimmi_usage_daily"],
+                "int_l0_streaming_vimmi_table"
+            ),
             # node(
             #     node_from_config,
             #     ["l0_streaming_ru_a_onair_vimmi_usage_daily",
@@ -87,12 +88,12 @@ def streaming_to_l1_pipeline(**kwargs):
             # ),
             #
             # # fav video service by download traffic
-            # node(
-            #     node_from_config,
-            #     ["l0_streaming_soc_mobile_app_daily",
-            #      "params:int_l1_streaming_video_service_feature"],
-            #     "int_l1_streaming_video_service_feature"
-            # ),
+            node(
+                l1_massive_processing,
+                ["l0_streaming_soc_mobile_app_daily",
+                 "params:int_l1_streaming_video_service_feature"],
+                "int_l1_streaming_video_service_feature"
+            ),
             # node(
             #     node_from_config,
             #     ["int_l1_streaming_video_service_feature",
@@ -107,12 +108,12 @@ def streaming_to_l1_pipeline(**kwargs):
             # ),
             #
             # # fav music service by download traffic
-            # node(
-            #     node_from_config,
-            #     ["l0_streaming_soc_mobile_app_daily",
-            #      "params:int_l1_streaming_music_service_feature"],
-            #     "int_l1_streaming_music_service_feature"
-            # ),
+            node(
+                l1_massive_processing,
+                ["l0_streaming_soc_mobile_app_daily",
+                 "params:int_l1_streaming_music_service_feature"],
+                "int_l1_streaming_music_service_feature"
+            ),
             # node(
             #     node_from_config,
             #     ["int_l1_streaming_music_service_feature",
@@ -127,12 +128,12 @@ def streaming_to_l1_pipeline(**kwargs):
             # ),
             #
             # # fav esport service by download traffic
-            # node(
-            #     node_from_config,
-            #     ["l0_streaming_soc_mobile_app_daily",
-            #      "params:int_l1_streaming_esport_service_feature"],
-            #     "int_l1_streaming_esport_service_feature"
-            # ),
+            node(
+                l1_massive_processing,
+                ["l0_streaming_soc_mobile_app_daily",
+                 "params:int_l1_streaming_esport_service_feature"],
+                "int_l1_streaming_esport_service_feature"
+            ),
             # node(
             #     node_from_config,
             #     ["int_l1_streaming_esport_service_feature",
@@ -148,18 +149,18 @@ def streaming_to_l1_pipeline(**kwargs):
             #
             # number of visit and volume of download traffic
             node(
-                node_from_config,
+                l1_massive_processing,
                 ["l0_streaming_soc_mobile_app_daily",
                  "params:l1_streaming_visit_count_and_download_traffic_feature"],
                 "l1_streaming_visit_count_and_download_traffic_feature"
             ),
 
             # session duration
-            # node(
-            #     node_from_config,
-            #     ["l0_streaming_soc_mobile_app_daily",
-            #      "params:l1_streaming_session_duration_feature"],
-            #     "l1_streaming_session_duration_feature"
-            # )
+            node(
+                l1_massive_processing,
+                ["l0_streaming_soc_mobile_app_daily",
+                 "params:l1_streaming_session_duration_feature"],
+                "l1_streaming_session_duration_feature"
+            )
         ], name="streaming_to_l1_pipeline"
     )
