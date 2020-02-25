@@ -93,3 +93,12 @@ def get_churn_targets(
     )
 
     return users_churn
+
+
+def get_min_max_churn_horizon(
+        target_parameters: Dict[str, Any],
+) -> int:
+
+    horizons = [target["inactivity_length"] + target["blindspot"] for target in
+                target_parameters]
+    return min(horizons), max(horizons)
