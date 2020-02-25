@@ -96,6 +96,8 @@ def derive_customer_profile(customer_prof):
     customer_prof = customer_prof.withColumn("start_of_month",f.to_date(f.date_trunc('month',customer_prof.event_partition_date)))\
         .withColumn("start_of_week",f.to_date(f.date_trunc('week',customer_prof.event_partition_date)))
 
+    customer_prof = customer_prof.dropDuplicates(["start_of_month","start_of_week","access_method_num","register_date","subscription_identifier"])
+
     return customer_prof
 
 def join_with_customer_profile(customer_prof,hs_summary):
