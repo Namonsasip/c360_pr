@@ -1,17 +1,17 @@
 
-l1_cam_post_channel_with_highest_conversion:
+l1_campaign_post_pre_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/CAMPAIGN/l1_cam_post_channel_with_highest_conversion/
+  filepath: /mnt/customer360-blob-data/C360/CAMPAIGN/l1_campaign_post_pre_daily/
   save_args:
     mode: "overwrite"
     partitionBy: ["event_partition_date"]
 
 
-l1_campaign_top_channel:
+l1_campaign_top_channel_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/CAMPAIGN/l1_campaign_top_channel/
+  filepath: /mnt/customer360-blob-data/C360/CAMPAIGN/l1_campaign_top_channel_daily/
   save_args:
     mode: "overwrite"
     partitionBy: ["event_partition_date"]
