@@ -41,5 +41,8 @@ def setup_names(
     """
 
     df = df.withColumnRenamed("partition_month", "key_date")
+    df = df.withColumnRenamed("event_partition_date", "key_date")
+    df = df.withColumnRenamed("max_usg_last_action_date_daily_last_ninety_day",
+                              "last_activity_date")
 
     return df

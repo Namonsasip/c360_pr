@@ -30,6 +30,9 @@
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as func
 from typing import Any, Dict
+import datetime
+
+from customer360.pipelines.cvm.src.setup_names import setup_names
 
 
 def get_churn_targets(
@@ -98,7 +101,64 @@ def get_churn_targets(
 def get_min_max_churn_horizon(
         target_parameters: Dict[str, Any],
 ) -> int:
+    """ Returns min and max of churn horizons.
 
+    Args:
+        target_parameters: churn targets dictionary.
+
+    Returns:
+        Min and max of churn horizons.
+    """
     horizons = [target["inactivity_length"] + target["blindspot"] for target in
                 target_parameters]
     return min(horizons), max(horizons)
+
+
+def filter_usage(
+        users: DataFrame,
+        usage: DataFrame,
+        parameters: Dict[str, Any],
+) -> DataFrame:
+    """ Reduce size of usage table, making it usable.
+
+    Args:
+        users: Table with users and dates to create targets for.
+        usage: Table with usage stats.
+        parameters: parameters defined in parameters.yml.
+    Returns:
+        Usage table with one column and less rows.
+    """
+
+    users = setup_names(users)
+
+    # filter columns
+    cols_to_pick = [
+        "subscription_identifier",
+        "key_date",
+        "last_activity_date",
+    ]
+    usage = usage.select(cols_to_pick)
+
+    # filter rows
+    def add_days(date: str, days_num: int) -> str:
+        date_format = "%Y-%m-%d"
+        start_date = datetime.datetime.strptime(date, date_format)
+        end_date = start_date + datetime.timedelta(days=days_num)
+
+        return end_date.strftime(date_format)
+
+    # setup date_filter
+    date_chosen = parameters["l5_cvm_one_day_users_table"]["date_chosen"]
+    min_horizon, max_horizon = get_min_max_churn_horizon(
+        parameters["targets"]["churn"])
+    min_date = add_days(date_chosen, min_horizon)
+    max_date = add_days(date_chosen, max_horizon)
+    usage = usage.filter("key_date >= '{}' and key_date <= '{}'".format(
+        min_date, max_date
+    ))
+
+    # filter users
+    keys = ["subscription_identifier", "key_date"]
+    usage = users.join(usage, keys, "inner")
+
+    return usage
