@@ -12,6 +12,8 @@ l0_streaming_ru_a_onair_vimmi_usage_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/stream_ru_a_onair_vimmi_usage_daily/
   file_format: parquet
+  load_args:
+    mergeSchema: true
 
 l0_streaming_soc_mobile_app_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
