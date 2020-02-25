@@ -2,37 +2,60 @@ from pyspark.sql import SparkSession, functions as F
 from pyspark.sql.types import StringType
 
 
-def union_daily_cust_profile(
-        cust_pre,
-        cust_post,
-        cust_non_mobile,
-        column_to_extract
-):
-    cust_pre.createOrReplaceTempView("cust_pre")
-    cust_post.createOrReplaceTempView("cust_post")
-    cust_non_mobile.createOrReplaceTempView("cust_non_mobile")
+def add_last_month_inactive_user(input_df, config):
+    input_df.createOrReplaceTempView("input_df")
+    spark = SparkSession.builder.getOrCreate()
 
-    sql_stmt = """
-        select {cust_pre_columns} from cust_pre
+    inactive_cust_feature_list = []
+    normal_feature_list = []
+    for each_feature in config["feature_list"].keys():
+        if each_feature == 'partition_month':
+            inactive_cust_feature_list.append("df1.next_month as partition_month")
+            normal_feature_list.append(each_feature)
+            continue
+
+        if each_feature == 'last_month' or each_feature == 'next_month':
+            continue
+
+        if each_feature == 'cust_active_this_month':
+            inactive_cust_feature_list.append("'N' as cust_active_this_month")
+            normal_feature_list.append(each_feature)
+            continue
+
+        inactive_cust_feature_list.append("df1.{feature_name} as {feature_name}"
+                                          .format(feature_name=each_feature))
+        normal_feature_list.append(each_feature)
+
+    df = spark.sql("""
+        with non_active_customer as (
+            select {inactive_cust_feature_list}
+            from (
+                select * from input_df 
+                where partition_month != (select max(partition_month) from input_df)
+                    and charge_type = 'Pre-paid'
+            ) df1
+            left anti join input_df df2
+            on df1.partition_month = df2.last_month
+                    and df1.access_method_num = df2.access_method_num
+                    and df1.register_date = df2.register_date
+                    
+            union all
+            
+            select {inactive_cust_feature_list}
+            from (
+                select * from input_df 
+                where partition_month != (select max(partition_month) from input_df)
+                    and charge_type != 'Pre-paid'
+            ) df1
+            left anti join input_df df2
+            on df1.partition_month = df2.last_month
+                    and df1.subscription_identifier = df2.subscription_identifier
+        )
+        select {normal_feature_list} from input_df
         union all
-        select {cust_post_columns} from cust_post
-        union all
-        select {cust_non_mobile_columns} from cust_non_mobile
-    """
-
-    def setup_column_to_extract(key):
-        columns = []
-
-        for alias, each_col in column_to_extract[key].items():
-            columns.append("{} as {}".format(each_col, alias))
-
-        return ','.join(columns)
-
-    sql_stmt = sql_stmt.format(cust_pre_columns=setup_column_to_extract("customer_pre"),
-                               cust_post_columns=setup_column_to_extract("customer_post"),
-                               cust_non_mobile_columns=setup_column_to_extract("customer_non_mobile"))
-
-    df = SparkSession.builder.getOrCreate().sql(sql_stmt)
+        select {normal_feature_list} from non_active_customer
+    """.format(inactive_cust_feature_list=','.join(inactive_cust_feature_list),
+               normal_feature_list=','.join(normal_feature_list)))
 
     return df
 

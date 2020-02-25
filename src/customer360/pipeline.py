@@ -30,43 +30,33 @@
 from typing import Dict
 
 from kedro.pipeline import Pipeline
-from customer360.pipelines import data_engineering as de
-from customer360.pipelines import data_science as ds
 
-# Here you can define your data-driven pipeline by importing your functions
-# and adding them to the pipeline as follows:
-#
-# from nodes.data_wrangling import clean_data, compute_features
-#
-# pipeline = Pipeline([
-#     node(clean_data, 'customers', 'prepared_customers'),
-#     node(compute_features, 'prepared_customers', ['X_train', 'Y_train'])
-# ])
-#
-# Once you have your pipeline defined, you can run it from the root of your
-# project by calling:
-#
-# $ kedro run
-
-from .pipelines.data_engineering import create_pipeline
 from .pipelines.data_engineering.pipelines.usage_pipeline.to_l1 import usage_to_l1_pipeline
+from src.customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l1.to_l1_pipeline import \
+    customer_profile_to_l1_pipeline
 from src.customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l3.to_l3_pipeline import \
     customer_profile_to_l3_pipeline, \
     customer_profile_billing_level_to_l3_pipeline
 from src.customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l4.to_l4_pipeline import \
     customer_profile_to_l4_pipeline
-from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l1.to_l1_pipeline import billing_to_l1_pipeline
-from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l3.to_l3_pipeline import billing_to_l3_pipeline
-from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l2.to_l2_pipeline import billing_to_l2_pipeline
-from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4.to_l4_pipline import billing_to_l4_pipeline
+from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l1.to_l1_pipeline import \
+    billing_to_l1_pipeline
+from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l3.to_l3_pipeline import \
+    billing_to_l3_pipeline
+from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l2.to_l2_pipeline import \
+    billing_to_l2_pipeline
+from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4.to_l4_pipeline import \
+    billing_to_l4_pipeline
 from .pipelines.data_engineering.pipelines.usage_pipeline.to_l2 import usage_to_l2_pipeline
-from .pipelines.data_engineering.pipelines.usage_pipeline.to_l4.to_l4_pipeline import usage_to_l4_pipeline
+from .pipelines.data_engineering.pipelines.usage_pipeline.to_l4 import usage_to_l4_pipeline
+from .pipelines.data_engineering.pipelines.usage_pipeline.to_l4 import usage_to_l4_daily_pipeline
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l1.to_l1_pipeline import streaming_to_l1_pipeline
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l2.to_l2_pipeline import streaming_to_l2_pipeline
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l3.to_l3_pipeline import streaming_to_l3_pipeline
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l4.to_l4_pipeline import streaming_to_l4_pipeline
 from .pipelines.data_engineering.pipelines.revenue_pipeline.to_l3 import revenue_to_l3_pipeline
 from .pipelines.data_engineering.pipelines.revenue_pipeline.to_l4 import revenue_to_l4_pipeline
+from .pipelines.data_engineering.pipelines.campaign_pipeline.to_l1 import campaign_to_l1_pipeline
 
 
 def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
@@ -100,8 +90,10 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
                        + billing_to_l4_pipeline()
                        + revenue_to_l3_pipeline()
                        + revenue_to_l4_pipeline(),
+        "usage_to_l4_daily_pipeline": usage_to_l4_daily_pipeline(),
         "usage_to_l2_pipeline": usage_to_l2_pipeline(),
         "usage_to_l4_pipeline": usage_to_l4_pipeline(),
+        "customer_profile_to_l1_pipeline": customer_profile_to_l1_pipeline(),
         "customer_profile_to_l3_pipeline": customer_profile_to_l3_pipeline(),
         "customer_profile_billing_level_to_l3_pipeline": customer_profile_billing_level_to_l3_pipeline(),
         "customer_profile_to_l4_pipeline": customer_profile_to_l4_pipeline(),
@@ -116,5 +108,6 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         "streaming_to_l4_pipeline": streaming_to_l4_pipeline(),
         'revenue_to_l3_pipeline': revenue_to_l3_pipeline(),
         'revenue_to_l4_pipeline': revenue_to_l4_pipeline(),
+        'campaign_to_l1_pipeline': campaign_to_l1_pipeline(),
         # "de": data_engineering_pipeline,
     }

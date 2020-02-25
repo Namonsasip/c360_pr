@@ -34,29 +34,18 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 from kedro.pipeline import Pipeline, node
 
 from customer360.utilities.config_parser import expansion
+from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l2 import usage_merge_all_data
+from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l2.to_l2_nodes import build_usage_l2_layer
 
 
 def usage_to_l2_pipeline(**kwargs):
     return Pipeline(
         [
-            node(
-                expansion,
-                ["l1_usage_call_relation_sum_daily",
-                 "params:l2_usage_call_relation_sum_weekly"],
-                "l2_usage_call_relation_sum_weekly"
-            ),
-            node(
-                expansion,
-                ["l1_usage_call_relation_sum_ir_daily",
-                 "params:l2_usage_call_relation_sum_ir_weekly"],
-                "l2_usage_call_relation_sum_ir_weekly"
-            ),
-            node(
-                expansion,
-                ["l1_usage_data_prepaid_postpaid_daily",
-                 "params:l2_usage_data_prepaid_postpaid_weekly"],
-                "l2_usage_data_prepaid_postpaid_weekly"
-            ),
+            node(build_usage_l2_layer,
+                 ["l1_usage_postpaid_prepaid_daily",
+                  "params:l2_usage_postpaid_prepaid_daily"],
+                 "l2_usage_postpaid_prepaid_weekly"
+                 ),
 
         ], name="usage_to_l2_pipeline"
     )

@@ -14,6 +14,14 @@ l4_billing_rolling_window_topup_and_volume:
     mode: "overwrite"
     partitionBy: ["start_of_week"]
 
+l4_daily_feature_topup_and_volume:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L4_FEATURES/BILLING/daily_topup_and_volume/
+  save_args:
+    mode: "append"
+    partitionBy: ["event_partition_date"]
+
 l4_billing_rolling_window_rpu:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
@@ -76,7 +84,7 @@ l4_billing_rolling_window_most_popular_topup_channel:
   file_format: "parquet"
   filepath: data/L4_FEATURES/BILLING/billing_and_payments_monthly_most_popular_topup_channel/
   save_args:
-    partitionBy: ["start_of_month"]
+    partitionBy: ["start_of_week"]
     mode: "overwrite"
 
 l4_rolling_window_last_top_up_channel:
@@ -85,4 +93,36 @@ l4_rolling_window_last_top_up_channel:
   filepath: data/L4_FEATURES/BILLING/billing_and_payments_last_top_up_channel/
   save_args:
     partitionBy: ["start_of_week"]
+    mode: "overwrite"
+
+l4_rolling_window_missed_bills:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L4_FEATURES/BILLING/billing_and_payments_missed_bills/
+  save_args:
+    partitionBy: ["start_of_month"]
+    mode: "overwrite"
+
+l4_rolling_window_popular_topup_day:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L4_FEATURES/BILLING/billing_and_payments_popular_topup_day/
+  save_args:
+    partitionBy: ["start_of_week"]
+    mode: "overwrite"
+
+l4_rolling_window_popular_topup_hour:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L4_FEATURES/BILLING/l4_features/billing_and_payments_popular_topup_hour/
+  save_args:
+    partitionBy: ["start_of_week"]
+    mode: "overwrite"
+
+l4_rolling_window_overdue_bills:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L4_FEATURES/BILLING/l4_features/billing_and_payments_overdue_bills/
+  save_args:
+    partitionBy: ["start_of_month"]
     mode: "overwrite"
