@@ -2,9 +2,9 @@
 l5_cvm_one_day_users_table:
   date_chosen: "2019-11-01"
 
-# Reve drop targets
-ard_targets:
-  targets:
+# List of targets
+targets:
+  ard:
     dilution1:
       colname: 'dilution1'
       unit_of_analysis: 'month'
@@ -15,10 +15,7 @@ ard_targets:
       unit_of_analysis: 'month'
       length: 3
       drop: 0.2
-
-# Churn targets
-churn_targets:
-  targets:
+  churn:
     churn5:
       colname: 'churn5'
       inactivity_length: 5

@@ -117,7 +117,7 @@ def add_ard_targets(
         Table with ARD targets.
     """
 
-    local_parameters = parameters["ard_targets"]["targets"]
+    local_parameters = parameters["targets"]["ard"]
     users = setup_names(users)
     ard_target_tables = [get_ard_targets(users, reve, local_parameters[targets])
                          for targets in local_parameters]
@@ -148,7 +148,7 @@ def add_churn_targets(
         Table with churn targets.
     """
 
-    local_parameters = parameters["churn_targets"]["targets"]
+    local_parameters = parameters["targets"]["churn"]
     users = setup_names(users)
     ard_target_tables = [get_churn_targets(users, usage,
                                            local_parameters[targets])
