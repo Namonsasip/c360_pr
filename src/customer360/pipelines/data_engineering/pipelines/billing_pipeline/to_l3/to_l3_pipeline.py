@@ -40,7 +40,7 @@ def billing_to_l3_pipeline(**kwargs):
             # ),
             # node(
             #     billing_time_diff_between_topups_monthly,
-            #     ["l1_customer_profile_union_daily_feature",
+            #     ["l3_customer_profile_include_1mo_non_active",
             #      "l3_billing_and_payments_monthly_topup_diff_time_intermediate",
             #      "params:l3_billing_and_payment_feature_time_diff_bw_topups_monthly"],
             #     "l3_billing_and_payments_monthly_topup_time_diff"
@@ -124,7 +124,7 @@ def billing_to_l3_pipeline(**kwargs):
             # node(
             #     billing_last_topup_channel_monthly,
             #     ["l0_billing_and_payments_rt_t_recharge_daily",
-            #      "l1_customer_profile_union_daily_feature",
+            #      "l3_customer_profile_include_1mo_non_active",
             #      "l0_billing_topup_type",
             #      "params:l3_last_topup_channel"],
             #     "l3_billing_and_payments_monthly_last_top_up_channel"
