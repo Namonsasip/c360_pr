@@ -88,6 +88,25 @@ l4_billing_time_diff_bw_topups:
     avg: ["payments_time_diff_avg"]
   read_from: "l2"
 
+l4_dynamics_time_diff_bw_topups:
+    where_clause: ""
+    feature_list:
+        start_of_week: "start_of_week"
+        access_method_num: "access_method_num"
+        register_date: "register_date"
+        subscription_identifier: "subscription_identifier"
+        sum_payments_time_diff_last_week: "sum_payments_time_diff_weekly_last_week"
+        sum_payments_time_diff_last_two_week: "sum_payments_time_diff_weekly_last_two_week"
+        sum_payments_time_diff_last_four_week: "sum_payments_time_diff_weekly_last_four_week"
+        sum_payments_time_diff_last_twelve_week: "sum_payments_time_diff_weekly_last_twelve_week"
+        avg_payments_time_diff_last_week: "avg_payments_time_diff_avg_weekly_last_week"
+        avg_payments_time_diff_last_two_week: "avg_payments_time_diff_avg_weekly_last_two_week"
+        avg_payments_time_diff_last_four_week: "avg_payments_time_diff_avg_weekly_last_four_week"
+        avg_payments_time_diff_last_twelve_week: "avg_payments_time_diff_avg_weekly_last_twelve_week"
+        week_dynamics_payments_time_diff: "avg_payments_time_diff_avg_weekly_last_two_week/avg_payments_time_diff_avg_weekly_last_two_week"
+        month_dynamics_payments_time_diff: "avg_payments_time_diff_avg_weekly_last_four_week/avg_payments_time_diff_avg_weekly_last_twelve_week"
+    granularity: ""
+
 l4_billing_before_top_up_balance:
   partition_by: ["access_method_num","register_date","subscription_identifier"]
   feature_list:
