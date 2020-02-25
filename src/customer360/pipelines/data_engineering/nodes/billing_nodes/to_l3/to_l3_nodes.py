@@ -6,6 +6,9 @@ from kedro.context.context import load_context
 from pathlib import Path
 import logging
 from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l1.to_l1_nodes import massive_processing
+import os
+
+conf = os.environ["CONF"]
 
 def top_up_channel_joined_data(input_df,topup_type_ref):
 
@@ -23,7 +26,7 @@ def massive_processing_monthly(data_frame: DataFrame, dict_obj: dict, output_df_
         # looping till length l
         for i in range(0, len(l), n):
             yield l[i:i + n]
-    CNTX = load_context(Path.cwd(), env='base')
+    CNTX = load_context(Path.cwd(), env=conf)
     data_frame = data_frame
     dates_list = data_frame.select('start_of_month').distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
@@ -52,7 +55,7 @@ def process_last_topup_channel(data_frame: DataFrame, cust_prof: DataFrame, sql:
         for i in range(0, len(l), n):
             yield l[i:i + n]
 
-    CNTX = load_context(Path.cwd(), env='base')
+    CNTX = load_context(Path.cwd(), env=conf)
     cust_data_frame = cust_prof
     dates_list = cust_data_frame.select('start_of_month').distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]

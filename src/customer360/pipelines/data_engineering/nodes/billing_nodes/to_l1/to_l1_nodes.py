@@ -5,6 +5,9 @@ from customer360.utilities.config_parser import node_from_config
 from kedro.context.context import load_context
 from pathlib import Path
 import logging
+import os
+
+conf = os.environ["CONF"]
 
 def massive_processing(input_df, customer_prof_input_df, join_function,sql,partition_date, cust_partition_date, cust_type, output_df_catalog):
     """
@@ -16,7 +19,7 @@ def massive_processing(input_df, customer_prof_input_df, join_function,sql,parti
         for i in range(0, len(l), n):
             yield l[i:i + n]
 
-    CNTX = load_context(Path.cwd(), env='base')
+    CNTX = load_context(Path.cwd(), env=conf)
     data_frame = input_df
     print("Filter "+cust_type)
     cust_data_frame = customer_prof_input_df.where("charge_type = '"+cust_type+"'")

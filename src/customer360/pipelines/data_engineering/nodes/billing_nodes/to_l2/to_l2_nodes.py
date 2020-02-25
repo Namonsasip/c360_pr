@@ -5,6 +5,9 @@ from kedro.context.context import load_context
 from pathlib import Path
 import logging
 from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l1.to_l1_nodes import massive_processing
+import os
+
+conf = os.environ["CONF"]
 
 def massive_processing_weekly(data_frame: DataFrame, dict_obj: dict, output_df_catalog) -> DataFrame:
     """
@@ -16,7 +19,7 @@ def massive_processing_weekly(data_frame: DataFrame, dict_obj: dict, output_df_c
         # looping till length l
         for i in range(0, len(l), n):
             yield l[i:i + n]
-    CNTX = load_context(Path.cwd(), env='base')
+    CNTX = load_context(Path.cwd(), env=conf)
     data_frame = data_frame
     dates_list = data_frame.select('start_of_week').distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
@@ -45,7 +48,7 @@ def customized_processing(data_frame: DataFrame, cust_prof: DataFrame, recharge_
         for i in range(0, len(l), n):
             yield l[i:i + n]
 
-    CNTX = load_context(Path.cwd(), env='base')
+    CNTX = load_context(Path.cwd(), env=conf)
     cust_data_frame = cust_prof.where("charge_type = 'Pre-paid'")
     dates_list = cust_prof.select('start_of_week').distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
