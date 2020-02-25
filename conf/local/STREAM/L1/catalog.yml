@@ -94,7 +94,7 @@ int_l1_streaming_music_service_feature:
   file_format: parquet
   save_args:
     mode: "overwrite"
-    partitionBy: ["event_partition_date"]
+#    partitionBy: ["event_partition_date"]
 
 l1_streaming_fav_music_service_by_download_feature:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -158,6 +158,15 @@ l1_streaming_fav_esport_service_by_visit_count_feature:
 l1_streaming_visit_count_and_download_traffic_feature:
   type: kedro.contrib.io.pyspark.SparkDataSet
   filepath: data/L1_DAILY/STREAM/l1_streaming_visit_count_and_download_traffic_feature/
+  file_format: parquet
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["event_partition_date"]
+
+
+l1_streaming_session_duration_feature:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L1_DAILY/STREAM/l1_streaming_session_duration_feature/
   file_format: parquet
   save_args:
     mode: "overwrite"
