@@ -1,12 +1,66 @@
 from pyspark.sql import DataFrame
+from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, execute_sql
 from pyspark.sql import functions as F
-from pyspark.sql import SparkSession
 from customer360.utilities.config_parser import node_from_config
-from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols
+from kedro.context.context import load_context
+from pathlib import Path
+import logging
+import os
+
+conf = os.environ["CONF"]
 
 
-def get_spark_session():
-    return SparkSession.builder.getOrCreate()
+def massive_processing(data_frame_1, data_frame_2, dict_1, dict_2, data_set_1, data_set_2) -> [DataFrame, DataFrame]:
+    """
+    :return:
+    """
+
+    def divide_chunks(l, n):
+        # looping till length l
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    CNTX = load_context(Path.cwd(), env=conf)
+    data_frame = data_frame_1
+    dates_list = data_frame.select('partition_date').distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+
+    mvv_new = list(divide_chunks(mvv_array, 2))
+    add_list = mvv_new
+
+    first_item = add_list[0]
+
+    add_list.remove(first_item)
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+
+        postpaid = data_frame_1.filter(F.col("partition_date").isin(*[curr_item]))
+        prepaid = data_frame_2.filter(F.col("partition_date").isin(*[curr_item]))
+
+        unioned_df = union_dataframes_with_missing_cols(prepaid, postpaid)
+
+        output_df_1, output_df_2 = pre_process_df(unioned_df)
+
+        output_df_1 = node_from_config(output_df_1, dict_1)
+        output_df_2 = node_from_config(output_df_2, dict_2)
+
+        CNTX.catalog.save(data_set_1, output_df_1)
+        CNTX.catalog.save(data_set_2, output_df_2)
+
+    logging.info("Final date to run for {0}".format(str(first_item)))
+
+    postpaid = data_frame_1.filter(F.col("partition_date").isin(*[first_item]))
+    prepaid = data_frame_2.filter(F.col("partition_date").isin(*[first_item]))
+
+    unioned_df = union_dataframes_with_missing_cols(prepaid, postpaid)
+
+    output_df_1, output_df_2 = pre_process_df(unioned_df)
+
+    output_df_1 = node_from_config(output_df_1, dict_1)
+    output_df_2 = node_from_config(output_df_2, dict_2)
+
+    return [output_df_1, output_df_2]
 
 
 def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
@@ -20,8 +74,17 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
     :param dictionary_obj_2:
     :return:
     """
-    data_frame = union_dataframes_with_missing_cols(postpaid, prepaid)
+    first_df, second_df = massive_processing(postpaid, prepaid, dictionary_obj, dictionary_obj_2,
+                                             'l1_campaign_post_pre_daily', 'l1_campaign_top_channel_daily')
 
+    return [first_df, second_df]
+
+
+def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame]:
+    """
+    :param data_frame:
+    :return:
+    """
     all_count_grp_cols = ['subscription_identifier', "contact_date",
                           'campaign_type', 'campaign_channel', 'response']
 
@@ -85,10 +148,6 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
         .agg(F.sum(F.col("base_count")).alias("campaign_overall_count")
              , F.max(F.col("contact_date")).alias("campaign_last_communication_date"))
 
-    final_df = final_df.join(total_campaign, ["subscription_identifier", "contact_date"],
-                             how="left")
+    final_df = final_df.join(total_campaign, ["subscription_identifier", "contact_date"], how="left")
 
-    final_df = node_from_config(final_df, dictionary_obj)
-    campaign_channel_top_df = node_from_config(campaign_channel_top_df, dictionary_obj_2)
-
-    return [final_df, campaign_channel_top_df]
+    return final_df, campaign_channel_top_df
