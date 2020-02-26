@@ -107,9 +107,9 @@ def l1_massive_processing(
     mvv_new = list(__divide_chunks(mvv_array, 3))
     add_list = mvv_new
 
-    # first_item = add_list[0]
-    #
-    # add_list.remove(first_item)
+    first_item = add_list[0]
+
+    add_list.remove(first_item)
     add_list = [20190801]
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
@@ -128,9 +128,9 @@ def l1_massive_processing(
 
         CNTX.catalog.save(config["output_catalog"], output_df)
 
-    # logging.info("Final date to run for {0}".format(str(first_item)))
-    # return_df = data_frame.filter(F.col("partition_date").isin(*[first_item]))
-    # return_df = node_from_config(return_df, config)
+    logging.info("Final date to run for {0}".format(str(first_item)))
+    return_df = data_frame.filter(F.col("partition_date").isin(*[first_item]))
+    return_df = node_from_config(return_df, config)
 
     # if cust_profile_df is not None:
     #     filtered_cust_profile = cust_profile_df.filter(F.col("event_partition_date").isin(*[
@@ -141,7 +141,7 @@ def l1_massive_processing(
     #                                            cust_profile_df=filtered_cust_profile,
     #                                            config=config)
 
-    return None
+    return return_df
 
 
 def l2_massive_processing(
