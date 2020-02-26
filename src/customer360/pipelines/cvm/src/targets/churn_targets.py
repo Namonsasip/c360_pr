@@ -55,17 +55,7 @@ def get_churn_targets(
     inactivity_length = target_parameters["inactivity_length"]
     blindspot = target_parameters["blindspot"]
 
-    usage_cols = [
-        "event_partition_date",
-        "subscription_identifier",
-        "max_usg_last_action_date_daily_last_ninety_day",
-    ]
-    usage = usage.select(usage_cols)
-
-    usage = usage.withColumnRenamed("event_partition_date", "target_date")
-    usage = usage.withColumnRenamed(
-        "max_usg_last_action_date_daily_last_ninety_day", "last_activity_date")
-    users = users.withColumnRenamed("partition_month", "key_date")
+    usage = usage.withColumnRenamed("key_date", "target_date")
 
     # key to join by
     usage = usage.withColumn(
@@ -158,7 +148,8 @@ def filter_usage(
     ))
 
     # filter users
-    keys = ["subscription_identifier", "key_date"]
-    usage = users.join(usage, keys, "inner")
+    users = setup_names(users)
+    users_subs_ids = users.select("subscription_identifier").distinct()
+    usage = users_subs_ids.join(usage, "subscription_identifier", "inner")
 
     return usage
