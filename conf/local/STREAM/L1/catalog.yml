@@ -42,7 +42,7 @@ int_l0_streaming_vimmi_table:
   file_format: parquet
   save_args:
     mode: "overwrite"
-    partitionBy: ["day_id"]
+    partitionBy: ["event_partition_date"]
 
 l1_streaming_fav_tv_show_by_episode_watched:
   type: kedro.contrib.io.pyspark.SparkDataSet
