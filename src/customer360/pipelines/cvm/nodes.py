@@ -76,10 +76,11 @@ def create_l5_cvm_one_day_users_table(
 
 
 def create_l5_cvm_users_sample_table(
-        users: DataFrame
+        users: DataFrame,
+        parameters: Dict[str, Any],
 ) -> DataFrame:
     """Sample long term users to create development sample. Users with at least
-    5 months of activity and subscription_identifier ending with 'A' are chosen.
+    4 months of activity and subscription_identifier ending with 'A' are chosen.
 
     Args:
         users: Monthly user table.
@@ -87,6 +88,8 @@ def create_l5_cvm_users_sample_table(
     Returns:
         Table with subscription_identifiers.
     """
+
+    chosen_date = parameters["l5_cvm_one_day_users_table"]["date_chosen"]
 
     users_months_count = users.groupby("subscription_identifier").count()
     long_term_users = users_months_count.filter("count == 4").select(
@@ -97,9 +100,10 @@ def create_l5_cvm_users_sample_table(
     long_term_users = long_term_users.filter(
         "subscription_identifier_last_letter == 'A'")
     long_term_users = long_term_users.select("subscription_identifier")
-    users = long_term_users.join(users, ["subscription_identifier"])
+    long_term_users = long_term_users.withColumn("key_date",
+                                                 func.lit(chosen_date))
 
-    return users
+    return long_term_users
 
 
 def add_ard_targets(
