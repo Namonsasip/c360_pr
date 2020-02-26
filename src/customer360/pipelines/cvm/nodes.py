@@ -195,8 +195,10 @@ def create_l5_cvm_one_day_train_test(
         "train_test",
         func.when(func.rand() <= train_share, "train").otherwise("test")
     )
+    train = train_test.filter("train_test == 'train'").drop("train_test")
+    test = train_test.filter("train_test == 'test'").drop("train_test")
 
-    return train_test
+    return train, test
 
 
 def create_l5_cvm_features_one_day_joined(
