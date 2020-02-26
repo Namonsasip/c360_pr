@@ -44,6 +44,8 @@ def create_dev_version(
     """
 
     chosen_date = parameters["dev_parameters"]["chosen_date"]
+    subscription_id_suffix = parameters["dev_parameters"][
+        "subscription_id_suffix"]
 
     dates_cols = ["partition_month", "event_partition_date", "start_of_month"]
     subs_cols = ["subscription_identifier"]
@@ -58,7 +60,8 @@ def create_dev_version(
     df = df.withColumn(
         "subscription_identifier_last_letter",
         df.subscription_identifier.substr(-2, 2))
-    subs_filter = "subscription_identifier_last_letter == {}".format()
+    subs_filter = "subscription_identifier_last_letter == {}".format(
+        subscription_id_suffix)
     dates_filter = "{} == '{}".format(dates_col, chosen_date)
 
     df = df.filter(subs_filter).filter(dates_filter).drop(
