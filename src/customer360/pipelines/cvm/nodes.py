@@ -155,9 +155,9 @@ def add_churn_targets(
     usage = setup_names(usage)
     usage = filter_usage(users, usage, parameters)
     churn_target_tables = [get_churn_targets(users, usage,
-                                           local_parameters[targets],
-                                           chosen_date)
-                         for targets in local_parameters]
+                                             local_parameters[targets],
+                                             chosen_date)
+                           for targets in local_parameters]
 
     def join_targets(df1, df2):
         return df1.join(
