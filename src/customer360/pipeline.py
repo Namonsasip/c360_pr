@@ -58,7 +58,7 @@ from .pipelines.data_engineering.pipelines.revenue_pipeline.to_l4 import revenue
 from .pipelines.data_engineering.pipelines.campaign_pipeline.to_l1 import campaign_to_l1_pipeline
 from .pipelines.cvm.pipeline import create_cvm_prepare_data_pipeline, \
     create_cvm_prepare_sample_data_pipeline
-from .pipelines.cvm.src.dev.pipeline import create_dev_version
+from .pipelines.cvm.src.dev.pipeline import create_cvm_dev_pipeline
 
 
 def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
@@ -115,7 +115,7 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         "revenue_to_l4_pipeline": revenue_to_l4_pipeline(),
         "cvm_prepare_data": create_cvm_prepare_data_pipeline(),
         "cvm_prepare_sample_data": create_cvm_prepare_sample_data_pipeline(),
-        "cvm_dev": create_dev_version(),
+        "cvm_dev": create_cvm_dev_pipeline(),
         "cvm": create_cvm_prepare_data_pipeline() + \
                create_cvm_prepare_sample_data_pipeline(),
     }

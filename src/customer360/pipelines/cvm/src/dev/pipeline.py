@@ -30,7 +30,7 @@ from kedro.pipeline import Pipeline, node
 from src.customer360.pipelines.cvm.src.dev.nodes import create_dev_version
 
 
-def create_cvm_dev(**kwargs):
+def create_cvm_dev_pipeline(**kwargs):
     return Pipeline(
         [
             node(
