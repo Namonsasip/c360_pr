@@ -48,17 +48,12 @@ def create_dev_version(
         "subscription_id_suffix"]
 
     dates_cols = ["partition_month", "event_partition_date", "start_of_month"]
-    subs_cols = ["subscription_identifier"]
-
     dates_intersect = set(dates_cols) & set(df.columns)
-    subs_intersect = set(subs_cols) & set(df.columns)
-
     dates_col = dates_intersect.pop()
-    subs_col = subs_intersect.pop()
 
     df = df.withColumn(
         "subscription_identifier_last_letter",
-        df.col(subs_col).substr(-2, 2))
+        df.subscription_identifier.substr(-2, 2))
     subs_filter = "subscription_identifier_last_letter == '{}'".format(
         subscription_id_suffix)
     dates_filter = "{} == '{}".format(dates_col, chosen_date)
