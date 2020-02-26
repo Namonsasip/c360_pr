@@ -107,9 +107,9 @@ def l1_massive_processing(
     mvv_new = list(__divide_chunks(mvv_array, 3))
     add_list = mvv_new
 
-    first_item = add_list[0]
-
-    add_list.remove(first_item)
+    # first_item = add_list[0]
+    #
+    # add_list.remove(first_item)
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         small_df = data_frame.filter(F.col("partition_date").isin(*[curr_item]))
@@ -127,9 +127,9 @@ def l1_massive_processing(
 
         CNTX.catalog.save(config["output_catalog"], output_df)
 
-    logging.info("Final date to run for {0}".format(str(first_item)))
-    return_df = data_frame.filter(F.col("partition_date").isin(*[first_item]))
-    return_df = node_from_config(return_df, config)
+    # logging.info("Final date to run for {0}".format(str(first_item)))
+    # return_df = data_frame.filter(F.col("partition_date").isin(*[first_item]))
+    # return_df = node_from_config(return_df, config)
 
     # if cust_profile_df is not None:
     #     filtered_cust_profile = cust_profile_df.filter(F.col("event_partition_date").isin(*[
@@ -139,5 +139,55 @@ def l1_massive_processing(
     #     return_df = join_with_customer_profile(input_df=output_df,
     #                                            cust_profile_df=filtered_cust_profile,
     #                                            config=config)
+
+    return None
+
+
+def l2_massive_processing(
+        input_df,
+        config,
+        cust_profile_df=None
+):
+    CNTX = load_context(Path.cwd(), env=conf)
+    data_frame = input_df
+    dates_list = data_frame.select('start_of_week').distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+
+    mvv_new = list(__divide_chunks(mvv_array, 3))
+    add_list = mvv_new
+
+    first_item = add_list[0]
+
+    add_list.remove(first_item)
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        small_df = data_frame.filter(F.col("start_of_week").isin(*[curr_item]))
+
+        output_df = node_from_config(small_df, config)
+
+        if cust_profile_df is not None:
+            filtered_cust_profile = cust_profile_df.filter(F.col("event_partition_date").isin(*[
+                datetime.strptime(str(each_date), "%Y%m%d").strftime("%Y-%m-%d") for each_date in curr_item
+            ]))
+
+            output_df = join_with_customer_profile(input_df=output_df,
+                                                   cust_profile_df=filtered_cust_profile,
+                                                   config=config)
+
+        CNTX.catalog.save(config["output_catalog"], output_df)
+
+    logging.info("Final date to run for {0}".format(str(first_item)))
+    return_df = data_frame.filter(F.col("start_of_week").isin(*[first_item]))
+    return_df = node_from_config(return_df, config)
+
+    if cust_profile_df is not None:
+        filtered_cust_profile = cust_profile_df.filter(F.col("event_partition_date").isin(*[
+            datetime.strptime(str(each_date), "%Y%m%d").strftime("%Y-%m-%d") for each_date in first_item
+        ]))
+
+        return_df = join_with_customer_profile(input_df=output_df,
+                                               cust_profile_df=filtered_cust_profile,
+                                               config=config)
 
     return return_df
