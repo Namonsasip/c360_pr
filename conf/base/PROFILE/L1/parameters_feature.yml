@@ -67,7 +67,7 @@ l1_customer_profile_union_daily_feature:
     royal_family_flag: "royal_family_flag"
 
   customer_non_mobile:
-    subscription_identifier: "subscription_id"
+    subscription_identifier: "subscription_identifier"
     access_method_num: "mobile_no"
     register_date: "register_date"
     zipcode: "zipcode"
