@@ -39,4 +39,4 @@ targets:
 
 # Train / test split table parameters
 l5_cvm_one_day_train_test:
-  train_share: 0.8
+  train_share: 0.9
