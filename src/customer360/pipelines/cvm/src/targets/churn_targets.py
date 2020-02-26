@@ -39,6 +39,7 @@ def get_churn_targets(
         users: DataFrame,
         usage: DataFrame,
         target_parameters: Dict[str, Any],
+        chosen_date: str,
 ) -> DataFrame:
     """ Create table with one churn target.
 
@@ -46,6 +47,7 @@ def get_churn_targets(
         users: Table with users and dates to create targets for.
         usage: Table with usage stats.
         target_parameters: parameters for given target.
+        chosen_date: date to calculate churn target for.
 
     Returns:
         Table with single churn target.
@@ -56,6 +58,8 @@ def get_churn_targets(
     blindspot = target_parameters["blindspot"]
 
     usage = usage.withColumnRenamed("key_date", "target_date")
+    usage = usage.filter("target_date == {}".format(
+        add_days(chosen_date, inactivity_length + blindspot)))
 
     # key to join by
     usage = usage.withColumn(

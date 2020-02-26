@@ -149,11 +149,14 @@ def add_churn_targets(
     """
 
     local_parameters = parameters["targets"]["churn"]
+    chosen_date = parameters["l5_cvm_one_day_users_table"]
+
     users = setup_names(users)
     usage = setup_names(usage)
     usage = filter_usage(users, usage, parameters)
     ard_target_tables = [get_churn_targets(users, usage,
-                                           local_parameters[targets])
+                                           local_parameters[targets],
+                                           chosen_date)
                          for targets in local_parameters]
 
     def join_targets(df1, df2):
