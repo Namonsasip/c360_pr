@@ -74,7 +74,8 @@ def create_cvm_prepare_data_pipeline(**kwargs):
                 create_l5_cvm_one_day_train_test,
                 ["l5_cvm_features_targets_one_day",
                  "parameters"],
-                "l5_cvm_one_day_train_test",
+                ["l5_cvm_one_day_train",
+                 "l5_cvm_one_day_test"],
                 name="create_l5_cvm_one_day_train_test"
             ),
             node(
@@ -127,7 +128,8 @@ def create_cvm_prepare_sample_data_pipeline(**kwargs):
                 create_l5_cvm_one_day_train_test,
                 ["l5_cvm_features_targets_one_day_sample",
                  "parameters"],
-                "l5_cvm_one_day_train_test_sample",
+                ["l5_cvm_one_day_train_sample",
+                 "l5_cvm_one_day_test_sample"],
                 name="create_l5_cvm_one_day_train_test_sample"
             ),
             node(
