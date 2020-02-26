@@ -30,7 +30,7 @@ from kedro.pipeline import Pipeline, node
 
 from src.customer360.utilities.config_parser import node_from_config
 from customer360.pipelines.data_engineering.nodes.customer_profile_nodes.to_l1.to_l1_nodes import *
-
+from customer360.utilities.re_usable_functions import add_start_of_week_and_month
 
 def customer_profile_to_l1_pipeline(**kwargs):
     return Pipeline(
@@ -41,6 +41,12 @@ def customer_profile_to_l1_pipeline(**kwargs):
                  "l0_customer_profile_profile_customer_profile_post_current",
                  "l0_customer_profile_profile_customer_profile_post_non_mobile_current_non_mobile_current",
                  "params:l1_customer_profile_union_daily_feature"],
+                "int_l1_customer_profile_union_daily_feature"
+            ),
+            node(
+                add_start_of_week_and_month,
+                ["int_l1_customer_profile_union_daily_feature",
+                 "params:customer_profile_partition_col"],
                 "l1_customer_profile_union_daily_feature"
             )
         ]
