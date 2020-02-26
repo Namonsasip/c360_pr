@@ -99,8 +99,9 @@ def get_min_max_churn_horizon(
     Returns:
         Min and max of churn horizons.
     """
-    horizons = [target["inactivity_length"] + target["blindspot"] for target in
-                target_parameters]
+    horizons = [target_parameters[target]["inactivity_length"] + \
+                target_parameters[target]["blindspot"]
+                for target in target_parameters]
     return min(horizons), max(horizons)
 
 
