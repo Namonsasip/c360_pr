@@ -69,11 +69,11 @@ def streaming_to_l1_pipeline(**kwargs):
             # ),
             #
             # # TV Show features
-            # node(
-            #     add_start_of_week_and_month,
-            #     ["l0_streaming_ru_a_onair_vimmi_usage_daily"],
-            #     "int_l0_streaming_vimmi_table"
-            # ),
+                node(
+                    add_start_of_week_and_month,
+                    ["l0_streaming_ru_a_onair_vimmi_usage_daily"],
+                    "int_l0_streaming_vimmi_table"
+                ),
             # node(
             #     node_from_config,
             #     ["l0_streaming_ru_a_onair_vimmi_usage_daily",
