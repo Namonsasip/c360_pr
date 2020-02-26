@@ -149,7 +149,7 @@ def add_churn_targets(
     """
 
     local_parameters = parameters["targets"]["churn"]
-    chosen_date = parameters["l5_cvm_one_day_users_table"]
+    chosen_date = parameters["l5_cvm_one_day_users_table"]["chosen_date"]
 
     users = setup_names(users)
     usage = setup_names(usage)
