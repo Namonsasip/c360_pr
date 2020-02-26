@@ -32,9 +32,6 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 """
 
 from kedro.pipeline import Pipeline, node
-
-from customer360.utilities.config_parser import expansion
-from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l2 import usage_merge_all_data
 from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l2.to_l2_nodes import build_usage_l2_layer
 
 

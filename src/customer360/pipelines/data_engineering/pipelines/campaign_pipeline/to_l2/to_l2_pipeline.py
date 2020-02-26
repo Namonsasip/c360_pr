@@ -33,15 +33,16 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 
-from customer360.pipelines.data_engineering.nodes.campaign_nodes.to_l2.to_l2_nodes import build_campaign_l2_layer
+from customer360.pipelines.data_engineering.nodes.campaign_nodes.to_l2 import build_campaign_l2_layer
 
 
-def v(**kwargs):
+def campaign_to_l2_pipeline(**kwargs):
     return Pipeline(
         [
             node(build_campaign_l2_layer,
-                 ["l1_campaign_post_pre_daily", "l1_campaign_top_channel_daily"],
-                 "l2_campaign_postpaid_prepaid_weekly"
+                 ["l1_campaign_post_pre_fbb_daily", "l1_campaign_top_channel_daily"
+                  , "params:l2_campaign_post_pre_fbb_weekly", "params:l2_campaign_top_channel_weekly"],
+                 ["l2_campaign_postpaid_prepaid_fbb_weekly", "l2_campaign_top_channel_weekly"]
                  ),
 
         ], name="campaign_to_l2_pipeline"

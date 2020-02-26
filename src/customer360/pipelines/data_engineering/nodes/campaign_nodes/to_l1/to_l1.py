@@ -10,7 +10,8 @@ import os
 conf = os.environ["CONF"]
 
 
-def massive_processing(data_frame_1, data_frame_2, dict_1, dict_2, data_set_1, data_set_2) -> [DataFrame, DataFrame]:
+def massive_processing(data_frame_1, data_frame_2, data_frame_3, dict_1
+                       , dict_2, data_set_1, data_set_2) -> [DataFrame, DataFrame]:
     """
     :return:
     """
@@ -37,8 +38,9 @@ def massive_processing(data_frame_1, data_frame_2, dict_1, dict_2, data_set_1, d
 
         postpaid = data_frame_1.filter(F.col("partition_date").isin(*[curr_item]))
         prepaid = data_frame_2.filter(F.col("partition_date").isin(*[curr_item]))
+        fbb = data_frame_3.filter(F.col("partition_date").isin(*[curr_item]))
 
-        unioned_df = union_dataframes_with_missing_cols(prepaid, postpaid)
+        unioned_df = union_dataframes_with_missing_cols(prepaid, postpaid, fbb)
 
         output_df_1, output_df_2 = pre_process_df(unioned_df)
 
@@ -52,8 +54,9 @@ def massive_processing(data_frame_1, data_frame_2, dict_1, dict_2, data_set_1, d
 
     postpaid = data_frame_1.filter(F.col("partition_date").isin(*[first_item]))
     prepaid = data_frame_2.filter(F.col("partition_date").isin(*[first_item]))
+    fbb = data_frame_3.filter(F.col("partition_date").isin(*[first_item]))
 
-    unioned_df = union_dataframes_with_missing_cols(prepaid, postpaid)
+    unioned_df = union_dataframes_with_missing_cols(prepaid, postpaid, fbb)
 
     output_df_1, output_df_2 = pre_process_df(unioned_df)
 
@@ -65,16 +68,18 @@ def massive_processing(data_frame_1, data_frame_2, dict_1, dict_2, data_set_1, d
 
 def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
                                              prepaid: DataFrame,
+                                             fbb: DataFrame,
                                              dictionary_obj,
                                              dictionary_obj_2) -> [DataFrame, DataFrame]:
     """
     :param postpaid:
     :param prepaid:
+    :param fbb
     :param dictionary_obj:
     :param dictionary_obj_2:
     :return:
     """
-    first_df, second_df = massive_processing(postpaid, prepaid, dictionary_obj, dictionary_obj_2,
+    first_df, second_df = massive_processing(postpaid, prepaid, fbb, dictionary_obj, dictionary_obj_2,
                                              'l1_campaign_post_pre_daily', 'l1_campaign_top_channel_daily')
 
     return [first_df, second_df]

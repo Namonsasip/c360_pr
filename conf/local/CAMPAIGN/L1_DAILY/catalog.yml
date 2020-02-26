@@ -1,8 +1,8 @@
 
-l1_campaign_post_pre_daily:
+l1_campaign_post_pre_fbb_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/CAMPAIGN/l1_features/l1_campaign_post_pre_daily/
+  filepath: data/CAMPAIGN/l1_features/l1_campaign_post_pre_fbb_daily/
   save_args:
     mode: "overwrite"
     partitionBy: ["event_partition_date"]
