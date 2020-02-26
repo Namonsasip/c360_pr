@@ -1,6 +1,6 @@
 import logging
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
@@ -9,7 +9,7 @@ from pyspark.sql import SparkSession
 from kedro.context import load_context
 from pathlib import Path
 
-from customer360.utilities.config_parser import node_from_config
+from customer360.utilities.config_parser import node_from_config, expansion
 
 conf = os.getenv("CONF", "local")
 
@@ -88,8 +88,7 @@ def join_with_customer_profile(
             continue
         col_to_select.append(F.col("right.{}".format(col)).alias(col))
 
-    right_cols = []
-    result_df = result_df.select(right_cols)
+    result_df = result_df.select(col_to_select)
 
     return result_df
 
@@ -144,14 +143,81 @@ def l1_massive_processing(
     return return_df
 
 
+def l2_massive_processing_with_expansion(
+        input_df,
+        config,
+        cust_profile_df=None
+):
+    return_df = _massive_processing(input_df=input_df,
+                                    config=config,
+                                    source_partition_col="start_of_week",
+                                    sql_generator_func=expansion,
+                                    cust_profile_df=cust_profile_df)
+    return return_df
+
+
 def l2_massive_processing(
         input_df,
         config,
         cust_profile_df=None
 ):
+    def l2_join_with_customer_profile(
+            input_df,
+            cust_profile_df,
+            config,
+            current_item
+    ):
+
+        # grouping all distinct customer per week
+        filtered_cust_profile_df = (cust_profile_df
+                                    .filter(F.col("start_of_week").isin(current_item))
+                                    .select(*config["join_column_with_cust_profile"].keys()).distinct())
+
+        joined_condition = None
+        for left_col, right_col in config["join_column_with_cust_profile"].items():
+            condition = F.col("left.{}".format(left_col)).eqNullSafe(F.col("right.{}".format(right_col)))
+            if joined_condition is None:
+                joined_condition = condition
+                continue
+
+            joined_condition &= condition
+
+        result_df = (filtered_cust_profile_df.alias("left")
+                     .join(other=input_df.alias("right"),
+                           on=joined_condition,
+                           how="left"))
+        col_to_select = []
+        for col in input_df.columns:
+            if col in config["join_column_with_cust_profile"]:
+                col_to_select.append(F.col("left.{}".format(col)).alias(col))
+                continue
+            col_to_select.append(F.col("right.{}".format(col)).alias(col))
+
+        result_df = result_df.select(col_to_select)
+
+        return result_df
+
+
+    return_df = _massive_processing(input_df=input_df,
+                                    config=config,
+                                    source_partition_col="start_of_week",
+                                    cust_profile_df=cust_profile_df,
+                                    cust_profile_join_func=l2_join_with_customer_profile)
+    return return_df
+
+
+def _massive_processing(
+        input_df,
+        config,
+        source_partition_col="partition_date",
+        sql_generator_func=node_from_config,
+        cust_profile_df=None,
+        cust_profile_join_func=None
+):
+
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = input_df
-    dates_list = data_frame.select('start_of_week').distinct().collect()
+    dates_list = data_frame.select(source_partition_col).distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
@@ -163,32 +229,26 @@ def l2_massive_processing(
     add_list.remove(first_item)
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
-        small_df = data_frame.filter(F.col("start_of_week").isin(*[curr_item]))
+        small_df = data_frame.filter(F.col(source_partition_col).isin(*[curr_item]))
 
-        output_df = node_from_config(small_df, config)
+        output_df = sql_generator_func(small_df, config)
 
         if cust_profile_df is not None:
-            filtered_cust_profile = cust_profile_df.filter(F.col("event_partition_date").isin(*[
-                datetime.strptime(str(each_date), "%Y%m%d").strftime("%Y-%m-%d") for each_date in curr_item
-            ]))
-
-            output_df = join_with_customer_profile(input_df=output_df,
-                                                   cust_profile_df=filtered_cust_profile,
-                                                   config=config)
+            output_df = cust_profile_join_func(input_df=output_df,
+                                               cust_profile_df=cust_profile_df,
+                                               config=config,
+                                               current_item=curr_item)
 
         CNTX.catalog.save(config["output_catalog"], output_df)
 
     logging.info("Final date to run for {0}".format(str(first_item)))
-    return_df = data_frame.filter(F.col("start_of_week").isin(*[first_item]))
-    return_df = node_from_config(return_df, config)
+    return_df = data_frame.filter(F.col(source_partition_col).isin(*[first_item]))
+    return_df = sql_generator_func(return_df, config)
 
     if cust_profile_df is not None:
-        filtered_cust_profile = cust_profile_df.filter(F.col("event_partition_date").isin(*[
-            datetime.strptime(str(each_date), "%Y%m%d").strftime("%Y-%m-%d") for each_date in first_item
-        ]))
-
-        return_df = join_with_customer_profile(input_df=output_df,
-                                               cust_profile_df=filtered_cust_profile,
-                                               config=config)
+        return_df = cust_profile_join_func(input_df=return_df,
+                                           cust_profile_df=cust_profile_df,
+                                           config=config,
+                                           current_item=first_item)
 
     return return_df
