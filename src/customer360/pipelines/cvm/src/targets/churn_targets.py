@@ -58,7 +58,7 @@ def get_churn_targets(
     blindspot = target_parameters["blindspot"]
 
     usage = usage.withColumnRenamed("key_date", "target_date")
-    usage = usage.filter("target_date == {}".format(
+    usage = usage.filter("target_date == '{}'".format(
         add_days(chosen_date, inactivity_length + blindspot)))
 
     # key to join by
