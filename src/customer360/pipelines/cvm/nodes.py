@@ -150,6 +150,7 @@ def add_churn_targets(
 
     local_parameters = parameters["targets"]["churn"]
     users = setup_names(users)
+    usage = setup_names(usage)
     usage = filter_usage(users, usage, parameters)
     ard_target_tables = [get_churn_targets(users, usage,
                                            local_parameters[targets])
