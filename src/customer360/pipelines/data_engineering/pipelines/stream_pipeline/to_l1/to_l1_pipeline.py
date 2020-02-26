@@ -40,13 +40,13 @@ from customer360.utilities.re_usable_functions import l1_massive_processing, add
 def streaming_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
-            # # Content Type Features
-            # node(
-            #     l1_massive_processing,
-            #     ["l0_streaming_ru_a_onair_vimmi_usage_daily",
-            #      "params:int_l1_streaming_content_type_features"],
-            #     "int_l1_streaming_content_type_features"
-            # ),
+            # Content Type Features
+            node(
+                l1_massive_processing,
+                ["l0_streaming_ru_a_onair_vimmi_usage_daily",
+                 "params:int_l1_streaming_content_type_features"],
+                "int_l1_streaming_content_type_features"
+            ),
             # # node(
             # #     node_from_config,
             # #     ["int_l1_streaming_content_type_features",
