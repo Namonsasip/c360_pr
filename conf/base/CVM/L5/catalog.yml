@@ -45,16 +45,30 @@ l5_cvm_churn_one_day_targets_sample:
     mode: "overwrite"
 
 # table / train sample
-l5_cvm_one_day_train_test:
+l5_cvm_one_day_train:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_one_day_train_test/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_one_day_train/
   file_format: "parquet"
   save_args:
     mode: "overwrite"
 
-l5_cvm_one_day_train_test_sample:
+l5_cvm_one_day_test:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_one_day_train_test_sample/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_one_day_test/
+  file_format: "parquet"
+  save_args:
+    mode: "overwrite"
+
+l5_cvm_one_day_train_sample:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_one_day_train_sample/
+  file_format: "parquet"
+  save_args:
+    mode: "overwrite"
+
+l5_cvm_one_day_test_sample:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_one_day_test_sample/
   file_format: "parquet"
   save_args:
     mode: "overwrite"
