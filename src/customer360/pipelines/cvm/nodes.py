@@ -154,7 +154,7 @@ def add_churn_targets(
     users = setup_names(users)
     usage = setup_names(usage)
     usage = filter_usage(users, usage, parameters)
-    ard_target_tables = [get_churn_targets(users, usage,
+    churn_target_tables = [get_churn_targets(users, usage,
                                            local_parameters[targets],
                                            chosen_date)
                          for targets in local_parameters]
@@ -166,7 +166,7 @@ def add_churn_targets(
             "full"
         )
 
-    return functools.reduce(join_targets, ard_target_tables)
+    return functools.reduce(join_targets, churn_target_tables)
 
 
 def create_l5_cvm_one_day_train_test(
