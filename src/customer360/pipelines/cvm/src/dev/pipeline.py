@@ -35,28 +35,29 @@ def create_cvm_dev_pipeline(**kwargs):
         [
             node(
                 create_dev_version,
-                ["l3_customer_profile_include_1mo_non_active_dev",
+                ["l3_customer_profile_include_1mo_non_active_",
                  "parameters"],
                 "l3_customer_profile_include_1mo_non_active_dev",
                 name="create_l3_customer_profile_include_1mo_non_active_dev"
             ),
             node(
                 create_dev_version,
-                ["l0_product_product_pru_m_package_master_group_dev",
+                ["l0_product_product_pru_m_package_master_group",
                  "parameters"],
                 "l0_product_product_pru_m_package_master_group_dev",
                 name="create_l0_product_product_pru_m_package_master_group_dev"
             ),
             node(
                 create_dev_version,
-                ["l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_dev",
+                ["l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
                  "parameters"],
                 "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_dev",
-                name="create_l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_dev"
+                name="create_l4_revenue_prepaid_ru_f_sum_revenue_by_service" + \
+                     "_monthly_dev"
             ),
             node(
                 create_dev_version,
-                ["l4_usage_prepaid_postpaid_daily_features_dev",
+                ["l4_usage_prepaid_postpaid_daily_features_",
                  "parameters"],
                 "l4_usage_prepaid_postpaid_daily_features_dev",
                 name="create_l4_usage_prepaid_postpaid_daily_features_dev"
@@ -96,19 +97,19 @@ def create_cvm_dev_pipeline(**kwargs):
                 "l5_cvm_features_targets_one_day_dev",
                 name="create_l5_cvm_features_targets_one_day_dev"
             ),
-#             node(
-#                 create_dev_version,
-#                 ["l5_cvm_one_day_train",
-#                  "parameters"],
-#                 "l5_cvm_one_day_train_dev",
-#                 name="create_l5_cvm_one_day_train_dev"
-#             ),
-#             node(
-#                 create_dev_version,
-#                 ["l5_cvm_one_day_test",
-#                  "parameters"],
-#                 "l5_cvm_one_day_test_dev",
-#                 name="create_l5_cvm_one_day_test_dev"
-#             ),
+            #             node(
+            #                 create_dev_version,
+            #                 ["l5_cvm_one_day_train",
+            #                  "parameters"],
+            #                 "l5_cvm_one_day_train_dev",
+            #                 name="create_l5_cvm_one_day_train_dev"
+            #             ),
+            #             node(
+            #                 create_dev_version,
+            #                 ["l5_cvm_one_day_test",
+            #                  "parameters"],
+            #                 "l5_cvm_one_day_test_dev",
+            #                 name="create_l5_cvm_one_day_test_dev"
+            #             ),
         ]
     )
