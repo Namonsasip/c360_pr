@@ -60,7 +60,7 @@ def create_dev_version(
     df = df.withColumn(
         "subscription_identifier_last_letter",
         df.subscription_identifier.substr(-2, 2))
-    subs_filter = "subscription_identifier_last_letter == {}".format(
+    subs_filter = "subscription_identifier_last_letter == '{}'".format(
         subscription_id_suffix)
     dates_filter = "{} == '{}".format(dates_col, chosen_date)
 
