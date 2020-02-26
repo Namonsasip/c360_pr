@@ -238,8 +238,9 @@ def subs_date_join(
     """
 
     keys = ["key_date", "subscription_identifier"]
+    tables = [setup_names(tab) for tab in args]
 
     def join_on(df1, df2):
         return df1.join(df2, keys, "left")
 
-    return functools.reduce(join_on, args)
+    return functools.reduce(join_on, tables)
