@@ -102,7 +102,8 @@ def create_cvm_prepare_sample_data_pipeline(**kwargs):
         [
             node(
                 create_l5_cvm_users_sample_table,
-                "l5_cvm_one_day_users_table",
+                ["l5_cvm_one_day_users_table",
+                 "parameters"],
                 "l5_cvm_one_day_users_sample_table",
                 name="create_l5_cvm_users_sample_table"
             ),
