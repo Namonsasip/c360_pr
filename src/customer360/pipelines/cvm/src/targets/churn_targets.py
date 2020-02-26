@@ -157,4 +157,4 @@ def filter_usage(
     users_subs_ids = users.select("subscription_identifier").distinct()
     usage = users_subs_ids.join(usage, "subscription_identifier", "inner")
 
-    return usage.collect()
+    return usage
