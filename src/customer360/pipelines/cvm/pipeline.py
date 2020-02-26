@@ -140,7 +140,7 @@ def create_cvm_prepare_sample_data_pipeline(**kwargs):
             node(
                 subs_date_join,
                 ["l5_cvm_features_one_day_joined_sample",
-                 "l5_cvm_churn_one_day_targets",
+                 "l5_cvm_churn_one_day_targets_sample",
                  "l5_cvm_ard_one_day_targets_sample"],
                 "l5_cvm_features_targets_one_day_sample",
                 name="create_l5_cvm_features_targets_one_day_sample"
