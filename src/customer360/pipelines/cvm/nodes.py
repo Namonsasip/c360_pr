@@ -33,7 +33,7 @@ import pyspark.sql.functions as func
 
 from customer360.pipelines.cvm.src.targets.ard_targets import get_ard_targets
 from customer360.pipelines.cvm.src.targets.churn_targets import \
-    get_churn_targets
+    get_churn_targets, filter_usage
 from customer360.pipelines.cvm.src.setup_names import setup_names
 
 
@@ -150,6 +150,7 @@ def add_churn_targets(
 
     local_parameters = parameters["targets"]["churn"]
     users = setup_names(users)
+    usage = filter_usage(users, usage, parameters)
     ard_target_tables = [get_churn_targets(users, usage,
                                            local_parameters[targets])
                          for targets in local_parameters]
