@@ -35,7 +35,7 @@ def create_cvm_dev_pipeline(**kwargs):
         [
             node(
                 create_dev_version,
-                ["l3_customer_profile_include_1mo_non_active_",
+                ["l3_customer_profile_include_1mo_non_active",
                  "parameters"],
                 "l3_customer_profile_include_1mo_non_active_dev",
                 name="create_l3_customer_profile_include_1mo_non_active_dev"
@@ -57,7 +57,7 @@ def create_cvm_dev_pipeline(**kwargs):
             ),
             node(
                 create_dev_version,
-                ["l4_usage_prepaid_postpaid_daily_features_",
+                ["l4_usage_prepaid_postpaid_daily_features",
                  "parameters"],
                 "l4_usage_prepaid_postpaid_daily_features_dev",
                 name="create_l4_usage_prepaid_postpaid_daily_features_dev"
