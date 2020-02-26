@@ -34,13 +34,13 @@ def device_to_l2_pipeline(**kwargs):
             ),
 
             # Weekly most used device
-            node(
-                device_most_used_weekly,
-                ["l1_customer_profile_union_daily_feature",
-                 "device_summary_with_config",
-                 "params:l2_device_most_used"],
-                "l2_device_most_used_weekly"
-            ),
+            # node(
+            #     device_most_used_weekly,
+            #     ["l1_customer_profile_union_daily_feature",
+            #      "device_summary_with_config",
+            #      "params:l2_device_most_used"],
+            #     "l2_device_most_used_weekly"
+            # ),
 
             # Weekly previous configurations features
             node(
