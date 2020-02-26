@@ -38,7 +38,7 @@ from customer360.pipelines.cvm.src.setup_names import setup_names
 def get_churn_targets(
         users: DataFrame,
         usage: DataFrame,
-        target_parameters: Dict[str, Any]
+        target_parameters: Dict[str, Any],
 ) -> DataFrame:
     """ Create table with one churn target.
 
@@ -88,6 +88,14 @@ def get_churn_targets(
     return users_churn
 
 
+def add_days(date: str, days_num: int) -> str:
+    date_format = "%Y-%m-%d"
+    start_date = datetime.datetime.strptime(date, date_format)
+    end_date = start_date + datetime.timedelta(days=days_num)
+
+    return end_date.strftime(date_format)
+
+
 def get_min_max_churn_horizon(
         target_parameters: Dict[str, Any],
 ) -> int:
@@ -129,14 +137,6 @@ def filter_usage(
         "last_activity_date",
     ]
     usage = usage.select(cols_to_pick)
-
-    # filter rows
-    def add_days(date: str, days_num: int) -> str:
-        date_format = "%Y-%m-%d"
-        start_date = datetime.datetime.strptime(date, date_format)
-        end_date = start_date + datetime.timedelta(days=days_num)
-
-        return end_date.strftime(date_format)
 
     # setup date_filter
     date_chosen = parameters["l5_cvm_one_day_users_table"]["date_chosen"]
