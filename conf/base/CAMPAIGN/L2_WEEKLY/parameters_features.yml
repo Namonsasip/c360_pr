@@ -3,55 +3,19 @@ l2_campaign_post_pre_fbb_weekly:
   where_clause: ""
   type: "week"
   feature_list:
-    sum: ['campaign_total_campaign_by_call_center', 'campaign_total_success_campaign_by_call_center',
-          'campaign_total_success_ratio_campaign_by_call_center', 'campaign_total_campaign_by_sms',
-          'campaign_total_success_campaign_by_sms', 'campaign_total_success_ratio_campaign_by_sms',
-          'campaign_total_upsell_xsell_campaign_by_call_center', 'campaign_total_upsell_xsell_success_campaign_by_call_center',
-          'campaign_total_upsell_xsell_success_ratio_campaign_by_call_center', 'campaign_total_campaign_retention_call_center',
-          'campaign_total_retention_success_campaign_by_call_center', 'campaign_total_retention_success_ratio_campaign_by_call_center',
-          'campaign_total_upsell_xsell_campaign_by_sms', 'campaign_total_upsell_xsell_success_ratio_campaign_by_sms',
-          'campaign_total_campaign_retention_sms'
+    sum: ["campaign_overall_count", "campaign_total_by_call_center", "campaign_total_eligible_by_call_center",
+      "campaign_total_success_by_call_center", "campaign_total_by_sms", "campaign_total_eligible_by_sms",
+      "campaign_total_success_by_sms", "campaign_total_upsell_xsell_by_call_center", "campaign_total_upsell_xsell_eligible_by_call_center",
+      "campaign_total_upsell_xsell_success_by_call_center", "campaign_total_others_by_call_center",
+      "campaign_total_others_by_eligible_call_center", "campaign_total_others_success_by_call_center",
+      "campaign_total_retention_by_call_center", "campaign_total_retention_eligible_by_call_center",
+      "campaign_total_retention_success_by_call_center", "campaign_total_upsell_xsell_by_sms",
+      "campaign_total_upsell_xsell_eligible_by_sms", "campaign_total_upsell_xsell_success_by_sms",
+      "campaign_total_others_by_sms", "campaign_total_others_eligible_by_sms", "campaign_total_others_success_by_sms",
+      "campaign_total_retention_by_sms", "campaign_total_retention_eligible_by_sms", "campaign_total_retention_success_by_sms",
     ]
-
-    max: ['campaign_last_communication_date', 'campaign_total_campaign_by_call_center',
-          'campaign_total_success_campaign_by_call_center', 'campaign_total_success_ratio_campaign_by_call_center',
-          'campaign_total_campaign_by_sms', 'campaign_total_success_campaign_by_sms',
-          'campaign_total_success_ratio_campaign_by_sms', 'campaign_total_upsell_xsell_campaign_by_call_center',
-          'campaign_total_upsell_xsell_success_campaign_by_call_center', 'campaign_total_upsell_xsell_success_ratio_campaign_by_call_center',
-          'campaign_total_campaign_retention_call_center', 'campaign_total_retention_success_campaign_by_call_center',
-          'campaign_total_retention_success_ratio_campaign_by_call_center', 'campaign_total_upsell_xsell_campaign_by_sms',
-          'campaign_total_upsell_xsell_success_ratio_campaign_by_sms', 'campaign_total_campaign_retention_sms',
-          'campaign_total_upsell_xsell_success_campaign_by_sms', 'campaign_total_retention_success_campaign_by_sms',
-          'campaign_total_retention_success_ratio_campaign_by_sms'
-
-    ]
-
-    min: ['campaign_total_campaign_by_call_center',
-          'campaign_total_success_campaign_by_call_center', 'campaign_total_success_ratio_campaign_by_call_center',
-          'campaign_total_campaign_by_sms', 'campaign_total_success_campaign_by_sms',
-          'campaign_total_success_ratio_campaign_by_sms', 'campaign_total_upsell_xsell_campaign_by_call_center',
-          'campaign_total_upsell_xsell_success_campaign_by_call_center', 'campaign_total_upsell_xsell_success_ratio_campaign_by_call_center',
-          'campaign_total_campaign_retention_call_center', 'campaign_total_retention_success_campaign_by_call_center',
-          'campaign_total_retention_success_ratio_campaign_by_call_center', 'campaign_total_upsell_xsell_campaign_by_sms',
-          'campaign_total_upsell_xsell_success_ratio_campaign_by_sms', 'campaign_total_campaign_retention_sms',
-          'campaign_total_upsell_xsell_success_campaign_by_sms', 'campaign_total_retention_success_campaign_by_sms',
-          'campaign_total_retention_success_ratio_campaign_by_sms'
-
-    ]
-
-    avg: ['campaign_total_campaign_by_call_center',
-          'campaign_total_success_campaign_by_call_center', 'campaign_total_success_ratio_campaign_by_call_center',
-          'campaign_total_campaign_by_sms', 'campaign_total_success_campaign_by_sms',
-          'campaign_total_success_ratio_campaign_by_sms', 'campaign_total_upsell_xsell_campaign_by_call_center',
-          'campaign_total_upsell_xsell_success_campaign_by_call_center', 'campaign_total_upsell_xsell_success_ratio_campaign_by_call_center',
-          'campaign_total_campaign_retention_call_center', 'campaign_total_retention_success_campaign_by_call_center',
-          'campaign_total_retention_success_ratio_campaign_by_call_center', 'campaign_total_upsell_xsell_campaign_by_sms',
-          'campaign_total_upsell_xsell_success_ratio_campaign_by_sms', 'campaign_total_campaign_retention_sms',
-          'campaign_total_upsell_xsell_success_campaign_by_sms', 'campaign_total_retention_success_campaign_by_sms',
-          'campaign_total_retention_success_ratio_campaign_by_sms'
-
-    ]
-
+    max: ['campaign_last_communication_date']
+    min: []
   granularity: "subscription_identifier, start_of_week"
 
 l2_campaign_top_channel_weekly:

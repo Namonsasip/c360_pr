@@ -32,9 +32,25 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 """
 
 from kedro.pipeline import Pipeline, node
-from .pipelines.usage_pipeline.to_l1 import usage_to_l1_pipeline
+
+from src.customer360.utilities.config_parser import l4_rolling_window, l4_rolling_ranked_window
+from src.customer360.pipelines.data_engineering.nodes.campaign_nodes.to_l4 import add_relative_time_features
 
 
+def campaign_to_l4_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                l4_rolling_window,
+                ["l2_campaign_postpaid_prepaid_fbb_weekly",
+                 "params:l4_campaign_postpaid_prepaid_fbb_features"],
+                "l4_campaign_postpaid_prepaid_fbb_int"
 
-def create_pipeline(**kwargs):
-    return Pipeline(usage_to_l1_pipeline().nodes, name="usage_pipeline")
+            ),
+            node(
+                add_relative_time_features, ['l4_campaign_postpaid_prepaid_fbb_int'],
+                'l4_campaign_postpaid_prepaid_fbb_features'
+            )
+
+        ], name="campaign_to_l4_pipeline"
+    )
