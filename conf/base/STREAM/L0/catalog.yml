@@ -17,5 +17,5 @@ l0_streaming_ru_a_onair_vimmi_usage_daily:
 
 l0_streaming_soc_mobile_app_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/stream_soc_mobile_app_daily/partition_date=20190801
+  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/stream_soc_mobile_app_daily/
   file_format: parquet

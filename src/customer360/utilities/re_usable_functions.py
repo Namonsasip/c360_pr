@@ -110,6 +110,7 @@ def l1_massive_processing(
     # first_item = add_list[0]
     #
     # add_list.remove(first_item)
+    add_list = [20190801]
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         small_df = data_frame.filter(F.col("partition_date").isin(*[curr_item]))
