@@ -56,10 +56,9 @@ def create_dev_version(
     dates_col = dates_intersect.pop()
     subs_col = subs_intersect.pop()
 
-    dates_filter = "{} == {}".format(subs_col, chosen_date)
     df = df.withColumn(
         "subscription_identifier_last_letter",
-        df.subscription_identifier.substr(-2, 2))
+        df.col(subs_col).substr(-2, 2))
     subs_filter = "subscription_identifier_last_letter == '{}'".format(
         subscription_id_suffix)
     dates_filter = "{} == '{}".format(dates_col, chosen_date)
