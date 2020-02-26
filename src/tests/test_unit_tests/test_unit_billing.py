@@ -1,8 +1,10 @@
 from datetime import datetime
 
+from kedro.pipeline import node
 from pyspark.sql.functions import to_timestamp
 
-from customer360.utilities.config_parser import node_from_config, expansion, l4_rolling_window
+from customer360.utilities.config_parser import node_from_config, expansion, l4_rolling_window, l4_rolling_ranked_window
+from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l2.to_l2_nodes import *
 import pandas as pd
 import random
 from pyspark.sql import functions as F, SparkSession
@@ -10,6 +12,93 @@ from datetime import timedelta
 
 
 class TestUnitBilling:
+
+    def test_popular_channel_feature(self, project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        # l1_billing_and_payment_most_popular_topup_channel
+        # l2_popular_top_up_channel
+        # l2_most_popular_topup_channel
+        # l3_popular_topup_channel
+        # l4_rolling_window_most_popular_topup_channel_1
+
+
+        # Below section is to create dummy data.
+        random_type = ['4', 'B1', 'B58', '3', 'B0', '7', '16', 'B43', '1', '5', '53', 'B69', '51', 'B50']
+        date1 = '2020-01-01'
+        date2 = '2020-04-01'
+        random.seed(100)
+        my_dates_list = pd.date_range(date1, date2).tolist()
+        my_dates = [iTemp.date().strftime("%d-%m-%Y") for iTemp in my_dates_list]
+        my_dates = my_dates * 3
+        random_list = [random_type[random.randint(0, 13)] for iTemp in range(0, len(my_dates))]
+        random_list2 = [random.randint(1, 10) * 100 for iTemp in range(0, len(my_dates))]
+        df = spark.createDataFrame(zip(random_list, my_dates, random_list2),
+                                   schema=['recharge_type', 'temp', 'face_value']) \
+            .withColumn("access_method_num", F.lit(1)) \
+            .withColumn("event_partition_date", F.to_date('temp', 'dd-MM-yyyy')) \
+            .withColumn("recharge_date", F.to_date('temp', 'dd-MM-yyyy')) \
+            .withColumn("register_date", F.to_date(F.lit('2019-01-01'), 'yyyy-MM-dd')) \
+            .withColumn("subscription_identifier", F.lit(123))
+        df = df.withColumn("start_of_month", F.to_date(F.date_trunc('month', df.event_partition_date))) \
+            .withColumn("start_of_week", F.to_date(F.date_trunc('week', df.event_partition_date)))
+
+
+
+        print('dfdebug')
+        df.orderBy('event_partition_date').show()
+        print('dfdebug2')
+        daily_data = node_from_config(df, var_project_context.catalog.load(
+            'params:l1_billing_and_payment_most_popular_topup_channel'))
+        print('dailydebug')
+        daily_data.orderBy('event_partition_date').show(999,False)
+        assert \
+            daily_data.where("event_partition_date = '2020-01-05'").where('recharge_type="B1"').select("payments_total_top_up").collect()[0][
+                0] == 2
+
+        dummy_type=['1','16','3','4','5','51','53','7','B0','B1','B43','B50','B58','B69']
+        dummy_desc=['Refill Card','My AIS App, My AIS Web','Refill Card for non Mobile','ATM','AIS Shop','Refill on Mobile','Partner Online Top Up','AIS Auto Top up','Cash card','Recharge via ATM of BBL','Recharge via mPay (Agent mCash)','Refill on Mobile','Recharge via ATM of BAAC','Biz Reward Platform']
+        topup_type = spark.createDataFrame(zip(dummy_type,dummy_desc),schema=['recharge_topup_event_type_cd','recharge_topup_event_type_name'])
+        joined_data=top_up_channel_joined_data(daily_data,topup_type)
+
+        # joined_data.show(999,False)
+        weekly_data = node_from_config(joined_data, var_project_context.catalog.load(
+            'params:l2_popular_top_up_channel'))
+        # print('weeklyy')
+        # weekly_data.show(999,False)
+
+        weekly_data_most = node_from_config(weekly_data, var_project_context.catalog.load(
+            'params:l2_most_popular_topup_channel'))
+        # print('mostweekly')
+        # weekly_data_most.orderBy('start_of_week').show(999,False)
+
+        monthly_data = node_from_config(joined_data, var_project_context.catalog.load(
+            'params:l3_popular_topup_channel'))
+        # print('monthlyy')
+        # monthly_data.orderBy('start_of_month','rank').show(999, False)
+
+        monthly_data_most=node_from_config(monthly_data, var_project_context.catalog.load(
+            'params:l3_most_popular_topup_channel'))
+        # print('monthlymost')
+        # monthly_data_most.show(999,False)
+
+
+        final_features_initial  = l4_rolling_window(weekly_data, var_project_context.catalog.load(
+            'params:l4_most_popular_topup_channel_initial'))
+        # print('finaldebugini')
+        # final_features_initial.show(999,False)
+        print('beforeerror')
+        final_features = l4_rolling_ranked_window(final_features_initial, var_project_context.catalog.load(
+            'params:l4_most_popular_topup_channel'))
+        print('finalfeaturedebug')
+        final_features.show(888,False)
+        # l4_most_popular_topup_channel_initial
+        # l4_most_popular_topup_channel
+        exit(2)
+
+
+
     def test_topup_frequency_feature(self, project_context):
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
