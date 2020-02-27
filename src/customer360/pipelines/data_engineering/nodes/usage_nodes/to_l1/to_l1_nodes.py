@@ -187,10 +187,6 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
     mvv_array = list(divide_chunks(mvv_array, 2))
     add_list = mvv_array
 
-    print(add_list)
-
-    exit(2)
-
     first_item = add_list[0]
     add_list.remove(first_item)
     for curr_item in add_list:
