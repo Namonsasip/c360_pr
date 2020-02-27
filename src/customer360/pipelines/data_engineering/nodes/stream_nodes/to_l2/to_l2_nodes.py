@@ -1,6 +1,10 @@
+import os
+
 from pyspark.sql import SparkSession
 
 from pathlib import Path
+
+conf = os.getenv("CONF", "local")
 
 
 def generate_l2_fav_streaming_day(input_df, app_list):
@@ -8,7 +12,7 @@ def generate_l2_fav_streaming_day(input_df, app_list):
     input_df.createOrReplaceTempView("input_df")
 
     from customer360.run import ProjectContext
-    ctx = ProjectContext(str(Path.cwd()))
+    ctx = ProjectContext(str(Path.cwd()), env=conf)
 
     week_list = input_df.select("start_of_week").distinct().collect()
     week_list = list(map(lambda x: x[0], week_list))
