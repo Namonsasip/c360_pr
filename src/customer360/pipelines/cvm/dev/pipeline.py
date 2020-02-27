@@ -27,10 +27,9 @@
 # limitations under the License.
 
 from kedro.pipeline import Pipeline, node
-from src.customer360.pipelines.cvm.src.dev.nodes import create_dev_version
-from src.customer360.pipelines.cvm.nodes import \
+from customer360.pipelines.cvm.dev.nodes import create_dev_version
+from customer360.pipelines.cvm.data_prep.nodes import \
     create_l5_cvm_one_day_users_table, \
-    create_l5_cvm_users_sample_table, \
     add_ard_targets, \
     add_churn_targets, \
     create_l5_cvm_features_one_day_joined, \

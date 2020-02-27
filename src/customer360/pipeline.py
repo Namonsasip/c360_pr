@@ -67,9 +67,9 @@ from .pipelines.data_engineering.pipelines.revenue_pipeline.to_l4 import \
     revenue_to_l4_pipeline
 from .pipelines.data_engineering.pipelines.campaign_pipeline.to_l1 import \
     campaign_to_l1_pipeline
-from .pipelines.cvm.pipeline import create_cvm_prepare_data_pipeline, \
+from customer360.pipelines.cvm.data_prep.pipeline import create_cvm_prepare_data_pipeline, \
     create_cvm_prepare_sample_data_pipeline
-from .pipelines.cvm.src.dev.pipeline import \
+from customer360.pipelines.cvm.dev.pipeline import \
     create_cvm_dev_inputs_pipeline, \
     create_cvm_prepare_data_pipeline_dev
 
