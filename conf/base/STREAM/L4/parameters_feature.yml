@@ -60,7 +60,7 @@ l4_streaming_fav_tv_show_by_episode_watched:
 
 # fav streaming content type (reused for music, video, and esport)
 int_l4_streaming_service_feature:
-  partition_by: ["mobile_no", "application"]
+  partition_by: ["access_method_num", "application"]
   feature_list:
     sum: ["sum_download_kb_traffic",
           "visit_count"]
@@ -71,7 +71,7 @@ l4_streaming_fav_service_by_download_feature:
   feature_column:
     fav_service_by_download_kb: "application"
 
-  partition_by: ["mobile_no", "start_of_week"]
+  partition_by: ["access_method_num", "start_of_week"]
   order_by_column_prefix: "sum_sum_download_kb_traffic"
   read_from: "l2"
 
@@ -80,7 +80,7 @@ l4_streaming_2nd_fav_service_by_download_feature:
   feature_column:
     second_fav_service_by_download_kb: "application"
 
-  partition_by: ["mobile_no", "start_of_week"]
+  partition_by: ["access_method_num", "start_of_week"]
   order_by_column_prefix: "sum_sum_download_kb_traffic"
   rank: 2
   read_from: "l2"
@@ -90,13 +90,13 @@ l4_streaming_fav_service_by_visit_count_feature:
   feature_column:
     fav_service_by_visit_count: "application"
 
-  partition_by: ["mobile_no", "start_of_week"]
+  partition_by: ["access_method_num", "start_of_week"]
   order_by_column_prefix: "sum_visit_count"
   read_from: "l2"
 
 # number of visit and volume of download traffic
 l4_streaming_visit_count_and_download_traffic_feature:
-  partition_by: ["mobile_no"]
+  partition_by: ["access_method_num"]
   feature_list:
     sum: ["visit_count_youtube_video_sum",
           "visit_count_facebook_video_sum",
@@ -127,7 +127,7 @@ l4_streaming_visit_count_and_download_traffic_feature:
   read_from: "l2"
 
 int_l4_streaming_download_traffic_per_day_of_week:
-  partition_by: ["mobile_no", "day_of_week", "start_of_week"]
+  partition_by: ["access_method_num", "day_of_week", "start_of_week"]
   feature_list:
     sum: ["download_kb_traffic_youtube_video_sum",
           "download_kb_traffic_facebook_video_sum",
@@ -150,13 +150,13 @@ int_l4_streaming_ranked_of_day_per_rolling_week:
   feature_column:
     fav_{app}_streaming_day_of_week: "day_of_week"
 
-  partition_by: ["mobile_no", "start_of_week"]
+  partition_by: ["access_method_num", "start_of_week"]
   order_by_column_prefix: "sum_download_kb_traffic_{app}_sum"
   read_from: "l2"
   to_join: False  # will be joined in generate_l4_fav_streaming_day() after custom select condition
 
 l4_streaming_session_duration_feature:
-  partition_by: ["mobile_no"]
+  partition_by: ["access_method_num"]
   feature_list:
     sum: ["sum_session_duration_youtube_video",
           "sum_session_duration_facebook_video",
