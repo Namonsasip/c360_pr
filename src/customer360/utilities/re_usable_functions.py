@@ -143,6 +143,49 @@ def l1_massive_processing(
     return return_df
 
 
+def _l2_join_with_customer_profile(
+        input_df,
+        cust_profile_df,
+        config,
+        current_item
+):
+
+    # grouping all distinct customer per week
+    filtered_cust_profile_df = (cust_profile_df
+                                .filter(F.col("start_of_week").isin(current_item))
+                                .select(*config["join_column_with_cust_profile"].keys()).distinct())
+
+    joined_condition = None
+    for left_col, right_col in config["join_column_with_cust_profile"].items():
+        condition = F.col("left.{}".format(left_col)).eqNullSafe(F.col("right.{}".format(right_col)))
+        if joined_condition is None:
+            joined_condition = condition
+            continue
+
+        joined_condition &= condition
+
+    result_df = (filtered_cust_profile_df.alias("left")
+                 .join(other=input_df.alias("right"),
+                       on=joined_condition,
+                       how="left"))
+
+    col_to_select = []
+
+    # Select all columns for right except those on customer profile
+    for col in input_df.columns:
+        if col in config["join_column_with_cust_profile"].values():
+            continue
+        col_to_select.append(F.col("right.{}".format(col)).alias(col))
+
+    # Select all customer profile column used for joining
+    for col in config["join_column_with_cust_profile"].keys():
+        col_to_select.append(F.col("left.{}".format(col)).alias(col))
+
+    result_df = result_df.select(col_to_select)
+
+    return result_df
+
+
 def l2_massive_processing_with_expansion(
         input_df,
         config,
@@ -152,7 +195,8 @@ def l2_massive_processing_with_expansion(
                                     config=config,
                                     source_partition_col="start_of_week",
                                     sql_generator_func=expansion,
-                                    cust_profile_df=cust_profile_df)
+                                    cust_profile_df=cust_profile_df,
+                                    cust_profile_join_func=_l2_join_with_customer_profile)
     return return_df
 
 
@@ -161,48 +205,12 @@ def l2_massive_processing(
         config,
         cust_profile_df=None
 ):
-    def l2_join_with_customer_profile(
-            input_df,
-            cust_profile_df,
-            config,
-            current_item
-    ):
-
-        # grouping all distinct customer per week
-        filtered_cust_profile_df = (cust_profile_df
-                                    .filter(F.col("start_of_week").isin(current_item))
-                                    .select(*config["join_column_with_cust_profile"].keys()).distinct())
-
-        joined_condition = None
-        for left_col, right_col in config["join_column_with_cust_profile"].items():
-            condition = F.col("left.{}".format(left_col)).eqNullSafe(F.col("right.{}".format(right_col)))
-            if joined_condition is None:
-                joined_condition = condition
-                continue
-
-            joined_condition &= condition
-
-        result_df = (filtered_cust_profile_df.alias("left")
-                     .join(other=input_df.alias("right"),
-                           on=joined_condition,
-                           how="left"))
-        col_to_select = []
-        for col in input_df.columns:
-            if col in config["join_column_with_cust_profile"]:
-                col_to_select.append(F.col("left.{}".format(col)).alias(col))
-                continue
-            col_to_select.append(F.col("right.{}".format(col)).alias(col))
-
-        result_df = result_df.select(col_to_select)
-
-        return result_df
-
 
     return_df = _massive_processing(input_df=input_df,
                                     config=config,
                                     source_partition_col="start_of_week",
                                     cust_profile_df=cust_profile_df,
-                                    cust_profile_join_func=l2_join_with_customer_profile)
+                                    cust_profile_join_func=_l2_join_with_customer_profile)
     return return_df
 
 
