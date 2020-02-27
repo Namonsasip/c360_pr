@@ -226,6 +226,8 @@ def create_l5_cvm_features_one_day_joined(
 
     # join the tables
     keys = ["key_date", "subscription_identifier"]
+    feature_tables = [setup_names(tab) for tab in feature_tables]
+    users = setup_names(users)
     join_on = lambda df1, df2: df1.join(df2, keys, "left")
     features_joined = functools.reduce(join_on, feature_tables, users)
 
