@@ -25,6 +25,7 @@ def massive_processing(data_frame_1, data_frame_2, data_frame_3, dict_1
     data_frame = data_frame_1
     dates_list = data_frame.select('partition_date').distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
     mvv_new = list(divide_chunks(mvv_array, 2))
