@@ -73,7 +73,7 @@ def create_cvm_prepare_data_pipeline_dev(**kwargs):
             node(
                 create_l5_cvm_one_day_users_table,
                 ["l3_customer_profile_include_1mo_non_active_dev",
-                 "l0_product_product_pru_m_package_master_group_dev",
+                 "l0_product_product_pru_m_package_master_group",
                  "parameters"],
                 "l5_cvm_one_day_users_table_dev",
                 name="create_l5_cvm_one_day_users_table_dev"
