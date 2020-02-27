@@ -221,7 +221,7 @@ def _massive_processing(
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(__divide_chunks(mvv_array, 3))
+    mvv_new = list(__divide_chunks(mvv_array, 1))
     add_list = mvv_new
 
     first_item = add_list[0]
