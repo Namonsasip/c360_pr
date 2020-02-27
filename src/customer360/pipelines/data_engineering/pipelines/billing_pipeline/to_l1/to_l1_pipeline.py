@@ -9,20 +9,20 @@ def billing_to_l1_pipeline(**kwargs):
         [
 
             # Top up count and top up volume feature pre-paid
-            node(
-                billing_topup_count_and_volume_node,
-                ["l0_billing_and_payments_rt_t_recharge_daily","l1_customer_profile_union_daily_feature",
-                 "params:l1_billing_and_payment_feature_top_up_and_count"],
-                "l1_billing_and_payments_daily_topup_and_volume"
-            ),
+            # node(
+            #     billing_topup_count_and_volume_node,
+            #     ["l0_billing_and_payments_rt_t_recharge_daily","l1_customer_profile_union_daily_feature",
+            #      "params:l1_billing_and_payment_feature_top_up_and_count"],
+            #     "l1_billing_and_payments_daily_topup_and_volume"
+            # ),
 
             # Average revenue for roaming feature post-paid
-            node(
-                billing_daily_rpu_roaming,
-                ["l0_billing_ir_a_usg_daily","l1_customer_profile_union_daily_feature",
-                 "params:l1_billing_and_payment_rpu_roaming"],
-                "l1_billing_and_payments_daily_rpu_roaming"
-            ),
+            # node(
+            #     billing_daily_rpu_roaming,
+            #     ["l0_billing_ir_a_usg_daily","l1_customer_profile_union_daily_feature",
+            #      "params:l1_billing_and_payment_rpu_roaming"],
+            #     "l1_billing_and_payments_daily_rpu_roaming"
+            # ),
 
             # Balance before top up feature pre-paid
             node(
@@ -33,28 +33,28 @@ def billing_to_l1_pipeline(**kwargs):
             ),
 
             # Top up channels feature pre-paid
-            node(
-                billing_topup_channels,
-                ["l0_billing_and_payments_rt_t_recharge_daily","l1_customer_profile_union_daily_feature",
-                 "params:l1_billing_and_payment_top_up_channels"],
-                "l1_billing_and_payments_daily_top_up_channels"
-            ),
+            # node(
+            #     billing_topup_channels,
+            #     ["l0_billing_and_payments_rt_t_recharge_daily","l1_customer_profile_union_daily_feature",
+            #      "params:l1_billing_and_payment_top_up_channels"],
+            #     "l1_billing_and_payments_daily_top_up_channels"
+            # ),
 
             # Most popular top up channel feature pre-paid
-            node(
-                billing_most_popular_topup_channel,
-                ["l0_billing_and_payments_rt_t_recharge_daily","l1_customer_profile_union_daily_feature",
-                 "params:l1_billing_and_payment_most_popular_topup_channel"],
-                "l1_billing_and_payments_daily_most_popular_top_up_channel"
-            ),
+            # node(
+            #     billing_most_popular_topup_channel,
+            #     ["l0_billing_and_payments_rt_t_recharge_daily","l1_customer_profile_union_daily_feature",
+            #      "params:l1_billing_and_payment_most_popular_topup_channel"],
+            #     "l1_billing_and_payments_daily_most_popular_top_up_channel"
+            # ),
 
             # Popular top up day and hour feature pre-paid
-            node(
-                billing_popular_topup_day_hour,
-                ["l0_billing_and_payments_rt_t_recharge_daily","l1_customer_profile_union_daily_feature",
-                 "params:l1_billing_and_payment_popular_topup_day"],
-                "l1_billing_and_payments_daily_popular_topup_day"
-            ),
+            # node(
+            #     billing_popular_topup_day_hour,
+            #     ["l0_billing_and_payments_rt_t_recharge_daily","l1_customer_profile_union_daily_feature",
+            #      "params:l1_billing_and_payment_popular_topup_day"],
+            #     "l1_billing_and_payments_daily_popular_topup_day"
+            # ),
 
             # Time since last top up feature pre-paid
             node(
