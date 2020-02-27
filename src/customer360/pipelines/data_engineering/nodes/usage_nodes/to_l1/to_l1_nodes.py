@@ -181,13 +181,14 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
     """
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = union_df
-    dates_list = data_frame.where("event_partition_date = '2020-02-13'").select('event_partition_date').distinct().collect()
+    dates_list = data_frame.where("event_partition_date IN ('2020-02-07', '2020-02-07', '2020-02-03', '2020-02-02'")\
+        .select('event_partition_date').distinct().collect()
     mvv_array = [row[0] for row in dates_list]
     mvv_array = sorted(mvv_array)
 
     logging.info("All Dates: {0}".format(mvv_array))
 
-    mvv_array = list(divide_chunks(mvv_array, 2))
+    mvv_array = list(divide_chunks(mvv_array, 5))
     add_list = mvv_array
 
     first_item = add_list[0]
