@@ -44,9 +44,9 @@ int_l4_streaming_tv_show_features_2:
   feature_list:
     approx_count_distinct_title_weekly_last_week: max(approx_count_distinct_title_weekly_last_week)
     approx_count_distinct_title_weekly_last_two_week: max(approx_count_distinct_title_weekly_last_two_week)
-    approx_count_distinct_title_weekly_last_month: max(approx_count_distinct_title_weekly_last_month)
-    approx_count_distinct_title_weekly_last_three_month: max(approx_count_distinct_title_weekly_last_three_month)
-  granularity: "access_method_num, register_date, start_of_week, start_of_month, series_title"
+    approx_count_distinct_title_weekly_last_four_week: max(approx_count_distinct_title_weekly_last_four_week)
+    approx_count_distinct_title_weekly_last_twelve_week: max(approx_count_distinct_title_weekly_last_twelve_week)
+  granularity: "access_method_num, register_date, start_of_week, series_title"
 
 l4_streaming_fav_tv_show_by_episode_watched:
   where_clause: ""
@@ -127,7 +127,7 @@ l4_streaming_visit_count_and_download_traffic_feature:
   read_from: "l2"
 
 int_l4_streaming_download_traffic_per_day_of_week:
-  partition_by: ["access_method_num", "day_of_week", "start_of_week"]
+  partition_by: ["access_method_num", "day_of_week"]
   feature_list:
     sum: ["download_kb_traffic_youtube_video_sum",
           "download_kb_traffic_facebook_video_sum",
