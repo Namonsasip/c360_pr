@@ -50,13 +50,6 @@ def create_cvm_dev_inputs_pipeline(**kwargs):
             ),
             node(
                 create_dev_version,
-                ["l0_product_product_pru_m_package_master_group",
-                 "parameters"],
-                "l0_product_product_pru_m_package_master_group_dev",
-                name="create_l0_product_product_pru_m_package_master_group_dev"
-            ),
-            node(
-                create_dev_version,
                 ["l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
                  "parameters"],
                 "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_dev",
