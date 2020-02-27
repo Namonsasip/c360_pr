@@ -28,7 +28,7 @@ def massive_processing(data_frame_1, data_frame_2, data_frame_3, dict_1
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 2))
+    mvv_new = list(divide_chunks(mvv_array, 5))
     add_list = mvv_new
 
     first_item = add_list[0]
