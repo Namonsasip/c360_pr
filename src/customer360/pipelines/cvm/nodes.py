@@ -72,7 +72,7 @@ def create_l5_cvm_one_day_users_table(
     users = users.select(columns_to_pick)
     users.withColumnRenamed("partition_month", "key_date")
 
-    return users
+    return users.distinct()
 
 
 def create_l5_cvm_users_sample_table(
