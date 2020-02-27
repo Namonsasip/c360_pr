@@ -125,6 +125,15 @@ l4_streaming_visit_count_and_download_traffic_feature:
     partitionBy: ["start_of_week"]
 
 
+
+int_l4_streaming_download_traffic_per_day_of_week:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L4_FEATURES/STREAM/int_l4_streaming_download_traffic_per_day_of_week/
+  file_format: parquet
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["start_of_week"]
+
 l4_streaming_fav_youtube_video_streaming_day_of_week_feature:
   type: kedro.contrib.io.pyspark.SparkDataSet
   filepath: data/L4_FEATURES/STREAM/l4_streaming_fav_youtube_video_streaming_day_of_week_feature/

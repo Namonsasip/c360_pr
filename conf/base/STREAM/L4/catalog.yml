@@ -129,6 +129,15 @@ l4_streaming_visit_count_and_download_traffic_feature:
     
 
 
+int_l4_streaming_download_traffic_per_day_of_week:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/int_l4_streaming_download_traffic_per_day_of_week/
+  file_format: parquet
+  save_args:
+    mode: "append"
+    partitionBy: ["start_of_week"]
+
+
 l4_streaming_fav_youtube_video_streaming_day_of_week_feature:
   type: kedro.contrib.io.pyspark.SparkDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_youtube_video_streaming_day_of_week_feature/

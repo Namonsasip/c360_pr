@@ -111,6 +111,7 @@ def l4_rolling_window(input_df, config):
 
     read_from = config.get("read_from")
     features.append(__get_l4_time_granularity_column(read_from))
+    features = list(set(features))  # Remove duplicates
 
     for agg_function, column_list in config["feature_list"].items():
         for each_feature_column in column_list:
