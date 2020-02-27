@@ -156,11 +156,11 @@ def streaming_to_l1_pipeline(**kwargs):
             ),
 
             # session duration
-            # node(
-            #     l1_massive_processing,
-            #     ["l0_streaming_soc_mobile_app_daily",
-            #      "params:l1_streaming_session_duration_feature"],
-            #     "l1_streaming_session_duration_feature"
-            # )
+            node(
+                l1_massive_processing,
+                ["l0_streaming_soc_mobile_app_daily",
+                 "params:l1_streaming_session_duration_feature"],
+                "l1_streaming_session_duration_feature"
+            )
         ], name="streaming_to_l1_pipeline"
     )
