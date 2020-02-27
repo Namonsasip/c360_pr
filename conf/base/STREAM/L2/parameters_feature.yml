@@ -5,8 +5,10 @@ int_l2_streaming_content_type_features:
         traffic_rank: "row_number() over (partition by access_method_num, date(register_date), start_of_week
                                     order by sum(traffic_volume_sum) desc)"
 
-        duration_rank: "row_number() over (partition by access_method_num, date(register_date), start_of_week
-                                    order by sum(duration) desc)" # duration column is not ingested currently
+#        duration_rank: "row_number() over (partition by access_method_num, date(register_date), start_of_week
+#                                    order by sum(duration) desc)" # duration column is not ingested currently
+#        duration_sum: "sum(duration_sum)"
+
         traffic_volume_sum: "sum(traffic_volume_sum)"
     granularity: "access_method_num, date(register_date), start_of_week, content_group"
     output_catalog: "int_l2_streaming_content_type_features"

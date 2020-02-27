@@ -8,6 +8,8 @@ int_l1_streaming_content_type_features:
         duration_rank: "row_number() over (partition by access_method_num, date(register_date), day_id
                                     order by sum(duration) desc)" # duration column is not ingested currently
         traffic_volume_sum: "sum(volume_mb)"
+        duration_sum: "sum(duration)"
+
     granularity: "access_method_num, date(register_date), day_id, content_group"
     event_date_column: "day_id"
     output_catalog: "int_l1_streaming_content_type_features"
