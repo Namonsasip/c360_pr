@@ -26,7 +26,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, Dict, List
+from typing import Any, Dict
 from pyspark.sql import DataFrame
 import functools
 import pyspark.sql.functions as func
@@ -42,8 +42,8 @@ def create_l5_cvm_one_day_users_table(
         main_packs: DataFrame,
         parameters: Dict[str, Any]
 ) -> DataFrame:
-    """Create l5_cvm_one_day_users_table - one day table of users used for training and
-    validating.
+    """Create l5_cvm_one_day_users_table - one day table of users used for
+    training and validating.
 
     Args:
         profile: monthly customer profiles.
@@ -79,8 +79,9 @@ def create_l5_cvm_users_sample_table(
         users: DataFrame,
         parameters: Dict[str, Any],
 ) -> DataFrame:
-    """Sample long term users to create development sample. Users with at least
-    4 months of activity and subscription_identifier ending with 'A' are chosen.
+    """Sample long term users to create development sample. Users with at
+    least 4 months of activity and subscription_identifier ending with 'A'
+    are chosen.
 
     Args:
         users: Monthly user table.
@@ -123,8 +124,10 @@ def add_ard_targets(
 
     local_parameters = parameters["targets"]["ard"]
     users = setup_names(users)
-    ard_target_tables = [get_ard_targets(users, reve, local_parameters[targets])
-                         for targets in local_parameters]
+    ard_target_tables = [get_ard_targets(
+        users, reve, local_parameters[targets]
+    )
+        for targets in local_parameters]
 
     def join_targets(df1, df2):
         return df1.join(
@@ -219,16 +222,22 @@ def create_l5_cvm_features_one_day_joined(
 
     # for every table make sure the month column is called 'start_of_month'
     cols_to_be_renamed = "partition_month"
-    rename = lambda df: df.withColumnRenamed(cols_to_be_renamed,
-                                             "key_date")
-    feature_tables = [rename(feature_table) for feature_table in feature_tables]
+
+    def rename(df):
+        return df.withColumnRenamed(cols_to_be_renamed, "key_date")
+
+    feature_tables = [rename(feature_table)
+                      for feature_table in feature_tables]
     users = rename(users)
 
     # join the tables
     keys = ["key_date", "subscription_identifier"]
     feature_tables = [setup_names(tab) for tab in feature_tables]
     users = setup_names(users)
-    join_on = lambda df1, df2: df1.join(df2, keys, "left")
+
+    def join_on(df1, df2):
+        return df1.join(df2, keys, "left")
+
     features_joined = functools.reduce(join_on, feature_tables, users)
 
     return features_joined

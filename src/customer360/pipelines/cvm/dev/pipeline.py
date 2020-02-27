@@ -52,8 +52,8 @@ def create_cvm_dev_inputs_pipeline(**kwargs):
                 ["l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
                  "parameters"],
                 "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_dev",
-                name="create_l4_revenue_prepaid_ru_f_sum_revenue_by_service" + \
-                     "_monthly_dev"
+                name="create_l4_revenue_prepaid_ru_f_sum_revenue" +
+                     "_by_service_monthly_dev"
             ),
             node(
                 create_dev_version,
