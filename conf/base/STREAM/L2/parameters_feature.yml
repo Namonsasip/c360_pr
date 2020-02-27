@@ -68,7 +68,7 @@ l2_streaming_fav_tv_show_by_episode_watched:
 
 
  # Fav service by download traffic (reused for video, music, and esport)
-int_l2_streaming_service_feature:
+int_l2_streaming_service_feature: &int_l2_streaming_service_feature
     feature_list:
         sum_download_kb_traffic_rank: "row_number() over (partition by mobile_no, application_group, start_of_week
                                                     order by sum(sum_download_kb_traffic) desc)"
@@ -78,12 +78,27 @@ int_l2_streaming_service_feature:
         visit_count_rank: "row_number() over (partition by mobile_no, application_group, start_of_week
                                                     order by sum(visit_count) desc)"
     granularity: "mobile_no, application, application_group, start_of_week"
+    join_column_with_cust_profile:
+        access_method_num: mobile_no
+        start_of_week: start_of_week
+
+int_l2_streaming_video_service_feature:
+    <<: *int_l2_streaming_service_feature
+    output_catalog: "int_l2_streaming_video_service_feature"
+
+int_l2_streaming_music_service_feature:
+    <<: *int_l2_streaming_service_feature
+    output_catalog: "int_l2_streaming_music_service_feature"
+
+int_l2_streaming_esport_service_feature:
+    <<: *int_l2_streaming_service_feature
+    output_catalog: "int_l2_streaming_esport_service_feature"
 
 
 l2_streaming_fav_service_by_download_feature:
     where_clause: "where sum_download_kb_traffic_rank = 1"
     feature_list:
-        mobile_no: "mobile_no"
+        access_method_num: "access_method_num"
         fav_service_by_download_kb_traffic: "application"
         sum_download_kb_traffic: "sum_download_kb_traffic"
         start_of_week: "start_of_week"
@@ -93,7 +108,7 @@ l2_streaming_fav_service_by_download_feature:
 l2_streaming_2nd_fav_service_by_download_feature:
     where_clause: "where sum_download_kb_traffic_rank = 2"
     feature_list:
-        mobile_no: "mobile_no"
+        access_method_num: "access_method_num"
         second_fav_service_by_download_kb_traffic: "application"
         sum_download_kb_traffic: "sum_download_kb_traffic"
         start_of_week: "start_of_week"
@@ -103,7 +118,7 @@ l2_streaming_2nd_fav_service_by_download_feature:
 l2_streaming_fav_service_by_visit_count_feature:
     where_clause: "where visit_count_rank = 1"
     feature_list:
-        mobile_no: "mobile_no"
+        access_method_num: "access_method_num"
         fav_service_by_visit_count: "application"
         visit_count: "visit_count"
         start_of_week: "start_of_week"
@@ -140,6 +155,10 @@ l2_streaming_visit_count_and_download_traffic_feature:
               "download_kb_traffic_mixer_esport",
               "download_kb_traffic_steamtv_esport"]
     granularity: "mobile_no, start_of_week"
+    output_catalog: "l2_streaming_visit_count_and_download_traffic_feature"
+    join_column_with_cust_profile:
+        access_method_num: mobile_no
+        start_of_week: start_of_week
 
 
 # number of visit and volume of download traffic
@@ -173,10 +192,14 @@ int_l2_streaming_sum_per_day:
               "download_kb_traffic_mixer_esport",
               "download_kb_traffic_steamtv_esport"]
     granularity: "mobile_no, day_of_week, start_of_week"
+    output_catalog: "int_l2_streaming_sum_per_day"
+    join_column_with_cust_profile:
+        access_method_num: mobile_no
+        start_of_week: start_of_week
 
 int_l2_streaming_ranked_of_day_per_week:
   feature_list:
-    mobile_no: mobile_no
+    access_method_num: access_method_num
     day_of_week: day_of_week
     start_of_week: start_of_week
     download_kb_traffic_youtube_video_sum: "download_kb_traffic_youtube_video_sum"
@@ -193,31 +216,31 @@ int_l2_streaming_ranked_of_day_per_week:
     download_kb_traffic_mixer_esport_sum: "download_kb_traffic_mixer_esport_sum"
     download_kb_traffic_steamtv_esport_sum: "download_kb_traffic_steamtv_esport_sum"
 
-    youtube_video_by_download_rank: "row_number() over (partition by mobile_no, start_of_week
+    youtube_video_by_download_rank: "row_number() over (partition by access_method_num, start_of_week
                                       order by download_kb_traffic_youtube_video_sum desc)"
-    facebook_video_by_download_rank: "row_number() over (partition by mobile_no, start_of_week
+    facebook_video_by_download_rank: "row_number() over (partition by access_method_num, start_of_week
                                       order by download_kb_traffic_facebook_video_sum desc)"
-    linetv_video_by_download_rank: "row_number() over (partition by mobile_no, start_of_week
+    linetv_video_by_download_rank: "row_number() over (partition by access_method_num, start_of_week
                                           order by download_kb_traffic_linetv_video_sum desc)"
-    ais_play_video_by_download_rank: "row_number() over (partition by mobile_no, start_of_week
+    ais_play_video_by_download_rank: "row_number() over (partition by access_method_num, start_of_week
                                           order by download_kb_traffic_ais_play_video_sum desc)"
-    netflix_video_by_download_rank: "row_number() over (partition by mobile_no, start_of_week
+    netflix_video_by_download_rank: "row_number() over (partition by access_method_num, start_of_week
                                           order by download_kb_traffic_netflix_video_sum desc)"
-    hooq_video_by_download_rank: "row_number() over (partition by mobile_no, start_of_week
+    hooq_video_by_download_rank: "row_number() over (partition by access_method_num, start_of_week
                                           order by download_kb_traffic_hooq_video_sum desc)"
-    iflix_video_by_download_rank: "row_number() over (partition by mobile_no, start_of_week
+    iflix_video_by_download_rank: "row_number() over (partition by access_method_num, start_of_week
                                       order by download_kb_traffic_iflix_video_sum desc)"
-    spotify_music_by_download_rank: "row_number() over (partition by mobile_no, start_of_week
+    spotify_music_by_download_rank: "row_number() over (partition by access_method_num, start_of_week
                                       order by download_kb_traffic_spotify_music_sum desc)"
-    joox_music_by_download_rank: "row_number() over (partition by mobile_no, start_of_week
+    joox_music_by_download_rank: "row_number() over (partition by access_method_num, start_of_week
                                           order by download_kb_traffic_joox_music_sum desc)"
-    twitch_esport_by_download_rank: "row_number() over (partition by mobile_no, start_of_week
+    twitch_esport_by_download_rank: "row_number() over (partition by access_method_num, start_of_week
                                           order by download_kb_traffic_twitch_esport_sum desc)"
-    bigo_esport_by_download_rank: "row_number() over (partition by mobile_no, start_of_week
+    bigo_esport_by_download_rank: "row_number() over (partition by access_method_num, start_of_week
                                           order by download_kb_traffic_bigo_esport_sum desc)"
-    mixer_esport_by_download_rank: "row_number() over (partition by mobile_no, start_of_week
+    mixer_esport_by_download_rank: "row_number() over (partition by access_method_num, start_of_week
                                           order by download_kb_traffic_mixer_esport_sum desc)"
-    steamtv_esport_by_download_rank: "row_number() over (partition by mobile_no, start_of_week
+    steamtv_esport_by_download_rank: "row_number() over (partition by access_method_num, start_of_week
                                               order by download_kb_traffic_steamtv_esport_sum desc)"
 
   granularity: ""
@@ -289,3 +312,7 @@ l2_streaming_session_duration_feature:
         avg_session_duration_per_day_steamtv_esport: "sum(sum_session_duration_steamtv_esport)/7"
 
     granularity: "mobile_no, start_of_week"
+    output_catalog: "l2_streaming_session_duration_feature"
+    join_column_with_cust_profile:
+        access_method_num: mobile_no
+        start_of_week: start_of_week
