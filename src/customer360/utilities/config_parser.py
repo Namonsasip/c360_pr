@@ -334,7 +334,8 @@ def __generate_l4_rolling_ranked_column(
     if read_from == 'l1':
         features.append("""
             row_number() over (partition by {partition_column} 
-            order by {order_column} {order}) as daily_rank_last_seven_day
+            order by {order_column} {order}) as daily_rank_last_seven_day,
+            {order_column}
             """.format(
             partition_column=','.join(config["partition_by"]),
             order_column="{}_daily_last_seven_day".format(config["order_by_column_prefix"]),
@@ -343,7 +344,8 @@ def __generate_l4_rolling_ranked_column(
 
         features.append("""
             row_number() over (partition by {partition_column} 
-            order by {order_column} {order}) as daily_rank_last_fourteen_day
+            order by {order_column} {order}) as daily_rank_last_fourteen_day,
+            {order_column}
             """.format(
             partition_column=','.join(config["partition_by"]),
             order_column="{}_daily_last_fourteen_day".format(config["order_by_column_prefix"]),
@@ -352,7 +354,8 @@ def __generate_l4_rolling_ranked_column(
 
         features.append("""
             row_number() over (partition by {partition_column} 
-            order by {order_column} {order}) as daily_rank_last_thirty_day
+            order by {order_column} {order}) as daily_rank_last_thirty_day,
+            {order_column}
             """.format(
             partition_column=','.join(config["partition_by"]),
             order_column="{}_daily_last_thirty_day".format(config["order_by_column_prefix"]),
@@ -361,7 +364,8 @@ def __generate_l4_rolling_ranked_column(
 
         features.append("""
             row_number() over (partition by {partition_column} 
-            order by {order_column} {order}) as daily_rank_last_ninety_day
+            order by {order_column} {order}) as daily_rank_last_ninety_day,
+            {order_column}
             """.format(
             partition_column=','.join(config["partition_by"]),
             order_column="{}_daily_last_ninety_day".format(config["order_by_column_prefix"]),
@@ -371,7 +375,8 @@ def __generate_l4_rolling_ranked_column(
     elif read_from == 'l2':
         features.append("""
             row_number() over (partition by {partition_column} 
-            order by {order_column} {order}) as weekly_rank_last_week
+            order by {order_column} {order}) as weekly_rank_last_week,
+            {order_column}
             """.format(
             partition_column=','.join(config["partition_by"]),
             order_column="{}_weekly_last_week".format(config["order_by_column_prefix"]),
@@ -380,7 +385,8 @@ def __generate_l4_rolling_ranked_column(
 
         features.append("""
             row_number() over (partition by {partition_column} 
-            order by {order_column} {order}) as weekly_rank_last_two_week
+            order by {order_column} {order}) as weekly_rank_last_two_week,
+            {order_column}
             """.format(
             partition_column=','.join(config["partition_by"]),
             order_column="{}_weekly_last_two_week".format(config["order_by_column_prefix"]),
@@ -389,7 +395,8 @@ def __generate_l4_rolling_ranked_column(
 
         features.append("""
             row_number() over (partition by {partition_column} 
-            order by {order_column} {order}) as weekly_rank_last_four_week
+            order by {order_column} {order}) as weekly_rank_last_four_week,
+            {order_column}
             """.format(
             partition_column=','.join(config["partition_by"]),
             order_column="{}_weekly_last_four_week".format(config["order_by_column_prefix"]),
@@ -398,7 +405,8 @@ def __generate_l4_rolling_ranked_column(
 
         features.append("""
             row_number() over (partition by {partition_column} 
-            order by {order_column} {order}) as weekly_rank_last_twelve_week
+            order by {order_column} {order}) as weekly_rank_last_twelve_week,
+            {order_column}
             """.format(
             partition_column=','.join(config["partition_by"]),
             order_column="{}_weekly_last_twelve_week".format(config["order_by_column_prefix"]),
@@ -407,7 +415,8 @@ def __generate_l4_rolling_ranked_column(
     else:
         features.append("""
             row_number() over (partition by {partition_column} 
-            order by {order_column} {order}) as rank_last_month
+            order by {order_column} {order}) as rank_last_month,
+            {order_column}
             """.format(
             partition_column=','.join(config["partition_by"]),
             order_column="{}_monthly_last_month".format(config["order_by_column_prefix"]),
@@ -416,7 +425,8 @@ def __generate_l4_rolling_ranked_column(
 
         features.append("""
             row_number() over (partition by {partition_column} 
-            order by {order_column} {order}) as rank_last_three_month
+            order by {order_column} {order}) as rank_last_three_month,
+            {order_column}
             """.format(
             partition_column=','.join(config["partition_by"]),
             order_column="{}_monthly_last_three_month".format(config["order_by_column_prefix"]),
