@@ -1,6 +1,6 @@
 # Minimum date for l5_cvm_users_table creation
 l5_cvm_one_day_users_table:
-  date_chosen: "2019-11-01"
+  date_chosen: "2019-10-01"
 
 # List of targets
 targets:
