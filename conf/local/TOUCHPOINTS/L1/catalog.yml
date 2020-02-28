@@ -10,7 +10,16 @@ l1_touchpoints_to_call_center_features:
 l1_touchpoints_from_call_center_features:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/L1_DAILY/TOUCHPOINTS//l1_touchpoints_from_call_center_features/
+  filepath: data/L1_DAILY/TOUCHPOINTS/l1_touchpoints_from_call_center_features/
+  save_args:
+    partitionBy: ["event_partition_date"]
+    mode: "overwrite"
+
+
+l1_touchpoints_nim_work_features:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L1_DAILY/TOUCHPOINTS/l1_touchpoints_nim_work_features/
   save_args:
     partitionBy: ["event_partition_date"]
     mode: "overwrite"
