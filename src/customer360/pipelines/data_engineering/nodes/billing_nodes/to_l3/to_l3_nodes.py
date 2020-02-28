@@ -194,7 +194,7 @@ def billing_last_topup_channel_monthly(input_df,customer_df,recharge_type, sql) 
     """
     recharge_data_with_topup_channel = top_up_channel_joined_data(input_df,recharge_type)
     recharge_data_with_topup_channel = recharge_data_with_topup_channel.withColumn('start_of_month',F.to_date(F.date_trunc('month',input_df.recharge_date)))
-    customer_df = customer_df.withColumn("start_of_month",f.to_date(f.date_trunc('month',customer_df.event_partition_date)))\
+    customer_df = derives_in_customer_profile(customer_df)\
         .where("charge_type = 'Pre-paid' and cust_active_this_month = 'Y'")
     return_df = process_last_topup_channel(recharge_data_with_topup_channel, customer_df, sql, "l3_billing_and_payments_monthly_last_top_up_channel")
     return return_df
