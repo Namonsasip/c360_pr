@@ -32,9 +32,7 @@ from typing import Any, Dict
 
 
 def get_ard_targets(
-        users: DataFrame,
-        reve: DataFrame,
-        target_parameters: Dict[str, Any]
+    users: DataFrame, reve: DataFrame, target_parameters: Dict[str, Any]
 ) -> DataFrame:
     """ Create table with one ARPU drop target.
 
@@ -65,47 +63,47 @@ def get_ard_targets(
     reve_arpu_only = reve_arpu_only.withColumnRenamed(arpu_col, "reve")
     # Pick only interesting users
     reve_arpu_only = users.join(
-        reve_arpu_only,
-        ["subscription_identifier", "key_date"],
-        "left"
+        reve_arpu_only, ["subscription_identifier", "key_date"], "left"
     )
 
     # Setup reve before and after
     reve_arpu_before_after = reve_arpu_only.withColumnRenamed(
-        "key_date", "key_date_before")
+        "key_date", "key_date_before"
+    )
     reve_arpu_before_after = reve_arpu_before_after.withColumn(
-        "key_date",
-        func.add_months(reve_arpu_before_after.key_date_before,
-                        length)
+        "key_date", func.add_months(reve_arpu_before_after.key_date_before, length)
     )
     reve_arpu_before_after = reve_arpu_before_after.withColumnRenamed(
-        "reve", "reve_before")
+        "reve", "reve_before"
+    )
 
     reve_arpu_before_after = reve_arpu_before_after.join(
-        reve_arpu_only,
-        ["key_date", "subscription_identifier"]
+        reve_arpu_only, ["key_date", "subscription_identifier"]
     )
 
     reve_arpu_before_after = reve_arpu_before_after.drop("key_date")
     reve_arpu_before_after = reve_arpu_before_after.withColumnRenamed(
-        "reve", "reve_after")
+        "reve", "reve_after"
+    )
 
     # Add the label
     reve_arpu_before_after = reve_arpu_before_after.withColumn(
         "reve_after_perc",
-        reve_arpu_before_after.reve_after / reve_arpu_before_after.reve_before)
+        reve_arpu_before_after.reve_after / reve_arpu_before_after.reve_before,
+    )
     target_col = func.when(
-        1 - reve_arpu_before_after.reve_after_perc >= drop,
-        "drop").otherwise("no_drop")
-    reve_arpu_before_after = reve_arpu_before_after.withColumn("target",
-                                                               target_col)
+        1 - reve_arpu_before_after.reve_after_perc >= drop, "drop"
+    ).otherwise("no_drop")
+    reve_arpu_before_after = reve_arpu_before_after.withColumn("target", target_col)
     reve_arpu_before_after = reve_arpu_before_after.withColumnRenamed(
-        "key_date_before", "key_date")
+        "key_date_before", "key_date"
+    )
 
     cols_to_select = ["target", "key_date", "subscription_identifier"]
     reve_arpu_before_after = reve_arpu_before_after.select(cols_to_select)
 
     reve_arpu_before_after = reve_arpu_before_after.withColumnRenamed(
-        "target", target_colname)
+        "target", target_colname
+    )
 
     return reve_arpu_before_after

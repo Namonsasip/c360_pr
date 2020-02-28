@@ -32,15 +32,15 @@ import functools
 import pyspark.sql.functions as func
 
 from customer360.pipelines.cvm.src.targets.ard_targets import get_ard_targets
-from customer360.pipelines.cvm.src.targets.churn_targets import \
-    get_churn_targets, filter_usage
+from customer360.pipelines.cvm.src.targets.churn_targets import (
+    get_churn_targets,
+    filter_usage,
+)
 from customer360.pipelines.cvm.src.setup_names import setup_names
 
 
 def create_l5_cvm_one_day_users_table(
-        profile: DataFrame,
-        main_packs: DataFrame,
-        parameters: Dict[str, Any]
+    profile: DataFrame, main_packs: DataFrame, parameters: Dict[str, Any]
 ) -> DataFrame:
     """Create l5_cvm_one_day_users_table - one day table of users used for
     training and validating.
@@ -64,11 +64,13 @@ def create_l5_cvm_one_day_users_table(
 
     main_packs = main_packs.filter(
         "promotion_group_tariff not in ('SIM 2 Fly', \
-         'Net SIM', 'Traveller SIM')")
-    main_packs = main_packs.select('package_id'). \
-        withColumnRenamed('package_id', 'current_package_id')
-    users = users.join(main_packs, ['current_package_id'], 'inner')
-    columns_to_pick = ['partition_month', 'subscription_identifier']
+         'Net SIM', 'Traveller SIM')"
+    )
+    main_packs = main_packs.select("package_id").withColumnRenamed(
+        "package_id", "current_package_id"
+    )
+    users = users.join(main_packs, ["current_package_id"], "inner")
+    columns_to_pick = ["partition_month", "subscription_identifier"]
     users = users.select(columns_to_pick)
     users.withColumnRenamed("partition_month", "key_date")
 
@@ -76,8 +78,7 @@ def create_l5_cvm_one_day_users_table(
 
 
 def create_l5_cvm_users_sample_table(
-        users: DataFrame,
-        parameters: Dict[str, Any],
+    users: DataFrame, parameters: Dict[str, Any],
 ) -> DataFrame:
     """Sample long term users to create development sample. Users with at
     least 4 months of activity and subscription_identifier ending with 'A'
@@ -93,24 +94,26 @@ def create_l5_cvm_users_sample_table(
     chosen_date = parameters["l5_cvm_one_day_users_table"]["date_chosen"]
 
     users_months_count = users.groupby("subscription_identifier").count()
-    long_term_users = users_months_count.filter("count == 4").select(
-        "subscription_identifier").distinct()
+    long_term_users = (
+        users_months_count.filter("count == 4")
+        .select("subscription_identifier")
+        .distinct()
+    )
     long_term_users = long_term_users.withColumn(
         "subscription_identifier_last_letter",
-        long_term_users.subscription_identifier.substr(-1, 1))
+        long_term_users.subscription_identifier.substr(-1, 1),
+    )
     long_term_users = long_term_users.filter(
-        "subscription_identifier_last_letter == 'A'")
+        "subscription_identifier_last_letter == 'A'"
+    )
     long_term_users = long_term_users.select("subscription_identifier")
-    long_term_users = long_term_users.withColumn("key_date",
-                                                 func.lit(chosen_date))
+    long_term_users = long_term_users.withColumn("key_date", func.lit(chosen_date))
 
     return long_term_users
 
 
 def add_ard_targets(
-        users: DataFrame,
-        reve: DataFrame,
-        parameters: Dict[str, Any]
+    users: DataFrame, reve: DataFrame, parameters: Dict[str, Any]
 ) -> DataFrame:
     """ Create table with ARPU drop targets.
 
@@ -124,25 +127,19 @@ def add_ard_targets(
 
     local_parameters = parameters["targets"]["ard"]
     users = setup_names(users)
-    ard_target_tables = [get_ard_targets(
-        users, reve, local_parameters[targets]
-    )
-        for targets in local_parameters]
+    ard_target_tables = [
+        get_ard_targets(users, reve, local_parameters[targets])
+        for targets in local_parameters
+    ]
 
     def join_targets(df1, df2):
-        return df1.join(
-            df2,
-            ["key_date", "subscription_identifier"],
-            "full"
-        )
+        return df1.join(df2, ["key_date", "subscription_identifier"], "full")
 
     return functools.reduce(join_targets, ard_target_tables)
 
 
 def add_churn_targets(
-        users: DataFrame,
-        usage: DataFrame,
-        parameters: Dict[str, Any]
+    users: DataFrame, usage: DataFrame, parameters: Dict[str, Any]
 ) -> DataFrame:
     """ Create table with churn targets.
 
@@ -161,24 +158,19 @@ def add_churn_targets(
     users = setup_names(users)
     usage = setup_names(usage)
     usage = filter_usage(users, usage, parameters)
-    churn_target_tables = [get_churn_targets(users, usage,
-                                             local_parameters[targets],
-                                             chosen_date)
-                           for targets in local_parameters]
+    churn_target_tables = [
+        get_churn_targets(users, usage, local_parameters[targets], chosen_date)
+        for targets in local_parameters
+    ]
 
     def join_targets(df1, df2):
-        return df1.join(
-            df2,
-            ["key_date", "subscription_identifier"],
-            "full"
-        )
+        return df1.join(df2, ["key_date", "subscription_identifier"], "full")
 
     return functools.reduce(join_targets, churn_target_tables)
 
 
 def create_l5_cvm_one_day_train_test(
-        targets_features: DataFrame,
-        parameters: Dict[str, Any],
+    targets_features: DataFrame, parameters: Dict[str, Any],
 ) -> DataFrame:
     """Adds train-test column to features-targets table. Train share defined in
     parameters.
@@ -195,8 +187,7 @@ def create_l5_cvm_one_day_train_test(
 
     # add train test flag
     train_test = targets_features.withColumn(
-        "train_test",
-        func.when(func.rand() <= train_share, "train").otherwise("test")
+        "train_test", func.when(func.rand() <= train_share, "train").otherwise("test")
     )
     train = train_test.filter("train_test == 'train'").drop("train_test")
     test = train_test.filter("train_test == 'test'").drop("train_test")
@@ -205,8 +196,7 @@ def create_l5_cvm_one_day_train_test(
 
 
 def create_l5_cvm_features_one_day_joined(
-        users: DataFrame,
-        *args: DataFrame
+    users: DataFrame, *args: DataFrame
 ) -> DataFrame:
     """ Creates table with one_day features for given users.
 
@@ -226,8 +216,7 @@ def create_l5_cvm_features_one_day_joined(
     def rename(df):
         return df.withColumnRenamed(cols_to_be_renamed, "key_date")
 
-    feature_tables = [rename(feature_table)
-                      for feature_table in feature_tables]
+    feature_tables = [rename(feature_table) for feature_table in feature_tables]
     users = rename(users)
 
     # join the tables
@@ -243,9 +232,7 @@ def create_l5_cvm_features_one_day_joined(
     return features_joined
 
 
-def subs_date_join(
-        *args: DataFrame,
-) -> DataFrame:
+def subs_date_join(*args: DataFrame,) -> DataFrame:
     """ Left join all tables by given keys.
 
     Args:

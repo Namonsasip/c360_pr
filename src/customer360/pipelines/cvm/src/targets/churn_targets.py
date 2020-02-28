@@ -36,10 +36,10 @@ from customer360.pipelines.cvm.src.setup_names import setup_names
 
 
 def get_churn_targets(
-        users: DataFrame,
-        usage: DataFrame,
-        target_parameters: Dict[str, Any],
-        chosen_date: str,
+    users: DataFrame,
+    usage: DataFrame,
+    target_parameters: Dict[str, Any],
+    chosen_date: str,
 ) -> DataFrame:
     """ Create table with one churn target.
 
@@ -58,36 +58,33 @@ def get_churn_targets(
     blindspot = target_parameters["blindspot"]
 
     usage = usage.withColumnRenamed("key_date", "target_date")
-    usage = usage.filter("target_date == '{}'".format(
-        add_days(chosen_date, inactivity_length + blindspot)))
+    usage = usage.filter(
+        "target_date == '{}'".format(
+            add_days(chosen_date, inactivity_length + blindspot)
+        )
+    )
 
     # key to join by
     usage = usage.withColumn(
-        "key_date",
-        func.date_sub(usage.target_date, blindspot + inactivity_length)
+        "key_date", func.date_sub(usage.target_date, blindspot + inactivity_length)
     )
 
     # setup activity flag
     usage = usage.withColumn(
-        "inactivity_start",
-        func.date_sub(usage.target_date, inactivity_length)
+        "inactivity_start", func.date_sub(usage.target_date, inactivity_length)
     )
 
     # setup flag
     usage = usage.withColumn(
         colname,
         func.when(usage.last_activity_date.isNull(), "churn")
-            .when(usage.inactivity_start > usage.last_activity_date, "churn")
-            .otherwise("no_churn")
+        .when(usage.inactivity_start > usage.last_activity_date, "churn")
+        .otherwise("no_churn"),
     )
     to_select = [colname, "key_date", "subscription_identifier"]
     usage = usage.select(to_select)
 
-    users_churn = users.join(
-        usage,
-        ["key_date", "subscription_identifier"],
-        "left"
-    )
+    users_churn = users.join(usage, ["key_date", "subscription_identifier"], "left")
 
     return users_churn
 
@@ -100,9 +97,7 @@ def add_days(date: str, days_num: int) -> str:
     return end_date.strftime(date_format)
 
 
-def get_min_max_churn_horizon(
-        target_parameters: Dict[str, Any],
-) -> int:
+def get_min_max_churn_horizon(target_parameters: Dict[str, Any],) -> int:
     """ Returns min and max of churn horizons.
 
     Args:
@@ -111,16 +106,16 @@ def get_min_max_churn_horizon(
     Returns:
         Min and max of churn horizons.
     """
-    horizons = [target_parameters[target]["inactivity_length"] +
-                target_parameters[target]["blindspot"]
-                for target in target_parameters]
+    horizons = [
+        target_parameters[target]["inactivity_length"]
+        + target_parameters[target]["blindspot"]
+        for target in target_parameters
+    ]
     return min(horizons), max(horizons)
 
 
 def filter_usage(
-        users: DataFrame,
-        usage: DataFrame,
-        parameters: Dict[str, Any],
+    users: DataFrame, usage: DataFrame, parameters: Dict[str, Any],
 ) -> DataFrame:
     """ Reduce size of usage table, making it usable.
 
@@ -144,13 +139,12 @@ def filter_usage(
 
     # setup date_filter
     date_chosen = parameters["l5_cvm_one_day_users_table"]["date_chosen"]
-    min_horizon, max_horizon = get_min_max_churn_horizon(
-        parameters["targets"]["churn"])
+    min_horizon, max_horizon = get_min_max_churn_horizon(parameters["targets"]["churn"])
     min_date = add_days(date_chosen, min_horizon)
     max_date = add_days(date_chosen, max_horizon)
-    usage = usage.filter("key_date >= '{}' and key_date <= '{}'".format(
-        min_date, max_date
-    ))
+    usage = usage.filter(
+        "key_date >= '{}' and key_date <= '{}'".format(min_date, max_date)
+    )
 
     # filter users
     users = setup_names(users)

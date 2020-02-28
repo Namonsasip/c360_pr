@@ -28,13 +28,14 @@
 
 from kedro.pipeline import Pipeline, node
 from customer360.pipelines.cvm.dev.nodes import create_dev_version
-from customer360.pipelines.cvm.data_prep.nodes import \
-    create_l5_cvm_one_day_users_table, \
-    add_ard_targets, \
-    add_churn_targets, \
-    create_l5_cvm_features_one_day_joined, \
-    create_l5_cvm_one_day_train_test, \
-    subs_date_join
+from customer360.pipelines.cvm.data_prep.nodes import (
+    create_l5_cvm_one_day_users_table,
+    add_ard_targets,
+    add_churn_targets,
+    create_l5_cvm_features_one_day_joined,
+    create_l5_cvm_one_day_train_test,
+    subs_date_join,
+)
 
 
 def create_cvm_dev_inputs_pipeline(**kwargs):
@@ -42,25 +43,25 @@ def create_cvm_dev_inputs_pipeline(**kwargs):
         [
             node(
                 create_dev_version,
-                ["l3_customer_profile_include_1mo_non_active",
-                 "parameters"],
+                ["l3_customer_profile_include_1mo_non_active", "parameters"],
                 "l3_customer_profile_include_1mo_non_active_dev",
-                name="create_l3_customer_profile_include_1mo_non_active_dev"
+                name="create_l3_customer_profile_include_1mo_non_active_dev",
             ),
             node(
                 create_dev_version,
-                ["l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
-                 "parameters"],
+                [
+                    "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
+                    "parameters",
+                ],
                 "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_dev",
-                name="create_l4_revenue_prepaid_ru_f_sum_revenue" +
-                     "_by_service_monthly_dev"
+                name="create_l4_revenue_prepaid_ru_f_sum_revenue"
+                + "_by_service_monthly_dev",
             ),
             node(
                 create_dev_version,
-                ["l4_usage_prepaid_postpaid_daily_features",
-                 "parameters"],
+                ["l4_usage_prepaid_postpaid_daily_features", "parameters"],
                 "l4_usage_prepaid_postpaid_daily_features_dev",
-                name="create_l4_usage_prepaid_postpaid_daily_features_dev"
+                name="create_l4_usage_prepaid_postpaid_daily_features_dev",
             ),
         ]
     )
@@ -71,51 +72,59 @@ def create_cvm_prepare_data_pipeline_dev(**kwargs):
         [
             node(
                 create_l5_cvm_one_day_users_table,
-                ["l3_customer_profile_include_1mo_non_active_dev",
-                 "l0_product_product_pru_m_package_master_group",
-                 "parameters"],
+                [
+                    "l3_customer_profile_include_1mo_non_active_dev",
+                    "l0_product_product_pru_m_package_master_group",
+                    "parameters",
+                ],
                 "l5_cvm_one_day_users_table_dev",
-                name="create_l5_cvm_one_day_users_table_dev"
+                name="create_l5_cvm_one_day_users_table_dev",
             ),
             node(
                 add_ard_targets,
-                ["l5_cvm_one_day_users_table_dev",
-                 "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_dev",
-                 "parameters"],
+                [
+                    "l5_cvm_one_day_users_table_dev",
+                    "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_dev",
+                    "parameters",
+                ],
                 "l5_cvm_ard_one_day_targets_dev",
-                name="create_l5_cvm_ard_one_day_targets_dev"
+                name="create_l5_cvm_ard_one_day_targets_dev",
             ),
             node(
                 add_churn_targets,
-                ["l5_cvm_one_day_users_table_dev",
-                 "l4_usage_prepaid_postpaid_daily_features_dev",
-                 "parameters"],
+                [
+                    "l5_cvm_one_day_users_table_dev",
+                    "l4_usage_prepaid_postpaid_daily_features_dev",
+                    "parameters",
+                ],
                 "l5_cvm_churn_one_day_targets_dev",
-                name="create_l5_cvm_churn_one_day_targets_dev"
+                name="create_l5_cvm_churn_one_day_targets_dev",
             ),
             node(
                 create_l5_cvm_one_day_train_test,
-                ["l5_cvm_features_targets_one_day_dev",
-                 "parameters"],
-                ["l5_cvm_one_day_train_dev",
-                 "l5_cvm_one_day_test_dev"],
-                name="create_l5_cvm_one_day_train_test_dev"
+                ["l5_cvm_features_targets_one_day_dev", "parameters"],
+                ["l5_cvm_one_day_train_dev", "l5_cvm_one_day_test_dev"],
+                name="create_l5_cvm_one_day_train_test_dev",
             ),
             node(
                 create_l5_cvm_features_one_day_joined,
-                ["l5_cvm_one_day_users_table_dev",
-                 "l3_customer_profile_include_1mo_non_active_dev",
-                 "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_dev"],
+                [
+                    "l5_cvm_one_day_users_table_dev",
+                    "l3_customer_profile_include_1mo_non_active_dev",
+                    "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_dev",
+                ],
                 "l5_cvm_features_one_day_joined_dev",
-                name="create_l5_cvm_features_one_day_joined_dev"
+                name="create_l5_cvm_features_one_day_joined_dev",
             ),
             node(
                 subs_date_join,
-                ["l5_cvm_features_one_day_joined_dev",
-                 "l5_cvm_churn_one_day_targets_dev",
-                 "l5_cvm_ard_one_day_targets_dev"],
+                [
+                    "l5_cvm_features_one_day_joined_dev",
+                    "l5_cvm_churn_one_day_targets_dev",
+                    "l5_cvm_ard_one_day_targets_dev",
+                ],
                 "l5_cvm_features_targets_one_day_dev",
-                name="create_l5_cvm_features_targets_one_day_dev"
+                name="create_l5_cvm_features_targets_one_day_dev",
             ),
         ]
     )
