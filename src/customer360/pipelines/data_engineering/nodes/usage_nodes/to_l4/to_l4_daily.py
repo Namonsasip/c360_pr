@@ -13,14 +13,10 @@ def split_and_run_daily(data_frame, dict_obj) -> DataFrame:
     unique_ids = data_frame.select("subscription_identifier").distinct()
     unique_ids = unique_ids.withColumn("id", monotonically_increasing_id())
 
-    min_id = unique_ids.agg(F.min("id")).collect()[0]
-    print(min_id)
-    min_id = min_id.id
+    min_id = unique_ids.select("id").agg(F.min("id")).collect()[0]
     print(min_id)
 
-    max_id = unique_ids.agg(F.min("id")).collect()[0]
-    print(max_id)
-    max_id = max_id.id
+    max_id = unique_ids.select("id").agg(F.max("id")).collect()[0]
     print(max_id)
 
     mid_point = (min_id/2)
