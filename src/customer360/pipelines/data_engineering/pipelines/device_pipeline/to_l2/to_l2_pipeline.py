@@ -16,13 +16,13 @@ def device_to_l2_pipeline(**kwargs):
                 "device_summary_with_config"
             ),
 
-            node(
-                device_current_configuration_weekly,
-                ["l1_customer_profile_union_daily_feature",
-                 "device_summary_with_config",
-                 "params:l2_device_handset_summary_with_configuration"],
-                "l2_device_handset_summary_with_configuration_weekly"
-            ),
+            # node(
+            #     device_current_configuration_weekly,
+            #     ["l1_customer_profile_union_daily_feature",
+            #      "device_summary_with_config",
+            #      "params:l2_device_handset_summary_with_configuration"],
+            #     "l2_device_handset_summary_with_configuration_weekly"
+            # ),
 
             # Weekly number of phone updates
             node(

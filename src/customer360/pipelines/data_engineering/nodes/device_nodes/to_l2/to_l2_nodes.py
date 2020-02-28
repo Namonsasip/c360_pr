@@ -20,7 +20,7 @@ def massive_processing(customer_prof, input_df, sql, is_rank, partition, output_
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = input_df
     cust_data_frame = customer_prof
-    dates_list = cust_data_frame.select(partition).where("start_of_week not in ('2019-08-05','2019-09-30','2019-10-14','2019-10-21','2020-01-13','2020-01-06','2019-09-02','2019-12-30')").distinct().collect()
+    dates_list = cust_data_frame.select(partition).where("start_of_week in ('2019-08-05','2019-09-30','2019-10-14','2019-10-21','2020-01-13','2020-01-06','2019-09-02','2019-12-30')").distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
