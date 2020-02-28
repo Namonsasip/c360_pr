@@ -60,7 +60,10 @@ from .pipelines.data_engineering.pipelines.complaints_pipeline.to_l1.to_l1_pipel
 from .pipelines.data_engineering.pipelines.complaints_pipeline.to_l2.to_l2_pipeline import complaints_to_l2_pipeline
 from .pipelines.data_engineering.pipelines.complaints_pipeline.to_l3.to_l3_pipeline import complaints_to_l3_pipeline
 from .pipelines.data_engineering.pipelines.complaints_pipeline.to_l4.to_l4_pipeline import complaints_to_l4_pipeline
-
+from .pipelines.data_engineering.pipelines.touchpoints_pipeline.to_l1.to_l1_pipeline import touchpoints_to_l1_pipeline
+from .pipelines.data_engineering.pipelines.touchpoints_pipeline.to_l2.to_l2_pipeline import touchpoints_to_l2_pipeline
+from .pipelines.data_engineering.pipelines.touchpoints_pipeline.to_l3.to_l3_pipeline import touchpoints_to_l3_pipeline
+from .pipelines.data_engineering.pipelines.touchpoints_pipeline.to_l4.to_l4_pipeline import touchpoints_to_l4_pipeline
 
 def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
     """Create the project's pipeline.
@@ -114,6 +117,10 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         'complaints_to_l1_pipeline': complaints_to_l1_pipeline(),
         'complaints_to_l2_pipeline': complaints_to_l2_pipeline(),
         'complaints_to_l3_pipeline': complaints_to_l3_pipeline(),
-        'complaints_to_l4_pipeline': complaints_to_l4_pipeline()
+        'complaints_to_l4_pipeline': complaints_to_l4_pipeline(),
+        'touchpoints_to_l1_pipeline': touchpoints_to_l1_pipeline(),
+        'touchpoints_to_l2_pipeline': touchpoints_to_l2_pipeline(),
+        'touchpoints_to_l3_pipeline': touchpoints_to_l3_pipeline(),
+        'touchpoints_to_l4_pipeline': touchpoints_to_l4_pipeline()
         # "de": data_engineering_pipeline,
     }

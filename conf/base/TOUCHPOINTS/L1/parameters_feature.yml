@@ -1,20 +1,29 @@
 l1_touchpoints_to_call_center_features:
   # AIS 1175 and AIS-SRN 1148
-  where_clause: "called_no = 'hYAUKs+f31uJzUZp3iM5F.fO8CgW7107gM602izDqDn.6GjSvNd8lhU6af7ItzfP' or
+  where_clause: "where called_no = 'hYAUKs+f31uJzUZp3iM5F.fO8CgW7107gM602izDqDn.6GjSvNd8lhU6af7ItzfP' or
                 called_no = '98MkP5bMx1ykVd8RBE3C.XztcSxOJmjcyHAUmXwvCHW2Bb+cKKwh1kqv0.QI4ddw'"
   feature_list:
     number_of_calls_on_cc: "sum(total_successful_call)"
     duration_of_calls_on_cc: "sum(total_durations)"
   granularity: "caller_no, day_id"
   event_date_column: "date(day_id)"
+  join_column_with_cust_profile:
+    access_method_num: caller_no
+    event_partition_date: event_partition_date
+  partition_num_per_job: 3
 
 
 l1_touchpoints_from_call_center_features:
   # AIS 1175 and AIS-SRN 1148
-  where_clause: "caller_no = 'hYAUKs+f31uJzUZp3iM5F.fO8CgW7107gM602izDqDn.6GjSvNd8lhU6af7ItzfP' or
+  where_clause: "where caller_no = 'hYAUKs+f31uJzUZp3iM5F.fO8CgW7107gM602izDqDn.6GjSvNd8lhU6af7ItzfP' or
                  caller_no = '98MkP5bMx1ykVd8RBE3C.XztcSxOJmjcyHAUmXwvCHW2Bb+cKKwh1kqv0.QI4ddw'"
   feature_list:
-    number_of_calls_on_cc: "sum(total_successful_call)"
-    duration_of_calls_on_cc: "sum(total_durations)"
+    number_of_calls_from_cc: "sum(total_successful_call)"
+    duration_of_calls_from_cc: "sum(total_durations)"
   granularity: "called_no, day_id"
+  event_date_column: "date(day_id)"
+  join_column_with_cust_profile:
+    access_method_num: called_no
+    event_partition_date: event_partition_date
+  partition_num_per_job: 3
 
