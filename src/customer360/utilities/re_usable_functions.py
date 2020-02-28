@@ -72,7 +72,7 @@ def _l1_join_with_customer_profile(
     cust_profile_col_to_select = list(config["join_column_with_cust_profile"].keys()) + ["start_of_week"]
     cust_profile_col_to_select = list(set(cust_profile_col_to_select))  # remove duplicates
 
-    if isinstance(current_item[0], int):
+    if not isinstance(current_item[0], datetime):
         current_item = list(map(lambda x: datetime.strptime(str(x), '%Y%m%d'), current_item))
 
     # push down the filter to customer profile to reduce the join rows
