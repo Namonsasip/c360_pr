@@ -8,6 +8,31 @@ def add_relative_time_features(data_frame: DataFrame) -> DataFrame:
     :return:
     """
     data_frame = data_frame.withColumn(
+        "sum_campaign_total_upsell_xsell_by_call_center_sum_weekly_last_four_week_over_twelve_weeks"
+        , F.col("sum_campaign_total_upsell_xsell_by_call_center_sum_weekly_last_four_week")
+          / F.col("sum_campaign_total_upsell_xsell_by_call_center_sum_weekly_last_twelve_week")
+            ) \
+        .withColumn(
+        "sum_campaign_total_others_by_call_center_sum_weekly_last_four_week_over_twelve_weeks"
+        , F.col("sum_campaign_total_others_by_call_center_sum_weekly_last_four_week")
+          / F.col("sum_campaign_total_others_by_call_center_sum_weekly_last_twelve_week")
+            ) \
+        .withColumn(
+        "sum_campaign_total_retention_by_call_center_sum_weekly_last_four_week_over_twelve_weeks"
+        , F.col("sum_campaign_total_retention_by_call_center_sum_weekly_last_four_week")
+          / F.col("sum_campaign_total_retention_by_call_center_sum_weekly_last_twelve_week")
+            ) \
+        .withColumn(
+        "sum_campaign_total_upsell_xsell_by_sms_sum_weekly_last_four_week_over_twelve_weeks"
+        , F.col("sum_campaign_total_upsell_xsell_by_sms_sum_weekly_last_four_week")
+          / F.col("sum_campaign_total_upsell_xsell_by_sms_sum_weekly_last_twelve_week")
+        ) \
+        .withColumn(
+        "sum_campaign_total_retention_by_sms_sum_weekly_last_four_week_over_twelve_weeks"
+        , F.col("sum_campaign_total_retention_by_sms_sum_weekly_last_four_week")
+          / F.col("sum_campaign_total_retention_by_sms_sum_weekly_last_twelve_week")
+            ) \
+        .withColumn(
         "sum_campaign_total_by_call_center_sum_weekly_last_four_week_over_twelve_weeks"
         , F.col("sum_campaign_total_by_call_center_sum_weekly_last_four_week")
           / F.col("sum_campaign_total_by_call_center_sum_weekly_last_twelve_week")

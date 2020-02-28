@@ -66,8 +66,8 @@ def usage_to_l4_daily_pipeline(**kwargs):
             # ),
             node(
                 split_and_run_daily, ["l1_usage_postpaid_prepaid_daily",
-                                      "params:l4_usage_prepaid_postpaid_daily_features_test"],
-                'l4_usage_prepaid_postpaid_daily_features_test'
+                                      "params:l4_usage_prepaid_postpaid_daily_features"],
+                'l4_usage_prepaid_postpaid_daily_features'
             )
 
         ], name="usage_to_l4_daily_pipeline"

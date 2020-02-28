@@ -172,10 +172,12 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
     final_df_str = gen_max_sql(union_df, 'roaming_incoming_outgoing_data', group_cols)
     sel_cols = ['access_method_num',
                 'event_partition_date',
-                "subscription_identifier"]
+                "subscription_identifier",
+                "start_of_week"]
 
     join_cols = ['access_method_num',
-                 'event_partition_date']
+                 'event_partition_date',
+                 "start_of_week"]
 
     """
     :return:
@@ -200,8 +202,6 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
             .select(sel_cols)
 
         output_df = cust_df.join(output_df, join_cols, how="left")
-        output_df = output_df.withColumn("start_of_week",
-                    F.coalesce(F.col("start_of_week"), F.to_date(F.date_trunc('week', F.col('event_partition_date')))))
         CNTX.catalog.save("l1_usage_postpaid_prepaid_daily", output_df.drop(*drop_cols))
 
 
@@ -212,7 +212,5 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
         .select(sel_cols)
     return_df = execute_sql(data_frame=return_df, table_name='roaming_incoming_outgoing_data', sql_str=final_df_str)
     return_df = cust_df.join(return_df, join_cols, how="left")
-    return_df = return_df.withColumn("start_of_week",
-                    F.coalesce(F.col("start_of_week"), F.to_date(F.date_trunc('week', F.col('event_partition_date')))))
 
     return return_df.drop(*drop_cols)

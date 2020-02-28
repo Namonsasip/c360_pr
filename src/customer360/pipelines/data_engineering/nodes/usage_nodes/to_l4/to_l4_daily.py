@@ -20,9 +20,6 @@ def split_and_run_daily(data_frame, dict_obj) -> DataFrame:
     max_id = min_max_id[0][1]
 
     mid_point = (min_id + max_id)/2
-    print(min_id)
-    print(max_id)
-    print(mid_point)
 
     unique_ids_1 = unique_ids.filter(F.col("id") <= mid_point).drop("id")
     unique_ids_2 = unique_ids.filter(F.col("id") > mid_point).drop("id")
