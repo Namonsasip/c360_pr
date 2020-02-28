@@ -1,34 +1,34 @@
-l4_usage_prepaid_postpaid_daily_features_min:
+l4_usage_prepaid_postpaid_daily_features_test:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/USAGE/l4_features/l4_usage_prepaid_postpaid_daily_features_min/
+  filepath: /mnt/customer360-blob-data/C360/USAGE/l4_features/l4_usage_prepaid_postpaid_daily_features_test/
   save_args:
     mode: "overwrite"
     partitionBy: ["event_partition_date"]
 
-l4_usage_prepaid_postpaid_daily_features_max:
-  type: kedro.contrib.io.pyspark.SparkDataSet
-  file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/USAGE/l4_features/l4_usage_prepaid_postpaid_daily_features_max/
-  save_args:
-    mode: "overwrite"
-    partitionBy: ["event_partition_date"]
-
-l4_usage_prepaid_postpaid_daily_features_sum:
-  type: kedro.contrib.io.pyspark.SparkDataSet
-  file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/USAGE/l4_features/l4_usage_prepaid_postpaid_daily_features_sum/
-  save_args:
-    mode: "overwrite"
-    partitionBy: ["event_partition_date"]
-
-l4_usage_prepaid_postpaid_daily_features_avg:
-  type: kedro.contrib.io.pyspark.SparkDataSet
-  file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/USAGE/l4_features/l4_usage_prepaid_postpaid_daily_features_avg/
-  save_args:
-    mode: "overwrite"
-    partitionBy: ["event_partition_date"]
+#l4_usage_prepaid_postpaid_daily_features_max:
+#  type: kedro.contrib.io.pyspark.SparkDataSet
+#  file_format: "parquet"
+#  filepath: /mnt/customer360-blob-data/C360/USAGE/l4_features/l4_usage_prepaid_postpaid_daily_features_max/
+#  save_args:
+#    mode: "overwrite"
+#    partitionBy: ["event_partition_date"]
+#
+#l4_usage_prepaid_postpaid_daily_features_sum:
+#  type: kedro.contrib.io.pyspark.SparkDataSet
+#  file_format: "parquet"
+#  filepath: /mnt/customer360-blob-data/C360/USAGE/l4_features/l4_usage_prepaid_postpaid_daily_features_sum/
+#  save_args:
+#    mode: "overwrite"
+#    partitionBy: ["event_partition_date"]
+#
+#l4_usage_prepaid_postpaid_daily_features_avg:
+#  type: kedro.contrib.io.pyspark.SparkDataSet
+#  file_format: "parquet"
+#  filepath: /mnt/customer360-blob-data/C360/USAGE/l4_features/l4_usage_prepaid_postpaid_daily_features_avg/
+#  save_args:
+#    mode: "overwrite"
+#    partitionBy: ["event_partition_date"]
 
 
 

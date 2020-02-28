@@ -34,35 +34,41 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 from kedro.pipeline import Pipeline, node
 
 from src.customer360.utilities.config_parser import l4_rolling_window
+from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l4 import split_and_run_daily
 
 
 def usage_to_l4_daily_pipeline(**kwargs):
     return Pipeline(
         [
+            # node(
+            #     l4_rolling_window,
+            #     ["l1_usage_postpaid_prepaid_daily",
+            #      "params:l4_usage_prepaid_postpaid_daily_features_avg"],
+            #     "l4_usage_prepaid_postpaid_daily_features_avg"
+            # ),
+            # node(
+            #     l4_rolling_window,
+            #     ["l1_usage_postpaid_prepaid_daily",
+            #      "params:l4_usage_prepaid_postpaid_daily_features_min"],
+            #     "l4_usage_prepaid_postpaid_daily_features_min"
+            # ),
+            # node(
+            #     l4_rolling_window,
+            #     ["l1_usage_postpaid_prepaid_daily",
+            #      "params:l4_usage_prepaid_postpaid_daily_features_max"],
+            #     "l4_usage_prepaid_postpaid_daily_features_max"
+            # ),
+            # node(
+            #     l4_rolling_window,
+            #     ["l1_usage_postpaid_prepaid_daily",
+            #      "params:l4_usage_prepaid_postpaid_daily_features_sum"],
+            #     "l4_usage_prepaid_postpaid_daily_features_sum"
+            # ),
             node(
-                l4_rolling_window,
-                ["l1_usage_postpaid_prepaid_daily",
-                 "params:l4_usage_prepaid_postpaid_daily_features_avg"],
-                "l4_usage_prepaid_postpaid_daily_features_avg"
-            ),
-            node(
-                l4_rolling_window,
-                ["l1_usage_postpaid_prepaid_daily",
-                 "params:l4_usage_prepaid_postpaid_daily_features_min"],
-                "l4_usage_prepaid_postpaid_daily_features_min"
-            ),
-            node(
-                l4_rolling_window,
-                ["l1_usage_postpaid_prepaid_daily",
-                 "params:l4_usage_prepaid_postpaid_daily_features_max"],
-                "l4_usage_prepaid_postpaid_daily_features_max"
-            ),
-            node(
-                l4_rolling_window,
-                ["l1_usage_postpaid_prepaid_daily",
-                 "params:l4_usage_prepaid_postpaid_daily_features_sum"],
-                "l4_usage_prepaid_postpaid_daily_features_sum"
-            ),
+                split_and_run_daily, ["l1_usage_postpaid_prepaid_daily",
+                                      "params:l4_usage_prepaid_postpaid_daily_features_test"],
+                'l4_usage_prepaid_postpaid_daily_features_test'
+            )
 
         ], name="usage_to_l4_daily_pipeline"
     )
