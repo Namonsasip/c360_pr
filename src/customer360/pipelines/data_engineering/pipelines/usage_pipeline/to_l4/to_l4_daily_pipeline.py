@@ -42,9 +42,26 @@ def usage_to_l4_daily_pipeline(**kwargs):
             node(
                 l4_rolling_window,
                 ["l1_usage_postpaid_prepaid_daily",
-                 "params:l4_usage_prepaid_postpaid_daily_features"],
-                "l4_usage_prepaid_postpaid_daily_features"
-
+                 "params:l4_usage_prepaid_postpaid_daily_features_min"],
+                "l4_usage_prepaid_postpaid_daily_features_min"
+            ),
+            node(
+                l4_rolling_window,
+                ["l1_usage_postpaid_prepaid_daily",
+                 "params:l4_usage_prepaid_postpaid_daily_features_max"],
+                "l4_usage_prepaid_postpaid_daily_features_max"
+            ),
+            node(
+                l4_rolling_window,
+                ["l1_usage_postpaid_prepaid_daily",
+                 "params:l4_usage_prepaid_postpaid_daily_features_sum"],
+                "l4_usage_prepaid_postpaid_daily_features_sum"
+            ),
+            node(
+                l4_rolling_window,
+                ["l1_usage_postpaid_prepaid_daily",
+                 "params:l4_usage_prepaid_postpaid_daily_features_avg"],
+                "l4_usage_prepaid_postpaid_daily_features_avg"
             )
 
         ], name="usage_to_l4_daily_pipeline"
