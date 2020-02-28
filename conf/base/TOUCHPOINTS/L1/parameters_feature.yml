@@ -10,7 +10,7 @@ l1_touchpoints_to_call_center_features:
   join_column_with_cust_profile:
     access_method_num: caller_no
     event_partition_date: event_partition_date
-  partition_num_per_job: 7
+  partition_num_per_job: 14
   output_catalog: "l1_touchpoints_to_call_center_features"
 
 
@@ -26,5 +26,5 @@ l1_touchpoints_from_call_center_features:
   join_column_with_cust_profile:
     access_method_num: called_no
     event_partition_date: event_partition_date
-  partition_num_per_job: 7
+  partition_num_per_job: 14
   output_catalog: "l1_touchpoints_from_call_center_features"
