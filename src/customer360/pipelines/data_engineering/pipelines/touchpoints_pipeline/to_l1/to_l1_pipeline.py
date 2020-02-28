@@ -35,19 +35,26 @@ from src.customer360.utilities.re_usable_functions import l1_massive_processing
 def touchpoints_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
+            # node(
+            #     l1_massive_processing,
+            #     ["l0_usage_call_relation_sum_daily",
+            #      "params:l1_touchpoints_to_call_center_features",
+            #      "l1_customer_profile_union_daily_feature"],
+            #     "l1_touchpoints_to_call_center_features"
+            # ),
+            # node(
+            #     l1_massive_processing,
+            #     ["l0_usage_call_relation_sum_daily",
+            #      "params:l1_touchpoints_from_call_center_features",
+            #      "l1_customer_profile_union_daily_feature"],
+            #     "l1_touchpoints_from_call_center_features"
+            # ),
             node(
                 l1_massive_processing,
-                ["l0_usage_call_relation_sum_daily",
-                 "params:l1_touchpoints_to_call_center_features",
+                ["l0_complaints_ais_nim_work",
+                 "params:l1_touchpoints_nim_work_features",
                  "l1_customer_profile_union_daily_feature"],
-                "l1_touchpoints_to_call_center_features"
-            ),
-            node(
-                l1_massive_processing,
-                ["l0_usage_call_relation_sum_daily",
-                 "params:l1_touchpoints_from_call_center_features",
-                 "l1_customer_profile_union_daily_feature"],
-                "l1_touchpoints_from_call_center_features"
+                "l1_touchpoints_nim_work_features"
             )
         ]
     )
