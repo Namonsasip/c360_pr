@@ -60,7 +60,7 @@ def pipeline1_fit(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
     imputer = Imputer(
         inputCols=df.columns, outputCols=[col + "imputed" for col in df.columns]
     )
-    stages += imputer
+    stages += [imputer]
 
     pipeline = Pipeline(stages=stages)
     pipeline_fitted = pipeline.fit(df)
