@@ -51,7 +51,7 @@ def create_l5_cvm_one_day_users_table(
         parameters: parameters defined in parameters.yml.
     """
 
-    date_chosen = parameters["date_chosen"]
+    date_chosen = parameters["chosen_date"]
     users = profile.filter("partition_month == '{}'".format(date_chosen))
     users = users.filter(
         "charge_type == 'Pre-paid' \
@@ -91,7 +91,7 @@ def create_l5_cvm_users_sample_table(
         Table with subscription_identifiers.
     """
 
-    chosen_date = parameters["date_chosen"]
+    chosen_date = parameters["chosen_date"]
 
     users_months_count = users.groupby("subscription_identifier").count()
     long_term_users = (
@@ -113,7 +113,7 @@ def create_l5_cvm_users_sample_table(
 
 
 def add_ard_targets(
-    users: DataFrame, reve: DataFrame, parameters: Dict[str, Any]
+    users: DataFrame, reve: DataFrame, parameters: Dict[str, Any], chosen_date: str
 ) -> DataFrame:
     """ Create table with ARPU drop targets.
 
@@ -121,6 +121,7 @@ def add_ard_targets(
         users: Table with users and dates to create targets for.
         reve: Table with revenue stats.
         parameters: parameters defined in parameters.yml.
+        chosen_date: Date for which targets will be created.
     Returns:
         Table with ARD targets.
     """
@@ -128,7 +129,7 @@ def add_ard_targets(
     local_parameters = parameters["targets"]["ard"]
     users = setup_names(users)
     ard_target_tables = [
-        get_ard_targets(users, reve, local_parameters[targets])
+        get_ard_targets(users, reve, local_parameters[targets], chosen_date)
         for targets in local_parameters
     ]
 
@@ -153,7 +154,7 @@ def add_churn_targets(
     """
 
     local_parameters = parameters["targets"]["churn"]
-    chosen_date = parameters["date_chosen"]
+    chosen_date = parameters["chosen_date"]
 
     users = setup_names(users)
     usage = setup_names(usage)
