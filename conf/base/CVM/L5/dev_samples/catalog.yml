@@ -106,5 +106,4 @@ l5_cvm_one_day_test_preprocessed_dev:
     mode: "overwrite"
 
 string_indexer:
-  type: kedro.io.PickleLocalDataSet
-  filepath: /mnt/customer360-cvm/cvm_model/preprocessing/string_indexer
+  type: kedro.io.MemoryDataSet
