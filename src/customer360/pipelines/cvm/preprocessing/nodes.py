@@ -31,6 +31,7 @@ from pyspark.sql import DataFrame
 from typing import Dict, Any
 from pyspark.ml.feature import StringIndexer, Imputer
 from pyspark.ml import Pipeline, PipelineModel
+from pyspark.sql.functions import col
 from src.customer360.pipelines.cvm.src.list_categorical import list_categorical
 
 
@@ -48,18 +49,22 @@ def pipeline1_fit(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
     cols_to_pick = parameters["prepro_cols_to_pick"]
     df = df.select(cols_to_pick)
 
-    # string indexer
+    # set types
     categorical_cols = list_categorical(df)
+    numerical_cols = list(set(df.columns) - set(categorical_cols))
+    for col_name in numerical_cols:
+        df = df.withColumn(col_name, col(col_name).cast("float"))
+
+    # string indexer
     stages = []
-    for col in categorical_cols:
+    for col_name in categorical_cols:
         indexer = StringIndexer(
-            inputCol=col, outputCol=col + "_indexed"
+            inputCol=col_name, outputCol=col_name + "_indexed"
         ).setHandleInvalid("keep")
         stages += [indexer]
     # imputation
-    input_cols = list(set(df.columns) - set(categorical_cols))
     imputer = Imputer(
-        inputCols=input_cols, outputCols=[col + "imputed" for col in input_cols]
+        inputCols=numerical_cols, outputCols=[col + "imputed" for col in numerical_cols]
     )
     stages += [imputer]
 
@@ -87,10 +92,15 @@ def pipeline1_transform(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
     cols_to_pick = parameters["prepro_cols_to_pick"]
     df = df.select(cols_to_pick)
 
+    # set types
+    categorical_cols = list_categorical(df)
+    numerical_cols = list(set(df.columns) - set(categorical_cols))
+    for col_name in numerical_cols:
+        df = df.withColumn(col_name, col(col_name).cast("float"))
+
     # string indexer
     pipeline_fitted = PipelineModel.load("/mnt/customer360-cvm/pipeline1")
     data_transformed = pipeline_fitted.transform(df)
-    categorical_cols = list_categorical(df)
     data_transformed = data_transformed.drop(*categorical_cols)
 
     return data_transformed
