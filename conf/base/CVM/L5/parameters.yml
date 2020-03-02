@@ -1,6 +1,6 @@
-# Minimum date for l5_cvm_users_table creation
-l5_cvm_one_day_users_table:
-  date_chosen: "2019-10-01"
+# sampling parameters
+chosen_date: '2019-10-01'
+subscription_id_suffix: 'AA'
 
 # List of targets
 targets:

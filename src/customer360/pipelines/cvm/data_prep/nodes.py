@@ -91,7 +91,7 @@ def create_l5_cvm_users_sample_table(
         Table with subscription_identifiers.
     """
 
-    chosen_date = parameters["l5_cvm_one_day_users_table"]["date_chosen"]
+    chosen_date = parameters["date_chosen"]
 
     users_months_count = users.groupby("subscription_identifier").count()
     long_term_users = (
@@ -153,7 +153,7 @@ def add_churn_targets(
     """
 
     local_parameters = parameters["targets"]["churn"]
-    chosen_date = parameters["l5_cvm_one_day_users_table"]["date_chosen"]
+    chosen_date = parameters["date_chosen"]
 
     users = setup_names(users)
     usage = setup_names(usage)

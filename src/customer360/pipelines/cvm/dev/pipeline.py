@@ -89,7 +89,7 @@ def create_cvm_prepare_data_pipeline_dev(**kwargs):
                     "l5_cvm_one_day_users_table_dev",
                     "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_dev",
                     "parameters",
-                    "params:dev_parameters:chosen_date",
+                    "params:chosen_date",
                 ],
                 "l5_cvm_ard_one_day_targets_dev",
                 name="create_l5_cvm_ard_one_day_targets_dev",

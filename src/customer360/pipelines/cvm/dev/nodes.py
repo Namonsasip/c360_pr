@@ -40,8 +40,8 @@ def create_dev_version(df: DataFrame, parameters: Dict[str, Any],) -> DataFrame:
         Dev sample of table.
     """
 
-    chosen_date = parameters["dev_parameters"]["chosen_date"]
-    subscription_id_suffix = parameters["dev_parameters"]["subscription_id_suffix"]
+    chosen_date = parameters["chosen_date"]
+    subscription_id_suffix = parameters["subscription_id_suffix"]
 
     dates_cols = ["partition_month", "event_partition_date", "start_of_month"]
     dates_intersect = set(dates_cols) & set(df.columns)
@@ -76,7 +76,7 @@ def create_dev_version_users_only(
         Dev sample of table.
     """
 
-    subscription_id_suffix = parameters["dev_parameters"]["subscription_id_suffix"]
+    subscription_id_suffix = parameters["subscription_id_suffix"]
 
     df = df.withColumn(
         "subscription_identifier_last_letter", df.subscription_identifier.substr(-2, 2)
