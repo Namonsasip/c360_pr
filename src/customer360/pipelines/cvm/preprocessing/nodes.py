@@ -57,8 +57,9 @@ def pipeline1_fit(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
         ).setHandleInvalid("keep")
         stages += [indexer]
     # imputation
+    input_cols = list(set(df.columns) - set(categorical_cols))
     imputer = Imputer(
-        inputCols=df.columns, outputCols=[col + "imputed" for col in df.columns]
+        inputCols=input_cols, outputCols=[col + "imputed" for col in input_cols]
     )
     stages += [imputer]
 
