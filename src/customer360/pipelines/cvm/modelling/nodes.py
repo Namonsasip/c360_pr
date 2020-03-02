@@ -32,6 +32,14 @@ from src.customer360.pipelines.cvm.src.list_targets import list_targets
 
 
 def train_rf(df: DataFrame) -> RandomForestClassifier:
+    """ Create random forest model given the table to train on.
+
+    Args:
+        df: Training preprocessed sample.
+
+    Returns:
+        Random forest classifier.
+    """
     target_cols = list_targets()
     X = df.drop(*target_cols).toPandas()
     y = df.select("dilution1").toPandas()
