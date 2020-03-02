@@ -28,11 +28,13 @@ class TestUnitBilling:
         random_type = ['4', 'B1', 'B58', '3', 'B0', '7', '16', 'B43', '1', '5', '53', 'B69', '51', 'B50']
         date1 = '2020-01-01'
         date2 = '2020-04-01'
-        random.seed(100)
+
         my_dates_list = pd.date_range(date1, date2).tolist()
         my_dates = [iTemp.date().strftime("%d-%m-%Y") for iTemp in my_dates_list]
         my_dates = my_dates * 3
+        random.seed(100)
         random_list = [random_type[random.randint(0, 13)] for iTemp in range(0, len(my_dates))]
+        random.seed(100)
         random_list2 = [random.randint(1, 10) * 100 for iTemp in range(0, len(my_dates))]
         df = spark.createDataFrame(zip(random_list, my_dates, random_list2),
                                    schema=['recharge_type', 'temp', 'face_value']) \
@@ -47,12 +49,12 @@ class TestUnitBilling:
 
 
         print('dfdebug')
-        df.orderBy('event_partition_date').show()
+        df.show()
         print('dfdebug2')
         daily_data = node_from_config(df, var_project_context.catalog.load(
             'params:l1_billing_and_payment_most_popular_topup_channel'))
         print('dailydebug')
-        daily_data.orderBy('event_partition_date').show(999,False)
+        daily_data.show(999,False)
         assert \
             daily_data.where("event_partition_date = '2020-01-05'").where('recharge_type="B1"').select("payments_total_top_up").collect()[0][
                 0] == 2
@@ -65,29 +67,99 @@ class TestUnitBilling:
         # joined_data.show(999,False)
         weekly_data = node_from_config(joined_data, var_project_context.catalog.load(
             'params:l2_popular_top_up_channel'))
-        # print('weeklyy')
-        # weekly_data.show(999,False)
+        print('weeklyy')
+        weekly_data.show(999,False)
+
+        assert \
+            weekly_data.where("start_of_week = '2019-12-30'").where('recharge_topup_event_type_name="Refill on Mobile"').select(
+                "payments_total_top_up").collect()[0][
+                0] == 3
+        assert \
+            weekly_data.where("start_of_week = '2019-12-30'").where(
+                'recharge_topup_event_type_name="Refill on Mobile"').select(
+                "rank").collect()[0][
+                0] == 2
 
         weekly_data_most = node_from_config(weekly_data, var_project_context.catalog.load(
             'params:l2_most_popular_topup_channel'))
-        # print('mostweekly')
-        # weekly_data_most.orderBy('start_of_week').show(999,False)
+        print('mostweekly')
+        weekly_data_most.show(999,False)
+        assert \
+            weekly_data_most.where("start_of_week = '2019-12-30'").select(
+                "payments_total_top_up").collect()[0][
+                0] == 4
+        assert \
+            weekly_data_most.where("start_of_week = '2019-12-30'").select(
+                "payments_top_up_channel").collect()[0][
+                0] == 'Recharge via ATM of BBL'
+        assert \
+            weekly_data_most.where("start_of_week = '2019-12-30'").select(
+                "subscription_identifier").collect()[0][
+                0] == 123
+
+
+
+
 
         monthly_data = node_from_config(joined_data, var_project_context.catalog.load(
             'params:l3_popular_topup_channel'))
-        # print('monthlyy')
-        # monthly_data.orderBy('start_of_month','rank').show(999, False)
+        print('monthlyy')
+        monthly_data.show(999, False)
+        assert \
+            monthly_data.where("start_of_month = '2020-01-01'").where(
+                'recharge_topup_event_type_name="Biz Reward Platform"').select(
+                "rank").collect()[0][
+                0] == 4 or 5
+        assert \
+            monthly_data.where("start_of_month = '2020-01-01'").where(
+                'recharge_topup_event_type_name="Biz Reward Platform"').select(
+                "payments_total_top_up").collect()[0][
+                0] == 8
+
 
         monthly_data_most=node_from_config(monthly_data, var_project_context.catalog.load(
             'params:l3_most_popular_topup_channel'))
-        # print('monthlymost')
-        # monthly_data_most.show(999,False)
+        print('monthlymost')
+        monthly_data_most.show(999,False)
+        assert \
+            monthly_data_most.where("start_of_month = '2020-01-01'").select(
+                "payments_total_top_up").collect()[0][
+                0] == 15
+        assert \
+            monthly_data_most.where("start_of_month = '2020-01-01'").select(
+                "payments_top_up_channel").collect()[0][
+                0] == 'Refill on Mobile'
+        assert \
+            monthly_data_most.where("start_of_month = '2020-01-01'").select(
+                "subscription_identifier").collect()[0][
+                0] == 123
 
 
         final_features_initial  = l4_rolling_window(weekly_data, var_project_context.catalog.load(
             'params:l4_most_popular_topup_channel_initial'))
-        # print('finaldebugini')
-        # final_features_initial.show(999,False)
+        print('finaldebugini')
+        final_features_initial.show(999,False)
+        assert \
+            final_features_initial.where("start_of_week = '2020-02-03'").where(
+                'recharge_topup_event_type_name="Refill on Mobile"').select(
+                "sum_payments_total_top_up_weekly_last_week").collect()[0][
+                0] == 5
+        assert \
+            final_features_initial.where("start_of_week = '2020-02-03'").where(
+                'recharge_topup_event_type_name="Refill on Mobile"').select(
+                "sum_payments_total_top_up_weekly_last_two_week").collect()[0][
+                0] == 8
+        assert \
+            final_features_initial.where("start_of_week = '2020-02-03'").where(
+                'recharge_topup_event_type_name="Refill on Mobile"').select(
+                "sum_payments_total_top_up_weekly_last_four_week").collect()[0][
+                0] == 13
+        assert \
+            final_features_initial.where("start_of_week = '2020-02-03'").where(
+                'recharge_topup_event_type_name="Refill on Mobile"').select(
+                "sum_payments_total_top_up_weekly_last_twelve_week").collect()[0][
+                0] == 16
+
         print('beforeerror')
         final_features = l4_rolling_ranked_window(final_features_initial, var_project_context.catalog.load(
             'params:l4_most_popular_topup_channel'))
