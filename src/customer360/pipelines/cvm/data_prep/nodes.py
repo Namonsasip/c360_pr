@@ -51,7 +51,7 @@ def create_l5_cvm_one_day_users_table(
         parameters: parameters defined in parameters.yml.
     """
 
-    date_chosen = parameters["l5_cvm_one_day_users_table"]["date_chosen"]
+    date_chosen = parameters["date_chosen"]
     users = profile.filter("partition_month == '{}'".format(date_chosen))
     users = users.filter(
         "charge_type == 'Pre-paid' \
