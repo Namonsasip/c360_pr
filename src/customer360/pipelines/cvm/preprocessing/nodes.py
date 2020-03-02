@@ -29,7 +29,8 @@
 
 from pyspark.sql import DataFrame
 from typing import Dict, Any, Tuple
-from pyspark.ml.feature import OneHotEncoderEstimator
+from pyspark.ml.feature import OneHotEncoderEstimator, StringIndexer
+from src.customer360.pipelines.cvm.src.list_categorical import list_categorical
 
 
 def pick_columns(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
@@ -42,6 +43,23 @@ def pick_columns(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
 
     cols_to_pick = parameters["prepro_cols_to_pick"]
     return df.select(cols_to_pick)
+
+
+def string_indexer_fit(df: DataFrame,) -> Tuple[DataFrame, OneHotEncoderEstimator]:
+    """ Fits string indexer and runs it for given table.
+
+    Args:
+        df: Table to run string indexing for.
+    Returns:
+        String indexed table and OneHotEncoderEstimator object to use later.
+    """
+    categorical_cols = list_categorical(df)
+    output_cols = [col + "_index" for col in categorical_cols]
+    indexer = StringIndexer(inputCol=categorical_cols, outputCol=output_cols)
+    indexer_fitted = indexer.fit(df)
+    indexed = indexer_fitted.transform(df)
+    indexed.drop(categorical_cols)
+    return indexed, indexer_fitted
 
 
 def one_hot_encoding_fit(df: DataFrame,) -> Tuple[DataFrame, OneHotEncoderEstimator]:
