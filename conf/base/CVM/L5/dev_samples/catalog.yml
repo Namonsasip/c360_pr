@@ -90,3 +90,7 @@ l5_cvm_one_day_test_preprocessed_dev:
   file_format: "parquet"
   save_args:
     mode: "overwrite"
+
+random_forest:
+  type: kedro.io.PickleLocalDataSet
+  filepath: /mnt/customer360-cvm/random_forest

@@ -25,3 +25,19 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+from kedro.pipeline import Pipeline, node
+from src.customer360.pipelines.cvm.modelling.nodes import train_rf
+
+
+def create_train_model(**kwargs):
+    return Pipeline(
+        [
+            node(
+                train_rf,
+                "l5_cvm_one_day_train_preprocessed_dev",
+                "random_forest",
+                name="create_random_forest",
+            ),
+        ]
+    )
