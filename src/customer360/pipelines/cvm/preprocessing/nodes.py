@@ -46,7 +46,7 @@ def pick_columns(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
     return df.select(cols_to_pick)
 
 
-def string_indexer_fit(df: DataFrame,) -> Tuple[DataFrame, OneHotEncoderEstimator]:
+def string_indexer_fit(df: DataFrame,) -> DataFrame:
     """ Fits string indexer and runs it for given table.
 
     Args:
@@ -69,7 +69,7 @@ def string_indexer_fit(df: DataFrame,) -> Tuple[DataFrame, OneHotEncoderEstimato
     return indexed
 
 
-def string_indexer_transform(df: DataFrame) -> Tuple[DataFrame, OneHotEncoderEstimator]:
+def string_indexer_transform(df: DataFrame) -> DataFrame:
     """ Transforms given table according to given indexer.
 
     Args:
