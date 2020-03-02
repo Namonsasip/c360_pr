@@ -77,20 +77,6 @@ l5_cvm_one_day_test_dev:
   save_args:
     mode: "overwrite"
 
-l5_cvm_one_day_train_cols_picked_dev:
-  type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: dbfs:/mnt/customer360-blob-data/c360/cvm/l5_cvm_one_day_train_cols_picked_dev/
-  file_format: "parquet"
-  save_args:
-    mode: "overwrite"
-
-l5_cvm_one_day_test_cols_picked_dev:
-  type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: dbfs:/mnt/customer360-blob-data/c360/cvm/l5_cvm_one_day_test_cols_picked_dev/
-  file_format: "parquet"
-  save_args:
-    mode: "overwrite"
-
 l5_cvm_one_day_train_preprocessed_dev:
   type: kedro.contrib.io.pyspark.SparkDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_one_day_train_preprocessed_dev/
