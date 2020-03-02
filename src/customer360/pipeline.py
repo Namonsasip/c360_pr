@@ -30,6 +30,8 @@
 from typing import Dict
 
 from kedro.pipeline import Pipeline
+
+from .pipelines.cvm.modelling.pipeline import create_train_model
 from .pipelines.data_engineering.pipelines.usage_pipeline.to_l1 import \
     usage_to_l1_pipeline
 from src.customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline\
@@ -143,4 +145,5 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         "cvm_preprocessing_dev": create_cvm_preprocessing_dev(),
         "cvm": create_cvm_prepare_data_pipeline() +
                create_cvm_prepare_sample_data_pipeline(),
+        "train_model": create_train_model(),
     }
