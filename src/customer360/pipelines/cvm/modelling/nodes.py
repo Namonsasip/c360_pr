@@ -25,3 +25,17 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+from pyspark.sql import DataFrame
+from sklearn.ensemble import RandomForestClassifier
+from src.customer360.pipelines.cvm.src.list_targets import list_targets
+
+
+def train_rf(df: DataFrame) -> RandomForestClassifier:
+    target_cols = list_targets()
+    X = df.drop(*target_cols).toPandas()
+    y = df.select("dilution1").toPandas()
+    rf = RandomForestClassifier(n_estimators=100, random_state=100)
+    rf_fitted = rf.fit(X, y)
+
+    return rf_fitted
