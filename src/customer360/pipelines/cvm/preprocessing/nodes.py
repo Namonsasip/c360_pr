@@ -33,6 +33,7 @@ from pyspark.ml.feature import StringIndexer, Imputer
 from pyspark.ml import Pipeline, PipelineModel
 from pyspark.sql.functions import col
 from src.customer360.pipelines.cvm.src.list_categorical import list_categorical
+from src.customer360.pipelines.cvm.src.list_targets import list_targets
 
 
 def pipeline1_fit(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
@@ -45,13 +46,15 @@ def pipeline1_fit(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
         String indexed table and OneHotEncoderEstimator object to use later.
     """
 
+    categorical_cols = list_categorical(df)
+    target_cols = list_targets()
+    numerical_cols = list(set(df.columns) - set(categorical_cols) - set(target_cols))
+
     # select columns
-    cols_to_pick = parameters["prepro_cols_to_pick"]
+    cols_to_pick = parameters["prepro_cols_to_pick"] + target_cols
     df = df.select(cols_to_pick)
 
     # set types
-    categorical_cols = list_categorical(df)
-    numerical_cols = list(set(df.columns) - set(categorical_cols))
     for col_name in numerical_cols:
         df = df.withColumn(col_name, col(col_name).cast("float"))
 
@@ -90,13 +93,15 @@ def pipeline1_transform(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
         String indexed table object to use later.
     """
 
+    categorical_cols = list_categorical(df)
+    target_cols = list_targets()
+    numerical_cols = list(set(df.columns) - set(categorical_cols) - set(target_cols))
+
     # select columns
-    cols_to_pick = parameters["prepro_cols_to_pick"]
+    cols_to_pick = parameters["prepro_cols_to_pick"] + target_cols
     df = df.select(cols_to_pick)
 
     # set types
-    categorical_cols = list_categorical(df)
-    numerical_cols = list(set(df.columns) - set(categorical_cols))
     for col_name in numerical_cols:
         df = df.withColumn(col_name, col(col_name).cast("float"))
 
