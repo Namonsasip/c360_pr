@@ -46,13 +46,13 @@ def pipeline1_fit(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
         String indexed table and OneHotEncoderEstimator object to use later.
     """
 
-    target_cols = list_targets()
-    categorical_cols = list(set(list_categorical(df)) - set(target_cols))
-    numerical_cols = list(set(df.columns) - set(categorical_cols) - set(target_cols))
-
     # select columns
+    target_cols = list_targets()
     cols_to_pick = parameters["prepro_cols_to_pick"] + target_cols
     df = df.select(cols_to_pick)
+
+    categorical_cols = list(set(list_categorical(df)) - set(target_cols))
+    numerical_cols = list(set(df.columns) - set(categorical_cols) - set(target_cols))
 
     # set types
     for col_name in numerical_cols:
@@ -93,13 +93,13 @@ def pipeline1_transform(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
         String indexed table object to use later.
     """
 
-    target_cols = list_targets()
-    categorical_cols = list(set(list_categorical(df)) - set(target_cols))
-    numerical_cols = list(set(df.columns) - set(categorical_cols) - set(target_cols))
-
     # select columns
+    target_cols = list_targets()
     cols_to_pick = parameters["prepro_cols_to_pick"] + target_cols
     df = df.select(cols_to_pick)
+
+    categorical_cols = list(set(list_categorical(df)) - set(target_cols))
+    numerical_cols = list(set(df.columns) - set(categorical_cols) - set(target_cols))
 
     # set types
     for col_name in numerical_cols:
