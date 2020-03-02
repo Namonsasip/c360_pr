@@ -130,7 +130,7 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         "cvm_prepare_data": create_cvm_prepare_data_pipeline(),
         "cvm_prepare_sample_data": create_cvm_prepare_sample_data_pipeline(),
         "cvm_inputs_dev": create_cvm_dev_inputs_pipeline(),
-        "cvm_prepare_date_dev": create_cvm_prepare_data_pipeline_dev(),
+        "cvm_prepare_data_dev": create_cvm_prepare_data_pipeline_dev(),
         "cvm": create_cvm_prepare_data_pipeline() + \
                create_cvm_prepare_sample_data_pipeline(),
     }
