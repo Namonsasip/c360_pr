@@ -58,8 +58,26 @@ def string_indexer_fit(df: DataFrame,) -> Tuple[DataFrame, OneHotEncoderEstimato
     indexer = StringIndexer(inputCol=categorical_cols, outputCol=output_cols)
     indexer_fitted = indexer.fit(df)
     indexed = indexer_fitted.transform(df)
-    indexed.drop(categorical_cols)
+    indexed = indexed.drop(categorical_cols)
     return indexed, indexer_fitted
+
+
+def string_indexer_transform(
+    df: DataFrame, indexer: StringIndexer
+) -> Tuple[DataFrame, OneHotEncoderEstimator]:
+    """ Transforms given table according to given indexer.
+
+    Args:
+        df: Table to run string indexing for.
+        indexer: Saved string indexer.
+    Returns:
+        String indexed table object to use later.
+    """
+
+    to_drop = indexer.getInputCol()
+    indexed = indexer.transform(df)
+    indexed = indexed.drop(to_drop)
+    return indexed
 
 
 def one_hot_encoding_fit(df: DataFrame,) -> Tuple[DataFrame, OneHotEncoderEstimator]:
