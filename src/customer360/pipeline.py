@@ -49,6 +49,10 @@ from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4
 from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4.to_l4_pipeline_weekly import *
 from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4.to_l4_pipeline_monthly import *
 from .pipelines.data_engineering.pipelines.usage_pipeline.to_l2 import usage_to_l2_pipeline
+from .pipelines.data_engineering.pipelines.usage_pipeline.to_l4.to_l4_pipeline import usage_to_l4_pipeline
+
+from .pipelines.data_engineering.pipelines.device_pipeline.to_l2.to_l2_pipeline import device_to_l2_pipeline
+from .pipelines.data_engineering.pipelines.device_pipeline.to_l3.to_l3_pipeline import device_to_l3_pipeline
 from .pipelines.data_engineering.pipelines.usage_pipeline.to_l4 import usage_to_l4_pipeline
 from .pipelines.data_engineering.pipelines.usage_pipeline.to_l4 import usage_to_l4_daily_pipeline
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l1.to_l1_pipeline import streaming_to_l1_pipeline
@@ -58,6 +62,7 @@ from .pipelines.data_engineering.pipelines.stream_pipeline.to_l4.to_l4_pipeline 
 from .pipelines.data_engineering.pipelines.revenue_pipeline.to_l3 import revenue_to_l3_pipeline
 from .pipelines.data_engineering.pipelines.revenue_pipeline.to_l4 import revenue_to_l4_pipeline
 from .pipelines.data_engineering.pipelines.campaign_pipeline.to_l1 import campaign_to_l1_pipeline
+
 
 
 def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
@@ -92,7 +97,9 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
                        + billing_to_l4_pipeline_weekly()
                        + billing_to_l4_pipeline_monthly()
                        + revenue_to_l3_pipeline()
-                       + revenue_to_l4_pipeline(),
+                       + revenue_to_l4_pipeline()
+                       + device_to_l2_pipeline()
+                       + device_to_l3_pipeline(),
         "usage_to_l4_daily_pipeline": usage_to_l4_daily_pipeline(),
         "usage_to_l2_pipeline": usage_to_l2_pipeline(),
         "usage_to_l4_pipeline": usage_to_l4_pipeline(),
@@ -107,6 +114,8 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         'billing_to_l4_pipeline_monthly': billing_to_l4_pipeline_monthly(),
         'billing_to_l4_pipeline_weekly': billing_to_l4_pipeline_weekly(),
         'billing_to_l4_pipeline_daily': billing_to_l4_pipeline_daily(),
+        'device_to_l2_pipeline': device_to_l2_pipeline(),
+        'device_to_l3_pipeline': device_to_l3_pipeline(),
         "streaming_to_l1_pipeline": streaming_to_l1_pipeline(),
         "streaming_to_l2_pipeline": streaming_to_l2_pipeline(),
         "streaming_to_l3_pipeline": streaming_to_l3_pipeline(),
