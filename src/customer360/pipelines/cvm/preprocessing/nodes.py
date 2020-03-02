@@ -30,7 +30,7 @@
 from pyspark.sql import DataFrame
 from typing import Dict, Any, Tuple
 from pyspark.ml.feature import OneHotEncoderEstimator, StringIndexer
-from pyspark.ml import Pipeline
+from pyspark.ml import Pipeline, PipelineModel
 from src.customer360.pipelines.cvm.src.list_categorical import list_categorical
 
 
@@ -79,7 +79,7 @@ def string_indexer_transform(df: DataFrame) -> DataFrame:
         String indexed table object to use later.
     """
 
-    indexer = Pipeline.load("/mnt/customer360-cvm/string_indexer")
+    indexer = PipelineModel.load("/mnt/customer360-cvm/string_indexer")
     to_drop = indexer.getInputCol()
     indexed = indexer.transform(df)
     indexed = indexed.drop(*to_drop)
