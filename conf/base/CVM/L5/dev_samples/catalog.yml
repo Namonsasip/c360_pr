@@ -104,3 +104,7 @@ l5_cvm_one_day_test_preprocessed_dev:
   file_format: "parquet"
   save_args:
     mode: "overwrite"
+
+string_indexer:
+  type: kedro.io.PickleLocalDataset
+  filepath: /mnt/customer360-cvm/cvm_model/preprocessing/string_indexer
