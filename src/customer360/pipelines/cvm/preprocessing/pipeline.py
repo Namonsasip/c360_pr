@@ -34,7 +34,7 @@ from src.customer360.pipelines.cvm.preprocessing.nodes import (
 )
 
 
-def create_preprocessing_pipeline_dev(**kwargs):
+def create_cvm_preprocessing_dev(**kwargs):
     return Pipeline(
         [
             node(
