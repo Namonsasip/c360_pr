@@ -56,7 +56,8 @@ def pipeline1_fit(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
 
     # set types
     for col_name in numerical_cols:
-        df = df.withColumn(col_name, col(col_name).cast("float"))
+        if col_name in df.columns:
+            df = df.withColumn(col_name, col(col_name).cast("float"))
 
     # string indexer
     stages = []
@@ -103,7 +104,8 @@ def pipeline1_transform(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
 
     # set types
     for col_name in numerical_cols:
-        df = df.withColumn(col_name, col(col_name).cast("float"))
+        if col_name in df.columns:
+            df = df.withColumn(col_name, col(col_name).cast("float"))
 
     # string indexer
     pipeline_fitted = PipelineModel.load("/mnt/customer360-cvm/pipeline1")
