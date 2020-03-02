@@ -57,7 +57,9 @@ def string_indexer_fit(df: DataFrame,) -> Tuple[DataFrame, OneHotEncoderEstimato
     categorical_cols = list_categorical(df)
     stages = []
     for col in categorical_cols:
-        indexer = StringIndexer(inputCol=col, outputCol=col + "_indexed")
+        indexer = StringIndexer(
+            inputCol=col, outputCol=col + "_indexed"
+        ).setHandleInvalid("keep")
         stages += [indexer]
     indexer_pipeline = Pipeline(stages=stages)
     indexer_fitted = indexer_pipeline.fit(df)
