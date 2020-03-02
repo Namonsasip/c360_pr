@@ -64,28 +64,28 @@ l5_cvm_features_targets_one_day_dev:
     mode: "overwrite"
 
 l5_cvm_one_day_train_dev:
-  type: kedro.contrib.io.pyspark.sparkdataset
+  type: kedro.contrib.io.pyspark.SparkDataSet
   filepath: dbfs:/mnt/customer360-blob-data/c360/cvm/l5_cvm_one_day_train_dev/
   file_format: "parquet"
   save_args:
     mode: "overwrite"
 
 l5_cvm_one_day_test_dev:
-  type: kedro.contrib.io.pyspark.sparkdataset
+  type: kedro.contrib.io.pyspark.SparkDataSet
   filepath: dbfs:/mnt/customer360-blob-data/c360/cvm/l5_cvm_one_day_test_dev/
   file_format: "parquet"
   save_args:
     mode: "overwrite"
 
 l5_cvm_one_day_train_cols_picked_dev:
-  type: kedro.contrib.io.pyspark.sparkdataset
+  type: kedro.contrib.io.pyspark.SparkDataSet
   filepath: dbfs:/mnt/customer360-blob-data/c360/cvm/l5_cvm_one_day_train_cols_picked_dev/
   file_format: "parquet"
   save_args:
     mode: "overwrite"
 
 l5_cvm_one_day_test_cols_picked_dev:
-  type: kedro.contrib.io.pyspark.sparkdataset
+  type: kedro.contrib.io.pyspark.SparkDataSet
   filepath: dbfs:/mnt/customer360-blob-data/c360/cvm/l5_cvm_one_day_test_cols_picked_dev/
   file_format: "parquet"
   save_args:
