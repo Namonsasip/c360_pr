@@ -62,8 +62,9 @@ def get_ard_targets(
     reve_arpu_only = reve.select(cols_to_pick)
     reve_arpu_only = reve_arpu_only.withColumnRenamed(arpu_col, "reve")
     # Pick only interesting users
-    reve_arpu_only = users.join(
-        reve_arpu_only, ["subscription_identifier", "key_date"], "left"
+    users_distinct = users.select("subscription_identifier").distinct()
+    reve_arpu_only = users_distinct.join(
+        reve_arpu_only, ["subscription_identifier"], "left"
     )
 
     # Setup reve before and after
