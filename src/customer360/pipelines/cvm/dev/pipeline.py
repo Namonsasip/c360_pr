@@ -45,7 +45,7 @@ def create_cvm_dev_inputs_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                create_dev_version,
+                create_dev_version_users_only,
                 ["l3_customer_profile_include_1mo_non_active", "parameters"],
                 "l3_customer_profile_include_1mo_non_active_dev",
                 name="create_l3_customer_profile_include_1mo_non_active_dev",
