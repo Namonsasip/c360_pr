@@ -30,6 +30,7 @@
 from pyspark.sql import DataFrame
 from typing import Dict, Any, Tuple
 from pyspark.ml.feature import OneHotEncoderEstimator, StringIndexer
+from pyspark.ml import Pipeline
 from src.customer360.pipelines.cvm.src.list_categorical import list_categorical
 
 
@@ -54,22 +55,25 @@ def string_indexer_fit(df: DataFrame,) -> Tuple[DataFrame, OneHotEncoderEstimato
         String indexed table and OneHotEncoderEstimator object to use later.
     """
     categorical_cols = list_categorical(df)
-    output_cols = [col + "_index" for col in categorical_cols]
-    indexer = StringIndexer(inputCol=categorical_cols, outputCol=output_cols)
-    indexer_fitted = indexer.fit(df)
+    stages = []
+    for col in categorical_cols:
+        indexer = StringIndexer(inputCol=col, outputCol=col + "_indexed")
+        stages += [indexer]
+    indexer_pipeline = Pipeline(stages)
+    indexer_fitted = indexer_pipeline.fit(df)
     indexed = indexer_fitted.transform(df)
     indexed = indexed.drop(categorical_cols)
     return indexed, indexer_fitted
 
 
 def string_indexer_transform(
-    df: DataFrame, indexer: StringIndexer
+    df: DataFrame, indexer: Pipeline
 ) -> Tuple[DataFrame, OneHotEncoderEstimator]:
     """ Transforms given table according to given indexer.
 
     Args:
         df: Table to run string indexing for.
-        indexer: Saved string indexer.
+        indexer: Saved string indexer pipeline.
     Returns:
         String indexed table object to use later.
     """
