@@ -29,7 +29,7 @@
 """Application entry point."""
 from pathlib import Path
 from typing import Dict
-
+import os
 from kedro.context import KedroContext, load_context
 from kedro.pipeline import Pipeline
 from kedro.config import MissingConfigException
@@ -44,6 +44,7 @@ from kedro.versioning import Journal
 import findspark
 findspark.init()
 
+conf = os.environ["CONF"]
 
 class ProjectContext(KedroContext):
     """Users can override the remaining methods from the parent class here,
@@ -100,7 +101,9 @@ class ProjectContext(KedroContext):
 def run_package(env='base',pipelines=None):
     # entry point for running pip-install projects
     # using `<project_package>` command
-    project_context = load_context(Path.cwd(), env=env)
+    project_context = load_context(Path.cwd(), env=conf)
+
+
 
     from pyspark.sql import SparkSession
     spark = SparkSession.builder.getOrCreate()
@@ -114,9 +117,8 @@ def run_package(env='base',pipelines=None):
             project_context.run(pipeline_name=each_pipeline)
         return
 
-    #project_context.run(pipeline_name="billing_to_l2_pipeline")
+    #project_context.run(pipeline_name='usage_to_l1_pipeline')
     # project_context.run(pipeline_name='customer_profile_to_l3_pipeline')
-
 
     # Replace line above with below to run on databricks cluster
     # and Dont forget to clear state for every git pull in notebook
