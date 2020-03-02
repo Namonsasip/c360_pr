@@ -80,9 +80,7 @@ def string_indexer_transform(df: DataFrame) -> DataFrame:
     """
 
     indexer = PipelineModel.load("/mnt/customer360-cvm/string_indexer")
-    to_drop = indexer.getInputCol()
     indexed = indexer.transform(df)
-    indexed = indexed.drop(*to_drop)
     return indexed
 
 
