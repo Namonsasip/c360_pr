@@ -28,7 +28,8 @@
 
 
 from pyspark.sql import DataFrame
-from typing import Dict, Any
+from typing import Dict, Any, Tuple
+from pyspark.ml.feature import OneHotEncoderEstimator
 
 
 def pick_columns(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
@@ -41,3 +42,13 @@ def pick_columns(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
 
     cols_to_pick = parameters["prepro_cols_to_pick"]
     return df.select(cols_to_pick)
+
+
+def one_hot_encoding_fit(df: DataFrame,) -> Tuple[DataFrame, OneHotEncoderEstimator]:
+    """ Fits one hot encoder and runs it for given table.
+
+    Args:
+        df: Table to run one hot encoding for.
+    Returns:
+        One hot encoded table and OneHotEncoderEstimator object to use later.
+    """
