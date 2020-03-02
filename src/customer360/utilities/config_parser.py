@@ -452,7 +452,7 @@ def __construct_null_safe_join_condition(
     return join_condition
 
 
-def __join_l4_rolling_ranked_table(result_df, config):
+def join_l4_rolling_ranked_table(result_df, config):
     feature_column = [F.col("left.{}".format(each_col)) for each_col in config["partition_by"]]
 
     final_df = None
@@ -504,7 +504,7 @@ def __generate_l4_filtered_ranked_table(
         result_df["last_three_month"] = ranked_df.where(F.col("monthly_rank_last_three_month") == rank)
 
     if to_join:
-        return __join_l4_rolling_ranked_table(result_df, config)
+        return join_l4_rolling_ranked_table(result_df, config)
 
     return result_df
 
