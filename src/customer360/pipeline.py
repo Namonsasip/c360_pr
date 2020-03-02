@@ -32,20 +32,27 @@ from typing import Dict
 from kedro.pipeline import Pipeline
 from .pipelines.data_engineering.pipelines.usage_pipeline.to_l1 import \
     usage_to_l1_pipeline
-from src.customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l1.to_l1_pipeline import \
+from src.customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline\
+    .to_l1.to_l1_pipeline import \
     customer_profile_to_l1_pipeline
-from src.customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l3.to_l3_pipeline import \
+from src.customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline\
+    .to_l3.to_l3_pipeline import \
     customer_profile_to_l3_pipeline, \
     customer_profile_billing_level_to_l3_pipeline
-from src.customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l4.to_l4_pipeline import \
+from src.customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline\
+    .to_l4.to_l4_pipeline import \
     customer_profile_to_l4_pipeline
-from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l1.to_l1_pipeline import \
+from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l1\
+    .to_l1_pipeline import \
     billing_to_l1_pipeline
-from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l3.to_l3_pipeline import \
+from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l3\
+    .to_l3_pipeline import \
     billing_to_l3_pipeline
-from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l2.to_l2_pipeline import \
+from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l2\
+    .to_l2_pipeline import \
     billing_to_l2_pipeline
-from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4.to_l4_pipeline import \
+from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4\
+    .to_l4_pipeline import \
     billing_to_l4_pipeline
 from .pipelines.data_engineering.pipelines.usage_pipeline.to_l2 import \
     usage_to_l2_pipeline
@@ -111,7 +118,8 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         "usage_to_l4_pipeline": usage_to_l4_pipeline(),
         "customer_profile_to_l1_pipeline": customer_profile_to_l1_pipeline(),
         "customer_profile_to_l3_pipeline": customer_profile_to_l3_pipeline(),
-        "customer_profile_billing_level_to_l3_pipeline": customer_profile_billing_level_to_l3_pipeline(),
+        "customer_profile_billing_level_to_l3_pipeline":
+            customer_profile_billing_level_to_l3_pipeline(),
         "customer_profile_to_l4_pipeline": customer_profile_to_l4_pipeline(),
         "usage_to_l1_pipeline": usage_to_l1_pipeline(),
         "billing_to_l1_pipeline": billing_to_l1_pipeline(),
@@ -131,6 +139,6 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         "cvm_prepare_sample_data": create_cvm_prepare_sample_data_pipeline(),
         "cvm_inputs_dev": create_cvm_dev_inputs_pipeline(),
         "cvm_prepare_data_dev": create_cvm_prepare_data_pipeline_dev(),
-        "cvm": create_cvm_prepare_data_pipeline() + \
+        "cvm": create_cvm_prepare_data_pipeline() +
                create_cvm_prepare_sample_data_pipeline(),
     }
