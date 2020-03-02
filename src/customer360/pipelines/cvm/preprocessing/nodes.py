@@ -64,7 +64,8 @@ def pipeline1_fit(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
         stages += [indexer]
     # imputation
     imputer = Imputer(
-        inputCols=numerical_cols, outputCols=[col + "imputed" for col in numerical_cols]
+        inputCols=numerical_cols,
+        outputCols=[col + "_imputed" for col in numerical_cols],
     )
     stages += [imputer]
 
@@ -72,6 +73,7 @@ def pipeline1_fit(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
     pipeline_fitted = pipeline.fit(df)
     data_transformed = pipeline_fitted.transform(df)
     data_transformed = data_transformed.drop(*categorical_cols)
+    data_transformed = data_transformed.drop(*numerical_cols)
 
     pipeline_fitted.write().overwrite().save("/mnt/customer360-cvm/pipeline1")
 
@@ -102,5 +104,6 @@ def pipeline1_transform(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
     pipeline_fitted = PipelineModel.load("/mnt/customer360-cvm/pipeline1")
     data_transformed = pipeline_fitted.transform(df)
     data_transformed = data_transformed.drop(*categorical_cols)
+    data_transformed = data_transformed.drop(*numerical_cols)
 
     return data_transformed
