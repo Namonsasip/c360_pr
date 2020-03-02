@@ -65,7 +65,7 @@ def string_indexer_fit(df: DataFrame,) -> DataFrame:
     indexer_fitted = indexer_pipeline.fit(df)
     indexed = indexer_fitted.transform(df)
     indexed = indexed.drop(*categorical_cols)
-    indexer_fitted.save("/mnt/customer360-cvm/string_indexer")
+    indexer_fitted.write().overwrite().save("/mnt/customer360-cvm/string_indexer")
     return indexed
 
 
