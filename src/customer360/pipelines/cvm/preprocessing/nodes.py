@@ -25,3 +25,19 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+
+from pyspark.sql import DataFrame
+from typing import Dict, Any
+
+
+def pick_columns(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
+    """Simply pick chosen columns.
+
+    Args:
+        df: Table to pick columns from.
+        parameters: parameters defined in parameters*.yml files.
+    """
+
+    cols_to_pick = parameters["prepro_cols_to_pick"]
+    return df.select(cols_to_pick)
