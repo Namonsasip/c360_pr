@@ -29,13 +29,13 @@
 
 from pyspark.sql import DataFrame
 from typing import Dict, Any
-from pyspark.ml.feature import StringIndexer
+from pyspark.ml.feature import StringIndexer, Imputer
 from pyspark.ml import Pipeline, PipelineModel
 from src.customer360.pipelines.cvm.src.list_categorical import list_categorical
 
 
 def pipeline1_fit(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
-    """ Fits string indexer and runs it for given table.
+    """ Fits preprocessing pipeline to given table and runs the pipeline on it.
 
     Args:
         df: Table to run string indexing for.
@@ -56,17 +56,24 @@ def pipeline1_fit(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
             inputCol=col, outputCol=col + "_indexed"
         ).setHandleInvalid("keep")
         stages += [indexer]
-    indexer_pipeline = Pipeline(stages=stages)
-    indexer_fitted = indexer_pipeline.fit(df)
-    indexed = indexer_fitted.transform(df)
-    indexed = indexed.drop(*categorical_cols)
-    indexer_fitted.write().overwrite().save("/mnt/customer360-cvm/string_indexer")
+    # imputation
+    imputer = Imputer(
+        inputCols=df.columns, outputCols=[col + "imputed" for col in df.columns]
+    )
+    stages += imputer
 
-    return indexed
+    pipeline = Pipeline(stages=stages)
+    pipeline_fitted = pipeline.fit(df)
+    data_transformed = pipeline_fitted.transform(df)
+    data_transformed = data_transformed.drop(*categorical_cols)
+
+    pipeline_fitted.write().overwrite().save("/mnt/customer360-cvm/pipeline1")
+
+    return data_transformed
 
 
 def pipeline1_transform(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
-    """ Transforms given table according to given indexer.
+    """ Preprocess given table.
 
     Args:
         df: Table to run string indexing for.
@@ -80,9 +87,9 @@ def pipeline1_transform(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
     df = df.select(cols_to_pick)
 
     # string indexer
-    indexer = PipelineModel.load("/mnt/customer360-cvm/string_indexer")
-    indexed = indexer.transform(df)
+    pipeline_fitted = PipelineModel.load("/mnt/customer360-cvm/pipeline1")
+    data_transformed = pipeline_fitted.transform(df)
     categorical_cols = list_categorical(df)
-    indexed = indexed.drop(*categorical_cols)
+    data_transformed = data_transformed.drop(*categorical_cols)
 
-    return indexed
+    return data_transformed
