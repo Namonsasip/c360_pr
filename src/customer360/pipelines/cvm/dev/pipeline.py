@@ -70,7 +70,7 @@ def create_cvm_dev_inputs_pipeline(**kwargs):
     )
 
 
-def create_cvm_prepare_data_pipeline_dev(**kwargs):
+def create_cvm_prepare_data_dev(**kwargs):
     return Pipeline(
         [
             node(

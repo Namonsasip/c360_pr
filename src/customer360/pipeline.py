@@ -79,7 +79,7 @@ from customer360.pipelines.cvm.data_prep.pipeline import \
     create_cvm_prepare_sample_data_pipeline
 from customer360.pipelines.cvm.dev.pipeline import \
     create_cvm_dev_inputs_pipeline, \
-    create_cvm_prepare_data_pipeline_dev
+    create_cvm_prepare_data_dev
 from customer360.pipelines.cvm.preprocessing.pipeline import create_preprocessing_pipeline_dev
 
 
@@ -139,7 +139,7 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         "cvm_prepare_data": create_cvm_prepare_data_pipeline(),
         "cvm_prepare_sample_data": create_cvm_prepare_sample_data_pipeline(),
         "cvm_inputs_dev": create_cvm_dev_inputs_pipeline(),
-        "cvm_prepare_data_dev": create_cvm_prepare_data_pipeline_dev(),
+        "cvm_prepare_data_dev": create_cvm_prepare_data_dev(),
         "cvm_preprocessing_dev": create_preprocessing_pipeline_dev(),
         "cvm": create_cvm_prepare_data_pipeline() +
                create_cvm_prepare_sample_data_pipeline(),
