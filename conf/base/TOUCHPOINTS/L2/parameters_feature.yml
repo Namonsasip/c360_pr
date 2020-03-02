@@ -1,0 +1,52 @@
+l2_touchpoints_to_call_center_features:
+  feature_list:
+    sum: ["number_of_calls_on_cc",
+          "duration_of_calls_on_cc"]
+    avg: ["number_of_calls_on_cc",
+          "duration_of_calls_on_cc"]
+    max: ["number_of_calls_on_cc",
+          "duration_of_calls_on_cc"]
+    min: ["number_of_calls_on_cc",
+          "duration_of_calls_on_cc"]
+  granularity: "access_method_num, start_of_week"
+  partition_num_per_job: 360
+  output_catalog: "l2_touchpoints_to_call_center_features"
+
+
+l2_touchpoints_from_call_center_features:
+  feature_list:
+    sum: ["number_of_calls_from_cc",
+          "duration_of_calls_from_cc"]
+    avg: ["number_of_calls_from_cc",
+          "duration_of_calls_from_cc"]
+    max: ["number_of_calls_from_cc",
+          "duration_of_calls_from_cc"]
+    min: ["number_of_calls_from_cc",
+          "duration_of_calls_from_cc"]
+  granularity: "access_method_num, start_of_week"
+  partition_num_per_job: 360
+  output_catalog: "l2_touchpoints_from_call_center_features"
+
+l2_touchpoints_nim_work_features:
+  feature_list:
+    sum: ["num_of_commercial_question_with_cc",
+          "num_of_claims_with_cc",
+          "num_of_consultation_with_cc",
+          "num_of_commercial_question_in_store",
+          "num_of_claims_in_store",
+          "num_of_consultation_in_store",
+          "num_of_commercial_question_with_chatbot",
+          "num_of_claims_with_chatbot",
+          "num_of_consultation_with_chatbot",
+          "num_of_chatbot_visit",
+          "num_of_days_with_chatbot",
+          "num_of_commercial_question_with_ais_app",
+          "num_of_claims_with_ais_app",
+          "num_of_consultation_with_ais_app",
+          "num_of_days_with_ais_app",
+          "num_of_commercial_question_online",
+          "num_of_claims_with_online",
+          "num_of_consultation_online"]
+  granularity: "access_method_num, start_of_week"
+  partition_num_per_job: 360
+  output_catalog: "l2_touchpoints_nim_work_features"

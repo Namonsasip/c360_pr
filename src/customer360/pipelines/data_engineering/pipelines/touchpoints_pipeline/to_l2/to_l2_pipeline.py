@@ -28,20 +28,29 @@
 
 from kedro.pipeline import Pipeline, node
 
-from src.customer360.utilities.config_parser import node_from_config
-from customer360.pipelines.data_engineering.nodes.customer_profile_nodes.to_l1.to_l1_nodes import *
+from src.customer360.utilities.re_usable_functions import l2_massive_processing_with_expansion
 
 
 def touchpoints_to_l2_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                union_daily_cust_profile,
-                ["l0_customer_profile_profile_customer_profile_pre_current",
-                 "l0_customer_profile_profile_customer_profile_post_current",
-                 "l0_customer_profile_profile_customer_profile_post_non_mobile_current_non_mobile_current",
-                 "params:l1_customer_profile_union_daily_feature"],
-                ""
+                l2_massive_processing_with_expansion,
+                ["l1_touchpoints_to_call_center_features",
+                 "params:l2_touchpoints_to_call_center_features"],
+                "l2_touchpoints_to_call_center_features"
+            ),
+            node(
+                l2_massive_processing_with_expansion,
+                ["l1_touchpoints_from_call_center_features",
+                 "params:l2_touchpoints_from_call_center_features"],
+                "l2_touchpoints_from_call_center_features"
+            ),
+            node(
+                l2_massive_processing_with_expansion,
+                ["l1_touchpoints_nim_work_features",
+                 "params:l2_touchpoints_nim_work_features"],
+                "l2_touchpoints_nim_work_features"
             )
         ]
     )
