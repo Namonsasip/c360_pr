@@ -27,5 +27,5 @@ l0_billing_sa_t_account_recharge_daily:
 
 l0_billing_topup_type:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_recharge_topup_event_type_current/
+  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_recharge_topup_event_type/
   file_format: parquet
