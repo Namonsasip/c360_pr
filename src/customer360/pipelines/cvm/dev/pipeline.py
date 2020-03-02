@@ -27,7 +27,10 @@
 # limitations under the License.
 
 from kedro.pipeline import Pipeline, node
-from customer360.pipelines.cvm.dev.nodes import create_dev_version
+from customer360.pipelines.cvm.dev.nodes import (
+    create_dev_version,
+    create_dev_version_users_only,
+)
 from customer360.pipelines.cvm.data_prep.nodes import (
     create_l5_cvm_one_day_users_table,
     add_ard_targets,
@@ -48,7 +51,7 @@ def create_cvm_dev_inputs_pipeline(**kwargs):
                 name="create_l3_customer_profile_include_1mo_non_active_dev",
             ),
             node(
-                create_dev_version,
+                create_dev_version_users_only,
                 [
                     "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
                     "parameters",

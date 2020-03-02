@@ -62,3 +62,29 @@ def create_dev_version(df: DataFrame, parameters: Dict[str, Any],) -> DataFrame:
     )
 
     return df
+
+
+def create_dev_version_users_only(
+    df: DataFrame, parameters: Dict[str, Any],
+) -> DataFrame:
+    """ Create dev sample of given table. Dev sample is super small sample.
+
+    Args:
+        parameters: parameters defined in parameters.yml.
+        df: given table.
+    Returns:
+        Dev sample of table.
+    """
+
+    subscription_id_suffix = parameters["dev_parameters"]["subscription_id_suffix"]
+
+    df = df.withColumn(
+        "subscription_identifier_last_letter", df.subscription_identifier.substr(-2, 2)
+    )
+    subs_filter = "subscription_identifier_last_letter == '{}'".format(
+        subscription_id_suffix
+    )
+
+    df = df.filter(subs_filter).drop("subscription_identifier_last_letter")
+
+    return df
