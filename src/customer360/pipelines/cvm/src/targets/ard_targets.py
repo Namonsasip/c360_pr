@@ -32,7 +32,10 @@ from typing import Any, Dict
 
 
 def get_ard_targets(
-    users: DataFrame, reve: DataFrame, target_parameters: Dict[str, Any]
+    users: DataFrame,
+    reve: DataFrame,
+    target_parameters: Dict[str, Any],
+    date_chosen: str,
 ) -> DataFrame:
     """ Create table with one ARPU drop target.
 
@@ -40,6 +43,7 @@ def get_ard_targets(
         users: Table with users and dates to create targets for.
         reve: Table with revenue stats.
         target_parameters: parameters for given target.
+        date_chosen: Date for which the targets should be created.
 
     Returns:
         Table with single ARPU drop target.
@@ -62,8 +66,10 @@ def get_ard_targets(
     reve_arpu_only = reve.select(cols_to_pick)
     reve_arpu_only = reve_arpu_only.withColumnRenamed(arpu_col, "reve")
     # Pick only interesting users
-    users_distinct = users.select("subscription_identifier").distinct()
-    reve_arpu_only = users_distinct.join(
+    users_one_day = users.filter("key_date == '{}'".format(date_chosen)).select(
+        "subscription_identifier"
+    )
+    reve_arpu_only = users_one_day.join(
         reve_arpu_only, ["subscription_identifier"], "left"
     )
 
