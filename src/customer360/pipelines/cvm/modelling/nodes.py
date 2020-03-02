@@ -40,9 +40,11 @@ def train_rf(df: DataFrame) -> RandomForestClassifier:
     Returns:
         Random forest classifier.
     """
+    target_chosen = "dilution1"
     target_cols = list_targets()
+    df = df.filter("{} is not null".format(target_chosen))
     X = df.drop(*target_cols).toPandas()
-    y = df.select("dilution1").toPandas()
+    y = df.select(target_chosen).toPandas()
     rf = RandomForestClassifier(n_estimators=100, random_state=100)
     rf_fitted = rf.fit(X, y)
 
