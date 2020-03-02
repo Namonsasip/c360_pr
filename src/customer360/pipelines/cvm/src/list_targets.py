@@ -30,7 +30,7 @@
 from typing import Iterable
 
 
-def list_targets() -> Iterable(str):
+def list_targets() -> Iterable[str]:
     """
         Get column names of all targets.
     """
