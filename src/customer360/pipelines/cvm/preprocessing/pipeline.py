@@ -25,3 +25,41 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+from kedro.pipeline import Pipeline, node
+from src.customer360.pipelines.cvm.preprocessing.nodes import (
+    string_indexer_fit,
+    string_indexer_transform,
+    pick_columns,
+)
+
+
+def create_preprocessing_pipeline_dev(**kwargs):
+    return Pipeline(
+        [
+            node(
+                pick_columns,
+                ["l5_cvm_one_day_train_dev", "parameters"],
+                "l5_cvm_one_day_train_cols_picked_dev",
+                name="create_l5_cvm_one_day_train_cols_picked_dev",
+            ),
+            node(
+                pick_columns,
+                ["l5_cvm_one_day_test_dev", "parameters"],
+                "l5_cvm_one_day_test_cols_picked_dev",
+                name="create_l5_cvm_one_day_test_cols_picked_dev",
+            ),
+            node(
+                string_indexer_fit,
+                ["l5_cvm_one_day_train_cols_picked_dev"],
+                ["l5_cvm_one_day_train_preprocessed_dev", "string_indexer"],
+                name="create_l5_cvm_one_day_train_preprocessed_dev",
+            ),
+            node(
+                string_indexer_transform,
+                ["l5_cvm_one_day_test_cols_picked_dev", "string_indexer"],
+                ["l5_cvm_one_day_test_preprocessed_dev"],
+                name="create_l5_cvm_one_day_test_preprocessed_dev",
+            ),
+        ]
+    )
