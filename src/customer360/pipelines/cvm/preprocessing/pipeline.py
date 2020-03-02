@@ -52,12 +52,12 @@ def create_cvm_preprocessing_dev(**kwargs):
             node(
                 string_indexer_fit,
                 ["l5_cvm_one_day_train_cols_picked_dev"],
-                ["l5_cvm_one_day_train_preprocessed_dev", "string_indexer"],
+                ["l5_cvm_one_day_train_preprocessed_dev"],
                 name="create_l5_cvm_one_day_train_preprocessed_dev",
             ),
             node(
                 string_indexer_transform,
-                ["l5_cvm_one_day_test_cols_picked_dev", "string_indexer"],
+                ["l5_cvm_one_day_test_cols_picked_dev"],
                 ["l5_cvm_one_day_test_preprocessed_dev"],
                 name="create_l5_cvm_one_day_test_preprocessed_dev",
             ),

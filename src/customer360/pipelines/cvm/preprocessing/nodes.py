@@ -65,12 +65,11 @@ def string_indexer_fit(df: DataFrame,) -> Tuple[DataFrame, OneHotEncoderEstimato
     indexer_fitted = indexer_pipeline.fit(df)
     indexed = indexer_fitted.transform(df)
     indexed = indexed.drop(*categorical_cols)
-    return indexed, indexer_fitted
+    indexer_fitted.save("/mnt/customer360-cvm/string_indexer")
+    return indexed
 
 
-def string_indexer_transform(
-    df: DataFrame, indexer: Pipeline
-) -> Tuple[DataFrame, OneHotEncoderEstimator]:
+def string_indexer_transform(df: DataFrame) -> Tuple[DataFrame, OneHotEncoderEstimator]:
     """ Transforms given table according to given indexer.
 
     Args:
@@ -80,6 +79,7 @@ def string_indexer_transform(
         String indexed table object to use later.
     """
 
+    indexer = Pipeline.load("/mnt/customer360-cvm/string_indexer")
     to_drop = indexer.getInputCol()
     indexed = indexer.transform(df)
     indexed = indexed.drop(*to_drop)
