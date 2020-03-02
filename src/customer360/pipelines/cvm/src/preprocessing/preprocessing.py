@@ -25,3 +25,54 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+from abc import ABC, abstractmethod
+
+
+class Preprocess:
+    def __init__(self, parameters, possible_stages):
+        self.stages = {}
+        for stage in parameters["prepro_stages"]:
+            self.stages[stage] = possible_stages[stage](parameters)
+
+    def fit(self, df):
+        artifacts = {}
+        for stage in self.stages:
+            df, artifact = self.stages[stage].fit(df)
+            artifacts[artifact] = artifact
+        return df, artifacts
+
+    def predict(self, df, artifacts):
+        for stage in self.stages:
+            df = self.stages[stage].predict(df, artifacts[stage])
+        return df
+
+
+class Preprocess_stage(ABC):
+    @abstractmethod
+    def __init__(self, parameters):
+        self.parameters = parameters
+
+    @abstractmethod
+    def fit(self, df):
+        pass
+
+    @abstractmethod
+    def predict(self, df, artifact):
+        pass
+
+
+class Pick_cols(Preprocess_stage):
+    def __init__(self, parameters):
+        self.cols_to_pick = parameters["cols_to_pick"]
+
+    def fit(self, df):
+        return df.select(self.cols_to_pick), None
+
+    def predict(self, df, artifact):
+        return df.select(self.cols_to_pick)
+
+
+possible_stages = {
+    "Pick_cols": Pick_cols,
+}
