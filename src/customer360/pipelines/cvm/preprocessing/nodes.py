@@ -81,6 +81,8 @@ def string_indexer_transform(df: DataFrame) -> DataFrame:
 
     indexer = PipelineModel.load("/mnt/customer360-cvm/string_indexer")
     indexed = indexer.transform(df)
+    categorical_cols = list_categorical(df)
+    indexed = indexed.drop(*categorical_cols)
     return indexed
 
 
