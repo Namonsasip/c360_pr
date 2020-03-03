@@ -33,3 +33,20 @@ l2_loyalty_number_of_points_spend_weekly:
         loyalty_points_spend_lifestyle: "sum(loyalty_points_spend_lifestyle)"
         loyalty_points_spend_others: "sum(loyalty_points_spend_others)"
     granularity: "start_of_week,access_method_num,register_date,subscription_identifier"
+
+l2_loyalty_serenade_class_weekly:
+    where_clause: ""
+    feature_list:
+        start_of_week: "start_of_week"
+        access_method_num: "access_method_num"
+        register_date: "register_date"
+        subscription_identifier: "subscription_identifier"
+        loyalty_serenade_class: "first_value(ma_segment)
+        over(partition by start_of_week,access_method_num,register_date,subscription_identifier order by last_update desc)"
+        loyalty_is_classic: "case when first_value(ma_segment)
+        over(partition by start_of_week,access_method_num,register_date,subscription_identifier order by last_update desc) in ('Classic') then 'Y' else 'N' end"
+        loyalty_is_emerald: "case when first_value(ma_segment)
+        over(partition by start_of_week,access_method_num,register_date,subscription_identifier order by last_update desc) in ('Emerald') then 'Y' else 'N' end"
+        loyalty_is_gold: "case when first_value(ma_segment)
+        over(partition by start_of_week,access_method_num,register_date,subscription_identifier order by last_update desc) in ('Gold') then 'Y' else 'N' end"
+    granularity: ""

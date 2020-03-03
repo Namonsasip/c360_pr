@@ -4,7 +4,7 @@ l1_loyalty_number_of_services:
   filepath: /mnt/customer360-blob-data/C360/LOYALTY/l1_features/number_of_services/
   save_args:
     partitionBy: ["event_partition_date"]
-    mode: "append"
+    mode: "overwrite"
 
 l1_loyalty_number_of_rewards:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -12,7 +12,7 @@ l1_loyalty_number_of_rewards:
   filepath: /mnt/customer360-blob-data/C360/LOYALTY/l1_features/number_of_rewards/
   save_args:
     partitionBy: ["event_partition_date"]
-    mode: "append"
+    mode: "overwrite"
 
 l1_loyalty_number_of_points_spend:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -20,4 +20,4 @@ l1_loyalty_number_of_points_spend:
   filepath: /mnt/customer360-blob-data/C360/LOYALTY/l1_features/number_of_points_spend/
   save_args:
     partitionBy: ["event_partition_date"]
-    mode: "append"
+    mode: "overwrite"
