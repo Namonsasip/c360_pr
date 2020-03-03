@@ -110,7 +110,11 @@ def add_relative_time_features(data_frame: DataFrame) -> DataFrame:
         .withColumn("sum_campaign_total_others_success_by_sms_sum_weekly_four_week_over_twelve_weeks"
                     , F.col("sum_campaign_total_others_success_by_sms_sum_weekly_last_four_week")
                     / F.col("sum_campaign_total_others_success_by_sms_sum_weekly_last_twelve_week")
-                    )
-
+                    ) \
+        .withColumn(
+        "sum_campaign_total_others_by_sms_sum_weekly_last_four_week_over_twelve_weeks"
+        , F.col("sum_campaign_total_others_by_sms_sum_weekly_last_four_week")
+          / F.col("sum_campaign_total_others_by_sms_sum_weekly_last_twelve_week")
+    )
     return data_frame
 

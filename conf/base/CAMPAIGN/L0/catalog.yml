@@ -8,13 +8,20 @@ l0_campaign_tracking_contact_list_post:
 l0_campaign_tracking_contact_list_pre:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/CAMPAIGN/campaign_tracking_contact_list_post/
+  filepath: /mnt/customer360-blob-data/C360/CAMPAIGN/campaign_tracking_contact_list_pre/
   load_args:
     mergeSchema: true
 
 l0_campaign_tracking_contact_list_fbb:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/CAMPAIGN/campaign_tracking_contact_list_post/
+  filepath: /mnt/customer360-blob-data/C360/CAMPAIGN/campaign_tracking_contact_list_fbb/
   load_args:
     mergeSchema: true
+
+l0_campaign_clm_campaign_contacts_ma:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/CAMPAIGN/campaign_clm_campaign_contacts_ma/
+  load_args:
+  mergeSchema: true
