@@ -100,7 +100,7 @@ class ProjectContext(KedroContext):
         return catalog
 
 
-def run_package(pipelines=["campaign_to_l4_pipeline"]):
+def run_package(pipelines=["usage_to_l4_daily_pipeline"]):
     # entry point for running pip-install projects
     # using `<project_package>` command
     project_context = load_context(Path.cwd(), env=conf)
