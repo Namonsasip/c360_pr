@@ -710,6 +710,7 @@ l1_usage_ru_a_gprs_cbs_usage_daily:
                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
 
         usg_data_sunday_morning_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Sunday')
+                                        AND call_start_hr IN (7, 8, 9, 10, 11, 12)
                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
 
         usg_data_sunday_afternoon_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Sunday')

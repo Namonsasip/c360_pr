@@ -7,7 +7,7 @@ from pathlib import Path
 import logging
 import os
 
-conf = os.environ["CONF"]
+conf = os.getenv("CONF", "local")
 
 
 def gen_max_sql(data_frame, table_name, group):
