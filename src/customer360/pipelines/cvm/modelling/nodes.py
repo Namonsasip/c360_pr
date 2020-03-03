@@ -62,7 +62,7 @@ def create_shap_for_rf(rf: RandomForestClassifier, df_test: DataFrame):
 
     target_cols = list_targets()
     X_test = df_test.drop(*target_cols).toPandas()
-    shap_values = shap.TreeExplainer(rf, X_test, model_output="predict_proba")
+    shap_values = shap.TreeExplainer(rf, X_test)
     summ_plot = shap.summary_plot(shap_values, X_test)
 
     return summ_plot
