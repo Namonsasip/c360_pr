@@ -41,7 +41,7 @@ from customer360.pipelines.cvm.data_prep.nodes import (
 )
 
 
-def create_cvm_dev_inputs_pipeline(**kwargs):
+def create_cvm_inputs_dev(**kwargs):
     return Pipeline(
         [
             node(
