@@ -24,4 +24,4 @@ l0_campaign_clm_campaign_contacts_ma:
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/CAMPAIGN/campaign_clm_campaign_contacts_ma/
   load_args:
-  mergeSchema: true
+    mergeSchema: true
