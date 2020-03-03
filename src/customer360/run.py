@@ -119,7 +119,7 @@ def run_package(pipelines=None):
         return
 
     #project_context.run()
-    project_context.run(pipeline_name='customer_profile_to_l1_pipeline')
+    #project_context.run(pipeline_name='customer_profile_to_l1_pipeline')
     # project_context.run(pipeline_name='customer_profile_to_l3_pipeline')
 
     # Replace line above with below to run on databricks cluster
