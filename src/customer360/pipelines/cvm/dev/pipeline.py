@@ -121,6 +121,7 @@ def create_cvm_prepare_data_dev(**kwargs):
                 [
                     "l5_cvm_one_day_users_table_dev",
                     "l3_customer_profile_include_1mo_non_active_dev",
+                    "l4_daily_feature_topup_and_volume_dev",
                     "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_dev",
                 ],
                 "l5_cvm_features_one_day_joined_dev",
