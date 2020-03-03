@@ -27,7 +27,7 @@
 # limitations under the License.
 
 from kedro.pipeline import Pipeline, node
-from src.customer360.pipelines.cvm.modelling.nodes import train_rf
+from src.customer360.pipelines.cvm.modelling.nodes import train_rf, create_shap_for_rf
 
 
 def create_train_model(**kwargs):
@@ -38,6 +38,12 @@ def create_train_model(**kwargs):
                 "l5_cvm_one_day_train_preprocessed_dev",
                 "random_forest",
                 name="create_random_forest",
+            ),
+            node(
+                create_shap_for_rf,
+                "random_forest",
+                "l5_cvm_one_day_test_preprocessed_dev",
+                name="create_shap",
             ),
         ]
     )
