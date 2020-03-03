@@ -66,6 +66,12 @@ def create_cvm_dev_inputs_pipeline(**kwargs):
                 "l4_usage_prepaid_postpaid_daily_features_dev",
                 name="create_l4_usage_prepaid_postpaid_daily_features_dev",
             ),
+            node(
+                create_dev_version_users_only,
+                ["l4_daily_feature_topup_and_volume", "parameters"],
+                "l4_daily_feature_topup_and_volume_dev",
+                name="create_l4_daily_feature_topup_and_volume_dev",
+            ),
         ]
     )
 
