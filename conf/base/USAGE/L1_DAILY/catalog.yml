@@ -1,7 +1,7 @@
 l1_usage_outgoing_call_relation_sum_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/l1_usage_outgoing_call_relation_sum_daily/
+  filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/l1_usage_outgoing_call_relation_sum_daily/event_partition_date=2020-02-13/
   save_args:
     mode: "overwrite"
     partitionBy: ["event_partition_date"]
@@ -9,7 +9,7 @@ l1_usage_outgoing_call_relation_sum_daily:
 l1_usage_incoming_call_relation_sum_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/l1_usage_incoming_call_relation_sum_daily/
+  filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/l1_usage_incoming_call_relation_sum_daily/event_partition_date=2020-02-13/
   save_args:
     mode: "overwrite"
     partitionBy: ["event_partition_date"]
@@ -17,7 +17,7 @@ l1_usage_incoming_call_relation_sum_daily:
 l1_usage_outgoing_call_relation_sum_ir_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/l1_usage_outgoing_call_relation_sum_ir_daily/
+  filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/l1_usage_outgoing_call_relation_sum_ir_daily/event_partition_date=2020-02-13/
   save_args:
     mode: "overwrite"
     partitionBy: ["event_partition_date"]
@@ -25,7 +25,7 @@ l1_usage_outgoing_call_relation_sum_ir_daily:
 l1_usage_incoming_call_relation_sum_ir_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/l1_usage_incoming_call_relation_sum_ir_daily/
+  filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/l1_usage_incoming_call_relation_sum_ir_daily/event_partition_date=2020-02-13/
   save_args:
     mode: "overwrite"
     partitionBy: ["event_partition_date"]
@@ -33,7 +33,7 @@ l1_usage_incoming_call_relation_sum_ir_daily:
 l1_usage_ru_a_gprs_cbs_usage_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/l1_usage_ru_a_gprs_cbs_usage_daily/
+  filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/l1_usage_ru_a_gprs_cbs_usage_daily/event_partition_date=2020-02-13/
   save_args:
     mode: "overwrite"
     partitionBy: ["event_partition_date"]
@@ -41,7 +41,7 @@ l1_usage_ru_a_gprs_cbs_usage_daily:
 l1_usage_ru_a_vas_postpaid_usg_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/l1_usage_ru_a_vas_postpaid_usg_daily/
+  filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/l1_usage_ru_a_vas_postpaid_usg_daily/event_partition_date=2020-02-13/
   save_args:
     mode: "overwrite"
     partitionBy: ["event_partition_date"]
@@ -49,7 +49,7 @@ l1_usage_ru_a_vas_postpaid_usg_daily:
 l1_usage_ru_a_vas_postpaid_prepaid_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/l1_usage_ru_a_vas_postpaid_prepaid_daily/
+  filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/l1_usage_ru_a_vas_postpaid_prepaid_daily/event_partition_date=2020-02-13/
   save_args:
     mode: "overwrite"
     partitionBy: ["event_partition_date"]
