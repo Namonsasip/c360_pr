@@ -150,6 +150,7 @@ def create_cvm_prepare_sample_data_pipeline(**kwargs):
                     "l5_cvm_one_day_users_sample_table",
                     "l3_customer_profile_include_1mo_non_active",
                     "l4_daily_feature_topup_and_volume",
+                    "l4_usage_prepaid_postpaid_daily_features",
                     "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
                 ],
                 "l5_cvm_features_one_day_joined_sample",
