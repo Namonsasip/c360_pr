@@ -23,8 +23,9 @@ def loyalty_serenade_class(input_df, customer_prof, sql):
     customer_prof = customer_prof.select("access_method_num",
                                          "subscription_identifier",
                                          f.to_date("register_date").alias("register_date"),
-                                         "start_of_month",
-                                         "charge_type")
+                                         "partition_month",
+                                         "charge_type")\
+        .withColumnRenamed("partition_month","start_of_month")
 
     input_df = input_df.withColumn("tran_date",f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd'))
     input_df = input_df.withColumn("start_of_month",f.to_date(f.date_trunc("month","tran_date")))
