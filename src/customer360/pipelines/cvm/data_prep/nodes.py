@@ -228,7 +228,7 @@ def create_l5_cvm_features_one_day_joined(
     users = setup_names(users)
 
     def join_on(df1, df2):
-        cols_to_drop = [col for col in df1.columns if col in df2.columns]
+        cols_to_drop = [col_name for col_name in df1.columns if col_name in df2.columns]
         df2 = df2.drop(cols_to_drop)
         return df1.join(df2, keys, "left")
 
@@ -250,7 +250,7 @@ def subs_date_join(*args: DataFrame,) -> DataFrame:
     tables = [setup_names(tab) for tab in args]
 
     def join_on(df1, df2):
-        cols_to_drop = [col for col in df1.columns if col in df2.columns]
+        cols_to_drop = [col_name for col_name in df1.columns if col_name in df2.columns]
         df2 = df2.drop(cols_to_drop)
         return df1.join(df2, keys, "left")
 
