@@ -5,6 +5,8 @@ from pyspark.sql.functions import to_timestamp
 
 from customer360.utilities.config_parser import node_from_config, expansion, l4_rolling_window, l4_rolling_ranked_window
 from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l2.to_l2_nodes import *
+from src.customer360.pipelines.data_engineering.nodes.customer_profile_nodes.to_l1.to_l1_nodes import *
+from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l1.to_l1_nodes import *
 import pandas as pd
 import random
 from pyspark.sql import functions as F, SparkSession
@@ -693,3 +695,99 @@ class TestUnitBilling:
 
         # final_features.orderBy('start_of_week').show()
         # final_features.printSchema()
+    def test_recharge_data(self,project_context):
+        # daily_recharge_data_with_customer_profile
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        random_type = ['4', 'B1', 'B58', '3', 'B0', '7', '16', 'B43', '1', '5', '53', 'B69', '51', 'B50']
+        date1 = '2020-01-01'
+        date2 = '2020-04-01'
+        random.seed(100)
+        my_dates_list = pd.date_range(date1, date2).tolist()
+        my_dates = [iTemp.date().strftime("%d-%m-%Y") for iTemp in my_dates_list]
+        my_dates = my_dates * 3
+        random_list = [random_type[random.randint(0, 13)] for iTemp in range(0, len(my_dates))]
+        random_list2 = [random.randint(1, 10) * 100 for iTemp in range(0, len(my_dates))]
+        df_pre = spark.createDataFrame(zip(random_list, my_dates, random_list2),
+                                       schema=['recharge_type', 'temp', 'face_value']) \
+            .withColumn("subscription_identifier", F.lit("MS05RTRSLTIwMw==")) \
+            .withColumn("subscription_id", F.lit("MS05RTRSLTIwMw==")) \
+            .withColumn("mobile_no", F.lit(
+            "eFBIRjk3V0s0bit3ZWdFYU9oVzYxcmx3bmZSQWFYdUFHTW1ucHhxaElhS0JoMTl6TzZTeUI5STk5cHJPSDFtRg==")) \
+            .withColumn("register_date", F.lit("2000-02-04T00:00:00.000+0000")) \
+            .withColumn("zipcode", F.lit("MTAxMjA=")) \
+            .withColumn("prefer_language", F.lit("RU5HTElTSA==")) \
+            .withColumn("company_size", F.lit("Rw==")) \
+            .withColumn("rsme_flag", F.lit("Rw==")) \
+            .withColumn("corp_account_size", F.lit("Rw==")) \
+            .withColumn("cust_type", F.lit('B')) \
+            .withColumn("prefer_language", F.lit('english')) \
+            .withColumn("prefer_language_eng", F.lit('english')) \
+            .withColumn("prefer_language_thai", F.lit('thai')) \
+            .withColumn("prefer_language_other", F.lit('thai')) \
+            .withColumn("package_id", F.lit("M0c5NTQ=")) \
+            .withColumn("current_package_id", F.lit("M0c5NTQ=")) \
+            .withColumn("current_promotion_id_ma", F.lit("M0c5NTQ=")) \
+            .withColumn("promotion_name", F.lit("RWFzeU5ldDY0ayBBbGxOVyAxQm5leHQxU3QgLSBTdG9wTmV0")) \
+            .withColumn("current_package_name", F.lit("RWFzeU5ldDY0ayBBbGxOVyAxQm5leHQxU3QgLSBTdG9wTmV0")) \
+            .withColumn("current_promotion_title_ma", F.lit("RWFzeU5ldDY0ayBBbGxOVyAxQm5leHQxU3QgLSBTdG9wTmV0")) \
+            .withColumn("age", F.lit(23)) \
+            .withColumn("ma_age", F.lit(23)) \
+            .withColumn("gender", F.lit("TQ==")) \
+            .withColumn("ma_gender_code", F.lit("TQ==")) \
+            .withColumn("partition_date", F.lit('20200214')) \
+            .withColumn("subscriber_tenure_day", F.lit('20200214')) \
+            .withColumn("service_month", F.lit(203)) \
+            .withColumn("subscriber_tenure_month", F.lit(203)) \
+            .withColumn("subscription_status", F.lit("U0E=")) \
+            .withColumn("mobile_status", F.lit("U0E=")) \
+            .withColumn("mobile_segment", F.lit("Q2xhc3NpYw==")) \
+            .withColumn("customer_segment", F.lit("Q2xhc3NpYw==")) \
+            .withColumn("serenade_status", F.lit("Q2xhc3NpYw==")) \
+            .withColumn("root_network_type", F.lit("M0c=")) \
+            .withColumn("network_type", F.lit("M0c=")) \
+            .withColumn("national_id_card", F.lit(
+            "Y2pHOFUxUlk3Nmd0WVpBTjdONWR0K1h5T085OGRrNnZ5ZDV6WGNaZGxiTlorUnVqUVVmVmhxeFNpRU5obFZBYQ==")) \
+            .withColumn("card_id", F.lit(
+            "Y2pHOFUxUlk3Nmd0WVpBTjdONWR0K1h5T085OGRrNnZ5ZDV6WGNaZGxiTlorUnVqUVVmVmhxeFNpRU5obFZBYQ==")) \
+            .withColumn("event_partition_date", F.lit("20190212")) \
+            .withColumn("charge_type", F.lit('Pre-paid')) \
+            .withColumn("Post-paid", F.lit('Pre-paid')) \
+            .withColumn("billing_account_no", F.lit("null")) \
+            .withColumn("card_no", F.lit(
+            "Y2pHOFUxUlk3Nmd0WVpBTjdONWR0K1h5T085OGRrNnZ5ZDV6WGNaZGxiTlorUnVqUVVmVmhxeFNpRU5obFZBYQ==")) \
+            .withColumn("account_no", F.lit(
+            "Y2pHOFUxUlk3Nmd0WVpBTjdONWR0K1h5T085OGRrNnZ5ZDV6WGNaZGxiTlorUnVqUVVmVmhxeFNpRU5obFZBYQ=="))
+
+            # l1_customer_profile_union_daily_feature
+        union_data = union_daily_cust_profile(df_pre, df_pre, df_pre, var_project_context.catalog.load(
+            'params:l1_customer_profile_union_daily_feature'))
+
+        df = spark.createDataFrame(zip(random_list, my_dates, random_list2),
+                                   schema=['recharge_type', 'temp', 'face_value']) \
+            .withColumn("recharge_date", F.lit("MS05RTRSLTIwMw==")) \
+            .withColumn("access_method_num", F.lit("MS05RTRSLTIwMw==")) \
+            .withColumn("month_id", F.lit("MS05RTRSLTIwMw==")) \
+            .withColumn("tariff_plan_id", F.lit("MS05RTRSLTIwMw==")) \
+            .withColumn("activate_location", F.lit("MS05RTRSLTIwMw==")) \
+            .withColumn("recharge_type", F.lit("MS05RTRSLTIwMw==")) \
+            .withColumn("face_value", F.lit("MS05RTRSLTIwMw==")) \
+            .withColumn("first_province", F.lit("MS05RTRSLTIwMw==")) \
+            .withColumn("mobile_region", F.lit("MS05RTRSLTIwMw==")) \
+            .withColumn("register_date", F.lit("MS05RTRSLTIwMw==")) \
+            .withColumn("dealer_code", F.lit("MS05RTRSLTIwMw==")) \
+            .withColumn("dealer_region", F.lit("MS05RTRSLTIwMw==")) \
+            .withColumn("quantity", F.lit("MS05RTRSLTIwMw==")) \
+            .withColumn("dealer_province", F.lit("MS05RTRSLTIwMw==")) \
+            .withColumn("flag_dealer_area", F.lit("MS05RTRSLTIwMw==")) \
+            .withColumn("account_id", F.lit("MS05RTRSLTIwMw==")) \
+            .withColumn("coverage_type", F.lit("MS05RTRSLTIwMw==")) \
+            .withColumn("recharge_time", F.lit("MS05RTRSLTIwMw==")) \
+            .withColumn("flag_dealer_in_out_region", F.lit("MS05RTRSLTIwMw==")) \
+            .withColumn("invoicing_company", F.lit("MS05RTRSLTIwMw==")) \
+            .withColumn("billing_system", F.lit("MS05RTRSLTIwMw=="))
+
+        recharge_daily_data = daily_recharge_data_with_customer_profile(union_data, df)
+        # recharge_daily_data.show()
+        # exit(2)
