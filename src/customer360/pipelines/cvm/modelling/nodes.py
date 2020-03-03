@@ -29,6 +29,7 @@
 from pyspark.sql import DataFrame
 from sklearn.ensemble import RandomForestClassifier
 from src.customer360.pipelines.cvm.src.list_targets import list_targets
+import shap
 
 
 def train_rf(df: DataFrame) -> RandomForestClassifier:
@@ -49,3 +50,19 @@ def train_rf(df: DataFrame) -> RandomForestClassifier:
     rf_fitted = rf.fit(X, y)
 
     return rf_fitted
+
+
+def create_shap_for_rf(rf: RandomForestClassifier, df_test: DataFrame):
+    """ Create SHAP plot for a given model.
+
+    Args:
+        df_test: Test set used for SHAP.
+        rf: Given model.
+    """
+
+    target_cols = list_targets()
+    X_test = df_test.drop(*target_cols).toPandas()
+    shap_values = shap.KernelExplainer(rf.predict, X_test)
+    summ_plot = shap.summary_plot(shap_values, X_test)
+
+    return summ_plot
