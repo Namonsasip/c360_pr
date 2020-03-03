@@ -94,3 +94,7 @@ l5_cvm_one_day_test_preprocessed_dev:
 random_forest_dev:
   type: kedro.io.PickleLocalDataSet
   filepath: /mnt/customer360-cvm/random_forest_dev
+
+shap_dev:
+  type: kedro.contrib.io.matplotlib.MatplotlibLocalWriter
+  filepath: /mnt/customer360-cvm/shap_dev

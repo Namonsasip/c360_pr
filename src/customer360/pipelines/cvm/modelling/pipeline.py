@@ -40,10 +40,7 @@ def create_train_model(**kwargs):
                 name="create_random_forest",
             ),
             node(
-                create_shap_for_rf,
-                "random_forest_dev",
-                "l5_cvm_one_day_test_preprocessed_dev",
-                name="create_shap",
+                create_shap_for_rf, "random_forest_dev", "shap_dev", name="create_shap",
             ),
         ]
     )
