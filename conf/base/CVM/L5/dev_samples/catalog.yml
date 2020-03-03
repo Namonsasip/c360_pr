@@ -28,9 +28,9 @@ l4_usage_prepaid_postpaid_daily_features_dev:
   save_args:
     mode: "overwrite"
 
-l4_billing_daily_topup_and_volume:
+l4_daily_feature_topup_and_volume_dev:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/BILLING/l4_features/daily_topup_and_volume/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_daily_feature_topup_and_volume_dev/
   file_format: "parquet"
   save_args:
     mode: "overwrite"
