@@ -6,7 +6,7 @@ int_l1_streaming_content_type_features:
                                     order by sum(volume_mb) desc)"
 
         duration_rank: "row_number() over (partition by access_method_num, date(register_date), day_id
-                                    order by sum(duration) desc)" # duration column is not ingested currently
+                                    order by sum(duration) desc)"
         traffic_volume_sum: "sum(volume_mb)"
         duration_sum: "sum(duration)"
 
@@ -20,30 +20,52 @@ l1_streaming_fav_content_group_by_volume:
         access_method_num: access_method_num
         register_date: date(register_date)
         fav_content_group_by_volume: content_group
+        traffic_volume_mb_sum: traffic_volume_sum
     granularity: ""
     event_date_column: "day_id"
 
-
+l1_streaming_fav_content_group_by_duration:
+    where_clause: "where duration_rank = 1"
+    feature_list:
+        access_method_num: access_method_num
+        register_date: date(register_date)
+        fav_content_group_by_duration: content_group
+        duration_sum: duration_sum
+    granularity: ""
+    event_date_column: "day_id"
 
 # TV Channel Features
 int_l1_streaming_tv_channel_features:
     where_clause: "where lower(content_group) = 'channel'"
     feature_list:
-        tv_channel_rank: "row_number() over (partition by access_method_num, date(register_date), day_id
+        tv_channel_rank_by_volume: "row_number() over (partition by access_method_num, date(register_date), day_id
                                                     order by sum(volume_mb) desc)"
         traffic_volume_sum: "sum(volume_mb)"
+        tv_channel_rank_by_duration: "row_number() over (partition by access_method_num, date(register_date), day_id
+                                            order by sum(duration) desc)"
+        duration_sum: "sum(duration)"
     granularity: "access_method_num, date(register_date), day_id, title"
     event_date_column: "day_id"
 
 l1_streaming_fav_tv_channel_by_volume:
-    where_clause: "where tv_channel_rank = 1"
+    where_clause: "where tv_channel_rank_by_volume = 1"
     feature_list:
         access_method_num: access_method_num
         register_date: date(register_date)
         fav_tv_channel_by_volume: title
+        traffic_volume_mb_sum: traffic_volume_sum
     granularity: ""
     event_date_column: "day_id"
 
+l1_streaming_fav_tv_channel_by_duration:
+    where_clause: "where tv_channel_rank_by_duration = 1"
+    feature_list:
+        access_method_num: access_method_num
+        register_date: date(register_date)
+        fav_tv_channel_by_duration: title
+        duration_sum: duration_sum
+    granularity: ""
+    event_date_column: "day_id"
 
 
 # TV Show features

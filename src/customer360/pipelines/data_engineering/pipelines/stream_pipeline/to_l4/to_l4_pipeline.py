@@ -57,6 +57,12 @@ def streaming_to_l4_pipeline(**kwargs):
                  "params:l4_streaming_fav_content_group_by_volume"],
                 "l4_streaming_fav_content_group_by_volume"
             ),
+            node(
+                l4_rolling_ranked_window,
+                ["int_l4_streaming_content_type_features",
+                 "params:l4_streaming_fav_content_group_by_duration"],
+                "l4_streaming_fav_content_group_by_duration"
+            ),
 
             # TV Channel features
             node(
@@ -71,7 +77,14 @@ def streaming_to_l4_pipeline(**kwargs):
                  "params:l4_streaming_fav_tv_channel_by_volume"],
                 "l4_streaming_fav_tv_channel_by_volume"
             ),
+            node(
+                l4_rolling_ranked_window,
+                ["int_l4_streaming_tv_channel_features",
+                 "params:l4_streaming_fav_tv_channel_by_duration"],
+                "l4_streaming_fav_tv_channel_by_duration"
+            ),
 
+            # TV show features
             node(
                 l4_rolling_window,
                 ["int_l0_streaming_vimmi_table",

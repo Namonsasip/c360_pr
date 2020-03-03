@@ -55,12 +55,19 @@ def streaming_to_l2_pipeline(**kwargs):
                  "params:l2_streaming_fav_content_group_by_volume"],
                 "l2_streaming_fav_content_group_by_volume"
             ),
+            node(
+                node_from_config,
+                ["int_l2_streaming_content_type_features",
+                 "params:l2_streaming_fav_content_group_by_duration"],
+                "l2_streaming_fav_content_group_by_duration"
+            ),
 
             # TV Channel features
             node(
-                node_from_config,
+                l2_massive_processing,
                 ["int_l1_streaming_tv_channel_features",
-                 "params:int_l2_streaming_tv_channel_features"],
+                 "params:int_l2_streaming_tv_channel_features",
+                 "l1_customer_profile_union_daily_feature"],
                 "int_l2_streaming_tv_channel_features"
             ),
             node(
@@ -68,6 +75,12 @@ def streaming_to_l2_pipeline(**kwargs):
                 ["int_l2_streaming_tv_channel_features",
                  "params:l2_streaming_fav_tv_channel_by_volume"],
                 "l2_streaming_fav_tv_channel_by_volume"
+            ),
+            node(
+                node_from_config,
+                ["int_l2_streaming_tv_channel_features",
+                 "params:l2_streaming_fav_tv_channel_by_duration"],
+                "l2_streaming_fav_tv_channel_by_duration"
             ),
 
             # TV show features

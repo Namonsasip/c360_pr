@@ -53,6 +53,12 @@ def streaming_to_l1_pipeline(**kwargs):
                  "params:l1_streaming_fav_content_group_by_volume"],
                 "l1_streaming_fav_content_group_by_volume"
             ),
+            node(
+                node_from_config,
+                ["int_l1_streaming_content_type_features",
+                 "params:l1_streaming_fav_content_group_by_duration"],
+                "l1_streaming_fav_content_group_by_duration"
+            ),
 
             # TV Channel features
             node(
@@ -67,8 +73,14 @@ def streaming_to_l1_pipeline(**kwargs):
                  "params:l1_streaming_fav_tv_channel_by_volume"],
                 "l1_streaming_fav_tv_channel_by_volume"
             ),
+            node(
+                node_from_config,
+                ["int_l1_streaming_tv_channel_features",
+                 "params:l1_streaming_fav_tv_channel_by_duration"],
+                "l1_streaming_fav_tv_channel_by_duration"
+            ),
 
-            # # TV Show features
+            # TV Show features
                 node(
                     add_start_of_week_and_month,
                     ["l0_streaming_ru_a_onair_vimmi_usage_daily"],

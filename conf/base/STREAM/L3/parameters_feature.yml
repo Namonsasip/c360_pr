@@ -4,9 +4,9 @@ int_l3_streaming_content_type_features:
     feature_list:
         traffic_rank: "row_number() over (partition by access_method_num, date(register_date), start_of_month
                                     order by sum(traffic_volume_sum) desc)"
-
-#        duration_rank: "row_number() over (partition by access_method_num, date(register_date), start_of_month
-#                                    order by sum(duration) desc)" # duration column is not ingested currently
+        duration_rank: "row_number() over (partition by access_method_num, date(register_date), start_of_month
+                                    order by sum(duration_sum) desc)"
+        duration_sum: "sum(duration_sum)"
         traffic_volume_sum: "sum(traffic_volume_sum)"
     granularity: "access_method_num, date(register_date), start_of_month, content_group"
 
@@ -16,6 +16,17 @@ l3_streaming_fav_content_group_by_volume:
         access_method_num: access_method_num
         register_date: date(register_date)
         fav_content_group_by_volume: content_group
+        traffic_volume_mb_sum: traffic_volume_sum
+        start_of_month: start_of_month
+    granularity: ""
+
+l3_streaming_fav_content_group_by_duration:
+    where_clause: "where duration_rank = 1"
+    feature_list:
+        access_method_num: access_method_num
+        register_date: date(register_date)
+        fav_content_group_by_duration: content_group
+        duration_sum: duration_sum
         start_of_month: start_of_month
     granularity: ""
 
@@ -25,17 +36,31 @@ l3_streaming_fav_content_group_by_volume:
 int_l3_streaming_tv_channel_features:
     where_clause: ""
     feature_list:
-        tv_channel_rank: "row_number() over (partition by access_method_num, date(register_date), start_of_month
+        tv_channel_rank_by_volume: "row_number() over (partition by access_method_num, date(register_date), start_of_month
                                                     order by sum(traffic_volume_sum) desc)"
         traffic_volume_sum: "sum(traffic_volume_sum)"
+        tv_channel_rank_by_duration: "row_number() over (partition by access_method_num, date(register_date), start_of_month
+                                    order by sum(duration_sum) desc)"
+        duration_sum: "sum(duration_sum)"
     granularity: "access_method_num, date(register_date), start_of_month, title"
 
 l3_streaming_fav_tv_channel_by_volume:
-    where_clause: "where tv_channel_rank = 1"
+    where_clause: "where tv_channel_rank_by_volume = 1"
     feature_list:
         access_method_num: access_method_num
         register_date: date(register_date)
         fav_tv_channel_by_volume: title
+        traffic_volume_mb_sum: traffic_volume_sum
+        start_of_month: start_of_month
+    granularity: ""
+
+l3_streaming_fav_tv_channel_by_duration:
+    where_clause: "where tv_channel_rank_by_duration = 1"
+    feature_list:
+        access_method_num: access_method_num
+        register_date: date(register_date)
+        fav_tv_channel_by_duration: title
+        duration_sum: duration_sum
         start_of_month: start_of_month
     granularity: ""
 

@@ -2,7 +2,8 @@
 int_l4_streaming_content_type_features:
   partition_by: ["access_method_num", "register_date", "content_group"]
   feature_list:
-    sum: ["traffic_volume_sum"]
+    sum: ["traffic_volume_sum",
+          "duration_sum"]
   read_from: "l2"
 
 l4_streaming_fav_content_group_by_volume:
@@ -15,11 +16,22 @@ l4_streaming_fav_content_group_by_volume:
   read_from: "l2"
   to_join: True
 
+l4_streaming_fav_content_group_by_duration:
+  where_clause: ""
+  feature_column:
+    fav_content_group_by_duration: "content_group"
+
+  partition_by: ["access_method_num", "register_date", "start_of_week"]
+  order_by_column_prefix: "sum_duration_sum"
+  read_from: "l2"
+  to_join: True
+
 
 int_l4_streaming_tv_channel_features:
   partition_by: ["access_method_num", "register_date", "title"]
   feature_list:
-    sum: ["traffic_volume_sum"]
+    sum: ["traffic_volume_sum",
+          "duration_sum"]
   read_from: "l2"
 
 l4_streaming_fav_tv_channel_by_volume:
@@ -29,6 +41,15 @@ l4_streaming_fav_tv_channel_by_volume:
 
   partition_by: ["access_method_num", "register_date", "start_of_week"]
   order_by_column_prefix: "sum_traffic_volume_sum"
+  read_from: "l2"
+
+l4_streaming_fav_tv_channel_by_duration:
+  where_clause: ""
+  feature_column:
+    fav_tv_channel_by_duration: "title"
+
+  partition_by: ["access_method_num", "register_date", "start_of_week"]
+  order_by_column_prefix: "sum_duration_sum"
   read_from: "l2"
 
 
