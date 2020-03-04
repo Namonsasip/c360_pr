@@ -475,6 +475,7 @@ def join_l4_rolling_ranked_table(result_df, config):
 
         if final_df is None:
             final_df = df.alias("left").select(feature_column)
+            feature_column = list(map(lambda x: 'left.{}'.format(x), final_df.columns))
             continue
 
         # Always join on partition_by because it defines the granularity
@@ -484,6 +485,8 @@ def join_l4_rolling_ranked_table(result_df, config):
                                                 on=join_condition,
                                                 how='inner')
                     .select(feature_column))
+
+        feature_column = list(map(lambda x: 'left.{}'.format(x), final_df.columns))
 
     return final_df
 
