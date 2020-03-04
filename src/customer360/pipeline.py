@@ -34,26 +34,26 @@ from kedro.pipeline import Pipeline
 from .pipelines.cvm.modelling.pipeline import create_train_model
 from .pipelines.data_engineering.pipelines.usage_pipeline.to_l1 import \
     usage_to_l1_pipeline
-from src.customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline\
+from src.customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline \
     .to_l1.to_l1_pipeline import \
     customer_profile_to_l1_pipeline
-from src.customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline\
+from src.customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline \
     .to_l3.to_l3_pipeline import \
     customer_profile_to_l3_pipeline, \
     customer_profile_billing_level_to_l3_pipeline
-from src.customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline\
+from src.customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline \
     .to_l4.to_l4_pipeline import \
     customer_profile_to_l4_pipeline
-from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l1\
+from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l1 \
     .to_l1_pipeline import \
     billing_to_l1_pipeline
-from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l3\
+from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l3 \
     .to_l3_pipeline import \
     billing_to_l3_pipeline
-from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l2\
+from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l2 \
     .to_l2_pipeline import \
     billing_to_l2_pipeline
-from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4\
+from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4 \
     .to_l4_pipeline import \
     billing_to_l4_pipeline
 from .pipelines.data_engineering.pipelines.usage_pipeline.to_l2 import \
@@ -82,7 +82,8 @@ from customer360.pipelines.cvm.data_prep.pipeline import \
 from customer360.pipelines.cvm.dev.pipeline import \
     create_cvm_inputs_dev, \
     create_cvm_prepare_data_dev
-from customer360.pipelines.cvm.preprocessing.pipeline import create_cvm_preprocessing_dev
+from customer360.pipelines.cvm.preprocessing.pipeline import \
+    create_cvm_preprocessing_dev
 
 
 def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
@@ -143,7 +144,9 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         "cvm_inputs_dev": create_cvm_inputs_dev(),
         "cvm_prepare_data_dev": create_cvm_prepare_data_dev(),
         "cvm_preprocessing_dev": create_cvm_preprocessing_dev(),
-        "cvm": create_cvm_prepare_data_pipeline() +
-               create_cvm_prepare_sample_data_pipeline(),
         "train_model": create_train_model(),
+        "cvm": create_cvm_prepare_data_pipeline() +
+               create_cvm_prepare_sample_data_pipeline() + create_cvm_inputs_dev() +
+               create_cvm_prepare_data_dev() + create_cvm_prepare_data_dev() +
+               create_train_model()
     }
