@@ -211,16 +211,8 @@ def create_l5_cvm_features_one_day_joined(
 
     feature_tables = args
 
-    # for every table make sure the month column is called 'start_of_month'
-    cols_to_be_renamed = ["partition_month", "event_partition_date"]
-
-    def rename(df):
-        for col_name in cols_to_be_renamed:
-            df = df.withColumnRenamed(col_name, "key_date")
-        return df
-
-    feature_tables = [rename(feature_table) for feature_table in feature_tables]
-    users = rename(users)
+    feature_tables = [setup_names(feature_table) for feature_table in feature_tables]
+    users = setup_names(users)
 
     # join the tables
     keys = ["key_date", "subscription_identifier"]
