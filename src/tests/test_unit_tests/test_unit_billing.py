@@ -16,15 +16,17 @@ from datetime import timedelta
 class TestUnitBilling:
 
     def test_popular_channel_feature(self, project_context):
+        '''
+        l1_billing_and_payment_most_popular_topup_channel
+        l2_popular_top_up_channel
+        l2_most_popular_topup_channel
+        l3_popular_topup_channel
+        l3_most_popular_topup_channel
+        l4_most_popular_topup_channel_initial
+        l4_most_popular_topup_channel
+        '''
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
-
-        # l1_billing_and_payment_most_popular_topup_channel
-        # l2_popular_top_up_channel
-        # l2_most_popular_topup_channel
-        # l3_popular_topup_channel
-        # l4_rolling_window_most_popular_topup_channel_1
-
 
         # Below section is to create dummy data.
         random_type = ['4', 'B1', 'B58', '3', 'B0', '7', '16', 'B43', '1', '5', '53', 'B69', '51', 'B50']
@@ -48,32 +50,36 @@ class TestUnitBilling:
         df = df.withColumn("start_of_month", F.to_date(F.date_trunc('month', df.event_partition_date))) \
             .withColumn("start_of_week", F.to_date(F.date_trunc('week', df.event_partition_date)))
 
-
-
         print('dfdebug')
         df.show()
         print('dfdebug2')
         daily_data = node_from_config(df, var_project_context.catalog.load(
             'params:l1_billing_and_payment_most_popular_topup_channel'))
         print('dailydebug')
-        daily_data.show(999,False)
+        daily_data.show(999, False)
         assert \
-            daily_data.where("event_partition_date = '2020-01-05'").where('recharge_type="B1"').select("payments_total_top_up").collect()[0][
+            daily_data.where("event_partition_date = '2020-01-05'").where('recharge_type="B1"').select(
+                "payments_total_top_up").collect()[0][
                 0] == 2
 
-        dummy_type=['1','16','3','4','5','51','53','7','B0','B1','B43','B50','B58','B69']
-        dummy_desc=['Refill Card','My AIS App, My AIS Web','Refill Card for non Mobile','ATM','AIS Shop','Refill on Mobile','Partner Online Top Up','AIS Auto Top up','Cash card','Recharge via ATM of BBL','Recharge via mPay (Agent mCash)','Refill on Mobile','Recharge via ATM of BAAC','Biz Reward Platform']
-        topup_type = spark.createDataFrame(zip(dummy_type,dummy_desc),schema=['recharge_topup_event_type_cd','recharge_topup_event_type_name'])
-        joined_data=top_up_channel_joined_data(daily_data,topup_type)
+        dummy_type = ['1', '16', '3', '4', '5', '51', '53', '7', 'B0', 'B1', 'B43', 'B50', 'B58', 'B69']
+        dummy_desc = ['Refill Card', 'My AIS App, My AIS Web', 'Refill Card for non Mobile', 'ATM', 'AIS Shop',
+                      'Refill on Mobile', 'Partner Online Top Up', 'AIS Auto Top up', 'Cash card',
+                      'Recharge via ATM of BBL', 'Recharge via mPay (Agent mCash)', 'Refill on Mobile',
+                      'Recharge via ATM of BAAC', 'Biz Reward Platform']
+        topup_type = spark.createDataFrame(zip(dummy_type, dummy_desc),
+                                           schema=['recharge_topup_event_type_cd', 'recharge_topup_event_type_name'])
+        joined_data = top_up_channel_joined_data(daily_data, topup_type)
 
         # joined_data.show(999,False)
         weekly_data = node_from_config(joined_data, var_project_context.catalog.load(
             'params:l2_popular_top_up_channel'))
         print('weeklyy')
-        weekly_data.show(999,False)
+        weekly_data.show(999, False)
 
         assert \
-            weekly_data.where("start_of_week = '2019-12-30'").where('recharge_topup_event_type_name="Refill on Mobile"').select(
+            weekly_data.where("start_of_week = '2019-12-30'").where(
+                'recharge_topup_event_type_name="Refill on Mobile"').select(
                 "payments_total_top_up").collect()[0][
                 0] == 3
         assert \
@@ -85,7 +91,7 @@ class TestUnitBilling:
         weekly_data_most = node_from_config(weekly_data, var_project_context.catalog.load(
             'params:l2_most_popular_topup_channel'))
         print('mostweekly')
-        weekly_data_most.show(999,False)
+        weekly_data_most.show(999, False)
         assert \
             weekly_data_most.where("start_of_week = '2019-12-30'").select(
                 "payments_total_top_up").collect()[0][
@@ -98,10 +104,6 @@ class TestUnitBilling:
             weekly_data_most.where("start_of_week = '2019-12-30'").select(
                 "subscription_identifier").collect()[0][
                 0] == 123
-
-
-
-
 
         monthly_data = node_from_config(joined_data, var_project_context.catalog.load(
             'params:l3_popular_topup_channel'))
@@ -118,11 +120,10 @@ class TestUnitBilling:
                 "payments_total_top_up").collect()[0][
                 0] == 8
 
-
-        monthly_data_most=node_from_config(monthly_data, var_project_context.catalog.load(
+        monthly_data_most = node_from_config(monthly_data, var_project_context.catalog.load(
             'params:l3_most_popular_topup_channel'))
         print('monthlymost')
-        monthly_data_most.show(999,False)
+        monthly_data_most.show(999, False)
         assert \
             monthly_data_most.where("start_of_month = '2020-01-01'").select(
                 "payments_total_top_up").collect()[0][
@@ -136,11 +137,10 @@ class TestUnitBilling:
                 "subscription_identifier").collect()[0][
                 0] == 123
 
-
-        final_features_initial  = l4_rolling_window(weekly_data, var_project_context.catalog.load(
+        final_features_initial = l4_rolling_window(weekly_data, var_project_context.catalog.load(
             'params:l4_most_popular_topup_channel_initial'))
         print('finaldebugini')
-        final_features_initial.show(999,False)
+        final_features_initial.show(999, False)
         assert \
             final_features_initial.where("start_of_week = '2020-02-03'").where(
                 'recharge_topup_event_type_name="Refill on Mobile"').select(
@@ -166,14 +166,31 @@ class TestUnitBilling:
         final_features = l4_rolling_ranked_window(final_features_initial, var_project_context.catalog.load(
             'params:l4_most_popular_topup_channel'))
         print('finalfeaturedebug')
-        final_features.show(888,False)
-        # l4_most_popular_topup_channel_initial
-        # l4_most_popular_topup_channel
-        exit(2)
-
-
+        final_features.orderBy('start_of_week').show(888, False)
+        assert \
+            final_features.where("start_of_week = '2020-02-10'").select(
+                "payments_top_up_channel_last_week").collect()[0][
+                0] == 'Refill Card for non Mobile'
+        assert \
+            final_features.where("start_of_week = '2020-02-10'").select(
+                "payments_top_up_channel_last_two_week").collect()[0][
+                0] == 'Refill on Mobile'
+        assert \
+            final_features.where("start_of_week = '2020-02-10'").select(
+                "payments_top_up_channel_last_four_week").collect()[0][
+                0] == 'Refill on Mobile'
+        assert \
+            final_features.where("start_of_week = '2020-02-10'").select(
+                "payments_top_up_channel_last_twelve_week").collect()[0][
+                0] == 'Refill on Mobile'
+        # exit(2)
 
     def test_topup_frequency_feature(self, project_context):
+        '''
+        params:l2_billing_and_payment_feature_time_diff_bw_topups_weekly_intermdeiate
+        params:l2_billing_and_payment_feature_time_diff_bw_topups_weekly
+        params:l4_billing_time_diff_bw_topups
+        '''
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
 
@@ -269,6 +286,12 @@ class TestUnitBilling:
         final_features.show(100, False)
 
     def test_topup_and_volume_feature(self, project_context):
+        '''
+        l1_billing_and_payment_feature_top_up_and_count
+        l2_billing_and_payment_feature_top_up_and_count_weekly
+        l3_billing_and_payment_feature_top_up_and_count_monthly
+        l4_billing_topup_and_volume
+        '''
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
 
@@ -347,9 +370,14 @@ class TestUnitBilling:
                 "avg_payments_top_up_volume_weekly_last_twelve_week").collect()[0][0]) == 10925
 
     def test_arpu_roaming_feature(self, project_context):
+        '''
+        l1_billing_and_payment_rpu_roaming
+        l2_billing_and_payment_feature_rpu_roaming_weekly
+        l3_billing_and_payment_feature_rpu_roaming_monthly
+        l4_billing_rpu_roaming
+        '''
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
-
         # Below section is to create dummy data.
         date1 = '2020-01-01'
         date2 = '2020-04-01'
@@ -404,6 +432,12 @@ class TestUnitBilling:
                 "avg_payments_arpu_roaming_avg_weekly_last_twelve_week").collect()[0][0]) == 1598
 
     def test_before_top_up_balance_feature(self, project_context):
+        '''
+        l1_billing_and_payment_before_top_up_balance
+        l2_billing_and_payment_before_top_up_balance_weekly
+        l3_billing_and_payment_before_top_up_balance_monthly
+        l4_billing_before_top_up_balance
+        '''
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
 
@@ -455,6 +489,12 @@ class TestUnitBilling:
                 "avg_payments_before_top_up_balance_weekly_last_twelve_week").collect()[0][0]) == 532
 
     def test_top_up_channel_feature(self, project_context):
+        '''
+        l1_billing_and_payment_top_up_channels
+        l2_billing_and_payment_top_up_channels_weekly
+        l3_billing_and_payment_top_up_channels_monthly
+        l4_billing_top_up_channels
+        '''
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
 
@@ -695,7 +735,8 @@ class TestUnitBilling:
 
         # final_features.orderBy('start_of_week').show()
         # final_features.printSchema()
-    def test_recharge_data(self,project_context):
+
+    def test_recharge_data(self, project_context):
         # daily_recharge_data_with_customer_profile
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
@@ -760,7 +801,7 @@ class TestUnitBilling:
             .withColumn("account_no", F.lit(
             "Y2pHOFUxUlk3Nmd0WVpBTjdONWR0K1h5T085OGRrNnZ5ZDV6WGNaZGxiTlorUnVqUVVmVmhxeFNpRU5obFZBYQ=="))
 
-            # l1_customer_profile_union_daily_feature
+        # l1_customer_profile_union_daily_feature
         union_data = union_daily_cust_profile(df_pre, df_pre, df_pre, var_project_context.catalog.load(
             'params:l1_customer_profile_union_daily_feature'))
 
