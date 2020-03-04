@@ -28,7 +28,7 @@
 
 from pyspark.sql import DataFrame
 from sklearn.ensemble import RandomForestClassifier
-from src.customer360.pipelines.cvm.src.list_targets import list_targets
+from customer360.pipelines.cvm.src.utils.list_targets import list_targets
 import shap
 
 

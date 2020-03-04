@@ -32,7 +32,7 @@ from pyspark.sql import functions as func
 from typing import Any, Dict
 import datetime
 
-from customer360.pipelines.cvm.src.setup_names import setup_names
+from customer360.pipelines.cvm.src.utils.setup_names import setup_names
 
 
 def get_churn_targets(

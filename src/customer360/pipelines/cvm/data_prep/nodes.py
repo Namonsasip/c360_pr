@@ -36,7 +36,7 @@ from customer360.pipelines.cvm.src.targets.churn_targets import (
     get_churn_targets,
     filter_usage,
 )
-from customer360.pipelines.cvm.src.setup_names import setup_names
+from customer360.pipelines.cvm.src.utils.setup_names import setup_names
 
 
 def create_l5_cvm_one_day_users_table(

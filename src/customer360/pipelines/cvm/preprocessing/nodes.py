@@ -32,8 +32,8 @@ from typing import Dict, Any
 from pyspark.ml.feature import StringIndexer, Imputer
 from pyspark.ml import Pipeline, PipelineModel
 from pyspark.sql.functions import col
-from src.customer360.pipelines.cvm.src.list_categorical import list_categorical
-from src.customer360.pipelines.cvm.src.list_targets import list_targets
+from customer360.pipelines.cvm.src.utils.list_categorical import list_categorical
+from customer360.pipelines.cvm.src.utils.list_targets import list_targets
 
 
 def pipeline1_fit(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
