@@ -42,9 +42,10 @@ def build_usage_l2_layer(data_frame: DataFrame, dict_obj: dict) -> DataFrame:
     data_frame = data_frame
     dates_list = data_frame.select('start_of_week').distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 2))
+    mvv_new = list(divide_chunks(mvv_array, 5))
     add_list = mvv_new
 
     first_item = add_list[0]
