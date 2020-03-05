@@ -27,11 +27,25 @@
 # limitations under the License.
 
 
-from typing import Iterable
+from typing import Iterable, Dict, Any
 
 
-def list_targets() -> Iterable[str]:
+def list_targets(parameters: Dict[str, Any]) -> Iterable[str]:
+    """ Return all target column names.
+
+    Args:
+        parameters: parameters defined in parameters*.yml files.
+
+    Returns:
+        List of target column names.
     """
-        Get column names of all targets.
-    """
-    return ["dilution1", "dilution2", "churn30", "churn45"]
+
+    targets_parameters = parameters["targets"]
+    target_colnames = []
+    for use_case_name in targets_parameters:
+        use_case_targets_parameters = targets_parameters[use_case_name]
+        for specific_target in use_case_targets_parameters:
+            target_colname = use_case_targets_parameters[specific_target]["colname"]
+            target_colnames.append(target_colname)
+
+    return target_colnames
