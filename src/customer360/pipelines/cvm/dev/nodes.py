@@ -34,7 +34,7 @@ def create_sample_dataset(df: DataFrame, subscription_id_suffix: str) -> DataFra
     users with certain subscription_identifier suffix.
 
     Args:
-        parameters: parameters defined in parameters.yml.
+        subscription_id_suffix: suffix to filter subscription_identifier with.
         df: given table.
     Returns:
         Dev sample of table.
