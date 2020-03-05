@@ -14,6 +14,10 @@ from customer360.utilities.config_parser import node_from_config
 conf = os.getenv("CONF", "local")
 
 
+def get_spark_session() -> SparkSession:
+    return SparkSession.builder.getOrCreate()
+
+
 def union_dataframes_with_missing_cols(df_input_or_list, *args):
     if type(df_input_or_list) is list:
         df_list = df_input_or_list
@@ -43,7 +47,7 @@ def execute_sql(data_frame, table_name, sql_str):
     :param sql_str:
     :return:
     """
-    ss = SparkSession.builder.getOrCreate()
+    ss = get_spark_session()
     data_frame.registerTempTable(table_name)
     return ss.sql(sql_str)
 

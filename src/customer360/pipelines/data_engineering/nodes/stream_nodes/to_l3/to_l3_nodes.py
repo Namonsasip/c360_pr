@@ -1,10 +1,9 @@
-from pyspark.sql import SparkSession
-
+from customer360.utilities.re_usable_functions import get_spark_session
 from pathlib import Path
 
 
 def generate_l3_fav_streaming_day(input_df, app_list):
-    spark = SparkSession.builder.getOrCreate()
+    spark = get_spark_session()
     input_df.createOrReplaceTempView("input_df")
 
     from customer360.run import ProjectContext

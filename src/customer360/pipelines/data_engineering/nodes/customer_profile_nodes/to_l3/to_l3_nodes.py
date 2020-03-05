@@ -1,10 +1,11 @@
-from pyspark.sql import SparkSession, functions as F
+from pyspark.sql import functions as F
 from pyspark.sql.types import StringType
+from customer360.utilities.re_usable_functions import get_spark_session
 
 
 def add_last_month_inactive_user(input_df, config):
     input_df.createOrReplaceTempView("input_df")
-    spark = SparkSession.builder.getOrCreate()
+    spark = get_spark_session()
 
     inactive_cust_feature_list = []
     normal_feature_list = []
@@ -64,7 +65,7 @@ def merge_union_and_basic_features(union_features, basic_features):
     union_features.createOrReplaceTempView("union_features")
     basic_features.createOrReplaceTempView("basic_features")
 
-    spark = SparkSession.builder.getOrCreate()
+    spark = get_spark_session()
 
     df = spark.sql("""
         select * 

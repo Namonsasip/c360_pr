@@ -1,6 +1,7 @@
 import logging
 from typing import *
-from pyspark.sql import SparkSession, DataFrame, functions as F
+from pyspark.sql import DataFrame, functions as F
+from customer360.utilities.re_usable_functions import get_spark_session
 
 
 # Query generator class
@@ -193,7 +194,7 @@ def l4_rolling_window(input_df, config):
 
     logging.info("SQL QUERY {}".format(sql_stmt))
 
-    spark = SparkSession.builder.getOrCreate()
+    spark = get_spark_session()
     df = spark.sql(sql_stmt)
 
     return df
@@ -275,7 +276,7 @@ def node_from_config(input_df, config) -> DataFrame:
         table_params=config,
         column_function=QueryGenerator.normal_feature_listing)
 
-    spark = SparkSession.builder.getOrCreate()
+    spark = get_spark_session()
 
     df = spark.sql(sql_stmt)
     return df
@@ -299,7 +300,7 @@ def expansion(input_df, config) -> DataFrame:
 
     logging.info("SQL QUERY {}".format(sql_stmt))
 
-    spark = SparkSession.builder.getOrCreate()
+    spark = get_spark_session()
 
     df = spark.sql(sql_stmt)
     return df
@@ -428,7 +429,7 @@ def __generate_l4_rolling_ranked_column(
 
     logging.info("SQL QUERY {}".format(sql_stmt))
 
-    spark = SparkSession.builder.getOrCreate()
+    spark = get_spark_session()
     df = spark.sql(sql_stmt)
 
     return df
