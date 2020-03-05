@@ -23,7 +23,7 @@ l1_loyalty_number_of_rewards_daily:
     granularity: "start_of_month,start_of_week,event_partition_date,access_method_num,register_date,subscription_identifier"
 
 l1_loyalty_number_of_points_spend_daily:
-    where_clause: "where event_partition_date is not null"
+    where_clause: "where event_partition_date is not null and project_type_id = 6 and project_subtype like 'REDEEM%' and msg_event_id = 13"
     feature_list:
         loyalty_points_spend_total: "sum(case when msisdn is not null then loyalty_points_spend else 0 end)"
         loyalty_points_spend_travel: "sum(case when category in (545,565,116,124) then loyalty_points_spend else 0 end)"

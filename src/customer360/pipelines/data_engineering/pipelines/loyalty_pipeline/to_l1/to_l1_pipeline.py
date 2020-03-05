@@ -58,6 +58,7 @@ def loyalty_to_l1_pipeline(**kwargs):
                 ["l1_customer_profile_union_daily_feature",
                  "l0_loyalty_drm_t_aunjai_point_collection_daily",
                  "l0_loyalty_priv_project",
+                 "l0_loyalty_priv_point_transaction",
                  "params:l1_loyalty_number_of_points_spend_daily"],
                 "l1_loyalty_number_of_points_spend"
             ),
