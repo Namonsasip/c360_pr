@@ -33,6 +33,14 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 
+from customer360.pipelines.cvm.data_prep.nodes import (
+    create_l5_cvm_one_day_users_table,
+    add_ard_targets,
+    add_churn_targets,
+    create_l5_cvm_one_day_train_test,
+    create_l5_cvm_features_one_day_joined,
+    subs_date_join,
+)
 from customer360.pipelines.cvm.dev.nodes import create_sample_dataset
 
 
@@ -86,6 +94,91 @@ def create_cvm_prepare_inputs_samples(sample_type: str) -> Pipeline:
                 ],
                 "l4_daily_feature_topup_and_volume" + suffix,
                 name="create_l4_daily_feature_topup_and_volume" + suffix,
+            ),
+        ]
+    )
+
+
+def create_cvm_prepare_data(sample_type: str = None):
+    """ Creates pipeline preparing data. Can create data pipeline for full dataset or
+    given sample_type.
+
+    Args:
+        sample_type: sample type to use. Dev sample for "dev", Sample for "sample", full
+        dataset for None (default).
+
+    Returns:
+        Kedro pipeline.
+    """
+
+    if sample_type not in ["dev", "sample", None]:
+        raise Exception("Sample type {} not implemented".format(sample_type))
+
+    if sample_type is not None:
+        suffix = "_" + sample_type
+    else:
+        suffix = ""
+
+    return Pipeline(
+        [
+            node(
+                create_l5_cvm_one_day_users_table,
+                [
+                    "l3_customer_profile_include_1mo_non_active" + suffix,
+                    "l0_product_product_pru_m_package_master_group",
+                    "parameters",
+                ],
+                "l5_cvm_one_day_users_table" + suffix,
+                name="create_l5_cvm_one_day_users_table" + suffix,
+            ),
+            node(
+                add_ard_targets,
+                [
+                    "l5_cvm_one_day_users_table" + suffix,
+                    "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly" + suffix,
+                    "parameters",
+                    "params:chosen_date",
+                ],
+                "l5_cvm_ard_one_day_targets" + suffix,
+                name="create_l5_cvm_ard_one_day_targets" + suffix,
+            ),
+            node(
+                add_churn_targets,
+                [
+                    "l5_cvm_one_day_users_table" + suffix,
+                    "l4_usage_prepaid_postpaid_daily_features" + suffix,
+                    "parameters",
+                ],
+                "l5_cvm_churn_one_day_targets" + suffix,
+                name="create_l5_cvm_churn_one_day_targets" + suffix,
+            ),
+            node(
+                create_l5_cvm_one_day_train_test,
+                ["l5_cvm_features_targets_one_day" + suffix, "parameters"],
+                ["l5_cvm_one_day_train" + suffix, "l5_cvm_one_day_test" + suffix],
+                name="create_l5_cvm_one_day_train_test" + suffix,
+            ),
+            node(
+                create_l5_cvm_features_one_day_joined,
+                [
+                    "l5_cvm_one_day_users_table" + suffix,
+                    "l3_customer_profile_include_1mo_non_active" + suffix,
+                    "l4_daily_feature_topup_and_volume" + suffix,
+                    "l4_usage_prepaid_postpaid_daily_features" + suffix,
+                    "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly" + suffix,
+                ],
+                "l5_cvm_features_one_day_joined" + suffix,
+                name="create_l5_cvm_features_one_day_joined" + suffix,
+            ),
+            node(
+                subs_date_join,
+                [
+                    "l5_cvm_features_one_day_joined" + suffix,
+                    "l5_cvm_churn_one_day_targets" + suffix,
+                    "l5_cvm_ard_one_day_targets" + suffix,
+                ],
+                "l5_cvm_features_targets_one_day" + suffix,
+                name="create_l5_cvm_features_targets_one_day" + suffix,
             ),
         ]
     )
