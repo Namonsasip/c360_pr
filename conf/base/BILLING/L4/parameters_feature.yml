@@ -103,7 +103,7 @@ l4_dynamics_time_diff_bw_topups:
         avg_payments_time_diff_last_two_week: "avg_payments_time_diff_avg_weekly_last_two_week"
         avg_payments_time_diff_last_four_week: "avg_payments_time_diff_avg_weekly_last_four_week"
         avg_payments_time_diff_last_twelve_week: "avg_payments_time_diff_avg_weekly_last_twelve_week"
-        week_dynamics_payments_time_diff: "avg_payments_time_diff_avg_weekly_last_two_week/avg_payments_time_diff_avg_weekly_last_two_week"
+        week_dynamics_payments_time_diff: "avg_payments_time_diff_avg_weekly_last_week/avg_payments_time_diff_avg_weekly_last_two_week"
         month_dynamics_payments_time_diff: "avg_payments_time_diff_avg_weekly_last_four_week/avg_payments_time_diff_avg_weekly_last_twelve_week"
     granularity: ""
 
