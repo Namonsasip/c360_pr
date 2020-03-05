@@ -35,10 +35,10 @@ l4_dynamics_topups_and_volume:
         avg_payments_top_up_volume_last_two_week: "avg_payments_top_up_volume_weekly_last_two_week"
         avg_payments_top_up_volume_last_four_week: "avg_payments_top_up_volume_weekly_last_four_week"
         avg_payments_top_up_volume_last_twelve_week: "avg_payments_top_up_volume_weekly_last_twelve_week"
-        week_dynamics_top_up_no: "avg_payments_top_ups_weekly_last_week/avg_payments_top_ups_weekly_last_two_week"
-        month_dynamics_top_up_no: "avg_payments_top_ups_weekly_last_four_week/avg_payments_top_ups_weekly_last_twelve_week"
-        week_dynamics_top_up_volume: "avg_payments_top_up_volume_weekly_last_week/avg_payments_top_up_volume_weekly_last_two_week"
-        month_dynamics_top_up_volume: "avg_payments_top_up_volume_weekly_last_four_week/avg_payments_top_up_volume_weekly_last_twelve_week"
+        payments_one_week_over_two_week_top_up_no: "avg_payments_top_ups_weekly_last_week/avg_payments_top_ups_weekly_last_two_week"
+        payments_four_week_over_twelve_week_top_up_no: "avg_payments_top_ups_weekly_last_four_week/avg_payments_top_ups_weekly_last_twelve_week"
+        payments_one_week_over_two_week_top_up_volume: "avg_payments_top_up_volume_weekly_last_week/avg_payments_top_up_volume_weekly_last_two_week"
+        payments_four_week_over_twelve_week_top_up_volume: "avg_payments_top_up_volume_weekly_last_four_week/avg_payments_top_up_volume_weekly_last_twelve_week"
     granularity: ""
 
 l4_billing_rpu:
@@ -71,7 +71,7 @@ l4_dynamics_arpu:
         avg_payments_arpu_vas_last_three_month: "avg_payments_arpu_vas_monthly_last_three_month"
         avg_payments_arpu_voice_last_month: "avg_payments_arpu_voice_monthly_last_month"
         avg_payments_arpu_voice_last_three_month: "avg_payments_arpu_voice_monthly_last_three_month"
-        month_dynamics_arpu: "avg_payments_arpu_monthly_last_month/avg_payments_arpu_monthly_last_three_month"
+        payments_one_month_over_three_month_dynamics_arpu: "avg_payments_arpu_monthly_last_month/avg_payments_arpu_monthly_last_three_month"
     granularity: ""
 
 l4_billing_rpu_roaming:
@@ -103,8 +103,8 @@ l4_dynamics_time_diff_bw_topups:
         avg_payments_time_diff_last_two_week: "avg_payments_time_diff_avg_weekly_last_two_week"
         avg_payments_time_diff_last_four_week: "avg_payments_time_diff_avg_weekly_last_four_week"
         avg_payments_time_diff_last_twelve_week: "avg_payments_time_diff_avg_weekly_last_twelve_week"
-        week_dynamics_payments_time_diff: "avg_payments_time_diff_avg_weekly_last_week/avg_payments_time_diff_avg_weekly_last_two_week"
-        month_dynamics_payments_time_diff: "avg_payments_time_diff_avg_weekly_last_four_week/avg_payments_time_diff_avg_weekly_last_twelve_week"
+        payments_one_week_over_two_week_time_diff: "avg_payments_time_diff_avg_weekly_last_week/avg_payments_time_diff_avg_weekly_last_two_week"
+        payments_four_week_over_twelve_week_time_diff: "avg_payments_time_diff_avg_weekly_last_four_week/avg_payments_time_diff_avg_weekly_last_twelve_week"
     granularity: ""
 
 l4_billing_before_top_up_balance:
@@ -147,7 +147,7 @@ l4_dynamics_bill_volume:
         sum_payments_bill_volume_last_three_month: "sum_payments_bill_volume_monthly_last_three_month"
         avg_payments_bill_volume_last_month: "avg_payments_bill_volume_monthly_last_month"
         avg_payments_bill_volume_last_three_month: "avg_payments_bill_volume_monthly_last_three_month"
-        month_dynamics_bill_volume: "avg_payments_bill_volume_monthly_last_month/avg_payments_bill_volume_monthly_last_three_month"
+        payments_one_month_over_three_month_dynamics_bill_volume: "avg_payments_bill_volume_monthly_last_month/avg_payments_bill_volume_monthly_last_three_month"
     granularity: ""
 
 l4_payments_bill_shock:
