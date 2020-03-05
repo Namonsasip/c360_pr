@@ -15,6 +15,10 @@ from datetime import timedelta
 
 class TestUnitBilling:
 
+    def test_dummy(self, project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
     def test_popular_channel_feature(self, project_context):
         '''
         l1_billing_and_payment_most_popular_topup_channel
@@ -187,9 +191,9 @@ class TestUnitBilling:
 
     def test_topup_frequency_feature(self, project_context):
         '''
-        params:l2_billing_and_payment_feature_time_diff_bw_topups_weekly_intermdeiate
-        params:l2_billing_and_payment_feature_time_diff_bw_topups_weekly
-        params:l4_billing_time_diff_bw_topups
+        l2_billing_and_payment_feature_time_diff_bw_topups_weekly_intermdeiate
+        l2_billing_and_payment_feature_time_diff_bw_topups_weekly
+        l4_billing_time_diff_bw_topups
         '''
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
@@ -220,70 +224,78 @@ class TestUnitBilling:
             .withColumn("start_of_week", F.to_date(F.date_trunc('week', df.recharge_time)))
         df = df.orderBy('recharge_time')
 
-        df.show(1000, False)
+        print('showdf')
+        df.show(888,False)
+
         intermediate_data = node_from_config(df, var_project_context.catalog.load(
             'params:l2_billing_and_payment_feature_time_diff_bw_topups_weekly_intermdeiate'))
 
-        intermediate_data.orderBy('recharge_time').show(1000, False)
+        print('debuginit')
+        intermediate_data.printSchema()
+        intermediate_data.orderBy('start_of_week').show(999,False)
         assert \
             intermediate_data.where("recharge_time = '2020-10-17 12:08:09'").select("payments_time_diff").collect()[0][
                 0] == 4
-
+        intermediate_data = intermediate_data.withColumn("subscription_identifier",F.lit(1))
         weekly_data = node_from_config(intermediate_data, var_project_context.catalog.load(
             'params:l2_billing_and_payment_feature_time_diff_bw_topups_weekly'))
 
+        print('debug12341')
+        weekly_data.orderBy('start_of_week').show(999,False)
+        # weekly_data.where("start_of_week = '2020-10-12'").show()
         assert \
-            weekly_data.where("start_of_week = '2020-10-12'").select("payments_max_time_diff").collect()[0][
-                0] == 4
+            weekly_data.where("start_of_week = '2020-03-02'").select("payments_max_time_diff").collect()[0][
+                0] == 17
         assert \
-            weekly_data.where("start_of_week = '2020-10-12'").select("payments_min_time_diff").collect()[0][
+            weekly_data.where("start_of_week = '2020-03-02'").select("payments_min_time_diff").collect()[0][
                 0] == 1
         assert \
-            weekly_data.where("start_of_week = '2020-10-12'").select("payments_time_diff").collect()[0][
-                0] == 6
+            weekly_data.where("start_of_week = '2020-03-02'").select("payments_time_diff").collect()[0][
+                0] == 120
         assert \
-            weekly_data.where("start_of_week = '2020-10-12'").select("payments_time_diff_avg").collect()[0][
-                0] == 2
+            weekly_data.where("start_of_week = '2020-03-02'").select("payments_time_diff_avg").collect()[0][
+                0] == 6
 
         weekly_data.orderBy('start_of_week').show(1000, False)
 
         final_features = l4_rolling_window(weekly_data, var_project_context.catalog.load(
             'params:l4_billing_time_diff_bw_topups'))
-
-        assert \
-            final_features.where("start_of_week = '2020-10-12'").select(
-                "sum_payments_time_diff_weekly_last_week").collect()[0][
-                0] == 4
-        assert \
-            final_features.where("start_of_week = '2020-10-12'").select(
-                "sum_payments_time_diff_weekly_last_two_week").collect()[0][
-                0] == 9
-        assert \
-            final_features.where("start_of_week = '2020-10-12'").select(
-                "sum_payments_time_diff_weekly_last_four_week").collect()[0][
-                0] == 16
-        assert \
-            final_features.where("start_of_week = '2020-10-12'").select(
-                "sum_payments_time_diff_weekly_last_twelve_week").collect()[0][
-                0] == 46
-        assert \
-            final_features.where("start_of_week = '2020-10-12'").select(
-                "avg_payments_time_diff_avg_weekly_last_week").collect()[0][
-                0] == 2
-        assert \
-            final_features.where("start_of_week = '2020-10-12'").select(
-                "avg_payments_time_diff_avg_weekly_last_two_week").collect()[0][
-                0] == 2.25
-        assert \
-            final_features.where("start_of_week = '2020-10-12'").select(
-                "avg_payments_time_diff_avg_weekly_last_four_week").collect()[0][
-                0] == 2.875
-        assert \
-            final_features.where("start_of_week = '2020-10-12'").select(
-                "avg_payments_time_diff_avg_weekly_last_twelve_week").collect()[0][
-                0] == 2.522727272727273
-
+        print('final feature')
         final_features.show(100, False)
+        assert \
+            final_features.where("start_of_week = '2020-02-10'").select(
+                "sum_payments_time_diff_weekly_last_week").collect()[0][
+                0] == 117
+        assert \
+            final_features.where("start_of_week = '2020-02-10'").select(
+                "sum_payments_time_diff_weekly_last_two_week").collect()[0][
+                0] == 776
+        assert \
+            final_features.where("start_of_week = '2020-02-10'").select(
+                "sum_payments_time_diff_weekly_last_four_week").collect()[0][
+                0] == 1065
+        assert \
+            final_features.where("start_of_week = '2020-02-10'").select(
+                "sum_payments_time_diff_weekly_last_twelve_week").collect()[0][
+                0] == 1276
+        assert \
+            final_features.where("start_of_week = '2020-02-10'").select(
+                "avg_payments_time_diff_avg_weekly_last_week").collect()[0][
+                0] == 5.85
+        assert \
+            int(final_features.where("start_of_week = '2020-02-10'").select(
+                "avg_payments_time_diff_avg_weekly_last_two_week").collect()[0][
+                0]) == 19
+        assert \
+            int(final_features.where("start_of_week = '2020-02-10'").select(
+                "avg_payments_time_diff_avg_weekly_last_four_week").collect()[0][
+                0]) == 13
+        assert \
+            int(final_features.where("start_of_week = '2020-02-10'").select(
+                "avg_payments_time_diff_avg_weekly_last_twelve_week").collect()[0][
+                0]) == 10
+
+        exit(2)
 
     def test_topup_and_volume_feature(self, project_context):
         '''
