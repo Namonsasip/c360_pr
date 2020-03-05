@@ -40,6 +40,7 @@ from customer360.pipeline import create_pipelines
 
 from kedro.io import DataCatalog
 from kedro.versioning import Journal
+from customer360.utilities.re_usable_functions import get_spark_session
 
 import findspark
 findspark.init()
@@ -98,15 +99,13 @@ class ProjectContext(KedroContext):
         return catalog
 
 
-
 def run_package(pipelines=[]):
 
     # entry point for running pip-install projects
     # using `<project_package>` command
     project_context = load_context(Path.cwd(), env=conf)
 
-    from pyspark.sql import SparkSession
-    spark = SparkSession.builder.getOrCreate()
+    spark = get_spark_session()
 
     # Dont delete this line. This allow spark to only overwrite the partition
     # saved to parquet instead of entire table folder
