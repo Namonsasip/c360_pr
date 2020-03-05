@@ -196,40 +196,6 @@ def create_l5_cvm_one_day_train_test(
     return train, test
 
 
-def create_l5_cvm_features_one_day_joined(
-    users: DataFrame, *args: DataFrame
-) -> DataFrame:
-    """ Creates table with one_day features for given users.
-
-    Args:
-        users: Table with users and dates to join features for.
-        *args: Tables with features.
-
-    Returns:
-        Table with one_day features for given users.
-    """
-
-    feature_tables = args
-
-    feature_tables = [setup_names(feature_table) for feature_table in feature_tables]
-    users = setup_names(users)
-
-    # join the tables
-    keys = ["key_date", "subscription_identifier"]
-    feature_tables = [setup_names(tab) for tab in feature_tables]
-    users = setup_names(users)
-
-    def join_on(df1, df2):
-        cols_to_drop = [col_name for col_name in df1.columns if col_name in df2.columns]
-        cols_to_drop = list(set(cols_to_drop) - set(keys))
-        df2 = df2.drop(*cols_to_drop)
-        return df1.join(df2, keys, "left")
-
-    features_joined = functools.reduce(join_on, feature_tables, users)
-
-    return features_joined
-
-
 def subs_date_join(*args: DataFrame,) -> DataFrame:
     """ Left join all tables by given keys.
 

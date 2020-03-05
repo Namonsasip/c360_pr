@@ -38,7 +38,6 @@ from customer360.pipelines.cvm.data_prep.nodes import (
     add_ard_targets,
     add_churn_targets,
     create_l5_cvm_one_day_train_test,
-    create_l5_cvm_features_one_day_joined,
     subs_date_join,
 )
 from customer360.pipelines.cvm.dev.nodes import create_sample_dataset
@@ -159,7 +158,7 @@ def create_cvm_prepare_data(sample_type: str = None):
                 name="create_l5_cvm_one_day_train_test" + suffix,
             ),
             node(
-                create_l5_cvm_features_one_day_joined,
+                subs_date_join,
                 [
                     "l5_cvm_one_day_users_table" + suffix,
                     "l3_customer_profile_include_1mo_non_active" + suffix,
