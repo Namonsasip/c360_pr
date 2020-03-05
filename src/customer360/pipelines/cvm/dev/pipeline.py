@@ -27,7 +27,7 @@
 # limitations under the License.
 
 from kedro.pipeline import Pipeline, node
-from customer360.pipelines.cvm.dev.nodes import create_dev_version
+from customer360.pipelines.cvm.dev.nodes import create_sample_dataset
 from customer360.pipelines.cvm.data_prep.nodes import (
     create_l5_cvm_one_day_users_table,
     add_ard_targets,
@@ -42,30 +42,39 @@ def create_cvm_inputs_dev(**kwargs):
     return Pipeline(
         [
             node(
-                create_dev_version,
-                ["l3_customer_profile_include_1mo_non_active", "parameters"],
+                create_sample_dataset,
+                [
+                    "l3_customer_profile_include_1mo_non_active",
+                    "params:subscription_id_suffix_dev",
+                ],
                 "l3_customer_profile_include_1mo_non_active_dev",
                 name="create_l3_customer_profile_include_1mo_non_active_dev",
             ),
             node(
-                create_dev_version,
+                create_sample_dataset,
                 [
                     "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
-                    "parameters",
+                    "params:subscription_id_suffix_dev",
                 ],
                 "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_dev",
                 name="create_l4_revenue_prepaid_ru_f_sum_revenue"
                 + "_by_service_monthly_dev",
             ),
             node(
-                create_dev_version,
-                ["l4_usage_prepaid_postpaid_daily_features", "parameters"],
+                create_sample_dataset,
+                [
+                    "l4_usage_prepaid_postpaid_daily_features",
+                    "params:subscription_id_suffix_dev",
+                ],
                 "l4_usage_prepaid_postpaid_daily_features_dev",
                 name="create_l4_usage_prepaid_postpaid_daily_features_dev",
             ),
             node(
-                create_dev_version,
-                ["l4_daily_feature_topup_and_volume", "parameters"],
+                create_sample_dataset,
+                [
+                    "l4_daily_feature_topup_and_volume",
+                    "params:subscription_id_suffix_dev",
+                ],
                 "l4_daily_feature_topup_and_volume_dev",
                 name="create_l4_daily_feature_topup_and_volume_dev",
             ),

@@ -27,10 +27,9 @@
 # limitations under the License.
 
 from pyspark.sql import DataFrame
-from typing import Dict, Any
 
 
-def create_dev_version(df: DataFrame, parameters: Dict[str, Any],) -> DataFrame:
+def create_sample_dataset(df: DataFrame, subscription_id_suffix: str) -> DataFrame:
     """ Create dev sample of given table. Dev sample is super small sample. Takes only
     users with certain subscription_identifier suffix.
 
@@ -40,8 +39,6 @@ def create_dev_version(df: DataFrame, parameters: Dict[str, Any],) -> DataFrame:
     Returns:
         Dev sample of table.
     """
-
-    subscription_id_suffix = parameters["subscription_id_suffix"]
 
     df = df.withColumn(
         "subscription_identifier_last_letter", df.subscription_identifier.substr(-2, 2)

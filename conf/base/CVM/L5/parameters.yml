@@ -1,6 +1,7 @@
 # sampling parameters
 chosen_date: '2019-10-01'
-subscription_id_suffix: 'AA'
+subscription_id_suffix_dev: 'AA'
+subscription_id_suffix_sample: 'A'
 
 # List of targets
 targets:
