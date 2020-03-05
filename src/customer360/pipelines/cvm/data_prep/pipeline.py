@@ -36,7 +36,7 @@ from kedro.pipeline import Pipeline, node
 from customer360.pipelines.cvm.dev.nodes import create_sample_dataset
 
 
-def create_prepare_inputs_samples(sample_type: str) -> Pipeline:
+def create_cvm_prepare_inputs_samples(sample_type: str) -> Pipeline:
     """ Creates samples for input datasets.
 
     Args:

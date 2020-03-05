@@ -31,6 +31,7 @@ from typing import Dict
 
 from kedro.pipeline import Pipeline
 
+from .pipelines.cvm.data_prep.pipeline import create_cvm_prepare_inputs_samples
 from .pipelines.cvm.modelling.pipeline import create_train_model
 from .pipelines.data_engineering.pipelines.usage_pipeline.to_l1 import \
     usage_to_l1_pipeline
@@ -76,9 +77,6 @@ from .pipelines.data_engineering.pipelines.revenue_pipeline.to_l4 import \
     revenue_to_l4_pipeline
 from .pipelines.data_engineering.pipelines.campaign_pipeline.to_l1 import \
     campaign_to_l1_pipeline
-from customer360.pipelines.cvm.data_prep.pipeline import \
-    create_cvm_prepare_data_pipeline, \
-    create_cvm_prepare_sample_data_pipeline
 from customer360.pipelines.cvm.dev.pipeline import \
     create_cvm_inputs_dev, \
     create_cvm_prepare_data_dev
@@ -139,14 +137,9 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         'campaign_to_l1_pipeline': campaign_to_l1_pipeline(),
         "revenue_to_l3_pipeline": revenue_to_l3_pipeline(),
         "revenue_to_l4_pipeline": revenue_to_l4_pipeline(),
-        "cvm_prepare_data": create_cvm_prepare_data_pipeline(),
-        "cvm_prepare_sample_data": create_cvm_prepare_sample_data_pipeline(),
-        "cvm_inputs_dev": create_cvm_inputs_dev(),
+        "create_cvm_prepare_inputs_dev": create_cvm_prepare_inputs_samples("dev"),
+        "create_cvm_prepare_inputs_sample": create_cvm_prepare_inputs_samples("sample"),
         "cvm_prepare_data_dev": create_cvm_prepare_data_dev(),
         "cvm_preprocessing_dev": create_cvm_preprocessing_dev(),
         "train_model": create_train_model(),
-        "cvm": create_cvm_prepare_data_pipeline() +
-               create_cvm_prepare_sample_data_pipeline() + create_cvm_inputs_dev() +
-               create_cvm_prepare_data_dev() + create_cvm_prepare_data_dev() +
-               create_train_model()
     }
