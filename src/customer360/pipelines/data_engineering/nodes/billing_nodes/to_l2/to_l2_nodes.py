@@ -7,7 +7,7 @@ import logging
 from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l1.to_l1_nodes import massive_processing
 import os
 
-conf = os.environ["CONF"]
+conf = os.getenv("CONF", None)
 
 def massive_processing_weekly(data_frame: DataFrame, dict_obj: dict, output_df_catalog) -> DataFrame:
     """

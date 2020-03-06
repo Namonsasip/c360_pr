@@ -7,7 +7,7 @@ from pathlib import Path
 import logging
 import os
 
-conf = os.environ["CONF"]
+conf = os.getenv("CONF", None)
 
 
 def massive_processing(data_frame_1, data_frame_2, data_frame_3, dict_1
