@@ -28,6 +28,7 @@
 
 from pyspark.sql import DataFrame
 from sklearn.ensemble import RandomForestClassifier
+import xgboost
 from customer360.pipelines.cvm.src.utils.list_targets import list_targets
 import shap
 
@@ -66,3 +67,28 @@ def create_shap_for_rf(rf: RandomForestClassifier, df_test: DataFrame):
     summ_plot = shap.summary_plot(shap_values, X_test)
 
     return summ_plot
+
+
+def train_xgb(df: DataFrame) -> object:
+    """ Create xgboost models for given the table to train on and all targets.
+
+    Args:
+        df: Training preprocessed sample.
+
+    Returns:
+        Xgboost classifier.
+    """
+    target_cols = list_targets()
+    targets = df.select(target_cols).toPandas()
+    X_all_targets = df.drop(*target_cols).toPandas()
+    models = {}
+
+    for target_chosen in target_cols:
+        y = targets.select(target_chosen).toPandas()
+        X = X_all_targets.filter("{} is not null".format(target_chosen))
+        xgb_model = xgboost.train(
+            {"learning_rate": 0.01}, xgboost.DMatrix(X, label=y), 100
+        )
+        models[target_chosen] = xgb_model
+
+    return models
