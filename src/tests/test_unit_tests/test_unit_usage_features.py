@@ -35,7 +35,7 @@ named ``test_*`` which test a unit of logic.
 
 To run the tests, run ``kedro test``.
 """
-
+from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l2.to_l2_nodes import build_usage_l2_layer
 from customer360.utilities.config_parser import node_from_config, expansion, l4_rolling_window
 import pandas as pd
 import random
@@ -64,6 +64,21 @@ def generate_day_id(min_dt, max_dt):
 
 def date_diff(min_date, max_date):
     return (max_date-min_date).days + 1  # inclusive
+
+def check_null(df):
+    if df.first() is None:
+        list_type = []
+        for f in df.schema.fields:
+            list_type = str(f.dataType)
+        if list_type[0] != "D": #D is DateType
+            temp = 0
+            return temp
+        elif list_type[0] == "D":
+            temp = None
+            return temp
+    else:
+        temp = df.first()[0]
+        return temp
 
 
 # Global Variables
@@ -1959,31 +1974,48 @@ class TestUnitUsage:
 
         #exit(2)
 
-    def test_usage_outgoing_call_relation_sum_feature(self, project_context):
+    def test_l1_usage_outgoing_call_relation_sum_daily(self, project_context):
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
-        # l0_tol1_test
+        random.seed(100)
+        print(
+            "***********************L0 usage_outgoing_call_relation_sum_daily generation*******************************")
+        # Below section is to create dummy data.
         min_dt = '2020-01-01'
         max_dt = '2020-04-01'
         doubled_days = days * 2
-        service_type_ = generate_category(doubled_days, ['VOICE', 'SMS'])
+        call_start_dt = generate_day_id(min_dt, max_dt)
+        call_start_dt.extend(call_start_dt)  # two records per day
+        call_start_dt.sort()
+
+        # print(day_id)
+        # _10min_totalcall = generate_int(doubled_days, 300, 600)
+        # _15min_totalcall = generate_int(doubled_days,600,900)
+        # _20min_totalcall = generate_int(doubled_days, 900, 1200)
+        # _30min_totalcall = generate_int(doubled_days, 1200, 1800)
+        # _morethan30_totalcall = generate_int(doubled_days, 1800, 2000)
+
+
+        #l0_tol1_test
+        service_type_ = generate_category(doubled_days,['VOICE', 'SMS'])
         idd_flag = generate_category(doubled_days, ['Y', 'N'])
         call_type = generate_category(doubled_days, ['MO', 'MT'])
-        # total_successful_call = generate_int(doubled_days, [0, 1])
-        called_network_type = generate_category(doubled_days,
-                                                ['TRUE', 'DTAC', '3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN',
-                                                 'AWN',
-                                                 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post',
-                                                 'AWNINT'])
-        # L1_test
+        #total_successful_call = generate_int(doubled_days, [0, 1])
+        called_network_type = generate_category(doubled_days, ['TRUE','DTAC','3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN',
+                                                               'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post',
+                                                               'AWNINT'])
+
+        #L1_test
         total_call = generate_int(doubled_days, 0, 2000)
         total_durations = generate_int(doubled_days, 0, 5)
         call_start_hr = generate_int(doubled_days, 0, 23)
+
         day_id = generate_day_id(min_dt, max_dt)
         day_id.extend(day_id)  # two records per day
         day_id.sort()
         hour_id = generate_int(doubled_days, 0, 23)
         total_successful_call = generate_int(doubled_days, 0, 30)
+
         for i in range(1, len(call_start_hr)):
             if ((i + 1) % 2 == 0):
                 while (call_start_hr[i] == call_start_hr[i - 1]):
@@ -1994,22 +2026,1243 @@ class TestUnitUsage:
                     print("hour_id[i-1] = " + str(call_start_hr[i - 1]))
                     call_start_hr[i] = new_int
         print(call_start_hr)
+
         df_usage_outgoing_call_relation_sum_daily = spark.createDataFrame(
-            zip(day_id, hour_id, total_call, total_successful_call, called_network_type, call_type, service_type_,
-                idd_flag),
-            schema=['day_id', 'hour_id', 'total_durations', 'total_successful_call', 'called_network_type', 'call_type',
-                    'service_type', 'idd_flag']) \
+            zip(day_id, hour_id, total_call, total_successful_call, called_network_type, call_type, service_type_, idd_flag),
+            schema=['day_id', 'hour_id', 'total_durations', 'total_successful_call','called_network_type','call_type', 'service_type', 'idd_flag'])\
             .withColumn("access_method_num", F.lit(1)) \
             .withColumn("caller_no", F.lit(2)) \
             .withColumn("day_id", F.to_date('day_id', 'dd-MM-yyyy')) \
             .withColumn("partition_date", F.lit('20200101'))
-        df_usage_outgoing_call_relation_sum_daily = df_usage_outgoing_call_relation_sum_daily \
+
+        df_usage_outgoing_call_relation_sum_daily = df_usage_outgoing_call_relation_sum_daily\
             .withColumn("weekday", F.date_format(df_usage_outgoing_call_relation_sum_daily.day_id, 'EEEE'))
+
         df_usage_outgoing_call_relation_sum_daily = df_usage_outgoing_call_relation_sum_daily.where("call_type = 'MO'")
         global usage_outgoing_call_relation_sum_daily
         usage_outgoing_call_relation_sum_daily = node_from_config(df_usage_outgoing_call_relation_sum_daily,
-                                                                  var_project_context.catalog.load(
-                                                                      'params:l1_usage_outgoing_call_relation_sum_daily'))
+                                                                  var_project_context.catalog.load('params:l1_usage_outgoing_call_relation_sum_daily'))
+
+        df_usage_outgoing_call_relation_sum_daily.where("day_id = '2020-01-07'").select("day_id","hour_id", "weekday", "total_durations").show()
+
+        # print("###############################################################")
+        #
+        # df_usage_outgoing_call_relation_sum_daily.show(100)
+        #
+        # print("###############################################################")
+        #
+        # #usage_outgoing_call_relation_sum_daily.show(100)
+        #
+        # print("###############################################################")
+        #
+        # ################################################################################
+        # #usg_outgoing_total_call_duration: "sum(case when service_type IN ('VOICE') THEN total_durations else 0 end)"
+        # #
+        # #usg_outgoing_total_call_duration
+        sum_usg_outgoing_total_call_duration = df_usage_outgoing_call_relation_sum_daily\
+            .where("service_type = 'VOICE'").groupBy("day_id").agg(F.sum("total_durations").alias("total_durations"))
+        #sum_usg_outgoing_total_call_duration = sum_usg_outgoing_total_call_duration.where("service_type = 'VOICE'").agg(F.sum("total_durations"))
+
+        print("###############################################################")
+        print("###############################################################")
+        print("###############################################################")
+        print("###############################################################")
+
+
+
+
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_total_call_duration").collect()[0][0] == check_null(sum_usg_outgoing_total_call_duration. \
+            where("day_id = '2020-01-07'").select("total_durations"))
+            # or\
+            # (usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+            # "usg_outgoing_total_call_duration").collect()[0][0] == 0)
+
+
+        ###############################################################################
+        #usg_outgoing_local_call_duration: "sum(case when service_type IN ('VOICE')
+        #                                  AND idd_flag = 'N' THEN total_durations else 0 end)"
+        #usg_outgoing_local_call_duration
+        sum_usg_outgoing_local_call_duration = df_usage_outgoing_call_relation_sum_daily\
+            .where("service_type = 'VOICE' AND idd_flag = 'N'").groupBy("day_id")\
+            .agg(F.sum("total_durations").alias("total_durations"))
+        #sum_usg_outgoing_local_call_duration = sum_usg_outgoing_local_call_duration.where("service_type = 'VOICE' AND idd_flag = 'N'").agg(F.sum("total_durations"))
+
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_local_call_duration").collect()[0][0] == check_null(sum_usg_outgoing_local_call_duration. \
+             where("day_id = '2020-01-07'").select("total_durations"))
+            # or\
+            # (usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+            # "usg_outgoing_total_call_duration").collect()[0][0] == 0)
+
+        ###############################################################################
+        # usg_outgoing_number_calls: "sum(case when service_type IN ('VOICE') THEN total_successful_call else 0 end)"
+        #
+        # usg_outgoing_number_calls
+
+        sum_usg_outgoing_number_calls = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE'").groupBy("day_id")\
+            .agg(F.sum("total_successful_call").alias("total_successful_call"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_number_calls").collect()[0][0] == check_null(sum_usg_outgoing_number_calls \
+            .where("day_id = '2020-01-07'").select("total_successful_call"))
+            # or\
+            # (usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+            # "usg_outgoing_total_call_duration").collect()[0][0] == 0)
+
+
+        ###############################################################################
+        # usg_outgoing_local_number_calls: "sum(case when service_type IN ('VOICE')
+        #                                         AND idd_flag = 'N' THEN total_successful_call else 0 end)"
+        # usg_outgoing_local_number_calls
+        sum_usg_outgoing_local_number_calls = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND idd_flag = 'N'").groupBy("day_id")\
+            .agg(F.sum("total_successful_call").alias("total_successful_call"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_local_number_calls").collect()[0][0] == check_null(sum_usg_outgoing_local_number_calls\
+                .where("day_id = '2020-01-07'").select("total_successful_call"))
+
+        ###############################################################################
+        # usg_outgoing_ais_local_calls_duration: "sum(case when service_type IN ('VOICE')
+        #                                                 AND called_network_type IN ('3GPost-paid', '3GPre-paid',
+        #                                                 'AIS','InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local',
+        #                                                 'AWNFIX','3GHybrid-Post', 'AWNINT')
+        #                                                 THEN total_durations else 0 end)"
+        # # usg_outgoing_local_number_calls
+        sum_usg_outgoing_ais_local_calls_duration = df_usage_outgoing_call_relation_sum_daily \
+            .where(" (service_type = 'VOICE') AND  (called_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', "
+                   "'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT'))") \
+            .groupby("day_id").agg(F.sum("total_durations").alias("total_durations"))
+
+        #
+        # sum_usg_outgoing_ais_local_calls_duration.show()
+        #
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_ais_local_calls_duration").collect()[0][0] == check_null(sum_usg_outgoing_ais_local_calls_duration.\
+                where("day_id = '2020-01-07'").select("total_durations"))
+            # or \
+            # (usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select
+            #  ("usg_outgoing_ais_local_calls_duration").collect()[0][0] == 0)
+
+
+        ################################################################################################################
+        ## sum_usg_outgoing_ais_local_number_calls = df_usage_outgoing_call_relation_sum_daily \
+        #                                             .where(" (service_type = 'VOICE') AND  (called_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', "
+        #                                                    "'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT'))") \
+        #                                             .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
+        ##
+
+        sum_usg_outgoing_ais_local_number_calls = df_usage_outgoing_call_relation_sum_daily \
+            .where(" (service_type = 'VOICE') AND  (called_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', "
+                   "'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT'))") \
+            .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_ais_local_number_calls").collect()[0][0] == check_null(sum_usg_outgoing_ais_local_number_calls.\
+                 where("day_id = '2020-01-07'").select("total_successful_call")) \
+
+
+        ################################################################################################################
+        # sum_usg_outgoing_offnet_local_calls_duration = df_usage_outgoing_call_relation_sum_daily \
+        #                                              .where(" (service_type = 'VOICE') AND  (called_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS', "
+        #                                                      "'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT'))") \
+        #                                               .groupby("day_id").agg(F.sum("total_durations").alias("total_durations"))
+
+        sum_usg_outgoing_offnet_local_calls_duration = df_usage_outgoing_call_relation_sum_daily \
+            .where(" (service_type = 'VOICE') AND  (called_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS', "
+                   "'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT'))") \
+            .groupby("day_id").agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_offnet_local_calls_duration").collect()[0][0] == check_null(sum_usg_outgoing_offnet_local_calls_duration. \
+                where("day_id = '2020-01-07'").select("total_durations"))
+
+        ################################################################################################################
+        #usg_outgoing_offnet_local_number_calls: "sum(case when service_type IN ('VOICE')
+        #                                         AND called_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')
+        #                                         THEN total_successful_call else 0 end)"
+
+        sum_usg_outgoing_offnet_local_number_calls = df_usage_outgoing_call_relation_sum_daily \
+            .where(" (service_type = 'VOICE') AND  (called_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS', "
+                   "'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT'))") \
+            .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_offnet_local_number_calls").collect()[0][0] == check_null(sum_usg_outgoing_offnet_local_number_calls. \
+                where("day_id = '2020-01-07'").select("total_successful_call"))
+
+
+
+        ################################################################################################################
+        # usg_outgoing_total_sms: "sum(case when service_type IN ('SMS') THEN total_durations else 0 end)"
+        #
+        #
+        #
+
+        sum_usg_outgoing_total_sms = df_usage_outgoing_call_relation_sum_daily \
+            .where("(service_type IN ('SMS'))") \
+            .groupby("day_id").agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_total_sms").collect()[0][0] == check_null(sum_usg_outgoing_total_sms. \
+                where("day_id = '2020-01-07'").select("total_durations"))
+
+
+        ###############################################################################################################
+        #usg_outgoing_local_sms: "sum(case when service_type IN ('SMS')
+        #                        AND idd_flag = 'N' THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_local_sms = df_usage_outgoing_call_relation_sum_daily \
+            .where("(service_type IN ('SMS')) AND (idd_flag = 'N')") \
+            .groupby("day_id").agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_local_sms").collect()[0][0] == check_null(sum_usg_outgoing_local_sms.\
+                where("day_id = '2020-01-07'").select("total_durations"))
+
+
+        ###############################################################################################################
+        #usg_outgoing_local_ais_sms: "sum(case when service_type IN ('SMS')
+        #                             AND called_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN',
+        #                             'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')
+        #                             AND idd_flag = 'N' THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_local_ais_sms = df_usage_outgoing_call_relation_sum_daily \
+            .where("(service_type IN ('SMS')) AND (called_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', "
+                                     "'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')) "
+                                     "AND (idd_flag = 'N')") \
+            .groupby("day_id").agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_local_ais_sms").collect()[0][0] == check_null(sum_usg_outgoing_local_ais_sms.\
+                where("day_id = '2020-01-07'").select("total_durations"))
+
+        ###############################################################################################################
+        #usg_outgoing_number_calls_upto_5_mins: "sum(case when service_type IN ('VOICE')
+        #                                       AND total_durations <= 300 THEN total_successful_call else 0 end)"
+
+        sum_usg_outgoing_number_calls_upto_5_mins = df_usage_outgoing_call_relation_sum_daily \
+            .where("(service_type IN ('VOICE')) AND total_durations <= 300") \
+            .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_number_calls_upto_5_mins").collect()[0][0] == check_null(sum_usg_outgoing_number_calls_upto_5_mins
+                .where("day_id = '2020-01-07'").select("total_successful_call"))
+
+        ################################################################################################################
+        #usg_outgoing_number_calls_upto_10_mins: "sum(case when service_type IN ('VOICE')
+        #                                        AND total_durations <= 600 THEN total_successful_call else 0 end)"
+
+        sum_usg_outgoing_number_calls_upto_10_mins = df_usage_outgoing_call_relation_sum_daily \
+            .where("(service_type IN ('VOICE')) AND total_durations <= 600") \
+            .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_number_calls_upto_10_mins").collect()[0][0] == check_null(sum_usg_outgoing_number_calls_upto_10_mins
+                .where("day_id = '2020-01-07'").select("total_successful_call"))
+
+        ###############################################################################################################
+        ################################################################################################################
+        # usg_outgoing_number_calls_upto_15_mins: "sum(case when service_type IN ('VOICE')
+        #                                        AND total_durations <= 900 THEN total_successful_call else 0 end)"
+
+        sum_usg_outgoing_number_calls_upto_15_mins = df_usage_outgoing_call_relation_sum_daily \
+            .where("(service_type IN ('VOICE')) AND total_durations <= 900") \
+            .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_number_calls_upto_15_mins").collect()[0][0] == check_null(
+                sum_usg_outgoing_number_calls_upto_15_mins
+                .where("day_id = '2020-01-07'").select("total_successful_call"))
+
+        ###############################################################################################################
+        ################################################################################################################
+        # usg_outgoing_number_calls_upto_20_mins: "sum(case when service_type IN ('VOICE')
+        #                                        AND total_durations <= 1200 THEN total_successful_call else 0 end)"
+
+        sum_usg_outgoing_number_calls_upto_20_mins = df_usage_outgoing_call_relation_sum_daily \
+            .where("(service_type IN ('VOICE')) AND total_durations <= 1200") \
+            .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_number_calls_upto_20_mins").collect()[0][0] == check_null(
+                sum_usg_outgoing_number_calls_upto_20_mins
+                .where("day_id = '2020-01-07'").select("total_successful_call"))
+
+        ###############################################################################################################
+        # usg_outgoing_number_calls_upto_30_mins: "sum(case when service_type IN ('VOICE')
+        #                                        AND total_durations <= 1800 THEN total_successful_call else 0 end)"
+
+        sum_usg_outgoing_number_calls_upto_30_mins = df_usage_outgoing_call_relation_sum_daily \
+            .where("(service_type IN ('VOICE')) AND total_durations <= 1800") \
+            .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_number_calls_upto_30_mins").collect()[0][0] == check_null(
+                sum_usg_outgoing_number_calls_upto_30_mins
+                .where("day_id = '2020-01-07'").select("total_successful_call"))
+
+        ###############################################################################################################
+        ###############################################################################################################
+        # usg_outgoing_number_calls_over_30_mins: "sum(case when service_type IN ('VOICE')
+        #                                        AND total_durations <= 1800 THEN total_successful_call else 0 end)"
+
+        sum_usg_outgoing_number_calls_over_30_mins = df_usage_outgoing_call_relation_sum_daily \
+            .where("(service_type IN ('VOICE')) AND total_durations > 1800") \
+            .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_number_calls_over_30_mins").collect()[0][0] == check_null(
+                sum_usg_outgoing_number_calls_over_30_mins
+                .where("day_id = '2020-01-07'").select("total_successful_call"))
+
+        ###############################################################################################################
+        #usg_outgoing_last_call_date: "max(case when service_type IN ('VOICE') THEN date(day_id) else null end)"
+
+        sum_usg_outgoing_last_call_date = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type IN ('VOICE')") \
+            .groupby("day_id").agg(F.max("day_id").alias("date"))
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_last_call_date").collect()[0][0] == check_null(sum_usg_outgoing_last_call_date
+                .where("day_id = '2020-01-07'").select("date"))
+
+        ###############################################################################################################
+        # usg_last_call_date: "max(case when service_type IN ('VOICE') THEN date(day_id) else null end)"
+
+        sum_usg_last_call_date = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type IN ('VOICE')") \
+            .groupby("day_id").agg(F.max("day_id").alias("date"))
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_last_call_date").collect()[0][0] == \
+            check_null(sum_usg_outgoing_last_call_date.where("day_id = '2020-01-07'").select("date"))
+
+        ###############################################################################################################
+        ###############################################################################################################
+        # usg_outgoing_last_sms_date: "max(case when service_type IN ('SMS') THEN date(day_id) else null end)"
+
+        sum_usg_outgoing_last_sms_date = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type IN ('SMS')") \
+            .groupby("day_id").agg(F.max("day_id").alias("date"))
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_last_sms_date").collect()[0][0] == \
+            check_null(sum_usg_outgoing_last_sms_date.where("day_id = '2020-01-07'").select("date"))
+
+        ###############################################################################################################
+        ###############################################################################################################
+        # usg_last_sms_date: "max(case when service_type IN ('SMS') THEN date(day_id) else null end)"
+
+        sum_usg_last_sms_date = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type IN ('SMS')") \
+            .groupby("day_id").agg(F.max("day_id").alias("date"))
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_last_sms_date").collect()[0][0] == \
+            check_null(sum_usg_last_sms_date.where("day_id = '2020-01-07'").select("date"))
+
+        ###############################################################################################################
+        ###############################################################################################################
+        # usg_last_action_date: "max(date(day_id))"
+
+        sum_usg_last_action_date = df_usage_outgoing_call_relation_sum_daily \
+            .groupby("day_id").agg(F.max("day_id").alias("date"))
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_last_action_date").collect()[0][0] == \
+            check_null(sum_usg_last_action_date.where("day_id = '2020-01-07'").select("date"))
+
+        ###############################################################################################################
+        ###############################################################################################################
+        #usg_outgoing_night_time_number_calls: "sum(case when service_type IN ('VOICE')
+        #                                    AND hour_id IN (1, 2, 3, 4, 5, 6) THEN total_successful_call else 0 end)"
+
+        sum_usg_outgoing_night_time_number_calls = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type IN ('VOICE') AND (hour_id IN (1, 2, 3, 4, 5, 6))") \
+            .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_night_time_number_calls").collect()[0][0] == \
+            check_null(sum_usg_outgoing_night_time_number_calls.where("day_id = '2020-01-07'").select("total_successful_call"))
+
+        ###############################################################################################################
+        ###############################################################################################################
+        #usg_outgoing_morning_time_number_calls: "sum(case when service_type IN ('VOICE')
+        #                                 AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_successful_call else 0 end)"
+
+        sum_usg_outgoing_morning_time_number_calls = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type IN ('VOICE') AND (hour_id IN (7, 8, 9, 10, 11, 12))") \
+            .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_morning_time_number_calls").collect()[0][0] == \
+            check_null(sum_usg_outgoing_morning_time_number_calls.where("day_id = '2020-01-07'").select("total_successful_call"))
+
+        ###############################################################################################################
+        ###############################################################################################################
+        # usg_outgoing_afternoon_number_calls: "sum(case when service_type IN ('VOICE')
+        #                                          AND hour_id IN (13, 14, 15, 16, 17, 18) THEN total_successful_call else 0 end)"
+
+        sum_usg_outgoing_afternoon_number_calls = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type IN ('VOICE') AND (hour_id IN (13, 14, 15, 16, 17, 18))") \
+            .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_afternoon_number_calls").collect()[0][0] == \
+            check_null(sum_usg_outgoing_afternoon_number_calls.where("day_id = '2020-01-07'").select(
+                "total_successful_call"))
+
+        ###############################################################################################################
+        ###############################################################################################################
+        #usg_outgoing_evening_number_calls: "sum(case when service_type IN ('VOICE')
+        #                                 AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_successful_call else 0 end)"
+
+        sum_usg_outgoing_evening_number_calls = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type IN ('VOICE') AND (hour_id IN (19, 20, 21, 22, 23, 0))") \
+            .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_evening_number_calls").collect()[0][0] == \
+            check_null(sum_usg_outgoing_evening_number_calls.where("day_id = '2020-01-07'").select(
+                "total_successful_call"))
+
+        ##############################################################################################################
+        #usg_outgoing_weekday_number_calls: "sum(case when service_type IN ('VOICE')
+        #                                AND date_format(day_id, 'EEEE') NOT IN ('Saturday', 'Sunday')
+        #                                THEN total_successful_call else 0 end)"
+
+        #day_of_month = df_usage_outgoing_call_relation_sum_daily.
+        sum_usg_outgoing_weekday_number_calls = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (weekday IN ('Monday', 'Tuesday', 'Wednesday','Thursday','Friday'))") \
+            .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_weekday_number_calls").collect()[0][0] == \
+            check_null(sum_usg_outgoing_weekday_number_calls.where("day_id = '2020-01-07'").select(
+                "total_successful_call"))
+
+        ################################################################################################################
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_weekend_number_calls: "sum(case when service_type IN ('VOICE')
+        #                                         AND date_format(day_id, 'EEEE') IN ('Saturday', 'Sunday')
+        #                                         THEN total_successful_call else 0 end)"
+
+        sum_usg_outgoing_weekend_number_calls = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Saturday', 'Sunday'))") \
+            .groupby("day_id") \
+            .agg(F.sum("total_successful_call").alias("total_successful_call"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_weekend_number_calls").collect()[0][0] == \
+            check_null(sum_usg_outgoing_weekend_number_calls.where("day_id = '2020-01-07'").select(
+                "total_successful_call"))
+
+        ################################################################################################################
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_weekday_calls_duration: "sum(case when service_type IN ('VOICE')
+        #                                         AND date_format(day_id, 'EEEE') NOT IN ('Saturday', 'Sunday')
+        #                                         THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_weekday_calls_duration = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') NOT IN ('Saturday', 'Sunday'))") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_weekday_calls_duration").collect()[0][0] == \
+            check_null(sum_usg_outgoing_weekday_calls_duration.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+
+        ################################################################################################################
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_weekend_calls_duration: "sum(case when service_type IN ('VOICE')
+        #                                             AND date_format(day_id, 'EEEE') IN ('Saturday', 'Sunday')
+        #                                             THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_weekend_calls_duration = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Saturday', 'Sunday'))") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_weekend_calls_duration").collect()[0][0] == \
+            check_null(sum_usg_outgoing_weekend_calls_duration.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        # ##############################################################################################################
+        # usg_outgoing_night_time_number_sms: "sum(case when service_type IN ('SMS')
+        #                                    AND hour_id IN (1, 2, 3, 4, 5, 6) THEN total_successful_call else 0 end)"
+        #
+        sum_usg_outgoing_night_time_number_sms = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type IN ('SMS') AND (hour_id IN (1, 2, 3, 4, 5, 6))") \
+            .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_night_time_number_sms").collect()[0][0] == \
+            check_null(sum_usg_outgoing_night_time_number_sms.where("day_id = '2020-01-07'").select("total_successful_call"))
+
+        ##############################################################################################################
+        ##############################################################################################################
+        # usg_outgoing_morning_time_number_sms: "sum(case when service_type IN ('SMS')
+        #                                 AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_successful_call else 0 end)"
+        #
+        sum_usg_outgoing_morning_time_number_sms = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type IN ('SMS') AND (hour_id IN (7, 8, 9, 10, 11, 12))") \
+            .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_morning_time_number_sms").collect()[0][0] == \
+            check_null(sum_usg_outgoing_morning_time_number_sms.where("day_id = '2020-01-07'").select("total_successful_call"))
+
+        ##############################################################################################################
+        ##############################################################################################################
+        # usg_outgoing_afternoon_number_sms: "sum(case when service_type IN ('SMS')
+        #                                          AND hour_id IN (13, 14, 15, 16, 17, 18) THEN total_successful_call else 0 end)"
+        #
+        sum_usg_outgoing_afternoon_number_sms = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type IN ('SMS') AND (hour_id IN (13, 14, 15, 16, 17, 18))") \
+            .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_afternoon_number_sms").collect()[0][0] == \
+            check_null(sum_usg_outgoing_afternoon_number_sms.where("day_id = '2020-01-07'").select(
+                "total_successful_call"))
+
+
+        ###############################################################################################################
+        ###############################################################################################################
+        #usg_outgoing_evening_number_sms: "sum(case when service_type IN ('SMS')
+        #                                 AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_successful_call else 0 end)"
+
+        sum_usg_outgoing_evening_number_sms = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type IN ('SMS') AND (hour_id IN (19, 20, 21, 22, 23, 0))") \
+            .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_evening_number_sms").collect()[0][0] == \
+            check_null(sum_usg_outgoing_evening_number_sms.where("day_id = '2020-01-07'").select(
+                "total_successful_call"))
+
+        ##############################################################################################################
+        # usg_outgoing_weekday_number_sms: "sum(case when service_type IN ('SMS')
+        #                                AND date_format(day_id, 'EEEE') NOT IN ('Saturday', 'Sunday')
+        #                                THEN total_successful_call else 0 end)"
+
+        sum_usg_outgoing_weekday_number_sms = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'SMS' AND (weekday IN ('Monday', 'Tuesday', 'Wednesday','Thursday','Friday'))") \
+            .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_weekday_number_sms").collect()[0][0] == \
+            check_null(sum_usg_outgoing_weekday_number_sms.where("day_id = '2020-01-07'").select(
+                "total_successful_call"))
+
+        ################################################################################################################
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_weekend_number_sms: "sum(case when service_type IN ('SMS')
+        #                                         AND date_format(day_id, 'EEEE') IN ('Saturday', 'Sunday')
+        #                                         THEN total_successful_call else 0 end)"
+
+        sum_usg_outgoing_weekend_number_sms = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'SMS' AND (date_format(day_id, 'EEEE') IN ('Saturday', 'Sunday'))") \
+            .groupby("day_id") \
+            .agg(F.sum("total_successful_call").alias("total_successful_call"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_weekend_number_sms").collect()[0][0] == \
+            check_null(sum_usg_outgoing_weekend_number_sms.where("day_id = '2020-01-07'").select(
+                "total_successful_call"))
+
+        ################################################################################################################
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        #usg_outgoing_monday_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                  AND date_format(day_id, 'EEEE') IN ('Monday') THEN total_durations else 0 end)"
+        #
+        sum_usg_outgoing_monday_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Monday'))") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_monday_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_monday_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ###############################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_monday_morning_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Monday')
+        #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_monday_morning_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("(service_type IN ('VOICE')) AND (weekday IN ('Monday')) AND (hour_id IN (7, 8, 9, 10, 11, 12))") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_monday_morning_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_monday_morning_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ###############################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_monday_afternoon_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Monday')
+        #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_monday_afternoon_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Monday'))"
+                   "AND hour_id IN (13, 14, 15, 16, 17, 18)") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_monday_afternoon_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_monday_afternoon_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ################################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_monday_evening_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Monday')
+        #                                           AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_monday_evening_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Monday'))"
+                   "AND hour_id IN (19, 20, 21, 22, 23, 0)") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_monday_evening_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_monday_evening_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ################################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_monday_night_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Monday')
+        #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_monday_night_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Monday')) AND hour_id IN (1, 2, 3, 4, 5, 6)") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_monday_night_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_monday_night_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ################################################################################################################
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        #usg_outgoing_tuesday_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                  AND date_format(day_id, 'EEEE') IN ('Tuesday') THEN total_durations else 0 end)"
+        #
+        sum_usg_outgoing_tuesday_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Tuesday'))") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_tuesday_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_tuesday_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ###############################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_tuesday_morning_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Monday')
+        #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_tuesday_morning_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("(service_type IN ('VOICE')) AND (weekday IN ('Tuesday')) AND (hour_id IN (7, 8, 9, 10, 11, 12))") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_tuesday_morning_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_tuesday_morning_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ###############################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_tuesday_afternoon_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Tuesday')
+        #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_tuesday_afternoon_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Tuesday'))"
+                   "AND hour_id IN (13, 14, 15, 16, 17, 18)") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_tuesday_afternoon_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_tuesday_afternoon_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ################################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_tuesday_evening_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Tuesday')
+        #                                           AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_tuesday_evening_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Tuesday'))"
+                   "AND hour_id IN (19, 20, 21, 22, 23, 0)") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_tuesday_evening_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_tuesday_evening_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ################################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_tuesday_night_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Tuesday')
+        #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_tuesday_night_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Tuesday')) AND hour_id IN (1, 2, 3, 4, 5, 6)") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_tuesday_night_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_tuesday_night_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ################################################################################################################
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        #usg_outgoing_wednesday_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                  AND date_format(day_id, 'EEEE') IN ('Tuesday') THEN total_durations else 0 end)"
+        #
+        sum_usg_outgoing_wednesday_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Wednesday'))") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_wednesday_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_wednesday_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ###############################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_wednesday_morning_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Monday')
+        #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_wednesday_morning_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("(service_type IN ('VOICE')) AND (weekday IN ('Wednesday')) AND (hour_id IN (7, 8, 9, 10, 11, 12))") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_wednesday_morning_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_wednesday_morning_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ###############################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_wednesday_afternoon_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Tuesday')
+        #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_wednesday_afternoon_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Wednesday'))"
+                   "AND hour_id IN (13, 14, 15, 16, 17, 18)") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_wednesday_afternoon_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_wednesday_afternoon_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ################################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_wednesday_evening_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Tuesday')
+        #                                           AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_wednesday_evening_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Wednesday'))"
+                   "AND hour_id IN (19, 20, 21, 22, 23, 0)") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_wednesday_evening_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_wednesday_evening_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ################################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_wednesday_night_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Tuesday')
+        #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_wednesday_night_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Wednesday')) AND hour_id IN (1, 2, 3, 4, 5, 6)") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_wednesday_night_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_wednesday_night_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ################################################################################################################
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        #usg_outgoing_thursday_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                  AND date_format(day_id, 'EEEE') IN ('Tuesday') THEN total_durations else 0 end)"
+        #
+        sum_usg_outgoing_thursday_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Thursday'))") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_thursday_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_thursday_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ###############################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_thursday_morning_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Monday')
+        #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_thursday_morning_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("(service_type IN ('VOICE')) AND (weekday IN ('Thursday')) AND (hour_id IN (7, 8, 9, 10, 11, 12))") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_thursday_morning_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_thursday_morning_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ###############################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_thursday_afternoon_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Tuesday')
+        #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_thursday_afternoon_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Thursday'))"
+                   "AND hour_id IN (13, 14, 15, 16, 17, 18)") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_thursday_afternoon_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_thursday_afternoon_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ################################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_thursday_evening_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Tuesday')
+        #                                           AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_thursday_evening_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Thursday'))"
+                   "AND hour_id IN (19, 20, 21, 22, 23, 0)") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_thursday_evening_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_thursday_evening_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ################################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_thursday_night_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Tuesday')
+        #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_thursday_night_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Thursday')) AND hour_id IN (1, 2, 3, 4, 5, 6)") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_thursday_night_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_thursday_night_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ################################################################################################################
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        #usg_outgoing_friday_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                  AND date_format(day_id, 'EEEE') IN ('Friday') THEN total_durations else 0 end)"
+        #
+        sum_usg_outgoing_friday_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Friday'))") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_friday_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_friday_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ###############################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_friday_morning_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Friday')
+        #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_friday_morning_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("(service_type IN ('VOICE')) AND (weekday IN ('Friday')) AND (hour_id IN (7, 8, 9, 10, 11, 12))") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_friday_morning_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_friday_morning_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ###############################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_friday_afternoon_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Friday')
+        #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_friday_afternoon_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Friday'))"
+                   "AND hour_id IN (13, 14, 15, 16, 17, 18)") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_friday_afternoon_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_friday_afternoon_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ################################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_friday_evening_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Friday')
+        #                                           AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_friday_evening_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Friday'))"
+                   "AND hour_id IN (19, 20, 21, 22, 23, 0)") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_friday_evening_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_friday_evening_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ################################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_friday_night_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Friday')
+        #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_friday_night_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Friday')) AND hour_id IN (1, 2, 3, 4, 5, 6)") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_friday_night_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_friday_night_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ################################################################################################################
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        #usg_outgoing_saturday_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                  AND date_format(day_id, 'EEEE') IN ('Saturday') THEN total_durations else 0 end)"
+        #
+        sum_usg_outgoing_saturday_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Saturday'))") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_saturday_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_saturday_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ###############################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_saturday_morning_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Saturday')
+        #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_saturday_morning_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("(service_type IN ('VOICE')) AND (weekday IN ('Saturday')) AND (hour_id IN (7, 8, 9, 10, 11, 12))") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_saturday_morning_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_saturday_morning_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ###############################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_saturday_afternoon_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Saturday')
+        #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_saturday_afternoon_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Saturday'))"
+                   "AND hour_id IN (13, 14, 15, 16, 17, 18)") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_saturday_afternoon_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_saturday_afternoon_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ################################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_saturday_evening_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Saturday')
+        #                                           AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_saturday_evening_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Saturday'))"
+                   "AND hour_id IN (19, 20, 21, 22, 23, 0)") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_saturday_evening_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_saturday_evening_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ################################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_saturday_night_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Saturday')
+        #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_saturday_night_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Saturday')) AND hour_id IN (1, 2, 3, 4, 5, 6)") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_saturday_night_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_saturday_night_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ################################################################################################################
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        #usg_outgoing_sunday_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                  AND date_format(day_id, 'EEEE') IN ('Sunday') THEN total_durations else 0 end)"
+        #
+        sum_usg_outgoing_sunday_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Sunday'))") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_sunday_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_sunday_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ###############################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_sunday_morning_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Sunday')
+        #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_sunday_morning_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("(service_type IN ('VOICE')) AND (weekday IN ('Sunday')) AND (hour_id IN (7, 8, 9, 10, 11, 12))") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_sunday_morning_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_sunday_morning_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ###############################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_sunday_afternoon_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Sunday')
+        #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_sunday_afternoon_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Sunday'))"
+                   "AND hour_id IN (13, 14, 15, 16, 17, 18)") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_sunday_afternoon_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_sunday_afternoon_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ################################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_sunday_evening_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Sunday')
+        #                                           AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_sunday_evening_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Sunday'))"
+                   "AND hour_id IN (19, 20, 21, 22, 23, 0)") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_sunday_evening_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_sunday_evening_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ################################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_sunday_night_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Sunday')
+        #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
+
+        sum_usg_outgoing_sunday_night_voice_usage = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Sunday')) AND hour_id IN (1, 2, 3, 4, 5, 6)") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_sunday_night_voice_usage").collect()[0][0] == \
+            check_null(sum_usg_outgoing_sunday_night_voice_usage.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        ################################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_dtac_number_calls: "sum(case when service_type IN ('VOICE')
+        #                                          AND called_network_type = 'DTAC' THEN total_successful_call else 0 end)"
+
+        sum_usg_outgoing_dtac_number_calls = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND called_network_type = 'DTAC'") \
+            .groupby("day_id") \
+            .agg(F.sum("total_successful_call").alias("total_successful_call"))
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_dtac_number_calls").collect()[0][0] == \
+            check_null(sum_usg_outgoing_dtac_number_calls.where("day_id = '2020-01-07'").select(
+                "total_successful_call"))
+        ################################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_dtac_call_duration: "sum(case when service_type IN ('VOICE')
+        #                                          AND called_network_type = 'DTAC' THEN total_successful_call else 0 end)"
+
+        sum_usg_outgoing_dtac_call_duration = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND called_network_type = 'DTAC'") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_dtac_call_duration").collect()[0][0] == \
+            check_null(sum_usg_outgoing_dtac_call_duration.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+
+        ################################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_dtac_number_sms: "sum(case when service_type IN ('SMS')
+        #                                          AND called_network_type = 'DTAC' THEN total_successful_call else 0 end)"
+
+        sum_usg_outgoing_dtac_number_sms = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'SMS' AND called_network_type = 'DTAC'") \
+            .groupby("day_id") \
+            .agg(F.sum("total_successful_call").alias("total_successful_call"))
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_dtac_number_sms").collect()[0][0] == \
+            check_null(sum_usg_outgoing_dtac_number_sms.where("day_id = '2020-01-07'").select(
+                "total_successful_call"))
+        ################################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_dtac_number_calls: "sum(case when service_type IN ('VOICE')
+        #                                          AND called_network_type = 'TRUE' THEN total_successful_call else 0 end)"
+
+        sum_usg_outgoing_dtac_number_calls = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND called_network_type = 'TRUE'") \
+            .groupby("day_id") \
+            .agg(F.sum("total_successful_call").alias("total_successful_call"))
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_dtac_number_calls").collect()[0][0] == \
+            check_null(sum_usg_outgoing_dtac_number_calls.where("day_id = '2020-01-07'").select(
+                "total_successful_call"))
+        ################################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_dtac_call_duration: "sum(case when service_type IN ('VOICE')
+        #                                          AND called_network_type = 'TRUE' THEN total_successful_call else 0 end)"
+
+        sum_usg_outgoing_dtac_call_duration = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND called_network_type = 'TRUE'") \
+            .groupby("day_id") \
+            .agg(F.sum("total_durations").alias("total_durations"))
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_dtac_call_duration").collect()[0][0] == \
+            check_null(sum_usg_outgoing_dtac_call_duration.where("day_id = '2020-01-07'").select(
+                "total_durations"))
+
+        ################################################################################################################
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_dtac_number_sms: "sum(case when service_type IN ('SMS')
+        #                                          AND called_network_type = 'TRUE' THEN total_successful_call else 0 end)"
+
+        sum_usg_outgoing_dtac_number_sms = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'SMS' AND called_network_type = 'TRUE'") \
+            .groupby("day_id") \
+            .agg(F.sum("total_successful_call").alias("total_successful_call"))
+        assert \
+            usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+                "usg_outgoing_dtac_number_sms").collect()[0][0] == \
+            check_null(sum_usg_outgoing_dtac_number_sms.where("day_id = '2020-01-07'").select(
+                "total_successful_call"))
 
     def test_daily_profile_for_usg(self, project_context):
         var_project_context = project_context['ProjectContext']
@@ -2030,7 +3283,7 @@ class TestUnitUsage:
         daily_profile_feature = spark.createDataFrame(
             zip(day_id, subscription_identifier),
             schema=['event_partition_date', 'subscription_identifier']) \
-            .withColumn("event_partition_date", F.to_date('day_id', 'dd-MM-yyyy')) \
+            .withColumn("event_partition_date", F.to_date('event_partition_date', 'dd-MM-yyyy')) \
             .withColumn("access_method_num", F.lit(1))
 
         daily_profile_feature.orderBy("event_partition_date", ascending=True).show(50)
@@ -2059,5 +3312,7 @@ class TestUnitUsage:
                                                             daily_usage_outgoing_sum_ir, daily_usage_incoming_sum_ir,
                                                             daily_usage_ru_a_gprs_cbs_usage, daily_usg_ru_vas_post,
                                                             vas_data, daily_profile_feature)
-
+        l2_usage_postpaid_prepaid_weekly = build_usage_l2_layer(l1_usage_postpaid_prepaid_daily, var_project_context.catalog.load(
+            'params:l2_usage_postpaid_prepaid_weekly'))
+        l2_usage_postpaid_prepaid_weekly.show()
         exit(2)
