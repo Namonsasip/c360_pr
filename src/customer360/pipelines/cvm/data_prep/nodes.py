@@ -215,3 +215,28 @@ def subs_date_join(*args: DataFrame,) -> DataFrame:
         return df1.join(df2, keys, "left")
 
     return functools.reduce(join_on, tables)
+
+
+def create_sample_dataset(df: DataFrame, subscription_id_suffix: str) -> DataFrame:
+    """ Create dev sample of given table. Dev sample is super small sample. Takes only
+    users with certain subscription_identifier suffix.
+
+    Args:
+        subscription_id_suffix: suffix to filter subscription_identifier with.
+        df: given table.
+    Returns:
+        Dev sample of table.
+    """
+
+    suffix_length = len(subscription_id_suffix)
+    df = df.withColumn(
+        "subscription_identifier_last_letter",
+        df.subscription_identifier.substr(-suffix_length, suffix_length),
+    )
+    subs_filter = "subscription_identifier_last_letter == '{}'".format(
+        subscription_id_suffix
+    )
+
+    df = df.filter(subs_filter).drop("subscription_identifier_last_letter")
+
+    return df

@@ -39,8 +39,8 @@ from customer360.pipelines.cvm.data_prep.nodes import (
     add_churn_targets,
     create_l5_cvm_one_day_train_test,
     subs_date_join,
+    create_sample_dataset,
 )
-from customer360.pipelines.cvm.dev.nodes import create_sample_dataset
 
 
 def create_cvm_prepare_inputs_samples(sample_type: str) -> Pipeline:
