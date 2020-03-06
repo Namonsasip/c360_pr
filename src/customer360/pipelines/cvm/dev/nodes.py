@@ -40,8 +40,10 @@ def create_sample_dataset(df: DataFrame, subscription_id_suffix: str) -> DataFra
         Dev sample of table.
     """
 
+    suffix_length = len(subscription_id_suffix)
     df = df.withColumn(
-        "subscription_identifier_last_letter", df.subscription_identifier.substr(-2, 2)
+        "subscription_identifier_last_letter",
+        df.subscription_identifier.substr(-suffix_length, suffix_length),
     )
     subs_filter = "subscription_identifier_last_letter == '{}'".format(
         subscription_id_suffix
