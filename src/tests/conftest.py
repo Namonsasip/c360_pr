@@ -49,4 +49,3 @@ conf = os.environ["CONF"]
 def project_context():
     spark = SparkSession.builder.getOrCreate()
     return {'ProjectContext': ProjectContext(str(Path.cwd()), env=conf), 'Spark': spark}
-

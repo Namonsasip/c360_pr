@@ -74,7 +74,8 @@ class TestUnitBilling:
         topup_type = spark.createDataFrame(zip(dummy_type, dummy_desc),
                                            schema=['recharge_topup_event_type_cd', 'recharge_topup_event_type_name'])
         joined_data = top_up_channel_joined_data(daily_data, topup_type)
-
+        print('joineddata')
+        joined_data.show(999,False)
         # joined_data.show(999,False)
         weekly_data = node_from_config(joined_data, var_project_context.catalog.load(
             'params:l2_popular_top_up_channel'))
@@ -295,7 +296,7 @@ class TestUnitBilling:
                 "avg_payments_time_diff_avg_weekly_last_twelve_week").collect()[0][
                 0]) == 10
 
-        exit(2)
+        # exit(2)
 
     def test_topup_and_volume_feature(self, project_context):
         '''
