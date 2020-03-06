@@ -41,8 +41,8 @@ from customer360.pipeline import create_pipelines
 from kedro.io import DataCatalog
 from kedro.versioning import Journal
 
-import findspark
-findspark.init()
+#import findspark
+#findspark.init()
 
 conf = os.environ["CONF"]
 
