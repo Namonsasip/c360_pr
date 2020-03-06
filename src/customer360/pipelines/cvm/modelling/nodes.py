@@ -27,6 +27,7 @@
 # limitations under the License.
 
 from pyspark.sql import DataFrame
+from typing import Dict, Any
 from sklearn.ensemble import RandomForestClassifier
 import xgboost
 import logging
@@ -34,17 +35,18 @@ from customer360.pipelines.cvm.src.utils.list_targets import list_targets
 import shap
 
 
-def train_rf(df: DataFrame) -> RandomForestClassifier:
+def train_rf(df: DataFrame, parameters: Dict[str, Any]) -> RandomForestClassifier:
     """ Create random forest model given the table to train on.
 
     Args:
         df: Training preprocessed sample.
+        parameters: parameters defined in parameters.yml.
 
     Returns:
         Random forest classifier.
     """
     target_chosen = "dilution1"
-    target_cols = list_targets()
+    target_cols = list_targets(parameters)
     df = df.filter("{} is not null".format(target_chosen))
     X = df.drop(*target_cols).toPandas()
     y = df.select(target_chosen).toPandas()
@@ -54,15 +56,18 @@ def train_rf(df: DataFrame) -> RandomForestClassifier:
     return rf_fitted
 
 
-def create_shap_for_rf(rf: RandomForestClassifier, df_test: DataFrame):
+def create_shap_for_rf(
+    rf: RandomForestClassifier, df_test: DataFrame, parameters: Dict[str, Any]
+):
     """ Create SHAP plot for a given model.
 
     Args:
         df_test: Test set used for SHAP.
         rf: Given model.
+        parameters: parameters defined in parameters.yml.
     """
 
-    target_cols = list_targets()
+    target_cols = list_targets(parameters)
     X_test = df_test.drop(*target_cols).toPandas()
     shap_values = shap.KernelExplainer(lambda x: rf.predict_proba(x), X_test)
     summ_plot = shap.summary_plot(shap_values, X_test)
@@ -70,16 +75,17 @@ def create_shap_for_rf(rf: RandomForestClassifier, df_test: DataFrame):
     return summ_plot
 
 
-def train_xgb(df: DataFrame) -> object:
+def train_xgb(df: DataFrame, parameters: Dict[str, Any]) -> Dict[str, xgboost.Booster]:
     """ Create xgboost models for given the table to train on and all targets.
 
     Args:
         df: Training preprocessed sample.
+        parameters: parameters defined in parameters.yml.
 
     Returns:
         Xgboost classifier.
     """
-    target_cols = list_targets()
+    target_cols = list_targets(parameters)
     targets = df.select(target_cols).toPandas()
     X_all_targets = df.drop(*target_cols).toPandas()
     models = {}
@@ -102,3 +108,17 @@ def train_xgb(df: DataFrame) -> object:
         models[target_chosen] = xgb_model
 
     return models
+
+
+def predict_xgb(
+    df: DataFrame, xgb_models: Dict[str, xgboost.Booster], parameters: Dict[str, Any]
+) -> DataFrame:
+    """ Uses saved xgboost models to create propensity scores for given table.
+
+    Args:
+        df: Table with features.
+        xgb_models: Saved dictionary of models for different targets.
+        parameters: parameters defined in parameters.yml.
+    Returns:
+        Table with propensity scores.
+    """

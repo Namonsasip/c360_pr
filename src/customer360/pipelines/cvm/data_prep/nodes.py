@@ -86,6 +86,7 @@ def create_l5_cvm_users_sample_table(
 
     Args:
         users: Monthly user table.
+        parameters: parameters defined in parameters.yml.
 
     Returns:
         Table with subscription_identifiers.

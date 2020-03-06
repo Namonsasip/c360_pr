@@ -47,7 +47,7 @@ def pipeline1_fit(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
     """
 
     # select columns
-    target_cols = list_targets()
+    target_cols = list_targets(parameters)
     cols_to_pick = parameters["prepro_cols_to_pick"] + target_cols
     df = df.select(cols_to_pick)
 
@@ -95,7 +95,7 @@ def pipeline1_transform(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
     """
 
     # select columns
-    target_cols = list_targets()
+    target_cols = list_targets(parameters)
     cols_to_pick = parameters["prepro_cols_to_pick"] + target_cols
     df = df.select(cols_to_pick)
 

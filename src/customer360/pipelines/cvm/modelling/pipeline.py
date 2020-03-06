@@ -39,19 +39,23 @@ def create_train_model(**kwargs):
         [
             node(
                 train_rf,
-                "l5_cvm_one_day_train_preprocessed_dev",
+                ["l5_cvm_one_day_train_preprocessed_dev", "parameters"],
                 "random_forest_dev",
                 name="create_random_forest",
             ),
             node(
                 create_shap_for_rf,
-                ["random_forest_dev", "l5_cvm_one_day_test_preprocessed_dev"],
+                [
+                    "random_forest_dev",
+                    "l5_cvm_one_day_test_preprocessed_dev",
+                    "parameters",
+                ],
                 "shap_dev",
                 name="create_shap",
             ),
             node(
                 train_xgb,
-                "l5_cvm_one_day_train_preprocessed_dev",
+                ["l5_cvm_one_day_train_preprocessed_dev", "parameters"],
                 "xgb_dev",
                 name="create_xgb",
             ),
