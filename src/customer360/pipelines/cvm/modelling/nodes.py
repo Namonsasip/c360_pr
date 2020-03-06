@@ -29,6 +29,7 @@
 from pyspark.sql import DataFrame
 from sklearn.ensemble import RandomForestClassifier
 import xgboost
+import logging
 from customer360.pipelines.cvm.src.utils.list_targets import list_targets
 import shap
 
@@ -83,7 +84,12 @@ def train_xgb(df: DataFrame) -> object:
     X_all_targets = df.drop(*target_cols).toPandas()
     models = {}
 
+    log = logging.getLogger(__name__)
+
     for target_chosen in target_cols:
+
+        log.info("Training xgboost model for {} target.".format(target_chosen))
+
         y = targets.select(target_chosen).toPandas()
         y["target"] = True
         y.loc[y[target_chosen] in ["no_churn", "no_drop"], "target"] = False
