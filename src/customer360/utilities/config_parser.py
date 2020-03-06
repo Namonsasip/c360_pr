@@ -276,7 +276,7 @@ def node_from_config(input_df, config) -> DataFrame:
         column_function=QueryGenerator.normal_feature_listing)
 
     spark = SparkSession.builder.getOrCreate()
-    
+
     df = spark.sql(sql_stmt)
     return df
 
