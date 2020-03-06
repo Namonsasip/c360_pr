@@ -42,6 +42,8 @@ import random
 from pyspark.sql import functions as F
 import datetime
 from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1 import merge_all_dataset_to_one_table
+
+
 def generate_category(days, values_list):
     column = []
     for iTemp in range(0, days):
@@ -76,7 +78,7 @@ vas_data = []
 daily_usage_ru_a_gprs_cbs_usage = []
 daily_usage_incoming_call = []
 daily_profile_feature = []
-
+usage_outgoing_call_relation_sum_daily = []
 
 class TestUnitUsage:
 
@@ -1957,6 +1959,58 @@ class TestUnitUsage:
 
         #exit(2)
 
+    def test_usage_outgoing_call_relation_sum_feature(self, project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+        # l0_tol1_test
+        min_dt = '2020-01-01'
+        max_dt = '2020-04-01'
+        doubled_days = days * 2
+        service_type_ = generate_category(doubled_days, ['VOICE', 'SMS'])
+        idd_flag = generate_category(doubled_days, ['Y', 'N'])
+        call_type = generate_category(doubled_days, ['MO', 'MT'])
+        # total_successful_call = generate_int(doubled_days, [0, 1])
+        called_network_type = generate_category(doubled_days,
+                                                ['TRUE', 'DTAC', '3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN',
+                                                 'AWN',
+                                                 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post',
+                                                 'AWNINT'])
+        # L1_test
+        total_call = generate_int(doubled_days, 0, 2000)
+        total_durations = generate_int(doubled_days, 0, 5)
+        call_start_hr = generate_int(doubled_days, 0, 23)
+        day_id = generate_day_id(min_dt, max_dt)
+        day_id.extend(day_id)  # two records per day
+        day_id.sort()
+        hour_id = generate_int(doubled_days, 0, 23)
+        total_successful_call = generate_int(doubled_days, 0, 30)
+        for i in range(1, len(call_start_hr)):
+            if ((i + 1) % 2 == 0):
+                while (call_start_hr[i] == call_start_hr[i - 1]):
+                    new_int = generate_int(1, 0, 23)[0]
+                    print("i = " + str(i))
+                    print("new_int = " + str(new_int))
+                    print("hour_id[i] = " + str(call_start_hr[i]))
+                    print("hour_id[i-1] = " + str(call_start_hr[i - 1]))
+                    call_start_hr[i] = new_int
+        print(call_start_hr)
+        df_usage_outgoing_call_relation_sum_daily = spark.createDataFrame(
+            zip(day_id, hour_id, total_call, total_successful_call, called_network_type, call_type, service_type_,
+                idd_flag),
+            schema=['day_id', 'hour_id', 'total_durations', 'total_successful_call', 'called_network_type', 'call_type',
+                    'service_type', 'idd_flag']) \
+            .withColumn("access_method_num", F.lit(1)) \
+            .withColumn("caller_no", F.lit(2)) \
+            .withColumn("day_id", F.to_date('day_id', 'dd-MM-yyyy')) \
+            .withColumn("partition_date", F.lit('20200101'))
+        df_usage_outgoing_call_relation_sum_daily = df_usage_outgoing_call_relation_sum_daily \
+            .withColumn("weekday", F.date_format(df_usage_outgoing_call_relation_sum_daily.day_id, 'EEEE'))
+        df_usage_outgoing_call_relation_sum_daily = df_usage_outgoing_call_relation_sum_daily.where("call_type = 'MO'")
+        global usage_outgoing_call_relation_sum_daily
+        usage_outgoing_call_relation_sum_daily = node_from_config(df_usage_outgoing_call_relation_sum_daily,
+                                                                  var_project_context.catalog.load(
+                                                                      'params:l1_usage_outgoing_call_relation_sum_daily'))
+
     def test_daily_profile_for_usg(self, project_context):
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
@@ -2001,8 +2055,9 @@ class TestUnitUsage:
         #     'l1_usage_ru_a_vas_postpaid_prepaid_daily', 'l1_customer_profile_union_daily_feature'
         # ],
         # 'l1_usage_postpaid_prepaid_daily'
-        l1_usage_postpaid_prepaid_daily = merge_all_dataset_to_one_table(daily_usage_outgoing_call, daily_usage_incoming_call,
+        l1_usage_postpaid_prepaid_daily = merge_all_dataset_to_one_table(usage_outgoing_call_relation_sum_daily, daily_usage_incoming_call,
                                                             daily_usage_outgoing_sum_ir, daily_usage_incoming_sum_ir,
                                                             daily_usage_ru_a_gprs_cbs_usage, daily_usg_ru_vas_post,
                                                             vas_data, daily_profile_feature)
+
         exit(2)
