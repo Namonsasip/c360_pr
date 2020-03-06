@@ -96,7 +96,7 @@ def train_xgb(df: DataFrame, parameters: Dict[str, Any]) -> Dict[str, xgboost.Bo
 
         log.info("Training xgboost model for {} target.".format(target_chosen))
 
-        y = targets.select(target_chosen).toPandas()
+        y = targets[target_chosen]
         y["target"] = True
         y.loc[y[target_chosen] in ["no_churn", "no_drop"], "target"] = False
         y = y.drop(target_chosen, axis=1)
