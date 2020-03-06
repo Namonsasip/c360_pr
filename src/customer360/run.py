@@ -105,8 +105,6 @@ def run_package(pipelines=[]):
     # using `<project_package>` command
     project_context = load_context(Path.cwd(), env=conf)
 
-
-
     from pyspark.sql import SparkSession
     spark = SparkSession.builder.getOrCreate()
 

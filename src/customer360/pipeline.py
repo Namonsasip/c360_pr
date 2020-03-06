@@ -62,6 +62,8 @@ from .pipelines.data_engineering.pipelines.stream_pipeline.to_l4.to_l4_pipeline 
 from .pipelines.data_engineering.pipelines.revenue_pipeline.to_l3 import revenue_to_l3_pipeline
 from .pipelines.data_engineering.pipelines.revenue_pipeline.to_l4 import revenue_to_l4_pipeline
 from .pipelines.data_engineering.pipelines.campaign_pipeline.to_l1 import campaign_to_l1_pipeline
+from .pipelines.data_engineering.pipelines.campaign_pipeline.to_l2 import campaign_to_l2_pipeline
+from .pipelines.data_engineering.pipelines.campaign_pipeline.to_l4 import campaign_to_l4_pipeline
 
 
 
@@ -123,5 +125,7 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         'revenue_to_l3_pipeline': revenue_to_l3_pipeline(),
         'revenue_to_l4_pipeline': revenue_to_l4_pipeline(),
         'campaign_to_l1_pipeline': campaign_to_l1_pipeline(),
+        'campaign_to_l2_pipeline': campaign_to_l2_pipeline(),
+        'campaign_to_l4_pipeline': campaign_to_l4_pipeline()
         # "de": data_engineering_pipeline,
     }

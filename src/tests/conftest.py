@@ -37,15 +37,16 @@ To run the tests, run ``kedro test``.
 """
 from pathlib import Path
 
-import pytest
+import pytest, os
 
 from customer360.run import ProjectContext
 
 from pyspark.sql import SparkSession
+conf = os.environ["CONF"]
 
 
 @pytest.fixture(scope="module")
 def project_context():
     spark = SparkSession.builder.getOrCreate()
-    spark.conf.set("spark.sql.session.timeZone", "UTC+7")
-    return {'ProjectContext': ProjectContext(str(Path.cwd())), 'Spark': spark}
+    return {'ProjectContext': ProjectContext(str(Path.cwd()), env=conf), 'Spark': spark}
+
