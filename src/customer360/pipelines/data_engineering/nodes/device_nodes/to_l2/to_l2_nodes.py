@@ -6,7 +6,7 @@ from pathlib import Path
 import logging
 import os
 
-conf = os.environ["CONF"]
+conf = os.getenv("CONF", None)
 def massive_processing(customer_prof, input_df, sql, is_rank, partition, output_df_catalog):
     """
     :return:
