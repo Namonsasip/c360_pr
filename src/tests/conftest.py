@@ -48,4 +48,6 @@ conf = os.environ["CONF"]
 @pytest.fixture(scope="module")
 def project_context():
     spark = SparkSession.builder.getOrCreate()
+    spark.conf.set("spark.sql.session.timeZone", "UTC+7")
     return {'ProjectContext': ProjectContext(str(Path.cwd()), env=conf), 'Spark': spark}
+
