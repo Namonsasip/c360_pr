@@ -85,6 +85,10 @@ def train_xgb(df: DataFrame) -> object:
 
     for target_chosen in target_cols:
         y = targets.select(target_chosen).toPandas()
+        y["target"] = True
+        y.loc[y[target_chosen] in ["no_churn", "no_drop"], "target"] = False
+        y = y.drop(target_chosen, axis=1)
+
         X = X_all_targets.filter("{} is not null".format(target_chosen))
         xgb_model = xgboost.train(
             {"learning_rate": 0.01}, xgboost.DMatrix(X, label=y), 100
