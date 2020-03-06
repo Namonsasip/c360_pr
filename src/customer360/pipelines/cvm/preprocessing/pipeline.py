@@ -33,20 +33,39 @@ from src.customer360.pipelines.cvm.preprocessing.nodes import (
 )
 
 
-def create_cvm_preprocessing_dev(**kwargs):
+def create_cvm_preprocessing(sample_type: str = None) -> Pipeline:
+    """ Creates pipeline preprocessing data. Can create data pipeline for full dataset
+     or given sample_type.
+
+     Args:
+         sample_type: sample type to use. Dev sample for "dev", Sample for "sample",
+          full dataset for None (default).
+
+     Returns:
+         Kedro pipeline.
+     """
+
+    if sample_type not in ["dev", "sample", None]:
+        raise Exception("Sample type {} not implemented".format(sample_type))
+
+    if sample_type is not None:
+        suffix = "_" + sample_type
+    else:
+        suffix = ""
+
     return Pipeline(
         [
             node(
                 pipeline1_fit,
-                ["l5_cvm_one_day_train_dev", "parameters"],
-                "l5_cvm_one_day_train_preprocessed_dev",
-                name="create_l5_cvm_one_day_train_preprocessed_dev",
+                ["l5_cvm_one_day_train" + suffix, "parameters"],
+                "l5_cvm_one_day_train_preprocessed" + suffix,
+                name="create_l5_cvm_one_day_train_preprocessed" + suffix,
             ),
             node(
                 pipeline1_transform,
-                ["l5_cvm_one_day_test_dev", "parameters"],
-                "l5_cvm_one_day_test_preprocessed_dev",
-                name="create_l5_cvm_one_day_test_preprocessed_dev",
+                ["l5_cvm_one_day_test" + suffix, "parameters"],
+                "l5_cvm_one_day_test_preprocessed" + suffix,
+                name="create_l5_cvm_one_day_test_preprocessed" + suffix,
             ),
         ]
     )
