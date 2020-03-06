@@ -74,6 +74,7 @@ class QueryGenerator:
         for (key, val) in feature_list.items():
             for col in val:
                 features.append("{}({}) as {}".format(key, col, col + "_" + key))
+
         return features
 
 
@@ -275,6 +276,7 @@ def node_from_config(input_df, config) -> DataFrame:
         column_function=QueryGenerator.normal_feature_listing)
 
     spark = SparkSession.builder.getOrCreate()
+    
     df = spark.sql(sql_stmt)
     return df
 
