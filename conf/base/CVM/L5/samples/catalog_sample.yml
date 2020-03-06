@@ -102,3 +102,6 @@ random_forest_sample:
   type: kedro.io.PickleLocalDataSet
   filepath: /mnt/customer360-cvm/random_forest_sample
 
+xgb_sample:
+  type: kedro.io.PickleLocalDataSet
+  filepath: /mnt/customer360-cvm/xgb_sample
