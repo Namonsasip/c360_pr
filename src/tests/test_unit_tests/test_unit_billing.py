@@ -214,10 +214,9 @@ class TestUnitBilling:
             start_time_list.append(start_time)
             start_time = start_time + timedelta(seconds=random.randint(1, 432000))
 
-        df = spark.createDataFrame(zip(random_list, my_dates, start_time_list),
-                                   schema=['face_value', 'temp', 'recharge_time']) \
+        df = spark.createDataFrame(zip(random_list, start_time_list, start_time_list),
+                                   schema=['face_value', 'recharge_date', 'recharge_time']) \
             .withColumn("access_method_num", F.lit(1)) \
-            .withColumn("recharge_date", F.to_date('temp', 'dd-MM-yyyy')) \
             .withColumn("event_partition_date", F.to_date('recharge_date', 'dd-MM-yyyy')) \
             .withColumn("register_date", F.to_date(F.lit('2019-01-01'), 'yyyy-MM-dd')) \
             .withColumn("subscription_identifier", F.lit(123))
@@ -235,7 +234,7 @@ class TestUnitBilling:
         intermediate_data.printSchema()
         intermediate_data.orderBy('start_of_week').show(999,False)
         assert \
-            intermediate_data.where("recharge_time = '2020-10-17 12:08:09'").select("payments_time_diff").collect()[0][
+            intermediate_data.where("event_partition_date = '2020-01-05'").select("payments_time_diff").collect()[0][
                 0] == 4
         intermediate_data = intermediate_data.withColumn("subscription_identifier",F.lit(1))
         weekly_data = node_from_config(intermediate_data, var_project_context.catalog.load(
@@ -245,17 +244,17 @@ class TestUnitBilling:
         weekly_data.orderBy('start_of_week').show(999,False)
         # weekly_data.where("start_of_week = '2020-10-12'").show()
         assert \
-            weekly_data.where("start_of_week = '2020-03-02'").select("payments_max_time_diff").collect()[0][
-                0] == 17
+            weekly_data.where("start_of_week = '2020-01-06'").select("payments_max_time_diff").collect()[0][
+                0] == 4
         assert \
-            weekly_data.where("start_of_week = '2020-03-02'").select("payments_min_time_diff").collect()[0][
-                0] == 1
+            weekly_data.where("start_of_week = '2020-01-06'").select("payments_min_time_diff").collect()[0][
+                0] == 0
         assert \
-            weekly_data.where("start_of_week = '2020-03-02'").select("payments_time_diff").collect()[0][
-                0] == 120
+            weekly_data.where("start_of_week = '2020-01-06'").select("payments_time_diff").collect()[0][
+                0] == 4
         assert \
-            weekly_data.where("start_of_week = '2020-03-02'").select("payments_time_diff_avg").collect()[0][
-                0] == 6
+            weekly_data.where("start_of_week = '2020-01-06'").select("payments_time_diff_avg").collect()[0][
+                0] == 2
 
         weekly_data.orderBy('start_of_week').show(1000, False)
 
@@ -266,35 +265,35 @@ class TestUnitBilling:
         assert \
             final_features.where("start_of_week = '2020-02-10'").select(
                 "sum_payments_time_diff_weekly_last_week").collect()[0][
-                0] == 117
+                0] == 4
         assert \
             final_features.where("start_of_week = '2020-02-10'").select(
                 "sum_payments_time_diff_weekly_last_two_week").collect()[0][
-                0] == 776
+                0] == 10
         assert \
             final_features.where("start_of_week = '2020-02-10'").select(
                 "sum_payments_time_diff_weekly_last_four_week").collect()[0][
-                0] == 1065
+                0] == 16
         assert \
             final_features.where("start_of_week = '2020-02-10'").select(
                 "sum_payments_time_diff_weekly_last_twelve_week").collect()[0][
-                0] == 1276
+                0] == 24
         assert \
             final_features.where("start_of_week = '2020-02-10'").select(
                 "avg_payments_time_diff_avg_weekly_last_week").collect()[0][
-                0] == 5.85
+                0] == 1.3333333333333333
         assert \
-            int(final_features.where("start_of_week = '2020-02-10'").select(
+            (final_features.where("start_of_week = '2020-02-10'").select(
                 "avg_payments_time_diff_avg_weekly_last_two_week").collect()[0][
-                0]) == 19
+                0]) == 1.6666666666666665
         assert \
-            int(final_features.where("start_of_week = '2020-02-10'").select(
+            (final_features.where("start_of_week = '2020-02-10'").select(
                 "avg_payments_time_diff_avg_weekly_last_four_week").collect()[0][
-                0]) == 13
+                0]) == 1.4999999999999998
         assert \
-            int(final_features.where("start_of_week = '2020-02-10'").select(
+            (final_features.where("start_of_week = '2020-02-10'").select(
                 "avg_payments_time_diff_avg_weekly_last_twelve_week").collect()[0][
-                0]) == 10
+                0]) == 2
 
         # exit(2)
 
