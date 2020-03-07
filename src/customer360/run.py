@@ -99,7 +99,7 @@ class ProjectContext(KedroContext):
         return catalog
 
 
-def run_package(pipelines=[]):
+def run_package(pipelines=['usage_to_l1_pipeline']):
 
     # entry point for running pip-install projects
     # using `<project_package>` command
