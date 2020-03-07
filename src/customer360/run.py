@@ -40,7 +40,7 @@ from customer360.pipeline import create_pipelines
 
 from kedro.io import DataCatalog
 from kedro.versioning import Journal
-from customer360.utilities.re_usable_functions import get_spark_session
+from src.customer360.utilities.spark_util import get_spark_session
 
 import findspark
 findspark.init()
@@ -99,7 +99,7 @@ class ProjectContext(KedroContext):
         return catalog
 
 
-def run_package(pipelines=['usage_to_l1_pipeline']):
+def run_package(pipelines=['campaign_to_l1_pipeline']):
 
     # entry point for running pip-install projects
     # using `<project_package>` command
