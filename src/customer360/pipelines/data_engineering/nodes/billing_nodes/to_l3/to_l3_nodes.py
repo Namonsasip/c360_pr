@@ -8,7 +8,7 @@ import logging
 from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l1.to_l1_nodes import massive_processing
 import os
 
-conf = os.environ["CONF"]
+conf = os.getenv("CONF", None)
 
 def top_up_channel_joined_data(input_df,topup_type_ref):
 

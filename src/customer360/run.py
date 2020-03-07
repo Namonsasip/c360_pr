@@ -27,6 +27,7 @@
 # limitations under the License.
 
 """Application entry point."""
+import logging
 from pathlib import Path
 from typing import Dict
 import os
@@ -43,9 +44,12 @@ from kedro.versioning import Journal
 from customer360.utilities.re_usable_functions import get_spark_session
 
 import findspark
-findspark.init()
+try:
+    findspark.init()
+except ValueError as err:
+    logging.info("findspark.init() failed with error " + str(err))
 
-conf = os.environ["CONF"]
+conf = os.getenv("CONF", None)
 
 class ProjectContext(KedroContext):
     """Users can override the remaining methods from the parent class here,

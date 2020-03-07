@@ -40,9 +40,9 @@ from pathlib import Path
 import pytest, os
 
 from customer360.run import ProjectContext
-from customer360.utilities.re_usable_functions import get_spark_session
-conf = os.environ["CONF"]
 
+from pyspark.sql import SparkSession
+conf = os.getenv("CONF", None)
 
 @pytest.fixture(scope="module")
 def project_context():
