@@ -5,17 +5,13 @@ from datetime import datetime
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 from functools import reduce
-from pyspark.sql import SparkSession
 from kedro.context import load_context
 from pathlib import Path
+from src.customer360.utilities.spark_util import get_spark_session
 
-from customer360.utilities.config_parser import node_from_config
+from src.customer360.utilities.config_parser import node_from_config
 
 conf = os.getenv("CONF", "local")
-
-
-def get_spark_session() -> SparkSession:
-    return SparkSession.builder.getOrCreate()
 
 
 def union_dataframes_with_missing_cols(df_input_or_list, *args):

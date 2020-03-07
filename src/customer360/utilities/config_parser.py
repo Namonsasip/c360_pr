@@ -1,7 +1,7 @@
 import logging
 from typing import *
 from pyspark.sql import DataFrame, functions as F
-from customer360.utilities.re_usable_functions import get_spark_session
+from src.customer360.utilities.spark_util import get_spark_session
 
 
 # Query generator class
