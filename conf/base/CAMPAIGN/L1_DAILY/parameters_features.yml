@@ -16,6 +16,18 @@ l1_cam_post_channel_with_highest_conversion:
     campaign_total_success_by_sms: "case when lower(campaign_channel) like '%sms%'
    then campaign_total_by_campaign_channel_y else 0 end"
 
+    campaign_total_by_ussd: "case when lower(campaign_channel) like '%ussd%' then campaign_total_by_campaign_channel else 0 end"
+    campaign_total_eligible_by_ussd: "case when lower(campaign_channel) like '%ussd%'
+   then campaign_total_by_campaign_channel_y_n else 0 end"
+    campaign_total_success_by_ussd: "case when lower(campaign_channel) like '%ussd%'
+   then campaign_total_by_campaign_channel_y else 0 end"
+
+    campaign_total_by_myais_app: "case when upper(campaign_channel) like '%OF_PUSH_NOTI%' then campaign_total_by_campaign_channel else 0 end"
+    campaign_total_eligible_by_myais_app: "case when upper(campaign_channel) like '%OF_PUSH_NOTI%'
+   then campaign_total_by_campaign_channel_y_n else 0 end"
+    campaign_total_success_by_myais_app: "case when upper(campaign_channel) like '%OF_PUSH_NOTI%'
+   then campaign_total_by_campaign_channel_y else 0 end"
+
     campaign_total_upsell_xsell_by_call_center: "case when lower(campaign_type) = 'cross & up sell' AND lower(campaign_channel) like '%phone%'
                                               then campaign_total_by_campaign_type else 0 end"
 
@@ -28,7 +40,7 @@ l1_cam_post_channel_with_highest_conversion:
     campaign_total_others_by_call_center: "case when lower(campaign_type) = 'others' AND lower(campaign_channel) like '%phone%'
                                               then campaign_total_by_campaign_type else 0 end"
 
-    campaign_total_others_by_eligible_call_center: "case when lower(campaign_type) = 'others' AND lower(campaign_channel) like '%phone%'
+    campaign_total_others_eligible_by_call_center: "case when lower(campaign_type) = 'others' AND lower(campaign_channel) like '%phone%'
                                               then campaign_total_by_campaign_type_y_n else 0 end"
 
     campaign_total_others_success_by_call_center: "case when lower(campaign_type) = 'others' AND lower(campaign_channel) like '%phone%'
@@ -42,6 +54,63 @@ l1_cam_post_channel_with_highest_conversion:
     then campaign_total_by_campaign_type_y_n else 0 end"
 
     campaign_total_retention_success_by_call_center: "case when lower(campaign_type) = 'csm retention' AND lower(campaign_channel) like '%phone%'
+    then campaign_total_by_campaign_type_y else 0 end"
+
+
+    campaign_total_upsell_xsell_by_ussd: "case when lower(campaign_type) = 'cross & up sell' AND lower(campaign_channel) like '%ussd%'
+                                              then campaign_total_by_campaign_type else 0 end"
+
+    campaign_total_upsell_xsell_eligible_by_ussd: "case when lower(campaign_type) = 'cross & up sell' AND lower(campaign_channel) like '%ussd%'
+                                              then campaign_total_by_campaign_type_y_n else 0 end"
+
+    campaign_total_upsell_xsell_success_by_ussd: "case when lower(campaign_type) = 'cross & up sell' AND lower(campaign_channel) like '%ussd%'
+    then campaign_total_by_campaign_type_y else 0 end"
+
+    campaign_total_others_by_ussd: "case when lower(campaign_type) = 'others' AND lower(campaign_channel) like '%ussd%'
+                                              then campaign_total_by_campaign_type else 0 end"
+
+    campaign_total_others_eligible_by_ussd: "case when lower(campaign_type) = 'others' AND lower(campaign_channel) like '%ussd%'
+                                              then campaign_total_by_campaign_type_y_n else 0 end"
+
+    campaign_total_others_success_by_ussd: "case when lower(campaign_type) = 'others' AND lower(campaign_channel) like '%ussd%'
+    then campaign_total_by_campaign_type_y else 0 end"
+
+
+    campaign_total_retention_by_ussd: "case when lower(campaign_type) = 'csm retention' AND lower(campaign_channel) like '%ussd%'
+                                                    then campaign_total_by_campaign_type else 0 end"
+
+    campaign_total_retention_eligible_by_ussd: "case when lower(campaign_type) = 'csm retention' AND lower(campaign_channel) like '%ussd%'
+    then campaign_total_by_campaign_type_y_n else 0 end"
+
+    campaign_total_retention_success_by_ussd: "case when lower(campaign_type) = 'csm retention' AND lower(campaign_channel) like '%ussd%'
+    then campaign_total_by_campaign_type_y else 0 end"
+
+    campaign_total_upsell_xsell_myais_app: "case when lower(campaign_type) = 'cross & up sell' AND lower(campaign_channel) like '%ussd%'
+                                              then campaign_total_by_campaign_type else 0 end"
+
+    campaign_total_upsell_xsell_eligible_myais_app: "case when lower(campaign_type) = 'cross & up sell' AND upper(campaign_channel) like '%OF_PUSH_NOTI%'
+                                              then campaign_total_by_campaign_type_y_n else 0 end"
+
+    campaign_total_upsell_xsell_success_myais_app: "case when lower(campaign_type) = 'cross & up sell' AND upper(campaign_channel) like '%OF_PUSH_NOTI%'
+    then campaign_total_by_campaign_type_y else 0 end"
+
+    campaign_total_others_by_myais_app: "case when lower(campaign_type) = 'others' AND upper(campaign_channel) like '%OF_PUSH_NOTI%'
+                                              then campaign_total_by_campaign_type else 0 end"
+
+    campaign_total_others_eligible_myais_app: "case when lower(campaign_type) = 'others' AND upper(campaign_channel) like '%OF_PUSH_NOTI%'
+                                              then campaign_total_by_campaign_type_y_n else 0 end"
+
+    campaign_total_others_success_myais_app: "case when lower(campaign_type) = 'others' AND upper(campaign_channel) like '%OF_PUSH_NOTI%'
+    then campaign_total_by_campaign_type_y else 0 end"
+
+
+    campaign_total_retention_by_myais_app: "case when lower(campaign_type) = 'csm retention' AND upper(campaign_channel) like '%OF_PUSH_NOTI%'
+                                                    then campaign_total_by_campaign_type else 0 end"
+
+    campaign_total_retention_eligible_myais_app: "case when lower(campaign_type) = 'csm retention' AND upper(campaign_channel) like '%OF_PUSH_NOTI%'
+    then campaign_total_by_campaign_type_y_n else 0 end"
+
+    campaign_total_retention_success_myais_app: "case when lower(campaign_type) = 'csm retention' AND upper(campaign_channel) like '%OF_PUSH_NOTI%'
     then campaign_total_by_campaign_type_y else 0 end"
 
 
