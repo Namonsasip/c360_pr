@@ -7,7 +7,7 @@ from pathlib import Path
 import logging
 import os
 
-conf = os.environ["CONF"]
+conf = os.getenv("CONF", None)
 
 
 def massive_processing(post_paid, prepaid, contacts_ma, contacts_ussd,

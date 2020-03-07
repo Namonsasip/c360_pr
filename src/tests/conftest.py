@@ -41,7 +41,7 @@ import pytest, os
 
 from customer360.run import ProjectContext
 from src.customer360.utilities.spark_util import get_spark_session
-conf = os.environ["CONF"]
+conf = os.getenv("CONF", None)
 
 
 @pytest.fixture(scope="module")

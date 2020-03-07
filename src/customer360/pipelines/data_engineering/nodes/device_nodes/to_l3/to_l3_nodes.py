@@ -6,7 +6,7 @@ import logging
 from src.customer360.pipelines.data_engineering.nodes.device_nodes.to_l2.to_l2_nodes import massive_processing
 import os
 
-conf = os.environ["CONF"]
+conf = os.getenv("CONF", None)
 
 def massive_processing_monthly(input_df, sql, output_df_catalog):
     """

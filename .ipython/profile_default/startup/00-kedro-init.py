@@ -7,8 +7,19 @@ from IPython.core.magic import register_line_magic
 
 # Find the project root (./../../../)
 startup_error = None
-project_path = Path(__file__).parents[3].resolve()
-
+try:
+    project_path = str(Path(__file__).parents[3].resolve())
+except NameError:
+    # If we're not running this code by sourcing the file,
+    # try checking if the current working directory is the project directory
+    kedro_init_file_path = os.path.join(
+        ".ipython", "profile_default", "startup", "00-kedro-init.py"
+    )
+    if os.path.isfile(kedro_init_file_path):
+        project_path = os.getcwd()
+    else:
+        # If the working directory is not the project, raise the exception
+        raise
 
 @register_line_magic
 def reload_kedro(path, line=None):
