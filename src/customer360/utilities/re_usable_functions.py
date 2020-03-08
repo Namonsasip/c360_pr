@@ -11,7 +11,7 @@ from src.customer360.utilities.spark_util import get_spark_session
 
 from src.customer360.utilities.config_parser import node_from_config
 
-conf = os.getenv("CONF", "local")
+conf = os.getenv("CONF", None)
 
 
 def union_dataframes_with_missing_cols(df_input_or_list, *args):
