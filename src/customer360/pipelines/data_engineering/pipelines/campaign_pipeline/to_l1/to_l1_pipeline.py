@@ -47,7 +47,7 @@ def campaign_to_l1_pipeline(**kwargs):
                  'l0_campaign_tracking_contact_list_ussd',
                  'params:l1_cam_post_channel_with_highest_conversion',
                  'params:l1_campaign_top_channel_daily'],
-                ['l1_campaign_post_pre_fbb_daily', 'l1_campaign_top_channel_daily']
+                ['l1_campaign_post_pre_daily', 'l1_campaign_top_channel_daily']
             )
 
         ], name="campaign_to_l1_pipeline"

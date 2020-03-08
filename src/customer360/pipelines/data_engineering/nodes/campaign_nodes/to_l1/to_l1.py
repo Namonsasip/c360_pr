@@ -10,59 +10,82 @@ import os
 conf = os.getenv("CONF", None)
 
 
+# def massive_processing(post_paid, prepaid, contacts_ma, contacts_ussd,
+#                        dict_1, dict_2, data_set_1, data_set_2) -> [DataFrame, DataFrame]:
+#     """
+#     :return:
+#     """
+#
+#     def divide_chunks(l, n):
+#         # looping till length l
+#         for i in range(0, len(l), n):
+#             yield l[i:i + n]
+#
+#     CNTX = load_context(Path.cwd(), env=conf)
+#     data_frame = post_paid
+#     dates_list = data_frame.select('partition_date').distinct().collect()
+#     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+#     mvv_array = sorted(mvv_array)
+#     logging.info("Dates to run for {0}".format(str(mvv_array)))
+#
+#     mvv_new = list(divide_chunks(mvv_array, 5))
+#     add_list = mvv_new
+#
+#     first_item = add_list[0]
+#
+#     add_list.remove(first_item)
+#     for curr_item in add_list:
+#         logging.info("running for dates {0}".format(str(curr_item)))
+#
+#         postpaid_small = post_paid.filter(F.col("partition_date").isin(*[curr_item]))
+#         prepaid_small = prepaid.filter(F.col("partition_date").isin(*[curr_item]))
+#         contacts_ma_small = contacts_ma.filter(F.col("partition_date").isin(*[curr_item]))
+#         contacts_ussd_small = contacts_ussd.filter(F.col("partition_date").isin(*[curr_item]))
+#
+#         unioned_df = union_dataframes_with_missing_cols(postpaid_small, prepaid_small)
+#
+#         output_df_1, output_df_2 = pre_process_df(unioned_df, contacts_ma_small, contacts_ussd_small)
+#
+#         output_df_1 = node_from_config(output_df_1, dict_1)
+#         output_df_2 = node_from_config(output_df_2, dict_2)
+#
+#         CNTX.catalog.save(data_set_1, output_df_1)
+#         CNTX.catalog.save(data_set_2, output_df_2)
+#
+#     logging.info("Final date to run for {0}".format(str(first_item)))
+#
+#     postpaid_small = post_paid.filter(F.col("partition_date").isin(*[first_item]))
+#     prepaid_small = prepaid.filter(F.col("partition_date").isin(*[first_item]))
+#     contacts_ma_small = contacts_ma.filter(F.col("partition_date").isin(*[first_item]))
+#     contacts_ussd_small = contacts_ussd.filter(F.col("partition_date").isin(*[first_item]))
+#
+#
+#     unioned_df = union_dataframes_with_missing_cols(postpaid_small, prepaid_small)
+#
+#     output_df_1, output_df_2 = pre_process_df(unioned_df, contacts_ma_small, contacts_ussd_small)
+#
+#     output_df_1 = node_from_config(output_df_1, dict_1)
+#     output_df_2 = node_from_config(output_df_2, dict_2)
+#
+#     return [output_df_1, output_df_2]
+
+
 def massive_processing(post_paid, prepaid, contacts_ma, contacts_ussd,
                        dict_1, dict_2, data_set_1, data_set_2) -> [DataFrame, DataFrame]:
     """
+    :param post_paid:
+    :param prepaid:
+    :param contacts_ma:
+    :param contacts_ussd:
+    :param dict_1:
+    :param dict_2:
+    :param data_set_1:
+    :param data_set_2:
     :return:
     """
+    unioned_df = union_dataframes_with_missing_cols(post_paid, prepaid)
 
-    def divide_chunks(l, n):
-        # looping till length l
-        for i in range(0, len(l), n):
-            yield l[i:i + n]
-
-    CNTX = load_context(Path.cwd(), env=conf)
-    data_frame = post_paid
-    dates_list = data_frame.select('partition_date').distinct().collect()
-    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
-    mvv_array = sorted(mvv_array)
-    logging.info("Dates to run for {0}".format(str(mvv_array)))
-
-    mvv_new = list(divide_chunks(mvv_array, 5))
-    add_list = mvv_new
-
-    first_item = add_list[0]
-
-    add_list.remove(first_item)
-    for curr_item in add_list:
-        logging.info("running for dates {0}".format(str(curr_item)))
-
-        postpaid_small = post_paid.filter(F.col("partition_date").isin(*[curr_item]))
-        prepaid_small = prepaid.filter(F.col("partition_date").isin(*[curr_item]))
-        contacts_ma_small = contacts_ma.filter(F.col("partition_date").isin(*[curr_item]))
-        contacts_ussd_small = contacts_ussd.filter(F.col("partition_date").isin(*[curr_item]))
-
-        unioned_df = union_dataframes_with_missing_cols(postpaid_small, prepaid_small)
-
-        output_df_1, output_df_2 = pre_process_df(unioned_df, contacts_ma_small, contacts_ussd_small)
-
-        output_df_1 = node_from_config(output_df_1, dict_1)
-        output_df_2 = node_from_config(output_df_2, dict_2)
-
-        CNTX.catalog.save(data_set_1, output_df_1)
-        CNTX.catalog.save(data_set_2, output_df_2)
-
-    logging.info("Final date to run for {0}".format(str(first_item)))
-
-    postpaid_small = post_paid.filter(F.col("partition_date").isin(*[first_item]))
-    prepaid_small = prepaid.filter(F.col("partition_date").isin(*[first_item]))
-    contacts_ma_small = contacts_ma.filter(F.col("partition_date").isin(*[first_item]))
-    contacts_ussd_small = contacts_ussd.filter(F.col("partition_date").isin(*[first_item]))
-
-
-    unioned_df = union_dataframes_with_missing_cols(postpaid_small, prepaid_small)
-
-    output_df_1, output_df_2 = pre_process_df(unioned_df, contacts_ma_small, contacts_ussd_small)
+    output_df_1, output_df_2 = pre_process_df(unioned_df, contacts_ma, contacts_ussd)
 
     output_df_1 = node_from_config(output_df_1, dict_1)
     output_df_2 = node_from_config(output_df_2, dict_2)
@@ -87,7 +110,7 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
     """
     first_df, second_df = massive_processing(postpaid, prepaid, contacts_ma, contact_list_ussd
                                              , dictionary_obj, dictionary_obj_2,
-                                             'l1_campaign_post_pre_fbb_daily', 'l1_campaign_top_channel_daily')
+                                             'l1_campaign_post_pre_daily', 'l1_campaign_top_channel_daily')
 
     return [first_df, second_df]
 
