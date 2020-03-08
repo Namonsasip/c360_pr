@@ -114,7 +114,7 @@
 #     compression: 'GZIP'
 #
 #cars@spark:
-#  type: kedro.contrib.io.pyspark.SparkDataSet  # https://kedro.readthedocs.io/en/latest/kedro.contrib.io.pyspark.SparkDataSet.html
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet  # https://kedro.readthedocs.io/en/latest/datasets.spark_dbfs_dataset.SparkFixedDataSet.html
 #  filepath: data/L1/cars.parquet
 
 

@@ -1,5 +1,5 @@
 l3_billing_and_payments_monthly_rpu:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_monthly_rpu/
   save_args:
@@ -7,7 +7,7 @@ l3_billing_and_payments_monthly_rpu:
     mode: "overwrite"
 
 l3_billing_and_payments_monthly_topup_and_volume:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_monthly_topup_and_volume/
   save_args:
@@ -15,7 +15,7 @@ l3_billing_and_payments_monthly_topup_and_volume:
     mode: "overwrite"
 
 l3_billing_and_payments_monthly_topup_time_diff:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_monthly_topup_time_diff/
   save_args:
@@ -23,7 +23,7 @@ l3_billing_and_payments_monthly_topup_time_diff:
     mode: "overwrite"
 
 l3_billing_monthly_rpu_roaming:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_monthly_rpu_roaming/
   save_args:
@@ -31,7 +31,7 @@ l3_billing_monthly_rpu_roaming:
     mode: "overwrite"
 
 l3_billing_monthly_automated_payments:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_monthly_automated_payments/
   save_args:
@@ -39,7 +39,7 @@ l3_billing_monthly_automated_payments:
     mode: "overwrite"
 
 l3_billing_and_payments_monthly_before_top_up_balance:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_before_top_up_balance/
   save_args:
@@ -48,7 +48,7 @@ l3_billing_and_payments_monthly_before_top_up_balance:
 
 
 l3_billing_and_payments_monthly_top_up_channels:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_top_up_channels/
   save_args:
@@ -57,7 +57,7 @@ l3_billing_and_payments_monthly_top_up_channels:
 
 
 l3_billing_and_payments_monthly_most_popular_top_up_channel:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_most_popular_top_up_channel/
   save_args:
@@ -66,7 +66,7 @@ l3_billing_and_payments_monthly_most_popular_top_up_channel:
 
 
 l3_billing_and_payments_monthly_bill_volume:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_monthly_bill_volume/
   save_args:
@@ -74,7 +74,7 @@ l3_billing_and_payments_monthly_bill_volume:
     mode: "overwrite"
 
 l3_billing_and_payments_monthly_last_top_up_channel:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_last_top_up_channel/
   save_args:
@@ -82,7 +82,7 @@ l3_billing_and_payments_monthly_last_top_up_channel:
     mode: "overwrite"
 
 l3_billing_and_payments_monthly_missed_bills:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_missed_bills/
   save_args:
@@ -90,7 +90,7 @@ l3_billing_and_payments_monthly_missed_bills:
     mode: "overwrite"
 
 l3_billing_and_payments_monthly_popular_topup_day:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_popular_topup_day/
   save_args:
@@ -98,7 +98,7 @@ l3_billing_and_payments_monthly_popular_topup_day:
     mode: "overwrite"
 
 l3_billing_and_payments_monthly_popular_topup_hour:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_popular_topup_hour/
   save_args:
@@ -107,7 +107,7 @@ l3_billing_and_payments_monthly_popular_topup_hour:
 
 
 l3_billing_and_payments_monthly_overdue_bills:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_overdue_bills/
   save_args:
@@ -115,7 +115,7 @@ l3_billing_and_payments_monthly_overdue_bills:
     mode: "overwrite"
 
 l3_billing_and_payments_monthly_time_since_last_top_up:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_time_since_last_top_up/
   save_args:
@@ -123,7 +123,7 @@ l3_billing_and_payments_monthly_time_since_last_top_up:
     mode: "overwrite"
 
 l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_last_overdue_bill_days_ago_and_volume/
   save_args:
@@ -131,7 +131,7 @@ l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume:
     mode: "overwrite"
 
 l3_billing_and_payments_monthly_last_three_topup_volume:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l3_features/billing_and_payments_last_three_topup_volume/
   save_args:

@@ -114,7 +114,7 @@
 #     compression: 'GZIP'
 #
 #cars@spark:
-#  type: kedro.contrib.io.pyspark.SparkDataSet  # https://kedro.readthedocs.io/en/latest/kedro.contrib.io.pyspark.SparkDataSet.html
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet  # https://kedro.readthedocs.io/en/latest/datasets.spark_dbfs_dataset.SparkFixedDataSet.html
 #  filepath: data/L1/cars.parquet
 
 
@@ -123,7 +123,7 @@
 # template. Please feel free to remove it once you remove the example pipeline.
 
 l1_billing_and_payments_daily_topup_and_volume:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l1_features/billing_and_payments_topup_and_volume/
   save_args:
@@ -131,7 +131,7 @@ l1_billing_and_payments_daily_topup_and_volume:
     mode: "overwrite"
 
 l1_billing_and_payments_daily_rpu_roaming:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l1_features/billing_and_payments_rpu_roaming/
   save_args:
@@ -139,7 +139,7 @@ l1_billing_and_payments_daily_rpu_roaming:
     mode: "overwrite"
 
 l1_billing_and_payments_daily_before_top_up_balance:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l1_features/billing_and_payments_before_top_up_balance/
   save_args:
@@ -147,7 +147,7 @@ l1_billing_and_payments_daily_before_top_up_balance:
     mode: "overwrite"
 
 l1_billing_and_payments_daily_top_up_channels:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l1_features/billing_and_payments_top_up_channels/
   save_args:
@@ -155,7 +155,7 @@ l1_billing_and_payments_daily_top_up_channels:
     mode: "overwrite"
 
 l1_billing_and_payments_daily_most_popular_top_up_channel:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l1_features/billing_and_payments_most_popular_top_up_channel/
   save_args:
@@ -163,7 +163,7 @@ l1_billing_and_payments_daily_most_popular_top_up_channel:
     mode: "overwrite"
 
 l1_billing_and_payments_daily_popular_topup_day:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l1_features/billing_and_payments_popular_topup_day/
   save_args:
@@ -171,7 +171,7 @@ l1_billing_and_payments_daily_popular_topup_day:
     mode: "overwrite"
 
 l1_billing_and_payments_daily_time_since_last_top_up:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/BILLING/l1_features/billing_and_payments_time_since_last_top_up/
   save_args:

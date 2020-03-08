@@ -1,6 +1,6 @@
 
 l1_customer_profile_union_daily_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-data/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
   save_args:

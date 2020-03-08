@@ -1,6 +1,6 @@
 
 int_l1_streaming_content_type_features:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/int_l1_streaming_content_type_features/
   file_format: parquet
   save_args:
@@ -8,7 +8,7 @@ int_l1_streaming_content_type_features:
     partitionBy: ["event_partition_date"]
 
 l1_streaming_content_type_features:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_content_type_features/
   file_format: parquet
   save_args:
@@ -18,7 +18,7 @@ l1_streaming_content_type_features:
 
 
 int_l1_streaming_tv_channel_features:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/int_l1_streaming_tv_channel_features/
   file_format: parquet
   save_args:
@@ -26,7 +26,7 @@ int_l1_streaming_tv_channel_features:
     partitionBy: ["event_partition_date"]
 
 l1_streaming_fav_tv_channel_by_volume:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_fav_tv_channel_by_volume/
   file_format: parquet
   save_args:
@@ -36,12 +36,12 @@ l1_streaming_fav_tv_channel_by_volume:
 
 
 int_l0_streaming_vimmi_table:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/int_l0_streaming_vimmi_table/
   file_format: parquet
 
 l1_streaming_fav_tv_show_by_episode_watched:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_fav_tv_show_by_episode_watched/
   file_format: parquet
   save_args:
@@ -52,7 +52,7 @@ l1_streaming_fav_tv_show_by_episode_watched:
     
 
 int_l1_streaming_video_service_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/int_l1_streaming_video_service_feature/
   file_format: parquet
   save_args:
@@ -60,7 +60,7 @@ int_l1_streaming_video_service_feature:
     partitionBy: ["event_partition_date"]
 
 l1_streaming_fav_video_service_by_download_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_fav_video_service_by_download_feature/
   file_format: parquet
   save_args:
@@ -68,7 +68,7 @@ l1_streaming_fav_video_service_by_download_feature:
     partitionBy: ["event_partition_date"]
 
 l1_streaming_2nd_fav_video_service_by_download_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_2nd_fav_video_service_by_download_feature/
   file_format: parquet
   save_args:
@@ -76,7 +76,7 @@ l1_streaming_2nd_fav_video_service_by_download_feature:
     partitionBy: ["event_partition_date"]
 
 l1_streaming_fav_video_service_by_visit_count_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_fav_video_service_by_visit_count_feature/
   file_format: parquet
   save_args:
@@ -86,7 +86,7 @@ l1_streaming_fav_video_service_by_visit_count_feature:
     
 
 int_l1_streaming_music_service_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/int_l1_streaming_music_service_feature/
   file_format: parquet
   save_args:
@@ -94,7 +94,7 @@ int_l1_streaming_music_service_feature:
     partitionBy: ["event_partition_date"]
 
 l1_streaming_fav_music_service_by_download_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_fav_music_service_by_download_feature/
   file_format: parquet
   save_args:
@@ -102,7 +102,7 @@ l1_streaming_fav_music_service_by_download_feature:
     partitionBy: ["event_partition_date"]
 
 l1_streaming_2nd_fav_music_service_by_download_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_2nd_fav_music_service_by_download_feature/
   file_format: parquet
   save_args:
@@ -110,7 +110,7 @@ l1_streaming_2nd_fav_music_service_by_download_feature:
     partitionBy: ["event_partition_date"]
 
 l1_streaming_fav_music_service_by_visit_count_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_fav_music_service_by_visit_count_feature/
   file_format: parquet
   save_args:
@@ -120,7 +120,7 @@ l1_streaming_fav_music_service_by_visit_count_feature:
     
 
 int_l1_streaming_esport_service_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/int_l1_streaming_esport_service_feature/
   file_format: parquet
   save_args:
@@ -128,7 +128,7 @@ int_l1_streaming_esport_service_feature:
     partitionBy: ["event_partition_date"]
 
 l1_streaming_fav_esport_service_by_download_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_fav_esport_service_by_download_feature/
   file_format: parquet
   save_args:
@@ -136,7 +136,7 @@ l1_streaming_fav_esport_service_by_download_feature:
     partitionBy: ["event_partition_date"]
 
 l1_streaming_2nd_fav_esport_service_by_download_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_2nd_fav_esport_service_by_download_feature/
   file_format: parquet
   save_args:
@@ -144,7 +144,7 @@ l1_streaming_2nd_fav_esport_service_by_download_feature:
     partitionBy: ["event_partition_date"]
 
 l1_streaming_fav_esport_service_by_visit_count_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_fav_esport_service_by_visit_count_feature/
   file_format: parquet
   save_args:
@@ -154,7 +154,7 @@ l1_streaming_fav_esport_service_by_visit_count_feature:
 
 
 l1_streaming_visit_count_and_download_traffic_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_visit_count_and_download_traffic_feature/
   file_format: parquet
   save_args:
@@ -163,7 +163,7 @@ l1_streaming_visit_count_and_download_traffic_feature:
 
 
 l1_streaming_session_duration_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_session_duration_feature/
   file_format: parquet
   save_args:
