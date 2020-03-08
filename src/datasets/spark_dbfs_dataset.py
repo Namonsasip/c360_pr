@@ -1,5 +1,5 @@
 from pathlib import PurePosixPath, WindowsPath
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict
 
 from kedro.contrib.io.pyspark import SparkDataSet
 from kedro.io import Version
