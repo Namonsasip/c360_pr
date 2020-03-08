@@ -34,8 +34,9 @@ class QueryGenerator:
 
             granularity = table_params["granularity"]
 
-            if granularity!="":
-                query = "Select {},{} from {} {} group by {}".format(granularity, projection, table_name, where_clause, granularity)
+            if granularity != "":
+                query = "Select {},{} from {} {} group by {}".format(granularity, projection, table_name, where_clause,
+                                                                     granularity)
             else:
                 query = "Select {} from {} {}".format(projection, table_name, where_clause)
 
@@ -310,7 +311,6 @@ def __generate_l4_rolling_ranked_column(
         input_df,
         config
 ) -> DataFrame:
-
     table_name = "input_table"
     input_df.createOrReplaceTempView(table_name)
 
@@ -485,7 +485,6 @@ def __generate_l4_filtered_ranked_table(
         ranked_df,
         config
 ):
-
     result_df = {}
     read_from = config["read_from"]
 
@@ -517,7 +516,6 @@ def l4_rolling_ranked_window(
         input_df,
         config
 ) -> Dict[str, DataFrame]:
-
     ranked_df = __generate_l4_rolling_ranked_column(input_df, config)
     result_df = __generate_l4_filtered_ranked_table(ranked_df, config)
     return result_df

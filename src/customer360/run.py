@@ -44,12 +44,14 @@ from kedro.versioning import Journal
 from src.customer360.utilities.spark_util import get_spark_session
 
 import findspark
+
 try:
     findspark.init()
 except ValueError as err:
     logging.info("findspark.init() failed with error " + str(err))
 
 conf = os.getenv("CONF", None)
+
 
 class ProjectContext(KedroContext):
     """Users can override the remaining methods from the parent class here,
@@ -103,8 +105,7 @@ class ProjectContext(KedroContext):
         return catalog
 
 
-def run_package(pipelines=['campaign_to_l1_pipeline']):
-
+def run_package(pipelines=['campaign_to_l4_pipeline']):
     # entry point for running pip-install projects
     # using `<project_package>` command
     project_context = load_context(Path.cwd(), env=conf)
@@ -119,8 +120,8 @@ def run_package(pipelines=['campaign_to_l1_pipeline']):
         for each_pipeline in pipelines:
             project_context.run(pipeline_name=each_pipeline)
         return
-    #project_context.run()
-    #project_context.run(pipeline_name='usage_to_l1_pipeline')
+    # project_context.run()
+    # project_context.run(pipeline_name='usage_to_l1_pipeline')
     # project_context.run(pipeline_name='customer_profile_to_l3_pipeline')
 
     # Replace line above with below to run on databricks cluster

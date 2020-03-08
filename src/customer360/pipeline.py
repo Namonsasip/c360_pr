@@ -66,7 +66,6 @@ from .pipelines.data_engineering.pipelines.campaign_pipeline.to_l2 import campai
 from .pipelines.data_engineering.pipelines.campaign_pipeline.to_l4 import campaign_to_l4_pipeline
 
 
-
 def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
     """Create the project's pipeline.
 

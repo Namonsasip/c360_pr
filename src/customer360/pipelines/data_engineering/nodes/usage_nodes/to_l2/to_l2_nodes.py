@@ -33,6 +33,7 @@ def build_usage_l2_layer(data_frame: DataFrame, dict_obj: dict) -> DataFrame:
     :param dict_obj:
     :return:
     """
+
     def divide_chunks(l, n):
         # looping till length l
         for i in range(0, len(l), n):

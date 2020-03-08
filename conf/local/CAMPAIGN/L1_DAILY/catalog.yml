@@ -1,4 +1,3 @@
-
 l1_campaign_post_pre_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"

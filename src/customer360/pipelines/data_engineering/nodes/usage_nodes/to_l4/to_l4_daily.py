@@ -4,6 +4,7 @@ from customer360.utilities.re_usable_functions import union_dataframes_with_miss
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 
+
 def split_and_run_daily(data_frame, dict_obj) -> DataFrame:
     """
     :param data_frame: 
@@ -14,12 +15,12 @@ def split_and_run_daily(data_frame, dict_obj) -> DataFrame:
     unique_ids = unique_ids.withColumn("id", monotonically_increasing_id())
 
     min_max_id = unique_ids.select("id").agg(F.min("id").alias("min_id")
-                                         , F.max("id").alias("max_id")).collect()
+                                             , F.max("id").alias("max_id")).collect()
 
     min_id = min_max_id[0][0]
     max_id = min_max_id[0][1]
 
-    mid_point = (min_id + max_id)/2
+    mid_point = (min_id + max_id) / 2
 
     unique_ids_1 = unique_ids.filter(F.col("id") <= mid_point).drop("id")
     unique_ids_2 = unique_ids.filter(F.col("id") > mid_point).drop("id")
@@ -33,6 +34,3 @@ def split_and_run_daily(data_frame, dict_obj) -> DataFrame:
     final_2 = l4_rolling_window(second_df_to_prepare, dict_obj)
 
     return union_dataframes_with_missing_cols(final_1, final_2)
-
-
-

@@ -1,4 +1,3 @@
-
 l1_customer_profile_union_daily_feature:
   type: kedro.contrib.io.pyspark.SparkDataSet
   filepath: /mnt/customer360-blob-data/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/

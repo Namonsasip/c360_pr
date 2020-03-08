@@ -88,4 +88,3 @@ def merge_union_and_basic_features(union_features, basic_features):
     df = df.drop("activation_date", "crm_sub_id", "mobile_no")
 
     return df
-

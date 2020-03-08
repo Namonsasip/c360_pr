@@ -1,4 +1,3 @@
-
 int_l2_streaming_content_type_features:
   type: kedro.contrib.io.pyspark.SparkDataSet
   filepath: data/L2_WEEKLY/STREAM/int_l2_streaming_content_type_features/
@@ -40,8 +39,8 @@ l2_streaming_fav_tv_show_by_episode_watched:
   save_args:
     mode: "overwrite"
     partitionBy: ["start_of_week"]
-    
-    
+
+
 
 int_l2_streaming_video_service_feature:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -74,7 +73,7 @@ l2_streaming_fav_video_service_by_visit_count_feature:
   save_args:
     mode: "overwrite"
     partitionBy: ["start_of_week"]
-    
+
 
 
 int_l2_streaming_music_service_feature:

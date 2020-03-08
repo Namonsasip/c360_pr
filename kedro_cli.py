@@ -60,7 +60,6 @@ CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 PROJ_PATH = Path(__file__).resolve().parent
 os.environ["IPYTHONDIR"] = str(PROJ_PATH / ".ipython")
 
-
 NO_DEPENDENCY_MESSAGE = """{0} is not installed. Please make sure {0} is in
 src/requirements.txt and run `kedro install`."""
 
@@ -225,18 +224,18 @@ def cli():
     "--params", type=str, default="", help=PARAMS_ARG_HELP, callback=_split_params
 )
 def run(
-    tag,
-    env,
-    parallel,
-    runner,
-    node_names,
-    to_nodes,
-    from_nodes,
-    from_inputs,
-    load_version,
-    pipeline,
-    config,
-    params,
+        tag,
+        env,
+        parallel,
+        runner,
+        node_names,
+        to_nodes,
+        from_nodes,
+        from_inputs,
+        load_version,
+        pipeline,
+        config,
+        params,
 ):
     """Run the pipeline."""
     if parallel and runner:
@@ -412,7 +411,7 @@ def activate_nbstripout():
 
 
 def _build_jupyter_command(
-    base: str, ip: str, all_kernels: bool, args: Iterable[str]
+        base: str, ip: str, all_kernels: bool, args: Iterable[str]
 ) -> List[str]:
     cmd = [base, "--ip", ip]
 
@@ -546,11 +545,11 @@ def convert_notebook(all_flag, overwrite_flag, filepath):
     for notebook in notebooks:
         secho("Converting notebook '{}'...".format(str(notebook)))
         output_path = (
-            kedro_project_path
-            / "src"
-            / kedro_package_name
-            / "nodes"
-            / "{}.py".format(notebook.stem)
+                kedro_project_path
+                / "src"
+                / kedro_package_name
+                / "nodes"
+                / "{}.py".format(notebook.stem)
         )
 
         if output_path.is_file():

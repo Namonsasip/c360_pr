@@ -66,7 +66,6 @@ def join_with_customer_profile(
         config,
         cust_profile_df,
 ):
-
     joined_condition = None
     for left_col, right_col in config["join_column_with_cust_profile"].items():
         condition = F.col("left.{}".format(left_col)).eqNullSafe(F.col("right.{}".format(right_col)))

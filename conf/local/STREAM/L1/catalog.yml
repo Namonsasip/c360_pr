@@ -1,4 +1,3 @@
-
 int_l1_streaming_content_type_features:
   type: kedro.contrib.io.pyspark.SparkDataSet
   filepath: data/L1_DAILY/STREAM/int_l1_streaming_content_type_features/

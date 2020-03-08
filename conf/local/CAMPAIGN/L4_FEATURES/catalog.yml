@@ -1,4 +1,3 @@
-
 l4_campaign_postpaid_prepaid_features:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"

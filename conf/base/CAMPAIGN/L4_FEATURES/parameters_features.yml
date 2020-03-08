@@ -2,7 +2,7 @@ l4_campaign_postpaid_prepaid_features:
   partition_by: ["subscription_identifier"]
   feature_list:
     min: [
-      'campaign_overall_count_sum'
+       'campaign_overall_count_sum'
       ,'campaign_total_by_call_center_sum'
       ,'campaign_total_eligible_by_call_center_sum'
       ,'campaign_total_success_by_call_center_sum'
@@ -93,7 +93,7 @@ l4_campaign_postpaid_prepaid_features:
 
     ]
     sum: [
-      'campaign_overall_count_sum'
+       'campaign_overall_count_sum'
       ,'campaign_total_by_call_center_sum'
       ,'campaign_total_eligible_by_call_center_sum'
       ,'campaign_total_success_by_call_center_sum'
@@ -139,7 +139,7 @@ l4_campaign_postpaid_prepaid_features:
 
     ]
     avg: [
-      'campaign_overall_count_sum'
+       'campaign_overall_count_sum'
       ,'campaign_total_by_call_center_sum'
       ,'campaign_total_eligible_by_call_center_sum'
       ,'campaign_total_success_by_call_center_sum'

@@ -1,4 +1,3 @@
-
 l3_customer_profile_include_1mo_non_active:
   type: kedro.contrib.io.pyspark.SparkDataSet
   filepath: /mnt/customer360-blob-data/C360/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/

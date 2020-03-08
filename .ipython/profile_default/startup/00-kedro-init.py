@@ -21,6 +21,7 @@ except NameError:
         # If the working directory is not the project, raise the exception
         raise
 
+
 @register_line_magic
 def reload_kedro(path, line=None):
     """"Line magic which reloads all Kedro default variables."""

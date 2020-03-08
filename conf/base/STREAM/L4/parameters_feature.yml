@@ -1,4 +1,3 @@
-
 int_l4_streaming_content_type_features:
   partition_by: ["access_method_num", "register_date", "content_group"]
   feature_list:
