@@ -53,7 +53,6 @@ l5_cvm_features_targets_one_day:
   save_args:
     mode: "overwrite"
 
-
 # predictions
 l5_cvm_one_day_predictions:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -61,3 +60,12 @@ l5_cvm_one_day_predictions:
   file_format: "parquet"
   save_args:
     mode: "overwrite"
+
+important_columns:
+  type: kedro.contrib.io.yaml_local.YAMLLocalDataSet
+  filepath: /mnt/customer360-cvm/important_columns    
+
+rfe_plot:
+  type: kedro.io.PickleLocalDataSet
+  filepath: /mnt/customer360-cvm/rfe_plot
+
