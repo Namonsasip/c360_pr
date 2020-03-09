@@ -62,7 +62,8 @@ def pandas_predict_xgb(
 def pyspark_predict_xgb(
     df: DataFrame, xgb_models: Dict[str, xgboost.Booster], parameters: Dict[str, Any]
 ) -> DataFrame:
-    """ Runs predictions on given pyspark DataFrame using saved models.
+    """ Runs predictions on given pyspark DataFrame using saved models. Assumes that
+    xgboost is present on Spark cluster.
 
     Args:
         df: pyspark DataFrame to predict on.
