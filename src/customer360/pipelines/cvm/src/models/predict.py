@@ -25,6 +25,7 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import logging
 
 from pyspark.sql import functions as func
 from pyspark.sql import DataFrame
@@ -71,8 +72,11 @@ def pyspark_predict_xgb(
     """
 
     target_cols = list_targets(parameters)
+    log = logging.getLogger(__name__)
 
     for target_chosen in target_cols:
+        log.info("Creating {} predictions.".format(target_chosen))
+
         # spark prediction udf
         @func.pandas_udf(
             returnType=DoubleType(), functionType=func.PandasUDfuncType.SCALAR
