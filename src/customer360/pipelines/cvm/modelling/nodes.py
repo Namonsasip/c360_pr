@@ -35,6 +35,7 @@ import logging
 from customer360.pipelines.cvm.src.models.get_pandas_train_test_sample import (
     get_pandas_train_test_sample,
 )
+from customer360.pipelines.cvm.src.models.predict import pyspark_predict_xgb
 from customer360.pipelines.cvm.src.utils.list_targets import list_targets
 import shap
 
@@ -120,3 +121,6 @@ def predict_xgb(
     Returns:
         Table with propensity scores.
     """
+
+    predictions = pyspark_predict_xgb(df, xgb_models, parameters)
+    return predictions
