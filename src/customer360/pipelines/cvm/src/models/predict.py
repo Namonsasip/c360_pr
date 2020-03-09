@@ -82,6 +82,8 @@ def pyspark_predict_xgb(
             returnType=DoubleType(), functionType=func.PandasUDFType.SCALAR
         )
         def _pandas_predict(*cols):
+            import xgboost
+
             chosen_xgb_model = xgb_models[target_chosen]
             pd_df = pd.concat(cols, axis=1)
             X_pred = xgboost.DMatrix(pd_df)
