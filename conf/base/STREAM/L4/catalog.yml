@@ -1,6 +1,6 @@
 # Fav Content Group Table
 int_l4_streaming_fav_content_group_by_volume:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/int_l4_streaming_fav_content_group_by_volume/
   file_format: parquet
   save_args:
@@ -8,7 +8,7 @@ int_l4_streaming_fav_content_group_by_volume:
     partitionBy: ["start_of_week"]
 
 l4_streaming_fav_content_group_by_volume:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_content_group_by_volume/
   file_format: parquet
   save_args:
@@ -17,7 +17,7 @@ l4_streaming_fav_content_group_by_volume:
 
 # Fav tv show by volume tables
 l4_streaming_fav_tv_channel_by_volume:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_tv_channel_by_volume/
   file_format: parquet
   save_args:
@@ -26,7 +26,7 @@ l4_streaming_fav_tv_channel_by_volume:
 
 # Fav tv show by number of episode watched tables
 l4_streaming_fav_tv_show_by_episode_watched:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_tv_show_by_episode_watched/
   file_format: parquet
   save_args:
@@ -35,7 +35,7 @@ l4_streaming_fav_tv_show_by_episode_watched:
 
 # Fav video service by download tables
 l4_streaming_fav_video_service_by_download_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_video_service_by_download_feature/
   file_format: parquet
   save_args:
@@ -44,7 +44,7 @@ l4_streaming_fav_video_service_by_download_feature:
 
 # 2nd Fav video service by download tables
 l4_streaming_2nd_fav_video_service_by_download_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_2nd_fav_video_service_by_download_feature/
   file_format: parquet
   save_args:
@@ -53,7 +53,7 @@ l4_streaming_2nd_fav_video_service_by_download_feature:
 
 # Fav video service by number of visit tables
 l4_streaming_fav_video_service_by_visit_count_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_video_service_by_visit_count_feature/
   file_format: parquet
   save_args:
@@ -62,7 +62,7 @@ l4_streaming_fav_video_service_by_visit_count_feature:
 
 # Fav music service by download tables
 l4_streaming_fav_music_service_by_download_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_music_service_by_download_feature/
   file_format: parquet
   save_args:
@@ -72,7 +72,7 @@ l4_streaming_fav_music_service_by_download_feature:
 
 # 2nd Fav music service by download tables
 l4_streaming_2nd_fav_music_service_by_download_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_2nd_fav_music_service_by_download_feature/
   file_format: parquet
   save_args:
@@ -81,7 +81,7 @@ l4_streaming_2nd_fav_music_service_by_download_feature:
 
 # Fav music service by number of visit tables
 l4_streaming_fav_music_service_by_visit_count_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_music_service_by_visit_count_feature/
   file_format: parquet
   save_args:
@@ -91,7 +91,7 @@ l4_streaming_fav_music_service_by_visit_count_feature:
 
 # Fav esport service by download tables
 l4_streaming_fav_esport_service_by_download_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_esport_service_by_download_feature/
   file_format: parquet
   save_args:
@@ -101,7 +101,7 @@ l4_streaming_fav_esport_service_by_download_feature:
   
 # 2nd Fav esport service by download tables
 l4_streaming_2nd_fav_esport_service_by_download_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_2nd_fav_esport_service_by_download_feature/
   file_format: parquet
   save_args:
@@ -111,7 +111,7 @@ l4_streaming_2nd_fav_esport_service_by_download_feature:
     
 # Fav esport service by number of visit tables
 l4_streaming_fav_esport_service_by_visit_count_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_esport_service_by_visit_count_feature/
   file_format: parquet
   save_args:
@@ -120,7 +120,7 @@ l4_streaming_fav_esport_service_by_visit_count_feature:
 
 
 l4_streaming_visit_count_and_download_traffic_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_visit_count_and_download_traffic_feature/
   file_format: parquet
   save_args:
@@ -130,7 +130,7 @@ l4_streaming_visit_count_and_download_traffic_feature:
 
 
 l4_streaming_fav_youtube_video_streaming_day_of_week_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_youtube_video_streaming_day_of_week_feature/
   file_format: parquet
   save_args:
@@ -138,7 +138,7 @@ l4_streaming_fav_youtube_video_streaming_day_of_week_feature:
     partitionBy: ["start_of_week"]
 
 l4_streaming_fav_facebook_video_streaming_day_of_week_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_facebook_video_streaming_day_of_week_feature/
   file_format: parquet
   save_args:
@@ -146,7 +146,7 @@ l4_streaming_fav_facebook_video_streaming_day_of_week_feature:
     partitionBy: ["start_of_week"]
 
 l4_streaming_fav_linetv_video_streaming_day_of_week_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_linetv_video_streaming_day_of_week_feature/
   file_format: parquet
   save_args:
@@ -154,7 +154,7 @@ l4_streaming_fav_linetv_video_streaming_day_of_week_feature:
     partitionBy: ["start_of_week"]
 
 l4_streaming_fav_ais_play_video_streaming_day_of_week_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_ais_play_video_streaming_day_of_week_feature/
   file_format: parquet
   save_args:
@@ -162,7 +162,7 @@ l4_streaming_fav_ais_play_video_streaming_day_of_week_feature:
     partitionBy: ["start_of_week"]
 
 l4_streaming_fav_netflix_video_streaming_day_of_week_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_netflix_video_streaming_day_of_week_feature/
   file_format: parquet
   save_args:
@@ -170,7 +170,7 @@ l4_streaming_fav_netflix_video_streaming_day_of_week_feature:
     partitionBy: ["start_of_week"]
 
 l4_streaming_fav_hooq_video_streaming_day_of_week_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_hooq_video_streaming_day_of_week_feature/
   file_format: parquet
   save_args:
@@ -178,7 +178,7 @@ l4_streaming_fav_hooq_video_streaming_day_of_week_feature:
     partitionBy: ["start_of_week"]
 
 l4_streaming_fav_iflix_video_streaming_day_of_week_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_iflix_video_streaming_day_of_week_feature/
   file_format: parquet
   save_args:
@@ -186,7 +186,7 @@ l4_streaming_fav_iflix_video_streaming_day_of_week_feature:
     partitionBy: ["start_of_week"]
 
 l4_streaming_fav_spotify_music_streaming_day_of_week_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_spotify_music_streaming_day_of_week_feature/
   file_format: parquet
   save_args:
@@ -194,7 +194,7 @@ l4_streaming_fav_spotify_music_streaming_day_of_week_feature:
     partitionBy: ["start_of_week"]
 
 l4_streaming_fav_joox_music_streaming_day_of_week_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_joox_music_streaming_day_of_week_feature/
   file_format: parquet
   save_args:
@@ -202,7 +202,7 @@ l4_streaming_fav_joox_music_streaming_day_of_week_feature:
     partitionBy: ["start_of_week"]
 
 l4_streaming_fav_twitch_esport_streaming_day_of_week_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_twitch_esport_streaming_day_of_week_feature/
   file_format: parquet
   save_args:
@@ -210,7 +210,7 @@ l4_streaming_fav_twitch_esport_streaming_day_of_week_feature:
     partitionBy: ["start_of_week"]
 
 l4_streaming_fav_bigo_esport_streaming_day_of_week_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_bigo_esport_streaming_day_of_week_feature/
   file_format: parquet
   save_args:
@@ -218,7 +218,7 @@ l4_streaming_fav_bigo_esport_streaming_day_of_week_feature:
     partitionBy: ["start_of_week"]
 
 l4_streaming_fav_mixer_esport_streaming_day_of_week_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_mixer_esport_streaming_day_of_week_feature/
   file_format: parquet
   save_args:
@@ -226,7 +226,7 @@ l4_streaming_fav_mixer_esport_streaming_day_of_week_feature:
     partitionBy: ["start_of_week"]
 
 l4_streaming_fav_steamtv_esport_streaming_day_of_week_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_fav_steamtv_esport_streaming_day_of_week_feature/
   file_format: parquet
   save_args:
@@ -235,7 +235,7 @@ l4_streaming_fav_steamtv_esport_streaming_day_of_week_feature:
 
 
 l4_streaming_session_duration_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l4_features/l4_streaming_session_duration_feature/
   file_format: parquet
   save_args:

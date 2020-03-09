@@ -1,5 +1,5 @@
 l1_usage_outgoing_call_relation_sum_daily:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/l1_usage_outgoing_call_relation_sum_daily/
   save_args:
@@ -7,7 +7,7 @@ l1_usage_outgoing_call_relation_sum_daily:
     partitionBy: ["event_partition_date"]
 
 l1_usage_incoming_call_relation_sum_daily:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/l1_usage_incoming_call_relation_sum_daily/
   save_args:
@@ -15,7 +15,7 @@ l1_usage_incoming_call_relation_sum_daily:
     partitionBy: ["event_partition_date"]
 
 l1_usage_outgoing_call_relation_sum_ir_daily:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/l1_usage_outgoing_call_relation_sum_ir_daily/
   save_args:
@@ -23,7 +23,7 @@ l1_usage_outgoing_call_relation_sum_ir_daily:
     partitionBy: ["event_partition_date"]
 
 l1_usage_incoming_call_relation_sum_ir_daily:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/l1_usage_incoming_call_relation_sum_ir_daily/
   save_args:
@@ -31,7 +31,7 @@ l1_usage_incoming_call_relation_sum_ir_daily:
     partitionBy: ["event_partition_date"]
 
 l1_usage_ru_a_gprs_cbs_usage_daily:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/l1_usage_ru_a_gprs_cbs_usage_daily/
   save_args:
@@ -39,7 +39,7 @@ l1_usage_ru_a_gprs_cbs_usage_daily:
     partitionBy: ["event_partition_date"]
 
 l1_usage_ru_a_vas_postpaid_usg_daily:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/l1_usage_ru_a_vas_postpaid_usg_daily/
   save_args:
@@ -47,7 +47,7 @@ l1_usage_ru_a_vas_postpaid_usg_daily:
     partitionBy: ["event_partition_date"]
 
 l1_usage_ru_a_vas_postpaid_prepaid_daily:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/l1_usage_ru_a_vas_postpaid_prepaid_daily/
   save_args:
@@ -55,7 +55,7 @@ l1_usage_ru_a_vas_postpaid_prepaid_daily:
     partitionBy: ["event_partition_date"]
 
 l1_usage_postpaid_prepaid_daily:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/USAGE/l1_features/l1_usage_postpaid_prepaid_daily/
   save_args:
