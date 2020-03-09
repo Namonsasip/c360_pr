@@ -30,7 +30,7 @@ from kedro.pipeline import Pipeline, node
 from src.customer360.pipelines.cvm.preprocessing.nodes import (
     pipeline1_fit,
     pipeline1_transform,
-    feature_selection,
+    feature_selection_all_target,
 )
 
 
@@ -69,7 +69,7 @@ def create_cvm_preprocessing(sample_type: str = None) -> Pipeline:
                 name="create_l5_cvm_one_day_test_preprocessed" + suffix,
             ),
             node(
-                feature_selection,
+                feature_selection_all_target,
                 ["l5_cvm_one_day_train_preprocessed" + suffix, "parameters"],
                 ["important_columns", "rfe_plot"],
                 name="feature_selection_l5_cvm_one_day_train_preprocessed" + suffix,
