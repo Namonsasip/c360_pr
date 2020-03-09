@@ -29,9 +29,12 @@
 from pyspark.sql import DataFrame
 from typing import Dict, Any
 from sklearn.ensemble import RandomForestClassifier
-import pyspark.sql.functions as func
 import xgboost
 import logging
+
+from customer360.pipelines.cvm.src.models.get_pandas_train_test_sample import (
+    get_pandas_train_test_sample,
+)
 from customer360.pipelines.cvm.src.utils.list_targets import list_targets
 import shap
 
@@ -95,21 +98,8 @@ def train_xgb(df: DataFrame, parameters: Dict[str, Any]) -> Dict[str, xgboost.Bo
 
         log.info("Training xgboost model for {} target.".format(target_chosen))
 
-        df_per_target = df.filter("{} is not null".format(target_chosen))
+        X, y = get_pandas_train_test_sample(df, parameters, target_chosen)
 
-        y = df_per_target.select(target_chosen).withColumnRenamed(
-            target_chosen, "target_base"
-        )
-        y = y.withColumn(
-            "target",
-            func.when(y.target_base == "churn", True)
-            .when(y.target_base == "drop", True)
-            .otherwise(False),
-        )
-        y = y.drop("target_base")
-        y = y.toPandas()
-
-        X = df_per_target.drop(*target_cols).toPandas()
         xgb_model = xgboost.train(
             {"learning_rate": 0.01}, xgboost.DMatrix(X, label=y["target"]), 100
         )
