@@ -98,7 +98,9 @@ def train_xgb(df: DataFrame, parameters: Dict[str, Any]) -> Dict[str, xgboost.Bo
         log.info("Training xgboost model for {} target.".format(target_chosen))
 
         y = targets
-        y["target"] = np.where(y[target_chosen] in ["no_churn", "no_drop"], False, True)
+        y["target"] = np.where(
+            y[target_chosen] == "no_churn" or y[target_chosen] == "no_drop", False, True
+        )
         y = y["target"]
 
         X = X_all_targets.filter("{} is not null".format(target_chosen))
