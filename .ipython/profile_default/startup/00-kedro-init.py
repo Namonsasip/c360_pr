@@ -1,16 +1,35 @@
 import logging.config
-from pathlib import Path
-import sys
 import os
+import sys
+from pathlib import Path
 
 from IPython.core.magic import register_line_magic
+from pyspark.sql import SparkSession
+
+
+def init_spark_session() -> SparkSession:
+    """
+    Initialize the Spark session
+
+    """
+    spark = SparkSession.builder.getOrCreate()
+
+    # Dont delete this line. This allow spark to only overwrite the partition
+    # saved to parquet instead of entire table folder
+    spark.conf.set("spark.sql.sources.partitionOverwriteMode", "DYNAMIC")
+
+    return spark
+
 
 # Find the project root (./../../../)
 startup_error = None
 try:
+    if Path(__file__).name != "00-kedro-init.py":
+        # This exception should be captured by the statement below
+        raise NameError("Not running from 00-kedro-init.py")
     project_path = str(Path(__file__).parents[3].resolve())
 except NameError:
-    # If we're not running this code by sourcing the file,
+    # If we're not running this code by sourcing the file (i.e __file__ does not exist),
     # try checking if the current working directory is the project directory
     kedro_init_file_path = os.path.join(
         ".ipython", "profile_default", "startup", "00-kedro-init.py"
@@ -27,6 +46,7 @@ def reload_kedro(path, line=None):
     global startup_error
     global context
     global catalog
+    global spark
 
     try:
         import kedro.config.default_logger
@@ -52,8 +72,10 @@ def reload_kedro(path, line=None):
         for module in to_remove:
             del sys.modules[module]
 
+        spark = init_spark_session()
+
         logging.info("** Kedro project %s", str(context.project_name))
-        logging.info("Defined global variable `context` and `catalog`")
+        logging.info("Defined global variable `context`, `catalog` and `spark`")
 
         for line_magic in collect_line_magic():
             register_line_magic(line_magic)
