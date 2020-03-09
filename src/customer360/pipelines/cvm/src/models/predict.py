@@ -79,9 +79,7 @@ def pyspark_predict_xgb(
         log.info("Creating {} predictions.".format(target_chosen))
 
         # spark prediction udf
-        @func.pandas_udf(
-            returnType=DoubleType(), functionType=func.PandasUDFType.SCALAR
-        )
+        @func.pandas_udf(returnType=DoubleType())
         def _pandas_predict(*cols):
             os.system("pip install xgboost")
 
