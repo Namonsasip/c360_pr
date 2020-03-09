@@ -65,7 +65,7 @@ def pyspark_predict_xgb(
     Args:
         df: pyspark DataFrame to predict on.
         xgb_models: xgb models used for prediction, one per target.
-        target_chosen: name of target column.
+        parameters: parameters defined in parameters.yml.
     Returns:
         Pyspark DataFrame of scores.
     """
