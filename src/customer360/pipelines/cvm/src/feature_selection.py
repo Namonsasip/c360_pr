@@ -54,7 +54,7 @@ def feature_selection(
 
     # Remove least important variables
     features.drop(
-        features.columns[np.where(not rfecv.support_)[0]], axis=1, inplace=True
+        features.columns[np.where(rfecv.support_ is False)[0]], axis=1, inplace=True
     )
     # Create plot
     dset = pd.DataFrame()
