@@ -8,8 +8,7 @@ l0_campaign_tracking_contact_list_post:
 l0_campaign_tracking_contact_list_ussd:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/CAMPAIGN/campaign_tracking_contact_list_ussd/
-#  filepath: /mnt/customer360-blob-data/C360/CAMPAIGN/campaign_config_special_ontop_package_hits_data/
+  filepath: /mnt/customer360-blob-data/C360/CAMPAIGN/campaign_config_special_ontop_package_hits_data/
   load_args:
     mergeSchema: true
 
