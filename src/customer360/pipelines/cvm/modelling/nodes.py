@@ -29,6 +29,7 @@
 from pyspark.sql import DataFrame
 from typing import Dict, Any
 from sklearn.ensemble import RandomForestClassifier
+import numpy as np
 import xgboost
 import logging
 from customer360.pipelines.cvm.src.utils.list_targets import list_targets
@@ -97,11 +98,7 @@ def train_xgb(df: DataFrame, parameters: Dict[str, Any]) -> Dict[str, xgboost.Bo
         log.info("Training xgboost model for {} target.".format(target_chosen))
 
         y = targets
-        y["target"] = True
-        y["target"][
-            y[target_chosen] == "no_churn" | y[target_chosen] == "no_drop", "target"
-        ] = False
-
+        y["target"] = np.where(y[target_chosen] in ["no_churn", "no_drop"], False, True)
         y = y["target"]
 
         X = X_all_targets.filter("{} is not null".format(target_chosen))
