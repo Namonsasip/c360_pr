@@ -7,11 +7,13 @@ from IPython.core.magic import register_line_magic
 from pyspark.sql import SparkSession
 
 
-def init_spark_session() -> SparkSession:
+@register_line_magic
+def init_spark_session(line=None):
     """
     Initialize the Spark session
 
     """
+    global spark
     spark = SparkSession.builder.getOrCreate()
 
     spark.conf.set("spark.sql.parquet.binaryAsString", "true")
@@ -19,7 +21,7 @@ def init_spark_session() -> SparkSession:
     # saved to parquet instead of entire table folder
     spark.conf.set("spark.sql.sources.partitionOverwriteMode", "DYNAMIC")
 
-    return spark
+    logging.info("Initlialized spark session and defined global variable `spark`")
 
 
 # Find the project root (./../../../)
@@ -41,13 +43,13 @@ except NameError:
         # If the working directory is not the project, raise the exception
         raise
 
+
 @register_line_magic
 def reload_kedro(path, line=None):
     """"Line magic which reloads all Kedro default variables."""
     global startup_error
     global context
     global catalog
-    global spark
 
     try:
         import kedro.config.default_logger
@@ -73,10 +75,8 @@ def reload_kedro(path, line=None):
         for module in to_remove:
             del sys.modules[module]
 
-        spark = init_spark_session()
-
         logging.info("** Kedro project %s", str(context.project_name))
-        logging.info("Defined global variable `context`, `catalog` and `spark`")
+        logging.info("Defined global variable `context` and `catalog`")
 
         for line_magic in collect_line_magic():
             register_line_magic(line_magic)
@@ -90,3 +90,4 @@ def reload_kedro(path, line=None):
 
 
 reload_kedro(project_path)
+init_spark_session()
