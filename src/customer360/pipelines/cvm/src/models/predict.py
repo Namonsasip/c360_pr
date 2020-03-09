@@ -79,7 +79,7 @@ def pyspark_predict_xgb(
 
         # spark prediction udf
         @func.pandas_udf(
-            returnType=DoubleType(), functionType=func.PandasUDfuncType.SCALAR
+            returnType=DoubleType(), functionType=func.PandasUDFType.SCALAR
         )
         def _pandas_predict(*cols):
             pd_df = pd.concat(cols, axis=1)
