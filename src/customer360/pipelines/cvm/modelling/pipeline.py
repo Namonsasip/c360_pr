@@ -31,6 +31,7 @@ from src.customer360.pipelines.cvm.modelling.nodes import (
     train_rf,
     create_shap_for_rf,
     train_xgb,
+    predict_xgb,
 )
 
 
@@ -59,5 +60,36 @@ def create_train_model(**kwargs):
                 "xgb_dev",
                 name="create_xgb",
             ),
+        ]
+    )
+
+
+def create_predictions(sample_type: str) -> Pipeline:
+    """ Creates prediction pipeline.
+
+      Args:
+          sample_type: sample type to use. Dev sample for "dev", Sample for "sample",
+          full dataset for None (default).
+
+      Returns:
+          Kedro pipeline.
+      """
+
+    if sample_type not in ["dev", "sample", None]:
+        raise Exception("Sample type {} not implemented".format(sample_type))
+
+    if sample_type is not None:
+        suffix = "_" + sample_type
+    else:
+        suffix = ""
+
+    return Pipeline(
+        [
+            node(
+                predict_xgb,
+                ["l5_cvm_one_day_train_preprocessed" + suffix, "xgb_dev", "parameters"],
+                ["l5_cvm_one_day_predictions" + suffix],
+                name="create_l5_cvm_one_day_predictions" + suffix,
+            )
         ]
     )
