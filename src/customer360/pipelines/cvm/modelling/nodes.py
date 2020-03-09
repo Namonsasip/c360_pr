@@ -103,7 +103,7 @@ def train_xgb(df: DataFrame, parameters: Dict[str, Any]) -> Dict[str, xgboost.Bo
         y = y.withColumn(
             "target",
             func.when(y.target_base == "churn", True)
-            .func.when(y.target_base == "drop", True)
+            .when(y.target_base == "drop", True)
             .otherwise(False),
         )
         y = y.drop("target_base")
