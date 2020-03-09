@@ -33,7 +33,7 @@ from kedro.pipeline import Pipeline
 
 from .pipelines.cvm.data_prep.pipeline import create_cvm_prepare_inputs_samples, \
     create_cvm_prepare_data
-from .pipelines.cvm.modelling.pipeline import create_train_model
+from .pipelines.cvm.modelling.pipeline import create_train_model, create_predictions
 from .pipelines.cvm.preprocessing.pipeline import create_cvm_preprocessing
 from .pipelines.data_engineering.pipelines.usage_pipeline.to_l1 import \
     usage_to_l1_pipeline
@@ -143,4 +143,7 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         "cvm_preprocessing_dev": create_cvm_preprocessing("dev"),
         "cvm_preprocessing_sample": create_cvm_preprocessing("sample"),
         "train_model": create_train_model(),
+        "predict": create_predictions(None),
+        "predict_sample": create_predictions("sample"),
+        "predict_dev": create_predictions("dev"),
     }
