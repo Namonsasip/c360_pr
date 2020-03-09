@@ -88,7 +88,7 @@ def create_predictions(sample_type: str) -> Pipeline:
             node(
                 predict_xgb,
                 ["l5_cvm_one_day_train_preprocessed" + suffix, "xgb_dev", "parameters"],
-                ["l5_cvm_one_day_predictions" + suffix],
+                "l5_cvm_one_day_predictions" + suffix,
                 name="create_l5_cvm_one_day_predictions" + suffix,
             )
         ]
