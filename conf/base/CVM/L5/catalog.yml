@@ -53,3 +53,11 @@ l5_cvm_features_targets_one_day:
   save_args:
     mode: "overwrite"
 
+
+# predictions
+l5_cvm_one_day_predictions:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_one_day_predictions/
+  file_format: "parquet"
+  save_args:
+    mode: "overwrite"

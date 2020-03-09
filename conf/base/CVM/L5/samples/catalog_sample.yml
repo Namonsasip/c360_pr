@@ -105,3 +105,11 @@ random_forest_sample:
 xgb_sample:
   type: kedro.io.PickleLocalDataSet
   filepath: /mnt/customer360-cvm/xgb_sample
+
+
+l5_cvm_one_day_predictions_sample:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_one_day_predictions_sample/
+  file_format: "parquet"
+  save_args:
+    mode: "overwrite"
