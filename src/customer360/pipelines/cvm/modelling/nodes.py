@@ -98,7 +98,7 @@ def train_xgb(df: DataFrame, parameters: Dict[str, Any]) -> Dict[str, xgboost.Bo
 
         y = targets
         y["target"] = True
-        y.loc[
+        y["target"][
             y[target_chosen] == "no_churn" | y[target_chosen] == "no_drop", "target"
         ] = False
 
