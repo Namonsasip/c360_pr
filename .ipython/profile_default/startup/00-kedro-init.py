@@ -14,6 +14,7 @@ def init_spark_session() -> SparkSession:
     """
     spark = SparkSession.builder.getOrCreate()
 
+    spark.conf.set("spark.sql.parquet.binaryAsString", "true")
     # Dont delete this line. This allow spark to only overwrite the partition
     # saved to parquet instead of entire table folder
     spark.conf.set("spark.sql.sources.partitionOverwriteMode", "DYNAMIC")
