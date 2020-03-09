@@ -99,7 +99,7 @@ def train_xgb(df: DataFrame, parameters: Dict[str, Any]) -> Dict[str, xgboost.Bo
 
         true_values = ["churn", "drop"]
         y = df_per_target.select(target_chosen).withColumnRenamed(
-            "target_base", target_chosen
+            target_chosen, "target_base"
         )
         y = y.withColumn(
             "target", func.when(y.target_base in true_values, True).otherwise(False)
