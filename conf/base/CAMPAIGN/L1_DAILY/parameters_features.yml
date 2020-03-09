@@ -1,7 +1,6 @@
 l1_cam_post_channel_with_highest_conversion:
   where_clause: ""
   feature_list:
-    subscription_identifier: "max(subscription_identifier)"
     campaign_overall_count: "max(campaign_overall_count)"
     campaign_last_communication_date: "max(campaign_last_communication_date)"
     campaign_total_by_call_center: "sum(case when lower(campaign_channel) like '%phone%' THEN campaign_total_by_campaign_channel else 0 end)"
