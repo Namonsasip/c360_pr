@@ -143,16 +143,16 @@ def feature_selection_all_target(
         for target in parameters["targets"][usecase]:
             target_class[target] = parameters["targets"][usecase][target]["target_type"]
     # Remove black list column
-    data = data.drop(*parameters["exclude_col"])
+    data = data.drop(*parameters["feature_selection_parameter"]["exclude_col"])
     final_list = []
     final_plot = []
-    for target in parameters["target_column"]:
-        exclude_target = parameters["target_column"][:]
+    for target in parameters["feature_selection_parameter"]["target_column"]:
+        exclude_target = parameters["feature_selection_parameter"]["target_column"][:]
         exclude_target.remove(target)
         res_list, res_plot = feature_selection(
             data.drop(*exclude_target),
             target,
-            parameters["step_size"],
+            parameters["feature_selection_parameter"]["step_size"],
             target_class[target],
         )
         final_list = list(set(final_list) | set(res_list))
