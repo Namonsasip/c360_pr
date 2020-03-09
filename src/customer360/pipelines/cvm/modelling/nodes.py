@@ -29,6 +29,7 @@
 from pyspark.sql import DataFrame
 from typing import Dict, Any
 from sklearn.ensemble import RandomForestClassifier
+import pyspark.sql.functions as func
 import xgboost
 import logging
 from customer360.pipelines.cvm.src.utils.list_targets import list_targets
@@ -86,23 +87,27 @@ def train_xgb(df: DataFrame, parameters: Dict[str, Any]) -> Dict[str, xgboost.Bo
         Xgboost classifier.
     """
     target_cols = list_targets(parameters)
-    targets = df.select(target_cols).toPandas()
-    X_all_targets = df.drop(*target_cols).toPandas()
-    models = {}
 
     log = logging.getLogger(__name__)
 
+    models = {}
     for target_chosen in target_cols:
 
         log.info("Training xgboost model for {} target.".format(target_chosen))
 
-        y = targets
-        true_values = ["churn", "drop"]
-        y["target"] = y[target_chosen].apply(
-            lambda x: True if x in true_values else False
-        )
+        df_per_target = df.filter("{} is not null".format(target_chosen))
 
-        X = X_all_targets.filter("{} is not null".format(target_chosen))
+        true_values = ["churn", "drop"]
+        y = df_per_target.select(target_chosen).withColumnRenamed(
+            "target_base", target_chosen
+        )
+        y = y.withColumn(
+            "target", func.when(y.target_base in true_values, True).otherwise(False)
+        )
+        y = y.drop("target_base")
+        y = y.toPandas()
+
+        X = df_per_target.drop(*target_cols).toPandas()
         xgb_model = xgboost.train(
             {"learning_rate": 0.01}, xgboost.DMatrix(X, label=y["target"]), 100
         )
