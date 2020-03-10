@@ -31,7 +31,7 @@ from typing import Dict, Any
 from sklearn.ensemble import RandomForestClassifier
 import xgboost
 import logging
-
+import numpy as np
 from customer360.pipelines.cvm.src.models.get_pandas_train_test_sample import (
     get_pandas_train_test_sample,
 )
@@ -57,11 +57,12 @@ def train_rf(df: DataFrame, parameters: Dict[str, Any]) -> RandomForestClassifie
     models = {}
     for target_chosen in target_cols:
 
-        log.info("Training xgboost model for {} target.".format(target_chosen))
+        log.info("Training random forest model for {} target.".format(target_chosen))
 
         X, y = get_pandas_train_test_sample(df, parameters, target_chosen)
 
         rf = RandomForestClassifier(n_estimators=100, random_state=100)
+        y = np.as_array(y)
         rf_fitted = rf.fit(X, y)
         models[target_chosen] = rf_fitted
 
