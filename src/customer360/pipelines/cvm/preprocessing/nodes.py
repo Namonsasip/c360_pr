@@ -147,7 +147,7 @@ def feature_selection_all_target(
     for target in parameters["feature_selection_parameter"]["target_column"]:
         exclude_target = parameters["feature_selection_parameter"]["target_column"][:]
         exclude_target.remove(target)
-        res_list, res_plot = feature_selection(
+        res_list = feature_selection(
             data.drop(*exclude_target),
             target,
             parameters["feature_selection_parameter"]["step_size"],
@@ -156,3 +156,26 @@ def feature_selection_all_target(
         final_list = list(set(final_list) | set(res_list))
 
     return final_list
+
+
+def data_filtering_feature(
+    important_column: List[str], whitelist_column: List[str], *df_inputs: DataFrame
+) -> DataFrame:
+    """ Return DataFrame with only selected features and the white list columns.
+    Args:
+        important_column: List of column from the the feature selection process.
+        whitelist_column: List of white list columns to be preserve in a DataFrame.
+        df_inputs: List of DataFrame to filter the feature.
+    Returns:
+        DataFrame with only selected column and white list columns.
+    """
+
+    if len(df_inputs) < 1:
+        raise "df_inputs is missing."
+    df = df_inputs[0]
+    if len(df_inputs) > 1:
+        for df_input in df_inputs[1:]:
+            df = df.join(df_input, whitelist_column, "left_outer")
+    df = df.select(important_column + whitelist_column)
+
+    return df
