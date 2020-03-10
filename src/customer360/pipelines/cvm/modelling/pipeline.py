@@ -32,6 +32,7 @@ from src.customer360.pipelines.cvm.modelling.nodes import (
     create_shap_for_rf,
     train_xgb,
     predict_xgb,
+    predict_rf,
 )
 
 
@@ -90,6 +91,16 @@ def create_predictions(sample_type: str) -> Pipeline:
                 ["l5_cvm_one_day_train_preprocessed" + suffix, "xgb_dev", "parameters"],
                 "l5_cvm_one_day_predictions" + suffix,
                 name="create_l5_cvm_one_day_predictions" + suffix,
-            )
+            ),
+            node(
+                predict_rf,
+                [
+                    "l5_cvm_one_day_train_preprocessed" + suffix,
+                    "random_forest_dev",
+                    "parameters",
+                ],
+                "l5_cvm_one_day_predictions" + suffix,
+                name="create_l5_cvm_one_day_predictions" + suffix,
+            ),
         ]
     )
