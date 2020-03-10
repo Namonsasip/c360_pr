@@ -52,9 +52,9 @@ def get_pandas_train_test_sample(
         y = df.select(target_chosen).withColumnRenamed(target_chosen, "target_base")
         y = y.withColumn(
             "target",
-            func.when(y.target_base == "churn", True)
-            .when(y.target_base == "drop", True)
-            .otherwise(False),
+            func.when(y.target_base == "churn", 1)
+            .when(y.target_base == "drop", 1)
+            .otherwise(0),
         )
         y = y.drop("target_base")
         y = y.toPandas()
