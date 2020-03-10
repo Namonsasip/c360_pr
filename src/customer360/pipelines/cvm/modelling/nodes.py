@@ -61,7 +61,7 @@ def train_rf(df: DataFrame, parameters: Dict[str, Any]) -> RandomForestClassifie
         X, y = get_pandas_train_test_sample(df, parameters, target_chosen)
 
         rf = RandomForestClassifier(n_estimators=100, random_state=100)
-        y = y.to_numpy()
+        y = y.values.ravel()
         rf_fitted = rf.fit(X, y)
         models[target_chosen] = rf_fitted
 
