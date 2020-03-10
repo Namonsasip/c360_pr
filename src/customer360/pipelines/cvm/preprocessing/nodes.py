@@ -33,7 +33,9 @@ from pyspark.ml.feature import StringIndexer, Imputer
 from pyspark.ml import Pipeline, PipelineModel
 from pyspark.sql.functions import col
 from customer360.pipelines.cvm.src.utils.list_categorical import list_categorical
+from customer360.pipelines.cvm.src.utils.list_operations import list_sub
 from customer360.pipelines.cvm.src.utils.list_targets import list_targets
+from customer360.pipelines.cvm.src.utils.setup_names import setup_names
 
 
 def pipeline1_fit(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
@@ -46,13 +48,16 @@ def pipeline1_fit(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
         String indexed table and OneHotEncoderEstimator object to use later.
     """
 
+    df = setup_names(df)
+
     # select columns
     target_cols = list_targets(parameters)
-    cols_to_pick = parameters["prepro_cols_to_pick"] + target_cols
+    key_columns = parameters["key_columns"]
+    cols_to_pick = parameters["prepro_cols_to_pick"] + target_cols + key_columns
     df = df.select(cols_to_pick)
 
-    categorical_cols = list(set(list_categorical(df)) - set(target_cols))
-    numerical_cols = list(set(df.columns) - set(categorical_cols) - set(target_cols))
+    categorical_cols = list_sub(list_categorical(df), target_cols + key_columns)
+    numerical_cols = list_sub(df.columns, categorical_cols + target_cols + key_columns)
 
     # set types
     for col_name in numerical_cols:
@@ -94,13 +99,16 @@ def pipeline1_transform(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
         String indexed table object to use later.
     """
 
+    df = setup_names(df)
+
     # select columns
     target_cols = list_targets(parameters)
-    cols_to_pick = parameters["prepro_cols_to_pick"] + target_cols
+    key_columns = parameters["key_columns"]
+    cols_to_pick = parameters["prepro_cols_to_pick"] + target_cols + key_columns
     df = df.select(cols_to_pick)
 
-    categorical_cols = list(set(list_categorical(df)) - set(target_cols))
-    numerical_cols = list(set(df.columns) - set(categorical_cols) - set(target_cols))
+    categorical_cols = list_sub(list_categorical(df), target_cols + key_columns)
+    numerical_cols = list_sub(df.columns, categorical_cols + target_cols + key_columns)
 
     # set types
     for col_name in numerical_cols:
