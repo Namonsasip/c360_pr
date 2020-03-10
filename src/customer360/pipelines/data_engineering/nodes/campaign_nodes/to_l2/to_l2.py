@@ -5,7 +5,7 @@ from kedro.context.context import load_context
 from pathlib import Path
 import logging, os
 
-conf = os.environ["CONF"]
+conf = os.getenv("CONF", None)
 
 
 def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,

@@ -42,7 +42,7 @@ import pytest, os
 from customer360.run import ProjectContext
 
 from pyspark.sql import SparkSession
-conf = os.environ["CONF"]
+conf = os.getenv("CONF", None)
 
 
 @pytest.fixture(scope="module")
