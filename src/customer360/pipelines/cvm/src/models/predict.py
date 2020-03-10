@@ -25,8 +25,9 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import logging
 
+import logging
+from sklearn.ensemble import RandomForestClassifier
 from pyspark.sql import functions as func
 from pyspark.sql import DataFrame
 from pyspark.sql.types import DoubleType
@@ -85,6 +86,42 @@ def pyspark_predict_xgb(
             pd_df = pd.concat(cols, axis=1)
             X_pred = xgboost.DMatrix(pd_df)
             predictions = chosen_xgb_model.predict(X_pred)
+            return pd.Series(predictions)
+
+        feature_cols = list_sub(df.columns, target_cols)
+        df = df.withColumn(target_chosen + "_pred", _pandas_predict(*feature_cols))
+
+    return df
+
+
+def pyspark_predict_rf(
+    df: DataFrame,
+    rf_models: Dict[str, RandomForestClassifier],
+    parameters: Dict[str, Any],
+) -> DataFrame:
+    """ Runs predictions on given pyspark DataFrame using saved models. Assumes that
+    sklearn is present on Spark cluster.
+
+    Args:
+        df: pyspark DataFrame to predict on.
+        rf_models: Random Forest models used for prediction, one per target.
+        parameters: parameters defined in parameters.yml.
+    Returns:
+        Pyspark DataFrame of scores.
+    """
+
+    target_cols = list_targets(parameters)
+    log = logging.getLogger(__name__)
+
+    for target_chosen in target_cols:
+        log.info("Creating {} predictions.".format(target_chosen))
+
+        # spark prediction udf
+        @func.pandas_udf(returnType=DoubleType())
+        def _pandas_predict(*cols):
+            chosen_model = rf_models[target_chosen]
+            pd_df = pd.concat(cols, axis=1)
+            predictions = chosen_model.predict_proba(pd_df)[:, 1]
             return pd.Series(predictions)
 
         feature_cols = list_sub(df.columns, target_cols)
