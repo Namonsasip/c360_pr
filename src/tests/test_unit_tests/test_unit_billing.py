@@ -15,9 +15,60 @@ from datetime import timedelta
 
 class TestUnitBilling:
 
-    def test_dummy(self, project_context):
+    def test_last_topup_channel(self, project_context):
+        '''
+        l2_last_topup_channel
+        '''
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
+
+        date1 = '2020-01-01'
+        date2 = '2020-04-01'
+        random.seed(100)
+        my_dates_list = pd.date_range(date1, date2).tolist()
+        my_dates = [iTemp.date().strftime("%d-%m-%Y") for iTemp in my_dates_list]
+        my_dates = my_dates * 3
+        random_list = [random.randint(1, 10) * 100 for iTemp in range(0, len(my_dates))]
+
+        input_df = spark.createDataFrame(zip(random_list, my_dates), schema=['face_value', 'temp']) \
+            .withColumn("access_method_num", F.lit(1)) \
+            .withColumn("recharge_date", F.to_date('temp', 'dd-MM-yyyy')) \
+            .withColumn("event_partition_date", F.to_date('recharge_date', 'dd-MM-yyyy')) \
+            .withColumn("register_date", F.to_date(F.lit('2019-01-01'), 'yyyy-MM-dd')) \
+            .withColumn("subscription_identifier", F.lit(123))
+        input_df = input_df.withColumn("start_of_month", F.to_date(F.date_trunc('month', input_df.event_partition_date))) \
+            .withColumn("start_of_week", F.to_date(F.date_trunc('week', input_df.event_partition_date)))
+        customer_profile_df = spark.createDataFrame(zip(random_list, my_dates), schema=['face_value', 'temp']) \
+            .withColumn("access_method_num", F.lit(1)) \
+            .withColumn("recharge_date", F.to_date('temp', 'dd-MM-yyyy')) \
+            .withColumn("event_partition_date", F.to_date('recharge_date', 'dd-MM-yyyy')) \
+            .withColumn("register_date", F.to_date(F.lit('2019-01-01'), 'yyyy-MM-dd')) \
+            .withColumn("subscription_identifier", F.lit(123))\
+            .withColumn("charge_type",F.lit('B43'))
+        dummy_type = ['1', '16', '3', '4', '5', '51', '53', '7', 'B0', 'B1', 'B43', 'B50', 'B58', 'B69']
+        dummy_desc = ['Refill Card', 'My AIS App, My AIS Web', 'Refill Card for non Mobile', 'ATM', 'AIS Shop',
+                      'Refill on Mobile', 'Partner Online Top Up', 'AIS Auto Top up', 'Cash card',
+                      'Recharge via ATM of BBL', 'Recharge via mPay (Agent mCash)', 'Refill on Mobile',
+                      'Recharge via ATM of BAAC', 'Biz Reward Platform']
+        recharge_type_df = spark.createDataFrame(zip(dummy_type, dummy_desc),
+                                                 schema=['recharge_topup_event_type_cd',
+                                                         'recharge_topup_event_type_name'])
+
+        test_data=billing_last_top_up_channel_weekly(input_df,customer_profile_df,recharge_type_df, var_project_context.catalog.load(
+            'params:l2_last_topup_channel'))
+
+        print('testdata')
+        test_data.show(888,False)
+
+        # node(
+        #     billing_last_top_up_channel_weekly,
+        #     ["l0_billing_and_payments_rt_t_recharge_daily",
+        #      "l1_customer_profile_union_daily_feature",
+        #      "l0_billing_topup_type",
+        #      "params:l2_last_topup_channel"],
+        #     "l2_billing_and_payments_weekly_last_top_up_channel"
+        # ),
+        # l2_last_topup_channel
 
     def test_popular_channel_feature(self, project_context):
         '''
@@ -75,7 +126,7 @@ class TestUnitBilling:
                                            schema=['recharge_topup_event_type_cd', 'recharge_topup_event_type_name'])
         joined_data = top_up_channel_joined_data(daily_data, topup_type)
         print('joineddata')
-        joined_data.show(999,False)
+        joined_data.show(999, False)
         # joined_data.show(999,False)
         weekly_data = node_from_config(joined_data, var_project_context.catalog.load(
             'params:l2_popular_top_up_channel'))
@@ -234,28 +285,30 @@ class TestUnitBilling:
         df = df.orderBy('recharge_time')
 
         print('showdf')
-        df.show(888,False)
+        df.show(888, False)
 
-        #nothing to test
-        time_since_last_topup =node_from_config(df, var_project_context.catalog.load(
+        # nothing to test
+        time_since_last_topup = node_from_config(df, var_project_context.catalog.load(
             'params:l1_time_since_last_top_up'))
         print('timelasttopup')
-        time_since_last_topup.show(999,False)
+        time_since_last_topup.show(999, False)
 
         l2_time_since_last = node_from_config(time_since_last_topup, var_project_context.catalog.load(
             'params:l2_time_since_last_top_up'))
         print('l2time')
         l2_time_since_last.orderBy('start_of_week').show(999, False)
         assert \
-            l2_time_since_last.where("start_of_week = '2020-01-06'").select("payments_time_since_last_top_up").collect()[0][
+            l2_time_since_last.where("start_of_week = '2020-01-06'").select(
+                "payments_time_since_last_top_up").collect()[0][
                 0] == 2
 
-        l2_last_three_ranked =node_from_config(time_since_last_topup, var_project_context.catalog.load(
+        l2_last_three_ranked = node_from_config(time_since_last_topup, var_project_context.catalog.load(
             'params:l2_last_three_topup_volume_ranked'))
         print('lastthreeranked')
-        l2_last_three_ranked.orderBy('start_of_week').show(999,False)
+        l2_last_three_ranked.orderBy('start_of_week').show(999, False)
         assert \
-            l2_last_three_ranked.where("start_of_week = '2020-01-06'").where('rank=1').select("face_value").collect()[0][
+            l2_last_three_ranked.where("start_of_week = '2020-01-06'").where('rank=1').select("face_value").collect()[
+                0][
                 0] == 700
         l2_last_three = node_from_config(l2_last_three_ranked, var_project_context.catalog.load(
             'params:l2_last_three_topup_volume'))
@@ -263,21 +316,23 @@ class TestUnitBilling:
             l2_last_three.where("start_of_week = '2020-01-06'").select("payment_top_volume").collect()[0][
                 0] == 1800
         print('last3')
-        l2_last_three.orderBy('start_of_week').show(888,False)
+        l2_last_three.orderBy('start_of_week').show(888, False)
 
         l3_time_since_last = node_from_config(time_since_last_topup, var_project_context.catalog.load(
             'params:l3_time_since_last_top_up'))
         print('l3time')
         l3_time_since_last.orderBy('start_of_month').show(999, False)
         assert \
-            l3_time_since_last.where("start_of_month = '2020-01-01'").select("payments_time_since_last_top_up").collect()[0][
+            l3_time_since_last.where("start_of_month = '2020-01-01'").select(
+                "payments_time_since_last_top_up").collect()[0][
                 0] == 2
         l3_last_three_ranked = node_from_config(time_since_last_topup, var_project_context.catalog.load(
             'params:l3_last_three_topup_volume_ranked'))
         print('last3threeranked')
         l3_last_three_ranked.orderBy('start_of_month').show(999, False)
         assert \
-            l3_last_three_ranked.where("start_of_month = '2020-01-01'").where('rank=2').select("face_value").collect()[0][
+            l3_last_three_ranked.where("start_of_month = '2020-01-01'").where('rank=2').select("face_value").collect()[
+                0][
                 0] == 500
         l3_last_three = node_from_config(l3_last_three_ranked, var_project_context.catalog.load(
             'params:l3_last_three_topup_volume'))
@@ -287,27 +342,23 @@ class TestUnitBilling:
         print('last_3')
         l3_last_three.orderBy('start_of_month').show(888, False)
 
-
-
-
         # exit(2)
-
 
         intermediate_data = node_from_config(df, var_project_context.catalog.load(
             'params:l2_billing_and_payment_feature_time_diff_bw_topups_weekly_intermdeiate'))
 
         print('debuginit')
         intermediate_data.printSchema()
-        intermediate_data.orderBy('start_of_week').show(999,False)
+        intermediate_data.orderBy('start_of_week').show(999, False)
         assert \
             intermediate_data.where("event_partition_date = '2020-01-05'").select("payments_time_diff").collect()[0][
                 0] == 4
-        intermediate_data = intermediate_data.withColumn("subscription_identifier",F.lit(1))
+        intermediate_data = intermediate_data.withColumn("subscription_identifier", F.lit(1))
         weekly_data = node_from_config(intermediate_data, var_project_context.catalog.load(
             'params:l2_billing_and_payment_feature_time_diff_bw_topups_weekly'))
 
         print('debug12341')
-        weekly_data.orderBy('start_of_week').show(999,False)
+        weekly_data.orderBy('start_of_week').show(999, False)
         # weekly_data.where("start_of_week = '2020-10-12'").show()
         assert \
             weekly_data.where("start_of_week = '2020-01-06'").select("payments_max_time_diff").collect()[0][
