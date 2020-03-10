@@ -27,7 +27,7 @@
 # limitations under the License.
 
 import pandas as pd
-from typing import Dict, Any
+from typing import Dict, Any, Tuple
 from pyspark.sql import DataFrame
 import pyspark.sql.functions as func
 from customer360.pipelines.cvm.src.utils.list_targets import list_targets
@@ -35,7 +35,7 @@ from customer360.pipelines.cvm.src.utils.list_targets import list_targets
 
 def get_pandas_train_test_sample(
     df: DataFrame, parameters: Dict[str, Any], target_chosen: str = None
-) -> pd.DataFrame:
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """ Setup pandas prediction / train sample for given pyspark DataFrame.
 
     Args:
@@ -44,7 +44,7 @@ def get_pandas_train_test_sample(
         target_chosen: For creating training sample, column name to create sample for.
             None for prediction, does not include target column.
     Returns:
-        Pandas DataFrame that can be used for prediction / training.
+        Pandas DataFrames that can be used for prediction / training.
     """
 
     if target_chosen is not None:
