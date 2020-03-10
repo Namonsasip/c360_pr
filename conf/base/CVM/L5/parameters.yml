@@ -41,3 +41,8 @@ targets:
 # Train / test split table parameters
 l5_cvm_one_day_train_test:
   train_share: 0.9
+
+# Column to be included in every table
+key_columns:
+  - 'key_date'
+  - 'subscription_identifier'
