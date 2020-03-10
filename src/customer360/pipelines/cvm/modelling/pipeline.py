@@ -35,30 +35,48 @@ from src.customer360.pipelines.cvm.modelling.nodes import (
 )
 
 
-def create_train_model(**kwargs):
+def create_train_model(sample_type: str) -> Pipeline:
+    """ Creates prediction pipeline.
+
+      Args:
+          sample_type: sample type to use. Dev sample for "dev", Sample for "sample",
+          full dataset for None (default).
+
+      Returns:
+          Kedro pipeline.
+      """
+
+    if sample_type not in ["dev", "sample", None]:
+        raise Exception("Sample type {} not implemented".format(sample_type))
+
+    if sample_type is not None:
+        suffix = "_" + sample_type
+    else:
+        suffix = ""
+
     return Pipeline(
         [
             node(
                 train_rf,
-                ["l5_cvm_one_day_train_preprocessed_dev", "parameters"],
-                "random_forest_dev",
-                name="create_random_forest",
+                ["l5_cvm_one_day_train_preprocessed" + suffix, "parameters"],
+                "random_forest" + suffix,
+                name="create_random_forest" + suffix,
             ),
             node(
                 create_shap_for_rf,
                 [
-                    "random_forest_dev",
-                    "l5_cvm_one_day_test_preprocessed_dev",
+                    "random_forest" + suffix,
+                    "l5_cvm_one_day_test_preprocessed" + suffix,
                     "parameters",
                 ],
-                "shap_dev",
-                name="create_shap",
+                "shap" + suffix,
+                name="create_shap" + suffix,
             ),
             node(
                 train_xgb,
-                ["l5_cvm_one_day_train_preprocessed_dev", "parameters"],
-                "xgb_dev",
-                name="create_xgb",
+                ["l5_cvm_one_day_train_preprocessed" + suffix, "parameters"],
+                "xgb" + suffix,
+                name="create_xgb" + suffix,
             ),
         ]
     )

@@ -142,8 +142,10 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         "cvm_preprocessing": create_cvm_preprocessing(None),
         "cvm_preprocessing_dev": create_cvm_preprocessing("dev"),
         "cvm_preprocessing_sample": create_cvm_preprocessing("sample"),
-        "train_model": create_train_model(),
+        "train_model": create_train_model(None),
+        "train_model_dev": create_train_model("dev"),
+        "train_model_sample": create_train_model("sample"),
         "predict": create_predictions(None),
-        "predict_sample": create_predictions("sample"),
         "predict_dev": create_predictions("dev"),
+        "predict_sample": create_predictions("sample"),
     }
