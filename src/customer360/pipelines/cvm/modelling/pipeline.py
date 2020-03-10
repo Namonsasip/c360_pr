@@ -27,6 +27,8 @@
 # limitations under the License.
 
 from kedro.pipeline import Pipeline, node
+
+from customer360.pipelines.cvm.src.utils.get_suffix import get_suffix
 from src.customer360.pipelines.cvm.modelling.nodes import (
     train_rf,
     create_shap_for_rf,
@@ -46,13 +48,7 @@ def create_train_model(sample_type: str) -> Pipeline:
           Kedro pipeline.
       """
 
-    if sample_type not in ["dev", "sample", None]:
-        raise Exception("Sample type {} not implemented".format(sample_type))
-
-    if sample_type is not None:
-        suffix = "_" + sample_type
-    else:
-        suffix = ""
+    suffix = get_suffix(sample_type)
 
     return Pipeline(
         [
@@ -93,13 +89,7 @@ def create_predictions(sample_type: str) -> Pipeline:
           Kedro pipeline.
       """
 
-    if sample_type not in ["dev", "sample", None]:
-        raise Exception("Sample type {} not implemented".format(sample_type))
-
-    if sample_type is not None:
-        suffix = "_" + sample_type
-    else:
-        suffix = ""
+    suffix = get_suffix(sample_type)
 
     return Pipeline(
         [

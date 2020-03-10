@@ -41,6 +41,7 @@ from customer360.pipelines.cvm.data_prep.nodes import (
     subs_date_join,
     create_sample_dataset,
 )
+from customer360.pipelines.cvm.src.utils.get_suffix import get_suffix
 
 
 def create_cvm_prepare_inputs_samples(sample_type: str) -> Pipeline:
@@ -50,10 +51,7 @@ def create_cvm_prepare_inputs_samples(sample_type: str) -> Pipeline:
         sample_type: "dev" for dev samples and "sample" for sample.
     """
 
-    if sample_type not in ["dev", "sample"]:
-        raise Exception("Sample type {} not implemented".format(sample_type))
-
-    suffix = "_" + sample_type
+    suffix = get_suffix(sample_type)
 
     return Pipeline(
         [
@@ -110,13 +108,7 @@ def create_cvm_prepare_data(sample_type: str = None):
         Kedro pipeline.
     """
 
-    if sample_type not in ["dev", "sample", None]:
-        raise Exception("Sample type {} not implemented".format(sample_type))
-
-    if sample_type is not None:
-        suffix = "_" + sample_type
-    else:
-        suffix = ""
+    suffix = get_suffix(sample_type)
 
     return Pipeline(
         [

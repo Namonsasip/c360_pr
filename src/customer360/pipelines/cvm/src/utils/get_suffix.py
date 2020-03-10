@@ -26,42 +26,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from kedro.pipeline import Pipeline, node
 
-from customer360.pipelines.cvm.src.utils.get_suffix import get_suffix
-from src.customer360.pipelines.cvm.preprocessing.nodes import (
-    pipeline1_fit,
-    pipeline1_transform,
-)
+def get_suffix(sample_type: str = None) -> str:
+    """ Returns dataset suffix for given sample type.
 
+    Args:
+        sample_type: can be None (for full dataset), "dev" for small sample,
+            "sample" for medium sample.
+    """
 
-def create_cvm_preprocessing(sample_type: str = None) -> Pipeline:
-    """ Creates pipeline preprocessing data. Can create data pipeline for full dataset
-     or given sample_type.
+    if sample_type not in ["dev", "sample", None]:
+        raise Exception("Sample type {} not implemented".format(sample_type))
 
-     Args:
-         sample_type: sample type to use. Dev sample for "dev", Sample for "sample",
-          full dataset for None (default).
+    if sample_type is not None:
+        suffix = "_" + sample_type
+    else:
+        suffix = ""
 
-     Returns:
-         Kedro pipeline.
-     """
-
-    suffix = get_suffix(sample_type)
-
-    return Pipeline(
-        [
-            node(
-                pipeline1_fit,
-                ["l5_cvm_one_day_train" + suffix, "parameters"],
-                "l5_cvm_one_day_train_preprocessed" + suffix,
-                name="create_l5_cvm_one_day_train_preprocessed" + suffix,
-            ),
-            node(
-                pipeline1_transform,
-                ["l5_cvm_one_day_test" + suffix, "parameters"],
-                "l5_cvm_one_day_test_preprocessed" + suffix,
-                name="create_l5_cvm_one_day_test_preprocessed" + suffix,
-            ),
-        ]
-    )
+    return suffix
