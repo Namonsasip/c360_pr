@@ -28,7 +28,7 @@
 
 
 from pyspark.sql import DataFrame
-from typing import Dict, Any, Tuple, List
+from typing import Dict, Any, List
 from pyspark.ml.feature import StringIndexer, Imputer
 from pyspark.ml import Pipeline, PipelineModel
 from pyspark.sql.functions import col
@@ -127,14 +127,13 @@ def pipeline1_transform(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
 
 def feature_selection_all_target(
     data: DataFrame, parameters: Dict[str, Any]
-) -> Tuple[List[Any], List[Any]]:
+) -> List[Any]:
     """ Return list of selected features and plots for all target columns.
   Args:
       data: Spark dataframe contain all features and all target columns.
       parameters: parameters defined in target parameters*.yml files.
   Returns:
-      List of selected feature column names for all target columns and
-      plot of features ranking for all target.
+      List of selected feature column names for all target columns.
   """
 
     # Get target_type from target parameter dict
@@ -145,7 +144,6 @@ def feature_selection_all_target(
     # Remove black list column
     data = data.drop(*parameters["feature_selection_parameter"]["exclude_col"])
     final_list = []
-    final_plot = []
     for target in parameters["feature_selection_parameter"]["target_column"]:
         exclude_target = parameters["feature_selection_parameter"]["target_column"][:]
         exclude_target.remove(target)
@@ -156,6 +154,5 @@ def feature_selection_all_target(
             target_class[target],
         )
         final_list = list(set(final_list) | set(res_list))
-        final_plot.append(res_plot)
 
-    return (final_list, final_plot)
+    return final_list

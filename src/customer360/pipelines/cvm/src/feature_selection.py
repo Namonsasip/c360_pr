@@ -1,8 +1,6 @@
 from pyspark.sql import DataFrame
-from typing import Any, Tuple, List
-import pandas as pd
+from typing import Any, List
 import numpy as np
-import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import StratifiedKFold
@@ -11,7 +9,7 @@ from sklearn.feature_selection import RFECV
 
 def feature_selection(
     data: DataFrame, target_col: str, step_size: int, target_type: str
-) -> Tuple[List[Any], Any]:
+) -> List[Any]:
     """ Return list of selected features given target column.
   Args:
       data: Spark dataframe contain all features and single target column.
@@ -19,7 +17,7 @@ def feature_selection(
       step_size: parameter step for RFECV function
       target_type: type of the target column only classification or regression.
   Returns:
-      List of selected feature column names and plot of features ranking.
+      List of selected feature column names.
   """
 
     # Filter out the target column and convert to pandas dataframe
@@ -54,14 +52,5 @@ def feature_selection(
 
     # Remove least important variables
     features.drop(features.columns[np.where(~rfecv.support_)[0]], axis=1, inplace=True)
-    # Create plot
-    dset = pd.DataFrame()
-    dset["attr"] = features.columns
-    dset["importance"] = rfecv.estimator_.feature_importances_
-    dset = dset.sort_values(by="importance", ascending=False)
-    plt.figure(figsize=(16, 14))
-    plt.barh(y=dset["attr"], width=dset["importance"], color="#1976D2")
-    plt.title("RFECV - Feature Importances", fontsize=20, fontweight="bold", pad=20)
-    plt.xlabel("Importance", fontsize=14, labelpad=20)
 
-    return (list(features.columns), plt)
+    return list(features.columns)

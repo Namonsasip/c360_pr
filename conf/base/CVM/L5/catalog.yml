@@ -65,7 +65,3 @@ important_columns:
   type: kedro.contrib.io.yaml_local.YAMLLocalDataSet
   filepath: /mnt/customer360-cvm/important_columns    
 
-rfe_plot:
-  type: kedro.io.PickleLocalDataSet
-  filepath: /mnt/customer360-cvm/rfe_plot
-
