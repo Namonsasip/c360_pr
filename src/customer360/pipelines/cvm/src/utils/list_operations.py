@@ -39,7 +39,7 @@ def list_sub(list1: List[Any], list2: List[Any]) -> List[Any]:
     Returns:
         Difference of two lists.
     """
-    return list(set(list1) - set(list2))
+    return [elem for elem in list1 if elem not in list2]
 
 
 def list_intersection(*args: List[Any]) -> List[Any]:
