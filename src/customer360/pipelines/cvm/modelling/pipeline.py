@@ -90,7 +90,7 @@ def create_predictions(sample_type: str) -> Pipeline:
                 predict_xgb,
                 ["l5_cvm_one_day_train_preprocessed" + suffix, "xgb_dev", "parameters"],
                 "l5_cvm_one_day_predictions" + suffix,
-                name="create_l5_cvm_one_day_predictions" + suffix,
+                name="create_l5_cvm_one_day_predictions_xgb" + suffix,
             ),
             node(
                 predict_rf,
@@ -100,7 +100,7 @@ def create_predictions(sample_type: str) -> Pipeline:
                     "parameters",
                 ],
                 "l5_cvm_one_day_predictions" + suffix,
-                name="create_l5_cvm_one_day_predictions" + suffix,
+                name="create_l5_cvm_one_day_predictions_rf" + suffix,
             ),
         ]
     )
