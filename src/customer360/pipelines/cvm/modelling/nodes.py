@@ -50,15 +50,22 @@ def train_rf(df: DataFrame, parameters: Dict[str, Any]) -> RandomForestClassifie
     Returns:
         Random forest classifier.
     """
-    target_chosen = "dilution1"
     target_cols = list_targets(parameters)
-    df = df.filter("{} is not null".format(target_chosen))
-    X = df.drop(*target_cols).toPandas()
-    y = df.select(target_chosen).toPandas()
-    rf = RandomForestClassifier(n_estimators=100, random_state=100)
-    rf_fitted = rf.fit(X, y)
 
-    return rf_fitted
+    log = logging.getLogger(__name__)
+
+    models = {}
+    for target_chosen in target_cols:
+
+        log.info("Training xgboost model for {} target.".format(target_chosen))
+
+        X, y = get_pandas_train_test_sample(df, parameters, target_chosen)
+
+        rf = RandomForestClassifier(n_estimators=100, random_state=100)
+        rf_fitted = rf.fit(X, y)
+        models[target_chosen] = rf_fitted
+
+    return models
 
 
 def create_shap_for_rf(
