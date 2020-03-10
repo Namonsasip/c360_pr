@@ -27,10 +27,10 @@
 # limitations under the License.
 
 
-from typing import Iterable, Dict, Any
+from typing import List, Dict, Any
 
 
-def list_targets(parameters: Dict[str, Any]) -> Iterable[str]:
+def list_targets(parameters: Dict[str, Any]) -> List[str]:
     """ Return all target column names.
 
     Args:
