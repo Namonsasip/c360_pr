@@ -31,8 +31,6 @@ from kedro.pipeline import Pipeline, node
 from customer360.pipelines.cvm.src.utils.get_suffix import get_suffix
 from src.customer360.pipelines.cvm.modelling.nodes import (
     train_rf,
-    create_shap_for_rf,
-    train_xgb,
     predict_rf,
 )
 
@@ -57,22 +55,6 @@ def create_train_model(sample_type: str) -> Pipeline:
                 ["l5_cvm_one_day_train_preprocessed" + suffix, "parameters"],
                 "random_forest" + suffix,
                 name="create_random_forest" + suffix,
-            ),
-            node(
-                create_shap_for_rf,
-                [
-                    "random_forest" + suffix,
-                    "l5_cvm_one_day_test_preprocessed" + suffix,
-                    "parameters",
-                ],
-                "shap" + suffix,
-                name="create_shap" + suffix,
-            ),
-            node(
-                train_xgb,
-                ["l5_cvm_one_day_train_preprocessed" + suffix, "parameters"],
-                "xgb" + suffix,
-                name="create_xgb" + suffix,
             ),
         ]
     )
