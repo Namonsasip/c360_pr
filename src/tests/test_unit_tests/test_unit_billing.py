@@ -195,6 +195,15 @@ class TestUnitBilling:
         l2_billing_and_payment_feature_time_diff_bw_topups_weekly_intermdeiate
         l2_billing_and_payment_feature_time_diff_bw_topups_weekly
         l4_billing_time_diff_bw_topups
+
+        l1_time_since_last_top_up
+        l2_time_since_last_top_up
+        l2_last_three_topup_volume_ranked
+        l2_last_three_topup_volume
+        l3_time_since_last_top_up
+        l3_last_three_topup_volume_ranked
+        l3_last_three_topup_volume
+
         '''
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
@@ -226,6 +235,63 @@ class TestUnitBilling:
 
         print('showdf')
         df.show(888,False)
+
+        #nothing to test
+        time_since_last_topup =node_from_config(df, var_project_context.catalog.load(
+            'params:l1_time_since_last_top_up'))
+        print('timelasttopup')
+        time_since_last_topup.show(999,False)
+
+        l2_time_since_last = node_from_config(time_since_last_topup, var_project_context.catalog.load(
+            'params:l2_time_since_last_top_up'))
+        print('l2time')
+        l2_time_since_last.orderBy('start_of_week').show(999, False)
+        assert \
+            l2_time_since_last.where("start_of_week = '2020-01-06'").select("payments_time_since_last_top_up").collect()[0][
+                0] == 2
+
+        l2_last_three_ranked =node_from_config(time_since_last_topup, var_project_context.catalog.load(
+            'params:l2_last_three_topup_volume_ranked'))
+        print('lastthreeranked')
+        l2_last_three_ranked.orderBy('start_of_week').show(999,False)
+        assert \
+            l2_last_three_ranked.where("start_of_week = '2020-01-06'").where('rank=1').select("face_value").collect()[0][
+                0] == 700
+        l2_last_three = node_from_config(l2_last_three_ranked, var_project_context.catalog.load(
+            'params:l2_last_three_topup_volume'))
+        assert \
+            l2_last_three.where("start_of_week = '2020-01-06'").select("payment_top_volume").collect()[0][
+                0] == 1800
+        print('last3')
+        l2_last_three.orderBy('start_of_week').show(888,False)
+
+        l3_time_since_last = node_from_config(time_since_last_topup, var_project_context.catalog.load(
+            'params:l3_time_since_last_top_up'))
+        print('l3time')
+        l3_time_since_last.orderBy('start_of_month').show(999, False)
+        assert \
+            l3_time_since_last.where("start_of_month = '2020-01-01'").select("payments_time_since_last_top_up").collect()[0][
+                0] == 2
+        l3_last_three_ranked = node_from_config(time_since_last_topup, var_project_context.catalog.load(
+            'params:l3_last_three_topup_volume_ranked'))
+        print('last3threeranked')
+        l3_last_three_ranked.orderBy('start_of_month').show(999, False)
+        assert \
+            l3_last_three_ranked.where("start_of_month = '2020-01-01'").where('rank=2').select("face_value").collect()[0][
+                0] == 500
+        l3_last_three = node_from_config(l3_last_three_ranked, var_project_context.catalog.load(
+            'params:l3_last_three_topup_volume'))
+        assert \
+            l3_last_three.where("start_of_month = '2020-01-01'").select("payment_top_volume").collect()[0][
+                0] == 1400
+        print('last_3')
+        l3_last_three.orderBy('start_of_month').show(888, False)
+
+
+
+
+        # exit(2)
+
 
         intermediate_data = node_from_config(df, var_project_context.catalog.load(
             'params:l2_billing_and_payment_feature_time_diff_bw_topups_weekly_intermdeiate'))
