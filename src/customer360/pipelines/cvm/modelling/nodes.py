@@ -34,7 +34,10 @@ import logging
 from customer360.pipelines.cvm.src.models.get_pandas_train_test_sample import (
     get_pandas_train_test_sample,
 )
-from customer360.pipelines.cvm.src.models.predict import pyspark_predict_xgb
+from customer360.pipelines.cvm.src.models.predict import (
+    pyspark_predict_xgb,
+    pyspark_predict_rf,
+)
 from customer360.pipelines.cvm.src.utils.list_targets import list_targets
 import shap
 
@@ -130,4 +133,23 @@ def predict_xgb(
     """
 
     predictions = pyspark_predict_xgb(df, xgb_models, parameters)
+    return predictions
+
+
+def predict_rf(
+    df: DataFrame,
+    rf_models: Dict[str, RandomForestClassifier],
+    parameters: Dict[str, Any],
+) -> DataFrame:
+    """ Uses saved Random Forest models to create propensity scores for given table.
+
+    Args:
+        df: Table with features.
+        rf_models: Saved dictionary of models for different targets.
+        parameters: parameters defined in parameters.yml.
+    Returns:
+        Table with propensity scores.
+    """
+
+    predictions = pyspark_predict_rf(df, rf_models, parameters)
     return predictions
