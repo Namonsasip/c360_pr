@@ -27,10 +27,10 @@
 # limitations under the License.
 
 from pyspark.sql import DataFrame
-from typing import Iterable
+from typing import List
 
 
-def list_categorical(df: DataFrame) -> Iterable[str]:
+def list_categorical(df: DataFrame) -> List[str]:
     """ List categorical variables in a given DataFrame.
 
     Args:
