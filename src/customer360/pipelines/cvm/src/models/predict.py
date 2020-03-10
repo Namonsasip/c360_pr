@@ -111,8 +111,9 @@ def pyspark_predict_rf(
     """
 
     target_cols = list_targets(parameters)
+    key_columns = parameters["key_columns"]
     log = logging.getLogger(__name__)
-    feature_cols = list_sub(df.columns, target_cols)
+    feature_cols = list_sub(df.columns, target_cols + key_columns)
 
     for target_chosen in target_cols:
         log.info("Creating {} predictions.".format(target_chosen))
