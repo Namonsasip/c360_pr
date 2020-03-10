@@ -125,6 +125,8 @@ def pyspark_predict_rf(
             return pd.Series(predictions)
 
         feature_cols = list_sub(df.columns, target_cols)
-        df = df.select(*df.columns, _pandas_predict(*feature_cols))
+        df = df.select(
+            *df.columns, _pandas_predict(*feature_cols).alias(target_chosen + "_pred")
+        )
 
     return df
