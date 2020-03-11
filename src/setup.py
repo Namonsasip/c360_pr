@@ -32,7 +32,6 @@ entry_point = (
     "project-samudra = customer360.run:run_package"
 )
 
-
 # get the dependencies and installs
 with open("requirements.txt", "r", encoding="utf-8") as f:
     # Make sure we strip all comments and options (e.g "--extra-index-url")
