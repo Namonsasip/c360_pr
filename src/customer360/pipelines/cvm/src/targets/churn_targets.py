@@ -77,9 +77,9 @@ def get_churn_targets(
     # setup flag
     usage = usage.withColumn(
         colname,
-        func.when(usage.last_activity_date.isNull(), "churn")
-        .when(usage.inactivity_start > usage.last_activity_date, "churn")
-        .otherwise("no_churn"),
+        func.when(usage.last_activity_date.isNull(), 1)
+        .when(usage.inactivity_start > usage.last_activity_date, 1)
+        .otherwise(0),
     )
     to_select = [colname, "key_date", "subscription_identifier"]
     usage = usage.select(to_select)
