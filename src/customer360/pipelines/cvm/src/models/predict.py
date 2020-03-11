@@ -131,3 +131,34 @@ def pyspark_predict_rf(
         )
 
     return df
+
+
+def predict_rf_pandas(
+    df: DataFrame,
+    rf_models: Dict[str, RandomForestClassifier],
+    parameters: Dict[str, Any],
+) -> pd.Series:
+    """ Runs predictions on given DataFrame using saved models.
+
+    Args:
+        df: DataFrame to predict on.
+        rf_models: Random Forest models used for prediction, one per target.
+        parameters: parameters defined in parameters.yml.
+    Returns:
+        Pandas series of scores.
+    """
+
+    target_cols = list_targets(parameters)
+    key_columns = parameters["key_columns"]
+    log = logging.getLogger(__name__)
+    feature_cols = list_sub(df.columns, target_cols + key_columns)
+    pd_df = df.select(feature_cols).toPandas()
+    predictions = pd.DataFrame({})
+
+    for target_chosen in target_cols:
+        log.info("Creating {} predictions.".format(target_chosen))
+        chosen_model = rf_models[target_chosen]
+        preds_col_name = target_chosen + "_pred"
+        predictions[preds_col_name] = chosen_model.predict_proba(pd_df)[:, 1]
+
+    return predictions
