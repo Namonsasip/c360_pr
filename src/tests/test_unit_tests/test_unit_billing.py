@@ -54,8 +54,8 @@ class TestUnitBilling:
             .withColumn("register_date", F.to_date(F.lit('2019-01-01'), 'yyyy-MM-dd')) \
             .withColumn("subscription_identifier", F.lit(123))\
             # .withColumn("start_of_week",F.to_date(F.date_trunc('week', start_time_list)))
-        input_df = input_df.withColumn("start_of_week", F.to_date(F.date_trunc('week', input_df.event_partition_date)))\
-            .drop(input_df.event_partition_date)
+        input_df = input_df.withColumn("start_of_week", F.to_date(F.date_trunc('week', input_df.recharge_time)))
+
 
 
         print('testdata')
@@ -153,6 +153,17 @@ class TestUnitBilling:
             'params:l2_most_popular_topup_channel'))
         print('mostweekly')
         weekly_data_most.show(999, False)
+
+        assert \
+            weekly_data_most.where("start_of_week = '2019-12-30'").select(
+                "access_method_num").collect()[0][
+                0] == 1
+        assert \
+            weekly_data_most.where("start_of_week = '2019-12-30'").count() == 1
+        assert \
+            str(weekly_data_most.where("start_of_week = '2019-12-30'").select(
+                "register_date").collect()[0][
+                0]) == '2019-01-01'
         assert \
             weekly_data_most.where("start_of_week = '2019-12-30'").select(
                 "payments_total_top_up").collect()[0][
@@ -185,6 +196,18 @@ class TestUnitBilling:
             'params:l3_most_popular_topup_channel'))
         print('monthlymost')
         monthly_data_most.show(999, False)
+
+        assert \
+            monthly_data_most.where("start_of_month = '2020-01-01'").count() == 1
+        assert \
+            monthly_data_most.where("start_of_month = '2020-01-01'").select(
+                "payments_top_up_channel").collect()[0][
+                0] == 'Refill on Mobile'
+        assert \
+            str(monthly_data_most.where("start_of_month = '2020-01-01'").select(
+                "register_date").collect()[0][
+                0]) == '2019-01-01'
+
         assert \
             monthly_data_most.where("start_of_month = '2020-01-01'").select(
                 "payments_total_top_up").collect()[0][
@@ -613,7 +636,7 @@ class TestUnitBilling:
 
         final_features = l4_rolling_window(weekly_data, var_project_context.catalog.load(
             'params:l4_billing_before_top_up_balance')).orderBy(F.col("start_of_week").desc())
-
+        print('final')
         final_features.orderBy('start_of_week').show()
         assert \
             int(final_features.where("start_of_week='2020-03-23'").select(
@@ -867,8 +890,121 @@ class TestUnitBilling:
         final_features = l4_rolling_window(weekly_data, var_project_context.catalog.load(
             'params:l4_billing_top_up_channels')).orderBy(F.col("start_of_week").desc())
 
-        # final_features.orderBy('start_of_week').show()
-        # final_features.printSchema()
+        # sum: ["payments_top_ups_by_bank_atm_cdm", "payments_top_up_vol_by_bank_atm_cdm",
+        #       "payments_top_ups_by_cash_card", "payments_top_up_vol_by_cash_card",
+        #       "payments_top_ups_by_digital_online_self_service", "payments_top_up_vol_by_digital_online_self_service",
+        #       "payments_top_ups_by_epin_slip",
+        #       "payments_top_up_vol_by_epin_slip", "payments_top_ups_by_epos", "payments_top_up_vol_by_epos",
+        #       "payments_top_ups_by_rom", "payments_top_up_vol_by_rom"]
+        # avg: ["payments_top_ups_avg_by_bank_atm_cdm", "payments_top_up_vol_avg_by_bank_atm_cdm",
+        #       "payments_top_ups_avg_by_cash_card", "payments_top_up_vol_avg_by_cash_card",
+        #       "payments_top_ups_avg_by_digital_online_self_service",
+        #       "payments_top_up_vol_avg_by_digital_online_self_service", "payments_top_ups_avg_by_epin_slip",
+        #       "payments_top_up_vol_avg_by_epin_slip", "payments_top_ups_avg_by_epos", "payments_top_up_vol_avg_by_epos",
+        #       "payments_top_ups_avg_by_rom", "payments_top_up_vol_avg_by_rom"]
+        assert \
+            (final_features.where("start_of_week='2020-02-03'").select("sum_payments_top_ups_by_bank_atm_cdm_weekly_last_twelve_week").collect()[0][
+                0]) ==20
+
+        assert \
+            (final_features.where("start_of_week='2020-02-03'").select("sum_payments_top_ups_by_cash_card_weekly_last_twelve_week").collect()[0][
+                0]) ==16
+        assert \
+            (final_features.where("start_of_week='2020-02-03'").select("sum_payments_top_ups_by_digital_online_self_service_weekly_last_twelve_week").collect()[0][
+                0]) ==22
+
+        assert \
+            (final_features.where("start_of_week='2020-02-03'").select("sum_payments_top_ups_by_epin_slip_weekly_last_twelve_week").collect()[0][
+                0]) ==5
+
+        assert \
+            (final_features.where("start_of_week='2020-02-03'").select("sum_payments_top_ups_by_epos_weekly_last_twelve_week").collect()[0][
+                0]) ==20
+
+        assert \
+            (final_features.where("start_of_week='2020-02-03'").select("sum_payments_top_ups_by_rom_weekly_last_twelve_week").collect()[0][
+                0]) ==16
+
+        assert \
+            (final_features.where("start_of_week='2020-02-03'").select("sum_payments_top_up_vol_by_bank_atm_cdm_weekly_last_twelve_week").collect()[0][
+                0]) ==12400
+
+        assert \
+            (final_features.where("start_of_week='2020-02-03'").select("sum_payments_top_up_vol_by_cash_card_weekly_last_twelve_week").collect()[0][
+                0]) ==9300
+
+        assert \
+            (final_features.where("start_of_week='2020-02-03'").select("sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_twelve_week").collect()[0][
+                0]) ==10600
+
+        assert \
+            (final_features.where("start_of_week='2020-02-03'").select("sum_payments_top_up_vol_by_epin_slip_weekly_last_twelve_week").collect()[0][
+                0]) ==3400
+
+        assert \
+            (final_features.where("start_of_week='2020-02-03'").select("sum_payments_top_up_vol_by_epos_weekly_last_twelve_week").collect()[0][
+                0]) ==10700
+
+        assert \
+            (final_features.where("start_of_week='2020-02-03'").select("sum_payments_top_up_vol_by_rom_weekly_last_twelve_week").collect()[0][
+                0]) ==10300
+
+
+
+
+
+        assert \
+            int(final_features.where("start_of_week='2020-02-03'").select("avg_payments_top_ups_avg_by_bank_atm_cdm_weekly_last_twelve_week").collect()[0][
+                0]*1000000) ==int(0.651428571*1000000)
+
+        assert \
+            int(final_features.where("start_of_week='2020-02-03'").select("avg_payments_top_ups_avg_by_cash_card_weekly_last_twelve_week").collect()[0][
+                0]*1000000) ==int(0.468571429*1000000)
+
+        assert \
+            int(final_features.where("start_of_week='2020-02-03'").select("avg_payments_top_ups_avg_by_digital_online_self_service_weekly_last_twelve_week").collect()[0][
+                0]*1000000) ==int(0.662857143*1000000)
+
+        assert \
+            int(final_features.where("start_of_week='2020-02-03'").select("avg_payments_top_ups_avg_by_epin_slip_weekly_last_twelve_week").collect()[0][
+                0]*1000000) ==int(0.142857143*1000000)
+
+        assert \
+            int(final_features.where("start_of_week='2020-02-03'").select("avg_payments_top_ups_avg_by_epos_weekly_last_twelve_week").collect()[0][
+                0]*1000000) ==int(0.582857143*1000000)
+
+        assert \
+            int(final_features.where("start_of_week='2020-02-03'").select("avg_payments_top_ups_avg_by_rom_weekly_last_twelve_week").collect()[0][
+                0]*1000000) ==int(0.491428571*1000000)
+
+        assert \
+            int(final_features.where("start_of_week='2020-02-03'").select("avg_payments_top_up_vol_avg_by_bank_atm_cdm_weekly_last_twelve_week").collect()[0][
+                0]*1000000) ==int(390.8571429*1000000)
+
+        assert \
+            int(final_features.where("start_of_week='2020-02-03'").select("avg_payments_top_up_vol_avg_by_cash_card_weekly_last_twelve_week").collect()[0][
+                0]*1000000) ==int(277.1428571*1000000)
+
+        assert \
+            int(final_features.where("start_of_week='2020-02-03'").select("avg_payments_top_up_vol_avg_by_digital_online_self_service_weekly_last_twelve_week").collect()[0][
+                0]*1000000) ==int(322.2857143*1000000)
+
+        assert \
+            int(final_features.where("start_of_week='2020-02-03'").select("avg_payments_top_up_vol_avg_by_epin_slip_weekly_last_twelve_week").collect()[0][
+                0]*1000000) ==int(97.14285714*1000000)
+
+        assert \
+            int(final_features.where("start_of_week='2020-02-03'").select("avg_payments_top_up_vol_avg_by_epos_weekly_last_twelve_week").collect()[0][
+                0]*1000000) ==int(312.5714286*1000000)
+
+        assert \
+            int(final_features.where("start_of_week='2020-02-03'").select("avg_payments_top_up_vol_avg_by_rom_weekly_last_twelve_week").collect()[0][
+                0]*1000000) ==int(318.2857143*1000000)
+
+        print('finalfeature')
+        final_features.orderBy('start_of_week').show()
+        final_features.printSchema()
+        # exit(2)
 
     def test_recharge_data(self, project_context):
         # daily_recharge_data_with_customer_profile
