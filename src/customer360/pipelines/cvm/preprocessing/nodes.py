@@ -143,6 +143,7 @@ def feature_selection_all_target(
             target_class[target] = parameters["targets"][usecase][target]["target_type"]
     # Remove black list column
     data = data.drop(*parameters["feature_selection_parameter"]["exclude_col"])
+    data = data.drop(*parameters["key_columns"])
     final_list = []
     for target in parameters["feature_selection_parameter"]["target_column"]:
         exclude_target = parameters["feature_selection_parameter"]["target_column"][:]
