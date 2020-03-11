@@ -29,7 +29,6 @@
 import pandas as pd
 from typing import Dict, Any, Tuple
 from pyspark.sql import DataFrame
-import pyspark.sql.functions as func
 from customer360.pipelines.cvm.src.utils.list_targets import list_targets
 
 
@@ -49,14 +48,7 @@ def get_pandas_train_test_sample(
 
     if target_chosen is not None:
         df = df.filter("{} is not null".format(target_chosen))
-        y = df.select(target_chosen).withColumnRenamed(target_chosen, "target_base")
-        y = y.withColumn(
-            "target",
-            func.when(y.target_base == "churn", 1)
-            .when(y.target_base == "drop", 1)
-            .otherwise(0),
-        )
-        y = y.drop("target_base")
+        y = df.select(target_chosen).withColumnRenamed(target_chosen, "target")
         y = y.toPandas()
     else:
         y = None
