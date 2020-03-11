@@ -32,10 +32,10 @@ from typing import Dict, Any, List
 from pyspark.ml.feature import StringIndexer, Imputer
 from pyspark.ml import Pipeline, PipelineModel
 from pyspark.sql.functions import col
-from customer360.pipelines.cvm.src.utils.list_categorical import list_categorical
 from customer360.pipelines.cvm.src.utils.list_operations import list_sub
-from customer360.pipelines.cvm.src.utils.list_targets import list_targets
 from customer360.pipelines.cvm.src.utils.setup_names import setup_names
+from src.customer360.pipelines.cvm.src.utils.list_categorical import list_categorical
+from src.customer360.pipelines.cvm.src.utils.list_targets import list_targets
 from src.customer360.pipelines.cvm.src.feature_selection import feature_selection
 
 
