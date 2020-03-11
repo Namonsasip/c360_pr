@@ -114,5 +114,3 @@ class TestUnitUsage:
                 'max_usg_vas_total_number_of_call_max_weekly_last_four_week').collect()[0][0] == 5
 
         # AIS DE TO ADD FEATURE HERE
-
-

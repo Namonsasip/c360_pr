@@ -41,7 +41,7 @@ import pandas as pd
 
 
 def train_model(
-    train_x: pd.DataFrame, train_y: pd.DataFrame, parameters: Dict[str, Any]
+        train_x: pd.DataFrame, train_y: pd.DataFrame, parameters: Dict[str, Any]
 ) -> np.ndarray:
     """Node for training a simple multi-class logistic regression model. The
     number of training iterations as well as the learning rate are taken from

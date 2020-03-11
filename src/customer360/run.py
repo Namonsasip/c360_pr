@@ -46,6 +46,9 @@ from kedro.pipeline import Pipeline
 from kedro.pipeline.node import Node
 from kedro.versioning import Journal
 
+from src.customer360.utilities.spark_util import get_spark_session
+
+
 from customer360.pipeline import create_pipelines
 
 try:
@@ -249,8 +252,7 @@ def run_package(pipelines=[]):
     # using `<project_package>` command
     project_context = load_context(Path.cwd(), env=conf)
 
-    from pyspark.sql import SparkSession
-    spark = SparkSession.builder.getOrCreate()
+    spark = get_spark_session()
 
     # Dont delete this line. This allow spark to only overwrite the partition
     # saved to parquet instead of entire table folder

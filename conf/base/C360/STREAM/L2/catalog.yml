@@ -1,4 +1,3 @@
-
 int_l2_streaming_content_type_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l2_features/int_l2_streaming_content_type_features/
@@ -42,7 +41,7 @@ l2_streaming_fav_tv_show_by_episode_watched:
   save_args:
     mode: "append"
     partitionBy: ["start_of_week"]
-    
+
 
 
 
@@ -77,9 +76,9 @@ l2_streaming_fav_video_service_by_visit_count_feature:
   save_args:
     mode: "append"
     partitionBy: ["start_of_week"]
-    
-    
-    
+
+
+
 
 int_l2_streaming_music_service_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -112,7 +111,7 @@ l2_streaming_fav_music_service_by_visit_count_feature:
   save_args:
     mode: "append"
     partitionBy: ["start_of_week"]
-    
+
 
 
 int_l2_streaming_esport_service_feature:
@@ -156,7 +155,7 @@ l2_streaming_visit_count_and_download_traffic_feature:
   save_args:
     mode: "append"
     partitionBy: ["start_of_week"]
-    
+
 
 int_l2_streaming_sum_per_day:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
