@@ -274,6 +274,13 @@ def run_package(pipelines=[]):
     # project_context.run(pipeline_name="customer_profile_to_l4_pipeline")
 
 
+def run_selected_nodes(pipeline_name, node_names=None, env="base"):
+    # entry point for running pip-install projects
+    # using `<project_package>` command
+    project_context = load_context(Path.cwd(), env=env)
+    project_context.run(node_names=node_names, pipeline_name=pipeline_name)
+
+
 if __name__ == "__main__":
     # entry point for running pip-installed projects
     # using `python -m <project_package>.run` command

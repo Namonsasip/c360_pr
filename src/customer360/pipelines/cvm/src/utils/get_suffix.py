@@ -25,30 +25,22 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Example code for the nodes in the example pipeline. This code is meant
-just for illustrating basic Kedro features.
-
-PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
-"""
-
-from kedro.pipeline import Pipeline, node
-
-from .nodes import predict, report_accuracy, train_model
 
 
-def create_pipeline(**kwargs):
-    return Pipeline(
-        [
-            node(
-                train_model,
-                ["example_train_x", "example_train_y", "parameters"],
-                "example_model",
-            ),
-            node(
-                predict,
-                dict(model="example_model", test_x="example_test_x"),
-                "example_predictions",
-            ),
-            node(report_accuracy, ["example_predictions", "example_test_y"], None),
-        ]
-    )
+def get_suffix(sample_type: str = None) -> str:
+    """ Returns dataset suffix for given sample type.
+
+    Args:
+        sample_type: can be None (for full dataset), "dev" for small sample,
+            "sample" for medium sample.
+    """
+
+    if sample_type not in ["dev", "sample", None]:
+        raise Exception("Sample type {} not implemented".format(sample_type))
+
+    if sample_type is not None:
+        suffix = "_" + sample_type
+    else:
+        suffix = ""
+
+    return suffix

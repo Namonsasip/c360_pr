@@ -25,10 +25,24 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Example code for the nodes in the example pipeline. This code is meant
-just for illustrating basic Kedro features.
 
-PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
-"""
+from pyspark.sql import DataFrame
 
-from .pipeline import create_pipeline  # NOQA
+
+def setup_names(df: DataFrame,) -> DataFrame:
+    """ Setup standard, project-wide column names for a given DataFrame.
+
+    Args:
+        df: given DataFrame.
+    Returns:
+        DataFrame with changed column names.
+    """
+
+    df = df.withColumnRenamed("partition_month", "key_date")
+    df = df.withColumnRenamed("event_partition_date", "key_date")
+    df = df.withColumnRenamed("start_of_month", "key_date")
+    df = df.withColumnRenamed(
+        "max_usg_last_action_date_daily_last_ninety_day", "last_activity_date"
+    )
+
+    return df
