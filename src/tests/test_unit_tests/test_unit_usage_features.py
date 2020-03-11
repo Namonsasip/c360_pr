@@ -41,7 +41,8 @@ import pandas as pd
 import random
 from pyspark.sql import functions as F
 import datetime
-from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1 import merge_all_dataset_to_one_table
+from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1 import merge_all_dataset_to_one_table, \
+    build_data_for_prepaid_postpaid_vas
 
 
 def generate_category(days, values_list):
@@ -89,7 +90,7 @@ random.seed(100)
 daily_usg_ru_vas_post = []
 daily_usage_incoming_sum_ir = []
 daily_usage_outgoing_sum_ir = []
-vas_data = []
+l1_usage_ru_a_vas_postpaid_prepaid_daily = []
 daily_usage_ru_a_gprs_cbs_usage = []
 daily_usage_incoming_call = []
 daily_profile_feature = []
@@ -106,21 +107,35 @@ class TestUnitUsage:
         # max_date = datetime.date(2020,4,1)
         # days = date_diff(min_date,max_date) #range from min_date to max_date
         random.seed(100)
-        my_dates_list = pd.date_range(min_date, max_date).tolist()
-        my_dates = [iTemp.date().strftime("%d-%m-%Y") for iTemp in my_dates_list]
-        random_list = [random.randint(1, 5) for iTemp in range(0, days)]
-
-        print("*********************************L1 usage_ru_a_vas_postpaid_prepaid_daily Starts***************************************")
-        df_vas_post_pre = spark.createDataFrame(zip(random_list, my_dates), schema=['number_of_call', 'day_id']) \
+        min_dt = '2020-01-01'
+        max_dt = '2020-04-01'
+        doubled_days = days * 2
+        day_id = generate_day_id(min_dt, max_dt)
+        day_id.extend(day_id)  # two records per day
+        day_id.sort()
+        # print(day_id)
+        number_of_call = generate_int(doubled_days, 1, 5)
+        call_type_cd = generate_category(doubled_days, [1, 5])
+        no_transaction = generate_int(doubled_days, 1, 5)
+        l0_usage_pps_v_ru_a_vas_nonvoice_daily = spark.createDataFrame(zip(number_of_call, day_id),
+                                                                       schema=['number_of_call', 'day_id']) \
             .withColumn("access_method_num", F.lit(1)) \
             .withColumn("day_id", F.to_date('day_id', 'dd-MM-yyyy')) \
-            .withColumn("partition_date",F.lit('20200101'))
+            .withColumn("partition_date", F.lit('20200101'))
+        l0_usage_ru_a_vas_postpaid_usg_daily = spark.createDataFrame(zip(number_of_call, day_id, call_type_cd, no_transaction),
+                                                                       schema=['number_of_call', 'day_id', 'call_type_cd', 'no_transaction']) \
+            .withColumn("access_method_num", F.lit(1)) \
+            .withColumn("day_id", F.to_date('day_id', 'dd-MM-yyyy')) \
+            .withColumn("partition_date", F.lit('20200101'))
+        print("*********************************L1 usage_ru_a_vas_postpaid_prepaid_daily Starts***************************************")
         # df_vas_post_pre.show()
         # Testing Daily Features here
-        global vas_data
-        vas_data = node_from_config(df_vas_post_pre, var_project_context.catalog.load(
+
+        vas_postpaid_prepaid_merged_stg = build_data_for_prepaid_postpaid_vas(l0_usage_pps_v_ru_a_vas_nonvoice_daily, l0_usage_ru_a_vas_postpaid_usg_daily)
+        global l1_usage_ru_a_vas_postpaid_prepaid_daily
+        l1_usage_ru_a_vas_postpaid_prepaid_daily = node_from_config(vas_postpaid_prepaid_merged_stg, var_project_context.catalog.load(
             'params:l1_usage_ru_a_vas_postpaid_prepaid_daily'))
-        # vas_data.orderBy('start_of_week').show()
+        #exit(2)
         # check event date = 2020-01-01 date the number of calls should be 2
         # assert \
         #     vas_data.where("event_partition_date = '2020-01-01'").select("usg_vas_total_number_of_call").collect()[0][
@@ -3294,35 +3309,150 @@ class TestUnitUsage:
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
         random.seed(100)
-        print("Daily usage VAS Postpaid: " + str(type(daily_usg_ru_vas_post)))
-        #daily_usg_ru_vas_post.show()
-        print("Daily usage incoming IR " + str(type(daily_usage_incoming_sum_ir)))
-        #daily_usage_incoming_sum_ir.show()
-        print("Daily usage outgoing IR " + str(type(daily_usage_outgoing_sum_ir)))
-        #daily_usage_outgoing_sum_ir.show()
-        print("Daily VAS pre_post usage " + str(type(vas_data)))
-        #vas_data.show()
-        print("Daily GPRS usage " + str(type(daily_usage_ru_a_gprs_cbs_usage)))
-        #daily_usage_ru_a_gprs_cbs_usage.show()
-        print("Daily usage incoming " + str(type(daily_usage_incoming_call)))
-        # daily_usage_incoming_call.show()
-        print("Daily usage outgoing " + str(type(usage_outgoing_call_relation_sum_daily)))
-        usage_outgoing_call_relation_sum_daily.show()
-        print("Daily profile " + str(type(daily_profile_feature)))
-        daily_profile_feature.show()
-        # Building a union usage_post_pre joined with profile
-        # merge_all_dataset_to_one_table, [
-        #     'l1_usage_outgoing_call_relation_sum_daily', 'l1_usage_incoming_call_relation_sum_daily',
-        #     'l1_usage_outgoing_call_relation_sum_ir_daily', 'l1_usage_incoming_call_relation_sum_ir_daily',
-        #     'l1_usage_ru_a_gprs_cbs_usage_daily', 'l1_usage_ru_a_vas_postpaid_usg_daily',
-        #     'l1_usage_ru_a_vas_postpaid_prepaid_daily', 'l1_customer_profile_union_daily_feature'
-        # ],
-        # 'l1_usage_postpaid_prepaid_daily'
-        l1_usage_postpaid_prepaid_daily = merge_all_dataset_to_one_table(usage_outgoing_call_relation_sum_daily, daily_usage_incoming_call,
-                                                            daily_usage_outgoing_sum_ir, daily_usage_incoming_sum_ir,
-                                                            daily_usage_ru_a_gprs_cbs_usage, daily_usg_ru_vas_post,
-                                                            vas_data, daily_profile_feature)
-        # l2_usage_postpaid_prepaid_weekly = build_usage_l2_layer(l1_usage_postpaid_prepaid_daily, var_project_context.catalog.load(
-        #    'params:l2_usage_postpaid_prepaid_weekly'))
-        # l2_usage_postpaid_prepaid_weekly.show()
+        # print("Daily usage VAS Postpaid: " + str(type(daily_usg_ru_vas_post)))
+        # #daily_usg_ru_vas_post.show()
+        # print("Daily usage incoming IR " + str(type(daily_usage_incoming_sum_ir)))
+        # #daily_usage_incoming_sum_ir.show()
+        # print("Daily usage outgoing IR " + str(type(daily_usage_outgoing_sum_ir)))
+        # #daily_usage_outgoing_sum_ir.show()
+        # print("Daily VAS pre_post usage " + str(type(l1_usage_ru_a_vas_postpaid_prepaid_daily)))
+        # #vas_data.show()
+        # print("Daily GPRS usage " + str(type(daily_usage_ru_a_gprs_cbs_usage)))
+        # #daily_usage_ru_a_gprs_cbs_usage.show()
+        # print("Daily usage incoming " + str(type(daily_usage_incoming_call)))
+        # # daily_usage_incoming_call.show()
+        # print("Daily usage outgoing " + str(type(usage_outgoing_call_relation_sum_daily)))
+        # # usage_outgoing_call_relation_sum_daily.show()
+        # print("Daily profile " + str(type(daily_profile_feature)))
+        # daily_profile_feature.show()
+        # # Building a union usage_post_pre joined with profile
+        # # merge_all_dataset_to_one_table, [
+        # #     'l1_usage_outgoing_call_relation_sum_daily', 'l1_usage_incoming_call_relation_sum_daily',
+        # #     'l1_usage_outgoing_call_relation_sum_ir_daily', 'l1_usage_incoming_call_relation_sum_ir_daily',
+        # #     'l1_usage_ru_a_gprs_cbs_usage_daily', 'l1_usage_ru_a_vas_postpaid_usg_daily',
+        # #     'l1_usage_ru_a_vas_postpaid_prepaid_daily', 'l1_customer_profile_union_daily_feature'
+        # # ],
+        # # 'l1_usage_postpaid_prepaid_daily'
+        # l1_usage_postpaid_prepaid_daily = merge_all_dataset_to_one_table(usage_outgoing_call_relation_sum_daily, daily_usage_incoming_call,
+        #                                                     daily_usage_outgoing_sum_ir, daily_usage_incoming_sum_ir,
+        #                                                     daily_usage_ru_a_gprs_cbs_usage, daily_usg_ru_vas_post,
+        #                                                     l1_usage_ru_a_vas_postpaid_prepaid_daily, daily_profile_feature
+        #                                                    )
+        # # l2_usage_postpaid_prepaid_weekly = build_usage_l2_layer(l1_usage_postpaid_prepaid_daily, var_project_context.catalog.load(
+        # #    'params:l2_usage_postpaid_prepaid_weekly'))
+        # # l2_usage_postpaid_prepaid_weekly.show()
+        l2_max_feature_list = ['usg_last_sms_date',
+        'usg_incoming_last_sms_date',
+        'usg_outgoing_roaming_last_sms_date',
+        'usg_incoming_roaming_last_sms_date',
+        'usg_last_action_date',
+        'usg_incoming_afternoon_number_sms',
+        'usg_incoming_afternoon_time_call',
+        'usg_incoming_last_call_date',
+        'usg_last_call_date',
+        'usg_outgoing_last_call_date',
+        'usg_outgoing_last_sms_date',
+        'usg_incoming_ais_local_calls_duration',
+        'usg_incoming_ais_local_number_calls',
+        'usg_incoming_dtac_call_duration',
+        'usg_incoming_dtac_number_calls',
+        'usg_incoming_dtac_number_sms',
+        'usg_incoming_evening_number_sms',
+        'usg_incoming_evening_time_call',
+        'usg_incoming_local_ais_sms',
+        'usg_incoming_local_call_duration',
+        'usg_incoming_local_number_calls',
+        'usg_incoming_local_sms',
+        'usg_incoming_morning_time_call',
+        'usg_incoming_morning_time_number_sms',
+        'usg_incoming_night_time_call',
+        'usg_incoming_night_time_number_sms',
+        'usg_incoming_number_calls',
+        'usg_incoming_number_calls_over_30_mins',
+        'usg_incoming_number_calls_upto_10_mins',
+        'usg_incoming_number_calls_upto_15_mins',
+        'usg_incoming_number_calls_upto_20_mins',
+        'usg_incoming_number_calls_upto_30_mins',
+        'usg_incoming_number_calls_upto_5_mins',
+        'usg_incoming_offnet_local_number_calls',
+        'usg_incoming_total_call_duration',
+        'usg_incoming_total_sms',
+        'usg_incoming_true_call_duration',
+        'usg_incoming_true_number_calls',
+        'usg_incoming_true_number_sms',
+        'usg_outgoing_afternoon_number_calls',
+        'usg_outgoing_afternoon_number_sms',
+        'usg_outgoing_ais_local_calls_duration',
+        'usg_outgoing_ais_local_number_calls',
+        'usg_outgoing_dtac_call_duration',
+        'usg_outgoing_dtac_number_calls',
+        'usg_outgoing_dtac_number_sms',
+        'usg_outgoing_evening_number_calls',
+        'usg_outgoing_evening_number_sms',
+        'usg_outgoing_local_ais_sms',
+        'usg_outgoing_local_call_duration',
+        'usg_outgoing_local_number_calls',
+        'usg_outgoing_local_sms',
+        'usg_outgoing_morning_time_number_calls',
+        'usg_outgoing_morning_time_number_sms',
+        'usg_outgoing_night_time_number_calls',
+        'usg_outgoing_night_time_number_sms',
+        'usg_outgoing_number_calls',
+        'usg_outgoing_number_calls_over_30_mins',
+        'usg_outgoing_number_calls_upto_10_mins',
+        'usg_outgoing_number_calls_upto_15_mins',
+        'usg_outgoing_number_calls_upto_20_mins',
+        'usg_outgoing_number_calls_upto_30_mins',
+        'usg_outgoing_number_calls_upto_5_mins',
+        'usg_outgoing_offnet_local_calls_duration',
+        'usg_outgoing_offnet_local_number_calls',
+        'usg_outgoing_total_call_duration',
+        'usg_outgoing_total_sms',
+        'usg_outgoing_true_call_duration',
+        'usg_outgoing_true_number_calls',
+        'usg_outgoing_true_number_sms',
+        "usg_incoming_roaming_call_duration",
+        "usg_incoming_roaming_number_calls",
+        "usg_incoming_roaming_total_sms",
+        "usg_outgoing_roaming_call_duration",
+        "usg_outgoing_roaming_number_calls",
+        "usg_outgoing_roaming_total_sms",
+        'usg_total_data_last_action_date',
+        'usg_data_last_action_date',
+        'usg_incoming_data_volume',
+        'usg_incoming_data_volume_2G_3G',
+        'usg_incoming_data_volume_4G',
+        'usg_incoming_local_data_volume',
+        'usg_incoming_local_data_volume_2G_3G',
+        'usg_incoming_local_data_volume_4G',
+        'usg_incoming_roaming_data_volume',
+        'usg_incoming_roaming_data_volume_2G_3G',
+        'usg_incoming_roaming_data_volume_4G',
+        'usg_outgoing_data_volume',
+        'usg_outgoing_data_volume_2G_3G',
+        'usg_outgoing_data_volume_4G',
+        'usg_outgoing_local_data_volume',
+        'usg_outgoing_local_data_volume_2G_3G',
+        'usg_outgoing_local_data_volume_4G',
+        'usg_outgoing_roaming_data_volume',
+        'usg_outgoing_roaming_data_volume_2G_3G',
+        'usg_outgoing_roaming_data_volume_4G',
+        'usg_total_data_volume',
+        "usg_vas_total_number_of_call",
+        "usg_vas_last_action_dt"]
+        min_dt = '2020-01-01'
+        max_dt = '2020-04-01'
+        #doubled_days = days * 2
+        day_id = generate_day_id(min_dt, max_dt)
+        #day_id.extend(day_id)  # two records per day
+        day_id.sort()
+        # print(day_id)
+        number_of_call = generate_int(days, 1, 5)
+        call_type_cd = generate_category(days, [1, 5])
+        no_transaction = generate_int(days, 1, 5)
+        l1_max_feature = spark.createDataFrame(zip(number_of_call, day_id),
+                                                                       schema=['number_of_call', 'day_id']) \
+            .withColumn("access_method_num", F.lit(1)) \
+            .withColumn("day_id", F.to_date('day_id', 'dd-MM-yyyy')) \
+            .withColumn("partition_date", F.lit('20200101'))
         exit(2)
