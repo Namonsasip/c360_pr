@@ -56,6 +56,16 @@ def create_train_model(sample_type: str = None) -> Pipeline:
                 "random_forest" + suffix,
                 name="create_random_forest" + suffix,
             ),
+            node(
+                predict_rf,
+                [
+                    "l5_cvm_one_day_test_preprocessed" + suffix,
+                    "random_forest_dev",
+                    "parameters",
+                ],
+                "l5_cvm_one_day_test_preprocessed_preds" + suffix,
+                name="create_l5_cvm_one_day_test_preprocessed_preds" + suffix,
+            ),
         ]
     )
 

@@ -112,3 +112,10 @@ l5_cvm_one_day_predictions_dev:
   file_format: "parquet"
   save_args:
     mode: "overwrite"
+
+l5_cvm_one_day_test_preprocessed_preds_dev:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_one_day_test_preprocessed_preds_dev/
+  file_format: "parquet"
+  save_args:
+    mode: "overwrite"
