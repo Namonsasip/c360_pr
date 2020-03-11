@@ -145,7 +145,7 @@ def predict_rf_pandas(
         rf_models: Random Forest models used for prediction, one per target.
         parameters: parameters defined in parameters.yml.
     Returns:
-        Pandas series of scores.
+        Pandas DataFrame of scores and targets.
     """
 
     target_cols = list_targets(parameters)
@@ -153,7 +153,7 @@ def predict_rf_pandas(
     log = logging.getLogger(__name__)
     feature_cols = list_sub(df.columns, target_cols + key_columns)
     pd_df = df.select(feature_cols).toPandas()
-    predictions = pd.DataFrame({})
+    predictions = df.select(target_cols + key_columns).toPandas()
 
     for target_chosen in target_cols:
         log.info("Creating {} predictions.".format(target_chosen))
