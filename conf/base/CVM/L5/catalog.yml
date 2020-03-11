@@ -63,5 +63,5 @@ l5_cvm_one_day_predictions:
 
 important_columns:
   type: kedro.contrib.io.yaml_local.YAMLLocalDataSet
-  filepath: /mnt/customer360-cvm/important_columns    
+  filepath: dbfs:/mnt/customer360-cvm/important_columns    
 
