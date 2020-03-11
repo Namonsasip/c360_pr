@@ -870,8 +870,8 @@ class TestUnitBilling:
         # final_features.orderBy('start_of_week').show()
         # final_features.printSchema()
 
-    def test_recharge_data(self, project_context):
-        # daily_recharge_data_with_customer_profile
+    def test_popular_topup_day(self, project_context):
+
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
 
@@ -887,15 +887,16 @@ class TestUnitBilling:
         df_pre = spark.createDataFrame(zip(random_list, my_dates, random_list2),
                                        schema=['recharge_type', 'temp', 'face_value']) \
             .withColumn("subscription_identifier", F.lit("MS05RTRSLTIwMw==")) \
+            .withColumn("partition_date", F.to_date(F.lit('20190101'), 'yyyyMMdd')) \
             .withColumn("subscription_id", F.lit("MS05RTRSLTIwMw==")) \
-            .withColumn("mobile_no", F.lit(
-            "eFBIRjk3V0s0bit3ZWdFYU9oVzYxcmx3bmZSQWFYdUFHTW1ucHhxaElhS0JoMTl6TzZTeUI5STk5cHJPSDFtRg==")) \
-            .withColumn("register_date", F.lit("2000-02-04T00:00:00.000+0000")) \
+            .withColumn("mobile_no", F.lit("eFBIRjk3V0s0bit3ZWdFYU9oVzYxcmx3bmZSQWFYdUFHTW1ucHhxaElhS0JoMTl6TzZTeUI5STk5cHJPSDFtRg==")) \
+            .withColumn("register_date", F.to_date(F.lit('2019-01-01'), 'yyyy-MM-dd')) \
             .withColumn("zipcode", F.lit("MTAxMjA=")) \
             .withColumn("prefer_language", F.lit("RU5HTElTSA==")) \
             .withColumn("company_size", F.lit("Rw==")) \
             .withColumn("rsme_flag", F.lit("Rw==")) \
             .withColumn("corp_account_size", F.lit("Rw==")) \
+            .withColumn("access_method_num", F.lit(1)) \
             .withColumn("cust_type", F.lit('B')) \
             .withColumn("prefer_language", F.lit('english')) \
             .withColumn("prefer_language_eng", F.lit('english')) \
@@ -926,7 +927,6 @@ class TestUnitBilling:
             "Y2pHOFUxUlk3Nmd0WVpBTjdONWR0K1h5T085OGRrNnZ5ZDV6WGNaZGxiTlorUnVqUVVmVmhxeFNpRU5obFZBYQ==")) \
             .withColumn("card_id", F.lit(
             "Y2pHOFUxUlk3Nmd0WVpBTjdONWR0K1h5T085OGRrNnZ5ZDV6WGNaZGxiTlorUnVqUVVmVmhxeFNpRU5obFZBYQ==")) \
-            .withColumn("event_partition_date", F.lit("20190212")) \
             .withColumn("charge_type", F.lit('Pre-paid')) \
             .withColumn("Post-paid", F.lit('Pre-paid')) \
             .withColumn("billing_account_no", F.lit("null")) \
@@ -935,34 +935,50 @@ class TestUnitBilling:
             .withColumn("account_no", F.lit(
             "Y2pHOFUxUlk3Nmd0WVpBTjdONWR0K1h5T085OGRrNnZ5ZDV6WGNaZGxiTlorUnVqUVVmVmhxeFNpRU5obFZBYQ=="))
 
-        # l1_customer_profile_union_daily_feature
         union_data = union_daily_cust_profile(df_pre, df_pre, df_pre, var_project_context.catalog.load(
             'params:l1_customer_profile_union_daily_feature'))
 
-        df = spark.createDataFrame(zip(random_list, my_dates, random_list2),
-                                   schema=['recharge_type', 'temp', 'face_value']) \
-            .withColumn("recharge_date", F.lit("MS05RTRSLTIwMw==")) \
-            .withColumn("access_method_num", F.lit("MS05RTRSLTIwMw==")) \
-            .withColumn("month_id", F.lit("MS05RTRSLTIwMw==")) \
-            .withColumn("tariff_plan_id", F.lit("MS05RTRSLTIwMw==")) \
-            .withColumn("activate_location", F.lit("MS05RTRSLTIwMw==")) \
-            .withColumn("recharge_type", F.lit("MS05RTRSLTIwMw==")) \
-            .withColumn("face_value", F.lit("MS05RTRSLTIwMw==")) \
-            .withColumn("first_province", F.lit("MS05RTRSLTIwMw==")) \
-            .withColumn("mobile_region", F.lit("MS05RTRSLTIwMw==")) \
-            .withColumn("register_date", F.lit("MS05RTRSLTIwMw==")) \
-            .withColumn("dealer_code", F.lit("MS05RTRSLTIwMw==")) \
-            .withColumn("dealer_region", F.lit("MS05RTRSLTIwMw==")) \
-            .withColumn("quantity", F.lit("MS05RTRSLTIwMw==")) \
-            .withColumn("dealer_province", F.lit("MS05RTRSLTIwMw==")) \
-            .withColumn("flag_dealer_area", F.lit("MS05RTRSLTIwMw==")) \
-            .withColumn("account_id", F.lit("MS05RTRSLTIwMw==")) \
-            .withColumn("coverage_type", F.lit("MS05RTRSLTIwMw==")) \
-            .withColumn("recharge_time", F.lit("MS05RTRSLTIwMw==")) \
-            .withColumn("flag_dealer_in_out_region", F.lit("MS05RTRSLTIwMw==")) \
-            .withColumn("invoicing_company", F.lit("MS05RTRSLTIwMw==")) \
-            .withColumn("billing_system", F.lit("MS05RTRSLTIwMw=="))
+        random_type = ['4', 'B1', 'B58', '3', 'B0', '7', '16', 'B43', '1', '5', '53', 'B69', '51', 'B50']
+        date1 = '2020-01-01'
+        date2 = '2020-04-01'
 
-        recharge_daily_data = daily_recharge_data_with_customer_profile(union_data, df)
-        # recharge_daily_data.show()
-        # exit(2)
+        my_dates_list = pd.date_range(date1, date2).tolist()
+        my_dates = [iTemp.date().strftime("%d-%m-%Y") for iTemp in my_dates_list]
+        my_dates = my_dates * 3
+        random.seed(100)
+        random_list = [random_type[random.randint(0, 13)] for iTemp in range(0, len(my_dates))]
+        random.seed(100)
+        random_list2 = [random.randint(1, 10) * 100 for iTemp in range(0, len(my_dates))]
+        df_rt = spark.createDataFrame(zip(random_list, my_dates, random_list2),
+                                   schema=['recharge_type', 'temp', 'face_value']) \
+            .withColumn("access_method_num", F.lit(1)) \
+            .withColumn("event_partition_date", F.to_date(F.lit('2019-01-01'), 'yyyy-MM-dd')) \
+            .withColumn("recharge_date",  F.to_date(F.lit('2019-01-01'), 'yyyy-MM-dd')) \
+            .withColumn("register_date", F.to_date(F.lit('2019-01-01'), 'yyyy-MM-dd')) \
+            .withColumn("recharge_time", F.lit('2019-08-01T11:25:55.000+0000')) \
+            .withColumn("subscription_identifier", F.lit(123))
+        df_rt = df_rt.withColumn("start_of_month", F.to_date(F.date_trunc('month', df_rt.event_partition_date))) \
+            .withColumn("start_of_week", F.to_date(F.date_trunc('week', df_rt.event_partition_date)))
+
+        # popular_topup_day = billing_popular_topup_day_hour(df_rt,union_data,var_project_context.catalog.load('params:l1_billing_and_payment_popular_topup_day'))
+        popular_topup_day = node_from_config(df_rt, var_project_context.catalog.load(
+            'params:l1_billing_and_payment_popular_topup_day'))
+        popular_topup_day.show()
+
+        popular_topup_day.where("start_of_month='2019-01-01'").select("access_method_num").show()
+
+        assert \
+            (popular_topup_day.where("start_of_month='2019-01-01'").select("access_method_num").collect()[0][
+                 0]) == 1
+        assert \
+            (popular_topup_day.where("start_of_month='2019-01-01'").select("register_date").collect()[0][
+                 0]) == datetime.strptime('2019-1-1',"%Y-%m-%d").date()
+        assert \
+            (popular_topup_day.where("start_of_month='2019-01-01'").select("subscription_identifier").collect()[0][
+                 0]) == 123
+        assert \
+            (popular_topup_day.where("start_of_month='2019-01-01'").select("payment_popular_day").collect()[0][
+                 0]) == 3
+        assert \
+            (popular_topup_day.where("start_of_month='2019-01-01'").select("payment_popular_hour").collect()[0][
+                 0]) == 11
