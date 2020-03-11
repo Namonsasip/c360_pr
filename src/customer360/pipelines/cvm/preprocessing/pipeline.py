@@ -71,7 +71,7 @@ def create_cvm_preprocessing(sample_type: str = None) -> Pipeline:
             node(
                 feature_selection_all_target,
                 ["l5_cvm_one_day_train_preprocessed" + suffix, "parameters"],
-                ["important_columns"],
+                "important_columns",
                 name="feature_selection_l5_cvm_one_day_train_preprocessed" + suffix,
             ),
         ]
