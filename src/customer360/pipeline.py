@@ -132,7 +132,7 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         'revenue_to_l4_pipeline': revenue_to_l4_pipeline(),
         'campaign_to_l1_pipeline': campaign_to_l1_pipeline(),
         'campaign_to_l2_pipeline': campaign_to_l2_pipeline(),
-        'campaign_to_l4_pipeline': campaign_to_l4_pipeline()
+        'campaign_to_l4_pipeline': campaign_to_l4_pipeline(),
         # "de": data_engineering_pipeline,
         "revenue_to_l3_pipeline": revenue_to_l3_pipeline(),
         "revenue_to_l4_pipeline": revenue_to_l4_pipeline(),
