@@ -55,5 +55,5 @@ l5_cvm_features_targets_one_day:
 
 important_columns:
   type: kedro.contrib.io.yaml_local.YAMLLocalDataSet
-  filepath: /mnt/customer360-cvm/important_columns    
+  filepath: dbfs:/mnt/customer360-cvm/important_columns    
 

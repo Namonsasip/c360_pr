@@ -34,8 +34,7 @@ from pyspark.ml import Pipeline, PipelineModel
 from pyspark.sql.functions import col
 from src.customer360.pipelines.cvm.src.utils.list_categorical import list_categorical
 from src.customer360.pipelines.cvm.src.utils.list_targets import list_targets
-
-# from src.customer360.pipelines.cvm.src.feature_selection import feature_selection
+from src.customer360.pipelines.cvm.src.feature_selection import feature_selection
 
 
 def pipeline1_fit(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
@@ -129,25 +128,24 @@ def feature_selection_all_target(
       List of selected feature column names for all target columns.
   """
 
-    # # Get target_type from target parameter dict
-    # target_class = {}
-    # for usecase in parameters["targets"]:
-    #     for target in parameters["targets"][usecase]:
-    # target_class[target] = parameters["targets"][usecase][target]["target_type"]
-    # # Remove black list column
-    # data = data.drop(*parameters["feature_selection_parameter"]["exclude_col"])
-    # final_list = []
-    # for target in parameters["feature_selection_parameter"]["target_column"]:
-    #     exclude_target = parameters["feature_selection_parameter"]["target_column"][:]
-    #     exclude_target.remove(target)
-    #     res_list = feature_selection(
-    #         data.drop(*exclude_target),
-    #         target,
-    #         parameters["feature_selection_parameter"]["step_size"],
-    #         target_class[target],
-    #     )
-    #     final_list = list(set(final_list) | set(res_list))
-    final_list = ["x", "y", "z", "w"]
+    # Get target_type from target parameter dict
+    target_class = {}
+    for usecase in parameters["targets"]:
+        for target in parameters["targets"][usecase]:
+            target_class[target] = parameters["targets"][usecase][target]["target_type"]
+    # Remove black list column
+    data = data.drop(*parameters["feature_selection_parameter"]["exclude_col"])
+    final_list = []
+    for target in parameters["feature_selection_parameter"]["target_column"]:
+        exclude_target = parameters["feature_selection_parameter"]["target_column"][:]
+        exclude_target.remove(target)
+        res_list = feature_selection(
+            data.drop(*exclude_target),
+            target,
+            parameters["feature_selection_parameter"]["step_size"],
+            target_class[target],
+        )
+        final_list = list(set(final_list) | set(res_list))
 
     return final_list
 
