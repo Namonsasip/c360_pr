@@ -39,6 +39,7 @@ from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l2.to_l2_nodes 
 from customer360.utilities.config_parser import node_from_config, expansion, l4_rolling_window
 import pandas as pd
 import random
+from pyspark.sql.types import *
 from pyspark.sql import functions as F
 import datetime
 from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1 import merge_all_dataset_to_one_table
@@ -47,7 +48,7 @@ from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1 import merge
 def generate_category(days, values_list):
     column = []
     for iTemp in range(0, days):
-        rand = random.randint(0, len(values_list)-1)
+        rand = random.randint(0, len(values_list) - 1)
         column.append(values_list[rand])
     return column
 
@@ -63,14 +64,15 @@ def generate_day_id(min_dt, max_dt):
 
 
 def date_diff(min_date, max_date):
-    return (max_date-min_date).days + 1  # inclusive
+    return (max_date - min_date).days + 1  # inclusive
+
 
 def check_null(df):
     if df.first() is None:
         list_type = []
         for f in df.schema.fields:
             list_type = str(f.dataType)
-        if list_type[0] != "D": #D is DateType
+        if list_type[0] != "D":  # D is DateType
             temp = 0
             return temp
         elif list_type[0] == "D":
@@ -80,6 +82,800 @@ def check_null(df):
         temp = df.first()[0]
         return temp
 
+
+def random_l2_genarate_sum():
+    list_l2sum = ['usg_incoming_afternoon_number_sms',
+                  'usg_incoming_afternoon_time_call',
+                  'usg_incoming_ais_local_calls_duration',
+                  'usg_incoming_ais_local_number_calls',
+                  'usg_incoming_dtac_call_duration',
+                  'usg_incoming_dtac_number_calls',
+                  'usg_incoming_dtac_number_sms',
+                  'usg_incoming_evening_number_sms',
+                  'usg_incoming_evening_time_call',
+                  'usg_incoming_friday_afternoon_voice_usage',
+                  'usg_incoming_friday_evening_voice_usage',
+                  'usg_incoming_friday_morning_voice_usage',
+                  'usg_incoming_friday_night_voice_usage',
+                  'usg_incoming_friday_voice_usage',
+                  'usg_incoming_local_ais_sms',
+                  'usg_incoming_local_call_duration',
+                  'usg_incoming_local_number_calls',
+                  'usg_incoming_local_sms',
+                  'usg_incoming_monday_afternoon_voice_usage',
+                  'usg_incoming_monday_evening_voice_usage',
+                  'usg_incoming_monday_morning_voice_usage',
+                  'usg_incoming_monday_night_voice_usage',
+                  'usg_incoming_monday_voice_usage',
+                  'usg_incoming_morning_time_call',
+                  'usg_incoming_morning_time_number_sms',
+                  'usg_incoming_night_time_call',
+                  'usg_incoming_night_time_number_sms',
+                  'usg_incoming_number_calls',
+                  'usg_incoming_number_calls_over_30_mins',
+                  'usg_incoming_number_calls_upto_10_mins',
+                  'usg_incoming_number_calls_upto_15_mins',
+                  'usg_incoming_number_calls_upto_20_mins',
+                  'usg_incoming_number_calls_upto_30_mins',
+                  'usg_incoming_number_calls_upto_5_mins',
+                  'usg_incoming_offnet_local_number_calls',
+                  'usg_incoming_saturday_afternoon_voice_usage',
+                  'usg_incoming_saturday_evening_voice_usage',
+                  'usg_incoming_saturday_morning_voice_usage',
+                  'usg_incoming_saturday_night_voice_usage',
+                  'usg_incoming_saturday_voice_usage',
+                  'usg_incoming_sunday_afternoon_voice_usage',
+                  'usg_incoming_sunday_evening_voice_usage',
+                  'usg_incoming_sunday_morning_voice_usage',
+                  'usg_incoming_sunday_night_voice_usage',
+                  'usg_incoming_sunday_voice_usage',
+                  'usg_incoming_thursday_afternoon_voice_usage',
+                  'usg_incoming_thursday_evening_voice_usage',
+                  'usg_incoming_thursday_morning_voice_usage',
+                  'usg_incoming_thursday_night_voice_usage',
+                  'usg_incoming_thursday_voice_usage',
+                  'usg_incoming_total_call_duration',
+                  'usg_incoming_total_sms',
+                  'usg_incoming_true_call_duration',
+                  'usg_incoming_true_number_calls',
+                  'usg_incoming_true_number_sms',
+                  'usg_incoming_tuesday_afternoon_voice_usage',
+                  'usg_incoming_tuesday_evening_voice_usage',
+                  'usg_incoming_tuesday_morning_voice_usage',
+                  'usg_incoming_tuesday_night_voice_usage',
+                  'usg_incoming_tuesday_voice_usage',
+                  'usg_incoming_wednesday_afternoon_voice_usage',
+                  'usg_incoming_wednesday_evening_voice_usage',
+                  'usg_incoming_wednesday_morning_voice_usage',
+                  'usg_incoming_wednesday_night_voice_usage',
+                  'usg_incoming_wednesday_voice_usage',
+                  'usg_incoming_weekday_calls_duration',
+                  'usg_incoming_weekday_number_calls',
+                  'usg_incoming_weekday_number_sms',
+                  'usg_incoming_weekend_calls_duration',
+                  'usg_incoming_weekend_number_calls',
+                  'usg_incoming_weekend_number_sms',
+                  'usg_outgoing_afternoon_number_calls',
+                  'usg_outgoing_afternoon_number_sms',
+                  'usg_outgoing_ais_local_calls_duration',
+                  'usg_outgoing_ais_local_number_calls',
+                  'usg_outgoing_dtac_call_duration',
+                  'usg_outgoing_dtac_number_calls',
+                  'usg_outgoing_dtac_number_sms',
+                  'usg_outgoing_evening_number_calls',
+                  'usg_outgoing_evening_number_sms',
+                  'usg_outgoing_friday_afternoon_voice_usage',
+                  'usg_outgoing_friday_evening_voice_usage',
+                  'usg_outgoing_friday_morning_voice_usage',
+                  'usg_outgoing_friday_night_voice_usage',
+                  'usg_outgoing_friday_voice_usage',
+                  'usg_outgoing_local_ais_sms',
+                  'usg_outgoing_local_call_duration',
+                  'usg_outgoing_local_number_calls',
+                  'usg_outgoing_local_sms',
+                  'usg_outgoing_monday_afternoon_voice_usage',
+                  'usg_outgoing_monday_evening_voice_usage',
+                  'usg_outgoing_monday_morning_voice_usage',
+                  'usg_outgoing_monday_night_voice_usage',
+                  'usg_outgoing_monday_voice_usage',
+                  'usg_outgoing_morning_time_number_calls',
+                  'usg_outgoing_morning_time_number_sms',
+                  'usg_outgoing_night_time_number_calls',
+                  'usg_outgoing_night_time_number_sms',
+                  'usg_outgoing_number_calls',
+                  'usg_outgoing_number_calls_over_30_mins',
+                  'usg_outgoing_number_calls_upto_10_mins',
+                  'usg_outgoing_number_calls_upto_15_mins',
+                  'usg_outgoing_number_calls_upto_20_mins',
+                  'usg_outgoing_number_calls_upto_30_mins',
+                  'usg_outgoing_number_calls_upto_5_mins',
+                  'usg_outgoing_offnet_local_calls_duration',
+                  'usg_outgoing_offnet_local_number_calls',
+                  'usg_outgoing_saturday_afternoon_voice_usage',
+                  'usg_outgoing_saturday_evening_voice_usage',
+                  'usg_outgoing_saturday_morning_voice_usage',
+                  'usg_outgoing_saturday_night_voice_usage',
+                  'usg_outgoing_saturday_voice_usage',
+                  'usg_outgoing_sunday_afternoon_voice_usage',
+                  'usg_outgoing_sunday_evening_voice_usage',
+                  'usg_outgoing_sunday_morning_voice_usage',
+                  'usg_outgoing_sunday_night_voice_usage',
+                  'usg_outgoing_sunday_voice_usage',
+                  'usg_outgoing_thursday_afternoon_voice_usage',
+                  'usg_outgoing_thursday_evening_voice_usage',
+                  'usg_outgoing_thursday_morning_voice_usage',
+                  'usg_outgoing_thursday_night_voice_usage',
+                  'usg_outgoing_thursday_voice_usage',
+                  'usg_outgoing_total_call_duration',
+                  'usg_outgoing_total_sms',
+                  'usg_outgoing_true_call_duration',
+                  'usg_outgoing_true_number_calls',
+                  'usg_outgoing_true_number_sms',
+                  'usg_outgoing_tuesday_afternoon_voice_usage',
+                  'usg_outgoing_tuesday_evening_voice_usage',
+                  'usg_outgoing_tuesday_morning_voice_usage',
+                  'usg_outgoing_tuesday_night_voice_usage',
+                  'usg_outgoing_tuesday_voice_usage',
+                  'usg_outgoing_wednesday_afternoon_voice_usage',
+                  'usg_outgoing_wednesday_evening_voice_usage',
+                  'usg_outgoing_wednesday_morning_voice_usage',
+                  'usg_outgoing_wednesday_night_voice_usage',
+                  'usg_outgoing_wednesday_voice_usage',
+                  'usg_outgoing_weekday_calls_duration',
+                  'usg_outgoing_weekday_number_calls',
+                  'usg_outgoing_weekday_number_sms',
+                  'usg_outgoing_weekend_calls_duration',
+                  'usg_outgoing_weekend_number_calls',
+                  'usg_outgoing_weekend_number_sms',
+                  "usg_incoming_roaming_call_duration",
+                  "usg_incoming_roaming_number_calls",
+                  "usg_incoming_roaming_total_sms",
+                  "usg_outgoing_roaming_call_duration",
+                  "usg_outgoing_roaming_number_calls",
+                  "usg_outgoing_roaming_total_sms",
+                  'usg_data_friday_usage',
+                  'usg_data_monday_usage',
+                  'usg_data_saturday_usage',
+                  'usg_data_sunday_usage',
+                  'usg_data_thursday_usage',
+                  'usg_data_tuesday_usage',
+                  'usg_data_wednesday_usage',
+                  'usg_incoming_data_volume',
+                  'usg_incoming_data_volume_2G_3G',
+                  'usg_incoming_data_volume_4G',
+                  'usg_incoming_local_data_volume',
+                  'usg_incoming_local_data_volume_2G_3G',
+                  'usg_incoming_local_data_volume_4G',
+                  'usg_incoming_roaming_data_volume',
+                  'usg_incoming_roaming_data_volume_2G_3G',
+                  'usg_incoming_roaming_data_volume_4G',
+                  'usg_outgoing_data_volume',
+                  'usg_outgoing_data_volume_2G_3G',
+                  'usg_outgoing_data_volume_4G',
+                  'usg_outgoing_local_data_volume',
+                  'usg_outgoing_local_data_volume_2G_3G',
+                  'usg_outgoing_local_data_volume_4G',
+                  'usg_outgoing_roaming_data_volume',
+                  'usg_outgoing_roaming_data_volume_2G_3G',
+                  'usg_outgoing_roaming_data_volume_4G',
+                  'usg_total_data_volume',
+                  'usg_data_monday_afternoon_usage',
+                  'usg_data_tuesday_afternoon_usage',
+                  'usg_data_wednesday_afternoon_usage',
+                  'usg_data_thursday_afternoon_usage',
+                  'usg_data_friday_afternoon_usage',
+                  'usg_data_saturday_afternoon_usage',
+                  'usg_data_sunday_afternoon_usage',
+                  'usg_data_monday_morning_usage',
+                  'usg_data_tuesday_morning_usage',
+                  'usg_data_wednesday_morning_usage',
+                  'usg_data_thursday_morning_usage',
+                  'usg_data_friday_morning_usage',
+                  'usg_data_saturday_morning_usage',
+                  'usg_data_sunday_morning_usage',
+                  'usg_data_monday_evening_usage',
+                  'usg_data_tuesday_evening_usage',
+                  'usg_data_wednesday_evening_usage',
+                  'usg_data_thursday_evening_usage',
+                  'usg_data_friday_evening_usage',
+                  'usg_data_saturday_evening_usage',
+                  'usg_data_sunday_evening_usage',
+                  'usg_data_monday_night_usage',
+                  'usg_data_tuesday_night_usage',
+                  'usg_data_wednesday_night_usage',
+                  'usg_data_thursday_night_usage',
+                  'usg_data_friday_night_usage',
+                  'usg_data_saturday_night_usage',
+                  'usg_data_sunday_night_usage',
+                  'usg_data_weekend_usage',
+                  'usg_data_weekday_usage',
+                  "usg_vas_total_number_of_call"
+                  ]
+
+    genl2sum = []
+
+    random.seed(100)
+    min_dt = '2020-01-01'
+    max_dt = '2020-04-01'
+    doubled_days = days * 2
+    call_start_dt = generate_day_id(min_dt, max_dt)
+    call_start_dt.extend(call_start_dt)  # two records per day
+    call_start_dt.sort()
+    for i in range(len(list_l2sum)):
+        genl2sum.append(random.randint(0, 2000))
+
+    return genl2sum
+
+
+def get_header_l2_sum():
+    list_l2sum = ['usg_incoming_afternoon_number_sms',
+                  'usg_incoming_afternoon_time_call',
+                  'usg_incoming_ais_local_calls_duration',
+                  'usg_incoming_ais_local_number_calls',
+                  'usg_incoming_dtac_call_duration',
+                  'usg_incoming_dtac_number_calls',
+                  'usg_incoming_dtac_number_sms',
+                  'usg_incoming_evening_number_sms',
+                  'usg_incoming_evening_time_call',
+                  'usg_incoming_friday_afternoon_voice_usage',
+                  'usg_incoming_friday_evening_voice_usage',
+                  'usg_incoming_friday_morning_voice_usage',
+                  'usg_incoming_friday_night_voice_usage',
+                  'usg_incoming_friday_voice_usage',
+                  'usg_incoming_local_ais_sms',
+                  'usg_incoming_local_call_duration',
+                  'usg_incoming_local_number_calls',
+                  'usg_incoming_local_sms',
+                  'usg_incoming_monday_afternoon_voice_usage',
+                  'usg_incoming_monday_evening_voice_usage',
+                  'usg_incoming_monday_morning_voice_usage',
+                  'usg_incoming_monday_night_voice_usage',
+                  'usg_incoming_monday_voice_usage',
+                  'usg_incoming_morning_time_call',
+                  'usg_incoming_morning_time_number_sms',
+                  'usg_incoming_night_time_call',
+                  'usg_incoming_night_time_number_sms',
+                  'usg_incoming_number_calls',
+                  'usg_incoming_number_calls_over_30_mins',
+                  'usg_incoming_number_calls_upto_10_mins',
+                  'usg_incoming_number_calls_upto_15_mins',
+                  'usg_incoming_number_calls_upto_20_mins',
+                  'usg_incoming_number_calls_upto_30_mins',
+                  'usg_incoming_number_calls_upto_5_mins',
+                  'usg_incoming_offnet_local_number_calls',
+                  'usg_incoming_saturday_afternoon_voice_usage',
+                  'usg_incoming_saturday_evening_voice_usage',
+                  'usg_incoming_saturday_morning_voice_usage',
+                  'usg_incoming_saturday_night_voice_usage',
+                  'usg_incoming_saturday_voice_usage',
+                  'usg_incoming_sunday_afternoon_voice_usage',
+                  'usg_incoming_sunday_evening_voice_usage',
+                  'usg_incoming_sunday_morning_voice_usage',
+                  'usg_incoming_sunday_night_voice_usage',
+                  'usg_incoming_sunday_voice_usage',
+                  'usg_incoming_thursday_afternoon_voice_usage',
+                  'usg_incoming_thursday_evening_voice_usage',
+                  'usg_incoming_thursday_morning_voice_usage',
+                  'usg_incoming_thursday_night_voice_usage',
+                  'usg_incoming_thursday_voice_usage',
+                  'usg_incoming_total_call_duration',
+                  'usg_incoming_total_sms',
+                  'usg_incoming_true_call_duration',
+                  'usg_incoming_true_number_calls',
+                  'usg_incoming_true_number_sms',
+                  'usg_incoming_tuesday_afternoon_voice_usage',
+                  'usg_incoming_tuesday_evening_voice_usage',
+                  'usg_incoming_tuesday_morning_voice_usage',
+                  'usg_incoming_tuesday_night_voice_usage',
+                  'usg_incoming_tuesday_voice_usage',
+                  'usg_incoming_wednesday_afternoon_voice_usage',
+                  'usg_incoming_wednesday_evening_voice_usage',
+                  'usg_incoming_wednesday_morning_voice_usage',
+                  'usg_incoming_wednesday_night_voice_usage',
+                  'usg_incoming_wednesday_voice_usage',
+                  'usg_incoming_weekday_calls_duration',
+                  'usg_incoming_weekday_number_calls',
+                  'usg_incoming_weekday_number_sms',
+                  'usg_incoming_weekend_calls_duration',
+                  'usg_incoming_weekend_number_calls',
+                  'usg_incoming_weekend_number_sms',
+                  'usg_outgoing_afternoon_number_calls',
+                  'usg_outgoing_afternoon_number_sms',
+                  'usg_outgoing_ais_local_calls_duration',
+                  'usg_outgoing_ais_local_number_calls',
+                  'usg_outgoing_dtac_call_duration',
+                  'usg_outgoing_dtac_number_calls',
+                  'usg_outgoing_dtac_number_sms',
+                  'usg_outgoing_evening_number_calls',
+                  'usg_outgoing_evening_number_sms',
+                  'usg_outgoing_friday_afternoon_voice_usage',
+                  'usg_outgoing_friday_evening_voice_usage',
+                  'usg_outgoing_friday_morning_voice_usage',
+                  'usg_outgoing_friday_night_voice_usage',
+                  'usg_outgoing_friday_voice_usage',
+                  'usg_outgoing_local_ais_sms',
+                  'usg_outgoing_local_call_duration',
+                  'usg_outgoing_local_number_calls',
+                  'usg_outgoing_local_sms',
+                  'usg_outgoing_monday_afternoon_voice_usage',
+                  'usg_outgoing_monday_evening_voice_usage',
+                  'usg_outgoing_monday_morning_voice_usage',
+                  'usg_outgoing_monday_night_voice_usage',
+                  'usg_outgoing_monday_voice_usage',
+                  'usg_outgoing_morning_time_number_calls',
+                  'usg_outgoing_morning_time_number_sms',
+                  'usg_outgoing_night_time_number_calls',
+                  'usg_outgoing_night_time_number_sms',
+                  'usg_outgoing_number_calls',
+                  'usg_outgoing_number_calls_over_30_mins',
+                  'usg_outgoing_number_calls_upto_10_mins',
+                  'usg_outgoing_number_calls_upto_15_mins',
+                  'usg_outgoing_number_calls_upto_20_mins',
+                  'usg_outgoing_number_calls_upto_30_mins',
+                  'usg_outgoing_number_calls_upto_5_mins',
+                  'usg_outgoing_offnet_local_calls_duration',
+                  'usg_outgoing_offnet_local_number_calls',
+                  'usg_outgoing_saturday_afternoon_voice_usage',
+                  'usg_outgoing_saturday_evening_voice_usage',
+                  'usg_outgoing_saturday_morning_voice_usage',
+                  'usg_outgoing_saturday_night_voice_usage',
+                  'usg_outgoing_saturday_voice_usage',
+                  'usg_outgoing_sunday_afternoon_voice_usage',
+                  'usg_outgoing_sunday_evening_voice_usage',
+                  'usg_outgoing_sunday_morning_voice_usage',
+                  'usg_outgoing_sunday_night_voice_usage',
+                  'usg_outgoing_sunday_voice_usage',
+                  'usg_outgoing_thursday_afternoon_voice_usage',
+                  'usg_outgoing_thursday_evening_voice_usage',
+                  'usg_outgoing_thursday_morning_voice_usage',
+                  'usg_outgoing_thursday_night_voice_usage',
+                  'usg_outgoing_thursday_voice_usage',
+                  'usg_outgoing_total_call_duration',
+                  'usg_outgoing_total_sms',
+                  'usg_outgoing_true_call_duration',
+                  'usg_outgoing_true_number_calls',
+                  'usg_outgoing_true_number_sms',
+                  'usg_outgoing_tuesday_afternoon_voice_usage',
+                  'usg_outgoing_tuesday_evening_voice_usage',
+                  'usg_outgoing_tuesday_morning_voice_usage',
+                  'usg_outgoing_tuesday_night_voice_usage',
+                  'usg_outgoing_tuesday_voice_usage',
+                  'usg_outgoing_wednesday_afternoon_voice_usage',
+                  'usg_outgoing_wednesday_evening_voice_usage',
+                  'usg_outgoing_wednesday_morning_voice_usage',
+                  'usg_outgoing_wednesday_night_voice_usage',
+                  'usg_outgoing_wednesday_voice_usage',
+                  'usg_outgoing_weekday_calls_duration',
+                  'usg_outgoing_weekday_number_calls',
+                  'usg_outgoing_weekday_number_sms',
+                  'usg_outgoing_weekend_calls_duration',
+                  'usg_outgoing_weekend_number_calls',
+                  'usg_outgoing_weekend_number_sms',
+                  "usg_incoming_roaming_call_duration",
+                  "usg_incoming_roaming_number_calls",
+                  "usg_incoming_roaming_total_sms",
+                  "usg_outgoing_roaming_call_duration",
+                  "usg_outgoing_roaming_number_calls",
+                  "usg_outgoing_roaming_total_sms",
+                  'usg_data_friday_usage',
+                  'usg_data_monday_usage',
+                  'usg_data_saturday_usage',
+                  'usg_data_sunday_usage',
+                  'usg_data_thursday_usage',
+                  'usg_data_tuesday_usage',
+                  'usg_data_wednesday_usage',
+                  'usg_incoming_data_volume',
+                  'usg_incoming_data_volume_2G_3G',
+                  'usg_incoming_data_volume_4G',
+                  'usg_incoming_local_data_volume',
+                  'usg_incoming_local_data_volume_2G_3G',
+                  'usg_incoming_local_data_volume_4G',
+                  'usg_incoming_roaming_data_volume',
+                  'usg_incoming_roaming_data_volume_2G_3G',
+                  'usg_incoming_roaming_data_volume_4G',
+                  'usg_outgoing_data_volume',
+                  'usg_outgoing_data_volume_2G_3G',
+                  'usg_outgoing_data_volume_4G',
+                  'usg_outgoing_local_data_volume',
+                  'usg_outgoing_local_data_volume_2G_3G',
+                  'usg_outgoing_local_data_volume_4G',
+                  'usg_outgoing_roaming_data_volume',
+                  'usg_outgoing_roaming_data_volume_2G_3G',
+                  'usg_outgoing_roaming_data_volume_4G',
+                  'usg_total_data_volume',
+                  'usg_data_monday_afternoon_usage',
+                  'usg_data_tuesday_afternoon_usage',
+                  'usg_data_wednesday_afternoon_usage',
+                  'usg_data_thursday_afternoon_usage',
+                  'usg_data_friday_afternoon_usage',
+                  'usg_data_saturday_afternoon_usage',
+                  'usg_data_sunday_afternoon_usage',
+                  'usg_data_monday_morning_usage',
+                  'usg_data_tuesday_morning_usage',
+                  'usg_data_wednesday_morning_usage',
+                  'usg_data_thursday_morning_usage',
+                  'usg_data_friday_morning_usage',
+                  'usg_data_saturday_morning_usage',
+                  'usg_data_sunday_morning_usage',
+                  'usg_data_monday_evening_usage',
+                  'usg_data_tuesday_evening_usage',
+                  'usg_data_wednesday_evening_usage',
+                  'usg_data_thursday_evening_usage',
+                  'usg_data_friday_evening_usage',
+                  'usg_data_saturday_evening_usage',
+                  'usg_data_sunday_evening_usage',
+                  'usg_data_monday_night_usage',
+                  'usg_data_tuesday_night_usage',
+                  'usg_data_wednesday_night_usage',
+                  'usg_data_thursday_night_usage',
+                  'usg_data_friday_night_usage',
+                  'usg_data_saturday_night_usage',
+                  'usg_data_sunday_night_usage',
+                  'usg_data_weekend_usage',
+                  'usg_data_weekday_usage',
+                  "usg_vas_total_number_of_call"
+                  ]
+
+    return list_l2sum
+
+
+def out_going(project_context):
+    var_project_context = project_context['ProjectContext']
+    spark = project_context['Spark']
+    random.seed(100)
+    print(
+        "***********************L0 usage_outgoing_call_relation_sum_daily generation*******************************")
+    # Below section is to create dummy data.
+    min_dt = '2020-01-01'
+    max_dt = '2020-04-01'
+    doubled_days = days * 2
+    call_start_dt = generate_day_id(min_dt, max_dt)
+    call_start_dt.extend(call_start_dt)  # two records per day
+    call_start_dt.sort()
+
+    # print(day_id)
+    # _10min_totalcall = generate_int(doubled_days, 300, 600)
+    # _15min_totalcall = generate_int(doubled_days,600,900)
+    # _20min_totalcall = generate_int(doubled_days, 900, 1200)
+    # _30min_totalcall = generate_int(doubled_days, 1200, 1800)
+    # _morethan30_totalcall = generate_int(doubled_days, 1800, 2000)
+
+    # l0_tol1_test
+    service_type_ = generate_category(doubled_days, ['VOICE', 'SMS'])
+    idd_flag = generate_category(doubled_days, ['Y', 'N'])
+    call_type = generate_category(doubled_days, ['MO', 'MT'])
+    # total_successful_call = generate_int(doubled_days, [0, 1])
+    called_network_type = generate_category(doubled_days,
+                                            ['TRUE', 'DTAC', '3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN',
+                                             'AWN',
+                                             'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post',
+                                             'AWNINT'])
+
+    # L1_test
+    total_call = generate_int(doubled_days, 0, 2000)
+    total_durations = generate_int(doubled_days, 0, 5)
+    call_start_hr = generate_int(doubled_days, 0, 23)
+
+    day_id = generate_day_id(min_dt, max_dt)
+    day_id.extend(day_id)  # two records per day
+    day_id.sort()
+    hour_id = generate_int(doubled_days, 0, 23)
+    total_successful_call = generate_int(doubled_days, 0, 30)
+
+    for i in range(1, len(call_start_hr)):
+        if ((i + 1) % 2 == 0):
+            while (call_start_hr[i] == call_start_hr[i - 1]):
+                new_int = generate_int(1, 0, 23)[0]
+                print("i = " + str(i))
+                print("new_int = " + str(new_int))
+                print("hour_id[i] = " + str(call_start_hr[i]))
+                print("hour_id[i-1] = " + str(call_start_hr[i - 1]))
+                call_start_hr[i] = new_int
+    print(call_start_hr)
+
+    df_usage_outgoing_call_relation_sum_daily = spark.createDataFrame(
+        zip(day_id, hour_id, total_call, total_successful_call, called_network_type, call_type, service_type_,
+            idd_flag),
+        schema=['day_id', 'hour_id', 'total_durations', 'total_successful_call', 'called_network_type', 'call_type',
+                'service_type', 'idd_flag']) \
+        .withColumn("access_method_num", F.lit(1)) \
+        .withColumn("caller_no", F.lit(2)) \
+        .withColumn("day_id", F.to_date('day_id', 'dd-MM-yyyy')) \
+        .withColumn("partition_date", F.lit('20200101'))
+
+    df_usage_outgoing_call_relation_sum_daily = df_usage_outgoing_call_relation_sum_daily \
+        .withColumn("weekday", F.date_format(df_usage_outgoing_call_relation_sum_daily.day_id, 'EEEE'))
+
+    df_usage_outgoing_call_relation_sum_daily = df_usage_outgoing_call_relation_sum_daily.where("call_type = 'MO'")
+
+    return df_usage_outgoing_call_relation_sum_daily
+
+
+def incoming(project_context):
+    var_project_context = project_context['ProjectContext']
+    spark = project_context['Spark']
+    print(
+        "***********************L0 usage_incoming_call_relation_sum_daily generation*******************************")
+    # Below section is to create dummy data.
+    min_dt = '2020-01-01'
+    max_dt = '2020-04-01'
+    doubled_days = days * 2
+    day_id = generate_day_id(min_dt, max_dt)
+    day_id.extend(day_id)  # two records per day
+    day_id.sort()
+    # print(day_id)
+    call_type = generate_category(doubled_days, ['MT', 'MO'])
+    service_type = generate_category(doubled_days, ['VOICE', 'SMS'])
+    idd_flag = generate_category(doubled_days, ['Y', 'N'])
+    total_durations = generate_int(doubled_days, 0, 1000)
+    total_successful_call = generate_int(doubled_days, 0, 5)
+    caller_network_type = generate_category(doubled_days, ['3GPost-paid', '3GPre-paid', 'AIS',
+                                                           'InternalAWN', 'AWN', 'Fixed Line-AWN',
+                                                           'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT',
+                                                           'DTAC', 'TRUE'])
+
+    rat_type = generate_category(doubled_days, ['2G', '3G', '4G'])
+    hour_id = generate_int(doubled_days, 0, 23)
+    for i in range(1, len(hour_id)):
+        if ((i + 1) % 2 == 0):
+            while (hour_id[i] == hour_id[i - 1]):
+                new_int = generate_int(1, 0, 23)[0]
+                print("i = " + str(i))
+                print("new_int = " + str(new_int))
+                print("hour_id[i] = " + str(hour_id[i]))
+                print("hour_id[i-1] = " + str(hour_id[i - 1]))
+                hour_id[i] = new_int
+    # print(hour_id)
+    df_usage_incoming_call = spark.createDataFrame(
+        zip(day_id, hour_id, call_type, service_type, idd_flag, total_durations, total_successful_call,
+            caller_network_type),
+        schema=['day_id', 'hour_id', 'call_type', 'service_type', 'idd_flag', 'total_durations',
+                'total_successful_call', 'caller_network_type']) \
+        .withColumn("called_no", F.lit(1)) \
+        .withColumn("day_id", F.to_date('day_id', 'dd-MM-yyyy')) \
+        .withColumn("partition_date", F.lit('20200101'))
+    # df_usage_incoming_call.orderBy("day_id", ascending=True).show()
+    # df_usage_incoming_call.orderBy("day_id", ascending=False).show()
+    daily_usage_incoming_call = node_from_config(df_usage_incoming_call, var_project_context.catalog.load(
+        'params:l1_usage_incoming_call_relation_sum_daily'))
+
+
+def out_going_ir(project_context):
+    var_project_context = project_context['ProjectContext']
+    spark = project_context['Spark']
+
+    # min_dt = '2020-01-01'
+    # max_dt = '2020-04-01'
+    # #days = date_diff(min_dt, max_dt)  # range from min_date to max_date
+    random.seed(100)
+    print("*********************************L1 usage_incoming_sum_ir Starts***************************************")
+    # random.seed(100)
+    random_dur = [random.randint(1, 5) for iTemp in range(0, days)]
+    # random.seed(101)
+    random_no_call = [random.randint(1, 5) for iTemp in range(0, days)]
+    # service_type = ['VOICE' if random.randint(1, 2) == 1 else 'SMS' for iTemp in range(0, 121)]
+    day_id = generate_day_id(min_date, max_date)
+    service_type = []
+    for iTemp in range(0, 121):
+        rand_service = random.randint(1, 3)
+        if rand_service == 1:
+            service_type.append('VOICE')
+        elif rand_service == 2:
+            service_type.append('SMS')
+        else:
+            service_type.append('IR_SMS')
+    call_type = ['MO' if random.randint(1, 2) == 1 else 'MT' for iTemp in range(0, 121)]
+    df_usg_relation_ir = spark.createDataFrame(zip(call_type, service_type, random_dur, random_no_call, day_id),
+                                               schema=['call_type', 'service_type', 'total_durations',
+                                                       'total_successful_call', 'day_id']) \
+        .withColumn("called_no", F.lit(1)) \
+        .withColumn("caller_no", F.lit(2)) \
+        .withColumn("day_id", F.to_date('day_id', 'dd-MM-yyyy')) \
+        .withColumn("partition_date", F.lit('20200101'))
+    # df_usg_relation_ir.orderBy("day_id", ascending=True).show()
+    # df_usg_relation_ir.orderBy("day_id", ascending=False).show()
+    daily_usage_outgoing_sum_ir = node_from_config(df_usg_relation_ir, var_project_context.catalog.load(
+        'params:l1_usage_outgoing_call_relation_sum_ir_daily'))
+
+    return df_usg_relation_ir
+
+
+def incoming_ir(project_context):
+    var_project_context = project_context['ProjectContext']
+    spark = project_context['Spark']
+
+    # min_dt = '2020-01-01'
+    # max_dt = '2020-04-01'
+    # #days = date_diff(min_dt, max_dt)  # range from min_date to max_date
+    random.seed(100)
+    print("*********************************L1 usage_incoming_sum_ir Starts***************************************")
+    # random.seed(100)
+    random_dur = [random.randint(1, 5) for iTemp in range(0, days)]
+    # random.seed(101)
+    random_no_call = [random.randint(1, 5) for iTemp in range(0, days)]
+    # service_type = ['VOICE' if random.randint(1, 2) == 1 else 'SMS' for iTemp in range(0, 121)]
+    day_id = generate_day_id(min_date, max_date)
+    service_type = []
+    for iTemp in range(0, 121):
+        rand_service = random.randint(1, 3)
+        if rand_service == 1:
+            service_type.append('VOICE')
+        elif rand_service == 2:
+            service_type.append('SMS')
+        else:
+            service_type.append('IR_SMS')
+    call_type = ['MO' if random.randint(1, 2) == 1 else 'MT' for iTemp in range(0, 121)]
+    df_usg_relation_ir = spark.createDataFrame(zip(call_type, service_type, random_dur, random_no_call, day_id),
+                                               schema=['call_type', 'service_type', 'total_durations',
+                                                       'total_successful_call', 'day_id']) \
+        .withColumn("called_no", F.lit(1)) \
+        .withColumn("caller_no", F.lit(2)) \
+        .withColumn("day_id", F.to_date('day_id', 'dd-MM-yyyy')) \
+        .withColumn("partition_date", F.lit('20200101'))
+    # df_usg_relation_ir.orderBy("day_id", ascending=True).show()
+    # df_usg_relation_ir.orderBy("day_id", ascending=False).show()
+    daily_usage_incoming_sum_ir = node_from_config(df_usg_relation_ir, var_project_context.catalog.load(
+        'params:l1_usage_incoming_call_relation_sum_ir_daily'))
+
+    return df_usg_relation_ir
+
+
+def ru_a_gprs_cbs(project_context):
+    var_project_context = project_context['ProjectContext']
+    spark = project_context['Spark']
+    print("***********************L0 usage_ru_a_gprs_cbs_usage_daily generation*******************************")
+    # Below section is to create dummy data.
+    min_dt = '2020-01-01'
+    max_dt = '2020-04-01'
+    doubled_days = days * 2
+    call_start_dt = generate_day_id(min_dt, max_dt)
+    call_start_dt.extend(call_start_dt)  # two records per day
+    call_start_dt.sort()
+    # print(day_id)
+    data_upload_amt = generate_int(doubled_days, 1, 5)
+    data_download_amt = generate_int(doubled_days, 1, 5)
+    cdr_subtype_cd = generate_category(doubled_days, ['ROAMING', 'DOMESTIC'])
+    rat_type = generate_category(doubled_days, ['2G', '3G', '4G'])
+    call_start_hr = generate_int(doubled_days, 0, 23)
+    for i in range(1, len(call_start_hr)):
+        if ((i + 1) % 2 == 0):
+            while (call_start_hr[i] == call_start_hr[i - 1]):
+                new_int = generate_int(1, 0, 23)[0]
+                print("i = " + str(i))
+                print("new_int = " + str(new_int))
+                print("hour_id[i] = " + str(call_start_hr[i]))
+                print("hour_id[i-1] = " + str(call_start_hr[i - 1]))
+                call_start_hr[i] = new_int
+    print(call_start_hr)
+    df_usage_ru_a_gprs_cbs_usage = spark.createDataFrame(
+        zip(call_start_dt, call_start_hr, data_upload_amt, data_download_amt, cdr_subtype_cd, rat_type),
+        schema=['call_start_dt', 'call_start_hr', 'data_upload_amt', 'data_download_amt', 'cdr_subtype_cd',
+                'rat_type']) \
+        .withColumn("access_method_num", F.lit(1)) \
+        .withColumn("call_start_dt", F.to_date('call_start_dt', 'dd-MM-yyyy')) \
+        .withColumn("partition_date", F.lit('20200101'))
+    # df_usage_ru_a_gprs_cbs_usage.orderBy("call_start_dt", ascending=True).show()
+    # df_usage_ru_a_gprs_cbs_usage.orderBy("call_start_dt", ascending=False).show()
+    daily_usage_ru_a_gprs_cbs_usage = node_from_config(df_usage_ru_a_gprs_cbs_usage,
+                                                       var_project_context.catalog.load(
+                                                           'params:l1_usage_ru_a_gprs_cbs_usage_daily'))
+
+    return df_usage_ru_a_gprs_cbs_usage
+
+
+def ru_vas_post(project_context):
+    var_project_context = project_context['ProjectContext']
+    spark = project_context['Spark']
+    print("***********************L0 usage_ru_a_vas_postpaid_usg_daily generation*******************************")
+    # Below section is to create dummy data.
+    min_dt = '2020-01-01'
+    max_dt = '2020-04-01'
+    doubled_days = days * 2
+    day_id = generate_day_id(min_dt, max_dt)
+    day_id.extend(day_id)  # two records per day
+    day_id.sort()
+    # print(day_id)
+    uplink_volume_kb = generate_int(doubled_days, 1, 5)
+    downlink_volume_kb = generate_int(doubled_days, 1, 5)
+    call_type_cd = generate_category(doubled_days, [3, 64])
+    rat_type = generate_category(doubled_days, ['2G', '3G', '4G'])
+    hour_id = generate_int(doubled_days, 0, 23)
+    for i in range(1, len(hour_id)):
+        if ((i + 1) % 2 == 0):
+
+            while (hour_id[i] == hour_id[i - 1]):
+                new_int = generate_int(1, 0, 23)[0]
+                print("i = " + str(i))
+                print("new_int = " + str(new_int))
+                print("hour_id[i] = " + str(hour_id[i]))
+                print("hour_id[i-1] = " + str(hour_id[i - 1]))
+                hour_id[i] = new_int
+    # print(hour_id)
+    df_usg_ru_vas_post = spark.createDataFrame(
+        zip(day_id, hour_id, uplink_volume_kb, downlink_volume_kb, call_type_cd, rat_type),
+        schema=['day_id', 'hour_id', 'uplink_volume_kb', 'downlink_volume_kb', 'call_type_cd', 'rat_type']) \
+        .withColumn("access_method_num", F.lit(1)) \
+        .withColumn("day_id", F.to_date('day_id', 'dd-MM-yyyy')) \
+        .withColumn("partition_date", F.lit('20200101'))
+    # df_usg_ru_vas_post.orderBy("day_id", ascending=True).show()
+    # df_usg_ru_vas_post.orderBy("day_id", ascending=False).show()
+    daily_usg_ru_vas_post = node_from_config(df_usg_ru_vas_post, var_project_context.catalog.load(
+        'params:l1_usage_ru_a_vas_postpaid_usg_daily'))
+
+    return df_usg_ru_vas_post
+
+
+def vas_data(project_context):
+    var_project_context = project_context['ProjectContext']
+    spark = project_context['Spark']
+
+    # Below section is to create dummy data.
+    # min_date = datetime.date(2020,1,1)
+    # max_date = datetime.date(2020,4,1)
+    # days = date_diff(min_date,max_date) #range from min_date to max_date
+    random.seed(100)
+    my_dates_list = pd.date_range(min_date, max_date).tolist()
+    my_dates = [iTemp.date().strftime("%d-%m-%Y") for iTemp in my_dates_list]
+    random_list = [random.randint(1, 5) for iTemp in range(0, days)]
+    df_vas_post_pre = spark.createDataFrame(zip(random_list, my_dates), schema=['number_of_call', 'day_id']) \
+        .withColumn("access_method_num", F.lit(1)) \
+        .withColumn("day_id", F.to_date('day_id', 'dd-MM-yyyy')) \
+        .withColumn("partition_date", F.lit('20200101'))
+    # df_vas_post_pre.show()
+    # Testing Daily Features here
+    vas_data = node_from_config(df_vas_post_pre, var_project_context.catalog.load(
+        'params:l1_usage_ru_a_vas_postpaid_prepaid_daily'))
+
+    return df_vas_post_pre
+
+
+def daily_profile(project_context):
+    var_project_context = project_context['ProjectContext']
+    spark = project_context['Spark']
+    random.seed(100)
+    print("***********************L1 usage_profile generation*******************************")
+    # Below section is to create dummy data.
+    min_dt = '2020-01-01'
+    max_dt = '2020-04-01'
+    doubled_days = days * 2
+    day_id = generate_day_id(min_dt, max_dt)
+    day_id.extend(day_id)  # two records per day
+    day_id.sort()
+    # print(day_id)
+    subscription_identifier = generate_int(doubled_days, 1, 2)
+    daily_profile_feature = spark.createDataFrame(
+        zip(day_id, subscription_identifier),
+        schema=['event_partition_date', 'subscription_identifier']) \
+        .withColumn("event_partition_date", F.to_date('event_partition_date', 'dd-MM-yyyy')) \
+        .withColumn("access_method_num", F.lit(1))
+
+    return daily_profile_feature
+
+
+global test_l1_usage_postpaid_prepaid_daily
+test_l1_usage_postpaid_prepaid_daily = [
+['1-ELB55V1',None,None,datetime.datetime.strptime("2020-01-01", '%Y-%m-%d'),datetime.datetime.strptime("2020-01-27", '%Y-%m-%d'),'0.00','0.00','0.00','0.00','0.00',datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),'0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','93239.00','357566.00','1648363.00','1142966.00','3242134.00','0.00','0.00','0.00','0.00','0.00','3242134.00','0.00','0.0','0.0','0.0','0.0','2235058.00','115060.00','2119998.00','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0',None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),'5.0','0.0','2235058','115060','2119998','0.0','5.0','0.0','0.0','0.0','0.0','0.0','0.0','3.0','0.0','2.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0',None,'0','0','0',None,None,None,'0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','5.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','5.0','0.0','0.0','0.0',datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),None,None,None,None,'1007076.00','106269.00','900807.00',None,None,None,None,None,None,None,None,None,None,None,None,None,None,'1007076','106269','900807',None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,'0.0',None,None,'0','0','0',None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),'3242134.00',None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d')],
+['1-J43GCJN',None,None,datetime.datetime.strptime("2020-01-01", '%Y-%m-%d'),datetime.datetime.strptime("2020-01-27", '%Y-%m-%d'),'0.00','0.00','0.00','0.00','0.00',datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),'0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.0','0.0','0.0','0.0','0.00','0.00','0.00','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0',None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),'0.0','0.0',None,None,None,'0.0','3.0','0.0','0.0','0.0','0.0','0.0','0.0','2.0','0.0','1.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0',None,None,None,None,None,None,None,'0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','3.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','3.0','0.0','0.0','0.0',datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),None,None,None,None,'0.00','0.00','0.00',None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,'0.0',None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),'0.00',None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d')],
+['1-DXZB-156',None,None,datetime.datetime.strptime("2020-01-01", '%Y-%m-%d'),datetime.datetime.strptime("2020-01-27", '%Y-%m-%d'),'0.00','0.00','0.00','0.00','0.00',datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),'0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','10977.00','5799.00','0.00','196556.00','213332.00','0.00','0.00','0.00','0.00','0.00','213332.00','0.00','0.0','1.0','0.0','0.0','154126.00','0.00','154126.00','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0',datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),'0.0','161.0','154126','0','154126','1.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','1.0','0.0','0.0','1.0','0.0','1.0','1.0','1.0','1.0','1.0','1.0',None,'0','0','0',None,None,None,'0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','161.0','0.0','0.0','0.0','0.0','161.0','0.0','0.0','0.0','161.0','0.0','0.0','0.0','0.0','0.0','161.0','1.0','1.0','0.0','0.0','0.0',datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),None,None,None,None,'59206.00','0.00','59206.00',None,None,None,None,None,None,None,None,None,None,None,None,None,None,'59206','0','59206',None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,'161.0',None,None,'0','0','0',None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),'213332.00',None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d')],
+['1-12F5QKFM',None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d')],
+['1-BH6BT1W',None,None,datetime.datetime.strptime("2020-01-01", '%Y-%m-%d'),datetime.datetime.strptime("2020-01-27", '%Y-%m-%d'),'0.00','0.00','0.00','0.00','0.00',datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),'0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','62041035.00','59988136.00','22915129.00','113044239.00','257988539.00','0.00','0.00','0.00','0.00','0.00','257988539.00','0.00','2.0','3.0','294.0','2.0','233697726.00','233697726.00','0.00','0.0','0.0','0.0','0.0','1.0','0.0','0.0','0.0','0.0','0.0',datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),'2.0','415.0','233697726','233697726','0','4.0','2.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','4.0','0.0','4.0','4.0','4.0','4.0','4.0','2.0',None,'0','0','0',None,None,None,'0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','415.0','2.0','0.0','0.0','0.0','299.0','116.0','0.0','0.0','415.0','0.0','0.0','0.0','0.0','0.0','415.0','4.0','2.0','0.0','0.0','0.0',datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),'2.0','0.0','0.0','0.0','24290813.00','24290813.00','0.00','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0',datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),None,'0.0','21.0','24290813','24290813','0','2.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','2.0','0.0','2.0','2.0','2.0','2.0','2.0','121.0','2.0',None,'0','0','0',None,None,None,'0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','21.0','0.0','0.0','0.0','0.0','21.0','0.0','0.0','0.0','21.0','0.0','0.0','0.0','0.0','0.0','21.0','2.0','0.0','0.0','0.0','0.0',datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),'257988539.00',None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d')],
+['1-O2YT11E',None,None,datetime.datetime.strptime("2020-01-01", '%Y-%m-%d'),datetime.datetime.strptime("2020-01-27", '%Y-%m-%d'),None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,'0.0','0.0','0.0','0.0',None,None,None,'0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0',None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),'1.0','0.0',None,None,None,'0.0','1.0','0.0','0.0','0.0','0.0','0.0','0.0','2.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0',None,None,None,None,None,None,None,'0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','1.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','2.0','0.0','0.0','0.0',datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,'0.0',None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d')],
+['1-U0IH1-380',None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d')],
+['1-FAKEVST',None,None,datetime.datetime.strptime("2020-01-01", '%Y-%m-%d'),datetime.datetime.strptime("2020-01-27", '%Y-%m-%d'),'0.00','0.00','0.00','0.00','0.00',datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),'0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','2972052.00','0.00','73497783.00','0.00','76469835.00','0.00','0.00','0.00','0.00','0.00','76469835.00','0.00','2.0','0.0','46.0','1.0','65656978.00','4568270.00','61088708.00','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0',datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),'2.0','46.0','65656978','4568270','61088708','1.0','2.0','0.0','0.0','0.0','0.0','0.0','1.0','0.0','0.0','0.0','1.0','0.0','1.0','1.0','1.0','1.0','1.0','0.0',None,'0','0','0',None,None,None,'0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','46.0','2.0','0.0','0.0','0.0','0.0','0.0','46.0','0.0','46.0','0.0','0.0','0.0','0.0','0.0','46.0','1.0','2.0','0.0','0.0','0.0',datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),None,None,None,None,'10812857.00','312808.00','10500049.00',None,None,None,None,None,None,None,None,None,None,None,None,None,None,'10812857','312808','10500049',None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,'0.0',None,None,'0','0','0',None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),'76469835.00',None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d')],
+['1-JJYMS5L',None,None,datetime.datetime.strptime("2020-01-01", '%Y-%m-%d'),datetime.datetime.strptime("2020-01-27", '%Y-%m-%d'),None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,'0.0','0.0','0.0','0.0',None,None,None,'0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0',None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),'4.0','0.0',None,None,None,'0.0','4.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','4.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0',None,None,None,None,None,None,None,'0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','4.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','4.0','0.0','0.0','0.0',datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,'0.0',None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d')],
+['1-1165A7G6',None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d')],
+['1-WI6J60P',None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d')],
+['1-US5SPCQ',None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d')],
+['1-M24GTF6',None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d')],
+['1-10ZG9NLS',None,None,datetime.datetime.strptime("2020-01-01", '%Y-%m-%d'),datetime.datetime.strptime("2020-01-27", '%Y-%m-%d'),'0.00','0.00','0.00','0.00','0.00',datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),'0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.0','1.0','0.0','0.0','0.00','0.00','0.00','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0',datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),None,'0.0','328.0',None,None,None,'1.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','1.0','0.0','1.0','1.0','1.0','1.0','0.0','1.0',None,None,None,None,None,None,None,'0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','328.0','0.0','0.0','0.0','0.0','328.0','0.0','0.0','0.0','328.0','0.0','0.0','0.0','0.0','0.0','328.0','1.0','0.0','0.0','0.0','0.0',datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),None,None,None,None,None,'0.00','0.00','0.00',None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,'328.0',None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),'0.00',None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d')],
+['1-O1MWJ69',None,None,datetime.datetime.strptime("2020-01-01", '%Y-%m-%d'),datetime.datetime.strptime("2020-01-27", '%Y-%m-%d'),'0.00','0.00','0.00','0.00','0.00',datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),'0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','167481.72','332566.40','287.14','500335.26','0.00','0.00','0.00','0.00','0.00','500335.26','0.00',None,None,None,None,'471391.56','9808.54','461583.02',None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),None,None,None,None,None,None,'28943.70','1515.04','27428.66',None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),'500335.26',None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d')],
+['1-WSBBDJ0',None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d')],
+['1-4Y2XXI8',None,None,datetime.datetime.strptime("2020-01-01", '%Y-%m-%d'),datetime.datetime.strptime("2020-01-27", '%Y-%m-%d'),None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,'0.0','1.0','1200.0','3.0',None,None,None,'0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0',datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),None,'0.0','1200.0',None,None,None,'3.0','0.0','0.0','0.0','0.0','0.0','0.0','2.0','0.0','0.0','0.0','3.0','0.0','2.0','2.0','3.0','3.0','2.0','0.0',None,None,None,None,None,None,None,'0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','1200.0','0.0','0.0','0.0','0.0','151.0','0.0','1049.0','0.0','1200.0','0.0','0.0','0.0','0.0','0.0','1200.0','3.0','0.0','0.0','0.0','0.0',datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,'0.0',None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d')],
+['1-KJ6DB11',None,None,datetime.datetime.strptime("2020-01-01", '%Y-%m-%d'),datetime.datetime.strptime("2020-01-27", '%Y-%m-%d'),'0.00','0.00','0.00','0.00','0.00',datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),'0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','1285775422.00','968611972.00','368187809.00','0.00','2622575203.00','0.00','0.00','0.00','0.00','0.00','2622575203.00','0.00','4.0','0.0','0.0','0.0','2498374248.00','5248156.00','2493126092.00','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0',None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),'0.0','0.0','2498374248','5248156','2493126092','0.0','4.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0',None,'0','0','0',None,None,None,'0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','4.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','4.0','0.0','0.0','0.0',datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),None,None,None,None,'124200955.00','1206688.00','122994267.00',None,None,None,None,None,None,None,None,None,None,None,None,None,None,'124200955','1206688','122994267',None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,'0.0',None,None,'0','0','0',None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),'2622575203.00',None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d')],
+['1-UP3OD4P',None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d')],
+['1-RD5TFTU',None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d')]
+
+]
 
 # Global Variables
 min_date = datetime.date(2020, 1, 1)
@@ -94,6 +890,7 @@ daily_usage_ru_a_gprs_cbs_usage = []
 daily_usage_incoming_call = []
 daily_profile_feature = []
 usage_outgoing_call_relation_sum_daily = []
+
 
 class TestUnitUsage:
 
@@ -110,11 +907,12 @@ class TestUnitUsage:
         my_dates = [iTemp.date().strftime("%d-%m-%Y") for iTemp in my_dates_list]
         random_list = [random.randint(1, 5) for iTemp in range(0, days)]
 
-        print("*********************************L1 usage_ru_a_vas_postpaid_prepaid_daily Starts***************************************")
+        print(
+            "*********************************L1 usage_ru_a_vas_postpaid_prepaid_daily Starts***************************************")
         df_vas_post_pre = spark.createDataFrame(zip(random_list, my_dates), schema=['number_of_call', 'day_id']) \
             .withColumn("access_method_num", F.lit(1)) \
             .withColumn("day_id", F.to_date('day_id', 'dd-MM-yyyy')) \
-            .withColumn("partition_date",F.lit('20200101'))
+            .withColumn("partition_date", F.lit('20200101'))
         # df_vas_post_pre.show()
         # Testing Daily Features here
         global vas_data
@@ -176,7 +974,7 @@ class TestUnitUsage:
         #         'max_usg_vas_total_number_of_call_max_weekly_last_four_week').collect()[0][0] == 5
 
         # AIS DE TO ADD FEATURE HERE
-        #exit(2)
+        # exit(2)
 
     def test_incoming_sum_ir_features(self, project_context):
         var_project_context = project_context['ProjectContext']
@@ -209,13 +1007,13 @@ class TestUnitUsage:
             .withColumn("called_no", F.lit(1)) \
             .withColumn("caller_no", F.lit(2)) \
             .withColumn("day_id", F.to_date('day_id', 'dd-MM-yyyy')) \
-            .withColumn("partition_date",F.lit('20200101'))
-        #df_usg_relation_ir.orderBy("day_id", ascending=True).show()
-        #df_usg_relation_ir.orderBy("day_id", ascending=False).show()
+            .withColumn("partition_date", F.lit('20200101'))
+        # df_usg_relation_ir.orderBy("day_id", ascending=True).show()
+        # df_usg_relation_ir.orderBy("day_id", ascending=False).show()
         global daily_usage_incoming_sum_ir
         daily_usage_incoming_sum_ir = node_from_config(df_usg_relation_ir, var_project_context.catalog.load(
             'params:l1_usage_incoming_call_relation_sum_ir_daily'))
-        #daily_usage_incoming_sum_ir.orderBy("event_partition_date").show()
+        # daily_usage_incoming_sum_ir.orderBy("event_partition_date").show()
 
         # Test for usg_incoming_roaming_call_duration: "sum(case when service_type IN ('VOICE') THEN total_durations else 0 end)"
         assert \
@@ -285,7 +1083,7 @@ class TestUnitUsage:
         daily_usage_outgoing_sum_ir = node_from_config(df_usg_relation_ir, var_project_context.catalog.load(
             'params:l1_usage_outgoing_call_relation_sum_ir_daily'))
 
-        #daily_usage_outgoing_sum_ir.orderBy("event_partition_date").show()
+        # daily_usage_outgoing_sum_ir.orderBy("event_partition_date").show()
 
         # Test for usg_outgoing_roaming_call_duration: "sum(case when service_type IN ('VOICE') THEN total_durations else 0 end)"
         assert \
@@ -349,7 +1147,7 @@ class TestUnitUsage:
                 "usg_outgoing_last_call_date").where("event_partition_date = '2020-03-28'").collect()[0][
                 0] == datetime.date(2020, 3, 28)
         print("*********************************L1 usage_outgoing_sum_ir PASS***************************************")
-        #exit(2)
+        # exit(2)
 
     def test_ru_a_vas_post_features(self, project_context):
         var_project_context = project_context['ProjectContext']
@@ -358,7 +1156,7 @@ class TestUnitUsage:
         # Below section is to create dummy data.
         min_dt = '2020-01-01'
         max_dt = '2020-04-01'
-        doubled_days = days*2
+        doubled_days = days * 2
         day_id = generate_day_id(min_dt, max_dt)
         day_id.extend(day_id)  # two records per day
         day_id.sort()
@@ -369,21 +1167,22 @@ class TestUnitUsage:
         rat_type = generate_category(doubled_days, ['2G', '3G', '4G'])
         hour_id = generate_int(doubled_days, 0, 23)
         for i in range(1, len(hour_id)):
-            if((i+1)%2 ==0):
+            if ((i + 1) % 2 == 0):
 
-                while(hour_id[i] == hour_id[i-1]):
+                while (hour_id[i] == hour_id[i - 1]):
                     new_int = generate_int(1, 0, 23)[0]
-                    print("i = "+str(i))
-                    print("new_int = "+str(new_int))
-                    print("hour_id[i] = "+str(hour_id[i]))
-                    print("hour_id[i-1] = "+str(hour_id[i-1]))
+                    print("i = " + str(i))
+                    print("new_int = " + str(new_int))
+                    print("hour_id[i] = " + str(hour_id[i]))
+                    print("hour_id[i-1] = " + str(hour_id[i - 1]))
                     hour_id[i] = new_int
-        #print(hour_id)
-        df_usg_ru_vas_post = spark.createDataFrame(zip(day_id, hour_id, uplink_volume_kb, downlink_volume_kb, call_type_cd, rat_type),
-                                                   schema=['day_id', 'hour_id', 'uplink_volume_kb', 'downlink_volume_kb', 'call_type_cd', 'rat_type']) \
+        # print(hour_id)
+        df_usg_ru_vas_post = spark.createDataFrame(
+            zip(day_id, hour_id, uplink_volume_kb, downlink_volume_kb, call_type_cd, rat_type),
+            schema=['day_id', 'hour_id', 'uplink_volume_kb', 'downlink_volume_kb', 'call_type_cd', 'rat_type']) \
             .withColumn("access_method_num", F.lit(1)) \
             .withColumn("day_id", F.to_date('day_id', 'dd-MM-yyyy')) \
-            .withColumn("partition_date",F.lit('20200101'))
+            .withColumn("partition_date", F.lit('20200101'))
         # df_usg_ru_vas_post.orderBy("day_id", ascending=True).show()
         # df_usg_ru_vas_post.orderBy("day_id", ascending=False).show()
         global daily_usg_ru_vas_post
@@ -462,22 +1261,22 @@ class TestUnitUsage:
         assert \
             daily_usg_ru_vas_post.where("event_partition_date = '2020-01-05'").select(
                 "usg_data_weekend_usage").collect()[0][
-                0] == 9 # Sunday
+                0] == 9  # Sunday
         assert \
             daily_usg_ru_vas_post.where("event_partition_date = '2020-01-03'").select(
                 "usg_data_weekend_usage").collect()[0][
-                0] == 0 # Friday
+                0] == 0  # Friday
         ########################################################################################################
         # Test for usg_data_weekday_usage: "sum(case when date_format(day_id, 'EEEE') NOT IN ('Saturday', 'Sunday')
         #                                     THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
         assert \
             daily_usg_ru_vas_post.where("event_partition_date = '2020-01-03'").select(
                 "usg_data_weekday_usage").collect()[0][
-                0] == 10 # Friday
+                0] == 10  # Friday
         assert \
             daily_usg_ru_vas_post.where("event_partition_date = '2020-01-05'").select(
                 "usg_data_weekday_usage").collect()[0][
-                0] == 0 # Sunday
+                0] == 0  # Sunday
         ########################################################################################################
         # Test for usg_data_monday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Monday') THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
         assert \
@@ -767,7 +1566,7 @@ class TestUnitUsage:
                 0] == datetime.date(2020, 3, 29)
         ########################################################################################################
         print("********************************L1 usg_ru_vas_post PASS****************************************")
-        #exit(2)
+        # exit(2)
 
     def test_ru_a_gprs_cbs_usage_features(self, project_context):
         var_project_context = project_context['ProjectContext']
@@ -798,15 +1597,17 @@ class TestUnitUsage:
         print(call_start_hr)
         df_usage_ru_a_gprs_cbs_usage = spark.createDataFrame(
             zip(call_start_dt, call_start_hr, data_upload_amt, data_download_amt, cdr_subtype_cd, rat_type),
-            schema=['call_start_dt', 'call_start_hr', 'data_upload_amt', 'data_download_amt', 'cdr_subtype_cd', 'rat_type']) \
+            schema=['call_start_dt', 'call_start_hr', 'data_upload_amt', 'data_download_amt', 'cdr_subtype_cd',
+                    'rat_type']) \
             .withColumn("access_method_num", F.lit(1)) \
             .withColumn("call_start_dt", F.to_date('call_start_dt', 'dd-MM-yyyy')) \
             .withColumn("partition_date", F.lit('20200101'))
         # df_usage_ru_a_gprs_cbs_usage.orderBy("call_start_dt", ascending=True).show()
         # df_usage_ru_a_gprs_cbs_usage.orderBy("call_start_dt", ascending=False).show()
         global daily_usage_ru_a_gprs_cbs_usage
-        daily_usage_ru_a_gprs_cbs_usage = node_from_config(df_usage_ru_a_gprs_cbs_usage, var_project_context.catalog.load(
-            'params:l1_usage_ru_a_gprs_cbs_usage_daily'))
+        daily_usage_ru_a_gprs_cbs_usage = node_from_config(df_usage_ru_a_gprs_cbs_usage,
+                                                           var_project_context.catalog.load(
+                                                               'params:l1_usage_ru_a_gprs_cbs_usage_daily'))
         print("***********************L1 usage_ru_a_gprs_cbs_usage_daily START************************************")
         ########################################################################################################
         # Test for usg_outgoing_data_volume: "sum(data_upload_amt)"
@@ -819,7 +1620,7 @@ class TestUnitUsage:
         assert \
             daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-05'").select(
                 "usg_outgoing_data_volume_4G").collect()[0][
-                0] == 0 # today used 3G
+                0] == 0  # today used 3G
         assert \
             daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-03'").select(
                 "usg_outgoing_data_volume_4G").collect()[0][
@@ -1304,12 +2105,13 @@ class TestUnitUsage:
                 0] == datetime.date(2020, 1, 5)
         ########################################################################################################
         print("***********************L1 usage_ru_a_gprs_cbs_usage_daily PASS************************************")
-        #exit(2)
+        # exit(2)
 
     def test_usage_incoming_call_relation_sum_feature(self, project_context):
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
-        print("***********************L0 usage_incoming_call_relation_sum_daily generation*******************************")
+        print(
+            "***********************L0 usage_incoming_call_relation_sum_daily generation*******************************")
         # Below section is to create dummy data.
         min_dt = '2020-01-01'
         max_dt = '2020-04-01'
@@ -1341,7 +2143,8 @@ class TestUnitUsage:
                     hour_id[i] = new_int
         # print(hour_id)
         df_usage_incoming_call = spark.createDataFrame(
-            zip(day_id, hour_id, call_type, service_type, idd_flag, total_durations, total_successful_call, caller_network_type),
+            zip(day_id, hour_id, call_type, service_type, idd_flag, total_durations, total_successful_call,
+                caller_network_type),
             schema=['day_id', 'hour_id', 'call_type', 'service_type', 'idd_flag', 'total_durations',
                     'total_successful_call', 'caller_network_type']) \
             .withColumn("called_no", F.lit(1)) \
@@ -1353,7 +2156,8 @@ class TestUnitUsage:
         global daily_usage_incoming_call
         daily_usage_incoming_call = node_from_config(df_usage_incoming_call, var_project_context.catalog.load(
             'params:l1_usage_incoming_call_relation_sum_daily'))
-        print("***********************L1 usage_incoming_call_relation_sum_daily START************************************")
+        print(
+            "***********************L1 usage_incoming_call_relation_sum_daily START************************************")
         # NOTE: incoming uses call_type IN 'MT'
         ########################################################################################################
         # Test for usg_incoming_total_call_duration: "sum(case when service_type IN ('VOICE') THEN total_durations else 0 end)"
@@ -1972,7 +2776,7 @@ class TestUnitUsage:
                 0] == 426
         ########################################################################################################
 
-        #exit(2)
+        # exit(2)
 
     def test_l1_usage_outgoing_call_relation_sum_daily(self, project_context):
         var_project_context = project_context['ProjectContext']
@@ -1995,17 +2799,18 @@ class TestUnitUsage:
         # _30min_totalcall = generate_int(doubled_days, 1200, 1800)
         # _morethan30_totalcall = generate_int(doubled_days, 1800, 2000)
 
-
-        #l0_tol1_test
-        service_type_ = generate_category(doubled_days,['VOICE', 'SMS'])
+        # l0_tol1_test
+        service_type_ = generate_category(doubled_days, ['VOICE', 'SMS'])
         idd_flag = generate_category(doubled_days, ['Y', 'N'])
         call_type = generate_category(doubled_days, ['MO', 'MT'])
-        #total_successful_call = generate_int(doubled_days, [0, 1])
-        called_network_type = generate_category(doubled_days, ['TRUE','DTAC','3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN',
-                                                               'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post',
-                                                               'AWNINT'])
+        # total_successful_call = generate_int(doubled_days, [0, 1])
+        called_network_type = generate_category(doubled_days,
+                                                ['TRUE', 'DTAC', '3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN',
+                                                 'AWN',
+                                                 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post',
+                                                 'AWNINT'])
 
-        #L1_test
+        # L1_test
         total_call = generate_int(doubled_days, 0, 2000)
         total_durations = generate_int(doubled_days, 0, 5)
         call_start_hr = generate_int(doubled_days, 0, 23)
@@ -2028,22 +2833,26 @@ class TestUnitUsage:
         print(call_start_hr)
 
         df_usage_outgoing_call_relation_sum_daily = spark.createDataFrame(
-            zip(day_id, hour_id, total_call, total_successful_call, called_network_type, call_type, service_type_, idd_flag),
-            schema=['day_id', 'hour_id', 'total_durations', 'total_successful_call','called_network_type','call_type', 'service_type', 'idd_flag'])\
+            zip(day_id, hour_id, total_call, total_successful_call, called_network_type, call_type, service_type_,
+                idd_flag),
+            schema=['day_id', 'hour_id', 'total_durations', 'total_successful_call', 'called_network_type', 'call_type',
+                    'service_type', 'idd_flag']) \
             .withColumn("access_method_num", F.lit(1)) \
             .withColumn("caller_no", F.lit(2)) \
             .withColumn("day_id", F.to_date('day_id', 'dd-MM-yyyy')) \
             .withColumn("partition_date", F.lit('20200101'))
 
-        df_usage_outgoing_call_relation_sum_daily = df_usage_outgoing_call_relation_sum_daily\
+        df_usage_outgoing_call_relation_sum_daily = df_usage_outgoing_call_relation_sum_daily \
             .withColumn("weekday", F.date_format(df_usage_outgoing_call_relation_sum_daily.day_id, 'EEEE'))
 
         df_usage_outgoing_call_relation_sum_daily = df_usage_outgoing_call_relation_sum_daily.where("call_type = 'MO'")
         global usage_outgoing_call_relation_sum_daily
         usage_outgoing_call_relation_sum_daily = node_from_config(df_usage_outgoing_call_relation_sum_daily,
-                                                                  var_project_context.catalog.load('params:l1_usage_outgoing_call_relation_sum_daily'))
+                                                                  var_project_context.catalog.load(
+                                                                      'params:l1_usage_outgoing_call_relation_sum_daily'))
 
-        df_usage_outgoing_call_relation_sum_daily.where("day_id = '2020-01-07'").select("day_id","hour_id", "weekday", "total_durations").show()
+        df_usage_outgoing_call_relation_sum_daily.where("day_id = '2020-01-07'").select("day_id", "hour_id", "weekday",
+                                                                                        "total_durations").show()
 
         # print("###############################################################")
         #
@@ -2059,45 +2868,41 @@ class TestUnitUsage:
         # #usg_outgoing_total_call_duration: "sum(case when service_type IN ('VOICE') THEN total_durations else 0 end)"
         # #
         # #usg_outgoing_total_call_duration
-        sum_usg_outgoing_total_call_duration = df_usage_outgoing_call_relation_sum_daily\
+        sum_usg_outgoing_total_call_duration = df_usage_outgoing_call_relation_sum_daily \
             .where("service_type = 'VOICE'").groupBy("day_id").agg(F.sum("total_durations").alias("total_durations"))
-        #sum_usg_outgoing_total_call_duration = sum_usg_outgoing_total_call_duration.where("service_type = 'VOICE'").agg(F.sum("total_durations"))
+        # sum_usg_outgoing_total_call_duration = sum_usg_outgoing_total_call_duration.where("service_type = 'VOICE'").agg(F.sum("total_durations"))
 
         print("###############################################################")
         print("###############################################################")
         print("###############################################################")
         print("###############################################################")
-
-
-
-
 
         assert \
             usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
                 "usg_outgoing_total_call_duration").collect()[0][0] == check_null(sum_usg_outgoing_total_call_duration. \
-            where("day_id = '2020-01-07'").select("total_durations"))
-            # or\
-            # (usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-            # "usg_outgoing_total_call_duration").collect()[0][0] == 0)
-
+                where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        # or\
+        # (usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+        # "usg_outgoing_total_call_duration").collect()[0][0] == 0)
 
         ###############################################################################
-        #usg_outgoing_local_call_duration: "sum(case when service_type IN ('VOICE')
+        # usg_outgoing_local_call_duration: "sum(case when service_type IN ('VOICE')
         #                                  AND idd_flag = 'N' THEN total_durations else 0 end)"
-        #usg_outgoing_local_call_duration
-        sum_usg_outgoing_local_call_duration = df_usage_outgoing_call_relation_sum_daily\
-            .where("service_type = 'VOICE' AND idd_flag = 'N'").groupBy("day_id")\
+        # usg_outgoing_local_call_duration
+        sum_usg_outgoing_local_call_duration = df_usage_outgoing_call_relation_sum_daily \
+            .where("service_type = 'VOICE' AND idd_flag = 'N'").groupBy("day_id") \
             .agg(F.sum("total_durations").alias("total_durations"))
-        #sum_usg_outgoing_local_call_duration = sum_usg_outgoing_local_call_duration.where("service_type = 'VOICE' AND idd_flag = 'N'").agg(F.sum("total_durations"))
-
+        # sum_usg_outgoing_local_call_duration = sum_usg_outgoing_local_call_duration.where("service_type = 'VOICE' AND idd_flag = 'N'").agg(F.sum("total_durations"))
 
         assert \
             usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
                 "usg_outgoing_local_call_duration").collect()[0][0] == check_null(sum_usg_outgoing_local_call_duration. \
-             where("day_id = '2020-01-07'").select("total_durations"))
-            # or\
-            # (usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-            # "usg_outgoing_total_call_duration").collect()[0][0] == 0)
+                where("day_id = '2020-01-07'").select(
+                "total_durations"))
+        # or\
+        # (usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+        # "usg_outgoing_total_call_duration").collect()[0][0] == 0)
 
         ###############################################################################
         # usg_outgoing_number_calls: "sum(case when service_type IN ('VOICE') THEN total_successful_call else 0 end)"
@@ -2105,30 +2910,31 @@ class TestUnitUsage:
         # usg_outgoing_number_calls
 
         sum_usg_outgoing_number_calls = df_usage_outgoing_call_relation_sum_daily \
-            .where("service_type = 'VOICE'").groupBy("day_id")\
+            .where("service_type = 'VOICE'").groupBy("day_id") \
             .agg(F.sum("total_successful_call").alias("total_successful_call"))
 
         assert \
             usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
                 "usg_outgoing_number_calls").collect()[0][0] == check_null(sum_usg_outgoing_number_calls \
-            .where("day_id = '2020-01-07'").select("total_successful_call"))
-            # or\
-            # (usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-            # "usg_outgoing_total_call_duration").collect()[0][0] == 0)
-
+                .where("day_id = '2020-01-07'").select(
+                "total_successful_call"))
+        # or\
+        # (usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
+        # "usg_outgoing_total_call_duration").collect()[0][0] == 0)
 
         ###############################################################################
         # usg_outgoing_local_number_calls: "sum(case when service_type IN ('VOICE')
         #                                         AND idd_flag = 'N' THEN total_successful_call else 0 end)"
         # usg_outgoing_local_number_calls
         sum_usg_outgoing_local_number_calls = df_usage_outgoing_call_relation_sum_daily \
-            .where("service_type = 'VOICE' AND idd_flag = 'N'").groupBy("day_id")\
+            .where("service_type = 'VOICE' AND idd_flag = 'N'").groupBy("day_id") \
             .agg(F.sum("total_successful_call").alias("total_successful_call"))
 
         assert \
             usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-                "usg_outgoing_local_number_calls").collect()[0][0] == check_null(sum_usg_outgoing_local_number_calls\
-                .where("day_id = '2020-01-07'").select("total_successful_call"))
+                "usg_outgoing_local_number_calls").collect()[0][0] == check_null(sum_usg_outgoing_local_number_calls \
+                .where("day_id = '2020-01-07'").select(
+                "total_successful_call"))
 
         ###############################################################################
         # usg_outgoing_ais_local_calls_duration: "sum(case when service_type IN ('VOICE')
@@ -2147,12 +2953,12 @@ class TestUnitUsage:
         #
         assert \
             usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-                "usg_outgoing_ais_local_calls_duration").collect()[0][0] == check_null(sum_usg_outgoing_ais_local_calls_duration.\
-                where("day_id = '2020-01-07'").select("total_durations"))
-            # or \
-            # (usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select
-            #  ("usg_outgoing_ais_local_calls_duration").collect()[0][0] == 0)
-
+                "usg_outgoing_ais_local_calls_duration").collect()[0][0] == check_null(
+                sum_usg_outgoing_ais_local_calls_duration. \
+                    where("day_id = '2020-01-07'").select("total_durations"))
+        # or \
+        # (usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select
+        #  ("usg_outgoing_ais_local_calls_duration").collect()[0][0] == 0)
 
         ################################################################################################################
         ## sum_usg_outgoing_ais_local_number_calls = df_usage_outgoing_call_relation_sum_daily \
@@ -2168,11 +2974,11 @@ class TestUnitUsage:
 
         assert \
             usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-                "usg_outgoing_ais_local_number_calls").collect()[0][0] == check_null(sum_usg_outgoing_ais_local_number_calls.\
-                 where("day_id = '2020-01-07'").select("total_successful_call")) \
-
-
-        ################################################################################################################
+                "usg_outgoing_ais_local_number_calls").collect()[0][0] == check_null(
+                sum_usg_outgoing_ais_local_number_calls. \
+                    where("day_id = '2020-01-07'").select("total_successful_call")) \
+ \
+            ################################################################################################################
         # sum_usg_outgoing_offnet_local_calls_duration = df_usage_outgoing_call_relation_sum_daily \
         #                                              .where(" (service_type = 'VOICE') AND  (called_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS', "
         #                                                      "'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT'))") \
@@ -2185,11 +2991,12 @@ class TestUnitUsage:
 
         assert \
             usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-                "usg_outgoing_offnet_local_calls_duration").collect()[0][0] == check_null(sum_usg_outgoing_offnet_local_calls_duration. \
-                where("day_id = '2020-01-07'").select("total_durations"))
+                "usg_outgoing_offnet_local_calls_duration").collect()[0][0] == check_null(
+                sum_usg_outgoing_offnet_local_calls_duration. \
+                    where("day_id = '2020-01-07'").select("total_durations"))
 
         ################################################################################################################
-        #usg_outgoing_offnet_local_number_calls: "sum(case when service_type IN ('VOICE')
+        # usg_outgoing_offnet_local_number_calls: "sum(case when service_type IN ('VOICE')
         #                                         AND called_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')
         #                                         THEN total_successful_call else 0 end)"
 
@@ -2200,10 +3007,9 @@ class TestUnitUsage:
 
         assert \
             usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-                "usg_outgoing_offnet_local_number_calls").collect()[0][0] == check_null(sum_usg_outgoing_offnet_local_number_calls. \
-                where("day_id = '2020-01-07'").select("total_successful_call"))
-
-
+                "usg_outgoing_offnet_local_number_calls").collect()[0][0] == check_null(
+                sum_usg_outgoing_offnet_local_number_calls. \
+                    where("day_id = '2020-01-07'").select("total_successful_call"))
 
         ################################################################################################################
         # usg_outgoing_total_sms: "sum(case when service_type IN ('SMS') THEN total_durations else 0 end)"
@@ -2218,11 +3024,11 @@ class TestUnitUsage:
         assert \
             usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
                 "usg_outgoing_total_sms").collect()[0][0] == check_null(sum_usg_outgoing_total_sms. \
-                where("day_id = '2020-01-07'").select("total_durations"))
-
+                where("day_id = '2020-01-07'").select(
+                "total_durations"))
 
         ###############################################################################################################
-        #usg_outgoing_local_sms: "sum(case when service_type IN ('SMS')
+        # usg_outgoing_local_sms: "sum(case when service_type IN ('SMS')
         #                        AND idd_flag = 'N' THEN total_durations else 0 end)"
 
         sum_usg_outgoing_local_sms = df_usage_outgoing_call_relation_sum_daily \
@@ -2231,29 +3037,31 @@ class TestUnitUsage:
 
         assert \
             usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-                "usg_outgoing_local_sms").collect()[0][0] == check_null(sum_usg_outgoing_local_sms.\
-                where("day_id = '2020-01-07'").select("total_durations"))
-
+                "usg_outgoing_local_sms").collect()[0][0] == check_null(sum_usg_outgoing_local_sms. \
+                where("day_id = '2020-01-07'").select(
+                "total_durations"))
 
         ###############################################################################################################
-        #usg_outgoing_local_ais_sms: "sum(case when service_type IN ('SMS')
+        # usg_outgoing_local_ais_sms: "sum(case when service_type IN ('SMS')
         #                             AND called_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN',
         #                             'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')
         #                             AND idd_flag = 'N' THEN total_durations else 0 end)"
 
         sum_usg_outgoing_local_ais_sms = df_usage_outgoing_call_relation_sum_daily \
-            .where("(service_type IN ('SMS')) AND (called_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', "
-                                     "'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')) "
-                                     "AND (idd_flag = 'N')") \
+            .where(
+            "(service_type IN ('SMS')) AND (called_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', "
+            "'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')) "
+            "AND (idd_flag = 'N')") \
             .groupby("day_id").agg(F.sum("total_durations").alias("total_durations"))
 
         assert \
             usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-                "usg_outgoing_local_ais_sms").collect()[0][0] == check_null(sum_usg_outgoing_local_ais_sms.\
-                where("day_id = '2020-01-07'").select("total_durations"))
+                "usg_outgoing_local_ais_sms").collect()[0][0] == check_null(sum_usg_outgoing_local_ais_sms. \
+                where("day_id = '2020-01-07'").select(
+                "total_durations"))
 
         ###############################################################################################################
-        #usg_outgoing_number_calls_upto_5_mins: "sum(case when service_type IN ('VOICE')
+        # usg_outgoing_number_calls_upto_5_mins: "sum(case when service_type IN ('VOICE')
         #                                       AND total_durations <= 300 THEN total_successful_call else 0 end)"
 
         sum_usg_outgoing_number_calls_upto_5_mins = df_usage_outgoing_call_relation_sum_daily \
@@ -2262,11 +3070,12 @@ class TestUnitUsage:
 
         assert \
             usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-                "usg_outgoing_number_calls_upto_5_mins").collect()[0][0] == check_null(sum_usg_outgoing_number_calls_upto_5_mins
-                .where("day_id = '2020-01-07'").select("total_successful_call"))
+                "usg_outgoing_number_calls_upto_5_mins").collect()[0][0] == check_null(
+                sum_usg_outgoing_number_calls_upto_5_mins
+                    .where("day_id = '2020-01-07'").select("total_successful_call"))
 
         ################################################################################################################
-        #usg_outgoing_number_calls_upto_10_mins: "sum(case when service_type IN ('VOICE')
+        # usg_outgoing_number_calls_upto_10_mins: "sum(case when service_type IN ('VOICE')
         #                                        AND total_durations <= 600 THEN total_successful_call else 0 end)"
 
         sum_usg_outgoing_number_calls_upto_10_mins = df_usage_outgoing_call_relation_sum_daily \
@@ -2274,8 +3083,9 @@ class TestUnitUsage:
             .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
         assert \
             usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-                "usg_outgoing_number_calls_upto_10_mins").collect()[0][0] == check_null(sum_usg_outgoing_number_calls_upto_10_mins
-                .where("day_id = '2020-01-07'").select("total_successful_call"))
+                "usg_outgoing_number_calls_upto_10_mins").collect()[0][0] == check_null(
+                sum_usg_outgoing_number_calls_upto_10_mins
+                    .where("day_id = '2020-01-07'").select("total_successful_call"))
 
         ###############################################################################################################
         ################################################################################################################
@@ -2289,7 +3099,7 @@ class TestUnitUsage:
             usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
                 "usg_outgoing_number_calls_upto_15_mins").collect()[0][0] == check_null(
                 sum_usg_outgoing_number_calls_upto_15_mins
-                .where("day_id = '2020-01-07'").select("total_successful_call"))
+                    .where("day_id = '2020-01-07'").select("total_successful_call"))
 
         ###############################################################################################################
         ################################################################################################################
@@ -2303,7 +3113,7 @@ class TestUnitUsage:
             usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
                 "usg_outgoing_number_calls_upto_20_mins").collect()[0][0] == check_null(
                 sum_usg_outgoing_number_calls_upto_20_mins
-                .where("day_id = '2020-01-07'").select("total_successful_call"))
+                    .where("day_id = '2020-01-07'").select("total_successful_call"))
 
         ###############################################################################################################
         # usg_outgoing_number_calls_upto_30_mins: "sum(case when service_type IN ('VOICE')
@@ -2316,7 +3126,7 @@ class TestUnitUsage:
             usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
                 "usg_outgoing_number_calls_upto_30_mins").collect()[0][0] == check_null(
                 sum_usg_outgoing_number_calls_upto_30_mins
-                .where("day_id = '2020-01-07'").select("total_successful_call"))
+                    .where("day_id = '2020-01-07'").select("total_successful_call"))
 
         ###############################################################################################################
         ###############################################################################################################
@@ -2330,10 +3140,10 @@ class TestUnitUsage:
             usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
                 "usg_outgoing_number_calls_over_30_mins").collect()[0][0] == check_null(
                 sum_usg_outgoing_number_calls_over_30_mins
-                .where("day_id = '2020-01-07'").select("total_successful_call"))
+                    .where("day_id = '2020-01-07'").select("total_successful_call"))
 
         ###############################################################################################################
-        #usg_outgoing_last_call_date: "max(case when service_type IN ('VOICE') THEN date(day_id) else null end)"
+        # usg_outgoing_last_call_date: "max(case when service_type IN ('VOICE') THEN date(day_id) else null end)"
 
         sum_usg_outgoing_last_call_date = df_usage_outgoing_call_relation_sum_daily \
             .where("service_type IN ('VOICE')") \
@@ -2341,7 +3151,8 @@ class TestUnitUsage:
         assert \
             usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
                 "usg_outgoing_last_call_date").collect()[0][0] == check_null(sum_usg_outgoing_last_call_date
-                .where("day_id = '2020-01-07'").select("date"))
+                .where("day_id = '2020-01-07'").select(
+                "date"))
 
         ###############################################################################################################
         # usg_last_call_date: "max(case when service_type IN ('VOICE') THEN date(day_id) else null end)"
@@ -2391,7 +3202,7 @@ class TestUnitUsage:
 
         ###############################################################################################################
         ###############################################################################################################
-        #usg_outgoing_night_time_number_calls: "sum(case when service_type IN ('VOICE')
+        # usg_outgoing_night_time_number_calls: "sum(case when service_type IN ('VOICE')
         #                                    AND hour_id IN (1, 2, 3, 4, 5, 6) THEN total_successful_call else 0 end)"
 
         sum_usg_outgoing_night_time_number_calls = df_usage_outgoing_call_relation_sum_daily \
@@ -2401,11 +3212,12 @@ class TestUnitUsage:
         assert \
             usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
                 "usg_outgoing_night_time_number_calls").collect()[0][0] == \
-            check_null(sum_usg_outgoing_night_time_number_calls.where("day_id = '2020-01-07'").select("total_successful_call"))
+            check_null(
+                sum_usg_outgoing_night_time_number_calls.where("day_id = '2020-01-07'").select("total_successful_call"))
 
         ###############################################################################################################
         ###############################################################################################################
-        #usg_outgoing_morning_time_number_calls: "sum(case when service_type IN ('VOICE')
+        # usg_outgoing_morning_time_number_calls: "sum(case when service_type IN ('VOICE')
         #                                 AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_successful_call else 0 end)"
 
         sum_usg_outgoing_morning_time_number_calls = df_usage_outgoing_call_relation_sum_daily \
@@ -2415,7 +3227,8 @@ class TestUnitUsage:
         assert \
             usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
                 "usg_outgoing_morning_time_number_calls").collect()[0][0] == \
-            check_null(sum_usg_outgoing_morning_time_number_calls.where("day_id = '2020-01-07'").select("total_successful_call"))
+            check_null(sum_usg_outgoing_morning_time_number_calls.where("day_id = '2020-01-07'").select(
+                "total_successful_call"))
 
         ###############################################################################################################
         ###############################################################################################################
@@ -2434,7 +3247,7 @@ class TestUnitUsage:
 
         ###############################################################################################################
         ###############################################################################################################
-        #usg_outgoing_evening_number_calls: "sum(case when service_type IN ('VOICE')
+        # usg_outgoing_evening_number_calls: "sum(case when service_type IN ('VOICE')
         #                                 AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_successful_call else 0 end)"
 
         sum_usg_outgoing_evening_number_calls = df_usage_outgoing_call_relation_sum_daily \
@@ -2448,11 +3261,11 @@ class TestUnitUsage:
                 "total_successful_call"))
 
         ##############################################################################################################
-        #usg_outgoing_weekday_number_calls: "sum(case when service_type IN ('VOICE')
+        # usg_outgoing_weekday_number_calls: "sum(case when service_type IN ('VOICE')
         #                                AND date_format(day_id, 'EEEE') NOT IN ('Saturday', 'Sunday')
         #                                THEN total_successful_call else 0 end)"
 
-        #day_of_month = df_usage_outgoing_call_relation_sum_daily.
+        # day_of_month = df_usage_outgoing_call_relation_sum_daily.
         sum_usg_outgoing_weekday_number_calls = df_usage_outgoing_call_relation_sum_daily \
             .where("service_type = 'VOICE' AND (weekday IN ('Monday', 'Tuesday', 'Wednesday','Thursday','Friday'))") \
             .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
@@ -2464,7 +3277,7 @@ class TestUnitUsage:
                 "total_successful_call"))
 
         ################################################################################################################
-        #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
         # usg_outgoing_weekend_number_calls: "sum(case when service_type IN ('VOICE')
         #                                         AND date_format(day_id, 'EEEE') IN ('Saturday', 'Sunday')
         #                                         THEN total_successful_call else 0 end)"
@@ -2524,7 +3337,8 @@ class TestUnitUsage:
         assert \
             usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
                 "usg_outgoing_night_time_number_sms").collect()[0][0] == \
-            check_null(sum_usg_outgoing_night_time_number_sms.where("day_id = '2020-01-07'").select("total_successful_call"))
+            check_null(
+                sum_usg_outgoing_night_time_number_sms.where("day_id = '2020-01-07'").select("total_successful_call"))
 
         ##############################################################################################################
         ##############################################################################################################
@@ -2538,7 +3352,8 @@ class TestUnitUsage:
         assert \
             usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
                 "usg_outgoing_morning_time_number_sms").collect()[0][0] == \
-            check_null(sum_usg_outgoing_morning_time_number_sms.where("day_id = '2020-01-07'").select("total_successful_call"))
+            check_null(
+                sum_usg_outgoing_morning_time_number_sms.where("day_id = '2020-01-07'").select("total_successful_call"))
 
         ##############################################################################################################
         ##############################################################################################################
@@ -2555,10 +3370,9 @@ class TestUnitUsage:
             check_null(sum_usg_outgoing_afternoon_number_sms.where("day_id = '2020-01-07'").select(
                 "total_successful_call"))
 
-
         ###############################################################################################################
         ###############################################################################################################
-        #usg_outgoing_evening_number_sms: "sum(case when service_type IN ('SMS')
+        # usg_outgoing_evening_number_sms: "sum(case when service_type IN ('SMS')
         #                                 AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_successful_call else 0 end)"
 
         sum_usg_outgoing_evening_number_sms = df_usage_outgoing_call_relation_sum_daily \
@@ -2587,7 +3401,7 @@ class TestUnitUsage:
                 "total_successful_call"))
 
         ################################################################################################################
-        #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
         # usg_outgoing_weekend_number_sms: "sum(case when service_type IN ('SMS')
         #                                         AND date_format(day_id, 'EEEE') IN ('Saturday', 'Sunday')
         #                                         THEN total_successful_call else 0 end)"
@@ -2604,8 +3418,8 @@ class TestUnitUsage:
                 "total_successful_call"))
 
         ################################################################################################################
-        #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        #usg_outgoing_monday_voice_usage: "sum(case when service_type IN ('VOICE')
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_monday_voice_usage: "sum(case when service_type IN ('VOICE')
         #                                  AND date_format(day_id, 'EEEE') IN ('Monday') THEN total_durations else 0 end)"
         #
         sum_usg_outgoing_monday_voice_usage = df_usage_outgoing_call_relation_sum_daily \
@@ -2628,7 +3442,6 @@ class TestUnitUsage:
             .where("(service_type IN ('VOICE')) AND (weekday IN ('Monday')) AND (hour_id IN (7, 8, 9, 10, 11, 12))") \
             .groupby("day_id") \
             .agg(F.sum("total_durations").alias("total_durations"))
-
 
         assert \
             usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
@@ -2676,7 +3489,8 @@ class TestUnitUsage:
         #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
 
         sum_usg_outgoing_monday_night_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Monday')) AND hour_id IN (1, 2, 3, 4, 5, 6)") \
+            .where(
+            "service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Monday')) AND hour_id IN (1, 2, 3, 4, 5, 6)") \
             .groupby("day_id") \
             .agg(F.sum("total_durations").alias("total_durations"))
 
@@ -2686,8 +3500,8 @@ class TestUnitUsage:
             check_null(sum_usg_outgoing_monday_night_voice_usage.where("day_id = '2020-01-07'").select(
                 "total_durations"))
         ################################################################################################################
-        #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        #usg_outgoing_tuesday_voice_usage: "sum(case when service_type IN ('VOICE')
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_tuesday_voice_usage: "sum(case when service_type IN ('VOICE')
         #                                  AND date_format(day_id, 'EEEE') IN ('Tuesday') THEN total_durations else 0 end)"
         #
         sum_usg_outgoing_tuesday_voice_usage = df_usage_outgoing_call_relation_sum_daily \
@@ -2710,7 +3524,6 @@ class TestUnitUsage:
             .where("(service_type IN ('VOICE')) AND (weekday IN ('Tuesday')) AND (hour_id IN (7, 8, 9, 10, 11, 12))") \
             .groupby("day_id") \
             .agg(F.sum("total_durations").alias("total_durations"))
-
 
         assert \
             usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
@@ -2758,7 +3571,8 @@ class TestUnitUsage:
         #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
 
         sum_usg_outgoing_tuesday_night_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Tuesday')) AND hour_id IN (1, 2, 3, 4, 5, 6)") \
+            .where(
+            "service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Tuesday')) AND hour_id IN (1, 2, 3, 4, 5, 6)") \
             .groupby("day_id") \
             .agg(F.sum("total_durations").alias("total_durations"))
 
@@ -2768,8 +3582,8 @@ class TestUnitUsage:
             check_null(sum_usg_outgoing_tuesday_night_voice_usage.where("day_id = '2020-01-07'").select(
                 "total_durations"))
         ################################################################################################################
-        #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        #usg_outgoing_wednesday_voice_usage: "sum(case when service_type IN ('VOICE')
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_wednesday_voice_usage: "sum(case when service_type IN ('VOICE')
         #                                  AND date_format(day_id, 'EEEE') IN ('Tuesday') THEN total_durations else 0 end)"
         #
         sum_usg_outgoing_wednesday_voice_usage = df_usage_outgoing_call_relation_sum_daily \
@@ -2792,7 +3606,6 @@ class TestUnitUsage:
             .where("(service_type IN ('VOICE')) AND (weekday IN ('Wednesday')) AND (hour_id IN (7, 8, 9, 10, 11, 12))") \
             .groupby("day_id") \
             .agg(F.sum("total_durations").alias("total_durations"))
-
 
         assert \
             usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
@@ -2840,7 +3653,8 @@ class TestUnitUsage:
         #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
 
         sum_usg_outgoing_wednesday_night_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Wednesday')) AND hour_id IN (1, 2, 3, 4, 5, 6)") \
+            .where(
+            "service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Wednesday')) AND hour_id IN (1, 2, 3, 4, 5, 6)") \
             .groupby("day_id") \
             .agg(F.sum("total_durations").alias("total_durations"))
 
@@ -2850,8 +3664,8 @@ class TestUnitUsage:
             check_null(sum_usg_outgoing_wednesday_night_voice_usage.where("day_id = '2020-01-07'").select(
                 "total_durations"))
         ################################################################################################################
-        #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        #usg_outgoing_thursday_voice_usage: "sum(case when service_type IN ('VOICE')
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_thursday_voice_usage: "sum(case when service_type IN ('VOICE')
         #                                  AND date_format(day_id, 'EEEE') IN ('Tuesday') THEN total_durations else 0 end)"
         #
         sum_usg_outgoing_thursday_voice_usage = df_usage_outgoing_call_relation_sum_daily \
@@ -2874,7 +3688,6 @@ class TestUnitUsage:
             .where("(service_type IN ('VOICE')) AND (weekday IN ('Thursday')) AND (hour_id IN (7, 8, 9, 10, 11, 12))") \
             .groupby("day_id") \
             .agg(F.sum("total_durations").alias("total_durations"))
-
 
         assert \
             usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
@@ -2922,7 +3735,8 @@ class TestUnitUsage:
         #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
 
         sum_usg_outgoing_thursday_night_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Thursday')) AND hour_id IN (1, 2, 3, 4, 5, 6)") \
+            .where(
+            "service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Thursday')) AND hour_id IN (1, 2, 3, 4, 5, 6)") \
             .groupby("day_id") \
             .agg(F.sum("total_durations").alias("total_durations"))
 
@@ -2932,8 +3746,8 @@ class TestUnitUsage:
             check_null(sum_usg_outgoing_thursday_night_voice_usage.where("day_id = '2020-01-07'").select(
                 "total_durations"))
         ################################################################################################################
-        #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        #usg_outgoing_friday_voice_usage: "sum(case when service_type IN ('VOICE')
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_friday_voice_usage: "sum(case when service_type IN ('VOICE')
         #                                  AND date_format(day_id, 'EEEE') IN ('Friday') THEN total_durations else 0 end)"
         #
         sum_usg_outgoing_friday_voice_usage = df_usage_outgoing_call_relation_sum_daily \
@@ -2956,7 +3770,6 @@ class TestUnitUsage:
             .where("(service_type IN ('VOICE')) AND (weekday IN ('Friday')) AND (hour_id IN (7, 8, 9, 10, 11, 12))") \
             .groupby("day_id") \
             .agg(F.sum("total_durations").alias("total_durations"))
-
 
         assert \
             usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
@@ -3004,7 +3817,8 @@ class TestUnitUsage:
         #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
 
         sum_usg_outgoing_friday_night_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Friday')) AND hour_id IN (1, 2, 3, 4, 5, 6)") \
+            .where(
+            "service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Friday')) AND hour_id IN (1, 2, 3, 4, 5, 6)") \
             .groupby("day_id") \
             .agg(F.sum("total_durations").alias("total_durations"))
 
@@ -3014,8 +3828,8 @@ class TestUnitUsage:
             check_null(sum_usg_outgoing_friday_night_voice_usage.where("day_id = '2020-01-07'").select(
                 "total_durations"))
         ################################################################################################################
-        #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        #usg_outgoing_saturday_voice_usage: "sum(case when service_type IN ('VOICE')
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_saturday_voice_usage: "sum(case when service_type IN ('VOICE')
         #                                  AND date_format(day_id, 'EEEE') IN ('Saturday') THEN total_durations else 0 end)"
         #
         sum_usg_outgoing_saturday_voice_usage = df_usage_outgoing_call_relation_sum_daily \
@@ -3038,7 +3852,6 @@ class TestUnitUsage:
             .where("(service_type IN ('VOICE')) AND (weekday IN ('Saturday')) AND (hour_id IN (7, 8, 9, 10, 11, 12))") \
             .groupby("day_id") \
             .agg(F.sum("total_durations").alias("total_durations"))
-
 
         assert \
             usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
@@ -3086,7 +3899,8 @@ class TestUnitUsage:
         #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
 
         sum_usg_outgoing_saturday_night_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Saturday')) AND hour_id IN (1, 2, 3, 4, 5, 6)") \
+            .where(
+            "service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Saturday')) AND hour_id IN (1, 2, 3, 4, 5, 6)") \
             .groupby("day_id") \
             .agg(F.sum("total_durations").alias("total_durations"))
 
@@ -3096,8 +3910,8 @@ class TestUnitUsage:
             check_null(sum_usg_outgoing_saturday_night_voice_usage.where("day_id = '2020-01-07'").select(
                 "total_durations"))
         ################################################################################################################
-        #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        #usg_outgoing_sunday_voice_usage: "sum(case when service_type IN ('VOICE')
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+        # usg_outgoing_sunday_voice_usage: "sum(case when service_type IN ('VOICE')
         #                                  AND date_format(day_id, 'EEEE') IN ('Sunday') THEN total_durations else 0 end)"
         #
         sum_usg_outgoing_sunday_voice_usage = df_usage_outgoing_call_relation_sum_daily \
@@ -3120,7 +3934,6 @@ class TestUnitUsage:
             .where("(service_type IN ('VOICE')) AND (weekday IN ('Sunday')) AND (hour_id IN (7, 8, 9, 10, 11, 12))") \
             .groupby("day_id") \
             .agg(F.sum("total_durations").alias("total_durations"))
-
 
         assert \
             usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
@@ -3168,7 +3981,8 @@ class TestUnitUsage:
         #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
 
         sum_usg_outgoing_sunday_night_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-            .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Sunday')) AND hour_id IN (1, 2, 3, 4, 5, 6)") \
+            .where(
+            "service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Sunday')) AND hour_id IN (1, 2, 3, 4, 5, 6)") \
             .groupby("day_id") \
             .agg(F.sum("total_durations").alias("total_durations"))
 
@@ -3292,27 +4106,241 @@ class TestUnitUsage:
     def test_l2_usage(self, project_context):
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
-        random.seed(100)
-        # daily_usg_ru_vas_post.orderBy("day_id", ascending=True).show()
-        # daily_usage_incoming_sum_ir.orderBy("day_id", ascending=True).show()
-        # daily_usage_outgoing_sum_ir.orderBy("day_id", ascending=True).show()
-        # vas_data.orderBy("day_id", ascending=True).show()
-        # daily_usage_ru_a_gprs_cbs_usage.orderBy("day_id", ascending=True).show()
-        # daily_usage_incoming_call.orderBy("day_id", ascending=True).show()
-        daily_profile_feature.orderBy("event_parition_date", ascending=True).show()
-        # Building a union usage_post_pre joined with profile
-        # merge_all_dataset_to_one_table, [
-        #     'l1_usage_outgoing_call_relation_sum_daily', 'l1_usage_incoming_call_relation_sum_daily',
-        #     'l1_usage_outgoing_call_relation_sum_ir_daily', 'l1_usage_incoming_call_relation_sum_ir_daily',
-        #     'l1_usage_ru_a_gprs_cbs_usage_daily', 'l1_usage_ru_a_vas_postpaid_usg_daily',
-        #     'l1_usage_ru_a_vas_postpaid_prepaid_daily', 'l1_customer_profile_union_daily_feature'
-        # ],
-        # 'l1_usage_postpaid_prepaid_daily'
-        l1_usage_postpaid_prepaid_daily = merge_all_dataset_to_one_table(usage_outgoing_call_relation_sum_daily, daily_usage_incoming_call,
-                                                            daily_usage_outgoing_sum_ir, daily_usage_incoming_sum_ir,
-                                                            daily_usage_ru_a_gprs_cbs_usage, daily_usg_ru_vas_post,
-                                                            vas_data, daily_profile_feature)
-        l2_usage_postpaid_prepaid_weekly = build_usage_l2_layer(l1_usage_postpaid_prepaid_daily, var_project_context.catalog.load(
-            'params:l2_usage_postpaid_prepaid_weekly'))
-        l2_usage_postpaid_prepaid_weekly.show()
+        rdd1 = spark.sparkContext.parallelize(test_l1_usage_postpaid_prepaid_daily)
+        df_l1_test = spark.createDataFrame(rdd1,
+                                           schema=StructType([StructField("subscription_identifier",StringType(),True),
+StructField("call_start_dt",DateType(),True),
+StructField("day_id",DateType(),True),
+StructField("start_of_month",DateType(),True),
+StructField("start_of_week",DateType(),True),
+StructField("usg_data_friday_afternoon_usage",StringType(),True),
+StructField("usg_data_friday_evening_usage",StringType(),True),
+StructField("usg_data_friday_morning_usage",StringType(),True),
+StructField("usg_data_friday_night_usage",StringType(),True),
+StructField("usg_data_friday_usage",StringType(),True),
+StructField("usg_data_last_action_date",DateType(),True),
+StructField("usg_data_monday_afternoon_usage",StringType(),True),
+StructField("usg_data_monday_evening_usage",StringType(),True),
+StructField("usg_data_monday_morning_usage",StringType(),True),
+StructField("usg_data_monday_night_usage",StringType(),True),
+StructField("usg_data_monday_usage",StringType(),True),
+StructField("usg_data_saturday_afternoon_usage",StringType(),True),
+StructField("usg_data_saturday_evening_usage",StringType(),True),
+StructField("usg_data_saturday_morning_usage",StringType(),True),
+StructField("usg_data_saturday_night_usage",StringType(),True),
+StructField("usg_data_saturday_usage",StringType(),True),
+StructField("usg_data_sunday_afternoon_usage",StringType(),True),
+StructField("usg_data_sunday_evening_usage",StringType(),True),
+StructField("usg_data_sunday_morning_usage",StringType(),True),
+StructField("usg_data_sunday_night_usage",StringType(),True),
+StructField("usg_data_sunday_usage",StringType(),True),
+StructField("usg_data_thursday_afternoon_usage",StringType(),True),
+StructField("usg_data_thursday_evening_usage",StringType(),True),
+StructField("usg_data_thursday_morning_usage",StringType(),True),
+StructField("usg_data_thursday_night_usage",StringType(),True),
+StructField("usg_data_thursday_usage",StringType(),True),
+StructField("usg_data_tuesday_afternoon_usage",StringType(),True),
+StructField("usg_data_tuesday_evening_usage",StringType(),True),
+StructField("usg_data_tuesday_morning_usage",StringType(),True),
+StructField("usg_data_tuesday_night_usage",StringType(),True),
+StructField("usg_data_tuesday_usage",StringType(),True),
+StructField("usg_data_wednesday_afternoon_usage",StringType(),True),
+StructField("usg_data_wednesday_evening_usage",StringType(),True),
+StructField("usg_data_wednesday_morning_usage",StringType(),True),
+StructField("usg_data_wednesday_night_usage",StringType(),True),
+StructField("usg_data_wednesday_usage",StringType(),True),
+StructField("usg_data_weekday_usage",StringType(),True),
+StructField("usg_data_weekend_usage",StringType(),True),
+StructField("usg_incoming_afternoon_number_sms",StringType(),True),
+StructField("usg_incoming_afternoon_time_call",StringType(),True),
+StructField("usg_incoming_ais_local_calls_duration",StringType(),True),
+StructField("usg_incoming_ais_local_number_calls",StringType(),True),
+StructField("usg_incoming_data_volume",StringType(),True),
+StructField("usg_incoming_data_volume_2G_3G",StringType(),True),
+StructField("usg_incoming_data_volume_4G",StringType(),True),
+StructField("usg_incoming_dtac_call_duration",StringType(),True),
+StructField("usg_incoming_dtac_number_calls",StringType(),True),
+StructField("usg_incoming_dtac_number_sms",StringType(),True),
+StructField("usg_incoming_evening_number_sms",StringType(),True),
+StructField("usg_incoming_evening_time_call",StringType(),True),
+StructField("usg_incoming_friday_afternoon_voice_usage",StringType(),True),
+StructField("usg_incoming_friday_evening_voice_usage",StringType(),True),
+StructField("usg_incoming_friday_morning_voice_usage",StringType(),True),
+StructField("usg_incoming_friday_night_voice_usage",StringType(),True),
+StructField("usg_incoming_friday_voice_usage",StringType(),True),
+StructField("usg_incoming_last_call_date",DateType(),True),
+StructField("usg_incoming_last_sms_date",DateType(),True),
+StructField("usg_incoming_local_ais_sms",StringType(),True),
+StructField("usg_incoming_local_call_duration",StringType(),True),
+StructField("usg_incoming_local_data_volume",StringType(),True),
+StructField("usg_incoming_local_data_volume_2G_3G",StringType(),True),
+StructField("usg_incoming_local_data_volume_4G",StringType(),True),
+StructField("usg_incoming_local_number_calls",StringType(),True),
+StructField("usg_incoming_local_sms",StringType(),True),
+StructField("usg_incoming_monday_afternoon_voice_usage",StringType(),True),
+StructField("usg_incoming_monday_evening_voice_usage",StringType(),True),
+StructField("usg_incoming_monday_morning_voice_usage",StringType(),True),
+StructField("usg_incoming_monday_night_voice_usage",StringType(),True),
+StructField("usg_incoming_monday_voice_usage",StringType(),True),
+StructField("usg_incoming_morning_time_call",StringType(),True),
+StructField("usg_incoming_morning_time_number_sms",StringType(),True),
+StructField("usg_incoming_night_time_call",StringType(),True),
+StructField("usg_incoming_night_time_number_sms",StringType(),True),
+StructField("usg_incoming_number_calls",StringType(),True),
+StructField("usg_incoming_number_calls_over_30_mins",StringType(),True),
+StructField("usg_incoming_number_calls_upto_10_mins",StringType(),True),
+StructField("usg_incoming_number_calls_upto_15_mins",StringType(),True),
+StructField("usg_incoming_number_calls_upto_20_mins",StringType(),True),
+StructField("usg_incoming_number_calls_upto_30_mins",StringType(),True),
+StructField("usg_incoming_number_calls_upto_5_mins",StringType(),True),
+StructField("usg_incoming_offnet_local_number_calls",StringType(),True),
+StructField("usg_incoming_roaming_call_duration",StringType(),True),
+StructField("usg_incoming_roaming_data_volume",StringType(),True),
+StructField("usg_incoming_roaming_data_volume_2G_3G",StringType(),True),
+StructField("usg_incoming_roaming_data_volume_4G",StringType(),True),
+StructField("usg_incoming_roaming_last_sms_date",DateType(),True),
+StructField("usg_incoming_roaming_number_calls",StringType(),True),
+StructField("usg_incoming_roaming_total_sms",StringType(),True),
+StructField("usg_incoming_saturday_afternoon_voice_usage",StringType(),True),
+StructField("usg_incoming_saturday_evening_voice_usage",StringType(),True),
+StructField("usg_incoming_saturday_morning_voice_usage",StringType(),True),
+StructField("usg_incoming_saturday_night_voice_usage",StringType(),True),
+StructField("usg_incoming_saturday_voice_usage",StringType(),True),
+StructField("usg_incoming_sunday_afternoon_voice_usage",StringType(),True),
+StructField("usg_incoming_sunday_evening_voice_usage",StringType(),True),
+StructField("usg_incoming_sunday_morning_voice_usage",StringType(),True),
+StructField("usg_incoming_sunday_night_voice_usage",StringType(),True),
+StructField("usg_incoming_sunday_voice_usage",StringType(),True),
+StructField("usg_incoming_thursday_afternoon_voice_usage",StringType(),True),
+StructField("usg_incoming_thursday_evening_voice_usage",StringType(),True),
+StructField("usg_incoming_thursday_morning_voice_usage",StringType(),True),
+StructField("usg_incoming_thursday_night_voice_usage",StringType(),True),
+StructField("usg_incoming_thursday_voice_usage",StringType(),True),
+StructField("usg_incoming_total_call_duration",StringType(),True),
+StructField("usg_incoming_total_sms",StringType(),True),
+StructField("usg_incoming_true_call_duration",StringType(),True),
+StructField("usg_incoming_true_number_calls",StringType(),True),
+StructField("usg_incoming_true_number_sms",StringType(),True),
+StructField("usg_incoming_tuesday_afternoon_voice_usage",StringType(),True),
+StructField("usg_incoming_tuesday_evening_voice_usage",StringType(),True),
+StructField("usg_incoming_tuesday_morning_voice_usage",StringType(),True),
+StructField("usg_incoming_tuesday_night_voice_usage",StringType(),True),
+StructField("usg_incoming_tuesday_voice_usage",StringType(),True),
+StructField("usg_incoming_wednesday_afternoon_voice_usage",StringType(),True),
+StructField("usg_incoming_wednesday_evening_voice_usage",StringType(),True),
+StructField("usg_incoming_wednesday_morning_voice_usage",StringType(),True),
+StructField("usg_incoming_wednesday_night_voice_usage",StringType(),True),
+StructField("usg_incoming_wednesday_voice_usage",StringType(),True),
+StructField("usg_incoming_weekday_calls_duration",StringType(),True),
+StructField("usg_incoming_weekday_number_calls",StringType(),True),
+StructField("usg_incoming_weekday_number_sms",StringType(),True),
+StructField("usg_incoming_weekend_calls_duration",StringType(),True),
+StructField("usg_incoming_weekend_number_calls",StringType(),True),
+StructField("usg_incoming_weekend_number_sms",StringType(),True),
+StructField("usg_last_action_date",DateType(),True),
+StructField("usg_last_call_date",DateType(),True),
+StructField("usg_last_sms_date",DateType(),True),
+StructField("usg_outgoing_afternoon_number_calls",StringType(),True),
+StructField("usg_outgoing_afternoon_number_sms",StringType(),True),
+StructField("usg_outgoing_ais_local_calls_duration",StringType(),True),
+StructField("usg_outgoing_ais_local_number_calls",StringType(),True),
+StructField("usg_outgoing_data_volume",StringType(),True),
+StructField("usg_outgoing_data_volume_2G_3G",StringType(),True),
+StructField("usg_outgoing_data_volume_4G",StringType(),True),
+StructField("usg_outgoing_dtac_call_duration",StringType(),True),
+StructField("usg_outgoing_dtac_number_calls",StringType(),True),
+StructField("usg_outgoing_dtac_number_sms",StringType(),True),
+StructField("usg_outgoing_evening_number_calls",StringType(),True),
+StructField("usg_outgoing_evening_number_sms",StringType(),True),
+StructField("usg_outgoing_friday_afternoon_voice_usage",StringType(),True),
+StructField("usg_outgoing_friday_evening_voice_usage",StringType(),True),
+StructField("usg_outgoing_friday_morning_voice_usage",StringType(),True),
+StructField("usg_outgoing_friday_night_voice_usage",StringType(),True),
+StructField("usg_outgoing_friday_voice_usage",StringType(),True),
+StructField("usg_outgoing_last_call_date",DateType(),True),
+StructField("usg_outgoing_last_sms_date",DateType(),True),
+StructField("usg_outgoing_local_ais_sms",StringType(),True),
+StructField("usg_outgoing_local_call_duration",StringType(),True),
+StructField("usg_outgoing_local_data_volume",StringType(),True),
+StructField("usg_outgoing_local_data_volume_2G_3G",StringType(),True),
+StructField("usg_outgoing_local_data_volume_4G",StringType(),True),
+StructField("usg_outgoing_local_number_calls",StringType(),True),
+StructField("usg_outgoing_local_sms",StringType(),True),
+StructField("usg_outgoing_monday_afternoon_voice_usage",StringType(),True),
+StructField("usg_outgoing_monday_evening_voice_usage",StringType(),True),
+StructField("usg_outgoing_monday_morning_voice_usage",StringType(),True),
+StructField("usg_outgoing_monday_night_voice_usage",StringType(),True),
+StructField("usg_outgoing_monday_voice_usage",StringType(),True),
+StructField("usg_outgoing_morning_time_number_calls",StringType(),True),
+StructField("usg_outgoing_morning_time_number_sms",StringType(),True),
+StructField("usg_outgoing_night_time_number_calls",StringType(),True),
+StructField("usg_outgoing_night_time_number_sms",StringType(),True),
+StructField("usg_outgoing_number_calls",StringType(),True),
+StructField("usg_outgoing_number_calls_over_30_mins",StringType(),True),
+StructField("usg_outgoing_number_calls_upto_10_mins",StringType(),True),
+StructField("usg_outgoing_number_calls_upto_15_mins",StringType(),True),
+StructField("usg_outgoing_number_calls_upto_20_mins",StringType(),True),
+StructField("usg_outgoing_number_calls_upto_30_mins",StringType(),True),
+StructField("usg_outgoing_number_calls_upto_5_mins",StringType(),True),
+StructField("usg_outgoing_offnet_local_calls_duration",StringType(),True),
+StructField("usg_outgoing_offnet_local_number_calls",StringType(),True),
+StructField("usg_outgoing_roaming_call_duration",StringType(),True),
+StructField("usg_outgoing_roaming_data_volume",StringType(),True),
+StructField("usg_outgoing_roaming_data_volume_2G_3G",StringType(),True),
+StructField("usg_outgoing_roaming_data_volume_4G",StringType(),True),
+StructField("usg_outgoing_roaming_last_sms_date",DateType(),True),
+StructField("usg_outgoing_roaming_number_calls",StringType(),True),
+StructField("usg_outgoing_roaming_total_sms",StringType(),True),
+StructField("usg_outgoing_saturday_afternoon_voice_usage",StringType(),True),
+StructField("usg_outgoing_saturday_evening_voice_usage",StringType(),True),
+StructField("usg_outgoing_saturday_morning_voice_usage",StringType(),True),
+StructField("usg_outgoing_saturday_night_voice_usage",StringType(),True),
+StructField("usg_outgoing_saturday_voice_usage",StringType(),True),
+StructField("usg_outgoing_sunday_afternoon_voice_usage",StringType(),True),
+StructField("usg_outgoing_sunday_evening_voice_usage",StringType(),True),
+StructField("usg_outgoing_sunday_morning_voice_usage",StringType(),True),
+StructField("usg_outgoing_sunday_night_voice_usage",StringType(),True),
+StructField("usg_outgoing_sunday_voice_usage",StringType(),True),
+StructField("usg_outgoing_thursday_afternoon_voice_usage",StringType(),True),
+StructField("usg_outgoing_thursday_evening_voice_usage",StringType(),True),
+StructField("usg_outgoing_thursday_morning_voice_usage",StringType(),True),
+StructField("usg_outgoing_thursday_night_voice_usage",StringType(),True),
+StructField("usg_outgoing_thursday_voice_usage",StringType(),True),
+StructField("usg_outgoing_total_call_duration",StringType(),True),
+StructField("usg_outgoing_total_sms",StringType(),True),
+StructField("usg_outgoing_true_call_duration",StringType(),True),
+StructField("usg_outgoing_true_number_calls",StringType(),True),
+StructField("usg_outgoing_true_number_sms",StringType(),True),
+StructField("usg_outgoing_tuesday_afternoon_voice_usage",StringType(),True),
+StructField("usg_outgoing_tuesday_evening_voice_usage",StringType(),True),
+StructField("usg_outgoing_tuesday_morning_voice_usage",StringType(),True),
+StructField("usg_outgoing_tuesday_night_voice_usage",StringType(),True),
+StructField("usg_outgoing_tuesday_voice_usage",StringType(),True),
+StructField("usg_outgoing_wednesday_afternoon_voice_usage",StringType(),True),
+StructField("usg_outgoing_wednesday_evening_voice_usage",StringType(),True),
+StructField("usg_outgoing_wednesday_morning_voice_usage",StringType(),True),
+StructField("usg_outgoing_wednesday_night_voice_usage",StringType(),True),
+StructField("usg_outgoing_wednesday_voice_usage",StringType(),True),
+StructField("usg_outgoing_weekday_calls_duration",StringType(),True),
+StructField("usg_outgoing_weekday_number_calls",StringType(),True),
+StructField("usg_outgoing_weekday_number_sms",StringType(),True),
+StructField("usg_outgoing_weekend_calls_duration",StringType(),True),
+StructField("usg_outgoing_weekend_number_calls",StringType(),True),
+StructField("usg_outgoing_weekend_number_sms",StringType(),True),
+StructField("usg_total_data_last_action_date",DateType(),True),
+StructField("usg_total_data_volume",StringType(),True),
+StructField("usg_vas_last_action_dt",DateType(),True),
+StructField("usg_vas_total_number_of_call",StringType(),True),
+StructField("event_partition_date",DateType(),True),
+                                                   ]))
+
+        df_l1_test.show()
+
+        #################################### Sum Test ###########################################
+
+        sum_l2 = build_usage_l2_layer(df_l1_test,
+                                  var_project_context.catalog.load('params:l2_usage_postpaid_prepaid_daily'))
+
+        sum_l2.show()
+
         exit(2)
