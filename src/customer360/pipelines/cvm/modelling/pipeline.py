@@ -32,6 +32,7 @@ from customer360.pipelines.cvm.src.utils.get_suffix import get_suffix
 from src.customer360.pipelines.cvm.modelling.nodes import (
     train_rf,
     predict_rf,
+    validate_rf,
 )
 
 
@@ -57,14 +58,14 @@ def create_train_model(sample_type: str = None) -> Pipeline:
                 name="create_random_forest" + suffix,
             ),
             node(
-                predict_rf,
+                validate_rf,
                 [
                     "l5_cvm_one_day_test_preprocessed" + suffix,
                     "random_forest_dev",
                     "parameters",
                 ],
-                "l5_cvm_one_day_test_preprocessed_preds" + suffix,
-                name="create_l5_cvm_one_day_test_preprocessed_preds" + suffix,
+                "models_metrics",
+                name="create_models_metrics" + suffix,
             ),
         ]
     )
