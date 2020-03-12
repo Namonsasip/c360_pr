@@ -35,7 +35,7 @@ def get_auc(true_val, pred_score):
 
 
 def get_tpr_fpr(
-    true_val, pred_score, thresholds=[0.01, 0.05, 0.1, 0.2, 0.5, 0.75, 0.9]
+    true_val, pred_score, thresholds=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 ):
     metrics_to_return = {}
     fpr, tpr, _ = metrics.roc_curve(true_val, pred_score)
@@ -46,8 +46,8 @@ def get_tpr_fpr(
 
     for threshold in thresholds:
         threshold_index = get_threshold_index(thresholds, threshold)
-        metrics_to_return["fpr_{}".format(threshold)] = fpr[threshold_index]
-        metrics_to_return["tpr_{}".format(threshold)] = tpr[threshold_index]
+        metrics_to_return[threshold]["fpr"] = fpr[threshold_index]
+        metrics_to_return[threshold]["tpr"] = tpr[threshold_index]
     return metrics_to_return
 
 
