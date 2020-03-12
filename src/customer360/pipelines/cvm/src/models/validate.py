@@ -43,8 +43,8 @@ def get_tpr_fpr(true_val, pred_score, quantile_thresholds=None):
     fpr, tpr, _ = metrics.roc_curve(true_val, pred_score)
     for quantile_threshold in quantile_thresholds:
         quantile_n = floor(n * quantile_threshold)
-        metrics_to_return["fpr_{}".format(quantile_threshold)] = fpr[quantile_n]
-        metrics_to_return["tpr_{}".format(quantile_threshold)] = tpr[quantile_n]
+        metrics_to_return["fpr_{}".format(quantile_threshold)] = fpr[quantile_n - 1]
+        metrics_to_return["tpr_{}".format(quantile_threshold)] = tpr[quantile_n - 1]
     return metrics_to_return
 
 
