@@ -35,7 +35,9 @@ def get_auc(true_val, pred_score):
     return metrics_to_return
 
 
-def get_tpr_fpr(true_val, pred_score, quantile_thresholds=[0.01, 0.05, 0.1, 0.2]):
+def get_tpr_fpr(true_val, pred_score, quantile_thresholds=None):
+    if quantile_thresholds is None:
+        quantile_thresholds = [0.01, 0.05, 0.1, 0.2]
     n = len(true_val)
     metrics_to_return = {}
     fpr, tpr, _ = metrics.roc_curve(true_val, pred_score)
