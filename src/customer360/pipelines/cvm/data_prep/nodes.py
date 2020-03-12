@@ -162,18 +162,19 @@ def create_l5_cvm_one_day_train_test(
 
 
 def subs_date_join_important_only(
-    important_param: List[Any], *args: DataFrame,
+    important_param: List[Any], parameters: Dict[str, Any], *args: DataFrame,
 ) -> DataFrame:
     """ Left join all tables with important variables by given keys.
 
     Args:
         important_param: List of important volumns.
+        parameters: parameters defined in parameters.yml.
         *args: Tables to join.
     Returns:
         Left joined and filtered tables.
     """
 
-    keys = ["key_date", "subscription_identifier"]
+    keys = parameters["key_columns"]
     tables = [setup_names(tab) for tab in args]
 
     def filter_column(df, filter_list):
