@@ -42,14 +42,14 @@ def campaign_to_l4_pipeline(**kwargs):
         [
             node(
                 l4_rolling_window,
-                ["l2_campaign_postpaid_prepaid_fbb_weekly",
-                 "params:l4_campaign_postpaid_prepaid_fbb_features"],
-                "l4_campaign_postpaid_prepaid_fbb_int"
+                ["l2_campaign_postpaid_prepaid_weekly",
+                 "params:l4_campaign_postpaid_prepaid_features"],
+                "l4_campaign_postpaid_prepaid_int"
 
             ),
             node(
-                add_relative_time_features, ['l4_campaign_postpaid_prepaid_fbb_int'],
-                'l4_campaign_postpaid_prepaid_fbb_features'
+                add_relative_time_features, ['l4_campaign_postpaid_prepaid_int'],
+                'l4_campaign_postpaid_prepaid_features'
             ),
             node(
                 l4_rolling_window,

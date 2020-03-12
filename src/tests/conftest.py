@@ -40,12 +40,12 @@ from pathlib import Path
 import pytest, os
 
 from customer360.run import ProjectContext
+from src.customer360.utilities.spark_util import get_spark_session
 
-from pyspark.sql import SparkSession
-conf = os.environ["CONF"]
+conf = os.getenv("CONF", None)
 
 
 @pytest.fixture(scope="module")
 def project_context():
-    spark = SparkSession.builder.getOrCreate()
+    spark = get_spark_session()
     return {'ProjectContext': ProjectContext(str(Path.cwd()), env=conf), 'Spark': spark}

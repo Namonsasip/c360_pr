@@ -5,7 +5,7 @@ from kedro.context.context import load_context
 from pathlib import Path
 import logging, os
 
-conf = os.environ["CONF"]
+conf = os.getenv("CONF", None)
 
 
 def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
@@ -45,7 +45,7 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
         top_campaign_df = l1_campaign_top_channel_daily.filter(F.col("start_of_week").isin(*[curr_item]))
         output_df_1 = expansion(small_df, dictObj_1)
         output_df_2 = expansion(top_campaign_df, dictObj_2)
-        CNTX.catalog.save("l2_campaign_postpaid_prepaid_fbb_weekly", output_df_1)
+        CNTX.catalog.save("l2_campaign_postpaid_prepaid_weekly", output_df_1)
         CNTX.catalog.save("l1_campaign_top_channel_weekly", output_df_2)
 
     small_df = data_frame.filter(F.col("start_of_week").isin(*[first_item]))
