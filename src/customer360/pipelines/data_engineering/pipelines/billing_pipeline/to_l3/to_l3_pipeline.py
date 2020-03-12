@@ -55,18 +55,18 @@ def billing_to_l3_pipeline(**kwargs):
             ),
 
             # Monthly automated payment feature post-paid
-             node(
-                 bill_payment_daily_data_with_customer_profile,
-                 ["l3_customer_profile_include_1mo_non_active",
-                  "l0_billing_pc_t_payment_daily"],
-                 "l3_billing_monthly_automated_payments_1"
-             ),
-             node(
-                 node_from_config,
-                 ["l3_billing_monthly_automated_payments_1",
-                  "params:l3_automated_flag"],
-                 "l3_billing_monthly_automated_payments"
-             ),
+            node(
+                bill_payment_daily_data_with_customer_profile,
+                ["l3_customer_profile_include_1mo_non_active",
+                 "l0_billing_pc_t_payment_daily"],
+                "l3_billing_monthly_automated_payments_1"
+            ),
+            node(
+                node_from_config,
+                ["l3_billing_monthly_automated_payments_1",
+                 "params:l3_automated_flag"],
+                "l3_billing_monthly_automated_payments"
+            ),
 
             # Monthly before top up balance feature pre-paid
             node(
@@ -130,7 +130,6 @@ def billing_to_l3_pipeline(**kwargs):
                 "l3_billing_and_payments_monthly_last_top_up_channel"
             ),
 
-
             # Monthly missed bills feature post-paid
             node(
                 billing_data_joined,
@@ -146,10 +145,10 @@ def billing_to_l3_pipeline(**kwargs):
             ),
 
             # Monthly overdue bills feature post-paid
-             node(
+            node(
                 billing_overdue_bills_monthly,
                 ["l3_billing_and_payments_monthly_joined",
-                "params:l3_overdue_bills"],
+                 "params:l3_overdue_bills"],
                 "l3_billing_and_payments_monthly_overdue_bills"
             ),
 

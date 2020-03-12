@@ -5,7 +5,7 @@ from kedro.context.context import load_context
 from pathlib import Path
 import logging, os
 
-conf = os.getenv("CONF", "local")
+conf = os.getenv("CONF", None)
 
 
 def usage_merge_all_data(l2_usage_call_relation_sum_weekly: DataFrame,
@@ -33,6 +33,7 @@ def build_usage_l2_layer(data_frame: DataFrame, dict_obj: dict) -> DataFrame:
     :param dict_obj:
     :return:
     """
+
     def divide_chunks(l, n):
         # looping till length l
         for i in range(0, len(l), n):
@@ -42,9 +43,10 @@ def build_usage_l2_layer(data_frame: DataFrame, dict_obj: dict) -> DataFrame:
     data_frame = data_frame
     dates_list = data_frame.select('start_of_week').distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 2))
+    mvv_new = list(divide_chunks(mvv_array, 5))
     add_list = mvv_new
 
     first_item = add_list[0]
