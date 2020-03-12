@@ -27,7 +27,6 @@
 # limitations under the License.
 
 from sklearn import metrics
-from math import floor
 
 
 def get_auc(true_val, pred_score):
@@ -35,16 +34,18 @@ def get_auc(true_val, pred_score):
     return metrics_to_return
 
 
-def get_tpr_fpr(true_val, pred_score, quantile_thresholds=None):
-    if quantile_thresholds is None:
-        quantile_thresholds = [0.01, 0.05, 0.1, 0.2]
-    n = len(true_val)
+def get_tpr_fpr(true_val, pred_score, thresholds=[0.01, 0.05, 0.1, 0.2]):
     metrics_to_return = {}
-    fpr, tpr, _ = metrics.roc_curve(true_val, pred_score, drop_intermediate=False)
-    for quantile_threshold in quantile_thresholds:
-        quantile_n = floor(n * quantile_threshold)
-        metrics_to_return["fpr_{}".format(quantile_threshold)] = fpr[quantile_n - 1]
-        metrics_to_return["tpr_{}".format(quantile_threshold)] = tpr[quantile_n - 1]
+    fpr, tpr, _ = metrics.roc_curve(true_val, pred_score)
+
+    def get_threshold_index(all_thresholds, threshold_chosen):
+        thresholds_greater = [thr for thr in all_thresholds if thr > threshold_chosen]
+        return len(thresholds_greater) - 1
+
+    for threshold in thresholds:
+        threshold_index = get_threshold_index(thresholds, threshold)
+        metrics_to_return["fpr_{}".format(threshold)] = fpr[threshold_index]
+        metrics_to_return["tpr_{}".format(threshold)] = tpr[threshold_index]
     return metrics_to_return
 
 
