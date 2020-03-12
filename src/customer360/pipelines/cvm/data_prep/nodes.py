@@ -178,7 +178,9 @@ def subs_date_join_important_only(
     tables = [setup_names(tab) for tab in args]
 
     def filter_column(df, filter_list):
-        cols_to_drop = [col_name for col_name in df if col_name not in filter_list]
+        cols_to_drop = [
+            col_name for col_name in df.columns if col_name not in filter_list
+        ]
         return df.drop(*cols_to_drop)
 
     tables = [filter_column(tab, important_param + keys) for tab in tables]
