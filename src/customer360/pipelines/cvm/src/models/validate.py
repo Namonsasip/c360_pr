@@ -50,5 +50,5 @@ def get_tpr_fpr(true_val, pred_score, quantile_thresholds=None):
 
 def get_metrics(true_val, pred_score):
     metrics_to_return = get_auc(true_val, pred_score)
-    metrics_to_return.update(get_tpr_fpr(true_val), pred_score)
+    metrics_to_return.update(get_tpr_fpr(true_val, pred_score))
     return metrics_to_return
