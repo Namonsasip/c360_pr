@@ -83,25 +83,6 @@ def check_null(df):
         temp = df.first()[0]
         return temp
 
-
-                  'usg_incoming_total_sms',
-                  'usg_incoming_true_call_duration',
-                  'usg_incoming_true_number_calls',
-                  'usg_incoming_true_number_sms',
-                  'usg_incoming_tuesday_afternoon_voice_usage',
-                  'usg_incoming_tuesday_evening_voice_usage',
-                  'usg_incoming_tuesday_morning_voice_usage',
-                  'usg_incoming_tuesday_night_voice_usage',
-                  'usg_incoming_tuesday_voice_usage',
-                  'usg_incoming_wednesday_afternoon_voice_usage',
-                  'usg_incoming_wednesday_evening_voice_usage',
-                  'usg_incoming_wednesday_morning_voice_usage',
-                  'usg_incoming_wednesday_night_voice_usage',
-                  'usg_incoming_wednesday_voice_usage',
-                  'usg_incoming_weekday_calls_duration',
-                  'usg_incoming_weekday_number_calls',
-                  'usg_incoming_weekday_number_sms',
-                  'usg_incoming_weekend_calls_duration',
 def out_going(project_context):
     var_project_context = project_context['ProjectContext']
     spark = project_context['Spark']
