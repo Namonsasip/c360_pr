@@ -40,7 +40,7 @@ def get_tpr_fpr(true_val, pred_score, quantile_thresholds=None):
         quantile_thresholds = [0.01, 0.05, 0.1, 0.2]
     n = len(true_val)
     metrics_to_return = {}
-    fpr, tpr, _ = metrics.roc_curve(true_val, pred_score)
+    fpr, tpr, _ = metrics.roc_curve(true_val, pred_score, drop_intermediate=False)
     for quantile_threshold in quantile_thresholds:
         quantile_n = floor(n * quantile_threshold)
         metrics_to_return["fpr_{}".format(quantile_threshold)] = fpr[quantile_n - 1]
