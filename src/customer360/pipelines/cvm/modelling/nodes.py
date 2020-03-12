@@ -42,6 +42,7 @@ from customer360.pipelines.cvm.src.models.predict import (
 from customer360.pipelines.cvm.src.models.validate import get_metrics
 from customer360.pipelines.cvm.src.utils.list_targets import list_targets
 import shap
+import pandas as pd
 
 
 def train_rf(df: DataFrame, parameters: Dict[str, Any]) -> RandomForestClassifier:
@@ -174,8 +175,10 @@ def validate_rf(
     predictions = predict_rf_pandas(df, rf_models, parameters)
     models_metrics = {}
     for target_chosen in target_cols:
-        true_val = predictions[target_chosen]
-        pred_score = predictions[target_chosen + "_pred"]
+        target_filter = pd.notna(predictions[target_chosen])
+        predictions_for_target_chosen = predictions[target_filter]
+        true_val = predictions_for_target_chosen[target_chosen]
+        pred_score = predictions_for_target_chosen[target_chosen + "_pred"]
         models_metrics[target_chosen] = get_metrics(true_val, pred_score)
 
     log = logging.getLogger(__name__)
