@@ -37,7 +37,9 @@ from customer360.pipelines.cvm.src.models.get_pandas_train_test_sample import (
 from customer360.pipelines.cvm.src.models.predict import (
     pyspark_predict_xgb,
     pyspark_predict_rf,
+    predict_rf_pandas,
 )
+from customer360.pipelines.cvm.src.models.validate import get_metrics
 from customer360.pipelines.cvm.src.utils.list_targets import list_targets
 import shap
 
@@ -58,7 +60,6 @@ def train_rf(df: DataFrame, parameters: Dict[str, Any]) -> RandomForestClassifie
 
     models = {}
     for target_chosen in target_cols:
-
         log.info("Training random forest model for {} target.".format(target_chosen))
 
         X, y = get_pandas_train_test_sample(df, parameters, target_chosen)
@@ -106,7 +107,6 @@ def train_xgb(df: DataFrame, parameters: Dict[str, Any]) -> Dict[str, xgboost.Bo
 
     models = {}
     for target_chosen in target_cols:
-
         log.info("Training xgboost model for {} target.".format(target_chosen))
 
         X, y = get_pandas_train_test_sample(df, parameters, target_chosen)
@@ -153,3 +153,31 @@ def predict_rf(
 
     predictions = pyspark_predict_rf(df, rf_models, parameters)
     return predictions
+
+
+def validate_rf(
+    df: DataFrame,
+    rf_models: Dict[str, RandomForestClassifier],
+    parameters: Dict[str, Any],
+) -> Dict[str, Any]:
+    """ Runs predictions on validation datasets. Does not use pyspark to perform
+     predictions. Calculates metrics to assess models performances.
+
+    Args:
+        df: DataFrame to predict for.
+        rf_models: Given models to validate.
+        parameters: parameters defined in parameters.yml.
+    Returns:
+        Dictionary with metrics for models.
+    """
+    target_cols = list_targets(parameters)
+    predictions = predict_rf_pandas(df, rf_models, parameters)
+    models_metrics = {}
+    for target_chosen in target_cols:
+        true_val = predictions[target_chosen]
+        pred_score = predictions[target_chosen + "_pred"]
+        models_metrics[target_chosen] = get_metrics(true_val, pred_score)
+
+    log = logging.getLogger(__name__)
+    log.info("Models metrics: {}".format(models_metrics))
+    return models_metrics
