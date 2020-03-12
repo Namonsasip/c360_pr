@@ -7,7 +7,7 @@ repos:
     -   id: end-of-file-fixer
         files: src/customer360/pipelines/cvm
     -   id: check-yaml
-        files: src/customer360/pipelines/cvm
+        files: conf/base/CVM
     -   id: check-added-large-files
         files: src/customer360/pipelines/cvm
     -   id: check-merge-conflict
