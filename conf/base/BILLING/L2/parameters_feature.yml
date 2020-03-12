@@ -97,10 +97,12 @@ l2_last_topup_channel:
       register_date: "register_date"
       recharge_time: "recharge_time"
       start_of_week: "start_of_week"
+      subscription_identifier: "subscription_identifier"
       payments_last_top_up_channel: "first_value(recharge_topup_event_type_name) over(partition by
              start_of_week,
              access_method_num,
-             register_date order by recharge_time desc)"
+             register_date,
+             subscription_identifier order by recharge_time desc)"
     granularity: ""
 
 l2_popular_topup_day_1:
