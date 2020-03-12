@@ -30,7 +30,7 @@ from sklearn import metrics
 
 
 def get_auc(true_val, pred_score):
-    metrics_to_return = {"auc": metrics.roc_auc_score(true_val, pred_score)}
+    metrics_to_return = {"auc": round(metrics.roc_auc_score(true_val, pred_score), 2)}
     return metrics_to_return
 
 
@@ -47,8 +47,8 @@ def get_tpr_fpr(
     for threshold in thresholds:
         threshold_index = get_threshold_index(roc_thresholds, threshold)
         metrics_to_return[threshold] = {}
-        metrics_to_return[threshold]["fpr"] = fpr[threshold_index]
-        metrics_to_return[threshold]["tpr"] = tpr[threshold_index]
+        metrics_to_return[threshold]["fpr"] = round(fpr[threshold_index], 2)
+        metrics_to_return[threshold]["tpr"] = round(tpr[threshold_index], 2)
     return metrics_to_return
 
 
