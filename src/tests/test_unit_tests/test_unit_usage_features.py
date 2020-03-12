@@ -42,8 +42,7 @@ import random
 from pyspark.sql.types import *
 from pyspark.sql import functions as F
 import datetime
-from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1 import merge_all_dataset_to_one_table, \
-    build_data_for_prepaid_postpaid_vas
+from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1 import merge_all_dataset_to_one_table
 
 
 def generate_category(days, values_list):
@@ -154,7 +153,6 @@ def out_going(project_context):
 
     return df_usage_outgoing_call_relation_sum_daily
 
-
 def incoming(project_context):
     var_project_context = project_context['ProjectContext']
     spark = project_context['Spark']
@@ -203,7 +201,6 @@ def incoming(project_context):
     daily_usage_incoming_call = node_from_config(df_usage_incoming_call, var_project_context.catalog.load(
         'params:l1_usage_incoming_call_relation_sum_daily'))
 
-
 def out_going_ir(project_context):
     var_project_context = project_context['ProjectContext']
     spark = project_context['Spark']
@@ -243,7 +240,6 @@ def out_going_ir(project_context):
 
     return df_usg_relation_ir
 
-
 def incoming_ir(project_context):
     var_project_context = project_context['ProjectContext']
     spark = project_context['Spark']
@@ -282,7 +278,6 @@ def incoming_ir(project_context):
         'params:l1_usage_incoming_call_relation_sum_ir_daily'))
 
     return df_usg_relation_ir
-
 
 def ru_a_gprs_cbs(project_context):
     var_project_context = project_context['ProjectContext']
@@ -326,7 +321,6 @@ def ru_a_gprs_cbs(project_context):
 
     return df_usage_ru_a_gprs_cbs_usage
 
-
 def ru_vas_post(project_context):
     var_project_context = project_context['ProjectContext']
     spark = project_context['Spark']
@@ -368,7 +362,6 @@ def ru_vas_post(project_context):
 
     return df_usg_ru_vas_post
 
-
 def vas_data(project_context):
     var_project_context = project_context['ProjectContext']
     spark = project_context['Spark']
@@ -392,7 +385,6 @@ def vas_data(project_context):
 
     return df_vas_post_pre
 
-
 def daily_profile(project_context):
     var_project_context = project_context['ProjectContext']
     spark = project_context['Spark']
@@ -414,7 +406,6 @@ def daily_profile(project_context):
         .withColumn("access_method_num", F.lit(1))
 
     return daily_profile_feature
-
 
 global test_l1_usage_postpaid_prepaid_daily
 test_l1_usage_postpaid_prepaid_daily = [
@@ -438,7 +429,6 @@ test_l1_usage_postpaid_prepaid_daily = [
 ['1-KJ6DB11',None,None,datetime.datetime.strptime("2020-01-01", '%Y-%m-%d'),datetime.datetime.strptime("2020-01-27", '%Y-%m-%d'),'0.00','0.00','0.00','0.00','0.00',datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),'0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','0.00','1285775422.00','968611972.00','368187809.00','0.00','2622575203.00','0.00','0.00','0.00','0.00','0.00','2622575203.00','0.00','4.0','0.0','0.0','0.0','2498374248.00','5248156.00','2493126092.00','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0',None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),'0.0','0.0','2498374248','5248156','2493126092','0.0','4.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0',None,'0','0','0',None,None,None,'0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','4.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','0.0','4.0','0.0','0.0','0.0',datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),None,None,None,None,'124200955.00','1206688.00','122994267.00',None,None,None,None,None,None,None,None,None,None,None,None,None,None,'124200955','1206688','122994267',None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,'0.0',None,None,'0','0','0',None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d'),'2622575203.00',None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d')],
 ['1-UP3OD4P',None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d')],
 ['1-RD5TFTU',None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,datetime.datetime.strptime("2020-01-28", '%Y-%m-%d')]
-
 ]
 
 # Global Variables
@@ -449,7 +439,7 @@ random.seed(100)
 daily_usg_ru_vas_post = []
 daily_usage_incoming_sum_ir = []
 daily_usage_outgoing_sum_ir = []
-l1_usage_ru_a_vas_postpaid_prepaid_daily = []
+vas_data = []
 daily_usage_ru_a_gprs_cbs_usage = []
 daily_usage_incoming_call = []
 daily_profile_feature = []
@@ -467,7 +457,6 @@ class TestUnitUsage:
         # max_date = datetime.date(2020,4,1)
         # days = date_diff(min_date,max_date) #range from min_date to max_date
         random.seed(100)
-<<<<<<< HEAD
         my_dates_list = pd.date_range(min_date, max_date).tolist()
         my_dates = [iTemp.date().strftime("%d-%m-%Y") for iTemp in my_dates_list]
         random_list = [random.randint(1, 5) for iTemp in range(0, days)]
@@ -478,47 +467,22 @@ class TestUnitUsage:
             .withColumn("access_method_num", F.lit(1)) \
             .withColumn("day_id", F.to_date('day_id', 'dd-MM-yyyy')) \
             .withColumn("partition_date", F.lit('20200101'))
-=======
-        min_dt = '2020-01-01'
-        max_dt = '2020-04-01'
-        doubled_days = days * 2
-        day_id = generate_day_id(min_dt, max_dt)
-        day_id.extend(day_id)  # two records per day
-        day_id.sort()
-        # print(day_id)
-        number_of_call = generate_int(doubled_days, 1, 5)
-        call_type_cd = generate_category(doubled_days, [1, 5])
-        no_transaction = generate_int(doubled_days, 1, 5)
-        l0_usage_pps_v_ru_a_vas_nonvoice_daily = spark.createDataFrame(zip(number_of_call, day_id),
-                                                                       schema=['number_of_call', 'day_id']) \
-            .withColumn("access_method_num", F.lit(1)) \
-            .withColumn("day_id", F.to_date('day_id', 'dd-MM-yyyy')) \
-            .withColumn("partition_date", F.lit('20200101'))
-        l0_usage_ru_a_vas_postpaid_usg_daily = spark.createDataFrame(zip(number_of_call, day_id, call_type_cd, no_transaction),
-                                                                       schema=['number_of_call', 'day_id', 'call_type_cd', 'no_transaction']) \
-            .withColumn("access_method_num", F.lit(1)) \
-            .withColumn("day_id", F.to_date('day_id', 'dd-MM-yyyy')) \
-            .withColumn("partition_date", F.lit('20200101'))
-        print("*********************************L1 usage_ru_a_vas_postpaid_prepaid_daily Starts***************************************")
->>>>>>> 05d2c3a30b02d918c3e6709440e1e59f3a166f6f
         # df_vas_post_pre.show()
         # Testing Daily Features here
-
-        vas_postpaid_prepaid_merged_stg = build_data_for_prepaid_postpaid_vas(l0_usage_pps_v_ru_a_vas_nonvoice_daily, l0_usage_ru_a_vas_postpaid_usg_daily)
-        global l1_usage_ru_a_vas_postpaid_prepaid_daily
-        l1_usage_ru_a_vas_postpaid_prepaid_daily = node_from_config(vas_postpaid_prepaid_merged_stg, var_project_context.catalog.load(
+        global vas_data
+        vas_data = node_from_config(df_vas_post_pre, var_project_context.catalog.load(
             'params:l1_usage_ru_a_vas_postpaid_prepaid_daily'))
-        #exit(2)
+        # vas_data.orderBy('start_of_week').show()
         # check event date = 2020-01-01 date the number of calls should be 2
-        # assert \
-        #     vas_data.where("event_partition_date = '2020-01-01'").select("usg_vas_total_number_of_call").collect()[0][
-        #         0] == 2
-        # assert \
-        #     vas_data.where("event_partition_date = '2020-01-01'").select("usg_vas_last_action_dt").collect()[0][
-        #         0] == datetime.date(2020, 1, 1)
-        # assert \
-        #     vas_data.where("event_partition_date = '2020-01-01'").select("usg_last_action_date").collect()[0][
-        #         0] == datetime.date(2020, 1, 1)
+        assert \
+            vas_data.where("event_partition_date = '2020-01-01'").select("usg_vas_total_number_of_call").collect()[0][
+                0] == 2
+        assert \
+            vas_data.where("event_partition_date = '2020-01-01'").select("usg_vas_last_action_dt").collect()[0][
+                0] == datetime.date(2020, 1, 1)
+        assert \
+            vas_data.where("event_partition_date = '2020-01-01'").select("usg_last_action_date").collect()[0][
+                0] == datetime.date(2020, 1, 1)
         # # check weekly features
         # weekly_data = expansion(daily_data,
         #                         var_project_context.catalog.load('params:l2_usage_ru_a_vas_postpaid_prepaid_weekly'))
@@ -606,72 +570,71 @@ class TestUnitUsage:
         # daily_usage_incoming_sum_ir.orderBy("event_partition_date").show()
 
         # Test for usg_incoming_roaming_call_duration: "sum(case when service_type IN ('VOICE') THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_sum_ir.where("event_partition_date = '2020-01-13'").select(
-        #         "usg_incoming_roaming_call_duration").collect()[0][
-        #         0] == 4
-        # assert \
-        #     daily_usage_incoming_sum_ir.where("event_partition_date = '2020-01-09'").select(
-        #         "usg_incoming_roaming_call_duration").collect()[0][
-        #         0] == 0
-        # # Test for usg_incoming_roaming_number_calls: "sum(case when service_type IN ('VOICE') THEN total_successful_call else 0 end)"
-        # assert \
-        #     daily_usage_incoming_sum_ir.where("event_partition_date = '2020-01-13'").select(
-        #         "usg_incoming_roaming_number_calls").collect()[0][
-        #         0] == 1
-        # assert \
-        #     daily_usage_incoming_sum_ir.where("event_partition_date = '2020-01-09'").select(
-        #         "usg_incoming_roaming_number_calls").collect()[0][
-        #         0] == 0
-        # # Test for usg_incoming_roaming_total_sms: "sum(case when service_type IN ('SMS', 'IR_SMS') THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_sum_ir.where("event_partition_date = '2020-01-04'").select(
-        #         "usg_incoming_roaming_total_sms").collect()[0][
-        #         0] == 2
-        # assert \
-        #     daily_usage_incoming_sum_ir.where("event_partition_date = '2020-01-05'").select(
-        #         "usg_incoming_roaming_total_sms").collect()[0][
-        #         0] == 4
-        # # Test for usg_incoming_roaming_last_sms_date: "max(case when service_type IN ('SMS', 'IR_SMS') THEN date(day_id) else null end)"
-        # assert \
-        #     daily_usage_incoming_sum_ir.select(
-        #         "usg_incoming_roaming_last_sms_date").where("event_partition_date = '2020-04-01'").collect()[0][
-        #         0] is None
-        # assert \
-        #     daily_usage_incoming_sum_ir.select(
-        #         "usg_incoming_roaming_last_sms_date").where("event_partition_date = '2020-03-31'").collect()[0][
-        #         0] == datetime.date(2020, 3, 31)
-        #
-        # # Test for usg_last_sms_date: "max(case when service_type IN ('SMS', 'IR_SMS') THEN date(day_id) else null end)"
-        # assert \
-        #     daily_usage_incoming_sum_ir.select(
-        #         "usg_last_sms_date").where("event_partition_date = '2020-04-01'").collect()[0][
-        #         0] is None
-        # assert \
-        #     daily_usage_incoming_sum_ir.select(
-        #         "usg_last_sms_date").where("event_partition_date = '2020-03-31'").collect()[0][
-        #         0] == datetime.date(2020, 3, 31)
-        # # Test for usg_last_action_date: "max(date(day_id))"
-        # assert \
-        #     daily_usage_incoming_sum_ir.select(
-        #         "usg_last_action_date").where("event_partition_date = '2020-04-01'").collect()[0][
-        #         0] == datetime.date(2020, 4, 1)
-        # # Test for usg_last_call_date: "max(case when service_type IN ('VOICE') THEN date(day_id) else null end)"
-        # assert \
-        #     daily_usage_incoming_sum_ir.select(
-        #         "usg_last_call_date").where("event_partition_date = '2020-04-01'").collect()[0][
-        #         0] == datetime.date(2020, 4, 1)
-        # # Test for usg_incoming_last_call_date: "max(case when service_type IN ('VOICE') THEN date(day_id) else null end)"
-        # assert \
-        #     daily_usage_incoming_sum_ir.select(
-        #         "usg_incoming_last_call_date").where("event_partition_date = '2020-04-01'").collect()[0][
-        #         0] == datetime.date(2020, 4, 1)
-        # print("*********************************L1 usage_incoming_sum_ir PASS***************************************")
-        #
-        # print("*********************************L1 usage_outgoing_sum_ir START***************************************")
+        assert \
+            daily_usage_incoming_sum_ir.where("event_partition_date = '2020-01-13'").select(
+                "usg_incoming_roaming_call_duration").collect()[0][
+                0] == 4
+        assert \
+            daily_usage_incoming_sum_ir.where("event_partition_date = '2020-01-09'").select(
+                "usg_incoming_roaming_call_duration").collect()[0][
+                0] == 0
+        # Test for usg_incoming_roaming_number_calls: "sum(case when service_type IN ('VOICE') THEN total_successful_call else 0 end)"
+        assert \
+            daily_usage_incoming_sum_ir.where("event_partition_date = '2020-01-13'").select(
+                "usg_incoming_roaming_number_calls").collect()[0][
+                0] == 1
+        assert \
+            daily_usage_incoming_sum_ir.where("event_partition_date = '2020-01-09'").select(
+                "usg_incoming_roaming_number_calls").collect()[0][
+                0] == 0
+        # Test for usg_incoming_roaming_total_sms: "sum(case when service_type IN ('SMS', 'IR_SMS') THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_sum_ir.where("event_partition_date = '2020-01-04'").select(
+                "usg_incoming_roaming_total_sms").collect()[0][
+                0] == 2
+        assert \
+            daily_usage_incoming_sum_ir.where("event_partition_date = '2020-01-05'").select(
+                "usg_incoming_roaming_total_sms").collect()[0][
+                0] == 4
+        # Test for usg_incoming_roaming_last_sms_date: "max(case when service_type IN ('SMS', 'IR_SMS') THEN date(day_id) else null end)"
+        assert \
+            daily_usage_incoming_sum_ir.select(
+                "usg_incoming_roaming_last_sms_date").where("event_partition_date = '2020-04-01'").collect()[0][
+                0] is None
+        assert \
+            daily_usage_incoming_sum_ir.select(
+                "usg_incoming_roaming_last_sms_date").where("event_partition_date = '2020-03-31'").collect()[0][
+                0] == datetime.date(2020, 3, 31)
+
+        # Test for usg_last_sms_date: "max(case when service_type IN ('SMS', 'IR_SMS') THEN date(day_id) else null end)"
+        assert \
+            daily_usage_incoming_sum_ir.select(
+                "usg_last_sms_date").where("event_partition_date = '2020-04-01'").collect()[0][
+                0] is None
+        assert \
+            daily_usage_incoming_sum_ir.select(
+                "usg_last_sms_date").where("event_partition_date = '2020-03-31'").collect()[0][
+                0] == datetime.date(2020, 3, 31)
+        # Test for usg_last_action_date: "max(date(day_id))"
+        assert \
+            daily_usage_incoming_sum_ir.select(
+                "usg_last_action_date").where("event_partition_date = '2020-04-01'").collect()[0][
+                0] == datetime.date(2020, 4, 1)
+        # Test for usg_last_call_date: "max(case when service_type IN ('VOICE') THEN date(day_id) else null end)"
+        assert \
+            daily_usage_incoming_sum_ir.select(
+                "usg_last_call_date").where("event_partition_date = '2020-04-01'").collect()[0][
+                0] == datetime.date(2020, 4, 1)
+        # Test for usg_incoming_last_call_date: "max(case when service_type IN ('VOICE') THEN date(day_id) else null end)"
+        assert \
+            daily_usage_incoming_sum_ir.select(
+                "usg_incoming_last_call_date").where("event_partition_date = '2020-04-01'").collect()[0][
+                0] == datetime.date(2020, 4, 1)
+        print("*********************************L1 usage_incoming_sum_ir PASS***************************************")
+
+        print("*********************************L1 usage_outgoing_sum_ir START***************************************")
         global daily_usage_outgoing_sum_ir
         daily_usage_outgoing_sum_ir = node_from_config(df_usg_relation_ir, var_project_context.catalog.load(
-<<<<<<< HEAD
             'params:l1_usage_outgoing_call_relation_sum_ir_daily'))
 
         # daily_usage_outgoing_sum_ir.orderBy("event_partition_date").show()
@@ -739,75 +702,6 @@ class TestUnitUsage:
                 0] == datetime.date(2020, 3, 28)
         print("*********************************L1 usage_outgoing_sum_ir PASS***************************************")
         # exit(2)
-=======
-             'params:l1_usage_outgoing_call_relation_sum_ir_daily'))
-        #
-        # #daily_usage_outgoing_sum_ir.orderBy("event_partition_date").show()
-        #
-        # # Test for usg_outgoing_roaming_call_duration: "sum(case when service_type IN ('VOICE') THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_outgoing_sum_ir.where("event_partition_date = '2020-01-01'").select(
-        #         "usg_outgoing_roaming_call_duration").collect()[0][
-        #         0] == 0
-        # assert \
-        #     daily_usage_outgoing_sum_ir.where("event_partition_date = '2020-01-03'").select(
-        #         "usg_outgoing_roaming_call_duration").collect()[0][
-        #         0] == 4
-        # # Test for usg_outgoing_roaming_number_calls: "sum(case when service_type IN ('VOICE') THEN total_successful_call else 0 end)"
-        # assert \
-        #     daily_usage_outgoing_sum_ir.where("event_partition_date = '2020-01-01'").select(
-        #         "usg_outgoing_roaming_number_calls").collect()[0][
-        #         0] == 0
-        # assert \
-        #     daily_usage_outgoing_sum_ir.where("event_partition_date = '2020-01-03'").select(
-        #         "usg_outgoing_roaming_number_calls").collect()[0][
-        #         0] == 1
-        # # Test for usg_outgoing_roaming_total_sms: "sum(case when service_type IN ('SMS', 'IR_SMS') THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_outgoing_sum_ir.where("event_partition_date = '2020-01-01'").select(
-        #         "usg_outgoing_roaming_total_sms").collect()[0][
-        #         0] == 2
-        # assert \
-        #     daily_usage_outgoing_sum_ir.where("event_partition_date = '2020-01-03'").select(
-        #         "usg_outgoing_roaming_total_sms").collect()[0][
-        #         0] == 0
-        # # Test for usg_outgoing_roaming_last_sms_date: "max(case when service_type IN ('SMS', 'IR_SMS') THEN date(day_id) else null end)"
-        # assert \
-        #     daily_usage_outgoing_sum_ir.select(
-        #         "usg_outgoing_roaming_last_sms_date").where("event_partition_date = '2020-03-28'").collect()[0][
-        #         0] is None
-        # assert \
-        #     daily_usage_outgoing_sum_ir.select(
-        #         "usg_outgoing_roaming_last_sms_date").where("event_partition_date = '2020-03-19'").collect()[0][
-        #         0] == datetime.date(2020, 3, 19)
-        #
-        # # Test for usg_last_sms_date: "max(case when service_type IN ('SMS', 'IR_SMS') THEN date(day_id) else null end)"
-        # assert \
-        #     daily_usage_outgoing_sum_ir.select(
-        #         "usg_last_sms_date").where("event_partition_date = '2020-03-28'").collect()[0][
-        #         0] is None
-        # assert \
-        #     daily_usage_outgoing_sum_ir.select(
-        #         "usg_last_sms_date").where("event_partition_date = '2020-03-19'").collect()[0][
-        #         0] == datetime.date(2020, 3, 19)
-        # # Test for usg_last_action_date: "max(date(day_id))"
-        # assert \
-        #     daily_usage_outgoing_sum_ir.select(
-        #         "usg_last_action_date").where("event_partition_date = '2020-03-28'").collect()[0][
-        #         0] == datetime.date(2020, 3, 28)
-        # # Test for usg_last_call_date: "max(case when service_type IN ('VOICE') THEN date(day_id) else null end)"
-        # assert \
-        #     daily_usage_outgoing_sum_ir.select(
-        #         "usg_last_call_date").where("event_partition_date = '2020-03-28'").collect()[0][
-        #         0] == datetime.date(2020, 3, 28)
-        # # Test for usg_outgoing_last_call_date: "max(case when service_type IN ('VOICE') THEN date(day_id) else null end)"
-        # assert \
-        #     daily_usage_outgoing_sum_ir.select(
-        #         "usg_outgoing_last_call_date").where("event_partition_date = '2020-03-28'").collect()[0][
-        #         0] == datetime.date(2020, 3, 28)
-        # print("*********************************L1 usage_outgoing_sum_ir PASS***************************************")
-        #exit(2)
->>>>>>> 05d2c3a30b02d918c3e6709440e1e59f3a166f6f
 
     def test_ru_a_vas_post_features(self, project_context):
         var_project_context = project_context['ProjectContext']
@@ -853,7 +747,6 @@ class TestUnitUsage:
 
         ########################################################################################################
         # Test for usg_outgoing_data_volume: "sum(uplink_volume_kb)"
-<<<<<<< HEAD
         assert \
             daily_usg_ru_vas_post.where("event_partition_date = '2020-01-05'").select(
                 "usg_outgoing_data_volume").collect()[0][
@@ -1226,380 +1119,6 @@ class TestUnitUsage:
                 "usg_total_data_last_action_date").collect()[0][
                 0] == datetime.date(2020, 3, 29)
         ########################################################################################################
-=======
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-05'").select(
-        #         "usg_outgoing_data_volume").collect()[0][
-        #         0] == 5
-        # ########################################################################################################
-        # # Test for usg_outgoing_data_volume_4G: "sum(case when rat_type = '4G' then uplink_volume_kb else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-05'").select(
-        #         "usg_outgoing_data_volume_4G").collect()[0][
-        #         0] == 1
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-09'").select(
-        #         "usg_outgoing_data_volume_4G").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_outgoing_data_volume_2G_3G: "sum(case when rat_type IN ('2G', '3G') then uplink_volume_kb else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-05'").select(
-        #         "usg_outgoing_data_volume_2G_3G").collect()[0][
-        #         0] == 4
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-10'").select(
-        #         "usg_outgoing_data_volume_2G_3G").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_data_volume: "sum(downlink_volume_kb)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-10'").select(
-        #         "usg_incoming_data_volume").collect()[0][
-        #         0] == 6
-        # ########################################################################################################
-        # # Test for usg_incoming_data_volume_4G: "sum(case when rat_type = '4G' then downlink_volume_kb else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-10'").select(
-        #         "usg_incoming_data_volume_4G").collect()[0][
-        #         0] == 6
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-04'").select(
-        #         "usg_incoming_data_volume_4G").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_data_volume_2G_3G: "sum(case when rat_type IN ('2G', '3G') then downlink_volume_kb else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-10'").select(
-        #         "usg_incoming_data_volume_2G_3G").collect()[0][
-        #         0] == 0
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-05'").select(
-        #         "usg_incoming_data_volume_2G_3G").collect()[0][
-        #         0] == 2
-        # ########################################################################################################
-        # # Test for usg_data_last_action_date: "max(date(day_id))"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-10'").select(
-        #         "usg_data_last_action_date").collect()[0][
-        #         0] == datetime.date(2020, 1, 10)
-        # ########################################################################################################
-        # # Test for usg_last_action_date: "max(date(day_id))"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-11'").select(
-        #         "usg_data_last_action_date").collect()[0][
-        #         0] == datetime.date(2020, 1, 11)
-        # ########################################################################################################
-        # # Test for usg_data_weekend_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Saturday', 'Sunday')
-        # #                                 THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-05'").select(
-        #         "usg_data_weekend_usage").collect()[0][
-        #         0] == 9 # Sunday
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-03'").select(
-        #         "usg_data_weekend_usage").collect()[0][
-        #         0] == 0 # Friday
-        # ########################################################################################################
-        # # Test for usg_data_weekday_usage: "sum(case when date_format(day_id, 'EEEE') NOT IN ('Saturday', 'Sunday')
-        # #                                     THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-03'").select(
-        #         "usg_data_weekday_usage").collect()[0][
-        #         0] == 10 # Friday
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-05'").select(
-        #         "usg_data_weekday_usage").collect()[0][
-        #         0] == 0 # Sunday
-        # ########################################################################################################
-        # # Test for usg_data_monday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Monday') THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-05'").select(
-        #         "usg_data_monday_usage").collect()[0][
-        #         0] == 0  # Sunday
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-06'").select(
-        #         "usg_data_monday_usage").collect()[0][
-        #         0] == 14  # Monday
-        # ########################################################################################################
-        # # Test for usg_data_monday_morning_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Monday') AND hour_id IN (7, 8, 9, 10, 11, 12)
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-06'").select(
-        #         "usg_data_monday_morning_usage").collect()[0][
-        #         0] == 8  # Monday's morning (hour_id == 9)
-        #
-        # ########################################################################################################
-        # # Test for usg_data_monday_afternoon_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Monday') AND hour_id IN (13, 14, 15, 16, 17, 18)
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-06'").select(
-        #         "usg_data_monday_afternoon_usage").collect()[0][
-        #         0] == 0  # Monday's morning (hour_id == 9)
-        # ########################################################################################################
-        # # Test for usg_data_monday_evening_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Monday') AND hour_id IN (19, 20, 21, 22, 23, 0)
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-06'").select(
-        #         "usg_data_monday_evening_usage").collect()[0][
-        #         0] == 0  # Monday's morning (hour_id == 9)
-        # ########################################################################################################
-        # # Test for usg_data_monday_night_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Monday')
-        # #                                         AND hour_id IN (1, 2, 3, 4, 5, 6)
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-06'").select(
-        #         "usg_data_monday_night_usage").collect()[0][
-        #         0] == 6  # Monday's night (hour_id == 1)
-        # ########################################################################################################
-        # # Test for usg_data_tuesday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Tuesday')
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_data_tuesday_usage").collect()[0][
-        #         0] == 8
-        # ########################################################################################################
-        # # Test for usg_data_tuesday_morning_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Tuesday')
-        # #                                         AND hour_id IN (7, 8, 9, 10, 11, 12)
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_data_tuesday_morning_usage").collect()[0][
-        #         0] == 6
-        # ########################################################################################################
-        # # Test for usg_data_tuesday_afternoon_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Tuesday')
-        # #                                         AND hour_id IN (13, 14, 15, 16, 17, 18)
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_data_tuesday_afternoon_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_data_tuesday_evening_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Tuesday')
-        # #                                         AND hour_id IN (19, 20, 21, 22, 23, 0)
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_data_tuesday_evening_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_data_tuesday_night_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Tuesday')
-        # #                                         AND hour_id IN (1, 2, 3, 4, 5, 6)
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_data_tuesday_night_usage").collect()[0][
-        #         0] == 2
-        # ########################################################################################################
-        # # Test for usg_data_wednesday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Wednesday')
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-08'").select(
-        #         "usg_data_wednesday_usage").collect()[0][
-        #         0] == 13
-        # ########################################################################################################
-        # # Test for usg_data_wednesday_morning_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Wednesday')
-        # #                                         AND hour_id IN (7, 8, 9, 10, 11, 12)
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-08'").select(
-        #         "usg_data_wednesday_morning_usage").collect()[0][
-        #         0] == 7
-        # ########################################################################################################
-        # # Test for usg_data_wednesday_afternoon_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Wednesday')
-        # #                                         AND hour_id IN (13, 14, 15, 16, 17, 18)
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-08'").select(
-        #         "usg_data_wednesday_afternoon_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_data_wednesday_evening_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Wednesday')
-        # #                                         AND hour_id IN (19, 20, 21, 22, 23, 0)
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-08'").select(
-        #         "usg_data_wednesday_evening_usage").collect()[0][
-        #         0] == 6
-        # ########################################################################################################
-        # # Test for usg_data_wednesday_night_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Wednesday')
-        # #                                         AND hour_id IN (1, 2, 3, 4, 5, 6)
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-08'").select(
-        #         "usg_data_wednesday_night_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_data_thursday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Thursday')
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-09'").select(
-        #         "usg_data_thursday_usage").collect()[0][
-        #         0] == 8
-        # ########################################################################################################
-        # # Test for usg_data_thursday_morning_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Thursday')
-        # #                                         AND hour_id IN (7, 8, 9, 10, 11, 12)
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-09'").select(
-        #         "usg_data_thursday_morning_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_data_thursday_afternoon_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Thursday')
-        # #                                         AND hour_id IN (13, 14, 15, 16, 17, 18)
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-09'").select(
-        #         "usg_data_thursday_afternoon_usage").collect()[0][
-        #         0] == 3
-        # ########################################################################################################
-        # # Test for usg_data_thursday_evening_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Thursday')
-        # #                                         AND hour_id IN (19, 20, 21, 22, 23, 0)
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-09'").select(
-        #         "usg_data_thursday_evening_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_data_thursday_night_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Thursday')
-        # #                                         AND hour_id IN (1, 2, 3, 4, 5, 6)
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-09'").select(
-        #         "usg_data_thursday_night_usage").collect()[0][
-        #         0] == 5
-        # ########################################################################################################
-        # # Test for usg_data_friday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Friday')
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-10'").select(
-        #         "usg_data_friday_usage").collect()[0][
-        #         0] == 11
-        # ########################################################################################################
-        # # Test for usg_data_friday_morning_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Friday')
-        # #                                         AND hour_id IN (7, 8, 9, 10, 11, 12)
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-10'").select(
-        #         "usg_data_friday_morning_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_data_friday_afternoon_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Friday')
-        # #                                         AND hour_id IN (13, 14, 15, 16, 17, 18)
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-10'").select(
-        #         "usg_data_friday_afternoon_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_data_friday_evening_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Friday')
-        # #                                         AND hour_id IN (19, 20, 21, 22, 23, 0)
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-10'").select(
-        #         "usg_data_friday_evening_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_data_friday_night_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Friday')
-        # #                                         AND hour_id IN (1, 2, 3, 4, 5, 6)
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-01-10'").select(
-        #         "usg_data_friday_night_usage").collect()[0][
-        #         0] == 11
-        # ########################################################################################################
-        # # Test for usg_data_saturday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Saturday')
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-03-28'").select(
-        #         "usg_data_saturday_usage").collect()[0][
-        #         0] == 13
-        # ########################################################################################################
-        # # Test for usg_data_saturday_morning_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Saturday')
-        # #                                         AND hour_id IN (7, 8, 9, 10, 11, 12)
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-03-28'").select(
-        #         "usg_data_saturday_morning_usage").collect()[0][
-        #         0] == 13
-        # ########################################################################################################
-        # # Test for usg_data_saturday_afternoon_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Saturday')
-        # #                                         AND hour_id IN (13, 14, 15, 16, 17, 18)
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-03-28'").select(
-        #         "usg_data_saturday_afternoon_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_data_saturday_evening_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Saturday')
-        # #                                         AND hour_id IN (19, 20, 21, 22, 23, 0)
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-03-28'").select(
-        #         "usg_data_saturday_evening_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_data_saturday_night_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Saturday')
-        # #                                         AND hour_id IN (1, 2, 3, 4, 5, 6)
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-03-28'").select(
-        #         "usg_data_saturday_night_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_data_sunday_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Sunday')
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-03-29'").select(
-        #         "usg_data_sunday_usage").collect()[0][
-        #         0] == 12
-        # ########################################################################################################
-        # # Test for usg_data_sunday_morning_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Sunday')
-        # #                                         AND hour_id IN (7, 8, 9, 10, 11, 12)
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-03-29'").select(
-        #         "usg_data_sunday_morning_usage").collect()[0][
-        #         0] == 5
-        # ########################################################################################################
-        # # Test for usg_data_sunday_afternoon_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Sunday')
-        # #                                         AND hour_id IN (13, 14, 15, 16, 17, 18)
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-03-29'").select(
-        #         "usg_data_sunday_afternoon_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_data_sunday_evening_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Sunday')
-        # #                                         AND hour_id IN (19, 20, 21, 22, 23, 0)
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-03-29'").select(
-        #         "usg_data_sunday_evening_usage").collect()[0][
-        #         0] == 7
-        # ########################################################################################################
-        # # Test for usg_data_sunday_night_usage: "sum(case when date_format(day_id, 'EEEE') IN ('Sunday')
-        # #                                         AND hour_id IN (1, 2, 3, 4, 5, 6)
-        # #                                         THEN (uplink_volume_kb + downlink_volume_kb) else 0 end)"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-03-29'").select(
-        #         "usg_data_sunday_night_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_total_data_volume: "sum(uplink_volume_kb + downlink_volume_kb)"
-        #
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-03-29'").select(
-        #         "usg_total_data_volume").collect()[0][
-        #         0] == 12
-        # ########################################################################################################
-        # # Test for usg_total_data_last_action_date: "max(date(day_id))"
-        # assert \
-        #     daily_usg_ru_vas_post.where("event_partition_date = '2020-03-29'").select(
-        #         "usg_total_data_last_action_date").collect()[0][
-        #         0] == datetime.date(2020, 3, 29)
-        # ########################################################################################################
->>>>>>> 05d2c3a30b02d918c3e6709440e1e59f3a166f6f
         print("********************************L1 usg_ru_vas_post PASS****************************************")
         # exit(2)
 
@@ -1646,7 +1165,6 @@ class TestUnitUsage:
         print("***********************L1 usage_ru_a_gprs_cbs_usage_daily START************************************")
         ########################################################################################################
         # Test for usg_outgoing_data_volume: "sum(data_upload_amt)"
-<<<<<<< HEAD
         assert \
             daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-05'").select(
                 "usg_outgoing_data_volume").collect()[0][
@@ -2142,513 +1660,12 @@ class TestUnitUsage:
         ########################################################################################################
         print("***********************L1 usage_ru_a_gprs_cbs_usage_daily PASS************************************")
         # exit(2)
-=======
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-05'").select(
-        #         "usg_outgoing_data_volume").collect()[0][
-        #         0] == 3
-        # ########################################################################################################
-        # # Test for usg_outgoing_data_volume_4G: "sum(case when rat_type = '4G' then data_upload_amt else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-05'").select(
-        #         "usg_outgoing_data_volume_4G").collect()[0][
-        #         0] == 0 # today used 3G
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-03'").select(
-        #         "usg_outgoing_data_volume_4G").collect()[0][
-        #         0] == 3
-        # ########################################################################################################
-        # # Test for usg_outgoing_data_volume_2G_3G: "sum(case when rat_type IN ('2G', '3G') then data_upload_amt else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-04'").select(
-        #         "usg_outgoing_data_volume_2G_3G").collect()[0][
-        #         0] == 10
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_data_volume_2G_3G").collect()[0][
-        #         0] == 2
-        # ########################################################################################################
-        # # Test for usg_outgoing_roaming_data_volume: "sum(case when cdr_subtype_cd = 'ROAMING' then data_upload_amt else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-04'").select(
-        #         "usg_outgoing_roaming_data_volume").collect()[0][
-        #         0] == 5
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-08'").select(
-        #         "usg_outgoing_roaming_data_volume").collect()[0][
-        #         0] == 0
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-01'").select(
-        #         "usg_outgoing_roaming_data_volume").collect()[0][
-        #         0] == 4
-        # ########################################################################################################
-        # # Test for usg_outgoing_roaming_data_volume_4G: "sum(case when cdr_subtype_cd = 'ROAMING' AND rat_type = '4G'
-        # #                                                 then data_upload_amt else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-04'").select(
-        #         "usg_outgoing_roaming_data_volume_4G").collect()[0][
-        #         0] == 0
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-02'").select(
-        #         "usg_outgoing_roaming_data_volume_4G").collect()[0][
-        #         0] == 5
-        # ########################################################################################################
-        # # Test for usg_outgoing_roaming_data_volume_2G_3G: "sum(case when cdr_subtype_cd = 'ROAMING' AND rat_type IN ('2G', '3G')
-        # #                                                 then data_upload_amt else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-02'").select(
-        #         "usg_outgoing_roaming_data_volume_2G_3G").collect()[0][
-        #         0] == 0
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_roaming_data_volume_2G_3G").collect()[0][
-        #         0] == 2
-        # ########################################################################################################
-        # # Test for usg_outgoing_local_data_volume: "sum(case when cdr_subtype_cd = 'DOMESTIC' then data_upload_amt else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-08'").select(
-        #         "usg_outgoing_local_data_volume").collect()[0][
-        #         0] == 5
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-03'").select(
-        #         "usg_outgoing_local_data_volume").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_outgoing_local_data_volume_4G: "sum(case when cdr_subtype_cd = 'DOMESTIC' AND rat_type = '4G'
-        # #                                                 then data_upload_amt else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-08'").select(
-        #         "usg_outgoing_local_data_volume_4G").collect()[0][
-        #         0] == 4
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-01'").select(
-        #         "usg_outgoing_local_data_volume_4G").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_outgoing_local_data_volume_2G_3G: "sum(case when cdr_subtype_cd = 'DOMESTIC' AND rat_type IN ('2G', '3G')
-        # #                                                 then data_upload_amt else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-01'").select(
-        #         "usg_outgoing_local_data_volume_2G_3G").collect()[0][
-        #         0] == 2
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-06'").select(
-        #         "usg_outgoing_local_data_volume_2G_3G").collect()[0][
-        #         0] == 7
-        # ########################################################################################################
-        # # Test for usg_incoming_data_volume: "sum(data_download_amt)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-06'").select(
-        #         "usg_incoming_data_volume").collect()[0][
-        #         0] == 7
-        # ########################################################################################################
-        # # Test for usg_incoming_data_volume_4G: "sum(case when rat_type = '4G' then data_download_amt else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-03'").select(
-        #         "usg_incoming_data_volume_4G").collect()[0][
-        #         0] == 5
-        # ########################################################################################################
-        # # Test for usg_incoming_data_volume_2G_3G: "sum(case when rat_type IN ('2G', '3G') then data_download_amt else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-03'").select(
-        #         "usg_incoming_data_volume_2G_3G").collect()[0][
-        #         0] == 1
-        # ########################################################################################################
-        # # Test for usg_incoming_roaming_data_volume: "sum(case when cdr_subtype_cd = 'ROAMING' then data_download_amt else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-03'").select(
-        #         "usg_incoming_roaming_data_volume").collect()[0][
-        #         0] == 6
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-04'").select(
-        #         "usg_incoming_roaming_data_volume").collect()[0][
-        #         0] == 2
-        # ########################################################################################################
-        # # Test for usg_incoming_roaming_data_volume_4G: "sum(case when rat_type = '4G' and cdr_subtype_cd = 'ROAMING'
-        # #                                               then data_download_amt else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-03'").select(
-        #         "usg_incoming_roaming_data_volume_4G").collect()[0][
-        #         0] == 5
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_incoming_roaming_data_volume_4G").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_roaming_data_volume_2G_3G: "sum(case when rat_type IN ('2G', '3G') and cdr_subtype_cd = 'ROAMING'
-        # #                                               then data_download_amt else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-04'").select(
-        #         "usg_incoming_roaming_data_volume_2G_3G").collect()[0][
-        #         0] == 2
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-03'").select(
-        #         "usg_incoming_roaming_data_volume_2G_3G").collect()[0][
-        #         0] == 1
-        # ########################################################################################################
-        # # Test for usg_incoming_local_data_volume: "sum(case when cdr_subtype_cd = 'DOMESTIC' then data_download_amt else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-05'").select(
-        #         "usg_incoming_local_data_volume").collect()[0][
-        #         0] == 3
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-06'").select(
-        #         "usg_incoming_local_data_volume").collect()[0][
-        #         0] == 7
-        # ########################################################################################################
-        # # Test for usg_incoming_local_data_volume_4G: "sum(case when rat_type = '4G' and cdr_subtype_cd = 'DOMESTIC'
-        # #                                               then data_download_amt else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-06'").select(
-        #         "usg_incoming_local_data_volume_4G").collect()[0][
-        #         0] == 0
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-08'").select(
-        #         "usg_incoming_local_data_volume_4G").collect()[0][
-        #         0] == 1
-        # ########################################################################################################
-        # # Test for usg_incoming_local_data_volume_2G_3G: "sum(case when rat_type IN ('2G', '3G') and cdr_subtype_cd = 'DOMESTIC'
-        # #                                               then data_download_amt else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-06'").select(
-        #         "usg_incoming_local_data_volume_2G_3G").collect()[0][
-        #         0] == 7
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-08'").select(
-        #         "usg_incoming_local_data_volume_2G_3G").collect()[0][
-        #         0] == 5
-        # ########################################################################################################
-        # # Test for usg_data_last_action_date: "max(date(call_start_dt))"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-08'").select(
-        #         "usg_data_last_action_date").collect()[0][
-        #         0] == datetime.date(2020, 1, 8)
-        # ########################################################################################################
-        # # Test for usg_last_action_date: "max(date(call_start_dt))"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-08'").select(
-        #         "usg_last_action_date").collect()[0][
-        #         0] == datetime.date(2020, 1, 8)
-        # ########################################################################################################
-        # # Test for usg_data_weekend_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Saturday', 'Sunday')
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-08'").select(
-        #         "usg_last_action_date").collect()[0][
-        #         0] == datetime.date(2020, 1, 8)
-        # ########################################################################################################
-        # # Test for usg_data_weekday_usage: "sum(case when date_format(call_start_dt, 'EEEE') NOT IN ('Saturday', 'Sunday')
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-03'").select(
-        #         "usg_data_weekday_usage").collect()[0][
-        #         0] == 13
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-04'").select(
-        #         "usg_data_weekday_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_data_monday_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Monday')
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-06'").select(
-        #         "usg_data_monday_usage").collect()[0][
-        #         0] == 14  # Monday
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-04'").select(
-        #         "usg_data_monday_usage").collect()[0][
-        #         0] == 0  # Sunday
-        # ########################################################################################################
-        # # Test for usg_data_monday_morning_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Monday')
-        # #                                         AND call_start_hr IN (7, 8, 9, 10, 11, 12)
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-06'").select(
-        #         "usg_data_monday_morning_usage").collect()[0][
-        #         0] == 7
-        # ########################################################################################################
-        # # Test for usg_data_monday_afternoon_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Monday')
-        # #                                         AND call_start_hr IN (13, 14, 15, 16, 17, 18)
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-06'").select(
-        #         "usg_data_monday_afternoon_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_data_monday_evening_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Monday')
-        # #                                         AND call_start_hr IN (19, 20, 21, 22, 23, 0)
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-06'").select(
-        #         "usg_data_monday_evening_usage").collect()[0][
-        #         0] == 7
-        # ########################################################################################################
-        # # Test for usg_data_monday_night_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Monday')
-        # #                                         AND call_start_hr IN (1, 2, 3, 4, 5, 6)
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-06'").select(
-        #         "usg_data_monday_night_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_data_tuesday_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Tuesday')
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_data_tuesday_usage").collect()[0][
-        #         0] == 9
-        # ########################################################################################################
-        # # Test for usg_data_tuesday_morning_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Tuesday')
-        # #                                         AND call_start_hr IN (7, 8, 9, 10, 11, 12)
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_data_tuesday_morning_usage").collect()[0][
-        #         0] == 4
-        # ########################################################################################################
-        # # Test for usg_data_tuesday_afternoon_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Tuesday')
-        # #                                         AND call_start_hr IN (13, 14, 15, 16, 17, 18)
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_data_tuesday_afternoon_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_data_tuesday_evening_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Tuesday')
-        # #                                         AND call_start_hr IN (19, 20, 21, 22, 23, 0)
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_data_tuesday_evening_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_data_tuesday_night_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Tuesday')
-        # #                                         AND call_start_hr IN (1, 2, 3, 4, 5, 6)
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_data_tuesday_night_usage").collect()[0][
-        #         0] == 5
-        # ########################################################################################################
-        # # Test for usg_data_wednesday_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Wednesday')
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-08'").select(
-        #         "usg_data_wednesday_usage").collect()[0][
-        #         0] == 11
-        # ########################################################################################################
-        # # Test for usg_data_wednesday_morning_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Wednesday')
-        # #                                             AND call_start_hr IN (7, 8, 9, 10, 11, 12)
-        # #                                             THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-08'").select(
-        #         "usg_data_wednesday_morning_usage").collect()[0][
-        #         0] == 6
-        # ########################################################################################################
-        # # Test for usg_data_wednesday_afternoon_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Wednesday')
-        # #                                         AND call_start_hr IN (13, 14, 15, 16, 17, 18)
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-08'").select(
-        #         "usg_data_wednesday_afternoon_usage").collect()[0][
-        #         0] == 5
-        # ########################################################################################################
-        # # Test for usg_data_wednesday_evening_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Wednesday')
-        # #                                         AND call_start_hr IN (19, 20, 21, 22, 23, 0)
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-08'").select(
-        #         "usg_data_wednesday_evening_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_data_wednesday_night_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Wednesday')
-        # #                                         AND call_start_hr IN (1, 2, 3, 4, 5, 6)
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-08'").select(
-        #         "usg_data_wednesday_night_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_data_thursday_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Thursday')
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-09'").select(
-        #         "usg_data_thursday_usage").collect()[0][
-        #         0] == 12
-        # ########################################################################################################
-        # # Test for usg_data_thursday_morning_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Thursday')
-        # #                                       AND call_start_hr IN (7, 8, 9, 10, 11, 12)
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-09'").select(
-        #         "usg_data_thursday_morning_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_data_thursday_afternoon_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Thursday')
-        # #                                         AND call_start_hr IN (13, 14, 15, 16, 17, 18)
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-09'").select(
-        #         "usg_data_thursday_afternoon_usage").collect()[0][
-        #         0] == 8
-        # ########################################################################################################
-        # # Test for usg_data_thursday_evening_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Thursday')
-        # #                                         AND call_start_hr IN (19, 20, 21, 22, 23, 0)
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-09'").select(
-        #         "usg_data_thursday_evening_usage").collect()[0][
-        #         0] == 4
-        # ########################################################################################################
-        # # Test for usg_data_thursday_night_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Thursday')
-        # #                                         AND call_start_hr IN (1, 2, 3, 4, 5, 6)
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-09'").select(
-        #         "usg_data_thursday_night_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_data_friday_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Friday')
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-10'").select(
-        #         "usg_data_friday_usage").collect()[0][
-        #         0] == 9
-        # ########################################################################################################
-        # # Test for usg_data_friday_morning_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Friday')
-        # #                                         AND call_start_hr IN (7, 8, 9, 10, 11, 12)
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-10'").select(
-        #         "usg_data_friday_morning_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_data_friday_afternoon_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Friday')
-        # #                                         AND call_start_hr IN (13, 14, 15, 16, 17, 18)
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-10'").select(
-        #         "usg_data_friday_afternoon_usage").collect()[0][
-        #         0] == 6
-        # ########################################################################################################
-        # # Test for usg_data_friday_evening_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Friday')
-        # #                                         AND call_start_hr IN (19, 20, 21, 22, 23, 0)
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-10'").select(
-        #         "usg_data_friday_evening_usage").collect()[0][
-        #         0] == 3
-        # ########################################################################################################
-        # # Test for usg_data_friday_night_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Friday')
-        # #                                         AND call_start_hr IN (1, 2, 3, 4, 5, 6)
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-10'").select(
-        #         "usg_data_friday_night_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_data_saturday_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Saturday')
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-04'").select(
-        #         "usg_data_saturday_usage").collect()[0][
-        #         0] == 14
-        # ########################################################################################################
-        # # Test for usg_data_saturday_morning_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Saturday')
-        # #                                         AND call_start_hr IN (7, 8, 9, 10, 11, 12)
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-04'").select(
-        #         "usg_data_saturday_morning_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_data_saturday_afternoon_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Saturday')
-        # #                                         AND call_start_hr IN (13, 14, 15, 16, 17, 18)
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-04'").select(
-        #         "usg_data_saturday_afternoon_usage").collect()[0][
-        #         0] == 7
-        # ########################################################################################################
-        # # Test for usg_data_saturday_evening_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Saturday')
-        # #                                         AND call_start_hr IN (19, 20, 21, 22, 23, 0)
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-04'").select(
-        #         "usg_data_saturday_evening_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_data_saturday_night_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Saturday')
-        # #                                         AND call_start_hr IN (1, 2, 3, 4, 5, 6)
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-04'").select(
-        #         "usg_data_saturday_night_usage").collect()[0][
-        #         0] == 7
-        # ########################################################################################################
-        # # Test for usg_data_sunday_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Sunday')
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-05'").select(
-        #         "usg_data_sunday_usage").collect()[0][
-        #         0] == 8
-        # ########################################################################################################
-        # # Test for usg_data_sunday_morning_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Sunday')
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-05'").select(
-        #         "usg_data_sunday_morning_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_data_sunday_afternoon_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Sunday')
-        # #                                         AND call_start_hr IN (13, 14, 15, 16, 17, 18)
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-05'").select(
-        #         "usg_data_sunday_afternoon_usage").collect()[0][
-        #         0] == 8
-        # ########################################################################################################
-        # # Test for usg_data_sunday_evening_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Sunday')
-        # #                                         AND call_start_hr IN (19, 20, 21, 22, 23, 0)
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-05'").select(
-        #         "usg_data_sunday_evening_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_data_sunday_night_usage: "sum(case when date_format(call_start_dt, 'EEEE') IN ('Sunday')
-        # #                                         AND call_start_hr IN (1, 2, 3, 4, 5, 6)
-        # #                                         THEN (data_upload_amt + data_download_amt) else 0 end)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-05'").select(
-        #         "usg_data_sunday_night_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_total_data_volume: "sum(data_upload_amt + data_download_amt)"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-05'").select(
-        #         "usg_total_data_volume").collect()[0][
-        #         0] == 8
-        # ########################################################################################################
-        # # Test for usg_total_data_last_action_date: "max(date(call_start_dt))"
-        # assert \
-        #     daily_usage_ru_a_gprs_cbs_usage.where("event_partition_date = '2020-01-05'").select(
-        #         "usg_total_data_last_action_date").collect()[0][
-        #         0] == datetime.date(2020, 1, 5)
-        # ########################################################################################################
-        # print("***********************L1 usage_ru_a_gprs_cbs_usage_daily PASS************************************")
-        #exit(2)
->>>>>>> 05d2c3a30b02d918c3e6709440e1e59f3a166f6f
 
     def test_usage_incoming_call_relation_sum_feature(self, project_context):
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
-<<<<<<< HEAD
         print(
             "***********************L0 usage_incoming_call_relation_sum_daily generation*******************************")
-=======
-        print("***********************L0 usage_incoming_call_relation_sum_daily generation*******************************")
->>>>>>> 05d2c3a30b02d918c3e6709440e1e59f3a166f6f
         # Below section is to create dummy data.
         min_dt = '2020-01-01'
         max_dt = '2020-04-01'
@@ -2698,620 +1715,620 @@ class TestUnitUsage:
         # NOTE: incoming uses call_type IN 'MT'
         ########################################################################################################
         # Test for usg_incoming_total_call_duration: "sum(case when service_type IN ('VOICE') THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-05'").select(
-        #         "usg_incoming_total_call_duration").collect()[0][
-        #         0] == 88
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-06'").select(
-        #         "usg_incoming_total_call_duration").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_local_call_duration: "sum(case when service_type IN ('VOICE')
-        # #                                            AND idd_flag = 'N' THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-08'").select(
-        #         "usg_incoming_local_call_duration").collect()[0][
-        #         0] == 314
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-05'").select(
-        #         "usg_incoming_local_call_duration").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_number_calls: "sum(case when service_type IN ('VOICE')
-        # #                                      THEN total_successful_call else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-05'").select(
-        #         "usg_incoming_number_calls").collect()[0][
-        #         0] == 0
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_incoming_number_calls").collect()[0][
-        #         0] == 1
-        # ########################################################################################################
-        # # Test for usg_incoming_local_number_calls: "sum(case when service_type IN ('VOICE')
-        # #                                         AND idd_flag = 'N' THEN total_successful_call else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-08'").select(
-        #         "usg_incoming_local_number_calls").collect()[0][
-        #         0] == 0
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_incoming_local_number_calls").collect()[0][
-        #         0] == 1
-        # ########################################################################################################
-        # # Test for usg_incoming_ais_local_calls_duration: "sum(case when service_type IN ('VOICE')
-        # #                                                 AND caller_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')
-        # #                                                 THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-05'").select(
-        #         "usg_incoming_ais_local_calls_duration").collect()[0][
-        #         0] == 88
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-03-23'").select(
-        #         "usg_incoming_ais_local_calls_duration").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_ais_local_number_calls: "sum(case when service_type IN ('VOICE')
-        # #                                                 AND caller_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')
-        # #                                                 THEN total_successful_call else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_incoming_ais_local_number_calls").collect()[0][
-        #         0] == 1
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-03-23'").select(
-        #         "usg_incoming_ais_local_number_calls").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_outgoing_offnet_local_calls_duration: "sum(case when service_type IN ('VOICE')
-        # #                                                 AND caller_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')
-        # #                                                 THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-05'").select(
-        #         "usg_outgoing_offnet_local_calls_duration").collect()[0][
-        #         0] == 0
-        # ##################################################################
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-01'").select(
-        #         "usg_outgoing_offnet_local_calls_duration").collect()[0][
-        #         0] == 506
-        # ########################################################################################################
-        # # Test for usg_incoming_offnet_local_number_calls: "sum(case when service_type IN ('VOICE')
-        # #                                                 AND caller_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')
-        # #                                                 THEN total_successful_call else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_incoming_offnet_local_number_calls").collect()[0][
-        #         0] == 0
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-03-23'").select(
-        #         "usg_incoming_offnet_local_number_calls").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_total_sms: "sum(case when service_type IN ('SMS') THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-03'").select(
-        #         "usg_incoming_total_sms").collect()[0][
-        #         0] == 645
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-01'").select(
-        #         "usg_incoming_total_sms").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_local_sms: "sum(case when service_type IN ('SMS')
-        # #                                  AND idd_flag = 'N' THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-03'").select(
-        #         "usg_incoming_local_sms").collect()[0][
-        #         0] == 645
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-08'").select(
-        #         "usg_incoming_local_sms").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_local_ais_sms: "sum(case when service_type IN ('SMS')
-        # #                                      AND caller_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')
-        # #                                      AND idd_flag = 'N' THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-03'").select(
-        #         "usg_incoming_local_ais_sms").collect()[0][
-        #         0] == 645
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-03-23'").select(
-        #         "usg_incoming_local_ais_sms").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_number_calls_upto_5_mins: "sum(case when service_type IN ('VOICE')
-        # #                                                 AND total_durations <= 300 THEN total_successful_call else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-23'").select(
-        #         "usg_incoming_number_calls_upto_5_mins").collect()[0][
-        #         0] == 2
-        # ########################################################################################################
-        # # Test for usg_incoming_number_calls_upto_10_mins: "sum(case when service_type IN ('VOICE')
-        # #                                                 AND total_durations <= 600 THEN total_successful_call else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-23'").select(
-        #         "usg_incoming_number_calls_upto_10_mins").collect()[0][
-        #         0] == 2
-        # ########################################################################################################
-        # # Test for usg_incoming_number_calls_upto_15_mins: "sum(case when service_type IN ('VOICE')
-        # #                                                 AND total_durations <= 900 THEN total_successful_call else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-23'").select(
-        #         "usg_incoming_number_calls_upto_15_mins").collect()[0][
-        #         0] == 2  # total_duration = 252
-        # ########################################################################################################
-        # # Test for usg_incoming_number_calls_upto_20_mins: "sum(case when service_type IN ('VOICE')
-        # #                                                 AND total_durations <= 1200 THEN total_successful_call else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-23'").select(
-        #         "usg_incoming_number_calls_upto_20_mins").collect()[0][
-        #         0] == 2  # total_duration = 252
-        # ########################################################################################################
-        # # Test for usg_incoming_number_calls_upto_30_mins: "sum(case when service_type IN ('VOICE')
-        # #                                                  AND total_durations <= 1800 THEN total_successful_call else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-23'").select(
-        #         "usg_incoming_number_calls_upto_30_mins").collect()[0][
-        #         0] == 2  # total_duration = 252
-        # ########################################################################################################
-        # # Test for usg_incoming_number_calls_over_30_mins: "sum(case when service_type IN ('VOICE')
-        # #                                                  AND total_durations > 1800 THEN total_successful_call else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-03-28'").select(
-        #         "usg_incoming_number_calls_over_30_mins").collect()[0][
-        #         0] == 0  # total_duration = 252
-        # ########################################################################################################
-        # # Test for usg_incoming_last_call_date: "max(case when service_type IN ('VOICE') THEN date(day_id) else null end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-05'").select(
-        #         "usg_incoming_last_call_date").collect()[0][
-        #         0] == datetime.date(2020, 1, 5)
-        # ########################################################################################################
-        # # Test for usg_last_call_date: "max(case when service_type IN ('VOICE') THEN date(day_id) else null end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-05'").select(
-        #         "usg_last_call_date").collect()[0][
-        #         0] == datetime.date(2020, 1, 5)
-        # ########################################################################################################
-        # # Test for usg_last_action_date: "max(date(day_id))"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-04-01'").select(
-        #         "usg_last_action_date").collect()[0][
-        #         0] == datetime.date(2020, 4, 1)
-        # ########################################################################################################
-        # # Test for usg_incoming_last_sms_date: "max(case when service_type IN ('SMS') THEN date(day_id) else null end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-04'").select(
-        #         "usg_incoming_last_sms_date").collect()[0][
-        #         0] == datetime.date(2020, 1, 4)
-        # ########################################################################################################
-        # # Test for usg_last_sms_date: "max(case when service_type IN ('SMS') THEN date(day_id) else null end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-04'").select(
-        #         "usg_last_sms_date").collect()[0][
-        #         0] == datetime.date(2020, 1, 4)
-        # ########################################################################################################
-        # # Test for usg_incoming_night_time_call: "sum(case when service_type IN ('VOICE')
-        # #                                        AND hour_id IN (1, 2, 3, 4, 5, 6) THEN total_successful_call else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-15'").select(
-        #         "usg_incoming_night_time_call").collect()[0][
-        #         0] == 4
-        # ########################################################################################################
-        # # Test for usg_incoming_morning_time_call: "sum(case when service_type IN ('VOICE')
-        # #                                        AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_successful_call else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-03-23'").select(
-        #         "usg_incoming_morning_time_call").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_afternoon_time_call: "sum(case when service_type IN ('VOICE')
-        # #                                        AND hour_id IN (13, 14, 15, 16, 17, 18) THEN total_successful_call else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-04-01'").select(
-        #         "usg_incoming_afternoon_time_call").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_evening_time_call: "sum(case when service_type IN ('VOICE')
-        # #                                        AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_successful_call else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-25'").select(
-        #         "usg_incoming_evening_time_call").collect()[0][
-        #         0] == 5
-        # ########################################################################################################
-        # # Test for usg_incoming_weekday_number_calls: "sum(case when service_type IN ('VOICE')
-        # #                                         AND date_format(day_id, 'EEEE') NOT IN ('Saturday', 'Sunday')
-        # #                                         THEN total_successful_call else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-15'").select(
-        #         "usg_incoming_weekday_number_calls").collect()[0][
-        #         0] == 4
-        # ########################################################################################################
-        # # Test for usg_incoming_weekend_number_calls: "sum(case when service_type IN ('VOICE')
-        # #                                             AND date_format(day_id, 'EEEE') IN ('Saturday', 'Sunday')
-        # #                                             THEN total_successful_call else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-25'").select(
-        #         "usg_incoming_weekend_number_calls").collect()[0][
-        #         0] == 5
-        # ########################################################################################################
-        # # Test for usg_incoming_weekday_calls_duration: "sum(case when service_type IN ('VOICE')
-        # #                                         AND date_format(day_id, 'EEEE') NOT IN ('Saturday', 'Sunday')
-        # #                                         THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-15'").select(
-        #         "usg_incoming_weekday_calls_duration").collect()[0][
-        #         0] == 449
-        # ########################################################################################################
-        # # Test for usg_incoming_weekend_calls_duration: "sum(case when service_type IN ('VOICE')
-        # #                                             AND date_format(day_id, 'EEEE') IN ('Saturday', 'Sunday')
-        # #                                             THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-25'").select(
-        #         "usg_incoming_weekend_calls_duration").collect()[0][
-        #         0] == 390
-        # ########################################################################################################
-        # # Test for usg_incoming_night_time_number_sms: "sum(case when service_type IN ('SMS')
-        # #                                             AND hour_id IN (1, 2, 3, 4, 5, 6) THEN total_successful_call else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-06'").select(
-        #         "usg_incoming_night_time_number_sms").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_morning_time_number_sms: "sum(case when service_type IN ('SMS')
-        # #                                          AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_successful_call else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-03-31'").select(
-        #         "usg_incoming_morning_time_number_sms").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_afternoon_number_sms: "sum(case when service_type IN ('SMS')
-        # #                                          AND hour_id IN (13, 14, 15, 16, 17, 18) THEN total_successful_call else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-08'").select(
-        #         "usg_incoming_afternoon_number_sms").collect()[0][
-        #         0] == 2
-        # ########################################################################################################
-        # # Test for usg_incoming_evening_number_sms: "sum(case when service_type IN ('SMS')
-        # #                                         AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_successful_call else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-06'").select(
-        #         "usg_incoming_evening_number_sms").collect()[0][
-        #         0] == 3
-        # ########################################################################################################
-        # # Test for usg_incoming_weekday_number_sms: "sum(case when service_type IN ('SMS')
-        # #                                         AND date_format(day_id, 'EEEE') NOT IN ('Saturday', 'Sunday') THEN total_successful_call else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-06'").select(
-        #         "usg_incoming_weekday_number_sms").collect()[0][
-        #         0] == 3
-        # ########################################################################################################
-        # # Test for usg_incoming_weekend_number_sms: "sum(case when service_type IN ('SMS')
-        # #                                         AND date_format(day_id, 'EEEE') IN ('Saturday', 'Sunday') THEN total_successful_call else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-04'").select(
-        #         "usg_incoming_weekend_number_sms").collect()[0][
-        #         0] == 5
-        # ########################################################################################################
-        # # Test for usg_incoming_monday_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Monday') THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-20'").select(
-        #         "usg_incoming_monday_voice_usage").collect()[0][
-        #         0] == 792
-        # ########################################################################################################
-        # # Test for usg_incoming_monday_morning_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Monday')
-        # #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-20'").select(
-        #         "usg_incoming_monday_morning_voice_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_monday_afternoon_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Monday')
-        # #                                           AND hour_id IN (13, 14, 15, 16, 17, 18) THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-20'").select(
-        #         "usg_incoming_monday_afternoon_voice_usage").collect()[0][
-        #         0] == 792
-        # ########################################################################################################
-        # # Test for usg_incoming_monday_evening_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Monday')
-        # #                                           AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-20'").select(
-        #         "usg_incoming_monday_evening_voice_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_monday_night_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Monday')
-        # #                                           AND hour_id IN (1, 2, 3, 4, 5, 6) THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-20'").select(
-        #         "usg_incoming_monday_night_voice_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_tuesday_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Tuesday') THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_incoming_tuesday_voice_usage").collect()[0][
-        #         0] == 729
-        # ########################################################################################################
-        # # Test for usg_incoming_tuesday_morning_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Tuesday')
-        # #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_incoming_tuesday_morning_voice_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_tuesday_afternoon_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Tuesday')
-        # #                                           AND hour_id IN (13, 14, 15, 16, 17, 18) THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_incoming_tuesday_afternoon_voice_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_tuesday_evening_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Tuesday')
-        # #                                           AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_incoming_tuesday_evening_voice_usage").collect()[0][
-        #         0] == 729
-        # ########################################################################################################
-        # # Test for usg_incoming_tuesday_night_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Tuesday')
-        # #                                           AND hour_id IN (1, 2, 3, 4, 5, 6) THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_incoming_tuesday_night_voice_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_wednesday_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Wednesday') THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-15'").select(
-        #         "usg_incoming_wednesday_voice_usage").collect()[0][
-        #         0] == 449
-        # ########################################################################################################
-        # # Test for usg_incoming_wednesday_morning_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Wednesday')
-        # #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-15'").select(
-        #         "usg_incoming_wednesday_morning_voice_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_wednesday_afternoon_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Wednesday')
-        # #                                           AND hour_id IN (13, 14, 15, 16, 17, 18) THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-15'").select(
-        #         "usg_incoming_wednesday_afternoon_voice_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_wednesday_evening_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Wednesday')
-        # #                                           AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-15'").select(
-        #         "usg_incoming_wednesday_evening_voice_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_wednesday_night_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Wednesday')
-        # #                                           AND hour_id IN (1, 2, 3, 4, 5, 6) THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-15'").select(
-        #         "usg_incoming_wednesday_night_voice_usage").collect()[0][
-        #         0] == 449
-        # ########################################################################################################
-        # # Test for usg_incoming_thursday_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Thursday') THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-23'").select(
-        #         "usg_incoming_thursday_voice_usage").collect()[0][
-        #         0] == 255
-        # ########################################################################################################
-        # # Test for usg_incoming_thursday_morning_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Thursday')
-        # #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-23'").select(
-        #         "usg_incoming_thursday_morning_voice_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_thursday_afternoon_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Thursday')
-        # #                                           AND hour_id IN (13, 14, 15, 16, 17, 18) THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-23'").select(
-        #         "usg_incoming_thursday_afternoon_voice_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_thursday_evening_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Thursday')
-        # #                                           AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-23'").select(
-        #         "usg_incoming_thursday_evening_voice_usage").collect()[0][
-        #         0] == 255
-        # ########################################################################################################
-        # # Test for usg_incoming_thursday_night_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Thursday')
-        # #                                           AND hour_id IN (1, 2, 3, 4, 5, 6) THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-23'").select(
-        #         "usg_incoming_thursday_night_voice_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_friday_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Friday') THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-03'").select(
-        #         "usg_incoming_friday_voice_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_friday_morning_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Friday')
-        # #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-03'").select(
-        #         "usg_incoming_friday_morning_voice_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_friday_afternoon_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Friday')
-        # #                                           AND hour_id IN (13, 14, 15, 16, 17, 18) THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-03'").select(
-        #         "usg_incoming_friday_afternoon_voice_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_friday_evening_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Friday')
-        # #                                           AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-03'").select(
-        #         "usg_incoming_friday_evening_voice_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_friday_night_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Friday')
-        # #                                           AND hour_id IN (1, 2, 3, 4, 5, 6) THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-03'").select(
-        #         "usg_incoming_friday_night_voice_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_saturday_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Saturday') THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-25'").select(
-        #         "usg_incoming_saturday_voice_usage").collect()[0][
-        #         0] == 390
-        # ########################################################################################################
-        # # Test for usg_incoming_saturday_morning_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Saturday')
-        # #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-25'").select(
-        #         "usg_incoming_saturday_morning_voice_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_saturday_afternoon_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Saturday')
-        # #                                           AND hour_id IN (13, 14, 15, 16, 17, 18) THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-25'").select(
-        #         "usg_incoming_saturday_afternoon_voice_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_saturday_evening_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Saturday')
-        # #                                           AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-25'").select(
-        #         "usg_incoming_saturday_evening_voice_usage").collect()[0][
-        #         0] == 390
-        # ########################################################################################################
-        # # Test for usg_incoming_saturday_night_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Saturday')
-        # #                                           AND hour_id IN (1, 2, 3, 4, 5, 6) THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-25'").select(
-        #         "usg_incoming_saturday_night_voice_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_sunday_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Sunday') THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-05'").select(
-        #         "usg_incoming_sunday_voice_usage").collect()[0][
-        #         0] == 88
-        # ########################################################################################################
-        # # Test for usg_incoming_sunday_morning_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Sunday')
-        # #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-05'").select(
-        #         "usg_incoming_sunday_morning_voice_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_sunday_afternoon_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Sunday')
-        # #                                           AND hour_id IN (13, 14, 15, 16, 17, 18) THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-05'").select(
-        #         "usg_incoming_sunday_afternoon_voice_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_sunday_evening_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Sunday')
-        # #                                           AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-05'").select(
-        #         "usg_incoming_sunday_evening_voice_usage").collect()[0][
-        #         0] == 88
-        # ########################################################################################################
-        # # Test for usg_incoming_sunday_night_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Sunday')
-        # #                                           AND hour_id IN (1, 2, 3, 4, 5, 6) THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-05'").select(
-        #         "usg_incoming_sunday_night_voice_usage").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for # check called_network_type DTAC/true value
-        # #         usg_incoming_dtac_number_calls: "sum(case when service_type IN ('VOICE')
-        # #                                          AND caller_network_type = 'DTAC' THEN total_successful_call else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-01'").select(
-        #         "usg_incoming_dtac_number_calls").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_dtac_call_duration: "sum(case when service_type IN ('VOICE')
-        # #                                          AND caller_network_type = 'DTAC' THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-01-01'").select(
-        #         "usg_incoming_dtac_call_duration").collect()[0][
-        #         0] == 506
-        # ########################################################################################################
-        # # Test for usg_incoming_true_number_calls: "sum(case when service_type IN ('VOICE')
-        # #                                          AND caller_network_type = 'TRUE' THEN total_successful_call else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-03-23'").select(
-        #         "usg_incoming_true_number_calls").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_true_call_duration: "sum(case when service_type IN ('VOICE')
-        # #                                          AND caller_network_type = 'TRUE' THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-03-23'").select(
-        #         "usg_incoming_true_call_duration").collect()[0][
-        #         0] == 0
-        # ########################################################################################################
-        # # Test for usg_incoming_dtac_number_sms: "sum(case when service_type IN ('SMS')
-        # #                                          AND caller_network_type = 'DTAC' THEN total_successful_call else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-03-31'").select(
-        #         "usg_incoming_dtac_number_sms").collect()[0][
-        #         0] == 2
-        # ########################################################################################################
-        # # Test for usg_incoming_true_number_sms: "sum(case when service_type IN ('SMS')
-        # #                                          AND caller_network_type = 'TRUE' THEN total_durations else 0 end)"
-        # assert \
-        #     daily_usage_incoming_call.where("event_partition_date = '2020-03-23'").select(
-        #         "usg_incoming_true_number_sms").collect()[0][
-        #         0] == 426
-        # ########################################################################################################
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-05'").select(
+                "usg_incoming_total_call_duration").collect()[0][
+                0] == 88
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-06'").select(
+                "usg_incoming_total_call_duration").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_local_call_duration: "sum(case when service_type IN ('VOICE')
+        #                                            AND idd_flag = 'N' THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-08'").select(
+                "usg_incoming_local_call_duration").collect()[0][
+                0] == 314
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-05'").select(
+                "usg_incoming_local_call_duration").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_number_calls: "sum(case when service_type IN ('VOICE')
+        #                                      THEN total_successful_call else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-05'").select(
+                "usg_incoming_number_calls").collect()[0][
+                0] == 0
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-07'").select(
+                "usg_incoming_number_calls").collect()[0][
+                0] == 1
+        ########################################################################################################
+        # Test for usg_incoming_local_number_calls: "sum(case when service_type IN ('VOICE')
+        #                                         AND idd_flag = 'N' THEN total_successful_call else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-08'").select(
+                "usg_incoming_local_number_calls").collect()[0][
+                0] == 0
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-07'").select(
+                "usg_incoming_local_number_calls").collect()[0][
+                0] == 1
+        ########################################################################################################
+        # Test for usg_incoming_ais_local_calls_duration: "sum(case when service_type IN ('VOICE')
+        #                                                 AND caller_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')
+        #                                                 THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-05'").select(
+                "usg_incoming_ais_local_calls_duration").collect()[0][
+                0] == 88
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-03-23'").select(
+                "usg_incoming_ais_local_calls_duration").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_ais_local_number_calls: "sum(case when service_type IN ('VOICE')
+        #                                                 AND caller_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')
+        #                                                 THEN total_successful_call else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-07'").select(
+                "usg_incoming_ais_local_number_calls").collect()[0][
+                0] == 1
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-03-23'").select(
+                "usg_incoming_ais_local_number_calls").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_outgoing_offnet_local_calls_duration: "sum(case when service_type IN ('VOICE')
+        #                                                 AND caller_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')
+        #                                                 THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-05'").select(
+                "usg_outgoing_offnet_local_calls_duration").collect()[0][
+                0] == 0
+        ##################################################################
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-01'").select(
+                "usg_outgoing_offnet_local_calls_duration").collect()[0][
+                0] == 506
+        ########################################################################################################
+        # Test for usg_incoming_offnet_local_number_calls: "sum(case when service_type IN ('VOICE')
+        #                                                 AND caller_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')
+        #                                                 THEN total_successful_call else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-07'").select(
+                "usg_incoming_offnet_local_number_calls").collect()[0][
+                0] == 0
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-03-23'").select(
+                "usg_incoming_offnet_local_number_calls").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_total_sms: "sum(case when service_type IN ('SMS') THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-03'").select(
+                "usg_incoming_total_sms").collect()[0][
+                0] == 645
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-01'").select(
+                "usg_incoming_total_sms").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_local_sms: "sum(case when service_type IN ('SMS')
+        #                                  AND idd_flag = 'N' THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-03'").select(
+                "usg_incoming_local_sms").collect()[0][
+                0] == 645
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-08'").select(
+                "usg_incoming_local_sms").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_local_ais_sms: "sum(case when service_type IN ('SMS')
+        #                                      AND caller_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')
+        #                                      AND idd_flag = 'N' THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-03'").select(
+                "usg_incoming_local_ais_sms").collect()[0][
+                0] == 645
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-03-23'").select(
+                "usg_incoming_local_ais_sms").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_number_calls_upto_5_mins: "sum(case when service_type IN ('VOICE')
+        #                                                 AND total_durations <= 300 THEN total_successful_call else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-23'").select(
+                "usg_incoming_number_calls_upto_5_mins").collect()[0][
+                0] == 2
+        ########################################################################################################
+        # Test for usg_incoming_number_calls_upto_10_mins: "sum(case when service_type IN ('VOICE')
+        #                                                 AND total_durations <= 600 THEN total_successful_call else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-23'").select(
+                "usg_incoming_number_calls_upto_10_mins").collect()[0][
+                0] == 2
+        ########################################################################################################
+        # Test for usg_incoming_number_calls_upto_15_mins: "sum(case when service_type IN ('VOICE')
+        #                                                 AND total_durations <= 900 THEN total_successful_call else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-23'").select(
+                "usg_incoming_number_calls_upto_15_mins").collect()[0][
+                0] == 2  # total_duration = 252
+        ########################################################################################################
+        # Test for usg_incoming_number_calls_upto_20_mins: "sum(case when service_type IN ('VOICE')
+        #                                                 AND total_durations <= 1200 THEN total_successful_call else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-23'").select(
+                "usg_incoming_number_calls_upto_20_mins").collect()[0][
+                0] == 2  # total_duration = 252
+        ########################################################################################################
+        # Test for usg_incoming_number_calls_upto_30_mins: "sum(case when service_type IN ('VOICE')
+        #                                                  AND total_durations <= 1800 THEN total_successful_call else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-23'").select(
+                "usg_incoming_number_calls_upto_30_mins").collect()[0][
+                0] == 2  # total_duration = 252
+        ########################################################################################################
+        # Test for usg_incoming_number_calls_over_30_mins: "sum(case when service_type IN ('VOICE')
+        #                                                  AND total_durations > 1800 THEN total_successful_call else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-03-28'").select(
+                "usg_incoming_number_calls_over_30_mins").collect()[0][
+                0] == 0  # total_duration = 252
+        ########################################################################################################
+        # Test for usg_incoming_last_call_date: "max(case when service_type IN ('VOICE') THEN date(day_id) else null end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-05'").select(
+                "usg_incoming_last_call_date").collect()[0][
+                0] == datetime.date(2020, 1, 5)
+        ########################################################################################################
+        # Test for usg_last_call_date: "max(case when service_type IN ('VOICE') THEN date(day_id) else null end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-05'").select(
+                "usg_last_call_date").collect()[0][
+                0] == datetime.date(2020, 1, 5)
+        ########################################################################################################
+        # Test for usg_last_action_date: "max(date(day_id))"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-04-01'").select(
+                "usg_last_action_date").collect()[0][
+                0] == datetime.date(2020, 4, 1)
+        ########################################################################################################
+        # Test for usg_incoming_last_sms_date: "max(case when service_type IN ('SMS') THEN date(day_id) else null end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-04'").select(
+                "usg_incoming_last_sms_date").collect()[0][
+                0] == datetime.date(2020, 1, 4)
+        ########################################################################################################
+        # Test for usg_last_sms_date: "max(case when service_type IN ('SMS') THEN date(day_id) else null end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-04'").select(
+                "usg_last_sms_date").collect()[0][
+                0] == datetime.date(2020, 1, 4)
+        ########################################################################################################
+        # Test for usg_incoming_night_time_call: "sum(case when service_type IN ('VOICE')
+        #                                        AND hour_id IN (1, 2, 3, 4, 5, 6) THEN total_successful_call else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-15'").select(
+                "usg_incoming_night_time_call").collect()[0][
+                0] == 4
+        ########################################################################################################
+        # Test for usg_incoming_morning_time_call: "sum(case when service_type IN ('VOICE')
+        #                                        AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_successful_call else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-03-23'").select(
+                "usg_incoming_morning_time_call").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_afternoon_time_call: "sum(case when service_type IN ('VOICE')
+        #                                        AND hour_id IN (13, 14, 15, 16, 17, 18) THEN total_successful_call else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-04-01'").select(
+                "usg_incoming_afternoon_time_call").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_evening_time_call: "sum(case when service_type IN ('VOICE')
+        #                                        AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_successful_call else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-25'").select(
+                "usg_incoming_evening_time_call").collect()[0][
+                0] == 5
+        ########################################################################################################
+        # Test for usg_incoming_weekday_number_calls: "sum(case when service_type IN ('VOICE')
+        #                                         AND date_format(day_id, 'EEEE') NOT IN ('Saturday', 'Sunday')
+        #                                         THEN total_successful_call else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-15'").select(
+                "usg_incoming_weekday_number_calls").collect()[0][
+                0] == 4
+        ########################################################################################################
+        # Test for usg_incoming_weekend_number_calls: "sum(case when service_type IN ('VOICE')
+        #                                             AND date_format(day_id, 'EEEE') IN ('Saturday', 'Sunday')
+        #                                             THEN total_successful_call else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-25'").select(
+                "usg_incoming_weekend_number_calls").collect()[0][
+                0] == 5
+        ########################################################################################################
+        # Test for usg_incoming_weekday_calls_duration: "sum(case when service_type IN ('VOICE')
+        #                                         AND date_format(day_id, 'EEEE') NOT IN ('Saturday', 'Sunday')
+        #                                         THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-15'").select(
+                "usg_incoming_weekday_calls_duration").collect()[0][
+                0] == 449
+        ########################################################################################################
+        # Test for usg_incoming_weekend_calls_duration: "sum(case when service_type IN ('VOICE')
+        #                                             AND date_format(day_id, 'EEEE') IN ('Saturday', 'Sunday')
+        #                                             THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-25'").select(
+                "usg_incoming_weekend_calls_duration").collect()[0][
+                0] == 390
+        ########################################################################################################
+        # Test for usg_incoming_night_time_number_sms: "sum(case when service_type IN ('SMS')
+        #                                             AND hour_id IN (1, 2, 3, 4, 5, 6) THEN total_successful_call else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-06'").select(
+                "usg_incoming_night_time_number_sms").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_morning_time_number_sms: "sum(case when service_type IN ('SMS')
+        #                                          AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_successful_call else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-03-31'").select(
+                "usg_incoming_morning_time_number_sms").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_afternoon_number_sms: "sum(case when service_type IN ('SMS')
+        #                                          AND hour_id IN (13, 14, 15, 16, 17, 18) THEN total_successful_call else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-08'").select(
+                "usg_incoming_afternoon_number_sms").collect()[0][
+                0] == 2
+        ########################################################################################################
+        # Test for usg_incoming_evening_number_sms: "sum(case when service_type IN ('SMS')
+        #                                         AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_successful_call else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-06'").select(
+                "usg_incoming_evening_number_sms").collect()[0][
+                0] == 3
+        ########################################################################################################
+        # Test for usg_incoming_weekday_number_sms: "sum(case when service_type IN ('SMS')
+        #                                         AND date_format(day_id, 'EEEE') NOT IN ('Saturday', 'Sunday') THEN total_successful_call else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-06'").select(
+                "usg_incoming_weekday_number_sms").collect()[0][
+                0] == 3
+        ########################################################################################################
+        # Test for usg_incoming_weekend_number_sms: "sum(case when service_type IN ('SMS')
+        #                                         AND date_format(day_id, 'EEEE') IN ('Saturday', 'Sunday') THEN total_successful_call else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-04'").select(
+                "usg_incoming_weekend_number_sms").collect()[0][
+                0] == 5
+        ########################################################################################################
+        # Test for usg_incoming_monday_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Monday') THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-20'").select(
+                "usg_incoming_monday_voice_usage").collect()[0][
+                0] == 792
+        ########################################################################################################
+        # Test for usg_incoming_monday_morning_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Monday')
+        #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-20'").select(
+                "usg_incoming_monday_morning_voice_usage").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_monday_afternoon_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Monday')
+        #                                           AND hour_id IN (13, 14, 15, 16, 17, 18) THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-20'").select(
+                "usg_incoming_monday_afternoon_voice_usage").collect()[0][
+                0] == 792
+        ########################################################################################################
+        # Test for usg_incoming_monday_evening_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Monday')
+        #                                           AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-20'").select(
+                "usg_incoming_monday_evening_voice_usage").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_monday_night_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Monday')
+        #                                           AND hour_id IN (1, 2, 3, 4, 5, 6) THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-20'").select(
+                "usg_incoming_monday_night_voice_usage").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_tuesday_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Tuesday') THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-07'").select(
+                "usg_incoming_tuesday_voice_usage").collect()[0][
+                0] == 729
+        ########################################################################################################
+        # Test for usg_incoming_tuesday_morning_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Tuesday')
+        #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-07'").select(
+                "usg_incoming_tuesday_morning_voice_usage").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_tuesday_afternoon_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Tuesday')
+        #                                           AND hour_id IN (13, 14, 15, 16, 17, 18) THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-07'").select(
+                "usg_incoming_tuesday_afternoon_voice_usage").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_tuesday_evening_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Tuesday')
+        #                                           AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-07'").select(
+                "usg_incoming_tuesday_evening_voice_usage").collect()[0][
+                0] == 729
+        ########################################################################################################
+        # Test for usg_incoming_tuesday_night_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Tuesday')
+        #                                           AND hour_id IN (1, 2, 3, 4, 5, 6) THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-07'").select(
+                "usg_incoming_tuesday_night_voice_usage").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_wednesday_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Wednesday') THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-15'").select(
+                "usg_incoming_wednesday_voice_usage").collect()[0][
+                0] == 449
+        ########################################################################################################
+        # Test for usg_incoming_wednesday_morning_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Wednesday')
+        #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-15'").select(
+                "usg_incoming_wednesday_morning_voice_usage").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_wednesday_afternoon_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Wednesday')
+        #                                           AND hour_id IN (13, 14, 15, 16, 17, 18) THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-15'").select(
+                "usg_incoming_wednesday_afternoon_voice_usage").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_wednesday_evening_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Wednesday')
+        #                                           AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-15'").select(
+                "usg_incoming_wednesday_evening_voice_usage").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_wednesday_night_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Wednesday')
+        #                                           AND hour_id IN (1, 2, 3, 4, 5, 6) THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-15'").select(
+                "usg_incoming_wednesday_night_voice_usage").collect()[0][
+                0] == 449
+        ########################################################################################################
+        # Test for usg_incoming_thursday_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Thursday') THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-23'").select(
+                "usg_incoming_thursday_voice_usage").collect()[0][
+                0] == 255
+        ########################################################################################################
+        # Test for usg_incoming_thursday_morning_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Thursday')
+        #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-23'").select(
+                "usg_incoming_thursday_morning_voice_usage").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_thursday_afternoon_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Thursday')
+        #                                           AND hour_id IN (13, 14, 15, 16, 17, 18) THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-23'").select(
+                "usg_incoming_thursday_afternoon_voice_usage").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_thursday_evening_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Thursday')
+        #                                           AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-23'").select(
+                "usg_incoming_thursday_evening_voice_usage").collect()[0][
+                0] == 255
+        ########################################################################################################
+        # Test for usg_incoming_thursday_night_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Thursday')
+        #                                           AND hour_id IN (1, 2, 3, 4, 5, 6) THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-23'").select(
+                "usg_incoming_thursday_night_voice_usage").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_friday_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Friday') THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-03'").select(
+                "usg_incoming_friday_voice_usage").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_friday_morning_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Friday')
+        #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-03'").select(
+                "usg_incoming_friday_morning_voice_usage").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_friday_afternoon_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Friday')
+        #                                           AND hour_id IN (13, 14, 15, 16, 17, 18) THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-03'").select(
+                "usg_incoming_friday_afternoon_voice_usage").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_friday_evening_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Friday')
+        #                                           AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-03'").select(
+                "usg_incoming_friday_evening_voice_usage").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_friday_night_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Friday')
+        #                                           AND hour_id IN (1, 2, 3, 4, 5, 6) THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-03'").select(
+                "usg_incoming_friday_night_voice_usage").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_saturday_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Saturday') THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-25'").select(
+                "usg_incoming_saturday_voice_usage").collect()[0][
+                0] == 390
+        ########################################################################################################
+        # Test for usg_incoming_saturday_morning_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Saturday')
+        #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-25'").select(
+                "usg_incoming_saturday_morning_voice_usage").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_saturday_afternoon_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Saturday')
+        #                                           AND hour_id IN (13, 14, 15, 16, 17, 18) THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-25'").select(
+                "usg_incoming_saturday_afternoon_voice_usage").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_saturday_evening_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Saturday')
+        #                                           AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-25'").select(
+                "usg_incoming_saturday_evening_voice_usage").collect()[0][
+                0] == 390
+        ########################################################################################################
+        # Test for usg_incoming_saturday_night_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Saturday')
+        #                                           AND hour_id IN (1, 2, 3, 4, 5, 6) THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-25'").select(
+                "usg_incoming_saturday_night_voice_usage").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_sunday_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Sunday') THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-05'").select(
+                "usg_incoming_sunday_voice_usage").collect()[0][
+                0] == 88
+        ########################################################################################################
+        # Test for usg_incoming_sunday_morning_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Sunday')
+        #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-05'").select(
+                "usg_incoming_sunday_morning_voice_usage").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_sunday_afternoon_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Sunday')
+        #                                           AND hour_id IN (13, 14, 15, 16, 17, 18) THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-05'").select(
+                "usg_incoming_sunday_afternoon_voice_usage").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_sunday_evening_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Sunday')
+        #                                           AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-05'").select(
+                "usg_incoming_sunday_evening_voice_usage").collect()[0][
+                0] == 88
+        ########################################################################################################
+        # Test for usg_incoming_sunday_night_voice_usage: "sum(case when service_type IN ('VOICE')
+        #                                           AND date_format(day_id, 'EEEE') IN ('Sunday')
+        #                                           AND hour_id IN (1, 2, 3, 4, 5, 6) THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-05'").select(
+                "usg_incoming_sunday_night_voice_usage").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for # check called_network_type DTAC/true value
+        #         usg_incoming_dtac_number_calls: "sum(case when service_type IN ('VOICE')
+        #                                          AND caller_network_type = 'DTAC' THEN total_successful_call else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-01'").select(
+                "usg_incoming_dtac_number_calls").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_dtac_call_duration: "sum(case when service_type IN ('VOICE')
+        #                                          AND caller_network_type = 'DTAC' THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-01-01'").select(
+                "usg_incoming_dtac_call_duration").collect()[0][
+                0] == 506
+        ########################################################################################################
+        # Test for usg_incoming_true_number_calls: "sum(case when service_type IN ('VOICE')
+        #                                          AND caller_network_type = 'TRUE' THEN total_successful_call else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-03-23'").select(
+                "usg_incoming_true_number_calls").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_true_call_duration: "sum(case when service_type IN ('VOICE')
+        #                                          AND caller_network_type = 'TRUE' THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-03-23'").select(
+                "usg_incoming_true_call_duration").collect()[0][
+                0] == 0
+        ########################################################################################################
+        # Test for usg_incoming_dtac_number_sms: "sum(case when service_type IN ('SMS')
+        #                                          AND caller_network_type = 'DTAC' THEN total_successful_call else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-03-31'").select(
+                "usg_incoming_dtac_number_sms").collect()[0][
+                0] == 2
+        ########################################################################################################
+        # Test for usg_incoming_true_number_sms: "sum(case when service_type IN ('SMS')
+        #                                          AND caller_network_type = 'TRUE' THEN total_durations else 0 end)"
+        assert \
+            daily_usage_incoming_call.where("event_partition_date = '2020-03-23'").select(
+                "usg_incoming_true_number_sms").collect()[0][
+                0] == 426
+        ########################################################################################################
 
         # exit(2)
 
@@ -3405,967 +2422,6 @@ class TestUnitUsage:
         # #usg_outgoing_total_call_duration: "sum(case when service_type IN ('VOICE') THEN total_durations else 0 end)"
         # #
         # #usg_outgoing_total_call_duration
-        sum_usg_outgoing_total_call_duration = df_usage_outgoing_call_relation_sum_daily\
-            .where("service_type = 'VOICE'").groupBy("day_id").agg(F.sum("total_durations").alias("total_durations"))
-        #sum_usg_outgoing_total_call_duration = sum_usg_outgoing_total_call_duration.where("service_type = 'VOICE'").agg(F.sum("total_durations"))
-
-        print("###############################################################")
-        print("###############################################################")
-        print("###############################################################")
-        print("###############################################################")
-
-
-
-
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_total_call_duration").collect()[0][0] == check_null(sum_usg_outgoing_total_call_duration. \
-        #     where("day_id = '2020-01-07'").select("total_durations"))
-        #     # or\
-        #     # (usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #     # "usg_outgoing_total_call_duration").collect()[0][0] == 0)
-        #
-        #
-        # ###############################################################################
-        # #usg_outgoing_local_call_duration: "sum(case when service_type IN ('VOICE')
-        # #                                  AND idd_flag = 'N' THEN total_durations else 0 end)"
-        # #usg_outgoing_local_call_duration
-        # sum_usg_outgoing_local_call_duration = df_usage_outgoing_call_relation_sum_daily\
-        #     .where("service_type = 'VOICE' AND idd_flag = 'N'").groupBy("day_id")\
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        # #sum_usg_outgoing_local_call_duration = sum_usg_outgoing_local_call_duration.where("service_type = 'VOICE' AND idd_flag = 'N'").agg(F.sum("total_durations"))
-        #
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_local_call_duration").collect()[0][0] == check_null(sum_usg_outgoing_local_call_duration. \
-        #      where("day_id = '2020-01-07'").select("total_durations"))
-        #     # or\
-        #     # (usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #     # "usg_outgoing_total_call_duration").collect()[0][0] == 0)
-        #
-        # ###############################################################################
-        # # usg_outgoing_number_calls: "sum(case when service_type IN ('VOICE') THEN total_successful_call else 0 end)"
-        # #
-        # # usg_outgoing_number_calls
-        #
-        # sum_usg_outgoing_number_calls = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE'").groupBy("day_id")\
-        #     .agg(F.sum("total_successful_call").alias("total_successful_call"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_number_calls").collect()[0][0] == check_null(sum_usg_outgoing_number_calls \
-        #     .where("day_id = '2020-01-07'").select("total_successful_call"))
-        #     # or\
-        #     # (usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #     # "usg_outgoing_total_call_duration").collect()[0][0] == 0)
-        #
-        #
-        # ###############################################################################
-        # # usg_outgoing_local_number_calls: "sum(case when service_type IN ('VOICE')
-        # #                                         AND idd_flag = 'N' THEN total_successful_call else 0 end)"
-        # # usg_outgoing_local_number_calls
-        # sum_usg_outgoing_local_number_calls = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND idd_flag = 'N'").groupBy("day_id")\
-        #     .agg(F.sum("total_successful_call").alias("total_successful_call"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_local_number_calls").collect()[0][0] == check_null(sum_usg_outgoing_local_number_calls\
-        #         .where("day_id = '2020-01-07'").select("total_successful_call"))
-        #
-        # ###############################################################################
-        # # usg_outgoing_ais_local_calls_duration: "sum(case when service_type IN ('VOICE')
-        # #                                                 AND called_network_type IN ('3GPost-paid', '3GPre-paid',
-        # #                                                 'AIS','InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local',
-        # #                                                 'AWNFIX','3GHybrid-Post', 'AWNINT')
-        # #                                                 THEN total_durations else 0 end)"
-        # # # usg_outgoing_local_number_calls
-        # sum_usg_outgoing_ais_local_calls_duration = df_usage_outgoing_call_relation_sum_daily \
-        #     .where(" (service_type = 'VOICE') AND  (called_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', "
-        #            "'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT'))") \
-        #     .groupby("day_id").agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # #
-        # # sum_usg_outgoing_ais_local_calls_duration.show()
-        # #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_ais_local_calls_duration").collect()[0][0] == check_null(sum_usg_outgoing_ais_local_calls_duration.\
-        #         where("day_id = '2020-01-07'").select("total_durations"))
-        #     # or \
-        #     # (usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select
-        #     #  ("usg_outgoing_ais_local_calls_duration").collect()[0][0] == 0)
-        #
-        #
-        # ################################################################################################################
-        # ## sum_usg_outgoing_ais_local_number_calls = df_usage_outgoing_call_relation_sum_daily \
-        # #                                             .where(" (service_type = 'VOICE') AND  (called_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', "
-        # #                                                    "'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT'))") \
-        # #                                             .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
-        # ##
-        #
-        # sum_usg_outgoing_ais_local_number_calls = df_usage_outgoing_call_relation_sum_daily \
-        #     .where(" (service_type = 'VOICE') AND  (called_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', "
-        #            "'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT'))") \
-        #     .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_ais_local_number_calls").collect()[0][0] == check_null(sum_usg_outgoing_ais_local_number_calls.\
-        #          where("day_id = '2020-01-07'").select("total_successful_call")) \
-        #
-        #
-        # ################################################################################################################
-        # # sum_usg_outgoing_offnet_local_calls_duration = df_usage_outgoing_call_relation_sum_daily \
-        # #                                              .where(" (service_type = 'VOICE') AND  (called_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS', "
-        # #                                                      "'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT'))") \
-        # #                                               .groupby("day_id").agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # sum_usg_outgoing_offnet_local_calls_duration = df_usage_outgoing_call_relation_sum_daily \
-        #     .where(" (service_type = 'VOICE') AND  (called_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS', "
-        #            "'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT'))") \
-        #     .groupby("day_id").agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_offnet_local_calls_duration").collect()[0][0] == check_null(sum_usg_outgoing_offnet_local_calls_duration. \
-        #         where("day_id = '2020-01-07'").select("total_durations"))
-        #
-        # ################################################################################################################
-        # #usg_outgoing_offnet_local_number_calls: "sum(case when service_type IN ('VOICE')
-        # #                                         AND called_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')
-        # #                                         THEN total_successful_call else 0 end)"
-        #
-        # sum_usg_outgoing_offnet_local_number_calls = df_usage_outgoing_call_relation_sum_daily \
-        #     .where(" (service_type = 'VOICE') AND  (called_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS', "
-        #            "'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT'))") \
-        #     .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_offnet_local_number_calls").collect()[0][0] == check_null(sum_usg_outgoing_offnet_local_number_calls. \
-        #         where("day_id = '2020-01-07'").select("total_successful_call"))
-        #
-        #
-        #
-        # ################################################################################################################
-        # # usg_outgoing_total_sms: "sum(case when service_type IN ('SMS') THEN total_durations else 0 end)"
-        # #
-        # #
-        # #
-        #
-        # sum_usg_outgoing_total_sms = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("(service_type IN ('SMS'))") \
-        #     .groupby("day_id").agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_total_sms").collect()[0][0] == check_null(sum_usg_outgoing_total_sms. \
-        #         where("day_id = '2020-01-07'").select("total_durations"))
-        #
-        #
-        # ###############################################################################################################
-        # #usg_outgoing_local_sms: "sum(case when service_type IN ('SMS')
-        # #                        AND idd_flag = 'N' THEN total_durations else 0 end)"
-        #
-        # sum_usg_outgoing_local_sms = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("(service_type IN ('SMS')) AND (idd_flag = 'N')") \
-        #     .groupby("day_id").agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_local_sms").collect()[0][0] == check_null(sum_usg_outgoing_local_sms.\
-        #         where("day_id = '2020-01-07'").select("total_durations"))
-        #
-        #
-        # ###############################################################################################################
-        # #usg_outgoing_local_ais_sms: "sum(case when service_type IN ('SMS')
-        # #                             AND called_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN',
-        # #                             'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')
-        # #                             AND idd_flag = 'N' THEN total_durations else 0 end)"
-        #
-        # sum_usg_outgoing_local_ais_sms = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("(service_type IN ('SMS')) AND (called_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', "
-        #                              "'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')) "
-        #                              "AND (idd_flag = 'N')") \
-        #     .groupby("day_id").agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_local_ais_sms").collect()[0][0] == check_null(sum_usg_outgoing_local_ais_sms.\
-        #         where("day_id = '2020-01-07'").select("total_durations"))
-        #
-        # ###############################################################################################################
-        # #usg_outgoing_number_calls_upto_5_mins: "sum(case when service_type IN ('VOICE')
-        # #                                       AND total_durations <= 300 THEN total_successful_call else 0 end)"
-        #
-        # sum_usg_outgoing_number_calls_upto_5_mins = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("(service_type IN ('VOICE')) AND total_durations <= 300") \
-        #     .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_number_calls_upto_5_mins").collect()[0][0] == check_null(sum_usg_outgoing_number_calls_upto_5_mins
-        #         .where("day_id = '2020-01-07'").select("total_successful_call"))
-        #
-        # ################################################################################################################
-        # #usg_outgoing_number_calls_upto_10_mins: "sum(case when service_type IN ('VOICE')
-        # #                                        AND total_durations <= 600 THEN total_successful_call else 0 end)"
-        #
-        # sum_usg_outgoing_number_calls_upto_10_mins = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("(service_type IN ('VOICE')) AND total_durations <= 600") \
-        #     .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_number_calls_upto_10_mins").collect()[0][0] == check_null(sum_usg_outgoing_number_calls_upto_10_mins
-        #         .where("day_id = '2020-01-07'").select("total_successful_call"))
-        #
-        # ###############################################################################################################
-        # ################################################################################################################
-        # # usg_outgoing_number_calls_upto_15_mins: "sum(case when service_type IN ('VOICE')
-        # #                                        AND total_durations <= 900 THEN total_successful_call else 0 end)"
-        #
-        # sum_usg_outgoing_number_calls_upto_15_mins = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("(service_type IN ('VOICE')) AND total_durations <= 900") \
-        #     .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_number_calls_upto_15_mins").collect()[0][0] == check_null(
-        #         sum_usg_outgoing_number_calls_upto_15_mins
-        #         .where("day_id = '2020-01-07'").select("total_successful_call"))
-        #
-        # ###############################################################################################################
-        # ################################################################################################################
-        # # usg_outgoing_number_calls_upto_20_mins: "sum(case when service_type IN ('VOICE')
-        # #                                        AND total_durations <= 1200 THEN total_successful_call else 0 end)"
-        #
-        # sum_usg_outgoing_number_calls_upto_20_mins = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("(service_type IN ('VOICE')) AND total_durations <= 1200") \
-        #     .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_number_calls_upto_20_mins").collect()[0][0] == check_null(
-        #         sum_usg_outgoing_number_calls_upto_20_mins
-        #         .where("day_id = '2020-01-07'").select("total_successful_call"))
-        #
-        # ###############################################################################################################
-        # # usg_outgoing_number_calls_upto_30_mins: "sum(case when service_type IN ('VOICE')
-        # #                                        AND total_durations <= 1800 THEN total_successful_call else 0 end)"
-        #
-        # sum_usg_outgoing_number_calls_upto_30_mins = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("(service_type IN ('VOICE')) AND total_durations <= 1800") \
-        #     .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_number_calls_upto_30_mins").collect()[0][0] == check_null(
-        #         sum_usg_outgoing_number_calls_upto_30_mins
-        #         .where("day_id = '2020-01-07'").select("total_successful_call"))
-        #
-        # ###############################################################################################################
-        # ###############################################################################################################
-        # # usg_outgoing_number_calls_over_30_mins: "sum(case when service_type IN ('VOICE')
-        # #                                        AND total_durations <= 1800 THEN total_successful_call else 0 end)"
-        #
-        # sum_usg_outgoing_number_calls_over_30_mins = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("(service_type IN ('VOICE')) AND total_durations > 1800") \
-        #     .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_number_calls_over_30_mins").collect()[0][0] == check_null(
-        #         sum_usg_outgoing_number_calls_over_30_mins
-        #         .where("day_id = '2020-01-07'").select("total_successful_call"))
-        #
-        # ###############################################################################################################
-        # #usg_outgoing_last_call_date: "max(case when service_type IN ('VOICE') THEN date(day_id) else null end)"
-        #
-        # sum_usg_outgoing_last_call_date = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type IN ('VOICE')") \
-        #     .groupby("day_id").agg(F.max("day_id").alias("date"))
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_last_call_date").collect()[0][0] == check_null(sum_usg_outgoing_last_call_date
-        #         .where("day_id = '2020-01-07'").select("date"))
-        #
-        # ###############################################################################################################
-        # # usg_last_call_date: "max(case when service_type IN ('VOICE') THEN date(day_id) else null end)"
-        #
-        # sum_usg_last_call_date = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type IN ('VOICE')") \
-        #     .groupby("day_id").agg(F.max("day_id").alias("date"))
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_last_call_date").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_last_call_date.where("day_id = '2020-01-07'").select("date"))
-        #
-        # ###############################################################################################################
-        # ###############################################################################################################
-        # # usg_outgoing_last_sms_date: "max(case when service_type IN ('SMS') THEN date(day_id) else null end)"
-        #
-        # sum_usg_outgoing_last_sms_date = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type IN ('SMS')") \
-        #     .groupby("day_id").agg(F.max("day_id").alias("date"))
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_last_sms_date").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_last_sms_date.where("day_id = '2020-01-07'").select("date"))
-        #
-        # ###############################################################################################################
-        # ###############################################################################################################
-        # # usg_last_sms_date: "max(case when service_type IN ('SMS') THEN date(day_id) else null end)"
-        #
-        # sum_usg_last_sms_date = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type IN ('SMS')") \
-        #     .groupby("day_id").agg(F.max("day_id").alias("date"))
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_last_sms_date").collect()[0][0] == \
-        #     check_null(sum_usg_last_sms_date.where("day_id = '2020-01-07'").select("date"))
-        #
-        # ###############################################################################################################
-        # ###############################################################################################################
-        # # usg_last_action_date: "max(date(day_id))"
-        #
-        # sum_usg_last_action_date = df_usage_outgoing_call_relation_sum_daily \
-        #     .groupby("day_id").agg(F.max("day_id").alias("date"))
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_last_action_date").collect()[0][0] == \
-        #     check_null(sum_usg_last_action_date.where("day_id = '2020-01-07'").select("date"))
-        #
-        # ###############################################################################################################
-        # ###############################################################################################################
-        # #usg_outgoing_night_time_number_calls: "sum(case when service_type IN ('VOICE')
-        # #                                    AND hour_id IN (1, 2, 3, 4, 5, 6) THEN total_successful_call else 0 end)"
-        #
-        # sum_usg_outgoing_night_time_number_calls = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type IN ('VOICE') AND (hour_id IN (1, 2, 3, 4, 5, 6))") \
-        #     .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_night_time_number_calls").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_night_time_number_calls.where("day_id = '2020-01-07'").select("total_successful_call"))
-        #
-        # ###############################################################################################################
-        # ###############################################################################################################
-        # #usg_outgoing_morning_time_number_calls: "sum(case when service_type IN ('VOICE')
-        # #                                 AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_successful_call else 0 end)"
-        #
-        # sum_usg_outgoing_morning_time_number_calls = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type IN ('VOICE') AND (hour_id IN (7, 8, 9, 10, 11, 12))") \
-        #     .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_morning_time_number_calls").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_morning_time_number_calls.where("day_id = '2020-01-07'").select("total_successful_call"))
-        #
-        # ###############################################################################################################
-        # ###############################################################################################################
-        # # usg_outgoing_afternoon_number_calls: "sum(case when service_type IN ('VOICE')
-        # #                                          AND hour_id IN (13, 14, 15, 16, 17, 18) THEN total_successful_call else 0 end)"
-        #
-        # sum_usg_outgoing_afternoon_number_calls = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type IN ('VOICE') AND (hour_id IN (13, 14, 15, 16, 17, 18))") \
-        #     .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_afternoon_number_calls").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_afternoon_number_calls.where("day_id = '2020-01-07'").select(
-        #         "total_successful_call"))
-        #
-        # ###############################################################################################################
-        # ###############################################################################################################
-        # #usg_outgoing_evening_number_calls: "sum(case when service_type IN ('VOICE')
-        # #                                 AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_successful_call else 0 end)"
-        #
-        # sum_usg_outgoing_evening_number_calls = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type IN ('VOICE') AND (hour_id IN (19, 20, 21, 22, 23, 0))") \
-        #     .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_evening_number_calls").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_evening_number_calls.where("day_id = '2020-01-07'").select(
-        #         "total_successful_call"))
-        #
-        # ##############################################################################################################
-        # #usg_outgoing_weekday_number_calls: "sum(case when service_type IN ('VOICE')
-        # #                                AND date_format(day_id, 'EEEE') NOT IN ('Saturday', 'Sunday')
-        # #                                THEN total_successful_call else 0 end)"
-        #
-        # #day_of_month = df_usage_outgoing_call_relation_sum_daily.
-        # sum_usg_outgoing_weekday_number_calls = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (weekday IN ('Monday', 'Tuesday', 'Wednesday','Thursday','Friday'))") \
-        #     .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_weekday_number_calls").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_weekday_number_calls.where("day_id = '2020-01-07'").select(
-        #         "total_successful_call"))
-        #
-        # ################################################################################################################
-        # #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_weekend_number_calls: "sum(case when service_type IN ('VOICE')
-        # #                                         AND date_format(day_id, 'EEEE') IN ('Saturday', 'Sunday')
-        # #                                         THEN total_successful_call else 0 end)"
-        #
-        # sum_usg_outgoing_weekend_number_calls = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Saturday', 'Sunday'))") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_successful_call").alias("total_successful_call"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_weekend_number_calls").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_weekend_number_calls.where("day_id = '2020-01-07'").select(
-        #         "total_successful_call"))
-        #
-        # ################################################################################################################
-        # # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_weekday_calls_duration: "sum(case when service_type IN ('VOICE')
-        # #                                         AND date_format(day_id, 'EEEE') NOT IN ('Saturday', 'Sunday')
-        # #                                         THEN total_durations else 0 end)"
-        #
-        # sum_usg_outgoing_weekday_calls_duration = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') NOT IN ('Saturday', 'Sunday'))") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_weekday_calls_duration").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_weekday_calls_duration.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        #
-        # ################################################################################################################
-        # # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_weekend_calls_duration: "sum(case when service_type IN ('VOICE')
-        # #                                             AND date_format(day_id, 'EEEE') IN ('Saturday', 'Sunday')
-        # #                                             THEN total_durations else 0 end)"
-        #
-        # sum_usg_outgoing_weekend_calls_duration = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Saturday', 'Sunday'))") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_weekend_calls_duration").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_weekend_calls_duration.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # # ##############################################################################################################
-        # # usg_outgoing_night_time_number_sms: "sum(case when service_type IN ('SMS')
-        # #                                    AND hour_id IN (1, 2, 3, 4, 5, 6) THEN total_successful_call else 0 end)"
-        # #
-        # sum_usg_outgoing_night_time_number_sms = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type IN ('SMS') AND (hour_id IN (1, 2, 3, 4, 5, 6))") \
-        #     .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_night_time_number_sms").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_night_time_number_sms.where("day_id = '2020-01-07'").select("total_successful_call"))
-        #
-        # ##############################################################################################################
-        # ##############################################################################################################
-        # # usg_outgoing_morning_time_number_sms: "sum(case when service_type IN ('SMS')
-        # #                                 AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_successful_call else 0 end)"
-        # #
-        # sum_usg_outgoing_morning_time_number_sms = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type IN ('SMS') AND (hour_id IN (7, 8, 9, 10, 11, 12))") \
-        #     .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_morning_time_number_sms").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_morning_time_number_sms.where("day_id = '2020-01-07'").select("total_successful_call"))
-        #
-        # ##############################################################################################################
-        # ##############################################################################################################
-        # # usg_outgoing_afternoon_number_sms: "sum(case when service_type IN ('SMS')
-        # #                                          AND hour_id IN (13, 14, 15, 16, 17, 18) THEN total_successful_call else 0 end)"
-        # #
-        # sum_usg_outgoing_afternoon_number_sms = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type IN ('SMS') AND (hour_id IN (13, 14, 15, 16, 17, 18))") \
-        #     .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_afternoon_number_sms").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_afternoon_number_sms.where("day_id = '2020-01-07'").select(
-        #         "total_successful_call"))
-        #
-        #
-        # ###############################################################################################################
-        # ###############################################################################################################
-        # #usg_outgoing_evening_number_sms: "sum(case when service_type IN ('SMS')
-        # #                                 AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_successful_call else 0 end)"
-        #
-        # sum_usg_outgoing_evening_number_sms = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type IN ('SMS') AND (hour_id IN (19, 20, 21, 22, 23, 0))") \
-        #     .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_evening_number_sms").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_evening_number_sms.where("day_id = '2020-01-07'").select(
-        #         "total_successful_call"))
-        #
-        # ##############################################################################################################
-        # # usg_outgoing_weekday_number_sms: "sum(case when service_type IN ('SMS')
-        # #                                AND date_format(day_id, 'EEEE') NOT IN ('Saturday', 'Sunday')
-        # #                                THEN total_successful_call else 0 end)"
-        #
-        # sum_usg_outgoing_weekday_number_sms = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'SMS' AND (weekday IN ('Monday', 'Tuesday', 'Wednesday','Thursday','Friday'))") \
-        #     .groupby("day_id").agg(F.sum("total_successful_call").alias("total_successful_call"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_weekday_number_sms").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_weekday_number_sms.where("day_id = '2020-01-07'").select(
-        #         "total_successful_call"))
-        #
-        # ################################################################################################################
-        # #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_weekend_number_sms: "sum(case when service_type IN ('SMS')
-        # #                                         AND date_format(day_id, 'EEEE') IN ('Saturday', 'Sunday')
-        # #                                         THEN total_successful_call else 0 end)"
-        #
-        # sum_usg_outgoing_weekend_number_sms = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'SMS' AND (date_format(day_id, 'EEEE') IN ('Saturday', 'Sunday'))") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_successful_call").alias("total_successful_call"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_weekend_number_sms").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_weekend_number_sms.where("day_id = '2020-01-07'").select(
-        #         "total_successful_call"))
-        #
-        # ################################################################################################################
-        # #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # #usg_outgoing_monday_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                  AND date_format(day_id, 'EEEE') IN ('Monday') THEN total_durations else 0 end)"
-        # #
-        # sum_usg_outgoing_monday_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Monday'))") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_monday_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_monday_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ###############################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_monday_morning_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Monday')
-        # #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
-        #
-        # sum_usg_outgoing_monday_morning_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("(service_type IN ('VOICE')) AND (weekday IN ('Monday')) AND (hour_id IN (7, 8, 9, 10, 11, 12))") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_monday_morning_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_monday_morning_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ###############################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_monday_afternoon_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Monday')
-        # #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
-        #
-        # sum_usg_outgoing_monday_afternoon_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Monday'))"
-        #            "AND hour_id IN (13, 14, 15, 16, 17, 18)") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_monday_afternoon_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_monday_afternoon_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ################################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_monday_evening_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Monday')
-        # #                                           AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_durations else 0 end)"
-        #
-        # sum_usg_outgoing_monday_evening_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Monday'))"
-        #            "AND hour_id IN (19, 20, 21, 22, 23, 0)") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_monday_evening_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_monday_evening_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ################################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_monday_night_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Monday')
-        # #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
-        #
-        # sum_usg_outgoing_monday_night_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Monday')) AND hour_id IN (1, 2, 3, 4, 5, 6)") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_monday_night_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_monday_night_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ################################################################################################################
-        # #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # #usg_outgoing_tuesday_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                  AND date_format(day_id, 'EEEE') IN ('Tuesday') THEN total_durations else 0 end)"
-        # #
-        # sum_usg_outgoing_tuesday_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Tuesday'))") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_tuesday_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_tuesday_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ###############################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_tuesday_morning_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Monday')
-        # #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
-        #
-        # sum_usg_outgoing_tuesday_morning_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("(service_type IN ('VOICE')) AND (weekday IN ('Tuesday')) AND (hour_id IN (7, 8, 9, 10, 11, 12))") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_tuesday_morning_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_tuesday_morning_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ###############################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_tuesday_afternoon_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Tuesday')
-        # #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
-        #
-        # sum_usg_outgoing_tuesday_afternoon_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Tuesday'))"
-        #            "AND hour_id IN (13, 14, 15, 16, 17, 18)") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_tuesday_afternoon_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_tuesday_afternoon_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ################################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_tuesday_evening_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Tuesday')
-        # #                                           AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_durations else 0 end)"
-        #
-        # sum_usg_outgoing_tuesday_evening_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Tuesday'))"
-        #            "AND hour_id IN (19, 20, 21, 22, 23, 0)") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_tuesday_evening_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_tuesday_evening_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ################################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_tuesday_night_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Tuesday')
-        # #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
-        #
-        # sum_usg_outgoing_tuesday_night_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Tuesday')) AND hour_id IN (1, 2, 3, 4, 5, 6)") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_tuesday_night_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_tuesday_night_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ################################################################################################################
-        # #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # #usg_outgoing_wednesday_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                  AND date_format(day_id, 'EEEE') IN ('Tuesday') THEN total_durations else 0 end)"
-        # #
-        # sum_usg_outgoing_wednesday_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Wednesday'))") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_wednesday_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_wednesday_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ###############################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_wednesday_morning_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Monday')
-        # #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
-        #
-        # sum_usg_outgoing_wednesday_morning_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("(service_type IN ('VOICE')) AND (weekday IN ('Wednesday')) AND (hour_id IN (7, 8, 9, 10, 11, 12))") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_wednesday_morning_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_wednesday_morning_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ###############################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_wednesday_afternoon_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Tuesday')
-        # #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
-        #
-        # sum_usg_outgoing_wednesday_afternoon_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Wednesday'))"
-        #            "AND hour_id IN (13, 14, 15, 16, 17, 18)") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_wednesday_afternoon_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_wednesday_afternoon_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ################################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_wednesday_evening_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Tuesday')
-        # #                                           AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_durations else 0 end)"
-        #
-        # sum_usg_outgoing_wednesday_evening_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Wednesday'))"
-        #            "AND hour_id IN (19, 20, 21, 22, 23, 0)") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_wednesday_evening_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_wednesday_evening_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ################################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_wednesday_night_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Tuesday')
-        # #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
-        #
-        # sum_usg_outgoing_wednesday_night_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Wednesday')) AND hour_id IN (1, 2, 3, 4, 5, 6)") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_wednesday_night_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_wednesday_night_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ################################################################################################################
-        # #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # #usg_outgoing_thursday_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                  AND date_format(day_id, 'EEEE') IN ('Tuesday') THEN total_durations else 0 end)"
-        # #
-        # sum_usg_outgoing_thursday_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Thursday'))") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_thursday_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_thursday_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ###############################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_thursday_morning_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Monday')
-        # #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
-        #
-        # sum_usg_outgoing_thursday_morning_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("(service_type IN ('VOICE')) AND (weekday IN ('Thursday')) AND (hour_id IN (7, 8, 9, 10, 11, 12))") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_thursday_morning_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_thursday_morning_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ###############################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_thursday_afternoon_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Tuesday')
-        # #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
-        #
-        # sum_usg_outgoing_thursday_afternoon_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Thursday'))"
-        #            "AND hour_id IN (13, 14, 15, 16, 17, 18)") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_thursday_afternoon_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_thursday_afternoon_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ################################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_thursday_evening_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Tuesday')
-        # #                                           AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_durations else 0 end)"
-        #
-        # sum_usg_outgoing_thursday_evening_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Thursday'))"
-        #            "AND hour_id IN (19, 20, 21, 22, 23, 0)") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_thursday_evening_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_thursday_evening_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ################################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_thursday_night_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Tuesday')
-        # #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
-        #
-        # sum_usg_outgoing_thursday_night_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Thursday')) AND hour_id IN (1, 2, 3, 4, 5, 6)") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_thursday_night_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_thursday_night_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ################################################################################################################
-        # #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # #usg_outgoing_friday_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                  AND date_format(day_id, 'EEEE') IN ('Friday') THEN total_durations else 0 end)"
-        # #
-        # sum_usg_outgoing_friday_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Friday'))") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_friday_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_friday_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ###############################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_friday_morning_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Friday')
-        # #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
-        #
-        # sum_usg_outgoing_friday_morning_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("(service_type IN ('VOICE')) AND (weekday IN ('Friday')) AND (hour_id IN (7, 8, 9, 10, 11, 12))") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_friday_morning_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_friday_morning_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ###############################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_friday_afternoon_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Friday')
-        # #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
-        #
-        # sum_usg_outgoing_friday_afternoon_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Friday'))"
-        #            "AND hour_id IN (13, 14, 15, 16, 17, 18)") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_friday_afternoon_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_friday_afternoon_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ################################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_friday_evening_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Friday')
-        # #                                           AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_durations else 0 end)"
-        #
-        # sum_usg_outgoing_friday_evening_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Friday'))"
-        #            "AND hour_id IN (19, 20, 21, 22, 23, 0)") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_friday_evening_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_friday_evening_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ################################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_friday_night_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Friday')
-        # #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
-        #
-        # sum_usg_outgoing_friday_night_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Friday')) AND hour_id IN (1, 2, 3, 4, 5, 6)") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_friday_night_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_friday_night_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ################################################################################################################
-        # #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # #usg_outgoing_saturday_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                  AND date_format(day_id, 'EEEE') IN ('Saturday') THEN total_durations else 0 end)"
-        # #
-<<<<<<< HEAD
-        # #usg_outgoing_total_call_duration
         sum_usg_outgoing_total_call_duration = df_usage_outgoing_call_relation_sum_daily \
             .where("service_type = 'VOICE'").groupBy("day_id").agg(F.sum("total_durations").alias("total_durations"))
         # sum_usg_outgoing_total_call_duration = sum_usg_outgoing_total_call_duration.where("service_type = 'VOICE'").agg(F.sum("total_durations"))
@@ -4446,30 +2502,9 @@ class TestUnitUsage:
                    "'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT'))") \
             .groupby("day_id").agg(F.sum("total_durations").alias("total_durations"))
 
-=======
-        # sum_usg_outgoing_saturday_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Saturday'))") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
         #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_saturday_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_saturday_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ###############################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_saturday_morning_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Saturday')
-        # #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
->>>>>>> 05d2c3a30b02d918c3e6709440e1e59f3a166f6f
+        # sum_usg_outgoing_ais_local_calls_duration.show()
         #
-        # sum_usg_outgoing_saturday_morning_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("(service_type IN ('VOICE')) AND (weekday IN ('Saturday')) AND (hour_id IN (7, 8, 9, 10, 11, 12))") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-<<<<<<< HEAD
         assert \
             usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
                 "usg_outgoing_ais_local_calls_duration").collect()[0][0] == check_null(
@@ -4532,27 +2567,9 @@ class TestUnitUsage:
 
         ################################################################################################################
         # usg_outgoing_total_sms: "sum(case when service_type IN ('SMS') THEN total_durations else 0 end)"
-=======
->>>>>>> 05d2c3a30b02d918c3e6709440e1e59f3a166f6f
         #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_saturday_morning_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_saturday_morning_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ###############################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_saturday_afternoon_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Saturday')
-        # #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
         #
-        # sum_usg_outgoing_saturday_afternoon_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Saturday'))"
-        #            "AND hour_id IN (13, 14, 15, 16, 17, 18)") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
         #
-<<<<<<< HEAD
 
         sum_usg_outgoing_total_sms = df_usage_outgoing_call_relation_sum_daily \
             .where("(service_type IN ('SMS'))") \
@@ -5614,214 +3631,6 @@ class TestUnitUsage:
                 "usg_outgoing_dtac_number_sms").collect()[0][0] == \
             check_null(sum_usg_outgoing_dtac_number_sms.where("day_id = '2020-01-07'").select(
                 "total_successful_call"))
-=======
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_saturday_afternoon_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_saturday_afternoon_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ################################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_saturday_evening_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Saturday')
-        # #                                           AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_durations else 0 end)"
-        #
-        # sum_usg_outgoing_saturday_evening_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Saturday'))"
-        #            "AND hour_id IN (19, 20, 21, 22, 23, 0)") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_saturday_evening_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_saturday_evening_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ################################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_saturday_night_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Saturday')
-        # #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
-        #
-        # sum_usg_outgoing_saturday_night_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Saturday')) AND hour_id IN (1, 2, 3, 4, 5, 6)") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_saturday_night_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_saturday_night_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ################################################################################################################
-        # #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # #usg_outgoing_sunday_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                  AND date_format(day_id, 'EEEE') IN ('Sunday') THEN total_durations else 0 end)"
-        # #
-        # sum_usg_outgoing_sunday_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Sunday'))") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_sunday_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_sunday_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ###############################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_sunday_morning_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Sunday')
-        # #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
-        #
-        # sum_usg_outgoing_sunday_morning_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("(service_type IN ('VOICE')) AND (weekday IN ('Sunday')) AND (hour_id IN (7, 8, 9, 10, 11, 12))") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_sunday_morning_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_sunday_morning_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ###############################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_sunday_afternoon_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Sunday')
-        # #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
-        #
-        # sum_usg_outgoing_sunday_afternoon_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Sunday'))"
-        #            "AND hour_id IN (13, 14, 15, 16, 17, 18)") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_sunday_afternoon_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_sunday_afternoon_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ################################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_sunday_evening_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Sunday')
-        # #                                           AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_durations else 0 end)"
-        #
-        # sum_usg_outgoing_sunday_evening_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Sunday'))"
-        #            "AND hour_id IN (19, 20, 21, 22, 23, 0)") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_sunday_evening_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_sunday_evening_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ################################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_sunday_night_voice_usage: "sum(case when service_type IN ('VOICE')
-        # #                                           AND date_format(day_id, 'EEEE') IN ('Sunday')
-        # #                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
-        #
-        # sum_usg_outgoing_sunday_night_voice_usage = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND (date_format(day_id, 'EEEE') IN ('Sunday')) AND hour_id IN (1, 2, 3, 4, 5, 6)") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        #
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_sunday_night_voice_usage").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_sunday_night_voice_usage.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        # ################################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_dtac_number_calls: "sum(case when service_type IN ('VOICE')
-        # #                                          AND called_network_type = 'DTAC' THEN total_successful_call else 0 end)"
-        #
-        # sum_usg_outgoing_dtac_number_calls = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND called_network_type = 'DTAC'") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_successful_call").alias("total_successful_call"))
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_dtac_number_calls").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_dtac_number_calls.where("day_id = '2020-01-07'").select(
-        #         "total_successful_call"))
-        # ################################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_dtac_call_duration: "sum(case when service_type IN ('VOICE')
-        # #                                          AND called_network_type = 'DTAC' THEN total_successful_call else 0 end)"
-        #
-        # sum_usg_outgoing_dtac_call_duration = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND called_network_type = 'DTAC'") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_dtac_call_duration").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_dtac_call_duration.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        #
-        # ################################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_dtac_number_sms: "sum(case when service_type IN ('SMS')
-        # #                                          AND called_network_type = 'DTAC' THEN total_successful_call else 0 end)"
-        #
-        # sum_usg_outgoing_dtac_number_sms = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'SMS' AND called_network_type = 'DTAC'") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_successful_call").alias("total_successful_call"))
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_dtac_number_sms").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_dtac_number_sms.where("day_id = '2020-01-07'").select(
-        #         "total_successful_call"))
-        # ################################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_dtac_number_calls: "sum(case when service_type IN ('VOICE')
-        # #                                          AND called_network_type = 'TRUE' THEN total_successful_call else 0 end)"
-        #
-        # sum_usg_outgoing_dtac_number_calls = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND called_network_type = 'TRUE'") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_successful_call").alias("total_successful_call"))
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_dtac_number_calls").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_dtac_number_calls.where("day_id = '2020-01-07'").select(
-        #         "total_successful_call"))
-        # ################################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_dtac_call_duration: "sum(case when service_type IN ('VOICE')
-        # #                                          AND called_network_type = 'TRUE' THEN total_successful_call else 0 end)"
-        #
-        # sum_usg_outgoing_dtac_call_duration = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'VOICE' AND called_network_type = 'TRUE'") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_durations").alias("total_durations"))
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_dtac_call_duration").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_dtac_call_duration.where("day_id = '2020-01-07'").select(
-        #         "total_durations"))
-        #
-        # ################################################################################################################
-        # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-        # # usg_outgoing_dtac_number_sms: "sum(case when service_type IN ('SMS')
-        # #                                          AND called_network_type = 'TRUE' THEN total_successful_call else 0 end)"
-        #
-        # sum_usg_outgoing_dtac_number_sms = df_usage_outgoing_call_relation_sum_daily \
-        #     .where("service_type = 'SMS' AND called_network_type = 'TRUE'") \
-        #     .groupby("day_id") \
-        #     .agg(F.sum("total_successful_call").alias("total_successful_call"))
-        # assert \
-        #     usage_outgoing_call_relation_sum_daily.where("event_partition_date = '2020-01-07'").select(
-        #         "usg_outgoing_dtac_number_sms").collect()[0][0] == \
-        #     check_null(sum_usg_outgoing_dtac_number_sms.where("day_id = '2020-01-07'").select(
-        #         "total_successful_call"))
->>>>>>> 05d2c3a30b02d918c3e6709440e1e59f3a166f6f
 
     def test_daily_profile_for_usg(self, project_context):
         var_project_context = project_context['ProjectContext']
@@ -5842,17 +3651,15 @@ class TestUnitUsage:
         daily_profile_feature = spark.createDataFrame(
             zip(day_id, subscription_identifier),
             schema=['event_partition_date', 'subscription_identifier']) \
+            .withColumn("event_partition_date", F.to_date('event_partition_date', 'dd-MM-yyyy')) \
             .withColumn("access_method_num", F.lit(1))
-        #    .withColumn("event_partition_date", F.to_date('event_partition_date', 'yyyy-MM-dd')) \
-
 
         daily_profile_feature.orderBy("event_partition_date", ascending=True).show(50)
-        # exit(2)
+        exit(2)
 
     def test_l2_usage(self, project_context):
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
-<<<<<<< HEAD
         rdd1 = spark.sparkContext.parallelize(test_l1_usage_postpaid_prepaid_daily)
         df_l1_test = spark.createDataFrame(rdd1,
                                            schema=StructType([StructField("subscription_identifier",StringType(),True),
@@ -6091,54 +3898,3 @@ StructField("event_partition_date",DateType(),True),
         sum_l2.show()
 
         exit(2)
-=======
-        random.seed(100)
-        # print("Daily usage VAS Postpaid: " + str(type(daily_usg_ru_vas_post)))
-        # #daily_usg_ru_vas_post.show()
-        # print("Daily usage incoming IR " + str(type(daily_usage_incoming_sum_ir)))
-        # #daily_usage_incoming_sum_ir.show()
-        # print("Daily usage outgoing IR " + str(type(daily_usage_outgoing_sum_ir)))
-        # #daily_usage_outgoing_sum_ir.show()
-        # print("Daily VAS pre_post usage " + str(type(l1_usage_ru_a_vas_postpaid_prepaid_daily)))
-        # #vas_data.show()
-        # print("Daily GPRS usage " + str(type(daily_usage_ru_a_gprs_cbs_usage)))
-        # #daily_usage_ru_a_gprs_cbs_usage.show()
-        # print("Daily usage incoming " + str(type(daily_usage_incoming_call)))
-        # # daily_usage_incoming_call.show()
-        # print("Daily usage outgoing " + str(type(usage_outgoing_call_relation_sum_daily)))
-        # # usage_outgoing_call_relation_sum_daily.show()
-        # print("Daily profile " + str(type(daily_profile_feature)))
-        # daily_profile_feature.show()
-        # # Building a union usage_post_pre joined with profile
-        # # merge_all_dataset_to_one_table, [
-        # #     'l1_usage_outgoing_call_relation_sum_daily', 'l1_usage_incoming_call_relation_sum_daily',
-        # #     'l1_usage_outgoing_call_relation_sum_ir_daily', 'l1_usage_incoming_call_relation_sum_ir_daily',
-        # #     'l1_usage_ru_a_gprs_cbs_usage_daily', 'l1_usage_ru_a_vas_postpaid_usg_daily',
-        # #     'l1_usage_ru_a_vas_postpaid_prepaid_daily', 'l1_customer_profile_union_daily_feature'
-        # # ],
-        # # 'l1_usage_postpaid_prepaid_daily'
-        # l1_usage_postpaid_prepaid_daily = merge_all_dataset_to_one_table(usage_outgoing_call_relation_sum_daily, daily_usage_incoming_call,
-        #                                                     daily_usage_outgoing_sum_ir, daily_usage_incoming_sum_ir,
-        #                                                     daily_usage_ru_a_gprs_cbs_usage, daily_usg_ru_vas_post,
-        #                                                     l1_usage_ru_a_vas_postpaid_prepaid_daily, daily_profile_feature
-        #                                                    )
-        # # l2_usage_postpaid_prepaid_weekly = build_usage_l2_layer(l1_usage_postpaid_prepaid_daily, var_project_context.catalog.load(
-        # #    'params:l2_usage_postpaid_prepaid_weekly'))
-        # # l2_usage_postpaid_prepaid_weekly.show()
-        min_dt = '2020-01-01'
-        max_dt = '2020-04-01'
-        #doubled_days = days * 2
-        day_id = generate_day_id(min_dt, max_dt)
-        #day_id.extend(day_id)  # two records per day
-        day_id.sort()
-        # print(day_id)
-        number_of_call = generate_int(days, 1, 5)
-        call_type_cd = generate_category(days, [1, 5])
-        no_transaction = generate_int(days, 1, 5)
-        l1_max_feature = spark.createDataFrame(zip(number_of_call, day_id),
-                                                                       schema=['number_of_call', 'day_id']) \
-            .withColumn("access_method_num", F.lit(1)) \
-            .withColumn("day_id", F.to_date('day_id', 'dd-MM-yyyy')) \
-            .withColumn("partition_date", F.lit('20200101'))
-        exit(2)
->>>>>>> 05d2c3a30b02d918c3e6709440e1e59f3a166f6f
