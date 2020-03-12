@@ -7,6 +7,7 @@ from customer360.utilities.config_parser import node_from_config, expansion, l4_
 from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l2.to_l2_nodes import *
 from src.customer360.pipelines.data_engineering.nodes.customer_profile_nodes.to_l1.to_l1_nodes import *
 from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l1.to_l1_nodes import *
+from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l3.to_l3_nodes import *
 import pandas as pd
 import random
 from pyspark.sql import functions as F, SparkSession
@@ -1208,7 +1209,7 @@ class TestUnitBilling:
         assert \
             (popular_topup_day.where("start_of_month='2019-01-01'").select("payment_popular_hour").collect()[0][
                  0]) == 11
-
+        # l2
         weekly_popular_topup_day1 = node_from_config(popular_topup_day,var_project_context.catalog.load('params:l2_popular_topup_day_1'))
 
         assert \
@@ -1273,4 +1274,73 @@ class TestUnitBilling:
             (weekly_topup_hour_2.where("start_of_week='2018-12-31'").select(
                 "payment_popular_hour").collect()[0][
                  0]) == 11
+        # l3
+        popular_topup_day_ranked=node_from_config(popular_topup_day,var_project_context.catalog.load('params:l3_popular_topup_day_ranked'))
+        assert \
+            (popular_topup_day_ranked.where("start_of_month='2019-01-01'").select(
+                "payment_popular_day_topup_count").collect()[0][
+                 0]) == 276
+        assert \
+            (popular_topup_day_ranked.where("start_of_month='2019-01-01'").select(
+                "rank").collect()[0][
+                 0]) == 1
 
+        monthly_popular_topup_day = billing_popular_topup_day_monthly(popular_topup_day_ranked, var_project_context.catalog.load(
+            'params:l3_popular_topup_day'))
+        monthly_popular_topup_day.show()
+        assert \
+            (monthly_popular_topup_day.where("start_of_month='2019-01-01'").select(
+                "start_of_month").collect()[0][
+                 0]) == datetime.strptime('2019-01-01', "%Y-%m-%d").date()
+        assert \
+            (monthly_popular_topup_day.where("start_of_month='2019-01-01'").select(
+                "access_method_num").collect()[0][
+                 0]) == 1
+        assert \
+            (monthly_popular_topup_day.where("start_of_month='2019-01-01'").select(
+                "register_date").collect()[0][
+                 0]) == datetime.strptime('2019-1-1', "%Y-%m-%d").date()
+        assert \
+            (monthly_popular_topup_day.where("start_of_month='2019-01-01'").select(
+                "subscription_identifier").collect()[0][
+                 0]) == 123
+        assert \
+            (monthly_popular_topup_day.where("start_of_month='2019-01-01'").select(
+                "payment_popular_day").collect()[0][
+                 0]) == 3
+        # ------------------------------------------------------------------------------------------------------------
+        popular_topup_hour_ranked = node_from_config(popular_topup_day, var_project_context.catalog.load(
+            'params:l3_popular_topup_hour_ranked'))
+        assert \
+            (popular_topup_hour_ranked.where("start_of_month='2019-01-01'").select(
+                "payment_popular_hour_topup_count").collect()[0][
+                 0]) == 276
+        assert \
+            (popular_topup_hour_ranked.where("start_of_month='2019-01-01'").select(
+                "rank").collect()[0][
+                 0]) == 1
+
+        monthly_popular_topup_hour = billing_popular_topup_hour_monthly(popular_topup_hour_ranked,
+                                                                      var_project_context.catalog.load(
+                                                                          'params:l3_popular_topup_hour'))
+        assert \
+            (monthly_popular_topup_hour.where("start_of_month='2019-01-01'").select(
+                "start_of_month").collect()[0][
+                 0]) == datetime.strptime('2019-01-01', "%Y-%m-%d").date()
+        assert \
+            (monthly_popular_topup_hour.where("start_of_month='2019-01-01'").select(
+                "access_method_num").collect()[0][
+                 0]) == 1
+        assert \
+            (monthly_popular_topup_hour.where("start_of_month='2019-01-01'").select(
+                "register_date").collect()[0][
+                 0]) == datetime.strptime('2019-1-1', "%Y-%m-%d").date()
+        assert \
+            (monthly_popular_topup_hour.where("start_of_month='2019-01-01'").select(
+                "subscription_identifier").collect()[0][
+                 0]) == 123
+        assert \
+            (monthly_popular_topup_hour.where("start_of_month='2019-01-01'").select(
+                "payment_popular_hour").collect()[0][
+                 0]) == 11
+        # exit(2)
