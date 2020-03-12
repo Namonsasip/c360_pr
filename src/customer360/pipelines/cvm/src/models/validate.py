@@ -38,14 +38,14 @@ def get_tpr_fpr(
     true_val, pred_score, thresholds=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 ):
     metrics_to_return = {}
-    fpr, tpr, _ = metrics.roc_curve(true_val, pred_score)
+    fpr, tpr, roc_thresholds = metrics.roc_curve(true_val, pred_score)
 
     def get_threshold_index(all_thresholds, threshold_chosen):
         thresholds_greater = [thr for thr in all_thresholds if thr > threshold_chosen]
         return len(thresholds_greater) - 1
 
     for threshold in thresholds:
-        threshold_index = get_threshold_index(thresholds, threshold)
+        threshold_index = get_threshold_index(roc_thresholds, threshold)
         metrics_to_return[threshold] = {}
         metrics_to_return[threshold]["fpr"] = fpr[threshold_index]
         metrics_to_return[threshold]["tpr"] = tpr[threshold_index]
