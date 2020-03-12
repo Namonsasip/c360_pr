@@ -126,15 +126,6 @@ def billing_most_popular_top_up_channel_weekly(input_df, sql) -> DataFrame:
     return_df = massive_processing_weekly(input_df, sql, "l2_billing_and_payments_weekly_most_popular_top_up_channel")
     return return_df
 
-
-def billing_last_top_up_channel_weekly(input_df, sql) -> DataFrame:
-    """
-    :return:
-    """
-    return_df = massive_processing_weekly(input_df, sql, "l2_billing_and_payments_weekly_last_top_up_channel")
-    return return_df
-
-
 def billing_popular_topup_day_weekly(input_df, sql) -> DataFrame:
     """
     :return:
