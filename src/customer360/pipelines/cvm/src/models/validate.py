@@ -46,8 +46,8 @@ def get_tpr_fpr(
 
     for threshold in thresholds:
         threshold_index = get_threshold_index(thresholds, threshold)
-        metrics_to_return[threshold]["fpr"] = fpr[threshold_index]
-        metrics_to_return[threshold]["tpr"] = tpr[threshold_index]
+        metrics_to_return["{}".format(threshold)]["fpr"] = fpr[threshold_index]
+        metrics_to_return["{}".format(threshold)]["tpr"] = tpr[threshold_index]
     return metrics_to_return
 
 
