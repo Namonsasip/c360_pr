@@ -36,6 +36,7 @@ from kedro.pipeline import Pipeline, node
 from customer360.utilities.config_parser import node_from_config, expansion
 from customer360.pipelines.data_engineering.nodes.stream_nodes.to_l3.to_l3_nodes import generate_l3_fav_streaming_day
 
+
 def streaming_to_l3_pipeline(**kwargs):
     return Pipeline(
         [

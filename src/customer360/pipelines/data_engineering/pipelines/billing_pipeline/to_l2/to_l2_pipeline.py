@@ -3,8 +3,8 @@ from src.customer360.utilities.config_parser import *
 from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l2.to_l2_nodes import *
 from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l1.to_l1_nodes import *
 
-def billing_to_l2_pipeline(**kwargs):
 
+def billing_to_l2_pipeline(**kwargs):
     return Pipeline(
         [
             # Weekly top up count and top up volume pre-paid
