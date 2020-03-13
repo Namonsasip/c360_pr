@@ -5,7 +5,7 @@ from kedro.context.context import load_context
 from pathlib import Path
 import logging, os
 
-conf = os.getenv("CONF", "local")
+conf = os.getenv("CONF", None)
 
 
 def usage_merge_all_data(l2_usage_call_relation_sum_weekly: DataFrame,
@@ -33,6 +33,7 @@ def build_usage_l2_layer(data_frame: DataFrame, dict_obj: dict) -> DataFrame:
     :param dict_obj:
     :return:
     """
+
     def divide_chunks(l, n):
         # looping till length l
         for i in range(0, len(l), n):

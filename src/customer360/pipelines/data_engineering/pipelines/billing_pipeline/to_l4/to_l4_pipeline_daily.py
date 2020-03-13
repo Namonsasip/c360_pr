@@ -1,8 +1,8 @@
 from kedro.pipeline import Pipeline, node
 from src.customer360.utilities.config_parser import *
 
-def billing_to_l4_pipeline_daily(**kwargs):
 
+def billing_to_l4_pipeline_daily(**kwargs):
     return Pipeline(
         [
 
