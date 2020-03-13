@@ -16,6 +16,12 @@ distinct_child_response_aggregated:
     table: distinct_child_response_aggregated
     write_mode: insert
 
+campaign_not_tracking_response:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: nba_dev
+    table: campaign_not_tracking_response
+    write_mode: insert
+
 dm01_fin_top_up:
     type: datasets.spark_hive_dataset.SparkHiveDataSet
     database: prod_delta
