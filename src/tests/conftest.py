@@ -49,6 +49,12 @@ conf = os.getenv("CONF", None)
 def project_context():
 
     spark = get_spark_session()
-
+    '''
+    without timezone config, test result would change if PC timezone is different
+    
+    this also works: 
+    spark.conf.set("spark.sql.session.timeZone", "UTC+7")
+    '''
+    spark.conf.set("spark.sql.session.timeZone", "UTC")
     return {'ProjectContext': ProjectContext(str(Path.cwd()), env=conf), 'Spark': spark}
 
