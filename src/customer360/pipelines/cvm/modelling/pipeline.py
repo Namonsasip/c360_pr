@@ -35,7 +35,7 @@ from src.customer360.pipelines.cvm.modelling.nodes import (
 )
 
 
-def create_train_model(sample_type: str = None) -> Pipeline:
+def create_cvm_train_model(sample_type: str = None) -> Pipeline:
     """ Creates prediction pipeline.
 
       Args:
@@ -60,7 +60,7 @@ def create_train_model(sample_type: str = None) -> Pipeline:
     )
 
 
-def create_predictions(sample_type: str = None) -> Pipeline:
+def create_cvm_predictions(sample_type: str = None) -> Pipeline:
     """ Creates prediction pipeline.
 
       Args:
