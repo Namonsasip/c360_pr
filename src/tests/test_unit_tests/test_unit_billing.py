@@ -16,8 +16,10 @@ from datetime import timedelta
 
 class TestUnitBilling:
 
-    def test_bill_shock_flag(self, project_context):
+    def test_bill_monthly_history(self, project_context):
         """
+        l3_bill_volume
+
         l4_payments_bill_shock
         """
         var_project_context = project_context['ProjectContext']
@@ -32,14 +34,28 @@ class TestUnitBilling:
 
         random.seed(100)
         random_list2 = [random.randint(1, 10) * 100 for iTemp in range(0, len(dummy_date))]
-        df = spark.createDataFrame(zip(dummy_date, random_list2),
-                                   schema=['temp', 'bill_stmt_tot_balance_due_amt']) \
+        df = spark.createDataFrame(zip(dummy_date, random_list2, random_list2, random_list2),
+                                   schema=['temp', 'bill_stmt_tot_balance_due_amt', 'bill_stmt_tot_invoiced_amt',
+                                           'bill_stmt_tot_net_ir_mrkp_amt']) \
             .withColumn("access_method_num", F.lit(1)) \
             .withColumn("billing_stmt_period_eff_date", F.to_date('temp', 'dd-MM-yyyy')) \
             .withColumn("recharge_date", F.to_date('temp', 'dd-MM-yyyy')) \
             .withColumn("register_date", F.to_date(F.lit('2019-01-01'), 'yyyy-MM-dd')) \
             .withColumn("subscription_identifier", F.lit(123))
         df = df.withColumn("start_of_month", F.to_date(F.date_trunc('month', df.billing_stmt_period_eff_date)))
+
+        l3_billing_and_payments_monthly_bill_volume = node_from_config(df, var_project_context.catalog.load(
+            'params:l3_bill_volume'))
+        print('l3billvolume')
+        l3_billing_and_payments_monthly_bill_volume.orderBy('start_of_month').show(888, False)
+        assert \
+            l3_billing_and_payments_monthly_bill_volume.where("start_of_month = '2020-01-01'").select(
+                "payments_bill_volume").collect()[0][
+                0] == 800
+        assert \
+            l3_billing_and_payments_monthly_bill_volume.where("start_of_month = '2020-01-01'").select(
+                "payments_roaming_bill_volume").collect()[0][
+                0] == 800
 
         l4_billing_statement_history_billshock = node_from_config(df, var_project_context.catalog.load(
             'params:l4_payments_bill_shock'))
@@ -1300,10 +1316,8 @@ class TestUnitBilling:
         df_rt = spark.createDataFrame(zip(random_list, my_dates, random_list2),
                                       schema=['recharge_type', 'temp', 'face_value']) \
             .withColumn("access_method_num", F.lit(1)) \
-
             .withColumn("recharge_date", F.to_date(F.lit('2019-01-01'), 'yyyy-MM-dd')) \
             .withColumn("event_partition_date", F.to_date('temp', 'dd-MM-yyyy')) \
-
             .withColumn("register_date", F.to_date(F.lit('2019-01-01'), 'yyyy-MM-dd')) \
             .withColumn("recharge_time", F.lit('2019-08-01T11:25:55.000+0000')) \
             .withColumn("subscription_identifier", F.lit(123))
@@ -1328,17 +1342,19 @@ class TestUnitBilling:
                 0]) == 3
         assert \
             (popular_topup_day.where("start_of_month='2019-01-01'").select("payment_popular_hour").collect()[0][
-                 0]) == 11
+                0]) == 11
         # l2
-        weekly_popular_topup_day1 = node_from_config(popular_topup_day,var_project_context.catalog.load('params:l2_popular_topup_day_1'))
+        weekly_popular_topup_day1 = node_from_config(popular_topup_day,
+                                                     var_project_context.catalog.load('params:l2_popular_topup_day_1'))
 
         assert \
-            (weekly_popular_topup_day1.where("start_of_week='2018-12-31'").select("payment_popular_day_topup_count").collect()[0][
-                 0]) == 18
+            (weekly_popular_topup_day1.where("start_of_week='2018-12-31'").select(
+                "payment_popular_day_topup_count").collect()[0][
+                0]) == 18
         assert \
             (weekly_popular_topup_day1.where("start_of_week='2018-12-31'").select(
                 "rank").collect()[0][
-                 0]) == 1
+                0]) == 1
 
         weekly_popular_topup_day2 = node_from_config(weekly_popular_topup_day1,
                                                      var_project_context.catalog.load('params:l2_popular_topup_day_2'))
@@ -1346,65 +1362,69 @@ class TestUnitBilling:
         assert \
             (weekly_popular_topup_day2.where("start_of_week='2018-12-31'").select(
                 "start_of_week").collect()[0][
-                 0]) == datetime.strptime('2018-12-31',"%Y-%m-%d").date()
+                0]) == datetime.strptime('2018-12-31', "%Y-%m-%d").date()
         assert \
             (weekly_popular_topup_day2.where("start_of_week='2018-12-31'").select(
                 "access_method_num").collect()[0][
-                 0]) == 1
+                0]) == 1
         assert \
             (weekly_popular_topup_day2.where("start_of_week='2018-12-31'").select(
                 "register_date").collect()[0][
-                 0]) == datetime.strptime('2019-1-1',"%Y-%m-%d").date()
+                0]) == datetime.strptime('2019-1-1', "%Y-%m-%d").date()
         assert \
             (weekly_popular_topup_day2.where("start_of_week='2018-12-31'").select(
                 "subscription_identifier").collect()[0][
-                 0]) == 123
+                0]) == 123
         assert \
             (weekly_popular_topup_day2.where("start_of_week='2019-02-18'").select(
                 "payment_popular_day").collect()[0][
-                 0]) == 3
+                0]) == 3
 
-        weekly_topup_hour_1 = node_from_config(popular_topup_day,var_project_context.catalog.load('params:l2_popular_topup_hour_1'))
+        weekly_topup_hour_1 = node_from_config(popular_topup_day,
+                                               var_project_context.catalog.load('params:l2_popular_topup_hour_1'))
 
         assert \
-            (weekly_topup_hour_1.where("start_of_week='2018-12-31'").select("payment_popular_hour_topup_count").collect()[0][
-                 0]) == 18
+            (weekly_topup_hour_1.where("start_of_week='2018-12-31'").select(
+                "payment_popular_hour_topup_count").collect()[0][
+                0]) == 18
         assert \
             (weekly_topup_hour_1.where("start_of_week='2018-12-31'").select(
                 "rank").collect()[0][
-                 0]) == 1
-        weekly_topup_hour_2 = node_from_config(weekly_topup_hour_1,var_project_context.catalog.load('params:l2_popular_topup_hour_2'))
+                0]) == 1
+        weekly_topup_hour_2 = node_from_config(weekly_topup_hour_1,
+                                               var_project_context.catalog.load('params:l2_popular_topup_hour_2'))
 
         assert \
             (weekly_topup_hour_2.where("start_of_week='2018-12-31'").select(
                 "start_of_week").collect()[0][
-                 0]) == datetime.strptime('2018-12-31', "%Y-%m-%d").date()
+                0]) == datetime.strptime('2018-12-31', "%Y-%m-%d").date()
         assert \
             (weekly_topup_hour_2.where("start_of_week='2018-12-31'").select(
                 "access_method_num").collect()[0][
-                 0]) == 1
+                0]) == 1
         assert \
             (weekly_topup_hour_2.where("start_of_week='2018-12-31'").select(
                 "register_date").collect()[0][
-                 0]) == datetime.strptime('2019-1-1', "%Y-%m-%d").date()
+                0]) == datetime.strptime('2019-1-1', "%Y-%m-%d").date()
         assert \
             (weekly_topup_hour_2.where("start_of_week='2018-12-31'").select(
                 "subscription_identifier").collect()[0][
-                 0]) == 123
+                0]) == 123
         assert \
             (weekly_topup_hour_2.where("start_of_week='2018-12-31'").select(
                 "payment_popular_hour").collect()[0][
-                 0]) == 11
+                0]) == 11
         # l3
-        popular_topup_day_ranked=node_from_config(popular_topup_day,var_project_context.catalog.load('params:l3_popular_topup_day_ranked'))
+        popular_topup_day_ranked = node_from_config(popular_topup_day, var_project_context.catalog.load(
+            'params:l3_popular_topup_day_ranked'))
         assert \
             (popular_topup_day_ranked.where("start_of_month='2019-01-01'").select(
                 "payment_popular_day_topup_count").collect()[0][
-                 0]) == 93
+                0]) == 93
         assert \
             (popular_topup_day_ranked.where("start_of_month='2019-01-01'").select(
                 "rank").collect()[0][
-                 0]) == 1
+                0]) == 1
 
         monthly_popular_topup_day = node_from_config(popular_topup_day_ranked, var_project_context.catalog.load(
             'params:l3_popular_topup_day'))
@@ -1412,136 +1432,136 @@ class TestUnitBilling:
         assert \
             (monthly_popular_topup_day.where("start_of_month='2019-01-01'").select(
                 "start_of_month").collect()[0][
-                 0]) == datetime.strptime('2019-01-01', "%Y-%m-%d").date()
+                0]) == datetime.strptime('2019-01-01', "%Y-%m-%d").date()
         assert \
             (monthly_popular_topup_day.where("start_of_month='2019-01-01'").select(
                 "access_method_num").collect()[0][
-                 0]) == 1
+                0]) == 1
         assert \
             (monthly_popular_topup_day.where("start_of_month='2019-01-01'").select(
                 "register_date").collect()[0][
-                 0]) == datetime.strptime('2019-1-1', "%Y-%m-%d").date()
+                0]) == datetime.strptime('2019-1-1', "%Y-%m-%d").date()
         assert \
             (monthly_popular_topup_day.where("start_of_month='2019-01-01'").select(
                 "subscription_identifier").collect()[0][
-                 0]) == 123
+                0]) == 123
         assert \
             (monthly_popular_topup_day.where("start_of_month='2019-01-01'").select(
                 "payment_popular_day").collect()[0][
-                 0]) == 3
+                0]) == 3
 
         popular_topup_hour_ranked = node_from_config(popular_topup_day, var_project_context.catalog.load(
             'params:l3_popular_topup_hour_ranked'))
         assert \
             (popular_topup_hour_ranked.where("start_of_month='2019-01-01'").select(
                 "payment_popular_hour_topup_count").collect()[0][
-                 0]) == 93
+                0]) == 93
         assert \
             (popular_topup_hour_ranked.where("start_of_month='2019-01-01'").select(
                 "rank").collect()[0][
-                 0]) == 1
+                0]) == 1
 
         monthly_popular_topup_hour = node_from_config(popular_topup_hour_ranked,
-                                                                      var_project_context.catalog.load(
-                                                                          'params:l3_popular_topup_hour'))
+                                                      var_project_context.catalog.load(
+                                                          'params:l3_popular_topup_hour'))
         assert \
             (monthly_popular_topup_hour.where("start_of_month='2019-01-01'").select(
                 "start_of_month").collect()[0][
-                 0]) == datetime.strptime('2019-01-01', "%Y-%m-%d").date()
+                0]) == datetime.strptime('2019-01-01', "%Y-%m-%d").date()
         assert \
             (monthly_popular_topup_hour.where("start_of_month='2019-01-01'").select(
                 "access_method_num").collect()[0][
-                 0]) == 1
+                0]) == 1
         assert \
             (monthly_popular_topup_hour.where("start_of_month='2019-01-01'").select(
                 "register_date").collect()[0][
-                 0]) == datetime.strptime('2019-1-1', "%Y-%m-%d").date()
+                0]) == datetime.strptime('2019-1-1', "%Y-%m-%d").date()
         assert \
             (monthly_popular_topup_hour.where("start_of_month='2019-01-01'").select(
                 "subscription_identifier").collect()[0][
-                 0]) == 123
+                0]) == 123
         assert \
             (monthly_popular_topup_hour.where("start_of_month='2019-01-01'").select(
                 "payment_popular_hour").collect()[0][
-                 0]) == 11
+                0]) == 11
         # l4
         popular_topup_day_1 = l4_rolling_window(weekly_popular_topup_day1,
-                                                                      var_project_context.catalog.load(
-                                                                          'params:l4_popular_topup_day_initial'))
+                                                var_project_context.catalog.load(
+                                                    'params:l4_popular_topup_day_initial'))
 
         assert \
             (popular_topup_day_1.where("start_of_week='2019-01-07'").select(
                 "sum_payment_popular_day_topup_count_weekly_last_week").collect()[0][
-                 0]) == 18
+                0]) == 18
         assert \
             (popular_topup_day_1.where("start_of_week='2019-01-07'").select(
                 "sum_payment_popular_day_topup_count_weekly_last_two_week").collect()[0][
-                 0]) == 18
+                0]) == 18
         assert \
             (popular_topup_day_1.where("start_of_week='2019-01-07'").select(
                 "sum_payment_popular_day_topup_count_weekly_last_four_week").collect()[0][
-                 0]) == 18
+                0]) == 18
         assert \
             (popular_topup_day_1.where("start_of_week='2019-01-07'").select(
                 "sum_payment_popular_day_topup_count_weekly_last_twelve_week").collect()[0][
-                 0]) == 18
+                0]) == 18
 
         window_popular_topup_day = l4_rolling_ranked_window(popular_topup_day_1,
-                                                                      var_project_context.catalog.load(
-                                                                          'params:l4_popular_topup_day'))
+                                                            var_project_context.catalog.load(
+                                                                'params:l4_popular_topup_day'))
 
         assert \
             (window_popular_topup_day.where("start_of_week='2019-01-07'").select(
                 "payment_popular_topup_day_last_week").collect()[0][
-                 0]) == 3
+                0]) == 3
         assert \
             (window_popular_topup_day.where("start_of_week='2019-01-07'").select(
                 "payment_popular_topup_day_last_two_week").collect()[0][
-                 0]) == 3
+                0]) == 3
         assert \
             (window_popular_topup_day.where("start_of_week='2019-01-07'").select(
                 "payment_popular_topup_day_last_four_week").collect()[0][
-                 0]) == 3
+                0]) == 3
         assert \
             (window_popular_topup_day.where("start_of_week='2019-01-07'").select(
                 "payment_popular_topup_day_last_twelve_week").collect()[0][
-                 0]) == 3
+                0]) == 3
 
-        popular_topup_hour_1 = l4_rolling_window(weekly_topup_hour_1,var_project_context.catalog.load(
-                                                                          'params:l4_popular_topup_hour_initial'))
+        popular_topup_hour_1 = l4_rolling_window(weekly_topup_hour_1, var_project_context.catalog.load(
+            'params:l4_popular_topup_hour_initial'))
 
         assert \
             (popular_topup_hour_1.where("start_of_week='2019-01-07'").select(
                 "sum_payment_popular_hour_topup_count_weekly_last_week").collect()[0][
-                 0]) == 18
+                0]) == 18
         assert \
             (popular_topup_hour_1.where("start_of_week='2019-01-07'").select(
                 "sum_payment_popular_hour_topup_count_weekly_last_two_week").collect()[0][
-                 0]) == 18
+                0]) == 18
         assert \
             (popular_topup_hour_1.where("start_of_week='2019-01-07'").select(
                 "sum_payment_popular_hour_topup_count_weekly_last_four_week").collect()[0][
-                 0]) == 18
+                0]) == 18
         assert \
             (popular_topup_hour_1.where("start_of_week='2019-01-07'").select(
                 "sum_payment_popular_hour_topup_count_weekly_last_twelve_week").collect()[0][
-                 0]) == 18
+                0]) == 18
 
-        window_popular_topup_hour = l4_rolling_ranked_window(popular_topup_hour_1,var_project_context.catalog.load(
-                                                                          'params:l4_popular_topup_hour'))
+        window_popular_topup_hour = l4_rolling_ranked_window(popular_topup_hour_1, var_project_context.catalog.load(
+            'params:l4_popular_topup_hour'))
         assert \
             (window_popular_topup_hour.where("start_of_week='2019-01-07'").select(
                 "payment_popular_hour_last_week").collect()[0][
-                 0]) == 11
+                0]) == 11
         assert \
             (window_popular_topup_hour.where("start_of_week='2019-01-07'").select(
                 "payment_popular_hour_last_two_week").collect()[0][
-                 0]) == 11
+                0]) == 11
         assert \
             (window_popular_topup_hour.where("start_of_week='2019-01-07'").select(
                 "payment_popular_hour_last_four_week").collect()[0][
-                 0]) == 11
+                0]) == 11
         assert \
             (window_popular_topup_hour.where("start_of_week='2019-01-07'").select(
                 "payment_popular_hour_last_twelve_week").collect()[0][
-                 0]) == 11
+                0]) == 11
