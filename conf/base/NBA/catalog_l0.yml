@@ -4,6 +4,18 @@ campaign_history_master_active:
     table: campaign_history_master_active
     write_mode: insert
 
+distinct_child_code_contact_response:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: default
+    table: distinct_child_code_contact_response
+    write_mode: insert
+
+distinct_child_response_aggregated:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: nba_dev
+    table: distinct_child_response_aggregated
+    write_mode: insert
+
 dm01_fin_top_up:
     type: datasets.spark_hive_dataset.SparkHiveDataSet
     database: prod_delta
