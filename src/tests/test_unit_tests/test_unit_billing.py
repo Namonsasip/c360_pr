@@ -97,11 +97,6 @@ class TestUnitBilling:
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
 
-        # access_method_num: "access_method_num"
-        # register_date: "register_date"
-        # recharge_time: "recharge_time"
-        # start_of_week: "start_of_week"
-        # payments_last_top_up_channel: "first_value(recharge_topup_event_type_name)
         # Below section is to create dummy data.
         date1 = '2020-01-01'
         date2 = '2020-04-01'
@@ -166,15 +161,6 @@ class TestUnitBilling:
         '''
 
         exit(2)
-        # node(
-        #     billing_last_top_up_channel_weekly,
-        #     ["l0_billing_and_payments_rt_t_recharge_daily",
-        #      "l1_customer_profile_union_daily_feature",
-        #      "l0_billing_topup_type",
-        #      "params:l2_last_topup_channel"],
-        #     "l2_billing_and_payments_weekly_last_top_up_channel"
-        # ),
-        # l2_last_topup_channel
 
     def test_popular_channel_feature(self, project_context):
         """
@@ -438,12 +424,10 @@ class TestUnitBilling:
                 "face_value").collect()[0][
                 0] == 800
 
-        # comment out due to timezone conversion bug
-        #  AssertionError: assert '2020-01-06 15:38:21' == '2020-01-06 08:38:21'
-        # assert \
-        #     str(time_since_last_topup.where("start_of_week = '2020-01-06'").select(
-        #         "recharge_time").collect()[0][
-        #         0]) == '2020-01-06 08:38:21'
+        assert \
+            str(time_since_last_topup.where("start_of_week = '2020-01-06'").select(
+                "recharge_time").collect()[0][
+                0]) == '2020-01-06 15:38:21'
 
         l2_time_since_last = node_from_config(time_since_last_topup, var_project_context.catalog.load(
             'params:l2_time_since_last_top_up'))
@@ -454,12 +438,10 @@ class TestUnitBilling:
                 "payments_time_since_last_top_up").collect()[0][
                 0] == 2
 
-        # comment out due to timezone conversion bug
-        # assert '2020-01-10 09:37:52' == '2020-01-10 02:37:52'
-        # assert \
-        #     str(l2_time_since_last.where("start_of_week = '2020-01-06'").select(
-        #         "payments_recharge_time").collect()[0][
-        #         0]) == '2020-01-10 02:37:52'
+        assert \
+            str(l2_time_since_last.where("start_of_week = '2020-01-06'").select(
+                "payments_recharge_time").collect()[0][
+                0]) == '2020-01-10 09:37:52'
 
         l2_last_three_ranked = node_from_config(time_since_last_topup, var_project_context.catalog.load(
             'params:l2_last_three_topup_volume_ranked'))
@@ -509,12 +491,11 @@ class TestUnitBilling:
             l3_time_since_last.where("start_of_month = '2020-01-01'").select(
                 "payments_time_since_last_top_up").collect()[0][
                 0] == 2
-        # comment out due to timezone conversion bug
-        # assert '2020-01-30 03:29:41' == '2020-01-29 20:29:41'
-        # assert \
-        #     str(l3_time_since_last.where("start_of_month = '2020-01-01'").select(
-        #         "payments_recharge_time").collect()[0][
-        #         0]) == '2020-01-29 20:29:41'
+
+        assert \
+            str(l3_time_since_last.where("start_of_month = '2020-01-01'").select(
+                "payments_recharge_time").collect()[0][
+                0]) == '2020-01-30 03:29:41'
         l3_last_three_ranked = node_from_config(time_since_last_topup, var_project_context.catalog.load(
             'params:l3_last_three_topup_volume_ranked'))
         print('last3threeranked')
