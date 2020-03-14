@@ -5,6 +5,7 @@ from kedro.context.context import load_context
 from pathlib import Path
 import logging
 from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l1.to_l1_nodes import massive_processing
+from src.customer360.utilities.spark_util import get_spark_session
 import os
 
 conf = os.getenv("CONF", None)
@@ -183,6 +184,17 @@ def billing_last_top_up_channel_weekly(input_df, customer_profile_df, recharge_t
 
     return_df = customized_processing(input_df, customer_prof, recharge_type_df, sql,
                                       "l2_billing_and_payments_weekly_last_top_up_channel")
+
+    return_df.createOrReplaceTempView("rdf")
+
+    spark = get_spark_session()
+    return_df = spark.sql(""" select * from (select *, 
+    row_number() over(partition by start_of_week,access_method_num,register_date order by recharge_time desc) as rn 
+    from rdf) t1 where t1.rn=1
+     """)
+
+    return_df.drop("rn")
+
     return return_df
 
 
