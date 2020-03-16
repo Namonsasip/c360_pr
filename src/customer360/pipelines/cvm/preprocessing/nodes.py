@@ -28,14 +28,15 @@
 
 
 from pyspark.sql import DataFrame
-from typing import Dict, Any
+from typing import Dict, Any, List
 from pyspark.ml.feature import StringIndexer, Imputer
 from pyspark.ml import Pipeline, PipelineModel
 from pyspark.sql.functions import col
-from customer360.pipelines.cvm.src.utils.list_categorical import list_categorical
 from customer360.pipelines.cvm.src.utils.list_operations import list_sub
-from customer360.pipelines.cvm.src.utils.list_targets import list_targets
 from customer360.pipelines.cvm.src.utils.setup_names import setup_names
+from src.customer360.pipelines.cvm.src.utils.list_categorical import list_categorical
+from src.customer360.pipelines.cvm.src.utils.list_targets import list_targets
+from src.customer360.pipelines.cvm.src.feature_selection import feature_selection
 
 
 def pipeline1_fit(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
@@ -122,3 +123,60 @@ def pipeline1_transform(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
     data_transformed = data_transformed.drop(*numerical_cols)
 
     return data_transformed
+
+
+def feature_selection_all_target(
+    data: DataFrame, parameters: Dict[str, Any]
+) -> List[Any]:
+    """ Return list of selected features and plots for all target columns.
+  Args:
+      data: Spark dataframe contain all features and all target columns.
+      parameters: parameters defined in target parameters*.yml files.
+  Returns:
+      List of selected feature column names for all target columns.
+  """
+
+    # Get target_type from target parameter dict
+    target_class = {}
+    for usecase in parameters["targets"]:
+        for target in parameters["targets"][usecase]:
+            target_class[target] = parameters["targets"][usecase][target]["target_type"]
+    # Remove black list column
+    data = data.drop(*parameters["feature_selection_parameter"]["exclude_col"])
+    data = data.drop(*parameters["key_columns"])
+    final_list = []
+    for target in parameters["feature_selection_parameter"]["target_column"]:
+        exclude_target = parameters["feature_selection_parameter"]["target_column"][:]
+        exclude_target.remove(target)
+        res_list = feature_selection(
+            data.drop(*exclude_target),
+            target,
+            parameters["feature_selection_parameter"]["step_size"],
+            target_class[target],
+        )
+        final_list = list(set(final_list) | set(res_list))
+
+    return final_list
+
+
+def data_filtering_feature(
+    important_column: List[str], whitelist_column: List[str], *df_inputs: DataFrame
+) -> DataFrame:
+    """ Return DataFrame with only selected features and the white list columns.
+    Args:
+        important_column: List of column from the the feature selection process.
+        whitelist_column: List of white list columns to be preserve in a DataFrame.
+        df_inputs: List of DataFrame to filter the feature.
+    Returns:
+        DataFrame with only selected column and white list columns.
+    """
+
+    if len(df_inputs) < 1:
+        raise "df_inputs is missing."
+    df = df_inputs[0]
+    if len(df_inputs) > 1:
+        for df_input in df_inputs[1:]:
+            df = df.join(df_input, whitelist_column, "left_outer")
+    df = df.select(important_column + whitelist_column)
+
+    return df

@@ -32,6 +32,7 @@ from customer360.pipelines.cvm.src.utils.get_suffix import get_suffix
 from src.customer360.pipelines.cvm.preprocessing.nodes import (
     pipeline1_fit,
     pipeline1_transform,
+    feature_selection_all_target,
 )
 
 
@@ -62,6 +63,12 @@ def create_cvm_preprocessing(sample_type: str = None) -> Pipeline:
                 ["l5_cvm_one_day_test" + suffix, "parameters"],
                 "l5_cvm_one_day_test_preprocessed" + suffix,
                 name="create_l5_cvm_one_day_test_preprocessed" + suffix,
+            ),
+            node(
+                feature_selection_all_target,
+                ["l5_cvm_one_day_train_preprocessed" + suffix, "parameters"],
+                "important_columns",
+                name="feature_selection_l5_cvm_one_day_train_preprocessed" + suffix,
             ),
         ]
     )

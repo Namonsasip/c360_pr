@@ -69,6 +69,19 @@ l5_cvm_one_day_test_preprocessed_preds:
   save_args:
     mode: "overwrite"
 
+# one day features from feature selection
+l5_cvm_selected_features_one_day_joined:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: dbfs:/mnt/customer360-cvm/l5_cvm_selected_features_one_day_joined/
+  file_format: "parquet"
+  save_args:
+    mode: "overwrite"
+
+# feature important columns
+important_columns:
+  type: kedro.contrib.io.yaml_local.YAMLLocalDataSet
+  filepath: /dbfs/mnt/customer360-cvm/important_columns
+
 # validation scores
 models_metrics:
   type: kedro.contrib.io.yaml_local.YAMLLocalDataSet

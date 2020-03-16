@@ -39,6 +39,7 @@ from customer360.pipelines.cvm.data_prep.nodes import (
     add_churn_targets,
     create_l5_cvm_one_day_train_test,
     subs_date_join,
+    subs_date_join_important_only,
     create_sample_dataset,
 )
 from customer360.pipelines.cvm.src.utils.get_suffix import get_suffix
@@ -170,6 +171,20 @@ def create_cvm_prepare_data(sample_type: str = None):
                 ],
                 "l5_cvm_features_targets_one_day" + suffix,
                 name="create_l5_cvm_features_targets_one_day" + suffix,
+            ),
+            node(
+                subs_date_join_important_only,
+                [
+                    "important_columns",
+                    "parameters",
+                    "l5_cvm_one_day_users_table" + suffix,
+                    "l3_customer_profile_include_1mo_non_active" + suffix,
+                    "l4_daily_feature_topup_and_volume" + suffix,
+                    "l4_usage_prepaid_postpaid_daily_features" + suffix,
+                    "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly" + suffix,
+                ],
+                "l5_cvm_selected_features_one_day_joined" + suffix,
+                name="create_l5_cvm_selected_features_one_day_joined" + suffix,
             ),
         ]
     )

@@ -26,7 +26,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, Dict
+from typing import Any, Dict, List
 from pyspark.sql import DataFrame
 import functools
 import pyspark.sql.functions as func
@@ -161,16 +161,50 @@ def create_l5_cvm_one_day_train_test(
     return train, test
 
 
-def subs_date_join(*args: DataFrame,) -> DataFrame:
+def subs_date_join_important_only(
+    important_param: List[Any], parameters: Dict[str, Any], *args: DataFrame,
+) -> DataFrame:
+    """ Left join all tables with important variables by given keys.
+
+    Args:
+        important_param: List of important volumns.
+        parameters: parameters defined in parameters.yml.
+        *args: Tables to join.
+    Returns:
+        Left joined and filtered tables.
+    """
+
+    keys = parameters["key_columns"]
+    tables = [setup_names(tab) for tab in args]
+
+    def filter_column(df, filter_list):
+        cols_to_drop = [
+            col_name for col_name in df.columns if col_name not in filter_list
+        ]
+        return df.drop(*cols_to_drop)
+
+    tables = [filter_column(tab, important_param + keys) for tab in tables]
+
+    def join_on(df1, df2):
+        cols_to_drop = [col_name for col_name in df1.columns if col_name in df2.columns]
+        cols_to_drop = list(set(cols_to_drop) - set(keys))
+        df2 = df2.drop(*cols_to_drop)
+        return df1.join(df2, keys, "left")
+
+    return functools.reduce(join_on, tables)
+
+
+def subs_date_join(parameters: Dict[str, Any], *args: DataFrame,) -> DataFrame:
     """ Left join all tables by given keys.
 
     Args:
+        parameters: parameters defined in parameters.yml.
         *args: Tables to join.
     Returns:
         Left joined tables.
     """
 
-    keys = ["key_date", "subscription_identifier"]
+    keys = parameters["key_columns"]
     tables = [setup_names(tab) for tab in args]
 
     def join_on(df1, df2):
