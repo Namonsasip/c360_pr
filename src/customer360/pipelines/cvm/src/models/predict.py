@@ -25,7 +25,7 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import functools
 import logging
 from sklearn.ensemble import RandomForestClassifier
 from pyspark.sql import functions as func
@@ -116,13 +116,20 @@ def pyspark_predict_rf(
     log = logging.getLogger(__name__)
     feature_cols = list_sub(df.columns, target_cols + key_columns + segments_columns)
 
-    for target_chosen in target_cols:
-        log.info("Creating {} predictions.".format(target_chosen))
+    target_cols_use_case_split = list_targets(parameters, case_split=True)
+    macrosegments = parameters["macrosegments"]
 
+    def _pred_for_macrosegment_target(df, use_case, macrosegment, target_chosen):
+
+        log.info(
+            "Creating predicitons for {} target, {} macrosegment.".format(
+                target_chosen, macrosegment
+            )
+        )
         # spark prediction udf
         @func.pandas_udf(returnType=DoubleType())
         def _pandas_predict(*cols):
-            chosen_model = rf_models[target_chosen]
+            chosen_model = rf_models[use_case][macrosegment][target_chosen]
             pd_df = pd.concat(cols, axis=1)
             predictions = chosen_model.predict_proba(pd_df)[:, 1]
             return pd.Series(predictions)
@@ -130,8 +137,35 @@ def pyspark_predict_rf(
         df = df.select(
             *df.columns, _pandas_predict(*feature_cols).alias(target_chosen + "_pred")
         )
+        return df
 
-    return df
+    def _pred_for_macrosegments(df, use_case, macrosegment):
+        df = df.filter("{}_macrosegment == {}".format(use_case, macrosegment))
+        for target_chosen in target_cols_use_case_split[use_case]:
+            df = _pred_for_macrosegment_target(
+                df, use_case, macrosegment, target_chosen
+            )
+        return df
+
+    def _pred_for_usecase(df, use_case):
+        macrosegment_preds = []
+        for macrosegment in macrosegments[use_case]:
+            macrosegment_preds.append(
+                _pred_for_macrosegments(df, use_case, macrosegment)
+            )
+        return functools.reduce(lambda df1, df2: df1.union(df2), macrosegment_preds)
+
+    use_case_preds = []
+    for use_case in parameters["targets"]:
+        use_case_preds.append(_pred_for_usecase(df, use_case))
+
+    def join_on(df1, df2):
+        cols_to_drop = [col_name for col_name in df1.columns if col_name in df2.columns]
+        cols_to_drop = list(set(cols_to_drop) - set(key_columns))
+        df2 = df2.drop(*cols_to_drop)
+        return df1.join(df2, key_columns, "left")
+
+    return functools.reduce(join_on, use_case_preds)
 
 
 def predict_rf_pandas(
