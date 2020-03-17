@@ -1,0 +1,7 @@
+churn_ard_report_input_table:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/NBA/churn_ard_report_input_table
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["date"]
