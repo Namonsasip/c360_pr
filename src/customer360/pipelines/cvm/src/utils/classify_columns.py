@@ -27,7 +27,13 @@
 # limitations under the License.
 
 from pyspark.sql import DataFrame
-from typing import List
+from typing import List, Dict, Any, Iterable
+
+from customer360.pipelines.cvm.src.utils.list_operations import (
+    list_sub,
+    list_intersection,
+)
+from customer360.pipelines.cvm.src.utils.list_targets import list_targets
 
 
 def list_categorical(df: DataFrame) -> List[str]:
@@ -40,3 +46,37 @@ def list_categorical(df: DataFrame) -> List[str]:
         List of categorical variables.
     """
     return [item[0] for item in df.dtypes if item[1].startswith("string")]
+
+
+# noinspection PyDictCreation
+def classify_columns(df: DataFrame, parameters: Dict[str, Any]) -> Dict[str, Iterable]:
+    """ For every column in given DataFrame determines whether it is numerical /
+    categorical etc column.
+
+    Args:
+        df: input DataFrame.
+        parameters: parameters defined in parameters.yml.
+    Returns:
+        Dictionary with one element per category of column and list of columns of that
+        category.
+    """
+
+    columns_cats = {}
+    columns_cats["target"] = list_targets(parameters)
+    columns_cats["key"] = parameters["key_columns"]
+    columns_cats["segment"] = parameters["segment_columns"]
+    columns_cats["categorical"] = list_sub(
+        list_categorical(df), columns_cats["target"] + columns_cats["key"]
+    )
+    columns_cats["numerical"] = list_sub(
+        df.columns,
+        columns_cats["categorical"] + columns_cats["target"] + columns_cats["key"],
+    )
+
+    # make sure only columns are chosen
+    for columns_cat in columns_cats:
+        columns_cats[columns_cat] = list_intersection(
+            columns_cats[columns_cat], df.columns
+        )
+
+    return columns_cats
