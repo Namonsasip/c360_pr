@@ -1,6 +1,6 @@
 from pyspark.sql import functions as F
 from pyspark.sql.types import StringType
-from src.customer360.utilities.spark_util import get_spark_session
+from customer360.utilities.spark_util import get_spark_session
 
 
 def add_last_month_inactive_user(input_df, config):

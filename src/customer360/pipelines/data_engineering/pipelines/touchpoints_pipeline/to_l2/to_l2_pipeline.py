@@ -28,7 +28,7 @@
 
 from kedro.pipeline import Pipeline, node
 
-from src.customer360.utilities.re_usable_functions import l2_massive_processing_with_expansion
+from customer360.utilities.re_usable_functions import l2_massive_processing_with_expansion
 
 
 def touchpoints_to_l2_pipeline(**kwargs):

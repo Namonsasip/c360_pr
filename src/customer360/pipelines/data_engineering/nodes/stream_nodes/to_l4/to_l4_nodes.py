@@ -1,6 +1,6 @@
 from pathlib import Path
 import json
-from src.customer360.utilities.spark_util import get_spark_session
+from customer360.utilities.spark_util import get_spark_session
 
 from customer360.utilities.config_parser import \
     l4_rolling_ranked_window, \

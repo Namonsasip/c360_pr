@@ -1,4 +1,4 @@
-from src.customer360.utilities.config_parser import l4_rolling_window
+from customer360.utilities.config_parser import l4_rolling_window
 from pyspark.sql.functions import monotonically_increasing_id
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols
 from pyspark.sql import DataFrame

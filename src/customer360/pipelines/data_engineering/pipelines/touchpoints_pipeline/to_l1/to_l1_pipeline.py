@@ -28,8 +28,8 @@
 
 from kedro.pipeline import Pipeline, node
 
-from src.customer360.utilities.config_parser import node_from_config
-from src.customer360.utilities.re_usable_functions import l1_massive_processing
+from customer360.utilities.config_parser import node_from_config
+from customer360.utilities.re_usable_functions import l1_massive_processing
 
 
 def touchpoints_to_l1_pipeline(**kwargs):

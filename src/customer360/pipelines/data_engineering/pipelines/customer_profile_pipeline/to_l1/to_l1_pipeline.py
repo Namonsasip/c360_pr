@@ -28,7 +28,7 @@
 
 from kedro.pipeline import Pipeline, node
 
-from src.customer360.utilities.config_parser import node_from_config
+from customer360.utilities.config_parser import node_from_config
 from customer360.pipelines.data_engineering.nodes.customer_profile_nodes.to_l1.to_l1_nodes import *
 from customer360.utilities.re_usable_functions import add_start_of_week_and_month
 

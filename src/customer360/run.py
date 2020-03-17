@@ -46,7 +46,7 @@ from kedro.pipeline import Pipeline
 from kedro.pipeline.node import Node
 from kedro.versioning import Journal
 
-from src.customer360.utilities.spark_util import get_spark_session
+from customer360.utilities.spark_util import get_spark_session
 
 
 from customer360.pipeline import create_pipelines

@@ -28,8 +28,8 @@
 
 from kedro.pipeline import Pipeline, node
 
-from src.customer360.utilities.config_parser import l4_rolling_window
-from src.customer360.pipelines.data_engineering.nodes.complaints_nodes.to_l4.to_l4_nodes import l4_complaints_nps
+from customer360.utilities.config_parser import l4_rolling_window
+from customer360.pipelines.data_engineering.nodes.complaints_nodes.to_l4.to_l4_nodes import l4_complaints_nps
 
 
 def complaints_to_l4_pipeline(**kwargs):
