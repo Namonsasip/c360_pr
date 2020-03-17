@@ -244,6 +244,9 @@ def create_agg_data_for_report(
                 "total_data_ontop_revenue_{0}_day + total_voice_ontop_revenue_{0}_day + total_ppu_revenue_{0}_day as total_revenue_{0}_day".format(
                     period
                 ),
+                "total_data_ontop_count_{0}_day + total_voice_ontop_count_{0}_day as total_number_ontop_purchase_{0}".format(
+                    period
+                ),
             )
         )
 
