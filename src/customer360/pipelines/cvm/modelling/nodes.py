@@ -55,20 +55,29 @@ def train_rf(df: DataFrame, parameters: Dict[str, Any]) -> RandomForestClassifie
     Returns:
         Random forest classifier.
     """
-    target_cols = list_targets(parameters)
+    target_cols = list_targets(parameters, case_split=True)
+    macrosegments = parameters["macrosegments"]
 
     log = logging.getLogger(__name__)
 
     models = {}
-    for target_chosen in target_cols:
-        log.info("Training random forest model for {} target.".format(target_chosen))
+    for use_case in parameters["targets"]:
+        for macrosegment in macrosegments[use_case]:
+            for target_chosen in target_cols[use_case]:
+                log.info(
+                    "Training model for {} target, {} macrosegment.".format(
+                        target_chosen, macrosegment
+                    )
+                )
 
-        X, y = get_pandas_train_test_sample(df, parameters, target_chosen)
+                X, y = get_pandas_train_test_sample(
+                    df, parameters, target_chosen, use_case, macrosegment
+                )
 
-        rf = RandomForestClassifier(n_estimators=100, random_state=100)
-        y = y.values.ravel()
-        rf_fitted = rf.fit(X, y)
-        models[target_chosen] = rf_fitted
+                rf = RandomForestClassifier(n_estimators=100, random_state=100)
+                y = y.values.ravel()
+                rf_fitted = rf.fit(X, y)
+                models[use_case][macrosegment][target_chosen] = rf_fitted
 
     return models
 
