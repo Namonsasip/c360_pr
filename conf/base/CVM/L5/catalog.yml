@@ -86,3 +86,11 @@ important_columns:
 models_metrics:
   type: kedro.contrib.io.yaml_local.YAMLLocalDataSet
   filepath: /dbfs/mnt/customer360-cvm/models_metrics
+
+# same as l5_cvm_selected_features_one_day_joined with ard macrosegments
+l5_cvm_selected_features_one_day_joined_ard_macrosegments:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: dbfs:/mnt/customer360-cvm/l5_cvm_selected_features_one_day_joined_ard_macrosegments/
+  file_format: "parquet"
+  save_args:
+    mode: "overwrite"
