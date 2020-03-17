@@ -122,7 +122,7 @@ def pyspark_predict_rf(
     def _pred_for_macrosegment_target(df, use_case, macrosegment, target_chosen):
 
         log.info(
-            "Creating predicitons for {} target, {} macrosegment.".format(
+            "Creating predictions for {} target, {} macrosegment.".format(
                 target_chosen, macrosegment
             )
         )
