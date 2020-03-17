@@ -41,6 +41,7 @@ from customer360.pipelines.cvm.data_prep.nodes import (
     subs_date_join,
     subs_date_join_important_only,
     create_sample_dataset,
+    add_macrosegments,
 )
 from customer360.pipelines.cvm.src.utils.get_suffix import get_suffix
 
@@ -185,6 +186,13 @@ def create_cvm_prepare_data(sample_type: str = None):
                 ],
                 "l5_cvm_selected_features_one_day_joined" + suffix,
                 name="create_l5_cvm_selected_features_one_day_joined" + suffix,
+            ),
+            node(
+                add_macrosegments,
+                "l5_cvm_features_targets_one_day" + suffix,
+                "l5_cvm_selected_features_one_day_joined_ard_macrosegments" + suffix,
+                name="create_l5_cvm_selected_features_one_day_joined_ard_macrosegments"
+                + suffix,
             ),
         ]
     )
