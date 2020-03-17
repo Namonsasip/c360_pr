@@ -53,3 +53,10 @@ l5_cvm_one_day_train_test:
 key_columns:
   - key_date
   - subscription_identifier
+
+# Columns indicating micro and macrosegments
+segment_columns:
+  - ard_macrosegment
+  - ard_microsegment
+  - churn_macrosegment
+  - churn_microsegment
