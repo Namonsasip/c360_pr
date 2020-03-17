@@ -8097,416 +8097,27 @@ class TestUnitUsage:
         assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
             "sum_usg_data_thursday_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
         assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_tuesday_usage_sum_weekly_last_two_week").collect()[0][0] == l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_tuesday_usage_sum_weekly_last_two_week").collect()[0][0] == (l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
             "sum_usg_data_tuesday_usage_sum_weekly_last_week").collect()[0][0] + l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
-            "sum_usg_data_tuesday_usage_sum_weekly_last_week").collect()[0][0]
+            "sum_usg_data_tuesday_usage_sum_weekly_last_week").collect()[0][0])/2
         assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
             "sum_usg_data_wednesday_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
         assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_data_volume_sum_weekly_last_two_week").collect()[0][0] == l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_data_volume_sum_weekly_last_two_week").collect()[0][0] == (l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
             "sum_usg_incoming_data_volume_sum_weekly_last_week").collect()[0][0] + l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
-            "sum_usg_incoming_data_volume_sum_weekly_last_week").collect()[0][0]
+            "sum_usg_incoming_data_volume_sum_weekly_last_week").collect()[0][0])/2
         assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_data_volume_2G_3G_sum_weekly_last_two_week").collect()[0][0] == l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_data_volume_2G_3G_sum_weekly_last_two_week").collect()[0][0] == (l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
             "sum_usg_incoming_data_volume_2G_3G_sum_weekly_last_week").collect()[0][0] + l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
-            "sum_usg_incoming_data_volume_2G_3G_sum_weekly_last_week").collect()[0][0]
+            "sum_usg_incoming_data_volume_2G_3G_sum_weekly_last_week").collect()[0][0])/2
         assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_data_volume_4G_sum_weekly_last_two_week").collect()[0][0] == l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_data_volume_4G_sum_weekly_last_two_week").collect()[0][0] == (l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
             "sum_usg_incoming_data_volume_4G_sum_weekly_last_week").collect()[0][0] + l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
-            "sum_usg_incoming_data_volume_4G_sum_weekly_last_week").collect()[0][0]
+            "sum_usg_incoming_data_volume_4G_sum_weekly_last_week").collect()[0][0])/2
         assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_local_data_volume_sum_weekly_last_two_week").collect()[0][0] == l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_local_data_volume_sum_weekly_last_two_week").collect()[0][0] == (l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
             "sum_usg_incoming_local_data_volume_sum_weekly_last_week").collect()[0][0] + l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
-            "sum_usg_incoming_local_data_volume_sum_weekly_last_week").collect()[0][0]
-
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_local_data_volume_2G_3G_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_local_data_volume_4G_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_roaming_data_volume_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_roaming_data_volume_2G_3G_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_roaming_data_volume_4G_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_data_volume_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_data_volume_2G_3G_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_data_volume_4G_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_local_data_volume_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_local_data_volume_2G_3G_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_local_data_volume_4G_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_roaming_data_volume_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_roaming_data_volume_2G_3G_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_roaming_data_volume_4G_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_total_data_volume_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_monday_afternoon_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_tuesday_afternoon_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_wednesday_afternoon_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_thursday_afternoon_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_friday_afternoon_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_saturday_afternoon_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_sunday_afternoon_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_monday_morning_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_tuesday_morning_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_wednesday_morning_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_thursday_morning_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_friday_morning_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_saturday_morning_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_sunday_morning_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_monday_evening_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_tuesday_evening_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_wednesday_evening_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_thursday_evening_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_friday_evening_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_saturday_evening_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_sunday_evening_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_monday_night_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_tuesday_night_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_wednesday_night_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_thursday_night_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_friday_night_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_saturday_night_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_sunday_night_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_weekend_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_weekday_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_roaming_call_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_roaming_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_roaming_total_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_roaming_call_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_roaming_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_roaming_total_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_afternoon_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_afternoon_time_call_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_ais_local_calls_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_ais_local_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_dtac_call_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_dtac_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_dtac_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_evening_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_evening_time_call_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_friday_afternoon_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_friday_evening_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_friday_morning_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_friday_night_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_friday_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_local_ais_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_local_call_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_local_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_local_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_monday_afternoon_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_monday_evening_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_monday_morning_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_monday_night_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_monday_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_morning_time_call_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_morning_time_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_night_time_call_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_night_time_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_number_calls_over_30_mins_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_number_calls_upto_10_mins_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_number_calls_upto_15_mins_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_number_calls_upto_20_mins_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_number_calls_upto_30_mins_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_number_calls_upto_5_mins_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_offnet_local_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_saturday_afternoon_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_saturday_evening_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_saturday_morning_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_saturday_night_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_saturday_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_sunday_afternoon_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_sunday_evening_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_sunday_morning_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_sunday_night_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_sunday_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_thursday_afternoon_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_thursday_evening_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_thursday_morning_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_thursday_night_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_thursday_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_total_call_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_total_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_true_call_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_true_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_true_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_tuesday_afternoon_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_tuesday_evening_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_tuesday_morning_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_tuesday_night_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_tuesday_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_wednesday_afternoon_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_wednesday_evening_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_wednesday_morning_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_wednesday_night_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_wednesday_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_weekday_calls_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_weekday_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_weekday_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_weekend_calls_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_weekend_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_incoming_weekend_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_afternoon_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_afternoon_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_ais_local_calls_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_ais_local_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_dtac_call_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_dtac_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_dtac_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_evening_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_evening_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_friday_afternoon_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_friday_evening_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_friday_morning_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_friday_night_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_friday_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_local_ais_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_local_call_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_local_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_local_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_monday_afternoon_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_monday_evening_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_monday_morning_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_monday_night_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_monday_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_morning_time_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_morning_time_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_night_time_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_night_time_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_number_calls_over_30_mins_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_number_calls_upto_10_mins_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_number_calls_upto_15_mins_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_number_calls_upto_20_mins_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_number_calls_upto_30_mins_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_number_calls_upto_5_mins_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_offnet_local_calls_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_offnet_local_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_saturday_afternoon_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_saturday_evening_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_saturday_morning_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_saturday_night_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_saturday_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_sunday_afternoon_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_sunday_evening_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_sunday_morning_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_sunday_night_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_sunday_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_thursday_afternoon_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_thursday_evening_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_thursday_morning_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_thursday_night_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_thursday_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_total_call_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_total_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_true_call_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_true_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_true_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_tuesday_afternoon_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_tuesday_evening_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_tuesday_morning_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_tuesday_night_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_tuesday_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_wednesday_afternoon_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_wednesday_evening_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_wednesday_morning_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_wednesday_night_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_wednesday_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_weekday_calls_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_weekday_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_weekday_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_weekend_calls_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_weekend_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_outgoing_weekend_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
+            "sum_usg_incoming_local_data_volume_sum_weekly_last_week").collect()[0][0])/2
 
         ###############################################################################################################
 
@@ -8528,420 +8139,498 @@ class TestUnitUsage:
             "sum_usg_incoming_data_volume_sum_weekly_last_week").collect()[0][0] == None
 
     def test_l4_weekly_avg(self, project_context):
-        def test_l4_weekly_sum(self, project_context):
-            var_project_context = project_context['ProjectContext']
-            spark = project_context['Spark']
-            rdd1 = spark.sparkContext.parallelize(test_l1_usage_postpaid_prepaid_daily)
-            df_l1_test = spark.createDataFrame(rdd1,
-                                               schema=StructType(
-                                                   [StructField("subscription_identifier", StringType(), True),
-                                                    StructField("call_start_dt", DateType(), True),
-                                                    StructField("day_id", DateType(), True),
-                                                    StructField("start_of_month", DateType(), True),
-                                                    StructField("start_of_week", DateType(), True),
-                                                    StructField("usg_data_friday_afternoon_usage", StringType(), True),
-                                                    StructField("usg_data_friday_evening_usage", StringType(), True),
-                                                    StructField("usg_data_friday_morning_usage", StringType(), True),
-                                                    StructField("usg_data_friday_night_usage", StringType(), True),
-                                                    StructField("usg_data_friday_usage", StringType(), True),
-                                                    StructField("usg_data_last_action_date", DateType(), True),
-                                                    StructField("usg_data_monday_afternoon_usage", StringType(), True),
-                                                    StructField("usg_data_monday_evening_usage", StringType(), True),
-                                                    StructField("usg_data_monday_morning_usage", StringType(), True),
-                                                    StructField("usg_data_monday_night_usage", StringType(), True),
-                                                    StructField("usg_data_monday_usage", StringType(), True),
-                                                    StructField("usg_data_saturday_afternoon_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_data_saturday_evening_usage", StringType(), True),
-                                                    StructField("usg_data_saturday_morning_usage", StringType(), True),
-                                                    StructField("usg_data_saturday_night_usage", StringType(), True),
-                                                    StructField("usg_data_saturday_usage", StringType(), True),
-                                                    StructField("usg_data_sunday_afternoon_usage", StringType(), True),
-                                                    StructField("usg_data_sunday_evening_usage", StringType(), True),
-                                                    StructField("usg_data_sunday_morning_usage", StringType(), True),
-                                                    StructField("usg_data_sunday_night_usage", StringType(), True),
-                                                    StructField("usg_data_sunday_usage", StringType(), True),
-                                                    StructField("usg_data_thursday_afternoon_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_data_thursday_evening_usage", StringType(), True),
-                                                    StructField("usg_data_thursday_morning_usage", StringType(), True),
-                                                    StructField("usg_data_thursday_night_usage", StringType(), True),
-                                                    StructField("usg_data_thursday_usage", StringType(), True),
-                                                    StructField("usg_data_tuesday_afternoon_usage", StringType(), True),
-                                                    StructField("usg_data_tuesday_evening_usage", StringType(), True),
-                                                    StructField("usg_data_tuesday_morning_usage", StringType(), True),
-                                                    StructField("usg_data_tuesday_night_usage", StringType(), True),
-                                                    StructField("usg_data_tuesday_usage", StringType(), True),
-                                                    StructField("usg_data_wednesday_afternoon_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_data_wednesday_evening_usage", StringType(), True),
-                                                    StructField("usg_data_wednesday_morning_usage", StringType(), True),
-                                                    StructField("usg_data_wednesday_night_usage", StringType(), True),
-                                                    StructField("usg_data_wednesday_usage", StringType(), True),
-                                                    StructField("usg_data_weekday_usage", StringType(), True),
-                                                    StructField("usg_data_weekend_usage", StringType(), True),
-                                                    StructField("usg_incoming_afternoon_number_sms", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_afternoon_time_call", StringType(), True),
-                                                    StructField("usg_incoming_ais_local_calls_duration", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_ais_local_number_calls", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_data_volume", StringType(), True),
-                                                    StructField("usg_incoming_data_volume_2G_3G", StringType(), True),
-                                                    StructField("usg_incoming_data_volume_4G", StringType(), True),
-                                                    StructField("usg_incoming_dtac_call_duration", StringType(), True),
-                                                    StructField("usg_incoming_dtac_number_calls", StringType(), True),
-                                                    StructField("usg_incoming_dtac_number_sms", StringType(), True),
-                                                    StructField("usg_incoming_evening_number_sms", StringType(), True),
-                                                    StructField("usg_incoming_evening_time_call", StringType(), True),
-                                                    StructField("usg_incoming_friday_afternoon_voice_usage",
-                                                                StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_friday_evening_voice_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_friday_morning_voice_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_friday_night_voice_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_friday_voice_usage", StringType(), True),
-                                                    StructField("usg_incoming_last_call_date", DateType(), True),
-                                                    StructField("usg_incoming_last_sms_date", DateType(), True),
-                                                    StructField("usg_incoming_local_ais_sms", StringType(), True),
-                                                    StructField("usg_incoming_local_call_duration", StringType(), True),
-                                                    StructField("usg_incoming_local_data_volume", StringType(), True),
-                                                    StructField("usg_incoming_local_data_volume_2G_3G", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_local_data_volume_4G", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_local_number_calls", StringType(), True),
-                                                    StructField("usg_incoming_local_sms", StringType(), True),
-                                                    StructField("usg_incoming_monday_afternoon_voice_usage",
-                                                                StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_monday_evening_voice_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_monday_morning_voice_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_monday_night_voice_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_monday_voice_usage", StringType(), True),
-                                                    StructField("usg_incoming_morning_time_call", StringType(), True),
-                                                    StructField("usg_incoming_morning_time_number_sms", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_night_time_call", StringType(), True),
-                                                    StructField("usg_incoming_night_time_number_sms", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_number_calls", StringType(), True),
-                                                    StructField("usg_incoming_number_calls_over_30_mins", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_number_calls_upto_10_mins", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_number_calls_upto_15_mins", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_number_calls_upto_20_mins", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_number_calls_upto_30_mins", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_number_calls_upto_5_mins", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_offnet_local_number_calls", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_roaming_call_duration", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_roaming_data_volume", StringType(), True),
-                                                    StructField("usg_incoming_roaming_data_volume_2G_3G", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_roaming_data_volume_4G", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_roaming_last_sms_date", DateType(), True),
-                                                    StructField("usg_incoming_roaming_number_calls", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_roaming_total_sms", StringType(), True),
-                                                    StructField("usg_incoming_saturday_afternoon_voice_usage",
-                                                                StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_saturday_evening_voice_usage",
-                                                                StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_saturday_morning_voice_usage",
-                                                                StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_saturday_night_voice_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_saturday_voice_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_sunday_afternoon_voice_usage",
-                                                                StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_sunday_evening_voice_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_sunday_morning_voice_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_sunday_night_voice_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_sunday_voice_usage", StringType(), True),
-                                                    StructField("usg_incoming_thursday_afternoon_voice_usage",
-                                                                StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_thursday_evening_voice_usage",
-                                                                StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_thursday_morning_voice_usage",
-                                                                StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_thursday_night_voice_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_thursday_voice_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_total_call_duration", StringType(), True),
-                                                    StructField("usg_incoming_total_sms", StringType(), True),
-                                                    StructField("usg_incoming_true_call_duration", StringType(), True),
-                                                    StructField("usg_incoming_true_number_calls", StringType(), True),
-                                                    StructField("usg_incoming_true_number_sms", StringType(), True),
-                                                    StructField("usg_incoming_tuesday_afternoon_voice_usage",
-                                                                StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_tuesday_evening_voice_usage",
-                                                                StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_tuesday_morning_voice_usage",
-                                                                StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_tuesday_night_voice_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_tuesday_voice_usage", StringType(), True),
-                                                    StructField("usg_incoming_wednesday_afternoon_voice_usage",
-                                                                StringType(), True),
-                                                    StructField("usg_incoming_wednesday_evening_voice_usage",
-                                                                StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_wednesday_morning_voice_usage",
-                                                                StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_wednesday_night_voice_usage",
-                                                                StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_wednesday_voice_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_weekday_calls_duration", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_weekday_number_calls", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_weekday_number_sms", StringType(), True),
-                                                    StructField("usg_incoming_weekend_calls_duration", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_weekend_number_calls", StringType(),
-                                                                True),
-                                                    StructField("usg_incoming_weekend_number_sms", StringType(), True),
-                                                    StructField("usg_last_action_date", DateType(), True),
-                                                    StructField("usg_last_call_date", DateType(), True),
-                                                    StructField("usg_last_sms_date", DateType(), True),
-                                                    StructField("usg_outgoing_afternoon_number_calls", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_afternoon_number_sms", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_ais_local_calls_duration", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_ais_local_number_calls", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_data_volume", StringType(), True),
-                                                    StructField("usg_outgoing_data_volume_2G_3G", StringType(), True),
-                                                    StructField("usg_outgoing_data_volume_4G", StringType(), True),
-                                                    StructField("usg_outgoing_dtac_call_duration", StringType(), True),
-                                                    StructField("usg_outgoing_dtac_number_calls", StringType(), True),
-                                                    StructField("usg_outgoing_dtac_number_sms", StringType(), True),
-                                                    StructField("usg_outgoing_evening_number_calls", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_evening_number_sms", StringType(), True),
-                                                    StructField("usg_outgoing_friday_afternoon_voice_usage",
-                                                                StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_friday_evening_voice_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_friday_morning_voice_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_friday_night_voice_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_friday_voice_usage", StringType(), True),
-                                                    StructField("usg_outgoing_last_call_date", DateType(), True),
-                                                    StructField("usg_outgoing_last_sms_date", DateType(), True),
-                                                    StructField("usg_outgoing_local_ais_sms", StringType(), True),
-                                                    StructField("usg_outgoing_local_call_duration", StringType(), True),
-                                                    StructField("usg_outgoing_local_data_volume", StringType(), True),
-                                                    StructField("usg_outgoing_local_data_volume_2G_3G", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_local_data_volume_4G", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_local_number_calls", StringType(), True),
-                                                    StructField("usg_outgoing_local_sms", StringType(), True),
-                                                    StructField("usg_outgoing_monday_afternoon_voice_usage",
-                                                                StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_monday_evening_voice_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_monday_morning_voice_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_monday_night_voice_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_monday_voice_usage", StringType(), True),
-                                                    StructField("usg_outgoing_morning_time_number_calls", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_morning_time_number_sms", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_night_time_number_calls", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_night_time_number_sms", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_number_calls", StringType(), True),
-                                                    StructField("usg_outgoing_number_calls_over_30_mins", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_number_calls_upto_10_mins", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_number_calls_upto_15_mins", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_number_calls_upto_20_mins", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_number_calls_upto_30_mins", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_number_calls_upto_5_mins", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_offnet_local_calls_duration",
-                                                                StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_offnet_local_number_calls", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_roaming_call_duration", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_roaming_data_volume", StringType(), True),
-                                                    StructField("usg_outgoing_roaming_data_volume_2G_3G", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_roaming_data_volume_4G", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_roaming_last_sms_date", DateType(), True),
-                                                    StructField("usg_outgoing_roaming_number_calls", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_roaming_total_sms", StringType(), True),
-                                                    StructField("usg_outgoing_saturday_afternoon_voice_usage",
-                                                                StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_saturday_evening_voice_usage",
-                                                                StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_saturday_morning_voice_usage",
-                                                                StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_saturday_night_voice_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_saturday_voice_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_sunday_afternoon_voice_usage",
-                                                                StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_sunday_evening_voice_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_sunday_morning_voice_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_sunday_night_voice_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_sunday_voice_usage", StringType(), True),
-                                                    StructField("usg_outgoing_thursday_afternoon_voice_usage",
-                                                                StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_thursday_evening_voice_usage",
-                                                                StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_thursday_morning_voice_usage",
-                                                                StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_thursday_night_voice_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_thursday_voice_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_total_call_duration", StringType(), True),
-                                                    StructField("usg_outgoing_total_sms", StringType(), True),
-                                                    StructField("usg_outgoing_true_call_duration", StringType(), True),
-                                                    StructField("usg_outgoing_true_number_calls", StringType(), True),
-                                                    StructField("usg_outgoing_true_number_sms", StringType(), True),
-                                                    StructField("usg_outgoing_tuesday_afternoon_voice_usage",
-                                                                StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_tuesday_evening_voice_usage",
-                                                                StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_tuesday_morning_voice_usage",
-                                                                StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_tuesday_night_voice_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_tuesday_voice_usage", StringType(), True),
-                                                    StructField("usg_outgoing_wednesday_afternoon_voice_usage",
-                                                                StringType(), True),
-                                                    StructField("usg_outgoing_wednesday_evening_voice_usage",
-                                                                StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_wednesday_morning_voice_usage",
-                                                                StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_wednesday_night_voice_usage",
-                                                                StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_wednesday_voice_usage", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_weekday_calls_duration", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_weekday_number_calls", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_weekday_number_sms", StringType(), True),
-                                                    StructField("usg_outgoing_weekend_calls_duration", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_weekend_number_calls", StringType(),
-                                                                True),
-                                                    StructField("usg_outgoing_weekend_number_sms", StringType(), True),
-                                                    StructField("usg_total_data_last_action_date", DateType(), True),
-                                                    StructField("usg_total_data_volume", StringType(), True),
-                                                    StructField("usg_vas_last_action_dt", DateType(), True),
-                                                    StructField("usg_vas_total_number_of_call", StringType(), True),
-                                                    StructField("event_partition_date", DateType(), True),
-                                                    ]))
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+        rdd1 = spark.sparkContext.parallelize(test_l1_usage_postpaid_prepaid_daily)
+        df_l1_test = spark.createDataFrame(rdd1,
+                                           schema=StructType(
+                                               [StructField("subscription_identifier", StringType(), True),
+                                                StructField("call_start_dt", DateType(), True),
+                                                StructField("day_id", DateType(), True),
+                                                StructField("start_of_month", DateType(), True),
+                                                StructField("start_of_week", DateType(), True),
+                                                StructField("usg_data_friday_afternoon_usage", StringType(), True),
+                                                StructField("usg_data_friday_evening_usage", StringType(), True),
+                                                StructField("usg_data_friday_morning_usage", StringType(), True),
+                                                StructField("usg_data_friday_night_usage", StringType(), True),
+                                                StructField("usg_data_friday_usage", StringType(), True),
+                                                StructField("usg_data_last_action_date", DateType(), True),
+                                                StructField("usg_data_monday_afternoon_usage", StringType(), True),
+                                                StructField("usg_data_monday_evening_usage", StringType(), True),
+                                                StructField("usg_data_monday_morning_usage", StringType(), True),
+                                                StructField("usg_data_monday_night_usage", StringType(), True),
+                                                StructField("usg_data_monday_usage", StringType(), True),
+                                                StructField("usg_data_saturday_afternoon_usage", StringType(),
+                                                            True),
+                                                StructField("usg_data_saturday_evening_usage", StringType(), True),
+                                                StructField("usg_data_saturday_morning_usage", StringType(), True),
+                                                StructField("usg_data_saturday_night_usage", StringType(), True),
+                                                StructField("usg_data_saturday_usage", StringType(), True),
+                                                StructField("usg_data_sunday_afternoon_usage", StringType(), True),
+                                                StructField("usg_data_sunday_evening_usage", StringType(), True),
+                                                StructField("usg_data_sunday_morning_usage", StringType(), True),
+                                                StructField("usg_data_sunday_night_usage", StringType(), True),
+                                                StructField("usg_data_sunday_usage", StringType(), True),
+                                                StructField("usg_data_thursday_afternoon_usage", StringType(),
+                                                            True),
+                                                StructField("usg_data_thursday_evening_usage", StringType(), True),
+                                                StructField("usg_data_thursday_morning_usage", StringType(), True),
+                                                StructField("usg_data_thursday_night_usage", StringType(), True),
+                                                StructField("usg_data_thursday_usage", StringType(), True),
+                                                StructField("usg_data_tuesday_afternoon_usage", StringType(), True),
+                                                StructField("usg_data_tuesday_evening_usage", StringType(), True),
+                                                StructField("usg_data_tuesday_morning_usage", StringType(), True),
+                                                StructField("usg_data_tuesday_night_usage", StringType(), True),
+                                                StructField("usg_data_tuesday_usage", StringType(), True),
+                                                StructField("usg_data_wednesday_afternoon_usage", StringType(),
+                                                            True),
+                                                StructField("usg_data_wednesday_evening_usage", StringType(), True),
+                                                StructField("usg_data_wednesday_morning_usage", StringType(), True),
+                                                StructField("usg_data_wednesday_night_usage", StringType(), True),
+                                                StructField("usg_data_wednesday_usage", StringType(), True),
+                                                StructField("usg_data_weekday_usage", StringType(), True),
+                                                StructField("usg_data_weekend_usage", StringType(), True),
+                                                StructField("usg_incoming_afternoon_number_sms", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_afternoon_time_call", StringType(), True),
+                                                StructField("usg_incoming_ais_local_calls_duration", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_ais_local_number_calls", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_data_volume", StringType(), True),
+                                                StructField("usg_incoming_data_volume_2G_3G", StringType(), True),
+                                                StructField("usg_incoming_data_volume_4G", StringType(), True),
+                                                StructField("usg_incoming_dtac_call_duration", StringType(), True),
+                                                StructField("usg_incoming_dtac_number_calls", StringType(), True),
+                                                StructField("usg_incoming_dtac_number_sms", StringType(), True),
+                                                StructField("usg_incoming_evening_number_sms", StringType(), True),
+                                                StructField("usg_incoming_evening_time_call", StringType(), True),
+                                                StructField("usg_incoming_friday_afternoon_voice_usage",
+                                                            StringType(),
+                                                            True),
+                                                StructField("usg_incoming_friday_evening_voice_usage", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_friday_morning_voice_usage", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_friday_night_voice_usage", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_friday_voice_usage", StringType(), True),
+                                                StructField("usg_incoming_last_call_date", DateType(), True),
+                                                StructField("usg_incoming_last_sms_date", DateType(), True),
+                                                StructField("usg_incoming_local_ais_sms", StringType(), True),
+                                                StructField("usg_incoming_local_call_duration", StringType(), True),
+                                                StructField("usg_incoming_local_data_volume", StringType(), True),
+                                                StructField("usg_incoming_local_data_volume_2G_3G", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_local_data_volume_4G", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_local_number_calls", StringType(), True),
+                                                StructField("usg_incoming_local_sms", StringType(), True),
+                                                StructField("usg_incoming_monday_afternoon_voice_usage",
+                                                            StringType(),
+                                                            True),
+                                                StructField("usg_incoming_monday_evening_voice_usage", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_monday_morning_voice_usage", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_monday_night_voice_usage", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_monday_voice_usage", StringType(), True),
+                                                StructField("usg_incoming_morning_time_call", StringType(), True),
+                                                StructField("usg_incoming_morning_time_number_sms", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_night_time_call", StringType(), True),
+                                                StructField("usg_incoming_night_time_number_sms", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_number_calls", StringType(), True),
+                                                StructField("usg_incoming_number_calls_over_30_mins", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_number_calls_upto_10_mins", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_number_calls_upto_15_mins", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_number_calls_upto_20_mins", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_number_calls_upto_30_mins", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_number_calls_upto_5_mins", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_offnet_local_number_calls", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_roaming_call_duration", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_roaming_data_volume", StringType(), True),
+                                                StructField("usg_incoming_roaming_data_volume_2G_3G", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_roaming_data_volume_4G", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_roaming_last_sms_date", DateType(), True),
+                                                StructField("usg_incoming_roaming_number_calls", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_roaming_total_sms", StringType(), True),
+                                                StructField("usg_incoming_saturday_afternoon_voice_usage",
+                                                            StringType(),
+                                                            True),
+                                                StructField("usg_incoming_saturday_evening_voice_usage",
+                                                            StringType(),
+                                                            True),
+                                                StructField("usg_incoming_saturday_morning_voice_usage",
+                                                            StringType(),
+                                                            True),
+                                                StructField("usg_incoming_saturday_night_voice_usage", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_saturday_voice_usage", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_sunday_afternoon_voice_usage",
+                                                            StringType(),
+                                                            True),
+                                                StructField("usg_incoming_sunday_evening_voice_usage", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_sunday_morning_voice_usage", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_sunday_night_voice_usage", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_sunday_voice_usage", StringType(), True),
+                                                StructField("usg_incoming_thursday_afternoon_voice_usage",
+                                                            StringType(),
+                                                            True),
+                                                StructField("usg_incoming_thursday_evening_voice_usage",
+                                                            StringType(),
+                                                            True),
+                                                StructField("usg_incoming_thursday_morning_voice_usage",
+                                                            StringType(),
+                                                            True),
+                                                StructField("usg_incoming_thursday_night_voice_usage", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_thursday_voice_usage", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_total_call_duration", StringType(), True),
+                                                StructField("usg_incoming_total_sms", StringType(), True),
+                                                StructField("usg_incoming_true_call_duration", StringType(), True),
+                                                StructField("usg_incoming_true_number_calls", StringType(), True),
+                                                StructField("usg_incoming_true_number_sms", StringType(), True),
+                                                StructField("usg_incoming_tuesday_afternoon_voice_usage",
+                                                            StringType(),
+                                                            True),
+                                                StructField("usg_incoming_tuesday_evening_voice_usage",
+                                                            StringType(),
+                                                            True),
+                                                StructField("usg_incoming_tuesday_morning_voice_usage",
+                                                            StringType(),
+                                                            True),
+                                                StructField("usg_incoming_tuesday_night_voice_usage", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_tuesday_voice_usage", StringType(), True),
+                                                StructField("usg_incoming_wednesday_afternoon_voice_usage",
+                                                            StringType(), True),
+                                                StructField("usg_incoming_wednesday_evening_voice_usage",
+                                                            StringType(),
+                                                            True),
+                                                StructField("usg_incoming_wednesday_morning_voice_usage",
+                                                            StringType(),
+                                                            True),
+                                                StructField("usg_incoming_wednesday_night_voice_usage",
+                                                            StringType(),
+                                                            True),
+                                                StructField("usg_incoming_wednesday_voice_usage", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_weekday_calls_duration", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_weekday_number_calls", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_weekday_number_sms", StringType(), True),
+                                                StructField("usg_incoming_weekend_calls_duration", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_weekend_number_calls", StringType(),
+                                                            True),
+                                                StructField("usg_incoming_weekend_number_sms", StringType(), True),
+                                                StructField("usg_last_action_date", DateType(), True),
+                                                StructField("usg_last_call_date", DateType(), True),
+                                                StructField("usg_last_sms_date", DateType(), True),
+                                                StructField("usg_outgoing_afternoon_number_calls", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_afternoon_number_sms", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_ais_local_calls_duration", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_ais_local_number_calls", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_data_volume", StringType(), True),
+                                                StructField("usg_outgoing_data_volume_2G_3G", StringType(), True),
+                                                StructField("usg_outgoing_data_volume_4G", StringType(), True),
+                                                StructField("usg_outgoing_dtac_call_duration", StringType(), True),
+                                                StructField("usg_outgoing_dtac_number_calls", StringType(), True),
+                                                StructField("usg_outgoing_dtac_number_sms", StringType(), True),
+                                                StructField("usg_outgoing_evening_number_calls", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_evening_number_sms", StringType(), True),
+                                                StructField("usg_outgoing_friday_afternoon_voice_usage",
+                                                            StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_friday_evening_voice_usage", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_friday_morning_voice_usage", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_friday_night_voice_usage", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_friday_voice_usage", StringType(), True),
+                                                StructField("usg_outgoing_last_call_date", DateType(), True),
+                                                StructField("usg_outgoing_last_sms_date", DateType(), True),
+                                                StructField("usg_outgoing_local_ais_sms", StringType(), True),
+                                                StructField("usg_outgoing_local_call_duration", StringType(), True),
+                                                StructField("usg_outgoing_local_data_volume", StringType(), True),
+                                                StructField("usg_outgoing_local_data_volume_2G_3G", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_local_data_volume_4G", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_local_number_calls", StringType(), True),
+                                                StructField("usg_outgoing_local_sms", StringType(), True),
+                                                StructField("usg_outgoing_monday_afternoon_voice_usage",
+                                                            StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_monday_evening_voice_usage", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_monday_morning_voice_usage", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_monday_night_voice_usage", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_monday_voice_usage", StringType(), True),
+                                                StructField("usg_outgoing_morning_time_number_calls", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_morning_time_number_sms", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_night_time_number_calls", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_night_time_number_sms", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_number_calls", StringType(), True),
+                                                StructField("usg_outgoing_number_calls_over_30_mins", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_number_calls_upto_10_mins", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_number_calls_upto_15_mins", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_number_calls_upto_20_mins", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_number_calls_upto_30_mins", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_number_calls_upto_5_mins", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_offnet_local_calls_duration",
+                                                            StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_offnet_local_number_calls", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_roaming_call_duration", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_roaming_data_volume", StringType(), True),
+                                                StructField("usg_outgoing_roaming_data_volume_2G_3G", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_roaming_data_volume_4G", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_roaming_last_sms_date", DateType(), True),
+                                                StructField("usg_outgoing_roaming_number_calls", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_roaming_total_sms", StringType(), True),
+                                                StructField("usg_outgoing_saturday_afternoon_voice_usage",
+                                                            StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_saturday_evening_voice_usage",
+                                                            StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_saturday_morning_voice_usage",
+                                                            StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_saturday_night_voice_usage", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_saturday_voice_usage", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_sunday_afternoon_voice_usage",
+                                                            StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_sunday_evening_voice_usage", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_sunday_morning_voice_usage", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_sunday_night_voice_usage", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_sunday_voice_usage", StringType(), True),
+                                                StructField("usg_outgoing_thursday_afternoon_voice_usage",
+                                                            StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_thursday_evening_voice_usage",
+                                                            StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_thursday_morning_voice_usage",
+                                                            StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_thursday_night_voice_usage", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_thursday_voice_usage", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_total_call_duration", StringType(), True),
+                                                StructField("usg_outgoing_total_sms", StringType(), True),
+                                                StructField("usg_outgoing_true_call_duration", StringType(), True),
+                                                StructField("usg_outgoing_true_number_calls", StringType(), True),
+                                                StructField("usg_outgoing_true_number_sms", StringType(), True),
+                                                StructField("usg_outgoing_tuesday_afternoon_voice_usage",
+                                                            StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_tuesday_evening_voice_usage",
+                                                            StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_tuesday_morning_voice_usage",
+                                                            StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_tuesday_night_voice_usage", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_tuesday_voice_usage", StringType(), True),
+                                                StructField("usg_outgoing_wednesday_afternoon_voice_usage",
+                                                            StringType(), True),
+                                                StructField("usg_outgoing_wednesday_evening_voice_usage",
+                                                            StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_wednesday_morning_voice_usage",
+                                                            StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_wednesday_night_voice_usage",
+                                                            StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_wednesday_voice_usage", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_weekday_calls_duration", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_weekday_number_calls", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_weekday_number_sms", StringType(), True),
+                                                StructField("usg_outgoing_weekend_calls_duration", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_weekend_number_calls", StringType(),
+                                                            True),
+                                                StructField("usg_outgoing_weekend_number_sms", StringType(), True),
+                                                StructField("usg_total_data_last_action_date", DateType(), True),
+                                                StructField("usg_total_data_volume", StringType(), True),
+                                                StructField("usg_vas_last_action_dt", DateType(), True),
+                                                StructField("usg_vas_total_number_of_call", StringType(), True),
+                                                StructField("event_partition_date", DateType(), True),
+                                                ]))
 
-            print("123456789")
+        print("123456789")
 
-            df_l1_test.select("subscription_identifier", "start_of_week", "usg_incoming_data_volume",
-                              "event_partition_date").where("subscription_identifier = '1-FAKEVST'").show()
+        df_l1_test.select("subscription_identifier", "start_of_week", "usg_incoming_data_volume",
+                          "event_partition_date").where("subscription_identifier = '1-FAKEVST'").show()
 
-            print("123456789")
+        print("123456789")
 
-            l2_agg = build_usage_l2_layer(df_l1_test,
-                                          var_project_context.catalog.load('params:l2_usage_postpaid_prepaid_daily'))
+        l2_agg = build_usage_l2_layer(df_l1_test,
+                                      var_project_context.catalog.load('params:l2_usage_postpaid_prepaid_daily'))
 
-            l2_agg.select("subscription_identifier", "start_of_week", "usg_incoming_data_volume_sum").show()
+        l2_agg.select("subscription_identifier", "start_of_week", "usg_incoming_data_volume_avg").show()
 
-            ############## L2 to L4 ####################################################################################
+        ############## L2 to L4 ####################################################################################
 
-            l4_agg = l4_rolling_window(l2_agg, var_project_context.catalog.load(
-                'params:l4_usage_postpaid_prepaid_weekly_features_avg'))
+        l4_agg = l4_rolling_window(l2_agg, var_project_context.catalog.load(
+            'params:l4_usage_postpaid_prepaid_weekly_features_avg'))
 
-            l4_agg.where("subscription_identifier = '1-FAKEVST'").select("subscription_identifier", "start_of_week",
-                                                                         "avg_usg_incoming_data_volume_avg_weekly_last_two_week").show()
+        l4_agg.where("subscription_identifier = '1-FAKEVST'").select("subscription_identifier", "start_of_week",
+                                                                     "avg_usg_incoming_data_volume_avg_weekly_last_two_week").show()
 
-            ####################### TEST look-back 2 week #################################################################
+        ####################### TEST look-back 2 week #################################################################
 
-            assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-                "avg_usg_incoming_data_volume_avg_weekly_last_two_week").collect()[0][0] == (float(
-                l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-                    "avg_usg_incoming_data_volume_avg_weekly_last_week").collect()[0][0]) + float(
-                l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
-                    "avg_usg_incoming_data_volume_avg_weekly_last_week").collect()[0][0])) / 2
+        ######### It's None cause This feature don't need the condition in l1 (Then .... Else .....) ##################
+        ####### When ran test please comment some or more assert cause I will get out of memory. ######################
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_vas_total_number_of_call_sum_weekly_last_two_week").collect()[0][0] == None
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_vas_total_number_of_call_avg_weekly_last_two_week").collect()[0][0] == None
 
-            #### test Null because Dataset start_of_week start on 2020-01-06 must be null #################################
-            assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-06'").select(
-                "avg_usg_incoming_data_volume_avg_weekly_last_two_week").collect()[0][0] == None
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_data_friday_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
 
-            ####################### TEST  look-back ################ 1 Week ##############################################
 
-            assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-                "avg_usg_incoming_data_volume_avg_weekly_last_week").collect()[0][0] == float('233697726.0')
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_data_monday_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
 
-            assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-06'").select(
-                "avg_usg_incoming_data_volume_avg_weekly_last_week").collect()[0][0] == None
+
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_data_saturday_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_data_sunday_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+
+
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_incoming_data_volume_sum_weekly_last_week").collect()[0][0] == ((l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_incoming_data_volume_sum_weekly_last_week").collect()[0][0]) + (l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+            "avg_usg_incoming_data_volume_sum_weekly_last_week").collect()[0][0]))/2
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_incoming_data_volume_avg_weekly_last_two_week").collect()[0][0] == ((l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_incoming_data_volume_avg_weekly_last_week").collect()[0][0]) + (l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+            "avg_usg_incoming_data_volume_avg_weekly_last_week").collect()[0][0]))/2
+
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_incoming_local_data_volume_sum_weekly_last_two_week").collect()[0][0] == ((l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_incoming_local_data_volume_sum_weekly_last_week").collect()[0][0]) + (l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+            "avg_usg_incoming_local_data_volume_sum_weekly_last_week").collect()[0][0]))/2
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_incoming_local_data_volume_avg_weekly_last_two_week").collect()[0][0] == ((l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_incoming_local_data_volume_avg_last_week").collect()[0][0]) + (l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+            "avg_usg_incoming_local_data_volume_avg_weekly_last_week").collect()[0][0]))/2
+
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_incoming_roaming_data_volume_sum_weekly_last_two_week").collect()[0][0] == ((l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_incoming_roaming_data_volume_sum_weekly_last_week").collect()[0][0]) + (l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+            "avg_usg_incoming_roaming_data_volume_sum_weekly_last_week").collect()[0][0]))/2
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_incoming_roaming_data_volume_avg_weekly_last_two_week").collect()[0][0] == ((l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_incoming_roaming_data_volume_avg_weekly_last_week").collect()[0][0]) + (l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+            "avg_usg_incoming_roaming_data_volume_avg_weekly_last_week").collect()[0][0]))/2
+
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_outgoing_data_volume_sum_weekly_last_two_week").collect()[0][0] == ((l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_outgoing_data_volume_sum_weekly_last_week").collect()[0][0]) + (l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+            "avg_usg_outgoing_data_volume_sum_weekly_last_week").collect()[0][0]))/2
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_outgoing_data_volume_avg_weekly_last_two_week").collect()[0][0] == ((l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_outgoing_data_volume_avg_weekly_last_week").collect()[0][0]) + (l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+            "avg_usg_outgoing_data_volume_avg_weekly_last_week").collect()[0][0]))/2
+
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_outgoing_local_data_volume_sum_weekly_last_two_week").collect()[0][0] == ((l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_outgoing_local_data_volume_sum_weekly_last_week").collect()[0][0]) + (l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+            "avg_usg_outgoing_local_data_volume_sum_weekly_last_week").collect()[0][0]))/2
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_outgoing_local_data_volume_avg_weekly_last_two_week").collect()[0][0] == ((l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_outgoing_local_data_volume_avg_weekly_last_week").collect()[0][0]) + (l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+            "avg_usg_outgoing_local_data_volume_avg_weekly_last_week").collect()[0][0]))/2
+
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_outgoing_roaming_data_volume_sum_weekly_last_two_week").collect()[0][0] == ((l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_outgoing_roaming_data_volume_sum_weekly_last_week").collect()[0][0]) + (l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+            "avg_usg_outgoing_roaming_data_volume_sum_weekly_last_week").collect()[0][0]))/2
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_outgoing_roaming_data_volume_avg_weekly_last_two_week").collect()[0][0] == ((l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+        #     "avg_usg_outgoing_roaming_data_volume_avg_weekly_last_week").collect()[0][0]) + (l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+            "avg_usg_outgoing_roaming_data_volume_avg_weekly_last_week").collect()[0][0]))/2
+
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_total_data_volume_sum_weekly_last_two_week").collect()[0][0] == ((l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_total_data_volume_sum_weekly_last_week").collect()[0][0]) + (l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+            "avg_usg_total_data_volume_sum_weekly_last_week").collect()[0][0]))/2
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_total_data_volume_avg_weekly_last_two_week").collect()[0][0] == ((l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_total_data_volume_avg_weekly_last_week").collect()[0][0]) + (l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+            "avg_usg_total_data_volume_avg_weekly_last_week").collect()[0][0]))/2
+
+
+        #### test Null because Dataset start_of_week start on 2020-01-06 must be null #################################
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-06'").select(
+            "avg_usg_incoming_data_volume_avg_weekly_last_two_week").collect()[0][0] == None
+
+        ####################### TEST  look-back ################ 1 Week ##############################################
+
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "avg_usg_incoming_data_volume_avg_weekly_last_week").collect()[0][0] == float('233697726.0')
+
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-06'").select(
+            "avg_usg_incoming_data_volume_avg_weekly_last_week").collect()[0][0] == None
