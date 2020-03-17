@@ -33,18 +33,28 @@ from customer360.pipelines.cvm.src.utils.list_targets import list_targets
 
 
 def get_pandas_train_test_sample(
-    df: DataFrame, parameters: Dict[str, Any], target_chosen: str = None
+    df: DataFrame,
+    parameters: Dict[str, Any],
+    use_case_chosen: str = None,
+    macrosegments_chosen: str = None,
+    target_chosen: str = None,
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """ Setup pandas prediction / train sample for given pyspark DataFrame.
 
     Args:
         df: DataFrame to create sample from.
         parameters: parameters defined in parameters.yml.
+        use_case_chosen: chosen use case
+        macrosegments_chosen: macrosegment chosen
         target_chosen: For creating training sample, column name to create sample for.
             None for prediction, does not include target column.
     Returns:
         Pandas DataFrames that can be used for prediction / training.
     """
+
+    if use_case_chosen is not None and macrosegments_chosen is not None:
+        macrosegment_col = use_case_chosen + "_macrosegment"
+        df = df.filter("{} == {}".format(macrosegment_col, macrosegments_chosen))
 
     if target_chosen is not None:
         df = df.filter("{} is not null".format(target_chosen))
