@@ -206,12 +206,11 @@ def subs_date_join(parameters: Dict[str, Any], *args: DataFrame,) -> DataFrame:
     """
 
     keys = parameters["key_columns"]
-    segments = parameters["segment_columns"]
     tables = [setup_names(tab) for tab in args]
 
     def join_on(df1, df2):
         cols_to_drop = [col_name for col_name in df1.columns if col_name in df2.columns]
-        cols_to_drop = list(set(cols_to_drop) - set(keys + segments))
+        cols_to_drop = list(set(cols_to_drop) - set(keys))
         df2 = df2.drop(*cols_to_drop)
         return df1.join(df2, keys, "left")
 
