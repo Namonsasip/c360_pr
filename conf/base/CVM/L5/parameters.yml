@@ -58,3 +58,10 @@ key_columns:
 segment_columns:
   - ard_macrosegment
   - churn_macrosegment
+
+# List of ard_macrosegments
+ard_macrosegments:
+  - low_arpu_high_tenure
+  - high_arpu_low_tenure
+  - high_arpu_high_tenure
+  - low_arpu_low_tenure
