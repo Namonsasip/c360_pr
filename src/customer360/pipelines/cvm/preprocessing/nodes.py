@@ -32,10 +32,8 @@ from typing import Dict, Any, List
 from pyspark.ml.feature import StringIndexer, Imputer
 from pyspark.ml import Pipeline, PipelineModel
 from pyspark.sql.functions import col
-from customer360.pipelines.cvm.src.utils.list_operations import list_sub
 from customer360.pipelines.cvm.src.utils.setup_names import setup_names
-from src.customer360.pipelines.cvm.src.utils.list_categorical import list_categorical
-from src.customer360.pipelines.cvm.src.utils.list_targets import list_targets
+from src.customer360.pipelines.cvm.src.utils.classify_columns import classify_columns
 from src.customer360.pipelines.cvm.src.feature_selection import feature_selection
 
 
@@ -52,38 +50,36 @@ def pipeline1_fit(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
     df = setup_names(df)
 
     # select columns
-    target_cols = list_targets(parameters)
-    key_columns = parameters["key_columns"]
-    cols_to_pick = parameters["prepro_cols_to_pick"] + target_cols + key_columns
+    columns_cats = classify_columns(df, parameters)
+    cols_to_pick = (
+        parameters["prepro_cols_to_pick"] + columns_cats["target"] + columns_cats["key"]
+    )
     df = df.select(cols_to_pick)
 
-    categorical_cols = list_sub(list_categorical(df), target_cols + key_columns)
-    numerical_cols = list_sub(df.columns, categorical_cols + target_cols + key_columns)
-
     # set types
-    for col_name in numerical_cols:
+    for col_name in columns_cats["numerical"]:
         if col_name in df.columns:
             df = df.withColumn(col_name, col(col_name).cast("float"))
 
     # string indexer
     stages = []
-    for col_name in categorical_cols:
+    for col_name in columns_cats["categorical"]:
         indexer = StringIndexer(
             inputCol=col_name, outputCol=col_name + "_indexed"
         ).setHandleInvalid("keep")
         stages += [indexer]
     # imputation
     imputer = Imputer(
-        inputCols=numerical_cols,
-        outputCols=[col + "_imputed" for col in numerical_cols],
+        inputCols=columns_cats["numerical"],
+        outputCols=[col + "_imputed" for col in columns_cats["numerical"]],
     )
     stages += [imputer]
 
     pipeline = Pipeline(stages=stages)
     pipeline_fitted = pipeline.fit(df)
     data_transformed = pipeline_fitted.transform(df)
-    data_transformed = data_transformed.drop(*categorical_cols)
-    data_transformed = data_transformed.drop(*numerical_cols)
+    data_transformed = data_transformed.drop(*columns_cats["categorical"])
+    data_transformed = data_transformed.drop(*columns_cats["numerical"])
 
     pipeline_fitted.write().overwrite().save("/mnt/customer360-cvm/pipeline1")
 
@@ -103,24 +99,22 @@ def pipeline1_transform(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
     df = setup_names(df)
 
     # select columns
-    target_cols = list_targets(parameters)
-    key_columns = parameters["key_columns"]
-    cols_to_pick = parameters["prepro_cols_to_pick"] + target_cols + key_columns
+    columns_cats = classify_columns(df, parameters)
+    cols_to_pick = (
+        parameters["prepro_cols_to_pick"] + columns_cats["target"] + columns_cats["key"]
+    )
     df = df.select(cols_to_pick)
 
-    categorical_cols = list_sub(list_categorical(df), target_cols + key_columns)
-    numerical_cols = list_sub(df.columns, categorical_cols + target_cols + key_columns)
-
     # set types
-    for col_name in numerical_cols:
+    for col_name in columns_cats["numerical"]:
         if col_name in df.columns:
             df = df.withColumn(col_name, col(col_name).cast("float"))
 
     # string indexer
     pipeline_fitted = PipelineModel.load("/mnt/customer360-cvm/pipeline1")
     data_transformed = pipeline_fitted.transform(df)
-    data_transformed = data_transformed.drop(*categorical_cols)
-    data_transformed = data_transformed.drop(*numerical_cols)
+    data_transformed = data_transformed.drop(*columns_cats["categorical"])
+    data_transformed = data_transformed.drop(*columns_cats["numerical"])
 
     return data_transformed
 
@@ -130,7 +124,7 @@ def feature_selection_all_target(
 ) -> List[Any]:
     """ Return list of selected features and plots for all target columns.
   Args:
-      data: Spark dataframe contain all features and all target columns.
+      data: Spark DataFrame contain all features and all target columns.
       parameters: parameters defined in target parameters*.yml files.
   Returns:
       List of selected feature column names for all target columns.
@@ -144,6 +138,7 @@ def feature_selection_all_target(
     # Remove black list column
     data = data.drop(*parameters["feature_selection_parameter"]["exclude_col"])
     data = data.drop(*parameters["key_columns"])
+    data = data.drop(*parameters["segment_columns"])
     final_list = []
     for target in parameters["feature_selection_parameter"]["target_column"]:
         exclude_target = parameters["feature_selection_parameter"]["target_column"][:]
@@ -172,7 +167,7 @@ def data_filtering_feature(
     """
 
     if len(df_inputs) < 1:
-        raise "df_inputs is missing."
+        raise Exception("df_inputs is missing.")
     df = df_inputs[0]
     if len(df_inputs) > 1:
         for df_input in df_inputs[1:]:

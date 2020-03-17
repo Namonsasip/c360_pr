@@ -175,6 +175,7 @@ def subs_date_join_important_only(
     """
 
     keys = parameters["key_columns"]
+    segments = parameters["segment_columns"]
     tables = [setup_names(tab) for tab in args]
 
     def filter_column(df, filter_list):
@@ -183,7 +184,7 @@ def subs_date_join_important_only(
         ]
         return df.drop(*cols_to_drop)
 
-    tables = [filter_column(tab, important_param + keys) for tab in tables]
+    tables = [filter_column(tab, important_param + keys + segments) for tab in tables]
 
     def join_on(df1, df2):
         cols_to_drop = [col_name for col_name in df1.columns if col_name in df2.columns]
@@ -205,11 +206,12 @@ def subs_date_join(parameters: Dict[str, Any], *args: DataFrame,) -> DataFrame:
     """
 
     keys = parameters["key_columns"]
+    segments = parameters["segment_columns"]
     tables = [setup_names(tab) for tab in args]
 
     def join_on(df1, df2):
         cols_to_drop = [col_name for col_name in df1.columns if col_name in df2.columns]
-        cols_to_drop = list(set(cols_to_drop) - set(keys))
+        cols_to_drop = list(set(cols_to_drop) - set(keys + segments))
         df2 = df2.drop(*cols_to_drop)
         return df1.join(df2, keys, "left")
 

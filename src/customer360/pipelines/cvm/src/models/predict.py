@@ -112,8 +112,9 @@ def pyspark_predict_rf(
 
     target_cols = list_targets(parameters)
     key_columns = parameters["key_columns"]
+    segments_columns = parameters["segment_columns"]
     log = logging.getLogger(__name__)
-    feature_cols = list_sub(df.columns, target_cols + key_columns)
+    feature_cols = list_sub(df.columns, target_cols + key_columns + segments_columns)
 
     for target_chosen in target_cols:
         log.info("Creating {} predictions.".format(target_chosen))
@@ -150,8 +151,9 @@ def predict_rf_pandas(
 
     target_cols = list_targets(parameters)
     key_columns = parameters["key_columns"]
+    segments_columns = parameters["segment_columns"]
     log = logging.getLogger(__name__)
-    feature_cols = list_sub(df.columns, target_cols + key_columns)
+    feature_cols = list_sub(df.columns, target_cols + key_columns + segments_columns)
     pd_df = df.select(feature_cols).toPandas()
     predictions = df.select(target_cols + key_columns).toPandas()
 

@@ -55,7 +55,8 @@ def get_pandas_train_test_sample(
 
     target_cols = list_targets(parameters)
     key_columns = parameters["key_columns"]
-    to_drop = target_cols + key_columns
+    segments_columns = parameters["segment_columns"]
+    to_drop = target_cols + key_columns + segments_columns
     X = df.drop(*to_drop).toPandas()
 
     return X, y
