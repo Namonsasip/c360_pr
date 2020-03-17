@@ -25,7 +25,7 @@ def merge_all_usage_outputs(df1: DataFrame, df2: DataFrame, df3: DataFrame, df4:
     logging.info("Dates to run for {0}".format(str(mvv_array)))
     join_key = ["subscription_identifier", "start_of_week"]
 
-    mvv_new = list(divide_chunks(mvv_array, 2))
+    mvv_new = list(divide_chunks(mvv_array, 5))
     add_list = mvv_new
 
     first_item = add_list[0]
