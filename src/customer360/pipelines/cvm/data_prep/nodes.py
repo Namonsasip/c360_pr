@@ -252,7 +252,7 @@ def add_macrosegments(df: DataFrame,) -> DataFrame:
         Input DataFrame with extra column marking macrosegment.
     """
 
-    return df.withColumn(
+    df = df.withColumn(
         "ard_macrosegment",
         func.when(
             func.col("sum_rev_arpu_total_revenue_monthly_last_month")
@@ -274,3 +274,11 @@ def add_macrosegments(df: DataFrame,) -> DataFrame:
         )
         .otherwise("low_arpu_low_tenure"),
     )
+    df = df.withColumn(
+        "churn_macrosegment",
+        func.when(
+            func.col("sum_rev_arpu_total_revenue_monthly_last_month") > 0,
+            "positive_arpu",
+        ).otherwise("zero_arpu"),
+    )
+    return df
