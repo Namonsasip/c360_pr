@@ -20,6 +20,10 @@ class TestUnitBilling:
         l3_missed_bills
 
         l3_overdue_bills
+
+        l4_missed_bills
+
+        l4_overdue_bills
         '''
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
@@ -54,6 +58,21 @@ class TestUnitBilling:
                 "payments_missed_bills").collect()[0][
                 0] == 23
 
+        l4_rolling_window_missed_bills=l4_rolling_window(l3_billing_and_payments_monthly_missed_bills, var_project_context.catalog.load(
+            'params:l4_missed_bills'))
+
+        print('l4rollingmissedbill')
+        l4_rolling_window_missed_bills.show(999,False)
+        assert \
+            l4_rolling_window_missed_bills.where("start_of_month = '2020-03-01'").select(
+                "sum_payments_missed_bills_monthly_last_three_month").collect()[0][
+                0] == 42
+        assert \
+            l4_rolling_window_missed_bills.where("start_of_month = '2020-03-01'").select(
+                "avg_payments_missed_bills_monthly_last_three_month").collect()[0][
+                0] == 21
+
+
         l3_billing_and_payments_monthly_overdue_bills = node_from_config(df, var_project_context.catalog.load(
             'params:l3_overdue_bills'))
         print('overduetest')
@@ -75,6 +94,51 @@ class TestUnitBilling:
             l3_billing_and_payments_monthly_overdue_bills.where("start_of_month = '2020-01-01'").select(
                 "payments_over_due_bills_30_plus_days").collect()[0][
                 0] == 21
+
+        l4_rolling_window_overdue_bills = l4_rolling_window(l3_billing_and_payments_monthly_overdue_bills,
+                                                           var_project_context.catalog.load(
+                                                               'params:l4_overdue_bills'))
+        print('l4overduebill')
+        l4_rolling_window_overdue_bills.show(888,False)
+
+
+        assert \
+            l4_rolling_window_overdue_bills.where("start_of_month = '2020-03-01'").select(
+                "sum_payments_over_due_bills_monthly_last_three_month").collect()[0][
+                0] == 135
+        assert \
+            l4_rolling_window_overdue_bills.where("start_of_month = '2020-03-01'").select(
+                "sum_payments_over_due_bills_1_to_10_days_monthly_last_three_month").collect()[0][
+                0] == 27
+        assert \
+            l4_rolling_window_overdue_bills.where("start_of_month = '2020-03-01'").select(
+                "sum_payments_over_due_bills_10_to_30_days_monthly_last_three_month").collect()[0][
+                0] == 72
+        assert \
+            l4_rolling_window_overdue_bills.where("start_of_month = '2020-03-01'").select(
+                "sum_payments_over_due_bills_30_plus_days_monthly_last_three_month").collect()[0][
+                0] == 36
+        assert \
+            l4_rolling_window_overdue_bills.where("start_of_month = '2020-03-01'").select(
+                "avg_payments_over_due_bills_monthly_last_three_month").collect()[0][
+                0] == 67.5
+        assert \
+            l4_rolling_window_overdue_bills.where("start_of_month = '2020-03-01'").select(
+                "avg_payments_over_due_bills_1_to_10_days_monthly_last_three_month").collect()[0][
+                0] == 13.5
+        assert \
+            l4_rolling_window_overdue_bills.where("start_of_month = '2020-03-01'").select(
+                "avg_payments_over_due_bills_10_to_30_days_monthly_last_three_month").collect()[0][
+                0] == 36
+        assert \
+            l4_rolling_window_overdue_bills.where("start_of_month = '2020-03-01'").select(
+                "avg_payments_over_due_bills_30_plus_days_monthly_last_three_month").collect()[0][
+                0] == 18
+
+
+
+
+
 
         l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume=node_from_config(df, var_project_context.catalog.load(
             'params:l3_last_overdue_bill_days_ago_and_volume'))
