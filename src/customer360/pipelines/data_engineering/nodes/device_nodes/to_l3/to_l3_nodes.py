@@ -6,7 +6,8 @@ import logging
 from src.customer360.pipelines.data_engineering.nodes.device_nodes.to_l2.to_l2_nodes import massive_processing
 import os
 
-conf = os.environ["CONF"]
+conf = os.getenv("CONF", None)
+
 
 def massive_processing_monthly(input_df, sql, output_df_catalog):
     """
@@ -42,6 +43,7 @@ def massive_processing_monthly(input_df, sql, output_df_catalog):
 
     return return_df
 
+
 def customize_massive_processing(customer_prof, input_df, sql, is_rank, partition, output_df_catalog):
     """
     :return:
@@ -72,7 +74,7 @@ def customize_massive_processing(customer_prof, input_df, sql, is_rank, partitio
         result_df = node_from_config(small_df, sql)
         if (is_rank):
             result_df = result_df.where("rank = 1")
-        output_df = join_with_customer_profile_monthly(cust_df,result_df)
+        output_df = join_with_customer_profile_monthly(cust_df, result_df)
         CNTX.catalog.save(output_df_catalog, output_df)
 
     logging.info("Final date to run for {0}".format(str(first_item)))
@@ -85,18 +87,21 @@ def customize_massive_processing(customer_prof, input_df, sql, is_rank, partitio
 
     return output_df
 
+
 def device_most_used_monthly(customer_prof, input_df, sql):
     """
     :return:
     """
-    customer_prof = customer_prof.where("cust_active_this_month = 'Y'")\
+    customer_prof = customer_prof.where("cust_active_this_month = 'Y'") \
         .select(F.col("partition_month").alias("start_of_month"),
                 "access_method_num",
                 F.to_date("register_date").alias("register_date"),
                 "subscription_identifier")
 
-    return_df = customize_massive_processing(customer_prof, input_df, sql, True, "start_of_month", "l3_device_most_used_monthly")
+    return_df = customize_massive_processing(customer_prof, input_df, sql, True, "start_of_month",
+                                             "l3_device_most_used_monthly")
     return return_df
+
 
 def device_number_of_phone_updates_monthly(input_df, sql):
     """
@@ -105,6 +110,7 @@ def device_number_of_phone_updates_monthly(input_df, sql):
     return_df = massive_processing_monthly(input_df, sql, "l3_device_number_of_phone_updates_monthly")
     return return_df
 
+
 def device_current_configurations_monthly(input_df, sql):
     """
     :return:
@@ -112,27 +118,31 @@ def device_current_configurations_monthly(input_df, sql):
     return_df = massive_processing_monthly(input_df, sql, "l3_device_handset_summary_with_configuration_monthly")
     return return_df
 
-def device_previous_configurations_monthly(customer_prof,input_df, sql):
+
+def device_previous_configurations_monthly(customer_prof, input_df, sql):
     """
     :return:
     """
-    customer_prof = customer_prof.where("cust_active_this_month = 'Y'")\
+    customer_prof = customer_prof.where("cust_active_this_month = 'Y'") \
         .select(F.col("partition_month").alias("start_of_month"),
                 "access_method_num",
                 F.to_date("register_date").alias("register_date"),
                 "subscription_identifier")
 
-    return_df = customize_massive_processing(customer_prof, input_df, sql, False, "start_of_month", "l3_previous_device_handset_summary_with_configuration_monthly")
+    return_df = customize_massive_processing(customer_prof, input_df, sql, False, "start_of_month",
+                                             "l3_previous_device_handset_summary_with_configuration_monthly")
     return return_df
 
-def join_with_customer_profile_monthly(customer_prof,hs_summary):
 
+def join_with_customer_profile_monthly(customer_prof, hs_summary):
     hs_summary_with_customer_profile = customer_prof.join(hs_summary,
-                                  (customer_prof.access_method_num == hs_summary.mobile_no) &
-                                  (customer_prof.register_date.eqNullSafe(F.to_date(hs_summary.register_date))) &
-                                  (customer_prof.start_of_month == hs_summary.start_of_month), "left")
+                                                          (customer_prof.access_method_num == hs_summary.mobile_no) &
+                                                          (customer_prof.register_date.eqNullSafe(
+                                                              F.to_date(hs_summary.register_date))) &
+                                                          (customer_prof.start_of_month == hs_summary.start_of_month),
+                                                          "left")
 
-    hs_summary_with_customer_profile = hs_summary_with_customer_profile.drop(hs_summary.register_date)\
+    hs_summary_with_customer_profile = hs_summary_with_customer_profile.drop(hs_summary.register_date) \
         .drop(hs_summary.start_of_month)
 
     return hs_summary_with_customer_profile

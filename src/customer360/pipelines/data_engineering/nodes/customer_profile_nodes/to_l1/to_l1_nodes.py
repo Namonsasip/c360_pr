@@ -1,4 +1,4 @@
-from pyspark.sql import SparkSession
+from src.customer360.utilities.spark_util import get_spark_session
 
 
 def union_daily_cust_profile(
@@ -30,7 +30,7 @@ def union_daily_cust_profile(
     sql_stmt = sql_stmt.format(cust_pre_columns=setup_column_to_extract("customer_pre"),
                                cust_post_columns=setup_column_to_extract("customer_post"),
                                cust_non_mobile_columns=setup_column_to_extract("customer_non_mobile"))
-
-    df = SparkSession.builder.getOrCreate().sql(sql_stmt)
+    spark = get_spark_session()
+    df = spark.sql(sql_stmt)
 
     return df
