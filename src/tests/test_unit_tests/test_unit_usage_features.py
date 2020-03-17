@@ -8057,7 +8057,7 @@ class TestUnitUsage:
 
         print("123456789")
 
-        df_l1_test.select("subscription_identifier", "start_of_week", "usg_incoming_data_volume",
+        df_l1_test.select("subscription_identifier", "start_of_week", "usg_vas_total_number_of_call",
                           "event_partition_date").where("subscription_identifier = '1-FAKEVST'").show()
 
         print("123456789")
@@ -8065,7 +8065,7 @@ class TestUnitUsage:
         l2_agg = build_usage_l2_layer(df_l1_test,
                                       var_project_context.catalog.load('params:l2_usage_postpaid_prepaid_daily'))
 
-        l2_agg.select("subscription_identifier", "start_of_week", "usg_incoming_data_volume_sum").show()
+        l2_agg.select("subscription_identifier", "start_of_week", "usg_vas_total_number_of_call_sum").show()
 
         ############## L2 to L4 ####################################################################################
 
@@ -8081,6 +8081,434 @@ class TestUnitUsage:
             "sum_usg_incoming_data_volume_sum_weekly_last_two_week").collect()[0][0] == float(l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
             "sum_usg_incoming_data_volume_sum_weekly_last_week").collect()[0][0]) + float(l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
             "sum_usg_incoming_data_volume_sum_weekly_last_week").collect()[0][0])
+
+        ######################################### TEST #################################################################
+
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_vas_total_number_of_call_sum_weekly_last_two_week").collect()[0][0] == None
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_friday_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_monday_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_saturday_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_sunday_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_thursday_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_tuesday_usage_sum_weekly_last_two_week").collect()[0][0] == l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_tuesday_usage_sum_weekly_last_week").collect()[0][0] + l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+            "sum_usg_data_tuesday_usage_sum_weekly_last_week").collect()[0][0]
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_wednesday_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_data_volume_sum_weekly_last_two_week").collect()[0][0] == l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_data_volume_sum_weekly_last_week").collect()[0][0] + l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+            "sum_usg_incoming_data_volume_sum_weekly_last_week").collect()[0][0]
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_data_volume_2G_3G_sum_weekly_last_two_week").collect()[0][0] == l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_data_volume_2G_3G_sum_weekly_last_week").collect()[0][0] + l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+            "sum_usg_incoming_data_volume_2G_3G_sum_weekly_last_week").collect()[0][0]
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_data_volume_4G_sum_weekly_last_two_week").collect()[0][0] == l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_data_volume_4G_sum_weekly_last_week").collect()[0][0] + l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+            "sum_usg_incoming_data_volume_4G_sum_weekly_last_week").collect()[0][0]
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_local_data_volume_sum_weekly_last_two_week").collect()[0][0] == l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_local_data_volume_sum_weekly_last_week").collect()[0][0] + l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+            "sum_usg_incoming_local_data_volume_sum_weekly_last_week").collect()[0][0]
+
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_local_data_volume_2G_3G_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_local_data_volume_4G_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_roaming_data_volume_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_roaming_data_volume_2G_3G_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_roaming_data_volume_4G_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_data_volume_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_data_volume_2G_3G_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_data_volume_4G_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_local_data_volume_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_local_data_volume_2G_3G_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_local_data_volume_4G_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_roaming_data_volume_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_roaming_data_volume_2G_3G_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_roaming_data_volume_4G_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_total_data_volume_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_monday_afternoon_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_tuesday_afternoon_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_wednesday_afternoon_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_thursday_afternoon_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_friday_afternoon_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_saturday_afternoon_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_sunday_afternoon_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_monday_morning_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_tuesday_morning_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_wednesday_morning_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_thursday_morning_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_friday_morning_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_saturday_morning_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_sunday_morning_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_monday_evening_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_tuesday_evening_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_wednesday_evening_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_thursday_evening_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_friday_evening_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_saturday_evening_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_sunday_evening_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_monday_night_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_tuesday_night_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_wednesday_night_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_thursday_night_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_friday_night_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_saturday_night_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_sunday_night_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_weekend_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_data_weekday_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_roaming_call_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_roaming_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_roaming_total_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_roaming_call_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_roaming_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_roaming_total_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_afternoon_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_afternoon_time_call_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_ais_local_calls_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_ais_local_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_dtac_call_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_dtac_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_dtac_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_evening_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_evening_time_call_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_friday_afternoon_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_friday_evening_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_friday_morning_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_friday_night_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_friday_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_local_ais_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_local_call_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_local_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_local_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_monday_afternoon_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_monday_evening_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_monday_morning_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_monday_night_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_monday_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_morning_time_call_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_morning_time_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_night_time_call_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_night_time_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_number_calls_over_30_mins_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_number_calls_upto_10_mins_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_number_calls_upto_15_mins_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_number_calls_upto_20_mins_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_number_calls_upto_30_mins_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_number_calls_upto_5_mins_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_offnet_local_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_saturday_afternoon_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_saturday_evening_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_saturday_morning_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_saturday_night_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_saturday_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_sunday_afternoon_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_sunday_evening_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_sunday_morning_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_sunday_night_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_sunday_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_thursday_afternoon_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_thursday_evening_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_thursday_morning_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_thursday_night_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_thursday_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_total_call_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_total_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_true_call_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_true_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_true_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_tuesday_afternoon_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_tuesday_evening_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_tuesday_morning_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_tuesday_night_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_tuesday_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_wednesday_afternoon_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_wednesday_evening_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_wednesday_morning_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_wednesday_night_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_wednesday_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_weekday_calls_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_weekday_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_weekday_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_weekend_calls_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_weekend_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_incoming_weekend_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_afternoon_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_afternoon_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_ais_local_calls_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_ais_local_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_dtac_call_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_dtac_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_dtac_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_evening_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_evening_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_friday_afternoon_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_friday_evening_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_friday_morning_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_friday_night_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_friday_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_local_ais_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_local_call_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_local_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_local_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_monday_afternoon_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_monday_evening_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_monday_morning_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_monday_night_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_monday_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_morning_time_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_morning_time_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_night_time_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_night_time_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_number_calls_over_30_mins_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_number_calls_upto_10_mins_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_number_calls_upto_15_mins_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_number_calls_upto_20_mins_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_number_calls_upto_30_mins_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_number_calls_upto_5_mins_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_offnet_local_calls_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_offnet_local_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_saturday_afternoon_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_saturday_evening_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_saturday_morning_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_saturday_night_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_saturday_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_sunday_afternoon_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_sunday_evening_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_sunday_morning_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_sunday_night_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_sunday_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_thursday_afternoon_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_thursday_evening_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_thursday_morning_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_thursday_night_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_thursday_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_total_call_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_total_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_true_call_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_true_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_true_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_tuesday_afternoon_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_tuesday_evening_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_tuesday_morning_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_tuesday_night_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_tuesday_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_wednesday_afternoon_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_wednesday_evening_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_wednesday_morning_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_wednesday_night_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_wednesday_voice_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_weekday_calls_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_weekday_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_weekday_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_weekend_calls_duration_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_weekend_number_calls_sum_weekly_last_two_week").collect()[0][0] == 0.0
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "sum_usg_outgoing_weekend_number_sms_sum_weekly_last_two_week").collect()[0][0] == 0.0
+
+        ###############################################################################################################
 
 
         assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
