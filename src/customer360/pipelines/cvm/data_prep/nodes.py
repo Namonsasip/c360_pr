@@ -241,3 +241,36 @@ def create_sample_dataset(df: DataFrame, subscription_id_suffix: str) -> DataFra
     df = df.filter(subs_filter).drop("subscription_identifier_last_letter")
 
     return df
+
+
+def add_macrosegments(df: DataFrame,) -> DataFrame:
+    """ Add macrosegments columns.
+
+    Args:
+        df: DataFrame with all features.
+    Returns:
+        Input DataFrame with extra column marking macrosegment.
+    """
+
+    return df.withColumn(
+        "ard_macrosegment",
+        func.when(
+            func.col("sum_rev_arpu_total_revenue_monthly_last_month")
+            < 50 & func.col("subscriber_tenure")
+            >= 12,
+            "low_arpu_high_tenure",
+        )
+        .when(
+            func.col("sum_rev_arpu_total_revenue_monthly_last_month")
+            >= 50 & func.col("subscriber_tenure")
+            < 12,
+            "high_arpu_low_tenure",
+        )
+        .when(
+            func.col("sum_rev_arpu_total_revenue_monthly_last_month")
+            >= 50 & func.col("subscriber_tenure")
+            >= 12,
+            "high_arpu_high_tenure",
+        )
+        .otherwise("low_arpu_low_tenure"),
+    )

@@ -5,12 +5,12 @@ prepro_cols_to_pick:
  - age
  - gender
  - serenade_status
- - subscriber_tenure
+ - subscriber_tenure # needed for ARD macrosegment definition
  - activation_region
  - current_package_id
  - norms_net_revenue
  - min_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_three_month
- - sum_rev_arpu_total_revenue_monthly_last_month
+ - sum_rev_arpu_total_revenue_monthly_last_month # needed for ARD and Churn macrosegment definition
  - sum_rev_arpu_total_revenue_monthly_last_three_month
  - sum_rev_arpu_total_gprs_net_revenue_monthly_last_month
  - sum_rev_arpu_total_gprs_net_revenue_monthly_last_three_month
