@@ -5,13 +5,12 @@ from datetime import datetime, timedelta
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 from functools import reduce
-from pyspark.sql import SparkSession
 from kedro.context import load_context
 from pathlib import Path
+from src.customer360.utilities.spark_util import get_spark_session
+from src.customer360.utilities.config_parser import node_from_config, expansion
 
-from customer360.utilities.config_parser import node_from_config, expansion
-
-conf = os.getenv("CONF", "local")
+conf = os.getenv("CONF", None)
 
 
 def union_dataframes_with_missing_cols(df_input_or_list, *args):
@@ -43,7 +42,7 @@ def execute_sql(data_frame, table_name, sql_str):
     :param sql_str:
     :return:
     """
-    ss = SparkSession.builder.getOrCreate()
+    ss = get_spark_session()
     data_frame.registerTempTable(table_name)
     return ss.sql(sql_str)
 

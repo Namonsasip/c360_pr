@@ -22,9 +22,9 @@ class TestConfigToL4:
         ]
         rdd1 = spark.sparkContext.parallelize(dummy_list)
         input_df = spark.createDataFrame(rdd1, schema=StructType([StructField("start_of_week", DateType(), True),
-                                                             StructField("channel", StringType(), True),
-                                                             StructField("id", IntegerType(), True),
-                                                             StructField("value", IntegerType(), True)]))
+                                                                  StructField("channel", StringType(), True),
+                                                                  StructField("id", IntegerType(), True),
+                                                                  StructField("value", IntegerType(), True)]))
 
         config_l4_rolling_window = {
             'partition_by': ["id", "channel"],

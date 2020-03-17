@@ -11,9 +11,9 @@ l1_customer_profile_union_daily_feature:
     prefer_language_eng: "case when lower(prefer_language) like 'eng%' then 'Y' else 'N' end"
     prefer_language_thai: "case when lower(prefer_language) like 'thai%' then 'Y' else 'N' end"
     prefer_language_other: >
-                          case when lower(prefer_language) not like 'thai%' or
-                                   lower(prefer_language) not like 'eng%'
-                                   then 'Y' else 'N' end
+      case when lower(prefer_language) not like 'thai%' or
+               lower(prefer_language) not like 'eng%'
+               then 'Y' else 'N' end
     current_package_id: package_id
     current_package_name: promotion_name
     age: age
@@ -40,9 +40,9 @@ l1_customer_profile_union_daily_feature:
     prefer_language_eng: "case when lower(prefer_language) like 'eng%' then 'Y' else 'N' end"
     prefer_language_thai: "case when lower(prefer_language) like 'thai%' then 'Y' else 'N' end"
     prefer_language_other: >
-                          case when lower(prefer_language) not like 'thai%' or
-                                   lower(prefer_language) not like 'eng%'
-                                   then 'Y' else 'N' end
+      case when lower(prefer_language) not like 'thai%' or
+               lower(prefer_language) not like 'eng%'
+               then 'Y' else 'N' end
     current_package_id: current_promotion_id_ma
     current_package_name: current_promotion_title_ma
     age: ma_age
@@ -69,9 +69,9 @@ l1_customer_profile_union_daily_feature:
     prefer_language_eng: "case when lower(prefer_language) like 'eng%' then 'Y' else 'N' end"
     prefer_language_thai: "case when lower(prefer_language) like 'thai%' then 'Y' else 'N' end"
     prefer_language_other: >
-                          case when lower(prefer_language) not like 'thai%' or
-                                   lower(prefer_language) not like 'eng%'
-                                   then 'Y' else 'N' end
+      case when lower(prefer_language) not like 'thai%' or
+               lower(prefer_language) not like 'eng%'
+               then 'Y' else 'N' end
     current_package_id: current_promotion_id_ma
     current_package_name: current_promotion_title_ma
     age: ma_age

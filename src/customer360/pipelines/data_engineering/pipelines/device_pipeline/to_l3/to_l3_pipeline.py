@@ -4,8 +4,8 @@ from src.customer360.utilities.config_parser import *
 from src.customer360.pipelines.data_engineering.nodes.device_nodes.to_l2.to_l2_nodes import *
 from src.customer360.pipelines.data_engineering.nodes.device_nodes.to_l3.to_l3_nodes import *
 
-def device_to_l3_pipeline(**kwargs):
 
+def device_to_l3_pipeline(**kwargs):
     return Pipeline(
         [
 

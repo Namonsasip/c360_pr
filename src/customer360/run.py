@@ -46,6 +46,9 @@ from kedro.pipeline import Pipeline
 from kedro.pipeline.node import Node
 from kedro.versioning import Journal
 
+from src.customer360.utilities.spark_util import get_spark_session
+
+
 from customer360.pipeline import create_pipelines
 
 try:
@@ -243,14 +246,13 @@ class ProjectContext(KedroContext):
                     caller_globals[parameter_name] = {}
 
 
-def run_package(pipelines=[]):
+def run_package(pipelines=None):
 
     # entry point for running pip-install projects
     # using `<project_package>` command
     project_context = load_context(Path.cwd(), env=conf)
 
-    from pyspark.sql import SparkSession
-    spark = SparkSession.builder.getOrCreate()
+    spark = get_spark_session()
 
     # Dont delete this line. This allow spark to only overwrite the partition
     # saved to parquet instead of entire table folder
@@ -261,7 +263,10 @@ def run_package(pipelines=[]):
             project_context.run(pipeline_name=each_pipeline)
         return
     #project_context.run()
-    #project_context.run(pipeline_name='usage_to_l1_pipeline')
+    project_context.run(pipeline_name='touchpoints_to_l1_pipeline')
+    project_context.run(pipeline_name='touchpoints_to_l2_pipeline')
+    project_context.run(pipeline_name='touchpoints_to_l3_pipeline')
+    project_context.run(pipeline_name='touchpoints_to_l4_pipeline')
     # project_context.run(pipeline_name='customer_profile_to_l3_pipeline')
 
     # Replace line above with below to run on databricks cluster
@@ -270,6 +275,13 @@ def run_package(pipelines=[]):
     #
     # project_context = load_context(Path.cwd(), env='base')
     # project_context.run(pipeline_name="customer_profile_to_l4_pipeline")
+
+
+def run_selected_nodes(pipeline_name, node_names=None, env="base"):
+    # entry point for running pip-install projects
+    # using `<project_package>` command
+    project_context = load_context(Path.cwd(), env=env)
+    project_context.run(node_names=node_names, pipeline_name=pipeline_name)
 
 
 if __name__ == "__main__":
