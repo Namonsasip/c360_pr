@@ -15,6 +15,83 @@ from datetime import timedelta
 
 
 class TestUnitBilling:
+    def test_missed_bill(self, project_context):
+        '''
+        l3_missed_bills
+
+        l3_overdue_bills
+        '''
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+        date1 = '2020-01-01'
+        date2 = '2020-04-01'
+        my_dates_list = pd.date_range(date1, date2).tolist()
+        my_dates = [iTemp.date().strftime("%d-%m-%Y") for iTemp in my_dates_list]
+        my_dates = my_dates * 3
+        my_dates.sort()
+        list=['1','2','3',None]
+
+        random.seed(100)
+        random_list = [list[random.randint(0, 3)] for iTemp in range(0, len(my_dates))]
+        random_list2= [random.randint(0, 40) for iTemp in range(0, len(my_dates))]
+        random_list3 = [random.randint(1, 10) * 100 for iTemp in range(0, len(my_dates))]
+        df = spark.createDataFrame(zip(my_dates, random_list,random_list2,random_list3),
+                                   schema=['temp', 'bill_seq_no','no_of_days','bill_stmt_tot_invoiced_amt']) \
+            .withColumn("access_method_num", F.lit(1)) \
+            .withColumn("register_date", F.to_date(F.lit('2019-01-01'), 'yyyy-MM-dd')) \
+            .withColumn("subscription_identifier", F.lit(123))
+        df = df.withColumn("start_of_month", F.to_date(F.date_trunc('month',  F.to_date('temp', 'dd-MM-yyyy'))))
+
+        print('rawdata')
+        df.orderBy('temp').show(999,False)
+
+        l3_billing_and_payments_monthly_missed_bills = node_from_config(df, var_project_context.catalog.load(
+            'params:l3_missed_bills'))
+        print('l3show')
+        l3_billing_and_payments_monthly_missed_bills.show(888,False)
+        assert \
+            l3_billing_and_payments_monthly_missed_bills.where("start_of_month = '2020-01-01'").select(
+                "payments_missed_bills").collect()[0][
+                0] == 23
+
+        l3_billing_and_payments_monthly_overdue_bills = node_from_config(df, var_project_context.catalog.load(
+            'params:l3_overdue_bills'))
+        print('overduetest')
+        l3_billing_and_payments_monthly_overdue_bills.orderBy('start_of_month').show(999,False)
+
+        assert \
+            l3_billing_and_payments_monthly_overdue_bills.where("start_of_month = '2020-01-01'").select(
+                "payments_over_due_bills").collect()[0][
+                0] == 70
+        assert \
+            l3_billing_and_payments_monthly_overdue_bills.where("start_of_month = '2020-01-01'").select(
+                "payments_over_due_bills_1_to_10_days").collect()[0][
+                0] == 17
+        assert \
+            l3_billing_and_payments_monthly_overdue_bills.where("start_of_month = '2020-01-01'").select(
+                "payments_over_due_bills_10_to_30_days").collect()[0][
+                0] == 32
+        assert \
+            l3_billing_and_payments_monthly_overdue_bills.where("start_of_month = '2020-01-01'").select(
+                "payments_over_due_bills_30_plus_days").collect()[0][
+                0] == 21
+
+        l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume=node_from_config(df, var_project_context.catalog.load(
+            'params:l3_last_overdue_bill_days_ago_and_volume'))
+
+        print('lastoverduevolumn')
+        l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume.show(888,False)
+
+        assert \
+            l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume.where("start_of_month = '2020-01-01'").select(
+                "payments_last_overdue_bill_days_ago").collect()[0][
+                0] == 40
+        assert \
+            l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume.where("start_of_month = '2020-01-01'").select(
+                "payments_last_overdue_bill_volume").collect()[0][
+                0] == 36700
+        # exit(2)
+
 
     def test_automatic_flag(self, project_context):
         var_project_context = project_context['ProjectContext']
@@ -62,6 +139,10 @@ class TestUnitBilling:
         l3_bill_volume
 
         l4_payments_bill_shock
+
+        l4_payments_bill_volume
+
+        l4_dynamics_bill_volume
         """
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
@@ -97,6 +178,89 @@ class TestUnitBilling:
             l3_billing_and_payments_monthly_bill_volume.where("start_of_month = '2020-01-01'").select(
                 "payments_roaming_bill_volume").collect()[0][
                 0] == 800
+
+
+        l4_billing_rolling_window_bill_volume_intermediate=l4_rolling_window(l3_billing_and_payments_monthly_bill_volume, var_project_context.catalog.load(
+            'params:l4_payments_bill_volume'))
+
+        assert \
+            l4_billing_rolling_window_bill_volume_intermediate.where("start_of_month = '2019-04-01'").select(
+                "sum_payments_bill_volume_monthly_last_three_month").collect()[0][
+                0] == 1900
+        assert \
+            l4_billing_rolling_window_bill_volume_intermediate.where("start_of_month = '2019-04-01'").select(
+                "sum_payments_roaming_bill_volume_monthly_last_three_month").collect()[0][
+                0] == 1900
+        assert \
+            int(l4_billing_rolling_window_bill_volume_intermediate.where("start_of_month = '2019-04-01'").select(
+                "avg_payments_bill_volume_monthly_last_three_month").collect()[0][
+                0])== 633
+        assert \
+            int(l4_billing_rolling_window_bill_volume_intermediate.where("start_of_month = '2019-04-01'").select(
+                "avg_payments_roaming_bill_volume_monthly_last_three_month").collect()[0][
+                0]) == 633
+
+        print('l4billvolume')
+        l4_billing_rolling_window_bill_volume_intermediate.show(888,False)
+
+        l4_billing_rolling_window_bill_volume=node_from_config(l4_billing_rolling_window_bill_volume_intermediate, var_project_context.catalog.load(
+            'params:l4_dynamics_bill_volume'))
+        print('l4billingrolling')
+
+        l4_billing_rolling_window_bill_volume.show(888,False)
+
+        assert \
+            int(l4_billing_rolling_window_bill_volume.where("start_of_month = '2019-04-01'").select(
+                "start_of_month").count()) == 1
+        assert \
+            int(l4_billing_rolling_window_bill_volume.where("start_of_month = '2019-04-01'").select(
+                "access_method_num").collect()[0][
+                    0]) == 1
+        assert \
+            str(l4_billing_rolling_window_bill_volume.where("start_of_month = '2019-04-01'").select(
+                "register_date").collect()[0][
+                    0]) == '2019-01-01'
+        assert \
+            int(l4_billing_rolling_window_bill_volume.where("start_of_month = '2019-04-01'").select(
+                "subscription_identifier").collect()[0][
+                    0]) == 123
+        assert \
+            int(l4_billing_rolling_window_bill_volume.where("start_of_month = '2019-04-01'").select(
+                "sum_payments_roaming_bill_volume_last_month").collect()[0][
+                    0]) == 800
+        assert \
+            int(l4_billing_rolling_window_bill_volume.where("start_of_month = '2019-04-01'").select(
+                "sum_payments_roaming_bill_volume_last_three_month").collect()[0][
+                    0]) == 1900
+        assert \
+            int(l4_billing_rolling_window_bill_volume.where("start_of_month = '2019-04-01'").select(
+                "avg_payments_roaming_bill_volume_last_month").collect()[0][
+                    0]) == 800
+        assert \
+            int(l4_billing_rolling_window_bill_volume.where("start_of_month = '2019-04-01'").select(
+                "avg_payments_roaming_bill_volume_last_three_month").collect()[0][
+                    0]) == 633
+        assert \
+            int(l4_billing_rolling_window_bill_volume.where("start_of_month = '2019-04-01'").select(
+                "sum_payments_bill_volume_last_month").collect()[0][
+                    0]) == 800
+        assert \
+            int(l4_billing_rolling_window_bill_volume.where("start_of_month = '2019-04-01'").select(
+                "sum_payments_bill_volume_last_three_month").collect()[0][
+                    0]) == 1900
+        assert \
+            int(l4_billing_rolling_window_bill_volume.where("start_of_month = '2019-04-01'").select(
+                "avg_payments_bill_volume_last_month").collect()[0][
+                    0]) == 800
+        assert \
+            int(l4_billing_rolling_window_bill_volume.where("start_of_month = '2019-04-01'").select(
+                "avg_payments_bill_volume_last_three_month").collect()[0][
+                    0]) == 633
+        assert \
+            int(l4_billing_rolling_window_bill_volume.where("start_of_month = '2019-04-01'").select(
+                "payments_one_month_over_three_month_dynamics_bill_volume").collect()[0][
+                    0]*100000) == int(1.26315789473684*100000)
+
 
         l4_billing_statement_history_billshock = node_from_config(df, var_project_context.catalog.load(
             'params:l4_payments_bill_shock'))
