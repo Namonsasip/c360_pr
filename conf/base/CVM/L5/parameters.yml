@@ -57,6 +57,4 @@ key_columns:
 # Columns indicating micro and macrosegments
 segment_columns:
   - ard_macrosegment
-  - ard_microsegment
   - churn_macrosegment
-  - churn_microsegment
