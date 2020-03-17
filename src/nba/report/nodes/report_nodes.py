@@ -178,6 +178,18 @@ def create_agg_data_for_report(
         F.col("total_net_tariff").alias("ontop_voice_total_net_tariff"),
         F.col("date_id").alias("date"),
     )
+
+    # data_charge is Pay per use data charge, voice/sms have onnet and offnet, onnet mean call within AIS network
+    dm01_fin_top_up_filtered = dm01_fin_top_up.filter(
+        dm01_fin_top_up.ddate >= start_day
+    ).select(
+        "analytic_id",
+        "register_date",
+        "top_up_tran",
+        "top_up_value",
+        F.col("ddate").alias("date"),
+    )
+
     dm15_mobile_usage_aggr_prepaid_filtered = dm15_mobile_usage_aggr_prepaid.filter(
         dm15_mobile_usage_aggr_prepaid.ddate >= start_day
     ).select(
@@ -193,17 +205,6 @@ def create_agg_data_for_report(
             + F.col("sms_roaming_charge_out")
             + F.col("data_roaming_charge_data")
         ).alias("all_ppu_charge"),
-        F.col("ddate").alias("date"),
-    )
-
-    # data_charge is Pay per use data charge, voice/sms have onnet and offnet, onnet mean call within AIS network
-    dm01_fin_top_up_filtered = dm01_fin_top_up.filter(
-        dm01_fin_top_up.ddate >= start_day
-    ).select(
-        "analytic_id",
-        "register_date",
-        "top_up_tran",
-        "top_up_value",
         F.col("ddate").alias("date"),
     )
 
