@@ -39,7 +39,7 @@ from customer360.pipelines.cvm.src.models.predict import (
     pyspark_predict_rf,
 )
 from customer360.pipelines.cvm.src.utils.list_targets import list_targets
-import shap
+# import shap
 
 
 def train_rf(df: DataFrame, parameters: Dict[str, Any]) -> RandomForestClassifier:
@@ -68,7 +68,7 @@ def train_rf(df: DataFrame, parameters: Dict[str, Any]) -> RandomForestClassifie
         rf_fitted = rf.fit(X, y)
         models[target_chosen] = rf_fitted
 
-    return models
+    # return models
 
 
 def create_shap_for_rf(
@@ -84,10 +84,10 @@ def create_shap_for_rf(
 
     target_cols = list_targets(parameters)
     X_test = df_test.drop(*target_cols).toPandas()
-    shap_values = shap.KernelExplainer(lambda x: rf.predict_proba(x), X_test)
-    summ_plot = shap.summary_plot(shap_values, X_test)
-
-    return summ_plot
+    # shap_values = shap.KernelExplainer(lambda x: rf.predict_proba(x), X_test)
+    # summ_plot = shap.summary_plot(shap_values, X_test)
+    #
+    # return summ_plot
 
 
 def train_xgb(df: DataFrame, parameters: Dict[str, Any]) -> Dict[str, xgboost.Booster]:
