@@ -15,6 +15,59 @@ from datetime import timedelta
 
 
 class TestUnitBilling:
+
+    def test_rpu_monthly(self,project_context):
+        '''
+        l3_billing_and_payment_revenue_per_user_monthly
+        l4_billing_rpu
+        l4_dynamics_arpu
+        '''
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+        # df = billing_monthly_data
+    #     l3_billing_and_payment_revenue_per_user_monthly:
+    #     where_clause: "where start_of_month is not null"
+    #     feature_list:
+    #     payments_arpu: "sum(norms_net_revenue)"
+    #     payments_arpu_gprs: "sum(norms_net_revenue_gprs)"
+    #     payments_arpu_vas: "sum(norms_net_revenue_vas)"
+    #     payments_arpu_voice: "sum(norms_net_revenue_voice)"
+    #
+    # granularity: "start_of_month,access_method_num,register_date,subscription_identifier"
+
+        dummy_date = ['2019-01-01', '2019-02-01', '2019-03-01', '2019-04-01', '2019-05-01', '2019-06-01', '2019-07-01',
+                      '2019-08-01', '2019-09-01', '2019-10-01', '2019-11-01', '2019-12-01', '2020-01-01', '2020-02-01',
+                      '2020-03-01', '2020-04-01']
+        dummy_date = pd.to_datetime(dummy_date).tolist()
+        dummy_date = [iTemp.date().strftime("%d-%m-%Y") for iTemp in dummy_date]
+        random.seed(100)
+        random_list = [random.randint(1, 9)*100 for iTemp in range(0, len(dummy_date))]
+        random_list2 = [random.randint(1, 9) * 100 for iTemp in range(0, len(dummy_date))]
+        random_list3 = [random.randint(1, 9) * 100 for iTemp in range(0, len(dummy_date))]
+        random_list4 = [random.randint(1, 9) * 100 for iTemp in range(0, len(dummy_date))]
+        df = spark.createDataFrame(zip(dummy_date, random_list,random_list2,random_list3,random_list4),
+                                   schema=['start_of_month', 'norms_net_revenue','norms_net_revenue_gprs','norms_net_revenue_vas','norms_net_revenue_voice']) \
+            .withColumn("access_method_num", F.lit(1)) \
+            .withColumn("register_date", F.to_date(F.lit('2019-01-01'), 'yyyy-MM-dd')) \
+            .withColumn("subscription_identifier", F.lit(123))
+        print('rawdata')
+        df.show(888,False)
+
+        l3_billing_and_payments_monthly_rpu = node_from_config(df, var_project_context.catalog.load(
+            'params:l3_billing_and_payment_revenue_per_user_monthly'))
+        print('l3monthlyrpu')
+        l3_billing_and_payments_monthly_rpu.show(888,False)
+        l4_billing_rolling_window_rpu_intermediate = l4_rolling_window(l3_billing_and_payments_monthly_rpu, var_project_context.catalog.load(
+            'params:l4_billing_rpu'))
+        print('l4rpuintermediate')
+        l4_billing_rolling_window_rpu_intermediate.show(888,False)
+        l4_billing_rolling_window_rpu = node_from_config(l4_billing_rolling_window_rpu_intermediate, var_project_context.catalog.load(
+            'params:l4_dynamics_arpu'))
+        print('l4rpu')
+        l4_billing_rolling_window_rpu.show(888,False)
+        exit(2)
+
+
     def test_missed_bill(self, project_context):
         '''
         l3_missed_bills
