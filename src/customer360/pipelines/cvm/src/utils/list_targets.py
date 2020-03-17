@@ -27,25 +27,37 @@
 # limitations under the License.
 
 
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Union
 
 
-def list_targets(parameters: Dict[str, Any]) -> List[str]:
+def list_targets(
+    parameters: Dict[str, Any], case_split: bool = False
+) -> Union[List[str], Dict[str, Any]]:
     """ Return all target column names.
 
     Args:
         parameters: parameters defined in parameters*.yml files.
-
+        case_split: should per-use-case dictionary be returned, default False.
     Returns:
-        List of target column names.
+        Target column names.
     """
 
     targets_parameters = parameters["targets"]
-    target_colnames = []
+
+    if case_split:
+        target_colnames = {}
+    else:
+        target_colnames = []
+
     for use_case_name in targets_parameters:
         use_case_targets_parameters = targets_parameters[use_case_name]
         for specific_target in use_case_targets_parameters:
             target_colname = use_case_targets_parameters[specific_target]["colname"]
-            target_colnames.append(target_colname)
+            if case_split:
+                if use_case_name not in target_colnames:
+                    target_colnames[use_case_name] = []
+                target_colnames[use_case_name].append[target_colname]
+            else:
+                target_colnames.append(target_colname)
 
     return target_colnames
