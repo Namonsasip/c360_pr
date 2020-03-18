@@ -61,23 +61,39 @@ def train_rf(df: DataFrame, parameters: Dict[str, Any]) -> RandomForestClassifie
     log = logging.getLogger(__name__)
 
     models = {}
-    for use_case in parameters["targets"]:
+
+    def _train_for_macrosegment_target(use_case, macrosegment, target_chosen):
+        log.info(
+            "Training model for {} target, {} macrosegment.".format(
+                target_chosen, macrosegment
+            )
+        )
+
+        X, y = get_pandas_train_test_sample(
+            df, parameters, target_chosen, use_case, macrosegment
+        )
+
+        rf = RandomForestClassifier(n_estimators=100, random_state=100)
+        y = y.values.ravel()
+        return rf.fit(X, y)
+
+    def _train_for_macrosegment(use_case, macrosegment):
+        models = {}
+        for target_chosen in target_cols[use_case]:
+            models[target_chosen] = _train_for_macrosegment_target(
+                use_case, macrosegment, target_chosen
+            )
+        return models
+
+    def _train_for_usecase(use_case):
+        models = {}
         for macrosegment in macrosegments[use_case]:
-            for target_chosen in target_cols[use_case]:
-                log.info(
-                    "Training model for {} target, {} macrosegment.".format(
-                        target_chosen, macrosegment
-                    )
-                )
+            models[macrosegment] = _train_for_macrosegment(use_case, macrosegment)
+        return models
 
-                X, y = get_pandas_train_test_sample(
-                    df, parameters, target_chosen, use_case, macrosegment
-                )
-
-                rf = RandomForestClassifier(n_estimators=100, random_state=100)
-                y = y.values.ravel()
-                rf_fitted = rf.fit(X, y)
-                models[use_case][macrosegment][target_chosen] = rf_fitted
+    models = {}
+    for use_case in parameters["targets"]:
+        models[use_case] = _train_for_usecase(use_case)
 
     return models
 
