@@ -16,7 +16,7 @@ from datetime import timedelta
 
 class TestUnitBilling:
 
-    def test_rpu_monthly(self,project_context):
+    def test_rpu_monthly(self, project_context):
         '''
         l3_billing_and_payment_revenue_per_user_monthly
         l4_billing_rpu
@@ -25,48 +25,209 @@ class TestUnitBilling:
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
         # df = billing_monthly_data
-    #     l3_billing_and_payment_revenue_per_user_monthly:
-    #     where_clause: "where start_of_month is not null"
-    #     feature_list:
-    #     payments_arpu: "sum(norms_net_revenue)"
-    #     payments_arpu_gprs: "sum(norms_net_revenue_gprs)"
-    #     payments_arpu_vas: "sum(norms_net_revenue_vas)"
-    #     payments_arpu_voice: "sum(norms_net_revenue_voice)"
-    #
-    # granularity: "start_of_month,access_method_num,register_date,subscription_identifier"
-
-        dummy_date = ['2019-01-01', '2019-02-01', '2019-03-01', '2019-04-01', '2019-05-01', '2019-06-01', '2019-07-01',
-                      '2019-08-01', '2019-09-01', '2019-10-01', '2019-11-01', '2019-12-01', '2020-01-01', '2020-02-01',
-                      '2020-03-01', '2020-04-01']
-        dummy_date = pd.to_datetime(dummy_date).tolist()
-        dummy_date = [iTemp.date().strftime("%d-%m-%Y") for iTemp in dummy_date]
+        #     l3_billing_and_payment_revenue_per_user_monthly:
+        #     where_clause: "where start_of_month is not null"
+        #     feature_list:
+        #     payments_arpu: "sum(norms_net_revenue)"
+        #     payments_arpu_gprs: "sum(norms_net_revenue_gprs)"
+        #     payments_arpu_vas: "sum(norms_net_revenue_vas)"
+        #     payments_arpu_voice: "sum(norms_net_revenue_voice)"
+        #
+        # granularity: "start_of_month,access_method_num,register_date,subscription_identifier"
+        date1 = '2020-01-01'
+        date2 = '2020-06-01'
+        dummy_date = pd.date_range(date1, date2).tolist()
+        # dummy_date = ['2019-01-01', '2019-02-01', '2019-03-01', '2019-04-01', '2019-05-01', '2019-06-01', '2019-07-01',
+        #               '2019-08-01', '2019-09-01', '2019-10-01', '2019-11-01', '2019-12-01', '2020-01-01', '2020-02-01',
+        #               '2020-03-01', '2020-04-01']
+        # dummy_date = pd.to_datetime(dummy_date).tolist()
+        dummy_date = [iTemp.date().strftime("%Y-%m-%d") for iTemp in dummy_date]
         random.seed(100)
-        random_list = [random.randint(1, 9)*100 for iTemp in range(0, len(dummy_date))]
+        random_list = [random.randint(1, 9) * 100 for iTemp in range(0, len(dummy_date))]
         random_list2 = [random.randint(1, 9) * 100 for iTemp in range(0, len(dummy_date))]
         random_list3 = [random.randint(1, 9) * 100 for iTemp in range(0, len(dummy_date))]
         random_list4 = [random.randint(1, 9) * 100 for iTemp in range(0, len(dummy_date))]
-        df = spark.createDataFrame(zip(dummy_date, random_list,random_list2,random_list3,random_list4),
-                                   schema=['start_of_month', 'norms_net_revenue','norms_net_revenue_gprs','norms_net_revenue_vas','norms_net_revenue_voice']) \
+        df = spark.createDataFrame(zip(dummy_date, random_list, random_list2, random_list3, random_list4),
+                                   schema=['temp', 'norms_net_revenue', 'norms_net_revenue_gprs',
+                                           'norms_net_revenue_vas', 'norms_net_revenue_voice']) \
             .withColumn("access_method_num", F.lit(1)) \
             .withColumn("register_date", F.to_date(F.lit('2019-01-01'), 'yyyy-MM-dd')) \
             .withColumn("subscription_identifier", F.lit(123))
+        df = df.withColumn("start_of_month", F.to_date(F.date_trunc('month', F.to_date('temp', 'yyyy-MM-dd'))))
+
         print('rawdata')
-        df.show(888,False)
+        df.show(888, False)
 
         l3_billing_and_payments_monthly_rpu = node_from_config(df, var_project_context.catalog.load(
             'params:l3_billing_and_payment_revenue_per_user_monthly'))
         print('l3monthlyrpu')
-        l3_billing_and_payments_monthly_rpu.show(888,False)
-        l4_billing_rolling_window_rpu_intermediate = l4_rolling_window(l3_billing_and_payments_monthly_rpu, var_project_context.catalog.load(
-            'params:l4_billing_rpu'))
-        print('l4rpuintermediate')
-        l4_billing_rolling_window_rpu_intermediate.show(888,False)
-        l4_billing_rolling_window_rpu = node_from_config(l4_billing_rolling_window_rpu_intermediate, var_project_context.catalog.load(
-            'params:l4_dynamics_arpu'))
-        print('l4rpu')
-        l4_billing_rolling_window_rpu.show(888,False)
-        exit(2)
+        l3_billing_and_payments_monthly_rpu.show(888, False)
+        assert \
+            l3_billing_and_payments_monthly_rpu.where("start_of_month = '2020-05-01'").select(
+                "payments_arpu").collect()[0][
+                0] == 13900
+        assert \
+            l3_billing_and_payments_monthly_rpu.where("start_of_month = '2020-05-01'").select(
+                "payments_arpu_gprs").collect()[0][
+                0] == 15200
+        assert \
+            l3_billing_and_payments_monthly_rpu.where("start_of_month = '2020-05-01'").select(
+                "payments_arpu_vas").collect()[0][
+                0] == 15600
+        assert \
+            l3_billing_and_payments_monthly_rpu.where("start_of_month = '2020-05-01'").select(
+                "payments_arpu_voice").collect()[0][
+                0] == 14500
 
+        l4_billing_rolling_window_rpu_intermediate = l4_rolling_window(l3_billing_and_payments_monthly_rpu,
+                                                                       var_project_context.catalog.load(
+                                                                           'params:l4_billing_rpu'))
+        print('l4rpuintermediate')
+        l4_billing_rolling_window_rpu_intermediate.show(888, False)
+        assert \
+            l4_billing_rolling_window_rpu_intermediate.where("start_of_month = '2020-05-01'").select(
+                "sum_payments_arpu_monthly_last_three_month").collect()[0][
+                0] == 42200
+        assert \
+            l4_billing_rolling_window_rpu_intermediate.where("start_of_month = '2020-05-01'").select(
+                "sum_payments_arpu_gprs_monthly_last_three_month").collect()[0][
+                0] == 41200
+        assert \
+            l4_billing_rolling_window_rpu_intermediate.where("start_of_month = '2020-05-01'").select(
+                "sum_payments_arpu_vas_monthly_last_three_month").collect()[0][
+                0] == 46100
+        assert \
+            l4_billing_rolling_window_rpu_intermediate.where("start_of_month = '2020-05-01'").select(
+                "sum_payments_arpu_voice_monthly_last_three_month").collect()[0][
+                0] == 46800
+        assert \
+            int(l4_billing_rolling_window_rpu_intermediate.where("start_of_month = '2020-05-01'").select(
+                "avg_payments_arpu_monthly_last_three_month").collect()[0][
+                    0]) == int(14066.6666666666)
+        assert \
+            int(l4_billing_rolling_window_rpu_intermediate.where("start_of_month = '2020-05-01'").select(
+                "avg_payments_arpu_gprs_monthly_last_three_month").collect()[0][
+                    0]) == int(13733.3333333333)
+        assert \
+            int(l4_billing_rolling_window_rpu_intermediate.where("start_of_month = '2020-05-01'").select(
+                "avg_payments_arpu_vas_monthly_last_three_month").collect()[0][
+                    0]) == int(15366.6666666666)
+        assert \
+            l4_billing_rolling_window_rpu_intermediate.where("start_of_month = '2020-05-01'").select(
+                "avg_payments_arpu_voice_monthly_last_three_month").collect()[0][
+                0] == 15600
+
+        l4_billing_rolling_window_rpu = node_from_config(l4_billing_rolling_window_rpu_intermediate,
+                                                         var_project_context.catalog.load(
+                                                             'params:l4_dynamics_arpu'))
+        print('l4rpu')
+        l4_billing_rolling_window_rpu.show(888, False)
+
+
+        assert \
+            l4_billing_rolling_window_rpu.where("start_of_month = '2020-05-01'").count() == 1
+
+        assert \
+            l4_billing_rolling_window_rpu.where("start_of_month = '2020-05-01'").select(
+                "access_method_num").collect()[0][
+                0] == 1
+
+        assert \
+            str(l4_billing_rolling_window_rpu.where("start_of_month = '2020-05-01'").select(
+                "register_date").collect()[0][
+                    0]) == '2019-01-01'
+
+        assert \
+            l4_billing_rolling_window_rpu.where("start_of_month = '2020-05-01'").select(
+                "subscription_identifier").collect()[0][
+                0] == 123
+
+        assert \
+            l4_billing_rolling_window_rpu.where("start_of_month = '2020-05-01'").select(
+                "sum_payments_arpu_last_month").collect()[0][
+                0] == 13600
+
+        assert \
+            l4_billing_rolling_window_rpu.where("start_of_month = '2020-05-01'").select(
+                "sum_payments_arpu_last_three_month").collect()[0][
+                0] == 42200
+
+        assert \
+            l4_billing_rolling_window_rpu.where("start_of_month = '2020-05-01'").select(
+                "sum_payments_arpu_gprs_last_month").collect()[0][
+                0] == 12800
+
+        assert \
+            l4_billing_rolling_window_rpu.where("start_of_month = '2020-05-01'").select(
+                "sum_payments_arpu_gprs_last_three_month").collect()[0][
+                0] == 41200
+
+        assert \
+            l4_billing_rolling_window_rpu.where("start_of_month = '2020-05-01'").select(
+                "sum_payments_arpu_vas_last_month").collect()[0][
+                0] == 15700
+
+        assert \
+            l4_billing_rolling_window_rpu.where("start_of_month = '2020-05-01'").select(
+                "sum_payments_arpu_vas_last_three_month").collect()[0][
+                0] == 46100
+
+        assert \
+            l4_billing_rolling_window_rpu.where("start_of_month = '2020-05-01'").select(
+                "sum_payments_arpu_voice_last_month").collect()[0][
+                0] == 15300
+
+        assert \
+            l4_billing_rolling_window_rpu.where("start_of_month = '2020-05-01'").select(
+                "sum_payments_arpu_voice_last_three_month").collect()[0][
+                0] == 46800
+
+        assert \
+            l4_billing_rolling_window_rpu.where("start_of_month = '2020-05-01'").select(
+                "avg_payments_arpu_last_month").collect()[0][
+                0] == 13600
+
+        assert \
+            int(l4_billing_rolling_window_rpu.where("start_of_month = '2020-05-01'").select(
+                "avg_payments_arpu_last_three_month").collect()[0][
+                0]) == int(14066.66667)
+
+        assert \
+            l4_billing_rolling_window_rpu.where("start_of_month = '2020-05-01'").select(
+                "avg_payments_arpu_gprs_last_month").collect()[0][
+                0] == 12800
+
+        assert \
+            int(l4_billing_rolling_window_rpu.where("start_of_month = '2020-05-01'").select(
+                "avg_payments_arpu_gprs_last_three_month").collect()[0][
+                0]) == int(13733.33333)
+
+        assert \
+            l4_billing_rolling_window_rpu.where("start_of_month = '2020-05-01'").select(
+                "avg_payments_arpu_vas_last_month").collect()[0][
+                0] == 15700
+
+        assert \
+            int(l4_billing_rolling_window_rpu.where("start_of_month = '2020-05-01'").select(
+                "avg_payments_arpu_vas_last_three_month").collect()[0][
+                0]) == int(15366.66667)
+
+        assert \
+            l4_billing_rolling_window_rpu.where("start_of_month = '2020-05-01'").select(
+                "avg_payments_arpu_voice_last_month").collect()[0][
+                0] == 15300
+
+        assert \
+            l4_billing_rolling_window_rpu.where("start_of_month = '2020-05-01'").select(
+                "avg_payments_arpu_voice_last_three_month").collect()[0][
+                0] == 15600
+
+        assert \
+            int(l4_billing_rolling_window_rpu.where("start_of_month = '2020-05-01'").select(
+                "payments_one_month_over_three_month_dynamics_arpu").collect()[0][
+                0]*1000000) == int(0.966824645*1000000)
+
+        # exit(2)
 
     def test_missed_bill(self, project_context):
         '''
@@ -86,36 +247,37 @@ class TestUnitBilling:
         my_dates = [iTemp.date().strftime("%d-%m-%Y") for iTemp in my_dates_list]
         my_dates = my_dates * 3
         my_dates.sort()
-        list=['1','2','3',None]
+        list = ['1', '2', '3', None]
 
         random.seed(100)
         random_list = [list[random.randint(0, 3)] for iTemp in range(0, len(my_dates))]
-        random_list2= [random.randint(0, 40) for iTemp in range(0, len(my_dates))]
+        random_list2 = [random.randint(0, 40) for iTemp in range(0, len(my_dates))]
         random_list3 = [random.randint(1, 10) * 100 for iTemp in range(0, len(my_dates))]
-        df = spark.createDataFrame(zip(my_dates, random_list,random_list2,random_list3),
-                                   schema=['temp', 'bill_seq_no','no_of_days','bill_stmt_tot_invoiced_amt']) \
+        df = spark.createDataFrame(zip(my_dates, random_list, random_list2, random_list3),
+                                   schema=['temp', 'bill_seq_no', 'no_of_days', 'bill_stmt_tot_invoiced_amt']) \
             .withColumn("access_method_num", F.lit(1)) \
             .withColumn("register_date", F.to_date(F.lit('2019-01-01'), 'yyyy-MM-dd')) \
             .withColumn("subscription_identifier", F.lit(123))
-        df = df.withColumn("start_of_month", F.to_date(F.date_trunc('month',  F.to_date('temp', 'dd-MM-yyyy'))))
+        df = df.withColumn("start_of_month", F.to_date(F.date_trunc('month', F.to_date('temp', 'dd-MM-yyyy'))))
 
         print('rawdata')
-        df.orderBy('temp').show(999,False)
+        df.orderBy('temp').show(999, False)
 
         l3_billing_and_payments_monthly_missed_bills = node_from_config(df, var_project_context.catalog.load(
             'params:l3_missed_bills'))
         print('l3show')
-        l3_billing_and_payments_monthly_missed_bills.show(888,False)
+        l3_billing_and_payments_monthly_missed_bills.show(888, False)
         assert \
             l3_billing_and_payments_monthly_missed_bills.where("start_of_month = '2020-01-01'").select(
                 "payments_missed_bills").collect()[0][
                 0] == 23
 
-        l4_rolling_window_missed_bills=l4_rolling_window(l3_billing_and_payments_monthly_missed_bills, var_project_context.catalog.load(
-            'params:l4_missed_bills'))
+        l4_rolling_window_missed_bills = l4_rolling_window(l3_billing_and_payments_monthly_missed_bills,
+                                                           var_project_context.catalog.load(
+                                                               'params:l4_missed_bills'))
 
         print('l4rollingmissedbill')
-        l4_rolling_window_missed_bills.show(999,False)
+        l4_rolling_window_missed_bills.show(999, False)
         assert \
             l4_rolling_window_missed_bills.where("start_of_month = '2020-03-01'").select(
                 "sum_payments_missed_bills_monthly_last_three_month").collect()[0][
@@ -125,11 +287,10 @@ class TestUnitBilling:
                 "avg_payments_missed_bills_monthly_last_three_month").collect()[0][
                 0] == 21
 
-
         l3_billing_and_payments_monthly_overdue_bills = node_from_config(df, var_project_context.catalog.load(
             'params:l3_overdue_bills'))
         print('overduetest')
-        l3_billing_and_payments_monthly_overdue_bills.orderBy('start_of_month').show(999,False)
+        l3_billing_and_payments_monthly_overdue_bills.orderBy('start_of_month').show(999, False)
 
         assert \
             l3_billing_and_payments_monthly_overdue_bills.where("start_of_month = '2020-01-01'").select(
@@ -149,11 +310,10 @@ class TestUnitBilling:
                 0] == 21
 
         l4_rolling_window_overdue_bills = l4_rolling_window(l3_billing_and_payments_monthly_overdue_bills,
-                                                           var_project_context.catalog.load(
-                                                               'params:l4_overdue_bills'))
+                                                            var_project_context.catalog.load(
+                                                                'params:l4_overdue_bills'))
         print('l4overduebill')
-        l4_rolling_window_overdue_bills.show(888,False)
-
+        l4_rolling_window_overdue_bills.show(888, False)
 
         assert \
             l4_rolling_window_overdue_bills.where("start_of_month = '2020-03-01'").select(
@@ -188,27 +348,24 @@ class TestUnitBilling:
                 "avg_payments_over_due_bills_30_plus_days_monthly_last_three_month").collect()[0][
                 0] == 18
 
-
-
-
-
-
-        l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume=node_from_config(df, var_project_context.catalog.load(
-            'params:l3_last_overdue_bill_days_ago_and_volume'))
+        l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume = node_from_config(df,
+                                                                                                 var_project_context.catalog.load(
+                                                                                                     'params:l3_last_overdue_bill_days_ago_and_volume'))
 
         print('lastoverduevolumn')
-        l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume.show(888,False)
+        l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume.show(888, False)
 
         assert \
-            l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume.where("start_of_month = '2020-01-01'").select(
+            l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume.where(
+                "start_of_month = '2020-01-01'").select(
                 "payments_last_overdue_bill_days_ago").collect()[0][
                 0] == 40
         assert \
-            l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume.where("start_of_month = '2020-01-01'").select(
+            l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume.where(
+                "start_of_month = '2020-01-01'").select(
                 "payments_last_overdue_bill_volume").collect()[0][
                 0] == 36700
         # exit(2)
-
 
     def test_automatic_flag(self, project_context):
         var_project_context = project_context['ProjectContext']
@@ -296,9 +453,9 @@ class TestUnitBilling:
                 "payments_roaming_bill_volume").collect()[0][
                 0] == 800
 
-
-        l4_billing_rolling_window_bill_volume_intermediate=l4_rolling_window(l3_billing_and_payments_monthly_bill_volume, var_project_context.catalog.load(
-            'params:l4_payments_bill_volume'))
+        l4_billing_rolling_window_bill_volume_intermediate = l4_rolling_window(
+            l3_billing_and_payments_monthly_bill_volume, var_project_context.catalog.load(
+                'params:l4_payments_bill_volume'))
 
         assert \
             l4_billing_rolling_window_bill_volume_intermediate.where("start_of_month = '2019-04-01'").select(
@@ -311,20 +468,21 @@ class TestUnitBilling:
         assert \
             int(l4_billing_rolling_window_bill_volume_intermediate.where("start_of_month = '2019-04-01'").select(
                 "avg_payments_bill_volume_monthly_last_three_month").collect()[0][
-                0])== 633
+                    0]) == 633
         assert \
             int(l4_billing_rolling_window_bill_volume_intermediate.where("start_of_month = '2019-04-01'").select(
                 "avg_payments_roaming_bill_volume_monthly_last_three_month").collect()[0][
-                0]) == 633
+                    0]) == 633
 
         print('l4billvolume')
-        l4_billing_rolling_window_bill_volume_intermediate.show(888,False)
+        l4_billing_rolling_window_bill_volume_intermediate.show(888, False)
 
-        l4_billing_rolling_window_bill_volume=node_from_config(l4_billing_rolling_window_bill_volume_intermediate, var_project_context.catalog.load(
-            'params:l4_dynamics_bill_volume'))
+        l4_billing_rolling_window_bill_volume = node_from_config(l4_billing_rolling_window_bill_volume_intermediate,
+                                                                 var_project_context.catalog.load(
+                                                                     'params:l4_dynamics_bill_volume'))
         print('l4billingrolling')
 
-        l4_billing_rolling_window_bill_volume.show(888,False)
+        l4_billing_rolling_window_bill_volume.show(888, False)
 
         assert \
             int(l4_billing_rolling_window_bill_volume.where("start_of_month = '2019-04-01'").select(
@@ -376,8 +534,7 @@ class TestUnitBilling:
         assert \
             int(l4_billing_rolling_window_bill_volume.where("start_of_month = '2019-04-01'").select(
                 "payments_one_month_over_three_month_dynamics_bill_volume").collect()[0][
-                    0]*100000) == int(1.26315789473684*100000)
-
+                    0] * 100000) == int(1.26315789473684 * 100000)
 
         l4_billing_statement_history_billshock = node_from_config(df, var_project_context.catalog.load(
             'params:l4_payments_bill_shock'))
@@ -415,6 +572,8 @@ class TestUnitBilling:
     def test_last_topup_channel(self, project_context):
         """
         l2_last_topup_channel
+
+        l3_last_topup_channel
         """
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
@@ -451,16 +610,17 @@ class TestUnitBilling:
 
         print('testdata')
         input_df.orderBy('start_of_week').show(888, False)
-        l2_billing_and_payments_weekly_last_top_up_channel = node_from_config(input_df, var_project_context.catalog.load(
-            'params:l2_last_topup_channel'))
+        l2_billing_and_payments_weekly_last_top_up_channel = node_from_config(input_df,
+                                                                              var_project_context.catalog.load(
+                                                                                  'params:l2_last_topup_channel'))
         print('l2test')
         l2_billing_and_payments_weekly_last_top_up_channel.orderBy('start_of_week').show(888, False)
 
-        l3_billing_and_payments_monthly_last_top_up_channel = node_from_config(input_df, var_project_context.catalog.load(
-            'params:l3_last_topup_channel'))
+        l3_billing_and_payments_monthly_last_top_up_channel = node_from_config(input_df,
+                                                                               var_project_context.catalog.load(
+                                                                                   'params:l3_last_topup_channel'))
         print('l3test')
         l3_billing_and_payments_monthly_last_top_up_channel.orderBy('start_of_month').show(999, False)
-
 
         # exit(2)
 
@@ -502,12 +662,14 @@ class TestUnitBilling:
         print('dfdebug')
         df.show()
         print('dfdebug2')
-        l1_billing_and_payments_daily_most_popular_top_up_channel = node_from_config(df, var_project_context.catalog.load(
-            'params:l1_billing_and_payment_most_popular_topup_channel'))
+        l1_billing_and_payments_daily_most_popular_top_up_channel = node_from_config(df,
+                                                                                     var_project_context.catalog.load(
+                                                                                         'params:l1_billing_and_payment_most_popular_topup_channel'))
         print('dailydebug')
         l1_billing_and_payments_daily_most_popular_top_up_channel.show(999, False)
         assert \
-            l1_billing_and_payments_daily_most_popular_top_up_channel.where("event_partition_date = '2020-01-05'").where('recharge_type="B1"').select(
+            l1_billing_and_payments_daily_most_popular_top_up_channel.where(
+                "event_partition_date = '2020-01-05'").where('recharge_type="B1"').select(
                 "payments_total_top_up").collect()[0][
                 0] == 2
 
@@ -522,24 +684,28 @@ class TestUnitBilling:
         print('joineddata')
         joined_data.show(999, False)
         # joined_data.show(999,False)
-        l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate = node_from_config(joined_data, var_project_context.catalog.load(
-            'params:l2_popular_top_up_channel'))
+        l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate = node_from_config(joined_data,
+                                                                                                   var_project_context.catalog.load(
+                                                                                                       'params:l2_popular_top_up_channel'))
         print('weeklyy')
         l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate.show(999, False)
 
         assert \
-            l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate.where("start_of_week = '2019-12-30'").where(
+            l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate.where(
+                "start_of_week = '2019-12-30'").where(
                 'recharge_topup_event_type_name="Refill on Mobile"').select(
                 "payments_total_top_up").collect()[0][
                 0] == 3
         assert \
-            l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate.where("start_of_week = '2019-12-30'").where(
+            l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate.where(
+                "start_of_week = '2019-12-30'").where(
                 'recharge_topup_event_type_name="Refill on Mobile"').select(
                 "rank").collect()[0][
                 0] == 2
 
-        l2_billing_and_payments_weekly_most_popular_top_up_channel = node_from_config(l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate, var_project_context.catalog.load(
-            'params:l2_most_popular_topup_channel'))
+        l2_billing_and_payments_weekly_most_popular_top_up_channel = node_from_config(
+            l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate, var_project_context.catalog.load(
+                'params:l2_most_popular_topup_channel'))
         print('mostweekly')
         l2_billing_and_payments_weekly_most_popular_top_up_channel.show(999, False)
 
@@ -548,7 +714,8 @@ class TestUnitBilling:
                 "access_method_num").collect()[0][
                 0] == 1
         assert \
-            l2_billing_and_payments_weekly_most_popular_top_up_channel.where("start_of_week = '2019-12-30'").count() == 1
+            l2_billing_and_payments_weekly_most_popular_top_up_channel.where(
+                "start_of_week = '2019-12-30'").count() == 1
         assert \
             str(l2_billing_and_payments_weekly_most_popular_top_up_channel.where("start_of_week = '2019-12-30'").select(
                 "register_date").collect()[0][
@@ -566,8 +733,9 @@ class TestUnitBilling:
                 "subscription_identifier").collect()[0][
                 0] == 123
 
-        l3_billing_and_payments_monthly_most_popular_top_up_channel_2 = node_from_config(joined_data, var_project_context.catalog.load(
-            'params:l3_popular_topup_channel'))
+        l3_billing_and_payments_monthly_most_popular_top_up_channel_2 = node_from_config(joined_data,
+                                                                                         var_project_context.catalog.load(
+                                                                                             'params:l3_popular_topup_channel'))
         print('monthlyy')
         l3_billing_and_payments_monthly_most_popular_top_up_channel_2.show(999, False)
         assert \
@@ -581,19 +749,22 @@ class TestUnitBilling:
                 "payments_total_top_up").collect()[0][
                 0] == 8
 
-        l3_billing_and_payments_monthly_most_popular_top_up_channel = node_from_config(l3_billing_and_payments_monthly_most_popular_top_up_channel_2, var_project_context.catalog.load(
-            'params:l3_most_popular_topup_channel'))
+        l3_billing_and_payments_monthly_most_popular_top_up_channel = node_from_config(
+            l3_billing_and_payments_monthly_most_popular_top_up_channel_2, var_project_context.catalog.load(
+                'params:l3_most_popular_topup_channel'))
         print('monthlymost')
         l3_billing_and_payments_monthly_most_popular_top_up_channel.show(999, False)
 
         assert \
-            l3_billing_and_payments_monthly_most_popular_top_up_channel.where("start_of_month = '2020-01-01'").count() == 1
+            l3_billing_and_payments_monthly_most_popular_top_up_channel.where(
+                "start_of_month = '2020-01-01'").count() == 1
         assert \
             l3_billing_and_payments_monthly_most_popular_top_up_channel.where("start_of_month = '2020-01-01'").select(
                 "payments_top_up_channel").collect()[0][
                 0] == 'Refill on Mobile'
         assert \
-            str(l3_billing_and_payments_monthly_most_popular_top_up_channel.where("start_of_month = '2020-01-01'").select(
+            str(l3_billing_and_payments_monthly_most_popular_top_up_channel.where(
+                "start_of_month = '2020-01-01'").select(
                 "register_date").collect()[0][
                     0]) == '2019-01-01'
 
@@ -610,8 +781,9 @@ class TestUnitBilling:
                 "subscription_identifier").collect()[0][
                 0] == 123
 
-        l4_rolling_window_most_popular_topup_channel_1 = l4_rolling_window(l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate, var_project_context.catalog.load(
-            'params:l4_most_popular_topup_channel_initial'))
+        l4_rolling_window_most_popular_topup_channel_1 = l4_rolling_window(
+            l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate, var_project_context.catalog.load(
+                'params:l4_most_popular_topup_channel_initial'))
         print('finaldebugini')
         l4_rolling_window_most_popular_topup_channel_1.show(999, False)
         assert \
@@ -636,8 +808,9 @@ class TestUnitBilling:
                 0] == 16
 
         print('beforeerror')
-        l4_billing_rolling_window_most_popular_topup_channel = l4_rolling_ranked_window(l4_rolling_window_most_popular_topup_channel_1, var_project_context.catalog.load(
-            'params:l4_most_popular_topup_channel'))
+        l4_billing_rolling_window_most_popular_topup_channel = l4_rolling_ranked_window(
+            l4_rolling_window_most_popular_topup_channel_1, var_project_context.catalog.load(
+                'params:l4_most_popular_topup_channel'))
         print('finalfeaturedebug')
         l4_billing_rolling_window_most_popular_topup_channel.orderBy('start_of_week').show(888, False)
         assert \
@@ -731,8 +904,9 @@ class TestUnitBilling:
                 "recharge_time").collect()[0][
                     0]) == '2020-01-06 15:38:21'
 
-        l2_billing_and_payments_weekly_time_since_last_top_up = node_from_config(l1_billing_and_payments_daily_time_since_last_top_up, var_project_context.catalog.load(
-            'params:l2_time_since_last_top_up'))
+        l2_billing_and_payments_weekly_time_since_last_top_up = node_from_config(
+            l1_billing_and_payments_daily_time_since_last_top_up, var_project_context.catalog.load(
+                'params:l2_time_since_last_top_up'))
         print('l2time')
         l2_billing_and_payments_weekly_time_since_last_top_up.orderBy('start_of_week').show(999, False)
         assert \
@@ -745,47 +919,56 @@ class TestUnitBilling:
                 "payments_recharge_time").collect()[0][
                     0]) == '2020-01-10 09:37:52'
 
-        l2_billing_and_payments_weekly_last_three_topup_volume_1 = node_from_config(l1_billing_and_payments_daily_time_since_last_top_up, var_project_context.catalog.load(
-            'params:l2_last_three_topup_volume_ranked'))
+        l2_billing_and_payments_weekly_last_three_topup_volume_1 = node_from_config(
+            l1_billing_and_payments_daily_time_since_last_top_up, var_project_context.catalog.load(
+                'params:l2_last_three_topup_volume_ranked'))
         print('lastthreeranked')
 
         l2_billing_and_payments_weekly_last_three_topup_volume_1.orderBy('start_of_week').show(999, False)
         assert \
-            l2_billing_and_payments_weekly_last_three_topup_volume_1.where("start_of_week = '2020-01-06'").where('rank=1').select("face_value").collect()[
+            l2_billing_and_payments_weekly_last_three_topup_volume_1.where("start_of_week = '2020-01-06'").where(
+                'rank=1').select("face_value").collect()[
                 0][
                 0] == 700
         assert \
-            l2_billing_and_payments_weekly_last_three_topup_volume_1.where("start_of_week = '2020-01-06'").where('rank=1').select(
+            l2_billing_and_payments_weekly_last_three_topup_volume_1.where("start_of_week = '2020-01-06'").where(
+                'rank=1').select(
                 "subscription_identifier").collect()[
                 0][
                 0] == 123
         assert \
-            str(l2_billing_and_payments_weekly_last_three_topup_volume_1.where("start_of_week = '2020-01-06'").where('rank=1').select(
+            str(l2_billing_and_payments_weekly_last_three_topup_volume_1.where("start_of_week = '2020-01-06'").where(
+                'rank=1').select(
                 "register_date").collect()[
                     0][
                     0]) == '2019-01-01'
         assert \
-            l2_billing_and_payments_weekly_last_three_topup_volume_1.where("start_of_week = '2020-01-06'").where('rank=1').select(
+            l2_billing_and_payments_weekly_last_three_topup_volume_1.where("start_of_week = '2020-01-06'").where(
+                'rank=1').select(
                 "access_method_num").collect()[
                 0][
                 0] == 1
         assert \
-            l2_billing_and_payments_weekly_last_three_topup_volume_1.where("start_of_week = '2020-01-06'").where('face_value=700').select("rank").collect()[
+            l2_billing_and_payments_weekly_last_three_topup_volume_1.where("start_of_week = '2020-01-06'").where(
+                'face_value=700').select("rank").collect()[
                 0][
                 0] == 1
         assert \
             l2_billing_and_payments_weekly_last_three_topup_volume_1.where("start_of_week = '2020-01-06'").count() == 3
 
-        l2_billing_and_payments_weekly_last_three_topup_volume = node_from_config(l2_billing_and_payments_weekly_last_three_topup_volume_1, var_project_context.catalog.load(
-            'params:l2_last_three_topup_volume'))
+        l2_billing_and_payments_weekly_last_three_topup_volume = node_from_config(
+            l2_billing_and_payments_weekly_last_three_topup_volume_1, var_project_context.catalog.load(
+                'params:l2_last_three_topup_volume'))
         assert \
-            l2_billing_and_payments_weekly_last_three_topup_volume.where("start_of_week = '2020-01-06'").select("payment_top_volume").collect()[0][
+            l2_billing_and_payments_weekly_last_three_topup_volume.where("start_of_week = '2020-01-06'").select(
+                "payment_top_volume").collect()[0][
                 0] == 1800
         print('last3')
         l2_billing_and_payments_weekly_last_three_topup_volume.orderBy('start_of_week').show(888, False)
 
-        l3_billing_and_payments_monthly_time_since_last_top_up = node_from_config(l1_billing_and_payments_daily_time_since_last_top_up, var_project_context.catalog.load(
-            'params:l3_time_since_last_top_up'))
+        l3_billing_and_payments_monthly_time_since_last_top_up = node_from_config(
+            l1_billing_and_payments_daily_time_since_last_top_up, var_project_context.catalog.load(
+                'params:l3_time_since_last_top_up'))
         print('l3time')
         l3_billing_and_payments_monthly_time_since_last_top_up.orderBy('start_of_month').show(999, False)
 
@@ -798,86 +981,106 @@ class TestUnitBilling:
             str(l3_billing_and_payments_monthly_time_since_last_top_up.where("start_of_month = '2020-01-01'").select(
                 "payments_recharge_time").collect()[0][
                     0]) == '2020-01-30 03:29:41'
-        l3_billing_and_payments_monthly_last_three_topup_volume_1 = node_from_config(l1_billing_and_payments_daily_time_since_last_top_up, var_project_context.catalog.load(
-            'params:l3_last_three_topup_volume_ranked'))
+        l3_billing_and_payments_monthly_last_three_topup_volume_1 = node_from_config(
+            l1_billing_and_payments_daily_time_since_last_top_up, var_project_context.catalog.load(
+                'params:l3_last_three_topup_volume_ranked'))
         print('last3threeranked')
 
         l3_billing_and_payments_monthly_last_three_topup_volume_1.orderBy('start_of_month').show(999, False)
         assert \
-            l3_billing_and_payments_monthly_last_three_topup_volume_1.where("start_of_month = '2020-01-01'").where('rank=2').select("face_value").collect()[
+            l3_billing_and_payments_monthly_last_three_topup_volume_1.where("start_of_month = '2020-01-01'").where(
+                'rank=2').select("face_value").collect()[
                 0][
                 0] == 500
         assert \
-            l3_billing_and_payments_monthly_last_three_topup_volume_1.where("start_of_month = '2020-01-01'").count() == 15
+            l3_billing_and_payments_monthly_last_three_topup_volume_1.where(
+                "start_of_month = '2020-01-01'").count() == 15
         assert \
-            l3_billing_and_payments_monthly_last_three_topup_volume_1.where("start_of_month = '2020-01-01'").where('rank=2').select(
+            l3_billing_and_payments_monthly_last_three_topup_volume_1.where("start_of_month = '2020-01-01'").where(
+                'rank=2').select(
                 "access_method_num").collect()[
                 0][
                 0] == 1
         assert \
-            str(l3_billing_and_payments_monthly_last_three_topup_volume_1.where("start_of_month = '2020-01-01'").where('rank=2').select(
+            str(l3_billing_and_payments_monthly_last_three_topup_volume_1.where("start_of_month = '2020-01-01'").where(
+                'rank=2').select(
                 "register_date").collect()[
                     0][
                     0]) == '2019-01-01'
         assert \
-            l3_billing_and_payments_monthly_last_three_topup_volume_1.where("start_of_month = '2020-01-01'").where('rank=2').select(
+            l3_billing_and_payments_monthly_last_three_topup_volume_1.where("start_of_month = '2020-01-01'").where(
+                'rank=2').select(
                 "subscription_identifier").collect()[
                 0][
                 0] == 123
         assert \
-            l3_billing_and_payments_monthly_last_three_topup_volume_1.where("start_of_month = '2020-01-01'").where('face_value=500').select(
+            l3_billing_and_payments_monthly_last_three_topup_volume_1.where("start_of_month = '2020-01-01'").where(
+                'face_value=500').select(
                 "rank").collect()[
                 0][
                 0] == 2
-        l3_billing_and_payments_monthly_last_three_topup_volume = node_from_config(l3_billing_and_payments_monthly_last_three_topup_volume_1, var_project_context.catalog.load(
-            'params:l3_last_three_topup_volume'))
+        l3_billing_and_payments_monthly_last_three_topup_volume = node_from_config(
+            l3_billing_and_payments_monthly_last_three_topup_volume_1, var_project_context.catalog.load(
+                'params:l3_last_three_topup_volume'))
         assert \
-            l3_billing_and_payments_monthly_last_three_topup_volume.where("start_of_month = '2020-01-01'").select("payment_top_volume").collect()[0][
+            l3_billing_and_payments_monthly_last_three_topup_volume.where("start_of_month = '2020-01-01'").select(
+                "payment_top_volume").collect()[0][
                 0] == 1400
         print('last_3')
         l3_billing_and_payments_monthly_last_three_topup_volume.orderBy('start_of_month').show(888, False)
 
         # exit(2)
 
-        l2_billing_and_payments_weekly_topup_diff_time_intermediate = node_from_config(df, var_project_context.catalog.load(
-            'params:l2_billing_and_payment_feature_time_diff_bw_topups_weekly_intermdeiate'))
+        l2_billing_and_payments_weekly_topup_diff_time_intermediate = node_from_config(df,
+                                                                                       var_project_context.catalog.load(
+                                                                                           'params:l2_billing_and_payment_feature_time_diff_bw_topups_weekly_intermdeiate'))
 
         print('debuginit')
         l2_billing_and_payments_weekly_topup_diff_time_intermediate.printSchema()
         l2_billing_and_payments_weekly_topup_diff_time_intermediate.orderBy('start_of_week').show(999, False)
         assert \
-            l2_billing_and_payments_weekly_topup_diff_time_intermediate.where("event_partition_date = '2020-01-05'").select("access_method_num").collect()[0][
+            l2_billing_and_payments_weekly_topup_diff_time_intermediate.where(
+                "event_partition_date = '2020-01-05'").select("access_method_num").collect()[0][
                 0] == 1
         assert \
-            str(l2_billing_and_payments_weekly_topup_diff_time_intermediate.where("event_partition_date = '2020-01-05'").select("register_date").collect()[0][
+            str(l2_billing_and_payments_weekly_topup_diff_time_intermediate.where(
+                "event_partition_date = '2020-01-05'").select("register_date").collect()[0][
                     0]) == '2019-01-01'
         assert \
-            l2_billing_and_payments_weekly_topup_diff_time_intermediate.where("event_partition_date = '2020-01-05'").select("payments_time_diff").collect()[0][
+            l2_billing_and_payments_weekly_topup_diff_time_intermediate.where(
+                "event_partition_date = '2020-01-05'").select("payments_time_diff").collect()[0][
                 0] == 4
-        l2_billing_and_payments_weekly_topup_diff_time_intermediate = l2_billing_and_payments_weekly_topup_diff_time_intermediate.withColumn("subscription_identifier", F.lit(1))
-        l2_billing_and_payments_weekly_topup_time_diff = node_from_config(l2_billing_and_payments_weekly_topup_diff_time_intermediate, var_project_context.catalog.load(
-            'params:l2_billing_and_payment_feature_time_diff_bw_topups_weekly'))
+        l2_billing_and_payments_weekly_topup_diff_time_intermediate = l2_billing_and_payments_weekly_topup_diff_time_intermediate.withColumn(
+            "subscription_identifier", F.lit(1))
+        l2_billing_and_payments_weekly_topup_time_diff = node_from_config(
+            l2_billing_and_payments_weekly_topup_diff_time_intermediate, var_project_context.catalog.load(
+                'params:l2_billing_and_payment_feature_time_diff_bw_topups_weekly'))
 
         print('debug12341')
         l2_billing_and_payments_weekly_topup_time_diff.orderBy('start_of_week').show(999, False)
         # weekly_data.where("start_of_week = '2020-10-12'").show()
         assert \
-            l2_billing_and_payments_weekly_topup_time_diff.where("start_of_week = '2020-01-06'").select("payments_max_time_diff").collect()[0][
+            l2_billing_and_payments_weekly_topup_time_diff.where("start_of_week = '2020-01-06'").select(
+                "payments_max_time_diff").collect()[0][
                 0] == 4
         assert \
-            l2_billing_and_payments_weekly_topup_time_diff.where("start_of_week = '2020-01-06'").select("payments_min_time_diff").collect()[0][
+            l2_billing_and_payments_weekly_topup_time_diff.where("start_of_week = '2020-01-06'").select(
+                "payments_min_time_diff").collect()[0][
                 0] == 0
         assert \
-            l2_billing_and_payments_weekly_topup_time_diff.where("start_of_week = '2020-01-06'").select("payments_time_diff").collect()[0][
+            l2_billing_and_payments_weekly_topup_time_diff.where("start_of_week = '2020-01-06'").select(
+                "payments_time_diff").collect()[0][
                 0] == 4
         assert \
-            l2_billing_and_payments_weekly_topup_time_diff.where("start_of_week = '2020-01-06'").select("payments_time_diff_avg").collect()[0][
+            l2_billing_and_payments_weekly_topup_time_diff.where("start_of_week = '2020-01-06'").select(
+                "payments_time_diff_avg").collect()[0][
                 0] == 2
 
         l2_billing_and_payments_weekly_topup_time_diff.orderBy('start_of_week').show(1000, False)
 
-        l4_billing_rolling_window_time_diff_bw_top_ups_1 = l4_rolling_window(l2_billing_and_payments_weekly_topup_time_diff, var_project_context.catalog.load(
-            'params:l4_billing_time_diff_bw_topups'))
+        l4_billing_rolling_window_time_diff_bw_top_ups_1 = l4_rolling_window(
+            l2_billing_and_payments_weekly_topup_time_diff, var_project_context.catalog.load(
+                'params:l4_billing_time_diff_bw_topups'))
         print('final feature')
         l4_billing_rolling_window_time_diff_bw_top_ups_1.show(100, False)
         assert \
@@ -955,8 +1158,9 @@ class TestUnitBilling:
         print('dailydata')
         l1_billing_and_payments_daily_topup_and_volume.orderBy('event_partition_date').show()
 
-        l4_daily_feature_topup_and_volume = l4_rolling_window(l1_billing_and_payments_daily_topup_and_volume, var_project_context.catalog.load(
-            'params:l4_billing_topup_and_volume_daily_feature'))
+        l4_daily_feature_topup_and_volume = l4_rolling_window(l1_billing_and_payments_daily_topup_and_volume,
+                                                              var_project_context.catalog.load(
+                                                                  'params:l4_billing_topup_and_volume_daily_feature'))
 
         print('l4_daily_feature_topup_and_volume')
         l4_daily_feature_topup_and_volume.show(999, False)
@@ -980,41 +1184,54 @@ class TestUnitBilling:
 
         # exit(2)
 
-        l2_billing_and_payments_weekly_topup_and_volume = node_from_config(l1_billing_and_payments_daily_topup_and_volume, var_project_context.catalog.load(
-            'params:l2_billing_and_payment_feature_top_up_and_count_weekly'))
+        l2_billing_and_payments_weekly_topup_and_volume = node_from_config(
+            l1_billing_and_payments_daily_topup_and_volume, var_project_context.catalog.load(
+                'params:l2_billing_and_payment_feature_top_up_and_count_weekly'))
         # weekly_data.orderBy('start_of_week').show()
         assert \
-            l1_billing_and_payments_daily_topup_and_volume.where("event_partition_date = '2020-01-01'").select("payments_top_up_volume").collect()[0][
+            l1_billing_and_payments_daily_topup_and_volume.where("event_partition_date = '2020-01-01'").select(
+                "payments_top_up_volume").collect()[0][
                 0] == 1000
         assert \
-            l1_billing_and_payments_daily_topup_and_volume.where("event_partition_date = '2020-01-01'").select("payments_top_ups").collect()[0][
+            l1_billing_and_payments_daily_topup_and_volume.where("event_partition_date = '2020-01-01'").select(
+                "payments_top_ups").collect()[0][
                 0] == 3
 
         assert \
-            l2_billing_and_payments_weekly_topup_and_volume.where("start_of_week='2020-01-06'").select("payments_top_ups").collect()[0][0] == 21
+            l2_billing_and_payments_weekly_topup_and_volume.where("start_of_week='2020-01-06'").select(
+                "payments_top_ups").collect()[0][0] == 21
         assert \
-            l2_billing_and_payments_weekly_topup_and_volume.where("start_of_week='2020-01-06'").select("payments_top_up_volume").collect()[0][0] == 11700
+            l2_billing_and_payments_weekly_topup_and_volume.where("start_of_week='2020-01-06'").select(
+                "payments_top_up_volume").collect()[0][0] == 11700
         assert \
-            l2_billing_and_payments_weekly_topup_and_volume.where("start_of_week='2020-01-06'").select("payments_top_ups_avg").collect()[0][0] == 3
+            l2_billing_and_payments_weekly_topup_and_volume.where("start_of_week='2020-01-06'").select(
+                "payments_top_ups_avg").collect()[0][0] == 3
         assert \
-            int(l2_billing_and_payments_weekly_topup_and_volume.where("start_of_week='2020-01-06'").select("payments_top_up_volume_avg").collect()[0][
+            int(l2_billing_and_payments_weekly_topup_and_volume.where("start_of_week='2020-01-06'").select(
+                "payments_top_up_volume_avg").collect()[0][
                     0]) == 1671
 
-        l3_billing_and_payments_monthly_topup_and_volume = node_from_config(l1_billing_and_payments_daily_topup_and_volume, var_project_context.catalog.load(
-            'params:l3_billing_and_payment_feature_top_up_and_count_monthly'))
+        l3_billing_and_payments_monthly_topup_and_volume = node_from_config(
+            l1_billing_and_payments_daily_topup_and_volume, var_project_context.catalog.load(
+                'params:l3_billing_and_payment_feature_top_up_and_count_monthly'))
         # monthly_data.show()
         assert \
-            l3_billing_and_payments_monthly_topup_and_volume.where("start_of_month='2020-02-01'").select("payments_top_ups").collect()[0][0] == 87
+            l3_billing_and_payments_monthly_topup_and_volume.where("start_of_month='2020-02-01'").select(
+                "payments_top_ups").collect()[0][0] == 87
         assert \
-            l3_billing_and_payments_monthly_topup_and_volume.where("start_of_month='2020-02-01'").select("payments_top_up_volume").collect()[0][0] == 48800
+            l3_billing_and_payments_monthly_topup_and_volume.where("start_of_month='2020-02-01'").select(
+                "payments_top_up_volume").collect()[0][0] == 48800
         assert \
-            l3_billing_and_payments_monthly_topup_and_volume.where("start_of_month='2020-02-01'").select("payments_top_ups_avg").collect()[0][0] == 3
+            l3_billing_and_payments_monthly_topup_and_volume.where("start_of_month='2020-02-01'").select(
+                "payments_top_ups_avg").collect()[0][0] == 3
         assert \
-            int(l3_billing_and_payments_monthly_topup_and_volume.where("start_of_month='2020-02-01'").select("payments_top_up_volume_avg").collect()[0][
+            int(l3_billing_and_payments_monthly_topup_and_volume.where("start_of_month='2020-02-01'").select(
+                "payments_top_up_volume_avg").collect()[0][
                     0]) == 1682
 
-        l4_billing_rolling_window_topup_and_volume_intermediate = l4_rolling_window(l2_billing_and_payments_weekly_topup_and_volume, var_project_context.catalog.load(
-            'params:l4_billing_topup_and_volume')).orderBy(F.col("start_of_week").desc())
+        l4_billing_rolling_window_topup_and_volume_intermediate = l4_rolling_window(
+            l2_billing_and_payments_weekly_topup_and_volume, var_project_context.catalog.load(
+                'params:l4_billing_topup_and_volume')).orderBy(F.col("start_of_week").desc())
 
         # final_features.orderBy('start_of_week').show()
         assert \
@@ -1030,13 +1247,14 @@ class TestUnitBilling:
             int(l4_billing_rolling_window_topup_and_volume_intermediate.where("start_of_week='2020-03-23'").select(
                 "avg_payments_top_up_volume_weekly_last_twelve_week").collect()[0][0]) == 10925
 
-        l4_billing_rolling_window_topup_and_volume = node_from_config(l4_billing_rolling_window_topup_and_volume_intermediate, var_project_context.catalog.load(
-            'params:l4_dynamics_topups_and_volume'))
+        l4_billing_rolling_window_topup_and_volume = node_from_config(
+            l4_billing_rolling_window_topup_and_volume_intermediate, var_project_context.catalog.load(
+                'params:l4_dynamics_topups_and_volume'))
         print('l4dynamics')
-        l4_billing_rolling_window_topup_and_volume.show(999,False)
+        l4_billing_rolling_window_topup_and_volume.show(999, False)
 
         assert \
-            l4_billing_rolling_window_topup_and_volume.where("start_of_week='2020-03-30'").count()==1
+            l4_billing_rolling_window_topup_and_volume.where("start_of_week='2020-03-30'").count() == 1
         assert \
             l4_billing_rolling_window_topup_and_volume.where("start_of_week='2020-03-23'").select(
                 "subscription_identifier").collect()[0][0] == 123
@@ -1049,7 +1267,7 @@ class TestUnitBilling:
 
         assert \
             l4_billing_rolling_window_topup_and_volume.where("start_of_week='2020-03-30'").select(
-                "sum_payments_top_ups_last_week").collect()[0][0] ==21
+                "sum_payments_top_ups_last_week").collect()[0][0] == 21
         assert \
             l4_billing_rolling_window_topup_and_volume.where("start_of_week='2020-03-30'").select(
                 "sum_payments_top_ups_last_two_week").collect()[0][0] == 42
@@ -1073,23 +1291,23 @@ class TestUnitBilling:
                 "sum_payments_top_up_volume_last_twelve_week").collect()[0][0] == 134800
         assert \
             l4_billing_rolling_window_topup_and_volume.where("start_of_week='2020-03-30'").select(
-                "avg_payments_top_ups_last_week").collect()[0][0] ==21
+                "avg_payments_top_ups_last_week").collect()[0][0] == 21
         assert \
             l4_billing_rolling_window_topup_and_volume.where("start_of_week='2020-03-30'").select(
-                "avg_payments_top_ups_last_two_week").collect()[0][0] ==21
+                "avg_payments_top_ups_last_two_week").collect()[0][0] == 21
         assert \
             l4_billing_rolling_window_topup_and_volume.where("start_of_week='2020-03-30'").select(
-                "avg_payments_top_ups_last_four_week").collect()[0][0] ==21
+                "avg_payments_top_ups_last_four_week").collect()[0][0] == 21
         assert \
             l4_billing_rolling_window_topup_and_volume.where("start_of_week='2020-03-30'").select(
-                "avg_payments_top_ups_last_twelve_week").collect()[0][0] ==21
+                "avg_payments_top_ups_last_twelve_week").collect()[0][0] == 21
 
         assert \
             l4_billing_rolling_window_topup_and_volume.where("start_of_week='2020-03-30'").select(
                 "avg_payments_top_up_volume_last_week").collect()[0][0] == 11700
         assert \
             l4_billing_rolling_window_topup_and_volume.where("start_of_week='2020-03-30'").select(
-                "avg_payments_top_up_volume_last_two_week").collect()[0][0] ==11400
+                "avg_payments_top_up_volume_last_two_week").collect()[0][0] == 11400
         assert \
             l4_billing_rolling_window_topup_and_volume.where("start_of_week='2020-03-30'").select(
                 "avg_payments_top_up_volume_last_four_week").collect()[0][0] == 10725
@@ -1098,19 +1316,18 @@ class TestUnitBilling:
                 "avg_payments_top_up_volume_last_twelve_week").collect()[0][0]) == 11233
         assert \
             l4_billing_rolling_window_topup_and_volume.where("start_of_week='2020-03-30'").select(
-                "payments_one_week_over_two_week_top_up_no").collect()[0][0] ==1
+                "payments_one_week_over_two_week_top_up_no").collect()[0][0] == 1
         assert \
             l4_billing_rolling_window_topup_and_volume.where("start_of_week='2020-03-30'").select(
-                "payments_four_week_over_twelve_week_top_up_no").collect()[0][0] ==1
+                "payments_four_week_over_twelve_week_top_up_no").collect()[0][0] == 1
         assert \
             int(l4_billing_rolling_window_topup_and_volume.where("start_of_week='2020-03-30'").select(
-                "payments_one_week_over_two_week_top_up_volume").collect()[0][0]*1000000) == int(1026315.78947368)
+                "payments_one_week_over_two_week_top_up_volume").collect()[0][0] * 1000000) == int(1026315.78947368)
         assert \
             int(l4_billing_rolling_window_topup_and_volume.where("start_of_week='2020-03-30'").select(
-                "payments_four_week_over_twelve_week_top_up_volume").collect()[0][0]*1000000) == int(954747.774480712)
+                "payments_four_week_over_twelve_week_top_up_volume").collect()[0][0] * 1000000) == int(954747.774480712)
 
         # exit(2)
-
 
     def test_arpu_roaming_feature(self, project_context):
         """
@@ -1143,28 +1360,37 @@ class TestUnitBilling:
 
         # daily_data.orderBy('event_partition_date').show()
         assert \
-            l1_billing_and_payments_daily_rpu_roaming.where("event_partition_date = '2020-01-01'").select("payments_arpu_roaming").collect()[0][
+            l1_billing_and_payments_daily_rpu_roaming.where("event_partition_date = '2020-01-01'").select(
+                "payments_arpu_roaming").collect()[0][
                 0] == 1000
-        l2_billing_weekly_rpu_roaming = node_from_config(l1_billing_and_payments_daily_rpu_roaming, var_project_context.catalog.load(
-            'params:l2_billing_and_payment_feature_rpu_roaming_weekly'))
+        l2_billing_weekly_rpu_roaming = node_from_config(l1_billing_and_payments_daily_rpu_roaming,
+                                                         var_project_context.catalog.load(
+                                                             'params:l2_billing_and_payment_feature_rpu_roaming_weekly'))
         # weekly_data.show(100, False)
         assert \
-            l2_billing_weekly_rpu_roaming.where("start_of_week='2020-01-06'").select("payments_arpu_roaming").collect()[0][0] == 11700
+            l2_billing_weekly_rpu_roaming.where("start_of_week='2020-01-06'").select("payments_arpu_roaming").collect()[
+                0][0] == 11700
         assert \
-            int(l2_billing_weekly_rpu_roaming.where("start_of_week='2020-01-06'").select("payments_arpu_roaming_avg").collect()[0][
+            int(l2_billing_weekly_rpu_roaming.where("start_of_week='2020-01-06'").select(
+                "payments_arpu_roaming_avg").collect()[0][
                     0]) == 1671
 
-        l3_billing_monthly_rpu_roaming = node_from_config(l1_billing_and_payments_daily_rpu_roaming, var_project_context.catalog.load(
-            'params:l3_billing_and_payment_feature_rpu_roaming_monthly'))
+        l3_billing_monthly_rpu_roaming = node_from_config(l1_billing_and_payments_daily_rpu_roaming,
+                                                          var_project_context.catalog.load(
+                                                              'params:l3_billing_and_payment_feature_rpu_roaming_monthly'))
         # monthly_data.show()
         assert \
-            l3_billing_monthly_rpu_roaming.where("start_of_month='2020-02-01'").select("payments_arpu_roaming").collect()[0][0] == 48800
+            l3_billing_monthly_rpu_roaming.where("start_of_month='2020-02-01'").select(
+                "payments_arpu_roaming").collect()[0][0] == 48800
         assert \
-            int(l3_billing_monthly_rpu_roaming.where("start_of_month='2020-02-01'").select("payments_arpu_roaming_avg").collect()[0][
+            int(l3_billing_monthly_rpu_roaming.where("start_of_month='2020-02-01'").select(
+                "payments_arpu_roaming_avg").collect()[0][
                     0]) == 1682
 
-        l4_billing_rolling_window_rpu_roaming = l4_rolling_window(l2_billing_weekly_rpu_roaming, var_project_context.catalog.load(
-            'params:l4_billing_rpu_roaming')).orderBy(F.col("start_of_week").desc())
+        l4_billing_rolling_window_rpu_roaming = l4_rolling_window(l2_billing_weekly_rpu_roaming,
+                                                                  var_project_context.catalog.load(
+                                                                      'params:l4_billing_rpu_roaming')).orderBy(
+            F.col("start_of_week").desc())
         # final_features.orderBy('start_of_week').show()
 
         assert \
@@ -1207,21 +1433,26 @@ class TestUnitBilling:
         assert \
             int(l1_billing_and_payments_daily_before_top_up_balance.where("event_partition_date = '2020-01-01'").select(
                 "payments_before_top_up_balance").collect()[0][0]) == 333
-        l2_billing_and_payments_weekly_before_top_up_balance = node_from_config(l1_billing_and_payments_daily_before_top_up_balance, var_project_context.catalog.load(
-            'params:l2_billing_and_payment_before_top_up_balance_weekly'))
+        l2_billing_and_payments_weekly_before_top_up_balance = node_from_config(
+            l1_billing_and_payments_daily_before_top_up_balance, var_project_context.catalog.load(
+                'params:l2_billing_and_payment_before_top_up_balance_weekly'))
         # weekly_data.orderBy('start_of_week').show()
         assert \
-            int(l2_billing_and_payments_weekly_before_top_up_balance.where("start_of_week='2020-01-06'").select("payments_before_top_up_balance").collect()[0][
+            int(l2_billing_and_payments_weekly_before_top_up_balance.where("start_of_week='2020-01-06'").select(
+                "payments_before_top_up_balance").collect()[0][
                     0]) == 557
-        l3_billing_and_payments_monthly_before_top_up_balance = node_from_config(l1_billing_and_payments_daily_before_top_up_balance, var_project_context.catalog.load(
-            'params:l3_billing_and_payment_before_top_up_balance_monthly'))
+        l3_billing_and_payments_monthly_before_top_up_balance = node_from_config(
+            l1_billing_and_payments_daily_before_top_up_balance, var_project_context.catalog.load(
+                'params:l3_billing_and_payment_before_top_up_balance_monthly'))
         # monthly_data.show(100,False)
         assert \
-            int(l3_billing_and_payments_monthly_before_top_up_balance.where("start_of_month='2020-02-01'").select("payments_before_top_up_balance").collect()[0][
+            int(l3_billing_and_payments_monthly_before_top_up_balance.where("start_of_month='2020-02-01'").select(
+                "payments_before_top_up_balance").collect()[0][
                     0]) == 560
 
-        l4_billing_rolling_window_before_top_up_balance = l4_rolling_window(l2_billing_and_payments_weekly_before_top_up_balance, var_project_context.catalog.load(
-            'params:l4_billing_before_top_up_balance')).orderBy(F.col("start_of_week").desc())
+        l4_billing_rolling_window_before_top_up_balance = l4_rolling_window(
+            l2_billing_and_payments_weekly_before_top_up_balance, var_project_context.catalog.load(
+                'params:l4_billing_before_top_up_balance')).orderBy(F.col("start_of_week").desc())
         print('final')
         l4_billing_rolling_window_before_top_up_balance.orderBy('start_of_week').show()
         assert \
@@ -1307,8 +1538,9 @@ class TestUnitBilling:
             int(l1_billing_and_payments_daily_top_up_channels.where("event_partition_date='2020-03-23'").select(
                 "payments_top_up_vol_by_rom").collect()[0][0]) == 1300
 
-        l2_billing_and_payments_weekly_top_up_channels = node_from_config(l1_billing_and_payments_daily_top_up_channels, var_project_context.catalog.load(
-            'params:l2_billing_and_payment_top_up_channels_weekly'))
+        l2_billing_and_payments_weekly_top_up_channels = node_from_config(l1_billing_and_payments_daily_top_up_channels,
+                                                                          var_project_context.catalog.load(
+                                                                              'params:l2_billing_and_payment_top_up_channels_weekly'))
         # weekly_data.orderBy('start_of_week').show()
 
         assert \
@@ -1384,12 +1616,14 @@ class TestUnitBilling:
             int(l2_billing_and_payments_weekly_top_up_channels.where("start_of_week='2020-01-06'").select(
                 "payments_top_up_vol_avg_by_rom").collect()[0][0]) == int(1700 / 7)
 
-        l3_billing_and_payments_monthly_top_up_channels = node_from_config(l1_billing_and_payments_daily_top_up_channels, var_project_context.catalog.load(
-            'params:l3_billing_and_payment_top_up_channels_monthly'))
+        l3_billing_and_payments_monthly_top_up_channels = node_from_config(
+            l1_billing_and_payments_daily_top_up_channels, var_project_context.catalog.load(
+                'params:l3_billing_and_payment_top_up_channels_monthly'))
         # monthly_data.show(100, False)
 
         assert \
-            int(l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select("payments_top_ups_by_bank_atm_cdm").collect()[
+            int(l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select(
+                "payments_top_ups_by_bank_atm_cdm").collect()[
                     0][
                     0]) == 18
         assert \
@@ -1397,10 +1631,12 @@ class TestUnitBilling:
                 "payments_top_up_vol_by_bank_atm_cdm").collect()[0][
                     0]) == 8800
         assert \
-            int(l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select("payments_top_ups_by_cash_card").collect()[0][
+            int(l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select(
+                "payments_top_ups_by_cash_card").collect()[0][
                     0]) == 18
         assert \
-            int(l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select("payments_top_up_vol_by_cash_card").collect()[
+            int(l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select(
+                "payments_top_up_vol_by_cash_card").collect()[
                     0][
                     0]) == 11300
         assert \
@@ -1412,26 +1648,33 @@ class TestUnitBilling:
                 "payments_top_up_vol_by_digital_online_self_service").collect()[0][
                     0]) == 6300
         assert \
-            int(l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select("payments_top_ups_by_epin_slip").collect()[0][
+            int(l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select(
+                "payments_top_ups_by_epin_slip").collect()[0][
                     0]) == 4
         assert \
-            int(l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select("payments_top_up_vol_by_epin_slip").collect()[
+            int(l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select(
+                "payments_top_up_vol_by_epin_slip").collect()[
                     0][
                     0]) == 2000
         assert \
-            int(l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select("payments_top_ups_by_epos").collect()[0][
+            int(l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select(
+                "payments_top_ups_by_epos").collect()[0][
                     0]) == 20
         assert \
-            int(l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select("payments_top_up_vol_by_epos").collect()[0][
+            int(l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select(
+                "payments_top_up_vol_by_epos").collect()[0][
                     0]) == 9600
         assert \
-            int(l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select("payments_top_ups_by_rom").collect()[0][
+            int(l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select(
+                "payments_top_ups_by_rom").collect()[0][
                     0]) == 13
         assert \
-            int(l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select("payments_top_up_vol_by_rom").collect()[0][
+            int(l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select(
+                "payments_top_up_vol_by_rom").collect()[0][
                     0]) == 7500
         assert \
-            (l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select("payments_top_ups_avg_by_bank_atm_cdm").collect()[
+            (l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select(
+                "payments_top_ups_avg_by_bank_atm_cdm").collect()[
                 0][
                 0]) == (18 / 29)
         assert \
@@ -1439,10 +1682,12 @@ class TestUnitBilling:
                 "payments_top_up_vol_avg_by_bank_atm_cdm").collect()[0][
                 0]) == (8800 / 29)
         assert \
-            (l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select("payments_top_ups_avg_by_cash_card").collect()[0][
+            (l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select(
+                "payments_top_ups_avg_by_cash_card").collect()[0][
                 0]) == (18 / 29)
         assert \
-            (l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select("payments_top_up_vol_avg_by_cash_card").collect()[
+            (l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select(
+                "payments_top_up_vol_avg_by_cash_card").collect()[
                 0][
                 0]) == (11300 / 29)
         assert \
@@ -1454,27 +1699,35 @@ class TestUnitBilling:
                 "payments_top_up_vol_avg_by_digital_online_self_service").collect()[0][
                 0]) == (6300 / 29)
         assert \
-            (l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select("payments_top_ups_avg_by_epin_slip").collect()[0][
+            (l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select(
+                "payments_top_ups_avg_by_epin_slip").collect()[0][
                 0]) == (4 / 29)
         assert \
-            (l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select("payments_top_up_vol_avg_by_epin_slip").collect()[
+            (l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select(
+                "payments_top_up_vol_avg_by_epin_slip").collect()[
                 0][
                 0]) == (2000 / 29)
         assert \
-            (l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select("payments_top_ups_avg_by_epos").collect()[0][
+            (l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select(
+                "payments_top_ups_avg_by_epos").collect()[0][
                 0]) == (20 / 29)
         assert \
-            (l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select("payments_top_up_vol_avg_by_epos").collect()[0][
+            (l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select(
+                "payments_top_up_vol_avg_by_epos").collect()[0][
                 0]) == (9600 / 29)
         assert \
-            (l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select("payments_top_ups_avg_by_rom").collect()[0][
+            (l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select(
+                "payments_top_ups_avg_by_rom").collect()[0][
                 0]) == (13 / 29)
         assert \
-            (l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select("payments_top_up_vol_avg_by_rom").collect()[0][
+            (l3_billing_and_payments_monthly_top_up_channels.where("start_of_month='2020-02-01'").select(
+                "payments_top_up_vol_avg_by_rom").collect()[0][
                 0]) == (7500 / 29)
 
-        l4_billing_rolling_window_top_up_channels = l4_rolling_window(l2_billing_and_payments_weekly_top_up_channels, var_project_context.catalog.load(
-            'params:l4_billing_top_up_channels')).orderBy(F.col("start_of_week").desc())
+        l4_billing_rolling_window_top_up_channels = l4_rolling_window(l2_billing_and_payments_weekly_top_up_channels,
+                                                                      var_project_context.catalog.load(
+                                                                          'params:l4_billing_top_up_channels')).orderBy(
+            F.col("start_of_week").desc())
 
         assert \
             (l4_billing_rolling_window_top_up_channels.where("start_of_week='2020-02-03'").select(
@@ -1717,7 +1970,7 @@ class TestUnitBilling:
         assert \
             (weekly_popular_topup_day1.where("start_of_week='2018-12-31'").select(
                 "payment_popular_day_topup_count").collect()[0][
-                0]) == 18  #6*3
+                0]) == 18  # 6*3
         assert \
             (weekly_popular_topup_day1.where("start_of_week='2018-12-31'").select(
                 "rank").collect()[0][
@@ -1749,7 +2002,7 @@ class TestUnitBilling:
         assert \
             (weekly_topup_hour_1.where("start_of_week='2018-12-31'").select(
                 "payment_popular_hour_topup_count").collect()[0][
-                0]) == 18 #6*3
+                0]) == 18  # 6*3
         assert \
             (weekly_topup_hour_1.where("start_of_week='2018-12-31'").select(
                 "rank").collect()[0][
@@ -1780,7 +2033,7 @@ class TestUnitBilling:
         assert \
             (popular_topup_day_ranked.where("start_of_month='2019-01-01'").select(
                 "payment_popular_day_topup_count").collect()[0][
-                0]) == 93 #31*3
+                0]) == 93  # 31*3
         assert \
             (popular_topup_day_ranked.where("start_of_month='2019-01-01'").select(
                 "rank").collect()[0][
@@ -1788,7 +2041,6 @@ class TestUnitBilling:
 
         monthly_popular_topup_day = node_from_config(popular_topup_day_ranked, var_project_context.catalog.load(
             'params:l3_popular_topup_day'))
-
 
         assert \
             (monthly_popular_topup_day.where("start_of_month='2019-01-01'").select(
@@ -1813,7 +2065,7 @@ class TestUnitBilling:
         assert \
             (popular_topup_hour_ranked.where("start_of_month='2019-01-01'").select(
                 "payment_popular_hour_topup_count").collect()[0][
-                0]) == 93 #31*3
+                0]) == 93  # 31*3
         assert \
             (popular_topup_hour_ranked.where("start_of_month='2019-01-01'").select(
                 "rank").collect()[0][
@@ -1822,7 +2074,6 @@ class TestUnitBilling:
         monthly_popular_topup_hour = node_from_config(popular_topup_hour_ranked,
                                                       var_project_context.catalog.load(
                                                           'params:l3_popular_topup_hour'))
-
 
         assert \
             (monthly_popular_topup_hour.where("start_of_month='2019-01-01'").select(
@@ -1866,7 +2117,6 @@ class TestUnitBilling:
                                                             var_project_context.catalog.load(
                                                                 'params:l4_popular_topup_day'))
 
-
         assert \
             (window_popular_topup_day.where("start_of_week='2019-01-07'").select(
                 "payment_popular_topup_day_last_week").collect()[0][
@@ -1886,7 +2136,6 @@ class TestUnitBilling:
 
         popular_topup_hour_1 = l4_rolling_window(weekly_topup_hour_1, var_project_context.catalog.load(
             'params:l4_popular_topup_hour_initial'))
-
 
         assert \
             (popular_topup_hour_1.where("start_of_week='2019-01-07'").select(
