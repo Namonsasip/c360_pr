@@ -58,6 +58,7 @@ def pipeline1_fit(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
         + columns_cats["segment"]
     )
     df = df.select(cols_to_pick)
+    columns_cats = classify_columns(df, parameters)
 
     # set types
     for col_name in columns_cats["numerical"]:
@@ -110,6 +111,7 @@ def pipeline1_transform(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
         + columns_cats["segment"]
     )
     df = df.select(cols_to_pick)
+    columns_cats = classify_columns(df, parameters)
 
     # set types
     for col_name in columns_cats["numerical"]:
