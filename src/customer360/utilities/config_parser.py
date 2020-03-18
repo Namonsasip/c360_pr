@@ -1,6 +1,7 @@
 import logging
 from typing import *
-from pyspark.sql import SparkSession, DataFrame, functions as F
+from pyspark.sql import DataFrame, functions as F
+from customer360.utilities.spark_util import get_spark_session
 
 
 # Query generator class
@@ -33,8 +34,9 @@ class QueryGenerator:
 
             granularity = table_params["granularity"]
 
-            if granularity!="":
-                query = "Select {},{} from {} {} group by {}".format(granularity, projection, table_name, where_clause, granularity)
+            if granularity != "":
+                query = "Select {},{} from {} {} group by {}".format(granularity, projection, table_name, where_clause,
+                                                                     granularity)
             else:
                 query = "Select {} from {} {}".format(projection, table_name, where_clause)
 
@@ -193,7 +195,7 @@ def l4_rolling_window(input_df, config):
 
     #logging.info("SQL QUERY {}".format(sql_stmt))
 
-    spark = SparkSession.builder.getOrCreate()
+    spark = get_spark_session()
     df = spark.sql(sql_stmt)
 
     return df
@@ -275,7 +277,7 @@ def node_from_config(input_df, config) -> DataFrame:
         table_params=config,
         column_function=QueryGenerator.normal_feature_listing)
 
-    spark = SparkSession.builder.getOrCreate()
+    spark = get_spark_session()
 
     df = spark.sql(sql_stmt)
     return df
@@ -299,7 +301,7 @@ def expansion(input_df, config) -> DataFrame:
 
     #logging.info("SQL QUERY {}".format(sql_stmt))
 
-    spark = SparkSession.builder.getOrCreate()
+    spark = get_spark_session()
 
     df = spark.sql(sql_stmt)
     return df
@@ -309,7 +311,6 @@ def __generate_l4_rolling_ranked_column(
         input_df,
         config
 ) -> DataFrame:
-
     table_name = "input_table"
     input_df.createOrReplaceTempView(table_name)
 
@@ -428,7 +429,7 @@ def __generate_l4_rolling_ranked_column(
 
     #logging.info("SQL QUERY {}".format(sql_stmt))
 
-    spark = SparkSession.builder.getOrCreate()
+    spark = get_spark_session()
     df = spark.sql(sql_stmt)
 
     return df
@@ -464,6 +465,7 @@ def join_l4_rolling_ranked_table(result_df, config):
 
         if final_df is None:
             final_df = df.alias("left").select(feature_column)
+            feature_column = list(map(lambda x: 'left.{}'.format(x), final_df.columns))
             continue
 
         # Always join on partition_by because it defines the granularity
@@ -474,6 +476,8 @@ def join_l4_rolling_ranked_table(result_df, config):
                                                 how='inner')
                     .select(feature_column))
 
+        feature_column = list(map(lambda x: 'left.{}'.format(x), final_df.columns))
+
     return final_df
 
 
@@ -481,7 +485,6 @@ def __generate_l4_filtered_ranked_table(
         ranked_df,
         config
 ):
-
     result_df = {}
     read_from = config["read_from"]
 
@@ -513,7 +516,6 @@ def l4_rolling_ranked_window(
         input_df,
         config
 ) -> Dict[str, DataFrame]:
-
     ranked_df = __generate_l4_rolling_ranked_column(input_df, config)
     result_df = __generate_l4_filtered_ranked_table(ranked_df, config)
     return result_df

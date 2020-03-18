@@ -31,32 +31,174 @@ from typing import Dict
 
 from kedro.pipeline import Pipeline
 
-from .pipelines.data_engineering.pipelines.usage_pipeline.to_l1 import usage_to_l1_pipeline
-from src.customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l1.to_l1_pipeline import \
-    customer_profile_to_l1_pipeline
-from src.customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l3.to_l3_pipeline import \
-    customer_profile_to_l3_pipeline, \
-    customer_profile_billing_level_to_l3_pipeline
-from src.customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l4.to_l4_pipeline import \
-    customer_profile_to_l4_pipeline
-from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l1.to_l1_pipeline import \
-    billing_to_l1_pipeline
-from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l3.to_l3_pipeline import \
-    billing_to_l3_pipeline
-from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l2.to_l2_pipeline import \
-    billing_to_l2_pipeline
-from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4.to_l4_pipeline import \
-    billing_to_l4_pipeline
-from .pipelines.data_engineering.pipelines.usage_pipeline.to_l2 import usage_to_l2_pipeline
-from .pipelines.data_engineering.pipelines.usage_pipeline.to_l4 import usage_to_l4_pipeline
-from .pipelines.data_engineering.pipelines.usage_pipeline.to_l4 import usage_to_l4_daily_pipeline
-from .pipelines.data_engineering.pipelines.stream_pipeline.to_l1.to_l1_pipeline import streaming_to_l1_pipeline
-from .pipelines.data_engineering.pipelines.stream_pipeline.to_l2.to_l2_pipeline import streaming_to_l2_pipeline
-from .pipelines.data_engineering.pipelines.stream_pipeline.to_l3.to_l3_pipeline import streaming_to_l3_pipeline
-from .pipelines.data_engineering.pipelines.stream_pipeline.to_l4.to_l4_pipeline import streaming_to_l4_pipeline
-from .pipelines.data_engineering.pipelines.revenue_pipeline.to_l3 import revenue_to_l3_pipeline
-from .pipelines.data_engineering.pipelines.revenue_pipeline.to_l4 import revenue_to_l4_pipeline
-from .pipelines.data_engineering.pipelines.campaign_pipeline.to_l1 import campaign_to_l1_pipeline
+from .pipelines.cvm.data_prep.pipeline import (
+    create_cvm_prepare_inputs_samples,
+    create_cvm_prepare_data,
+)
+from .pipelines.cvm.modelling.pipeline import (
+    create_cvm_train_model,
+    create_cvm_predictions,
+)
+from .pipelines.cvm.preprocessing.pipeline import create_cvm_preprocessing
+from .pipelines.data_engineering.pipelines.usage_pipeline.to_l1 import (
+    usage_to_l1_pipeline,
+)
+from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l1.to_l1_pipeline import (
+    customer_profile_to_l1_pipeline,
+)
+from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l3.to_l3_pipeline import (
+    customer_profile_to_l3_pipeline,
+    customer_profile_billing_level_to_l3_pipeline,
+)
+from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l4.to_l4_pipeline import (
+    customer_profile_to_l4_pipeline,
+)
+from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l1.to_l1_pipeline import (
+    billing_to_l1_pipeline,
+)
+from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l3.to_l3_pipeline import (
+    billing_to_l3_pipeline,
+)
+from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l2.to_l2_pipeline import (
+    billing_to_l2_pipeline,
+)
+from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4.to_l4_pipeline_daily import *
+from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4.to_l4_pipeline_weekly import *
+from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4.to_l4_pipeline_monthly import *
+from .pipelines.data_engineering.pipelines.usage_pipeline.to_l2 import (
+    usage_to_l2_pipeline,
+)
+from .pipelines.data_engineering.pipelines.usage_pipeline.to_l4.to_l4_pipeline import (
+    usage_to_l4_pipeline,
+)
+
+
+from .pipelines.data_engineering.pipelines.device_pipeline.to_l2.to_l2_pipeline import (
+    device_to_l2_pipeline,
+)
+from .pipelines.data_engineering.pipelines.device_pipeline.to_l3.to_l3_pipeline import (
+    device_to_l3_pipeline,
+)
+from .pipelines.data_engineering.pipelines.usage_pipeline.to_l4 import (
+    usage_to_l4_pipeline,
+)
+from .pipelines.data_engineering.pipelines.usage_pipeline.to_l4 import (
+    usage_to_l4_daily_pipeline,
+)
+from .pipelines.data_engineering.pipelines.stream_pipeline.to_l1.to_l1_pipeline import (
+    streaming_to_l1_pipeline,
+)
+from .pipelines.data_engineering.pipelines.stream_pipeline.to_l2.to_l2_pipeline import (
+    streaming_to_l2_pipeline,
+)
+from .pipelines.data_engineering.pipelines.stream_pipeline.to_l3.to_l3_pipeline import (
+    streaming_to_l3_pipeline,
+)
+from .pipelines.data_engineering.pipelines.stream_pipeline.to_l4.to_l4_pipeline import (
+    streaming_to_l4_pipeline,
+)
+from .pipelines.data_engineering.pipelines.revenue_pipeline.to_l3 import (
+    revenue_to_l3_pipeline,
+)
+from .pipelines.data_engineering.pipelines.revenue_pipeline.to_l4 import (
+    revenue_to_l4_pipeline,
+)
+from .pipelines.data_engineering.pipelines.campaign_pipeline.to_l1 import (
+    campaign_to_l1_pipeline,
+)
+from .pipelines.data_engineering.pipelines.campaign_pipeline.to_l2 import (
+    campaign_to_l2_pipeline,
+)
+from .pipelines.data_engineering.pipelines.campaign_pipeline.to_l4 import (
+    campaign_to_l4_pipeline,
+)
+from .pipelines.data_engineering.pipelines.complaints_pipeline.to_l1.to_l1_pipeline import complaints_to_l1_pipeline
+from .pipelines.data_engineering.pipelines.complaints_pipeline.to_l2.to_l2_pipeline import complaints_to_l2_pipeline
+from .pipelines.data_engineering.pipelines.complaints_pipeline.to_l3.to_l3_pipeline import complaints_to_l3_pipeline
+from .pipelines.data_engineering.pipelines.complaints_pipeline.to_l4.to_l4_pipeline import complaints_to_l4_pipeline
+from .pipelines.data_engineering.pipelines.touchpoints_pipeline.to_l1.to_l1_pipeline import touchpoints_to_l1_pipeline
+from .pipelines.data_engineering.pipelines.touchpoints_pipeline.to_l2.to_l2_pipeline import touchpoints_to_l2_pipeline
+from .pipelines.data_engineering.pipelines.touchpoints_pipeline.to_l3.to_l3_pipeline import touchpoints_to_l3_pipeline
+from .pipelines.data_engineering.pipelines.touchpoints_pipeline.to_l4.to_l4_pipeline import touchpoints_to_l4_pipeline
+
+
+def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
+
+    return {
+        "__default__": usage_to_l1_pipeline()
+        + usage_to_l2_pipeline()
+        + usage_to_l4_pipeline()
+        + customer_profile_to_l3_pipeline()
+        + customer_profile_to_l4_pipeline()
+        + customer_profile_billing_level_to_l3_pipeline()
+        + billing_to_l1_pipeline()
+        + billing_to_l2_pipeline()
+        + billing_to_l3_pipeline()
+        + billing_to_l4_pipeline_daily()
+        + billing_to_l4_pipeline_weekly()
+        + billing_to_l4_pipeline_monthly()
+        + revenue_to_l3_pipeline()
+        + revenue_to_l4_pipeline()
+        + device_to_l2_pipeline()
+        + device_to_l3_pipeline(),
+        "usage_to_l4_daily_pipeline": usage_to_l4_daily_pipeline(),
+        "usage_to_l2_pipeline": usage_to_l2_pipeline(),
+        "usage_to_l4_pipeline": usage_to_l4_pipeline(),
+        "customer_profile_to_l1_pipeline": customer_profile_to_l1_pipeline(),
+        "customer_profile_to_l3_pipeline": customer_profile_to_l3_pipeline(),
+        "customer_profile_billing_level_to_l3_pipeline": customer_profile_billing_level_to_l3_pipeline(),
+        "customer_profile_to_l4_pipeline": customer_profile_to_l4_pipeline(),
+        "usage_to_l1_pipeline": usage_to_l1_pipeline(),
+        "billing_to_l1_pipeline": billing_to_l1_pipeline(),
+        "billing_to_l3_pipeline": billing_to_l3_pipeline(),
+        "billing_to_l2_pipeline": billing_to_l2_pipeline(),
+        "billing_to_l4_pipeline_monthly": billing_to_l4_pipeline_monthly(),
+        "billing_to_l4_pipeline_weekly": billing_to_l4_pipeline_weekly(),
+        "billing_to_l4_pipeline_daily": billing_to_l4_pipeline_daily(),
+        "device_to_l2_pipeline": device_to_l2_pipeline(),
+        "device_to_l3_pipeline": device_to_l3_pipeline(),
+        "streaming_to_l1_pipeline": streaming_to_l1_pipeline(),
+        "streaming_to_l2_pipeline": streaming_to_l2_pipeline(),
+        "streaming_to_l3_pipeline": streaming_to_l3_pipeline(),
+        "streaming_to_l4_pipeline": streaming_to_l4_pipeline(),
+        'revenue_to_l3_pipeline': revenue_to_l3_pipeline(),
+        'revenue_to_l4_pipeline': revenue_to_l4_pipeline(),
+        'complaints_to_l1_pipeline': complaints_to_l1_pipeline(),
+        'complaints_to_l2_pipeline': complaints_to_l2_pipeline(),
+        'complaints_to_l3_pipeline': complaints_to_l3_pipeline(),
+        'complaints_to_l4_pipeline': complaints_to_l4_pipeline(),
+        'touchpoints_to_l1_pipeline': touchpoints_to_l1_pipeline(),
+        'touchpoints_to_l2_pipeline': touchpoints_to_l2_pipeline(),
+        'touchpoints_to_l3_pipeline': touchpoints_to_l3_pipeline(),
+        'touchpoints_to_l4_pipeline': touchpoints_to_l4_pipeline(),
+        'campaign_to_l1_pipeline': campaign_to_l1_pipeline(),
+        'campaign_to_l2_pipeline': campaign_to_l2_pipeline(),
+        'campaign_to_l4_pipeline': campaign_to_l4_pipeline()
+        # "de": data_engineering_pipeline,
+    }
+
+
+def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
+    return {
+        "cvm_prepare_inputs_dev": create_cvm_prepare_inputs_samples("dev"),
+        "cvm_prepare_inputs_sample": create_cvm_prepare_inputs_samples("sample"),
+        "cvm_prepare_data": create_cvm_prepare_data(None),
+        "cvm_prepare_data_dev": create_cvm_prepare_data("dev"),
+        "cvm_prepare_data_sample": create_cvm_prepare_data("sample"),
+        "cvm_preprocessing": create_cvm_preprocessing(None),
+        "cvm_preprocessing_dev": create_cvm_preprocessing("dev"),
+        "cvm_preprocessing_sample": create_cvm_preprocessing("sample"),
+        "cvm_train_model": create_cvm_train_model(None),
+        "cvm_train_model_dev": create_cvm_train_model("dev"),
+        "cvm_train_model_sample": create_cvm_train_model("sample"),
+        "cvm_predict": create_cvm_predictions(None),
+        "cvm_predict_dev": create_cvm_predictions("dev"),
+        "cvm_predict_sample": create_cvm_predictions("sample"),
+    }
+
+
+def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
+    return {}
 
 
 def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
@@ -70,44 +212,21 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
 
     """
 
-    ###########################################################################
-    # Here you can find an example pipeline, made of two modular pipelines.
-    #
-    # PLEASE DELETE THIS PIPELINE ONCE YOU START WORKING ON YOUR OWN PROJECT AS
-    # WELL AS pipelines/data_science AND pipelines/data_engineering
-    # -------------------------------------------------------------------------
+    pipeline_dicts = [
+        create_c360_pipeline(**kwargs),
+        create_cvm_pipeline(**kwargs),
+        create_nba_pipeline(**kwargs),
+    ]
 
-    return {
-        "__default__": usage_to_l1_pipeline()
-                       + usage_to_l2_pipeline()
-                       + usage_to_l4_pipeline()
-                       + customer_profile_to_l3_pipeline()
-                       + customer_profile_to_l4_pipeline()
-                       + customer_profile_billing_level_to_l3_pipeline()
-                       + billing_to_l1_pipeline()
-                       + billing_to_l2_pipeline()
-                       + billing_to_l3_pipeline()
-                       + billing_to_l4_pipeline()
-                       + revenue_to_l3_pipeline()
-                       + revenue_to_l4_pipeline(),
-        "usage_to_l4_daily_pipeline": usage_to_l4_daily_pipeline(),
-        "usage_to_l2_pipeline": usage_to_l2_pipeline(),
-        "usage_to_l4_pipeline": usage_to_l4_pipeline(),
-        "customer_profile_to_l1_pipeline": customer_profile_to_l1_pipeline(),
-        "customer_profile_to_l3_pipeline": customer_profile_to_l3_pipeline(),
-        "customer_profile_billing_level_to_l3_pipeline": customer_profile_billing_level_to_l3_pipeline(),
-        "customer_profile_to_l4_pipeline": customer_profile_to_l4_pipeline(),
-        "usage_to_l1_pipeline": usage_to_l1_pipeline(),
-        'billing_to_l1_pipeline': billing_to_l1_pipeline(),
-        'billing_to_l3_pipeline': billing_to_l3_pipeline(),
-        'billing_to_l2_pipeline': billing_to_l2_pipeline(),
-        'billing_to_l4_pipeline': billing_to_l4_pipeline(),
-        "streaming_to_l1_pipeline": streaming_to_l1_pipeline(),
-        "streaming_to_l2_pipeline": streaming_to_l2_pipeline(),
-        "streaming_to_l3_pipeline": streaming_to_l3_pipeline(),
-        "streaming_to_l4_pipeline": streaming_to_l4_pipeline(),
-        'revenue_to_l3_pipeline': revenue_to_l3_pipeline(),
-        'revenue_to_l4_pipeline': revenue_to_l4_pipeline(),
-        'campaign_to_l1_pipeline': campaign_to_l1_pipeline(),
-        # "de": data_engineering_pipeline,
-    }
+    all_pipelines = {}
+    for pipeline_dict in pipeline_dicts:
+        duplicated_keys = set.intersection(
+            set(pipeline_dict.keys()), all_pipelines.keys()
+        )
+        if duplicated_keys:
+            raise ValueError(
+                f"There following pipeline keys are duplicated: {duplicated_keys}"
+            )
+        all_pipelines.update(pipeline_dict)
+
+    return all_pipelines

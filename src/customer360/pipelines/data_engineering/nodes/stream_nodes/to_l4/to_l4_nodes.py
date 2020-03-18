@@ -1,6 +1,6 @@
-from pyspark.sql import SparkSession
 from pathlib import Path
 import json
+from customer360.utilities.spark_util import get_spark_session
 
 from customer360.utilities.config_parser import \
     l4_rolling_ranked_window, \
@@ -13,7 +13,7 @@ def generate_l4_fav_streaming_day(input_df, template_config, app_list):
     from customer360.run import ProjectContext
     ctx = ProjectContext(str(Path.cwd()))
 
-    spark = SparkSession.builder.getOrCreate()
+    spark = get_spark_session()
 
     for each_app in app_list:
         config_str = json.dumps(template_config).replace("{app}", each_app)

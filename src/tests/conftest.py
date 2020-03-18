@@ -37,14 +37,15 @@ To run the tests, run ``kedro test``.
 """
 from pathlib import Path
 
-import pytest
+import pytest, os
 
 from customer360.run import ProjectContext
+from customer360.utilities.spark_util import get_spark_session
 
-from pyspark.sql import SparkSession
+conf = os.getenv("CONF", None)
 
 
 @pytest.fixture(scope="module")
 def project_context():
-    spark = SparkSession.builder.getOrCreate()
-    return {'ProjectContext': ProjectContext(str(Path.cwd())), 'Spark': spark}
+    spark = get_spark_session()
+    return {'ProjectContext': ProjectContext(str(Path.cwd()), env=conf), 'Spark': spark}

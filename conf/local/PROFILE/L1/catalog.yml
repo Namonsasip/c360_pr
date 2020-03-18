@@ -1,8 +1,0 @@
-
-l1_customer_profile_union_daily_feature:
-  type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: data/L1_DAILY/PROFILE/l1_customer_profile_union_daily_feature/
-  file_format: "parquet"
-  save_args:
-    mode: "overwrite"
-    partitionBy: ["event_partition_date"]

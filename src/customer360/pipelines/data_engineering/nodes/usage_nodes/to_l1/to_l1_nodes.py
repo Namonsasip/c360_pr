@@ -7,7 +7,8 @@ from pathlib import Path
 import logging
 import os
 
-conf = os.getenv("CONF", "local")
+conf = os.getenv("CONF", None)
+
 
 def gen_max_sql(data_frame, table_name, group):
     grp_str = ', '.join(group)
@@ -31,9 +32,10 @@ def massive_processing(input_df, sql, output_df_catalog):
     data_frame = input_df
     dates_list = data_frame.select('partition_date').distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 2))
+    mvv_new = list(divide_chunks(mvv_array, 5))
     add_list = mvv_new
 
     first_item = add_list[0]
@@ -170,10 +172,12 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
     final_df_str = gen_max_sql(union_df, 'roaming_incoming_outgoing_data', group_cols)
     sel_cols = ['access_method_num',
                 'event_partition_date',
-                "subscription_identifier"]
+                "subscription_identifier",
+                "start_of_week"]
 
     join_cols = ['access_method_num',
-                 'event_partition_date']
+                 'event_partition_date',
+                 "start_of_week"]
 
     """
     :return:
@@ -182,8 +186,10 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
     data_frame = union_df
     dates_list = data_frame.select('event_partition_date').distinct().collect()
     mvv_array = [row[0] for row in dates_list]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_array = list(divide_chunks(mvv_array, 2))
+    mvv_array = list(divide_chunks(mvv_array, 5))
     add_list = mvv_array
 
     first_item = add_list[0]
@@ -192,8 +198,9 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
         logging.info("running for dates {0}".format(str(curr_item)))
         small_df = data_frame.filter(F.col("event_partition_date").isin(*[curr_item]))
         output_df = execute_sql(data_frame=small_df, table_name='roaming_incoming_outgoing_data', sql_str=final_df_str)
-        cust_df = l1_customer_profile_union_daily_feature.filter(F.col("event_partition_date").isin(*[curr_item])) \
+        cust_df = l1_customer_profile_union_daily_feature.filter((F.col("event_partition_date").isin(*[curr_item]))) \
             .select(sel_cols)
+
         output_df = cust_df.join(output_df, join_cols, how="left")
         CNTX.catalog.save("l1_usage_postpaid_prepaid_daily", output_df.drop(*drop_cols))
 
@@ -201,7 +208,7 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
     return_df = data_frame.filter(F.col("event_partition_date").isin(*[first_item]))
     cust_df = l1_customer_profile_union_daily_feature.filter(F.col("event_partition_date").isin(*[first_item])) \
         .select(sel_cols)
-    return_df = cust_df.join(return_df, join_cols, how="left")
     return_df = execute_sql(data_frame=return_df, table_name='roaming_incoming_outgoing_data', sql_str=final_df_str)
+    return_df = cust_df.join(return_df, join_cols, how="left")
 
     return return_df.drop(*drop_cols)
