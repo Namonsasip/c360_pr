@@ -12,6 +12,7 @@ import pandas as pd
 import random
 from pyspark.sql import functions as F, SparkSession
 from datetime import timedelta
+import datetime
 
 
 class TestUnitBilling:
@@ -2173,3 +2174,104 @@ class TestUnitBilling:
             (window_popular_topup_hour.where("start_of_week='2019-01-07'").select(
                 "payment_popular_hour_last_twelve_week").collect()[0][
                 0]) == 11
+
+    def test_time_diff_bw_topups(self, project_context):
+        #kedro test D:\save\test\project-samudra\src\tests\test_unit_tests\test_unit_billing.py::TestUnitBilling::test_time_diff_bw_topups
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        random_type = ['4', 'B1', 'B58', '3', 'B0', '7', '16', 'B43', '1', '5', '53', 'B69', '51', 'B50']
+        date1 = '2019-01-01'
+        date2 = '2019-04-01'
+
+        my_dates_list = pd.date_range(date1, date2).tolist()
+        my_dates = [iTemp.date().strftime("%d-%m-%Y") for iTemp in my_dates_list]
+        my_dates = my_dates * 3
+        random.seed(100)
+        random_list = [random_type[random.randint(0, 13)] for iTemp in range(0, len(my_dates))]
+        random.seed(100)
+        random_list2 = [random.randint(1, 10) * 100 for iTemp in range(0, len(my_dates))]
+
+        start_time = datetime.datetime.strptime("01/01/2020 08:35:55", '%d/%m/%Y %H:%M:%S')
+        start_time_list = []
+        for i in range(len(my_dates)):
+            start_time_list.append(start_time)
+            start_time = start_time + timedelta(seconds=random.randint(1, 432000))
+
+        recharge_date_list = [d.strftime('%Y-%m-%d') for d in start_time_list]
+
+        df_rt = spark.createDataFrame(zip(random_list, my_dates, random_list2,start_time_list,recharge_date_list),
+                                      schema=['recharge_type', 'temp', 'face_value','recharge_time','recharge_date']) \
+            .withColumn("access_method_num", F.lit(1)) \
+            .withColumn("charge_type", F.lit('Pre-paid')) \
+            .withColumn("event_partition_date", F.to_date('temp', 'dd-MM-yyyy')) \
+            .withColumn("register_date", F.to_date(F.lit('2019-01-01'), 'yyyy-MM-dd')) \
+            .withColumn("subscription_identifier", F.lit(123))
+        df_rt = df_rt.withColumn("start_of_month", F.to_date(F.date_trunc('month', df_rt.event_partition_date))) \
+            .withColumn("start_of_week", F.to_date(F.date_trunc('week', df_rt.event_partition_date)))
+        topup_diff_time_intermediate = node_from_config(df_rt,var_project_context.catalog.load(
+                'params:l3_billing_and_payment_feature_time_diff_bw_topups_monthly_intermdeiate'))
+
+        # access_method_num: "access_method_num"
+        # register_date: "register_date"
+        # payments_time_diff: "datediff(recharge_time,lag(recharge_time,1) over(partition by date_trunc('month',date(recharge_date))
+
+        assert \
+            (topup_diff_time_intermediate.where("event_partition_date='2021-05-05'").select(
+                "payments_time_diff").collect()[0][
+                 0]) == 4
+        assert \
+            (topup_diff_time_intermediate.where("event_partition_date='2021-05-05'").select(
+                "access_method_num").collect()[0][
+                 0]) == 1
+
+        # a = node_from_config(df_rt, var_project_context.catalog.load(
+        #     'params:l3_billing_and_payments_monthly_topup_time_diff'))
+        topup_diff_time_intermediate = topup_diff_time_intermediate.withColumn("access_method_num", F.lit(1)) \
+            .withColumn("charge_type", F.lit('Pre-paid')) \
+            .withColumn("subscription_identifier", F.lit(123)) \
+            .withColumn("event_partition_date",  F.to_date(F.lit('2019-01-01'), 'yyyy-MM-dd')) \
+            .withColumn("register_date", F.to_date(F.lit('2019-01-01'), 'yyyy-MM-dd'))
+        topup_diff_time_intermediate.show(273,False)
+        diff_bw_topups_monthly = node_from_config(topup_diff_time_intermediate,var_project_context.catalog.load(
+                'params:l3_billing_and_payment_feature_time_diff_bw_topups_monthly'))
+        # payments_max_time_diff: "max(payments_time_diff)"
+        # payments_min_time_diff: "min(payments_time_diff)"
+        # payments_time_diff: "sum(payments_time_diff)"
+        # payments_time_diff_avg: "avg(payments_time_diff)"
+
+        # null
+        # 0
+        # 2
+        # 3
+        # 4
+        # 0
+        # 5
+        # 0
+        # 2
+        # 1
+        # 4
+        # 1
+        # 5
+        # min = 0
+        # max = 5
+        # sum = 27
+        # avg = 2.25
+
+        assert \
+            (diff_bw_topups_monthly.where("start_of_month='2020-09-01'").select(
+                "payments_max_time_diff").collect()[0][
+                 0]) == 5
+        assert \
+            (diff_bw_topups_monthly.where("start_of_month='2020-09-01'").select(
+                "payments_min_time_diff").collect()[0][
+                 0]) == 0
+        assert \
+            (diff_bw_topups_monthly.where("start_of_month='2020-09-01'").select(
+                "payments_time_diff").collect()[0][
+                 0]) == 27
+        assert \
+            (diff_bw_topups_monthly.where("start_of_month='2020-09-01'").select(
+                "payments_time_diff_avg").collect()[0][
+                 0]) == 2.25
+        exit(5)
