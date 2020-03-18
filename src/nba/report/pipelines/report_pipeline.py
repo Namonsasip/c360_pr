@@ -39,6 +39,21 @@ def create_use_case_view_report_data(run_type: str = None) -> Pipeline:
                 outputs="churn_ard_report_input_table",
                 name="churn_ard_report_input_table",
             ),
+
+            node(
+                partial(
+                    create_use_case_view_report,
+                    day="2020-03-03",  # TODO make dynamic
+                    aggregate_period=[1, 7, 30],
+                ),
+                inputs=[
+                    "cvm_prepaid_customer_groups",
+                    "campaign_response_input_table",
+                    "churn_ard_report_input_table",
+                ],
+                outputs="use_case_view_report_table",
+                name="churn_ard_report_use_case_view_table",
+            ),
         ],
         name="churn_ard_report",
     )

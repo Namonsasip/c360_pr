@@ -221,7 +221,22 @@ def create_use_case_view_report(
     churn_ard_report_input_table: DataFrame,
     day: str,
     aggregate_period: List[int],
-):
+) -> DataFrame:
+    """
+    This function create use case view report.
+        -aggregate campaign response tracking data to use case based
+        -combine report input data
+
+    Args:
+        cvm_prepaid_customer_groups: cvm sandbox target group
+        campaign_response_input_table: campaign response table created on focus campaigns
+        churn_ard_report_input_table: ontop, topup, and revenue features
+        day: report running date
+        aggregate_period: list of aggregate period for campaign data aggregatation
+
+    Returns: DataFrame of use case view report, contain all use case report currently support ARD and CHURN
+
+    """
     # Get number of Freeze customer in control group
     current_size = cvm_prepaid_customer_groups.groupby("target_group").agg(
         F.countDistinct("crm_sub_id").alias("distinct_targeted_subscriber")
