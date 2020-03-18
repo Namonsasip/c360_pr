@@ -148,8 +148,7 @@ def create_cvm_prepare_data(sample_type: str = None):
             node(
                 create_l5_cvm_one_day_train_test,
                 [
-                    "l5_cvm_selected_features_one_day_joined_ard_macrosegments"
-                    + suffix,
+                    "l5_cvm_selected_features_one_day_joined_macrosegments" + suffix,
                     "parameters",
                 ],
                 ["l5_cvm_one_day_train" + suffix, "l5_cvm_one_day_test" + suffix],
@@ -195,7 +194,7 @@ def create_cvm_prepare_data(sample_type: str = None):
                 add_macrosegments,
                 "l5_cvm_features_targets_one_day" + suffix,
                 "l5_cvm_selected_features_one_day_joined_ard_macrosegments" + suffix,
-                name="create_l5_cvm_selected_features_one_day_joined_ard_macrosegments"
+                name="create_l5_cvm_selected_features_one_day_joined_macrosegments"
                 + suffix,
             ),
         ]

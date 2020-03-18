@@ -127,9 +127,9 @@ l5_cvm_selected_features_one_day_joined_sample:
   save_args:
     mode: "overwrite"
 
-l5_cvm_selected_features_one_day_joined_ard_macrosegments_sample:
+l5_cvm_selected_features_one_day_joined_macrosegments_sample:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: dbfs:/mnt/customer360-cvm/l5_cvm_selected_features_one_day_joined_ard_macrosegments_sample/
+  filepath: dbfs:/mnt/customer360-cvm/l5_cvm_selected_features_one_day_joined_macrosegments_sample/
   file_format: "parquet"
   save_args:
     mode: "overwrite"
