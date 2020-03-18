@@ -56,12 +56,7 @@ try:
 except ValueError as err:
     logging.info("findspark.init() failed with error " + str(err))
 
-<<<<<<< HEAD
-#import findspark
-#findspark.init()
-=======
 conf = os.getenv("CONF", None)
->>>>>>> master
 
 
 class ProjectContext(KedroContext):
