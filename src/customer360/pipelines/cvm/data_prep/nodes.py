@@ -254,21 +254,18 @@ def add_macrosegments(df: DataFrame,) -> DataFrame:
     df = df.withColumn(
         "ard_macrosegment",
         func.when(
-            func.col("sum_rev_arpu_total_revenue_monthly_last_month")
-            < 50 & func.col("subscriber_tenure")
-            >= 12,
+            (func.col("sum_rev_arpu_total_revenue_monthly_last_month") < 50)
+            & (func.col("subscriber_tenure") >= 12),
             "low_arpu_high_tenure",
         )
         .when(
-            func.col("sum_rev_arpu_total_revenue_monthly_last_month")
-            >= 50 & func.col("subscriber_tenure")
-            < 12,
+            (func.col("sum_rev_arpu_total_revenue_monthly_last_month") >= 50)
+            & (func.col("subscriber_tenure") < 12),
             "high_arpu_low_tenure",
         )
         .when(
-            func.col("sum_rev_arpu_total_revenue_monthly_last_month")
-            >= 50 & func.col("subscriber_tenure")
-            >= 12,
+            (func.col("sum_rev_arpu_total_revenue_monthly_last_month") >= 50)
+            & (func.col("subscriber_tenure") >= 12),
             "high_arpu_high_tenure",
         )
         .otherwise("low_arpu_low_tenure"),
