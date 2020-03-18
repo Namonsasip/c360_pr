@@ -3,7 +3,7 @@ from datetime import timedelta
 from datetime import datetime
 from pyspark.sql import Window
 from pyspark.sql import functions as F
-from typing import Dict, Any
+from typing import Dict, Any, List
 from pyspark.sql import DataFrame
 import pandas as pd
 from src.customer360.utilities.spark_util import get_spark_session
@@ -124,7 +124,7 @@ def create_agg_data_for_report(
     dm01_fin_top_up: DataFrame,
     dm15_mobile_usage_aggr_prepaid: DataFrame,
     day: str,
-    aggregate_period=[1, 7, 30],
+    aggregate_period: List[int],
 ):
     """
 
@@ -135,22 +135,23 @@ def create_agg_data_for_report(
         dm43_promotion_prepaid: daily voice on-top transaction
         dm01_fin_top_up:  daily top-up transaction
         dm15_mobile_usage_aggr_prepaid: daily usage data, contains data/voice usage Pay per use charge sms
-        day: day string //will be remove
-        aggregate_period: list of aggregate period
+        day: day string #TODO make dynamic
+        aggregate_period: list with all number of days to look back for the metrics
 
     Returns: dataFrame of aggregated features for campaign report tracking
 
     """
-    day = "2020-03-03"
 
-    # Create date period dataframe that will be use in cross join to create main table for features aggregation
-    start_day = datetime.date(datetime.strptime(day, "%Y-%m-%d")) - timedelta(31)
+    # Create date period dataframe that will be use in cross join
+    # to create main table for features aggregation
+    start_day = datetime.date(datetime.strptime(day, "%Y-%m-%d")) - timedelta(
+        max(aggregate_period)
+    )
     df_date_period = spark.sql(
-        "SELECT sequence(to_date('"
-        + start_day.strftime("%Y-%m-%d")
-        + "'), to_date('"
-        + day
-        + "'), interval 1 day) as date"
+        f"SELECT sequence("
+        f"  to_date('{ start_day.strftime('%Y-%m-%d')}'),"
+        f"  to_date('{day}'), interval 1 day"
+        f") as date"
     ).withColumn("date", F.explode(F.col("date")))
 
     # Cross join all customer in sandbox control group with date period
@@ -161,36 +162,50 @@ def create_agg_data_for_report(
     # Filter data-sources on recent period to minimize computation waste
     dm42_promotion_prepaid_filtered = dm42_promotion_prepaid.filter(
         dm42_promotion_prepaid.date_id >= start_day
-    ).selectExpr(
+    ).select(
         "analytic_id",
         "register_date",
-        "number_of_transaction as number_of_ontop_data_transaction",
-        "total_net_tariff as ontop_data_total_net_tariff",
-        "date_id as date",
+        F.col("number_of_transaction").alias("ontop_data_number_of_transaction"),
+        F.col("total_net_tariff").alias("ontop_data_total_net_tariff"),
+        F.col("date_id").alias("date"),
     )
     dm43_promotion_prepaid_filtered = dm43_promotion_prepaid.filter(
         dm43_promotion_prepaid.date_id >= start_day
-    ).selectExpr(
+    ).select(
         "analytic_id",
         "register_date",
-        "number_of_transaction as number_of_ontop_voice_transaction",
-        "total_net_tariff as ontop_voice_total_net_tariff",
-        "date_id as date",
-    )
-    dm01_fin_top_up_filtered = dm01_fin_top_up.filter(
-        dm01_fin_top_up.ddate >= start_day
-    ).selectExpr(
-        "analytic_id", "register_date", "top_up_tran", "top_up_value", "ddate as date"
+        F.col("number_of_transaction").alias("ontop_voice_number_of_transaction"),
+        F.col("total_net_tariff").alias("ontop_voice_total_net_tariff"),
+        F.col("date_id").alias("date"),
     )
 
     # data_charge is Pay per use data charge, voice/sms have onnet and offnet, onnet mean call within AIS network
-    dm15_mobile_usage_aggr_prepaid_filtered = dm15_mobile_usage_aggr_prepaid.filter(
-        dm15_mobile_usage_aggr_prepaid.ddate >= start_day
-    ).selectExpr(
+    dm01_fin_top_up_filtered = dm01_fin_top_up.filter(
+        dm01_fin_top_up.ddate >= start_day
+    ).select(
         "analytic_id",
         "register_date",
-        "data_charge + voice_onnet_charge_out + voice_offnet_charge_out + sms_onnet_charge_out + sms_offnet_charge_out + voice_roaming_charge_out + sms_roaming_charge_out + data_roaming_charge_data as all_ppu_charge",
-        "ddate as date",
+        "top_up_tran",
+        "top_up_value",
+        F.col("ddate").alias("date"),
+    )
+
+    dm15_mobile_usage_aggr_prepaid_filtered = dm15_mobile_usage_aggr_prepaid.filter(
+        dm15_mobile_usage_aggr_prepaid.ddate >= start_day
+    ).select(
+        "analytic_id",
+        "register_date",
+        (
+            F.col("data_charge")
+            + F.col("voice_onnet_charge_out")
+            + F.col("voice_offnet_charge_out")
+            + F.col("sms_onnet_charge_out")
+            + F.col("sms_offnet_charge_out")
+            + F.col("voice_roaming_charge_out")
+            + F.col("sms_roaming_charge_out")
+            + F.col("data_roaming_charge_data")
+        ).alias("all_ppu_charge"),
+        F.col("ddate").alias("date"),
     )
 
     # Join all table to consolidate all required data
@@ -202,52 +217,56 @@ def create_agg_data_for_report(
         .join(dm15_mobile_usage_aggr_prepaid_filtered, join_keys, "left")
     )
 
-    # Convert date column to timestamp for window function, Should be change if date format can be use
+    # Convert date column to timestamp for window function
+    # Should be change if date format can be use
     df_aggregate_table = df_aggregate_table.withColumn(
-        "timestamp", df_aggregate_table.date.astype("Timestamp").cast("long"),
+        "timestamp", F.col("date").astype("Timestamp").cast("long"),
     )
-    df_aggregate_table.persist()
+
+    df_aggregate_table = df_aggregate_table.withColumn(
+        "total_revenue",
+        F.col("ontop_data_total_net_tariff")
+        + F.col("ontop_voice_total_net_tariff")
+        + F.col("all_ppu_charge"),
+    )
+    df_aggregate_table = df_aggregate_table.withColumn(
+        "total_number_ontop_purchase",
+        F.col("ontop_data_number_of_transaction")
+        + F.col("ontop_voice_number_of_transaction"),
+    )
+    columns_to_aggregate = [
+        "ontop_data_number_of_transaction",
+        "ontop_data_total_net_tariff",
+        "ontop_voice_number_of_transaction",
+        "ontop_voice_total_net_tariff",
+        "all_ppu_charge",
+        "top_up_value",
+        "total_revenue",
+        "total_number_ontop_purchase",
+    ]
 
     for period in aggregate_period:
         window_func = (
             Window.partitionBy("analytic_id")
             .orderBy(F.col("timestamp"))
-            .rangeBetween(-((period + 1) * 86400), 0)
+            .rangeBetween(
+                -((period + 1) * 86400), Window.currentRow
+            )  # 86400 is the number of seconds in a day
         )
-        df_aggregate_table = (
-            df_aggregate_table.withColumn(
-                "total_data_ontop_revenue_{}_day".format(period),
-                F.sum("ontop_data_total_net_tariff").over(window_func),
-            )
-            .withColumn(
-                "total_voice_ontop_revenue_{}_day".format(period),
-                F.sum("ontop_voice_total_net_tariff").over(window_func),
-            )
-            .withColumn(
-                "total_ppu_revenue_{}_day".format(period),
-                F.sum("all_ppu_charge").over(window_func),
-            )
-            .withColumn(
-                "total_topup_{}_day".format(period),
-                F.sum("top_up_value").over(window_func),
-            )
-            .withColumn(
-                "total_data_ontop_count_{}_day".format(period),
-                F.sum("number_of_ontop_data_transaction").over(window_func),
-            )
-            .withColumn(
-                "total_voice_ontop_count_{}_day".format(period),
-                F.sum("number_of_ontop_voice_transaction").over(window_func),
-            )
-            .selectExpr(
-                "*",
-                "total_data_ontop_revenue_{0}_day + total_voice_ontop_revenue_{0}_day + total_ppu_revenue_{0}_day as total_revenue_{0}_day".format(
-                    period
-                ),
-                "total_data_ontop_count_{0}_day + total_voice_ontop_count_{0}_day as total_number_ontop_purchase_{0}".format(
-                    period
-                ),
+
+        df_aggregate_table = df_aggregate_table.select(
+            *(
+                df_aggregate_table.columns
+                + [
+                    F.sum(column).over(window_func).alias(f"{column}_{period}_day")
+                    for column in columns_to_aggregate
+                ]
             )
         )
+
+    # Filter only the days for which we have all the info
+    df_aggregate_table = df_aggregate_table.filter(F.col("date") == day)
+
+    #TODO join with campaign detailed info (dm996_cvm_ontop_pack)
 
     return df_aggregate_table

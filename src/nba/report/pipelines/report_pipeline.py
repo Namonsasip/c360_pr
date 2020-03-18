@@ -7,7 +7,6 @@ REPORT_DATE = "2020-03-06"
 
 
 def create_use_case_view_report_data(run_type: str = None) -> Pipeline:
-    suffix = get_suffix(run_type)
     return Pipeline(
         [
             node(
@@ -69,5 +68,23 @@ def create_use_case_view_report_data(run_type: str = None) -> Pipeline:
                 "l0_churn_ard_targeted_customer_last_month",
                 name="churn_ard_targeted_customer_last_month",
             ),
-        ]
+            node(
+                partial(
+                    create_agg_data_for_report,
+                    day="2020-03-03",  # TODO make dynamic
+                    aggregate_period=[1, 7, 30],
+                ),
+                inputs=[
+                    "cvm_prepaid_customer_groups",
+                    "dm996_cvm_ontop_pack",
+                    "dm42_promotion_prepaid",
+                    "dm43_promotion_prepaid",
+                    "dm01_fin_top_up",
+                    "dm15_mobile_usage_aggr_prepaid",
+                ],
+                outputs="churn_ard_report_input_table",
+                name="churn_ard_report_input_table",
+            ),
+        ],
+        name="churn_ard_report",
     )

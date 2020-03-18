@@ -31,6 +31,7 @@ from typing import Dict
 
 from kedro.pipeline import Pipeline
 
+from nba.report.pipelines.report_pipeline import create_use_case_view_report_data
 from .pipelines.cvm.data_prep.pipeline import (
     create_cvm_prepare_inputs_samples,
     create_cvm_prepare_data,
@@ -180,7 +181,9 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
 
 
 def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
-    return {}
+    return {
+        "churn_ard_report": create_use_case_view_report_data(),
+    }
 
 
 def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
