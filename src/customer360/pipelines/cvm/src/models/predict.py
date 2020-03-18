@@ -140,7 +140,7 @@ def pyspark_predict_rf(
         return df
 
     def _pred_for_macrosegments(df, use_case, macrosegment):
-        df = df.filter("{}_macrosegment == {}".format(use_case, macrosegment))
+        df = df.filter("{}_macrosegment == '{}'".format(use_case, macrosegment))
         for target_chosen in target_cols_use_case_split[use_case]:
             df = _pred_for_macrosegment_target(
                 df, use_case, macrosegment, target_chosen
