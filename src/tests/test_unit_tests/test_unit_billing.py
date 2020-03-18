@@ -12,7 +12,7 @@ import pandas as pd
 import random
 from pyspark.sql import functions as F, SparkSession
 from datetime import timedelta
-import datetime
+
 
 
 class TestUnitBilling:
@@ -2192,7 +2192,7 @@ class TestUnitBilling:
         random.seed(100)
         random_list2 = [random.randint(1, 10) * 100 for iTemp in range(0, len(my_dates))]
 
-        start_time = datetime.datetime.strptime("01/01/2020 08:35:55", '%d/%m/%Y %H:%M:%S')
+        start_time = datetime.strptime("01/01/2020 08:35:55", '%d/%m/%Y %H:%M:%S')
         start_time_list = []
         for i in range(len(my_dates)):
             start_time_list.append(start_time)
@@ -2274,4 +2274,4 @@ class TestUnitBilling:
             (diff_bw_topups_monthly.where("start_of_month='2020-09-01'").select(
                 "payments_time_diff_avg").collect()[0][
                  0]) == 2.25
-        exit(5)
+        # exit(5)
