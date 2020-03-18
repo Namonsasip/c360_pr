@@ -224,6 +224,12 @@ def recharge_data_with_customer_profile_joined(customer_prof, recharge_data):
         .drop(recharge_data.register_date) \
         .drop(recharge_data.start_of_week)
 
+
+    output_df = output_df.withColumn("rn", expr(
+        "row_number() over(partition by start_of_week,access_method_num,register_date order by recharge_time desc)"))
+
+    output_df = output_df.filter("rn = 1").drop("rn")
+
     return output_df
 
 
