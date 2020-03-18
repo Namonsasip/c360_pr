@@ -66,11 +66,15 @@ def classify_columns(df: DataFrame, parameters: Dict[str, Any]) -> Dict[str, Ite
     columns_cats["key"] = parameters["key_columns"]
     columns_cats["segment"] = parameters["segment_columns"]
     columns_cats["categorical"] = list_sub(
-        list_categorical(df), columns_cats["target"] + columns_cats["key"]
+        list_categorical(df),
+        columns_cats["target"] + columns_cats["key"] + columns_cats["segment"],
     )
     columns_cats["numerical"] = list_sub(
         df.columns,
-        columns_cats["categorical"] + columns_cats["target"] + columns_cats["key"],
+        columns_cats["categorical"]
+        + columns_cats["target"]
+        + columns_cats["key"]
+        + columns_cats["segment"],
     )
 
     # make sure only columns are chosen
