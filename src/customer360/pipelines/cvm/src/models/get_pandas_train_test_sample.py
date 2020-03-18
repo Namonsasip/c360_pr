@@ -54,7 +54,7 @@ def get_pandas_train_test_sample(
 
     if use_case_chosen is not None and macrosegments_chosen is not None:
         macrosegment_col = use_case_chosen + "_macrosegment"
-        df = df.filter("{} == {}".format(macrosegment_col, macrosegments_chosen))
+        df = df.filter("{} == '{}'".format(macrosegment_col, macrosegments_chosen))
 
     if target_chosen is not None:
         df = df.filter("{} is not null".format(target_chosen))
