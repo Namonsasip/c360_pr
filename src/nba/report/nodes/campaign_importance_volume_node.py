@@ -4,11 +4,14 @@ from datetime import datetime
 from pyspark.sql import functions as F
 from typing import Dict, Any
 from pyspark.sql import DataFrame
-import pandas as pd
-
+from src.customer360.utilities.spark_util import get_spark_session
 print("yay")
-df = catalog.load("l1_prep_report_ontop_pack")
-df.show()
-def create_table_delta(path:str, table_name:str):
-    df = spark.sql("select * from prod_delta.dm01_fin_top_up")
-    return 0
+spark = get_spark_session()
+
+def create_table_delta(distinct_response:DataFrame) -> DataFrame:
+    df_agg = distinct_response
+    return df_agg
+
+def read_table(df_agg:DataFrame):
+    df_agg.show()
+    return 1

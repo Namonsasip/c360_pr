@@ -10,11 +10,18 @@ def campaign_importance_volume(run_type:str = None) -> Pipeline:
             node(
                 create_table_delta,
                 [
-                    "campaign_history_master_active",
-                    "params:report_control_group_current_size",
+                    "distinct_child_code_contact_response",
                 ],
-                "l0_campaign_report_current_size",
-                name="user_current_size",
+                "distinct_child_response_agg",
+                name="create distinct_child_response_agg table",
+            ),
+            node(
+                read_table,
+                [
+                    "distinct_child_response_agg",
+                ],
+                "read_success",
+                name = "test reading table"
             )
         ]
     )
