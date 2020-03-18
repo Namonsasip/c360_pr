@@ -193,7 +193,7 @@ def create_cvm_prepare_data(sample_type: str = None):
             node(
                 add_macrosegments,
                 "l5_cvm_features_targets_one_day" + suffix,
-                "l5_cvm_selected_features_one_day_joined_ard_macrosegments" + suffix,
+                "l5_cvm_selected_features_one_day_joined_macrosegments" + suffix,
                 name="create_l5_cvm_selected_features_one_day_joined_macrosegments"
                 + suffix,
             ),
