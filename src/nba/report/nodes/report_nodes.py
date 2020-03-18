@@ -318,6 +318,8 @@ def create_use_case_view_report(
 
     # Nasty code to remove aggregate function TODO find another way to aggregate with reasonable renaming method
     for column in df_usage_features.columns:
+        if column == "target_group":
+            continue
         start_index = column.find("(")
         end_index = column.find(")")
         if start_index and end_index:
