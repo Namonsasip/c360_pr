@@ -52,7 +52,10 @@ def pipeline1_fit(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
     # select columns
     columns_cats = classify_columns(df, parameters)
     cols_to_pick = (
-        parameters["prepro_cols_to_pick"] + columns_cats["target"] + columns_cats["key"]
+        parameters["prepro_cols_to_pick"]
+        + columns_cats["target"]
+        + columns_cats["key"]
+        + columns_cats["segment"]
     )
     df = df.select(cols_to_pick)
 
@@ -101,7 +104,10 @@ def pipeline1_transform(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
     # select columns
     columns_cats = classify_columns(df, parameters)
     cols_to_pick = (
-        parameters["prepro_cols_to_pick"] + columns_cats["target"] + columns_cats["key"]
+        parameters["prepro_cols_to_pick"]
+        + columns_cats["target"]
+        + columns_cats["key"]
+        + columns_cats["segment"]
     )
     df = df.select(cols_to_pick)
 
