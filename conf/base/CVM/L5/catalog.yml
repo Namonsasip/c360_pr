@@ -66,4 +66,4 @@ models_metrics:
 # same as l5_cvm_selected_features_one_day_joined with ard macrosegments
 l5_cvm_selected_features_one_day_joined_macrosegments:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-cvm/l5_cvm_selected_features_one_day_joined_macrosegments/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_selected_features_one_day_joined_macrosegments/

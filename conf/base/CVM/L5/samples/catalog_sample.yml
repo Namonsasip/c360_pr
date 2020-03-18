@@ -3,7 +3,7 @@ _spark_parquet: &spark_parquet
   file_format: "parquet"
   save_args:
     mode: "overwrite"
-    
+
 # Sample samples of used datasets - medium samples to develop code
 
 l3_customer_profile_include_1mo_non_active_sample:
@@ -84,4 +84,4 @@ l5_cvm_selected_features_one_day_joined_sample:
 
 l5_cvm_selected_features_one_day_joined_macrosegments_sample:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-cvm/l5_cvm_selected_features_one_day_joined_macrosegments_sample/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_selected_features_one_day_joined_macrosegments_sample/
