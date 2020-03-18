@@ -5,53 +5,7 @@ report_create_campaign_tracking_table:
   campaign_and_group_join_keys: ["analytic_id","register_date"]
   campaign_mapping_join_keys: ["campaign_child_code"]
 
-report_create_ontop_table:
-  scope_down_delta_date: 60
-  ontop_data_date_filter_column: "date_id"
-  ontop_voice_date_filter_column: "date_id"
-  ontop_data_selected_column: ["analytic_id","register_date","promotion_code","total_net_tariff","number_of_transaction","date_id"]
-  ontop_voice_selected_column: ["analytic_id","register_date","promotion_code","total_net_tariff","number_of_transaction","date_id"]
-  join_keys: ["analytic_id","register_date"]
-
 report_control_group_current_size:
   group_by_column: "target_group"
   users_unique_identifier: "crm_sub_id"
   output_alias: "distinct_targeted_subscriber"
-
-report_targeted_user:
-  mode: "custom"
-  yesterday:
-    aggregate_window: 1
-    alias_name: "CNT_YTD"
-    alias_name_2: "CNT_DISTINCT_YTD"
-  last_week:
-    aggregate_window: 7
-    alias_name: "CNT_LAST_WEEK"
-    alias_name_2: "CNT_DISTINCT_LAST_WEEK"
-  last_month:
-    aggregate_window: 30
-    alias_name: "CNT_LAST_MONTH"
-    alias_name_2: "CNT_DISTINCT_LAST_MONTH"
-  date_col: "contact_date"
-  aggregate_col: "*"
-  aggregate_col_2: "crm_sub_id"
-  group_by_identifiers: ["target_group", "usecase", "response"]
-
-report_ontop:
-  mode: "custom_ontop"
-  yesterday:
-    aggregate_window: 1
-    alias_name: "ONTOP_COUNT_YTD"
-    alias_name_2: "ONTOP_REV_YTD"
-  last_week:
-    aggregate_window: 7
-    alias_name: "ONTOP_COUNT_LAST_WEEK"
-    alias_name_2: "ONTOP_REV_LAST_WEEK"
-  last_month:
-    aggregate_window: 30
-    alias_name: "ONTOP_COUNT_LAST_MONTH"
-    alias_name_2: "ONTOP_REV_LAST_MONTH"
-  date_col: "date_id"
-  aggregate_col: "number_of_transaction"
-  aggregate_col_2: "total_net_tariff"
-  group_by_identifiers: ["target_group"]
