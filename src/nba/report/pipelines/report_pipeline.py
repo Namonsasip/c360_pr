@@ -21,7 +21,8 @@ def create_use_case_view_report_data(run_type: str = None) -> Pipeline:
                     "params:report_create_campaign_tracking_table",
                 ],
                 "campaign_response_input_table",
-                name="create_campaign_tracking_on_groups",
+                name="campaign_response_input_table",
+                tags=["campaign_response_input_table",]
             ),
             node(
                 partial(
@@ -36,8 +37,9 @@ def create_use_case_view_report_data(run_type: str = None) -> Pipeline:
                     "dm01_fin_top_up",
                     "dm15_mobile_usage_aggr_prepaid",
                 ],
-                outputs="churn_ard_report_input_table",
-                name="churn_ard_report_input_table",
+                outputs="reporting_kpis",
+                name="reporting_kpis",
+                tags=["reporting_kpis"]
             ),
 
             node(
@@ -49,11 +51,12 @@ def create_use_case_view_report_data(run_type: str = None) -> Pipeline:
                 inputs=[
                     "cvm_prepaid_customer_groups",
                     "campaign_response_input_table",
-                    "churn_ard_report_input_table",
+                    "reporting_kpis",
                 ],
                 outputs="use_case_view_report_table",
-                name="churn_ard_report_use_case_view_table",
+                name="use_case_view_report_table",
+                tags=["use_case_view_report_table",]
             ),
         ],
-        name="churn_ard_report",
+        tags=["churn_ard_report"],
     )
