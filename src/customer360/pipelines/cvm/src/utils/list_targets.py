@@ -56,7 +56,7 @@ def list_targets(
             if case_split:
                 if use_case_name not in target_colnames:
                     target_colnames[use_case_name] = []
-                target_colnames[use_case_name].append[target_colname]
+                target_colnames[use_case_name].append(target_colname)
             else:
                 target_colnames.append(target_colname)
 
