@@ -7251,15 +7251,122 @@ class TestUnitUsage:
 
         ####################### TEST look-back 2 week #################################################################
 
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select("min_usg_incoming_data_volume_min_weekly_last_two_week").collect()[0][0] ==  '233697726.00'
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "min_usg_incoming_roaming_call_duration_min_weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "min_usg_incoming_roaming_call_duration_min_weekly_last_week").collect()[0][0] or \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "min__weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+                   "min_usg_incoming_roaming_call_duration_min_weekly_last_week").collect()[0][0]
+
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "min_usg_incoming_roaming_number_calls_min_weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "min_usg_incoming_roaming_number_calls_min_weekly_last_week").collect()[0][0] or \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "min__weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+                   "min_usg_incoming_roaming_number_calls_min_weekly_last_week").collect()[0][0]
+
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "min_usg_data_wednesday_usage_sum_weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "min_usg_data_wednesday_usage_sum_weekly_last_week").collect()[0][0] or \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "min__weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+                   "min_usg_data_wednesday_usage_sum_weekly_last_week").collect()[0][0]
+
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "min_usg_incoming_data_volume_min_weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "min_usg_incoming_data_volume_min_weekly_last_week").collect()[0][0] or \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "min__weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+                   "min_usg_incoming_data_volume_min_weekly_last_week").collect()[0][0]
+
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "min_usg_incoming_data_volume_2G_3G_min_weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "min_usg_incoming_data_volume_2G_3G_min_weekly_last_week").collect()[0][0] or \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "min__weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+                   "min_usg_incoming_data_volume_2G_3G_min_weekly_last_week").collect()[0][0]
+
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "min_usg_outgoing_data_volume_min_weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "min_usg_outgoing_data_volume_min_weekly_last_week").collect()[0][0] or \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "min__weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+                   "min_usg_outgoing_data_volume_min_weekly_last_week").collect()[0][0]
+
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "min_usg_outgoing_data_volume_2G_3G_min_weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "min_usg_outgoing_data_volume_2G_3G_min_weekly_last_week").collect()[0][0] or \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "min__weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+                   "min_usg_outgoing_data_volume_2G_3G_min_weekly_last_week").collect()[0][0]
+
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "min_usg_data_monday_afternoon_usage_sum_weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "min_usg_data_monday_afternoon_usage_sum_weekly_last_week").collect()[0][0] or \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "min__weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+                   "min_usg_data_monday_afternoon_usage_sum_weekly_last_week").collect()[0][0]
+
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "min_usg_incoming_afternoon_number_sms_min_weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "min_usg_incoming_afternoon_number_sms_min_weekly_last_week").collect()[0][0] or \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "min__weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+                   "min_usg_incoming_afternoon_number_sms_min_weekly_last_week").collect()[0][0]
+
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "min_usg_outgoing_weekday_calls_duration_sum_weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "min_usg_outgoing_weekday_calls_duration_sum_weekly_last_week").collect()[0][0] or \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "min__weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+                   "min_usg_outgoing_weekday_calls_duration_sum_weekly_last_week").collect()[0][0]
+
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "min_usg_outgoing_wednesday_voice_usage_sum_weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "min_usg_outgoing_wednesday_voice_usage_sum_weekly_last_week").collect()[0][0] or \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "min__weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+                   "min_usg_outgoing_wednesday_voice_usage_sum_weekly_last_week").collect()[0][0]
+
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "min_usg_outgoing_weekend_calls_duration_sum_weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "min_usg_outgoing_weekend_calls_duration_sum_weekly_last_week").collect()[0][0] or \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "min__weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+                   "min_usg_outgoing_weekend_calls_duration_sum_weekly_last_week").collect()[0][0]
+
+        ################################################################################################################
 
         #### test Null because Dataset start_of_week start on 2020-01-06 must be null #################################
         assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-06'").select("min_usg_incoming_data_volume_min_weekly_last_two_week").collect()[0][0] == None
 
         ####################### TEST  look-back ################ 1 Week ##############################################
 
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "min_usg_incoming_data_volume_min_weekly_last_week").collect()[0][0] == '233697726.00'
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select("min_usg_incoming_data_volume_min_weekly_last_week").collect()[0][0] == '233697726.00'
 
         assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-06'").select(
             "min_usg_incoming_data_volume_min_weekly_last_week").collect()[0][0] == None
@@ -7664,8 +7771,103 @@ class TestUnitUsage:
         ####################### TEST look-back 2 week #################################################################
 
         assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "max_usg_incoming_data_volume_max_weekly_last_two_week").collect()[0][0] == '233697726.00'
+            "max_usg_incoming_roaming_call_duration_max_weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "max_usg_incoming_roaming_call_duration_max_weekly_last_week").collect()[0][0] or \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "max__weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+                   "max_usg_incoming_roaming_call_duration_max_weekly_last_week").collect()[0][0]
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "max_usg_incoming_roaming_number_calls_max_weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "max_usg_incoming_roaming_number_calls_max_weekly_last_week").collect()[0][0] or \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "max__weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+                   "max_usg_incoming_roaming_number_calls_max_weekly_last_week").collect()[0][0]
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "max_usg_data_wednesday_usage_sum_weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "max_usg_data_wednesday_usage_sum_weekly_last_week").collect()[0][0] or \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "max__weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+                   "max_usg_data_wednesday_usage_sum_weekly_last_week").collect()[0][0]
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "max_usg_incoming_data_volume_max_weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "max_usg_incoming_data_volume_max_weekly_last_week").collect()[0][0] or \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "max__weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+                   "max_usg_incoming_data_volume_max_weekly_last_week").collect()[0][0]
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "max_usg_incoming_data_volume_2G_3G_max_weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "max_usg_incoming_data_volume_2G_3G_max_weekly_last_week").collect()[0][0] or \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "max__weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+                   "max_usg_incoming_data_volume_2G_3G_max_weekly_last_week").collect()[0][0]
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "max_usg_outgoing_data_volume_max_weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "max_usg_outgoing_data_volume_max_weekly_last_week").collect()[0][0] or \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "max__weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+                   "max_usg_outgoing_data_volume_max_weekly_last_week").collect()[0][0]
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "max_usg_outgoing_data_volume_2G_3G_max_weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "max_usg_outgoing_data_volume_2G_3G_max_weekly_last_week").collect()[0][0] or \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "max__weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+                   "max_usg_outgoing_data_volume_2G_3G_max_weekly_last_week").collect()[0][0]
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "max_usg_data_monday_afternoon_usage_sum_weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "max_usg_data_monday_afternoon_usage_sum_weekly_last_week").collect()[0][0] or \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "max__weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+                   "max_usg_data_monday_afternoon_usage_sum_weekly_last_week").collect()[0][0]
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "max_usg_incoming_afternoon_number_sms_max_weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "max_usg_incoming_afternoon_number_sms_max_weekly_last_week").collect()[0][0] or \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "max__weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+                   "max_usg_incoming_afternoon_number_sms_max_weekly_last_week").collect()[0][0]
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "max_usg_outgoing_weekday_calls_duration_sum_weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "max_usg_outgoing_weekday_calls_duration_sum_weekly_last_week").collect()[0][0] or \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "max__weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+                   "max_usg_outgoing_weekday_calls_duration_sum_weekly_last_week").collect()[0][0]
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "max_usg_outgoing_wednesday_voice_usage_sum_weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "max_usg_outgoing_wednesday_voice_usage_sum_weekly_last_week").collect()[0][0] or \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "max__weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+                   "max_usg_outgoing_wednesday_voice_usage_sum_weekly_last_week").collect()[0][0]
+        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+            "max_usg_outgoing_weekend_calls_duration_sum_weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "max_usg_outgoing_weekend_calls_duration_sum_weekly_last_week").collect()[0][0] or \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
+                   "max__weekly_last_two_week").collect()[0][0] == \
+               l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-20'").select(
+                   "max_usg_outgoing_weekend_calls_duration_sum_weekly_last_week").collect()[0][0]
 
+        ###############################################################################################################
         #### test Null because Dataset start_of_week start on 2020-01-06 must be null #################################
         assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-06'").select(
             "max_usg_incoming_data_volume_max_weekly_last_two_week").collect()[0][0] == None
@@ -8092,8 +8294,6 @@ class TestUnitUsage:
             "sum_usg_data_monday_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
         assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
             "sum_usg_data_saturday_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
-        assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
-            "sum_usg_data_sunday_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
         assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
             "sum_usg_data_thursday_usage_sum_weekly_last_two_week").collect()[0][0] == 0.0
         assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
