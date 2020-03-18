@@ -67,3 +67,11 @@ models_metrics:
 l5_cvm_selected_features_one_day_joined_macrosegments:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_selected_features_one_day_joined_macrosegments/
+
+l5_cvm_one_day_train_preprocessed:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_one_day_train_preprocessed/
+
+l5_cvm_one_day_test_preprocessed:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_one_day_test_preprocessed/
