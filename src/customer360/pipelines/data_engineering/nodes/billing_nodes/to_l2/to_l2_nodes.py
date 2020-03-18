@@ -1,4 +1,5 @@
 import pyspark.sql.functions as f
+from pyspark.sql.functions import expr
 from pyspark.sql import DataFrame
 from customer360.utilities.config_parser import node_from_config
 from kedro.context.context import load_context
@@ -185,15 +186,10 @@ def billing_last_top_up_channel_weekly(input_df, customer_profile_df, recharge_t
     return_df = customized_processing(input_df, customer_prof, recharge_type_df, sql,
                                       "l2_billing_and_payments_weekly_last_top_up_channel")
 
-    return_df.createOrReplaceTempView("rdf")
+    return_df = return_df.withColumn("rn", expr(
+        "row_number() over(partition by start_of_week,access_method_num,register_date order by recharge_time desc)"))
 
-    spark = get_spark_session()
-    return_df = spark.sql(""" select * from (select *, 
-    row_number() over(partition by start_of_week,access_method_num,register_date order by recharge_time desc) as rn 
-    from rdf) t1 where t1.rn=1
-     """)
-
-    return_df.drop("rn")
+    return_df = return_df.filter("rn = 1").drop("rn")
 
     return return_df
 
