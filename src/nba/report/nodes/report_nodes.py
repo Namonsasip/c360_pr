@@ -7,10 +7,6 @@ from pyspark.sql import DataFrame
 from pyspark.sql import Window
 from pyspark.sql import functions as F
 
-from src.customer360.utilities.spark_util import get_spark_session
-
-spark = get_spark_session()
-
 
 def create_report_campaign_tracking_table(
     cvm_prepaid_customer_groups: DataFrame,
@@ -293,13 +289,12 @@ def create_use_case_view_report(
         )
 
     # Group data into target group basis
-    columns_to_sum = [c for c in reporting_kpis.columns if re.search(r"_[0-9]+_day$", c)]
-
+    columns_to_sum = [
+        c for c in reporting_kpis.columns if re.search(r"_[0-9]+_day$", c)
+    ]
 
     exprs = [F.sum(x).alias(x) for x in columns_to_sum]
-    df_usage_features = reporting_kpis.groupBy(["target_group"]).agg(
-        *exprs
-    )
+    df_usage_features = reporting_kpis.groupBy(["target_group"]).agg(*exprs)
 
     # Join Number of Freeze customer with Campaign Feature
     df_use_case_view_report = current_size.join(
