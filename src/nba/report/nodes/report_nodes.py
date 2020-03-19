@@ -268,10 +268,10 @@ def create_use_case_view_report(
         "timestamp", F.col("contact_date").astype("Timestamp").cast("long"),
     )
     columns_to_aggregate = [
-        "number_of_subscriber_targeted",
-        "number_of_distinct_accepted",
-        "number_of_campaign_sent",
-        "number_of_campaign_accepted",
+        "n_subscriber_targeted",
+        "n_campaign_accepted",
+        "n_campaign_sent",
+        "n_subscriber_accepted",
     ]
     for period in aggregate_period:
         window_func = (
