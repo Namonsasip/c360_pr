@@ -42,6 +42,7 @@ from customer360.pipelines.cvm.data_prep.nodes import (
     subs_date_join_important_only,
     create_sample_dataset,
     add_macrosegments,
+    add_volatility_scores,
 )
 from customer360.pipelines.cvm.src.utils.get_suffix import get_suffix
 
@@ -196,6 +197,19 @@ def create_cvm_prepare_data(sample_type: str = None):
                 "l5_cvm_selected_features_one_day_joined_macrosegments" + suffix,
                 name="create_l5_cvm_selected_features_one_day_joined_macrosegments"
                 + suffix,
+            ),
+        ]
+    )
+
+
+def create_volatility():
+    return Pipeline(
+        [
+            node(
+                add_volatility_scores(),
+                "l5_cvm_one_day_predictions_sample",
+                "l5_cvm_volatility",
+                name="create_l5_cvm_volatility",
             ),
         ]
     )
