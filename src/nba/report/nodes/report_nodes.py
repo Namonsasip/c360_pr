@@ -7,6 +7,7 @@ from pyspark.sql import DataFrame
 from pyspark.sql import Window
 from pyspark.sql import functions as F
 
+from customer360.utilities.spark_util import get_spark_session
 
 def create_report_campaign_tracking_table(
     cvm_prepaid_customer_groups: DataFrame,
@@ -83,6 +84,8 @@ def create_agg_data_for_report(
     Returns: dataFrame of aggregated features for campaign report tracking
 
     """
+
+    spark = get_spark_session()
 
     # Create date period dataframe that will be use in cross join
     # to create main table for features aggregation
