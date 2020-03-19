@@ -207,7 +207,11 @@ def create_volatility():
         [
             node(
                 add_volatility_scores(),
-                "l5_cvm_one_day_predictions_sample",
+                [
+                    "l5_cvm_one_day_predictions_sample",
+                    "l3_customer_profile_include_1mo_non_active",
+                    "parameters",
+                ],
                 "l5_cvm_volatility",
                 name="create_l5_cvm_volatility",
             ),
