@@ -430,6 +430,7 @@ def __generate_l4_rolling_ranked_column(
     logging.info("SQL QUERY {}".format(sql_stmt))
 
     spark = get_spark_session()
+
     df = spark.sql(sql_stmt)
 
     return df
