@@ -206,7 +206,7 @@ def create_volatility():
     return Pipeline(
         [
             node(
-                add_volatility_scores(),
+                add_volatility_scores,
                 [
                     "l5_cvm_one_day_predictions_sample",
                     "l3_customer_profile_include_1mo_non_active",
