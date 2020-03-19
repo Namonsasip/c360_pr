@@ -30,6 +30,7 @@ from typing import Any, Dict, List
 from pyspark.sql import DataFrame
 import functools
 import pyspark.sql.functions as func
+from pyspark.sql import Window
 
 from customer360.pipelines.cvm.src.targets.ard_targets import get_ard_targets
 from customer360.pipelines.cvm.src.targets.churn_targets import (
@@ -278,3 +279,44 @@ def add_macrosegments(df: DataFrame,) -> DataFrame:
         ).otherwise("zero_arpu"),
     )
     return df
+
+
+def add_volatility_scores(
+    users: DataFrame, reve: DataFrame, parameters: Dict[str, Any]
+) -> DataFrame:
+    """Create volatility score for given set of users.
+
+    Args:
+        users: DataFrame with users, subscription_identifier column will be used.
+        reve: Monthly revenue data.
+        parameters: parameters defined in parameters.yml.
+    """
+
+    vol_length = parameters["volatility_length"]
+
+    reve = setup_names(reve)
+    users = setup_names(users)
+
+    reve_cols_to_pick = parameters["key_columns"] + "rev_arpu_total_revenue"
+    reve = reve.select(reve_cols_to_pick)
+    reve_users_window = Window.partitionBy("subscription_identifier")
+    reve = (
+        reve.withColumn("reve_history", func.count().over(reve_users_window))
+        .filter("reve_history >= {}".format(vol_length))
+        .drop("reve_history")
+    )
+    vol_window = Window.partitionBy("subscription_identifier").orderBy(
+        reve["key_date"].desc()
+    )
+    reve = reve.withColumn("month_id", func.rank().over(vol_window)).filter(
+        "month_id <= {}".format(vol_length)
+    )
+    volatility = reve.groupby("subscription_identifier").agg(
+        func.stddev("rev_arpu_total_revenue").alias("volatility")
+    )
+
+    users = users.select("subscription_identifier").join(
+        volatility, "subscription_identifier", "left"
+    )
+
+    return users

@@ -69,3 +69,6 @@ macrosegments:
   churn:
     - zero_arpu
     - positive_arpu
+
+# volatility
+volatility_length: 5
