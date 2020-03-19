@@ -31,16 +31,21 @@ from pyspark.sql import DataFrame
 from customer360.pipelines.cvm.src.utils.setup_names import setup_names
 
 
-def get_latest_date(df: DataFrame) -> str:
+def get_latest_date(df: DataFrame, maximum_date: str = None) -> str:
     """ Returns last date available in given dataset.
 
     Args:
         df: Given DataFrame.
+        maximum_date: later dates will be ignored, if None then latest date present
+            is returned.
     """
 
     df = setup_names(df)
     if "key_date" not in df.columns:
         raise Exception("Date column not found.")
+
+    if maximum_date is not None:
+        df = df.filter("key_date <= '{}'".filter(maximum_date))
 
     return df.select("key_date").collect()[0][0]
 
