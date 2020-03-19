@@ -40,7 +40,7 @@ class QueryGenerator:
             else:
                 query = "Select {} from {} {}".format(projection, table_name, where_clause)
 
-            #logging.info("SQL QUERY {}".format(query))
+            logging.info("SQL QUERY {}".format(query))
 
             return query
 
@@ -193,7 +193,7 @@ def l4_rolling_window(input_df, config):
     sql_stmt = sql_stmt.format(',\n'.join(features),
                                config.get("where_clause", ""))
 
-    #logging.info("SQL QUERY {}".format(sql_stmt))
+    logging.info("SQL QUERY {}".format(sql_stmt))
 
     spark = get_spark_session()
     df = spark.sql(sql_stmt)
@@ -299,7 +299,7 @@ def expansion(input_df, config) -> DataFrame:
         column_function=QueryGenerator.expansion_feature_listing
     )
 
-    #logging.info("SQL QUERY {}".format(sql_stmt))
+    logging.info("SQL QUERY {}".format(sql_stmt))
 
     spark = get_spark_session()
 
@@ -427,7 +427,7 @@ def __generate_l4_rolling_ranked_column(
     sql_stmt = sql_stmt.format(',\n'.join(set(features)),
                                config.get("where_clause", ""))
 
-    #logging.info("SQL QUERY {}".format(sql_stmt))
+    logging.info("SQL QUERY {}".format(sql_stmt))
 
     spark = get_spark_session()
     df = spark.sql(sql_stmt)

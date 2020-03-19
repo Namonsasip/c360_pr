@@ -8832,5 +8832,6 @@ class TestUnitUsage:
         assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-27'").select(
             "avg_usg_incoming_data_volume_avg_weekly_last_week").collect()[0][0] == float('233697726.0')
 
+
         assert l4_agg.where("subscription_identifier = '1-FAKEVST' AND start_of_week = '2020-01-06'").select(
             "avg_usg_incoming_data_volume_avg_weekly_last_week").collect()[0][0] == None
