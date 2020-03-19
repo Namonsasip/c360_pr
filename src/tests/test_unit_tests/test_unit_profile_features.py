@@ -48,6 +48,7 @@ from pyspark.sql.types import *
 from customer360.pipelines.data_engineering.nodes.customer_profile_nodes.to_l1.to_l1_nodes import *
 from customer360.utilities.re_usable_functions import add_start_of_week_and_month
 
+
 # def generate_category(days, values_list):
 #     column = []
 #     for iTemp in range(0, days):
@@ -73,7 +74,7 @@ from customer360.utilities.re_usable_functions import add_start_of_week_and_mont
 
 class TestUnitProfile:
 
-    def test_l3_monthly_customer_profile_features(self, project_context):
+    def test_l1_monthly_customer_profile_features(self, project_context):
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
 
@@ -177,31 +178,6 @@ class TestUnitProfile:
                                        ]))
 
         dummy_list_non_b = [
-            ['1-119GBMXF', 'hdKjCgrCEx6trMLkB9t9vp8h5zZMhSXZNPVkszobP6R1F+QYLsGUf1pSyrwWfylr',
-             datetime.strptime('2019-09-10', "%Y-%m-%d"), '10400', 'THAI', 'L', 'B', 'THAI', 'null', 'null', 'null',
-             'null', '20200305', '6', 'Active', 'MS_CLASSIC', 'Non Mobile-SBN',
-             'B46N9jtEioK6Ac0vZEURM7fvOaGPqb+foexapARTs05QP.JnKsqGEgKFfr.5GOcg', 'Post-paid', '31900026039377', 'Y'],
-            ['1-119H236V', 'qsWp+NoBtWFArW56n2Cs5H+VFhfqeh1XVrn6QPmPqyBf6NdnMKCXyRy.zLAVQRYt',
-             datetime.strptime('2019-09-10', "%Y-%m-%d"), '50210', 'THAI', 'null', 'R', 'THAI',
-             '8C4919B95E3556E8E05400144FF8A004',
-             'P06_Greeting for HomeBROADBAND Package 100/100 Mbps 299 THB for 6 months', '31', 'F', '20200305', '6',
-             'Suspend - Debt', 'MS_CLASSIC', 'FBB', '.xb5IevL0w1tZfp8fJcoRYdgsonfE8DE7e0u0j0qSyVU7mjF7Z2PAAqoDuVW+Sh1',
-             'Post-paid', '31900028543640', 'Y'],
-            ['1-11AFELZ5', 'KYMuVn2JAoWgsGQLD+1MEqdplM3oJOEwQfZiiEX1nKdVgHYUSo9MsA77wEa8A9fv',
-             datetime.strptime('2019-09-11', "%Y-%m-%d"), '60120', 'THAI', 'null', 'R', 'THAI',
-             '82DDF21644274FBE05400144FF8A004', 'Greeting for Power4 MAXX II Package 50/20 Mbps 699 THB', '28', 'M',
-             '20200305', '6', 'Suspend - Debt', 'MS_CLASSIC', 'FBB',
-             'vM6UaE9QzLPbQMCsHIQspfwdIsy8zKZuJCbmdREiyO1MHbbHVzcqfA59TyRdKhX0', 'Post-paid', '31900028561606', 'Y'],
-            ['1-11BIYN1O', 'ZDDZDab.IJWnHY2jqGY7AlQAyZzyiyYvRc5NuCntsNgfBewi9BC829EOjeMOOoOV',
-             datetime.strptime('2019-09-12', "%Y-%m-%d"), '34190', 'THAI', 'null', 'R', 'THAI',
-             '90B127F66ED29A3E05400144FF8A004', 'MOU_HomeBROADBAND Package 50/20 Mbps 199 THB for 12 months', '22', 'F',
-             '20200305', '6', 'Active', 'MS_CLASSIC', 'FBB',
-             'Y4eg76CjIATrSXZcFOkm7IL4Aj.+6Vm7QBYtKYvCPf.rvRigSqDAcv2p7UsXlnnn', 'Post-paid', '31900028576429', 'Y'],
-            ['1-11DAY807', 'JIn5hc6xO8UI.LKpte8UAHmXRRWJPSNqdveJtszKledsrWDT5kSw2dK2KlPXQrg+',
-             datetime.strptime('2019-09-14', "%Y-%m-%d"), '10242', 'THAI', 'null', 'R', 'THAI',
-             '8DDCCB00942749C2E05400144FF8A004', 'CVM - HomePLUS Package 100/100 Mbps 399 THB for 12 months', '56', 'M',
-             '20200305', '6', 'Active', 'MS_CLASSIC', 'FBB',
-             'XjMOh9XFMQUfx8Uyb9DXn0jvro8YdBMn8KdrnXQzbN4Yt6ncEIQOmzkekhvVNxfA', 'Post-paid', '31900028542392', 'Y'],
 
         ]
         rdd3 = spark.sparkContext.parallelize(dummy_list_non_b)
@@ -243,9 +219,184 @@ class TestUnitProfile:
                                            var_project_context.catalog.load(
                                                'params:l1_customer_profile_union_daily_feature'))
 
-        l1_data.show()
-        l1_total_data = add_start_of_week_and_month(l1_data,var_project_context.catalog.load(
-                                               'params:customer_profile_partition_col'))
+        l1_total_data = add_start_of_week_and_month(l1_data, var_project_context.catalog.load(
+            'params:customer_profile_partition_col'))
 
         l1_total_data.show()
+        exit(2)
+
+
+
+    def test_l3_customer_profile_features(self, project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        spark.conf.set("spark.sql.parquet.binaryAsString", "true")
+
+        dummy_list_journey = [
+            ['SuTSF9eqzsYsFxBuVVu1Hm51gsKzmegs4So1P31PFcBPwHfDs710pU0Ms+HCI6PX',
+             datetime.strptime('2019-06-11', "%Y-%m-%d"), '1-YZ6CJ2F', 'Post-paid', '201909', 'Active', '1981-12',
+             'Female', datetime.strptime('2020-06-30', "%Y-%m-%d"), datetime.strptime('2019-06-30', "%Y-%m-%d"),
+             'Classic', '3G', 'RETAIL & IT CHAIN', 'NL', '4G_HotDeal MAXX_549 12GB UL SWifi', '11', 'RESIDENTIAL_MOC',
+             '1', 'Y', '31900027220037', '549'],
+            ['E3pLnJoxYAY5jc5Aq0c2.HAEIgbFHqR3181FhZ8ijaJJXj9Zq0bTaIpIidUHewA1',
+             datetime.strptime('2010-09-22', "%Y-%m-%d"), '1-7ASCIXN', 'Post-paid', '201909', 'Active', '1995-08',
+             'Male', 'null', 'null', 'Classic', '3G', 'null', 'CB', '3G_Buffet450Dis50_250 1Mbps UL SWifi', '22',
+             'RESIDENTIAL_MOC', '2', 'Y', '31800023504177', '342.56'],
+            ['SuTSF9eqzsYsFxBuVVu1Hm51gsKzmegs4So1P31PFcBPwHfDs710pU0Ms+HCI6PX',
+             datetime.strptime('2019-06-11', "%Y-%m-%d"), '1-YZ6CJ2F', 'Post-paid', '201908', 'Active', '1981-12',
+             'Female', datetime.strptime('2020-06-30', "%Y-%m-%d"), datetime.strptime('2019-06-30', "%Y-%m-%d"),
+             'Classic', '3G', 'RETAIL & IT CHAIN', 'NL', '4G_HotDeal MAXX_549 12GB UL SWifi', '11', 'RESIDENTIAL_MOC',
+             '1', 'Y', '31900027220037', '549'],
+            ['E3pLnJoxYAY5jc5Aq0c2.HAEIgbFHqR3181FhZ8ijaJJXj9Zq0bTaIpIidUHewA1',
+             datetime.strptime('2010-09-22', "%Y-%m-%d"), '1-7ASCIXN', 'Post-paid', '201908', 'Active', '1995-08',
+             'Male', 'null', 'null', 'Classic', '3G', 'null', 'CB', '3G_Buffet450Dis50_250 1Mbps UL SWifi', '22',
+             'RESIDENTIAL_MOC', '2', 'Y', '31800023504177', '381.47'],
+            ['8iiFuP0akRDCs280HV8ZDa65wn+s.tTWjGDWw81aO+wM5.sWuE.Qet9xLanx8kIH',
+             datetime.strptime('2019-11-13', "%Y-%m-%d"), '1-U0IH6-496', 'Pre-paid', '201912', 'SA', '1995-08', 'M',
+             'null', 'null', 'Classic', '3GPre-paid', 'null', 'CB', 'SIM2Fly 3G Non-Stop', '3G905', 'null', '2', 'Y',
+             'null', '0'],
+            ['E3pLnJoxYAY5jc5Aq0c2.HAEIgbFHqR3181FhZ8ijaJJXj9Zq0bTaIpIidUHewA1',
+             datetime.strptime('2010-09-22', "%Y-%m-%d"), '1-7ASCIXN', 'Post-paid', '201912', 'Active', '1995-08',
+             'Male', 'null', 'null', 'Classic', '3G', 'null', 'CB', '3G_Save 1099_DC549 UL40GB VDOCloudSWifi', '33',
+             'RESIDENTIAL_MOC', '2', 'Y', '31800023504177', '570.42'],
+            ['mU0rlxxrHIUalXUVlGF1ULzAOTcHyPxkt5bl4s87NMhHjNr.OJuO4iDk.ZLRKPMx',
+             datetime.strptime('2019-11-30', "%Y-%m-%d"), '1-U97N7-240', 'Pre-paid', '201912', 'SA', 'null', 'null',
+             'null', 'null', 'Classic', '3GPre-paid', 'null', 'NL', 'SUPER SOCIAL SIM V3', '3GA97', 'null', '1', 'Y',
+             'null', '46.06'],
+            ['8iiFuP0akRDCs280HV8ZDa65wn+s.tTWjGDWw81aO+wM5.sWuE.Qet9xLanx8kIH',
+             datetime.strptime('2019-11-13', "%Y-%m-%d"), '1-U0IH6-496', 'Pre-paid', '201911', 'SA', '1995-08', 'Male',
+             'null', 'null', 'Classic', '3GPre-paid', 'null', 'CB', 'SIM2Fly 3G Non-Stop', '3G905', 'null', '2', 'Y',
+             'null', '342.9'],
+            ['E3pLnJoxYAY5jc5Aq0c2.HAEIgbFHqR3181FhZ8ijaJJXj9Zq0bTaIpIidUHewA1',
+             datetime.strptime('2010-09-22', "%Y-%m-%d"), '1-7ASCIXN', 'Post-paid', '201911', 'Active', '1995-08',
+             'Male', 'null', 'null', 'Classic', '3G', 'null', 'CB', '3G_Buffet_450B 100Min 1Mbps UL SWifi', '44',
+             'RESIDENTIAL_MOC', '2', 'Y', '31800023504177', '684.09'],
+            ['mU0rlxxrHIUalXUVlGF1ULzAOTcHyPxkt5bl4s87NMhHjNr.OJuO4iDk.ZLRKPMx',
+             datetime.strptime('2019-11-30', "%Y-%m-%d"), 'NA_6198973790', 'Pre-paid', '201911', 'SA', 'null', 'null',
+             'null', 'null', 'Classic', '3GPre-paid', 'null', 'NL', 'SUPER SOCIAL SIM V3', '3GA97', 'null', '1', 'Y',
+             'null', '0'],
+            ['E3pLnJoxYAY5jc5Aq0c2.HAEIgbFHqR3181FhZ8ijaJJXj9Zq0bTaIpIidUHewA1',
+             datetime.strptime('2010-09-22', "%Y-%m-%d"), '1-7ASCIXN', 'Post-paid', '201910', 'Active', '1995-08',
+             'Male', 'null', 'null', 'Classic', '3G', 'null', 'CB', '3G_Buffet_450B 100Min 1Mbps UL SWifi', '44',
+             'RESIDENTIAL_MOC', '2', 'Y', '31800023504177', '383.1'],
+            ['mU0rlxxrHIUalXUVlGF1ULzAOTcHyPxkt5bl4s87NMhHjNr.OJuO4iDk.ZLRKPMx',
+             datetime.strptime('2019-11-30', "%Y-%m-%d"), '1-U97N7-240', 'Pre-paid', '202001', 'SA', 'null', 'null',
+             'null', 'null', 'Classic', '3GPre-paid', 'null', 'NL', 'SUPER SOCIAL SIM V3', '3GA97', 'null', '1', 'Y',
+             'null', '7.15'],
+            ['E3pLnJoxYAY5jc5Aq0c2.HAEIgbFHqR3181FhZ8ijaJJXj9Zq0bTaIpIidUHewA1',
+             datetime.strptime('2010-09-22', "%Y-%m-%d"), '1-7ASCIXN', 'Post-paid', '202001', 'Active', '1995-08',
+             'Male', 'null', 'null', 'Classic', '3G', 'null', 'CB', '3G_Save 1099_DC549 UL40GB VDOCloudSWifi', '33',
+             'RESIDENTIAL_MOC', '2', 'Y', '31800023504177', '549'],
+            ['8iiFuP0akRDCs280HV8ZDa65wn+s.tTWjGDWw81aO+wM5.sWuE.Qet9xLanx8kIH',
+             datetime.strptime('2019-11-13', "%Y-%m-%d"), '1-U0IH6-496', 'Pre-paid', '202001', 'SS', '1995-08', 'Male',
+             'null', 'null', 'Classic', '3GPre-paid', 'null', 'CB', 'SIM2Fly 3G Non-Stop', '3G905', 'null', '2', 'Y',
+             'null', '0'],
+            ['mU0rlxxrHIUalXUVlGF1ULzAOTcHyPxkt5bl4s87NMhHjNr.OJuO4iDk.ZLRKPMx',
+             datetime.strptime('2019-11-30', "%Y-%m-%d"), '1-U97N7-240', 'Pre-paid', '202001', 'SA', 'null', 'null',
+             'null', 'null', 'Classic', '3GPre-paid', 'null', 'NL', 'SUPER SOCIAL SIM V3', '3GA97', 'null', '1', 'Y',
+             'null', '7.15'],
+            ['8iiFuP0akRDCs280HV8ZDa65wn+s.tTWjGDWw81aO+wM5.sWuE.Qet9xLanx8kIH',
+             datetime.strptime('2019-11-13', "%Y-%m-%d"), '1-U0IH6-496', 'Pre-paid', '202001', 'SS', '1995-08', 'Male',
+             'null', 'null', 'Classic', '3GPre-paid', 'null', 'CB', 'SIM2Fly 3G Non-Stop', '3G905', 'null', '2', 'Y',
+             'null', '0'],
+            ['E3pLnJoxYAY5jc5Aq0c2.HAEIgbFHqR3181FhZ8ijaJJXj9Zq0bTaIpIidUHewA1',
+             datetime.strptime('2010-09-22', "%Y-%m-%d"), '1-7ASCIXN', 'Post-paid', '202001', 'Active', '1995-08',
+             'Male', 'null', 'null', 'Classic', '3G', 'null', 'CB', '3G_Save 1099_DC549 UL40GB VDOCloudSWifi', '33',
+             'RESIDENTIAL_MOC', '2', 'Y', '31800023504177', '549'],
+
+        ]
+        rdd4 = spark.sparkContext.parallelize(dummy_list_journey)
+        df_journey = spark.createDataFrame(rdd4,
+                                           schema=StructType([
+                                               StructField("access_method_num", StringType(), True),
+                                               StructField("register_date", DateType(), True),
+                                               StructField("crm_sub_id", StringType(), True),
+                                               StructField("charge_type", StringType(), True),
+                                               StructField("partition_month", StringType(), True),
+                                               StructField("mobile_status", StringType(), True),
+                                               StructField("birth_date", StringType(), True),
+                                               StructField("gender", StringType(), True),
+                                               StructField("contract_end_month", StringType(), True),
+                                               StructField("contract_start_month", StringType(), True),
+                                               StructField("mobile_segment", StringType(), True),
+                                               StructField("network_type", StringType(), True),
+                                               StructField("trade_cmd_channel_type", StringType(), True),
+                                               StructField("first_act_region", StringType(), True),
+                                               StructField("main_promo_name", StringType(), True),
+                                               StructField("main_promo_id", StringType(), True),
+                                               StructField("moc_cust_type", StringType(), True),
+                                               StructField("card_no", StringType(), True),
+                                               StructField("cust_active_this_month", StringType(), True),
+                                               StructField("ba_id", StringType(), True),
+                                               StructField("norms_net_revenue", StringType(), True),
+                                           ]))
+
+        # df_journey.show()
+
+        korn2 = node_from_config(df_journey, var_project_context.catalog.load(
+            'params:int_l3_customer_profile_basic_features'))
+
+        korn2.show()
+        korn3 = add_last_month_inactive_user(korn2, var_project_context.catalog.load(
+            'params:int_l3_customer_profile_basic_features'))
+
+    def test_l4_customer_profile_features(self, project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        spark.conf.set("spark.sql.parquet.binaryAsString", "true")
+        dummy_list_journey = [
+            ['SuTSF9eqzsYsFxBuVVu1Hm51gsKzmegs4So1P31PFcBPwHfDs710pU0Ms+HCI6PX',
+             datetime.strptime('2019-06-11', "%Y-%m-%d"), '1-YZ6CJ2F', 'Post-paid', '201909', 'Active', '549'],
+            ['E3pLnJoxYAY5jc5Aq0c2.HAEIgbFHqR3181FhZ8ijaJJXj9Zq0bTaIpIidUHewA1',
+             datetime.strptime('2010-09-22', "%Y-%m-%d"), '1-7ASCIXN', 'Post-paid', '201909', 'Active', '342.56'],
+            ['SuTSF9eqzsYsFxBuVVu1Hm51gsKzmegs4So1P31PFcBPwHfDs710pU0Ms+HCI6PX',
+             datetime.strptime('2019-06-11', "%Y-%m-%d"), '1-YZ6CJ2F', 'Post-paid', '201908', 'Active', '549'],
+            ['E3pLnJoxYAY5jc5Aq0c2.HAEIgbFHqR3181FhZ8ijaJJXj9Zq0bTaIpIidUHewA1',
+             datetime.strptime('2010-09-22', "%Y-%m-%d"), '1-7ASCIXN', 'Post-paid', '201908', 'Active', '381.47'],
+            ['8iiFuP0akRDCs280HV8ZDa65wn+s.tTWjGDWw81aO+wM5.sWuE.Qet9xLanx8kIH',
+             datetime.strptime('2019-11-13', "%Y-%m-%d"), '1-U0IH6-496', 'Pre-paid', '201912', 'SA', '0'],
+            ['E3pLnJoxYAY5jc5Aq0c2.HAEIgbFHqR3181FhZ8ijaJJXj9Zq0bTaIpIidUHewA1',
+             datetime.strptime('2010-09-22', "%Y-%m-%d"), '1-7ASCIXN', 'Post-paid', '201912', 'Active', '570.42'],
+            ['mU0rlxxrHIUalXUVlGF1ULzAOTcHyPxkt5bl4s87NMhHjNr.OJuO4iDk.ZLRKPMx',
+             datetime.strptime('2019-11-30', "%Y-%m-%d"), '1-U97N7-240', 'Pre-paid', '201912', 'SA', '46.06'],
+            ['8iiFuP0akRDCs280HV8ZDa65wn+s.tTWjGDWw81aO+wM5.sWuE.Qet9xLanx8kIH',
+             datetime.strptime('2019-11-13', "%Y-%m-%d"), '1-U0IH6-496', 'Pre-paid', '201911', 'SA', '342.9'],
+            ['E3pLnJoxYAY5jc5Aq0c2.HAEIgbFHqR3181FhZ8ijaJJXj9Zq0bTaIpIidUHewA1',
+             datetime.strptime('2010-09-22', "%Y-%m-%d"), '1-7ASCIXN', 'Post-paid', '201911', 'Active', '684.09'],
+            ['mU0rlxxrHIUalXUVlGF1ULzAOTcHyPxkt5bl4s87NMhHjNr.OJuO4iDk.ZLRKPMx',
+             datetime.strptime('2019-11-30', "%Y-%m-%d"), 'NA_6198973790', 'Pre-paid', '201911', 'SA', '0'],
+            ['E3pLnJoxYAY5jc5Aq0c2.HAEIgbFHqR3181FhZ8ijaJJXj9Zq0bTaIpIidUHewA1',
+             datetime.strptime('2010-09-22', "%Y-%m-%d"), '1-7ASCIXN', 'Post-paid', '201910', 'Active', '383.1'],
+            ['mU0rlxxrHIUalXUVlGF1ULzAOTcHyPxkt5bl4s87NMhHjNr.OJuO4iDk.ZLRKPMx',
+             datetime.strptime('2019-11-30', "%Y-%m-%d"), '1-U97N7-240', 'Pre-paid', '202001', 'SA', '7.15'],
+            ['E3pLnJoxYAY5jc5Aq0c2.HAEIgbFHqR3181FhZ8ijaJJXj9Zq0bTaIpIidUHewA1',
+             datetime.strptime('2010-09-22', "%Y-%m-%d"), '1-7ASCIXN', 'Post-paid', '202001', 'Active', '549'],
+            ['8iiFuP0akRDCs280HV8ZDa65wn+s.tTWjGDWw81aO+wM5.sWuE.Qet9xLanx8kIH',
+             datetime.strptime('2019-11-13', "%Y-%m-%d"), '1-U0IH6-496', 'Pre-paid', '202001', 'SS', '0'],
+            ['mU0rlxxrHIUalXUVlGF1ULzAOTcHyPxkt5bl4s87NMhHjNr.OJuO4iDk.ZLRKPMx',
+             datetime.strptime('2019-11-30', "%Y-%m-%d"), '1-U97N7-240', 'Pre-paid', '202001', 'SA', '7.15'],
+            ['8iiFuP0akRDCs280HV8ZDa65wn+s.tTWjGDWw81aO+wM5.sWuE.Qet9xLanx8kIH',
+             datetime.strptime('2019-11-13', "%Y-%m-%d"), '1-U0IH6-496', 'Pre-paid', '202001', 'SS', '0'],
+            ['E3pLnJoxYAY5jc5Aq0c2.HAEIgbFHqR3181FhZ8ijaJJXj9Zq0bTaIpIidUHewA1',
+             datetime.strptime('2010-09-22', "%Y-%m-%d"), '1-7ASCIXN', 'Post-paid', '202001', 'Active', '549'],
+        ]
+
+        rdd5 = spark.sparkContext.parallelize(dummy_list_journey)
+        df_journey = spark.createDataFrame(rdd5,
+                                           schema=StructType([
+                                               StructField("access_method_num", StringType(), True),
+                                               StructField("register_date", DateType(), True),
+                                               StructField("crm_sub_id", StringType(), True),
+                                               StructField("charge_type", StringType(), True),
+                                               StructField("partition_month", StringType(), True),
+                                               StructField("mobile_status", StringType(), True),
+                                               StructField("norms_net_revenue", StringType(), True),
+                                           ]))
+        korn4 = node_from_config(df_journey, var_project_context.catalog.load(
+            'params:l4_customer_profile_ltv_to_date'))
+
+        korn4.show()
+        print('555555555555555555555555555555555555555555555555555555555')
         exit(2)
