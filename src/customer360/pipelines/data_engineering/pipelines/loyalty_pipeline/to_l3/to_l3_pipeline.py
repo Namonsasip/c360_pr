@@ -31,13 +31,13 @@ def loyalty_to_l3_pipeline(**kwargs):
                 "l3_loyalty_number_of_points_spend"
             ),
 
-            # # Serenade class monthly
-            # node(
-            #     loyalty_serenade_class,
-            #     ["l0_loyalty_priv_customer_profile",
-            #      "l3_customer_profile_include_1mo_non_active",
-            #      "params:l3_loyalty_serenade_class_monthly"],
-            #     "l3_loyalty_serenade_class"
-            # ),
+            # Serenade class monthly
+            node(
+                loyalty_serenade_class,
+                ["l0_loyalty_priv_customer_profile",
+                 "l3_customer_profile_include_1mo_non_active",
+                 "params:l3_loyalty_serenade_class_monthly"],
+                "l3_loyalty_serenade_class"
+            ),
         ]
     )

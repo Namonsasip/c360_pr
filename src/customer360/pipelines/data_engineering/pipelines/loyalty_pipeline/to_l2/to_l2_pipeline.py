@@ -31,13 +31,13 @@ def loyalty_to_l2_pipeline(**kwargs):
                 "l2_loyalty_number_of_points_spend"
             ),
 
-            # Serenade class weekly
-            # node(
-            #     loyalty_serenade_class,
-            #     ["l0_loyalty_priv_customer_profile",
-            #      "l1_customer_profile_union_daily_feature",
-            #      "params:l2_loyalty_serenade_class_weekly"],
-            #     "l2_loyalty_serenade_class"
-            # ),
+            #Serenade class weekly
+            node(
+                loyalty_serenade_class,
+                ["l0_loyalty_priv_customer_profile",
+                 "l1_customer_profile_union_daily_feature",
+                 "params:l2_loyalty_serenade_class_weekly"],
+                "l2_loyalty_serenade_class"
+            ),
         ]
     )
