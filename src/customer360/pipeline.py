@@ -182,7 +182,7 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
 
 def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
     return {
-        "churn_ard_report": create_use_case_view_report_data(),
+        "__default__": create_use_case_view_report_data(),
     }
 
 

@@ -1,11 +1,12 @@
-from datetime import date
-from datetime import timedelta
+import re
 from datetime import datetime
+from datetime import timedelta
+from typing import Dict, Any, List
+
+from pyspark.sql import DataFrame
 from pyspark.sql import Window
 from pyspark.sql import functions as F
-from typing import Dict, Any, List
-from pyspark.sql import DataFrame
-import pandas as pd
+
 from src.customer360.utilities.spark_util import get_spark_session
 
 spark = get_spark_session()
@@ -55,7 +56,7 @@ def create_report_campaign_tracking_table(
         report_create_campaign_tracking_table_parameters["campaign_mapping_join_keys"],
         "inner",
     )
-    # Create interger response feature
+    # Create integer response feature
     df_cvm_campaign_tracking = df_cvm_campaign_tracking.withColumn(
         "response_integer", F.when(F.col("response") == "Y", 1).otherwise(0)
     )
@@ -218,7 +219,7 @@ def create_agg_data_for_report(
 def create_use_case_view_report(
     cvm_prepaid_customer_groups: DataFrame,
     campaign_response_input_table: DataFrame,
-    churn_ard_report_input_table: DataFrame,
+    reporting_kpis: DataFrame,
     day: str,
     aggregate_period: List[int],
 ) -> DataFrame:
@@ -230,7 +231,7 @@ def create_use_case_view_report(
     Args:
         cvm_prepaid_customer_groups: cvm sandbox target group
         campaign_response_input_table: campaign response table created on focus campaigns
-        churn_ard_report_input_table: ontop, topup, and revenue features
+        reporting_kpis: ontop, topup, and revenue features
         day: report running date
         aggregate_period: list of aggregate period for campaign data aggregatation
 
@@ -248,27 +249,19 @@ def create_use_case_view_report(
         "contact_date",
         "target_group",
     ]
-    df_distinct_customer_accept = (
-        campaign_response_input_table.groupBy(
-            ["usecase", "contact_date", "target_group", "analytic_id",]
-        )
-        .agg(F.max("response_integer").alias("customer_accepted"))
-        .groupBy(campaign_group_by)
-    ).agg(F.sum("customer_accepted").alias("number_of_distinct_accepted"))
 
     # Create campaign features
     expr = [
-        F.sum("response_integer").alias("number_of_campaign_accepted"),
-        F.countDistinct("analytic_id").alias("number_of_subscriber_targeted"),
-        F.count("*").alias("number_of_campaign_sent"),
+        F.sum("response_integer").alias("n_campaign_accepted"),
+        F.count("*").alias("n_campaign_sent"),
+        F.countDistinct("analytic_id").alias("n_subscriber_targeted"),
+        F.countDistinct(
+            F.when(F.col("response_integer") == 1, F.col("analytic_id"))
+        ).alias("n_subscriber_accepted"),
     ]
-    df_campaign_summary = campaign_response_input_table.groupBy(campaign_group_by).agg(
-        *expr
-    )
-
-    df_campaign_aggregate_input = df_campaign_summary.join(
-        df_distinct_customer_accept, campaign_group_by, "left",
-    )
+    df_campaign_aggregate_input = campaign_response_input_table.groupBy(
+        campaign_group_by
+    ).agg(*expr)
 
     # Aggregate window period campaign features
     df_campaign_aggregate_input = df_campaign_aggregate_input.withColumn(
@@ -300,47 +293,13 @@ def create_use_case_view_report(
         )
 
     # Group data into target group basis
-    columns_to_sum = [
-        "all_ppu_charge_1_day",
-        "all_ppu_charge_7_day",
-        "all_ppu_charge_30_day",
-        "total_revenue_1_day",
-        "total_revenue_7_day",
-        "total_revenue_30_day",
-        "top_up_value_1_day",
-        "top_up_value_7_day",
-        "top_up_value_30_day",
-        "total_number_ontop_purchase_1_day",
-        "total_number_ontop_purchase_7_day",
-        "total_number_ontop_purchase_30_day",
-        "ontop_data_total_net_tariff_1_day",
-        "ontop_data_total_net_tariff_7_day",
-        "ontop_data_total_net_tariff_30_day",
-        "ontop_voice_number_of_transaction_1_day",
-        "ontop_voice_number_of_transaction_7_day",
-        "ontop_voice_number_of_transaction_30_day",
-        "ontop_data_number_of_transaction_1_day",
-        "ontop_data_number_of_transaction_7_day",
-        "ontop_voice_total_net_tariff_1_day",
-        "ontop_voice_total_net_tariff_7_day",
-        "ontop_voice_total_net_tariff_30_day",
-    ]
+    columns_to_sum = [c for c in reporting_kpis.columns if re.search(r"_[0-9]+_day$", c)]
 
-    exprs = {x: "sum" for x in columns_to_sum}
-    df_usage_features = churn_ard_report_input_table.groupBy(["target_group"]).agg(
-        exprs
+
+    exprs = [F.sum(x).alias(x) for x in columns_to_sum]
+    df_usage_features = reporting_kpis.groupBy(["target_group"]).agg(
+        *exprs
     )
-
-    # Nasty code to remove aggregate function TODO find another way to aggregate with reasonable renaming method
-    for column in df_usage_features.columns:
-        if column == "target_group":
-            continue
-        start_index = column.find("(")
-        end_index = column.find(")")
-        if start_index and end_index:
-            df_usage_features = df_usage_features.withColumnRenamed(
-                column, column[start_index + 1 : end_index]
-            )
 
     # Join Number of Freeze customer with Campaign Feature
     df_use_case_view_report = current_size.join(
