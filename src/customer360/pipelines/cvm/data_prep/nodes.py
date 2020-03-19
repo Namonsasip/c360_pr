@@ -297,7 +297,7 @@ def add_volatility_scores(
     reve = setup_names(reve)
     users = setup_names(users)
 
-    reve_cols_to_pick = parameters["key_columns"] + "rev_arpu_total_revenue"
+    reve_cols_to_pick = parameters["key_columns"] + ["rev_arpu_total_revenue"]
     reve = reve.select(reve_cols_to_pick)
     reve_users_window = Window.partitionBy("subscription_identifier")
     reve = (
