@@ -147,5 +147,5 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         "predict": create_predictions(None),
         "predict_dev": create_predictions("dev"),
         "predict_sample": create_predictions("sample"),
-        "volatility": create_volatility,
+        "volatility": create_volatility(),
     }
