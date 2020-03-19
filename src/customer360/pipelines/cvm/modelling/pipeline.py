@@ -29,7 +29,7 @@
 from kedro.pipeline import Pipeline, node
 
 from customer360.pipelines.cvm.src.utils.get_suffix import get_suffix
-from src.customer360.pipelines.cvm.modelling.nodes import (
+from customer360.pipelines.cvm.modelling.nodes import (
     train_rf,
     predict_rf,
 )

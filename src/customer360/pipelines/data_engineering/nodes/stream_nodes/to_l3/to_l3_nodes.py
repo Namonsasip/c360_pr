@@ -1,4 +1,4 @@
-from src.customer360.utilities.spark_util import get_spark_session
+from customer360.utilities.spark_util import get_spark_session
 from pathlib import Path
 
 
