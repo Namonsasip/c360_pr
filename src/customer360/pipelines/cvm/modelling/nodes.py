@@ -68,7 +68,7 @@ def train_rf(df: DataFrame, parameters: Dict[str, Any]) -> RandomForestClassifie
         rf_fitted = rf.fit(X, y)
         models[target_chosen] = rf_fitted
 
-    # return models
+    return models
 
 
 def create_shap_for_rf(
