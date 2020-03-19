@@ -69,8 +69,13 @@ l1_usage_outgoing_call_relation_sum_daily:
     usg_outgoing_night_time_number_calls: "sum(case when service_type IN ('VOICE')
                                             AND hour_id IN (1, 2, 3, 4, 5, 6) THEN total_successful_call else 0 end)"
 
+    usg_outgoing_night_time_calls_duration: "sum(case when service_type IN ('VOICE')
+                                            AND hour_id IN (1, 2, 3, 4, 5, 6) THEN total_durations else 0 end)"
+
     usg_outgoing_morning_time_number_calls: "sum(case when service_type IN ('VOICE')
                                          AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_successful_call else 0 end)"
+    usg_outgoing_morning_time_calls_duration: "sum(case when service_type IN ('VOICE')
+                                         AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
 
     usg_outgoing_afternoon_number_calls: "sum(case when service_type IN ('VOICE')
                                          AND hour_id IN (13, 14, 15, 16, 17, 18) THEN total_successful_call else 0 end)"
@@ -339,8 +344,14 @@ l1_usage_incoming_call_relation_sum_daily:
     usg_incoming_night_time_call: "sum(case when service_type IN ('VOICE')
                                        AND hour_id IN (1, 2, 3, 4, 5, 6) THEN total_successful_call else 0 end)"
 
+    usg_incoming_night_time_call_duration: "sum(case when service_type IN ('VOICE')
+                                       AND hour_id IN (1, 2, 3, 4, 5, 6) THEN total_durations else 0 end)"
+
     usg_incoming_morning_time_call: "sum(case when service_type IN ('VOICE')
                                        AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_successful_call else 0 end)"
+
+    usg_incoming_morning_time_call_duration: "sum(case when service_type IN ('VOICE')
+                                       AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
 
     usg_incoming_afternoon_time_call: "sum(case when service_type IN ('VOICE')
                                        AND hour_id IN (13, 14, 15, 16, 17, 18) THEN total_successful_call else 0 end)"
