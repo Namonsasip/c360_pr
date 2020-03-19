@@ -1,0 +1,9 @@
+l4_complaints_call_to_competitor_features:
+  partition_by: ["caller_no"]
+  feature_list:
+    sum: ["call_to_dtac_count",
+          "call_to_dtac_duration_sum",
+          "call_to_true_count",
+          "call_to_true_duration_sum"]
+  read_from: "l2"
+

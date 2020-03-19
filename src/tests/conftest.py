@@ -40,7 +40,7 @@ from pathlib import Path
 import pytest, os
 
 from customer360.run import ProjectContext
-from src.customer360.utilities.spark_util import get_spark_session
+from customer360.utilities.spark_util import get_spark_session
 
 conf = os.getenv("CONF", None)
 
