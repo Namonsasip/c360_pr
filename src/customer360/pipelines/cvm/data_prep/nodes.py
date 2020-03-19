@@ -301,7 +301,7 @@ def add_volatility_scores(
     reve = reve.select(reve_cols_to_pick)
     reve_users_window = Window.partitionBy("subscription_identifier")
     reve = (
-        reve.withColumn("reve_history", func.count().over(reve_users_window))
+        reve.withColumn("reve_history", func.count("key_date").over(reve_users_window))
         .filter("reve_history >= {}".format(vol_length))
         .drop("reve_history")
     )
