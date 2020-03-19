@@ -16,20 +16,20 @@ def loyalty_to_l3_pipeline(**kwargs):
             ),
 
             # Number of rewards for each category
-            node(
-                node_from_config,
-                ["l1_loyalty_number_of_rewards",
-                 "params:l3_loyalty_number_of_rewards_monthly"],
-                "l3_loyalty_number_of_rewards"
-            ),
-
-            # Number of points spend for each category
-            node(
-                node_from_config,
-                ["l1_loyalty_number_of_points_spend",
-                 "params:l3_loyalty_number_of_points_spend_monthly"],
-                "l3_loyalty_number_of_points_spend"
-            ),
+            # node(
+            #     node_from_config,
+            #     ["l1_loyalty_number_of_rewards",
+            #      "params:l3_loyalty_number_of_rewards_monthly"],
+            #     "l3_loyalty_number_of_rewards"
+            # ),
+            #
+            # # Number of points spend for each category
+            # node(
+            #     node_from_config,
+            #     ["l1_loyalty_number_of_points_spend",
+            #      "params:l3_loyalty_number_of_points_spend_monthly"],
+            #     "l3_loyalty_number_of_points_spend"
+            # ),
 
             # Serenade class monthly
             node(
