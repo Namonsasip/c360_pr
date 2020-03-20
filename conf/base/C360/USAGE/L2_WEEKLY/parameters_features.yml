@@ -3,6 +3,10 @@ l2_usage_postpaid_prepaid_daily:
   type: "week"
   feature_list:
     sum: [
+      'usg_outgoing_night_time_calls_duration',
+      'usg_outgoing_morning_time_calls_duration',
+      'usg_incoming_night_time_call_duration',
+      'usg_incoming_morning_time_call_duration',
       'usg_incoming_afternoon_number_sms',
       'usg_incoming_afternoon_time_call',
       'usg_incoming_ais_local_calls_duration',
@@ -211,6 +215,10 @@ l2_usage_postpaid_prepaid_daily:
       "usg_vas_total_number_of_call",
     ]
     max: [
+      'usg_outgoing_night_time_calls_duration',
+      'usg_outgoing_morning_time_calls_duration',
+      'usg_incoming_night_time_call_duration',
+      'usg_incoming_morning_time_call_duration',
       'usg_last_sms_date',
       'usg_incoming_last_sms_date',
       'usg_outgoing_roaming_last_sms_date',
@@ -312,6 +320,10 @@ l2_usage_postpaid_prepaid_daily:
       "usg_vas_last_action_dt"
     ]
     min: [
+      'usg_outgoing_night_time_calls_duration',
+      'usg_outgoing_morning_time_calls_duration',
+      'usg_incoming_night_time_call_duration',
+      'usg_incoming_morning_time_call_duration',
       'usg_incoming_afternoon_number_sms',
       'usg_incoming_afternoon_time_call',
       'usg_incoming_ais_local_calls_duration',
@@ -401,6 +413,10 @@ l2_usage_postpaid_prepaid_daily:
       "usg_vas_total_number_of_call"
     ]
     avg: [
+      'usg_outgoing_night_time_calls_duration',
+      'usg_outgoing_morning_time_calls_duration',
+      'usg_incoming_night_time_call_duration',
+      'usg_incoming_morning_time_call_duration',
       'usg_incoming_ais_local_calls_duration',
       'usg_incoming_ais_local_number_calls',
       'usg_incoming_dtac_call_duration',
