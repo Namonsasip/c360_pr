@@ -28,6 +28,8 @@
 
 from pyspark.sql import DataFrame
 
+from customer360.pipelines.cvm.src.utils.list_operations import list_intersection
+
 
 def setup_names(df: DataFrame,) -> DataFrame:
     """ Setup standard, project-wide column names for a given DataFrame.
@@ -38,9 +40,18 @@ def setup_names(df: DataFrame,) -> DataFrame:
         DataFrame with changed column names.
     """
 
-    df = df.withColumnRenamed("partition_month", "key_date")
-    df = df.withColumnRenamed("event_partition_date", "key_date")
-    df = df.withColumnRenamed("start_of_month", "key_date")
+    key_date_columns = [
+        "partition_month",
+        "event_partition_date",
+        "start_of_month",
+    ]
+
+    if len(list_intersection(df.columns, key_date_columns)) > 1:
+        raise Exception("More then one date column found.")
+
+    for key_date_column in key_date_columns:
+        df = df.withColumnRenamed(key_date_column, "key_date")
+
     df = df.withColumnRenamed(
         "max_usg_last_action_date_daily_last_ninety_day", "last_activity_date"
     )
