@@ -137,4 +137,6 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         "cvm_setup_training_data_sample": create_cvm_prepare_inputs_samples("sample")
                                           + create_cvm_targets("sample")
                                           + create_cvm_training_data("sample"),
+        "cvm_preprocess_sample": create_cvm_preprocessing("sample"),
+        "cvm_train_model_sample": create_train_model("sample"),
     }
