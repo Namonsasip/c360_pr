@@ -26,3 +26,9 @@ distinct_child_response_aggregated:
   filepath: /mnt/customer360-blob-output/databases/nba_dev/distinct_child_response_aggregated
   save_args:
     mode: "overwrite"
+
+response_percentage_report:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: nba_dev
+    table: response_percentage_report
+    write_mode: overwrite

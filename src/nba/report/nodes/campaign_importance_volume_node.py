@@ -15,7 +15,7 @@ def create_l0_campaign_history_master_active(input_campaign_master:DataFrame, ou
     return input_campaign_master
 
 
-def create_l1_campaign_distinct_contact_response(child_response_full:DataFrame,
+def create_l5_campaign_distinct_contact_response(child_response_full:DataFrame,
                                                  child_response_params:Dict[str, Any]) -> DataFrame:
     child_response = child_response_full.select(child_response_params["source_cols"])
 
@@ -28,6 +28,7 @@ def create_l1_campaign_distinct_contact_response(child_response_full:DataFrame,
     #               'contact_trans_m1','contact_trans_m2','contact_sub_m0','contact_sub_m1','contact_sub_m2',
     #               'response_m0','response_m1','response_m2']
     # #agg_cols: ['contact_last_3mth','contact_sub_last_3mth','response_last_3mth']
+    # Improvement: would be nice if I can iterate this
     child_response_agg = child_response\
         .withColumn(child_response_params["agg_cols"][0], F.lit(F.col(child_response_params["source_cols"][5]) +
                                                F.col(child_response_params["source_cols"][6]) +
@@ -43,3 +44,24 @@ def create_l1_campaign_distinct_contact_response(child_response_full:DataFrame,
     output_child_response_agg = child_response_agg.select(output_child_response_agg_cols)
     print("==========================SUCCESS=========================")
     return output_child_response_agg
+
+
+def create_l5_response_percentage_report(distinct_child_response_agg:DataFrame,
+                                         campaign_master:DataFrame,
+                                         report_param:Dict[str, Any]) -> DataFrame:
+    stmt = "TRUNCATE TABLE " + report_param["schema"] + "." + report_param["table"]
+    print(stmt)
+    try:
+        spark.sql(stmt)
+        print("Truncated the old table: "+report_param["schema"] + "." + report_param["table"])
+    except:
+        print("No existing table: "+report_param["schema"] + "." + report_param["table"])
+    campaign_mst_exclude_information = campaign_master.where('offer_type <> "information" and month_id = "2020-02-29"')
+    campaign_agg_no_info = distinct_child_response_agg.alias('agg')\
+        .join(campaign_mst_exclude_information.alias('mst'),
+              F.col('agg.'+report_param['join_cols']) == F.col('mst.'+report_param['join_cols']), 'left')\
+        .select("agg.*")
+    response_rate_df = campaign_agg_no_info\
+        .withColumn(report_param['response_rate_cols'], F.lit(F.col('response_last_3mth') / F.col('contact_last_3mth') * 100))\
+        .fillna(0, subset=report_param['response_rate_cols'])
+    return response_rate_df

@@ -1,11 +1,17 @@
 create_l0_campaign_history_master_active_param:
-    schema: "default"
-    table: "campaign_history_master_active"
+  schema: "default"
+  table: "campaign_history_master_active"
 
-create_l1_campaign_distinct_contact_response_param:
-    schema: "nba_dev"
-    table: "distinct_child_response_aggregated"
-    source_cols: ['campaign_category','child_code','campaign_type','tools','tracking_flag','contact_trans_m0',
-                  'contact_trans_m1','contact_trans_m2','contact_sub_m0','contact_sub_m1','contact_sub_m2',
-                  'response_m0','response_m1','response_m2']
-    agg_cols: ['contact_last_3mth','contact_sub_last_3mth','response_last_3mth']
+create_l5_campaign_distinct_contact_response_param:
+  schema: "nba_dev"
+  table: "distinct_child_response_aggregated"
+  source_cols: ['campaign_category','child_code','campaign_type','tools','tracking_flag','contact_trans_m0',
+                'contact_trans_m1','contact_trans_m2','contact_sub_m0','contact_sub_m1','contact_sub_m2',
+                'response_m0','response_m1','response_m2']
+  agg_cols: ['contact_last_3mth','contact_sub_last_3mth','response_last_3mth']
+
+create_l5_response_percentage_report_param:
+  schema: "nba_dev"
+  table: "response_percentage_report"
+  join_cols: "child_code"
+  response_rate_cols: "response_rate_percentage"

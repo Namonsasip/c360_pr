@@ -27,14 +27,25 @@ def campaign_importance_volume(run_type: str = None) -> Pipeline:
                 tags=["l0_camp_mst"],
             ),
             node(
-                create_l1_campaign_distinct_contact_response,
+                create_l5_campaign_distinct_contact_response,
                 [
                     "distinct_child_code_contact_response",
-                    "params:create_l1_campaign_distinct_contact_response_param"
+                    "params:create_l5_campaign_distinct_contact_response_param"
                 ],
                 "distinct_child_response_aggregated",
-                name="create_l1_campaign_distinct_contact_response",
-                tags=["l1_cmp_res_agg"],
-            )
+                name="create_l5_campaign_distinct_contact_response",
+                tags=["l5_cmp_res_agg"],
+            ),
+            node(
+                create_l5_response_percentage_report,
+                [
+                    "distinct_child_response_aggregated",
+                    "campaign_history_master_active",
+                    "params:create_l5_response_percentage_report_param"
+                ],
+                "response_percentage_report",
+                name="create_l5_response_percentage_report",
+                tags=["l5_res_perc_report"],
+            ),
         ], tags=[]
     )

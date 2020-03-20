@@ -103,6 +103,6 @@ l0_campaign_history_master_active:
 l1_campaign_history_master_active:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "delta"
-  filepath: /mnt/customer360-blob-output/databases/nba_dev/campaign_history_master_active2/
+  filepath: /mnt/customer360-blob-output/databases/nba_dev/campaign_history_master_active/
   save_args:
     mode: "overwrite"
