@@ -130,7 +130,7 @@ def billing_to_l3_pipeline(**kwargs):
                 "l3_billing_and_payments_monthly_last_top_up_channel"
             ),
 
-            # Monthly missed bills feature post-paid
+            #Monthly missed bills feature post-paid
             node(
                 billing_data_joined,
                 ["billing_stat_hist_monthly_data",
