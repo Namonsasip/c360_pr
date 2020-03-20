@@ -168,7 +168,7 @@ def subs_date_join_important_only(
     """ Left join all tables with important variables by given keys.
 
     Args:
-        important_param: List of important volumns.
+        important_param: List of important columns.
         parameters: parameters defined in parameters.yml.
         *args: Tables to join.
     Returns:
