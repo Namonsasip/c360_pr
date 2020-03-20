@@ -8,10 +8,9 @@ from src.customer360.utilities.spark_util import get_spark_session
 print("yay")
 spark = get_spark_session()
 
-def create_table_delta(distinct_response:DataFrame) -> DataFrame:
-    df_agg = distinct_response
-    return df_agg
 
-def read_table(df_agg:DataFrame):
-    df_agg.show()
-    return 1
+def create_l0_campaign_history_master_active(input_campaign_master:DataFrame) -> DataFrame:
+    return input_campaign_master
+
+def read_table(campaign_master2:DataFrame):
+    campaign_master2.limit(1).show()

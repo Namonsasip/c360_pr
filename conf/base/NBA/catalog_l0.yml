@@ -2,18 +2,12 @@ campaign_history_master_active:
     type: datasets.spark_hive_dataset.SparkHiveDataSet
     database: default
     table: campaign_history_master_active
-    write_mode: insert
+    write_mode: overwrite
 
 distinct_child_code_contact_response:
     type: datasets.spark_hive_dataset.SparkHiveDataSet
     database: default
     table: distinct_child_code_contact_response
-    write_mode: insert
-
-distinct_child_response_aggregated:
-    type: datasets.spark_hive_dataset.SparkHiveDataSet
-    database: nba_dev
-    table: distinct_child_response_aggregated
     write_mode: insert
 
 campaign_not_tracking_response:

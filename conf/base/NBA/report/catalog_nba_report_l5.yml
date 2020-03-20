@@ -19,3 +19,9 @@ use_case_view_report_table:
   filepath: /mnt/customer360-blob-data/C360/NBA/use_case_view_report_table/
   save_args:
     mode: "overwrite"
+
+distinct_child_response_aggregated:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: nba_dev
+    table: distinct_child_response_aggregated
+    write_mode: overwrite

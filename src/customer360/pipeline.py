@@ -31,6 +31,12 @@ from typing import Dict
 
 from kedro.pipeline import Pipeline
 
+
+from typing import Dict
+
+from kedro.pipeline import Pipeline
+
+from nba.report.pipelines.campaign_importance_volume_pipeline import campaign_importance_volume
 from nba.report.pipelines.report_pipeline import create_use_case_view_report_data
 from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l1.to_l1_pipeline import (
     billing_to_l1_pipeline,
@@ -211,7 +217,8 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
 
 def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
     return {
-        "__default__": create_use_case_view_report_data(),
+        "__default__": campaign_importance_volume()
+                        +create_use_case_view_report_data()
     }
 
 
