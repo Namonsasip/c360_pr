@@ -32,7 +32,8 @@ from typing import Dict
 from kedro.pipeline import Pipeline
 
 from .pipelines.cvm.data_prep.pipeline import create_cvm_prepare_inputs_samples, \
-    create_cvm_prepare_data, create_volatility
+    create_cvm_prepare_data, create_volatility, create_cvm_targets, \
+    create_cvm_training_data
 from .pipelines.cvm.modelling.pipeline import create_train_model, create_predictions
 from .pipelines.cvm.preprocessing.pipeline import create_cvm_preprocessing
 from .pipelines.data_engineering.pipelines.usage_pipeline.to_l1 import \
@@ -133,5 +134,7 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         'campaign_to_l2_pipeline': campaign_to_l2_pipeline(),
         'campaign_to_l4_pipeline': campaign_to_l4_pipeline(),
         # "de": data_engineering_pipeline,
-        "cvm_setup_training_data_sample": create_cvm_prepare_inputs_samples() + create_cvm_targets() + create_cvm_training_data(),
+        "cvm_setup_training_data_sample": create_cvm_prepare_inputs_samples()
+                                          + create_cvm_targets()
+                                          + create_cvm_training_data(),
     }
