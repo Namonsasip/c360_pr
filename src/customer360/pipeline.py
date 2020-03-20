@@ -32,7 +32,6 @@ from typing import Dict
 from kedro.pipeline import Pipeline
 
 from .pipelines.cvm.data_prep.pipeline import create_cvm_prepare_inputs_samples, \
-    create_cvm_prepare_data, create_volatility, create_cvm_targets, \
     create_cvm_training_data
 from .pipelines.cvm.modelling.pipeline import create_train_model, create_predictions
 from .pipelines.cvm.preprocessing.pipeline import create_cvm_preprocessing
