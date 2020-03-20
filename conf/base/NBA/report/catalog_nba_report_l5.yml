@@ -21,7 +21,8 @@ use_case_view_report_table:
     mode: "overwrite"
 
 distinct_child_response_aggregated:
-    type: datasets.spark_hive_dataset.SparkHiveDataSet
-    database: nba_dev
-    table: distinct_child_response_aggregated
-    write_mode: overwrite
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "delta"
+  filepath: /mnt/customer360-blob-output/databases/nba_dev/distinct_child_response_aggregated
+  save_args:
+    mode: "overwrite"
