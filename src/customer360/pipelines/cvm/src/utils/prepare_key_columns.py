@@ -31,8 +31,8 @@ from pyspark.sql import functions as func
 from customer360.pipelines.cvm.src.utils.list_operations import list_intersection
 
 
-def setup_names(df: DataFrame,) -> DataFrame:
-    """ Setup standard, project-wide column names for a given DataFrame.
+def prepare_key_columns(df: DataFrame,) -> DataFrame:
+    """ Prepare key columns - setup names and modify if necessary.
 
     Args:
         df: given DataFrame.

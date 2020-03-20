@@ -28,7 +28,7 @@
 
 from pyspark.sql import DataFrame
 
-from customer360.pipelines.cvm.src.utils.setup_names import setup_names
+from customer360.pipelines.cvm.src.utils.prepare_key_columns import prepare_key_columns
 
 
 def get_latest_date(df: DataFrame, maximum_date: str = None) -> str:
@@ -40,7 +40,7 @@ def get_latest_date(df: DataFrame, maximum_date: str = None) -> str:
             is returned.
     """
 
-    df = setup_names(df)
+    df = prepare_key_columns(df)
     if "key_date" not in df.columns:
         raise Exception("Date column not found.")
 
@@ -57,6 +57,6 @@ def filter_latest_date(df: DataFrame) -> DataFrame:
         df:  Input DataFrame.
     """
 
-    df = setup_names(df)
+    df = prepare_key_columns(df)
     latest_date = get_latest_date(df)
     return df.filter("key_date == '{}'".format(latest_date))

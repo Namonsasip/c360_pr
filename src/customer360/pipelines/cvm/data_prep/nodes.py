@@ -37,7 +37,7 @@ from customer360.pipelines.cvm.src.targets.churn_targets import (
     get_churn_targets,
     filter_usage,
 )
-from customer360.pipelines.cvm.src.utils.setup_names import setup_names
+from customer360.pipelines.cvm.src.utils.prepare_key_columns import prepare_key_columns
 
 
 def create_l5_cvm_one_day_users_table(
@@ -93,7 +93,7 @@ def add_ard_targets(
     """
 
     local_parameters = parameters["targets"]["ard"]
-    users = setup_names(users)
+    users = prepare_key_columns(users)
     ard_target_tables = [
         get_ard_targets(users, reve, local_parameters[targets], chosen_date)
         for targets in local_parameters
@@ -122,8 +122,8 @@ def add_churn_targets(
     local_parameters = parameters["targets"]["churn"]
     chosen_date = parameters["chosen_date"]
 
-    users = setup_names(users)
-    usage = setup_names(usage)
+    users = prepare_key_columns(users)
+    usage = prepare_key_columns(usage)
     usage = filter_usage(users, usage, parameters)
     churn_target_tables = [
         get_churn_targets(users, usage, local_parameters[targets], chosen_date)
@@ -177,7 +177,7 @@ def subs_date_join_important_only(
 
     keys = parameters["key_columns"]
     segments = parameters["segment_columns"]
-    tables = [setup_names(tab) for tab in args]
+    tables = [prepare_key_columns(tab) for tab in args]
 
     def filter_column(df, filter_list):
         cols_to_drop = [
@@ -207,7 +207,7 @@ def subs_date_join(parameters: Dict[str, Any], *args: DataFrame,) -> DataFrame:
     """
 
     keys = parameters["key_columns"]
-    tables = [setup_names(tab) for tab in args]
+    tables = [prepare_key_columns(tab) for tab in args]
 
     def join_on(df1, df2):
         cols_to_drop = [col_name for col_name in df1.columns if col_name in df2.columns]
@@ -294,8 +294,8 @@ def add_volatility_scores(
 
     vol_length = parameters["volatility_length"]
 
-    reve = setup_names(reve)
-    users = setup_names(users)
+    reve = prepare_key_columns(reve)
+    users = prepare_key_columns(users)
 
     reve_cols_to_pick = parameters["key_columns"] + ["norms_net_revenue"]
     reve = reve.select(reve_cols_to_pick)

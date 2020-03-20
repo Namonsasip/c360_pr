@@ -32,7 +32,7 @@ from pyspark.sql import functions as func
 from typing import Any, Dict
 import datetime
 
-from customer360.pipelines.cvm.src.utils.setup_names import setup_names
+from customer360.pipelines.cvm.src.utils.prepare_key_columns import prepare_key_columns
 
 
 def get_churn_targets(
@@ -127,7 +127,7 @@ def filter_usage(
         Usage table with one column and less rows.
     """
 
-    users = setup_names(users)
+    users = prepare_key_columns(users)
 
     # filter columns
     cols_to_pick = [
@@ -147,7 +147,7 @@ def filter_usage(
     )
 
     # filter users
-    users = setup_names(users)
+    users = prepare_key_columns(users)
     users_subs_ids = users.select("subscription_identifier").distinct()
     usage = users_subs_ids.join(usage, "subscription_identifier", "inner")
 
