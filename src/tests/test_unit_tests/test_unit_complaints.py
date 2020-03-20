@@ -225,4 +225,3 @@ class TestUnitComplaints:
                     "access_method_num = 'zHD1URYLeFsOkFfNfGp3.2YgQdMDEKlrRBlbDC6.veRVgoBXFnNiWIYw52Ht4BG5' and event_partition_date='2019-11-01'") \
                 .select("record_count").collect()[0][0] == 2
 
- 
