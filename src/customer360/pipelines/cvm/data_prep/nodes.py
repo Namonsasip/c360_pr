@@ -37,6 +37,10 @@ from customer360.pipelines.cvm.src.targets.churn_targets import (
     get_churn_targets,
     filter_usage,
 )
+from customer360.pipelines.cvm.src.utils.incremental_manipulation import (
+    filter_users,
+    filter_latest_date,
+)
 from customer360.pipelines.cvm.src.utils.prepare_key_columns import prepare_key_columns
 
 
@@ -218,27 +222,27 @@ def subs_date_join(parameters: Dict[str, Any], *args: DataFrame,) -> DataFrame:
     return functools.reduce(join_on, tables)
 
 
-def create_sample_dataset(df: DataFrame, subscription_id_suffix: str) -> DataFrame:
+def create_sample_dataset(
+    df: DataFrame, sampling_params: Dict[str, Any], subscription_id_suffix: str
+) -> DataFrame:
     """ Create dev sample of given table. Dev sample is super small sample. Takes only
     users with certain subscription_identifier suffix.
 
     Args:
-        subscription_id_suffix: suffix to filter subscription_identifier with.
         df: given table.
+        sampling_params: parameters of sampling procedure.
+        subscription_id_suffix: suffix to filter subscription_identifier with.
     Returns:
         Dev sample of table.
     """
 
-    suffix_length = len(subscription_id_suffix)
-    df = df.withColumn(
-        "subscription_identifier_last_letter",
-        df.subscription_identifier.substr(-suffix_length, suffix_length),
-    )
-    subs_filter = "subscription_identifier_last_letter == '{}'".format(
-        subscription_id_suffix
-    )
+    sampling_stages = {
+        "filter_users": lambda df: filter_users(df, subscription_id_suffix),
+        "take_last_date": filter_latest_date,
+    }
 
-    df = df.filter(subs_filter).drop("subscription_identifier_last_letter")
+    for sampling_param in sampling_params:
+        df = sampling_stages[sampling_param](df)
 
     return df
 

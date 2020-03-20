@@ -2,6 +2,11 @@
 chosen_date: '2019-10-01'
 subscription_id_suffix_dev: 'AB'
 subscription_id_suffix_sample: 'A'
+training_sampling:
+  - filter_users
+scoring_sampling:
+  - filter_users
+  - take_last_date
 
 # List of targets
 targets:
@@ -72,3 +77,4 @@ macrosegments:
 
 # volatility
 volatility_length: 5
+

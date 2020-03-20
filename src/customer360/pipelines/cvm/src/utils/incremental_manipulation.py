@@ -27,8 +27,9 @@
 # limitations under the License.
 
 from pyspark.sql import DataFrame
-
+from datetime import date
 from customer360.pipelines.cvm.src.utils.prepare_key_columns import prepare_key_columns
+from pyspark.sql import functions as func
 
 
 def get_latest_date(df: DataFrame, maximum_date: str = None) -> str:
@@ -59,4 +60,39 @@ def filter_latest_date(df: DataFrame) -> DataFrame:
 
     df = prepare_key_columns(df)
     latest_date = get_latest_date(df)
-    return df.filter("key_date == '{}'".format(latest_date))
+    df.filter("key_date == '{}'".format(latest_date))
+
+    today = date.today().strftime("%Y-%m-%d")
+    df = df.withColumn("key_date", func.lit(today))
+
+    return df
+
+
+def filter_users(df: DataFrame, subscription_id_suffix: str) -> DataFrame:
+    """ Create dev sample of given table basing on users' subscription_identifiers.
+
+    Args:
+        subscription_id_suffix: suffix to filter subscription_identifier with.
+        df: given table.
+    Returns:
+        Sample of table.
+    """
+
+    if subscription_id_suffix is None:
+        return df
+
+    if "subscription_identifier" not in df.columns:
+        raise Exception("Column subscription_identifier not found.")
+
+    suffix_length = len(subscription_id_suffix)
+    df = df.withColumn(
+        "subscription_identifier_last_letter",
+        df.subscription_identifier.substr(-suffix_length, suffix_length),
+    )
+    subs_filter = "subscription_identifier_last_letter == '{}'".format(
+        subscription_id_suffix
+    )
+
+    df = df.filter(subs_filter).drop("subscription_identifier_last_letter")
+
+    return df

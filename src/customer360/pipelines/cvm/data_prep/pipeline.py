@@ -71,6 +71,7 @@ def create_cvm_prepare_inputs_samples(sample_type: str) -> Pipeline:
                 create_sample_dataset,
                 [
                     "l3_customer_profile_include_1mo_non_active",
+                    "params:training_sampling",
                     "params:subscription_id_suffix" + suffix,
                 ],
                 "l3_customer_profile_include_1mo_non_active" + suffix,
@@ -80,6 +81,7 @@ def create_cvm_prepare_inputs_samples(sample_type: str) -> Pipeline:
                 create_sample_dataset,
                 [
                     "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
+                    "params:training_sampling",
                     "params:subscription_id_suffix" + suffix,
                 ],
                 "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly" + suffix,
@@ -90,6 +92,7 @@ def create_cvm_prepare_inputs_samples(sample_type: str) -> Pipeline:
                 create_sample_dataset,
                 [
                     "l4_usage_prepaid_postpaid_daily_features",
+                    "params:training_sampling",
                     "params:subscription_id_suffix" + suffix,
                 ],
                 "l4_usage_prepaid_postpaid_daily_features" + suffix,
@@ -99,6 +102,7 @@ def create_cvm_prepare_inputs_samples(sample_type: str) -> Pipeline:
                 create_sample_dataset,
                 [
                     "l4_daily_feature_topup_and_volume",
+                    "params:training_sampling",
                     "params:subscription_id_suffix" + suffix,
                 ],
                 "l4_daily_feature_topup_and_volume" + suffix,
