@@ -38,3 +38,11 @@ l2_device_number_of_phone_updates_weekly:
   save_args:
     partitionBy: ["start_of_week"]
     mode: "overwrite"
+
+l2_device_summary_with_config_weekly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DEVICE/l2_features/l2_device_summary_with_config_weekly/
+  save_args:
+    partitionBy: ["start_of_week"]
+    mode: "overwrite"
