@@ -27,7 +27,7 @@
 # limitations under the License.
 
 from pyspark.sql import DataFrame
-
+from pyspark.sql import functions as func
 from customer360.pipelines.cvm.src.utils.list_operations import list_intersection
 
 
@@ -48,6 +48,9 @@ def setup_names(df: DataFrame,) -> DataFrame:
 
     if len(list_intersection(df.columns, key_date_columns)) > 1:
         raise Exception("More then one date column found.")
+
+    if "start_of_month" in df.columns:
+        df = df.withColumn("start_of_month", func.add_months(df.start_of_month, 1))
 
     for key_date_column in key_date_columns:
         df = df.withColumnRenamed(key_date_column, "key_date")
