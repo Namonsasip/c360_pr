@@ -34,6 +34,7 @@ def get_suffix(sample_type: str = None) -> str:
         sample_type: can be None (for full dataset),
             "dev" for small training sample,
             "sample" for medium training sample,
+            "scoring" for full scoring sample,
             "scoring_dev" for small scoring sample,
             "scoring_sample" for medium scoring sample.
     """
@@ -47,3 +48,20 @@ def get_suffix(sample_type: str = None) -> str:
         suffix = ""
 
     return suffix
+
+
+def is_scoring(sample_type: str = None) -> bool:
+    """ Returns True if sample type contains scoring.
+
+    Args:
+        sample_type: can be None (for full dataset),
+            "dev" for small training sample,
+            "sample" for medium training sample,
+            "scoring" for full scoring sample,
+            "scoring_dev" for small scoring sample,
+            "scoring_sample" for medium scoring sample.
+    """
+
+    if sample_type is None:
+        return False
+    return "scoring" in sample_type
