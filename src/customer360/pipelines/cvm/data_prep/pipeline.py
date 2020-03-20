@@ -149,7 +149,7 @@ def create_cvm_targets(sample_type: str = None):
     )
 
 
-def create_cvm_prepare_data(sample_type: str = None):
+def create_cvm_training_data(sample_type: str = None):
     """ Creates pipeline preparing data. Can create data pipeline for full dataset or
     given sample_type.
 
