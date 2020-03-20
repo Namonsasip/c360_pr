@@ -1,6 +1,7 @@
 import pyspark.sql.functions as f
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
+from pyspark.sql.functions import expr
 from customer360.utilities.config_parser import node_from_config
 from kedro.context.context import load_context
 from pathlib import Path
@@ -222,6 +223,13 @@ def billing_last_topup_channel_monthly(input_df, customer_df, recharge_type, sql
         .where("charge_type = 'Pre-paid' and cust_active_this_month = 'Y'")
     return_df = process_last_topup_channel(recharge_data_with_topup_channel, customer_df, sql,
                                            "l3_billing_and_payments_monthly_last_top_up_channel")
+
+
+    return_df = return_df.withColumn("rn", expr(
+        "row_number() over(partition by start_of_month,access_method_num,register_date order by register_date desc)"))
+
+    return_df = return_df.filter("rn = 1").drop("rn")
+
     return return_df
 
 
@@ -317,5 +325,10 @@ def recharge_data_with_customer_profile_joined(customer_prof, recharge_data):
     output_df = output_df.drop(recharge_data.access_method_num) \
         .drop(recharge_data.register_date) \
         .drop(recharge_data.start_of_month)
+
+    output_df = output_df.withColumn("rn", expr(
+        "row_number() over(partition by start_of_month,access_method_num,register_date order by register_date desc)"))
+
+    output_df = output_df.filter("rn = 1").drop("rn")
 
     return output_df

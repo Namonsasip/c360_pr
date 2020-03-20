@@ -84,7 +84,7 @@ def billing_to_l2_pipeline(**kwargs):
                 "l2_billing_and_payments_weekly_last_top_up_channel"
             ),
 
-            # Weekly popular top up day pre-apid
+            # # Weekly popular top up day pre-apid
             node(
                 node_from_config,
                 ["l1_billing_and_payments_daily_popular_topup_day",
