@@ -64,6 +64,25 @@ def create_cvm_preprocessing(sample_type: str = None) -> Pipeline:
                 "l5_cvm_one_day_test_preprocessed" + suffix,
                 name="create_l5_cvm_one_day_test_preprocessed" + suffix,
             ),
+        ]
+    )
+
+
+def create_cvm_feature_extraction(sample_type: str = None) -> Pipeline:
+    """ Creates pipeline for feature extraction.
+
+     Args:
+         sample_type: sample type to use. Dev sample for "dev", Sample for "sample",
+          full dataset for None (default).
+
+     Returns:
+         Kedro pipeline.
+     """
+
+    suffix = get_suffix(sample_type)
+
+    return Pipeline(
+        [
             node(
                 feature_selection_all_target,
                 ["l5_cvm_one_day_train_preprocessed" + suffix, "parameters"],
