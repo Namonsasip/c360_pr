@@ -209,18 +209,52 @@ def create_cvm_training_data(sample_type: str = None):
     )
 
 
-def create_volatility():
+def create_cvm_scoring_data(sample_type: str = None):
+    """ Creates pipeline preparing data. Can create data pipeline for full dataset or
+    given sample_type.
+
+    Args:
+        sample_type: sample type to use. Dev sample for "dev", Sample for "sample", full
+        dataset for None (default).
+
+    Returns:
+        Kedro pipeline.
+    """
+
+    suffix = get_suffix(sample_type)
+
     return Pipeline(
         [
             node(
+                subs_date_join_important_only,
+                [
+                    "important_columns",
+                    "parameters",
+                    "l5_cvm_one_day_users_table" + suffix,
+                    "l3_customer_profile_include_1mo_non_active" + suffix,
+                    "l4_daily_feature_topup_and_volume" + suffix,
+                    "l4_usage_prepaid_postpaid_daily_features" + suffix,
+                    "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly" + suffix,
+                ],
+                "l5_cvm_features" + suffix,
+                name="create_l5_cvm_features" + suffix,
+            ),
+            node(
+                add_macrosegments,
+                "l5_cvm_features" + suffix,
+                "l5_cvm_selected_features_one_day_joined_macrosegments" + suffix,
+                name="create_l5_cvm_selected_features_one_day_joined_macrosegments"
+                + suffix,
+            ),
+            node(
                 add_volatility_scores,
                 [
-                    "l5_cvm_one_day_predictions_sample",
+                    "l5_cvm_selected_features_one_day_joined_macrosegments" + suffix,
                     "l3_customer_profile_include_1mo_non_active",
                     "parameters",
                 ],
-                "l5_cvm_volatility",
-                name="create_l5_cvm_volatility",
+                "l5_cvm_volatility" + suffix,
+                name="create_l5_cvm_volatility" + suffix,
             ),
         ]
     )
