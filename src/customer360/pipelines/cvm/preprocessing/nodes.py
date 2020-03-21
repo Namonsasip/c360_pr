@@ -32,6 +32,8 @@ from typing import Dict, Any, List
 from pyspark.ml.feature import StringIndexer, Imputer
 from pyspark.ml import Pipeline, PipelineModel
 from pyspark.sql.functions import col
+
+from customer360.pipelines.cvm.src.utils.list_operations import list_intersection
 from customer360.pipelines.cvm.src.utils.prepare_key_columns import prepare_key_columns
 from src.customer360.pipelines.cvm.src.utils.classify_columns import classify_columns
 from src.customer360.pipelines.cvm.src.feature_selection import feature_selection
@@ -110,6 +112,7 @@ def pipeline1_transform(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
         + columns_cats["key"]
         + columns_cats["segment"]
     )
+    cols_to_pick = list_intersection(cols_to_pick, df.columns)
     df = df.select(cols_to_pick)
     columns_cats = classify_columns(df, parameters)
 
