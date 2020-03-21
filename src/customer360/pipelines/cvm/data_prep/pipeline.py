@@ -42,6 +42,7 @@ from customer360.pipelines.cvm.data_prep.nodes import (
     create_sample_dataset,
     add_macrosegments,
     add_volatility_scores,
+    subs_date_join,
 )
 from customer360.pipelines.cvm.src.utils.get_suffix import get_suffix, is_scoring
 
@@ -226,9 +227,8 @@ def create_cvm_scoring_data(sample_type: str = None):
     return Pipeline(
         [
             node(
-                subs_date_join_important_only,
+                subs_date_join,
                 [
-                    "important_columns",
                     "parameters",
                     "l5_cvm_one_day_users_table" + suffix,
                     "l3_customer_profile_include_1mo_non_active" + suffix,
