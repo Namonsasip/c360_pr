@@ -149,7 +149,6 @@ def device_summary_with_configuration(hs_summary, hs_configs):
                                   (hs_summary.handset_brand_code == hs_configs.hs_brand_code) &
                                   (hs_summary.handset_model_code == hs_configs.hs_model_code) &
                                   (hs_summary.start_of_week == hs_configs.start_of_week), "inner") \
-        .drop(hs_configs.start_of_week) \
-        .drop(hs_configs.hs_support_lte_1800)
+                                  .drop(hs_configs.start_of_week) \
 
     return joined_data
