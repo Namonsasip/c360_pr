@@ -2,6 +2,8 @@
 chosen_date: '2019-10-01'
 subscription_id_suffix_dev: 'AB'
 subscription_id_suffix_sample: 'A'
+subscription_id_suffix_scoring_dev: 'AB'
+subscription_id_suffix_scoring_sample: 'A'
 training_sampling:
   - filter_users
 scoring_sampling:
