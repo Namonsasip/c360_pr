@@ -295,17 +295,20 @@ def add_volatility_scores(
     """Create volatility score for given set of users.
 
     Args:
-        users: DataFrame with users, subscription_identifier column will be used.
+        users: DataFrame with users, subscription_identifier column will be
+        used.
+        Rest will be kept.
         reve: Monthly revenue data.
         parameters: parameters defined in parameters.yml.
     """
 
     vol_length = parameters["volatility_length"]
+    reve_col = "norms_net_revenue"
 
     reve = prepare_key_columns(reve)
     users = prepare_key_columns(users)
 
-    reve_cols_to_pick = parameters["key_columns"] + ["norms_net_revenue"]
+    reve_cols_to_pick = parameters["key_columns"] + [reve_col]
     reve = reve.select(reve_cols_to_pick)
     reve_users_window = Window.partitionBy("subscription_identifier")
     reve = (
@@ -320,11 +323,9 @@ def add_volatility_scores(
         "month_id <= {}".format(vol_length)
     )
     volatility = reve.groupby("subscription_identifier").agg(
-        func.stddev(func.log(1 + func.col("norms_net_revenue"))).alias("volatility")
+        func.stddev(func.log(1 + func.col(reve_col))).alias("volatility")
     )
 
-    users = users.select("subscription_identifier").join(
-        volatility, "subscription_identifier", "left"
-    )
+    users = users.join(volatility, "subscription_identifier", "left")
 
     return users
