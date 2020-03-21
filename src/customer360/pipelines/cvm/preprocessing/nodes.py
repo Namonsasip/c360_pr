@@ -59,6 +59,7 @@ def pipeline1_fit(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
         + columns_cats["key"]
         + columns_cats["segment"]
     )
+    cols_to_pick = list_intersection(cols_to_pick, df.columns)
     df = df.select(cols_to_pick)
     columns_cats = classify_columns(df, parameters)
 
