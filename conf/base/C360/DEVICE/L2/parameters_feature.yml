@@ -85,8 +85,7 @@ l2_device_summary_with_config:
                           then 1 else 0 end)"
     device_mid_range: "max(case when coalesce(launchprice ,saleprice) >= 4500 and coalesce(launchprice ,saleprice) <= 14500
                           then 1 else 0 end)"
-    device_low_range: "max(case when coalesce(launchprice ,saleprice) < 4500
-                          then 1 else 0 end)"
+    device_low_range: "max(case when coalesce(launchprice ,saleprice) < 4500 then 1 else 0 end)"
     device_smartphone: "max(case when handset_type in ('SmartPhone','smartphone','Smart Phone','Smart phone','Smartphone')
                           then 1 else 0 end)"
     device_standardphone: "max(case when handset_type in ('StandardPhone','standardphone','Standard Phone','Standard phone','Standardphone')
