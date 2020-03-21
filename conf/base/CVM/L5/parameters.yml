@@ -77,6 +77,10 @@ macrosegments:
     - zero_arpu
     - positive_arpu
 
+must_have_features:
+  - subscriber_tenure
+  - sum_rev_arpu_total_revenue_monthly_last_month
+
 # volatility
 volatility_length: 5
 
