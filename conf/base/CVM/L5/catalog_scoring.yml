@@ -84,3 +84,7 @@ l5_cvm_selected_features_one_day_joined_scoring:
 l5_cvm_selected_features_one_day_joined_macrosegments_scoring:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_selected_features_one_day_joined_macrosegments_scoring/
+
+l5_cvm_volatility_scoring:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_volatility_scoring/
