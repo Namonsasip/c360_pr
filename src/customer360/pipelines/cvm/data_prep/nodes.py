@@ -57,7 +57,8 @@ def create_l5_cvm_one_day_users_table(
     """
 
     date_chosen = parameters["chosen_date"]
-    users = profile.filter("partition_month == '{}'".format(date_chosen))
+    profile = prepare_key_columns(profile)
+    users = profile.filter("key_date == '{}'".format(date_chosen))
     users = users.filter(
         "charge_type == 'Pre-paid' \
          AND subscription_status == 'SA' \
@@ -75,9 +76,8 @@ def create_l5_cvm_one_day_users_table(
         "package_id", "current_package_id"
     )
     users = users.join(main_packs, ["current_package_id"], "inner")
-    columns_to_pick = ["partition_month", "subscription_identifier"]
+    columns_to_pick = ["key_date", "subscription_identifier"]
     users = users.select(columns_to_pick)
-    users.withColumnRenamed("partition_month", "key_date")
 
     return users.distinct()
 

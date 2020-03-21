@@ -64,7 +64,7 @@ def create_cvm_prepare_inputs_samples(sample_type: str) -> Pipeline:
             node(
                 create_l5_cvm_one_day_users_table,
                 [
-                    "l3_customer_profile_include_1mo_non_active" + suffix,
+                    "l3_customer_profile_include_1mo_non_active",
                     "l0_product_product_pru_m_package_master_group",
                     "parameters",
                 ],
