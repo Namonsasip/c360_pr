@@ -134,6 +134,11 @@ def device_summary_with_configuration(hs_summary, hs_configs):
     hs_configs = hs_configs.withColumn("start_of_week",
                                        f.to_date(f.date_trunc('week', f.to_date(f.col("partition_date"), 'yyyyMMdd'))))
 
+    hs_config_sel = ["start_of_week", "hs_brand_code", "hs_model_code", "month_id", "os"
+                     "launchprice", "saleprice", "gprs_handset_support", "hsdpa", "google_map", "video_call"]
+
+    hs_configs = hs_configs.select(hs_config_sel)
+
     partition = Window.partitionBy(["start_of_week", "hs_brand_code", "hs_model_code"]).orderBy(F.col("month_id").desc())
 
     # removing duplicates within a week
@@ -144,8 +149,6 @@ def device_summary_with_configuration(hs_summary, hs_configs):
                                   (hs_summary.handset_brand_code == hs_configs.hs_brand_code) &
                                   (hs_summary.handset_model_code == hs_configs.hs_model_code) &
                                   (hs_summary.start_of_week == hs_configs.start_of_week), "inner") \
-        .drop(hs_summary.handset_type) \
-        .drop(hs_configs.dual_sim) \
         .drop(hs_configs.start_of_week) \
         .drop(hs_configs.hs_support_lte_1800)
 
