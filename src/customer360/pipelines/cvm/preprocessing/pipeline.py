@@ -86,7 +86,7 @@ def create_cvm_preprocessing_scoring(sample_type: str = None) -> Pipeline:
         [
             node(
                 pipeline1_fit,
-                ["create_l5_cvm_volatility" + suffix, "parameters"],
+                ["l5_cvm_volatility" + suffix, "parameters"],
                 "l5_cvm_one_day_test_preprocessed" + suffix,
                 name="create_l5_cvm_one_day_preprocessed" + suffix,
             ),
