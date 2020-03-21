@@ -40,7 +40,7 @@ from customer360.pipelines.cvm.src.utils.setup_names import setup_names
 
 
 def create_l5_cvm_one_day_users_table(
-    profile: DataFrame, main_packs: DataFrame, parameters: Dict[str, Any]
+        profile: DataFrame, main_packs: DataFrame, parameters: Dict[str, Any]
 ) -> DataFrame:
     """Create l5_cvm_one_day_users_table - one day table of users used for
     training and validating.
@@ -78,7 +78,7 @@ def create_l5_cvm_one_day_users_table(
 
 
 def add_ard_targets(
-    users: DataFrame, reve: DataFrame, parameters: Dict[str, Any], chosen_date: str
+        users: DataFrame, reve: DataFrame, parameters: Dict[str, Any], chosen_date: str
 ) -> DataFrame:
     """ Create table with ARPU drop targets.
 
@@ -105,7 +105,7 @@ def add_ard_targets(
 
 
 def add_churn_targets(
-    users: DataFrame, usage: DataFrame, parameters: Dict[str, Any]
+        users: DataFrame, usage: DataFrame, parameters: Dict[str, Any]
 ) -> DataFrame:
     """ Create table with churn targets.
 
@@ -136,7 +136,7 @@ def add_churn_targets(
 
 
 def create_l5_cvm_one_day_train_test(
-    targets_features: DataFrame, parameters: Dict[str, Any],
+        targets_features: DataFrame, parameters: Dict[str, Any],
 ) -> DataFrame:
     """Adds train-test column to features-targets table. Train share defined in
     parameters.
@@ -162,7 +162,7 @@ def create_l5_cvm_one_day_train_test(
 
 
 def subs_date_join_important_only(
-    important_param: List[Any], parameters: Dict[str, Any], *args: DataFrame,
+        important_param: List[Any], parameters: Dict[str, Any], *args: DataFrame,
 ) -> DataFrame:
     """ Left join all tables with important variables by given keys.
 
@@ -194,7 +194,7 @@ def subs_date_join_important_only(
     return functools.reduce(join_on, tables)
 
 
-def subs_date_join(parameters: Dict[str, Any], *args: DataFrame,) -> DataFrame:
+def subs_date_join(parameters: Dict[str, Any], *args: DataFrame, ) -> DataFrame:
     """ Left join all tables by given keys.
 
     Args:
@@ -237,5 +237,37 @@ def create_sample_dataset(df: DataFrame, subscription_id_suffix: str) -> DataFra
     )
 
     df = df.filter(subs_filter).drop("subscription_identifier_last_letter")
+
+    return df
+
+
+def add_microsegments(df: DataFrame) -> DataFrame:
+    """Add microsegments to the given table.
+
+    Args:
+        df: given DataFrame
+
+    Returns:
+        given DataFrame with microsegments column
+
+    """
+    df = df.withColumn("arpu_segment",
+                       func.when(func.col("sum_rev_arpu_total_revenue_monthly_last_month") > 300, "H").when(
+                           func.col("sum_rev_arpu_total_revenue_monthly_last_month") > 100, "M").when(
+                           func.col("sum_rev_arpu_total_revenue_monthly_last_month") > 1, "L").otherwise("Z"))
+    df = df.withColumn("vou_segment",
+                       func.when(func.col("sum_usg_outgoing_data_volume_daily_last_thirty_day") > 30720, "V").when(
+                           func.col("sum_usg_outgoing_data_volume_daily_last_thirty_day") > 5120, "H").when(
+                           func.col("sum_usg_outgoing_data_volume_daily_last_thirty_day") > 500, "M").when(
+                           func.col("sum_usg_outgoing_data_volume_daily_last_thirty_day") > 1, "L").otherwise("Z"))
+    df = df.withColumn("mou_segment",
+                       func.when(func.col("sum_usg_outgoing_total_call_duration_daily_last_thirty_day") > 300,
+                                 "V").when(func.col("sum_usg_outgoing_total_call_duration_daily_last_thirty_day") > 120,
+                                           "H").when(
+                           func.col("sum_usg_outgoing_total_call_duration_daily_last_thirty_day") > 30, "M").when(
+                           func.col("sum_usg_outgoing_total_call_duration_daily_last_thirty_day") > 1, "L").otherwise(
+                           "Z"))
+    df = df.withColumn("microsegments", func.concat(func.col("arpu_segment"), func.col("vou_segment"), func.col("mou_segment")))
+    df = df.drop("arpu_segment", "vou_segment", "mou_segment")
 
     return df
