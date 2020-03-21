@@ -7,8 +7,8 @@ subscription_id_suffix_scoring_sample: 'A'
 training_sampling:
   - filter_users
 scoring_sampling:
-  - filter_users
   - take_last_date
+  - filter_users
 
 # List of targets
 targets:
