@@ -68,6 +68,32 @@ def create_cvm_preprocessing(sample_type: str = None) -> Pipeline:
     )
 
 
+def create_cvm_preprocessing_scoring(sample_type: str = None) -> Pipeline:
+    """ Creates pipeline preprocessing data for scoring purposes.
+    Can create data pipeline for full dataset or given sample_type.
+
+     Args:
+         sample_type: sample type to use. Dev sample for "dev", Sample for "sample",
+          full dataset for None (default).
+
+     Returns:
+         Kedro pipeline.
+     """
+
+    suffix = get_suffix(sample_type)
+
+    return Pipeline(
+        [
+            node(
+                pipeline1_fit,
+                ["create_l5_cvm_volatility" + suffix, "parameters"],
+                "l5_cvm_one_day_test_preprocessed" + suffix,
+                name="create_l5_cvm_one_day_preprocessed" + suffix,
+            ),
+        ]
+    )
+
+
 def create_cvm_feature_extraction(sample_type: str = None) -> Pipeline:
     """ Creates pipeline for feature extraction.
 
