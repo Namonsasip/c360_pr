@@ -75,27 +75,27 @@ l2_device_summary_with_config:
   where_clause: ""
   feature_list:
     device_number_of_phone_updates: "count(distinct handset_imei)"
-    device_most_used_handset_samsung: "sum(case when handset_brand_name='SAMSUNG' then 1 else 0 end)"
-    device_most_used_handset_huawei: "sum(case when handset_brand_name='HUAWEI' then 1 else 0 end)"
-    device_most_used_handset_oppo: "sum(case when handset_brand_name='OPPO' then 1 else 0 end)"
-    device_most_used_handset_apple: "sum(case when handset_brand_name='APPLE' then 1 else 0 end)"
-    device_most_used_handset_xiaomi: "sum(case when handset_brand_name='XIAOMI' then 1 else 0 end)"
-    device_most_used_handset_others: "sum(case when handset_brand_name not in ('SAMSUNG','HUAWEI','OPPO','APPLE','XIAOMI') then 1 else 0 end)"
+    device_most_used_handset_samsung: "sum(case when lower(handset_brand_name)='samsung' then 1 else 0 end)"
+    device_most_used_handset_huawei: "sum(case when lower(handset_brand_name)='huwaei' then 1 else 0 end)"
+    device_most_used_handset_oppo: "sum(case when lower(handset_brand_name)='oppo' then 1 else 0 end)"
+    device_most_used_handset_apple: "sum(case when lower(handset_brand_name)='apple' then 1 else 0 end)"
+    device_most_used_handset_xiaomi: "sum(case when lower(handset_brand_name)='xiaomi' then 1 else 0 end)"
+    device_most_used_handset_others: "sum(case when lower(handset_brand_name) not in ('samsung','huwaei','oppo','apple','xiaomi') then 1 else 0 end)"
     device_high_range: "max(case when coalesce(launchprice ,saleprice) > 14500
                           then 1 else 0 end)"
     device_mid_range: "max(case when coalesce(launchprice ,saleprice) >= 4500 and coalesce(launchprice ,saleprice) <= 14500
                           then 1 else 0 end)"
     device_low_range: "max(case when coalesce(launchprice ,saleprice) < 4500 then 1 else 0 end)"
-    device_smartphone: "max(case when handset_type in ('SmartPhone','smartphone','Smart Phone','Smart phone','Smartphone')
+    device_smartphone: "max(case when handset_type in ('smartphone','smartphone','smart phone','smart phone','smartphone')
                           then 1 else 0 end)"
-    device_standardphone: "max(case when handset_type in ('StandardPhone','standardphone','Standard Phone','Standard phone','Standardphone')
+    device_standardphone: "max(case when lower(handset_type) in ('standardphone','standardphone','standard phone','standard phone','standardphone')
                             then 1 else 0 end)"
-    device_legacyphone: "max(case when handset_type in ('LegacyPhone','legacyphone','Legacy Phone','Legacy phone','Legacyphone')
+    device_legacyphone: "max(case when lower(handset_type) in ('legacyphone','legacyphone','legacy phone','legacy phone','legacyphone')
                             then 1 else 0 end)"
-    device_netbook: "max(case when handset_type in ('NetBook','netbook','Net Book','Net book','Netbook')
+    device_netbook: "max(case when lower(handset_type) in ('netbook','netbook','net book','net book','netbook')
                             then 1 else 0 end)"
-    device_tablet: "max(case when handset_type in ('Tablet','tablet') then 1 else 0 end)"
-    device_phablet: "max(case when handset_type in ('Phablet','phablet') then 1 else 0 end)"
+    device_tablet: "max(case when lower(handset_type) in ('tablet','tablet') then 1 else 0 end)"
+    device_phablet: "max(case when lower(handset_type) in ('phablet','phablet') then 1 else 0 end)"
     device_supports_gprs: "max(case when gprs_handset_support = 'Y' then 1 else 0 end)"
     device_supports_umts: "max(case when handset_support_3g_2100_yn = 'Y' then 1 else 0 end)"
     device_supports_hsdpa: "max(case when hsdpa = 'Y' then 1 else 0 end)"
@@ -108,19 +108,19 @@ l2_device_summary_with_config:
     device_supports_video_call: "max(case when video_call = 'Y' then 1 else 0 end)"
     device_supports_google_map: "max(case when google_map = 'Y' then 1 else 0 end)"
     device_supports_wds: "max(case when handset_wds_flag = 'Y' then 1 else 0 end)"
-    device_module: "max(case when handset_type in ('Module','module') then 1 else 0 end)"
-    device_handheld: "max(case when handset_type in ('Handheld','handheld') then 1 else 0 end)"
-    device_vehicle: "max(case when handset_type in ('Vehicle','vehicle') then 1 else 0 end)"
-    device_air_card_or_dongle: "max(case when handset_type in ('AirCard/Dongle') then 1 else 0 end)"
-    device_modem: "max(case when handset_type in ('Modem','modem') then 1 else 0 end)"
-    device_wirelessrouter: "max(case when handset_type in ('WirelessRouter','wirelessrouter','Wireless Router','Wireless router',
-                         'Wirelessrouter') then 1 else 0 end)"
-    device_smartwatch: "max(case when handset_type in ('SmartWatch','smartwatch','Smart Watch','Smart watch','Smartwatch')
+    device_module: "max(case when lower(handset_type) in ('module','module') then 1 else 0 end)"
+    device_handheld: "max(case when lower(handset_type) in ('handheld','handheld') then 1 else 0 end)"
+    device_vehicle: "max(case when lower(handset_type) in ('vehicle','vehicle') then 1 else 0 end)"
+    device_air_card_or_dongle: "max(case when lower(handset_type) in ('aircard/dongle') then 1 else 0 end)"
+    device_modem: "max(case when lower(handset_type) in ('modem','modem') then 1 else 0 end)"
+    device_wirelessrouter: "max(case when lower(handset_type) in ('wirelessrouter','wirelessrouter','wireless router','wireless router',
+                         'wirelessrouter') then 1 else 0 end)"
+    device_smartwatch: "max(case when lower(handset_type) in ('smartwatch','smartwatch','smart watch','smart watch','smartwatch')
                           then 1 else 0 end)"
-    device_watchphone: "max(case when handset_type in ('WatchPhone','watchphone','Watch Phone','Watch phone','Watchphone')
+    device_watchphone: "max(case when lower(handset_type) in ('watchphone','watchphone','watch phone','watch phone','watchphone')
                           then 1 else 0 end)"
-    device_iotvehicle: "max(case when handset_type in ('IOT-VEHICLE','Iot-Vehicle') then 1 else 0 end)"
-    device_unknown: "max(case when handset_type is null then 1 else 0 end)"
+    device_iotvehicle: "max(case when lower(handset_type) in ('iot-vehicle','iot-vehicle') then 1 else 0 end)"
+    device_unknown: "max(case when lower(handset_type) is null then 1 else 0 end)"
   granularity: "subscription_identifier,start_of_week"
 
 #l2_device_number_of_phone_updates:
