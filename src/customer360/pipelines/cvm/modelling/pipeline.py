@@ -83,7 +83,7 @@ def create_predictions(
             node(
                 predict_rf,
                 [
-                    "l5_cvm_one_day_train_preprocessed" + suffix,
+                    "l5_cvm_one_day_preprocessed" + suffix,
                     "random_forest" + training_suffix,
                     "parameters",
                 ],
