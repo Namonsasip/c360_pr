@@ -55,3 +55,7 @@ def merge_with_customer_postpaid_df(source_df: DataFrame,
     final_df = final_df.drop_duplicates(subset=["subscription_identifier", "start_of_month"])
 
     return final_df
+
+
+def copy_df(df: DataFrame):
+    return df
