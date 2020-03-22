@@ -13,6 +13,7 @@ def generate_l1_layer(device_df: DataFrame
     :param customer_df:
     :return:
     """
+    device_df = device_df.filter(f.col("access_method_num").isNotNull())
     device_df = device_df.withColumn("event_partition_date", f.to_date('date_id')) \
         .withColumn("start_of_week", f.to_date(f.date_trunc('week', "date_id"))) \
         .withColumnRenamed("mobile_no", "access_method_num")
@@ -27,4 +28,6 @@ def generate_l1_layer(device_df: DataFrame
                 "start_of_week"]
 
     final_df = device_df.join(customer_df.select(sel_cols), join_cols)
+    final_df = final_df.filter(f.col("subscription_identifier").isNotNull()).distinct()
+
     return final_df
