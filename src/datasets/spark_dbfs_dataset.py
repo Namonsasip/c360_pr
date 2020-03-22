@@ -191,7 +191,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         self._load_args = load_args if load_args is not None else {}
         self._save_args = save_args if save_args is not None else {}
 
-        self._increment_flag = load_args.get("increment_flag", None) if load_args is not None else None
+        self._increment_flag_load = load_args.get("increment_flag", None) if load_args is not None else None
+        self._increment_flag_save = save_args.get("increment_flag", None) if save_args is not None else None
         self._read_layer = load_args.get("read_layer", None) if load_args is not None else None
         self._target_layer = load_args.get("target_layer", None) if load_args is not None else None
         self._lookback = load_args.get("lookback", None) if load_args is not None else None
@@ -514,7 +515,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
     def _load(self) -> DataFrame:
         print("Entering load function")
-        if self._increment_flag is not None and self._increment_flag.lower() == "yes":
+        if self._increment_flag_load is not None and self._increment_flag_load.lower() == "yes":
             print("Entering incremental mode")
             return self._get_incremental_data()
 
@@ -526,7 +527,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
     def _save(self, data: DataFrame) -> None:
         print("Entering save function")
-        if self._increment_flag is not None and self._increment_flag.lower() == "yes":
+        if self._increment_flag_save is not None and self._increment_flag_save.lower() == "yes":
             print("Entering save incremental mode")
             self._write_incremental_data(data)
 
