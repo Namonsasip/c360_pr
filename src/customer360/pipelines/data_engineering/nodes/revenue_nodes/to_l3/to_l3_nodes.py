@@ -57,5 +57,3 @@ def merge_with_customer_postpaid_df(source_df: DataFrame,
     return final_df
 
 
-def copy_df(df: DataFrame):
-    return df

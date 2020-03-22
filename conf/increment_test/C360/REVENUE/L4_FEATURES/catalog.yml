@@ -23,7 +23,7 @@ l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly:
   metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
   save_args:
     mode: "overwrite"
-    partitionBy: ["start_of_month"]
+    partitionBy: "start_of_month"
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
 
@@ -36,6 +36,6 @@ l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
   metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
   save_args:
     mode: "overwrite"
-    partitionBy: ["start_of_month"]
+    partitionBy: "start_of_month"
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
