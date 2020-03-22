@@ -340,7 +340,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     "select * from src_data where to_date(cast({0} as String),'yyyyMMdd') > date_sub(to_date(cast('{1}' as String)) , {2} )".format(
                     filter_col, tgt_filter_date, lookback_fltr))
 
-            elif read_layer.lower() == "l0_monthy" and target_layer.lower() == 'l3_monthly':
+            elif read_layer.lower() == "l0_monthly" and target_layer.lower() == 'l3_monthly':
                 filter_col = "partition_month"
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 print("filter_col:", filter_col)
