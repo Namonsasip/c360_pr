@@ -9,6 +9,7 @@ from pyspark.sql import functions as F
 
 from customer360.utilities.spark_util import get_spark_session
 
+
 def create_report_campaign_tracking_table(
     cvm_prepaid_customer_groups: DataFrame,
     dm996_cvm_ontop_pack: DataFrame,
@@ -229,6 +230,9 @@ def create_use_case_view_report(
         aggregate_period: list of aggregate period for campaign data aggregatation
     Returns: DataFrame of use case view report, contain all use case report currently support ARD and CHURN
     """
+
+    spark = get_spark_session()
+
     # Get number of Freeze customer in control group
     current_size = cvm_prepaid_customer_groups.groupby("target_group").agg(
         F.countDistinct("crm_sub_id").alias("distinct_targeted_subscriber")
