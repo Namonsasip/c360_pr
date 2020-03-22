@@ -325,7 +325,10 @@ def subs_date_join(parameters: Dict[str, Any], *args: DataFrame,) -> DataFrame:
 
 
 def create_sample_dataset(
-    df: DataFrame, sampling_params: Dict[str, Any], subscription_id_suffix: str
+    df: DataFrame,
+    sampling_params: Dict[str, Any],
+    subscription_id_suffix: str,
+    max_date: str,
 ) -> DataFrame:
     """ Create dev sample of given table. Dev sample is super small sample. Takes only
     users with certain subscription_identifier suffix.
@@ -334,13 +337,14 @@ def create_sample_dataset(
         df: given table.
         sampling_params: parameters of sampling procedure.
         subscription_id_suffix: suffix to filter subscription_identifier with.
+        max_date: last date to include.
     Returns:
         Dev sample of table.
     """
 
     sampling_stages = {
         "filter_users": lambda df: filter_users(df, subscription_id_suffix),
-        "take_last_date": filter_latest_date,
+        "take_last_date": lambda df: filter_latest_date(df, max_date),
     }
 
     for sampling_param in sampling_params:
