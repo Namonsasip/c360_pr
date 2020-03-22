@@ -1,7 +1,16 @@
 l4_usage_postpaid_prepaid_weekly_features_min:
   partition_by: ["subscription_identifier"]
   feature_list:
-    min: ['usg_vas_total_number_of_call_min',
+    min: [
+          'usg_outgoing_night_time_calls_duration_sum',
+          'usg_outgoing_morning_time_calls_duration_sum',
+          'usg_incoming_night_time_call_duration_sum',
+          'usg_incoming_morning_time_call_duration_sum',
+          'usg_outgoing_night_time_calls_duration_min',
+          'usg_outgoing_morning_time_calls_duration_min',
+          'usg_incoming_night_time_call_duration_min',
+          'usg_incoming_morning_time_call_duration_min',
+          'usg_vas_total_number_of_call_min',
           'usg_incoming_roaming_call_duration_min',
           'usg_incoming_roaming_number_calls_min',
           'usg_incoming_roaming_total_sms_min',
@@ -211,7 +220,16 @@ l4_usage_postpaid_prepaid_weekly_features_min:
 l4_usage_postpaid_prepaid_weekly_features_max:
   partition_by: ["subscription_identifier"]
   feature_list:
-    max: ['usg_last_sms_date_max',
+    max: [
+          'usg_outgoing_night_time_calls_duration_sum',
+          'usg_outgoing_morning_time_calls_duration_sum',
+          'usg_incoming_night_time_call_duration_sum',
+          'usg_incoming_morning_time_call_duration_sum',
+          'usg_outgoing_night_time_calls_duration_max',
+          'usg_outgoing_morning_time_calls_duration_max',
+          'usg_incoming_night_time_call_duration_max',
+          'usg_incoming_morning_time_call_duration_max',
+          'usg_last_sms_date_max',
           'usg_incoming_last_sms_date_max',
           'usg_outgoing_roaming_last_sms_date_max',
           'usg_last_action_date_max',
@@ -433,7 +451,24 @@ l4_usage_postpaid_prepaid_weekly_features_max:
 l4_usage_postpaid_prepaid_weekly_features_avg:
   partition_by: ["subscription_identifier"]
   feature_list:
-    avg: ["usg_vas_total_number_of_call_avg",
+    avg: [
+          'usg_outgoing_night_time_calls_duration_sum',
+          'usg_outgoing_morning_time_calls_duration_sum',
+          'usg_incoming_night_time_call_duration_sum',
+          'usg_incoming_morning_time_call_duration_sum',
+          'usg_outgoing_night_time_calls_duration_min',
+          'usg_outgoing_morning_time_calls_duration_min',
+          'usg_incoming_night_time_call_duration_min',
+          'usg_incoming_morning_time_call_duration_min',
+          'usg_outgoing_night_time_calls_duration_max',
+          'usg_outgoing_morning_time_calls_duration_max',
+          'usg_incoming_night_time_call_duration_max',
+          'usg_incoming_morning_time_call_duration_max',
+          'usg_outgoing_night_time_calls_duration_avg',
+          'usg_outgoing_morning_time_calls_duration_avg',
+          'usg_incoming_night_time_call_duration_avg',
+          'usg_incoming_morning_time_call_duration_avg',
+          "usg_vas_total_number_of_call_avg",
           "usg_vas_total_number_of_call_sum",
           "usg_vas_total_number_of_call_min",
           "usg_vas_total_number_of_call_max",
@@ -844,7 +879,11 @@ l4_usage_postpaid_prepaid_weekly_features_avg:
 l4_usage_postpaid_prepaid_weekly_features_sum:
   partition_by: ["subscription_identifier"]
   feature_list:
-    sum: ["usg_vas_total_number_of_call_sum",
+    sum: ['usg_outgoing_night_time_calls_duration_sum',
+          'usg_outgoing_morning_time_calls_duration_sum',
+          'usg_incoming_night_time_call_duration_sum',
+          'usg_incoming_morning_time_call_duration_sum',
+          "usg_vas_total_number_of_call_sum",
           'usg_data_friday_usage_sum',
           'usg_data_monday_usage_sum',
           'usg_data_saturday_usage_sum',
