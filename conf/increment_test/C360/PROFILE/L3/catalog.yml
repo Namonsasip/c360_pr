@@ -25,6 +25,7 @@ l3_customer_profile_billing_level_volume_of_active_contracts:
     partitionBy: ["partition_month"]
 
 
+
 #################################################################################
 ### New entries for incremental read
 
