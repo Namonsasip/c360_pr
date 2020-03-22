@@ -114,7 +114,9 @@ def pyspark_predict_rf(
     key_columns = parameters["key_columns"]
     segments_columns = parameters["segment_columns"]
     log = logging.getLogger(__name__)
-    feature_cols = list_sub(df.columns, target_cols + key_columns + segments_columns)
+    feature_cols = list_sub(
+        df.columns, target_cols + key_columns + segments_columns + ["volatility"]
+    )
 
     target_cols_use_case_split = list_targets(parameters, case_split=True)
     macrosegments = parameters["macrosegments"]
@@ -126,6 +128,7 @@ def pyspark_predict_rf(
                 target_chosen, macrosegment
             )
         )
+
         # spark prediction udf
         @func.pandas_udf(returnType=DoubleType())
         def _pandas_predict(*cols):
