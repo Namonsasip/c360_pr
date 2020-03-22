@@ -37,7 +37,7 @@ l3_customer_profile_include_1mo_non_active_l3_revenue_postpaid:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly'
-    read_layer: 'l0_monthly'
+    read_layer: 'l3_monthly_customer_profile'
     target_layer: 'l3_monthly'
     lookback: '0'
 
@@ -49,7 +49,7 @@ l3_customer_profile_include_1mo_non_active_l3_revenue_prepaid:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly'
-    read_layer: 'l0_monthly'
+    read_layer: 'l3_monthly_customer_profile'
     target_layer: 'l3_monthly'
     lookback: '0'
 
