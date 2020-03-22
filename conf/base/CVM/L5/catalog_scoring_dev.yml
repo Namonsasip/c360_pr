@@ -52,13 +52,9 @@ l5_cvm_one_day_test_scoring_dev:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_one_day_test_scoring_dev/
 
-l5_cvm_one_day_train_preprocessed_scoring_dev:
+l5_cvm_one_day_preprocessed_scoring_dev:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_one_day_train_preprocessed_scoring_dev/
-
-l5_cvm_one_day_test_preprocessed_scoring_dev:
-  <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_one_day_test_preprocessed_scoring_dev/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_one_day_preprocessed_scoring_dev/
 
 random_forest_scoring_dev:
   type: kedro.io.PickleLocalDataSet
