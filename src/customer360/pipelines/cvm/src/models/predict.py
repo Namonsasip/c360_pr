@@ -115,7 +115,8 @@ def pyspark_predict_rf(
     segments_columns = parameters["segment_columns"]
     log = logging.getLogger(__name__)
     feature_cols = list_sub(
-        df.columns, target_cols + key_columns + segments_columns + ["volatility"]
+        df.columns,
+        target_cols + key_columns + segments_columns + ["volatility_imputed"],
     )
 
     target_cols_use_case_split = list_targets(parameters, case_split=True)
