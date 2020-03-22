@@ -64,16 +64,6 @@ def create_cvm_prepare_inputs_samples(sample_type: str) -> Pipeline:
     return Pipeline(
         [
             node(
-                create_l5_cvm_one_day_users_table,
-                [
-                    "l3_customer_profile_include_1mo_non_active",
-                    "l0_product_product_pru_m_package_master_group",
-                    date_params,
-                ],
-                "l5_cvm_one_day_users_table" + suffix,
-                name="create_l5_cvm_one_day_users_table" + suffix,
-            ),
-            node(
                 create_sample_dataset,
                 [
                     "l3_customer_profile_include_1mo_non_active",
@@ -83,6 +73,16 @@ def create_cvm_prepare_inputs_samples(sample_type: str) -> Pipeline:
                 ],
                 "l3_customer_profile_include_1mo_non_active" + suffix,
                 name="create_l3_customer_profile_include_1mo_non_active" + suffix,
+            ),
+            node(
+                create_l5_cvm_one_day_users_table,
+                [
+                    "l3_customer_profile_include_1mo_non_active" + suffix,
+                    "l0_product_product_pru_m_package_master_group",
+                    date_params,
+                ],
+                "l5_cvm_one_day_users_table" + suffix,
+                name="create_l5_cvm_one_day_users_table" + suffix,
             ),
             node(
                 create_sample_dataset,
