@@ -64,7 +64,10 @@ def filter_latest_date(df: DataFrame, maximum_date: str = None) -> DataFrame:
     latest_date = get_latest_date(df, maximum_date)
     df.filter("key_date == '{}'".format(latest_date))
 
-    today = date.today().strftime("%Y-%m-%d")
+    if maximum_date is None:
+        today = date.today().strftime("%Y-%m-%d")
+    else:
+        today = maximum_date
     df = df.withColumn("key_date", func.lit(today))
 
     return df
