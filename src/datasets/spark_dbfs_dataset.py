@@ -210,6 +210,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
     def _get_spark():
         spark = SparkSession.builder.appName("project_customer_360").getOrCreate()
         spark.conf.set("spark.sql.sources.partitionOverwriteMode", "dynamic")
+        spark.conf.set("spark.sql.parquet.binaryAsString", "true")
         return spark
 
     def _create_metadata_table(self, spark):

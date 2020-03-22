@@ -45,7 +45,7 @@ def revenue_to_l3_pipeline(**kwargs):
                 node_from_config,
                 ["l0_revenue_postpaid_ru_f_sum_revenue_by_service_monthly",
                  "params:l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly"],
-                "l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_stg"
+                "l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly"
             ),
             # node(merge_with_customer_postpaid_df, ['l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_stg',
             #                                        'l3_customer_profile_include_1mo_non_active_l3_revenue_postpaid'],
@@ -56,12 +56,12 @@ def revenue_to_l3_pipeline(**kwargs):
             #                                        'l3_customer_profile_include_1mo_non_active'],
             #      'l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly'
             #      ),
-            
+
             node(
                 node_from_config,
                 ["l0_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
                  "params:l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"],
-                "l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_stg"
+                "l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"
             ),
             # node(merge_with_customer_prepaid_df, ['l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_stg',
             #                                       'l3_customer_profile_include_1mo_non_active_l3_revenue_prepaid'],
