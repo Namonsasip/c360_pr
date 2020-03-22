@@ -58,6 +58,7 @@ def pipeline1_fit(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
         + columns_cats["target"]
         + columns_cats["key"]
         + columns_cats["segment"]
+        + parameters["must_have_features"]
     )
     cols_to_pick = list_intersection(cols_to_pick, df.columns)
     df = df.select(cols_to_pick)
@@ -112,6 +113,7 @@ def pipeline1_transform(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
         + columns_cats["target"]
         + columns_cats["key"]
         + columns_cats["segment"]
+        + parameters["must_have_features"]
     )
     cols_to_pick = list_intersection(cols_to_pick, df.columns)
     df = df.select(cols_to_pick)
