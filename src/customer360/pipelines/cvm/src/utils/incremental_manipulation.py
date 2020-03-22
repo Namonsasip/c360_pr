@@ -51,15 +51,17 @@ def get_latest_date(df: DataFrame, maximum_date: str = None) -> str:
     return max_date.strftime("%Y-%m-%d")
 
 
-def filter_latest_date(df: DataFrame) -> DataFrame:
+def filter_latest_date(df: DataFrame, maximum_date: str = None) -> DataFrame:
     """ Filters given DataFrame, leaving only latest date entries.
 
     Args:
         df:  Input DataFrame.
+        maximum_date: later dates will be ignored, if None then latest date present
+            is returned.
     """
 
     df = prepare_key_columns(df)
-    latest_date = get_latest_date(df)
+    latest_date = get_latest_date(df, maximum_date)
     df.filter("key_date == '{}'".format(latest_date))
 
     today = date.today().strftime("%Y-%m-%d")

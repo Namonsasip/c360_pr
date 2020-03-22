@@ -1,5 +1,6 @@
 # sampling parameters
 chosen_date: '2019-10-01'
+scoring_date: '2020-03-21'
 subscription_id_suffix_dev: 'AB'
 subscription_id_suffix_sample: 'A'
 subscription_id_suffix_scoring_dev: 'AB'

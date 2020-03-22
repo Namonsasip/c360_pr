@@ -45,7 +45,7 @@ from customer360.pipelines.cvm.src.utils.prepare_key_columns import prepare_key_
 
 
 def create_l5_cvm_one_day_users_table(
-    profile: DataFrame, main_packs: DataFrame, parameters: Dict[str, Any]
+    profile: DataFrame, main_packs: DataFrame, date_chosen: str = "today"
 ) -> DataFrame:
     """Create l5_cvm_one_day_users_table - one day table of users used for
     training and validating.
@@ -53,12 +53,13 @@ def create_l5_cvm_one_day_users_table(
     Args:
         profile: monthly customer profiles.
         main_packs: pre-paid main packages description.
-        parameters: parameters defined in parameters.yml.
+        date_chosen: date to create list for. If "today" then take the most recent.
     """
 
-    date_chosen = parameters["chosen_date"]
     profile = prepare_key_columns(profile)
-    users = profile.filter("key_date == '{}'".format(date_chosen))
+    if date_chosen == "today":
+        date_chosen = None
+    users = filter_latest_date(profile, date_chosen)
     users = users.filter(
         "charge_type == 'Pre-paid' \
          AND subscription_status == 'SA' \
