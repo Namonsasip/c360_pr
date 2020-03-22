@@ -7,10 +7,7 @@ from pyspark.sql import DataFrame
 from pyspark.sql import Window
 from pyspark.sql import functions as F
 
-# Initialize spark session, this will be use until spark will be initialize automatically by kedro
 from customer360.utilities.spark_util import get_spark_session
-
-spark = get_spark_session()
 
 
 def create_report_campaign_tracking_table(
@@ -82,6 +79,8 @@ def create_agg_data_for_report(
         aggregate_period: list with all number of days to look back for the metrics
     Returns: dataFrame of aggregated features for campaign report tracking
     """
+
+    spark = get_spark_session()
 
     # Create date period dataframe that will be use in cross join
     # to create main table for features aggregation
@@ -231,6 +230,9 @@ def create_use_case_view_report(
         aggregate_period: list of aggregate period for campaign data aggregatation
     Returns: DataFrame of use case view report, contain all use case report currently support ARD and CHURN
     """
+
+    spark = get_spark_session()
+
     # Get number of Freeze customer in control group
     current_size = cvm_prepaid_customer_groups.groupby("target_group").agg(
         F.countDistinct("crm_sub_id").alias("distinct_targeted_subscriber")
