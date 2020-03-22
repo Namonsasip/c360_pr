@@ -40,7 +40,7 @@ l3_customer_profile_include_1mo_non_active_l3_revenue_postpaid:
     target_layer: 'l3_monthly'
     lookback: '0'
 
-l3_customer_profile_include_1mo_non_active_l3_revenue_pretpaid:
+l3_customer_profile_include_1mo_non_active_l3_revenue_prepaid:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-data/C360/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
   file_format: "parquet"
