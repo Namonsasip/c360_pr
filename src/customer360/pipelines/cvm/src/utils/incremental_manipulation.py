@@ -46,7 +46,7 @@ def get_latest_date(df: DataFrame, maximum_date: str = None) -> str:
         raise Exception("Date column not found.")
 
     if maximum_date is not None:
-        df = df.filter("key_date <= '{}'".filter(maximum_date))
+        df = df.filter("key_date <= '{}'".format(maximum_date))
     max_date = df.select("key_date").agg(func.max("key_date")).collect()[0][0]
     return max_date.strftime("%Y-%m-%d")
 
