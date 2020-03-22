@@ -29,6 +29,8 @@
 import pandas as pd
 from typing import Dict, Any, Tuple
 from pyspark.sql import DataFrame
+
+from customer360.pipelines.cvm.src.utils.list_operations import list_intersection
 from customer360.pipelines.cvm.src.utils.list_targets import list_targets
 
 
@@ -66,7 +68,9 @@ def get_pandas_train_test_sample(
     target_cols = list_targets(parameters)
     key_columns = parameters["key_columns"]
     segments_columns = parameters["segment_columns"]
-    to_drop = target_cols + key_columns + segments_columns + ["volatility"]
+    to_drop = list_intersection(
+        df.columns, target_cols + key_columns + segments_columns + ["volatility"]
+    )
     X = df.drop(*to_drop).toPandas()
 
     return X, y
