@@ -3,7 +3,7 @@ import pyspark.sql.functions as f
 from pyspark.sql.types import StringType
 import os
 
-conf = os.environ["CONF"]
+# conf = os.environ["CONF"]
 
 def priv_customer_profile_joined(customer_prof,input_df):
 
