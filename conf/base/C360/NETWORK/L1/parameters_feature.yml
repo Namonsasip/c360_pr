@@ -86,8 +86,8 @@ l1_network_data_traffic_features:
     total_3g_traffic: total_3g_traffic
     total_4g_traffic: total_4g_traffic
     total_traffic: total_traffic
-    share_of_3g_traffic_in_total_traffic: total_3g_traffic/total_traffic
-    share_of_4g_traffic_in_total_traffic: total_4g_traffic/total_traffic
+    share_of_3g_traffic_in_total_traffic: "total_3g_traffic/total_traffic"
+    share_of_4g_traffic_in_total_traffic: "total_4g_traffic/total_traffic"
     change_of_share_of_3g_vs_4g_traffic: "(total_3g_traffic/total_4g_traffic) / lag(total_3g_traffic/total_4g_traffic, 1, 0)
                                         over (partition by mobile_no order by partition date asc)"
     mobile_no: mobile_no
