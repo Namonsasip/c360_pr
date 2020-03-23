@@ -84,6 +84,7 @@ def pipeline1_fit(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
     stages += [imputer]
 
     pipeline = Pipeline(stages=stages)
+    columns_cats = classify_columns(df, parameters)
     pipeline_fitted = pipeline.fit(df)
     data_transformed = pipeline_fitted.transform(df)
     data_transformed = data_transformed.drop(*columns_cats["categorical"])
@@ -126,6 +127,7 @@ def pipeline1_transform(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
 
     # string indexer
     pipeline_fitted = PipelineModel.load("/mnt/customer360-cvm/pipeline1")
+    columns_cats = classify_columns(df, parameters)
     data_transformed = pipeline_fitted.transform(df)
     data_transformed = data_transformed.drop(*columns_cats["categorical"])
     data_transformed = data_transformed.drop(*columns_cats["numerical"])
