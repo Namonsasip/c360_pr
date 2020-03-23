@@ -525,7 +525,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             else:
                 print("write dataframe without lookback scenario")
-                dataframe_to_write.coalesce(10).write.partitionBy(partitionBy).mode(mode).format(file_format).save(
+                dataframe_to_write.coalesce(20).write.partitionBy(partitionBy).mode(mode).format(file_format).save(
                     filewritepath)
 
                 print("Updating metadata table")
