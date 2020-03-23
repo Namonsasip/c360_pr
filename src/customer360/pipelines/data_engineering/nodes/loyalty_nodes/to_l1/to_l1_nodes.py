@@ -245,7 +245,3 @@ def loyalty_number_of_points_spend_for_each_category(customer_prof,input_df,priv
     return return_df
 
 
-def binary_check(df):
-    df1 = df.where("project_type_id = 6 and project_subtype like 'REDEEM%'")
-    return df1
-

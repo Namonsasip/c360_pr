@@ -35,10 +35,3 @@ l0_loyalty_priv_customer_profile:
   filepath: /mnt/customer360-blob-data/C360/LOYALTY/loyalty_priv_customer_profile/
   file_format: parquet
 
-
-
-
-l0_loyalty_priv_project_output:
-  type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: /mnt/customer360-blob-data/C360/LOYALTY/test/loyalty_priv_project/
-  file_format: parquet
