@@ -1,59 +1,80 @@
 from kedro.pipeline import Pipeline, node
 
 from src.customer360.utilities.config_parser import *
-from src.customer360.pipelines.data_engineering.nodes.device_nodes.to_l2.to_l2_nodes import *
-from src.customer360.pipelines.data_engineering.nodes.device_nodes.to_l3.to_l3_nodes import *
 
 
-def device_to_l3_pipeline(**kwargs):
+def network_to_l3_pipeline(**kwargs):
     return Pipeline(
         [
-
-            node(
-                device_summary_with_configuration,
-                ["l0_devices_summary_customer_handset",
-                 "l0_devices_handset_configurations"],
-                "device_summary_with_config"
-            ),
-
-            # Monthly current device configs
-            node(
-                device_current_configurations_monthly,
-                ["l2_device_handset_summary_with_configuration_weekly",
-                 "params:l3_device_handset_summary_with_configuration"],
-                "l3_device_handset_summary_with_configuration_monthly"
-            ),
-
-            # Monthly number of phone updates
-            node(
-                device_number_of_phone_updates_monthly,
-                ["l2_device_number_of_phone_updates_weekly",
-                 "params:l3_device_number_of_phone_updates"],
-                "l3_device_number_of_phone_updates_monthly"
-            ),
-
-            # Monthly previous configurations features
             node(
                 node_from_config,
-                ["device_summary_with_config",
-                 "params:l3_previous_device_features_with_config_ranked"],
-                "l3_previous_device_handset_summary_with_configuration_monthly_1"
-            ),
-            node(
-                device_previous_configurations_monthly,
-                ["l3_customer_profile_include_1mo_non_active",
-                 "l3_previous_device_handset_summary_with_configuration_monthly_1",
-                 "params:l3_previous_device_features_with_config"],
-                "l3_previous_device_handset_summary_with_configuration_monthly"
+                ["l1_network_voice_features",
+                 "params:int_l3_network_voice_features"],
+                "int_l3_network_voice_features"
             ),
 
-            # Monthly most used device
             node(
-                device_most_used_monthly,
-                ["l3_customer_profile_include_1mo_non_active",
-                 "device_summary_with_config",
-                 "params:l3_device_most_used"],
-                "l3_device_most_used_monthly"
+                node_from_config,
+                ["int_l3_network_voice_features",
+                 "params:l3_network_voice_features"],
+                "l3_network_voice_features"
+            ),
+
+            node(
+                node_from_config,
+                ["l1_network_good_and_bad_cells_features",
+                 "params:l3_network_good_and_bad_cells_features"],
+                "l3_network_good_and_bad_cells_features"
+            ),
+            node(
+                node_from_config,
+                ["l1_network_share_of_3g_time_in_total_time",
+                 "params:l3_network_share_of_3g_time_in_total_time"],
+                "l3_network_share_of_3g_time_in_total_time"
+            ),
+
+            node(
+                node_from_config,
+                ["l1_network_data_traffic_features",
+                 "params:l3_network_data_traffic_features"],
+                "l3_network_data_traffic_features"
+            ),
+
+            node(
+                node_from_config,
+                ["l1_network_data_cqi",
+                 "params:l3_network_data_cqi"],
+                "l3_network_data_cqi"
+            ),
+            node(
+                node_from_config,
+                ["l1_network_im_cqi",
+                 "params:l3_network_im_cqi"],
+                "l3_network_im_cqi"
+            ),
+            node(
+                node_from_config,
+                ["l1_network_streaming_cqi",
+                 "params:l3_network_streaming_cqi"],
+                "l3_network_streaming_cqi"
+            ),
+            node(
+                node_from_config,
+                ["l1_network_web_cqi",
+                 "params:l3_network_web_cqi"],
+                "l3_network_web_cqi"
+            ),
+            node(
+                node_from_config,
+                ["l1_network_voip_cqi",
+                 "params:l3_network_voip_cqi"],
+                "l3_network_voip_cqi"
+            ),
+            node(
+                node_from_config,
+                ["l1_network_volte_cqi",
+                 "params:l3_network_volte_cqi"],
+                "l3_network_volte_cqi"
             ),
         ]
     )
