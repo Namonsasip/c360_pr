@@ -16,16 +16,22 @@ def loyalty_to_l1_pipeline(**kwargs):
             #      "l0_loyalty_priv_project"],
             #     "privilege_data_with_customer_profile"
             # ),
+            #
+
+
 
             # Number of services for each category
-            node(
-                loyalty_number_of_services_for_each_category,
-                ["l1_customer_profile_union_daily_feature",
-                 "l0_loyalty_drm_t_privilege_success",
-                 "l0_loyalty_priv_project",
-                 "params:l1_loyalty_number_of_services_daily"],
-                 "l1_loyalty_number_of_services"
-            ),
+            # node(
+            #     loyalty_number_of_services_for_each_category,
+            #     ["l1_customer_profile_union_daily_feature",
+            #      "l0_loyalty_drm_t_privilege_success",
+            #      "l0_loyalty_priv_project",
+            #      "params:l1_loyalty_number_of_services_daily"],
+            #      "l1_loyalty_number_of_services"
+            # ),
+
+
+
 
             # Join daily aunjai points data with customer profile along with priv_project
             # node(
@@ -35,6 +41,7 @@ def loyalty_to_l1_pipeline(**kwargs):
             #      "l0_loyalty_priv_project"],
             #     "aunjai_points_data_with_customer_profile"
             # ),
+
 
             # Number of rewards for each category
             node(
@@ -53,14 +60,17 @@ def loyalty_to_l1_pipeline(**kwargs):
             #      "l0_loyalty_priv_point_transaction"],
             #     "aunjai_points_data_with_reward_points_spend"
             # ),
-            node(
-                loyalty_number_of_points_spend_for_each_category,
-                ["l1_customer_profile_union_daily_feature",
-                 "l0_loyalty_drm_t_aunjai_point_collection_daily",
-                 "l0_loyalty_priv_project",
-                 "l0_loyalty_priv_point_transaction",
-                 "params:l1_loyalty_number_of_points_spend_daily"],
-                "l1_loyalty_number_of_points_spend"
-            ),
+
+
+
+            # node(
+            #     loyalty_number_of_points_spend_for_each_category,
+            #     ["l1_customer_profile_union_daily_feature",
+            #      "l0_loyalty_drm_t_aunjai_point_collection_daily",
+            #      "l0_loyalty_priv_project",
+            #      "l0_loyalty_priv_point_transaction",
+            #      "params:l1_loyalty_number_of_points_spend_daily"],
+            #     "l1_loyalty_number_of_points_spend"
+            # ),
         ]
     )
