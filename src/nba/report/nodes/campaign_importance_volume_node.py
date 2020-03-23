@@ -14,6 +14,9 @@ def create_l0_campaign_history_master_active(input_campaign_master:DataFrame, ou
     spark.sql(stmt)
     return input_campaign_master
 
+def create_l0_campaign_tracking_contact_list_pre(input_campaign_master:DataFrame, output:Dict[str, Any]) -> DataFrame:
+    return input_campaign_master
+
 
 def create_l5_campaign_distinct_contact_response(child_response_full:DataFrame,
                                                  child_response_params:Dict[str, Any]) -> DataFrame:

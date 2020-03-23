@@ -15,3 +15,8 @@ create_l5_response_percentage_report_param:
   table: "response_percentage_report"
   join_cols: "child_code"
   response_rate_cols: "response_rate_percentage"
+
+focus_campaign_param:
+                         churn_focus: ["Prev_PrePC.120","Prev_PrePC.100","cmp2","cmp2","cmp2","cmp2","cmp2","cmp2","cmp2","cmp2","cmp2"]
+                         cross_upsell_focus: ["cmp1"]
+                         topup_focus: ["cmp1"]
