@@ -48,7 +48,6 @@ from kedro.versioning import Journal
 
 from src.customer360.utilities.spark_util import get_spark_session
 
-
 from customer360.pipeline import create_pipelines
 
 try:
@@ -57,6 +56,7 @@ except ValueError as err:
     logging.info("findspark.init() failed with error " + str(err))
 
 conf = os.getenv("CONF", None)
+
 
 class ProjectContext(KedroContext):
     """Users can override the remaining methods from the parent class here,
@@ -78,7 +78,9 @@ class ProjectContext(KedroContext):
                 extra parameters passed at initialization.
         """
         try:
-            params = self.config_loader.get("parameters*", "parameters*/**", "*/**/parameter*")
+            params = self.config_loader.get(
+                "parameters*", "parameters*/**", "*/**/parameter*"
+            )
         except MissingConfigException as exc:
             warn(
                 "Parameters not found in your Kedro project config.\n{}".format(
@@ -90,10 +92,10 @@ class ProjectContext(KedroContext):
         return params
 
     def _get_catalog(
-            self,
-            save_version: str = None,
-            journal: Journal = None,
-            load_versions: Dict[str, str] = None,
+        self,
+        save_version: str = None,
+        journal: Journal = None,
+        load_versions: Dict[str, str] = None,
     ) -> DataCatalog:
         """A hook for changing the creation of a DataCatalog instance.
 
@@ -101,7 +103,9 @@ class ProjectContext(KedroContext):
             DataCatalog defined in `conf/base`.
 
         """
-        conf_catalog = self.config_loader.get("catalog*", "catalog*/**", "*/**/catalog*")
+        conf_catalog = self.config_loader.get(
+            "catalog*", "catalog*/**", "*/**/catalog*"
+        )
         conf_creds = self._get_config_credentials()
         catalog = self._create_catalog(
             conf_catalog, conf_creds, save_version, journal, load_versions
@@ -111,11 +115,11 @@ class ProjectContext(KedroContext):
 
     def load_node_inputs(self, node_name: str, import_full_module: bool = True):
         """
-        Loads all inputs of a node into the namespace from which this function was called.
-        This function is designed for being used in kedro ipython to debug nodes: after
-        running this function you should be able to feed the function code into the
-        interpreter line by line.
-        Caution: this function alters the namespace from which it was called (its parent namespace)
+        Loads all inputs of a node into the namespace from which this function was
+        called. This function is designed for being used in kedro ipython to debug
+        nodes: after running this function you should be able to feed the function
+        code into the interpreter line by line. Caution: this function alters the
+        namespace from which it was called (its parent namespace)
         Args:
             node_name: Name of the node to load inputs from
             import_full_module: If True, also imports all names defined within the
@@ -171,12 +175,13 @@ class ProjectContext(KedroContext):
                     logging.info("Setting `{}`".format(obj_name))
                     caller_globals[obj_name] = getattr(function_module, obj_name)
 
-        # If the node was called using a partial function, also load the partial parameters
+        # If the node was called using a partial function, also load the partial
+        # parameters
         if isinstance(node_func, partial):
             partial_args = node_func.args
             node_args = (
-                                ["parameter_from_functools_partial"] * len(partial_args)
-                        ) + node_args
+                ["parameter_from_functools_partial"] * len(partial_args)
+            ) + node_args
             node_loaded_args = list(partial_args) + node_args
             partial_kwargs = node_func.keywords
             for key, value in partial_kwargs.items():
@@ -187,18 +192,18 @@ class ProjectContext(KedroContext):
         # Bind the node inputs to the parametes of the function
         bound_signature_parameters = (
             inspect.signature(node_func, follow_wrapped=False)
-                .bind(*node_args, **node_kwargs)
-                .signature.parameters
+            .bind(*node_args, **node_kwargs)
+            .signature.parameters
         )
         bound_params_dataset_names = (
             inspect.signature(node_func, follow_wrapped=False)
-                .bind(*node_args, **node_kwargs)
-                .arguments
+            .bind(*node_args, **node_kwargs)
+            .arguments
         )
         bound_params_dataset_content = (
             inspect.signature(node_func, follow_wrapped=False)
-                .bind(*node_loaded_args, **node_loaded_kwargs)
-                .arguments
+            .bind(*node_loaded_args, **node_loaded_kwargs)
+            .arguments
         )
 
         # We load the argument details to be able to identify *args and **kwargs
@@ -215,7 +220,8 @@ class ProjectContext(KedroContext):
                     )
                 )
                 caller_globals[parameter_name] = loaded_dataset
-            # If the parameter was not specified and had a default value, load the default value
+            # If the parameter was not specified and had a default value, load the
+            # default value
             elif parameter_value.default is not inspect._empty:
                 default_param_value = parameter_value.default
                 logging.info(
@@ -224,16 +230,15 @@ class ProjectContext(KedroContext):
                     )
                 )
                 caller_globals[parameter_name] = default_param_value
-            # If the parameter was not specified in inputs and does not have a default values
+            # If the parameter was not specified in inputs and does not have a
+            # default values
             # they might be the *args or **kwargs. In that case we load an empty list or
             # dictionary for them
             else:
                 if parameter_name == argspec.varargs:
                     logging.info(
                         "Set `{}` (*args parameter) to [] (empty list)"
-                        " since it was not specified".format(
-                            parameter_name
-                        )
+                        " since it was not specified".format(parameter_name)
                     )
                     caller_globals[parameter_name] = []
                 if parameter_name == argspec.varkw:
@@ -241,13 +246,12 @@ class ProjectContext(KedroContext):
                         "Set `"
                         + parameter_name
                         + "` (**kwrgs parameter) to {} (empty dictionary)"
-                          " since it was not specified"
+                        " since it was not specified"
                     )
                     caller_globals[parameter_name] = {}
 
 
 def run_package(pipelines=[]):
-
     # entry point for running pip-install projects
     # using `<project_package>` command
     project_context = load_context(Path.cwd(), env=conf)
@@ -262,8 +266,8 @@ def run_package(pipelines=[]):
         for each_pipeline in pipelines:
             project_context.run(pipeline_name=each_pipeline)
         return
-    #project_context.run()
-    #project_context.run(pipeline_name='usage_to_l1_pipeline')
+    # project_context.run()
+    # project_context.run(pipeline_name='usage_to_l1_pipeline')
     # project_context.run(pipeline_name='customer_profile_to_l3_pipeline')
 
     # Replace line above with below to run on databricks cluster

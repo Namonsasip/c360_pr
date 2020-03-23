@@ -26,11 +26,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Pipeline construction."""
-from cvm.data_prep.pipeline import create_cvm_prepare_inputs_samples, \
-    create_cvm_targets, create_cvm_training_data, create_cvm_scoring_data
+from typing import Dict
+
+from kedro.pipeline import Pipeline
+
+from cvm.data_prep.pipeline import (
+    create_cvm_prepare_inputs_samples,
+    create_cvm_targets,
+    create_cvm_training_data,
+    create_cvm_scoring_data,
+)
 from cvm.modelling.pipeline import create_train_model, create_predictions
-from cvm.preprocessing.pipeline import create_cvm_preprocessing, \
-    create_cvm_preprocessing_scoring
+from cvm.preprocessing.pipeline import (
+    create_cvm_preprocessing,
+    create_cvm_preprocessing_scoring,
+)
 
 
 def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
@@ -53,30 +63,30 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
 
     return {
         "cvm_setup_training_data_sample": create_cvm_prepare_inputs_samples("sample")
-                                          + create_cvm_targets("sample")
-                                          + create_cvm_training_data("sample"),
+        + create_cvm_targets("sample")
+        + create_cvm_training_data("sample"),
         "cvm_training_preprocess_sample": create_cvm_preprocessing("sample"),
         "cvm_train_model_sample": create_train_model("sample"),
         "cvm_setup_scoring_data_sample": create_cvm_prepare_inputs_samples(
-            "scoring_sample")
-                                         + create_cvm_scoring_data("scoring_sample"),
+            "scoring_sample"
+        )
+        + create_cvm_scoring_data("scoring_sample"),
         "cvm_scoring_combine_data": create_cvm_scoring_data("scoring_sample"),
         "cvm_scoring_preprocess_sample": create_cvm_preprocessing_scoring(
-            "scoring_sample"),
+            "scoring_sample"
+        ),
         "cvm_predict_model_sample": create_predictions("scoring_sample"),
         "cvm_setup_training_data_dev": create_cvm_prepare_inputs_samples("dev")
-                                       + create_cvm_targets("dev")
-                                       + create_cvm_training_data("dev"),
+        + create_cvm_targets("dev")
+        + create_cvm_training_data("dev"),
         "cvm_training_combine_data": create_cvm_training_data("dev"),
         "cvm_training_preprocess_dev": create_cvm_preprocessing("dev"),
         "cvm_train_model_dev": create_train_model("dev"),
-        "cvm_setup_scoring_data_dev": create_cvm_prepare_inputs_samples(
-            "scoring_dev")
-                                      + create_cvm_scoring_data("scoring_dev"),
-        "cvm_scoring_combine_data": create_cvm_scoring_data("scoring_dev"),
-        "cvm_scoring_preprocess_dev": create_cvm_preprocessing_scoring(
-            "scoring_dev"),
+        "cvm_setup_scoring_data_dev": create_cvm_prepare_inputs_samples("scoring_dev")
+        + create_cvm_scoring_data("scoring_dev"),
+        "cvm_scoring_preprocess_dev": create_cvm_preprocessing_scoring("scoring_dev"),
         "cvm_predict_model_dev": create_predictions("scoring_dev", "dev"),
-        "cvm_validate_model_dev": create_predictions("sample", "dev",
-                                                     "l5_cvm_one_day_train_preprocessed_sample")
+        "cvm_validate_model_dev": create_predictions(
+            "sample", "dev", "l5_cvm_one_day_train_preprocessed_sample"
+        ),
     }
