@@ -3,8 +3,6 @@ from kedro.pipeline import Pipeline, node
 from src.customer360.pipelines.cvm.src.utils.get_suffix import get_suffix
 from src.nba.report.nodes.report_nodes import *
 
-REPORT_DATE = "2020-03-06"
-
 
 def create_use_case_view_report_data(run_type: str = None) -> Pipeline:
     return Pipeline(
@@ -22,7 +20,7 @@ def create_use_case_view_report_data(run_type: str = None) -> Pipeline:
                 ],
                 "campaign_response_input_table",
                 name="campaign_response_input_table",
-                tags=["campaign_response_input_table",]
+                tags=["campaign_response_input_table",],
             ),
             node(
                 partial(
@@ -39,9 +37,8 @@ def create_use_case_view_report_data(run_type: str = None) -> Pipeline:
                 ],
                 outputs="reporting_kpis",
                 name="reporting_kpis",
-                tags=["reporting_kpis"]
+                tags=["reporting_kpis"],
             ),
-
             node(
                 partial(
                     create_use_case_view_report,
@@ -49,13 +46,15 @@ def create_use_case_view_report_data(run_type: str = None) -> Pipeline:
                     aggregate_period=[1, 7, 30],
                 ),
                 inputs=[
+                    "use_case_campaign_mapping",
                     "cvm_prepaid_customer_groups",
                     "campaign_response_input_table",
                     "reporting_kpis",
+                    "prepaid_no_activity_daily",
                 ],
                 outputs="use_case_view_report_table",
                 name="use_case_view_report_table",
-                tags=["use_case_view_report_table",]
+                tags=["use_case_view_report_table",],
             ),
         ],
         tags=["churn_ard_report"],
