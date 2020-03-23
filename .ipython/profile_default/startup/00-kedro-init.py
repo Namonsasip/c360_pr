@@ -20,6 +20,7 @@ def init_spark_session(line=None):
     # Dont delete this line. This allow spark to only overwrite the partition
     # saved to parquet instead of entire table folder
     spark.conf.set("spark.sql.sources.partitionOverwriteMode", "DYNAMIC")
+    spark.conf.set("spark.sql.execution.arrow.enabled", "false")
 
     logging.info("Initlialized spark session and defined global variable `spark`")
 
