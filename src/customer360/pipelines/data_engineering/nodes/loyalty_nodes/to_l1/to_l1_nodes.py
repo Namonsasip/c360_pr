@@ -243,3 +243,9 @@ def loyalty_number_of_points_spend_for_each_category(customer_prof,input_df,priv
     return_df = customize_massive_processing(input_df, customer_prof, priv_project, priv_points_raw, daily_privilege_or_aunjai_data_with_customer_profile_reward_and_points_spend,
                                    sql,'response_date','event_partition_date',"l1_loyalty_number_of_points_spend")
     return return_df
+
+
+def binary_check(df):
+    df1 = df.where("project_type_id = 6 and project_subtype like 'REDEEM%'")
+    return df1
+
