@@ -1,10 +1,26 @@
+# This dataset is at daily level
 l0_devices_summary_customer_handset:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-data/C360/DEVICE/device_summary_customer_handset_daily/
   file_format: parquet
 
-
+# This dataset is weekly level
 l0_devices_handset_configurations:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/DEVICE/device_migrate_m_3g_handset_feature_current/
+  filepath: /mnt/customer360-blob-data/C360/DEVICE/device_migrate_m_3g_handset_feature/
   file_format: parquet
+
+
+
+## This dataset is at daily level
+#l0_devices_summary_customer_handset:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  filepath: /mnt/customer360-blob-data/C360/DEVICE/device_summary_customer_handset_daily/
+#  file_format: parquet
+#  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+#  load_args:
+#    increment_flag: 'yes'
+#    lookup_table_name: 'l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly'
+#    read_layer: 'l0_monthly'
+#    target_layer: 'l3_monthly'
+#    lookback: '0'
