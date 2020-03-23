@@ -28,11 +28,8 @@
 
 from kedro.pipeline import Pipeline, node
 
+from cvm.modelling.nodes import train_rf, predict_rf
 from cvm.src.utils.get_suffix import get_suffix
-from cvm.modelling import (
-    train_rf,
-    predict_rf,
-)
 
 
 def create_train_model(sample_type: str = None) -> Pipeline:

@@ -28,12 +28,12 @@
 
 from kedro.pipeline import Pipeline, node
 
-from cvm.src.utils.get_suffix import get_suffix
-from cvm.preprocessing import (
-    pipeline1_fit,
+from cvm.preprocessing.nodes import (
     pipeline1_transform,
+    pipeline1_fit,
     feature_selection_all_target,
 )
+from cvm.src.utils.get_suffix import get_suffix
 
 
 def create_cvm_preprocessing(sample_type: str = None) -> Pipeline:

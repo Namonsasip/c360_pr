@@ -30,8 +30,8 @@ import pandas as pd
 from typing import Dict, Any, Tuple
 from pyspark.sql import DataFrame
 
-from cvm.src.utils import list_intersection
 from cvm.src.utils import list_targets
+from cvm.src.utils.list_operations import list_intersection
 
 
 def get_pandas_train_test_sample(

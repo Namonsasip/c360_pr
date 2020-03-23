@@ -32,12 +32,12 @@ from sklearn.ensemble import RandomForestClassifier
 import xgboost
 import logging
 from cvm.src.models import get_pandas_train_test_sample
-from cvm.src.models import (
-    pyspark_predict_xgb,
+from cvm.src.models.predict import (
     pyspark_predict_rf,
     predict_rf_pandas,
+    pyspark_predict_xgb,
 )
-from cvm.src.models import get_metrics
+from cvm.src.models.validate import get_metrics
 from cvm.src.utils import list_targets
 import shap
 import pandas as pd

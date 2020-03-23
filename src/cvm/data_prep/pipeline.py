@@ -33,15 +33,15 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 
-from cvm.data_prep import (
+from cvm.data_prep.nodes import (
+    create_sample_dataset,
     create_l5_cvm_one_day_users_table,
     add_ard_targets,
     add_churn_targets,
-    create_l5_cvm_one_day_train_test,
-    create_sample_dataset,
-    add_macrosegments,
-    add_volatility_scores,
     subs_date_join,
+    add_macrosegments,
+    create_l5_cvm_one_day_train_test,
+    add_volatility_scores,
 )
 from cvm.src.utils.get_suffix import get_suffix, is_scoring
 
