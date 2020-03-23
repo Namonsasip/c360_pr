@@ -29,7 +29,7 @@
 from pyspark.sql import DataFrame
 from typing import List, Dict, Any, Iterable
 
-from cvm.src.utils import list_targets
+from cvm.src.utils.list_targets import list_targets
 from cvm.src.utils.list_operations import list_sub, list_intersection
 
 
