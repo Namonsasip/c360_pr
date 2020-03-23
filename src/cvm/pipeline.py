@@ -75,7 +75,7 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         "cvm_scoring_preprocess_sample": create_cvm_preprocessing_scoring(
             "scoring_sample"
         ),
-        "cvm_predict_model_sample": create_predictions("scoring_sample"),
+        "cvm_predict_model_sample": create_predictions("scoring_sample", "dev"),
         "cvm_setup_training_data_dev": create_cvm_prepare_inputs_samples("dev")
         + create_cvm_targets("dev")
         + create_cvm_training_data("dev"),
