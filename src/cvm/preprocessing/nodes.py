@@ -34,7 +34,7 @@ from pyspark.ml import Pipeline, PipelineModel
 from pyspark.sql.functions import col
 
 from cvm.src.feature_selection import feature_selection
-from cvm.src.utils import prepare_key_columns
+from cvm.src.utils.prepare_key_columns import prepare_key_columns
 from cvm.src.utils.classify_columns import classify_columns
 from cvm.src.utils.list_operations import list_intersection
 
