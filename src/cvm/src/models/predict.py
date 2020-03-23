@@ -35,7 +35,7 @@ import pandas as pd
 from typing import Dict, Any
 import xgboost
 
-from cvm.src.utils import list_targets
+from cvm.src.utils.list_targets import list_targets
 from cvm.src.utils.list_operations import list_sub
 
 

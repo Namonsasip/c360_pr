@@ -32,7 +32,7 @@ from pyspark.sql import functions as func
 from typing import Any, Dict
 import datetime
 
-from cvm.src.utils import prepare_key_columns
+from cvm.src.utils.prepare_key_columns import prepare_key_columns
 
 
 def get_churn_targets(
