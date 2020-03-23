@@ -38,7 +38,7 @@ from cvm.src.models.predict import (
     pyspark_predict_xgb,
 )
 from cvm.src.models.validate import get_metrics
-from cvm.src.utils import list_targets
+from cvm.src.utils.list_targets import list_targets
 import shap
 import pandas as pd
 
