@@ -1,6 +1,6 @@
 int_l1_network_voice_features:
   feature_list:
-    cei_voice_qoe: "cei_voice_qoe"
+    cei_voice_qoe: "avg(cei_voice_qoe)"
     share_of_drop_calls: "sum(cei_voice_voice_drops_after_answers_moc + cei_voice_voice_drops_after_answers_mtc)/sum(cei_voice_call_proceeding_times)"
     drop_call_count: "sum(cei_voice_voice_drops_after_answers_moc + cei_voice_voice_drops_after_answers_mtc)"
     drop_call_in_3g_count: "sum(case when char_length(cs_cgi) = 13 then
@@ -76,9 +76,6 @@ int_l1_network_data_traffic_features:
     total_3g_traffic: "sum(case when upper(gprs_type) = '4GLTE' then vol_uplink_kb + vol_downlink_kb else 0)"
     total_4g_traffic: "sum(case when upper(gprs_type) in ('GGSN', '3GGSN') then vol_uplink_kb + vol_downlink_kb else 0)"
     total_traffic: "sum(vol_uplink_kb + vol_downlink_kb)"
-    share_of_3g_traffic_in_total_traffic: "sum(case when upper(gprs_type) in ('GGSN', '3GGSN')
-                                     then vol_uplink_kb + vol_downlink_kb else 0)/
-                                     sum(vol_uplink_kb + vol_downlink_kb)"
   granularity: "mobile_no, partition_date"
 
 l1_network_data_traffic_features:
