@@ -497,7 +497,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 if len(df_with_lookback_to_write.head(1)) == 0:
                     print("No new data to write at target")
                 else:
-                    df_with_lookback_to_write.coalesce(10).write.partitionBy(partitionBy).mode(mode).format(
+                    df_with_lookback_to_write.coalesce(20).write.partitionBy(partitionBy).mode(mode).format(
                         file_format).save(filewritepath)
                     print("Updating metadata table for lookback dataset scenario")
                     self._update_metadata_table(spark, metadata_table_path, target_table_name, filewritepath,
