@@ -281,7 +281,7 @@ def run_package(pipelines=[]):
 def run_selected_nodes(pipeline_name, node_names=None, env="base"):
     # entry point for running pip-install projects
     # using `<project_package>` command
-    project_context = load_context("cvm.run.ProjectContext", env=env)
+    project_context = load_context(Path.cwd(), env=env)
     project_context.run(node_names=node_names, pipeline_name=pipeline_name)
 
 
