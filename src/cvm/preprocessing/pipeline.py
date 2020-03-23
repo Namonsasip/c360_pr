@@ -28,8 +28,8 @@
 
 from kedro.pipeline import Pipeline, node
 
-from customer360.pipelines.cvm.src.utils.get_suffix import get_suffix
-from src.customer360.pipelines.cvm.preprocessing.nodes import (
+from cvm.src.utils.get_suffix import get_suffix
+from cvm.preprocessing import (
     pipeline1_fit,
     pipeline1_transform,
     feature_selection_all_target,

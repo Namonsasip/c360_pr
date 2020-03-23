@@ -32,16 +32,16 @@ import functools
 import pyspark.sql.functions as func
 from pyspark.sql import Window
 
-from customer360.pipelines.cvm.src.targets.ard_targets import get_ard_targets
-from customer360.pipelines.cvm.src.targets.churn_targets import (
+from cvm.src.targets import get_ard_targets
+from cvm.src.targets import (
     get_churn_targets,
     filter_usage,
 )
-from customer360.pipelines.cvm.src.utils.incremental_manipulation import (
+from cvm.src.utils import (
     filter_users,
     filter_latest_date,
 )
-from customer360.pipelines.cvm.src.utils.prepare_key_columns import prepare_key_columns
+from cvm.src.utils import prepare_key_columns
 
 
 def create_l5_cvm_one_day_users_table(

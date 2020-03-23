@@ -33,7 +33,7 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 
-from customer360.pipelines.cvm.data_prep.nodes import (
+from cvm.data_prep import (
     create_l5_cvm_one_day_users_table,
     add_ard_targets,
     add_churn_targets,
@@ -43,7 +43,7 @@ from customer360.pipelines.cvm.data_prep.nodes import (
     add_volatility_scores,
     subs_date_join,
 )
-from customer360.pipelines.cvm.src.utils.get_suffix import get_suffix, is_scoring
+from cvm.src.utils.get_suffix import get_suffix, is_scoring
 
 
 def create_cvm_prepare_inputs_samples(sample_type: str) -> Pipeline:

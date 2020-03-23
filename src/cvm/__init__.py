@@ -25,8 +25,7 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Example code for the nodes in the example pipeline. This code is meant
-just for illustrating basic Kedro features.
-
-PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
+"""project-samudra
 """
+
+__version__ = "0.1"

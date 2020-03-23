@@ -33,10 +33,10 @@ from pyspark.ml.feature import StringIndexer, Imputer
 from pyspark.ml import Pipeline, PipelineModel
 from pyspark.sql.functions import col
 
-from customer360.pipelines.cvm.src.utils.list_operations import list_intersection
-from customer360.pipelines.cvm.src.utils.prepare_key_columns import prepare_key_columns
-from src.customer360.pipelines.cvm.src.utils.classify_columns import classify_columns
-from src.customer360.pipelines.cvm.src.feature_selection import feature_selection
+from cvm.src.utils import list_intersection
+from cvm.src.utils import prepare_key_columns
+from cvm.src.utils.classify_columns import classify_columns
+from cvm import feature_selection
 
 
 def pipeline1_fit(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:

@@ -3,23 +3,23 @@ repos:
     rev: v2.4.0
     hooks:
     -   id: trailing-whitespace
-        files: src/customer360/pipelines/cvm
+        files: src/pipelines/cvm
     -   id: end-of-file-fixer
-        files: src/customer360/pipelines/cvm
+        files: src/pipelines/cvm
     -   id: check-yaml
         files: conf/base/CVM
     -   id: check-added-large-files
-        files: src/customer360/pipelines/cvm
+        files: src/pipelines/cvm
     -   id: check-merge-conflict
-        files: src/customer360/pipelines/cvm
+        files: src/pipelines/cvm
 -   repo: https://github.com/psf/black
     rev: stable
     hooks:
     - id: black
       language_version: python3.7
-      files: src/customer360/pipelines/cvm
+      files: src/pipelines/cvm
 -   repo: https://gitlab.com/pycqa/flake8
     rev: 3.7.9
     hooks:
     - id: flake8
-      files: src/customer360/pipelines/cvm
+      files: src/pipelines/cvm

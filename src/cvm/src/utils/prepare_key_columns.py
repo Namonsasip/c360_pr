@@ -28,7 +28,7 @@
 
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as func
-from customer360.pipelines.cvm.src.utils.list_operations import list_intersection
+from cvm.src.utils import list_intersection
 
 
 def prepare_key_columns(df: DataFrame,) -> DataFrame:

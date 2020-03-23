@@ -31,16 +31,16 @@ from typing import Dict, Any
 from sklearn.ensemble import RandomForestClassifier
 import xgboost
 import logging
-from customer360.pipelines.cvm.src.models.get_pandas_train_test_sample import (
+from cvm.src.models import (
     get_pandas_train_test_sample,
 )
-from customer360.pipelines.cvm.src.models.predict import (
+from cvm.src.models import (
     pyspark_predict_xgb,
     pyspark_predict_rf,
     predict_rf_pandas,
 )
-from customer360.pipelines.cvm.src.models.validate import get_metrics
-from customer360.pipelines.cvm.src.utils.list_targets import list_targets
+from cvm.src.models import get_metrics
+from cvm.src.utils import list_targets
 import shap
 import pandas as pd
 

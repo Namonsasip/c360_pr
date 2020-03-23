@@ -35,8 +35,8 @@ import pandas as pd
 from typing import Dict, Any
 import xgboost
 
-from customer360.pipelines.cvm.src.utils.list_operations import list_sub
-from customer360.pipelines.cvm.src.utils.list_targets import list_targets
+from cvm.src.utils import list_sub
+from cvm.src.utils import list_targets
 
 
 def pandas_predict_xgb(

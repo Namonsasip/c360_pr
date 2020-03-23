@@ -28,7 +28,7 @@
 
 from pyspark.sql import DataFrame
 from datetime import date
-from customer360.pipelines.cvm.src.utils.prepare_key_columns import prepare_key_columns
+from cvm.src.utils import prepare_key_columns
 from pyspark.sql import functions as func
 
 
