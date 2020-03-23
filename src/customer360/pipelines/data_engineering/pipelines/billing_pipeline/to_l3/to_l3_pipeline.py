@@ -1,6 +1,6 @@
 from kedro.pipeline import Pipeline, node
-from src.customer360.utilities.config_parser import *
-from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l3.to_l3_nodes import *
+from customer360.utilities.config_parser import *
+from customer360.pipelines.data_engineering.nodes.billing_nodes.to_l3.to_l3_nodes import *
 
 
 def billing_to_l3_pipeline(**kwargs):
@@ -130,7 +130,7 @@ def billing_to_l3_pipeline(**kwargs):
                 "l3_billing_and_payments_monthly_last_top_up_channel"
             ),
 
-            # Monthly missed bills feature post-paid
+            #Monthly missed bills feature post-paid
             node(
                 billing_data_joined,
                 ["billing_stat_hist_monthly_data",

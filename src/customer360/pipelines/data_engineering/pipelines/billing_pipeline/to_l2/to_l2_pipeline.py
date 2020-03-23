@@ -1,7 +1,7 @@
 from kedro.pipeline import Pipeline, node
-from src.customer360.utilities.config_parser import *
-from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l2.to_l2_nodes import *
-from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l1.to_l1_nodes import *
+from customer360.utilities.config_parser import *
+from customer360.pipelines.data_engineering.nodes.billing_nodes.to_l2.to_l2_nodes import *
+from customer360.pipelines.data_engineering.nodes.billing_nodes.to_l1.to_l1_nodes import *
 
 
 def billing_to_l2_pipeline(**kwargs):
@@ -84,7 +84,7 @@ def billing_to_l2_pipeline(**kwargs):
                 "l2_billing_and_payments_weekly_last_top_up_channel"
             ),
 
-            # Weekly popular top up day pre-apid
+            # # Weekly popular top up day pre-apid
             node(
                 node_from_config,
                 ["l1_billing_and_payments_daily_popular_topup_day",

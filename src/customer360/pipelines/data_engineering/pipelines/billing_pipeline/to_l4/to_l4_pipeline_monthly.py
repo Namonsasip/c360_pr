@@ -1,7 +1,7 @@
 from kedro.pipeline import Pipeline, node
 
-from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l3.to_l3_nodes import *
-from src.customer360.utilities.config_parser import *
+from customer360.pipelines.data_engineering.nodes.billing_nodes.to_l3.to_l3_nodes import *
+from customer360.utilities.config_parser import *
 
 
 def billing_to_l4_pipeline_monthly(**kwargs):

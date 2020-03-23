@@ -20,6 +20,7 @@ def init_spark_session(line=None):
     # Dont delete this line. This allow spark to only overwrite the partition
     # saved to parquet instead of entire table folder
     spark.conf.set("spark.sql.sources.partitionOverwriteMode", "DYNAMIC")
+    spark.conf.set("spark.sql.execution.arrow.enabled", "false")
 
     logging.info("Initlialized spark session and defined global variable `spark`")
 
@@ -70,8 +71,14 @@ def reload_kedro(path, line=None):
         catalog = context.catalog
 
         # remove cached user modules
-        package_name = context.__module__.split(".")[0]
-        to_remove = [mod for mod in sys.modules if mod.startswith(package_name)]
+        package_names = os.listdir(os.path.join(path, "src"))
+        package_names += [context.__module__.split(".")[0]]
+        package_names += ["src"]
+        to_remove = [
+            mod
+            for mod in sys.modules
+            if any([mod.startswith(package_name) for package_name in package_names])
+        ]
         for module in to_remove:
             del sys.modules[module]
 
