@@ -41,36 +41,59 @@ from .pipelines.data_engineering.pipelines.usage_pipeline.to_l1 import \
 from src.customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline \
     .to_l1.to_l1_pipeline import \
     customer_profile_to_l1_pipeline
-from src.customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l3.to_l3_pipeline import \
+from src.customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline\
+    .to_l3.to_l3_pipeline import \
     customer_profile_to_l3_pipeline, \
     customer_profile_billing_level_to_l3_pipeline
-from src.customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l4.to_l4_pipeline import \
+from src.customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline\
+    .to_l4.to_l4_pipeline import \
     customer_profile_to_l4_pipeline
-from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l1.to_l1_pipeline import \
+from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l1\
+    .to_l1_pipeline import \
     billing_to_l1_pipeline
-from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l3.to_l3_pipeline import \
+from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l3\
+    .to_l3_pipeline import \
     billing_to_l3_pipeline
-from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l2.to_l2_pipeline import \
+from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l2\
+    .to_l2_pipeline import \
     billing_to_l2_pipeline
-from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4.to_l4_pipeline_daily import *
-from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4.to_l4_pipeline_weekly import *
-from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4.to_l4_pipeline_monthly import *
-from .pipelines.data_engineering.pipelines.usage_pipeline.to_l2 import usage_to_l2_pipeline
-from .pipelines.data_engineering.pipelines.usage_pipeline.to_l4.to_l4_pipeline import usage_to_l4_pipeline
+from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4\
+    .to_l4_pipeline_daily import *
+from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4\
+    .to_l4_pipeline_weekly import *
+from src.customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4\
+    .to_l4_pipeline_monthly import *
+from .pipelines.data_engineering.pipelines.usage_pipeline.to_l2 import \
+    usage_to_l2_pipeline
+from .pipelines.data_engineering.pipelines.usage_pipeline.to_l4.to_l4_pipeline import \
+    usage_to_l4_pipeline
 
-from .pipelines.data_engineering.pipelines.device_pipeline.to_l2.to_l2_pipeline import device_to_l2_pipeline
-from .pipelines.data_engineering.pipelines.device_pipeline.to_l3.to_l3_pipeline import device_to_l3_pipeline
-from .pipelines.data_engineering.pipelines.usage_pipeline.to_l4 import usage_to_l4_pipeline
-from .pipelines.data_engineering.pipelines.usage_pipeline.to_l4 import usage_to_l4_daily_pipeline
-from .pipelines.data_engineering.pipelines.stream_pipeline.to_l1.to_l1_pipeline import streaming_to_l1_pipeline
-from .pipelines.data_engineering.pipelines.stream_pipeline.to_l2.to_l2_pipeline import streaming_to_l2_pipeline
-from .pipelines.data_engineering.pipelines.stream_pipeline.to_l3.to_l3_pipeline import streaming_to_l3_pipeline
-from .pipelines.data_engineering.pipelines.stream_pipeline.to_l4.to_l4_pipeline import streaming_to_l4_pipeline
-from .pipelines.data_engineering.pipelines.revenue_pipeline.to_l3 import revenue_to_l3_pipeline
-from .pipelines.data_engineering.pipelines.revenue_pipeline.to_l4 import revenue_to_l4_pipeline
-from .pipelines.data_engineering.pipelines.campaign_pipeline.to_l1 import campaign_to_l1_pipeline
-from .pipelines.data_engineering.pipelines.campaign_pipeline.to_l2 import campaign_to_l2_pipeline
-from .pipelines.data_engineering.pipelines.campaign_pipeline.to_l4 import campaign_to_l4_pipeline
+from .pipelines.data_engineering.pipelines.device_pipeline.to_l2.to_l2_pipeline import \
+    device_to_l2_pipeline
+from .pipelines.data_engineering.pipelines.device_pipeline.to_l3.to_l3_pipeline import \
+    device_to_l3_pipeline
+from .pipelines.data_engineering.pipelines.usage_pipeline.to_l4 import \
+    usage_to_l4_pipeline
+from .pipelines.data_engineering.pipelines.usage_pipeline.to_l4 import \
+    usage_to_l4_daily_pipeline
+from .pipelines.data_engineering.pipelines.stream_pipeline.to_l1.to_l1_pipeline import \
+    streaming_to_l1_pipeline
+from .pipelines.data_engineering.pipelines.stream_pipeline.to_l2.to_l2_pipeline import \
+    streaming_to_l2_pipeline
+from .pipelines.data_engineering.pipelines.stream_pipeline.to_l3.to_l3_pipeline import \
+    streaming_to_l3_pipeline
+from .pipelines.data_engineering.pipelines.stream_pipeline.to_l4.to_l4_pipeline import \
+    streaming_to_l4_pipeline
+from .pipelines.data_engineering.pipelines.revenue_pipeline.to_l3 import \
+    revenue_to_l3_pipeline
+from .pipelines.data_engineering.pipelines.revenue_pipeline.to_l4 import \
+    revenue_to_l4_pipeline
+from .pipelines.data_engineering.pipelines.campaign_pipeline.to_l1 import \
+    campaign_to_l1_pipeline
+from .pipelines.data_engineering.pipelines.campaign_pipeline.to_l2 import \
+    campaign_to_l2_pipeline
+from .pipelines.data_engineering.pipelines.campaign_pipeline.to_l4 import \
+    campaign_to_l4_pipeline
 
 
 def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
@@ -113,7 +136,8 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         "usage_to_l4_pipeline": usage_to_l4_pipeline(),
         "customer_profile_to_l1_pipeline": customer_profile_to_l1_pipeline(),
         "customer_profile_to_l3_pipeline": customer_profile_to_l3_pipeline(),
-        "customer_profile_billing_level_to_l3_pipeline": customer_profile_billing_level_to_l3_pipeline(),
+        "customer_profile_billing_level_to_l3_pipeline":
+            customer_profile_billing_level_to_l3_pipeline(),
         "customer_profile_to_l4_pipeline": customer_profile_to_l4_pipeline(),
         "usage_to_l1_pipeline": usage_to_l1_pipeline(),
         'billing_to_l1_pipeline': billing_to_l1_pipeline(),
@@ -139,23 +163,26 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
                                           + create_cvm_training_data("sample"),
         "cvm_training_preprocess_sample": create_cvm_preprocessing("sample"),
         "cvm_train_model_sample": create_train_model("sample"),
-        "cvm_setup_scoring_data_sample": create_cvm_prepare_inputs_samples("scoring_sample")
-                                          + create_cvm_scoring_data("scoring_sample"),
+        "cvm_setup_scoring_data_sample": create_cvm_prepare_inputs_samples(
+            "scoring_sample")
+                                         + create_cvm_scoring_data("scoring_sample"),
         "cvm_scoring_combine_data": create_cvm_scoring_data("scoring_sample"),
-        "cvm_scoring_preprocess_sample": create_cvm_preprocessing_scoring("scoring_sample"),
+        "cvm_scoring_preprocess_sample": create_cvm_preprocessing_scoring(
+            "scoring_sample"),
         "cvm_predict_model_sample": create_predictions("scoring_sample"),
         "cvm_setup_training_data_dev": create_cvm_prepare_inputs_samples("dev")
-                                          + create_cvm_targets("dev")
-                                          + create_cvm_training_data("dev"),
+                                       + create_cvm_targets("dev")
+                                       + create_cvm_training_data("dev"),
         "cvm_training_combine_data": create_cvm_training_data("dev"),
-       "cvm_training_preprocess_dev": create_cvm_preprocessing("dev"),
+        "cvm_training_preprocess_dev": create_cvm_preprocessing("dev"),
         "cvm_train_model_dev": create_train_model("dev"),
         "cvm_setup_scoring_data_dev": create_cvm_prepare_inputs_samples(
             "scoring_dev")
-                                         + create_cvm_scoring_data("scoring_dev"),
+                                      + create_cvm_scoring_data("scoring_dev"),
         "cvm_scoring_combine_data": create_cvm_scoring_data("scoring_dev"),
         "cvm_scoring_preprocess_dev": create_cvm_preprocessing_scoring(
             "scoring_dev"),
         "cvm_predict_model_dev": create_predictions("scoring_dev", "dev"),
-        "cvm_validate_model_dev": create_predictions("sample", "dev"),
+        "cvm_validate_model_dev": create_predictions("sample", "dev",
+                                                     "l5_cvm_one_day_train_preprocessed_sample")
     }

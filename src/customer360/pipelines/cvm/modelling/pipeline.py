@@ -61,15 +61,18 @@ def create_train_model(sample_type: str = None) -> Pipeline:
 
 
 def create_predictions(
-    sample_type: str = None, training_sample_type: str = None
+    sample_type: str = None,
+    training_sample_type: str = None,
+    input_dataset_name: str = None,
 ) -> Pipeline:
     """ Creates prediction pipeline.
 
       Args:
           sample_type: sample type to use. Dev sample for "dev", Sample for "sample",
-          full dataset for None (default).
+              full dataset for None (default).
           training_sample_type: same as sample_type, but defines type of training
-          sample for models used.
+              sample for models used.
+          input_dataset_name: uses given dataset as input, overrides other arguments.
 
       Returns:
           Kedro pipeline.
@@ -77,16 +80,16 @@ def create_predictions(
 
     suffix = get_suffix(sample_type)
     training_suffix = get_suffix(training_sample_type)
+    if input_dataset_name is None:
+        input_name = "l5_cvm_one_day_preprocessed" + suffix
+    else:
+        input_name = input_dataset_name
 
     return Pipeline(
         [
             node(
                 predict_rf,
-                [
-                    "l5_cvm_one_day_preprocessed" + suffix,
-                    "random_forest" + training_suffix,
-                    "parameters",
-                ],
+                [input_name, "random_forest" + training_suffix, "parameters"],
                 "l5_cvm_one_day_predictions" + suffix,
                 name="create_l5_cvm_one_day_predictions" + suffix,
             ),
