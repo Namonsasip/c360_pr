@@ -2,6 +2,7 @@
 # KEDRO PROJECT
 
 # ignore all local configuration
+.kedro.yml
 
 # ignore potentially sensitive credentials files
 conf/**/*credentials*
