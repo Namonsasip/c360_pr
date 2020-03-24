@@ -660,8 +660,7 @@ class TestUnitTp:
                 0] == 3426
 
     def test_nim_work(self,project_context):
-
-        # kedro test D:\save\test\project-samudra\src\tests\test_unit_tests\test_unit_touch_point_features.py::TestUnitTp::test_nim_work
+        # kedro test C:\Users\Administrator.OGSKWZOI8UHKM7Y\Desktop\project-samudra\src\tests\test_unit_tests\test_unit_touch_point_features.py::TestUnitTp::test_nim_work
 
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
@@ -797,116 +796,234 @@ class TestUnitTp:
         l1_nim_work = l1_nim_work.withColumn("access_method_num", F.lit(1))
         l2_nim_work = l2_massive_processing_with_expansion(l1_nim_work, var_project_context.catalog.load(
             'params:l2_touchpoints_nim_work_features'))
-        l2_nim_work.show()
-        exit(0)
+        # l2_nim_work.show()
+        # exit(0)
         # num_of_commercial_question_with_cc_sum
         # num_of_claims_with_cc_sum
-        assert \
-            l2_nim_work.where(
-                "start_of_week = '2020-01-27'").select(
-                "num_of_commercial_question_with_cc_sum").collect()[0][
-                0] == 0
-        assert \
-            l2_nim_work.where(
-                "start_of_week = '2020-01-27'").select(
-                "num_of_claims_with_cc_sum").collect()[0][
-                0] == 0
-        # num_of_consultation_with_cc_sum
-        # num_of_commercial_question_in_store_sum
-        assert \
-            l2_nim_work.where(
-                "start_of_week = '2020-01-27'").select(
-                "num_of_consultation_with_cc_sum").collect()[0][
-                0] == 0
-        assert \
-            l2_nim_work.where(
-                "start_of_week = '2020-01-27'").select(
-                "num_of_commercial_question_in_store_sum").collect()[0][
-                0] == 0
-        # num_of_claims_in_store_sum
-        # num_of_consultation_in_store_sum
-        assert \
-            l2_nim_work.where(
-                "start_of_week = '2020-01-27'").select(
-                "num_of_claims_in_store_sum").collect()[0][
-                0] == 0
-        assert \
-            l2_nim_work.where(
-                "start_of_week = '2020-01-27'").select(
-                "num_of_consultation_in_store_sum").collect()[0][
-                0] == 0
-        # num_of_commercial_question_with_chatbot_sum
-        # num_of_claims_with_chatbot_sum
-        assert \
-            l2_nim_work.where(
-                "start_of_week = '2020-01-27'").select(
-                "num_of_commercial_question_with_chatbot_sum").collect()[0][
-                0] == 0
-        assert \
-            l2_nim_work.where(
-                "start_of_week = '2020-01-27'").select(
-                "num_of_claims_with_chatbot_sum").collect()[0][
-                0] == 0
-        # num_of_consultation_with_chatbot_sum
-        # num_of_chatbot_visit_sum
-        assert \
-            l2_nim_work.where(
-                "start_of_week = '2020-01-27'").select(
-                "num_of_consultation_with_chatbot_sum").collect()[0][
-                0] == 0
-        assert \
-            l2_nim_work.where(
-                "start_of_week = '2020-01-27'").select(
-                "num_of_chatbot_visit_sum").collect()[0][
-                0] == 0
-        # num_of_days_with_chatbot_sum
-        # num_of_commercial_question_with_ais_app_sum
-        assert \
-            l2_nim_work.where(
-                "start_of_week = '2020-01-27'").select(
-                "num_of_days_with_chatbot_sum").collect()[0][
-                0] == 0
-        assert \
-            l2_nim_work.where(
-                "start_of_week = '2020-01-27'").select(
-                "num_of_commercial_question_with_ais_app_sum").collect()[0][
-                0] == 0
-        # num_of_claims_with_ais_app_sum
-        # num_of_consultation_with_ais_app_sum
-        assert \
-            l2_nim_work.where(
-                "start_of_week = '2020-01-27'").select(
-                "num_of_claims_with_ais_app_sum").collect()[0][
-                0] == 0
-        assert \
-            l2_nim_work.where(
-                "start_of_week = '2020-01-27'").select(
-                "num_of_consultation_with_ais_app_sum").collect()[0][
-                0] == 0
-        # num_of_days_with_ais_app_sum
-        # num_of_commercial_question_online_sum
-        assert \
-            l2_nim_work.where(
-                "start_of_week = '2020-01-27'").select(
-                "num_of_days_with_ais_app_sum").collect()[0][
-                0] == 0
-        assert \
-            l2_nim_work.where(
-                "start_of_week = '2020-01-27'").select(
-                "num_of_commercial_question_online_sum").collect()[0][
-                0] == 0
-        # num_of_claims_with_online_sum
-        # num_of_consultation_online_sum
-        assert \
-            l2_nim_work.where(
-                "start_of_week = '2020-01-27'").select(
-                "num_of_claims_with_online_sum").collect()[0][
-                0] == 0
-        assert \
-            l2_nim_work.where(
-                "start_of_week = '2020-01-27'").select(
-                "num_of_consultation_online_sum").collect()[0][
-                0] == 0
+        # assert \
+        #     l2_nim_work.where(
+        #         "start_of_week = '2020-01-27'").select(
+        #         "num_of_commercial_question_with_cc_sum").collect()[0][
+        #         0] == 2
+        # assert \
+        #     l2_nim_work.where(
+        #         "start_of_week = '2020-01-27'").select(
+        #         "num_of_claims_with_cc_sum").collect()[0][
+        #         0] == 2
+        # # num_of_consultation_with_cc_sum
+        # # num_of_commercial_question_in_store_sum
+        # assert \
+        #     l2_nim_work.where(
+        #         "start_of_week = '2020-01-27'").select(
+        #         "num_of_consultation_with_cc_sum").collect()[0][
+        #         0] == 2
+        # assert \
+        #     l2_nim_work.where(
+        #         "start_of_week = '2020-01-27'").select(
+        #         "num_of_commercial_question_in_store_sum").collect()[0][
+        #         0] == 2
+        # # num_of_claims_in_store_sum
+        # # num_of_consultation_in_store_sum
+        # assert \
+        #     l2_nim_work.where(
+        #         "start_of_week = '2020-01-27'").select(
+        #         "num_of_claims_in_store_sum").collect()[0][
+        #         0] == 2
+        # assert \
+        #     l2_nim_work.where(
+        #         "start_of_week = '2020-01-27'").select(
+        #         "num_of_consultation_in_store_sum").collect()[0][
+        #         0] == 2
+        # # num_of_commercial_question_with_chatbot_sum
+        # # num_of_claims_with_chatbot_sum
+        # assert \
+        #     l2_nim_work.where(
+        #         "start_of_week = '2020-01-27'").select(
+        #         "num_of_commercial_question_with_chatbot_sum").collect()[0][
+        #         0] == 2
+        # assert \
+        #     l2_nim_work.where(
+        #         "start_of_week = '2020-01-27'").select(
+        #         "num_of_claims_with_chatbot_sum").collect()[0][
+        #         0] == 2
+        # # num_of_consultation_with_chatbot_sum
+        # # num_of_chatbot_visit_sum
+        # assert \
+        #     l2_nim_work.where(
+        #         "start_of_week = '2020-01-27'").select(
+        #         "num_of_consultation_with_chatbot_sum").collect()[0][
+        #         0] == 2
+        # assert \
+        #     l2_nim_work.where(
+        #         "start_of_week = '2020-01-27'").select(
+        #         "num_of_chatbot_visit_sum").collect()[0][
+        #         0] == 2
+        # # num_of_days_with_chatbot_sum
+        # # num_of_commercial_question_with_ais_app_sum
+        # assert \
+        #     l2_nim_work.where(
+        #         "start_of_week = '2020-01-27'").select(
+        #         "num_of_days_with_chatbot_sum").collect()[0][
+        #         0] == 2
+        # assert \
+        #     l2_nim_work.where(
+        #         "start_of_week = '2020-01-27'").select(
+        #         "num_of_commercial_question_with_ais_app_sum").collect()[0][
+        #         0] == 0
+        # # num_of_claims_with_ais_app_sum
+        # # num_of_consultation_with_ais_app_sum
+        # assert \
+        #     l2_nim_work.where(
+        #         "start_of_week = '2020-01-27'").select(
+        #         "num_of_claims_with_ais_app_sum").collect()[0][
+        #         0] == 0
+        # assert \
+        #     l2_nim_work.where(
+        #         "start_of_week = '2020-01-27'").select(
+        #         "num_of_consultation_with_ais_app_sum").collect()[0][
+        #         0] == 0
+        # # num_of_days_with_ais_app_sum
+        # # num_of_commercial_question_online_sum
+        # assert \
+        #     l2_nim_work.where(
+        #         "start_of_week = '2020-01-27'").select(
+        #         "num_of_days_with_ais_app_sum").collect()[0][
+        #         0] == 0
+        # assert \
+        #     l2_nim_work.where(
+        #         "start_of_week = '2020-01-27'").select(
+        #         "num_of_commercial_question_online_sum").collect()[0][
+        #         0] == 1
+        # # num_of_claims_with_online_sum
+        # # num_of_consultation_online_sum
+        # assert \
+        #     l2_nim_work.where(
+        #         "start_of_week = '2020-01-27'").select(
+        #         "num_of_claims_with_online_sum").collect()[0][
+        #         0] == 1
+        # assert \
+        #     l2_nim_work.where(
+        #         "start_of_week = '2020-01-27'").select(
+        #         "num_of_consultation_online_sum").collect()[0][
+        #         0] == 1
 
-        l2_nim_work.show()
-        exit()
+        # l2_nim_work.show()
+        l3_nim_work = expansion(l1_nim_work, var_project_context.catalog.load(
+            'params:l3_touchpoints_nim_work_features'))
+        # l3_nim_work = expansion(l1_nim_work, var_project_context.catalog.load(
+        #     'params:l3_touchpoints_from_call_center_features'))
+        # l3_nim_work.show()
+        # num_of_commercial_question_with_cc_sum
+        # num_of_claims_with_cc_sum
+        # assert \
+        #     l3_nim_work.where(
+        #         "start_of_month = '2020-01-01'").select(
+        #         "num_of_commercial_question_with_cc_sum").collect()[0][
+        #         0] == 11
+        # assert \
+        #     l3_nim_work.where(
+        #         "start_of_month = '2020-01-01'").select(
+        #         "num_of_claims_with_cc_sum").collect()[0][
+        #         0] == 11
+        # # num_of_consultation_with_cc_sum
+        # # num_of_commercial_question_in_store_sum
+        # assert \
+        #     l3_nim_work.where(
+        #         "start_of_month = '2020-01-01'").select(
+        #         "num_of_consultation_with_cc_sum").collect()[0][
+        #         0] == 11
+        # assert \
+        #     l3_nim_work.where(
+        #         "start_of_month = '2020-01-01'").select(
+        #         "num_of_commercial_question_in_store_sum").collect()[0][
+        #         0] == 6
+        # # num_of_claims_in_store_sum
+        # # num_of_consultation_in_store_sum
+        # assert \
+        #     l3_nim_work.where(
+        #         "start_of_month = '2020-01-01'").select(
+        #         "num_of_claims_in_store_sum").collect()[0][
+        #         0] == 6
+        # assert \
+        #     l3_nim_work.where(
+        #         "start_of_month = '2020-01-01'").select(
+        #         "num_of_consultation_in_store_sum").collect()[0][
+        #         0] == 6
+        # # num_of_commercial_question_with_chatbot_sum
+        # # num_of_claims_with_chatbot_sum
+        # assert \
+        #     l3_nim_work.where(
+        #         "start_of_month = '2020-01-01'").select(
+        #         "num_of_commercial_question_with_chatbot_sum").collect()[0][
+        #         0] == 6
+        # assert \
+        #     l3_nim_work.where(
+        #         "start_of_month = '2020-01-01'").select(
+        #         "num_of_claims_with_chatbot_sum").collect()[0][
+        #         0] == 6
+        # # num_of_consultation_with_chatbot_sum
+        # # num_of_chatbot_visit_sum
+        # assert \
+        #     l3_nim_work.where(
+        #         "start_of_month = '2020-01-01'").select(
+        #         "num_of_consultation_with_chatbot_sum").collect()[0][
+        #         0] == 6
+        # assert \
+        #     l3_nim_work.where(
+        #         "start_of_month = '2020-01-01'").select(
+        #         "num_of_chatbot_visit_sum").collect()[0][
+        #         0] == 6
+        # # num_of_days_with_chatbot_sum
+        # # num_of_commercial_question_with_ais_app_sum
+        # assert \
+        #     l3_nim_work.where(
+        #         "start_of_month = '2020-01-01'").select(
+        #         "num_of_days_with_chatbot_sum").collect()[0][
+        #         0] == 6
+        # assert \
+        #     l3_nim_work.where(
+        #         "start_of_month = '2020-01-01'").select(
+        #         "num_of_commercial_question_with_ais_app_sum").collect()[0][
+        #         0] == 2
+        # # num_of_claims_with_ais_app_sum
+        # # num_of_consultation_with_ais_app_sum
+        # assert \
+        #     l3_nim_work.where(
+        #         "start_of_month = '2020-01-01'").select(
+        #         "num_of_claims_with_ais_app_sum").collect()[0][
+        #         0] == 2
+        # assert \
+        #     l3_nim_work.where(
+        #         "start_of_month = '2020-01-01'").select(
+        #         "num_of_consultation_with_ais_app_sum").collect()[0][
+        #         0] == 2
+        # # num_of_days_with_ais_app_sum
+        # # num_of_commercial_question_online_sum
+        # assert \
+        #     l3_nim_work.where(
+        #         "start_of_month = '2020-01-01'").select(
+        #         "num_of_days_with_ais_app_sum").collect()[0][
+        #         0] == 2
+        # assert \
+        #     l3_nim_work.where(
+        #         "start_of_month = '2020-01-01'").select(
+        #         "num_of_commercial_question_online_sum").collect()[0][
+        #         0] == 6
+        # # num_of_claims_with_online_sum
+        # # num_of_consultation_online_sum
+        # assert \
+        #     l3_nim_work.where(
+        #         "start_of_month = '2020-01-01'").select(
+        #         "num_of_claims_with_online_sum").collect()[0][
+        #         0] == 6
+        # assert \
+        #     l3_nim_work.where(
+        #         "start_of_month = '2020-01-01'").select(
+        #         "num_of_consultation_online_sum").collect()[0][
+        #         0] == 6
+
+        l4_nim_work = l4_rolling_window(l2_nim_work, var_project_context.catalog.load(
+            'params:l4_touchpoints_nim_work_features'))
+        l4_nim_work.show()
+        exit(2)
+#
