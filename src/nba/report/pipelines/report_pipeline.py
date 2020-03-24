@@ -1,6 +1,5 @@
 from functools import partial
 from kedro.pipeline import Pipeline, node
-from src.customer360.pipelines.cvm.src.utils.get_suffix import get_suffix
 from src.nba.report.nodes.report_nodes import *
 
 
