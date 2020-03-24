@@ -292,7 +292,10 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             print("lookback:", lookback)
 
             print("Fetching source data")
-            src_data = spark.read.parquet(filepath)
+            #src_data = spark.read.parquet(filepath)
+            src_data = spark.read.load(
+                filepath, self._file_format, **self._load_args
+                            )
 
             print("source data is fetched")
             print("checking whether data is empty or not")
@@ -370,7 +373,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                                                                                                             tgt_filter_date,
                                                                                                             lookback_fltr))
 
-            elif read_layer.lower() == "l1_daily_customer_profile_daily" and target_layer.lower() == 'l1_daily':
+            elif read_layer.lower() == "l1_daily" and target_layer.lower() == 'l1_daily':
                 filter_col = "event_partition_date"
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 print("filter_col:", filter_col)
@@ -438,7 +441,11 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
     def _update_metadata_table(self, spark, metadata_table_path, target_table_name, filepath, write_mode, file_format, partitionBy):
 
-        current_target_data = spark.read.format(file_format).load(filepath)
+        #current_target_data = spark.read.format(file_format).load(filepath)
+
+        current_target_data = spark.read.load(
+                filepath, file_format, **self._load_args
+                            )
         current_target_data.createOrReplaceTempView("curr_target")
 
         current_target_max_data_load_date = spark.sql(
@@ -520,7 +527,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     df_with_lookback_to_write.write.partitionBy(partitionBy).mode(mode).format(
                         file_format).save(filewritepath)
                     print("Updating metadata table for lookback dataset scenario")
-                    self._update_metadata_table(spark, metadata_table_path, target_table_name, filewritepath,
+                    self._update_metadata_table(self, spark, metadata_table_path, target_table_name, filewritepath,
                                                 mode, file_format, partitionBy)
 
             else:
@@ -530,7 +537,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
                 print("Updating metadata table")
 
-                self._update_metadata_table(spark, metadata_table_path, target_table_name, filewritepath, mode,
+                self._update_metadata_table(self,spark, metadata_table_path, target_table_name, filewritepath, mode,
                                             file_format, partitionBy)
 
     def _load(self) -> DataFrame:
