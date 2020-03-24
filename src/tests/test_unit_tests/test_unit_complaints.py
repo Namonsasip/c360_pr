@@ -278,14 +278,14 @@ class TestUnitComplaints:
         print("test L2 -->  l2_complaints_nps_scoring  --> from complaints_nps_after_call")
         assert \
             l2_feature_2.where( \
-                "caller_no = 'mv6fLn5EbNGOgfj8olB9yHg6r8rQRjv92iiccMAtQH71LOCmupE.lEk9eaS1ZyDw' and "
+                "access_method_num = 'mv6fLn5EbNGOgfj8olB9yHg6r8rQRjv92iiccMAtQH71LOCmupE.lEk9eaS1ZyDw' and "
                 "start_of_week='2020-01-27'") \
                 .select("avg_nps").collect()[0][0] == 3
 
         assert \
             l2_feature_2.where \
                     (
-                    "caller_no = 'mv6fLn5EbNGOgfj8olB9yHg6r8rQRjv92iiccMAtQH71LOCmupE.lEk9eaS1ZyDw' and "
+                    "access_method_num = 'mv6fLn5EbNGOgfj8olB9yHg6r8rQRjv92iiccMAtQH71LOCmupE.lEk9eaS1ZyDw' and "
                     "start_of_week='2020-02-10'") \
                 .select("record_count").collect()[0][0] == 2
         print("test L2 -->  l2_complaints_nps_scoring  --> from complaints_nps_after_call --> success 2 feature")
@@ -293,14 +293,14 @@ class TestUnitComplaints:
         print("test L2 -->  l2_complaints_nps_scoring  --> from complaints_nps_after_chatbot")
         assert \
         l2_feature_3.where( \
-            "caller_no = 'mv6fLn5EbNGOgfj8olB9yHg6r8rQRjv92iiccMAtQH71LOCmupE.lEk9eaS1ZyDw' and "
+            "access_method_num = 'mv6fLn5EbNGOgfj8olB9yHg6r8rQRjv92iiccMAtQH71LOCmupE.lEk9eaS1ZyDw' and "
             "start_of_week='2020-01-27'") \
             .select("avg_nps").collect()[0][0] == 2.5
 
         assert \
         l2_feature_3.where \
                 (
-                "caller_no = 'mv6fLn5EbNGOgfj8olB9yHg6r8rQRjv92iiccMAtQH71LOCmupE.lEk9eaS1ZyDw' and "
+                "access_method_num = 'mv6fLn5EbNGOgfj8olB9yHg6r8rQRjv92iiccMAtQH71LOCmupE.lEk9eaS1ZyDw' and "
                 "start_of_week='2020-02-10'") \
             .select("record_count").collect()[0][0] == 2
         print("test L2 -->  l2_complaints_nps_scoring  --> from complaints_nps_after_chatbot --> success 2 feature")
@@ -308,14 +308,14 @@ class TestUnitComplaints:
         print("test L2 -->  l2_complaints_nps_scoring  --> from complaints_nps_after_store_visit")
         assert \
         l2_feature_4.where( \
-            "caller_no = 'mv6fLn5EbNGOgfj8olB9yHg6r8rQRjv92iiccMAtQH71LOCmupE.lEk9eaS1ZyDw' and "
+            "access_method_num = 'mv6fLn5EbNGOgfj8olB9yHg6r8rQRjv92iiccMAtQH71LOCmupE.lEk9eaS1ZyDw' and "
             "start_of_week='2020-01-27'") \
             .select("avg_nps").collect()[0][0] == 7.5
 
         assert \
         l2_feature_4.where \
                 (
-                "caller_no = 'mv6fLn5EbNGOgfj8olB9yHg6r8rQRjv92iiccMAtQH71LOCmupE.lEk9eaS1ZyDw' and "
+                "access_method_num = 'mv6fLn5EbNGOgfj8olB9yHg6r8rQRjv92iiccMAtQH71LOCmupE.lEk9eaS1ZyDw' and "
                 "start_of_week='2020-02-10'") \
             .select("record_count").collect()[0][0] == 2
         print("test L2 -->  l2_complaints_nps_scoring  --> from complaints_nps_after_store_visit --> success 2 feature")
