@@ -21,23 +21,30 @@ def union_daily_cust_profile(
         ),
         dedup_amn_reg_date as (
             select unioned_cust_profile.access_method_num, 
-                    max(unioned_cust_profile.register_date) as register_date
+                    max(unioned_cust_profile.register_date) as register_date,
+                    unioned_cust_profile.partition_date
             from unioned_cust_profile
             inner join (
-              select access_method_num, max(register_date) as register_date
+              select access_method_num, 
+                     max(register_date) as register_date,
+                     partition_date
               from unioned_cust_profile
-              group by access_method_num
+              group by access_method_num, partition_date
             ) t
             on unioned_cust_profile.access_method_num = t.access_method_num
                and unioned_cust_profile.register_date = t.register_date
-            group by unioned_cust_profile.access_method_num
-            having count(unioned_cust_profile.access_method_num) = 1
+               and unioned_cust_profile.partition_date = t.partition_date
+            group by unioned_cust_profile.access_method_num, 
+                     unioned_cust_profile.partition_date
+            having count(unioned_cust_profile.access_method_num, 
+                         unioned_cust_profile.partition_date) = 1
         )
         select unioned_cust_profile.*
         from unioned_cust_profile
         inner join dedup_amn_reg_date d
         on unioned_cust_profile.access_method_num = d.access_method_num
             and unioned_cust_profile.register_date = d.register_date
+            and unioned_cust_profile.partition_date = d.partition_date
     """
 
     def setup_column_to_extract(key):
