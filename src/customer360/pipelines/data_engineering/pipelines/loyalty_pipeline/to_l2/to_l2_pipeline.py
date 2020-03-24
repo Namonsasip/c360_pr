@@ -24,12 +24,12 @@ def loyalty_to_l2_pipeline(**kwargs):
             ),
             #
             # # Number of points spend for each category
-            node(
-                node_from_config,
-                ["l1_loyalty_number_of_points_spend",
-                 "params:l2_loyalty_number_of_points_spend_weekly"],
-                "l2_loyalty_number_of_points_spend"
-            ),
+            # node(
+            #     node_from_config,
+            #     ["l1_loyalty_number_of_points_spend",
+            #      "params:l2_loyalty_number_of_points_spend_weekly"],
+            #     "l2_loyalty_number_of_points_spend"
+            # ),
 
             #Serenade class weekly
             node(

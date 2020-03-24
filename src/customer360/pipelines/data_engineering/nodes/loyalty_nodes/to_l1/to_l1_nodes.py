@@ -167,8 +167,8 @@ def daily_privilege_or_aunjai_data_with_priv_points(privilege_or_aunjai_data_wit
                                          "project_subtype",
                                          "msg_event_id",
                                          "category",
-                                         "response_date")\
-        .where("project_type_id = 6 and project_subtype like 'REDEEM%' and msg_event_id = 13")
+                                         "response_date")
+        #.where("project_type_id = 6 and project_subtype like 'REDEEM%' and msg_event_id = 13")
 
     priv_points = priv_points_raw.where("point_tran_type_id in (15,35) and refund_session_id is null")\
         .groupBy("msisdn","msg_id","project_id",

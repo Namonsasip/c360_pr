@@ -22,19 +22,3 @@ l1_loyalty_number_of_points_spend:
     partitionBy: ["event_partition_date"]
     mode: "overwrite"
 
-
-
-#l1_empty_check_read:
-#  type: kedro.contrib.io.pyspark.SparkDataSet
-#  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-data/C360/metadata_table/
-#  save_args:
-#    partitionBy: ["event_partition_date"]
-#    mode: "overwrite"
-#
-#l1_empty_check_write:
-#  type: kedro.contrib.io.pyspark.SparkDataSet
-#  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-data/users/saurabh/test/
-#  save_args:
-#    mode: "overwrite"
