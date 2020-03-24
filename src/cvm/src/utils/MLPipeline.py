@@ -26,23 +26,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pyspark.sql import DataFrame
+"""`MLPipeline` loads and saves ML Pipelines using `PySpark ML`.
+See https://spark.apache.org/docs/latest/ml-pipeline.html for details.
+"""
+from pathlib import Path
+from typing import Dict, Any
+
+from kedro.io import AbstractDataSet
 
 
-def setup_names(df: DataFrame,) -> DataFrame:
-    """ Setup standard, project-wide column names for a given DataFrame.
+class MLPipeline(AbstractDataSet):
+    def __init__(self, filepath: str) -> None:
+        """Creates an instance of the object pointing to concrete filepath.
 
-    Args:
-        df: given DataFrame.
-    Returns:
-        DataFrame with changed column names.
-    """
+        Args:
+            filepath: path to ML Pipeline object.
+        """
+        super().__init__(filepath=Path(filepath))
 
-    df = df.withColumnRenamed("partition_month", "key_date")
-    df = df.withColumnRenamed("event_partition_date", "key_date")
-    df = df.withColumnRenamed("start_of_month", "key_date")
-    df = df.withColumnRenamed(
-        "max_usg_last_action_date_daily_last_ninety_day", "last_activity_date"
-    )
+    def _load(self) -> Any:
+        pass
 
-    return df
+    def _save(self, data: Any) -> None:
+        pass
+
+    def _describe(self) -> Dict[str, Any]:
+        pass

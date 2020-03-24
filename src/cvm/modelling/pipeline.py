@@ -28,40 +28,67 @@
 
 from kedro.pipeline import Pipeline, node
 
-from customer360.pipelines.cvm.src.utils.get_suffix import get_suffix
-from customer360.pipelines.cvm.preprocessing.nodes import (
-    pipeline1_fit,
-    pipeline1_transform,
-)
+from cvm.modelling.nodes import train_rf, predict_rf
+from cvm.src.utils.get_suffix import get_suffix
 
 
-def create_cvm_preprocessing(sample_type: str = None) -> Pipeline:
-    """ Creates pipeline preprocessing data. Can create data pipeline for full dataset
-     or given sample_type.
+def create_train_model(sample_type: str = None) -> Pipeline:
+    """ Creates prediction pipeline.
 
-     Args:
-         sample_type: sample type to use. Dev sample for "dev", Sample for "sample",
+      Args:
+          sample_type: sample type to use. Dev sample for "dev", Sample for "sample",
           full dataset for None (default).
 
-     Returns:
-         Kedro pipeline.
-     """
+      Returns:
+          Kedro pipeline.
+      """
 
     suffix = get_suffix(sample_type)
 
     return Pipeline(
         [
             node(
-                pipeline1_fit,
-                ["l5_cvm_one_day_train" + suffix, "parameters"],
-                "l5_cvm_one_day_train_preprocessed" + suffix,
-                name="create_l5_cvm_one_day_train_preprocessed" + suffix,
+                train_rf,
+                ["l5_cvm_one_day_train_preprocessed" + suffix, "parameters"],
+                "random_forest" + suffix,
+                name="create_random_forest" + suffix,
             ),
+        ]
+    )
+
+
+def create_predictions(
+    sample_type: str = None,
+    training_sample_type: str = None,
+    input_dataset_name: str = None,
+) -> Pipeline:
+    """ Creates prediction pipeline.
+
+      Args:
+          sample_type: sample type to use. Dev sample for "dev", Sample for "sample",
+              full dataset for None (default).
+          training_sample_type: same as sample_type, but defines type of training
+              sample for models used.
+          input_dataset_name: uses given dataset as input, overrides other arguments.
+
+      Returns:
+          Kedro pipeline.
+      """
+
+    suffix = get_suffix(sample_type)
+    training_suffix = get_suffix(training_sample_type)
+    if input_dataset_name is None:
+        input_name = "l5_cvm_one_day_preprocessed" + suffix
+    else:
+        input_name = input_dataset_name
+
+    return Pipeline(
+        [
             node(
-                pipeline1_transform,
-                ["l5_cvm_one_day_test" + suffix, "parameters"],
-                "l5_cvm_one_day_test_preprocessed" + suffix,
-                name="create_l5_cvm_one_day_test_preprocessed" + suffix,
+                predict_rf,
+                [input_name, "random_forest" + training_suffix, "parameters"],
+                "l5_cvm_one_day_predictions" + suffix,
+                name="create_l5_cvm_one_day_predictions" + suffix,
             ),
         ]
     )

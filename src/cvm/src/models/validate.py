@@ -25,8 +25,34 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Example code for the nodes in the example pipeline. This code is meant
-just for illustrating basic Kedro features.
 
-PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
-"""
+from sklearn import metrics
+
+
+def get_auc(true_val, pred_score):
+    metrics_to_return = {"auc": round(metrics.roc_auc_score(true_val, pred_score), 2)}
+    return metrics_to_return
+
+
+def get_tpr_fpr(
+    true_val, pred_score, thresholds=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+):
+    metrics_to_return = {}
+    fpr, tpr, roc_thresholds = metrics.roc_curve(true_val, pred_score)
+
+    def get_threshold_index(all_thresholds, threshold_chosen):
+        thresholds_greater = [thr for thr in all_thresholds if thr > threshold_chosen]
+        return len(thresholds_greater) - 1
+
+    for threshold in thresholds:
+        threshold_index = get_threshold_index(roc_thresholds, threshold)
+        metrics_to_return[threshold] = {}
+        metrics_to_return[threshold]["fpr"] = round(fpr[threshold_index], 2)
+        metrics_to_return[threshold]["tpr"] = round(tpr[threshold_index], 2)
+    return metrics_to_return
+
+
+def get_metrics(true_val, pred_score):
+    metrics_to_return = get_auc(true_val, pred_score)
+    metrics_to_return.update(get_tpr_fpr(true_val, pred_score))
+    return metrics_to_return

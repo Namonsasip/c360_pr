@@ -25,18 +25,7 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""project-samudra
+"""
 
-from pyspark.sql import DataFrame
-from typing import List
-
-
-def list_categorical(df: DataFrame) -> List[str]:
-    """ List categorical variables in a given DataFrame.
-
-    Args:
-        df: given DataFrame.
-
-    Returns:
-        List of categorical variables.
-    """
-    return [item[0] for item in df.dtypes if item[1].startswith("string")]
+__version__ = "0.1"

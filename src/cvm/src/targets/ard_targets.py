@@ -99,8 +99,8 @@ def get_ard_targets(
         reve_arpu_before_after.reve_after / reve_arpu_before_after.reve_before,
     )
     target_col = func.when(
-        1 - reve_arpu_before_after.reve_after_perc >= drop, "drop"
-    ).otherwise("no_drop")
+        1 - reve_arpu_before_after.reve_after_perc >= drop, 1
+    ).otherwise(0)
     reve_arpu_before_after = reve_arpu_before_after.withColumn("target", target_col)
     reve_arpu_before_after = reve_arpu_before_after.withColumnRenamed(
         "key_date_before", "key_date"

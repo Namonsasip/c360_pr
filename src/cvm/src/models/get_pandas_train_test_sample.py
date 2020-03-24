@@ -29,12 +29,17 @@
 import pandas as pd
 from typing import Dict, Any, Tuple
 from pyspark.sql import DataFrame
-import pyspark.sql.functions as func
-from customer360.pipelines.cvm.src.utils.list_targets import list_targets
+
+from cvm.src.utils.list_targets import list_targets
+from cvm.src.utils.list_operations import list_intersection
 
 
 def get_pandas_train_test_sample(
-    df: DataFrame, parameters: Dict[str, Any], target_chosen: str = None
+    df: DataFrame,
+    parameters: Dict[str, Any],
+    target_chosen: str = None,
+    use_case_chosen: str = None,
+    macrosegments_chosen: str = None,
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """ Setup pandas prediction / train sample for given pyspark DataFrame.
 
@@ -43,27 +48,29 @@ def get_pandas_train_test_sample(
         parameters: parameters defined in parameters.yml.
         target_chosen: For creating training sample, column name to create sample for.
             None for prediction, does not include target column.
+        use_case_chosen: chosen use case
+        macrosegments_chosen: macrosegment chosen
     Returns:
         Pandas DataFrames that can be used for prediction / training.
     """
 
+    if use_case_chosen is not None and macrosegments_chosen is not None:
+        macrosegment_col = use_case_chosen + "_macrosegment"
+        df = df.filter("{} == '{}'".format(macrosegment_col, macrosegments_chosen))
+
     if target_chosen is not None:
         df = df.filter("{} is not null".format(target_chosen))
-        y = df.select(target_chosen).withColumnRenamed(target_chosen, "target_base")
-        y = y.withColumn(
-            "target",
-            func.when(y.target_base == "churn", 1)
-            .when(y.target_base == "drop", 1)
-            .otherwise(0),
-        )
-        y = y.drop("target_base")
+        y = df.select(target_chosen).withColumnRenamed(target_chosen, "target")
         y = y.toPandas()
     else:
         y = None
 
     target_cols = list_targets(parameters)
     key_columns = parameters["key_columns"]
-    to_drop = target_cols + key_columns
+    segments_columns = parameters["segment_columns"]
+    to_drop = list_intersection(
+        df.columns, target_cols + key_columns + segments_columns + ["volatility"]
+    )
     X = df.drop(*to_drop).toPandas()
 
     return X, y

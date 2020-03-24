@@ -31,11 +31,15 @@ def get_suffix(sample_type: str = None) -> str:
     """ Returns dataset suffix for given sample type.
 
     Args:
-        sample_type: can be None (for full dataset), "dev" for small sample,
-            "sample" for medium sample.
+        sample_type: can be None (for full dataset),
+            "dev" for small training sample,
+            "sample" for medium training sample,
+            "scoring" for full scoring sample,
+            "scoring_dev" for small scoring sample,
+            "scoring_sample" for medium scoring sample.
     """
 
-    if sample_type not in ["dev", "sample", None]:
+    if sample_type not in [None, "dev", "sample", "scoring_dev", "scoring_sample"]:
         raise Exception("Sample type {} not implemented".format(sample_type))
 
     if sample_type is not None:
@@ -44,3 +48,20 @@ def get_suffix(sample_type: str = None) -> str:
         suffix = ""
 
     return suffix
+
+
+def is_scoring(sample_type: str = None) -> bool:
+    """ Returns True if sample type contains scoring.
+
+    Args:
+        sample_type: can be None (for full dataset),
+            "dev" for small training sample,
+            "sample" for medium training sample,
+            "scoring" for full scoring sample,
+            "scoring_dev" for small scoring sample,
+            "scoring_sample" for medium scoring sample.
+    """
+
+    if sample_type is None:
+        return False
+    return "scoring" in sample_type
