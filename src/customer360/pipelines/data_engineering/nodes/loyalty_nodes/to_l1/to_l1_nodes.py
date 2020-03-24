@@ -258,8 +258,14 @@ def loyalty_number_of_points_spend_for_each_category(customer_prof,input_df,priv
     return_df = customize_massive_processing(input_df, customer_prof, priv_project, priv_points_raw, daily_privilege_or_aunjai_data_with_customer_profile,
                                    sql,'response_date','event_partition_date',"l1_loyalty_number_of_points_spend")
 
-    # if len(return_df.head(1)) == 0:
-    #     raise ValueError("Empty dataframe from loyalty_number_of_points_spend_for_each_category function's output for write")
+    # from pyspark.sql.utils import AnalysisException
+    # try:
+    #     if len(return_df.head(1)) == 0:
+    #         raise ValueError("Empty dataframe from loyalty_number_of_points_spend_for_each_category function's output for write")
+    #
+    # except AnalysisException as e:
+    #     print("Creating metadata table : ")
+    #     log.exception("Exception raised", str(e))
 
     return return_df
 
