@@ -119,8 +119,8 @@ def priv_project_ranked(priv_project):
 
     return priv_project
 
-def daily_privilege_or_aunjai_data_with_customer_profile(customer_prof,privilege_or_aunjai_data,priv_project):
 
+def daily_privilege_or_aunjai_data_with_customer_profile(customer_prof,privilege_or_aunjai_data,priv_project):
 
     output_df_1 = customer_prof.join(privilege_or_aunjai_data,(customer_prof.access_method_num == privilege_or_aunjai_data.mobile_no) &
                                    (customer_prof.register_date.eqNullSafe(f.to_date(privilege_or_aunjai_data.register_date))) &
@@ -139,15 +139,10 @@ def daily_privilege_or_aunjai_data_with_customer_profile(customer_prof,privilege
 
 def daily_privilege_or_aunjai_data_with_customer_profile_reward_and_points_spend(customer_prof,privilege_or_aunjai_data,priv_project):
 
-
     output_df_1 = customer_prof.join(privilege_or_aunjai_data,(customer_prof.access_method_num == privilege_or_aunjai_data.mobile_no) &
                                    (customer_prof.register_date.eqNullSafe(f.to_date(privilege_or_aunjai_data.register_date))) &
                                    (customer_prof.event_partition_date == f.to_date(privilege_or_aunjai_data.response_date)))
 
-    # if len(output_df_1.head(1)) == 0:
-    #         print("Empty_output_1 from customer and aunjai join")
-    #         return output_df_1
-    # else:
     output_df_1 = output_df_1.drop(privilege_or_aunjai_data.register_date)
 
     output_df_2 = output_df_1.join(priv_project,
@@ -260,11 +255,11 @@ def loyalty_number_of_points_spend_for_each_category(customer_prof,input_df,priv
 
     input_df = input_df.where("msg_event_id = 13")
 
-    return_df = customize_massive_processing(input_df, customer_prof, priv_project, priv_points_raw, daily_privilege_or_aunjai_data_with_customer_profile_reward_and_points_spend,
+    return_df = customize_massive_processing(input_df, customer_prof, priv_project, priv_points_raw, daily_privilege_or_aunjai_data_with_customer_profile,
                                    sql,'response_date','event_partition_date',"l1_loyalty_number_of_points_spend")
 
-    if len(return_df.head(1)) == 0:
-        raise ValueError("Empty dataframe from loyalty_number_of_points_spend_for_each_category function's output for write")
+    # if len(return_df.head(1)) == 0:
+    #     raise ValueError("Empty dataframe from loyalty_number_of_points_spend_for_each_category function's output for write")
 
     return return_df
 
