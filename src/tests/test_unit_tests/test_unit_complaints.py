@@ -59,7 +59,7 @@ class TestUnitComplaints:
                                                      StructField("caller_no", StringType(), True),
                                                  ]))
         # df_l0_usage_call.show()
-
+        global l1_feature_1
         l1_feature_1 = node_from_config(df_l0_usage_call, var_project_context.catalog.load(
             'params:l1_complaints_call_to_competitor_features'))
         # l1_feature_1.orderBy('event_partition_date').show()
@@ -95,6 +95,7 @@ class TestUnitComplaints:
                                                                StructField("cldate", DateType(), True),
                                                            ]))
         # df_l0_ucomplaints_acc_atsr.orderBy('cldate').show()
+        global l1_feature_2
         l1_feature_2 = change_grouped_column_name(df_l0_ucomplaints_acc_atsr, var_project_context.catalog.load(
             'params:l1_complaints_nps_after_call'))
         # l1_feature_2.orderBy('event_partition_date').show()
@@ -130,6 +131,7 @@ class TestUnitComplaints:
                                                          StructField("request_datetime", DateType(), True),
                                                      ]))
         # df_l0_acc_ai_chatbot.orderBy('request_datetime').show()
+        global l1_feature_3
         l1_feature_3 = change_grouped_column_name(df_l0_acc_ai_chatbot, var_project_context.catalog.load(
             'params:l1_complaints_nps_after_chatbot'))
         # l1_feature_3.orderBy('event_partition_date').show()
@@ -165,6 +167,7 @@ class TestUnitComplaints:
                                                       StructField("create_dttm", DateType(), True),
                                                   ]))
         # df_l0_acc_qmt_csi.orderBy('create_dttm').show()
+        global l1_feature_4
         l1_feature_4 = change_grouped_column_name(df_l0_acc_qmt_csi, var_project_context.catalog.load(
             'params:l1_complaints_nps_after_store_visit'))
         # l1_feature_4.orderBy('event_partition_date').show()
@@ -203,9 +206,9 @@ class TestUnitComplaints:
 
         print("test l1 -->  l1_complaints_nps_after_chatbot")
         assert l1_feature_3.where \
-                    (
-                    "access_method_num = 'zHD1URYLeFsOkFfNfGp3.2YgQdMDEKlrRBlbDC6.veRVgoBXFnNiWIYw52Ht4BG5' and  event_partition_date='2019-11-01'") \
-                .select("avg_nps").collect()[0][0] == 1.5
+                       (
+                       "access_method_num = 'zHD1URYLeFsOkFfNfGp3.2YgQdMDEKlrRBlbDC6.veRVgoBXFnNiWIYw52Ht4BG5' and  event_partition_date='2019-11-01'") \
+                   .select("avg_nps").collect()[0][0] == 1.5
 
         assert \
             l1_feature_3.where \
@@ -225,3 +228,96 @@ class TestUnitComplaints:
                     "access_method_num = 'zHD1URYLeFsOkFfNfGp3.2YgQdMDEKlrRBlbDC6.veRVgoBXFnNiWIYw52Ht4BG5' and event_partition_date='2019-11-01'") \
                 .select("record_count").collect()[0][0] == 2
 
+    def test_l2(self, project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        spark.conf.set("spark.sql.parquet.binaryAsString", "true")
+
+        l2_feature_1 = node_from_config(l1_feature_1, var_project_context.catalog.load(
+            'params:l2_complaints_call_to_competitor_features'))
+
+
+        l2_feature_2 = node_from_config(l1_feature_2, var_project_context.catalog.load(
+            'params:l2_complaints_nps_scoring'))
+
+
+        l2_feature_3 = node_from_config(l1_feature_3, var_project_context.catalog.load(
+            'params:l2_complaints_nps_scoring'))
+
+        l2_feature_4 = node_from_config(l1_feature_4, var_project_context.catalog.load(
+        'params:l2_complaints_nps_scoring'))
+
+        print("test L2 -->  l2_complaints_call_to_competitor_features")
+        assert \
+            l2_feature_1.where( \
+                "caller_no = 'CBWF9FNPqZHBYm8bPKouZQdhlgBrVwKOfTebFbumu7jevrbXBLJwSnxbIc11DSbY' and "
+                "start_of_week='2020-02-10'") \
+                .select("call_to_dtac_count").collect()[0][0] == 3
+
+        assert \
+            l2_feature_1.where \
+                    (
+                    "caller_no = 'CBWF9FNPqZHBYm8bPKouZQdhlgBrVwKOfTebFbumu7jevrbXBLJwSnxbIc11DSbY' and "
+                    "start_of_week='2020-02-10'") \
+                .select("call_to_dtac_duration_sum").collect()[0][0] == 30
+
+        assert \
+            l2_feature_1.where \
+                    (
+                    "caller_no = 's29uZZn8axRu9Rs.hZl.mB3O3076InFK5+lFoG792dwSDVzy3w+.02SMc5ezMMMP' and  start_of_week='2020-03-02'") \
+                .select("call_to_true_count").collect()[0][0] == 6
+        assert \
+            l2_feature_1.where \
+                    (
+                    "caller_no = 's29uZZn8axRu9Rs.hZl.mB3O3076InFK5+lFoG792dwSDVzy3w+.02SMc5ezMMMP' and "
+                    "start_of_week='2020-03-02'") \
+                .select("call_to_true_duration_sum").collect()[0][0] == 60
+
+        print("test L2 --> l2_complaints_call_to_competitor_features -->  success 4 feature")
+        print("test L2 -->  l2_complaints_nps_scoring  --> from complaints_nps_after_call")
+        assert \
+            l2_feature_2.where( \
+                "caller_no = 'mv6fLn5EbNGOgfj8olB9yHg6r8rQRjv92iiccMAtQH71LOCmupE.lEk9eaS1ZyDw' and "
+                "start_of_week='2020-01-27'") \
+                .select("avg_nps").collect()[0][0] == 3
+
+        assert \
+            l2_feature_2.where \
+                    (
+                    "caller_no = 'mv6fLn5EbNGOgfj8olB9yHg6r8rQRjv92iiccMAtQH71LOCmupE.lEk9eaS1ZyDw' and "
+                    "start_of_week='2020-02-10'") \
+                .select("record_count").collect()[0][0] == 2
+        print("test L2 -->  l2_complaints_nps_scoring  --> from complaints_nps_after_call --> success 2 feature")
+
+        print("test L2 -->  l2_complaints_nps_scoring  --> from complaints_nps_after_chatbot")
+        assert \
+        l2_feature_3.where( \
+            "caller_no = 'mv6fLn5EbNGOgfj8olB9yHg6r8rQRjv92iiccMAtQH71LOCmupE.lEk9eaS1ZyDw' and "
+            "start_of_week='2020-01-27'") \
+            .select("avg_nps").collect()[0][0] == 2.5
+
+        assert \
+        l2_feature_3.where \
+                (
+                "caller_no = 'mv6fLn5EbNGOgfj8olB9yHg6r8rQRjv92iiccMAtQH71LOCmupE.lEk9eaS1ZyDw' and "
+                "start_of_week='2020-02-10'") \
+            .select("record_count").collect()[0][0] == 2
+        print("test L2 -->  l2_complaints_nps_scoring  --> from complaints_nps_after_chatbot --> success 2 feature")
+
+        print("test L2 -->  l2_complaints_nps_scoring  --> from complaints_nps_after_store_visit")
+        assert \
+        l2_feature_4.where( \
+            "caller_no = 'mv6fLn5EbNGOgfj8olB9yHg6r8rQRjv92iiccMAtQH71LOCmupE.lEk9eaS1ZyDw' and "
+            "start_of_week='2020-01-27'") \
+            .select("avg_nps").collect()[0][0] == 7.5
+
+        assert \
+        l2_feature_4.where \
+                (
+                "caller_no = 'mv6fLn5EbNGOgfj8olB9yHg6r8rQRjv92iiccMAtQH71LOCmupE.lEk9eaS1ZyDw' and "
+                "start_of_week='2020-02-10'") \
+            .select("record_count").collect()[0][0] == 2
+        print("test L2 -->  l2_complaints_nps_scoring  --> from complaints_nps_after_store_visit --> success 2 feature")
+        print("Total Success all of L2 --> 10 frature")
+        exit(2)
