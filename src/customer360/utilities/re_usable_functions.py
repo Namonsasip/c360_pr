@@ -7,8 +7,8 @@ from pyspark.sql import functions as F
 from functools import reduce
 from kedro.context import load_context
 from pathlib import Path
-from src.customer360.utilities.spark_util import get_spark_session
-from src.customer360.utilities.config_parser import node_from_config, expansion
+from customer360.utilities.spark_util import get_spark_session
+from customer360.utilities.config_parser import node_from_config, expansion
 
 conf = os.getenv("CONF", None)
 

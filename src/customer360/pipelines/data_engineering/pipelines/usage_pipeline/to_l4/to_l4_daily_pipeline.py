@@ -33,7 +33,7 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 
-from src.customer360.utilities.config_parser import l4_rolling_window
+from customer360.utilities.config_parser import l4_rolling_window
 from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l4 import split_and_run_daily
 
 

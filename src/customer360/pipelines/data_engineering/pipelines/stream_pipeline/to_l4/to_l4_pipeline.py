@@ -33,7 +33,7 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 
-from src.customer360.utilities.config_parser import \
+from customer360.utilities.config_parser import \
     l4_rolling_window, \
     node_from_config, \
     l4_rolling_ranked_window

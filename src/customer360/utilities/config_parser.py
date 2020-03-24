@@ -1,7 +1,7 @@
 import logging
 from typing import *
 from pyspark.sql import DataFrame, functions as F
-from src.customer360.utilities.spark_util import get_spark_session
+from customer360.utilities.spark_util import get_spark_session
 
 
 # Query generator class
@@ -441,6 +441,7 @@ def __generate_l4_rolling_ranked_column(
     logging.info("SQL QUERY {}".format(sql_stmt))
 
     spark = get_spark_session()
+
     df = spark.sql(sql_stmt)
 
     return df

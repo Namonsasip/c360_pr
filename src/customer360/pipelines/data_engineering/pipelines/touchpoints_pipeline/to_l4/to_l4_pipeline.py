@@ -28,7 +28,7 @@
 
 from kedro.pipeline import Pipeline, node
 
-from src.customer360.utilities.config_parser import l4_rolling_window
+from customer360.utilities.config_parser import l4_rolling_window
 
 
 def touchpoints_to_l4_pipeline(**kwargs):

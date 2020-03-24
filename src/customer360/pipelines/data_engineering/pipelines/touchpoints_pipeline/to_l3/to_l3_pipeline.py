@@ -28,7 +28,7 @@
 
 from kedro.pipeline import Pipeline, node
 
-from src.customer360.utilities.config_parser import expansion
+from customer360.utilities.config_parser import expansion
 
 
 def touchpoints_to_l3_pipeline(**kwargs):

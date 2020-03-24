@@ -28,7 +28,7 @@
 
 from kedro.pipeline import Pipeline, node
 
-from src.customer360.utilities.config_parser import node_from_config
+from customer360.utilities.config_parser import node_from_config
 
 
 def complaints_to_l3_pipeline(**kwargs):
