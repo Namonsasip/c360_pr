@@ -1,10 +1,12 @@
 import pyspark.sql.functions as f
+from pyspark.sql.functions import expr
 from pyspark.sql import DataFrame
 from customer360.utilities.config_parser import node_from_config
 from kedro.context.context import load_context
 from pathlib import Path
 import logging
 from src.customer360.pipelines.data_engineering.nodes.billing_nodes.to_l1.to_l1_nodes import massive_processing
+from src.customer360.utilities.spark_util import get_spark_session
 import os
 
 conf = os.getenv("CONF", None)
@@ -126,15 +128,6 @@ def billing_most_popular_top_up_channel_weekly(input_df, sql) -> DataFrame:
     return_df = massive_processing_weekly(input_df, sql, "l2_billing_and_payments_weekly_most_popular_top_up_channel")
     return return_df
 
-
-def billing_last_top_up_channel_weekly(input_df, sql) -> DataFrame:
-    """
-    :return:
-    """
-    return_df = massive_processing_weekly(input_df, sql, "l2_billing_and_payments_weekly_last_top_up_channel")
-    return return_df
-
-
 def billing_popular_topup_day_weekly(input_df, sql) -> DataFrame:
     """
     :return:
@@ -192,6 +185,12 @@ def billing_last_top_up_channel_weekly(input_df, customer_profile_df, recharge_t
 
     return_df = customized_processing(input_df, customer_prof, recharge_type_df, sql,
                                       "l2_billing_and_payments_weekly_last_top_up_channel")
+
+    return_df = return_df.withColumn("rn", expr(
+        "row_number() over(partition by start_of_week,access_method_num,register_date order by recharge_time desc)"))
+
+    return_df = return_df.filter("rn = 1").drop("rn")
+
     return return_df
 
 
@@ -224,6 +223,12 @@ def recharge_data_with_customer_profile_joined(customer_prof, recharge_data):
     output_df = output_df.drop(recharge_data.access_method_num) \
         .drop(recharge_data.register_date) \
         .drop(recharge_data.start_of_week)
+
+
+    output_df = output_df.withColumn("rn", expr(
+        "row_number() over(partition by start_of_week,access_method_num,register_date order by recharge_time desc)"))
+
+    output_df = output_df.filter("rn = 1").drop("rn")
 
     return output_df
 

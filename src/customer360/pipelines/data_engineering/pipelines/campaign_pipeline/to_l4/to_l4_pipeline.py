@@ -33,8 +33,8 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 
-from src.customer360.utilities.config_parser import l4_rolling_window, l4_rolling_ranked_window
-from src.customer360.pipelines.data_engineering.nodes.campaign_nodes.to_l4 import add_relative_time_features
+from customer360.utilities.config_parser import l4_rolling_window, l4_rolling_ranked_window
+from customer360.pipelines.data_engineering.nodes.campaign_nodes.to_l4 import add_relative_time_features
 
 
 def campaign_to_l4_pipeline(**kwargs):

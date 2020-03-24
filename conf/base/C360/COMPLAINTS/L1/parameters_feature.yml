@@ -1,0 +1,84 @@
+l1_complaints_call_to_competitor_features:
+  feature_list:
+    call_to_dtac_count: "sum(case when called_no = 'CBWF9FNPqZHBYm8bPKouZQdhlgBrVwKOfTebFbumu7jevrbXBLJwSnxbIc11DSbY' then total_successful_call else 0 end)"
+    call_to_dtac_duration_sum: "sum(case when called_no = 'CBWF9FNPqZHBYm8bPKouZQdhlgBrVwKOfTebFbumu7jevrbXBLJwSnxbIc11DSbY' then total_durations else 0 end)"
+    call_to_true_count: "sum(case when called_no = 's29uZZn8axRu9Rs.hZl.mB3O3076InFK5+lFoG792dwSDVzy3w+.02SMc5ezMMMP' then total_successful_call else 0 end)"
+    call_to_true_duration_sum: "sum(case when called_no = 's29uZZn8axRu9Rs.hZl.mB3O3076InFK5+lFoG792dwSDVzy3w+.02SMc5ezMMMP' then total_durations else 0 end)"
+  granularity: "caller_no, day_id"
+  event_date_column: "date(day_id)"
+
+l1_complaints_nps_after_call:
+  feature_list:
+    avg_nps: "avg(qsc_1)"
+    record_count: "count(*)"
+  where_clause: "where qsc_1 != '' and qsc_1 is not null" # tested with cloud data
+  granularity: "mobile_no, date(cldate)"
+  event_date_column: "date(cldate)"
+  rename_column:
+    access_method_num: mobile_no
+
+
+l1_complaints_nps_after_chatbot:
+  feature_list:
+    avg_nps: "avg(qsc_1)"
+    record_count: "count(*)"
+  where_clause: "where qsc_1 != '' and qsc_1 is not null" # tested with cloud data
+  granularity: "mobile_number, date(request_datetime)"
+  event_date_column: "date(request_datetime)"
+  rename_column:
+    access_method_num: mobile_number
+
+
+l1_complaints_nps_after_store_visit:
+  feature_list:
+    avg_nps: "avg(survey_nps_score)"
+    record_count: "count(*)"
+  where_clause: "where survey_nps_score != -1"
+  granularity: "access_metod_num, date(create_dttm)" # no typo here
+  event_date_column: "date(create_dttm)"
+  rename_column:
+    access_method_num: access_metod_num
+
+l1_complaints_time_to_resolve_complaint:
+  feature_list:
+    avg_second_to_resolve_complaint: avg(pyresolvedtime)
+    max_second_to_resolve_complaint: max(pyresolvedtime)
+    min_second_to_resolve_complaint: min(pyresolvedtime)
+    sum_second_to_resolve_complaint: sum(pyresolvedtime)
+    count_resolved_complaints: sum(case when pyresolvedtime is not null then 1 else 0 end)
+    number_of_complaints: count(*)
+  where_clause: "where mobilenumber is not null
+                and tt_caseid is not null" # for complaint case only
+  granularity: "mobilenumber, partition_date"
+  event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
+
+l1_complaints_ranked_complaint_type:
+  feature_list:
+    topic_count: count(*)
+    rank: "row_number() over (partition by mobilenumber, partition_date
+                               order by count(*) desc)"
+  granularity: "mobilenumber, partition_date, topic"
+  where_clause: "where mobilenumber is not null
+                and tt_caseid is not null" # for complaint case only
+  event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
+
+l1_complaints_top_complaint_type:
+  feature_list:
+    mobilenumber: mobilenumber
+    event_partition_date: event_partition_date
+    most_popular_complaint: topic
+  where_clause: "where rank = 1"
+
+l1_complaints_2nd_top_complaint_type:
+  feature_list:
+    mobilenumber: mobilenumber
+    event_partition_date: event_partition_date
+    2nd_most_popular_complaint: topic
+  where_clause: "where rank = 2"
+
+l1_complaints_3rd_top_complaint_type:
+  feature_list:
+    mobilenumber: mobilenumber
+    event_partition_date: event_partition_date
+    3rd_most_popular_complaint: topic
+  where_clause: "where rank = 3"

@@ -502,8 +502,20 @@ dm996_cvm_ontop_pack_raw:
     table: dm996_cvm_ontop_pack_raw
     write_mode: overwrite
 
+dm996_cvm_ontop_pack:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_delta
+    table: dm996_cvm_ontop_pack
+    write_mode: overwrite
+
 dm997_daily_cvm_bau_active_list:
     type: datasets.spark_hive_dataset.SparkHiveDataSet
     database: prod_delta
     table: dm997_daily_cvm_bau_active_list
+    write_mode: overwrite
+
+prepaid_no_activity_daily:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_delta
+    table: prepaid_no_activity_daily
     write_mode: overwrite

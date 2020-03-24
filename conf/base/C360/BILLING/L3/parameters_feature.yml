@@ -106,10 +106,12 @@ l3_last_topup_channel:
     start_of_month: "start_of_month"
     access_method_num: "access_method_num"
     register_date: "register_date"
+    #subscription_identifier: "subscription_identifier"
     payments_last_top_up_channel: "first_value(recharge_topup_event_type_name) over(partition by
              start_of_month,
              access_method_num,
-             register_date order by recharge_time desc)"
+             register_date
+             order by recharge_time desc)"
   granularity: ""
 
 l3_automated_flag:
