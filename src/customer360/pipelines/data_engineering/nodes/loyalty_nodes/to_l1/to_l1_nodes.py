@@ -42,7 +42,7 @@ def massive_processing(input_df, customer_prof_input_df, priv_project, join_func
         joined_df = join_function(customer_prof_df,small_df,priv_project)
         output_df = node_from_config(joined_df, sql)
         if len(output_df.head(1)) == 0:
-            print("Empty dataframe from node_from_config function's output for write")
+            print("Empty dataframe for writing from node_from_config function's output to massive_processing for partition:", curr_item)
         else:
             CNTX.catalog.save(output_df_catalog, output_df)
 
@@ -86,7 +86,7 @@ def customize_massive_processing(input_df, customer_prof_input_df, priv_project,
         joined_with_priv_points = daily_privilege_or_aunjai_data_with_priv_points(joined_df,small_priv_points)
         output_df = node_from_config(joined_with_priv_points, sql)
         if len(output_df.head(1)) == 0:
-            print("Empty dataframe from node_from_config function's output for write")
+            print("Empty dataframe for writing from node_from_config function's output to customised massive processing")
         else:
             CNTX.catalog.save(output_df_catalog, output_df)
 
@@ -114,7 +114,7 @@ def priv_project_ranked(priv_project):
         .orderBy(f.col("start_date").desc(),
                  f.col("stop_date").desc())
 
-    priv_project = priv_project.withColumn("rank",f.row_number().over(window))\
+    priv_project = priv_project.withColumn("rank", f.row_number().over(window))\
         .where("rank = 1")
 
     return priv_project
@@ -209,7 +209,7 @@ def loyalty_number_of_services_for_each_category(customer_prof,input_df,priv_pro
                                    sql,'response_date', 'event_partition_date',"l1_loyalty_number_of_services")
 
     if len(return_df.head(1)) == 0:
-        print("Empty dataframe from loyalty_number_of_services_for_each_category funtion's output for write")
+        print("Empty dataframe from loyalty_number_of_services_for_each_category function's output for write")
     else:
         return return_df
 
@@ -238,7 +238,7 @@ def loyalty_number_of_rewards_for_each_category(customer_prof,input_df,priv_proj
                                    sql,'response_date', 'event_partition_date',"l1_loyalty_number_of_rewards")
 
     if len(return_df.head(1)) == 0:
-        print("Empty dataframe from loyalty_number_of_rewards_for_each_category funtion's output for write")
+        print("Empty dataframe from loyalty_number_of_rewards_for_each_category function's output for write")
     else:
         return return_df
 
@@ -264,7 +264,7 @@ def loyalty_number_of_points_spend_for_each_category(customer_prof,input_df,priv
                                    sql,'response_date','event_partition_date',"l1_loyalty_number_of_points_spend")
 
     if len(return_df.head(1)) == 0:
-        print("Empty dataframe from loyalty_number_of_points_spend_for_each_category funtion's output for write")
+        print("Empty dataframe from loyalty_number_of_points_spend_for_each_category function's output for write")
     else:
         return return_df
 
