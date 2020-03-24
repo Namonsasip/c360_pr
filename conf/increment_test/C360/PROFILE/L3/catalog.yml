@@ -27,7 +27,7 @@ l3_customer_profile_billing_level_volume_of_active_contracts:
 
 
 #################################################################################
-### New entries for incremental read
+### New entries for incremental read for revenue domain
 
 l3_customer_profile_include_1mo_non_active_l3_revenue_postpaid:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
