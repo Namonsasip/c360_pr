@@ -205,7 +205,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
         self._partitionBy = save_args.get("partitionBy", None) if save_args is not None else None
         self._mode = save_args.get("mode", None) if save_args is not None else None
-
+        self._mergeSchema = load_args.get("mergeSchema", None) if load_args is not None else None
 
     @staticmethod
     def _get_spark():
@@ -285,6 +285,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             target_layer = self._target_layer
             lookback = self._lookback
             lookup_table_name = self._lookup_table_name
+            #mergeSchema = self._mergeSchema
 
             print("filepath:", filepath)
             print("read_layer:", read_layer)
@@ -439,13 +440,13 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         except AnalysisException as e:
             log.exception("Exception raised", str(e))
 
-    def _update_metadata_table(self, spark, metadata_table_path, target_table_name, filepath, write_mode, file_format, partitionBy):
+    def _update_metadata_table(spark, metadata_table_path, target_table_name, filepath, write_mode, file_format, partitionBy, mergeSchema):
 
-        #current_target_data = spark.read.format(file_format).load(filepath)
+        if mergeSchema is not None and mergeSchema.lower() == "true":
+            current_target_data = spark.read.format(file_format).option("mergeSchema", 'true').load(filepath)
+        else:
+            current_target_data = spark.read.format(file_format).load(filepath)
 
-        current_target_data = spark.read.load(
-                filepath, file_format, **self._load_args
-                            )
         current_target_data.createOrReplaceTempView("curr_target")
 
         current_target_max_data_load_date = spark.sql(
@@ -489,6 +490,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         target_layer = self._target_layer_save
         target_table_name = filewritepath.split('/')[-2]
         dataframe_to_write = data
+        mergeSchema = self._mergeSchema
 
         if len(dataframe_to_write.head(1)) == 0:
             print("No new partitions to write from source")
@@ -527,8 +529,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     df_with_lookback_to_write.write.partitionBy(partitionBy).mode(mode).format(
                         file_format).save(filewritepath)
                     print("Updating metadata table for lookback dataset scenario")
-                    self._update_metadata_table(self, spark, metadata_table_path, target_table_name, filewritepath,
-                                                mode, file_format, partitionBy)
+                    self._update_metadata_table(spark, metadata_table_path, target_table_name, filewritepath,
+                                                mode, file_format, partitionBy, mergeSchema, )
 
             else:
                 print("write dataframe without lookback scenario")
@@ -537,8 +539,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
                 print("Updating metadata table")
 
-                self._update_metadata_table(self,spark, metadata_table_path, target_table_name, filewritepath, mode,
-                                            file_format, partitionBy)
+                self._update_metadata_table(spark, metadata_table_path, target_table_name, filewritepath, mode,
+                                                            file_format, partitionBy, mergeSchema, )
 
     def _load(self) -> DataFrame:
         print("Entering load function")
