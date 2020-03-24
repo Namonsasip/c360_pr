@@ -137,7 +137,7 @@ from .pipelines.data_engineering.pipelines.device_pipeline import (
 )
 from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l1.to_l1_pipeline import *
 from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l2.to_l2_pipeline import *
-from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l3.to_l3_pipeline import *
+#from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l3.to_l3_pipeline import *
 from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l4.to_l4_pipeline import *
 
 
@@ -198,7 +198,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "campaign_to_l4_pipeline": campaign_to_l4_pipeline(),
         'loyalty_to_l1_pipeline': loyalty_to_l1_pipeline(),
         'loyalty_to_l2_pipeline': loyalty_to_l2_pipeline(),
-        'loyalty_to_l3_pipeline': loyalty_to_l3_pipeline(),
+        #'loyalty_to_l3_pipeline': loyalty_to_l3_pipeline(),
         'loyalty_to_l4_pipeline': loyalty_to_l4_pipeline(),
         # "de": data_engineering_pipeline,
     }
