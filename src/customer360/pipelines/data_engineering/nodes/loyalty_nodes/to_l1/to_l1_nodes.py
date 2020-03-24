@@ -271,4 +271,14 @@ def loyalty_number_of_points_spend_for_each_category(customer_prof,input_df,priv
 
     #return return_df
 
+def empty_check(df):
+    df.createOrReplaceTempView("df")
+
+    df1 = df.where("table_name = 'a1")
+
+    if len(df1.head(1)) == 0:
+        print("Empty dataset")
+    else:
+        return df1
+
 
