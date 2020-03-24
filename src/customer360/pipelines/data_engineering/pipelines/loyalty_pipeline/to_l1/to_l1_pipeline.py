@@ -59,17 +59,17 @@ def loyalty_to_l1_pipeline(**kwargs):
             ##     "aunjai_points_data_with_reward_points_spend"
             ## ),
 
-            # node(
-            #     loyalty_number_of_points_spend_for_each_category,
-            #     ["l1_customer_profile_union_daily_feature",
-            #      "l0_loyalty_drm_t_aunjai_point_collection_daily",
-            #      "l0_loyalty_priv_project",
-            #      "l0_loyalty_priv_point_transaction",
-            #      "params:l1_loyalty_number_of_points_spend_daily"],
-            #     "l1_loyalty_number_of_points_spend"
-            # ),
+            node(
+                loyalty_number_of_points_spend_for_each_category,
+                ["l1_customer_profile_union_daily_feature",
+                 "l0_loyalty_drm_t_aunjai_point_collection_daily",
+                 "l0_loyalty_priv_project",
+                 "l0_loyalty_priv_point_transaction",
+                 "params:l1_loyalty_number_of_points_spend_daily"],
+                "l1_loyalty_number_of_points_spend"
+            ),
 
-            node(empty_check, "empty_check_read", "empty_check_write")
+            # node(empty_check, "empty_check_read", "empty_check_write")
 
         ]
     )

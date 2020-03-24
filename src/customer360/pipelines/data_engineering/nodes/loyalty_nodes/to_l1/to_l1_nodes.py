@@ -262,24 +262,26 @@ def loyalty_number_of_points_spend_for_each_category(customer_prof,input_df,priv
 
     return_df = customize_massive_processing(input_df, customer_prof, priv_project, priv_points_raw, daily_privilege_or_aunjai_data_with_customer_profile_reward_and_points_spend,
                                    sql,'response_date','event_partition_date',"l1_loyalty_number_of_points_spend")
-    #
-    # if len(return_df.head(1)) == 0:
-    #     print("Empty dataframe from loyalty_number_of_points_spend_for_each_category function's output for write")
-    # else:
+
+    if len(return_df.head(1)) == 0:
+        raise ValueError("Empty dataframe from loyalty_number_of_points_spend_for_each_category function's output for write")
+
     return return_df
 
 
     #return return_df
-
-def ec_2(df):
-    df1 = df.where("table_name = 'a1' ")
-    return df1
-
-#AnalysisException
-def empty_check(df):
-    df2 = ec_2(df)
-
-    return df2
+#
+# def ec_2(df):
+#     df1 = df.where("table_name = 'a1' ")
+#     return df1
+#
+# #AnalysisException
+# def empty_check(df):
+#     df2 = ec_2(df)
+#
+#     if len(df2.head(1)) == 0:
+#         return
+#     return df2
 
 
 
