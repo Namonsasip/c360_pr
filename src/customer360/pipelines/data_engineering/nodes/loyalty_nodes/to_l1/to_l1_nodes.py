@@ -1,13 +1,14 @@
 import pyspark.sql.functions as f
 from pyspark.sql import SparkSession, Window
 from pyspark.sql.types import *
-from pyspark.sql import functions as F
+#from pyspark.sql import functions as F
 from pyspark.sql.types import StringType
 from customer360.utilities.config_parser import node_from_config
 from kedro.context.context import load_context
 from pathlib import Path
 import logging
 import os
+
 
 conf = os.environ["CONF"]
 
@@ -40,7 +41,10 @@ def massive_processing(input_df, customer_prof_input_df, priv_project, join_func
         customer_prof_df = cust_data_frame.filter(F.col(cust_partition_date).isin(*[curr_item]))
         joined_df = join_function(customer_prof_df,small_df,priv_project)
         output_df = node_from_config(joined_df, sql)
-        CNTX.catalog.save(output_df_catalog, output_df)
+        if len(output_df.head(1)) == 0:
+            print("Empty dataframe from node_from_config function's output for write")
+        else:
+            CNTX.catalog.save(output_df_catalog, output_df)
 
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(F.to_date(partition_date).isin(*[first_item]))
@@ -81,7 +85,10 @@ def customize_massive_processing(input_df, customer_prof_input_df, priv_project,
         joined_df = join_function(customer_prof_df,small_df,priv_project)
         joined_with_priv_points = daily_privilege_or_aunjai_data_with_priv_points(joined_df,small_priv_points)
         output_df = node_from_config(joined_with_priv_points, sql)
-        CNTX.catalog.save(output_df_catalog, output_df)
+        if len(output_df.head(1)) == 0:
+            print("Empty dataframe from node_from_config function's output for write")
+        else:
+            CNTX.catalog.save(output_df_catalog, output_df)
 
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(F.to_date(partition_date).isin(*[first_item]))
@@ -137,13 +144,17 @@ def daily_privilege_or_aunjai_data_with_customer_profile_reward_and_points_spend
                                    (customer_prof.register_date.eqNullSafe(f.to_date(privilege_or_aunjai_data.register_date))) &
                                    (customer_prof.event_partition_date == f.to_date(privilege_or_aunjai_data.response_date)))
 
+    # if len(output_df_1.head(1)) == 0:
+    #         print("Empty_output_1 from customer and aunjai join")
+    #         return output_df_1
+    # else:
     output_df_1 = output_df_1.drop(privilege_or_aunjai_data.register_date)
 
     output_df_2 = output_df_1.join(priv_project,
                                output_df_1.project_id.cast(StringType()) == priv_project.project_id.cast(StringType()))
 
     output_df = output_df_2.drop(output_df_1.project_id)\
-        .drop(output_df_1.category)
+            .drop(output_df_1.category)
 
     return output_df
 
@@ -220,7 +231,11 @@ def loyalty_number_of_rewards_for_each_category(customer_prof,input_df,priv_proj
 
     return_df = massive_processing(input_df, customer_prof, priv_project, daily_privilege_or_aunjai_data_with_customer_profile_reward_and_points_spend,
                                    sql,'response_date', 'event_partition_date',"l1_loyalty_number_of_rewards")
-    return return_df
+
+    if len(return_df.head(1)) == 0:
+        print("Empty dataframe from loyalty_number_of_rewards_for_each_category funtion's output for write")
+    else:
+        return return_df
 
 def loyalty_number_of_points_spend_for_each_category(customer_prof,input_df,priv_project, priv_points_raw, sql):
     """
@@ -242,6 +257,13 @@ def loyalty_number_of_points_spend_for_each_category(customer_prof,input_df,priv
 
     return_df = customize_massive_processing(input_df, customer_prof, priv_project, priv_points_raw, daily_privilege_or_aunjai_data_with_customer_profile_reward_and_points_spend,
                                    sql,'response_date','event_partition_date',"l1_loyalty_number_of_points_spend")
-    return return_df
+
+    if len(return_df.head(1)) == 0:
+        print("Empty dataframe from loyalty_number_of_points_spend_for_each_category funtion's output for write")
+    else:
+        return return_df
+
+
+    #return return_df
 
 
