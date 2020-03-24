@@ -1,7 +1,7 @@
 import pyspark.sql.functions as f
 from pyspark.sql import SparkSession, Window
 from pyspark.sql.types import *
-#from pyspark.sql import functions as F
+from pyspark.sql import functions as F
 from pyspark.sql.types import StringType
 from customer360.utilities.config_parser import node_from_config
 from kedro.context.context import load_context
