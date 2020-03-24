@@ -153,8 +153,7 @@ def daily_privilege_or_aunjai_data_with_customer_profile_reward_and_points_spend
     output_df_2 = output_df_1.join(priv_project,
                                output_df_1.project_id.cast(StringType()) == priv_project.project_id.cast(StringType()))
 
-    output_df = output_df_2.drop(output_df_1.project_id)\
-            .drop(output_df_1.category)
+    output_df = output_df_2.drop(output_df_1.project_id).drop(output_df_1.category)
 
     return output_df
 
@@ -208,7 +207,13 @@ def loyalty_number_of_services_for_each_category(customer_prof,input_df,priv_pro
 
     return_df = massive_processing(input_df, customer_prof, priv_project, daily_privilege_or_aunjai_data_with_customer_profile,
                                    sql,'response_date', 'event_partition_date',"l1_loyalty_number_of_services")
-    return return_df
+
+    if len(return_df.head(1)) == 0:
+        print("Empty dataframe from loyalty_number_of_services_for_each_category funtion's output for write")
+    else:
+        return return_df
+
+    #return return_df
 
 def loyalty_number_of_rewards_for_each_category(customer_prof,input_df,priv_project, sql):
     """
