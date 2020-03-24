@@ -276,10 +276,6 @@ def empty_check(df):
 
     df1 = df.where("table_name = 'a1' ")
 
-    if len(df1.head(1)) == 0:
-        print("Empty dataset")
-        return None
-    else:
-        return df1
+    return df1
 
 
