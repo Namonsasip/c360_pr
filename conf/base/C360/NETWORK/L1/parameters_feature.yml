@@ -8,30 +8,33 @@ int_l1_network_voice_features:
     drop_call_in_4g_count: "sum(case when char_length(cs_cgi) = 12 then
                         (cei_voice_voice_drops_after_answers_moc + cei_voice_voice_drops_after_answers_mtc) else 0 end)"
     total_call_count: "sum(cei_voice_call_proceeding_times)"
-    failed_incoming_call_attempt: "moc_attempt_counter_drill_id"
-    failed_outgoing_call_attempt: "mtc_attempt_counter_drill_id"
+    failed_incoming_call_attempt: "sum(moc_attempt_counter_drill_id)"
+    failed_outgoing_call_attempt: "sum(mtc_attempt_counter_drill_id)"
   granularity: "msisdn, partition_date"
+  event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
 
 l1_network_voice_features:
   feature_list:
     cei_voice_qoe: cei_voice_qoe
-    change_of_share_of_drop_call: "share_of_drop_calls/lag(share_of_drop_calls, 1, 0) over (partition by access_method_num order by event_partition_date asc)"
+    change_of_share_of_drop_call: "share_of_drop_calls/lag(share_of_drop_calls, 1, 0)
+                                    over (partition by msisdn order by event_partition_date  asc)"
     share_of_drop_calls: share_of_drop_calls
     drop_call_count: drop_call_count
     drop_call_in_3g_count: drop_call_in_3g_count
-    change_of_drop_call_in_3g: "drop_call_in_3g_count/lag(drop_call_in_3g_count, 1, 0) over (partition by access_method_num order by event_partition_date asc)"
+    change_of_drop_call_in_3g: "drop_call_in_3g_count/lag(drop_call_in_3g_count, 1, 0)
+                                    over (partition by msisdn order by event_partition_date asc)"
     drop_call_in_4g_count: drop_call_in_4g_count
-    change_of_drop_call_in_4g: "drop_call_in_4g_count/lag(drop_call_in_4g_count, 1, 0) over (partition by access_method_num order by event_partition_date asc)"
+    change_of_drop_call_in_4g: "drop_call_in_4g_count/lag(drop_call_in_4g_count, 1, 0)
+                                    over (partition by msisdn order by event_partition_date asc)"
     total_call_count: total_call_count
     failed_incoming_call_attempt: failed_incoming_call_attempt
     failed_outgoing_call_attempt: failed_outgoing_call_attempt
     msisdn: msisdn
-    partition_date: partition_date
+    event_partition_date: event_partition_date
   granularity: ""
-  event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
   output_catalog: "l1_network_voice_features"
   join_column_with_cust_profile:
-    access_method_num: mobile_no
+    access_method_num: msisdn
     event_partition_date: event_partition_date
   partition_num_per_job: 360
 

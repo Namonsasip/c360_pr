@@ -75,45 +75,45 @@ def get_transaction_on_good_and_bad_cells(
         with geo as (
             select *, 
                    cast(substr(cgi,6) as integer) as trunc_cgi
-            from geo
+            from cell_master_plan_df
         ),
-        with voice_tx_location as (
+        voice_tx_location as (
             select *,
                 cast(case when char_length(ci) > 5 then ci else concat(lac, ci) end as integer) as trunc_cgi
             from sum_voice_daily_location_df
         ),
-        with enriched_voice_tx_location as (
+        enriched_voice_tx_location as (
             select /*+ BROADCAST(geo) */
-                t1.mobile_no as mobile_no,
-                t1.partition_date as partition_date
-                t1.service_type as service_type
-                t1.no_of_call + t1.no_of_inc as total_transaction
+                t1.access_method_num as access_method_num,
+                t1.partition_date as partition_date,
+                t1.service_type as service_type,
+                t1.no_of_call + t1.no_of_inc as total_transaction,
                 
-                t2.cgi as cgi
+                t2.cgi as cgi,
                 t2.soc_cgi_hex as soc_cgi_hex                
-            from sum_voice_daily_location_df t1
-            inner join geo t1
+            from voice_tx_location t1
+            inner join geo t2
             on t1.trunc_cgi = t2.trunc_cgi
         ),
-        with joined_ranked_cells_df as (
+        joined_ranked_cells_df as (
             select 
                 t1.msisdn as access_method_num,
                 t1.partition_date as partition_date,
-                sum(case when t1.good_cells is true then 1 else 0 end) as sum_of_good_cells,
-                sum(case when t1.bad_cells is true then 1 else 0 end) as sum_of_bad_cells,
+                sum(case when t1.good_cells == true then 1 else 0 end) as sum_of_good_cells,
+                sum(case when t1.bad_cells == true then 1 else 0 end) as sum_of_bad_cells,
                 max(cell_id_count) as cell_id_count,
-                sum(case when t1.good_cells is true then t2.total_transaction else 0 end) as total_transaction_good_cells,
-                sum(case when t1.bad_cells is true then t2.total_transaction else 0 end) as total_transaction_bad_cells
+                sum(case when t1.good_cells == true then t2.total_transaction else 0 end) as total_transaction_good_cells,
+                sum(case when t1.bad_cells == true then t2.total_transaction else 0 end) as total_transaction_bad_cells
             from ranked_cells_df t1
             inner join enriched_voice_tx_location t2
-                on t1.msisdn = t2.mobile_no
+            on t1.msisdn = t2.access_method_num
                 and t1.cell_id = t2.soc_cgi_hex
                 and t1.partition_date = t2.partition_date
             group by t1.msisdn, t1.partition_date
         )
         select *,
-            sum_of_good_cells/cell_id_count as share_of_good_cells
-            sum_of_bad_cells/cell_id_count as share_of_bad_cells
+            (sum_of_good_cells/cell_id_count) as share_of_good_cells,
+            (sum_of_bad_cells/cell_id_count) as share_of_bad_cells
         from joined_ranked_cells_df
     """)
 
