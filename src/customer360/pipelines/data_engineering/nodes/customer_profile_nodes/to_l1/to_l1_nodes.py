@@ -20,7 +20,8 @@ def union_daily_cust_profile(
             select {cust_non_mobile_columns} from cust_non_mobile
         ),
         dedup_amn_reg_date as (
-            select unioned_cust_profile.access_method_num
+            select unioned_cust_profile.access_method_num, 
+                    max(unioned_cust_profile.register_date) as register_date
             from unioned_cust_profile
             inner join (
               select access_method_num, max(register_date) as register_date
@@ -36,6 +37,7 @@ def union_daily_cust_profile(
         from unioned_cust_profile
         inner join dedup_amn_reg_date d
         on unioned_cust_profile.access_method_num = d.access_method_num
+            and unioned_cust_profile.register_date = d.register_date
     """
 
     def setup_column_to_extract(key):
