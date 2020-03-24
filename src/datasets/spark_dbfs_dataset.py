@@ -440,7 +440,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         except AnalysisException as e:
             log.exception("Exception raised", str(e))
 
-    def _update_metadata_table(spark, metadata_table_path, target_table_name, filepath, write_mode, file_format, partitionBy, mergeSchema):
+    def _update_metadata_table(self, spark, metadata_table_path, target_table_name, filepath, write_mode, file_format, partitionBy, mergeSchema):
 
         if mergeSchema is not None and mergeSchema.lower() == "true":
             current_target_data = spark.read.format(file_format).option("mergeSchema", 'true').load(filepath)
@@ -450,7 +450,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         current_target_data.createOrReplaceTempView("curr_target")
 
         current_target_max_data_load_date = spark.sql(
-            "select cast(max({0}) as String) from curr_target".format(partitionBy))
+            "select cast( nvl(max({0}),'1970-01-01') as String) from curr_target".format(partitionBy))
 
         metadata_table_update_max_date_temp = current_target_max_data_load_date.rdd.flatMap(lambda x: x).collect()
 
@@ -473,8 +473,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         )
 
         try:
-            metadata_table_update_df.write.partitionBy("table_name").format("parquet").mode("append").save(
-                metadata_table_path)
+            metadata_table_update_df.write.partitionBy("table_name").format("parquet").mode("append").save(metadata_table_path)
         except AnalysisException as e:
             log.exception("Exception raised", str(e))
 
@@ -491,6 +490,16 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         target_table_name = filewritepath.split('/')[-2]
         dataframe_to_write = data
         mergeSchema = self._mergeSchema
+
+        print("filewritepath:", filewritepath)
+        print("partitionBy:", partitionBy)
+        print("mode:", mode)
+        print("file_format", file_format)
+        print("metadata_table_path:", metadata_table_path)
+        print("read_layer:", read_layer)
+        print("target_layer:", target_layer)
+        print("target_table_name:", target_table_name)
+        print("mergeSchema:", mergeSchema)
 
         if len(dataframe_to_write.head(1)) == 0:
             print("No new partitions to write from source")
@@ -530,7 +539,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         file_format).save(filewritepath)
                     print("Updating metadata table for lookback dataset scenario")
                     self._update_metadata_table(spark, metadata_table_path, target_table_name, filewritepath,
-                                                mode, file_format, partitionBy, mergeSchema, )
+                                                mode, file_format, partitionBy, mergeSchema)
 
             else:
                 print("write dataframe without lookback scenario")
@@ -540,7 +549,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 print("Updating metadata table")
 
                 self._update_metadata_table(spark, metadata_table_path, target_table_name, filewritepath, mode,
-                                                            file_format, partitionBy, mergeSchema, )
+                                            file_format, partitionBy, mergeSchema)
 
     def _load(self) -> DataFrame:
         print("Entering load function")

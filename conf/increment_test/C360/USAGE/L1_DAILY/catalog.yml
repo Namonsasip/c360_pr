@@ -107,8 +107,8 @@ l1_usage_incoming_call_relation_sum_ir_daily:
 
 l1_usage_ru_a_gprs_cbs_usage_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/USAGE/l1_features/l1_usage_ru_a_gprs_cbs_usage_daily/
+  file_format: "parquet"
   metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
@@ -125,8 +125,8 @@ l1_usage_ru_a_gprs_cbs_usage_daily:
 
 l1_usage_ru_a_vas_postpaid_usg_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/USAGE/l1_features/l1_usage_ru_a_vas_postpaid_usg_daily/
+  file_format: "parquet"
   metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
