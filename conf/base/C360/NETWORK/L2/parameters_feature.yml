@@ -53,7 +53,7 @@ l2_network_data_traffic_features:
     share_of_3g_traffic_in_total_traffic: sum(total_3g_traffic)/sum(total_traffic)
     share_of_4g_traffic_in_total_traffic: sum(total_4g_traffic)/sum(total_traffic)
     change_of_share_of_3g_vs_4g_traffic: "sum(total_3g_traffic)/sum(total_4g_traffic) / lag(sum(total_3g_traffic)/sum(total_4g_traffic), 1, 0)
-                                          over (partition by subscription_identifier order by partition date asc)"
+                                          over (partition by subscription_identifier order by start_of_week asc)"
   granularity: "subscription_identifier, start_of_week"
 
 l2_network_data_cqi:

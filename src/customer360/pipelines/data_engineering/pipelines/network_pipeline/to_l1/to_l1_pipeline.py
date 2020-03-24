@@ -10,7 +10,7 @@ def network_to_l1_pipeline(**kwargs):
         [
             node(
                 node_from_config,
-                ["l0_network_sdr_dyn_cea_cei_cei_cei_qoe_cell_usr_voice_1day",
+                ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day",
                  "params:int_l1_network_voice_features"],
                 "int_l1_network_voice_features"
             ),
@@ -34,8 +34,15 @@ def network_to_l1_pipeline(**kwargs):
                 "int_l1_network_good_and_bad_cells_features"
             ),
             node(
-                l1_massive_processing,
+                get_transaction_on_good_and_bad_cells,
                 ["int_l1_network_good_and_bad_cells_features",
+                 "l0_geo_mst_cell_masterplan_current",
+                 "l0_usage_sum_voice_location_daily"],
+                "int_l1_network_get_transaction_on_good_and_bad_cells"
+            ),
+            node(
+                l1_massive_processing,
+                ["int_l1_network_get_transaction_on_good_and_bad_cells",
                  "params:l1_network_good_and_bad_cells_features",
                  "l1_customer_profile_union_daily_feature"],
                 "l1_network_good_and_bad_cells_features"
