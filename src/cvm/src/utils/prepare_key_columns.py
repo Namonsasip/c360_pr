@@ -45,6 +45,7 @@ def prepare_key_columns(df: DataFrame,) -> DataFrame:
         "partition_month",
         "event_partition_date",
         "start_of_month",
+        "start_of_week",
     ]
 
     if len(list_intersection(df.columns, key_date_columns)) > 1:
@@ -52,6 +53,9 @@ def prepare_key_columns(df: DataFrame,) -> DataFrame:
 
     if "start_of_month" in df.columns:
         df = df.withColumn("start_of_month", func.add_months(df.start_of_month, 1))
+
+    if "start_of_week" in df.columns:
+        df = df.withColumn("start_of_week", func.add_weeks(df.start_of_week, 1))
 
     for key_date_column in key_date_columns:
         df = df.withColumnRenamed(key_date_column, "key_date")
