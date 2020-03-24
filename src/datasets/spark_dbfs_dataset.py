@@ -285,12 +285,14 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             target_layer = self._target_layer
             lookback = self._lookback
             lookup_table_name = self._lookup_table_name
-            #mergeSchema = self._mergeSchema
+            mergeSchema = self._mergeSchema
 
             print("filepath:", filepath)
             print("read_layer:", read_layer)
             print("target_layer:", target_layer)
             print("lookback:", lookback)
+            print("mergeSchema:", mergeSchema)
+            print("lookup_table_name:", lookup_table_name)
 
             print("Fetching source data")
             #src_data = spark.read.parquet(filepath)
