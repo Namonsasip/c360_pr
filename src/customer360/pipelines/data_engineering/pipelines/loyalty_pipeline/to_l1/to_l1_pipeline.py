@@ -69,7 +69,6 @@ def loyalty_to_l1_pipeline(**kwargs):
                 "l1_loyalty_number_of_points_spend"
             ),
 
-            # node(empty_check, "empty_check_read", "empty_check_write")
 
         ]
     )

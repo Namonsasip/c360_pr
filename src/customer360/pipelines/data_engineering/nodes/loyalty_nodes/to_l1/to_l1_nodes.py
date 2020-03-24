@@ -243,7 +243,7 @@ def loyalty_number_of_points_spend_for_each_category(customer_prof,input_df,priv
     """
 
     priv_project = priv_project_ranked(priv_project)
-    priv_project = priv_project.where("project_type_id = 6 and project_subtype like 'REDEEM%'")
+    #priv_project = priv_project.where("project_type_id = 6 and project_subtype like 'REDEEM%'")
 
     customer_prof = customer_prof.select("access_method_num",
                                          "subscription_identifier",
@@ -253,7 +253,7 @@ def loyalty_number_of_points_spend_for_each_category(customer_prof,input_df,priv
                                          "start_of_month")
     customer_prof = customer_prof.where("event_partition_date is not null")
 
-    input_df = input_df.where("msg_event_id = 13")
+    #input_df = input_df.where("msg_event_id = 13")
 
     return_df = customize_massive_processing(input_df, customer_prof, priv_project, priv_points_raw, daily_privilege_or_aunjai_data_with_customer_profile,
                                    sql,'response_date','event_partition_date',"l1_loyalty_number_of_points_spend")
@@ -270,19 +270,6 @@ def loyalty_number_of_points_spend_for_each_category(customer_prof,input_df,priv
     return return_df
 
 
-    #return return_df
-#
-# def ec_2(df):
-#     df1 = df.where("table_name = 'a1' ")
-#     return df1
-#
-# #AnalysisException
-# def empty_check(df):
-#     df2 = ec_2(df)
-#
-#     if len(df2.head(1)) == 0:
-#         return
-#     return df2
 
 
 
