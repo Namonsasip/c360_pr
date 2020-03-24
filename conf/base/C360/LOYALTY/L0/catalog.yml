@@ -35,3 +35,13 @@ l0_loyalty_priv_customer_profile:
   filepath: /mnt/customer360-blob-data/C360/LOYALTY/loyalty_priv_customer_profile/
   file_format: parquet
 
+
+empty_check_read:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: /mnt/customer360-blob-data/C360/metadata_table/
+  file_format: parquet
+
+empty_check_write:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: /mnt/customer360-blob-data/users/saurabh/test/
+  file_format: parquet

@@ -271,11 +271,15 @@ def loyalty_number_of_points_spend_for_each_category(customer_prof,input_df,priv
 
     #return return_df
 
-# def empty_check(df):
-#     df.createOrReplaceTempView("df")
-#
-#     df1 = df.where("table_name = 'a1' ")
-#
-#     return df1
+def ec_2(df):
+    df1 = df.where("table_name = 'a1' ")
+    return df1
+
+#AnalysisException
+def empty_check(df):
+    df2 = ec_2(df)
+
+    return df2
+
 
 
