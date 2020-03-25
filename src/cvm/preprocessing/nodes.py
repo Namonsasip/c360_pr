@@ -30,7 +30,7 @@
 from pyspark.sql import DataFrame
 from typing import Dict, Any, List
 from pyspark.ml.feature import StringIndexer, Imputer
-from pyspark.ml import Pipeline
+from pyspark.ml import Pipeline, PipelineModel
 from pyspark.sql.functions import col
 
 from cvm.src.feature_selection import feature_selection
@@ -94,7 +94,7 @@ def pipeline1_fit(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
 
 
 def pipeline1_transform(
-    df: DataFrame, pipeline_fitted: Pipeline, parameters: Dict[str, Any]
+    df: DataFrame, pipeline_fitted: PipelineModel, parameters: Dict[str, Any]
 ) -> DataFrame:
     """ Preprocess given table.
 
