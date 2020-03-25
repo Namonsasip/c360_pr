@@ -34,13 +34,11 @@ import logging
 from cvm.src.models import get_pandas_train_test_sample
 from cvm.src.models.predict import (
     pyspark_predict_rf,
-    predict_rf_pandas,
     pyspark_predict_xgb,
 )
 from cvm.src.models.validate import get_metrics
 from cvm.src.utils.list_targets import list_targets
 import shap
-import pandas as pd
 
 
 def train_rf(df: DataFrame, parameters: Dict[str, Any]) -> RandomForestClassifier:
@@ -179,31 +177,53 @@ def predict_rf(
     return predictions
 
 
-def validate_rf(
-    df: DataFrame,
-    rf_models: Dict[str, RandomForestClassifier],
-    parameters: Dict[str, Any],
-) -> Dict[str, Any]:
-    """ Runs predictions on validation datasets. Does not use pyspark to perform
-     predictions. Calculates metrics to assess models performances.
+def validate_rf(df: DataFrame, parameters: Dict[str, Any],) -> Dict[str, Any]:
+    """ Runs validation on validation datasets.
+        Calculates metrics to assess models performances.
 
     Args:
-        df: DataFrame to predict for.
-        rf_models: Given models to validate.
+        df: DataFrame to calculate metrics for, must include targets and models
+          predictions.
         parameters: parameters defined in parameters.yml.
     Returns:
         Dictionary with metrics for models.
     """
-    target_cols = list_targets(parameters)
-    predictions = predict_rf_pandas(df, rf_models, parameters)
-    models_metrics = {}
-    for target_chosen in target_cols:
-        target_filter = pd.notna(predictions[target_chosen])
-        predictions_for_target_chosen = predictions[target_filter]
-        true_val = predictions_for_target_chosen[target_chosen]
-        pred_score = predictions_for_target_chosen[target_chosen + "_pred"]
-        models_metrics[target_chosen] = get_metrics(true_val, pred_score)
 
     log = logging.getLogger(__name__)
+    target_cols_use_case_split = list_targets(parameters, case_split=True)
+    macrosegments = parameters["macrosegments"]
+
+    def _validate_macrosegment_target(df, macrosegment, target_chosen):
+        log.info(
+            "Validating {} target predictions, {} macrosegment.".format(
+                target_chosen, macrosegment
+            )
+        )
+        pd_df = df.toPandas()
+        true_val = pd_df[target_chosen]
+        pred_score = pd_df[target_chosen + "_pred"]
+        return get_metrics(true_val, pred_score)
+
+    def _validate_macrosegment(df, use_case, macrosegment):
+        df = df.filter("{}_macrosegment == '{}'".format(use_case, macrosegment))
+        models_metrics = {}
+        for target_chosen in target_cols_use_case_split[use_case]:
+            models_metrics[target_chosen] = _validate_macrosegment_target(
+                df, macrosegment, target_chosen
+            )
+        return models_metrics
+
+    def _validate_usecase(df, use_case):
+        models_metrics = {}
+        for macrosegment in macrosegments[use_case]:
+            models_metrics[macrosegment] = _validate_macrosegment(
+                df, use_case, macrosegment
+            )
+        return models_metrics
+
+    models_metrics = {}
+    for use_case in parameters["targets"]:
+        models_metrics[use_case] = _validate_usecase(df, use_case)
+
     log.info("Models metrics: {}".format(models_metrics))
     return models_metrics
