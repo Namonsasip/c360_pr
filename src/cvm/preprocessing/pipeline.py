@@ -96,7 +96,7 @@ def create_cvm_preprocessing_scoring(
     return Pipeline(
         [
             node(
-                pipeline1_fit,
+                pipeline1_transform,
                 [
                     "l5_cvm_volatility" + suffix,
                     "preprocessing_pipeline" + training_suffix,
