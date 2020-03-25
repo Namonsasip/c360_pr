@@ -41,3 +41,13 @@ l0_usage_pps_v_ru_a_vas_nonvoice_daily:
 #  filepath: data/L0/USAGE/usage_ir_a_usg_daily/
 #  type: kedro.contrib.io.pyspark.SparkDataSet
 #  file_format: "parquet"
+
+l0_usage_sum_data_location_daily:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L0/USAGE/usage_sum_data_location_daily/
+
+l0_usage_sum_voice_location_daily:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L0/USAGE/usage_sum_voice_location_daily/

@@ -68,7 +68,7 @@ def _l1_join_with_customer_profile(
         current_item
 ) -> DataFrame:
 
-    cust_profile_col_to_select = list(config["join_column_with_cust_profile"].keys()) + ["start_of_week", "start_of_month"]
+    cust_profile_col_to_select = list(config["join_column_with_cust_profile"].keys()) + ["start_of_week", "start_of_month", "subscription_identifier"]
     cust_profile_col_to_select = list(set(cust_profile_col_to_select))  # remove duplicates
 
     if not isinstance(current_item[0], datetime):
