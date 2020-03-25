@@ -43,14 +43,14 @@ class MLPipeline(AbstractDataSet):
         Args:
             filepath: path to ML Pipeline object.
         """
-        self._filepath = Path(filepath)
+        self._filepath = filepath
 
     def _load(self) -> Any:
         return Pipeline.load(self._filepath)
 
     def _save(self, pipeline: Pipeline) -> None:
-        self._filepath.parent.mkdir(parents=True, exist_ok=True)
-        pipeline.save(str(self._filepath))
+        Path(self._filepath).parent.mkdir(parents=True, exist_ok=True)
+        pipeline.save(self._filepath)
 
     def _describe(self) -> Dict[str, Any]:
-        return {"filepath": str(self._filepath)}
+        return {"filepath": self._filepath}
