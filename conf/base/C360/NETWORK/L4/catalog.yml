@@ -4,7 +4,7 @@ l4_network_voice_features:
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/l4_features/l4_network_voice_features/
   save_args:
     partitionBy: ["start_of_week"]
-    mode: "append"
+    mode: "overwrite"
 
 l4_network_good_and_bad_cells_features:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -12,7 +12,7 @@ l4_network_good_and_bad_cells_features:
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/l4_features/l4_network_good_and_bad_cells_features/
   save_args:
     partitionBy: ["start_of_week"]
-    mode: "append"
+    mode: "overwrite"
 
 l4_network_share_of_3g_time_in_total_time:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -20,7 +20,7 @@ l4_network_share_of_3g_time_in_total_time:
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/l4_features/l4_network_share_of_3g_time_in_total_time/
   save_args:
     partitionBy: ["start_of_week"]
-    mode: "append"
+    mode: "overwrite"
 
 l4_network_data_traffic_features:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -28,7 +28,7 @@ l4_network_data_traffic_features:
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/l4_features/l4_network_data_traffic_features/
   save_args:
     partitionBy: ["start_of_week"]
-    mode: "append"
+    mode: "overwrite"
 
 l4_network_data_cqi:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -36,7 +36,7 @@ l4_network_data_cqi:
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/l4_features/l4_network_data_cqi/
   save_args:
     partitionBy: ["start_of_week"]
-    mode: "append"
+    mode: "overwrite"
 
 l4_network_im_cqi:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -44,7 +44,7 @@ l4_network_im_cqi:
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/l4_features/l4_network_im_cqi/
   save_args:
     partitionBy: ["start_of_week"]
-    mode: "append"
+    mode: "overwrite"
 
 l4_network_streaming_cqi:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -52,7 +52,7 @@ l4_network_streaming_cqi:
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/l4_features/l4_network_streaming_cqi/
   save_args:
     partitionBy: ["start_of_week"]
-    mode: "append"
+    mode: "overwrite"
 
 l4_network_web_cqi:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -60,7 +60,7 @@ l4_network_web_cqi:
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/l4_features/l4_network_web_cqi/
   save_args:
     partitionBy: ["start_of_week"]
-    mode: "append"
+    mode: "overwrite"
 
 l4_network_voip_cqi:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -68,7 +68,7 @@ l4_network_voip_cqi:
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/l4_features/l4_network_voip_cqi/
   save_args:
     partitionBy: ["start_of_week"]
-    mode: "append"
+    mode: "overwrite"
 
 l4_network_volte_cqi:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -76,5 +76,5 @@ l4_network_volte_cqi:
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/l4_features/l4_network_volte_cqi/
   save_args:
     partitionBy: ["start_of_week"]
-    mode: "append"
+    mode: "overwrite"
 
