@@ -1,8 +1,9 @@
 from functools import partial
 from kedro.pipeline import Pipeline, node
-from src.customer360.pipelines.cvm.src.utils.get_suffix import get_suffix
 from src.nba.report.nodes.report_nodes import *
 
+# Ankit commented this out as it is not being used and getting import exception
+#from src.customer360.pipelines.cvm.src.utils.get_suffix import get_suffix
 
 def create_use_case_view_report_data(run_type: str = None) -> Pipeline:
     return Pipeline(
