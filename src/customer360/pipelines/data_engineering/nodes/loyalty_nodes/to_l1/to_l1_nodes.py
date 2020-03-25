@@ -10,7 +10,7 @@ import logging
 import os
 
 
-conf = os.environ["CONF"]
+conf = os.getenv("CONF", None)
 
 def massive_processing(input_df, customer_prof_input_df, priv_project, join_function,sql,partition_date, cust_partition_date, output_df_catalog):
     """
