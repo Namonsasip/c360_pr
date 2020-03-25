@@ -7,20 +7,20 @@ def loyalty_to_l4_pipeline(**kwargs):
         [
 
             # Number of services for each category
-            # node(
-            #     l4_rolling_window,
-            #     ["l2_loyalty_number_of_services",
-            #      "params:l4_rolling_window_loyalty_number_of_services"],
-            #      "l4_loyalty_number_of_services"
-            # ),
+            node(
+                l4_rolling_window,
+                ["l2_loyalty_number_of_services",
+                 "params:l4_rolling_window_loyalty_number_of_services"],
+                 "l4_loyalty_number_of_services"
+            ),
 
             # Number of rewards for each category
-            # node(
-            #     l4_rolling_window,
-            #     ["l2_loyalty_number_of_rewards",
-            #      "params:l4_rolling_window_loyalty_number_of_rewards"],
-            #     "l4_loyalty_number_of_rewards"
-            # ),
+            node(
+                l4_rolling_window,
+                ["l2_loyalty_number_of_rewards",
+                 "params:l4_rolling_window_loyalty_number_of_rewards"],
+                "l4_loyalty_number_of_rewards"
+            ),
             #
             # # Number of points spend for each category
             node(
