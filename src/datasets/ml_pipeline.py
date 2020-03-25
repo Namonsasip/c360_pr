@@ -33,7 +33,7 @@ from pathlib import Path
 from typing import Dict, Any
 
 from kedro.io import AbstractDataSet
-from pyspark.ml import Pipeline
+from pyspark.ml import Pipeline, PipelineModel
 
 
 class MLPipeline(AbstractDataSet):
@@ -46,7 +46,7 @@ class MLPipeline(AbstractDataSet):
         self._filepath = filepath
 
     def _load(self) -> Any:
-        return Pipeline.load(self._filepath)
+        return PipelineModel.load(self._filepath)
 
     def _save(self, pipeline: Pipeline) -> None:
         Path(self._filepath).parent.mkdir(parents=True, exist_ok=True)
