@@ -1,0 +1,13 @@
+l5_nba_master_table_spine:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_nba_master_table_spine/
+  save_args:
+    mode: "overwrite"
+
+l5_nba_master_table:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_nba_master_table/
+  save_args:
+    mode: "overwrite"
