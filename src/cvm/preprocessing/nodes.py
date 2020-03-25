@@ -100,6 +100,7 @@ def pipeline1_transform(
 
     Args:
         df: Table to run string indexing for.
+        pipeline_fitted: MLPipeline fitted to training data.
         parameters: parameters defined in parameters*.yml files.
     Returns:
         String indexed table object to use later.
