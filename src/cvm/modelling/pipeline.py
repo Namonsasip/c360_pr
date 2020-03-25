@@ -126,7 +126,7 @@ def create_train_validate(sample_type: str = None,) -> Pipeline:
         [
             node(
                 validate_rf,
-                ["l5_cvm_one_day_train_preprocessed_preds" + suffix, "parameters"],
+                ["l5_cvm_one_day_test_preprocessed_preds" + suffix, "parameters"],
                 "models_metrics",
                 name="create_models_metrics" + suffix,
             )
