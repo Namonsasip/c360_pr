@@ -31,7 +31,7 @@ from typing import Dict, Any
 from sklearn.ensemble import RandomForestClassifier
 import xgboost
 import logging
-from cvm.src.models import get_pandas_train_test_sample
+from cvm.src.models.get_pandas_train_test_sample import get_pandas_train_test_sample
 from cvm.src.models.predict import (
     pyspark_predict_rf,
     pyspark_predict_xgb,
