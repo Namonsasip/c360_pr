@@ -79,3 +79,7 @@ l5_cvm_one_day_test_preprocessed:
 l5_cvm_volatility:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_volatility/
+
+preprocessing_pipeline:
+  type: datasets.MLPipeline
+  filepath: /mnt/customer360-cvm/preprocessing_pipeline
