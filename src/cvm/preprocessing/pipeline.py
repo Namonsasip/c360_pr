@@ -55,12 +55,19 @@ def create_cvm_preprocessing(sample_type: str = None) -> Pipeline:
             node(
                 pipeline1_fit,
                 ["l5_cvm_one_day_train" + suffix, "parameters"],
-                "l5_cvm_one_day_train_preprocessed" + suffix,
+                [
+                    "l5_cvm_one_day_train_preprocessed" + suffix,
+                    "preprocessing_pipeline" + suffix,
+                ],
                 name="create_l5_cvm_one_day_train_preprocessed" + suffix,
             ),
             node(
                 pipeline1_transform,
-                ["l5_cvm_one_day_test" + suffix, "parameters"],
+                [
+                    "l5_cvm_one_day_test" + suffix,
+                    "preprocessing_pipeline" + suffix,
+                    "parameters",
+                ],
                 "l5_cvm_one_day_test_preprocessed" + suffix,
                 name="create_l5_cvm_one_day_test_preprocessed" + suffix,
             ),
@@ -68,25 +75,33 @@ def create_cvm_preprocessing(sample_type: str = None) -> Pipeline:
     )
 
 
-def create_cvm_preprocessing_scoring(sample_type: str = None) -> Pipeline:
+def create_cvm_preprocessing_scoring(
+    sample_type: str = None, training_sample_type: str = None,
+) -> Pipeline:
     """ Creates pipeline preprocessing data for scoring purposes.
     Can create data pipeline for full dataset or given sample_type.
 
      Args:
          sample_type: sample type to use. Dev sample for "dev", Sample for "sample",
           full dataset for None (default).
-
+         training_sample_type: same as sample_type, but defines type of training
+          sample for preprocessing pipeline used.
      Returns:
          Kedro pipeline.
      """
 
     suffix = get_suffix(sample_type)
+    training_suffix = get_suffix(training_sample_type)
 
     return Pipeline(
         [
             node(
                 pipeline1_fit,
-                ["l5_cvm_volatility" + suffix, "parameters"],
+                [
+                    "l5_cvm_volatility" + suffix,
+                    "preprocessing_pipeline" + training_suffix,
+                    "parameters",
+                ],
                 "l5_cvm_one_day_preprocessed" + suffix,
                 name="create_l5_cvm_one_day_preprocessed" + suffix,
             ),

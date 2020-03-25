@@ -205,7 +205,7 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
                                          + create_cvm_scoring_data("scoring_sample"),
         "cvm_scoring_combine_data": create_cvm_scoring_data("scoring_sample"),
         "cvm_scoring_preprocess_sample": create_cvm_preprocessing_scoring(
-            "scoring_sample"
+            "scoring_sample", "sample"
         ),
         "cvm_predict_model_sample": create_predictions("scoring_sample", "dev"),
         "cvm_setup_training_data_dev": create_cvm_prepare_inputs_samples("dev")
@@ -216,7 +216,7 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "cvm_train_model_dev": create_train_model("dev"),
         "cvm_setup_scoring_data_dev": create_cvm_prepare_inputs_samples("scoring_dev")
                                       + create_cvm_scoring_data("scoring_dev"),
-        "cvm_scoring_preprocess_dev": create_cvm_preprocessing_scoring("scoring_dev"),
+        "cvm_scoring_preprocess_dev": create_cvm_preprocessing_scoring("scoring_dev", "dev"),
         "cvm_predict_model_dev": create_predictions("scoring_dev", "dev"),
         "cvm_validate_model_dev": create_predictions(
             "sample", "dev", "l5_cvm_one_day_train_preprocessed_sample"
