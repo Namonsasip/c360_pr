@@ -114,6 +114,12 @@ class ProjectContext(KedroContext):
         catalog.add_feed_dict(self._get_feed_dict())
         return catalog
 
+    def run(self, **kwargs):
+        # We override run so that spark gets initialized when
+        # running kedro run
+        spark = get_spark_session()
+        return super().run(**kwargs)
+
     def load_node_inputs(
         self, node_name: str, pipeline_name: str = None, import_full_module: bool = True
     ):
@@ -259,10 +265,6 @@ def run_package(pipelines=None):
     project_context = load_context(Path.cwd(), env=conf)
 
     spark = get_spark_session()
-
-    # Dont delete this line. This allow spark to only overwrite the partition
-    # saved to parquet instead of entire table folder
-    spark.conf.set("spark.sql.sources.partitionOverwriteMode", "DYNAMIC")
 
     if pipelines is not None:
         for each_pipeline in pipelines:

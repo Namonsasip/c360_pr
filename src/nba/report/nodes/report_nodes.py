@@ -3,9 +3,14 @@ from datetime import datetime
 from datetime import timedelta
 from typing import Dict, Any, List
 
+import pandas as pd
+import plotnine
+from plotnine import *
 from pyspark.sql import DataFrame
 from pyspark.sql import Window
 from pyspark.sql import functions as F
+
+from customer360.utilities.spark_util import get_spark_session
 
 
 def create_report_campaign_tracking_table(
@@ -16,16 +21,13 @@ def create_report_campaign_tracking_table(
     day: str,
 ) -> DataFrame:
     """
-
     Args:
         cvm_prepaid_customer_groups: cvm sandbox target group
         dm996_cvm_ontop_pack: campaign response data
         use_case_campaign_mapping: campaign child code mapping table of each usecase
         report_create_campaign_tracking_table_parameters: parameters use to create campaign tracking table
         day: day string #TODO make dynamic
-
     Returns: DataFrame of campaign data for report making
-
     """
 
     # reduce data period to 90 days #TODO change to proper number
@@ -60,39 +62,45 @@ def create_report_campaign_tracking_table(
     return df_cvm_campaign_tracking
 
 
-def create_agg_data_for_report(
+def node_reporting_kpis(
     cvm_prepaid_customer_groups: DataFrame,
     dm42_promotion_prepaid: DataFrame,
     dm43_promotion_prepaid: DataFrame,
     dm01_fin_top_up: DataFrame,
     dm15_mobile_usage_aggr_prepaid: DataFrame,
-    day: str,
-    aggregate_period: List[int],
+    prepaid_no_activity_daily: DataFrame,
+    date_from: datetime,
+    date_to: datetime,
+    arpu_days_agg_periods: List[int],
+    dormant_days_agg_periods: List[int],
 ):
     """
-
     Args:
         cvm_prepaid_customer_groups: cvm_sandbox_target_group
         dm42_promotion_prepaid: daily data on-top transaction
         dm43_promotion_prepaid: daily voice on-top transaction
         dm01_fin_top_up:  daily top-up transaction
         dm15_mobile_usage_aggr_prepaid: daily usage data, contains data/voice usage Pay per use charge sms
-        day: day string #TODO make dynamic
-        aggregate_period: list with all number of days to look back for the metrics
+        prepaid_no_activity_daily: table that contains inactivity data
+        date_from: minimum date to generate the KPIs
+        date_to: maximum date to generate the KPIs
+        arpu_days_agg_periods: List of days back to aggregate ARPU-like KPIs
+        dormant_days_agg_periods: List of days back to aggregate dormancy KPIs
 
     Returns: dataFrame of aggregated features for campaign report tracking
-
     """
+
+    spark = get_spark_session()
 
     # Create date period dataframe that will be use in cross join
     # to create main table for features aggregation
-    start_day = datetime.date(datetime.strptime(day, "%Y-%m-%d")) - timedelta(
-        max(aggregate_period) + 31  # To make available data for arpu uplift comparison
+    min_day_required_for_arpu_window = date_from - timedelta(
+        days=max(arpu_days_agg_periods)
     )
     df_date_period = spark.sql(
         f"SELECT sequence("
-        f"  to_date('{ start_day.strftime('%Y-%m-%d')}'),"
-        f"  to_date('{day}'), interval 1 day"
+        f"  to_date('{ min_day_required_for_arpu_window.strftime('%Y-%m-%d')}'),"
+        f"  to_date('{ date_to.strftime('%Y-%m-%d')}'), interval 1 day"
         f") as date"
     ).withColumn("date", F.explode(F.col("date")))
 
@@ -103,7 +111,7 @@ def create_agg_data_for_report(
 
     # Filter data-sources on recent period to minimize computation waste
     dm42_promotion_prepaid_filtered = dm42_promotion_prepaid.filter(
-        dm42_promotion_prepaid.date_id >= start_day
+        F.col("date_id").between(min_day_required_for_arpu_window, date_to)
     ).select(
         "analytic_id",
         "register_date",
@@ -112,7 +120,7 @@ def create_agg_data_for_report(
         F.col("date_id").alias("date"),
     )
     dm43_promotion_prepaid_filtered = dm43_promotion_prepaid.filter(
-        dm43_promotion_prepaid.date_id >= start_day
+        F.col("date_id").between(min_day_required_for_arpu_window, date_to)
     ).select(
         "analytic_id",
         "register_date",
@@ -123,7 +131,7 @@ def create_agg_data_for_report(
 
     # data_charge is Pay per use data charge, voice/sms have onnet and offnet, onnet mean call within AIS network
     dm01_fin_top_up_filtered = dm01_fin_top_up.filter(
-        dm01_fin_top_up.ddate >= start_day
+        F.col("ddate").between(min_day_required_for_arpu_window, date_to)
     ).select(
         "analytic_id",
         "register_date",
@@ -133,7 +141,7 @@ def create_agg_data_for_report(
     )
 
     dm15_mobile_usage_aggr_prepaid_filtered = dm15_mobile_usage_aggr_prepaid.filter(
-        dm15_mobile_usage_aggr_prepaid.ddate >= start_day
+        F.col("ddate").between(min_day_required_for_arpu_window, date_to)
     ).select(
         "analytic_id",
         "register_date",
@@ -150,32 +158,44 @@ def create_agg_data_for_report(
         F.col("ddate").alias("date"),
     )
 
+    # Create inactivity KPI features
+    inactivity_kpis = (
+        prepaid_no_activity_daily.withColumnRenamed("ddate", "date")
+        # For dormancy we don't need to load extra data in the past because no
+        # window function aggregation is necessary
+        .filter(F.col("ddate").between(date_from, date_to)).select(
+            "analytic_id",
+            "register_date",
+            "date",
+            *[
+                F.when(F.col("no_activity_n_days") >= min_days_dormant, 1)
+                .otherwise(0)
+                .alias(f"dormant_{min_days_dormant}_day")
+                for min_days_dormant in dormant_days_agg_periods
+            ],
+        )
+    )
+
     # Join all table to consolidate all required data
     join_keys = ["analytic_id", "register_date", "date"]
-    df_aggregate_table = (
+    df_reporting_kpis = (
         df_customer_date_period.join(dm42_promotion_prepaid_filtered, join_keys, "left")
         .join(dm43_promotion_prepaid_filtered, join_keys, "left")
         .join(dm01_fin_top_up_filtered, join_keys, "left")
         .join(dm15_mobile_usage_aggr_prepaid_filtered, join_keys, "left")
+        .join(inactivity_kpis, join_keys, "left")
     )
 
     # Convert date column to timestamp for window function
     # Should be change if date format can be use
-    df_aggregate_table = df_aggregate_table.withColumn(
+    df_reporting_kpis = df_reporting_kpis.withColumn(
         "timestamp", F.col("date").astype("Timestamp").cast("long"),
     )
 
-    df_aggregate_table = df_aggregate_table.withColumn(
-        "total_revenue",
-        F.col("ontop_data_total_net_tariff")
-        + F.col("ontop_voice_total_net_tariff")
-        + F.col("all_ppu_charge"),
-    )
-    df_aggregate_table = df_aggregate_table.withColumn(
-        "total_number_ontop_purchase",
-        F.col("ontop_data_number_of_transaction")
-        + F.col("ontop_voice_number_of_transaction"),
-    )
+    # These aren't all the columns we need to aggregate, but first we need to
+    # impute these ones so that the combined ones don't have problems of
+    # NA arithmetics
+
     columns_to_aggregate = [
         "ontop_data_number_of_transaction",
         "ontop_data_total_net_tariff",
@@ -183,11 +203,30 @@ def create_agg_data_for_report(
         "ontop_voice_total_net_tariff",
         "all_ppu_charge",
         "top_up_value",
+    ]
+
+    # When we don't have data it means the KPI is 0 (e.g subscriber didn't consume)
+    df_reporting_kpis = df_reporting_kpis.fillna(0, subset=columns_to_aggregate)
+
+    # Now that NAs are imputed we can create these additional columns
+    df_reporting_kpis = df_reporting_kpis.withColumn(
+        "total_revenue",
+        F.col("ontop_data_total_net_tariff")
+        + F.col("ontop_voice_total_net_tariff")
+        + F.col("all_ppu_charge"),
+    )
+    df_reporting_kpis = df_reporting_kpis.withColumn(
+        "total_number_ontop_purchase",
+        F.col("ontop_data_number_of_transaction")
+        + F.col("ontop_voice_number_of_transaction"),
+    )
+
+    columns_to_aggregate += [
         "total_revenue",
         "total_number_ontop_purchase",
     ]
 
-    for period in aggregate_period:
+    for period in arpu_days_agg_periods:
         window_func = (
             Window.partitionBy("analytic_id")
             .orderBy(F.col("timestamp"))
@@ -196,9 +235,9 @@ def create_agg_data_for_report(
             )  # 86400 is the number of seconds in a day
         )
 
-        df_aggregate_table = df_aggregate_table.select(
+        df_reporting_kpis = df_reporting_kpis.select(
             *(
-                df_aggregate_table.columns
+                df_reporting_kpis.columns
                 + [
                     F.sum(column).over(window_func).alias(f"{column}_{period}_day")
                     for column in columns_to_aggregate
@@ -206,13 +245,71 @@ def create_agg_data_for_report(
             )
         )
 
-    # Filter only the days for which we have all the info
-    df_aggregate_table = df_aggregate_table.filter(F.col("date") == day)
+    # This will eliminate the extra auxiliary dates we loaded for window aggregation,
+    # Just leaving the data that is complete
+    df_reporting_kpis = df_reporting_kpis.filter(
+        F.col("date").between(date_from, date_to)
+    )
 
-    return df_aggregate_table
+    return df_reporting_kpis
+
+
+def node_daily_kpis_by_group_report(reporting_kpis: DataFrame) -> DataFrame:
+    """
+    Creates a report table with the daily average value of the reporting KPIs
+    for each group
+    Args:
+        reporting_kpis: reportings_kpis as returned by node_reporting_kpis
+
+    Returns:
+        A spark DataFrame with the KPIs for each day
+    """
+    df_daily_kpis_by_group_report = reporting_kpis.groupby(
+        ["target_group", "date"]
+    ).agg(
+        *[
+            F.mean(c).alias(f"mean_{c}")
+            for c in reporting_kpis.columns
+            if c.endswith("_day")
+        ]
+    )
+    return df_daily_kpis_by_group_report
+
+
+def node_plot_daily_kpis_by_group_report(
+    daily_kpis_by_group_report: DataFrame,
+) -> Dict[str, plotnine.ggplot]:
+    """
+    Plots the daily kpis report results, creates a different plot for each KPI
+    Args:
+        daily_kpis_by_group_report: daily KPIs report table as returned by
+            node_daily_kpis_by_group_report
+
+    Returns:
+        A dictionary where each key is the name of the KPI and the value the plot
+    """
+
+    pdf_daily_kpis_by_group_report = daily_kpis_by_group_report.toPandas()
+    pdf_daily_kpis_by_group_report["date"] = pd.to_datetime(
+        pdf_daily_kpis_by_group_report["date"]
+    )
+    plots_dict = {}
+    cols_to_plot = [
+        c for c in pdf_daily_kpis_by_group_report.columns if c.endswith("_day")
+    ]
+    for col_to_plot in cols_to_plot:
+        plots_dict[col_to_plot] = (
+            ggplot(
+                pdf_daily_kpis_by_group_report,
+                aes(x="date", y=col_to_plot, color="target_group"),
+            )
+            + geom_line()
+        )
+    return plots_dict
 
 
 def create_use_case_view_report(
+    use_case_campaign_mapping: DataFrame,
     cvm_prepaid_customer_groups: DataFrame,
     campaign_response_input_table: DataFrame,
     reporting_kpis: DataFrame,
@@ -223,22 +320,24 @@ def create_use_case_view_report(
     This function create use case view report.
         -aggregate campaign response tracking data to use case based
         -combine report input data
-
     Args:
+        use_case_campaign_mapping:
         cvm_prepaid_customer_groups: cvm sandbox target group
         campaign_response_input_table: campaign response table created on focus campaigns
         reporting_kpis: ontop, topup, and revenue features
+        prepaid_no_activity_daily: Inactivity data
         day: report running date
         aggregate_period: list of aggregate period for campaign data aggregatation
-
     Returns: DataFrame of use case view report, contain all use case report currently support ARD and CHURN
-
     """
+
+    spark = get_spark_session()
+
     # Get number of Freeze customer in control group
     current_size = cvm_prepaid_customer_groups.groupby("target_group").agg(
         F.countDistinct("crm_sub_id").alias("distinct_targeted_subscriber")
     )
-    # TODO Make sure that rows of usecase and target_group combination exists report generating day same issue with cross join in previous function
+
     # Group data by customer to create number of distinct customer who accept campaign
     campaign_group_by = [
         "usecase",
@@ -255,9 +354,32 @@ def create_use_case_view_report(
             F.when(F.col("response_integer") == 1, F.col("analytic_id"))
         ).alias("n_subscriber_accepted"),
     ]
+
+    # Make sure that rows of usecase and target_group combination exists report generating day
+    start_day = datetime.date(datetime.strptime(day, "%Y-%m-%d")) - timedelta(90)
+    df_date_period = spark.sql(
+        f"SELECT sequence("
+        f"  to_date('{ start_day.strftime('%Y-%m-%d')}'),"
+        f"  to_date('{day}'), interval 1 day"
+        f") as contact_date"
+    ).withColumn("contact_date", F.explode(F.col("contact_date")))
+    df_usecases = (
+        use_case_campaign_mapping.groupBy(["usecase"])
+        .agg(F.count("*").alias("Total_campaigns"))
+        .select("usecase")
+    )
+    df_groups = (
+        cvm_prepaid_customer_groups.groupBy(["target_group"])
+        .agg(F.count("*").alias("Total_campaigns"))
+        .select("target_group")
+    )
+    df_usecases_period = df_date_period.crossJoin(df_usecases).crossJoin(df_groups)
     df_campaign_aggregate_input = campaign_response_input_table.groupBy(
         campaign_group_by
     ).agg(*expr)
+    df_campaign_aggregate_input = df_usecases_period.join(
+        df_campaign_aggregate_input, ["usecase", "target_group", "contact_date"], "left"
+    )
 
     # Aggregate window period campaign features
     df_campaign_aggregate_input = df_campaign_aggregate_input.withColumn(
@@ -287,14 +409,16 @@ def create_use_case_view_report(
                 ]
             )
         )
+    # Filter only the days for which we calculate report
+    reporting_kpis_present = reporting_kpis.filter(F.col("date") == day)
 
     # Group data into target group basis
     columns_to_sum = [
-        c for c in reporting_kpis.columns if re.search(r"_[0-9]+_day$", c)
+        c for c in reporting_kpis_present.columns if re.search(r"_[0-9]+_day$", c)
     ]
 
     exprs = [F.sum(x).alias(x) for x in columns_to_sum]
-    df_usage_features = reporting_kpis.groupBy(["target_group"]).agg(*exprs)
+    df_usage_features = reporting_kpis_present.groupBy(["target_group"]).agg(*exprs)
 
     # Join Number of Freeze customer with Campaign Feature
     df_use_case_view_report = current_size.join(
@@ -302,5 +426,49 @@ def create_use_case_view_report(
         ["target_group"],
         "left",
     ).join(df_usage_features, ["target_group"], "inner")
-    # TODO add inactivity features, join previous arpu data and calculate revenue uplift
+
+    # Join with ARPU Last month for uplift calculation
+    last_month_day = (
+        datetime.date(datetime.strptime(day, "%Y-%m-%d")) - timedelta(31)
+    ).strftime("%Y-%m-%d")
+    reporting_kpis_last_month = reporting_kpis.filter(F.col("date") == last_month_day)
+    df_arpu_last_month = reporting_kpis_last_month.select(
+        "analytic_id",
+        "register_date",
+        "target_group",
+        "total_revenue_1_day",
+        "total_revenue_7_day",
+        "total_revenue_30_day",
+    )
+    columns_to_sum = [
+        c for c in df_arpu_last_month.columns if re.search(r"_[0-9]+_day$", c)
+    ]
+    exprs = [F.sum(x).alias(x + "_last_month") for x in columns_to_sum]
+    df_arpu_last_month_features = df_arpu_last_month.groupBy(["target_group"]).agg(
+        *exprs
+    )
+
+    # Calculate ARPU uplift
+    df_use_case_view_report = (
+        df_use_case_view_report.join(
+            df_arpu_last_month_features, ["target_group"], "left"
+        )
+        .withColumn(
+            "arpu_uplift_1_day_vs_last_month",
+            (F.col("total_revenue_1_day") - F.col("total_revenue_1_day_last_month"))
+            / F.col("total_revenue_1_day_last_month"),
+        )
+        .withColumn(
+            "arpu_uplift_7_day_vs_last_month",
+            (F.col("total_revenue_7_day") - F.col("total_revenue_7_day_last_month"))
+            / F.col("total_revenue_7_day_last_month"),
+        )
+        .withColumn(
+            "arpu_uplift_30_day_vs_last_month",
+            (F.col("total_revenue_30_day") - F.col("total_revenue_30_day_last_month"))
+            / F.col("total_revenue_30_day_last_month"),
+        )
+    )
+
+    # TODO discuss on how churn feature should be added into reporting
     return df_use_case_view_report

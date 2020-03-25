@@ -20,6 +20,19 @@ use_case_view_report_table:
   save_args:
     mode: "overwrite"
 
+daily_kpis_by_group_report:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/daily_kpis_by_group_report/
+  save_args:
+    mode: "overwrite"
+
+plot_daily_kpis_by_group_report:
+  type: kedro.io.PartitionedDataSet
+  path: data/nba_churn_ard_report/daily_kpis_by_group_report
+  filename_suffix: ".png"
+  dataset: datasets.plotnine_local.PlotninePNGLocalDataSet
+
 distinct_child_response_aggregated:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "delta"

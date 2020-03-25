@@ -525,3 +525,9 @@ dm997_daily_cvm_bau_active_list:
     database: prod_delta
     table: dm997_daily_cvm_bau_active_list
     write_mode: overwrite
+
+prepaid_no_activity_daily:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_delta
+    table: prepaid_no_activity_daily
+    write_mode: overwrite
