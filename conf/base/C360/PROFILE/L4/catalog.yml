@@ -4,3 +4,4 @@ l4_customer_profile_ltv_to_date:
   file_format: "parquet"
   save_args:
     partitionBy: ["partition_month"]
+    mode: "overwrite"
