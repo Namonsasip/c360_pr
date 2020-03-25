@@ -132,6 +132,10 @@ from .pipelines.data_engineering.pipelines.usage_pipeline.to_l4 import (
 from .pipelines.data_engineering.pipelines.device_pipeline import (
     device_to_l1_pipeline, device_to_l2_pipeline, device_to_l4_pipeline
 )
+from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l1.to_l1_pipeline import *
+from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l2.to_l2_pipeline import *
+from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l3.to_l3_pipeline import *
+from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l4.to_l4_pipeline import *
 
 from .pipelines.data_engineering.pipelines.network_pipeline.to_l1.to_l1_pipeline import network_to_l1_pipeline
 from .pipelines.data_engineering.pipelines.network_pipeline.to_l2.to_l2_pipeline import network_to_l2_pipeline
@@ -180,19 +184,23 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "streaming_to_l2_pipeline": streaming_to_l2_pipeline(),
         "streaming_to_l3_pipeline": streaming_to_l3_pipeline(),
         "streaming_to_l4_pipeline": streaming_to_l4_pipeline(),
-        'revenue_to_l3_pipeline': revenue_to_l3_pipeline(),
-        'revenue_to_l4_pipeline': revenue_to_l4_pipeline(),
-        'complaints_to_l1_pipeline': complaints_to_l1_pipeline(),
-        'complaints_to_l2_pipeline': complaints_to_l2_pipeline(),
-        'complaints_to_l3_pipeline': complaints_to_l3_pipeline(),
-        'complaints_to_l4_pipeline': complaints_to_l4_pipeline(),
-        'touchpoints_to_l1_pipeline': touchpoints_to_l1_pipeline(),
-        'touchpoints_to_l2_pipeline': touchpoints_to_l2_pipeline(),
-        'touchpoints_to_l3_pipeline': touchpoints_to_l3_pipeline(),
-        'touchpoints_to_l4_pipeline': touchpoints_to_l4_pipeline(),
-        'campaign_to_l1_pipeline': campaign_to_l1_pipeline(),
-        'campaign_to_l2_pipeline': campaign_to_l2_pipeline(),
-        'campaign_to_l4_pipeline': campaign_to_l4_pipeline(),
+        "revenue_to_l3_pipeline": revenue_to_l3_pipeline(),
+        "revenue_to_l4_pipeline": revenue_to_l4_pipeline(),
+        "complaints_to_l1_pipeline": complaints_to_l1_pipeline(),
+        "complaints_to_l2_pipeline": complaints_to_l2_pipeline(),
+        "complaints_to_l3_pipeline": complaints_to_l3_pipeline(),
+        "complaints_to_l4_pipeline": complaints_to_l4_pipeline(),
+        "touchpoints_to_l1_pipeline": touchpoints_to_l1_pipeline(),
+        "touchpoints_to_l2_pipeline": touchpoints_to_l2_pipeline(),
+        "touchpoints_to_l3_pipeline": touchpoints_to_l3_pipeline(),
+        "touchpoints_to_l4_pipeline": touchpoints_to_l4_pipeline(),
+        "campaign_to_l1_pipeline": campaign_to_l1_pipeline(),
+        "campaign_to_l2_pipeline": campaign_to_l2_pipeline(),
+        "campaign_to_l4_pipeline": campaign_to_l4_pipeline(),
+        'loyalty_to_l1_pipeline': loyalty_to_l1_pipeline(),
+        'loyalty_to_l2_pipeline': loyalty_to_l2_pipeline(),
+        'loyalty_to_l3_pipeline': loyalty_to_l3_pipeline(),
+        'loyalty_to_l4_pipeline': loyalty_to_l4_pipeline(),
         'network_to_l1_pipeline': network_to_l1_pipeline(),
         'network_to_l2_pipeline': network_to_l2_pipeline(),
         'network_to_l3_pipeline': network_to_l3_pipeline(),
@@ -241,13 +249,10 @@ def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
 
 def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
     """Create the project's pipeline.
-
     Args:
         kwargs: Ignore any additional arguments added in the future.
-
     Returns:
         A mapping from a pipeline name to a ``Pipeline`` object.
-
     """
     all_pipelines = {}
 

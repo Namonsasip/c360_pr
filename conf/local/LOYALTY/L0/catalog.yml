@@ -1,38 +1,36 @@
 l0_loyalty_drm_t_aunjai_point_collection_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: /mnt/customer360-blob-data/C360/LOYALTY/loyalty_drm_t_aunjai_point_collection_daily/
+  filepath: data/L0/LOYALTY/loyalty_drm_t_aunjai_point_collection_daily/
   file_format: parquet
 
 
 l0_loyalty_drm_t_privilege_success:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: /mnt/customer360-blob-data/C360/LOYALTY/loyalty_drm_t_privilege_success/
+  filepath: data/L0/LOYALTY/loyalty_drm_t_privilege_success/
   file_format: parquet
 
 
 l0_loyalty_priv_category:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: /mnt/customer360-blob-data/C360/LOYALTY/loyalty_priv_category/
+  filepath: data/L0/LOYALTY/loyalty_priv_category/
   file_format: parquet
 
 l0_loyalty_priv_point_ba:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: /mnt/customer360-blob-data/C360/LOYALTY/loyalty_priv_point_ba/
+  filepath: data/L0/LOYALTY/loyalty_priv_point_ba/
   file_format: parquet
 
 l0_loyalty_priv_point_transaction:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: /mnt/customer360-blob-data/C360/LOYALTY/loyalty_priv_point_transaction/
+  filepath: data/L0/LOYALTY/loyalty_priv_point_transaction/
   file_format: parquet
 
 l0_loyalty_priv_project:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: /mnt/customer360-blob-data/C360/LOYALTY/loyalty_priv_project/
+  filepath: data/L0/LOYALTY/loyalty_priv_project/
   file_format: parquet
 
 l0_loyalty_priv_customer_profile:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: /mnt/customer360-blob-data/C360/LOYALTY/loyalty_priv_customer_profile/
+  filepath: data/L0/LOYALTY/loyalty_priv_customer_profile/
   file_format: parquet
-
-
