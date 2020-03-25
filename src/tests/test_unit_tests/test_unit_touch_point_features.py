@@ -660,7 +660,7 @@ class TestUnitTp:
                 0] == 3426
 
     def test_nim_work(self,project_context):
-        # kedro test C:\Users\Administrator.OGSKWZOI8UHKM7Y\Desktop\project-samudra\src\tests\test_unit_tests\test_unit_touch_point_features.py::TestUnitTp::test_nim_work
+        # kedro test C:\Users\myPC\Desktop\project-samudra\src\tests\test_unit_tests\test_unit_touch_point_features.py::TestUnitTp::test_nim_work
 
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
@@ -1024,6 +1024,1450 @@ class TestUnitTp:
 
         l4_nim_work = l4_rolling_window(l2_nim_work, var_project_context.catalog.load(
             'params:l4_touchpoints_nim_work_features'))
-        l4_nim_work.show()
-        exit(2)
+        # l4_nim_work.show()
+        # access_method_num
+        # start_of_week
+        # sum_num_of_commercial_question_with_cc_sum_weekly_last_week
+        # sum_num_of_commercial_question_with_cc_sum_weekly_last_two_week
+        # sum_num_of_commercial_question_with_cc_sum_weekly_last_four_week
+        # sum_num_of_commercial_question_with_cc_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_commercial_question_with_cc_sum_weekly_last_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_commercial_question_with_cc_sum_weekly_last_two_week").collect()[0][
+                0] == 4
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_commercial_question_with_cc_sum_weekly_last_four_week").collect()[0][
+                0] == 6
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_commercial_question_with_cc_sum_weekly_last_twelve_week").collect()[0][
+                0] == 6
+        # sum_num_of_claims_with_cc_sum_weekly_last_week
+        # sum_num_of_claims_with_cc_sum_weekly_last_two_week
+        # sum_num_of_claims_with_cc_sum_weekly_last_four_week
+        # sum_num_of_claims_with_cc_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_claims_with_cc_sum_weekly_last_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_claims_with_cc_sum_weekly_last_two_week").collect()[0][
+                0] == 4
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_claims_with_cc_sum_weekly_last_four_week").collect()[0][
+                0] == 6
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_claims_with_cc_sum_weekly_last_twelve_week").collect()[0][
+                0] == 6
+        # sum_num_of_consultation_with_cc_sum_weekly_last_week
+        # sum_num_of_consultation_with_cc_sum_weekly_last_two_week
+        # sum_num_of_consultation_with_cc_sum_weekly_last_four_week
+        # sum_num_of_consultation_with_cc_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_consultation_with_cc_sum_weekly_last_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_consultation_with_cc_sum_weekly_last_two_week").collect()[0][
+                0] == 4
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_consultation_with_cc_sum_weekly_last_four_week").collect()[0][
+                0] == 6
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_consultation_with_cc_sum_weekly_last_twelve_week").collect()[0][
+                0] == 6
+        # sum_num_of_commercial_question_in_store_sum_weekly_last_week
+        # sum_num_of_commercial_question_in_store_sum_weekly_last_two_week
+        # sum_num_of_commercial_question_in_store_sum_weekly_last_four_week
+        # sum_num_of_commercial_question_in_store_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_commercial_question_in_store_sum_weekly_last_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_commercial_question_in_store_sum_weekly_last_two_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_commercial_question_in_store_sum_weekly_last_four_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_commercial_question_in_store_sum_weekly_last_twelve_week").collect()[0][
+                0] == 2
+        # sum_num_of_claims_in_store_sum_weekly_last_week
+        # sum_num_of_claims_in_store_sum_weekly_last_two_week
+        # sum_num_of_claims_in_store_sum_weekly_last_four_week
+        # sum_num_of_claims_in_store_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_claims_in_store_sum_weekly_last_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_claims_in_store_sum_weekly_last_two_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_claims_in_store_sum_weekly_last_four_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_claims_in_store_sum_weekly_last_twelve_week").collect()[0][
+                0] == 2
+        # sum_num_of_consultation_in_store_sum_weekly_last_week
+        # sum_num_of_consultation_in_store_sum_weekly_last_two_week
+        # sum_num_of_consultation_in_store_sum_weekly_last_four_week
+        # sum_num_of_consultation_in_store_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_consultation_in_store_sum_weekly_last_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_consultation_in_store_sum_weekly_last_two_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_consultation_in_store_sum_weekly_last_four_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "num_of_consultation_online_sum_num_of_consultation_in_store_sum_weekly_last_four_weeksum").collect()[0][
+                0] == 2
+        # sum_num_of_commercial_question_with_chatbot_sum_weekly_last_week
+        # sum_num_of_commercial_question_with_chatbot_sum_weekly_last_two_week
+        # sum_num_of_commercial_question_with_chatbot_sum_weekly_last_four_week
+        # sum_num_of_commercial_question_with_chatbot_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_commercial_question_with_chatbot_sum_weekly_last_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "        sum_num_of_commercial_question_with_chatbot_sum_weekly_last_two_week
+").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_commercial_question_with_chatbot_sum_weekly_last_four_week").collect()[0][
+                0] == 5
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_commercial_question_with_chatbot_sum_weekly_last_twelve_week").collect()[0][
+                0] == 5
+        # sum_num_of_claims_with_chatbot_sum_weekly_last_week
+        # sum_num_of_claims_with_chatbot_sum_weekly_last_two_week
+        # sum_num_of_claims_with_chatbot_sum_weekly_last_four_week
+        # sum_num_of_claims_with_chatbot_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_claims_with_chatbot_sum_weekly_last_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_claims_with_chatbot_sum_weekly_last_two_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_claims_with_chatbot_sum_weekly_last_four_week").collect()[0][
+                0] == 5
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "num_of_consultation_osum_num_of_claims_with_chatbot_sum_weekly_last_four_weeknline_sum").collect()[0][
+                0] == 5
+        # sum_num_of_consultation_with_chatbot_sum_weekly_last_week
+        # sum_num_of_consultation_with_chatbot_sum_weekly_last_two_week
+        # sum_num_of_consultation_with_chatbot_sum_weekly_last_four_week
+        # sum_num_of_consultation_with_chatbot_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_consultation_with_chatbot_sum_weekly_last_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_consultation_with_chatbot_sum_weekly_last_two_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_consultation_with_chatbot_sum_weekly_last_four_week").collect()[0][
+                0] == 5
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_consultation_with_chatbot_sum_weekly_last_twelve_week").collect()[0][
+                0] == 5
+        # sum_num_of_chatbot_visit_sum_weekly_last_week
+        # sum_num_of_chatbot_visit_sum_weekly_last_two_week
+        # sum_num_of_chatbot_visit_sum_weekly_last_four_week
+        # sum_num_of_chatbot_visit_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_chatbot_visit_sum_weekly_last_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_chatbot_visit_sum_weekly_last_two_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_chatbot_visit_sum_weekly_last_four_week").collect()[0][
+                0] == 5
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_chatbot_visit_sum_weekly_last_twelve_week").collect()[0][
+                0] == 5
+        # sum_num_of_days_with_chatbot_sum_weekly_last_week
+        # sum_num_of_days_with_chatbot_sum_weekly_last_two_week
+        # sum_num_of_days_with_chatbot_sum_weekly_last_four_week
+        # sum_num_of_days_with_chatbot_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_days_with_chatbot_sum_weekly_last_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_days_with_chatbot_sum_weekly_last_two_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_days_with_chatbot_sum_weekly_last_four_week").collect()[0][
+                0] == 5
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_days_with_chatbot_sum_weekly_last_twelve_week").collect()[0][
+                0] == 5
+        # sum_num_of_commercial_question_with_ais_app_sum_weekly_last_week
+        # sum_num_of_commercial_question_with_ais_app_sum_weekly_last_two_week
+        # sum_num_of_commercial_question_with_ais_app_sum_weekly_last_four_week
+        # sum_num_of_commercial_question_with_ais_app_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_commercial_question_with_ais_app_sum_weekly_last_week").collect()[0][
+                0] == 0
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_commercial_question_with_ais_app_sum_weekly_last_two_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_commercial_question_with_ais_app_sum_weekly_last_four_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_commercial_question_with_ais_app_sum_weekly_last_twelve_week").collect()[0][
+                0] == 2
+        # sum_num_of_claims_with_ais_app_sum_weekly_last_week
+        # sum_num_of_claims_with_ais_app_sum_weekly_last_two_week
+        # sum_num_of_claims_with_ais_app_sum_weekly_last_four_week
+        # sum_num_of_claims_with_ais_app_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_claims_with_ais_app_sum_weekly_last_week").collect()[0][
+                0] == 0
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_claims_with_ais_app_sum_weekly_last_two_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_claims_with_ais_app_sum_weekly_last_four_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_claims_with_ais_app_sum_weekly_last_twelve_week").collect()[0][
+                0] == 2
+        # sum_num_of_consultation_with_ais_app_sum_weekly_last_week
+        # sum_num_of_consultation_with_ais_app_sum_weekly_last_two_week
+        # sum_num_of_consultation_with_ais_app_sum_weekly_last_four_week
+        # sum_num_of_consultation_with_ais_app_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_consultation_with_ais_app_sum_weekly_last_week").collect()[0][
+                0] == 0
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_consultation_with_ais_app_sum_weekly_last_two_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_consultation_with_ais_app_sum_weekly_last_four_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_consultation_with_ais_app_sum_weekly_last_twelve_week").collect()[0][
+                0] == 2
+        # sum_num_of_days_with_ais_app_sum_weekly_last_week
+        # sum_num_of_days_with_ais_app_sum_weekly_last_two_week
+        # sum_num_of_days_with_ais_app_sum_weekly_last_four_week
+        # sum_num_of_days_with_ais_app_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_days_with_ais_app_sum_weekly_last_week").collect()[0][
+                0] == 0
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_days_with_ais_app_sum_weekly_last_two_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_days_with_ais_app_sum_weekly_last_four_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_days_with_ais_app_sum_weekly_last_twelve_week").collect()[0][
+                0] == 2
+        # sum_num_of_commercial_question_online_sum_weekly_last_week
+        # sum_num_of_commercial_question_online_sum_weekly_last_two_week
+        # sum_num_of_commercial_question_online_sum_weekly_last_four_week
+        # sum_num_of_commercial_question_online_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_commercial_question_online_sum_weekly_last_week").collect()[0][
+                0] == 3
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_commercial_question_online_sum_weekly_last_two_week").collect()[0][
+                0] == 4
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_commercial_question_online_sum_weekly_last_four_week").collect()[0][
+                0] == 5
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_commercial_question_online_sum_weekly_last_twelve_week").collect()[0][
+                0] == 5
+        # sum_num_of_claims_with_online_sum_weekly_last_week
+        # sum_num_of_claims_with_online_sum_weekly_last_two_week
+        # sum_num_of_claims_with_online_sum_weekly_last_four_week
+        # sum_num_of_claims_with_online_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_claims_with_online_sum_weekly_last_week").collect()[0][
+                0] == 3
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_claims_with_online_sum_weekly_last_two_week").collect()[0][
+                0] == 4
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_claims_with_online_sum_weekly_last_four_week").collect()[0][
+                0] == 5
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_claims_with_online_sum_weekly_last_twelve_week").collect()[0][
+                0] == 5
+        # sum_num_of_consultation_online_sum_weekly_last_week
+        # sum_num_of_consultation_online_sum_weekly_last_two_week
+        # sum_num_of_consultation_online_sum_weekly_last_four_week
+        # sum_num_of_consultation_online_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_consultation_online_sum_weekly_last_week").collect()[0][
+                0] == 3
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_consultation_online_sum_weekly_last_two_week").collect()[0][
+                0] == 4
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_consultation_online_sum_weekly_last_four_week").collect()[0][
+                0] == 5
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "sum_num_of_consultation_online_sum_weekly_last_twelve_week").collect()[0][
+                0] == 5
+        # avg_num_of_commercial_question_with_cc_sum_weekly_last_week
+        # avg_num_of_commercial_question_with_cc_sum_weekly_last_two_week
+        # avg_num_of_commercial_question_with_cc_sum_weekly_last_four_week
+        # avg_num_of_commercial_question_with_cc_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_commercial_question_with_cc_sum_weekly_last_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_commercial_question_with_cc_sum_weekly_last_two_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_commercial_question_with_cc_sum_weekly_last_four_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_commercial_question_with_cc_sum_weekly_last_twelve_week").collect()[0][
+                0] == 2
+        # avg_num_of_claims_with_cc_sum_weekly_last_week
+        # avg_num_of_claims_with_cc_sum_weekly_last_two_week
+        # avg_num_of_claims_with_cc_sum_weekly_last_four_week
+        # avg_num_of_claims_with_cc_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_claims_with_cc_sum_weekly_last_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_claims_with_cc_sum_weekly_last_two_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_claims_with_cc_sum_weekly_last_four_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_claims_with_cc_sum_weekly_last_twelve_week").collect()[0][
+                0] == 2
+        # avg_num_of_consultation_with_cc_sum_weekly_last_week
+        # avg_num_of_consultation_with_cc_sum_weekly_last_two_week
+        # avg_num_of_consultation_with_cc_sum_weekly_last_four_week
+        # avg_num_of_consultation_with_cc_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_consultation_with_cc_sum_weekly_last_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_consultation_with_cc_sum_weekly_last_two_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_consultation_with_cc_sum_weekly_last_four_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_consultation_with_cc_sum_weekly_last_twelve_week").collect()[0][
+                0] == 2
+        # avg_num_of_commercial_question_in_store_sum_weekly_last_week
+        # avg_num_of_commercial_question_in_store_sum_weekly_last_two_week
+        # avg_num_of_commercial_question_in_store_sum_weekly_last_four_week
+        # avg_num_of_commercial_question_in_store_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_commercial_question_in_store_sum_weekly_last_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_commercial_question_in_store_sum_weekly_last_two_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_commercial_question_in_store_sum_weekly_last_four_week").collect()[0][
+                0] == 0.7
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_commercial_question_in_store_sum_weekly_last_twelve_week").collect()[0][
+                0] == 0.7
+        # avg_num_of_claims_in_store_sum_weekly_last_week
+        # avg_num_of_claims_in_store_sum_weekly_last_two_week
+        # avg_num_of_claims_in_store_sum_weekly_last_four_week
+        # avg_num_of_claims_in_store_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_claims_in_store_sum_weekly_last_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_claims_in_store_sum_weekly_last_two_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_claims_in_store_sum_weekly_last_four_week").collect()[0][
+                0] == 0.7
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_claims_in_store_sum_weekly_last_twelve_week").collect()[0][
+                0] == 0.7
+        # avg_num_of_consultation_in_store_sum_weekly_last_week
+        # avg_num_of_consultation_in_store_sum_weekly_last_two_week
+        # avg_num_of_consultation_in_store_sum_weekly_last_four_week
+        # avg_num_of_consultation_in_store_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_consultation_in_store_sum_weekly_last_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_consultation_in_store_sum_weekly_last_two_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_consultation_in_store_sum_weekly_last_four_week").collect()[0][
+                0] == 0.7
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_consultation_in_store_sum_weekly_last_twelve_week").collect()[0][
+                0] == 0.7
+        # avg_num_of_commercial_question_with_chatbot_sum_weekly_last_week
+        # avg_num_of_commercial_question_with_chatbot_sum_weekly_last_two_week
+        # avg_num_of_commercial_question_with_chatbot_sum_weekly_last_four_week
+        # avg_num_of_commercial_question_with_chatbot_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_commercial_question_with_chatbot_sum_weekly_last_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_commercial_question_with_chatbot_sum_weekly_last_two_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_commercial_question_with_chatbot_sum_weekly_last_four_week").collect()[0][
+                0] == 1.7       
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_commercial_question_with_chatbot_sum_weekly_last_twelve_week").collect()[0][
+                0] == 1.7
+        # avg_num_of_claims_with_chatbot_sum_weekly_last_week
+        # avg_num_of_claims_with_chatbot_sum_weekly_last_two_week
+        # avg_num_of_claims_with_chatbot_sum_weekly_last_four_week
+        # avg_num_of_claims_with_chatbot_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_claims_with_chatbot_sum_weekly_last_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_claims_with_chatbot_sum_weekly_last_two_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_claims_with_chatbot_sum_weekly_last_four_week").collect()[0][
+                0] == 1.7
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_claims_with_chatbot_sum_weekly_last_twelve_week").collect()[0][
+                0] == 1.7
+        # avg_num_of_consultation_with_chatbot_sum_weekly_last_week
+        # avg_num_of_consultation_with_chatbot_sum_weekly_last_two_week
+        # avg_num_of_consultation_with_chatbot_sum_weekly_last_four_week
+        # avg_num_of_consultation_with_chatbot_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_consultation_with_chatbot_sum_weekly_last_week").collect()[0][
+                0] == 1         
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_consultation_with_chatbot_sum_weekly_last_two_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_consultation_with_chatbot_sum_weekly_last_four_week").collect()[0][
+                0] == 1.7
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_consultation_with_chatbot_sum_weekly_last_twelve_week").collect()[0][
+                0] == 1.7
+        # avg_num_of_chatbot_visit_sum_weekly_last_week
+        # avg_num_of_chatbot_visit_sum_weekly_last_two_week
+        # avg_num_of_chatbot_visit_sum_weekly_last_four_week
+        # avg_num_of_chatbot_visit_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_chatbot_visit_sum_weekly_last_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_chatbot_visit_sum_weekly_last_two_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_chatbot_visit_sum_weekly_last_four_week").collect()[0][
+                0] == 1.7
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_chatbot_visit_sum_weekly_last_twelve_week").collect()[0][
+                0] == 1.7
+        # avg_num_of_days_with_chatbot_sum_weekly_last_week
+        # avg_num_of_days_with_chatbot_sum_weekly_last_two_week
+        # avg_num_of_days_with_chatbot_sum_weekly_last_four_week
+        # avg_num_of_days_with_chatbot_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_days_with_chatbot_sum_weekly_last_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_days_with_chatbot_sum_weekly_last_two_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_days_with_chatbot_sum_weekly_last_four_week").collect()[0][
+                0] == 1.7
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_days_with_chatbot_sum_weekly_last_twelve_week").collect()[0][
+                0] == 1.7
+        # avg_num_of_commercial_question_with_ais_app_sum_weekly_last_week
+        # avg_num_of_commercial_question_with_ais_app_sum_weekly_last_two_week
+        # avg_num_of_commercial_question_with_ais_app_sum_weekly_last_four_week
+        # avg_num_of_commercial_question_with_ais_app_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_commercial_question_with_ais_app_sum_weekly_last_week").collect()[0][
+                0] == 0
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_commercial_question_with_ais_app_sum_weekly_last_two_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_commercial_question_with_ais_app_sum_weekly_last_four_week").collect()[0][
+                0] == 0.7
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_commercial_question_with_ais_app_sum_weekly_last_twelve_week").collect()[0][
+                0] == 0.7
+        # avg_num_of_claims_with_ais_app_sum_weekly_last_week
+        # avg_num_of_claims_with_ais_app_sum_weekly_last_two_week
+        # avg_num_of_claims_with_ais_app_sum_weekly_last_four_week
+        # avg_num_of_claims_with_ais_app_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_claims_with_ais_app_sum_weekly_last_week").collect()[0][
+                0] == 0
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_claims_with_ais_app_sum_weekly_last_two_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_claims_with_ais_app_sum_weekly_last_four_week").collect()[0][
+                0] == 0.7
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_claims_with_ais_app_sum_weekly_last_twelve_week").collect()[0][
+                0] == 0.7
+        # avg_num_of_consultation_with_ais_app_sum_weekly_last_week
+        # avg_num_of_consultation_with_ais_app_sum_weekly_last_two_week
+        # avg_num_of_consultation_with_ais_app_sum_weekly_last_four_week
+        # avg_num_of_consultation_with_ais_app_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_consultation_with_ais_app_sum_weekly_last_week").collect()[0][
+                0] == 0
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_consultation_with_ais_app_sum_weekly_last_two_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_consultation_with_ais_app_sum_weekly_last_four_week").collect()[0][
+                0] == 0.7
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_consultation_with_ais_app_sum_weekly_last_twelve_week").collect()[0][
+                0] == 0.7
+        # avg_num_of_days_with_ais_app_sum_weekly_last_week
+        # avg_num_of_days_with_ais_app_sum_weekly_last_two_week
+        # avg_num_of_days_with_ais_app_sum_weekly_last_four_week
+        # avg_num_of_days_with_ais_app_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_days_with_ais_app_sum_weekly_last_week").collect()[0][
+                0] == 0
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_days_with_ais_app_sum_weekly_last_two_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_days_with_ais_app_sum_weekly_last_four_week").collect()[0][
+                0] == 0.7
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_days_with_ais_app_sum_weekly_last_twelve_week").collect()[0][
+                0] == 0.7
+        # avg_num_of_commercial_question_online_sum_weekly_last_week
+        # avg_num_of_commercial_question_online_sum_weekly_last_two_week
+        # avg_num_of_commercial_question_online_sum_weekly_last_four_week
+        # avg_num_of_commercial_question_online_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_commercial_question_online_sum_weekly_last_week").collect()[0][
+                0] == 3
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_commercial_question_online_sum_weekly_last_two_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_commercial_question_online_sum_weekly_last_four_week").collect()[0][
+                0] == 1.7
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_commercial_question_online_sum_weekly_last_twelve_week").collect()[0][
+                0] == 1.7
+        # avg_num_of_claims_with_online_sum_weekly_last_week
+        # avg_num_of_claims_with_online_sum_weekly_last_two_week
+        # avg_num_of_claims_with_online_sum_weekly_last_four_week
+        # avg_num_of_claims_with_online_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_claims_with_online_sum_weekly_last_week").collect()[0][
+                0] == 3
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_claims_with_online_sum_weekly_last_two_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_claims_with_online_sum_weekly_last_four_week").collect()[0][
+                0] == 1.7
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_claims_with_online_sum_weekly_last_twelve_week").collect()[0][
+                0] == 1.7
+        # avg_num_of_consultation_online_sum_weekly_last_week
+        # avg_num_of_consultation_online_sum_weekly_last_two_week
+        # avg_num_of_consultation_online_sum_weekly_last_four_week
+        # avg_num_of_consultation_online_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_consultation_online_sum_weekly_last_week").collect()[0][
+                0] == 3
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_consultation_online_sum_weekly_last_two_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_consultation_online_sum_weekly_last_four_week").collect()[0][
+                0] == 1.7
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "avg_num_of_consultation_online_sum_weekly_last_twelve_week").collect()[0][
+                0] == 1.7
+        # min_num_of_commercial_question_with_cc_sum_weekly_last_week
+        # min_num_of_commercial_question_with_cc_sum_weekly_last_two_week
+        # min_num_of_commercial_question_with_cc_sum_weekly_last_four_week
+        # min_num_of_commercial_question_with_cc_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_commercial_question_with_cc_sum_weekly_last_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_commercial_question_with_cc_sum_weekly_last_two_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_commercial_question_with_cc_sum_weekly_last_four_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_commercial_question_with_cc_sum_weekly_last_twelve_week").collect()[0][
+                0] == 2
+        
+        # min_num_of_claims_with_cc_sum_weekly_last_week
+        # min_num_of_claims_with_cc_sum_weekly_last_two_week
+        # min_num_of_claims_with_cc_sum_weekly_last_four_week
+        # min_num_of_claims_with_cc_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_claims_with_cc_sum_weekly_last_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_claims_with_cc_sum_weekly_last_two_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_claims_with_cc_sum_weekly_last_four_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_claims_with_cc_sum_weekly_last_twelve_week").collect()[0][
+                0] == 2
+        # min_num_of_consultation_with_cc_sum_weekly_last_week
+        # min_num_of_consultation_with_cc_sum_weekly_last_two_week
+        # min_num_of_consultation_with_cc_sum_weekly_last_four_week
+        # min_num_of_consultation_with_cc_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_consultation_with_cc_sum_weekly_last_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_consultation_with_cc_sum_weekly_last_two_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_consultation_with_cc_sum_weekly_last_four_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_consultation_with_cc_sum_weekly_last_twelve_week").collect()[0][
+                0] == 2
+        # min_num_of_commercial_question_in_store_sum_weekly_last_week
+        # min_num_of_commercial_question_in_store_sum_weekly_last_two_week
+        # min_num_of_commercial_question_in_store_sum_weekly_last_four_week
+        # min_num_of_commercial_question_in_store_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_commercial_question_in_store_sum_weekly_last_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_commercial_question_in_store_sum_weekly_last_two_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_commercial_question_in_store_sum_weekly_last_four_week").collect()[0][
+                0] == 0
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_commercial_question_in_store_sum_weekly_last_twelve_week").collect()[0][
+                0] == 0
+        # min_num_of_claims_in_store_sum_weekly_last_week
+        # min_num_of_claims_in_store_sum_weekly_last_two_week
+        # min_num_of_claims_in_store_sum_weekly_last_four_week
+        # min_num_of_claims_in_store_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_claims_in_store_sum_weekly_last_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_claims_in_store_sum_weekly_last_two_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_claims_in_store_sum_weekly_last_four_week").collect()[0][
+                0] == 0
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_claims_in_store_sum_weekly_last_twelve_week").collect()[0][
+                0] == 0
+        # min_num_of_consultation_in_store_sum_weekly_last_week
+        # min_num_of_consultation_in_store_sum_weekly_last_two_week
+        # min_num_of_consultation_in_store_sum_weekly_last_four_week
+        # min_num_of_consultation_in_store_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_consultation_in_store_sum_weekly_last_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_consultation_in_store_sum_weekly_last_two_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_consultation_in_store_sum_weekly_last_four_week").collect()[0][
+                0] == 0
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_consultation_in_store_sum_weekly_last_twelve_week").collect()[0][
+                0] == 0
+        # min_num_of_commercial_question_with_chatbot_sum_weekly_last_week
+        # min_num_of_commercial_question_with_chatbot_sum_weekly_last_two_week
+        # min_num_of_commercial_question_with_chatbot_sum_weekly_last_four_week
+        # min_num_of_commercial_question_with_chatbot_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_commercial_question_with_chatbot_sum_weekly_last_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_commercial_question_with_chatbot_sum_weekly_last_two_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_commercial_question_with_chatbot_sum_weekly_last_four_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_commercial_question_with_chatbot_sum_weekly_last_twelve_week").collect()[0][
+                0] == 1
+        # min_num_of_claims_with_chatbot_sum_weekly_last_week
+        # min_num_of_claims_with_chatbot_sum_weekly_last_two_week
+        # min_num_of_claims_with_chatbot_sum_weekly_last_four_week
+        # min_num_of_claims_with_chatbot_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_claims_with_chatbot_sum_weekly_last_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_claims_with_chatbot_sum_weekly_last_two_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_claims_with_chatbot_sum_weekly_last_four_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_claims_with_chatbot_sum_weekly_last_twelve_week").collect()[0][
+                0] == 1
+        # min_num_of_consultation_with_chatbot_sum_weekly_last_week
+        # min_num_of_consultation_with_chatbot_sum_weekly_last_two_week
+        # min_num_of_consultation_with_chatbot_sum_weekly_last_four_week
+        # min_num_of_consultation_with_chatbot_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_consultation_with_chatbot_sum_weekly_last_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_consultation_with_chatbot_sum_weekly_last_two_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_consultation_with_chatbot_sum_weekly_last_four_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_consultation_with_chatbot_sum_weekly_last_twelve_week").collect()[0][
+                0] == 1
+        # min_num_of_chatbot_visit_sum_weekly_last_week
+        # min_num_of_chatbot_visit_sum_weekly_last_two_week
+        # min_num_of_chatbot_visit_sum_weekly_last_four_week
+        # min_num_of_chatbot_visit_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_chatbot_visit_sum_weekly_last_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_chatbot_visit_sum_weekly_last_two_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_chatbot_visit_sum_weekly_last_four_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_chatbot_visit_sum_weekly_last_twelve_week").collect()[0][
+                0] == 1
+        # min_num_of_days_with_chatbot_sum_weekly_last_week
+        # min_num_of_days_with_chatbot_sum_weekly_last_two_week
+        # min_num_of_days_with_chatbot_sum_weekly_last_four_week
+        # min_num_of_days_with_chatbot_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_days_with_chatbot_sum_weekly_last_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_days_with_chatbot_sum_weekly_last_two_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_days_with_chatbot_sum_weekly_last_four_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_days_with_chatbot_sum_weekly_last_twelve_week").collect()[0][
+                0] == 1
+        # min_num_of_commercial_question_with_ais_app_sum_weekly_last_week
+        # min_num_of_commercial_question_with_ais_app_sum_weekly_last_two_week
+        # min_num_of_commercial_question_with_ais_app_sum_weekly_last_four_week
+        # min_num_of_commercial_question_with_ais_app_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_commercial_question_with_ais_app_sum_weekly_last_week").collect()[0][
+                0] == 0
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_commercial_question_with_ais_app_sum_weekly_last_two_week").collect()[0][
+                0] == 0
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_commercial_question_with_ais_app_sum_weekly_last_four_week").collect()[0][
+                0] == 0
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_commercial_question_with_ais_app_sum_weekly_last_twelve_week").collect()[0][
+                0] == 0
+        # min_num_of_claims_with_ais_app_sum_weekly_last_week
+        # min_num_of_claims_with_ais_app_sum_weekly_last_two_week
+        # min_num_of_claims_with_ais_app_sum_weekly_last_four_week
+        # min_num_of_claims_with_ais_app_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_claims_with_ais_app_sum_weekly_last_week").collect()[0][
+                0] == 0
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_claims_with_ais_app_sum_weekly_last_two_week").collect()[0][
+                0] == 0
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_claims_with_ais_app_sum_weekly_last_four_week").collect()[0][
+                0] == 0
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_claims_with_ais_app_sum_weekly_last_twelve_week").collect()[0][
+                0] == 0
+        # min_num_of_consultation_with_ais_app_sum_weekly_last_week
+        # min_num_of_consultation_with_ais_app_sum_weekly_last_two_week
+        # min_num_of_consultation_with_ais_app_sum_weekly_last_four_week
+        # min_num_of_consultation_with_ais_app_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_consultation_with_ais_app_sum_weekly_last_week").collect()[0][
+                0] == 0
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_consultation_with_ais_app_sum_weekly_last_two_week").collect()[0][
+                0] == 0
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_consultation_with_ais_app_sum_weekly_last_four_week").collect()[0][
+                0] == 0
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_consultation_with_ais_app_sum_weekly_last_twelve_week").collect()[0][
+                0] == 0
+        # min_num_of_days_with_ais_app_sum_weekly_last_week
+        # min_num_of_days_with_ais_app_sum_weekly_last_two_week
+        # min_num_of_days_with_ais_app_sum_weekly_last_four_week
+        # min_num_of_days_with_ais_app_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_days_with_ais_app_sum_weekly_last_week").collect()[0][
+                0] == 0
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_days_with_ais_app_sum_weekly_last_two_week").collect()[0][
+                0] == 0
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_days_with_ais_app_sum_weekly_last_four_week").collect()[0][
+                0] == 0
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_days_with_ais_app_sum_weekly_last_twelve_week").collect()[0][
+                0] == 0
+        # min_num_of_commercial_question_online_sum_weekly_last_week
+        # min_num_of_commercial_question_online_sum_weekly_last_two_week
+        # min_num_of_commercial_question_online_sum_weekly_last_four_week
+        # min_num_of_commercial_question_online_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_commercial_question_online_sum_weekly_last_week").collect()[0][
+                0] == 3
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_commercial_question_online_sum_weekly_last_two_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_commercial_question_online_sum_weekly_last_four_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_commercial_question_online_sum_weekly_last_twelve_week").collect()[0][
+                0] == 1
+        # min_num_of_claims_with_online_sum_weekly_last_week
+        # min_num_of_claims_with_online_sum_weekly_last_two_week
+        # min_num_of_claims_with_online_sum_weekly_last_four_week
+        # min_num_of_claims_with_online_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_claims_with_online_sum_weekly_last_week").collect()[0][
+                0] == 3
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_claims_with_online_sum_weekly_last_two_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_claims_with_online_sum_weekly_last_four_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_claims_with_online_sum_weekly_last_twelve_week").collect()[0][
+                0] == 1
+        # min_num_of_consultation_online_sum_weekly_last_week
+        # min_num_of_consultation_online_sum_weekly_last_two_week
+        # min_num_of_consultation_online_sum_weekly_last_four_week
+        # min_num_of_consultation_online_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_consultation_online_sum_weekly_last_week").collect()[0][
+                0] == 3
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_consultation_online_sum_weekly_last_two_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_consultation_online_sum_weekly_last_four_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "min_num_of_consultation_online_sum_weekly_last_twelve_week").collect()[0][
+                0] == 1
+        # max_num_of_commercial_question_with_cc_sum_weekly_last_week
+        # max_num_of_commercial_question_with_cc_sum_weekly_last_two_week
+        # max_num_of_commercial_question_with_cc_sum_weekly_last_four_week
+        # max_num_of_commercial_question_with_cc_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_commercial_question_with_cc_sum_weekly_last_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_commercial_question_with_cc_sum_weekly_last_two_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_commercial_question_with_cc_sum_weekly_last_four_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_commercial_question_with_cc_sum_weekly_last_twelve_week").collect()[0][
+                0] == 2
+        # max_num_of_claims_with_cc_sum_weekly_last_week
+        # max_num_of_claims_with_cc_sum_weekly_last_two_week
+        # max_num_of_claims_with_cc_sum_weekly_last_four_week
+        # max_num_of_claims_with_cc_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_claims_with_cc_sum_weekly_last_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_claims_with_cc_sum_weekly_last_two_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_claims_with_cc_sum_weekly_last_four_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_claims_with_cc_sum_weekly_last_twelve_week").collect()[0][
+                0] == 2
+        # max_num_of_consultation_with_cc_sum_weekly_last_week
+        # max_num_of_consultation_with_cc_sum_weekly_last_two_week
+        # max_num_of_consultation_with_cc_sum_weekly_last_four_week
+        # max_num_of_consultation_with_cc_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_consultation_with_cc_sum_weekly_last_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_consultation_with_cc_sum_weekly_last_two_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_consultation_with_cc_sum_weekly_last_four_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_consultation_with_cc_sum_weekly_last_twelve_week").collect()[0][
+                0] == 2
+        # max_num_of_commercial_question_in_store_sum_weekly_last_week
+        # max_num_of_commercial_question_in_store_sum_weekly_last_two_week
+        # max_num_of_commercial_question_in_store_sum_weekly_last_four_week
+        # max_num_of_commercial_question_in_store_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_commercial_question_in_store_sum_weekly_last_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_commercial_question_in_store_sum_weekly_last_two_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_commercial_question_in_store_sum_weekly_last_four_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_commercial_question_in_store_sum_weekly_last_twelve_week").collect()[0][
+                0] == 1
+        # max_num_of_claims_in_store_sum_weekly_last_week
+        # max_num_of_claims_in_store_sum_weekly_last_two_week
+        # max_num_of_claims_in_store_sum_weekly_last_four_week
+        # max_num_of_claims_in_store_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_claims_in_store_sum_weekly_last_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_claims_in_store_sum_weekly_last_two_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_claims_in_store_sum_weekly_last_four_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_claims_in_store_sum_weekly_last_twelve_week").collect()[0][
+                0] == 1
+        # max_num_of_consultation_in_store_sum_weekly_last_week
+        # max_num_of_consultation_in_store_sum_weekly_last_two_week
+        # max_num_of_consultation_in_store_sum_weekly_last_four_week
+        # max_num_of_consultation_in_store_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_consultation_in_store_sum_weekly_last_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_consultation_in_store_sum_weekly_last_two_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_consultation_in_store_sum_weekly_last_four_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_consultation_in_store_sum_weekly_last_twelve_week").collect()[0][
+                0] == 1
+        # max_num_of_commercial_question_with_chatbot_sum_weekly_last_week
+        # max_num_of_commercial_question_with_chatbot_sum_weekly_last_two_week
+        # max_num_of_commercial_question_with_chatbot_sum_weekly_last_four_week
+        # max_num_of_commercial_question_with_chatbot_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_commercial_question_with_chatbot_sum_weekly_last_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_commercial_question_with_chatbot_sum_weekly_last_two_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_commercial_question_with_chatbot_sum_weekly_last_four_week").collect()[0][
+                0] == 3
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_commercial_question_with_chatbot_sum_weekly_last_twelve_week").collect()[0][
+                0] == 3
+        # max_num_of_claims_with_chatbot_sum_weekly_last_week
+        # max_num_of_claims_with_chatbot_sum_weekly_last_two_week
+        # max_num_of_claims_with_chatbot_sum_weekly_last_four_week
+        # max_num_of_claims_with_chatbot_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_claims_with_chatbot_sum_weekly_last_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_claims_with_chatbot_sum_weekly_last_two_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_claims_with_chatbot_sum_weekly_last_four_week").collect()[0][
+                0] == 3
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_claims_with_chatbot_sum_weekly_last_twelve_week").collect()[0][
+                0] == 3
+        # max_num_of_consultation_with_chatbot_sum_weekly_last_week
+        # max_num_of_consultation_with_chatbot_sum_weekly_last_two_week
+        # max_num_of_consultation_with_chatbot_sum_weekly_last_four_week
+        # max_num_of_consultation_with_chatbot_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_consultation_with_chatbot_sum_weekly_last_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_consultation_with_chatbot_sum_weekly_last_two_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_consultation_with_chatbot_sum_weekly_last_four_week").collect()[0][
+                0] == 3
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_consultation_with_chatbot_sum_weekly_last_twelve_week").collect()[0][
+                0] == 3
+        # max_num_of_chatbot_visit_sum_weekly_last_week
+        # max_num_of_chatbot_visit_sum_weekly_last_two_week
+        # max_num_of_chatbot_visit_sum_weekly_last_four_week
+        # max_num_of_chatbot_visit_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_chatbot_visit_sum_weekly_last_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_chatbot_visit_sum_weekly_last_two_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_chatbot_visit_sum_weekly_last_four_week").collect()[0][
+                0] == 3
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_chatbot_visit_sum_weekly_last_twelve_week").collect()[0][
+                0] == 3
+        # max_num_of_days_with_chatbot_sum_weekly_last_week
+        # max_num_of_days_with_chatbot_sum_weekly_last_two_week
+        # max_num_of_days_with_chatbot_sum_weekly_last_four_week
+        # max_num_of_days_with_chatbot_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_days_with_chatbot_sum_weekly_last_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_days_with_chatbot_sum_weekly_last_two_week").collect()[0][
+                0] == 1
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_days_with_chatbot_sum_weekly_last_four_week").collect()[0][
+                0] == 3
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_days_with_chatbot_sum_weekly_last_twelve_week").collect()[0][
+                0] == 3
+        # max_num_of_commercial_question_with_ais_app_sum_weekly_last_week
+        # max_num_of_commercial_question_with_ais_app_sum_weekly_last_two_week
+        # max_num_of_commercial_question_with_ais_app_sum_weekly_last_four_week
+        # max_num_of_commercial_question_with_ais_app_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_commercial_question_with_ais_app_sum_weekly_last_week").collect()[0][
+                0] == 0
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_commercial_question_with_ais_app_sum_weekly_last_two_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_commercial_question_with_ais_app_sum_weekly_last_four_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_commercial_question_with_ais_app_sum_weekly_last_twelve_week").collect()[0][
+                0] == 2
+        # max_num_of_claims_with_ais_app_sum_weekly_last_week
+        # max_num_of_claims_with_ais_app_sum_weekly_last_two_week
+        # max_num_of_claims_with_ais_app_sum_weekly_last_four_week
+        # max_num_of_claims_with_ais_app_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_claims_with_ais_app_sum_weekly_last_week").collect()[0][
+                0] == 0
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_claims_with_ais_app_sum_weekly_last_two_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_claims_with_ais_app_sum_weekly_last_four_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_claims_with_ais_app_sum_weekly_last_twelve_week").collect()[0][
+                0] == 2
+        # max_num_of_consultation_with_ais_app_sum_weekly_last_week
+        # max_num_of_consultation_with_ais_app_sum_weekly_last_two_week
+        # max_num_of_consultation_with_ais_app_sum_weekly_last_four_week
+        # max_num_of_consultation_with_ais_app_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_consultation_with_ais_app_sum_weekly_last_week").collect()[0][
+                0] == 0
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_consultation_with_ais_app_sum_weekly_last_two_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_consultation_with_ais_app_sum_weekly_last_four_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_consultation_with_ais_app_sum_weekly_last_twelve_week").collect()[0][
+                0] == 2
+        # max_num_of_days_with_ais_app_sum_weekly_last_week
+        # max_num_of_days_with_ais_app_sum_weekly_last_two_week
+        # max_num_of_days_with_ais_app_sum_weekly_last_four_week
+        # max_num_of_days_with_ais_app_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_days_with_ais_app_sum_weekly_last_week").collect()[0][
+                0] == 0
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_days_with_ais_app_sum_weekly_last_two_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_days_with_ais_app_sum_weekly_last_four_week").collect()[0][
+                0] == 2
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_days_with_ais_app_sum_weekly_last_twelve_week").collect()[0][
+                0] == 2
+        # max_num_of_commercial_question_online_sum_weekly_last_week
+        # max_num_of_commercial_question_online_sum_weekly_last_two_week
+        # max_num_of_commercial_question_online_sum_weekly_last_four_week
+        # max_num_of_commercial_question_online_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_commercial_question_online_sum_weekly_last_week").collect()[0][
+                0] == 3
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_commercial_question_online_sum_weekly_last_two_week").collect()[0][
+                0] == 3
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_commercial_question_online_sum_weekly_last_four_week").collect()[0][
+                0] == 3
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_commercial_question_online_sum_weekly_last_twelve_week").collect()[0][
+                0] == 3
+        # max_num_of_claims_with_online_sum_weekly_last_week
+        # max_num_of_claims_with_online_sum_weekly_last_two_week
+        # max_num_of_claims_with_online_sum_weekly_last_four_week
+        # max_num_of_claims_with_online_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_claims_with_online_sum_weekly_last_week").collect()[0][
+                0] == 3
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_claims_with_online_sum_weekly_last_two_week").collect()[0][
+                0] == 3
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_claims_with_online_sum_weekly_last_four_week").collect()[0][
+                0] == 3
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_claims_with_online_sum_weekly_last_twelve_week").collect()[0][
+                0] == 3
+        # max_num_of_consultation_online_sum_weekly_last_week
+        # max_num_of_consultation_online_sum_weekly_last_two_week
+        # max_num_of_consultation_online_sum_weekly_last_four_week
+        # max_num_of_consultation_online_sum_weekly_last_twelve_week
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_consultation_online_sum_weekly_last_week").collect()[0][
+                0] == 3
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_consultation_online_sum_weekly_last_two_week").collect()[0][
+                0] == 3
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_consultation_online_sum_weekly_last_four_week").collect()[0][
+                0] == 3
+        l4_nim_work.where(
+                "start_of_week = '2020-01-20'").select(
+                "max_num_of_consultation_online_sum_weekly_last_twelve_week").collect()[0][
+                0] == 3
+
 #
