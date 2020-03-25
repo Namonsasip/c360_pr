@@ -8,36 +8,36 @@ def loyalty_to_l2_pipeline(**kwargs):
         [
 
             # Number of services for each category
-            node(
-                node_from_config,
-                ["l1_loyalty_number_of_services",
-                 "params:l2_loyalty_number_of_services_weekly"],
-                 "l2_loyalty_number_of_services"
-            ),
-
-            # # Number of rewards for each category
-            node(
-                node_from_config,
-                ["l1_loyalty_number_of_rewards",
-                 "params:l2_loyalty_number_of_rewards_weekly"],
-                "l2_loyalty_number_of_rewards"
-            ),
-            #
-            # # Number of points spend for each category
             # node(
             #     node_from_config,
-            #     ["l1_loyalty_number_of_points_spend",
-            #      "params:l2_loyalty_number_of_points_spend_weekly"],
-            #     "l2_loyalty_number_of_points_spend"
+            #     ["l1_loyalty_number_of_services",
+            #      "params:l2_loyalty_number_of_services_weekly"],
+            #      "l2_loyalty_number_of_services"
             # ),
 
-            #Serenade class weekly
+            # # Number of rewards for each category
+            # node(
+            #     node_from_config,
+            #     ["l1_loyalty_number_of_rewards",
+            #      "params:l2_loyalty_number_of_rewards_weekly"],
+            #     "l2_loyalty_number_of_rewards"
+            # ),
+            #
+            # # Number of points spend for each category
             node(
-                loyalty_serenade_class,
-                ["l0_loyalty_priv_customer_profile",
-                 "l1_customer_profile_union_daily_feature",
-                 "params:l2_loyalty_serenade_class_weekly"],
-                "l2_loyalty_serenade_class"
+                node_from_config,
+                ["l1_loyalty_number_of_points_spend",
+                 "params:l2_loyalty_number_of_points_spend_weekly"],
+                "l2_loyalty_number_of_points_spend"
             ),
+
+            #Serenade class weekly
+            # node(
+            #     loyalty_serenade_class,
+            #     ["l0_loyalty_priv_customer_profile",
+            #      "l1_customer_profile_union_daily_feature",
+            #      "params:l2_loyalty_serenade_class_weekly"],
+            #     "l2_loyalty_serenade_class"
+            # ),
         ]
     )
