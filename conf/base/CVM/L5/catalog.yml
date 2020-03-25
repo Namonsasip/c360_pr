@@ -81,5 +81,5 @@ l5_cvm_volatility:
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_volatility/
 
 preprocessing_pipeline:
-  type: datasets.MLPipeline
+  type: datasets.ml_pipeline.MLPipeline
   filepath: /mnt/customer360-cvm/preprocessing_pipeline

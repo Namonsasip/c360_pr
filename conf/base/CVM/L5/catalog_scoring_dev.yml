@@ -84,6 +84,3 @@ l5_cvm_volatility_scoring_dev:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_volatility_scoring_dev/
 
-preprocessing_pipeline_sample:
-  type: datasets.MLPipeline
-  filepath: /mnt/customer360-cvm/preprocessing_pipeline_sample
