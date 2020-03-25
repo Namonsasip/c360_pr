@@ -30,7 +30,7 @@
 from pyspark.sql import DataFrame
 from typing import Dict, Any, List
 from pyspark.ml.feature import StringIndexer, Imputer
-from pyspark.ml import Pipeline, PipelineModel
+from pyspark.ml import Pipeline
 from pyspark.sql.functions import col
 
 from cvm.src.feature_selection import feature_selection
@@ -90,12 +90,12 @@ def pipeline1_fit(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
     data_transformed = data_transformed.drop(*columns_cats["categorical"])
     data_transformed = data_transformed.drop(*columns_cats["numerical"])
 
-    pipeline_fitted.write().overwrite().save("/mnt/customer360-cvm/pipeline1")
-
-    return data_transformed
+    return data_transformed, pipeline_fitted
 
 
-def pipeline1_transform(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
+def pipeline1_transform(
+    df: DataFrame, pipeline_fitted: Pipeline, parameters: Dict[str, Any]
+) -> DataFrame:
     """ Preprocess given table.
 
     Args:
@@ -126,7 +126,6 @@ def pipeline1_transform(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
             df = df.withColumn(col_name, col(col_name).cast("float"))
 
     # string indexer
-    pipeline_fitted = PipelineModel.load("/mnt/customer360-cvm/pipeline1")
     columns_cats = classify_columns(df, parameters)
     data_transformed = pipeline_fitted.transform(df)
     data_transformed = data_transformed.drop(*columns_cats["categorical"])
