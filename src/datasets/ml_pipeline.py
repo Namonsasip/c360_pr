@@ -50,7 +50,7 @@ class MLPipeline(AbstractDataSet):
 
     def _save(self, pipeline: Pipeline) -> None:
         Path(self._filepath).parent.mkdir(parents=True, exist_ok=True)
-        pipeline.save(self._filepath)
+        pipeline.write.overwrite().save(self._filepath)
 
     def _describe(self) -> Dict[str, Any]:
         return {"filepath": self._filepath}
