@@ -29,8 +29,14 @@
 from sklearn import metrics
 
 
+def round_to_float(x):
+    return round(float(x), 2)
+
+
 def get_auc(true_val, pred_score):
-    metrics_to_return = {"auc": round(metrics.roc_auc_score(true_val, pred_score), 2)}
+    metrics_to_return = {
+        "auc": round_to_float(metrics.roc_auc_score(true_val, pred_score))
+    }
     return metrics_to_return
 
 
@@ -47,8 +53,8 @@ def get_tpr_fpr(
     for threshold in thresholds:
         threshold_index = get_threshold_index(roc_thresholds, threshold)
         metrics_to_return[threshold] = {}
-        metrics_to_return[threshold]["fpr"] = round(fpr[threshold_index], 2)
-        metrics_to_return[threshold]["tpr"] = round(tpr[threshold_index], 2)
+        metrics_to_return[threshold]["fpr"] = round_to_float(fpr[threshold_index])
+        metrics_to_return[threshold]["tpr"] = round_to_float(tpr[threshold_index])
     return metrics_to_return
 
 
