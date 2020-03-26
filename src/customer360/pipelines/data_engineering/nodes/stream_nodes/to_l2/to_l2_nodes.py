@@ -1,18 +1,22 @@
+import os
+
 from customer360.utilities.spark_util import get_spark_session
 from pathlib import Path
 
+conf = os.getenv("CONF", None)
 
 def generate_l2_fav_streaming_day(input_df, app_list):
     spark = get_spark_session()
     input_df.createOrReplaceTempView("input_df")
 
     from customer360.run import ProjectContext
-    ctx = ProjectContext(str(Path.cwd()))
+    ctx = ProjectContext(str(Path.cwd()), env=conf)
 
     for each_app in app_list:
         df = spark.sql("""
             select
-                mobile_no,
+                access_method_num,
+                subscription_identifier,
                 start_of_week,
                 day_of_week as fav_{each_app}_streaming_day_of_week,
                 download_kb_traffic_{each_app}_sum 

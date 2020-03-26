@@ -230,6 +230,7 @@ int_l2_streaming_sum_per_day:
 int_l2_streaming_ranked_of_day_per_week:
   feature_list:
     access_method_num: access_method_num
+    subscription_identifier: subscription_identifier
     day_of_week: day_of_week
     start_of_week: start_of_week
     download_kb_traffic_youtube_video_sum: "download_kb_traffic_youtube_video_sum"
