@@ -40,7 +40,7 @@ l0_campaign_tracking_contact_list_post:
   filepath: /mnt/customer360-blob-data/C360/CAMPAIGN/campaign_tracking_contact_list_post/
   metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mergeSchema: true
     lookup_table_name: 'l1_campaign_post_pre_daily'
     read_layer: 'l0_daily'
@@ -54,7 +54,7 @@ l0_campaign_tracking_contact_list_pre:
   filepath: /mnt/customer360-blob-data/C360/CAMPAIGN/campaign_tracking_contact_list_pre/
   metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mergeSchema: true
     lookup_table_name: 'l1_campaign_post_pre_daily'
     read_layer: 'l0_daily'
@@ -68,7 +68,7 @@ l0_campaign_clm_campaign_contacts_ma:
   filepath: /mnt/customer360-blob-data/C360/CAMPAIGN/campaign_clm_campaign_contacts_ma/
   metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mergeSchema: true
     lookup_table_name: 'l1_campaign_post_pre_daily'
     read_layer: 'l0_daily'
@@ -82,7 +82,7 @@ l0_campaign_tracking_contact_list_ussd:
   filepath: /mnt/customer360-blob-data/C360/CAMPAIGN/campaign_config_special_ontop_package_hits_data/
   metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mergeSchema: true
     lookup_table_name: 'l1_campaign_post_pre_daily'
     read_layer: 'l0_daily'
