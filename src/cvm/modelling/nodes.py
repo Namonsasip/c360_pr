@@ -176,11 +176,7 @@ def validate_rf(df: DataFrame, parameters: Dict[str, Any],) -> Dict[str, Any]:
     macrosegments = parameters["macrosegments"]
 
     def _validate_macrosegment_target(pd_df, macrosegment, target_chosen):
-        log.info(
-            "Validating {} target predictions, {} macrosegment.".format(
-                target_chosen, macrosegment
-            )
-        )
+        log.info("Validating {} target predictions.".format(target_chosen))
 
         pd_filter = (
             ~pd_df[target_chosen].isnull() & ~pd_df[target_chosen + "_pred"].isnull()
@@ -191,6 +187,7 @@ def validate_rf(df: DataFrame, parameters: Dict[str, Any],) -> Dict[str, Any]:
         return get_metrics(true_val, pred_score)
 
     def _validate_macrosegment(df_validate, use_case_chosen, macrosegment):
+        log.info("Validating {} macrosegments.".format(macrosegment))
         df_validate = df_validate.filter(
             "{}_macrosegment == '{}'".format(use_case_chosen, macrosegment)
         )
@@ -203,6 +200,7 @@ def validate_rf(df: DataFrame, parameters: Dict[str, Any],) -> Dict[str, Any]:
         return macrosegment_models_metrics
 
     def _validate_usecase(df_validate, use_case_chosen):
+        log.info("Validating {} use case.".format(use_case_chosen))
         use_case_models_metrics = {}
         for macrosegment in macrosegments[use_case_chosen]:
             use_case_models_metrics[macrosegment] = _validate_macrosegment(
