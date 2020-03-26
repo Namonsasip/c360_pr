@@ -92,3 +92,7 @@ l5_cvm_volatility_dev:
 preprocessing_pipeline_dev:
   type: datasets.ml_pipeline.MLPipeline
   filepath: /dbfs/mnt/customer360-cvm/preprocessing_pipeline_dev
+
+l5_cvm_one_day_users_full_table_dev:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_one_day_users_full_table_dev/

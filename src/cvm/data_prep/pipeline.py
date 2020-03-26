@@ -81,6 +81,17 @@ def create_cvm_prepare_inputs_samples(sample_type: str) -> Pipeline:
                     "l0_product_product_pru_m_package_master_group",
                     date_params,
                 ],
+                "l5_cvm_one_day_users_full_table" + suffix,
+                name="create_l5_cvm_one_day_users_full_table" + suffix,
+            ),
+            node(
+                create_sample_dataset,
+                [
+                    "l5_cvm_one_day_users_full_table" + suffix,
+                    "sampling_params",
+                    "params:subscription_id_suffix" + suffix,
+                    date_params,
+                ],
                 "l5_cvm_one_day_users_table" + suffix,
                 name="create_l5_cvm_one_day_users_table" + suffix,
             ),
@@ -142,7 +153,7 @@ def create_cvm_targets(sample_type: str = None):
                 add_ard_targets,
                 [
                     "l5_cvm_one_day_users_table" + suffix,
-                    "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly" + suffix,
+                    "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
                     "parameters",
                     "params:chosen_date",
                 ],
@@ -153,7 +164,7 @@ def create_cvm_targets(sample_type: str = None):
                 add_churn_targets,
                 [
                     "l5_cvm_one_day_users_table" + suffix,
-                    "l4_usage_prepaid_postpaid_daily_features" + suffix,
+                    "l4_usage_prepaid_postpaid_daily_features",
                     "parameters",
                 ],
                 "l5_cvm_churn_one_day_targets" + suffix,
