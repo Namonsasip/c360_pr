@@ -25,6 +25,7 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import logging
 from typing import Any, Dict, List
 from pyspark.sql import DataFrame
 import functools
@@ -342,6 +343,9 @@ def create_sample_dataset(
 
     for sampling_param in sampling_params:
         df = sampling_stages[sampling_param](df)
+
+    log = logging.getLogger(__name__)
+    log.info(f"Sample has {df.count()} rows.")
 
     return df
 
