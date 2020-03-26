@@ -2,7 +2,11 @@ import logging
 from typing import *
 from pyspark.sql import DataFrame, functions as F
 from customer360.utilities.spark_util import get_spark_session
+from pyspark.sql import DataFrame,Row
+from pyspark.sql.functions import concat_ws,explode
+#lit
 
+from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols
 
 # Query generator class
 class QueryGenerator:
@@ -96,7 +100,89 @@ def __get_l4_time_granularity_column(read_from):
     raise ValueError("Unknown value for read_from. Please specify either 'l1', 'l2', or 'l3'")
 
 
+def _get_full_data(src_data, fea_dict):
+    spark = get_spark_session()
+
+    read_from = fea_dict.get("read_from")
+    src_data.createOrReplaceTempView("src_data")
+    if read_from is None:
+        raise ValueError("read_from is mandatory. Please specify either 'l1' ,'l2', or 'l3'")
+
+    if read_from.lower() == 'l1':
+        data_range = "90"
+        grouping = fea_dict.get("grouping", "event_partition_date")
+        fix_dimension_cols = fea_dict["fix_dimension_cols", "access_method_num,event_partition_date"]
+        fix_dimension_where_cond = fea_dict.get("fix_dimension_where_cond")
+
+        target_dimension_col = fea_dict["target_dimension_col"]
+
+        logging.info("data_range:", data_range)
+
+    elif read_from.lower() == 'l2':
+        data_range = "12"
+        grouping = fea_dict.get("grouping", "start_of_week")
+        fix_dimension_cols = fea_dict["fix_dimension_cols", "access_method_num,start_of_week"]
+        fix_dimension_where_cond = fea_dict.get("fix_dimension_where_cond")
+
+        target_dimension_col = fea_dict["target_dimension_col"]
+        logging.info("data_range:", data_range)
+
+    elif read_from.lower() == 'l3':
+        data_range = "3"
+        grouping = fea_dict.get("grouping", "start_of_month")
+        fix_dimension_cols = fea_dict["fix_dimension_cols"]
+        fix_dimension_where_cond = fea_dict.get("fix_dimension_where_cond")
+
+        target_dimension_col = fea_dict["target_dimension_col"]
+        logging.info("data_range:", data_range)
+
+    else:
+        raise ValueError("read_from is mandatory. Please specify either 'l1', l2', or 'l3'")
+
+    if fix_dimension_cols is None or target_dimension_col is None:
+        raise ValueError("fix_dimension_cols and target_dimension_cols is mandatory for creating full_data")
+    else:
+        full_set_1 = spark.sql(
+            "select {0},collect_set({1}) as set_1 from src_data {2} group by {0}".format(fix_dimension_cols,
+                                                                                         target_dimension_col,
+                                                                                         fix_dimension_where_cond))
+
+        full_set_1 = full_set_1.withColumn("set_2", concat_ws(",", "set_1"))
+        full_set_1.createOrReplaceTempView("full_set_1")
+
+        full_set_2 = spark.sql(
+            "select *, collect_set(set_2) over(order by {0} RANGE BETWEEN {1} PRECEDING AND 1 PRECEDING) as set_3 from full_set_1".format(
+                grouping, data_range))
+        full_set_2 = full_set_2.withColumn("set_4", concat_ws(",", "set_3"))
+        full_set_2 = full_set_2.withColumn("set_5", F.split("set_2", ",")).withColumn("set_6", F.split("set_4", ","))
+        full_set_2.createOrReplaceTempView("full_set_2")
+
+        full_set_3 = spark.sql(
+            "select *,array_distinct(set_5) as set_7, array_distinct(set_6) as set_8 from full_set_2").drop("set_1",
+                                                                                                            "set_2",
+                                                                                                            "set_3",
+                                                                                                            "set_4",
+                                                                                                            "set_5",
+                                                                                                            "set_6")
+        full_set_3.createOrReplaceTempView("full_set_3")
+
+        full_set_4 = spark.sql("select *,array_except(set_8,set_7) as missing_set from full_set_3")
+        full_set_4 = full_set_4.drop("set_7", "set_8")
+        full_set_4 = full_set_4.withColumn(target_dimension_col, explode(full_set_4.missing_set)).drop("missing_set")
+
+        full_data = union_dataframes_with_missing_cols(src_data, full_set_4)
+
+        return full_data
+
+
 def l4_rolling_window(input_df, config):
+
+    ranked_lookup_enable_flag = config.get('ranked_lookup_enable_flag', False)
+
+    if ranked_lookup_enable_flag:
+        full_data = _get_full_data(input_df, config)
+        input_df = full_data
+
     table_name = "input_table"
     input_df.createOrReplaceTempView(table_name)
 
@@ -306,6 +392,22 @@ def expansion(input_df, config) -> DataFrame:
 
     df = spark.sql(sql_stmt)
     return df
+
+
+def customUnion(df1, df2):
+    cols1 = df1.columns
+    cols2 = df2.columns
+    total_cols = sorted(cols1 + list(set(cols2) - set(cols1)))
+    def expr(mycols, allcols):
+        def processCols(colname):
+            if colname in mycols:
+                return colname
+            else:
+                return F.lit(None).alias(colname)
+        cols = map(processCols, allcols)
+        return list(cols)
+    appended = df1.select(expr(cols1, total_cols)).union(df2.select(expr(cols2, total_cols)))
+    return appended
 
 
 def __generate_l4_rolling_ranked_column(
