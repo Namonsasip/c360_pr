@@ -108,6 +108,11 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
     :param dictionary_obj_2:
     :return:
     """
+    print("postpaid:",postpaid.columns)
+    print("prepaid:", prepaid.column)
+
+    print("contacts_ma:", contacts_ma)
+    
     first_df, second_df = massive_processing(postpaid, prepaid, contacts_ma, contact_list_ussd
                                              , dictionary_obj, dictionary_obj_2,
                                              'l1_campaign_post_pre_daily', 'l1_campaign_top_channel_daily')
