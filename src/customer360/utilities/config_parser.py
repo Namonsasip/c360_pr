@@ -177,9 +177,9 @@ def _get_full_data(src_data, fea_dict):
 
 def l4_rolling_window(input_df, config):
 
-    ranked_lookup_enable_flag = config.get('ranked_lookup_enable_flag', False)
+    ranked_lookup_enable_flag = config.get('ranked_lookup_enable_flag', "No")
 
-    if ranked_lookup_enable_flag:
+    if ranked_lookup_enable_flag.lower() == 'yes':
         full_data = _get_full_data(input_df, config)
         input_df = full_data
 
