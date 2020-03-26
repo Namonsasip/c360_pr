@@ -113,7 +113,7 @@ def create_train_validate(sample_type: str = None,) -> Pipeline:
             node(
                 predict_rf,
                 [
-                    "l5_cvm_one_day_train_preprocessed" + suffix,
+                    "l5_cvm_one_day_test_preprocessed" + suffix,
                     "random_forest" + suffix,
                     "parameters",
                 ],
