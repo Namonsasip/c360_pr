@@ -63,11 +63,11 @@ l5_cvm_one_day_test_preprocessed_scoring:
 
 random_forest_scoring:
   type: kedro.io.PickleLocalDataSet
-  filepath: /mnt/customer360-cvm/random_forest_scoring
+  filepath: /dbfs/mnt/customer360-cvm/random_forest_scoring
 
 xgb_scoring:
   type: kedro.io.PickleLocalDataSet
-  filepath: /mnt/customer360-cvm/xgb_scoring
+  filepath: /dbfs/mnt/customer360-cvm/xgb_scoring
 
 l5_cvm_one_day_predictions_scoring:
   <<: *spark_parquet

@@ -64,11 +64,11 @@ l5_cvm_one_day_test_preprocessed_sample:
 
 random_forest_sample:
   type: kedro.io.PickleLocalDataSet
-  filepath: /mnt/customer360-cvm/random_forest_sample
+  filepath: /dbfs/mnt/customer360-cvm/random_forest_sample
 
 xgb_sample:
   type: kedro.io.PickleLocalDataSet
-  filepath: /mnt/customer360-cvm/xgb_sample
+  filepath: /dbfs/mnt/customer360-cvm/xgb_sample
 
 l5_cvm_one_day_predictions_sample:
   <<: *spark_parquet
@@ -96,4 +96,4 @@ l5_cvm_one_day_preprocessed_sample:
 
 preprocessing_pipeline_sample:
   type: datasets.ml_pipeline.MLPipeline
-  filepath: /mnt/customer360-cvm/preprocessing_pipeline_sample
+  filepath: /dbfs/mnt/customer360-cvm/preprocessing_pipeline_sample
