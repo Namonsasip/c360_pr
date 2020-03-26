@@ -83,8 +83,8 @@ def pre_process_df(data_frame: DataFrame,
 
     data_frame = data_frame.withColumnRenamed("campaign_child_code", "child_campaign_code")
     three_df_join_cols = ['subscription_identifier', 'child_campaign_code']
-    # contacts_ma_small = contacts_ma_small.where("channel_identifier = 'OF_PUSH_NOTI'") \
-    #     .select("subscription_identifier", "child_campaign_code", "channel_identifier").distinct()
+    contacts_ma_small = contacts_ma_small.where("channel_identifier = 'OF_PUSH_NOTI'") \
+        .select("subscription_identifier", "child_campaign_code", "channel_identifier").distinct()
     contacts_ussd_small = contacts_ussd_small.select("subscription_identifier", "child_campaign_code"
                                                      , F.lit("USSD").alias("channel_identifier_ussd")).distinct()
 
