@@ -117,7 +117,7 @@ def create_train_validate(sample_type: str = None,) -> Pipeline:
                     "random_forest" + suffix,
                     "parameters",
                 ],
-                "l5_cvm_one_day_train_preprocessed_preds" + suffix,
+                "l5_cvm_one_day_test_preprocessed_preds" + suffix,
                 name="create_l5_cvm_one_day_predictions" + suffix,
             ),
         ]
