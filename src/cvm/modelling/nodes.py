@@ -175,7 +175,7 @@ def validate_rf(df: DataFrame, parameters: Dict[str, Any],) -> Dict[str, Any]:
     target_cols_use_case_split = list_targets(parameters, case_split=True)
     macrosegments = parameters["macrosegments"]
 
-    def _validate_macrosegment_target(pd_df, macrosegment, target_chosen):
+    def _validate_macrosegment_target(pd_df, target_chosen):
         log.info("Validating {} target predictions.".format(target_chosen))
 
         pd_filter = (
@@ -195,7 +195,7 @@ def validate_rf(df: DataFrame, parameters: Dict[str, Any],) -> Dict[str, Any]:
         macrosegment_models_metrics = {}
         for target_chosen in target_cols_use_case_split[use_case_chosen]:
             macrosegment_models_metrics[target_chosen] = _validate_macrosegment_target(
-                pd_df, macrosegment, target_chosen
+                pd_df, target_chosen
             )
         return macrosegment_models_metrics
 
