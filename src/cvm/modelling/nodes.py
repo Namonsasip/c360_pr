@@ -188,9 +188,10 @@ def validate_rf(df: DataFrame, parameters: Dict[str, Any],) -> Dict[str, Any]:
 
     def _validate_macrosegment(df_validate, use_case_chosen, macrosegment):
         log.info("Validating {} macrosegments.".format(macrosegment))
-        df_validate = df_validate.filter(
-            "{}_macrosegment == '{}'".format(use_case_chosen, macrosegment)
-        )
+        if macrosegment != "global":
+            df_validate = df_validate.filter(
+                "{}_macrosegment == '{}'".format(use_case_chosen, macrosegment)
+            )
         pd_df = df_validate.toPandas()
         macrosegment_models_metrics = {}
         for target_chosen in target_cols_use_case_split[use_case_chosen]:
@@ -202,7 +203,8 @@ def validate_rf(df: DataFrame, parameters: Dict[str, Any],) -> Dict[str, Any]:
     def _validate_usecase(df_validate, use_case_chosen):
         log.info("Validating {} use case.".format(use_case_chosen))
         use_case_models_metrics = {}
-        for macrosegment in macrosegments[use_case_chosen]:
+
+        for macrosegment in macrosegments[use_case_chosen] + ["global"]:
             use_case_models_metrics[macrosegment] = _validate_macrosegment(
                 df_validate, use_case_chosen, macrosegment
             )
