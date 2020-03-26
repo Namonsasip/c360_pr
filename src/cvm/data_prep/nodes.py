@@ -341,11 +341,12 @@ def create_sample_dataset(
         "take_last_date": lambda df: filter_latest_date(df, max_date),
     }
 
+    starting_rows = df.count()
     for sampling_param in sampling_params:
         df = sampling_stages[sampling_param](df)
 
     log = logging.getLogger(__name__)
-    log.info(f"Sample has {df.count()} rows.")
+    log.info(f"Sample has {df.count()} rows, down from {starting_rows} rows.")
 
     return df
 
