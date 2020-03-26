@@ -69,57 +69,6 @@ conf = os.getenv("CONF", None)
 #
 #     return [output_df_1, output_df_2]
 
-
-def massive_processing(post_paid, prepaid, contacts_ma, contacts_ussd,
-                       dict_1, dict_2, data_set_1, data_set_2) -> [DataFrame, DataFrame]:
-    """
-    :param post_paid:
-    :param prepaid:
-    :param contacts_ma:
-    :param contacts_ussd:
-    :param dict_1:
-    :param dict_2:
-    :param data_set_1:
-    :param data_set_2:
-    :return:
-    """
-    unioned_df = union_dataframes_with_missing_cols(post_paid, prepaid)
-
-    output_df_1, output_df_2 = pre_process_df(unioned_df, contacts_ma, contacts_ussd)
-
-    output_df_1 = node_from_config(output_df_1, dict_1)
-    output_df_2 = node_from_config(output_df_2, dict_2)
-
-    return [output_df_1, output_df_2]
-
-
-def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
-                                             prepaid: DataFrame,
-                                             contacts_ma: DataFrame,
-                                             contact_list_ussd: DataFrame,
-                                             dictionary_obj,
-                                             dictionary_obj_2) -> [DataFrame, DataFrame]:
-    """
-    :param postpaid:
-    :param prepaid:
-    :param contacts_ma
-    :param contact_list_ussd
-    :param dictionary_obj:
-    :param dictionary_obj_2:
-    :return:
-    """
-    print("postpaid:",postpaid.columns)
-    print("prepaid:", prepaid.columns)
-
-    print("contacts_ma:", contacts_ma.columns)
-
-    first_df, second_df = massive_processing(postpaid, prepaid, contacts_ma, contact_list_ussd
-                                             , dictionary_obj, dictionary_obj_2,
-                                             'l1_campaign_post_pre_daily', 'l1_campaign_top_channel_daily')
-
-    return [first_df, second_df]
-
-
 def pre_process_df(data_frame: DataFrame,
                    contacts_ma_small: DataFrame,
                    contacts_ussd_small: DataFrame) -> [DataFrame, DataFrame]:
@@ -131,6 +80,7 @@ def pre_process_df(data_frame: DataFrame,
     :return:
     """
     # below lines are to prepare channels
+
     data_frame = data_frame.withColumnRenamed("campaign_child_code", "child_campaign_code")
     three_df_join_cols = ['subscription_identifier', 'child_campaign_code']
     contacts_ma_small = contacts_ma_small.where("channel_identifier = 'OF_PUSH_NOTI'") \
@@ -217,3 +167,54 @@ def pre_process_df(data_frame: DataFrame,
     final_df = final_df.join(total_campaign, ["subscription_identifier", "contact_date"], how="left")
 
     return final_df, campaign_channel_top_df
+
+
+def massive_processing(post_paid, prepaid, contacts_ma, contacts_ussd,
+                       dict_1, dict_2) -> [DataFrame, DataFrame]:
+    """
+    :param post_paid:
+    :param prepaid:
+    :param contacts_ma:
+    :param contacts_ussd:
+    :param dict_1:
+    :param dict_2:
+    :param data_set_1:
+    :param data_set_2:
+    :return:
+    """
+    # data_set_1, data_set_2
+    unioned_df = union_dataframes_with_missing_cols(post_paid, prepaid)
+
+    output_df_1, output_df_2 = pre_process_df(unioned_df, contacts_ma, contacts_ussd)
+
+    output_df_1 = node_from_config(output_df_1, dict_1)
+    output_df_2 = node_from_config(output_df_2, dict_2)
+
+    return [output_df_1, output_df_2]
+
+
+def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
+                                             prepaid: DataFrame,
+                                             contacts_ma: DataFrame,
+                                             contact_list_ussd: DataFrame,
+                                             dictionary_obj,
+                                             dictionary_obj_2) -> [DataFrame, DataFrame]:
+    """
+    :param postpaid:
+    :param prepaid:
+    :param contacts_ma
+    :param contact_list_ussd
+    :param dictionary_obj:
+    :param dictionary_obj_2:
+    :return:
+    """
+    print("postpaid:",postpaid.columns)
+    print("prepaid:", prepaid.columns)
+
+    print("contacts_ma:", contacts_ma.columns)
+
+    first_df, second_df = massive_processing(postpaid, prepaid, contacts_ma, contact_list_ussd
+                                             , dictionary_obj, dictionary_obj_2)
+                                            # 'l1_campaign_post_pre_daily', 'l1_campaign_top_channel_daily')
+
+    return [first_df, second_df]
