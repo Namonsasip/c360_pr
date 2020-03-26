@@ -38,7 +38,6 @@ from cvm.src.models.predict import (
 )
 from cvm.src.models.validate import get_metrics
 from cvm.src.utils.list_targets import list_targets
-import shap
 
 
 def train_rf(df: DataFrame, parameters: Dict[str, Any]) -> RandomForestClassifier:
@@ -92,25 +91,6 @@ def train_rf(df: DataFrame, parameters: Dict[str, Any]) -> RandomForestClassifie
         models[use_case] = _train_for_usecase(use_case)
 
     return models
-
-
-def create_shap_for_rf(
-    rf: RandomForestClassifier, df_test: DataFrame, parameters: Dict[str, Any]
-):
-    """ Create SHAP plot for a given model.
-
-    Args:
-        df_test: Test set used for SHAP.
-        rf: Given model.
-        parameters: parameters defined in parameters.yml.
-    """
-
-    target_cols = list_targets(parameters)
-    X_test = df_test.drop(*target_cols).toPandas()
-    shap_values = shap.KernelExplainer(lambda x: rf.predict_proba(x), X_test)
-    summ_plot = shap.summary_plot(shap_values, X_test)
-
-    return summ_plot
 
 
 def train_xgb(df: DataFrame, parameters: Dict[str, Any]) -> Dict[str, xgboost.Booster]:
