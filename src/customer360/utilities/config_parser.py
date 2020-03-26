@@ -133,7 +133,7 @@ def _get_full_data(src_data, fea_dict):
     if read_from.lower() == 'l1':
         data_range = "90"
         grouping = fea_dict.get("grouping", "event_partition_date")
-        fix_dimension_cols = fea_dict["fix_dimension_cols", "access_method_num,event_partition_date"]
+        fix_dimension_cols = fea_dict["fix_dimension_cols"]
         fix_dimension_where_cond = fea_dict.get("fix_dimension_where_cond")
 
         target_dimension_col = fea_dict["target_dimension_col"]
@@ -143,7 +143,7 @@ def _get_full_data(src_data, fea_dict):
     elif read_from.lower() == 'l2':
         data_range = "12"
         grouping = fea_dict.get("grouping", "start_of_week")
-        fix_dimension_cols = fea_dict["fix_dimension_cols", "access_method_num,start_of_week"]
+        fix_dimension_cols = fea_dict["fix_dimension_cols"]
         fix_dimension_where_cond = fea_dict.get("fix_dimension_where_cond")
 
         target_dimension_col = fea_dict["target_dimension_col"]
