@@ -13,5 +13,5 @@ hdfs==2.5.8
 pre-commit==2.1.1
 scikit-learn==0.22.2
 xgboost==1.0.2
-pandas==0.25.3
+pandas==1.0.3
 plotnine==0.6.0
