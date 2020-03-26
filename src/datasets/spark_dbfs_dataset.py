@@ -301,7 +301,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             #     filepath, self._file_format, **self._load_args
             #                 )
 
-            if os.path.exists(filepath):
+            if os.path.exists('/dbfs'+filepath):
                 print("Source path exists")
                 src_data = spark.read.load(filepath, self._file_format, **self._load_args)
             else:
@@ -565,6 +565,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
     def _load(self) -> DataFrame:
         print("Entering load function")
+
         if self._increment_flag_load is not None and self._increment_flag_load.lower() == "yes":
             print("Entering incremental mode")
             return self._get_incremental_data()
