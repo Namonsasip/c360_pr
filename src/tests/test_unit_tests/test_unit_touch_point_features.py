@@ -1145,7 +1145,7 @@ class TestUnitTp:
                 0] == 2
         l4_nim_work.where(
                 "start_of_week = '2020-01-20'").select(
-                "num_of_consultation_online_sum_num_of_consultation_in_store_sum_weekly_last_four_weeksum").collect()[0][
+                "sum_num_of_consultation_in_store_sum_weekly_last_twelve_week").collect()[0][
                 0] == 2
         # sum_num_of_commercial_question_with_chatbot_sum_weekly_last_week
         # sum_num_of_commercial_question_with_chatbot_sum_weekly_last_two_week
@@ -1157,8 +1157,7 @@ class TestUnitTp:
                 0] == 1
         l4_nim_work.where(
                 "start_of_week = '2020-01-20'").select(
-                "        sum_num_of_commercial_question_with_chatbot_sum_weekly_last_two_week
-").collect()[0][
+                "sum_num_of_commercial_question_with_chatbot_sum_weekly_last_two_week").collect()[0][
                 0] == 2
         l4_nim_work.where(
                 "start_of_week = '2020-01-20'").select(
@@ -1186,7 +1185,7 @@ class TestUnitTp:
                 0] == 5
         l4_nim_work.where(
                 "start_of_week = '2020-01-20'").select(
-                "num_of_consultation_osum_num_of_claims_with_chatbot_sum_weekly_last_four_weeknline_sum").collect()[0][
+                "sum_num_of_claims_with_chatbot_sum_weekly_last_twelve_week").collect()[0][
                 0] == 5
         # sum_num_of_consultation_with_chatbot_sum_weekly_last_week
         # sum_num_of_consultation_with_chatbot_sum_weekly_last_two_week
