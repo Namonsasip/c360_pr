@@ -175,112 +175,21 @@ def subs_date_join_important_only(
     """
 
     keys = parameters["key_columns"]
+    suffix_list = parameters["preprocessing_suffixes"]
     segments = parameters["segment_columns"]
     must_have_features = parameters["must_have_features"]
     tables = [prepare_key_columns(tab) for tab in args]
-    important_param = [
-        "subscription_status",
-        "age",
-        "gender",
-        "serenade_status",
-        "subscriber_tenure",
-        "activation_region",
-        "current_package_id",
-        "norms_net_revenue",
-        "min_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_three_month",
-        "sum_rev_arpu_total_revenue_monthly_last_month",
-        "sum_rev_arpu_total_revenue_monthly_last_three_month",
-        "sum_rev_arpu_total_gprs_net_revenue_monthly_last_month",
-        "sum_rev_arpu_total_gprs_net_revenue_monthly_last_three_month",
-        "sum_rev_arpu_total_sms_net_revenue_monthly_last_month",
-        "sum_rev_arpu_total_sms_net_revenue_monthly_last_three_month",
-        "sum_rev_arpu_total_others_net_revenue_monthly_last_month",
-        "sum_rev_arpu_total_others_net_revenue_monthly_last_three_month",
-        "sum_rev_arpu_total_voice_net_revenue_monthly_last_month",
-        "sum_rev_arpu_total_voice_net_revenue_monthly_last_three_month",
-        "sum_rev_arpu_total_mms_net_revenue_monthly_last_month",
-        "sum_rev_arpu_total_mms_net_revenue_monthly_last_three_month",
-        "sum_rev_arpu_total_ir_net_revenue_monthly_last_month",
-        "sum_rev_arpu_total_ir_net_revenue_monthly_last_three_month",
-        "sum_rev_arpu_total_idd_net_revenue_monthly_last_month",
-        "sum_rev_arpu_total_idd_net_revenue_monthly_last_three_month",
-        "sum_rev_arpu_total_voice_net_tariff_rev_mth_monthly_last_month",
-        "sum_rev_arpu_total_voice_net_tariff_rev_mth_monthly_last_three_month",
-        "sum_rev_arpu_total_gprs_net_tariff_rev_mth_monthly_last_month",
-        "sum_rev_arpu_total_gprs_net_tariff_rev_mth_monthly_last_three_month",
-        "sum_rev_arpu_total_sms_net_tariff_rev_mth_monthly_last_month",
-        "sum_rev_arpu_total_sms_net_tariff_rev_mth_monthly_last_three_month",
-        "sum_rev_arpu_total_mms_net_tariff_rev_mth_monthly_last_month",
-        "sum_rev_arpu_total_mms_net_tariff_rev_mth_monthly_last_three_month",
-        "sum_rev_arpu_total_others_net_tariff_rev_mth_monthly_last_month",
-        "sum_rev_arpu_total_others_net_tariff_rev_mth_monthly_last_three_month",
-        "sum_rev_arpu_total_voice_net_tariff_rev_ppu_monthly_last_month",
-        "sum_rev_arpu_total_voice_net_tariff_rev_ppu_monthly_last_three_month",
-        "sum_rev_arpu_total_gprs_net_tariff_rev_ppu_monthly_last_month",
-        "sum_rev_arpu_total_gprs_net_tariff_rev_ppu_monthly_last_three_month",
-        "sum_rev_arpu_total_sms_net_tariff_rev_ppu_monthly_last_month",
-        "sum_rev_arpu_total_sms_net_tariff_rev_ppu_monthly_last_three_month",
-        "sum_rev_arpu_total_mms_net_tariff_rev_ppu_monthly_last_month",
-        "sum_rev_arpu_total_mms_net_tariff_rev_ppu_monthly_last_three_month",
-        "sum_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_month",
-        "sum_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_three_month",
-        "sum_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_month",
-        "sum_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_three_month",
-        "sum_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_month",
-        "sum_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_three_month",
-        "sum_rev_arpu_total_revenue_monthly_last_month_over_three_month",
-        "sum_rev_arpu_total_gprs_net_revenue_monthly_last_month_over_three_month",
-        "sum_rev_arpu_total_sms_net_revenue_monthly_last_month_over_three_month",
-        "sum_rev_arpu_total_others_net_revenue_monthly_last_month_over_three_month",
-        "sum_rev_arpu_total_voice_net_revenue_monthly_last_month_over_three_month",
-        "sum_rev_arpu_total_mms_net_revenue_monthly_last_month_over_three_month",
-        "sum_rev_arpu_total_ir_net_revenue_monthly_last_month_over_three_month",
-        "sum_rev_arpu_total_idd_net_revenue_monthly_last_month_over_three_month",
-        "sum_rev_arpu_total_voice"
-        + "_net_tariff_rev_mth_monthly_last_month_over_three_month",
-        "sum_rev_arpu_total_gprs_net_tariff"
-        + "_rev_mth_monthly_last_month_over_three_month",
-        "sum_rev_arpu_total_sms_net_tariff_rev_mth_monthly_last_month_over_three_month",
-        "sum_rev_arpu_total_mms_net_tariff_rev_mth_monthly_last_month_over_three_month",
-        "sum_rev_arpu_total_others_net_tariff"
-        + "_rev_mth_monthly_last_month_over_three_month",
-        "sum_rev_arpu_total_voice_net_tariff_rev"
-        + "_ppu_monthly_last_month_over_three_month",
-        "sum_rev_arpu_total_gprs_net_tariff"
-        + "_rev_ppu_monthly_last_month_over_three_month",
-        "sum_rev_arpu_total_sms_net_tariff_rev_ppu_monthly_last_month_over_three_month",
-        "sum_rev_arpu_total_mms_net_tariff_rev_ppu_monthly_last_month_over_three_month",
-        "sum_rev_arpu_total_others_net_tariff_rev"
-        + "_ppu_monthly_last_month_over_three_month",
-        "sum_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_month_over_three_month",
-        "sum_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_month_over_three_month",
-        "sum_usg_outgoing_total_call_duration_daily_last_seven_day",
-        "sum_usg_outgoing_total_call_duration_daily_last_fourteen_day",
-        "sum_usg_outgoing_total_call_duration_daily_last_thirty_day",
-        "sum_usg_outgoing_total_call_duration_daily_last_ninety_day",
-        "sum_usg_outgoing_data_volume_daily_last_seven_day",
-        "sum_usg_outgoing_data_volume_daily_last_fourteen_day",
-        "sum_usg_outgoing_data_volume_daily_last_thirty_day",
-        "sum_usg_outgoing_data_volume_daily_last_ninety_day",
-        "sum_usg_outgoing_total_sms_daily_last_seven_day",
-        "sum_usg_outgoing_total_sms_daily_last_fourteen_day",
-        "sum_usg_outgoing_total_sms_daily_last_thirty_day",
-        "sum_usg_outgoing_total_sms_daily_last_ninety_day",
-        "sum_payments_top_ups_daily_last_seven_day",
-        "sum_payments_top_ups_daily_last_fourteen_day",
-        "sum_payments_top_ups_daily_last_thirty_day",
-        "sum_payments_top_ups_daily_last_ninety_day",
-        "sum_payments_top_up_volume_daily_last_seven_day",
-        "sum_payments_top_up_volume_daily_last_fourteen_day",
-        "sum_payments_top_up_volume_daily_last_thirty_day",
-        "sum_payments_top_up_volume_daily_last_ninety_day",
-    ]
+
 
     def filter_column(df, filter_list):
         cols_to_drop = [
             col_name for col_name in df.columns if col_name not in filter_list
         ]
         return df.drop(*cols_to_drop)
+
+    # remove suffix from important columns
+    for suffix in suffix_list:
+        important_param = [col.replace(suffix_list[suffix], '') for col in important_param]
 
     tables = [
         filter_column(tab, important_param + keys + segments + must_have_features)
