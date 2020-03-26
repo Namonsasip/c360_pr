@@ -29,6 +29,7 @@
 from pyspark.sql import DataFrame
 from datetime import date
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
+import logging
 from pyspark.sql import functions as func
 
 
@@ -60,6 +61,9 @@ def filter_latest_date(df: DataFrame, maximum_date: str = None) -> DataFrame:
             is returned.
     """
 
+    log = logging.getLogger(__name__)
+    log.info(f"Filtering, maximum date {maximum_date}")
+
     df = prepare_key_columns(df)
     latest_date = get_latest_date(df, maximum_date)
     df = df.filter("key_date == '{}'".format(latest_date))
@@ -82,6 +86,9 @@ def filter_users(df: DataFrame, subscription_id_suffix: str) -> DataFrame:
     Returns:
         Sample of table.
     """
+
+    log = logging.getLogger(__name__)
+    log.info(f"Filtering users, suffix chosen '{subscription_id_suffix}'")
 
     if subscription_id_suffix is None:
         return df
