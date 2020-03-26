@@ -181,8 +181,13 @@ def validate_rf(df: DataFrame, parameters: Dict[str, Any],) -> Dict[str, Any]:
                 target_chosen, macrosegment
             )
         )
-        true_val = pd_df[target_chosen]
-        pred_score = pd_df[target_chosen + "_pred"]
+
+        pd_filter = (
+            ~pd_df[target_chosen].isnull() & ~pd_df[target_chosen + "_pred"].isnull()
+        )
+        pd_df_filtered = pd_df[pd_filter]
+        true_val = pd_df_filtered[target_chosen]
+        pred_score = pd_df_filtered[target_chosen + "_pred"]
         return get_metrics(true_val, pred_score)
 
     def _validate_macrosegment(df_validate, use_case_chosen, macrosegment):
