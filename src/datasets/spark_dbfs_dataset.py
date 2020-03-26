@@ -15,7 +15,8 @@ from kedro.io import AbstractVersionedDataSet, Version
 
 from pyspark.sql import functions as F
 from typing import *
-
+import os
+from pyspark.sql.types import *
 
 import logging
 
@@ -296,9 +297,18 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             print("Fetching source data")
             #src_data = spark.read.parquet(filepath)
-            src_data = spark.read.load(
-                filepath, self._file_format, **self._load_args
-                            )
+            # src_data = spark.read.load(
+            #     filepath, self._file_format, **self._load_args
+            #                 )
+
+            if os.path.exists(filepath):
+                print("Source path exists")
+                src_data = spark.read.load(filepath, self._file_format, **self._load_args)
+            else:
+                print("Source path doesn't exists")
+                schema = StructType([])
+                src_data = spark.createDataFrame(spark.sparkContext.emptyRDD(), schema)
+                return src_data
 
             print("source data is fetched")
             print("checking whether data is empty or not")
