@@ -2,11 +2,12 @@ import logging
 from typing import *
 from pyspark.sql import DataFrame, functions as F
 from customer360.utilities.spark_util import get_spark_session
-from pyspark.sql import DataFrame,Row
+from pyspark.sql import DataFrame
 from pyspark.sql.functions import concat_ws,explode
-#lit
+from functools import reduce
 
-from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols
+
+#from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols
 
 # Query generator class
 class QueryGenerator:
@@ -98,6 +99,27 @@ def __get_l4_time_granularity_column(read_from):
         return "start_of_month"
 
     raise ValueError("Unknown value for read_from. Please specify either 'l1', 'l2', or 'l3'")
+
+
+def union_dataframes_with_missing_cols(df_input_or_list, *args):
+    if type(df_input_or_list) is list:
+        df_list = df_input_or_list
+    elif type(df_input_or_list) is DataFrame:
+        df_list = [df_input_or_list] + list(args)
+
+    col_list = set()
+    for df in df_list:
+        for column in df.columns:
+            col_list.add(column)
+
+    def add_missing_cols(dataframe, col_list):
+        missing_cols = [column for column in col_list if column not in dataframe.columns]
+        for column in missing_cols:
+            dataframe = dataframe.withColumn(column, F.lit(None))
+        return dataframe.select(*sorted(col_list))
+
+    df_list_updated = [add_missing_cols(df, col_list) for df in df_list]
+    return reduce(DataFrame.union, df_list_updated)
 
 
 def _get_full_data(src_data, fea_dict):
