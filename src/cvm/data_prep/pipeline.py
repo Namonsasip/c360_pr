@@ -88,7 +88,7 @@ def create_cvm_prepare_inputs_samples(sample_type: str) -> Pipeline:
                 create_sample_dataset,
                 [
                     "l5_cvm_one_day_users_full_table" + suffix,
-                    "sampling_params",
+                    sampling_params,
                     "params:subscription_id_suffix" + suffix,
                     date_params,
                 ],
