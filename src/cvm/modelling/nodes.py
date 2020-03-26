@@ -27,7 +27,7 @@
 # limitations under the License.
 
 from pyspark.sql import DataFrame
-from typing import Dict, Any
+from typing import Dict, Any, Union
 from sklearn.ensemble import RandomForestClassifier
 import xgboost
 import logging
@@ -40,7 +40,9 @@ from cvm.src.models.validate import get_metrics
 from cvm.src.utils.list_targets import list_targets
 
 
-def train_rf(df: DataFrame, parameters: Dict[str, Any]) -> RandomForestClassifier:
+def train_rf(
+    df: DataFrame, parameters: Dict[str, Any]
+) -> Dict[Any, Dict[Any, Dict[Union[str, Any], object]]]:
     """ Create random forest model given the table to train on.
 
     Args:
@@ -55,9 +57,7 @@ def train_rf(df: DataFrame, parameters: Dict[str, Any]) -> RandomForestClassifie
 
     log = logging.getLogger(__name__)
 
-    models = {}
-
-    def _train_for_macrosegment_target(use_case, macrosegment, target_chosen):
+    def _train_for_macrosegment_target(use_case_chosen, macrosegment, target_chosen):
         log.info(
             "Training model for {} target, {} macrosegment.".format(
                 target_chosen, macrosegment
@@ -65,26 +65,28 @@ def train_rf(df: DataFrame, parameters: Dict[str, Any]) -> RandomForestClassifie
         )
 
         X, y = get_pandas_train_test_sample(
-            df, parameters, target_chosen, use_case, macrosegment
+            df, parameters, target_chosen, use_case_chosen, macrosegment
         )
 
         rf = RandomForestClassifier(n_estimators=100, random_state=100)
         y = y.values.ravel()
         return rf.fit(X, y)
 
-    def _train_for_macrosegment(use_case, macrosegment):
-        models = {}
-        for target_chosen in target_cols[use_case]:
-            models[target_chosen] = _train_for_macrosegment_target(
-                use_case, macrosegment, target_chosen
+    def _train_for_macrosegment(use_case_chosen, macrosegment):
+        macrosegment_models = {}
+        for target_chosen in target_cols[use_case_chosen]:
+            macrosegment_models[target_chosen] = _train_for_macrosegment_target(
+                use_case_chosen, macrosegment, target_chosen
             )
-        return models
+        return macrosegment_models
 
-    def _train_for_usecase(use_case):
-        models = {}
-        for macrosegment in macrosegments[use_case]:
-            models[macrosegment] = _train_for_macrosegment(use_case, macrosegment)
-        return models
+    def _train_for_usecase(use_chosen):
+        usecase_models = {}
+        for macrosegment in macrosegments[use_chosen]:
+            usecase_models[macrosegment] = _train_for_macrosegment(
+                use_chosen, macrosegment
+            )
+        return usecase_models
 
     models = {}
     for use_case in parameters["targets"]:
@@ -183,23 +185,25 @@ def validate_rf(df: DataFrame, parameters: Dict[str, Any],) -> Dict[str, Any]:
         pred_score = pd_df[target_chosen + "_pred"]
         return get_metrics(true_val, pred_score)
 
-    def _validate_macrosegment(df, use_case, macrosegment):
-        df = df.filter("{}_macrosegment == '{}'".format(use_case, macrosegment))
-        pd_df = df.toPandas()
-        models_metrics = {}
-        for target_chosen in target_cols_use_case_split[use_case]:
-            models_metrics[target_chosen] = _validate_macrosegment_target(
+    def _validate_macrosegment(df_validate, use_case_chosen, macrosegment):
+        df_validate = df_validate.filter(
+            "{}_macrosegment == '{}'".format(use_case_chosen, macrosegment)
+        )
+        pd_df = df_validate.toPandas()
+        macrosegment_models_metrics = {}
+        for target_chosen in target_cols_use_case_split[use_case_chosen]:
+            macrosegment_models_metrics[target_chosen] = _validate_macrosegment_target(
                 pd_df, macrosegment, target_chosen
             )
-        return models_metrics
+        return macrosegment_models_metrics
 
-    def _validate_usecase(df, use_case):
-        models_metrics = {}
-        for macrosegment in macrosegments[use_case]:
-            models_metrics[macrosegment] = _validate_macrosegment(
-                df, use_case, macrosegment
+    def _validate_usecase(df_validate, use_case_chosen):
+        use_case_models_metrics = {}
+        for macrosegment in macrosegments[use_case_chosen]:
+            use_case_models_metrics[macrosegment] = _validate_macrosegment(
+                df_validate, use_case_chosen, macrosegment
             )
-        return models_metrics
+        return use_case_models_metrics
 
     models_metrics = {}
     for use_case in parameters["targets"]:
