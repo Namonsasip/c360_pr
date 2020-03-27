@@ -71,8 +71,8 @@ temp_l0_streaming_ida_mobile_search_daily = [
 [datetime.datetime.strptime('2020-01-28','%Y-%m-%d'),'test','google','word_search','1','20200101']
 ]
 
-global temp_l0_streaming_ru_a_onair_vimmi_usage_daily
-temp_l0_streaming_ru_a_onair_vimmi_usage_daily = [
+global temp_l0_streaming_ru_a_onair_vimmi_usage_daily_old
+temp_l0_streaming_ru_a_onair_vimmi_usage_daily_old = [
 [datetime.datetime.strptime('2020-01-06','%Y-%m-%d'),9,"user_test","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"","NA","ethernet","STB","ipbs9210","AIS-STB","Stream","Channel","content_id","","title","","","","","","","","","product_name",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"20200101","category_channal","1","epg_title","","N","Y","2",datetime.datetime.strptime('2020-01-30','%Y-%m-%d'),"20200101",datetime.datetime.strptime('2020-01-06','%Y-%m-%d'),datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),datetime.datetime.strptime('2020-01-01','%Y-%m-%d')],
 [datetime.datetime.strptime('2020-01-07','%Y-%m-%d'),18,"user_test","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"","NA","ethernet","STB","ipbs9210","AIS-STB","Stream","Channel","content_id","","title","","","","","","","","","product_name",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"20200101","category_channal","1","epg_title","","N","Y","2",datetime.datetime.strptime('2020-01-30','%Y-%m-%d'),"20200101",datetime.datetime.strptime('2020-01-06','%Y-%m-%d'),datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),datetime.datetime.strptime('2020-01-01','%Y-%m-%d')],
 [datetime.datetime.strptime('2020-01-13','%Y-%m-%d'),9,"user_test","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"","NA","ethernet","STB","ipbs9210","AIS-STB","Stream","Channel","content_id","","title","","","","","","","","","product_name",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"20200101","category_channal","1","epg_title","","N","Y","2",datetime.datetime.strptime('2020-01-30','%Y-%m-%d'),"20200101",datetime.datetime.strptime('2020-01-13','%Y-%m-%d'),datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),datetime.datetime.strptime('2020-01-01','%Y-%m-%d')],
@@ -82,6 +82,17 @@ temp_l0_streaming_ru_a_onair_vimmi_usage_daily = [
 [datetime.datetime.strptime('2020-01-27','%Y-%m-%d'),9,"user_test","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"","NA","ethernet","STB","ipbs9210","AIS-STB","Stream","Channel","content_id","","title","","","","","","","","","product_name",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"20200101","category_channal","1","epg_title","","N","Y","2",datetime.datetime.strptime('2020-01-30','%Y-%m-%d'),"20200101",datetime.datetime.strptime('2020-01-27','%Y-%m-%d'),datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),datetime.datetime.strptime('2020-01-01','%Y-%m-%d')],
 [datetime.datetime.strptime('2020-01-28','%Y-%m-%d'),18,"user_test","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"","NA","ethernet","STB","ipbs9210","AIS-STB","Stream","Channel","content_id","","title","","","","","","","","","product_name",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"20200101","category_channal","1","epg_title","","N","Y","2",datetime.datetime.strptime('2020-01-30','%Y-%m-%d'),"20200101",datetime.datetime.strptime('2020-01-27','%Y-%m-%d'),datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),datetime.datetime.strptime('2020-01-01','%Y-%m-%d')]
 ]
+
+global temp_l0_streaming_ru_a_onair_vimmi_usage_daily_new
+temp_l0_streaming_ru_a_onair_vimmi_usage_daily_new = [
+[datetime.datetime.strptime('2020-01-06','%Y-%m-%d'),9,"user_test","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"1-TEST","FBB","wifi","STB","Device","AIS-STB","Stream","Channel","test_content_123","N","TV_Channel",None,None,None,None,None,None,None,None,None,datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"20200101","Digital TV","1","epg_title","Free","N","Y","618",None,'20200101'],
+[datetime.datetime.strptime('2020-01-07','%Y-%m-%d'),18,"user_test","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"1-TEST","FBB","wifi","STB","Device","AIS-STB","Stream","Channel","test_content_123","N","TV_Channel",None,None,None,None,None,None,None,None,None,datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"20200101","Digital TV","1","epg_title","Free","N","Y","618",None,'20200101'],
+[datetime.datetime.strptime('2020-01-13','%Y-%m-%d'),9,"user_test","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"1-TEST","FBB","wifi","STB","Device","AIS-STB","Stream","Channel","test_content_123","N","TV_Channel",None,None,None,None,None,None,None,None,None,datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"20200101","Digital TV","1","epg_title","Free","N","Y","618",None,'20200101'],
+[datetime.datetime.strptime('2020-01-14','%Y-%m-%d'),18,"user_test","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"1-TEST","FBB","wifi","STB","Device","AIS-STB","Stream","Channel","test_content_123","N","TV_Channel",None,None,None,None,None,None,None,None,None,datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"20200101","Digital TV","1","epg_title","Free","N","Y","618",None,'20200101'],
+[datetime.datetime.strptime('2020-01-20','%Y-%m-%d'),9,"user_test","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"1-TEST","FBB","wifi","STB","Device","AIS-STB","Stream","Channel","test_content_123","N","TV_Channel",None,None,None,None,None,None,None,None,None,datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"20200101","Digital TV","1","epg_title","Free","N","Y","618",None,'20200101'],
+[datetime.datetime.strptime('2020-01-21','%Y-%m-%d'),18,"user_test","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"1-TEST","FBB","wifi","STB","Device","AIS-STB","Stream","Channel","test_content_123","N","TV_Channel",None,None,None,None,None,None,None,None,None,datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"20200101","Digital TV","1","epg_title","Free","N","Y","618",None,'20200101'],
+[datetime.datetime.strptime('2020-01-27','%Y-%m-%d'),9,"user_test","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"1-TEST","FBB","wifi","STB","Device","AIS-STB","Stream","Channel","test_content_123","N","TV_Channel",None,None,None,None,None,None,None,None,None,datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"20200101","Digital TV","1","epg_title","Free","N","Y","618",None,'20200101'],
+[datetime.datetime.strptime('2020-01-28','%Y-%m-%d'),18,"user_test","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"1-TEST","FBB","wifi","STB","Device","AIS-STB","Stream","Channel","test_content_123","N","TV_Channel",None,None,None,None,None,None,None,None,None,datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"20200101","Digital TV","1","epg_title","Free","N","Y","618",None,'20200101']]
 
 global temp_l0_streaming_soc_mobile_app_daily
 temp_l0_streaming_soc_mobile_app_daily = [
@@ -96,7 +107,7 @@ temp_l0_streaming_soc_mobile_app_daily = [
 ]
 global daily_customer_profile
 daily_customer_profile =[
-["1-6TX4D0H","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"null","THAI","null","N","N","Y","Y","3G339","test","25","F","3577","118","SA","Classic","Classic","3G","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"Pre-paid","null","N","NNNN","N","N",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),datetime.datetime.strptime('2020-01-01','%Y-%m-%d')]
+["1-TEST","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"null","THAI","null","N","N","Y","Y","3G339","test","25","F","3577","118","SA","Classic","Classic","3G","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"Pre-paid","null","N","NNNN","N","N",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),datetime.datetime.strptime('2020-01-01','%Y-%m-%d')]
 ]
 
 
@@ -138,12 +149,12 @@ def set_value(project_context):
                                                                               StructField("count_search", StringType(),
                                                                                           True),
                                                                               StructField("partition_date",
-                                                                                          StringType(), True),
+                                                                                          StringType(), True)
                                                                               ]))
 
-    rdd1 = spark.sparkContext.parallelize(temp_l0_streaming_ru_a_onair_vimmi_usage_daily)
-    global df_temp_l0_streaming_ru_a_onair_vimmi_usage_daily
-    df_temp_l0_streaming_ru_a_onair_vimmi_usage_daily = spark.createDataFrame(rdd1,
+    rdd1 = spark.sparkContext.parallelize(temp_l0_streaming_ru_a_onair_vimmi_usage_daily_old)
+    global df_temp_l0_streaming_ru_a_onair_vimmi_usage_daily_old
+    df_temp_l0_streaming_ru_a_onair_vimmi_usage_daily_old = spark.createDataFrame(rdd1,
                                                                               schema=StructType(
                                                                                   [
 StructField("day_id",DateType(), True),
@@ -186,6 +197,48 @@ StructField("start_of_week",DateType(), True),
 StructField("start_of_month",DateType(), True),
 StructField("event_partition_date",DateType(), True)
                                                                                    ]))
+
+    rdd1 = spark.sparkContext.parallelize(temp_l0_streaming_ru_a_onair_vimmi_usage_daily_new)
+    global df_temp_l0_streaming_ru_a_onair_vimmi_usage_daily
+    df_temp_l0_streaming_ru_a_onair_vimmi_usage_daily = spark.createDataFrame(rdd1,
+                                                                              schema=StructType(
+                                                                                  [StructField("day_id",DateType(), True),
+StructField("hour_id",IntegerType(), True),
+StructField("user_id",StringType(), True),
+StructField("access_method_num",StringType(), True),
+StructField("register_date",DateType(), True),
+StructField("sff_sub_id",StringType(), True),
+StructField("network_type",StringType(), True),
+StructField("network_group",StringType(), True),
+StructField("device_type",StringType(), True),
+StructField("device_name",StringType(), True),
+StructField("app_id",StringType(), True),
+StructField("event_code",StringType(), True),
+StructField("content_group",StringType(), True),
+StructField("content_id",StringType(), True),
+StructField("paid",StringType(), True),
+StructField("title",StringType(), True),
+StructField("season_title",StringType(), True),
+StructField("series_title",StringType(), True),
+StructField("genre",StringType(), True),
+StructField("rated",StringType(), True),
+StructField("provider_id",StringType(), True),
+StructField("provider_name",StringType(), True),
+StructField("purchase_id",StringType(), True),
+StructField("product_id",StringType(), True),
+StructField("product_name",StringType(), True),
+StructField("start_time",DateType(), True),
+StructField("file_date",StringType(), True),
+StructField("ctp_category_channel",StringType(), True),
+StructField("volume_mb",StringType(), True),
+StructField("epg_title",StringType(), True),
+StructField("ctp_type_product",StringType(), True),
+StructField("ctp_hd_flag",StringType(), True),
+StructField("ctp_sd_flag",StringType(), True),
+StructField("duration",StringType(), True),
+StructField("expiration_date",DateType(), True),
+StructField("partition_date",StringType(), True)
+                                                                                  ]))
 
     rdd1 = spark.sparkContext.parallelize(temp_l0_streaming_soc_mobile_app_daily)
     global df_temp_l0_streaming_soc_mobile_app_daily
