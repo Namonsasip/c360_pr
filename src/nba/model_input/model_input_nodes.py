@@ -1,17 +1,20 @@
+import pandas as pd
+from kedro.io import ParquetLocalDataSet
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 
+from nba.models.models_nodes import calculate_extra_pai_metrics
+ParquetLocalDataSet
 
 def node_l5_nba_master_table_spine(
-    l0_campaign_tracking_contact_list_pre: DataFrame,
-    min_feature_days_lag: int = 5,  # TODO validate lag
+    l0_campaign_tracking_contact_list_pre: DataFrame, min_feature_days_lag: int,
 ) -> DataFrame:
 
     # TODO change
-    campaigns_to_keep = ["Prev_Sus.44", "Prev_PreI.2.3", "TU39.2", "Voice.18.3.2"]
+    child_codes_to_keep = ["Prev_Sus.44", "Prev_PreI.2.3", "TU39.2", "Voice.18.3.2"]
 
     df_spine = l0_campaign_tracking_contact_list_pre.filter(
-        F.col("campaign_child_code").isin(campaigns_to_keep)
+        F.col("campaign_child_code").isin(child_codes_to_keep)
     )
 
     df_spine = df_spine.withColumn(
@@ -50,7 +53,9 @@ def node_l5_nba_master_table_spine(
     return df_spine
 
 
-def node_l5_nba_master_table(l5_nba_master_table_spine: DataFrame, **kwargs: DataFrame) -> DataFrame:
+def node_l5_nba_master_table(
+    l5_nba_master_table_spine: DataFrame, **kwargs: DataFrame
+) -> DataFrame:
 
     non_date_join_cols = ["subscription_identifier"]
 
@@ -100,3 +105,15 @@ def node_l5_nba_master_table(l5_nba_master_table_spine: DataFrame, **kwargs: Dat
         df_master = df_master.join(df_features, on=key_columns, how="left")
 
         return df_master
+
+
+def node_l5_nba_master_table_chunk_debug(
+    l5_nba_master_table: DataFrame, child_code: str, sampling_rate: float
+) -> pd.DataFrame:
+    df_chunk = l5_nba_master_table.filter(F.col("campaign_child_code") == child_code)
+
+    pdf_extra_pai_metrics = calculate_extra_pai_metrics(
+        l5_nba_master_table, target_column="target_response", by="campaign_child_code"
+    )
+    l5_nba_master_table_chunk_debug = df_chunk.sample(sampling_rate).toPandas()
+    return l5_nba_master_table_chunk_debug, pdf_extra_pai_metrics

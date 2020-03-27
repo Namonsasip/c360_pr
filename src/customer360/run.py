@@ -157,7 +157,7 @@ class ProjectContext(KedroContext):
 
         catalog = self._get_catalog()
         # Get both the dataset names and dataset contents of the node
-        node_args, node_kwargs = Node._process_inputs_for_bind(node.inputs)
+        node_args, node_kwargs = Node._process_inputs_for_bind(node._inputs)
         node_loaded_args = [catalog.load(dataset_name) for dataset_name in node_args]
         node_loaded_kwargs = {
             key: catalog.load(dataset_name) for key, dataset_name in node_kwargs.items()
