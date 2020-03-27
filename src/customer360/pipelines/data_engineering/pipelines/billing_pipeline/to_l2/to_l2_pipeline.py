@@ -18,13 +18,13 @@ def billing_to_l2_pipeline(**kwargs):
             # Weekly Time difference between top ups pre-paid
             node(
                 node_from_config,
-                ["l0_billing_and_payments_rt_t_recharge_daily",
+                ["l0_billing_and_payments_rt_t_recharge_daily_for_l2_billing_and_payments_weekly_topup_time_diff",
                  "params:l2_billing_and_payment_feature_time_diff_bw_topups_weekly_intermdeiate"],
                 "l2_billing_and_payments_weekly_topup_diff_time_intermediate"
             ),
             node(
                 billing_time_diff_between_topups_weekly,
-                ["l1_customer_profile_union_daily_feature",
+                ["l1_customer_profile_union_daily_feature_for_l2_billing_and_payments_weekly_topup_time_diff",
                  "l2_billing_and_payments_weekly_topup_diff_time_intermediate",
                  "params:l2_billing_and_payment_feature_time_diff_bw_topups_weekly"],
                 "l2_billing_and_payments_weekly_topup_time_diff"
@@ -35,7 +35,7 @@ def billing_to_l2_pipeline(**kwargs):
                 billing_arpu_roaming_weekly,
                 ["l1_billing_and_payments_daily_rpu_roaming",
                  "params:l2_billing_and_payment_feature_rpu_roaming_weekly"],
-                "l2_billing_weekly_rpu_roaming"
+                "l2_billing_and_payments_weekly_rpu_roaming"
             ),
 
             # Weekly balance before top up pre-paid
@@ -77,8 +77,8 @@ def billing_to_l2_pipeline(**kwargs):
             # Weekly last top up channel pre-paid
             node(
                 billing_last_top_up_channel_weekly,
-                ["l0_billing_and_payments_rt_t_recharge_daily",
-                 "l1_customer_profile_union_daily_feature",
+                ["l0_billing_and_payments_rt_t_recharge_daily_for_l2_billing_and_payments_weekly_last_top_up_channel",
+                 "l1_customer_profile_union_daily_feature_for_l2_billing_and_payments_weekly_last_top_up_channel",
                  "l0_billing_topup_type",
                  "params:l2_last_topup_channel"],
                 "l2_billing_and_payments_weekly_last_top_up_channel"
@@ -87,7 +87,7 @@ def billing_to_l2_pipeline(**kwargs):
             # # Weekly popular top up day pre-apid
             node(
                 node_from_config,
-                ["l1_billing_and_payments_daily_popular_topup_day",
+                ["l1_billing_and_payments_daily_popular_topup_day_for_l2_billing_and_payments_weekly_popular_topup_day_intermediate",
                  "params:l2_popular_topup_day_1"],
                 "l2_billing_and_payments_weekly_popular_topup_day_intermediate"
             ),
@@ -101,7 +101,7 @@ def billing_to_l2_pipeline(**kwargs):
             # Weekly popular top up hour pre-paid
             node(
                 node_from_config,
-                ["l1_billing_and_payments_daily_popular_topup_day",
+                ["l1_billing_and_payments_daily_popular_topup_day_for_l2_billing_and_payments_weekly_popular_topup_hour_intermediate",
                  "params:l2_popular_topup_hour_1"],
                 "l2_billing_and_payments_weekly_popular_topup_hour_intermediate"
             ),
@@ -115,7 +115,7 @@ def billing_to_l2_pipeline(**kwargs):
             # Weekly time since last top up  pre-paid
             node(
                 billing_time_since_last_topup_weekly,
-                ["l1_billing_and_payments_daily_time_since_last_top_up",
+                ["l1_billing_and_payments_daily_time_since_last_top_up_for_l2_billing_and_payments_weekly_time_since_last_top_up",
                  "params:l2_time_since_last_top_up"],
                 "l2_billing_and_payments_weekly_time_since_last_top_up"
             ),
@@ -123,7 +123,7 @@ def billing_to_l2_pipeline(**kwargs):
             # Weekly last 3 top up volume pre-paid
             node(
                 node_from_config,
-                ["l1_billing_and_payments_daily_time_since_last_top_up",
+                ["l1_billing_and_payments_daily_time_since_last_top_up_for_l2_billing_and_payments_weekly_last_three_topup_volume",
                  "params:l2_last_three_topup_volume_ranked"],
                 "l2_billing_and_payments_weekly_last_three_topup_volume_1"
             ),

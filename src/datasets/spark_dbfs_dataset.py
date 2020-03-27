@@ -363,7 +363,25 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 "select * from src_data where to_date(cast({0} as String),'yyyyMM') > add_months(date(date_trunc('month',to_date(cast('{1}' as String)))),-{2})".format(
                     filter_col, tgt_filter_date, lookback_fltr))
 
-            elif read_layer.lower() == "l0_weekly" and target_layer.lower() == 'l2_weekly':
+            elif read_layer.lower() == "l0_monthly" and target_layer.lower() == 'l4_monthly':
+                filter_col = "partition_month"
+                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
+                print("filter_col:", filter_col)
+                print("lookback_fltr:", lookback_fltr)
+                src_incremental_data = spark.sql(
+                "select * from src_data where to_date(cast({0} as String),'yyyyMM') > add_months(date(date_trunc('month',to_date(cast('{1}' as String)))),-{2})".format(
+                    filter_col, tgt_filter_date, lookback_fltr))
+
+            # elif read_layer.lower() == "l0_weekly" and target_layer.lower() == 'l2_weekly':
+            #     filter_col = "partition_date"
+            #     lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
+            #     print("filter_col:", filter_col)
+            #     print("lookback_fltr:", lookback_fltr)
+            #     src_incremental_data = spark.sql(
+            #     "select * from src_data where to_date(cast({0} as String),'yyyyMMdd') > date_sub(date_sub(date_sub(date(date_trunc('week', to_date(cast('{1}' as String)))),- 7*(1)), 1), 7*({2}))".format(
+            #         filter_col, tgt_filter_date, lookback_fltr))
+
+            elif read_layer.lower() == "l0_daily" and target_layer.lower() == 'l2_weekly':
                 filter_col = "partition_date"
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 print("filter_col:", filter_col)
@@ -401,6 +419,15 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 "select * from src_data where {0} > date_sub(date_sub(date_sub(date(date_trunc('week', to_date(cast('{1}' as String)))),- 7*(1)), 1), 7*({2}))".format(
                     filter_col, tgt_filter_date, lookback_fltr))
 
+            elif read_layer.lower() == "l1_daily" and target_layer.lower() == 'l3_monthly':
+                filter_col = "event_partition_date"
+                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
+                print("filter_col:", filter_col)
+                print("lookback_fltr:", lookback_fltr)
+                src_incremental_data = spark.sql(
+                "select * from src_data where {0} > add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), -{2})".format(
+                    filter_col, tgt_filter_date, lookback_fltr))
+
 
             elif read_layer.lower() == "l2_weekly" and target_layer.lower() == 'l4_weekly':
                 filter_col = "start_of_week"
@@ -410,6 +437,15 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 src_incremental_data = spark.sql(
                 "select * from src_data where {0} > date_sub(date(date_trunc('week', to_date(cast('{1}' as String)))), 7*({2}))".format(
                     filter_col, tgt_filter_date, lookback_fltr))
+
+            elif read_layer.lower() == "l2_weekly" and target_layer.lower() == 'l2_weekly':
+                filter_col = "start_of_week"
+                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
+                print("filter_col:", filter_col)
+                print("lookback_fltr:", lookback_fltr)
+                src_incremental_data = spark.sql(
+                    "select * from src_data where {0} > date_sub(date(date_trunc('week', to_date(cast('{1}' as String)))), 7*({2}))".format(
+                        filter_col, tgt_filter_date, lookback_fltr))
 
             elif read_layer.lower() == "l3_monthly" and target_layer.lower() == 'l4_monthly':
                 filter_col = "start_of_month"
