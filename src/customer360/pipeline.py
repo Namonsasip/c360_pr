@@ -33,7 +33,8 @@ from kedro.pipeline import Pipeline
 
 from cvm.data_prep.pipeline import create_cvm_prepare_inputs_samples, \
     create_cvm_targets, create_cvm_training_data, create_cvm_scoring_data
-from cvm.modelling.pipeline import create_train_model, create_predictions
+from cvm.modelling.pipeline import create_train_model, create_predictions, \
+    create_train_validate
 from cvm.preprocessing.pipeline import create_cvm_preprocessing_scoring, \
     create_cvm_preprocessing
 from nba.report.pipelines.report_pipeline import create_use_case_view_report_data
@@ -199,6 +200,10 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
                                           + create_cvm_training_data("sample"),
         "cvm_training_preprocess_sample": create_cvm_preprocessing_scoring("sample"),
         "cvm_train_model_sample": create_train_model("sample"),
+        "prepare_data_train_model_dev": create_cvm_targets("dev")
+                                        + create_cvm_training_data("dev")
+                                        + create_cvm_preprocessing("dev")
+                                        + create_train_validate("dev"),
         "cvm_setup_scoring_data_sample": create_cvm_prepare_inputs_samples(
             "scoring_sample"
         )
