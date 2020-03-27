@@ -85,14 +85,14 @@ temp_l0_streaming_ru_a_onair_vimmi_usage_daily_old = [
 
 global temp_l0_streaming_ru_a_onair_vimmi_usage_daily_new
 temp_l0_streaming_ru_a_onair_vimmi_usage_daily_new = [
-[datetime.datetime.strptime('2020-01-06','%Y-%m-%d'),9,"user_test","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"1-TEST","FBB","wifi","STB","Device","AIS-STB","Stream","Channel","test_content_123","N","TV_Channel",None,None,None,None,None,None,None,None,None,datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"20200101","Digital TV","1","epg_title","Free","N","Y","618",None,'20200101'],
-[datetime.datetime.strptime('2020-01-07','%Y-%m-%d'),18,"user_test","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"1-TEST","FBB","wifi","STB","Device","AIS-STB","Stream","Channel","test_content_123","N","TV_Channel",None,None,None,None,None,None,None,None,None,datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"20200101","Digital TV","1","epg_title","Free","N","Y","618",None,'20200101'],
-[datetime.datetime.strptime('2020-01-13','%Y-%m-%d'),9,"user_test","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"1-TEST","FBB","wifi","STB","Device","AIS-STB","Stream","Channel","test_content_123","N","TV_Channel",None,None,None,None,None,None,None,None,None,datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"20200101","Digital TV","1","epg_title","Free","N","Y","618",None,'20200101'],
-[datetime.datetime.strptime('2020-01-14','%Y-%m-%d'),18,"user_test","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"1-TEST","FBB","wifi","STB","Device","AIS-STB","Stream","Channel","test_content_123","N","TV_Channel",None,None,None,None,None,None,None,None,None,datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"20200101","Digital TV","1","epg_title","Free","N","Y","618",None,'20200101'],
-[datetime.datetime.strptime('2020-01-20','%Y-%m-%d'),9,"user_test","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"1-TEST","FBB","wifi","STB","Device","AIS-STB","Stream","Channel","test_content_123","N","TV_Channel",None,None,None,None,None,None,None,None,None,datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"20200101","Digital TV","1","epg_title","Free","N","Y","618",None,'20200101'],
-[datetime.datetime.strptime('2020-01-21','%Y-%m-%d'),18,"user_test","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"1-TEST","FBB","wifi","STB","Device","AIS-STB","Stream","Channel","test_content_123","N","TV_Channel",None,None,None,None,None,None,None,None,None,datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"20200101","Digital TV","1","epg_title","Free","N","Y","618",None,'20200101'],
-[datetime.datetime.strptime('2020-01-27','%Y-%m-%d'),9,"user_test","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"1-TEST","FBB","wifi","STB","Device","AIS-STB","Stream","Channel","test_content_123","N","TV_Channel",None,None,None,None,None,None,None,None,None,datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"20200101","Digital TV","1","epg_title","Free","N","Y","618",None,'20200101'],
-[datetime.datetime.strptime('2020-01-28','%Y-%m-%d'),18,"user_test","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"1-TEST","FBB","wifi","STB","Device","AIS-STB","Stream","Channel","test_content_123","N","TV_Channel",None,None,None,None,None,None,None,None,None,datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"20200101","Digital TV","1","epg_title","Free","N","Y","618",None,'20200101']]
+[datetime.datetime.strptime('2020-01-06','%Y-%m-%d'),9,"user_test","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"1-TEST","FBB","wifi","STB","Device","AIS-STB","Stream","Channel","test_content_123","N","TV_Channel",None,None,None,None,None,None,None,None,None,datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"20200101","Digital TV","1","epg_title","Free","N","Y","1",None,'20200101'],
+[datetime.datetime.strptime('2020-01-07','%Y-%m-%d'),18,"user_test","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"1-TEST","FBB","wifi","STB","Device","AIS-STB","Stream","Channel","test_content_123","N","TV_Channel",None,None,None,None,None,None,None,None,None,datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"20200101","Digital TV","1","epg_title","Free","N","Y","1",None,'20200101'],
+[datetime.datetime.strptime('2020-01-13','%Y-%m-%d'),9,"user_test","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"1-TEST","FBB","wifi","STB","Device","AIS-STB","Stream","Channel","test_content_123","N","TV_Channel",None,None,None,None,None,None,None,None,None,datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"20200101","Digital TV","1","epg_title","Free","N","Y","1",None,'20200101'],
+[datetime.datetime.strptime('2020-01-14','%Y-%m-%d'),18,"user_test","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"1-TEST","FBB","wifi","STB","Device","AIS-STB","Stream","Channel","test_content_123","N","TV_Channel",None,None,None,None,None,None,None,None,None,datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"20200101","Digital TV","1","epg_title","Free","N","Y","1",None,'20200101'],
+[datetime.datetime.strptime('2020-01-20','%Y-%m-%d'),9,"user_test","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"1-TEST","FBB","wifi","STB","Device","AIS-STB","Stream","Channel","test_content_123","N","TV_Channel",None,None,None,None,None,None,None,None,None,datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"20200101","Digital TV","1","epg_title","Free","N","Y","1",None,'20200101'],
+[datetime.datetime.strptime('2020-01-21','%Y-%m-%d'),18,"user_test","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"1-TEST","FBB","wifi","STB","Device","AIS-STB","Stream","Channel","test_content_123","N","TV_Channel",None,None,None,None,None,None,None,None,None,datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"20200101","Digital TV","1","epg_title","Free","N","Y","1",None,'20200101'],
+[datetime.datetime.strptime('2020-01-27','%Y-%m-%d'),9,"user_test","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"1-TEST","FBB","wifi","STB","Device","AIS-STB","Stream","Channel","test_content_123","N","TV_Channel",None,None,None,None,None,None,None,None,None,datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"20200101","Digital TV","1","epg_title","Free","N","Y","1",None,'20200101'],
+[datetime.datetime.strptime('2020-01-28','%Y-%m-%d'),18,"user_test","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"1-TEST","FBB","wifi","STB","Device","AIS-STB","Stream","Channel","test_content_123","N","TV_Channel",None,None,None,None,None,None,None,None,None,datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"20200101","Digital TV","1","epg_title","Free","N","Y","1",None,'20200101']]
 
 global temp_l0_streaming_soc_mobile_app_daily
 temp_l0_streaming_soc_mobile_app_daily = [
@@ -313,8 +313,6 @@ class TestUnitStream:
 
         assert l1int_l1_streaming_video_service_feature.select("mobile_no").count() == 8
 
-
-
     def test_l1_streaming_fav_content_group_by_duration(self,project_context):
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
@@ -347,8 +345,7 @@ class TestUnitStream:
 
         streaming_fav_video_service_by_download_feature.show()
 
-        exit(2)
-        assert streaming_fav_video_service_by_download_feature.select("mobile_no").rdd.isEmpty() == True
+        assert streaming_fav_video_service_by_download_feature.select("mobile_no").count() == 8
 
     def test_l1_streaming_2nd_fav_video_service_by_download_feature(self,project_context):
         var_project_context = project_context['ProjectContext']
@@ -618,7 +615,7 @@ class TestUnitStream:
         int_l1_streaming_content_type_features = l1_massive_processing(df_temp_l0_streaming_ru_a_onair_vimmi_usage_daily,
                         var_project_context.catalog.load('params:int_l1_streaming_content_type_features'))
 
-        int_l2_streaming_content_type_features = node_from_config(int_l1_streaming_content_type_features,
+        int_l2_streaming_content_type_features = l2_massive_processing(int_l1_streaming_content_type_features,
                                                                          var_project_context.catalog.load(
                                                                              'params:int_l2_streaming_content_type_features'))
 
@@ -635,9 +632,9 @@ class TestUnitStream:
         int_l1_streaming_content_type_features = l1_massive_processing(df_temp_l0_streaming_ru_a_onair_vimmi_usage_daily,
                         var_project_context.catalog.load('params:int_l1_streaming_content_type_features'))
 
-        int_l2_streaming_content_type_features = node_from_config(int_l1_streaming_content_type_features,
-                                                                  var_project_context.catalog.load(
-                                                                      'params:int_l2_streaming_content_type_features'))
+        int_l2_streaming_content_type_features = l2_massive_processing(int_l1_streaming_content_type_features,
+                                                                       var_project_context.catalog.load(
+                                                                           'params:int_l2_streaming_content_type_features'))
 
         l2_streaming_fav_content_group_by_volume = node_from_config(int_l2_streaming_content_type_features,
                                                                          var_project_context.catalog.load(
@@ -656,9 +653,9 @@ class TestUnitStream:
         int_l1_streaming_content_type_features = l1_massive_processing(df_temp_l0_streaming_ru_a_onair_vimmi_usage_daily,
                         var_project_context.catalog.load('params:int_l1_streaming_content_type_features'))
 
-        int_l2_streaming_content_type_features = node_from_config(int_l1_streaming_content_type_features,
-                                                                  var_project_context.catalog.load(
-                                                                      'params:int_l2_streaming_content_type_features'))
+        int_l2_streaming_content_type_features = l2_massive_processing(int_l1_streaming_content_type_features,
+                                                                       var_project_context.catalog.load(
+                                                                           'params:int_l2_streaming_content_type_features'))
 
         l2_streaming_fav_content_group_by_duration = node_from_config(int_l2_streaming_content_type_features,
                                                                          var_project_context.catalog.load(
@@ -678,7 +675,7 @@ class TestUnitStream:
         int_l1_streaming_content_type_features = l1_massive_processing(df_temp_l0_streaming_ru_a_onair_vimmi_usage_daily,
                         var_project_context.catalog.load('params:int_l1_streaming_tv_channel_features'))
 
-        int_l2_streaming_content_type_features = node_from_config(int_l1_streaming_content_type_features,
+        int_l2_streaming_content_type_features = l2_massive_processing(int_l1_streaming_content_type_features,
                                                                          var_project_context.catalog.load(
                                                                              'params:int_l2_streaming_tv_channel_features'))
 
@@ -695,9 +692,9 @@ class TestUnitStream:
         int_l1_streaming_content_type_features = l1_massive_processing(df_temp_l0_streaming_ru_a_onair_vimmi_usage_daily,
                         var_project_context.catalog.load('params:int_l1_streaming_tv_channel_features'))
 
-        int_l2_streaming_content_type_features = node_from_config(int_l1_streaming_content_type_features,
-                                                                  var_project_context.catalog.load(
-                                                                      'params:int_l2_streaming_tv_channel_features'))
+        int_l2_streaming_content_type_features = l2_massive_processing(int_l1_streaming_content_type_features,
+                                                                       var_project_context.catalog.load(
+                                                                           'params:int_l2_streaming_tv_channel_features'))
 
         l2_streaming_fav_tv_channel_by_volume = node_from_config(int_l2_streaming_content_type_features,
                                                                          var_project_context.catalog.load(
@@ -716,9 +713,9 @@ class TestUnitStream:
         int_l1_streaming_content_type_features = l1_massive_processing(df_temp_l0_streaming_ru_a_onair_vimmi_usage_daily,
                         var_project_context.catalog.load('params:int_l1_streaming_content_type_features'))
 
-        int_l2_streaming_content_type_features = node_from_config(int_l1_streaming_content_type_features,
-                                                                  var_project_context.catalog.load(
-                                                                      'params:int_l2_streaming_tv_channel_features'))
+        int_l2_streaming_content_type_features = l2_massive_processing(int_l1_streaming_content_type_features,
+                                                                       var_project_context.catalog.load(
+                                                                           'params:int_l2_streaming_tv_channel_features'))
 
         l2_streaming_fav_tv_channel_by_duration = node_from_config(int_l2_streaming_content_type_features,
                                                                          var_project_context.catalog.load(
@@ -735,9 +732,10 @@ class TestUnitStream:
 
         set_value(project_context)
 
-        int_l2_streaming_tv_show_features = node_from_config(df_temp_l0_streaming_ru_a_onair_vimmi_usage_daily,
-                        var_project_context.catalog.load('params:int_l2_streaming_tv_show_features'))
+        int_l0_streaming_vimmi_table = add_start_of_week_and_month(df_temp_l0_streaming_ru_a_onair_vimmi_usage_daily)
 
+        int_l2_streaming_tv_show_features = node_from_config(int_l0_streaming_vimmi_table,
+                        var_project_context.catalog.load('params:int_l2_streaming_tv_show_features'))
 
         int_l2_streaming_tv_show_features.show()
 
@@ -749,8 +747,11 @@ class TestUnitStream:
 
         set_value(project_context)
 
-        int_l2_streaming_tv_show_features = node_from_config(df_temp_l0_streaming_ru_a_onair_vimmi_usage_daily,
-                        var_project_context.catalog.load('params:int_l2_streaming_tv_show_features'))
+        int_l0_streaming_vimmi_table = add_start_of_week_and_month(df_temp_l0_streaming_ru_a_onair_vimmi_usage_daily)
+
+        int_l2_streaming_tv_show_features = node_from_config(int_l0_streaming_vimmi_table,
+                                                             var_project_context.catalog.load(
+                                                                 'params:int_l2_streaming_tv_show_features'))
 
 
         l2_streaming_fav_tv_show_by_episode_watched = node_from_config(int_l2_streaming_tv_show_features,
@@ -768,17 +769,17 @@ class TestUnitStream:
 
         set_value(project_context)
 
-        int_l1_streaming_music_service_feature = node_from_config(df_temp_l0_streaming_soc_mobile_app_daily,
-                        var_project_context.catalog.load('params:int_l1_streaming_music_service_feature'))
+        int_l1_streaming_music_service_feature = l1_massive_processing(df_temp_l0_streaming_soc_mobile_app_daily,
+                        var_project_context.catalog.load('params:int_l1_streaming_video_service_feature'))
 
-        int_l2_streaming_music_service_feature = node_from_config(int_l1_streaming_music_service_feature,
+        int_l2_streaming_video_service_feature = l2_massive_processing(int_l1_streaming_music_service_feature,
                                                                   var_project_context.catalog.load(
-                                                                      'params:int_l2_streaming_music_service_feature'))
+                                                                      'params:int_l2_streaming_video_service_feature'))
 
 
-        int_l2_streaming_music_service_feature.show()
+        int_l2_streaming_video_service_feature.show()
 
-        assert int_l2_streaming_music_service_feature.select("mobile_no").rdd.isEmpty() == True
+        assert int_l2_streaming_video_service_feature.select("mobile_no").count() ==  4
 
     def test_l2_streaming_fav_service_by_download_feature(self,project_context):
         var_project_context = project_context['ProjectContext']
@@ -789,17 +790,17 @@ class TestUnitStream:
         int_l1_streaming_music_service_feature = node_from_config(df_temp_l0_streaming_soc_mobile_app_daily,
                         var_project_context.catalog.load('params:int_l1_streaming_music_service_feature'))
 
-        int_l2_streaming_music_service_feature = node_from_config(int_l1_streaming_music_service_feature,
-                                                                  var_project_context.catalog.load(
-                                                                      'params:int_l2_streaming_music_service_feature'))
+        int_l2_streaming_video_service_feature = l2_massive_processing(int_l1_streaming_music_service_feature,
+                                                                       var_project_context.catalog.load(
+                                                                           'params:int_l2_streaming_video_service_feature'))
 
-        l2_streaming_fav_service_by_download_feature = node_from_config(int_l2_streaming_music_service_feature,
+        l2_streaming_fav_service_by_download_feature = node_from_config(int_l2_streaming_video_service_feature,
                                                                   var_project_context.catalog.load(
                                                                       'params:l2_streaming_fav_service_by_download_feature'))
 
         l2_streaming_fav_service_by_download_feature.show()
 
-        assert int_l2_streaming_music_service_feature.select("mobile_no").rdd.isEmpty() == True
+        assert l2_streaming_fav_service_by_download_feature.select("mobile_no").rdd.isEmpty() == True
 
     def test_l2_streaming_2nd_fav_service_by_download_feature(self,project_context):
         var_project_context = project_context['ProjectContext']
@@ -810,11 +811,11 @@ class TestUnitStream:
         int_l1_streaming_music_service_feature = node_from_config(df_temp_l0_streaming_soc_mobile_app_daily,
                         var_project_context.catalog.load('params:int_l1_streaming_music_service_feature'))
 
-        int_l2_streaming_music_service_feature = node_from_config(int_l1_streaming_music_service_feature,
-                                                                  var_project_context.catalog.load(
-                                                                      'params:int_l2_streaming_music_service_feature'))
+        int_l2_streaming_video_service_feature = l2_massive_processing(int_l1_streaming_music_service_feature,
+                                                                       var_project_context.catalog.load(
+                                                                           'params:int_l2_streaming_video_service_feature'))
 
-        l2_streaming_2nd_fav_service_by_download_feature = node_from_config(int_l2_streaming_music_service_feature,
+        l2_streaming_2nd_fav_service_by_download_feature = node_from_config(int_l2_streaming_video_service_feature,
                                                                   var_project_context.catalog.load(
                                                                       'params:l2_streaming_2nd_fav_service_by_download_feature'))
 
