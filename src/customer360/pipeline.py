@@ -188,14 +188,6 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "campaign_to_l1_pipeline": campaign_to_l1_pipeline(),
         "campaign_to_l2_pipeline": campaign_to_l2_pipeline(),
         "campaign_to_l4_pipeline": campaign_to_l4_pipeline(),
-        'loyalty_to_l1_pipeline': loyalty_to_l1_pipeline(),
-        'loyalty_to_l2_pipeline': loyalty_to_l2_pipeline(),
-        'loyalty_to_l3_pipeline': loyalty_to_l3_pipeline(),
-        'loyalty_to_l4_pipeline': loyalty_to_l4_pipeline(),
-        'network_to_l1_pipeline': network_to_l1_pipeline(),
-        'network_to_l2_pipeline': network_to_l2_pipeline(),
-        'network_to_l3_pipeline': network_to_l3_pipeline(),
-        'network_to_l4_pipeline': network_to_l4_pipeline(),
         # "de": data_engineering_pipeline,
     }
 
@@ -234,8 +226,7 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
 
 def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
     return {
-        "__default__": create_use_case_view_report_data() +
-        create_nba_model_input_pipeline(),
+        "__default__": create_use_case_view_report_data()
     }
 
 
