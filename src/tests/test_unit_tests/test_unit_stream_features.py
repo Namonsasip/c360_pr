@@ -107,7 +107,10 @@ temp_l0_streaming_soc_mobile_app_daily = [
 ]
 global daily_customer_profile
 daily_customer_profile =[
-["1-TEST","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"null","THAI","null","N","N","Y","Y","3G339","test","25","F","3577","118","SA","Classic","Classic","3G","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"Pre-paid","null","N","NNNN","N","N",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),datetime.datetime.strptime('2020-01-01','%Y-%m-%d')]
+["1-TEST","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"null","THAI","null","N","N","Y","Y","3G537","NULL","null","null","3574","117","SA","Classic","Classic","3G","National_id_card",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"Pre-paid","null",datetime.datetime.strptime('2020-01-06','%Y-%m-%d'),datetime.datetime.strptime('2020-01-01','%Y-%m-%d')],
+["1-TEST","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"null","THAI","null","N","N","Y","Y","3G537","NULL","null","null","3574","117","SA","Classic","Classic","3G","National_id_card",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"Pre-paid","null",datetime.datetime.strptime('2020-01-13','%Y-%m-%d'),datetime.datetime.strptime('2020-01-01','%Y-%m-%d')],
+["1-TEST","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"null","THAI","null","N","N","Y","Y","3G537","NULL","null","null","3574","117","SA","Classic","Classic","3G","National_id_card",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"Pre-paid","null",datetime.datetime.strptime('2020-01-20','%Y-%m-%d'),datetime.datetime.strptime('2020-01-01','%Y-%m-%d')],
+["1-TEST","test",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"null","THAI","null","N","N","Y","Y","3G537","NULL","null","null","3574","117","SA","Classic","Classic","3G","National_id_card",datetime.datetime.strptime('2020-01-01','%Y-%m-%d'),"Pre-paid","null",datetime.datetime.strptime('2020-01-27','%Y-%m-%d'),datetime.datetime.strptime('2020-01-01','%Y-%m-%d')]
 ]
 
 
@@ -262,6 +265,7 @@ StructField("partition_date",StringType(), True)
                                                                                        True)
                                                                            ]))
 
+    rdd1 = spark.sparkContext.parallelize(daily_customer_profile)
     global customer_pro
     customer_pro = spark.createDataFrame(rdd1,schema=StructType([
         StructField("subscription_identifier", StringType(), True),
@@ -288,14 +292,8 @@ StructField("partition_date",StringType(), True)
         StructField("partition_date", DateType(), True),
         StructField("charge_type", StringType(), True),
         StructField("billing_account_no", StringType(), True),
-        StructField("suppress_sms", StringType(), True),
-        StructField("supp_cntn_all", StringType(), True),
-        StructField("vip_flag", StringType(), True),
-        StructField("royal_family_flag", StringType(), True),
         StructField("start_of_week", DateType(), True),
-        StructField("start_of_month", DateType(), True),
-        StructField("event_partition_date", DateType(), True),
-
+        StructField("start_of_month", DateType(), True)
     ]))
 
 
@@ -769,17 +767,16 @@ class TestUnitStream:
 
         set_value(project_context)
 
-        int_l1_streaming_music_service_feature = l1_massive_processing(df_temp_l0_streaming_soc_mobile_app_daily,
+        int_l1_streaming_video_service_feature = l1_massive_processing(df_temp_l0_streaming_soc_mobile_app_daily,
                         var_project_context.catalog.load('params:int_l1_streaming_video_service_feature'))
 
-        int_l2_streaming_video_service_feature = l2_massive_processing(int_l1_streaming_music_service_feature,
+        int_l2_streaming_video_service_feature = l2_massive_processing(int_l1_streaming_video_service_feature,
                                                                   var_project_context.catalog.load(
-                                                                      'params:int_l2_streaming_video_service_feature'))
-
+                                                                      'params:int_l2_streaming_video_service_feature'),customer_pro)
 
         int_l2_streaming_video_service_feature.show()
 
-        assert int_l2_streaming_video_service_feature.select("mobile_no").count() ==  4
+        assert int_l2_streaming_video_service_feature.select("access_method_num").count() ==  4
 
     def test_l2_streaming_fav_service_by_download_feature(self,project_context):
         var_project_context = project_context['ProjectContext']
@@ -787,12 +784,14 @@ class TestUnitStream:
 
         set_value(project_context)
 
-        int_l1_streaming_music_service_feature = node_from_config(df_temp_l0_streaming_soc_mobile_app_daily,
-                        var_project_context.catalog.load('params:int_l1_streaming_music_service_feature'))
-
-        int_l2_streaming_video_service_feature = l2_massive_processing(int_l1_streaming_music_service_feature,
+        int_l1_streaming_video_service_feature = l1_massive_processing(df_temp_l0_streaming_soc_mobile_app_daily,
                                                                        var_project_context.catalog.load(
-                                                                           'params:int_l2_streaming_video_service_feature'))
+                                                                           'params:int_l1_streaming_video_service_feature'))
+
+        int_l2_streaming_video_service_feature = l2_massive_processing(int_l1_streaming_video_service_feature,
+                                                                       var_project_context.catalog.load(
+                                                                           'params:int_l2_streaming_video_service_feature'),
+                                                                       customer_pro)
 
         l2_streaming_fav_service_by_download_feature = node_from_config(int_l2_streaming_video_service_feature,
                                                                   var_project_context.catalog.load(
@@ -800,7 +799,7 @@ class TestUnitStream:
 
         l2_streaming_fav_service_by_download_feature.show()
 
-        assert l2_streaming_fav_service_by_download_feature.select("mobile_no").rdd.isEmpty() == True
+        assert l2_streaming_fav_service_by_download_feature.select("access_method_num").count() == 4
 
     def test_l2_streaming_2nd_fav_service_by_download_feature(self,project_context):
         var_project_context = project_context['ProjectContext']
@@ -808,12 +807,14 @@ class TestUnitStream:
 
         set_value(project_context)
 
-        int_l1_streaming_music_service_feature = node_from_config(df_temp_l0_streaming_soc_mobile_app_daily,
-                        var_project_context.catalog.load('params:int_l1_streaming_music_service_feature'))
-
-        int_l2_streaming_video_service_feature = l2_massive_processing(int_l1_streaming_music_service_feature,
+        int_l1_streaming_video_service_feature = l1_massive_processing(df_temp_l0_streaming_soc_mobile_app_daily,
                                                                        var_project_context.catalog.load(
-                                                                           'params:int_l2_streaming_video_service_feature'))
+                                                                           'params:int_l1_streaming_video_service_feature'))
+
+        int_l2_streaming_video_service_feature = l2_massive_processing(int_l1_streaming_video_service_feature,
+                                                                       var_project_context.catalog.load(
+                                                                           'params:int_l2_streaming_video_service_feature'),
+                                                                       customer_pro)
 
         l2_streaming_2nd_fav_service_by_download_feature = node_from_config(int_l2_streaming_video_service_feature,
                                                                   var_project_context.catalog.load(
@@ -821,7 +822,7 @@ class TestUnitStream:
 
         l2_streaming_2nd_fav_service_by_download_feature.show()
 
-        assert int_l2_streaming_music_service_feature.select("mobile_no").rdd.isEmpty() == True
+        assert l2_streaming_2nd_fav_service_by_download_feature.select("access_method_num").rdd.isEmpty() == True
 
     def test_l2_streaming_fav_service_by_visit_count_feature(self,project_context):
         var_project_context = project_context['ProjectContext']
@@ -829,20 +830,22 @@ class TestUnitStream:
 
         set_value(project_context)
 
-        int_l1_streaming_music_service_feature = node_from_config(df_temp_l0_streaming_soc_mobile_app_daily,
-                        var_project_context.catalog.load('params:int_l1_streaming_music_service_feature'))
+        int_l1_streaming_video_service_feature = l1_massive_processing(df_temp_l0_streaming_soc_mobile_app_daily,
+                                                                       var_project_context.catalog.load(
+                                                                           'params:int_l1_streaming_video_service_feature'))
 
-        int_l2_streaming_music_service_feature = node_from_config(int_l1_streaming_music_service_feature,
-                                                                  var_project_context.catalog.load(
-                                                                      'params:int_l2_streaming_music_service_feature'))
+        int_l2_streaming_video_service_feature = l2_massive_processing(int_l1_streaming_video_service_feature,
+                                                                       var_project_context.catalog.load(
+                                                                           'params:int_l2_streaming_video_service_feature'),
+                                                                       customer_pro)
 
-        l2_streaming_fav_service_by_visit_count_feature = node_from_config(int_l2_streaming_music_service_feature,
+        l2_streaming_fav_service_by_visit_count_feature = node_from_config(int_l2_streaming_video_service_feature,
                                                                   var_project_context.catalog.load(
                                                                       'params:l2_streaming_fav_service_by_visit_count_feature'))
 
         l2_streaming_fav_service_by_visit_count_feature.show()
 
-        assert int_l2_streaming_music_service_feature.select("mobile_no").rdd.isEmpty() == True
+        assert l2_streaming_fav_service_by_visit_count_feature.select("access_method_num").count() == 4
 
     def test_l2_streaming_visit_count_and_download_traffic_feature(self,project_context):
         var_project_context = project_context['ProjectContext']
@@ -850,19 +853,131 @@ class TestUnitStream:
 
         set_value(project_context)
 
-        l0_streaming_soc_mobile_app_daily = l1_massive_processing(df_temp_l0_streaming_soc_mobile_app_daily,
-                        var_project_context.catalog.load('params:l1_streaming_visit_count_and_download_traffic_feature'))
+        l1_streaming_visit_count_and_download_traffic_feature = l1_massive_processing(df_temp_l0_streaming_soc_mobile_app_daily,
+                                                                       var_project_context.catalog.load(
+                                                                           'params:l1_streaming_visit_count_and_download_traffic_feature'))
 
-        l2_streaming_visit_count_and_download_traffic_feature = node_from_config(l0_streaming_soc_mobile_app_daily,
+        l2_streaming_visit_count_and_download_traffic_feature = l2_massive_processing_with_expansion(l1_streaming_visit_count_and_download_traffic_feature,
                                                                   var_project_context.catalog.load(
-                                                                      'params:l2_streaming_visit_count_and_download_traffic_feature'))
+                                                                      'params:l2_streaming_visit_count_and_download_traffic_feature'),customer_pro)
 
         l2_streaming_visit_count_and_download_traffic_feature.show()
 
-        exit(2)
+        ####################### TEST ZONE #############################################################################
 
-        assert l2_streaming_visit_count_and_download_traffic_feature.select("mobile_no").rdd.isEmpty() == True
+        ## 2 cause my dataset have 2 row per week
+        assert float(
+            l2_streaming_visit_count_and_download_traffic_feature.select("visit_count_youtube_video_sum").collect()[0][
+                0]) == 2
+        assert float(
+            l2_streaming_visit_count_and_download_traffic_feature.select("visit_count_facebook_video_sum").collect()[0][
+                0]) == 0
+        assert float(
+            l2_streaming_visit_count_and_download_traffic_feature.select("visit_count_linetv_video_sum").collect()[0][
+                0]) == 0
+        assert float(
+            l2_streaming_visit_count_and_download_traffic_feature.select("visit_count_ais_play_video_sum").collect()[0][
+                0]) == 0
+        assert float(
+            l2_streaming_visit_count_and_download_traffic_feature.select("visit_count_netflix_video_sum").collect()[0][
+                0]) == 0
+        assert float(
+            l2_streaming_visit_count_and_download_traffic_feature.select("visit_count_hooq_video_sum").collect()[0][
+                0]) == 0
+        assert float(
+            l2_streaming_visit_count_and_download_traffic_feature.select("visit_count_iflix_video_sum").collect()[0][
+                0]) == 0
+        assert float(
+            l2_streaming_visit_count_and_download_traffic_feature.select("visit_count_spotify_music_sum").collect()[0][
+                0]) == 0
+        assert float(
+            l2_streaming_visit_count_and_download_traffic_feature.select("visit_count_joox_music_sum").collect()[0][
+                0]) == 0
+        assert float(
+            l2_streaming_visit_count_and_download_traffic_feature.select("visit_count_twitch_esport_sum").collect()[0][
+                0]) == 0
+        assert float(
+            l2_streaming_visit_count_and_download_traffic_feature.select("visit_count_bigo_esport_sum").collect()[0][
+                0]) == 0
+        assert float(
+            l2_streaming_visit_count_and_download_traffic_feature.select("visit_count_mixer_esport_sum").collect()[0][
+                0]) == 0
+        assert float(
+            l2_streaming_visit_count_and_download_traffic_feature.select("visit_count_steamtv_esport_sum").collect()[0][
+                0]) == 0
+        assert float(l2_streaming_visit_count_and_download_traffic_feature.select(
+            "download_kb_traffic_youtube_video_sum").collect()[0][0]) == 4
+        assert float(l2_streaming_visit_count_and_download_traffic_feature.select(
+            "download_kb_traffic_facebook_video_sum").collect()[0][0]) == 0
+        assert float(l2_streaming_visit_count_and_download_traffic_feature.select(
+            "download_kb_traffic_linetv_video_sum").collect()[0][0]) == 0
+        assert float(l2_streaming_visit_count_and_download_traffic_feature.select(
+            "download_kb_traffic_ais_play_video_sum").collect()[0][0]) == 0
+        assert float(l2_streaming_visit_count_and_download_traffic_feature.select(
+            "download_kb_traffic_netflix_video_sum").collect()[0][0]) == 0
+        assert float(l2_streaming_visit_count_and_download_traffic_feature.select(
+            "download_kb_traffic_hooq_video_sum").collect()[0][0]) == 0
+        assert float(l2_streaming_visit_count_and_download_traffic_feature.select(
+            "download_kb_traffic_iflix_video_sum").collect()[0][0]) == 0
+        assert float(l2_streaming_visit_count_and_download_traffic_feature.select(
+            "download_kb_traffic_spotify_music_sum").collect()[0][0]) == 0
+        assert float(l2_streaming_visit_count_and_download_traffic_feature.select(
+            "download_kb_traffic_joox_music_sum").collect()[0][0]) == 0
+        assert float(l2_streaming_visit_count_and_download_traffic_feature.select(
+            "download_kb_traffic_twitch_esport_sum").collect()[0][0]) == 0
+        assert float(l2_streaming_visit_count_and_download_traffic_feature.select(
+            "download_kb_traffic_bigo_esport_sum").collect()[0][0]) == 0
+        assert float(l2_streaming_visit_count_and_download_traffic_feature.select(
+            "download_kb_traffic_mixer_esport_sum").collect()[0][0]) == 0
+        assert float(l2_streaming_visit_count_and_download_traffic_feature.select(
+            "download_kb_traffic_steamtv_esport_sum").collect()[0][0]) == 0
 
+    def test_int_l2_streaming_sum_per_day(self, project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+
+        l1_streaming_visit_count_and_download_traffic_feature = l1_massive_processing(
+            df_temp_l0_streaming_soc_mobile_app_daily,
+            var_project_context.catalog.load(
+                'params:l1_streaming_visit_count_and_download_traffic_feature'))
+
+        int_l2_streaming_sum_per_day = l2_massive_processing_with_expansion(
+            l1_streaming_visit_count_and_download_traffic_feature,
+            var_project_context.catalog.load(
+                'params:int_l2_streaming_sum_per_day'), customer_pro)
+
+        int_l2_streaming_sum_per_day.show()
+
+        ####################### TEST ZONE #############################################################################
+
+        assert float(int_l2_streaming_sum_per_day.select("visit_count_youtube_video_sum").collect()[0][0]) == 1
+        assert float(int_l2_streaming_sum_per_day.select("visit_count_facebook_video_sum").collect()[0][0]) == 0
+        assert float(int_l2_streaming_sum_per_day.select("visit_count_linetv_video_sum").collect()[0][0]) == 0
+        assert float(int_l2_streaming_sum_per_day.select("visit_count_ais_play_video_sum").collect()[0][0]) == 0
+        assert float(int_l2_streaming_sum_per_day.select("visit_count_netflix_video_sum").collect()[0][0]) == 0
+        assert float(int_l2_streaming_sum_per_day.select("visit_count_hooq_video_sum").collect()[0][0]) == 0
+        assert float(int_l2_streaming_sum_per_day.select("visit_count_iflix_video_sum").collect()[0][0]) == 0
+        assert float(int_l2_streaming_sum_per_day.select("visit_count_spotify_music_sum").collect()[0][0]) == 0
+        assert float(int_l2_streaming_sum_per_day.select("visit_count_joox_music_sum").collect()[0][0]) == 0
+        assert float(int_l2_streaming_sum_per_day.select("visit_count_twitch_esport_sum").collect()[0][0]) == 0
+        assert float(int_l2_streaming_sum_per_day.select("visit_count_bigo_esport_sum").collect()[0][0]) == 0
+        assert float(int_l2_streaming_sum_per_day.select("visit_count_mixer_esport_sum").collect()[0][0]) == 0
+        assert float(int_l2_streaming_sum_per_day.select("visit_count_steamtv_esport_sum").collect()[0][0]) == 0
+        assert float(int_l2_streaming_sum_per_day.select("download_kb_traffic_youtube_video_sum").collect()[0][0]) == 2
+        assert float(int_l2_streaming_sum_per_day.select("download_kb_traffic_facebook_video_sum").collect()[0][0]) == 0
+        assert float(int_l2_streaming_sum_per_day.select("download_kb_traffic_linetv_video_sum").collect()[0][0]) == 0
+        assert float(int_l2_streaming_sum_per_day.select("download_kb_traffic_ais_play_video_sum").collect()[0][0]) == 0
+        assert float(int_l2_streaming_sum_per_day.select("download_kb_traffic_netflix_video_sum").collect()[0][0]) == 0
+        assert float(int_l2_streaming_sum_per_day.select("download_kb_traffic_hooq_video_sum").collect()[0][0]) == 0
+        assert float(int_l2_streaming_sum_per_day.select("download_kb_traffic_iflix_video_sum").collect()[0][0]) == 0
+        assert float(int_l2_streaming_sum_per_day.select("download_kb_traffic_spotify_music_sum").collect()[0][0]) == 0
+        assert float(int_l2_streaming_sum_per_day.select("download_kb_traffic_joox_music_sum").collect()[0][0]) == 0
+        assert float(int_l2_streaming_sum_per_day.select("download_kb_traffic_twitch_esport_sum").collect()[0][0]) == 0
+        assert float(int_l2_streaming_sum_per_day.select("download_kb_traffic_bigo_esport_sum").collect()[0][0]) == 0
+        assert float(int_l2_streaming_sum_per_day.select("download_kb_traffic_mixer_esport_sum").collect()[0][0]) == 0
+        assert float(int_l2_streaming_sum_per_day.select("download_kb_traffic_steamtv_esport_sum").collect()[0][0]) == 0
 
     def Test(self,project_context):
         var_project_context = project_context['ProjectContext']
