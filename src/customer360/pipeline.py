@@ -37,7 +37,6 @@ from cvm.modelling.pipeline import create_train_model, create_predictions, \
     create_train_validate
 from cvm.preprocessing.pipeline import create_cvm_preprocessing_scoring, \
     create_cvm_preprocessing
-from nba.report.pipelines.report_pipeline import create_use_case_view_report_data
 from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l1.to_l1_pipeline import (
     billing_to_l1_pipeline,
 )
