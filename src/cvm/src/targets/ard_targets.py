@@ -52,6 +52,10 @@ def get_ard_targets(
     length = target_parameters["length"]
     drop = target_parameters["drop"]
     target_colname = target_parameters["colname"]
+    if "min_drop_absolute" in target_parameters:
+        min_drop_absolute = target_parameters["min_drop_absolute"]
+    else:
+        min_drop_absolute = 0
 
     if length == 1:
         arpu_col = "sum_rev_arpu_total_revenue_monthly_last_month"
@@ -98,8 +102,14 @@ def get_ard_targets(
         "reve_after_perc",
         reve_arpu_before_after.reve_after / reve_arpu_before_after.reve_before,
     )
+    reve_arpu_before_after = reve_arpu_before_after.withColumn(
+        "reve_absolute_diff",
+        reve_arpu_before_after.reve_after - reve_arpu_before_after.reve_before,
+    )
     target_col = func.when(
-        1 - reve_arpu_before_after.reve_after_perc >= drop, 1
+        (1 - reve_arpu_before_after.reve_after_perc >= drop)
+        & (reve_arpu_before_after.reve_absolute_diff <= -min_drop_absolute),
+        1,
     ).otherwise(0)
     reve_arpu_before_after = reve_arpu_before_after.withColumn("target", target_col)
     reve_arpu_before_after = reve_arpu_before_after.withColumnRenamed(
