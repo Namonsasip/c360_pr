@@ -26,15 +26,15 @@ targets:
       length: 3
       drop: 0.2
       target_type: 'class'
-    dilution1_min_drop1:
-      colname: 'dilution1'
+    dilution1_min_drop10:
+      colname: 'dilution1_min_drop10'
       unit_of_analysis: 'month'
       length: 1
       drop: 0.1
       min_drop_absolute: 10
       target_type: 'class'
     dilution2_min_drop20:
-      colname: 'dilution2'
+      colname: 'dilution2_min_drop20'
       unit_of_analysis: 'month'
       length: 3
       drop: 0.2
