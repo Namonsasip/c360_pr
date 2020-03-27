@@ -36,7 +36,6 @@ from cvm.data_prep.pipeline import create_cvm_prepare_inputs_samples, \
 from cvm.modelling.pipeline import create_train_model, create_predictions
 from cvm.preprocessing.pipeline import create_cvm_preprocessing_scoring, \
     create_cvm_preprocessing
-from nba.model_input.model_input_pipeline import create_nba_model_input_pipeline
 from nba.report.pipelines.report_pipeline import create_use_case_view_report_data
 from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l1.to_l1_pipeline import (
     billing_to_l1_pipeline,
@@ -133,15 +132,6 @@ from .pipelines.data_engineering.pipelines.usage_pipeline.to_l4 import (
 from .pipelines.data_engineering.pipelines.device_pipeline import (
     device_to_l1_pipeline, device_to_l2_pipeline, device_to_l4_pipeline
 )
-from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l1.to_l1_pipeline import *
-from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l2.to_l2_pipeline import *
-from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l3.to_l3_pipeline import *
-from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l4.to_l4_pipeline import *
-
-from .pipelines.data_engineering.pipelines.network_pipeline.to_l1.to_l1_pipeline import network_to_l1_pipeline
-from .pipelines.data_engineering.pipelines.network_pipeline.to_l2.to_l2_pipeline import network_to_l2_pipeline
-from .pipelines.data_engineering.pipelines.network_pipeline.to_l3.to_l3_pipeline import network_to_l3_pipeline
-from .pipelines.data_engineering.pipelines.network_pipeline.to_l4.to_l4_pipeline import network_to_l4_pipeline
 
 def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
 
