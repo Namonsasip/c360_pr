@@ -93,10 +93,11 @@ def _l2_join_with_customer_profile(
         current_item
 ) -> DataFrame:
 
+    cust_profile_col_selection = set(list(config["join_column_with_cust_profile"].keys()) + ["subscription_identifier"])
     # grouping all distinct customer per week
     filtered_cust_profile_df = (cust_profile_df
                                 .filter(F.col("start_of_week").isin(current_item))
-                                .select(*config["join_column_with_cust_profile"].keys())
+                                .select(*cust_profile_col_selection)
                                 .distinct())
 
     return _join_with_filtered_customer_profile(
