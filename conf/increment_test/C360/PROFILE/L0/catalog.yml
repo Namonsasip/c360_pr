@@ -73,14 +73,14 @@ l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3
     lookback: '0'
 
 
-l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3_billing_level_features:
+l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3_customer_profile_billing_level_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-data/C360/PROFILE/profile_drm_t_active_profile_customer_journey/
   file_format: "parquet"
   metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'billing_level_features'
+    lookup_table_name: 'l3_customer_profile_billing_level_features'
     read_layer: 'l0_monthly'
     target_layer: 'l3_monthly'
     lookback: '0'
@@ -96,4 +96,18 @@ l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l4
     lookup_table_name: 'ltv_to_date'
     read_layer: 'l0_monthly'
     target_layer: 'l4_monthly'
+    lookback: '0'
+
+
+
+l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3_billing_and_payments_monthly_rpu:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/PROFILE/profile_drm_t_active_profile_customer_journey/
+  file_format: "parquet"
+  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_billing_and_payments_monthly_rpu'
+    read_layer: 'l0_monthly'
+    target_layer: 'l3_monthly'
     lookback: '0'

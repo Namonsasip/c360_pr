@@ -62,7 +62,7 @@ def customer_profile_billing_level_to_l3_pipeline(**kwargs):
         [
             node(
                 node_from_config,
-                ['l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3_billing_level_features',
+                ['l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3_customer_profile_billing_level_features',
                  "params:l3_customer_profile_billing_level_features"],
                 "l3_customer_profile_billing_level_features"
             ),
