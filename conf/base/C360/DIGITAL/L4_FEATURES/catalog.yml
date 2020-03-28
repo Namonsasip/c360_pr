@@ -1,0 +1,7 @@
+l4_digital_cxenxse_user_profile_monthly:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/DIGITAL/l4_features/l4_digital_cxenxse_user_profile_monthly/
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["start_of_month"]
