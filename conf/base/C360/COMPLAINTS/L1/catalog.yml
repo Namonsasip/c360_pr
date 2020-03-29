@@ -1,7 +1,7 @@
 l1_complaints_call_to_competitor_features:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l1_features/l1_complaints_call_to_competitor_features/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS_old/l1_features/l1_complaints_call_to_competitor_features/
   save_args:
     partitionBy: ["event_partition_date"]
     mode: "append"
@@ -9,7 +9,7 @@ l1_complaints_call_to_competitor_features:
 l1_complaints_nps_score:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l1_features/l1_complaints_nps_score/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS_old/l1_features/l1_complaints_nps_score/
   save_args:
     partitionBy: ["event_partition_date"]
     mode: "append"
@@ -18,7 +18,7 @@ l1_complaints_nps_score:
 l1_complaints_nps_after_call:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l1_features/l1_complaints_nps_after_call/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS_old/l1_features/l1_complaints_nps_after_call/
   save_args:
     partitionBy: ["event_partition_date"]
     mode: "append"
@@ -27,7 +27,7 @@ l1_complaints_nps_after_call:
 l1_complaints_nps_after_chatbot:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l1_features/l1_complaints_nps_after_chatbot/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS_old/l1_features/l1_complaints_nps_after_chatbot/
   save_args:
     partitionBy: ["event_partition_date"]
     mode: "append"
@@ -36,7 +36,7 @@ l1_complaints_nps_after_chatbot:
 l1_complaints_nps_after_store_visit:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l1_features/l1_complaints_nps_after_store_visit/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS_old/l1_features/l1_complaints_nps_after_store_visit/
   save_args:
     partitionBy: ["event_partition_date"]
     mode: "append"

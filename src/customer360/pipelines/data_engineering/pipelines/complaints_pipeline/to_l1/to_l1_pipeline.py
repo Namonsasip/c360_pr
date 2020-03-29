@@ -37,7 +37,7 @@ def complaints_to_l1_pipeline(**kwargs):
         [
             node(
                 node_from_config,
-                ["l0_usage_call_relation_sum_daily",
+                ["l0_usage_call_relation_sum_daily_for_l1_complaints_call_to_competitor_features",
                  "params:l1_complaints_call_to_competitor_features"],
                 "l1_complaints_call_to_competitor_features"
             ),
