@@ -6,9 +6,17 @@ int_l1_streaming_content_type_features:
     mode: "append"
     partitionBy: ["event_partition_date"]
 
-l1_streaming_content_type_features:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_content_type_features/
+l1_streaming_fav_content_group_by_volume:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_fav_content_group_by_volume/
+  file_format: parquet
+  save_args:
+    mode: "append"
+    partitionBy: ["event_partition_date"]
+
+l1_streaming_fav_content_group_by_duration:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_fav_content_group_by_duration/
   file_format: parquet
   save_args:
     mode: "append"
@@ -32,6 +40,13 @@ l1_streaming_fav_tv_channel_by_volume:
     mode: "append"
     partitionBy: ["event_partition_date"]
 
+l1_streaming_fav_tv_channel_by_duration:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_streaming_fav_tv_channel_by_duration/
+  file_format: parquet
+  save_args:
+    mode: "append"
+    partitionBy: ["event_partition_date"]
 
 
 int_l0_streaming_vimmi_table:
