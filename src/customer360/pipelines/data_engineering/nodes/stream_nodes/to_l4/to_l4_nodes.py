@@ -1,17 +1,20 @@
 from pathlib import Path
 import json
+import os
 from customer360.utilities.spark_util import get_spark_session
 
 from customer360.utilities.config_parser import \
     l4_rolling_ranked_window, \
     join_l4_rolling_ranked_table
 
+conf = os.getenv("CONF", None)
+
 
 def generate_l4_fav_streaming_day(input_df, template_config, app_list):
     input_df.createOrReplaceTempView("input_df")
 
     from customer360.run import ProjectContext
-    ctx = ProjectContext(str(Path.cwd()))
+    ctx = ProjectContext(str(Path.cwd()), env=conf)
 
     spark = get_spark_session()
 
