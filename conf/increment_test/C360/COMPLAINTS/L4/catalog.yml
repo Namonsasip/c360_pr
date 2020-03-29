@@ -7,7 +7,7 @@
 #    mode: "append"
 
 l4_complaints_call_to_competitor_features:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/INCREMENT_WRITE/COMPLAINTS/l4_features/l4_complaints_call_to_competitor_features/
   metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
@@ -28,7 +28,7 @@ l4_complaints_call_to_competitor_features:
 #    mode: "append"
 
 l4_complaints_nps_after_call:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/INCREMENT_WRITE/COMPLAINTS/l4_features/l4_complaints_nps_after_call/
   metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
@@ -49,7 +49,7 @@ l4_complaints_nps_after_call:
 #    mode: "append"
 
 l4_complaints_nps_after_chatbot:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/INCREMENT_WRITE/COMPLAINTS/l4_features/l4_complaints_nps_after_chatbot/
   metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
@@ -71,7 +71,7 @@ l4_complaints_nps_after_chatbot:
 #    mode: "append"
 
 l4_complaints_nps_after_store_visit:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/INCREMENT_WRITE/COMPLAINTS/l4_features/l4_complaints_nps_after_store_visit/
   metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'

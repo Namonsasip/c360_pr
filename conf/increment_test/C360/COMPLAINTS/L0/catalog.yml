@@ -5,7 +5,7 @@
 
 
 l0_complaints_acc_ai_chatbot_survey_daily:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-data/C360/COMPLAINTS/complaints_acc_ai_chatbot_survey/
   file_format: "parquet"
   metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
@@ -23,7 +23,7 @@ l0_complaints_acc_ai_chatbot_survey_daily:
 #  file_format: "parquet"
 
 l0_complaints_acc_atsr_outbound_daily:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-data/C360/COMPLAINTS/complaints_acc_atsr_outbound/
   file_format: "parquet"
   metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
@@ -41,7 +41,7 @@ l0_complaints_acc_atsr_outbound_daily:
 #  file_format: "parquet"
 
 l0_complaints_acc_qmt_csi_daily:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/complaints_acc_qmt_csi/
   file_format: "parquet"
   metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
