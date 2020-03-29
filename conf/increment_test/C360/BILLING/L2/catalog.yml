@@ -29,7 +29,7 @@ l2_billing_and_payments_weekly_topup_and_volume_for_l4_billing_rolling_window_to
     lookup_table_name: 'l4_billing_rolling_window_topup_and_volume'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
-    lookback: '0'
+    lookback: '12'
 
 #l2_billing_and_payments_weekly_topup_time_diff:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -63,7 +63,7 @@ l2_billing_and_payments_weekly_topup_time_diff_for_l4_billing_rolling_window_tim
     lookup_table_name: 'l4_billing_rolling_window_time_diff_bw_top_ups'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
-    lookback: '0'
+    lookback: '12'
 
 
 
@@ -99,7 +99,7 @@ l2_billing_and_payments_weekly_rpu_roaming_for_l4_billing_rolling_window_rpu_roa
     lookup_table_name: 'l4_billing_rolling_window_rpu_roaming'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
-    lookback: '0'
+    lookback: '12'
 
 
 #l2_billing_and_payments_weekly_before_top_up_balance:
@@ -133,7 +133,7 @@ l2_billing_and_payments_weekly_before_top_up_balance_for_l4_billing_rolling_wind
     lookup_table_name: 'l4_billing_rolling_window_before_top_up_balance'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
-    lookback: '0'
+    lookback: '12'
 
 
 #l2_billing_and_payments_weekly_top_up_channels:
@@ -168,7 +168,7 @@ l2_billing_and_payments_weekly_top_up_channels_for_l4_billing_rolling_window_top
     lookup_table_name: 'l4_billing_rolling_window_top_up_channels'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
-    lookback: '0'
+    lookback: '12'
 
 
 #l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate:

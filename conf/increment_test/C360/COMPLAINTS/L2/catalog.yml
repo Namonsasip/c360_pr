@@ -30,7 +30,7 @@ l2_complaints_call_to_competitor_features_for_l4_complaints_call_to_competitor_f
     lookup_table_name: 'l4_complaints_call_to_competitor_features'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
-    lookback: '0'
+    lookback: '12'
 
 
 
@@ -65,7 +65,7 @@ l2_complaints_nps_after_call_for_l4_complaints_nps_after_call:
     lookup_table_name: 'l4_complaints_nps_after_call'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
-    lookback: '0'
+    lookback: '12'
 
 
 #l2_complaints_nps_after_chatbot:
@@ -99,7 +99,7 @@ l2_complaints_nps_after_chatbot_for_l4_complaints_nps_after_chatbot:
     lookup_table_name: 'l4_complaints_nps_after_chatbot'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
-    lookback: '0'
+    lookback: '12'
 
 
 #l2_complaints_nps_after_store_visit:
@@ -134,5 +134,5 @@ l2_complaints_nps_after_store_visit_for_l4_complaints_nps_after_store_visit:
     lookup_table_name: 'l4_complaints_nps_after_store_visit'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
-    lookback: '0'
+    lookback: '12'
 

@@ -29,7 +29,7 @@ l2_loyalty_number_of_services_for_l4_loyalty_number_of_services:
     lookup_table_name: 'l4_loyalty_number_of_services'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
-    lookback: '0'
+    lookback: '12'
 
 
 #l2_loyalty_number_of_rewards:
@@ -63,7 +63,7 @@ l2_loyalty_number_of_rewards_for_l4_loyalty_number_of_rewards:
     lookup_table_name: 'l4_loyalty_number_of_rewards'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
-    lookback: '0'
+    lookback: '12'
 
 
 
@@ -98,7 +98,7 @@ l2_loyalty_number_of_points_spend_for_l4_loyalty_number_of_points_spend:
     lookup_table_name: 'l4_loyalty_number_of_points_spend'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
-    lookback: '0'
+    lookback: '12'
 
 
 #l2_loyalty_serenade_class:
