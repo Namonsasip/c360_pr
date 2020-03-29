@@ -43,11 +43,11 @@ def customer_profile_to_l1_pipeline(**kwargs):
                  "params:l1_customer_profile_union_daily_feature"],
                 "int_l1_customer_profile_union_daily_feature"
             ),
-            # node(
-            #     add_start_of_week_and_month,
-            #     ["int_l1_customer_profile_union_daily_feature",
-            #      "params:customer_profile_partition_col"],
-            #     "l1_customer_profile_union_daily_feature"
-            # )
+            node(
+                add_start_of_week_and_month,
+                ["int_l1_customer_profile_union_daily_feature",
+                 "params:customer_profile_partition_col"],
+                "l1_customer_profile_union_daily_feature"
+            )
         ]
     )
