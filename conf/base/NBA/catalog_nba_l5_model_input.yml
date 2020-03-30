@@ -11,3 +11,12 @@ l5_nba_master_table:
   filepath: /mnt/customer360-blob-data/C360/NBA/l5_nba_master_table/
   save_args:
     mode: "overwrite"
+
+l5_nba_master_table_chunk_debug:
+  type: kedro.io.ParquetLocalDataSet
+  filepath: data/L5/NBA/l5_nba_master_table_chunk_debug.parquet
+
+master_table_chunk_debug_extra_pai_metrics:
+  type: kedro.io.CSVLocalDataSet
+  filepath: data/L5/NBA/master_table_chunk_debug_extra_pai_metrics.csv
+
