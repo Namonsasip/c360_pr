@@ -44,9 +44,9 @@ def streaming_to_l2_pipeline(**kwargs):
             # Content Type Features
             node(
                 l2_massive_processing,
-                ["int_l1_streaming_content_type_features",
+                ["int_l1_streaming_content_type_features_for_int_l2_streaming_content_type_features",
                  "params:int_l2_streaming_content_type_features",
-                 "l1_customer_profile_union_daily_feature"],
+                 "l1_customer_profile_union_daily_feature_for_int_l2_streaming_content_type_features"],
                 "int_l2_streaming_content_type_features"
             ),
             node(
