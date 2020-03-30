@@ -304,6 +304,7 @@ def node_plot_daily_kpis_by_group_report(
                 aes(x="date", y=col_to_plot, color="target_group"),
             )
             + geom_line()
+            + theme(axis_text_x=element_text(rotation=60, hjust=1))
         )
     return plots_dict
 

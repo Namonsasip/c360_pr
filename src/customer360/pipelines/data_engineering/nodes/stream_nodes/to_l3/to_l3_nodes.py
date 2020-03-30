@@ -1,13 +1,17 @@
 from customer360.utilities.spark_util import get_spark_session
 from pathlib import Path
 
+import os
+
+conf = os.getenv("CONF", "local")
+
 
 def generate_l3_fav_streaming_day(input_df, app_list):
     spark = get_spark_session()
     input_df.createOrReplaceTempView("input_df")
 
     from customer360.run import ProjectContext
-    ctx = ProjectContext(str(Path.cwd()))
+    ctx = ProjectContext(str(Path.cwd()), env=conf)
 
     for each_app in app_list:
         df = spark.sql("""
