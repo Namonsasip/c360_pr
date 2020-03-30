@@ -4,7 +4,7 @@ l1_complaints_call_to_competitor_features:
   filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l1_features/l1_complaints_call_to_competitor_features/
   save_args:
     partitionBy: ["event_partition_date"]
-    mode: "append"
+    mode: "overwrite"
 
 l1_complaints_nps_score:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -12,7 +12,7 @@ l1_complaints_nps_score:
   filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l1_features/l1_complaints_nps_score/
   save_args:
     partitionBy: ["event_partition_date"]
-    mode: "append"
+    mode: "overwrite"
     
 
 l1_complaints_nps_after_call:
@@ -21,7 +21,7 @@ l1_complaints_nps_after_call:
   filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l1_features/l1_complaints_nps_after_call/
   save_args:
     partitionBy: ["event_partition_date"]
-    mode: "append"
+    mode: "overwrite"
 
 
 l1_complaints_nps_after_chatbot:
@@ -30,7 +30,7 @@ l1_complaints_nps_after_chatbot:
   filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l1_features/l1_complaints_nps_after_chatbot/
   save_args:
     partitionBy: ["event_partition_date"]
-    mode: "append"
+    mode: "overwrite"
 
 
 l1_complaints_nps_after_store_visit:
@@ -39,4 +39,4 @@ l1_complaints_nps_after_store_visit:
   filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l1_features/l1_complaints_nps_after_store_visit/
   save_args:
     partitionBy: ["event_partition_date"]
-    mode: "append"
+    mode: "overwrite"
