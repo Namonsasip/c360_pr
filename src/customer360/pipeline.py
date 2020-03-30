@@ -195,6 +195,8 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
 
 def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
     return {
+        "cvm_prepare_samples_dev": create_cvm_prepare_inputs_samples("dev"),
+        "cvm_prepare_samples_sample": create_cvm_prepare_inputs_samples("sample"),
         "cvm_setup_training_data_sample": create_cvm_prepare_inputs_samples("sample")
                                           + create_cvm_targets("sample")
                                           + create_cvm_training_data("sample"),
