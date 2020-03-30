@@ -88,18 +88,6 @@ def create_cvm_prepare_inputs_samples(sample_type: str) -> Pipeline:
             node(
                 create_sample_dataset,
                 [
-                    "l3_streaming_fav_video_service_by_visit_count_feature",
-                    sampling_params,
-                    "params:subscription_id_suffix" + suffix,
-                    date_params,
-                ],
-                "l3_streaming_fav_video_service_by_visit_count_feature" + suffix,
-                name="create_l3_streaming_fav_video_service_by_visit_count_feature"
-                + suffix,
-            ),
-            node(
-                create_sample_dataset,
-                [
                     "l3_customer_profile_include_1mo_non_active",
                     sampling_params,
                     "params:subscription_id_suffix" + suffix,
