@@ -1,4 +1,3 @@
-
 campaign_churn_cvm_master:
     type: datasets.spark_hive_dataset.SparkHiveDataSet
     database: nba_dev
@@ -92,17 +91,12 @@ l1_ontop_purchase_revenue_last_month:
   save_args:
     mode: "overwrite"
 
+# List of all campaigns and its details
 l0_campaign_history_master_active:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "csv"
-  filepath: /mnt/customer360-blob-data/project_nba/campaign_history_master_Active_JAN_FEB20_V4.csv
+  filepath: /mnt/data-exploration-blob/de-storage/users/titsanuw/campaign_master_20200324.csv
   load_args:
     header: True
     inferSchema: True
 
-l1_campaign_history_master_active:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "delta"
-  filepath: /mnt/customer360-blob-output/databases/nba_dev/campaign_history_master_active/
-  save_args:
-    mode: "overwrite"

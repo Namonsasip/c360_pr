@@ -17,16 +17,6 @@ def campaign_importance_volume(run_type: str = None) -> Pipeline:
             # Name is for calling when there is a need to run individual node
             # Tag is a short version of name, multiple nodes with the same tag can be used to run at once
             node(
-                create_l0_campaign_tracking_contact_list_pre,
-                [
-                    "l0_campaign_tracking_contact_list_pre",
-                    #"params:create_l0_campaign_history_master_active_param"
-                ],
-                "l0_campaign_tracking_contact_list_pre",
-                name="create_l0_campaign_history_master_active",
-                tags=["l0_camp_tracking_pre"],
-            ),
-            node(
                 create_l0_campaign_history_master_active,
                 [
                     "l0_campaign_history_master_active",
@@ -34,17 +24,17 @@ def campaign_importance_volume(run_type: str = None) -> Pipeline:
                 ],
                 "campaign_history_master_active",
                 name="create_l0_campaign_history_master_active",
-                tags=["l0_camp_mst"],
+                tags=["l0_camp_mst", "campaign_importance_volume"],
             ),
             node(
                 create_l5_campaign_distinct_contact_response,
                 [
                     "distinct_child_code_contact_response",
-                    "params:create_l5_campaign_distinct_contact_response_param"
+                    "params:create_l5_campaign_distinct_contact_response_param",
                 ],
                 "distinct_child_response_aggregated",
                 name="create_l5_campaign_distinct_contact_response",
-                tags=["l5_cmp_res_agg"],
+                tags=["l5_cmp_res_agg", "campaign_importance_volume"],
             ),
             node(
                 create_l5_response_percentage_report,
@@ -55,7 +45,7 @@ def campaign_importance_volume(run_type: str = None) -> Pipeline:
                 ],
                 "response_percentage_report",
                 name="create_l5_response_percentage_report",
-                tags=["l5_res_perc_report"],
-            ),
+                tags=["l5_res_perc_report", "campaign_importance_volume"],
+            )
         ], tags=[]
     )
