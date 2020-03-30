@@ -58,6 +58,31 @@ int_l1_streaming_content_type_features_for_int_l2_streaming_content_type_feature
     target_layer: 'l2_weekly'
     lookback: '0'
 
+
+int_l1_streaming_content_type_features_for_l3_streaming_fav_content_group_by_volume:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/STREAM/l1_features/int_l1_streaming_content_type_features/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_streaming_fav_content_group_by_volume'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+int_l1_streaming_content_type_features_for_l3_streaming_fav_content_group_by_duration:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/STREAM/l1_features/int_l1_streaming_content_type_features/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_streaming_fav_content_group_by_duration'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
 #l1_streaming_fav_content_group_by_volume:
 #  type: kedro.contrib.io.pyspark.SparkDataSet
 #  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_fav_content_group_by_volume/
@@ -151,6 +176,44 @@ int_l1_streaming_tv_channel_features_for_l1_streaming_fav_tv_channel_by_duration
     lookback: '0'
 
 
+int_l1_streaming_tv_channel_features_for_int_l2_streaming_tv_channel_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/STREAM/l1_features/int_l1_streaming_tv_channel_features/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'int_l2_streaming_tv_channel_features'
+    read_layer: 'l1_daily'
+    target_layer: 'l2_weekly'
+    lookback: '0'
+
+int_l1_streaming_tv_channel_features_for_l3_streaming_fav_tv_channel_by_volume:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/STREAM/l1_features/int_l1_streaming_tv_channel_features/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_streaming_fav_tv_channel_by_volume'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+
+int_l1_streaming_tv_channel_features_for_l3_streaming_fav_tv_channel_by_duration:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/STREAM/l1_features/int_l1_streaming_tv_channel_features/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_streaming_fav_tv_channel_by_duration'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+
 #l1_streaming_fav_tv_channel_by_volume:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_fav_tv_channel_by_volume/
@@ -212,6 +275,32 @@ int_l0_streaming_vimmi_table:
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
+
+
+int_l0_streaming_vimmi_table_for_l2_streaming_fav_tv_show_by_episode_watched:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/STREAM/int_l0_streaming_vimmi_table/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l2_streaming_fav_tv_show_by_episode_watched'
+    read_layer: 'l1_daily'
+    target_layer: 'l2_weekly'
+    lookback: '0'
+
+
+int_l0_streaming_vimmi_table_for_l3_streaming_fav_tv_show_by_episode_watched:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/STREAM/int_l0_streaming_vimmi_table/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_streaming_fav_tv_show_by_episode_watched'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
 
 
 
@@ -281,6 +370,56 @@ int_l1_streaming_video_service_feature_for_l1_streaming_2nd_fav_video_service_by
     lookup_table_name: 'l1_streaming_2nd_fav_video_service_by_download_feature'
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
+    lookback: '0'
+
+int_l1_streaming_video_service_feature_for_int_l2_streaming_video_service_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/STREAM/l1_features/int_l1_streaming_video_service_feature/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'int_l2_streaming_video_service_feature'
+    read_layer: 'l1_daily'
+    target_layer: 'l2_weekly'
+    lookback: '0'
+
+
+int_l1_streaming_video_service_feature_for_l3_streaming_fav_video_service_by_download_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/STREAM/l1_features/int_l1_streaming_video_service_feature/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_streaming_fav_video_service_by_download_feature'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+int_l1_streaming_video_service_feature_for_l3_streaming_2nd_fav_video_service_by_download_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/STREAM/l1_features/int_l1_streaming_video_service_feature/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_streaming_2nd_fav_video_service_by_download_feature'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+
+int_l1_streaming_video_service_feature_for_l3_streaming_fav_video_service_by_visit_count_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/STREAM/l1_features/int_l1_streaming_video_service_feature/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_streaming_fav_video_service_by_visit_count_feature'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
     lookback: '0'
 
 
@@ -381,6 +520,56 @@ int_l1_streaming_music_service_feature_for_l1_streaming_2nd_fav_music_service_by
     lookup_table_name: 'l1_streaming_2nd_fav_music_service_by_download_feature'
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
+    lookback: '0'
+
+
+int_l1_streaming_music_service_feature_for_int_l2_streaming_music_service_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/STREAM/l1_features/int_l1_streaming_music_service_feature/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'int_l2_streaming_music_service_feature'
+    read_layer: 'l1_daily'
+    target_layer: 'l2_weekly'
+    lookback: '0'
+
+
+int_l1_streaming_music_service_feature_for_l3_streaming_fav_music_service_by_download_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/STREAM/l1_features/int_l1_streaming_music_service_feature/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_streaming_fav_music_service_by_download_feature'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+int_l1_streaming_music_service_feature_for_l3_streaming_2nd_fav_music_service_by_download_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/STREAM/l1_features/int_l1_streaming_music_service_feature/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_streaming_2nd_fav_music_service_by_download_feature'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+int_l1_streaming_music_service_feature_for_l3_streaming_fav_music_service_by_visit_count_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/STREAM/l1_features/int_l1_streaming_music_service_feature/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_streaming_fav_music_service_by_visit_count_feature'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
     lookback: '0'
 
 
@@ -485,6 +674,57 @@ int_l1_streaming_esport_service_feature_for_l1_streaming_2nd_fav_esport_service_
     lookback: '0'
 
 
+int_l1_streaming_esport_service_feature_for_int_l2_streaming_esport_service_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/STREAM/l1_features/int_l1_streaming_esport_service_feature/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'int_l2_streaming_esport_service_feature'
+    read_layer: 'l1_daily'
+    target_layer: 'l2_weekly'
+    lookback: '0'
+
+
+int_l1_streaming_esport_service_feature_for_l3_streaming_fav_esport_service_by_download_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/STREAM/l1_features/int_l1_streaming_esport_service_feature/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_streaming_fav_esport_service_by_download_feature'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+
+int_l1_streaming_esport_service_feature_for_l3_streaming_2nd_fav_esport_service_by_download_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/STREAM/l1_features/int_l1_streaming_esport_service_feature/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_streaming_2nd_fav_esport_service_by_download_feature'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+
+int_l1_streaming_esport_service_feature_for_l3_streaming_fav_esport_service_by_visit_count_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/STREAM/l1_features/int_l1_streaming_esport_service_feature/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_streaming_fav_esport_service_by_visit_count_feature'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
 
 #l1_streaming_fav_esport_service_by_download_feature:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -565,6 +805,44 @@ l1_streaming_visit_count_and_download_traffic_feature:
     target_layer: 'l1_daily'
 
 
+l1_streaming_visit_count_and_download_traffic_feature_for_l2_streaming_visit_count_and_download_traffic_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/STREAM/l1_features/l1_streaming_visit_count_and_download_traffic_feature/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l2_streaming_visit_count_and_download_traffic_feature'
+    read_layer: 'l1_daily'
+    target_layer: 'l2_weekly'
+    lookback: '0'
+
+l1_streaming_visit_count_and_download_traffic_feature_for_int_l2_streaming_sum_per_day:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/STREAM/l1_features/l1_streaming_visit_count_and_download_traffic_feature/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'int_l2_streaming_sum_per_day'
+    read_layer: 'l1_daily'
+    target_layer: 'l2_weekly'
+    lookback: '0'
+
+
+l1_streaming_visit_count_and_download_traffic_feature_for_l3_streaming_visit_count_and_download_traffic_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/STREAM/l1_features/l1_streaming_visit_count_and_download_traffic_feature/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_streaming_visit_count_and_download_traffic_feature'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+
 #l1_streaming_session_duration_feature:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_session_duration_feature/
@@ -576,7 +854,7 @@ l1_streaming_visit_count_and_download_traffic_feature:
 
 l1_streaming_session_duration_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/INCREMENT_WRITE/STREAM/l1_features/l1_streaming_session_duration_feature/
+  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/STREAM/l1_features/l1_streaming_session_duration_feature/
   file_format: parquet
   metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
   save_args:
@@ -586,3 +864,29 @@ l1_streaming_session_duration_feature:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
+
+
+l1_streaming_session_duration_feature_for_l2_streaming_session_duration_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/STREAM/l1_features/l1_streaming_session_duration_feature/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l2_streaming_session_duration_feature'
+    read_layer: 'l1_daily'
+    target_layer: 'l2_weekly'
+    lookback: '0'
+
+
+l1_streaming_session_duration_feature_for_l3_streaming_session_duration_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/STREAM/l1_features/l1_streaming_session_duration_feature/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_streaming_session_duration_feature'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
