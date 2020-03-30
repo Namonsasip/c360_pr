@@ -1,0 +1,8 @@
+
+l1_geo_cust_cell_visit_time_daily:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/GEO/l1_features/geo_cust_cell_visit_time_daily/
+  save_args:
+    partitionBy: ["event_partition_date"]
+    mode: "overwrite"

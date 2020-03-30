@@ -1,20 +1,44 @@
 
+#HDFS : Footfall >>> GEO.GEO_CUST_CELL_VISIT_TIME (temp)
+
 l0_geo_cust_cell_visit_time_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time_daily/
+  filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time_daily/  # REAL DATA IN PROGRESS
   file_format: parquet
+#  /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time_daily/partition_date=20200118/f242c1d4d838c7e8-cea2751e00000000_750079171_data.0.parq
 
+#  unused ?
 l0_geo_tdr_roaming_info:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-data/C360/GEO/geo_tdr_roaming_info/
   file_format: parquet
 
+#GEO.GEO_MST_CELL_MASTERPLAN    Cloud : C360/GEO/mst_cell_masterplan
 l0_mst_cell_masterplan:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-data/C360/GEO/mst_cell_masterplan/
   file_format: parquet
 
+# geo.lm_poi_master
 l0_mst_poi_location:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/GEO/mst_poi_location/
+  filepath: /mnt/customer360-blob-data/C360/GEO/mst_poi_location/    # REAL DATA IN PROGRESS
   file_format: parquet
+
+# PROD_DB_SUMMARY_PPS.SUM_DATA_LOCATION_DAILY
+l0_usage_sum_data_location_daily:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_sum_data_location_daily/   # from usage domain
+  file_format: parquet
+
+# PROD_DB_SUMMARY_PPS.SUM_VOICE_LOCATION_DAILY
+l0_usage_sum_voice_location_daily:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_sum_voice_location_daily/   # from usage domain
+  file_format: parquet
+
+##HDFS : Homework (temp)
+l0_dm21_geo_subscriber_home_work:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/mck_databases/prod_delta/dm21_geo_subscriber_home_work   #REAL DATA IN PROGRESS
+  file_format: delta

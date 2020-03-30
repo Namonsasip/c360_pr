@@ -263,7 +263,10 @@ def run_package(pipelines=None):
     # entry point for running pip-install projects
     # using `<project_package>` command
     project_context = load_context(Path.cwd(), env=conf)
-
+    df=project_context.catalog.load('l0_geo_cust_cell_visit_time_daily')
+    df.show()
+    exit(2)
+    ''' 
     spark = get_spark_session()
 
     if pipelines is not None:
@@ -283,7 +286,7 @@ def run_package(pipelines=None):
     #
     # project_context = load_context(Path.cwd(), env='base')
     # project_context.run(pipeline_name="customer_profile_to_l4_pipeline")
-
+    '''
 
 def run_selected_nodes(pipeline_name, node_names=None, env="base"):
     # entry point for running pip-install projects

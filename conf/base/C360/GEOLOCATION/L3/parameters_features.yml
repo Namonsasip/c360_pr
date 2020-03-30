@@ -1,0 +1,5 @@
+l3_number_of_bs_used:
+  where_clause: ""
+  feature_list:
+    number_of_bs_used: "count(distinct(cell_id))"
+  granularity: "start_of_month,imsi"

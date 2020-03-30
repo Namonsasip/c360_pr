@@ -1,0 +1,6 @@
+l1_number_of_bs_used:
+  where_clause: ""
+  feature_list:
+    number_of_bs_used: "count(distinct(cell_id))"
+  granularity: "event_partition_date,imsi"
+
