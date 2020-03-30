@@ -28,7 +28,6 @@ def create_use_case_view_report_data() -> Pipeline:
                     "cvm_prepaid_customer_groups": "cvm_prepaid_customer_groups",
                     "l0_campaign_tracking_contact_list_pre": "l0_campaign_tracking_contact_list_pre",
                     "use_case_campaign_mapping": "use_case_campaign_mapping",
-                    "report_create_campaign_tracking_table_parameters": "params:report_create_campaign_tracking_table",
                 },
                 "campaign_response_input_table",
                 name="campaign_response_input_table",
