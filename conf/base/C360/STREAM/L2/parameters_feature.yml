@@ -183,7 +183,13 @@ l2_streaming_visit_count_and_download_traffic_feature:
               "download_kb_traffic_twitch_esport",
               "download_kb_traffic_bigo_esport",
               "download_kb_traffic_mixer_esport",
-              "download_kb_traffic_steamtv_esport"]
+              "download_kb_traffic_steamtv_esport",
+
+              "visit_count_line",
+              "visit_count_twitter",
+              "visit_count_gmail",
+              "visit_count_amazon"
+        ]
     granularity: "mobile_no, start_of_week"
     output_catalog: "l2_streaming_visit_count_and_download_traffic_feature"
     join_column_with_cust_profile:

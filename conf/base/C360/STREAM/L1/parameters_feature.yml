@@ -213,6 +213,12 @@ l1_streaming_visit_count_and_download_traffic_feature:
         download_kb_traffic_mixer_esport: "sum(case when lower(application) in ('mixerbox') then download_kb else 0 end)"
         download_kb_traffic_steamtv_esport: "sum(case when lower(application) in ('valve_steam') then download_kb else 0 end)"
 
+        # additional request from DS
+        visit_count_line: "case when sum(case when lower(application) in ('line') then 1 else 0 end) >= 1 then 1 else 0 end"
+        visit_count_twitter: "case when sum(case when lower(application) in ('twitter') then 1 else 0 end) >= 1 then 1 else 0 end"
+        visit_count_gmail: "case when sum(case when lower(application) in ('webmail_gmail') then 1 else 0 end) >= 1 then 1 else 0 end"
+        visit_count_amazon: "case when sum(case when lower(application) in ('amazon', 'amazon_shopping_app') then 1 else 0 end) >= 1 then 1 else 0 end"
+
         # 1 for Monday, 7 for Sunday
         day_of_week: "date_format(to_date(cast(partition_date as string), 'yyyyMMdd'), 'u')"
     granularity: "mobile_no, partition_date"
