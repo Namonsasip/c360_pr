@@ -6,25 +6,15 @@ from pyspark.sql import DataFrame
 from src.customer360.utilities.spark_util import get_spark_session
 from pyspark.sql import functions as F
 import logging
-spark = get_spark_session()
+
 
 
 def create_l0_campaign_history_master_active(input_campaign_master:DataFrame, output:Dict[str, Any]) -> DataFrame:
-    stmt = "TRUNCATE TABLE "+output["schema"]+"."+output["table"]
-    logging.info("Truncate statement: "+stmt)
-    spark.sql(stmt)
     return input_campaign_master
 
 
 def create_l5_campaign_distinct_contact_response(child_response_full:DataFrame,
                                                  child_response_params:Dict[str, Any]) -> DataFrame:
-
-    stmt = "DROP TABLE "+child_response_params["schema"]+"."+child_response_params["table"]
-    logging.info("Drop statement: "+stmt)
-    try:
-        dbutils.fs.rm(child_response_params["filepath"], recurse=True)
-    except:
-        logging.info("No table dropped")
     child_response = child_response_full.fillna(0, subset=child_response_params["source_cols"])
     # source_cols: ['contact_trans_m0', 'contact_trans_m1', 'contact_trans_m2',
     # 'trans_resp_m0', 'trans_resp_m1', 'trans_resp_m2',
@@ -50,12 +40,6 @@ def create_l5_campaign_distinct_contact_response(child_response_full:DataFrame,
 def create_l5_response_percentage_report(distinct_child_response_agg:DataFrame,
                                          campaign_master:DataFrame,
                                          report_param:Dict[str, Any]) -> DataFrame:
-    stmt = "DROP TABLE " + report_param["schema"] + "." + report_param["table"]
-    logging.info("Drop statement: "+stmt)
-    try:
-        dbutils.fs.rm(report_param["filepath"], recurse=True)
-    except:
-        logging.info("No existing table: "+report_param["schema"] + "." + report_param["table"])
     # excluding the offer_type != information because the new column includes the non tracking information campaigns
     campaign_mst_exclude_information = campaign_master.where('offer_type <> "information" and month_id = "2020-02-29"')
     # campaign_mst_exclude_information = campaign_master.where('month_id = "2020-02-29"')
@@ -68,7 +52,3 @@ def create_l5_response_percentage_report(distinct_child_response_agg:DataFrame,
         .fillna(0, subset=report_param['response_rate_cols'])
     return response_rate_df
 
-
-def create_l0_campaign_history_master_active(input_campaign_master:DataFrame, output:Dict[str, Any]) -> DataFrame:
-    input_campaign_master.show()
-    #return input_campaign_master
