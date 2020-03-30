@@ -31,7 +31,6 @@ def create_report_campaign_tracking_table(
     Returns: DataFrame of campaign data for report making
     """
     # reduce data period to 90 days #TODO change to proper number
-    day = "2020-03-25"
     tracking_day_d = datetime.date(datetime.strptime(day, "%Y-%m-%d"))
     down_scoped_date = tracking_day_d - timedelta(90)
     campaign_tracking_sdf_filter = l0_campaign_tracking_contact_list_pre.filter(
