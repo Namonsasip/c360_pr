@@ -38,7 +38,7 @@ from pathlib import Path
 from typing import Any, Dict
 from warnings import warn
 
-import findspark
+#import findspark
 from kedro.config import MissingConfigException
 from kedro.context import KedroContext, load_context
 from kedro.io import DataCatalog
@@ -51,10 +51,10 @@ from customer360.utilities.spark_util import get_spark_session
 
 from customer360.pipeline import create_pipelines
 
-try:
-    findspark.init()
-except ValueError as err:
-    logging.info("findspark.init() failed with error " + str(err))
+# try:
+#     findspark.init()
+# except ValueError as err:
+#     logging.info("findspark.init() failed with error " + str(err))
 
 conf = os.getenv("CONF", None)
 
