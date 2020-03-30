@@ -1,7 +1,7 @@
 l3_complaints_call_to_competitor_features:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS_old/l3_features/l3_complaints_call_to_competitor_features/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l3_features/l3_complaints_call_to_competitor_features/
   save_args:
     partitionBy: ["start_of_month"]
     mode: "overwrite"
@@ -10,7 +10,7 @@ l3_complaints_call_to_competitor_features:
 l3_complaints_nps_after_call:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS_old/l3_features/l3_complaints_nps_after_call/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l3_features/l3_complaints_nps_after_call/
   save_args:
     partitionBy: ["start_of_month"]
     mode: "overwrite"
@@ -19,7 +19,7 @@ l3_complaints_nps_after_call:
 l3_complaints_nps_after_chatbot:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS_old/l3_features/l3_complaints_nps_after_chatbot/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l3_features/l3_complaints_nps_after_chatbot/
   save_args:
     partitionBy: ["start_of_month"]
     mode: "overwrite"
@@ -28,7 +28,7 @@ l3_complaints_nps_after_chatbot:
 l3_complaints_nps_after_store_visit:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS_old/l3_features/l3_complaints_nps_after_store_visit/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l3_features/l3_complaints_nps_after_store_visit/
   save_args:
     partitionBy: ["start_of_month"]
     mode: "overwrite"

@@ -52,7 +52,7 @@ l1_complaints_nps_score:
   filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l1_features/l1_complaints_nps_score/
   save_args:
     partitionBy: ["event_partition_date"]
-    mode: "append"
+    mode: "overwrite"
     
 
 #l1_complaints_nps_after_call:
@@ -61,7 +61,7 @@ l1_complaints_nps_score:
 #  filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l1_features/l1_complaints_nps_after_call/
 #  save_args:
 #    partitionBy: ["event_partition_date"]
-#    mode: "append"
+#    mode: "overwrite"
 
 
 l1_complaints_nps_after_call:
@@ -109,7 +109,7 @@ l1_complaints_nps_after_call_for_l3_complaints_nps_after_call:
 #  filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l1_features/l1_complaints_nps_after_chatbot/
 #  save_args:
 #    partitionBy: ["event_partition_date"]
-#    mode: "append"
+#    mode: "overwrite"
 
 l1_complaints_nps_after_chatbot:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -155,7 +155,7 @@ l1_complaints_nps_after_chatbot_for_l3_complaints_nps_after_chatbot:
 #  filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l1_features/l1_complaints_nps_after_store_visit/
 #  save_args:
 #    partitionBy: ["event_partition_date"]
-#    mode: "append"
+#    mode: "overwrite"
 
 l1_complaints_nps_after_store_visit:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
