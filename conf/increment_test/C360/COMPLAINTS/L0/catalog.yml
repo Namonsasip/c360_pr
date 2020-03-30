@@ -55,7 +55,7 @@ l0_complaints_acc_qmt_csi_daily:
 
 
 l0_complaints_ais_nim_interaction:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/complaints_ais_nim_interaction/
   file_format: "parquet"
 
@@ -66,7 +66,7 @@ l0_complaints_ais_nim_interaction:
 
 
 l0_complaints_ais_nim_work:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-data/C360/COMPLAINTS/complaints_ais_nim_work/
   file_format: "parquet"
   metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
