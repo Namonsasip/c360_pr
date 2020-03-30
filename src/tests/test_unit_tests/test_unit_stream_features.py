@@ -472,6 +472,96 @@ class TestUnitStream:
         ##Empty cause I don't set the column application_group value 'game'
         assert l1_streaming_2nd_fav_esport_service_by_download_feature.select("mobile_no").rdd.isEmpty() == True
 
+    def test_l1_streaming_visit_count_and_download_traffic_feature(self, project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+
+        l1_streaming_visit_count_and_download_traffic_feature = l1_massive_processing(df_temp_l0_streaming_soc_mobile_app_daily,
+                                                                      var_project_context.catalog.load(
+                                                                          'params:l1_streaming_visit_count_and_download_traffic_feature'))
+
+        l1_streaming_visit_count_and_download_traffic_feature.show()
+
+
+        ############################################ TEST ZONE #########################################################
+        assert float(
+            l1_streaming_visit_count_and_download_traffic_feature.select("visit_count_youtube_video").collect()[0][
+                0]) == 1
+        assert float(
+            l1_streaming_visit_count_and_download_traffic_feature.select("visit_count_facebook_video").collect()[0][
+                0]) == 0
+        assert float(
+            l1_streaming_visit_count_and_download_traffic_feature.select("visit_count_linetv_video").collect()[0][
+                0]) == 0
+        assert float(
+            l1_streaming_visit_count_and_download_traffic_feature.select("visit_count_ais_play_video").collect()[0][
+                0]) == 0
+        assert float(
+            l1_streaming_visit_count_and_download_traffic_feature.select("visit_count_netflix_video").collect()[0][
+                0]) == 0
+        assert float(
+            l1_streaming_visit_count_and_download_traffic_feature.select("visit_count_hooq_video").collect()[0][0]) == 0
+        assert float(
+            l1_streaming_visit_count_and_download_traffic_feature.select("visit_count_iflix_video").collect()[0][
+                0]) == 0
+        assert float(
+            l1_streaming_visit_count_and_download_traffic_feature.select("visit_count_spotify_music").collect()[0][
+                0]) == 0
+        assert float(
+            l1_streaming_visit_count_and_download_traffic_feature.select("visit_count_joox_music").collect()[0][0]) == 0
+        assert float(
+            l1_streaming_visit_count_and_download_traffic_feature.select("visit_count_twitch_esport").collect()[0][
+                0]) == 0
+        assert float(
+            l1_streaming_visit_count_and_download_traffic_feature.select("visit_count_bigo_esport").collect()[0][
+                0]) == 0
+        assert float(
+            l1_streaming_visit_count_and_download_traffic_feature.select("visit_count_mixer_esport").collect()[0][
+                0]) == 0
+        assert float(
+            l1_streaming_visit_count_and_download_traffic_feature.select("visit_count_steamtv_esport").collect()[0][
+                0]) == 0
+        assert float(
+            l1_streaming_visit_count_and_download_traffic_feature.select("download_kb_traffic_youtube_video").collect()[
+                0][0]) == 2
+        assert float(l1_streaming_visit_count_and_download_traffic_feature.select(
+            "download_kb_traffic_facebook_video").collect()[0][0]) == 0
+        assert float(
+            l1_streaming_visit_count_and_download_traffic_feature.select("download_kb_traffic_linetv_video").collect()[
+                0][0]) == 0
+        assert float(l1_streaming_visit_count_and_download_traffic_feature.select(
+            "download_kb_traffic_ais_play_video").collect()[0][0]) == 0
+        assert float(
+            l1_streaming_visit_count_and_download_traffic_feature.select("download_kb_traffic_netflix_video").collect()[
+                0][0]) == 0
+        assert float(
+            l1_streaming_visit_count_and_download_traffic_feature.select("download_kb_traffic_hooq_video").collect()[0][
+                0]) == 0
+        assert float(
+            l1_streaming_visit_count_and_download_traffic_feature.select("download_kb_traffic_iflix_video").collect()[
+                0][0]) == 0
+        assert float(
+            l1_streaming_visit_count_and_download_traffic_feature.select("download_kb_traffic_spotify_music").collect()[
+                0][0]) == 0
+        assert float(
+            l1_streaming_visit_count_and_download_traffic_feature.select("download_kb_traffic_joox_music").collect()[0][
+                0]) == 0
+        assert float(
+            l1_streaming_visit_count_and_download_traffic_feature.select("download_kb_traffic_twitch_esport").collect()[
+                0][0]) == 0
+        assert float(
+            l1_streaming_visit_count_and_download_traffic_feature.select("download_kb_traffic_bigo_esport").collect()[
+                0][0]) == 0
+        assert float(
+            l1_streaming_visit_count_and_download_traffic_feature.select("download_kb_traffic_mixer_esport").collect()[
+                0][0]) == 0
+        assert float(l1_streaming_visit_count_and_download_traffic_feature.select(
+            "download_kb_traffic_steamtv_esport").collect()[0][0]) == 0
+
+        ###############################################################################################################
+
     def test_l1_streaming_session_duration_feature(self, project_context):
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
@@ -979,5 +1069,138 @@ class TestUnitStream:
         assert float(int_l2_streaming_sum_per_day.select("download_kb_traffic_mixer_esport_sum").collect()[0][0]) == 0
         assert float(int_l2_streaming_sum_per_day.select("download_kb_traffic_steamtv_esport_sum").collect()[0][0]) == 0
 
+    def test_int_l2_streaming_ranked_of_day_per_week(self,project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+
+        l1_streaming_visit_count_and_download_traffic_feature = l1_massive_processing(
+            df_temp_l0_streaming_soc_mobile_app_daily,
+            var_project_context.catalog.load(
+                'params:l1_streaming_visit_count_and_download_traffic_feature'))
+
+        int_l2_streaming_sum_per_day = l2_massive_processing_with_expansion(
+            l1_streaming_visit_count_and_download_traffic_feature,
+            var_project_context.catalog.load(
+                'params:int_l2_streaming_sum_per_day'), customer_pro)
+
+        int_l2_streaming_ranked_of_day_per_week = node_from_config(
+            int_l2_streaming_sum_per_day,
+            var_project_context.catalog.load(
+                'params:int_l2_streaming_ranked_of_day_per_week'))
+
+        int_l2_streaming_ranked_of_day_per_week.show()
+
+        ############################## TEST ZONE #####################################################################
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_youtube_video_sum").where(
+            "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 2
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_facebook_video_sum").where(
+            "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_linetv_video_sum").where(
+            "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_ais_play_video_sum").where(
+            "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_netflix_video_sum").where(
+            "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_hooq_video_sum").where(
+            "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_iflix_video_sum").where(
+            "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_spotify_music_sum").where(
+            "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_joox_music_sum").where(
+            "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_twitch_esport_sum").where(
+            "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_bigo_esport_sum").where(
+            "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_mixer_esport_sum").where(
+            "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_steamtv_esport_sum").where(
+            "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("youtube_video_by_download_rank").where(
+            "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 1
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("facebook_video_by_download_rank").where(
+            "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 1
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("linetv_video_by_download_rank").where(
+            "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 1
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("ais_play_video_by_download_rank").where(
+            "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 1
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("netflix_video_by_download_rank").where(
+            "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 1
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("hooq_video_by_download_rank").where(
+            "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 1
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("iflix_video_by_download_rank").where(
+            "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 1
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("spotify_music_by_download_rank").where(
+            "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 1
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("joox_music_by_download_rank").where(
+            "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 1
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("twitch_esport_by_download_rank").where(
+            "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 1
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("bigo_esport_by_download_rank").where(
+            "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 1
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("mixer_esport_by_download_rank").where(
+            "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 1
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("steamtv_esport_by_download_rank").where(
+            "day_of_week = '1' AND start_of_week = '2020-01-06'").collect()[0][0]) == 1
+
+        ############################################ RANK 2 ###########################################################
+
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_youtube_video_sum").where(
+            "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 2
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_facebook_video_sum").where(
+            "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_linetv_video_sum").where(
+            "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_ais_play_video_sum").where(
+            "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_netflix_video_sum").where(
+            "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_hooq_video_sum").where(
+            "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_iflix_video_sum").where(
+            "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_spotify_music_sum").where(
+            "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_joox_music_sum").where(
+            "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_twitch_esport_sum").where(
+            "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_bigo_esport_sum").where(
+            "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_mixer_esport_sum").where(
+            "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("download_kb_traffic_steamtv_esport_sum").where(
+            "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 0
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("youtube_video_by_download_rank").where(
+            "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 2
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("facebook_video_by_download_rank").where(
+            "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 2
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("linetv_video_by_download_rank").where(
+            "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 2
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("ais_play_video_by_download_rank").where(
+            "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 2
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("netflix_video_by_download_rank").where(
+            "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 2
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("hooq_video_by_download_rank").where(
+            "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 2
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("iflix_video_by_download_rank").where(
+            "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 2
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("spotify_music_by_download_rank").where(
+            "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 2
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("joox_music_by_download_rank").where(
+            "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 2
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("twitch_esport_by_download_rank").where(
+            "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 2
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("bigo_esport_by_download_rank").where(
+            "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 2
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("mixer_esport_by_download_rank").where(
+            "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 2
+        assert float(int_l2_streaming_ranked_of_day_per_week.select("steamtv_esport_by_download_rank").where(
+            "day_of_week = '2' AND start_of_week = '2020-01-06'").collect()[0][0]) == 2
+
+        
     def Test(self,project_context):
         var_project_context = project_context['ProjectContext']
