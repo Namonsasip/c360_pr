@@ -3,7 +3,7 @@ int_l1_streaming_content_type_features:
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/int_l1_streaming_content_type_features/
   file_format: parquet
   save_args:
-    mode: "append"
+    mode: "overwrite"
     partitionBy: ["event_partition_date"]
 
 l1_streaming_fav_content_group_by_volume:
@@ -11,7 +11,7 @@ l1_streaming_fav_content_group_by_volume:
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_fav_content_group_by_volume/
   file_format: parquet
   save_args:
-    mode: "append"
+    mode: "overwrite"
     partitionBy: ["event_partition_date"]
 
 l1_streaming_fav_content_group_by_duration:
@@ -19,7 +19,7 @@ l1_streaming_fav_content_group_by_duration:
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_fav_content_group_by_duration/
   file_format: parquet
   save_args:
-    mode: "append"
+    mode: "overwrite"
     partitionBy: ["event_partition_date"]
 
 
@@ -29,7 +29,7 @@ int_l1_streaming_tv_channel_features:
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/int_l1_streaming_tv_channel_features/
   file_format: parquet
   save_args:
-    mode: "append"
+    mode: "overwrite"
     partitionBy: ["event_partition_date"]
 
 l1_streaming_fav_tv_channel_by_volume:
@@ -37,7 +37,7 @@ l1_streaming_fav_tv_channel_by_volume:
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_fav_tv_channel_by_volume/
   file_format: parquet
   save_args:
-    mode: "append"
+    mode: "overwrite"
     partitionBy: ["event_partition_date"]
 
 l1_streaming_fav_tv_channel_by_duration:
@@ -45,7 +45,7 @@ l1_streaming_fav_tv_channel_by_duration:
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_streaming_fav_tv_channel_by_duration/
   file_format: parquet
   save_args:
-    mode: "append"
+    mode: "overwrite"
     partitionBy: ["event_partition_date"]
 
 
@@ -59,7 +59,7 @@ l1_streaming_fav_tv_show_by_episode_watched:
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_fav_tv_show_by_episode_watched/
   file_format: parquet
   save_args:
-    mode: "append"
+    mode: "overwrite"
     partitionBy: ["event_partition_date"]
 
 
@@ -70,7 +70,7 @@ int_l1_streaming_video_service_feature:
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/int_l1_streaming_video_service_feature/
   file_format: parquet
   save_args:
-    mode: "append"
+    mode: "overwrite"
     partitionBy: ["event_partition_date"]
 
 l1_streaming_fav_video_service_by_download_feature:
@@ -78,7 +78,7 @@ l1_streaming_fav_video_service_by_download_feature:
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_fav_video_service_by_download_feature/
   file_format: parquet
   save_args:
-    mode: "append"
+    mode: "overwrite"
     partitionBy: ["event_partition_date"]
 
 l1_streaming_2nd_fav_video_service_by_download_feature:
@@ -86,7 +86,7 @@ l1_streaming_2nd_fav_video_service_by_download_feature:
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_2nd_fav_video_service_by_download_feature/
   file_format: parquet
   save_args:
-    mode: "append"
+    mode: "overwrite"
     partitionBy: ["event_partition_date"]
 
 l1_streaming_fav_video_service_by_visit_count_feature:
@@ -94,7 +94,7 @@ l1_streaming_fav_video_service_by_visit_count_feature:
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_fav_video_service_by_visit_count_feature/
   file_format: parquet
   save_args:
-    mode: "append"
+    mode: "overwrite"
     partitionBy: ["event_partition_date"]
 
 
@@ -104,7 +104,7 @@ int_l1_streaming_music_service_feature:
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/int_l1_streaming_music_service_feature/
   file_format: parquet
   save_args:
-    mode: "append"
+    mode: "overwrite"
     partitionBy: ["event_partition_date"]
 
 l1_streaming_fav_music_service_by_download_feature:
@@ -112,7 +112,7 @@ l1_streaming_fav_music_service_by_download_feature:
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_fav_music_service_by_download_feature/
   file_format: parquet
   save_args:
-    mode: "append"
+    mode: "overwrite"
     partitionBy: ["event_partition_date"]
 
 l1_streaming_2nd_fav_music_service_by_download_feature:
@@ -120,7 +120,7 @@ l1_streaming_2nd_fav_music_service_by_download_feature:
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_2nd_fav_music_service_by_download_feature/
   file_format: parquet
   save_args:
-    mode: "append"
+    mode: "overwrite"
     partitionBy: ["event_partition_date"]
 
 l1_streaming_fav_music_service_by_visit_count_feature:
@@ -128,7 +128,7 @@ l1_streaming_fav_music_service_by_visit_count_feature:
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_fav_music_service_by_visit_count_feature/
   file_format: parquet
   save_args:
-    mode: "append"
+    mode: "overwrite"
     partitionBy: ["event_partition_date"]
 
 
@@ -138,7 +138,7 @@ int_l1_streaming_esport_service_feature:
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/int_l1_streaming_esport_service_feature/
   file_format: parquet
   save_args:
-    mode: "append"
+    mode: "overwrite"
     partitionBy: ["event_partition_date"]
 
 l1_streaming_fav_esport_service_by_download_feature:
@@ -146,7 +146,7 @@ l1_streaming_fav_esport_service_by_download_feature:
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_fav_esport_service_by_download_feature/
   file_format: parquet
   save_args:
-    mode: "append"
+    mode: "overwrite"
     partitionBy: ["event_partition_date"]
 
 l1_streaming_2nd_fav_esport_service_by_download_feature:
@@ -154,7 +154,7 @@ l1_streaming_2nd_fav_esport_service_by_download_feature:
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_2nd_fav_esport_service_by_download_feature/
   file_format: parquet
   save_args:
-    mode: "append"
+    mode: "overwrite"
     partitionBy: ["event_partition_date"]
 
 l1_streaming_fav_esport_service_by_visit_count_feature:
@@ -162,7 +162,7 @@ l1_streaming_fav_esport_service_by_visit_count_feature:
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_fav_esport_service_by_visit_count_feature/
   file_format: parquet
   save_args:
-    mode: "append"
+    mode: "overwrite"
     partitionBy: ["event_partition_date"]
 
 
@@ -172,7 +172,7 @@ l1_streaming_visit_count_and_download_traffic_feature:
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_visit_count_and_download_traffic_feature/
   file_format: parquet
   save_args:
-    mode: "append"
+    mode: "overwrite"
     partitionBy: ["event_partition_date"]
 
 
@@ -181,5 +181,5 @@ l1_streaming_session_duration_feature:
   filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l1_features/l1_streaming_session_duration_feature/
   file_format: parquet
   save_args:
-    mode: "append"
+    mode: "overwrite"
     partitionBy: ["event_partition_date"]
