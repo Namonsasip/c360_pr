@@ -1395,6 +1395,70 @@ class TestUnitStream:
 
 
     ####################################################################################################################
+    def test_int_l3_streaming_tv_channel_features(self, project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+
+        int_l1_streaming_tv_channel_features = l1_massive_processing(
+            df_temp_l0_streaming_ru_a_onair_vimmi_usage_daily,
+            var_project_context.catalog.load('params:int_l1_streaming_tv_channel_features'))
+
+        int_l3_streaming_content_type_features = node_from_config(int_l1_streaming_tv_channel_features,
+                                                                       var_project_context.catalog.load(
+                                                                           'params:int_l3_streaming_tv_channel_features'))
+
+        int_l3_streaming_content_type_features.show()
+
+        assert int_l3_streaming_content_type_features.select("access_method_num").count() == 1
+
+    def test_l3_streaming_fav_tv_channel_by_volume(self, project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+
+        int_l1_streaming_tv_channel_features = l1_massive_processing(
+            df_temp_l0_streaming_ru_a_onair_vimmi_usage_daily,
+            var_project_context.catalog.load('params:int_l1_streaming_tv_channel_features'))
+
+        int_l3_streaming_tv_channel_features = node_from_config(int_l1_streaming_tv_channel_features,
+                                                                  var_project_context.catalog.load(
+                                                                      'params:int_l3_streaming_tv_channel_features'))
+
+        l3_streaming_fav_tv_channel_by_volume = node_from_config(int_l3_streaming_tv_channel_features,
+                                                                 var_project_context.catalog.load(
+                                                                     'params:l3_streaming_fav_tv_channel_by_volume'))
+
+        l3_streaming_fav_tv_channel_by_volume.show()
+
+        assert l3_streaming_fav_tv_channel_by_volume.select("access_method_num").count() == 1
+
+    def test_l3_streaming_fav_tv_channel_by_duration(self, project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+
+        int_l1_streaming_tv_channel_features = l1_massive_processing(
+            df_temp_l0_streaming_ru_a_onair_vimmi_usage_daily,
+            var_project_context.catalog.load('params:int_l1_streaming_tv_channel_features'))
+
+        int_l3_streaming_tv_channel_features = node_from_config(int_l1_streaming_tv_channel_features,
+                                                                  var_project_context.catalog.load(
+                                                                      'params:int_l3_streaming_tv_channel_features'))
+
+        l3_streaming_fav_tv_channel_by_duration = node_from_config(int_l3_streaming_tv_channel_features,
+                                                                   var_project_context.catalog.load(
+                                                                       'params:l3_streaming_fav_tv_channel_by_duration'))
+
+        l3_streaming_fav_tv_channel_by_duration.show()
+
+        assert l3_streaming_fav_tv_channel_by_duration.select("access_method_num").count() == 1
+
+
+    ####################################################################################################################
 
     def Test(self,project_context):
         var_project_context = project_context['ProjectContext']
