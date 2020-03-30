@@ -55,7 +55,7 @@ def prepare_key_columns(df: DataFrame,) -> DataFrame:
         df = df.withColumn("start_of_month", func.add_months(df.start_of_month, 1))
 
     if "start_of_week" in df.columns:
-        df = df.withColumn("start_of_week", func.add_weeks(df.start_of_week, 1))
+        df = df.withColumn("start_of_week", func.date_add(df.start_of_week, 7))
 
     for key_date_column in key_date_columns:
         df = df.withColumnRenamed(key_date_column, "key_date")
