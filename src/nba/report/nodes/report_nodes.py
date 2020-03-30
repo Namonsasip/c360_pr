@@ -18,7 +18,6 @@ def create_report_campaign_tracking_table(
     cvm_prepaid_customer_groups: DataFrame,
     l0_campaign_tracking_contact_list_pre: DataFrame,
     use_case_campaign_mapping: DataFrame,
-    report_create_campaign_tracking_table_parameters: Dict[str, Any],
     day: str,
 ) -> DataFrame:
     """
