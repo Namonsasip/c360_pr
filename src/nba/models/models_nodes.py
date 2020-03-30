@@ -1,80 +1,80 @@
-from pathlib import PurePath, Path
-from typing import List, Any, Dict
-
-import numpy as np
-#import pai
-import pandas as pd
-import pyspark
-import pyspark.sql.functions as F
-#from lightgbm import LGBMClassifier
-#from plotnine import *
-from pyspark.sql.types import DoubleType
-#from sklearn.model_selection import train_test_split
-
-from customer360.utilities.plot_roc_curve import plot_roc_curve
-
-
-def calculate_extra_pai_metrics(
-    df_master: pyspark.sql.DataFrame, target_column: str, by: str
-) -> pd.DataFrame:
-    pdf_extra_pai_metrics = (
-        df_master.groupby(F.col(by).alias("group"))
-        .agg(
-            F.mean(F.isnull(target_column).cast(DoubleType())).alias(
-                "original_perc_obs_target_null"
-            ),
-            F.count(target_column).alias("original_n_obs"),
-            F.sum((F.col(target_column) == 1).cast(DoubleType())).alias(
-                "original_n_obs_positive_target"
-            ),
-            F.mean(target_column).alias("original_target_mean"),
-        )
-        .toPandas()
-    )
-    return pdf_extra_pai_metrics
-
-
-def train_single_binary_model(
-    pdf_master_chunk: pd.DataFrame,
-    group_column: str,
-    explanatory_features: List[str],
-    target_column: str,
-    train_sampling_ratio: float,
-    model_params: Dict[str, Any],
-    min_obs_per_class_for_model: int,
-    pdf_extra_pai_metrics: pd.DataFrame,
-    pai_storage_path: str,  # = "/dbfs/mnt/customer360-blob-data/NBA/mlruns",
-):
-
-    # context.load_node_inputs("debug_model_training")
-
-    tmp_path = Path("data/tmp")
-    current_group = pdf_master_chunk[group_column].iloc[0]
-
-    pdf_extra_pai_metrics_filtered = pdf_extra_pai_metrics[
-        pdf_extra_pai_metrics["group"] == current_group
-    ]
-
-    original_perc_obs_target_null = pdf_extra_pai_metrics_filtered[
-        "original_perc_obs_target_null"
-    ].iloc[0]
-    original_n_obs = pdf_extra_pai_metrics_filtered["original_n_obs"].iloc[0]
-    original_n_obs_positive_target = pdf_extra_pai_metrics_filtered[
-        "original_n_obs_positive_target"
-    ].iloc[0]
-    original_target_mean = pdf_extra_pai_metrics_filtered["original_target_mean"].iloc[
-        0
-    ]
-
-    modelling_perc_obs_target_null = np.mean(pdf_master_chunk[target_column].isna())
-
-    pdf_master_chunk = pdf_master_chunk[~pdf_master_chunk[target_column].isna()]
-
-    modelling_n_obs = len(pdf_master_chunk)
-    modelling_n_obs_positive_target = len(
-        pdf_master_chunk[pdf_master_chunk[target_column] == 1]
-    )
-    modelling_target_mean = np.mean(pdf_master_chunk[target_column])
+# from pathlib import PurePath, Path
+# from typing import List, Any, Dict
+#
+# import numpy as np
+# #import pai
+# import pandas as pd
+# import pyspark
+# import pyspark.sql.functions as F
+# #from lightgbm import LGBMClassifier
+# #from plotnine import *
+# from pyspark.sql.types import DoubleType
+# #from sklearn.model_selection import train_test_split
+#
+# from customer360.utilities.plot_roc_curve import plot_roc_curve
+#
+#
+# def calculate_extra_pai_metrics(
+#     df_master: pyspark.sql.DataFrame, target_column: str, by: str
+# ) -> pd.DataFrame:
+#     pdf_extra_pai_metrics = (
+#         df_master.groupby(F.col(by).alias("group"))
+#         .agg(
+#             F.mean(F.isnull(target_column).cast(DoubleType())).alias(
+#                 "original_perc_obs_target_null"
+#             ),
+#             F.count(target_column).alias("original_n_obs"),
+#             F.sum((F.col(target_column) == 1).cast(DoubleType())).alias(
+#                 "original_n_obs_positive_target"
+#             ),
+#             F.mean(target_column).alias("original_target_mean"),
+#         )
+#         .toPandas()
+#     )
+#     return pdf_extra_pai_metrics
+#
+#
+# def train_single_binary_model(
+#     pdf_master_chunk: pd.DataFrame,
+#     group_column: str,
+#     explanatory_features: List[str],
+#     target_column: str,
+#     train_sampling_ratio: float,
+#     model_params: Dict[str, Any],
+#     min_obs_per_class_for_model: int,
+#     pdf_extra_pai_metrics: pd.DataFrame,
+#     pai_storage_path: str,  # = "/dbfs/mnt/customer360-blob-data/NBA/mlruns",
+# ):
+#
+#     # context.load_node_inputs("debug_model_training")
+#
+#     tmp_path = Path("data/tmp")
+#     current_group = pdf_master_chunk[group_column].iloc[0]
+#
+#     pdf_extra_pai_metrics_filtered = pdf_extra_pai_metrics[
+#         pdf_extra_pai_metrics["group"] == current_group
+#     ]
+#
+#     original_perc_obs_target_null = pdf_extra_pai_metrics_filtered[
+#         "original_perc_obs_target_null"
+#     ].iloc[0]
+#     original_n_obs = pdf_extra_pai_metrics_filtered["original_n_obs"].iloc[0]
+#     original_n_obs_positive_target = pdf_extra_pai_metrics_filtered[
+#         "original_n_obs_positive_target"
+#     ].iloc[0]
+#     original_target_mean = pdf_extra_pai_metrics_filtered["original_target_mean"].iloc[
+#         0
+#     ]
+#
+#     modelling_perc_obs_target_null = np.mean(pdf_master_chunk[target_column].isna())
+#
+#     pdf_master_chunk = pdf_master_chunk[~pdf_master_chunk[target_column].isna()]
+#
+#     modelling_n_obs = len(pdf_master_chunk)
+#     modelling_n_obs_positive_target = len(
+#         pdf_master_chunk[pdf_master_chunk[target_column] == 1]
+#     )
+#     modelling_target_mean = np.mean(pdf_master_chunk[target_column])
 
 #    pai.set_config(experiment=current_group, storage_runs=pai_storage_path)
 
