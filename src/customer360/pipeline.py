@@ -42,9 +42,9 @@ from cvm.preprocessing.pipeline import (
     create_cvm_preprocessing_scoring,
     create_cvm_preprocessing,
 )
-from nba.model_input.model_input_pipeline import create_nba_model_input_pipeline
-from nba.models.models_pipeline import create_nba_models_pipeline
-from nba.report.pipelines.report_pipeline import create_use_case_view_report_data
+# from nba.model_input.model_input_pipeline import create_nba_model_input_pipeline
+# from nba.models.models_pipeline import create_nba_models_pipeline
+# from nba.report.pipelines.report_pipeline import create_use_case_view_report_data
 from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l1.to_l1_pipeline import (
     billing_to_l1_pipeline,
 )
@@ -261,13 +261,13 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
     }
 
 
-def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
-    return {
-        "__default__": create_use_case_view_report_data()
-        + create_nba_model_input_pipeline()
-        + create_nba_models_pipeline()
-    }
-
+# def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
+#     return {
+#         "__default__": create_use_case_view_report_data()
+#         + create_nba_model_input_pipeline()
+#         + create_nba_models_pipeline()
+#     }
+#
 
 def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
     """Create the project's pipeline.
@@ -281,7 +281,7 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
     for pipeline_name, pipeline_object in itertools.chain(
         create_c360_pipeline(**kwargs).items(),
         create_cvm_pipeline(**kwargs).items(),
-        create_nba_pipeline(**kwargs).items(),
+      #  create_nba_pipeline(**kwargs).items(),
     ):
         # If many pipelines have nodes under the same modular
         # pipeline, combine the results
