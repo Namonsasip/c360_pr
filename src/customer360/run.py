@@ -39,7 +39,6 @@ from typing import Any, Dict
 from warnings import warn
 
 import findspark
-#import kedro
 from kedro.config import MissingConfigException
 from kedro.context import KedroContext, load_context
 from kedro.io import DataCatalog
