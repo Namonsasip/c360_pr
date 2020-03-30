@@ -96,3 +96,16 @@ preprocessing_pipeline_dev:
 l5_cvm_one_day_users_full_table_dev:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_one_day_users_full_table_dev/
+
+l3_device_most_used_monthly_dev:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l3_device_most_used_monthly_dev/
+
+l3_touchpoints_to_call_center_features_dev:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l3_touchpoints_to_call_center_features_dev/
+
+l3_streaming_fav_video_service_by_visit_count_feature_dev:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l3_streaming_fav_video_service_by_visit_count_feature_dev/
+
