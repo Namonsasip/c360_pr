@@ -46,20 +46,20 @@ def streaming_to_l4_pipeline(**kwargs):
             # this will calculate sum per content_group
             node(
                 l4_rolling_window,
-                ["int_l2_streaming_content_type_features",
+                ["int_l2_streaming_content_type_features_for_int_l4_streaming_content_type_features",
                  "params:int_l4_streaming_content_type_features"],
-                "int_l4_streaming_content_type_features"
+                "int_l4_streaming_content_type_features@save"
             ),
             # this will get all the first rank of the group
             node(
                 l4_rolling_ranked_window,
-                ["int_l4_streaming_content_type_features",
+                ["int_l4_streaming_content_type_features@load_l4_streaming_fav_content_group_by_volume",
                  "params:l4_streaming_fav_content_group_by_volume"],
                 "l4_streaming_fav_content_group_by_volume"
             ),
             node(
                 l4_rolling_ranked_window,
-                ["int_l4_streaming_content_type_features",
+                ["int_l4_streaming_content_type_features@load_l4_streaming_fav_content_group_by_duration",
                  "params:l4_streaming_fav_content_group_by_duration"],
                 "l4_streaming_fav_content_group_by_duration"
             ),
