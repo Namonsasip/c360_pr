@@ -1,3 +1,35 @@
 
 nba_min_feature_days_lag: 5  # TODO validate lag
 
+
+# Parameters for model training
+nba_model_group_column: campaign_child_code
+
+nba_model_target_column: target_response
+
+nba_model_train_sampling_ratio: 0.8
+
+nba_model_model_params:
+   num_leaves: 16
+   learning_rate: 0.05
+   n_estimators: 10
+   min_gain_to_split: 0.0
+   random_state: 123456
+   importance_type: "gain"
+
+nba_model_min_obs_per_class_for_model: 100
+
+nba_model_pai_storage_path: "/dbfs/mnt/customer360-blob-data/NBA/pai"
+
+nba_model_explanatory_features:
+  - min_campaign_total_by_sms_sum_weekly_last_week
+  - min_campaign_total_others_by_ussd_sum_weekly_last_week
+  - max_campaign_total_by_sms_sum_weekly_last_week
+  - max_campaign_total_by_sms_sum_weekly_last_twelve_week
+  - sum_campaign_total_by_call_center_sum_weekly_last_four_week_over_twelve_weeks
+  - avg_campaign_total_by_sms_sum_weekly_last_twelve_week
+  - avg_campaign_total_by_sms_sum_weekly_last_week
+  - avg_campaign_overall_count_sum_weekly_last_week
+  - avg_campaign_overall_count_sum_weekly_last_two_week
+
+
