@@ -44,6 +44,12 @@ from cvm.preprocessing.pipeline import (
 )
 from nba.model_input.model_input_pipeline import create_nba_model_input_pipeline
 from nba.models.models_pipeline import create_nba_models_pipeline
+
+from typing import Dict
+
+from kedro.pipeline import Pipeline
+
+from nba.report.pipelines.campaign_importance_volume_pipeline import campaign_importance_volume
 from nba.report.pipelines.report_pipeline import create_use_case_view_report_data
 from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l1.to_l1_pipeline import (
     billing_to_l1_pipeline,
@@ -266,6 +272,7 @@ def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "__default__": create_use_case_view_report_data()
         + create_nba_model_input_pipeline()
         + create_nba_models_pipeline()
+        + campaign_importance_volume()
     }
 
 
