@@ -1640,7 +1640,7 @@ class TestUnitStream:
                 "start_of_week = '2020-01-06'").collect()[0][0]) == 0
             assert float(l3_streaming_session_duration_feature.select("max_session_duration_hooq_video").where(
                 "start_of_week = '2020-01-06'").collect()[0][0]) == 0
-            assert float(l2_streaming_session_duration_feature.select("max_session_duration_iflix_video").where(
+            assert float(l3_streaming_session_duration_feature.select("max_session_duration_iflix_video").where(
                 "start_of_week = '2020-01-06'").collect()[0][0]) == 0
             assert float(l3_streaming_session_duration_feature.select("max_session_duration_spotify_music").where(
                 "start_of_week = '2020-01-06'").collect()[0][0]) == 0
