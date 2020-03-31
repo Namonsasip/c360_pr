@@ -194,9 +194,10 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         # "campaign_to_l2_pipeline": campaign_to_l2_pipeline(),
         # "campaign_to_l4_pipeline": campaign_to_l4_pipeline(),
         # "de": data_engineering_pipeline,
-        "geo_to_l1_pipeline": geo_cell_visit_time_pipeline(),
+        "geo_to_l1_pipeline": geo_to_l1_pipeline(),
         "geo_to_l2_pipeline": geo_to_l2_pipeline(),
-        "geo_to_l3_pipeline": geo_to_l3_pipeline()
+        "geo_to_l3_pipeline": geo_to_l3_pipeline(),
+        "geo_to_l4_pipeline": geo_to_l4_pipeline()
     }
 
 

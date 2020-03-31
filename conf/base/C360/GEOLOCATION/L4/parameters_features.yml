@@ -1,0 +1,5 @@
+l4_number_of_bs_used:
+  partition_by: ["imsi"]
+  feature_list:
+    avg: ["number_of_bs_used"]
+  read_from: "l2"

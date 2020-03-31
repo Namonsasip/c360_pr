@@ -9,8 +9,12 @@ import os
 
 
 def l2_number_of_bs_used(input_df):
-    df = input_df.select('imsi', 'cell_id', 'time_in')
-    df = df.withColumn("start_of_week", f.to_date(f.date_trunc('week', "time_in"))) \
-        .drop(df.time_in)
+    df = input_df.withColumn("start_of_week", f.to_date(f.date_trunc('week', "event_partition_date"))) \
+        .drop('event_partition_date')
+    df = (df.groupby('imsi', 'start_of_week').agg(F.collect_set("cell_id_list")))
+    df = df.select("imsi", "start_of_week",
+                         f.array_distinct(f.flatten("collect_set(cell_id_list)")).alias('distinct_list'))
+    df = df.select('*', F.size('distinct_list').alias('count_bs'))
+
 
     return df

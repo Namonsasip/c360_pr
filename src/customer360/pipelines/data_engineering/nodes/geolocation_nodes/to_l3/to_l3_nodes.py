@@ -8,8 +8,8 @@ import logging
 import os
 
 
-def l3_number_of_bs_used(input_df):
-    df = input_df.select('imsi', 'cell_id', 'time_in')
-    df = df.withColumn("start_of_month", f.to_date(f.date_trunc('month', "time_in"))) \
-        .drop(df.time_in)
-    return df
+# def l3_number_of_bs_used(input_df):
+#     df = input_df.select('imsi', 'cell_id', 'time_in')
+#     df = df.withColumn("start_of_month", f.to_date(f.date_trunc('month', "time_in"))) \
+#         .drop(df.time_in)
+#     return df

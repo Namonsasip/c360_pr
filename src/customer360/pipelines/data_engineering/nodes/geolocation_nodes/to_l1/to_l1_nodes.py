@@ -8,11 +8,12 @@ import logging
 import os
 
 
-def l0_int_number_of_bs_used(input_df):
+
+def l1_int_number_of_bs_used(input_df):
     df = input_df.select('imsi', 'cell_id', 'time_in')
     df = df.withColumn("event_partition_date", f.to_date('time_in')) \
-        .withColumn("start_of_week", f.to_date(f.date_trunc('week', "time_in"))) \
-        .withColumn("start_of_month", f.to_date(f.date_trunc('month', "time_in"))) \
-        .drop(df.time_in)
+        .groupby("imsi","event_partition_date")\
+        .agg(F.collect_set("cell_id").alias('cell_id_list'))
+    df = df.select('*', F.size('cell_id_list'))
 
     return df

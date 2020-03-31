@@ -1,5 +1,5 @@
 l2_number_of_bs_used:
   where_clause: ""
   feature_list:
-    number_of_bs_used: "count(distinct(cell_id))"
-  granularity: "start_of_week,imsi"
+    number_of_bs_used: "first_value(count_bs)"
+  granularity: "start_of_week,imsi,distinct_list"
