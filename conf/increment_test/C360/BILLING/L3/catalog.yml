@@ -118,7 +118,7 @@ l3_billing_and_payments_monthly_automated_payments:
     increment_flag: 'yes'
     partitionBy: "start_of_month"
     mode: "overwrite"
-    read_layer: 'l3_monthly_customer_profile'
+    read_layer: 'l0_daily'
     target_layer: 'l3_monthly'
 
 

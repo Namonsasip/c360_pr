@@ -179,7 +179,7 @@ l2_billing_and_payments_weekly_top_up_channels_for_l4_billing_rolling_window_top
 #    partitionBy: ["start_of_week"]
 #    mode: "overwrite"
 
-l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate:
+l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate@save:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/BILLING/l2_features/l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate/
@@ -193,7 +193,7 @@ l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate:
 
 
 
-l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate_for_l2_billing_and_payments_weekly_most_popular_top_up_channel:
+l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate@l2_billing_and_payments_weekly_most_popular_top_up_channel:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/BILLING/l2_features/l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate/
@@ -275,7 +275,7 @@ l2_billing_and_payments_weekly_last_top_up_channel:
 #    mode: "overwrite"
 
 
-l2_billing_and_payments_weekly_popular_topup_day_intermediate:
+l2_billing_and_payments_weekly_popular_topup_day_intermediate@save:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/BILLING/l2_features/l2_billing_and_payments_weekly_popular_topup_day_intermediate/
@@ -289,7 +289,7 @@ l2_billing_and_payments_weekly_popular_topup_day_intermediate:
 
 
 
-l2_billing_and_payments_weekly_popular_topup_day_intermediate_for_l2_billing_and_payments_weekly_popular_topup_day:
+l2_billing_and_payments_weekly_popular_topup_day_intermediate@l2_billing_and_payments_weekly_popular_topup_day:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/BILLING/l2_features/l2_billing_and_payments_weekly_popular_topup_day_intermediate/
@@ -346,7 +346,7 @@ l2_billing_and_payments_weekly_popular_topup_day:
 #    partitionBy: ["start_of_week"]
 #    mode: "overwrite"
 
-l2_billing_and_payments_weekly_popular_topup_hour_intermediate:
+l2_billing_and_payments_weekly_popular_topup_hour_intermediate@save:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/BILLING/l2_features/l2_billing_and_payments_weekly_popular_topup_hour_intermediate/
@@ -360,7 +360,7 @@ l2_billing_and_payments_weekly_popular_topup_hour_intermediate:
 
 
 
-l2_billing_and_payments_weekly_popular_topup_hour_intermediate_for_l2_billing_and_payments_weekly_popular_topup_hour:
+l2_billing_and_payments_weekly_popular_topup_hour_intermediate@l2_billing_and_payments_weekly_popular_topup_hour:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/BILLING/l2_features/l2_billing_and_payments_weekly_popular_topup_hour_intermediate/
