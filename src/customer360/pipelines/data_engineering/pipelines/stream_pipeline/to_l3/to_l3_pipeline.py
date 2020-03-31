@@ -256,26 +256,26 @@ def streaming_to_l3_pipeline(**kwargs):
 
             # Favourite streaming day of week
             # get sum per day of week
-            # node(
-            #     expansion,
-            #     ["l1_streaming_visit_count_and_download_traffic_feature",
-            #      "params:int_l3_streaming_sum_per_day"],
-            #     "int_l3_streaming_sum_per_day"
-            # ),
-            # # rank of day per week
-            # node(
-            #     node_from_config,
-            #     ["int_l3_streaming_sum_per_day",
-            #      "params:int_l3_streaming_ranked_of_day_per_month"],
-            #     "int_l3_streaming_ranked_of_day_per_month"
-            # ),
-            # # generate all the tables inside
-            # node(
-            #     generate_l3_fav_streaming_day,
-            #     ["int_l3_streaming_ranked_of_day_per_month",
-            #      "params:streaming_app"],
-            #     None
-            # ),
+            node(
+                expansion,
+                ["l1_streaming_visit_count_and_download_traffic_feature_for_l3_streaming_fav_youtube_video_streaming_day_of_week_feature",
+                 "params:int_l3_streaming_sum_per_day"],
+                "int_l3_streaming_sum_per_day"
+            ),
+            # rank of day per week
+            node(
+                node_from_config,
+                ["int_l3_streaming_sum_per_day",
+                 "params:int_l3_streaming_ranked_of_day_per_month"],
+                "int_l3_streaming_ranked_of_day_per_month"
+            ),
+            # generate all the tables inside
+            node(
+                generate_l3_fav_streaming_day,
+                ["int_l3_streaming_ranked_of_day_per_month",
+                 "params:streaming_app"],
+                None
+            ),
 
             # session duration
             node(

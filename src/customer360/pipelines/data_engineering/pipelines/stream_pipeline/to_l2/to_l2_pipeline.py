@@ -196,24 +196,25 @@ def streaming_to_l2_pipeline(**kwargs):
                  "l1_customer_profile_union_daily_feature_for_int_l2_streaming_sum_per_day"],
                 "int_l2_streaming_sum_per_day"
             ),
-            # rank of day per week
-            # node(
-            #     # no need to join to customer profile because it's joined on top
-            #     node_from_config,
-            #     ["int_l2_streaming_sum_per_day_for_l2_streaming_fav_youtube_video_streaming_day_of_week_feature",
-            #      "params:int_l2_streaming_ranked_of_day_per_week"],
-            #     "int_l2_streaming_ranked_of_day_per_week"
-            # ),
-            # # generate all the tables inside
-            # node(
-            #     generate_l2_fav_streaming_day,
-            #     ["int_l2_streaming_ranked_of_day_per_week",
-            #      "params:streaming_app"],
-            #     None
-            # #"l2_streaming_fav_youtube_video_streaming_day_of_week_feature"
-            # ),
 
-            # # session duration
+            #rank of day per week
+            node(
+                # no need to join to customer profile because it's joined on top
+                node_from_config,
+                ["int_l2_streaming_sum_per_day_for_l2_streaming_fav_youtube_video_streaming_day_of_week_feature",
+                 "params:int_l2_streaming_ranked_of_day_per_week"],
+                "int_l2_streaming_ranked_of_day_per_week"
+            ),
+            # generate all the tables inside
+            node(
+                generate_l2_fav_streaming_day,
+                ["int_l2_streaming_ranked_of_day_per_week",
+                 "params:streaming_app"],
+                None
+            #"l2_streaming_fav_youtube_video_streaming_day_of_week_feature"
+            ),
+
+            # session duration
             node(
                 l2_massive_processing,
                 ["l1_streaming_session_duration_feature_for_l2_streaming_session_duration_feature",
