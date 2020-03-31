@@ -1460,5 +1460,265 @@ class TestUnitStream:
 
     ####################################################################################################################
 
-    def Test(self,project_context):
+    def test_int_l3_streaming_tv_show_features(self, project_context):
         var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+        int_l0_streaming_vimmi_table = add_start_of_week_and_month(df_temp_l0_streaming_ru_a_onair_vimmi_usage_daily)
+
+        int_l3_streaming_tv_show_features = node_from_config(int_l0_streaming_vimmi_table,
+                                                                 var_project_context.catalog.load(
+                                                                     'params:int_l3_streaming_tv_show_features'))
+
+        int_l3_streaming_tv_show_features.show()
+
+        assert int_l3_streaming_tv_show_features.select("num_of_episode_watched_rank").rdd.isEmpty() == True
+
+    def test_l3_streaming_fav_tv_show_by_episode_watched(self, project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+        int_l0_streaming_vimmi_table = add_start_of_week_and_month(df_temp_l0_streaming_ru_a_onair_vimmi_usage_daily)
+
+        int_l3_streaming_tv_show_features = node_from_config(int_l0_streaming_vimmi_table,
+                                                                 var_project_context.catalog.load(
+                                                                     'params:int_l3_streaming_tv_show_features'))
+
+        l3_streaming_fav_tv_show_by_episode_watched = node_from_config(int_l3_streaming_tv_show_features,
+                                                                 var_project_context.catalog.load(
+                                                                     'params:l3_streaming_fav_tv_show_by_episode_watched'))
+
+        l3_streaming_fav_tv_show_by_episode_watched.show()
+
+        assert l3_streaming_fav_tv_show_by_episode_watched.rdd.isEmpty() == True
+
+    ####################################################################################################################
+
+    def test_int_l3_streaming_service_feature(self, project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+
+        int_l1_streaming_video_service_feature = l1_massive_processing(df_temp_l0_streaming_soc_mobile_app_daily,
+                                                                       var_project_context.catalog.load(
+                                                                           'params:int_l1_streaming_video_service_feature'))
+
+        int_l3_streaming_service_feature = node_from_config(int_l1_streaming_video_service_feature,
+                                                                       var_project_context.catalog.load(
+                                                                           'params:int_l3_streaming_service_feature'))
+
+        int_l3_streaming_service_feature.show()
+
+        assert int_l3_streaming_service_feature.select("moblie_no").count() == 4
+
+    def test_l3_streaming_fav_service_by_download_feature(self, project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+
+        int_l1_streaming_video_service_feature = l1_massive_processing(df_temp_l0_streaming_soc_mobile_app_daily,
+                                                                       var_project_context.catalog.load(
+                                                                           'params:int_l1_streaming_video_service_feature'))
+
+        int_l3_streaming_service_feature = node_from_config(int_l1_streaming_video_service_feature,
+                                                            var_project_context.catalog.load(
+                                                                'params:int_l3_streaming_service_feature'))
+
+        l3_streaming_fav_service_by_download_feature = node_from_config(int_l3_streaming_service_feature,
+                                                                        var_project_context.catalog.load(
+                                                                            'params:l3_streaming_fav_service_by_download_feature'))
+
+        l3_streaming_fav_service_by_download_feature.show()
+
+        assert l3_streaming_fav_service_by_download_feature.select("mobile_no").count() == 1
+
+    def test_l3_streaming_2nd_fav_service_by_download_feature(self, project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+
+        int_l1_streaming_video_service_feature = l1_massive_processing(df_temp_l0_streaming_soc_mobile_app_daily,
+                                                                       var_project_context.catalog.load(
+                                                                           'params:int_l1_streaming_video_service_feature'))
+
+        int_l3_streaming_service_feature = node_from_config(int_l1_streaming_video_service_feature,
+                                                            var_project_context.catalog.load(
+                                                                'params:int_l3_streaming_service_feature'))
+
+        l2_streaming_2nd_fav_service_by_download_feature = node_from_config(int_l3_streaming_service_feature,
+                                                                            var_project_context.catalog.load(
+                                                                                'params:l3_streaming_2nd_fav_service_by_download_feature'))
+
+        l2_streaming_2nd_fav_service_by_download_feature.show()
+
+        assert l2_streaming_2nd_fav_service_by_download_feature.select("mobile_no").rdd.isEmpty() == True
+
+    def test_l3_streaming_fav_service_by_visit_count_feature(self, project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+
+        int_l1_streaming_video_service_feature = l1_massive_processing(df_temp_l0_streaming_soc_mobile_app_daily,
+                                                                       var_project_context.catalog.load(
+                                                                           'params:int_l1_streaming_video_service_feature'))
+
+        int_l3_streaming_service_feature = node_from_config(int_l1_streaming_video_service_feature,
+                                                            var_project_context.catalog.load(
+                                                                'params:int_l3_streaming_service_feature'))
+
+        l2_streaming_fav_service_by_visit_count_feature = node_from_config(int_l3_streaming_service_feature,
+                                                                           var_project_context.catalog.load(
+                                                                               'params:l3_streaming_fav_service_by_visit_count_feature'))
+
+        l2_streaming_fav_service_by_visit_count_feature.show()
+
+        assert l2_streaming_fav_service_by_visit_count_feature.select("mobile_no").count() == 1
+
+    ####################################################################################################################
+
+    def test_l3_streaming_session_duration_feature(self, project_context):
+        def test_l2_streaming_session_duration_feature(self, project_context):
+            var_project_context = project_context['ProjectContext']
+            spark = project_context['Spark']
+
+            set_value(project_context)
+
+            l1_streaming_session_duration_feature = l1_massive_processing(df_temp_l0_streaming_soc_mobile_app_daily,
+                                                                          var_project_context.catalog.load(
+                                                                              'params:l1_streaming_session_duration_feature'))
+
+            l3_streaming_session_duration_feature = node_from_config(l1_streaming_session_duration_feature,
+                                                                          var_project_context.catalog.load(
+                                                                              'params:l3_streaming_session_duration_feature'))
+
+            l3_streaming_session_duration_feature.show()
+
+            ############################################# SUM ##############################################################
+            assert float(l3_streaming_session_duration_feature.select("sum_session_duration_youtube_video").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 8
+            assert float(l3_streaming_session_duration_feature.select("sum_session_duration_facebook_video").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("sum_session_duration_linetv_video").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("sum_session_duration_ais_play_video").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("sum_session_duration_netflix_video").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("sum_session_duration_hooq_video").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("sum_session_duration_iflix_video").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("sum_session_duration_spotify_music").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("sum_session_duration_joox_music").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("sum_session_duration_twitch_esport").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("sum_session_duration_bigo_esport").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("sum_session_duration_mixer_esport").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("sum_session_duration_steamtv_esport").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+
+            ################################################ MAX ##########################################################
+            assert float(l3_streaming_session_duration_feature.select("max_session_duration_youtube_video").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 1
+            assert float(l3_streaming_session_duration_feature.select("max_session_duration_facebook_video").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("max_session_duration_linetv_video").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("max_session_duration_ais_play_video").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("max_session_duration_netflix_video").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("max_session_duration_hooq_video").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l2_streaming_session_duration_feature.select("max_session_duration_iflix_video").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("max_session_duration_spotify_music").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("max_session_duration_joox_music").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("max_session_duration_twitch_esport").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("max_session_duration_bigo_esport").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("max_session_duration_mixer_esport").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("max_session_duration_steamtv_esport").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+
+            ###################################### MIN #####################################################################
+            assert float(l3_streaming_session_duration_feature.select("min_session_duration_youtube_video").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 1
+            assert float(l3_streaming_session_duration_feature.select("min_session_duration_facebook_video").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("min_session_duration_linetv_video").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("min_session_duration_ais_play_video").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("min_session_duration_netflix_video").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("min_session_duration_hooq_video").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("min_session_duration_iflix_video").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("min_session_duration_spotify_music").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("min_session_duration_joox_music").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("min_session_duration_twitch_esport").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("min_session_duration_bigo_esport").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("min_session_duration_mixer_esport").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("min_session_duration_steamtv_esport").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+
+            ############################ AVG    total use /(week) ##########################################################
+            assert round(
+                float(l3_streaming_session_duration_feature.select("avg_session_duration_per_day_youtube_video").where(
+                    "start_of_week = '2020-01-06'").collect()[0][0]), 2) == round((8 / 31), 2)
+            assert float(
+                l3_streaming_session_duration_feature.select("avg_session_duration_per_day_facebook_video").where(
+                    "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(
+                l3_streaming_session_duration_feature.select("avg_session_duration_per_day_linetv_video").where(
+                    "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(
+                l3_streaming_session_duration_feature.select("avg_session_duration_per_day_ais_play_video").where(
+                    "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(
+                l3_streaming_session_duration_feature.select("avg_session_duration_per_day_netflix_video").where(
+                    "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("avg_session_duration_per_day_hooq_video").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("avg_session_duration_per_day_iflix_video").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(
+                l3_streaming_session_duration_feature.select("avg_session_duration_per_day_spotify_music").where(
+                    "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("avg_session_duration_per_day_joox_music").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(
+                l3_streaming_session_duration_feature.select("avg_session_duration_per_day_twitch_esport").where(
+                    "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(l3_streaming_session_duration_feature.select("avg_session_duration_per_day_bigo_esport").where(
+                "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(
+                l3_streaming_session_duration_feature.select("avg_session_duration_per_day_mixer_esport").where(
+                    "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+            assert float(
+                l3_streaming_session_duration_feature.select("avg_session_duration_per_day_steamtv_esport").where(
+                    "start_of_week = '2020-01-06'").collect()[0][0]) == 0
+
+            ###############################################################################################################
+
