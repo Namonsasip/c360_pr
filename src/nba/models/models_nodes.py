@@ -25,6 +25,18 @@ from sklearn.model_selection import train_test_split
 def calculate_extra_pai_metrics(
     df_master: pyspark.sql.DataFrame, target_column: str, by: str
 ) -> pd.DataFrame:
+    """
+    Calculates some extra metrics for performance AI
+    This is done in Spark separately in case sampling is required in pandas udf
+    training to have info on the original metrics
+    Args:
+        df_master: master table
+        target_column: name of the column that contains the target variable
+        by: name of the column for which models will be split
+
+    Returns:
+        A pandas DataFrame with some metrics to be logged into pai
+    """
     pdf_extra_pai_metrics = (
         df_master.groupby(F.col(by).alias("group"))
         .agg(
@@ -45,9 +57,37 @@ def calculate_extra_pai_metrics(
 def create_binary_model_function(
     as_pandas_udf: bool, **kwargs: Any,
 ) -> Callable[[pd.DataFrame], pd.DataFrame]:
+    """
+    Creates a function to train a binary classification model
+    Args:
+        as_pandas_udf: If True, the function returned will be a pandas udf to be
+            used in a spark cluster. If False a normal python function is returned
+        **kwargs: all parameters for the modelling training function, for details see
+            the documentation of train_single_binary_model inside the code of this
+            function
+
+    Returns:
+        A function that trains a model from a pandas DataFrame with all parameters
+        specified
+    """
+
     schema = StructType([StructField("able_to_model_flag", IntegerType()),])
 
-    def train_single_binary_model_wrapper(pdf_master_chunk):
+    def train_single_binary_model_wrapper(
+        pdf_master_chunk: pd.DataFrame,
+    ) -> pd.DataFrame:
+        """
+        Wrapper that allows to build a pandas udf from the model training function.
+        This functions is necessary because pandas udf require just one input parameter
+        which should be a pandas DataFrame but we want our modelling function to be
+        parametrizable
+        Args:
+            pdf_master_chunk: master table for training
+
+        Returns:
+            A pandas DataFrame with information about training
+        """
+
         def train_single_binary_model(
             pdf_master_chunk: pd.DataFrame,
             group_column: str,
@@ -59,8 +99,31 @@ def create_binary_model_function(
             pai_run_prefix: str,
             pdf_extra_pai_metrics: pd.DataFrame,
             pai_storage_path: str,
-        ):
+        ) -> pd.DataFrame:
+            """
+            Trains a binary classification model and logs the process in pai
+            Args:
+                pdf_master_chunk: pandas DataFrame with the data (master table)
+                group_column: column that contains an identifier for the group of the
+                    model, this is useful in case many models want to be trained
+                    using a similat structures
+                explanatory_features: list of features names to use for learning
+                target_column: column name that contans target variable
+                train_sampling_ratio: percentage of pdf_master_chunk to be used for
+                    training (sampled randomly), the rest will be used for validation
+                    (a.k.a. test)
+                model_params: model hyperparameters
+                min_obs_per_class_for_model: minimum observations within each class
+                    from the target variable that are required to confidently train
+                    a model
+                pai_run_prefix: prefix that the pai run will have. The name will be the
+                    prefix concatenated with the group
+                pdf_extra_pai_metrics: extra pai metrics to log
+                pai_storage_path: path where pai run will be stored
 
+            Returns:
+                A pandas DataFrame with some info on the execution
+            """
             # We declare the function within the pandas udf to avoid having dependencies
             # that would require to export the project code as an egg file and install
             # it as a cluster library in Databricks, being a major inconvenience for
@@ -130,19 +193,19 @@ def create_binary_model_function(
                 else:
                     plt.show()
 
-            # context.load_node_inputs("debug_model_training")
-
+            # This path will be used to store artifacts for pai, don't rely
+            # on them being available after function ends
             tmp_path = Path("data/tmp")
             os.makedirs(tmp_path, exist_ok=True)
 
             current_group = pdf_master_chunk[group_column].iloc[0]
-
             pai_run_name = pai_run_prefix + current_group
 
             pdf_extra_pai_metrics_filtered = pdf_extra_pai_metrics[
                 pdf_extra_pai_metrics["group"] == current_group
             ]
 
+            # Calculate some metrics on the data to log into pai
             original_perc_obs_target_null = pdf_extra_pai_metrics_filtered[
                 "original_perc_obs_target_null"
             ].iloc[0]
@@ -153,7 +216,6 @@ def create_binary_model_function(
             original_target_mean = pdf_extra_pai_metrics_filtered[
                 "original_target_mean"
             ].iloc[0]
-
             modelling_perc_obs_target_null = np.mean(
                 pdf_master_chunk[target_column].isna()
             )
@@ -166,8 +228,8 @@ def create_binary_model_function(
             )
             modelling_target_mean = np.mean(pdf_master_chunk[target_column])
 
+            # Start pai run and log some metrics
             pai.set_config(experiment=current_group, storage_runs=pai_storage_path)
-
             pai.start_run(run_name=pai_run_name)
 
             pai.log_metrics(
@@ -187,8 +249,8 @@ def create_binary_model_function(
                 {"target_column": target_column,}
             )
 
+            # Check if we have enough data to train a model for the current group
             able_to_model_flag = True
-
             if modelling_perc_obs_target_null != 0:
                 pai.log_note(
                     "There are observations with NA target in the modelling data"
@@ -224,101 +286,105 @@ def create_binary_model_function(
                 )
                 able_to_model_flag = False
 
-            if not able_to_model_flag:
-                pai.add_tags(["Unable to model"])
-                pai.end_run()
-                return
-            else:
-                pai.add_tags(["Able to model"])
-
-            pdf_train, pdf_test = train_test_split(
-                pdf_master_chunk, train_size=train_sampling_ratio
-            )
-
-            pai.log_params(
-                {
-                    "train_sampling_ratio": train_sampling_ratio,
-                    "model_params": model_params,
-                }
-            )
-
-            model = LGBMClassifier(**model_params).fit(
-                pdf_train[explanatory_features],
-                pdf_train[target_column],
-                eval_set=[
-                    (pdf_train[explanatory_features], pdf_train[target_column]),
-                    (pdf_test[explanatory_features], pdf_test[target_column]),
-                ],
-                eval_names=["train", "test"],
-                eval_metric="auc",
-            )
-            pai.log_model(model)
-
-            train_auc = model.evals_result_["train"]["auc"][-1]
-            test_auc = model.evals_result_["test"]["auc"][-1]
-
-            pai.log_metrics(
-                {
-                    "train_auc": train_auc,
-                    "test_auc": test_auc,
-                    "train_test_auc_diff": train_auc - test_auc,
-                }
-            )
-
-            pai.log_features(
-                features=explanatory_features,
-                importance=list(
-                    model.feature_importances_ / sum(model.feature_importances_)
-                ),
-            )
-
-            # Plot ROC curve
-            plot_roc_curve(
-                y_true=pdf_test[target_column],
-                y_score=model.predict_proba(pdf_test[explanatory_features])[:, 1],
-                filepath=tmp_path / "roc_curve.png",
-            )
-
-            ## Calculate and plot AUC per round
-            pdf_metrics = pd.DataFrame()
-            for valid_set_name, metrics_dict in model.evals_result_.items():
-                metrics_dict["set"] = valid_set_name
-                pdf_metrics_partial = pd.DataFrame(metrics_dict)
-                pdf_metrics_partial["round"] = range(
-                    1, pdf_metrics_partial.shape[0] + 1
-                )
-                pdf_metrics = pd.concat([pdf_metrics, pdf_metrics_partial])
-            pdf_metrics_melted = pdf_metrics.melt(
-                id_vars=["set", "round"], var_name="metric"
-            )
-            pdf_metrics_melted.to_csv(tmp_path / "metrics_by_round.csv", index=False)
-
-            (  # Plot the AUC of each set in each round
-                ggplot(
-                    pdf_metrics_melted[pdf_metrics_melted["metric"] == "auc"],
-                    aes(x="round", y="value", color="set"),
-                )
-                + ylab("Gini")
-                + geom_line()
-                + ggtitle("Gini per round (tree)")
-            ).save(tmp_path / "auc_per_round.png")
-
-            pai.log_artifacts(
-                {
-                    "roc_curve": str(tmp_path / "roc_curve.png"),
-                    "metrics_by_round": str(tmp_path / "metrics_by_round.csv"),
-                    "auc_per_round": str(tmp_path / "auc_per_round.png"),
-                }
-            )
-
-            pai.end_run()
-
             # build the DataFrame to return
             df_to_return = pd.DataFrame(
                 {"able_to_model_flag": [int(able_to_model_flag)]}
             )
 
-            return df_to_return
+            if not able_to_model_flag:
+                # Unable to train a model, end execution
+                pai.add_tags(["Unable to model"])
+                pai.end_run()
+                return df_to_return
+            else:
+
+                # Train the model
+                pai.add_tags(["Able to model"])
+
+                pdf_train, pdf_test = train_test_split(
+                    pdf_master_chunk, train_size=train_sampling_ratio
+                )
+
+                pai.log_params(
+                    {
+                        "train_sampling_ratio": train_sampling_ratio,
+                        "model_params": model_params,
+                    }
+                )
+
+                model = LGBMClassifier(**model_params).fit(
+                    pdf_train[explanatory_features],
+                    pdf_train[target_column],
+                    eval_set=[
+                        (pdf_train[explanatory_features], pdf_train[target_column]),
+                        (pdf_test[explanatory_features], pdf_test[target_column]),
+                    ],
+                    eval_names=["train", "test"],
+                    eval_metric="auc",
+                )
+                pai.log_model(model)
+
+                train_auc = model.evals_result_["train"]["auc"][-1]
+                test_auc = model.evals_result_["test"]["auc"][-1]
+
+                pai.log_metrics(
+                    {
+                        "train_auc": train_auc,
+                        "test_auc": test_auc,
+                        "train_test_auc_diff": train_auc - test_auc,
+                    }
+                )
+
+                pai.log_features(
+                    features=explanatory_features,
+                    importance=list(
+                        model.feature_importances_ / sum(model.feature_importances_)
+                    ),
+                )
+
+                # Plot ROC curve
+                plot_roc_curve(
+                    y_true=pdf_test[target_column],
+                    y_score=model.predict_proba(pdf_test[explanatory_features])[:, 1],
+                    filepath=tmp_path / "roc_curve.png",
+                )
+
+                # Calculate and plot AUC per round
+                pdf_metrics = pd.DataFrame()
+                for valid_set_name, metrics_dict in model.evals_result_.items():
+                    metrics_dict["set"] = valid_set_name
+                    pdf_metrics_partial = pd.DataFrame(metrics_dict)
+                    pdf_metrics_partial["round"] = range(
+                        1, pdf_metrics_partial.shape[0] + 1
+                    )
+                    pdf_metrics = pd.concat([pdf_metrics, pdf_metrics_partial])
+                pdf_metrics_melted = pdf_metrics.melt(
+                    id_vars=["set", "round"], var_name="metric"
+                )
+                pdf_metrics_melted.to_csv(tmp_path / "metrics_by_round.csv", index=False)
+
+                (  # Plot the AUC of each set in each round
+                    ggplot(
+                        pdf_metrics_melted[pdf_metrics_melted["metric"] == "auc"],
+                        aes(x="round", y="value", color="set"),
+                    )
+                    + ylab("AUC")
+                    + geom_line()
+                    + ggtitle(f"AUC per round (tree) for {current_group}")
+                ).save(tmp_path / "auc_per_round.png")
+
+                # Log artifacts created and end the run
+                pai.log_artifacts(
+                    {
+                        "roc_curve": str(tmp_path / "roc_curve.png"),
+                        "metrics_by_round": str(tmp_path / "metrics_by_round.csv"),
+                        "auc_per_round": str(tmp_path / "auc_per_round.png"),
+                    }
+                )
+
+                pai.end_run()
+
+                return df_to_return
 
         return train_single_binary_model(pdf_master_chunk=pdf_master_chunk, **kwargs)
 
@@ -338,8 +404,24 @@ def train_multiple_binary_models(
     explanatory_features: List[str],
     target_column: str,
     **kwargs: Any,
-):
+) -> pyspark.sql.DataFrame:
+    """
+    Trains multiple binary classification models using pandas udf to distrbute the
+    training in a spark cluster
+    Args:
+        df_master: master table
+        group_column: column name for the group, a model will be trained for each unique
+            value of this column
+        explanatory_features: list of features name to learn from. Must exist in
+            df_master
+        target_column: column with target variable
+        **kwargs: further arguments to pass to the modelling function, they are not all
+            explicitly listed here for easier code maintenance but details can be found
+            in the definition of train_single_binary_model
 
+    Returns:
+        A spark DataFrame with info about the training
+    """
     # To reduce the size of the pandas DataFrames only select the columns we really need
     df_master_only_necessary_columns = df_master.select(
         group_column, target_column, *explanatory_features
@@ -347,6 +429,11 @@ def train_multiple_binary_models(
 
     pdf_extra_pai_metrics = calculate_extra_pai_metrics(
         df_master_only_necessary_columns, target_column, group_column
+    )
+
+    # Filter rows with NA target to reduce size of pandas DataFrames within pandas udf
+    df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
+        ~F.isnull(F.col(target_column))
     )
 
     df_training_info = df_master_only_necessary_columns.groupby(group_column).apply(
