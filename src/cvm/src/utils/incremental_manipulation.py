@@ -62,11 +62,14 @@ def filter_latest_date(df: DataFrame, maximum_date: str = None) -> DataFrame:
     """
 
     log = logging.getLogger(__name__)
-    log.info(f"Filtering, maximum date {maximum_date}")
 
     df = prepare_key_columns(df)
     latest_date = get_latest_date(df, maximum_date)
     df = df.filter("key_date == '{}'".format(latest_date))
+
+    log.info(
+        "Filtering most recent entries, entries from {} found.".format(latest_date)
+    )
 
     if maximum_date is None or maximum_date == "today":
         today = date.today().strftime("%Y-%m-%d")
