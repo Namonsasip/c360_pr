@@ -180,7 +180,6 @@ def subs_date_join_important_only(
     must_have_features = parameters["must_have_features"]
     tables = [prepare_key_columns(tab) for tab in args]
 
-
     def filter_column(df, filter_list):
         cols_to_drop = [
             col_name for col_name in df.columns if col_name not in filter_list
@@ -189,7 +188,9 @@ def subs_date_join_important_only(
 
     # remove suffix from important columns
     for suffix in suffix_list:
-        important_param = [col.replace(suffix_list[suffix], '') for col in important_param]
+        important_param = [
+            col.replace(suffix_list[suffix], "") for col in important_param
+        ]
 
     tables = [
         filter_column(tab, important_param + keys + segments + must_have_features)
