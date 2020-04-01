@@ -45,17 +45,17 @@ def streaming_to_l1_pipeline(**kwargs):
                 l1_massive_processing,
                 ["l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_content_type_features",
                  "params:int_l1_streaming_content_type_features"],
-                "int_l1_streaming_content_type_features"
+                "int_l1_streaming_content_type_features@save"
             ),
             node(
                 node_from_config,
-                ["int_l1_streaming_content_type_features_for_l1_streaming_fav_content_group_by_volume",
+                ["int_l1_streaming_content_type_features@l1_streaming_fav_content_group_by_volume",
                  "params:l1_streaming_fav_content_group_by_volume"],
                 "l1_streaming_fav_content_group_by_volume"
             ),
             node(
                 node_from_config,
-                ["int_l1_streaming_content_type_features_for_l1_streaming_fav_content_group_by_duration",
+                ["int_l1_streaming_content_type_features@l1_streaming_fav_content_group_by_duration",
                  "params:l1_streaming_fav_content_group_by_duration"],
                 "l1_streaming_fav_content_group_by_duration"
             ),
@@ -65,17 +65,17 @@ def streaming_to_l1_pipeline(**kwargs):
                 node_from_config,
                 ["l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_tv_channel_features",
                  "params:int_l1_streaming_tv_channel_features"],
-                "int_l1_streaming_tv_channel_features"
+                "int_l1_streaming_tv_channel_features@save"
             ),
             node(
                 node_from_config,
-                ["int_l1_streaming_tv_channel_features_for_l1_streaming_fav_tv_channel_by_volume",
+                ["int_l1_streaming_tv_channel_features@l1_streaming_fav_tv_channel_by_volume",
                  "params:l1_streaming_fav_tv_channel_by_volume"],
                 "l1_streaming_fav_tv_channel_by_volume"
             ),
             node(
                 node_from_config,
-                ["int_l1_streaming_tv_channel_features_for_l1_streaming_fav_tv_channel_by_duration",
+                ["int_l1_streaming_tv_channel_features@l1_streaming_fav_tv_channel_by_duration",
                  "params:l1_streaming_fav_tv_channel_by_duration"],
                 "l1_streaming_fav_tv_channel_by_duration"
             ),
@@ -104,17 +104,17 @@ def streaming_to_l1_pipeline(**kwargs):
                 l1_massive_processing,
                 ["l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_video_service_feature",
                  "params:int_l1_streaming_video_service_feature"],
-                "int_l1_streaming_video_service_feature"
+                "int_l1_streaming_video_service_feature@save"
             ),
             node(
                 node_from_config,
-                ["int_l1_streaming_video_service_feature_for_l1_streaming_fav_video_service_by_download_feature",
+                ["int_l1_streaming_video_service_feature@l1_streaming_fav_video_service_by_download_feature",
                  "params:l1_streaming_fav_video_service_by_download_feature"],
                 "l1_streaming_fav_video_service_by_download_feature"
             ),
             node(
                 node_from_config,
-                ["int_l1_streaming_video_service_feature_for_l1_streaming_2nd_fav_video_service_by_download_feature",
+                ["int_l1_streaming_video_service_feature@l1_streaming_2nd_fav_video_service_by_download_feature",
                  "params:l1_streaming_2nd_fav_video_service_by_download_feature"],
                 "l1_streaming_2nd_fav_video_service_by_download_feature"
             ),
@@ -124,17 +124,17 @@ def streaming_to_l1_pipeline(**kwargs):
                 l1_massive_processing,
                 ["l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_music_service_feature",
                  "params:int_l1_streaming_music_service_feature"],
-                "int_l1_streaming_music_service_feature"
+                "int_l1_streaming_music_service_feature@save"
             ),
             node(
                 node_from_config,
-                ["int_l1_streaming_music_service_feature_for_l1_streaming_fav_music_service_by_download_feature",
+                ["int_l1_streaming_music_service_feature@l1_streaming_fav_music_service_by_download_feature",
                  "params:l1_streaming_fav_music_service_by_download_feature"],
                 "l1_streaming_fav_music_service_by_download_feature"
             ),
             node(
                 node_from_config,
-                ["int_l1_streaming_music_service_feature_for_l1_streaming_2nd_fav_music_service_by_download_feature",
+                ["int_l1_streaming_music_service_feature@streaming_2nd_fav_music_service_by_download_feature",
                  "params:l1_streaming_2nd_fav_music_service_by_download_feature"],
                 "l1_streaming_2nd_fav_music_service_by_download_feature"
             ),
@@ -144,17 +144,17 @@ def streaming_to_l1_pipeline(**kwargs):
                 l1_massive_processing,
                 ["l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_esport_service_feature",
                  "params:int_l1_streaming_esport_service_feature"],
-                "int_l1_streaming_esport_service_feature"
+                "int_l1_streaming_esport_service_feature@save"
             ),
             node(
                 node_from_config,
-                ["int_l1_streaming_esport_service_feature_for_l1_streaming_fav_esport_service_by_download_feature",
+                ["int_l1_streaming_esport_service_feature@l1_streaming_fav_esport_service_by_download_feature",
                  "params:l1_streaming_fav_esport_service_by_download_feature"],
                 "l1_streaming_fav_esport_service_by_download_feature"
             ),
             node(
                 node_from_config,
-                ["int_l1_streaming_esport_service_feature_for_l1_streaming_2nd_fav_esport_service_by_download_feature",
+                ["int_l1_streaming_esport_service_feature@l1_streaming_2nd_fav_esport_service_by_download_feature",
                  "params:l1_streaming_2nd_fav_esport_service_by_download_feature"],
                 "l1_streaming_2nd_fav_esport_service_by_download_feature"
             ),

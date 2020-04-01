@@ -225,7 +225,7 @@ def streaming_to_l4_pipeline(**kwargs):
             # session duration
             node(
                 l4_rolling_window,
-                ["l2_streaming_session_duration_feature",
+                ["l2_streaming_session_duration_feature_for_l4_streaming_session_duration_feature",
                  "params:l4_streaming_session_duration_feature"],
                 "l4_streaming_session_duration_feature"
             ),

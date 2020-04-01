@@ -47,17 +47,17 @@ def streaming_to_l2_pipeline(**kwargs):
                 ["int_l1_streaming_content_type_features_for_int_l2_streaming_content_type_features",
                  "params:int_l2_streaming_content_type_features",
                  "l1_customer_profile_union_daily_feature_for_int_l2_streaming_content_type_features"],
-                "int_l2_streaming_content_type_features"
+                "int_l2_streaming_content_type_features@save"
             ),
             node(
                 node_from_config,
-                ["int_l2_streaming_content_type_features_for_l2_streaming_fav_content_group_by_volume",
+                ["int_l2_streaming_content_type_features@l2_streaming_fav_content_group_by_volume",
                  "params:l2_streaming_fav_content_group_by_volume"],
                 "l2_streaming_fav_content_group_by_volume"
             ),
             node(
                 node_from_config,
-                ["int_l2_streaming_content_type_features_for_l2_streaming_fav_content_group_by_duration",
+                ["int_l2_streaming_content_type_features@l2_streaming_fav_content_group_by_duration",
                  "params:l2_streaming_fav_content_group_by_duration"],
                 "l2_streaming_fav_content_group_by_duration"
             ),
@@ -68,17 +68,17 @@ def streaming_to_l2_pipeline(**kwargs):
                 ["int_l1_streaming_tv_channel_features_for_int_l2_streaming_tv_channel_features",
                  "params:int_l2_streaming_tv_channel_features",
                  "l1_customer_profile_union_daily_feature_for_int_l2_streaming_tv_channel_features"],
-                "int_l2_streaming_tv_channel_features"
+                "int_l2_streaming_tv_channel_features@save"
             ),
             node(
                 node_from_config,
-                ["int_l2_streaming_tv_channel_features_for_l2_streaming_fav_tv_channel_by_volume",
+                ["int_l2_streaming_tv_channel_features@l2_streaming_fav_tv_channel_by_volume",
                  "params:l2_streaming_fav_tv_channel_by_volume"],
                 "l2_streaming_fav_tv_channel_by_volume"
             ),
             node(
                 node_from_config,
-                ["int_l2_streaming_tv_channel_features_for_l2_streaming_fav_tv_channel_by_duration",
+                ["int_l2_streaming_tv_channel_features@l2_streaming_fav_tv_channel_by_duration",
                  "params:l2_streaming_fav_tv_channel_by_duration"],
                 "l2_streaming_fav_tv_channel_by_duration"
             ),
@@ -102,24 +102,24 @@ def streaming_to_l2_pipeline(**kwargs):
                 l2_massive_processing,
                 ["int_l1_streaming_video_service_feature_for_int_l2_streaming_video_service_feature",
                  "params:int_l2_streaming_video_service_feature",
-                 "l1_customer_profile_union_daily_feature"],
-                "int_l2_streaming_video_service_feature"
+                 "l1_customer_profile_union_daily_feature_for_int_l2_streaming_video_service_feature"],
+                "int_l2_streaming_video_service_feature@save"
             ),
             node(
                 node_from_config,
-                ["int_l2_streaming_video_service_feature_for_l2_streaming_fav_video_service_by_download_feature",
+                ["int_l2_streaming_video_service_feature@l2_streaming_fav_video_service_by_download_feature",
                  "params:l2_streaming_fav_service_by_download_feature"],
                 "l2_streaming_fav_video_service_by_download_feature"
             ),
             node(
                 node_from_config,
-                ["int_l2_streaming_video_service_feature_for_l2_streaming_2nd_fav_video_service_by_download_feature",
+                ["int_l2_streaming_video_service_feature@l2_streaming_2nd_fav_video_service_by_download_feature",
                  "params:l2_streaming_2nd_fav_service_by_download_feature"],
                 "l2_streaming_2nd_fav_video_service_by_download_feature"
             ),
             node(
                 node_from_config,
-                ["int_l2_streaming_video_service_feature_for_l2_streaming_fav_video_service_by_visit_count_feature",
+                ["int_l2_streaming_video_service_feature@l2_streaming_fav_video_service_by_visit_count_feature",
                  "params:l2_streaming_fav_service_by_visit_count_feature"],
                 "l2_streaming_fav_video_service_by_visit_count_feature"
             ),
@@ -129,24 +129,24 @@ def streaming_to_l2_pipeline(**kwargs):
                 l2_massive_processing,
                 ["int_l1_streaming_music_service_feature_for_int_l2_streaming_music_service_feature",
                  "params:int_l2_streaming_music_service_feature",
-                 "l1_customer_profile_union_daily_feature"],
-                "int_l2_streaming_music_service_feature"
+                 "l1_customer_profile_union_daily_feature_for_int_l2_streaming_music_service_feature"],
+                "int_l2_streaming_music_service_feature@save"
             ),
             node(
                 node_from_config,
-                ["int_l2_streaming_music_service_feature_for_l2_streaming_fav_music_service_by_download_feature",
+                ["int_l2_streaming_music_service_feature@l2_streaming_fav_music_service_by_download_feature",
                  "params:l2_streaming_fav_service_by_download_feature"],
                 "l2_streaming_fav_music_service_by_download_feature"
             ),
             node(
                 node_from_config,
-                ["int_l2_streaming_music_service_feature_for_l2_streaming_2nd_fav_music_service_by_download_feature",
+                ["int_l2_streaming_music_service_feature@l2_streaming_2nd_fav_music_service_by_download_feature",
                  "params:l2_streaming_2nd_fav_service_by_download_feature"],
                 "l2_streaming_2nd_fav_music_service_by_download_feature"
             ),
             node(
                 node_from_config,
-                ["int_l2_streaming_music_service_feature_for_l2_streaming_fav_music_service_by_visit_count_feature",
+                ["int_l2_streaming_music_service_feature@l2_streaming_fav_music_service_by_visit_count_feature",
                  "params:l2_streaming_fav_service_by_visit_count_feature"],
                 "l2_streaming_fav_music_service_by_visit_count_feature"
             ),
@@ -157,23 +157,23 @@ def streaming_to_l2_pipeline(**kwargs):
                 ["int_l1_streaming_esport_service_feature_for_int_l2_streaming_esport_service_feature",
                  "params:int_l2_streaming_esport_service_feature",
                  "l1_customer_profile_union_daily_feature_for_int_l2_streaming_esport_service_feature"],
-                "int_l2_streaming_esport_service_feature"
+                "int_l2_streaming_esport_service_feature@save"
             ),
             node(
                 node_from_config,
-                ["int_l2_streaming_esport_service_feature_for_l2_streaming_fav_esport_service_by_download_feature",
+                ["int_l2_streaming_esport_service_feature@l2_streaming_fav_esport_service_by_download_feature",
                  "params:l2_streaming_fav_service_by_download_feature"],
                 "l2_streaming_fav_esport_service_by_download_feature"
             ),
             node(
                 node_from_config,
-                ["int_l2_streaming_esport_service_feature_for_l2_streaming_2nd_fav_esport_service_by_download_feature",
+                ["int_l2_streaming_esport_service_feature@l2_streaming_2nd_fav_esport_service_by_download_feature",
                  "params:l2_streaming_2nd_fav_service_by_download_feature"],
                 "l2_streaming_2nd_fav_esport_service_by_download_feature"
             ),
             node(
                 node_from_config,
-                ["int_l2_streaming_esport_service_feature_for_l2_streaming_fav_esport_service_by_visit_count_feature",
+                ["int_l2_streaming_esport_service_feature@l2_streaming_fav_esport_service_by_visit_count_feature",
                  "params:l2_streaming_fav_service_by_visit_count_feature"],
                 "l2_streaming_fav_esport_service_by_visit_count_feature"
             ),
@@ -194,14 +194,14 @@ def streaming_to_l2_pipeline(**kwargs):
                 ["l1_streaming_visit_count_and_download_traffic_feature_for_int_l2_streaming_sum_per_day",
                  "params:int_l2_streaming_sum_per_day",
                  "l1_customer_profile_union_daily_feature_for_int_l2_streaming_sum_per_day"],
-                "int_l2_streaming_sum_per_day"
+                "int_l2_streaming_sum_per_day@save"
             ),
 
             #rank of day per week
             node(
                 # no need to join to customer profile because it's joined on top
                 node_from_config,
-                ["int_l2_streaming_sum_per_day_for_l2_streaming_fav_youtube_video_streaming_day_of_week_feature",
+                ["int_l2_streaming_sum_per_day@l2_streaming_fav_youtube_video_streaming_day_of_week_feature",
                  "params:int_l2_streaming_ranked_of_day_per_week"],
                 "int_l2_streaming_ranked_of_day_per_week"
             ),

@@ -218,7 +218,7 @@ int_l4_streaming_video_service_feature@l4_streaming_fav_video_service_by_downloa
   metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l4_streaming_fav_tv_channel_by_duration'
+    lookup_table_name: 'l4_streaming_fav_video_service_by_download_feature'
     read_layer: 'l4_weekly'
     target_layer: 'l4_weekly'
     lookback: '0'
