@@ -133,11 +133,11 @@ def pyspark_predict_rf(
         # spark prediction udf
         @func.pandas_udf(returnType=DoubleType())
         def _pandas_predict(*cols):
-            chosen_model = rf_models[use_case][macrosegment][target_chosen]
             pd_df = pd.concat(cols, axis=1)
             predictions = chosen_model.predict_proba(pd_df)[:, 1]
             return pd.Series(predictions)
 
+        chosen_model = rf_models[use_case][macrosegment][target_chosen]
         df = df.select(
             *df.columns, _pandas_predict(*feature_cols).alias(target_chosen + "_pred")
         )
