@@ -26,20 +26,6 @@ targets:
       length: 3
       drop: 0.2
       target_type: 'class'
-    dilution1_min_drop10:
-      colname: 'dilution1_min_drop10'
-      unit_of_analysis: 'month'
-      length: 1
-      drop: 0.1
-      min_drop_absolute: 10
-      target_type: 'class'
-    dilution2_min_drop20:
-      colname: 'dilution2_min_drop20'
-      unit_of_analysis: 'month'
-      length: 3
-      drop: 0.2
-      min_drop_absolute: 20
-      target_type: 'class'
   churn:
     churn5:
       colname: 'churn5'
