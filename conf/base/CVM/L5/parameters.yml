@@ -86,3 +86,6 @@ must_have_features:
 # volatility
 volatility_length: 5
 
+# pai parameters
+pai_runs_path: '/dbfs/mnt/customer360-blob-data/cvm/pai01/runs'
+pai_artifact_path: '/dbfs/mnt/customer360-blob-data/cvm/pai01/artifacts'

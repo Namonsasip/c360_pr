@@ -245,6 +245,10 @@ def log_pai_rf(
             metrics: models metrics.
             tags: List of tags, eg ard, churn60
         """
+        pai.set_config(
+            storage_runs=parameters["pai_runs_path"],
+            storage_artifacts=parameters["pai_artifacts_path"],
+        )
         pai.start_run(tags=tags)
         pai.log_model(rf_model)
         pai.log_features(rf_model.feature_names, rf_model.feature_importances_)
