@@ -25,7 +25,11 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import string
+from random import random
+
 import pai
+from pai.backends import mlflow
 from pyspark.sql import DataFrame
 from typing import Dict, Any, Union, List
 from sklearn.ensemble import RandomForestClassifier
@@ -245,11 +249,18 @@ def log_pai_rf(
             metrics: models metrics.
             tags: List of tags, eg ard, churn60
         """
+
+        random_name = "".join(
+            random.choice(string.ascii_uppercase + string.digits) for _ in range(16)
+        )
+        exp_id = mlflow.create_experiment(
+            name=random_name, artifact_location=parameters["pai_artifacts_path"]
+        )
         pai.set_config(
             storage_runs=parameters["pai_runs_path"],
             storage_artifacts=parameters["pai_artifacts_path"],
         )
-        pai.start_run(tags=tags)
+        pai.start_run(tags=tags, experiment_id=exp_id)
         pai.log_model(rf_model)
         pai.log_features(rf_model.feature_names, rf_model.feature_importances_)
         pai.log_metrics(metrics)
