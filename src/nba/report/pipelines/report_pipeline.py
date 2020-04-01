@@ -22,7 +22,7 @@ def create_use_case_view_report_data() -> Pipeline:
             node(
                 partial(
                     create_report_campaign_tracking_table,
-                    day="2020-03-25",  # TODO make dynamic
+                    day="2020-03-24",  # TODO make dynamic
                 ),
                 {
                     "cvm_prepaid_customer_groups": "cvm_prepaid_customer_groups",
@@ -40,7 +40,7 @@ def create_use_case_view_report_data() -> Pipeline:
                         "2020-02-20", "%Y-%m-%d"
                     ),  # TODO make dynamic
                     date_to=datetime.strptime(
-                        "2020-03-25", "%Y-%m-%d"
+                        "2020-03-24", "%Y-%m-%d"
                     ),  # TODO make dynamic
                     arpu_days_agg_periods=[1, 7, 30],
                     dormant_days_agg_periods=[5, 7, 14, 30, 60, 90],
@@ -74,7 +74,7 @@ def create_use_case_view_report_data() -> Pipeline:
             node(
                 partial(
                     create_use_case_view_report,
-                    day="2020-03-25",  # TODO make dynamic
+                    day="2020-03-24",  # TODO make dynamic
                     aggregate_period=[1, 7, 30],
                 ),
                 inputs={
