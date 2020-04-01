@@ -4,3 +4,8 @@ l1_number_of_bs_used:
     number_of_bs_used: "size(cell_id_list)"
   granularity: "event_partition_date,imsi,cell_id_list"
 
+l1_number_of_location_with_transactions:
+  where_clause: ""
+  feature_list:
+    num_location_with_transactions: "size(location_list)"
+  granularity: "event_partition_date,imsi,location_list"

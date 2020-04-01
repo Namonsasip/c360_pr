@@ -11,9 +11,19 @@ def geo_to_l4_pipeline(**kwargs):
 
             node(
                 l4_rolling_window,
-                ["l2_geo_cust_cell_visit_time_daily",
+                ["l2_geo_number_of_bs_used",
                  "params:l4_number_of_bs_used"],
-                "l4_geo_cust_cell_visit_time_daily"
+                "l4_geo_number_of_bs_used"
             ),
+
+            node(
+                l4_rolling_window,
+                ["l2_geo_number_of_location_with_transactions",
+                 "params:l4_number_of_location_with_transactions"],
+                "l4_geo_number_of_location_with_transactions"
+            ),
+
+
+
         ], name="geo_to_l4_pipeline"
     )

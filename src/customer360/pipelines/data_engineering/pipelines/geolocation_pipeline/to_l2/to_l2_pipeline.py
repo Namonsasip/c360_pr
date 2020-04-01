@@ -10,7 +10,7 @@ def geo_to_l2_pipeline(**kwargs):
         [
             node(
                 l2_number_of_bs_used,
-                ["l1_geo_cust_cell_visit_time_daily",
+                ["l1_geo_number_of_bs_used",
                  ],
                 "l1_int_geo_cust_cell_visit_time_daily"
             ),
@@ -19,7 +19,16 @@ def geo_to_l2_pipeline(**kwargs):
                 node_from_config,
                 ["l1_int_geo_cust_cell_visit_time_daily",
                  "params:l2_number_of_bs_used"],
-                "l2_geo_cust_cell_visit_time_daily"
+                "l2_geo_number_of_bs_used"
             ),
+
+            node(
+                l2_number_of_location_with_transactions,
+                ["l1_geo_number_of_location_with_transactions",
+                 "params:l2_number_of_location_with_transactions"],
+                "l2_geo_number_of_location_with_transactions"
+            ),
+
+
         ], name="geo_to_l2_pipeline"
     )

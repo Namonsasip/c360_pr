@@ -3,3 +3,10 @@ l4_number_of_bs_used:
   feature_list:
     avg: ["number_of_bs_used"]
   read_from: "l2"
+
+
+l4_number_of_location_with_transactions:
+  partition_by: ["imsi"]
+  feature_list:
+    avg: ["num_location_with_transactions"]
+  read_from: "l2"

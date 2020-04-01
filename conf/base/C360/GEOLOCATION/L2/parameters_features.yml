@@ -1,5 +1,12 @@
 l2_number_of_bs_used:
   where_clause: ""
   feature_list:
-    number_of_bs_used: "first_value(count_bs)"
+    number_of_bs_used: "size(distinct_list)"
+  granularity: "start_of_week,imsi,distinct_list"
+
+
+l2_number_of_location_with_transactions:
+  where_clause: ""
+  feature_list:
+    num_location_with_transactions: "size(distinct_list)"
   granularity: "start_of_week,imsi,distinct_list"

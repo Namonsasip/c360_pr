@@ -1,6 +1,6 @@
 
 #HDFS : Footfall >>> GEO.GEO_CUST_CELL_VISIT_TIME (temp)
-
+#cell_id might change to cgi for real data
 l0_geo_cust_cell_visit_time_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time_daily/  # REAL DATA IN PROGRESS

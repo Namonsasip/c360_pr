@@ -1,8 +1,16 @@
 
-l2_geo_cust_cell_visit_time_daily:
+l2_geo_number_of_bs_used:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/GEO/l2_features/geo_cust_cell_visit_time_daily/
+  filepath: /mnt/customer360-blob-data/C360/GEO/l2_features/geo_number_of_bs_used/
+  save_args:
+    partitionBy: ["start_of_week"]
+    mode: "overwrite"
+
+l2_geo_number_of_location_with_transactions:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/GEO/l2_features/geo_number_of_location_with_transactions/
   save_args:
     partitionBy: ["start_of_week"]
     mode: "overwrite"
