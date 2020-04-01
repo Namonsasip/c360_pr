@@ -25,8 +25,7 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import string
-from random import random
+import uuid
 
 import pai
 from pai.backends import mlflow
@@ -250,9 +249,7 @@ def log_pai_rf(
             tags: List of tags, eg ard, churn60
         """
 
-        random_name = "".join(
-            random.choice(string.ascii_uppercase + string.digits) for _ in range(16)
-        )
+        random_name = uuid.uuid4()
         exp_id = mlflow.create_experiment(
             name=random_name, artifact_location=parameters["pai_artifacts_path"]
         )
