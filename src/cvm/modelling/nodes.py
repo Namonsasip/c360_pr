@@ -25,7 +25,6 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import uuid
 
 import pai
 import mlflow
@@ -41,7 +40,7 @@ from cvm.src.models.predict import (
 )
 from cvm.src.models.validate import get_metrics
 from cvm.src.utils.list_targets import list_targets
-from cvm.src.utils.utils import iterate_over_usecases_macrosegments_targets
+from cvm.src.utils.utils import iterate_over_usecases_macrosegments_targets, random_word
 
 
 def train_rf(
@@ -249,7 +248,7 @@ def log_pai_rf(
             tags: List of tags, eg ard, churn60
         """
 
-        random_name = str(uuid.uuid4())
+        random_name = random_word()
         exp_id = mlflow.create_experiment(
             name=random_name, artifact_location=parameters["pai_artifacts_path"]
         )

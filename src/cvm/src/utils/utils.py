@@ -25,7 +25,8 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import string
+from random import random
 from typing import Dict, Callable, Any
 
 from cvm.src.utils.list_targets import list_targets
@@ -93,3 +94,8 @@ def iterate_over_usecases_macrosegments_targets(
         fun_vals[use_case] = _iter_for_usecase(use_case)
 
     return fun_vals
+
+
+def random_word(length=16):
+    letters = string.ascii_lowercase
+    return "".join(random.choice(letters) for i in range(length))
