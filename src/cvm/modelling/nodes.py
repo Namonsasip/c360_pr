@@ -25,9 +25,9 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import pai
 from pyspark.sql import DataFrame
-from typing import Dict, Any, Union
+from typing import Dict, Any, Union, List
 from sklearn.ensemble import RandomForestClassifier
 import xgboost
 import logging
@@ -38,6 +38,7 @@ from cvm.src.models.predict import (
 )
 from cvm.src.models.validate import get_metrics
 from cvm.src.utils.list_targets import list_targets
+from cvm.src.utils.utils import iterate_over_usecases_macrosegments_targets
 
 
 def train_rf(
@@ -70,7 +71,10 @@ def train_rf(
 
         rf = RandomForestClassifier(n_estimators=100, random_state=100)
         y = y.values.ravel()
-        return rf.fit(X, y)
+
+        rf_fitted = rf.fit(X, y)
+        rf_fitted.feature_names = list(X.columns.values)
+        return rf_fitted
 
     def _train_for_macrosegment(use_case_chosen, macrosegment):
         macrosegment_models = {}
@@ -216,3 +220,45 @@ def validate_rf(df: DataFrame, parameters: Dict[str, Any],) -> Dict[str, Any]:
 
     log.info("Models metrics: {}".format(models_metrics))
     return models_metrics
+
+
+def log_pai_rf(
+    rf_models: Dict[str, RandomForestClassifier],
+    models_metrics: Dict[str, Any],
+    parameters: Dict[str, Any],
+):
+    """Logs models diagnostics to PAI.
+
+    Args:
+        rf_models: Saved dictionary of models for different targets.
+        models_metrics: metrics of the models created in validation.
+        parameters: parameters defined in parameters.yml.
+    """
+
+    def _log_one_model(
+        rf_model: RandomForestClassifier, metrics: Dict[Any], tags: List[str],
+    ):
+        """ Logs only one model.
+
+        Args:
+            rf_model: Saved model.
+            metrics: models metrics.
+            tags: List of tags, eg ard, churn60
+        """
+        pai.start_run(tags=tags)
+        pai.log_model(rf_model)
+        pai.log_features(rf_model.feature_names, rf_model.feature_importances_)
+        pai.log_metrics(metrics)
+        pai.log_params(rf_model.get_params())
+        pai.end_run()
+
+    def _fun_to_iterate(usecase, macrosegment, target):
+        def pick_from_dict(d):
+            return d[usecase][macrosegment][target]
+
+        rf_model = pick_from_dict(rf_models)
+        metrics = pick_from_dict(models_metrics)
+        tags = [usecase, macrosegment, target]
+        _log_one_model(rf_model, metrics, tags)
+
+    iterate_over_usecases_macrosegments_targets(_fun_to_iterate, parameters)
