@@ -249,7 +249,7 @@ def log_pai_rf(
             tags: List of tags, eg ard, churn60
         """
 
-        random_name = uuid.uuid4()
+        random_name = str(uuid.uuid4())
         exp_id = mlflow.create_experiment(
             name=random_name, artifact_location=parameters["pai_artifacts_path"]
         )
