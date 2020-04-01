@@ -228,6 +228,7 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "cvm_validate_model_dev": create_predictions(
             "sample", "dev", "l5_cvm_one_day_train_preprocessed_sample"
         ),
+        "train_validate_sample": create_train_validate("sample"),
     }
 
 
