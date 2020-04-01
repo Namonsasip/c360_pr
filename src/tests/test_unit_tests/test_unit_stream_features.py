@@ -1722,3 +1722,81 @@ class TestUnitStream:
 
             ###############################################################################################################
 
+    def test_int_l4_streaming_content_type_features(self, project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+
+        int_l1_streaming_content_type_features = l1_massive_processing(
+            df_temp_l0_streaming_ru_a_onair_vimmi_usage_daily,
+            var_project_context.catalog.load('params:int_l1_streaming_content_type_features'))
+
+        int_l2_streaming_content_type_features = l2_massive_processing(int_l1_streaming_content_type_features,
+                                                                       var_project_context.catalog.load(
+                                                                           'params:int_l2_streaming_content_type_features'),customer_pro)
+
+        int_l4_streaming_content_type_features = l4_rolling_window(int_l2_streaming_content_type_features,
+                                                                   var_project_context.catalog.load(
+                                                                           'params:int_l4_streaming_content_type_features'))
+
+        int_l4_streaming_content_type_features.show()
+
+        ############################### Last week ######################################################################
+        assert int_l4_streaming_content_type_features.select("sum_traffic_volume_sum_weekly_last_week").where(
+            "start_of_week = '2020-01-27'").collect()[0][0] == 2
+        assert int_l4_streaming_content_type_features.select("sum_traffic_volume_sum_weekly_last_week").where(
+            "start_of_week = '2020-01-20'").collect()[0][0] == 2
+        assert int_l4_streaming_content_type_features.select("sum_traffic_volume_sum_weekly_last_week").where(
+            "start_of_week = '2020-01-13'").collect()[0][0] == 2
+        assert int_l4_streaming_content_type_features.select("sum_traffic_volume_sum_weekly_last_week").where(
+            "start_of_week = '2020-01-06'").collect()[0][0] == None
+
+        assert int_l4_streaming_content_type_features.select("sum_duration_sum_weekly_last_week").where(
+            "start_of_week = '2020-01-27'").collect()[0][0] == 2
+        assert int_l4_streaming_content_type_features.select("sum_duration_sum_weekly_last_week").where(
+            "start_of_week = '2020-01-20'").collect()[0][0] == 2
+        assert int_l4_streaming_content_type_features.select("sum_duration_sum_weekly_last_week").where(
+            "start_of_week = '2020-01-13'").collect()[0][0] == 2
+        assert int_l4_streaming_content_type_features.select("sum_duration_sum_weekly_last_week").where(
+            "start_of_week = '2020-01-06'").collect()[0][0] == None
+
+        ###################################### 2 week ##################################################################
+
+        assert int_l4_streaming_content_type_features.select("sum_traffic_volume_sum_weekly_last_two_week").where(
+            "start_of_week = '2020-01-27'").collect()[0][0] == 4
+        assert int_l4_streaming_content_type_features.select("sum_traffic_volume_sum_weekly_last_two_week").where(
+            "start_of_week = '2020-01-20'").collect()[0][0] == 4
+        assert int_l4_streaming_content_type_features.select("sum_traffic_volume_sum_weekly_last_two_week").where(
+            "start_of_week = '2020-01-13'").collect()[0][0] == 2
+        assert int_l4_streaming_content_type_features.select("sum_traffic_volume_sum_weekly_last_two_week").where(
+            "start_of_week = '2020-01-06'").collect()[0][0] == None
+
+        assert int_l4_streaming_content_type_features.select("sum_duration_sum_weekly_last_two_week").where(
+            "start_of_week = '2020-01-27'").collect()[0][0] == 4
+        assert int_l4_streaming_content_type_features.select("sum_duration_sum_weekly_last_two_week").where(
+            "start_of_week = '2020-01-20'").collect()[0][0] == 4
+        assert int_l4_streaming_content_type_features.select("sum_duration_sum_weekly_last_two_week").where(
+            "start_of_week = '2020-01-13'").collect()[0][0] == 2
+        assert int_l4_streaming_content_type_features.select("sum_duration_sum_weekly_last_two_week").where(
+            "start_of_week = '2020-01-06'").collect()[0][0] == None
+
+        ##################################### last 4 week ############################################################
+
+        assert int_l4_streaming_content_type_features.select("sum_traffic_volume_sum_weekly_last_four_week").where(
+            "start_of_week = '2020-01-27'").collect()[0][0] == 6
+        assert int_l4_streaming_content_type_features.select("sum_traffic_volume_sum_weekly_last_four_week").where(
+            "start_of_week = '2020-01-20'").collect()[0][0] == 4
+        assert int_l4_streaming_content_type_features.select("sum_traffic_volume_sum_weekly_last_four_week").where(
+            "start_of_week = '2020-01-13'").collect()[0][0] == 2
+        assert int_l4_streaming_content_type_features.select("sum_traffic_volume_sum_weekly_last_four_week").where(
+            "start_of_week = '2020-01-06'").collect()[0][0] == None
+
+        assert int_l4_streaming_content_type_features.select("sum_duration_sum_weekly_last_four_week").where(
+            "start_of_week = '2020-01-27'").collect()[0][0] == 6
+        assert int_l4_streaming_content_type_features.select("sum_duration_sum_weekly_last_four_week").where(
+            "start_of_week = '2020-01-20'").collect()[0][0] == 4
+        assert int_l4_streaming_content_type_features.select("sum_duration_sum_weekly_last_four_week").where(
+            "start_of_week = '2020-01-13'").collect()[0][0] == 2
+        assert int_l4_streaming_content_type_features.select("sum_duration_sum_weekly_last_four_week").where(
+            "start_of_week = '2020-01-06'").collect()[0][0] == None
