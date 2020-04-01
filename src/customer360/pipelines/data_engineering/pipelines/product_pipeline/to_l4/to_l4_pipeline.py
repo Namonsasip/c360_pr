@@ -4,7 +4,7 @@ from src.customer360.utilities.config_parser import *
 from src.customer360.pipelines.data_engineering.nodes.product_nodes.to_l1.to_l1_nodes import *
 
 
-def product_to_l3_pipeline(**kwargs):
+def product_to_l4_pipeline(**kwargs):
     return Pipeline(
         [
             node(

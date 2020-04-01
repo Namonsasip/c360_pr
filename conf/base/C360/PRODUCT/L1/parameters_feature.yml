@@ -1,0 +1,37 @@
+int_l1_product_active_customer_promotion_features:
+  where_clause: "where lower(promo_status) = 'active'"
+  feature_list:
+    postpaid_promo_boolean: "max(case when lower(promo_charge_type) in ('post-paid', 'all', 'hybrid-post')
+                            then true else false end)"
+    prepaid_promo_boolean: "max(case when lower(promo_charge_type) in ('pre-paid', 'all', 'hybrid-post')
+                            then true else false end)"
+    main_package_features: "collect_set(case when lower(promo_class) in ('main service', 'main')
+                            then (promo_cd,
+                                  promo_name,
+                                  previous_main_promotion_id,
+                                  promo_package_price,
+                                  promo_end_dttm,
+                                  previous_promo_end_dttm)
+                            else null end)[0]" # IF there's multiple main package, get the first one
+
+    ontop_package_features: "collect_set(case when lower(promo_class) in ('on-top')
+                            then (promo_cd, promo_name, promo_package_price, promo_end_dttm)
+                            else null end)[0]" # IF there's multiple ontop package, get the first one
+    landline_flag: "max(boolean(lower(promo_name) like '%landline%'))"
+    mobile_flag: "max(boolean(mobile_num is not null))"
+
+  event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
+  granularity: "crm_subscription_id, partition_date"
+
+
+l1_product_active_fbb_customer_features:
+  where_clause: "where lower(promo_status) = 'active'"
+  feature_list:
+    sum_offering_upload_rate: sum(offering_upload_rate)
+    sum_offering_download_rate: sum(offering_download_rate)
+    count_offering_upload_rate: count(offering_upload_rate)
+    count_offering_download_rate: count(offering_download_rate)
+    avg_offering_upload_rate: avg(offering_upload_rate)
+    avg_offering_download_rate: avg(offering_download_rate)
+  event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
+  granularity: "crm_subscription_id, partition_date"
