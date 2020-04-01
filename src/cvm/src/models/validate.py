@@ -52,9 +52,12 @@ def get_tpr_fpr(
 
     for threshold in thresholds:
         threshold_index = get_threshold_index(roc_thresholds, threshold)
-        metrics_to_return[threshold] = {}
-        metrics_to_return[threshold]["fpr"] = round_to_float(fpr[threshold_index])
-        metrics_to_return[threshold]["tpr"] = round_to_float(tpr[threshold_index])
+        metrics_to_return["fpr_{}".format(str(threshold))] = round_to_float(
+            fpr[threshold_index]
+        )
+        metrics_to_return["tpr_{}".format(str(threshold))] = round_to_float(
+            tpr[threshold_index]
+        )
     return metrics_to_return
 
 
