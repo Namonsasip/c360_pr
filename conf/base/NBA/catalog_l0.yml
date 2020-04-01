@@ -1,7 +1,23 @@
+# List of all campaigns and its details
 campaign_history_master_active:
     type: datasets.spark_hive_dataset.SparkHiveDataSet
     database: default
     table: campaign_history_master_active
+    write_mode: overwrite
+
+# List of each campaign's contacts and responses volume from Dec2019-Feb2020
+distinct_child_code_contact_response:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: default
+    table: distinct_child_code_contact_response
+    write_mode: insert
+
+
+# List of non-tracking campaign [adhoc]
+campaign_not_tracking_response:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: nba_dev
+    table: campaign_not_tracking_response
     write_mode: insert
 
 dm01_fin_top_up:
