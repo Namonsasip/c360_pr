@@ -28,7 +28,7 @@
 import uuid
 
 import pai
-from pai.backends import mlflow
+import mlflow
 from pyspark.sql import DataFrame
 from typing import Dict, Any, Union, List
 from sklearn.ensemble import RandomForestClassifier
