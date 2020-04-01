@@ -248,12 +248,6 @@ def log_pai_rf(
             tags: List of tags, eg ard, churn60
         """
 
-        random_name = str(uuid.uuid4())
-        pai.set_config(
-            experiment=random_name,
-            storage_runs=parameters["pai_runs_path"],
-            storage_artifacts=parameters["pai_artifacts_path"],
-        )
         pai.start_run(tags=tags)
         pai.log_model(rf_model)
         pai.log_features(rf_model.feature_names, rf_model.feature_importances_)
@@ -270,4 +264,10 @@ def log_pai_rf(
         tags = [usecase, macrosegment, target]
         _log_one_model(rf_model, metrics, tags)
 
+    random_name = str(uuid.uuid4())
+    pai.set_config(
+        experiment=random_name,
+        storage_runs=parameters["pai_runs_path"],
+        storage_artifacts=parameters["pai_artifacts_path"],
+    )
     iterate_over_usecases_macrosegments_targets(_fun_to_iterate, parameters)
