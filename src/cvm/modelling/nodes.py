@@ -236,7 +236,7 @@ def log_pai_rf(
     """
 
     def _log_one_model(
-        rf_model: RandomForestClassifier, metrics: Dict[Any], tags: List[str],
+        rf_model: RandomForestClassifier, metrics: Dict[str, Any], tags: List[str],
     ):
         """ Logs only one model.
 
