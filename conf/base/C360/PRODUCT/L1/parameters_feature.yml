@@ -5,7 +5,7 @@ int_l1_product_active_customer_promotion_features:
                             then true else false end)"
     prepaid_promo_boolean: "max(case when lower(promo_charge_type) in ('pre-paid', 'all', 'hybrid-post')
                             then true else false end)"
-    main_package_features: "collect_set(case when lower(promo_class) in ('main service', 'main')
+    main_package_features: "collect_set(case when lower(promo_class) = 'main'
                             then (promo_cd,
                                   promo_name,
                                   previous_main_promotion_id,
@@ -14,9 +14,17 @@ int_l1_product_active_customer_promotion_features:
                                   previous_promo_end_dttm)
                             else null end)[0]" # IF there's multiple main package, get the first one
 
-    ontop_package_features: "collect_set(case when lower(promo_class) in ('on-top')
+    ontop_package_features: "collect_set(case when lower(promo_class) = 'on-top'
                             then (promo_cd, promo_name, promo_package_price, promo_end_dttm)
-                            else null end)[0]" # IF there's multiple ontop package, get the first one
+                            else null end)"
+
+    main_package_count: "sum(case when lower(promo_class) = 'main' then 1 else 0 end)"
+    total_main_package_price: "sum(case when lower(promo_class) = 'main' then promo_package_price else 0 end)"
+
+    ontop_package_count: "sum(case when lower(promo_class) = 'on-top' then 1 else 0 end)"
+    total_ontop_package_price: "sum(case when lower(promo_class) = 'on-top' then promo_package_price else 0 end)"
+
+    fbb_flag: "max(boolean(lower(promo_user_cat_cd) like '%fbb%'))"
     landline_flag: "max(boolean(lower(promo_name) like '%landline%'))"
     mobile_flag: "max(boolean(mobile_num is not null))"
 

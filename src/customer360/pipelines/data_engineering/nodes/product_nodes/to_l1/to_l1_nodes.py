@@ -18,6 +18,43 @@ def join_with_master_package(
     postpaid_main_master_df.createOrReplaceTempView("postpaid_main_master_df")
     postpaid_ontop_master_df.createOrReplaceTempView("postpaid_ontop_master_df")
 
+    unioned_main_master = spark.sql("""
+        select package_id as promotion_code,
+                main_package_4g_type_tariff as data_speed,
+                null as data_mb_in_pack,
+                package_service_type as service_group,
+                null as tv_vdo_bundling,
+                partition_date 
+        from prepaid_main_master_df
+        union all
+        select promotion_code,
+                data_speed,
+                data_mb_in_pack,
+                service_group,
+                tv_vdo_bundling,
+                partition_date 
+        from postpaid_main_master_df
+    """)
+    unioned_main_master.createOrReplaceTempView("unioned_main_master")
+    unioned_main_master.cache()
+
+    unioned_ontop_master = spark.sql("""
+        select promotion_code,
+                mm_data_speed,
+                data_quota,
+               partition_date
+        from prepaid_ontop_master_df
+        union all
+        select
+            promotion_code,
+            mm_data_speed,
+            data_quota,
+            partition_date
+        from postpaid_ontop_master_df
+    """)
+    unioned_ontop_master.createOrReplaceTempView("unioned_ontop_master")
+    unioned_ontop_master.cache()
+
     result_df = spark.sql("""
         with flatten_cust_promo_df as (
             select 
@@ -32,11 +69,23 @@ def join_with_master_package(
                 main_package_features.previous_main_promotion_id as prev_main_package_name,
                 main_package_features.previous_promo_end_dttm as prev_main_package_end_dttm,
                 
-                ontop_package_features.promo_name as ontop_package_name,
-                ontop_package_features.promo_package_price as ontop_package_price,
-                ontop_package_features.promo_cd as ontop_package_promo_cd,
-                ontop_package_features.promo_end_dttm as ontop_package_validity,
+                ontop_package_features[0].promo_name as ontop_1_package_name,
+                ontop_package_features[0].promo_package_price as ontop_1_package_price,
+                ontop_package_features[0].promo_cd as ontop_1_package_promo_cd,
+                ontop_package_features[0].promo_end_dttm as ontop_1_package_validity,
                 
+                ontop_package_features[1].promo_name as ontop_2_package_name,
+                ontop_package_features[1].promo_package_price as ontop_2_package_price,
+                ontop_package_features[1].promo_cd as ontop_2_package_promo_cd,
+                ontop_package_features[1].promo_end_dttm as ontop_2_package_validity,
+                
+                main_package_count,
+                total_main_package_price,
+                
+                ontop_package_count,
+                total_ontop_package_price,
+                
+                fbb_flag,
                 landline_flag,
                 mobile_flag,
                 
@@ -48,13 +97,14 @@ def join_with_master_package(
             from grouped_cust_promo_df
         )
         select cp_df.*,
-                coalesce(pre_m_df.main_package_4g_type_tariff, post_m_df.data_speed) as main_data_throughput_limit,
-                coalesce(pre_ontop_df.mm_data_speed, post_ontop_df.mm_data_speed) as ontop_data_throughput_limit,
+                main_df.data_speed as main_data_throughput_limit,
+                ontop_df1.mm_data_speed as ontop_1_data_throughput_limit,
+                ontop_df2.mm_data_speed as ontop_2_data_throughput_limit,
                 
-                post_m_df.data_mb_in_pack as main_data_traffic_limit,
-                coalesce(pre_ontop_df.data_quota, post_ontop_df.data_quota) as ontop_data_traffic_limit,
+                main_df.data_mb_in_pack as main_data_traffic_limit,
+                ontop_df1.data_quota as ontop_1_data_traffic_limit,
+                ontop_df2.data_quota as ontop_2_data_traffic_limit,
                 
-                coalesce(boolean(lower(post_m_df.fbb_yn) = 'y'), false) as fbb_flag,
                 boolean(datediff(event_partition_date, prev_main_package_end_dttm) < 30) as main_package_changed_last_month,
                 
                 boolean(datediff(event_partition_date, prev_main_package_end_dttm) < 60 and
@@ -66,22 +116,21 @@ def join_with_master_package(
                 boolean(datediff(event_partition_date, prev_main_package_end_dttm) < 180 and
                         datediff(event_partition_date, prev_main_package_end_dttm) >= 90) as main_package_changed_last_six_month,
                 
-                boolean(post_m_df.tv_vdo_bundling is not null) as paytv_flag,
-                boolean(lower(pre_m_df.package_service_type) = 'data' or lower(post_m_df.service_group) = 'data') as mobile_data_only_flag
+                boolean(main_df.tv_vdo_bundling is not null) as paytv_flag,
+                boolean(lower(main_df.service_group) = 'data') as mobile_data_only_flag
                 
         from flatten_cust_promo_df cp_df
-        left join prepaid_main_master_df pre_m_df
-            on pre_m_df.package_id = cp_df.main_package_promo_cd
-            and pre_m_df.partition_date = cp_df.partition_date
-        left join prepaid_ontop_master_df pre_ontop_df
-            on pre_ontop_df.promotion_code = cp_df.ontop_package_promo_cd
-            and pre_ontop_df.partition_date = cp_df.partition_date
-        left join postpaid_main_master_df post_m_df
-            on post_m_df.promotion_code = cp_df.main_package_promo_cd
-            and post_m_df.partition_date = cp_df.partition_date
-        left join postpaid_ontop_master_df post_ontop_df
-            on post_ontop_df.promotion_code = cp_df.ontop_package_promo_cd
-            and post_ontop_df.partition_date = cp_df.partition_date
+        left join unioned_main_master main_df
+            on main_df.promotion_code = cp_df.main_package_promo_cd
+            and main_df.partition_date = cp_df.partition_date
+            
+        left join unioned_ontop_master ontop_df1
+            on ontop_df1.promotion_code = cp_df.ontop_1_package_promo_cd
+            and ontop_df1.partition_date = cp_df.partition_date
+            
+        left join unioned_ontop_master ontop_df2
+            on ontop_df2.promotion_code = cp_df.ontop_2_package_promo_cd
+            and ontop_df2.partition_date = cp_df.partition_date
     """)
 
     return result_df
