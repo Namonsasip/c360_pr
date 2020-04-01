@@ -26,11 +26,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Dict, Callable, Bool
+from typing import Dict, Callable, Any
+
+from cvm.src.utils.list_targets import list_targets
 
 
 def map_over_deep_dict(
-    deep_dict: Dict, fun: Callable, pass_dict_key: Bool = False
+    deep_dict: Dict, fun: Callable, pass_dict_key: bool = False
 ) -> Dict:
     """ Iterates over dictionary of dictionaries.
 
@@ -55,3 +57,39 @@ def map_over_deep_dict(
         return to_return
 
     return _iter_deeper(deep_dict, ())
+
+
+def iterate_over_usecases_macrosegments_targets(
+    fun: Callable, parameters: Dict[str, Any],
+) -> object:
+    """Iterates fun over every usecase, macrosegment, target.
+
+    Args:
+        fun: function to call, assumes to input usecase, macrosegment, target
+        parameters: parameters defined in parameters.yml.
+    """
+
+    def _iter_for_macrosegment(use_case_chosen, macrosegment_chosen):
+        fun_values = {}
+        for target_chosen in target_cols[use_case_chosen]:
+            fun_values[target_chosen] = fun(
+                use_case_chosen, macrosegment_chosen, target_chosen
+            )
+        return fun_values
+
+    def _iter_for_usecase(use_chosen):
+        fun_values = {}
+        for macrosegment_chosen in macrosegments[use_chosen]:
+            fun_values[macrosegment_chosen] = _iter_for_macrosegment(
+                use_chosen, macrosegment_chosen
+            )
+        return fun_values
+
+    target_cols = list_targets(parameters, case_split=True)
+    macrosegments = parameters["macrosegments"]
+
+    fun_vals = {}
+    for use_case in parameters["targets"]:
+        fun_vals[use_case] = _iter_for_usecase(use_case)
+
+    return fun_vals
