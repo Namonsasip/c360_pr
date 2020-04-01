@@ -26,26 +26,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Dict, Callable
+from typing import Dict, Callable, Bool
 
 
-def map_over_deep_dict(deep_dict: Dict, fun: Callable,) -> Dict:
+def map_over_deep_dict(
+    deep_dict: Dict, fun: Callable, pass_dict_key: Bool = False
+) -> Dict:
     """ Iterates over dictionary of dictionaries.
 
     Args:
         deep_dict: dictionary of dictionaries with arguments in leaf nodes.
         fun: function to map on deep_dict.
+        pass_dict_key: should dictionary keys be passed as arguments to fun.
     Returns:
         Dictionary of dictionaries with mapped values in leaves.
     """
 
-    def _iter_deeper(sub_dict_or_arg):
+    def _iter_deeper(sub_dict_or_arg, *args):
         if type(sub_dict_or_arg) is dict:
             to_return = {}
             for k in sub_dict_or_arg:
-                to_return[k] = _iter_deeper(sub_dict_or_arg[k])
+                to_return[k] = _iter_deeper(sub_dict_or_arg[k], (*args, k))
         else:
-            to_return = fun(sub_dict_or_arg)
+            if pass_dict_key:
+                to_return = fun(sub_dict_or_arg, *args)
+            else:
+                to_return = fun(sub_dict_or_arg)
         return to_return
 
-    return _iter_deeper(deep_dict)
+    return _iter_deeper(deep_dict, ())
