@@ -133,7 +133,7 @@ def create_train_validate(sample_type: str = None,) -> Pipeline:
             node(
                 log_pai_rf,
                 ["random_forest" + suffix, "models_metrics", "parameters"],
-                [],
+                None,
                 name="log_pai" + suffix,
             ),
         ]
