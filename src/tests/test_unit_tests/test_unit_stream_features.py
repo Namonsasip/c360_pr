@@ -37,7 +37,7 @@ To run the tests, run ``kedro test``.
 """
 
 from customer360.pipelines.data_engineering.nodes.stream_nodes import *
-from customer360.utilities.config_parser import node_from_config, expansion, l4_rolling_window
+from customer360.utilities.config_parser import node_from_config, expansion, l4_rolling_window , l4_rolling_ranked_window
 from customer360.utilities.re_usable_functions import *
 import pandas as pd
 import random
@@ -1730,15 +1730,15 @@ class TestUnitStream:
 
         int_l1_streaming_content_type_features = l1_massive_processing(
             df_temp_l0_streaming_ru_a_onair_vimmi_usage_daily,
-            var_project_context.catalog.load('params:int_l1_streaming_content_type_features'))
+            var_project_context.catalog.load('params:int_l1_streaming_tv_channel_features'))
 
         int_l2_streaming_content_type_features = l2_massive_processing(int_l1_streaming_content_type_features,
                                                                        var_project_context.catalog.load(
-                                                                           'params:int_l2_streaming_content_type_features'),customer_pro)
+                                                                           'params:int_l2_streaming_tv_channel_features'),customer_pro)
 
         int_l4_streaming_content_type_features = l4_rolling_window(int_l2_streaming_content_type_features,
                                                                    var_project_context.catalog.load(
-                                                                           'params:int_l4_streaming_content_type_features'))
+                                                                           'params:int_l4_streaming_tv_channel_features'))
 
         int_l4_streaming_content_type_features.show()
 
@@ -1800,3 +1800,189 @@ class TestUnitStream:
             "start_of_week = '2020-01-13'").collect()[0][0] == 2
         assert int_l4_streaming_content_type_features.select("sum_duration_sum_weekly_last_four_week").where(
             "start_of_week = '2020-01-06'").collect()[0][0] == None
+
+    ###################################################################################################################
+
+    def test_l4_streaming_fav_tv_channel_by_volume(self, project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+
+        int_l1_streaming_tv_channel_features = l1_massive_processing(
+            df_temp_l0_streaming_ru_a_onair_vimmi_usage_daily,
+            var_project_context.catalog.load('params:int_l1_streaming_tv_channel_features'))
+
+        int_l2_streaming_tv_channel_features = l2_massive_processing(int_l1_streaming_tv_channel_features,
+                                                                       var_project_context.catalog.load(
+                                                                           'params:int_l2_streaming_tv_channel_features'),customer_pro)
+
+        int_l4_streaming_tv_channel_features = l4_rolling_window(int_l2_streaming_tv_channel_features,
+                                                                   var_project_context.catalog.load(
+                                                                           'params:int_l4_streaming_tv_channel_features'))
+
+        l4_streaming_fav_tv_channel_by_volume = l4_rolling_ranked_window(int_l4_streaming_tv_channel_features,
+                                                                   var_project_context.catalog.load(
+                                                                       'params:l4_streaming_fav_tv_channel_by_volume'))
+
+        l4_streaming_fav_tv_channel_by_volume.show()
+
+        assert l4_streaming_fav_tv_channel_by_volume.select("subscription_identifier").count() == 4
+
+    def test_l4_streaming_fav_tv_channel_by_duration(self, project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+
+        int_l1_streaming_tv_channel_features = l1_massive_processing(
+            df_temp_l0_streaming_ru_a_onair_vimmi_usage_daily,
+            var_project_context.catalog.load('params:int_l1_streaming_tv_channel_features'))
+
+        int_l2_streaming_tv_channel_features = l2_massive_processing(int_l1_streaming_tv_channel_features,
+                                                                       var_project_context.catalog.load(
+                                                                           'params:int_l2_streaming_tv_channel_features'),customer_pro)
+
+        int_l4_streaming_tv_channel_features = l4_rolling_window(int_l2_streaming_tv_channel_features,
+                                                                   var_project_context.catalog.load(
+                                                                           'params:int_l4_streaming_tv_channel_features'))
+
+        l4_streaming_fav_tv_channel_by_duration = l4_rolling_ranked_window(int_l4_streaming_tv_channel_features,
+                                                                   var_project_context.catalog.load(
+                                                                       'params:l4_streaming_fav_tv_channel_by_duration'))
+
+        l4_streaming_fav_tv_channel_by_duration.show()
+
+        assert l4_streaming_fav_tv_channel_by_duration.select("subscription_identifier").count() == 4
+
+    ####################################################################################################################
+
+    def test_int_l4_streaming_tv_show_features_1(self,project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+
+        int_l0_streaming_vimmi_table  = add_start_of_week_and_month(df_temp_l0_streaming_ru_a_onair_vimmi_usage_daily)
+        int_l4_streaming_tv_show_features_1 = l4_rolling_window(
+            int_l0_streaming_vimmi_table,
+            var_project_context.catalog.load('params:int_l4_streaming_tv_show_features_1'))
+
+        int_l4_streaming_tv_show_features_1.show()
+
+        assert int_l4_streaming_tv_show_features_1.select("access_method_num").rdd.isEmpty() == True
+
+    def test_int_l4_streaming_tv_show_features_2(self,project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+
+        int_l0_streaming_vimmi_table  = add_start_of_week_and_month(df_temp_l0_streaming_ru_a_onair_vimmi_usage_daily)
+        int_l4_streaming_tv_show_features_1 = l4_rolling_window(
+            int_l0_streaming_vimmi_table,
+            var_project_context.catalog.load('params:int_l4_streaming_tv_show_features_1'))
+
+        int_l4_streaming_tv_show_features_2 = node_from_config(
+            int_l4_streaming_tv_show_features_1,
+            var_project_context.catalog.load('params:int_l4_streaming_tv_show_features_2'))
+
+        int_l4_streaming_tv_show_features_2.show()
+
+        assert int_l4_streaming_tv_show_features_2.select("access_method_num").rdd.isEmpty() == True
+
+    def test_l4_streaming_fav_tv_show_by_episode_watched(self,project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+
+        int_l0_streaming_vimmi_table  = add_start_of_week_and_month(df_temp_l0_streaming_ru_a_onair_vimmi_usage_daily)
+
+        int_l4_streaming_tv_show_features_1 = l4_rolling_window(
+            int_l0_streaming_vimmi_table,
+            var_project_context.catalog.load('params:int_l4_streaming_tv_show_features_1'))
+
+        int_l4_streaming_tv_show_features_2 = node_from_config(
+            int_l4_streaming_tv_show_features_1,
+            var_project_context.catalog.load('params:int_l4_streaming_tv_show_features_2'))
+
+        l4_streaming_fav_tv_show_by_episode_watched = l4_rolling_ranked_window(
+            int_l4_streaming_tv_show_features_2,
+            var_project_context.catalog.load('params:l4_streaming_fav_tv_show_by_episode_watched'))
+
+        l4_streaming_fav_tv_show_by_episode_watched.show()
+
+        assert l4_streaming_fav_tv_show_by_episode_watched.select("access_method_num").rdd.isEmpty() == True
+
+    ####################################################################################################################
+
+    def test_l4_streaming_visit_count_and_download_traffic_feature(self, project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+
+        l1_streaming_visit_count_and_download_traffic_feature = l1_massive_processing(
+            df_temp_l0_streaming_soc_mobile_app_daily,
+            var_project_context.catalog.load(
+                'params:l1_streaming_visit_count_and_download_traffic_feature'))
+
+        l2_streaming_visit_count_and_download_traffic_feature = l2_massive_processing_with_expansion(
+            l1_streaming_visit_count_and_download_traffic_feature,
+            var_project_context.catalog.load(
+                'params:l2_streaming_visit_count_and_download_traffic_feature'), customer_pro)
+
+        l4_streaming_visit_count_and_download_traffic_feature = l4_rolling_window(
+            l2_streaming_visit_count_and_download_traffic_feature,
+            var_project_context.catalog.load(
+                'params:l4_streaming_visit_count_and_download_traffic_feature'))
+
+        l4_streaming_visit_count_and_download_traffic_feature.show()
+
+        ############################################## TEST ZONE #####################################################
+        ########################## Last week ########################################################################
+        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_visit_count_youtube_video_sum_weekly_last_week").where("start_of_week = '2020-01-27'").collect()[0][0]) == 2
+        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_visit_count_youtube_video_sum_weekly_last_week").where("start_of_week = '2020-01-20'").collect()[0][0]) == 2
+        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_visit_count_youtube_video_sum_weekly_last_week").where("start_of_week = '2020-01-13'").collect()[0][0]) == 2
+        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_visit_count_youtube_video_sum_weekly_last_week").where("start_of_week = '2020-01-06'").collect()[0][0]) == None
+
+        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_visit_count_facebook_video_sum_weekly_last_week").where("start_of_week = '2020-01-27'").collect()[0][0]) == 0
+        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_visit_count_facebook_video_sum_weekly_last_week").where("start_of_week = '2020-01-20'").collect()[0][0]) == 0
+        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_visit_count_facebook_video_sum_weekly_last_week").where("start_of_week = '2020-01-13'").collect()[0][0]) == 0
+        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_visit_count_facebook_video_sum_weekly_last_week").where("start_of_week = '2020-01-06'").collect()[0][0]) == None
+
+        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_download_kb_traffic_youtube_video_sum_weekly_last_week").where("start_of_week = '2020-01-27'").collect()[0][0]) == 4
+        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_download_kb_traffic_youtube_video_sum_weekly_last_week").where("start_of_week = '2020-01-20'").collect()[0][0]) == 4
+        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_download_kb_traffic_youtube_video_sum_weekly_last_week").where("start_of_week = '2020-01-13'").collect()[0][0]) == 4
+        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_download_kb_traffic_youtube_video_sum_weekly_last_week").where("start_of_week = '2020-01-06'").collect()[0][0]) == None
+
+        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_download_kb_traffic_facebook_video_sum_weekly_last_week").where("start_of_week = '2020-01-27'").collect()[0][
+                         0]) == 0
+        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_download_kb_traffic_facebook_video_sum_weekly_last_week").where("start_of_week = '2020-01-20'").collect()[0][
+                         0]) == 0
+        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_download_kb_traffic_facebook_video_sum_weekly_last_week").where("start_of_week = '2020-01-13'").collect()[0][
+                         0]) == 0
+        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_download_kb_traffic_facebook_video_sum_weekly_last_week").where("start_of_week = '2020-01-06'").collect()[0][
+                         0]) == None
+
+        ####################################### 2 week #################################################################
+
+
+
