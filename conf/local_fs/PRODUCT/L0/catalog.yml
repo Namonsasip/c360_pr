@@ -1,39 +1,39 @@
 # PREPAID MAIN MASTER
 l0_product_pru_m_package_master_group:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/PRODUCT/product_pru_m_package_master_group/
+  filepath: data/L0/PRODUCT/product_pru_m_package_master_group/
   file_format: "parquet"
 
 # PREPAID ONTOP MASTER
 l0_product_pru_m_ontop_master:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/PRODUCT/product_pru_m_ontop_master/
+  filepath: data/L0/PRODUCT/product_pru_m_ontop_master/
   file_format: "parquet"
 
 # POSTPAID MAIN MASTER
 l0_product_ru_m_main_promotion_cvm_proj:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/PRODUCT/product_ru_m_main_promotion_cvm_proj/
+  filepath: data/L0/PRODUCT/product_ru_m_main_promotion_cvm_proj/
   file_format: "parquet"
 
 # POSTPAID ONTOP MASTER
 l0_product_ru_m_ontop_promotion_cvm_proj:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/PRODUCT/product_ru_m_ontop_promotion_cvm_proj/
+  filepath: data/L0/PRODUCT/product_ru_m_ontop_promotion_cvm_proj/
   file_format: "parquet"
 
 
 l0_product_ir_package:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/PRODUCT/product_ir_package/
+  filepath: data/L0/PRODUCT/product_ir_package/
   file_format: "parquet"
 
 l0_product_fbb_a_customer_promotion_current:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/PRODUCT/product_fbb_a_customer_promotion_current/
+  filepath: data/L0/PRODUCT/product_fbb_a_customer_promotion_current/
   file_format: "parquet"
 
 l0_product_customer_promotion_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/PRODUCT/product_customer_promotion_daily/
+  filepath: data/L0/PRODUCT/product_customer_promotion_daily/
   file_format: "parquet"
