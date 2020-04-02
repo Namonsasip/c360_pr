@@ -1948,8 +1948,8 @@ class TestUnitStream:
             "sum_visit_count_youtube_video_sum_weekly_last_week").where("start_of_week = '2020-01-20'").collect()[0][0]) == 2
         assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
             "sum_visit_count_youtube_video_sum_weekly_last_week").where("start_of_week = '2020-01-13'").collect()[0][0]) == 2
-        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
-            "sum_visit_count_youtube_video_sum_weekly_last_week").where("start_of_week = '2020-01-06'").collect()[0][0]) == None
+        assert l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_visit_count_youtube_video_sum_weekly_last_week").where("start_of_week = '2020-01-06'").collect()[0][0] == None
 
         assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
             "sum_visit_count_facebook_video_sum_weekly_last_week").where("start_of_week = '2020-01-27'").collect()[0][0]) == 0
@@ -1957,8 +1957,8 @@ class TestUnitStream:
             "sum_visit_count_facebook_video_sum_weekly_last_week").where("start_of_week = '2020-01-20'").collect()[0][0]) == 0
         assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
             "sum_visit_count_facebook_video_sum_weekly_last_week").where("start_of_week = '2020-01-13'").collect()[0][0]) == 0
-        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
-            "sum_visit_count_facebook_video_sum_weekly_last_week").where("start_of_week = '2020-01-06'").collect()[0][0]) == None
+        assert l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_visit_count_facebook_video_sum_weekly_last_week").where("start_of_week = '2020-01-06'").collect()[0][0] == None
 
         assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
             "sum_download_kb_traffic_youtube_video_sum_weekly_last_week").where("start_of_week = '2020-01-27'").collect()[0][0]) == 4
@@ -1966,8 +1966,8 @@ class TestUnitStream:
             "sum_download_kb_traffic_youtube_video_sum_weekly_last_week").where("start_of_week = '2020-01-20'").collect()[0][0]) == 4
         assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
             "sum_download_kb_traffic_youtube_video_sum_weekly_last_week").where("start_of_week = '2020-01-13'").collect()[0][0]) == 4
-        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
-            "sum_download_kb_traffic_youtube_video_sum_weekly_last_week").where("start_of_week = '2020-01-06'").collect()[0][0]) == None
+        assert l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_download_kb_traffic_youtube_video_sum_weekly_last_week").where("start_of_week = '2020-01-06'").collect()[0][0] == None
 
         assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
             "sum_download_kb_traffic_facebook_video_sum_weekly_last_week").where("start_of_week = '2020-01-27'").collect()[0][
@@ -1978,11 +1978,117 @@ class TestUnitStream:
         assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
             "sum_download_kb_traffic_facebook_video_sum_weekly_last_week").where("start_of_week = '2020-01-13'").collect()[0][
                          0]) == 0
-        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
+        assert l4_streaming_visit_count_and_download_traffic_feature.select(
             "sum_download_kb_traffic_facebook_video_sum_weekly_last_week").where("start_of_week = '2020-01-06'").collect()[0][
-                         0]) == None
+                         0] == None
 
         ####################################### 2 week #################################################################
+        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_visit_count_youtube_video_sum_weekly_last_two_week").where("start_of_week = '2020-01-27'").collect()[
+                         0][0]) == 4
+        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_visit_count_youtube_video_sum_weekly_last_two_week").where("start_of_week = '2020-01-20'").collect()[
+                         0][0]) == 4
+        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_visit_count_youtube_video_sum_weekly_last_two_week").where("start_of_week = '2020-01-13'").collect()[
+                         0][0]) == 2
+        assert l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_visit_count_youtube_video_sum_weekly_last_two_week").where("start_of_week = '2020-01-06'").collect()[
+                   0][0] == None
 
+        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_visit_count_facebook_video_sum_weekly_last_two_week").where("start_of_week = '2020-01-27'").collect()[
+                         0][0]) == 0
+        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_visit_count_facebook_video_sum_weekly_last_two_week").where("start_of_week = '2020-01-20'").collect()[
+                         0][0]) == 0
+        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_visit_count_facebook_video_sum_weekly_last_two_week").where("start_of_week = '2020-01-13'").collect()[
+                         0][0]) == 0
+        assert l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_visit_count_facebook_video_sum_weekly_last_two_week").where("start_of_week = '2020-01-06'").collect()[
+                   0][0] == None
 
+        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_download_kb_traffic_youtube_video_sum_weekly_last_two_week").where(
+            "start_of_week = '2020-01-27'").collect()[0][0]) == 8
+        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_download_kb_traffic_youtube_video_sum_weekly_last_two_week").where(
+            "start_of_week = '2020-01-20'").collect()[0][0]) == 8
+        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_download_kb_traffic_youtube_video_sum_weekly_last_two_week").where(
+            "start_of_week = '2020-01-13'").collect()[0][0]) == 4
+        assert l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_download_kb_traffic_youtube_video_sum_weekly_last_two_week").where(
+            "start_of_week = '2020-01-06'").collect()[0][0] == None
+
+        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_download_kb_traffic_facebook_video_sum_weekly_last_two_week").where(
+            "start_of_week = '2020-01-27'").collect()[0][
+                         0]) == 0
+        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_download_kb_traffic_facebook_video_sum_weekly_last_two_week").where(
+            "start_of_week = '2020-01-20'").collect()[0][
+                         0]) == 0
+        assert float(l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_download_kb_traffic_facebook_video_sum_weekly_last_two_week").where(
+            "start_of_week = '2020-01-13'").collect()[0][
+                         0]) == 0
+        assert l4_streaming_visit_count_and_download_traffic_feature.select(
+            "sum_download_kb_traffic_facebook_video_sum_weekly_last_two_week").where(
+            "start_of_week = '2020-01-06'").collect()[0][
+                   0] == None
+
+        ################################################################################################################
+
+    def test_int_l4_streaming_download_traffic_per_day_of_week(self, project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+
+        l1_streaming_visit_count_and_download_traffic_feature = l1_massive_processing(
+            df_temp_l0_streaming_soc_mobile_app_daily,
+            var_project_context.catalog.load(
+                'params:l1_streaming_visit_count_and_download_traffic_feature'))
+
+        int_l2_streaming_sum_per_day = l2_massive_processing_with_expansion(
+            l1_streaming_visit_count_and_download_traffic_feature,
+            var_project_context.catalog.load(
+                'params:int_l2_streaming_sum_per_day'), customer_pro)
+
+        int_l4_streaming_download_traffic_per_day_of_week = l4_rolling_window(
+            int_l2_streaming_sum_per_day,
+            var_project_context.catalog.load(
+                'params:int_l4_streaming_download_traffic_per_day_of_week'))
+
+        int_l4_streaming_download_traffic_per_day_of_week.show()
+
+        ########################### TEST ZONE ######################################################################
+        ############################## Last week ##################################################################
+        assert float(int_l4_streaming_download_traffic_per_day_of_week.select(
+            "sum_download_kb_traffic_youtube_video_sum_weekly_last_week").where(
+            'start_of_week = "2020-01-27"').collect()[0][0]) == 2
+        assert float(int_l4_streaming_download_traffic_per_day_of_week.select(
+            "sum_download_kb_traffic_youtube_video_sum_weekly_last_week").where(
+            'start_of_week = "2020-01-20"').collect()[0][0]) == 2
+        assert float(int_l4_streaming_download_traffic_per_day_of_week.select(
+            "sum_download_kb_traffic_youtube_video_sum_weekly_last_week").where(
+            'start_of_week = "2020-01-13"').collect()[0][0]) == 2
+        assert int_l4_streaming_download_traffic_per_day_of_week.select(
+            "sum_download_kb_traffic_youtube_video_sum_weekly_last_week").where(
+            'start_of_week = "2020-01-06"').collect()[0][0] == None
+
+        assert float(int_l4_streaming_download_traffic_per_day_of_week.select(
+            "sum_download_kb_traffic_facebook_video_sum_weekly_last_week").where(
+            'start_of_week = "2020-01-27"').collect()[0][0]) == 2
+        assert float(int_l4_streaming_download_traffic_per_day_of_week.select(
+            "sum_download_kb_traffic_facebook_video_sum_weekly_last_week").where(
+            'start_of_week = "2020-01-20"').collect()[0][0]) == 2
+        assert float(int_l4_streaming_download_traffic_per_day_of_week.select(
+            "sum_download_kb_traffic_facebook_video_sum_weekly_last_week").where(
+            'start_of_week = "2020-01-13"').collect()[0][0]) == 2
+        assert int_l4_streaming_download_traffic_per_day_of_week.select(
+            "sum_download_kb_traffic_facebook_video_sum_weekly_last_week").where(
+            'start_of_week = "2020-01-06"').collect()[0][0] == None
 
