@@ -87,36 +87,36 @@ def join_with_master_package(
     result_df = spark.sql("""
         with flatten_cust_promo_df as (
             select 
-                postpaid_promo_boolean,
-                prepaid_promo_boolean,
+                product_postpaid_promo_boolean,
+                product_prepaid_promo_boolean,
                 
-                main_package_features.promo_name as main_package_name,
-                main_package_features.promo_package_price as main_package_price,
-                main_package_features.promo_cd as main_package_promo_cd,
-                main_package_features.promo_end_dttm as main_package_validity,
+                main_package_features.promo_name as product_main_package_name,
+                main_package_features.promo_package_price as product_main_package_price,
+                main_package_features.promo_cd as product_main_package_promo_cd,
+                main_package_features.promo_end_dttm as product_main_package_validity,
                 
-                main_package_features.previous_main_promotion_id as prev_main_package_name,
-                main_package_features.previous_promo_end_dttm as prev_main_package_end_dttm,
+                main_package_features.previous_main_promotion_id as product_prev_main_package_name,
+                main_package_features.previous_promo_end_dttm as product_prev_main_package_end_dttm,
                 
-                ontop_package_features[0].promo_name as ontop_1_package_name,
-                ontop_package_features[0].promo_package_price as ontop_1_package_price,
-                ontop_package_features[0].promo_cd as ontop_1_package_promo_cd,
-                ontop_package_features[0].promo_end_dttm as ontop_1_package_validity,
+                ontop_package_features[0].promo_name as product_ontop_1_package_name,
+                ontop_package_features[0].promo_package_price as product_ontop_1_package_price,
+                ontop_package_features[0].promo_cd as product_ontop_1_package_promo_cd,
+                ontop_package_features[0].promo_end_dttm as product_ontop_1_package_validity,
                 
-                ontop_package_features[1].promo_name as ontop_2_package_name,
-                ontop_package_features[1].promo_package_price as ontop_2_package_price,
-                ontop_package_features[1].promo_cd as ontop_2_package_promo_cd,
-                ontop_package_features[1].promo_end_dttm as ontop_2_package_validity,
+                ontop_package_features[1].promo_name as product_ontop_2_package_name,
+                ontop_package_features[1].promo_package_price as product_ontop_2_package_price,
+                ontop_package_features[1].promo_cd as product_ontop_2_package_promo_cd,
+                ontop_package_features[1].promo_end_dttm as product_ontop_2_package_validity,
                 
-                main_package_count,
-                total_main_package_price,
+                product_main_package_count,
+                product_total_main_package_price,
                 
-                ontop_package_count,
-                total_ontop_package_price,
+                product_ontop_package_count,
+                product_total_ontop_package_price,
                 
-                fbb_flag,
-                landline_flag,
-                mobile_flag,
+                product_fbb_flag,
+                product_landline_flag,
+                product_mobile_flag,
                 
                 crm_subscription_id as subscription_identifier, 
                 partition_date,
@@ -126,39 +126,39 @@ def join_with_master_package(
             from grouped_cust_promo_df
         )
         select cp_df.*,
-                main_df.data_speed as main_data_throughput_limit,
-                ontop_df1.mm_data_speed as ontop_1_data_throughput_limit,
-                ontop_df2.mm_data_speed as ontop_2_data_throughput_limit,
+                main_df.data_speed as product_main_data_throughput_limit,
+                ontop_df1.mm_data_speed as product_ontop_1_data_throughput_limit,
+                ontop_df2.mm_data_speed as product_ontop_2_data_throughput_limit,
                 
-                main_df.data_mb_in_pack as main_data_traffic_limit,
-                ontop_df1.data_quota as ontop_1_data_traffic_limit,
-                ontop_df2.data_quota as ontop_2_data_traffic_limit,
+                main_df.data_mb_in_pack as product_main_data_traffic_limit,
+                ontop_df1.data_quota as product_ontop_1_data_traffic_limit,
+                ontop_df2.data_quota as product_ontop_2_data_traffic_limit,
                 
-                boolean(datediff(event_partition_date, prev_main_package_end_dttm) < 30) as main_package_changed_last_month,
+                boolean(datediff(event_partition_date, product_prev_main_package_end_dttm) < 30) as product_main_package_changed_last_month,
                 
-                boolean(datediff(event_partition_date, prev_main_package_end_dttm) < 60 and
-                        datediff(event_partition_date, prev_main_package_end_dttm) >= 30) as main_package_changed_last_two_month,
+                boolean(datediff(event_partition_date, product_prev_main_package_end_dttm) < 60 and
+                        datediff(event_partition_date, product_prev_main_package_end_dttm) >= 30) as product_main_package_changed_last_two_month,
                         
-                boolean(datediff(event_partition_date, prev_main_package_end_dttm) < 90 and
-                        datediff(event_partition_date, prev_main_package_end_dttm) >= 60) as main_package_changed_last_three_month,
+                boolean(datediff(event_partition_date, product_prev_main_package_end_dttm) < 90 and
+                        datediff(event_partition_date, product_prev_main_package_end_dttm) >= 60) as product_main_package_changed_last_three_month,
                         
-                boolean(datediff(event_partition_date, prev_main_package_end_dttm) < 180 and
-                        datediff(event_partition_date, prev_main_package_end_dttm) >= 90) as main_package_changed_last_six_month,
+                boolean(datediff(event_partition_date, product_prev_main_package_end_dttm) < 180 and
+                        datediff(event_partition_date, product_prev_main_package_end_dttm) >= 90) as product_main_package_changed_last_six_month,
                 
-                boolean(main_df.tv_vdo_bundling is not null) as paytv_flag,
-                boolean(lower(main_df.service_group) = 'data') as mobile_data_only_flag
+                boolean(main_df.tv_vdo_bundling is not null) as product_paytv_flag,
+                boolean(lower(main_df.service_group) = 'data') as product_mobile_data_only_flag
                 
         from flatten_cust_promo_df cp_df
         left join unioned_main_master main_df
-            on main_df.promotion_code = cp_df.main_package_promo_cd
+            on main_df.promotion_code = cp_df.product_main_package_promo_cd
             and main_df.partition_date = cp_df.partition_date
             
         left join unioned_ontop_master ontop_df1
-            on ontop_df1.promotion_code = cp_df.ontop_1_package_promo_cd
+            on ontop_df1.promotion_code = cp_df.product_ontop_1_package_promo_cd
             and ontop_df1.partition_date = cp_df.partition_date
             
         left join unioned_ontop_master ontop_df2
-            on ontop_df2.promotion_code = cp_df.ontop_2_package_promo_cd
+            on ontop_df2.promotion_code = cp_df.product_ontop_2_package_promo_cd
             and ontop_df2.partition_date = cp_df.partition_date
     """)
 

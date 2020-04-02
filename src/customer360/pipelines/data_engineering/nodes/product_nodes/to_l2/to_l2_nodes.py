@@ -86,38 +86,38 @@ def get_activated_deactivated_features(
                 sum(case when 
                     (to_date(promo_start_dttm) between start_of_week and date_add(start_of_week, 7))
                     and lower(promo_class) = 'on-top'
-                    then promo_package_price else 0 end) as total_activated_ontop_package_price,
+                    then promo_package_price else 0 end) as product_total_activated_ontop_package_price,
                 
                 sum(case when 
                     (to_date(promo_start_dttm) between start_of_week and date_add(start_of_week, 7))
                     and lower(promo_class) = 'main'
-                    then promo_package_price else 0 end) as total_activated_main_package_price,
+                    then promo_package_price else 0 end) as product_total_activated_main_package_price,
                     
                 -- DEACTIVATED FEATURES
                 sum(case when 
                     (to_date(promo_status_end_dttm) between start_of_week and date_add(start_of_week, 7))
                     and (lower(mm_types) like '%message%' or lower(mm_types) like '%sms%') 
                     and lower(promo_class) = 'on-top'
-                    then 1 else 0 end) as deactivated_sms_ontop_packages,
+                    then 1 else 0 end) as product_deactivated_sms_ontop_packages,
                 
                 sum(case when 
                     (to_date(promo_status_end_dttm) between start_of_week and date_add(start_of_week, 7))
                     and lower(mm_types) like '%data%' 
                     and lower(promo_class) = 'on-top'
-                    then 1 else 0 end) as deactivated_data_ontop_packages,
+                    then 1 else 0 end) as product_deactivated_data_ontop_packages,
                 
                 sum(case when 
                     (to_date(promo_status_end_dttm) between start_of_week and date_add(start_of_week, 7))
                     and (lower(mm_types) like '%minute%' or lower(mm_types) like '%voice%') 
                     and lower(promo_class) = 'on-top'
-                    then 1 else 0 end) as deactivated_voice_ontop_packages,
+                    then 1 else 0 end) as product_deactivated_voice_ontop_packages,
                     
                 
                 sum(case when 
                     (to_date(promo_status_end_dttm) between start_of_week and date_add(start_of_week, 7))
                     and (lower(mm_types) like '%message%' or lower(mm_types) like '%sms%') 
                     and lower(promo_class) = 'on-top'
-                    then sms_amount else 0 end) as deactivated_sms_volume_ontop_packages,
+                    then sms_amount else 0 end) as product_deactivated_sms_volume_ontop_packages,
                 
                 sum(case when 
                     (to_date(promo_status_end_dttm) between start_of_week and date_add(start_of_week, 7))
@@ -126,13 +126,13 @@ def get_activated_deactivated_features(
                     then case when data_unit = 'gb' or data_unit is null then data_amount
                               when data_unit = 'mb' then data_amount/1000
                               else 0 end
-                    else 0 end) as deactivated_data_volume_gb_ontop_packages,
+                    else 0 end) as product_deactivated_data_volume_gb_ontop_packages,
                 
                 sum(case when 
                     (to_date(promo_status_end_dttm) between start_of_week and date_add(start_of_week, 7))
                     and (lower(mm_types) like '%minute%' or lower(mm_types) like '%voice%') 
                     and lower(promo_class) = 'on-top'
-                    then voice_minutes else 0 end) as deactivated_voice_minutes_ontop_packages,
+                    then voice_minutes else 0 end) as product_deactivated_voice_minutes_ontop_packages,
                     
                     
                 sum(case when 
@@ -140,14 +140,14 @@ def get_activated_deactivated_features(
                     and one_off_promo_flag 
                     and bundle_flag 
                     and lower(promo_class) = 'on-top'
-                    then 1 else 0 end) as deactivated_oneoff_bundle_ontop_packages,
+                    then 1 else 0 end) as product_deactivated_oneoff_bundle_ontop_packages,
                     
                 sum(case when 
                     (to_date(promo_status_end_dttm) between start_of_week and date_add(start_of_week, 7))
                     and rolling_promo_flag 
                     and bundle_flag 
                     and lower(promo_class) = 'on-top'
-                    then 1 else 0 end) as deactivated_rolling_bundle_ontop_packages,
+                    then 1 else 0 end) as product_deactivated_rolling_bundle_ontop_packages,
                     
                 
                 sum(case when 
@@ -155,28 +155,28 @@ def get_activated_deactivated_features(
                     and lower(mm_types) like '%data%' 
                     and rolling_promo_flag
                     and lower(promo_class) = 'on-top'
-                    then 1 else 0 end) as deactivated_rolling_data_ontop_packages,
+                    then 1 else 0 end) as product_deactivated_rolling_data_ontop_packages,
                 
                 sum(case when 
                     (to_date(promo_status_end_dttm) between start_of_week and date_add(start_of_week, 7))
                     and (lower(mm_types) like '%minute%' or lower(mm_types) like '%voice%') 
                     and rolling_promo_flag
                     and lower(promo_class) = 'on-top'
-                    then 1 else 0 end) as deactivated_rolling_voice_ontop_packages,
+                    then 1 else 0 end) as product_deactivated_rolling_voice_ontop_packages,
                     
                 sum(case when 
                     (to_date(promo_status_end_dttm) between start_of_week and date_add(start_of_week, 7))
                     and lower(mm_types) like '%data%' 
                     and one_off_promo_flag
                     and lower(promo_class) = 'on-top'
-                    then 1 else 0 end) as deactivated_one_off_data_ontop_packages,
+                    then 1 else 0 end) as product_deactivated_one_off_data_ontop_packages,
                 
                 sum(case when 
                     (to_date(promo_status_end_dttm) between start_of_week and date_add(start_of_week, 7))
                     and (lower(mm_types) like '%minute%' or lower(mm_types) like '%voice%') 
                     and one_off_promo_flag
                     and lower(promo_class) = 'on-top'
-                    then 1 else 0 end) as deactivated_one_off_voice_ontop_packages,
+                    then 1 else 0 end) as product_deactivated_one_off_voice_ontop_packages,
                 
                 -- ACTIVATED FEATURES
                 
@@ -184,26 +184,26 @@ def get_activated_deactivated_features(
                     (to_date(promo_start_dttm) between start_of_week and date_add(start_of_week, 7))
                     and (lower(mm_types) like '%message%' or lower(mm_types) like '%sms%') 
                     and lower(promo_class) = 'on-top'
-                    then 1 else 0 end) as activated_sms_ontop_packages,
+                    then 1 else 0 end) as product_activated_sms_ontop_packages,
                 
                 sum(case when 
                     (to_date(promo_start_dttm) between start_of_week and date_add(start_of_week, 7))
                     and lower(mm_types) like '%data%' 
                     and lower(promo_class) = 'on-top'
-                    then 1 else 0 end) as activated_data_ontop_packages,
+                    then 1 else 0 end) as product_activated_data_ontop_packages,
                 
                 sum(case when 
                     (to_date(promo_start_dttm) between start_of_week and date_add(start_of_week, 7))
                     and (lower(mm_types) like '%minute%' or lower(mm_types) like '%voice%') 
                     and lower(promo_class) = 'on-top'
-                    then 1 else 0 end) as activated_voice_ontop_packages,
+                    then 1 else 0 end) as product_activated_voice_ontop_packages,
                     
                 
                 sum(case when 
                     (to_date(promo_start_dttm) between start_of_week and date_add(start_of_week, 7))
                     and (lower(mm_types) like '%message%' or lower(mm_types) like '%sms%') 
                     and lower(promo_class) = 'on-top'
-                    then sms_amount else 0 end) as activated_sms_volume_ontop_packages,
+                    then sms_amount else 0 end) as product_activated_sms_volume_ontop_packages,
                 
                 sum(case when 
                     (to_date(promo_start_dttm) between start_of_week and date_add(start_of_week, 7))
@@ -212,13 +212,13 @@ def get_activated_deactivated_features(
                     then case when data_unit = 'gb' or data_unit is null then data_amount
                               when data_unit = 'mb' then data_amount/1000
                               else 0 end
-                    else 0 end) as activated_data_volume_gb_ontop_packages,
+                    else 0 end) as product_activated_data_volume_gb_ontop_packages,
                 
                 sum(case when 
                     (to_date(promo_start_dttm) between start_of_week and date_add(start_of_week, 7))
                     and (lower(mm_types) like '%minute%' or lower(mm_types) like '%voice%') 
                     and lower(promo_class) = 'on-top'
-                    then voice_minutes else 0 end) as activated_voice_minutes_ontop_packages,
+                    then voice_minutes else 0 end) as product_activated_voice_minutes_ontop_packages,
                     
                     
                 sum(case when 
@@ -226,14 +226,14 @@ def get_activated_deactivated_features(
                     and one_off_promo_flag 
                     and bundle_flag 
                     and lower(promo_class) = 'on-top'
-                    then 1 else 0 end) as activated_oneoff_bundle_ontop_packages,
+                    then 1 else 0 end) as product_activated_oneoff_bundle_ontop_packages,
                     
                 sum(case when 
                     (to_date(promo_start_dttm) between start_of_week and date_add(start_of_week, 7))
                     and rolling_promo_flag 
                     and bundle_flag 
                     and lower(promo_class) = 'on-top'
-                    then 1 else 0 end) as activated_rolling_bundle_ontop_packages,
+                    then 1 else 0 end) as product_activated_rolling_bundle_ontop_packages,
                     
                 
                 sum(case when 
@@ -241,73 +241,73 @@ def get_activated_deactivated_features(
                     and lower(mm_types) like '%data%' 
                     and rolling_promo_flag
                     and lower(promo_class) = 'on-top'
-                    then 1 else 0 end) as activated_rolling_data_ontop_packages,
+                    then 1 else 0 end) as product_activated_rolling_data_ontop_packages,
                 
                 sum(case when 
                     (to_date(promo_start_dttm) between start_of_week and date_add(start_of_week, 7))
                     and (lower(mm_types) like '%minute%' or lower(mm_types) like '%voice%') 
                     and rolling_promo_flag
                     and lower(promo_class) = 'on-top'
-                    then 1 else 0 end) as activated_rolling_voice_ontop_packages,
+                    then 1 else 0 end) as product_activated_rolling_voice_ontop_packages,
                     
                 sum(case when 
                     (to_date(promo_start_dttm) between start_of_week and date_add(start_of_week, 7))
                     and lower(mm_types) like '%data%' 
                     and one_off_promo_flag
                     and lower(promo_class) = 'on-top'
-                    then 1 else 0 end) as activated_one_off_data_ontop_packages,
+                    then 1 else 0 end) as product_activated_one_off_data_ontop_packages,
                 
                 sum(case when 
                     (to_date(promo_start_dttm) between start_of_week and date_add(start_of_week, 7))
                     and (lower(mm_types) like '%minute%' or lower(mm_types) like '%voice%') 
                     and one_off_promo_flag
                     and lower(promo_class) = 'on-top'
-                    then 1 else 0 end) as activated_one_off_voice_ontop_packages,
+                    then 1 else 0 end) as product_activated_one_off_voice_ontop_packages,
                     
                 max(case when data_package_purchase_time_rank = 1
                     then promo_package_price
-                    else null end) as last_activated_main_data_promo_price,
+                    else null end) as product_last_activated_main_data_promo_price,
                     
                 max(case when voice_package_purchase_time_rank = 1
                     then promo_package_price
-                    else null end) as last_activated_main_voice_promo_price,
+                    else null end) as product_last_activated_main_voice_promo_price,
                 
                 -- VAS related features
                 sum(case when 
                     (to_date(promo_start_dttm) between start_of_week and date_add(start_of_week, 7))
                     and lower(promo_class) = 'value added services'
-                    then 1 else 0 end) as activated_vas_packages,
+                    then 1 else 0 end) as product_activated_vas_packages,
                     
                 sum(case when 
                     (to_date(promo_start_dttm) between start_of_week and date_add(start_of_week, 7))
                     and lower(promo_class) = 'value added services'
-                    then promo_package_price else 0 end) as total_activated_vas_packages_price,
+                    then promo_package_price else 0 end) as product_total_activated_vas_packages_price,
                     
                     
                 max(case when vas_package_purchase_time_rank = 1
                     then promo_package_price
-                    else null end) as last_activated_vas_price,
+                    else null end) as product_last_activated_vas_price,
                 
                 max(case when vas_package_purchase_time_rank = 1
                     then promo_name
-                    else null end) as last_activated_vas_promo_name,
+                    else null end) as product_last_activated_vas_promo_name,
                 
                 -- DEACTIVATION DUE TO EXPIRED REASONS
                 sum(case when
                     (to_date(promo_status_end_dttm) between start_of_week and date_add(start_of_week, 7)) 
                     and to_date(promo_end_dttm) = to_date(promo_status_end_dttm)
-                    then 1 else 0 end) as deactivated_package_due_to_expired_reason
+                    then 1 else 0 end) as product_deactivated_package_due_to_expired_reason
                     
             from enriched_cust_promo_df
             group by subscription_identifier, start_of_week
         )
         select
             *,
-            deactivated_one_off_data_ontop_packages/deactivated_rolling_data_ontop_packages as ratio_of_deactivated_one_off_to_rolling_data_ontop,
-            deactivated_one_off_voice_ontop_packages/deactivated_rolling_voice_ontop_packages as ratio_of_deactivated_one_off_to_rolling_voice_ontop,
+            product_deactivated_one_off_data_ontop_packages/product_deactivated_rolling_data_ontop_packages as product_ratio_of_deactivated_one_off_to_rolling_data_ontop,
+            product_deactivated_one_off_voice_ontop_packages/product_deactivated_rolling_voice_ontop_packages as product_ratio_of_deactivated_one_off_to_rolling_voice_ontop,
             
-            activated_one_off_data_ontop_packages/activated_rolling_data_ontop_packages as ratio_of_activated_one_off_to_rolling_data_ontop,
-            activated_one_off_voice_ontop_packages/activated_rolling_voice_ontop_packages as ratio_of_activated_one_off_to_rolling_voice_ontop
+            product_activated_one_off_data_ontop_packages/product_activated_rolling_data_ontop_packages as product_ratio_of_activated_one_off_to_rolling_data_ontop,
+            product_activated_one_off_voice_ontop_packages/product_activated_rolling_voice_ontop_packages as product_ratio_of_activated_one_off_to_rolling_voice_ontop
         from int_act_deact_features
     """)
 
