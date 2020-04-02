@@ -15,7 +15,7 @@ def build_digital_l3_monthly_features(cxense_user_profile: DataFrame,
     :return:
     """
     cxense_user_profile = cxense_user_profile.withColumnRenamed("hash_id", "access_method_num") \
-        .withColumn("partition_month", f.col("partition_date").cast(StringType())) \
+        .withColumn("partition_month", f.col("partition_month").cast(StringType())) \
         .withColumn("start_of_month", f.to_date(f.date_trunc('month', f.to_date(f.col("partition_month"), 'yyyyMM'))))\
         .withColumn("device_type", f.when(f.col("groups") == "device-type", f.col("item"))
                     .otherwise(f.lit(None)))
