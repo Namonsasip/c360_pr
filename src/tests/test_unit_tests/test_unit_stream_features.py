@@ -2081,14 +2081,465 @@ class TestUnitStream:
 
         assert float(int_l4_streaming_download_traffic_per_day_of_week.select(
             "sum_download_kb_traffic_facebook_video_sum_weekly_last_week").where(
-            'start_of_week = "2020-01-27"').collect()[0][0]) == 2
+            'start_of_week = "2020-01-27"').collect()[0][0]) == 0
         assert float(int_l4_streaming_download_traffic_per_day_of_week.select(
             "sum_download_kb_traffic_facebook_video_sum_weekly_last_week").where(
-            'start_of_week = "2020-01-20"').collect()[0][0]) == 2
+            'start_of_week = "2020-01-20"').collect()[0][0]) == 0
         assert float(int_l4_streaming_download_traffic_per_day_of_week.select(
             "sum_download_kb_traffic_facebook_video_sum_weekly_last_week").where(
-            'start_of_week = "2020-01-13"').collect()[0][0]) == 2
+            'start_of_week = "2020-01-13"').collect()[0][0]) == 0
         assert int_l4_streaming_download_traffic_per_day_of_week.select(
             "sum_download_kb_traffic_facebook_video_sum_weekly_last_week").where(
             'start_of_week = "2020-01-06"').collect()[0][0] == None
 
+        ########################### Last 2 week #####################################################################
+
+        assert float(int_l4_streaming_download_traffic_per_day_of_week.select(
+            "sum_download_kb_traffic_youtube_video_sum_weekly_last_two_week").where(
+            'start_of_week = "2020-01-27"').collect()[0][0]) == 4
+        assert float(int_l4_streaming_download_traffic_per_day_of_week.select(
+            "sum_download_kb_traffic_youtube_video_sum_weekly_last_two_week").where(
+            'start_of_week = "2020-01-20"').collect()[0][0]) == 4
+        assert float(int_l4_streaming_download_traffic_per_day_of_week.select(
+            "sum_download_kb_traffic_youtube_video_sum_weekly_last_two_week").where(
+            'start_of_week = "2020-01-13"').collect()[0][0]) == 2
+        assert int_l4_streaming_download_traffic_per_day_of_week.select(
+            "sum_download_kb_traffic_youtube_video_sum_weekly_last_two_week").where(
+            'start_of_week = "2020-01-06"').collect()[0][0] == None
+
+        assert float(int_l4_streaming_download_traffic_per_day_of_week.select(
+            "sum_download_kb_traffic_facebook_video_sum_weekly_last_two_week").where(
+            'start_of_week = "2020-01-27"').collect()[0][0]) == 0
+        assert float(int_l4_streaming_download_traffic_per_day_of_week.select(
+            "sum_download_kb_traffic_facebook_video_sum_weekly_last_two_week").where(
+            'start_of_week = "2020-01-20"').collect()[0][0]) == 0
+        assert float(int_l4_streaming_download_traffic_per_day_of_week.select(
+            "sum_download_kb_traffic_facebook_video_sum_weekly_last_two_week").where(
+            'start_of_week = "2020-01-13"').collect()[0][0]) == 0
+        assert int_l4_streaming_download_traffic_per_day_of_week.select(
+            "sum_download_kb_traffic_facebook_video_sum_weekly_last_two_week").where(
+            'start_of_week = "2020-01-06"').collect()[0][0] == None
+
+        ############################## last 4 week ####################################################################
+
+        assert float(int_l4_streaming_download_traffic_per_day_of_week.select(
+            "sum_download_kb_traffic_youtube_video_sum_weekly_last_four_week").where(
+            'start_of_week = "2020-01-27"').collect()[0][0]) == 6
+        assert float(int_l4_streaming_download_traffic_per_day_of_week.select(
+            "sum_download_kb_traffic_youtube_video_sum_weekly_last_four_week").where(
+            'start_of_week = "2020-01-20"').collect()[0][0]) == 4
+        assert float(int_l4_streaming_download_traffic_per_day_of_week.select(
+            "sum_download_kb_traffic_youtube_video_sum_weekly_last_four_week").where(
+            'start_of_week = "2020-01-13"').collect()[0][0]) == 2
+        assert int_l4_streaming_download_traffic_per_day_of_week.select(
+            "sum_download_kb_traffic_youtube_video_sum_weekly_last_four_week").where(
+            'start_of_week = "2020-01-06"').collect()[0][0] == None
+
+        assert float(int_l4_streaming_download_traffic_per_day_of_week.select(
+            "sum_download_kb_traffic_facebook_video_sum_weekly_last_four_week").where(
+            'start_of_week = "2020-01-27"').collect()[0][0]) == 0
+        assert float(int_l4_streaming_download_traffic_per_day_of_week.select(
+            "sum_download_kb_traffic_facebook_video_sum_weekly_last_four_week").where(
+            'start_of_week = "2020-01-20"').collect()[0][0]) == 0
+        assert float(int_l4_streaming_download_traffic_per_day_of_week.select(
+            "sum_download_kb_traffic_facebook_video_sum_weekly_last_four_week").where(
+            'start_of_week = "2020-01-13"').collect()[0][0]) == 0
+        assert int_l4_streaming_download_traffic_per_day_of_week.select(
+            "sum_download_kb_traffic_facebook_video_sum_weekly_last_four_week").where(
+            'start_of_week = "2020-01-06"').collect()[0][0] == None
+
+        ################################################################################################################
+
+    def test_l4_streaming_session_duration_feature_sum(self, project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+
+        l1_streaming_session_duration_feature = l1_massive_processing(df_temp_l0_streaming_soc_mobile_app_daily,
+                                                                      var_project_context.catalog.load(
+                                                                          'params:l1_streaming_session_duration_feature'))
+
+        l2_streaming_session_duration_feature = l2_massive_processing(l1_streaming_session_duration_feature,
+                                                                      var_project_context.catalog.load(
+                                                                          'params:l2_streaming_session_duration_feature'),customer_pro)
+
+        l4_streaming_session_duration_feature = l4_rolling_window(l2_streaming_session_duration_feature,
+                                                                      var_project_context.catalog.load(
+                                                                          'params:l4_streaming_session_duration_feature'))
+
+        l4_streaming_session_duration_feature.show()
+
+        #################### TEST Zone #################################################################################
+        ######################### 1 Week ###############################################################################
+
+        assert float(l4_streaming_session_duration_feature.select("sum_sum_session_duration_youtube_video_weekly_last_week").where(
+            'start_of_week = "2020-01-27"').collect()[0][0]) == 2
+        assert float(l4_streaming_session_duration_feature.select("sum_sum_session_duration_youtube_video_weekly_last_week").where(
+            'start_of_week = "2020-01-20"').collect()[0][0]) == 2
+        assert float(l4_streaming_session_duration_feature.select("sum_sum_session_duration_youtube_video_weekly_last_week").where(
+            'start_of_week = "2020-01-13"').collect()[0][0]) == 2
+        assert l4_streaming_session_duration_feature.select("sum_sum_session_duration_youtube_video_weekly_last_week").where(
+            'start_of_week = "2020-01-06"').collect()[0][0] == None
+
+        assert float(l4_streaming_session_duration_feature.select("sum_sum_session_duration_facebook_video_weekly_last_week").where(
+            'start_of_week = "2020-01-27"').collect()[0][0]) == 0
+        assert float(l4_streaming_session_duration_feature.select("sum_sum_session_duration_facebook_video_weekly_last_week").where(
+            'start_of_week = "2020-01-20"').collect()[0][0]) == 0
+        assert float(l4_streaming_session_duration_feature.select("sum_sum_session_duration_facebook_video_weekly_last_week").where(
+            'start_of_week = "2020-01-13"').collect()[0][0]) == 0
+        assert l4_streaming_session_duration_feature.select("sum_sum_session_duration_facebook_video_weekly_last_week").where(
+            'start_of_week = "2020-01-06"').collect()[0][0] == None
+
+        ################################# 2 week ######################################################################
+
+        assert float(l4_streaming_session_duration_feature.select(
+            "sum_sum_session_duration_youtube_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-27"').collect()[0][0]) == 4
+        assert float(l4_streaming_session_duration_feature.select(
+            "sum_sum_session_duration_youtube_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-20"').collect()[0][0]) == 4
+        assert float(l4_streaming_session_duration_feature.select(
+            "sum_sum_session_duration_youtube_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-13"').collect()[0][0]) == 2
+        assert l4_streaming_session_duration_feature.select(
+            "sum_sum_session_duration_youtube_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-06"').collect()[0][0] == None
+
+        assert float(l4_streaming_session_duration_feature.select(
+            "sum_sum_session_duration_facebook_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-27"').collect()[0][0]) == 0
+        assert float(l4_streaming_session_duration_feature.select(
+            "sum_sum_session_duration_facebook_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-20"').collect()[0][0]) == 0
+        assert float(l4_streaming_session_duration_feature.select(
+            "sum_sum_session_duration_facebook_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-13"').collect()[0][0]) == 0
+        assert l4_streaming_session_duration_feature.select(
+            "sum_sum_session_duration_facebook_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-06"').collect()[0][0] == None
+
+        ##################################### 4 week ###################################################################
+
+        assert float(l4_streaming_session_duration_feature.select(
+            "sum_sum_session_duration_youtube_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-27"').collect()[0][0]) == 6
+        assert float(l4_streaming_session_duration_feature.select(
+            "sum_sum_session_duration_youtube_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-20"').collect()[0][0]) == 4
+        assert float(l4_streaming_session_duration_feature.select(
+            "sum_sum_session_duration_youtube_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-13"').collect()[0][0]) == 2
+        assert l4_streaming_session_duration_feature.select(
+            "sum_sum_session_duration_youtube_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-06"').collect()[0][0] == None
+
+        assert float(l4_streaming_session_duration_feature.select(
+            "sum_sum_session_duration_facebook_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-27"').collect()[0][0]) == 0
+        assert float(l4_streaming_session_duration_feature.select(
+            "sum_sum_session_duration_facebook_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-20"').collect()[0][0]) == 0
+        assert float(l4_streaming_session_duration_feature.select(
+            "sum_sum_session_duration_facebook_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-13"').collect()[0][0]) == 0
+        assert l4_streaming_session_duration_feature.select(
+            "sum_sum_session_duration_facebook_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-06"').collect()[0][0] == None
+
+        ###############################################################################################################
+    def test_l4_streaming_session_duration_feature_max(self, project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+
+        l1_streaming_session_duration_feature = l1_massive_processing(df_temp_l0_streaming_soc_mobile_app_daily,
+                                                                      var_project_context.catalog.load(
+                                                                          'params:l1_streaming_session_duration_feature'))
+
+        l2_streaming_session_duration_feature = l2_massive_processing(l1_streaming_session_duration_feature,
+                                                                      var_project_context.catalog.load(
+                                                                          'params:l2_streaming_session_duration_feature'),customer_pro)
+
+        l4_streaming_session_duration_feature = l4_rolling_window(l2_streaming_session_duration_feature,
+                                                                      var_project_context.catalog.load(
+                                                                          'params:l4_streaming_session_duration_feature'))
+
+        l4_streaming_session_duration_feature.show()
+
+        #################### TEST Zone #################################################################################
+        ######################### 1 Week ###############################################################################
+
+        assert float(l4_streaming_session_duration_feature.select("max_max_session_duration_youtube_video_weekly_last_week").where(
+            'start_of_week = "2020-01-27"').collect()[0][0]) == 1
+        assert float(l4_streaming_session_duration_feature.select("max_max_session_duration_youtube_video_weekly_last_week").where(
+            'start_of_week = "2020-01-20"').collect()[0][0]) == 1
+        assert float(l4_streaming_session_duration_feature.select("max_max_session_duration_youtube_video_weekly_last_week").where(
+            'start_of_week = "2020-01-13"').collect()[0][0]) == 1
+        assert l4_streaming_session_duration_feature.select("max_max_session_duration_youtube_video_weekly_last_week").where(
+            'start_of_week = "2020-01-06"').collect()[0][0] == None
+
+        assert float(l4_streaming_session_duration_feature.select("max_max_session_duration_facebook_video_weekly_last_week").where(
+            'start_of_week = "2020-01-27"').collect()[0][0]) == 0
+        assert float(l4_streaming_session_duration_feature.select("max_max_session_duration_facebook_video_weekly_last_week").where(
+            'start_of_week = "2020-01-20"').collect()[0][0]) == 0
+        assert float(l4_streaming_session_duration_feature.select("max_max_session_duration_facebook_video_weekly_last_week").where(
+            'start_of_week = "2020-01-13"').collect()[0][0]) == 0
+        assert l4_streaming_session_duration_feature.select("max_max_session_duration_facebook_video_weekly_last_week").where(
+            'start_of_week = "2020-01-06"').collect()[0][0] == None
+
+        ################################# 2 week ######################################################################
+
+        assert float(l4_streaming_session_duration_feature.select(
+            "max_max_session_duration_youtube_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-27"').collect()[0][0]) == 1
+        assert float(l4_streaming_session_duration_feature.select(
+            "max_max_session_duration_youtube_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-20"').collect()[0][0]) == 1
+        assert float(l4_streaming_session_duration_feature.select(
+            "max_max_session_duration_youtube_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-13"').collect()[0][0]) == 1
+        assert l4_streaming_session_duration_feature.select(
+            "max_max_session_duration_youtube_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-06"').collect()[0][0] == None
+
+        assert float(l4_streaming_session_duration_feature.select(
+            "max_max_session_duration_facebook_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-27"').collect()[0][0]) == 0
+        assert float(l4_streaming_session_duration_feature.select(
+            "max_max_session_duration_facebook_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-20"').collect()[0][0]) == 0
+        assert float(l4_streaming_session_duration_feature.select(
+            "max_max_session_duration_facebook_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-13"').collect()[0][0]) == 0
+        assert l4_streaming_session_duration_feature.select(
+            "max_max_session_duration_facebook_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-06"').collect()[0][0] == None
+
+        ##################################### 4 week ###################################################################
+
+        assert float(l4_streaming_session_duration_feature.select(
+            "max_max_session_duration_youtube_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-27"').collect()[0][0]) == 1
+        assert float(l4_streaming_session_duration_feature.select(
+            "max_max_session_duration_youtube_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-20"').collect()[0][0]) == 1
+        assert float(l4_streaming_session_duration_feature.select(
+            "max_max_session_duration_youtube_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-13"').collect()[0][0]) == 1
+        assert l4_streaming_session_duration_feature.select(
+            "max_max_session_duration_youtube_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-06"').collect()[0][0] == None
+
+        assert float(l4_streaming_session_duration_feature.select(
+            "max_max_session_duration_facebook_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-27"').collect()[0][0]) == 0
+        assert float(l4_streaming_session_duration_feature.select(
+            "max_max_session_duration_facebook_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-20"').collect()[0][0]) == 0
+        assert float(l4_streaming_session_duration_feature.select(
+            "max_max_session_duration_facebook_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-13"').collect()[0][0]) == 0
+        assert l4_streaming_session_duration_feature.select(
+            "max_max_session_duration_facebook_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-06"').collect()[0][0] == None
+
+        ###############################################################################################################
+    def test_l4_streaming_session_duration_feature_min(self, project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+
+        l1_streaming_session_duration_feature = l1_massive_processing(df_temp_l0_streaming_soc_mobile_app_daily,
+                                                                      var_project_context.catalog.load(
+                                                                          'params:l1_streaming_session_duration_feature'))
+
+        l2_streaming_session_duration_feature = l2_massive_processing(l1_streaming_session_duration_feature,
+                                                                      var_project_context.catalog.load(
+                                                                          'params:l2_streaming_session_duration_feature'),customer_pro)
+
+        l4_streaming_session_duration_feature = l4_rolling_window(l2_streaming_session_duration_feature,
+                                                                      var_project_context.catalog.load(
+                                                                          'params:l4_streaming_session_duration_feature'))
+
+        l4_streaming_session_duration_feature.show()
+
+        #################### TEST Zone #################################################################################
+        ######################### 1 Week ###############################################################################
+
+        assert float(l4_streaming_session_duration_feature.select("min_min_session_duration_youtube_video_weekly_last_week").where(
+            'start_of_week = "2020-01-27"').collect()[0][0]) == 1
+        assert float(l4_streaming_session_duration_feature.select("min_min_session_duration_youtube_video_weekly_last_week").where(
+            'start_of_week = "2020-01-20"').collect()[0][0]) == 1
+        assert float(l4_streaming_session_duration_feature.select("min_min_session_duration_youtube_video_weekly_last_week").where(
+            'start_of_week = "2020-01-13"').collect()[0][0]) == 1
+        assert l4_streaming_session_duration_feature.select("min_min_session_duration_youtube_video_weekly_last_week").where(
+            'start_of_week = "2020-01-06"').collect()[0][0] == None
+
+        assert float(l4_streaming_session_duration_feature.select("min_min_session_duration_facebook_video_weekly_last_week").where(
+            'start_of_week = "2020-01-27"').collect()[0][0]) == 0
+        assert float(l4_streaming_session_duration_feature.select("min_min_session_duration_facebook_video_weekly_last_week").where(
+            'start_of_week = "2020-01-20"').collect()[0][0]) == 0
+        assert float(l4_streaming_session_duration_feature.select("min_min_session_duration_facebook_video_weekly_last_week").where(
+            'start_of_week = "2020-01-13"').collect()[0][0]) == 0
+        assert l4_streaming_session_duration_feature.select("min_min_session_duration_facebook_video_weekly_last_week").where(
+            'start_of_week = "2020-01-06"').collect()[0][0] == None
+
+        ################################# 2 week ######################################################################
+
+        assert float(l4_streaming_session_duration_feature.select(
+            "min_min_session_duration_youtube_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-27"').collect()[0][0]) == 1
+        assert float(l4_streaming_session_duration_feature.select(
+            "min_min_session_duration_youtube_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-20"').collect()[0][0]) == 1
+        assert float(l4_streaming_session_duration_feature.select(
+            "min_min_session_duration_youtube_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-13"').collect()[0][0]) == 1
+        assert l4_streaming_session_duration_feature.select(
+            "min_min_session_duration_youtube_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-06"').collect()[0][0] == None
+
+        assert float(l4_streaming_session_duration_feature.select(
+            "min_min_session_duration_facebook_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-27"').collect()[0][0]) == 0
+        assert float(l4_streaming_session_duration_feature.select(
+            "min_min_session_duration_facebook_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-20"').collect()[0][0]) == 0
+        assert float(l4_streaming_session_duration_feature.select(
+            "min_min_session_duration_facebook_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-13"').collect()[0][0]) == 0
+        assert l4_streaming_session_duration_feature.select(
+            "min_min_session_duration_facebook_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-06"').collect()[0][0] == None
+
+        ##################################### 4 week ###################################################################
+
+        assert float(l4_streaming_session_duration_feature.select(
+            "min_min_session_duration_youtube_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-27"').collect()[0][0]) == 1
+        assert float(l4_streaming_session_duration_feature.select(
+            "min_min_session_duration_youtube_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-20"').collect()[0][0]) == 1
+        assert float(l4_streaming_session_duration_feature.select(
+            "min_min_session_duration_youtube_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-13"').collect()[0][0]) == 1
+        assert l4_streaming_session_duration_feature.select(
+            "min_min_session_duration_youtube_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-06"').collect()[0][0] == None
+
+        assert float(l4_streaming_session_duration_feature.select(
+            "min_min_session_duration_facebook_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-27"').collect()[0][0]) == 0
+        assert float(l4_streaming_session_duration_feature.select(
+            "min_min_session_duration_facebook_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-20"').collect()[0][0]) == 0
+        assert float(l4_streaming_session_duration_feature.select(
+            "min_min_session_duration_facebook_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-13"').collect()[0][0]) == 0
+        assert l4_streaming_session_duration_feature.select(
+            "min_min_session_duration_facebook_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-06"').collect()[0][0] == None
+
+        ###############################################################################################################
+
+    def test_l4_streaming_session_duration_feature_avg(self, project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+
+        l1_streaming_session_duration_feature = l1_massive_processing(df_temp_l0_streaming_soc_mobile_app_daily,
+                                                                      var_project_context.catalog.load(
+                                                                          'params:l1_streaming_session_duration_feature'))
+
+        l2_streaming_session_duration_feature = l2_massive_processing(l1_streaming_session_duration_feature,
+                                                                      var_project_context.catalog.load(
+                                                                          'params:l2_streaming_session_duration_feature'),customer_pro)
+
+        l4_streaming_session_duration_feature = l4_rolling_window(l2_streaming_session_duration_feature,
+                                                                      var_project_context.catalog.load(
+                                                                          'params:l4_streaming_session_duration_feature'))
+
+        l4_streaming_session_duration_feature.show()
+
+        #################### TEST Zone #################################################################################
+        ######################### 1 Week ###############################################################################
+
+        assert float(l4_streaming_session_duration_feature.select("avg_sum_session_duration_youtube_video_weekly_last_week").where(
+            'start_of_week = "2020-01-27"').collect()[0][0]) == 2
+        assert float(l4_streaming_session_duration_feature.select("avg_sum_session_duration_youtube_video_weekly_last_week").where(
+            'start_of_week = "2020-01-20"').collect()[0][0]) == 2
+        assert float(l4_streaming_session_duration_feature.select("avg_sum_session_duration_youtube_video_weekly_last_week").where(
+            'start_of_week = "2020-01-13"').collect()[0][0]) == 2
+        assert l4_streaming_session_duration_feature.select("avg_sum_session_duration_youtube_video_weekly_last_week").where(
+            'start_of_week = "2020-01-06"').collect()[0][0] == None
+
+        assert float(l4_streaming_session_duration_feature.select("avg_sum_session_duration_facebook_video_weekly_last_week").where(
+            'start_of_week = "2020-01-27"').collect()[0][0]) == 0
+        assert float(l4_streaming_session_duration_feature.select("avg_sum_session_duration_facebook_video_weekly_last_week").where(
+            'start_of_week = "2020-01-20"').collect()[0][0]) == 0
+        assert float(l4_streaming_session_duration_feature.select("avg_sum_session_duration_facebook_video_weekly_last_week").where(
+            'start_of_week = "2020-01-13"').collect()[0][0]) == 0
+        assert l4_streaming_session_duration_feature.select("avg_sum_session_duration_facebook_video_weekly_last_week").where(
+            'start_of_week = "2020-01-06"').collect()[0][0] == None
+
+        ################################# 2 week ######################################################################
+
+        assert float(l4_streaming_session_duration_feature.select(
+            "avg_sum_session_duration_youtube_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-27"').collect()[0][0]) == 2
+        assert float(l4_streaming_session_duration_feature.select(
+            "avg_sum_session_duration_youtube_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-20"').collect()[0][0]) == 2
+        assert float(l4_streaming_session_duration_feature.select(
+            "avg_sum_session_duration_youtube_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-13"').collect()[0][0]) == 2
+        assert l4_streaming_session_duration_feature.select(
+            "avg_sum_session_duration_youtube_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-06"').collect()[0][0] == None
+
+        assert float(l4_streaming_session_duration_feature.select(
+            "avg_sum_session_duration_facebook_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-27"').collect()[0][0]) == 0
+        assert float(l4_streaming_session_duration_feature.select(
+            "avg_sum_session_duration_facebook_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-20"').collect()[0][0]) == 0
+        assert float(l4_streaming_session_duration_feature.select(
+            "avg_sum_session_duration_facebook_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-13"').collect()[0][0]) == 0
+        assert l4_streaming_session_duration_feature.select(
+            "avg_sum_session_duration_facebook_video_weekly_last_two_week").where(
+            'start_of_week = "2020-01-06"').collect()[0][0] == None
+
+        ##################################### 4 week ###################################################################
+
+        assert float(l4_streaming_session_duration_feature.select(
+            "avg_sum_session_duration_youtube_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-27"').collect()[0][0]) == 2
+        assert float(l4_streaming_session_duration_feature.select(
+            "avg_sum_session_duration_youtube_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-20"').collect()[0][0]) == 2
+        assert float(l4_streaming_session_duration_feature.select(
+            "avg_sum_session_duration_youtube_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-13"').collect()[0][0]) == 2
+        assert l4_streaming_session_duration_feature.select(
+            "avg_sum_session_duration_youtube_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-06"').collect()[0][0] == None
+
+        assert float(l4_streaming_session_duration_feature.select(
+            "avg_sum_session_duration_facebook_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-27"').collect()[0][0]) == 0
+        assert float(l4_streaming_session_duration_feature.select(
+            "avg_sum_session_duration_facebook_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-20"').collect()[0][0]) == 0
+        assert float(l4_streaming_session_duration_feature.select(
+            "avg_sum_session_duration_facebook_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-13"').collect()[0][0]) == 0
+        assert l4_streaming_session_duration_feature.select(
+            "avg_sum_session_duration_facebook_video_weekly_last_four_week").where(
+            'start_of_week = "2020-01-06"').collect()[0][0] == None
+
+        ###############################################################################################################
