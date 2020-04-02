@@ -1,6 +1,6 @@
-int_l4_streaming_fav_content_group_by_volume:
+int_l4_streaming_content_type_features:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: data/L4_FEATURES/STREAM/int_l4_streaming_fav_content_group_by_volume/
+  filepath: data/L4_FEATURES/STREAM/int_l4_streaming_content_type_features/
   file_format: parquet
   save_args:
     mode: "overwrite"
@@ -14,10 +14,27 @@ l4_streaming_fav_content_group_by_volume:
     mode: "overwrite"
     partitionBy: ["start_of_week"]
 
-# Fav tv show by volume tables 
+l4_streaming_fav_content_group_by_duration:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L4_FEATURES/STREAM/l4_streaming_fav_content_group_by_duration/
+  file_format: parquet
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["start_of_week"]
+
+
+# Fav tv show by volume tables
 l4_streaming_fav_tv_channel_by_volume:
   type: kedro.contrib.io.pyspark.SparkDataSet
   filepath: data/L4_FEATURES/STREAM/l4_streaming_fav_tv_channel_by_volume/
+  file_format: parquet
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["start_of_week"]
+
+l4_streaming_fav_tv_channel_by_duration:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: data/L4_FEATURES/STREAM/l4_features/l4_streaming_fav_tv_channel_by_duration/
   file_format: parquet
   save_args:
     mode: "overwrite"

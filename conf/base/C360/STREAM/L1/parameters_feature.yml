@@ -91,12 +91,12 @@ l1_streaming_fav_tv_show_by_episode_watched:
 int_l1_streaming_video_service_feature:
     where_clause: "where lower(application_group) = 'videoplayers_editors'"
     feature_list:
-        sum_download_kb_traffic_rank: "row_number() over (partition by mobile_no, application_group, usage_date
+        sum_download_kb_traffic_rank: "row_number() over (partition by mobile_no, application_group, partition_date
                                                     order by sum(download_kb) desc)"
         sum_download_kb_traffic: "sum(download_kb)"
         visit_count: "1" # counting active days
-    granularity: "mobile_no, application, application_group, usage_date"
-    event_date_column: "usage_date"
+    granularity: "mobile_no, application, application_group, partition_date"
+    event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
     output_catalog: "int_l1_streaming_video_service_feature"
 
 l1_streaming_fav_video_service_by_download_feature:
@@ -106,7 +106,7 @@ l1_streaming_fav_video_service_by_download_feature:
         fav_video_service_by_download_kb_traffic: "application"
         sum_download_kb_traffic: "sum_download_kb_traffic"
     granularity: ""
-    event_date_column: "usage_date"
+    event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
 
 l1_streaming_2nd_fav_video_service_by_download_feature:
     where_clause: "where sum_download_kb_traffic_rank = 2"
@@ -115,19 +115,19 @@ l1_streaming_2nd_fav_video_service_by_download_feature:
         second_fav_video_service_by_download_kb_traffic: "application"
         sum_download_kb_traffic: "sum_download_kb_traffic"
     granularity: ""
-    event_date_column: "usage_date"
+    event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
 
 
  # Fav music service by download traffic
 int_l1_streaming_music_service_feature:
     where_clause: "where lower(application_group) = 'music_audio'"
     feature_list:
-        sum_download_kb_traffic_rank: "row_number() over (partition by mobile_no, application_group, usage_date
+        sum_download_kb_traffic_rank: "row_number() over (partition by mobile_no, application_group, partition_date
                                                     order by sum(download_kb) desc)"
         sum_download_kb_traffic: "sum(download_kb)"
         visit_count: "1" # counting active days
-    granularity: "mobile_no, application, application_group, usage_date"
-    event_date_column: "usage_date"
+    granularity: "mobile_no, application, application_group, partition_date"
+    event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
     output_catalog: "int_l1_streaming_music_service_feature"
 
 l1_streaming_fav_music_service_by_download_feature:
@@ -137,7 +137,7 @@ l1_streaming_fav_music_service_by_download_feature:
         fav_music_service_by_download_kb_traffic: "application"
         sum_download_kb_traffic: "sum_download_kb_traffic"
     granularity: ""
-    event_date_column: "usage_date"
+    event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
 
 l1_streaming_2nd_fav_music_service_by_download_feature:
     where_clause: "where sum_download_kb_traffic_rank = 2"
@@ -146,18 +146,18 @@ l1_streaming_2nd_fav_music_service_by_download_feature:
         second_fav_music_service_by_download_kb_traffic: "application"
         sum_download_kb_traffic: "sum_download_kb_traffic"
     granularity: ""
-    event_date_column: "usage_date"
+    event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
 
  # Fav esport service by download traffic
 int_l1_streaming_esport_service_feature:
     where_clause: "where lower(application_group) = 'game'"
     feature_list:
-        sum_download_kb_traffic_rank: "row_number() over (partition by mobile_no, application_group, usage_date
+        sum_download_kb_traffic_rank: "row_number() over (partition by mobile_no, application_group, partition_date
                                                     order by sum(download_kb) desc)"
         sum_download_kb_traffic: "sum(download_kb)"
         visit_count: "1" # counting active days
-    granularity: "mobile_no, application, application_group, usage_date"
-    event_date_column: "usage_date"
+    granularity: "mobile_no, application, application_group, partition_date"
+    event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
     output_catalog: "int_l1_streaming_esport_service_feature"
 
 l1_streaming_fav_esport_service_by_download_feature:
@@ -167,7 +167,7 @@ l1_streaming_fav_esport_service_by_download_feature:
         fav_esport_service_by_download_kb_traffic: "application"
         sum_download_kb_traffic: "sum_download_kb_traffic"
     granularity: ""
-    event_date_column: "usage_date"
+    event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
 
 l1_streaming_2nd_fav_esport_service_by_download_feature:
     where_clause: "where sum_download_kb_traffic_rank = 2"
@@ -176,7 +176,7 @@ l1_streaming_2nd_fav_esport_service_by_download_feature:
         second_fav_esport_service_by_download_kb_traffic: "application"
         sum_download_kb_traffic: "sum_download_kb_traffic"
     granularity: ""
-    event_date_column: "usage_date"
+    event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
 
 # number of visit and volume of download traffic
 l1_streaming_visit_count_and_download_traffic_feature:
@@ -213,10 +213,16 @@ l1_streaming_visit_count_and_download_traffic_feature:
         download_kb_traffic_mixer_esport: "sum(case when lower(application) in ('mixerbox') then download_kb else 0 end)"
         download_kb_traffic_steamtv_esport: "sum(case when lower(application) in ('valve_steam') then download_kb else 0 end)"
 
+        # additional request from DS
+        visit_count_line: "case when sum(case when lower(application) in ('line') then 1 else 0 end) >= 1 then 1 else 0 end"
+        visit_count_twitter: "case when sum(case when lower(application) in ('twitter') then 1 else 0 end) >= 1 then 1 else 0 end"
+        visit_count_gmail: "case when sum(case when lower(application) in ('webmail_gmail') then 1 else 0 end) >= 1 then 1 else 0 end"
+        visit_count_amazon: "case when sum(case when lower(application) in ('amazon', 'amazon_shopping_app') then 1 else 0 end) >= 1 then 1 else 0 end"
+
         # 1 for Monday, 7 for Sunday
-        day_of_week: "date_format(usage_date, 'u')"
-    granularity: "mobile_no, usage_date"
-    event_date_column: "usage_date"
+        day_of_week: "date_format(to_date(cast(partition_date as string), 'yyyyMMdd'), 'u')"
+    granularity: "mobile_no, partition_date"
+    event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
     output_catalog: "l1_streaming_visit_count_and_download_traffic_feature"
     join_column_with_cust_profile:
         access_method_num: mobile_no
@@ -289,8 +295,8 @@ l1_streaming_session_duration_feature:
         avg_duration_per_session_mixer_esport: "avg(case when lower(application) in ('mixerbox') then duration else 0 end)"
         avg_duration_per_session_steamtv_esport: "avg(case when lower(application) in ('valve_steam') then duration else 0 end)"
 
-    granularity: "mobile_no, usage_date"
-    event_date_column: "usage_date"
+    granularity: "mobile_no, partition_date"
+    event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
     join_column_with_cust_profile:
         access_method_num: mobile_no
         event_partition_date: event_partition_date # after aggregation
