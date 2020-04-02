@@ -70,7 +70,18 @@ class TestUnitLoyalty:
         assert \
             df.where("loyalty_serenade_class='Gold'").select("loyalty_is_gold").collect()[0][
                 0] == 'Y'
-
+        
+        df_m = node_from_config(df0,var_project_context.catalog.load(
+            'params:l3_loyalty_serenade_class_monthly'))
+        assert \
+            df_m.where("loyalty_serenade_class='Emerald'").select("loyalty_is_emerald").collect()[0][
+                0] == 'Y'
+        assert \
+            df_m.where("loyalty_serenade_class='Classic'").select("loyalty_is_classic").collect()[0][
+                0] == 'Y'
+        assert \
+            df_m.where("loyalty_serenade_class='Gold'").select("loyalty_is_gold").collect()[0][
+                0] == 'Y'
 
     def test_number_of_rewards(self,project_context):
         var_project_context = project_context['ProjectContext']
