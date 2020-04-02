@@ -17,6 +17,7 @@ from pyspark.sql.types import (
     StructField,
     StructType,
     IntegerType,
+    FloatType,
 )
 from sklearn.metrics import auc, roc_curve
 from sklearn.model_selection import train_test_split
@@ -198,7 +199,14 @@ def create_binary_model_function(
             tmp_path = Path("data/tmp")
             os.makedirs(tmp_path, exist_ok=True)
 
+            if len(pdf_master_chunk[group_column].unique()) > 1:
+                raise ValueError(
+                    f"More than one group found in training table: "
+                    f"{pdf_master_chunk[group_column].unique()}"
+                )
+
             current_group = pdf_master_chunk[group_column].iloc[0]
+            current_group_description = pdf_master_chunk["campaign_name"].iloc[0]
             pai_run_name = pai_run_prefix + current_group
 
             pdf_extra_pai_metrics_filtered = pdf_extra_pai_metrics[
@@ -231,6 +239,8 @@ def create_binary_model_function(
             # Start pai run and log some metrics
             pai.set_config(experiment=current_group, storage_runs=pai_storage_path)
             pai.start_run(run_name=pai_run_name)
+            pai.add_tags([f"z_{pai_run_prefix}"])
+            pai.log_note(current_group_description)
 
             pai.log_metrics(
                 {
@@ -361,7 +371,9 @@ def create_binary_model_function(
                 pdf_metrics_melted = pdf_metrics.melt(
                     id_vars=["set", "round"], var_name="metric"
                 )
-                pdf_metrics_melted.to_csv(tmp_path / "metrics_by_round.csv", index=False)
+                pdf_metrics_melted.to_csv(
+                    tmp_path / "metrics_by_round.csv", index=False
+                )
 
                 (  # Plot the AUC of each set in each round
                     ggplot(
@@ -423,8 +435,19 @@ def train_multiple_binary_models(
         A spark DataFrame with info about the training
     """
     # To reduce the size of the pandas DataFrames only select the columns we really need
+    # Also cast decimal type columns cause they don't get properly converted to pandas
     df_master_only_necessary_columns = df_master.select(
-        group_column, target_column, *explanatory_features
+        group_column,
+        target_column,
+        "campaign_name",
+        *[
+            F.col(column_name).cast(FloatType())
+            if column_type.startswith("decimal")
+            else F.col(column_name)
+            for column_name, column_type in df_master.select(
+                *explanatory_features
+            ).dtypes
+        ],
     )
 
     pdf_extra_pai_metrics = calculate_extra_pai_metrics(
@@ -435,8 +458,8 @@ def train_multiple_binary_models(
     df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
         ~F.isnull(F.col(target_column))
     )
-
-    df_training_info = df_master_only_necessary_columns.groupby(group_column).apply(
+    #TODO remove sampling
+    df_training_info = df_master_only_necessary_columns.sample(0.1).groupby(group_column).apply(
         create_binary_model_function(
             as_pandas_udf=True,
             group_column=group_column,
