@@ -1,0 +1,41 @@
+l4_product_activated_deactivated_features:
+  partition_by: ["subscription_identifier"]
+  read_from: "l2"
+  feature_list:
+    sum: ["total_activated_ontop_package_price",
+          "total_activated_main_package_price",
+
+          "deactivated_sms_ontop_packages",
+          "deactivated_data_ontop_packages",
+          "deactivated_voice_ontop_packages",
+          "deactivated_sms_volume_ontop_packages",
+          "deactivated_data_volume_gb_ontop_packages",
+          "deactivated_voice_minutes_ontop_packages",
+          "deactivated_oneoff_bundle_ontop_packages",
+          "deactivated_rolling_bundle_ontop_packages",
+          "deactivated_rolling_data_ontop_packages",
+          "deactivated_rolling_voice_ontop_packages",
+          "deactivated_one_off_data_ontop_packages",
+          "deactivated_one_off_voice_ontop_packages",
+
+          "activated_sms_ontop_packages",
+          "activated_data_ontop_packages",
+          "activated_voice_ontop_packages",
+          "activated_sms_volume_ontop_packages",
+          "activated_data_volume_gb_ontop_packages",
+          "activated_voice_minutes_ontop_packages",
+          "activated_oneoff_bundle_ontop_packages",
+          "activated_rolling_bundle_ontop_packages",
+          "activated_rolling_data_ontop_packages",
+          "activated_rolling_voice_ontop_packages",
+          "activated_one_off_data_ontop_packages",
+          "activated_one_off_voice_ontop_packages",
+
+          "last_activated_main_data_promo_price",
+          "last_activated_main_voice_promo_price",
+
+          "activated_vas_packages",
+          "total_activated_vas_packages_price",
+          "last_activated_vas_price",
+          "last_activated_vas_promo_name",
+          "deactivated_package_due_to_expired_reason"]
