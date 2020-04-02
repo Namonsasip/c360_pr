@@ -26,10 +26,12 @@ def get_activated_deactivated_features(
         with enriched_cust_promo_df as (
             select
                 cp_df.crm_subscription_id as subscription_identifier,
+                cp_df.promo_end_dttm as promo_end_dttm,
                 cp_df.promo_status_end_dttm as promo_status_end_dttm,
                 cp_df.promo_start_dttm as promo_start_dttm,
                 cp_df.promo_class as promo_class,
                 cp_df.promo_package_price as promo_package_price,
+                cp_df.promo_name as promo_name,
                 
                 ontop_df.mm_types as mm_types,
                 
@@ -50,7 +52,22 @@ def get_activated_deactivated_features(
                          
                 boolean(lower(cp_df.promo_price_type) != 'recurring') as one_off_promo_flag,
                 boolean(lower(cp_df.promo_price_type) = 'recurring') as rolling_promo_flag,
-                boolean(lower(ontop_df.package_type) = 'combo') as bundle_flag
+                boolean(lower(ontop_df.package_type) = 'combo') as bundle_flag,
+                
+                case when lower(promo_class) = 'value added services'
+                then row_number() over (partition by cp_df.crm_subscription_id, cp_df.promo_class, cp_df.partition_date
+                                    order by cp_df.promo_start_dttm desc) 
+                else null end as vas_package_purchase_time_rank,
+                
+                case when lower(promo_class) = 'main' and lower(main_df.service_group) like '%data%' 
+                then row_number() over (partition by cp_df.crm_subscription_id, cp_df.promo_class, cp_df.partition_date
+                                    order by cp_df.promo_start_dttm desc) 
+                else null end as data_package_purchase_time_rank,
+                
+                case when lower(promo_class) = 'main' and lower(main_df.service_group) like '%voice%' 
+                then row_number() over (partition by cp_df.crm_subscription_id, cp_df.promo_class, cp_df.partition_date
+                                    order by cp_df.promo_start_dttm desc) 
+                else null end as voice_package_purchase_time_rank
                     
             from cust_promo_df cp_df
             left join unioned_main_master main_df
@@ -69,12 +86,12 @@ def get_activated_deactivated_features(
                 sum(case when 
                     (to_date(promo_start_dttm) between start_of_week and date_add(start_of_week, 7))
                     and lower(promo_class) = 'on-top'
-                    then promo_package_price else 0 end) as total_ontop_package_purchased_price,
+                    then promo_package_price else 0 end) as total_activated_ontop_package_price,
                 
                 sum(case when 
                     (to_date(promo_start_dttm) between start_of_week and date_add(start_of_week, 7))
                     and lower(promo_class) = 'main'
-                    then promo_package_price else 0 end) as total_main_package_purchased_price,
+                    then promo_package_price else 0 end) as total_activated_main_package_price,
                     
                 -- DEACTIVATED FEATURES
                 sum(case when 
@@ -245,7 +262,41 @@ def get_activated_deactivated_features(
                     and (lower(mm_types) like '%minute%' or lower(mm_types) like '%voice%') 
                     and one_off_promo_flag
                     and lower(promo_class) = 'on-top'
-                    then 1 else 0 end) as activated_one_off_voice_ontop_packages
+                    then 1 else 0 end) as activated_one_off_voice_ontop_packages,
+                    
+                max(case when data_package_purchase_time_rank = 1
+                    then promo_package_price
+                    else null end) as last_activated_main_data_promo_price,
+                    
+                max(case when voice_package_purchase_time_rank = 1
+                    then promo_package_price
+                    else null end) as last_activated_main_voice_promo_price,
+                
+                -- VAS related features
+                sum(case when 
+                    (to_date(promo_start_dttm) between start_of_week and date_add(start_of_week, 7))
+                    and lower(promo_class) = 'value added services'
+                    then 1 else 0 end) as activated_vas_packages,
+                    
+                sum(case when 
+                    (to_date(promo_start_dttm) between start_of_week and date_add(start_of_week, 7))
+                    and lower(promo_class) = 'value added services'
+                    then promo_package_price else 0 end) as total_activated_vas_packages_price,
+                    
+                    
+                max(case when vas_package_purchase_time_rank = 1
+                    then promo_package_price
+                    else null end) as last_activated_vas_price,
+                
+                max(case when vas_package_purchase_time_rank = 1
+                    then promo_name
+                    else null end) as last_activated_vas_promo_name,
+                
+                -- DEACTIVATION DUE TO EXPIRED REASONS
+                sum(case when
+                    (to_date(promo_status_end_dttm) between start_of_week and date_add(start_of_week, 7)) 
+                    and to_date(promo_end_dttm) = to_date(promo_status_end_dttm)
+                    then 1 else 0 end) as deactivated_package_due_to_expired_reason
                     
             from enriched_cust_promo_df
             group by subscription_identifier, start_of_week
