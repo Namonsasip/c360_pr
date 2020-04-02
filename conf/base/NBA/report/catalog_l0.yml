@@ -17,16 +17,11 @@ campaign_ard_cvm_master:
     write_mode: overwrite
 
 cvm_prepaid_customer_groups:
-    type: datasets.spark_hive_dataset.SparkHiveDataSet
-    database: prod_delta
-    table: cvm_prepaid_customer_groups
-    write_mode: overwrite
-
-use_case_campaign_mapping:
-    type: datasets.spark_hive_dataset.SparkHiveDataSet
-    database: default
-    table: mock_up_campaign_group
-    write_mode: overwrite
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-cvm/cvm_prepaid_customer_groups
+  save_args:
+    mode: "overwrite"
 
 l0_campaign_report_response_control_group:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -99,4 +94,3 @@ l0_campaign_history_master_active:
   load_args:
     header: True
     inferSchema: True
-
