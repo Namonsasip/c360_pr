@@ -261,7 +261,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         print("spark:", spark)
 
         target_max_data_load_date = spark.sql(
-            """select cast(nvl(max(to_date(target_max_data_load_date,'yyyy-MM-dd')),'1970-01-01') as String) as target_max_data_load_date
+            """select cast( to_date(nvl(max(target_max_data_load_date),'1970-01-01'),'yyyy-MM-dd') as String) as target_max_data_load_date
             from mdtl where table_name = '{0}'""".format(lookup_table_name))
 
         try:
@@ -512,7 +512,11 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
         current_target_data.createOrReplaceTempView("curr_target")
 
-        current_target_max_data_load_date = spark.sql(
+        if partitionBy == 'partition_month':
+            current_target_max_data_load_date = spark.sql(
+                "select cast( to_date(nvl(max({0}),'197001'),'yyyyMM') as String) from curr_target".format(partitionBy))
+        else:
+            current_target_max_data_load_date = spark.sql(
             "select cast( nvl(max({0}),'1970-01-01') as String) from curr_target".format(partitionBy))
 
         metadata_table_update_max_date_temp = current_target_max_data_load_date.rdd.flatMap(lambda x: x).collect()
