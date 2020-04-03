@@ -1,7 +1,10 @@
 l4_product_activated_deactivated_features:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/PRODUCT/l4_features/l4_product_activated_deactivated_features/
   save_args:
-    partitionBy: ["start_of_week"]
+    increment_flag: 'yes'
     mode: "overwrite"
+    partitionBy: "start_of_week"
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
