@@ -149,6 +149,10 @@ from .pipelines.data_engineering.pipelines.device_pipeline import (
     device_to_l2_pipeline,
     device_to_l4_pipeline,
 )
+
+from .pipelines.data_engineering.pipelines.digital_pipeline import (
+    digital_to_l3_pipeline, digital_to_l4_pipeline
+)
 from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l1.to_l1_pipeline import *
 from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l2.to_l2_pipeline import *
 from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l3.to_l3_pipeline import *
@@ -175,6 +179,7 @@ from .pipelines.data_engineering.pipelines.product_pipeline.to_l2.to_l2_pipeline
 from .pipelines.data_engineering.pipelines.product_pipeline.to_l4.to_l4_pipeline import (
     product_to_l4_pipeline,
 )
+
 
 def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
 
@@ -213,6 +218,8 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "device_to_l1_pipeline": device_to_l1_pipeline(),
         "device_to_l2_pipeline": device_to_l2_pipeline(),
         "device_to_l4_pipeline": device_to_l4_pipeline(),
+        "digital_to_l3_pipeline": digital_to_l3_pipeline(),
+        "digital_to_l4_pipeline": digital_to_l4_pipeline(),
         # "device_to_l3_pipeline": device_to_l3_pipeline(),
         "streaming_to_l1_pipeline": streaming_to_l1_pipeline(),
         "streaming_to_l2_pipeline": streaming_to_l2_pipeline(),
