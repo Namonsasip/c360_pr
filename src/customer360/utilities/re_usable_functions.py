@@ -9,6 +9,7 @@ from kedro.context import load_context
 from pathlib import Path
 from customer360.utilities.spark_util import get_spark_session
 from customer360.utilities.config_parser import node_from_config, expansion
+from src.customer360.utilities.spark_util import get_spark_empty_df
 
 conf = os.getenv("CONF", None)
 
@@ -201,6 +202,9 @@ def l1_massive_processing(
         cust_profile_df=None
 ) -> DataFrame:
 
+    if len(input_df.head(1)) == 0 or len(cust_profile_df.head(1)) == 0:
+        return get_spark_empty_df
+
     return_df = _massive_processing(input_df=input_df,
                                     config=config,
                                     source_partition_col="partition_date",
@@ -215,6 +219,9 @@ def l2_massive_processing(
         cust_profile_df=None
 ) -> DataFrame:
 
+    if len(input_df.head(1)) == 0 or len(cust_profile_df.head(1)) == 0:
+        return get_spark_empty_df
+
     return_df = _massive_processing(input_df=input_df,
                                     config=config,
                                     source_partition_col="start_of_week",
@@ -228,6 +235,10 @@ def l2_massive_processing_with_expansion(
         config,
         cust_profile_df=None
 ) -> DataFrame:
+
+    if len(input_df.head(1)) == 0 or len(cust_profile_df.head(1)) == 0:
+        return get_spark_empty_df
+
     return_df = _massive_processing(input_df=input_df,
                                     config=config,
                                     source_partition_col="start_of_week",

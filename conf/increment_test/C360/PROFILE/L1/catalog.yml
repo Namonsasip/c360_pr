@@ -1,6 +1,6 @@
 #l1_customer_profile_union_daily_feature:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: /mnt/customer360-blob-data/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+#  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
 #  file_format: "parquet"
 #  save_args:
 #    mode: "overwrite" # because it is a dimension, overwrite everytime we run the pipeline
@@ -9,8 +9,8 @@
 
 l1_customer_profile_union_daily_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   file_format: "parquet"
   save_args:
     increment_flag: 'yes'
@@ -23,9 +23,9 @@ l1_customer_profile_union_daily_feature:
 
 l1_customer_profile_union_daily_feature_for_device:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_devices_summary_customer_handset_daily'
@@ -37,9 +37,9 @@ l1_customer_profile_union_daily_feature_for_device:
 
 l1_customer_profile_union_daily_feature_for_usage:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_usage_postpaid_prepaid_daily'
@@ -50,9 +50,9 @@ l1_customer_profile_union_daily_feature_for_usage:
 
 l1_customer_profile_union_daily_feature_for_l1_billing_and_payments_daily_topup_and_volume:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_billing_and_payments_daily_topup_and_volume'
@@ -65,9 +65,9 @@ l1_customer_profile_union_daily_feature_for_l1_billing_and_payments_daily_topup_
 
 l1_customer_profile_union_daily_feature_for_l1_billing_and_payments_daily_rpu_roaming:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_billing_and_payments_daily_rpu_roaming'
@@ -79,9 +79,9 @@ l1_customer_profile_union_daily_feature_for_l1_billing_and_payments_daily_rpu_ro
 
 l1_customer_profile_union_daily_feature_for_l1_billing_and_payments_daily_before_top_up_balance:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_billing_and_payments_daily_before_top_up_balance'
@@ -93,9 +93,9 @@ l1_customer_profile_union_daily_feature_for_l1_billing_and_payments_daily_before
 
 l1_customer_profile_union_daily_feature_for_l1_billing_and_payments_daily_top_up_channels:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_billing_and_payments_daily_top_up_channels'
@@ -107,9 +107,9 @@ l1_customer_profile_union_daily_feature_for_l1_billing_and_payments_daily_top_up
 
 l1_customer_profile_union_daily_feature_for_l1_billing_and_payments_daily_most_popular_top_up_channel:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_billing_and_payments_daily_most_popular_top_up_channel'
@@ -120,9 +120,9 @@ l1_customer_profile_union_daily_feature_for_l1_billing_and_payments_daily_most_p
 
 l1_customer_profile_union_daily_feature_for_l1_billing_and_payments_daily_popular_topup_day:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_billing_and_payments_daily_popular_topup_day'
@@ -134,9 +134,9 @@ l1_customer_profile_union_daily_feature_for_l1_billing_and_payments_daily_popula
 
 l1_customer_profile_union_daily_feature_for_l1_billing_and_payments_daily_time_since_last_top_up:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_billing_and_payments_daily_time_since_last_top_up'
@@ -147,9 +147,9 @@ l1_customer_profile_union_daily_feature_for_l1_billing_and_payments_daily_time_s
 
 l1_customer_profile_union_daily_feature_for_l1_touchpoints_to_call_center_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_touchpoints_to_call_center_features'
@@ -160,9 +160,9 @@ l1_customer_profile_union_daily_feature_for_l1_touchpoints_to_call_center_featur
 
 l1_customer_profile_union_daily_feature_for_l1_touchpoints_from_call_center_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_touchpoints_from_call_center_features'
@@ -173,9 +173,9 @@ l1_customer_profile_union_daily_feature_for_l1_touchpoints_from_call_center_feat
 
 l1_customer_profile_union_daily_feature_for_l1_touchpoints_nim_work_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_touchpoints_nim_work_features'
@@ -187,9 +187,9 @@ l1_customer_profile_union_daily_feature_for_l1_touchpoints_nim_work_features:
 
 l1_customer_profile_union_daily_feature_for_l2_billing_and_payments_weekly_topup_time_diff:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_billing_and_payments_weekly_topup_time_diff'
@@ -201,9 +201,9 @@ l1_customer_profile_union_daily_feature_for_l2_billing_and_payments_weekly_topup
 
 l1_customer_profile_union_daily_feature_for_l2_billing_and_payments_weekly_last_top_up_channel:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_billing_and_payments_weekly_last_top_up_channel'
@@ -214,9 +214,9 @@ l1_customer_profile_union_daily_feature_for_l2_billing_and_payments_weekly_last_
 
 l1_customer_profile_union_daily_feature_for_l2_loyalty_serenade_class:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_loyalty_serenade_class'
@@ -229,9 +229,9 @@ l1_customer_profile_union_daily_feature_for_l2_loyalty_serenade_class:
 
 l1_customer_profile_union_daily_feature_for_l1_loyalty_number_of_services:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_loyalty_number_of_services'
@@ -242,9 +242,9 @@ l1_customer_profile_union_daily_feature_for_l1_loyalty_number_of_services:
 
 l1_customer_profile_union_daily_feature_for_l1_loyalty_number_of_rewards:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_loyalty_number_of_rewards'
@@ -255,9 +255,9 @@ l1_customer_profile_union_daily_feature_for_l1_loyalty_number_of_rewards:
 
 l1_customer_profile_union_daily_feature_for_l1_loyalty_number_of_points_spend:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_loyalty_number_of_points_spend'
@@ -269,9 +269,9 @@ l1_customer_profile_union_daily_feature_for_l1_loyalty_number_of_points_spend:
 
 l1_customer_profile_union_daily_feature_for_int_l2_streaming_content_type_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'int_l2_streaming_content_type_features'
@@ -282,9 +282,9 @@ l1_customer_profile_union_daily_feature_for_int_l2_streaming_content_type_featur
 
 l1_customer_profile_union_daily_feature_for_int_l2_streaming_tv_channel_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'int_l2_streaming_tv_channel_features'
@@ -295,9 +295,9 @@ l1_customer_profile_union_daily_feature_for_int_l2_streaming_tv_channel_features
 
 l1_customer_profile_union_daily_feature_for_int_l2_streaming_video_service_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'int_l2_streaming_video_service_feature'
@@ -308,9 +308,9 @@ l1_customer_profile_union_daily_feature_for_int_l2_streaming_video_service_featu
 
 l1_customer_profile_union_daily_feature_for_int_l2_streaming_music_service_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'int_l2_streaming_video_service_feature'
@@ -321,9 +321,9 @@ l1_customer_profile_union_daily_feature_for_int_l2_streaming_music_service_featu
 
 l1_customer_profile_union_daily_feature_for_int_l2_streaming_esport_service_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'int_l2_streaming_esport_service_feature'
@@ -334,9 +334,9 @@ l1_customer_profile_union_daily_feature_for_int_l2_streaming_esport_service_feat
 
 l1_customer_profile_union_daily_feature_for_l2_streaming_visit_count_and_download_traffic_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_streaming_visit_count_and_download_traffic_feature'
@@ -347,9 +347,9 @@ l1_customer_profile_union_daily_feature_for_l2_streaming_visit_count_and_downloa
 
 l1_customer_profile_union_daily_feature_for_int_l2_streaming_sum_per_day:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'int_l2_streaming_sum_per_day'
@@ -360,9 +360,9 @@ l1_customer_profile_union_daily_feature_for_int_l2_streaming_sum_per_day:
 
 l1_customer_profile_union_daily_feature_l2_streaming_session_duration_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_streaming_session_duration_feature'

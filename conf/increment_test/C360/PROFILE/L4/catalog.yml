@@ -1,6 +1,6 @@
 #l4_customer_profile_ltv_to_date:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: /mnt/customer360-blob-data/C360/PROFILE/l4_features/ltv_to_date/
+#  filepath: /mnt/customer360-blob-output/C360/PROFILE/l4_features/ltv_to_date/
 #  file_format: "parquet"
 #  save_args:
 #    partitionBy: ["partition_month"]
@@ -9,9 +9,9 @@
 
 l4_customer_profile_ltv_to_date:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/PROFILE/l4_features/l4_customer_profile_ltv_to_date/
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l4_features/l4_customer_profile_ltv_to_date/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"

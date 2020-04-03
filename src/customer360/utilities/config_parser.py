@@ -123,6 +123,10 @@ def union_dataframes_with_missing_cols(df_input_or_list, *args):
 
 
 def _get_full_data(src_data, fea_dict):
+
+    if len(src_data.head(1)) == 0:
+        return src_data
+
     spark = get_spark_session()
 
     read_from = fea_dict.get("read_from")
@@ -198,6 +202,9 @@ def _get_full_data(src_data, fea_dict):
 
 
 def l4_rolling_window(input_df, config):
+
+    if len(input_df.head(1)) == 0:
+        return input_df
 
     ranked_lookup_enable_flag = config.get('ranked_lookup_enable_flag', "No")
 
@@ -378,6 +385,10 @@ def create_window_statement(
 
 
 def node_from_config(input_df, config) -> DataFrame:
+
+    if len(input_df.head(1)) == 0:
+        return input_df
+
     table_name = "input_table"
     input_df.createOrReplaceTempView(table_name)
 
@@ -399,6 +410,10 @@ def expansion(input_df, config) -> DataFrame:
     :param config:
     :return:
     """
+
+    if len(input_df.head(1)) == 0:
+        return input_df
+
     table_name = "input_table"
     input_df.createOrReplaceTempView(table_name)
 
@@ -436,6 +451,10 @@ def __generate_l4_rolling_ranked_column(
         input_df,
         config
 ) -> DataFrame:
+
+    if len(input_df.head(1)) == 0:
+        return input_df
+
     table_name = "input_table"
     input_df.createOrReplaceTempView(table_name)
 
@@ -590,6 +609,10 @@ def __construct_null_safe_join_condition(
 
 
 def join_l4_rolling_ranked_table(result_df, config):
+
+    if len(result_df.head(1)) == 0:
+        return result_df
+
     feature_column = [F.col("left.{}".format(each_col)) for each_col in config["partition_by"]]
 
     final_df = None
@@ -652,6 +675,10 @@ def l4_rolling_ranked_window(
         input_df,
         config
 ) -> Dict[str, DataFrame]:
+
+    if len(input_df.head(1)) == 0:
+        return input_df
+
     ranked_df = __generate_l4_rolling_ranked_column(input_df, config)
     result_df = __generate_l4_filtered_ranked_table(ranked_df, config)
     return result_df
