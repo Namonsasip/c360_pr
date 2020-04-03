@@ -8,6 +8,7 @@ conf/**/*credentials*
 
 # ignore everything in the following folders
 logs/**
+mlruns/**
 references/**
 results/**
 

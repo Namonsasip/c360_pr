@@ -1,22 +1,33 @@
 from functools import partial
+
 from kedro.pipeline import Pipeline, node
-from src.customer360.pipelines.cvm.src.utils.get_suffix import get_suffix
+
 from src.nba.report.nodes.report_nodes import *
 
 
-def create_use_case_view_report_data(run_type: str = None) -> Pipeline:
+def create_use_case_view_report_data() -> Pipeline:
     return Pipeline(
         [
             node(
+                create_use_case_campaign_mapping_table,
+                {
+                    "campaign_churn_cvm_master": "campaign_churn_cvm_master",
+                    "campaign_churn_bau_master": "campaign_churn_bau_master",
+                    "campaign_ard_cvm_master": "campaign_ard_cvm_master",
+                },
+                "use_case_campaign_mapping",
+                name="create_use_case_campaign_mapping_table",
+                tags=["create_use_case_campaign_mapping_table",],
+            ),
+            node(
                 partial(
                     create_report_campaign_tracking_table,
-                    day="2020-03-03",  # TODO make dynamic
+                    day="2020-03-24",  # TODO make dynamic
                 ),
                 {
                     "cvm_prepaid_customer_groups": "cvm_prepaid_customer_groups",
-                    "dm996_cvm_ontop_pack": "dm996_cvm_ontop_pack",
+                    "l0_campaign_tracking_contact_list_pre": "l0_campaign_tracking_contact_list_pre",
                     "use_case_campaign_mapping": "use_case_campaign_mapping",
-                    "report_create_campaign_tracking_table_parameters": "params:report_create_campaign_tracking_table",
                 },
                 "campaign_response_input_table",
                 name="campaign_response_input_table",
@@ -26,10 +37,10 @@ def create_use_case_view_report_data(run_type: str = None) -> Pipeline:
                 partial(
                     node_reporting_kpis,
                     date_from=datetime.strptime(
-                        "2020-02-01", "%Y-%m-%d"
+                        "2020-02-20", "%Y-%m-%d"
                     ),  # TODO make dynamic
                     date_to=datetime.strptime(
-                        "2020-03-03", "%Y-%m-%d"
+                        "2020-03-24", "%Y-%m-%d"
                     ),  # TODO make dynamic
                     arpu_days_agg_periods=[1, 7, 30],
                     dormant_days_agg_periods=[5, 7, 14, 30, 60, 90],
@@ -63,7 +74,7 @@ def create_use_case_view_report_data(run_type: str = None) -> Pipeline:
             node(
                 partial(
                     create_use_case_view_report,
-                    day="2020-03-03",  # TODO make dynamic
+                    day="2020-03-24",  # TODO make dynamic
                     aggregate_period=[1, 7, 30],
                 ),
                 inputs={

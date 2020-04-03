@@ -40,52 +40,64 @@ from customer360.utilities.re_usable_functions import l1_massive_processing, add
 def streaming_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
-            # # Content Type Features
+            # Content Type Features
             node(
                 l1_massive_processing,
                 ["l0_streaming_ru_a_onair_vimmi_usage_daily",
                  "params:int_l1_streaming_content_type_features"],
                 "int_l1_streaming_content_type_features"
             ),
-            # node(
-            #     node_from_config,
-            #     ["int_l1_streaming_content_type_features",
-            #      "params:l1_streaming_fav_content_group_by_volume"],
-            #     "l1_streaming_fav_content_group_by_volume"
-            # ),
-            #
-            # # TV Channel features
-            # node(
-            #     node_from_config,
-            #     ["l0_streaming_ru_a_onair_vimmi_usage_daily",
-            #      "params:int_l1_streaming_tv_channel_features"],
-            #     "int_l1_streaming_tv_channel_features"
-            # ),
-            # node(
-            #     node_from_config,
-            #     ["int_l1_streaming_tv_channel_features",
-            #      "params:l1_streaming_fav_tv_channel_by_volume"],
-            #     "l1_streaming_fav_tv_channel_by_volume"
-            # ),
-            #
-            # # TV Show features
             node(
-                add_start_of_week_and_month,
-                ["l0_streaming_ru_a_onair_vimmi_usage_daily"],
-                "int_l0_streaming_vimmi_table"
+                node_from_config,
+                ["int_l1_streaming_content_type_features",
+                 "params:l1_streaming_fav_content_group_by_volume"],
+                "l1_streaming_fav_content_group_by_volume"
             ),
-            # node(
-            #     node_from_config,
-            #     ["l0_streaming_ru_a_onair_vimmi_usage_daily",
-            #      "params:int_l1_streaming_tv_show_features"],
-            #     "int_l1_streaming_tv_show_features"
-            # ),
-            # node(
-            #     node_from_config,
-            #     ["int_l1_streaming_tv_show_features",
-            #      "params:l1_streaming_fav_tv_show_by_episode_watched"],
-            #     "l1_streaming_fav_tv_show_by_episode_watched"
-            # ),
+            node(
+                node_from_config,
+                ["int_l1_streaming_content_type_features",
+                 "params:l1_streaming_fav_content_group_by_duration"],
+                "l1_streaming_fav_content_group_by_duration"
+            ),
+
+            # TV Channel features
+            node(
+                node_from_config,
+                ["l0_streaming_ru_a_onair_vimmi_usage_daily",
+                 "params:int_l1_streaming_tv_channel_features"],
+                "int_l1_streaming_tv_channel_features"
+            ),
+            node(
+                node_from_config,
+                ["int_l1_streaming_tv_channel_features",
+                 "params:l1_streaming_fav_tv_channel_by_volume"],
+                "l1_streaming_fav_tv_channel_by_volume"
+            ),
+            node(
+                node_from_config,
+                ["int_l1_streaming_tv_channel_features",
+                 "params:l1_streaming_fav_tv_channel_by_duration"],
+                "l1_streaming_fav_tv_channel_by_duration"
+            ),
+
+            # TV Show features
+                node(
+                    add_start_of_week_and_month,
+                    ["l0_streaming_ru_a_onair_vimmi_usage_daily"],
+                    "int_l0_streaming_vimmi_table"
+                ),
+            node(
+                node_from_config,
+                ["l0_streaming_ru_a_onair_vimmi_usage_daily",
+                 "params:int_l1_streaming_tv_show_features"],
+                "int_l1_streaming_tv_show_features"
+            ),
+            node(
+                node_from_config,
+                ["int_l1_streaming_tv_show_features",
+                 "params:l1_streaming_fav_tv_show_by_episode_watched"],
+                "l1_streaming_fav_tv_show_by_episode_watched"
+            ),
             #
             # # fav video service by download traffic
             node(
@@ -94,19 +106,19 @@ def streaming_to_l1_pipeline(**kwargs):
                  "params:int_l1_streaming_video_service_feature"],
                 "int_l1_streaming_video_service_feature"
             ),
-            # node(
-            #     node_from_config,
-            #     ["int_l1_streaming_video_service_feature",
-            #      "params:l1_streaming_fav_video_service_by_download_feature"],
-            #     "l1_streaming_fav_video_service_by_download_feature"
-            # ),
-            # node(
-            #     node_from_config,
-            #     ["int_l1_streaming_video_service_feature",
-            #      "params:l1_streaming_2nd_fav_video_service_by_download_feature"],
-            #     "l1_streaming_2nd_fav_video_service_by_download_feature"
-            # ),
-            #
+            node(
+                node_from_config,
+                ["int_l1_streaming_video_service_feature",
+                 "params:l1_streaming_fav_video_service_by_download_feature"],
+                "l1_streaming_fav_video_service_by_download_feature"
+            ),
+            node(
+                node_from_config,
+                ["int_l1_streaming_video_service_feature",
+                 "params:l1_streaming_2nd_fav_video_service_by_download_feature"],
+                "l1_streaming_2nd_fav_video_service_by_download_feature"
+            ),
+
             # # fav music service by download traffic
             node(
                 l1_massive_processing,
@@ -114,19 +126,19 @@ def streaming_to_l1_pipeline(**kwargs):
                  "params:int_l1_streaming_music_service_feature"],
                 "int_l1_streaming_music_service_feature"
             ),
-            # node(
-            #     node_from_config,
-            #     ["int_l1_streaming_music_service_feature",
-            #      "params:l1_streaming_fav_music_service_by_download_feature"],
-            #     "l1_streaming_fav_music_service_by_download_feature"
-            # ),
-            # node(
-            #     node_from_config,
-            #     ["int_l1_streaming_music_service_feature",
-            #      "params:l1_streaming_2nd_fav_music_service_by_download_feature"],
-            #     "l1_streaming_2nd_fav_music_service_by_download_feature"
-            # ),
-            #
+            node(
+                node_from_config,
+                ["int_l1_streaming_music_service_feature",
+                 "params:l1_streaming_fav_music_service_by_download_feature"],
+                "l1_streaming_fav_music_service_by_download_feature"
+            ),
+            node(
+                node_from_config,
+                ["int_l1_streaming_music_service_feature",
+                 "params:l1_streaming_2nd_fav_music_service_by_download_feature"],
+                "l1_streaming_2nd_fav_music_service_by_download_feature"
+            ),
+
             # # fav esport service by download traffic
             node(
                 l1_massive_processing,
@@ -134,19 +146,19 @@ def streaming_to_l1_pipeline(**kwargs):
                  "params:int_l1_streaming_esport_service_feature"],
                 "int_l1_streaming_esport_service_feature"
             ),
-            # node(
-            #     node_from_config,
-            #     ["int_l1_streaming_esport_service_feature",
-            #      "params:l1_streaming_fav_esport_service_by_download_feature"],
-            #     "l1_streaming_fav_esport_service_by_download_feature"
-            # ),
-            # node(
-            #     node_from_config,
-            #     ["int_l1_streaming_esport_service_feature",
-            #      "params:l1_streaming_2nd_fav_esport_service_by_download_feature"],
-            #     "l1_streaming_2nd_fav_esport_service_by_download_feature"
-            # ),
-            #
+            node(
+                node_from_config,
+                ["int_l1_streaming_esport_service_feature",
+                 "params:l1_streaming_fav_esport_service_by_download_feature"],
+                "l1_streaming_fav_esport_service_by_download_feature"
+            ),
+            node(
+                node_from_config,
+                ["int_l1_streaming_esport_service_feature",
+                 "params:l1_streaming_2nd_fav_esport_service_by_download_feature"],
+                "l1_streaming_2nd_fav_esport_service_by_download_feature"
+            ),
+
             # number of visit and volume of download traffic
             node(
                 l1_massive_processing,
