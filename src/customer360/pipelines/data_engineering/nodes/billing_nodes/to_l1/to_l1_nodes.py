@@ -6,6 +6,7 @@ from kedro.context.context import load_context
 from pathlib import Path
 import logging
 import os
+from src.customer360.utilities.spark_util import get_spark_empty_df
 
 conf = os.getenv("CONF", None)
 
@@ -15,6 +16,9 @@ def massive_processing(input_df, customer_prof_input_df, join_function, sql, par
     """
     :return:
     """
+
+    if len(input_df.head(1)) == 0 or len(customer_prof_input_df.head(1)) == 0:
+        return get_spark_empty_df
 
     def divide_chunks(l, n):
 
