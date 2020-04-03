@@ -6,14 +6,8 @@ l1_product_active_customer_promotion_features_daily:
     increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "event_partition_date"
-    read_layer: 'l1_daily'
+    read_layer: 'l0_daily'
     target_layer: 'l1_daily'
-#  load_args:
-#    increment_flag: 'yes'
-#    lookup_table_name: 'l4_digital_cxenzxse_user_profile_monthly_features'
-#    read_layer: 'l1_daily'
-#    target_layer: 'l1_daily'
-#    lookback: '0'
 
 l1_product_active_fbb_customer_features_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -23,5 +17,5 @@ l1_product_active_fbb_customer_features_daily:
     increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "event_partition_date"
-    read_layer: 'l1_daily'
+    read_layer: 'l0_daily'
     target_layer: 'l1_daily'

@@ -2,12 +2,12 @@ l2_product_activated_deactivated_features_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/PRODUCT/l2_features/l2_product_activated_deactivated_features_weekly/
-    load_args:
-      increment_flag: 'yes'
-      lookup_table_name: 'l4_product_activated_deactivated_features'
-      read_layer: 'l2_weekly'
-      target_layer: 'l4_weekly'
-      lookback: '12'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l4_product_activated_deactivated_features'
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
+    lookback: '12'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
