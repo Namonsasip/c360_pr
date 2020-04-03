@@ -8,7 +8,7 @@ l0_product_pru_m_package_master_group_for_daily:
   filepath: dbfs:/mnt/customer360-blob-data/C360/PRODUCT/product_pru_m_package_master_group/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_product_active_customer_promotion_features_daily'
@@ -20,7 +20,7 @@ l0_product_pru_m_package_master_group_for_weekly:
   filepath: dbfs:/mnt/customer360-blob-data/C360/PRODUCT/product_pru_m_package_master_group/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_product_activated_deactivated_features_weekly'
@@ -37,7 +37,7 @@ l0_product_customer_promotion_for_daily:
   filepath: dbfs:/mnt/customer360-blob-data/C360/PRODUCT/product_customer_promotion_daily/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_product_active_customer_promotion_features_daily'
@@ -49,7 +49,7 @@ l0_product_customer_promotion_for_weekly:
   filepath: dbfs:/mnt/customer360-blob-data/C360/PRODUCT/product_customer_promotion_daily/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_product_activated_deactivated_features_weekly'
@@ -68,7 +68,7 @@ l0_product_pru_m_ontop_master_for_daily:
   filepath: dbfs:/mnt/customer360-blob-data/C360/PRODUCT/product_pru_m_ontop_master/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_product_active_customer_promotion_features_daily'
@@ -80,7 +80,7 @@ l0_product_pru_m_ontop_master_for_weekly:
   filepath: dbfs:/mnt/customer360-blob-data/C360/PRODUCT/product_pru_m_ontop_master/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_product_activated_deactivated_features_weekly'
@@ -98,7 +98,7 @@ l0_product_ru_m_main_promotion_cvm_proj_for_daily:
   filepath: dbfs:/mnt/customer360-blob-data/C360/PRODUCT/product_ru_m_main_promotion_cvm_proj/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_product_active_customer_promotion_features_daily'
@@ -110,7 +110,7 @@ l0_product_ru_m_main_promotion_cvm_proj_for_weekly:
   filepath: dbfs:/mnt/customer360-blob-data/C360/PRODUCT/product_ru_m_main_promotion_cvm_proj/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_product_activated_deactivated_features_weekly'
@@ -128,7 +128,7 @@ l0_product_ru_m_ontop_promotion_cvm_proj_for_daily:
   filepath: dbfs:/mnt/customer360-blob-data/C360/PRODUCT/product_ru_m_ontop_promotion_cvm_proj/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_product_active_customer_promotion_features_daily'
@@ -140,7 +140,7 @@ l0_product_ru_m_ontop_promotion_cvm_proj_for_weekly:
   filepath: dbfs:/mnt/customer360-blob-data/C360/PRODUCT/product_ru_m_ontop_promotion_cvm_proj/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_product_activated_deactivated_features_weekly'
@@ -163,7 +163,7 @@ l0_product_fbb_a_customer_promotion_current_for_daily:
   filepath: dbfs:/mnt/customer360-blob-data/C360/PRODUCT/product_fbb_a_customer_promotion_current/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_product_active_fbb_customer_features_daily'

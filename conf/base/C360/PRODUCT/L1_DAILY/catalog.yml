@@ -2,7 +2,7 @@ l1_product_active_customer_promotion_features_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
   filepath: dbfs:/mnt/customer360-blob-output/C360/PRODUCT/l1_features/l1_product_active_customer_promotion_features_daily/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -14,7 +14,7 @@ l1_product_active_fbb_customer_features_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
   filepath: dbfs:/mnt/customer360-blob-output/C360/PRODUCT/l1_features/l1_product_active_fbb_customer_features_daily/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
