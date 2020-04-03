@@ -365,7 +365,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             elif read_layer.lower() == "l0_monthly" and target_layer.lower() == 'l4_monthly':
                 filter_col = "partition_month"
-                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
+                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "3"
                 print("filter_col:", filter_col)
                 print("lookback_fltr:", lookback_fltr)
                 src_incremental_data = spark.sql(
