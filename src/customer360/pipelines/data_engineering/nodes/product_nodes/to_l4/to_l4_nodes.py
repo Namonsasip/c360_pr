@@ -1,12 +1,15 @@
 from pyspark.sql import DataFrame
 
-from src.customer360.utilities.spark_util import get_spark_session
+from src.customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 
 
 def add_l4_product_ratio_features(
         int_l4_product_df
 ) -> DataFrame:
     spark = get_spark_session()
+
+    if len(int_l4_product_df.head(1)) == 0:
+        return get_spark_empty_df()
 
     int_l4_product_df.createOrReplaceTempView("int_l4_product_df")
 

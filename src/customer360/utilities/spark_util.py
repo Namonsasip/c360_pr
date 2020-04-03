@@ -1,4 +1,5 @@
-from pyspark.sql import SparkSession
+from pyspark.sql import SparkSession, DataFrame
+from pyspark.sql.types import *
 
 
 def get_spark_session() -> SparkSession:
@@ -14,3 +15,13 @@ def get_spark_session() -> SparkSession:
     spark.conf.set("spark.sql.sources.partitionOverwriteMode", "DYNAMIC")
 
     return spark
+
+
+def get_spark_empty_df() -> DataFrame:
+    """
+    :return:
+    """
+    schema = StructType([])
+    spark = get_spark_session()
+    src = spark.createDataFrame(spark.sparkContext.emptyRDD(), schema)
+    return src

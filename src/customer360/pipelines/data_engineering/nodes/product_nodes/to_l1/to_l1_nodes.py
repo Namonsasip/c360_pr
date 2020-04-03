@@ -1,6 +1,5 @@
 from pyspark.sql import DataFrame
-
-from src.customer360.utilities.spark_util import get_spark_session
+from src.customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 
 
 def union_master_package_table(
@@ -74,6 +73,12 @@ def join_with_master_package(
         postpaid_ontop_master_df
 ) -> DataFrame:
     spark = get_spark_session()
+
+    if (len(grouped_cust_promo_df.head(1)) == 0 | len(prepaid_main_master_df.head(1)) == 0 |
+        len(grouped_cust_promo_df.head(1)) == 0 | len(grouped_cust_promo_df.head(1)) == 0 |
+        len(prepaid_ontop_master_df.head(1)) == 0 | len(postpaid_main_master_df.head(1)) == 0 |
+        len(postpaid_ontop_master_df.head(1)) == 0):
+        return get_spark_empty_df()
 
     grouped_cust_promo_df.createOrReplaceTempView("grouped_cust_promo_df")
 

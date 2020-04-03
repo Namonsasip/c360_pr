@@ -24,7 +24,7 @@ l0_product_pru_m_package_master_group_for_weekly:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_product_activated_deactivated_features_weekly'
-    read_layer: 'l0_daily'
+    read_layer: 'l0_weekly'
     target_layer: 'l2_weekly'
     lookback: '0'
 
@@ -53,7 +53,7 @@ l0_product_customer_promotion_for_weekly:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_product_activated_deactivated_features_weekly'
-    read_layer: 'l0_daily'
+    read_layer: 'l0_weekly'
     target_layer: 'l2_weekly'
     lookback: '0'
 
@@ -84,7 +84,7 @@ l0_product_pru_m_ontop_master_for_weekly:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_product_activated_deactivated_features_weekly'
-    read_layer: 'l0_daily'
+    read_layer: 'l0_weekly'
     target_layer: 'l2_weekly'
     lookback: '0'
 
@@ -114,7 +114,7 @@ l0_product_ru_m_main_promotion_cvm_proj_for_weekly:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_product_activated_deactivated_features_weekly'
-    read_layer: 'l0_daily'
+    read_layer: 'l0_weekly'
     target_layer: 'l2_weekly'
     lookback: '0'
 
@@ -144,7 +144,7 @@ l0_product_ru_m_ontop_promotion_cvm_proj_for_weekly:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_product_activated_deactivated_features_weekly'
-    read_layer: 'l0_daily'
+    read_layer: 'l0_weekly'
     target_layer: 'l2_weekly'
     lookback: '0'
 
