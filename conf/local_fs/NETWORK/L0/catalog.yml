@@ -31,7 +31,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day:
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day
+  filepath: data/L0/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day:
   type: kedro.contrib.io.pyspark.SparkDataSet

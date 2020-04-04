@@ -42,9 +42,13 @@ from cvm.preprocessing.pipeline import (
     create_cvm_preprocessing_scoring,
     create_cvm_preprocessing,
 )
-# from nba.model_input.model_input_pipeline import create_nba_model_input_pipeline
-# from nba.models.models_pipeline import create_nba_models_pipeline
-# from nba.report.pipelines.report_pipeline import create_use_case_view_report_data
+
+from nba.model_input.model_input_pipeline import create_nba_model_input_pipeline
+from nba.models.models_pipeline import create_nba_models_pipeline
+
+from nba.report.pipelines.campaign_importance_volume_pipeline import campaign_importance_volume
+from nba.report.pipelines.report_pipeline import create_use_case_view_report_data
+
 from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l1.to_l1_pipeline import (
     billing_to_l1_pipeline,
 )
@@ -143,6 +147,10 @@ from .pipelines.data_engineering.pipelines.device_pipeline import (
     device_to_l2_pipeline,
     device_to_l4_pipeline,
 )
+
+from .pipelines.data_engineering.pipelines.digital_pipeline import (
+    digital_to_l3_pipeline, digital_to_l4_pipeline
+)
 from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l1.to_l1_pipeline import *
 from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l2.to_l2_pipeline import *
 from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l3.to_l3_pipeline import *
@@ -159,6 +167,15 @@ from .pipelines.data_engineering.pipelines.network_pipeline.to_l3.to_l3_pipeline
 )
 from .pipelines.data_engineering.pipelines.network_pipeline.to_l4.to_l4_pipeline import (
     network_to_l4_pipeline,
+)
+from .pipelines.data_engineering.pipelines.product_pipeline.to_l1.to_l1_pipeline import (
+    product_to_l1_pipeline,
+)
+from .pipelines.data_engineering.pipelines.product_pipeline.to_l2.to_l2_pipeline import (
+    product_to_l2_pipeline,
+)
+from .pipelines.data_engineering.pipelines.product_pipeline.to_l4.to_l4_pipeline import (
+    product_to_l4_pipeline,
 )
 
 
@@ -199,6 +216,8 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "device_to_l1_pipeline": device_to_l1_pipeline(),
         "device_to_l2_pipeline": device_to_l2_pipeline(),
         "device_to_l4_pipeline": device_to_l4_pipeline(),
+        "digital_to_l3_pipeline": digital_to_l3_pipeline(),
+        "digital_to_l4_pipeline": digital_to_l4_pipeline(),
         # "device_to_l3_pipeline": device_to_l3_pipeline(),
         "streaming_to_l1_pipeline": streaming_to_l1_pipeline(),
         "streaming_to_l2_pipeline": streaming_to_l2_pipeline(),
@@ -225,6 +244,9 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "network_to_l2_pipeline": network_to_l2_pipeline(),
         "network_to_l3_pipeline": network_to_l3_pipeline(),
         "network_to_l4_pipeline": network_to_l4_pipeline(),
+        "product_to_l1_pipeline": product_to_l1_pipeline(),
+        "product_to_l2_pipeline": product_to_l2_pipeline(),
+        "product_to_l4_pipeline": product_to_l4_pipeline(),
         # "de": data_engineering_pipeline,
     }
 
@@ -261,13 +283,14 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
     }
 
 
-# def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
-#     return {
-#         "__default__": create_use_case_view_report_data()
-#         + create_nba_model_input_pipeline()
-#         + create_nba_models_pipeline()
-#     }
-#
+
+def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
+    return {
+        "__default__": create_use_case_view_report_data()
+        + create_nba_model_input_pipeline()
+        + create_nba_models_pipeline()
+        + campaign_importance_volume()
+    }
 
 def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
     """Create the project's pipeline.
