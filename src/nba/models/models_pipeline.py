@@ -1,5 +1,5 @@
 # from functools import partial
-# 
+#
 # from kedro.pipeline import Pipeline, node
 #
 # from nba.models.models_nodes import train_single_binary_model
