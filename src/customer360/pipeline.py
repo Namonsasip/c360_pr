@@ -43,8 +43,8 @@ from cvm.preprocessing.pipeline import (
     create_cvm_preprocessing,
 )
 
-from nba.model_input.model_input_pipeline import create_nba_model_input_pipeline
-from nba.models.models_pipeline import create_nba_models_pipeline
+#from nba.model_input.model_input_pipeline import create_nba_model_input_pipeline
+#from nba.models.models_pipeline import create_nba_models_pipeline
 
 from nba.report.pipelines.campaign_importance_volume_pipeline import campaign_importance_volume
 from nba.report.pipelines.report_pipeline import create_use_case_view_report_data
