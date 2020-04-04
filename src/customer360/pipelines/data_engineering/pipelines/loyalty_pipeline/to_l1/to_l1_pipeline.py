@@ -21,9 +21,9 @@ def loyalty_to_l1_pipeline(**kwargs):
             # Number of services for each category
             node(
                 loyalty_number_of_services_for_each_category,
-                ["l1_customer_profile_union_daily_feature",
+                ["l1_customer_profile_union_daily_feature_for_l1_loyalty_number_of_services",
                  "l0_loyalty_drm_t_privilege_success",
-                 "l0_loyalty_priv_project",
+                 "l0_loyalty_priv_project_for_l1_loyalty_number_of_services",
                  "params:l1_loyalty_number_of_services_daily"],
                 "l1_loyalty_number_of_services"
             ),
@@ -44,9 +44,9 @@ def loyalty_to_l1_pipeline(**kwargs):
             # Number of rewards for each category
             node(
                 loyalty_number_of_rewards_for_each_category,
-                ["l1_customer_profile_union_daily_feature",
-                 "l0_loyalty_drm_t_aunjai_point_collection_daily",
-                 "l0_loyalty_priv_project",
+                ["l1_customer_profile_union_daily_feature_for_l1_loyalty_number_of_rewards",
+                 "l0_loyalty_drm_t_aunjai_point_collection_daily_for_l1_loyalty_number_of_rewards",
+                 "l0_loyalty_priv_project_for_l1_loyalty_number_of_rewards",
                  "params:l1_loyalty_number_of_rewards_daily"],
                 "l1_loyalty_number_of_rewards"
             ),
@@ -61,9 +61,9 @@ def loyalty_to_l1_pipeline(**kwargs):
 
             node(
                 loyalty_number_of_points_spend_for_each_category,
-                ["l1_customer_profile_union_daily_feature",
-                 "l0_loyalty_drm_t_aunjai_point_collection_daily",
-                 "l0_loyalty_priv_project",
+                ["l1_customer_profile_union_daily_feature_for_l1_loyalty_number_of_points_spend",
+                 "l0_loyalty_drm_t_aunjai_point_collection_daily_for_l1_loyalty_number_of_points_spend",
+                 "l0_loyalty_priv_project_for_l1_loyalty_number_of_points_spend",
                  "l0_loyalty_priv_point_transaction",
                  "params:l1_loyalty_number_of_points_spend_daily"],
                 "l1_loyalty_number_of_points_spend"

@@ -1,24 +1,24 @@
 l0_complaints_acc_ai_chatbot_survey_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: data/L0/COMPLAINTS/complaints_acc_ai_chatbot_survey/
+  filepath: data/L0/COMPLAINTS_old/complaints_acc_ai_chatbot_survey/
   file_format: "parquet"
 
 l0_complaints_acc_atsr_outbound_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: data/L0/COMPLAINTS/complaints_acc_atsr_outbound/
+  filepath: data/L0/COMPLAINTS_old/complaints_acc_atsr_outbound/
   file_format: "parquet"
 
 l0_complaints_acc_qmt_csi_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: data/L0/COMPLAINTS/complaints_acc_qmt_csi/
+  filepath: data/L0/COMPLAINTS_old/complaints_acc_qmt_csi/
   file_format: "parquet"
 
 l0_complaints_ais_nim_interaction:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: data/L0/COMPLAINTS/complaints_ais_nim_interaction/
+  filepath: data/L0/COMPLAINTS_old/complaints_ais_nim_interaction/
   file_format: "parquet"
 
 l0_complaints_ais_nim_work:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: data/L0/COMPLAINTS/complaints_ais_nim_work/
+  filepath: data/L0/COMPLAINTS_old/complaints_ais_nim_work/
   file_format: "parquet"

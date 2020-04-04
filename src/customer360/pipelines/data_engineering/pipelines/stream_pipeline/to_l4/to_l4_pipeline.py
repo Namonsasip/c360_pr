@@ -46,48 +46,54 @@ def streaming_to_l4_pipeline(**kwargs):
             # this will calculate sum per content_group
             node(
                 l4_rolling_window,
-                ["int_l2_streaming_content_type_features",
+                ["int_l2_streaming_content_type_features_for_int_l4_streaming_content_type_features",
                  "params:int_l4_streaming_content_type_features"],
-                "int_l4_streaming_content_type_features"
+                "int_l4_streaming_content_type_features@save"
             ),
             # this will get all the first rank of the group
             node(
                 l4_rolling_ranked_window,
-                ["int_l4_streaming_content_type_features",
+                ["int_l4_streaming_content_type_features@load_l4_streaming_fav_content_group_by_volume",
                  "params:l4_streaming_fav_content_group_by_volume"],
                 "l4_streaming_fav_content_group_by_volume"
             ),
             node(
                 l4_rolling_ranked_window,
-                ["int_l4_streaming_content_type_features",
+                ["int_l4_streaming_content_type_features@load_l4_streaming_fav_content_group_by_duration",
                  "params:l4_streaming_fav_content_group_by_duration"],
                 "l4_streaming_fav_content_group_by_duration"
             ),
 
+
+
             # TV Channel features
             node(
                 l4_rolling_window,
-                ["int_l2_streaming_tv_channel_features",
+                ["int_l2_streaming_tv_channel_features_for_int_l4_streaming_tv_channel_features",
                  "params:int_l4_streaming_tv_channel_features"],
-                "int_l4_streaming_tv_channel_features"
+                "int_l4_streaming_tv_channel_features@save"
             ),
             node(
                 l4_rolling_ranked_window,
-                ["int_l4_streaming_tv_channel_features",
+                ["int_l4_streaming_tv_channel_features@l4_streaming_fav_tv_channel_by_volume",
                  "params:l4_streaming_fav_tv_channel_by_volume"],
                 "l4_streaming_fav_tv_channel_by_volume"
             ),
             node(
                 l4_rolling_ranked_window,
-                ["int_l4_streaming_tv_channel_features",
+                ["int_l4_streaming_tv_channel_features@l4_streaming_fav_tv_channel_by_duration",
                  "params:l4_streaming_fav_tv_channel_by_duration"],
                 "l4_streaming_fav_tv_channel_by_duration"
             ),
 
+
+
+
+
             # TV show features
             node(
                 l4_rolling_window,
-                ["int_l0_streaming_vimmi_table",
+                ["int_l0_streaming_vimmi_table_for_l4_streaming_fav_tv_show_by_episode_watched",
                  "params:int_l4_streaming_tv_show_features_1"],
                 "int_l4_streaming_tv_show_features_1"
             ),
@@ -105,94 +111,106 @@ def streaming_to_l4_pipeline(**kwargs):
                 "l4_streaming_fav_tv_show_by_episode_watched"
             ),
 
+
+
+
+
             # fav video service feature
             node(
                 l4_rolling_window,
-                ["int_l2_streaming_video_service_feature",
+                ["int_l2_streaming_video_service_feature_for_int_l4_streaming_video_service_feature",
                  "params:int_l4_streaming_service_feature"],
-                "int_l4_streaming_video_service_feature"
+                "int_l4_streaming_video_service_feature@save"
             ),
             node(
                 l4_rolling_ranked_window,
-                ["int_l4_streaming_video_service_feature",
+                ["int_l4_streaming_video_service_feature@l4_streaming_fav_video_service_by_download_feature",
                  "params:l4_streaming_fav_service_by_download_feature"],
                 "l4_streaming_fav_video_service_by_download_feature"
             ),
             node(
                 l4_rolling_ranked_window,
-                ["int_l4_streaming_video_service_feature",
+                ["int_l4_streaming_video_service_feature@l4_streaming_2nd_fav_video_service_by_download_feature",
                  "params:l4_streaming_2nd_fav_service_by_download_feature"],
                 "l4_streaming_2nd_fav_video_service_by_download_feature"
             ),
             node(
                 l4_rolling_ranked_window,
-                ["int_l4_streaming_video_service_feature",
+                ["int_l4_streaming_video_service_feature@l4_streaming_fav_video_service_by_visit_count_feature",
                  "params:l4_streaming_fav_service_by_visit_count_feature"],
                 "l4_streaming_fav_video_service_by_visit_count_feature"
             ),
 
+
+
+
             # fav music service feature
             node(
                 l4_rolling_window,
-                ["int_l2_streaming_music_service_feature",
+                ["int_l2_streaming_music_service_feature_for_int_l4_streaming_music_service_feature",
                  "params:int_l4_streaming_service_feature"],
-                "int_l4_streaming_music_service_feature"
+                "int_l4_streaming_music_service_feature@save"
             ),
             node(
                 l4_rolling_ranked_window,
-                ["int_l4_streaming_music_service_feature",
+                ["int_l4_streaming_music_service_feature@l4_streaming_fav_music_service_by_download_feature",
                  "params:l4_streaming_fav_service_by_download_feature"],
                 "l4_streaming_fav_music_service_by_download_feature"
             ),
             node(
                 l4_rolling_ranked_window,
-                ["int_l4_streaming_music_service_feature",
+                ["int_l4_streaming_music_service_feature@l4_streaming_2nd_fav_music_service_by_download_feature",
                  "params:l4_streaming_2nd_fav_service_by_download_feature"],
                 "l4_streaming_2nd_fav_music_service_by_download_feature"
             ),
             node(
                 l4_rolling_ranked_window,
-                ["int_l4_streaming_music_service_feature",
+                ["int_l4_streaming_music_service_feature@l4_streaming_fav_music_service_by_visit_count_feature",
                  "params:l4_streaming_fav_service_by_visit_count_feature"],
                 "l4_streaming_fav_music_service_by_visit_count_feature"
             ),
 
+
+
             # fav esport service feature
             node(
                 l4_rolling_window,
-                ["int_l2_streaming_esport_service_feature",
+                ["int_l2_streaming_esport_service_feature_for_int_l4_streaming_music_service_feature",
                  "params:int_l4_streaming_service_feature"],
-                "int_l4_streaming_esport_service_feature"
+                "int_l4_streaming_esport_service_feature@save"
             ),
             node(
                 l4_rolling_ranked_window,
-                ["int_l4_streaming_esport_service_feature",
+                ["int_l4_streaming_esport_service_feature@l4_streaming_fav_esport_service_by_download_feature",
                  "params:l4_streaming_fav_service_by_download_feature"],
                 "l4_streaming_fav_esport_service_by_download_feature"
             ),
             node(
                 l4_rolling_ranked_window,
-                ["int_l4_streaming_esport_service_feature",
+                ["int_l4_streaming_esport_service_feature@l4_streaming_2nd_fav_esport_service_by_download_feature",
                  "params:l4_streaming_2nd_fav_service_by_download_feature"],
                 "l4_streaming_2nd_fav_esport_service_by_download_feature"
             ),
             node(
                 l4_rolling_ranked_window,
-                ["int_l4_streaming_esport_service_feature",
+                ["int_l4_streaming_esport_service_feature@l4_streaming_fav_esport_service_by_visit_count_feature",
                  "params:l4_streaming_fav_service_by_visit_count_feature"],
                 "l4_streaming_fav_esport_service_by_visit_count_feature"
             ),
 
+
+
+
             node(
                 l4_rolling_window,
-                ["l2_streaming_visit_count_and_download_traffic_feature",
+                ["l2_streaming_visit_count_and_download_traffic_feature_for_l4_streaming_visit_count_and_download_traffic_feature",
                  "params:l4_streaming_visit_count_and_download_traffic_feature"],
                 "l4_streaming_visit_count_and_download_traffic_feature"
             ),
 
             node(
                 l4_rolling_window,
-                ["int_l2_streaming_sum_per_day",
+                ["int_l2_streaming_sum_per_day_for_l4_streaming_fav_youtube_video_streaming_day_of_week_feature",
                  "params:int_l4_streaming_download_traffic_per_day_of_week"],
                 "int_l4_streaming_download_traffic_per_day_of_week"
             ),
@@ -207,7 +225,7 @@ def streaming_to_l4_pipeline(**kwargs):
             # session duration
             node(
                 l4_rolling_window,
-                ["l2_streaming_session_duration_feature",
+                ["l2_streaming_session_duration_feature_for_l4_streaming_session_duration_feature",
                  "params:l4_streaming_session_duration_feature"],
                 "l4_streaming_session_duration_feature"
             ),

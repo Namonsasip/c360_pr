@@ -7,6 +7,7 @@ import logging
 import os
 from pyspark.sql import Window
 from pyspark.sql.types import StringType
+from src.customer360.utilities.spark_util import get_spark_empty_df
 
 conf = os.getenv("CONF", None)
 
@@ -65,15 +66,15 @@ def device_most_used_weekly(customer_prof, input_df, sql):
     return return_df
 
 
-def device_number_of_phone_updates_weekly(input_df, sql):
-    """
-    :return:
-    """
-    customer_prof = derive_customer_profile(customer_prof)
-
-    return_df = massive_processing(customer_prof, input_df, sql, False, "start_of_week",
-                                   "l2_device_number_of_phone_updates_weekly")
-    return return_df
+# def device_number_of_phone_updates_weekly(input_df, sql):
+#     """
+#     :return:
+#     """
+#     customer_prof = derive_customer_profile(customer_prof)
+#
+#     return_df = massive_processing(customer_prof, input_df, sql, False, "start_of_week",
+#                                    "l2_device_number_of_phone_updates_weekly")
+#     return return_df
 
 
 def device_previous_configurations_weekly(customer_prof, input_df, sql):
@@ -130,6 +131,10 @@ def join_with_customer_profile(customer_prof, hs_summary):
 
 
 def device_summary_with_configuration(hs_summary, hs_configs):
+
+    if len(hs_summary.head(1)) == 0 or len(hs_configs.head(1)) == 0:
+        return get_spark_empty_df
+
     hs_configs = hs_configs.withColumn("partition_date", hs_configs["partition_date"].cast(StringType()))
     hs_configs = hs_configs.withColumn("start_of_week",
                                        f.to_date(f.date_trunc('week', f.to_date(f.col("partition_date"), 'yyyyMMdd'))))
