@@ -365,7 +365,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             elif read_layer.lower() == "l0_monthly" and target_layer.lower() == 'l4_monthly':
                 filter_col = "partition_month"
-                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "3"
+                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 print("filter_col:", filter_col)
                 print("lookback_fltr:", lookback_fltr)
                 src_incremental_data = spark.sql(
@@ -512,11 +512,11 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
         current_target_data.createOrReplaceTempView("curr_target")
 
-        if partitionBy == 'partition_month':
-            current_target_max_data_load_date = spark.sql(
-                "select cast( to_date(nvl(max({0}),'197001'),'yyyyMM') as String) from curr_target".format(partitionBy))
-        else:
-            current_target_max_data_load_date = spark.sql(
+        # if partitionBy == 'partition_month':
+        #     current_target_max_data_load_date = spark.sql(
+        #         "select cast( to_date(nvl(max({0}),'197001'),'yyyyMM') as String) from curr_target".format(partitionBy))
+        # else:
+        current_target_max_data_load_date = spark.sql(
             "select cast( nvl(max({0}),'1970-01-01') as String) from curr_target".format(partitionBy))
 
         metadata_table_update_max_date_temp = current_target_max_data_load_date.rdd.flatMap(lambda x: x).collect()
