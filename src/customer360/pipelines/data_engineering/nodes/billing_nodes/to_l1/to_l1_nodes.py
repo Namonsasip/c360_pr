@@ -8,6 +8,7 @@ import logging
 import os
 from src.customer360.utilities.spark_util import get_spark_empty_df
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols
+from pyspark.sql.types import *
 
 conf = os.getenv("CONF", None)
 
@@ -24,13 +25,13 @@ def massive_processing(input_df, customer_prof_input_df, join_function, sql, par
     min_value = union_dataframes_with_missing_cols(
         [
             input_df.select(
-                F.to_date(F.max(F.col("partition_date")),'yyyyMMdd').alias("max_date")),
+                F.to_date(F.max(F.col("partition_date")).cast(StringType()),'yyyyMMdd').alias("max_date")),
             customer_prof_input_df.select(
                 F.max(F.col("event_partition_date")).alias("max_date")),
         ]
     ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
 
-    input_df = input_df.filter(F.to_date(F.col("partition_date"),'yyyyMMdd') <= min_value)
+    input_df = input_df.filter(F.to_date(F.col("partition_date").cast(StringType()),'yyyyMMdd') <= min_value)
     customer_prof_input_df = customer_prof_input_df.filter(F.col("event_partition_date") <= min_value)
 
     def divide_chunks(l, n):

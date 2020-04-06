@@ -10,6 +10,7 @@ from customer360.pipelines.data_engineering.nodes.billing_nodes.to_l1.to_l1_node
 import os
 from src.customer360.utilities.spark_util import get_spark_empty_df
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols
+from pyspark.sql.types import *
 
 conf = os.getenv("CONF", None)
 
@@ -376,13 +377,13 @@ def billing_rpu_data_with_customer_profile(customer_prof, rpu_data):
     min_value = union_dataframes_with_missing_cols(
         [
             rpu_data.select(
-                f.to_date(f.max(f.col("partition_month")),'yyyyMM').alias("max_date")),
+                f.to_date(f.max(f.col("partition_month")).cast(StringType()),'yyyyMM').alias("max_date")),
             customer_prof.select(
                 f.max(f.col("start_of_month")).alias("max_date")),
         ]
     ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
 
-    rpu_data = rpu_data.filter(f.col("partition_month") <= min_value)
+    rpu_data = rpu_data.filter(f.to_date(f.col("partition_month").cast(StringType()),'yyyyMM') <= min_value)
     customer_prof = customer_prof.filter(f.col("start_of_month") <= min_value)
 
 

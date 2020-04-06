@@ -9,6 +9,7 @@ import logging
 from src.customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols
 import os
+from pyspark.sql.types import *
 
 conf = os.getenv("CONF", None)
 
@@ -124,7 +125,7 @@ def customized_processing(data_frame: DataFrame, cust_prof: DataFrame, recharge_
         ]
     ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
 
-    data_frame = data_frame.filter(f.to_date(f.col("partition_date"), 'yyyyMMdd') <= min_value)
+    data_frame = data_frame.filter(f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
     cust_prof = cust_prof.filter(f.col("start_of_week") <= min_value)
 
 
