@@ -17,7 +17,7 @@ def product_to_l1_pipeline(**kwargs):
                 join_with_master_package,
                 ["int_l1_product_active_customer_promotion_features",
                  "l0_product_pru_m_package_master_group_for_daily",
-                 "l0_product_pru_m_ontop_master_for_daily_for_daily",
+                 "l0_product_pru_m_ontop_master_for_daily",
                  "l0_product_ru_m_main_promotion_cvm_proj_for_daily",
                  "l0_product_ru_m_ontop_promotion_cvm_proj_for_daily"],
                 "l1_product_active_customer_promotion_features_daily"
