@@ -36,19 +36,19 @@ def touchpoints_to_l2_pipeline(**kwargs):
         [
             node(
                 l2_massive_processing_with_expansion,
-                ["l1_touchpoints_to_call_center_features",
+                ["l1_touchpoints_to_call_center_features_for_l2_touchpoints_to_call_center_features",
                  "params:l2_touchpoints_to_call_center_features"],
                 "l2_touchpoints_to_call_center_features"
             ),
             node(
                 l2_massive_processing_with_expansion,
-                ["l1_touchpoints_from_call_center_features",
+                ["l1_touchpoints_from_call_center_features_for_l2_touchpoints_from_call_center_features",
                  "params:l2_touchpoints_from_call_center_features"],
                 "l2_touchpoints_from_call_center_features"
             ),
             node(
                 l2_massive_processing_with_expansion,
-                ["l1_touchpoints_nim_work_features",
+                ["l1_touchpoints_nim_work_features_for_l2_touchpoints_nim_work_features",
                  "params:l2_touchpoints_nim_work_features"],
                 "l2_touchpoints_nim_work_features"
             )

@@ -1,7 +1,6 @@
 from pyspark.sql import SparkSession, DataFrame
 from pyspark.sql.types import *
 
-
 def get_spark_session() -> SparkSession:
     spark = SparkSession.builder.getOrCreate()
 

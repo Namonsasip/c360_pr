@@ -1,11 +1,14 @@
-from pyspark.sql import DataFrame
-from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, execute_sql
-from pyspark.sql import functions as F
-from customer360.utilities.config_parser import node_from_config
-from kedro.context.context import load_context
-from pathlib import Path
 import logging
 import os
+from pathlib import Path
+
+from kedro.context.context import load_context
+from pyspark.sql import DataFrame
+from pyspark.sql import functions as F
+
+from customer360.utilities.config_parser import node_from_config
+from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, execute_sql
+from src.customer360.utilities.spark_util import get_spark_empty_df
 
 conf = os.getenv("CONF", None)
 
@@ -22,6 +25,9 @@ def massive_processing(input_df, sql, output_df_catalog):
     """
     :return:
     """
+
+    if len(input_df.head(1)) == 0:
+        return input_df
 
     def divide_chunks(l, n):
         # looping till length l
@@ -74,6 +80,10 @@ def usage_outgoing_ir_call_pipeline(input_df, sql) -> DataFrame:
     """
     :return:
     """
+
+    if len(input_df.head(1)) == 0:
+        return input_df
+
     return_df = massive_processing(input_df, sql, "l1_usage_outgoing_call_relation_sum_ir_daily")
     return return_df
 
@@ -82,6 +92,10 @@ def usage_incoming_ir_call_pipeline(input_df, sql) -> DataFrame:
     """
     :return:
     """
+
+    if len(input_df.head(1)) == 0:
+        return input_df
+
     return_df = massive_processing(input_df, sql, "l1_usage_incoming_call_relation_sum_ir_daily")
     return return_df
 
@@ -90,6 +104,10 @@ def usage_outgoing_call_pipeline(input_df, sql) -> DataFrame:
     """
     :return:
     """
+
+    if len(input_df.head(1)) == 0:
+        return input_df
+
     return_df = massive_processing(input_df, sql, "l1_usage_outgoing_call_relation_sum_daily")
     return return_df
 
@@ -98,6 +116,10 @@ def usage_incoming_call_pipeline(input_df, sql) -> DataFrame:
     """
     :return:
     """
+
+    if len(input_df.head(1)) == 0:
+        return input_df
+
     return_df = massive_processing(input_df, sql, "l1_usage_incoming_call_relation_sum_daily")
     return return_df
 
@@ -106,6 +128,10 @@ def usage_data_prepaid_pipeline(input_df, sql) -> DataFrame:
     """
     :return:
     """
+
+    if len(input_df.head(1)) == 0:
+        return input_df
+
     return_df = massive_processing(input_df, sql, "l1_usage_ru_a_gprs_cbs_usage_daily")
     return return_df
 
@@ -114,6 +140,10 @@ def usage_data_postpaid_pipeline(input_df, sql) -> DataFrame:
     """
     :return:
     """
+
+    if len(input_df.head(1)) == 0:
+        return input_df
+
     return_df = massive_processing(input_df, sql, "l1_usage_ru_a_vas_postpaid_usg_daily")
     return return_df
 
@@ -126,6 +156,10 @@ def build_data_for_prepaid_postpaid_vas(prepaid: DataFrame
     :param postpaid:
     :return:
     """
+
+    if len(prepaid.head(1)) == 0 and len(postpaid.head(1)) == 0:
+        return get_spark_empty_df()
+
     prepaid = prepaid.select("access_method_num", "number_of_call", 'day_id')
     postpaid = postpaid.where("call_type_cd = 5") \
         .select("access_method_num", F.col("no_transaction").alias("number_of_call"), 'day_id')
@@ -160,6 +194,24 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
         for i in range(0, len(l), n):
             yield l[i:i + n]
 
+    # new section to handle data latency
+    min_value = union_dataframes_with_missing_cols(
+        [
+            l1_usage_outgoing_call_relation_sum_daily_stg.select(
+                F.max(F.col("event_partition_date")).alias("max_date")),
+            l1_usage_incoming_call_relation_sum_daily_stg.select(
+                F.max(F.col("event_partition_date")).alias("max_date")),
+            l1_usage_outgoing_call_relation_sum_ir_daily_stg.select(
+                F.max(F.col("event_partition_date")).alias("max_date")),
+            l1_usage_incoming_call_relation_sum_ir_daily_stg.select(
+                F.max(F.col("event_partition_date")).alias("max_date")),
+            l1_usage_ru_a_gprs_cbs_usage_daily_stg.select(F.max(F.col("event_partition_date")).alias("max_date")),
+            l1_usage_ru_a_vas_postpaid_usg_daily_stg.select(F.max(F.col("event_partition_date")).alias("max_date")),
+            l1_usage_ru_a_vas_postpaid_prepaid_daily_stg.select(F.max(F.col("event_partition_date")).alias("max_date")),
+            l1_customer_profile_union_daily_feature.select(F.max(F.col("event_partition_date")).alias("max_date"))
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
     drop_cols = ["access_method_num", "called_no", "caller_no", "call_start_dt", "day_id"]
     union_df = union_dataframes_with_missing_cols([
         l1_usage_outgoing_call_relation_sum_daily_stg, l1_usage_incoming_call_relation_sum_daily_stg,
@@ -167,6 +219,11 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
         l1_usage_ru_a_gprs_cbs_usage_daily_stg, l1_usage_ru_a_vas_postpaid_usg_daily_stg,
         l1_usage_ru_a_vas_postpaid_prepaid_daily_stg
     ])
+
+    union_df = union_df.filter(F.col("event_partition_date") <= min_value)
+
+    if len(union_df.head(1)) == 0:
+        return get_spark_empty_df()
 
     group_cols = ['access_method_num', 'event_partition_date']
     final_df_str = gen_max_sql(union_df, 'roaming_incoming_outgoing_data', group_cols)
