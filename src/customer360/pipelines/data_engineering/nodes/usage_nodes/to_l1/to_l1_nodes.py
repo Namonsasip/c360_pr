@@ -158,7 +158,7 @@ def build_data_for_prepaid_postpaid_vas(prepaid: DataFrame
     """
 
     if len(prepaid.head(1)) == 0 and len(postpaid.head(1)) == 0:
-        return get_spark_empty_df
+        return get_spark_empty_df()
 
     prepaid = prepaid.select("access_method_num", "number_of_call", 'day_id')
     postpaid = postpaid.where("call_type_cd = 5") \

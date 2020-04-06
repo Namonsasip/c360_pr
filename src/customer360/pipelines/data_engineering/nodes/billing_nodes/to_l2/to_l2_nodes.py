@@ -118,14 +118,14 @@ def customized_processing(data_frame: DataFrame, cust_prof: DataFrame, recharge_
     min_value = union_dataframes_with_missing_cols(
         [
             data_frame.select(
-                f.to_date(f.max(f.col("partition_date")), 'yyyyMMdd').alias("max_date")),
+                f.to_date(f.date_trunc('week', f.to_date(f.max(f.col("partition_date")), 'yyyyMMdd'))).alias("max_date")),
             cust_prof.select(
-                f.max(f.col("event_partition_date")).alias("max_date")),
+                f.max(f.col("start_of_week")).alias("max_date")),
         ]
     ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
 
     data_frame = data_frame.filter(f.to_date(f.col("partition_date"), 'yyyyMMdd') <= min_value)
-    cust_prof = cust_prof.filter(f.col("event_partition_date") <= min_value)
+    cust_prof = cust_prof.filter(f.col("start_of_week") <= min_value)
 
 
     def divide_chunks(l, n):

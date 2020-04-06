@@ -134,7 +134,7 @@ def join_with_customer_profile(customer_prof, hs_summary):
 def device_summary_with_configuration(hs_summary, hs_configs):
 
     if len(hs_summary.head(1)) == 0 or len(hs_configs.head(1)) == 0:
-        return get_spark_empty_df
+        return get_spark_empty_df()
 
     hs_configs = hs_configs.withColumn("partition_date", hs_configs["partition_date"].cast(StringType()))
     hs_configs = hs_configs.withColumn("start_of_week",

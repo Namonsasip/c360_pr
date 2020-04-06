@@ -9,8 +9,55 @@ import logging
 from customer360.pipelines.data_engineering.nodes.billing_nodes.to_l1.to_l1_nodes import massive_processing
 import os
 from src.customer360.utilities.spark_util import get_spark_empty_df
+from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols
 
 conf = os.getenv("CONF", None)
+
+
+def massive_processing(input_df, customer_prof_input_df, join_function, sql, partition_date, cust_partition_date,
+                       cust_type, output_df_catalog):
+    """
+    :return:
+    """
+
+    if len(input_df.head(1)) == 0 or len(customer_prof_input_df.head(1)) == 0:
+        return get_spark_empty_df()
+
+    def divide_chunks(l, n):
+
+        # looping till length l
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    CNTX = load_context(Path.cwd(), env=conf)
+    data_frame = input_df
+    print("Filter " + cust_type)
+    cust_data_frame = customer_prof_input_df.where("charge_type = '" + cust_type + "'")
+    dates_list = cust_data_frame.select(f.to_date(cust_partition_date).alias(cust_partition_date)).distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+
+    mvv_new = list(divide_chunks(mvv_array, 2))
+    add_list = mvv_new
+
+    first_item = add_list[0]
+
+    add_list.remove(first_item)
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        small_df = data_frame.filter(f.to_date(partition_date).isin(*[curr_item]))
+        customer_prof_df = cust_data_frame.filter(F.col(cust_partition_date).isin(*[curr_item]))
+        joined_df = join_function(customer_prof_df, small_df)
+        output_df = node_from_config(joined_df, sql)
+        CNTX.catalog.save(output_df_catalog, output_df)
+
+    logging.info("Final date to run for {0}".format(str(first_item)))
+    return_df = data_frame.filter(F.to_date(partition_date).isin(*[first_item]))
+    customer_prof_df = cust_data_frame.filter(F.col(cust_partition_date).isin(*[first_item]))
+    joined_df = join_function(customer_prof_df, return_df)
+    final_df = node_from_config(joined_df, sql)
+
+    return final_df
 
 
 def top_up_channel_joined_data(input_df, topup_type_ref):
@@ -32,7 +79,7 @@ def massive_processing_monthly(data_frame: DataFrame, dict_obj: dict, output_df_
     """
 
     if len(data_frame.head(1)) == 0:
-        return get_spark_empty_df
+        return get_spark_empty_df()
 
     def divide_chunks(l, n):
         # looping till length l
@@ -66,6 +113,18 @@ def process_last_topup_channel(data_frame: DataFrame, cust_prof: DataFrame, sql:
 
     if len(data_frame.head(1)) == 0:
         return data_frame
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            data_frame.select(
+                f.max(f.col("start_of_month")).alias("max_date")),
+            cust_prof.select(
+                f.max(f.col("start_of_month")).alias("max_date")),
+        ]
+    ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    data_frame = data_frame.filter(f.col("start_of_month") <= min_value)
+    cust_prof = cust_prof.filter(f.col("start_of_month") <= min_value)
 
     def divide_chunks(l, n):
 
@@ -254,6 +313,19 @@ def billing_time_diff_between_topups_monthly(customer_profile_df, input_df, sql)
     customer_prof = derives_in_customer_profile(customer_profile_df) \
         .where("charge_type = 'Pre-paid' and cust_active_this_month = 'Y'")
 
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            input_df.select(
+                f.max(f.col("start_of_month")).alias("max_date")),
+            customer_prof.select(
+                f.max(f.col("start_of_month")).alias("max_date")),
+        ]
+    ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    input_df = input_df.filter(f.col("start_of_month") <= min_value)
+    customer_prof = customer_prof.filter(f.col("start_of_month") <= min_value)
+
     return_df = massive_processing(input_df, customer_prof, recharge_data_with_customer_profile_joined, sql,
                                    'start_of_month', 'start_of_month', 'Pre-paid',
                                    "l3_billing_and_payments_monthly_topup_time_diff")
@@ -262,9 +334,9 @@ def billing_time_diff_between_topups_monthly(customer_profile_df, input_df, sql)
 
 
 def billing_data_joined(billing_monthly, payment_daily):
-
+    # Need to check becasue billing_monthly and payment_daily are getting joined on a different column than partition_month
     if len(billing_monthly.head(1)) == 0 or len(payment_daily.head(1)) == 0:
-        return get_spark_empty_df
+        return get_spark_empty_df()
 
     output_df = billing_monthly.join(payment_daily,
                                      (billing_monthly.account_identifier == payment_daily.account_identifier) &
@@ -295,10 +367,24 @@ def derives_in_customer_profile(customer_prof):
 def billing_rpu_data_with_customer_profile(customer_prof, rpu_data):
 
     if len(rpu_data.head(1)) == 0 or len(customer_prof.head(1)) == 0:
-        return get_spark_empty_df
+        return get_spark_empty_df()
 
     customer_prof = derives_in_customer_profile(customer_prof) \
         .where("cust_active_this_month = 'Y'")
+
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            rpu_data.select(
+                f.to_date(f.max(f.col("partition_month")),'yyyyMM').alias("max_date")),
+            customer_prof.select(
+                f.max(f.col("start_of_month")).alias("max_date")),
+        ]
+    ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    rpu_data = rpu_data.filter(f.col("partition_month") <= min_value)
+    customer_prof = customer_prof.filter(f.col("start_of_month") <= min_value)
+
 
     output_df = customer_prof.join(rpu_data, (customer_prof.access_method_num == rpu_data.access_method_num) &
                                    (customer_prof.register_date.eqNullSafe(f.to_date(rpu_data.register_date))) &
@@ -313,8 +399,9 @@ def billing_rpu_data_with_customer_profile(customer_prof, rpu_data):
 
 def billing_statement_hist_data_with_customer_profile(customer_prof, billing_hist):
 
+    #Need to check becasue billing_hist is getting joined with customer on a different column than partition_month
     if len(billing_hist.head(1)) == 0 or len(customer_prof.head(1)) == 0:
-        return get_spark_empty_df
+        return get_spark_empty_df()
 
     customer_prof = derives_in_customer_profile(customer_prof) \
         .where("charge_type = 'Post-paid' and cust_active_this_month = 'Y'")
@@ -329,10 +416,23 @@ def billing_statement_hist_data_with_customer_profile(customer_prof, billing_his
 def bill_payment_daily_data_with_customer_profile(customer_prof, pc_t_data):
 
     if len(pc_t_data.head(1)) == 0 or len(customer_prof.head(1)) == 0:
-        return get_spark_empty_df
+        return get_spark_empty_df()
 
     customer_prof = derives_in_customer_profile(customer_prof) \
         .where("charge_type = 'Post-paid' and cust_active_this_month = 'Y'")
+
+
+    # min_value = union_dataframes_with_missing_cols(
+    #     [
+    #         pc_t_data.select(
+    #             f.max(f.col("partition_month")).alias("max_date")),
+    #         customer_prof.select(
+    #             f.max(f.col("start_of_month")).alias("max_date")),
+    #     ]
+    # ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
+    #
+    # pc_t_data = pc_t_data.filter(f.col("partition_month") <= min_value)
+    # customer_prof = customer_prof.filter(f.col("start_of_month") <= min_value)
 
     output_df = customer_prof.join(pc_t_data, (customer_prof.billing_account_no == pc_t_data.ba_no) &
                                    (customer_prof.start_of_month == f.to_date(
