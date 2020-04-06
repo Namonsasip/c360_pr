@@ -1,97 +1,97 @@
 int_l3_network_voice_features:
   feature_list:
-    cei_voice_qoe: avg(cei_voice_qoe)
-    drop_call_count: sum(drop_call_count)
-    drop_call_in_3g_count: sum(drop_call_in_3g_count)
-    drop_call_in_4g_count: sum(drop_call_in_4g_count)
-    total_call_count: sum(total_call_count)
-    failed_incoming_call_attempt: sum(failed_incoming_call_attempt)
-    failed_outgoing_call_attempt: sum(failed_outgoing_call_attempt)
-    share_of_drop_calls: sum(drop_call_count)/sum(total_call_count)
+    network_cei_voice_qoe: avg(network_cei_voice_qoe)
+    network_drop_call_count: sum(network_drop_call_count)
+    network_drop_call_in_3g_count: sum(network_drop_call_in_3g_count)
+    network_drop_call_in_4g_count: sum(network_drop_call_in_4g_count)
+    network_total_call_count: sum(network_total_call_count)
+    network_failed_incoming_call_attempt: sum(network_failed_incoming_call_attempt)
+    network_failed_outgoing_call_attempt: sum(network_failed_outgoing_call_attempt)
+    network_share_of_drop_calls: sum(network_drop_call_count)/sum(network_total_call_count)
   granularity: "subscription_identifier, start_of_month"
 
 l3_network_voice_features:
   feature_list:
-    cei_voice_qoe: cei_voice_qoe
-    drop_call_count: drop_call_count
-    drop_call_in_3g_count: drop_call_in_3g_count
-    drop_call_in_4g_count: drop_call_in_4g_count
-    total_call_count: total_call_count
-    failed_incoming_call_attempt: failed_incoming_call_attempt
-    failed_outgoing_call_attempt: failed_outgoing_call_attempt
-    share_of_drop_calls: share_of_drop_calls
-    change_of_share_of_drop_call: "share_of_drop_calls/lag(share_of_drop_calls, 1, 0) over (partition by subscription_identifier order by start_of_month asc)"
-    change_of_drop_call_in_3g: "drop_call_in_3g_count/lag(drop_call_in_3g_count, 1, 0) over (partition by subscription_identifier order by start_of_month asc)"
-    change_of_drop_call_in_4g: "drop_call_in_4g_count/lag(drop_call_in_4g_count, 1, 0) over (partition by subscription_identifier order by start_of_month asc)"
+    network_cei_voice_qoe: network_cei_voice_qoe
+    network_drop_call_count: network_drop_call_count
+    network_drop_call_in_3g_count: network_drop_call_in_3g_count
+    network_drop_call_in_4g_count: network_drop_call_in_4g_count
+    network_total_call_count: network_total_call_count
+    network_failed_incoming_call_attempt: network_failed_incoming_call_attempt
+    network_failed_outgoing_call_attempt: network_failed_outgoing_call_attempt
+    network_share_of_drop_calls: network_share_of_drop_calls
+    network_change_of_share_of_drop_call: "network_share_of_drop_calls/lag(network_share_of_drop_calls, 1, 0) over (partition by subscription_identifier order by start_of_month asc)"
+    network_change_of_drop_call_in_3g: "network_drop_call_in_3g_count/lag(network_drop_call_in_3g_count, 1, 0) over (partition by subscription_identifier order by start_of_month asc)"
+    network_change_of_drop_call_in_4g: "network_drop_call_in_4g_count/lag(network_drop_call_in_4g_count, 1, 0) over (partition by subscription_identifier order by start_of_month asc)"
     subscription_identifier: subscription_identifier
     start_of_month: start_of_month
   granularity: ""
 
 l3_network_good_and_bad_cells_features:
   feature_list:
-    sum_of_good_cells: sum(sum_of_good_cells)
-    sum_of_bad_cells: sum(sum_of_bad_cells)
-    cell_id_count: sum(cell_id_count)
-    share_of_good_cells: sum(sum_of_good_cells)/sum(cell_id_count)
-    share_of_bad_cells: sum(share_of_bad_cells)/sum(cell_id_count)
-    total_transaction_good_cells: sum(total_transaction_good_cells)
-    total_transaction_bad_cells: sum(total_transaction_bad_cells)
+    network_sum_of_good_cells: sum(network_sum_of_good_cells)
+    network_sum_of_bad_cells: sum(network_sum_of_bad_cells)
+    network_cell_id_count: sum(network_cell_id_count)
+    network_share_of_good_cells: sum(network_sum_of_good_cells)/sum(network_cell_id_count)
+    network_share_of_bad_cells: sum(network_share_of_bad_cells)/sum(network_cell_id_count)
+    network_total_transaction_good_cells: sum(network_total_transaction_good_cells)
+    network_total_transaction_bad_cells: sum(network_total_transaction_bad_cells)
   granularity: "subscription_identifier, start_of_month"
 
 l3_network_share_of_3g_time_in_total_time:
   feature_list:
-    total_3g_time: sum(total_3g_time)
-    total_time: sum(total_time)
-    share_of_3g_time_in_total_time: sum(total_3g_time)/sum(total_time)
+    network_total_3g_time: sum(network_total_3g_time)
+    network_total_time: sum(network_total_time)
+    network_share_of_3g_time_in_total_time: sum(network_total_3g_time)/sum(network_total_time)
   granularity: "subscription_identifier, start_of_month"
 
 l3_network_data_traffic_features:
   feature_list:
-    total_3g_traffic: sum(total_3g_traffic)
-    total_4g_traffic: sum(total_4g_traffic)
-    total_traffic: sum(total_traffic)
-    share_of_3g_traffic_in_total_traffic: sum(total_3g_traffic)/sum(total_traffic)
-    share_of_4g_traffic_in_total_traffic: sum(total_4g_traffic)/sum(total_traffic)
-    change_of_share_of_3g_vs_4g_traffic: "sum(total_3g_traffic)/sum(total_4g_traffic) / lag(sum(total_3g_traffic)/sum(total_4g_traffic), 1, 0)
-                                          over (partition by subscription_identifier order by start_of_month asc)"
+    network_total_3g_traffic: sum(network_total_3g_traffic)
+    network_total_4g_traffic: sum(network_total_4g_traffic)
+    network_total_traffic: sum(network_total_traffic)
+    network_share_of_3g_traffic_in_total_traffic: sum(network_total_3g_traffic)/sum(network_total_traffic)
+    network_share_of_4g_traffic_in_total_traffic: sum(network_total_4g_traffic)/sum(network_total_traffic)
+    network_change_of_share_of_3g_vs_4g_traffic: "sum(network_total_3g_traffic)/sum(network_total_4g_traffic) / lag(sum(network_total_3g_traffic)/sum(network_total_4g_traffic), 1, 0)
+                                                     over (partition by subscription_identifier order by start_of_month asc)"
   granularity: "subscription_identifier, start_of_month"
   
 l3_network_data_cqi:
   feature_list:
-    data_cqi: avg(data_cqi)
+    network_data_cqi: avg(network_data_cqi)
   granularity: "subscription_identifier, start_of_month"
 
 l3_network_im_cqi:
   feature_list:
-    cei_im_qoe: sum(sum_im_cqi)/sum(count_im_cqi)
+    network_cei_im_qoe: sum(sum_im_cqi)/sum(count_im_cqi)
     sum_im_cqi: sum(sum_im_cqi)
     count_im_cqi: sum(count_im_cqi)
   granularity: "subscription_identifier, start_of_month"
 
 l3_network_streaming_cqi:
   feature_list:
-    cei_stream_qoe: sum(sum_streaming_cqi)/sum(count_streaming_cqi)
+    network_cei_stream_qoe: sum(sum_streaming_cqi)/sum(count_streaming_cqi)
     sum_streaming_cqi: sum(sum_streaming_cqi)
     count_streaming_cqi: sum(count_streaming_cqi)
   granularity: "subscription_identifier, start_of_month"
   
 l3_network_web_cqi:
   feature_list:
-    cei_web_qoe: sum(sum_web_cqi)/sum(count_web_cqi)
+    network_cei_web_qoe: sum(sum_web_cqi)/sum(count_web_cqi)
     sum_web_cqi: sum(sum_web_cqi)
     count_web_cqi: sum(count_web_cqi)
   granularity: "subscription_identifier, start_of_month"
 
 l3_network_voip_cqi:
   feature_list:
-    cei_voip_qoe: sum(sum_voip_cqi)/sum(count_voip_cqi)
+    network_cei_voip_qoe: sum(sum_voip_cqi)/sum(count_voip_cqi)
     sum_voip_cqi: sum(sum_voip_cqi)
     count_voip_cqi: sum(count_voip_cqi)
   granularity: "subscription_identifier, start_of_month"
 
 l3_network_volte_cqi:
   feature_list:
-    cei_volte_qoe: sum(sum_volte_cqi)/sum(count_volte_cqi)
+    network_cei_volte_qoe: sum(sum_volte_cqi)/sum(count_volte_cqi)
     sum_volte_cqi: sum(sum_volte_cqi)
     count_volte_cqi: sum(count_volte_cqi)
   granularity: "subscription_identifier, start_of_month"
