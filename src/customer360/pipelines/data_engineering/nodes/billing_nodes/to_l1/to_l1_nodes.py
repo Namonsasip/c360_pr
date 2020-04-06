@@ -7,6 +7,7 @@ from pathlib import Path
 import logging
 import os
 from src.customer360.utilities.spark_util import get_spark_empty_df
+from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols
 
 conf = os.getenv("CONF", None)
 
@@ -18,7 +19,19 @@ def massive_processing(input_df, customer_prof_input_df, join_function, sql, par
     """
 
     if len(input_df.head(1)) == 0 or len(customer_prof_input_df.head(1)) == 0:
-        return get_spark_empty_df
+        return get_spark_empty_df()
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            input_df.select(
+                F.to_date(F.max(F.col("partition_date")),'yyyyMMdd').alias("max_date")),
+            customer_prof_input_df.select(
+                F.max(F.col("event_partition_date")).alias("max_date")),
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    input_df = input_df.filter(F.to_date(F.col("partition_date"),'yyyyMMdd') <= min_value)
+    customer_prof_input_df = customer_prof_input_df.filter(F.col("event_partition_date") <= min_value)
 
     def divide_chunks(l, n):
 
@@ -61,6 +74,7 @@ def billing_topup_count_and_volume_node(input_df, customer_prof, sql) -> DataFra
     """
     :return:
     """
+
     return_df = massive_processing(input_df, customer_prof, daily_recharge_data_with_customer_profile, sql,
                                    'recharge_date', 'event_partition_date', "Pre-paid",
                                    "l1_billing_and_payments_daily_topup_and_volume")
