@@ -1,6 +1,6 @@
 from pyspark.sql import DataFrame
 
-from src.customer360.utilities.spark_util import get_spark_session
+from src.customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 from src.customer360.pipelines.data_engineering.nodes.product_nodes.to_l1.to_l1_nodes import union_master_package_table
 
 
@@ -13,7 +13,13 @@ def get_activated_deactivated_features(
 ) -> DataFrame:
     spark = get_spark_session()
 
+    if (len(cust_promo_df.head(1)) == 0 | len(prepaid_main_master_df.head(1)) == 0 |
+            len(postpaid_main_master_df.head(1)) == 0 | len(prepaid_ontop_master_df.head(1)) == 0 |
+            len(postpaid_ontop_master_df.head(1)) == 0):
+        return get_spark_empty_df()
+
     cust_promo_df.createOrReplaceTempView("cust_promo_df")
+
 
     union_master_package_table(
         prepaid_main_master_df,
