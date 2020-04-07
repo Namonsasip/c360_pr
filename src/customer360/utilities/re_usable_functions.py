@@ -164,6 +164,7 @@ def _massive_processing(
     data_frame = input_df
     dates_list = data_frame.select(source_partition_col).distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
     partition_num_per_job = config.get("partition_num_per_job", 1)
@@ -207,7 +208,7 @@ def l1_massive_processing(
 ) -> DataFrame:
 
     if len(input_df.head(1)) == 0 or len(cust_profile_df.head(1)) == 0:
-        return get_spark_empty_df
+        return get_spark_empty_df()
 
     return_df = _massive_processing(input_df=input_df,
                                     config=config,
@@ -224,7 +225,7 @@ def l2_massive_processing(
 ) -> DataFrame:
 
     if len(input_df.head(1)) == 0 or len(cust_profile_df.head(1)) == 0:
-        return get_spark_empty_df
+        return get_spark_empty_df()
 
     return_df = _massive_processing(input_df=input_df,
                                     config=config,
@@ -241,7 +242,7 @@ def l2_massive_processing_with_expansion(
 ) -> DataFrame:
 
     if len(input_df.head(1)) == 0 or len(cust_profile_df.head(1)) == 0:
-        return get_spark_empty_df
+        return get_spark_empty_df()
 
     return_df = _massive_processing(input_df=input_df,
                                     config=config,
