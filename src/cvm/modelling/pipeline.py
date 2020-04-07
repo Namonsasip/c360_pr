@@ -128,7 +128,7 @@ def create_train_validate(sample_type: str = None,) -> Pipeline:
                 validate_log_rf,
                 [
                     "random_forest" + suffix,
-                    "l5_cvm_one_day_test_preprocessed" + suffix,
+                    "l5_cvm_one_day_test_preprocessed_preds" + suffix,
                     "parameters",
                 ],
                 None,
