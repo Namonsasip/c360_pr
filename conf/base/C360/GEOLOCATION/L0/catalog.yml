@@ -1,11 +1,9 @@
 
-#HDFS : Footfall >>> GEO.GEO_CUST_CELL_VISIT_TIME (temp)
-#cell_id might change to cgi for real data
-l0_geo_cust_cell_visit_time_daily:
+#HDFS : Footfall
+l0_geo_footfall_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time_daily/  # REAL DATA IN PROGRESS
+  filepath: /mnt/customer360-blob-data/C360/GEO/dataspark_footfall_daily
   file_format: parquet
-#  /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time_daily/partition_date=20200118/f242c1d4d838c7e8-cea2751e00000000_750079171_data.0.parq
 
 #  unused ?
 l0_geo_tdr_roaming_info:
@@ -37,8 +35,14 @@ l0_usage_sum_voice_location_daily:
   filepath: /mnt/customer360-blob-data/C360/USAGE/usage_sum_voice_location_daily/   # from usage domain
   file_format: parquet
 
-##HDFS : Homework (temp)
+# prod_raw.dm21_geo_subscriber_home_work
 l0_dm21_geo_subscriber_home_work:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/mck_databases/prod_delta/dm21_geo_subscriber_home_work   #REAL DATA IN PROGRESS
+  filepath: /mnt/mck_databases/prod_delta/dm21_geo_subscriber_home_work
   file_format: delta
+
+# HDFS : Homework
+l0_locals_homework:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/GEO/locals_homework_new/
+  file_format: parquet
