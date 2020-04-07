@@ -142,4 +142,6 @@ def get_metrics_and_plots(true_val, pred_score):
     metrics_to_return.update(
         get_precision_recall_for_quantiles(precision_recall, [0.05, 0.1])
     )
-    return metrics_to_return, precision_recall
+    roc = get_roc_curve(true_val, pred_score)
+    pr = get_precision_recall_plot(true_val, pred_score)
+    return metrics_to_return, precision_recall, roc, pr
