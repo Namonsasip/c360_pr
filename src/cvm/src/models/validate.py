@@ -25,7 +25,8 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import numpy
+import pandas
 from sklearn import metrics
 
 
@@ -59,6 +60,36 @@ def get_tpr_fpr(
             tpr[threshold_index]
         )
     return metrics_to_return
+
+
+def get_precision_recall_per_percentile(
+    true_val, pred_score,
+):
+    assert true_val.shape == pred_score.shape
+    ntiles = 100
+
+    trues_preds = pandas.DataFrame(
+        {"true_val": true_val, "pred_score": pred_score}
+    ).sort_values(by="pred_score")
+    vectors_length = true_val.shape[0]
+
+    indices_to_pick = (
+        numpy.arange(1, ntiles - 1) * (vectors_length - 2) / (ntiles - 1)
+    ).round()
+    trues_preds = trues_preds.iloc[indices_to_pick]
+
+    precision, recall, thresholds = metrics.precision_recall_curve(
+        trues_preds["true_val"], trues_preds["pred_score"]
+    )
+
+    return pandas.DataFrame(
+        {
+            "quantile": numpy.arange(1, ntiles - 1) / ntiles,
+            "precision": precision,
+            "recall": recall,
+            "threshold": thresholds,
+        }
+    )
 
 
 def get_metrics(true_val, pred_score):
