@@ -27,7 +27,9 @@
 # limitations under the License.
 import uuid
 
+import matplotlib
 import pai
+import pandas
 from pyspark.sql import DataFrame
 from typing import Dict, Any, Union, List
 from sklearn.ensemble import RandomForestClassifier
@@ -227,6 +229,9 @@ def validate_rf(df: DataFrame, parameters: Dict[str, Any],) -> Dict[str, Any]:
 def log_pai_rf(
     rf_models: Dict[str, RandomForestClassifier],
     models_metrics: Dict[str, Any],
+    precision_recall_tables: Dict[str, Any],
+    roc_plots: Dict[str, Any],
+    precision_recall_plots: Dict[str, Any],
     parameters: Dict[str, Any],
 ):
     """Logs models diagnostics to PAI.
@@ -234,11 +239,19 @@ def log_pai_rf(
     Args:
         rf_models: Saved dictionary of models for different targets.
         models_metrics: metrics of the models created in validation.
+        precision_recall_table: Table with precision and recall per percentile.
+        roc_plot: ROC of the model.
+        precision_recall_plot: Precision - recall plot.
         parameters: parameters defined in parameters.yml.
     """
 
     def _log_one_model(
-        rf_model: RandomForestClassifier, metrics: Dict[str, Any], tags: List[str],
+        rf_model: RandomForestClassifier,
+        metrics: Dict[str, Any],
+        tags: List[str],
+        precision_recall_table: pandas.DataFrame,
+        roc_plot: matplotlib.pyplot.subfigure,
+        precision_recall_plot: matplotlib.pyplot.subfigure,
     ):
         """ Logs only one model.
 
@@ -246,6 +259,9 @@ def log_pai_rf(
             rf_model: Saved model.
             metrics: models metrics.
             tags: List of tags, eg ard, churn60
+            precision_recall_table: Table with precision and recall per percentile.
+            roc_plot: ROC of the model.
+            precision_recall_plot: Precision - recall plot.
         """
 
         pai.start_run(tags=tags)
@@ -253,6 +269,9 @@ def log_pai_rf(
         pai.log_features(rf_model.feature_names, rf_model.feature_importances_)
         pai.log_metrics(metrics)
         pai.log_params(rf_model.get_params())
+        pai.log_artifacts(precision_recall_table)
+        pai.log_artifacts(roc_plot)
+        pai.log_artifacts(precision_recall_plot)
         pai.end_run()
 
     def _fun_to_iterate(usecase, macrosegment, target):
@@ -261,8 +280,18 @@ def log_pai_rf(
 
         rf_model = pick_from_dict(rf_models)
         metrics = pick_from_dict(models_metrics)
+        precision_recall_table = pick_from_dict(precision_recall_tables)
+        roc_plot = pick_from_dict(roc_plots)
+        precision_recall_plot = pick_from_dict(precision_recall_plots)
         tags = [usecase, macrosegment, target]
-        _log_one_model(rf_model, metrics, tags)
+        _log_one_model(
+            rf_model,
+            metrics,
+            tags,
+            precision_recall_table,
+            roc_plot,
+            precision_recall_plot,
+        )
 
     experiment_name = parameters["pai_experiment_name"]
     if experiment_name == "":
