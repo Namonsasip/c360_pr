@@ -79,7 +79,7 @@ def get_precision_recall_per_percentile(
     ).round()
     trues_preds = trues_preds.iloc[indices_to_pick]
 
-    precision, recall, thresholds = metrics.precision_recall_curve(
+    precision, recall = metrics.precision_recall_curve(
         trues_preds["true_val"], trues_preds["pred_score"]
     )
 
@@ -88,7 +88,6 @@ def get_precision_recall_per_percentile(
             "quantile": numpy.arange(1, ntiles - 1) / ntiles,
             "precision": precision,
             "recall": recall,
-            "threshold": thresholds,
         }
     )
 
