@@ -95,13 +95,13 @@ def get_precision_recall_per_percentile(
 def get_precision_recall_for_quantiles(precision_recall, quantiles):
     models_metrics = {}
     for q in quantiles:
-        filter_value = min([quan for quan in precision_recall.quantile if quan > q])
-        precision = precision_recall[precision_recall.quantile == filter_value][
+        filter_value = min([quan for quan in precision_recall["quantile"] if quan > q])
+        precision = precision_recall[precision_recall["quantile"] == filter_value][
             "precision"
         ][0]
-        recall = precision_recall[precision_recall.quantile == filter_value]["recall"][
-            0
-        ]
+        recall = precision_recall[precision_recall["quantile"] == filter_value][
+            "recall"
+        ][0]
         models_metrics[f"precision_{q}"] = precision
         models_metrics[f"recall_{q}"] = recall
     return models_metrics
