@@ -1,7 +1,7 @@
 l2_complaints_call_to_competitor_features:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/L2_WEEKLY/COMPLAINTS_old/l2_complaints_call_to_competitor_features/
+  filepath: data/L2_WEEKLY/COMPLAINTS/l2_complaints_call_to_competitor_features/
   save_args:
     partitionBy: ["start_of_week"]
     mode: "overwrite"
@@ -10,7 +10,7 @@ l2_complaints_call_to_competitor_features:
 l2_complaints_nps_after_call:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/L2_WEEKLY/COMPLAINTS_old/l2_complaints_nps_after_call/
+  filepath: data/L2_WEEKLY/COMPLAINTS/l2_complaints_nps_after_call/
   save_args:
     partitionBy: ["start_of_week"]
     mode: "overwrite"
@@ -19,7 +19,7 @@ l2_complaints_nps_after_call:
 l2_complaints_nps_after_chatbot:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/L2_WEEKLY/COMPLAINTS_old/l2_complaints_nps_after_chatbot/
+  filepath: data/L2_WEEKLY/COMPLAINTS/l2_complaints_nps_after_chatbot/
   save_args:
     partitionBy: ["start_of_week"]
     mode: "overwrite"
@@ -28,7 +28,7 @@ l2_complaints_nps_after_chatbot:
 l2_complaints_nps_after_store_visit:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/L2_WEEKLY/COMPLAINTS_old/l2_complaints_nps_after_store_visit/
+  filepath: data/L2_WEEKLY/COMPLAINTS/l2_complaints_nps_after_store_visit/
   save_args:
     partitionBy: ["start_of_week"]
     mode: "overwrite"
