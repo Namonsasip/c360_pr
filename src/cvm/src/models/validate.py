@@ -100,8 +100,8 @@ def get_precision_recall_for_quantiles(precision_recall, quantiles):
             .sort_values(by="quantile")
             .iloc[0]
         )
-        precision = interesting_row["precision"][0]
-        recall = interesting_row["recall"][0]
+        precision = interesting_row["precision"]
+        recall = interesting_row["recall"]
         models_metrics[f"precision_{q}"] = precision
         models_metrics[f"recall_{q}"] = recall
     return models_metrics
