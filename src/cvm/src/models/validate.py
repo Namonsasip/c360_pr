@@ -257,9 +257,9 @@ def log_pai_rf(
         models_metrics["features_num"] = len(rf_model.feature_names)
         pai.log_metrics(models_metrics)
         pai.log_params(rf_model.get_params())
-        pai.log_artifacts(precision_recall_table)
-        pai.log_artifacts(roc_plot)
-        pai.log_artifacts(precision_recall_plot)
+        pai.log_artifacts({"precision_recall_table": precision_recall_table})
+        pai.log_artifacts({"ROC": roc_plot})
+        pai.log_artifacts({"precision_recall_plot": precision_recall_plot})
         pai.end_run()
 
     def _fun_to_iterate(usecase, macrosegment, target):
