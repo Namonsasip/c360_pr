@@ -33,6 +33,8 @@ import matplotlib
 import numpy
 import pai
 import pandas
+from matplotlib.backends.backend_template import FigureCanvas
+from matplotlib.figure import Figure
 from pyspark.sql import DataFrame
 from sklearn import metrics
 import matplotlib.pyplot
@@ -121,7 +123,9 @@ def get_precision_recall_for_quantiles(precision_recall, quantiles):
 def get_roc_curve(true_val, pred_score):
     fpr, tpr, _ = metrics.roc_curve(true_val, pred_score)
     matplotlib.pyplot.style.use("dark_background")
-    _, roc = matplotlib.pyplot.subplots()
+    fig = Figure()
+    FigureCanvas(fig)
+    roc = fig.add_subplot(111)
     roc.plot(fpr, tpr, color="lightblue")
     roc.plot([0, 1], [0, 1], color="cyan", linestyle="--")
 
@@ -130,7 +134,9 @@ def get_roc_curve(true_val, pred_score):
 
 def get_precision_recall_plot(precision_recall):
     matplotlib.pyplot.style.use("dark_background")
-    _, pr = matplotlib.pyplot.subplots()
+    fig = Figure()
+    FigureCanvas(fig)
+    pr = fig.add_subplot(111)
     pr.plot(
         precision_recall["quantile"], precision_recall["precision"], color="lightblue"
     )
