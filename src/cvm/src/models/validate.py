@@ -28,6 +28,7 @@
 import numpy
 import pandas
 from sklearn import metrics
+import matplotlib.pyplot
 
 
 def round_to_float(x):
@@ -102,7 +103,23 @@ def get_precision_recall_for_quantiles(precision_recall, quantiles):
     return models_metrics
 
 
-def get_metrics(true_val, pred_score):
+def get_roc_curve(true_val, pred_score):
+    fpr, tpr = metrics.roc_curve(true_val, pred_score)
+    matplotlib.pyplot.style.use("dark_background")
+    _, roc = matplotlib.pyplot.subplots()
+    roc.plot(fpr, tpr, color="lightblue")
+    roc.plot([0, 1], [0, 1], color="cyan", linestyle="--")
+    roc.xlim([0.0, 1.0])
+    roc.ylim([0.0, 1.05])
+    roc.xlabel("False Positive Rate")
+    roc.ylabel("True Positive Rate")
+    roc.title("Receiver operating characteristic example")
+    roc.legend(loc="lower right")
+
+    return roc
+
+
+def get_metrics_and_plots(true_val, pred_score):
     metrics_to_return = get_auc(true_val, pred_score)
     precision_recall = get_precision_recall_per_percentile(true_val, pred_score)
     metrics_to_return.update(

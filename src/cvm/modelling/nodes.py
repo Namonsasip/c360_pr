@@ -38,7 +38,7 @@ from cvm.src.models.predict import (
     pyspark_predict_rf,
     pyspark_predict_xgb,
 )
-from cvm.src.models.validate import get_metrics
+from cvm.src.models.validate import get_metrics_and_plots
 from cvm.src.utils.list_targets import list_targets
 from cvm.src.utils.utils import iterate_over_usecases_macrosegments_targets
 
@@ -190,7 +190,7 @@ def validate_rf(df: DataFrame, parameters: Dict[str, Any],) -> Dict[str, Any]:
         pd_df_filtered = pd_df[pd_filter]
         true_val = pd_df_filtered[target_chosen]
         pred_score = pd_df_filtered[target_chosen + "_pred"]
-        return get_metrics(true_val, pred_score)
+        return get_metrics_and_plots(true_val, pred_score)
 
     def _validate_macrosegment(df_validate, use_case_chosen, macrosegment):
         log.info("Validating {} macrosegments.".format(macrosegment))
