@@ -239,9 +239,9 @@ def log_pai_rf(
     Args:
         rf_models: Saved dictionary of models for different targets.
         models_metrics: metrics of the models created in validation.
-        precision_recall_table: Table with precision and recall per percentile.
-        roc_plot: ROC of the model.
-        precision_recall_plot: Precision - recall plot.
+        precision_recall_tables: Table with precision and recall per percentile.
+        roc_plots: ROC of the model.
+        precision_recall_plots: Precision - recall plot.
         parameters: parameters defined in parameters.yml.
     """
 
