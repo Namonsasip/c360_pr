@@ -79,7 +79,7 @@ def get_precision_recall_per_percentile(
     ).round()
     trues_preds = trues_preds.iloc[indices_to_pick]
 
-    precision, recall = metrics.precision_recall_curve(
+    precision, recall, _, _ = metrics.precision_recall_curve(
         trues_preds["true_val"], trues_preds["pred_score"]
     )
 
