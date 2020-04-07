@@ -127,24 +127,12 @@ def create_train_validate(sample_type: str = None,) -> Pipeline:
             node(
                 validate_rf,
                 ["l5_cvm_one_day_test_preprocessed_preds" + suffix, "parameters"],
-                [
-                    "models_metrics",
-                    "precision_recall_table",
-                    "roc_plot",
-                    "precision_recall_plot",
-                ],
+                ["models_diags"],
                 name="create_models_metrics" + suffix,
             ),
             node(
                 log_pai_rf,
-                [
-                    "random_forest" + suffix,
-                    "models_metrics",
-                    "precision_recall_table",
-                    "roc_plot",
-                    "precision_recall_plot",
-                    "parameters",
-                ],
+                ["random_forest" + suffix, "models_diags"],
                 None,
                 name="log_pai" + suffix,
             ),

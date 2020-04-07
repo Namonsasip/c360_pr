@@ -201,29 +201,28 @@ def validate_rf(df: DataFrame, parameters: Dict[str, Any],) -> Dict[str, Any]:
                 "{}_macrosegment == '{}'".format(use_case_chosen, macrosegment)
             )
         pd_df = df_validate.toPandas()
-        macrosegment_models_metrics = {}
+        macrosegment_models_diags = {}
         for target_chosen in target_cols_use_case_split[use_case_chosen]:
-            macrosegment_models_metrics[target_chosen] = _validate_macrosegment_target(
+            macrosegment_models_diags[target_chosen] = _validate_macrosegment_target(
                 pd_df, target_chosen
             )
-        return macrosegment_models_metrics
+        return macrosegment_models_diags
 
     def _validate_usecase(df_validate, use_case_chosen):
         log.info("Validating {} use case.".format(use_case_chosen))
-        use_case_models_metrics = {}
+        use_case_diags = {}
 
         for macrosegment in macrosegments[use_case_chosen] + ["global"]:
-            use_case_models_metrics[macrosegment] = _validate_macrosegment(
+            use_case_diags[macrosegment] = _validate_macrosegment(
                 df_validate, use_case_chosen, macrosegment
             )
-        return use_case_models_metrics
+        return use_case_diags
 
-    models_metrics = {}
+    models_diags = {}
     for use_case in parameters["targets"]:
-        models_metrics[use_case] = _validate_usecase(df, use_case)
+        models_diags[use_case] = _validate_usecase(df, use_case)
 
-    log.info("Models metrics: {}".format(models_metrics))
-    return models_metrics
+    return models_diags
 
 
 def log_pai_rf(
