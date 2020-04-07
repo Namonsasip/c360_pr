@@ -144,4 +144,9 @@ def get_metrics_and_plots(true_val, pred_score):
     )
     roc = get_roc_curve(true_val, pred_score)
     pr = get_precision_recall_plot(true_val, pred_score)
-    return [metrics_to_return, precision_recall, roc, pr]
+    return {
+        "metrics": metrics_to_return,
+        "pr_table": precision_recall,
+        "roc": roc,
+        "pr_plot": pr,
+    }
