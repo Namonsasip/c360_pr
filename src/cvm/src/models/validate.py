@@ -275,10 +275,10 @@ def log_pai_rf(
 
         rf_model = pick_from_dict(rf_models)
         models_diags_umt = pick_from_dict(models_diags)
-        models_metrics = pick_from_dict(models_diags_umt["metrics"])
-        precision_recall_table = pick_from_dict(models_diags_umt["pr_table"])
-        roc_plot = pick_from_dict(models_diags_umt["roc"])
-        precision_recall_plot = pick_from_dict(models_diags_umt["pr_plot"])
+        models_metrics = models_diags_umt["metrics"]
+        precision_recall_table = models_diags_umt["pr_table"]
+        roc_plot = models_diags_umt["roc"]
+        precision_recall_plot = models_diags_umt["pr_plot"]
         tags = [usecase, macrosegment, target]
         _log_one_model(
             rf_model,
