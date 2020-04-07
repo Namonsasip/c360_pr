@@ -206,7 +206,7 @@ def l1_massive_processing(
         cust_profile_df=None
 ) -> DataFrame:
 
-    if len(input_df.head(1)) == 0 or len(cust_profile_df.head(1)) == 0:
+    if input_df is None or len(input_df.head(1)) == 0:
         return get_spark_empty_df
 
     return_df = _massive_processing(input_df=input_df,
@@ -240,7 +240,7 @@ def l2_massive_processing_with_expansion(
         cust_profile_df=None
 ) -> DataFrame:
 
-    if len(input_df.head(1)) == 0 or len(cust_profile_df.head(1)) == 0:
+    if input_df is None or len(input_df.head(1)) == 0:
         return get_spark_empty_df
 
     return_df = _massive_processing(input_df=input_df,
