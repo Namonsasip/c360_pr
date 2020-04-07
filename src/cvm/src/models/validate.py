@@ -85,9 +85,9 @@ def get_precision_recall_per_percentile(
 
     return pandas.DataFrame(
         {
-            "quantile": numpy.arange(1, ntiles) / ntiles,
             "precision": precision,
             "recall": recall,
+            "quantile": numpy.arange(1, recall.shape[0]) / recall.shape[0],
         }
     )
 
