@@ -18,61 +18,61 @@ def l4_complaints_nps(
     df = spark.sql("""
         with intermediate_table as (
             select 
-                access_method_num,
+                subscription_identifier,
                 start_of_week,
                 
-                sum(avg_nps*record_count) over (
-                            partition by access_method_num 
+                sum(complaints_avg_nps*record_count) over (
+                            partition by subscription_identifier 
                             order by cast(cast(start_of_week as timestamp) as long) asc
                             range between 604800 preceding and 1 preceding
                             ) as total_nps_last_week,
                 sum(record_count) over (
-                            partition by access_method_num 
+                            partition by subscription_identifier 
                             order by cast(cast(start_of_week as timestamp) as long) asc
                             range between 604800 preceding and 1 preceding
                             ) as count_nps_last_week,
                             
-                sum(avg_nps*record_count) over (
-                            partition by access_method_num 
+                sum(complaints_avg_nps*record_count) over (
+                            partition by subscription_identifier 
                             order by cast(cast(start_of_week as timestamp) as long) asc
                             range between 1209600 preceding and 1 preceding
                             ) as total_nps_last_two_week,
                 sum(record_count) over (
-                            partition by access_method_num 
+                            partition by subscription_identifier 
                             order by cast(cast(start_of_week as timestamp) as long) asc
                             range between 1209600 preceding and 1 preceding
                             ) as count_nps_last_two_week,
                             
-                sum(avg_nps*record_count) over (
-                            partition by access_method_num 
+                sum(complaints_avg_nps*record_count) over (
+                            partition by subscription_identifier 
                             order by cast(cast(start_of_week as timestamp) as long) asc
                             range between 2419200 preceding and 1 preceding
                             ) as total_nps_last_four_week,
                 sum(record_count) over (
-                            partition by access_method_num 
+                            partition by subscription_identifier 
                             order by cast(cast(start_of_week as timestamp) as long) asc
                             range between 2419200 preceding and 1 preceding
                             ) as count_nps_last_four_week,
                             
-                sum(avg_nps*record_count) over (
-                            partition by access_method_num 
+                sum(complaints_avg_nps*record_count) over (
+                            partition by subscription_identifier 
                             order by cast(cast(start_of_week as timestamp) as long) asc
                             range between 7257600 preceding and 1 preceding
                             ) as total_nps_last_twelve_week,
                 sum(record_count) over (
-                            partition by access_method_num 
+                            partition by subscription_identifier 
                             order by cast(cast(start_of_week as timestamp) as long) asc
                             range between 7257600 preceding and 1 preceding
                             ) as count_nps_last_twelve_week
             from input_table
         )
         select
-            access_method_num,
+            subscription_identifier,
             start_of_week,
-            total_nps_last_week/count_nps_last_week as avg_nps_last_week,
-            total_nps_last_two_week/count_nps_last_two_week as avg_nps_last_two_week,
-            total_nps_last_four_week/count_nps_last_four_week as avg_nps_last_four_week,
-            total_nps_last_twelve_week/count_nps_last_week as avg_nps_last_twelve_week
+            total_nps_last_week/count_nps_last_week as complaints_avg_nps_last_week,
+            total_nps_last_two_week/count_nps_last_two_week as complaints_avg_nps_last_two_week,
+            total_nps_last_four_week/count_nps_last_four_week as complaints_avg_nps_last_four_week,
+            total_nps_last_twelve_week/count_nps_last_week as complaints_avg_nps_last_twelve_week
         from intermediate_table
     """)
 

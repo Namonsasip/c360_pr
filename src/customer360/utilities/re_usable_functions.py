@@ -207,7 +207,7 @@ def l1_massive_processing(
         cust_profile_df=None
 ) -> DataFrame:
 
-    if len(input_df.head(1)) == 0 or len(cust_profile_df.head(1)) == 0:
+    if not __is_valid_input_df(input_df, cust_profile_df):
         return get_spark_empty_df()
 
     return_df = _massive_processing(input_df=input_df,
@@ -224,7 +224,7 @@ def l2_massive_processing(
         cust_profile_df=None
 ) -> DataFrame:
 
-    if len(input_df.head(1)) == 0 or len(cust_profile_df.head(1)) == 0:
+    if not __is_valid_input_df(input_df, cust_profile_df):
         return get_spark_empty_df()
 
     return_df = _massive_processing(input_df=input_df,
@@ -241,7 +241,7 @@ def l2_massive_processing_with_expansion(
         cust_profile_df=None
 ) -> DataFrame:
 
-    if len(input_df.head(1)) == 0 or len(cust_profile_df.head(1)) == 0:
+    if not __is_valid_input_df(input_df, cust_profile_df):
         return get_spark_empty_df()
 
     return_df = _massive_processing(input_df=input_df,
@@ -252,3 +252,17 @@ def l2_massive_processing_with_expansion(
                                     cust_profile_join_func=_l2_join_with_customer_profile)
     return return_df
 
+
+def __is_valid_input_df(
+        input_df,
+        cust_profile_df
+):
+    """
+    Valid input criteria:
+    1. input_df is provided and it is not empty
+    2. cust_profile_df is either:
+        - provided with non empty data OR
+        - not provided at all
+    """
+    return (input_df is not None and len(input_df.head(1)) > 0) and \
+            (cust_profile_df is None or len(cust_profile_df.head(1)) > 0)
