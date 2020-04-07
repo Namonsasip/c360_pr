@@ -264,9 +264,11 @@ def log_pai_rf(
         tags = [usecase, macrosegment, target]
         _log_one_model(rf_model, metrics, tags)
 
-    random_name = str(uuid.uuid4())
+    experiment_name = parameters["pai_experiment_name"]
+    if experiment_name == "":
+        experiment_name = str(uuid.uuid4())
     pai.set_config(
-        experiment=random_name,
+        experiment=experiment_name,
         storage_runs=parameters["pai_runs_path"],
         storage_artifacts=parameters["pai_artifacts_path"],
     )
