@@ -58,23 +58,10 @@ important_columns:
   type: kedro.contrib.io.yaml_local.YAMLLocalDataSet
   filepath: /dbfs/mnt/customer360-cvm/important_columns
 
-# validation scores
-models_metrics:
-  type: kedro.contrib.io.yaml_local.YAMLLocalDataSet
-  filepath: /dbfs/mnt/customer360-cvm/models_metrics
-
-# validation scores
-precision_recall_table:
-  type: kedro.io.PickleLocalDataSet
-  filepath: /dbfs/mnt/customer360-cvm/precision_recall_table
-
-roc_plot:
+# models diagnostic metric, plots and tables
+models_diags:
   type: kedro.contrib.io.yaml_local.PickleLocalDataSet
-  filepath: /dbfs/mnt/customer360-cvm/roc_plot
-
-precision_recall_plot:
-  type: kedro.contrib.io.yaml_local.PickleLocalDataSet
-  filepath: /dbfs/mnt/customer360-cvm/precision_recall_plot
+  filepath: /dbfs/mnt/customer360-cvm/models_diags
 
 # same as l5_cvm_selected_features_one_day_joined with ard macrosegments
 l5_cvm_selected_features_one_day_joined_macrosegments:
