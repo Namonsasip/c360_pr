@@ -119,6 +119,23 @@ def get_roc_curve(true_val, pred_score):
     return roc
 
 
+def get_precision_recall_plot(precision_recall):
+    matplotlib.pyplot.style.use("dark_background")
+    _, pr = matplotlib.pyplot.subplots()
+    pr.plot(
+        precision_recall["quantile"], precision_recall["precision"], color="lightblue"
+    )
+    pr.plot(precision_recall["quantile"], precision_recall["recall"], color="lightgray")
+    pr.xlim([0.0, 1.0])
+    pr.ylim([0.0, 1.05])
+    pr.xlabel("Percentile cut-off")
+    pr.ylabel("Metrics value")
+    pr.title("Precision - recall curve")
+    pr.legend(loc="lower right")
+
+    return pr
+
+
 def get_metrics_and_plots(true_val, pred_score):
     metrics_to_return = get_auc(true_val, pred_score)
     precision_recall = get_precision_recall_per_percentile(true_val, pred_score)
