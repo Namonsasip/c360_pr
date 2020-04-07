@@ -92,7 +92,20 @@ def get_precision_recall_per_percentile(
     )
 
 
+def get_precision_recall_for_quantiles(precision_recall, quantiles):
+    models_metrics = {}
+    for q in quantiles:
+        precision = precision_recall[precision_recall.quantile == q]["precision"][0]
+        recall = precision_recall[precision_recall.quantile == q]["recall"][0]
+        models_metrics[f"precision_{q}"] = precision
+        models_metrics[f"recall_{q}"] = recall
+    return models_metrics
+
+
 def get_metrics(true_val, pred_score):
     metrics_to_return = get_auc(true_val, pred_score)
-    metrics_to_return.update(get_tpr_fpr(true_val, pred_score))
-    return metrics_to_return
+    precision_recall = get_precision_recall_per_percentile(true_val, pred_score)
+    metrics_to_return.update(
+        get_precision_recall_for_quantiles(precision_recall, [0.05, 0.1])
+    )
+    return metrics_to_return, precision_recall
