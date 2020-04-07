@@ -240,17 +240,17 @@ def log_pai_rf(
 
     def _log_one_model(
         rf_model: RandomForestClassifier,
-        metrics: Dict[str, Any],
+        models_metrics: Dict[str, Any],
         tags: List[str],
         precision_recall_table: pandas.DataFrame,
-        roc_plot: matplotlib.pyplot.subfigure,
-        precision_recall_plot: matplotlib.pyplot.subfigure,
+        roc_plot: Any,
+        precision_recall_plot: Any,
     ):
         """ Logs only one model.
 
         Args:
             rf_model: Saved model.
-            metrics: models metrics.
+            models_metrics: models metrics.
             tags: List of tags, eg ard, churn60
             precision_recall_table: Table with precision and recall per percentile.
             roc_plot: ROC of the model.
@@ -260,9 +260,9 @@ def log_pai_rf(
         pai.start_run(tags=tags)
         pai.log_model(rf_model)
         pai.log_features(rf_model.feature_names, rf_model.feature_importances_)
-        metrics["features_num"] = len(rf_model.feature_names)
-        metrics["sample_size"] = rf_model.sample_size
-        pai.log_metrics(metrics)
+        models_metrics["features_num"] = len(rf_model.feature_names)
+        models_metrics["sample_size"] = rf_model.sample_size
+        pai.log_metrics(models_metrics)
         pai.log_params(rf_model.get_params())
         pai.log_artifacts(precision_recall_table)
         pai.log_artifacts(roc_plot)
@@ -274,14 +274,14 @@ def log_pai_rf(
             return d[usecase][macrosegment][target]
 
         rf_model = pick_from_dict(rf_models)
-        metrics = pick_from_dict(models_diags["metrics"])
+        models_metrics = pick_from_dict(models_diags["metrics"])
         precision_recall_table = pick_from_dict(models_diags["pr_table"])
         roc_plot = pick_from_dict(models_diags["roc"])
         precision_recall_plot = pick_from_dict(models_diags["pr_plot"])
         tags = [usecase, macrosegment, target]
         _log_one_model(
             rf_model,
-            metrics,
+            models_metrics,
             tags,
             precision_recall_table,
             roc_plot,
