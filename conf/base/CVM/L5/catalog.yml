@@ -63,6 +63,11 @@ models_metrics:
   type: kedro.contrib.io.yaml_local.YAMLLocalDataSet
   filepath: /dbfs/mnt/customer360-cvm/models_metrics
 
+# validation scores
+precision_recall_table:
+  type: kedro.io.PickleLocalDataSet
+  filepath: /dbfs/mnt/customer360-cvm/models_metrics
+
 # same as l5_cvm_selected_features_one_day_joined with ard macrosegments
 l5_cvm_selected_features_one_day_joined_macrosegments:
   <<: *spark_parquet
