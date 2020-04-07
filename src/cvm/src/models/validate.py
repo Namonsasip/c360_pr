@@ -113,8 +113,6 @@ def get_roc_curve(true_val, pred_score):
     _, roc = matplotlib.pyplot.subplots()
     roc.plot(fpr, tpr, color="lightblue")
     roc.plot([0, 1], [0, 1], color="cyan", linestyle="--")
-    roc.xlim([0.0, 1.0])
-    roc.ylim([0.0, 1.05])
     roc.xlabel("False Positive Rate")
     roc.ylabel("True Positive Rate")
     roc.title("Receiver operating characteristic example")
@@ -130,8 +128,6 @@ def get_precision_recall_plot(precision_recall):
         precision_recall["quantile"], precision_recall["precision"], color="lightblue"
     )
     pr.plot(precision_recall["quantile"], precision_recall["recall"], color="lightgray")
-    pr.xlim([0.0, 1.0])
-    pr.ylim([0.0, 1.05])
     pr.xlabel("Percentile cut-off")
     pr.ylabel("Metrics value")
     pr.title("Precision - recall curve")
