@@ -97,7 +97,7 @@ def get_precision_recall_for_quantiles(precision_recall, quantiles):
     for q in quantiles:
         interesting_row = (
             precision_recall[precision_recall["quantile"] > q]
-            .sort_values(by="quantiles")
+            .sort_values(by="quantile")
             .iloc[0]
         )
         precision = interesting_row["precision"][0]
