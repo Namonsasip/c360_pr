@@ -28,7 +28,7 @@
 
 from kedro.pipeline import Pipeline, node
 
-from cvm.modelling.nodes import train_rf, predict_rf, validate_rf, log_pai_rf
+from cvm.modelling.nodes import train_rf, predict_rf, validate_log_rf
 from cvm.src.utils.get_suffix import get_suffix
 
 
@@ -125,16 +125,14 @@ def create_train_validate(sample_type: str = None,) -> Pipeline:
     validation_pipeline = Pipeline(
         [
             node(
-                validate_rf,
-                ["l5_cvm_one_day_test_preprocessed_preds" + suffix, "parameters"],
-                "models_diags",
-                name="create_models_diags" + suffix,
-            ),
-            node(
-                log_pai_rf,
-                ["random_forest" + suffix, "models_diags", "parameters"],
+                validate_log_rf,
+                [
+                    "random_forest" + suffix,
+                    "l5_cvm_one_day_test_preprocessed" + suffix,
+                    "parameters",
+                ],
                 None,
-                name="log_pai" + suffix,
+                name="validate" + suffix,
             ),
         ]
     )
