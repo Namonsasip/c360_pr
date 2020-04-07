@@ -24,14 +24,14 @@ def get_activated_deactivated_features(
     min_value = union_dataframes_with_missing_cols(
         [
             cust_promo_df.select(
-                F.to_Date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
+                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
             prepaid_main_master_df.select(
-                F.to_Date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
+                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
             postpaid_main_master_df.select(
-                F.to_Date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
+                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
             prepaid_ontop_master_df.select(
-                F.to_Date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
-            postpaid_ontop_master_df.select(F.to_Date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date"))
+                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
+            postpaid_ontop_master_df.select(F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date"))
         ]
     ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
 
