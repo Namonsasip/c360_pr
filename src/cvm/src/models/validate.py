@@ -108,7 +108,7 @@ def get_precision_recall_for_quantiles(precision_recall, quantiles):
 
 
 def get_roc_curve(true_val, pred_score):
-    fpr, tpr = metrics.roc_curve(true_val, pred_score)
+    fpr, tpr, _ = metrics.roc_curve(true_val, pred_score)
     matplotlib.pyplot.style.use("dark_background")
     _, roc = matplotlib.pyplot.subplots()
     roc.plot(fpr, tpr, color="lightblue")
