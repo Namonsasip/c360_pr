@@ -60,7 +60,7 @@ important_columns:
 
 # models diagnostic metric, plots and tables
 models_diags:
-  type: kedro.contrib.io.yaml_local.PickleLocalDataSet
+  type: kedro.contrib.io.PickleLocalDataSet
   filepath: /dbfs/mnt/customer360-cvm/models_diags
 
 # same as l5_cvm_selected_features_one_day_joined with ard macrosegments
