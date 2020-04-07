@@ -150,7 +150,7 @@ def get_metrics_and_plots(true_val, pred_score):
     metrics_to_return = get_auc(true_val, pred_score)
     precision_recall = get_precision_recall_per_percentile(true_val, pred_score)
     metrics_to_return.update(
-        get_precision_recall_for_quantiles(precision_recall, [0.05, 0.1])
+        get_precision_recall_for_quantiles(precision_recall, [0.05, 0.1, 0.9, 0.95])
     )
     roc = get_roc_curve(true_val, pred_score)
     pr = get_precision_recall_plot(precision_recall)
