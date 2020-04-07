@@ -227,20 +227,14 @@ def validate_rf(df: DataFrame, parameters: Dict[str, Any],) -> Dict[str, Any]:
 
 def log_pai_rf(
     rf_models: Dict[str, RandomForestClassifier],
-    models_metrics: Dict[str, Any],
-    precision_recall_tables: Dict[str, Any],
-    roc_plots: Dict[str, Any],
-    precision_recall_plots: Dict[str, Any],
+    models_diags: Dict[str, Any],
     parameters: Dict[str, Any],
 ):
     """Logs models diagnostics to PAI.
 
     Args:
         rf_models: Saved dictionary of models for different targets.
-        models_metrics: metrics of the models created in validation.
-        precision_recall_tables: Table with precision and recall per percentile.
-        roc_plots: ROC of the model.
-        precision_recall_plots: Precision - recall plot.
+        models_diags: Dictionary with plots and diagnostics metrics.
         parameters: parameters defined in parameters.yml.
     """
 
@@ -278,10 +272,10 @@ def log_pai_rf(
             return d[usecase][macrosegment][target]
 
         rf_model = pick_from_dict(rf_models)
-        metrics = pick_from_dict(models_metrics)
-        precision_recall_table = pick_from_dict(precision_recall_tables)
-        roc_plot = pick_from_dict(roc_plots)
-        precision_recall_plot = pick_from_dict(precision_recall_plots)
+        metrics = pick_from_dict(models_diags["metrics"])
+        precision_recall_table = pick_from_dict(models_diags["pr_table"])
+        roc_plot = pick_from_dict(models_diags["roc"])
+        precision_recall_plot = pick_from_dict(models_diags["pr_plot"])
         tags = [usecase, macrosegment, target]
         _log_one_model(
             rf_model,
