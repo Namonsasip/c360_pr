@@ -78,6 +78,7 @@ def train_rf(
 
         rf_fitted = rf.fit(X, y)
         rf_fitted.feature_names = list(X.columns.values)
+        rf_fitted.sample_size = X.shape[0]
         return rf_fitted
 
     def _train_for_macrosegment(use_case_chosen, macrosegment):
@@ -260,6 +261,8 @@ def log_pai_rf(
         pai.start_run(tags=tags)
         pai.log_model(rf_model)
         pai.log_features(rf_model.feature_names, rf_model.feature_importances_)
+        metrics["features_num"] = len(rf_model.feature_names)
+        metrics["sample_size"] = rf_model.sample_size
         pai.log_metrics(metrics)
         pai.log_params(rf_model.get_params())
         pai.log_artifacts(precision_recall_table)
