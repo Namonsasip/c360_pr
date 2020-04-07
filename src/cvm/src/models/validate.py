@@ -87,7 +87,7 @@ def get_precision_recall_per_percentile(
         {
             "precision": precision,
             "recall": recall,
-            "quantile": numpy.arange(1, recall.shape[0] + 1) / recall.shape[0],
+            "quantile": numpy.arange(1, recall.shape[0] + 1) / (recall.shape[0] + 1),
         }
     )
 
