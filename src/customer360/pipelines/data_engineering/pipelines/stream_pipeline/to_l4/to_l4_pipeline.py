@@ -37,6 +37,7 @@ from customer360.utilities.config_parser import \
     l4_rolling_window, \
     node_from_config, \
     l4_rolling_ranked_window
+from customer360.utilities.re_usable_functions import l2_massive_processing
 from customer360.pipelines.data_engineering.nodes.stream_nodes.to_l4.to_l4_nodes import generate_l4_fav_streaming_day
 
 
@@ -99,9 +100,10 @@ def streaming_to_l4_pipeline(**kwargs):
             ),
             # group it per week because we read directly from L1
             node(
-                node_from_config,
+                l2_massive_processing,  # Since we are directly reading from L1, we can use this method
                 ["int_l4_streaming_tv_show_features_1",
-                 "params:int_l4_streaming_tv_show_features_2"],
+                 "params:int_l4_streaming_tv_show_features_2",
+                 "l1_customer_profile_union_daily_feature_for_l4_streaming_fav_tv_show_by_episode_watched"],
                 "int_l4_streaming_tv_show_features_2"
             ),
             node(
