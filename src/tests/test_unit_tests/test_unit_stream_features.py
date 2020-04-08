@@ -1693,7 +1693,7 @@ class TestUnitStream:
 
     ####################################################################################################################
 
-    def test_l3_streaming_visit_count_and_download_traffic_feature(self, project_context):
+
     def test_int_l3_streaming_tv_show_features(self, project_context):
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
@@ -2855,3 +2855,171 @@ class TestUnitStream:
             'start_of_week = "2020-01-06"').collect()[0][0] == None
 
         ###############################################################################################################
+    def test_int_l4_streaming_service_feature(self,project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+
+        config = var_project_context.catalog.load('params:int_l1_streaming_video_service_feature')
+        config['partition_num_per_job'] = 5  # or any big number you need
+
+        int_l1_streaming_video_service_feature = l1_massive_processing(df_temp_l0_streaming_soc_mobile_app_daily,config)
+
+        config2 = var_project_context.catalog.load('params:int_l2_streaming_video_service_feature')
+        config2['partition_num_per_job'] = 5  # or any big number you need
+
+        int_l2_streaming_video_service_feature = l2_massive_processing(int_l1_streaming_video_service_feature,config2,customer_pro)
+
+
+        int_l4_streaming_video_service_feature = l4_rolling_window(int_l2_streaming_video_service_feature,
+                                                                   var_project_context.catalog.load(
+                                                                       'params:int_l4_streaming_service_feature'))
+
+        int_l2_streaming_video_service_feature.show()
+        int_l4_streaming_video_service_feature.show()
+
+        ## sum_visit_count_weekly_last_week
+        assert int_l4_streaming_video_service_feature.select("sum_visit_count_weekly_last_week").where(
+            "start_of_week = '2020-01-27'").collect()[0][0] == 2
+        assert int_l4_streaming_video_service_feature.select("sum_visit_count_weekly_last_week").where(
+            "start_of_week = '2020-01-20'").collect()[0][0] == 2
+        assert int_l4_streaming_video_service_feature.select("sum_visit_count_weekly_last_week").where(
+            "start_of_week = '2020-01-13'").collect()[0][0] == 2
+        assert int_l4_streaming_video_service_feature.select("sum_visit_count_weekly_last_week").where(
+            "start_of_week = '2020-01-06'").collect()[0][0] == None
+
+
+        ## sum_sum_download_kb_traffic_weekly_last_two_week
+        assert int_l4_streaming_video_service_feature.select("sum_sum_download_kb_traffic_weekly_last_two_week").where(
+            "start_of_week = '2020-01-27'").collect()[0][0] == 8
+        assert int_l4_streaming_video_service_feature.select("sum_sum_download_kb_traffic_weekly_last_two_week").where(
+            "start_of_week = '2020-01-20'").collect()[0][0] == 8
+        assert int_l4_streaming_video_service_feature.select("sum_sum_download_kb_traffic_weekly_last_two_week").where(
+            "start_of_week = '2020-01-13'").collect()[0][0] == 4
+        assert int_l4_streaming_video_service_feature.select("sum_sum_download_kb_traffic_weekly_last_two_week").where(
+            "start_of_week = '2020-01-06'").collect()[0][0] == None
+
+    def test_l4_streaming_fav_service_by_download_feature(self,project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+
+        config = var_project_context.catalog.load('params:int_l1_streaming_video_service_feature')
+        config['partition_num_per_job'] = 5  # or any big number you need
+
+        int_l1_streaming_video_service_feature = l1_massive_processing(df_temp_l0_streaming_soc_mobile_app_daily,config)
+
+        config2 = var_project_context.catalog.load('params:int_l2_streaming_video_service_feature')
+        config2['partition_num_per_job'] = 5  # or any big number you need
+
+        int_l2_streaming_video_service_feature = l2_massive_processing(int_l1_streaming_video_service_feature,config2,
+                                                                       customer_pro)
+
+
+        int_l4_streaming_video_service_feature = l4_rolling_window(int_l2_streaming_video_service_feature,
+                                                                   var_project_context.catalog.load(
+                                                                       'params:int_l4_streaming_service_feature'))
+
+        l4_streaming_fav_video_service_by_download_feature = l4_rolling_ranked_window( int_l4_streaming_video_service_feature,
+                                                                   var_project_context.catalog.load(
+                                                                       'params:l4_streaming_fav_service_by_download_feature'))
+
+        int_l2_streaming_video_service_feature.show()
+        int_l4_streaming_video_service_feature.show()
+        l4_streaming_fav_video_service_by_download_feature.show()
+
+        assert l4_streaming_fav_video_service_by_download_feature.select(
+            "fav_service_by_download_kb_last_twelve_week").where("start_of_week = '2020-01-06'").collect()[0][0] == 'Youtube'
+        assert l4_streaming_fav_video_service_by_download_feature.select(
+            "fav_service_by_download_kb_last_twelve_week").where("start_of_week = '2020-01-13'").collect()[0][0] == 'Youtube'
+        assert l4_streaming_fav_video_service_by_download_feature.select(
+            "fav_service_by_download_kb_last_twelve_week").where("start_of_week = '2020-01-20'").collect()[0][0] == 'Youtube'
+        assert l4_streaming_fav_video_service_by_download_feature.select(
+            "fav_service_by_download_kb_last_twelve_week").where("start_of_week = '2020-01-27'").collect()[0][0] == 'Youtube'
+
+    def test_l4_streaming_2nd_fav_service_by_download_feature(self, project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+
+        config = var_project_context.catalog.load('params:int_l1_streaming_video_service_feature')
+        config['partition_num_per_job'] = 5  # or any big number you need
+
+        int_l1_streaming_video_service_feature = l1_massive_processing(df_temp_l0_streaming_soc_mobile_app_daily,
+                                                                       config)
+
+        config2 = var_project_context.catalog.load('params:int_l2_streaming_video_service_feature')
+        config2['partition_num_per_job'] = 5  # or any big number you need
+
+        int_l2_streaming_video_service_feature = l2_massive_processing(int_l1_streaming_video_service_feature, config2,
+                                                                       customer_pro)
+
+        int_l4_streaming_video_service_feature = l4_rolling_window(int_l2_streaming_video_service_feature,
+                                                                   var_project_context.catalog.load(
+                                                                       'params:int_l4_streaming_service_feature'))
+
+        l4_streaming_2nd_fav_video_service_by_download_feature = l4_rolling_ranked_window(
+            int_l4_streaming_video_service_feature,
+            var_project_context.catalog.load('params:l4_streaming_2nd_fav_service_by_download_feature'))
+
+
+        int_l4_streaming_video_service_feature.show()
+        l4_streaming_2nd_fav_video_service_by_download_feature.show()
+
+        ## last 2 week
+
+        assert l4_streaming_2nd_fav_video_service_by_download_feature.select(
+            "second_fav_service_by_download_kb_last_two_week").rdd.isEmpty() == True
+
+        ## last 4 week
+        assert l4_streaming_2nd_fav_video_service_by_download_feature.select(
+            "second_fav_service_by_download_kb_last_two_week").rdd.isEmpty() == True
+
+    def test_l4_streaming_fav_service_by_visit_count_feature(self, project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+
+        config = var_project_context.catalog.load('params:int_l1_streaming_video_service_feature')
+        config['partition_num_per_job'] = 5  # or any big number you need
+
+        int_l1_streaming_video_service_feature = l1_massive_processing(df_temp_l0_streaming_soc_mobile_app_daily,
+                                                                       config)
+
+        config2 = var_project_context.catalog.load('params:int_l2_streaming_video_service_feature')
+        config2['partition_num_per_job'] = 5  # or any big number you need
+
+        int_l2_streaming_video_service_feature = l2_massive_processing(int_l1_streaming_video_service_feature, config2,
+                                                                       customer_pro)
+
+        int_l4_streaming_video_service_feature = l4_rolling_window(int_l2_streaming_video_service_feature,
+                                                                   var_project_context.catalog.load(
+                                                                       'params:int_l4_streaming_service_feature'))
+
+        l4_streaming_fav_video_service_by_visit_count_feature = l4_rolling_ranked_window(
+            int_l4_streaming_video_service_feature,
+            var_project_context.catalog.load('params:l4_streaming_fav_service_by_visit_count_feature'))
+
+
+        int_l4_streaming_video_service_feature.show()
+        l4_streaming_fav_video_service_by_visit_count_feature.show()
+
+        ## last week
+        assert l4_streaming_fav_video_service_by_visit_count_feature.select(
+            "fav_service_by_visit_count_last_week").where("start_of_week = '2020-01-20'").collect()[0][
+                   0] == 'Youtube'
+        assert l4_streaming_fav_video_service_by_visit_count_feature.select(
+            "fav_service_by_visit_count_last_week").where("start_of_week = '2020-01-27'").collect()[0][
+                   0] == 'Youtube'
+
+        ## last four week
+        assert l4_streaming_fav_video_service_by_visit_count_feature.select(
+            "fav_service_by_visit_count_last_four_week").where("start_of_week = '2020-01-27'").collect()[0][
+                   0] == 'Youtube'
+        assert l4_streaming_fav_video_service_by_visit_count_feature.select(
+            "fav_service_by_visit_count_last_four_week").where("start_of_week = '2020-01-27'").collect()[0][
+                   0] == 'Youtube'
