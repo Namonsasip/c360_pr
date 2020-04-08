@@ -29,6 +29,7 @@
 from kedro.pipeline import Pipeline, node
 
 from customer360.utilities.config_parser import node_from_config
+from customer360.utilities.re_usable_functions import l1_massive_processing
 from customer360.pipelines.data_engineering.nodes.complaints_nodes.to_l1.to_l1_nodes import change_grouped_column_name
 
 
@@ -36,27 +37,31 @@ def complaints_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                node_from_config,
-                ["l0_usage_call_relation_sum_daily",
-                 "params:l1_complaints_call_to_competitor_features"],
+                l1_massive_processing,
+                ["l0_usage_call_relation_sum_daily_for_l1_complaints_call_to_competitor_features",
+                 "params:l1_complaints_call_to_competitor_features",
+                 "l1_customer_profile_union_daily_feature_for_l1_complaints_call_to_competitor_features"],
                 "l1_complaints_call_to_competitor_features"
             ),
             node(
-                change_grouped_column_name,
+                l1_massive_processing,
                 ["l0_complaints_acc_atsr_outbound_daily",
-                 "params:l1_complaints_nps_after_call"],
+                 "params:l1_complaints_nps_after_call",
+                 "l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_call"],
                 "l1_complaints_nps_after_call"
             ),
             node(
-                change_grouped_column_name,
+                l1_massive_processing,
                 ["l0_complaints_acc_ai_chatbot_survey_daily",
-                 "params:l1_complaints_nps_after_chatbot"],
+                 "params:l1_complaints_nps_after_chatbot",
+                 "l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_chatbot"],
                 "l1_complaints_nps_after_chatbot"
             ),
             node(
-                change_grouped_column_name,
+                l1_massive_processing,
                 ["l0_complaints_acc_qmt_csi_daily",
-                 "params:l1_complaints_nps_after_store_visit"],
+                 "params:l1_complaints_nps_after_store_visit",
+                 "l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_store_visit"],
                 "l1_complaints_nps_after_store_visit"
             ),
         ]

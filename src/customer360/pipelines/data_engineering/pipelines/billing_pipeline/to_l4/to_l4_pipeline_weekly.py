@@ -11,7 +11,7 @@ def billing_to_l4_pipeline_weekly(**kwargs):
 
             node(
                 l4_rolling_window,
-                ["l2_billing_and_payments_weekly_topup_and_volume",
+                ["l2_billing_and_payments_weekly_topup_and_volume_for_l4_billing_rolling_window_topup_and_volume",
                  "params:l4_billing_topup_and_volume"],
                 "l4_billing_rolling_window_topup_and_volume_intermediate"
             ),
@@ -25,7 +25,7 @@ def billing_to_l4_pipeline_weekly(**kwargs):
             # ARPU roaming
             node(
                 l4_rolling_window,
-                ["l2_billing_weekly_rpu_roaming",
+                ["l2_billing_and_payments_weekly_rpu_roaming_for_l4_billing_rolling_window_rpu_roaming",
                  "params:l4_billing_rpu_roaming"],
                 "l4_billing_rolling_window_rpu_roaming"
             ),
@@ -33,7 +33,7 @@ def billing_to_l4_pipeline_weekly(**kwargs):
             # Time difference between top ups
             node(
                 l4_rolling_window,
-                ["l2_billing_and_payments_weekly_topup_time_diff",
+                ["l2_billing_and_payments_weekly_topup_time_diff_for_l4_billing_rolling_window_time_diff_bw_top_ups",
                  "params:l4_billing_time_diff_bw_topups"],
                 "l4_billing_rolling_window_time_diff_bw_top_ups_1"
             ),
@@ -48,7 +48,7 @@ def billing_to_l4_pipeline_weekly(**kwargs):
             # Balance before top up
             node(
                 l4_rolling_window,
-                ["l2_billing_and_payments_weekly_before_top_up_balance",
+                ["l2_billing_and_payments_weekly_before_top_up_balance_for_l4_billing_rolling_window_before_top_up_balance",
                  "params:l4_billing_before_top_up_balance"],
                 "l4_billing_rolling_window_before_top_up_balance"
             ),
@@ -56,7 +56,7 @@ def billing_to_l4_pipeline_weekly(**kwargs):
             # Top up channels
             node(
                 l4_rolling_window,
-                ["l2_billing_and_payments_weekly_top_up_channels",
+                ["l2_billing_and_payments_weekly_top_up_channels_for_l4_billing_rolling_window_top_up_channels",
                  "params:l4_billing_top_up_channels"],
                 "l4_billing_rolling_window_top_up_channels"
             ),
@@ -64,7 +64,7 @@ def billing_to_l4_pipeline_weekly(**kwargs):
             # Popular top up day
             node(
                 l4_rolling_window,
-                ["l2_billing_and_payments_weekly_popular_topup_day_intermediate",
+                ["l2_billing_and_payments_weekly_popular_topup_day_intermediate_for_l4_rolling_window_popular_topup_day",
                  "params:l4_popular_topup_day_initial"],
                 "l4_rolling_window_popular_topup_day_1"
             ),
@@ -78,7 +78,7 @@ def billing_to_l4_pipeline_weekly(**kwargs):
             # Popular top up hour
             node(
                 l4_rolling_window,
-                ["l2_billing_and_payments_weekly_popular_topup_hour_intermediate",
+                ["l2_billing_and_payments_weekly_popular_topup_hour_intermediate_for_l4_rolling_window_popular_topup_hour",
                  "params:l4_popular_topup_hour_initial"],
                 "l4_rolling_window_popular_topup_hour_1"
             ),
@@ -92,7 +92,7 @@ def billing_to_l4_pipeline_weekly(**kwargs):
             # Most popular top up channel
             node(
                 l4_rolling_window,
-                ["l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate",
+                ["l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate_for_l4_billing_rolling_window_most_popular_topup_channel",
                  "params:l4_most_popular_topup_channel_initial"],
                 "l4_rolling_window_most_popular_topup_channel_1"
             ),

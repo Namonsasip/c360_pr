@@ -37,7 +37,7 @@ def customer_profile_to_l4_pipeline(**kwargs):
         [
             node(
                 node_from_config,
-                ["l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly",
+                ["l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l4_customer_profile_ltv_to_date",
                  "params:l4_customer_profile_ltv_to_date"],
                 "l4_customer_profile_ltv_to_date"
             ),

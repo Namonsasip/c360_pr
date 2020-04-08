@@ -9,6 +9,10 @@ def merge_with_customer_prepaid_df(source_df: DataFrame,
     :param cust_df:
     :return:
     """
+
+    if len(source_df.head(1)) == 0:
+        return source_df
+
     # This code will populate a subscriber id to the data set.
     cust_df_cols = ['access_method_num', 'partition_month', 'subscription_identifier']
     join_key = ['access_method_num', 'start_of_month']
@@ -36,6 +40,10 @@ def merge_with_customer_postpaid_df(source_df: DataFrame,
     :param cust_df:
     :return:
     """
+
+    if len(source_df.head(1)) == 0:
+        return source_df
+
     # This code will populate a subscriber id to the data set.
     cust_df_cols = ['partition_month', 'subscription_identifier']
     join_key = ['subscription_identifier', 'start_of_month']
@@ -55,3 +63,5 @@ def merge_with_customer_postpaid_df(source_df: DataFrame,
     final_df = final_df.drop_duplicates(subset=["subscription_identifier", "start_of_month"])
 
     return final_df
+
+

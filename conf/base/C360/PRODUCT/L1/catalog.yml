@@ -1,0 +1,15 @@
+l1_product_active_customer_promotion_features:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: dbfs:/mnt/customer360-blob-data/C360/PRODUCT/l1_features/l1_product_active_customer_promotion_features/
+  save_args:
+    partitionBy: ["event_partition_date"]
+    mode: "overwrite"
+
+l1_product_active_fbb_customer_features:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: dbfs:/mnt/customer360-blob-data/C360/PRODUCT/l1_features/l1_product_active_fbb_customer_features/
+  save_args:
+    partitionBy: ["event_partition_date"]
+    mode: "overwrite"

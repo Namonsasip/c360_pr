@@ -11,6 +11,10 @@ def split_and_run_daily(data_frame, dict_obj) -> DataFrame:
     :param dict_obj: 
     :return: 
     """
+
+    if len(data_frame.head(1)) == 0:
+        return data_frame
+
     unique_ids = data_frame.select("subscription_identifier").distinct()
     unique_ids = unique_ids.withColumn("id", monotonically_increasing_id())
 
