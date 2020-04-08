@@ -76,11 +76,11 @@ def train_single_binary_model(
     )
     modelling_target_mean = np.mean(pdf_master_chunk[target_column])
 
-   pai.set_config(experiment=current_group, storage_runs=pai_storage_path)
+    pai.set_config(experiment=current_group, storage_runs=pai_storage_path)
 
-   pai.start_run()
+    pai.start_run()
 
-   pai.log_metrics(
+    pai.log_metrics(
         {
             "original_perc_obs_target_null": original_perc_obs_target_null,
             "original_n_obs": original_n_obs,
