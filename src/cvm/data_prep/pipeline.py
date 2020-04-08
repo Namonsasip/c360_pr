@@ -42,8 +42,26 @@ from cvm.data_prep.nodes import (
     add_macrosegments,
     create_l5_cvm_one_day_train_test,
     add_volatility_scores,
+    create_users_from_cgtg,
 )
 from cvm.src.utils.get_suffix import get_suffix, is_scoring
+
+
+def create_users_from_tg() -> Pipeline:
+    """ Creates users table to use during training / scoring using predefined target
+    group.
+    """
+
+    return Pipeline(
+        [
+            node(
+                create_users_from_cgtg,
+                ["cvm_prepaid_customer_groups"],
+                "l5_cvm_users_to_score",
+                name="create_l5_cvm_users_to_score",
+            ),
+        ]
+    )
 
 
 def create_users(sample_type: str) -> Pipeline:

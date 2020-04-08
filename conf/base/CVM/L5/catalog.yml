@@ -91,3 +91,8 @@ l5_cvm_one_day_users_full_table:
 cvm_prepaid_customer_groups:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-cvm/cvm_prepaid_customer_groups
+
+l5_cvm_users_to_score:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_users_to_score/
+
