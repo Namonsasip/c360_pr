@@ -8,64 +8,64 @@ def network_to_l4_pipeline(**kwargs):
         [
             node(
                 l4_rolling_window,
-                ["l2_network_voice_features",
+                ["l2_network_voice_features_for_l4_network_voice_features",
                  "params:l4_network_voice_features"],
                 "l4_network_voice_features"
             ),
 
             node(
                 l4_rolling_window,
-                ["l2_network_good_and_bad_cells_features",
+                ["l2_network_good_and_bad_cells_features_for_l4_network_good_and_bad_cells_features",
                  "params:l4_network_good_and_bad_cells_features"],
                 "l4_network_good_and_bad_cells_features"
             ),
             node(
                 l4_rolling_window,
-                ["l2_network_share_of_3g_time_in_total_time",
+                ["l2_network_share_of_3g_time_in_total_time_for_l4_network_share_of_3g_time_in_total_time",
                  "params:l4_network_share_of_3g_time_in_total_time"],
                 "l4_network_share_of_3g_time_in_total_time"
             ),
 
             node(
                 l4_rolling_window,
-                ["l2_network_data_traffic_features",
+                ["l2_network_data_traffic_features_for_l4_network_data_traffic_features",
                  "params:l4_network_data_traffic_features"],
                 "l4_network_data_traffic_features"
             ),
 
             node(
                 l4_rolling_window,
-                ["l2_network_data_cqi",
+                ["l2_network_data_cqi_for_l4_network_data_cqi",
                  "params:l4_network_data_cqi"],
                 "l4_network_data_cqi"
             ),
             node(
                 l4_rolling_window,
-                ["l2_network_im_cqi",
+                ["l2_network_im_cqi_for_l4_network_im_cqi",
                  "params:l4_network_im_cqi"],
                 "l4_network_im_cqi"
             ),
             node(
                 l4_rolling_window,
-                ["l2_network_streaming_cqi",
+                ["l2_network_streaming_cqi_for_l4_network_streaming_cqi",
                  "params:l4_network_streaming_cqi"],
                 "l4_network_streaming_cqi"
             ),
             node(
                 l4_rolling_window,
-                ["l2_network_web_cqi",
+                ["l2_network_web_cqi_for_l4_network_web_cqi",
                  "params:l4_network_web_cqi"],
                 "l4_network_web_cqi"
             ),
             node(
                 l4_rolling_window,
-                ["l2_network_voip_cqi",
+                ["l2_network_voip_cqi_for_l4_network_voip_cqi",
                  "params:l4_network_voip_cqi"],
                 "l4_network_voip_cqi"
             ),
             node(
                 l4_rolling_window,
-                ["l2_network_volte_cqi",
+                ["l2_network_volte_cqi_for_l4_network_volte_cqi",
                  "params:l4_network_volte_cqi"],
                 "l4_network_volte_cqi"
             ),
