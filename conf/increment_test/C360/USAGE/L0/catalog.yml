@@ -180,3 +180,37 @@ l0_usage_call_relation_sum_daily_for_l1_touchpoints_from_call_center_features:
     target_layer: 'l1_daily'
     lookback: '0'
 
+
+l0_usage_sum_data_location_daily_for_l1_network_data_traffic_features:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_sum_data_location_daily/
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_network_data_traffic_features'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_sum_voice_location_daily/
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_network_good_and_bad_cells_features'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l0_usage_sum_voice_location_daily_for_l1_network_share_of_3g_time_in_total_time:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_sum_voice_location_daily/
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_network_share_of_3g_time_in_total_time'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+

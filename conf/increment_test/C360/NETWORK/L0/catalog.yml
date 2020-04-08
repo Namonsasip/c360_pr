@@ -1,9 +1,9 @@
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_voice_features:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/L0/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day
+  filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l1_network_voice_features'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -12,9 +12,9 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_voice_features
 l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/L0/NETWORK/network_sdr_dyn_cea_cei_dataqoe_usr_1day
+  filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_sdr_dyn_cea_cei_dataqoe_usr_1day
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l1_network_data_cqi'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -23,14 +23,14 @@ l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi:
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_fileaccess_1day:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/L0/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_fileaccess_1day
+  filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_fileaccess_1day
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/L0/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day
+  filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l1_network_good_and_bad_cells_features'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -39,9 +39,9 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cell
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/L0/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day
+  filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l1_network_im_cqi'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -50,9 +50,9 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi:
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/L0/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day
+  filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l1_network_good_and_bad_cells_features'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -61,9 +61,9 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_streaming_cqi:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/L0/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day
+  filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l1_network_streaming_cqi'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -72,9 +72,9 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_streaming_cqi
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/L0/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day
+  filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l1_network_good_and_bad_cells_features'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -83,9 +83,9 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_ce
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/L0/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day
+  filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l1_network_voip_cqi'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -94,9 +94,9 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi:
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/L0/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day
+  filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l1_network_good_and_bad_cells_features'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -105,9 +105,9 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cel
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/L0/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day
+  filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l1_network_web_cqi'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -116,9 +116,9 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi:
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/L0/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day
+  filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l1_network_good_and_bad_cells_features'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -127,9 +127,9 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_c
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_volte_cqi:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/L0/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day
+  filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l1_network_volte_cqi'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -138,14 +138,14 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_volte_cqi:
 l0_network_sdr_dyn_cea_cei_voiceqoe_usr_1day:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/L0/NETWORK/network_sdr_dyn_cea_cei_voiceqoe_usr_1day
+  filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_sdr_dyn_cea_cei_voiceqoe_usr_1day
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/L0/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day
+  filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l1_network_good_and_bad_cells_features'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
