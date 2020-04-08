@@ -610,8 +610,8 @@ def __construct_null_safe_join_condition(
 
 def join_l4_rolling_ranked_table(result_df, config):
 
-    if len(result_df.head(1)) == 0:
-        return result_df
+    # if len(result_df.head(1)) == 0:
+    #     return result_df
 
     feature_column = [F.col("left.{}".format(each_col)) for each_col in config["partition_by"]]
 
