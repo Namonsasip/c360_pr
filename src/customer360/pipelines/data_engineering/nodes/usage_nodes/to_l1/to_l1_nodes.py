@@ -6,6 +6,7 @@ from kedro.context.context import load_context
 from pathlib import Path
 import logging
 import os
+from src.customer360.utilities.spark_util import get_spark_empty_df
 
 conf = os.getenv("CONF", None)
 
@@ -22,6 +23,9 @@ def massive_processing(input_df, sql, output_df_catalog):
     """
     :return:
     """
+
+    if len(input_df.head(1)) == 0:
+        return input_df
 
     def divide_chunks(l, n):
         # looping till length l
@@ -74,6 +78,10 @@ def usage_outgoing_ir_call_pipeline(input_df, sql) -> DataFrame:
     """
     :return:
     """
+
+    if len(input_df.head(1)) == 0:
+        return input_df
+
     return_df = massive_processing(input_df, sql, "l1_usage_outgoing_call_relation_sum_ir_daily")
     return return_df
 
@@ -82,6 +90,10 @@ def usage_incoming_ir_call_pipeline(input_df, sql) -> DataFrame:
     """
     :return:
     """
+
+    if len(input_df.head(1)) == 0:
+        return input_df
+
     return_df = massive_processing(input_df, sql, "l1_usage_incoming_call_relation_sum_ir_daily")
     return return_df
 
@@ -90,6 +102,10 @@ def usage_outgoing_call_pipeline(input_df, sql) -> DataFrame:
     """
     :return:
     """
+
+    if len(input_df.head(1)) == 0:
+        return input_df
+
     return_df = massive_processing(input_df, sql, "l1_usage_outgoing_call_relation_sum_daily")
     return return_df
 
@@ -98,6 +114,10 @@ def usage_incoming_call_pipeline(input_df, sql) -> DataFrame:
     """
     :return:
     """
+
+    if len(input_df.head(1)) == 0:
+        return input_df
+
     return_df = massive_processing(input_df, sql, "l1_usage_incoming_call_relation_sum_daily")
     return return_df
 
@@ -106,6 +126,10 @@ def usage_data_prepaid_pipeline(input_df, sql) -> DataFrame:
     """
     :return:
     """
+
+    if len(input_df.head(1)) == 0:
+        return input_df
+
     return_df = massive_processing(input_df, sql, "l1_usage_ru_a_gprs_cbs_usage_daily")
     return return_df
 
@@ -114,6 +138,10 @@ def usage_data_postpaid_pipeline(input_df, sql) -> DataFrame:
     """
     :return:
     """
+
+    if len(input_df.head(1)) == 0:
+        return input_df
+
     return_df = massive_processing(input_df, sql, "l1_usage_ru_a_vas_postpaid_usg_daily")
     return return_df
 
@@ -126,6 +154,10 @@ def build_data_for_prepaid_postpaid_vas(prepaid: DataFrame
     :param postpaid:
     :return:
     """
+
+    if len(prepaid.head(1)) == 0 and len(postpaid.head(1)) == 0:
+        return get_spark_empty_df
+
     prepaid = prepaid.select("access_method_num", "number_of_call", 'day_id')
     postpaid = postpaid.where("call_type_cd = 5") \
         .select("access_method_num", F.col("no_transaction").alias("number_of_call"), 'day_id')
@@ -167,6 +199,9 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
         l1_usage_ru_a_gprs_cbs_usage_daily_stg, l1_usage_ru_a_vas_postpaid_usg_daily_stg,
         l1_usage_ru_a_vas_postpaid_prepaid_daily_stg
     ])
+
+    if len(union_df.head(1)) == 0:
+        return get_spark_empty_df()
 
     group_cols = ['access_method_num', 'event_partition_date']
     final_df_str = gen_max_sql(union_df, 'roaming_incoming_outgoing_data', group_cols)

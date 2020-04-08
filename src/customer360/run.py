@@ -114,6 +114,12 @@ class ProjectContext(KedroContext):
         catalog.add_feed_dict(self._get_feed_dict())
         return catalog
 
+    def run(self, **kwargs):
+        # We override run so that spark gets initialized when
+        # running kedro run
+        spark = get_spark_session()
+        return super().run(**kwargs)
+
     def load_node_inputs(
         self, node_name: str, pipeline_name: str = None, import_full_module: bool = True
     ):
@@ -151,7 +157,7 @@ class ProjectContext(KedroContext):
 
         catalog = self._get_catalog()
         # Get both the dataset names and dataset contents of the node
-        node_args, node_kwargs = Node._process_inputs_for_bind(node.inputs)
+        node_args, node_kwargs = Node._process_inputs_for_bind(node._inputs)
         node_loaded_args = [catalog.load(dataset_name) for dataset_name in node_args]
         node_loaded_kwargs = {
             key: catalog.load(dataset_name) for key, dataset_name in node_kwargs.items()
@@ -234,6 +240,7 @@ class ProjectContext(KedroContext):
                     )
                     caller_globals[parameter_name] = {}
 
+
         # Import all names that are defined in the module,
         # so that all references and dependencies within
         # the function code are defined
@@ -260,14 +267,11 @@ def run_package(pipelines=None):
 
     spark = get_spark_session()
 
-    # Dont delete this line. This allow spark to only overwrite the partition
-    # saved to parquet instead of entire table folder
-    spark.conf.set("spark.sql.sources.partitionOverwriteMode", "DYNAMIC")
-
     if pipelines is not None:
         for each_pipeline in pipelines:
             project_context.run(pipeline_name=each_pipeline)
         return
+
     # project_context.run()
     project_context.run(pipeline_name='touchpoints_to_l1_pipeline')
     project_context.run(pipeline_name='touchpoints_to_l2_pipeline')

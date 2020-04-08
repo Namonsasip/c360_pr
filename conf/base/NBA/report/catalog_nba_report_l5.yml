@@ -4,7 +4,7 @@ churn_ard_report_input_table:
   filepath: /mnt/customer360-blob-data/NBA/churn_ard_report_input_table
   save_args:
     mode: "overwrite"
-    partitionBy: ["date"]
+    partitionBy: ["join_date"]
 
 campaign_response_input_table:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -19,3 +19,41 @@ use_case_view_report_table:
   filepath: /mnt/customer360-blob-data/C360/NBA/use_case_view_report_table/
   save_args:
     mode: "overwrite"
+    partitionBy: ["contact_date"]
+
+daily_kpis_by_group_report:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/daily_kpis_by_group_report/
+  save_args:
+    mode: "overwrite"
+
+plot_daily_kpis_by_group_report:
+  type: kedro.io.PartitionedDataSet
+  path: data/nba_churn_ard_report/daily_kpis_by_group_report
+  filename_suffix: ".png"
+  dataset: datasets.plotnine_local.PlotninePNGLocalDataSet
+
+use_case_campaign_mapping:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/use_case_campaign_mapping/
+  save_args:
+    mode: "overwrite"
+    
+# List of each campaign's total contacts and responses SUM for 3 months (Dec2019-Feb2020)
+distinct_child_response_aggregated:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "delta"
+  filepath: /mnt/customer360-blob-output/databases/nba_dev/distinct_child_response_aggregated
+  save_args:
+    mode: "overwrite"
+
+# List of each campaign's total contacts, responses and response percentage
+# Created from distinct_child_response_aggregated left join with campaign master (Feb2020) excluding information campaigns
+response_percentage_report:
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: "delta"
+    filepath: /mnt/customer360-blob-output/databases/nba_dev/response_percentage_report
+    save_args:
+      mode: "overwrite"

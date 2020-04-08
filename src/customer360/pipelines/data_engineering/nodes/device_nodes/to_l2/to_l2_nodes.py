@@ -5,6 +5,9 @@ from kedro.context.context import load_context
 from pathlib import Path
 import logging
 import os
+from pyspark.sql import Window
+from pyspark.sql.types import StringType
+from src.customer360.utilities.spark_util import get_spark_empty_df
 
 conf = os.getenv("CONF", None)
 
@@ -63,15 +66,15 @@ def device_most_used_weekly(customer_prof, input_df, sql):
     return return_df
 
 
-def device_number_of_phone_updates_weekly(customer_prof, input_df, sql):
-    """
-    :return:
-    """
-    customer_prof = derive_customer_profile(customer_prof)
-
-    return_df = massive_processing(customer_prof, input_df, sql, False, "start_of_week",
-                                   "l2_device_number_of_phone_updates_weekly")
-    return return_df
+# def device_number_of_phone_updates_weekly(input_df, sql):
+#     """
+#     :return:
+#     """
+#     customer_prof = derive_customer_profile(customer_prof)
+#
+#     return_df = massive_processing(customer_prof, input_df, sql, False, "start_of_week",
+#                                    "l2_device_number_of_phone_updates_weekly")
+#     return return_df
 
 
 def device_previous_configurations_weekly(customer_prof, input_df, sql):
@@ -128,17 +131,29 @@ def join_with_customer_profile(customer_prof, hs_summary):
 
 
 def device_summary_with_configuration(hs_summary, hs_configs):
-    hs_configs = hs_configs.withColumn("start_of_month", f.to_date(f.date_trunc('month', "month_id")))
-    hs_summary = hs_summary.withColumn("start_of_month", f.to_date(f.date_trunc('month', "date_id"))) \
-        .withColumn("start_of_week", f.to_date(f.date_trunc('week', "date_id")))
+
+    if len(hs_summary.head(1)) == 0 or len(hs_configs.head(1)) == 0:
+        return get_spark_empty_df
+
+    hs_configs = hs_configs.withColumn("partition_date", hs_configs["partition_date"].cast(StringType()))
+    hs_configs = hs_configs.withColumn("start_of_week",
+                                       f.to_date(f.date_trunc('week', f.to_date(f.col("partition_date"), 'yyyyMMdd'))))
+
+    hs_config_sel = ["start_of_week", "hs_brand_code", "hs_model_code", "month_id", "os",
+                     "launchprice", "saleprice", "gprs_handset_support", "hsdpa", "google_map", "video_call"]
+
+    hs_configs = hs_configs.select(hs_config_sel)
+
+    partition = Window.partitionBy(["start_of_week", "hs_brand_code", "hs_model_code"]).orderBy(F.col("month_id").desc())
+
+    # removing duplicates within a week
+    hs_configs = hs_configs.withColumn("rnk", F.row_number().over(partition))
+    hs_configs = hs_configs.filter(f.col("rnk") == 1)
 
     joined_data = hs_summary.join(hs_configs,
                                   (hs_summary.handset_brand_code == hs_configs.hs_brand_code) &
                                   (hs_summary.handset_model_code == hs_configs.hs_model_code) &
-                                  (hs_summary.start_of_month == hs_configs.start_of_month), "inner") \
-        .drop(hs_configs.start_of_month) \
-        .drop(hs_summary.handset_type) \
-        .drop(hs_configs.dual_sim) \
-        .drop(hs_configs.hs_support_lte_1800)
+                                  (hs_summary.start_of_week == hs_configs.start_of_week), "left") \
+                                  .drop(hs_configs.start_of_week) \
 
     return joined_data

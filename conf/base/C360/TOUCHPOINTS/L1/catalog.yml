@@ -4,7 +4,7 @@ l1_touchpoints_to_call_center_features:
   filepath: dbfs:/mnt/customer360-blob-data/C360/TOUCHPOINTS/l1_features/l1_touchpoints_to_call_center_features/
   save_args:
     partitionBy: ["event_partition_date"]
-    mode: "append"
+    mode: "overwrite"
 
 l1_touchpoints_from_call_center_features:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -12,7 +12,7 @@ l1_touchpoints_from_call_center_features:
   filepath: dbfs:/mnt/customer360-blob-data/C360/TOUCHPOINTS/l1_features/l1_touchpoints_from_call_center_features/
   save_args:
     partitionBy: ["event_partition_date"]
-    mode: "append"
+    mode: "overwrite"
 
 l1_touchpoints_nim_work_features:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -20,4 +20,4 @@ l1_touchpoints_nim_work_features:
   filepath: dbfs:/mnt/customer360-blob-data/C360/TOUCHPOINTS/l1_features/l1_touchpoints_nim_work_features/
   save_args:
     partitionBy: ["event_partition_date"]
-    mode: "append"
+    mode: "overwrite"

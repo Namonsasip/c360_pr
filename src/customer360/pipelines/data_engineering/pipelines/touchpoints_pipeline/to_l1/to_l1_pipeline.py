@@ -37,23 +37,23 @@ def touchpoints_to_l1_pipeline(**kwargs):
         [
             node(
                 l1_massive_processing,
-                ["l0_usage_call_relation_sum_daily",
+                ["l0_usage_call_relation_sum_daily_for_l1_touchpoints_to_call_center_features",
                  "params:l1_touchpoints_to_call_center_features",
-                 "l1_customer_profile_union_daily_feature"],
+                 "l1_customer_profile_union_daily_feature_for_l1_touchpoints_to_call_center_features"],
                 "l1_touchpoints_to_call_center_features"
             ),
             node(
                 l1_massive_processing,
-                ["l0_usage_call_relation_sum_daily",
+                ["l0_usage_call_relation_sum_daily_for_l1_touchpoints_from_call_center_features",
                  "params:l1_touchpoints_from_call_center_features",
-                 "l1_customer_profile_union_daily_feature"],
+                 "l1_customer_profile_union_daily_feature_for_l1_touchpoints_from_call_center_features"],
                 "l1_touchpoints_from_call_center_features"
             ),
             node(
                 l1_massive_processing,
                 ["l0_complaints_ais_nim_work",
                  "params:l1_touchpoints_nim_work_features",
-                 "l1_customer_profile_union_daily_feature"],
+                 "l1_customer_profile_union_daily_feature_for_l1_touchpoints_nim_work_features"],
                 "l1_touchpoints_nim_work_features"
             )
         ]

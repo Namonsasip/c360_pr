@@ -1,0 +1,7 @@
+l4_product_activated_deactivated_features:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  filepath: data/L4_FEATURES/PRODUCT/l4_product_activated_deactivated_features/
+  save_args:
+    partitionBy: ["start_of_week"]
+    mode: "overwrite"

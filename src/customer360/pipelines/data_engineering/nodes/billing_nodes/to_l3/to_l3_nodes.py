@@ -1,17 +1,23 @@
 import pyspark.sql.functions as f
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
+from pyspark.sql.functions import expr
 from customer360.utilities.config_parser import node_from_config
 from kedro.context.context import load_context
 from pathlib import Path
 import logging
 from customer360.pipelines.data_engineering.nodes.billing_nodes.to_l1.to_l1_nodes import massive_processing
 import os
+from src.customer360.utilities.spark_util import get_spark_empty_df
 
 conf = os.getenv("CONF", None)
 
 
 def top_up_channel_joined_data(input_df, topup_type_ref):
+
+    if len(input_df.head(1)) == 0:
+        return input_df
+
     output_df = input_df.join(topup_type_ref, input_df.recharge_type == topup_type_ref.recharge_topup_event_type_cd,
                               'left')
 
@@ -24,6 +30,9 @@ def massive_processing_monthly(data_frame: DataFrame, dict_obj: dict, output_df_
     :param dict_obj:
     :return:
     """
+
+    if len(data_frame.head(1)) == 0:
+        return get_spark_empty_df
 
     def divide_chunks(l, n):
         # looping till length l
@@ -54,6 +63,9 @@ def process_last_topup_channel(data_frame: DataFrame, cust_prof: DataFrame, sql:
     """
     :return:
     """
+
+    if len(data_frame.head(1)) == 0:
+        return data_frame
 
     def divide_chunks(l, n):
 
@@ -215,6 +227,9 @@ def billing_last_topup_channel_monthly(input_df, customer_df, recharge_type, sql
     """
     :return:
     """
+    if len(input_df.head(1)) == 0:
+        return input_df
+
     recharge_data_with_topup_channel = top_up_channel_joined_data(input_df, recharge_type)
     recharge_data_with_topup_channel = recharge_data_with_topup_channel.withColumn('start_of_month', F.to_date(
         F.date_trunc('month', input_df.recharge_date)))
@@ -222,6 +237,13 @@ def billing_last_topup_channel_monthly(input_df, customer_df, recharge_type, sql
         .where("charge_type = 'Pre-paid' and cust_active_this_month = 'Y'")
     return_df = process_last_topup_channel(recharge_data_with_topup_channel, customer_df, sql,
                                            "l3_billing_and_payments_monthly_last_top_up_channel")
+
+
+    return_df = return_df.withColumn("rn", expr(
+        "row_number() over(partition by start_of_month,access_method_num,register_date order by register_date desc)"))
+
+    return_df = return_df.filter("rn = 1").drop("rn")
+
     return return_df
 
 
@@ -240,6 +262,10 @@ def billing_time_diff_between_topups_monthly(customer_profile_df, input_df, sql)
 
 
 def billing_data_joined(billing_monthly, payment_daily):
+
+    if len(billing_monthly.head(1)) == 0 or len(payment_daily.head(1)) == 0:
+        return get_spark_empty_df
+
     output_df = billing_monthly.join(payment_daily,
                                      (billing_monthly.account_identifier == payment_daily.account_identifier) &
                                      (
@@ -267,6 +293,10 @@ def derives_in_customer_profile(customer_prof):
 
 
 def billing_rpu_data_with_customer_profile(customer_prof, rpu_data):
+
+    if len(rpu_data.head(1)) == 0 or len(customer_prof.head(1)) == 0:
+        return get_spark_empty_df
+
     customer_prof = derives_in_customer_profile(customer_prof) \
         .where("cust_active_this_month = 'Y'")
 
@@ -282,6 +312,10 @@ def billing_rpu_data_with_customer_profile(customer_prof, rpu_data):
 
 
 def billing_statement_hist_data_with_customer_profile(customer_prof, billing_hist):
+
+    if len(billing_hist.head(1)) == 0 or len(customer_prof.head(1)) == 0:
+        return get_spark_empty_df
+
     customer_prof = derives_in_customer_profile(customer_prof) \
         .where("charge_type = 'Post-paid' and cust_active_this_month = 'Y'")
 
@@ -293,6 +327,10 @@ def billing_statement_hist_data_with_customer_profile(customer_prof, billing_his
 
 
 def bill_payment_daily_data_with_customer_profile(customer_prof, pc_t_data):
+
+    if len(pc_t_data.head(1)) == 0 or len(customer_prof.head(1)) == 0:
+        return get_spark_empty_df
+
     customer_prof = derives_in_customer_profile(customer_prof) \
         .where("charge_type = 'Post-paid' and cust_active_this_month = 'Y'")
 
@@ -317,5 +355,10 @@ def recharge_data_with_customer_profile_joined(customer_prof, recharge_data):
     output_df = output_df.drop(recharge_data.access_method_num) \
         .drop(recharge_data.register_date) \
         .drop(recharge_data.start_of_month)
+
+    output_df = output_df.withColumn("rn", expr(
+        "row_number() over(partition by start_of_month,access_method_num,register_date order by register_date desc)"))
+
+    output_df = output_df.filter("rn = 1").drop("rn")
 
     return output_df

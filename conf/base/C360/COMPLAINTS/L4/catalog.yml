@@ -4,7 +4,7 @@ l4_complaints_call_to_competitor_features:
   filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l4_features/l4_complaints_call_to_competitor_features/
   save_args:
     partitionBy: ["start_of_week"]
-    mode: "append"
+    mode: "overwrite"
     
  
 l4_complaints_nps_after_call:
@@ -13,7 +13,7 @@ l4_complaints_nps_after_call:
   filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l4_features/l4_complaints_nps_after_call/
   save_args:
     partitionBy: ["start_of_week"]
-    mode: "append"
+    mode: "overwrite"
 
 
 l4_complaints_nps_after_chatbot:
@@ -22,7 +22,7 @@ l4_complaints_nps_after_chatbot:
   filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l4_features/l4_complaints_nps_after_call/
   save_args:
     partitionBy: ["start_of_week"]
-    mode: "append"
+    mode: "overwrite"
 
 
 l4_complaints_nps_after_store_visit:
@@ -31,4 +31,4 @@ l4_complaints_nps_after_store_visit:
   filepath: dbfs:/mnt/customer360-blob-data/C360/COMPLAINTS/l4_features/l4_complaints_nps_after_call/
   save_args:
     partitionBy: ["start_of_week"]
-    mode: "append"
+    mode: "overwrite"

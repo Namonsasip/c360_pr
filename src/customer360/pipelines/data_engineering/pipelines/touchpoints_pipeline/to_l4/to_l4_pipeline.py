@@ -36,19 +36,19 @@ def touchpoints_to_l4_pipeline(**kwargs):
         [
             node(
                 l4_rolling_window,
-                ["l2_touchpoints_to_call_center_features",
+                ["l2_touchpoints_to_call_center_features_for_l4_touchpoints_to_call_center_features",
                  "params:l4_touchpoints_to_call_center_features"],
                 "l4_touchpoints_to_call_center_features"
             ),
             node(
                 l4_rolling_window,
-                ["l2_touchpoints_from_call_center_features",
+                ["l2_touchpoints_from_call_center_features_for_l4_touchpoints_from_call_center_features",
                  "params:l4_touchpoints_from_call_center_features"],
                 "l4_touchpoints_from_call_center_features"
             ),
             node(
                 l4_rolling_window,
-                ["l2_touchpoints_nim_work_features",
+                ["l2_touchpoints_nim_work_features_for_l4_touchpoints_nim_work_features",
                  "params:l4_touchpoints_nim_work_features"],
                 "l4_touchpoints_nim_work_features"
             )
