@@ -65,7 +65,7 @@ def create_users_from_tg() -> Pipeline:
 
 
 def create_users(sample_type: str) -> Pipeline:
-    """ Creates users table to use during training / scoring.
+    """ Creates users table to use during training / scoring using list of active users.
 
     Args:
         sample_type: "dev" for dev samples and "sample" for sample.
