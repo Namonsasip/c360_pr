@@ -26,6 +26,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import logging
+from datetime import date
 from typing import Any, Dict, List
 from pyspark.sql import DataFrame
 import functools
@@ -36,6 +37,24 @@ from cvm.src.targets.ard_targets import get_ard_targets
 from cvm.src.targets.churn_targets import filter_usage, get_churn_targets
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
 from cvm.src.utils.incremental_manipulation import filter_latest_date, filter_users
+
+
+def create_users_from_cgtg(customer_groups: DataFrame) -> DataFrame:
+    """ Creates users table to use during scoring using customer groups
+    table.
+
+    Args:
+        customer_groups: Table with target, control and bau groups.
+    """
+    today = date.today().strftime("%Y-%m-%d")
+    df = (
+        customer_groups.filter("target_group == 'TG")
+        .select("crm_sub_id")
+        .distinct()
+        .withColumn("key_date", func.lit(today))
+        .withColumnRenamed("crm_sub_id", "subscription_identifier")
+    )
+    return df
 
 
 def create_l5_cvm_one_day_users_table(
