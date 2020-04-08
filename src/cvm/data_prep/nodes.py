@@ -27,7 +27,7 @@
 # limitations under the License.
 import logging
 from datetime import date
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 from pyspark.sql import DataFrame
 import functools
 import pyspark.sql.functions as func
@@ -156,7 +156,7 @@ def add_churn_targets(
 
 def create_l5_cvm_one_day_train_test(
     targets_features: DataFrame, parameters: Dict[str, Any],
-) -> DataFrame:
+) -> Tuple[DataFrame, DataFrame]:
     """Adds train-test column to features-targets table. Train share defined in
     parameters.
 
