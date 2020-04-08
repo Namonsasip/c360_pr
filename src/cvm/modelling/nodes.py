@@ -55,65 +55,7 @@ def train_rf(
     target_cols = list_targets(parameters, case_split=True)
     macrosegments = parameters["macrosegments"]
 
-    log = logging.getLogger(__name__)
-
-    def _train_for_macrosegment_target(use_case_chosen, macrosegment, target_chosen):
-        log.info(
-            "Training model for {} target, {} macrosegment.".format(
-                target_chosen, macrosegment
-            )
-        )
-
-        X, y = get_pandas_train_test_sample(
-            df, parameters, target_chosen, use_case_chosen, macrosegment
-        )
-
-        rf = RandomForestClassifier(n_estimators=100, random_state=100)
-        y = y.values.ravel()
-
-        rf_fitted = rf.fit(X, y)
-        rf_fitted.feature_names = list(X.columns.values)
-        rf_fitted.sample_size = X.shape[0]
-        return rf_fitted
-
-    def _train_for_macrosegment(use_case_chosen, macrosegment):
-        macrosegment_models = {}
-        for target_chosen in target_cols[use_case_chosen]:
-            macrosegment_models[target_chosen] = _train_for_macrosegment_target(
-                use_case_chosen, macrosegment, target_chosen
-            )
-        return macrosegment_models
-
-    def _train_for_usecase(use_chosen):
-        usecase_models = {}
-        for macrosegment in macrosegments[use_chosen]:
-            usecase_models[macrosegment] = _train_for_macrosegment(
-                use_chosen, macrosegment
-            )
-        return usecase_models
-
-    models = {}
-    for use_case in parameters["targets"]:
-        models[use_case] = _train_for_usecase(use_case)
-
-    return models
-
-
-def train_xgb(df: DataFrame, parameters: Dict[str, Any]) -> Dict[str, xgboost.Booster]:
-    """ Create xgboost models for given the table to train on and all targets.
-
-    Args:
-        df: Training preprocessed sample.
-        parameters: parameters defined in parameters.yml.
-
-    Returns:
-        Xgboost classifier.
-    """
-    target_cols = list_targets(parameters)
-
-    log = logging.getLogger(__name__)
-
-#    # to drop
+    #    # to drop
     blacklisted = [
         "norms_net_revenue_imputed",
         "activation_region_indexed",
@@ -182,6 +124,64 @@ def train_xgb(df: DataFrame, parameters: Dict[str, Any]) -> Dict[str, xgboost.Bo
         "sum_rev_arpu_total_sms_net_tariff_rev_mth_monthly_last_month_over_three_month_imputed",
     ]
     df = df.drop(*blacklisted)
+    log = logging.getLogger(__name__)
+
+    def _train_for_macrosegment_target(use_case_chosen, macrosegment, target_chosen):
+        log.info(
+            "Training model for {} target, {} macrosegment.".format(
+                target_chosen, macrosegment
+            )
+        )
+
+        X, y = get_pandas_train_test_sample(
+            df, parameters, target_chosen, use_case_chosen, macrosegment
+        )
+
+        rf = RandomForestClassifier(n_estimators=100, random_state=100)
+        y = y.values.ravel()
+
+        rf_fitted = rf.fit(X, y)
+        rf_fitted.feature_names = list(X.columns.values)
+        rf_fitted.sample_size = X.shape[0]
+        return rf_fitted
+
+    def _train_for_macrosegment(use_case_chosen, macrosegment):
+        macrosegment_models = {}
+        for target_chosen in target_cols[use_case_chosen]:
+            macrosegment_models[target_chosen] = _train_for_macrosegment_target(
+                use_case_chosen, macrosegment, target_chosen
+            )
+        return macrosegment_models
+
+    def _train_for_usecase(use_chosen):
+        usecase_models = {}
+        for macrosegment in macrosegments[use_chosen]:
+            usecase_models[macrosegment] = _train_for_macrosegment(
+                use_chosen, macrosegment
+            )
+        return usecase_models
+
+    models = {}
+    for use_case in parameters["targets"]:
+        models[use_case] = _train_for_usecase(use_case)
+
+    return models
+
+
+def train_xgb(df: DataFrame, parameters: Dict[str, Any]) -> Dict[str, xgboost.Booster]:
+    """ Create xgboost models for given the table to train on and all targets.
+
+    Args:
+        df: Training preprocessed sample.
+        parameters: parameters defined in parameters.yml.
+
+    Returns:
+        Xgboost classifier.
+    """
+    target_cols = list_targets(parameters)
+
+    log = logging.getLogger(__name__)
+
 
     models = {}
     for target_chosen in target_cols:
