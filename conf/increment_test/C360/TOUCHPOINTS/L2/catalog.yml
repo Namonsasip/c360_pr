@@ -1,7 +1,7 @@
 #l2_touchpoints_to_call_center_features:
 #  type: kedro.contrib.io.pyspark.SparkDataSet
 #  file_format: "parquet"
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/TOUCHPOINTS/l2_features/l2_touchpoints_to_call_center_features/
+#  filepath: dbfs:/mnt/customer360-blob-output/C360/TOUCHPOINTS/l2_features/l2_touchpoints_to_call_center_features/
 #  save_args:
 #    partitionBy: ["start_of_week"]
 #    mode: "append"
@@ -9,8 +9,8 @@
 l2_touchpoints_to_call_center_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/TOUCHPOINTS/l2_features/l2_touchpoints_to_call_center_features/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  filepath: /mnt/customer360-blob-output/C360/TOUCHPOINTS/l2_features/l2_touchpoints_to_call_center_features/
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -22,8 +22,8 @@ l2_touchpoints_to_call_center_features:
 l2_touchpoints_to_call_center_features_for_l4_touchpoints_to_call_center_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/TOUCHPOINTS/l2_features/l2_touchpoints_to_call_center_features/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  filepath: /mnt/customer360-blob-output/C360/TOUCHPOINTS/l2_features/l2_touchpoints_to_call_center_features/
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l4_touchpoints_to_call_center_features'
@@ -35,7 +35,7 @@ l2_touchpoints_to_call_center_features_for_l4_touchpoints_to_call_center_feature
 #l2_touchpoints_from_call_center_features:
 #  type: kedro.contrib.io.pyspark.SparkDataSet
 #  file_format: "parquet"
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/TOUCHPOINTS/l2_features/l2_touchpoints_from_call_center_features/
+#  filepath: dbfs:/mnt/customer360-blob-output/C360/TOUCHPOINTS/l2_features/l2_touchpoints_from_call_center_features/
 #  save_args:
 #    partitionBy: ["start_of_week"]
 #    mode: "append"
@@ -43,8 +43,8 @@ l2_touchpoints_to_call_center_features_for_l4_touchpoints_to_call_center_feature
 l2_touchpoints_from_call_center_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/TOUCHPOINTS/l2_features/l2_touchpoints_from_call_center_features/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  filepath: /mnt/customer360-blob-output/C360/TOUCHPOINTS/l2_features/l2_touchpoints_from_call_center_features/
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -56,8 +56,8 @@ l2_touchpoints_from_call_center_features:
 l2_touchpoints_from_call_center_features_for_l4_touchpoints_from_call_center_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/TOUCHPOINTS/l2_features/l2_touchpoints_from_call_center_features/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  filepath: /mnt/customer360-blob-output/C360/TOUCHPOINTS/l2_features/l2_touchpoints_from_call_center_features/
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l4_touchpoints_from_call_center_features'
@@ -69,7 +69,7 @@ l2_touchpoints_from_call_center_features_for_l4_touchpoints_from_call_center_fea
 #l2_touchpoints_nim_work_features:
 #  type: kedro.contrib.io.pyspark.SparkDataSet
 #  file_format: "parquet"
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/TOUCHPOINTS/l2_features/l2_touchpoints_nim_work_features/
+#  filepath: dbfs:/mnt/customer360-blob-output/C360/TOUCHPOINTS/l2_features/l2_touchpoints_nim_work_features/
 #  save_args:
 #    partitionBy: ["start_of_week"]
 #    mode: "append"
@@ -77,8 +77,8 @@ l2_touchpoints_from_call_center_features_for_l4_touchpoints_from_call_center_fea
 l2_touchpoints_nim_work_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/TOUCHPOINTS/l2_features/l2_touchpoints_nim_work_features/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  filepath: /mnt/customer360-blob-output/C360/TOUCHPOINTS/l2_features/l2_touchpoints_nim_work_features/
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -90,8 +90,8 @@ l2_touchpoints_nim_work_features:
 l2_touchpoints_nim_work_features_for_l4_touchpoints_nim_work_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/TOUCHPOINTS/l2_features/l2_touchpoints_nim_work_features/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  filepath: /mnt/customer360-blob-output/C360/TOUCHPOINTS/l2_features/l2_touchpoints_nim_work_features/
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l4_touchpoints_nim_work_features'
