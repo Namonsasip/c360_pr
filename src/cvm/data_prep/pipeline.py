@@ -46,6 +46,35 @@ from cvm.data_prep.nodes import (
 from cvm.src.utils.get_suffix import get_suffix, is_scoring
 
 
+def create_users(sample_type: str) -> Pipeline:
+    """ Creates users table to use during training / scoring.
+
+    Args:
+        sample_type: "dev" for dev samples and "sample" for sample.
+    """
+
+    suffix = get_suffix(sample_type)
+    if is_scoring(sample_type):
+        date_params = "params:scoring_date"
+    else:
+        date_params = "params:chosen_date"
+
+    return Pipeline(
+        [
+            node(
+                create_l5_cvm_one_day_users_table,
+                [
+                    "l3_customer_profile_include_1mo_non_active" + suffix,
+                    "l0_product_product_pru_m_package_master_group",
+                    date_params,
+                ],
+                "l5_cvm_one_day_users_full_table" + suffix,
+                name="create_l5_cvm_one_day_users_full_table" + suffix,
+            ),
+        ]
+    )
+
+
 def create_cvm_prepare_inputs_samples(sample_type: str) -> Pipeline:
     """ Creates samples for input datasets.
 
@@ -73,16 +102,6 @@ def create_cvm_prepare_inputs_samples(sample_type: str) -> Pipeline:
                 ],
                 "l3_customer_profile_include_1mo_non_active" + suffix,
                 name="create_l3_customer_profile_include_1mo_non_active" + suffix,
-            ),
-            node(
-                create_l5_cvm_one_day_users_table,
-                [
-                    "l3_customer_profile_include_1mo_non_active" + suffix,
-                    "l0_product_product_pru_m_package_master_group",
-                    date_params,
-                ],
-                "l5_cvm_one_day_users_full_table" + suffix,
-                name="create_l5_cvm_one_day_users_full_table" + suffix,
             ),
             node(
                 create_sample_dataset,
