@@ -1,5 +1,5 @@
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_voice_features:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day
   load_args:
@@ -10,7 +10,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_voice_features
     lookback: '0'
 
 l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_sdr_dyn_cea_cei_dataqoe_usr_1day
   load_args:
@@ -21,12 +21,12 @@ l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi:
     lookback: '0'
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_fileaccess_1day:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_fileaccess_1day
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day
   load_args:
@@ -37,7 +37,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cell
     lookback: '0'
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day
   load_args:
@@ -48,7 +48,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi:
     lookback: '0'
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day
   load_args:
@@ -59,7 +59,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_
     lookback: '0'
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_streaming_cqi:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day
   load_args:
@@ -70,7 +70,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_streaming_cqi
     lookback: '0'
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day
   load_args:
@@ -81,7 +81,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_ce
     lookback: '0'
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day
   load_args:
@@ -92,7 +92,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi:
     lookback: '0'
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day
   load_args:
@@ -103,7 +103,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cel
     lookback: '0'
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day
   load_args:
@@ -114,7 +114,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi:
     lookback: '0'
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day
   load_args:
@@ -125,7 +125,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_c
     lookback: '0'
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_volte_cqi:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day
   load_args:
@@ -136,12 +136,12 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_volte_cqi:
     lookback: '0'
 
 l0_network_sdr_dyn_cea_cei_voiceqoe_usr_1day:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_sdr_dyn_cea_cei_voiceqoe_usr_1day
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day
   load_args:

@@ -1,5 +1,5 @@
 l4_network_voice_features:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/l4_features/l4_network_voice_features/
   save_args:
@@ -12,7 +12,7 @@ l4_network_voice_features:
     lookback: '12'
 
 l4_network_good_and_bad_cells_features:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/l4_features/l4_network_good_and_bad_cells_features/
   save_args:
@@ -25,7 +25,7 @@ l4_network_good_and_bad_cells_features:
     lookback: '12'
 
 l4_network_share_of_3g_time_in_total_time:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/l4_features/l4_network_share_of_3g_time_in_total_time/
   save_args:
@@ -38,7 +38,7 @@ l4_network_share_of_3g_time_in_total_time:
     lookback: '12'
 
 l4_network_data_traffic_features:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/l4_features/l4_network_data_traffic_features/
   save_args:
@@ -51,7 +51,7 @@ l4_network_data_traffic_features:
     lookback: '12'
 
 l4_network_data_cqi:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/l4_features/l4_network_data_cqi/
   save_args:
@@ -64,7 +64,7 @@ l4_network_data_cqi:
     lookback: '12'
 
 l4_network_im_cqi:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/l4_features/l4_network_im_cqi/
   save_args:
@@ -77,7 +77,7 @@ l4_network_im_cqi:
     lookback: '12'
 
 l4_network_streaming_cqi:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/l4_features/l4_network_streaming_cqi/
   save_args:
@@ -90,7 +90,7 @@ l4_network_streaming_cqi:
     lookback: '12'
 
 l4_network_web_cqi:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/l4_features/l4_network_web_cqi/
   save_args:
@@ -103,7 +103,7 @@ l4_network_web_cqi:
     lookback: '12'
 
 l4_network_voip_cqi:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/l4_features/l4_network_voip_cqi/
   save_args:
@@ -116,7 +116,7 @@ l4_network_voip_cqi:
     lookback: '12'
 
 l4_network_volte_cqi:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/l4_features/l4_network_volte_cqi/
   save_args:
