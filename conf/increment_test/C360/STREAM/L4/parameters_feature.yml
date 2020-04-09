@@ -61,7 +61,7 @@ l4_streaming_fav_tv_channel_by_duration:
 int_l4_streaming_tv_show_features_1:
   partition_by: ["access_method_num", "register_date", "series_title"]
   ranked_lookup_enable_flag: 'yes'
-  fix_dimension_cols: "subscription_identifier,register_date,start_of_week"
+  fix_dimension_cols: "access_method_num,register_date,start_of_week"
   target_dimension_col: "series_title"
   feature_list:
     approx_count_distinct: ["title"] # because distinct cannot be used over window
@@ -76,6 +76,11 @@ int_l4_streaming_tv_show_features_2:
     approx_count_distinct_title_weekly_last_four_week: max(approx_count_distinct_title_weekly_last_four_week)
     approx_count_distinct_title_weekly_last_twelve_week: max(approx_count_distinct_title_weekly_last_twelve_week)
   granularity: "access_method_num, register_date, start_of_week, series_title"
+  join_column_with_cust_profile:
+    access_method_num: access_method_num
+    register_date: register_date
+    start_of_week: start_of_week
+  partition_num_per_job: 9999 # to process all data
 
 l4_streaming_fav_tv_show_by_episode_watched:
   where_clause: ""
