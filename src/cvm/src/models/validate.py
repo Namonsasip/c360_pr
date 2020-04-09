@@ -261,6 +261,7 @@ def log_pai_rf(
         pai.log_artifacts({"precision_recall_table": precision_recall_table})
         pai.log_artifacts({"ROC": roc_plot})
         pai.log_artifacts({"precision_recall_plot": precision_recall_plot})
+        pai.log_artifacts({"parameters": parameters})
         pai.end_run()
 
     def _fun_to_iterate(usecase, macrosegment, target):
