@@ -121,55 +121,29 @@ def create_cvm_prepare_inputs_samples(sample_type: str) -> Pipeline:
         sampling_params = "params:training_sampling"
         date_params = "params:chosen_date"
 
-    return Pipeline(
-        [
-            node(
-                create_sample_dataset,
-                [
-                    "l5_cvm_one_day_users_full_table" + suffix,
-                    sampling_params,
-                    "params:subscription_id_suffix" + suffix,
-                    date_params,
-                ],
-                "l5_cvm_one_day_users_table" + suffix,
-                name="create_l5_cvm_one_day_users_table" + suffix,
-            ),
-            node(
-                create_sample_dataset,
-                [
-                    "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
-                    sampling_params,
-                    "params:subscription_id_suffix" + suffix,
-                    date_params,
-                ],
-                "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly" + suffix,
-                name="create_l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"
-                + suffix,
-            ),
-            node(
-                create_sample_dataset,
-                [
-                    "l4_usage_prepaid_postpaid_daily_features",
-                    sampling_params,
-                    "params:subscription_id_suffix" + suffix,
-                    date_params,
-                ],
-                "l4_usage_prepaid_postpaid_daily_features" + suffix,
-                name="create_l4_usage_prepaid_postpaid_daily_features" + suffix,
-            ),
-            node(
-                create_sample_dataset,
-                [
-                    "l4_daily_feature_topup_and_volume",
-                    sampling_params,
-                    "params:subscription_id_suffix" + suffix,
-                    date_params,
-                ],
-                "l4_daily_feature_topup_and_volume" + suffix,
-                name="create_l4_daily_feature_topup_and_volume" + suffix,
-            ),
-        ]
-    )
+    datasets_to_sample = [
+        "l5_cvm_one_day_users_full_table",
+        "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
+        "l4_usage_prepaid_postpaid_daily_features",
+        "l4_daily_feature_topup_and_volume",
+    ]
+
+    nodes_list = [
+        node(
+            create_sample_dataset,
+            [
+                dataset_name + suffix,
+                sampling_params,
+                "params:subscription_id_suffix" + suffix,
+                date_params,
+            ],
+            dataset_name + suffix,
+            name="create_" + dataset_name + suffix,
+        )
+        for dataset_name in datasets_to_sample
+    ]
+
+    return Pipeline(nodes_list)
 
 
 def create_cvm_targets(sample_type: str = None):
