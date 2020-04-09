@@ -28,7 +28,7 @@
 
 
 from pyspark.sql import DataFrame
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Tuple
 from pyspark.ml.feature import StringIndexer, Imputer
 from pyspark.ml import Pipeline, PipelineModel
 from pyspark.sql.functions import col
@@ -39,7 +39,9 @@ from cvm.src.utils.classify_columns import classify_columns
 from cvm.src.utils.list_operations import list_intersection
 
 
-def pipeline1_fit(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
+def pipeline1_fit(
+    df: DataFrame, parameters: Dict[str, Any]
+) -> Tuple[DataFrame, Pipeline]:
     """ Fits preprocessing pipeline to given table and runs the pipeline on it.
 
     Args:
@@ -60,7 +62,7 @@ def pipeline1_fit(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
         + columns_cats["segment"]
         + parameters["must_have_features"]
     )
-    cols_to_pick = list_intersection(cols_to_pick, df.columns)
+    cols_to_pick = list_intersection(list(cols_to_pick), df.columns)
     df = df.select(cols_to_pick)
     columns_cats = classify_columns(df, parameters)
 
@@ -117,7 +119,7 @@ def pipeline1_transform(
         + columns_cats["segment"]
         + parameters["must_have_features"]
     )
-    cols_to_pick = list_intersection(cols_to_pick, df.columns)
+    cols_to_pick = list_intersection(list(cols_to_pick), df.columns)
     df = df.select(cols_to_pick)
     columns_cats = classify_columns(df, parameters)
 
