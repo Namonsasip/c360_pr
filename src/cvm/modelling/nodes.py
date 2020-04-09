@@ -36,17 +36,18 @@ from cvm.src.models.validate import validate_rf, log_pai_rf
 from cvm.src.utils.utils import iterate_over_usecases_macrosegments_targets
 
 
-def train_rf(
-    df: DataFrame, parameters: Dict[str, Any]
-) -> Dict[Any, Dict[Any, Dict[Union[str, Any], object]]]:
-    """ Create random forest model given the table to train on.
+def train_sklearn(
+    df: DataFrame, parameters: Dict[str, Any], sklearn_model: Any
+) -> object:
+    """ Create sklearn model given the table to train on.
 
     Args:
         df: Training preprocessed sample.
         parameters: parameters defined in parameters.yml.
+        sklearn_model: initialized sklearn model.
 
     Returns:
-        Random forest classifier.
+        Dictionary of trained models.
     """
     log = logging.getLogger(__name__)
 
@@ -61,19 +62,34 @@ def train_rf(
             df, parameters, target_chosen, use_case_chosen, macrosegment
         )
 
-        rf = RandomForestClassifier(n_estimators=100, random_state=100)
         y = y.values.ravel()
 
-        rf_fitted = rf.fit(X, y)
-        rf_fitted.feature_names = list(X.columns.values)
-        rf_fitted.sample_size = X.shape[0]
-        return rf_fitted
+        model_fitted = sklearn_model.fit(X, y)
+        model_fitted.feature_names = list(X.columns.values)
+        model_fitted.sample_size = X.shape[0]
+        return model_fitted
 
     models = iterate_over_usecases_macrosegments_targets(
         _train_for_macrosegment_target, parameters
     )
 
     return models
+
+
+def train_rf(
+    df: DataFrame, parameters: Dict[str, Any]
+) -> Dict[Any, Dict[Any, Dict[Union[str, Any], object]]]:
+    """ Create random forest model given the table to train on.
+
+    Args:
+        df: Training preprocessed sample.
+        parameters: parameters defined in parameters.yml.
+
+    Returns:
+        Random forest classifier.
+    """
+    rf = RandomForestClassifier(n_estimators=100, random_state=100)
+    return train_sklearn(df, parameters, rf)
 
 
 def predict_rf(
