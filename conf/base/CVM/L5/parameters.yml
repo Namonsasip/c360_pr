@@ -1,15 +1,18 @@
 # sampling parameters
-training_date: '2019-10-01' # '' for most recent data
-scoring_date: '2020-03-21' # '' for most recent data
-subscription_id_suffix_dev: 'AB'
-subscription_id_suffix_sample: 'A'
-subscription_id_suffix_scoring_dev: 'AB'
-subscription_id_suffix_scoring_sample: 'A'
-training_sampling:
-  - filter_users
-scoring_sampling:
-  - take_last_date
-  - filter_users
+training:
+  sampling:
+    subscription_id_suffix: 'A' # '' for all users
+    chosen_date: '2019-10-01' # '' for most recent data
+    stages:
+      - filter_users
+
+scoring:
+  sampling:
+    subscription_id_suffix: '' # '' for all users
+    chosen_date: '2020-03-21' # '' for most recent data
+    stages:
+      - take_last_date
+      - filter_users
 
 # Train / test split table parameters
 l5_cvm_one_day_train_test:

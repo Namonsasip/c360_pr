@@ -249,7 +249,7 @@ def subs_date_join(parameters: Dict[str, Any], *args: DataFrame,) -> DataFrame:
 
 def create_sample_dataset(
     df: DataFrame,
-    sampling_params: Dict[str, Any],
+    sampling_parameters: Dict[str, Any],
     subscription_id_suffix: str,
     max_date: str,
 ) -> DataFrame:
@@ -258,12 +258,14 @@ def create_sample_dataset(
 
     Args:
         df: given table.
-        sampling_params: parameters of sampling procedure.
+        sampling_parameters: sampling parameters defined in parameters.yml.
         subscription_id_suffix: suffix to filter subscription_identifier with.
         max_date: last date to include.
     Returns:
         Dev sample of table.
     """
+    subscription_id_suffix = sampling_parameters["subscription_id_suffix"]
+    max_date = sampling_parameters["chosen_date"]
 
     sampling_stages = {
         "filter_users": lambda df: filter_users(df, subscription_id_suffix),
@@ -271,7 +273,7 @@ def create_sample_dataset(
     }
 
     starting_rows = df.count()
-    for sampling_param in sampling_params:
+    for sampling_param in sampling_parameters["stages"]:
         df = sampling_stages[sampling_param](df)
 
     log = logging.getLogger(__name__)
