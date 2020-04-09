@@ -248,33 +248,28 @@ def subs_date_join(parameters: Dict[str, Any], *args: DataFrame,) -> DataFrame:
 
 
 def create_sample_dataset(
-    df: DataFrame,
-    sampling_parameters: Dict[str, Any],
-    subscription_id_suffix: str,
-    max_date: str,
+    df: DataFrame, sampling_parameters: Dict[str, Any],
 ) -> DataFrame:
-    """ Create dev sample of given table. Dev sample is super small sample. Takes only
-    users with certain subscription_identifier suffix.
+    """ Create sample of given table. Used to limit users and / or pick chosen date from
+    data.
 
     Args:
         df: given table.
         sampling_parameters: sampling parameters defined in parameters.yml.
-        subscription_id_suffix: suffix to filter subscription_identifier with.
-        max_date: last date to include.
     Returns:
-        Dev sample of table.
+        Sample of table.
     """
     subscription_id_suffix = sampling_parameters["subscription_id_suffix"]
     max_date = sampling_parameters["chosen_date"]
 
     sampling_stages = {
-        "filter_users": lambda df: filter_users(df, subscription_id_suffix),
-        "take_last_date": lambda df: filter_latest_date(df, max_date),
+        "filter_users": lambda dfx: filter_users(dfx, subscription_id_suffix),
+        "take_last_date": lambda dfx: filter_latest_date(dfx, max_date),
     }
 
     starting_rows = df.count()
-    for sampling_param in sampling_parameters["stages"]:
-        df = sampling_stages[sampling_param](df)
+    for stage in sampling_parameters["stages"]:
+        df = sampling_stages[stage](df)
 
     log = logging.getLogger(__name__)
     log.info(f"Sample has {df.count()} rows, down from {starting_rows} rows.")
