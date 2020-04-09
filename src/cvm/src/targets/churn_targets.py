@@ -138,7 +138,7 @@ def filter_usage(
     usage = usage.select(cols_to_pick)
 
     # setup date_filter
-    date_chosen = parameters["training_date"]
+    date_chosen = parameters["training"]["chosen_date"]
     min_horizon, max_horizon = get_min_max_churn_horizon(parameters["targets"]["churn"])
     min_date = add_days(date_chosen, min_horizon)
     max_date = add_days(date_chosen, max_horizon)
