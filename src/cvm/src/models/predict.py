@@ -122,7 +122,9 @@ def pyspark_predict_rf(
     target_cols_use_case_split = list_targets(parameters, case_split=True)
     macrosegments = parameters["macrosegments"]
 
-    def _pred_for_macrosegment_target(df, use_case, macrosegment, target_chosen):
+    def _pred_for_macrosegment_target(
+        df_target, use_case_chosen, macrosegment, target_chosen
+    ):
 
         log.info(
             "Creating predictions for {} target, {} macrosegment.".format(
@@ -137,25 +139,28 @@ def pyspark_predict_rf(
             predictions = chosen_model.predict_proba(pd_df)[:, 1]
             return pd.Series(predictions)
 
-        chosen_model = rf_models[use_case][macrosegment][target_chosen]
-        df = df.select(
-            *df.columns, _pandas_predict(*feature_cols).alias(target_chosen + "_pred")
+        chosen_model = rf_models[use_case_chosen][macrosegment][target_chosen]
+        df_target = df_target.select(
+            *df_target.columns,
+            _pandas_predict(*feature_cols).alias(target_chosen + "_pred")
         )
-        return df
+        return df_target
 
-    def _pred_for_macrosegments(df, use_case, macrosegment):
-        df = df.filter("{}_macrosegment == '{}'".format(use_case, macrosegment))
-        for target_chosen in target_cols_use_case_split[use_case]:
-            df = _pred_for_macrosegment_target(
-                df, use_case, macrosegment, target_chosen
+    def _pred_for_macrosegments(df_for_macrosegment, use_case_chosen, macrosegment):
+        df_for_macrosegment = df_for_macrosegment.filter(
+            "{}_macrosegment == '{}'".format(use_case_chosen, macrosegment)
+        )
+        for target_chosen in target_cols_use_case_split[use_case_chosen]:
+            df_for_macrosegment = _pred_for_macrosegment_target(
+                df_for_macrosegment, use_case_chosen, macrosegment, target_chosen
             )
-        return df
+        return df_for_macrosegment
 
-    def _pred_for_usecase(df, use_case):
+    def _pred_for_usecase(df_for_usecase, use_case_chosen):
         macrosegment_preds = []
-        for macrosegment in macrosegments[use_case]:
+        for macrosegment in macrosegments[use_case_chosen]:
             macrosegment_preds.append(
-                _pred_for_macrosegments(df, use_case, macrosegment)
+                _pred_for_macrosegments(df_for_usecase, use_case_chosen, macrosegment)
             )
         return functools.reduce(lambda df1, df2: df1.union(df2), macrosegment_preds)
 
