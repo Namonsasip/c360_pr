@@ -33,7 +33,7 @@ import logging
 from cvm.src.models.get_pandas_train_test_sample import get_pandas_train_test_sample
 from cvm.src.models.predict import pyspark_predict_rf
 from cvm.src.models.validate import validate_rf, log_pai_rf
-from cvm.src.utils.list_targets import list_targets
+from cvm.src.utils.utils import iterate_over_usecases_macrosegments_targets
 
 
 def train_rf(
@@ -48,8 +48,6 @@ def train_rf(
     Returns:
         Random forest classifier.
     """
-    target_cols = list_targets(parameters, case_split=True)
-    macrosegments = parameters["macrosegments"]
     log = logging.getLogger(__name__)
 
     def _train_for_macrosegment_target(use_case_chosen, macrosegment, target_chosen):
@@ -71,25 +69,9 @@ def train_rf(
         rf_fitted.sample_size = X.shape[0]
         return rf_fitted
 
-    def _train_for_macrosegment(use_case_chosen, macrosegment):
-        macrosegment_models = {}
-        for target_chosen in target_cols[use_case_chosen]:
-            macrosegment_models[target_chosen] = _train_for_macrosegment_target(
-                use_case_chosen, macrosegment, target_chosen
-            )
-        return macrosegment_models
-
-    def _train_for_usecase(use_chosen):
-        usecase_models = {}
-        for macrosegment in macrosegments[use_chosen]:
-            usecase_models[macrosegment] = _train_for_macrosegment(
-                use_chosen, macrosegment
-            )
-        return usecase_models
-
-    models = {}
-    for use_case in parameters["targets"]:
-        models[use_case] = _train_for_usecase(use_case)
+    models = iterate_over_usecases_macrosegments_targets(
+        _train_for_macrosegment_target, parameters
+    )
 
     return models
 
