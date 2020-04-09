@@ -32,24 +32,27 @@ from pyspark.sql import functions as func
 from pyspark.sql import DataFrame
 from pyspark.sql.types import DoubleType
 import pandas as pd
-from typing import Dict, Any
+from typing import Dict, Any, Callable
 
 from cvm.src.utils.list_targets import list_targets
 from cvm.src.utils.list_operations import list_sub
 
 
-def pyspark_predict_rf(
+def pyspark_predict_sklearn(
     df: DataFrame,
-    rf_models: Dict[str, RandomForestClassifier],
+    sklearn_models: Dict[str, Any],
     parameters: Dict[str, Any],
+    prediction_function: Callable,
 ) -> DataFrame:
     """ Runs predictions on given pyspark DataFrame using saved models. Assumes that
     sklearn is present on Spark cluster.
 
     Args:
         df: pyspark DataFrame to predict on.
-        rf_models: Random Forest models used for prediction, one per target.
+        sklearn_models: sklearn models used for prediction, one per target.
         parameters: parameters defined in parameters.yml.
+        prediction_function: function that takes model and pandas dataframe as input and
+        returns predictions.
     Returns:
         Pyspark DataFrame of scores.
     """
@@ -80,10 +83,10 @@ def pyspark_predict_rf(
         @func.pandas_udf(returnType=DoubleType())
         def _pandas_predict(*cols):
             pd_df = pd.concat(cols, axis=1)
-            predictions = chosen_model.predict_proba(pd_df)[:, 1]
-            return pd.Series(predictions)
+            model_predictions = prediction_function(chosen_model, pd_df)
+            return pd.Series(model_predictions)
 
-        chosen_model = rf_models[use_case_chosen][macrosegment][target_chosen]
+        chosen_model = sklearn_models[use_case_chosen][macrosegment][target_chosen]
         df_target = df_target.select(
             *df_target.columns,
             _pandas_predict(*feature_cols).alias(target_chosen + "_pred")
@@ -119,6 +122,26 @@ def pyspark_predict_rf(
         return df1.join(df2, key_columns, "left")
 
     return functools.reduce(join_on, use_case_preds)
+
+
+def pyspark_predict_rf(
+    df: DataFrame, rf_models: Dict[str, Any], parameters: Dict[str, Any],
+) -> DataFrame:
+    """ Runs predictions on given pyspark DataFrame using saved models. Assumes that
+    sklearn is present on Spark cluster.
+
+    Args:
+        df: pyspark DataFrame to predict on.
+        rf_models: Random Forest models used for prediction, one per target.
+        parameters: parameters defined in parameters.yml.
+    Returns:
+        Pyspark DataFrame of scores.
+    """
+
+    def _rf_prediction_function(rf_model, pd_df):
+        return rf_model.predict_proba(pd_df)[:, 1]
+
+    return pyspark_predict_sklearn(df, rf_models, parameters, _rf_prediction_function)
 
 
 def predict_rf_pandas(
