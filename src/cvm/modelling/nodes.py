@@ -27,7 +27,7 @@
 # limitations under the License.
 
 from pyspark.sql import DataFrame
-from typing import Dict, Any, Union
+from typing import Dict, Any
 from sklearn.ensemble import RandomForestClassifier
 import logging
 from cvm.src.models.get_pandas_train_test_sample import get_pandas_train_test_sample
@@ -76,9 +76,7 @@ def train_sklearn(
     return models
 
 
-def train_rf(
-    df: DataFrame, parameters: Dict[str, Any]
-) -> Dict[Any, Dict[Any, Dict[Union[str, Any], object]]]:
+def train_rf(df: DataFrame, parameters: Dict[str, Any]) -> object:
     """ Create random forest model given the table to train on.
 
     Args:
