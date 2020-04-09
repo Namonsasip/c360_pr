@@ -1,6 +1,7 @@
 # sampling parameters
 training:
-  sampling:
+  train_share: 0.9 # the rest is validation set
+  sampling: # what users to pick, what date to pick
     subscription_id_suffix: 'A' # '' for all users
     chosen_date: '2019-10-01' # '' for most recent data
     stages:
@@ -16,7 +17,6 @@ scoring:
 
 # Train / test split table parameters
 l5_cvm_one_day_train_test:
-  train_share: 0.9
 
 # Column to be included in every table
 key_columns:

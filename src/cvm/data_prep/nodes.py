@@ -168,7 +168,7 @@ def create_l5_cvm_one_day_train_test(
         targets_features table with extra column with train / test flag.
     """
 
-    train_share = parameters["l5_cvm_one_day_train_test"]["train_share"]
+    train_share = parameters["training"]["train_share"]
 
     # add train test flag
     train_test = targets_features.withColumn(
