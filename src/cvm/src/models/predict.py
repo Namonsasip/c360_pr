@@ -33,65 +33,9 @@ from pyspark.sql import DataFrame
 from pyspark.sql.types import DoubleType
 import pandas as pd
 from typing import Dict, Any
-import xgboost
 
 from cvm.src.utils.list_targets import list_targets
 from cvm.src.utils.list_operations import list_sub
-
-
-def pandas_predict_xgb(
-    pd_df: pd.DataFrame, xgb_models: Dict[str, xgboost.Booster], target_chosen: str
-) -> pd.Series:
-    """ Runs predictions on given pandas DataFrame using saved models.
-
-    Args:
-        pd_df: pandas DataFrame to predict on.
-        xgb_models: xgb models used for prediction, one per target.
-        target_chosen: name of target column.
-    Returns:
-        Pandas series of scores.
-    """
-
-    chosen_xgb_model = xgb_models[target_chosen]
-    X_pred = xgboost.DMatrix(pd_df)
-    predictions = chosen_xgb_model.predict(X_pred)
-
-    return pd.Series(predictions)
-
-
-def pyspark_predict_xgb(
-    df: DataFrame, xgb_models: Dict[str, xgboost.Booster], parameters: Dict[str, Any]
-) -> DataFrame:
-    """ Runs predictions on given pyspark DataFrame using saved models. Assumes that
-    xgboost is present on Spark cluster.
-
-    Args:
-        df: pyspark DataFrame to predict on.
-        xgb_models: xgb models used for prediction, one per target.
-        parameters: parameters defined in parameters.yml.
-    Returns:
-        Pyspark DataFrame of scores.
-    """
-
-    target_cols = list_targets(parameters)
-    log = logging.getLogger(__name__)
-
-    for target_chosen in target_cols:
-        log.info("Creating {} predictions.".format(target_chosen))
-
-        # spark prediction udf
-        @func.pandas_udf(returnType=DoubleType())
-        def _pandas_predict(*cols):
-            chosen_xgb_model = xgb_models[target_chosen]
-            pd_df = pd.concat(cols, axis=1)
-            X_pred = xgboost.DMatrix(pd_df)
-            predictions = chosen_xgb_model.predict(X_pred)
-            return pd.Series(predictions)
-
-        feature_cols = list_sub(df.columns, target_cols)
-        df = df.withColumn(target_chosen + "_pred", _pandas_predict(*feature_cols))
-
-    return df
 
 
 def pyspark_predict_rf(
