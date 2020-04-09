@@ -138,7 +138,7 @@ def add_churn_targets(
     """
 
     local_parameters = parameters["targets"]["churn"]
-    chosen_date = parameters["chosen_date"]
+    chosen_date = parameters["training_date"]
 
     users = prepare_key_columns(users)
     usage = prepare_key_columns(usage)

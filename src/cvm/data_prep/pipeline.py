@@ -77,7 +77,7 @@ def create_users(sample_type: str) -> Pipeline:
         date_params = "params:scoring_date"
     else:
         sampling_params = "params:training_sampling"
-        date_params = "params:chosen_date"
+        date_params = "params:training_date"
 
     return Pipeline(
         [
@@ -119,7 +119,7 @@ def create_cvm_prepare_inputs_samples(sample_type: str) -> Pipeline:
         date_params = "params:scoring_date"
     else:
         sampling_params = "params:training_sampling"
-        date_params = "params:chosen_date"
+        date_params = "params:training_date"
 
     datasets_to_sample = [
         "l5_cvm_one_day_users_full_table",
@@ -168,7 +168,7 @@ def create_cvm_targets(sample_type: str = None):
                     "l5_cvm_one_day_users_table" + suffix,
                     "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
                     "parameters",
-                    "params:chosen_date",
+                    "params:training_date",
                 ],
                 "l5_cvm_ard_one_day_targets" + suffix,
                 name="create_l5_cvm_ard_one_day_targets" + suffix,
