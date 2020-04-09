@@ -29,13 +29,9 @@
 from pyspark.sql import DataFrame
 from typing import Dict, Any, Union
 from sklearn.ensemble import RandomForestClassifier
-import xgboost
 import logging
 from cvm.src.models.get_pandas_train_test_sample import get_pandas_train_test_sample
-from cvm.src.models.predict import (
-    pyspark_predict_rf,
-    pyspark_predict_xgb,
-)
+from cvm.src.models.predict import pyspark_predict_rf
 from cvm.src.models.validate import validate_rf, log_pai_rf
 from cvm.src.utils.list_targets import list_targets
 
@@ -96,51 +92,6 @@ def train_rf(
         models[use_case] = _train_for_usecase(use_case)
 
     return models
-
-
-def train_xgb(df: DataFrame, parameters: Dict[str, Any]) -> Dict[str, xgboost.Booster]:
-    """ Create xgboost models for given the table to train on and all targets.
-
-    Args:
-        df: Training preprocessed sample.
-        parameters: parameters defined in parameters.yml.
-
-    Returns:
-        Xgboost classifier.
-    """
-    target_cols = list_targets(parameters)
-
-    log = logging.getLogger(__name__)
-
-    models = {}
-    for target_chosen in target_cols:
-        log.info("Training xgboost model for {} target.".format(target_chosen))
-
-        X, y = get_pandas_train_test_sample(df, parameters, target_chosen)
-
-        xgb_model = xgboost.train(
-            {"learning_rate": 0.01}, xgboost.DMatrix(X, label=y["target"]), 100
-        )
-        models[target_chosen] = xgb_model
-
-    return models
-
-
-def predict_xgb(
-    df: DataFrame, xgb_models: Dict[str, xgboost.Booster], parameters: Dict[str, Any]
-) -> DataFrame:
-    """ Uses saved xgboost models to create propensity scores for given table.
-
-    Args:
-        df: Table with features.
-        xgb_models: Saved dictionary of models for different targets.
-        parameters: parameters defined in parameters.yml.
-    Returns:
-        Table with propensity scores.
-    """
-
-    predictions = pyspark_predict_xgb(df, xgb_models, parameters)
-    return predictions
 
 
 def predict_rf(
