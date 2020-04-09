@@ -29,7 +29,7 @@
 
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as func
-from typing import Any, Dict
+from typing import Any, Dict, Tuple
 import datetime
 
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
@@ -97,7 +97,7 @@ def add_days(date: str, days_num: int) -> str:
     return end_date.strftime(date_format)
 
 
-def get_min_max_churn_horizon(target_parameters: Dict[str, Any],) -> int:
+def get_min_max_churn_horizon(target_parameters: Dict[str, Any],) -> Tuple[int, int]:
     """ Returns min and max of churn horizons.
 
     Args:
