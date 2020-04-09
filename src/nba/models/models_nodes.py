@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from time import sleep
 from typing import List, Any, Dict, Callable
 
 import matplotlib.pyplot as plt
@@ -11,6 +12,7 @@ import pyspark.sql.functions as F
 import seaborn as sns
 from lightgbm import LGBMClassifier
 from plotnine import *
+from pyspark.sql import Window
 from pyspark.sql.functions import pandas_udf, PandasUDFType
 from pyspark.sql.types import (
     DoubleType,
@@ -194,10 +196,54 @@ def create_binary_model_function(
                 else:
                     plt.show()
 
-            # This path will be used to store artifacts for pai, don't rely
-            # on them being available after function ends
-            tmp_path = Path("data/tmp")
-            os.makedirs(tmp_path, exist_ok=True)
+            def get_metrics_by_percentile(y_true, y_pred) -> pd.DataFrame:
+                """
+                 Performance report generation function to check model performance at percentile level.
+                :param y_true: numpy array with the real value of the target variable
+                :param y_pred: numpy array with  predicted value by the model
+                :return: pandas.DataFrame wit the different KPIs:
+                        - percentile: Percentile of the distribution
+                        - population: Number of observations al percentile level
+                        - positive_cases: Number of positive cases at percentile level
+                        - avg_score: Model score average per percentile
+                        - cum_y_true: Cumulative positive cases
+                        - cum_population: Cumulative population
+                        - cum_prob: Cumulative probability
+                        - cum_percentage_target: Cumulative percentage of the total positive population captured
+                        - uplift: Cumulative uplift
+                """
+                report = pd.DataFrame(
+                    {"y_true": y_true, "y_pred": y_pred,}, columns=["y_true", "y_pred"]
+                )
+
+                report["score_rank"] = report.y_pred.rank(
+                    method="first", ascending=True, pct=True
+                )
+                report["percentile"] = np.floor((1 - report.score_rank) * 100) + 1
+                report["population"] = 1
+                report = (
+                    report.groupby(["percentile"])
+                    .agg({"y_true": "sum", "population": "sum", "y_pred": "mean"})
+                    .reset_index()
+                )
+                report = report.rename(
+                    columns={"y_pred": "avg_score", "y_true": "positive_cases"}
+                )
+                report = report[
+                    ["percentile", "population", "positive_cases", "avg_score"]
+                ]
+
+                report["cum_y_true"] = report.positive_cases.cumsum()
+                report["cum_population"] = report.population.cumsum()
+                report["cum_prob"] = report.cum_y_true / report.cum_population
+                report["cum_percentage_target"] = (
+                    report["cum_y_true"] / report["cum_y_true"].max()
+                )
+                report["uplift"] = report.cum_prob / (
+                    report.positive_cases.sum() / report.population.sum()
+                )
+                return report
+
 
             if len(pdf_master_chunk[group_column].unique()) > 1:
                 raise ValueError(
@@ -238,163 +284,197 @@ def create_binary_model_function(
 
             # Start pai run and log some metrics
             pai.set_config(experiment=current_group, storage_runs=pai_storage_path)
-            pai.start_run(run_name=pai_run_name)
-            pai.add_tags([f"z_{pai_run_prefix}"])
-            pai.log_note(current_group_description)
 
-            pai.log_metrics(
-                {
-                    "original_perc_obs_target_null": original_perc_obs_target_null,
-                    "original_n_obs": original_n_obs,
-                    "original_n_obs_positive_target": original_n_obs_positive_target,
-                    "original_target_mean": original_target_mean,
-                    "modelling_perc_obs_target_null": modelling_perc_obs_target_null,
-                    "modelling_n_obs": modelling_n_obs,
-                    "modelling_n_obs_positive_target": modelling_n_obs_positive_target,
-                    "modelling_target_mean": modelling_target_mean,
-                }
-            )
-
-            pai.log_params(
-                {"target_column": target_column,}
-            )
-
-            # Check if we have enough data to train a model for the current group
-            able_to_model_flag = True
-            if modelling_perc_obs_target_null != 0:
-                pai.log_note(
-                    "There are observations with NA target in the modelling data"
-                )
-                able_to_model_flag = False
-
-            if original_perc_obs_target_null == 1:
-                pai.log_note("The are no observations with tracked response")
-                able_to_model_flag = False
-
-            if original_n_obs_positive_target == 0:
-                pai.log_note("There are no observations with positive response")
-                able_to_model_flag = False
-
-            if original_n_obs_positive_target == original_n_obs:
-                pai.log_note("There are no observations for negative response")
-                able_to_model_flag = False
-
-            if original_n_obs_positive_target < min_obs_per_class_for_model:
-                pai.log_note(
-                    f"The number of positive responses is not enough to reliably train a model. "
-                    f"There are {original_n_obs_positive_target} observations while minimum required is {min_obs_per_class_for_model}"
-                )
-                able_to_model_flag = False
-
-            if (
-                original_n_obs - original_n_obs_positive_target
-                < min_obs_per_class_for_model
-            ):
-                pai.log_note(
-                    f"The number of negative responses is not enough to reliably train a model. "
-                    f"There are {original_n_obs_positive_target} observations while minimum required is {min_obs_per_class_for_model}"
-                )
-                able_to_model_flag = False
-
-            # build the DataFrame to return
-            df_to_return = pd.DataFrame(
-                {"able_to_model_flag": [int(able_to_model_flag)]}
-            )
-
-            if not able_to_model_flag:
-                # Unable to train a model, end execution
-                pai.add_tags(["Unable to model"])
-                pai.end_run()
-                return df_to_return
-            else:
-
-                # Train the model
-                pai.add_tags(["Able to model"])
-
-                pdf_train, pdf_test = train_test_split(
-                    pdf_master_chunk, train_size=train_sampling_ratio
+            if pai.active_run():
+                raise AssertionError(
+                    f"There is already an active pai run when "
+                    f"trying to start the {current_group} model"
                 )
 
-                pai.log_params(
-                    {
-                        "train_sampling_ratio": train_sampling_ratio,
-                        "model_params": model_params,
-                    }
-                )
+            with pai.start_run(run_name=pai_run_name):
+                run_id = pai.current_run_uuid()
+                # This path will be used to store artifacts for pai, don't rely
+                # on them being available after function ends
+                tmp_path = Path("data/tmp") / run_id
+                os.makedirs(tmp_path, exist_ok=True)
 
-                model = LGBMClassifier(**model_params).fit(
-                    pdf_train[explanatory_features],
-                    pdf_train[target_column],
-                    eval_set=[
-                        (pdf_train[explanatory_features], pdf_train[target_column]),
-                        (pdf_test[explanatory_features], pdf_test[target_column]),
-                    ],
-                    eval_names=["train", "test"],
-                    eval_metric="auc",
-                )
-                pai.log_model(model)
-
-                train_auc = model.evals_result_["train"]["auc"][-1]
-                test_auc = model.evals_result_["test"]["auc"][-1]
+                pai.add_tags([f"z_{pai_run_prefix}"])
+                pai.log_note(current_group_description)
 
                 pai.log_metrics(
                     {
-                        "train_auc": train_auc,
-                        "test_auc": test_auc,
-                        "train_test_auc_diff": train_auc - test_auc,
+                        "original_perc_obs_target_null": original_perc_obs_target_null,
+                        "original_n_obs": original_n_obs,
+                        "original_n_obs_positive_target": original_n_obs_positive_target,
+                        "original_target_mean": original_target_mean,
+                        "modelling_perc_obs_target_null": modelling_perc_obs_target_null,
+                        "modelling_n_obs": modelling_n_obs,
+                        "modelling_n_obs_positive_target": modelling_n_obs_positive_target,
+                        "modelling_target_mean": modelling_target_mean,
                     }
                 )
 
-                pai.log_features(
-                    features=explanatory_features,
-                    importance=list(
-                        model.feature_importances_ / sum(model.feature_importances_)
-                    ),
+                pai.log_params(
+                    {"target_column": target_column,}
                 )
 
-                # Plot ROC curve
-                plot_roc_curve(
-                    y_true=pdf_test[target_column],
-                    y_score=model.predict_proba(pdf_test[explanatory_features])[:, 1],
-                    filepath=tmp_path / "roc_curve.png",
-                )
-
-                # Calculate and plot AUC per round
-                pdf_metrics = pd.DataFrame()
-                for valid_set_name, metrics_dict in model.evals_result_.items():
-                    metrics_dict["set"] = valid_set_name
-                    pdf_metrics_partial = pd.DataFrame(metrics_dict)
-                    pdf_metrics_partial["round"] = range(
-                        1, pdf_metrics_partial.shape[0] + 1
+                # Check if we have enough data to train a model for the current group
+                able_to_model_flag = True
+                if modelling_perc_obs_target_null != 0:
+                    pai.log_note(
+                        "There are observations with NA target in the modelling data"
                     )
-                    pdf_metrics = pd.concat([pdf_metrics, pdf_metrics_partial])
-                pdf_metrics_melted = pdf_metrics.melt(
-                    id_vars=["set", "round"], var_name="metric"
-                )
-                pdf_metrics_melted.to_csv(
-                    tmp_path / "metrics_by_round.csv", index=False
-                )
+                    able_to_model_flag = False
 
-                (  # Plot the AUC of each set in each round
-                    ggplot(
-                        pdf_metrics_melted[pdf_metrics_melted["metric"] == "auc"],
-                        aes(x="round", y="value", color="set"),
+                if original_perc_obs_target_null == 1:
+                    pai.log_note("The are no observations with tracked response")
+                    able_to_model_flag = False
+
+                if original_n_obs_positive_target == 0:
+                    pai.log_note("There are no observations with positive response")
+                    able_to_model_flag = False
+
+                if original_n_obs_positive_target == original_n_obs:
+                    pai.log_note("There are no observations for negative response")
+                    able_to_model_flag = False
+
+                if original_n_obs_positive_target < min_obs_per_class_for_model:
+                    pai.log_note(
+                        f"The number of positive responses is not enough to reliably train a model. "
+                        f"There are {original_n_obs_positive_target} observations while minimum required is {min_obs_per_class_for_model}"
                     )
-                    + ylab("AUC")
-                    + geom_line()
-                    + ggtitle(f"AUC per round (tree) for {current_group}")
-                ).save(tmp_path / "auc_per_round.png")
+                    able_to_model_flag = False
 
-                # Log artifacts created and end the run
-                pai.log_artifacts(
-                    {
-                        "roc_curve": str(tmp_path / "roc_curve.png"),
-                        "metrics_by_round": str(tmp_path / "metrics_by_round.csv"),
-                        "auc_per_round": str(tmp_path / "auc_per_round.png"),
-                    }
+                if (
+                    original_n_obs - original_n_obs_positive_target
+                    < min_obs_per_class_for_model
+                ):
+                    pai.log_note(
+                        f"The number of negative responses is not enough to reliably train a model. "
+                        f"There are {original_n_obs_positive_target} observations while minimum required is {min_obs_per_class_for_model}"
+                    )
+                    able_to_model_flag = False
+
+                # build the DataFrame to return
+                df_to_return = pd.DataFrame(
+                    {"able_to_model_flag": [int(able_to_model_flag)]}
                 )
 
-                pai.end_run()
+                if not able_to_model_flag:
+                    # Unable to train a model, end execution
+                    pai.add_tags(["Unable to model", "Finished"])
+                    return df_to_return
+                else:
+
+                    # Train the model
+                    pai.add_tags(["Able to model"])
+
+                    pdf_train, pdf_test = train_test_split(
+                        pdf_master_chunk, train_size=train_sampling_ratio
+                    )
+
+                    pai.log_params(
+                        {
+                            "train_sampling_ratio": train_sampling_ratio,
+                            "model_params": model_params,
+                        }
+                    )
+
+                    model = LGBMClassifier(**model_params).fit(
+                        pdf_train[explanatory_features],
+                        pdf_train[target_column],
+                        eval_set=[
+                            (pdf_train[explanatory_features], pdf_train[target_column]),
+                            (pdf_test[explanatory_features], pdf_test[target_column]),
+                        ],
+                        eval_names=["train", "test"],
+                        eval_metric="auc",
+                    )
+
+                    test_predictions = model.predict_proba(pdf_test[explanatory_features])[
+                        :, 1
+                    ]
+
+                    pai.log_model(model)
+
+                    train_auc = model.evals_result_["train"]["auc"][-1]
+                    test_auc = model.evals_result_["test"]["auc"][-1]
+
+                    pai.log_metrics(
+                        {
+                            "train_auc": train_auc,
+                            "test_auc": test_auc,
+                            "train_test_auc_diff": train_auc - test_auc,
+                        }
+                    )
+
+                    pai.log_features(
+                        features=explanatory_features,
+                        importance=list(
+                            model.feature_importances_ / sum(model.feature_importances_)
+                        ),
+                    )
+
+                    if os.path.isfile(tmp_path / "roinc_curve.png"):
+                        raise AssertionError(
+                            f"There is already a file in the tmp directory "
+                            f"when running the {current_group} model"
+                        )
+
+                    # Plot ROC curve
+                    plot_roc_curve(
+                        y_true=pdf_test[target_column],
+                        y_score=test_predictions,
+                        filepath=tmp_path / "roc_curve.png",
+                    )
+
+                    # Calculate and plot AUC per round
+                    pdf_metrics = pd.DataFrame()
+                    for valid_set_name, metrics_dict in model.evals_result_.items():
+                        metrics_dict["set"] = valid_set_name
+                        pdf_metrics_partial = pd.DataFrame(metrics_dict)
+                        pdf_metrics_partial["round"] = range(
+                            1, pdf_metrics_partial.shape[0] + 1
+                        )
+                        pdf_metrics = pd.concat([pdf_metrics, pdf_metrics_partial])
+                    pdf_metrics_melted = pdf_metrics.melt(
+                        id_vars=["set", "round"], var_name="metric"
+                    )
+                    pdf_metrics_melted.to_csv(
+                        tmp_path / "metrics_by_round.csv", index=False
+                    )
+
+                    (  # Plot the AUC of each set in each round
+                        ggplot(
+                            pdf_metrics_melted[pdf_metrics_melted["metric"] == "auc"],
+                            aes(x="round", y="value", color="set"),
+                        )
+                        + ylab("AUC")
+                        + geom_line()
+                        + ggtitle(f"AUC per round (tree) for {current_group}")
+                    ).save(tmp_path / "auc_per_round.png")
+
+                    # Create a CSV report with percentile metrics
+                    df_metrics_by_percentile = get_metrics_by_percentile(
+                        y_true=pdf_test[target_column], y_pred=test_predictions
+                    )
+                    df_metrics_by_percentile.to_csv(
+                        tmp_path / "metrics_by_percentile.csv", index=False
+                    )
+
+                    # Log artifacts created and end the run
+                    pai.log_artifacts(
+                        {
+                            "roc_curve": str(tmp_path / "roc_curve.png"),
+                            "metrics_by_round": str(tmp_path / "metrics_by_round.csv"),
+                            "auc_per_round": str(tmp_path / "auc_per_round.png"),
+                            "metrics_by_percentile": str(
+                                tmp_path / "metrics_by_percentile.csv"
+                            ),
+                        }
+                    )
+
+                    pai.add_tags(["Finished"])
 
                 return df_to_return
 
@@ -415,6 +495,7 @@ def train_multiple_binary_models(
     group_column: str,
     explanatory_features: List[str],
     target_column: str,
+    max_rows_per_group: int = None,
     **kwargs: Any,
 ) -> pyspark.sql.DataFrame:
     """
@@ -427,6 +508,8 @@ def train_multiple_binary_models(
         explanatory_features: list of features name to learn from. Must exist in
             df_master
         target_column: column with target variable
+        max_rows_per_group: maximum rows that the train set of the model will have.
+            If for a group the number of rows is larget it will be randomly sampled down
         **kwargs: further arguments to pass to the modelling function, they are not all
             explicitly listed here for easier code maintenance but details can be found
             in the definition of train_single_binary_model
@@ -458,8 +541,18 @@ def train_multiple_binary_models(
     df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
         ~F.isnull(F.col(target_column))
     )
-    #TODO remove sampling
-    df_training_info = df_master_only_necessary_columns.sample(0.1).groupby(group_column).apply(
+
+    # Sample down if data is too large to reliably train a model
+    if max_rows_per_group is not None:
+        df_master_only_necessary_columns = df_master_only_necessary_columns.withColumn(
+            "aux_n_rows_per_group",
+            F.count(F.lit(1)).over(Window.partitionBy(group_column)),
+        )
+        df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
+            F.rand() * F.col("aux_n_rows_per_group") / max_rows_per_group <= 1
+        ).drop("aux_n_rows_per_group")
+
+    df_training_info = df_master_only_necessary_columns.groupby(group_column).apply(
         create_binary_model_function(
             as_pandas_udf=True,
             group_column=group_column,
