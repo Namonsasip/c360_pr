@@ -15,9 +15,6 @@ scoring:
       - take_last_date
       - filter_users
 
-# Train / test split table parameters
-l5_cvm_one_day_train_test:
-
 # Column to be included in every table
 key_columns:
   - key_date
