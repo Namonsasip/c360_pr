@@ -73,12 +73,25 @@ def create_users(sample_type: str) -> Pipeline:
 
     suffix = get_suffix(sample_type)
     if is_scoring(sample_type):
+        sampling_params = "params:scoring_sampling"
         date_params = "params:scoring_date"
     else:
+        sampling_params = "params:training_sampling"
         date_params = "params:chosen_date"
 
     return Pipeline(
         [
+            node(
+                create_sample_dataset,
+                [
+                    "l3_customer_profile_include_1mo_non_active",
+                    sampling_params,
+                    "params:subscription_id_suffix" + suffix,
+                    date_params,
+                ],
+                "l3_customer_profile_include_1mo_non_active" + suffix,
+                name="create_l3_customer_profile_include_1mo_non_active" + suffix,
+            ),
             node(
                 create_l5_cvm_one_day_users_table,
                 [
@@ -110,17 +123,6 @@ def create_cvm_prepare_inputs_samples(sample_type: str) -> Pipeline:
 
     return Pipeline(
         [
-            node(
-                create_sample_dataset,
-                [
-                    "l3_customer_profile_include_1mo_non_active",
-                    sampling_params,
-                    "params:subscription_id_suffix" + suffix,
-                    date_params,
-                ],
-                "l3_customer_profile_include_1mo_non_active" + suffix,
-                name="create_l3_customer_profile_include_1mo_non_active" + suffix,
-            ),
             node(
                 create_sample_dataset,
                 [
