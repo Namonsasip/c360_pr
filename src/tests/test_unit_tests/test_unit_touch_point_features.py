@@ -10,7 +10,6 @@ class TestUnitTp:
 
     def test_to_call_center(self,project_context):
 
-        # # D:\save\test\project-samudra\src\tests\test_unit_tests\test_unit_touch_point_features.py::TestUnitTp::test_to_call_center
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
 
