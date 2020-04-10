@@ -33,7 +33,6 @@ from cvm.preprocessing.nodes import (
     pipeline_fit,
     feature_selection_all_target,
 )
-from cvm.src.utils.get_suffix import get_suffix
 
 
 def preprocessing_fit(sample_type: str = None) -> Pipeline:
@@ -104,15 +103,13 @@ def create_cvm_feature_extraction(sample_type: str = None) -> Pipeline:
          Kedro pipeline.
      """
 
-    suffix = get_suffix(sample_type)
-
     return Pipeline(
         [
             node(
                 feature_selection_all_target,
-                ["l5_cvm_one_day_train_preprocessed" + suffix, "parameters"],
+                ["test_sample_preprocessed_" + sample_type, "parameters"],
                 "important_columns",
-                name="feature_selection_l5_cvm_one_day_train_preprocessed" + suffix,
+                name="feature_selection_l5_cvm_one_day_train_preprocessed",
             ),
         ]
     )
