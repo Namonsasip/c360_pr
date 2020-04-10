@@ -19,3 +19,15 @@ l1_voice_distance_daily: #425-428
     maximum_distance: "first(max_distance)"
     standard_deviation_distance: "first(stdev_distance)"
   granularity: "event_partition_date,access_method_num"
+
+l1_first_data_session_cell_identifier: #470
+  where_clause: "where rank = 1"
+  feature_list:
+    event_partition_date: "date_id"
+    mobile_no: "mobile_no"
+    gprs_type: "gprs_type"
+    imei: "imei"
+    lac: "lac"
+    ci: "ci"
+  granularity: ""
+

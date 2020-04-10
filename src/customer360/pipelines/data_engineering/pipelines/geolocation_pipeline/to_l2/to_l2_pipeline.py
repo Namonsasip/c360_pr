@@ -37,5 +37,13 @@ def geo_to_l2_pipeline(**kwargs):
 
             ),
 
+            node(
+                l2_first_data_session_cell_identifier_weekly,
+                ["l1_geo_first_data_session_cell_identifier_daily",
+                 "params:l2_first_data_session_cell_identifier"],
+                "l2_geo_first_data_session_cell_identifier_weekly"
+
+            ),
+
         ], name="geo_to_l2_pipeline"
     )

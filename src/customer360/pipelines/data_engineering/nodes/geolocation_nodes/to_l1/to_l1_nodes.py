@@ -82,3 +82,20 @@ def l1_geo_voice_distance_daily(df, sql):
     df = node_from_config(df, sql)
 
     return df
+
+
+def l1_geo_data_distance_daily_intermediate(df):
+    # df = df.where('service_type!="SMS"')
+    df = add_start_of_week_and_month(df, "date_id")
+    df = df.withColumn("day_of_week", F.date_format(F.col("event_partition_date"), "u"))
+    # df = df.select('*', F.concat(df.lac, df.ci).alias('lac_ci'),
+    #                (df.no_of_call + df.no_of_inc).alias('sum_call'))
+    df = df.groupBy('access_method_num', 'lac_ci', 'event_partition_date', 'start_of_week', 'start_of_month').agg(
+        F.sum('sum_call').alias('sum_call'))
+    return df
+
+
+def l1_first_data_session_cell_identifier_daily(df, sql):
+    df = df.selectExpr('*', 'row_number() over(partition by mobile_no,date_id order by hour_id ASC) as rank')
+    df = node_from_config(df, sql)
+    return df

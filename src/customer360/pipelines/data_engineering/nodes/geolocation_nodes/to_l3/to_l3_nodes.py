@@ -10,11 +10,11 @@ from pyspark.sql import types as T
 import statistics
 
 
-# def l3_number_of_bs_used(input_df):
-#     df = input_df.select('imsi', 'cell_id', 'time_in')
-#     df = df.withColumn("start_of_month", f.to_date(f.date_trunc('month', "time_in"))) \
-#         .drop(df.time_in)
-#     return df
+def l3_number_of_bs_used(input_df):
+    df = input_df.select('imsi', 'cell_id', 'time_in')
+    df = df.withColumn("start_of_month", f.to_date(f.date_trunc('month', "time_in"))) \
+        .drop(df.time_in)
+    return df
 
 
 def l3_geo_voice_distance_daily(df, sql):
@@ -44,5 +44,11 @@ def l3_geo_voice_distance_daily(df, sql):
     df = df.drop('max', 'sorted_sum', 'length_without_max', 'list_without_max', 'distance_list')
 
     df = node_from_config(df, sql)
+
+    return df
+
+def l3_first_data_session_cell_identifier_monthly(df,sql):
+    df = df.withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col('event_partition_date'))))
+    df = df.selectExpr('*', 'row_number() over(partition by mobile_no,start_of_month order by event_partition_date ASC) as rank_monthly')
 
     return df

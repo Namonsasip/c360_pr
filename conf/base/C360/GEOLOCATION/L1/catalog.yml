@@ -30,3 +30,11 @@ l1_geo_voice_distance_daily:
   save_args:
     partitionBy: ["event_partition_date"]
     mode: "overwrite"
+
+l1_geo_first_data_session_cell_identifier_daily:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/GEO/l1_features/geo_first_data_session_cell_identifier_daily/
+  save_args:
+    partitionBy: ["event_partition_date"]
+    mode: "overwrite"

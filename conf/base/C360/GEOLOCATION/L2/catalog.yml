@@ -23,3 +23,11 @@ l2_geo_voice_distance_daily:
   save_args:
     partitionBy: ["start_of_week"]
     mode: "overwrite"
+
+l2_geo_first_data_session_cell_identifier_weekly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/GEO/l2_features/geo_first_data_session_cell_identifier_weekly
+  save_args:
+    partitionBy: ["start_of_week"]
+    mode: "overwrite"

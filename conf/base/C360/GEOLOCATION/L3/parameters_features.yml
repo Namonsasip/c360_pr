@@ -13,3 +13,14 @@ l3_voice_distance_daily: #425-428
     maximum_distance: "first(max_distance)"
     standard_deviation_distance: "first(stdev_distance)"
   granularity: "start_of_month,access_method_num"
+
+l3_first_data_session_cell_identifier: #470
+  where_clause: "where rank_monthly = 1"
+  feature_list:
+    start_of_month: "start_of_month"
+    mobile_no: "mobile_no"
+    gprs_type: "gprs_type"
+    imei: "imei"
+    lac: "lac"
+    ci: "ci"
+  granularity: ""

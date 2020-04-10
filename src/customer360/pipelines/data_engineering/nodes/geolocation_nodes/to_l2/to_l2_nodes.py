@@ -62,3 +62,9 @@ def l2_geo_voice_distance_daily(df, sql):
     df = node_from_config(df, sql)
 
     return df
+
+def l2_first_data_session_cell_identifier_weekly(df,sql):
+    df = df.withColumn("start_of_week", F.to_date(F.date_trunc('week', F.col('event_partition_date'))))
+    df = df.selectExpr('*', 'row_number() over(partition by mobile_no,start_of_week order by event_partition_date ASC) as rank_weekly')
+
+    return df
