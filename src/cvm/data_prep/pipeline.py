@@ -35,12 +35,12 @@ from kedro.pipeline import Pipeline, node
 
 from cvm.data_prep.nodes import (
     create_sample_dataset,
-    create_l5_cvm_one_day_users_table,
+    create_users_from_active_users,
     add_ard_targets,
     add_churn_targets,
     subs_date_join,
     add_macrosegments,
-    create_l5_cvm_one_day_train_test,
+    train_test_split,
     add_volatility_scores,
     create_users_from_cgtg,
 )
@@ -93,7 +93,7 @@ def create_users(sample_type: str) -> Pipeline:
                 name="create_l3_customer_profile_include_1mo_non_active" + suffix,
             ),
             node(
-                create_l5_cvm_one_day_users_table,
+                create_users_from_active_users,
                 [
                     "l3_customer_profile_include_1mo_non_active" + suffix,
                     "l0_product_product_pru_m_package_master_group",
@@ -226,7 +226,7 @@ def create_cvm_training_data(sample_type: str = None):
                 + suffix,
             ),
             node(
-                create_l5_cvm_one_day_train_test,
+                train_test_split,
                 [
                     "l5_cvm_selected_features_one_day_joined_macrosegments" + suffix,
                     "parameters",

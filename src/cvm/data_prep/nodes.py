@@ -57,7 +57,7 @@ def create_users_from_cgtg(customer_groups: DataFrame) -> DataFrame:
     return df
 
 
-def create_l5_cvm_one_day_users_table(
+def create_users_from_active_users(
     profile: DataFrame, main_packs: DataFrame, date_chosen: str = "today"
 ) -> DataFrame:
     """Create l5_cvm_one_day_users_table - one day table of users used for
@@ -154,7 +154,7 @@ def add_churn_targets(
     return functools.reduce(join_targets, churn_target_tables)
 
 
-def create_l5_cvm_one_day_train_test(
+def train_test_split(
     targets_features: DataFrame, parameters: Dict[str, Any],
 ) -> Tuple[DataFrame, DataFrame]:
     """Adds train-test column to features-targets table. Train share defined in
