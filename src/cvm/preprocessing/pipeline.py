@@ -35,18 +35,14 @@ from cvm.preprocessing.nodes import (
 )
 
 
-def preprocessing_fit(sample_type: str = None) -> Pipeline:
+def preprocessing_fit() -> Pipeline:
     """ Creates pipeline preprocessing data. Can create data pipeline for full dataset
      or given sample_type.
-
-    Args:
-        sample_type: "scoring" if list created for scoring, "training" if list created
-            for training.
 
      Returns:
          Kedro pipeline.
      """
-
+    sample_type = "training"
     return Pipeline(
         [
             node(
