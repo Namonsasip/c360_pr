@@ -101,7 +101,7 @@ def create_users_from_active(sample_type: str) -> Pipeline:
     )
 
 
-def create_cvm_prepare_inputs_samples(sample_type: str) -> Pipeline:
+def sample_inputs(sample_type: str) -> Pipeline:
     """ Creates samples for input datasets.
 
     Args:
