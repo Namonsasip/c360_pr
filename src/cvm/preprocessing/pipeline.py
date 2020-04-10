@@ -53,17 +53,14 @@ def preprocessing_fit(sample_type: str = None) -> Pipeline:
             node(
                 pipeline_fit,
                 ["train_sample_" + sample_type, "parameters"],
-                [
-                    "train_sample_preprocessed_" + sample_type,
-                    "preprocessing_pipeline_" + sample_type,
-                ],
+                ["train_sample_preprocessed_" + sample_type, "preprocessing_pipeline"],
                 name="preprocessing_fit_" + sample_type,
             ),
             node(
                 pipeline_transform,
                 [
                     "train_sample_" + sample_type,
-                    "preprocessing_pipeline" + sample_type,
+                    "preprocessing_pipeline",
                     "parameters",
                 ],
                 "test_sample_preprocessed_" + sample_type,
@@ -73,35 +70,24 @@ def preprocessing_fit(sample_type: str = None) -> Pipeline:
     )
 
 
-def preprocessing_transform(
-    sample_type: str = None, training_sample_type: str = None,
-) -> Pipeline:
+def preprocessing_transform() -> Pipeline:
     """ Creates pipeline preprocessing data for scoring purposes.
     Can create data pipeline for full dataset or given sample_type.
 
-     Args:
-         sample_type: sample type to use. Dev sample for "dev", Sample for "sample",
-          full dataset for None (default).
-         training_sample_type: same as sample_type, but defines type of training
-          sample for preprocessing pipeline used.
      Returns:
          Kedro pipeline.
      """
-
-    suffix = get_suffix(sample_type)
-    training_suffix = get_suffix(training_sample_type)
 
     return Pipeline(
         [
             node(
                 pipeline_transform,
                 [
-                    "l5_cvm_volatility" + suffix,
-                    "preprocessing_pipeline" + training_suffix,
+                    "features_macrosegments_scoring" "preprocessing_pipeline",
                     "parameters",
                 ],
-                "l5_cvm_one_day_preprocessed" + suffix,
-                name="create_l5_cvm_one_day_preprocessed" + suffix,
+                "sample_preprocessed_scoring",
+                name="preprocessing_transform_scoring_sample",
             ),
         ]
     )

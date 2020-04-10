@@ -4,6 +4,20 @@ _spark_parquet: &spark_parquet
   save_args:
     mode: "overwrite"
 
+# feature important columns
+important_columns:
+  type: kedro.contrib.io.yaml_local.YAMLLocalDataSet
+  filepath: /dbfs/mnt/customer360-cvm/important_columns
+
+#  diagnostic metric, plots and tables
+models_diags:
+  type: kedro.io.PickleLocalDataSet
+  filepath: /dbfs/mnt/customer360-cvm/models_diags
+
+preprocessing_pipeline:
+  type: datasets.ml_pipeline.MLPipeline
+  filepath: /dbfs/mnt/customer360-cvm/preprocessing_pipeline
+
 # table with users eligible for training
 l5_cvm_one_day_users_table:
   <<: *spark_parquet
@@ -53,15 +67,6 @@ l5_cvm_selected_features_one_day_joined:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-cvm/l5_cvm_selected_features_one_day_joined/
 
-# feature important columns
-important_columns:
-  type: kedro.contrib.io.yaml_local.YAMLLocalDataSet
-  filepath: /dbfs/mnt/customer360-cvm/important_columns
-
-# models diagnostic metric, plots and tables
-models_diags:
-  type: kedro.io.PickleLocalDataSet
-  filepath: /dbfs/mnt/customer360-cvm/models_diags
 
 # same as l5_cvm_selected_features_one_day_joined with ard macrosegments
 l5_cvm_selected_features_one_day_joined_macrosegments:
@@ -80,9 +85,6 @@ l5_cvm_volatility:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_volatility/
 
-preprocessing_pipeline:
-  type: datasets.ml_pipeline.MLPipeline
-  filepath: /dbfs/mnt/customer360-cvm/preprocessing_pipeline
 
 l5_cvm_one_day_users_full_table:
   <<: *spark_parquet
