@@ -62,26 +62,19 @@ def create_users_from_tg(sample_type: str) -> Pipeline:
                 create_users_from_cgtg,
                 ["cvm_prepaid_customer_groups"],
                 "cvm_users_list_" + sample_type,
-                name="create_users_list_" + sample_type,
+                name="create_users_list_tgcg_" + sample_type,
             ),
         ]
     )
 
 
-def create_users_from(sample_type: str) -> Pipeline:
+def create_users_from_active(sample_type: str) -> Pipeline:
     """ Creates users table to use during training / scoring using list of active users.
 
     Args:
-        sample_type: "dev" for dev samples and "sample" for sample.
+        sample_type: "scoring" if list created for scoring, "training" if list created
+            for training.
     """
-
-    suffix = get_suffix(sample_type)
-    if is_scoring(sample_type):
-        sampling_params = "params:scoring_sampling"
-        date_params = "params:scoring_date"
-    else:
-        sampling_params = "params:training_sampling"
-        date_params = "params:training_date"
 
     return Pipeline(
         [
@@ -89,22 +82,20 @@ def create_users_from(sample_type: str) -> Pipeline:
                 create_sample_dataset,
                 [
                     "l3_customer_profile_include_1mo_non_active",
-                    sampling_params,
-                    "params:subscription_id_suffix" + suffix,
-                    date_params,
+                    "params:" + sample_type,
                 ],
-                "l3_customer_profile_include_1mo_non_active" + suffix,
-                name="create_l3_customer_profile_include_1mo_non_active" + suffix,
+                "l3_customer_profile_include_1mo_non_active_" + sample_type,
+                name="create_l3_customer_profile_include_1mo_non_active_" + sample_type,
             ),
             node(
                 create_users_from_active_users,
                 [
-                    "l3_customer_profile_include_1mo_non_active" + suffix,
+                    "l3_customer_profile_include_1mo_non_active_" + sample_type,
                     "l0_product_product_pru_m_package_master_group",
-                    date_params,
+                    "params:" + sample_type,
                 ],
-                "l5_cvm_one_day_users_full_table" + suffix,
-                name="create_l5_cvm_one_day_users_full_table" + suffix,
+                "cvm_users_list_" + sample_type,
+                name="create_cvm_users_list_active_users_" + sample_type,
             ),
         ]
     )

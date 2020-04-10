@@ -58,7 +58,7 @@ def create_users_from_cgtg(customer_groups: DataFrame) -> DataFrame:
 
 
 def create_users_from_active_users(
-    profile: DataFrame, main_packs: DataFrame, date_chosen: str = "today"
+    profile: DataFrame, main_packs: DataFrame, sampling_parameters: Dict[str, Any]
 ) -> DataFrame:
     """Create l5_cvm_one_day_users_table - one day table of users used for
     training and validating.
@@ -66,10 +66,11 @@ def create_users_from_active_users(
     Args:
         profile: monthly customer profiles.
         main_packs: pre-paid main packages description.
-        date_chosen: date to create list for. If "today" then take the most recent.
+        sampling_parameters: sampling parameters defined in parameters.yml.
     """
 
     profile = prepare_key_columns(profile)
+    date_chosen = sampling_parameters["chosen_date"]
     if date_chosen == "today":
         date_chosen = None
     users = filter_latest_date(profile, date_chosen)
