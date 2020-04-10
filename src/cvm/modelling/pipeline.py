@@ -29,7 +29,6 @@
 from kedro.pipeline import Pipeline, node
 
 from cvm.modelling.nodes import train_rf, predict_rf, validate_log_rf
-from cvm.src.utils.get_suffix import get_suffix
 
 
 def train_model() -> Pipeline:
@@ -72,108 +71,20 @@ def train_model() -> Pipeline:
     )
 
 
-def create_train_model(sample_type: str = None) -> Pipeline:
-    """ Creates model training pipeline.
-
-      Args:
-          sample_type: sample type to use. Dev sample for "dev", Sample for "sample",
-          full dataset for None (default).
-
-      Returns:
-          Kedro pipeline.
-      """
-
-    suffix = get_suffix(sample_type)
-
-    return Pipeline(
-        [
-            node(
-                train_rf,
-                ["l5_cvm_one_day_train_preprocessed" + suffix, "parameters"],
-                "random_forest" + suffix,
-                name="create_random_forest" + suffix,
-            ),
-        ]
-    )
-
-
-def create_predictions(
-    sample_type: str = None,
-    training_sample_type: str = None,
-    input_dataset_name: str = None,
-) -> Pipeline:
+def score_model() -> Pipeline:
     """ Creates prediction pipeline.
 
-      Args:
-          sample_type: sample type to use. Dev sample for "dev", Sample for "sample",
-              full dataset for None (default).
-          training_sample_type: same as sample_type, but defines type of training
-              sample for models used.
-          input_dataset_name: uses given dataset as input, overrides other arguments.
-
       Returns:
           Kedro pipeline.
       """
-
-    suffix = get_suffix(sample_type)
-    training_suffix = get_suffix(training_sample_type)
-    if input_dataset_name is None:
-        input_name = "l5_cvm_one_day_preprocessed" + suffix
-    else:
-        input_name = input_dataset_name
 
     return Pipeline(
         [
             node(
                 predict_rf,
-                [input_name, "random_forest" + training_suffix, "parameters"],
-                "l5_cvm_one_day_predictions" + suffix,
-                name="create_l5_cvm_one_day_predictions" + suffix,
+                ["sample_preprocessed_scoring", "random_forest", "parameters"],
+                "propensity_scores",
+                name="create_propensity_scores",
             ),
         ]
     )
-
-
-def create_train_validate(sample_type: str = None,) -> Pipeline:
-    """ Creates model training and validating pipeline.
-
-      Args:
-          sample_type: sample type to use. Dev sample for "dev", Sample for "sample",
-          full dataset for None (default).
-
-      Returns:
-          Kedro pipeline.
-      """
-
-    suffix = get_suffix(sample_type)
-
-    train_pipeline = create_train_model(sample_type)
-    predict_pipeline = Pipeline(
-        [
-            node(
-                predict_rf,
-                [
-                    "l5_cvm_one_day_test_preprocessed" + suffix,
-                    "random_forest" + suffix,
-                    "parameters",
-                ],
-                "l5_cvm_one_day_test_preprocessed_preds" + suffix,
-                name="create_l5_cvm_one_day_predictions" + suffix,
-            ),
-        ]
-    )
-    validation_pipeline = Pipeline(
-        [
-            node(
-                validate_log_rf,
-                [
-                    "random_forest" + suffix,
-                    "l5_cvm_one_day_test_preprocessed_preds" + suffix,
-                    "parameters",
-                ],
-                None,
-                name="validate" + suffix,
-            ),
-        ]
-    )
-    return train_pipeline + predict_pipeline + validation_pipeline
