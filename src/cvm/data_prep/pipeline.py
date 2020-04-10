@@ -208,16 +208,9 @@ def create_cvm_training_data(sample_type: str):
             ),
             node(
                 train_test_split,
-                [
-                    "l5_cvm_selected_features_one_day_joined_macrosegments"
-                    + sample_type,
-                    "parameters",
-                ],
-                [
-                    "l5_cvm_one_day_train" + sample_type,
-                    "l5_cvm_one_day_test" + sample_type,
-                ],
-                name="create_l5_cvm_one_day_train_test" + sample_type,
+                ["features_macrosegments_" + sample_type, "parameters"],
+                ["train_sample_" + sample_type, "test_sample" + sample_type],
+                name="create_train_test_split_" + sample_type,
             ),
         ]
     )
