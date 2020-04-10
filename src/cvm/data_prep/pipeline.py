@@ -38,14 +38,12 @@ from cvm.data_prep.nodes import (
     create_users_from_active_users,
     add_ard_targets,
     add_churn_targets,
-    subs_date_join,
     add_macrosegments,
     train_test_split,
     add_volatility_scores,
     create_users_from_cgtg,
     subs_date_join_important_only,
 )
-from cvm.src.utils.get_suffix import get_suffix
 
 
 def create_users_from_tg(sample_type: str) -> Pipeline:
@@ -225,7 +223,7 @@ def create_cvm_training_data(sample_type: str):
             node(
                 train_test_split,
                 ["features_macrosegments_" + sample_type, "parameters"],
-                ["train_sample_" + sample_type, "test_sample" + sample_type],
+                ["train_sample_" + sample_type, "test_sample_" + sample_type],
                 name="create_train_test_split_" + sample_type,
             ),
         ]
@@ -244,39 +242,17 @@ def create_cvm_scoring_data(sample_type: str = None):
         Kedro pipeline.
     """
 
-    suffix = get_suffix(sample_type)
-
-    return Pipeline(
+    return prepare_features_macrosegments(sample_type) + Pipeline(
         [
-            node(
-                subs_date_join,
-                [
-                    "parameters",
-                    "l5_cvm_one_day_users_table" + suffix,
-                    "l3_customer_profile_include_1mo_non_active" + suffix,
-                    "l4_daily_feature_topup_and_volume" + suffix,
-                    "l4_usage_prepaid_postpaid_daily_features" + suffix,
-                    "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly" + suffix,
-                ],
-                "l5_cvm_features" + suffix,
-                name="create_l5_cvm_features" + suffix,
-            ),
-            node(
-                add_macrosegments,
-                "l5_cvm_features" + suffix,
-                "l5_cvm_selected_features_one_day_joined_macrosegments" + suffix,
-                name="create_l5_cvm_selected_features_one_day_joined_macrosegments"
-                + suffix,
-            ),
             node(
                 add_volatility_scores,
                 [
-                    "l5_cvm_selected_features_one_day_joined_macrosegments" + suffix,
+                    "features_macrosegments_" + sample_type,
                     "l3_customer_profile_include_1mo_non_active",
                     "parameters",
                 ],
-                "l5_cvm_volatility" + suffix,
-                name="create_l5_cvm_volatility" + suffix,
+                "features_macrosegments_volatility_" + sample_type,
+                name="add_volatility_" + sample_type,
             ),
         ]
     )
