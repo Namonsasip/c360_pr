@@ -47,9 +47,13 @@ from cvm.data_prep.nodes import (
 from cvm.src.utils.get_suffix import get_suffix, is_scoring
 
 
-def create_users_from_tg() -> Pipeline:
+def create_users_from_tg(sample_type: str) -> Pipeline:
     """ Creates users table to use during training / scoring using predefined target
     group.
+
+    Args:
+        sample_type: "scoring" if list created for scoring, "training" if list created
+            for training.
     """
 
     return Pipeline(
@@ -57,14 +61,14 @@ def create_users_from_tg() -> Pipeline:
             node(
                 create_users_from_cgtg,
                 ["cvm_prepaid_customer_groups"],
-                "l5_cvm_users_to_score",
-                name="create_l5_cvm_users_to_score",
+                "cvm_users_list_" + sample_type,
+                name="create_users_list_" + sample_type,
             ),
         ]
     )
 
 
-def create_users(sample_type: str) -> Pipeline:
+def create_users_from(sample_type: str) -> Pipeline:
     """ Creates users table to use during training / scoring using list of active users.
 
     Args:

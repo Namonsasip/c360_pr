@@ -4,6 +4,10 @@ _spark_parquet: &spark_parquet
   save_args:
     mode: "overwrite"
 
+cvm_users_list_scoring:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_cvm_users_list_scoring/
+
 # Dev samples of used datasets - small samples to develop code
 l3_customer_profile_include_1mo_non_active_scoring:
   <<: *spark_parquet
