@@ -18,7 +18,7 @@ l0_usage_call_relation_sum_daily:
   file_format: "parquet"
 
 l0_usage_call_relation_sum_ir_daily:
-  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_call_relation_ir_sum_daily/
+  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_call_relation_irl0_usage_sum_voice_location_daily_sum_daily/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
 
@@ -30,11 +30,13 @@ l0_usage_pps_v_ru_a_vas_nonvoice_daily:
     mergeSchema: true
     
 l0_usage_sum_data_location_daily:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/USAGE/usage_sum_data_location_daily/
 
 l0_usage_sum_voice_location_daily:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/USAGE/usage_sum_voice_location_daily/
+
+#  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_sum_voice_location_daily/partition_date=20191104/

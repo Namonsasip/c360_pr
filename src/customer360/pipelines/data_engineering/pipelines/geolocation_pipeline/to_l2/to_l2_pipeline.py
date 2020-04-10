@@ -29,6 +29,13 @@ def geo_to_l2_pipeline(**kwargs):
                 "l2_geo_number_of_location_with_transactions"
             ),
 
+            node(
+                l2_geo_voice_distance_daily,
+                ["l1_geo_voice_distance_daily_intermediate",
+                 "params:l2_voice_distance_daily"],
+                "l2_geo_voice_distance_daily"
+
+            ),
 
         ], name="geo_to_l2_pipeline"
     )

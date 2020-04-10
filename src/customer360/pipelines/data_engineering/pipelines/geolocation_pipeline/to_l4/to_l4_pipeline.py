@@ -23,7 +23,12 @@ def geo_to_l4_pipeline(**kwargs):
                 "l4_geo_number_of_location_with_transactions"
             ),
 
-
+            node(
+                l4_rolling_window,
+                ["l2_geo_voice_distance_daily",
+                 "params:l4_voice_distance_daily"],
+                "l4_geo_voice_distance_daily"
+            ),
 
         ], name="geo_to_l4_pipeline"
     )

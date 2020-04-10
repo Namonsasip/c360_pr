@@ -1,12 +1,23 @@
-l4_number_of_bs_used:
+l4_number_of_bs_used: #396
   partition_by: ["imsi"]
   feature_list:
     avg: ["number_of_bs_used"]
   read_from: "l2"
 
 
-l4_number_of_location_with_transactions:
+l4_number_of_location_with_transactions: #397
   partition_by: ["imsi"]
   feature_list:
     avg: ["num_location_with_transactions"]
   read_from: "l2"
+
+l4_voice_distance_daily: #425-428
+  partition_by: ["access_method_num"]
+  feature_list:
+    avg: ["average_distance","minimum_distance","maximum_distance","standard_deviation_distance"]
+    max: ["average_distance","minimum_distance","maximum_distance","standard_deviation_distance"]
+    min: ["average_distance","minimum_distance","maximum_distance","standard_deviation_distance"]
+  read_from: "l2"
+
+
+

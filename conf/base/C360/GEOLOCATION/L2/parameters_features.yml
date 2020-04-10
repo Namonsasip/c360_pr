@@ -1,12 +1,23 @@
-l2_number_of_bs_used:
+l2_number_of_bs_used: #396
   where_clause: ""
   feature_list:
     number_of_bs_used: "size(distinct_list)"
   granularity: "start_of_week,imsi,distinct_list"
 
 
-l2_number_of_location_with_transactions:
+l2_number_of_location_with_transactions: #397
   where_clause: ""
   feature_list:
     num_location_with_transactions: "size(distinct_list)"
   granularity: "start_of_week,imsi,distinct_list"
+
+
+l2_voice_distance_daily: #425-428
+  where_clause: ""
+  feature_list:
+    call_count_list: "first(sum_list)"
+    average_distance: "first(avg_distance)"
+    minimum_distance: "first(min_distance)"
+    maximum_distance: "first(max_distance)"
+    standard_deviation_distance: "first(stdev_distance)"
+  granularity: "start_of_week,access_method_num"

@@ -16,3 +16,11 @@ l4_geo_number_of_location_with_transactions:
   save_args:
     partitionBy: ["start_of_week"]
     mode: "overwrite"
+
+l4_geo_voice_distance_daily:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/GEO/l4_features/geo_voice_distance_daily/
+  save_args:
+    partitionBy: ["start_of_week"]
+    mode: "overwrite"

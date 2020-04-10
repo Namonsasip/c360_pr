@@ -14,3 +14,19 @@ l1_geo_number_of_location_with_transactions:
   save_args:
     partitionBy: ["event_partition_date"]
     mode: "overwrite"
+
+l1_geo_voice_distance_daily_intermediate:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/GEO/l1_features/geo_voice_distance_daily_intermediate/
+  save_args:
+    partitionBy: ["event_partition_date"]
+    mode: "overwrite"
+
+l1_geo_voice_distance_daily:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/GEO/l1_features/geo_voice_distance_daily/
+  save_args:
+    partitionBy: ["event_partition_date"]
+    mode: "overwrite"
