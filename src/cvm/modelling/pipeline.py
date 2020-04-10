@@ -32,6 +32,46 @@ from cvm.modelling.nodes import train_rf, predict_rf, validate_log_rf
 from cvm.src.utils.get_suffix import get_suffix
 
 
+def train_model() -> Pipeline:
+    """ Creates model training and validating pipeline.
+
+      Returns:
+          Kedro pipeline.
+      """
+
+    sample_type = "training"
+    return Pipeline(
+        [
+            node(
+                train_rf,
+                ["train_sample_preprocessed_" + sample_type, "parameters"],
+                "random_forest",
+                name="create_random_forest" + sample_type,
+            ),
+            node(
+                predict_rf,
+                [
+                    "test_sample_preprocessed_" + sample_type,
+                    "random_forest" + sample_type,
+                    "parameters",
+                ],
+                "test_sample_predictions_" + sample_type,
+                name="test_sample_predict_" + sample_type,
+            ),
+            node(
+                validate_log_rf,
+                [
+                    "random_forest",
+                    "test_sample_predictions_" + sample_type,
+                    "parameters",
+                ],
+                None,
+                name="validate_" + sample_type,
+            ),
+        ]
+    )
+
+
 def create_train_model(sample_type: str = None) -> Pipeline:
     """ Creates model training pipeline.
 

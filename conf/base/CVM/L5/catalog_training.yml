@@ -55,3 +55,7 @@ train_sample_preprocessed_training:
 test_sample_preprocessed_training:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_test_sample_preprocessed_training/
+
+test_sample_predictions_training:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_test_sample_predictions_training/

@@ -18,6 +18,10 @@ preprocessing_pipeline:
   type: datasets.ml_pipeline.MLPipeline
   filepath: /dbfs/mnt/customer360-cvm/preprocessing_pipeline
 
+random_forest:
+  type: kedro.io.PickleLocalDataSet
+  filepath: /dbfs/mnt/customer360-cvm/random_forest
+
 # table with users eligible for training
 l5_cvm_one_day_users_table:
   <<: *spark_parquet
