@@ -31,3 +31,7 @@ ard_targets_training:
 churn_targets_training:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_churn_targets_training/
+
+features_targets_training:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_features_targets_training/

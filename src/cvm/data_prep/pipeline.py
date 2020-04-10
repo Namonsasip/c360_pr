@@ -43,6 +43,7 @@ from cvm.data_prep.nodes import (
     train_test_split,
     add_volatility_scores,
     create_users_from_cgtg,
+    subs_date_join_important_only,
 )
 from cvm.src.utils.get_suffix import get_suffix
 
@@ -168,13 +169,13 @@ def create_cvm_targets(sample_type: str):
     )
 
 
-def create_cvm_training_data(sample_type: str = None):
+def create_cvm_training_data(sample_type: str):
     """ Creates pipeline preparing data. Can create data pipeline for full dataset or
     given sample_type.
 
     Args:
-        sample_type: sample type to use. Dev sample for "dev", Sample for "sample", full
-        dataset for None (default).
+        sample_type: "scoring" if list created for scoring, "training" if list created
+            for training.
 
     Returns:
         Kedro pipeline.
@@ -185,19 +186,21 @@ def create_cvm_training_data(sample_type: str = None):
     return Pipeline(
         [
             node(
-                subs_date_join,
+                subs_date_join_important_only,
                 [
+                    "important_columns",
                     "parameters",
-                    "l5_cvm_one_day_users_table" + suffix,
-                    "l3_customer_profile_include_1mo_non_active" + suffix,
-                    "l4_daily_feature_topup_and_volume" + suffix,
-                    "l4_usage_prepaid_postpaid_daily_features" + suffix,
-                    "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly" + suffix,
-                    "l5_cvm_churn_one_day_targets" + suffix,
-                    "l5_cvm_ard_one_day_targets" + suffix,
+                    "cvm_users_list_" + sample_type,
+                    "l3_customer_profile_include_1mo_non_active_" + sample_type,
+                    "l4_daily_feature_topup_and_volume_" + sample_type,
+                    "l4_usage_prepaid_postpaid_daily_features_" + sample_type,
+                    "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_"
+                    + sample_type,
+                    "churn_targets_" + sample_type,
+                    "ard_targets_" + sample_type,
                 ],
-                "l5_cvm_features_targets_one_day" + suffix,
-                name="create_l5_cvm_features_targets_one_day" + suffix,
+                "features_targets_" + sample_type,
+                name="create_features_targets_" + suffix,
             ),
             node(
                 add_macrosegments,
