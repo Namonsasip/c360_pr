@@ -56,8 +56,7 @@ def pipeline_fit(
     # select columns
     columns_cats = classify_columns(df, parameters)
     cols_to_pick = set(
-        parameters["prepro_cols_to_pick"]
-        + columns_cats["target"]
+        columns_cats["target"]
         + columns_cats["key"]
         + columns_cats["segment"]
         + parameters["must_have_features"]
@@ -113,8 +112,7 @@ def pipeline_transform(
     # select columns
     columns_cats = classify_columns(df, parameters)
     cols_to_pick = set(
-        parameters["prepro_cols_to_pick"]
-        + columns_cats["target"]
+        columns_cats["target"]
         + columns_cats["key"]
         + columns_cats["segment"]
         + parameters["must_have_features"]
