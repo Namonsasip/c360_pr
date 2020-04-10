@@ -44,7 +44,7 @@ from cvm.data_prep.nodes import (
     add_volatility_scores,
     create_users_from_cgtg,
 )
-from cvm.src.utils.get_suffix import get_suffix, is_scoring
+from cvm.src.utils.get_suffix import get_suffix
 
 
 def create_users_from_tg(sample_type: str) -> Pipeline:
@@ -105,19 +105,11 @@ def create_cvm_prepare_inputs_samples(sample_type: str) -> Pipeline:
     """ Creates samples for input datasets.
 
     Args:
-        sample_type: "dev" for dev samples and "sample" for sample.
+        sample_type: "scoring" if list created for scoring, "training" if list created
+            for training.
     """
 
-    suffix = get_suffix(sample_type)
-    if is_scoring(sample_type):
-        sampling_params = "params:scoring_sampling"
-        date_params = "params:scoring_date"
-    else:
-        sampling_params = "params:training_sampling"
-        date_params = "params:training_date"
-
     datasets_to_sample = [
-        "l5_cvm_one_day_users_full_table",
         "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
         "l4_usage_prepaid_postpaid_daily_features",
         "l4_daily_feature_topup_and_volume",
@@ -126,14 +118,9 @@ def create_cvm_prepare_inputs_samples(sample_type: str) -> Pipeline:
     nodes_list = [
         node(
             create_sample_dataset,
-            [
-                dataset_name + suffix,
-                sampling_params,
-                "params:subscription_id_suffix" + suffix,
-                date_params,
-            ],
-            dataset_name + suffix,
-            name="create_" + dataset_name + suffix,
+            [dataset_name, "params:" + sample_type],
+            dataset_name + "_" + sample_type,
+            name="sample_" + dataset_name + "_ " + sample_type,
         )
         for dataset_name in datasets_to_sample
     ]
