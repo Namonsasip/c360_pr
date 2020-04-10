@@ -40,17 +40,13 @@ features_macrosegments_scoring:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_features_macrosegments_scoring/
 
-train_sample_scoring:
+train_sample_preprocessed_scoring:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_train_sample_scoring/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_train_sample_preprocessed_scoring/
 
-test_sample_scoring:
+test_sample_preprocessed_scoring:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_test_sample_scoring/
-
-features_macrosegments_volatility_scoring:
-  <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_features_macrosegments_volatility_scoring/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_test_sample_preprocessed_scoring/
 
 #
 l0_product_product_pru_m_package_master_group_scoring:

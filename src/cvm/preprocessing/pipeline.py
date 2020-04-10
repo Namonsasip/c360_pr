@@ -36,7 +36,7 @@ from cvm.preprocessing.nodes import (
 from cvm.src.utils.get_suffix import get_suffix
 
 
-def create_cvm_preprocessing(sample_type: str = None) -> Pipeline:
+def preprocessing_fit(sample_type: str = None) -> Pipeline:
     """ Creates pipeline preprocessing data. Can create data pipeline for full dataset
      or given sample_type.
 
@@ -48,34 +48,32 @@ def create_cvm_preprocessing(sample_type: str = None) -> Pipeline:
          Kedro pipeline.
      """
 
-    suffix = get_suffix(sample_type)
-
     return Pipeline(
         [
             node(
                 pipeline_fit,
-                ["l5_cvm_one_day_train" + suffix, "parameters"],
+                ["train_sample_" + sample_type, "parameters"],
                 [
-                    "l5_cvm_one_day_train_preprocessed" + suffix,
-                    "preprocessing_pipeline" + suffix,
+                    "train_sample_preprocessed_" + sample_type,
+                    "preprocessing_pipeline_" + sample_type,
                 ],
-                name="create_l5_cvm_one_day_train_preprocessed" + suffix,
+                name="preprocessing_fit_" + sample_type,
             ),
             node(
                 pipeline_transform,
                 [
-                    "l5_cvm_one_day_test" + suffix,
-                    "preprocessing_pipeline" + suffix,
+                    "train_sample_" + sample_type,
+                    "preprocessing_pipeline" + sample_type,
                     "parameters",
                 ],
-                "l5_cvm_one_day_test_preprocessed" + suffix,
-                name="create_l5_cvm_one_day_test_preprocessed" + suffix,
+                "test_sample_preprocessed_" + sample_type,
+                name="create_test_sample_preprocessed_" + sample_type,
             ),
         ]
     )
 
 
-def create_cvm_preprocessing_scoring(
+def preprocessing_transform(
     sample_type: str = None, training_sample_type: str = None,
 ) -> Pipeline:
     """ Creates pipeline preprocessing data for scoring purposes.
