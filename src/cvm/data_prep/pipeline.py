@@ -181,8 +181,6 @@ def create_cvm_training_data(sample_type: str):
         Kedro pipeline.
     """
 
-    suffix = get_suffix(sample_type)
-
     return Pipeline(
         [
             node(
@@ -200,23 +198,26 @@ def create_cvm_training_data(sample_type: str):
                     "ard_targets_" + sample_type,
                 ],
                 "features_targets_" + sample_type,
-                name="create_features_targets_" + suffix,
+                name="create_features_targets_" + sample_type,
             ),
             node(
                 add_macrosegments,
-                "l5_cvm_features_targets_one_day" + suffix,
-                "l5_cvm_selected_features_one_day_joined_macrosegments" + suffix,
-                name="create_l5_cvm_selected_features_one_day_joined_macrosegments"
-                + suffix,
+                "features_targets_" + sample_type,
+                "features_macrosegments_" + sample_type,
+                name="create_features_macrosegments_" + sample_type,
             ),
             node(
                 train_test_split,
                 [
-                    "l5_cvm_selected_features_one_day_joined_macrosegments" + suffix,
+                    "l5_cvm_selected_features_one_day_joined_macrosegments"
+                    + sample_type,
                     "parameters",
                 ],
-                ["l5_cvm_one_day_train" + suffix, "l5_cvm_one_day_test" + suffix],
-                name="create_l5_cvm_one_day_train_test" + suffix,
+                [
+                    "l5_cvm_one_day_train" + sample_type,
+                    "l5_cvm_one_day_test" + sample_type,
+                ],
+                name="create_l5_cvm_one_day_train_test" + sample_type,
             ),
         ]
     )

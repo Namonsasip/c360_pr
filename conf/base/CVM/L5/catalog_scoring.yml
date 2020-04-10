@@ -36,6 +36,10 @@ features_targets_scoring:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_features_targets_scoring/
 
+features_macrosegments_scoring:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_features_targets_scoring/
+
 #
 l0_product_product_pru_m_package_master_group_scoring:
   <<: *spark_parquet
