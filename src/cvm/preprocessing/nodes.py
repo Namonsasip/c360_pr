@@ -33,13 +33,13 @@ from pyspark.ml.feature import StringIndexer, Imputer
 from pyspark.ml import Pipeline, PipelineModel
 from pyspark.sql.functions import col
 
-from utils.feature_selection import feature_selection
+from cvm.src.utils.feature_selection import feature_selection
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
 from cvm.src.utils.classify_columns import classify_columns
 from cvm.src.utils.list_operations import list_intersection
 
 
-def pipeline1_fit(
+def pipeline_fit(
     df: DataFrame, parameters: Dict[str, Any]
 ) -> Tuple[DataFrame, Pipeline]:
     """ Fits preprocessing pipeline to given table and runs the pipeline on it.
@@ -95,7 +95,7 @@ def pipeline1_fit(
     return data_transformed, pipeline_fitted
 
 
-def pipeline1_transform(
+def pipeline_transform(
     df: DataFrame, pipeline_fitted: PipelineModel, parameters: Dict[str, Any]
 ) -> DataFrame:
     """ Preprocess given table.
@@ -170,26 +170,3 @@ def feature_selection_all_target(
         final_list = list(set(final_list) | set(res_list))
 
     return final_list
-
-
-def data_filtering_feature(
-    important_column: List[str], whitelist_column: List[str], *df_inputs: DataFrame
-) -> DataFrame:
-    """ Return DataFrame with only selected features and the white list columns.
-    Args:
-        important_column: List of column from the the feature selection process.
-        whitelist_column: List of white list columns to be preserve in a DataFrame.
-        df_inputs: List of DataFrame to filter the feature.
-    Returns:
-        DataFrame with only selected column and white list columns.
-    """
-
-    if len(df_inputs) < 1:
-        raise Exception("df_inputs is missing.")
-    df = df_inputs[0]
-    if len(df_inputs) > 1:
-        for df_input in df_inputs[1:]:
-            df = df.join(df_input, whitelist_column, "left_outer")
-    df = df.select(important_column + whitelist_column)
-
-    return df

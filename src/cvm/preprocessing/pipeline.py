@@ -29,8 +29,8 @@
 from kedro.pipeline import Pipeline, node
 
 from cvm.preprocessing.nodes import (
-    pipeline1_transform,
-    pipeline1_fit,
+    pipeline_transform,
+    pipeline_fit,
     feature_selection_all_target,
 )
 from cvm.src.utils.get_suffix import get_suffix
@@ -53,7 +53,7 @@ def create_cvm_preprocessing(sample_type: str = None) -> Pipeline:
     return Pipeline(
         [
             node(
-                pipeline1_fit,
+                pipeline_fit,
                 ["l5_cvm_one_day_train" + suffix, "parameters"],
                 [
                     "l5_cvm_one_day_train_preprocessed" + suffix,
@@ -62,7 +62,7 @@ def create_cvm_preprocessing(sample_type: str = None) -> Pipeline:
                 name="create_l5_cvm_one_day_train_preprocessed" + suffix,
             ),
             node(
-                pipeline1_transform,
+                pipeline_transform,
                 [
                     "l5_cvm_one_day_test" + suffix,
                     "preprocessing_pipeline" + suffix,
@@ -96,7 +96,7 @@ def create_cvm_preprocessing_scoring(
     return Pipeline(
         [
             node(
-                pipeline1_transform,
+                pipeline_transform,
                 [
                     "l5_cvm_volatility" + suffix,
                     "preprocessing_pipeline" + training_suffix,
