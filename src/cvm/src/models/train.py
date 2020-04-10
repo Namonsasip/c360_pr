@@ -25,60 +25,50 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import logging
+from typing import Dict, Any
 
 from pyspark.sql import DataFrame
-from typing import Dict, Any
-from sklearn.ensemble import RandomForestClassifier
-from cvm.src.models.predict import pyspark_predict_rf
-from cvm.src.models.train import train_sklearn
-from cvm.src.models.validate import validate_rf, log_pai_rf
+
+from cvm.src.models.get_pandas_train_test_sample import get_pandas_train_test_sample
+from cvm.src.utils.utils import iterate_over_usecases_macrosegments_targets
 
 
-def train_rf(df: DataFrame, parameters: Dict[str, Any]) -> object:
-    """ Create random forest model given the table to train on.
+def train_sklearn(
+    df: DataFrame, parameters: Dict[str, Any], sklearn_model: Any
+) -> object:
+    """ Create sklearn model given the table to train on.
 
     Args:
         df: Training preprocessed sample.
         parameters: parameters defined in parameters.yml.
+        sklearn_model: initialized sklearn model.
 
     Returns:
-        Random forest classifier.
+        Dictionary of trained models.
     """
-    rf = RandomForestClassifier(n_estimators=100, random_state=100)
-    return train_sklearn(df, parameters, rf)
+    log = logging.getLogger(__name__)
 
+    def _train_for_macrosegment_target(use_case_chosen, macrosegment, target_chosen):
+        log.info(
+            "Training model for {} target, {} macrosegment.".format(
+                target_chosen, macrosegment
+            )
+        )
 
-def predict_rf(
-    df: DataFrame,
-    rf_models: Dict[str, RandomForestClassifier],
-    parameters: Dict[str, Any],
-) -> DataFrame:
-    """ Uses saved Random Forest models to create propensity scores for given table.
+        X, y = get_pandas_train_test_sample(
+            df, parameters, target_chosen, use_case_chosen, macrosegment
+        )
 
-    Args:
-        df: Table with features.
-        rf_models: Saved dictionary of models for different targets.
-        parameters: parameters defined in parameters.yml.
-    Returns:
-        Table with propensity scores.
-    """
-    predictions = pyspark_predict_rf(df, rf_models, parameters)
-    return predictions
+        y = y.values.ravel()
 
+        model_fitted = sklearn_model.fit(X, y)
+        model_fitted.feature_names = list(X.columns.values)
+        model_fitted.sample_size = X.shape[0]
+        return model_fitted
 
-def validate_log_rf(
-    rf_models: Dict[str, RandomForestClassifier],
-    df: DataFrame,
-    parameters: Dict[str, Any],
-) -> None:
-    """ Validates given model on test dataset and log everything to PAI.
+    models = iterate_over_usecases_macrosegments_targets(
+        _train_for_macrosegment_target, parameters
+    )
 
-    Args:
-        rf_models: Saved models.
-        df: DataFrame to calculate metrics for, must include targets and models
-          predictions.
-        parameters: parameters defined in parameters.yml.
-    """
-
-    model_diags = validate_rf(df, parameters)
-    log_pai_rf(rf_models, model_diags, parameters)
+    return models
