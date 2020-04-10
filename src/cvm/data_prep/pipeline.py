@@ -169,9 +169,8 @@ def create_cvm_targets(sample_type: str):
     )
 
 
-def create_cvm_training_data(sample_type: str):
-    """ Creates pipeline preparing data. Can create data pipeline for full dataset or
-    given sample_type.
+def prepare_features_macrosegments(sample_type: str):
+    """ Creates pipeline preparing data with all features and macrosegments.
 
     Args:
         sample_type: "scoring" if list created for scoring, "training" if list created
@@ -180,7 +179,6 @@ def create_cvm_training_data(sample_type: str):
     Returns:
         Kedro pipeline.
     """
-
     return Pipeline(
         [
             node(
@@ -206,6 +204,24 @@ def create_cvm_training_data(sample_type: str):
                 "features_macrosegments_" + sample_type,
                 name="create_features_macrosegments_" + sample_type,
             ),
+        ]
+    )
+
+
+def create_cvm_training_data(sample_type: str):
+    """ Creates pipeline preparing data. Can create data pipeline for full dataset or
+    given sample_type.
+
+    Args:
+        sample_type: "scoring" if list created for scoring, "training" if list created
+            for training.
+
+    Returns:
+        Kedro pipeline.
+    """
+
+    return prepare_features_macrosegments(sample_type) + Pipeline(
+        [
             node(
                 train_test_split,
                 ["features_macrosegments_" + sample_type, "parameters"],
