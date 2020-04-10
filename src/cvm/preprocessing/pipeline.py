@@ -39,9 +39,9 @@ def preprocessing_fit(sample_type: str = None) -> Pipeline:
     """ Creates pipeline preprocessing data. Can create data pipeline for full dataset
      or given sample_type.
 
-     Args:
-         sample_type: sample type to use. Dev sample for "dev", Sample for "sample",
-          full dataset for None (default).
+    Args:
+        sample_type: "scoring" if list created for scoring, "training" if list created
+            for training.
 
      Returns:
          Kedro pipeline.
