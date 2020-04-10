@@ -1,4 +1,4 @@
-# sampling parameters
+# sampling parameter
 training:
   train_share: 0.9 # the rest is validation set
   sampling: # what users to pick, what date to pick

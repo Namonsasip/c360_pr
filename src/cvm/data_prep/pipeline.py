@@ -128,42 +128,41 @@ def create_cvm_prepare_inputs_samples(sample_type: str) -> Pipeline:
     return Pipeline(nodes_list)
 
 
-def create_cvm_targets(sample_type: str = None):
+def create_cvm_targets(sample_type: str):
     """ Creates pipeline preparing targets. Can create data pipeline for full dataset or
     given sample_type.
 
     Args:
-        sample_type: sample type to use. Dev sample for "dev", Sample for "sample", full
-        dataset for None (default).
+        sample_type: "scoring" if list created for scoring, "training" if list created
+            for training.
 
     Returns:
         Kedro pipeline.
     """
-
-    suffix = get_suffix(sample_type)
 
     return Pipeline(
         [
             node(
                 add_ard_targets,
                 [
-                    "l5_cvm_one_day_users_table" + suffix,
+                    "cvm_users_list_" + sample_type,
                     "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
                     "parameters",
-                    "params:training_date",
+                    "params:" + sample_type,
                 ],
-                "l5_cvm_ard_one_day_targets" + suffix,
-                name="create_l5_cvm_ard_one_day_targets" + suffix,
+                "ard_targets_" + sample_type,
+                name="create_ard_targets_" + sample_type,
             ),
             node(
                 add_churn_targets,
                 [
-                    "l5_cvm_one_day_users_table" + suffix,
+                    "cvm_users_list_" + sample_type,
                     "l4_usage_prepaid_postpaid_daily_features",
                     "parameters",
+                    "params:" + sample_type,
                 ],
-                "l5_cvm_churn_one_day_targets" + suffix,
-                name="create_l5_cvm_churn_one_day_targets" + suffix,
+                "churn_targets_" + sample_type,
+                name="create_churn_targets_" + sample_type,
             ),
         ]
     )

@@ -98,7 +98,10 @@ def create_users_from_active_users(
 
 
 def add_ard_targets(
-    users: DataFrame, reve: DataFrame, parameters: Dict[str, Any], chosen_date: str
+    users: DataFrame,
+    reve: DataFrame,
+    parameters: Dict[str, Any],
+    sampling_parameters: Dict[str, Any],
 ) -> DataFrame:
     """ Create table with ARPU drop targets.
 
@@ -106,12 +109,13 @@ def add_ard_targets(
         users: Table with users and dates to create targets for.
         reve: Table with revenue stats.
         parameters: parameters defined in parameters.yml.
-        chosen_date: Date for which targets will be created.
+        sampling_parameters: sampling parameters defined in parameters.yml.
     Returns:
         Table with ARD targets.
     """
 
     local_parameters = parameters["targets"]["ard"]
+    chosen_date = sampling_parameters["chosen_date"]
     users = prepare_key_columns(users)
     ard_target_tables = [
         get_ard_targets(users, reve, local_parameters[targets], chosen_date)
@@ -125,7 +129,10 @@ def add_ard_targets(
 
 
 def add_churn_targets(
-    users: DataFrame, usage: DataFrame, parameters: Dict[str, Any]
+    users: DataFrame,
+    usage: DataFrame,
+    parameters: Dict[str, Any],
+    sampling_parameters: Dict[str, Any],
 ) -> DataFrame:
     """ Create table with churn targets.
 
@@ -133,13 +140,13 @@ def add_churn_targets(
         users: Table with users and dates to create targets for.
         usage: Table with usage stats.
         parameters: parameters defined in parameters.yml.
-
+        sampling_parameters: sampling parameters defined in parameters.yml.
     Returns:
         Table with churn targets.
     """
 
     local_parameters = parameters["targets"]["churn"]
-    chosen_date = parameters["training"]["chosen_date"]
+    chosen_date = sampling_parameters["chosen_date"]
 
     users = prepare_key_columns(users)
     usage = prepare_key_columns(usage)
