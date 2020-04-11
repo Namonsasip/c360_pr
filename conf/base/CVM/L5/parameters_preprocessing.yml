@@ -3,6 +3,6 @@ feature_selection_parameter:
   target_column: ['dilution1', 'dilution2', 'churn30', 'churn45']
   step_size: 2
 
-  preprocessing_suffixes:
-   imputed: "_imputed"
-   indexed: "_indexed"
+preprocessing_suffixes:
+ imputed: "_imputed"
+ indexed: "_indexed"
