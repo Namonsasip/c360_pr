@@ -3,14 +3,14 @@ training:
   train_share: 0.9 # the rest is validation set
   sampling: # what users to pick, what date to pick
     subscription_id_suffix: 'A' # '' for all users
-    chosen_date: '2019-10-01' # '' for most recent data
+    chosen_date: '2020-02-01' # '' for most recent data
     stages:
       - filter_users
 
 scoring:
   sampling:
     subscription_id_suffix: '' # '' for all users
-    chosen_date: '2020-03-21' # '' for most recent data
+    chosen_date: '' # '' for most recent data
     stages:
       - take_last_date
       - filter_users
@@ -47,4 +47,4 @@ volatility_length: 5
 # pai parameters
 pai_runs_path: '/dbfs/mnt/customer360-blob-data/cvm/pai01/runs'
 pai_artifacts_path: '/dbfs/mnt/customer360-blob-data/cvm/pai01/artifacts'
-pai_experiment_name: 'reduced_cols_model'
+pai_experiment_name: 'easter_model'
