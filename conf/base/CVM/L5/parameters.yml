@@ -5,13 +5,13 @@ training:
   chosen_date: '2020-02-01' # '' for most recent data
   stages:
     - filter_users
+    - take_last_date
 
 scoring:
   subscription_id_suffix: '' # '' for all users
   chosen_date: '' # '' for most recent data
   stages:
     - take_last_date
-    - filter_users
 
 # Column to be included in every table
 key_columns:
