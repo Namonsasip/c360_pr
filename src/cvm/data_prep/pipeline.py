@@ -120,7 +120,7 @@ def sample_inputs(sample_type: str) -> Pipeline:
             create_sample_dataset,
             [dataset_name, "params:" + sample_type],
             dataset_name + "_" + sample_type,
-            name="sample_" + dataset_name + "_ " + sample_type,
+            name="sample_" + dataset_name + "_" + sample_type,
         )
         for dataset_name in datasets_to_sample
     ]
