@@ -257,3 +257,17 @@ def create_cvm_scoring_data(sample_type: str = None):
             ),
         ]
     )
+
+
+training_data_prepare = (
+    create_users_from_active("training")
+    + sample_inputs("training")
+    + create_cvm_targets("training")
+    + prepare_features_macrosegments("training")
+    + create_cvm_training_data("training")
+)
+scoring_data_prepare = (
+    create_users_from_tg("scoring")
+    + sample_inputs("scoring")
+    + prepare_features_macrosegments("scoring")
+)
