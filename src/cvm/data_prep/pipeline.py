@@ -112,6 +112,7 @@ def sample_inputs(sample_type: str) -> Pipeline:
         "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
         "l4_usage_prepaid_postpaid_daily_features",
         "l4_daily_feature_topup_and_volume",
+        "l4_usage_postpaid_prepaid_weekly_features_sum",
     ]
 
     nodes_list = [

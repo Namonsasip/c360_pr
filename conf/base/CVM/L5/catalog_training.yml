@@ -24,6 +24,10 @@ l4_daily_feature_topup_and_volume_training:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_daily_feature_topup_and_volume_training/
 
+l4_usage_postpaid_prepaid_weekly_features_sum_training:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_usage_postpaid_prepaid_weekly_features_sum_training/
+
 ard_targets_training:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_ard_targets_training/
