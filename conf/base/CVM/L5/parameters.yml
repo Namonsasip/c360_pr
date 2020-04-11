@@ -37,9 +37,28 @@ macrosegments:
     - positive_arpu
 
 must_have_features:
+  # macrosegments
   - subscriber_tenure
   - sum_rev_arpu_total_revenue_monthly_last_month
+  # microsegment
   - volatility
+  - sum_usg_incoming_number_calls_sum_weekly_last_twelve_week
+  - sum_usg_total_data_volume_sum_weekly_last_twelve_week
+  - sum_rev_arpu_total_revenue_monthly_last_month
+  - sum_rev_arpu_total_revenue_monthly_last_three_month
+  - sum_rev_arpu_total_gprs_net_revenue_monthly_last_three_month
+  - sum_payments_top_ups_daily_last_ninety_day
+  - avg_payments_top_up_volume_daily_last_ninety_day
+  - sum_payments_top_ups_daily_last_ninety_day
+  - max_usg_last_action_date_daily_last_ninety_day
+  - sum_usg_incoming_number_calls_sum_weekly_last_twelve_week
+  - sum_usg_total_data_volume_sum_weekly_last_twelve_week
+  - sum_usg_outgoing_data_volume_daily_last_thirty_day
+  - sum_usg_outgoing_total_call_duration_daily_last_thirty_day
+  - sum_usg_data_weekend_usage_sum_weekly_last_four_week
+  - sum_usg_data_weekday_usage_sum_weekly_last_four_week
+  - sum_usg_outgoing_weekend_number_calls_sum_weekly_last_four_week
+  - sum_usg_outgoing_weekday_number_calls_sum_weekly_last_four_week
 
 # volatility
 volatility_length: 5
