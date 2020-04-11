@@ -31,7 +31,6 @@ from typing import Any, Dict, List, Tuple
 from pyspark.sql import DataFrame
 import functools
 import pyspark.sql.functions as func
-from pyspark.sql import Window
 
 from cvm.src.targets.ard_targets import get_ard_targets
 from cvm.src.targets.churn_targets import filter_usage, get_churn_targets
@@ -321,46 +320,3 @@ def add_macrosegments(df: DataFrame,) -> DataFrame:
         ).otherwise("zero_arpu"),
     )
     return df
-
-
-def add_volatility_scores(
-    users: DataFrame, reve: DataFrame, parameters: Dict[str, Any]
-) -> DataFrame:
-    """Create volatility score for given set of users.
-
-    Args:
-        users: DataFrame with users, subscription_identifier column will be
-        used.
-        Rest will be kept.
-        reve: Monthly revenue data.
-        parameters: parameters defined in parameters.yml.
-    """
-
-    vol_length = parameters["volatility_length"]
-    reve_col = "norms_net_revenue"
-
-    reve = prepare_key_columns(reve)
-    users = prepare_key_columns(users)
-
-    reve_cols_to_pick = parameters["key_columns"] + [reve_col]
-    reve = reve.select(reve_cols_to_pick)
-    reve_users_window = Window.partitionBy("subscription_identifier")
-    reve = (
-        reve.withColumn("reve_history", func.count("key_date").over(reve_users_window))
-        .filter("reve_history >= {}".format(vol_length))
-        .drop("reve_history")
-    )
-    vol_window = Window.partitionBy("subscription_identifier").orderBy(
-        reve["key_date"].desc()
-    )
-    reve = reve.withColumn("month_id", func.rank().over(vol_window)).filter(
-        "month_id <= {}".format(vol_length)
-    )
-    volatility = reve.groupby("subscription_identifier").agg(
-        func.stddev(func.log(1 + func.col(reve_col))).alias("volatility")
-    )
-
-    users = users.join(volatility, "subscription_identifier", "left")
-    users = users.fillna({"volatility": 0})
-
-    return users

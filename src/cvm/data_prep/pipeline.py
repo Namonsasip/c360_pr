@@ -40,10 +40,10 @@ from cvm.data_prep.nodes import (
     add_churn_targets,
     add_macrosegments,
     train_test_split,
-    add_volatility_scores,
     create_users_from_cgtg,
     subs_date_join_important_only,
 )
+from cvm.treatments.nodes import add_volatility_scores
 
 
 def create_users_from_tg(sample_type: str) -> Pipeline:
