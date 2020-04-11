@@ -68,6 +68,7 @@ def create_users_from_active_users(
         sampling_parameters: sampling parameters defined in parameters.yml.
     """
 
+    sampling_parameters = sampling_parameters["sampling"]
     profile = prepare_key_columns(profile)
     date_chosen = sampling_parameters["chosen_date"]
     if date_chosen == "today":
@@ -266,6 +267,7 @@ def create_sample_dataset(
     Returns:
         Sample of table.
     """
+    sampling_parameters = sampling_parameters["sampling"]
     subscription_id_suffix = sampling_parameters["subscription_id_suffix"]
     max_date = sampling_parameters["chosen_date"]
 
