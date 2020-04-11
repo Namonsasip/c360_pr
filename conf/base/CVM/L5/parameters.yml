@@ -1,19 +1,17 @@
 # sampling parameter
 training:
   train_share: 0.9 # the rest is validation set
-  sampling: # what users to pick, what date to pick
-    subscription_id_suffix: 'A' # '' for all users
-    chosen_date: '2020-02-01' # '' for most recent data
-    stages:
-      - filter_users
+  subscription_id_suffix: 'A' # '' for all users
+  chosen_date: '2020-02-01' # '' for most recent data
+  stages:
+    - filter_users
 
 scoring:
-  sampling:
-    subscription_id_suffix: '' # '' for all users
-    chosen_date: '' # '' for most recent data
-    stages:
-      - take_last_date
-      - filter_users
+  subscription_id_suffix: '' # '' for all users
+  chosen_date: '' # '' for most recent data
+  stages:
+    - take_last_date
+    - filter_users
 
 # Column to be included in every table
 key_columns:
