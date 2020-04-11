@@ -1,0 +1,268 @@
+feature_default_values:
+  data_to_voice_consumption: 100000
+  data_weekend_consumption_share: 0.71
+  voice_weekend_consumption_share: 0.27
+  volatility: 0.3
+  sum_usg_incoming_number_calls_sum_weekly_last_twelve_week: 0
+  sum_usg_total_data_volume_sum_weekly_last_twelve_week: 0
+  action_in_last_10days: 0
+  sum_payments_top_ups_daily_last_ninety_day: 0
+  sum_rev_arpu_total_revenue_monthly_last_month: 0
+  arpu_dynamic: 1
+  arpu_data_share: 0.1
+
+microsegments:
+  churn:
+    positive_arpu_m1:
+      - "churn_macrosegment == 'positive_arpu'"
+      - "sum_rev_arpu_total_revenue_monthly_last_month > 150"
+      - "arpu_dynamic >= 1"
+    positive_arpu_m2:
+      - "churn_macrosegment == 'positive_arpu'"
+      - "sum_rev_arpu_total_revenue_monthly_last_month > 150"
+      - "arpu_dynamic < 1"
+      - "arpu_data_share >= 0.8"
+    positive_arpu_m3:
+      - "churn_macrosegment == 'positive_arpu'"
+      - "sum_rev_arpu_total_revenue_monthly_last_month > 150"
+      - "arpu_dynamic < 1"
+      - "arpu_data_share < 0.8"
+    positive_arpu_m4:
+      - "churn_macrosegment == 'positive_arpu'"
+      - "sum_rev_arpu_total_revenue_monthly_last_month <= 150"
+      - "sum_rev_arpu_total_revenue_monthly_last_month > 30"
+      - "arpu_data_share >= 0.8"
+    positive_arpu_m5:
+      - "churn_macrosegment == 'positive_arpu'"
+      - "sum_rev_arpu_total_revenue_monthly_last_month <= 150"
+      - "sum_rev_arpu_total_revenue_monthly_last_month > 30"
+      - "arpu_data_share < 0.8"
+      - "sum_payments_top_ups_daily_last_ninety_day >= 1"
+    positive_arpu_m6:
+      - "churn_macrosegment == 'positive_arpu'"
+      - "sum_rev_arpu_total_revenue_monthly_last_month <= 150"
+      - "sum_rev_arpu_total_revenue_monthly_last_month > 30"
+      - "arpu_data_share < 0.8"
+      - "sum_payments_top_ups_daily_last_ninety_day < 1"
+    positive_arpu_m7:
+      - "churn_macrosegment == 'positive_arpu'"
+      - "sum_rev_arpu_total_revenue_monthly_last_month < 30"
+      - "arpu_data_share >= 0.8"
+    positive_arpu_m8:
+      - "churn_macrosegment == 'positive_arpu'"
+      - "sum_rev_arpu_total_revenue_monthly_last_month < 30"
+      - "arpu_data_share < 0.8"
+      - "arpu_data_share > 0"
+    positive_arpu_m9:
+      - "churn_macrosegment == 'positive_arpu'"
+      - "sum_rev_arpu_total_revenue_monthly_last_month < 30"
+      - "arpu_data_share == 0"
+      - "sum_payments_top_ups_daily_last_ninety_day >= 1"
+    positive_arpu_m10:
+      - "churn_macrosegment == 'positive_arpu'"
+      - "sum_rev_arpu_total_revenue_monthly_last_month < 30"
+      - "arpu_data_share == 0"
+      - "sum_payments_top_ups_daily_last_ninety_day < 1"
+    zero_arpu_m1:
+      - "churn_macrosegment == 'zero_arpu'"
+      - "action_in_last_10days == 1"
+      - "sum_payments_top_ups_daily_last_ninety_day >= 1.5"
+      - "sum_usg_total_data_volume_sum_weekly_last_twelve_week > 30000000"
+    zero_arpu_m2:
+      - "churn_macrosegment == 'zero_arpu'"
+      - "action_in_last_10days == 1"
+      - "sum_payments_top_ups_daily_last_ninety_day >= 1.5"
+      - "sum_usg_total_data_volume_sum_weekly_last_twelve_week <= 30000000"
+    zero_arpu_m3:
+      - "churn_macrosegment == 'zero_arpu'"
+      - "action_in_last_10days == 1"
+      - "sum_payments_top_ups_daily_last_ninety_day < 1.5"
+      - "sum_usg_incoming_number_calls_sum_weekly_last_twelve_week >= 80"
+      - "sum_usg_total_data_volume_sum_weekly_last_twelve_week > 30000000"
+    zero_arpu_m4:
+      - "churn_macrosegment == 'zero_arpu'"
+      - "action_in_last_10days == 1"
+      - "sum_payments_top_ups_daily_last_ninety_day < 1.5"
+      - "sum_usg_incoming_number_calls_sum_weekly_last_twelve_week >= 80"
+      - "sum_usg_total_data_volume_sum_weekly_last_twelve_week <= 30000000"
+    zero_arpu_m5:
+      - "churn_macrosegment == 'zero_arpu'"
+      - "action_in_last_10days == 1"
+      - "sum_payments_top_ups_daily_last_ninety_day < 1.5"
+      - "sum_usg_incoming_number_calls_sum_weekly_last_twelve_week < 80"
+      - "sum_usg_total_data_volume_sum_weekly_last_twelve_week > 30000000"
+    zero_arpu_m6:
+      - "churn_macrosegment == 'zero_arpu'"
+      - "action_in_last_10days == 1"
+      - "sum_payments_top_ups_daily_last_ninety_day < 1.5"
+      - "sum_usg_incoming_number_calls_sum_weekly_last_twelve_week < 80"
+      - "sum_usg_total_data_volume_sum_weekly_last_twelve_week <= 30000000"
+    zero_arpu_m7:
+      - "churn_macrosegment == 'zero_arpu'"
+      - "action_in_last_10days == 0"
+      - "sum_usg_total_data_volume_sum_weekly_last_twelve_week > 30000000"
+    zero_arpu_m8:
+      - "churn_macrosegment == 'zero_arpu'"
+      - "action_in_last_10days == 0"
+      - "sum_usg_total_data_volume_sum_weekly_last_twelve_week <= 30000000"
+  ard:
+    low_arpu_low_tenure_m1:
+      - "ard_macrosegment == 'low_arpu_low_tenure'"
+      - "volatility < 1.1"
+      - "data_to_voice_consumption <= 2300"
+      - "voice_weekend_consumption_share <= 0.26"
+    low_arpu_low_tenure_m2:
+      - "ard_macrosegment == 'low_arpu_low_tenure'"
+      - "volatility < 1.1"
+      - "data_to_voice_consumption <= 2300"
+      - "voice_weekend_consumption_share > 0.26"
+    low_arpu_low_tenure_m3:
+      - "ard_macrosegment == 'low_arpu_low_tenure'"
+      - "volatility < 1.1"
+      - "data_to_voice_consumption > 2300"
+      - "data_weekend_consumption_share <= 0.23"
+    low_arpu_low_tenure_m4:
+      - "ard_macrosegment == 'low_arpu_low_tenure'"
+      - "volatility < 1.1"
+      - "data_to_voice_consumption > 2300"
+      - "data_weekend_consumption_share > 0.23"
+    low_arpu_low_tenure_m5:
+      - "ard_macrosegment == 'low_arpu_low_tenure'"
+      - "volatility >= 1.1"
+      - "data_to_voice_consumption <= 2300"
+      - "voice_weekend_consumption_share <= 0.26"
+    low_arpu_low_tenure_m6:
+      - "ard_macrosegment == 'low_arpu_low_tenure'"
+      - "volatility >= 1.1"
+      - "data_to_voice_consumption <= 2300"
+      - "voice_weekend_consumption_share > 0.26"
+    low_arpu_low_tenure_m7:
+      - "ard_macrosegment == 'low_arpu_low_tenure'"
+      - "volatility >= 1.1"
+      - "data_to_voice_consumption > 2300"
+      - "data_weekend_consumption_share <= 0.23"
+    low_arpu_low_tenure_m8:
+      - "ard_macrosegment == 'low_arpu_low_tenure'"
+      - "volatility >= 1.1"
+      - "data_to_voice_consumption > 2300"
+      - "data_weekend_consumption_share > 0.23"
+    low_arpu_high_tenure_m1:
+      - "ard_macrosegment == 'low_arpu_high_tenure'"
+      - "volatility < 1.1"
+      - "data_to_voice_consumption <= 3400"
+      - "voice_weekend_consumption_share <= 0.25"
+    low_arpu_high_tenure_m2:
+      - "ard_macrosegment == 'low_arpu_high_tenure'"
+      - "volatility < 1.1"
+      - "data_to_voice_consumption <= 3400"
+      - "voice_weekend_consumption_share > 0.25"
+    low_arpu_high_tenure_m3:
+      - "ard_macrosegment == 'low_arpu_high_tenure'"
+      - "volatility < 1.1"
+      - "data_to_voice_consumption > 3400"
+      - "data_weekend_consumption_share <= 0.17"
+    low_arpu_high_tenure_m4:
+      - "ard_macrosegment == 'low_arpu_high_tenure'"
+      - "volatility < 1.1"
+      - "data_to_voice_consumption > 3400"
+      - "data_weekend_consumption_share > 0.17"
+    low_arpu_high_tenure_m5:
+      - "ard_macrosegment == 'low_arpu_high_tenure'"
+      - "volatility >= 1.1"
+      - "data_to_voice_consumption <= 3400"
+      - "voice_weekend_consumption_share <= 0.25"
+    low_arpu_high_tenure_m6:
+      - "ard_macrosegment == 'low_arpu_high_tenure'"
+      - "volatility >= 1.1"
+      - "data_to_voice_consumption <= 3400"
+      - "voice_weekend_consumption_share > 0.25"
+    low_arpu_high_tenure_m7:
+      - "ard_macrosegment == 'low_arpu_high_tenure'"
+      - "volatility >= 1.1"
+      - "data_to_voice_consumption > 3400"
+      - "data_weekend_consumption_share <= 0.17"
+    low_arpu_high_tenure_m8:
+      - "ard_macrosegment == 'low_arpu_high_tenure'"
+      - "volatility >= 1.1"
+      - "data_to_voice_consumption > 3400"
+      - "data_weekend_consumption_share > 0.17"
+    high_arpu_low_tenure_m1:
+      - "ard_macrosegment == 'high_arpu_low_tenure'"
+      - "volatility < 1.5"
+      - "data_to_voice_consumption <= 240000"
+      - "voice_weekend_consumption_share <= 0.27"
+    high_arpu_low_tenure_m2:
+      - "ard_macrosegment == 'high_arpu_low_tenure'"
+      - "volatility < 1.5"
+      - "data_to_voice_consumption <= 240000"
+      - "voice_weekend_consumption_share > 0.27"
+    high_arpu_low_tenure_m3:
+      - "ard_macrosegment == 'high_arpu_low_tenure'"
+      - "volatility < 1.5"
+      - "data_to_voice_consumption > 240000"
+      - "data_weekend_consumption_share <= 0.28"
+    high_arpu_low_tenure_m4:
+      - "ard_macrosegment == 'high_arpu_low_tenure'"
+      - "volatility < 1.5"
+      - "data_to_voice_consumption > 240000"
+      - "data_weekend_consumption_share > 0.28"
+    high_arpu_low_tenure_m5:
+      - "ard_macrosegment == 'high_arpu_low_tenure'"
+      - "volatility >= 1.5"
+      - "data_to_voice_consumption <= 240000"
+      - "voice_weekend_consumption_share <= 0.27"
+    high_arpu_low_tenure_m6:
+      - "ard_macrosegment == 'high_arpu_low_tenure'"
+      - "volatility >= 1.5"
+      - "data_to_voice_consumption <= 240000"
+      - "voice_weekend_consumption_share > 0.27"
+    high_arpu_low_tenure_m7:
+      - "ard_macrosegment == 'high_arpu_low_tenure'"
+      - "volatility >= 1.5"
+      - "data_to_voice_consumption > 240000"
+      - "data_weekend_consumption_share <= 0.28"
+    high_arpu_low_tenure_m8:
+      - "ard_macrosegment == 'high_arpu_low_tenure'"
+      - "volatility >= 1.5"
+      - "data_to_voice_consumption > 240000"
+      - "data_weekend_consumption_share > 0.28"
+    high_arpu_high_tenure_m1:
+      - "ard_macrosegment == 'high_arpu_high_tenure'"
+      - "volatility < 0.85"
+      - "data_to_voice_consumption <= 140000"
+      - "voice_weekend_consumption_share <= 0.27"
+    high_arpu_high_tenure_m2:
+      - "ard_macrosegment == 'high_arpu_high_tenure'"
+      - "volatility < 0.85"
+      - "data_to_voice_consumption <= 140000"
+      - "voice_weekend_consumption_share > 0.27"
+    high_arpu_high_tenure_m3:
+      - "ard_macrosegment == 'high_arpu_high_tenure'"
+      - "volatility < 0.85"
+      - "data_to_voice_consumption > 140000"
+      - "data_weekend_consumption_share <= 0.28"
+    high_arpu_high_tenure_m4:
+      - "ard_macrosegment == 'high_arpu_high_tenure'"
+      - "volatility < 0.85"
+      - "data_to_voice_consumption > 140000"
+      - "data_weekend_consumption_share > 0.28"
+    high_arpu_high_tenure_m5:
+      - "ard_macrosegment == 'high_arpu_high_tenure'"
+      - "volatility >= 0.85"
+      - "data_to_voice_consumption <= 140000"
+      - "voice_weekend_consumption_share <= 0.27"
+    high_arpu_high_tenure_m6:
+      - "ard_macrosegment == 'high_arpu_high_tenure'"
+      - "volatility >= 0.85"
+      - "data_to_voice_consumption <= 140000"
+      - "voice_weekend_consumption_share > 0.27"
+    high_arpu_high_tenure_m7:
+      - "ard_macrosegment == 'high_arpu_high_tenure'"
+      - "volatility >= 0.85"
+      - "data_to_voice_consumption > 140000"
+      - "data_weekend_consumption_share <= 0.28"
+    high_arpu_high_tenure_m8:
+      - "ard_macrosegment == 'high_arpu_high_tenure'"
+      - "volatility >= 0.85"
+      - "data_to_voice_consumption > 140000"
+      - "data_weekend_consumption_share > 0.28"
