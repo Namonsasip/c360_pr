@@ -55,6 +55,7 @@ def preprocessing_fit() -> Pipeline:
                 pipeline_transform,
                 [
                     "train_sample_" + sample_type,
+                    "important_columns",
                     "preprocessing_pipeline",
                     "parameters",
                 ],
