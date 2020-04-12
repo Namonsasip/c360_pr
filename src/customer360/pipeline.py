@@ -195,7 +195,7 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "cvm_prepare_training_data": training_data_prepare,
         "cvm_prepare_scoring_data": scoring_data_prepare,
         "cvm_preprocess_training": preprocessing_fit(),
-        "cvm_preprocess_training": preprocessing_transform(),
+        "cvm_preprocess_scoring": preprocessing_transform(),
         "cvm_train_model": train_model(),
         "cvm_score_model": score_model(),
     }
