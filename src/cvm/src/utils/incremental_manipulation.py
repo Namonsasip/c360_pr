@@ -71,7 +71,7 @@ def filter_latest_date(df: DataFrame, maximum_date: str = None) -> DataFrame:
         "Filtering most recent entries, entries from {} found.".format(latest_date)
     )
 
-    if maximum_date is None or maximum_date == "today":
+    if maximum_date is None or maximum_date in ["today", ""]:
         today = date.today().strftime("%Y-%m-%d")
     else:
         today = maximum_date
