@@ -47,7 +47,7 @@ def create_users_from_cgtg(customer_groups: DataFrame) -> DataFrame:
     """
     today = date.today().strftime("%Y-%m-%d")
     df = (
-        customer_groups.filter("target_group == 'TG")
+        customer_groups.filter("target_group == 'TG'")
         .select("crm_sub_id")
         .distinct()
         .withColumn("key_date", func.lit(today))
