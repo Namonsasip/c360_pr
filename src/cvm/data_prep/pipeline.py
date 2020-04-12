@@ -83,13 +83,13 @@ def create_users_from_active(sample_type: str) -> Pipeline:
                     "l3_customer_profile_include_1mo_non_active",
                     "params:" + sample_type,
                 ],
-                "l3_customer_profile_include_1mo_non_active_" + sample_type,
-                name="create_l3_customer_profile_include_1mo_non_active_" + sample_type,
+                "active_users_sample_" + sample_type,
+                name="create_active_users_sample_" + sample_type,
             ),
             node(
                 create_users_from_active_users,
                 [
-                    "l3_customer_profile_include_1mo_non_active_" + sample_type,
+                    "active_users_sample_" + sample_type,
                     "l0_product_product_pru_m_package_master_group",
                     "params:" + sample_type,
                 ],
