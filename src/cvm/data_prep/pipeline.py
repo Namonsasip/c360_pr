@@ -180,7 +180,7 @@ def prepare_features_macrosegments(sample_type: str):
         Kedro pipeline.
     """
 
-    if sample_type == "training":
+    if sample_type == "scoring":
         targets_datasets = []
     else:
         targets_datasets = [
