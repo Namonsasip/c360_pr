@@ -51,7 +51,7 @@ def train_model() -> Pipeline:
                 predict_rf,
                 [
                     "test_sample_preprocessed_" + sample_type,
-                    "random_forest" + sample_type,
+                    "random_forest",
                     "parameters",
                 ],
                 "test_sample_predictions_" + sample_type,
