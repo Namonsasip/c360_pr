@@ -34,6 +34,7 @@ import pyspark.sql.functions as func
 
 from cvm.src.targets.ard_targets import get_ard_targets
 from cvm.src.targets.churn_targets import filter_usage, get_churn_targets
+from cvm.src.utils.list_targets import list_targets
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
 from cvm.src.utils.incremental_manipulation import filter_latest_date, filter_users
 
@@ -204,6 +205,7 @@ def subs_date_join_important_only(
     suffix_list = parameters["preprocessing_suffixes"]
     segments = parameters["segment_columns"]
     must_have_features = parameters["must_have_features"]
+    targets = list_targets(parameters)
     tables = [prepare_key_columns(tab) for tab in args]
 
     def filter_column(df, filter_list):
@@ -219,7 +221,9 @@ def subs_date_join_important_only(
         ]
 
     tables = [
-        filter_column(tab, important_param + keys + segments + must_have_features)
+        filter_column(
+            tab, important_param + keys + segments + must_have_features + targets
+        )
         for tab in tables
     ]
 
