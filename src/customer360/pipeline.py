@@ -32,6 +32,7 @@ from typing import Dict
 from kedro.pipeline import Pipeline
 
 from cvm.data_prep.pipeline import training_data_prepare, scoring_data_prepare
+from cvm.modelling.pipeline import train_model, score_model
 from cvm.preprocessing.pipeline import preprocessing_fit, preprocessing_transform
 from nba.report.pipelines.report_pipeline import create_use_case_view_report_data
 from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l1.to_l1_pipeline import (
@@ -193,8 +194,10 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
     return {
         "cvm_prepare_training_data": training_data_prepare,
         "cvm_prepare_scoring_data": scoring_data_prepare,
-        "cvm_preprocess_training": preprocessing_fit,
-        "cvm_preprocess_training": preprocessing_transform,
+        "cvm_preprocess_training": preprocessing_fit(),
+        "cvm_preprocess_training": preprocessing_transform(),
+        "cvm_train_model": train_model(),
+        "cvm_score_model": score_model(),
     }
 
 
