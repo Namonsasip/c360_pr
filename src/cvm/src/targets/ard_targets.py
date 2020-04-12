@@ -52,6 +52,8 @@ def get_ard_targets(
     length = target_parameters["length"]
     drop = target_parameters["drop"]
     target_colname = target_parameters["colname"]
+    # pick start of month
+    date_chosen = date_chosen[:-2] + "01"
     if "min_drop_absolute" in target_parameters:
         min_drop_absolute = target_parameters["min_drop_absolute"]
     else:
