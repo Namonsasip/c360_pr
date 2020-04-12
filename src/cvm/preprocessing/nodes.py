@@ -40,12 +40,13 @@ from cvm.src.utils.list_operations import list_intersection
 
 
 def pipeline_fit(
-    df: DataFrame, parameters: Dict[str, Any]
+    df: DataFrame, important_param: List[Any], parameters: Dict[str, Any]
 ) -> Tuple[DataFrame, Pipeline]:
     """ Fits preprocessing pipeline to given table and runs the pipeline on it.
 
     Args:
         df: Table to run string indexing for.
+        important_param: List of important columns.
         parameters: parameters defined in parameters*.yml files.
     Returns:
         String indexed table and OneHotEncoderEstimator object to use later.
@@ -60,6 +61,7 @@ def pipeline_fit(
         + columns_cats["key"]
         + columns_cats["segment"]
         + parameters["must_have_features"]
+        + important_param
     )
     cols_to_pick = list_intersection(list(cols_to_pick), df.columns)
     df = df.select(cols_to_pick)
@@ -95,12 +97,16 @@ def pipeline_fit(
 
 
 def pipeline_transform(
-    df: DataFrame, pipeline_fitted: PipelineModel, parameters: Dict[str, Any]
+    df: DataFrame,
+    important_param: List[Any],
+    pipeline_fitted: PipelineModel,
+    parameters: Dict[str, Any],
 ) -> DataFrame:
     """ Preprocess given table.
 
     Args:
         df: Table to run string indexing for.
+        important_param: List of important columns.
         pipeline_fitted: MLPipeline fitted to training data.
         parameters: parameters defined in parameters*.yml files.
     Returns:
@@ -116,6 +122,7 @@ def pipeline_transform(
         + columns_cats["key"]
         + columns_cats["segment"]
         + parameters["must_have_features"]
+        + important_param
     )
     cols_to_pick = list_intersection(list(cols_to_pick), df.columns)
     df = df.select(cols_to_pick)
