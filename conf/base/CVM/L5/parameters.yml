@@ -2,7 +2,7 @@
 training:
   train_share: 0.9 # the rest is validation set
   subscription_id_suffix: 'A' # '' for all users
-  chosen_date: '2020-02-01' # '' for most recent data
+  chosen_date: '2019-12-01' # '' for most recent data
   stages:
     - filter_users
     - take_last_date
