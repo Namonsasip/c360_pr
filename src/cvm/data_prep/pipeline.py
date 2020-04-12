@@ -179,6 +179,14 @@ def prepare_features_macrosegments(sample_type: str):
     Returns:
         Kedro pipeline.
     """
+
+    if sample_type == "training":
+        targets_datasets = []
+    else:
+        targets_datasets = [
+            "churn_targets_" + sample_type,
+            "ard_targets_" + sample_type,
+        ]
     return Pipeline(
         [
             node(
@@ -192,9 +200,8 @@ def prepare_features_macrosegments(sample_type: str):
                     "l4_usage_prepaid_postpaid_daily_features_" + sample_type,
                     "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_"
                     + sample_type,
-                    "churn_targets_" + sample_type,
-                    "ard_targets_" + sample_type,
-                ],
+                ]
+                + targets_datasets,
                 "features_targets_" + sample_type,
                 name="create_features_targets_" + sample_type,
             ),
