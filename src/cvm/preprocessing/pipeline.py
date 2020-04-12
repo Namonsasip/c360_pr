@@ -78,7 +78,8 @@ def preprocessing_transform() -> Pipeline:
             node(
                 pipeline_transform,
                 [
-                    "features_macrosegments_scoring" "preprocessing_pipeline",
+                    "features_macrosegments_scoring",
+                    "preprocessing_pipeline",
                     "parameters",
                 ],
                 "sample_preprocessed_scoring",
