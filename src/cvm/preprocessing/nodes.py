@@ -37,6 +37,7 @@ from cvm.src.utils.feature_selection import feature_selection
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
 from cvm.src.utils.classify_columns import classify_columns
 from cvm.src.utils.list_operations import list_intersection
+from cvm.src.utils.utils import get_clean_important_variables
 
 
 def pipeline_fit(
@@ -53,6 +54,7 @@ def pipeline_fit(
     """
 
     df = prepare_key_columns(df)
+    important_param = get_clean_important_variables(important_param, parameters)
 
     # select columns
     columns_cats = classify_columns(df, parameters)
@@ -114,6 +116,7 @@ def pipeline_transform(
     """
 
     df = prepare_key_columns(df)
+    important_param = get_clean_important_variables(important_param, parameters)
 
     # select columns
     columns_cats = classify_columns(df, parameters)
