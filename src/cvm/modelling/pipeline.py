@@ -45,7 +45,7 @@ def train_model() -> Pipeline:
                 train_rf,
                 ["train_sample_preprocessed_" + sample_type, "parameters"],
                 "random_forest",
-                name="create_random_forest" + sample_type,
+                name="create_random_forest_" + sample_type,
             ),
             node(
                 predict_rf,
