@@ -37,6 +37,7 @@ from cvm.src.targets.churn_targets import filter_usage, get_churn_targets
 from cvm.src.utils.list_targets import list_targets
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
 from cvm.src.utils.incremental_manipulation import filter_latest_date, filter_users
+from cvm.src.utils.utils import get_clean_important_variables
 
 
 def create_users_from_cgtg(customer_groups: DataFrame) -> DataFrame:
@@ -202,23 +203,17 @@ def subs_date_join_important_only(
     """
 
     keys = parameters["key_columns"]
-    suffix_list = parameters["preprocessing_suffixes"]
     segments = parameters["segment_columns"]
     must_have_features = parameters["must_have_features"]
     targets = list_targets(parameters)
     tables = [prepare_key_columns(tab) for tab in args]
+    important_param = get_clean_important_variables(important_param, parameters)
 
     def filter_column(df, filter_list):
         cols_to_drop = [
             col_name for col_name in df.columns if col_name not in filter_list
         ]
         return df.drop(*cols_to_drop)
-
-    # remove suffix from important columns
-    for suffix in suffix_list:
-        important_param = [
-            col.replace(suffix_list[suffix], "") for col in important_param
-        ]
 
     tables = [
         filter_column(

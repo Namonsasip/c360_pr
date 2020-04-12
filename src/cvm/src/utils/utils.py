@@ -27,7 +27,7 @@
 # limitations under the License.
 import string
 from random import random
-from typing import Dict, Callable, Any
+from typing import Dict, Callable, Any, List
 
 from cvm.src.utils.list_targets import list_targets
 
@@ -99,3 +99,20 @@ def iterate_over_usecases_macrosegments_targets(
 def random_word(length=16):
     letters = string.ascii_lowercase
     return "".join(random.choice(letters) for i in range(length))
+
+
+def get_clean_important_variables(
+    important_param: List[Any], parameters: Dict[str, Any],
+) -> List[Any]:
+    """ Returns important variables from before preprocessing stage.
+
+    Args:
+        important_param: List of important columns.
+        parameters: parameters defined in parameters.yml.
+    """
+    suffix_list = parameters["preprocessing_suffixes"]
+    for suffix in suffix_list:
+        important_param = [
+            col.replace(suffix_list[suffix], "") for col in important_param
+        ]
+    return important_param
