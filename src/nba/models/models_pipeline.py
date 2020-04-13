@@ -18,8 +18,8 @@ def create_nba_models_pipeline() -> Pipeline:
                     as_pandas_udf=False,
                     group_column="campaign_child_code",
                     explanatory_features=[
-                        "subscriber_tenure",
-                        "norms_net_revenue",
+                        "sum_usg_outgoing_total_call_duration_sum_weekly_last_four_week",
+                        "sum_usg_outgoing_total_sms_sum_weekly_last_week",
                     ],
                     target_column="target_response",
                     train_sampling_ratio=0.8,
@@ -65,6 +65,7 @@ def create_nba_models_pipeline() -> Pipeline:
                     "target_column": "params:nba_model_target_column",
                     "train_sampling_ratio": "params:nba_model_train_sampling_ratio",
                     "model_params": "params:nba_model_model_params",
+                    "max_rows_per_group": "params:nba_model_max_rows_per_group",
                     "min_obs_per_class_for_model": "params:nba_model_min_obs_per_class_for_model",
                     "pai_storage_path": "params:nba_model_pai_storage_path",
                 },
