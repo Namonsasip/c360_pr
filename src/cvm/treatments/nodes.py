@@ -84,13 +84,13 @@ def produce_treatments(
         target_users.join(microsegments, on="subscription_identifier", how="left")
         .withColumn(
             "macrosegment",
-            func.when("use_case == 'churn", func.col("ard_microsegment")).otherwise(
+            func.when("use_case == 'churn'", func.col("ard_microsegment")).otherwise(
                 "churn_microsegment"
             ),
         )
         .withColumn(
             "microsegment",
-            func.when("use_case == 'churn", func.col("ard_microsegment")).otherwise(
+            func.when("use_case == 'churn'", func.col("ard_microsegment")).otherwise(
                 "churn_microsegment"
             ),
         )
