@@ -56,12 +56,12 @@ microsegments:
     positive_arpu_m9:
       - "churn_macrosegment == 'positive_arpu'"
       - "sum_rev_arpu_total_revenue_monthly_last_month < 30"
-      - "arpu_data_share == 0"
+      - "arpu_data_share <= 0"
       - "sum_payments_top_ups_daily_last_ninety_day >= 1"
     positive_arpu_m10:
       - "churn_macrosegment == 'positive_arpu'"
       - "sum_rev_arpu_total_revenue_monthly_last_month < 30"
-      - "arpu_data_share == 0"
+      - "arpu_data_share <= 0"
       - "sum_payments_top_ups_daily_last_ninety_day < 1"
     zero_arpu_m1:
       - "churn_macrosegment == 'zero_arpu'"
