@@ -27,7 +27,7 @@
 # limitations under the License.
 from kedro.pipeline import Pipeline, node
 
-from cvm.treatments.nodes import prepare_microsegments
+from cvm.treatments.nodes import prepare_microsegments, get_target_users
 
 
 def generate_treatments() -> Pipeline:
@@ -48,6 +48,12 @@ def generate_treatments() -> Pipeline:
                 ],
                 "microsegments_scoring",
                 name="create_microsegments_scoring",
-            )
+            ),
+            node(
+                get_target_users,
+                ["propensity_scores", "parameters"],
+                "target_users",
+                name="create_target_users",
+            ),
         ]
     )
