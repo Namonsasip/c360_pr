@@ -25,6 +25,7 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import functools
 import logging
 from typing import Dict, Any
 
@@ -154,13 +155,42 @@ def filter_cutoffs(propensities: DataFrame, parameters: Dict[str, Any],) -> Data
 
     cutoffs = parameters["cutoffs"]
 
-    def _get_filter_for_macro(use_case, macrosegment):
-        cutoffs_local = cutoffs[use_case][macrosegment]
-        filter_str = ""
+    def _get_filter_for_macro(use_case_chosen, macrosegment):
+        """ Return string that filters out users of specific macrosegment with all
+        propensities higher then cutoffs."""
+        cutoffs_local = cutoffs[use_case_chosen][macrosegment]
+        filter_str = f"{use_case_chosen}_macrosegment == {macrosegment}"
         for target in cutoffs_local:
-            filter_str += "(" + target + ">=" + cutoffs_local[target] + ") and"
-        filter_str = "(" + filter_str[:-4] + ")"
+            filter_str += f" and ({target}_pred >= {cutoffs_local[target]})"
         return filter_str
+
+    # propensity above threshold for all targets
+    def _get_filter_for_use_case(use_case_chosen):
+        """ Returns filter string that filter out users of all macrosegments with all
+        propensities higher than cutoffs."""
+        macrosegments = cutoffs[use_case_chosen]
+        filter_str = ""
+        for macrosegment in macrosegments:
+            macrosegment_filter_str = _get_filter_for_macro(
+                use_case_chosen, macrosegment
+            )
+            filter_str += f"({macrosegment_filter_str}) or "
+        filter_str = filter_str[:-4]
+        return filter_str
+
+    dfs = []
+    for use_case in cutoffs:
+        use_case_filter_str = _get_filter_for_use_case(use_case)
+        dfs.append(
+            propensities.filter(use_case_filter_str)
+            .select("subscription_identifier")
+            .withColumn("use_case", func.lit(use_case))
+        )
+
+    def union_dfs(df1, df2):
+        return df1.union(df2)
+
+    return functools.reduce(union_dfs, dfs)
 
 
 def add_volatility_scores(
