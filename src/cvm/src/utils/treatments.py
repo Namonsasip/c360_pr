@@ -194,5 +194,7 @@ def add_volatility_scores(
 
     users = users.join(volatility, "subscription_identifier", "left")
     users = users.fillna({"volatility": 0})
+    cols_to_pick = ["subscription_identifier", "volatility"]
+    users = users.select(cols_to_pick)
 
     return users
