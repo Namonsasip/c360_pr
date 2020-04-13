@@ -77,7 +77,7 @@ def add_microsegment_features(df: DataFrame, parameters: Dict[str, Any]) -> Data
         ),
     )
 
-    key_date = df.select("key_date").first()[0].strftime("%Y-%m-%d")
+    key_date = df.select("key_date").first()[0]
     date_10days_ago = add_days(key_date, -10)
     df = df.withColumn(
         "action_in_last_10days",
@@ -151,8 +151,6 @@ def filter_cutoffs(propensities: DataFrame, parameters: Dict[str, Any],) -> Data
 
     log = logging.getLogger(__name__)
     log.info("Choosing users to target with treatment")
-
-    # TODO: FINISH
 
 
 def add_volatility_scores(
