@@ -81,8 +81,8 @@ def add_microsegment_features(df: DataFrame, parameters: Dict[str, Any]) -> Data
     date_10days_ago = add_days(key_date, -10)
     df = df.withColumn(
         "action_in_last_10days",
-        func.when(df.max_usg_last_action_date_daily_last_ninety_day.isNull(), 0)
-        .when(date_10days_ago > df.max_usg_last_action_date_daily_last_ninety_day, 0)
+        func.when(df.last_activity_date.isNull(), 0)
+        .when(date_10days_ago > df.last_activity_date, 0)
         .otherwise(1),
     )
 
@@ -151,6 +151,16 @@ def filter_cutoffs(propensities: DataFrame, parameters: Dict[str, Any],) -> Data
 
     log = logging.getLogger(__name__)
     log.info("Choosing users to target with treatment")
+
+    cutoffs = parameters["cutoffs"]
+
+    def _get_filter_for_macro(use_case, macrosegment):
+        cutoffs_local = cutoffs[use_case][macrosegment]
+        filter_str = ""
+        for target in cutoffs_local:
+            filter_str += "(" + target + ">=" + cutoffs_local[target] + ") and"
+        filter_str = "(" + filter_str[:-4] + ")"
+        return filter_str
 
 
 def add_volatility_scores(

@@ -48,7 +48,7 @@ must_have_features:
   - sum_payments_top_ups_daily_last_ninety_day
   - avg_payments_top_up_volume_daily_last_ninety_day
   - sum_payments_top_ups_daily_last_ninety_day
-  - max_usg_last_action_date_daily_last_ninety_day
+  - last_activity_date
   - sum_usg_incoming_number_calls_sum_weekly_last_twelve_week
   - sum_usg_total_data_volume_sum_weekly_last_twelve_week
   - sum_usg_outgoing_data_volume_daily_last_thirty_day
