@@ -56,14 +56,6 @@ def geo_to_l1_pipeline(**kwargs):
 
 
             node(
-                l1_geo_data_distance_daily_intermediate,
-                ["l0_usage_sum_data_location_daily",
-                 ],
-                "l1_geo_data_distance_daily_intermediate"
-
-            ),
-
-            node(
                 l1_first_data_session_cell_identifier_daily,
                 ["l0_usage_sum_data_location_daily",
                  "params:l1_first_data_session_cell_identifier"],
