@@ -25,3 +25,7 @@ random_forest:
 microsegments_treatments:
   type: kedro.io.csv_local.CSVLocalDataSet
   filepath: /dbfs/mnt/customer360-cvm/treatments.csv
+
+treatments_chosen:
+  type: kedro.io.csv_local.CSVLocalDataSet
+  filepafh: /dbfs/mnt/customer360-cvm/treatments_chosen.csv
