@@ -138,3 +138,17 @@ def define_microsegments(df: DataFrame, parameters: Dict[str, Any],) -> DataFram
         )
 
     return df
+
+
+def filter_cutoffs(propensities: DataFrame, parameters: Dict[str, Any],) -> DataFrame:
+    """ Filters given propensities table according to cutoffs given.
+
+    Args:
+        propensities: table with propensities.
+        parameters: parameters defined in parameters.yml.
+    """
+
+    log = logging.getLogger(__name__)
+    log.info("Choosing users to target with treatment")
+
+    # TODO: FINISH
