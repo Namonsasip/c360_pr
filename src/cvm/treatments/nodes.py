@@ -80,7 +80,6 @@ def produce_treatments(
         treatment_dictionary: Table of microsegment to treatment mapping.
     """
 
-    treatment_dictionary = DataFrame(treatment_dictionary)
     df = (
         target_users.join(microsegments, on="subscription_identifier", how="left")
         .withColumn(
@@ -95,15 +94,10 @@ def produce_treatments(
                 func.col("use_case") == "churn", func.col("ard_microsegment")
             ).otherwise(func.col("churn_microsegment")),
         )
-        .join(treatment_dictionary, on=["macrosegment", "microsegment"])
-        .select(
-            [
-                "subscription_identifier",
-                "use_case",
-                "macrosegment",
-                "microsegment",
-                "campaign_code1",
-            ]
-        )
-    )
+        .select(["subscription_identifier", "use_case", "macrosegment", "microsegment"])
+    ).toPandas()
+    treatment_dictionary = treatment_dictionary[
+        ["macrosegment", "microsegment", "campaign_code1"]
+    ]
+    df = df.join(treatment_dictionary, on=["macrosegment", "microsegment"], how="left")
     return df
