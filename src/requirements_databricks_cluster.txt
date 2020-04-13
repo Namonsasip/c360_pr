@@ -1,0 +1,11 @@
+# This file has only illustrative and documentation purposes
+# This files contains a list of python modules that should be installed in the
+# Databricks cluster as libraries because they need to be propagated to all worker
+# nodes (e.g for pandas udfs)
+
+scikit-learn==0.22.2
+pandas==0.25.3
+plotnine==0.6.0
+pai==0.43.0
+lightgbm==2.3.1
+seaborn==0.10.0
