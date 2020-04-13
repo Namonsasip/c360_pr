@@ -27,6 +27,7 @@
 # limitations under the License.
 from typing import Dict, Any
 
+import pandas
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as func
 
@@ -99,5 +100,7 @@ def produce_treatments(
     treatment_dictionary = treatment_dictionary[
         ["macrosegment", "microsegment", "campaign_code1"]
     ]
-    df = df.join(treatment_dictionary, on=["macrosegment", "microsegment"], how="left")
+    df = pandas.merge(
+        df, treatment_dictionary, on=["microsegment", "macrosegment"], how="left"
+    )
     return df
