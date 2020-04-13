@@ -55,3 +55,7 @@ propensity_scores:
 active_users_sample_scoring:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_active_users_sample_scoring/
+
+microsegments_scoring:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_microsegments_scoring/

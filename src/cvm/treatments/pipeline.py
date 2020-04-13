@@ -25,3 +25,29 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from kedro.pipeline import Pipeline, node
+
+from cvm.treatments.nodes import prepare_microsegments
+
+
+def generate_treatments() -> Pipeline:
+    """ Creates pipeline defining treatment from propensity scores.
+
+     Returns:
+         Kedro pipeline.
+     """
+
+    return Pipeline(
+        [
+            node(
+                prepare_microsegments,
+                [
+                    "features_macrosegments_scoring",
+                    "l3_customer_profile_include_1mo_non_active",
+                    "parameters",
+                ],
+                "microsegments_scoring",
+                name="create_microsegments_scoring",
+            )
+        ]
+    )
