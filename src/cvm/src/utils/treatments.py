@@ -179,13 +179,19 @@ def filter_cutoffs(propensities: DataFrame, parameters: Dict[str, Any],) -> Data
         return filter_str
 
     dfs = []
-    for use_case in cutoffs:
-        use_case_filter_str = _get_filter_for_use_case(use_case)
-        dfs.append(
-            propensities.filter(use_case_filter_str)
-            .select("subscription_identifier")
-            .withColumn("use_case", func.lit(use_case))
-        )
+    churn_filter_str = _get_filter_for_use_case("churn")
+    dfs.append(
+        propensities.filter(churn_filter_str)
+        .select("subscription_identifier")
+        .withColumn("use_case", func.lit("churn"))
+    )
+    ard_filter_str = _get_filter_for_use_case("ard")
+    ard_filter_str = f"({ard_filter_str}) and not ({churn_filter_str})"
+    dfs.append(
+        propensities.filter(ard_filter_str)
+        .select("subscription_identifier")
+        .withColumn("use_case", func.lit("ard"))
+    )
 
     def union_dfs(df1, df2):
         return df1.union(df2)
