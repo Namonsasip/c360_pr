@@ -2,7 +2,6 @@ feature_default_values:
   data_to_voice_consumption: 100000
   data_weekend_consumption_share: 0.71
   voice_weekend_consumption_share: 0.27
-  volatility: 0.3
   sum_usg_incoming_number_calls_sum_weekly_last_twelve_week: 0
   sum_usg_total_data_volume_sum_weekly_last_twelve_week: 0
   action_in_last_10days: 0
