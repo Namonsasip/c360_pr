@@ -28,6 +28,7 @@
 from typing import Dict, Any
 
 from pyspark.sql import DataFrame
+from pyspark.sql import functions as func
 
 from cvm.src.utils.treatments import (
     add_volatility_scores,
@@ -65,3 +66,43 @@ def get_target_users(propensities: DataFrame, parameters: Dict[str, Any],) -> Da
     """
 
     return filter_cutoffs(propensities, parameters)
+
+
+def produce_treatments(
+    target_users: DataFrame, microsegments: DataFrame, treatment_dictionary: DataFrame,
+) -> DataFrame:
+    """ Combine filtered users table, microsegments and the treatments assigned to
+    microsegments.
+
+    Args:
+        target_users: List of users to target with treatment.
+        microsegments: List of users and assigned microsegments.
+        treatment_dictionary: Table of microsegment to treatment mapping.
+    """
+
+    df = (
+        target_users.join(microsegments, on="subscription_identifier", how="left")
+        .withColumn(
+            "macrosegment",
+            func.when("use_case == 'churn", func.col("ard_microsegment")).otherwise(
+                "churn_microsegment"
+            ),
+        )
+        .withColumn(
+            "microsegment",
+            func.when("use_case == 'churn", func.col("ard_microsegment")).otherwise(
+                "churn_microsegment"
+            ),
+        )
+        .join(treatment_dictionary, on=["macrosegment", "microsegment"])
+        .select(
+            [
+                "subscription_identifier",
+                "use_case",
+                "macrosegment",
+                "microsegment",
+                "campaign_code1",
+            ]
+        )
+    )
+    return df
