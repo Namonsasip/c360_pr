@@ -200,6 +200,7 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "cvm_train_model": train_model(),
         "cvm_score_model": score_model(),
         "cvm_treatments": generate_treatments(),
+        "cvm_full_scoring": score_model() + generate_treatments(),
     }
 
 
