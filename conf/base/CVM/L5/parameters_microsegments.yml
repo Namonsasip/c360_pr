@@ -9,6 +9,7 @@ feature_default_values:
   sum_rev_arpu_total_revenue_monthly_last_month: 0
   arpu_dynamic: 1
   arpu_data_share: 0.1
+  volatility: 0.3
 
 microsegments:
   churn:
