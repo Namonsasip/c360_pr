@@ -28,4 +28,4 @@ microsegments_treatments:
 
 treatments_chosen:
   type: kedro.io.csv_local.CSVLocalDataSet
-  filepafh: /dbfs/mnt/customer360-cvm/treatments_chosen.csv
+  filepath: /dbfs/mnt/customer360-cvm/treatments_chosen.csv
