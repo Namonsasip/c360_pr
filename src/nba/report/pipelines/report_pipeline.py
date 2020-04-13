@@ -1,11 +1,13 @@
 from functools import partial
 
 from kedro.pipeline import Pipeline, node
-
+from datetime import timedelta
 from src.nba.report.nodes.report_nodes import *
 
 
 def create_use_case_view_report_data() -> Pipeline:
+    mock_report_running_date = "2020-03-27"
+    start_date = datetime.strptime(mock_report_running_date, "%Y-%m-%d") + timedelta(days=-45)
     return Pipeline(
         [
             node(
@@ -22,7 +24,7 @@ def create_use_case_view_report_data() -> Pipeline:
             node(
                 partial(
                     create_report_campaign_tracking_table,
-                    day="2020-03-24",  # TODO make dynamic
+                    day=mock_report_running_date,  # TODO make dynamic
                 ),
                 {
                     "cvm_prepaid_customer_groups": "cvm_prepaid_customer_groups",
@@ -36,11 +38,9 @@ def create_use_case_view_report_data() -> Pipeline:
             node(
                 partial(
                     node_reporting_kpis,
-                    date_from=datetime.strptime(
-                        "2020-02-20", "%Y-%m-%d"
-                    ),  # TODO make dynamic
+                    date_from=start_date,  # TODO make dynamic
                     date_to=datetime.strptime(
-                        "2020-03-24", "%Y-%m-%d"
+                        mock_report_running_date, "%Y-%m-%d"
                     ),  # TODO make dynamic
                     arpu_days_agg_periods=[1, 7, 30],
                     dormant_days_agg_periods=[5, 7, 14, 30, 60, 90],
@@ -74,7 +74,7 @@ def create_use_case_view_report_data() -> Pipeline:
             node(
                 partial(
                     create_use_case_view_report,
-                    day="2020-03-24",  # TODO make dynamic
+                    day=mock_report_running_date,  # TODO make dynamic
                     aggregate_period=[1, 7, 30],
                 ),
                 inputs={
@@ -86,6 +86,17 @@ def create_use_case_view_report_data() -> Pipeline:
                 outputs="use_case_view_report_table",
                 name="use_case_view_report_table",
                 tags=["use_case_view_report_table",],
+            ),
+            node(
+                partial(
+                    store_historical_usecase_view_report
+                ),
+                inputs={
+                    "use_case_view_report_table": "use_case_view_report_table",
+                },
+                outputs="historical_use_case_view_report_table",
+                name="historical_use_case_view_report_table",
+                tags=["historical_use_case_view_report_table", ],
             ),
         ],
         tags=["churn_ard_report"],
