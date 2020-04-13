@@ -131,7 +131,7 @@ def define_microsegments(df: DataFrame, parameters: Dict[str, Any],) -> DataFram
     log = logging.getLogger(__name__)
     log.info("Defining microsegments")
 
-    df.fillna(parameters["feature_default_values"])
+    df = df.fillna(parameters["feature_default_values"])
 
     microsegment_defs = parameters["microsegments"]
     for use_case in microsegment_defs:
