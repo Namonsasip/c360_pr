@@ -25,3 +25,31 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from typing import Dict, Any
+
+from pyspark.sql import DataFrame
+
+from cvm.src.utils.treatments import (
+    add_volatility_scores,
+    add_microsegment_features,
+    define_microsegments,
+)
+
+
+def prepare_microsegments(
+    raw_features: DataFrame, reve: DataFrame, parameters: Dict[str, Any],
+) -> DataFrame:
+    """ Add microsegments columns.
+
+    Args:
+        raw_features: Table with users to add microsegments to and pre - preprocessing
+            features.
+        reve: Table with monthly revenue. Assumes using l3 profile table.
+        parameters: parameters defined in parameters.yml.
+    """
+
+    vol = add_volatility_scores(raw_features, reve, parameters)
+    micro_features = add_microsegment_features(raw_features, parameters).join(
+        vol, "subscription_identifier"
+    )
+    return define_microsegments(micro_features, parameters)
