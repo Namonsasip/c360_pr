@@ -43,7 +43,7 @@ from cvm.data_prep.nodes import (
     create_users_from_cgtg,
     subs_date_join_important_only,
 )
-from cvm.treatments.nodes import add_volatility_scores
+from cvm.src.utils.treatments import add_volatility_scores
 
 
 def create_users_from_tg(sample_type: str) -> Pipeline:
