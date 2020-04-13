@@ -33,6 +33,7 @@ from cvm.src.utils.treatments import (
     add_volatility_scores,
     add_microsegment_features,
     define_microsegments,
+    filter_cutoffs,
 )
 
 
@@ -53,3 +54,14 @@ def prepare_microsegments(
         vol, "subscription_identifier"
     )
     return define_microsegments(micro_features, parameters)
+
+
+def get_target_users(propensities: DataFrame, parameters: Dict[str, Any],) -> DataFrame:
+    """ Filters given propensities table according to cutoffs given.
+
+    Args:
+        propensities: table with propensities.
+        parameters: parameters defined in parameters.yml.
+    """
+
+    return filter_cutoffs(propensities, parameters)
