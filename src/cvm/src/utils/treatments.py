@@ -83,3 +83,50 @@ def add_microsegment_features(df: DataFrame, parameters: Dict[str, Any]) -> Data
     df.fillna(parameters["feature_default_values"])
 
     return df
+
+
+def add_microsegment(df: DataFrame, parameters: Dict[str, Any],) -> DataFrame:
+    """ Adds microsegment columns to given tables. Microsegments are used to connect
+    with treatments.
+
+    Args:
+        df: DataFrame with all microsegment features.
+        parameters: parameters defined in parameters.yml.
+    """
+
+    def get_when_then_clause_for_one_microsegment(conditions_list, microsegment_name):
+        """Prepares when - then clause to create one microsegment."""
+        when_str = " and ".join([f"({cond})" for cond in conditions_list])
+        return "when " + when_str + " then '" + microsegment_name + "'"
+
+    def get_when_then_cause(microsegments_dict, microsegments_colname):
+        """Prepare when - then clause to create microsegment column for one use case."""
+        when_then_clauses = [
+            get_when_then_clause_for_one_microsegment(
+                microsegments_dict[microsegment_name], microsegment_name
+            )
+            for microsegment_name in microsegments_dict
+        ]
+        return (
+            "case "
+            + "\n".join(when_then_clauses)
+            + " else NULL end as "
+            + microsegments_colname
+        )
+
+    def add_microsegments(
+        df_with_microsegment_features, microsegments_dict, microsegments_colname
+    ):
+        """Calculates microsegment column for one use case."""
+        case_when_clause = get_when_then_cause(
+            microsegments_dict, microsegments_colname
+        )
+        return df_with_microsegment_features.selectExpr("*", case_when_clause)
+
+    microsegment_defs = parameters["microsegments"]
+    for use_case in microsegment_defs:
+        df = add_microsegments(
+            df, microsegment_defs[use_case], use_case + "_microsegment",
+        )
+
+    return df
