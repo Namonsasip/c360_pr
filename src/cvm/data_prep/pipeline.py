@@ -43,7 +43,6 @@ from cvm.data_prep.nodes import (
     create_users_from_cgtg,
     subs_date_join_important_only,
 )
-from cvm.src.utils.treatments import add_volatility_scores
 
 
 def create_users_from_tg(sample_type: str) -> Pipeline:
@@ -235,34 +234,6 @@ def create_cvm_training_data(sample_type: str):
                 ["features_macrosegments_" + sample_type, "parameters"],
                 ["train_sample_" + sample_type, "test_sample_" + sample_type],
                 name="create_train_test_split_" + sample_type,
-            ),
-        ]
-    )
-
-
-def create_cvm_scoring_data(sample_type: str = None):
-    """ Creates pipeline preparing data. Can create data pipeline for full dataset or
-    given sample_type.
-
-    Args:
-        sample_type: sample type to use. Dev sample for "dev", Sample for "sample", full
-        dataset for None (default).
-
-    Returns:
-        Kedro pipeline.
-    """
-
-    return prepare_features_macrosegments(sample_type) + Pipeline(
-        [
-            node(
-                add_volatility_scores,
-                [
-                    "features_macrosegments_" + sample_type,
-                    "l3_customer_profile_include_1mo_non_active",
-                    "parameters",
-                ],
-                "features_macrosegments_volatility_" + sample_type,
-                name="add_volatility_" + sample_type,
             ),
         ]
     )
