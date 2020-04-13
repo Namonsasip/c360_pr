@@ -25,6 +25,7 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import logging
 from typing import Dict, Any
 
 from pyspark.sql import DataFrame, functions as func
@@ -39,6 +40,10 @@ def add_microsegment_features(df: DataFrame, parameters: Dict[str, Any]) -> Data
         df: DataFrame with raw (not preprocessed) features.
         parameters: parameters defined in parameters.yml.
     """
+
+    log = logging.getLogger(__name__)
+    log.info("Adding microsegments features")
+
     df = df.withColumn(
         "arpu_dynamic",
         df.sum_rev_arpu_total_revenue_monthly_last_month
@@ -85,7 +90,7 @@ def add_microsegment_features(df: DataFrame, parameters: Dict[str, Any]) -> Data
     return df
 
 
-def add_microsegment(df: DataFrame, parameters: Dict[str, Any],) -> DataFrame:
+def define_microsegments(df: DataFrame, parameters: Dict[str, Any],) -> DataFrame:
     """ Adds microsegment columns to given tables. Microsegments are used to connect
     with treatments.
 
@@ -122,6 +127,9 @@ def add_microsegment(df: DataFrame, parameters: Dict[str, Any],) -> DataFrame:
             microsegments_dict, microsegments_colname
         )
         return df_with_microsegment_features.selectExpr("*", case_when_clause)
+
+    log = logging.getLogger(__name__)
+    log.info("Defining microsegments")
 
     microsegment_defs = parameters["microsegments"]
     for use_case in microsegment_defs:
