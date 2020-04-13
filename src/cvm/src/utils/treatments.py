@@ -159,7 +159,7 @@ def filter_cutoffs(propensities: DataFrame, parameters: Dict[str, Any],) -> Data
         """ Return string that filters out users of specific macrosegment with all
         propensities higher then cutoffs."""
         cutoffs_local = cutoffs[use_case_chosen][macrosegment]
-        filter_str = f"{use_case_chosen}_macrosegment == {macrosegment}"
+        filter_str = f"{use_case_chosen}_macrosegment == '{macrosegment}'"
         for target in cutoffs_local:
             filter_str += f" and ({target}_pred >= {cutoffs_local[target]})"
         return filter_str
