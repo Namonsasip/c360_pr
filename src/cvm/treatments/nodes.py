@@ -80,6 +80,7 @@ def produce_treatments(
         treatment_dictionary: Table of microsegment to treatment mapping.
     """
 
+    treatment_dictionary = DataFrame(treatment_dictionary)
     df = (
         target_users.join(microsegments, on="subscription_identifier", how="left")
         .withColumn(
