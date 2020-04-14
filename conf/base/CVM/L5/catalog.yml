@@ -29,3 +29,7 @@ microsegments_treatments:
 treatments_chosen:
   type: kedro.io.csv_local.CSVLocalDataSet
   filepath: /dbfs/mnt/customer360-cvm/treatments_chosen.csv
+
+treatments_chosen_history:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_treatments_chosen_history/
