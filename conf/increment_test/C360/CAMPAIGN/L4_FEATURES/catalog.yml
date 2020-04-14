@@ -1,7 +1,7 @@
 #l4_campaign_postpaid_prepaid_features:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-data/C360/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features/
+#  filepath: /mnt/customer360-blob-output/C360/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features/
 #  save_args:
 #    mode: "overwrite"
 #    partitionBy: ["start_of_week"]
@@ -10,7 +10,7 @@
 #l4_campaign_top_channel_features:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-data/C360/CAMPAIGN/l4_features/l4_campaign_top_channel_features/
+#  filepath: /mnt/customer360-blob-output/C360/CAMPAIGN/l4_features/l4_campaign_top_channel_features/
 #  save_args:
 #    mode: "overwrite"
 #    partitionBy: ["start_of_week"]
@@ -20,8 +20,8 @@
 l4_campaign_postpaid_prepaid_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  filepath: /mnt/customer360-blob-output/C360/CAMPAIGN/l4_features/l4_campaign_postpaid_prepaid_features/
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -34,8 +34,8 @@ l4_campaign_postpaid_prepaid_features:
 l4_campaign_top_channel_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/CAMPAIGN/l4_features/l4_campaign_top_channel_features/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  filepath: /mnt/customer360-blob-output/C360/CAMPAIGN/l4_features/l4_campaign_top_channel_features/
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"

@@ -4,6 +4,7 @@ from customer360.utilities.config_parser import expansion
 from kedro.context.context import load_context
 from pathlib import Path
 import logging, os
+from customer360.utilities.spark_util import get_spark_empty_df
 
 conf = os.getenv("CONF", None)
 
@@ -20,6 +21,10 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     :param dictObj_2:
     :return:
     """
+
+    if len(l1_campaign_post_pre_fbb_daily.head(1)) == 0 or len(l1_campaign_top_channel_daily.head(1)) == 0:
+        return [get_spark_empty_df(), get_spark_empty_df()]
+
 
     def divide_chunks(l, n):
         # looping till length l
