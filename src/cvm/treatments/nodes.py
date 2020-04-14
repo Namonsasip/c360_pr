@@ -120,8 +120,7 @@ def produce_treatments(
         use_case:string,
         macrosegment:string,
         microsegment:string,
-        campaign_code1:string,
-        key_date:string
+        campaign_code1:string
         """,
     )
 
