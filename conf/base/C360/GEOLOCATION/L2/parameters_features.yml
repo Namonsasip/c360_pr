@@ -12,7 +12,7 @@ l2_number_of_location_with_transactions: #397
   granularity: "start_of_week,imsi,distinct_list"
 
 
-l2_voice_distance_daily: #425-428
+l2_voice_distance_daily: #425,426,427,428
   where_clause: ""
   feature_list:
     call_count_list: "first(sum_list)"
@@ -32,3 +32,33 @@ l2_first_data_session_cell_identifier: #470
     lac: "lac"
     ci: "ci"
   granularity: ""
+
+l2_data_distance_weekly: #473,476,479
+  where_clause: ""
+  feature_list:
+    call_count_list: "first(sum_list)"
+    average_distance: "first(avg_distance)"
+    minimum_distance: "first(min_distance)"
+    maximum_distance: "first(max_distance)"
+#    standard_deviation_distance: "first(stdev_distance)"
+  granularity: "start_of_week,mobile_no"
+
+l2_data_distance_weekday_weekly: #471,474,477
+  where_clause: ""
+  feature_list:
+    call_count_list: "first(sum_list)"
+    average_distance: "first(avg_distance)"
+    minimum_distance: "first(min_distance)"
+    maximum_distance: "first(max_distance)"
+  #    standard_deviation_distance: "first(stdev_distance)"
+  granularity: "start_of_week,mobile_no"
+
+l2_data_distance_weekend_weekly: #472,475,478
+  where_clause: ""
+  feature_list:
+    call_count_list: "first(sum_list)"
+    average_distance: "first(avg_distance)"
+    minimum_distance: "first(min_distance)"
+    maximum_distance: "first(max_distance)"
+  #    standard_deviation_distance: "first(stdev_distance)"
+  granularity: "start_of_week,mobile_no"

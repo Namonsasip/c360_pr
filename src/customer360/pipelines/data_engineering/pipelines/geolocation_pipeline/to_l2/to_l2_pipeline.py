@@ -45,5 +45,30 @@ def geo_to_l2_pipeline(**kwargs):
 
             ),
 
+            node(
+                l2_geo_data_distance_weekly,
+                ["l1_geo_usage_sum_data_location_dow_intermediate",
+                 "params:l2_data_distance_weekly"],
+                "l2_geo_data_distance_weekly"
+
+            ),
+
+            node(
+                l2_geo_data_distance_weekday_weekly,
+                ["l1_geo_usage_sum_data_location_dow_intermediate",
+                 "params:l2_data_distance_weekday_weekly"],
+                "l2_geo_data_distance_weekday_weekly"
+
+            ),
+
+            node(
+                l2_geo_data_distance_weekend_weekly,
+                ["l1_geo_usage_sum_data_location_dow_intermediate",
+                 "params:l2_data_distance_weekend_weekly"],
+                "l2_geo_data_distance_weekend_weekly"
+
+            ),
+
+
         ], name="geo_to_l2_pipeline"
     )

@@ -10,7 +10,7 @@ l1_number_of_location_with_transactions: #397
     num_location_with_transactions: "size(location_list)"
   granularity: "event_partition_date,imsi,location_list"
 
-l1_voice_distance_daily: #425-428
+l1_voice_distance_daily: #425,426,427,428
   where_clause: ""
   feature_list:
     call_count_list: "first(sum_list)"
@@ -31,3 +31,32 @@ l1_first_data_session_cell_identifier: #470
     ci: "ci"
   granularity: ""
 
+l1_data_distance_daily: #473,476,479
+  where_clause: ""
+  feature_list:
+    call_count_list: "first(sum_list)"
+    average_distance: "first(avg_distance)"
+    minimum_distance: "first(min_distance)"
+    maximum_distance: "first(max_distance)"
+#    standard_deviation_distance: "first(stdev_distance)"
+  granularity: "event_partition_date,mobile_no"
+
+l1_data_distance_weekday_daily: #471,474,477
+  where_clause: ""
+  feature_list:
+    call_count_list: "first(sum_list)"
+    average_distance: "first(avg_distance)"
+    minimum_distance: "first(min_distance)"
+    maximum_distance: "first(max_distance)"
+  #    standard_deviation_distance: "first(stdev_distance)"
+  granularity: "event_partition_date,mobile_no"
+
+l1_data_distance_weekend_daily: #472,475,478
+  where_clause: ""
+  feature_list:
+    call_count_list: "first(sum_list)"
+    average_distance: "first(avg_distance)"
+    minimum_distance: "first(min_distance)"
+    maximum_distance: "first(max_distance)"
+  #    standard_deviation_distance: "first(stdev_distance)"
+  granularity: "event_partition_date,mobile_no"

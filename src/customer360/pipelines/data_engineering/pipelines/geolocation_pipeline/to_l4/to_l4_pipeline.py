@@ -30,5 +30,32 @@ def geo_to_l4_pipeline(**kwargs):
                 "l4_geo_voice_distance_daily"
             ),
 
+            node(
+                l4_rolling_window,
+                ["l2_geo_data_distance_weekly",
+                 "params:l4_data_distance_monthly"],
+                "l4_geo_data_distance"
+
+            ),
+
+            node(
+                l4_rolling_window,
+                ["l2_geo_data_distance_weekday_weekly",
+                 "params:l4_data_distance_monthly"],
+                "l4_geo_data_distance_weekday"
+
+            ),
+
+            node(
+                l4_rolling_window,
+                ["l2_geo_data_distance_weekend_weekly",
+                 "params:l4_data_distance_monthly"],
+                "l4_geo_data_distance_weekend"
+
+            ),
+
+
+
+
         ], name="geo_to_l4_pipeline"
     )

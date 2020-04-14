@@ -46,13 +46,6 @@ def geo_to_l1_pipeline(**kwargs):
 
             ),
 
-            node(
-                l1_geo_data_distance_daily_intermediate,
-                ["l0_usage_sum_data_location_daily",
-                 ],
-                "l1_geo_data_distance_daily_intermediate"
-
-            ),
 
 
             node(
@@ -63,6 +56,37 @@ def geo_to_l1_pipeline(**kwargs):
 
             ),
 
+            node(
+                l1_usage_sum_data_location_dow_intermediate,
+                ["l0_usage_sum_data_location_daily",
+               ],
+                "l1_geo_usage_sum_data_location_dow_intermediate"
+
+            ),
+
+            node(
+                l1_geo_data_distance_daily,
+                ["l1_geo_usage_sum_data_location_dow_intermediate",
+                 "params:l1_data_distance_daily"],
+                "l1_geo_data_distance_daily"
+
+            ),
+
+            node(
+                l1_geo_data_distance_weekday_daily,
+                ["l1_geo_usage_sum_data_location_dow_intermediate",
+                 "params:l1_data_distance_weekday_daily"],
+                "l1_geo_data_distance_weekday_daily"
+
+            ),
+
+            node(
+                l1_geo_data_distance_weekend_daily,
+                ["l1_geo_usage_sum_data_location_dow_intermediate",
+                 "params:l1_data_distance_weekend_daily"],
+                "l1_geo_data_distance_weekend_daily"
+
+            ),
 
         ], name="geo_to_l1_pipeline"
     )

@@ -4,7 +4,7 @@ l3_number_of_bs_used: #396
     number_of_bs_used: "count(distinct(cell_id))"
   granularity: "start_of_month,imsi"
 
-l3_voice_distance_daily: #425-428
+l3_voice_distance_daily: #425,426,427,428
   where_clause: ""
   feature_list:
     call_count_list: "first(sum_list)"
@@ -24,3 +24,33 @@ l3_first_data_session_cell_identifier: #470
     lac: "lac"
     ci: "ci"
   granularity: ""
+
+l3_data_distance_monthly: #473,476,479
+  where_clause: ""
+  feature_list:
+    call_count_list: "first(sum_list)"
+    average_distance: "first(avg_distance)"
+    minimum_distance: "first(min_distance)"
+    maximum_distance: "first(max_distance)"
+#    standard_deviation_distance: "first(stdev_distance)"
+  granularity: "start_of_month,mobile_no"
+
+l3_data_distance_weekday_monthly: #471,474,477
+  where_clause: ""
+  feature_list:
+    call_count_list: "first(sum_list)"
+    average_distance: "first(avg_distance)"
+    minimum_distance: "first(min_distance)"
+    maximum_distance: "first(max_distance)"
+  #    standard_deviation_distance: "first(stdev_distance)"
+  granularity: "start_of_month,mobile_no"
+
+l3_data_distance_weekend_monthly: #472,475,478
+  where_clause: ""
+  feature_list:
+    call_count_list: "first(sum_list)"
+    average_distance: "first(avg_distance)"
+    minimum_distance: "first(min_distance)"
+    maximum_distance: "first(max_distance)"
+  #    standard_deviation_distance: "first(stdev_distance)"
+  granularity: "start_of_month,mobile_no"

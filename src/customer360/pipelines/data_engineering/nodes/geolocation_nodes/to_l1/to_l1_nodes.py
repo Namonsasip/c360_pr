@@ -13,13 +13,11 @@ from customer360.utilities.re_usable_functions import add_start_of_week_and_mont
 
 
 def l1_int_number_of_bs_used(input_df):
-    # df = input_df.select('imsi', 'cell_id', 'time_in')
     df = input_df.select('imsi', 'cell_id', 'partition_date')
-    # df = df.withColumn("event_partition_date", f.to_date('time_in')) \
-    df = df.withColumn('event_partition_date', f.to_date(df.partition_date.cast("string"), 'yyyyMMdd')) \
+    df = df.withColumn('event_partition_date',
+                       f.to_date(df.partition_date.cast("string"), 'yyyyMMdd')) \
         .groupby("imsi", "event_partition_date") \
         .agg(F.collect_set("cell_id").alias('cell_id_list'))
-    # df = df.select('*', F.size('cell_id_list'))
 
     return df
 
@@ -98,4 +96,111 @@ def l1_geo_data_distance_daily_intermediate(df):
 def l1_first_data_session_cell_identifier_daily(df, sql):
     df = df.selectExpr('*', 'row_number() over(partition by mobile_no,date_id order by hour_id ASC) as rank')
     df = node_from_config(df, sql)
+    return df
+
+
+def l1_usage_sum_data_location_dow_intermediate(df):
+    df = df.groupBy('date_id', 'mobile_no', 'lac', 'ci').agg(F.sum('no_of_call').alias('sum_call'))
+    df = add_start_of_week_and_month(df, "date_id")
+    df = df.withColumn("day_of_week", F.date_format(F.col("event_partition_date"), "u"))
+    return df
+
+def l1_geo_data_distance_daily(df,sql):
+    df = (df.groupBy('mobile_no', 'event_partition_date').agg(F.collect_list('sum_call').alias('sum_list')
+                                                                      , F.max('sum_call').alias('max')))
+    df = df.withColumn('sorted_sum', F.array_sort("sum_list"))
+    df = df.withColumn('length_without_max', F.size(df.sorted_sum) - 1)
+    df = df.withColumn('list_without_max', F.expr("slice(sorted_sum, 1, length_without_max)"))
+    distance = F.udf(lambda x, y: [y - i for i in x], T.ArrayType(T.FloatType()))
+    df = df \
+        .withColumn('distance_list', distance('list_without_max', 'max'))
+
+    df = df.withColumn('max_distance', F.array_max('distance_list')) \
+        .withColumn('min_distance', F.array_min('distance_list'))
+
+    # stdev_udf = F.udf(lambda x: None if len(x) < 2 or type(x) is not list else statistics.stdev(x))
+
+    query = """aggregate(
+        `{col}`,
+        CAST(0.0 AS double),
+        (acc, x) -> acc + x,
+        acc -> acc / size(`{col}`)
+    ) AS  `avg_distance`""".format(col="distance_list")
+
+    df = df.selectExpr("*", query)
+    # df = df.withColumn('stdev_distance', stdev_udf('distance_list'))
+    df = df.drop('max', 'sorted_sum', 'length_without_max', 'list_without_max', 'distance_list')
+
+
+
+
+    df = node_from_config(df,sql)
+
+    return df
+
+def l1_geo_data_distance_weekday_daily(df,sql):
+    df=df.where('day_of_week in (1,2,3,4,5)')
+    df = (df.groupBy('mobile_no', 'event_partition_date').agg(F.collect_list('sum_call').alias('sum_list')
+                                                                      , F.max('sum_call').alias('max')))
+    df = df.withColumn('sorted_sum', F.array_sort("sum_list"))
+    df = df.withColumn('length_without_max', F.size(df.sorted_sum) - 1)
+    df = df.withColumn('list_without_max', F.expr("slice(sorted_sum, 1, length_without_max)"))
+    distance = F.udf(lambda x, y: [y - i for i in x], T.ArrayType(T.FloatType()))
+    df = df \
+        .withColumn('distance_list', distance('list_without_max', 'max'))
+
+    df = df.withColumn('max_distance', F.array_max('distance_list')) \
+        .withColumn('min_distance', F.array_min('distance_list'))
+
+    # stdev_udf = F.udf(lambda x: None if len(x) < 2 or type(x) is not list else statistics.stdev(x))
+
+    query = """aggregate(
+        `{col}`,
+        CAST(0.0 AS double),
+        (acc, x) -> acc + x,
+        acc -> acc / size(`{col}`)
+    ) AS  `avg_distance`""".format(col="distance_list")
+
+    df = df.selectExpr("*", query)
+    # df = df.withColumn('stdev_distance', stdev_udf('distance_list'))
+    df = df.drop('max', 'sorted_sum', 'length_without_max', 'list_without_max', 'distance_list')
+
+    df = node_from_config(df, sql)
+    return df
+
+def l1_geo_data_distance_weekend_daily(df,sql):
+    df = df.where('day_of_week in (6,7)')
+    df = (df.groupBy('mobile_no', 'event_partition_date').agg(F.collect_list('sum_call').alias('sum_list')
+                                                                      , F.max('sum_call').alias('max')))
+    df = df.withColumn('sorted_sum', F.array_sort("sum_list"))
+    df = df.withColumn('length_without_max', F.size(df.sorted_sum) - 1)
+    df = df.withColumn('list_without_max', F.expr("slice(sorted_sum, 1, length_without_max)"))
+    distance = F.udf(lambda x, y: [y - i for i in x], T.ArrayType(T.FloatType()))
+    df = df \
+        .withColumn('distance_list', distance('list_without_max', 'max'))
+
+    df = df.withColumn('max_distance', F.array_max('distance_list')) \
+        .withColumn('min_distance', F.array_min('distance_list'))
+
+    # stdev_udf = F.udf(lambda x: None if len(x) < 2 or type(x) is not list else statistics.stdev(x))
+
+    query = """aggregate(
+        `{col}`,
+        CAST(0.0 AS double),
+        (acc, x) -> acc + x,
+        acc -> acc / size(`{col}`)
+    ) AS  `avg_distance`""".format(col="distance_list")
+
+    df = df.selectExpr("*", query)
+    # df = df.withColumn('stdev_distance', stdev_udf('distance_list'))
+    df = df.drop('max', 'sorted_sum', 'length_without_max', 'list_without_max', 'distance_list')
+
+
+    print('b4node')
+    df.show(88, False)
+    df = node_from_config(df, sql)
+
+    print('testnodefromconfig')
+    df.show(88,False)
+
     return df

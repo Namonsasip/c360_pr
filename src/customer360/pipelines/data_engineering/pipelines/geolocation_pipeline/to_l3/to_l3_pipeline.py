@@ -25,5 +25,29 @@ def geo_to_l3_pipeline(**kwargs):
 
             ),
 
+            node(
+                l3_geo_data_distance_monthly,
+                ["l1_geo_usage_sum_data_location_dow_intermediate",
+                 "params:l3_data_distance_monthly"],
+                "l3_geo_data_distance_monthly"
+
+            ),
+
+            node(
+                l3_geo_data_distance_weekday_monthly,
+                ["l1_geo_usage_sum_data_location_dow_intermediate",
+                 "params:l3_data_distance_weekday_monthly"],
+                "l3_geo_data_distance_weekday_monthly"
+
+            ),
+
+            node(
+                l3_geo_data_distance_weekend_monthly,
+                ["l1_geo_usage_sum_data_location_dow_intermediate",
+                 "params:l3_data_distance_weekend_monthly"],
+                "l3_geo_data_distance_weekend_monthly"
+
+            ),
+
         ], name="geo_to_l3_pipeline"
     )
