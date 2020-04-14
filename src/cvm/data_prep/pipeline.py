@@ -89,7 +89,7 @@ def create_users_from_active(sample_type: str) -> Pipeline:
                 create_users_from_active_users,
                 [
                     "active_users_sample_" + sample_type,
-                    "l0_product_product_pru_m_package_master_group",
+                    "l0_product_pru_m_package_master_group",
                     "params:" + sample_type,
                 ],
                 "cvm_users_list_" + sample_type,
