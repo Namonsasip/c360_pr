@@ -38,29 +38,39 @@ from cvm.treatments.pipeline import generate_treatments
 from nba.model_input.model_input_pipeline import create_nba_model_input_pipeline
 from nba.models.models_pipeline import create_nba_models_pipeline
 
-from nba.report.pipelines.campaign_importance_volume_pipeline import campaign_importance_volume
+from nba.report.pipelines.campaign_importance_volume_pipeline import \
+    campaign_importance_volume
 from nba.report.pipelines.report_pipeline import create_use_case_view_report_data
 
-from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l1.to_l1_pipeline import (
+from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l1 \
+    .to_l1_pipeline import (
     billing_to_l1_pipeline,
 )
-from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l2.to_l2_pipeline import (
+from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l2 \
+    .to_l2_pipeline import (
     billing_to_l2_pipeline,
 )
-from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l3.to_l3_pipeline import (
+from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l3 \
+    .to_l3_pipeline import (
     billing_to_l3_pipeline,
 )
-from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4.to_l4_pipeline_daily import *
-from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4.to_l4_pipeline_monthly import *
-from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4.to_l4_pipeline_weekly import *
-from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l1.to_l1_pipeline import (
+from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4 \
+    .to_l4_pipeline_daily import *
+from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4 \
+    .to_l4_pipeline_monthly import *
+from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4 \
+    .to_l4_pipeline_weekly import *
+from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l1 \
+    .to_l1_pipeline import (
     customer_profile_to_l1_pipeline,
 )
-from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l3.to_l3_pipeline import (
+from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l3 \
+    .to_l3_pipeline import (
     customer_profile_to_l3_pipeline,
     customer_profile_billing_level_to_l3_pipeline,
 )
-from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l4.to_l4_pipeline import (
+from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l4 \
+    .to_l4_pipeline import (
     customer_profile_to_l4_pipeline,
 )
 from .pipelines.data_engineering.pipelines.campaign_pipeline.to_l1 import (
@@ -72,24 +82,30 @@ from .pipelines.data_engineering.pipelines.campaign_pipeline.to_l2 import (
 from .pipelines.data_engineering.pipelines.campaign_pipeline.to_l4 import (
     campaign_to_l4_pipeline,
 )
-from .pipelines.data_engineering.pipelines.complaints_pipeline.to_l1.to_l1_pipeline import (
+from .pipelines.data_engineering.pipelines.complaints_pipeline.to_l1.to_l1_pipeline \
+    import (
     complaints_to_l1_pipeline,
 )
-from .pipelines.data_engineering.pipelines.complaints_pipeline.to_l2.to_l2_pipeline import (
+from .pipelines.data_engineering.pipelines.complaints_pipeline.to_l2.to_l2_pipeline \
+    import (
     complaints_to_l2_pipeline,
 )
-from .pipelines.data_engineering.pipelines.complaints_pipeline.to_l3.to_l3_pipeline import (
+from .pipelines.data_engineering.pipelines.complaints_pipeline.to_l3.to_l3_pipeline \
+    import (
     complaints_to_l3_pipeline,
 )
 
-from .pipelines.data_engineering.pipelines.complaints_pipeline.to_l4.to_l4_pipeline import (
+from .pipelines.data_engineering.pipelines.complaints_pipeline.to_l4.to_l4_pipeline \
+    import (
     complaints_to_l4_pipeline,
 )
 
-# from .pipelines.data_engineering.pipelines.device_pipeline.to_l2.to_l2_pipeline import (
+# from .pipelines.data_engineering.pipelines.device_pipeline.to_l2.to_l2_pipeline
+# import (
 #     device_to_l2_pipeline,
 # )
-# from .pipelines.data_engineering.pipelines.device_pipeline.to_l3.to_l3_pipeline import (
+# from .pipelines.data_engineering.pipelines.device_pipeline.to_l3.to_l3_pipeline
+# import (
 #     device_to_l3_pipeline,
 # )
 from .pipelines.data_engineering.pipelines.revenue_pipeline.to_l3 import (
@@ -110,16 +126,20 @@ from .pipelines.data_engineering.pipelines.stream_pipeline.to_l3.to_l3_pipeline 
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l4.to_l4_pipeline import (
     streaming_to_l4_pipeline,
 )
-from .pipelines.data_engineering.pipelines.touchpoints_pipeline.to_l1.to_l1_pipeline import (
+from .pipelines.data_engineering.pipelines.touchpoints_pipeline.to_l1.to_l1_pipeline \
+    import (
     touchpoints_to_l1_pipeline,
 )
-from .pipelines.data_engineering.pipelines.touchpoints_pipeline.to_l2.to_l2_pipeline import (
+from .pipelines.data_engineering.pipelines.touchpoints_pipeline.to_l2.to_l2_pipeline \
+    import (
     touchpoints_to_l2_pipeline,
 )
-from .pipelines.data_engineering.pipelines.touchpoints_pipeline.to_l3.to_l3_pipeline import (
+from .pipelines.data_engineering.pipelines.touchpoints_pipeline.to_l3.to_l3_pipeline \
+    import (
     touchpoints_to_l3_pipeline,
 )
-from .pipelines.data_engineering.pipelines.touchpoints_pipeline.to_l4.to_l4_pipeline import (
+from .pipelines.data_engineering.pipelines.touchpoints_pipeline.to_l4.to_l4_pipeline \
+    import (
     touchpoints_to_l4_pipeline,
 )
 from .pipelines.data_engineering.pipelines.usage_pipeline.to_l1 import (
@@ -143,36 +163,46 @@ from .pipelines.data_engineering.pipelines.device_pipeline import (
 from .pipelines.data_engineering.pipelines.digital_pipeline import (
     digital_to_l3_pipeline, digital_to_l4_pipeline
 )
-from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l1.to_l1_pipeline import *
-from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l2.to_l2_pipeline import *
-from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l3.to_l3_pipeline import *
-from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l4.to_l4_pipeline import *
+from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l1.to_l1_pipeline \
+    import *
+from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l2.to_l2_pipeline \
+    import *
+from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l3.to_l3_pipeline \
+    import *
+from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l4.to_l4_pipeline \
+    import *
 
-from .pipelines.data_engineering.pipelines.network_pipeline.to_l1.to_l1_pipeline import (
+from .pipelines.data_engineering.pipelines.network_pipeline.to_l1.to_l1_pipeline \
+    import (
     network_to_l1_pipeline,
 )
-from .pipelines.data_engineering.pipelines.network_pipeline.to_l2.to_l2_pipeline import (
+from .pipelines.data_engineering.pipelines.network_pipeline.to_l2.to_l2_pipeline \
+    import (
     network_to_l2_pipeline,
 )
-from .pipelines.data_engineering.pipelines.network_pipeline.to_l3.to_l3_pipeline import (
+from .pipelines.data_engineering.pipelines.network_pipeline.to_l3.to_l3_pipeline \
+    import (
     network_to_l3_pipeline,
 )
-from .pipelines.data_engineering.pipelines.network_pipeline.to_l4.to_l4_pipeline import (
+from .pipelines.data_engineering.pipelines.network_pipeline.to_l4.to_l4_pipeline \
+    import (
     network_to_l4_pipeline,
 )
-from .pipelines.data_engineering.pipelines.product_pipeline.to_l1.to_l1_pipeline import (
+from .pipelines.data_engineering.pipelines.product_pipeline.to_l1.to_l1_pipeline \
+    import (
     product_to_l1_pipeline,
 )
-from .pipelines.data_engineering.pipelines.product_pipeline.to_l2.to_l2_pipeline import (
+from .pipelines.data_engineering.pipelines.product_pipeline.to_l2.to_l2_pipeline \
+    import (
     product_to_l2_pipeline,
 )
-from .pipelines.data_engineering.pipelines.product_pipeline.to_l4.to_l4_pipeline import (
+from .pipelines.data_engineering.pipelines.product_pipeline.to_l4.to_l4_pipeline \
+    import (
     product_to_l4_pipeline,
 )
 
 
 def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
-
     return {
         # "__default__": usage_to_l1_pipeline()
         # + usage_to_l2_pipeline()
@@ -196,7 +226,8 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "usage_to_l4_pipeline": usage_to_l4_pipeline(),
         "customer_profile_to_l1_pipeline": customer_profile_to_l1_pipeline(),
         "customer_profile_to_l3_pipeline": customer_profile_to_l3_pipeline(),
-        "customer_profile_billing_level_to_l3_pipeline": customer_profile_billing_level_to_l3_pipeline(),
+        "customer_profile_billing_level_to_l3_pipeline":
+            customer_profile_billing_level_to_l3_pipeline(),
         "customer_profile_to_l4_pipeline": customer_profile_to_l4_pipeline(),
         "usage_to_l1_pipeline": usage_to_l1_pipeline(),
         "billing_to_l1_pipeline": billing_to_l1_pipeline(),
@@ -252,17 +283,19 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "cvm_train_model": train_model(),
         "cvm_score_model": score_model(),
         "cvm_treatments": generate_treatments(),
-        "cvm_full_scoring": score_model() + generate_treatments(),
+        "cvm_full_training": training_data_prepare + preprocessing_fit()
+                             + train_model(),
+        "cvm_full_scoring": scoring_data_prepare + preprocessing_transform()
+                            + score_model() + generate_treatments(),
     }
-
 
 
 def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
     return {
         "__default__": create_use_case_view_report_data()
-        + create_nba_model_input_pipeline()
-        + create_nba_models_pipeline()
-        + campaign_importance_volume()
+                       + create_nba_model_input_pipeline()
+                       + create_nba_models_pipeline()
+                       + campaign_importance_volume()
     }
 
 
@@ -279,9 +312,9 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
     all_pipelines = {}
 
     for pipeline_name, pipeline_object in itertools.chain(
-        create_c360_pipeline(**kwargs).items(),
-        create_cvm_pipeline(**kwargs).items(),
-      #  create_nba_pipeline(**kwargs).items(),
+            create_c360_pipeline(**kwargs).items(),
+            create_cvm_pipeline(**kwargs).items(),
+            #  create_nba_pipeline(**kwargs).items(),
     ):
         # If many pipelines have nodes under the same modular
         # pipeline, combine the results
