@@ -113,7 +113,16 @@ def produce_treatments(
     treatments = pandas.merge(
         df, treatment_dictionary, on=["microsegment", "macrosegment"], how="left"
     )
-    treatments_df = get_spark_session().createDataFrame(treatments)
+    treatments_df = get_spark_session().createDataFrame(
+        treatments,
+        schema="""subscription_identifier:string,
+                    use_case:string,
+                    macrosegment:string,
+                    microsegment:string,
+                    campaign_code1:string,
+                    key_date:string
+                    """,
+    )
 
     # filter those that were recently targeted
     today = date.today().strftime("%Y-%m-%d")
