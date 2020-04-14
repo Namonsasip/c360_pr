@@ -8,7 +8,7 @@ def device_to_l1_pipeline(**kwargs):
         [
             node(
                 generate_l1_layer,
-                ["l0_devices_summary_customer_handset", "l1_customer_profile_union_daily_feature"],
+                ["l0_devices_summary_customer_handset", "l1_customer_profile_union_daily_feature_for_device"],
                 "l1_devices_summary_customer_handset_daily"
             ),
         ], name="device_to_l1_pipeline"

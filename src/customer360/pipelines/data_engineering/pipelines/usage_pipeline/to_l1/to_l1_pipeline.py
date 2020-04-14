@@ -43,15 +43,27 @@ from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1 import build
 def usage_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
+            # node(
+            #     usage_outgoing_ir_call_pipeline,
+            #     ["l0_usage_call_relation_sum_ir_daily",
+            #      "params:l1_usage_outgoing_call_relation_sum_ir_daily"],
+            #     "l1_usage_outgoing_call_relation_sum_ir_daily"
+            # ),
             node(
                 usage_outgoing_ir_call_pipeline,
-                ["l0_usage_call_relation_sum_ir_daily",
+                ["l0_usage_call_relation_sum_ir_daily_outgoing",
                  "params:l1_usage_outgoing_call_relation_sum_ir_daily"],
                 "l1_usage_outgoing_call_relation_sum_ir_daily"
             ),
+            # node(
+            #     usage_incoming_ir_call_pipeline,
+            #     ["l0_usage_call_relation_sum_ir_daily",
+            #      "params:l1_usage_incoming_call_relation_sum_ir_daily"],
+            #     "l1_usage_incoming_call_relation_sum_ir_daily"
+            # ),
             node(
                 usage_incoming_ir_call_pipeline,
-                ["l0_usage_call_relation_sum_ir_daily",
+                ["l0_usage_call_relation_sum_ir_daily_incoming",
                  "params:l1_usage_incoming_call_relation_sum_ir_daily"],
                 "l1_usage_incoming_call_relation_sum_ir_daily"
             ),
@@ -68,7 +80,7 @@ def usage_to_l1_pipeline(**kwargs):
             ),
             node(
                 build_data_for_prepaid_postpaid_vas, ['l0_usage_pps_v_ru_a_vas_nonvoice_daily',
-                                                      'l0_usage_ru_a_vas_postpaid_usg_daily'],
+                                                      'l0_usage_ru_a_vas_postpaid_usg_daily_prepaid_postpaid_merged'],
                 'vas_postpaid_prepaid_merged_stg'
             ),
             node(
@@ -76,15 +88,27 @@ def usage_to_l1_pipeline(**kwargs):
                                    "params:l1_usage_ru_a_vas_postpaid_prepaid_daily"],
                 'l1_usage_ru_a_vas_postpaid_prepaid_daily'
             ),
+            # node(
+            #     usage_outgoing_call_pipeline,
+            #     ["l0_usage_call_relation_sum_daily",
+            #      "params:l1_usage_outgoing_call_relation_sum_daily"],
+            #     "l1_usage_outgoing_call_relation_sum_daily"
+            # ),
             node(
                 usage_outgoing_call_pipeline,
-                ["l0_usage_call_relation_sum_daily",
+                ["l0_usage_call_relation_sum_daily_outgoing",
                  "params:l1_usage_outgoing_call_relation_sum_daily"],
                 "l1_usage_outgoing_call_relation_sum_daily"
             ),
+            # node(
+            #     usage_incoming_call_pipeline,
+            #     ["l0_usage_call_relation_sum_daily",
+            #      "params:l1_usage_incoming_call_relation_sum_daily"],
+            #     "l1_usage_incoming_call_relation_sum_daily"
+            # ),
             node(
                 usage_incoming_call_pipeline,
-                ["l0_usage_call_relation_sum_daily",
+                ["l0_usage_call_relation_sum_daily_incoming",
                  "params:l1_usage_incoming_call_relation_sum_daily"],
                 "l1_usage_incoming_call_relation_sum_daily"
             ),
@@ -92,7 +116,7 @@ def usage_to_l1_pipeline(**kwargs):
                 'l1_usage_outgoing_call_relation_sum_daily', 'l1_usage_incoming_call_relation_sum_daily',
                 'l1_usage_outgoing_call_relation_sum_ir_daily', 'l1_usage_incoming_call_relation_sum_ir_daily',
                 'l1_usage_ru_a_gprs_cbs_usage_daily', 'l1_usage_ru_a_vas_postpaid_usg_daily',
-                'l1_usage_ru_a_vas_postpaid_prepaid_daily', 'l1_customer_profile_union_daily_feature'
+                'l1_usage_ru_a_vas_postpaid_prepaid_daily', 'l1_customer_profile_union_daily_feature_for_usage'
             ],
                  'l1_usage_postpaid_prepaid_daily'
                  )

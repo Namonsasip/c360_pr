@@ -10,7 +10,7 @@ def loyalty_to_l3_pipeline(**kwargs):
             # Number of services for each category
             node(
                 node_from_config,
-                ["l1_loyalty_number_of_services",
+                ["l1_loyalty_number_of_services_for_l3_loyalty_number_of_services",
                  "params:l3_loyalty_number_of_services_monthly"],
                  "l3_loyalty_number_of_services"
             ),
@@ -18,7 +18,7 @@ def loyalty_to_l3_pipeline(**kwargs):
             # Number of rewards for each category
             node(
                 node_from_config,
-                ["l1_loyalty_number_of_rewards",
+                ["l1_loyalty_number_of_rewards_for_l3_loyalty_number_of_rewards",
                  "params:l3_loyalty_number_of_rewards_monthly"],
                 "l3_loyalty_number_of_rewards"
             ),
@@ -26,7 +26,7 @@ def loyalty_to_l3_pipeline(**kwargs):
             # # Number of points spend for each category
             node(
                 node_from_config,
-                ["l1_loyalty_number_of_points_spend",
+                ["l1_loyalty_number_of_points_spend_for_l3_loyalty_number_of_points_spend",
                  "params:l3_loyalty_number_of_points_spend_monthly"],
                 "l3_loyalty_number_of_points_spend"
             ),
@@ -34,8 +34,8 @@ def loyalty_to_l3_pipeline(**kwargs):
             # Serenade class monthly
             node(
                 loyalty_serenade_class,
-                ["l0_loyalty_priv_customer_profile",
-                 "l3_customer_profile_include_1mo_non_active",
+                ["l0_loyalty_priv_customer_profile_for_l3_loyalty_serenade_class",
+                 "l3_customer_profile_include_1mo_non_active_for_l3_loyalty_serenade_class",
                  "params:l3_loyalty_serenade_class_monthly"],
                 "l3_loyalty_serenade_class"
             ),
