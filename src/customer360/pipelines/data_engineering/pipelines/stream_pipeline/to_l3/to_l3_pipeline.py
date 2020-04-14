@@ -34,6 +34,7 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 from kedro.pipeline import Pipeline, node
 
 from customer360.utilities.config_parser import node_from_config, expansion
+from customer360.utilities.re_usable_functions import l3_massive_processing
 from customer360.pipelines.data_engineering.nodes.stream_nodes.to_l3.to_l3_nodes import generate_l3_fav_streaming_day
 
 
@@ -106,9 +107,10 @@ def streaming_to_l3_pipeline(**kwargs):
                 "int_l3_streaming_tv_show_features"
             ),
             node(
-                node_from_config,
+                l3_massive_processing,
                 ["int_l3_streaming_tv_show_features",
-                 "params:l3_streaming_fav_tv_show_by_episode_watched"],
+                 "params:l3_streaming_fav_tv_show_by_episode_watched",
+                 "l3_customer_profile_include_1mo_non_active_for_l3_streaming_fav_tv_show_by_episode_watched"],
                 "l3_streaming_fav_tv_show_by_episode_watched"
             ),
 
