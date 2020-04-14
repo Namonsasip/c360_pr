@@ -129,7 +129,7 @@ def produce_treatments(
     recent_past_date = add_days(today, -parameters["treatment_cadence"])
 
     recent_history = (
-        treatments_history.filter(f"key_date >= '{recent_past_date}")
+        treatments_history.filter(f"key_date >= '{recent_past_date}'")
         .select(["subscription_identifier", "use_case"])
         .distinct()
     )
