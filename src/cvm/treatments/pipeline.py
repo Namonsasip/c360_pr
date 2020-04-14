@@ -65,10 +65,10 @@ def generate_treatments() -> Pipeline:
                     "target_users",
                     "microsegments_scoring",
                     "microsegments_treatments",
-                    "treatments_history",
+                    "treatments_chosen_history",
                     "parameters",
                 ],
-                ["treatments_chosen", "treatments_history"],
+                ["treatments_chosen", "treatments_history2"],
                 name="create_treatments_chosen",
             ),
         ]
