@@ -614,15 +614,34 @@ class TestUnitBilling:
         l2_billing_and_payments_weekly_last_top_up_channel = node_from_config(input_df,
                                                                               var_project_context.catalog.load(
                                                                                   'params:l2_last_topup_channel'))
+
+        l2_billing_and_payments_weekly_last_top_up_channel = l2_billing_and_payments_weekly_last_top_up_channel.withColumn("rn", expr(
+            "row_number() over(partition by start_of_week,access_method_num,register_date order by recharge_time desc)"))
+
+        l2_billing_and_payments_weekly_last_top_up_channel = l2_billing_and_payments_weekly_last_top_up_channel.filter("rn = 1").drop("rn")
         print('l2test')
         l2_billing_and_payments_weekly_last_top_up_channel.orderBy('start_of_week').show(888, False)
-
+        # payments_last_top_up_channel
+        assert \
+            l2_billing_and_payments_weekly_last_top_up_channel.where(
+                "start_of_week = '2020-01-06'").select(
+                "payments_last_top_up_channel").collect()[0][
+                0] == 'Refill on Mobile'
         l3_billing_and_payments_monthly_last_top_up_channel = node_from_config(input_df,
                                                                                var_project_context.catalog.load(
                                                                                    'params:l3_last_topup_channel'))
+
+        l3_billing_and_payments_monthly_last_top_up_channel = l3_billing_and_payments_monthly_last_top_up_channel.withColumn("rn", expr(
+            "row_number() over(partition by start_of_month,access_method_num,register_date order by register_date desc)"))
+
+        l3_billing_and_payments_monthly_last_top_up_channel = l3_billing_and_payments_monthly_last_top_up_channel.filter("rn = 1").drop("rn")
         print('l3test')
         l3_billing_and_payments_monthly_last_top_up_channel.orderBy('start_of_month').show(999, False)
-
+        assert \
+            l3_billing_and_payments_monthly_last_top_up_channel.where(
+                "start_of_month = '2020-03-01'").select(
+                "payments_last_top_up_channel").collect()[0][
+                0] == 'Biz Reward Platform'
         # exit(2)
 
     def test_popular_channel_feature(self, project_context):

@@ -6,7 +6,13 @@ l3_streaming_fav_content_group_by_volume:
     mode: "overwrite"
     partitionBy: ["start_of_month"]
 
-
+l3_streaming_fav_content_group_by_duration:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L3_MONTHLY/STREAM/l3_streaming_fav_content_group_by_duration/
+  file_format: parquet
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["start_of_month"]
 
 l3_streaming_fav_tv_channel_by_volume:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -16,6 +22,13 @@ l3_streaming_fav_tv_channel_by_volume:
     mode: "overwrite"
     partitionBy: ["start_of_month"]
 
+l3_streaming_fav_tv_channel_by_duration:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L3_MONTHLY/STREAM/l3_streaming_fav_tv_channel_by_duration/
+  file_format: parquet
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["start_of_month"]
 
 l3_streaming_fav_tv_show_by_episode_watched:
   type: kedro.contrib.io.pyspark.SparkDataSet
