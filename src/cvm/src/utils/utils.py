@@ -29,6 +29,8 @@ import string
 from random import random
 from typing import Dict, Callable, Any, List
 
+from pyspark.sql import DataFrame
+
 from cvm.src.utils.list_targets import list_targets
 
 
@@ -116,3 +118,19 @@ def get_clean_important_variables(
             col.replace(suffix_list[suffix], "") for col in important_param
         ]
     return important_param
+
+
+def impute_from_parameters(df: DataFrame, parameters: Dict[str, Any],) -> DataFrame:
+    """ Impute columns using dictionary defined in parameters.
+
+    Args:
+        df: Table to impute.
+        parameters: parameters defined in parameters.yml.
+    """
+    default_values = parameters["feature_default_values"]
+    default_values_to_apply = {
+        col_name: default_values[col_name]
+        for col_name in default_values
+        if col_name in df.columns
+    }
+    return df.fillna(default_values_to_apply)
