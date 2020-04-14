@@ -61,8 +61,14 @@ def generate_treatments() -> Pipeline:
             ),
             node(
                 produce_treatments,
-                ["target_users", "microsegments_scoring", "microsegments_treatments"],
-                "treatments_chosen",
+                [
+                    "target_users",
+                    "microsegments_scoring",
+                    "microsegments_treatments",
+                    "treatments_history",
+                    "parameters",
+                ],
+                ["treatments_chosen", "treatments_history"],
                 name="create_treatments_chosen",
             ),
         ]
