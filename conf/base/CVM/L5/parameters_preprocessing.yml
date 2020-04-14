@@ -12,6 +12,9 @@ feature_default_values:
   volatility: 0.3
   last_activity_date: "2019-01-01"
 
+drop_in_preprocessing:
+  - last_activity_date
+
 feature_selection_parameter:
   exclude_col: ['subscription_identifier', 'register_date', 'churn5', 'churn15', 'churn60']
   target_column: ['dilution1', 'dilution2', 'churn30', 'churn45']

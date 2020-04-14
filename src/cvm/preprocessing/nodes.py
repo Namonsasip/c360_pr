@@ -56,6 +56,10 @@ def pipeline_fit(
     df = prepare_key_columns(df)
     important_param = get_clean_important_variables(important_param, parameters)
 
+    # drop columns
+    cols_to_drop = list_intersection(parameters["drop_in_preprocessing"], df.columns)
+    df = df.drop(*cols_to_drop)
+
     # select columns
     columns_cats = classify_columns(df, parameters)
     cols_to_pick = set(
@@ -118,6 +122,10 @@ def pipeline_transform(
 
     df = prepare_key_columns(df)
     important_param = get_clean_important_variables(important_param, parameters)
+
+    # drop columns
+    cols_to_drop = list_intersection(parameters["drop_in_preprocessing"], df.columns)
+    df = df.drop(*cols_to_drop)
 
     # select columns
     columns_cats = classify_columns(df, parameters)
