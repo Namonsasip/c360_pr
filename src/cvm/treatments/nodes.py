@@ -141,4 +141,4 @@ def produce_treatments(
     to_append = treatments_df.withColumn("key_date", func.lit(today))
     treatments_history = treatments_history.union(to_append)
 
-    return treatments_df, treatments_history
+    return treatments, treatments_history
