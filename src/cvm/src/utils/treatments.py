@@ -33,6 +33,7 @@ from pyspark.sql import DataFrame, functions as func, Window
 
 from cvm.src.targets.churn_targets import add_days
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
+from cvm.src.utils.utils import impute_from_parameters
 
 
 def add_microsegment_features(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
@@ -131,7 +132,7 @@ def define_microsegments(df: DataFrame, parameters: Dict[str, Any],) -> DataFram
     log = logging.getLogger(__name__)
     log.info("Defining microsegments")
 
-    df = df.fillna(parameters["feature_default_values"])
+    df = impute_from_parameters(df, parameters)
 
     microsegment_defs = parameters["microsegments"]
     for use_case in microsegment_defs:
