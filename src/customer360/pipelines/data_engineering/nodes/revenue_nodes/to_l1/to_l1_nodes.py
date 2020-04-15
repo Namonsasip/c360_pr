@@ -1,5 +1,4 @@
 from pyspark.sql import DataFrame
-from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, execute_sql
 from pyspark.sql import functions as F
 from customer360.utilities.config_parser import node_from_config
 from kedro.context.context import load_context
@@ -10,8 +9,13 @@ from src.customer360.utilities.spark_util import get_spark_empty_df
 
 conf = os.getenv("CONF", None)
 
-def massive_processing_with_customer(input_df, customer_df, sql):
+def massive_processing_with_customer(input_df: DataFrame
+                                     , customer_df: DataFrame
+                                     , sql:dict) -> DataFrame:
     """
+    :param input_df:
+    :param customer_df:
+    :param sql:
     :return:
     """
 
@@ -42,12 +46,12 @@ def massive_processing_with_customer(input_df, customer_df, sql):
         small_df = data_frame.filter(F.col("partition_date").isin(*[curr_item]))
         small_cus_df = customer_df.filter(F.col("event_partition_date").isin(*[curr_item]))
         output_df = node_from_config(small_df, sql)
-        output_df = small_cus_df.join(output_df, ["access_method_num", "event_partition_date"], "left")
+        output_df = small_cus_df.join(output_df, ["access_method_num", "event_partition_date", "start_of_week"], "left")
         CNTX.catalog.save("l1_revenue_prepaid_pru_f_usage_multi_daily", output_df)
 
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(F.col("partition_date").isin(*[first_item]))
     return_df = node_from_config(return_df, sql)
     small_cus_df = customer_df.filter(F.col("event_partition_date").isin(*[first_item]))
-    return_df =  small_cus_df.join(return_df, ["access_method_num", "event_partition_date"], "left")
+    return_df = small_cus_df.join(return_df, ["access_method_num", "event_partition_date", "start_of_week"], "left")
     return return_df
