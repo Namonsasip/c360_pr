@@ -297,11 +297,11 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             print("Fetching source data")
 
-            if os.path.exists('/dbfs'+filepath):
-                print("Source path exists")
-                src_data = spark.read.load(filepath, self._file_format, **self._load_args)
-            else:
-                raise ValueError("Source path doesn't exists")
+            # if os.path.exists('/dbfs'+filepath):
+            #     print("Source path exists")
+            src_data = spark.read.load(filepath, self._file_format, **self._load_args)
+            # else:
+            #     raise ValueError("Source path doesn't exists")
                 # schema = StructType([])
                 # src_data = spark.createDataFrame(spark.sparkContext.emptyRDD(), schema)
                 # return src_data

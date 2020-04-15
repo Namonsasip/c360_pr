@@ -8,7 +8,7 @@ def union_daily_cust_profile(
         column_to_extract
 ):
     if len(cust_pre.head(1)) == 0 and len(cust_post.head(1)) == 0 and len(cust_non_mobile.head(1)) == 0:
-        return get_spark_empty_df
+        return get_spark_empty_df()
 
     cust_pre.createOrReplaceTempView("cust_pre")
     cust_post.createOrReplaceTempView("cust_post")
