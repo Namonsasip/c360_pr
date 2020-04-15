@@ -10,7 +10,7 @@ l1_complaints_call_to_competitor_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-output/C360/COMPLAINTS/l1_features/l1_complaints_call_to_competitor_features/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -23,7 +23,7 @@ l1_complaints_call_to_competitor_features_for_l2_complaints_call_to_competitor_f
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-output/C360/COMPLAINTS/l1_features/l1_complaints_call_to_competitor_features/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_complaints_call_to_competitor_features'
@@ -36,7 +36,7 @@ l1_complaints_call_to_competitor_features_for_l3_complaints_call_to_competitor_f
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-output/C360/COMPLAINTS/l1_features/l1_complaints_call_to_competitor_features/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_complaints_call_to_competitor_features'
@@ -68,7 +68,7 @@ l1_complaints_nps_after_call:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-output/C360/COMPLAINTS/l1_features/l1_complaints_nps_after_call/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -81,7 +81,7 @@ l1_complaints_nps_after_call_for_l2_complaints_nps_after_call:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-output/C360/COMPLAINTS/l1_features/l1_complaints_nps_after_call/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_complaints_nps_after_call'
@@ -94,7 +94,7 @@ l1_complaints_nps_after_call_for_l3_complaints_nps_after_call:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-output/C360/COMPLAINTS/l1_features/l1_complaints_nps_after_call/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_complaints_nps_after_call'
@@ -115,7 +115,7 @@ l1_complaints_nps_after_chatbot:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-output/C360/COMPLAINTS/l1_features/l1_complaints_nps_after_chatbot/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -127,7 +127,7 @@ l1_complaints_nps_after_chatbot_for_l2_complaints_nps_after_chatbot:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-output/C360/COMPLAINTS/l1_features/l1_complaints_nps_after_chatbot/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_complaints_nps_after_chatbot'
@@ -140,7 +140,7 @@ l1_complaints_nps_after_chatbot_for_l3_complaints_nps_after_chatbot:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-output/C360/COMPLAINTS/l1_features/l1_complaints_nps_after_chatbot/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_complaints_nps_after_chatbot'
@@ -161,7 +161,7 @@ l1_complaints_nps_after_store_visit:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-output/C360/COMPLAINTS/l1_features/l1_complaints_nps_after_store_visit/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -174,7 +174,7 @@ l1_complaints_nps_after_store_visit_for_l2_complaints_nps_after_store_visit:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-output/C360/COMPLAINTS/l1_features/l1_complaints_nps_after_store_visit/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_complaints_nps_after_store_visit'
@@ -187,7 +187,7 @@ l1_complaints_nps_after_store_visit_for_l3_complaints_nps_after_store_visit:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-output/C360/COMPLAINTS/l1_features/l1_complaints_nps_after_store_visit/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_complaints_nps_after_store_visit'

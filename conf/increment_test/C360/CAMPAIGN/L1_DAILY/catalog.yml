@@ -22,7 +22,7 @@ l1_campaign_post_pre_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-output/C360/CAMPAIGN/l1_features/l1_campaign_post_pre_daily/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_campaign_postpaid_prepaid_weekly'
@@ -42,7 +42,7 @@ l1_campaign_top_channel_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-output/C360/CAMPAIGN/l1_features/l1_campaign_top_channel_daily/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_campaign_top_channel_weekly'
@@ -64,7 +64,7 @@ l1_campaign_top_channel_daily:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
 #  filepath: /mnt/customer360-blob-output/C360/DEVICE/l1_features/l1_devices_summary_customer_handset_daily/
-#  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+#  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
 #  load_args:
 #    increment_flag: 'yes'
 #    lookup_table_name: 'l2_device_summary_with_config_weekly'

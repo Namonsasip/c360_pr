@@ -11,7 +11,7 @@ int_l1_streaming_content_type_features@save:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_content_type_features/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -24,7 +24,7 @@ int_l1_streaming_content_type_features@l1_streaming_fav_content_group_by_volume:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_content_type_features/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_streaming_fav_content_group_by_volume'
@@ -37,7 +37,7 @@ int_l1_streaming_content_type_features@l1_streaming_fav_content_group_by_duratio
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_content_type_features/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_streaming_fav_content_group_by_duration'
@@ -50,7 +50,7 @@ int_l1_streaming_content_type_features_for_int_l2_streaming_content_type_feature
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_content_type_features/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'int_l2_streaming_content_type_features'
@@ -63,7 +63,7 @@ int_l1_streaming_content_type_features_for_l3_streaming_fav_content_group_by_vol
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_content_type_features/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_streaming_fav_content_group_by_volume'
@@ -75,7 +75,7 @@ int_l1_streaming_content_type_features_for_l3_streaming_fav_content_group_by_dur
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_content_type_features/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_streaming_fav_content_group_by_duration'
@@ -96,7 +96,7 @@ l1_streaming_fav_content_group_by_volume:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/l1_streaming_fav_content_group_by_volume/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -119,7 +119,7 @@ l1_streaming_fav_content_group_by_duration:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/l1_streaming_fav_content_group_by_duration/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -141,7 +141,7 @@ int_l1_streaming_tv_channel_features@save:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_tv_channel_features/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -154,7 +154,7 @@ int_l1_streaming_tv_channel_features@l1_streaming_fav_tv_channel_by_volume:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_tv_channel_features/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_streaming_fav_tv_channel_by_volume'
@@ -167,7 +167,7 @@ int_l1_streaming_tv_channel_features@l1_streaming_fav_tv_channel_by_duration:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_tv_channel_features/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_streaming_fav_tv_channel_by_duration'
@@ -180,7 +180,7 @@ int_l1_streaming_tv_channel_features_for_int_l2_streaming_tv_channel_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_tv_channel_features/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'int_l2_streaming_tv_channel_features'
@@ -192,7 +192,7 @@ int_l1_streaming_tv_channel_features_for_l3_streaming_fav_tv_channel_by_volume:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_tv_channel_features/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_streaming_fav_tv_channel_by_volume'
@@ -205,7 +205,7 @@ int_l1_streaming_tv_channel_features_for_l3_streaming_fav_tv_channel_by_duration
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_tv_channel_features/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_streaming_fav_tv_channel_by_duration'
@@ -226,7 +226,7 @@ l1_streaming_fav_tv_channel_by_volume:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/l1_streaming_fav_tv_channel_by_volume/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -247,7 +247,7 @@ l1_streaming_fav_tv_channel_by_duration:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/l1_streaming_fav_tv_channel_by_duration/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -268,7 +268,7 @@ int_l0_streaming_vimmi_table:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/int_l0_streaming_vimmi_table/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -281,7 +281,7 @@ int_l0_streaming_vimmi_table_for_l2_streaming_fav_tv_show_by_episode_watched:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/int_l0_streaming_vimmi_table/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_streaming_fav_tv_show_by_episode_watched'
@@ -294,7 +294,7 @@ int_l0_streaming_vimmi_table_for_l3_streaming_fav_tv_show_by_episode_watched:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/int_l0_streaming_vimmi_table/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_streaming_fav_tv_show_by_episode_watched'
@@ -307,7 +307,7 @@ int_l0_streaming_vimmi_table_for_l4_streaming_fav_tv_show_by_episode_watched:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/int_l0_streaming_vimmi_table/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l4_streaming_fav_tv_show_by_episode_watched'
@@ -329,7 +329,7 @@ l1_streaming_fav_tv_show_by_episode_watched:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/l1_streaming_fav_tv_show_by_episode_watched/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -351,7 +351,7 @@ int_l1_streaming_video_service_feature@save:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_video_service_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -364,7 +364,7 @@ int_l1_streaming_video_service_feature@l1_streaming_fav_video_service_by_downloa
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_video_service_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_streaming_fav_video_service_by_download_feature'
@@ -376,7 +376,7 @@ int_l1_streaming_video_service_feature@l1_streaming_2nd_fav_video_service_by_dow
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_video_service_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_streaming_2nd_fav_video_service_by_download_feature'
@@ -388,7 +388,7 @@ int_l1_streaming_video_service_feature_for_int_l2_streaming_video_service_featur
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_video_service_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'int_l2_streaming_video_service_feature'
@@ -401,7 +401,7 @@ int_l1_streaming_video_service_feature_for_l3_streaming_fav_video_service_by_dow
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_video_service_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_streaming_fav_video_service_by_download_feature'
@@ -413,7 +413,7 @@ int_l1_streaming_video_service_feature_for_l3_streaming_2nd_fav_video_service_by
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_video_service_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_streaming_2nd_fav_video_service_by_download_feature'
@@ -426,7 +426,7 @@ int_l1_streaming_video_service_feature_for_l3_streaming_fav_video_service_by_vis
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_video_service_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_streaming_fav_video_service_by_visit_count_feature'
@@ -447,7 +447,7 @@ l1_streaming_fav_video_service_by_download_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/l1_streaming_fav_video_service_by_download_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -468,7 +468,7 @@ l1_streaming_2nd_fav_video_service_by_download_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/l1_streaming_2nd_fav_video_service_by_download_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -499,7 +499,7 @@ int_l1_streaming_music_service_feature@save:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_music_service_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -513,7 +513,7 @@ int_l1_streaming_music_service_feature@l1_streaming_fav_music_service_by_downloa
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_music_service_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_streaming_fav_music_service_by_download_feature'
@@ -526,7 +526,7 @@ int_l1_streaming_music_service_feature@streaming_2nd_fav_music_service_by_downlo
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_music_service_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_streaming_2nd_fav_music_service_by_download_feature'
@@ -539,7 +539,7 @@ int_l1_streaming_music_service_feature_for_int_l2_streaming_music_service_featur
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_music_service_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'int_l2_streaming_music_service_feature'
@@ -552,7 +552,7 @@ int_l1_streaming_music_service_feature_for_l3_streaming_fav_music_service_by_dow
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_music_service_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_streaming_fav_music_service_by_download_feature'
@@ -564,7 +564,7 @@ int_l1_streaming_music_service_feature_for_l3_streaming_2nd_fav_music_service_by
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_music_service_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_streaming_2nd_fav_music_service_by_download_feature'
@@ -576,7 +576,7 @@ int_l1_streaming_music_service_feature_for_l3_streaming_fav_music_service_by_vis
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_music_service_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_streaming_fav_music_service_by_visit_count_feature'
@@ -597,7 +597,7 @@ l1_streaming_fav_music_service_by_download_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/l1_streaming_fav_music_service_by_download_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -619,7 +619,7 @@ l1_streaming_2nd_fav_music_service_by_download_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/l1_streaming_2nd_fav_music_service_by_download_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -651,7 +651,7 @@ int_l1_streaming_esport_service_feature@save:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_esport_service_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -664,7 +664,7 @@ int_l1_streaming_esport_service_feature@l1_streaming_fav_esport_service_by_downl
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_esport_service_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_streaming_fav_esport_service_by_download_feature'
@@ -677,7 +677,7 @@ int_l1_streaming_esport_service_feature@l1_streaming_2nd_fav_esport_service_by_d
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_esport_service_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_streaming_2nd_fav_esport_service_by_download_feature'
@@ -690,7 +690,7 @@ int_l1_streaming_esport_service_feature_for_int_l2_streaming_esport_service_feat
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_esport_service_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'int_l2_streaming_esport_service_feature'
@@ -703,7 +703,7 @@ int_l1_streaming_esport_service_feature_for_l3_streaming_fav_esport_service_by_d
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_esport_service_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_streaming_fav_esport_service_by_download_feature'
@@ -716,7 +716,7 @@ int_l1_streaming_esport_service_feature_for_l3_streaming_2nd_fav_esport_service_
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_esport_service_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_streaming_2nd_fav_esport_service_by_download_feature'
@@ -729,7 +729,7 @@ int_l1_streaming_esport_service_feature_for_l3_streaming_fav_esport_service_by_v
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/int_l1_streaming_esport_service_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_streaming_fav_esport_service_by_visit_count_feature'
@@ -751,7 +751,7 @@ l1_streaming_fav_esport_service_by_download_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/l1_streaming_fav_esport_service_by_download_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -775,7 +775,7 @@ l1_streaming_2nd_fav_esport_service_by_download_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/l1_streaming_2nd_fav_esport_service_by_download_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -808,7 +808,7 @@ l1_streaming_visit_count_and_download_traffic_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/l1_streaming_visit_count_and_download_traffic_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -821,7 +821,7 @@ l1_streaming_visit_count_and_download_traffic_feature_for_l2_streaming_visit_cou
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/l1_streaming_visit_count_and_download_traffic_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_streaming_visit_count_and_download_traffic_feature'
@@ -833,7 +833,7 @@ l1_streaming_visit_count_and_download_traffic_feature_for_int_l2_streaming_sum_p
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/l1_streaming_visit_count_and_download_traffic_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'int_l2_streaming_sum_per_day'
@@ -846,7 +846,7 @@ l1_streaming_visit_count_and_download_traffic_feature_for_l3_streaming_visit_cou
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/l1_streaming_visit_count_and_download_traffic_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_streaming_visit_count_and_download_traffic_feature'
@@ -859,7 +859,7 @@ l1_streaming_visit_count_and_download_traffic_feature_for_l3_streaming_fav_youtu
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/l1_streaming_visit_count_and_download_traffic_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_streaming_fav_youtube_video_streaming_day_of_week_feature'
@@ -882,7 +882,7 @@ l1_streaming_session_duration_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/l1_streaming_session_duration_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -896,7 +896,7 @@ l1_streaming_session_duration_feature_for_l2_streaming_session_duration_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/l1_streaming_session_duration_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_streaming_session_duration_feature'
@@ -909,7 +909,7 @@ l1_streaming_session_duration_feature_for_l3_streaming_session_duration_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/STREAM/l1_features/l1_streaming_session_duration_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_streaming_session_duration_feature'

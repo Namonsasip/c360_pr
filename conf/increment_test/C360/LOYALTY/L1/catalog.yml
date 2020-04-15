@@ -11,7 +11,7 @@ l1_loyalty_number_of_services:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-output/C360/LOYALTY/l1_features/l1_loyalty_number_of_services/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -24,7 +24,7 @@ l1_loyalty_number_of_services_for_l2_loyalty_number_of_services:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-output/C360/LOYALTY/l1_features/l1_loyalty_number_of_services/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_loyalty_number_of_services'
@@ -37,7 +37,7 @@ l1_loyalty_number_of_services_for_l3_loyalty_number_of_services:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-output/C360/LOYALTY/l1_features/l1_loyalty_number_of_services/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_loyalty_number_of_services'
@@ -58,7 +58,7 @@ l1_loyalty_number_of_rewards:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-output/C360/LOYALTY/l1_features/l1_loyalty_number_of_rewards/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -71,7 +71,7 @@ l1_loyalty_number_of_rewards_for_l2_loyalty_number_of_rewards:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-output/C360/LOYALTY/l1_features/l2_loyalty_number_of_rewards/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_loyalty_number_of_rewards'
@@ -83,7 +83,7 @@ l1_loyalty_number_of_rewards_for_l3_loyalty_number_of_rewards:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-output/C360/LOYALTY/l1_features/l2_loyalty_number_of_rewards/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_loyalty_number_of_rewards'
@@ -105,7 +105,7 @@ l1_loyalty_number_of_points_spend:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-output/C360/LOYALTY/l1_features/l1_loyalty_number_of_points_spend/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -118,7 +118,7 @@ l1_loyalty_number_of_points_spend_for_l2_loyalty_number_of_points_spend:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-output/C360/LOYALTY/l1_features/l1_loyalty_number_of_points_spend/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_loyalty_number_of_points_spend'
@@ -131,7 +131,7 @@ l1_loyalty_number_of_points_spend_for_l3_loyalty_number_of_points_spend:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-output/C360/LOYALTY/l1_features/l1_loyalty_number_of_points_spend/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_loyalty_number_of_points_spend'

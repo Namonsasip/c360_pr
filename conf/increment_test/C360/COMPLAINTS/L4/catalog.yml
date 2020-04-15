@@ -10,7 +10,7 @@ l4_complaints_call_to_competitor_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-output/C360/COMPLAINTS/l4_features/l4_complaints_call_to_competitor_features/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -31,7 +31,7 @@ l4_complaints_nps_after_call:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-output/C360/COMPLAINTS/l4_features/l4_complaints_nps_after_call/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -52,7 +52,7 @@ l4_complaints_nps_after_chatbot:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-output/C360/COMPLAINTS/l4_features/l4_complaints_nps_after_chatbot/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -74,7 +74,7 @@ l4_complaints_nps_after_store_visit:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-output/C360/COMPLAINTS/l4_features/l4_complaints_nps_after_store_visit/
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
