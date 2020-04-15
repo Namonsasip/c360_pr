@@ -21,7 +21,7 @@
 l1_campaign_post_pre_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/INCREMENT_WRITE/CAMPAIGN/l1_features/l1_campaign_post_pre_daily/
+  filepath: /mnt/customer360-blob-output/C360/CAMPAIGN/l1_features/l1_campaign_post_pre_daily/
   metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
@@ -41,7 +41,7 @@ l1_campaign_post_pre_daily:
 l1_campaign_top_channel_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/INCREMENT_WRITE/CAMPAIGN/l1_features/l1_campaign_top_channel_daily/
+  filepath: /mnt/customer360-blob-output/C360/CAMPAIGN/l1_features/l1_campaign_top_channel_daily/
   metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
@@ -63,7 +63,7 @@ l1_campaign_top_channel_daily:
 #l1_devices_summary_customer_handset_daily:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/INCREMENT_WRITE/DEVICE/l1_features/l1_devices_summary_customer_handset_daily/
+#  filepath: /mnt/customer360-blob-output/C360/DEVICE/l1_features/l1_devices_summary_customer_handset_daily/
 #  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
 #  load_args:
 #    increment_flag: 'yes'
