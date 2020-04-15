@@ -33,7 +33,9 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 
-from customer360.pipelines.data_engineering.nodes.revenue_nodes.to_l1.to_l1_nodes import massive_processing_with_customer
+from customer360.pipelines.data_engineering.nodes.revenue_nodes.to_l1.to_l1_nodes import \
+    massive_processing_with_customer
+
 
 def revenue_to_l1_pipeline(**kwargs):
     return Pipeline(
@@ -42,9 +44,8 @@ def revenue_to_l1_pipeline(**kwargs):
             #
             node(massive_processing_with_customer, ["l0_revenue_prepaid_pru_f_usage_multi_daily",
                                                     "l1_customer_profile_union_daily_features_for_revenue_daily",
-                                    "params:l1_revenue_prepaid_pru_f_usage_multi_daily"],
+                                                    "params:l1_revenue_prepaid_pru_f_usage_multi_daily"],
                  "l1_revenue_prepaid_pru_f_usage_multi_daily"),
-
 
         ], name="revenue_to_l1_pipeline"
     )
