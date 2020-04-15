@@ -31,8 +31,8 @@ from kedro.pipeline import Pipeline, node
 from cvm.preprocessing.nodes import (
     pipeline_transform,
     pipeline_fit,
-    feature_selection_all_target,
 )
+from cvm.data_prep.nodes import feature_selection_all_target
 
 
 def preprocessing_fit() -> Pipeline:

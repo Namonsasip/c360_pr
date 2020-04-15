@@ -34,6 +34,7 @@ import pyspark.sql.functions as func
 
 from cvm.src.targets.ard_targets import get_ard_targets
 from cvm.src.targets.churn_targets import filter_usage, get_churn_targets
+from cvm.src.utils.feature_selection import feature_selection
 from cvm.src.utils.list_targets import list_targets
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
 from cvm.src.utils.incremental_manipulation import filter_latest_date, filter_users
@@ -319,3 +320,38 @@ def add_macrosegments(df: DataFrame,) -> DataFrame:
         ).otherwise("zero_arpu"),
     )
     return df
+
+
+def feature_selection_all_target(
+    data: DataFrame, parameters: Dict[str, Any]
+) -> List[Any]:
+    """ Return list of selected features and plots for all target columns.
+  Args:
+      data: Spark DataFrame contain all features and all target columns.
+      parameters: parameters defined in target parameters*.yml files.
+  Returns:
+      List of selected feature column names for all target columns.
+  """
+
+    # Get target_type from target parameter dict
+    target_class = {}
+    for usecase in parameters["targets"]:
+        for target in parameters["targets"][usecase]:
+            target_class[target] = parameters["targets"][usecase][target]["target_type"]
+    # Remove black list column
+    data = data.drop(*parameters["feature_selection_parameter"]["exclude_col"])
+    data = data.drop(*parameters["key_columns"])
+    data = data.drop(*parameters["segment_columns"])
+    final_list = []
+    for target in parameters["feature_selection_parameter"]["target_column"]:
+        exclude_target = parameters["feature_selection_parameter"]["target_column"][:]
+        exclude_target.remove(target)
+        res_list = feature_selection(
+            data.drop(*exclude_target),
+            target,
+            parameters["feature_selection_parameter"]["step_size"],
+            target_class[target],
+        )
+        final_list = list(set(final_list) | set(res_list))
+
+    return final_list
