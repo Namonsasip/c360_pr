@@ -19,7 +19,7 @@ l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_content_type_feat
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-data/C360/STREAM/stream_ru_a_onair_vimmi_usage_daily/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     mergeSchema: true
@@ -33,7 +33,7 @@ l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_tv_channel_featur
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-data/C360/STREAM/stream_ru_a_onair_vimmi_usage_daily/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     mergeSchema: true
@@ -48,7 +48,7 @@ l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l0_streaming_vimmi_table:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-data/C360/STREAM/stream_ru_a_onair_vimmi_usage_daily/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     mergeSchema: true
@@ -62,7 +62,7 @@ l0_streaming_ru_a_onair_vimmi_usage_daily_for_l1_streaming_fav_tv_show_by_episod
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-data/C360/STREAM/stream_ru_a_onair_vimmi_usage_daily/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     mergeSchema: true
@@ -82,7 +82,7 @@ l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_video_service_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-data/C360/STREAM/stream_soc_mobile_app_daily/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     mergeSchema: true
@@ -96,7 +96,7 @@ l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_music_service_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-data/C360/STREAM/stream_soc_mobile_app_daily/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     mergeSchema: true
@@ -110,7 +110,7 @@ l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_esport_service_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-data/C360/STREAM/stream_soc_mobile_app_daily/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     mergeSchema: true
@@ -124,7 +124,7 @@ l0_streaming_soc_mobile_app_daily_for_l1_streaming_visit_count_and_download_traf
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-data/C360/STREAM/stream_soc_mobile_app_daily/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     mergeSchema: true
@@ -138,7 +138,7 @@ l0_streaming_soc_mobile_app_daily_for_l1_streaming_session_duration_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-data/C360/STREAM/stream_soc_mobile_app_daily/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
     mergeSchema: true

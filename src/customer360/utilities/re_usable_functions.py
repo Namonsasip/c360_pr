@@ -112,6 +112,32 @@ def _l2_join_with_customer_profile(
     )
 
 
+def _l3_join_with_customer_profile(
+        input_df,
+        cust_profile_df,
+        config,
+        current_item
+) -> DataFrame:
+
+    # Rename partition_month to start_of_month in parameter config
+    config["join_column_with_cust_profile"]["start_of_month"] = config["join_column_with_cust_profile"]["partition_month"]
+    del config["join_column_with_cust_profile"]["partition_month"]
+
+    cust_profile_col_selection = set(list(config["join_column_with_cust_profile"].keys()) + ["subscription_identifier"])
+
+    filtered_cust_profile_df = (cust_profile_df
+                                .withColumnRenamed("partition_month", "start_of_month")
+                                .filter(F.col("start_of_month").isin(current_item)
+                                        & (F.col("cust_active_this_month") == 'Y'))
+                                .select(*cust_profile_col_selection))
+
+    return _join_with_filtered_customer_profile(
+        input_df=input_df,
+        filtered_cust_profile_df=filtered_cust_profile_df,
+        config=config
+    )
+
+
 def _join_with_filtered_customer_profile(
     input_df,
     filtered_cust_profile_df,
@@ -250,6 +276,23 @@ def l2_massive_processing_with_expansion(
                                     sql_generator_func=expansion,
                                     cust_profile_df=cust_profile_df,
                                     cust_profile_join_func=_l2_join_with_customer_profile)
+    return return_df
+
+
+def l3_massive_processing(
+        input_df,
+        config,
+        cust_profile_df=None
+) -> DataFrame:
+
+    if not __is_valid_input_df(input_df, cust_profile_df):
+        return get_spark_empty_df
+
+    return_df = _massive_processing(input_df=input_df,
+                                    config=config,
+                                    source_partition_col="start_of_month",
+                                    cust_profile_df=cust_profile_df,
+                                    cust_profile_join_func=_l3_join_with_customer_profile)
     return return_df
 
 
