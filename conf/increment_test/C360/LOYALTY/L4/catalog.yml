@@ -9,7 +9,7 @@
 l4_loyalty_number_of_services:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/LOYALTY/l4_features/l4_loyalty_number_of_services/
+  filepath: /mnt/customer360-blob-output/C360/INCREMENT_WRITE/LOYALTY/l4_features/l4_loyalty_number_of_services/
   metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
@@ -30,7 +30,7 @@ l4_loyalty_number_of_services:
 l4_loyalty_number_of_rewards:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/LOYALTY/l4_features/l4_loyalty_number_of_rewards/
+  filepath: /mnt/customer360-blob-output/C360/INCREMENT_WRITE/LOYALTY/l4_features/l4_loyalty_number_of_rewards/
   metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
@@ -52,7 +52,7 @@ l4_loyalty_number_of_rewards:
 l4_loyalty_number_of_points_spend:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/INCREMENT_WRITE/LOYALTY/l4_features/l4_loyalty_number_of_points_spend/
+  filepath: /mnt/customer360-blob-output/C360/INCREMENT_WRITE/LOYALTY/l4_features/l4_loyalty_number_of_points_spend/
   metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
