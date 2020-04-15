@@ -47,7 +47,7 @@ def campaign_importance_volume(run_type: str = None) -> Pipeline:
             ),
             node(
                 partial(
-                    create_focus_campaign_by_volume_low_response,
+                    create_focus_campaign_by_volume,
                     percentage_threshold_low=10,
                     percentage_threshold_high=20,
                     campaign_amount_per_category=20,
@@ -56,9 +56,8 @@ def campaign_importance_volume(run_type: str = None) -> Pipeline:
                     "response_percentage_report": "response_percentage_report",
                     "focus_campaign_param": "params:create_l5_focus_campaign_param",
                 },
-                outputs=['important_campaign_by_contact_volume_low_response',
-                         'important_campaign_by_contact_volume_high_response'],
-                name="create_focus_campaign_by_volume_low_response",
+                outputs='important_campaign_by_contact_volume',
+                name="create_focus_campaign_by_volume",
                 tags=["l5_focus_campaign", "campaign_importance_volume"]
             )
         ], tags=[]

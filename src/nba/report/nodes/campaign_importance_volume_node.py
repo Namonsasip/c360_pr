@@ -104,7 +104,7 @@ def filter_campaigns_by_category(base_campaigns: DataFrame,
     return total_focus_campaigns
 
 
-def create_focus_campaign_by_volume_low_response(response_percentage_report: DataFrame,
+def create_focus_campaign_by_volume(response_percentage_report: DataFrame,
                                                  percentage_threshold_low: float,
                                                  percentage_threshold_high: float,
                                                  campaign_amount_per_category: int,
@@ -136,47 +136,5 @@ def create_focus_campaign_by_volume_low_response(response_percentage_report: Dat
     total_focus_campaigns_high_response = total_focus_campaigns_high_response.withColumn("main_criteria",
                                                                                          F.lit("High_contact")) \
         .withColumn("sub_criteria", F.lit("High_response"))
-
-    return total_focus_campaigns_low_response, total_focus_campaigns_high_response
-
-
-def create_focus_campaign_by_volume_high_response(response_percentage_report: DataFrame,
-                                                  percentage_threshold: float,
-                                                  campaign_amount_per_category: int,
-                                                  focus_campaign_param: Dict[str, Any]) -> DataFrame:
-    # Exclude information campaigns and non-tracking campaigns
-    df_not_inform_trackable = response_percentage_report.select(focus_campaign_param['focus_cols']) \
-        .where("response_rate_percentage >= " + str(percentage_threshold) +
-               " and trans_inform_last_3mth = 0 and trans_null_last_3mth = 0 ") \
-        .orderBy('contact_trans_last_3mth', ascending=False)
-
-    # Different category has different amount of contacts
-    # The contacts_trans_last_3mth is the total times a campaign has contacted customers in the last 3 months
-    # For churn-related and cross sell/upsell, the number of contacts are very high, so we filter only the campaigns that
-    # have exceptionally high contacts, currently higher than 1M contacts
-    df_churn = df_not_inform_trackable.where('contact_trans_last_3mth > 1000000'
-                                             ' and (campaign_category = "Churn Prevention" '
-                                             'or campaign_category = "Retention")') \
-        .limit(campaign_amount_per_category)
-    df_cross_upsell = df_not_inform_trackable.where('contact_trans_last_3mth > 1000000'
-                                                    ' and (campaign_category = "Cross/Up sell"'
-                                                    'or campaign_category = "Cross Sell")') \
-        .limit(campaign_amount_per_category)
-    df_handset = df_not_inform_trackable.where('campaign_category = "Handset"') \
-        .limit(campaign_amount_per_category)  # NOTE: There are only 3 campaigns
-    df_pre_to_post = df_not_inform_trackable.where('campaign_category = "Convert Pre to Post"') \
-        .limit(campaign_amount_per_category)  # NOTE: There is only 1 campaign
-    df_top_up = df_not_inform_trackable.where('campaign_category = "Top up"') \
-        .limit(campaign_amount_per_category)  # NOTE: There are only 7 campaigns
-    df_vas = df_not_inform_trackable.where('campaign_category = "VAS"') \
-        .limit(campaign_amount_per_category)  # NOTE: There are only 8 campaigns
-
-    # To be decided: write these into seperate tables or one table, or keep both
-    total_focus_campaigns = df_churn.union(df_cross_upsell) \
-        .union(df_handset) \
-        .union(df_pre_to_post) \
-        .union(df_top_up) \
-        .union(df_vas)
-    total_focus_campaigns = total_focus_campaigns.withColumn("main_criteria", F.lit("High_contact")) \
-        .withColumn("sub_criteria", F.lit("High_response"))
-    return total_focus_campaigns
+    total_focus_campaign = total_focus_campaigns_high_response.union(total_focus_campaigns_low_response)
+    return total_focus_campaign

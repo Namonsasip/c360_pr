@@ -16,15 +16,9 @@ response_percentage_report:
       mode: "overwrite"
 
 # List of important campaigns by contact volume
-important_campaign_by_contact_volume_low_response:
+important_campaign_by_contact_volume:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/databases/nba_dev/important_campaigns_by_contact_volume_low_response
-  save_args:
-      mode: "overwrite"
-important_campaign_by_contact_volume_high_response:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/databases/nba_dev/important_campaigns_by_contact_volume_high_response
+  filepath: /mnt/customer360-blob-output/databases/nba_dev/important_campaigns_by_contact_volume
   save_args:
       mode: "overwrite"

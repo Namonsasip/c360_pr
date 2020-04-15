@@ -47,7 +47,7 @@ def train_single_binary_model(
 ):
 
     # context.load_node_inputs("debug_model_training")
-
+    pai_storage_path = "/dbfs/mnt/data-exploration-blob/de-storage/users/titsanuw/test_mlruns/"
     tmp_path = Path("data/tmp")
     current_group = pdf_master_chunk[group_column].iloc[0]
 
