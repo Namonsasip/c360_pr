@@ -198,7 +198,7 @@ l4_popular_topup_hour_initial:
     sum: ["payment_popular_hour_topup_count"]
   read_from: "l2"
 
-l4_popular_topup_hour:l4_payments_bill_shock:
+l4_popular_topup_hour:
   where_clause: ""
   feature_column:
     payment_popular_hour: "payment_popular_hour"

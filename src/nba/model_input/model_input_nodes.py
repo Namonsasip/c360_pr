@@ -1,8 +1,9 @@
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 import pandas as pd
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
+from pyspark.sql.types import FloatType
 
 from nba.models.models_nodes import calculate_extra_pai_metrics
 
@@ -187,16 +188,30 @@ def node_l5_nba_master_table(
 
         df_master = df_master.join(df_features, on=key_columns, how="left")
 
+    # Cast decimal type columns cause they don't get properly converted to pandas
+    df_master = df_master.select(
+        *[
+            F.col(column_name).cast(FloatType())
+            if column_type.startswith("decimal")
+            else F.col(column_name)
+            for column_name, column_type in df_master.dtypes
+        ],
+    )
+
     return df_master
 
 
 def node_l5_nba_master_table_chunk_debug(
     l5_nba_master_table: DataFrame, child_code: str, sampling_rate: float
-) -> pd.DataFrame:
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
     df_chunk = l5_nba_master_table.filter(F.col("campaign_child_code") == child_code)
 
     pdf_extra_pai_metrics = calculate_extra_pai_metrics(
         l5_nba_master_table, target_column="target_response", by="campaign_child_code"
     )
-    l5_nba_master_table_chunk_debug = df_chunk.sample(sampling_rate).toPandas()
+    l5_nba_master_table_chunk_debug = (
+        df_chunk.filter(~F.isnull(F.col("target_response")))
+        .sample(sampling_rate)
+        .toPandas()
+    )
     return l5_nba_master_table_chunk_debug, pdf_extra_pai_metrics

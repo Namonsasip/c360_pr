@@ -181,29 +181,28 @@ nba_model_input_features:
     - sum_usg_outgoing_total_sms_sum_weekly_last_twelve_week
 
 
-
-
-
 # Parameters for model training
 nba_model_group_column: campaign_child_code
 
 nba_model_target_column: target_response
 
+nba_model_min_obs_per_class_for_model: 100
+nba_model_max_rows_per_group: 1000000
 nba_model_train_sampling_ratio: 0.8
 
 nba_model_model_params:
    num_leaves: 16
-   learning_rate: 0.05
-   n_estimators: 10
+   learning_rate: 0.02
+   n_estimators: 200
    min_gain_to_split: 0.0
    random_state: 123456
    importance_type: "gain"
 
-nba_model_min_obs_per_class_for_model: 100
 
 nba_model_pai_storage_path: "/dbfs/mnt/customer360-blob-data/NBA/pai"
 
 nba_model_explanatory_features:
+   - age
    - time_with_current_package
    - subscriber_tenure
 #   - cust_active_this_month

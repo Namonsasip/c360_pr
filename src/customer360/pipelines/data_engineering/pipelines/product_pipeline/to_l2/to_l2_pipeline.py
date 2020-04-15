@@ -10,12 +10,12 @@ def product_to_l2_pipeline(**kwargs):
             # Directly from L0 because it is already ingested weekly
             node(
                 get_activated_deactivated_features,
-                ["l0_product_customer_promotion_daily",
-                 "l0_product_pru_m_package_master_group",
-                 "l0_product_pru_m_ontop_master",
-                 "l0_product_ru_m_main_promotion_cvm_proj",
-                 "l0_product_ru_m_ontop_promotion_cvm_proj"],
-                "l2_product_activated_deactivated_features"
+                ["l0_product_customer_promotion_for_weekly",
+                 "l0_product_pru_m_package_master_group_for_weekly",
+                 "l0_product_pru_m_ontop_master_for_weekly",
+                 "l0_product_ru_m_main_promotion_cvm_proj_for_weekly",
+                 "l0_product_ru_m_ontop_promotion_cvm_proj_for_weekly"],
+                "l2_product_activated_deactivated_features_weekly"
             )
         ]
     )
