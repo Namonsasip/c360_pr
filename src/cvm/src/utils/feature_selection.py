@@ -39,14 +39,14 @@ def feature_selection(
         target_type == "regression"
     ), "Target type incorrect."
     if target_type == "class":
-        rfc = RandomForestClassifier(random_state=101)
+        rfc = RandomForestClassifier(random_state=101, n_estimators=20)
         rfecv = RFECV(
-            estimator=rfc, step=step_size, cv=StratifiedKFold(10), scoring="roc_auc"
+            estimator=rfc, step=step_size, cv=StratifiedKFold(5), scoring="roc_auc"
         )
     else:
         lr = LinearRegression(normalize=True)
         rfecv = RFECV(
-            estimator=lr, step=step_size, cv=StratifiedKFold(10), scoring="roc_auc"
+            estimator=lr, step=step_size, cv=StratifiedKFold(5), scoring="roc_auc"
         )
     rfecv.fit(features, target)
 
