@@ -19,3 +19,9 @@ create_l5_response_percentage_report_param:
   filepath: "/mnt/customer360-blob-output/databases/nba_dev/response_percentage_report"
   join_cols: "child_code"
   response_rate_cols: "response_rate_percentage"
+
+create_l5_focus_campaign_param:
+  schema: "nba_dev"
+  focus_cols: ["campaign_category","child_code","tools","tracking_flag","contact_trans_last_3mth",
+               "trans_response_last_3mth","trans_no_response_last_3mth","trans_inform_last_3mth",
+               "trans_null_last_3mth","response_rate_percentage"]

@@ -33,21 +33,3 @@ plot_daily_kpis_by_group_report:
   filename_suffix: ".png"
   dataset: datasets.plotnine_local.PlotninePNGLocalDataSet
 
-# List of each campaign's total contacts and responses SUM for 3 months (Dec2019-Feb2020)
-distinct_child_response_aggregated:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "delta"
-  filepath: /mnt/customer360-blob-output/databases/nba_dev/distinct_child_response_aggregated
-  save_args:
-    mode: "overwrite"
-
-# List of each campaign's total contacts, responses and response percentage
-# Created from distinct_child_response_aggregated left join with campaign master (Feb2020) excluding information campaigns
-response_percentage_report:
-    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-    file_format: "delta"
-    filepath: /mnt/customer360-blob-output/databases/nba_dev/response_percentage_report
-    save_args:
-      mode: "overwrite"
-
-

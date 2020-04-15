@@ -95,7 +95,7 @@ l1_ontop_purchase_revenue_last_month:
 l0_campaign_history_master_active:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "csv"
-  filepath: /mnt/data-exploration-blob/de-storage/users/titsanuw/campaign_master_20200324.csv
+  filepath: /mnt/data-exploration-blob/de-storage/users/titsanuw/20200407_campaign_history_master.csv
   load_args:
     header: True
     inferSchema: True
