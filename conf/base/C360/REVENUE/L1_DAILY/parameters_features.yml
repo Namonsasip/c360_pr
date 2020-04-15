@@ -1,0 +1,37 @@
+l1_revenue_prepaid_pru_f_usage_multi_daily:
+  where_clause: ""
+  feature_list:
+    rev_arpu_total_net_revenue: "sum(total_net_tariff_revenue)"
+    rev_arpu_total_net_tariff_revenue_reward: "sum(total_net_tariff_revenue_reward)"
+    rev_arpu_total_net_tariff_revenue_exc_reward: "sum(total_net_tariff_revenue_exc_reward)"
+    rev_arpu_share_of_exc_reward_over_total_revenue: "sum(total_net_tariff_revenue_exc_reward / total_net_tariff_revenue)"
+    rev_arpu_share_of_revenue_reward_over_total_revenue: "sum(total_net_tariff_revenue_reward / total_net_tariff_revenue)"
+    rev_arpu_diffence_in_exc_reward_revenue_reward: "sum(total_net_tariff_revenue_exc_reward - total_net_tariff_revenue_reward)"
+    rev_arpu_number_of_distinct_ontop_packages: "count(distinct gprs_ontop_package_name)"
+	rev_arpu_total_data_revenue: "sum(total_net_tariff_gprs_revenue)"
+    rev_arpu_total_data_revenue_by_package: "sum(total_net_tariff_gprs_package)"
+    rev_arpu_total_data_revenue_by_ppu: "sum(total_net_tariff_gprs_exc_package)"
+
+    #######################################################################################################
+    rev_arpu_total_data_revenue_4G: "sum(case when network_type in ('3GPre-paid','3GHybrid-Post')
+     then sum(total_vol_gprs_4g)/sum(total_vol_gprs) else 0 end)"
+
+
+
+
+
+    rev_arpu_total_data_revenue_2_3g: "sum(case when network_type in ('3GPre-paid','3GHybrid-Post')
+     then total_net_tariff_gprs_revenue else 0 end)"
+    ###
+    rev_arpu_total_data_revenue_by_package_2_3g: "sum(case when network_type in ('3GPre-paid','3GHybrid-Post')
+     then total_net_tariff_gprs_package else 0 end)"
+    rev_arpu_total_data_revenue_by_ppu_2_3g: "sum(case when network_type in ('3GPre-paid','3GHybrid-Post')
+     then total_net_tariff_gprs_exc_package else 0 end)"
+    rev_arpu_total_data_revenue_by_per_unit: "sum(total_net_tariff_gprs_revenue / total_vol_gprs)"
+
+
+
+      total data revenue per unit 2/3G
+
+  granularity: "access_method_num, register_date, day_id"
+  event_date_column: "date(day_id)"
