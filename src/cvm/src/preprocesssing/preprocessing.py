@@ -43,6 +43,8 @@ class Selector(Transformer):
 
     def _transform(self, dataset):
         to_pick = list_intersection(self.cols_to_pick, dataset.columns)
+        log = logging.getLogger(__name__)
+        log.info(f"{len(to_pick)} columns selected")
         return dataset.select(to_pick)
 
     def transform(self, dataset, params=None):
@@ -76,6 +78,8 @@ class Dropper(Transformer):
 
     def _transform(self, dataset):
         cols_to_drop = list_intersection(self.cols_to_drop, dataset.columns)
+        log = logging.getLogger(__name__)
+        log.info(f"{len(cols_to_drop)} columns dropped")
         return dataset.drop(*cols_to_drop)
 
     def transform(self, dataset, params=None):
@@ -92,7 +96,7 @@ class NullDropper(Estimator):
                 nullColumns.append(k)
 
         log = logging.getLogger(__name__)
-        log.info(f"Following columns are all NULL: {','.join(nullColumns)}")
+        log.info(f"{len(nullColumns)} columns full of NULLs")
 
         transformer = Dropper(nullColumns)
         return Model(transformer)
