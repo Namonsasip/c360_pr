@@ -77,9 +77,9 @@ def pipeline_fit(
     cols_to_pick = list_sub(cols_to_pick, cols_to_drop)
 
     stages = [
-        NullDropper(),
         Selector(cols_to_pick),
         TypeSetter(parameters),
+        NullDropper(),
         MultiImputer(parameters),
         MultiStringIndexer(parameters),
         Dropper(columns_cats["numerical"] + columns_cats["categorical"]),
