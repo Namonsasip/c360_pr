@@ -86,7 +86,9 @@ def pipeline_fit(
     stages += [selector]
 
     # to create rest of pipeline
-    columns_cats_after_selection = classify_columns(selector.transform(df), parameters)
+    columns_cats_after_selection = classify_columns(
+        Pipeline(stages=stages).transform(df), parameters
+    )
 
     # set types
     stages += [TypeSetter(parameters)]
