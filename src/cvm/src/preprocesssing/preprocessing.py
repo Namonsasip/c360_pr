@@ -28,7 +28,7 @@
 import logging
 
 from pyspark.ml import Transformer, Estimator
-from pyspark.ml.feature import Imputer
+from pyspark.ml.feature import Imputer, StringIndexer
 from pyspark.sql.functions import col
 import pyspark.sql.functions as F
 
@@ -120,3 +120,16 @@ class MultiImputer(Estimator):
         )
         imputer_fitted = imputer.fit(dataset)
         return imputer_fitted
+
+
+class MultiStringIndexer(Estimator):
+    """ Runs StringIndexer for all categorical columns"""
+
+    def _fit(self, dataset):
+        columns_cats = classify_columns(dataset)
+        for col_name in columns_cats["categorical"]:
+            indexer = StringIndexer(
+                inputCol=col_name, outputCol=col_name + "_indexed"
+            ).setHandleInvalid("keep")
+        indexer_fitted = indexer.fit(dataset)
+        return indexer_fitted
