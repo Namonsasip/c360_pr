@@ -32,7 +32,7 @@ from typing import Dict, Any, List, Tuple
 from pyspark.ml.feature import StringIndexer, Imputer
 from pyspark.ml import Pipeline, PipelineModel
 
-from cvm.src.preprocesssing.preprocessing import Selector, TypeSetter
+from cvm.src.preprocesssing.preprocessing import Selector, TypeSetter, Dropper
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
 from cvm.src.utils.classify_columns import classify_columns
 from cvm.src.utils.list_operations import list_intersection, list_sub
@@ -74,7 +74,9 @@ def pipeline_fit(
     selector = Selector(cols_to_pick)
     stages += [selector]
 
+    # to create rest of pipeline
     columns_cats_after_selection = classify_columns(selector.transform(df), parameters)
+
     # set types
     stages += [TypeSetter(parameters)]
 
@@ -93,14 +95,16 @@ def pipeline_fit(
     )
     stages += [imputer]
 
+    # drop raw columns
+    dropper = Dropper(
+        columns_cats_after_selection["categorical"]
+        + columns_cats_after_selection["numerical"]
+    )
+    stages += [dropper]
+
     pipeline = Pipeline(stages=stages)
-    columns_cats_after_selection = classify_columns(df, parameters)
     pipeline_fitted = pipeline.fit(df)
     data_transformed = pipeline_fitted.transform(df)
-    data_transformed = data_transformed.drop(
-        *columns_cats_after_selection["categorical"]
-    )
-    data_transformed = data_transformed.drop(*columns_cats_after_selection["numerical"])
 
     return data_transformed, pipeline_fitted
 
@@ -121,10 +125,6 @@ def pipeline_transform(
     df = prepare_key_columns(df)
     df = impute_from_parameters(df, parameters)
 
-    # string indexer
-    columns_cats = classify_columns(df, parameters)
     data_transformed = pipeline_fitted.transform(df)
-    data_transformed = data_transformed.drop(*columns_cats["categorical"])
-    data_transformed = data_transformed.drop(*columns_cats["numerical"])
 
     return data_transformed
