@@ -31,9 +31,8 @@ from pyspark.sql import DataFrame
 from typing import Dict, Any, List, Tuple
 from pyspark.ml.feature import StringIndexer, Imputer
 from pyspark.ml import Pipeline, PipelineModel
-from pyspark.sql.functions import col
 
-from cvm.src.preprocesssing.preprocessing import Selector
+from cvm.src.preprocesssing.preprocessing import Selector, TypeSetter
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
 from cvm.src.utils.classify_columns import classify_columns
 from cvm.src.utils.list_operations import list_intersection, list_sub
@@ -77,9 +76,7 @@ def pipeline_fit(
 
     columns_cats_after_selection = classify_columns(selector.transform(df), parameters)
     # set types
-    for col_name in columns_cats_after_selection["numerical"]:
-        if col_name in df.columns:
-            df = df.withColumn(col_name, col(col_name).cast("float"))
+    stages += [TypeSetter(parameters)]
 
     # string indexer
     for col_name in columns_cats_after_selection["categorical"]:
@@ -123,13 +120,6 @@ def pipeline_transform(
 
     df = prepare_key_columns(df)
     df = impute_from_parameters(df, parameters)
-
-    columns_cats = classify_columns(df, parameters)
-
-    # set types
-    for col_name in columns_cats["numerical"]:
-        if col_name in df.columns:
-            df = df.withColumn(col_name, col(col_name).cast("float"))
 
     # string indexer
     columns_cats = classify_columns(df, parameters)
