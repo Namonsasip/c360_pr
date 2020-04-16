@@ -98,7 +98,7 @@ class NullDropper(Estimator):
         null_columns = [
             colname
             for colname in dataset.columns
-            if null_counts[colname] == dataset_count
+            if null_counts[colname][0] == dataset_count
         ]
 
         log = logging.getLogger(__name__)
