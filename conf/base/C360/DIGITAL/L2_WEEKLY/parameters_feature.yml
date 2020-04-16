@@ -1,0 +1,34 @@
+# Digital active time per browser
+l2_digital_cxenxse_site_traffic_browser_active_time_weekly:
+  where_clause: ""
+  feature_list:
+    digital_site_traffic_browser_rank: "row_number() over (partition by user_id, browser, start_of_week
+                                                                                    order by count(browser) desc)"
+    digital_site_traffic_active_time_per_browser: "sum(activetime)"
+  granularity: "hash_id,browser,start_of_week"
+
+l2_digital_cxenxse_site_traffic_browser_active_time_top_3_weekly:
+  where_clause: "where digital_site_traffic_browser_rank <= 3"
+  feature_list:
+    user_id: hash_id
+    browser_rank: digital_site_traffic_browser_rank
+    site_traffic_browser: site_traffic_browser
+    digital_site_traffic_active_time_per_browser: digital_site_traffic_active_time_per_browser
+  granularity: ""
+
+# Digital Favorite url
+l2_digital_cxenxse_site_traffic_favorite_url_weekly:
+  where_clause: ""
+  feature_list:
+    digital_site_traffic_url_rank: "row_number() over (partition by user_id, browser, start_of_week
+                                                                                        order by count(url) desc)"
+  granularity: "hash_id,url,start_of_week"
+
+l2_digital_cxenxse_site_traffic_favorite_url_rank_1_weekly:
+  where_clause: "digital_site_traffic_url_rank = 1"
+  feature_list:
+    user_id: hash_id
+    digital_site_traffic_url_rank: digital_site_traffic_url_rank
+    favorite_url: url
+    start_of_week: start_of_week
+  granularity: ""
