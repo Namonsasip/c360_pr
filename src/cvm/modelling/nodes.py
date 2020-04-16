@@ -26,12 +26,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pyspark.sql import DataFrame
-from typing import Dict, Any
+from typing import Any, Dict
+
 from sklearn.ensemble import RandomForestClassifier
+
 from cvm.src.models.predict import pyspark_predict_rf
 from cvm.src.models.train import train_sklearn
-from cvm.src.models.validate import validate_rf, log_pai_rf
+from cvm.src.models.validate import log_pai_rf, validate_rf
+from pyspark.sql import DataFrame
 
 
 def train_rf(df: DataFrame, parameters: Dict[str, Any]) -> object:

@@ -26,9 +26,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import Any, Dict
+
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as func
-from typing import Any, Dict
 
 
 def get_ard_targets(

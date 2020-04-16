@@ -27,11 +27,10 @@
 # limitations under the License.
 import string
 from random import random
-from typing import Dict, Callable, Any, List
-
-from pyspark.sql import DataFrame
+from typing import Any, Callable, Dict, List
 
 from cvm.src.utils.list_targets import list_targets
+from pyspark.sql import DataFrame
 
 
 def map_over_deep_dict(

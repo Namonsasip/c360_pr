@@ -25,16 +25,16 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from pyspark.sql import DataFrame
-from typing import Dict, Any, List, Tuple
-from pyspark.ml.feature import StringIndexer, Imputer
-from pyspark.ml import Pipeline, PipelineModel
-from pyspark.sql.functions import col, when, count
+from typing import Any, Dict, List, Tuple
 
-from cvm.src.utils.prepare_key_columns import prepare_key_columns
 from cvm.src.utils.classify_columns import classify_columns
 from cvm.src.utils.list_operations import list_intersection
+from cvm.src.utils.prepare_key_columns import prepare_key_columns
 from cvm.src.utils.utils import get_clean_important_variables, impute_from_parameters
+from pyspark.ml import Pipeline, PipelineModel
+from pyspark.ml.feature import Imputer, StringIndexer
+from pyspark.sql import DataFrame
+from pyspark.sql.functions import col, count, when
 
 
 def pipeline_fit(

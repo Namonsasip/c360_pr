@@ -33,16 +33,16 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 from kedro.pipeline import Pipeline, node
 
 from cvm.data_prep.nodes import (
-    create_sample_dataset,
-    create_users_from_active_users,
     add_ard_targets,
     add_churn_targets,
     add_macrosegments,
-    train_test_split,
+    create_sample_dataset,
+    create_users_from_active_users,
     create_users_from_cgtg,
-    subs_date_join_important_only,
-    subs_date_join,
     feature_selection_all_target,
+    subs_date_join,
+    subs_date_join_important_only,
+    train_test_split,
 )
 from cvm.preprocessing.nodes import pipeline_fit
 

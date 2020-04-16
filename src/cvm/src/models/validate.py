@@ -27,21 +27,21 @@
 # limitations under the License.
 import logging
 import uuid
-from typing import Dict, Any, List
+from typing import Any, Dict, List
 
 import matplotlib
+import matplotlib.pyplot
 import numpy
-import pai
 import pandas
 from matplotlib.backends.backend_template import FigureCanvas
 from matplotlib.figure import Figure
-from pyspark.sql import DataFrame
 from sklearn import metrics
-import matplotlib.pyplot
 from sklearn.ensemble import RandomForestClassifier
 
+import pai
 from cvm.src.utils.list_targets import list_targets
 from cvm.src.utils.utils import iterate_over_usecases_macrosegments_targets
+from pyspark.sql import DataFrame
 
 
 def round_to_float(x):

@@ -28,7 +28,7 @@
 
 from kedro.pipeline import Pipeline, node
 
-from cvm.modelling.nodes import train_rf, predict_rf, validate_log_rf
+from cvm.modelling.nodes import predict_rf, train_rf, validate_log_rf
 
 
 def train_model() -> Pipeline:

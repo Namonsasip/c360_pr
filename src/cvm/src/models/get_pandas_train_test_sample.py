@@ -26,12 +26,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pandas as pd
-from typing import Dict, Any, Tuple
-from pyspark.sql import DataFrame
+from typing import Any, Dict, Tuple
 
-from cvm.src.utils.list_targets import list_targets
+import pandas as pd
+
 from cvm.src.utils.list_operations import list_intersection
+from cvm.src.utils.list_targets import list_targets
+from pyspark.sql import DataFrame
 
 
 def get_pandas_train_test_sample(

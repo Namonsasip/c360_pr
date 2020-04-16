@@ -28,10 +28,7 @@
 
 from kedro.pipeline import Pipeline, node
 
-from cvm.preprocessing.nodes import (
-    pipeline_transform,
-    pipeline_fit,
-)
+from cvm.preprocessing.nodes import pipeline_fit, pipeline_transform
 
 
 def preprocessing_fit() -> Pipeline:

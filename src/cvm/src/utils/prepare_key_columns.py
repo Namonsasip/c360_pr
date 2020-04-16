@@ -26,10 +26,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from cvm.src.utils.list_operations import list_intersection
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as func
-
-from cvm.src.utils.list_operations import list_intersection
 
 
 def prepare_key_columns(df: DataFrame,) -> DataFrame:

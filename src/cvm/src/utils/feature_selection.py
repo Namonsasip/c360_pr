@@ -1,10 +1,12 @@
-from pyspark.sql import DataFrame
 from typing import Any, List
+
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.feature_selection import RFECV
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import StratifiedKFold
-from sklearn.feature_selection import RFECV
+
+from pyspark.sql import DataFrame
 
 
 def feature_selection(

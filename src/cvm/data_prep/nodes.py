@@ -25,20 +25,20 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import functools
 import logging
 from datetime import date
 from typing import Any, Dict, List, Tuple
-from pyspark.sql import DataFrame
-import functools
-import pyspark.sql.functions as func
 
+import pyspark.sql.functions as func
 from cvm.src.targets.ard_targets import get_ard_targets
 from cvm.src.targets.churn_targets import filter_usage, get_churn_targets
 from cvm.src.utils.feature_selection import feature_selection
+from cvm.src.utils.incremental_manipulation import filter_latest_date, filter_users
 from cvm.src.utils.list_targets import list_targets
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
-from cvm.src.utils.incremental_manipulation import filter_latest_date, filter_users
 from cvm.src.utils.utils import get_clean_important_variables
+from pyspark.sql import DataFrame
 
 
 def create_users_from_cgtg(customer_groups: DataFrame) -> DataFrame:

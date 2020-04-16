@@ -27,14 +27,13 @@
 # limitations under the License.
 import logging
 
-from pyspark.ml import Transformer, Estimator, Pipeline
+import pyspark.sql.functions as F
+from cvm.src.utils.classify_columns import classify_columns
+from cvm.src.utils.list_operations import list_intersection, list_sub
+from pyspark.ml import Estimator, Pipeline, Transformer
 from pyspark.ml.feature import Imputer, StringIndexer
 from pyspark.ml.util import DefaultParamsReadable, DefaultParamsWritable
 from pyspark.sql.functions import col
-import pyspark.sql.functions as F
-
-from cvm.src.utils.classify_columns import classify_columns
-from cvm.src.utils.list_operations import list_intersection, list_sub
 
 
 class Selector(Transformer, DefaultParamsWritable, DefaultParamsReadable):

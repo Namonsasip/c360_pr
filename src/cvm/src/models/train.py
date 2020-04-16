@@ -26,12 +26,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import logging
-from typing import Dict, Any
-
-from pyspark.sql import DataFrame
+from typing import Any, Dict
 
 from cvm.src.models.get_pandas_train_test_sample import get_pandas_train_test_sample
 from cvm.src.utils.utils import iterate_over_usecases_macrosegments_targets
+from pyspark.sql import DataFrame
 
 
 def train_sklearn(

@@ -27,12 +27,12 @@
 # limitations under the License.
 
 
-from pyspark.sql import DataFrame
-from pyspark.sql import functions as func
-from typing import Any, Dict, Tuple
 import datetime
+from typing import Any, Dict, Tuple
 
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
+from pyspark.sql import DataFrame
+from pyspark.sql import functions as func
 
 
 def get_churn_targets(
