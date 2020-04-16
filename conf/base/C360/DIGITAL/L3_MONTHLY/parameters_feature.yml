@@ -37,16 +37,17 @@ l3_digital_cxenxse_user_profile_monthly:
 l3_digital_cxenxse_site_traffic_monthly:
   where_clause: ""
   feature_list:
-    digital_site_traffic_browser_rank: "row_number() over (partition by user_id, site_traffic_browser, start_of_month
-                                                                                    order by count(site_traffic_browser) desc)"
-    digital_site_traffic_active_time_per_browser: "sum(site_traffic_active_time)"
-  granularity: "user_id,start_of_month,site_traffic_browser"
+    digital_site_traffic_browser_rank: "row_number() over (partition by user_id, browser, start_of_month
+                                                                                    order by count(browser) desc)"
+    digital_site_traffic_active_time_per_browser: "sum(activetime)"
+  granularity: "user_id,browser,start_of_month"
 
 l3_digital_cxenxse_site_traffic_monthly_top_3:
-  where_clause: "where traffic_rank < 4"
+  where_clause: "where digital_site_traffic_browser_rank <= 3"
     feature_list:
-      user_id: user_id
-      digital_site_traffic_browser_rank: digital_site_traffic_browser_rank
+      userid: userid
+      browser_rank: digital_site_traffic_browser_rank
       site_traffic_browser: site_traffic_browser
       digital_site_traffic_active_time_per_browser: digital_site_traffic_active_time_per_browser
     granularity: ""
+

@@ -18,7 +18,7 @@ l0_digital_cxenxse_site_traffic:
   metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l3_digital_cxenxse_site_traffic_monthly'
-    read_layer: 'l0_monthly'
-    target_layer: 'l3_monthly'
+    lookup_table_name: 'l2_digital_cxenxse_site_traffic_weekly'
+    read_layer: 'l0_weekly'
+    target_layer: 'l2_weekly'
     lookback: '0'
