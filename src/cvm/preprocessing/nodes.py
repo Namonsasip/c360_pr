@@ -32,7 +32,12 @@ from typing import Dict, Any, List, Tuple
 from pyspark.ml.feature import StringIndexer, Imputer
 from pyspark.ml import Pipeline, PipelineModel
 
-from cvm.src.preprocesssing.preprocessing import Selector, TypeSetter, Dropper
+from cvm.src.preprocesssing.preprocessing import (
+    Selector,
+    TypeSetter,
+    Dropper,
+    NullDropper,
+)
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
 from cvm.src.utils.classify_columns import classify_columns
 from cvm.src.utils.list_operations import list_intersection, list_sub
@@ -71,6 +76,12 @@ def pipeline_fit(
     cols_to_pick = list_sub(cols_to_pick, cols_to_drop)
 
     stages = []
+
+    # drop all nulls
+    null_dropper = NullDropper()
+    stages += [null_dropper]
+
+    # select chosen columns
     selector = Selector(cols_to_pick)
     stages += [selector]
 

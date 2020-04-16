@@ -80,7 +80,7 @@ class Dropper(Transformer):
         return self._transform(dataset)
 
 
-class NullDroppers(Estimator):
+class NullDropper(Estimator):
     """ Drops columns with nothing but NULLs"""
 
     def _fit(self, dataset):
