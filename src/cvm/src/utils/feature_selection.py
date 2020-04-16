@@ -45,7 +45,7 @@ def feature_selection(
             step=step_size,
             cv=StratifiedKFold(5),
             scoring="roc_auc",
-            min_features_to_select=20,
+            min_features_to_select=30,
         )
     else:
         lr = LinearRegression(normalize=True)
@@ -54,7 +54,7 @@ def feature_selection(
             step=step_size,
             cv=StratifiedKFold(5),
             scoring="roc_auc",
-            min_features_to_select=20,
+            min_features_to_select=30,
         )
     rfecv.fit(features, target)
 
