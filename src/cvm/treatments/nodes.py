@@ -26,20 +26,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from datetime import date
-from typing import Dict, Any, Tuple
+from typing import Any, Dict, Tuple
 
 import pandas
-from pyspark.sql import DataFrame
-from pyspark.sql import functions as func
 
 from customer360.utilities.spark_util import get_spark_session
-from cvm.src.targets.churn_targets import add_days
 from cvm.src.utils.treatments import (
-    add_volatility_scores,
     add_microsegment_features,
+    add_volatility_scores,
     define_microsegments,
     filter_cutoffs,
 )
+from pyspark.sql import DataFrame
+from pyspark.sql import functions as func
 
 
 def prepare_microsegments(
@@ -77,7 +76,6 @@ def produce_treatments(
     microsegments: DataFrame,
     treatment_dictionary: DataFrame,
     treatments_history: DataFrame,
-    parameters: Dict[str, Any],
 ) -> Tuple[DataFrame, DataFrame]:
     """ Combine filtered users table, microsegments and the treatments assigned to
     microsegments.
@@ -87,7 +85,6 @@ def produce_treatments(
         microsegments: List of users and assigned microsegments.
         treatment_dictionary: Table of microsegment to treatment mapping.
         treatments_history: Table with history of treatments.
-        parameters: parameters defined in parameters.yml.
     """
 
     # get treatments propositions
@@ -124,20 +121,8 @@ def produce_treatments(
         """,
     )
 
-    # filter those that were recently targeted
-    today = date.today().strftime("%Y-%m-%d")
-    recent_past_date = add_days(today, -parameters["treatment_cadence"])
-
-    recent_history = (
-        treatments_history.filter(f"key_date >= '{recent_past_date}'")
-        .select(["subscription_identifier", "use_case"])
-        .distinct()
-    )
-    treatments_df = treatments_df.join(
-        recent_history, on=["subscription_identifier", "use_case"], how="left_anti"
-    )
-
     # update history
+    today = date.today().strftime("%Y-%m-%d")
     to_append = treatments_df.withColumn("key_date", func.lit(today))
     treatments_history = treatments_history.union(to_append)
 

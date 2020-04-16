@@ -27,13 +27,14 @@
 # limitations under the License.
 import functools
 import logging
-from typing import Dict, Any
-
-from pyspark.sql import DataFrame, functions as func, Window
+from datetime import date
+from typing import Any, Dict
 
 from cvm.src.targets.churn_targets import add_days
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
 from cvm.src.utils.utils import impute_from_parameters
+from pyspark.sql import DataFrame, Window
+from pyspark.sql import functions as func
 
 
 def add_microsegment_features(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
@@ -301,7 +302,7 @@ def add_volatility_scores(
 
 
 def generate_treatment_target_group_basing_on_order(
-    propensities: DataFrame, parameters: Dict[str, Any],
+    propensities: DataFrame, parameters: Dict[str, Any], treatments_history: DataFrame,
 ) -> DataFrame:
     """ Returns group of users to be targeted with treatments. The list is generated
         basing on presumed size of treatment groups and some order which is a function
@@ -310,6 +311,7 @@ def generate_treatment_target_group_basing_on_order(
     Args:
         propensities: table with propensities.
         parameters: parameters defined in parameters.yml.
+        treatments_history: Table with history of treatments.
     """
 
     # define order columns
@@ -325,6 +327,19 @@ def generate_treatment_target_group_basing_on_order(
     # apply orders
     propensities = propensities.withColumn("churn_order", churn_order).withColumn(
         "ard_order", ard_order
+    )
+
+    # filter those that were recently targeted
+    today = date.today().strftime("%Y-%m-%d")
+    recent_past_date = add_days(today, -parameters["treatment_cadence"])
+
+    recent_history = (
+        treatments_history.filter(f"key_date >= '{recent_past_date}'")
+        .select(["subscription_identifier", "use_case"])
+        .distinct()
+    )
+    propensities = propensities.join(
+        recent_history, on=["subscription_identifier", "use_case"], how="left_anti"
     )
 
     # pick users to treat

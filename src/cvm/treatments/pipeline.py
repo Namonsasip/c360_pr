@@ -28,10 +28,7 @@
 from kedro.pipeline import Pipeline, node
 
 from cvm.src.utils.treatments import generate_treatment_target_group_basing_on_order
-from cvm.treatments.nodes import (
-    prepare_microsegments,
-    produce_treatments,
-)
+from cvm.treatments.nodes import prepare_microsegments, produce_treatments
 
 
 def generate_treatments() -> Pipeline:
@@ -55,7 +52,7 @@ def generate_treatments() -> Pipeline:
             ),
             node(
                 generate_treatment_target_group_basing_on_order,
-                ["propensity_scores", "parameters"],
+                ["propensity_scores", "parameters", "treatments_chosen_history"],
                 "target_users",
                 name="create_target_users",
             ),
