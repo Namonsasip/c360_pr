@@ -33,9 +33,10 @@ from pyspark.ml.feature import StringIndexer, Imputer
 from pyspark.ml import Pipeline, PipelineModel
 from pyspark.sql.functions import col
 
+from cvm.src.preprocesssing.preprocessing import Selector
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
 from cvm.src.utils.classify_columns import classify_columns
-from cvm.src.utils.list_operations import list_intersection
+from cvm.src.utils.list_operations import list_intersection, list_sub
 from cvm.src.utils.utils import get_clean_important_variables, impute_from_parameters
 
 
@@ -53,13 +54,9 @@ def pipeline_fit(
     """
 
     df = prepare_key_columns(df)
+    df = impute_from_parameters(df, parameters)
     important_param = get_clean_important_variables(important_param, parameters)
 
-    # drop columns
-    cols_to_drop = list_intersection(parameters["drop_in_preprocessing"], df.columns)
-    df = df.drop(*cols_to_drop)
-
-    # select columns
     columns_cats = classify_columns(df, parameters)
     if not important_param:
         cols_to_pick = df.columns
@@ -71,10 +68,11 @@ def pipeline_fit(
             + parameters["must_have_features"]
             + important_param
         )
-    cols_to_pick = list_intersection(list(cols_to_pick), df.columns)
-    df = df.select(cols_to_pick)
-    df = impute_from_parameters(df, parameters)
-    columns_cats = classify_columns(df, parameters)
+    cols_to_drop = list_intersection(parameters["drop_in_preprocessing"], df.columns)
+    cols_to_pick = list_sub(cols_to_pick, cols_to_drop)
+
+    stages = []
+    stages += [Selector(cols_to_pick)]
 
     # set types
     for col_name in columns_cats["numerical"]:
@@ -82,7 +80,6 @@ def pipeline_fit(
             df = df.withColumn(col_name, col(col_name).cast("float"))
 
     # string indexer
-    stages = []
     for col_name in columns_cats["categorical"]:
         indexer = StringIndexer(
             inputCol=col_name, outputCol=col_name + "_indexed"
@@ -106,10 +103,7 @@ def pipeline_fit(
 
 
 def pipeline_transform(
-    df: DataFrame,
-    important_param: List[Any],
-    pipeline_fitted: PipelineModel,
-    parameters: Dict[str, Any],
+    df: DataFrame, pipeline_fitted: PipelineModel, parameters: Dict[str, Any],
 ) -> DataFrame:
     """ Preprocess given table.
 
@@ -123,27 +117,8 @@ def pipeline_transform(
     """
 
     df = prepare_key_columns(df)
-    important_param = get_clean_important_variables(important_param, parameters)
-
-    # drop columns
-    cols_to_drop = list_intersection(parameters["drop_in_preprocessing"], df.columns)
-    df = df.drop(*cols_to_drop)
-
-    # select columns
-    columns_cats = classify_columns(df, parameters)
-    if not important_param:
-        cols_to_pick = df.columns
-    else:
-        cols_to_pick = set(
-            columns_cats["target"]
-            + columns_cats["key"]
-            + columns_cats["segment"]
-            + parameters["must_have_features"]
-            + important_param
-        )
-    cols_to_pick = list_intersection(list(cols_to_pick), df.columns)
-    df = df.select(cols_to_pick)
     df = impute_from_parameters(df, parameters)
+
     columns_cats = classify_columns(df, parameters)
 
     # set types
