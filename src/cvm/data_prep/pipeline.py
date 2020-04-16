@@ -271,6 +271,12 @@ def create_cvm_important_columns():
                 "features_targets_fe",
                 name="create_features_targets_fe",
             ),
+            node(
+                add_macrosegments,
+                "features_targets_" + sample_type,
+                "features_macrosegments_fe",
+                name="create_features_macrosegments_fe",
+            ),
         ]
     )
 
