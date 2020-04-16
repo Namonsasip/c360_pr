@@ -42,6 +42,7 @@ from cvm.data_prep.nodes import (
     train_test_split,
     create_users_from_cgtg,
     subs_date_join_important_only,
+    subs_date_join,
 )
 
 
@@ -234,6 +235,41 @@ def create_cvm_training_data(sample_type: str):
                 ["features_macrosegments_" + sample_type, "parameters"],
                 ["train_sample_" + sample_type, "test_sample_" + sample_type],
                 name="create_train_test_split_" + sample_type,
+            ),
+        ]
+    )
+
+
+def create_cvm_important_columns():
+    """ Uses training samples as inputs, runs feature extraction procedure.
+
+    Returns:
+        Kedro pipeline.
+    """
+
+    sample_type = "training"
+    targets_datasets = [
+        "churn_targets_" + sample_type,
+        "ard_targets_" + sample_type,
+    ]
+
+    return Pipeline(
+        [
+            node(
+                subs_date_join,
+                [
+                    "parameters",
+                    "cvm_users_list_" + sample_type,
+                    "l3_customer_profile_include_1mo_non_active_" + sample_type,
+                    "l4_daily_feature_topup_and_volume_" + sample_type,
+                    "l4_usage_prepaid_postpaid_daily_features_" + sample_type,
+                    "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_"
+                    + sample_type,
+                    "l4_usage_postpaid_prepaid_weekly_features_sum_" + sample_type,
+                ]
+                + targets_datasets,
+                "features_targets_fe",
+                name="create_features_targets_fe",
             ),
         ]
     )
