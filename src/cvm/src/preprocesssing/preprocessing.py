@@ -48,11 +48,11 @@ class Selector(Transformer):
 
 
 class TypeSetter(Transformer):
-    """ Transformer selecting constant set of columns"""
+    """ Transformer converting types of columns"""
 
     def __init__(self, parameters):
         super().__init__()
-        self.cols_to_pick = parameters
+        self.parameters = parameters
 
     def _transform(self, dataset):
         columns_cats = classify_columns(dataset, self.parameters)
@@ -60,6 +60,21 @@ class TypeSetter(Transformer):
         for col_name in numerical_cols:
             dataset = dataset.withColumn(col_name, col(col_name).cast("float"))
         return dataset
+
+    def transform(self, dataset, params=None):
+        return self._transform(dataset)
+
+
+class Dropper(Transformer):
+    """ Transformer dropping constant set of columns"""
+
+    def __init__(self, cols_to_drop):
+        super().__init__()
+        self.cols_to_drop = cols_to_drop
+
+    def _transform(self, dataset):
+        cols_to_drop = list_intersection(self.cols_to_drop, dataset.columns)
+        return dataset.drop(*cols_to_drop)
 
     def transform(self, dataset, params=None):
         return self._transform(dataset)
