@@ -61,6 +61,8 @@ class TypeSetter(Transformer):
         self.parameters = parameters
 
     def _transform(self, dataset):
+        log = logging.getLogger(__name__)
+        log.info("Setting types")
         columns_cats = classify_columns(dataset, self.parameters)
         numerical_cols = list_intersection(dataset.columns, columns_cats["numerical"])
         for col_name in numerical_cols:
@@ -117,6 +119,8 @@ class MultiImputer(Estimator):
         self.parameters = parameters
 
     def _fit(self, dataset):
+        log = logging.getLogger(__name__)
+        log.info("Imputing columns")
         columns_cats = classify_columns(dataset, self.parameters)
         imputer = Imputer(
             inputCols=columns_cats["numerical"],
@@ -134,6 +138,8 @@ class MultiStringIndexer(Estimator):
         self.parameters = parameters
 
     def _fit(self, dataset):
+        log = logging.getLogger(__name__)
+        log.info("Indexing categorical features")
         columns_cats = classify_columns(dataset, self.parameters)
         indexers = []
         for col_name in columns_cats["categorical"]:
