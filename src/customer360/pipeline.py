@@ -31,7 +31,8 @@ from typing import Dict
 
 from kedro.pipeline import Pipeline
 
-from cvm.data_prep.pipeline import training_data_prepare, scoring_data_prepare
+from cvm.data_prep.pipeline import training_data_prepare, scoring_data_prepare, \
+    extract_features, rfe_only
 from cvm.modelling.pipeline import train_model, score_model
 from cvm.preprocessing.pipeline import preprocessing_fit, preprocessing_transform
 from cvm.treatments.pipeline import generate_treatments
@@ -287,6 +288,8 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
                              + train_model(),
         "cvm_full_scoring": scoring_data_prepare + preprocessing_transform()
                             + score_model() + generate_treatments(),
+        "cvm_full_features_extraction": extract_features,
+        "cvm_rfe_only": rfe_only,
     }
 
 
