@@ -88,6 +88,7 @@ def pipeline_fit(
         colname for colname in df.columns if null_counts[colname][0] == df_count
     ]
     df = df.drop(*null_columns)
+    columns_cats = classify_columns(df, parameters)
 
     # string indexer
     stages = []
