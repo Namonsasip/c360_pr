@@ -25,6 +25,8 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import logging
+
 from pyspark.ml import Transformer, Estimator, Model
 from pyspark.sql.functions import col, countDistinct
 
@@ -88,5 +90,9 @@ class NullDropper(Estimator):
         for k in dataset.columns:
             if dataset.agg(countDistinct(dataset[k])).collect()[0][0] == 0:
                 nullColumns.append(k)
+
+        log = logging.getLogger(__name__)
+        log.info(f"Following columns are all NULL: {','.join(nullColumns)}")
+
         transformer = Dropper(nullColumns)
         return Model(transformer)
