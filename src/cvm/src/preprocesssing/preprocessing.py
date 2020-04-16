@@ -28,7 +28,8 @@
 import logging
 
 from pyspark.ml import Transformer, Estimator, Model
-from pyspark.sql.functions import col, countDistinct
+from pyspark.sql.functions import col
+import pyspark.sql.functions as F
 
 from cvm.src.utils.classify_columns import classify_columns
 from cvm.src.utils.list_operations import list_intersection
@@ -90,13 +91,15 @@ class NullDropper(Estimator):
     """ Drops columns with nothing but NULLs"""
 
     def _fit(self, dataset):
-        nullColumns = []
-        for k in dataset.columns:
-            if dataset.agg(countDistinct(dataset[k])).collect()[0][0] == 0:
-                nullColumns.append(k)
+        null_columns = []
+        for col_name in dataset.columns:
+            min_ = dataset.select(F.min(col_name)).first()[0]
+            max_ = dataset.select(F.max(col_name)).first()[0]
+            if min_ is None and max_ is None:
+                null_columns.append(col_name)
 
         log = logging.getLogger(__name__)
-        log.info(f"{len(nullColumns)} columns full of NULLs")
+        log.info(f"{len(null_columns)} columns full of NULLs")
 
-        transformer = Dropper(nullColumns)
+        transformer = Dropper(null_columns)
         return Model(transformer)
