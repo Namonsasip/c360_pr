@@ -28,6 +28,7 @@
 import logging
 
 from pyspark.ml import Transformer, Estimator
+from pyspark.ml.feature import Imputer
 from pyspark.sql.functions import col
 import pyspark.sql.functions as F
 
@@ -106,3 +107,16 @@ class NullDropper(Estimator):
 
         transformer = Dropper(null_columns)
         return transformer
+
+
+class MultiImputer(Estimator):
+    """ Performs median imputation for all numeric columns"""
+
+    def _fit(self, dataset):
+        columns_cats = classify_columns(dataset)
+        imputer = Imputer(
+            inputCols=columns_cats["numerical"],
+            outputCols=[col + "_imputed" for col in columns_cats["numerical"]],
+        )
+        imputer_fitted = imputer.fit(dataset)
+        return imputer_fitted
