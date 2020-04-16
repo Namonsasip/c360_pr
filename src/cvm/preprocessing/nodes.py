@@ -29,7 +29,6 @@
 
 from pyspark.sql import DataFrame
 from typing import Dict, Any, List, Tuple
-from pyspark.ml.feature import StringIndexer, Imputer
 from pyspark.ml import Pipeline, PipelineModel
 
 from cvm.src.preprocesssing.preprocessing import (
@@ -37,6 +36,8 @@ from cvm.src.preprocesssing.preprocessing import (
     TypeSetter,
     Dropper,
     NullDropper,
+    MultiImputer,
+    MultiStringIndexer,
 )
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
 from cvm.src.utils.classify_columns import classify_columns
@@ -75,45 +76,14 @@ def pipeline_fit(
     cols_to_drop = list_intersection(parameters["drop_in_preprocessing"], df.columns)
     cols_to_pick = list_sub(cols_to_pick, cols_to_drop)
 
-    stages = []
-
-    # drop all nulls
-    null_dropper = NullDropper()
-    stages += [null_dropper]
-
-    # select chosen columns
-    selector = Selector(cols_to_pick)
-    stages += [selector]
-
-    # to create rest of pipeline
-    columns_cats_after_selection = classify_columns(
-        Pipeline(stages=stages).transform(df), parameters
-    )
-
-    # set types
-    stages += [TypeSetter(parameters)]
-
-    # string indexer
-    for col_name in columns_cats_after_selection["categorical"]:
-        indexer = StringIndexer(
-            inputCol=col_name, outputCol=col_name + "_indexed"
-        ).setHandleInvalid("keep")
-        stages += [indexer]
-    # imputation
-    imputer = Imputer(
-        inputCols=columns_cats_after_selection["numerical"],
-        outputCols=[
-            col + "_imputed" for col in columns_cats_after_selection["numerical"]
-        ],
-    )
-    stages += [imputer]
-
-    # drop raw columns
-    dropper = Dropper(
-        columns_cats_after_selection["categorical"]
-        + columns_cats_after_selection["numerical"]
-    )
-    stages += [dropper]
+    stages = [
+        NullDropper(),
+        Selector(cols_to_pick),
+        TypeSetter(parameters),
+        MultiImputer(),
+        MultiStringIndexer(),
+        Dropper(columns_cats["numerical"] + columns_cats["categorical"]),
+    ]
 
     pipeline = Pipeline(stages=stages)
     pipeline_fitted = pipeline.fit(df)
