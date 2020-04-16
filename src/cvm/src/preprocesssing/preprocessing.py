@@ -26,7 +26,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from pyspark.ml import Transformer
+from pyspark.sql.functions import col
 
+from cvm.src.utils.classify_columns import classify_columns
 from cvm.src.utils.list_operations import list_intersection
 
 
@@ -40,6 +42,24 @@ class Selector(Transformer):
     def _transform(self, dataset):
         to_pick = list_intersection(self.cols_to_pick, dataset.columns)
         return dataset.select(to_pick)
+
+    def transform(self, dataset, params=None):
+        return self._transform(dataset)
+
+
+class TypeSetter(Transformer):
+    """ Transformer selecting constant set of columns"""
+
+    def __init__(self, parameters):
+        super().__init__()
+        self.cols_to_pick = parameters
+
+    def _transform(self, dataset):
+        columns_cats = classify_columns(dataset, self.parameters)
+        numerical_cols = list_intersection(dataset.columns, columns_cats["numerical"])
+        for col_name in numerical_cols:
+            dataset = dataset.withColumn(col_name, col(col_name).cast("float"))
+        return dataset
 
     def transform(self, dataset, params=None):
         return self._transform(dataset)
