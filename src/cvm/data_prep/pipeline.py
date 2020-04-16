@@ -288,7 +288,7 @@ def create_cvm_important_columns():
                 feature_selection_all_target,
                 ["sample_preprocessed_fe", "parameters"],
                 "important_columns",
-                name="feature_selection_l5_cvm_one_day_train_preprocessed",
+                name="feature_selection",
             ),
         }
     )
