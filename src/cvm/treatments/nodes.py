@@ -124,6 +124,7 @@ def produce_treatments(
     # update history
     today = date.today().strftime("%Y-%m-%d")
     to_append = treatments_df.withColumn("key_date", func.lit(today))
+    treatments_history = treatments_history.filter(f"key_date != '{today}'")
     treatments_history = treatments_history.union(to_append)
 
     return treatments, treatments_history
