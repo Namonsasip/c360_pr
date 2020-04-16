@@ -333,6 +333,7 @@ def feature_selection_all_target(
       List of selected feature column names for all target columns.
   """
 
+    log = logging.getLogger(__name__)
     # Get target_type from target parameter dict
     target_class = {}
     for usecase in parameters["targets"]:
@@ -342,8 +343,10 @@ def feature_selection_all_target(
     data = data.drop(*parameters["feature_selection_parameter"]["exclude_col"])
     data = data.drop(*parameters["key_columns"])
     data = data.drop(*parameters["segment_columns"])
+
     final_list = []
     for target in parameters["feature_selection_parameter"]["target_column"]:
+        log.info(f"Looking for important feature for {target}")
         exclude_target = parameters["feature_selection_parameter"]["target_column"][:]
         exclude_target.remove(target)
         res_list = feature_selection(
