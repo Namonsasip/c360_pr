@@ -30,8 +30,6 @@ just for illustrating basic Kedro features.
 
 PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 """
-from functools import partial
-
 from kedro.pipeline import Pipeline, node
 
 from cvm.data_prep.nodes import (
@@ -281,7 +279,7 @@ def create_cvm_important_columns():
                 name="create_features_macrosegments_fe",
             ),
             node(
-                partial(pipeline_fit, important_param=[]),
+                lambda df, parameters: pipeline_fit(df, [], parameters),
                 ["features_macrosegments_fe", "parameters"],
                 ["sample_preprocessed_fe", "preprocessing_pipeline_fe"],
                 name="preprocessing_fit_fe",
