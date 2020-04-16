@@ -339,7 +339,7 @@ def generate_treatment_target_group_basing_on_order(
         .distinct()
     )
     propensities = propensities.join(
-        recent_history, on=["subscription_identifier", "use_case"], how="left_anti"
+        recent_history, on=["subscription_identifier"], how="left_anti"
     )
 
     # pick users to treat
