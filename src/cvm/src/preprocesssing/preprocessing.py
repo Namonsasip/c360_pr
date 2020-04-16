@@ -91,12 +91,15 @@ class NullDropper(Estimator):
     """ Drops columns with nothing but NULLs"""
 
     def _fit(self, dataset):
-        null_columns = []
-        for col_name in dataset.columns:
-            min_ = dataset.select(F.min(col_name)).first()[0]
-            max_ = dataset.select(F.max(col_name)).first()[0]
-            if min_ is None and max_ is None:
-                null_columns.append(col_name)
+        dataset_count = dataset.count()
+        null_counts = dataset.select(
+            [F.count(F.when(F.col(c).isNull(), c)).alias(c) for c in dataset.columns]
+        ).toPandas()
+        null_columns = [
+            colname
+            for colname in dataset.columns
+            if null_counts[colname] == dataset_count
+        ]
 
         log = logging.getLogger(__name__)
         log.info(f"{len(null_columns)} columns full of NULLs")
