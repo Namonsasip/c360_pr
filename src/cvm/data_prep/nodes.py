@@ -346,7 +346,7 @@ def feature_selection_all_target(
 
     final_list = []
     for target in parameters["feature_selection_parameter"]["target_column"]:
-        log.info(f"Looking for important feature for {target}")
+        log.info(f"Looking for important features for {target}")
         exclude_target = parameters["feature_selection_parameter"]["target_column"][:]
         exclude_target.remove(target)
         res_list = feature_selection(
