@@ -27,7 +27,7 @@
 # limitations under the License.
 import logging
 
-from pyspark.ml import Transformer, Estimator
+from pyspark.ml import Transformer, Estimator, Pipeline
 from pyspark.ml.feature import Imputer, StringIndexer
 from pyspark.sql.functions import col
 import pyspark.sql.functions as F
@@ -135,9 +135,11 @@ class MultiStringIndexer(Estimator):
 
     def _fit(self, dataset):
         columns_cats = classify_columns(dataset, self.parameters)
+        indexers = []
         for col_name in columns_cats["categorical"]:
             indexer = StringIndexer(
                 inputCol=col_name, outputCol=col_name + "_indexed"
             ).setHandleInvalid("keep")
-        indexer_fitted = indexer.fit(dataset)
+            indexers += indexer
+        indexer_fitted = Pipeline(stages=indexers).fit(dataset)
         return indexer_fitted
