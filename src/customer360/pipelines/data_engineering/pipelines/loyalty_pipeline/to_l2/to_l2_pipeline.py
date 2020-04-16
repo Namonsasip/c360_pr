@@ -10,7 +10,7 @@ def loyalty_to_l2_pipeline(**kwargs):
             # Number of services for each category
             node(
                 node_from_config,
-                ["l1_loyalty_number_of_services",
+                ["l1_loyalty_number_of_services_for_l2_loyalty_number_of_services",
                  "params:l2_loyalty_number_of_services_weekly"],
                  "l2_loyalty_number_of_services"
             ),
@@ -18,7 +18,7 @@ def loyalty_to_l2_pipeline(**kwargs):
             # # Number of rewards for each category
             node(
                 node_from_config,
-                ["l1_loyalty_number_of_rewards",
+                ["l1_loyalty_number_of_rewards_for_l2_loyalty_number_of_rewards",
                  "params:l2_loyalty_number_of_rewards_weekly"],
                 "l2_loyalty_number_of_rewards"
             ),
@@ -26,7 +26,7 @@ def loyalty_to_l2_pipeline(**kwargs):
             # # Number of points spend for each category
             node(
                 node_from_config,
-                ["l1_loyalty_number_of_points_spend",
+                ["l1_loyalty_number_of_points_spend_for_l2_loyalty_number_of_points_spend",
                  "params:l2_loyalty_number_of_points_spend_weekly"],
                 "l2_loyalty_number_of_points_spend"
             ),
@@ -34,8 +34,8 @@ def loyalty_to_l2_pipeline(**kwargs):
             #Serenade class weekly
             node(
                 loyalty_serenade_class,
-                ["l0_loyalty_priv_customer_profile",
-                 "l1_customer_profile_union_daily_feature",
+                ["l0_loyalty_priv_customer_profile_for_l2_loyalty_serenade_class",
+                 "l1_customer_profile_union_daily_feature_for_l2_loyalty_serenade_class",
                  "params:l2_loyalty_serenade_class_weekly"],
                 "l2_loyalty_serenade_class"
             ),

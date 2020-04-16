@@ -1,4 +1,4 @@
-from customer360.utilities.spark_util import get_spark_session
+from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 
 
 def union_daily_cust_profile(
@@ -7,6 +7,9 @@ def union_daily_cust_profile(
         cust_non_mobile,
         column_to_extract
 ):
+    if len(cust_pre.head(1)) == 0 and len(cust_post.head(1)) == 0 and len(cust_non_mobile.head(1)) == 0:
+        return get_spark_empty_df
+
     cust_pre.createOrReplaceTempView("cust_pre")
     cust_post.createOrReplaceTempView("cust_post")
     cust_non_mobile.createOrReplaceTempView("cust_non_mobile")

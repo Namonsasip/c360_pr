@@ -4,6 +4,10 @@ from customer360.utilities.spark_util import get_spark_session
 
 
 def add_last_month_inactive_user(input_df, config):
+
+    if len(input_df.head(1)) == 0:
+        return input_df
+
     input_df.createOrReplaceTempView("input_df")
     spark = get_spark_session()
 
