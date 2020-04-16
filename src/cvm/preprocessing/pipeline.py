@@ -84,6 +84,7 @@ def preprocessing_transform() -> Pipeline:
                 pipeline_transform,
                 [
                     "features_macrosegments_scoring",
+                    "important_param",
                     "preprocessing_pipeline",
                     "parameters",
                     "null_columns",
