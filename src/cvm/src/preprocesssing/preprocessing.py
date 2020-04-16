@@ -33,7 +33,7 @@ from pyspark.sql.functions import col
 import pyspark.sql.functions as F
 
 from cvm.src.utils.classify_columns import classify_columns
-from cvm.src.utils.list_operations import list_intersection
+from cvm.src.utils.list_operations import list_intersection, list_sub
 
 
 class Selector(Transformer):
@@ -65,8 +65,11 @@ class TypeSetter(Transformer):
         log.info("Setting types")
         columns_cats = classify_columns(dataset, self.parameters)
         numerical_cols = list_intersection(dataset.columns, columns_cats["numerical"])
-        for col_name in numerical_cols:
-            dataset = dataset.withColumn(col_name, col(col_name).cast("float"))
+        non_numerical_cols = list_sub(dataset.columns, numerical_cols)
+        dataset = dataset.select(
+            [col(num_col).cast("float") for num_col in numerical_cols]
+            + non_numerical_cols
+        )
         return dataset
 
     def transform(self, dataset, params=None):
