@@ -34,6 +34,7 @@ treatments_chosen_history:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_treatments_chosen_history/
 
+# The same as above - used when the dataset is both an input and output of a node
 treatments_chosen_history2:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_treatments_chosen_history/
