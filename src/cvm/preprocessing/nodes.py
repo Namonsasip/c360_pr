@@ -25,23 +25,17 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import logging
+
 
 from pyspark.sql import DataFrame
 from typing import Dict, Any, List, Tuple
+from pyspark.ml.feature import StringIndexer, Imputer
 from pyspark.ml import Pipeline, PipelineModel
+from pyspark.sql.functions import col
 
-from cvm.src.preprocesssing.preprocessing import (
-    Selector,
-    TypeSetter,
-    Dropper,
-    NullDropper,
-    MultiImputer,
-    MultiStringIndexer,
-)
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
 from cvm.src.utils.classify_columns import classify_columns
-from cvm.src.utils.list_operations import list_intersection, list_sub
+from cvm.src.utils.list_operations import list_intersection
 from cvm.src.utils.utils import get_clean_important_variables, impute_from_parameters
 
 
@@ -59,49 +53,66 @@ def pipeline_fit(
     """
 
     df = prepare_key_columns(df)
-    df = impute_from_parameters(df, parameters)
     important_param = get_clean_important_variables(important_param, parameters)
 
-    columns_cats = classify_columns(df, parameters)
-    if not important_param:
-        cols_to_pick = df.columns
-    else:
-        cols_to_pick = set(
-            columns_cats["target"]
-            + columns_cats["key"]
-            + columns_cats["segment"]
-            + parameters["must_have_features"]
-            + important_param
-        )
+    # drop columns
     cols_to_drop = list_intersection(parameters["drop_in_preprocessing"], df.columns)
-    cols_to_pick = list_sub(cols_to_pick, cols_to_drop)
+    df = df.drop(*cols_to_drop)
 
-    stages = [
-        Selector(cols_to_pick),
-        TypeSetter(parameters),
-        NullDropper(),
-        MultiImputer(parameters),
-        MultiStringIndexer(parameters),
-        Dropper(columns_cats["numerical"] + columns_cats["categorical"]),
-    ]
+    # select columns
+    columns_cats = classify_columns(df, parameters)
+    cols_to_pick = set(
+        columns_cats["target"]
+        + columns_cats["key"]
+        + columns_cats["segment"]
+        + parameters["must_have_features"]
+        + important_param
+    )
+    cols_to_pick = list_intersection(list(cols_to_pick), df.columns)
+    df = df.select(cols_to_pick)
+    df = impute_from_parameters(df, parameters)
+    columns_cats = classify_columns(df, parameters)
 
-    log = logging.getLogger(__name__)
-    log.info(f"Started with {len(df.columns)} columns")
+    # set types
+    for col_name in columns_cats["numerical"]:
+        if col_name in df.columns:
+            df = df.withColumn(col_name, col(col_name).cast("float"))
+
+    # string indexer
+    stages = []
+    for col_name in columns_cats["categorical"]:
+        indexer = StringIndexer(
+            inputCol=col_name, outputCol=col_name + "_indexed"
+        ).setHandleInvalid("keep")
+        stages += [indexer]
+    # imputation
+    imputer = Imputer(
+        inputCols=columns_cats["numerical"],
+        outputCols=[col + "_imputed" for col in columns_cats["numerical"]],
+    )
+    stages += [imputer]
 
     pipeline = Pipeline(stages=stages)
+    columns_cats = classify_columns(df, parameters)
     pipeline_fitted = pipeline.fit(df)
     data_transformed = pipeline_fitted.transform(df)
+    data_transformed = data_transformed.drop(*columns_cats["categorical"])
+    data_transformed = data_transformed.drop(*columns_cats["numerical"])
 
     return data_transformed, pipeline_fitted
 
 
 def pipeline_transform(
-    df: DataFrame, pipeline_fitted: PipelineModel, parameters: Dict[str, Any],
+    df: DataFrame,
+    important_param: List[Any],
+    pipeline_fitted: PipelineModel,
+    parameters: Dict[str, Any],
 ) -> DataFrame:
     """ Preprocess given table.
 
     Args:
         df: Table to run string indexing for.
+        important_param: List of important columns.
         pipeline_fitted: MLPipeline fitted to training data.
         parameters: parameters defined in parameters*.yml files.
     Returns:
@@ -109,8 +120,35 @@ def pipeline_transform(
     """
 
     df = prepare_key_columns(df)
-    df = impute_from_parameters(df, parameters)
+    important_param = get_clean_important_variables(important_param, parameters)
 
+    # drop columns
+    cols_to_drop = list_intersection(parameters["drop_in_preprocessing"], df.columns)
+    df = df.drop(*cols_to_drop)
+
+    # select columns
+    columns_cats = classify_columns(df, parameters)
+    cols_to_pick = set(
+        columns_cats["target"]
+        + columns_cats["key"]
+        + columns_cats["segment"]
+        + parameters["must_have_features"]
+        + important_param
+    )
+    cols_to_pick = list_intersection(list(cols_to_pick), df.columns)
+    df = df.select(cols_to_pick)
+    df = impute_from_parameters(df, parameters)
+    columns_cats = classify_columns(df, parameters)
+
+    # set types
+    for col_name in columns_cats["numerical"]:
+        if col_name in df.columns:
+            df = df.withColumn(col_name, col(col_name).cast("float"))
+
+    # string indexer
+    columns_cats = classify_columns(df, parameters)
     data_transformed = pipeline_fitted.transform(df)
+    data_transformed = data_transformed.drop(*columns_cats["categorical"])
+    data_transformed = data_transformed.drop(*columns_cats["numerical"])
 
     return data_transformed
