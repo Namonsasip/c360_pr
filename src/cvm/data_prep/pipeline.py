@@ -281,7 +281,7 @@ def create_cvm_important_columns():
                 name="create_features_macrosegments_fe",
             ),
             node(
-                partial(pipeline_fit, important_columns=[]),
+                partial(pipeline_fit, important_param=[]),
                 ["features_macrosegments_fe", "parameters"],
                 ["sample_preprocessed_fe", "preprocessing_pipeline_fe"],
                 name="preprocessing_fit_fe",
