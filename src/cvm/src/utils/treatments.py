@@ -170,8 +170,12 @@ def mark_propensities_as_low_high(
         macrosegment_cond = func.col(macrosegment_colname) == macrosegment_chosen
         H_cond = func.col(propensity_colname) >= cutoff_local
         L_cond = func.col(propensity_colname) < cutoff_local
-        when_clause = func.when(macrosegment_cond and H_cond, "H").when(
-            macrosegment_cond and L_cond, "L"
+        if new_colname not in df.columns:
+            df = df.withColumn(new_colname, func.lit(None))
+        when_clause = (
+            func.when(macrosegment_cond & H_cond, "H")
+            .when(macrosegment_cond & L_cond, "L")
+            .otherwise(func.col(new_colname))
         )
 
         return df.withColumn(new_colname, when_clause)
