@@ -28,6 +28,10 @@ l4_usage_postpaid_prepaid_weekly_features_sum_training:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_usage_postpaid_prepaid_weekly_features_sum_training/
 
+l4_touchpoints_to_call_center_features_training:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_touchpoints_to_call_center_features_training/
+
 ard_targets_training:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_ard_targets_training/
