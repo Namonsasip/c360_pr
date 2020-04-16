@@ -11,3 +11,11 @@ features_targets_fe:
 features_macrosegments_fe:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_features_macrosegments_fe/
+
+sample_preprocessed_fe:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_sample_preprocessed_fe/
+
+preprocessing_pipeline_fe:
+  type: datasets.ml_pipeline.MLPipeline
+  filepath: /dbfs/mnt/customer360-cvm/preprocessing_pipeline_fe

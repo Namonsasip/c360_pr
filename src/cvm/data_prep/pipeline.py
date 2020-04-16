@@ -30,6 +30,7 @@ just for illustrating basic Kedro features.
 
 PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 """
+from functools import partial
 
 from kedro.pipeline import Pipeline, node
 
@@ -44,6 +45,7 @@ from cvm.data_prep.nodes import (
     subs_date_join_important_only,
     subs_date_join,
 )
+from cvm.preprocessing.nodes import pipeline_fit
 
 
 def create_users_from_tg(sample_type: str) -> Pipeline:
@@ -254,7 +256,7 @@ def create_cvm_important_columns():
     ]
 
     return Pipeline(
-        [
+        {
             node(
                 subs_date_join,
                 [
@@ -277,7 +279,13 @@ def create_cvm_important_columns():
                 "features_macrosegments_fe",
                 name="create_features_macrosegments_fe",
             ),
-        ]
+            node(
+                partial(pipeline_fit, important_columns=[]),
+                ["features_macrosegments_fe", "parameters"],
+                ["sample_preprocessed_fe", "preprocessing_pipeline_fe"],
+                name="preprocessing_fit_fe",
+            ),
+        }
     )
 
 
