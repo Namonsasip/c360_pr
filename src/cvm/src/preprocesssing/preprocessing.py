@@ -25,8 +25,8 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from pyspark.ml import Transformer
-from pyspark.sql.functions import col
+from pyspark.ml import Transformer, Estimator, Model
+from pyspark.sql.functions import col, countDistinct
 
 from cvm.src.utils.classify_columns import classify_columns
 from cvm.src.utils.list_operations import list_intersection
@@ -78,3 +78,15 @@ class Dropper(Transformer):
 
     def transform(self, dataset, params=None):
         return self._transform(dataset)
+
+
+class NullDroppers(Estimator):
+    """ Drops columns with nothing but NULLs"""
+
+    def _fit(self, dataset):
+        nullColumns = []
+        for k in dataset.columns:
+            if dataset.agg(countDistinct(dataset[k])).collect()[0][0] == 0:
+                nullColumns.append(k)
+        transformer = Dropper(nullColumns)
+        return Model(transformer)
