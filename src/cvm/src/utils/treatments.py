@@ -348,7 +348,7 @@ def generate_treatment_target_group_basing_on_order(
     def _pick_top_n_rows(df, col_to_sort_on, n):
         return (
             df.orderBy(col_to_sort_on, ascending=False)
-            .head(n)
+            .limit(n)
             .select("subscription_identifier")
             .distinct()
         )
