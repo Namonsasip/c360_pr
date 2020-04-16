@@ -27,9 +27,9 @@
 # limitations under the License.
 from kedro.pipeline import Pipeline, node
 
+from cvm.src.utils.treatments import generate_treatment_target_group_basing_on_order
 from cvm.treatments.nodes import (
     prepare_microsegments,
-    get_target_users,
     produce_treatments,
 )
 
@@ -54,7 +54,7 @@ def generate_treatments() -> Pipeline:
                 name="create_microsegments_scoring",
             ),
             node(
-                get_target_users,
+                generate_treatment_target_group_basing_on_order,
                 ["propensity_scores", "parameters"],
                 "target_users",
                 name="create_target_users",
