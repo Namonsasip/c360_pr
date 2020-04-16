@@ -298,3 +298,58 @@ def add_volatility_scores(
     users = users.select(cols_to_pick)
 
     return users
+
+
+def generate_treatment_target_group_basing_on_order(
+    propensities: DataFrame, parameters: Dict[str, Any],
+) -> DataFrame:
+    """ Returns group of users to be targeted with treatments. The list is generated
+        basing on presumed size of treatment groups and some order which is a function
+        of propensities.
+
+    Args:
+        propensities: table with propensities.
+        parameters: parameters defined in parameters.yml.
+    """
+
+    # define order columns
+    churn_order = (
+        func.col("churn5_pred")
+        + func.col("churn15_pred")
+        + func.col("churn30_pred")
+        + func.col("churn45_pred")
+        + func.col("churn60_pred")
+    )
+    ard_order = func.col("dilution1_pred") + func.col("dilution2_pred")
+
+    # apply orders
+    propensities = propensities.withColumn("churn_order", churn_order).withColumn(
+        "ard_order", ard_order
+    )
+
+    # pick users to treat
+    treatment_sizes = parameters["treatment_sizes"]
+
+    def _pick_top_n_rows(df, col_to_sort_on, n):
+        return (
+            df.orderBy(col_to_sort_on, ascending=False)
+            .head(n)
+            .select("subscription_identifier")
+            .distinct()
+        )
+
+    churn_users = _pick_top_n_rows(
+        propensities, "churn_order", treatment_sizes["churn"]
+    )
+    propensities_no_churn = propensities.join(
+        churn_users, on="subscription_identifier", how="left_anti"
+    )
+    ard_users = _pick_top_n_rows(
+        propensities_no_churn, "ard_order", treatment_sizes["ard"]
+    )
+
+    # combine the users
+    churn_users = churn_users.withColumn("use_case", func.lit("churn"))
+    ard_users = ard_users.withColumn("use_case", func.lit("ard"))
+
+    return churn_users.union(ard_users)
