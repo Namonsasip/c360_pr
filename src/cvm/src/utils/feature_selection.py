@@ -41,12 +41,20 @@ def feature_selection(
     if target_type == "class":
         rfc = RandomForestClassifier(random_state=101, n_estimators=20)
         rfecv = RFECV(
-            estimator=rfc, step=step_size, cv=StratifiedKFold(5), scoring="roc_auc"
+            estimator=rfc,
+            step=step_size,
+            cv=StratifiedKFold(5),
+            scoring="roc_auc",
+            min_features_to_select=20,
         )
     else:
         lr = LinearRegression(normalize=True)
         rfecv = RFECV(
-            estimator=lr, step=step_size, cv=StratifiedKFold(5), scoring="roc_auc"
+            estimator=lr,
+            step=step_size,
+            cv=StratifiedKFold(5),
+            scoring="roc_auc",
+            min_features_to_select=20,
         )
     rfecv.fit(features, target)
 
