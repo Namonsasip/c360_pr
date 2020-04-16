@@ -143,6 +143,57 @@ def define_microsegments(df: DataFrame, parameters: Dict[str, Any],) -> DataFram
     return df
 
 
+def mark_propensities_as_low_high(
+    propensities: DataFrame, parameters: Dict[str, Any],
+) -> DataFrame:
+    """ Each propensity is mapped to 'H' if greater then given threshold and to 'L'
+        otherwise.
+
+    Args:
+        propensities: table with propensities.
+        parameters: parameters defined in parameters.yml.
+    """
+
+    log = logging.getLogger(__name__)
+    log.info("Mapping propensities to H / L")
+
+    cutoffs = parameters["cutoffs"]
+
+    def _map_usecase_macro_target(
+        df, use_case_chosen, macrosegment_chosen, target_chosen
+    ):
+        cutoff_local = cutoffs[use_case_chosen][macrosegment_chosen][target_chosen]
+        new_colname = target_chosen + "_lh"
+        propensity_colname = target_chosen + "_pred"
+        macrosegment_colname = use_case_chosen + "_macrosegment"
+
+        macrosegment_cond = func.col(macrosegment_colname) == macrosegment_chosen
+        H_cond = func.col(propensity_colname) >= cutoff_local
+        L_cond = func.col(propensity_colname) < cutoff_local
+        when_clause = func.when(macrosegment_cond and H_cond, "H").when(
+            macrosegment_cond and L_cond, "L"
+        )
+
+        return df.withColumn(new_colname, when_clause)
+
+    def _map_usecase_macro(df, use_case_chosen, macrosegment_chosen):
+        for target_chosen in cutoffs[use_case_chosen][macrosegment_chosen]:
+            df = _map_usecase_macro_target(
+                df, use_case_chosen, macrosegment_chosen, target_chosen
+            )
+        return df
+
+    def _map_usecase(df, use_case_chosen):
+        for macrosegment_chosen in cutoffs[use_case_chosen]:
+            df = _map_usecase_macro(df, use_case_chosen, macrosegment_chosen)
+        return df
+
+    for use_case in cutoffs:
+        propensities = _map_usecase(propensities, use_case)
+
+    return propensities
+
+
 def filter_cutoffs(propensities: DataFrame, parameters: Dict[str, Any],) -> DataFrame:
     """ Filters given propensities table according to cutoffs given.
 
