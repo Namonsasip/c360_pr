@@ -72,32 +72,38 @@ def pipeline_fit(
     cols_to_pick = list_sub(cols_to_pick, cols_to_drop)
 
     stages = []
-    stages += [Selector(cols_to_pick)]
+    selector = Selector(cols_to_pick)
+    stages += [selector]
 
+    columns_cats_after_selection = classify_columns(selector.transform(df), parameters)
     # set types
-    for col_name in columns_cats["numerical"]:
+    for col_name in columns_cats_after_selection["numerical"]:
         if col_name in df.columns:
             df = df.withColumn(col_name, col(col_name).cast("float"))
 
     # string indexer
-    for col_name in columns_cats["categorical"]:
+    for col_name in columns_cats_after_selection["categorical"]:
         indexer = StringIndexer(
             inputCol=col_name, outputCol=col_name + "_indexed"
         ).setHandleInvalid("keep")
         stages += [indexer]
     # imputation
     imputer = Imputer(
-        inputCols=columns_cats["numerical"],
-        outputCols=[col + "_imputed" for col in columns_cats["numerical"]],
+        inputCols=columns_cats_after_selection["numerical"],
+        outputCols=[
+            col + "_imputed" for col in columns_cats_after_selection["numerical"]
+        ],
     )
     stages += [imputer]
 
     pipeline = Pipeline(stages=stages)
-    columns_cats = classify_columns(df, parameters)
+    columns_cats_after_selection = classify_columns(df, parameters)
     pipeline_fitted = pipeline.fit(df)
     data_transformed = pipeline_fitted.transform(df)
-    data_transformed = data_transformed.drop(*columns_cats["categorical"])
-    data_transformed = data_transformed.drop(*columns_cats["numerical"])
+    data_transformed = data_transformed.drop(
+        *columns_cats_after_selection["categorical"]
+    )
+    data_transformed = data_transformed.drop(*columns_cats_after_selection["numerical"])
 
     return data_transformed, pipeline_fitted
 
@@ -109,7 +115,6 @@ def pipeline_transform(
 
     Args:
         df: Table to run string indexing for.
-        important_param: List of important columns.
         pipeline_fitted: MLPipeline fitted to training data.
         parameters: parameters defined in parameters*.yml files.
     Returns:
