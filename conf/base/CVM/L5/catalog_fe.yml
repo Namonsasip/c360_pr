@@ -19,3 +19,7 @@ sample_preprocessed_fe:
 preprocessing_pipeline_fe:
   type: datasets.ml_pipeline.MLPipeline
   filepath: /dbfs/mnt/customer360-cvm/preprocessing_pipeline_fe
+
+null_columns_fe:
+  type: kedro.contrib.io.yaml_local.YAMLLocalDataSet
+  filepath: /dbfs/mnt/customer360-cvm/null_columns_fe

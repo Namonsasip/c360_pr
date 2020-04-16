@@ -47,7 +47,11 @@ def preprocessing_fit() -> Pipeline:
             node(
                 pipeline_fit,
                 ["train_sample_" + sample_type, "important_columns", "parameters"],
-                ["train_sample_preprocessed_" + sample_type, "preprocessing_pipeline"],
+                [
+                    "train_sample_preprocessed_" + sample_type,
+                    "preprocessing_pipeline",
+                    "null_columns",
+                ],
                 name="preprocessing_fit_" + sample_type,
             ),
             node(
@@ -56,6 +60,7 @@ def preprocessing_fit() -> Pipeline:
                     "train_sample_" + sample_type,
                     "preprocessing_pipeline",
                     "parameters",
+                    "null_columns",
                 ],
                 "test_sample_preprocessed_" + sample_type,
                 name="create_test_sample_preprocessed_" + sample_type,
@@ -80,6 +85,7 @@ def preprocessing_transform() -> Pipeline:
                     "features_macrosegments_scoring",
                     "preprocessing_pipeline",
                     "parameters",
+                    "null_columns",
                 ],
                 "sample_preprocessed_scoring",
                 name="preprocessing_transform_scoring_sample",

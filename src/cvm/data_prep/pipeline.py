@@ -284,7 +284,11 @@ def create_cvm_important_columns():
             node(
                 lambda df, parameters: pipeline_fit(df, [], parameters),
                 ["features_macrosegments_fe", "parameters"],
-                ["sample_preprocessed_fe", "preprocessing_pipeline_fe"],
+                [
+                    "sample_preprocessed_fe",
+                    "preprocessing_pipeline_fe",
+                    "null_columns_fe",
+                ],
                 name="preprocessing_fit_fe",
             ),
             node(

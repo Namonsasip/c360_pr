@@ -9,6 +9,10 @@ important_columns:
   type: kedro.contrib.io.yaml_local.YAMLLocalDataSet
   filepath: /dbfs/mnt/customer360-cvm/important_columns
 
+null_columns:
+  type: kedro.contrib.io.yaml_local.YAMLLocalDataSet
+  filepath: /dbfs/mnt/customer360-cvm/null_columns
+
 #  diagnostic metric, plots and tables
 models_diags:
   type: kedro.io.PickleLocalDataSet

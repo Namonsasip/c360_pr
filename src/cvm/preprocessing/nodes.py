@@ -25,13 +25,11 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-
 from pyspark.sql import DataFrame
 from typing import Dict, Any, List, Tuple
 from pyspark.ml.feature import StringIndexer, Imputer
 from pyspark.ml import Pipeline, PipelineModel
-from pyspark.sql.functions import col
+from pyspark.sql.functions import col, when, count
 
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
 from cvm.src.utils.classify_columns import classify_columns
@@ -41,7 +39,7 @@ from cvm.src.utils.utils import get_clean_important_variables, impute_from_param
 
 def pipeline_fit(
     df: DataFrame, important_param: List[Any], parameters: Dict[str, Any]
-) -> Tuple[DataFrame, Pipeline]:
+) -> Tuple[DataFrame, Pipeline, List]:
     """ Fits preprocessing pipeline to given table and runs the pipeline on it.
 
     Args:
@@ -78,6 +76,16 @@ def pipeline_fit(
         if col_name in df.columns:
             df = df.withColumn(col_name, col(col_name).cast("float"))
 
+    # filter out nulls
+    df_count = df.count()
+    null_counts = df.select(
+        [count(when(col(c).isNull(), c)).alias(c) for c in df.columns]
+    ).toPandas()
+    null_columns = [
+        colname for colname in df.columns if null_counts[colname][0] == df_count
+    ]
+    df = df.drop(*null_columns)
+
     # string indexer
     stages = []
     for col_name in columns_cats["categorical"]:
@@ -85,6 +93,7 @@ def pipeline_fit(
             inputCol=col_name, outputCol=col_name + "_indexed"
         ).setHandleInvalid("keep")
         stages += [indexer]
+
     # imputation
     imputer = Imputer(
         inputCols=columns_cats["numerical"],
@@ -99,7 +108,7 @@ def pipeline_fit(
     data_transformed = data_transformed.drop(*columns_cats["categorical"])
     data_transformed = data_transformed.drop(*columns_cats["numerical"])
 
-    return data_transformed, pipeline_fitted
+    return data_transformed, pipeline_fitted, null_columns
 
 
 def pipeline_transform(
@@ -107,6 +116,7 @@ def pipeline_transform(
     important_param: List[Any],
     pipeline_fitted: PipelineModel,
     parameters: Dict[str, Any],
+    null_columns: List,
 ) -> DataFrame:
     """ Preprocess given table.
 
@@ -115,6 +125,7 @@ def pipeline_transform(
         important_param: List of important columns.
         pipeline_fitted: MLPipeline fitted to training data.
         parameters: parameters defined in parameters*.yml files.
+        null_columns: Columns with all null values.
     Returns:
         String indexed table object to use later.
     """
@@ -124,6 +135,7 @@ def pipeline_transform(
 
     # drop columns
     cols_to_drop = list_intersection(parameters["drop_in_preprocessing"], df.columns)
+    cols_to_drop += null_columns
     df = df.drop(*cols_to_drop)
 
     # select columns
