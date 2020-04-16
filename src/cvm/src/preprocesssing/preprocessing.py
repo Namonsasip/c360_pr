@@ -112,8 +112,12 @@ class NullDropper(Estimator):
 class MultiImputer(Estimator):
     """ Performs median imputation for all numeric columns"""
 
+    def __init__(self, parameters):
+        super().__init__()
+        self.parameters = parameters
+
     def _fit(self, dataset):
-        columns_cats = classify_columns(dataset)
+        columns_cats = classify_columns(dataset, self.parameters)
         imputer = Imputer(
             inputCols=columns_cats["numerical"],
             outputCols=[col + "_imputed" for col in columns_cats["numerical"]],
@@ -125,8 +129,12 @@ class MultiImputer(Estimator):
 class MultiStringIndexer(Estimator):
     """ Runs StringIndexer for all categorical columns"""
 
+    def __init__(self, parameters):
+        super().__init__()
+        self.parameters = parameters
+
     def _fit(self, dataset):
-        columns_cats = classify_columns(dataset)
+        columns_cats = classify_columns(dataset, self.parameters)
         for col_name in columns_cats["categorical"]:
             indexer = StringIndexer(
                 inputCol=col_name, outputCol=col_name + "_indexed"

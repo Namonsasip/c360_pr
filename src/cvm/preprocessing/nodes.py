@@ -80,8 +80,8 @@ def pipeline_fit(
         NullDropper(),
         Selector(cols_to_pick),
         TypeSetter(parameters),
-        MultiImputer(),
-        MultiStringIndexer(),
+        MultiImputer(parameters),
+        MultiStringIndexer(parameters),
         Dropper(columns_cats["numerical"] + columns_cats["categorical"]),
     ]
 
