@@ -149,6 +149,6 @@ class MultiStringIndexer(Estimator):
             indexer = StringIndexer(
                 inputCol=col_name, outputCol=col_name + "_indexed"
             ).setHandleInvalid("keep")
-            indexers += indexer
+            indexers += [indexer]
         indexer_fitted = Pipeline(stages=indexers).fit(dataset)
         return indexer_fitted
