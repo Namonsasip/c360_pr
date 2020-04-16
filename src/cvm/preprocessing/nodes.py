@@ -25,7 +25,7 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import logging
 
 from pyspark.sql import DataFrame
 from typing import Dict, Any, List, Tuple
@@ -84,6 +84,9 @@ def pipeline_fit(
         MultiStringIndexer(parameters),
         Dropper(columns_cats["numerical"] + columns_cats["categorical"]),
     ]
+
+    log = logging.getLogger(__name__)
+    log.info(f"Started with {len(df.columns)} columns")
 
     pipeline = Pipeline(stages=stages)
     pipeline_fitted = pipeline.fit(df)
