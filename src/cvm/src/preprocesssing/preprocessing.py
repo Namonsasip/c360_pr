@@ -29,6 +29,7 @@ import logging
 
 from pyspark.ml import Transformer, Estimator, Pipeline
 from pyspark.ml.feature import Imputer, StringIndexer
+from pyspark.ml.util import DefaultParamsReadable, DefaultParamsWritable
 from pyspark.sql.functions import col
 import pyspark.sql.functions as F
 
@@ -36,8 +37,11 @@ from cvm.src.utils.classify_columns import classify_columns
 from cvm.src.utils.list_operations import list_intersection, list_sub
 
 
-class Selector(Transformer):
+class Selector(Transformer, DefaultParamsWritable, DefaultParamsReadable):
     """ Transformer selecting constant set of columns"""
+
+    def write(self):
+        pass
 
     def __init__(self, cols_to_pick):
         super().__init__()
@@ -53,7 +57,7 @@ class Selector(Transformer):
         return self._transform(dataset)
 
 
-class TypeSetter(Transformer):
+class TypeSetter(Transformer, DefaultParamsWritable, DefaultParamsReadable):
     """ Transformer converting types of columns"""
 
     def __init__(self, parameters):
@@ -76,7 +80,7 @@ class TypeSetter(Transformer):
         return self._transform(dataset)
 
 
-class Dropper(Transformer):
+class Dropper(Transformer, DefaultParamsWritable, DefaultParamsReadable):
     """ Transformer dropping constant set of columns"""
 
     def __init__(self, cols_to_drop):
@@ -93,7 +97,7 @@ class Dropper(Transformer):
         return self._transform(dataset)
 
 
-class NullDropper(Estimator):
+class NullDropper(Estimator, DefaultParamsWritable, DefaultParamsReadable):
     """ Drops columns with nothing but NULLs"""
 
     def _fit(self, dataset):
@@ -114,7 +118,7 @@ class NullDropper(Estimator):
         return transformer
 
 
-class MultiImputer(Estimator):
+class MultiImputer(Estimator, DefaultParamsWritable, DefaultParamsReadable):
     """ Performs median imputation for all numeric columns"""
 
     def __init__(self, parameters):
@@ -133,7 +137,7 @@ class MultiImputer(Estimator):
         return imputer_fitted
 
 
-class MultiStringIndexer(Estimator):
+class MultiStringIndexer(Estimator, DefaultParamsWritable, DefaultParamsReadable):
     """ Runs StringIndexer for all categorical columns"""
 
     def __init__(self, parameters):
