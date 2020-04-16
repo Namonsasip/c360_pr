@@ -61,13 +61,16 @@ def pipeline_fit(
 
     # select columns
     columns_cats = classify_columns(df, parameters)
-    cols_to_pick = set(
-        columns_cats["target"]
-        + columns_cats["key"]
-        + columns_cats["segment"]
-        + parameters["must_have_features"]
-        + important_param
-    )
+    if not important_param:
+        cols_to_pick = df.columns
+    else:
+        cols_to_pick = set(
+            columns_cats["target"]
+            + columns_cats["key"]
+            + columns_cats["segment"]
+            + parameters["must_have_features"]
+            + important_param
+        )
     cols_to_pick = list_intersection(list(cols_to_pick), df.columns)
     df = df.select(cols_to_pick)
     df = impute_from_parameters(df, parameters)
@@ -128,13 +131,16 @@ def pipeline_transform(
 
     # select columns
     columns_cats = classify_columns(df, parameters)
-    cols_to_pick = set(
-        columns_cats["target"]
-        + columns_cats["key"]
-        + columns_cats["segment"]
-        + parameters["must_have_features"]
-        + important_param
-    )
+    if not important_param:
+        cols_to_pick = df.columns
+    else:
+        cols_to_pick = set(
+            columns_cats["target"]
+            + columns_cats["key"]
+            + columns_cats["segment"]
+            + parameters["must_have_features"]
+            + important_param
+        )
     cols_to_pick = list_intersection(list(cols_to_pick), df.columns)
     df = df.select(cols_to_pick)
     df = impute_from_parameters(df, parameters)
