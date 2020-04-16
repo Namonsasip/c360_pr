@@ -44,6 +44,7 @@ from cvm.data_prep.nodes import (
     create_users_from_cgtg,
     subs_date_join_important_only,
     subs_date_join,
+    feature_selection_all_target,
 )
 from cvm.preprocessing.nodes import pipeline_fit
 
@@ -284,6 +285,12 @@ def create_cvm_important_columns():
                 ["features_macrosegments_fe", "parameters"],
                 ["sample_preprocessed_fe", "preprocessing_pipeline_fe"],
                 name="preprocessing_fit_fe",
+            ),
+            node(
+                feature_selection_all_target,
+                ["sample_preprocessed_fe", "parameters"],
+                "important_columns",
+                name="feature_selection_l5_cvm_one_day_train_preprocessed",
             ),
         }
     )
