@@ -27,7 +27,7 @@
 # limitations under the License.
 import logging
 
-from pyspark.ml import Transformer, Estimator, Model
+from pyspark.ml import Transformer, Estimator
 from pyspark.sql.functions import col
 import pyspark.sql.functions as F
 
@@ -105,4 +105,4 @@ class NullDropper(Estimator):
         log.info(f"{len(null_columns)} columns full of NULLs")
 
         transformer = Dropper(null_columns)
-        return Model(transformer)
+        return transformer
