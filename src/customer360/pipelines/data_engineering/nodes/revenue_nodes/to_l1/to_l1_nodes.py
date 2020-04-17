@@ -44,6 +44,7 @@ def massive_processing_with_customer(input_df: DataFrame
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         small_df = data_frame.filter(F.col("partition_date").isin(*[curr_item]))
+        small_df = small_df.withColumn("total_vol_gprs_2g_3g", F.col("total_vol_gprs") - F.col("total_vol_gprs_4g"))
         small_cus_df = customer_df.filter(F.col("event_partition_date").isin(*[curr_item]))
         output_df = node_from_config(small_df, sql)
         output_df = small_cus_df.join(output_df, ["access_method_num", "event_partition_date", "start_of_week"], "left")
