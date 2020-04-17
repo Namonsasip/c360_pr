@@ -1,0 +1,9 @@
+l2_revenue_prepaid_weekly:
+  where_clause: ""
+  type: "week"
+  feature_list:
+    sum: []
+    max: []
+    min: []
+    avg: []
+  granularity: "subscription_identifier, start_of_week"
