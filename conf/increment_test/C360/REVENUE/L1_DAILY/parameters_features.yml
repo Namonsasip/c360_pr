@@ -12,33 +12,67 @@ l1_revenue_prepaid_pru_f_usage_multi_daily:
     rev_arpu_total_data_revenue_by_package: "sum(total_net_tariff_gprs_package)"
     rev_arpu_total_data_revenue_by_ppu: "sum(total_net_tariff_gprs_exc_package)"
 
-    ########################################### 4g ############################################################
+    ########################################### 4g #####################################################################
     rev_arpu_total_data_revenue_4G: "sum(total_net_tariff_gprs_revenue * (total_vol_gprs_4g/total_vol_gprs))"
+
     rev_arpu_total_data_revenue_by_package_4g: "sum(total_net_tariff_gprs_package * (total_vol_gprs_4g/total_vol_gprs))"
+
     rev_arpu_total_data_revenue_by_ppu_4g: "sum(total_net_tariff_gprs_exc_package * (total_vol_gprs_4g/total_vol_gprs))"
-    ########################################## 3g #############################################################
+
+    ########################################## 3g ######################################################################
     rev_arpu_total_data_revenue_2g_3g: "sum(total_net_tariff_gprs_revenue * (total_vol_gprs_2g_3g/total_vol_gprs))"
+
     rev_arpu_total_data_revenue_by_package_2g_3g: "sum(total_net_tariff_gprs_revenue * (total_vol_gprs_2g_3g/total_vol_gprs))"
+
     rev_arpu_total_data_revenue_by_ppu_2g_3g: "sum(total_net_tariff_gprs_revenue * (total_vol_gprs_2g_3g/total_vol_gprs))"
-    #############################################per_unit##########################################################
+
+    #############################################per_unit###############################################################
     rev_arpu_total_data_revenue_by_per_unit: "sum(total_net_tariff_gprs_revenue / total_vol_gprs)"
-    rev_arpu_total_data_revenue_per_unit_2g_3g: "sum(sum(total_net_tariff_gprs_revenue * (total_vol_gprs_2g_3g/total_vol_gprs))
-                                              / sum(total_vol_gprs_2g_3g))"
-    rev_arpu_total_data_revenue_per_unit_4g: "sum(sum(total_net_tariff_gprs_revenue * (total_vol_gprs_4g/total_vol_gprs))
-                                              / sum(total_vol_gprs_4g))"
+
+    rev_arpu_total_data_revenue_per_unit_2g_3g: "sum(total_net_tariff_gprs_revenue * (total_vol_gprs_2g_3g/total_vol_gprs))
+                                              / sum(total_vol_gprs_2g_3g)"
+
+    rev_arpu_total_data_revenue_per_unit_4g: "sum(total_net_tariff_gprs_revenue * (total_vol_gprs_4g/total_vol_gprs))
+                                              / sum(total_vol_gprs_4g)"
+
     ##############################diff data revenue by package##########################################################
     rev_arpu_diffence_revenue_by_package_ppu: "sum(total_net_tariff_gprs_package - total_net_tariff_gprs_exc_package)"
-    rev_arpu_diffence_revenue_by_package_ppu_4g: "sum(sum(total_net_tariff_gprs_package * (total_vol_gprs_4g/total_vol_gprs))
-     - sum(total_net_tariff_gprs_exc_package * (total_vol_gprs_4g/total_vol_gprs)))"
-    rev_arpu_diffence_revenue_by_package_ppu_2g_3g: "sum(sum(total_net_tariff_gprs_revenue * (total_vol_gprs_2g_3g/total_vol_gprs))
-     - sum(total_net_tariff_gprs_revenue * (total_vol_gprs_2g_3g/total_vol_gprs)))"
-    rev_arpu_diffence_revenue_2g_3g_vs_4g: "sum(sum(total_net_tariff_gprs_revenue * (total_vol_gprs_2g_3g/total_vol_gprs))
-     - sum(total_net_tariff_gprs_revenue * (total_vol_gprs_4g/total_vol_gprs)))"
 
-    rev_arpu_diffence_revenue_per_unit_2g_3g_vs_4g:
+    rev_arpu_diffence_revenue_by_package_ppu_4g: "sum(total_net_tariff_gprs_package * (total_vol_gprs_4g/total_vol_gprs))
+     - sum(total_net_tariff_gprs_exc_package * (total_vol_gprs_4g/total_vol_gprs))"
 
-    rev_arpu_share_4g_data_revenue_in_data_revenue:
-    rev_arpu_share_2_3g_data_revenue_in_data_revenue:
+    rev_arpu_diffence_revenue_by_package_ppu_2g_3g: "sum(total_net_tariff_gprs_revenue * (total_vol_gprs_2g_3g/total_vol_gprs))
+     - sum(total_net_tariff_gprs_revenue * (total_vol_gprs_2g_3g/total_vol_gprs))"
+
+    rev_arpu_diffence_revenue_2g_3g_vs_4g: "sum(total_net_tariff_gprs_revenue * (total_vol_gprs_2g_3g/total_vol_gprs))
+     - sum(total_net_tariff_gprs_revenue * (total_vol_gprs_4g/total_vol_gprs))"
+
+    rev_arpu_diffence_revenue_per_unit_2g_3g_vs_4g: "(sum(total_net_tariff_gprs_revenue * (total_vol_gprs_2g_3g/total_vol_gprs))
+        / sum(total_vol_gprs_2g_3g)))  - (sum(total_net_tariff_gprs_revenue * (total_vol_gprs_4g/total_vol_gprs))
+                                                      / sum(total_vol_gprs_4g)))"
+      ##############################voice features######################################################################
+
+    rev_arpu_total_voice: "sum(total_net_tariff_revenue_basic)"
+    rev_arpu_total_voice_intra: "sum(total_net_tariff_basic_intra)"
+    rev_arpu_total_voice_non_intra: "sum(total_net_tariff_basic_non_intra)"
+    rev_arpu_total_voice_per_call: "sum(total_net_tariff_revenue_basic/total_call)"
+    rev_arpu_total_voice_intra_per_call: "sum(total_net_tariff_basic_intra/total_call)"
+    rev_arpu_total_voice_non_intra_per_call: "sum(total_net_tariff_basic_non_intra/total_call)"
+    rev_arpu_total_voice_per_minute: "sum(total_net_tariff_revenue_basic/total_minute)"
+    rev_arpu_total_voice_intra_per_minute: "sum(total_net_tariff_basic_intra/total_minute)"
+    rev_arpu_total_voice_non_intra_per_minute: "sum(total_net_tariff_basic_non_intra/total_minute)"
+    rev_arpu_difference_voice_intra_non_intra: "sum(total_net_tariff_basic_intra) - sum(total_net_tariff_basic_non_intra)"
+    rev_arpu_difference_voice_intra_non_intra_per_min:
+                    "sum(total_net_tariff_basic_intra/total_minute) - sum(total_net_tariff_basic_non_intra/total_minute)"
+    rev_arpu_total_days_with_0_revenue: "sum(case when total_net_tariff_revenue = 0 OR total_net_tariff_revenue is NULL
+    THEN 1 ELSE 0 END)"
+    rev_arpu_total_days_with_data_0_revenue: "sum(case when total_net_tariff_gprs_revenue = 0 OR
+    total_net_tariff_revenue is NULL THEN 1 ELSE 0 END)"
+    rev_arpu_total_days_with_data_ppu_0_revenue: "sum(case when total_net_tariff_gprs_exc_package = 0 OR
+    total_net_tariff_revenue is NULL THEN 1 ELSE 0 END)"
+
+
+
 
 
   granularity: "access_method_num, register_date, day_id"
