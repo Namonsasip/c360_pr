@@ -29,7 +29,7 @@ import logging
 from typing import Any, Dict, List, Tuple
 
 from cvm.src.utils.classify_columns import classify_columns
-from cvm.src.utils.list_operations import list_intersection
+from cvm.src.utils.list_operations import list_intersection, list_sub
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
 from cvm.src.utils.utils import get_clean_important_variables, impute_from_parameters
 from pyspark.ml import Pipeline, PipelineModel
@@ -80,9 +80,12 @@ def pipeline_fit(
     columns_cats = classify_columns(df, parameters)
 
     # set types
-    for col_name in columns_cats["numerical"]:
-        if col_name in df.columns:
-            df = df.withColumn(col_name, col(col_name).cast("float"))
+    num_cols = columns_cats["numerical"]
+    non_num_cols = list_sub(df.columns, num_cols)
+    df = df.select(
+        [col(col_name).cast("float").alias(col_name) for col_name in num_cols]
+        + non_num_cols
+    )
     log.info(f"Types set")
 
     # filter out nulls
@@ -171,9 +174,12 @@ def pipeline_transform(
     columns_cats = classify_columns(df, parameters)
 
     # set types
-    for col_name in columns_cats["numerical"]:
-        if col_name in df.columns:
-            df = df.withColumn(col_name, col(col_name).cast("float"))
+    num_cols = columns_cats["numerical"]
+    non_num_cols = list_sub(df.columns, num_cols)
+    df = df.select(
+        [col(col_name).cast("float").alias(col_name) for col_name in num_cols]
+        + non_num_cols
+    )
     log.info(f"Types set")
 
     columns_cats = classify_columns(df, parameters)
