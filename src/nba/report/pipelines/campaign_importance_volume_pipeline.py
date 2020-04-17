@@ -16,34 +16,49 @@ def campaign_importance_volume(run_type: str = None) -> Pipeline:
             # Tag is a short version of name, multiple nodes with the same tag can be used to run at once
             node(
                 create_l0_campaign_history_master_active,
-                [
+                inputs=[
                     "l0_campaign_history_master_active",
                     "params:create_l0_campaign_history_master_active_param"
                 ],
-                "campaign_history_master_active",
+                outputs=["campaign_history_master_active"],
                 name="create_l0_campaign_history_master_active",
                 tags=["l0_camp_mst", "campaign_importance_volume"],
             ),
             node(
                 create_l5_campaign_distinct_contact_response,
-                [
+                inputs=[
                     "distinct_child_code_contact_response",
                     "params:create_l5_campaign_distinct_contact_response_param",
                 ],
-                "distinct_child_response_aggregated",
+                outputs=["distinct_child_response_aggregated"],
                 name="create_l5_campaign_distinct_contact_response",
                 tags=["l5_cmp_res_agg", "campaign_importance_volume"],
             ),
             node(
                 create_l5_response_percentage_report,
-                [
+                inputs=[
                     "distinct_child_response_aggregated",
                     "campaign_history_master_active",
                     "params:create_l5_response_percentage_report_param"
                 ],
-                "response_percentage_report",
+                outputs=["response_percentage_report"],
                 name="create_l5_response_percentage_report",
                 tags=["l5_res_perc_report", "campaign_importance_volume"],
+            ),
+            node(
+                partial(
+                    create_focus_campaign_by_volume,
+                    percentage_threshold_low=10,
+                    percentage_threshold_high=20,
+                    campaign_amount_per_category=20,
+                ),
+                inputs={
+                    "response_percentage_report": "response_percentage_report",
+                    "focus_campaign_param": "params:create_l5_focus_campaign_param",
+                },
+                outputs='important_campaign_by_contact_volume',
+                name="create_focus_campaign_by_volume",
+                tags=["l5_focus_campaign", "campaign_importance_volume"]
             )
         ], tags=[]
     )
