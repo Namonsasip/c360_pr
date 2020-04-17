@@ -330,16 +330,8 @@ def generate_treatment_target_group_basing_on_order(
     )
 
     # filter those that were recently targeted
-    today = date.today().strftime("%Y-%m-%d")
-    recent_past_date = add_days(today, -parameters["treatment_cadence"])
-
-    recent_history = (
-        treatments_history.filter(f"key_date >= '{recent_past_date}'")
-        .select(["subscription_identifier", "use_case"])
-        .distinct()
-    )
-    propensities = propensities.join(
-        recent_history, on=["subscription_identifier"], how="left_anti"
+    propensities = remove_recently_contacted(
+        propensities, parameters, treatments_history
     )
 
     # pick users to treat
@@ -368,3 +360,29 @@ def generate_treatment_target_group_basing_on_order(
     ard_users = ard_users.withColumn("use_case", func.lit("ard"))
 
     return churn_users.union(ard_users)
+
+
+def remove_recently_contacted(
+    propensities: DataFrame, parameters: Dict[str, Any], treatments_history: DataFrame,
+) -> DataFrame:
+    """ Removes users that were recently contacted.
+
+    Args:
+        propensities: table with propensities.
+        parameters: parameters defined in parameters.yml.
+        treatments_history: Table with history of treatments.
+    Returns:
+        Filtered propensities.
+    """
+
+    today = date.today().strftime("%Y-%m-%d")
+    recent_past_date = add_days(today, -parameters["treatment_cadence"])
+
+    recent_history = (
+        treatments_history.filter(f"key_date >= '{recent_past_date}'")
+        .select(["subscription_identifier", "use_case"])
+        .distinct()
+    )
+    return propensities.join(
+        recent_history, on=["subscription_identifier"], how="left_anti"
+    )
