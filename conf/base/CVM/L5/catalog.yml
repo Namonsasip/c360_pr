@@ -13,7 +13,7 @@ null_columns:
   type: kedro.contrib.io.yaml_local.YAMLLocalDataSet
   filepath: /dbfs/mnt/customer360-cvm/null_columns
 
-#  diagnostic metric, plots and tables
+# diagnostic metric, plots and tables
 models_diags:
   type: kedro.io.PickleLocalDataSet
   filepath: /dbfs/mnt/customer360-cvm/models_diags
