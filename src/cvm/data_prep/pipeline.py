@@ -250,7 +250,7 @@ def create_cvm_important_columns():
         Kedro pipeline.
     """
 
-    sample_type = "training"
+    sample_type = "fe"
     targets_datasets = [
         "churn_targets_" + sample_type,
         "ard_targets_" + sample_type,

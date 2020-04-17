@@ -304,7 +304,7 @@ def add_volatility_scores(
 def generate_treatment_target_group_basing_on_order(
     propensities: DataFrame, parameters: Dict[str, Any], treatments_history: DataFrame,
 ) -> DataFrame:
-    """ Returns group of users to be targeted with treatments. The list is generated
+    """ Updates treatments history with treatments target users. The list is generated
         basing on presumed size of treatment groups and some order which is a function
         of propensities.
 
