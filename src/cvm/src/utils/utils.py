@@ -133,3 +133,12 @@ def impute_from_parameters(df: DataFrame, parameters: Dict[str, Any],) -> DataFr
         if col_name in df.columns
     }
     return df.fillna(default_values_to_apply)
+
+
+def df_to_list(df: DataFrame) -> List[Any]:
+    """ Converts one column DataFrame into list.
+
+    Args:
+        df: one column DataFrame
+    """
+    return df.rdd.flatMap(lambda x: x).collect()
