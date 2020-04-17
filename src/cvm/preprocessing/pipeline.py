@@ -55,7 +55,7 @@ def preprocessing_fit() -> Pipeline:
                 pipeline_transform,
                 [
                     "train_sample_" + sample_type,
-                    "important_param",
+                    "important_columns",
                     "preprocessing_pipeline",
                     "parameters",
                     "null_columns",
@@ -81,7 +81,7 @@ def preprocessing_transform() -> Pipeline:
                 pipeline_transform,
                 [
                     "features_macrosegments_scoring",
-                    "important_param",
+                    "important_columns",
                     "preprocessing_pipeline",
                     "parameters",
                     "null_columns",
