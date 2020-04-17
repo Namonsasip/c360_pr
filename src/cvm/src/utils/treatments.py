@@ -32,7 +32,7 @@ from typing import Any, Dict
 
 from cvm.src.targets.churn_targets import add_days
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
-from cvm.src.utils.utils import impute_from_parameters
+from cvm.src.utils.utils import df_to_list, impute_from_parameters
 from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as func
 
@@ -386,3 +386,66 @@ def remove_recently_contacted(
     return propensities.join(
         recent_history, on=["subscription_identifier"], how="left_anti"
     )
+
+
+def get_treatments_propositions(
+    target_users: DataFrame, microsegments: DataFrame, treatment_dictionary: DataFrame,
+) -> DataFrame:
+    """ Combine filtered users table, microsegments and the treatments assigned to
+    microsegments.
+
+    Args:
+        target_users: List of users to target with treatment.
+        microsegments: List of users and assigned microsegments.
+        treatment_dictionary: Table of microsegment to treatment mapping.
+    """
+
+    # join with microsegments
+    target_users = target_users.join(
+        microsegments, on="subscription_identifier", how="left"
+    )
+
+    def _add_random_column_from_values(tab, values, colname):
+        """ Adds a new column to DataFrame which consists of randomly picked elements
+            of values"""
+        n = len(values)
+        # setup when statement
+        tab = tab.withColumn("val_ind", func.floor(func.rand() * n))
+        whens = [func.when(func.col("val_ind") == i, values[i]) for i in range(0, n)]
+        whens = functools.reduce(lambda x1, x2: x1.x2, whens)
+
+        # choose values
+        tab = tab.withColumn(colname, whens)
+        tab = tab.drop("val_ind")
+
+        return tab
+
+    def _pick_treatments_for_microsegment(microsegment_chosen):
+        """ Picks treatments for target users using treatment dictionary"""
+        chosen_microsegment_treatments = df_to_list(
+            treatment_dictionary.filter(
+                f"microsegment == '{microsegment_chosen}'"
+            ).select("campaign_code")
+        )
+        target_users_in_microsegment = target_users.filter(
+            f"microsegment == '{microsegment_chosen}'"
+        )
+        if len(chosen_microsegment_treatments) == 1:
+            target_users_in_microsegment = target_users_in_microsegment.withColumn(
+                "campaign_code", func.lit(chosen_microsegment_treatments[0])
+            )
+        else:
+            target_users_in_microsegment = _add_random_column_from_values(
+                target_users_in_microsegment,
+                chosen_microsegment_treatments + ["no_treatment"],
+                "campaign_code",
+            )
+        return target_users_in_microsegment
+
+    microsegments = df_to_list(target_users.select("microsegment").distinct())
+    target_users_with_treatments = functools.reduce(
+        lambda df1, df2: df1.union(df2),
+        map(_pick_treatments_for_microsegment, microsegments),
+    )
+
+    return target_users_with_treatments
