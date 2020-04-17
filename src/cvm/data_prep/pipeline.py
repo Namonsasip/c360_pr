@@ -314,9 +314,9 @@ scoring_data_prepare = (
     + prepare_features_macrosegments("scoring")
 )
 extract_features = (
-    create_users_from_active("training")
-    + sample_inputs("training")
-    + create_cvm_targets("training")
+    create_users_from_active("fe")
+    + sample_inputs("fe")
+    + create_cvm_targets("fe")
     + create_cvm_important_columns()
 )
 rfe_only = create_cvm_important_columns()
