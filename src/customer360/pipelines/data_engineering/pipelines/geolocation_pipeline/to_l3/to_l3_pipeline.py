@@ -49,5 +49,13 @@ def geo_to_l3_pipeline(**kwargs):
 
             ),
 
+            node(
+                l3_geo_home_work_location_id,
+                ["l0_locals_homework",
+                 "params:l3_geo_home_work_location_id"],
+                "l3_geo_home_work_location_id"
+
+            ),
+
         ], name="geo_to_l3_pipeline"
     )

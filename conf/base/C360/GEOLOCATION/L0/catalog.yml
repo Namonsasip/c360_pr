@@ -38,10 +38,10 @@ l0_mst_poi_location:
 #  file_format: parquet
 
 # prod_raw.dm21_geo_subscriber_home_work
-l0_dm21_geo_subscriber_home_work:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/mck_databases/prod_delta/dm21_geo_subscriber_home_work
-  file_format: delta
+#l0_dm21_geo_subscriber_home_work:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  filepath: /mnt/mck_databases/prod_delta/dm21_geo_subscriber_home_work
+#  file_format: delta
 
 # HDFS : Homework
 l0_locals_homework:

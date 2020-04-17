@@ -47,15 +47,18 @@ def l3_geo_voice_distance_daily(df, sql):
 
     return df
 
-def l3_first_data_session_cell_identifier_monthly(df,sql):
+
+def l3_first_data_session_cell_identifier_monthly(df, sql):
     df = df.withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col('event_partition_date'))))
-    df = df.selectExpr('*', 'row_number() over(partition by mobile_no,start_of_month order by event_partition_date ASC) as rank_monthly')
+    df = df.selectExpr('*',
+                       'row_number() over(partition by mobile_no,start_of_month order by event_partition_date ASC) as rank_monthly')
 
     return df
 
-def l3_geo_data_distance_monthly(df,sql):
+
+def l3_geo_data_distance_monthly(df, sql):
     df = (df.groupBy('mobile_no', 'start_of_month').agg(F.collect_list('sum_call').alias('sum_list')
-                                                                      , F.max('sum_call').alias('max')))
+                                                        , F.max('sum_call').alias('max')))
     df = df.withColumn('sorted_sum', F.array_sort("sum_list"))
     df = df.withColumn('length_without_max', F.size(df.sorted_sum) - 1)
     df = df.withColumn('list_without_max', F.expr("slice(sorted_sum, 1, length_without_max)"))
@@ -79,17 +82,15 @@ def l3_geo_data_distance_monthly(df,sql):
     # df = df.withColumn('stdev_distance', stdev_udf('distance_list'))
     df = df.drop('max', 'sorted_sum', 'length_without_max', 'list_without_max', 'distance_list')
 
-
-
-
-    df = node_from_config(df,sql)
+    df = node_from_config(df, sql)
 
     return df
 
-def l3_geo_data_distance_weekday_monthly(df,sql):
-    df=df.where('day_of_week in (1,2,3,4,5)')
+
+def l3_geo_data_distance_weekday_monthly(df, sql):
+    df = df.where('day_of_week in (1,2,3,4,5)')
     df = (df.groupBy('mobile_no', 'start_of_month').agg(F.collect_list('sum_call').alias('sum_list')
-                                                                      , F.max('sum_call').alias('max')))
+                                                        , F.max('sum_call').alias('max')))
     df = df.withColumn('sorted_sum', F.array_sort("sum_list"))
     df = df.withColumn('length_without_max', F.size(df.sorted_sum) - 1)
     df = df.withColumn('list_without_max', F.expr("slice(sorted_sum, 1, length_without_max)"))
@@ -116,10 +117,11 @@ def l3_geo_data_distance_weekday_monthly(df,sql):
     df = node_from_config(df, sql)
     return df
 
-def l3_geo_data_distance_weekend_monthly(df,sql):
+
+def l3_geo_data_distance_weekend_monthly(df, sql):
     df = df.where('day_of_week in (6,7)')
     df = (df.groupBy('mobile_no', 'start_of_month').agg(F.collect_list('sum_call').alias('sum_list')
-                                                                      , F.max('sum_call').alias('max')))
+                                                        , F.max('sum_call').alias('max')))
     df = df.withColumn('sorted_sum', F.array_sort("sum_list"))
     df = df.withColumn('length_without_max', F.size(df.sorted_sum) - 1)
     df = df.withColumn('list_without_max', F.expr("slice(sorted_sum, 1, length_without_max)"))
@@ -144,4 +146,13 @@ def l3_geo_data_distance_weekend_monthly(df,sql):
     df = df.drop('max', 'sorted_sum', 'length_without_max', 'list_without_max', 'distance_list')
 
     df = node_from_config(df, sql)
+    return df
+
+
+def l3_geo_home_work_location_id(df, sql):
+    df = df.withColumn('start_of_month',
+                       f.to_date(df.partition_month.cast("string"), 'yyyyMM'))
+
+    df = node_from_config(df, sql)
+
     return df

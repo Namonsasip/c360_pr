@@ -54,3 +54,10 @@ l3_data_distance_weekend_monthly: #472,475,478
     maximum_distance: "first(max_distance)"
   #    standard_deviation_distance: "first(stdev_distance)"
   granularity: "start_of_month,mobile_no"
+
+l3_geo_home_work_location_id: #
+  where_clause: ""
+  feature_list:
+    home_location_id: "first(home_shape_id)"
+    work_location_id: "first(work_shape_id)"
+  granularity: "start_of_month,imsi,msisdn"
