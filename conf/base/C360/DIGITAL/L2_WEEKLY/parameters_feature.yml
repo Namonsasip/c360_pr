@@ -2,7 +2,7 @@
 l2_digital_cxenxse_site_traffic_browser_active_time_weekly:
   where_clause: ""
   feature_list:
-    digital_site_traffic_browser_rank: "row_number() over (partition by user_id, browser, start_of_week
+    digital_site_traffic_browser_rank: "row_number() over (partition by hash_id, browser, start_of_week
                                                                                     order by count(browser) desc)"
     digital_site_traffic_active_time_per_browser: "sum(activetime)"
   granularity: "hash_id,browser,start_of_week"
@@ -12,7 +12,7 @@ l2_digital_cxenxse_site_traffic_browser_active_time_top_3_weekly:
   feature_list:
     user_id: hash_id
     browser_rank: digital_site_traffic_browser_rank
-    site_traffic_browser: site_traffic_browser
+    site_traffic_browser: browser
     digital_site_traffic_active_time_per_browser: digital_site_traffic_active_time_per_browser
   granularity: ""
 
@@ -20,7 +20,7 @@ l2_digital_cxenxse_site_traffic_browser_active_time_top_3_weekly:
 l2_digital_cxenxse_site_traffic_favorite_url_weekly:
   where_clause: ""
   feature_list:
-    digital_site_traffic_url_rank: "row_number() over (partition by user_id, browser, start_of_week
+    digital_site_traffic_url_rank: "row_number() over (partition by hash_id, url, start_of_week
                                                                                         order by count(url) desc)"
   granularity: "hash_id,url,start_of_week"
 
@@ -31,4 +31,92 @@ l2_digital_cxenxse_site_traffic_favorite_url_rank_1_weekly:
     digital_site_traffic_url_rank: digital_site_traffic_url_rank
     favorite_url: url
     start_of_week: start_of_week
+  granularity: ""
+
+# Digital Favorite postalcode
+l2_digital_cxenxse_site_traffic_favorite_postalcode_weekly:
+  where_clause: ""
+  feature_list:
+    digital_site_traffic_postalcode_rank: "row_number() over (partition by hash_id, postalcode , start_of_week
+                                                                                        order by count(postalcode) desc)"
+  granularity: "hash_id,postalcode,start_of_week"
+
+l2_digital_cxenxse_site_traffic_favorite_postalcode_rank_1_weekly:
+  where_clause: "digital_site_traffic_postalcode_rank = 1"
+  feature_list:
+    user_id: hash_id
+    digital_site_traffic_postalcode_rank: digital_site_traffic_postalcode_rank
+    favorite_postalcode: postalcode
+    start_of_week: start_of_week
+  granularity: ""
+
+# Digital Favorite referrerquery
+l2_digital_cxenxse_site_traffic_favorite_referrerquery_weekly:
+  where_clause: ""
+  feature_list:
+    digital_site_traffic_referrerquery_rank: "row_number() over (partition by hash_id, referrerquery , start_of_week
+                                                                                        order by count(referrerquery) desc)"
+  granularity: "hash_id,referrerquery,start_of_week"
+
+l2_digital_cxenxse_site_traffic_favorite_referrerquery_rank_1_weekly:
+  where_clause: "digital_site_traffic_referrerquery_rank = 1"
+  feature_list:
+    user_id: hash_id
+    digital_site_traffic_referrerquery_rank: digital_site_traffic_referrerquery_rank
+    favorite_referrerquery: referrerquery
+    start_of_week: start_of_week
+  granularity: ""
+
+# Digital Active Time  per Refferer Social Network Top 5
+l2_digital_cxenxse_site_traffic_refferer_social_network_active_time_weekly:
+  where_clause: ""
+  feature_list:
+    digital_site_traffic_referrer_social_network_rank: "row_number() over (partition by hash_id, referrersocialnetwork, start_of_week
+                                                                                    order by count(referrersocialnetwork) desc)"
+    digital_site_traffic_active_time_per_referrer_social_network: "sum(activetime)"
+  granularity: "hash_id,referrersocialnetwork,start_of_week"
+
+l2_digital_cxenxse_site_traffic_refferer_social_network_active_time_top_5_weekly:
+  where_clause: "where digital_site_traffic_referrer_social_network_rank <= 5"
+  feature_list:
+    user_id: hash_id
+    referrer_social_network_rank: digital_site_traffic_referrer_social_network_rank
+    site_traffic_referrer_social_network: referrersocialnetwork
+    digital_site_traffic_active_time_per_referrer_social_network: digital_site_traffic_active_time_per_referrer_social_network
+  granularity: ""
+
+# Digital Active Time  per Refferer Search Engine Top 5
+l2_digital_cxenxse_site_traffic_refferer_search_engine_active_time_weekly:
+  where_clause: ""
+  feature_list:
+    digital_site_traffic_referrer_search_engine: "row_number() over (partition by hash_id, referrersearchengine, start_of_week
+                                                                                    order by count(referrersearchengine) desc)"
+    digital_site_traffic_active_time_per_referrer_search_engine: "sum(activetime)"
+  granularity: "hash_id,referrersearchengine,start_of_week"
+
+l2_digital_cxenxse_site_traffic_refferer_search_engine_active_time_top_5_weekly:
+  where_clause: "where digital_site_traffic_referrer_search_engine <= 5"
+  feature_list:
+    user_id: hash_id
+    referrer_search_engine_rank: digital_site_traffic_referrer_search_engine
+    site_traffic_referrer_search_engine: referrersearchengine
+    digital_site_traffic_active_time_per_referrer_search_engine: digital_site_traffic_active_time_per_referrer_search_engine
+  granularity: ""
+
+# Digital Active Time  per Refferer Host Class Top 5
+l2_digital_cxenxse_site_traffic_refferer_host_class_active_time_weekly:
+  where_clause: ""
+  feature_list:
+    digital_site_traffic_referrer_host_class: "row_number() over (partition by hash_id, referrerhostclass, start_of_week
+                                                                                    order by count(referrerhostclass) desc)"
+    digital_site_traffic_active_time_per_referrer_host_class: "sum(activetime)"
+  granularity: "hash_id,referrerhostclass,start_of_week"
+
+l2_digital_cxenxse_site_traffic_refferer_host_class_active_time_top_5_weekly:
+  where_clause: "where digital_site_traffic_referrer_host_class <= 5"
+  feature_list:
+    user_id: hash_id
+    referrer_host_class_rank: digital_site_traffic_referrer_host_class
+    site_traffic_referrer_host_class: referrerhostclass
+    digital_site_traffic_active_time_per_referrer_host_class: digital_site_traffic_active_time_per_referrer_host_class
   granularity: ""
