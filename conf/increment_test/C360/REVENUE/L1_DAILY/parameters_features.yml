@@ -28,10 +28,13 @@ l1_revenue_prepaid_pru_f_usage_multi_daily:
                                               / sum(total_vol_gprs_4g))"
     ##############################diff data revenue by package##########################################################
     rev_arpu_diffence_revenue_by_package_ppu: "sum(total_net_tariff_gprs_package - total_net_tariff_gprs_exc_package)"
-    rev_arpu_diffence_revenue_by_package_ppu_4g:
+    rev_arpu_diffence_revenue_by_package_ppu_4g: "sum(sum(total_net_tariff_gprs_package * (total_vol_gprs_4g/total_vol_gprs))
+     - sum(total_net_tariff_gprs_exc_package * (total_vol_gprs_4g/total_vol_gprs)))"
+    rev_arpu_diffence_revenue_by_package_ppu_2g_3g: "sum(sum(total_net_tariff_gprs_revenue * (total_vol_gprs_2g_3g/total_vol_gprs))
+     - sum(total_net_tariff_gprs_revenue * (total_vol_gprs_2g_3g/total_vol_gprs)))"
+    rev_arpu_diffence_revenue_2g_3g_vs_4g: "sum(sum(total_net_tariff_gprs_revenue * (total_vol_gprs_2g_3g/total_vol_gprs))
+     - sum(total_net_tariff_gprs_revenue * (total_vol_gprs_4g/total_vol_gprs)))"
 
-    rev_arpu_diffence_revenue_by_package_ppu_2g_3g:
-    rev_arpu_diffence_revenue_2g_3g_vs_4g:
     rev_arpu_diffence_revenue_per_unit_2g_3g_vs_4g:
 
     rev_arpu_share_4g_data_revenue_in_data_revenue:
