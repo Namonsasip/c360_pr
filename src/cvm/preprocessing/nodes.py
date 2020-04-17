@@ -25,6 +25,7 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import logging
 from typing import Any, Dict, List, Tuple
 
 from cvm.src.utils.classify_columns import classify_columns
@@ -50,12 +51,15 @@ def pipeline_fit(
         String indexed table and OneHotEncoderEstimator object to use later.
     """
 
+    log = logging.getLogger(__name__)
     df = prepare_key_columns(df)
     important_param = get_clean_important_variables(important_param, parameters)
+    log.info(f"Started with {len(df.columns)} columns")
 
     # drop columns
     cols_to_drop = list_intersection(parameters["drop_in_preprocessing"], df.columns)
     df = df.drop(*cols_to_drop)
+    log.info(f"Dropped {len(cols_to_drop)} columns")
 
     # select columns
     columns_cats = classify_columns(df, parameters)
@@ -71,6 +75,7 @@ def pipeline_fit(
         cols_to_pick = df.columns
     cols_to_pick = list_intersection(list(cols_to_pick), df.columns)
     df = df.select(cols_to_pick)
+    log.info(f"Selected {len(df.columns)} columns")
     df = impute_from_parameters(df, parameters)
     columns_cats = classify_columns(df, parameters)
 
@@ -78,6 +83,7 @@ def pipeline_fit(
     for col_name in columns_cats["numerical"]:
         if col_name in df.columns:
             df = df.withColumn(col_name, col(col_name).cast("float"))
+    log.info(f"Types set")
 
     # filter out nulls
     df_count = df.count()
@@ -89,6 +95,7 @@ def pipeline_fit(
     ]
     df = df.drop(*null_columns)
     columns_cats = classify_columns(df, parameters)
+    log.info(f"{len(null_columns)} columns full of nulls")
 
     # string indexer
     stages = []
@@ -134,13 +141,16 @@ def pipeline_transform(
         String indexed table object to use later.
     """
 
+    log = logging.getLogger(__name__)
     df = prepare_key_columns(df)
     important_param = get_clean_important_variables(important_param, parameters)
+    log.info(f"Started with {len(df.columns)} columns")
 
     # drop columns
     cols_to_drop = list_intersection(parameters["drop_in_preprocessing"], df.columns)
     cols_to_drop += null_columns
     df = df.drop(*cols_to_drop)
+    log.info(f"Dropped {len(cols_to_drop)} columns")
 
     # select columns
     columns_cats = classify_columns(df, parameters)
@@ -156,6 +166,7 @@ def pipeline_transform(
         cols_to_pick = df.columns
     cols_to_pick = list_intersection(list(cols_to_pick), df.columns)
     df = df.select(cols_to_pick)
+    log.info(f"Selected {len(df.columns)} columns")
     df = impute_from_parameters(df, parameters)
     columns_cats = classify_columns(df, parameters)
 
@@ -163,8 +174,8 @@ def pipeline_transform(
     for col_name in columns_cats["numerical"]:
         if col_name in df.columns:
             df = df.withColumn(col_name, col(col_name).cast("float"))
+    log.info(f"Types set")
 
-    # string indexer
     columns_cats = classify_columns(df, parameters)
     data_transformed = pipeline_fitted.transform(df)
     data_transformed = data_transformed.drop(*columns_cats["categorical"])
