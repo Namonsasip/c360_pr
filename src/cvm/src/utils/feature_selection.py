@@ -1,3 +1,5 @@
+import logging
+import sys
 from typing import Any, List
 
 import numpy as np
@@ -36,6 +38,10 @@ def feature_selection(
     features = data.drop(target_col, axis=1)
     target = data[target_col]
 
+    # Redirect print to log
+    log = logging.getLogger(__name__)
+    sys.stdout = log.info
+
     # Select the estimator for different target type
     assert (target_type == "class") | (
         target_type == "regression"
@@ -48,6 +54,7 @@ def feature_selection(
             cv=StratifiedKFold(5),
             scoring="roc_auc",
             min_features_to_select=30,
+            verbose=1,
         )
     else:
         lr = LinearRegression(normalize=True)
@@ -57,6 +64,7 @@ def feature_selection(
             cv=StratifiedKFold(5),
             scoring="roc_auc",
             min_features_to_select=30,
+            verbose=1,
         )
     rfecv.fit(features, target)
 
