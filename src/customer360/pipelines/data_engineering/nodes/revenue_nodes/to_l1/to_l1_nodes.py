@@ -51,7 +51,8 @@ def massive_processing_with_customer(input_df: DataFrame
         CNTX.catalog.save("l1_revenue_prepaid_pru_f_usage_multi_daily", output_df)
 
     logging.info("Final date to run for {0}".format(str(first_item)))
-    return_df = data_frame.filter(F.col("partition_date").isin(*[first_item]))
+    return_df = data_frame.filter(F.col("partition_date").isin(*[first_item]))\
+                .drop_duplicates(subset=["access_method_num", "event_partition_date"])
     return_df = node_from_config(return_df, sql)
     small_cus_df = customer_df.filter(F.col("event_partition_date").isin(*[first_item]))
     return_df = small_cus_df.join(return_df, ["access_method_num", "event_partition_date", "start_of_week"], "left")
