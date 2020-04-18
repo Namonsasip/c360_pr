@@ -28,7 +28,7 @@
 import functools
 import logging
 from datetime import date
-from typing import Any, Dict
+from typing import Any, Dict, Tuple
 
 import pandas
 
@@ -540,3 +540,40 @@ def convert_treatments_dictionary_to_sparkdf(
         campaign_code:string
         """
     return get_spark_session().createDataFrame(treatment_dictionary_pd, schema=schema)
+
+
+def generate_treatments_chosen(
+    propensities: DataFrame,
+    microsegments: DataFrame,
+    treatment_dictionary_pd: pandas.DataFrame,
+    treatments_history: DataFrame,
+    parameters: Dict[str, Any],
+) -> Tuple[pandas.DataFrame, DataFrame]:
+    """ Function combines above functions to generate treatments and update treatments
+    history.
+
+    Args:
+        propensities: table with propensities.
+        microsegments: List of users and assigned microsegments.
+        treatment_dictionary_pd: Table of microsegment to treatment mapping in pandas.
+        treatments_history: Table with history of treatments.
+        parameters: parameters defined in parameters.yml.
+    Returns:
+        Pandas DataFrame with chosen campaigns and updated history DataFrame.
+    """
+
+    targets_list_per_use_case = get_targets_list_per_use_case(
+        propensities, parameters, treatments_history
+    )
+    treatments_dictionary = convert_treatments_dictionary_to_sparkdf(
+        treatment_dictionary_pd
+    )
+    treatments_propositions = get_treatments_propositions(
+        targets_list_per_use_case, microsegments, treatments_dictionary
+    )
+    treatments_history = update_history_with_treatments_propositions(
+        treatments_propositions, treatments_history
+    )
+    treatments_chosen = serve_treatments_chosen(treatments_history)
+
+    return treatments_chosen, treatments_history
