@@ -475,7 +475,14 @@ def get_treatments_propositions(
         map(_pick_treatments_for_microsegment, microsegments),
     )
 
-    return target_users_with_treatments
+    cols_to_pick = [
+        "subscription_identifier",
+        "use_case",
+        "macrosegment",
+        "microsegment",
+        "campaign_code",
+    ]
+    return target_users_with_treatments.select(cols_to_pick)
 
 
 def update_history_with_treatments_propositions(
