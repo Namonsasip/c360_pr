@@ -141,7 +141,16 @@ def define_microsegments(df: DataFrame, parameters: Dict[str, Any],) -> DataFram
             df, microsegment_defs[use_case], use_case + "_microsegment",
         )
 
-    return df
+    cols_to_pick = [
+        "subscription_identifier",
+        "key_date",
+        "ard_macrosegment",
+        "churn_macrosegment",
+        "churn_microsegment",
+        "ard_microsegment",
+    ]
+
+    return df.select(cols_to_pick)
 
 
 def mark_propensities_as_low_high(
