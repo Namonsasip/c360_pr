@@ -32,6 +32,7 @@ from typing import Any, Dict
 
 import pandas
 
+from customer360.utilities.spark_util import get_spark_session
 from cvm.src.targets.churn_targets import add_days
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
 from cvm.src.utils.utils import df_to_list, impute_from_parameters
@@ -520,3 +521,22 @@ def serve_treatments_chosen(treatments_history: DataFrame) -> pandas.DataFrame:
         raise Exception(f"No treatments found for {today}")
     treatments_df = treatments_from_history.filter("campaign_code != 'no_treatment'")
     return treatments_df.toPandas()
+
+
+def convert_treatments_dictionary_to_sparkdf(
+    treatment_dictionary_pd: pandas.DataFrame,
+) -> DataFrame:
+    """ Creates spark DataFrame treatments dictionary.
+
+    Args:
+        treatment_dictionary_pd: Table of microsegment to treatment mapping in pandas.
+    """
+
+    schema = """
+        subscription_identifier:string,
+        use_case:string,
+        macrosegment:string,
+        microsegment:string,
+        campaign_code:string
+        """
+    return get_spark_session().createDataFrame(treatment_dictionary_pd, schema=schema)
