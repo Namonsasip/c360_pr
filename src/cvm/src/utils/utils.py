@@ -29,6 +29,8 @@ import string
 from random import random
 from typing import Any, Callable, Dict, List
 
+import pandas
+
 from cvm.src.utils.list_targets import list_targets
 from pyspark.sql import DataFrame
 
@@ -142,3 +144,21 @@ def df_to_list(df: DataFrame) -> List[Any]:
         df: one column DataFrame
     """
     return df.rdd.flatMap(lambda x: x).collect()
+
+
+def pyspark_to_pandas(df, n_partitions=None):
+    """
+    Returns the contents of `df` as a local `pandas.DataFrame` in a speedy
+    fashion. The DataFrame is repartitioned if `n_partitions` is passed.
+    """
+
+    def _map_to_pandas(rdds):
+        """ Needs to be here due to pickling issues """
+        return [pandas.DataFrame(list(rdds))]
+
+    if n_partitions is not None:
+        df = df.repartition(n_partitions)
+    df_pandas = df.rdd.mapPartitions(_map_to_pandas).collect()
+    df_pandas = pandas.concat(df_pandas)
+    df_pandas.columns = df.columns
+    return df_pandas
