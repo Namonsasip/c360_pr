@@ -47,7 +47,7 @@ from kedro.pipeline.node import Node
 from kedro.versioning import Journal
 
 from customer360.utilities.spark_util import get_spark_session
-
+from customer360.utilities.generate_dependency_dataset import generate_dependency_dataset
 
 from customer360.pipeline import create_pipelines
 
@@ -265,15 +265,15 @@ def run_package(pipelines=None):
     # using `<project_package>` command
     project_context = load_context(Path.cwd(), env=conf)
 
-    from customer360.utilities.generate_dependency_dataset import generate_dependency_dataset
-    generate_dependency_dataset(project_context)
-    exit(2)
+
+    dependency_df = generate_dependency_dataset(project_context)
     spark = get_spark_session()
 
     if pipelines is not None:
         for each_pipeline in pipelines:
             project_context.run(pipeline_name=each_pipeline)
         return
+    project_context.catalog.save("util_dependency_report", dependency_df)
     # project_context.run(pipeline_name='customer_profile_to_l3_pipeline')
     # project_context.run()
     # Replace line above with below to run on databricks cluster
