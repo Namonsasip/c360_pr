@@ -456,3 +456,19 @@ def get_treatments_propositions(
     )
 
     return target_users_with_treatments
+
+
+def update_history_with_treatments_propositions(
+    treatments_propositions: DataFrame, treatments_history: DataFrame,
+) -> DataFrame:
+    """ Add treatments propositions to treatments history.
+
+    Args:
+        treatments_propositions: DataFrame with users to be targeted and treatments
+        chosen.
+        treatments_history: Table with history of treatments.
+    Returns:
+        Updated `treatments_history`.
+    """
+
+    # today = date.today().strftime("%Y-%m-%d")
