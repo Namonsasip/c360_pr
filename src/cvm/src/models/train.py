@@ -58,10 +58,11 @@ def train_sklearn(
         X, y = get_pandas_train_test_sample(
             df, parameters, target_chosen, use_case_chosen, macrosegment
         )
-
         y = y.values.ravel()
+        log.info("Created training sample for macrosegment")
 
         model_fitted = sklearn_model.fit(X, y)
+        log.info("Model trained")
         model_fitted.feature_names = list(X.columns.values)
         model_fitted.sample_size = X.shape[0]
         return model_fitted
