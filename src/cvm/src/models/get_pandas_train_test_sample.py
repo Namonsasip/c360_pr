@@ -25,7 +25,7 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import logging
 from typing import Any, Dict, Tuple
 
 import pandas as pd
@@ -55,12 +55,15 @@ def get_pandas_train_test_sample(
         Pandas DataFrames that can be used for prediction / training.
     """
 
+    log = logging.getLogger(__name__)
     if use_case_chosen is not None and macrosegments_chosen is not None:
         macrosegment_col = use_case_chosen + "_macrosegment"
         df = df.filter("{} == '{}'".format(macrosegment_col, macrosegments_chosen))
+        log.info(f"Filtered {macrosegments_chosen}")
 
     if target_chosen is not None:
         df = df.filter("{} is not null".format(target_chosen))
+        log.info(f"Filtered out null values for {target_chosen}")
         y = df.select(target_chosen).withColumnRenamed(target_chosen, "target")
         y = y.toPandas()
     else:
@@ -73,5 +76,6 @@ def get_pandas_train_test_sample(
         df.columns, target_cols + key_columns + segments_columns + ["volatility"]
     )
     X = df.drop(*to_drop).toPandas()
+    log.info("Created pandas sample")
 
     return X, y
