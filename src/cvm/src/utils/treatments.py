@@ -398,6 +398,10 @@ def get_treatments_propositions(
         target_users: List of users to target with treatment.
         microsegments: List of users and assigned microsegments.
         treatment_dictionary: Table of microsegment to treatment mapping.
+    Returns:
+        Table with users, microsegments and treatments chosen. For multiple treatments
+        per microsegments supplied, treatment is chosen randomly from supplied with
+        "no_treatment" option added for tracking test and learn.
     """
 
     # join with microsegments
