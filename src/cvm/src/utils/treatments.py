@@ -422,10 +422,11 @@ def get_treatments_propositions(
     )
 
     def _choose_column_basing_on_usecase(df, colname):
+        is_ard = func.col("use_case") == "ard"
+        pick_ard = func.col(f"ard_{colname}")
+        pick_churn = func.col(f"churn_{colname}")
         return df.withColumn(
-            colname,
-            func.when(func.col("use_case") == "ard"),
-            func.col(f"ard_{colname}").otherwise(f"churn_{colname}"),
+            colname, func.when(is_ard, pick_ard).otherwise(pick_churn),
         )
 
     target_users = _choose_column_basing_on_usecase(target_users, "microsegment")
