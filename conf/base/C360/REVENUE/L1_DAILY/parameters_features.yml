@@ -1,47 +1,45 @@
-l1_revenue_prepaid_pru_f_usage_multi_daily:
-  where_clause: ""
-  feature_list:
-    rev_arpu_total_net_revenue: "sum(total_net_tariff_revenue)"
-    rev_arpu_total_net_tariff_revenue_reward: "sum(total_net_tariff_revenue_reward)"
-    rev_arpu_total_net_tariff_revenue_exc_reward: "sum(total_net_tariff_revenue_exc_reward)"
-    rev_arpu_share_of_exc_reward_over_total_revenue: "sum(total_net_tariff_revenue_exc_reward / total_net_tariff_revenue)"
-    rev_arpu_share_of_revenue_reward_over_total_revenue: "sum(total_net_tariff_revenue_reward / total_net_tariff_revenue)"
-    rev_arpu_diffence_in_exc_reward_revenue_reward: "sum(total_net_tariff_revenue_exc_reward - total_net_tariff_revenue_reward)"
-    rev_arpu_number_of_distinct_ontop_packages: "count(distinct gprs_ontop_package_name)"
-	rev_arpu_total_data_revenue: "sum(total_net_tariff_gprs_revenue)"
-    rev_arpu_total_data_revenue_by_package: "sum(total_net_tariff_gprs_package)"
-    rev_arpu_total_data_revenue_by_ppu: "sum(total_net_tariff_gprs_exc_package)"
-
-    ########################################### 4g ############################################################
-    rev_arpu_total_data_revenue_4G: "sum(case when network_type in ('3GPre-paid','3GHybrid-Post')
-      then 0 else sum(total_net_tariff_gprs_revenue)*(sum(total_vol_gprs_4g)/sum(total_vol_gprs)) end)"
-    rev_arpu_total_data_revenue_by_package_4g: "sum(case when network_type in ('3GPre-paid','3GHybrid-Post')
-      then 0 else sum(total_net_tariff_gprs_package)*(sum(total_vol_gprs_4g)/sum(total_vol_gprs)) end)"
-    rev_arpu_total_data_revenue_by_ppu_4g: "sum(case when network_type in ('3GPre-paid','3GHybrid-Post')
-      then 0 else sum(total_net_tariff_gprs_exc_package)*(sum(total_vol_gprs_4g)/sum(total_vol_gprs)) end)"
-    ########################################## 3g #############################################################
-    rev_arpu_total_data_revenue_2_3g: "sum(case when network_type in ('3GPre-paid','3GHybrid-Post')
-      then sum(total_net_tariff_gprs_revenue)*(sum(total_vol_gprs_4g)/sum(total_vol_gprs)) else 0 end)"
-    rev_arpu_total_data_revenue_by_package_2_3g: "sum(case when network_type in ('3GPre-paid','3GHybrid-Post')
-      then sum(total_net_tariff_gprs_package)*(sum(total_vol_gprs_4g)/sum(total_vol_gprs)) else 0 end)"
-    rev_arpu_total_data_revenue_by_ppu_2_3g: "sum(case when network_type in ('3GPre-paid','3GHybrid-Post')
-      then sum(total_net_tariff_gprs_exc_package)*(sum(total_vol_gprs_4g)/sum(total_vol_gprs)) else 0 end)"
-    #############################################per_unit##########################################################
-    rev_arpu_total_data_revenue_by_per_unit: "sum(total_net_tariff_gprs_revenue / total_vol_gprs)"
-    rev_arpu_total_data_revenue_per_unit_2_3g: "sum(case when network_type in ('3GPre-paid','3GHybrid-Post')
-      then sum(total_net_tariff_gprs_revenue / total_vol_gprs)*(sum(total_vol_gprs_4g)/sum(total_vol_gprs)) else 0 end)"
-    rev_arpu_total_data_revenue_per_unit_4g: "sum(case when network_type in ('3GPre-paid','3GHybrid-Post')
-      then 0 else sum(total_net_tariff_gprs_revenue / total_vol_gprs)*(sum(total_vol_gprs_4g)/sum(total_vol_gprs)) end)"
-    ##############################diff data revenue by package##########################################################
-    rev_arpu_diffence_revenue_by_package_ppu: "sum(total_net_tariff_gprs_package - total_net_tariff_gprs_exc_package)"
-    rev_arpu_diffence_revenue_by_package_ppu_4g: "sum(case when network_type in ('3GPre-paid','3GHybrid-Post')
-      then 0 else
-      sum(total_net_tariff_gprs_package - total_net_tariff_gprs_exc_package)*(sum(total_vol_gprs_4g)/sum(total_vol_gprs)) end)"
-    rev_arpu_diffence_revenue_by_package_ppu_2_3g: "sum(case when network_type in ('3GPre-paid','3GHybrid-Post')
-      then sum(total_net_tariff_gprs_package - total_net_tariff_gprs_exc_package)*(sum(total_vol_gprs_4g)/sum(total_vol_gprs))
-      else 0 end)"
-
-
-
-  granularity: "access_method_num, register_date, day_id"
-  event_date_column: "date(day_id)"
+#l1_revenue_prepaid_pru_f_usage_multi_daily:
+#  where_clause: ""
+#  feature_list:
+#    rev_arpu_total_net_revenue: "sum(total_net_tariff_revenue)"
+#    rev_arpu_total_net_tariff_revenue_reward: "sum(total_net_tariff_revenue_reward)"
+#    rev_arpu_total_net_tariff_revenue_exc_reward: "sum(total_net_tariff_revenue_exc_reward)"
+#    rev_arpu_share_of_exc_reward_over_total_revenue: "sum(total_net_tariff_revenue_exc_reward / total_net_tariff_revenue)"
+#    rev_arpu_share_of_revenue_reward_over_total_revenue: "sum(total_net_tariff_revenue_reward / total_net_tariff_revenue)"
+#    rev_arpu_diffence_in_exc_reward_revenue_reward: "sum(total_net_tariff_revenue_exc_reward - total_net_tariff_revenue_reward)"
+#    rev_arpu_number_of_distinct_ontop_packages: "count(distinct gprs_ontop_package_name)"
+#    rev_arpu_total_data_revenue: "sum(total_net_tariff_gprs_revenue)"
+#    rev_arpu_total_data_revenue_by_package: "sum(total_net_tariff_gprs_package)"
+#    rev_arpu_total_data_revenue_by_ppu: "sum(total_net_tariff_gprs_exc_package)"
+#
+#    ########################################### 4g ############################################################
+#    rev_arpu_total_data_revenue_4G: "sum(case when network_type in ('3GPre-paid','3GHybrid-Post')
+#      then 0 else sum(total_net_tariff_gprs_revenue)*(sum(total_vol_gprs_4g)/sum(total_vol_gprs)) end)"
+#    rev_arpu_total_data_revenue_by_package_4g: "sum(case when network_type in ('3GPre-paid','3GHybrid-Post')
+#      then 0 else sum(total_net_tariff_gprs_package)*(sum(total_vol_gprs_4g)/sum(total_vol_gprs)) end)"
+#    rev_arpu_total_data_revenue_by_ppu_4g: "sum(case when network_type in ('3GPre-paid','3GHybrid-Post')
+#      then 0 else sum(total_net_tariff_gprs_exc_package)*(sum(total_vol_gprs_4g)/sum(total_vol_gprs)) end)"
+#    ########################################## 3g #############################################################
+#    rev_arpu_total_data_revenue_2_3g: "sum(case when network_type in ('3GPre-paid','3GHybrid-Post')
+#      then sum(total_net_tariff_gprs_revenue)*(sum(total_vol_gprs_4g)/sum(total_vol_gprs)) else 0 end)"
+#    rev_arpu_total_data_revenue_by_package_2_3g: "sum(case when network_type in ('3GPre-paid','3GHybrid-Post')
+#      then sum(total_net_tariff_gprs_package)*(sum(total_vol_gprs_4g)/sum(total_vol_gprs)) else 0 end)"
+#    rev_arpu_total_data_revenue_by_ppu_2_3g: "sum(case when network_type in ('3GPre-paid','3GHybrid-Post')
+#      then sum(total_net_tariff_gprs_exc_package)*(sum(total_vol_gprs_4g)/sum(total_vol_gprs)) else 0 end)"
+#    #############################################per_unit##########################################################
+#    rev_arpu_total_data_revenue_by_per_unit: "sum(total_net_tariff_gprs_revenue / total_vol_gprs)"
+#    rev_arpu_total_data_revenue_per_unit_2_3g: "sum(case when network_type in ('3GPre-paid','3GHybrid-Post')
+#      then sum(total_net_tariff_gprs_revenue / total_vol_gprs)*(sum(total_vol_gprs_4g)/sum(total_vol_gprs)) else 0 end)"
+#    rev_arpu_total_data_revenue_per_unit_4g: "sum(case when network_type in ('3GPre-paid','3GHybrid-Post')
+#      then 0 else sum(total_net_tariff_gprs_revenue / total_vol_gprs)*(sum(total_vol_gprs_4g)/sum(total_vol_gprs)) end)"
+#    ##############################diff data revenue by package##########################################################
+#    rev_arpu_diffence_revenue_by_package_ppu: "sum(total_net_tariff_gprs_package - total_net_tariff_gprs_exc_package)"
+#    rev_arpu_diffence_revenue_by_package_ppu_4g: "sum(case when network_type in ('3GPre-paid','3GHybrid-Post')
+#      then 0 else
+#      sum(total_net_tariff_gprs_package - total_net_tariff_gprs_exc_package)*(sum(total_vol_gprs_4g)/sum(total_vol_gprs)) end)"
+#    rev_arpu_diffence_revenue_by_package_ppu_2_3g: "sum(case when network_type in ('3GPre-paid','3GHybrid-Post')
+#      then sum(total_net_tariff_gprs_package - total_net_tariff_gprs_exc_package)*(sum(total_vol_gprs_4g)/sum(total_vol_gprs))
+#      else 0 end)"
+#
+#  granularity: "access_method_num, register_date, day_id"
+#  event_date_column: "date(day_id)"

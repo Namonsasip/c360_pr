@@ -8,7 +8,7 @@ l1_revenue_prepaid_pru_f_usage_multi_daily:
     rev_arpu_share_of_revenue_reward_over_total_rev: "total_net_tariff_revenue_reward / total_net_tariff_revenue"
     rev_arpu_diffence_in_exc_reward_rev_reward: "total_net_tariff_revenue_exc_reward - total_net_tariff_revenue_reward"
     rev_arpu_number_of_distinct_ontop_packages: "case when gprs_ontop_package_name is not null then 1 else 0"
-	rev_arpu_total_data_rev: "total_net_tariff_gprs_revenue"
+    rev_arpu_total_data_rev: "total_net_tariff_gprs_revenue"
     rev_arpu_total_data_rev_by_package: "total_net_tariff_gprs_package"
     rev_arpu_total_data_rev_by_ppu: "total_net_tariff_gprs_exc_package"
 
