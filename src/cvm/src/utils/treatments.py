@@ -421,6 +421,16 @@ def get_treatments_propositions(
         microsegments, on="subscription_identifier", how="left"
     )
 
+    def _choose_column_basing_on_usecase(df, colname):
+        return df.withColumn(
+            colname,
+            func.when(func.col("use_case") == "ard"),
+            func.col(f"ard_{colname}").otherwise(f"churn_{colname}"),
+        )
+
+    target_users = _choose_column_basing_on_usecase(target_users, "microsegment")
+    target_users = _choose_column_basing_on_usecase(target_users, "macrosegment")
+
     def _add_random_column_from_values(tab, values, colname):
         """ Adds a new column to DataFrame which consists of randomly picked elements
             of values"""
