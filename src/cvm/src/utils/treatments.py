@@ -312,6 +312,9 @@ def generate_treatment_target_group_basing_on_order(
         propensities: table with propensities.
         parameters: parameters defined in parameters.yml.
         treatments_history: Table with history of treatments.
+    Returns:
+        List of users to target with use case to target user with. DOES NOT add
+        treatments themselves.
     """
 
     # define order columns
