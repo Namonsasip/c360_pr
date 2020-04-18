@@ -32,6 +32,7 @@ import pandas as pd
 
 from cvm.src.utils.list_operations import list_intersection
 from cvm.src.utils.list_targets import list_targets
+from cvm.src.utils.utils import pyspark_to_pandas
 from pyspark.sql import DataFrame
 
 
@@ -75,7 +76,8 @@ def get_pandas_train_test_sample(
     to_drop = list_intersection(
         df.columns, target_cols + key_columns + segments_columns + ["volatility"]
     )
-    X = df.drop(*to_drop).toPandas()
+    X = df.drop(*to_drop)
+    X = pyspark_to_pandas(X, 100)
     log.info("Created pandas sample")
 
     return X, y
