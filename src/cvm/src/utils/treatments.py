@@ -30,6 +30,8 @@ import logging
 from datetime import date
 from typing import Any, Dict
 
+import pandas
+
 from cvm.src.targets.churn_targets import add_days
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
 from cvm.src.utils.utils import df_to_list, impute_from_parameters
@@ -502,3 +504,19 @@ def update_history_with_treatments_propositions(
     return treatments_history.filter(f"key_date != '{today}'").union(
         treatments_propositions.withColumn("key_date", func.lit(today))
     )
+
+
+def serve_treatments_chosen(treatments_history: DataFrame) -> pandas.DataFrame:
+    """ Saves the csv with treatments basing on the recent entries in treatments
+    history.
+
+    Args:
+        treatments_history: Table with history of treatments.
+    """
+
+    today = date.today().strftime("%Y-%m-%d")
+    treatments_from_history = treatments_history.filter(f"key_date == '{today}'")
+    if treatments_from_history.count() == 0:
+        raise Exception(f"No treatments found for {today}")
+    treatments_df = treatments_from_history.filter("campaign_code != 'no_treatment'")
+    return treatments_df.toPandas()
