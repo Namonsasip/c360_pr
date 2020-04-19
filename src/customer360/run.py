@@ -264,14 +264,13 @@ def run_package(pipelines=None):
     # entry point for running pip-install projects
     # using `<project_package>` command
     project_context = load_context(Path.cwd(), env=conf)
-    dependency_df = generate_dependency_dataset(project_context)
     spark = get_spark_session()
 
     if pipelines is not None:
         for each_pipeline in pipelines:
             project_context.run(pipeline_name=each_pipeline)
         return
-    project_context.catalog.save("util_dependency_report", dependency_df)
+    # generate_dependency_dataset(project_context)
     # project_context.run(pipeline_name='customer_profile_to_l3_pipeline')
     # project_context.run()
     # Replace line above with below to run on databricks cluster

@@ -51,5 +51,6 @@ def generate_dependency_dataset(project_context):
     spark = get_spark_session()
     spark_df = spark.createDataFrame(df).drop("child_path").drop_duplicates(subset=["parent_path", "list_of_children"])
     spark_df = spark_df.withColumn("event_partition_date", f.current_date())
-    return spark_df
+
+    project_context.catalog.save("util_dependency_report", spark_df)
 
