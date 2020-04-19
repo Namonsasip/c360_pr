@@ -146,16 +146,20 @@ def df_to_list(df: DataFrame) -> List[Any]:
     return df.rdd.flatMap(lambda x: x).collect()
 
 
-def return_column_as_list(df: DataFrame, colname: str) -> List:
+def return_column_as_list(df: DataFrame, colname: str, distinct: bool = False) -> List:
     """ Return column of DataFrame as list.
 
     Args:
         df: Input DataFrame.
         colname: name of column to return.
+        distinct: should distinct values be returned.
     """
     if colname not in df.columns:
         raise Exception(f"Column {colname} not found")
-    return df_to_list(df.select(colname))
+    df = df.select(colname)
+    if distinct:
+        df = df.distinct()
+    return df_to_list(df)
 
 
 def pyspark_to_pandas(df, n_partitions=None):
