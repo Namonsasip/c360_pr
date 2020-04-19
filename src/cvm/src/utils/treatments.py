@@ -373,8 +373,10 @@ def get_targets_list_per_use_case(
     # combine the users
     churn_users = churn_users.withColumn("use_case", func.lit("churn"))
     ard_users = ard_users.withColumn("use_case", func.lit("ard"))
+    df = churn_users.union(ard_users)
+    logging.info(f"{df.count()} users picked for treatment")
 
-    return churn_users.union(ard_users)
+    return df
 
 
 def remove_recently_contacted(
