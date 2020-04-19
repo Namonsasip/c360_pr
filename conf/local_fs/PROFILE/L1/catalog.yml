@@ -551,3 +551,8 @@ l1_customer_profile_union_daily_feature_for_l1_network_volte_cqi:
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+
+l1_customer_profile_union_daily_features_for_revenue_daily:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L1_DAILY/PROFILE/l1_customer_profile_union_daily_feature/
+  file_format: "parquet"

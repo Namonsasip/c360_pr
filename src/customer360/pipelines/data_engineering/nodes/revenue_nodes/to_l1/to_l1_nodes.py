@@ -1,17 +1,20 @@
-from pyspark.sql import DataFrame
-from pyspark.sql import functions as F
-from customer360.utilities.config_parser import node_from_config
-from kedro.context.context import load_context
-from pathlib import Path
 import logging
 import os
+from pathlib import Path
+
+from kedro.context.context import load_context
+from pyspark.sql import DataFrame
+from pyspark.sql import functions as F
+
+from customer360.utilities.config_parser import node_from_config
 from src.customer360.utilities.spark_util import get_spark_empty_df
 
 conf = os.getenv("CONF", None)
 
+
 def massive_processing_with_customer(input_df: DataFrame
                                      , customer_df: DataFrame
-                                     , sql:dict) -> DataFrame:
+                                     , sql: dict) -> DataFrame:
     """
     :param input_df:
     :param customer_df:
@@ -37,7 +40,7 @@ def massive_processing_with_customer(input_df: DataFrame
 
     mvv_new = list(divide_chunks(mvv_array, 5))
     add_list = mvv_new
-    customer_df = customer_df.where("charge_type = 'Pre-paid'")\
+    customer_df = customer_df.where("charge_type = 'Pre-paid'") \
         .select("access_method_num", "subscription_identifier", "event_partition_date", "start_of_week")
     first_item = add_list[0]
 
