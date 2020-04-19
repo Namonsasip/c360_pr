@@ -199,3 +199,21 @@ def select_important_and_whitelisted_columns(
     df = df.select(cols_to_pick)
     logging.getLogger(__name__).info(f"Selected {len(df.columns)} columns")
     return df
+
+
+def numerical_to_floats(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
+    """ Sets types of numerical columns.
+
+    Args:
+        df: Table to perform type changing on.
+        parameters: parameters defined in parameters*.yml files.
+    """
+    columns_cats = classify_columns(df, parameters)
+    num_cols = columns_cats["numerical"]
+    non_num_cols = list_sub(df.columns, num_cols)
+    df = df.select(
+        [col(col_name).cast("float").alias(col_name) for col_name in num_cols]
+        + non_num_cols
+    )
+    logging.getLogger(__name__).info(f"Types set")
+    return df

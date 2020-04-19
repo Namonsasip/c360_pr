@@ -30,10 +30,10 @@ from typing import Any, Dict, List, Tuple
 
 from cvm.src.preprocesssing.preprocessing import (
     drop_blacklisted_columns,
+    numerical_to_floats,
     select_important_and_whitelisted_columns,
 )
 from cvm.src.utils.classify_columns import classify_columns
-from cvm.src.utils.list_operations import list_sub
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
 from cvm.src.utils.utils import get_clean_important_variables, impute_from_parameters
 from pyspark.ml import Pipeline, PipelineModel
@@ -66,16 +66,7 @@ def pipeline_fit(
     # select columns
     df = select_important_and_whitelisted_columns(df, parameters, important_param)
     df = impute_from_parameters(df, parameters)
-    columns_cats = classify_columns(df, parameters)
-
-    # set types
-    num_cols = columns_cats["numerical"]
-    non_num_cols = list_sub(df.columns, num_cols)
-    df = df.select(
-        [col(col_name).cast("float").alias(col_name) for col_name in num_cols]
-        + non_num_cols
-    )
-    log.info(f"Types set")
+    df = numerical_to_floats(df, parameters)
 
     # filter out nulls
     df_count = df.count()
@@ -146,16 +137,7 @@ def pipeline_transform(
     # select columns
     df = select_important_and_whitelisted_columns(df, parameters, important_param)
     df = impute_from_parameters(df, parameters)
-    columns_cats = classify_columns(df, parameters)
-
-    # set types
-    num_cols = columns_cats["numerical"]
-    non_num_cols = list_sub(df.columns, num_cols)
-    df = df.select(
-        [col(col_name).cast("float").alias(col_name) for col_name in num_cols]
-        + non_num_cols
-    )
-    log.info(f"Types set")
+    df = numerical_to_floats(df, parameters)
 
     columns_cats = classify_columns(df, parameters)
     data_transformed = pipeline_fitted.transform(df)
