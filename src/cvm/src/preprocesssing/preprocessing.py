@@ -239,3 +239,20 @@ def filter_out_nulls(df: DataFrame) -> Tuple[DataFrame, List]:
     df = df.drop(*null_columns)
     logging.getLogger(__name__).info(f"{len(null_columns)} columns full of nulls")
     return df, null_columns
+
+
+def get_string_indexers(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
+    """ Returns stages indexing strings.
+
+    Args:
+        df: Table to run it on.
+        parameters: parameters defined in parameters*.yml files.
+    """
+    columns_cats = classify_columns(df, parameters)
+    stages = []
+    for col_name in columns_cats["categorical"]:
+        indexer = StringIndexer(
+            inputCol=col_name, outputCol=col_name + "_indexed"
+        ).setHandleInvalid("keep")
+        stages += [indexer]
+    return stages

@@ -31,6 +31,7 @@ from typing import Any, Dict, List, Tuple
 from cvm.src.preprocesssing.preprocessing import (
     drop_blacklisted_columns,
     filter_out_nulls,
+    get_string_indexers,
     numerical_to_floats,
     select_important_and_whitelisted_columns,
 )
@@ -38,7 +39,7 @@ from cvm.src.utils.classify_columns import classify_columns
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
 from cvm.src.utils.utils import get_clean_important_variables, impute_from_parameters
 from pyspark.ml import Pipeline, PipelineModel
-from pyspark.ml.feature import Imputer, StringIndexer
+from pyspark.ml.feature import Imputer
 from pyspark.sql import DataFrame
 
 
@@ -70,16 +71,11 @@ def pipeline_fit(
 
     df, null_columns = filter_out_nulls(df)
 
-    # string indexer
-    columns_cats = classify_columns(df, parameters)
-    stages = []
-    for col_name in columns_cats["categorical"]:
-        indexer = StringIndexer(
-            inputCol=col_name, outputCol=col_name + "_indexed"
-        ).setHandleInvalid("keep")
-        stages += [indexer]
+    # setup string indexer
+    stages = get_string_indexers(df, parameters)
 
     # imputation
+    columns_cats = classify_columns(df, parameters)
     imputer = Imputer(
         inputCols=columns_cats["numerical"],
         outputCols=[col + "_imputed" for col in columns_cats["numerical"]],
