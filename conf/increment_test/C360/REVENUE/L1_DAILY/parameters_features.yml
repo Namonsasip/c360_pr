@@ -138,5 +138,7 @@ l1_revenue_prepaid_pru_f_usage_multi_daily:
     rev_arpu_total_days_voice_non_intra_per_min_0_rev: "case when total_net_tariff_basic_non_intra/total_minute = 0 OR
    total_net_tariff_basic_non_intra/total_minute is NULL THEN 1 ELSE 0 END)"
 
+    rev_arpu_last_date_on_top_package: "case when gprs_ontop_package_name is not null then date(day_id) else NULL end"
+
   granularity: "access_method_num, register_date, day_id"
   event_date_column: "date(day_id)"
