@@ -442,7 +442,7 @@ def get_treatments_propositions(
         # setup when statement
         tab = tab.withColumn("val_ind", func.floor(func.rand() * n))
         whens = [func.when(func.col("val_ind") == i, values[i]) for i in range(0, n)]
-        whens = functools.reduce(lambda x1, x2: x1.x2, whens)
+        whens = func.coalesce(*whens)
 
         # choose values
         tab = tab.withColumn(colname, whens)
