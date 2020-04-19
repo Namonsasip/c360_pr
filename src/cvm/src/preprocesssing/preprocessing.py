@@ -256,3 +256,19 @@ def get_string_indexers(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
         ).setHandleInvalid("keep")
         stages += [indexer]
     return stages
+
+
+def get_imputer(df: DataFrame, parameters: Dict[str, Any]) -> List[Any]:
+    """ Get imputer for given table.
+
+    Args:
+        df: Input table.
+        parameters: parameters defined in parameters*.yml files.
+    """
+    columns_cats = classify_columns(df, parameters)
+    imputer = Imputer(
+        inputCols=columns_cats["numerical"],
+        outputCols=[col + "_imputed" for col in columns_cats["numerical"]],
+    )
+    stages = [imputer]
+    return stages
