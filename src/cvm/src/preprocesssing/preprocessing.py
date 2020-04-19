@@ -159,7 +159,7 @@ class MultiStringIndexer(Estimator, DefaultParamsWritable, DefaultParamsReadable
         return indexer_fitted
 
 
-def drop_blacklisted_columns(df: DataFrame, blacklisted_cols) -> DataFrame:
+def drop_blacklisted_columns(df: DataFrame, blacklisted_cols: List[Any]) -> DataFrame:
     """ Drop columns that are blacklisted in parameters.
 
     Args:
