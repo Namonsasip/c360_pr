@@ -88,7 +88,7 @@ def revenue_to_l4_weekly_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                node_from_config,
+                l4_rolling_window,
                 ["l2_revenue_prepaid_pru_f_usage_multi_weekly",
                  "params:l4_revenue_prepaid_pru_f_usage_multi_features"],
                 "l4_revenue_prepaid_pru_f_usage_multi_features"
