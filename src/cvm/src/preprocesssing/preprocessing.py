@@ -26,7 +26,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import logging
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 import pyspark.sql.functions as F
 from cvm.src.utils.classify_columns import classify_columns
@@ -35,7 +35,7 @@ from pyspark.ml import Estimator, Pipeline, Transformer
 from pyspark.ml.feature import Imputer, StringIndexer
 from pyspark.ml.util import DefaultParamsReadable, DefaultParamsWritable
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col
+from pyspark.sql.functions import col, count, when
 
 
 class Selector(Transformer, DefaultParamsWritable, DefaultParamsReadable):
@@ -217,3 +217,25 @@ def numerical_to_floats(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
     )
     logging.getLogger(__name__).info(f"Types set")
     return df
+
+
+def filter_out_nulls(df: DataFrame) -> Tuple[DataFrame, List]:
+    """ Drops columns that have null values only.
+
+    Args:
+        df: Table to perform it on.
+
+    Returns:
+        Table without `null_columns`.
+        List of null columns.
+    """
+    df_count = df.count()
+    null_counts = df.select(
+        [count(when(col(c).isNull(), c)).alias(c) for c in df.columns]
+    ).toPandas()
+    null_columns = [
+        colname for colname in df.columns if null_counts[colname][0] == df_count
+    ]
+    df = df.drop(*null_columns)
+    logging.getLogger(__name__).info(f"{len(null_columns)} columns full of nulls")
+    return df, null_columns

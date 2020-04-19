@@ -30,6 +30,7 @@ from typing import Any, Dict, List, Tuple
 
 from cvm.src.preprocesssing.preprocessing import (
     drop_blacklisted_columns,
+    filter_out_nulls,
     numerical_to_floats,
     select_important_and_whitelisted_columns,
 )
@@ -39,7 +40,6 @@ from cvm.src.utils.utils import get_clean_important_variables, impute_from_param
 from pyspark.ml import Pipeline, PipelineModel
 from pyspark.ml.feature import Imputer, StringIndexer
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col, count, when
 
 
 def pipeline_fit(
@@ -68,19 +68,10 @@ def pipeline_fit(
     df = impute_from_parameters(df, parameters)
     df = numerical_to_floats(df, parameters)
 
-    # filter out nulls
-    df_count = df.count()
-    null_counts = df.select(
-        [count(when(col(c).isNull(), c)).alias(c) for c in df.columns]
-    ).toPandas()
-    null_columns = [
-        colname for colname in df.columns if null_counts[colname][0] == df_count
-    ]
-    df = df.drop(*null_columns)
-    columns_cats = classify_columns(df, parameters)
-    log.info(f"{len(null_columns)} columns full of nulls")
+    df, null_columns = filter_out_nulls(df)
 
     # string indexer
+    columns_cats = classify_columns(df, parameters)
     stages = []
     for col_name in columns_cats["categorical"]:
         indexer = StringIndexer(
