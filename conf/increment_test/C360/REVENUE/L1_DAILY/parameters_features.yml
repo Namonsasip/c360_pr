@@ -66,8 +66,8 @@ l1_revenue_prepaid_pru_f_usage_multi_daily:
      - (total_net_tariff_gprs_revenue * (total_vol_gprs_4g/total_vol_gprs))"
 
     rev_arpu_diffence_rev_per_unit_2g_3g_vs_4g: "((total_net_tariff_gprs_revenue * (total_vol_gprs_2g_3g/total_vol_gprs))
-        / (total_vol_gprs_2g_3g)))  - ((total_net_tariff_gprs_revenue * (total_vol_gprs_4g/total_vol_gprs))
-                                                      / (total_vol_gprs_4g)))"
+        / (total_vol_gprs_2g_3g))  - ((total_net_tariff_gprs_revenue * (total_vol_gprs_4g/total_vol_gprs))
+                                                      / (total_vol_gprs_4g))"
       ##############################voice features######################################################################
 
     rev_arpu_total_voice: "total_net_tariff_revenue_basic"
@@ -93,23 +93,23 @@ l1_revenue_prepaid_pru_f_usage_multi_daily:
     rev_arpu_total_days_data_ppu_0_rev: "case when total_net_tariff_gprs_exc_package = 0 OR
     total_net_tariff_revenue is NULL THEN 1 ELSE 0 END)"
 
-    rev_arpu_total_days_4g_data_0_rev: "case when total_net_tariff_gprs_revenue * (total_vol_gprs_4g/total_vol_gprs)
-    = 0 or total_net_tariff_gprs_revenue * (total_vol_gprs_4g/total_vol_gprs) IS NULL THEN 1 else 0 end)"
+    rev_arpu_total_days_4g_data_0_rev: "case when (total_net_tariff_gprs_revenue * (total_vol_gprs_4g/total_vol_gprs))
+    = 0 or (total_net_tariff_gprs_revenue * (total_vol_gprs_4g/total_vol_gprs)) IS NULL THEN 1 else 0 end)"
 
-    rev_arpu_total_days_2g_3g_data_0_rev: "case when total_net_tariff_gprs_revenue * (total_vol_gprs_2g_3g/total_vol_gprs)
-      = 0 or total_net_tariff_gprs_revenue * (total_vol_gprs_2g_3g/total_vol_gprs) IS NULL THEN 1 else 0 end)"
+    rev_arpu_total_days_2g_3g_data_0_rev: "case when (total_net_tariff_gprs_revenue * (total_vol_gprs_2g_3g/total_vol_gprs))
+      = 0 OR (total_net_tariff_gprs_revenue * (total_vol_gprs_2g_3g/total_vol_gprs)) IS NULL THEN 1 else 0 end)"
 
-    rev_arpu_total_days_4g_data_pkg_0_rev: "case when total_net_tariff_gprs_package * (total_vol_gprs_4g/total_vol_gprs)
-      = 0 or total_net_tariff_gprs_package * (total_vol_gprs_4g/total_vol_gprs) IS NULL THEN 1 else 0 end)"
+    rev_arpu_total_days_4g_data_pkg_0_rev: "case when (total_net_tariff_gprs_package * (total_vol_gprs_4g/total_vol_gprs))
+      = 0 OR (total_net_tariff_gprs_package * (total_vol_gprs_4g/total_vol_gprs)) IS NULL THEN 1 else 0 end)"
 
-    rev_arpu_total_days_2g_3g_data_pkg_0_rev: "case when total_net_tariff_gprs_package * (total_vol_gprs_2g_3g/total_vol_gprs)
-      = 0 or total_net_tariff_gprs_package * (total_vol_gprs_2g_3g/total_vol_gprs) IS NULL THEN 1 else 0 end)"
+    rev_arpu_total_days_2g_3g_data_pkg_0_rev: "case when (total_net_tariff_gprs_package * (total_vol_gprs_2g_3g/total_vol_gprs))
+      = 0 OR (total_net_tariff_gprs_package * (total_vol_gprs_2g_3g/total_vol_gprs)) IS NULL THEN 1 else 0 end)"
 
-    rev_arpu_total_days_4g_data_ppu_0_rev: "case when total_net_tariff_gprs_exc_package * (total_vol_gprs_4g/total_vol_gprs)
-                = 0 or total_net_tariff_gprs_exc_package * (total_vol_gprs_4g/total_vol_gprs) IS NULL THEN 1 else 0 end)"
+    rev_arpu_total_days_4g_data_ppu_0_rev: "case when (total_net_tariff_gprs_exc_package * (total_vol_gprs_4g/total_vol_gprs))
+                = 0 OR (total_net_tariff_gprs_exc_package * (total_vol_gprs_4g/total_vol_gprs)) IS NULL THEN 1 else 0 end)"
 
-    rev_arpu_total_days_2g_3g_data_ppu_0_rev: "case when total_net_tariff_gprs_exc_package * (total_vol_gprs_2g_3g/total_vol_gprs)
-      = 0 or total_net_tariff_gprs_exc_package * (total_vol_gprs_2g_3g/total_vol_gprs) IS NULL THEN 1 else 0 end)"
+    rev_arpu_total_days_2g_3g_data_ppu_0_rev: "case when (total_net_tariff_gprs_exc_package * (total_vol_gprs_2g_3g/total_vol_gprs))
+      = 0 OR (total_net_tariff_gprs_exc_package * (total_vol_gprs_2g_3g/total_vol_gprs)) IS NULL THEN 1 else 0 end)"
 
     rev_arpu_total_days_voice_0_rev: "case when total_net_tariff_revenue_basic = 0 OR
       total_net_tariff_revenue is NULL THEN 1 ELSE 0 END"
