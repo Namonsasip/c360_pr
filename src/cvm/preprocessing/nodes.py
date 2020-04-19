@@ -28,9 +28,12 @@
 import logging
 from typing import Any, Dict, List, Tuple
 
-from cvm.src.preprocesssing.preprocessing import drop_blacklisted_columns
+from cvm.src.preprocesssing.preprocessing import (
+    drop_blacklisted_columns,
+    select_important_and_whitelisted_columns,
+)
 from cvm.src.utils.classify_columns import classify_columns
-from cvm.src.utils.list_operations import list_intersection, list_sub
+from cvm.src.utils.list_operations import list_sub
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
 from cvm.src.utils.utils import get_clean_important_variables, impute_from_parameters
 from pyspark.ml import Pipeline, PipelineModel
@@ -58,23 +61,10 @@ def pipeline_fit(
     log.info(f"Started with {len(df.columns)} columns")
 
     # drop columns
-    df = drop_blacklisted_columns(df, parameters)
+    df = drop_blacklisted_columns(df, parameters["drop_in_preprocessing"])
 
     # select columns
-    columns_cats = classify_columns(df, parameters)
-    if important_param:
-        cols_to_pick = set(
-            columns_cats["target"]
-            + columns_cats["key"]
-            + columns_cats["segment"]
-            + parameters["must_have_features"]
-            + important_param
-        )
-    else:
-        cols_to_pick = df.columns
-    cols_to_pick = list_intersection(list(cols_to_pick), df.columns)
-    df = df.select(cols_to_pick)
-    log.info(f"Selected {len(df.columns)} columns")
+    df = select_important_and_whitelisted_columns(df, parameters, important_param)
     df = impute_from_parameters(df, parameters)
     columns_cats = classify_columns(df, parameters)
 
@@ -149,23 +139,12 @@ def pipeline_transform(
     log.info(f"Started with {len(df.columns)} columns")
 
     # drop columns
-    df = drop_blacklisted_columns(df, parameters)
+    df = drop_blacklisted_columns(
+        df, parameters["drop_in_preprocessing"] + null_columns
+    )
 
     # select columns
-    columns_cats = classify_columns(df, parameters)
-    if important_param:
-        cols_to_pick = set(
-            columns_cats["target"]
-            + columns_cats["key"]
-            + columns_cats["segment"]
-            + parameters["must_have_features"]
-            + important_param
-        )
-    else:
-        cols_to_pick = df.columns
-    cols_to_pick = list_intersection(list(cols_to_pick), df.columns)
-    df = df.select(cols_to_pick)
-    log.info(f"Selected {len(df.columns)} columns")
+    df = select_important_and_whitelisted_columns(df, parameters, important_param)
     df = impute_from_parameters(df, parameters)
     columns_cats = classify_columns(df, parameters)
 

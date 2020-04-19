@@ -26,7 +26,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import logging
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 import pyspark.sql.functions as F
 from cvm.src.utils.classify_columns import classify_columns
@@ -159,15 +159,43 @@ class MultiStringIndexer(Estimator, DefaultParamsWritable, DefaultParamsReadable
         return indexer_fitted
 
 
-def drop_blacklisted_columns(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
+def drop_blacklisted_columns(df: DataFrame, blacklisted_cols) -> DataFrame:
     """ Drop columns that are blacklisted in parameters.
 
     Args:
+        blacklisted_cols: cols to be dropped.
         df: Table to perform dropping on.
-        parameters: parameters defined in parameters.yml.
     """
     log = logging.getLogger(__name__)
-    cols_to_drop = list_intersection(parameters["drop_in_preprocessing"], df.columns)
+    cols_to_drop = list_intersection(blacklisted_cols, df.columns)
     df = df.drop(*cols_to_drop)
     log.info(f"Dropped {len(cols_to_drop)} columns")
+    return df
+
+
+def select_important_and_whitelisted_columns(
+    df: DataFrame, parameters: Dict[str, Any], important_columns: List[Any]
+) -> DataFrame:
+    """ Selects features chosen by feature extraction and features necessary to run
+    rest of the pipeline, eg key columns.
+
+    Args:
+        df: Table to perform selecting on.
+        parameters: parameters defined in parameters.yml.
+        important_columns: List of important columns.
+    """
+    columns_cats = classify_columns(df, parameters)
+    if important_columns:
+        cols_to_pick = set(
+            columns_cats["target"]
+            + columns_cats["key"]
+            + columns_cats["segment"]
+            + parameters["must_have_features"]
+            + important_columns
+        )
+    else:
+        cols_to_pick = df.columns
+    cols_to_pick = list_intersection(list(cols_to_pick), df.columns)
+    df = df.select(cols_to_pick)
+    logging.getLogger(__name__).info(f"Selected {len(df.columns)} columns")
     return df
