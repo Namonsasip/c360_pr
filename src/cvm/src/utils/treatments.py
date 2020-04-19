@@ -473,9 +473,12 @@ def get_treatments_propositions(
         return target_users_in_microsegment
 
     microsegments = df_to_list(target_users.select("microsegment").distinct())
+    treatments_per_microsegments = [
+        _pick_treatments_for_microsegment(microsegment)
+        for microsegment in microsegments
+    ]
     target_users_with_treatments = functools.reduce(
-        lambda df1, df2: df1.union(df2),
-        map(_pick_treatments_for_microsegment, microsegments),
+        lambda df1, df2: df1.union(df2), treatments_per_microsegments,
     )
 
     cols_to_pick = [
