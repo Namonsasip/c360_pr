@@ -26,6 +26,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import logging
+from typing import Any, Dict
 
 import pyspark.sql.functions as F
 from cvm.src.utils.classify_columns import classify_columns
@@ -33,6 +34,7 @@ from cvm.src.utils.list_operations import list_intersection, list_sub
 from pyspark.ml import Estimator, Pipeline, Transformer
 from pyspark.ml.feature import Imputer, StringIndexer
 from pyspark.ml.util import DefaultParamsReadable, DefaultParamsWritable
+from pyspark.sql import DataFrame
 from pyspark.sql.functions import col
 
 
@@ -155,3 +157,17 @@ class MultiStringIndexer(Estimator, DefaultParamsWritable, DefaultParamsReadable
             indexers += [indexer]
         indexer_fitted = Pipeline(stages=indexers).fit(dataset)
         return indexer_fitted
+
+
+def drop_blacklisted_columns(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
+    """ Drop columns that are blacklisted in parameters.
+
+    Args:
+        df: Table to perform dropping on.
+        parameters: parameters defined in parameters.yml.
+    """
+    log = logging.getLogger(__name__)
+    cols_to_drop = list_intersection(parameters["drop_in_preprocessing"], df.columns)
+    df = df.drop(*cols_to_drop)
+    log.info(f"Dropped {len(cols_to_drop)} columns")
+    return df

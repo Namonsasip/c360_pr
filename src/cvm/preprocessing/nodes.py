@@ -28,6 +28,7 @@
 import logging
 from typing import Any, Dict, List, Tuple
 
+from cvm.src.preprocesssing.preprocessing import drop_blacklisted_columns
 from cvm.src.utils.classify_columns import classify_columns
 from cvm.src.utils.list_operations import list_intersection, list_sub
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
@@ -57,9 +58,7 @@ def pipeline_fit(
     log.info(f"Started with {len(df.columns)} columns")
 
     # drop columns
-    cols_to_drop = list_intersection(parameters["drop_in_preprocessing"], df.columns)
-    df = df.drop(*cols_to_drop)
-    log.info(f"Dropped {len(cols_to_drop)} columns")
+    df = drop_blacklisted_columns(df, parameters)
 
     # select columns
     columns_cats = classify_columns(df, parameters)
@@ -150,10 +149,7 @@ def pipeline_transform(
     log.info(f"Started with {len(df.columns)} columns")
 
     # drop columns
-    cols_to_drop = list_intersection(parameters["drop_in_preprocessing"], df.columns)
-    cols_to_drop += null_columns
-    df = df.drop(*cols_to_drop)
-    log.info(f"Dropped {len(cols_to_drop)} columns")
+    df = drop_blacklisted_columns(df, parameters)
 
     # select columns
     columns_cats = classify_columns(df, parameters)
