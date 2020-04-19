@@ -508,7 +508,9 @@ def update_history_with_treatments_propositions(
 
     today = date.today().strftime("%Y-%m-%d")
     return treatments_history.filter(f"key_date != '{today}'").union(
-        treatments_propositions.withColumn("key_date", func.lit(today))
+        treatments_propositions.withColumn("key_date", func.lit(today)).select(
+            treatments_history.columns
+        )
     )
 
 
