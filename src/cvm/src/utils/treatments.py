@@ -536,10 +536,9 @@ def convert_treatments_dictionary_to_sparkdf(
     """
 
     schema = """
-        subscription_identifier:string,
         use_case:string,
-        macrosegment:string,
         microsegment:string,
+        treatment_variant:int,
         campaign_code:string
         """
     return get_spark_session().createDataFrame(treatment_dictionary_pd, schema=schema)
