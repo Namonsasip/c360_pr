@@ -29,6 +29,7 @@ def massive_processing_with_customer(input_df: DataFrame
 
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = input_df
+    data_frame = data_frame.withColumn("total_vol_gprs_2g_3g", F.col("total_vol_gprs") - F.col("total_vol_gprs_4g"))
     dates_list = data_frame.select('partition_date').distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
@@ -44,15 +45,13 @@ def massive_processing_with_customer(input_df: DataFrame
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         small_df = data_frame.filter(F.col("partition_date").isin(*[curr_item]))
-        small_df = small_df.withColumn("total_vol_gprs_2g_3g", F.col("total_vol_gprs") - F.col("total_vol_gprs_4g"))
         small_cus_df = customer_df.filter(F.col("event_partition_date").isin(*[curr_item]))
         output_df = node_from_config(small_df, sql)
         output_df = small_cus_df.join(output_df, ["access_method_num", "event_partition_date", "start_of_week"], "left")
         CNTX.catalog.save("l1_revenue_prepaid_pru_f_usage_multi_daily", output_df)
 
     logging.info("Final date to run for {0}".format(str(first_item)))
-    return_df = data_frame.filter(F.col("partition_date").isin(*[first_item]))\
-                .drop_duplicates(subset=["access_method_num", "event_partition_date"])
+    return_df = data_frame.filter(F.col("partition_date").isin(*[first_item]))
     return_df = node_from_config(return_df, sql)
     small_cus_df = customer_df.filter(F.col("event_partition_date").isin(*[first_item]))
     return_df = small_cus_df.join(return_df, ["access_method_num", "event_partition_date", "start_of_week"], "left")

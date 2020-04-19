@@ -14,17 +14,35 @@ l1_revenue_prepaid_pru_f_usage_multi_daily:
 
     ########################################### 4g #####################################################################
     rev_arpu_total_data_rev_4g: "total_net_tariff_gprs_revenue * (total_vol_gprs_4g/total_vol_gprs)"
+    # share of 4G data revenue in data revenue
+    rev_arpu_share_data_rev_4g: "(total_net_tariff_gprs_revenue * (total_vol_gprs_4g/total_vol_gprs))
+                                / (total_net_tariff_gprs_revenue)"
 
     rev_arpu_total_data_rev_by_package_4g: "total_net_tariff_gprs_package * (total_vol_gprs_4g/total_vol_gprs)"
+    # share of 4G data revenue in data package
+    rev_arpu_share_data_rev_by_package_4g: "(total_net_tariff_gprs_package * (total_vol_gprs_4g/total_vol_gprs))
+                                            / (total_net_tariff_gprs_package)"
 
     rev_arpu_total_data_rev_by_ppu_4g: "total_net_tariff_gprs_exc_package * (total_vol_gprs_4g/total_vol_gprs)"
+    # share of 4G data revenue in data PPY
+    rev_arpu_share_data_rev_by_ppu_4g: "(total_net_tariff_gprs_exc_package * (total_vol_gprs_4g/total_vol_gprs))
+                                        / (total_net_tariff_gprs_exc_package)"
 
     ########################################## 3g ######################################################################
     rev_arpu_total_data_rev_2g_3g: "total_net_tariff_gprs_revenue * (total_vol_gprs_2g_3g/total_vol_gprs)"
+    # share of 3G data revenue in data revenue
+    rev_arpu_share_data_rev_2g_3g: "(total_net_tariff_gprs_revenue * (total_vol_gprs_2g_3g/total_vol_gprs))
+                                    / (total_net_tariff_gprs_revenue)"
 
-    rev_arpu_total_data_rev_by_package_2g_3g: "total_net_tariff_gprs_revenue * (total_vol_gprs_2g_3g/total_vol_gprs)"
+    rev_arpu_total_data_rev_by_package_2g_3g: "total_net_tariff_gprs_package * (total_vol_gprs_2g_3g/total_vol_gprs)"
+    # share of 3G data revenue in data package
+    rev_arpu_share_data_rev_by_package_2g_3g: "(total_net_tariff_gprs_package * (total_vol_gprs_2g_3g/total_vol_gprs))
+                                              / (total_net_tariff_gprs_package)"
 
     rev_arpu_total_data_rev_by_ppu_2g_3g: "total_net_tariff_gprs_revenue * (total_vol_gprs_2g_3g/total_vol_gprs)"
+    # share of 3G data revenue in data PPU
+    rev_arpu_share_data_rev_by_ppu_2g_3g: "(total_net_tariff_gprs_exc_package * (total_vol_gprs_2g_3g/total_vol_gprs))
+                                          / (total_net_tariff_gprs_exc_package)"
 
     #############################################per_unit###############################################################
     rev_arpu_total_data_rev_by_per_unit: "total_net_tariff_gprs_revenue / total_vol_gprs"
@@ -42,7 +60,7 @@ l1_revenue_prepaid_pru_f_usage_multi_daily:
      - (total_net_tariff_gprs_exc_package * (total_vol_gprs_4g/total_vol_gprs))"
 
     rev_arpu_diffence_rev_by_package_ppu_2g_3g: "(total_net_tariff_gprs_revenue * (total_vol_gprs_2g_3g/total_vol_gprs))
-     - (total_net_tariff_gprs_revenue * (total_vol_gprs_2g_3g/total_vol_gprs))"
+     - (total_net_tariff_gprs_exc_package * (total_vol_gprs_2g_3g/total_vol_gprs))"
 
     rev_arpu_diffence_rev_2g_3g_vs_4g: "(total_net_tariff_gprs_revenue * (total_vol_gprs_2g_3g/total_vol_gprs))
      - (total_net_tariff_gprs_revenue * (total_vol_gprs_4g/total_vol_gprs))"
@@ -54,7 +72,11 @@ l1_revenue_prepaid_pru_f_usage_multi_daily:
 
     rev_arpu_total_voice: "total_net_tariff_revenue_basic"
     rev_arpu_total_voice_intra: "total_net_tariff_basic_intra"
+    # share of intra voice revenue
+    rev_arpu_share_voice_intra: "total_net_tariff_basic_intra/total_net_tariff_revenue_basic"
     rev_arpu_total_voice_non_intra: "total_net_tariff_basic_non_intra"
+    # share of non intra voice revenue
+    rev_arpu_share_voice_non_intra: "total_net_tariff_basic_non_intra/total_net_tariff_revenue_basic"
     rev_arpu_total_voice_per_call: "total_net_tariff_revenue_basic/total_call"
     rev_arpu_total_voice_intra_per_call: "total_net_tariff_basic_intra/total_call"
     rev_arpu_total_voice_non_intra_per_call: "total_net_tariff_basic_non_intra/total_call"
