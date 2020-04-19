@@ -512,19 +512,18 @@ def update_history_with_treatments_propositions(
     )
 
 
-def serve_treatments_chosen(treatments_history: DataFrame) -> pandas.DataFrame:
+def serve_treatments_chosen(treatments_propositions: DataFrame) -> pandas.DataFrame:
     """ Saves the csv with treatments basing on the recent entries in treatments
     history.
 
     Args:
-        treatments_history: Table with history of treatments.
+        treatments_propositions: Table with history of treatments.
     """
 
-    today = date.today().strftime("%Y-%m-%d")
-    treatments_from_history = treatments_history.filter(f"key_date == '{today}'")
-    if treatments_from_history.count() == 0:
+    treatments_df = treatments_propositions.filter("campaign_code != 'no_treatment'")
+    if treatments_df.count() == 0:
+        today = date.today().strftime("%Y-%m-%d")
         raise Exception(f"No treatments found for {today}")
-    treatments_df = treatments_from_history.filter("campaign_code != 'no_treatment'")
     return treatments_df.toPandas()
 
 
@@ -578,6 +577,6 @@ def generate_treatments_chosen(
     treatments_history = update_history_with_treatments_propositions(
         treatments_propositions, treatments_history
     )
-    treatments_chosen = serve_treatments_chosen(treatments_history)
+    treatments_chosen = serve_treatments_chosen(treatments_propositions)
 
     return treatments_chosen, treatments_history
