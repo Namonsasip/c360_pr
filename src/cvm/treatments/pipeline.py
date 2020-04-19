@@ -58,7 +58,7 @@ def generate_treatments() -> Pipeline:
                     "treatments_chosen_history",
                     "parameters",
                 ],
-                ["treatments_chosen", "treatments_history2"],
+                ["treatments_chosen", "treatments_chosen_history2"],
                 name="produce_treatments",
             ),
         ]
