@@ -35,7 +35,7 @@ import pandas
 from customer360.utilities.spark_util import get_spark_session
 from cvm.src.targets.churn_targets import add_days
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
-from cvm.src.utils.utils import df_to_list, impute_from_parameters
+from cvm.src.utils.utils import impute_from_parameters, return_column_as_list
 from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as func
 
@@ -452,10 +452,10 @@ def get_treatments_propositions(
 
     def _pick_treatments_for_microsegment(microsegment_chosen):
         """ Picks treatments for target users using treatment dictionary"""
-        chosen_microsegment_treatments = df_to_list(
-            treatment_dictionary.filter(
-                f"microsegment == '{microsegment_chosen}'"
-            ).select("campaign_code")
+        chosen_microsegment_treatments = return_column_as_list(
+            treatment_dictionary.filter(f"microsegment == '{microsegment_chosen}'"),
+            "campaign_code",
+            True,
         )
         target_users_in_microsegment = target_users.filter(
             f"microsegment == '{microsegment_chosen}'"
@@ -472,7 +472,7 @@ def get_treatments_propositions(
             )
         return target_users_in_microsegment
 
-    microsegments = df_to_list(target_users.select("microsegment").distinct())
+    microsegments = return_column_as_list(target_users, "microsegment", True)
     treatments_per_microsegments = [
         _pick_treatments_for_microsegment(microsegment)
         for microsegment in microsegments
