@@ -146,6 +146,18 @@ def df_to_list(df: DataFrame) -> List[Any]:
     return df.rdd.flatMap(lambda x: x).collect()
 
 
+def return_column_as_list(df: DataFrame, colname: str) -> List:
+    """ Return column of DataFrame as list.
+
+    Args:
+        df: Input DataFrame.
+        colname: name of column to return.
+    """
+    if colname not in df.columns:
+        raise Exception(f"Column {colname} not found")
+    return df_to_list(df.select(colname))
+
+
 def pyspark_to_pandas(df, n_partitions=None):
     """
     Returns the contents of `df` as a local `pandas.DataFrame` in a speedy
