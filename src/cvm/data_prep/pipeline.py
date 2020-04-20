@@ -115,7 +115,7 @@ def sample_inputs(sample_type: str) -> Pipeline:
         "l4_usage_prepaid_postpaid_daily_features",
         "l4_daily_feature_topup_and_volume",
         "l4_usage_postpaid_prepaid_weekly_features_sum",
-        "l4_touchpoints_to_call_center_features",
+        "l2_touchpoints_to_call_center_features",
     ]
 
     nodes_list = [
@@ -203,7 +203,7 @@ def prepare_features_macrosegments(sample_type: str):
                     "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_"
                     + sample_type,
                     "l4_usage_postpaid_prepaid_weekly_features_sum_" + sample_type,
-                    "l4_touchpoints_to_call_center_features_" + sample_type,
+                    "l2_touchpoints_to_call_center_features_" + sample_type,
                 ]
                 + targets_datasets,
                 "features_targets_" + sample_type,
@@ -269,7 +269,7 @@ def create_cvm_important_columns():
                     "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_"
                     + sample_type,
                     "l4_usage_postpaid_prepaid_weekly_features_sum_" + sample_type,
-                    "l4_touchpoints_to_call_center_features_" + sample_type,
+                    "l2_touchpoints_to_call_center_features_" + sample_type,
                 ]
                 + targets_datasets,
                 "features_targets_fe",
