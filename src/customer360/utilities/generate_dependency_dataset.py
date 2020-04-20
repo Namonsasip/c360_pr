@@ -45,12 +45,23 @@ def generate_dependency_dataset(project_context):
                 dfs(child_id)
 
         dfs(id)
+        list_of_children = list(set(list_of_children))
         return list_of_children
 
-    df["list_of_children"] = df["parent_path"].apply(get_children).astype(str)
-    spark = get_spark_session()
-    spark_df = spark.createDataFrame(df).drop("child_path").drop_duplicates(subset=["parent_path", "list_of_children"])
-    spark_df = spark_df.withColumn("event_partition_date", f.current_date())
+    def generate_l1_l2_l3_l4_cols(row):
+        row["l1_datasets"] = [x for x in row["list_of_children"] if "l1_feat" in x]
+        row["l2_datasets"] = [x for x in row["list_of_children"] if "l2_feat" in x]
+        row["l3_datasets"] = [x for x in row["list_of_children"] if "l3_feat" in x]
+        row["l4_datasets"] = [x for x in row["list_of_children"] if "l4_feat" in x]
+        return row
 
+    df["list_of_children"] = df["parent_path"].apply(get_children)
+    df = df[df.parent_path.str.contains("customer360-blob-data")]
+    df = df.apply(generate_l1_l2_l3_l4_cols, axis=1)
+    for col in df.columns:
+        df[col] = df[col].astype(str)
+    spark = get_spark_session()
+    spark_df = spark.createDataFrame(df).drop("child_path").drop_duplicates(subset=["parent_path"])
+    spark_df = spark_df.withColumn("event_partition_date", f.current_date())
     project_context.catalog.save("util_dependency_report", spark_df)
 
