@@ -64,13 +64,14 @@ def map_over_deep_dict(
 
 
 def iterate_over_usecases_macrosegments_targets(
-    fun: Callable, parameters: Dict[str, Any],
+    fun: Callable, parameters: Dict[str, Any], add_global_macrosegment: bool = False
 ) -> object:
     """Iterates fun over every usecase, macrosegment, target.
 
     Args:
         fun: function to call, assumes to input usecase, macrosegment, target
         parameters: parameters defined in parameters.yml.
+        add_global_macrosegment: if True then special macrosegment is added - `global`.
     """
 
     def _iter_for_macrosegment(use_case_chosen, macrosegment_chosen):
@@ -83,7 +84,10 @@ def iterate_over_usecases_macrosegments_targets(
 
     def _iter_for_usecase(use_chosen):
         fun_values = {}
-        for macrosegment_chosen in macrosegments[use_chosen]:
+        all_macrosegments = macrosegments[use_chosen]
+        if add_global_macrosegment:
+            all_macrosegments += ["global"]
+        for macrosegment_chosen in all_macrosegments:
             fun_values[macrosegment_chosen] = _iter_for_macrosegment(
                 use_chosen, macrosegment_chosen
             )
