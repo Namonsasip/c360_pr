@@ -31,6 +31,7 @@ from cvm.treatments.nodes import (
     prepare_microsegments,
     get_target_users,
     produce_treatments,
+    deploy_contact,
 )
 
 
@@ -71,5 +72,11 @@ def generate_treatments() -> Pipeline:
                 ["treatments_chosen", "treatments_history2"],
                 name="create_treatments_chosen",
             ),
+            node(
+                deploy_contact,
+                ["parameters", "treatment_chosen"],
+                None,
+                name="deploy_contact_workflow"
+            )
         ]
     )
