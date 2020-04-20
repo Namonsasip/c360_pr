@@ -1,11 +1,10 @@
 from pyspark.sql import DataFrame
-from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, execute_sql
+from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols
 from pyspark.sql import functions as F
 from customer360.utilities.config_parser import node_from_config
-from kedro.context.context import load_context
-from pathlib import Path
-import logging
 import os
+from customer360.utilities.spark_util import get_spark_empty_df
+from pyspark.sql.types import *
 
 conf = os.getenv("CONF", None)
 
@@ -208,10 +207,31 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
     :param dictionary_obj_2:
     :return:
     """
-    print("postpaid:",postpaid.columns)
-    print("prepaid:", prepaid.columns)
 
-    print("contacts_ma:", contacts_ma.columns)
+    if len(postpaid.head(1)) == 0 or len(prepaid.head(1)) == 0 or len(contacts_ma.head(1)) == 0 or len(contact_list_ussd.head(1)) == 0:
+        return [get_spark_empty_df(), get_spark_empty_df()]
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            postpaid.select(
+                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
+            prepaid.select(
+                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
+            contacts_ma.select(
+                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
+            contact_list_ussd.select(
+                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    postpaid = postpaid.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+
+    prepaid = prepaid.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+
+    contacts_ma = contacts_ma.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+
+    contact_list_ussd = contact_list_ussd.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+
 
     first_df, second_df = massive_processing(postpaid, prepaid, contacts_ma, contact_list_ussd
                                              , dictionary_obj, dictionary_obj_2)
