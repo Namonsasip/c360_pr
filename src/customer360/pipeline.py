@@ -56,7 +56,7 @@ from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l2.to_
     billing_to_l2_pipeline,
 )
 from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l3.to_l3_pipeline import (
-    billing_to_l3_pipeline,
+    billing_l1_to_l3_pipeline,billing_l0_to_l3_pipeline
 )
 from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4.to_l4_pipeline_daily import *
 from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4.to_l4_pipeline_monthly import *
@@ -114,7 +114,7 @@ from .pipelines.data_engineering.pipelines.stream_pipeline.to_l3.to_l3_pipeline 
     streaming_to_l3_pipeline,
 )
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l4.to_l4_pipeline import (
-    streaming_to_l4_pipeline,
+    streaming_l2_to_l4_pipeline, streaming_l1_to_l4_pipeline
 )
 from .pipelines.data_engineering.pipelines.touchpoints_pipeline.to_l1.to_l1_pipeline import (
     touchpoints_to_l1_pipeline,
@@ -150,8 +150,10 @@ from .pipelines.data_engineering.pipelines.digital_pipeline import (
     digital_to_l3_pipeline, digital_to_l4_pipeline
 )
 from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l1.to_l1_pipeline import *
-from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l2.to_l2_pipeline import *
-from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l3.to_l3_pipeline import *
+from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l2.to_l2_pipeline import (
+   loyalty_l0_to_l2_pipeline, loyalty_l1_to_l2_pipeline)
+from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l3.to_l3_pipeline import (
+    loyalty_l0_to_l3_pipeline, loyalty_l1_to_l3_pipeline )
 from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l4.to_l4_pipeline import *
 
 from .pipelines.data_engineering.pipelines.network_pipeline.to_l1.to_l1_pipeline import (
@@ -206,7 +208,8 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "customer_profile_to_l4_pipeline": customer_profile_to_l4_pipeline(),
         "usage_to_l1_pipeline": usage_to_l1_pipeline(),
         "billing_to_l1_pipeline": billing_to_l1_pipeline(),
-        "billing_to_l3_pipeline": billing_to_l3_pipeline(),
+        "billing_l0_to_l3_pipeline": billing_l0_to_l3_pipeline(),
+        "billing_l1_to_l3_pipeline": billing_l1_to_l3_pipeline(),
         "billing_to_l2_pipeline": billing_to_l2_pipeline(),
         "billing_to_l4_pipeline_monthly": billing_to_l4_pipeline_monthly(),
         "billing_to_l4_pipeline_weekly": billing_to_l4_pipeline_weekly(),
@@ -220,7 +223,8 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "streaming_to_l1_pipeline": streaming_to_l1_pipeline(),
         "streaming_to_l2_pipeline": streaming_to_l2_pipeline(),
         "streaming_to_l3_pipeline": streaming_to_l3_pipeline(),
-        "streaming_to_l4_pipeline": streaming_to_l4_pipeline(),
+        "streaming_l1_to_l4_pipeline": streaming_l1_to_l4_pipeline(),      
+        "streaming_l2_to_l4_pipeline": streaming_l2_to_l4_pipeline(),
         "revenue_to_l1_pipeline": revenue_to_l1_pipeline(),
         "revenue_to_l2_pipeline": revenue_to_l2_pipeline(),
         "revenue_to_l3_pipeline": revenue_to_l3_pipeline(),
@@ -239,8 +243,10 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "campaign_to_l2_pipeline": campaign_to_l2_pipeline(),
         "campaign_to_l4_pipeline": campaign_to_l4_pipeline(),
         "loyalty_to_l1_pipeline": loyalty_to_l1_pipeline(),
-        "loyalty_to_l2_pipeline": loyalty_to_l2_pipeline(),
-        "loyalty_to_l3_pipeline": loyalty_to_l3_pipeline(),
+        "loyalty_l0_to_l2_pipeline": loyalty_l0_to_l2_pipeline(),
+        "loyalty_l1_to_l2_pipeline": loyalty_l1_to_l2_pipeline(),
+        "loyalty_l1_to_l3_pipeline": loyalty_l1_to_l3_pipeline(),
+        "loyalty_l0_to_l3_pipeline": loyalty_l0_to_l3_pipeline(),
         "loyalty_to_l4_pipeline": loyalty_to_l4_pipeline(),
         "network_to_l1_pipeline": network_to_l1_pipeline(),
         "network_to_l2_pipeline": network_to_l2_pipeline(),
