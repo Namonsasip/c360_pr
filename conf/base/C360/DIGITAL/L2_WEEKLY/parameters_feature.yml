@@ -11,6 +11,7 @@ l2_digital_cxenxse_site_traffic_browser_active_time_top_3_weekly:
   where_clause: "where digital_site_traffic_browser_rank <= 3"
   feature_list:
     access_method_num: access_method_num
+    start_of_week: start_of_week
     browser_rank: digital_site_traffic_browser_rank
     site_traffic_browser: browser
     digital_site_traffic_active_time_per_browser: digital_site_traffic_active_time_per_browser
@@ -28,9 +29,9 @@ l2_digital_cxenxse_site_traffic_favorite_url_rank_1_weekly:
   where_clause: "digital_site_traffic_url_rank = 1"
   feature_list:
     access_method_num: access_method_num
+    start_of_week: start_of_week
     digital_site_traffic_url_rank: digital_site_traffic_url_rank
     favorite_url: url
-    start_of_week: start_of_week
   granularity: ""
 
 # Digital Favorite postalcode
@@ -45,9 +46,9 @@ l2_digital_cxenxse_site_traffic_favorite_postalcode_rank_1_weekly:
   where_clause: "digital_site_traffic_postalcode_rank = 1"
   feature_list:
     access_method_num: access_method_num
+    start_of_week: start_of_week
     digital_site_traffic_postalcode_rank: digital_site_traffic_postalcode_rank
     favorite_postalcode: postalcode
-    start_of_week: start_of_week
   granularity: ""
 
 # Digital Favorite referrerquery
@@ -62,9 +63,9 @@ l2_digital_cxenxse_site_traffic_favorite_referrerquery_rank_1_weekly:
   where_clause: "digital_site_traffic_referrerquery_rank = 1"
   feature_list:
     access_method_num: access_method_num
+    start_of_week: start_of_week
     digital_site_traffic_referrerquery_rank: digital_site_traffic_referrerquery_rank
     favorite_referrerquery: referrerquery
-    start_of_week: start_of_week
   granularity: ""
 
 # Digital Active Time  per Refferer Social Network Top 5
@@ -80,6 +81,7 @@ l2_digital_cxenxse_site_traffic_refferer_social_network_active_time_top_5_weekly
   where_clause: "where digital_site_traffic_referrer_social_network_rank <= 5"
   feature_list:
     access_method_num: access_method_num
+    start_of_week: start_of_week
     referrer_social_network_rank: digital_site_traffic_referrer_social_network_rank
     site_traffic_referrer_social_network: referrersocialnetwork
     digital_site_traffic_active_time_per_referrer_social_network: digital_site_traffic_active_time_per_referrer_social_network
@@ -98,6 +100,7 @@ l2_digital_cxenxse_site_traffic_refferer_search_engine_active_time_top_5_weekly:
   where_clause: "where digital_site_traffic_referrer_search_engine <= 5"
   feature_list:
     access_method_num: access_method_num
+    start_of_week: start_of_week
     referrer_search_engine_rank: digital_site_traffic_referrer_search_engine
     site_traffic_referrer_search_engine: referrersearchengine
     digital_site_traffic_active_time_per_referrer_search_engine: digital_site_traffic_active_time_per_referrer_search_engine
@@ -116,6 +119,7 @@ l2_digital_cxenxse_site_traffic_refferer_host_class_active_time_top_5_weekly:
   where_clause: "where digital_site_traffic_referrer_host_class <= 5"
   feature_list:
     access_method_num: access_method_num
+    start_of_week: start_of_week
     referrer_host_class_rank: digital_site_traffic_referrer_host_class
     site_traffic_referrer_host_class: referrerhostclass
     digital_site_traffic_active_time_per_referrer_host_class: digital_site_traffic_active_time_per_referrer_host_class
