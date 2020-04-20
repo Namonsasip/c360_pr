@@ -34,7 +34,6 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 from kedro.pipeline import Pipeline, node
 
 from customer360.pipelines.data_engineering.nodes.digital_nodes.to_l2 import build_digital_l2_weekly_features
-from customer360.utilities.config_parser import node_from_config
 
 
 def digital_to_l2_pipeline(**kwargs):
@@ -42,81 +41,22 @@ def digital_to_l2_pipeline(**kwargs):
         [
             node(
                 build_digital_l2_weekly_features,
-                ["l0_digital_cxenxse_site_traffic",
-                 "l3_customer_profile_include_1mo_non_active_for_l3_digital_cxenxse_user_profile_monthly",
-                 "params:l2_digital_cxenxse_site_traffic_browser_active_time_weekly"],
-                "l2_digital_cxenxse_site_traffic_browser_active_time_weekly"
-            ),
-            node(
-                node_from_config,
-                ["l2_digital_cxenxse_site_traffic_browser_active_time_weekly",
-                 "params:l2_digital_cxenxse_site_traffic_browser_active_time_weekly"],
-                "l2_digital_cxenxse_site_traffic_browser_active_time_top_3_weekly"
-            ),
-            node(
-                build_digital_l2_weekly_features,
-                ["l0_digital_cxenxse_site_traffic",
-                 "l3_customer_profile_include_1mo_non_active_for_l3_digital_cxenxse_user_profile_monthly",
-                 "params:l2_digital_cxenxse_site_traffic_favorite_url_weekly"],
-                "l2_digital_cxenxse_site_traffic_favorite_url_weekly"
-            ),
-            node(
-                node_from_config,
-                ["l2_digital_cxenxse_site_traffic_favorite_url_weekly",
-                 "params:l2_digital_cxenxse_site_traffic_favorite_url_rank_1_weekly"],
-                "l2_digital_cxenxse_site_traffic_favorite_url_rank_1_weekly"
-            ),
-            node(
-                build_digital_l2_weekly_features,
-                ["l0_digital_cxenxse_site_traffic",
-                 "l3_customer_profile_include_1mo_non_active_for_l3_digital_cxenxse_user_profile_monthly",
-                 "params:l2_digital_cxenxse_site_traffic_favorite_referrerquery_weekly"],
-                "l2_digital_cxenxse_site_traffic_favorite_referrerquery_weekly"
-            ),
-            node(
-                node_from_config,
-                ["l2_digital_cxenxse_site_traffic_favorite_referrerquery_weekly",
-                 "params:l2_digital_cxenxse_site_traffic_favorite_referrerquery_rank_1_weekly"],
-                "l2_digital_cxenxse_site_traffic_favorite_referrerquery_rank_1_weekly"
-            ),
-            node(
-                build_digital_l2_weekly_features,
-                ["l0_digital_cxenxse_site_traffic",
-                 "l3_customer_profile_include_1mo_non_active_for_l3_digital_cxenxse_user_profile_monthly",
-                 "params:l2_digital_cxenxse_site_traffic_refferer_social_network_active_time_weekly"],
-                "l2_digital_cxenxse_site_traffic_refferer_social_network_active_time_weekly"
-            ),
-            node(
-                node_from_config,
-                ["l2_digital_cxenxse_site_traffic_refferer_social_network_active_time_weekly",
-                 "params:l2_digital_cxenxse_site_traffic_refferer_social_network_active_time_top_5_weekly"],
-                "l2_digital_cxenxse_site_traffic_refferer_social_network_active_time_top_5_weekly"
-            ),
-            node(
-                build_digital_l2_weekly_features,
-                ["l0_digital_cxenxse_site_traffic",
-                 "l3_customer_profile_include_1mo_non_active_for_l3_digital_cxenxse_user_profile_monthly",
-                 "params:l2_digital_cxenxse_site_traffic_refferer_search_engine_active_time_weekly"],
-                "l2_digital_cxenxse_site_traffic_refferer_search_engine_active_time_weekly"
-            ),
-            node(
-                node_from_config,
-                ["l2_digital_cxenxse_site_traffic_refferer_search_engine_active_time_weekly",
-                 "params:l2_digital_cxenxse_site_traffic_refferer_search_engine_active_time_top_5_weekly"],
-                "l2_digital_cxenxse_site_traffic_refferer_search_engine_active_time_top_5_weekly"
-            ),
-            node(
-                build_digital_l2_weekly_features,
-                ["l0_digital_cxenxse_site_traffic",
-                 "l3_customer_profile_include_1mo_non_active_for_l3_digital_cxenxse_user_profile_monthly",
-                 "params:l2_digital_cxenxse_site_traffic_refferer_host_class_active_time_weekly"],
-                "l2_digital_cxenxse_site_traffic_refferer_host_class_active_time_weekly"
-            ),
-            node(
-                node_from_config,
-                ["l2_digital_cxenxse_site_traffic_refferer_host_class_active_time_weekly",
-                 "params:l2_digital_cxenxse_site_traffic_refferer_host_class_active_time_top_5_weekly"],
-                "l2_digital_cxenxse_site_traffic_refferer_host_class_active_time_top_5_weekly"
+                [
+                 "l0_digital_cxenxse_site_traffic",
+                 "l1_customer_profile_union_daily_feature_for_usage_for_l2_digital_cxenxse_site_traffic_browser_active_time_weekly",
+                 "params:l2_digital_cxenxse_site_traffic_weekly"
+                 "params:l2_digital_cxenxse_site_traffic_popular_host_weekly"
+                 "params:l2_digital_cxenxse_site_traffic_popular_postalcode_weekly"
+                 "params:l2_digital_cxenxse_site_traffic_popular_referrerquery_weekly"
+                 "params:l2_digital_cxenxse_site_traffic_popular_referrerhost_weekly"
+                 ],
+                [
+                 "l2_digital_cxenxse_site_traffic_weekly",
+                 "l2_digital_cxenxse_site_traffic_popular_host_weekly",
+                 "l2_digital_cxenxse_site_traffic_popular_postalcode_weekly"
+                 "l2_digital_cxenxse_site_traffic_popular_referrerquery_weekly"
+                 "l2_digital_cxenxse_site_traffic_popular_referrerhost_weekly"
+                ]
             ),
         ], name="digital_to_l2_pipeline"
     )
