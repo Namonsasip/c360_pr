@@ -100,11 +100,9 @@ from .pipelines.data_engineering.pipelines.complaints_pipeline.to_l4.to_l4_pipel
 # from .pipelines.data_engineering.pipelines.device_pipeline.to_l3.to_l3_pipeline import (
 #     device_to_l3_pipeline,
 # )
-from .pipelines.data_engineering.pipelines.revenue_pipeline.to_l3 import (
-    revenue_to_l3_pipeline,
-)
-from .pipelines.data_engineering.pipelines.revenue_pipeline.to_l4 import (
-    revenue_to_l4_pipeline,
+from .pipelines.data_engineering.pipelines.revenue_pipeline import (
+    revenue_to_l1_pipeline, revenue_to_l4_daily_pipeline, revenue_to_l3_pipeline, revenue_to_l4_monthly_pipeline,
+    revenue_to_l2_pipeline, revenue_to_l4_weekly_pipeline
 )
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l1.to_l1_pipeline import (
     streaming_to_l1_pipeline,
@@ -226,10 +224,14 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "streaming_to_l1_pipeline": streaming_to_l1_pipeline(),
         "streaming_to_l2_pipeline": streaming_to_l2_pipeline(),
         "streaming_to_l3_pipeline": streaming_to_l3_pipeline(),
-        "streaming_l1_to_l4_pipeline": streaming_l1_to_l4_pipeline(),
+        "streaming_l1_to_l4_pipeline": streaming_l1_to_l4_pipeline(),      
         "streaming_l2_to_l4_pipeline": streaming_l2_to_l4_pipeline(),
+        "revenue_to_l1_pipeline": revenue_to_l1_pipeline(),
+        "revenue_to_l2_pipeline": revenue_to_l2_pipeline(),
         "revenue_to_l3_pipeline": revenue_to_l3_pipeline(),
-        "revenue_to_l4_pipeline": revenue_to_l4_pipeline(),
+        "revenue_to_l4_daily_pipelin": revenue_to_l4_daily_pipeline(),
+        "revenue_to_l4_pipeline": revenue_to_l4_monthly_pipeline(),
+        "revenue_to_l4_weekly_pipeline": revenue_to_l4_weekly_pipeline(),
         "complaints_to_l1_pipeline": complaints_to_l1_pipeline(),
         "complaints_to_l2_pipeline": complaints_to_l2_pipeline(),
         "complaints_to_l3_pipeline": complaints_to_l3_pipeline(),
