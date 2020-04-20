@@ -84,7 +84,7 @@ l4_digital_cxenxse_site_traffic_popular_referrerhost_weekly_int:
   partition_by: ["subscription_identifier", "referrerhost"]
   ranked_lookup_enable_flag: 'yes'
   fix_dimension_cols: "subscription_identifier,start_of_week"
-  target_dimension_col: "referrerquery"
+  target_dimension_col: "referrerhost"
   feature_list:
     sum: ["digital_popular_referrerhost"]
   read_from: "l2"

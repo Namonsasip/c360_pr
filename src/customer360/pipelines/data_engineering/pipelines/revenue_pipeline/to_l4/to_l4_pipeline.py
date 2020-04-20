@@ -75,7 +75,7 @@ def revenue_to_l4_daily_pipeline(**kwargs):
         [
             node(
                 l4_rolling_window,
-                ["l1_revenue_prepaid_pru_f_usage_multi_daily_for_l2_revenue_prepaid_pru_f_usage_multi",
+                ["l1_revenue_prepaid_pru_f_usage_multi_daily_for_l4_revenue_prepaid_daily_features",
                  "params:l4_revenue_prepaid_daily_features"],
                 'l4_revenue_prepaid_daily_features'
             )

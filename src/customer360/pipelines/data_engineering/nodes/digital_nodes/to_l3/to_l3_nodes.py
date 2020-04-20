@@ -14,6 +14,10 @@ def build_digital_l3_monthly_features(cxense_user_profile: DataFrame,
     :param node_config_dict:
     :return:
     """
+
+    if len(cxense_user_profile.head(1)) == 0:
+        return cxense_user_profile
+
     cxense_user_profile = cxense_user_profile.withColumnRenamed("mobile_no", "access_method_num") \
         .withColumn("partition_month", f.col("partition_month").cast(StringType())) \
         .withColumn("start_of_month", f.to_date(f.date_trunc('month', f.to_date(f.col("partition_month"), 'yyyyMM'))))\

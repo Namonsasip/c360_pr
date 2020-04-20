@@ -188,6 +188,9 @@ l4_campaign_postpaid_prepaid_features:
 
 l4_campaign_top_channel_features_int:
   partition_by: ["subscription_identifier", "campaign_channel"]
+  ranked_lookup_enable_flag: 'yes'
+  fix_dimension_cols: "subscription_identifier,start_of_week"
+  target_dimension_col: "campaign_channel"
   feature_list:
     sum: ["campaign_channel_success_ratio_sum"]
   read_from: "l2"

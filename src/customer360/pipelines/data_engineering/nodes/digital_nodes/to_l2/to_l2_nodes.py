@@ -21,6 +21,9 @@ def build_digital_l2_weekly_features(cxense_site_traffic: DataFrame,
     :param popular_postal_code_dict:
     :return:
     """
+    if len(cxense_site_traffic.head(1)) == 0:
+        return cxense_site_traffic
+
     cust_df_cols = ['access_method_num', 'start_of_week', 'subscription_identifier']
     cxense_site_traffic = cxense_site_traffic.withColumnRenamed("hash_id", "access_method_num") \
         .withColumn("partition_date", f.col("partition_date").cast(StringType())) \
