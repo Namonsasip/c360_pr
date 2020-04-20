@@ -72,5 +72,5 @@ volatility_length: 5
 # pai parameters
 pai_runs_path: '/dbfs/mnt/customer360-blob-data/cvm/pai01/runs'
 pai_artifacts_path: '/dbfs/mnt/customer360-blob-data/cvm/pai01/artifacts'
-pai_experiment_name: 'added_call_center_less_columns'
+pai_experiment_name: 'added_call_center_nim'
 
