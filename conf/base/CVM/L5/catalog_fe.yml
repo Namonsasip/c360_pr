@@ -28,9 +28,9 @@ l4_usage_postpaid_prepaid_weekly_features_sum_fe:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_usage_postpaid_prepaid_weekly_features_sum_fe/
 
-l4_touchpoints_to_call_center_features_fe:
+l2_touchpoints_to_call_center_features:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_touchpoints_to_call_center_features_fe/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l2_touchpoints_to_call_center_features/
 
 ard_targets_fe:
   <<: *spark_parquet
