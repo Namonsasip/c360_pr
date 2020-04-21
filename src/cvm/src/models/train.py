@@ -50,7 +50,7 @@ def train_sklearn(
 
     def _train_for_macrosegment_target(use_case_chosen, macrosegment, target_chosen):
         log.info(
-            "Training model for {} target, {} macrosegment.".format(
+            "Training model for {} target, {} macrosegment".format(
                 target_chosen, macrosegment
             )
         )
