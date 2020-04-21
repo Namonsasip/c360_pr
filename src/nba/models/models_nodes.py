@@ -281,7 +281,6 @@ def create_model_function(
                 )
 
             current_group = pdf_master_chunk[group_column].iloc[0]
-            current_group_description = pdf_master_chunk["campaign_name"].iloc[0]
             pai_run_name = pai_run_prefix + current_group
 
             pdf_extra_pai_metrics_filtered = pdf_extra_pai_metrics[
@@ -344,7 +343,10 @@ def create_model_function(
             modelling_target_mean = np.mean(pdf_master_chunk[target_column])
             pai_metrics_dict["modelling_target_mean"] = modelling_target_mean
             # Configure and start pai run
-            pai.set_config(experiment=current_group, storage_runs=pai_storage_path)
+            pai.set_config(
+                experiment=f"{group_column}={current_group}",
+                storage_runs=pai_storage_path,
+            )
 
             if pai.active_run():
                 raise AssertionError(
@@ -359,8 +361,9 @@ def create_model_function(
                 tmp_path = Path("data/tmp") / run_id
                 os.makedirs(tmp_path, exist_ok=True)
 
-                pai.add_tags([f"z_{pai_run_prefix}", model_type])
-                pai.log_note(current_group_description)
+                pai.add_tags(
+                    [f"z_{pai_run_prefix}", model_type, f"modeled_by_{group_column}"]
+                )
 
                 pai.log_metrics(pai_metrics_dict)
 
@@ -667,6 +670,7 @@ def train_multiple_models(
     group_column: str,
     explanatory_features: List[str],
     target_column: str,
+    extra_keep_columns: List[str] = None,
     max_rows_per_group: int = None,
     **kwargs: Any,
 ) -> pyspark.sql.DataFrame:
@@ -679,6 +683,9 @@ def train_multiple_models(
         explanatory_features: list of features name to learn from. Must exist in
             df_master
         target_column: column with target variable
+        extra_keep_columns: extra columns that will be kept in the master when doing the
+            pandas UDF, should only be restricted to the ones that will be used since
+            this might consume a lot of memory
         max_rows_per_group: maximum rows that the train set of the model will have.
             If for a group the number of rows is larget it will be randomly sampled down
         **kwargs: further arguments to pass to the modelling function, they are not all
@@ -688,20 +695,26 @@ def train_multiple_models(
     Returns:
         A spark DataFrame with info about the training
     """
+
+    if extra_keep_columns is None:
+        extra_keep_columns = []
+    
     # To reduce the size of the pandas DataFrames only select the columns we really need
     # Also cast decimal type columns cause they don't get properly converted to pandas
     df_master_only_necessary_columns = df_master.select(
         group_column,
         target_column,
-        "campaign_name",
-        *[
-            F.col(column_name).cast(FloatType())
-            if column_type.startswith("decimal")
-            else F.col(column_name)
-            for column_name, column_type in df_master.select(
-                *explanatory_features
-            ).dtypes
-        ],
+        *(
+            extra_keep_columns
+            + [
+                F.col(column_name).cast(FloatType())
+                if column_type.startswith("decimal")
+                else F.col(column_name)
+                for column_name, column_type in df_master.select(
+                    *explanatory_features
+                ).dtypes
+            ]
+        ),
     )
 
     pdf_extra_pai_metrics = calculate_extra_pai_metrics(
