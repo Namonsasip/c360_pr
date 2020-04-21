@@ -90,9 +90,6 @@ def deploy_contact(parameters: Dict[str, Any], df: DataFrame,):
         parameters: parameters defined in parameters.yml.
         df: DataFrame with treatment per customer.
 
-    Returns:
-        None
-
     """
     created_date = date.today()
     df = df.withColumn("data_date", func.lit(created_date))
@@ -102,3 +99,4 @@ def deploy_contact(parameters: Dict[str, Any], df: DataFrame,):
     df.repartition(1).write.option("sep", "|").option("header", "true").option("mode", "overwrite").csv(file_name)
 
     return 0
+
