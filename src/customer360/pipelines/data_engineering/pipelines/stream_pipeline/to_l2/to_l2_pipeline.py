@@ -45,8 +45,7 @@ def streaming_to_l2_pipeline(**kwargs):
             node(
                 l2_massive_processing,
                 ["int_l1_streaming_content_type_features_for_int_l2_streaming_content_type_features",
-                 "params:int_l2_streaming_content_type_features",
-                 "l1_customer_profile_union_daily_feature_for_int_l2_streaming_content_type_features"],
+                 "params:int_l2_streaming_content_type_features"],
                 "int_l2_streaming_content_type_features@save"
             ),
             node(
@@ -66,8 +65,7 @@ def streaming_to_l2_pipeline(**kwargs):
             node(
                 l2_massive_processing,
                 ["int_l1_streaming_tv_channel_features_for_int_l2_streaming_tv_channel_features",
-                 "params:int_l2_streaming_tv_channel_features",
-                 "l1_customer_profile_union_daily_feature_for_int_l2_streaming_tv_channel_features"],
+                 "params:int_l2_streaming_tv_channel_features",],
                 "int_l2_streaming_tv_channel_features@save"
             ),
             node(
@@ -101,8 +99,7 @@ def streaming_to_l2_pipeline(**kwargs):
             node(
                 l2_massive_processing,
                 ["int_l1_streaming_video_service_feature_for_int_l2_streaming_video_service_feature",
-                 "params:int_l2_streaming_video_service_feature",
-                 "l1_customer_profile_union_daily_feature_for_int_l2_streaming_video_service_feature"],
+                 "params:int_l2_streaming_video_service_feature"],
                 "int_l2_streaming_video_service_feature@save"
             ),
             node(
@@ -128,8 +125,7 @@ def streaming_to_l2_pipeline(**kwargs):
             node(
                 l2_massive_processing,
                 ["int_l1_streaming_music_service_feature_for_int_l2_streaming_music_service_feature",
-                 "params:int_l2_streaming_music_service_feature",
-                 "l1_customer_profile_union_daily_feature_for_int_l2_streaming_music_service_feature"],
+                 "params:int_l2_streaming_music_service_feature"],
                 "int_l2_streaming_music_service_feature@save"
             ),
             node(
@@ -155,8 +151,7 @@ def streaming_to_l2_pipeline(**kwargs):
             node(
                 l2_massive_processing,
                 ["int_l1_streaming_esport_service_feature_for_int_l2_streaming_esport_service_feature",
-                 "params:int_l2_streaming_esport_service_feature",
-                 "l1_customer_profile_union_daily_feature_for_int_l2_streaming_esport_service_feature"],
+                 "params:int_l2_streaming_esport_service_feature"],
                 "int_l2_streaming_esport_service_feature@save"
             ),
             node(
@@ -182,8 +177,7 @@ def streaming_to_l2_pipeline(**kwargs):
             node(
                 l2_massive_processing_with_expansion,
                 ["l1_streaming_visit_count_and_download_traffic_feature_for_l2_streaming_visit_count_and_download_traffic_feature",
-                 "params:l2_streaming_visit_count_and_download_traffic_feature",
-                 "l1_customer_profile_union_daily_feature_for_l2_streaming_visit_count_and_download_traffic_feature"],
+                 "params:l2_streaming_visit_count_and_download_traffic_feature"],
                 "l2_streaming_visit_count_and_download_traffic_feature"
             ),
 
@@ -192,14 +186,12 @@ def streaming_to_l2_pipeline(**kwargs):
             node(
                 l2_massive_processing_with_expansion,
                 ["l1_streaming_visit_count_and_download_traffic_feature_for_int_l2_streaming_sum_per_day",
-                 "params:int_l2_streaming_sum_per_day",
-                 "l1_customer_profile_union_daily_feature_for_int_l2_streaming_sum_per_day"],
+                 "params:int_l2_streaming_sum_per_day"],
                 "int_l2_streaming_sum_per_day@save"
             ),
 
             #rank of day per week
             node(
-                # no need to join to customer profile because it's joined on top
                 node_from_config,
                 ["int_l2_streaming_sum_per_day@l2_streaming_fav_youtube_video_streaming_day_of_week_feature",
                  "params:int_l2_streaming_ranked_of_day_per_week"],
@@ -218,8 +210,7 @@ def streaming_to_l2_pipeline(**kwargs):
             node(
                 l2_massive_processing,
                 ["l1_streaming_session_duration_feature_for_l2_streaming_session_duration_feature",
-                 "params:l2_streaming_session_duration_feature",
-                 "l1_customer_profile_union_daily_feature_l2_streaming_session_duration_feature"],
+                 "params:l2_streaming_session_duration_feature"],
                 "l2_streaming_session_duration_feature"
             )
         ], name="streaming_to_l2_pipeline"
