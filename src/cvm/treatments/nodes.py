@@ -26,7 +26,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from typing import Any, Dict, Tuple
-from datetime import date
+from datetime import datetime
+import pytz
 import pyspark.sql.functions as func
 import pandas
 
@@ -84,7 +85,9 @@ def produce_treatments(
     )
 
 
-def deploy_contact(parameters: Dict[str, Any], df: DataFrame,):
+def deploy_contact(
+    parameters: Dict[str, Any], df: DataFrame,
+):
     """ Copy list from df to the target path for campaign targeting
 
     Args:
@@ -92,12 +95,15 @@ def deploy_contact(parameters: Dict[str, Any], df: DataFrame,):
         df: DataFrame with treatment per customer.
 
     """
-    created_date = date.today()
-    df = df.withColumn("data_date", func.lit(created_date))
-    df = df.selectExpr("data_date", "subscription_identifier as crm_subscription_id", "campaign_code as dummy01")
-    file_name = parameters["output_path_ard"]+"_{}".format(
-        created_date.strftime("%Y%m%d080000"))
-    df.repartition(1).write.option("sep", "|").option("header", "true").option("mode", "overwrite").csv(file_name)
+    utc_now = pytz.utc.localize(datetime.utcnow())
+    created_date = utc_now.astimezone(pytz.timezone("Asia/Bangkok"))
+    df["data_date"] = created_date.date()
+    df.rename(columns={parameters["treatment_output"]["key_column"]: 'crm_subscription_id',
+                       parameters["treatment_output"]["treatment_column"]: 'dummy01'}, inplace=True)
+    df = df[["data_date", "crm_subscription_id", "dummy01"]]
+    file_name = parameters["treatment_output"]["output_path_ard"] + "_{}.csv".format(
+        created_date.strftime("%Y%m%d%H%M%S")
+    )
+    df.to_csv(file_name, index=False, header=True, sep='|')
 
     return 0
-
