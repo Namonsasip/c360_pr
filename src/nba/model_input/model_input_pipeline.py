@@ -27,8 +27,9 @@ def create_nba_model_input_pipeline() -> Pipeline:
             node(
                 node_l5_nba_master_table_spine,
                 inputs={
-                    "l0_campaign_tracking_contact_list_pre": "l0_campaign_tracking_contact_list_pre",
-                    "important_campaigns": "important_campaign_by_contact_volume",
+                    "l0_campaign_tracking_contact_list_pre": "l0_campaign_tracking_contact_list_pre_full_load",
+                    "campaign_history_master_active": "campaign_history_master_active",
+                    "important_campaigns": "params:nba_prioritized_campaigns_child_codes",
                     "reporting_kpis": "reporting_kpis",
                     "min_feature_days_lag": "params:nba_min_feature_days_lag",
                 },

@@ -1,6 +1,175 @@
 
 nba_min_feature_days_lag: 5  # TODO validate lag
 
+# Parameters for model training
+nba_model_group_column: campaign_name
+
+nba_acceptance_model_target_column: target_response
+nba_arpu_model_target_column: target_relative_arpu_increase_30d
+
+nba_model_min_obs_per_class_for_model: 100
+nba_model_max_rows_per_group: 1000000
+nba_model_train_sampling_ratio: 0.8
+
+regression_clip_target_quantiles_arpu: [0.05, 0.95]
+
+nba_model_model_params:
+   num_leaves: 16
+   learning_rate: 0.02
+   n_estimators: 200
+   min_gain_to_split: 0.0
+   random_state: 123456
+   importance_type: "gain"
+
+nba_model_pai_storage_path: "/dbfs/mnt/customer360-blob-data/NBA/pai"
+
+# Columns to track in NBA, they will be added in the PAI run info
+
+campaign_type_contact_policy:
+  - campaign_category
+  - campaign_child_code
+  - campaign_type
+  - campaign_sub_type
+  - campaign_type_contact_policy
+
+nba_prioritized_campaigns_child_codes:
+  - "1-43008448667"
+  - "1-54446727889"
+  - "1-47725105277"
+  - "1-73943893353"
+  - "1-54451059058"
+  - "1-47997015444"
+  - "1-84074046175"
+  - "1-62026255771"
+  - "1-57028094991"
+  - "1-63919285101"
+  - "1-54316752745"
+  - "Prev_Sus.44"
+  - "1-55160941796"
+  - "1-88583487771"
+  - "1-47997015450"
+  - "1-71909079741"
+  - "Prev_PreP.83"
+  - "1-86664206547"
+  - "Prev_PreA.74.2"
+  - "1-47997015447"
+  - "Prev_PreI.2.3"
+  - "1-61675239221"
+  - "DataExp.5.3"
+  - "1-47997015523"
+  - "1-84171759301"
+  - "1-50466956657"
+  - "1-46493338111"
+  - "1-54316118231"
+  - "1-54446718862"
+  - "1-82928983971"
+  - "Prev_PreA.25"
+  - "1-48343888951"
+  - "1-78484433450"
+  - "1-54343861463"
+  - "1-65968305071"
+  - "Prev_PreP.67"
+  - "Prev_Sus.39"
+  - "1-83796369622"
+  - "1-62402989247"
+  - "1-88800672973"
+  - "1-77521335684"
+  - "1-69708668918"
+  - "1-49214431681"
+  - "1-80300752441"
+  - "1-77516159323"
+  - "1-84228520290"
+  - "1-50837815153"
+  - "1-84025237671"
+  - "1-69757290370"
+  - "Prev_Sus.40"
+  - "Prev_PreA.4"
+  - "1-81954361981"
+  - "Prev_Sus.41"
+  - "1-84153709846"
+  - "Prev_PreW.4.2"
+  - "Prev_PreP.87"
+  - "1-69747342393"
+  - "1-69708668724"
+  - "1-77874144084"
+  - "1-70583718777"
+  - "Prev_PreA.27.2"
+  - "1-52935867264"
+  - "1-84171759307"
+  - "Prev_PreA.28.2"
+  - "Prev_PreP.84"
+  - "Prev_Sus.43"
+  - "Prev_PreP.81"
+  - "Prev_PreI.16"
+  - "Prev_PreP.80"
+  - "1-77874144124"
+  - "1-81950524770"
+  - "1-84027476256"
+  - "Prev_PreP.91"
+  - "1-72408085056"
+  - "1-84027476154"
+  - "1-84027476253"
+  - "DataExp.4.3"
+  - "Prev_PreA.46.2"
+  - "Prev_PreA.36.2"
+  - "Prev_PreP.82"
+  - "Prev_PreWC.9.2"
+  - "Prev_PreA.39"
+  - "1-89160890318"
+  - "Prev_PreP.85"
+  - "Prev_PreWC.10.2"
+  - "Prev_PreP.89"
+  - "1-69825842851"
+  - "Prev_PreP.88"
+  - "1-62402989244"
+  - "1-85631825623"
+  - "1-85631825626"
+  - "Prev_PreP.92"
+  - "1-85631825594"
+  - "Prev_PreP.86"
+  - "1-26147892261"
+  - "Prev_Sus.42"
+  - "1-79640598690"
+  - "1-79640598783"
+  - "1-79629398761"
+  - "1-79629398764"
+  - "Prev_PreA.3"
+  - "1-80674542534"
+  - "1-80757093381"
+  - "1-80757093390"
+  - "Prev_PreA.2"
+  - "1-85356131701"
+  - "Prev_PreP.90"
+  - "1-54727233043"
+  - "1-85412125341"
+  - "1-85412125344"
+  - "200309-199"
+  - "200318-12"
+  - "200227-105"
+  - "200323-22"
+  - "200305-170"
+  - "1-63491118223"
+  - "200312-33"
+  - "1-82216451704"
+  - "200318-8"
+  - "200306-177"
+  - "200323-19"
+  - "200224-45"
+  - "1-90529876760"
+  - "1-91784859084"
+  - "200324-25"
+  - "200317-6"
+  - "200225-92"
+  - "200318-15"
+  - "1-90544608454"
+  - "1-90544608446"
+  - "200305-168"
+  - "1-90544608460"
+  - "200309-201"
+  - "200327-19"
+  - "200324-16"
+
+
 # Parameters for master table (model input)
 nba_model_input_features:
   l3_customer_profile_include_1mo_non_active:
@@ -181,29 +350,6 @@ nba_model_input_features:
     - sum_usg_outgoing_total_sms_sum_weekly_last_twelve_week
 
 
-# Parameters for model training
-nba_model_group_column: campaign_child_code
-
-nba_acceptance_model_target_column: target_response
-nba_arpu_model_target_column: target_relative_arpu_increase_30d
-
-nba_model_min_obs_per_class_for_model: 100
-nba_model_max_rows_per_group: 2000000
-nba_model_train_sampling_ratio: 0.8
-
-regression_clip_target_quantiles_arpu: [0.05, 0.95]
-
-nba_model_model_params:
-   num_leaves: 16
-   learning_rate: 0.02
-   n_estimators: 200
-   min_gain_to_split: 0.0
-   random_state: 123456
-   importance_type: "gain"
-
-
-nba_model_pai_storage_path: "/dbfs/mnt/customer360-blob-data/NBA/pai"
-
 nba_model_explanatory_features:
    - age
    - time_with_current_package
@@ -238,12 +384,12 @@ nba_model_explanatory_features:
    - sum_payments_top_ups_daily_last_seven_day
    - sum_payments_top_ups_daily_last_thirty_day
    - sum_payments_top_ups_daily_last_ninety_day
-   - sum_campaign_overall_count_sum_weekly_last_week
-   - sum_campaign_overall_count_sum_weekly_last_four_week
-   - sum_campaign_overall_count_sum_weekly_last_twelve_week
-   - sum_campaign_total_by_sms_sum_weekly_last_week
-   - sum_campaign_total_by_sms_sum_weekly_last_twelve_week
-   - sum_campaign_total_others_by_sms_sum_weekly_last_week
+#   - sum_campaign_overall_count_sum_weekly_last_week
+#   - sum_campaign_overall_count_sum_weekly_last_four_week
+#   - sum_campaign_overall_count_sum_weekly_last_twelve_week
+#   - sum_campaign_total_by_sms_sum_weekly_last_week
+#   - sum_campaign_total_by_sms_sum_weekly_last_twelve_week
+#   - sum_campaign_total_others_by_sms_sum_weekly_last_week
    - max_device_high_range_weekly_last_week
    - max_device_low_range_weekly_last_week
    - sum_rev_arpu_total_revenue_monthly_last_month
@@ -268,5 +414,4 @@ nba_model_explanatory_features:
    - sum_usg_incoming_local_data_volume_4G_sum_weekly_last_four_week
    - sum_usg_outgoing_total_call_duration_sum_weekly_last_week
    - sum_usg_outgoing_total_call_duration_sum_weekly_last_twelve_week
-
 

@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Union
 
 import pandas as pd
 import pyspark
@@ -31,7 +31,6 @@ def node_l5_nba_customer_profile(
         .when(F.col("network_type") == "Fixed Line-AWN", 3)
         .when(F.col("network_type") == "Non Mobile-SBN", 4),
     )
-
 
     df_customer_profile = df_customer_profile.withColumn(
         "customer_segment_numeric",
@@ -65,9 +64,11 @@ def node_l5_nba_customer_profile(
 
     return df_customer_profile
 
+
 def node_l5_nba_master_table_spine(
     l0_campaign_tracking_contact_list_pre: DataFrame,
-    important_campaigns: DataFrame,
+    campaign_history_master_active: DataFrame,
+    important_campaigns: Union[DataFrame, List[str]],
     reporting_kpis: DataFrame,
     min_feature_days_lag: int,
 ) -> DataFrame:
@@ -78,27 +79,39 @@ def node_l5_nba_master_table_spine(
 
     common_columns = list(
         set.intersection(
-            set(important_campaigns.columns),
+            set(campaign_history_master_active.columns),
             set(l0_campaign_tracking_contact_list_pre.columns),
         )
     )
     if common_columns:
         logging.warning(
-            f"There are common columns in l0_campaign_tracking_contact_list_"
-            f" pre and important_campaigns list: {', '.join(common_columns)}"
+            f"There are common columns in l0_campaign_tracking_contact_list_pre "
+            f"and campaign_history_master_active: {', '.join(common_columns)}"
         )
         for common_column in common_columns:
-            important_campaigns = important_campaigns.withColumnRenamed(
-                common_column, common_column + "_from_important_campaigns"
+            l0_campaign_tracking_contact_list_pre = l0_campaign_tracking_contact_list_pre.withColumnRenamed(
+                common_column, common_column + "_from_campaign_tracking"
             )
 
-    df_spine = l0_campaign_tracking_contact_list_pre.join(
-        F.broadcast(
-            important_campaigns.withColumnRenamed("child_code", "campaign_child_code")
-        ),
-        on="campaign_child_code",
-        how="inner",
-    )
+    if isinstance(important_campaigns, DataFrame):
+        df_spine = l0_campaign_tracking_contact_list_pre.join(
+            F.broadcast(
+                important_campaigns.select(
+                    F.col("child_code").alias("campaign_child_code"),
+                    F.lit(1).alias("campaign_prioritized"),
+                )
+            ),
+            on="campaign_child_code",
+            how="left",
+        )
+        df_spine = df_spine.fillna(0, subset="campaign_prioritized")
+    else:
+        df_spine = l0_campaign_tracking_contact_list_pre.withColumn(
+            "campaign_prioritized",
+            F.when(
+                F.col("campaign_child_code").isin(important_campaigns), F.lit(1)
+            ).otherwise(F.lit(0)),
+        )
 
     df_spine = df_spine.withColumn(
         "target_response",
@@ -280,9 +293,7 @@ def node_l5_nba_master_table_chunk_debug_arpu(
         by="campaign_child_code",
     )
     l5_nba_master_table_chunk_debug = (
-        df_chunk.filter(
-            ~F.isnull(F.col("target_relative_arpu_increase_30d"))
-        )
+        df_chunk.filter(~F.isnull(F.col("target_relative_arpu_increase_30d")))
         .sample(sampling_rate)
         .toPandas()
     )
