@@ -9,7 +9,11 @@ important_columns:
   type: kedro.contrib.io.yaml_local.YAMLLocalDataSet
   filepath: /dbfs/mnt/customer360-cvm/important_columns
 
-#  diagnostic metric, plots and tables
+null_columns:
+  type: kedro.contrib.io.yaml_local.YAMLLocalDataSet
+  filepath: /dbfs/mnt/customer360-cvm/null_columns
+
+# diagnostic metric, plots and tables
 models_diags:
   type: kedro.io.PickleLocalDataSet
   filepath: /dbfs/mnt/customer360-cvm/models_diags
@@ -34,6 +38,7 @@ treatments_chosen_history:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_treatments_chosen_history/
 
+# The same as above - used when the dataset is both an input and output of a node
 treatments_chosen_history2:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_treatments_chosen_history/

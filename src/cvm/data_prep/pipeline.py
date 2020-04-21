@@ -30,19 +30,21 @@ just for illustrating basic Kedro features.
 
 PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 """
-
 from kedro.pipeline import Pipeline, node
 
 from cvm.data_prep.nodes import (
-    create_sample_dataset,
-    create_users_from_active_users,
     add_ard_targets,
     add_churn_targets,
     add_macrosegments,
-    train_test_split,
+    create_sample_dataset,
+    create_users_from_active_users,
     create_users_from_cgtg,
+    feature_selection_all_target,
+    subs_date_join,
     subs_date_join_important_only,
+    train_test_split,
 )
+from cvm.preprocessing.nodes import pipeline_fit
 
 
 def create_users_from_tg(sample_type: str) -> Pipeline:
@@ -113,6 +115,7 @@ def sample_inputs(sample_type: str) -> Pipeline:
         "l4_usage_prepaid_postpaid_daily_features",
         "l4_daily_feature_topup_and_volume",
         "l4_usage_postpaid_prepaid_weekly_features_sum",
+        "l2_touchpoints_nim_work_features",
     ]
 
     nodes_list = [
@@ -200,6 +203,7 @@ def prepare_features_macrosegments(sample_type: str):
                     "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_"
                     + sample_type,
                     "l4_usage_postpaid_prepaid_weekly_features_sum_" + sample_type,
+                    "l2_touchpoints_nim_work_features_" + sample_type,
                 ]
                 + targets_datasets,
                 "features_targets_" + sample_type,
@@ -239,6 +243,64 @@ def create_cvm_training_data(sample_type: str):
     )
 
 
+def create_cvm_important_columns():
+    """ Uses training samples as inputs, runs feature extraction procedure.
+
+    Returns:
+        Kedro pipeline.
+    """
+
+    sample_type = "fe"
+    targets_datasets = [
+        "churn_targets_" + sample_type,
+        "ard_targets_" + sample_type,
+    ]
+
+    return Pipeline(
+        {
+            node(
+                subs_date_join,
+                [
+                    "parameters",
+                    "cvm_users_list_" + sample_type,
+                    "l3_customer_profile_include_1mo_non_active_" + sample_type,
+                    "l4_daily_feature_topup_and_volume_" + sample_type,
+                    "l4_usage_prepaid_postpaid_daily_features_" + sample_type,
+                    "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_"
+                    + sample_type,
+                    "l4_usage_postpaid_prepaid_weekly_features_sum_" + sample_type,
+                    "l2_touchpoints_nim_work_features_" + sample_type,
+                ]
+                + targets_datasets,
+                "features_targets_fe",
+                name="create_features_targets_fe",
+            ),
+            node(
+                add_macrosegments,
+                "features_targets_fe",
+                "features_macrosegments_fe",
+                name="create_features_macrosegments_fe",
+            ),
+            node(
+                lambda df, parameters: pipeline_fit(df, [], parameters),
+                ["features_macrosegments_fe", "parameters"],
+                [
+                    "sample_preprocessed_fe",
+                    "preprocessing_pipeline_fe",
+                    "null_columns_fe",
+                ],
+                name="preprocessing_fit_fe",
+            ),
+            node(
+                feature_selection_all_target,
+                ["sample_preprocessed_fe", "parameters"],
+                "important_columns",
+                name="feature_selection",
+            ),
+        }
+    )
+
+
 training_data_prepare = (
     create_users_from_active("training")
     + sample_inputs("training")
@@ -251,3 +313,10 @@ scoring_data_prepare = (
     + sample_inputs("scoring")
     + prepare_features_macrosegments("scoring")
 )
+extract_features = (
+    create_users_from_active("fe")
+    + sample_inputs("fe")
+    + create_cvm_targets("fe")
+    + create_cvm_important_columns()
+)
+rfe_only = create_cvm_important_columns()

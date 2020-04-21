@@ -27,11 +27,12 @@
 # limitations under the License.
 import string
 from random import random
-from typing import Dict, Callable, Any, List
+from typing import Any, Callable, Dict, List
 
-from pyspark.sql import DataFrame
+import pandas
 
 from cvm.src.utils.list_targets import list_targets
+from pyspark.sql import DataFrame
 
 
 def map_over_deep_dict(
@@ -63,13 +64,14 @@ def map_over_deep_dict(
 
 
 def iterate_over_usecases_macrosegments_targets(
-    fun: Callable, parameters: Dict[str, Any],
+    fun: Callable, parameters: Dict[str, Any], add_global_macrosegment: bool = False
 ) -> object:
     """Iterates fun over every usecase, macrosegment, target.
 
     Args:
         fun: function to call, assumes to input usecase, macrosegment, target
         parameters: parameters defined in parameters.yml.
+        add_global_macrosegment: if True then special macrosegment is added - `global`.
     """
 
     def _iter_for_macrosegment(use_case_chosen, macrosegment_chosen):
@@ -82,7 +84,10 @@ def iterate_over_usecases_macrosegments_targets(
 
     def _iter_for_usecase(use_chosen):
         fun_values = {}
-        for macrosegment_chosen in macrosegments[use_chosen]:
+        all_macrosegments = macrosegments[use_chosen]
+        if add_global_macrosegment:
+            all_macrosegments += ["global"]
+        for macrosegment_chosen in all_macrosegments:
             fun_values[macrosegment_chosen] = _iter_for_macrosegment(
                 use_chosen, macrosegment_chosen
             )
@@ -134,3 +139,46 @@ def impute_from_parameters(df: DataFrame, parameters: Dict[str, Any],) -> DataFr
         if col_name in df.columns
     }
     return df.fillna(default_values_to_apply)
+
+
+def df_to_list(df: DataFrame) -> List[Any]:
+    """ Converts one column DataFrame into list.
+
+    Args:
+        df: one column DataFrame
+    """
+    return df.rdd.flatMap(lambda x: x).collect()
+
+
+def return_column_as_list(df: DataFrame, colname: str, distinct: bool = False) -> List:
+    """ Return column of DataFrame as list.
+
+    Args:
+        df: Input DataFrame.
+        colname: name of column to return.
+        distinct: should distinct values be returned.
+    """
+    if colname not in df.columns:
+        raise Exception(f"Column {colname} not found")
+    df = df.select(colname)
+    if distinct:
+        df = df.distinct()
+    return df_to_list(df)
+
+
+def pyspark_to_pandas(df, n_partitions=None):
+    """
+    Returns the contents of `df` as a local `pandas.DataFrame` in a speedy
+    fashion. The DataFrame is repartitioned if `n_partitions` is passed.
+    """
+
+    def _map_to_pandas(rdds):
+        """ Needs to be here due to pickling issues """
+        return [pandas.DataFrame(list(rdds))]
+
+    if n_partitions is not None:
+        df = df.repartition(n_partitions)
+    df_pandas = df.rdd.mapPartitions(_map_to_pandas).collect()
+    df_pandas = pandas.concat(df_pandas)
+    df_pandas.columns = df.columns
+    return df_pandas

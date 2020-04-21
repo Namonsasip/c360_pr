@@ -26,12 +26,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import logging
-from typing import Dict, Any
-
-from pyspark.sql import DataFrame
+from typing import Any, Dict
 
 from cvm.src.models.get_pandas_train_test_sample import get_pandas_train_test_sample
 from cvm.src.utils.utils import iterate_over_usecases_macrosegments_targets
+from pyspark.sql import DataFrame
 
 
 def train_sklearn(
@@ -59,10 +58,11 @@ def train_sklearn(
         X, y = get_pandas_train_test_sample(
             df, parameters, target_chosen, use_case_chosen, macrosegment
         )
-
         y = y.values.ravel()
+        log.info("Created training sample for macrosegment")
 
         model_fitted = sklearn_model.fit(X, y)
+        log.info("Model trained")
         model_fitted.feature_names = list(X.columns.values)
         model_fitted.sample_size = X.shape[0]
         return model_fitted

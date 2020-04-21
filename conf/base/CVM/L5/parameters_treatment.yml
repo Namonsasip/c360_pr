@@ -25,3 +25,10 @@ cutoffs:
       churn30: 0.42
       churn45: 0.38
       churn60: 0.38
+
+treatment_sizes:
+  ard: 48000
+  churn: 16000
+
+# how often can person be targeted - in days
+treatment_cadence: 7

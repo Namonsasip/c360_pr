@@ -28,11 +28,7 @@
 
 from kedro.pipeline import Pipeline, node
 
-from cvm.preprocessing.nodes import (
-    pipeline_transform,
-    pipeline_fit,
-    feature_selection_all_target,
-)
+from cvm.preprocessing.nodes import pipeline_fit, pipeline_transform
 
 
 def preprocessing_fit() -> Pipeline:
@@ -48,7 +44,11 @@ def preprocessing_fit() -> Pipeline:
             node(
                 pipeline_fit,
                 ["train_sample_" + sample_type, "important_columns", "parameters"],
-                ["train_sample_preprocessed_" + sample_type, "preprocessing_pipeline"],
+                [
+                    "train_sample_preprocessed_" + sample_type,
+                    "preprocessing_pipeline",
+                    "null_columns",
+                ],
                 name="preprocessing_fit_" + sample_type,
             ),
             node(
@@ -58,6 +58,7 @@ def preprocessing_fit() -> Pipeline:
                     "important_columns",
                     "preprocessing_pipeline",
                     "parameters",
+                    "null_columns",
                 ],
                 "test_sample_preprocessed_" + sample_type,
                 name="create_test_sample_preprocessed_" + sample_type,
@@ -83,32 +84,10 @@ def preprocessing_transform() -> Pipeline:
                     "important_columns",
                     "preprocessing_pipeline",
                     "parameters",
+                    "null_columns",
                 ],
                 "sample_preprocessed_scoring",
                 name="preprocessing_transform_scoring_sample",
-            ),
-        ]
-    )
-
-
-def create_cvm_feature_extraction(sample_type: str = None) -> Pipeline:
-    """ Creates pipeline for feature extraction.
-
-     Args:
-         sample_type: sample type to use. Dev sample for "dev", Sample for "sample",
-          full dataset for None (default).
-
-     Returns:
-         Kedro pipeline.
-     """
-
-    return Pipeline(
-        [
-            node(
-                feature_selection_all_target,
-                ["test_sample_preprocessed_" + sample_type, "parameters"],
-                "important_columns",
-                name="feature_selection_l5_cvm_one_day_train_preprocessed",
             ),
         ]
     )

@@ -27,7 +27,7 @@
 # limitations under the License.
 
 
-from typing import List, Dict, Any, Union
+from typing import Any, Dict, List, Union
 
 
 def list_targets(

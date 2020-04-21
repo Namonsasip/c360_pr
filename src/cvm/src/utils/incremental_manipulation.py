@@ -26,10 +26,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pyspark.sql import DataFrame
-from datetime import date
-from cvm.src.utils.prepare_key_columns import prepare_key_columns
 import logging
+from datetime import date
+
+from cvm.src.utils.prepare_key_columns import prepare_key_columns
+from pyspark.sql import DataFrame
 from pyspark.sql import functions as func
 
 

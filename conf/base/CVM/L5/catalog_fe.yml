@@ -1,0 +1,61 @@
+_spark_parquet: &spark_parquet
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  save_args:
+    mode: "overwrite"
+
+cvm_users_list_fe:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_cvm_users_list_fe/
+
+l3_customer_profile_include_1mo_non_active_fe:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l3_customer_profile_include_1mo_non_active_fe/
+
+l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_fe:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_fe/
+
+l4_usage_prepaid_postpaid_daily_features_fe:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_usage_prepaid_postpaid_daily_features_fe/
+
+l4_daily_feature_topup_and_volume_fe:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_daily_feature_topup_and_volume_fe/
+
+l4_usage_postpaid_prepaid_weekly_features_sum_fe:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_usage_postpaid_prepaid_weekly_features_sum_fe/
+
+l2_touchpoints_nim_work_features_fe:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l2_touchpoints_nim_work_features_fe/
+
+ard_targets_fe:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_ard_targets_fe/
+
+churn_targets_fe:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_churn_targets_fe/
+
+features_targets_fe:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_features_targets_fe/
+
+features_macrosegments_fe:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_features_macrosegments_fe/
+
+sample_preprocessed_fe:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_sample_preprocessed_fe/
+
+preprocessing_pipeline_fe:
+  type: datasets.ml_pipeline.MLPipeline
+  filepath: /dbfs/mnt/customer360-cvm/preprocessing_pipeline_fe
+
+null_columns_fe:
+  type: kedro.contrib.io.yaml_local.YAMLLocalDataSet
+  filepath: /dbfs/mnt/customer360-cvm/null_columns_fe

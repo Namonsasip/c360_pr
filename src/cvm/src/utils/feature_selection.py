@@ -1,10 +1,12 @@
-from pyspark.sql import DataFrame
 from typing import Any, List
+
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.feature_selection import RFECV
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import StratifiedKFold
-from sklearn.feature_selection import RFECV
+
+from pyspark.sql import DataFrame
 
 
 def feature_selection(
@@ -39,14 +41,22 @@ def feature_selection(
         target_type == "regression"
     ), "Target type incorrect."
     if target_type == "class":
-        rfc = RandomForestClassifier(random_state=101)
+        rfc = RandomForestClassifier(random_state=101, n_estimators=20)
         rfecv = RFECV(
-            estimator=rfc, step=step_size, cv=StratifiedKFold(10), scoring="roc_auc"
+            estimator=rfc,
+            step=step_size,
+            cv=StratifiedKFold(5),
+            scoring="roc_auc",
+            min_features_to_select=20,
         )
     else:
         lr = LinearRegression(normalize=True)
         rfecv = RFECV(
-            estimator=lr, step=step_size, cv=StratifiedKFold(10), scoring="roc_auc"
+            estimator=lr,
+            step=step_size,
+            cv=StratifiedKFold(5),
+            scoring="roc_auc",
+            min_features_to_select=20,
         )
     rfecv.fit(features, target)
 

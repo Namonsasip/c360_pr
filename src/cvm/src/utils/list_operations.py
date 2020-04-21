@@ -26,8 +26,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List, Any
 import functools
+from typing import Any, List
 
 
 def list_sub(list1: List[Any], list2: List[Any]) -> List[Any]:

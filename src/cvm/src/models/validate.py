@@ -27,21 +27,21 @@
 # limitations under the License.
 import logging
 import uuid
-from typing import Dict, Any, List
+from typing import Any, Dict, List
 
 import matplotlib
+import matplotlib.pyplot
 import numpy
-import pai
 import pandas
 from matplotlib.backends.backend_template import FigureCanvas
 from matplotlib.figure import Figure
-from pyspark.sql import DataFrame
 from sklearn import metrics
-import matplotlib.pyplot
 from sklearn.ensemble import RandomForestClassifier
 
+import pai
 from cvm.src.utils.list_targets import list_targets
 from cvm.src.utils.utils import iterate_over_usecases_macrosegments_targets
+from pyspark.sql import DataFrame
 
 
 def round_to_float(x):
@@ -253,11 +253,11 @@ def log_pai_rf(
         """
 
         pai.start_run(tags=tags)
-        pai.log_model(rf_model)
-        pai.log_features(rf_model.feature_names, rf_model.feature_importances_)
-        models_metrics["features_num"] = len(rf_model.feature_names)
+        if rf_model is not None:
+            pai.log_model(rf_model)
+            pai.log_features(rf_model.feature_names, rf_model.feature_importances_)
+            models_metrics["features_num"] = len(rf_model.feature_names)
         pai.log_metrics(models_metrics)
-        pai.log_params(rf_model.get_params())
         pai.log_artifacts({"precision_recall_table": precision_recall_table})
         pai.log_artifacts({"ROC": roc_plot})
         pai.log_artifacts({"precision_recall_plot": precision_recall_plot})
@@ -266,6 +266,8 @@ def log_pai_rf(
 
     def _fun_to_iterate(usecase, macrosegment, target):
         def pick_from_dict(d):
+            if macrosegment == "global" and "global" not in d[usecase]:
+                return None
             return d[usecase][macrosegment][target]
 
         rf_model = pick_from_dict(rf_models)
@@ -292,4 +294,6 @@ def log_pai_rf(
         storage_runs=parameters["pai_runs_path"],
         storage_artifacts=parameters["pai_artifacts_path"],
     )
-    iterate_over_usecases_macrosegments_targets(_fun_to_iterate, parameters)
+    iterate_over_usecases_macrosegments_targets(
+        _fun_to_iterate, parameters, add_global_macrosegment=True
+    )

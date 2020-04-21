@@ -27,15 +27,16 @@
 # limitations under the License.
 import functools
 import logging
-from sklearn.ensemble import RandomForestClassifier
-from pyspark.sql import functions as func
-from pyspark.sql import DataFrame
-from pyspark.sql.types import DoubleType
-import pandas as pd
-from typing import Dict, Any, Callable
+from typing import Any, Callable, Dict
 
-from cvm.src.utils.list_targets import list_targets
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+
 from cvm.src.utils.list_operations import list_sub
+from cvm.src.utils.list_targets import list_targets
+from pyspark.sql import DataFrame
+from pyspark.sql import functions as func
+from pyspark.sql.types import DoubleType
 
 
 def pyspark_predict_sklearn(

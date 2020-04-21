@@ -26,11 +26,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pyspark.sql import DataFrame
-from typing import List, Dict, Any, Iterable
+from typing import Any, Dict, Iterable, List
 
+from cvm.src.utils.list_operations import list_intersection, list_sub
 from cvm.src.utils.list_targets import list_targets
-from cvm.src.utils.list_operations import list_sub, list_intersection
+from pyspark.sql import DataFrame
 
 
 def list_categorical(df: DataFrame) -> List[str]:

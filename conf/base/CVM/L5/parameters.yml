@@ -7,6 +7,14 @@ training:
     - filter_users
     - take_last_date
 
+fe:
+  train_share: 0.9 # the rest is validation set
+  subscription_id_suffix: 'AA' # '' for all users
+  chosen_date: '2019-10-01' # '' for most recent data
+  stages:
+    - filter_users
+    - take_last_date
+
 scoring:
   subscription_id_suffix: '' # '' for all users
   chosen_date: '' # '' for most recent data
@@ -64,7 +72,7 @@ volatility_length: 5
 # pai parameters
 pai_runs_path: '/dbfs/mnt/customer360-blob-data/cvm/pai01/runs'
 pai_artifacts_path: '/dbfs/mnt/customer360-blob-data/cvm/pai01/artifacts'
-pai_experiment_name: 'easter_model'
+pai_experiment_name: 'added_call_center_nim'
 
 # how often can person be targeted - in days
 treatment_cadence: 4

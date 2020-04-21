@@ -25,21 +25,17 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from datetime import date
-from typing import Dict, Any, Tuple
+from typing import Any, Dict, Tuple
 
 import pandas
-from pyspark.sql import DataFrame
-from pyspark.sql import functions as func
 
-from customer360.utilities.spark_util import get_spark_session
-from cvm.src.targets.churn_targets import add_days
 from cvm.src.utils.treatments import (
-    add_volatility_scores,
     add_microsegment_features,
+    add_volatility_scores,
     define_microsegments,
-    filter_cutoffs,
+    generate_treatments_chosen,
 )
+from pyspark.sql import DataFrame
 
 
 def prepare_microsegments(
@@ -61,84 +57,27 @@ def prepare_microsegments(
     return define_microsegments(micro_features, parameters)
 
 
-def get_target_users(propensities: DataFrame, parameters: Dict[str, Any],) -> DataFrame:
-    """ Filters given propensities table according to cutoffs given.
+def produce_treatments(
+    propensities: DataFrame,
+    microsegments: DataFrame,
+    treatment_dictionary: pandas.DataFrame,
+    treatments_history: DataFrame,
+    parameters: Dict[str, Any],
+) -> Tuple[DataFrame, DataFrame]:
+    """  Generates treatments and updated treatments history.
 
     Args:
         propensities: table with propensities.
         parameters: parameters defined in parameters.yml.
-    """
-
-    return filter_cutoffs(propensities, parameters)
-
-
-def produce_treatments(
-    target_users: DataFrame,
-    microsegments: DataFrame,
-    treatment_dictionary: DataFrame,
-    treatments_history: DataFrame,
-    parameters: Dict[str, Any],
-) -> Tuple[DataFrame, DataFrame]:
-    """ Combine filtered users table, microsegments and the treatments assigned to
-    microsegments.
-
-    Args:
-        target_users: List of users to target with treatment.
         microsegments: List of users and assigned microsegments.
         treatment_dictionary: Table of microsegment to treatment mapping.
         treatments_history: Table with history of treatments.
-        parameters: parameters defined in parameters.yml.
     """
 
-    # get treatments propositions
-    df = (
-        target_users.join(microsegments, on="subscription_identifier", how="left")
-        .withColumn(
-            "macrosegment",
-            func.when(
-                func.col("use_case") == "ard", func.col("ard_macrosegment")
-            ).otherwise(func.col("churn_macrosegment")),
-        )
-        .withColumn(
-            "microsegment",
-            func.when(
-                func.col("use_case") == "ard", func.col("ard_microsegment")
-            ).otherwise(func.col("churn_microsegment")),
-        )
-        .select(["subscription_identifier", "use_case", "macrosegment", "microsegment"])
-    ).toPandas()
-    treatment_dictionary = treatment_dictionary[
-        ["macrosegment", "microsegment", "campaign_code1"]
-    ]
-    treatments = pandas.merge(
-        df, treatment_dictionary, on=["microsegment", "macrosegment"], how="left"
+    return generate_treatments_chosen(
+        propensities,
+        microsegments,
+        treatment_dictionary,
+        treatments_history,
+        parameters,
     )
-    treatments_df = get_spark_session().createDataFrame(
-        treatments,
-        schema="""
-        subscription_identifier:string,
-        use_case:string,
-        macrosegment:string,
-        microsegment:string,
-        campaign_code1:string
-        """,
-    )
-
-    # filter those that were recently targeted
-    today = date.today().strftime("%Y-%m-%d")
-    recent_past_date = add_days(today, -parameters["treatment_cadence"])
-
-    recent_history = (
-        treatments_history.filter(f"key_date >= '{recent_past_date}'")
-        .select(["subscription_identifier", "use_case"])
-        .distinct()
-    )
-    treatments_df = treatments_df.join(
-        recent_history, on=["subscription_identifier", "use_case"], how="left_anti"
-    )
-
-    # update history
-    to_append = treatments_df.withColumn("key_date", func.lit(today))
-    treatments_history = treatments_history.union(to_append)
-
-    return treatments, treatments_history
