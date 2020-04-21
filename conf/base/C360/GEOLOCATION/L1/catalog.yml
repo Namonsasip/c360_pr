@@ -292,132 +292,132 @@ l1_int_geo_number_of_bs_used_for_l2_geo_number_of_bs_used:
 
 l1_geo_number_of_location_with_transactions_for_l2_geo_number_of_location_with_transactions:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-    file_format: "parquet"
-    filepath: /mnt/customer360-blob-output/C360/BILLING/l1_features/l1_geo_number_of_location_with_transactions/
-    metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
-    load_args:
-      increment_flag: 'yes'
-      lookup_table_name: 'l2_geo_number_of_location_with_transactions'
-      read_layer: 'l1_daily'
-      target_layer: 'l2_weekly'
-      lookback: '0'
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-output/C360/BILLING/l1_features/l1_geo_number_of_location_with_transactions/
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l2_geo_number_of_location_with_transactions'
+    read_layer: 'l1_daily'
+    target_layer: 'l2_weekly'
+    lookback: '0'
 
 l1_geo_voice_distance_daily_intermediate_for_l2_geo_voice_distance_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-    file_format: "parquet"
-    filepath: /mnt/customer360-blob-output/C360/BILLING/l1_features/l1_geo_voice_distance_daily_intermediate/
-    metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
-    load_args:
-      increment_flag: 'yes'
-      lookup_table_name: 'l2_geo_voice_distance_daily'
-      read_layer: 'l1_daily'
-      target_layer: 'l2_weekly'
-      lookback: '0'
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-output/C360/BILLING/l1_features/l1_geo_voice_distance_daily_intermediate/
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l2_geo_voice_distance_daily'
+    read_layer: 'l1_daily'
+    target_layer: 'l2_weekly'
+    lookback: '0'
 
 l1_geo_first_data_session_cell_identifier_daily_for_l2_geo_first_data_session_cell_identifier_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-    file_format: "parquet"
-    filepath: /mnt/customer360-blob-output/C360/BILLING/l1_features/l1_geo_first_data_session_cell_identifier_daily/
-    metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
-    load_args:
-      increment_flag: 'yes'
-      lookup_table_name: 'l2_geo_first_data_session_cell_identifier_weekly'
-      read_layer: 'l1_daily'
-      target_layer: 'l2_weekly'
-      lookback: '0'
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-output/C360/BILLING/l1_features/l1_geo_first_data_session_cell_identifier_daily/
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l2_geo_first_data_session_cell_identifier_weekly'
+    read_layer: 'l1_daily'
+    target_layer: 'l2_weekly'
+    lookback: '0'
 
 l1_geo_usage_sum_data_location_dow_intermediate_for_l2_geo_data_distance_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-    file_format: "parquet"
-    filepath: /mnt/customer360-blob-output/C360/BILLING/l1_features/l1_geo_usage_sum_data_location_dow_intermediate/
-    metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
-    load_args:
-      increment_flag: 'yes'
-      lookup_table_name: 'l2_geo_data_distance_weekly'
-      read_layer: 'l1_daily'
-      target_layer: 'l2_weekly'
-      lookback: '0'
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-output/C360/BILLING/l1_features/l1_geo_usage_sum_data_location_dow_intermediate/
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l2_geo_data_distance_weekly'
+    read_layer: 'l1_daily'
+    target_layer: 'l2_weekly'
+    lookback: '0'
 
 l1_geo_usage_sum_data_location_dow_intermediate_for_l2_geo_data_distance_weekday_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-    file_format: "parquet"
-    filepath: /mnt/customer360-blob-output/C360/BILLING/l1_features/l1_geo_usage_sum_data_location_dow_intermediate/
-    metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
-    load_args:
-      increment_flag: 'yes'
-      lookup_table_name: 'l2_geo_data_distance_weekday_weekly'
-      read_layer: 'l1_daily'
-      target_layer: 'l2_weekly'
-      lookback: '0'
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-output/C360/BILLING/l1_features/l1_geo_usage_sum_data_location_dow_intermediate/
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l2_geo_data_distance_weekday_weekly'
+    read_layer: 'l1_daily'
+    target_layer: 'l2_weekly'
+    lookback: '0'
 
 l1_geo_usage_sum_data_location_dow_intermediate_for_l2_geo_data_distance_weekend_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-    file_format: "parquet"
-    filepath: /mnt/customer360-blob-output/C360/BILLING/l1_features/l1_geo_usage_sum_data_location_dow_intermediate/
-    metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
-    load_args:
-      increment_flag: 'yes'
-      lookup_table_name: 'l2_geo_data_distance_weekend_weekly'
-      read_layer: 'l1_daily'
-      target_layer: 'l2_weekly'
-      lookback: '0'
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-output/C360/BILLING/l1_features/l1_geo_usage_sum_data_location_dow_intermediate/
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l2_geo_data_distance_weekend_weekly'
+    read_layer: 'l1_daily'
+    target_layer: 'l2_weekly'
+    lookback: '0'
 
 l1_geo_voice_distance_daily_intermediate_for_l3_geo_voice_distance_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-    file_format: "parquet"
-    filepath: /mnt/customer360-blob-output/C360/BILLING/l1_features/l1_geo_voice_distance_daily_intermediate/
-    metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
-    load_args:
-      increment_flag: 'yes'
-      lookup_table_name: 'l3_geo_voice_distance_daily'
-      read_layer: 'l1_daily'
-      target_layer: 'l3_monthly'
-      lookback: '0'
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-output/C360/BILLING/l1_features/l1_geo_voice_distance_daily_intermediate/
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_geo_voice_distance_daily'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
 
 l1_geo_first_data_session_cell_identifier_daily_for_l3_geo_first_data_session_cell_identifier_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-    file_format: "parquet"
-    filepath: /mnt/customer360-blob-output/C360/BILLING/l1_features/l1_geo_first_data_session_cell_identifier_daily/
-    metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
-    load_args:
-      increment_flag: 'yes'
-      lookup_table_name: 'l3_geo_first_data_session_cell_identifier_monthly'
-      read_layer: 'l1_daily'
-      target_layer: 'l3_monthly'
-      lookback: '0'
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-output/C360/BILLING/l1_features/l1_geo_first_data_session_cell_identifier_daily/
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_geo_first_data_session_cell_identifier_monthly'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
 
 l1_geo_usage_sum_data_location_dow_intermediate_for_l3_geo_data_distance_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-    file_format: "parquet"
-    filepath: /mnt/customer360-blob-output/C360/BILLING/l1_features/l1_geo_usage_sum_data_location_dow_intermediate/
-    metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
-    load_args:
-      increment_flag: 'yes'
-      lookup_table_name: 'l3_geo_data_distance_monthly'
-      read_layer: 'l1_daily'
-      target_layer: 'l3_monthly'
-      lookback: '0'
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-output/C360/BILLING/l1_features/l1_geo_usage_sum_data_location_dow_intermediate/
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_geo_data_distance_monthly'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
 
 l1_geo_usage_sum_data_location_dow_intermediate_for_l3_geo_data_distance_weekday_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-    file_format: "parquet"
-    filepath: /mnt/customer360-blob-output/C360/BILLING/l1_features/l1_geo_usage_sum_data_location_dow_intermediate/
-    metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
-    load_args:
-      increment_flag: 'yes'
-      lookup_table_name: 'l3_geo_data_distance_weekday_monthly'
-      read_layer: 'l1_daily'
-      target_layer: 'l3_monthly'
-      lookback: '0'
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-output/C360/BILLING/l1_features/l1_geo_usage_sum_data_location_dow_intermediate/
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_geo_data_distance_weekday_monthly'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
 
 l1_geo_usage_sum_data_location_dow_intermediate_for_l3_geo_data_distance_weekend_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-    file_format: "parquet"
-    filepath: /mnt/customer360-blob-output/C360/BILLING/l1_features/l1_geo_usage_sum_data_location_dow_intermediate/
-    metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
-    load_args:
-      increment_flag: 'yes'
-      lookup_table_name: 'l3_geo_data_distance_weekend_monthly'
-      read_layer: 'l1_daily'
-      target_layer: 'l3_monthly'
-      lookback: '0'
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-output/C360/BILLING/l1_features/l1_geo_usage_sum_data_location_dow_intermediate/
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_geo_data_distance_weekend_monthly'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
