@@ -34,6 +34,7 @@ from sklearn.ensemble import RandomForestClassifier
 
 from cvm.src.utils.list_operations import list_sub
 from cvm.src.utils.list_targets import list_targets
+from pyspark import SparkContext
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as func
 from pyspark.sql.types import DoubleType
@@ -88,11 +89,12 @@ def pyspark_predict_sklearn(
             return pd.Series(model_predictions)
 
         chosen_model = sklearn_models[use_case_chosen][macrosegment][target_chosen]
+        SparkContext.getOrCreate().broadcast(chosen_model)
         df_target = df_target.select(
             *df_target.columns,
             _pandas_predict(*feature_cols).alias(target_chosen + "_pred")
         )
-        return df_target.collect()
+        return df_target
 
     def _pred_for_macrosegments(df_for_macrosegment, use_case_chosen, macrosegment):
         df_for_macrosegment = df_for_macrosegment.filter(
