@@ -273,10 +273,7 @@ def run_package(pipelines=None):
         return
 
     # project_context.run()
-    project_context.run(pipeline_name='touchpoints_to_l1_pipeline')
-    project_context.run(pipeline_name='touchpoints_to_l2_pipeline')
-    project_context.run(pipeline_name='touchpoints_to_l3_pipeline')
-    project_context.run(pipeline_name='touchpoints_to_l4_pipeline')
+    project_context.run(pipeline_name='data_quality_pipeline')
     # project_context.run(pipeline_name='customer_profile_to_l3_pipeline')
 
     # Replace line above with below to run on databricks cluster
@@ -287,6 +284,49 @@ def run_package(pipelines=None):
     # project_context.run(pipeline_name="customer_profile_to_l4_pipeline")
 
 
+class DataQualityProjectContext(ProjectContext):
+    def _remove_increment_flag(self, catalog_dict):
+        """
+            Set all the incremental_flag in catalog to 'no'
+            for data quality pipeline
+
+            The incremental load in data quality will be handled separately
+        """
+        if catalog_dict.get("load_args") is None:
+            return catalog_dict
+
+        if catalog_dict.get("load_args").get("increment_flag") is not None:
+            catalog_dict["load_args"]["increment_flag"] = 'no'
+
+        return catalog_dict
+
+    def _get_catalog(
+        self,
+        save_version: str = None,
+        journal: Journal = None,
+        load_versions: Dict[str, str] = None,
+    ) -> DataCatalog:
+
+        conf_catalog = self.config_loader.get(
+            "catalog*", "catalog*/**", "*/**/catalog*"
+        )
+
+        for dataset_name, each_catalog in conf_catalog.items():
+            self._remove_increment_flag(each_catalog)
+
+        conf_creds = self._get_config_credentials()
+        catalog = self._create_catalog(
+            conf_catalog, conf_creds, save_version, journal, load_versions
+        )
+        catalog.add_feed_dict(self._get_feed_dict())
+        return catalog
+
+
+def run_data_quality_pipeline():
+    project_context = DataQualityProjectContext(project_path=Path.cwd(), env=conf)
+    project_context.run(pipeline_name='data_quality_pipeline')
+
+
 def run_selected_nodes(pipeline_name, node_names=None, env="base"):
     # entry point for running pip-install projects
     # using `<project_package>` command
@@ -294,7 +334,10 @@ def run_selected_nodes(pipeline_name, node_names=None, env="base"):
     project_context.run(node_names=node_names, pipeline_name=pipeline_name)
 
 
+
+
+
 if __name__ == "__main__":
     # entry point for running pip-installed projects
     # using `python -m <project_package>.run` command
-    run_package()
+    run_data_quality_pipeline()

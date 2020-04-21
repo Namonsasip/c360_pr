@@ -27,9 +27,6 @@
 # limitations under the License.
 """Pipeline construction."""
 import itertools
-from typing import Dict
-
-from kedro.pipeline import Pipeline
 
 from cvm.data_prep.pipeline import (
     create_cvm_prepare_inputs_samples,
@@ -177,7 +174,10 @@ from .pipelines.data_engineering.pipelines.product_pipeline.to_l2.to_l2_pipeline
 from .pipelines.data_engineering.pipelines.product_pipeline.to_l4.to_l4_pipeline import (
     product_to_l4_pipeline,
 )
-
+from data_quality.pipeline import (
+    data_quality_pipeline,
+    subscription_id_sampling_pipeline
+)
 
 def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
 
@@ -283,7 +283,6 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
     }
 
 
-
 def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
     return {
         "__default__": create_use_case_view_report_data()
@@ -291,6 +290,14 @@ def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
         + create_nba_models_pipeline()
         + campaign_importance_volume()
     }
+
+
+def create_dq_pipeline(**kwargs) -> Dict[str, Pipeline]:
+    return {
+        "data_quality_pipeline": data_quality_pipeline(),
+        "subscription_id_sampling_pipeline": subscription_id_sampling_pipeline()
+    }
+
 
 def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
     """Create the project's pipeline.
@@ -305,6 +312,7 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         create_c360_pipeline(**kwargs).items(),
         create_cvm_pipeline(**kwargs).items(),
       #  create_nba_pipeline(**kwargs).items(),
+        create_dq_pipeline(**kwargs).items()
     ):
         # If many pipelines have nodes under the same modular
         # pipeline, combine the results
