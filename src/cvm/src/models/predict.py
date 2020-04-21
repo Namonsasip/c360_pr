@@ -85,11 +85,11 @@ def pyspark_predict_sklearn(
         @func.pandas_udf(returnType=DoubleType())
         def _pandas_predict(*cols):
             pd_df = pd.concat(cols, axis=1)
-            model_predictions = prediction_function(chosen_model, pd_df)
+            model_predictions = prediction_function(model_broadcasted.value, pd_df)
             return pd.Series(model_predictions)
 
         chosen_model = sklearn_models[use_case_chosen][macrosegment][target_chosen]
-        SparkContext.getOrCreate().broadcast(chosen_model)
+        model_broadcasted = SparkContext.getOrCreate().broadcast(chosen_model)
         df_target = df_target.select(
             *df_target.columns,
             _pandas_predict(*feature_cols).alias(target_chosen + "_pred")
