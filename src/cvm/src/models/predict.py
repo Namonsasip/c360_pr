@@ -92,7 +92,7 @@ def pyspark_predict_sklearn(
             *df_target.columns,
             _pandas_predict(*feature_cols).alias(target_chosen + "_pred")
         )
-        return df_target
+        return df_target.collect()
 
     def _pred_for_macrosegments(df_for_macrosegment, use_case_chosen, macrosegment):
         df_for_macrosegment = df_for_macrosegment.filter(
