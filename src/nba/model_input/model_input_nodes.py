@@ -239,7 +239,7 @@ def node_l5_nba_master_table(
             #                 f" found when joining, they will be dropped from one table")
             raise ValueError(
                 f"Duplicated column names {', '.join(duplicated_columns)} found"
-                f" when joining features table {table_name} to the master table."
+                f" when joining features table {table_name} to the master table. "
                 f"Columns of {table_name} are: {', '.join(df_features.columns)}"
             )
 

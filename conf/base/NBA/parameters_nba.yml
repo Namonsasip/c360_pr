@@ -172,7 +172,7 @@ nba_prioritized_campaigns_child_codes:
 
 # Parameters for master table (model input)
 nba_model_input_features:
-  l3_customer_profile_include_1mo_non_active:
+  l5_nba_customer_profile:
     - subscription_status
     - age
     - gender
@@ -188,6 +188,11 @@ nba_model_input_features:
     - company_type
     - cust_active_this_month
     - norms_net_revenue
+    - charge_type_numeric
+    - network_type_numeric
+    - customer_segment_numeric
+    - subscription_status_numeric
+    - cust_active_this_month_numeric
   l4_billing_rolling_window_topup_and_volume:
     - sum_payments_top_ups_last_week
     - sum_payments_top_ups_last_four_week
@@ -354,7 +359,11 @@ nba_model_explanatory_features:
    - age
    - time_with_current_package
    - subscriber_tenure
-#   - cust_active_this_month
+   - charge_type_numeric
+   - network_type_numeric
+   - customer_segment_numeric
+   - subscription_status_numeric
+   - cust_active_this_month_numeric
    - norms_net_revenue
    - sum_payments_top_ups_daily_last_seven_day
    - sum_payments_top_ups_daily_last_thirty_day
