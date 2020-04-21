@@ -12,12 +12,12 @@ def geo_to_l2_pipeline(**kwargs):
                 l2_number_of_bs_used,
                 ["l1_geo_number_of_bs_used",
                  ],
-                "l1_int_geo_cust_cell_visit_time_daily"
+                "l1_int_geo_number_of_bs_used"
             ),
 
             node(
                 node_from_config,
-                ["l1_int_geo_cust_cell_visit_time_daily",
+                ["l1_int_geo_number_of_bs_used",
                  "params:l2_number_of_bs_used"],
                 "l2_geo_number_of_bs_used"
             ),
