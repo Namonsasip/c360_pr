@@ -67,7 +67,7 @@ def generate_treatments() -> Pipeline:
             ),
             node(
                 deploy_contact,
-                ["parameters", "treatment_chosen"],
+                ["parameters", "treatments_chosen"],
                 None,
                 name="deploy_contact_workflow"
             )

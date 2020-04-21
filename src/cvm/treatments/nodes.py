@@ -26,7 +26,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from typing import Any, Dict, Tuple
-
+from datetime import date
+import pyspark.sql.functions as func
 import pandas
 
 from cvm.src.utils.treatments import (
