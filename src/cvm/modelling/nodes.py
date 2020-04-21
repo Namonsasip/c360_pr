@@ -46,8 +46,11 @@ def train_rf(df: DataFrame, parameters: Dict[str, Any]) -> object:
     Returns:
         Random forest classifier.
     """
-    rf = RandomForestClassifier(n_estimators=100, random_state=100)
-    return train_sklearn(df, parameters, rf)
+
+    def rf_cons():
+        return RandomForestClassifier(n_estimators=100, random_state=100)
+
+    return train_sklearn(df, parameters, rf_cons)
 
 
 def predict_rf(
