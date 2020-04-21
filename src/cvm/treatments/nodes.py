@@ -26,7 +26,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from typing import Any, Dict, Tuple
-
+from datetime import date
+import pyspark.sql.functions as func
 import pandas
 
 from cvm.src.utils.treatments import (
@@ -81,3 +82,22 @@ def produce_treatments(
         treatments_history,
         parameters,
     )
+
+
+def deploy_contact(parameters: Dict[str, Any], df: DataFrame,):
+    """ Copy list from df to the target path for campaign targeting
+
+    Args:
+        parameters: parameters defined in parameters.yml.
+        df: DataFrame with treatment per customer.
+
+    """
+    created_date = date.today()
+    df = df.withColumn("data_date", func.lit(created_date))
+    df = df.selectExpr("data_date", "subscription_identifier as crm_subscription_id", "campaign_code as dummy01")
+    file_name = parameters["output_path_ard"]+"_{}".format(
+        created_date.strftime("%Y%m%d080000"))
+    df.repartition(1).write.option("sep", "|").option("header", "true").option("mode", "overwrite").csv(file_name)
+
+    return 0
+

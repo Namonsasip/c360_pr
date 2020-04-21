@@ -74,3 +74,5 @@ pai_runs_path: '/dbfs/mnt/customer360-blob-data/cvm/pai01/runs'
 pai_artifacts_path: '/dbfs/mnt/customer360-blob-data/cvm/pai01/artifacts'
 pai_experiment_name: 'added_call_center_nim'
 
+# output write path for ard
+output_path_ard: '/mnt/customer360-blob-output/CVM_OUTPUT/cvm_prepaid_ard_output/New_CVM_ARD1'
