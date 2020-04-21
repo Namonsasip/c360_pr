@@ -34,14 +34,14 @@ from pyspark.sql import DataFrame
 
 
 def train_sklearn(
-    df: DataFrame, parameters: Dict[str, Any], sklearn_model: Any
+    df: DataFrame, parameters: Dict[str, Any], sklearn_model_cons: Any
 ) -> object:
     """ Create sklearn model given the table to train on.
 
     Args:
         df: Training preprocessed sample.
         parameters: parameters defined in parameters.yml.
-        sklearn_model: initialized sklearn model.
+        sklearn_model_cons: sklearn model constructor.
 
     Returns:
         Dictionary of trained models.
@@ -61,6 +61,7 @@ def train_sklearn(
         y = y.values.ravel()
         log.info("Created training sample for macrosegment")
 
+        sklearn_model = sklearn_model_cons()
         model_fitted = sklearn_model.fit(X, y)
         log.info("Model trained")
         model_fitted.feature_names = list(X.columns.values)
