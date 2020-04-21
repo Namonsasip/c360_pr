@@ -97,17 +97,13 @@ def deploy_contact(
     """
     utc_now = pytz.utc.localize(datetime.utcnow())
     created_date = utc_now.astimezone(pytz.timezone("Asia/Bangkok"))
-    df = df.withColumn("data_date", func.lit(created_date))
-    df = df.selectExpr(
-        "data_date",
-        parameters["treatment_output"]["key_column"] + " as crm_subscription_id",
-        parameters["treatment_output"]["treatment_column"] + " as dummy01",
-    )
-    file_name = parameters["treatment_output"]["output_path_ard"] + "_{}".format(
+    df["data_date"] = created_date.date()
+    df.rename(columns={parameters["treatment_output"]["key_column"]: 'crm_subscription_id',
+                       parameters["treatment_output"]["treatment_column"]: 'dummy01'}, inplace=True)
+    df = df[["data_date", "crm_subscription_id", "dummy01"]]
+    file_name = parameters["treatment_output"]["output_path_ard"] + "_{}.csv".format(
         created_date.strftime("%Y%m%d%H%M%S")
     )
-    df.repartition(1).write.option("sep", "|").option("header", "true").option(
-        "mode", "overwrite"
-    ).csv(file_name)
+    df.to_csv(file_name, index=False, header=True, sep='|')
 
     return 0
