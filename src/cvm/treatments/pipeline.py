@@ -29,7 +29,6 @@ from kedro.pipeline import Pipeline, node
 
 from cvm.treatments.nodes import (
     prepare_microsegments,
-    get_target_users,
     produce_treatments,
     deploy_contact,
 )
