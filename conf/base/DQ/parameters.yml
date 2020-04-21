@@ -1,0 +1,8 @@
+sample_size: 100000
+
+features_for_dq:
+  l4_touchpoints_from_call_center_features:
+    - sum_touchpoints_number_of_calls_from_cc_sum_weekly_last_week
+    - sum_touchpoints_number_of_calls_from_cc_sum_weekly_last_two_week
+    - sum_touchpoints_number_of_calls_from_cc_sum_weekly_last_four_week
+    - sum_touchpoints_number_of_calls_from_cc_sum_weekly_last_twelve_week

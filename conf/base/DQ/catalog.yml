@@ -1,0 +1,7 @@
+dq_sampled_subscription_identifier:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: dbfs:/mnt/customer360-blob-output/DQ/profile_drm_t_active_profile_customer_journey/
+  file_format: "parquet"
+  save_args:
+    mode: "append"
+    partitionBy: ["created_date"]
