@@ -8,6 +8,7 @@ import os
 from pyspark.sql import Window
 from pyspark.sql.types import StringType
 from src.customer360.utilities.spark_util import get_spark_empty_df
+from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols
 
 conf = os.getenv("CONF", None)
 
@@ -133,7 +134,7 @@ def join_with_customer_profile(customer_prof, hs_summary):
 def device_summary_with_configuration(hs_summary, hs_configs):
 
     if len(hs_summary.head(1)) == 0 or len(hs_configs.head(1)) == 0:
-        return get_spark_empty_df
+        return get_spark_empty_df()
 
     hs_configs = hs_configs.withColumn("partition_date", hs_configs["partition_date"].cast(StringType()))
     hs_configs = hs_configs.withColumn("start_of_week",
@@ -149,6 +150,18 @@ def device_summary_with_configuration(hs_summary, hs_configs):
     # removing duplicates within a week
     hs_configs = hs_configs.withColumn("rnk", F.row_number().over(partition))
     hs_configs = hs_configs.filter(f.col("rnk") == 1)
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            hs_summary.select(
+                F.max(F.col("start_of_week")).alias("max_date")),
+            hs_configs.select(
+                F.max(F.col("start_of_week")).alias("max_date")),
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    hs_summary = hs_summary.filter(F.col("start_of_week") <= min_value)
+    hs_configs = hs_configs.filter(F.col("start_of_week") <= min_value)
 
     joined_data = hs_summary.join(hs_configs,
                                   (hs_summary.handset_brand_code == hs_configs.hs_brand_code) &

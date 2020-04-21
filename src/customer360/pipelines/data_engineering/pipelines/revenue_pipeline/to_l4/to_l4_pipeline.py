@@ -36,8 +36,8 @@ from kedro.pipeline import Pipeline, node
 from customer360.utilities.config_parser import l4_rolling_window
 from customer360.utilities.config_parser import node_from_config
 
-
-def revenue_to_l4_pipeline(**kwargs):
+####
+def revenue_to_l4_monthly_pipeline(**kwargs):
     return Pipeline(
         [
             node(
@@ -64,6 +64,34 @@ def revenue_to_l4_pipeline(**kwargs):
                 ["l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_stg",
                  "params:l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"],
                 "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"
+            ),
+
+        ], name="revenue_to_l4_pipeline"
+    )
+
+
+def revenue_to_l4_daily_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                l4_rolling_window,
+                ["l1_revenue_prepaid_pru_f_usage_multi_daily_for_l4_revenue_prepaid_daily_features",
+                 "params:l4_revenue_prepaid_daily_features"],
+                'l4_revenue_prepaid_daily_features'
+            )
+
+        ], name="revenue_to_l4_daily_pipeline"
+    )
+
+
+def revenue_to_l4_weekly_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                l4_rolling_window,
+                ["l2_revenue_prepaid_pru_f_usage_multi_weekly",
+                 "params:l4_revenue_prepaid_pru_f_usage_multi_features"],
+                "l4_revenue_prepaid_pru_f_usage_multi_features"
             ),
 
         ], name="revenue_to_l4_pipeline"
