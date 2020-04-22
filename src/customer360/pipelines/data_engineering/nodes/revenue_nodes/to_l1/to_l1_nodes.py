@@ -8,6 +8,8 @@ from pyspark.sql import functions as F
 
 from customer360.utilities.config_parser import node_from_config
 from src.customer360.utilities.spark_util import get_spark_empty_df
+from customer360.utilities.re_usable_functions import check_empty_dfs, \
+    data_non_availability_and_missing_check
 
 conf = os.getenv("CONF", None)
 
@@ -22,8 +24,21 @@ def massive_processing_with_customer(input_df: DataFrame
     :return:
     """
 
-    if len(input_df.head(1)) == 0 | len(customer_df.head(1)) == 0:
+    ################################# Start Implementing Data availability checks ###############################
+    if check_empty_dfs([input_df, customer_df]):
         return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
+                                                       target_table_name="l1_revenue_prepaid_pru_f_usage_multi_daily")
+
+    customer_df = data_non_availability_and_missing_check(df=customer_df, grouping="daily",
+                                                          par_col="event_partition_date",
+                                                          target_table_name="l1_revenue_prepaid_pru_f_usage_multi_daily")
+
+    if check_empty_dfs([input_df, customer_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
 
     def divide_chunks(l, n):
         # looping till length l
@@ -47,7 +62,7 @@ def massive_processing_with_customer(input_df: DataFrame
     add_list.remove(first_item)
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
-        small_df = data_frame.filter(F.col("partition_date").isin(*[curr_item]))\
+        small_df = data_frame.filter(F.col("partition_date").isin(*[curr_item])) \
             .drop_duplicates(subset=["access_method_num", "partition_date"])
         small_cus_df = customer_df.filter(F.col("event_partition_date").isin(*[curr_item]))
         output_df = node_from_config(small_df, sql)
@@ -56,7 +71,7 @@ def massive_processing_with_customer(input_df: DataFrame
 
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(F.col("partition_date").isin(*[first_item])) \
-                .drop_duplicates(subset=["access_method_num", "partition_date"])
+        .drop_duplicates(subset=["access_method_num", "partition_date"])
     return_df = node_from_config(return_df, sql)
     small_cus_df = customer_df.filter(F.col("event_partition_date").isin(*[first_item]))
     return_df = small_cus_df.join(return_df, ["access_method_num", "event_partition_date", "start_of_week"], "left")

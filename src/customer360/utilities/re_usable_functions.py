@@ -329,7 +329,7 @@ def __is_valid_input_df(
             (cust_profile_df is None or len(cust_profile_df.head(1)) > 0)
 
 
-def data_non_availability_and_missing_check(df, grouping, par_col, target_table_name, missing_data_check_flg,
+def data_non_availability_and_missing_check(df, grouping, par_col, target_table_name, missing_data_check_flg='N',
                                             exception_partitions=None):
     """
     This function will check two scenario's:
