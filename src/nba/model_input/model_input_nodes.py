@@ -1,89 +1,103 @@
+import logging
 from typing import Dict, List, Tuple
 
 import pandas as pd
+import pyspark
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
-from pyspark.sql.types import FloatType
+from pyspark.sql.types import FloatType, TimestampType, DateType
 
+from customer360.utilities.spark_util import get_spark_session
 from nba.models.models_nodes import calculate_extra_pai_metrics
 
 
+def node_l5_nba_customer_profile(
+    l3_customer_profile_include_1mo_non_active: pyspark.sql.DataFrame,
+) -> pyspark.sql.DataFrame:
+
+    df_customer_profile = l3_customer_profile_include_1mo_non_active
+
+    df_customer_profile = df_customer_profile.withColumn(
+        "charge_type_numeric",
+        F.when(F.col("charge_type") == "Pre-paid", 0)
+        .when(F.col("charge_type") == "Post-paid", 1)
+        .when(F.col("charge_type") == "Hybrid-Post", 2),
+    )
+    df_customer_profile = df_customer_profile.withColumn(
+        "network_type_numeric",
+        F.when(F.col("network_type") == "3GPre-paid", 0)
+        .when(F.col("network_type") == "3G", 1)
+        .when(F.col("network_type") == "FBB", 2)
+        .when(F.col("network_type") == "Fixed Line-AWN", 3)
+        .when(F.col("network_type") == "Non Mobile-SBN", 4),
+    )
+
+
+    df_customer_profile = df_customer_profile.withColumn(
+        "customer_segment_numeric",
+        F.when(F.col("customer_segment") == "Classic", 0)
+        .when(F.col("customer_segment") == "Standard", 1)
+        .when(F.col("customer_segment") == "Gold", 2)
+        .when(F.col("customer_segment") == "Platinum", 3)
+        .when(F.col("customer_segment") == "Platinum Plus", 4)
+        .when(F.col("customer_segment") == "Emerald", 5)
+        .when(F.col("customer_segment") == "Prospect Gold", 6)
+        .when(F.col("customer_segment") == "Prospect Platinum", 7)
+        .when(F.col("customer_segment") == "Prospect Plat Plus", 8)
+        .when(F.col("customer_segment") == "Prospect Emerald", 9),
+    )
+
+    df_customer_profile = df_customer_profile.withColumn(
+        "subscription_status_numeric",
+        F.when(F.col("subscription_status") == "Active", 0)
+        .when(F.col("subscription_status") == "SA", 1)
+        .when(F.col("subscription_status") == "CT", 2)
+        .when(F.col("subscription_status") == "SS", 3)
+        .when(F.col("subscription_status") == "SD", 4)
+        .when(F.col("subscription_status") == "Suspend", 5)
+        .when(F.col("subscription_status") == "Suspend - Debt", 6),
+    )
+
+    df_customer_profile = df_customer_profile.withColumn(
+        "cust_active_this_month_numeric",
+        (F.col("cust_active_this_month") == "Y").cast(FloatType()),
+    )
+
+    return df_customer_profile
+
 def node_l5_nba_master_table_spine(
-    l0_campaign_tracking_contact_list_pre: DataFrame, min_feature_days_lag: int,
+    l0_campaign_tracking_contact_list_pre: DataFrame,
+    important_campaigns: DataFrame,
+    reporting_kpis: DataFrame,
+    min_feature_days_lag: int,
 ) -> DataFrame:
 
-    # TODO change
-    child_codes_to_keep = [
-        "1-47997015444",
-        "Prev_PrePMC.28",
-        "1-62026255771",
-        "1-63919285101",
-        "1-77613407411",
-        "Prev_PrePMC.29",
-        "1-57028094991",
-        "1-47997015450",
-        "Prev_Sus.44",
-        "1-71909079741",
-        "Prev_PreP.83",
-        "1-47997015447",
-        "SOC_Pre.20",
-        "1-61675239221",
-        "Prev_PreI.2.3",
-        "1-47997015523",
-        "1-50466956657",
-        "1-48343888951",
-        "1-82928983971",
-        "Prev_PreA.25",
-        "1-86931924401",
-        "Prev_PrePMC.26",
-        "Prev_PreP.67",
-        "SOC_Pre.21",
-        "Prev_Sus.40",
-        "1-86931924407",
-        "1-84025237671",
-        "Prev_Sus.39",
-        "Prev_PrePMC.27",
-        "Prev_PreW.4.2",
-        "DataExp.5.3",
-        "Prev_PrePC.120",
-        "Prev_PreA.27.2",
-        "Prev_PrePC.100",
-        "1-52935867264",
-        "1-52935867261",
-        "Prev_PreA.28.2",
-        "Prev_PrePC.104",
-        "Prev_PrePC.102",
-        "Prev_PrePC.122",
-        "Prev_PreA.36.2",
-        "DataExp.4.3",
-        "1-11480817862",
-        "DataExpPost.6.3",
-        "1-77267324431",
-        "SOC_Pre.23",
-        "Prev_PrePC.108",
-        "DataExpPost.7.3",
-        "1-38962026033",
-        "1-72335358410",
-        "Prev_PrePMC.40",
-        "1-32383424765",
-        "1-24793922948",
-        "1-38962026036",
-        "1-52939737355",
-        "1-52939737358",
-        "1-67470210571",
-        "1-72065208825",
-        "Prev_PrePMC.33",
-        "1-58054415211",
-        "1-75166857694",
-        "1-38962026039",
-        "1-75110002473",
-        "1-75166857691",
-        "1-42724554544",
-        "1-72150881191",
-    ]
+    # Increase number of partitions when creating master table to avoid huge joins
+    spark = get_spark_session()
+    spark.conf.set("spark.sql.shuffle.partitions", 2000)
 
-    df_spine = l0_campaign_tracking_contact_list_pre.filter(
-        F.col("campaign_child_code").isin(child_codes_to_keep)
+    common_columns = list(
+        set.intersection(
+            set(important_campaigns.columns),
+            set(l0_campaign_tracking_contact_list_pre.columns),
+        )
+    )
+    if common_columns:
+        logging.warning(
+            f"There are common columns in l0_campaign_tracking_contact_list_"
+            f" pre and important_campaigns list: {', '.join(common_columns)}"
+        )
+        for common_column in common_columns:
+            important_campaigns = important_campaigns.withColumnRenamed(
+                common_column, common_column + "_from_important_campaigns"
+            )
+
+    df_spine = l0_campaign_tracking_contact_list_pre.join(
+        F.broadcast(
+            important_campaigns.withColumnRenamed("child_code", "campaign_child_code")
+        ),
+        on="campaign_child_code",
+        how="inner",
     )
 
     df_spine = df_spine.withColumn(
@@ -126,6 +140,32 @@ def node_l5_nba_master_table_spine(
         F.date_sub(F.col("contact_date"), days=min_feature_days_lag),
     )
 
+    # join_date
+    df_spine = df_spine.withColumn("join_date", F.col("contact_date").cast(DateType()))
+
+    # Add ARPU uplift
+    df_arpu_30d_before = reporting_kpis.select(
+        "subscription_identifier", "join_date", "total_revenue_30_day"
+    )
+    df_arpu_30d_after = reporting_kpis.select(
+        "subscription_identifier",
+        F.date_sub(F.col("join_date"), 30).alias("join_date"),
+        F.col("total_revenue_30_day").alias("total_revenue_30_day_after"),
+    )
+    df_arpu_uplift = df_arpu_30d_before.join(
+        df_arpu_30d_after, how="inner", on=["subscription_identifier", "join_date"]
+    ).select(
+        "subscription_identifier",
+        F.col("join_date"),
+        (F.col("total_revenue_30_day_after") - F.col("total_revenue_30_day")).alias(
+            "target_relative_arpu_increase_30d"
+        ),
+    )
+
+    df_spine = df_spine.join(
+        df_arpu_uplift, on=["subscription_identifier", "join_date"], how="left"
+    )
+
     return df_spine
 
 
@@ -134,6 +174,10 @@ def node_l5_nba_master_table(
     subset_features: Dict[str, List[str]],
     **kwargs: DataFrame,
 ) -> DataFrame:
+
+    # Increase number of partitions when creating master table to avoid huge joins
+    spark = get_spark_session()
+    spark.conf.set("spark.sql.shuffle.partitions", 2000)
 
     non_date_join_cols = ["subscription_identifier"]
 
@@ -201,7 +245,13 @@ def node_l5_nba_master_table(
     return df_master
 
 
-def node_l5_nba_master_table_chunk_debug(
+def node_l5_nba_master_table_only_accepted(
+    l5_nba_master_table: DataFrame,
+) -> DataFrame:
+    return l5_nba_master_table.filter(F.col("response") == "Y")
+
+
+def node_l5_nba_master_table_chunk_debug_acceptance(
     l5_nba_master_table: DataFrame, child_code: str, sampling_rate: float
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     df_chunk = l5_nba_master_table.filter(F.col("campaign_child_code") == child_code)
@@ -211,6 +261,28 @@ def node_l5_nba_master_table_chunk_debug(
     )
     l5_nba_master_table_chunk_debug = (
         df_chunk.filter(~F.isnull(F.col("target_response")))
+        .sample(sampling_rate)
+        .toPandas()
+    )
+    return l5_nba_master_table_chunk_debug, pdf_extra_pai_metrics
+
+
+def node_l5_nba_master_table_chunk_debug_arpu(
+    l5_nba_master_table_only_accepted: DataFrame, child_code: str, sampling_rate: float
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    df_chunk = l5_nba_master_table_only_accepted.filter(
+        F.col("campaign_child_code") == child_code
+    )
+
+    pdf_extra_pai_metrics = calculate_extra_pai_metrics(
+        l5_nba_master_table_only_accepted,
+        target_column="target_relative_arpu_increase_30d",
+        by="campaign_child_code",
+    )
+    l5_nba_master_table_chunk_debug = (
+        df_chunk.filter(
+            ~F.isnull(F.col("target_relative_arpu_increase_30d"))
+        )
         .sample(sampling_rate)
         .toPandas()
     )
