@@ -7,8 +7,10 @@ from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 
 from customer360.utilities.config_parser import node_from_config
-from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, execute_sql
 from src.customer360.utilities.spark_util import get_spark_empty_df
+
+from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
+    data_non_availability_and_missing_check, execute_sql
 
 conf = os.getenv("CONF", None)
 
@@ -81,8 +83,17 @@ def usage_outgoing_ir_call_pipeline(input_df, sql) -> DataFrame:
     :return:
     """
 
-    if len(input_df.head(1)) == 0:
-        return input_df
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
+                                                       target_table_name="l1_usage_outgoing_call_relation_sum_ir_daily")
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
 
     return_df = massive_processing(input_df, sql, "l1_usage_outgoing_call_relation_sum_ir_daily")
     return return_df
@@ -93,8 +104,17 @@ def usage_incoming_ir_call_pipeline(input_df, sql) -> DataFrame:
     :return:
     """
 
-    if len(input_df.head(1)) == 0:
-        return input_df
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
+                                                       target_table_name="l1_usage_incoming_call_relation_sum_ir_daily")
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
 
     return_df = massive_processing(input_df, sql, "l1_usage_incoming_call_relation_sum_ir_daily")
     return return_df
@@ -105,8 +125,17 @@ def usage_outgoing_call_pipeline(input_df, sql) -> DataFrame:
     :return:
     """
 
-    if len(input_df.head(1)) == 0:
-        return input_df
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
+                                                       target_table_name="l1_usage_outgoing_call_relation_sum_daily")
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
 
     return_df = massive_processing(input_df, sql, "l1_usage_outgoing_call_relation_sum_daily")
     return return_df
@@ -117,8 +146,17 @@ def usage_incoming_call_pipeline(input_df, sql) -> DataFrame:
     :return:
     """
 
-    if len(input_df.head(1)) == 0:
-        return input_df
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
+                                                       target_table_name="l1_usage_incoming_call_relation_sum_daily")
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
 
     return_df = massive_processing(input_df, sql, "l1_usage_incoming_call_relation_sum_daily")
     return return_df
@@ -129,8 +167,17 @@ def usage_data_prepaid_pipeline(input_df, sql) -> DataFrame:
     :return:
     """
 
-    if len(input_df.head(1)) == 0:
-        return input_df
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
+                                                       target_table_name="l1_usage_ru_a_gprs_cbs_usage_daily")
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
 
     return_df = massive_processing(input_df, sql, "l1_usage_ru_a_gprs_cbs_usage_daily")
     return return_df
@@ -141,8 +188,17 @@ def usage_data_postpaid_pipeline(input_df, sql) -> DataFrame:
     :return:
     """
 
-    if len(input_df.head(1)) == 0:
-        return input_df
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
+                                                       target_table_name="l1_usage_ru_a_vas_postpaid_usg_daily")
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
 
     return_df = massive_processing(input_df, sql, "l1_usage_ru_a_vas_postpaid_usg_daily")
     return return_df
@@ -157,8 +213,20 @@ def build_data_for_prepaid_postpaid_vas(prepaid: DataFrame
     :return:
     """
 
-    if len(prepaid.head(1)) == 0 and len(postpaid.head(1)) == 0:
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([prepaid, postpaid]):
         return get_spark_empty_df()
+
+    prepaid = data_non_availability_and_missing_check(df=prepaid, grouping="daily", par_col="partition_date",
+                                                      target_table_name="l1_usage_ru_a_vas_postpaid_prepaid_daily")
+
+    postpaid = data_non_availability_and_missing_check(df=postpaid, grouping="daily", par_col="partition_date",
+                                                       target_table_name="l1_usage_ru_a_vas_postpaid_prepaid_daily")
+
+    if check_empty_dfs([prepaid, postpaid]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
 
     prepaid = prepaid.select("access_method_num", "number_of_call", 'day_id')
     postpaid = postpaid.where("call_type_cd = 5") \
@@ -189,10 +257,53 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
     :return:
     """
 
-    def divide_chunks(l, n):
-        # looping till length l
-        for i in range(0, len(l), n):
-            yield l[i:i + n]
+    ################################# Start Implementing Data availability checks ###############################
+    if check_empty_dfs([l1_usage_outgoing_call_relation_sum_daily_stg, l1_usage_incoming_call_relation_sum_daily_stg,
+                        l1_usage_outgoing_call_relation_sum_ir_daily_stg,
+                        l1_usage_incoming_call_relation_sum_ir_daily_stg,
+                        l1_usage_ru_a_gprs_cbs_usage_daily_stg, l1_usage_ru_a_vas_postpaid_usg_daily_stg,
+                        l1_usage_ru_a_vas_postpaid_prepaid_daily_stg, l1_customer_profile_union_daily_feature]):
+        return get_spark_empty_df()
+
+    l1_usage_outgoing_call_relation_sum_daily_stg = data_non_availability_and_missing_check(
+        df=l1_usage_outgoing_call_relation_sum_daily_stg,
+        grouping="daily", par_col="event_partition_date",
+        target_table_name="l1_usage_postpaid_prepaid_daily")
+
+    l1_usage_incoming_call_relation_sum_daily_stg = data_non_availability_and_missing_check(
+        df=l1_usage_incoming_call_relation_sum_daily_stg,
+        grouping="daily", par_col="event_partition_date",
+        target_table_name="l1_usage_postpaid_prepaid_daily")
+
+    l1_usage_outgoing_call_relation_sum_ir_daily_stg = data_non_availability_and_missing_check(
+        df=l1_usage_outgoing_call_relation_sum_ir_daily_stg,
+        grouping="daily", par_col="event_partition_date",
+        target_table_name="l1_usage_postpaid_prepaid_daily")
+
+    l1_usage_incoming_call_relation_sum_ir_daily_stg = data_non_availability_and_missing_check(
+        df=l1_usage_incoming_call_relation_sum_ir_daily_stg,
+        grouping="daily", par_col="event_partition_date",
+        target_table_name="l1_usage_postpaid_prepaid_daily")
+
+    l1_usage_ru_a_gprs_cbs_usage_daily_stg = data_non_availability_and_missing_check(
+        df=l1_usage_ru_a_gprs_cbs_usage_daily_stg,
+        grouping="daily", par_col="event_partition_date",
+        target_table_name="l1_usage_postpaid_prepaid_daily")
+
+    l1_usage_ru_a_vas_postpaid_usg_daily_stg = data_non_availability_and_missing_check(
+        df=l1_usage_ru_a_vas_postpaid_usg_daily_stg,
+        grouping="daily", par_col="event_partition_date",
+        target_table_name="l1_usage_postpaid_prepaid_daily")
+
+    l1_usage_ru_a_vas_postpaid_prepaid_daily_stg = data_non_availability_and_missing_check(
+        df=l1_usage_ru_a_vas_postpaid_prepaid_daily_stg,
+        grouping="daily", par_col="event_partition_date",
+        target_table_name="l1_usage_postpaid_prepaid_daily")
+
+    l1_customer_profile_union_daily_feature = data_non_availability_and_missing_check(
+        df=l1_customer_profile_union_daily_feature,
+        grouping="daily", par_col="event_partition_date",
+        target_table_name="l1_usage_postpaid_prepaid_daily")
 
     # new section to handle data latency
     min_value = union_dataframes_with_missing_cols(
@@ -222,8 +333,15 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
 
     union_df = union_df.filter(F.col("event_partition_date") <= min_value)
 
-    if len(union_df.head(1)) == 0:
+    if check_empty_dfs([union_df]):
         return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+
+    def divide_chunks(l, n):
+        # looping till length l
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
 
     group_cols = ['access_method_num', 'event_partition_date']
     final_df_str = gen_max_sql(union_df, 'roaming_incoming_outgoing_data', group_cols)
