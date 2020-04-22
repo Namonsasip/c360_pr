@@ -416,9 +416,7 @@ def get_treatments_propositions(
         microsegments: List of users and assigned microsegments.
         treatment_dictionary: Table of microsegment to treatment mapping.
     Returns:
-        Table with users, microsegments and treatments chosen. For multiple treatments
-        per microsegments supplied, treatment is chosen randomly from supplied with
-        "no_treatment" option added for tracking test and learn.
+        Table with users, microsegments and treatments chosen.
     """
 
     # join with microsegments
@@ -469,7 +467,7 @@ def get_treatments_propositions(
         else:
             target_users_in_microsegment = _add_random_column_from_values(
                 target_users_in_microsegment,
-                chosen_microsegment_treatments + ["no_treatment"],
+                chosen_microsegment_treatments,
                 "campaign_code",
             )
         return target_users_in_microsegment
