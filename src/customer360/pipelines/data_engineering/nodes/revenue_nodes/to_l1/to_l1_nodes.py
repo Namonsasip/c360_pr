@@ -49,7 +49,7 @@ def massive_processing_with_customer(input_df: DataFrame
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = input_df
     data_frame = data_frame.withColumn("total_vol_gprs_2g_3g", F.col("total_vol_gprs") - F.col("total_vol_gprs_4g")) \
-                            .withColumn("filter_date", F.to_date(F.col("partition_date").cast(StringType()), 'yyyy-MM-dd'))
+                            .withColumn("filter_date", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))
     dates_list = data_frame.select('filter_date').distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
