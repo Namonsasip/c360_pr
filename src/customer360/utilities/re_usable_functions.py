@@ -35,11 +35,11 @@ def union_dataframes_with_missing_cols(df_input_or_list, *args):
     return reduce(DataFrame.union, df_list_updated)
 
 
-def check_empty_dfs(df_input_or_list, *args):
+def check_empty_dfs(df_input_or_list):
     if type(df_input_or_list) is list:
         df_list = df_input_or_list
     elif type(df_input_or_list) is DataFrame:
-        df_list = [df_input_or_list] + list(args)
+        df_list = [df_input_or_list]
 
     ret_obj = False
     for df in df_list:
