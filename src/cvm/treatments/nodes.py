@@ -25,13 +25,13 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import Any, Dict, Tuple
 from datetime import datetime
-import pytz
-import pyspark.sql.functions as func
-import pandas
+from typing import Any, Dict, Tuple
 
-from cvm.src.utils.treatments import (
+import pandas
+import pytz
+
+from cvm.src.treatments.treatments_build import (
     add_microsegment_features,
     add_volatility_scores,
     define_microsegments,
@@ -98,12 +98,17 @@ def deploy_contact(
     utc_now = pytz.utc.localize(datetime.utcnow())
     created_date = utc_now.astimezone(pytz.timezone("Asia/Bangkok"))
     df["data_date"] = created_date.date()
-    df.rename(columns={parameters["treatment_output"]["key_column"]: 'crm_subscription_id',
-                       parameters["treatment_output"]["treatment_column"]: 'dummy01'}, inplace=True)
+    df.rename(
+        columns={
+            parameters["treatment_output"]["key_column"]: "crm_subscription_id",
+            parameters["treatment_output"]["treatment_column"]: "dummy01",
+        },
+        inplace=True,
+    )
     df = df[["data_date", "crm_subscription_id", "dummy01"]]
     file_name = parameters["treatment_output"]["output_path_ard"] + "_{}.csv".format(
         created_date.strftime("%Y%m%d%H%M%S")
     )
-    df.to_csv(file_name, index=False, header=True, sep='|')
+    df.to_csv(file_name, index=False, header=True, sep="|")
 
     return 0
