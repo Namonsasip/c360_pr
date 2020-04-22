@@ -38,6 +38,21 @@ def union_dataframes_with_missing_cols(df_input_or_list, *args):
     return reduce(DataFrame.union, df_list_updated)
 
 
+def check_empty_dfs(df_input_or_list):
+    if type(df_input_or_list) is list:
+        df_list = df_input_or_list
+    elif type(df_input_or_list) is DataFrame:
+        df_list = [df_input_or_list]
+
+    ret_obj = False
+    for df in df_list:
+        if len(df.head(1)) == 0:
+            return True
+        else:
+            pass
+    return ret_obj
+
+
 def execute_sql(data_frame, table_name, sql_str):
     """
 
