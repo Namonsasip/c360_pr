@@ -29,6 +29,7 @@ from typing import Any, Dict, Tuple
 
 import pandas
 
+from cvm.src.treatments.deploy_treatments import deploy_contact, prepare_campaigns_table
 from cvm.src.treatments.treatments_build import (
     add_microsegment_features,
     add_volatility_scores,
@@ -81,3 +82,19 @@ def produce_treatments(
         treatments_history,
         parameters,
     )
+
+
+def deploy_treatments(
+    treatments_chosen: pandas.DataFrame, parameters: Dict[str, Any],
+):
+    """ Send the treatments to the campaign team.
+
+    Args:
+        treatments_chosen: List of users and campaigns chosen for all use cases.:
+        parameters: parameters defined in parameters.yml.
+    """
+
+    use_cases = parameters["targets"]
+    for use_case in use_cases:
+        campaign_table_prepared = prepare_campaigns_table(treatments_chosen, use_case)
+        deploy_contact(campaign_table_prepared, parameters, use_case)
