@@ -406,7 +406,10 @@ def remove_recently_contacted(
 
 
 def get_treatments_propositions(
-    target_users: DataFrame, microsegments: DataFrame, treatment_dictionary: DataFrame,
+    target_users: DataFrame,
+    microsegments: DataFrame,
+    treatment_dictionary: DataFrame,
+    add_no_treatment: bool = False,
 ) -> DataFrame:
     """ Combine filtered users table, microsegments and the treatments assigned to
     microsegments.
@@ -415,6 +418,8 @@ def get_treatments_propositions(
         target_users: List of users to target with treatment.
         microsegments: List of users and assigned microsegments.
         treatment_dictionary: Table of microsegment to treatment mapping.
+        add_no_treatment: If `True` then new treatment called 'no_treatment' is added to
+            create a control group.
     Returns:
         Table with users, microsegments and treatments chosen.
     """
@@ -468,6 +473,8 @@ def get_treatments_propositions(
                 "campaign_code", func.lit(chosen_microsegment_treatments[0])
             )
         else:
+            if add_no_treatment:
+                chosen_microsegment_treatments += ["no_treatment"]
             target_users_in_microsegment = _add_random_column_from_values(
                 target_users_in_microsegment,
                 chosen_microsegment_treatments,
