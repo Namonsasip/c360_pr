@@ -10,7 +10,11 @@ from pyspark.sql import DataFrame
 
 
 def feature_selection(
-    data: DataFrame, target_col: str, step_size: int, target_type: str
+    data: DataFrame,
+    target_col: str,
+    step_size: int,
+    target_type: str,
+    correlation_threshold: float,
 ) -> List[Any]:
     """ Return list of selected features given target column.
   Args:
@@ -18,6 +22,7 @@ def feature_selection(
       target_col: column name of the target.
       step_size: parameter step for RFECV function
       target_type: type of the target column only classification or regression.
+      correlation_threshold: threshold used to filter out highly correlated features.
   Returns:
       List of selected feature column names.
   """
@@ -25,12 +30,12 @@ def feature_selection(
     # Filter out the target column and convert to pandas dataframe
     data = data.filter(target_col + " IS NOT NULL").toPandas()
 
-    # Remove correlated feature at correlation > 0.8
+    # Remove highly correlated features
     correlated_features = set()
     correlation_matrix = data.drop(target_col, axis=1).corr()
     for i in range(len(correlation_matrix.columns)):
         for j in range(i):
-            if abs(correlation_matrix.iloc[i, j]) > 0.8:
+            if abs(correlation_matrix.iloc[i, j]) > correlation_threshold:
                 colname = correlation_matrix.columns[i]
                 correlated_features.add(colname)
     features = data.drop(target_col, axis=1)
