@@ -530,3 +530,74 @@ def create_use_case_campaign_mapping_table(
         campaign_churn_bau_master
     ).union(campaign_ard_cvm_master)
     return campaign_mapping_master
+
+
+def store_historical_usecase_view_report(use_case_view_report_table) -> DataFrame:
+
+    group_by_campaign_group_tbl = use_case_view_report_table.groupby(
+        ["target_group","contact_date"]
+    ).agg(
+        *[
+            F.first(c).alias(c)
+            for c in use_case_view_report_table.columns
+            if c.endswith("_day") or c.endswith("_last_month")
+        ]
+    )
+    group_by_campaign_group_tbl = group_by_campaign_group_tbl.drop(
+        "n_subscriber_targeted_1_day",
+        "n_campaign_accepted_1_day",
+        "n_campaign_sent_1_day",
+        "n_subscriber_accepted_1_day",
+        "n_subscriber_targeted_7_day",
+        "n_campaign_accepted_7_day",
+        "n_campaign_sent_7_day",
+        "n_subscriber_accepted_7_day",
+        "n_subscriber_targeted_30_day",
+        "n_campaign_accepted_30_day",
+        "n_campaign_sent_30_day",
+        "n_subscriber_accepted_30_day",
+    )
+    group_by_campaign_group_tbl = group_by_campaign_group_tbl.join(
+        use_case_view_report_table.groupby(["target_group"]).agg(
+            F.first("distinct_targeted_subscriber").alias("distinct_targeted_subscriber")),
+        ["target_group"],
+        "inner",
+    )
+    for usecase in ("CHURN", "ARD"):
+        sdf_pivot = use_case_view_report_table.where(
+            F.col("usecase") == usecase
+        ).selectExpr(
+            "target_group",
+            "contact_date",
+            "n_subscriber_targeted_1_day as n_{}_subscriber_targeted_1_day".format(
+                usecase
+            ),
+            "n_campaign_accepted_1_day as n_{}_campaign_accepted_1_day".format(usecase),
+            "n_campaign_sent_1_day as n_{}_campaign_sent_1_day".format(usecase),
+            "n_subscriber_accepted_1_day as n_{}_subscriber_accepted_1_day".format(
+                usecase
+            ),
+            "n_subscriber_targeted_7_day as n_{}_subscriber_targeted_7_day".format(
+                usecase
+            ),
+            "n_campaign_accepted_7_day as n_{}_campaign_accepted_7_day".format(usecase),
+            "n_campaign_sent_7_day as n_{}_campaign_sent_7_day".format(usecase),
+            "n_subscriber_accepted_7_day as n_{}_subscriber_accepted_7_day".format(
+                usecase
+            ),
+            "n_subscriber_targeted_30_day as n_{}_subscriber_targeted_30_day".format(
+                usecase
+            ),
+            "n_campaign_accepted_30_day as n_{}_campaign_accepted_30_day".format(
+                usecase
+            ),
+            "n_campaign_sent_30_day as n_{}_campaign_sent_30_day".format(usecase),
+            "n_subscriber_accepted_30_day as n_{}_subscriber_accepted_30_day".format(
+                usecase
+            ),
+        )
+        group_by_campaign_group_tbl = group_by_campaign_group_tbl.join(
+            sdf_pivot, ["target_group","contact_date"], "inner"
+        )
+    group_by_campaign_group_tbl = group_by_campaign_group_tbl.withColumnRenamed("target_group","campaign_control_group").withColumnRenamed("contact_date","report_date")
+    return group_by_campaign_group_tbl

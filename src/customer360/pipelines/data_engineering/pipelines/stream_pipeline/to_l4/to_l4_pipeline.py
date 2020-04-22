@@ -41,7 +41,7 @@ from customer360.utilities.re_usable_functions import l2_massive_processing
 from customer360.pipelines.data_engineering.nodes.stream_nodes.to_l4.to_l4_nodes import generate_l4_fav_streaming_day
 
 
-def streaming_to_l4_pipeline(**kwargs):
+def streaming_l2_to_l4_pipeline(**kwargs):
     return Pipeline(
         [
             # this will calculate sum per content_group
@@ -86,35 +86,6 @@ def streaming_to_l4_pipeline(**kwargs):
                  "params:l4_streaming_fav_tv_channel_by_duration"],
                 "l4_streaming_fav_tv_channel_by_duration"
             ),
-
-
-
-
-
-            # TV show features
-            node(
-                l4_rolling_window,
-                ["int_l0_streaming_vimmi_table_for_l4_streaming_fav_tv_show_by_episode_watched",
-                 "params:int_l4_streaming_tv_show_features_1"],
-                "int_l4_streaming_tv_show_features_1"
-            ),
-            # group it per week because we read directly from L1
-            node(
-                l2_massive_processing,  # Since we are directly reading from L1, we can use this method
-                ["int_l4_streaming_tv_show_features_1",
-                 "params:int_l4_streaming_tv_show_features_2",
-                 "l1_customer_profile_union_daily_feature_for_l4_streaming_fav_tv_show_by_episode_watched"],
-                "int_l4_streaming_tv_show_features_2"
-            ),
-            node(
-                l4_rolling_ranked_window,
-                ["int_l4_streaming_tv_show_features_2",
-                 "params:l4_streaming_fav_tv_show_by_episode_watched"],
-                "l4_streaming_fav_tv_show_by_episode_watched"
-            ),
-
-
-
 
 
             # fav video service feature
@@ -231,5 +202,34 @@ def streaming_to_l4_pipeline(**kwargs):
                  "params:l4_streaming_session_duration_feature"],
                 "l4_streaming_session_duration_feature"
             ),
-        ], name="streaming_to_l4_pipeline"
+        ], name="streaming_l2_to_l4_pipeline"
+    )
+
+
+def streaming_l1_to_l4_pipeline(**kwargs):
+    return Pipeline(
+        [
+            # TV show features
+            node(
+                l4_rolling_window,
+                ["int_l0_streaming_vimmi_table_for_l4_streaming_fav_tv_show_by_episode_watched",
+                 "params:int_l4_streaming_tv_show_features_1"],
+                "int_l4_streaming_tv_show_features_1"
+            ),
+            # group it per week because we read directly from L1
+            node(
+                l2_massive_processing,  # Since we are directly reading from L1, we can use this method
+                ["int_l4_streaming_tv_show_features_1",
+                 "params:int_l4_streaming_tv_show_features_2",
+                 "l1_customer_profile_union_daily_feature_for_l4_streaming_fav_tv_show_by_episode_watched"],
+                "int_l4_streaming_tv_show_features_2"
+            ),
+            node(
+                l4_rolling_ranked_window,
+                ["int_l4_streaming_tv_show_features_2",
+                 "params:l4_streaming_fav_tv_show_by_episode_watched"],
+                "l4_streaming_fav_tv_show_by_episode_watched"
+            ),
+
+        ], name="streaming_l1_to_l4_pipeline"
     )

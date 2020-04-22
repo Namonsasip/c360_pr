@@ -32,14 +32,14 @@ nba_model_input_features:
     - sum_payments_arpu_vas_last_three_month
     - sum_payments_arpu_voice_last_month
     - sum_payments_arpu_voice_last_three_month
-    - avg_payments_arpu_last_month
-    - avg_payments_arpu_last_three_month
-    - avg_payments_arpu_gprs_last_month
-    - avg_payments_arpu_gprs_last_three_month
-    - avg_payments_arpu_vas_last_month
-    - avg_payments_arpu_vas_last_three_month
-    - avg_payments_arpu_voice_last_month
-    - avg_payments_arpu_voice_last_three_month
+#    - avg_payments_arpu_last_month
+#    - avg_payments_arpu_last_three_month
+#    - avg_payments_arpu_gprs_last_month
+#    - avg_payments_arpu_gprs_last_three_month
+#    - avg_payments_arpu_vas_last_month
+#    - avg_payments_arpu_vas_last_three_month
+#    - avg_payments_arpu_voice_last_month
+#    - avg_payments_arpu_voice_last_three_month
     - payments_one_month_over_three_month_dynamics_arpu
   l4_billing_rolling_window_rpu_roaming:
     - sum_payments_arpu_roaming_weekly_last_week
@@ -184,11 +184,14 @@ nba_model_input_features:
 # Parameters for model training
 nba_model_group_column: campaign_child_code
 
-nba_model_target_column: target_response
+nba_acceptance_model_target_column: target_response
+nba_arpu_model_target_column: target_relative_arpu_increase_30d
 
 nba_model_min_obs_per_class_for_model: 100
-nba_model_max_rows_per_group: 1000000
+nba_model_max_rows_per_group: 2000000
 nba_model_train_sampling_ratio: 0.8
+
+regression_clip_target_quantiles_arpu: [0.05, 0.95]
 
 nba_model_model_params:
    num_leaves: 16
@@ -207,15 +210,34 @@ nba_model_explanatory_features:
    - subscriber_tenure
 #   - cust_active_this_month
    - norms_net_revenue
-   - sum_payments_top_ups_last_week
-   - sum_payments_top_ups_last_twelve_week
+   - sum_payments_top_ups_daily_last_seven_day
+   - sum_payments_top_ups_daily_last_thirty_day
+   - sum_payments_top_ups_daily_last_ninety_day
    - sum_payments_arpu_last_month
    - sum_payments_arpu_last_three_month
-   - sum_payments_arpu_roaming_weekly_last_week
+   - sum_payments_arpu_gprs_last_month
+   - sum_payments_arpu_gprs_last_three_month
+   - sum_payments_arpu_vas_last_month
+   - sum_payments_arpu_vas_last_three_month
+   - sum_payments_arpu_voice_last_month
+   - sum_payments_arpu_voice_last_three_month
+   - sum_payments_before_top_up_balance_weekly_last_week
    - sum_payments_before_top_up_balance_weekly_last_four_week
    - sum_payments_top_ups_by_bank_atm_cdm_weekly_last_twelve_week
+   - sum_payments_top_up_vol_by_bank_atm_cdm_weekly_last_twelve_week
+   - sum_payments_top_ups_by_cash_card_weekly_last_twelve_week
+   - sum_payments_top_up_vol_by_cash_card_weekly_last_twelve_week
+   - sum_payments_top_ups_by_digital_online_self_service_weekly_last_twelve_week
    - sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_twelve_week
+   - sum_payments_top_ups_by_epin_slip_weekly_last_twelve_week
+   - sum_payments_top_up_vol_by_epin_slip_weekly_last_twelve_week
+   - sum_payments_top_ups_by_epos_weekly_last_twelve_week
+   - sum_payments_top_up_vol_by_epos_weekly_last_twelve_week
+   - sum_payments_top_ups_by_rom_weekly_last_twelve_week
+   - sum_payments_top_up_vol_by_rom_weekly_last_twelve_week
+   - sum_payments_top_ups_daily_last_seven_day
    - sum_payments_top_ups_daily_last_thirty_day
+   - sum_payments_top_ups_daily_last_ninety_day
    - sum_campaign_overall_count_sum_weekly_last_week
    - sum_campaign_overall_count_sum_weekly_last_four_week
    - sum_campaign_overall_count_sum_weekly_last_twelve_week
@@ -229,10 +251,20 @@ nba_model_explanatory_features:
    - sum_rev_arpu_total_gprs_net_revenue_monthly_last_month
    - sum_rev_arpu_total_sms_net_revenue_monthly_last_month
    - sum_usg_incoming_total_call_duration_daily_last_ninety_day
+   - sum_usg_incoming_total_call_duration_daily_last_seven_day
    - sum_usg_outgoing_data_volume_daily_last_fourteen_day
    - sum_usg_outgoing_data_volume_daily_last_ninety_day
+   - sum_usg_outgoing_data_volume_daily_last_seven_day
+   - sum_usg_outgoing_total_call_duration_daily_last_ninety_day
+   - sum_usg_outgoing_total_call_duration_daily_last_seven_day
+   - sum_usg_outgoing_total_sms_daily_last_ninety_day
+   - sum_usg_outgoing_total_sms_daily_last_seven_day
    - sum_usg_incoming_data_volume_sum_weekly_last_week
    - sum_usg_incoming_data_volume_sum_weekly_last_twelve_week
+   - sum_usg_incoming_data_volume_2G_3G_sum_weekly_last_four_week
+   - sum_usg_incoming_data_volume_4G_sum_weekly_last_four_week
+   - sum_usg_incoming_local_data_volume_sum_weekly_last_four_week
+   - sum_usg_incoming_local_data_volume_2G_3G_sum_weekly_last_four_week
    - sum_usg_incoming_local_data_volume_4G_sum_weekly_last_four_week
    - sum_usg_outgoing_total_call_duration_sum_weekly_last_week
    - sum_usg_outgoing_total_call_duration_sum_weekly_last_twelve_week

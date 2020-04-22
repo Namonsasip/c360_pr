@@ -1,7 +1,7 @@
 l4_product_activated_deactivated_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: dbfs:/mnt/customer360-blob-output/C360/PRODUCT/l4_features/l4_product_activated_deactivated_features/
+  filepath: /mnt/customer360-blob-output/C360/PRODUCT/l4_features/l4_product_activated_deactivated_features/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
