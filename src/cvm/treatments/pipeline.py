@@ -27,7 +27,7 @@
 # limitations under the License.
 from kedro.pipeline import Pipeline, node
 
-from cvm.src.treatments import deploy_treatments
+from cvm.src.treatments.deploy_treatments import deploy_contact
 from cvm.treatments.nodes import prepare_microsegments, produce_treatments
 
 
@@ -63,7 +63,7 @@ def generate_treatments() -> Pipeline:
                 name="produce_treatments",
             ),
             node(
-                deploy_treatments,
+                deploy_contact,
                 ["parameters", "treatments_chosen"],
                 None,
                 name="deploy_treatments",
