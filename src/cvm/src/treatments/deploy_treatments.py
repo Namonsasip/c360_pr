@@ -34,7 +34,7 @@ import pytz
 from pyspark.sql import DataFrame
 
 
-def deploy_contact(
+def deploy_contact_ard(
     parameters: Dict[str, Any], df: DataFrame,
 ):
     """ Copy list from df to the target path for campaign targeting
