@@ -29,6 +29,7 @@ import logging
 from datetime import datetime
 from typing import Any, Dict
 
+import pandas
 import pytz
 
 from pyspark.sql import DataFrame
@@ -37,7 +38,7 @@ from pyspark.sql import DataFrame
 def deploy_contact_ard(
     parameters: Dict[str, Any], df: DataFrame,
 ):
-    """ Copy list from df to the target path for campaign targeting
+    """ Copy list from df to the target path for ARD campaign targeting.
 
     Args:
         parameters: parameters defined in parameters.yml.
@@ -63,3 +64,37 @@ def deploy_contact_ard(
     logging.info("ARD treatments saved to {}".format(file_name))
 
     return 0
+
+
+def prepare_campaigns_table(
+    treatments_chosen: pandas.DataFrame, use_case: str,
+) -> pandas.DataFrame:
+    """ Prepares table for saving.
+
+    Args:
+        treatments_chosen: List of users and campaigns chosen for all use cases.
+        parameters: parameters defined in parameters.yml.
+        use_case: "churn" or "ard".
+    """
+
+    use_case_treatments = treatments_chosen[treatments_chosen["use_case"] == use_case]
+
+    utc_now = pytz.utc.localize(datetime.utcnow())
+    created_date = utc_now.astimezone(pytz.timezone("Asia/Bangkok"))
+    use_case_treatments["data_date"] = created_date.date()
+
+    use_case_treatments.rename(
+        columns={
+            "subscription_identifier": "crm_subscription_id",
+            "campaign_code": "dummy01",
+        },
+        inplace=True,
+    )
+    use_case_treatments = use_case_treatments[
+        ["data_date", "crm_subscription_id", "dummy01"]
+    ]
+
+    if use_case == "churn":
+        use_case_treatments["project_name"] = "CVM_Prepaid_churn_model_V2"
+
+    return use_case_treatments
