@@ -33,39 +33,6 @@ from typing import Any, Dict
 import pandas
 import pytz
 
-from pyspark.sql import DataFrame
-
-
-def deploy_contact_ard(
-    parameters: Dict[str, Any], df: DataFrame,
-):
-    """ Copy list from df to the target path for ARD campaign targeting.
-
-    Args:
-        parameters: parameters defined in parameters.yml.
-        df: DataFrame with treatment per customer.
-
-    """
-    utc_now = pytz.utc.localize(datetime.utcnow())
-    created_date = utc_now.astimezone(pytz.timezone("Asia/Bangkok"))
-    df = df[df["use_case"] == "ard"]
-    df["data_date"] = created_date.date()
-    df.rename(
-        columns={
-            parameters["treatment_output"]["key_column"]: "crm_subscription_id",
-            parameters["treatment_output"]["treatment_column"]: "dummy01",
-        },
-        inplace=True,
-    )
-    df = df[["data_date", "crm_subscription_id", "dummy01"]]
-    file_name = parameters["treatment_output"]["output_path_ard"] + "_{}.csv".format(
-        created_date.strftime("%Y%m%d%H%M%S")
-    )
-    df.to_csv(file_name, index=False, header=True, sep="|")
-    logging.info("ARD treatments saved to {}".format(file_name))
-
-    return 0
-
 
 def prepare_campaigns_table(
     treatments_chosen: pandas.DataFrame, use_case: str,
