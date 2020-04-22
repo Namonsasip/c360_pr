@@ -5,3 +5,4 @@ feature_selection_parameter:
   correlation_threshold: 0.8
   n_estimators: 20
   n_folds: 5
+  min_features_to_select: 20

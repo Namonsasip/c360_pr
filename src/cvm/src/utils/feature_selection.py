@@ -17,6 +17,7 @@ def feature_selection(
     correlation_threshold: float,
     n_estimators: float,
     n_folds: float,
+    min_features_to_select: float,
 ) -> List[Any]:
     """ Return list of selected features given target column.
   Args:
@@ -27,6 +28,7 @@ def feature_selection(
       correlation_threshold: threshold used to filter out highly correlated features.
       n_estimators: number of estimators used for rfe.
       n_folds: number of cv folds used for rfe.
+      min_features_to_select: minimum number of features to be selected per target.
   Returns:
       List of selected feature column names.
   """
@@ -56,7 +58,7 @@ def feature_selection(
             step=step_size,
             cv=StratifiedKFold(n_folds),
             scoring="roc_auc",
-            min_features_to_select=20,
+            min_features_to_select=min_features_to_select,
         )
     else:
         lr = LinearRegression(normalize=True)
@@ -65,7 +67,7 @@ def feature_selection(
             step=step_size,
             cv=StratifiedKFold(n_folds),
             scoring="roc_auc",
-            min_features_to_select=20,
+            min_features_to_select=min_features_to_select,
         )
     rfecv.fit(features, target)
 
