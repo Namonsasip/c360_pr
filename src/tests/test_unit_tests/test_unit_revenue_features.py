@@ -92,7 +92,7 @@ l0_revenue_prepaid_pru_f_usage_multi_daily = [
 
 global customer
 customer = [
-["1-Test","TEST",datetime.strptime('2020-01-01', '%Y-%m-%d'),"null","THAI","null","N","N","Y","Y","3G339","3G�� 30 ���ѧ�� All Network [0.99B/min] ExVAT","25","F","3577","118","SA","Classic","Classic","3G","aWHlgJKyzdZhML+1MsR8zkLsXHK5SUBzt9OMWpVdheZEg9ejPmUEoOqHJqQIIHo0",datetime.strptime('2020-01-01', '%Y-%m-%d'),"Pre-paid","null","N","NNNN","N","N",datetime.strptime('2020-01-06', '%Y-%m-%d'),datetime.strptime('2020-01-01', '%Y-%m-%d'),datetime.strptime('2020-02-01', '%Y-%m-%d')]
+["1-TEST","TEST",datetime.strptime('2020-01-01', '%Y-%m-%d'),"null","THAI","null","N","N","Y","Y","3G339","Promotion_ID","25","F","3577","118","SA","Classic","Classic","3G","aWHlgJKyzdZhML+1MsR8zkLsXHK5SUBzt9OMWpVdheZEg9ejPmUEoOqHJqQIIHo0",datetime.strptime('2020-01-01', '%Y-%m-%d'),"Pre-paid","null","N","NNNN","N","N",datetime.strptime('2020-01-06', '%Y-%m-%d'),datetime.strptime('2020-01-01', '%Y-%m-%d'),datetime.strptime('2020-02-01', '%Y-%m-%d')]
 ]
 
 
