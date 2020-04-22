@@ -825,7 +825,7 @@ l4_revenue_prepaid_pru_f_usage_multi_features:
   partition_by: ["subscription_identifier"]
   feature_list:
     sum: [
-      'rev_arpu_net_rev_sum',
+      'rev_arpu_total_net_rev_sum',
       'rev_arpu_net_tariff_rev_reward_sum',
       'rev_arpu_net_tariff_rev_exc_reward_sum',
       'rev_arpu_data_rev_sum',
@@ -887,7 +887,7 @@ l4_revenue_prepaid_pru_f_usage_multi_features:
           'rev_arpu_share_voice_non_intra_avg',
           'rev_arpu_diff_voice_intra_non_intra_avg',
           'rev_arpu_diff_voice_intra_non_intra_per_min_avg',]
-    max: ["rev_arpu_last_date_on_top_pkg_max",
+    max: ["rev_arpu_last_date_on_top_pkg_max"
           "rev_arpu_share_of_exc_reward_over_total_rev_max",
           "rev_arpu_share_of_revenue_reward_over_total_rev_max",
           "rev_arpu_share_data_rev_4g_max",
