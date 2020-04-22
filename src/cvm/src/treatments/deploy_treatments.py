@@ -25,6 +25,7 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import logging
 from datetime import datetime
 from typing import Any, Dict
 
@@ -59,5 +60,6 @@ def deploy_contact(
         created_date.strftime("%Y%m%d%H%M%S")
     )
     df.to_csv(file_name, index=False, header=True, sep="|")
+    logging.info("ARD treatments saved to {}".format(file_name))
 
     return 0
