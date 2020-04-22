@@ -53,6 +53,7 @@ def massive_processing(input_df, sql, output_df_catalog):
         logging.info("running for dates {0}".format(str(curr_item)))
         small_df = data_frame.filter(F.col("partition_date").isin(*[curr_item]))
         output_df = node_from_config(small_df, sql)
+        print("schema:", output_df.printSchema())
         CNTX.catalog.save(output_df_catalog, output_df)
 
     logging.info("Final date to run for {0}".format(str(first_item)))
