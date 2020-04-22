@@ -450,10 +450,8 @@ class TestUnitRevenue:
 
         set_value(project_context)
 
-        l1_revenue_prepaid_pru_f_usage_multi_daily = massive_processing_with_customer(
-            df_l0_revenue_prepaid_pru_f_usage_multi_daily,
-            customer_pro,
-            var_project_context.catalog.load('params:l1_revenue_prepaid_pru_f_usage_multi_daily'))
+        l1_revenue_prepaid_pru_f_usage_multi_daily = massive_processing_with_customer(df_l0_revenue_prepaid_pru_f_usage_multi_daily,
+            customer_pro,var_project_context.catalog.load('params:l1_revenue_prepaid_pru_f_usage_multi_daily'))
 
         l1_revenue_prepaid_pru_f_usage_multi_daily.show()
 
