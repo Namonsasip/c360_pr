@@ -46,7 +46,7 @@ def deploy_contact(
     """
     utc_now = pytz.utc.localize(datetime.utcnow())
     created_date = utc_now.astimezone(pytz.timezone("Asia/Bangkok"))
-    df = [df["use_case"] == "ard"]
+    df = df[df["use_case"] == "ard"]
     df["data_date"] = created_date.date()
     df.rename(
         columns={
