@@ -406,10 +406,10 @@ def set_value(project_context):
 
     rdd1 = spark.sparkContext.parallelize(customer)
     global customer_pro
-    customer_pro = spark.createDataFrame(rdd1, schema=StructType([StructField("subscription_identifier",DateType(), True),
-StructField("access_method_num",DateType(), True),
-StructField("register_date",StringType(), True),
-StructField("zipcode",DateType(), True),
+    customer_pro = spark.createDataFrame(rdd1, schema=StructType([StructField("subscription_identifier",StringType(), True),
+StructField("access_method_num",StringType(), True),
+StructField("register_date",DateType(), True),
+StructField("zipcode",StringType(), True),
 StructField("prefer_language",StringType(), True),
 StructField("company_size",StringType(), True),
 StructField("corporate_flag",StringType(), True),
@@ -427,16 +427,17 @@ StructField("customer_segment",StringType(), True),
 StructField("serenade_status",StringType(), True),
 StructField("network_type",StringType(), True),
 StructField("national_id_card",StringType(), True),
-StructField("partition_date",StringType(), True),
+StructField("partition_date",DateType(), True),
 StructField("charge_type",StringType(), True),
 StructField("billing_account_no",StringType(), True),
 StructField("suppress_sms",StringType(), True),
 StructField("supp_cntn_all",StringType(), True),
 StructField("vip_flag",StringType(), True),
 StructField("royal_family_flag",StringType(), True),
-StructField("start_of_week",StringType(), True),
-StructField("start_of_month",StringType(), True),
-StructField("event_partition_date",StringType(), True)
+StructField("start_of_week",DateType(), True),
+StructField("start_of_month",DateType(), True),
+StructField("event_partition_date",DateType(), True),
+
     ]))
 
 
