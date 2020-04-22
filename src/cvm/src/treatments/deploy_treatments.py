@@ -26,6 +26,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import logging
+import os
 from datetime import datetime
 from typing import Any, Dict
 
@@ -120,5 +121,7 @@ def deploy_contact(
     output_path_date = created_date.strftime(output_path_date_format)
 
     output_path = output_path_template.format(output_path_date)
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+
     table_to_save.to_csv(output_path, index=False, header=True, sep="|")
     logging.info("Treatments for {} saved in {}".format(use_case, output_path))
