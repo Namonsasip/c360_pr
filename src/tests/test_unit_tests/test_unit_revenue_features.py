@@ -92,11 +92,7 @@ l0_revenue_prepaid_pru_f_usage_multi_daily = [
 
 global customer
 customer = [
-    ["1-test", "TEST", datetime.strptime('2020-01-01', '%Y-%m-%d'), "null", "THAI", "null", "N", "N", "Y", "Y", "3G339",
-     "3G�� 30 ���ѧ�� All Network [0.99B/min] ExVAT", "25", "F", "3577", "118", "SA", "Classic", "Classic", "3G",
-     "aWHlgJKyzdZhML+1MsR8zkLsXHK5SUBzt9OMWpVdheZEg9ejPmUEoOqHJqQIIHo0", "datetime.strptime('2020-01-01','%Y-%m-%d')",
-     "Pre-paid", "null", "N", "NNNN", "N", "N", datetime.strptime('2020-01-27', '%Y-%m-%d'),
-     datetime.strptime('2020-01-01', '%Y-%m-%d'), datetime.strptime('2020-01-01', '%Y-%m-%d')]
+["1-Test","TEST",datetime.strptime('2020-01-01', '%Y-%m-%d'),"null","THAI","null","N","N","Y","Y","3G339","3G�� 30 ���ѧ�� All Network [0.99B/min] ExVAT","25","F","3577","118","SA","Classic","Classic","3G","aWHlgJKyzdZhML+1MsR8zkLsXHK5SUBzt9OMWpVdheZEg9ejPmUEoOqHJqQIIHo0",datetime.strptime('2020-01-01', '%Y-%m-%d'),"Pre-paid","null","N","NNNN","N","N",datetime.strptime('2020-01-06', '%Y-%m-%d'),datetime.strptime('2020-01-01', '%Y-%m-%d'),datetime.strptime('2020-02-01', '%Y-%m-%d')]
 ]
 
 
@@ -410,35 +406,37 @@ def set_value(project_context):
 
     rdd1 = spark.sparkContext.parallelize(customer)
     global customer_pro
-    customer_pro = spark.createDataFrame(rdd1, schema=StructType([
-        StructField("subscription_identifier", StringType(), True),
-        StructField("access_method_num", StringType(), True),
-        StructField("register_date", DateType(), True),
-        StructField("zipcode", StringType(), True),
-        StructField("prefer_language", StringType(), True),
-        StructField("company_size", StringType(), True),
-        StructField("corporate_flag", StringType(), True),
-        StructField("prefer_language_eng", StringType(), True),
-        StructField("prefer_language_thai", StringType(), True),
-        StructField("prefer_language_other", StringType(), True),
-        StructField("current_package_id", StringType(), True),
-        StructField("current_package_name", StringType(), True),
-        StructField("age", StringType(), True),
-        StructField("gender", StringType(), True),
-        StructField("subscriber_tenure_day", StringType(), True),
-        StructField("subscriber_tenure_month", StringType(), True),
-        StructField("subscription_status", StringType(), True),
-        StructField("customer_segment", StringType(), True),
-        StructField("serenade_status", StringType(), True),
-        StructField("charge_type", StringType(), True),
-        StructField("billing_account_no", StringType(), True),
-        StructField("suppress_sms", DateType(), True),
-        StructField("supp_cntn_all", StringType(), True),
-        StructField("vip_flag", StringType(), True),
-        StructField("royal_family_flag", StringType(), True),
-        StructField("start_of_week", DateType(), True),
-        StructField("start_of_month", DateType(), True),
-        StructField("event_partition_date", DateType(), True)
+    customer_pro = spark.createDataFrame(rdd1, schema=StructType([StructField("subscription_identifier",DateType(), True),
+StructField("access_method_num",DateType(), True),
+StructField("register_date",StringType(), True),
+StructField("zipcode",DateType(), True),
+StructField("prefer_language",StringType(), True),
+StructField("company_size",StringType(), True),
+StructField("corporate_flag",StringType(), True),
+StructField("prefer_language_eng",StringType(), True),
+StructField("prefer_language_thai",StringType(), True),
+StructField("prefer_language_other",StringType(), True),
+StructField("current_package_id",StringType(), True),
+StructField("current_package_name",StringType(), True),
+StructField("age",StringType(), True),
+StructField("gender",StringType(), True),
+StructField("subscriber_tenure_day",StringType(), True),
+StructField("subscriber_tenure_month",StringType(), True),
+StructField("subscription_status",StringType(), True),
+StructField("customer_segment",StringType(), True),
+StructField("serenade_status",StringType(), True),
+StructField("network_type",StringType(), True),
+StructField("national_id_card",StringType(), True),
+StructField("partition_date",StringType(), True),
+StructField("charge_type",StringType(), True),
+StructField("billing_account_no",StringType(), True),
+StructField("suppress_sms",StringType(), True),
+StructField("supp_cntn_all",StringType(), True),
+StructField("vip_flag",StringType(), True),
+StructField("royal_family_flag",StringType(), True),
+StructField("start_of_week",StringType(), True),
+StructField("start_of_month",StringType(), True),
+StructField("event_partition_date",StringType(), True)
     ]))
 
 
