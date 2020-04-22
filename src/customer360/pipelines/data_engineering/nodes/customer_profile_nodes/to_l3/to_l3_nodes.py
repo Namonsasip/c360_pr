@@ -1,12 +1,23 @@
 from pyspark.sql import functions as F
 from pyspark.sql.types import StringType
-from customer360.utilities.spark_util import get_spark_session
+from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
+from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check
 
 
 def add_last_month_inactive_user(input_df, config):
 
-    if len(input_df.head(1)) == 0:
-        return input_df
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="monthly",
+                                                       par_col="partition_month_dup",
+                                                       target_table_name="l3_customer_profile_include_1mo_non_active")
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
 
     input_df.createOrReplaceTempView("input_df")
     spark = get_spark_session()

@@ -8,6 +8,7 @@ int_l3_customer_profile_basic_features:
     subscription_identifier: "crm_sub_id"
     charge_type: "charge_type"
     partition_month: "to_date(cast(partition_month as STRING), 'yyyyMM')"
+    partition_month_dup: "to_date(cast(partition_month as STRING), 'yyyyMM')"
     last_month: "add_months(to_date(cast(partition_month as STRING), 'yyyyMM'), -1)"
     next_month: "add_months(to_date(cast(partition_month as STRING), 'yyyyMM'), 1)"
     subscription_status: "mobile_status"
