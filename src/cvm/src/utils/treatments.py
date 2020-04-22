@@ -457,6 +457,8 @@ def get_treatments_propositions(
             "campaign_code",
             True,
         )
+        if len(chosen_microsegment_treatments) == 0:
+            raise Exception(f"No treatment for {microsegment_chosen} found")
         target_users_in_microsegment = target_users.filter(
             f"microsegment == '{microsegment_chosen}'"
         )
