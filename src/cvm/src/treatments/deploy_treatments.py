@@ -111,12 +111,14 @@ def deploy_contact(
     utc_now = pytz.utc.localize(datetime.utcnow())
     created_date = utc_now.astimezone(pytz.timezone("Asia/Bangkok"))
 
-    output_path_prefix = parameters["treatment_output"][use_case]["output_path_prefix"]
-    output_path_suffix_format = parameters["treatment_output"][use_case][
-        "output_path_suffix_format"
+    output_path_template = parameters["treatment_output"][use_case][
+        "output_path_template"
     ]
-    output_path_suffix = created_date.strftime(output_path_suffix_format)
+    output_path_date_format = parameters["treatment_output"][use_case][
+        "output_path_date_format"
+    ]
+    output_path_date = created_date.strftime(output_path_date_format)
 
-    output_path = "{}{}.csv".format(output_path_prefix, output_path_suffix)
+    output_path = output_path_template.format(output_path_date)
     table_to_save.to_csv(output_path, index=False, header=True, sep="|")
     logging.info("Treatments for {} saved in {}".format(use_case, output_path))
