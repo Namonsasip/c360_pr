@@ -25,6 +25,7 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import logging
 from typing import Any, Dict, Tuple
 
 import pandas
@@ -102,3 +103,5 @@ def deploy_treatments(
                 treatments_chosen, use_case
             )
             deploy_contact(campaign_table_prepared, parameters, use_case)
+    else:
+        logging.info("Sending treatments skipped")
