@@ -4,3 +4,4 @@ feature_selection_parameter:
   step_size: 0.1
   correlation_threshold: 0.8
   n_estimators: 20
+  n_folds: 5

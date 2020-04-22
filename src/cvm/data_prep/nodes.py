@@ -356,6 +356,7 @@ def feature_selection_all_target(
             target_class[target],
             parameters["feature_selection_parameter"]["correlation_threshold"],
             parameters["feature_selection_parameter"]["n_estimators"],
+            parameters["feature_selection_parameter"]["n_folds"],
         )
         final_list = list(set(final_list) | set(res_list))
 

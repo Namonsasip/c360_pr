@@ -16,6 +16,7 @@ def feature_selection(
     target_type: str,
     correlation_threshold: float,
     n_estimators: float,
+    n_folds: float,
 ) -> List[Any]:
     """ Return list of selected features given target column.
   Args:
@@ -25,6 +26,7 @@ def feature_selection(
       target_type: type of the target column only classification or regression.
       correlation_threshold: threshold used to filter out highly correlated features.
       n_estimators: number of estimators used for rfe.
+      n_folds: number of cv folds used for rfe.
   Returns:
       List of selected feature column names.
   """
@@ -52,7 +54,7 @@ def feature_selection(
         rfecv = RFECV(
             estimator=rfc,
             step=step_size,
-            cv=StratifiedKFold(5),
+            cv=StratifiedKFold(n_folds),
             scoring="roc_auc",
             min_features_to_select=20,
         )
@@ -61,7 +63,7 @@ def feature_selection(
         rfecv = RFECV(
             estimator=lr,
             step=step_size,
-            cv=StratifiedKFold(5),
+            cv=StratifiedKFold(n_folds),
             scoring="roc_auc",
             min_features_to_select=20,
         )
