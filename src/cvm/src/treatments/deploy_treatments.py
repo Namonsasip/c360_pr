@@ -73,7 +73,6 @@ def prepare_campaigns_table(
 
     Args:
         treatments_chosen: List of users and campaigns chosen for all use cases.
-        parameters: parameters defined in parameters.yml.
         use_case: "churn" or "ard".
     """
 
@@ -96,5 +95,28 @@ def prepare_campaigns_table(
 
     if use_case == "churn":
         use_case_treatments["project_name"] = "CVM_Prepaid_churn_model_V2"
-
     return use_case_treatments
+
+
+def deploy_contact(
+    table_to_save: pandas.DataFrame, parameters: Dict[str, Any], use_case: str,
+):
+    """ Saves given table to final output paths.
+
+    Args:
+        table_to_save: list of users and treatments in format that is ready to save.
+        parameters: parameters defined in parameters.yml.
+        use_case: "churn" or "ard".
+    """
+    utc_now = pytz.utc.localize(datetime.utcnow())
+    created_date = utc_now.astimezone(pytz.timezone("Asia/Bangkok"))
+
+    output_path_prefix = parameters["treatment_output"][use_case]["output_path_prefix"]
+    output_path_suffix_format = parameters["treatment_output"][use_case][
+        "output_path_suffix_format"
+    ]
+    output_path_suffix = created_date.strftime(output_path_suffix_format)
+
+    output_path = "{}{}.csv".format(output_path_prefix, output_path_suffix)
+    table_to_save.to_csv(output_path, index=False, header=True, sep="|")
+    logging.info("Treatments for {} saved in {}".format(use_case, output_path))
