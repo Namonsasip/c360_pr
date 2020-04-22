@@ -15,6 +15,7 @@ def feature_selection(
     step_size: int,
     target_type: str,
     correlation_threshold: float,
+    n_estimators: float,
 ) -> List[Any]:
     """ Return list of selected features given target column.
   Args:
@@ -23,6 +24,7 @@ def feature_selection(
       step_size: parameter step for RFECV function
       target_type: type of the target column only classification or regression.
       correlation_threshold: threshold used to filter out highly correlated features.
+      n_estimators: number of estimators used for rfe.
   Returns:
       List of selected feature column names.
   """
@@ -46,7 +48,7 @@ def feature_selection(
         target_type == "regression"
     ), "Target type incorrect."
     if target_type == "class":
-        rfc = RandomForestClassifier(random_state=101, n_estimators=20)
+        rfc = RandomForestClassifier(random_state=101, n_estimators=n_estimators)
         rfecv = RFECV(
             estimator=rfc,
             step=step_size,
