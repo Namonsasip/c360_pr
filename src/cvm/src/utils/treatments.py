@@ -434,6 +434,7 @@ def get_treatments_propositions(
 
     target_users = _choose_column_basing_on_usecase(target_users, "microsegment")
     target_users = _choose_column_basing_on_usecase(target_users, "macrosegment")
+    target_users = target_users.filter("microsegment is not null")
 
     def _add_random_column_from_values(tab, values, colname):
         """ Adds a new column to DataFrame which consists of randomly picked elements
