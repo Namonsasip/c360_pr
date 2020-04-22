@@ -94,7 +94,11 @@ def deploy_treatments(
         parameters: parameters defined in parameters.yml.
     """
 
-    use_cases = parameters["targets"]
-    for use_case in use_cases:
-        campaign_table_prepared = prepare_campaigns_table(treatments_chosen, use_case)
-        deploy_contact(campaign_table_prepared, parameters, use_case)
+    skip_node = parameters["treatment_output"]["skip_sending"] == "yes"
+    if not skip_node:
+        use_cases = parameters["targets"]
+        for use_case in use_cases:
+            campaign_table_prepared = prepare_campaigns_table(
+                treatments_chosen, use_case
+            )
+            deploy_contact(campaign_table_prepared, parameters, use_case)
