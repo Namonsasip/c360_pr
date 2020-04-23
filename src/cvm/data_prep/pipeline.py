@@ -308,11 +308,25 @@ training_data_prepare = (
     + prepare_features_macrosegments("training")
     + create_cvm_training_data("training")
 )
-scoring_data_prepare = (
-    create_users_from_tg("scoring")
-    + sample_inputs("scoring")
-    + prepare_features_macrosegments("scoring")
-)
+
+
+def scoring_data_prepare(sample_type: str) -> Pipeline:
+    """ Create pipeline generating input data for scoring
+
+    Args:
+        sample_type: "scoring" if list created for scoring, "training" if list created
+            for training.
+
+    Returns:
+        Kedro pipeline.
+    """
+    return (
+        create_users_from_tg(sample_type)
+        + sample_inputs(sample_type)
+        + prepare_features_macrosegments(sample_type)
+    )
+
+
 extract_features = (
     create_users_from_active("fe")
     + sample_inputs("fe")
