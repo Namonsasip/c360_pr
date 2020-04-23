@@ -1,4 +1,5 @@
 from kedro.pipeline.node import Node
+from kedro.io.core import DataSetError
 from pathlib import Path
 from pyspark.sql import functions as f
 from pyspark.sql import DataFrame
@@ -7,7 +8,7 @@ import os
 from typing import *
 from functools import reduce, partial, update_wrapper
 
-from src.customer360.utilities.re_usable_functions import get_spark_session
+from src.customer360.utilities.re_usable_functions import get_spark_session, get_spark_empty_df
 
 conf = os.getenv("CONF", None)
 
@@ -101,6 +102,22 @@ def run_accuracy_logic(
         if each_col in input_df.columns:
             partition_col = each_col
             break
+
+    ctx = get_dq_context()
+    try:
+        dq_accuracy_df = ctx.catalog.load("dq_accuracy")
+        last_processed_date = (dq_accuracy_df
+                               .filter(f.col("dataset_name") == dataset_name)
+                               .select(f.max(f.col("corresponding_date")))
+                               .head())
+
+        if last_processed_date is not None:
+            input_df = input_df.filter(f.col(partition_col) > last_processed_date[0])
+            if input_df.head() is None:
+                return get_spark_empty_df(schema=dq_accuracy_df.schema)
+    except DataSetError:
+        # no dq_accuracy table means the pipeline is never executed
+        pass
 
     if partition_col is None:
         raise AttributeError("""No partition column is detected in dataset. 
