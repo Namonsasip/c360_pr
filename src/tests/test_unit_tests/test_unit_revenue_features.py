@@ -42,57 +42,42 @@ from customer360.utilities.re_usable_functions import *
 import pandas as pd
 import random
 from pyspark.sql.types import *
-from pyspark.sql import functions as F
-from datetime import datetime
+import datetime
 from customer360.pipelines.data_engineering.nodes.revenue_nodes.to_l1.to_l1_nodes import \
     massive_processing_with_customer
 
 global l0_revenue_postpaid_ru_f_sum_revenue_by_service_monthly
 l0_revenue_postpaid_ru_f_sum_revenue_by_service_monthly = [
-    [datetime.strptime('2020-01-01', '%Y-%m-%d'), "TEST", "Bill_tag", "111", "1", "10", "100", "0", "0", "0", "0", "0",
+    [datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'), "TEST", "Bill_tag", "111", "1", "10", "100", "0", "0", "0", "0", "0",
      "1", "10", "100", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "202001"],
-    [datetime.strptime('2020-01-01', '%Y-%m-%d'), "TEST", "Bill_tag", "111", "1", "10", "100", "0", "0", "0", "0", "0",
+    [datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'), "TEST", "Bill_tag", "111", "1", "10", "100", "0", "0", "0", "0", "0",
      "1", "10", "100", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "202001"],
-    [datetime.strptime('2020-02-01', '%Y-%m-%d'), "TEST", "Bill_tag", "111", "1", "10", "100", "0", "0", "0", "0", "0",
+    [datetime.datetime.strptime('2020-02-01', '%Y-%m-%d'), "TEST", "Bill_tag", "111", "1", "10", "100", "0", "0", "0", "0", "0",
      "1", "10", "100", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "202001"]
 
 ]
 
 global l0_revenue_prepaid_ru_f_sum_revenue_by_service_monthly
 l0_revenue_prepaid_ru_f_sum_revenue_by_service_monthly = [
-    [datetime.strptime('2020-01-01', '%Y-%m-%d'), "TEST", "3G971", "0", "null", "null",
-     datetime.strptime('2020-01-01', '%Y-%m-%d'), "10", "0", "0", "1", "0", "0", "0", "100", "2", "267.09", "0", "0",
+    [datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'), "test", "3G971", "0", "null", "null",
+     datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'), "10", "0", "0", "1", "0", "0", "0", "100", "2", "267.09", "0", "0",
      "0", "0", "0", "10", "0", "0", "1", "100", "202001"],
-    [datetime.strptime('2020-01-01', '%Y-%m-%d'), "TEST", "3G971", "0", "null", "null",
-     datetime.strptime('2020-01-01', '%Y-%m-%d'), "10", "0", "0", "1", "0", "0", "0", "100", "2", "267.09", "0", "0",
-     "0", "0", "0", "10", "0", "0", "1", "100", "202001"],
-    [datetime.strptime('2020-01-01', '%Y-%m-%d'), "TEST", "3G971", "0", "null", "null",
-     datetime.strptime('2020-01-01', '%Y-%m-%d'), "10", "0", "0", "1", "0", "0", "0", "100", "2", "267.09", "0", "0",
+    [datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'), "TEST", "3G971", "0", "null", "null",
+     datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'), "10", "0", "0", "1", "0", "0", "0", "100", "2", "267.09", "0", "0",
+     "0", "0", "0", "10", "0", "0", "1", "100", "test"],
+    [datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'), "test", "3G971", "0", "null", "null",
+     datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'), "10", "0", "0", "1", "0", "0", "0", "100", "2", "267.09", "0", "0",
      "0", "0", "0", "10", "0", "0", "1", "100", "202001"]
 ]
 
 global l0_revenue_prepaid_pru_f_usage_multi_daily
 l0_revenue_prepaid_pru_f_usage_multi_daily = [
-    [datetime.strptime('2020-01-27', '%Y-%m-%d'), datetime.strptime('2020-01-01', '%Y-%m-%d'), "TEST",
-     datetime.strptime('2020-01-01', '%Y-%m-%d'), "Y", "N", "N", "52", "CW", "3G718", "N", "null", "null", "null",
-     "null", "null", "null", "null", "null", "null", "null", "null", "null", "null", "null", "null", "null", "null",
-     "null", "null", "null", "null", "null", "null", "null", "null", "null", "null", "null", "null", "3GPre-paid",
-     "null", "CBS", "null", "null", "PBI", "20200101"],
-    [datetime.strptime('2020-01-28', '%Y-%m-%d'), datetime.strptime('2020-01-01', '%Y-%m-%d'), "TEST",
-     datetime.strptime('2020-01-01', '%Y-%m-%d'), "Y", "N", "N", "52", "CW", "3G718", "N", "null", "null", "null",
-     "null", "null", "null", "null", "null", "null", "null", "null", "null", "null", "null", "null", "null", "null",
-     "null", "null", "null", "null", "null", "null", "null", "null", "null", "null", "null", "null", "3GPre-paid",
-     "null", "CBS", "null", "null", "PBI", "20200101"],
-    [datetime.strptime('2020-02-01', '%Y-%m-%d'), datetime.strptime('2020-02-01', '%Y-%m-%d'), "TEST",
-     datetime.strptime('2020-01-01', '%Y-%m-%d'), "Y", "N", "N", "52", "CW", "3G718", "N", "null", "null", "null",
-     "null", "null", "null", "null", "null", "null", "null", "null", "null", "null", "null", "null", "null", "null",
-     "null", "null", "null", "null", "null", "null", "null", "null", "null", "null", "null", "null", "3GPre-paid",
-     "null", "CBS", "null", "null", "PBI", "20200101"]
+[datetime.datetime.strptime('2020-01-28', '%Y-%m-%d'),datetime.datetime.strptime('2020-01-31', '%Y-%m-%d'),"test",datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'),"Y","N","N",48.0,"XU","3G882","N","null",1.0,1.0,1.0,1.0,2.0,2.0,2.0,2.0,2.14,1.0,2.0,2.0,2.14,1.0,1.0,1.0,1.0,2.14,2.14,1.0,1.0,2.1,0.0,1.0,1.0,2.0,1.0,1.0,"3GPre-paid",0.0,"CBS",0.0,0.0,"UDN","20200101"]
 ]
 
 global customer
 customer = [
-["1-TEST","TEST",datetime.strptime('2020-01-01', '%Y-%m-%d'),"null","THAI","null","N","N","Y","Y","3G339","Promotion_ID","25","F","3577","118","SA","Classic","Classic","3G","aWHlgJKyzdZhML+1MsR8zkLsXHK5SUBzt9OMWpVdheZEg9ejPmUEoOqHJqQIIHo0",datetime.strptime('2020-01-01', '%Y-%m-%d'),"Pre-paid","null","N","NNNN","N","N",datetime.strptime('2020-01-06', '%Y-%m-%d'),datetime.strptime('2020-01-01', '%Y-%m-%d'),datetime.strptime('2020-02-01', '%Y-%m-%d')]
+["1-TEST","test",datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'),"null","THAI","null","N","N","Y","Y","3G339","Promotion_ID","25","F","3577","118","SA","Classic","Classic","3G","aWHlgJKyzdZhML+1MsR8zkLsXHK5SUBzt9OMWpVdheZEg9ejPmUEoOqHJqQIIHo0",datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'),"Pre-paid","null","N","NNNN","N","N",datetime.datetime.strptime('2020-01-27', '%Y-%m-%d'),datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'),"20200101"]
 ]
 
 
@@ -289,118 +274,53 @@ def set_value(project_context):
     global df_l0_revenue_prepaid_pru_f_usage_multi_daily
     df_l0_revenue_prepaid_pru_f_usage_multi_daily = spark.createDataFrame(rdd1,
                                                                           schema=StructType(
-                                                                              [StructField("day_id", DateType(), True),
-                                                                               StructField("month_id", DateType(),
-                                                                                           True),
-                                                                               StructField("access_method_num",
-                                                                                           StringType(), True),
-                                                                               StructField("register_date", DateType(),
-                                                                                           True),
-                                                                               StructField("arpu0_yn", StringType(),
-                                                                                           True),
-                                                                               StructField("usage_yn", StringType(),
-                                                                                           True),
-                                                                               StructField("data_user_yn", StringType(),
-                                                                                           True),
-                                                                               StructField("service_months",
-                                                                                           StringType(), True),
-                                                                               StructField("first_activate_region",
-                                                                                           StringType(), True),
-                                                                               StructField("package_id", StringType(),
-                                                                                           True),
-                                                                               StructField("has_ontop_gprs_yn",
-                                                                                           StringType(), True),
-                                                                               StructField("gprs_ontop_package_name",
-                                                                                           StringType(), True),
-                                                                               StructField(
-                                                                                   "total_net_tariff_gprs_revenue",
-                                                                                   StringType(), True),
-                                                                               StructField(
-                                                                                   "total_net_tariff_gprs_package",
-                                                                                   StringType(), True),
-                                                                               StructField(
-                                                                                   "total_net_tariff_gprs_exc_package",
-                                                                                   StringType(), True),
-                                                                               StructField("total_vol_gprs",
-                                                                                           StringType(), True),
-                                                                               StructField("total_call", StringType(),
-                                                                                           True),
-                                                                               StructField("total_minute", StringType(),
-                                                                                           True),
-                                                                               StructField("total_call_exc_free_no",
-                                                                                           StringType(), True),
-                                                                               StructField("total_minute_exc_free_no",
-                                                                                           StringType(), True),
-                                                                               StructField("total_net_tariff_revenue",
-                                                                                           StringType(), True),
-                                                                               StructField(
-                                                                                   "total_net_tariff_revenue_reward",
-                                                                                   StringType(), True),
-                                                                               StructField(
-                                                                                   "total_call_basic_exc_free_pack",
-                                                                                   StringType(), True),
-                                                                               StructField(
-                                                                                   "total_minute_basic_exc_free_pack",
-                                                                                   StringType(), True),
-                                                                               StructField(
-                                                                                   "total_net_tariff_revenue_basic",
-                                                                                   StringType(), True),
-                                                                               StructField("total_call_basic_free_pack",
-                                                                                           StringType(), True),
-                                                                               StructField("total_min_basic_free_pack",
-                                                                                           StringType(), True),
-                                                                               StructField("total_call_monthly",
-                                                                                           StringType(), True),
-                                                                               StructField(
-                                                                                   "total_net_tariff_revenue_monthly",
-                                                                                   StringType(), True),
-                                                                               StructField(
-                                                                                   "total_net_tariff_revenue_exc_reward",
-                                                                                   StringType(), True),
-                                                                               StructField(
-                                                                                   "total_net_tariff_basic_non_intra",
-                                                                                   StringType(), True),
-                                                                               StructField(
-                                                                                   "total_net_tariff_basic_intra",
-                                                                                   StringType(), True),
-                                                                               StructField(
-                                                                                   "total_minute_basic_exc_free_pack_intra",
-                                                                                   StringType(), True),
-                                                                               StructField(
-                                                                                   "total_minute_basic_exc_free_pack_non_intra",
-                                                                                   StringType(), True),
-                                                                               StructField(
-                                                                                   "total_minute_basic_free_pack_intra",
-                                                                                   StringType(), True),
-                                                                               StructField(
-                                                                                   "total_minute_basic_free_pack_non_intra",
-                                                                                   StringType(), True),
-                                                                               StructField(
-                                                                                   "total_call_basic_exc_free_pack_intra",
-                                                                                   StringType(), True),
-                                                                               StructField(
-                                                                                   "total_call_basic_exc_free_pack_non_intra",
-                                                                                   StringType(), True),
-                                                                               StructField(
-                                                                                   "total_call_basic_free_pack_intra",
-                                                                                   StringType(), True),
-                                                                               StructField(
-                                                                                   "total_call_basic_free_pack_non_intra",
-                                                                                   StringType(), True),
-                                                                               StructField("network_type", StringType(),
-                                                                                           True),
-                                                                               StructField("total_vol_gprs_4g",
-                                                                                           StringType(), True),
-                                                                               StructField("billing_system",
-                                                                                           StringType(), True),
-                                                                               StructField("total_vol_gprs_package",
-                                                                                           StringType(), True),
-                                                                               StructField("total_vol_gprs_exc_pack",
-                                                                                           StringType(), True),
-                                                                               StructField("first_activate_province",
-                                                                                           StringType(), True),
-                                                                               StructField("partition_date",
-                                                                                           StringType(), True)
+                                                                              [StructField("day_id",DateType(), True),
+StructField("month_id",DateType(), True),
+StructField("access_method_num",StringType(), True),
+StructField("register_date",DateType(), True),
+StructField("arpu0_yn",StringType(), True),
+StructField("usage_yn",StringType(), True),
+StructField("data_user_yn",StringType(), True),
+StructField("service_months",DoubleType(), True),
+StructField("first_activate_region",StringType(), True),
+StructField("package_id",StringType(), True),
+StructField("has_ontop_gprs_yn",StringType(), True),
+StructField("gprs_ontop_package_name",StringType(), True),
+StructField("total_net_tariff_gprs_revenue",DoubleType(), True),
+StructField("total_net_tariff_gprs_package",DoubleType(), True),
+StructField("total_net_tariff_gprs_exc_package",DoubleType(), True),
+StructField("total_vol_gprs",DoubleType(), True),
+StructField("total_call",DoubleType(), True),
+StructField("total_minute",DoubleType(), True),
+StructField("total_call_exc_free_no",DoubleType(), True),
+StructField("total_minute_exc_free_no",DoubleType(), True),
+StructField("total_net_tariff_revenue",DoubleType(), True),
+StructField("total_net_tariff_revenue_reward",DoubleType(), True),
+StructField("total_call_basic_exc_free_pack",DoubleType(), True),
+StructField("total_minute_basic_exc_free_pack",DoubleType(), True),
+StructField("total_net_tariff_revenue_basic",DoubleType(), True),
+StructField("total_call_basic_free_pack",DoubleType(), True),
+StructField("total_min_basic_free_pack",DoubleType(), True),
+StructField("total_call_monthly",DoubleType(), True),
+StructField("total_net_tariff_revenue_monthly",DoubleType(), True),
+StructField("total_net_tariff_revenue_exc_reward",DoubleType(), True),
+StructField("total_net_tariff_basic_non_intra",DoubleType(), True),
+StructField("total_net_tariff_basic_intra",DoubleType(), True),
+StructField("total_minute_basic_exc_free_pack_intra",DoubleType(), True),
+StructField("total_minute_basic_exc_free_pack_non_intra",DoubleType(), True),
+StructField("total_minute_basic_free_pack_intra",DoubleType(), True),
+StructField("total_minute_basic_free_pack_non_intra",DoubleType(), True),
+StructField("total_call_basic_exc_free_pack_intra",DoubleType(), True),
+StructField("total_call_basic_exc_free_pack_non_intra",DoubleType(), True),
+StructField("total_call_basic_free_pack_intra",DoubleType(), True),
+StructField("total_call_basic_free_pack_non_intra",DoubleType(), True),
+StructField("network_type",StringType(), True),
+StructField("total_vol_gprs_4g",DoubleType(), True),
+StructField("billing_system",StringType(), True),
+StructField("total_vol_gprs_package",DoubleType(), True),
+StructField("total_vol_gprs_exc_pack",DoubleType(), True),
+StructField("first_activate_province",StringType(), True),
+StructField("partition_date",StringType(), True),
 
                                                                                ]))
 
@@ -436,7 +356,7 @@ StructField("vip_flag",StringType(), True),
 StructField("royal_family_flag",StringType(), True),
 StructField("start_of_week",DateType(), True),
 StructField("start_of_month",DateType(), True),
-StructField("event_partition_date",DateType(), True),
+StructField("event_partition_date",StringType(), True),
 
     ]))
 
