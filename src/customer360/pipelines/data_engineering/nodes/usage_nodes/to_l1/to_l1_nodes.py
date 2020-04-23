@@ -273,7 +273,7 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
         df=l1_usage_outgoing_call_relation_sum_daily_stg,
         grouping="daily", par_col="event_partition_date",
         target_table_name="l1_usage_postpaid_prepaid_daily",
-        exception_partitions=['2019-12-01'])
+        exception_partitions=['2019-12-01', '2020-01-03'])
 
     l1_usage_incoming_call_relation_sum_daily_stg = data_non_availability_and_missing_check(
         df=l1_usage_incoming_call_relation_sum_daily_stg,
