@@ -58,7 +58,7 @@ def check_catalog_and_feature_exist(
             df = ctx.catalog.load(dataset_name)
 
             for col in dq_config[dataset_name]:
-                if col not in df.columns:
+                if col["feature"] not in df.columns:
                     missing_files.append("{}.{}".format(dataset_name, col))
         except:
             missing_files.append(dataset_name)
@@ -135,8 +135,14 @@ def run_accuracy_logic(
 
     agg_features = []
     for each_feature in features_list:
+        col = each_feature["feature"]
         for each_agg in agg_functions:
-            agg_features.append(each_agg.format(col=each_feature))
+            agg_features.append(each_agg.format(col=col))
+
+        if "outlier_formula" in each_feature:
+            agg_features.append(
+                f"{each_feature['outlier_formula'].format(col=col)}/count(*) as {col}__outlier_percentage"
+            )
 
     spark = get_spark_session()
     sql_stmt = """

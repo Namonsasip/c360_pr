@@ -6,11 +6,19 @@ percentiles:
     - 0.1
     - 0.9
 
+
+
+num_of_calls_outlier:  &num_of_calls_outlier
+  outlier_formula: "sum(case when {col} < 0 or {col} > 500 then 1 else 0 end)"
+
 features_for_dq:
   l4_touchpoints_to_call_center_features:
-    - sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_week
-    - sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_two_week
-    - sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_four_week
-    - sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_twelve_week
+    - feature: sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_week
+      <<: *num_of_calls_outlier
+    - feature: sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_two_week
+      <<: *num_of_calls_outlier
+    - feature: sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_four_week
+      <<: *num_of_calls_outlier
+    - feature: sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_twelve_week
 
 
