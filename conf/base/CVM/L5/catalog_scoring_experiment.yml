@@ -1,0 +1,67 @@
+_spark_parquet: &spark_parquet
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  save_args:
+    mode: "overwrite"
+
+cvm_users_list_scoring_experiment:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_cvm_users_list_scoring_experiment/
+
+l3_customer_profile_include_1mo_non_active_scoring_experiment:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l3_customer_profile_include_1mo_non_active_scoring_experiment/
+
+l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_scoring_experiment:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_scoring_experiment/
+
+l4_usage_prepaid_postpaid_daily_features_scoring_experiment:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_usage_prepaid_postpaid_daily_features_scoring_experiment/
+
+l4_daily_feature_topup_and_volume_scoring_experiment:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_daily_feature_topup_and_volume_scoring_experiment/
+
+l4_usage_postpaid_prepaid_weekly_features_sum_scoring_experiment:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_usage_postpaid_prepaid_weekly_features_sum_scoring_experiment/
+
+l2_touchpoints_nim_work_features_scoring_experiment:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l2_touchpoints_nim_work_features_scoring_experiment/
+
+ard_targets_scoring_experiment:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_ard_targets_scoring_experiment/
+
+churn_targets_scoring_experiment:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_churn_targets_scoring_experiment/
+
+features_targets_scoring_experiment:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_features_targets_scoring_experiment/
+
+features_macrosegments_scoring_experiment:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_features_macrosegments_scoring_experiment/
+
+sample_preprocessed_scoring_experiment:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_sample_preprocessed_scoring_experiment/
+
+propensity_scores:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_propensity_scores/
+
+active_users_sample_scoring_experiment:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_active_users_sample_scoring_experiment/
+
+microsegments_scoring_experiment:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_microsegments_scoring_experiment/
+
+
