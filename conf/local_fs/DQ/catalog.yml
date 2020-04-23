@@ -14,3 +14,4 @@ dq_accuracy:
   filepath: data/DQ/dq_accuracy/
   save_args:
     mode: "append"
+    partitionBy: ["dataset_name", "corresponding_date"]
