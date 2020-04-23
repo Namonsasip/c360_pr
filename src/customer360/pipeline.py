@@ -274,8 +274,18 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "cvm_treatments": generate_treatments(),
         "cvm_full_training": training_data_prepare + preprocessing_fit()
                              + train_model(),
-        "cvm_full_scoring": scoring_data_prepare("scoring") + preprocessing_transform("scoring")
-                            + score_model("scoring") + generate_treatments("scoring"),
+        "cvm_full_scoring": (
+            scoring_data_prepare("scoring")
+            + preprocessing_transform("scoring")
+            + score_model("scoring")
+            + generate_treatments("scoring"),
+        ),
+        "cvm_full_scoring_experiment": (
+            scoring_data_prepare("scoring_experiment")
+            + preprocessing_transform("scoring_experiment")
+            + score_model("scoring_experiment")
+            + generate_treatments("scoring_experiment"),
+        ),
         "cvm_full_features_extraction": extract_features,
         "cvm_rfe_only": rfe_only,
     }
