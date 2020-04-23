@@ -131,7 +131,8 @@ def usage_outgoing_call_pipeline(input_df, sql) -> DataFrame:
         return get_spark_empty_df()
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
-                                                       target_table_name="l1_usage_outgoing_call_relation_sum_daily")
+                                                       target_table_name="l1_usage_outgoing_call_relation_sum_daily",
+                                                       exception_partitions=['2019-12-01'])
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -152,7 +153,8 @@ def usage_incoming_call_pipeline(input_df, sql) -> DataFrame:
         return get_spark_empty_df()
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
-                                                       target_table_name="l1_usage_incoming_call_relation_sum_daily")
+                                                       target_table_name="l1_usage_incoming_call_relation_sum_daily",
+                                                       exception_partitions=['2019-12-01'])
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
