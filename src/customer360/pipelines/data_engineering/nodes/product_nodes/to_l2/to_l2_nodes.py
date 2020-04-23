@@ -1,7 +1,10 @@
 from pyspark.sql import DataFrame
 
-from src.customer360.utilities.spark_util import get_spark_session
+from src.customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 from src.customer360.pipelines.data_engineering.nodes.product_nodes.to_l1.to_l1_nodes import union_master_package_table
+from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols
+from pyspark.sql import functions as F
+from pyspark.sql.types  import *
 
 
 def get_activated_deactivated_features(
@@ -13,6 +16,26 @@ def get_activated_deactivated_features(
 ) -> DataFrame:
     spark = get_spark_session()
 
+    if (len(cust_promo_df.head(1)) == 0 | len(prepaid_main_master_df.head(1)) == 0 |
+            len(postpaid_main_master_df.head(1)) == 0 | len(prepaid_ontop_master_df.head(1)) == 0 |
+            len(postpaid_ontop_master_df.head(1)) == 0):
+        return get_spark_empty_df()
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            cust_promo_df.select(
+                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
+            prepaid_main_master_df.select(
+                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
+            postpaid_main_master_df.select(
+                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
+            prepaid_ontop_master_df.select(
+                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
+            postpaid_ontop_master_df.select(F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date"))
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    cust_promo_df.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
     cust_promo_df.createOrReplaceTempView("cust_promo_df")
 
     union_master_package_table(
