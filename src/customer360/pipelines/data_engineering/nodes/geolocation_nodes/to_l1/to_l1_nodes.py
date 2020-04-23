@@ -100,7 +100,7 @@ def l1_first_data_session_cell_identifier_daily(df, sql):
 
 
 def l1_usage_sum_data_location_dow_intermediate(df):
-    df = df.groupBy('date_id', 'mobile_no', 'lac', 'ci').agg(F.sum('no_of_call').alias('sum_call'))
+    df = df.groupBy('date_id', 'mobile_no', 'gprs_type','lac', 'ci').agg(F.sum('no_of_call').alias('sum_call'))
     df = add_start_of_week_and_month(df, "date_id")
     df = df.withColumn("day_of_week", F.date_format(F.col("event_partition_date"), "u"))
     return df

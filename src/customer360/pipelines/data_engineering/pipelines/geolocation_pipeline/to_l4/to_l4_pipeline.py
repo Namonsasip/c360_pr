@@ -11,28 +11,28 @@ def geo_to_l4_pipeline(**kwargs):
 
             node(
                 l4_rolling_window,
-                ["l2_geo_number_of_bs_used",
+                ["l2_geo_number_of_bs_used_for_l4_geo_number_of_bs_used",
                  "params:l4_number_of_bs_used"],
                 "l4_geo_number_of_bs_used"
             ),
 
             node(
                 l4_rolling_window,
-                ["l2_geo_number_of_location_with_transactions",
+                ["l2_geo_number_of_location_with_transactions_for_l4_geo_number_of_location_with_transactions",
                  "params:l4_number_of_location_with_transactions"],
                 "l4_geo_number_of_location_with_transactions"
             ),
 
             node(
                 l4_rolling_window,
-                ["l2_geo_voice_distance_daily",
+                ["l2_geo_voice_distance_daily_for_l4_geo_voice_distance_daily",
                  "params:l4_voice_distance_daily"],
                 "l4_geo_voice_distance_daily"
             ),
 
             node(
                 l4_rolling_window,
-                ["l2_geo_data_distance_weekly",
+                ["l2_geo_data_distance_weekly_for_l4_geo_data_distance",
                  "params:l4_data_distance_monthly"],
                 "l4_geo_data_distance"
 
@@ -40,7 +40,7 @@ def geo_to_l4_pipeline(**kwargs):
 
             node(
                 l4_rolling_window,
-                ["l2_geo_data_distance_weekday_weekly",
+                ["l2_geo_data_distance_weekday_weekly_for_l4_geo_data_distance_weekday",
                  "params:l4_data_distance_monthly"],
                 "l4_geo_data_distance_weekday"
 
@@ -48,7 +48,7 @@ def geo_to_l4_pipeline(**kwargs):
 
             node(
                 l4_rolling_window,
-                ["l2_geo_data_distance_weekend_weekly",
+                ["l2_geo_data_distance_weekend_weekly_for_l4_geo_data_distance_weekend",
                  "params:l4_data_distance_monthly"],
                 "l4_geo_data_distance_weekend"
 

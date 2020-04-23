@@ -83,7 +83,7 @@ l0_usage_sum_voice_location_daily_for_l1_geo_voice_distance_daily_intermediate:
 
 l0_usage_sum_data_location_daily_for_l1_geo_first_data_session_cell_identifier_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/GEO/l0_usage_sum_data_location_daily/
+  filepath: /mnt/customer360-blob-data/C360/USAGE/l0_usage_sum_data_location_daily/
   file_format: parquet
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
@@ -95,7 +95,7 @@ l0_usage_sum_data_location_daily_for_l1_geo_first_data_session_cell_identifier_d
 
 l0_usage_sum_data_location_daily_for_l1_geo_usage_sum_data_location_dow_intermediate:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/GEO/l0_usage_sum_data_location_daily/
+  filepath: /mnt/customer360-blob-data/C360/USAGE/l0_usage_sum_data_location_daily/
   file_format: parquet
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:

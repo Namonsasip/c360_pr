@@ -11,7 +11,7 @@ def geo_to_l3_pipeline(**kwargs):
 
             node(
                 l3_geo_voice_distance_daily,
-                ["l1_geo_voice_distance_daily_intermediate",
+                ["l1_geo_voice_distance_daily_intermediate_for_l3_geo_voice_distance_daily",
                  "params:l3_voice_distance_daily"],
                 "l3_geo_voice_distance_daily"
 
@@ -19,7 +19,7 @@ def geo_to_l3_pipeline(**kwargs):
 
             node(
                 l3_first_data_session_cell_identifier_monthly,
-                ["l1_geo_first_data_session_cell_identifier_daily",
+                ["l1_geo_first_data_session_cell_identifier_daily_for_l3_geo_first_data_session_cell_identifier_monthly",
                  "params:l3_first_data_session_cell_identifier"],
                 "l3_geo_first_data_session_cell_identifier_monthly"
 
@@ -27,7 +27,7 @@ def geo_to_l3_pipeline(**kwargs):
 
             node(
                 l3_geo_data_distance_monthly,
-                ["l1_geo_usage_sum_data_location_dow_intermediate",
+                ["l1_geo_usage_sum_data_location_dow_intermediate_for_l3_geo_data_distance_monthly",
                  "params:l3_data_distance_monthly"],
                 "l3_geo_data_distance_monthly"
 
@@ -35,7 +35,7 @@ def geo_to_l3_pipeline(**kwargs):
 
             node(
                 l3_geo_data_distance_weekday_monthly,
-                ["l1_geo_usage_sum_data_location_dow_intermediate",
+                ["l1_geo_usage_sum_data_location_dow_intermediate_for_l3_geo_data_distance_weekday_monthly",
                  "params:l3_data_distance_weekday_monthly"],
                 "l3_geo_data_distance_weekday_monthly"
 
@@ -43,7 +43,7 @@ def geo_to_l3_pipeline(**kwargs):
 
             node(
                 l3_geo_data_distance_weekend_monthly,
-                ["l1_geo_usage_sum_data_location_dow_intermediate",
+                ["l1_geo_usage_sum_data_location_dow_intermediate_for_l3_geo_data_distance_weekend_monthly",
                  "params:l3_data_distance_weekend_monthly"],
                 "l3_geo_data_distance_weekend_monthly"
 
@@ -51,7 +51,7 @@ def geo_to_l3_pipeline(**kwargs):
 
             node(
                 l3_geo_home_work_location_id,
-                ["l0_locals_homework",
+                ["l0_locals_homework_for_l3_geo_home_work_location_id",
                  "params:l3_geo_home_work_location_id"],
                 "l3_geo_home_work_location_id"
 
