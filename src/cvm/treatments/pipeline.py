@@ -34,8 +34,12 @@ from cvm.treatments.nodes import (
 )
 
 
-def generate_treatments() -> Pipeline:
+def generate_treatments(sample_type: str) -> Pipeline:
     """ Creates pipeline defining treatment from propensity scores.
+
+    Args:
+        sample_type: "scoring" if list created for scoring, "training" if list created
+            for training.
 
      Returns:
          Kedro pipeline.
@@ -46,18 +50,18 @@ def generate_treatments() -> Pipeline:
             node(
                 prepare_microsegments,
                 [
-                    "features_macrosegments_scoring",
+                    "features_macrosegments_{}".format(sample_type),
                     "l3_customer_profile_include_1mo_non_active",
                     "parameters",
                 ],
-                "microsegments_scoring",
-                name="create_microsegments_scoring",
+                "microsegments_{}".format(sample_type),
+                name="create_microsegments_{}".format(sample_type),
             ),
             node(
                 produce_treatments,
                 [
-                    "propensity_scores_scoring",
-                    "microsegments_scoring",
+                    "propensity_scores_{}".format(sample_type),
+                    "microsegments_{}".format(sample_type),
                     "microsegments_treatments",
                     "treatments_chosen_history",
                     "parameters",
