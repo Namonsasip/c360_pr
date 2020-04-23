@@ -20,7 +20,7 @@ scoring:
   chosen_date: '' # '' for most recent data
   stages:
     - take_last_date
-    -
+
 scoring_experiment:
   subscription_id_suffix: '' # '' for all users
   chosen_date: '' # '' for most recent data
