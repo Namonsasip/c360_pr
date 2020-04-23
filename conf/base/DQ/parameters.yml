@@ -1,8 +1,16 @@
 sample_size: 100000
 
+percentiles:
+  accuracy: 80
+  percentile_list:
+    - 0.1
+    - 0.9
+
 features_for_dq:
-  l4_touchpoints_from_call_center_features:
-    - sum_touchpoints_number_of_calls_from_cc_sum_weekly_last_week
-    - sum_touchpoints_number_of_calls_from_cc_sum_weekly_last_two_week
-    - sum_touchpoints_number_of_calls_from_cc_sum_weekly_last_four_week
-    - sum_touchpoints_number_of_calls_from_cc_sum_weekly_last_twelve_week
+  l4_touchpoints_to_call_center_features:
+    - sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_week
+    - sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_two_week
+    - sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_four_week
+    - sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_twelve_week
+
+
