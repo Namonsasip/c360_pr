@@ -324,6 +324,7 @@ class DataQualityProjectContext(ProjectContext):
 
 def run_data_quality_pipeline():
     project_context = DataQualityProjectContext(project_path=Path.cwd(), env=conf)
+    # project_context.run(pipeline_name='subscription_id_sampling_pipeline')
     project_context.run(pipeline_name='data_quality_pipeline')
 
 
