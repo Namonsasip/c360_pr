@@ -41,14 +41,22 @@ from cvm.src.utils.utils import get_clean_important_variables
 from pyspark.sql import DataFrame
 
 
-def create_users_from_cgtg(customer_groups: DataFrame) -> DataFrame:
+def create_users_from_cgtg(
+    customer_groups: DataFrame, sampling_parameters: Dict[str, Any]
+) -> DataFrame:
     """ Creates users table to use during scoring using customer groups
     table.
 
     Args:
         customer_groups: Table with target, control and bau groups.
+        sampling_parameters: sampling parameters defined in parameters.yml.
     """
-    today = date.today().strftime("%Y-%m-%d")
+
+    date_chosen = sampling_parameters["chosen_date"]
+    if date_chosen == "today" or date_chosen == "" or date_chosen is None:
+        today = date.today().strftime("%Y-%m-%d")
+    else:
+        today = date_chosen
     df = (
         customer_groups.filter("target_group == 'TG'")
         .select("crm_sub_id")
@@ -73,7 +81,7 @@ def create_users_from_active_users(
 
     profile = prepare_key_columns(profile)
     date_chosen = sampling_parameters["chosen_date"]
-    if date_chosen == "today":
+    if date_chosen == "today" or date_chosen == "":
         date_chosen = None
     users = filter_latest_date(profile, date_chosen)
     users = users.filter(
