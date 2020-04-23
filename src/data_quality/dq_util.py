@@ -6,6 +6,7 @@ import os
 from typing import *
 from functools import reduce
 
+from src.customer360.utilities.re_usable_functions import get_spark_session
 
 conf = os.getenv("CONF", None)
 
@@ -159,3 +160,48 @@ def merge_all(dfs, on, how='inner'):
     Merge all the dataframes
     """
     return reduce(lambda x, y: x.join(y, on=on, how=how), dfs)
+
+
+def get_outlier_column(
+    feature_config: Dict
+):
+    col = feature_config["feature"]
+    return f"({feature_config['outlier_formula'].format(col=col)}/count(*))*100 " \
+           f"as {col}__outlier_percentage"
+
+
+def add_most_frequent_value(
+        input_df: DataFrame,
+        features_list: Dict,
+        partition_col: str
+) -> DataFrame:
+    spark = get_spark_session()
+
+    most_freq_df_list = []
+    for each_feature in features_list:
+        most_freq_sql_stmt = """
+            select {col} as {col}__most_freq_value, 
+                   {partition_col} as {partition_col}, 
+                   {col}__count as {col}__most_freq_value_count
+            from (
+                select {col}, 
+                       {partition_col},  
+                       count(*) as {col}__count,
+                       row_number() over (partition by {partition_col} 
+                                          order by count(*) desc) as rnk
+                from sampled_df
+                group by {col}, {partition_col}  
+            ) t
+            where rnk = 1
+
+        """.format(col=each_feature["feature"],
+                   partition_col=partition_col)
+        most_freq_df_list.append(spark.sql(most_freq_sql_stmt))
+
+    result_df = merge_all(
+        dfs=[input_df] + most_freq_df_list,
+        how="inner",
+        on=[partition_col]
+    )
+
+    return result_df

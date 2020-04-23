@@ -8,7 +8,9 @@ from src.data_quality.dq_util import get_config_parameters, \
     get_dq_incremental_records, \
     get_dq_sampled_records, \
     melt_qa_result, \
-    break_percentile_columns
+    break_percentile_columns, \
+    get_outlier_column, \
+    add_most_frequent_value
 
 from kedro.pipeline.node import Node
 from kedro.io.core import DataSetError
@@ -140,11 +142,10 @@ def run_accuracy_logic(
             agg_features.append(each_agg.format(col=col))
 
         if "outlier_formula" in each_feature:
-            agg_features.append(
-                f"{each_feature['outlier_formula'].format(col=col)}/count(*) as {col}__outlier_percentage"
-            )
+            agg_features.append(get_outlier_column(each_feature))
 
     spark = get_spark_session()
+
     sql_stmt = """
         select {partition_col},
                 {metrics}
@@ -154,13 +155,22 @@ def run_accuracy_logic(
                partition_col=partition_col)
 
     result_df = spark.sql(sql_stmt)
+
+    result_df = add_most_frequent_value(
+        input_df=result_df,
+        features_list=features_list,
+        partition_col=partition_col
+    )
+
     result_df = melt_qa_result(result_df, partition_col)
 
     if "percentiles" in result_df.columns:
         result_df = break_percentile_columns(result_df, percentiles["percentile_list"])
 
-    result_df = result_df.withColumn("run_date", F.current_timestamp())
-    result_df = result_df.withColumn("dataset_name", F.lit(dataset_name))
+    result_df = (result_df
+                 .withColumn("most_frequent_value_percentage", (F.col("most_freq_value_count")/F.col("count"))*100)
+                 .withColumn("run_date", F.current_timestamp())
+                 .withColumn("dataset_name", F.lit(dataset_name)))
 
     return result_df
 
