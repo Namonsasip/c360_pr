@@ -6,11 +6,10 @@ from kedro.context.context import load_context
 from pathlib import Path
 import logging
 from src.customer360.utilities.spark_util import get_spark_empty_df
-from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, data_non_availability_and_missing_check
+from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
+    data_non_availability_and_missing_check
 import os
 from pyspark.sql.types import *
-
-
 
 conf = os.getenv("CONF", None)
 
@@ -111,7 +110,8 @@ def customized_processing(data_frame: DataFrame, cust_prof: DataFrame, recharge_
     min_value = union_dataframes_with_missing_cols(
         [
             data_frame.select(
-                f.to_date(f.date_trunc('week', f.to_date(f.max(f.col("partition_date")), 'yyyyMMdd'))).alias("max_date")),
+                f.to_date(f.date_trunc('week', f.to_date(f.max(f.col("partition_date")), 'yyyyMMdd'))).alias(
+                    "max_date")),
             cust_prof.select(
                 f.max(f.col("start_of_week")).alias("max_date")),
         ]
@@ -119,7 +119,6 @@ def customized_processing(data_frame: DataFrame, cust_prof: DataFrame, recharge_
 
     data_frame = data_frame.filter(f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
     cust_prof = cust_prof.filter(f.col("start_of_week") <= min_value)
-
 
     def divide_chunks(l, n):
 
@@ -269,8 +268,7 @@ def billing_most_popular_top_up_channel_weekly(input_df, sql) -> DataFrame:
     return return_df
 
 
-def df_copy_for_l2_billing_and_payments_weekly_popular_topup_day_intermediate(input_df) -> DataFrame :
-
+def df_copy_for_l2_billing_and_payments_weekly_popular_topup_day_intermediate(input_df) -> DataFrame:
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -309,7 +307,6 @@ def billing_popular_topup_day_weekly(input_df, sql) -> DataFrame:
 
 
 def df_copy_for_l2_billing_and_payments_weekly_popular_topup_hour_intermediate(input_df) -> DataFrame:
-
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -370,7 +367,6 @@ def billing_time_since_last_topup_weekly(input_df, sql) -> DataFrame:
 
 
 def df_copy_for_l2_billing_and_payments_weekly_last_three_topup_volume(input_df) -> DataFrame:
-
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -423,10 +419,10 @@ def billing_last_top_up_channel_weekly(input_df, customer_profile_df, recharge_t
                                                        target_table_name="l2_billing_and_payments_weekly_topup_time_diff",
                                                        missing_data_check_flg='Y')
 
-    customer_profile_df = data_non_availability_and_missing_check(df=customer_profile_df, grouping="weekly", par_col="event_partition_date",
-                                                       target_table_name="l2_billing_and_payments_weekly_topup_time_diff",
-                                                       missing_data_check_flg='Y')
-
+    customer_profile_df = data_non_availability_and_missing_check(df=customer_profile_df, grouping="weekly",
+                                                                  par_col="event_partition_date",
+                                                                  target_table_name="l2_billing_and_payments_weekly_topup_time_diff",
+                                                                  missing_data_check_flg='Y')
 
     if check_empty_dfs([input_df, customer_profile_df]):
         return get_spark_empty_df()
@@ -461,10 +457,10 @@ def billing_time_diff_between_topups_weekly(customer_profile_df, input_df, sql) 
                                                        target_table_name="l2_billing_and_payments_weekly_topup_time_diff",
                                                        missing_data_check_flg='Y')
 
-    customer_profile_df = data_non_availability_and_missing_check(df=customer_profile_df, grouping="weekly", par_col="event_partition_date",
-                                                       target_table_name="l2_billing_and_payments_weekly_topup_time_diff",
-                                                       missing_data_check_flg='Y')
-
+    customer_profile_df = data_non_availability_and_missing_check(df=customer_profile_df, grouping="weekly",
+                                                                  par_col="event_partition_date",
+                                                                  target_table_name="l2_billing_and_payments_weekly_topup_time_diff",
+                                                                  missing_data_check_flg='Y')
 
     if check_empty_dfs([input_df, customer_profile_df]):
         return get_spark_empty_df()
@@ -497,7 +493,6 @@ def recharge_data_with_customer_profile_joined(customer_prof, recharge_data):
         .drop(recharge_data.register_date) \
         .drop(recharge_data.start_of_week)
 
-
     output_df = output_df.withColumn("rn", expr(
         "row_number() over(partition by start_of_week,access_method_num,register_date order by recharge_time desc)"))
 
@@ -507,7 +502,6 @@ def recharge_data_with_customer_profile_joined(customer_prof, recharge_data):
 
 
 def top_up_channel_joined_data(input_df, topup_type_ref):
-
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
