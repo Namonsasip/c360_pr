@@ -1,23 +1,67 @@
-from pyspark.sql import functions as F
-from pyspark.sql.types import StringType
 from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check
 
 
-def add_last_month_inactive_user(input_df, config):
+def df_copy_for_l3_customer_profile_include_1mo_non_active(input_df):
 
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="monthly",
-                                                       par_col="partition_month_dup",
+                                                       par_col="partition_month",
                                                        target_table_name="l3_customer_profile_include_1mo_non_active")
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
+
+    return input_df
+
+
+def df_copy_for_l3_customer_profile_billing_level_features(input_df):
+
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="monthly",
+                                                       par_col="partition_month",
+                                                       target_table_name="l3_customer_profile_billing_level_features")
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+
+    return input_df
+
+
+def df_copy_for_l3_customer_profile_billing_level_volume_of_active_contracts(input_df):
+
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="monthly",
+                                                       par_col="partition_month",
+                                                       target_table_name="l3_customer_profile_billing_level_volume_of_active_contracts")
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+
+    return input_df
+
+
+
+def add_last_month_inactive_user(input_df, config):
+
+    if check_empty_dfs([input_df]):
+        return input_df
+
 
     input_df.createOrReplaceTempView("input_df")
     spark = get_spark_session()

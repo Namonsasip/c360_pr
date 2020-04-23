@@ -175,7 +175,8 @@ def usage_data_prepaid_pipeline(input_df, sql) -> DataFrame:
         return get_spark_empty_df()
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
-                                                       target_table_name="l1_usage_ru_a_gprs_cbs_usage_daily")
+                                                       target_table_name="l1_usage_ru_a_gprs_cbs_usage_daily",
+                                                       exception_partitions=['2020-02-03'])
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -271,12 +272,14 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
     l1_usage_outgoing_call_relation_sum_daily_stg = data_non_availability_and_missing_check(
         df=l1_usage_outgoing_call_relation_sum_daily_stg,
         grouping="daily", par_col="event_partition_date",
-        target_table_name="l1_usage_postpaid_prepaid_daily")
+        target_table_name="l1_usage_postpaid_prepaid_daily",
+        exception_partitions=['2019-12-01'])
 
     l1_usage_incoming_call_relation_sum_daily_stg = data_non_availability_and_missing_check(
         df=l1_usage_incoming_call_relation_sum_daily_stg,
         grouping="daily", par_col="event_partition_date",
-        target_table_name="l1_usage_postpaid_prepaid_daily")
+        target_table_name="l1_usage_postpaid_prepaid_daily",
+        exception_partitions=['2019-12-01'])
 
     l1_usage_outgoing_call_relation_sum_ir_daily_stg = data_non_availability_and_missing_check(
         df=l1_usage_outgoing_call_relation_sum_ir_daily_stg,
@@ -291,7 +294,8 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
     l1_usage_ru_a_gprs_cbs_usage_daily_stg = data_non_availability_and_missing_check(
         df=l1_usage_ru_a_gprs_cbs_usage_daily_stg,
         grouping="daily", par_col="event_partition_date",
-        target_table_name="l1_usage_postpaid_prepaid_daily")
+        target_table_name="l1_usage_postpaid_prepaid_daily",
+        exception_partitions=['2020-02-03'])
 
     l1_usage_ru_a_vas_postpaid_usg_daily_stg = data_non_availability_and_missing_check(
         df=l1_usage_ru_a_vas_postpaid_usg_daily_stg,
