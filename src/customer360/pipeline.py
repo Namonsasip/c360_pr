@@ -265,12 +265,6 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
 
 def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
     return {
-        "cvm_prepare_training_data": training_data_prepare,
-        "cvm_prepare_scoring_data": scoring_data_prepare,
-        "cvm_preprocess_training": preprocessing_fit(),
-        "cvm_preprocess_scoring": preprocessing_transform(),
-        "cvm_train_model": train_model(),
-        "cvm_score_model": score_model(),
         "cvm_treatments": generate_treatments(),
         "cvm_full_training": training_data_prepare + preprocessing_fit()
                              + train_model(),
