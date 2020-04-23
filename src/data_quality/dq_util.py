@@ -1,14 +1,11 @@
-from kedro.pipeline.node import Node
-from kedro.io.core import DataSetError
 from pathlib import Path
 from pyspark.sql import functions as f
 from pyspark.sql import DataFrame
 
 import os
 from typing import *
-from functools import reduce, partial, update_wrapper
+from functools import reduce
 
-from src.customer360.utilities.re_usable_functions import get_spark_session, get_spark_empty_df
 
 conf = os.getenv("CONF", None)
 
@@ -23,78 +20,13 @@ def get_config_parameters(config_path="**/parameters.yml"):
     return config
 
 
-def generate_dq_nodes():
-    nodes = []
-    selected_dataset = get_config_parameters()['features_for_dq']
-    for dataset_name, feature_list in selected_dataset.items():
-
-        # Accuracy Test
-        node = Node(
-            func=update_wrapper(
-                wrapper=partial(run_accuracy_logic, dataset_name=dataset_name),
-                wrapped=run_accuracy_logic
-            ),
-            inputs=[dataset_name,
-                    "dq_sampled_subscription_identifier",
-                    "params:features_for_dq",
-                    "params:percentiles"],
-            outputs="dq_accuracy"
-        )
-        nodes.append(node)
-
-    return nodes
-
-
-def get_column_name_of_type(df, required_types=None):
-    """
-    Get all the column names of specific type
-    """
-    schema = [(x.name, str(x.dataType).split('(')[0]) for x in df.schema.fields]
-
-    data_type = {
-        'numeric': ["DecimalType", "DoubleType", "FloatType", "IntegerType", "LongType", "ShortType"],
-        'string': ["StringType"],
-        'boolean': ['BooleanType'],
-        'date': ['DateType', 'TimestampType'],
-        'array': ["ArrayType"]
-    }
-
-    if (required_types is None):
-        return df.columns
-
-    required_type_pyspark = []
-
-    for required_type in required_types:
-        required_type_pyspark = required_type_pyspark + data_type[required_type]
-
-    return [column_name for column_name, data_type in schema if data_type in required_type_pyspark]
-
-
-def run_accuracy_logic(
-    input_df: DataFrame,
-    sampled_sub_id_df: DataFrame,
-    dq_config: dict,
-    percentiles: Dict,
-    dataset_name: str
-) -> DataFrame:
-    features_list = dq_config[dataset_name]
-
+def get_partition_col(
+    input_df: DataFrame
+) -> str:
     possible_partition_date = [
         "event_partition_date",
         "start_of_week",
         "start_of_month"
-    ]
-
-    agg_functions = [
-        "count({col}) as {col}__count",
-        "avg({col}) as {col}__avg",
-        "min({col}) as {col}__min",
-        "max({col}) as {col}__max",
-        "(sum(case when {col} is null then 1 else 0 end)/count(*))*100 as {col}__null_percentage",
-
-        f"percentile_approx({{col}}, "
-        f"array({','.join(map(str, percentiles['percentile_list']))}), {percentiles['accuracy']}) "
-        f"as {{col}}__percentiles"
     ]
 
     partition_col = None
@@ -103,31 +35,34 @@ def run_accuracy_logic(
             partition_col = each_col
             break
 
-    ctx = get_dq_context()
-    try:
-        dq_accuracy_df = ctx.catalog.load("dq_accuracy")
-        last_processed_date = (dq_accuracy_df
-                               .filter(f.col("dataset_name") == dataset_name)
-                               .select(f.max(f.col("corresponding_date")))
-                               .head())
-
-        if last_processed_date is not None:
-            input_df = input_df.filter(f.col(partition_col) > last_processed_date[0])
-            if input_df.head() is None:
-                return get_spark_empty_df(schema=dq_accuracy_df.schema)
-    except DataSetError:
-        # no dq_accuracy table means the pipeline is never executed
-        pass
-
     if partition_col is None:
         raise AttributeError("""No partition column is detected in dataset. 
         Available columns: {}""".format(input_df.columns))
 
-    agg_features = []
-    for each_feature in features_list:
-        for each_agg in agg_functions:
-            agg_features.append(each_agg.format(col=each_feature))
+    return partition_col
 
+
+def get_dq_incremental_records(
+    input_df: DataFrame,
+    dq_accuracy_df: DataFrame,
+    dataset_name: str,
+    partition_col: str
+) -> DataFrame:
+    last_processed_date = (dq_accuracy_df
+                           .filter(f.col("dataset_name") == dataset_name)
+                           .select(f.max(f.col("corresponding_date")))
+                           .head())
+
+    if last_processed_date is not None:
+        input_df = input_df.filter(f.col(partition_col) > last_processed_date[0])
+
+    return input_df
+
+
+def get_dq_sampled_records(
+        input_df: DataFrame,
+        sampled_sub_id_df: DataFrame
+) -> DataFrame:
     # get only the latest sampled one
     max_sampled_date = sampled_sub_id_df.select(f.max(f.col("created_date"))).collect()[0][0]
 
@@ -136,32 +71,22 @@ def run_accuracy_logic(
         on=["subscription_identifier"],
         how="inner"
     )
-    sampled_df.createOrReplaceTempView("sampled_df")
 
-    spark = get_spark_session()
-    sql_stmt = """
-        select {partition_col},
-                {metrics}
-        from sampled_df
-        group by {partition_col}
-    """.format(metrics=','.join(agg_features),
-               partition_col=partition_col)
+    return sampled_df
 
-    result_df = spark.sql(sql_stmt)
-    result_df = melt_qa_result(result_df, partition_col)
 
-    # break percentiles into columns
-    if "percentiles" in result_df.columns:
-        for idx, percentile in enumerate(percentiles["percentile_list"]):
-            result_df = result_df.withColumn(
-                f"percentile_{percentile}",
-                f.expr(f"case when percentiles is not null then percentiles[{idx}] else null end"))
-        result_df = result_df.drop("percentiles")
+def break_percentile_columns(
+        input_df: DataFrame,
+        percentile_list: List[float]
+) -> DataFrame:
+    for idx, percentile in enumerate(percentile_list):
+        input_df = input_df.withColumn(
+            f"percentile_{percentile}",
+            f.expr(f"case when percentiles is not null then percentiles[{idx}] else null end")
+        )
+    input_df = input_df.drop("percentiles")
 
-    result_df = result_df.withColumn("run_date", f.current_timestamp())
-    result_df = result_df.withColumn("dataset_name", f.lit(dataset_name))
-
-    return result_df
+    return input_df
 
 
 def melt_qa_result(

@@ -1,7 +1,8 @@
 from kedro.pipeline import Pipeline, node
 
-from data_quality.nodes import *
-from data_quality.dq_util import *
+from data_quality.nodes import generate_dq_nodes, \
+    check_catalog_and_feature_exist, \
+    sample_subscription_identifier
 
 
 def data_quality_pipeline(**kwargs):
