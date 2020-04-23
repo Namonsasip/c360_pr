@@ -2,15 +2,15 @@ _spark_parquet: &spark_parquet
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
 
-dq_sampled_subscription_identifier: &dq_sampled_subscription_identifier
+dq_sampled_subscription_identifier:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-output/DQ/dq_sampled_subscription_identifier/
+  filepath: data/DQ/dq_sampled_subscription_identifier/
   save_args:
     partitionBy: ["created_date"]
     mode: "append"
 
 dq_accuracy:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-output/DQ/dq_accuracy/
+  filepath: data/DQ/dq_accuracy/
   save_args:
     mode: "append"
