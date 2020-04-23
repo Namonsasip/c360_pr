@@ -71,19 +71,27 @@ def train_model() -> Pipeline:
     )
 
 
-def score_model() -> Pipeline:
+def score_model(sample_type: str) -> Pipeline:
     """ Creates prediction pipeline.
+
+    Args:
+        sample_type: "scoring" if list created for scoring, "training" if list created
+            for training.
 
       Returns:
           Kedro pipeline.
-      """
+    """
 
     return Pipeline(
         [
             node(
                 predict_rf,
-                ["sample_preprocessed_scoring", "random_forest", "parameters"],
-                "propensity_scores_scoring",
+                [
+                    "sample_preprocessed_{}".format(sample_type),
+                    "random_forest",
+                    "parameters",
+                ],
+                "propensity_scores_{}".format(sample_type),
                 name="create_propensity_scores",
             ),
         ]
