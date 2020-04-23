@@ -67,9 +67,13 @@ def preprocessing_fit() -> Pipeline:
     )
 
 
-def preprocessing_transform() -> Pipeline:
+def preprocessing_transform(sample_type: str) -> Pipeline:
     """ Creates pipeline preprocessing data for scoring purposes.
     Can create data pipeline for full dataset or given sample_type.
+
+    Args:
+        sample_type: "scoring" if list created for scoring, "training" if list created
+            for training.
 
      Returns:
          Kedro pipeline.
@@ -80,14 +84,14 @@ def preprocessing_transform() -> Pipeline:
             node(
                 pipeline_transform,
                 [
-                    "features_macrosegments_scoring",
+                    "features_macrosegments_{}".format(sample_type),
                     "important_columns",
                     "preprocessing_pipeline",
                     "parameters",
                     "null_columns",
                 ],
-                "sample_preprocessed_scoring",
-                name="preprocessing_transform_scoring_sample",
+                "sample_preprocessed_{}".format(sample_type),
+                name="preprocessing_transform_{}_sample".format(sample_type),
             ),
         ]
     )
