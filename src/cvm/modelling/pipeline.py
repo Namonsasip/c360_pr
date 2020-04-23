@@ -83,7 +83,7 @@ def score_model() -> Pipeline:
             node(
                 predict_rf,
                 ["sample_preprocessed_scoring", "random_forest", "parameters"],
-                "propensity_scores",
+                "propensity_scores_scoring",
                 name="create_propensity_scores",
             ),
         ]

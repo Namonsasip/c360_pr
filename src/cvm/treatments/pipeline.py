@@ -56,7 +56,7 @@ def generate_treatments() -> Pipeline:
             node(
                 produce_treatments,
                 [
-                    "propensity_scores",
+                    "propensity_scores_scoring",
                     "microsegments_scoring",
                     "microsegments_treatments",
                     "treatments_chosen_history",

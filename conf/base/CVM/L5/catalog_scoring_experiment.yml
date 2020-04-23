@@ -52,7 +52,7 @@ sample_preprocessed_scoring_experiment:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_sample_preprocessed_scoring_experiment/
 
-propensity_scores:
+propensity_scores_scoring_experiment:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_propensity_scores/
 
