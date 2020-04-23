@@ -259,11 +259,12 @@ class ProjectContext(KedroContext):
                     caller_globals[obj_name] = getattr(function_module, obj_name)
 
 
-def run_package(pipelines=None):
+def run_package(pipelines=None, project_context=None):
 
     # entry point for running pip-install projects
     # using `<project_package>` command
-    project_context = load_context(Path.cwd(), env=conf)
+    if project_context is None:
+        project_context = load_context(Path.cwd(), env=conf)
     spark = get_spark_session()
 
     if pipelines is not None:
@@ -319,10 +320,9 @@ class DataQualityProjectContext(ProjectContext):
         return catalog
 
 
-def run_data_quality_pipeline():
+def run_data_quality_pipeline(pipelines):
     project_context = DataQualityProjectContext(project_path=Path.cwd(), env=conf)
-    # project_context.run(pipeline_name='subscription_id_sampling_pipeline')
-    project_context.run(pipeline_name='data_quality_pipeline')
+    run_package(pipelines=pipelines, project_context=project_context)
 
 
 def run_selected_nodes(pipeline_name, node_names=None, env="base"):
@@ -332,13 +332,13 @@ def run_selected_nodes(pipeline_name, node_names=None, env="base"):
     project_context.run(node_names=node_names, pipeline_name=pipeline_name)
 
 
-
-
-
 if __name__ == "__main__":
     # entry point for running pip-installed projects
     # using `python -m <project_package>.run` command
-    run_package()
+    # run_package()
 
-    # uncomment below to run data_quality_pipeline
-    # run_data_quality_pipeline()
+    # uncomment below to run data_quality_pipeline locally
+    run_data_quality_pipeline(pipelines=[
+        # 'subscription_id_sampling_pipeline',
+        'data_quality_pipeline'
+    ])
