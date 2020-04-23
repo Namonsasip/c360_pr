@@ -47,7 +47,7 @@ from kedro.pipeline.node import Node
 from kedro.versioning import Journal
 
 from customer360.utilities.spark_util import get_spark_session
-
+from customer360.utilities.generate_dependency_dataset import generate_dependency_dataset
 
 from customer360.pipeline import create_pipelines
 
@@ -264,18 +264,15 @@ def run_package(pipelines=None):
     # entry point for running pip-install projects
     # using `<project_package>` command
     project_context = load_context(Path.cwd(), env=conf)
-
     spark = get_spark_session()
 
     if pipelines is not None:
         for each_pipeline in pipelines:
             project_context.run(pipeline_name=each_pipeline)
         return
-
-    # project_context.run()
-    project_context.run(pipeline_name='data_quality_pipeline')
+    generate_dependency_dataset(project_context)
     # project_context.run(pipeline_name='customer_profile_to_l3_pipeline')
-
+    # project_context.run()
     # Replace line above with below to run on databricks cluster
     # and Dont forget to clear state for every git pull in notebook
     # (change the pipeline name to your pipeline name)
@@ -341,4 +338,7 @@ def run_selected_nodes(pipeline_name, node_names=None, env="base"):
 if __name__ == "__main__":
     # entry point for running pip-installed projects
     # using `python -m <project_package>.run` command
-    run_data_quality_pipeline()
+    run_package()
+
+    # uncomment below to run data_quality_pipeline
+    # run_data_quality_pipeline()
