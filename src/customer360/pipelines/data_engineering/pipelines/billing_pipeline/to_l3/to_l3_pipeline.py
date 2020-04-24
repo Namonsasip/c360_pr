@@ -42,7 +42,7 @@ def billing_l1_to_l3_pipeline(**kwargs):
 
             # Monthly most popular top up channel feature pre-paid
             node(
-                top_up_channel_joined_data,
+                top_up_channel_joined_data_for_monthly_most_popular_top_up_channel,
                 ["l1_billing_and_payments_daily_most_popular_top_up_channel_for_l3_billing_and_payments_monthly_most_popular_top_up_channel",
                  "l0_billing_topup_type_for_l3_billing_and_payments_monthly_most_popular_top_up_channel"],
                 "l3_billing_and_payments_monthly_most_popular_top_up_channel_1"
@@ -63,8 +63,13 @@ def billing_l1_to_l3_pipeline(**kwargs):
 
             # Monthly popular top up day feature pre-paid
             node(
+                copy_df_for_l3_billing_and_payments_monthly_popular_topup_day,
+                "l1_billing_and_payments_daily_popular_topup_day_for_l3_billing_and_payments_monthly_popular_topup_day",
+                "int_l3_billing_and_payments_monthly_popular_topup_day_1"
+            ),
+            node(
                 node_from_config,
-                ["l1_billing_and_payments_daily_popular_topup_day_for_l3_billing_and_payments_monthly_popular_topup_day",
+                ["int_l3_billing_and_payments_monthly_popular_topup_day_1",
                  "params:l3_popular_topup_day_ranked"],
                 "l3_billing_and_payments_monthly_popular_topup_day_1"
             ),
@@ -77,8 +82,13 @@ def billing_l1_to_l3_pipeline(**kwargs):
 
             # Monthly popular top up hour feature pre-paid
             node(
+                copy_df_for_l3_billing_and_payments_monthly_popular_topup_hour,
+                "l1_billing_and_payments_daily_popular_topup_day_for_l3_billing_and_payments_monthly_popular_topup_hour",
+                "int_l3_billing_and_payments_monthly_popular_topup_hour_1"
+            ),
+            node(
                 node_from_config,
-                ["l1_billing_and_payments_daily_popular_topup_day_for_l3_billing_and_payments_monthly_popular_topup_hour",
+                ["int_l3_billing_and_payments_monthly_popular_topup_hour_1",
                  "params:l3_popular_topup_hour_ranked"],
                 "l3_billing_and_payments_monthly_popular_topup_hour_1"
             ),
@@ -99,8 +109,13 @@ def billing_l1_to_l3_pipeline(**kwargs):
 
             # Monthly last 3 top up volume pre-paid
             node(
+                copy_df_for_l3_billing_and_payments_monthly_last_three_topup_volume,
+                "l1_billing_and_payments_daily_time_since_last_top_up_for_l3_billing_and_payments_monthly_last_three_topup_volume",
+                "int_l3_billing_and_payments_monthly_last_three_topup_volume_1"
+            ),
+            node(
                 node_from_config,
-                ["l1_billing_and_payments_daily_time_since_last_top_up_for_l3_billing_and_payments_monthly_last_three_topup_volume",
+                ["int_l3_billing_and_payments_monthly_last_three_topup_volume_1",
                  "params:l3_last_three_topup_volume_ranked"],
                 "l3_billing_and_payments_monthly_last_three_topup_volume_1"
             ),
@@ -136,8 +151,13 @@ def billing_l0_to_l3_pipeline(**kwargs):
 
             # Monthly time difference between top ups pre-paid
             node(
+                copy_df_for_l3_billing_and_payments_monthly_topup_time_diff,
+                "l0_billing_and_payments_rt_t_recharge_daily_for_l3_billing_and_payments_monthly_topup_time_diff",
+                "Int_l3_billing_and_payments_monthly_topup_diff_time_intermediate"
+            ),
+            node(
                 node_from_config,
-                ["l0_billing_and_payments_rt_t_recharge_daily_for_l3_billing_and_payments_monthly_topup_time_diff",
+                ["Int_l3_billing_and_payments_monthly_topup_diff_time_intermediate",
                  "params:l3_billing_and_payment_feature_time_diff_bw_topups_monthly_intermdeiate"],
                 "l3_billing_and_payments_monthly_topup_diff_time_intermediate"
             ),
@@ -168,7 +188,7 @@ def billing_l0_to_l3_pipeline(**kwargs):
             node(
                 billing_statement_hist_data_with_customer_profile,
                 ["l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_bill_volume",
-                 "l0_billing_statement_history_monthly_for_l3_billing_and_payments_monthly_bill_volume"],
+                 "l0_billing_statement_history_monthly_for_l3_billing_and_payments_monthly_bill_volume", "l3_billing_and_payments_monthly_bill_volume"],
                 "billing_stat_hist_monthly_data"
             ),
 
@@ -183,14 +203,14 @@ def billing_l0_to_l3_pipeline(**kwargs):
             node(
                 billing_statement_hist_data_with_customer_profile,
                 ["l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_missed_bills",
-                 "l0_billing_statement_history_monthly_for_l3_billing_and_payments_monthly_missed_bills"],
+                 "l0_billing_statement_history_monthly_for_l3_billing_and_payments_monthly_missed_bills", "l3_billing_and_payments_monthly_missed_bills"],
                 "billing_stat_hist_monthly_data_missed_bills_stg"
             ),
             # Monthly missed bills feature post-paid
             node(
                 billing_data_joined,
                 ["billing_stat_hist_monthly_data_missed_bills_stg",
-                 "l0_billing_pc_t_payment_daily_for_l3_billing_and_payments_monthly_missed_bills"],
+                 "l0_billing_pc_t_payment_daily_for_l3_billing_and_payments_monthly_missed_bills", "l3_billing_and_payments_monthly_missed_bills"],
                 "l3_billing_and_payments_monthly_joined_missed_bills_stg"
             ),
             node(
@@ -203,13 +223,13 @@ def billing_l0_to_l3_pipeline(**kwargs):
             node(
                 billing_statement_hist_data_with_customer_profile,
                 ["l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_overdue_bills",
-                 "l0_billing_statement_history_monthly_for_l3_billing_and_payments_monthly_overdue_bills"],
+                 "l0_billing_statement_history_monthly_for_l3_billing_and_payments_monthly_overdue_bills", "l3_billing_and_payments_monthly_overdue_bills"],
                 "billing_stat_hist_monthly_data_overdue_bills_stg"
             ),
             node(
                 billing_data_joined,
                 ["billing_stat_hist_monthly_data_overdue_bills_stg",
-                 "l0_billing_pc_t_payment_daily_for_l3_billing_and_payments_monthly_overdue_bills"],
+                 "l0_billing_pc_t_payment_daily_for_l3_billing_and_payments_monthly_overdue_bills", "l3_billing_and_payments_monthly_overdue_bills"],
                 "l3_billing_and_payments_monthly_joined_overdue_bills_stg"
             ),
             # Monthly overdue bills feature post-paid
@@ -223,14 +243,14 @@ def billing_l0_to_l3_pipeline(**kwargs):
             node(
                 billing_statement_hist_data_with_customer_profile,
                 ["l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume",
-                 "l0_billing_statement_history_monthly_for_l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume"],
+                 "l0_billing_statement_history_monthly_for_l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume", "l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume"],
                 "billing_stat_hist_monthly_data_last_overdue_bill_days_ago_and_volume_stg"
             ),
 
             node(
                 billing_data_joined,
                 ["billing_stat_hist_monthly_data_last_overdue_bill_days_ago_and_volume_stg",
-                 "l0_billing_pc_t_payment_daily_for_l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume"],
+                 "l0_billing_pc_t_payment_daily_for_l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume", "l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume"],
                 "l3_billing_and_payments_monthly_joined_last_overdue_bill_days_ago_and_volume__stg"
             ),
 

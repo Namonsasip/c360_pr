@@ -44,6 +44,7 @@ def massive_processing(input_df, customer_prof_input_df, join_function, sql, par
     cust_data_frame = customer_prof_input_df.where("charge_type = '" + cust_type + "'")
     dates_list = cust_data_frame.select(f.to_date(cust_partition_date).alias(cust_partition_date)).distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
     mvv_new = list(divide_chunks(mvv_array, 2))
@@ -85,6 +86,7 @@ def massive_processing_weekly(data_frame: DataFrame, dict_obj: dict, output_df_c
     data_frame = data_frame
     dates_list = data_frame.select('start_of_week').distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
     mvv_new = list(divide_chunks(mvv_array, 1))
     add_list = mvv_new
@@ -130,6 +132,7 @@ def customized_processing(data_frame: DataFrame, cust_prof: DataFrame, recharge_
     cust_data_frame = cust_prof.where("charge_type = 'Pre-paid'")
     dates_list = cust_prof.select('start_of_week').distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
     mvv_new = list(divide_chunks(mvv_array, 1))
