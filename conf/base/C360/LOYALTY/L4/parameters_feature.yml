@@ -6,12 +6,10 @@ l4_loyalty_number_of_services_features:
     max: ["loyalty_privilege_registered_date"]
   read_from: "l2"
 
-l4_rolling_window_loyalty_number_of_rewards:
-  partition_by: ["access_method_num","register_date","subscription_identifier"]
+l4_loyalty_number_of_rewards_redeemed_features:
+  partition_by: ["subscription_identifier"]
   feature_list:
     sum: ["loyalty_rewards_total","loyalty_rewards_travel","loyalty_rewards_ais_rewards","loyalty_rewards_entertainment",
-          "loyalty_rewards_food_and_drink","loyalty_rewards_lifestyle","loyalty_rewards_others"]
-    avg: ["loyalty_rewards_total","loyalty_rewards_travel","loyalty_rewards_ais_rewards","loyalty_rewards_entertainment",
           "loyalty_rewards_food_and_drink","loyalty_rewards_lifestyle","loyalty_rewards_others"]
   read_from: "l2"
 
