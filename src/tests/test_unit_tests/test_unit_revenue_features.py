@@ -41,6 +41,7 @@ from customer360.utilities.config_parser import node_from_config, expansion, l4_
 from customer360.utilities.re_usable_functions import *
 import pandas as pd
 import random
+from pyspark.sql import functions as F
 from pyspark.sql.types import *
 import datetime
 from customer360.pipelines.data_engineering.nodes.revenue_nodes.to_l1.to_l1_nodes import \
@@ -72,7 +73,10 @@ l0_revenue_prepaid_ru_f_sum_revenue_by_service_monthly = [
 
 global l0_revenue_prepaid_pru_f_usage_multi_daily
 l0_revenue_prepaid_pru_f_usage_multi_daily = [
-[datetime.datetime.strptime('2020-01-28', '%Y-%m-%d'),datetime.datetime.strptime('2020-01-31', '%Y-%m-%d'),"test",datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'),"Y","N","N",48.0,"XU","3G882","N","null",1.0,1.0,1.0,1.0,2.0,2.0,2.0,2.0,2.14,1.0,2.0,2.0,2.14,1.0,1.0,1.0,1.0,2.14,2.14,1.0,1.0,2.1,0.0,1.0,1.0,2.0,1.0,1.0,"3GPre-paid",0.0,"CBS",0.0,0.0,"UDN","20200101"]
+[datetime.datetime.strptime('2020-01-28', '%Y-%m-%d'),datetime.datetime.strptime('2020-01-31', '%Y-%m-%d'),"test",
+ datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'),"Y","N","N",48.0,"XU","3G882","N","null",
+ 10.0,15.0,9.0,5.0,4.0,3.0,2.0,2.0,2.14,1.0,2.0,2.0,2.14,1.0,1.0,1.0,1.0,2.14,2.14,1.0,1.0,2.1,0.0,1.0,1.0,2.0,1.0,1.0,
+ "3GPre-paid",0.0,"CBS",0.0,0.0,"UDN","20200101"]
 ]
 
 global customer
@@ -372,6 +376,10 @@ class TestUnitRevenue:
         l1_revenue_prepaid_pru_f_usage_multi_daily = massive_processing_with_customer(df_l0_revenue_prepaid_pru_f_usage_multi_daily,
             customer_pro,var_project_context.catalog.load('params:l1_revenue_prepaid_pru_f_usage_multi_daily'))
 
-        l1_revenue_prepaid_pru_f_usage_multi_daily.show()
+        joindata = df_l0_revenue_prepaid_pru_f_usage_multi_daily.join(customer_pro,["access_method_num"],"left")
+        temp = df_l0_revenue_prepaid_pru_f_usage_multi_daily.withColumn("total_vol_gprs_2g_3g",F.col("total_vol_gprs") - F.col("total_vol_gprs_4g"))
+        test = node_from_config(temp,var_project_context.catalog.load('params:l1_revenue_prepaid_pru_f_usage_multi_daily'))
 
+        test.show()
+        l1_revenue_prepaid_pru_f_usage_multi_daily.show()
         exit(2)
