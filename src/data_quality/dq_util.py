@@ -3,6 +3,7 @@ from pyspark.sql import functions as f
 from pyspark.sql import DataFrame
 
 import os
+from datetime import datetime
 from typing import *
 from functools import reduce
 
@@ -65,7 +66,7 @@ def get_dq_incremental_records(
 def get_dq_sampled_records(
         input_df: DataFrame,
         sampled_sub_id_df: DataFrame
-) -> DataFrame:
+) -> Tuple[datetime, DataFrame]:
     # get only the latest sampled one
     max_sampled_date = sampled_sub_id_df.select(f.max(f.col("created_date"))).collect()[0][0]
 
@@ -75,7 +76,7 @@ def get_dq_sampled_records(
         how="inner"
     )
 
-    return sampled_df
+    return max_sampled_date, sampled_df
 
 
 def break_percentile_columns(
