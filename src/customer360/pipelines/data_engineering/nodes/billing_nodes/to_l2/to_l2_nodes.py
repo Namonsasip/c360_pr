@@ -47,7 +47,7 @@ def massive_processing(input_df, customer_prof_input_df, join_function, sql, par
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 2))
+    mvv_new = list(divide_chunks(mvv_array, 3))
     add_list = mvv_new
 
     first_item = add_list[0]
@@ -88,7 +88,7 @@ def massive_processing_weekly(data_frame: DataFrame, dict_obj: dict, output_df_c
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
-    mvv_new = list(divide_chunks(mvv_array, 1))
+    mvv_new = list(divide_chunks(mvv_array, 3))
     add_list = mvv_new
     first_item = add_list[0]
     add_list.remove(first_item)
@@ -135,7 +135,7 @@ def customized_processing(data_frame: DataFrame, cust_prof: DataFrame, recharge_
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 1))
+    mvv_new = list(divide_chunks(mvv_array, 3))
     add_list = mvv_new
 
     first_item = add_list[0]
@@ -202,7 +202,7 @@ def billing_arpu_roaming_weekly(input_df, sql) -> DataFrame:
 
     ################################# End Implementing Data availability checks ###############################
 
-    return_df = massive_processing_weekly(input_df, sql, "l2_billing_weekly_rpu_roaming")
+    return_df = massive_processing_weekly(input_df, sql, "l2_billing_and_payments_weekly_rpu_roaming")
     return return_df
 
 
