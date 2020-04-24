@@ -2,6 +2,7 @@ from kedro.pipeline import Pipeline, node
 
 from src.customer360.utilities.config_parser import *
 
+
 def loyalty_to_l4_pipeline(**kwargs):
     return Pipeline(
         [
@@ -9,9 +10,9 @@ def loyalty_to_l4_pipeline(**kwargs):
             # Number of services for each category
             node(
                 l4_rolling_window,
-                ["l2_loyalty_number_of_services_for_l4_loyalty_number_of_services",
-                 "params:l4_rolling_window_loyalty_number_of_services"],
-                 "l4_loyalty_number_of_services"
+                ["l2_loyalty_number_of_services_weekly",
+                 "params:l4_loyalty_number_of_services_features"],
+                "l4_loyalty_number_of_services_weekly"
             ),
 
             # Number of rewards for each category

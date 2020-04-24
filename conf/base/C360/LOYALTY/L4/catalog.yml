@@ -6,10 +6,10 @@
 #    partitionBy: ["start_of_week"]
 #    mode: "overwrite"
 
-l4_loyalty_number_of_services:
+l4_loyalty_number_of_services_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/LOYALTY/l4_features/l4_loyalty_number_of_services/
+  filepath: /mnt/customer360-blob-output/C360/LOYALTY/l4_features/l4_loyalty_number_of_services_features/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
     increment_flag: 'yes'
