@@ -10,7 +10,8 @@ from src.data_quality.dq_util import get_config_parameters, \
     melt_qa_result, \
     break_percentile_columns, \
     get_outlier_column, \
-    add_most_frequent_value
+    add_most_frequent_value, \
+    merge_all
 
 from kedro.pipeline.node import Node
 from kedro.io.core import DataSetError
@@ -113,7 +114,7 @@ def run_accuracy_logic(
         f"as {{col}}__percentiles"
     ]
 
-    partition_col = get_partition_col(input_df)
+    partition_col = get_partition_col(input_df, dataset_name)
 
     ctx = get_dq_context()
     try:
@@ -133,6 +134,9 @@ def run_accuracy_logic(
         return get_spark_empty_df(schema=dq_accuracy_df.schema)
 
     sampled_df = get_dq_sampled_records(filtered_input_df, sampled_sub_id_df)
+    if sampled_df.head() is None:
+        return get_spark_empty_df(schema=dq_accuracy_df.schema)
+
     sampled_df.createOrReplaceTempView("sampled_df")
 
     agg_features = []
@@ -155,14 +159,13 @@ def run_accuracy_logic(
                partition_col=partition_col)
 
     result_df = spark.sql(sql_stmt)
+    result_df = melt_qa_result(result_df, partition_col)
 
     result_df = add_most_frequent_value(
-        input_df=result_df,
+        melted_result_df=result_df,
         features_list=features_list,
         partition_col=partition_col
     )
-
-    result_df = melt_qa_result(result_df, partition_col)
 
     if "percentiles" in result_df.columns:
         result_df = break_percentile_columns(result_df, percentiles["percentile_list"])

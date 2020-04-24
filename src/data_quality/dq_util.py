@@ -22,12 +22,14 @@ def get_config_parameters(config_path="**/parameters.yml"):
 
 
 def get_partition_col(
-    input_df: DataFrame
+    input_df: DataFrame,
+    dataset_name: str
 ) -> str:
     possible_partition_date = [
         "event_partition_date",
         "start_of_week",
-        "start_of_month"
+        "start_of_month",
+        "partition_month"
     ]
 
     partition_col = None
@@ -37,8 +39,8 @@ def get_partition_col(
             break
 
     if partition_col is None:
-        raise AttributeError("""No partition column is detected in dataset. 
-        Available columns: {}""".format(input_df.columns))
+        raise AttributeError("""No partition column is detected in dataset: {}. 
+        Available columns: {}""".format(dataset_name, input_df.columns))
 
     return partition_col
 
@@ -54,7 +56,7 @@ def get_dq_incremental_records(
                            .select(f.max(f.col("corresponding_date")))
                            .head())
 
-    if last_processed_date is not None:
+    if last_processed_date is not None and last_processed_date[0] is not None:
         input_df = input_df.filter(f.col(partition_col) > last_processed_date[0])
 
     return input_df
@@ -171,13 +173,13 @@ def get_outlier_column(
 
 
 def add_most_frequent_value(
-        input_df: DataFrame,
+        melted_result_df: DataFrame,
         features_list: Dict,
         partition_col: str
 ) -> DataFrame:
     spark = get_spark_session()
 
-    most_freq_df_list = []
+    most_freq_df = None
     for each_feature in features_list:
         most_freq_sql_stmt = """
             select {col} as {col}__most_freq_value, 
@@ -196,12 +198,18 @@ def add_most_frequent_value(
 
         """.format(col=each_feature["feature"],
                    partition_col=partition_col)
-        most_freq_df_list.append(spark.sql(most_freq_sql_stmt))
+        df = spark.sql(most_freq_sql_stmt)
+        df = melt_qa_result(df, partition_col)
+
+        if most_freq_df is None:
+            most_freq_df = df
+        else:
+            most_freq_df = most_freq_df.unionByName(df)
 
     result_df = merge_all(
-        dfs=[input_df] + most_freq_df_list,
-        how="inner",
-        on=[partition_col]
+        dfs=[melted_result_df, most_freq_df],
+        how="outer",
+        on=["corresponding_date", "granularity", "feature_column_name"]
     )
 
     return result_df
