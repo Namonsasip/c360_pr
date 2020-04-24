@@ -74,7 +74,6 @@ def pyspark_predict_sklearn(
     def _pred_for_macrosegment_target(
         df_target, use_case_chosen, macrosegment, target_chosen
     ):
-
         log.info(
             "Creating predictions for {} target, {} macrosegment.".format(
                 target_chosen, macrosegment
@@ -90,33 +89,31 @@ def pyspark_predict_sklearn(
 
         chosen_model = sklearn_models[use_case_chosen][macrosegment][target_chosen]
         model_broadcasted = SparkContext.getOrCreate().broadcast(chosen_model)
-        df_target = df_target.select(
+        return df_target.select(
             *df_target.columns,
             _pandas_predict(*feature_cols).alias(target_chosen + "_pred")
         )
-        return df_target
 
     def _pred_for_macrosegments(df_for_macrosegment, use_case_chosen, macrosegment):
-        df_for_macrosegment = df_for_macrosegment.filter(
+        df_macrosegment = df_for_macrosegment.filter(
             "{}_macrosegment == '{}'".format(use_case_chosen, macrosegment)
         )
         for target_chosen in target_cols_use_case_split[use_case_chosen]:
-            df_for_macrosegment = _pred_for_macrosegment_target(
-                df_for_macrosegment, use_case_chosen, macrosegment, target_chosen
+            df_macrosegment = _pred_for_macrosegment_target(
+                df_macrosegment, use_case_chosen, macrosegment, target_chosen
             )
-        return df_for_macrosegment
+        return df_macrosegment
 
     def _pred_for_usecase(df_for_usecase, use_case_chosen):
-        macrosegment_preds = []
-        for macrosegment in macrosegments[use_case_chosen]:
-            macrosegment_preds.append(
-                _pred_for_macrosegments(df_for_usecase, use_case_chosen, macrosegment)
-            )
+        macrosegment_preds = [
+            _pred_for_macrosegments(df_for_usecase, use_case_chosen, macrosegment)
+            for macrosegment in macrosegments[use_case_chosen]
+        ]
         return functools.reduce(lambda df1, df2: df1.union(df2), macrosegment_preds)
 
-    use_case_preds = []
-    for use_case in parameters["targets"]:
-        use_case_preds.append(_pred_for_usecase(df, use_case))
+    use_case_preds = [
+        _pred_for_usecase(df, use_case) for use_case in parameters["targets"]
+    ]
 
     def join_on(df1, df2):
         cols_to_drop = [col_name for col_name in df1.columns if col_name in df2.columns]
@@ -124,7 +121,7 @@ def pyspark_predict_sklearn(
         df2 = df2.drop(*cols_to_drop)
         return df1.join(df2, key_columns, "left")
 
-    return functools.reduce(join_on, use_case_preds)
+    return functools.reduce(join_on, use_case_preds).distinct()
 
 
 def pyspark_predict_rf(
