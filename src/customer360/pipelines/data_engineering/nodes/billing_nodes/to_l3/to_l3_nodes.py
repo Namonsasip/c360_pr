@@ -547,7 +547,7 @@ def billing_time_diff_between_topups_monthly(customer_profile_df, input_df, sql)
     return return_df
 
 
-def billing_data_joined(billing_monthly, payment_daily, target_table_name):
+def billing_data_joined(billing_monthly, payment_daily, target_table_name: str):
     # Need to check becasue billing_monthly and payment_daily are getting joined on a different column than partition_month
 
     ################################# Start Implementing Data availability checks #############################
@@ -648,7 +648,7 @@ def billing_rpu_data_with_customer_profile(customer_prof, rpu_data):
     return output_df
 
 
-def billing_statement_hist_data_with_customer_profile(customer_prof, billing_hist, target_table_name):
+def billing_statement_hist_data_with_customer_profile(customer_prof, billing_hist, target_table_name: str):
     # Need to check becasue billing_hist is getting joined with customer on a different column than partition_month
 
     ################################# Start Implementing Data availability checks #############################
