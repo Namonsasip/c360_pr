@@ -1,4 +1,4 @@
-from functools import partial, update_wrapper
+from functools import partial, update_wrapper, reduce
 from typing import *
 
 from src.customer360.utilities.re_usable_functions import get_spark_session, get_spark_empty_df
@@ -71,11 +71,40 @@ def check_catalog_and_feature_exist(
         raise FileNotFoundError(err_msg)
 
 
+def dq_merger_nodes(
+        *args: List[DataFrame]
+) -> DataFrame:
+    """
+    Function to union all the output DataFrame.
+    It will collect all columns and put default value as null
+    if the DataFrame does not have that column
+
+    :param args: List of DataFrame to be unioned
+    :return: unioned DataFrame
+    """
+
+    all_cols = []
+    for each_df in args:
+        all_cols.extend(each_df.columns)
+    all_cols = set(all_cols)  # remove duplicates
+
+    df_list = list(args)
+
+    for idx, each_df in enumerate(df_list):
+        for each_col in all_cols:
+            if each_col not in each_df.columns:
+                df_list[idx] = df_list[idx].withColumn(each_col, F.lit(None))
+
+    return reduce(lambda x, y: x.unionByName(y), df_list)
+
+
 def generate_dq_nodes():
     nodes = []
+    accuracy_node_output_list = []
     selected_dataset = get_config_parameters()['features_for_dq']
     for dataset_name, feature_list in selected_dataset.items():
 
+        output_catalog = "dq_accuracy_{}".format(dataset_name)
         # Accuracy Test
         node = Node(
             func=update_wrapper(
@@ -86,9 +115,19 @@ def generate_dq_nodes():
                     "dq_sampled_subscription_identifier",
                     "params:features_for_dq",
                     "params:percentiles"],
-            outputs="dq_accuracy"
+            outputs=output_catalog
         )
         nodes.append(node)
+        accuracy_node_output_list.append(output_catalog)
+
+    # Since node output must be unique, we create MemoryDataSet for each
+    # accuracy node output and then merge it with node below
+    merger_node = Node(
+        func=dq_merger_nodes,
+        inputs=accuracy_node_output_list,
+        outputs="dq_accuracy"
+    )
+    nodes.append(merger_node)
 
     return nodes
 
@@ -133,7 +172,7 @@ def run_accuracy_logic(
     if filtered_input_df.head() is None:
         return get_spark_empty_df(schema=dq_accuracy_df.schema)
 
-    sampled_df = get_dq_sampled_records(filtered_input_df, sampled_sub_id_df)
+    sample_creation_date, sampled_df = get_dq_sampled_records(filtered_input_df, sampled_sub_id_df)
     if sampled_df.head() is None:
         return get_spark_empty_df(schema=dq_accuracy_df.schema)
 
@@ -173,7 +212,8 @@ def run_accuracy_logic(
     result_df = (result_df
                  .withColumn("most_frequent_value_percentage", (F.col("most_freq_value_count")/F.col("count"))*100)
                  .withColumn("run_date", F.current_timestamp())
-                 .withColumn("dataset_name", F.lit(dataset_name)))
+                 .withColumn("dataset_name", F.lit(dataset_name))
+                 .withColumn("sub_id_sample_creation_date", F.lit(sample_creation_date)))
 
     return result_df
 
