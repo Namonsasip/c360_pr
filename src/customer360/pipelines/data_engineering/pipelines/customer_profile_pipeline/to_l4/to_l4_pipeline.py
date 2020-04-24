@@ -29,15 +29,19 @@
 from kedro.pipeline import Pipeline, node
 
 from customer360.utilities.config_parser import node_from_config
-from customer360.pipelines.data_engineering.nodes.customer_profile_nodes.to_l3.to_l3_nodes import *
+from customer360.pipelines.data_engineering.nodes.customer_profile_nodes.to_l4.to_l4_nodes import *
 
 
 def customer_profile_to_l4_pipeline(**kwargs):
     return Pipeline(
         [
+            node(df_copy_for_l4_customer_profile_ltv_to_date,
+                 "l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l4_customer_profile_ltv_to_date",
+                 "int_l4_customer_profile_ltv_to_date"
+                 ),
             node(
                 node_from_config,
-                ["l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l4_customer_profile_ltv_to_date",
+                ["int_l4_customer_profile_ltv_to_date",
                  "params:l4_customer_profile_ltv_to_date"],
                 "l4_customer_profile_ltv_to_date"
             ),

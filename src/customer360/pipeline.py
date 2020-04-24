@@ -75,7 +75,7 @@ from .pipelines.data_engineering.pipelines.campaign_pipeline.to_l2 import (
     campaign_to_l2_pipeline,
 )
 from .pipelines.data_engineering.pipelines.campaign_pipeline.to_l4 import (
-    campaign_to_l4_pipeline,
+    campaign_to_l4_pipeline, campaign_to_l4_ranking_pipeline
 )
 from .pipelines.data_engineering.pipelines.complaints_pipeline.to_l1.to_l1_pipeline import (
     complaints_to_l1_pipeline,
@@ -236,8 +236,8 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "revenue_to_l1_pipeline": revenue_to_l1_pipeline(),
         "revenue_to_l2_pipeline": revenue_to_l2_pipeline(),
         "revenue_to_l3_pipeline": revenue_to_l3_pipeline(),
-        "revenue_to_l4_daily_pipelin": revenue_to_l4_daily_pipeline(),
-        "revenue_to_l4_pipeline": revenue_to_l4_monthly_pipeline(),
+        "revenue_to_l4_daily_pipeline": revenue_to_l4_daily_pipeline(),
+        "revenue_to_l4_monthly_pipeline": revenue_to_l4_monthly_pipeline(),
         "revenue_to_l4_weekly_pipeline": revenue_to_l4_weekly_pipeline(),
         "complaints_to_l1_pipeline": complaints_to_l1_pipeline(),
         "complaints_to_l2_pipeline": complaints_to_l2_pipeline(),
@@ -250,6 +250,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "campaign_to_l1_pipeline": campaign_to_l1_pipeline(),
         "campaign_to_l2_pipeline": campaign_to_l2_pipeline(),
         "campaign_to_l4_pipeline": campaign_to_l4_pipeline(),
+        "campaign_to_l4_ranking_pipeline": campaign_to_l4_ranking_pipeline(),
         "loyalty_to_l1_pipeline": loyalty_to_l1_pipeline(),
         "loyalty_l0_to_l2_pipeline": loyalty_l0_to_l2_pipeline(),
         "loyalty_l1_to_l2_pipeline": loyalty_l1_to_l2_pipeline(),

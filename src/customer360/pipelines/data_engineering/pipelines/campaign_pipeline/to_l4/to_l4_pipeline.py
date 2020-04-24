@@ -51,6 +51,14 @@ def campaign_to_l4_pipeline(**kwargs):
                 add_relative_time_features, ['l4_campaign_postpaid_prepaid_int'],
                 'l4_campaign_postpaid_prepaid_features'
             ),
+
+        ], name="campaign_to_l4_pipeline"
+    )
+
+
+def campaign_to_l4_ranking_pipeline(**kwargs):
+    return Pipeline(
+        [
             node(
                 l4_rolling_window,
                 ["l2_campaign_top_channel_weekly",
@@ -64,5 +72,5 @@ def campaign_to_l4_pipeline(**kwargs):
                 "l4_campaign_top_channel_features"
             )
 
-        ], name="campaign_to_l4_pipeline"
+        ], name="campaign_to_l4_ranking_pipeline"
     )
