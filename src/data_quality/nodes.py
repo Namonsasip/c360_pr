@@ -37,7 +37,7 @@ def sample_subscription_identifier(
     cust_profile_df.createOrReplaceTempView("cust_profile_df")
     distinct_sub_id_df = spark.sql("""
         select 
-            distinct(subscription_identifier) as subscription_identifier
+            distinct(crm_sub_id) as subscription_identifier
         from cust_profile_df
         where subscription_identifier is not null
           and lower(subscription_identifier) != 'na'
