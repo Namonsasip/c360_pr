@@ -76,7 +76,7 @@ l0_revenue_prepaid_pru_f_usage_multi_daily = [
 [datetime.datetime.strptime('2020-01-28', '%Y-%m-%d'),datetime.datetime.strptime('2020-01-31', '%Y-%m-%d'),"test",
  datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'),"Y","N","N",48.0,"XU","3G882","N","null",
  10.0,15.0,9.0,5.0,4.0,3.0,2.0,2.0,2.14,1.0,2.0,2.0,2.14,1.0,1.0,1.0,1.0,2.14,2.14,1.0,1.0,2.1,0.0,1.0,1.0,2.0,1.0,1.0,
- "3GPre-paid",0.0,"CBS",0.0,0.0,"UDN","20200101"]
+ "3GPre-paid",0.0,"CBS",0.0,0.0,"UDN","20200101",datetime.datetime.strptime('2020-01-27', '%Y-%m-%d')]
 ]
 
 global customer
@@ -325,6 +325,7 @@ StructField("total_vol_gprs_package",DoubleType(), True),
 StructField("total_vol_gprs_exc_pack",DoubleType(), True),
 StructField("first_activate_province",StringType(), True),
 StructField("partition_date",StringType(), True),
+StructField("start_of_week",StringType(), True)
 
                                                                                ]))
 
@@ -376,10 +377,179 @@ class TestUnitRevenue:
         l1_revenue_prepaid_pru_f_usage_multi_daily = massive_processing_with_customer(df_l0_revenue_prepaid_pru_f_usage_multi_daily,
             customer_pro,var_project_context.catalog.load('params:l1_revenue_prepaid_pru_f_usage_multi_daily'))
 
-        joindata = df_l0_revenue_prepaid_pru_f_usage_multi_daily.join(customer_pro,["access_method_num"],"left")
-        temp = df_l0_revenue_prepaid_pru_f_usage_multi_daily.withColumn("total_vol_gprs_2g_3g",F.col("total_vol_gprs") - F.col("total_vol_gprs_4g"))
-        test = node_from_config(temp,var_project_context.catalog.load('params:l1_revenue_prepaid_pru_f_usage_multi_daily'))
+        temp = df_l0_revenue_prepaid_pru_f_usage_multi_daily.withColumn("total_vol_gprs_2g_3g", F.col("total_vol_gprs") - F.col("total_vol_gprs_4g"))
+
+        joindata = temp.join(customer_pro,["access_method_num"],"left")
+
+        test = node_from_config(joindata,var_project_context.catalog.load('params:l1_revenue_prepaid_pru_f_usage_multi_daily'))
 
         test.show()
-        l1_revenue_prepaid_pru_f_usage_multi_daily.show()
-        exit(2)
+
+        assert round(float(test.where("access_method_num = 'test'").select("rev_arpu_total_net_rev").collect()[0][0]),
+                     2) == 2.14
+        assert round(
+            float(test.where("access_method_num = 'test'").select("rev_arpu_net_tariff_rev_reward").collect()[0][0]),
+            2) == 1
+        assert round(float(
+            test.where("access_method_num = 'test'").select("rev_arpu_net_tariff_rev_exc_reward").collect()[0][0]),
+                     2) == 2.14
+        assert round(float(
+            test.where("access_method_num = 'test'").select("rev_arpu_share_of_exc_reward_over_total_rev").collect()[0][
+                0]), 2) == 1
+        assert round(float(test.where("access_method_num = 'test'").select(
+            "rev_arpu_share_of_revenue_reward_over_total_rev").collect()[0][0]), 2) == 0.47
+        assert round(float(
+            test.where("access_method_num = 'test'").select("rev_arpu_diff_in_exc_reward_rev_reward").collect()[0][0]),
+                     2) == 1.14
+        assert round(
+            float(test.where("access_method_num = 'test'").select("rev_arpu_number_of_ontop_pkg").collect()[0][0]),
+            2) == 1
+        assert round(float(test.where("access_method_num = 'test'").select("rev_arpu_data_rev").collect()[0][0]),
+                     2) == 10
+        assert round(float(test.where("access_method_num = 'test'").select("rev_arpu_data_rev_by_pkg").collect()[0][0]),
+                     2) == 15
+        assert round(float(test.where("access_method_num = 'test'").select("rev_arpu_data_rev_by_ppu").collect()[0][0]),
+                     2) == 9
+        assert round(float(test.where("access_method_num = 'test'").select("rev_arpu_data_rev_4g").collect()[0][0]),
+                     2) == 0
+        assert round(
+            float(test.where("access_method_num = 'test'").select("rev_arpu_share_data_rev_4g").collect()[0][0]),
+            2) == 0
+        assert round(
+            float(test.where("access_method_num = 'test'").select("rev_arpu_data_rev_by_pkg_4g").collect()[0][0]),
+            2) == 0
+        assert round(
+            float(test.where("access_method_num = 'test'").select("rev_arpu_share_data_rev_4g").collect()[0][0]),
+            2) == 0
+        assert round(
+            float(test.where("access_method_num = 'test'").select("rev_arpu_share_data_rev_by_pkg_4g").collect()[0][0]),
+            2) == 0
+        assert round(
+            float(test.where("access_method_num = 'test'").select("rev_arpu_data_rev_by_ppu_4g").collect()[0][0]),
+            2) == 0
+        assert round(float(test.where("access_method_num = 'test'").select("rev_arpu_data_rev_2g_3g").collect()[0][0]),
+                     2) == 10
+        assert round(
+            float(test.where("access_method_num = 'test'").select("rev_arpu_share_data_rev_2g_3g").collect()[0][0]),
+            2) == 1
+        assert round(
+            float(test.where("access_method_num = 'test'").select("rev_arpu_data_rev_by_pkg_2g_3g").collect()[0][0]),
+            2) == 15
+        assert round(float(
+            test.where("access_method_num = 'test'").select("rev_arpu_share_data_rev_by_pkg_2g_3g").collect()[0][0]),
+                     2) == 1
+        assert round(
+            float(test.where("access_method_num = 'test'").select("rev_arpu_data_rev_by_ppu_2g_3g").collect()[0][0]),
+            2) == 10
+        assert round(float(
+            test.where("access_method_num = 'test'").select("rev_arpu_share_data_rev_by_ppu_2g_3g").collect()[0][0]),
+                     2) == 1
+        assert round(
+            float(test.where("access_method_num = 'test'").select("rev_arpu_data_rev_by_per_unit").collect()[0][0]),
+            2) == 2
+        assert round(
+            float(test.where("access_method_num = 'test'").select("rev_arpu_data_rev_per_unit_2g_3g").collect()[0][0]),
+            2) == 2
+        assert test.where("access_method_num = 'test'").select("rev_arpu_data_rev_per_unit_4g").collect()[0][0] == None
+        assert round(
+            float(test.where("access_method_num = 'test'").select("rev_arpu_diff_rev_by_pkg_ppu").collect()[0][0]),
+            2) == 6
+        assert round(
+            float(test.where("access_method_num = 'test'").select("rev_arpu_diff_rev_by_pkg_ppu_4g").collect()[0][0]),
+            2) == 0
+        assert round(float(
+            test.where("access_method_num = 'test'").select("rev_arpu_diff_rev_by_pkg_ppu_2g_3g").collect()[0][0]),
+                     2) == 1
+        assert round(
+            float(test.where("access_method_num = 'test'").select("rev_arpu_diff_rev_2g_3g_vs_4g").collect()[0][0]),
+            2) == 10
+        assert test.where("access_method_num = 'test'").select("rev_arpu_diff_rev_per_unit_2g_3g_vs_4g").collect()[0][0] == None
+        assert round(float(test.where("access_method_num = 'test'").select("rev_arpu_voice").collect()[0][0]),
+                     2) == 2.14
+        assert round(float(test.where("access_method_num = 'test'").select("rev_arpu_voice_intra").collect()[0][0]),
+                     2) == 1
+        assert round(
+            float(test.where("access_method_num = 'test'").select("rev_arpu_share_voice_intra").collect()[0][0]),
+            2) == 0.47
+        assert round(float(test.where("access_method_num = 'test'").select("rev_arpu_voice_non_intra").collect()[0][0]),
+                     2) == 2.14
+        assert round(
+            float(test.where("access_method_num = 'test'").select("rev_arpu_share_voice_non_intra").collect()[0][0]),
+            2) == 1
+        assert round(float(test.where("access_method_num = 'test'").select("rev_arpu_voice_per_call").collect()[0][0]),
+                     2) == 0.54
+        assert round(
+            float(test.where("access_method_num = 'test'").select("rev_arpu_voice_intra_per_call").collect()[0][0]),
+            2) == 0.25
+        assert round(
+            float(test.where("access_method_num = 'test'").select("rev_arpu_voice_non_intra_per_call").collect()[0][0]),
+            2) == 0.54
+        assert round(
+            float(test.where("access_method_num = 'test'").select("rev_arpu_voice_per_minute").collect()[0][0]),
+            2) == 0.71
+        assert round(
+            float(test.where("access_method_num = 'test'").select("rev_arpu_voice_intra_per_minute").collect()[0][0]),
+            2) == 0.33
+        assert round(float(
+            test.where("access_method_num = 'test'").select("rev_arpu_voice_non_intra_per_minute").collect()[0][0]),
+                     2) == 0.71
+        assert round(float(
+            test.where("access_method_num = 'test'").select("rev_arpu_diff_voice_intra_non_intra").collect()[0][0]),
+                     2) == -1.14
+        assert round(float(
+            test.where("access_method_num = 'test'").select("rev_arpu_diff_voice_intra_non_intra_per_min").collect()[0][
+                0]), 2) == -0.38
+        assert round(float(test.where("access_method_num = 'test'").select("rev_arpu_days_0_rev").collect()[0][0]),
+                     2) == 0
+        assert round(float(test.where("access_method_num = 'test'").select("rev_arpu_days_data_0_rev").collect()[0][0]),
+                     2) == 0
+        assert round(
+            float(test.where("access_method_num = 'test'").select("rev_arpu_days_data_ppu_0_rev").collect()[0][0]),
+            2) == 0
+        assert round(
+            float(test.where("access_method_num = 'test'").select("rev_arpu_days_4g_data_0_rev").collect()[0][0]),
+            2) == 1
+        assert round(
+            float(test.where("access_method_num = 'test'").select("rev_arpu_days_2g_3g_data_0_rev").collect()[0][0]),
+            2) == 0
+        assert round(
+            float(test.where("access_method_num = 'test'").select("rev_arpu_days_4g_data_pkg_0_rev").collect()[0][0]),
+            2) == 1
+        assert round(float(
+            test.where("access_method_num = 'test'").select("rev_arpu_days_2g_3g_data_pkg_0_rev").collect()[0][0]),
+                     2) == 0
+        assert round(
+            float(test.where("access_method_num = 'test'").select("rev_arpu_days_4g_data_ppu_0_rev").collect()[0][0]),
+            2) == 1
+        assert round(float(
+            test.where("access_method_num = 'test'").select("rev_arpu_days_2g_3g_data_ppu_0_rev").collect()[0][0]),
+                     2) == 0
+        assert round(
+            float(test.where("access_method_num = 'test'").select("rev_arpu_days_voice_0_rev").collect()[0][0]), 2) == 0
+        assert round(
+            float(test.where("access_method_num = 'test'").select("rev_arpu_days_voice_intra_0_rev").collect()[0][0]),
+            2) == 0
+        assert round(float(
+            test.where("access_method_num = 'test'").select("rev_arpu_days_voice_non_intra_0_rev").collect()[0][0]),
+                     2) == 0
+        assert round(float(
+            test.where("access_method_num = 'test'").select("rev_arpu_days_voice_per_call_0_rev").collect()[0][0]),
+                     2) == 0
+        assert round(float(
+            test.where("access_method_num = 'test'").select("rev_arpu_days_voice_intra_per_call_0_rev").collect()[0][
+                0]), 2) == 0
+        assert round(float(
+            test.where("access_method_num = 'test'").select("rev_arpu_days_voice_non_intra_per_call_0_rev").collect()[
+                0][0]), 2) == 0
+        assert round(
+            float(test.where("access_method_num = 'test'").select("rev_arpu_days_voice_per_min_0_rev").collect()[0][0]),
+            2) == 0
+        assert round(float(
+            test.where("access_method_num = 'test'").select("rev_arpu_days_voice_intra_per_min_0_rev").collect()[0][0]),
+                     2) == 0
+        assert round(float(
+            test.where("access_method_num = 'test'").select("rev_arpu_days_voice_non_intra_per_min_0_rev").collect()[0][
+                0]), 2) == 0
+        assert test.where("access_method_num = 'test'").select("rev_arpu_last_date_on_top_pkg").collect()[0][0] == None
+
+
