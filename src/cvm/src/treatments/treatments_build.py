@@ -531,9 +531,10 @@ def serve_treatments_chosen(treatments_propositions: DataFrame) -> pandas.DataFr
     """
 
     treatments_df = treatments_propositions.filter("campaign_code != 'no_treatment'")
+    today = date.today().strftime("%Y-%m-%d")
     if treatments_df.count() == 0:
-        today = date.today().strftime("%Y-%m-%d")
         raise Exception(f"No treatments found for {today}")
+    treatments_df = treatments_df.withColumn("date", today)
     return treatments_df.toPandas()
 
 
