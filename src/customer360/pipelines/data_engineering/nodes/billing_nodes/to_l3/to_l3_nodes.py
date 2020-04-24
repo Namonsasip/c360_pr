@@ -550,13 +550,15 @@ def billing_time_diff_between_topups_monthly(customer_profile_df, input_df, sql)
 def billing_data_joined(billing_monthly, payment_daily, target_table_name: str):
     # Need to check becasue billing_monthly and payment_daily are getting joined on a different column than partition_month
 
+    table_name = target_table_name.split('_tbl')[0]
+
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([billing_monthly, payment_daily]):
         return get_spark_empty_df()
 
     payment_daily = data_non_availability_and_missing_check(df=payment_daily, grouping="monthly",
                                                             par_col="partition_date",
-                                                            target_table_name=target_table_name,
+                                                            target_table_name=table_name,
                                                             missing_data_check_flg='Y')
 
     if check_empty_dfs([billing_monthly, payment_daily]):
@@ -651,20 +653,22 @@ def billing_rpu_data_with_customer_profile(customer_prof, rpu_data):
 def billing_statement_hist_data_with_customer_profile(customer_prof, billing_hist, target_table_name: str):
     # Need to check becasue billing_hist is getting joined with customer on a different column than partition_month
 
+    table_name = target_table_name.split('_tbl')[0]
+
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([billing_hist, customer_prof]):
         return get_spark_empty_df()
 
     billing_hist = data_non_availability_and_missing_check(df=billing_hist, grouping="monthly",
                                                            par_col="partition_month",
-                                                           target_table_name=target_table_name)
+                                                           target_table_name=table_name)
 
     customer_prof = derives_in_customer_profile(customer_prof) \
         .where("charge_type = 'Post-paid' and cust_active_this_month = 'Y'")
 
     customer_prof = data_non_availability_and_missing_check(df=customer_prof, grouping="monthly",
                                                             par_col="start_of_month",
-                                                            target_table_name=target_table_name)
+                                                            target_table_name=table_name)
 
     if check_empty_dfs([billing_hist, customer_prof]):
         return get_spark_empty_df()
