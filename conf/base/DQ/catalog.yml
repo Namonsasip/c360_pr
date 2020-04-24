@@ -14,3 +14,4 @@ dq_accuracy:
   filepath: dbfs:/mnt/customer360-blob-output/DQ/dq_accuracy/
   save_args:
     mode: "append"
+    partitionBy: ["dataset_name", "corresponding_date"]
