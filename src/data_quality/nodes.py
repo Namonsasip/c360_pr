@@ -39,8 +39,8 @@ def sample_subscription_identifier(
         select 
             distinct(crm_sub_id) as subscription_identifier
         from cust_profile_df
-        where subscription_identifier is not null
-          and lower(subscription_identifier) != 'na'
+        where crm_sub_id is not null
+          and lower(crm_sub_id) != 'na'
     """)
     distinct_sub_id_count = distinct_sub_id_df.count()
 
