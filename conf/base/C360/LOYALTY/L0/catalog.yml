@@ -7,7 +7,7 @@ l0_loyalty_priv_point_ba:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_loyalty_priv_point_ba_weekly'
-    read_layer: 'l0_daily'
+    read_layer: 'l0_weekly'
     target_layer: 'l2_weekly'
     lookback: '0'
 

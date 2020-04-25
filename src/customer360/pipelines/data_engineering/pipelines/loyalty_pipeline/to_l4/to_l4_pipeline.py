@@ -15,7 +15,7 @@ def loyalty_to_l4_pipeline(**kwargs):
                 l4_rolling_window,
                 ["l2_loyalty_number_of_services_weekly",
                  "params:l4_loyalty_number_of_services_features"],
-                "l4_loyalty_number_of_services_weekly"
+                "l4_loyalty_number_of_services_features"
             ),
             # Number of rewards for each category
             node(
