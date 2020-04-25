@@ -13,11 +13,9 @@ l4_loyalty_number_of_rewards_redeemed_features:
           "loyalty_rewards_food_and_drink","loyalty_rewards_lifestyle","loyalty_rewards_others"]
   read_from: "l2"
 
-l4_rolling_window_loyalty_number_of_points_spend:
-  partition_by: ["access_method_num","register_date","subscription_identifier"]
+l4_loyalty_number_of_points_spend_features:
+  partition_by: ["subscription_identifier"]
   feature_list:
     sum: ["loyalty_points_spend_total","loyalty_points_spend_travel","loyalty_points_spend_ais_rewards","loyalty_points_spend_entertainment",
-          "loyalty_points_spend_food_and_drink","loyalty_points_spend_lifestyle","loyalty_points_spend_others"]
-    avg: ["loyalty_points_spend_total","loyalty_points_spend_travel","loyalty_points_spend_ais_rewards","loyalty_points_spend_entertainment",
           "loyalty_points_spend_food_and_drink","loyalty_points_spend_lifestyle","loyalty_points_spend_others"]
   read_from: "l2"

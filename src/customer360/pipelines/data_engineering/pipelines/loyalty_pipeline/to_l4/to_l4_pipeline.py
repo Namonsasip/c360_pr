@@ -26,9 +26,9 @@ def loyalty_to_l4_pipeline(**kwargs):
             # # Number of points spend for each category
             node(
                 l4_rolling_window,
-                ["l2_loyalty_number_of_points_spend_for_l4_loyalty_number_of_points_spend",
-                 "params:l4_rolling_window_loyalty_number_of_points_spend"],
-                "l4_loyalty_number_of_points_spend"
+                ["l2_loyalty_number_of_points_spend_weekly",
+                 "params:l4_loyalty_number_of_points_spend_features"],
+                "l4_loyalty_number_of_points_spend_features"
             ),
         ]
     )
