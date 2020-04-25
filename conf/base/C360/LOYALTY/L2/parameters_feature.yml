@@ -1,73 +1,73 @@
 l2_loyalty_number_of_services_weekly:
-    where_clause: ""
-    feature_list:
-        loyalty_services_total: "count(*)"
-        loyalty_services_travel: "sum(CASE WHEN lower(category_id) like '%travel%'
+  where_clause: ""
+  feature_list:
+    loyalty_services_total: "count(*)"
+    loyalty_services_travel: "sum(CASE WHEN lower(category_id) like '%travel%'
         or lower(category_text) like '%travel%' THEN 1 ELSE 0 END)"
-        loyalty_services_ais_rewards: "sum(CASE WHEN lower(category_id) like '%ais rewards%'
+    loyalty_services_ais_rewards: "sum(CASE WHEN lower(category_id) like '%ais rewards%'
         or lower(category_text) like '%ais rewards%' THEN 1 ELSE 0 END)"
-        loyalty_services_entertainment: "sum(CASE WHEN lower(category_id) like '%entertainment%'
+    loyalty_services_entertainment: "sum(CASE WHEN lower(category_id) like '%entertainment%'
         or lower(category_text) like '%entertainment%' THEN 1 ELSE 0 END)"
-        loyalty_services_food_and_drink: "sum(CASE WHEN lower(category_id) like '%food%'
+    loyalty_services_food_and_drink: "sum(CASE WHEN lower(category_id) like '%food%'
         or lower(category_text) like '%food%' THEN 1 ELSE 0 END)"
-        loyalty_services_lifestyle: "sum(CASE WHEN lower(category_id) like '%lifestyle%'
+    loyalty_services_lifestyle: "sum(CASE WHEN lower(category_id) like '%lifestyle%'
         or lower(category_text) like '%lifestyle%' THEN 1 ELSE 0 END)"
-        loyalty_services_others: "sum(CASE WHEN lower(category_id) NOT like '%tra%'
-        AND lower(category_id) NOT like '%ais rewards%'
-        AND lower(category_id) NOT like '%entertainment%'
-        AND lower(category_id) NOT like '%food%'
-        AND lower(category_id) NOT like '%lifestyle%'
-        AND lower(category_text) NOT like '%travel%'
-        AND lower(category_text) NOT like '%ais rewards%'
-        AND lower(category_text) NOT like '%entertainment%'
-        AND lower(category_text) NOT like '%food%'
-        AND lower(category_text) NOT like '%lifestyle%' THEN 1 ELSE 0 END)"
-        loyalty_privilege_registered_date: "max(to_date(register_date))"
-    granularity: "start_of_week,subscription_identifier"
+    loyalty_services_others: "sum(CASE WHEN (category_id is null) or (lower(category_id) NOT like '%tra%'
+                                                                       AND lower(category_id) NOT like '%ais rewards%'
+                                                                       AND lower(category_id) NOT like '%entertainment%'
+                                                                       AND lower(category_id) NOT like '%food%'
+                                                                       AND lower(category_id) NOT like '%lifestyle%'
+                                                                       AND lower(category_text) NOT like '%travel%'
+                                                                       AND lower(category_text) NOT like '%ais rewards%'
+                                                                       AND lower(category_text) NOT like '%entertainment%'
+                                                                       AND lower(category_text) NOT like '%food%'
+                                                                       AND lower(category_text) NOT like '%lifestyle%') THEN 1 ELSE 0 END)"
+    loyalty_privilege_registered_date: "max(to_date(register_date))"
+  granularity: "start_of_week,subscription_identifier"
 
 
 l2_loyalty_number_of_rewards_redeemed_weekly:
-    where_clause: ""
-    feature_list:
-        loyalty_services_total: "count(*)"
-        loyalty_services_travel: "sum(CASE WHEN lower(category_id) like '%travel%'
+  where_clause: ""
+  feature_list:
+    loyalty_services_total: "count(*)"
+    loyalty_services_travel: "sum(CASE WHEN lower(category_id) like '%travel%'
                                         or lower(category_text) like '%travel%' THEN 1 ELSE 0 END)"
-        loyalty_services_ais_rewards: "sum(CASE WHEN lower(category_id) like '%ais rewards%'
+    loyalty_services_ais_rewards: "sum(CASE WHEN lower(category_id) like '%ais rewards%'
                                         or lower(category_text) like '%ais rewards%' THEN 1 ELSE 0 END)"
-        loyalty_services_entertainment: "sum(CASE WHEN lower(category_id) like '%entertainment%'
+    loyalty_services_entertainment: "sum(CASE WHEN lower(category_id) like '%entertainment%'
                                         or lower(category_text) like '%entertainment%' THEN 1 ELSE 0 END)"
-        loyalty_services_food_and_drink: "sum(CASE WHEN lower(category_id) like '%food%'
+    loyalty_services_food_and_drink: "sum(CASE WHEN lower(category_id) like '%food%'
                                         or lower(category_text) like '%food%' THEN 1 ELSE 0 END)"
-        loyalty_services_lifestyle: "sum(CASE WHEN lower(category_id) like '%lifestyle%'
+    loyalty_services_lifestyle: "sum(CASE WHEN lower(category_id) like '%lifestyle%'
                                         or lower(category_text) like '%lifestyle%' THEN 1 ELSE 0 END)"
-        loyalty_services_others: "sum(CASE WHEN lower(category_id) NOT like '%tra%'
-                                         AND lower(category_id) NOT like '%ais rewards%'
-                                         AND lower(category_id) NOT like '%entertainment%'
-                                         AND lower(category_id) NOT like '%food%'
-                                         AND lower(category_id) NOT like '%lifestyle%'
-                                         AND lower(category_text) NOT like '%travel%'
-                                         AND lower(category_text) NOT like '%ais rewards%'
-                                         AND lower(category_text) NOT like '%entertainment%'
-                                         AND lower(category_text) NOT like '%food%'
-                                         AND lower(category_text) NOT like '%lifestyle%' THEN 1 ELSE 0 END)"
-    granularity: "start_of_week,subscription_identifier"
+    loyalty_services_others: "sum(CASE WHEN (category_id is null) or (lower(category_id) NOT like '%tra%'
+                                                                       AND lower(category_id) NOT like '%ais rewards%'
+                                                                       AND lower(category_id) NOT like '%entertainment%'
+                                                                       AND lower(category_id) NOT like '%food%'
+                                                                       AND lower(category_id) NOT like '%lifestyle%'
+                                                                       AND lower(category_text) NOT like '%travel%'
+                                                                       AND lower(category_text) NOT like '%ais rewards%'
+                                                                       AND lower(category_text) NOT like '%entertainment%'
+                                                                       AND lower(category_text) NOT like '%food%'
+                                                                       AND lower(category_text) NOT like '%lifestyle%') THEN 1 ELSE 0 END)"
+  granularity: "start_of_week,subscription_identifier"
 
 
 l2_loyalty_number_of_points_spend_weekly:
-    where_clause: ""
-    feature_list:
-        loyalty_points_spend_total: "sum(loyalty_points_spend)"
-        loyalty_points_spend_travel: "sum(CASE WHEN lower(category_id) like '%travel%'
+  where_clause: ""
+  feature_list:
+    loyalty_points_spend_total: "sum(loyalty_points_spend)"
+    loyalty_points_spend_travel: "sum(CASE WHEN lower(category_id) like '%travel%'
                                     or lower(category_text) like '%travel%' THEN loyalty_points_spend ELSE 0 END)"
-        loyalty_points_spend_ais_rewards: "sum(CASE WHEN lower(category_id) like '%ais rewards%'
+    loyalty_points_spend_ais_rewards: "sum(CASE WHEN lower(category_id) like '%ais rewards%'
                                     or lower(category_text) like '%ais rewards%' THEN loyalty_points_spend ELSE 0 END)"
-        loyalty_points_spend_entertainment: "sum(CASE WHEN lower(category_id) like '%entertainment%'
+    loyalty_points_spend_entertainment: "sum(CASE WHEN lower(category_id) like '%entertainment%'
                                     or lower(category_text) like '%entertainment%' THEN loyalty_points_spend ELSE 0 END)"
-        loyalty_points_spend_food_and_drink: "sum(CASE WHEN lower(category_id) like '%food%'
+    loyalty_points_spend_food_and_drink: "sum(CASE WHEN lower(category_id) like '%food%'
                                     or lower(category_text) like '%food%' THEN loyalty_points_spend ELSE 0 END)"
-        loyalty_points_spend_lifestyle: "sum(CASE WHEN lower(category_id) like '%lifestyle%'
+    loyalty_points_spend_lifestyle: "sum(CASE WHEN lower(category_id) like '%lifestyle%'
                                          or lower(category_text) like '%lifestyle%' THEN loyalty_points_spend ELSE 0 END)"
-        loyalty_points_spend_others: "sum(CASE WHEN lower(category_id) NOT like '%tra%'
+    loyalty_points_spend_others: "sum(CASE WHEN (category_id is null) or (lower(category_id) NOT like '%tra%'
                                      AND lower(category_id) NOT like '%ais rewards%'
                                      AND lower(category_id) NOT like '%entertainment%'
                                      AND lower(category_id) NOT like '%food%'
@@ -76,21 +76,21 @@ l2_loyalty_number_of_points_spend_weekly:
                                      AND lower(category_text) NOT like '%ais rewards%'
                                      AND lower(category_text) NOT like '%entertainment%'
                                      AND lower(category_text) NOT like '%food%'
-                                     AND lower(category_text) NOT like '%lifestyle%' THEN 1 ELSE 0 END)"
-    granularity: "start_of_week, subscription_identifier"
+                                     AND lower(category_text) NOT like '%lifestyle%') THEN 1 ELSE 0 END)"
+  granularity: "start_of_week, subscription_identifier"
 
 l2_loyalty_priv_point_ba_weekly:
-    where_clause: ""
-    feature_list:
-        loyalty_points_total_balance: "max(points)"
-        loyalty_points_last_modified_date: "max(modified_date)"
-        loyalty_points_last_expired_date: "max(expired_date)"
-        loyalty_is_status_emerald: "max(CASE WHEN lower(mobile_segment) = 'emerald' THEN 1 ELSE 0 END)"
-        loyalty_is_status_gold: "max(CASE WHEN lower(mobile_segment) = 'gold' THEN 1 ELSE 0 END)"
-        loyalty_is_status_platinum: "max(CASE WHEN lower(mobile_segment) = 'platinum' THEN 1 ELSE 0 END)"
-        loyalty_is_status_ms_emerald: "max(CASE WHEN lower(mobile_segment) = 'ms_emerald' THEN 1 ELSE 0 END)"
-        loyalty_is_status_prospect_platinum: "max(CASE WHEN lower(mobile_segment) = 'prospect platinum' THEN 1 ELSE 0 END)"
-        loyalty_is_status_prospect_gold: "max(CASE WHEN lower(mobile_segment) = 'prospect gold' THEN 1 ELSE 0 END)"
-        loyalty_is_status_platinum_plus: "max(CASE WHEN lower(mobile_segment) = 'platinum plus' THEN 1 ELSE 0 END)"
-        loyalty_last_mobile_status_date: "max(mobile_status_date)"
-    granularity: "start_of_week, subscription_identifier"
+  where_clause: ""
+  feature_list:
+    loyalty_points_total_balance: "max(points)"
+    loyalty_points_last_modified_date: "max(modified_date)"
+    loyalty_points_last_expired_date: "max(expired_date)"
+    loyalty_is_status_emerald: "max(CASE WHEN lower(mobile_segment) = 'emerald' THEN 1 ELSE 0 END)"
+    loyalty_is_status_gold: "max(CASE WHEN lower(mobile_segment) = 'gold' THEN 1 ELSE 0 END)"
+    loyalty_is_status_platinum: "max(CASE WHEN lower(mobile_segment) = 'platinum' THEN 1 ELSE 0 END)"
+    loyalty_is_status_ms_emerald: "max(CASE WHEN lower(mobile_segment) = 'ms_emerald' THEN 1 ELSE 0 END)"
+    loyalty_is_status_prospect_platinum: "max(CASE WHEN lower(mobile_segment) = 'prospect platinum' THEN 1 ELSE 0 END)"
+    loyalty_is_status_prospect_gold: "max(CASE WHEN lower(mobile_segment) = 'prospect gold' THEN 1 ELSE 0 END)"
+    loyalty_is_status_platinum_plus: "max(CASE WHEN lower(mobile_segment) = 'platinum plus' THEN 1 ELSE 0 END)"
+    loyalty_last_mobile_status_date: "max(mobile_status_date)"
+  granularity: "start_of_week, subscription_identifier"
