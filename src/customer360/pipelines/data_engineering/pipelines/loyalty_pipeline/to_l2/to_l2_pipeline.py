@@ -3,7 +3,11 @@ from kedro.pipeline import Pipeline, node
 from src.customer360.pipelines.data_engineering.nodes.loyalty_nodes.to_l2.to_l2_nodes import *
 
 
-def loyalty_l1_to_l2_pipeline(**kwargs):
+def loyalty_to_l2_pipeline(**kwargs):
+    """
+    :param kwargs:
+    :return:
+    """
     return Pipeline(
         [
 

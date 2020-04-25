@@ -4,6 +4,10 @@ from src.customer360.utilities.config_parser import *
 
 
 def loyalty_to_l4_pipeline(**kwargs):
+    """
+    :param kwargs:
+    :return:
+    """
     return Pipeline(
         [
             # Number of services for each category
