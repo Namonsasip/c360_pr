@@ -112,7 +112,7 @@ def customized_processing(data_frame: DataFrame, cust_prof: DataFrame, recharge_
     min_value = union_dataframes_with_missing_cols(
         [
             data_frame.select(
-                f.to_date(f.date_trunc('week', f.to_date(f.max(f.col("partition_date")), 'yyyyMMdd'))).alias(
+                f.to_date(f.date_trunc('week', f.to_date(f.max(f.col("partition_date")).cast(StringType()), 'yyyyMMdd'))).alias(
                     "max_date")),
             cust_prof.select(
                 f.max(f.col("start_of_week")).alias("max_date")),
