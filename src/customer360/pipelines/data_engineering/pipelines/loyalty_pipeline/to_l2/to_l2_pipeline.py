@@ -7,7 +7,7 @@ def loyalty_l1_to_l2_pipeline(**kwargs):
     return Pipeline(
         [
 
-            # # Number of services for each category
+            # Number of services for each category
             node(
                 build_loyalty_number_of_services_weekly,
                 ["l1_loyalty_number_of_services_daily",
@@ -17,7 +17,7 @@ def loyalty_l1_to_l2_pipeline(**kwargs):
                 "l2_loyalty_number_of_services_weekly"
             ),
 
-            # # Number of services for each category
+            # Number of redeemed rewards in each category
             node(
                 build_loyalty_number_of_rewards_redeemed_weekly,
                 ["l1_loyalty_number_of_rewards_redeemed_daily",
@@ -25,6 +25,15 @@ def loyalty_l1_to_l2_pipeline(**kwargs):
                  "l0_loyalty_priv_category",
                  "params:l2_loyalty_number_of_rewards_redeemed_weekly"],
                 "l2_loyalty_number_of_rewards_redeemed_weekly"
+            ),
+            # Number of spend points in each category
+            node(
+                build_loyalty_number_of_points_spend_weekly,
+                ["l1_loyalty_number_of_points_spend_daily",
+                 "l0_loyalty_priv_project",
+                 "l0_loyalty_priv_category",
+                 "params:l2_loyalty_number_of_points_spend_weekly"],
+                "l2_loyalty_number_of_points_spend_weekly"
             ),
 
         ]
