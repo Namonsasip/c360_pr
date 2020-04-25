@@ -146,7 +146,7 @@ def customized_processing(data_frame: DataFrame, cust_prof: DataFrame, recharge_
         small_df = data_frame.withColumn("start_of_week", f.to_date(f.date_trunc('week', data_frame.recharge_date)))
         small_df = small_df.filter(f.to_date('start_of_week').isin(*[curr_item]))
         customer_prof_df = cust_data_frame.filter(f.col('start_of_week').isin(*[curr_item]))
-        joined_df_with_recharge_type = top_up_channel_joined_data(small_df, recharge_type_df)
+        joined_df_with_recharge_type = top_up_channel_joined_data_for_weekly_last_top_up_channel(small_df, recharge_type_df)
         df = node_from_config(joined_df_with_recharge_type, sql)
         output_df = recharge_data_with_customer_profile_joined(customer_prof_df, df)
         CNTX.catalog.save(output_df_catalog, output_df)
@@ -155,7 +155,7 @@ def customized_processing(data_frame: DataFrame, cust_prof: DataFrame, recharge_
     small_df = data_frame.withColumn("start_of_week", f.to_date(f.date_trunc('week', data_frame.recharge_date)))
     small_df = small_df.filter(f.to_date('start_of_week').isin(*[first_item]))
     customer_prof_df = cust_data_frame.filter(f.col('start_of_week').isin(*[first_item]))
-    joined_df_with_recharge_type = top_up_channel_joined_data(small_df, recharge_type_df)
+    joined_df_with_recharge_type = top_up_channel_joined_data_for_weekly_last_top_up_channel(small_df, recharge_type_df)
     df = node_from_config(joined_df_with_recharge_type, sql)
     output_df = recharge_data_with_customer_profile_joined(customer_prof_df, df)
 
@@ -522,3 +522,12 @@ def top_up_channel_joined_data(input_df, topup_type_ref):
                               'left')
 
     return output_df
+
+
+def top_up_channel_joined_data_for_weekly_last_top_up_channel(input_df, topup_type_ref):
+
+    output_df = input_df.join(topup_type_ref, input_df.recharge_type == topup_type_ref.recharge_topup_event_type_cd,
+                              'left')
+
+    return output_df
+
