@@ -78,20 +78,19 @@ l2_loyalty_number_of_points_spend_weekly:
                                      AND lower(category_text) NOT like '%food%'
                                      AND lower(category_text) NOT like '%lifestyle%' THEN 1 ELSE 0 END)"
     granularity: "start_of_week, subscription_identifier"
-#
-#l2_loyalty_serenade_class_weekly:
-#    where_clause: ""
-#    feature_list:
-#        start_of_week: "start_of_week"
-#        access_method_num: "access_method_num"
-#        register_date: "register_date"
-#        subscription_identifier: "subscription_identifier"
-#        loyalty_serenade_class: "first_value(ma_segment)
-#        over(partition by start_of_week,access_method_num,register_date,subscription_identifier order by last_update desc)"
-#        loyalty_is_classic: "case when first_value(ma_segment)
-#        over(partition by start_of_week,access_method_num,register_date,subscription_identifier order by last_update desc) in ('Classic') then 'Y' else 'N' end"
-#        loyalty_is_emerald: "case when first_value(ma_segment)
-#        over(partition by start_of_week,access_method_num,register_date,subscription_identifier order by last_update desc) in ('Emerald') then 'Y' else 'N' end"
-#        loyalty_is_gold: "case when first_value(ma_segment)
-#        over(partition by start_of_week,access_method_num,register_date,subscription_identifier order by last_update desc) in ('Gold') then 'Y' else 'N' end"
-#    granularity: ""
+
+l2_loyalty_priv_point_ba_weekly:
+    where_clause: ""
+    feature_list:
+        loyalty_points_total_balance: "max(points)"
+        loyalty_points_last_modified_date: "max(modified_date)"
+        loyalty_points_last_expired_date: "max(expired_date)"
+        loyalty_is_status_emerald: "max(CASE WHEN lower(mobile_segment) = 'emerald' THEN 1 ELSE 0 END)"
+        loyalty_is_status_gold: "max(CASE WHEN lower(mobile_segment) = 'gold' THEN 1 ELSE 0 END)"
+        loyalty_is_status_platinum: "max(CASE WHEN lower(mobile_segment) = 'platinum' THEN 1 ELSE 0 END)"
+        loyalty_is_status_ms_emerald: "max(CASE WHEN lower(mobile_segment) = 'ms_emerald' THEN 1 ELSE 0 END)"
+        loyalty_is_status_prospect_platinum: "max(CASE WHEN lower(mobile_segment) = 'prospect platinum' THEN 1 ELSE 0 END)"
+        loyalty_is_status_prospect_gold: "max(CASE WHEN lower(mobile_segment) = 'prospect gold' THEN 1 ELSE 0 END)"
+        loyalty_is_status_platinum_plus: "max(CASE WHEN lower(mobile_segment) = 'platinum plus' THEN 1 ELSE 0 END)"
+        loyalty_last_mobile_status_date: "max(mobile_status_date)"
+    granularity: "start_of_week, subscription_identifier"

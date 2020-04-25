@@ -24,4 +24,16 @@ l4_loyalty_number_of_points_spend_features:
           "loyalty_points_spend_food_and_drink","loyalty_points_spend_lifestyle","loyalty_points_spend_others"]
     avg: ["loyalty_points_spend_total","loyalty_points_spend_travel","loyalty_points_spend_ais_rewards","loyalty_points_spend_entertainment",
           "loyalty_points_spend_food_and_drink","loyalty_points_spend_lifestyle","loyalty_points_spend_others"]
-  read_from: "l3"
+  read_from: "l2"
+
+l4_loyalty_priv_point_ba_features:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+    max: ["loyalty_points_total_balance", "loyalty_points_last_modified_date", "loyalty_points_last_expired_date",
+    "loyalty_is_status_emerald", "loyalty_is_status_gold", "loyalty_is_status_platinum", "loyalty_is_status_ms_emerald",
+    "loyalty_is_status_prospect_platinum", "loyalty_is_status_prospect_gold", "loyalty_is_status_platinum_plus",
+    "loyalty_last_mobile_status_date"]
+    min: ["loyalty_points_total_balance", "loyalty_points_last_expired_date",
+      "loyalty_is_status_emerald", "loyalty_is_status_gold", "loyalty_is_status_platinum", "loyalty_is_status_ms_emerald",
+      "loyalty_is_status_prospect_platinum", "loyalty_is_status_prospect_gold", "loyalty_is_status_platinum_plus"]
+  read_from: "l2"

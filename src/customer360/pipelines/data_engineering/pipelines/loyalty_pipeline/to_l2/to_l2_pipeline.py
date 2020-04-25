@@ -36,20 +36,14 @@ def loyalty_l1_to_l2_pipeline(**kwargs):
                 "l2_loyalty_number_of_points_spend_weekly"
             ),
 
+            # Point balance & Statuses
+            node(
+                build_loyalty_point_balance_statuses_weekly,
+                ["l1_loyalty_priv_point_ba_daily",
+                 "l0_loyalty_priv_point_ba",
+                 "params:l2_loyalty_priv_point_ba_weekly"],
+                "l2_loyalty_priv_point_ba_weekly"
+            ),
+
         ]
     )
-
-#
-# def loyalty_l0_to_l2_pipeline(**kwargs):
-#     return Pipeline(
-#         [
-#             # Serenade class weekly
-#             node(
-#                 loyalty_serenade_class,
-#                 ["l0_loyalty_priv_customer_profile_for_l2_loyalty_serenade_class",
-#                  "l1_customer_profile_union_daily_feature_for_l2_loyalty_serenade_class",
-#                  "params:l2_loyalty_serenade_class_weekly"],
-#                 "l2_loyalty_serenade_class"
-#             ),
-#         ]
-#     )
