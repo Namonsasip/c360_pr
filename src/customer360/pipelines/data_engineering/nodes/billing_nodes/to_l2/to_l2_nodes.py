@@ -419,12 +419,12 @@ def billing_last_top_up_channel_weekly(input_df, customer_profile_df, recharge_t
         return get_spark_empty_df()
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="weekly", par_col="partition_date",
-                                                       target_table_name="l2_billing_and_payments_weekly_topup_time_diff",
+                                                       target_table_name="l2_billing_and_payments_weekly_last_top_up_channel",
                                                        missing_data_check_flg='Y')
 
     customer_profile_df = data_non_availability_and_missing_check(df=customer_profile_df, grouping="weekly",
                                                                   par_col="event_partition_date",
-                                                                  target_table_name="l2_billing_and_payments_weekly_topup_time_diff",
+                                                                  target_table_name="l2_billing_and_payments_weekly_last_top_up_channel",
                                                                   missing_data_check_flg='Y')
 
     if check_empty_dfs([input_df, customer_profile_df]):
