@@ -220,6 +220,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "billing_to_l2_pipeline": billing_to_l2_pipeline(),
         "billing_to_l4_pipeline_monthly": billing_to_l4_pipeline_monthly(),
         "billing_to_l4_pipeline_weekly": billing_to_l4_pipeline_weekly(),
+        "billing_to_l4_ranked_pipeline_weekly": billing_to_l4_ranked_pipeline_weekly(),
         "billing_to_l4_pipeline_daily": billing_to_l4_pipeline_daily(),
         "device_to_l1_pipeline": device_to_l1_pipeline(),
         "device_to_l2_pipeline": device_to_l2_pipeline(),
