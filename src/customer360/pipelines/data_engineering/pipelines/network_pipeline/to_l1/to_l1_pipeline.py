@@ -1,8 +1,7 @@
 from kedro.pipeline import Pipeline, node
 
-from customer360.utilities.config_parser import *
-from customer360.utilities.re_usable_functions import l1_massive_processing
 from customer360.pipelines.data_engineering.nodes.network_nodes.to_l1.to_l1_nodes import *
+from customer360.utilities.config_parser import *
 
 
 def network_to_l1_pipeline(**kwargs):
@@ -23,30 +22,45 @@ def network_to_l1_pipeline(**kwargs):
                 "l1_network_voice_features"
             ),
 
-            node(
-                get_good_and_bad_cells_for_each_customer,
-                ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features",
-                 "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features",
-                 "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features",
-                 "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features",
-                 "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features",
-                 "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features"],
-                "int_l1_network_good_and_bad_cells_features"
-            ),
-            node(
-                get_transaction_on_good_and_bad_cells,
-                ["int_l1_network_good_and_bad_cells_features",
-                 "l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features",
-                 "l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features"],
-                "int_l1_network_get_transaction_on_good_and_bad_cells"
-            ),
-            node(
-                l1_massive_processing,
-                ["int_l1_network_get_transaction_on_good_and_bad_cells",
-                 "params:l1_network_good_and_bad_cells_features",
-                 "l1_customer_profile_union_daily_feature_for_l1_network_good_and_bad_cells_features"],
-                "l1_network_good_and_bad_cells_features"
-            ),
+            node(build_network_good_and_bad_cells_features, [
+                "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features",
+                "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features",
+                "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features",
+                "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features",
+                "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features",
+                "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features",
+
+                "l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features",
+                "l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features",
+
+                "l1_customer_profile_union_daily_feature_for_l1_network_good_and_bad_cells_features",
+                "params:l1_network_good_and_bad_cells_features",
+            ], "l1_network_good_and_bad_cells_features"),
+
+            # node(
+            #     get_good_and_bad_cells_for_each_customer,
+            #     ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features",
+            #      "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features",
+            #      "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features",
+            #      "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features",
+            #      "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features",
+            #      "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features"],
+            #     "int_l1_network_good_and_bad_cells_features"
+            # ),
+            # node(
+            #     get_transaction_on_good_and_bad_cells,
+            #     ["int_l1_network_good_and_bad_cells_features",
+            #      "l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features",
+            #      "l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features"],
+            #     "int_l1_network_get_transaction_on_good_and_bad_cells"
+            # ),
+            # node(
+            #     l1_massive_processing,
+            #     ["int_l1_network_get_transaction_on_good_and_bad_cells",
+            #      "params:l1_network_good_and_bad_cells_features",
+            #      "l1_customer_profile_union_daily_feature_for_l1_network_good_and_bad_cells_features"],
+            #     "l1_network_good_and_bad_cells_features"
+            # ),
 
             node(
                 l1_massive_processing,
