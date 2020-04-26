@@ -54,19 +54,19 @@ def billing_to_l2_pipeline(**kwargs):
             #     "l2_billing_and_payments_weekly_top_up_channels"
             # ),
             #
-            # # Weekly most popular top up channel pre-paid
-            # node(
-            #     top_up_channel_joined_data,
-            #     ["l1_billing_and_payments_daily_most_popular_top_up_channel_for_l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate",
-            #      "l0_billing_topup_type_for_l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate"],
-            #     "l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate_1"
-            # ),
-            # node(
-            #     node_from_config,
-            #     ["l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate_1",
-            #      "params:l2_popular_top_up_channel"],
-            #     "l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate@save"
-            # ),
+            # Weekly most popular top up channel pre-paid
+            node(
+                top_up_channel_joined_data,
+                ["l1_billing_and_payments_daily_most_popular_top_up_channel_for_l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate",
+                 "l0_billing_topup_type_for_l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate"],
+                "l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate_1"
+            ),
+            node(
+                node_from_config,
+                ["l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate_1",
+                 "params:l2_popular_top_up_channel"],
+                "l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate@save"
+            ),
             # node(
             #     billing_most_popular_top_up_channel_weekly,
             #     ["l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate@l2_billing_and_payments_weekly_most_popular_top_up_channel",
@@ -96,25 +96,25 @@ def billing_to_l2_pipeline(**kwargs):
                  "params:l2_popular_topup_day_1"],
                 "l2_billing_and_payments_weekly_popular_topup_day_intermediate@save"
             ),
-            node(
-                billing_popular_topup_day_weekly,
-                ["l2_billing_and_payments_weekly_popular_topup_day_intermediate@l2_billing_and_payments_weekly_popular_topup_day",
-                 "params:l2_popular_topup_day_2"],
-                "l2_billing_and_payments_weekly_popular_topup_day"
-            ),
+            # node(
+            #     billing_popular_topup_day_weekly,
+            #     ["l2_billing_and_payments_weekly_popular_topup_day_intermediate@l2_billing_and_payments_weekly_popular_topup_day",
+            #      "params:l2_popular_topup_day_2"],
+            #     "l2_billing_and_payments_weekly_popular_topup_day"
+            # ),
 
-            # # Weekly popular top up hour pre-paid
-            # node(
-            #     df_copy_for_l2_billing_and_payments_weekly_popular_topup_hour_intermediate,
-            #     "l1_billing_and_payments_daily_popular_topup_day_for_l2_billing_and_payments_weekly_popular_topup_hour_intermediate",
-            #     "int_l2_billing_and_payments_weekly_popular_topup_hour_intermediate"
-            # ),
-            # node(
-            #     node_from_config,
-            #     ["int_l2_billing_and_payments_weekly_popular_topup_hour_intermediate",
-            #      "params:l2_popular_topup_hour_1"],
-            #     "l2_billing_and_payments_weekly_popular_topup_hour_intermediate@save"
-            # ),
+            # Weekly popular top up hour pre-paid
+            node(
+                df_copy_for_l2_billing_and_payments_weekly_popular_topup_hour_intermediate,
+                "l1_billing_and_payments_daily_popular_topup_day_for_l2_billing_and_payments_weekly_popular_topup_hour_intermediate",
+                "int_l2_billing_and_payments_weekly_popular_topup_hour_intermediate"
+            ),
+            node(
+                node_from_config,
+                ["int_l2_billing_and_payments_weekly_popular_topup_hour_intermediate",
+                 "params:l2_popular_topup_hour_1"],
+                "l2_billing_and_payments_weekly_popular_topup_hour_intermediate@save"
+            ),
             # node(
             #     billing_popular_topup_hour_weekly,
             #     ["l2_billing_and_payments_weekly_popular_topup_hour_intermediate@l2_billing_and_payments_weekly_popular_topup_hour",
