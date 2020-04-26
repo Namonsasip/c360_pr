@@ -101,7 +101,7 @@ def network_to_l1_pipeline(**kwargs):
             ),
 
             node(
-                l1_massive_processing,
+                build_network_streaming_cqi,
                 ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_streaming_cqi",
                  "params:l1_network_streaming_cqi",
                  "l1_customer_profile_union_daily_feature_for_l1_network_streaming_cqi"],
