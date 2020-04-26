@@ -48,6 +48,7 @@ def billing_to_l2_intermediate_pipeline(**kwargs):
         ]
     )
 
+
 def billing_to_l2_pipeline(**kwargs):
     return Pipeline(
         [
