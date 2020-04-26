@@ -398,6 +398,9 @@ def billing_last_three_topup_volume_weekly(input_df, sql) -> DataFrame:
     """
     :return:
     """
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
     return_df = massive_processing_weekly(input_df, sql, "l2_billing_and_payments_weekly_last_three_topup_volume")
     return return_df
 
