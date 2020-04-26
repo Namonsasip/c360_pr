@@ -63,7 +63,7 @@ def network_to_l1_pipeline(**kwargs):
             # ),
 
             node(
-                l1_massive_processing,
+                build_network_share_of_3g_time_in_total_time,
                 ["l0_usage_sum_voice_location_daily_for_l1_network_share_of_3g_time_in_total_time",
                  "params:l1_network_share_of_3g_time_in_total_time",
                  "l1_customer_profile_union_daily_feature_for_l1_network_share_of_3g_time_in_total_time"],
