@@ -1,6 +1,54 @@
 from pyspark.sql import DataFrame
+from customer360.utilities.re_usable_functions import check_empty_dfs, \
+    data_non_availability_and_missing_check
+from customer360.utilities.re_usable_functions import l1_massive_processing, union_dataframes_with_missing_cols
+from customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
+import pyspark.sql.functions as f
 
-from src.customer360.utilities.spark_util import get_spark_session
+
+def build_network_voice_features(int_l1_network_voice_features: DataFrame,
+                                 l1_network_voice_features: dict,
+                                 l1_customer_profile_union_daily_feature_for_l1_network_voice_features: DataFrame) -> DataFrame:
+    """
+    :param int_l1_network_voice_features:
+    :param l1_network_voice_features:
+    :param l1_customer_profile_union_daily_feature_for_l1_network_voice_features:
+    :return:
+    """
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs(
+            [int_l1_network_voice_features, l1_customer_profile_union_daily_feature_for_l1_network_voice_features]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=int_l1_network_voice_features, grouping="daily",
+                                                       par_col="event_partition_date",
+                                                       target_table_name="l1_network_voice_features")
+
+    cust_df = data_non_availability_and_missing_check(
+        df=l1_customer_profile_union_daily_feature_for_l1_network_voice_features, grouping="daily",
+        par_col="event_partition_date",
+        target_table_name="l1_network_voice_features")
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            input_df.select(
+                f.max(f.col("event_partition_date")).alias("max_date")),
+            cust_df.select(
+                f.max(f.col("event_partition_date")).alias("max_date")),
+        ]
+    ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    input_df = input_df.filter(f.col("event_partition_date") <= min_value)
+    cust_df = cust_df.filter(f.col("event_partition_date") <= min_value)
+
+    if check_empty_dfs([input_df, cust_df]):
+        return get_spark_empty_df()
+    ################################# End Implementing Data availability checks ###############################
+
+    return_df = l1_massive_processing(int_l1_network_voice_features,
+                                      l1_network_voice_features,
+                                      cust_df)
+    return return_df
 
 
 def get_good_and_bad_cells_for_each_customer(
@@ -61,9 +109,9 @@ def get_good_and_bad_cells_for_each_customer(
 
 
 def get_transaction_on_good_and_bad_cells(
-    ranked_cells_df,
-    cell_master_plan_df,
-    sum_voice_daily_location_df
+        ranked_cells_df,
+        cell_master_plan_df,
+        sum_voice_daily_location_df
 ) -> DataFrame:
     spark = get_spark_session()
 

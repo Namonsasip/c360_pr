@@ -126,13 +126,6 @@ from .pipelines.data_engineering.pipelines.product_pipeline.to_l2.to_l2_pipeline
 from .pipelines.data_engineering.pipelines.product_pipeline.to_l4.to_l4_pipeline import (
     product_to_l4_pipeline,
 )
-
-# from .pipelines.data_engineering.pipelines.device_pipeline.to_l2.to_l2_pipeline import (
-#     device_to_l2_pipeline,
-# )
-# from .pipelines.data_engineering.pipelines.device_pipeline.to_l3.to_l3_pipeline import (
-#     device_to_l3_pipeline,
-# )
 from .pipelines.data_engineering.pipelines.revenue_pipeline import (
     revenue_to_l1_pipeline,
     revenue_to_l4_daily_pipeline,
@@ -222,7 +215,6 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "digital_to_l4_monthly_pipeline": digital_to_l4_monthly_pipeline(),
         "digital_to_l4_weekly_pipeline": digital_to_l4_weekly_pipeline(),
         "digital_to_l4_weekly_favourite_pipeline": digital_to_l4_weekly_favourite_pipeline(),
-        # "device_to_l3_pipeline": device_to_l3_pipeline(),
         "streaming_to_l1_pipeline": streaming_to_l1_pipeline(),
         "streaming_to_l2_pipeline": streaming_to_l2_pipeline(),
         "streaming_to_l3_pipeline": streaming_to_l3_pipeline(),
