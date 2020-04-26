@@ -534,7 +534,7 @@ def serve_treatments_chosen(treatments_propositions: DataFrame) -> pandas.DataFr
     today = date.today().strftime("%Y-%m-%d")
     if treatments_df.count() == 0:
         raise Exception(f"No treatments found for {today}")
-    treatments_df = treatments_df.withColumn("date", today)
+    treatments_df = treatments_df.withColumn("date", func.lit(today))
     return treatments_df.toPandas()
 
 
