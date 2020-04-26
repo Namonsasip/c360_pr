@@ -173,7 +173,8 @@ def billing_topup_count_and_volume_node_weekly(input_df, sql) -> DataFrame:
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="weekly", par_col="event_partition_date",
                                                        target_table_name="l2_billing_and_payments_weekly_topup_and_volume",
-                                                       missing_data_check_flg='Y')
+                                                       missing_data_check_flg='Y',
+                                                       exception_partitions=["2019-07-29"])
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -195,7 +196,8 @@ def billing_arpu_roaming_weekly(input_df, sql) -> DataFrame:
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="weekly", par_col="event_partition_date",
                                                        target_table_name="l2_billing_and_payments_weekly_rpu_roaming",
-                                                       missing_data_check_flg='Y')
+                                                       missing_data_check_flg='Y',
+                                                       exception_partitions=["2019-07-29"])
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -217,7 +219,8 @@ def billing_before_topup_balance_weekly(input_df, sql) -> DataFrame:
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="weekly", par_col="event_partition_date",
                                                        target_table_name="l2_billing_and_payments_weekly_before_top_up_balance",
-                                                       missing_data_check_flg='Y')
+                                                       missing_data_check_flg='Y',
+                                                       exception_partitions=["2019-07-29"])
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -239,7 +242,8 @@ def billing_top_up_channels_weekly(input_df, sql) -> DataFrame:
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="weekly", par_col="event_partition_date",
                                                        target_table_name="l2_billing_and_payments_weekly_top_up_channels",
-                                                       missing_data_check_flg='Y')
+                                                       missing_data_check_flg='Y',
+                                                       exception_partitions=["2019-07-29"])
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -278,7 +282,8 @@ def df_copy_for_l2_billing_and_payments_weekly_popular_topup_day_intermediate(in
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="weekly", par_col="event_partition_date",
                                                        target_table_name="l2_billing_and_payments_weekly_popular_topup_day_intermediate",
-                                                       missing_data_check_flg='Y')
+                                                       missing_data_check_flg='Y',
+                                                       exception_partitions=["2019-07-29"])
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -316,7 +321,8 @@ def df_copy_for_l2_billing_and_payments_weekly_popular_topup_hour_intermediate(i
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="weekly", par_col="event_partition_date",
                                                        target_table_name="l2_billing_and_payments_weekly_popular_topup_hour_intermediate",
-                                                       missing_data_check_flg='Y')
+                                                       missing_data_check_flg='Y',
+                                                       exception_partitions=["2019-07-29"])
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -358,7 +364,8 @@ def billing_time_since_last_topup_weekly(input_df, sql) -> DataFrame:
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="weekly", par_col="event_partition_date",
                                                        target_table_name="l2_billing_and_payments_weekly_time_since_last_top_up",
-                                                       missing_data_check_flg='Y')
+                                                       missing_data_check_flg='Y',
+                                                       exception_partitions=["2019-07-29"])
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -376,7 +383,8 @@ def df_copy_for_l2_billing_and_payments_weekly_last_three_topup_volume(input_df)
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="weekly", par_col="event_partition_date",
                                                        target_table_name="l2_billing_and_payments_weekly_last_three_topup_volume",
-                                                       missing_data_check_flg='Y')
+                                                       missing_data_check_flg='Y',
+                                                       exception_partitions=["2019-07-29"])
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -420,12 +428,14 @@ def billing_last_top_up_channel_weekly(input_df, customer_profile_df, recharge_t
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="weekly", par_col="partition_date",
                                                        target_table_name="l2_billing_and_payments_weekly_last_top_up_channel",
-                                                       missing_data_check_flg='Y')
+                                                       missing_data_check_flg='Y',
+                                                       exception_partitions=["2019-07-29"])
 
     customer_profile_df = data_non_availability_and_missing_check(df=customer_profile_df, grouping="weekly",
                                                                   par_col="event_partition_date",
                                                                   target_table_name="l2_billing_and_payments_weekly_last_top_up_channel",
-                                                                  missing_data_check_flg='Y')
+                                                                  missing_data_check_flg='Y',
+                                                                  exception_partitions=["2019-07-29"])
 
     if check_empty_dfs([input_df, customer_profile_df]):
         return get_spark_empty_df()
@@ -458,12 +468,14 @@ def billing_time_diff_between_topups_weekly(customer_profile_df, input_df, sql) 
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="weekly", par_col="event_partition_date",
                                                        target_table_name="l2_billing_and_payments_weekly_topup_time_diff",
-                                                       missing_data_check_flg='Y')
+                                                       missing_data_check_flg='Y',
+                                                       exception_partitions=["2019-07-29"])
 
     customer_profile_df = data_non_availability_and_missing_check(df=customer_profile_df, grouping="weekly",
                                                                   par_col="event_partition_date",
                                                                   target_table_name="l2_billing_and_payments_weekly_topup_time_diff",
-                                                                  missing_data_check_flg='Y')
+                                                                  missing_data_check_flg='Y',
+                                                                  exception_partitions=["2019-07-29"])
 
     if check_empty_dfs([input_df, customer_profile_df]):
         return get_spark_empty_df()
@@ -511,7 +523,8 @@ def top_up_channel_joined_data(input_df, topup_type_ref):
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="weekly", par_col="event_partition_date",
                                                        target_table_name="l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate",
-                                                       missing_data_check_flg='Y')
+                                                       missing_data_check_flg='Y',
+                                                       exception_partitions=["2019-07-29"])
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
