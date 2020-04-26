@@ -7,7 +7,7 @@ from customer360.utilities.spark_util import get_spark_empty_df
 from customer360.utilities.config_parser import node_from_config
 
 
-def build_l2_network_voice_features(
+def build_l3_network_voice_features(
         input_df: DataFrame,
         parameter: dict) -> DataFrame:
     """
@@ -23,9 +23,9 @@ def build_l2_network_voice_features(
 
     input_df = \
         data_non_availability_and_missing_check(
-            df=input_df, grouping="weekly",
+            df=input_df, grouping="monthly",
             par_col="event_partition_date",
-            target_table_name="l2_network_voice_features",
+            target_table_name="l3_network_voice_features",
             missing_data_check_flg='Y')
 
     if check_empty_dfs([input_df]):
@@ -37,7 +37,7 @@ def build_l2_network_voice_features(
     return return_df
 
 
-def build_l2_network_good_and_bad_cells_features(
+def build_l3_network_good_and_bad_cells_features(
         input_df: DataFrame,
         parameter: dict) -> DataFrame:
     """
@@ -53,9 +53,9 @@ def build_l2_network_good_and_bad_cells_features(
 
     input_df = \
         data_non_availability_and_missing_check(
-            df=input_df, grouping="weekly",
+            df=input_df, grouping="monthly",
             par_col="event_partition_date",
-            target_table_name="l2_network_good_and_bad_cells_features",
+            target_table_name="l3_network_good_and_bad_cells_features",
             missing_data_check_flg='Y')
 
     if check_empty_dfs([input_df]):
@@ -67,7 +67,7 @@ def build_l2_network_good_and_bad_cells_features(
     return return_df
 
 
-def build_l2_network_share_of_3g_time_in_total_time(
+def build_l3_network_share_of_3g_time_in_total_time(
         input_df: DataFrame,
         parameter: dict) -> DataFrame:
     """
@@ -83,9 +83,9 @@ def build_l2_network_share_of_3g_time_in_total_time(
 
     input_df = \
         data_non_availability_and_missing_check(
-            df=input_df, grouping="weekly",
+            df=input_df, grouping="monthly",
             par_col="event_partition_date",
-            target_table_name="l2_network_share_of_3g_time_in_total_time",
+            target_table_name="l3_network_share_of_3g_time_in_total_time",
             missing_data_check_flg='Y')
 
     if check_empty_dfs([input_df]):
@@ -97,7 +97,7 @@ def build_l2_network_share_of_3g_time_in_total_time(
     return return_df
 
 
-def build_l2_network_data_traffic_features(
+def build_l3_network_data_traffic_features(
         input_df: DataFrame,
         parameter: dict) -> DataFrame:
     """
@@ -113,9 +113,9 @@ def build_l2_network_data_traffic_features(
 
     input_df = \
         data_non_availability_and_missing_check(
-            df=input_df, grouping="weekly",
+            df=input_df, grouping="monthly",
             par_col="event_partition_date",
-            target_table_name="l2_network_data_traffic_features",
+            target_table_name="l3_network_data_traffic_features",
             missing_data_check_flg='Y')
 
     if check_empty_dfs([input_df]):
@@ -127,7 +127,7 @@ def build_l2_network_data_traffic_features(
     return return_df
 
 
-def build_l2_network_data_cqi(
+def build_l3_network_data_cqi(
         input_df: DataFrame,
         parameter: dict) -> DataFrame:
     """
@@ -143,9 +143,9 @@ def build_l2_network_data_cqi(
 
     input_df = \
         data_non_availability_and_missing_check(
-            df=input_df, grouping="weekly",
+            df=input_df, grouping="monthly",
             par_col="event_partition_date",
-            target_table_name="l2_network_data_cqi",
+            target_table_name="l3_network_data_cqi",
             missing_data_check_flg='Y')
 
     if check_empty_dfs([input_df]):
@@ -156,7 +156,7 @@ def build_l2_network_data_cqi(
     return return_df
 
 
-def build_l2_network_im_cqi(
+def build_l3_network_im_cqi(
         input_df: DataFrame,
         parameter: dict) -> DataFrame:
     """
@@ -172,9 +172,9 @@ def build_l2_network_im_cqi(
 
     input_df = \
         data_non_availability_and_missing_check(
-            df=input_df, grouping="weekly",
+            df=input_df, grouping="monthly",
             par_col="event_partition_date",
-            target_table_name="l2_network_im_cqi",
+            target_table_name="l3_network_im_cqi",
             missing_data_check_flg='Y')
 
     if check_empty_dfs([input_df]):
@@ -185,7 +185,7 @@ def build_l2_network_im_cqi(
     return return_df
 
 
-def build_l2_network_im_cqi(
+def builld_l3_network_im_cqi(
         input_df: DataFrame,
         parameter: dict) -> DataFrame:
     """
@@ -201,9 +201,9 @@ def build_l2_network_im_cqi(
 
     input_df = \
         data_non_availability_and_missing_check(
-            df=input_df, grouping="weekly",
+            df=input_df, grouping="monthly",
             par_col="event_partition_date",
-            target_table_name="l2_network_im_cqi",
+            target_table_name="l3_network_im_cqi",
             missing_data_check_flg='Y')
 
     if check_empty_dfs([input_df]):
@@ -214,7 +214,7 @@ def build_l2_network_im_cqi(
     return return_df
 
 
-def build_l2_network_streaming_cqi(
+def build_l3_network_streaming_cqi(
         input_df: DataFrame,
         parameter: dict) -> DataFrame:
     """
@@ -230,9 +230,9 @@ def build_l2_network_streaming_cqi(
 
     input_df = \
         data_non_availability_and_missing_check(
-            df=input_df, grouping="weekly",
+            df=input_df, grouping="monthly",
             par_col="event_partition_date",
-            target_table_name="l2_network_streaming_cqi",
+            target_table_name="l3_network_streaming_cqi",
             missing_data_check_flg='Y')
 
     if check_empty_dfs([input_df]):
@@ -243,7 +243,7 @@ def build_l2_network_streaming_cqi(
     return return_df
 
 
-def build_l2_network_web_cqi(
+def build_l3_network_web_cqi(
         input_df: DataFrame,
         parameter: dict) -> DataFrame:
     """
@@ -259,9 +259,9 @@ def build_l2_network_web_cqi(
 
     input_df = \
         data_non_availability_and_missing_check(
-            df=input_df, grouping="weekly",
+            df=input_df, grouping="monthly",
             par_col="event_partition_date",
-            target_table_name="l2_network_web_cqi",
+            target_table_name="l3_network_web_cqi",
             missing_data_check_flg='Y')
 
     if check_empty_dfs([input_df]):
@@ -272,7 +272,7 @@ def build_l2_network_web_cqi(
     return return_df
 
 
-def build_l2_network_voip_cqi(
+def build_l3_network_voip_cqi(
         input_df: DataFrame,
         parameter: dict) -> DataFrame:
     """
@@ -288,9 +288,9 @@ def build_l2_network_voip_cqi(
 
     input_df = \
         data_non_availability_and_missing_check(
-            df=input_df, grouping="weekly",
+            df=input_df, grouping="monthly",
             par_col="event_partition_date",
-            target_table_name="l2_network_voip_cqi",
+            target_table_name="l3_network_voip_cqi",
             missing_data_check_flg='Y')
 
     if check_empty_dfs([input_df]):
@@ -301,7 +301,7 @@ def build_l2_network_voip_cqi(
     return return_df
 
 
-def build_l2_network_volte_cqi(
+def build_l3_network_volte_cqi(
         input_df: DataFrame,
         parameter: dict) -> DataFrame:
     """
@@ -317,9 +317,9 @@ def build_l2_network_volte_cqi(
 
     input_df = \
         data_non_availability_and_missing_check(
-            df=input_df, grouping="weekly",
+            df=input_df, grouping="monthly",
             par_col="event_partition_date",
-            target_table_name="l2_network_volte_cqi",
+            target_table_name="l3_network_volte_cqi",
             missing_data_check_flg='Y')
 
     if check_empty_dfs([input_df]):

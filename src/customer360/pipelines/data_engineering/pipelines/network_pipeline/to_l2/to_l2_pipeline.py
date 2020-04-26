@@ -48,7 +48,7 @@ def network_to_l2_pipeline(**kwargs):
                 "l2_network_data_cqi"
             ),
             node(
-                builld_l2_network_im_cqi,
+                build_l2_network_im_cqi,
                 ["l1_network_im_cqi_for_l2_network_im_cqi",
                  "params:l2_network_im_cqi"],
                 "l2_network_im_cqi"
