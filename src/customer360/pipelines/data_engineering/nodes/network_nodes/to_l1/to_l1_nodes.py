@@ -347,18 +347,18 @@ def get_transaction_on_good_and_bad_cells(
 
 def build_network_share_of_3g_time_in_total_time(
         l0_usage_sum_voice_location_daily_for_l1_network_share_of_3g_time_in_total_time: DataFrame,
-        l1_network_data_traffic_features: dict,
-        l1_customer_profile_union_daily_feature_for_l1_network_data_traffic_features: DataFrame) -> DataFrame:
+        l1_network_share_of_3g_time_in_total_time: dict,
+        l1_customer_profile_union_daily_feature_for_l1_network_share_of_3g_time_in_total_time: DataFrame) -> DataFrame:
     """
     :param l0_usage_sum_voice_location_daily_for_l1_network_share_of_3g_time_in_total_time:
-    :param l1_network_data_traffic_features:
-    :param l1_customer_profile_union_daily_feature_for_l1_network_data_traffic_features:
+    :param l1_network_share_of_3g_time_in_total_time:
+    :param l1_customer_profile_union_daily_feature_for_l1_network_share_of_3g_time_in_total_time:
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs(
             [l0_usage_sum_voice_location_daily_for_l1_network_share_of_3g_time_in_total_time,
-             l1_customer_profile_union_daily_feature_for_l1_network_data_traffic_features]):
+             l1_customer_profile_union_daily_feature_for_l1_network_share_of_3g_time_in_total_time]):
         return get_spark_empty_df()
 
     l0_usage_sum_voice_location_daily_for_l1_network_share_of_3g_time_in_total_time = \
@@ -368,7 +368,7 @@ def build_network_share_of_3g_time_in_total_time(
             target_table_name="l1_network_share_of_3g_time_in_total_time")
 
     cust_df = data_non_availability_and_missing_check(
-        df=l1_customer_profile_union_daily_feature_for_l1_network_data_traffic_features, grouping="daily",
+        df=l1_customer_profile_union_daily_feature_for_l1_network_share_of_3g_time_in_total_time, grouping="daily",
         par_col="event_partition_date",
         target_table_name="l1_network_share_of_3g_time_in_total_time")
 
@@ -379,6 +379,84 @@ def build_network_share_of_3g_time_in_total_time(
     ################################# End Implementing Data availability checks ###############################
 
     return_df = l1_massive_processing(l0_usage_sum_voice_location_daily_for_l1_network_share_of_3g_time_in_total_time,
+                                      l1_network_share_of_3g_time_in_total_time,
+                                      cust_df)
+    return return_df
+
+
+def build_network_data_traffic_features(
+        int_l1_network_data_traffic_features: DataFrame,
+        l1_network_data_traffic_features: dict,
+        l1_customer_profile_union_daily_feature_for_l1_network_data_traffic_features: DataFrame) -> DataFrame:
+    """
+
+    :param int_l1_network_data_traffic_features:
+    :param l1_network_data_traffic_features:
+    :param l1_customer_profile_union_daily_feature_for_l1_network_data_traffic_features:
+    :return:
+    """
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs(
+            [int_l1_network_data_traffic_features,
+             l1_customer_profile_union_daily_feature_for_l1_network_data_traffic_features]):
+        return get_spark_empty_df()
+
+    int_l1_network_data_traffic_features = \
+        data_non_availability_and_missing_check(
+            df=int_l1_network_data_traffic_features, grouping="daily",
+            par_col="event_partition_date",
+            target_table_name="l1_network_data_traffic_features")
+
+    cust_df = data_non_availability_and_missing_check(
+        df=l1_customer_profile_union_daily_feature_for_l1_network_data_traffic_features, grouping="daily",
+        par_col="event_partition_date",
+        target_table_name="l1_network_data_traffic_features")
+
+    # Min function is not required as driving table is network and join is based on that
+
+    if check_empty_dfs([int_l1_network_data_traffic_features, cust_df]):
+        return get_spark_empty_df()
+    ################################# End Implementing Data availability checks ###############################
+
+    return_df = l1_massive_processing(int_l1_network_data_traffic_features,
                                       l1_network_data_traffic_features,
+                                      cust_df)
+    return return_df
+
+def builld_network_data_cqi(
+        l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi: DataFrame,
+        l1_network_data_cqi: dict,
+        l1_customer_profile_union_daily_feature_for_l1_network_data_cqi: DataFrame) -> DataFrame:
+    """
+    :param l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi:
+    :param l1_network_data_cqi:
+    :param l1_customer_profile_union_daily_feature_for_l1_network_data_cqi:
+    :return:
+    """
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs(
+            [l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi,
+             l1_customer_profile_union_daily_feature_for_l1_network_data_cqi]):
+        return get_spark_empty_df()
+
+    l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi = \
+        data_non_availability_and_missing_check(
+            df=l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi, grouping="daily",
+            par_col="partition_date",
+            target_table_name="l1_network_data_cqi")
+
+    cust_df = data_non_availability_and_missing_check(
+        df=l1_customer_profile_union_daily_feature_for_l1_network_data_cqi, grouping="daily",
+        par_col="event_partition_date",
+        target_table_name="l1_network_data_cqi")
+
+    # Min function is not required as driving table is network and join is based on that
+
+    if check_empty_dfs([l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi, cust_df]):
+        return get_spark_empty_df()
+    ################################# End Implementing Data availability checks ###############################
+
+    return_df = l1_massive_processing(l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi,
+                                      l1_network_data_cqi,
                                       cust_df)
     return return_df
