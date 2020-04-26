@@ -84,18 +84,18 @@ def billing_to_l2_pipeline(**kwargs):
             #     "l2_billing_and_payments_weekly_last_top_up_channel"
             # ),
 
-            # # # Weekly popular top up day pre-apid
-            # node(
-            #     df_copy_for_l2_billing_and_payments_weekly_popular_topup_day_intermediate,
-            #      "l1_billing_and_payments_daily_popular_topup_day_for_l2_billing_and_payments_weekly_popular_topup_day_intermediate",
-            #      "int_l2_billing_and_payments_weekly_popular_topup_day_intermediate"
-            # ),
-            # node(
-            #     node_from_config,
-            #     ["int_l2_billing_and_payments_weekly_popular_topup_day_intermediate",
-            #      "params:l2_popular_topup_day_1"],
-            #     "l2_billing_and_payments_weekly_popular_topup_day_intermediate@save"
-            # ),
+            # # Weekly popular top up day pre-apid
+            node(
+                df_copy_for_l2_billing_and_payments_weekly_popular_topup_day_intermediate,
+                 "l1_billing_and_payments_daily_popular_topup_day_for_l2_billing_and_payments_weekly_popular_topup_day_intermediate",
+                 "int_l2_billing_and_payments_weekly_popular_topup_day_intermediate"
+            ),
+            node(
+                node_from_config,
+                ["int_l2_billing_and_payments_weekly_popular_topup_day_intermediate",
+                 "params:l2_popular_topup_day_1"],
+                "l2_billing_and_payments_weekly_popular_topup_day_intermediate@save"
+            ),
             node(
                 billing_popular_topup_day_weekly,
                 ["l2_billing_and_payments_weekly_popular_topup_day_intermediate@l2_billing_and_payments_weekly_popular_topup_day",
