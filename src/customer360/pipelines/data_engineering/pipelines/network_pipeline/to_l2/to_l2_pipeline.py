@@ -1,6 +1,7 @@
 from kedro.pipeline import Pipeline, node
 
-from src.customer360.utilities.config_parser import *
+from customer360.utilities.config_parser import *
+from customer360.pipelines.data_engineering.nodes.network_nodes.to_l2.to_l2_nodes import *
 
 
 def network_to_l2_pipeline(**kwargs):
@@ -14,64 +15,64 @@ def network_to_l2_pipeline(**kwargs):
             ),
 
             node(
-                node_from_config,
+                build_l2_network_voice_features,
                 ["int_l2_network_voice_features",
                  "params:l2_network_voice_features"],
                 "l2_network_voice_features"
             ),
 
             node(
-                node_from_config,
+                build_l2_network_good_and_bad_cells_features,
                 ["l1_network_good_and_bad_cells_features_for_l2_network_good_and_bad_cells_features",
                  "params:l2_network_good_and_bad_cells_features"],
                 "l2_network_good_and_bad_cells_features"
             ),
             node(
-                node_from_config,
+                build_l2_network_share_of_3g_time_in_total_time,
                 ["l1_network_share_of_3g_time_in_total_time_for_l2_network_share_of_3g_time_in_total_time",
                  "params:l2_network_share_of_3g_time_in_total_time"],
                 "l2_network_share_of_3g_time_in_total_time"
             ),
 
             node(
-                node_from_config,
+                build_l2_network_data_traffic_features,
                 ["l1_network_data_traffic_features_for_l2_network_data_traffic_features",
                  "params:l2_network_data_traffic_features"],
                 "l2_network_data_traffic_features"
             ),
 
             node(
-                node_from_config,
+                build_l2_network_data_cqi,
                 ["l1_network_data_cqi_for_l2_network_data_cqi",
                  "params:l2_network_data_cqi"],
                 "l2_network_data_cqi"
             ),
             node(
-                node_from_config,
+                builld_l2_network_im_cqi,
                 ["l1_network_im_cqi_for_l2_network_im_cqi",
                  "params:l2_network_im_cqi"],
                 "l2_network_im_cqi"
             ),
             node(
-                node_from_config,
+                build_l2_network_streaming_cqi,
                 ["l1_network_streaming_cqi_for_l2_network_streaming_cqi",
                  "params:l2_network_streaming_cqi"],
                 "l2_network_streaming_cqi"
             ),
             node(
-                node_from_config,
+                build_l2_network_web_cqi,
                 ["l1_network_web_cqi_for_l2_network_web_cqi",
                  "params:l2_network_web_cqi"],
                 "l2_network_web_cqi"
             ),
             node(
-                node_from_config,
+                build_l2_network_voip_cqi,
                 ["l1_network_voip_cqi_for_l2_network_voip_cqi",
                  "params:l2_network_voip_cqi"],
                 "l2_network_voip_cqi"
             ),
             node(
-                node_from_config,
+                build_l2_network_volte_cqi,
                 ["l1_network_volte_cqi_for_l2_network_volte_cqi",
                  "params:l2_network_volte_cqi"],
                 "l2_network_volte_cqi"
