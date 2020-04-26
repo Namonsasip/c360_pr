@@ -37,7 +37,7 @@ l0_loyalty_drm_t_privilege_success:
 
 l0_loyalty_priv_category:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/LOYALTY/loyalty_drm_t_privilege_success/
+  filepath: /mnt/customer360-blob-data/C360/LOYALTY/loyalty_priv_category/
   file_format: parquet
   load_args:
     increment_flag: 'no'
