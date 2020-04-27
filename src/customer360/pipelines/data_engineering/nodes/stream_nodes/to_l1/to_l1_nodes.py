@@ -10,7 +10,7 @@ from pyspark.sql.types import *
 conf = os.getenv("CONF", None)
 
 
-def dac_for_streaming_to_l1_intermediate_pipeline(input_df: DataFrame, cust_df: DataFrame, target_table_name: str) -> [DataFrame, DataFrame]:
+def dac_for_streaming_to_l1_intermediate_pipeline(input_df: DataFrame, cust_df: DataFrame, target_table_name: str):
 
     #table_name = target_table_name.split('_tbl')[0]
 
@@ -40,5 +40,10 @@ def dac_for_streaming_to_l1_intermediate_pipeline(input_df: DataFrame, cust_df: 
     cust_df = cust_df.filter(f.col("event_partition_date") <= min_value)
 
     ################################# End Implementing Data availability checks ###############################
+
+    def return_df_tuple(df1, df2):
+        return [df1, df2]
+
+    input_df, cust_df = return_df_tuple(input_df, cust_df)
 
     return [input_df, cust_df]
