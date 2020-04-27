@@ -4,12 +4,13 @@ from pyspark.sql.types import *
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
     data_non_availability_and_missing_check
 from pyspark.sql import functions as f, DataFrame
+from pyspark.sql.types import *
 
 
 conf = os.getenv("CONF", None)
 
 
-def dac_for_streaming_to_l1_intermediate_pipeline(input_df, cust_df, target_table_name) -> [DataFrame, DataFrame]:
+def dac_for_streaming_to_l1_intermediate_pipeline(input_df, cust_df, target_table_name: str) -> [DataFrame, DataFrame]:
 
     table_name = target_table_name.split('_tbl')[0]
 

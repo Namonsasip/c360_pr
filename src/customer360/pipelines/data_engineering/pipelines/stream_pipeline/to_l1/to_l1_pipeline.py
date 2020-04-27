@@ -115,20 +115,55 @@ def streaming_to_l1_intermediate_pipeline(**kwargs):
 
 
 
+            # # node(
+            # #     l1_massive_processing,
+            # #     ["l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_music_service_feature",
+            # #      "params:int_l1_streaming_music_service_feature",
+            # #      "l1_customer_profile_union_daily_feature_for_int_l1_streaming_music_service_feature"],
+            # #     "int_l1_streaming_music_service_feature"
+            # # ),
+            #
+            # node(
+            #     dac_for_streaming_to_l1_intermediate_pipeline,
+            #     ["l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_music_service_feature",
+            #      "l1_customer_profile_union_daily_feature_for_int_l1_streaming_music_service_feature",
+            #      "int_l1_streaming_music_service_feature_tbl"],
+            #     ["int_l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_music_service_feature",
+            #      "int_l1_customer_profile_union_daily_feature_for_int_l1_streaming_music_service_feature"]
+            # ),
             # node(
             #     l1_massive_processing,
-            #     ["l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_music_service_feature",
+            #     ["int_l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_music_service_feature",
             #      "params:int_l1_streaming_music_service_feature",
-            #      "l1_customer_profile_union_daily_feature_for_int_l1_streaming_music_service_feature"],
+            #      "int_l1_customer_profile_union_daily_feature_for_int_l1_streaming_music_service_feature"],
             #     "int_l1_streaming_music_service_feature"
             # ),
+
+            # # node(
+            # #     l1_massive_processing,
+            # #     ["l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_esport_service_feature",
+            # #      "params:int_l1_streaming_esport_service_feature",
+            # #      "l1_customer_profile_union_daily_feature_for_int_l1_streaming_esport_service_feature"],
+            # #     "int_l1_streaming_esport_service_feature"
+            # # ),
+            #
+            # node(
+            #     dac_for_streaming_to_l1_intermediate_pipeline,
+            #     ["l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_esport_service_feature",
+            #      "l1_customer_profile_union_daily_feature_for_int_l1_streaming_esport_service_feature",
+            #      "int_l1_streaming_esport_service_feature_tbl"],
+            #     ["int_l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_esport_service_feature",
+            #      "int_l1_customer_profile_union_daily_feature_for_int_l1_streaming_esport_service_feature"]
+            # ),
             # node(
             #     l1_massive_processing,
-            #     ["l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_esport_service_feature",
+            #     ["int_l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_esport_service_feature",
             #      "params:int_l1_streaming_esport_service_feature",
-            #      "l1_customer_profile_union_daily_feature_for_int_l1_streaming_esport_service_feature"],
+            #      "int_l1_customer_profile_union_daily_feature_for_int_l1_streaming_esport_service_feature"],
             #     "int_l1_streaming_esport_service_feature"
             # ),
+
+
 
         ]
     )
