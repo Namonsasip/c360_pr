@@ -16,7 +16,7 @@ def dac_for_streaming_to_l1_intermediate_pipeline(input_df: DataFrame, cust_df: 
 
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df, cust_df]):
-        return get_spark_empty_df()
+        return [get_spark_empty_df(), get_spark_empty_df()]
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
                                                        target_table_name=target_table_name)
@@ -25,7 +25,7 @@ def dac_for_streaming_to_l1_intermediate_pipeline(input_df: DataFrame, cust_df: 
                                                        target_table_name=target_table_name)
 
     if check_empty_dfs([input_df, cust_df]):
-        return get_spark_empty_df()
+        return [get_spark_empty_df(), get_spark_empty_df()]
 
     min_value = union_dataframes_with_missing_cols(
         [
@@ -41,9 +41,9 @@ def dac_for_streaming_to_l1_intermediate_pipeline(input_df: DataFrame, cust_df: 
 
     ################################# End Implementing Data availability checks ###############################
 
-    def return_df_tuple(df1, df2):
-        return [df1, df2]
-
-    input_df, cust_df = return_df_tuple(input_df, cust_df)
+    # def return_df_tuple(df1, df2):
+    #     return [df1, df2]
+    #
+    # input_df, cust_df = return_df_tuple(input_df, cust_df)
 
     return [input_df, cust_df]
