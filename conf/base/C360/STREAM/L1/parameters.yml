@@ -2,3 +2,4 @@
 # remove the example pipeline from pipeline.py and the example nodes in
 # `src/pipelines/`
 
+int_l1_streaming_content_type_features_tbl: "int_l1_streaming_content_type_features"

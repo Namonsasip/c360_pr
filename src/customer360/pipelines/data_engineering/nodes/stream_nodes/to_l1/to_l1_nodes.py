@@ -12,17 +12,17 @@ conf = os.getenv("CONF", None)
 
 def dac_for_streaming_to_l1_intermediate_pipeline(input_df: DataFrame, cust_df: DataFrame, target_table_name: str) -> [DataFrame, DataFrame]:
 
-    table_name = target_table_name.split('_tbl')[0]
+    #table_name = target_table_name.split('_tbl')[0]
 
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df, cust_df]):
         return get_spark_empty_df()
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
-                                                       target_table_name=table_name)
+                                                       target_table_name=target_table_name)
 
     cust_df = data_non_availability_and_missing_check(df=cust_df, grouping="daily", par_col="event_partition_date",
-                                                       target_table_name=table_name)
+                                                       target_table_name=target_table_name)
 
     if check_empty_dfs([input_df, cust_df]):
         return get_spark_empty_df()
