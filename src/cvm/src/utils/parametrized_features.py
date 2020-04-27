@@ -25,6 +25,7 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import logging
 from typing import Any, Dict, List
 
 from pyspark.sql import DataFrame
@@ -63,6 +64,7 @@ def build_feature_from_parameters(
             "case " + "\n".join(when_then_clauses) + " else NULL end as " + new_col_name
         )
 
+    logging.info("Creating {} from dictionary definition".format(new_col_name))
     if new_col_name in df.columns:
         raise Exception("{} already in provided table".format(new_col_name))
     case_when_clause = _get_when_then_clause_for_col(feature_definition)
