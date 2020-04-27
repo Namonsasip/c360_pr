@@ -115,7 +115,7 @@ def sample_inputs(sample_type: str) -> Pipeline:
         "l4_usage_prepaid_postpaid_daily_features",
         "l4_daily_feature_topup_and_volume",
         "l4_usage_postpaid_prepaid_weekly_features_sum",
-        "l2_touchpoints_nim_work_features",
+        "l2_touchpoints_nim_work_features_no_inc",
     ]
 
     nodes_list = [
