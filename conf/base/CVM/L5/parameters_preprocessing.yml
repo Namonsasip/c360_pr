@@ -11,6 +11,7 @@ feature_default_values:
   arpu_data_share: 0.1
   volatility: 0.3
   last_activity_date: "2019-01-01"
+  subscriber_tenure: 5
 
 drop_in_preprocessing:
   - last_activity_date
