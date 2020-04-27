@@ -4,8 +4,11 @@ from customer360.utilities.config_parser import expansion
 from kedro.context.context import load_context
 from pathlib import Path
 import logging, os
+from customer360.utilities.re_usable_functions import check_empty_dfs, \
+    data_non_availability_and_missing_check
 
 conf = os.getenv("CONF", None)
+
 
 def build_revenue_l2_layer(data_frame: DataFrame, dict_obj: dict) -> DataFrame:
     """
@@ -14,8 +17,20 @@ def build_revenue_l2_layer(data_frame: DataFrame, dict_obj: dict) -> DataFrame:
     :return:
     """
 
-    if len(data_frame.head(1)) == 0:
+    ################################# Start Implementing Data availability checks ###############################
+    if check_empty_dfs([data_frame]):
         return data_frame
+
+    data_frame = data_non_availability_and_missing_check(df=data_frame, grouping="weekly",
+                                                         par_col="event_partition_date",
+                                                         target_table_name="l2_revenue_prepaid_pru_f_usage_multi_weekly",
+                                                         missing_data_check_flg='Y',
+                                                         exception_partitions=['2019-08-26'])
+
+    if check_empty_dfs([data_frame]):
+        return data_frame
+
+    ################################# End Implementing Data availability checks ###############################
 
     def divide_chunks(l, n):
         # looping till length l

@@ -50,7 +50,7 @@ l4_revenue_prepaid_pru_f_usage_multi_features:
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
-    partitionBy: "event_partition_date"
+    partitionBy: "start_of_week"
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
 
