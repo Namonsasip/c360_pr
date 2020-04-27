@@ -12,8 +12,6 @@ conf = os.getenv("CONF", None)
 
 def dac_for_streaming_to_l1_intermediate_pipeline(input_df: DataFrame, cust_df: DataFrame, target_table_name: str):
 
-    #table_name = target_table_name.split('_tbl')[0]
-
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df, cust_df]):
         return [get_spark_empty_df(), get_spark_empty_df()]
@@ -41,9 +39,38 @@ def dac_for_streaming_to_l1_intermediate_pipeline(input_df: DataFrame, cust_df: 
 
     ################################# End Implementing Data availability checks ###############################
 
-    # def return_df_tuple(df1, df2):
-    #     return [df1, df2]
-    #
-    # input_df, cust_df = return_df_tuple(input_df, cust_df)
-
     return [input_df, cust_df]
+
+
+def dac_for_streaming_to_l1_pipeline(input_df: DataFrame, target_table_name: str):
+
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="event_partition_date",
+                                                       target_table_name=target_table_name)
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+
+    return input_df
+
+
+def dac_for_streaming_to_l1_pipeline_from_l0(input_df: DataFrame, target_table_name: str):
+
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
+                                                       target_table_name=target_table_name)
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+
+    return input_df
