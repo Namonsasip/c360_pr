@@ -1,0 +1,21 @@
+# Parametric definition of macrosegments
+
+macrosegments:
+  ard:
+    high_arpu_high_tenure:
+      - "sum_rev_arpu_total_revenue_monthly_last_month >= 50"
+      - "subscriber_tenure >= 12"
+    high_arpu_low_tenure:
+      - "sum_rev_arpu_total_revenue_monthly_last_month >= 50"
+      - "subscriber_tenure < 12"
+    low_arpu_high_tenure:
+      - "sum_rev_arpu_total_revenue_monthly_last_month < 50"
+      - "subscriber_tenure >= 12"
+    low_arpu_low_tenure:
+      - "sum_rev_arpu_total_revenue_monthly_last_month < 50"
+      - "subscriber_tenure < 12"
+  churn:
+    positive_arpu:
+      - "sum_rev_arpu_total_revenue_monthly_last_month > 0"
+    zero_arpu:
+      - "sum_rev_arpu_total_revenue_monthly_last_month == 0"
