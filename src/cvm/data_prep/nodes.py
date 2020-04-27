@@ -292,11 +292,12 @@ def create_sample_dataset(
     return df
 
 
-def add_macrosegments(df: DataFrame,) -> DataFrame:
+def add_macrosegments(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
     """ Add macrosegments columns.
 
     Args:
         df: DataFrame with all features.
+        parameters: parameters defined in parameters.yml.
     Returns:
         Input DataFrame with extra column marking macrosegment.
     """

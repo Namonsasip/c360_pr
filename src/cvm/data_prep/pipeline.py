@@ -213,7 +213,7 @@ def prepare_features_macrosegments(sample_type: str):
             ),
             node(
                 add_macrosegments,
-                "features_targets_" + sample_type,
+                ["features_targets_" + sample_type, "parameters"],
                 "features_macrosegments_" + sample_type,
                 name="create_features_macrosegments_" + sample_type,
             ),
@@ -279,7 +279,7 @@ def create_cvm_important_columns():
             ),
             node(
                 add_macrosegments,
-                "features_targets_fe",
+                ["features_targets_fe", "parameters"],
                 "features_macrosegments_fe",
                 name="create_features_macrosegments_fe",
             ),
