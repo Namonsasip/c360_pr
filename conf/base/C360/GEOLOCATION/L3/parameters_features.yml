@@ -73,10 +73,10 @@ l3_data_frequent_cell_weekday_monthly:
     sum_no_of_call_rank_5: "sum(sum_rank_5)"
     sum_no_of_call_all: "sum(sum_call)"
     Number_of_Unique_Cells: "count(1)"
-    lac_rank_1: "concat_ws("", collect_list(ranked.lac_rank_1))"
-    ci_rank_1: "concat_ws("", collect_list(ranked.ci_rank_1))"
-    lac_rank_2: "concat_ws("", collect_list(ranked.lac_rank_2))"
-    ci_rank_2: "concat_ws("", collect_list(ranked.ci_rank_2))"
+    lac_rank_1: "concat_ws('', collect_list(ranked.lac_rank_1))"
+    ci_rank_1: "concat_ws('', collect_list(ranked.ci_rank_1))"
+    lac_rank_2: "concat_ws('', collect_list(ranked.lac_rank_2))"
+    ci_rank_2: "concat_ws('', collect_list(ranked.ci_rank_2))"
   granularity: "start_of_week,mobile_no"
 
 l3_data_frequent_cell_weekend_monthly:
@@ -89,10 +89,10 @@ l3_data_frequent_cell_weekend_monthly:
     sum_no_of_call_rank_5: "sum(sum_rank_5)"
     sum_no_of_call_all: "sum(sum_call)"
     Number_of_Unique_Cells: "count(1)"
-    lac_rank_1: "concat_ws("", collect_list(ranked.lac_rank_1))"
-    ci_rank_1: "concat_ws("", collect_list(ranked.ci_rank_1))"
-    lac_rank_2: "concat_ws("", collect_list(ranked.lac_rank_2))"
-    ci_rank_2: "concat_ws("", collect_list(ranked.ci_rank_2))"
+    lac_rank_1: "concat_ws('', collect_list(ranked.lac_rank_1))"
+    ci_rank_1: "concat_ws('', collect_list(ranked.ci_rank_1))"
+    lac_rank_2: "concat_ws('', collect_list(ranked.lac_rank_2))"
+    ci_rank_2: "concat_ws('', collect_list(ranked.ci_rank_2))"
   granularity: "start_of_week,mobile_no"
 
 l3_data_frequent_cell_monthly:
@@ -104,10 +104,10 @@ l3_data_frequent_cell_monthly:
     sum_no_of_call_rank_4: "sum(sum_rank_4)"
     sum_no_of_call_rank_5: "sum(sum_rank_5)"
     Number_of_Unique_Cells: "count(1)"
-    lac_rank_1: "concat_ws("", collect_list(ranked.lac_rank_1))"
-    ci_rank_1: "concat_ws("", collect_list(ranked.ci_rank_1))"
-    lac_rank_2: "concat_ws("", collect_list(ranked.lac_rank_2))"
-    ci_rank_2: "concat_ws("", collect_list(ranked.ci_rank_2))"
+    lac_rank_1: "concat_ws('', collect_list(ranked.lac_rank_1))"
+    ci_rank_1: "concat_ws('', collect_list(ranked.ci_rank_1))"
+    lac_rank_2: "concat_ws('', collect_list(ranked.lac_rank_2))"
+    ci_rank_2: "concat_ws('', collect_list(ranked.ci_rank_2))"
   granularity: "start_of_week,mobile_no"
 
 
@@ -116,26 +116,26 @@ l3_data_frequent_cell_monthly:
 l3_data_frequent_cell_4g_weekday_monthly:
   where_clause: ""
   feature_list:
-    lac_rank_1: "concat_ws("", collect_list(ranked.lac_rank_1))"
-    ci_rank_1: "concat_ws("", collect_list(ranked.ci_rank_1))"
-    lac_rank_2: "concat_ws("", collect_list(ranked.lac_rank_2))"
-    ci_rank_2: "concat_ws("", collect_list(ranked.ci_rank_2))"
+    lac_rank_1: "concat_ws('', collect_list(ranked.lac_rank_1))"
+    ci_rank_1: "concat_ws('', collect_list(ranked.ci_rank_1))"
+    lac_rank_2: "concat_ws('', collect_list(ranked.lac_rank_2))"
+    ci_rank_2: "concat_ws('', collect_list(ranked.ci_rank_2))"
   granularity: "start_of_week,mobile_no"
 
 l3_data_frequent_cell_4g_weekend_monthly:
   where_clause: ""
   feature_list:
-    lac_rank_1: "concat_ws("", collect_list(ranked.lac_rank_1))"
-    ci_rank_1: "concat_ws("", collect_list(ranked.ci_rank_1))"
-    lac_rank_2: "concat_ws("", collect_list(ranked.lac_rank_2))"
-    ci_rank_2: "concat_ws("", collect_list(ranked.ci_rank_2))"
+    lac_rank_1: "concat_ws('', collect_list(ranked.lac_rank_1))"
+    ci_rank_1: "concat_ws('', collect_list(ranked.ci_rank_1))"
+    lac_rank_2: "concat_ws('', collect_list(ranked.lac_rank_2))"
+    ci_rank_2: "concat_ws('', collect_list(ranked.ci_rank_2))"
   granularity: "start_of_week,mobile_no"
 
 l3_data_frequent_cell_4g_monthly:
   where_clause: ""
   feature_list:
-    lac_rank_1: "concat_ws("", collect_list(ranked.lac_rank_1))"
-    ci_rank_1: "concat_ws("", collect_list(ranked.ci_rank_1))"
-    lac_rank_2: "concat_ws("", collect_list(ranked.lac_rank_2))"
-    ci_rank_2: "concat_ws("", collect_list(ranked.ci_rank_2))"
+    lac_rank_1: "concat_ws('', collect_list(ranked.lac_rank_1))"
+    ci_rank_1: "concat_ws('', collect_list(ranked.ci_rank_1))"
+    lac_rank_2: "concat_ws('', collect_list(ranked.lac_rank_2))"
+    ci_rank_2: "concat_ws('', collect_list(ranked.ci_rank_2))"
   granularity: "start_of_week,mobile_no"
