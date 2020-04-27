@@ -46,6 +46,7 @@ from pyspark.sql.types import *
 import datetime
 from customer360.pipelines.data_engineering.nodes.revenue_nodes.to_l1.to_l1_nodes import \
     massive_processing_with_customer
+from customer360.pipelines.data_engineering.nodes.revenue_nodes.to_l2.to_l2_nodes import build_revenue_l2_layer
 
 global l0_revenue_postpaid_ru_f_sum_revenue_by_service_monthly
 l0_revenue_postpaid_ru_f_sum_revenue_by_service_monthly = [
@@ -551,5 +552,35 @@ class TestUnitRevenue:
             test.where("access_method_num = 'test'").select("rev_arpu_days_voice_non_intra_per_min_0_rev").collect()[0][
                 0]), 2) == 0
         assert test.where("access_method_num = 'test'").select("rev_arpu_last_date_on_top_pkg").collect()[0][0] == None
+
+
+    def test_l2_revenue_prepaid_weekly(self, project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+
+        l1_revenue_prepaid_pru_f_usage_multi_daily = massive_processing_with_customer(
+            df_l0_revenue_prepaid_pru_f_usage_multi_daily,
+            customer_pro, var_project_context.catalog.load('params:l1_revenue_prepaid_pru_f_usage_multi_daily'))
+
+        temp = df_l0_revenue_prepaid_pru_f_usage_multi_daily.withColumn("total_vol_gprs_2g_3g",
+                                                                        F.col("total_vol_gprs") - F.col(
+                                                                            "total_vol_gprs_4g"))
+
+        joindata = temp.join(customer_pro, on = ["access_method_num"],how ="left")
+
+        test = node_from_config(joindata,
+                                var_project_context.catalog.load('params:l1_revenue_prepaid_pru_f_usage_multi_daily'))
+
+        test = test.join(customer_pro,on = ["access_method_num","start_of_week"],how ="left")
+
+        test.show()
+
+        l2_revenue_prepaid_weekly = build_revenue_l2_layer(test,var_project_context.catalog.load('params:l2_revenue_prepaid_weekly'))
+
+        l2_revenue_prepaid_weekly.show()
+
+        exit(2)
 
 
