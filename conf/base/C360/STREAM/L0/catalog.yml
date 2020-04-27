@@ -1,11 +1,11 @@
 l0_streaming_ida_mobile_domain_summary_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/stream_ida_mobile_domain_summary_daily/
+  filepath: /mnt/customer360-blob-data/C360/STREAM/stream_ida_mobile_domain_summary_daily/
   file_format: parquet
 
 l0_streaming_ida_mobile_search_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/stream_ida_mobile_search_daily/
+  filepath: /mnt/customer360-blob-data/C360/STREAM/stream_ida_mobile_search_daily/
   file_format: parquet
 
 #l0_streaming_ru_a_onair_vimmi_usage_daily:

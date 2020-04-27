@@ -3,7 +3,7 @@ l2_revenue_prepaid_weekly:
   type: "week"
   feature_list:
     sum: [
-      "rev_arpu_net_rev",
+      "rev_arpu_total_net_rev",
       "rev_arpu_net_tariff_rev_reward",
       "rev_arpu_net_tariff_rev_exc_reward",
       "rev_arpu_data_rev",
@@ -47,25 +47,49 @@ l2_revenue_prepaid_weekly:
       "rev_arpu_voice_intra_per_minute",
       "rev_arpu_voice_non_intra_per_minute",
     ]
-    max: ["rev_arpu_last_date_on_top_pkg"]
+    max: [
+          "rev_arpu_last_date_on_top_pkg",
+          "rev_arpu_share_of_exc_reward_over_total_rev",
+          "rev_arpu_share_of_revenue_reward_over_total_rev",
+          "rev_arpu_share_data_rev_4g",
+          "rev_arpu_share_data_rev_by_pkg_4g",
+          "rev_arpu_share_data_rev_by_ppu_4g",
+          "rev_arpu_share_data_rev_2g_3g",
+          "rev_arpu_share_data_rev_by_pkg_2g_3g",
+          "rev_arpu_share_data_rev_by_ppu_2g_3g",
+          "rev_arpu_share_voice_intra",
+          "rev_arpu_share_voice_non_intra",
+    ]
     avg: [
       "rev_arpu_share_of_exc_reward_over_total_rev",
       "rev_arpu_share_of_revenue_reward_over_total_rev",
-      "rev_arpu_diff_in_exc_reward_rev_reward",
       "rev_arpu_share_data_rev_4g",
       "rev_arpu_share_data_rev_by_pkg_4g",
       "rev_arpu_share_data_rev_by_ppu_4g",
       "rev_arpu_share_data_rev_2g_3g",
       "rev_arpu_share_data_rev_by_pkg_2g_3g",
       "rev_arpu_share_data_rev_by_ppu_2g_3g",
+      "rev_arpu_share_voice_intra",
+      "rev_arpu_share_voice_non_intra",
+      "rev_arpu_diff_in_exc_reward_rev_reward",
       "rev_arpu_diff_rev_by_pkg_ppu",
       "rev_arpu_diff_rev_by_pkg_ppu_4g",
       "rev_arpu_diff_rev_by_pkg_ppu_2g_3g",
       "rev_arpu_diff_rev_2g_3g_vs_4g",
       "rev_arpu_diff_rev_per_unit_2g_3g_vs_4g",
-      "rev_arpu_share_voice_intra",
-      "rev_arpu_share_voice_non_intra",
       "rev_arpu_diff_voice_intra_non_intra",
       "rev_arpu_diff_voice_intra_non_intra_per_min",
+    ]
+    min: [
+      "rev_arpu_share_of_exc_reward_over_total_rev",
+      "rev_arpu_share_of_revenue_reward_over_total_rev",
+      "rev_arpu_share_data_rev_4g",
+      "rev_arpu_share_data_rev_by_pkg_4g",
+      "rev_arpu_share_data_rev_by_ppu_4g",
+      "rev_arpu_share_data_rev_2g_3g",
+      "rev_arpu_share_data_rev_by_pkg_2g_3g",
+      "rev_arpu_share_data_rev_by_ppu_2g_3g",
+      "rev_arpu_share_voice_intra",
+      "rev_arpu_share_voice_non_intra",
     ]
   granularity: "subscription_identifier, start_of_week"

@@ -61,6 +61,13 @@ l0_campaign_tracking_contact_list_pre:
     target_layer: 'l1_daily'
     lookback: '0'
 
+l0_campaign_tracking_contact_list_pre_full_load:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/CAMPAIGN/campaign_tracking_contact_list_pre/
+  load_args:
+    increment_flag: 'no'
+    mergeSchema: true
 
 l0_campaign_clm_campaign_contacts_ma:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet

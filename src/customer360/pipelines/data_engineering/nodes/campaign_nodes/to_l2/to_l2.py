@@ -5,6 +5,8 @@ from kedro.context.context import load_context
 from pathlib import Path
 import logging, os
 from customer360.utilities.spark_util import get_spark_empty_df
+from customer360.utilities.re_usable_functions import check_empty_dfs, \
+    data_non_availability_and_missing_check
 
 conf = os.getenv("CONF", None)
 
@@ -22,9 +24,27 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     :return:
     """
 
-    if len(l1_campaign_post_pre_fbb_daily.head(1)) == 0 or len(l1_campaign_top_channel_daily.head(1)) == 0:
+    ################################# Start Implementing Data availability checks ###############################
+    if check_empty_dfs([l1_campaign_post_pre_fbb_daily, l1_campaign_top_channel_daily]):
         return [get_spark_empty_df(), get_spark_empty_df()]
 
+
+    l1_campaign_post_pre_fbb_daily = data_non_availability_and_missing_check(df=l1_campaign_post_pre_fbb_daily,
+                                                                             grouping="weekly",
+                                                                             par_col="event_partition_date",
+                                                                             target_table_name="l2_campaign_postpaid_prepaid_weekly",
+                                                                             missing_data_check_flg='Y')
+
+    l1_campaign_top_channel_daily = data_non_availability_and_missing_check(df=l1_campaign_top_channel_daily,
+                                                                            grouping="weekly",
+                                                                            par_col="event_partition_date",
+                                                                            target_table_name="l2_campaign_top_channel_weekly",
+                                                                            missing_data_check_flg='Y')
+
+    if check_empty_dfs([l1_campaign_post_pre_fbb_daily, l1_campaign_top_channel_daily]):
+        return [get_spark_empty_df(), get_spark_empty_df()]
+
+    ################################# End Implementing Data availability checks ###############################
 
     def divide_chunks(l, n):
         # looping till length l
