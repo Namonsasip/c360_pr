@@ -36,8 +36,9 @@ from cvm.src.targets.churn_targets import filter_usage, get_churn_targets
 from cvm.src.utils.feature_selection import feature_selection
 from cvm.src.utils.incremental_manipulation import filter_latest_date, filter_users
 from cvm.src.utils.list_targets import list_targets
+from cvm.src.utils.parametrized_features import build_feature_from_parameters
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
-from cvm.src.utils.utils import get_clean_important_variables
+from cvm.src.utils.utils import get_clean_important_variables, impute_from_parameters
 from pyspark.sql import DataFrame
 
 
@@ -302,32 +303,14 @@ def add_macrosegments(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
         Input DataFrame with extra column marking macrosegment.
     """
 
-    df = df.withColumn(
-        "ard_macrosegment",
-        func.when(
-            (func.col("sum_rev_arpu_total_revenue_monthly_last_month") < 50)
-            & (func.col("subscriber_tenure") >= 12),
-            "low_arpu_high_tenure",
+    logging.info("Defining macrosegments")
+    df = impute_from_parameters(df, parameters)
+    macrosegments_defs = parameters["macrosegments"]
+    for use_case in macrosegments_defs:
+        df = build_feature_from_parameters(
+            df, use_case + "_macrosegment", macrosegments_defs[use_case]
         )
-        .when(
-            (func.col("sum_rev_arpu_total_revenue_monthly_last_month") >= 50)
-            & (func.col("subscriber_tenure") < 12),
-            "high_arpu_low_tenure",
-        )
-        .when(
-            (func.col("sum_rev_arpu_total_revenue_monthly_last_month") >= 50)
-            & (func.col("subscriber_tenure") >= 12),
-            "high_arpu_high_tenure",
-        )
-        .otherwise("low_arpu_low_tenure"),
-    )
-    df = df.withColumn(
-        "churn_macrosegment",
-        func.when(
-            func.col("sum_rev_arpu_total_revenue_monthly_last_month") > 0,
-            "positive_arpu",
-        ).otherwise("zero_arpu"),
-    )
+
     return df
 
 
