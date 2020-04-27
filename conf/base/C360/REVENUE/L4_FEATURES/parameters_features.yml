@@ -825,7 +825,7 @@ l4_revenue_prepaid_pru_f_usage_multi_features:
   partition_by: ["subscription_identifier"]
   feature_list:
     sum: [
-      'rev_arpu_net_rev_sum',
+      'rev_arpu_total_net_rev_sum',
       'rev_arpu_net_tariff_rev_reward_sum',
       'rev_arpu_net_tariff_rev_exc_reward_sum',
       'rev_arpu_data_rev_sum',

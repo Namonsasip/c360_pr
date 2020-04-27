@@ -1,4 +1,6 @@
 from pyspark.sql import DataFrame
+from customer360.utilities.re_usable_functions import check_empty_dfs, \
+    data_non_availability_and_missing_check
 
 
 def merge_with_customer_prepaid_df(source_df: DataFrame,
@@ -10,8 +12,19 @@ def merge_with_customer_prepaid_df(source_df: DataFrame,
     :return:
     """
 
-    if len(source_df.head(1)) == 0:
+    ################################# Start Implementing Data availability checks ###############################
+    if check_empty_dfs([source_df]):
         return source_df
+
+    source_df = data_non_availability_and_missing_check(df=source_df, grouping="monthly",
+                                                        par_col="start_of_month",
+                                                        target_table_name="l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
+                                                        missing_data_check_flg='N')
+
+    if check_empty_dfs([source_df]):
+        return source_df
+
+    ################################# End Implementing Data availability checks ###############################
 
     # This code will populate a subscriber id to the data set.
     cust_df_cols = ['access_method_num', 'partition_month', 'subscription_identifier']
@@ -41,8 +54,19 @@ def merge_with_customer_postpaid_df(source_df: DataFrame,
     :return:
     """
 
-    if len(source_df.head(1)) == 0:
+    ################################# Start Implementing Data availability checks ###############################
+    if check_empty_dfs([source_df]):
         return source_df
+
+    source_df = data_non_availability_and_missing_check(df=source_df, grouping="monthly",
+                                                        par_col="start_of_month",
+                                                        target_table_name="l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly",
+                                                        missing_data_check_flg='N')
+
+    if check_empty_dfs([source_df]):
+        return source_df
+
+    ################################# End Implementing Data availability checks ###############################
 
     # This code will populate a subscriber id to the data set.
     cust_df_cols = ['partition_month', 'subscription_identifier']
@@ -63,5 +87,3 @@ def merge_with_customer_postpaid_df(source_df: DataFrame,
     final_df = final_df.drop_duplicates(subset=["subscription_identifier", "start_of_month"])
 
     return final_df
-
-
