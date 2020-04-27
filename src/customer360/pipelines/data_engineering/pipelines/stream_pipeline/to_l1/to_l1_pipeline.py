@@ -52,7 +52,7 @@ def streaming_to_l1_intermediate_pipeline(**kwargs):
                 dac_for_streaming_to_l1_intermediate_pipeline,
                 ["l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_content_type_features",
                  "l1_customer_profile_union_daily_feature_for_int_l1_streaming_content_type_features",
-                 "params: int_l1_streaming_content_type_features_tbl"],
+                 "params:int_l1_streaming_content_type_features_tbl"],
                 ["int_l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_content_type_features",
                  "int_l1_customer_profile_union_daily_feature_for_int_l1_streaming_content_type_features"]
             ),
