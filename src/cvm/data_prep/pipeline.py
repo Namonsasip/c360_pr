@@ -30,6 +30,8 @@ just for illustrating basic Kedro features.
 
 PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 """
+import re
+
 from kedro.pipeline import Pipeline, node
 
 from cvm.data_prep.nodes import (
@@ -122,7 +124,7 @@ def sample_inputs(sample_type: str) -> Pipeline:
         node(
             create_sample_dataset,
             [dataset_name, "params:" + sample_type],
-            dataset_name + "_" + sample_type,
+            re.sub("_no_inc", "", dataset_name) + "_" + sample_type,
             name="sample_" + dataset_name + "_" + sample_type,
         )
         for dataset_name in datasets_to_sample
