@@ -1,4 +1,0 @@
-l0_product_product_pru_m_package_master_group:
-  type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/PRODUCT/product_pru_m_package_master_group/
-  file_format: "parquet"

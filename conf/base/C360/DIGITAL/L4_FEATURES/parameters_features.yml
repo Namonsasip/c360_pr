@@ -12,3 +12,88 @@ l4_digital_cxenzxse_user_profile_monthly_features:
     avg: ['digital_nummber_of_device_brands', 'digital_nummber_of_distinct_device_type']
     stddev: []
   read_from: "l3"
+
+l4_digital_cxenxse_site_traffic_weekly_features:
+  partition_by: ["subscription_identifier"]
+  feature_list:
+    min: []
+    max: []
+    sum: ["digital_time_spent_browser_chrome", "digital_time_spent_browser_safari", "digital_time_spent_browser_line",
+          "digital_time_spent_browser_opera","digital_time_spent_referrersocialnetwork_facebook",
+          "digital_time_spent_referrerhostclass_other","digital_time_spent_referrerhostclass_direct",
+          "digital_time_spent_referrerhostclass_internal", "digital_time_spent_referrerhostclass_social"]
+    avg: []
+    stddev: []
+  read_from: "l2"
+
+l4_digital_cxenxse_site_traffic_popular_host_weekly_int:
+  partition_by: ["subscription_identifier", "host"]
+  ranked_lookup_enable_flag: 'yes'
+  fix_dimension_cols: "subscription_identifier,start_of_week"
+  target_dimension_col: "host"
+  feature_list:
+    sum: ["digital_popular_host"]
+  read_from: "l2"
+
+l4_digital_cxenxse_site_traffic_popular_host_weekly_features:
+  where_clause: ""
+  feature_column:
+    fav_host: "host"
+  partition_by: ["subscription_identifier", "start_of_week"]
+  order_by_column_prefix: "sum_digital_popular_host"
+  read_from: "l2"
+  to_join: True
+
+l4_digital_cxenxse_site_traffic_popular_postalcode_weekly_int:
+  partition_by: ["subscription_identifier", "postalcode"]
+  ranked_lookup_enable_flag: 'yes'
+  fix_dimension_cols: "subscription_identifier,start_of_week"
+  target_dimension_col: "postalcode"
+  feature_list:
+    sum: ["digital_popular_postalcode"]
+  read_from: "l2"
+
+l4_digital_cxenxse_site_traffic_popular_postalcode_weekly_features:
+  where_clause: ""
+  feature_column:
+    fav_postalcode: "postalcode"
+  partition_by: ["subscription_identifier", "start_of_week"]
+  order_by_column_prefix: "sum_digital_popular_postalcode"
+  read_from: "l2"
+  to_join: True
+
+l4_digital_cxenxse_site_traffic_popular_referrerquery_weekly_int:
+  partition_by: ["subscription_identifier", "referrerquery"]
+  ranked_lookup_enable_flag: 'yes'
+  fix_dimension_cols: "subscription_identifier,start_of_week"
+  target_dimension_col: "referrerquery"
+  feature_list:
+    sum: ["digital_popular_referrerquery"]
+  read_from: "l2"
+
+l4_digital_cxenxse_site_traffic_popular_referrerquery_weekly_features:
+  where_clause: ""
+  feature_column:
+    fav_referrerquery: "referrerquery"
+  partition_by: ["subscription_identifier", "start_of_week"]
+  order_by_column_prefix: "sum_digital_popular_referrerquery"
+  read_from: "l2"
+  to_join: True
+
+l4_digital_cxenxse_site_traffic_popular_referrerhost_weekly_int:
+  partition_by: ["subscription_identifier", "referrerhost"]
+  ranked_lookup_enable_flag: 'yes'
+  fix_dimension_cols: "subscription_identifier,start_of_week"
+  target_dimension_col: "referrerhost"
+  feature_list:
+    sum: ["digital_popular_referrerhost"]
+  read_from: "l2"
+
+l4_digital_cxenxse_site_traffic_popular_referrerhost_weekly_features:
+  where_clause: ""
+  feature_column:
+    fav_referrerhost: "referrerhost"
+  partition_by: ["subscription_identifier", "start_of_week"]
+  order_by_column_prefix: "sum_digital_popular_referrerhost"
+  read_from: "l2"
+  to_join: True

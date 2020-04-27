@@ -44,7 +44,8 @@ def streaming_to_l1_pipeline(**kwargs):
             node(
                 l1_massive_processing,
                 ["l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_content_type_features",
-                 "params:int_l1_streaming_content_type_features"],
+                 "params:int_l1_streaming_content_type_features",
+                 "l1_customer_profile_union_daily_feature_for_int_l1_streaming_content_type_features"],
                 "int_l1_streaming_content_type_features@save"
             ),
             node(
@@ -62,9 +63,10 @@ def streaming_to_l1_pipeline(**kwargs):
 
             # TV Channel features
             node(
-                node_from_config,
+                l1_massive_processing,
                 ["l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_tv_channel_features",
-                 "params:int_l1_streaming_tv_channel_features"],
+                 "params:int_l1_streaming_tv_channel_features",
+                 "l1_customer_profile_union_daily_feature_for_int_l1_streaming_tv_channel_features"],
                 "int_l1_streaming_tv_channel_features@save"
             ),
             node(
@@ -81,11 +83,11 @@ def streaming_to_l1_pipeline(**kwargs):
             ),
 
             # TV Show features
-                node(
-                    add_start_of_week_and_month,
-                    ["l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l0_streaming_vimmi_table"],
-                    "int_l0_streaming_vimmi_table"
-                ),
+            node(
+                add_start_of_week_and_month,
+                ["l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l0_streaming_vimmi_table"],
+                "int_l0_streaming_vimmi_table"
+            ),
             node(
                 node_from_config,
                 ["l0_streaming_ru_a_onair_vimmi_usage_daily_for_l1_streaming_fav_tv_show_by_episode_watched",
@@ -103,7 +105,8 @@ def streaming_to_l1_pipeline(**kwargs):
             node(
                 l1_massive_processing,
                 ["l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_video_service_feature",
-                 "params:int_l1_streaming_video_service_feature"],
+                 "params:int_l1_streaming_video_service_feature",
+                 "l1_customer_profile_union_daily_feature_for_int_l1_streaming_video_service_feature"],
                 "int_l1_streaming_video_service_feature@save"
             ),
             node(
@@ -123,7 +126,8 @@ def streaming_to_l1_pipeline(**kwargs):
             node(
                 l1_massive_processing,
                 ["l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_music_service_feature",
-                 "params:int_l1_streaming_music_service_feature"],
+                 "params:int_l1_streaming_music_service_feature",
+                 "l1_customer_profile_union_daily_feature_for_int_l1_streaming_music_service_feature"],
                 "int_l1_streaming_music_service_feature@save"
             ),
             node(
@@ -143,7 +147,8 @@ def streaming_to_l1_pipeline(**kwargs):
             node(
                 l1_massive_processing,
                 ["l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_esport_service_feature",
-                 "params:int_l1_streaming_esport_service_feature"],
+                 "params:int_l1_streaming_esport_service_feature",
+                 "l1_customer_profile_union_daily_feature_for_int_l1_streaming_esport_service_feature"],
                 "int_l1_streaming_esport_service_feature@save"
             ),
             node(
@@ -163,7 +168,8 @@ def streaming_to_l1_pipeline(**kwargs):
             node(
                 l1_massive_processing,
                 ["l0_streaming_soc_mobile_app_daily_for_l1_streaming_visit_count_and_download_traffic_feature",
-                 "params:l1_streaming_visit_count_and_download_traffic_feature"],
+                 "params:l1_streaming_visit_count_and_download_traffic_feature",
+                 "l1_customer_profile_union_daily_feature_for_l1_streaming_visit_count_and_download_traffic_feature"],
                 "l1_streaming_visit_count_and_download_traffic_feature"
             ),
 
@@ -171,7 +177,8 @@ def streaming_to_l1_pipeline(**kwargs):
             node(
                 l1_massive_processing,
                 ["l0_streaming_soc_mobile_app_daily_for_l1_streaming_session_duration_feature",
-                 "params:l1_streaming_session_duration_feature"],
+                 "params:l1_streaming_session_duration_feature",
+                 "l1_customer_profile_union_daily_feature_l1_streaming_session_duration_feature"],
                 "l1_streaming_session_duration_feature"
             )
         ], name="streaming_to_l1_pipeline"

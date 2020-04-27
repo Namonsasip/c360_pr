@@ -1,73 +1,15 @@
 from pyspark.sql import DataFrame
-from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, execute_sql
+from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
+    data_non_availability_and_missing_check
 from pyspark.sql import functions as F
 from customer360.utilities.config_parser import node_from_config
-from kedro.context.context import load_context
-from pathlib import Path
-import logging
 import os
+from customer360.utilities.spark_util import get_spark_empty_df
+from pyspark.sql.types import *
 
 conf = os.getenv("CONF", None)
 
 
-# def massive_processing(post_paid, prepaid, contacts_ma, contacts_ussd,
-#                        dict_1, dict_2, data_set_1, data_set_2) -> [DataFrame, DataFrame]:
-#     """
-#     :return:
-#     """
-#
-#     def divide_chunks(l, n):
-#         # looping till length l
-#         for i in range(0, len(l), n):
-#             yield l[i:i + n]
-#
-#     CNTX = load_context(Path.cwd(), env=conf)
-#     data_frame = post_paid
-#     dates_list = data_frame.select('partition_date').distinct().collect()
-#     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
-#     mvv_array = sorted(mvv_array)
-#     logging.info("Dates to run for {0}".format(str(mvv_array)))
-#
-#     mvv_new = list(divide_chunks(mvv_array, 5))
-#     add_list = mvv_new
-#
-#     first_item = add_list[0]
-#
-#     add_list.remove(first_item)
-#     for curr_item in add_list:
-#         logging.info("running for dates {0}".format(str(curr_item)))
-#
-#         postpaid_small = post_paid.filter(F.col("partition_date").isin(*[curr_item]))
-#         prepaid_small = prepaid.filter(F.col("partition_date").isin(*[curr_item]))
-#         contacts_ma_small = contacts_ma.filter(F.col("partition_date").isin(*[curr_item]))
-#         contacts_ussd_small = contacts_ussd.filter(F.col("partition_date").isin(*[curr_item]))
-#
-#         unioned_df = union_dataframes_with_missing_cols(postpaid_small, prepaid_small)
-#
-#         output_df_1, output_df_2 = pre_process_df(unioned_df, contacts_ma_small, contacts_ussd_small)
-#
-#         output_df_1 = node_from_config(output_df_1, dict_1)
-#         output_df_2 = node_from_config(output_df_2, dict_2)
-#
-#         CNTX.catalog.save(data_set_1, output_df_1)
-#         CNTX.catalog.save(data_set_2, output_df_2)
-#
-#     logging.info("Final date to run for {0}".format(str(first_item)))
-#
-#     postpaid_small = post_paid.filter(F.col("partition_date").isin(*[first_item]))
-#     prepaid_small = prepaid.filter(F.col("partition_date").isin(*[first_item]))
-#     contacts_ma_small = contacts_ma.filter(F.col("partition_date").isin(*[first_item]))
-#     contacts_ussd_small = contacts_ussd.filter(F.col("partition_date").isin(*[first_item]))
-#
-#
-#     unioned_df = union_dataframes_with_missing_cols(postpaid_small, prepaid_small)
-#
-#     output_df_1, output_df_2 = pre_process_df(unioned_df, contacts_ma_small, contacts_ussd_small)
-#
-#     output_df_1 = node_from_config(output_df_1, dict_1)
-#     output_df_2 = node_from_config(output_df_2, dict_2)
-#
-#     return [output_df_1, output_df_2]
 
 def pre_process_df(data_frame: DataFrame,
                    contacts_ma_small: DataFrame,
@@ -208,13 +150,52 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
     :param dictionary_obj_2:
     :return:
     """
-    print("postpaid:",postpaid.columns)
-    print("prepaid:", prepaid.columns)
 
-    print("contacts_ma:", contacts_ma.columns)
+    ################################# Start Implementing Data availability checks ###############################
+    if check_empty_dfs([postpaid, prepaid, contacts_ma, contact_list_ussd]):
+        return [get_spark_empty_df(), get_spark_empty_df()]
+
+    postpaid = data_non_availability_and_missing_check(df=postpaid, grouping="daily", par_col="partition_date",
+                                                       target_table_name="l1_campaign_post_pre_daily")
+
+    prepaid = data_non_availability_and_missing_check(df=prepaid, grouping="daily", par_col="partition_date",
+                                                      target_table_name="l1_campaign_post_pre_daily")
+
+    contacts_ma = data_non_availability_and_missing_check(df=contacts_ma, grouping="daily", par_col="partition_date",
+                                                          target_table_name="l1_campaign_post_pre_daily")
+
+    contact_list_ussd = data_non_availability_and_missing_check(df=contact_list_ussd, grouping="daily",
+                                                                par_col="partition_date",
+                                                                target_table_name="l1_campaign_post_pre_daily")
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            postpaid.select(
+                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
+            prepaid.select(
+                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
+            contacts_ma.select(
+                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
+            contact_list_ussd.select(
+                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    postpaid = postpaid.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+
+    prepaid = prepaid.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+
+    contacts_ma = contacts_ma.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+
+    contact_list_ussd = contact_list_ussd.filter(
+        F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+
+    if check_empty_dfs([postpaid, prepaid, contacts_ma, contact_list_ussd]):
+        return [get_spark_empty_df(), get_spark_empty_df()]
+
+    ################################# End Implementing Data availability checks ###############################
 
     first_df, second_df = massive_processing(postpaid, prepaid, contacts_ma, contact_list_ussd
                                              , dictionary_obj, dictionary_obj_2)
-                                            # 'l1_campaign_post_pre_daily', 'l1_campaign_top_channel_daily')
 
     return [first_df, second_df]

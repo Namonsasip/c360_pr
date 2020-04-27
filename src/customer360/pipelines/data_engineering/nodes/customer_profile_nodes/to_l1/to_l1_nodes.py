@@ -1,4 +1,5 @@
 from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
+from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check
 
 
 def union_daily_cust_profile(
@@ -7,8 +8,26 @@ def union_daily_cust_profile(
         cust_non_mobile,
         column_to_extract
 ):
-    if len(cust_pre.head(1)) == 0 and len(cust_post.head(1)) == 0 and len(cust_non_mobile.head(1)) == 0:
-        return get_spark_empty_df
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([cust_pre, cust_post, cust_non_mobile]):
+        return get_spark_empty_df()
+
+    cust_pre = data_non_availability_and_missing_check(df=cust_pre, grouping="daily",
+                                                       par_col="partition_date",
+                                                       target_table_name="l1_customer_profile_union_daily_feature")
+
+    cust_post = data_non_availability_and_missing_check(df=cust_post, grouping="daily",
+                                                        par_col="partition_date",
+                                                        target_table_name="l1_customer_profile_union_daily_feature")
+
+    cust_non_mobile = data_non_availability_and_missing_check(df=cust_non_mobile, grouping="daily",
+                                                              par_col="partition_date",
+                                                              target_table_name="l1_customer_profile_union_daily_feature")
+
+    if check_empty_dfs([cust_pre, cust_post, cust_non_mobile]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
 
     cust_pre.createOrReplaceTempView("cust_pre")
     cust_post.createOrReplaceTempView("cust_post")

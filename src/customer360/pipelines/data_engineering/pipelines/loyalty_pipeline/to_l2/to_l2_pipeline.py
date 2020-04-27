@@ -3,7 +3,8 @@ from kedro.pipeline import Pipeline, node
 from src.customer360.utilities.config_parser import node_from_config
 from src.customer360.pipelines.data_engineering.nodes.loyalty_nodes.to_l2.to_l2_nodes import *
 
-def loyalty_to_l2_pipeline(**kwargs):
+
+def loyalty_l1_to_l2_pipeline(**kwargs):
     return Pipeline(
         [
 
@@ -31,6 +32,13 @@ def loyalty_to_l2_pipeline(**kwargs):
                 "l2_loyalty_number_of_points_spend"
             ),
 
+        ]
+    )
+
+
+def loyalty_l0_to_l2_pipeline(**kwargs):
+    return Pipeline(
+        [
             #Serenade class weekly
             node(
                 loyalty_serenade_class,
