@@ -54,7 +54,53 @@ def geo_to_l4_pipeline(**kwargs):
 
             ),
 
+            node(  # weekday 434,437,443,449,452,455,458,461,464
+                l4_rolling_window,
+                ["l2_geo_data_frequent_cell_weekday_weekly_for_l4_geo_data_frequent_cell_weekday_monthly",
+                 "params:l4_data_frequent_cell_weekday_monthly"],
+                "l4_geo_data_frequent_cell_weekday_monthly"
 
+            ),
+
+            node(  # weekend 435,439,445,450,453,456,459,462,465
+                l4_rolling_window,
+                ["l2_geo_data_frequent_cell_weekend_weekly_for_l4_geo_data_frequent_cell_weekend_monthly",
+                 "params:l4_data_frequent_cell_weekend_monthly"],
+                "l4_geo_data_frequent_cell_weekend_monthly"
+
+            ),
+
+            node(  # all 436, 441,447,451,454,457,460,463
+                l4_rolling_window,
+                ["l2_geo_data_frequent_cell_weekly_for_l4_geo_data_frequent_cell_monthly",
+                 "params:l4_data_frequent_cell_monthly"],
+                "l4_geo_data_frequent_cell_monthly"
+
+            ),
+
+            node(  # 4g_weekday 438,444
+                l4_rolling_window,
+                ["l2_geo_data_frequent_cell_4g_weekday_weekly_for_l4_geo_data_frequent_cell_4g_weekday_monthly",
+                 "params:l4_data_frequent_cell_4g_weekday_monthly"],
+                "l4_geo_data_frequent_cell_4g_weekday_monthly"
+
+            ),
+
+            node(  # 4g_weekend 440,446
+                l4_rolling_window,
+                ["l2_geo_data_frequent_cell_4g_weekend_weekly_for_l4_geo_data_frequent_cell_4g_weekend_monthly",
+                 "params:l4_data_frequent_cell_4g_weekend_monthly"],
+                "l4_geo_data_frequent_cell_4g_weekend_monthly"
+
+            ),
+
+            node(  # 4g_all 442,448
+                l4_rolling_window,
+                ["l2_geo_data_frequent_cell_4g_weekly_for_l4_geo_data_frequent_cell_4g_monthly",
+                 "params:l4_data_frequent_cell_4g_monthly"],
+                "l4_geo_data_frequent_cell_4g_monthly"
+
+            ),
 
 
         ], name="geo_to_l4_pipeline"

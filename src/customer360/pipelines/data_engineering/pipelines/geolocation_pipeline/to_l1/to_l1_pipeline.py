@@ -88,7 +88,53 @@ def geo_to_l1_pipeline(**kwargs):
 
             ),
 
-
+            # node(#weekday 434,437,443,449,452,455,458,461,464
+            #     l1_geo_data_frequent_cell_weekday_daily,
+            #     ["l1_geo_usage_sum_data_location_dow_intermediate_for_l1_geo_data_frequent_cell_weekday_daily",
+            #      "params:l1_data_frequent_cell_weekday_daily"],
+            #     "l1_geo_data_frequent_cell_weekday_daily"
+            #
+            # ),
+            #
+            # node(#weekend 435,439,445,450,453,456,459,462,465
+            #     l1_geo_data_frequent_cell_weekend_daily,
+            #     ["l1_geo_usage_sum_data_location_dow_intermediate_for_l1_geo_data_frequent_cell_weekend_daily",
+            #      "params:l1_data_frequent_cell_weekend_daily"],
+            #     "l1_geo_data_frequent_cell_weekend_daily"
+            #
+            # ),
+            #
+            # node(#all 436, 441,447,451,454,457,460,463
+            #     l1_geo_data_frequent_cell_daily,
+            #     ["l1_geo_usage_sum_data_location_dow_intermediate_for_l1_geo_data_frequent_cell_daily",
+            #      "params:l1_data_frequent_cell_daily"],
+            #     "l1_geo_data_frequent_cell_daily"
+            #
+            # ),
+            #
+            # node(#4g_weekday 438,444
+            #     l1_geo_data_frequent_cell_4g_weekday_daily,
+            #     ["l1_geo_usage_sum_data_location_dow_intermediate_for_l1_geo_data_frequent_cell_4g_weekday_daily",
+            #      "params:l1_data_frequent_cell_4g_weekday_daily"],
+            #     "l1_geo_data_frequent_cell_4g_weekday_daily"
+            #
+            # ),
+            #
+            # node(#4g_weekend 440,446
+            #     l1_geo_data_frequent_cell_4g_weekend_daily,
+            #     ["l1_geo_usage_sum_data_location_dow_intermediate_for_l1_geo_data_frequent_cell_4g_weekend_daily",
+            #      "params:l1_data_frequent_cell_4g_weekend_daily"],
+            #     "l1_geo_data_frequent_cell_4g_weekend_daily"
+            #
+            # ),
+            #
+            # node(#4g_all 442,448
+            #     l1_geo_data_frequent_cell_4g_daily,
+            #     ["l1_geo_usage_sum_data_location_dow_intermediate_for_l1_geo_data_frequent_cell_4g_daily",
+            #      "params:l1_data_frequent_cell_4g_daily"],
+            #     "l1_geo_data_frequent_cell_4g_daily"
+            #
+            # ),
 
         ], name="geo_to_l1_pipeline"
     )

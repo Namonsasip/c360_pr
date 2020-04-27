@@ -100,14 +100,15 @@ def l1_first_data_session_cell_identifier_daily(df, sql):
 
 
 def l1_usage_sum_data_location_dow_intermediate(df):
-    df = df.groupBy('date_id', 'mobile_no', 'gprs_type','lac', 'ci').agg(F.sum('no_of_call').alias('sum_call'))
+    df = df.groupBy('date_id', 'mobile_no', 'gprs_type', 'lac', 'ci').agg(F.sum('no_of_call').alias('sum_call'))
     df = add_start_of_week_and_month(df, "date_id")
     df = df.withColumn("day_of_week", F.date_format(F.col("event_partition_date"), "u"))
     return df
 
-def l1_geo_data_distance_daily(df,sql):
+
+def l1_geo_data_distance_daily(df, sql):
     df = (df.groupBy('mobile_no', 'event_partition_date').agg(F.collect_list('sum_call').alias('sum_list')
-                                                                      , F.max('sum_call').alias('max')))
+                                                              , F.max('sum_call').alias('max')))
     df = df.withColumn('sorted_sum', F.array_sort("sum_list"))
     df = df.withColumn('length_without_max', F.size(df.sorted_sum) - 1)
     df = df.withColumn('list_without_max', F.expr("slice(sorted_sum, 1, length_without_max)"))
@@ -131,17 +132,15 @@ def l1_geo_data_distance_daily(df,sql):
     # df = df.withColumn('stdev_distance', stdev_udf('distance_list'))
     df = df.drop('max', 'sorted_sum', 'length_without_max', 'list_without_max', 'distance_list')
 
-
-
-
-    df = node_from_config(df,sql)
+    df = node_from_config(df, sql)
 
     return df
 
-def l1_geo_data_distance_weekday_daily(df,sql):
-    df=df.where('day_of_week in (1,2,3,4,5)')
+
+def l1_geo_data_distance_weekday_daily(df, sql):
+    df = df.where('day_of_week in (1,2,3,4,5)')
     df = (df.groupBy('mobile_no', 'event_partition_date').agg(F.collect_list('sum_call').alias('sum_list')
-                                                                      , F.max('sum_call').alias('max')))
+                                                              , F.max('sum_call').alias('max')))
     df = df.withColumn('sorted_sum', F.array_sort("sum_list"))
     df = df.withColumn('length_without_max', F.size(df.sorted_sum) - 1)
     df = df.withColumn('list_without_max', F.expr("slice(sorted_sum, 1, length_without_max)"))
@@ -168,10 +167,11 @@ def l1_geo_data_distance_weekday_daily(df,sql):
     df = node_from_config(df, sql)
     return df
 
-def l1_geo_data_distance_weekend_daily(df,sql):
+
+def l1_geo_data_distance_weekend_daily(df, sql):
     df = df.where('day_of_week in (6,7)')
     df = (df.groupBy('mobile_no', 'event_partition_date').agg(F.collect_list('sum_call').alias('sum_list')
-                                                                      , F.max('sum_call').alias('max')))
+                                                              , F.max('sum_call').alias('max')))
     df = df.withColumn('sorted_sum', F.array_sort("sum_list"))
     df = df.withColumn('length_without_max', F.size(df.sorted_sum) - 1)
     df = df.withColumn('list_without_max', F.expr("slice(sorted_sum, 1, length_without_max)"))
@@ -195,12 +195,87 @@ def l1_geo_data_distance_weekend_daily(df,sql):
     # df = df.withColumn('stdev_distance', stdev_udf('distance_list'))
     df = df.drop('max', 'sorted_sum', 'length_without_max', 'list_without_max', 'distance_list')
 
-
-    print('b4node')
     df.show(88, False)
     df = node_from_config(df, sql)
-
-    print('testnodefromconfig')
-    df.show(88,False)
+    df.show(88, False)
 
     return df
+
+
+# def l1_geo_data_frequent_cell_weekday_daily(df, sql):  # in progress weekday 434,437,443,449,452,455,458,461,464
+#     df = df.where('day_of_week in (1,2,3,4,5)')
+#     ranked = df.selectExpr('*', 'row_number() over(partition by mobile_no,start_of_week order by sum_call DESC) as rank')
+#     # ranked = df.withColumn('rank_1', F.when(df.rank == 1, df.sum_call)).withColumn('rank_2',
+#     #                                                                                            F.when(df.rank == 2,
+#     #                                                                                                   df.sum_call)).withColumn(
+#     #     'rank_3', F.when(df.rank == 3, df.sum_call))
+#     # ranked = ranked.withColumn('rank_1', F.when(ranked.rank == 1, ranked.sum_call)).withColumn('rank_2',
+#     #                                                                                            F.when(ranked.rank == 2,
+#     #                                                                                                   ranked.sum_call)).withColumn(
+#     #     'rank_3', F.when(ranked.rank == 3, ranked.sum_call))
+#     # agg = ranked.groupBy('mobile_no', 'start_of_week').agg(F.sum('rank_1').alias('sum_no_of_call_rank_1'),
+#     #                                                        F.sum('rank_2').alias('sum_no_of_call_rank_2'),
+#     #                                                        F.sum('rank_3').alias('sum_no_of_call_rank_3'),
+#     #                                                        F.count(F.lit(1)).alias("Number_of_Unique_Cells"))
+#
+#     ranked = ranked.withColumn('sum_rank_1', F.when(ranked.rank == 1, ranked.sum_call)).withColumn('sum_rank_2', F.when(
+#         ranked.rank == 2, ranked.sum_call)).withColumn('sum_rank_3',
+#                                                        F.when(ranked.rank == 3, ranked.sum_call)).withColumn(
+#         'lac_rank_1', F.when(ranked.rank == 1, ranked.lac)).withColumn('ci_rank_1',
+#                                                                        F.when(ranked.rank == 1, ranked.ci)).withColumn(
+#         'lac_rank_2', F.when(ranked.rank == 1, ranked.lac)).withColumn('ci_rank_2', F.when(ranked.rank == 1, ranked.ci))
+#     df = node_from_config(ranked, sql)
+#     agg = ranked.groupBy('mobile_no', 'start_of_week').agg(F.sum('sum_rank_1').alias('sum_no_of_call_rank_1'),
+#                                                            F.sum('sum_rank_2').alias('sum_no_of_call_rank_2'),
+#                                                            F.sum('sum_rank_3').alias('sum_no_of_call_rank_3'),
+#                                                            F.count(F.lit(1)).alias("Number_of_Unique_Cells"),
+#                                                            F.concat_ws("", F.collect_list(ranked.lac_rank_1)).alias(
+#                                                                'lac_rank_1'),
+#                                                            F.concat_ws("", F.collect_list(ranked.ci_rank_1)).alias(
+#                                                                'ci_rank_1'),
+#                                                            F.concat_ws("", F.collect_list(ranked.lac_rank_2)).alias(
+#                                                                'lac_rank_2'),
+#                                                            F.concat_ws("", F.collect_list(ranked.ci_rank_2)).alias(
+#                                                                'ci_rank_2'))
+#
+#     #434 = groupby lac+ci count
+#     #437 lac + ci with most  (first most)
+#     #443  second most
+#     #449  count cell with first most
+#     #452  count cell with second most
+#     #455 count third
+#     #458 count fourth
+#     #461 count fifth
+#     #464 count all
+#
+#     return df
+#
+#
+# def l1_geo_data_frequent_cell_weekend_daily(df, sql):  # in progress weekend 435,439,445,450,453,456,459,462,465
+#     df = df.where('day_of_week in (6,7)')
+#     df = node_from_config(df, sql)
+#     return df
+#
+#
+# def l1_geo_data_frequent_cell_daily(df, sql):  # in progress all 436, 441,447,451,454,457,460,463
+#
+#     df = node_from_config(df, sql)
+#     return df
+#
+#
+# def l1_geo_data_frequent_cell_4g_weekday_daily(df, sql):  # in progress 4g_weekday 438,444
+#     df = df.where('day_of_week in (1,2,3,4,5)').where('gprs_type="4GLTE"')
+#     df = node_from_config(df, sql)
+#     return df
+#
+#
+# def l1_geo_data_frequent_cell_4g_weekend_daily(df, sql):  # in progress 4g_weekend 440,446
+#     df = df.where('day_of_week in (6,7)').where('gprs_type="4GLTE"')
+#     df = node_from_config(df, sql)
+#     return df
+#
+#
+# def l1_geo_data_frequent_cell_4g_daily(df, sql):  # in progress 4g_all 442,448
+#
+#     df = node_from_config(df, sql)
+#     return df
