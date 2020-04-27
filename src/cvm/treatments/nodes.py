@@ -31,12 +31,12 @@ from typing import Any, Dict, Tuple
 import pandas
 
 from cvm.src.treatments.deploy_treatments import deploy_contact, prepare_campaigns_table
-from cvm.src.treatments.treatments_build import (
+from cvm.src.treatments.microsegments import (
     add_microsegment_features,
     add_volatility_scores,
     define_microsegments,
-    generate_treatments_chosen,
 )
+from cvm.src.treatments.treatments_build import generate_treatments_chosen
 from pyspark.sql import DataFrame
 
 
