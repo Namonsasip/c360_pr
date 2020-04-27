@@ -41,4 +41,4 @@ def dac_for_streaming_to_l1_intermediate_pipeline(input_df: DataFrame, cust_df: 
 
     ################################# End Implementing Data availability checks ###############################
 
-    return input_df, cust_df
+    return [input_df, cust_df]

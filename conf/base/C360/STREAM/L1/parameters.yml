@@ -3,3 +3,7 @@
 # `src/pipelines/`
 
 int_l1_streaming_content_type_features_tbl: "int_l1_streaming_content_type_features"
+int_l1_streaming_tv_channel_features_tbl: "int_l1_streaming_tv_channel_features"
+int_l1_streaming_video_service_feature_tbl: "int_l1_streaming_video_service_feature"
+int_l1_streaming_music_service_feature_tbl: "int_l1_streaming_music_service_feature"
+int_l1_streaming_esport_service_feature_tbl: "int_l1_streaming_esport_service_feature"

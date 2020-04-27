@@ -76,7 +76,7 @@ def streaming_to_l1_intermediate_pipeline(**kwargs):
             #     dac_for_streaming_to_l1_intermediate_pipeline,
             #     ["l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_tv_channel_features",
             #      "l1_customer_profile_union_daily_feature_for_int_l1_streaming_tv_channel_features",
-            #      "int_l1_streaming_tv_channel_features_tbl"],
+            #      "params:int_l1_streaming_tv_channel_features_tbl"],
             #     ["int_l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_tv_channel_features",
             #      "int_l1_customer_profile_union_daily_feature_for_int_l1_streaming_tv_channel_features"]
             # ),
@@ -101,7 +101,7 @@ def streaming_to_l1_intermediate_pipeline(**kwargs):
             #     dac_for_streaming_to_l1_intermediate_pipeline,
             #     ["l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_video_service_feature",
             #      "l1_customer_profile_union_daily_feature_for_int_l1_streaming_video_service_feature",
-            #      "int_l1_streaming_video_service_feature_tbl"],
+            #      "params:int_l1_streaming_video_service_feature_tbl"],
             #     ["int_l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_video_service_feature",
             #      "int_l1_customer_profile_union_daily_feature_for_int_l1_streaming_video_service_feature"]
             # ),
@@ -127,7 +127,7 @@ def streaming_to_l1_intermediate_pipeline(**kwargs):
             #     dac_for_streaming_to_l1_intermediate_pipeline,
             #     ["l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_music_service_feature",
             #      "l1_customer_profile_union_daily_feature_for_int_l1_streaming_music_service_feature",
-            #      "int_l1_streaming_music_service_feature_tbl"],
+            #      "params:int_l1_streaming_music_service_feature_tbl"],
             #     ["int_l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_music_service_feature",
             #      "int_l1_customer_profile_union_daily_feature_for_int_l1_streaming_music_service_feature"]
             # ),
@@ -151,7 +151,7 @@ def streaming_to_l1_intermediate_pipeline(**kwargs):
             #     dac_for_streaming_to_l1_intermediate_pipeline,
             #     ["l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_esport_service_feature",
             #      "l1_customer_profile_union_daily_feature_for_int_l1_streaming_esport_service_feature",
-            #      "int_l1_streaming_esport_service_feature_tbl"],
+            #      "params:int_l1_streaming_esport_service_feature_tbl"],
             #     ["int_l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_esport_service_feature",
             #      "int_l1_customer_profile_union_daily_feature_for_int_l1_streaming_esport_service_feature"]
             # ),
