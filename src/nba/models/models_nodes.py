@@ -1,6 +1,6 @@
 import os
+import re
 from pathlib import Path
-from time import sleep
 from typing import List, Any, Dict, Callable, Tuple
 
 import matplotlib.pyplot as plt
@@ -23,6 +23,8 @@ from pyspark.sql.types import (
 )
 from sklearn.metrics import auc, roc_curve
 from sklearn.model_selection import train_test_split
+
+from customer360.utilities.spark_util import get_spark_session
 
 
 def calculate_extra_pai_metrics(
@@ -51,9 +53,7 @@ def calculate_extra_pai_metrics(
                 "original_n_obs_positive_target"
             ),
             F.mean(target_column).alias("original_target_mean"),
-            (F.stddev(target_column) / F.mean(target_column)).alias(
-                "original_target_normalized_stdev"
-            ),
+            (F.stddev(target_column)).alias("original_target_stdev"),
             (F.max(target_column)).alias("original_target_max"),
             (F.min(target_column)).alias("original_target_min"),
         )
@@ -103,6 +103,7 @@ def create_model_function(
             train_sampling_ratio: float,
             model_params: Dict[str, Any],
             min_obs_per_class_for_model: int,
+            extra_tag_columns: List[str],
             pai_run_prefix: str,
             pdf_extra_pai_metrics: pd.DataFrame,
             pai_storage_path: str,
@@ -125,6 +126,8 @@ def create_model_function(
                 min_obs_per_class_for_model: minimum observations within each class
                     from the target variable that are required to confidently train
                     a model
+                extra_tag_columns: other columns from the master table to add as a tag,
+                    they should be unique
                 regression_clip_target_quantiles: (only applicable for regression)
                     Tuple with the quantiles to clip the target before model training
                 pai_run_prefix: prefix that the pai run will have. The name will be the
@@ -280,7 +283,15 @@ def create_model_function(
                     ),
                 )
 
+            def pai_log_metrics_fix(metrics_dict):
+                fixed_metrics_dict = {
+                    k: (int(v) if isinstance(v, np.int64) else float(v))
+                    for k, v in metrics_dict.items()
+                }
+                pai.log_metrics(fixed_metrics_dict)
+
             current_group = pdf_master_chunk[group_column].iloc[0]
+
             pai_run_name = pai_run_prefix + current_group
 
             pdf_extra_pai_metrics_filtered = pdf_extra_pai_metrics[
@@ -301,13 +312,12 @@ def create_model_function(
                 ]
             elif model_type == "regression":
                 original_metrics += [
-                    "original_target_normalized_stdev",
+                    "original_target_stdev",
                     "original_target_min",
                     "original_target_max",
                 ]
 
             for metric in original_metrics:
-
                 pai_metrics_dict[metric] = pdf_extra_pai_metrics_filtered[metric].iloc[
                     0
                 ]
@@ -332,20 +342,14 @@ def create_model_function(
                     "modelling_n_obs_positive_target"
                 ] = modelling_n_obs_positive_target
             elif model_type == "regression":
-                modelling_target_normalized_stdev = (
-                    pdf_master_chunk[target_column].std()
-                    / pdf_master_chunk[target_column].mean()
-                )
-                pai_metrics_dict[
-                    "modelling_target_normalized_stdev"
-                ] = modelling_target_normalized_stdev
+                modelling_target_stdev = pdf_master_chunk[target_column].std()
+                pai_metrics_dict["modelling_target_stdev"] = modelling_target_stdev
 
             modelling_target_mean = np.mean(pdf_master_chunk[target_column])
             pai_metrics_dict["modelling_target_mean"] = modelling_target_mean
             # Configure and start pai run
             pai.set_config(
-                experiment=f"{group_column}={current_group}",
-                storage_runs=pai_storage_path,
+                experiment=current_group, storage_runs=pai_storage_path,
             )
 
             if pai.active_run():
@@ -362,10 +366,30 @@ def create_model_function(
                 os.makedirs(tmp_path, exist_ok=True)
 
                 pai.add_tags(
-                    [f"z_{pai_run_prefix}", model_type, f"modeled_by_{group_column}"]
+                    [f"z_{pai_run_prefix}", model_type, f"modelled_by_{group_column}"]
                 )
 
-                pai.log_metrics(pai_metrics_dict)
+                if extra_tag_columns:
+                    for c in extra_tag_columns:
+                        if len(pdf_master_chunk[c].unique()) == 1:
+                            pai.add_tags(
+                                [
+                                    re.sub(
+                                        r"[^A-Za-z0-9\.\-_]",
+                                        "",
+                                        f"{c}-{pdf_master_chunk[c].iloc[0]}".replace(
+                                            " ", "_"
+                                        ),
+                                    )
+                                ]
+                            )
+                        else:
+                            pai.add_tags([f"{c} not unique"])
+                            pai.log_note(
+                                f"{c} is not unique for this run, possible values are {', '.join(pdf_master_chunk[c].unique())}"
+                            )
+
+                pai_log_metrics_fix(pai_metrics_dict)
 
                 pai.log_params(
                     {
@@ -474,7 +498,7 @@ def create_model_function(
                             ),
                         )
 
-                        pai.log_metrics(
+                        pai_log_metrics_fix(
                             {
                                 "train_auc": train_auc,
                                 "test_auc": test_auc,
@@ -566,14 +590,8 @@ def create_model_function(
 
                         pai.log_model(model)
 
-                        train_relative_mae = (
-                            model.evals_result_["train"]["l1"][-1]
-                            / modelling_target_mean
-                        )
-                        test_relative_mae = (
-                            model.evals_result_["test"]["l1"][-1]
-                            / modelling_target_mean
-                        )
+                        train_mae = model.evals_result_["train"]["l1"][-1]
+                        test_mae = model.evals_result_["test"]["l1"][-1]
 
                         pai.log_features(
                             features=explanatory_features,
@@ -583,12 +601,11 @@ def create_model_function(
                             ),
                         )
 
-                        pai.log_metrics(
+                        pai_log_metrics_fix(
                             {
-                                "train_relative_mae": train_relative_mae,
-                                "test_relative_mae": test_relative_mae,
-                                "train_test_relative_mae_diff": train_relative_mae
-                                - test_relative_mae,
+                                "train_mae": train_mae,
+                                "test_mae": test_mae,
+                                "train_test_relative_mae_diff": train_mae - test_mae,
                             }
                         )
 
@@ -667,6 +684,9 @@ def create_model_function(
 
 def train_multiple_models(
     df_master: pyspark.sql.DataFrame,
+    prioritized_campaign_child_codes: List[str],
+    nba_model_group_column_prioritized: str,
+    nba_model_group_column_non_prioritized: str,
     group_column: str,
     explanatory_features: List[str],
     target_column: str,
@@ -678,6 +698,11 @@ def train_multiple_models(
     Trains multiple models using pandas udf to distrbute the training in a spark cluster
     Args:
         df_master: master table
+        prioritized_campaign_child_codes: List of prioritized campaign child codes
+        nba_model_group_column_prioritized: column that contains the group for which
+            prioritized cmpaigns will be trained on
+        nba_model_group_column_non_prioritized: column that contains the group for which
+            non-prioritized cmpaigns will be trained on
         group_column: column name for the group, a model will be trained for each unique
             value of this column
         explanatory_features: list of features name to learn from. Must exist in
@@ -698,7 +723,39 @@ def train_multiple_models(
 
     if extra_keep_columns is None:
         extra_keep_columns = []
-    
+
+    # Increase number of partitions when training models to ensure data stays small
+    spark = get_spark_session()
+    spark.conf.set("spark.sql.shuffle.partitions", 2100)
+
+    df_master = df_master.withColumn(
+        "campaign_prioritized",
+        F.when(
+            F.col("campaign_child_code").isin(prioritized_campaign_child_codes),
+            F.lit(1),
+        ).otherwise(F.lit(0)),
+    )
+
+    df_master = df_master.withColumn(
+        "model_group",
+        F.when(
+            F.col("campaign_prioritized") == 1,
+            F.concat(
+                F.lit(f"{nba_model_group_column_prioritized}="),
+                F.col(nba_model_group_column_prioritized),
+            ),
+        ).otherwise(
+            F.concat(
+                F.lit(f"{nba_model_group_column_non_prioritized}="),
+                F.col(nba_model_group_column_non_prioritized),
+            )
+        ),
+    )
+
+    # Fill NAs in group column as that can lead to problems later when converting to
+    # pandas and training models
+    df_master = df_master.fillna("NULL", subset=group_column)
+
     # To reduce the size of the pandas DataFrames only select the columns we really need
     # Also cast decimal type columns cause they don't get properly converted to pandas
     df_master_only_necessary_columns = df_master.select(
@@ -743,6 +800,7 @@ def train_multiple_models(
             explanatory_features=explanatory_features,
             target_column=target_column,
             pdf_extra_pai_metrics=pdf_extra_pai_metrics,
+            extra_tag_columns=extra_keep_columns,
             **kwargs,
         )
     )

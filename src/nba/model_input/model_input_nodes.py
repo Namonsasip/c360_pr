@@ -67,15 +67,20 @@ def node_l5_nba_customer_profile(
 
 def node_l5_nba_master_table_spine(
     l0_campaign_tracking_contact_list_pre: DataFrame,
+    l4_revenue_prepaid_daily_features: DataFrame,
     campaign_history_master_active: DataFrame,
-    important_campaigns: Union[DataFrame, List[str]],
-    reporting_kpis: DataFrame,
+    date_min: str,  # YYYY-MM-DD
+    date_max: str,  # YYYY-MM-DD
     min_feature_days_lag: int,
 ) -> DataFrame:
 
     # Increase number of partitions when creating master table to avoid huge joins
     spark = get_spark_session()
     spark.conf.set("spark.sql.shuffle.partitions", 2000)
+
+    l0_campaign_tracking_contact_list_pre = l0_campaign_tracking_contact_list_pre.filter(
+        F.col("contact_date").between(date_min, date_max)
+    )
 
     common_columns = list(
         set.intersection(
@@ -93,25 +98,15 @@ def node_l5_nba_master_table_spine(
                 common_column, common_column + "_from_campaign_tracking"
             )
 
-    if isinstance(important_campaigns, DataFrame):
-        df_spine = l0_campaign_tracking_contact_list_pre.join(
-            F.broadcast(
-                important_campaigns.select(
-                    F.col("child_code").alias("campaign_child_code"),
-                    F.lit(1).alias("campaign_prioritized"),
-                )
-            ),
-            on="campaign_child_code",
-            how="left",
-        )
-        df_spine = df_spine.fillna(0, subset="campaign_prioritized")
-    else:
-        df_spine = l0_campaign_tracking_contact_list_pre.withColumn(
-            "campaign_prioritized",
-            F.when(
-                F.col("campaign_child_code").isin(important_campaigns), F.lit(1)
-            ).otherwise(F.lit(0)),
-        )
+    df_spine = l0_campaign_tracking_contact_list_pre.join(
+        F.broadcast(
+            campaign_history_master_active.withColumnRenamed(
+                "child_code", "campaign_child_code",
+            )
+        ),
+        on="campaign_child_code",
+        how="left",
+    )
 
     df_spine = df_spine.withColumn(
         "target_response",
@@ -153,30 +148,44 @@ def node_l5_nba_master_table_spine(
         F.date_sub(F.col("contact_date"), days=min_feature_days_lag),
     )
 
-    # join_date
-    df_spine = df_spine.withColumn("join_date", F.col("contact_date").cast(DateType()))
-
     # Add ARPU uplift
-    df_arpu_30d_before = reporting_kpis.select(
-        "subscription_identifier", "join_date", "total_revenue_30_day"
-    )
-    df_arpu_30d_after = reporting_kpis.select(
+    df_arpu_30d_before = l4_revenue_prepaid_daily_features.select(
         "subscription_identifier",
-        F.date_sub(F.col("join_date"), 30).alias("join_date"),
-        F.col("total_revenue_30_day").alias("total_revenue_30_day_after"),
+        "event_partition_date",
+        "sum_rev_arpu_total_net_rev_daily_last_thirty_day",
+    )
+    df_arpu_30d_after = l4_revenue_prepaid_daily_features.select(
+        "subscription_identifier",
+        F.date_sub(F.col("event_partition_date"), 30).alias("event_partition_date"),
+        F.col("sum_rev_arpu_total_net_rev_daily_last_thirty_day").alias(
+            "sum_rev_arpu_total_net_rev_daily_last_thirty_day_after"
+        ),
     )
     df_arpu_uplift = df_arpu_30d_before.join(
-        df_arpu_30d_after, how="inner", on=["subscription_identifier", "join_date"]
-    ).select(
-        "subscription_identifier",
-        F.col("join_date"),
-        (F.col("total_revenue_30_day_after") - F.col("total_revenue_30_day")).alias(
-            "target_relative_arpu_increase_30d"
+        df_arpu_30d_after,
+        how="inner",
+        on=["subscription_identifier", "event_partition_date"],
+    ).withColumn(
+        "target_relative_arpu_increase_30d",
+        (
+            F.col("sum_rev_arpu_total_net_rev_daily_last_thirty_day_after")
+            - F.col("sum_rev_arpu_total_net_rev_daily_last_thirty_day")
         ),
     )
 
     df_spine = df_spine.join(
-        df_arpu_uplift, on=["subscription_identifier", "join_date"], how="left"
+        df_arpu_uplift,
+        on=["subscription_identifier", "event_partition_date"],
+        how="left",
+    )
+
+    # Impute ARPU uplift columns as NA means that subscriber had 0 ARPU
+    df_spine = df_spine.fillna(
+        0,
+        subset=list(
+            set(df_arpu_uplift.columns)
+            - set(["subscription_identifier", "event_partition_date"])
+        ),
     )
 
     return df_spine

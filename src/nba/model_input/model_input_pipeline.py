@@ -28,9 +28,10 @@ def create_nba_model_input_pipeline() -> Pipeline:
                 node_l5_nba_master_table_spine,
                 inputs={
                     "l0_campaign_tracking_contact_list_pre": "l0_campaign_tracking_contact_list_pre_full_load",
+                    "l4_revenue_prepaid_daily_features": "l4_revenue_prepaid_daily_features",
                     "campaign_history_master_active": "campaign_history_master_active",
-                    "important_campaigns": "params:nba_prioritized_campaigns_child_codes",
-                    "reporting_kpis": "reporting_kpis",
+                    "date_min": "params:nba_master_table_date_min",
+                    "date_max": "params:nba_master_table_date_max",
                     "min_feature_days_lag": "params:nba_min_feature_days_lag",
                 },
                 outputs="l5_nba_master_table_spine",
@@ -49,7 +50,7 @@ def create_nba_model_input_pipeline() -> Pipeline:
                     "l4_billing_rolling_window_before_top_up_balance": "l4_billing_rolling_window_before_top_up_balance",
                     "l4_billing_rolling_window_top_up_channels": "l4_billing_rolling_window_top_up_channels",
                     "l4_daily_feature_topup_and_volume": "l4_daily_feature_topup_and_volume",
-                    # "l4_campaign_postpaid_prepaid_features": "l4_campaign_postpaid_prepaid_features",
+                    "l4_campaign_postpaid_prepaid_features": "l4_campaign_postpaid_prepaid_features",
                     "l4_device_summary_features": "l4_device_summary_features",
                     "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly": "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
                     # "l4_streaming_visit_count_and_download_traffic_feature": "l4_streaming_visit_count_and_download_traffic_feature",
@@ -71,7 +72,7 @@ def create_nba_model_input_pipeline() -> Pipeline:
                 partial(
                     node_l5_nba_master_table_chunk_debug_acceptance,
                     child_code="1-63919285101",
-                    sampling_rate=1e-2,
+                    sampling_rate=1e-5,
                 ),
                 inputs={"l5_nba_master_table": "l5_nba_master_table",},
                 outputs=[
