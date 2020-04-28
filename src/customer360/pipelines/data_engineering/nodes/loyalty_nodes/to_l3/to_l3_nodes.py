@@ -49,6 +49,9 @@ def build_loyalty_point_balance_statuses_monthly(
         par_col="event_partition_date",
         target_table_name="l3_loyalty_point_balance_statuses_monthly")
 
+    if check_empty_dfs([input_df, l1_loyalty_priv_point_bonus_ba_daily, l1_loyalty_priv_point_ba_daily]):
+        return get_spark_empty_df()
+
     min_value = union_dataframes_with_missing_cols(
         [
             input_df.select(
@@ -64,9 +67,6 @@ def build_loyalty_point_balance_statuses_monthly(
     l1_loyalty_priv_point_bonus_ba_daily = l1_loyalty_priv_point_bonus_ba_daily.filter(
         f.col("start_of_month") <= min_value)
     l1_loyalty_priv_point_ba_daily = l1_loyalty_priv_point_ba_daily.filter(f.col("start_of_month") <= min_value)
-
-    if check_empty_dfs([input_df, l1_loyalty_priv_point_bonus_ba_daily, l1_loyalty_priv_point_ba_daily]):
-        return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
 
