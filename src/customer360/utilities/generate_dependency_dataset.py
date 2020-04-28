@@ -49,7 +49,6 @@ def generate_dependency_dataset():
     logging.info("Pandas df_dependency generated :")
 
     def get_children(id):
-        logging.info("Running get_children collecting child information :")
         list_of_children = []
 
         def dfs(id):
@@ -65,15 +64,16 @@ def generate_dependency_dataset():
         return list_of_children
 
     def generate_l1_l2_l3_l4_cols(row):
-        logging.info("Running generate_l1_l2_l3_l4_cols collecting layer information :")
         row["l1_datasets"] = [x for x in row["list_of_children"] if "l1_feat" in x]
         row["l2_datasets"] = [x for x in row["list_of_children"] if "l2_feat" in x]
         row["l3_datasets"] = [x for x in row["list_of_children"] if "l3_feat" in x]
         row["l4_datasets"] = [x for x in row["list_of_children"] if "l4_feat" in x]
         return row
 
+    logging.info("Running get_children collecting child information :")
     df_dependency["list_of_children"] = df_dependency["parent_path"].apply(get_children)
     df_dependency = df_dependency[df_dependency.parent_path.str.contains("customer360-blob-data", na=False)]
+    logging.info("Running generate_l1_l2_l3_l4_cols collecting layer information :")
     df_dependency = df_dependency.apply(generate_l1_l2_l3_l4_cols, axis=1)
     for col in df_dependency.columns:
         df_dependency[col] = df_dependency[col].astype(str)
@@ -91,11 +91,11 @@ def generate_dependency_dataset():
         return row
 
     # This filter needs to be removed
-    df_cols = df_cols[df_cols.data_set_path.str.contains("USAGE", na=False)]
-    df_cols = df_cols[df_cols.data_set_path.str.contains("output", na=False)]
-    logging.info("df_cols row count", str(df_cols.shape))
+    # df_cols = df_cols[df_cols.data_set_path.str.contains("USAGE", na=False)]
+    # df_cols = df_cols[df_cols.data_set_path.str.contains("output", na=False)]
+    logging.info("df_cols row count :"+str(df_cols.shape))
     ################################
-    logging.info("Running get_cols too get schema of all the paths :")
+    logging.info("Running get_cols to get schema of all the paths :")
     df_cols = df_cols.apply(get_cols, axis=1)
     df_cols_spark = spark.createDataFrame(df_cols).drop_duplicates(subset=["data_set_path"]) \
         .withColumn("event_partition_date", f.current_date())
