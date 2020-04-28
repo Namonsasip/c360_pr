@@ -100,6 +100,10 @@ from .pipelines.data_engineering.pipelines.digital_pipeline import (
     digital_to_l4_weekly_pipeline,
     digital_to_l4_weekly_favourite_pipeline,
 )
+from .pipelines.data_engineering.pipelines.geolocation_pipeline.to_l1.to_l1_pipeline import *
+from .pipelines.data_engineering.pipelines.geolocation_pipeline.to_l2.to_l2_pipeline import *
+from .pipelines.data_engineering.pipelines.geolocation_pipeline.to_l3.to_l3_pipeline import *
+from .pipelines.data_engineering.pipelines.geolocation_pipeline.to_l4.to_l4_pipeline import *
 from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l1.to_l1_pipeline import *
 from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l2.to_l2_pipeline import (
     loyalty_l0_to_l2_pipeline,
