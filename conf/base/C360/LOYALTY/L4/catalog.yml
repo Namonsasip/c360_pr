@@ -42,6 +42,6 @@ l4_loyalty_priv_point_balance_statuses_features:
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
-    partitionBy: "start_of_week"
+    partitionBy: "start_of_month"
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
