@@ -35,8 +35,69 @@ import pandas
 from customer360.utilities.spark_util import get_spark_session
 from cvm.src.targets.churn_targets import add_days
 from cvm.src.utils.utils import return_column_as_list
-from pyspark.sql import DataFrame
+from pyspark.sql import Column, DataFrame
 from pyspark.sql import functions as func
+
+
+def treatments_propositions_for_ard_churn(
+    propensities: DataFrame,
+    parameters: Dict[str, Any],
+    blacklisted_users: DataFrame,
+    treatment_dictionary: DataFrame,
+    order_policy: Column,
+    use_case: str,
+) -> DataFrame:
+    """ Prepares treatments for ard and churn usecases.
+
+    Args:
+        use_case: either "churn" or "ard".
+        propensities: Table with propensities, microsegments and macrosegments.
+        parameters: parameters defined in parameters.yml.
+        blacklisted_users: Table with users that cannot be targeted with treatment.
+        treatment_dictionary: Table of microsegment to treatment mapping.
+        order_policy: column that will be used to order the users. Top users will be
+            picked for treatment.
+    Returns:
+        Treatments chosen for use case.
+    """
+
+    treatment_size = parameters["treatment_sizes"][use_case]
+    users_chosen = (
+        propensities.withColumn("order_col", order_policy)  # prepare order column
+        # prepare column names
+        .selectExpr(
+            "subscription_identifier",
+            "{}_macrosegment as macrosegment".format(use_case),
+            "{}_microsegment as microsegment".format(use_case),
+            "order_col",
+            "'{}' as use_case".format(use_case),
+        )
+        # just in case
+        .filter("macrosegment is not null and microsegment is not null")
+        # drop blacklisted users
+        .join(blacklisted_users, on="subscription_identifier", how="left_anti")
+        # pick top users
+        .orderBy("order_col", ascending=False)
+        .limit(treatment_size)
+        .drop("order_col")
+    )
+
+    # join to treatments
+    def _add_random_column_from_values(tab, values, colname):
+        """ Adds a new column to DataFrame which consists of randomly picked elements
+            of values"""
+        n = len(values)
+        # setup when statement
+        tab = tab.withColumn("val_ind", func.floor(func.rand() * n))
+        whens = [func.when(func.col("val_ind") == i, values[i]) for i in range(0, n)]
+        whens = func.coalesce(*whens)
+        # choose values
+        tab = tab.withColumn(colname, whens)
+        tab = tab.drop("val_ind")
+        return tab
+
+    # TODO add proper return
+    return users_chosen
 
 
 def get_targets_list_per_use_case(
