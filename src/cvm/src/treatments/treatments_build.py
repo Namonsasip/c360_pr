@@ -40,7 +40,7 @@ from pyspark.sql import functions as func
 
 
 def get_targets_list_per_use_case(
-    propensities: DataFrame, parameters: Dict[str, Any], treatments_history: DataFrame,
+    propensities: DataFrame, parameters: Dict[str, Any], blacklisted_users: DataFrame,
 ) -> DataFrame:
     """ Updates treatments history with treatments target users. The list is generated
         basing on presumed size of treatment groups and some order which is a function
@@ -49,7 +49,7 @@ def get_targets_list_per_use_case(
     Args:
         propensities: table with propensities.
         parameters: parameters defined in parameters.yml.
-        treatments_history: Table with history of treatments.
+        blacklisted_users: Table with users that cannot be targeted with treatment.
     Returns:
         List of users to target with use case to target user with. DOES NOT add
         treatments themselves.
@@ -70,9 +70,9 @@ def get_targets_list_per_use_case(
         "ard_order", ard_order
     )
 
-    # filter those that were recently targeted
-    propensities = remove_recently_contacted(
-        propensities, parameters, treatments_history
+    # filter blacklisted
+    propensities = propensities.join(
+        blacklisted_users, on="subscription_identifier", how="left_anti"
     )
 
     # pick users to treat
@@ -105,13 +105,12 @@ def get_targets_list_per_use_case(
     return df
 
 
-def remove_recently_contacted(
-    propensities: DataFrame, parameters: Dict[str, Any], treatments_history: DataFrame,
+def get_recently_contacted(
+    parameters: Dict[str, Any], treatments_history: DataFrame,
 ) -> DataFrame:
-    """ Removes users that were recently contacted.
+    """ Fetches users that were recently contacted.
 
     Args:
-        propensities: table with propensities.
         parameters: parameters defined in parameters.yml.
         treatments_history: Table with history of treatments.
     Returns:
@@ -120,15 +119,12 @@ def remove_recently_contacted(
 
     today = date.today().strftime("%Y-%m-%d")
     recent_past_date = add_days(today, -parameters["treatment_cadence"])
-
-    recent_history = (
+    recent_users = (
         treatments_history.filter(f"key_date >= '{recent_past_date}'")
-        .select(["subscription_identifier", "use_case"])
+        .select("subscription_identifier")
         .distinct()
     )
-    return propensities.join(
-        recent_history, on=["subscription_identifier"], how="left_anti"
-    )
+    return recent_users
 
 
 def get_treatments_propositions(
