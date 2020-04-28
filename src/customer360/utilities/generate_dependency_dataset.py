@@ -84,6 +84,10 @@ def generate_dependency_dataset():
         row['features'] = curr_val
         return row
 
+    # This filter needs to be removed
+    df_cols = df_cols[df_cols.data_set_path.str.contains("USAGE")]
+    df_cols = df_cols[df_cols.data_set_path.str.contains("customer360")]
+    ######
     df_cols = df_cols.apply(get_cols, axis=1)
     df_cols_spark = spark.createDataFrame(df_cols).drop_duplicates(subset=["data_set_path"]) \
         .withColumn("event_partition_date", f.current_date())
