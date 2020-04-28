@@ -60,7 +60,13 @@ def billing_to_l4_pipeline_weekly(**kwargs):
                  "params:l4_billing_top_up_channels"],
                 "l4_billing_rolling_window_top_up_channels"
             ),
+        ]
+    )
 
+
+def billing_to_l4_ranked_pipeline_weekly(**kwargs):
+    return Pipeline(
+        [
             # Popular top up day
             node(
                 l4_rolling_window,
