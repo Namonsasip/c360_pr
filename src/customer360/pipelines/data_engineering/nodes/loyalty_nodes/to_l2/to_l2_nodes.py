@@ -126,7 +126,7 @@ def build_loyalty_number_of_points_spend_weekly(l1_loyalty_number_of_points_spen
     input_df = data_non_availability_and_missing_check(df=l1_loyalty_number_of_points_spend_daily,
                                                        grouping="weekly",
                                                        par_col="event_partition_date",
-                                                       target_table_name="l2_loyalty_number_of_rewards_redeemed_weekly",
+                                                       target_table_name="l2_loyalty_number_of_points_spend_weekly",
                                                        missing_data_check_flg='Y')
 
     if check_empty_dfs([input_df]):
