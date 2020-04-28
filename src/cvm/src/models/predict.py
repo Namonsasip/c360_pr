@@ -70,6 +70,7 @@ def pyspark_predict_sklearn(
 
     target_cols_use_case_split = list_targets(parameters, case_split=True)
     macrosegments = parameters["macrosegments"]
+    pred_cols = [target + "_pred" for target in list_targets(parameters)]
 
     def _pred_for_macrosegment_target(
         df_target, use_case_chosen, macrosegment, target_chosen
@@ -121,7 +122,12 @@ def pyspark_predict_sklearn(
         df2 = df2.drop(*cols_to_drop)
         return df1.join(df2, key_columns, "left")
 
-    return functools.reduce(join_on, use_case_preds).distinct()
+    cols_to_pick = key_columns + segments_columns + pred_cols
+    joined_tables = (
+        functools.reduce(join_on, use_case_preds).select(cols_to_pick).distinct()
+    )
+
+    return joined_tables
 
 
 def pyspark_predict_rf(
