@@ -92,7 +92,7 @@ def generate_dependency_dataset():
 
     # This filter needs to be removed
     df_cols = df_cols[df_cols.data_set_path.str.contains("USAGE", na=False)]
-    df_cols = df_cols[df_cols.data_set_path.str.contains("customer360", na=False)]
+    df_cols = df_cols[df_cols.data_set_path.str.contains("output", na=False)]
     logging.info("df_cols row count", str(df_cols.shape))
     ################################
     logging.info("Running get_cols too get schema of all the paths :")
