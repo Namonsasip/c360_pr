@@ -670,5 +670,78 @@ class TestUnitRevenue:
             l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly.where("start_of_month = '2020-01-01'").select(
                 "rev_arpu_total_idd_net_tariff_rev_ppu").collect()[0][0]) == 0
 
+    def test_l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly(self,project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+
+        l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly = node_from_config(df_l0_revenue_prepaid_ru_f_sum_revenue_by_service_monthly,
+                                                                                   var_project_context.catalog.load('params:l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly'))
+
+        l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly.show()
+
+        assert float(
+            l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly.where("start_of_month = '2020-01-01'").select(
+                "rev_arpu_total_revenue").collect()[0][0]) == 2
+        assert float(
+            l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly.where("start_of_month = '2020-01-01'").select(
+                "rev_arpu_total_gprs_net_revenue").collect()[0][0]) == 2
+        assert float(
+            l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly.where("start_of_month = '2020-01-01'").select(
+                "rev_arpu_total_sms_net_revenue").collect()[0][0]) == 2
+        assert float(
+            l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly.where("start_of_month = '2020-01-01'").select(
+                "rev_arpu_total_others_net_revenue").collect()[0][0]) == 2
+        assert float(
+            l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly.where("start_of_month = '2020-01-01'").select(
+                "rev_arpu_total_voice_net_revenue").collect()[0][0]) == 2
+        assert float(
+            l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly.where("start_of_month = '2020-01-01'").select(
+                "rev_arpu_total_mms_net_revenue").collect()[0][0]) == 2
+        assert float(
+            l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly.where("start_of_month = '2020-01-01'").select(
+                "rev_arpu_total_ir_net_revenue").collect()[0][0]) == 2
+        assert float(
+            l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly.where("start_of_month = '2020-01-01'").select(
+                "rev_arpu_total_idd_net_revenue").collect()[0][0]) == 2
+        assert float(
+            l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly.where("start_of_month = '2020-01-01'").select(
+                "rev_arpu_total_voice_net_tariff_rev_mth").collect()[0][0]) == 2
+        assert float(
+            l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly.where("start_of_month = '2020-01-01'").select(
+                "rev_arpu_total_gprs_net_tariff_rev_mth").collect()[0][0]) == 2
+        assert float(
+            l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly.where("start_of_month = '2020-01-01'").select(
+                "rev_arpu_total_sms_net_tariff_rev_mth").collect()[0][0]) == 2
+        assert float(
+            l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly.where("start_of_month = '2020-01-01'").select(
+                "rev_arpu_total_mms_net_tariff_rev_mth").collect()[0][0]) == 2
+        assert float(
+            l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly.where("start_of_month = '2020-01-01'").select(
+                "rev_arpu_total_others_net_tariff_rev_mth").collect()[0][0]) == 2
+        assert float(
+            l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly.where("start_of_month = '2020-01-01'").select(
+                "rev_arpu_total_voice_net_tariff_rev_ppu").collect()[0][0]) == 2
+        assert float(
+            l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly.where("start_of_month = '2020-01-01'").select(
+                "rev_arpu_total_gprs_net_tariff_rev_ppu").collect()[0][0]) == 2
+        assert float(
+            l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly.where("start_of_month = '2020-01-01'").select(
+                "rev_arpu_total_sms_net_tariff_rev_ppu").collect()[0][0]) == 2
+        assert float(
+            l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly.where("start_of_month = '2020-01-01'").select(
+                "rev_arpu_total_mms_net_tariff_rev_ppu").collect()[0][0]) == 2
+        assert float(
+            l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly.where("start_of_month = '2020-01-01'").select(
+                "rev_arpu_total_others_net_tariff_rev_ppu").collect()[0][0]) == 2
+        assert float(
+            l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly.where("start_of_month = '2020-01-01'").select(
+                "rev_arpu_total_ir_net_tariff_rev_ppu").collect()[0][0]) == 2
+        assert float(
+            l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly.where("start_of_month = '2020-01-01'").select(
+                "rev_arpu_total_idd_net_tariff_rev_ppu").collect()[0][0]) == 2
+
+
 
 
