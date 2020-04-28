@@ -1,4 +1,5 @@
 from kedro.pipeline import Pipeline, node
+
 from customer360.pipelines.data_engineering.nodes.loyalty_nodes.to_l1.to_l1_nodes import *
 
 
@@ -36,9 +37,15 @@ def loyalty_to_l1_pipeline(**kwargs):
             # Number of points balance
             node(
                 loyalty_number_of_points_balance,
-                ["l1_customer_profile_union_daily_feature_for_l1_loyalty_priv_point_ba_daily",
-                 "l0_loyalty_drm_t_aunjai_point_collection_daily_for_l1_loyalty_priv_point_ba_daily"],
-                "l1_loyalty_priv_point_ba_daily"
+                ["l1_customer_profile_union_daily_feature_for_l1_loyalty_priv_point_ba_daily"
+                    , "l0_loyalty_drm_t_aunjai_point_collection_daily_for_l1_loyalty_priv_point_ba_daily"
+                    , "l0_loyalty_priv_point_bonus_ba"
+                    , "l0_loyalty_priv_point_ba"
+                 ],
+                ["l1_loyalty_drm_t_aunjai_point_collection_with_customers_for_point_bal_daily"
+                    , "l1_loyalty_priv_point_bonus_ba_daily"
+                    , "l1_loyalty_priv_point_ba_daily"
+                 ]
             ),
 
         ]
