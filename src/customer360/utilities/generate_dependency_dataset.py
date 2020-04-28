@@ -4,6 +4,7 @@ import os
 from customer360.utilities.spark_util import get_spark_session
 from pathlib import Path
 from kedro.context.context import load_context
+import logging
 conf = os.getenv("CONF", None)
 
 
@@ -12,6 +13,7 @@ def generate_dependency_dataset():
     :param project_context:
     :return:
     """
+    logging.info("Running generate_dependency_dataset collecting catalog information :")
     project_context = load_context(Path.cwd(), env=conf)
     catalog = project_context.catalog
 
@@ -41,10 +43,13 @@ def generate_dependency_dataset():
         all_list_cols.append(child_path)
 
     df_cols = pd.DataFrame(all_list_cols, columns=['data_set_path']).drop_duplicates()
+    logging.info("Pandas df_cols generated :")
     df_dependency = pd.DataFrame(all_list_dependency, columns=['parent_path', 'child_path']).drop_duplicates()
     df_dependency = df_dependency[df_dependency.child_path.notnull()]
+    logging.info("Pandas df_dependency generated :")
 
     def get_children(id):
+        logging.info("Running get_children collecting child information :")
         list_of_children = []
 
         def dfs(id):
@@ -60,6 +65,7 @@ def generate_dependency_dataset():
         return list_of_children
 
     def generate_l1_l2_l3_l4_cols(row):
+        logging.info("Running generate_l1_l2_l3_l4_cols collecting layer information :")
         row["l1_datasets"] = [x for x in row["list_of_children"] if "l1_feat" in x]
         row["l2_datasets"] = [x for x in row["list_of_children"] if "l2_feat" in x]
         row["l3_datasets"] = [x for x in row["list_of_children"] if "l3_feat" in x]
@@ -87,8 +93,9 @@ def generate_dependency_dataset():
     # This filter needs to be removed
     df_cols = df_cols[df_cols.data_set_path.str.contains("USAGE", na=False)]
     df_cols = df_cols[df_cols.data_set_path.str.contains("customer360", na=False)]
+    logging.info("df_cols row count", str(df_cols.shape))
     ################################
-
+    logging.info("Running get_cols too get schema of all the paths :")
     df_cols = df_cols.apply(get_cols, axis=1)
     df_cols_spark = spark.createDataFrame(df_cols).drop_duplicates(subset=["data_set_path"]) \
         .withColumn("event_partition_date", f.current_date())
