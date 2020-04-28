@@ -36,7 +36,7 @@ named ``test_*`` which test a unit of logic.
 To run the tests, run ``kedro test``.
 """
 
-from customer360.pipelines.data_engineering.nodes.revenue_nodes import *
+from customer360.pipelines.data_engineering.nodes.revenue_nodes.to_l3.to_l3_nodes import *
 from customer360.utilities.config_parser import node_from_config, expansion, l4_rolling_window, l4_rolling_ranked_window
 from customer360.utilities.re_usable_functions import *
 import pandas as pd
@@ -553,7 +553,6 @@ class TestUnitRevenue:
                 0]), 2) == 0
         assert test.where("access_method_num = 'test'").select("rev_arpu_last_date_on_top_pkg").collect()[0][0] == None
 
-
     def test_l2_revenue_prepaid_weekly(self, project_context):
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
@@ -741,6 +740,25 @@ class TestUnitRevenue:
         assert float(
             l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly.where("start_of_month = '2020-01-01'").select(
                 "rev_arpu_total_idd_net_tariff_rev_ppu").collect()[0][0]) == 2
+
+
+    def test_l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int(self,project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+
+        l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly = node_from_config(
+            df_l0_revenue_prepaid_ru_f_sum_revenue_by_service_monthly,
+            var_project_context.catalog.load('params:l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly'))
+
+        l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly.show()
+
+        l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int = l4_rolling_window(l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly,
+                                                                                        var_project_context.catalog.load('params:l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly'))
+
+
+        exit(2)
 
 
 
