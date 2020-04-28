@@ -34,15 +34,17 @@ def generate_dependency_dataset():
                 except Exception as e:
                     child_path = get_path(lookup_name + '@save')
         # This is to create two columns with dependency DFS
-        all_list_dependency.append(parent_path)
-        all_list_dependency.append(child_path)
+        all_list_dependency.append((parent_path, child_path))
+        print(all_list_dependency.head())
+
         # This is to create one column with columns
         all_list_cols.append(parent_path)
         all_list_cols.append(child_path)
+        print(all_list_cols.head())
 
-    df_cols = pd.DataFrame(all_list_dependency, columns=['data_set_path']).drop_duplicates()
+    df_cols = pd.DataFrame(all_list_cols, columns=['data_set_path']).drop_duplicates()
     print(df_cols.head())
-    df_dependency = pd.DataFrame(all_list_dependency, columns=['parent_path', 'child_path'])
+    df_dependency = pd.DataFrame(all_list_dependency, columns=['parent_path', 'child_path']).drop_duplicates()
     df_dependency = df_dependency[df_dependency.child_path.notnull()]
 
     def get_children(id):
