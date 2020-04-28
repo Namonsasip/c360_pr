@@ -1,14 +1,18 @@
 import pandas as pd
 import pyspark.sql.functions as f
-
+import os
 from customer360.utilities.spark_util import get_spark_session
+from pathlib import Path
+from kedro.context.context import load_context
+conf = os.getenv("CONF", None)
 
 
-def generate_dependency_dataset(project_context):
+def generate_dependency_dataset():
     """
     :param project_context:
     :return:
     """
+    project_context = load_context(Path.cwd(), env=conf)
     catalog = project_context.catalog
 
     def get_path(catalog_name):
@@ -69,7 +73,7 @@ def generate_dependency_dataset(project_context):
     spark = get_spark_session()
     spark_df = spark.createDataFrame(df_dependency).drop("child_path").drop_duplicates(subset=["parent_path"])
     spark_df = spark_df.withColumn("event_partition_date", f.current_date())
-    project_context.catalog.save("util_dependency_report", spark_df)
+    util_dependency_report = spark_df
 
     def get_cols(row):
         try:
@@ -82,4 +86,6 @@ def generate_dependency_dataset(project_context):
     df_cols = df_cols.apply(get_cols, axis=1)
     df_cols_spark = spark.createDataFrame(df_cols).drop_duplicates(subset=["data_set_path"]) \
         .withColumn("event_partition_date", f.current_date())
-    project_context.catalog.save("util_feature_report", df_cols_spark)
+    util_feature_report = df_cols_spark
+
+    return [util_dependency_report, util_feature_report]
