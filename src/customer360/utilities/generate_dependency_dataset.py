@@ -72,7 +72,11 @@ def generate_dependency_dataset(project_context):
     project_context.catalog.save("util_dependency_report", spark_df)
 
     def get_cols(row):
-        row['features'] = str(spark.read.parquet(row['data_set_path']).columns)
+        try:
+            curr_val = str(spark.read.parquet(row['data_set_path']).columns)
+        except Exception as e:
+            curr_val = ''
+        row['features'] = curr_val
         return row
 
     df_cols = df_cols.apply(get_cols, axis=1)
