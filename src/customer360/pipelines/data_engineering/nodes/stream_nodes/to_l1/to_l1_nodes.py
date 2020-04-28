@@ -1,6 +1,5 @@
 import os
 from src.customer360.utilities.spark_util import get_spark_empty_df
-from pyspark.sql.types import *
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
     data_non_availability_and_missing_check
 from pyspark.sql import functions as f, DataFrame
