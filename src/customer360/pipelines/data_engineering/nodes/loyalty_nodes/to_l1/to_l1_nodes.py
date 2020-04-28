@@ -3,8 +3,7 @@ import os
 import pyspark.sql.functions as f
 from pyspark.sql import DataFrame
 
-from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check, \
-    union_dataframes_with_missing_cols
+from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check
 from customer360.utilities.spark_util import get_spark_empty_df
 
 conf = os.getenv("CONF", None)
@@ -154,7 +153,6 @@ def loyalty_number_of_points_balance(customer_prof: DataFrame
                                                             par_col="event_partition_date",
                                                             target_table_name="l1_loyalty_priv_point_ba_daily")
 
-
     if check_empty_dfs([input_df, customer_prof, l0_loyalty_priv_point_bonus_ba]):
         return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
@@ -168,17 +166,19 @@ def loyalty_number_of_points_balance(customer_prof: DataFrame
                                , "mobile_segment", "billing_account") \
         .withColumn("event_partition_date", f.to_date(f.col("response_date"))) \
         .withColumn("start_of_week", f.to_date(f.date_trunc('week', f.col("response_date")))) \
-        .withColumn("start_of_month", f.to_date(f.date_trunc('week', f.col("response_date"))))
+        .withColumn("start_of_month", f.to_date(f.date_trunc('month', f.col("response_date"))))
 
     l0_loyalty_priv_point_bonus_ba = l0_loyalty_priv_point_bonus_ba.select("billing_account", "points", "modified_date") \
         .withColumn("event_partition_date", f.to_date(f.col("modified_date"))) \
         .withColumn("start_of_week", f.to_date(f.date_trunc('week', f.col("modified_date")))) \
-        .withColumn("start_of_month", f.to_date(f.date_trunc('week', f.col("modified_date"))))
+        .withColumn("start_of_month", f.to_date(f.date_trunc('month', f.col("modified_date"))))
 
-    l0_loyalty_priv_point_ba = l0_loyalty_priv_point_ba.select("billing_account", "points", "modified_date") \
+    l0_loyalty_priv_point_ba = l0_loyalty_priv_point_ba.select("billing_account", "points", "modified_date",
+                                                               "expired_date") \
+        .withColumn("expired_date", f.to_date(f.col("expired_date"))) \
         .withColumn("event_partition_date", f.to_date(f.col("modified_date"))) \
         .withColumn("start_of_week", f.to_date(f.date_trunc('week', f.col("modified_date")))) \
-        .withColumn("start_of_month", f.to_date(f.date_trunc('week', f.col("modified_date"))))
+        .withColumn("start_of_month", f.to_date(f.date_trunc('month', f.col("modified_date"))))
 
     return_df = customer_prof.join(input_df, join_key)
 

@@ -34,9 +34,9 @@ def loyalty_to_l4_pipeline(**kwargs):
             # Number of point balance and status
             node(
                 l4_rolling_window,
-                ["l2_loyalty_priv_point_ba_weekly",
-                 "params:l4_loyalty_priv_point_ba_features"],
-                "l4_loyalty_priv_point_ba_features"
+                ["l3_loyalty_point_balance_statuses_monthly",
+                 "params:l4_loyalty_priv_point_balance_statuses_features"],
+                "l4_loyalty_priv_point_balance_statuses_features"
             ),
         ]
     )

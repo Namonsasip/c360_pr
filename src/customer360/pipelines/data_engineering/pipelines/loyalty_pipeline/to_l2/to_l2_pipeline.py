@@ -40,14 +40,5 @@ def loyalty_to_l2_pipeline(**kwargs):
                 "l2_loyalty_number_of_points_spend_weekly"
             ),
 
-            # Point balance & Statuses
-            node(
-                build_loyalty_point_balance_statuses_weekly,
-                ["l1_loyalty_priv_point_ba_daily",
-                 "l0_loyalty_priv_point_ba",
-                 "params:l2_loyalty_priv_point_ba_weekly"],
-                "l2_loyalty_priv_point_ba_weekly"
-            ),
-
         ]
     )
