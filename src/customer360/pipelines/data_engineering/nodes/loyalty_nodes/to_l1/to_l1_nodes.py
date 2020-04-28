@@ -144,17 +144,24 @@ def loyalty_number_of_points_balance(customer_prof: DataFrame
     ################################# Start Implementing Data availability checks #############################
     # No check for weekly data to be used at daily level for this special case
     if check_empty_dfs([input_df, customer_prof, l0_loyalty_priv_point_bonus_ba]):
-        return get_spark_empty_df()
+        return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df()]
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
                                                        target_table_name="l1_loyalty_priv_point_ba_daily")
 
-    customer_prof = data_non_availability_and_missing_check(df=customer_prof, grouping="daily",
-                                                            par_col="event_partition_date",
-                                                            target_table_name="l1_loyalty_priv_point_ba_daily")
+    customer_prof = data_non_availability_and_missing_check(
+        df=customer_prof, grouping="daily",
+        par_col="event_partition_date",
+        target_table_name="l1_loyalty_priv_point_ba_daily")
+
+    l0_loyalty_priv_point_bonus_ba = data_non_availability_and_missing_check(
+        df=l0_loyalty_priv_point_bonus_ba,
+        grouping="daily",
+        par_col="partition_date",
+        target_table_name="l1_loyalty_priv_point_bonus_ba_daily")
 
     if check_empty_dfs([input_df, customer_prof, l0_loyalty_priv_point_bonus_ba]):
-        return get_spark_empty_df()
+        return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df()]
     ################################# End Implementing Data availability checks ###############################
     customer_prof = customer_prof.select("access_method_num",
                                          "subscription_identifier",

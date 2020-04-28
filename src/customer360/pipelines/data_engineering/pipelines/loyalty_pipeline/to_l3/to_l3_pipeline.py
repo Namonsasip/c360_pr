@@ -16,7 +16,7 @@ def loyalty_to_l3_pipeline(**kwargs):
                  "l1_loyalty_priv_point_bonus_ba_daily",
                  "l1_loyalty_priv_point_ba_daily",
                  "params:l3_loyalty_point_balance_statuses_monthly"],
-                ["l3_loyalty_point_balance_statuses_monthly"]
+                "l3_loyalty_point_balance_statuses_monthly"
             ),
 
         ]
