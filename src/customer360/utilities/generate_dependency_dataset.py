@@ -67,7 +67,7 @@ def generate_dependency_dataset():
         return row
 
     df_dependency["list_of_children"] = df_dependency["parent_path"].apply(get_children)
-    df_dependency = df_dependency[df_dependency.parent_path.str.contains("customer360-blob-data")]
+    df_dependency = df_dependency[df_dependency.parent_path.str.contains("customer360-blob-data", na=False)]
     df_dependency = df_dependency.apply(generate_l1_l2_l3_l4_cols, axis=1)
     for col in df_dependency.columns:
         df_dependency[col] = df_dependency[col].astype(str)
@@ -85,9 +85,10 @@ def generate_dependency_dataset():
         return row
 
     # This filter needs to be removed
-    df_cols = df_cols[df_cols.data_set_path.str.contains("USAGE")]
-    df_cols = df_cols[df_cols.data_set_path.str.contains("customer360")]
-    ######
+    df_cols = df_cols[df_cols.data_set_path.str.contains("USAGE", na=False)]
+    df_cols = df_cols[df_cols.data_set_path.str.contains("customer360", na=False)]
+    ################################
+
     df_cols = df_cols.apply(get_cols, axis=1)
     df_cols_spark = spark.createDataFrame(df_cols).drop_duplicates(subset=["data_set_path"]) \
         .withColumn("event_partition_date", f.current_date())
