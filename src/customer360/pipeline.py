@@ -95,6 +95,7 @@ from .pipelines.data_engineering.pipelines.device_pipeline import (
     device_to_l4_pipeline,
 )
 from .pipelines.data_engineering.pipelines.digital_pipeline import (
+    digital_to_l2_pipeline,
     digital_to_l3_pipeline,
     digital_to_l4_monthly_pipeline,
     digital_to_l4_weekly_pipeline,
@@ -174,6 +175,9 @@ from .pipelines.data_engineering.pipelines.usage_pipeline.to_l4 import (
 from .pipelines.data_engineering.pipelines.usage_pipeline.to_l4 import (
     usage_to_l4_pipeline,
 )
+from .pipelines.data_engineering.pipelines.util_pipeline import (
+    lineage_dependency_pipeline
+)
 
 
 def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
@@ -216,6 +220,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "device_to_l1_pipeline": device_to_l1_pipeline(),
         "device_to_l2_pipeline": device_to_l2_pipeline(),
         "device_to_l4_pipeline": device_to_l4_pipeline(),
+        "digital_to_l2_pipeline": digital_to_l2_pipeline(),
         "digital_to_l3_pipeline": digital_to_l3_pipeline(),
         "digital_to_l4_monthly_pipeline": digital_to_l4_monthly_pipeline(),
         "digital_to_l4_weekly_pipeline": digital_to_l4_weekly_pipeline(),
@@ -256,6 +261,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "product_to_l1_pipeline": product_to_l1_pipeline(),
         "product_to_l2_pipeline": product_to_l2_pipeline(),
         "product_to_l4_pipeline": product_to_l4_pipeline(),
+        "lineage_dependency_pipeline": lineage_dependency_pipeline(),
         # "de": data_engineering_pipeline,
     }
 
