@@ -5,7 +5,8 @@ from src.customer360.pipelines.data_engineering.nodes.product_nodes.to_l1.to_l1_
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols
 from pyspark.sql import functions as F
 from pyspark.sql.types  import *
-
+from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
+    data_non_availability_and_missing_check, execute_sql
 
 def get_activated_deactivated_features(
         cust_promo_df,
@@ -15,6 +16,40 @@ def get_activated_deactivated_features(
         postpaid_ontop_master_df,
 ) -> DataFrame:
     spark = get_spark_session()
+
+
+    ################################# Start Implementing Data availability checks ###############################
+    if check_empty_dfs([cust_promo_df, prepaid_main_master_df
+                           , prepaid_ontop_master_df, postpaid_main_master_df
+                        ,postpaid_ontop_master_df]):
+        return [get_spark_empty_df(), get_spark_empty_df()]
+
+    cust_promo_df = data_non_availability_and_missing_check(df=prepaid_main_master_df
+         , grouping="weekly", par_col="partition_date",target_table_name="l2_product_activated_deactivated_features_weekly"
+                                        ,missing_data_check_flg='Y')
+    prepaid_main_master_df = data_non_availability_and_missing_check(df=prepaid_main_master_df
+         ,grouping="weekly", par_col="partition_date",target_table_name="l2_product_activated_deactivated_features_weekly"
+                                        , missing_data_check_flg='Y')
+    prepaid_ontop_master_df = data_non_availability_and_missing_check(df=prepaid_ontop_master_df
+         , grouping="weekly", par_col="partition_date",target_table_name="l2_product_activated_deactivated_features_weekly"
+                                        , missing_data_check_flg='Y')
+    postpaid_main_master_df = data_non_availability_and_missing_check(df=postpaid_main_master_df
+        , grouping="weekly", par_col="partition_date",target_table_name="l2_product_activated_deactivated_features_weekly"
+                                        , missing_data_check_flg='Y')
+    postpaid_ontop_master_df = data_non_availability_and_missing_check(df=postpaid_ontop_master_df
+        , grouping="weekly", par_col="partition_date",target_table_name="l2_product_activated_deactivated_features_weekly"
+                                       , missing_data_check_flg='Y')
+
+    if check_empty_dfs([cust_promo_df,prepaid_main_master_df,prepaid_ontop_master_df,postpaid_main_master_df
+                        ,postpaid_ontop_master_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+
+
+
+
+
 
     if (len(cust_promo_df.head(1)) == 0 | len(prepaid_main_master_df.head(1)) == 0 |
             len(postpaid_main_master_df.head(1)) == 0 | len(prepaid_ontop_master_df.head(1)) == 0 |
