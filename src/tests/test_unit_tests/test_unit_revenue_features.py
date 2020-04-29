@@ -50,11 +50,11 @@ from customer360.pipelines.data_engineering.nodes.revenue_nodes.to_l2.to_l2_node
 
 global l0_revenue_postpaid_ru_f_sum_revenue_by_service_monthly
 l0_revenue_postpaid_ru_f_sum_revenue_by_service_monthly = [
-    [datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'), "test", "Bill_tag", "111", "1", "10", "100", "0", "0", "0", "0", "0",
+    [datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'), "1-TEST", "Bill_tag", "111", "1", "10", "100", "0", "0", "0", "0", "0",
      "1", "10", "100", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "202001"],
-    [datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'), "test", "Bill_tag", "111", "1", "10", "100", "0", "0", "0", "0", "0",
+    [datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'), "1-TEST", "Bill_tag", "111", "1", "10", "100", "0", "0", "0", "0", "0",
      "1", "10", "100", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "202001"],
-    [datetime.datetime.strptime('2020-02-01', '%Y-%m-%d'), "test", "Bill_tag", "111", "1", "10", "100", "0", "0", "0", "0", "0",
+    [datetime.datetime.strptime('2020-02-01', '%Y-%m-%d'), "1-TEST", "Bill_tag", "111", "1", "10", "100", "0", "0", "0", "0", "0",
      "1", "10", "100", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "202002"]
 
 ]
@@ -88,8 +88,8 @@ customer = [
 
 global l1_revenue_prepaid_pru_f_usage_multi_weekly
 l1_revenue_prepaid_pru_f_usage_multi_weekly = [
-["test",datetime.datetime.strptime('2020-01-27', '%Y-%m-%d'),"1-TEST","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1",datetime.datetime.strptime('2020-01-27', '%Y-%m-%d'),datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'),datetime.datetime.strptime('2020-01-01', '%Y-%m-%d')],
-["test",datetime.datetime.strptime('2020-01-27', '%Y-%m-%d'),"1-TEST","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1",datetime.datetime.strptime('2020-01-27', '%Y-%m-%d'),datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'),datetime.datetime.strptime('2020-01-01', '%Y-%m-%d')]
+["test",datetime.datetime.strptime('2020-01-27', '%Y-%m-%d'),"1-TEST","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1",datetime.datetime.strptime('2020-01-27', '%Y-%m-%d'),datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'),datetime.datetime.strptime('2020-01-27', '%Y-%m-%d')],
+["test",datetime.datetime.strptime('2020-01-27', '%Y-%m-%d'),"1-TEST","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1",datetime.datetime.strptime('2020-01-27', '%Y-%m-%d'),datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'),datetime.datetime.strptime('2020-01-28', '%Y-%m-%d')]
 ]
 
 
@@ -1341,17 +1341,343 @@ class TestUnitRevenue:
             var_project_context.catalog.load('params:l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly'))
 
         l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly.show()
-        l4_join = l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly.join(customer_pro,on=['access_method_num', 'start_of_month'])
+
+        l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly = l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly.withColumnRenamed("sub_id", "subscription_identifier")
+
+        l4_join = l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly.join(customer_pro,on=['subscription_identifier', 'start_of_month'])
         l4_join.show()
 
         l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int = l4_rolling_window(l4_join, var_project_context.catalog.load('params:l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int'))
 
         l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.show()
 
-        exit(2)
+        ##################### MIN ##########################################################################
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "min_rev_arpu_total_revenue_monthly_last_month").collect()[0][0] == 222
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "min_rev_arpu_total_gprs_net_revenue_monthly_last_month").collect()[0][0] == 200
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "min_rev_arpu_total_vas_net_revenue_monthly_last_month").collect()[0][0] == 20
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "min_rev_arpu_total_sms_net_revenue_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "min_rev_arpu_total_others_net_revenue_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "min_rev_arpu_total_voice_net_revenue_monthly_last_month").collect()[0][0] == 2
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "min_rev_arpu_total_mms_net_revenue_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "min_rev_arpu_total_ir_net_revenue_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "min_rev_arpu_total_idd_net_revenue_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "min_rev_arpu_total_voice_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 2
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "min_rev_arpu_total_vas_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 20
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "min_rev_arpu_total_gprs_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 200
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "min_rev_arpu_total_sms_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "min_rev_arpu_total_mms_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "min_rev_arpu_total_others_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "min_rev_arpu_total_ir_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "min_rev_arpu_total_idd_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "min_rev_arpu_total_voice_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "min_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "min_rev_arpu_total_gprs_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "min_rev_arpu_total_sms_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "min_rev_arpu_total_mms_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "min_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "min_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "min_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
 
+        ###################### MAX ######################################################################
 
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "max_rev_arpu_total_revenue_monthly_last_month").collect()[0][0] == 222
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "max_rev_arpu_total_gprs_net_revenue_monthly_last_month").collect()[0][0] == 200
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "max_rev_arpu_total_vas_net_revenue_monthly_last_month").collect()[0][0] == 20
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "max_rev_arpu_total_sms_net_revenue_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "max_rev_arpu_total_others_net_revenue_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "max_rev_arpu_total_voice_net_revenue_monthly_last_month").collect()[0][0] == 2
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "max_rev_arpu_total_mms_net_revenue_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "max_rev_arpu_total_ir_net_revenue_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "max_rev_arpu_total_idd_net_revenue_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "max_rev_arpu_total_voice_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 2
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "max_rev_arpu_total_vas_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 20
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "max_rev_arpu_total_gprs_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 200
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "max_rev_arpu_total_sms_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "max_rev_arpu_total_mms_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "max_rev_arpu_total_others_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "max_rev_arpu_total_ir_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "max_rev_arpu_total_idd_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "max_rev_arpu_total_voice_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "max_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "max_rev_arpu_total_gprs_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "max_rev_arpu_total_sms_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "max_rev_arpu_total_mms_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "max_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "max_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "max_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
 
+        ################# SUM ##################################################################
+
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "sum_rev_arpu_total_revenue_monthly_last_month").collect()[0][0] == 222
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "sum_rev_arpu_total_gprs_net_revenue_monthly_last_month").collect()[0][0] == 200
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "sum_rev_arpu_total_vas_net_revenue_monthly_last_month").collect()[0][0] == 20
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "sum_rev_arpu_total_sms_net_revenue_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "sum_rev_arpu_total_others_net_revenue_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "sum_rev_arpu_total_voice_net_revenue_monthly_last_month").collect()[0][0] == 2
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "sum_rev_arpu_total_mms_net_revenue_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "sum_rev_arpu_total_ir_net_revenue_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "sum_rev_arpu_total_idd_net_revenue_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "sum_rev_arpu_total_voice_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 2
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "sum_rev_arpu_total_vas_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 20
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "sum_rev_arpu_total_gprs_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 200
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "sum_rev_arpu_total_sms_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "sum_rev_arpu_total_mms_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "sum_rev_arpu_total_others_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "sum_rev_arpu_total_ir_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "sum_rev_arpu_total_idd_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "sum_rev_arpu_total_voice_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "sum_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "sum_rev_arpu_total_gprs_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "sum_rev_arpu_total_sms_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "sum_rev_arpu_total_mms_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "sum_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "sum_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "sum_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
+
+        ################# AVG ##############################################################################
+
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "avg_rev_arpu_total_revenue_monthly_last_month").collect()[0][0] == 222
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "avg_rev_arpu_total_gprs_net_revenue_monthly_last_month").collect()[0][0] == 200
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "avg_rev_arpu_total_vas_net_revenue_monthly_last_month").collect()[0][0] == 20
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "avg_rev_arpu_total_sms_net_revenue_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "avg_rev_arpu_total_others_net_revenue_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "avg_rev_arpu_total_voice_net_revenue_monthly_last_month").collect()[0][0] == 2
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "avg_rev_arpu_total_mms_net_revenue_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "avg_rev_arpu_total_ir_net_revenue_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "avg_rev_arpu_total_idd_net_revenue_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "avg_rev_arpu_total_voice_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 2
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "avg_rev_arpu_total_vas_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 20
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "avg_rev_arpu_total_gprs_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 200
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "avg_rev_arpu_total_sms_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "avg_rev_arpu_total_mms_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "avg_rev_arpu_total_others_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "avg_rev_arpu_total_ir_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "avg_rev_arpu_total_idd_net_tariff_rev_mth_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "avg_rev_arpu_total_voice_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "avg_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "avg_rev_arpu_total_gprs_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "avg_rev_arpu_total_sms_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "avg_rev_arpu_total_mms_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "avg_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "avg_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
+        assert l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.where(
+            "start_of_month = '2020-02-01' and subscription_identifier = '1-TEST'").select(
+            "avg_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_month").collect()[0][0] == 0
+
+    def test_l4_revenue_prepaid_daily_features(self,project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value_l1(project_context)
+
+        l4_revenue_prepaid_daily_features = l4_rolling_window(df_l1_revenue_prepaid_pru_f_usage_multi_weekly,
+                                                           var_project_context.catalog.load(
+                                                               'params:l4_revenue_prepaid_daily_features'))
+
+        l4_revenue_prepaid_daily_features.show()
+
+        assert l4_revenue_prepaid_daily_features.where("event_partition_date = '2020-01-28'").select("avg_rev_arpu_total_net_rev_daily_last_seven_day").collect == 1
+        assert l4_revenue_prepaid_daily_features.where("event_partition_date = '2020-01-28'").select("sum_rev_arpu_total_net_rev_daily_last_seven_day").collect == 1
+        assert l4_revenue_prepaid_daily_features.where("event_partition_date = '2020-01-28'").select("max_rev_arpu_total_net_rev_daily_last_seven_day").collect == 1
+        assert l4_revenue_prepaid_daily_features.where("event_partition_date = '2020-01-28'").select("min_rev_arpu_total_net_rev_daily_last_seven_day").collect == 1
 
 
 
