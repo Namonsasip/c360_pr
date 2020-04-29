@@ -647,7 +647,260 @@ class TestUnitRevenue:
 
         l2_revenue_prepaid_weekly.show()
 
-        exit(2)
+        #SUM
+
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_total_net_rev_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_net_tariff_rev_reward_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_net_tariff_rev_exc_reward_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_data_rev_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_data_rev_by_pkg_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_data_rev_by_ppu_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_data_rev_4g_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_number_of_ontop_pkg_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_data_rev_by_pkg_4g_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_data_rev_by_ppu_4g_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_data_rev_2g_3g_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_data_rev_by_pkg_2g_3g_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_data_rev_by_ppu_2g_3g_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_data_rev_by_per_unit_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_data_rev_per_unit_2g_3g_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_data_rev_per_unit_4g_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_days_0_rev_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_days_data_0_rev_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_days_data_ppu_0_rev_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_days_4g_data_0_rev_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_days_2g_3g_data_0_rev_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_days_4g_data_pkg_0_rev_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_days_2g_3g_data_pkg_0_rev_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_days_4g_data_ppu_0_rev_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_days_2g_3g_data_ppu_0_rev_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_days_voice_0_rev_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_days_voice_intra_0_rev_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_days_voice_non_intra_0_rev_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_days_voice_per_call_0_rev_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_days_voice_intra_per_call_0_rev_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_days_voice_non_intra_per_call_0_rev_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_days_voice_per_min_0_rev_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_days_voice_intra_per_min_0_rev_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_days_voice_non_intra_per_min_0_rev_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_voice_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_voice_intra_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_voice_non_intra_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_voice_per_call_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_voice_intra_per_call_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_voice_non_intra_per_call_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_voice_per_minute_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_voice_intra_per_minute_sum").collect()[0][0] == 2
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_voice_non_intra_per_minute_sum").collect()[0][0] == 2
+
+        #max
+
+        assert \
+        float(l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_share_of_exc_reward_over_total_rev_max").collect()[0][0]) == 1
+        assert \
+        float(l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_share_of_revenue_reward_over_total_rev_max").collect()[0][0]) == 1
+        assert \
+        float(l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_share_data_rev_4g_max").collect()[0][0]) == 1
+        assert \
+        float(l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_share_data_rev_by_pkg_4g_max").collect()[0][0]) == 1
+        assert \
+        float(l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_share_data_rev_by_ppu_4g_max").collect()[0][0]) == 1
+        assert \
+        float(l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_share_data_rev_2g_3g_max").collect()[0][0]) == 1
+        assert \
+        float(l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_share_data_rev_by_pkg_2g_3g_max").collect()[0][0]) == 1
+        assert \
+        float(l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_share_data_rev_by_ppu_2g_3g_max").collect()[0][0]) == 1
+        assert \
+        float(l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_share_voice_intra_max").collect()[0][0]) == 1
+        assert \
+        float(l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_share_voice_non_intra_max").collect()[0][0]) == 1
+
+        #avg
+
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_share_of_exc_reward_over_total_rev_avg").collect()[0][0] == 1
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_share_of_revenue_reward_over_total_rev_avg").collect()[0][0] == 1
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_share_data_rev_4g_avg").collect()[0][0] == 1
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_share_data_rev_by_pkg_4g_avg").collect()[0][0] == 1
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_share_data_rev_by_ppu_4g_avg").collect()[0][0] == 1
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_share_data_rev_2g_3g_avg").collect()[0][0] == 1
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_share_data_rev_by_pkg_2g_3g_avg").collect()[0][0] == 1
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_share_data_rev_by_ppu_2g_3g_avg").collect()[0][0] == 1
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_share_voice_intra_avg").collect()[0][0] == 1
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_share_voice_non_intra_avg").collect()[0][0] == 1
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_diff_in_exc_reward_rev_reward_avg").collect()[0][0] == 1
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_diff_rev_by_pkg_ppu_avg").collect()[0][0] == 1
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_diff_rev_by_pkg_ppu_4g_avg").collect()[0][0] == 1
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_diff_rev_by_pkg_ppu_2g_3g_avg").collect()[0][0] == 1
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_diff_rev_2g_3g_vs_4g_avg").collect()[0][0] == 1
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_diff_rev_per_unit_2g_3g_vs_4g_avg").collect()[0][0] == 1
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_diff_voice_intra_non_intra_avg").collect()[0][0] == 1
+        assert \
+        l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_diff_voice_intra_non_intra_per_min_avg").collect()[0][0] == 1
+
+        #min
+
+        assert \
+        float(l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_share_of_exc_reward_over_total_rev_min").collect()[0][0]) == 1
+        assert \
+        float(l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_share_of_revenue_reward_over_total_rev_min").collect()[0][0]) == 1
+        assert \
+        float(l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_share_data_rev_4g_min").collect()[0][0]) == 1
+        assert \
+        float(l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_share_data_rev_by_pkg_4g_min").collect()[0][0]) == 1
+        assert \
+        float(l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_share_data_rev_by_ppu_4g_min").collect()[0][0]) == 1
+        assert \
+        float(l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_share_data_rev_2g_3g_min").collect()[0][0]) == 1
+        assert \
+        float(l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_share_data_rev_by_pkg_2g_3g_min").collect()[0][0]) == 1
+        assert \
+        float(l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_share_data_rev_by_ppu_2g_3g_min").collect()[0][0]) == 1
+        assert \
+        float(l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_share_voice_intra_min").collect()[0][0]) == 1
+        assert \
+        float(l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
+            "rev_arpu_share_voice_non_intra_min").collect()[0][0]) == 1
 
     def test_l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly(self,project_context):
         var_project_context = project_context['ProjectContext']
@@ -819,9 +1072,10 @@ class TestUnitRevenue:
             var_project_context.catalog.load('params:l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly'))
 
         l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly.show()
+        l4_join = l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly.join(customer_pro,on=['access_method_num', 'start_of_month'])
+        l4_join.show()
 
-        l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int = l4_rolling_window(l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly,
-                                                                                        var_project_context.catalog.load('params:l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly'))
+        #l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int = l4_rolling_window(l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly, var_project_context.catalog.load('params:l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly'))
 
 
         exit(2)
