@@ -55,7 +55,7 @@ l0_revenue_postpaid_ru_f_sum_revenue_by_service_monthly = [
     [datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'), "test", "Bill_tag", "111", "1", "10", "100", "0", "0", "0", "0", "0",
      "1", "10", "100", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "202001"],
     [datetime.datetime.strptime('2020-02-01', '%Y-%m-%d'), "test", "Bill_tag", "111", "1", "10", "100", "0", "0", "0", "0", "0",
-     "1", "10", "100", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "202001"]
+     "1", "10", "100", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "202002"]
 
 ]
 
@@ -69,7 +69,7 @@ l0_revenue_prepaid_ru_f_sum_revenue_by_service_monthly = [
      "1", "1", "1", "1", "1", "1", "1", "1", "202001"],
      [datetime.datetime.strptime('2020-02-01', '%Y-%m-%d'), "test", "3G971", "1", "1", "1",
       datetime.datetime.strptime('2020-02-01', '%Y-%m-%d'), "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1",
-      "1", "1", "1", "1", "1", "1", "1", "1", "202001"]
+      "1", "1", "1", "1", "1", "1", "1", "1", "202002"]
 ]
 
 global l0_revenue_prepaid_pru_f_usage_multi_daily
@@ -82,7 +82,8 @@ l0_revenue_prepaid_pru_f_usage_multi_daily = [
 
 global customer
 customer = [
-["1-TEST","test",datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'),"null","THAI","null","N","N","Y","Y","3G339","Promotion_ID","25","F","3577","118","SA","Classic","Classic","3G","aWHlgJKyzdZhML+1MsR8zkLsXHK5SUBzt9OMWpVdheZEg9ejPmUEoOqHJqQIIHo0",datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'),"Pre-paid","null","N","NNNN","N","N",datetime.datetime.strptime('2020-01-27', '%Y-%m-%d'),datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'),"20200101"]
+["1-TEST","test",datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'),"null","THAI","null","N","N","Y","Y","3G339","Promotion_ID","25","F","3577","118","SA","Classic","Classic","3G","aWHlgJKyzdZhML+1MsR8zkLsXHK5SUBzt9OMWpVdheZEg9ejPmUEoOqHJqQIIHo0",datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'),"Pre-paid","null","N","NNNN","N","N",datetime.datetime.strptime('2020-01-27', '%Y-%m-%d'),datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'),"20200101"],
+["1-TEST","test",datetime.datetime.strptime('2020-02-01', '%Y-%m-%d'),"null","THAI","null","N","N","Y","Y","3G339","Promotion_ID","25","F","3577","118","SA","Classic","Classic","3G","aWHlgJKyzdZhML+1MsR8zkLsXHK5SUBzt9OMWpVdheZEg9ejPmUEoOqHJqQIIHo0",datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'),"Pre-paid","null","N","NNNN","N","N",datetime.datetime.strptime('2020-02-03', '%Y-%m-%d'),datetime.datetime.strptime('2020-02-01', '%Y-%m-%d'),"20200201"]
 ]
 
 global l1_revenue_prepaid_pru_f_usage_multi_weekly
@@ -1075,10 +1076,11 @@ class TestUnitRevenue:
         l4_join = l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly.join(customer_pro,on=['access_method_num', 'start_of_month'])
         l4_join.show()
 
-        #l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int = l4_rolling_window(l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly, var_project_context.catalog.load('params:l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly'))
+        l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int = l4_rolling_window(l4_join, var_project_context.catalog.load('params:l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_int'))
+
+        l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int.show()
 
 
-        exit(2)
 
 
 
