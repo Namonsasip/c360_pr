@@ -26,6 +26,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import functools
+import logging
 from datetime import date
 from typing import Any, Dict, Tuple
 
@@ -62,6 +63,7 @@ def treatments_propositions_for_ard_churn(
         Treatments chosen for use case.
     """
 
+    logging.info("Adding {} treatments".format(use_case))
     treatment_size = parameters["treatment_sizes"][use_case]
     microsegments = microsegments.select(
         ["subscription_identifier", "ard_microsegment", "churn_microsegment"]
@@ -134,6 +136,7 @@ def treatments_propositions_from_rules(
         macrosegment: value to return as macrosegment in output.
     """
 
+    logging.info("Adding rule based treatments")
     blacklisted_users = blacklisted_users.select("subscription_identifier")
     propensities_with_features = propensities.join(
         features_macrosegments_scoring, on="subscription_identifier"
@@ -209,6 +212,7 @@ def get_treatments_propositions(
         else:
             return blacklisted_users_old.union(blacklisted_users_new)
 
+    logging.info("Generating treatments")
     all_treatments = []
     recently_contacted = get_recently_contacted(parameters, treatments_history)
     blacklisted_users = _add_to_blacklist(recently_contacted)
@@ -266,6 +270,7 @@ def update_history_with_treatments_propositions(
         Updated `treatments_history`.
     """
 
+    logging.info("Updating treatments history")
     today = date.today().strftime("%Y-%m-%d")
     return treatments_history.filter(f"key_date != '{today}'").union(
         treatments_propositions.withColumn("key_date", func.lit(today)).select(
