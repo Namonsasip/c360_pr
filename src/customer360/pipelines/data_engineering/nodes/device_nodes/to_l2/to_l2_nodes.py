@@ -6,9 +6,10 @@ from pathlib import Path
 import logging
 import os
 from pyspark.sql import Window
-from pyspark.sql.types import StringType
 from src.customer360.utilities.spark_util import get_spark_empty_df
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols
+from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check
+from pyspark.sql.types import *
 
 conf = os.getenv("CONF", None)
 
@@ -133,8 +134,22 @@ def join_with_customer_profile(customer_prof, hs_summary):
 
 def device_summary_with_configuration(hs_summary, hs_configs):
 
-    if len(hs_summary.head(1)) == 0 or len(hs_configs.head(1)) == 0:
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([hs_summary, hs_configs]):
         return get_spark_empty_df()
+
+    hs_summary = data_non_availability_and_missing_check(df=hs_summary, grouping="weekly", par_col="event_partition_date",
+                                                       target_table_name="l2_device_summary_with_config_weekly",
+                                                        missing_data_check_flg='Y')
+
+    hs_configs = data_non_availability_and_missing_check(df=hs_configs, grouping="weekly", par_col="partition_date",
+                                                        target_table_name="l2_device_summary_with_config_weekly")
+
+    if check_empty_dfs([hs_summary, hs_configs]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+
 
     hs_configs = hs_configs.withColumn("partition_date", hs_configs["partition_date"].cast(StringType()))
     hs_configs = hs_configs.withColumn("start_of_week",
