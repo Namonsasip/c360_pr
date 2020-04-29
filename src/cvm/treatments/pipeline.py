@@ -65,6 +65,7 @@ def generate_treatments(sample_type: str) -> Pipeline:
                     "microsegments_treatments",
                     "treatments_chosen_history",
                     "parameters",
+                    "features_macrosegments_scoring",
                 ],
                 ["treatments_chosen", "treatments_chosen_history2"],
                 name="produce_treatments",
