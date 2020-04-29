@@ -60,7 +60,10 @@ l1_customer_profile_union_daily_feature_for_l1_billing_and_payments_daily_topup_
     target_layer: 'l1_daily'
     lookback: '0'
 
-
+l1_customer_profile_union_daily_feature_for_usage_for_l2_digital_cxenxse_site_traffic_browser_active_time_weekly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: data/L1_DAILY/PROFILE/l1_customer_profile_union_daily_feature/
+  file_format: "parquet"
 
 
 l1_customer_profile_union_daily_feature_for_l1_billing_and_payments_daily_rpu_roaming:
