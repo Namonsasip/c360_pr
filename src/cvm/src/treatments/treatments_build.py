@@ -319,18 +319,37 @@ def generate_treatments_chosen(
     treatment_dictionary_pd: pandas.DataFrame,
     treatments_history: DataFrame,
     parameters: Dict[str, Any],
+    features_macrosegments_scoring: DataFrame,
+    treatment_rules: Dict[str, Any] = None,
 ) -> Tuple[pandas.DataFrame, DataFrame]:
     """ Function combines above functions to generate treatments and update treatments
     history.
 
     Args:
-        propensities: table with propensities.
+        features_macrosegments_scoring: table with features to run rules on.
         microsegments: List of users and assigned microsegments.
-        treatment_dictionary_pd: Table of microsegment to treatment mapping in pandas.
-        treatments_history: Table with history of treatments.
         parameters: parameters defined in parameters.yml.
+        propensities: table with propensities.
+        treatment_dictionary_pd: Table of microsegment to treatment mapping in pandas.
+        treatment_rules: manually defined rules to assign treatment.
+        treatments_history: Table with history of treatments.
     Returns:
         Pandas DataFrame with chosen campaigns and updated history DataFrame.
     """
-    # TODO rewrite
-    return 0
+    treatments_dictionary = convert_treatments_dictionary_to_sparkdf(
+        treatment_dictionary_pd
+    )
+    treatments_propositions = get_treatments_propositions(
+        propensities,
+        parameters,
+        microsegments,
+        treatments_dictionary,
+        treatments_history,
+        features_macrosegments_scoring,
+        treatment_rules,
+    )
+    treatments_history = update_history_with_treatments_propositions(
+        treatments_propositions, treatments_history
+    )
+    treatments_chosen = serve_treatments_chosen(treatments_propositions)
+    return treatments_chosen, treatments_history
