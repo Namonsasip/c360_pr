@@ -85,6 +85,11 @@ customer = [
 ["1-TEST","test",datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'),"null","THAI","null","N","N","Y","Y","3G339","Promotion_ID","25","F","3577","118","SA","Classic","Classic","3G","aWHlgJKyzdZhML+1MsR8zkLsXHK5SUBzt9OMWpVdheZEg9ejPmUEoOqHJqQIIHo0",datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'),"Pre-paid","null","N","NNNN","N","N",datetime.datetime.strptime('2020-01-27', '%Y-%m-%d'),datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'),"20200101"]
 ]
 
+global l2_revenue_prepaid_pru_f_usage_multi_weekly
+l2_revenue_prepaid_pru_f_usage_multi_weekly = [
+["1-TEST","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1",datetime.datetime.strptime('2020-01-20', '%Y-%m-%d')],
+["1-TEST","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1",datetime.datetime.strptime('2020-01-27', '%Y-%m-%d')]
+]
 
 def set_value(project_context):
     var_project_context = project_context['ProjectContext']
@@ -366,6 +371,97 @@ StructField("event_partition_date",StringType(), True),
 
     ]))
 
+def set_value_l2(project_context):
+    var_project_context = project_context['ProjectContext']
+    spark = project_context['Spark']
+    rdd1 = spark.sparkContext.parallelize(l2_revenue_prepaid_pru_f_usage_multi_weekly)
+    global df_l2_revenue_prepaid_pru_f_usage_multi_weekly
+    df_l2_revenue_prepaid_pru_f_usage_multi_weekly = spark.createDataFrame(rdd1,schema=StructType(
+                                                                                           [StructField("subscription_identifier",StringType(), True),
+StructField("rev_arpu_total_net_rev_sum",StringType(), True),
+StructField("rev_arpu_net_tariff_rev_reward_sum",StringType(), True),
+StructField("rev_arpu_net_tariff_rev_exc_reward_sum",StringType(), True),
+StructField("rev_arpu_data_rev_sum",StringType(), True),
+StructField("rev_arpu_data_rev_by_pkg_sum",StringType(), True),
+StructField("rev_arpu_data_rev_by_ppu_sum",StringType(), True),
+StructField("rev_arpu_data_rev_4g_sum",StringType(), True),
+StructField("rev_arpu_number_of_ontop_pkg_sum",StringType(), True),
+StructField("rev_arpu_data_rev_by_pkg_4g_sum",StringType(), True),
+StructField("rev_arpu_data_rev_by_ppu_4g_sum",StringType(), True),
+StructField("rev_arpu_data_rev_2g_3g_sum",StringType(), True),
+StructField("rev_arpu_data_rev_by_pkg_2g_3g_sum",StringType(), True),
+StructField("rev_arpu_data_rev_by_ppu_2g_3g_sum",StringType(), True),
+StructField("rev_arpu_data_rev_by_per_unit_sum",StringType(), True),
+StructField("rev_arpu_data_rev_per_unit_2g_3g_sum",StringType(), True),
+StructField("rev_arpu_data_rev_per_unit_4g_sum",StringType(), True),
+StructField("rev_arpu_days_0_rev_sum",StringType(), True),
+StructField("rev_arpu_days_data_0_rev_sum",StringType(), True),
+StructField("rev_arpu_days_data_ppu_0_rev_sum",StringType(), True),
+StructField("rev_arpu_days_4g_data_0_rev_sum",StringType(), True),
+StructField("rev_arpu_days_2g_3g_data_0_rev_sum",StringType(), True),
+StructField("rev_arpu_days_4g_data_pkg_0_rev_sum",StringType(), True),
+StructField("rev_arpu_days_2g_3g_data_pkg_0_rev_sum",StringType(), True),
+StructField("rev_arpu_days_4g_data_ppu_0_rev_sum",StringType(), True),
+StructField("rev_arpu_days_2g_3g_data_ppu_0_rev_sum",StringType(), True),
+StructField("rev_arpu_days_voice_0_rev_sum",StringType(), True),
+StructField("rev_arpu_days_voice_intra_0_rev_sum",StringType(), True),
+StructField("rev_arpu_days_voice_non_intra_0_rev_sum",StringType(), True),
+StructField("rev_arpu_days_voice_per_call_0_rev_sum",StringType(), True),
+StructField("rev_arpu_days_voice_intra_per_call_0_rev_sum",StringType(), True),
+StructField("rev_arpu_days_voice_non_intra_per_call_0_rev_sum",StringType(), True),
+StructField("rev_arpu_days_voice_per_min_0_rev_sum",StringType(), True),
+StructField("rev_arpu_days_voice_intra_per_min_0_rev_sum",StringType(), True),
+StructField("rev_arpu_days_voice_non_intra_per_min_0_rev_sum",StringType(), True),
+StructField("rev_arpu_voice_sum",StringType(), True),
+StructField("rev_arpu_voice_intra_sum",StringType(), True),
+StructField("rev_arpu_voice_non_intra_sum",StringType(), True),
+StructField("rev_arpu_voice_per_call_sum",StringType(), True),
+StructField("rev_arpu_voice_intra_per_call_sum",StringType(), True),
+StructField("rev_arpu_voice_non_intra_per_call_sum",StringType(), True),
+StructField("rev_arpu_voice_per_minute_sum",StringType(), True),
+StructField("rev_arpu_voice_intra_per_minute_sum",StringType(), True),
+StructField("rev_arpu_voice_non_intra_per_minute_sum",StringType(), True),
+StructField("rev_arpu_last_date_on_top_pkg_max",StringType(), True),
+StructField("rev_arpu_share_of_exc_reward_over_total_rev_max",StringType(), True),
+StructField("rev_arpu_share_of_revenue_reward_over_total_rev_max",StringType(), True),
+StructField("rev_arpu_share_data_rev_4g_max",StringType(), True),
+StructField("rev_arpu_share_data_rev_by_pkg_4g_max",StringType(), True),
+StructField("rev_arpu_share_data_rev_by_ppu_4g_max",StringType(), True),
+StructField("rev_arpu_share_data_rev_2g_3g_max",StringType(), True),
+StructField("rev_arpu_share_data_rev_by_pkg_2g_3g_max",StringType(), True),
+StructField("rev_arpu_share_data_rev_by_ppu_2g_3g_max",StringType(), True),
+StructField("rev_arpu_share_voice_intra_max",StringType(), True),
+StructField("rev_arpu_share_voice_non_intra_max",StringType(), True),
+StructField("rev_arpu_share_of_exc_reward_over_total_rev_avg",StringType(), True),
+StructField("rev_arpu_share_of_revenue_reward_over_total_rev_avg",StringType(), True),
+StructField("rev_arpu_share_data_rev_4g_avg",StringType(), True),
+StructField("rev_arpu_share_data_rev_by_pkg_4g_avg",StringType(), True),
+StructField("rev_arpu_share_data_rev_by_ppu_4g_avg",StringType(), True),
+StructField("rev_arpu_share_data_rev_2g_3g_avg",StringType(), True),
+StructField("rev_arpu_share_data_rev_by_pkg_2g_3g_avg",StringType(), True),
+StructField("rev_arpu_share_data_rev_by_ppu_2g_3g_avg",StringType(), True),
+StructField("rev_arpu_share_voice_intra_avg",StringType(), True),
+StructField("rev_arpu_share_voice_non_intra_avg",StringType(), True),
+StructField("rev_arpu_diff_in_exc_reward_rev_reward_avg",StringType(), True),
+StructField("rev_arpu_diff_rev_by_pkg_ppu_avg",StringType(), True),
+StructField("rev_arpu_diff_rev_by_pkg_ppu_4g_avg",StringType(), True),
+StructField("rev_arpu_diff_rev_by_pkg_ppu_2g_3g_avg",StringType(), True),
+StructField("rev_arpu_diff_rev_2g_3g_vs_4g_avg",StringType(), True),
+StructField("rev_arpu_diff_rev_per_unit_2g_3g_vs_4g_avg",StringType(), True),
+StructField("rev_arpu_diff_voice_intra_non_intra_avg",StringType(), True),
+StructField("rev_arpu_diff_voice_intra_non_intra_per_min_avg",StringType(), True),
+StructField("rev_arpu_share_of_exc_reward_over_total_rev_min",StringType(), True),
+StructField("rev_arpu_share_of_revenue_reward_over_total_rev_min",StringType(), True),
+StructField("rev_arpu_share_data_rev_4g_min",StringType(), True),
+StructField("rev_arpu_share_data_rev_by_pkg_4g_min",StringType(), True),
+StructField("rev_arpu_share_data_rev_by_ppu_4g_min",StringType(), True),
+StructField("rev_arpu_share_data_rev_2g_3g_min",StringType(), True),
+StructField("rev_arpu_share_data_rev_by_pkg_2g_3g_min",StringType(), True),
+StructField("rev_arpu_share_data_rev_by_ppu_2g_3g_min",StringType(), True),
+StructField("rev_arpu_share_voice_intra_min",StringType(), True),
+StructField("rev_arpu_share_voice_non_intra_min",StringType(), True),
+StructField("start_of_week",DateType(), True)
+                                                                                           ]))
 
 class TestUnitRevenue:
 
@@ -557,26 +653,10 @@ class TestUnitRevenue:
         var_project_context = project_context['ProjectContext']
         spark = project_context['Spark']
 
-        set_value(project_context)
+        set_value_l2(project_context)
 
-        l1_revenue_prepaid_pru_f_usage_multi_daily = massive_processing_with_customer(
-            df_l0_revenue_prepaid_pru_f_usage_multi_daily,
-            customer_pro, var_project_context.catalog.load('params:l1_revenue_prepaid_pru_f_usage_multi_daily'))
 
-        temp = df_l0_revenue_prepaid_pru_f_usage_multi_daily.withColumn("total_vol_gprs_2g_3g",
-                                                                        F.col("total_vol_gprs") - F.col(
-                                                                            "total_vol_gprs_4g"))
-
-        joindata = temp.join(customer_pro, on = ["access_method_num"],how ="left")
-
-        test = node_from_config(joindata,
-                                var_project_context.catalog.load('params:l1_revenue_prepaid_pru_f_usage_multi_daily'))
-
-        test = test.join(customer_pro,on = ["access_method_num","start_of_week"],how ="left")
-
-        test.show()
-
-        l2_revenue_prepaid_weekly = build_revenue_l2_layer(test,var_project_context.catalog.load('params:l2_revenue_prepaid_weekly'))
+        l2_revenue_prepaid_weekly = build_revenue_l2_layer(df_l2_revenue_prepaid_pru_f_usage_multi_weekly,var_project_context.catalog.load('params:l2_revenue_prepaid_weekly'))
 
         l2_revenue_prepaid_weekly.show()
 
@@ -740,7 +820,6 @@ class TestUnitRevenue:
         assert float(
             l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly.where("start_of_month = '2020-01-01'").select(
                 "rev_arpu_total_idd_net_tariff_rev_ppu").collect()[0][0]) == 2
-
 
     def test_l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int(self,project_context):
         var_project_context = project_context['ProjectContext']
