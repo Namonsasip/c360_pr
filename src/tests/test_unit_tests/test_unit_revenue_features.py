@@ -87,9 +87,11 @@ customer = [
 
 global l2_revenue_prepaid_pru_f_usage_multi_weekly
 l2_revenue_prepaid_pru_f_usage_multi_weekly = [
+
 ["1-TEST","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1",datetime.datetime.strptime('2020-01-20', '%Y-%m-%d')],
 ["1-TEST","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1",datetime.datetime.strptime('2020-01-27', '%Y-%m-%d')]
 ]
+
 
 def set_value(project_context):
     var_project_context = project_context['ProjectContext']
@@ -377,7 +379,8 @@ def set_value_l2(project_context):
     rdd1 = spark.sparkContext.parallelize(l2_revenue_prepaid_pru_f_usage_multi_weekly)
     global df_l2_revenue_prepaid_pru_f_usage_multi_weekly
     df_l2_revenue_prepaid_pru_f_usage_multi_weekly = spark.createDataFrame(rdd1,schema=StructType(
-                                                                                           [StructField("subscription_identifier",StringType(), True),
+                                                                                           [
+StructField("subscription_identifier",StringType(), True),
 StructField("rev_arpu_total_net_rev_sum",StringType(), True),
 StructField("rev_arpu_net_tariff_rev_reward_sum",StringType(), True),
 StructField("rev_arpu_net_tariff_rev_exc_reward_sum",StringType(), True),
