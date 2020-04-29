@@ -35,7 +35,7 @@ import pandas
 from customer360.utilities.spark_util import get_spark_session
 from cvm.src.targets.churn_targets import add_days
 from cvm.src.utils.utils import return_column_as_list
-from pyspark.sql import Column, DataFrame
+from pyspark.sql import Column, DataFrame, Window
 from pyspark.sql import functions as func
 
 
@@ -95,9 +95,15 @@ def treatments_propositions_for_ard_churn(
         "use_case == '{}'".format(use_case)
     ).selectExpr("{}_microsegment as microsegment", "campaign_code")
 
-    # add treatments
+    # add treatments by picking a random from treatments dictionary
     treatments_chosen = users_chosen.join(
         treatment_dictionary, on="microsegment", how="left"
+    ).withColumn("r", func.rand())
+    random_window = Window.partitionBy("subscription_identifier").orderby("r")
+    treatments_chosen = (
+        treatments_chosen.withColumn("rn", func.row_number().over(random_window))
+        .filter("rn == 1")
+        .drop(["r", "rn"])
     )
 
     # check if all microsegments have treatments
