@@ -34,6 +34,7 @@ import pandas
 
 from customer360.utilities.spark_util import get_spark_session
 from cvm.src.targets.churn_targets import add_days
+from cvm.src.utils.parametrized_features import build_feature_from_parameters
 from cvm.src.utils.utils import return_column_as_list
 from pyspark.sql import Column, DataFrame, Window
 from pyspark.sql import functions as func
@@ -52,7 +53,7 @@ def treatments_propositions_for_ard_churn(
 
     Args:
         use_case: either "churn" or "ard".
-        propensities: Table with propensities, microsegments and macrosegments.
+        propensities: table with propensities and macrosegments.
         parameters: parameters defined in parameters.yml.
         blacklisted_users: Table with users that cannot be targeted with treatment.
         microsegments: List of users and assigned microsegments.
@@ -67,6 +68,7 @@ def treatments_propositions_for_ard_churn(
     microsegments = microsegments.select(
         ["subscription_identifier", "ard_microsegment", "churn_microsegment"]
     )
+    blacklisted_users = blacklisted_users.select("subscription_identifier")
     users_chosen = (
         # add microsegments
         propensities.join(microsegments, on="subscription_identifier")
@@ -111,6 +113,49 @@ def treatments_propositions_for_ard_churn(
         raise Exception("Campaign codes for some microsegments missing")
 
     return treatments_chosen
+
+
+def treatments_propositions_from_rules(
+    propensities: DataFrame,
+    blacklisted_users: DataFrame,
+    treatment_rules: Dict[str, Any],
+    features_macrosegments_scoring: DataFrame,
+    use_case: str = "rules",
+    microsegment: str = "rules",
+    macrosegment: str = "rules",
+) -> DataFrame:
+    """ Create treatments propositions from manual rules.
+
+    Args:
+        propensities: table with propensities and macrosegments.
+        blacklisted_users: table with users that cannot be targeted with treatment.
+        treatment_rules: manually defined rules to assign treatment.
+        features_macrosegments_scoring: table with features to run rules on.
+        use_case: value to return as use_case in output.
+        microsegment: value to return as microsegment in output.
+        macrosegment: value to return as macrosegment in output.
+    """
+
+    blacklisted_users = blacklisted_users.select("subscription_identifier")
+    propensities_with_features = propensities.join(
+        features_macrosegments_scoring, on="subscription_identifier"
+    ).join(blacklisted_users, on="subscription_identifier", how="anti-left")
+
+    rule_based_treatments = (
+        build_feature_from_parameters(
+            propensities_with_features, "campaign_code", treatment_rules
+        )
+        .selectExpr(
+            "subscription_identifier",
+            "'{}' as macrosegment".format(macrosegment),
+            "'{}' as microsegment".format(microsegment),
+            "'{}' as use_case".format(use_case),
+            "campaign_code",
+        )
+        .filter("campaign_code is not null")
+    )
+
+    return rule_based_treatments
 
 
 def get_targets_list_per_use_case(
