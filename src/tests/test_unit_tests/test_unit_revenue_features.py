@@ -1674,10 +1674,10 @@ class TestUnitRevenue:
 
         l4_revenue_prepaid_daily_features.show()
 
-        assert l4_revenue_prepaid_daily_features.where("event_partition_date = '2020-01-28'").select("avg_rev_arpu_total_net_rev_daily_last_seven_day").collect == 1
-        assert l4_revenue_prepaid_daily_features.where("event_partition_date = '2020-01-28'").select("sum_rev_arpu_total_net_rev_daily_last_seven_day").collect == 1
-        assert l4_revenue_prepaid_daily_features.where("event_partition_date = '2020-01-28'").select("max_rev_arpu_total_net_rev_daily_last_seven_day").collect == 1
-        assert l4_revenue_prepaid_daily_features.where("event_partition_date = '2020-01-28'").select("min_rev_arpu_total_net_rev_daily_last_seven_day").collect == 1
+        assert l4_revenue_prepaid_daily_features.where("event_partition_date = '2020-01-28'").select("avg_rev_arpu_total_net_rev_daily_last_seven_day").collect()[0][0] == 1
+        assert l4_revenue_prepaid_daily_features.where("event_partition_date = '2020-01-28'").select("sum_rev_arpu_total_net_rev_daily_last_seven_day").collect()[0][0] == 1
+        assert float(l4_revenue_prepaid_daily_features.where("event_partition_date = '2020-01-28'").select("max_rev_arpu_total_net_rev_daily_last_seven_day").collect()[0][0]) == 1
+        assert float(l4_revenue_prepaid_daily_features.where("event_partition_date = '2020-01-28'").select("min_rev_arpu_total_net_rev_daily_last_seven_day").collect()[0][0]) == 1
 
 
 
