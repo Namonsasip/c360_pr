@@ -26,7 +26,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import functools
-import logging
 from datetime import date
 from typing import Any, Dict, Tuple
 
@@ -35,7 +34,6 @@ import pandas
 from customer360.utilities.spark_util import get_spark_session
 from cvm.src.targets.churn_targets import add_days
 from cvm.src.utils.parametrized_features import build_feature_from_parameters
-from cvm.src.utils.utils import return_column_as_list
 from pyspark.sql import Column, DataFrame, Window
 from pyspark.sql import functions as func
 
@@ -158,72 +156,6 @@ def treatments_propositions_from_rules(
     return rule_based_treatments
 
 
-def get_targets_list_per_use_case(
-    propensities: DataFrame, parameters: Dict[str, Any], blacklisted_users: DataFrame,
-) -> DataFrame:
-    """ Updates treatments history with treatments target users. The list is generated
-        basing on presumed size of treatment groups and some order which is a function
-        of propensities.
-
-    Args:
-        propensities: table with propensities.
-        parameters: parameters defined in parameters.yml.
-        blacklisted_users: Table with users that cannot be targeted with treatment.
-    Returns:
-        List of users to target with use case to target user with. DOES NOT add
-        treatments themselves.
-    """
-
-    # define order columns
-    churn_order = (
-        func.col("churn5_pred")
-        + func.col("churn15_pred")
-        + func.col("churn30_pred")
-        + func.col("churn45_pred")
-        + func.col("churn60_pred")
-    )
-    ard_order = func.col("dilution1_pred") + func.col("dilution2_pred")
-
-    # apply orders
-    propensities = propensities.withColumn("churn_order", churn_order).withColumn(
-        "ard_order", ard_order
-    )
-
-    # filter blacklisted
-    propensities = propensities.join(
-        blacklisted_users, on="subscription_identifier", how="left_anti"
-    )
-
-    # pick users to treat
-    treatment_sizes = parameters["treatment_sizes"]
-
-    def _pick_top_n_rows(df, col_to_sort_on, n):
-        return (
-            df.orderBy(col_to_sort_on, ascending=False)
-            .limit(n)
-            .select("subscription_identifier")
-            .distinct()
-        )
-
-    churn_users = _pick_top_n_rows(
-        propensities, "churn_order", treatment_sizes["churn"]
-    )
-    propensities_no_churn = propensities.join(
-        churn_users, on="subscription_identifier", how="left_anti"
-    )
-    ard_users = _pick_top_n_rows(
-        propensities_no_churn, "ard_order", treatment_sizes["ard"]
-    )
-
-    # combine the users
-    churn_users = churn_users.withColumn("use_case", func.lit("churn"))
-    ard_users = ard_users.withColumn("use_case", func.lit("ard"))
-    df = churn_users.union(ard_users)
-    logging.info(f"{df.count()} users picked for treatment")
-
-    return df
-
-
 def get_recently_contacted(
     parameters: Dict[str, Any], treatments_history: DataFrame,
 ) -> DataFrame:
@@ -247,99 +179,78 @@ def get_recently_contacted(
 
 
 def get_treatments_propositions(
-    target_users: DataFrame,
+    propensities: DataFrame,
+    parameters: Dict[str, Any],
     microsegments: DataFrame,
     treatment_dictionary: DataFrame,
-    add_no_treatment: bool = False,
+    treatments_history: DataFrame,
+    features_macrosegments_scoring: DataFrame,
+    treatment_rules: Dict[str, Any] = None,
 ) -> DataFrame:
-    """ Combine filtered users table, microsegments and the treatments assigned to
-    microsegments.
+    """ Generate treatments propositions for rule based treatments, churn and ard.
 
     Args:
-        target_users: List of users to target with treatment.
+        features_macrosegments_scoring: table with features to run rules on.
         microsegments: List of users and assigned microsegments.
+        parameters: parameters defined in parameters.yml.
+        propensities: table with propensities and macrosegments.
         treatment_dictionary: Table of microsegment to treatment mapping.
-        add_no_treatment: If `True` then new treatment called 'no_treatment' is added to
-            create a control group.
+        treatment_rules: manually defined rules to assign treatment.
+        treatments_history: Table with history of treatments.
     Returns:
         Table with users, microsegments and treatments chosen.
     """
 
-    # join with microsegments
-    target_users = target_users.join(
-        microsegments, on="subscription_identifier", how="left"
-    )
-
-    def _choose_column_basing_on_usecase(df, colname):
-        is_ard = func.col("use_case") == "ard"
-        pick_ard = func.col(f"ard_{colname}")
-        pick_churn = func.col(f"churn_{colname}")
-        return df.withColumn(
-            colname, func.when(is_ard, pick_ard).otherwise(pick_churn),
-        )
-
-    target_users = _choose_column_basing_on_usecase(target_users, "microsegment")
-    target_users = _choose_column_basing_on_usecase(target_users, "macrosegment")
-    target_users = target_users.filter("microsegment is not null")
-
-    def _add_random_column_from_values(tab, values, colname):
-        """ Adds a new column to DataFrame which consists of randomly picked elements
-            of values"""
-        n = len(values)
-        # setup when statement
-        tab = tab.withColumn("val_ind", func.floor(func.rand() * n))
-        whens = [func.when(func.col("val_ind") == i, values[i]) for i in range(0, n)]
-        whens = func.coalesce(*whens)
-
-        # choose values
-        tab = tab.withColumn(colname, whens)
-        tab = tab.drop("val_ind")
-
-        return tab
-
-    def _pick_treatments_for_microsegment(microsegment_chosen):
-        """ Picks treatments for target users using treatment dictionary"""
-        chosen_microsegment_treatments = return_column_as_list(
-            treatment_dictionary.filter(f"microsegment == '{microsegment_chosen}'"),
-            "campaign_code",
-            True,
-        )
-        if len(chosen_microsegment_treatments) == 0:
-            raise Exception(f"No treatment for {microsegment_chosen} found")
-        target_users_in_microsegment = target_users.filter(
-            f"microsegment == '{microsegment_chosen}'"
-        )
-        if len(chosen_microsegment_treatments) == 1:
-            target_users_in_microsegment = target_users_in_microsegment.withColumn(
-                "campaign_code", func.lit(chosen_microsegment_treatments[0])
-            )
+    def _add_to_blacklist(blacklisted_users_new, blacklisted_users_old=None):
+        """Updates blacklisted users with new entries"""
+        blacklisted_users_new = blacklisted_users_new.select("subscription_identifiers")
+        if blacklisted_users_old is None:
+            return blacklisted_users_new
         else:
-            if add_no_treatment:
-                chosen_microsegment_treatments += ["no_treatment"]
-            target_users_in_microsegment = _add_random_column_from_values(
-                target_users_in_microsegment,
-                chosen_microsegment_treatments,
-                "campaign_code",
-            )
-        return target_users_in_microsegment
+            return blacklisted_users_old.union(blacklisted_users_new)
 
-    microsegments = return_column_as_list(target_users, "microsegment", True)
-    treatments_per_microsegments = [
-        _pick_treatments_for_microsegment(microsegment)
-        for microsegment in microsegments
-    ]
-    target_users_with_treatments = functools.reduce(
-        lambda df1, df2: df1.union(df2), treatments_per_microsegments,
+    all_treatments = []
+    recently_contacted = get_recently_contacted(parameters, treatments_history)
+    blacklisted_users = _add_to_blacklist(recently_contacted)
+    if treatment_rules is not None:
+        rules_treatments = treatments_propositions_from_rules(
+            propensities,
+            blacklisted_users,
+            treatment_rules,
+            features_macrosegments_scoring,
+        )
+        all_treatments.append(rules_treatments)
+        blacklisted_users = _add_to_blacklist(recently_contacted, rules_treatments)
+    churn_order = (
+        func.col("churn5_pred")
+        + func.col("churn15_pred")
+        + func.col("churn30_pred")
+        + func.col("churn45_pred")
+        + func.col("churn60_pred")
     )
-
-    cols_to_pick = [
-        "subscription_identifier",
-        "use_case",
-        "macrosegment",
-        "microsegment",
-        "campaign_code",
-    ]
-    return target_users_with_treatments.select(cols_to_pick)
+    churn_treatments = treatments_propositions_for_ard_churn(
+        propensities,
+        parameters,
+        blacklisted_users,
+        microsegments,
+        treatment_dictionary,
+        churn_order,
+        "churn",
+    )
+    all_treatments.append(churn_treatments)
+    blacklisted_users = _add_to_blacklist(churn_treatments, blacklisted_users)
+    ard_order = func.col("dilution1_pred") + func.col("dilution2_pred")
+    ard_treatments = treatments_propositions_for_ard_churn(
+        propensities,
+        parameters,
+        blacklisted_users,
+        microsegments,
+        treatment_dictionary,
+        ard_order,
+        "ard",
+    )
+    all_treatments.append(ard_treatments)
+    return functools.reduce(lambda df1, df2: df1.union(df2), all_treatments)
 
 
 def update_history_with_treatments_propositions(
@@ -416,19 +327,5 @@ def generate_treatments_chosen(
     Returns:
         Pandas DataFrame with chosen campaigns and updated history DataFrame.
     """
-
-    targets_list_per_use_case = get_targets_list_per_use_case(
-        propensities, parameters, treatments_history
-    )
-    treatments_dictionary = convert_treatments_dictionary_to_sparkdf(
-        treatment_dictionary_pd
-    )
-    treatments_propositions = get_treatments_propositions(
-        targets_list_per_use_case, microsegments, treatments_dictionary
-    )
-    treatments_history = update_history_with_treatments_propositions(
-        treatments_propositions, treatments_history
-    )
-    treatments_chosen = serve_treatments_chosen(treatments_propositions)
-
-    return treatments_chosen, treatments_history
+    # TODO rewrite
+    return 0
