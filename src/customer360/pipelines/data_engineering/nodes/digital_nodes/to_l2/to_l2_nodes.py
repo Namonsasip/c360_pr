@@ -43,7 +43,7 @@ def build_digital_l2_weekly_features(cxense_site_traffic: DataFrame,
 
     if check_empty_dfs([cxense_site_traffic, cust_df]):
         return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df()
-            , get_spark_empty_df(), cust_df]
+            , get_spark_empty_df()]
 
     ################################# End Implementing Data availability checks ###############################
 
