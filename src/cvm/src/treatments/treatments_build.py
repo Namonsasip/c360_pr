@@ -43,6 +43,7 @@ def treatments_propositions_for_ard_churn(
     propensities: DataFrame,
     parameters: Dict[str, Any],
     blacklisted_users: DataFrame,
+    microsegments: DataFrame,
     treatment_dictionary: DataFrame,
     order_policy: Column,
     use_case: str,
@@ -54,6 +55,7 @@ def treatments_propositions_for_ard_churn(
         propensities: Table with propensities, microsegments and macrosegments.
         parameters: parameters defined in parameters.yml.
         blacklisted_users: Table with users that cannot be targeted with treatment.
+        microsegments: List of users and assigned microsegments.
         treatment_dictionary: Table of microsegment to treatment mapping.
         order_policy: column that will be used to order the users. Top users will be
             picked for treatment.
@@ -62,8 +64,14 @@ def treatments_propositions_for_ard_churn(
     """
 
     treatment_size = parameters["treatment_sizes"][use_case]
+    microsegments = microsegments.select(
+        ["subscription_identifier", "ard_microsegment", "churn_microsegment"]
+    )
     users_chosen = (
-        propensities.withColumn("order_col", order_policy)  # prepare order column
+        # add microsegments
+        propensities.join(microsegments, on="subscription_identifier")
+        # prepare order column
+        .withColumn("order_col", order_policy)
         # prepare column names
         .selectExpr(
             "subscription_identifier",
@@ -82,22 +90,21 @@ def treatments_propositions_for_ard_churn(
         .drop("order_col")
     )
 
-    # join to treatments
-    def _add_random_column_from_values(tab, values, colname):
-        """ Adds a new column to DataFrame which consists of randomly picked elements
-            of values"""
-        n = len(values)
-        # setup when statement
-        tab = tab.withColumn("val_ind", func.floor(func.rand() * n))
-        whens = [func.when(func.col("val_ind") == i, values[i]) for i in range(0, n)]
-        whens = func.coalesce(*whens)
-        # choose values
-        tab = tab.withColumn(colname, whens)
-        tab = tab.drop("val_ind")
-        return tab
+    # prepare treatments
+    treatment_dictionary = treatment_dictionary.filter(
+        "use_case == '{}'".format(use_case)
+    ).selectExpr("{}_microsegment as microsegment", "campaign_code")
 
-    # TODO add proper return
-    return users_chosen
+    # add treatments
+    treatments_chosen = users_chosen.join(
+        treatment_dictionary, on="microsegment", how="left"
+    )
+
+    # check if all microsegments have treatments
+    if treatments_chosen.filter("campaign_code is NULL").count() > 0:
+        raise Exception("Campaign codes for some microsegments missing")
+
+    return treatments_chosen
 
 
 def get_targets_list_per_use_case(
