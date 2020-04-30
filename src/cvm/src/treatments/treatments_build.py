@@ -101,7 +101,7 @@ def treatments_propositions_for_ard_churn(
     treatments_chosen = users_chosen.join(
         treatment_dictionary, on="microsegment", how="left"
     ).withColumn("r", func.rand())
-    random_window = Window.partitionBy("subscription_identifier").orderby("r")
+    random_window = Window.partitionBy("subscription_identifier").orderBy("r")
     treatments_chosen = (
         treatments_chosen.withColumn("rn", func.row_number().over(random_window))
         .filter("rn == 1")
