@@ -129,7 +129,7 @@ def generate_dq_nodes():
     merger_node = Node(
         func=dq_merger_nodes,
         inputs=accuracy_node_output_list,
-        outputs="dq_accuracy"
+        outputs="dq_accuracy_and_completeness"
     )
     nodes.append(merger_node)
 
@@ -163,7 +163,7 @@ def run_accuracy_logic(
 
     ctx = get_dq_context()
     try:
-        dq_accuracy_df = ctx.catalog.load("dq_accuracy")
+        dq_accuracy_df = ctx.catalog.load("dq_accuracy_and_completeness")
 
         filtered_input_df = get_dq_incremental_records(
             input_df=input_df,

@@ -9,9 +9,9 @@ dq_sampled_subscription_identifier: &dq_sampled_subscription_identifier
     partitionBy: ["created_date"]
     mode: "append"
 
-dq_accuracy:
+dq_accuracy_and_completeness:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-output/DQ/dq_accuracy/
+  filepath: dbfs:/mnt/customer360-blob-output/DQ/dq_accuracy_and_completeness/
   save_args:
     mode: "append"
     partitionBy: ["dataset_name", "corresponding_date"]
