@@ -258,7 +258,9 @@ def get_treatments_propositions(
 
 
 def update_history_with_treatments_propositions(
-    treatments_propositions: DataFrame, treatments_history: DataFrame,
+    treatments_propositions: DataFrame,
+    treatments_history: DataFrame,
+    parameters: Dict[str, Any],
 ) -> DataFrame:
     """ Add treatments propositions to treatments history.
 
@@ -266,6 +268,7 @@ def update_history_with_treatments_propositions(
         treatments_propositions: DataFrame with users to be targeted and treatments
         chosen.
         treatments_history: Table with history of treatments.
+        parameters: parameters defined in parameters.yml.
     Returns:
         Updated `treatments_history`.
     """
@@ -349,7 +352,7 @@ def generate_treatments_chosen(
         treatment_rules,
     )
     treatments_history = update_history_with_treatments_propositions(
-        treatments_propositions, treatments_history
+        treatments_propositions, treatments_history, parameters
     )
     treatments_chosen = serve_treatments_chosen(treatments_propositions)
     return treatments_chosen, treatments_history
