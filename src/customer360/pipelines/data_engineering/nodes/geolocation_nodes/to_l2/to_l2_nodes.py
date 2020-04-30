@@ -183,9 +183,8 @@ def l2_geo_data_frequent_cell_weekday_weekly(df, sql):  # in progress weekday 43
                                                        F.when(ranked.rank == 3, ranked.sum_call)).withColumn(
         'sum_rank_4', F.when(ranked.rank == 4, ranked.sum_call)).withColumn('sum_rank_5', F.when(ranked.rank == 5,
                                                                                                  ranked.sum_call)).withColumn(
-        'lac_rank_1', F.when(ranked.rank == 1, ranked.lac)).withColumn('ci_rank_1',
-                                                                       F.when(ranked.rank == 1, ranked.ci)).withColumn(
-        'lac_rank_2', F.when(ranked.rank == 1, ranked.lac)).withColumn('ci_rank_2', F.when(ranked.rank == 1, ranked.ci))
+        'cgi_partial_rank_1', F.when(ranked.rank == 1, ranked.cgi_partial)).withColumn('cgi_partial_rank_2',
+                                                                       F.when(ranked.rank == 2, ranked.cgi_partial))
     df = node_from_config(ranked, sql)
     # agg = ranked.groupBy('mobile_no', 'start_of_week').agg(F.sum('sum_rank_1').alias('sum_no_of_call_rank_1'),
     #                                                        F.sum('sum_rank_2').alias('sum_no_of_call_rank_2'),
@@ -212,9 +211,8 @@ def l2_geo_data_frequent_cell_weekend_weekly(df, sql):  # in progress weekend 43
                                                        F.when(ranked.rank == 3, ranked.sum_call)).withColumn(
         'sum_rank_4', F.when(ranked.rank == 4, ranked.sum_call)).withColumn('sum_rank_5', F.when(ranked.rank == 5,
                                                                                                  ranked.sum_call)).withColumn(
-        'lac_rank_1', F.when(ranked.rank == 1, ranked.lac)).withColumn('ci_rank_1',
-                                                                       F.when(ranked.rank == 1, ranked.ci)).withColumn(
-        'lac_rank_2', F.when(ranked.rank == 1, ranked.lac)).withColumn('ci_rank_2', F.when(ranked.rank == 1, ranked.ci))
+        'cgi_partial_rank_1', F.when(ranked.rank == 1, ranked.cgi_partial)).withColumn('cgi_partial_rank_2',
+                                                                       F.when(ranked.rank == 2, ranked.cgi_partial))
     df = node_from_config(ranked, sql)
     return df
 
@@ -222,16 +220,15 @@ def l2_geo_data_frequent_cell_weekend_weekly(df, sql):  # in progress weekend 43
 def l2_geo_data_frequent_cell_weekly(df, sql):  # in progress all 436, 441,447,451,454,457,460,463
     ranked = df.selectExpr('*',
                            'row_number() over(partition by mobile_no,start_of_week order by sum_call DESC) as rank')
+
     ranked = ranked.withColumn('sum_rank_1', F.when(ranked.rank == 1, ranked.sum_call)).withColumn('sum_rank_2', F.when(
         ranked.rank == 2, ranked.sum_call)).withColumn('sum_rank_3',
                                                        F.when(ranked.rank == 3, ranked.sum_call)).withColumn(
         'sum_rank_4', F.when(ranked.rank == 4, ranked.sum_call)).withColumn('sum_rank_5', F.when(ranked.rank == 5,
                                                                                                  ranked.sum_call)).withColumn(
-        'lac_rank_1', F.when(ranked.rank == 1, ranked.lac)).withColumn('ci_rank_1',
-                                                                       F.when(ranked.rank == 1, ranked.ci)).withColumn(
-        'lac_rank_2', F.when(ranked.rank == 1, ranked.lac)).withColumn('ci_rank_2', F.when(ranked.rank == 1, ranked.ci))
+        'cgi_partial_rank_1', F.when(ranked.rank == 1, ranked.cgi_partial)).withColumn('cgi_partial_rank_2',
+                                                                       F.when(ranked.rank == 2, ranked.cgi_partial))
     df = node_from_config(ranked, sql)
-
     return df
 
 
@@ -240,9 +237,8 @@ def l2_geo_data_frequent_cell_4g_weekday_weekly(df, sql):  # in progress 4g_week
     ranked = df.selectExpr('*',
                            'row_number() over(partition by mobile_no,start_of_week order by sum_call DESC) as rank')
     ranked = ranked.withColumn(
-        'lac_rank_1', F.when(ranked.rank == 1, ranked.lac)).withColumn('ci_rank_1',
-                                                                       F.when(ranked.rank == 1, ranked.ci)).withColumn(
-        'lac_rank_2', F.when(ranked.rank == 1, ranked.lac)).withColumn('ci_rank_2', F.when(ranked.rank == 1, ranked.ci))
+        'cgi_partial_rank_1', F.when(ranked.cgi_partial == 1, ranked.lac)).withColumn('cgi_partial_rank_2',
+                                                                       F.when(ranked.rank == 2, ranked.cgi_partial))
     df = node_from_config(ranked, sql)
 
     return df
@@ -253,9 +249,8 @@ def l2_geo_data_frequent_cell_4g_weekend_weekly(df, sql):  # in progress 4g_week
     ranked = df.selectExpr('*',
                            'row_number() over(partition by mobile_no,start_of_week order by sum_call DESC) as rank')
     ranked = ranked.withColumn(
-        'lac_rank_1', F.when(ranked.rank == 1, ranked.lac)).withColumn('ci_rank_1',
-                                                                       F.when(ranked.rank == 1, ranked.ci)).withColumn(
-        'lac_rank_2', F.when(ranked.rank == 1, ranked.lac)).withColumn('ci_rank_2', F.when(ranked.rank == 1, ranked.ci))
+        'cgi_partial_rank_1', F.when(ranked.cgi_partial == 1, ranked.lac)).withColumn('cgi_partial_rank_2',
+                                                                       F.when(ranked.rank == 2, ranked.cgi_partial))
     df = node_from_config(ranked, sql)
 
     return df
@@ -266,9 +261,8 @@ def l2_geo_data_frequent_cell_4g_weekly(df, sql):  # in progress 4g_all 442,448
     ranked = df.selectExpr('*',
                            'row_number() over(partition by mobile_no,start_of_week order by sum_call DESC) as rank')
     ranked = ranked.withColumn(
-        'lac_rank_1', F.when(ranked.rank == 1, ranked.lac)).withColumn('ci_rank_1',
-                                                                       F.when(ranked.rank == 1, ranked.ci)).withColumn(
-        'lac_rank_2', F.when(ranked.rank == 1, ranked.lac)).withColumn('ci_rank_2', F.when(ranked.rank == 1, ranked.ci))
+        'cgi_partial_rank_1', F.when(ranked.cgi_partial == 1, ranked.lac)).withColumn('cgi_partial_rank_2',
+                                                                       F.when(ranked.rank == 2, ranked.cgi_partial))
     df = node_from_config(ranked, sql)
 
     return df

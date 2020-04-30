@@ -59,7 +59,7 @@ l4_geo_number_of_bs_used:
   file_format: parquet
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l2_weekly'
@@ -71,7 +71,7 @@ l4_geo_number_of_location_with_transactions:
   file_format: parquet
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l2_weekly'
@@ -83,7 +83,7 @@ l4_geo_voice_distance_daily:
   file_format: parquet
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l2_weekly'
@@ -95,7 +95,7 @@ l4_geo_data_distance:
   file_format: parquet
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l2_weekly'
@@ -107,7 +107,7 @@ l4_geo_data_distance_weekday:
   file_format: parquet
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l2_weekly'
@@ -119,7 +119,7 @@ l4_geo_data_distance_weekend:
   file_format: parquet
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l2_weekly'
@@ -131,7 +131,7 @@ l4_geo_data_frequent_cell_weekday:
   file_format: parquet
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l2_weekly'
@@ -143,7 +143,7 @@ l4_geo_data_frequent_cell_weekend:
   file_format: parquet
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l2_weekly'
@@ -155,7 +155,7 @@ l4_geo_data_frequent_cell:
   file_format: parquet
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l2_weekly'
@@ -167,7 +167,7 @@ l4_geo_data_frequent_cell_4g_weekday:
   file_format: parquet
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l2_weekly'
@@ -179,7 +179,7 @@ l4_geo_data_frequent_cell_4g_weekend:
   file_format: parquet
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l2_weekly'
@@ -191,7 +191,7 @@ l4_geo_data_frequent_cell_4g:
   file_format: parquet
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l2_weekly'

@@ -66,7 +66,7 @@ l2_geo_number_of_bs_used:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l2_geo_number_of_bs_used/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l1_daily'
@@ -78,7 +78,7 @@ l2_geo_number_of_location_with_transactions:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l2_geo_number_of_location_with_transactions/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l1_daily'
@@ -90,7 +90,7 @@ l2_geo_voice_distance_daily:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l2_geo_voice_distance_daily/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l1_daily'
@@ -102,7 +102,7 @@ l2_geo_first_data_session_cell_identifier_weekly:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l2_geo_first_data_session_cell_identifier_weekly/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l1_daily'
@@ -114,7 +114,7 @@ l2_geo_data_distance_weekly:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l2_geo_data_distance_weekly/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l1_daily'
@@ -126,7 +126,7 @@ l2_geo_data_distance_weekday_weekly:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l2_geo_data_distance_weekday_weekly/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l1_daily'
@@ -138,7 +138,7 @@ l2_geo_data_distance_weekend_weekly:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l2_geo_data_distance_weekend_weekly/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l1_daily'
@@ -150,7 +150,7 @@ l2_geo_number_of_bs_used_for_l4_geo_number_of_bs_used:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l2_geo_number_of_bs_used/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l4_geo_number_of_bs_used'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
@@ -162,7 +162,7 @@ l2_geo_number_of_location_with_transactions_for_l4_geo_number_of_location_with_t
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l2_geo_number_of_location_with_transactions/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l4_geo_number_of_location_with_transactions'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
@@ -174,7 +174,7 @@ l2_geo_voice_distance_daily_for_l4_geo_voice_distance_daily:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l2_geo_voice_distance_daily/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l4_geo_voice_distance_daily'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
@@ -186,7 +186,7 @@ l2_geo_data_distance_weekly_for_l4_geo_data_distance:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l2_geo_data_distance_weekly/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l4_geo_data_distance'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
@@ -198,7 +198,7 @@ l2_geo_data_distance_weekday_weekly_for_l4_geo_data_distance_weekday:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l2_geo_data_distance_weekday_weekly/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l4_geo_data_distance_weekday'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
@@ -210,7 +210,7 @@ l2_geo_data_distance_weekend_weekly_for_l4_geo_data_distance_weekend:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l2_geo_data_distance_weekend_weekly/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l4_geo_data_distance_weekend'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
@@ -228,7 +228,7 @@ l2_geo_data_frequent_cell_weekday_weekly:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l2_geo_data_frequent_cell_weekday_weekly/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l1_daily'
@@ -240,7 +240,7 @@ l2_geo_data_frequent_cell_weekend_weekly:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l2_geo_data_frequent_cell_weekend_weekly/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l1_daily'
@@ -252,7 +252,7 @@ l2_geo_data_frequent_cell_weekly:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l2_geo_data_frequent_cell_weekly/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l1_daily'
@@ -264,7 +264,7 @@ l2_geo_data_frequent_cell_4g_weekday_weekly:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l2_geo_data_frequent_cell_4g_weekday_weekly/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l1_daily'
@@ -276,7 +276,7 @@ l2_geo_data_frequent_cell_4g_weekend_weekly:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l2_geo_data_frequent_cell_4g_weekend_weekly/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l1_daily'
@@ -288,7 +288,7 @@ l2_geo_data_frequent_cell_4g_weekly:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l2_geo_data_frequent_cell_4g_weekly/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l1_daily'
@@ -300,7 +300,7 @@ l2_geo_data_frequent_cell_weekday_weekly_for_l4_geo_data_frequent_cell_weekday:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l2_geo_data_frequent_cell_weekday_weekly/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l4_geo_data_frequent_cell_weekday'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
@@ -313,7 +313,7 @@ l2_geo_data_frequent_cell_weekend_weekly_for_l4_geo_data_frequent_cell_weekend:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l2_geo_data_frequent_cell_weekend_weekly/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l4_geo_data_frequent_cell_weekend'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
@@ -326,7 +326,7 @@ l2_geo_data_frequent_cell_weekly_for_l4_geo_data_frequent_cell:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l2_geo_data_frequent_cell_weekly/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l4_geo_data_frequent_cell'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
@@ -339,7 +339,7 @@ l2_geo_data_frequent_cell_4g_weekday_weekly_for_l4_geo_data_frequent_cell_4g_wee
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l2_geo_data_frequent_cell_4g_weekday_weekly/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l4_geo_data_frequent_cell_4g_weekday'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
@@ -352,7 +352,7 @@ l2_geo_data_frequent_cell_4g_weekend_weekly_for_l4_geo_data_frequent_cell_4g_wee
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l2_geo_data_frequent_cell_4g_weekend_weekly/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l4_geo_data_frequent_cell_4g_weekend'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
@@ -365,7 +365,7 @@ l2_geo_data_frequent_cell_4g_weekly_for_l4_geo_data_frequent_cell_4g:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l2_geo_data_frequent_cell_4g_weekly/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l4_geo_data_frequent_cell_4g'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'

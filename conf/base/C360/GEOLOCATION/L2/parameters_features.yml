@@ -63,7 +63,7 @@ l2_data_distance_weekend_weekly: #472,475,478
   #    standard_deviation_distance: "first(stdev_distance)"
   granularity: "start_of_week,mobile_no"
 
-l2_geo_data_frequent_cell_weekday_weekly:
+l2_data_frequent_cell_weekday_weekly:
   where_clause: ""
   feature_list:
     sum_no_of_call_rank_1: "sum(sum_rank_1)"
@@ -73,10 +73,8 @@ l2_geo_data_frequent_cell_weekday_weekly:
     sum_no_of_call_rank_5: "sum(sum_rank_5)"
     sum_no_of_call_all: "sum(sum_call)"
     Number_of_Unique_Cells: "count(1)"
-    lac_rank_1: "concat_ws('', collect_list(ranked.lac_rank_1))"
-    ci_rank_1: "concat_ws('', collect_list(ranked.ci_rank_1))"
-    lac_rank_2: "concat_ws('', collect_list(ranked.lac_rank_2))"
-    ci_rank_2: "concat_ws('', collect_list(ranked.ci_rank_2))"
+    cgi_partial_rank_1: "concat_ws('', collect_list(cgi_partial_rank_1))"
+    cgi_partial_rank_2: "concat_ws('', collect_list(cgi_partial_rank_2))"
   granularity: "start_of_week,mobile_no"
 
 l2_data_frequent_cell_weekend_weekly:
@@ -89,10 +87,8 @@ l2_data_frequent_cell_weekend_weekly:
     sum_no_of_call_rank_5: "sum(sum_rank_5)"
     sum_no_of_call_all: "sum(sum_call)"
     Number_of_Unique_Cells: "count(1)"
-    lac_rank_1: "concat_ws('', collect_list(ranked.lac_rank_1))"
-    ci_rank_1: "concat_ws('', collect_list(ranked.ci_rank_1))"
-    lac_rank_2: "concat_ws('', collect_list(ranked.lac_rank_2))"
-    ci_rank_2: "concat_ws('', collect_list(ranked.ci_rank_2))"
+    cgi_partial_rank_1: "concat_ws('', collect_list(cgi_partial_rank_1))"
+    cgi_partial_rank_2: "concat_ws('', collect_list(cgi_partial_rank_2))"
   granularity: "start_of_week,mobile_no"
 
 l2_data_frequent_cell_weekly:
@@ -104,10 +100,8 @@ l2_data_frequent_cell_weekly:
     sum_no_of_call_rank_4: "sum(sum_rank_4)"
     sum_no_of_call_rank_5: "sum(sum_rank_5)"
     Number_of_Unique_Cells: "count(1)"
-    lac_rank_1: "concat_ws('', collect_list(ranked.lac_rank_1))"
-    ci_rank_1: "concat_ws('', collect_list(ranked.ci_rank_1))"
-    lac_rank_2: "concat_ws('', collect_list(ranked.lac_rank_2))"
-    ci_rank_2: "concat_ws('', collect_list(ranked.ci_rank_2))"
+    cgi_partial_rank_1: "concat_ws('', collect_list(cgi_partial_rank_1))"
+    cgi_partial_rank_2: "concat_ws('', collect_list(cgi_partial_rank_2))"
   granularity: "start_of_week,mobile_no"
 
 
@@ -116,26 +110,20 @@ l2_data_frequent_cell_weekly:
 l2_data_frequent_cell_4g_weekday_weekly:
   where_clause: ""
   feature_list:
-    lac_rank_1: "concat_ws('', collect_list(ranked.lac_rank_1))"
-    ci_rank_1: "concat_ws('', collect_list(ranked.ci_rank_1))"
-    lac_rank_2: "concat_ws('', collect_list(ranked.lac_rank_2))"
-    ci_rank_2: "concat_ws('', collect_list(ranked.ci_rank_2))"
+    cgi_partial_rank_1: "concat_ws('', collect_list(cgi_partial_rank_1))"
+    cgi_partial_rank_2: "concat_ws('', collect_list(cgi_partial_rank_2))"
   granularity: "start_of_week,mobile_no"
 
 l2_data_frequent_cell_4g_weekend_weekly:
   where_clause: ""
   feature_list:
-    lac_rank_1: "concat_ws('', collect_list(ranked.lac_rank_1))"
-    ci_rank_1: "concat_ws('', collect_list(ranked.ci_rank_1))"
-    lac_rank_2: "concat_ws('', collect_list(ranked.lac_rank_2))"
-    ci_rank_2: "concat_ws('', collect_list(ranked.ci_rank_2))"
+    cgi_partial_rank_1: "concat_ws('', collect_list(cgi_partial_rank_1))"
+    cgi_partial_rank_2: "concat_ws('', collect_list(cgi_partial_rank_2))"
   granularity: "start_of_week,mobile_no"
 
 l2_data_frequent_cell_4g_weekly:
   where_clause: ""
   feature_list:
-    lac_rank_1: "concat_ws('', collect_list(ranked.lac_rank_1))"
-    ci_rank_1: "concat_ws('', collect_list(ranked.ci_rank_1))"
-    lac_rank_2: "concat_ws('', collect_list(ranked.lac_rank_2))"
-    ci_rank_2: "concat_ws('', collect_list(ranked.ci_rank_2))"
+    cgi_partial_rank_1: "concat_ws('', collect_list(cgi_partial_rank_1))"
+    cgi_partial_rank_2: "concat_ws('', collect_list(cgi_partial_rank_2))"
   granularity: "start_of_week,mobile_no"

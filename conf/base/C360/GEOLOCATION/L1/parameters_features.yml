@@ -27,8 +27,7 @@ l1_first_data_session_cell_identifier: #470
     mobile_no: "mobile_no"
     gprs_type: "gprs_type"
     imei: "imei"
-    lac: "lac"
-    ci: "ci"
+    cgi_partial: "cgi_partial"
   granularity: ""
 
 l1_data_distance_daily: #473,476,479

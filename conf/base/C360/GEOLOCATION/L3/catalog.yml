@@ -56,7 +56,7 @@ l3_geo_voice_distance_daily:
   filepath: /mnt/customer360-blob-output/C360/GEO/l1_features/l3_geo_voice_distance_daily/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_month"
     read_layer: 'l1_daily'
@@ -68,7 +68,7 @@ l3_geo_first_data_session_cell_identifier_monthly:
   filepath: /mnt/customer360-blob-output/C360/GEO/l1_features/l3_geo_first_data_session_cell_identifier_monthly/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_month"
     read_layer: 'l1_daily'
@@ -80,7 +80,7 @@ l3_geo_data_distance_monthly:
   filepath: /mnt/customer360-blob-output/C360/GEO/l1_features/l3_geo_data_distance_monthly/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_month"
     read_layer: 'l1_daily'
@@ -92,7 +92,7 @@ l3_geo_data_distance_weekday_monthly:
   filepath: /mnt/customer360-blob-output/C360/GEO/l1_features/l3_geo_data_distance_weekday_monthly/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_month"
     read_layer: 'l1_daily'
@@ -104,7 +104,7 @@ l3_geo_data_distance_weekend_monthly:
   filepath: /mnt/customer360-blob-output/C360/GEO/l1_features/l3_geo_data_distance_weekend_monthly/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_month"
     read_layer: 'l1_daily'
@@ -116,7 +116,7 @@ l3_geo_home_work_location_id:
   filepath: /mnt/customer360-blob-output/C360/GEO/l1_features/l3_geo_home_work_location_id/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_month"
     read_layer: 'l0_daily'
@@ -128,7 +128,7 @@ l3_geo_data_frequent_cell_weekday_monthly:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l3_geo_data_frequent_cell_weekday_monthly/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_month"
     read_layer: 'l1_daily'
@@ -140,7 +140,7 @@ l3_geo_data_frequent_cell_weekend_monthly:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l3_geo_data_frequent_cell_weekend_monthly/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_month"
     read_layer: 'l1_daily'
@@ -152,7 +152,7 @@ l3_geo_data_frequent_cell_monthly:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l3_geo_data_frequent_cell_monthly/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_month"
     read_layer: 'l1_daily'
@@ -164,7 +164,7 @@ l3_geo_data_frequent_cell_4g_weekday_monthly:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l3_geo_data_frequent_cell_4g_weekday_monthly/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_month"
     read_layer: 'l1_daily'
@@ -176,7 +176,7 @@ l3_geo_data_frequent_cell_4g_weekend_monthly:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l3_geo_data_frequent_cell_4g_weekend_monthly/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_month"
     read_layer: 'l1_daily'
@@ -188,7 +188,7 @@ l3_geo_data_frequent_cell_4g_monthly:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l3_geo_data_frequent_cell_4g_monthly/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_month"
     read_layer: 'l1_daily'
