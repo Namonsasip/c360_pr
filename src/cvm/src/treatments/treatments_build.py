@@ -189,7 +189,7 @@ def get_recently_contacted(
     recent_past_date = add_days(today, -parameters["treatment_cadence"])
     recent_users = (
         treatments_history.filter(
-            f"key_date >= '{recent_past_date}' and key_date < '{today}"
+            f"key_date >= '{recent_past_date}' and key_date < '{today}'"
         )
         .select("subscription_identifier")
         .distinct()
