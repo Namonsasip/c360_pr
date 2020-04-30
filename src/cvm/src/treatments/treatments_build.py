@@ -282,12 +282,15 @@ def update_history_with_treatments_propositions(
     )
 
 
-def serve_treatments_chosen(treatments_propositions: DataFrame) -> pandas.DataFrame:
+def serve_treatments_chosen(
+    treatments_propositions: DataFrame, parameters: Dict[str, Any],
+) -> pandas.DataFrame:
     """ Saves the csv with treatments basing on the recent entries in treatments
     history.
 
     Args:
         treatments_propositions: Table with history of treatments.
+        parameters: parameters defined in parameters.yml.
     """
 
     treatments_df = treatments_propositions.filter("campaign_code != 'no_treatment'")
@@ -354,5 +357,5 @@ def generate_treatments_chosen(
     treatments_history = update_history_with_treatments_propositions(
         treatments_propositions, treatments_history, parameters
     )
-    treatments_chosen = serve_treatments_chosen(treatments_propositions)
+    treatments_chosen = serve_treatments_chosen(treatments_propositions, parameters)
     return treatments_chosen, treatments_history
