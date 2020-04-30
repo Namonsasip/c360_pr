@@ -49,3 +49,49 @@ l2_touchpoints_nim_work_features:
   granularity: "subscription_identifier, start_of_week"
   partition_num_per_job: 360
   output_catalog: "l2_touchpoints_nim_work_features"
+
+l2_touchpoints_ivr_features:
+  feature_list:
+    sum: ["touchpoints_num_of_call_ivr",
+          "touchpoints_num_of_disconnection_by_ivr",
+          "touchpoints_num_of_disconnection_by_customer",
+          "touchpoints_num_of_disconnection_by_transfer_agent",
+          "touchpoints_ivr_moring_calls",
+          "touchpoints_ivr_afternoon_calls",
+          "touchpoints_evening_calls",
+          "touchpoints_night_calls",
+          "touchpoints_distinct_languages_chosen",
+          "touchpoints_unsuccesful_connect_tuxedo"]
+    avg: ["touchpoints_num_of_call_ivr",
+          "touchpoints_num_of_disconnection_by_ivr",
+          "touchpoints_num_of_disconnection_by_customer",
+          "touchpoints_num_of_disconnection_by_transfer_agent",
+          "touchpoints_ivr_moring_calls",
+          "touchpoints_ivr_afternoon_calls",
+          "touchpoints_evening_calls",
+          "touchpoints_night_calls",
+          "touchpoints_distinct_languages_chosen",
+          "touchpoints_unsuccesful_connect_tuxedo"]
+    max: ["touchpoints_num_of_call_ivr",
+          "touchpoints_num_of_disconnection_by_ivr",
+          "touchpoints_num_of_disconnection_by_customer",
+          "touchpoints_num_of_disconnection_by_transfer_agent",
+          "touchpoints_ivr_moring_calls",
+          "touchpoints_ivr_afternoon_calls",
+          "touchpoints_evening_calls",
+          "touchpoints_night_calls",
+          "touchpoints_distinct_languages_chosen",
+          "touchpoints_unsuccesful_connect_tuxedo"]
+    min: ["touchpoints_num_of_call_ivr",
+          "touchpoints_num_of_disconnection_by_ivr",
+          "touchpoints_num_of_disconnection_by_customer",
+          "touchpoints_num_of_disconnection_by_transfer_agent",
+          "touchpoints_ivr_moring_calls",
+          "touchpoints_ivr_afternoon_calls",
+          "touchpoints_evening_calls",
+          "touchpoints_night_calls",
+          "touchpoints_distinct_languages_chosen",
+          "touchpoints_unsuccesful_connect_tuxedo"]
+  granularity: "subscription_identifier, start_of_week"
+  partition_num_per_job: 360
+  output_catalog: "l2_touchpoints_ivr_features"
