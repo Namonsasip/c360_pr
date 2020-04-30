@@ -2,32 +2,41 @@ from kedro.pipeline import Pipeline, node
 
 from src.customer360.utilities.config_parser import *
 
+
 def loyalty_to_l4_pipeline(**kwargs):
+    """
+    :param kwargs:
+    :return:
+    """
     return Pipeline(
         [
-
             # Number of services for each category
             node(
                 l4_rolling_window,
-                ["l2_loyalty_number_of_services_for_l4_loyalty_number_of_services",
-                 "params:l4_rolling_window_loyalty_number_of_services"],
-                 "l4_loyalty_number_of_services"
+                ["l2_loyalty_number_of_services_weekly",
+                 "params:l4_loyalty_number_of_services_features"],
+                "l4_loyalty_number_of_services_features"
             ),
-
             # Number of rewards for each category
             node(
                 l4_rolling_window,
-                ["l2_loyalty_number_of_rewards_for_l4_loyalty_number_of_rewards",
-                 "params:l4_rolling_window_loyalty_number_of_rewards"],
-                "l4_loyalty_number_of_rewards"
+                ["l2_loyalty_number_of_rewards_redeemed_weekly",
+                 "params:l4_loyalty_number_of_rewards_redeemed_features"],
+                "l4_loyalty_number_of_rewards_redeemed_features"
             ),
-            #
-            # # Number of points spend for each category
+            # Number of points spend for each category
             node(
                 l4_rolling_window,
-                ["l2_loyalty_number_of_points_spend_for_l4_loyalty_number_of_points_spend",
-                 "params:l4_rolling_window_loyalty_number_of_points_spend"],
-                "l4_loyalty_number_of_points_spend"
+                ["l2_loyalty_number_of_points_spend_weekly",
+                 "params:l4_loyalty_number_of_points_spend_features"],
+                "l4_loyalty_number_of_points_spend_features"
+            ),
+            # Number of point balance and status
+            node(
+                l4_rolling_window,
+                ["l3_loyalty_point_balance_statuses_monthly",
+                 "params:l4_loyalty_priv_point_balance_statuses_features"],
+                "l4_loyalty_priv_point_balance_statuses_features"
             ),
         ]
     )

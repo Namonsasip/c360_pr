@@ -12,6 +12,7 @@ l2_billing_and_payment_feature_time_diff_bw_topups_weekly_intermdeiate:
   feature_list:
     access_method_num: "access_method_num"
     register_date: "register_date"
+    recharge_time: "recharge_time"
     payments_time_diff: "datediff(recharge_time,lag(recharge_time,1) over(partition by date_trunc('week',date(recharge_date))
       ,access_method_num,register_date order by recharge_time))"
   granularity: ""
