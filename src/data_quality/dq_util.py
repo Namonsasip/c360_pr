@@ -175,7 +175,7 @@ def get_outlier_column(
 
 def add_most_frequent_value(
         melted_result_df: DataFrame,
-        features_list: Dict,
+        features_list: List[Dict],
         partition_col: str
 ) -> DataFrame:
     spark = get_spark_session()
@@ -214,3 +214,52 @@ def add_most_frequent_value(
     )
 
     return result_df
+
+
+def get_column_name_of_type(df, required_types=None):
+    """
+    Get all the column names of specific type
+    """
+    schema = [(x.name, str(x.dataType).split('(')[0]) for x in df.schema.fields]
+
+    data_type = {
+        'numeric': ["DecimalType", "DoubleType", "FloatType", "IntegerType", "LongType", "ShortType"],
+        'string': ["StringType"],
+        'boolean': ['BooleanType'],
+        'date': ['DateType', 'TimestampType'],
+        'array': ["ArrayType"]
+    }
+
+    if (required_types is None):
+        return df.columns
+
+    required_type_pyspark = []
+
+    for required_type in required_types:
+        required_type_pyspark = required_type_pyspark + data_type[required_type]
+
+    return [column_name for column_name, data_type in schema if data_type in required_type_pyspark]
+
+
+def replace_asterisk_feature(
+        features_list: List[Dict],
+        dataset_name: str,
+        numeric_columns_only=True
+) -> List[Dict]:
+    feature_name_set = set(map(lambda x: x["feature"], features_list))
+
+    if "*" not in feature_name_set:
+        return features_list
+
+    result_list = list(filter(lambda x: x["feature"] != "*", features_list))
+
+    ctx = get_dq_context()
+    df = ctx.catalog.load(dataset_name)
+
+    column_list = get_column_name_of_type(df, ["numeric"] if numeric_columns_only else None)
+
+    for each_col in column_list:
+        if each_col not in feature_name_set:
+            result_list.append({"feature": each_col})
+
+    return result_list

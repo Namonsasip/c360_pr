@@ -11,7 +11,7 @@ from src.data_quality.dq_util import get_config_parameters, \
     break_percentile_columns, \
     get_outlier_column, \
     add_most_frequent_value, \
-    merge_all
+    replace_asterisk_feature
 
 from kedro.pipeline.node import Node
 from kedro.io.core import DataSetError
@@ -61,7 +61,7 @@ def check_catalog_and_feature_exist(
             df = ctx.catalog.load(dataset_name)
 
             for col in dq_config[dataset_name]:
-                if col["feature"] not in df.columns:
+                if col["feature"] != "*" and col["feature"] not in df.columns:
                     missing_files.append("{}.{}".format(dataset_name, col))
         except:
             missing_files.append(dataset_name)
@@ -69,6 +69,8 @@ def check_catalog_and_feature_exist(
     if missing_files:
         err_msg = "These datasets/columns do not exist: {}".format(missing_files)
         raise FileNotFoundError(err_msg)
+
+    return get_spark_empty_df()
 
 
 def dq_merger_nodes(
@@ -114,7 +116,9 @@ def generate_dq_nodes():
             inputs=[dataset_name,
                     "dq_sampled_subscription_identifier",
                     "params:features_for_dq",
-                    "params:percentiles"],
+                    "params:percentiles",
+                    "all_catalog_and_feature_exist"
+                    ],
             outputs=output_catalog
         )
         nodes.append(node)
@@ -137,9 +141,11 @@ def run_accuracy_logic(
     sampled_sub_id_df: DataFrame,
     dq_config: dict,
     percentiles: Dict,
+    all_catalog_and_feature_exist: DataFrame,  # dependency to ensure this node runs after all checks are passed
     dataset_name: str
 ) -> DataFrame:
     features_list = dq_config[dataset_name]
+    features_list = replace_asterisk_feature(features_list, dataset_name, numeric_columns_only=True)
 
     agg_functions = [
         "count({col}) as {col}__count",
