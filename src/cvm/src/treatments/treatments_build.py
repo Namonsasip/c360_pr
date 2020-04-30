@@ -39,6 +39,20 @@ from pyspark.sql import Column, DataFrame, Window
 from pyspark.sql import functions as func
 
 
+def get_today(parameters: Dict[str, Any],) -> str:
+    """ Returns scoring date if specified in parameters or today's date otherwise.
+
+    Args:
+        parameters: parameters defined in parameters.yml.
+    """
+    chosen_date = parameters["scoring"]["chosen_date"]
+    if chosen_date == "" or chosen_date is None:
+        today = date.today().strftime("%Y-%m-%d")
+    else:
+        today = chosen_date
+    return today
+
+
 def treatments_propositions_for_ard_churn(
     propensities: DataFrame,
     parameters: Dict[str, Any],
@@ -171,7 +185,7 @@ def get_recently_contacted(
         Filtered propensities.
     """
 
-    today = date.today().strftime("%Y-%m-%d")
+    today = get_today(parameters)
     recent_past_date = add_days(today, -parameters["treatment_cadence"])
     recent_users = (
         treatments_history.filter(
@@ -276,7 +290,7 @@ def update_history_with_treatments_propositions(
     """
 
     logging.info("Updating treatments history")
-    today = date.today().strftime("%Y-%m-%d")
+    today = get_today(parameters)
     return treatments_history.filter(f"key_date != '{today}'").union(
         treatments_propositions.withColumn("key_date", func.lit(today)).select(
             treatments_history.columns
@@ -296,7 +310,7 @@ def serve_treatments_chosen(
     """
 
     treatments_df = treatments_propositions.filter("campaign_code != 'no_treatment'")
-    today = date.today().strftime("%Y-%m-%d")
+    today = get_today(parameters)
     if treatments_df.count() == 0:
         raise Exception(f"No treatments found for {today}")
     treatments_df = treatments_df.withColumn("date", func.lit(today))
