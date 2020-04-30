@@ -95,7 +95,7 @@ def treatments_propositions_for_ard_churn(
     # prepare treatments
     treatment_dictionary = treatment_dictionary.filter(
         "use_case == '{}'".format(use_case)
-    ).selectExpr("{}_microsegment as microsegment".format(use_case), "campaign_code")
+    ).selectExpr("microsegment", "campaign_code")
 
     # add treatments by picking a random from treatments dictionary
     treatments_chosen = users_chosen.join(
