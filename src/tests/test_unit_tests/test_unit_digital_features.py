@@ -16,19 +16,13 @@ class TestUnitDigital:
         browser_type = ['chrome','safari','line','opera','ie']
         reference_type = ['facebook','other','direct','internal','social']
         activetime_type =['','34']
-        msisdn_type = ['ank5bkxpOWxOZStrY2FFaVpzeEd6UXl4MDNkanZnMlR0dGdjaGRyUERDUmI0aEx2S21QMVV3eHVhTGdUS2MxNA==','']
         date1 = '2019-01-01'
         date2 = '2019-04-01'
-        # group_list =[]
-        # brand_list =[]
-        # # for i in range (0, len(my_dates)):
         
         my_dates_list = pd.date_range(date1, date2).tolist()
         my_dates = [iTemp.date().strftime("%d-%m-%Y") for iTemp in my_dates_list]
         my_dates = my_dates * 3
         random.seed(100)
-        # random_list = [random_group[random.randint(0, 3)] for iTemp in range(0, len(my_dates))]
-        # type_list = [random_type[random.randint(0, 2)] for iTemp in range(0, len(my_dates))]
         browser_list = [browser_type[random.randint(0, 4)] for iTemp in range(0, len(my_dates))]
         ref_list = [reference_type[random.randint(0, 4)] for iTemp in range(0, len(my_dates))]
         activetime_list =[activetime_type[random.randint(0, 1)] for iTemp in range(0, len(my_dates))]
@@ -410,13 +404,7 @@ class TestUnitDigital:
         # --------------------------------------------------------------------------------
         df42 = l4_rolling_window(df_weekly,var_project_context.catalog.load(
             'params:l4_digital_cxenxse_site_traffic_weekly_features'))
-        # df42.show(df42.count(),False)
-        # exit(1)
-
-                # sum_digital_time_spent_browser_chrome_weekly_last_week
-                # sum_digital_time_spent_browser_chrome_weekly_last_two_week
-                # sum_digital_time_spent_browser_chrome_weekly_last_four_week
-                # sum_digital_time_spent_browser_chrome_weekly_last_twelve_week
+        
         assert \
             df42.where("start_of_week='2019-04-01'").select("sum_digital_time_spent_browser_chrome_weekly_last_week").collect()[0][
                 0] == 34
@@ -592,30 +580,142 @@ class TestUnitDigital:
         df_host_weekly = node_from_config(df0,var_project_context.catalog.load(
             'params:l2_digital_cxenxse_site_traffic_popular_host_weekly'))
         
-        # df_postcode_weekly = node_from_config(df0,var_project_context.catalog.load(
-        #     'params:l2_digital_cxenxse_site_traffic_popular_postalcode_weekly'))
+        df_postcode_weekly = node_from_config(df0,var_project_context.catalog.load(
+            'params:l2_digital_cxenxse_site_traffic_popular_postalcode_weekly'))
         
-        # df_ref_q_weekly = node_from_config(df0,var_project_context.catalog.load(
-        #     'params:l2_digital_cxenxse_site_traffic_popular_referrerquery_weekly'))
+        df_ref_q_weekly = node_from_config(df0,var_project_context.catalog.load(
+            'params:l2_digital_cxenxse_site_traffic_popular_referrerquery_weekly'))
         
-        # df_ref_host_weekly = node_from_config(df0,var_project_context.catalog.load(
-        #     'params:l2_digital_cxenxse_site_traffic_popular_referrerhost_weekly'))
-        # --------------------------------------------------------------------------------
+        df_ref_host_weekly = node_from_config(df0,var_project_context.catalog.load(
+            'params:l2_digital_cxenxse_site_traffic_popular_referrerhost_weekly'))
+        # -----------------------hostt---------------------------------------------------------
         df_host_1 = l4_rolling_window(df_host_weekly,var_project_context.catalog.load(
             'params:l4_digital_cxenxse_site_traffic_popular_host_weekly_int'))
-        # assert \
-        #     df41.where("start_of_week='2019-04-01'").select("sum_digital_popular_host_weekly_last_week").collect()[0][
-        #         0] == 340
-        # assert \
-        #     df41.where("start_of_week='2019-04-01'").select("sum_digital_popular_host_weekly_last_two_week").collect()[0][
-        #         0] == 680
-        # assert \
-        #     df41.where("start_of_week='2019-04-01'").select("sum_digital_popular_host_weekly_last_four_week").collect()[0][
-        #         0] == 1292
-        # assert \
-        #     df41.where("start_of_week='2019-04-01'").select("sum_digital_popular_host_weekly_last_twelve_week").collect()[0][
-        #         0] == 4318
-        df_host_2 = l4_rolling_window(df_host_1,var_project_context.catalog.load(
+        assert \
+            df_host_1.where("start_of_week='2019-04-01'").select("sum_digital_popular_host_weekly_last_week").collect()[0][
+                0] == 340
+        assert \
+            df_host_1.where("start_of_week='2019-04-01'").select("sum_digital_popular_host_weekly_last_two_week").collect()[0][
+                0] == 680
+        assert \
+            df_host_1.where("start_of_week='2019-04-01'").select("sum_digital_popular_host_weekly_last_four_week").collect()[0][
+                0] == 1292
+        assert \
+            df_host_1.where("start_of_week='2019-04-01'").select("sum_digital_popular_host_weekly_last_twelve_week").collect()[0][
+                0] == 4318
+        df_host_2 = l4_rolling_ranked_window(df_host_1,var_project_context.catalog.load(
             'params:l4_digital_cxenxse_site_traffic_popular_host_weekly_features'))
-        df_host_2.show(df_host_2.count(),False)
-        exit(2)
+
+        assert \
+            df_host_2.where("start_of_week='2019-04-01'").select("fav_host_last_week").collect()[0][
+                0] == 'callingmelody.net'
+        assert \
+            df_host_2.where("start_of_week='2019-04-01'").select("fav_host_last_two_week").collect()[0][
+                0] == 'callingmelody.net'
+        assert \
+            df_host_2.where("start_of_week='2019-04-01'").select("fav_host_last_four_week").collect()[0][
+                0] == 'callingmelody.net'
+        assert \
+            df_host_2.where("start_of_week='2019-04-01'").select("fav_host_last_twelve_week").collect()[0][
+                0] == 'callingmelody.net'
+                # ------------------------postalcode---------------------------------
+        df_post1 = l4_rolling_window(df_postcode_weekly,var_project_context.catalog.load(
+            'params:l4_digital_cxenxse_site_traffic_popular_postalcode_weekly_int'))
+
+        assert \
+            df_post1.where("start_of_week='2019-04-01'").select("sum_digital_popular_postalcode_weekly_last_week").collect()[0][
+                0] == 21
+        assert \
+            df_post1.where("start_of_week='2019-04-01'").select("sum_digital_popular_postalcode_weekly_last_two_week").collect()[0][
+                0] == 42
+        assert \
+            df_post1.where("start_of_week='2019-04-01'").select("sum_digital_popular_postalcode_weekly_last_four_week").collect()[0][
+                0] == 84
+        assert \
+            df_post1.where("start_of_week='2019-04-01'").select("sum_digital_popular_postalcode_weekly_last_twelve_week").collect()[0][
+                0] == 252
+
+        df_post2 = l4_rolling_ranked_window(df_post1,var_project_context.catalog.load(
+            'params:l4_digital_cxenxse_site_traffic_popular_postalcode_weekly_features'))
+        
+        assert \
+            df_post2.where("start_of_week='2019-04-01'").select("fav_postalcode_last_week").collect()[0][
+                0] == '10120'
+        assert \
+            df_post2.where("start_of_week='2019-04-01'").select("fav_postalcode_last_two_week").collect()[0][
+                0] == '10120'
+        assert \
+            df_post2.where("start_of_week='2019-04-01'").select("fav_postalcode_last_four_week").collect()[0][
+                0] == '10120'
+        assert \
+            df_post2.where("start_of_week='2019-04-01'").select("fav_postalcode_last_twelve_week").collect()[0][
+                0] == '10120'
+        # ------------------------ref-q-----------------
+        df_ref_q1 = l4_rolling_window(df_ref_q_weekly,var_project_context.catalog.load(
+            'params:l4_digital_cxenxse_site_traffic_popular_referrerquery_weekly_int'))
+        # df_ref_q1.show()
+
+        assert \
+            df_ref_q1.where("start_of_week='2019-04-01'").select("sum_digital_popular_referrerquery_weekly_last_week").collect()[0][
+                0] == 21
+        assert \
+            df_ref_q1.where("start_of_week='2019-04-01'").select("sum_digital_popular_referrerquery_weekly_last_two_week").collect()[0][
+                0] == 42
+        assert \
+            df_ref_q1.where("start_of_week='2019-04-01'").select("sum_digital_popular_referrerquery_weekly_last_four_week").collect()[0][
+                0] == 84
+        assert \
+            df_ref_q1.where("start_of_week='2019-04-01'").select("sum_digital_popular_referrerquery_weekly_last_twelve_week").collect()[0][
+                0] == 252
+
+        df_ref_q2 = l4_rolling_ranked_window(df_ref_q1,var_project_context.catalog.load(
+            'params:l4_digital_cxenxse_site_traffic_popular_referrerquery_weekly_features'))
+
+        assert \
+            df_ref_q2.where("start_of_week='2019-04-01'").select("fav_referrerquery_last_week").collect()[0][
+                0] == 'callingmelody.net'
+        assert \
+            df_ref_q2.where("start_of_week='2019-04-01'").select("fav_referrerquery_last_two_week").collect()[0][
+                0] == 'callingmelody.net'
+        assert \
+            df_ref_q2.where("start_of_week='2019-04-01'").select("fav_referrerquery_last_four_week").collect()[0][
+                0] == 'callingmelody.net'
+        assert \
+            df_ref_q2.where("start_of_week='2019-04-01'").select("fav_referrerquery_last_twelve_week").collect()[0][
+                0] == 'callingmelody.net'
+
+        # ------------------- ref host -------------------
+
+        df_ref_h1 = l4_rolling_window(df_ref_host_weekly,var_project_context.catalog.load(
+            'params:l4_digital_cxenxse_site_traffic_popular_referrerhost_weekly_int'))
+        
+        assert \
+            df_ref_h1.where("start_of_week='2019-04-01'").select("sum_digital_popular_referrerhost_weekly_last_week").collect()[0][
+                0] == 21
+        assert \
+            df_ref_h1.where("start_of_week='2019-04-01'").select("sum_digital_popular_referrerhost_weekly_last_two_week").collect()[0][
+                0] == 42
+        assert \
+            df_ref_h1.where("start_of_week='2019-04-01'").select("sum_digital_popular_referrerhost_weekly_last_four_week").collect()[0][
+                0] == 84
+        assert \
+            df_ref_h1.where("start_of_week='2019-04-01'").select("sum_digital_popular_referrerhost_weekly_last_twelve_week").collect()[0][
+                0] == 252
+
+
+        df_ref_h2 = l4_rolling_ranked_window(df_ref_h1,var_project_context.catalog.load(
+            'params:l4_digital_cxenxse_site_traffic_popular_referrerhost_weekly_features'))
+
+        assert \
+            df_ref_h2.where("start_of_week='2019-04-01'").select("fav_referrerhost_last_week").collect()[0][
+                0] == 'callingmelody.net'
+        assert \
+            df_ref_h2.where("start_of_week='2019-04-01'").select("fav_referrerhost_last_two_week").collect()[0][
+                0] == 'callingmelody.net'
+        assert \
+            df_ref_h2.where("start_of_week='2019-04-01'").select("fav_referrerhost_last_four_week").collect()[0][
+                0] == 'callingmelody.net'
+        assert \
+            df_ref_h2.where("start_of_week='2019-04-01'").select("fav_referrerhost_last_twelve_week").collect()[0][
+                0] == 'callingmelody.net'
+        
