@@ -105,7 +105,7 @@ def treatments_propositions_for_ard_churn(
     treatments_chosen = (
         treatments_chosen.withColumn("rn", func.row_number().over(random_window))
         .filter("rn == 1")
-        .drop(["r", "rn"])
+        .drop(*["r", "rn"])
     )
 
     # check if all microsegments have treatments
