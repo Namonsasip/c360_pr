@@ -13,7 +13,10 @@ def data_quality_pipeline(**kwargs):
             node(
                 func=check_catalog_and_feature_exist,
                 inputs=["params:features_for_dq"],
-                outputs=None
+
+                # MemoryDataSet to ensure execution order. Otherwise,
+                # dq_nodes can run before the checks completed
+                outputs="all_catalog_and_feature_exist"
             ),
             *dq_nodes
         ]
