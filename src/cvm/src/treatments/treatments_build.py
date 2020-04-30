@@ -206,7 +206,7 @@ def get_treatments_propositions(
 
     def _add_to_blacklist(blacklisted_users_new, blacklisted_users_old=None):
         """Updates blacklisted users with new entries"""
-        blacklisted_users_new = blacklisted_users_new.select("subscription_identifiers")
+        blacklisted_users_new = blacklisted_users_new.select("subscription_identifier")
         if blacklisted_users_old is None:
             return blacklisted_users_new
         else:
