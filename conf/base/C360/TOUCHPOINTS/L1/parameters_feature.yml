@@ -85,9 +85,9 @@ l1_touchpoints_nim_work_features:
   output_catalog: "l1_touchpoints_nim_work_features"
 
 l1_touchpoints_ivr_features:
-  where_clause: "where called_no  = '98MkP5bMx1ykVd8RBE3C.XztcSxOJmjcyHAUmXwvCHW2Bb+cKKwh1kqv0.QI4ddw' or
-                 called_no  = '0SUAExF.ULAW1AfkPeM9hn4MIbCHizRswjZuNlZOs.IJRACVbg+R4o4laSXLCjFe' or
-                 called_no  = 'hYAUKs+f31uJzUZp3iM5F.fO8CgW7107gM602izDqDn.6GjSvNd8lhU6af7ItzfP'"
+  where_clause: "where caller_no  = '98MkP5bMx1ykVd8RBE3C.XztcSxOJmjcyHAUmXwvCHW2Bb+cKKwh1kqv0.QI4ddw' or
+                 caller_no  = '0SUAExF.ULAW1AfkPeM9hn4MIbCHizRswjZuNlZOs.IJRACVbg+R4o4laSXLCjFe' or
+                 caller_no  = 'hYAUKs+f31uJzUZp3iM5F.fO8CgW7107gM602izDqDn.6GjSvNd8lhU6af7ItzfP'"
   feature_list:
     touchpoints_num_of_call_ivr: "count(distinct(call_id))"
     touchpoints_num_of_disconnection_by_ivr: "count(distinct(case when lower(discon_type) = 'ivr' then call_id else null end))"
