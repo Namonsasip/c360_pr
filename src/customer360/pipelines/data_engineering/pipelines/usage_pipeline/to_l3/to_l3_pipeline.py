@@ -32,17 +32,17 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 """
 
 from kedro.pipeline import Pipeline, node
-from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l2.to_l2_nodes import build_usage_l2_layer
+from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l3.to_l3_nodes import build_usage_l3_layer
 
 
-def usage_to_l2_pipeline(**kwargs):
+def usage_to_l3_pipeline(**kwargs):
     return Pipeline(
         [
-            node(build_usage_l2_layer,
-                 ["l1_usage_postpaid_prepaid_daily_for_l2_postpaid_prepaid_weekly",
-                  "params:l2_usage_postpaid_prepaid_weekly"],
-                 "l2_usage_postpaid_prepaid_weekly"
+            node(build_usage_l3_layer,
+                 ["l1_usage_postpaid_prepaid_daily_for_l3_postpaid_prepaid_monthly",
+                  "params:l3_usage_postpaid_prepaid_monthly"],
+                 "l3_usage_postpaid_prepaid_monthly"
                  ),
 
-        ], name="usage_to_l2_pipeline"
+        ], name="usage_to_l3_pipeline"
     )
