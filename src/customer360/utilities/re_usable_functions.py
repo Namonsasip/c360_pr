@@ -352,7 +352,7 @@ def data_non_availability_and_missing_check(df, grouping, par_col, target_table_
     :return:
     """
     logging.info("Entering data_non_availability_and_missing_check")
-    if (run_mode == 'UNIT_TEST') | (run_mode == 'LOCAL_FS'):
+    if (run_mode.upper() == 'UNIT_TEST') | (run_mode.upper() == 'LOCAL_FS'):
         logging.info("Exiting data_non_availability_and_missing_check as OS ENV RUN_MODE  = {}".format(run_mode))
         return df
     logging.info("Executing data_non_availability_and_missing_check IMP: OS ENV RUN_MODE NO UNIT TEST CASE SELECTED")
