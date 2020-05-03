@@ -271,7 +271,6 @@ def run_package(pipelines=None, project_context=None):
         for each_pipeline in pipelines:
             project_context.run(pipeline_name=each_pipeline)
         return
-    generate_dependency_dataset(project_context)
     # project_context.run(pipeline_name='customer_profile_to_l3_pipeline')
     # project_context.run()
     # Replace line above with below to run on databricks cluster

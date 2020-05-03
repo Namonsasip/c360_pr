@@ -59,6 +59,14 @@ def digital_to_l4_weekly_pipeline(**kwargs):
                  "params:l4_digital_cxenxse_site_traffic_weekly_features"],
                 "l4_digital_cxenxse_site_traffic_weekly_features"
             ),
+
+        ], name="digital_to_l4_weekly_pipeline"
+    )
+
+
+def digital_to_l4_weekly_favourite_pipeline(**kwargs):
+    return Pipeline(
+        [
             node(
                 l4_rolling_window,
                 ["l2_digital_cxenxse_site_traffic_popular_host_weekly",
@@ -66,7 +74,7 @@ def digital_to_l4_weekly_pipeline(**kwargs):
                 "l4_digital_cxenxse_site_traffic_popular_host_weekly_features_int"
             ),
             node(
-                l4_rolling_window,
+                l4_rolling_ranked_window,
                 ["l4_digital_cxenxse_site_traffic_popular_host_weekly_features_int",
                  "params:l4_digital_cxenxse_site_traffic_popular_host_weekly_features"],
                 "l4_digital_cxenxse_site_traffic_popular_host_weekly_features"
@@ -78,7 +86,7 @@ def digital_to_l4_weekly_pipeline(**kwargs):
                 "l4_digital_cxenxse_site_traffic_popular_postalcode_weekly_features_int"
             ),
             node(
-                l4_rolling_window,
+                l4_rolling_ranked_window,
                 ["l4_digital_cxenxse_site_traffic_popular_postalcode_weekly_features_int",
                  "params:l4_digital_cxenxse_site_traffic_popular_postalcode_weekly_features"],
                 "l4_digital_cxenxse_site_traffic_popular_postalcode_weekly_features"
@@ -90,7 +98,7 @@ def digital_to_l4_weekly_pipeline(**kwargs):
                 "l4_digital_cxenxse_site_traffic_popular_referrerquery_weekly_features_int"
             ),
             node(
-                l4_rolling_window,
+                l4_rolling_ranked_window,
                 ["l4_digital_cxenxse_site_traffic_popular_referrerquery_weekly_features_int",
                  "params:l4_digital_cxenxse_site_traffic_popular_referrerquery_weekly_features"],
                 "l4_digital_cxenxse_site_traffic_popular_referrerquery_weekly_features"
@@ -102,11 +110,11 @@ def digital_to_l4_weekly_pipeline(**kwargs):
                 "l4_digital_cxenxse_site_traffic_popular_referrerhost_weekly_int"
             ),
             node(
-                l4_rolling_window,
+                l4_rolling_ranked_window,
                 ["l4_digital_cxenxse_site_traffic_popular_referrerhost_weekly_int",
                  "params:l4_digital_cxenxse_site_traffic_popular_referrerhost_weekly_features"],
                 "l4_digital_cxenxse_site_traffic_popular_referrerhost_weekly_features"
             ),
 
-        ], name="digital_to_l4_weekly_pipeline"
+        ], name="digital_to_l4_weekly_favourite_pipeline"
     )

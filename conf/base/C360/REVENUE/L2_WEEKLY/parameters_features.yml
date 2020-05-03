@@ -3,7 +3,7 @@ l2_revenue_prepaid_weekly:
   type: "week"
   feature_list:
     sum: [
-      "rev_arpu_net_rev",
+      "rev_arpu_total_net_rev",
       "rev_arpu_net_tariff_rev_reward",
       "rev_arpu_net_tariff_rev_exc_reward",
       "rev_arpu_data_rev",

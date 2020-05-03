@@ -247,17 +247,19 @@ def run(
         runner = "ParallelRunner"
     runner_class = load_obj(runner, "kedro.runner") if runner else SequentialRunner
 
-    context = load_context(Path.cwd(), env=env, extra_params=params)
-    context.run(
-        tags=tag,
-        runner=runner_class(),
-        node_names=node_names,
-        from_nodes=from_nodes,
-        to_nodes=to_nodes,
-        from_inputs=from_inputs,
-        load_versions=load_version,
-        pipeline_name=pipeline,
-    )
+    if pipeline is not None:
+        for pipe in list(pipeline.split(',')):
+            context = load_context(Path.cwd(), env=env, extra_params=params)
+            context.run(
+            tags=tag,
+            runner=runner_class(),
+            node_names=node_names,
+            from_nodes=from_nodes,
+            to_nodes=to_nodes,
+            from_inputs=from_inputs,
+            load_versions=load_version,
+            pipeline_name=pipe.strip(' '),
+            )
 
 
 @forward_command(cli, forward_help=True)

@@ -1,3 +1,8 @@
 # Parameters for the example pipeline. Feel free to delete these once you
 # remove the example pipeline from pipeline.py and the example nodes in
 # `src/pipelines/`
+
+l3_billing_and_payments_monthly_bill_volume_tbl: "l3_billing_and_payments_monthly_bill_volume"
+l3_billing_and_payments_monthly_missed_bills_tbl: "l3_billing_and_payments_monthly_missed_bills"
+l3_billing_and_payments_monthly_overdue_bills_tbl: "l3_billing_and_payments_monthly_overdue_bills"
+l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume_tbl: "l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume"
