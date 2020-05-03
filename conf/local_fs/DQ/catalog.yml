@@ -15,3 +15,10 @@ dq_accuracy_and_completeness:
   save_args:
     mode: "append"
     partitionBy: ["dataset_name", "corresponding_date"]
+
+dq_availability:
+  <<: *spark_parquet
+  filepath: data/DQ/dq_availability/
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["dataset_name", "run_date"]

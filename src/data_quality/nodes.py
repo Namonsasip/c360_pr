@@ -11,7 +11,8 @@ from src.data_quality.dq_util import get_config_parameters, \
     break_percentile_columns, \
     get_outlier_column, \
     add_most_frequent_value, \
-    replace_asterisk_feature
+    replace_asterisk_feature, \
+    get_expected_partition_count_formula
 
 from kedro.pipeline.node import Node
 from kedro.io.core import DataSetError
@@ -103,11 +104,12 @@ def dq_merger_nodes(
 def generate_dq_nodes():
     nodes = []
     accuracy_node_output_list = []
+    availability_node_output_list = []
     selected_dataset = get_config_parameters()['features_for_dq']
     for dataset_name, feature_list in selected_dataset.items():
 
+        ################ Accuracy check ################
         output_catalog = "dq_accuracy_{}".format(dataset_name)
-        # Accuracy Test
         node = Node(
             func=update_wrapper(
                 wrapper=partial(run_accuracy_logic, dataset_name=dataset_name),
@@ -121,17 +123,40 @@ def generate_dq_nodes():
                     ],
             outputs=output_catalog
         )
+
         nodes.append(node)
         accuracy_node_output_list.append(output_catalog)
 
+        ################ Availability check ################
+        availability_output_catalog = "dq_availability_{}".format(dataset_name)
+        availability_node = Node(
+            func=update_wrapper(
+                wrapper=partial(run_availability_logic, dataset_name=dataset_name),
+                wrapped=run_availability_logic
+            ),
+            inputs=[dataset_name,
+                    "all_catalog_and_feature_exist"],
+            outputs=availability_output_catalog
+        )
+
+        nodes.append(availability_node)
+        availability_node_output_list.append(availability_output_catalog)
+
     # Since node output must be unique, we create MemoryDataSet for each
     # accuracy node output and then merge it with node below
-    merger_node = Node(
+    accuracy_merger_node = Node(
         func=dq_merger_nodes,
         inputs=accuracy_node_output_list,
         outputs="dq_accuracy_and_completeness"
     )
-    nodes.append(merger_node)
+    nodes.append(accuracy_merger_node)
+
+    availability_merger_node = Node(
+        func=dq_merger_nodes,
+        inputs=availability_node_output_list,
+        outputs="dq_availability"
+    )
+    nodes.append(availability_merger_node)
 
     return nodes
 
@@ -223,3 +248,33 @@ def run_accuracy_logic(
 
     return result_df
 
+
+def run_availability_logic(
+        input_df: DataFrame,
+        all_catalog_and_feature_exist: DataFrame,  # dependency to ensure this node runs after all checks are passed
+        dataset_name: str
+) -> DataFrame:
+
+    partition_col = get_partition_col(input_df, dataset_name)
+    expected_partition_cnt_formula = get_expected_partition_count_formula(partition_col)
+
+    input_df.createOrReplaceTempView("input_df")
+
+    sql_stmt = """
+        select
+            '{partition_col}' as granularity,
+            max({partition_col}) as max_partition,
+            min({partition_col}) as min_partition,
+            count(distinct({partition_col})) as distinct_partition,
+            cast(({expected_partition_cnt_formula}) - count(distinct({partition_col})) as integer) as missing_partition_count,
+            '{dataset_name}' as dataset_name,
+            current_date() as run_date
+        from input_df
+    """.format(partition_col=partition_col,
+               dataset_name=dataset_name,
+               expected_partition_cnt_formula=expected_partition_cnt_formula.format(partition_col=partition_col))
+
+    spark = get_spark_session()
+    result_df = spark.sql(sql_stmt)
+
+    return result_df
