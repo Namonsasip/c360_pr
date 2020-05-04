@@ -1,6 +1,6 @@
-l2_usage_postpaid_prepaid_weekly:
+l3_usage_postpaid_prepaid_monthly:
   where_clause: ""
-  type: "week"
+  type: "monthly"
   feature_list:
     sum: [
       'usg_outgoing_night_time_calls_duration',
@@ -503,4 +503,4 @@ l2_usage_postpaid_prepaid_weekly:
       'usg_total_data_volume',
       "usg_vas_total_number_of_call"
     ]
-  granularity: "subscription_identifier, start_of_week"
+  granularity: "subscription_identifier, start_of_month"
