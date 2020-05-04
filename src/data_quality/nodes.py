@@ -128,19 +128,19 @@ def generate_dq_nodes():
         accuracy_node_output_list.append(output_catalog)
 
         ################ Availability check ################
-        availability_output_catalog = "dq_availability_{}".format(dataset_name)
-        availability_node = Node(
-            func=update_wrapper(
-                wrapper=partial(run_availability_logic, dataset_name=dataset_name),
-                wrapped=run_availability_logic
-            ),
-            inputs=[dataset_name,
-                    "all_catalog_and_feature_exist"],
-            outputs=availability_output_catalog
-        )
-
-        nodes.append(availability_node)
-        availability_node_output_list.append(availability_output_catalog)
+        # availability_output_catalog = "dq_availability_{}".format(dataset_name)
+        # availability_node = Node(
+        #     func=update_wrapper(
+        #         wrapper=partial(run_availability_logic, dataset_name=dataset_name),
+        #         wrapped=run_availability_logic
+        #     ),
+        #     inputs=[dataset_name,
+        #             "all_catalog_and_feature_exist"],
+        #     outputs=availability_output_catalog
+        # )
+        #
+        # nodes.append(availability_node)
+        # availability_node_output_list.append(availability_output_catalog)
 
     # Since node output must be unique, we create MemoryDataSet for each
     # accuracy node output and then merge it with node below
@@ -151,12 +151,12 @@ def generate_dq_nodes():
     )
     nodes.append(accuracy_merger_node)
 
-    availability_merger_node = Node(
-        func=dq_merger_nodes,
-        inputs=availability_node_output_list,
-        outputs="dq_availability"
-    )
-    nodes.append(availability_merger_node)
+    # availability_merger_node = Node(
+    #     func=dq_merger_nodes,
+    #     inputs=availability_node_output_list,
+    #     outputs="dq_availability"
+    # )
+    # nodes.append(availability_merger_node)
 
     return nodes
 
