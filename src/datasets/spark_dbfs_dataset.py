@@ -6,7 +6,8 @@ from pathlib import Path, PurePosixPath, WindowsPath
 from warnings import warn
 
 from hdfs import HdfsError, InsecureClient
-from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import DataFrame
+from customer360.utilities.spark_util import get_spark_session
 from pyspark.sql.utils import AnalysisException
 from s3fs import S3FileSystem
 
@@ -210,9 +211,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
     @staticmethod
     def _get_spark():
-        spark = SparkSession.builder.appName("project_customer_360").getOrCreate()
-        spark.conf.set("spark.sql.sources.partitionOverwriteMode", "dynamic")
-        spark.conf.set("spark.sql.parquet.binaryAsString", "true")
+        spark = get_spark_session()
         return spark
 
     def _create_metadata_table(self, spark):
