@@ -18,6 +18,7 @@ from kedro.pipeline.node import Node
 from kedro.io.core import DataSetError
 from pyspark.sql import DataFrame
 import pyspark.sql.functions as F
+from pyspark.storagelevel import StorageLevel
 
 
 def sample_subscription_identifier(
@@ -245,6 +246,8 @@ def run_accuracy_logic(
                  .withColumn("run_date", F.current_timestamp())
                  .withColumn("dataset_name", F.lit(dataset_name))
                  .withColumn("sub_id_sample_creation_date", F.lit(sample_creation_date)))
+
+    result_df.persist(StorageLevel.MEMORY_AND_DISK).count()
 
     return result_df
 
