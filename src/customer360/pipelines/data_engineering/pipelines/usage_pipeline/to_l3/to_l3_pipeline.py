@@ -32,23 +32,17 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 """
 
 from kedro.pipeline import Pipeline, node
+from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l3.to_l3_nodes import build_usage_l3_layer
 
-from customer360.pipelines.data_engineering.nodes.campaign_nodes.to_l1 import cam_post_channel_with_highest_conversion
 
-
-def campaign_to_l1_pipeline(**kwargs):
+def usage_to_l3_pipeline(**kwargs):
     return Pipeline(
         [
-            node(
-                cam_post_channel_with_highest_conversion,
-                ['l0_campaign_tracking_contact_list_post',
-                 'l0_campaign_tracking_contact_list_pre',
-                 'l0_campaign_clm_campaign_contacts_ma',
-                 'l0_campaign_tracking_contact_list_ussd',
-                 'params:l1_campaign_post_pre_daily',
-                 'params:l1_campaign_top_channel_daily'],
-                ['l1_campaign_post_pre_daily', 'l1_campaign_top_channel_daily']
-            )
+            node(build_usage_l3_layer,
+                 ["l1_usage_postpaid_prepaid_daily_for_l3_postpaid_prepaid_monthly",
+                  "params:l3_usage_postpaid_prepaid_monthly"],
+                 "l3_usage_postpaid_prepaid_monthly"
+                 ),
 
-        ], name="campaign_to_l1_pipeline"
+        ], name="usage_to_l3_pipeline"
     )
