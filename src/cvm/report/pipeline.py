@@ -55,12 +55,12 @@ def sample_report_inputs() -> Pipeline:
     return Pipeline(nodes_list)
 
 
-def prepare_users() -> Pipeline:
+def prepare_users_report() -> Pipeline:
     """Prepares users to include in report."""
     return Pipeline(
         [
             node(
-                prepare_users,
+                prepare_users_report,
                 "cvm_prepaid_customer_groups",
                 "users_report",
                 name="create_users_report",
@@ -108,4 +108,4 @@ def join_features() -> Pipeline:
 
 def prepare_user_microsegments() -> Pipeline:
     """ Join above pipelines"""
-    return prepare_users() + sample_report_inputs() + join_features()
+    return prepare_users_report() + sample_report_inputs() + join_features()
