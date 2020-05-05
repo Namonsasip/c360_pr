@@ -28,7 +28,7 @@
 from kedro.pipeline import Pipeline, node
 
 from cvm.data_prep.nodes import create_sample_dataset, subs_date_join
-from cvm.report.nodes import add_micro_macro, filter_out_micro_macro
+from cvm.report.nodes import add_micro_macro, filter_out_micro_macro, prepare_users
 
 
 def sample_report_inputs() -> Pipeline:
@@ -60,7 +60,7 @@ def prepare_users_report() -> Pipeline:
     return Pipeline(
         [
             node(
-                prepare_users_report,
+                prepare_users,
                 "cvm_prepaid_customer_groups",
                 "users_report",
                 name="create_users_report",
