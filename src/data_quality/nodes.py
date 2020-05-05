@@ -99,7 +99,12 @@ def dq_merger_nodes(
             if each_col not in each_df.columns:
                 df_list[idx] = df_list[idx].withColumn(each_col, F.lit(None))
 
-    return reduce(lambda x, y: x.unionByName(y), df_list)
+    result_df = reduce(lambda x, y: x.unionByName(y), df_list)
+
+    # to reduce number of files produced
+    result_df = result_df.repartition(len(args), "dataset_name")
+
+    return result_df
 
 
 def generate_dq_nodes():
@@ -129,19 +134,19 @@ def generate_dq_nodes():
         accuracy_node_output_list.append(output_catalog)
 
         ################ Availability check ################
-        # availability_output_catalog = "dq_availability_{}".format(dataset_name)
-        # availability_node = Node(
-        #     func=update_wrapper(
-        #         wrapper=partial(run_availability_logic, dataset_name=dataset_name),
-        #         wrapped=run_availability_logic
-        #     ),
-        #     inputs=[dataset_name,
-        #             "all_catalog_and_feature_exist"],
-        #     outputs=availability_output_catalog
-        # )
-        #
-        # nodes.append(availability_node)
-        # availability_node_output_list.append(availability_output_catalog)
+        availability_output_catalog = "dq_availability_{}".format(dataset_name)
+        availability_node = Node(
+            func=update_wrapper(
+                wrapper=partial(run_availability_logic, dataset_name=dataset_name),
+                wrapped=run_availability_logic
+            ),
+            inputs=[dataset_name,
+                    "all_catalog_and_feature_exist"],
+            outputs=availability_output_catalog
+        )
+
+        nodes.append(availability_node)
+        availability_node_output_list.append(availability_output_catalog)
 
     # Since node output must be unique, we create MemoryDataSet for each
     # accuracy node output and then merge it with node below
@@ -152,12 +157,12 @@ def generate_dq_nodes():
     )
     nodes.append(accuracy_merger_node)
 
-    # availability_merger_node = Node(
-    #     func=dq_merger_nodes,
-    #     inputs=availability_node_output_list,
-    #     outputs="dq_availability"
-    # )
-    # nodes.append(availability_merger_node)
+    availability_merger_node = Node(
+        func=dq_merger_nodes,
+        inputs=availability_node_output_list,
+        outputs="dq_availability"
+    )
+    nodes.append(availability_merger_node)
 
     return nodes
 
@@ -247,6 +252,8 @@ def run_accuracy_logic(
                  .withColumn("dataset_name", F.lit(dataset_name))
                  .withColumn("sub_id_sample_creation_date", F.lit(sample_creation_date)))
 
+    # this is to avoid running every process at the end which causes
+    # long GC pauses before the spark job is even started
     result_df.persist(StorageLevel.MEMORY_AND_DISK).count()
 
     return result_df
