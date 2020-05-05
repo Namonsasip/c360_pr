@@ -52,3 +52,17 @@ def sample_report_inputs() -> Pipeline:
     ]
 
     return Pipeline(nodes_list)
+
+
+def prepare_users() -> Pipeline:
+    """Prepares users to include in report."""
+    return Pipeline(
+        [
+            node(
+                prepare_users,
+                "cvm_prepaid_customer_groups",
+                "users_report",
+                name="create_users_report",
+            )
+        ]
+    )
