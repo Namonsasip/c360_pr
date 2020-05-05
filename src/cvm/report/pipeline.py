@@ -39,6 +39,7 @@ def sample_report_inputs() -> Pipeline:
         "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
         "l4_usage_prepaid_postpaid_daily_features",
         "l4_usage_postpaid_prepaid_weekly_features_sum",
+        "l4_daily_feature_topup_and_volume",
     ]
     sample_type = "report"
 
@@ -78,6 +79,7 @@ def join_features() -> Pipeline:
                 [
                     "parameters",
                     "users_report",
+                    "l4_daily_feature_topup_and_volume_report",
                     "l3_customer_profile_include_1mo_non_active_report",
                     "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_report",
                     "l4_usage_prepaid_postpaid_daily_features_report",
