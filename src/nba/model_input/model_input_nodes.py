@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Union
 
 import pandas as pd
 import pyspark
@@ -31,7 +31,6 @@ def node_l5_nba_customer_profile(
         .when(F.col("network_type") == "Fixed Line-AWN", 3)
         .when(F.col("network_type") == "Non Mobile-SBN", 4),
     )
-
 
     df_customer_profile = df_customer_profile.withColumn(
         "customer_segment_numeric",
@@ -65,10 +64,13 @@ def node_l5_nba_customer_profile(
 
     return df_customer_profile
 
+
 def node_l5_nba_master_table_spine(
     l0_campaign_tracking_contact_list_pre: DataFrame,
-    important_campaigns: DataFrame,
-    reporting_kpis: DataFrame,
+    l4_revenue_prepaid_daily_features: DataFrame,
+    campaign_history_master_active: DataFrame,
+    date_min: str,  # YYYY-MM-DD
+    date_max: str,  # YYYY-MM-DD
     min_feature_days_lag: int,
 ) -> DataFrame:
 
@@ -76,28 +78,34 @@ def node_l5_nba_master_table_spine(
     spark = get_spark_session()
     spark.conf.set("spark.sql.shuffle.partitions", 2000)
 
+    l0_campaign_tracking_contact_list_pre = l0_campaign_tracking_contact_list_pre.filter(
+        F.col("contact_date").between(date_min, date_max)
+    )
+
     common_columns = list(
         set.intersection(
-            set(important_campaigns.columns),
+            set(campaign_history_master_active.columns),
             set(l0_campaign_tracking_contact_list_pre.columns),
         )
     )
     if common_columns:
         logging.warning(
-            f"There are common columns in l0_campaign_tracking_contact_list_"
-            f" pre and important_campaigns list: {', '.join(common_columns)}"
+            f"There are common columns in l0_campaign_tracking_contact_list_pre "
+            f"and campaign_history_master_active: {', '.join(common_columns)}"
         )
         for common_column in common_columns:
-            important_campaigns = important_campaigns.withColumnRenamed(
-                common_column, common_column + "_from_important_campaigns"
+            l0_campaign_tracking_contact_list_pre = l0_campaign_tracking_contact_list_pre.withColumnRenamed(
+                common_column, common_column + "_from_campaign_tracking"
             )
 
     df_spine = l0_campaign_tracking_contact_list_pre.join(
         F.broadcast(
-            important_campaigns.withColumnRenamed("child_code", "campaign_child_code")
+            campaign_history_master_active.withColumnRenamed(
+                "child_code", "campaign_child_code",
+            )
         ),
         on="campaign_child_code",
-        how="inner",
+        how="left",
     )
 
     df_spine = df_spine.withColumn(
@@ -140,30 +148,44 @@ def node_l5_nba_master_table_spine(
         F.date_sub(F.col("contact_date"), days=min_feature_days_lag),
     )
 
-    # join_date
-    df_spine = df_spine.withColumn("join_date", F.col("contact_date").cast(DateType()))
-
     # Add ARPU uplift
-    df_arpu_30d_before = reporting_kpis.select(
-        "subscription_identifier", "join_date", "total_revenue_30_day"
-    )
-    df_arpu_30d_after = reporting_kpis.select(
+    df_arpu_30d_before = l4_revenue_prepaid_daily_features.select(
         "subscription_identifier",
-        F.date_sub(F.col("join_date"), 30).alias("join_date"),
-        F.col("total_revenue_30_day").alias("total_revenue_30_day_after"),
+        "event_partition_date",
+        "sum_rev_arpu_total_net_rev_daily_last_thirty_day",
+    )
+    df_arpu_30d_after = l4_revenue_prepaid_daily_features.select(
+        "subscription_identifier",
+        F.date_sub(F.col("event_partition_date"), 30).alias("event_partition_date"),
+        F.col("sum_rev_arpu_total_net_rev_daily_last_thirty_day").alias(
+            "sum_rev_arpu_total_net_rev_daily_last_thirty_day_after"
+        ),
     )
     df_arpu_uplift = df_arpu_30d_before.join(
-        df_arpu_30d_after, how="inner", on=["subscription_identifier", "join_date"]
-    ).select(
-        "subscription_identifier",
-        F.col("join_date"),
-        (F.col("total_revenue_30_day_after") - F.col("total_revenue_30_day")).alias(
-            "target_relative_arpu_increase_30d"
+        df_arpu_30d_after,
+        how="inner",
+        on=["subscription_identifier", "event_partition_date"],
+    ).withColumn(
+        "target_relative_arpu_increase_30d",
+        (
+            F.col("sum_rev_arpu_total_net_rev_daily_last_thirty_day_after")
+            - F.col("sum_rev_arpu_total_net_rev_daily_last_thirty_day")
         ),
     )
 
     df_spine = df_spine.join(
-        df_arpu_uplift, on=["subscription_identifier", "join_date"], how="left"
+        df_arpu_uplift,
+        on=["subscription_identifier", "event_partition_date"],
+        how="left",
+    )
+
+    # Impute ARPU uplift columns as NA means that subscriber had 0 ARPU
+    df_spine = df_spine.fillna(
+        0,
+        subset=list(
+            set(df_arpu_uplift.columns)
+            - set(["subscription_identifier", "event_partition_date"])
+        ),
     )
 
     return df_spine
@@ -226,7 +248,7 @@ def node_l5_nba_master_table(
             #                 f" found when joining, they will be dropped from one table")
             raise ValueError(
                 f"Duplicated column names {', '.join(duplicated_columns)} found"
-                f" when joining features table {table_name} to the master table."
+                f" when joining features table {table_name} to the master table. "
                 f"Columns of {table_name} are: {', '.join(df_features.columns)}"
             )
 
@@ -280,9 +302,7 @@ def node_l5_nba_master_table_chunk_debug_arpu(
         by="campaign_child_code",
     )
     l5_nba_master_table_chunk_debug = (
-        df_chunk.filter(
-            ~F.isnull(F.col("target_relative_arpu_increase_30d"))
-        )
+        df_chunk.filter(~F.isnull(F.col("target_relative_arpu_increase_30d")))
         .sample(sampling_rate)
         .toPandas()
     )
