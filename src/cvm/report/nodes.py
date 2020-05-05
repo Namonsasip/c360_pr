@@ -36,7 +36,7 @@ def prepare_users(customer_groups: DataFrame) -> DataFrame:
     """
 
     return (
-        customer_groups.filter("target_group in ('TG', 'CG')")
+        customer_groups.filter("target_group in ('TG', 'CG', 'BAU')")
         .select(["crm_sub_id", "target_group"])
         .distinct()
         .withColumnRenamed("crm_sub_id", "subscription_identifier")
