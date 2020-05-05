@@ -25,11 +25,13 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from datetime import date
 from typing import Any, Dict
 
 from cvm.data_prep.nodes import add_macrosegments
 from cvm.treatments.nodes import prepare_microsegments
 from pyspark.sql import DataFrame
+from pyspark.sql import functions as func
 
 
 def prepare_users(customer_groups: DataFrame) -> DataFrame:
@@ -38,11 +40,12 @@ def prepare_users(customer_groups: DataFrame) -> DataFrame:
     Args:
         customer_groups: Table with target, control and bau groups.
     """
-
+    today = date.today().strftime("%Y-%m-%d")
     return (
         customer_groups.filter("target_group in ('TG', 'CG', 'BAU')")
         .select(["crm_sub_id", "target_group"])
         .distinct()
+        .withColumn("key_date", func.lit(today))
         .withColumnRenamed("crm_sub_id", "subscription_identifier")
     )
 
