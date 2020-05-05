@@ -34,3 +34,8 @@ features_report:
 users_micro_macro:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_users_micro_macro/
+
+# c360 microsegments and microsegments only
+users_micro_macro_only:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_users_micro_macro_only/

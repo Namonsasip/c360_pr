@@ -28,7 +28,7 @@
 from kedro.pipeline import Pipeline, node
 
 from cvm.data_prep.nodes import create_sample_dataset, subs_date_join
-from cvm.report.nodes import add_micro_macro
+from cvm.report.nodes import add_micro_macro, filter_out_micro_macro
 
 
 def sample_report_inputs() -> Pipeline:
@@ -95,6 +95,12 @@ def join_features() -> Pipeline:
                 ],
                 "users_micro_macro",
                 name="prepare_micro_macro",
+            ),
+            node(
+                filter_out_micro_macro,
+                "users_micro_macro",
+                "users_micro_macro_only",
+                name="prepare_micro_macro_only",
             ),
         ]
     )

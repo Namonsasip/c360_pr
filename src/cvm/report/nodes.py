@@ -62,3 +62,18 @@ def add_micro_macro(
     macro_added = add_macrosegments(raw_features, parameters)
     micro_macro_added = prepare_microsegments(macro_added, reve, parameters)
     return micro_macro_added
+
+
+def filter_out_micro_macro(all_features: DataFrame) -> DataFrame:
+    """ Pick only microsegments and macrosegments from table with all features.
+
+    Args:
+        all_features: table with raw features, macrosegments and microsegments.
+    """
+    cols_to_pick = [
+        "subscription_identifier",
+        "macrosegments",
+        "microsegments",
+        "target_group",
+    ]
+    return all_features.select(cols_to_pick)
