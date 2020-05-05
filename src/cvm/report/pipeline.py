@@ -25,3 +25,30 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from kedro.pipeline import Pipeline, node
+
+from cvm.data_prep.nodes import create_sample_dataset
+
+
+def sample_report_inputs() -> Pipeline:
+    """ Creates samples for report input datasets. """
+
+    datasets_to_sample = [
+        "l3_customer_profile_include_1mo_non_active",
+        "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
+        "l4_usage_prepaid_postpaid_daily_features",
+        "l4_usage_postpaid_prepaid_weekly_features_sum",
+    ]
+    sample_type = "report"
+
+    nodes_list = [
+        node(
+            create_sample_dataset,
+            [dataset_name, "params:" + sample_type],
+            dataset_name + "_" + sample_type,
+            name="sample_" + dataset_name + "_" + sample_type,
+        )
+        for dataset_name in datasets_to_sample
+    ]
+
+    return Pipeline(nodes_list)
