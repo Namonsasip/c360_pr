@@ -8,6 +8,7 @@ users_report:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_users_report/
 
+# inputs samples
 l3_customer_profile_include_1mo_non_active_report:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l3_customer_profile_include_1mo_non_active_report/
@@ -23,3 +24,8 @@ l4_usage_prepaid_postpaid_daily_features_report:
 l4_usage_postpaid_prepaid_weekly_features_sum_report:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_usage_postpaid_prepaid_weekly_features_sum_report/
+
+# c360 datasets joined
+features_report:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_features_report/
