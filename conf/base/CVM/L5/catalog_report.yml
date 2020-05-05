@@ -30,6 +30,7 @@ features_report:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_features_report/
 
+# c360 features joined + microsegments and microsegments
 users_micro_macro:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_users_micro_macro/

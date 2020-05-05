@@ -27,7 +27,8 @@
 # limitations under the License.
 from kedro.pipeline import Pipeline, node
 
-from cvm.data_prep.nodes import create_sample_dataset
+from cvm.data_prep.nodes import create_sample_dataset, subs_date_join
+from cvm.report.nodes import add_micro_macro
 
 
 def sample_report_inputs() -> Pipeline:
@@ -64,5 +65,36 @@ def prepare_users() -> Pipeline:
                 "users_report",
                 name="create_users_report",
             )
+        ]
+    )
+
+
+def join_features() -> Pipeline:
+    """Joins the features from C360 and adds microsegments / macrosegments."""
+    return Pipeline(
+        [
+            node(
+                subs_date_join,
+                [
+                    "parameters",
+                    "users_report",
+                    "l3_customer_profile_include_1mo_non_active_report",
+                    "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_report",
+                    "l4_usage_prepaid_postpaid_daily_features_report",
+                    "l4_usage_postpaid_prepaid_weekly_features_sum_report",
+                ],
+                "features_report",
+                name="join_report_features",
+            ),
+            node(
+                add_micro_macro,
+                [
+                    "features_report",
+                    "l3_customer_profile_include_1mo_non_active_report",
+                    "parameters",
+                ],
+                "users_micro_macro",
+                name="prepare_micro_macro",
+            ),
         ]
     )
