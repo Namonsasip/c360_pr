@@ -8,11 +8,15 @@ def device_to_l2_pipeline(**kwargs):
     return Pipeline(
         [
             # Weekly handset configuration related features
-
+            node(
+                dac_for_device_summary_with_configuration,
+                ["l0_devices_handset_configurations"],
+                "int_l0_devices_handset_configurations"
+            ),
             node(
                 device_summary_with_configuration,
                 ["l1_devices_summary_customer_handset_daily",
-                 "l0_devices_handset_configurations"],
+                 "int_l0_devices_handset_configurations"],
                 "device_summary_with_config"
             ),
 

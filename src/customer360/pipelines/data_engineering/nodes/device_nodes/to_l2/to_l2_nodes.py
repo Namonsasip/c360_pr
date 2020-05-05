@@ -6,8 +6,10 @@ from pathlib import Path
 import logging
 import os
 from pyspark.sql import Window
-from pyspark.sql.types import StringType
 from src.customer360.utilities.spark_util import get_spark_empty_df
+from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols
+from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check
+from pyspark.sql.types import *
 
 conf = os.getenv("CONF", None)
 
@@ -132,8 +134,22 @@ def join_with_customer_profile(customer_prof, hs_summary):
 
 def device_summary_with_configuration(hs_summary, hs_configs):
 
-    if len(hs_summary.head(1)) == 0 or len(hs_configs.head(1)) == 0:
-        return get_spark_empty_df
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([hs_summary, hs_configs]):
+        return get_spark_empty_df()
+
+    hs_summary = data_non_availability_and_missing_check(df=hs_summary, grouping="weekly", par_col="event_partition_date",
+                                                       target_table_name="l2_device_summary_with_config_weekly",
+                                                        missing_data_check_flg='Y')
+
+    hs_configs = data_non_availability_and_missing_check(df=hs_configs, grouping="weekly", par_col="partition_date",
+                                                        target_table_name="l2_device_summary_with_config_weekly")
+
+    if check_empty_dfs([hs_summary, hs_configs]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+
 
     hs_configs = hs_configs.withColumn("partition_date", hs_configs["partition_date"].cast(StringType()))
     hs_configs = hs_configs.withColumn("start_of_week",
@@ -150,6 +166,18 @@ def device_summary_with_configuration(hs_summary, hs_configs):
     hs_configs = hs_configs.withColumn("rnk", F.row_number().over(partition))
     hs_configs = hs_configs.filter(f.col("rnk") == 1)
 
+    min_value = union_dataframes_with_missing_cols(
+        [
+            hs_summary.select(
+                F.max(F.col("start_of_week")).alias("max_date")),
+            hs_configs.select(
+                F.max(F.col("start_of_week")).alias("max_date")),
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    hs_summary = hs_summary.filter(F.col("start_of_week") <= min_value)
+    hs_configs = hs_configs.filter(F.col("start_of_week") <= min_value)
+
     joined_data = hs_summary.join(hs_configs,
                                   (hs_summary.handset_brand_code == hs_configs.hs_brand_code) &
                                   (hs_summary.handset_model_code == hs_configs.hs_model_code) &
@@ -157,3 +185,19 @@ def device_summary_with_configuration(hs_summary, hs_configs):
                                   .drop(hs_configs.start_of_week) \
 
     return joined_data
+
+
+def dac_for_streaming_to_l2_pipeline_from_l2(input_df: DataFrame, target_table_name: str):
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="weekly", par_col="start_of_week",
+                                                       target_table_name=target_table_name)
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+
+    return input_df

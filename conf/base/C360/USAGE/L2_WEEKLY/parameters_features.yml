@@ -1,4 +1,4 @@
-l2_usage_postpaid_prepaid_daily:
+l2_usage_postpaid_prepaid_weekly:
   where_clause: ""
   type: "week"
   feature_list:

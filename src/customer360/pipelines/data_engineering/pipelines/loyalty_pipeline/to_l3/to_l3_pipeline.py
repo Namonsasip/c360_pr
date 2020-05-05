@@ -1,43 +1,23 @@
 from kedro.pipeline import Pipeline, node
 
-from src.customer360.utilities.config_parser import node_from_config
 from src.customer360.pipelines.data_engineering.nodes.loyalty_nodes.to_l3.to_l3_nodes import *
 
+
 def loyalty_to_l3_pipeline(**kwargs):
+    """
+    :param kwargs:
+    :return:
+    """
     return Pipeline(
         [
-
-            # Number of services for each category
             node(
-                node_from_config,
-                ["l1_loyalty_number_of_services_for_l3_loyalty_number_of_services",
-                 "params:l3_loyalty_number_of_services_monthly"],
-                 "l3_loyalty_number_of_services"
+                build_loyalty_point_balance_statuses_monthly,
+                ["l1_loyalty_drm_t_aunjai_point_collection_with_customers_for_point_bal_daily",
+                 "l1_loyalty_priv_point_bonus_ba_daily",
+                 "l1_loyalty_priv_point_ba_daily",
+                 "params:l3_loyalty_point_balance_statuses_monthly"],
+                "l3_loyalty_point_balance_statuses_monthly"
             ),
 
-            # Number of rewards for each category
-            node(
-                node_from_config,
-                ["l1_loyalty_number_of_rewards_for_l3_loyalty_number_of_rewards",
-                 "params:l3_loyalty_number_of_rewards_monthly"],
-                "l3_loyalty_number_of_rewards"
-            ),
-            #
-            # # Number of points spend for each category
-            node(
-                node_from_config,
-                ["l1_loyalty_number_of_points_spend_for_l3_loyalty_number_of_points_spend",
-                 "params:l3_loyalty_number_of_points_spend_monthly"],
-                "l3_loyalty_number_of_points_spend"
-            ),
-
-            # Serenade class monthly
-            node(
-                loyalty_serenade_class,
-                ["l0_loyalty_priv_customer_profile_for_l3_loyalty_serenade_class",
-                 "l3_customer_profile_include_1mo_non_active_for_l3_loyalty_serenade_class",
-                 "params:l3_loyalty_serenade_class_monthly"],
-                "l3_loyalty_serenade_class"
-            ),
         ]
     )

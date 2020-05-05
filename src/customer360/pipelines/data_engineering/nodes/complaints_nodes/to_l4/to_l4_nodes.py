@@ -1,4 +1,5 @@
 from customer360.utilities.config_parser import l4_rolling_window
+from customer360.utilities.spark_util import get_spark_session
 
 
 def l4_complaints_nps(
@@ -10,8 +11,7 @@ def l4_complaints_nps(
     :param config:
     :return:
     """
-    from pyspark.sql import SparkSession
-    spark = SparkSession.builder.getOrCreate()
+    spark = get_spark_session()
 
     input_df.createOrReplaceTempView("input_table")
 
