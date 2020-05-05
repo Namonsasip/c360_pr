@@ -29,3 +29,7 @@ l4_usage_postpaid_prepaid_weekly_features_sum_report:
 features_report:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_features_report/
+
+users_micro_macro:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_users_micro_macro/
