@@ -104,3 +104,8 @@ def join_features() -> Pipeline:
             ),
         ]
     )
+
+
+def prepare_user_microsegments() -> Pipeline:
+    """ Join above pipelines"""
+    return prepare_users() + sample_report_inputs() + join_features()
