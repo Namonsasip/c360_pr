@@ -185,3 +185,19 @@ def device_summary_with_configuration(hs_summary, hs_configs):
                                   .drop(hs_configs.start_of_week) \
 
     return joined_data
+
+
+def dac_for_streaming_to_l2_pipeline_from_l2(input_df: DataFrame, target_table_name: str):
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="weekly", par_col="start_of_week",
+                                                       target_table_name=target_table_name)
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+
+    return input_df
