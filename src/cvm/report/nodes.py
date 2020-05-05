@@ -25,3 +25,19 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from pyspark.sql import DataFrame
+
+
+def prepare_users(customer_groups: DataFrame) -> DataFrame:
+    """ Creates users table for reporting purposes.
+
+    Args:
+        customer_groups: Table with target, control and bau groups.
+    """
+
+    return (
+        customer_groups.filter("target_group in ('TG', 'CG')")
+        .select(["crm_sub_id", "target_group"])
+        .distinct()
+        .withColumnRenamed("crm_sub_id", "subscription_identifier")
+    )
