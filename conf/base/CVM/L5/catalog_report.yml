@@ -1,0 +1,9 @@
+_spark_parquet: &spark_parquet
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  save_args:
+    mode: "overwrite"
+
+users_report:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_users_report/
