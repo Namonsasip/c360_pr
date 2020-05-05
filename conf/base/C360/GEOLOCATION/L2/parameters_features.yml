@@ -63,7 +63,7 @@ l2_data_distance_weekend_weekly: #472,475,478
   #    standard_deviation_distance: "first(stdev_distance)"
   granularity: "start_of_week,mobile_no"
 
-l2_data_frequent_cell_weekday_weekly:
+l2_data_frequent_cell_weekday_weekly: #434/437/443/449/452/455/458/461/464
   where_clause: ""
   feature_list:
     sum_no_of_call_rank_1: "sum(sum_rank_1)"
@@ -77,7 +77,7 @@ l2_data_frequent_cell_weekday_weekly:
     cgi_partial_rank_2: "concat_ws('', collect_list(cgi_partial_rank_2))"
   granularity: "start_of_week,mobile_no"
 
-l2_data_frequent_cell_weekend_weekly:
+l2_data_frequent_cell_weekend_weekly: #435/439/445/450/453/456/459/462/465
   where_clause: ""
   feature_list:
     sum_no_of_call_rank_1: "sum(sum_rank_1)"
@@ -91,7 +91,7 @@ l2_data_frequent_cell_weekend_weekly:
     cgi_partial_rank_2: "concat_ws('', collect_list(cgi_partial_rank_2))"
   granularity: "start_of_week,mobile_no"
 
-l2_data_frequent_cell_weekly:
+l2_data_frequent_cell_weekly: #436/441/447/451/454/457/460/463
   where_clause: ""
   feature_list:
     sum_no_of_call_rank_1: "sum(sum_rank_1)"
@@ -107,21 +107,21 @@ l2_data_frequent_cell_weekly:
 
 
 
-l2_data_frequent_cell_4g_weekday_weekly:
+l2_data_frequent_cell_4g_weekday_weekly: #438/444
   where_clause: ""
   feature_list:
     cgi_partial_rank_1: "concat_ws('', collect_list(cgi_partial_rank_1))"
     cgi_partial_rank_2: "concat_ws('', collect_list(cgi_partial_rank_2))"
   granularity: "start_of_week,mobile_no"
 
-l2_data_frequent_cell_4g_weekend_weekly:
+l2_data_frequent_cell_4g_weekend_weekly: #440/446
   where_clause: ""
   feature_list:
     cgi_partial_rank_1: "concat_ws('', collect_list(cgi_partial_rank_1))"
     cgi_partial_rank_2: "concat_ws('', collect_list(cgi_partial_rank_2))"
   granularity: "start_of_week,mobile_no"
 
-l2_data_frequent_cell_4g_weekly:
+l2_data_frequent_cell_4g_weekly: #442/448
   where_clause: ""
   feature_list:
     cgi_partial_rank_1: "concat_ws('', collect_list(cgi_partial_rank_1))"

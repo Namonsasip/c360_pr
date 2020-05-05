@@ -63,7 +63,7 @@ l3_geo_home_work_location_id: #
   granularity: "start_of_month,imsi,msisdn"
 
 
-l3_data_frequent_cell_weekday_monthly:
+l3_data_frequent_cell_weekday_monthly: #434/437/443/449/452/455/458/461/464
   where_clause: ""
   feature_list:
     sum_no_of_call_rank_1: "sum(sum_rank_1)"
@@ -77,7 +77,7 @@ l3_data_frequent_cell_weekday_monthly:
     cgi_partial_rank_2: "concat_ws('', collect_list(cgi_partial_rank_2))"
   granularity: "start_of_week,mobile_no"
 
-l3_data_frequent_cell_weekend_monthly:
+l3_data_frequent_cell_weekend_monthly: #435/439/445/450/453/456/459/462/465
   where_clause: ""
   feature_list:
     sum_no_of_call_rank_1: "sum(sum_rank_1)"
@@ -91,7 +91,7 @@ l3_data_frequent_cell_weekend_monthly:
     cgi_partial_rank_2: "concat_ws('', collect_list(cgi_partial_rank_2))"
   granularity: "start_of_week,mobile_no"
 
-l3_data_frequent_cell_monthly:
+l3_data_frequent_cell_monthly: #436/441/447/451/454/457/460/463
   where_clause: ""
   feature_list:
     sum_no_of_call_rank_1: "sum(sum_rank_1)"
@@ -107,21 +107,21 @@ l3_data_frequent_cell_monthly:
 
 
 
-l3_data_frequent_cell_4g_weekday_monthly:
+l3_data_frequent_cell_4g_weekday_monthly: #438/444
   where_clause: ""
   feature_list:
     cgi_partial_rank_1: "concat_ws('', collect_list(cgi_partial_rank_1))"
     cgi_partial_rank_2: "concat_ws('', collect_list(cgi_partial_rank_2))"
   granularity: "start_of_week,mobile_no"
 
-l3_data_frequent_cell_4g_weekend_monthly:
+l3_data_frequent_cell_4g_weekend_monthly: #440/446
   where_clause: ""
   feature_list:
     cgi_partial_rank_1: "concat_ws('', collect_list(cgi_partial_rank_1))"
     cgi_partial_rank_2: "concat_ws('', collect_list(cgi_partial_rank_2))"
   granularity: "start_of_week,mobile_no"
 
-l3_data_frequent_cell_4g_monthly:
+l3_data_frequent_cell_4g_monthly: #442/448
   where_clause: ""
   feature_list:
     cgi_partial_rank_1: "concat_ws('', collect_list(cgi_partial_rank_1))"
