@@ -7,3 +7,19 @@ _spark_parquet: &spark_parquet
 users_report:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_users_report/
+
+l3_customer_profile_include_1mo_non_active_report:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l3_customer_profile_include_1mo_non_active_report/
+
+l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_report:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_report/
+
+l4_usage_prepaid_postpaid_daily_features_report:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_usage_prepaid_postpaid_daily_features_report/
+
+l4_usage_postpaid_prepaid_weekly_features_sum_report:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_usage_postpaid_prepaid_weekly_features_sum_report/
