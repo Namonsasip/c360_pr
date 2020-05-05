@@ -114,9 +114,9 @@ class TestUnitDigital:
         df_monthly = node_from_config(df3,var_project_context.catalog.load(
             'params:l3_digital_cxenxse_user_profile_monthly'))
         df_monthly = df_monthly.withColumn("subscription_identifier", F.lit(1)) 
-
+        # df_monthly.show()
         assert \
-            df_monthly.where("start_of_month='2019-03-01'").select("digital_nummber_of_device_brands").collect()[0][
+            df_monthly.where("start_of_month='2019-03-01'").select("digital_number_of_device_brands").collect()[0][
                 0] == 27
         assert \
             df_monthly.where("start_of_month='2019-03-01'").select("digital_is_device_brands_apple").collect()[0][
@@ -140,7 +140,7 @@ class TestUnitDigital:
             df_monthly.where("start_of_month='2019-03-01'").select("digital_is_device_brands_true").collect()[0][
                 0] == 1
         assert \
-            df_monthly.where("start_of_month='2019-03-01'").select("digital_nummber_of_distinct_device_type").collect()[0][
+            df_monthly.where("start_of_month='2019-03-01'").select("digital_number_of_distinct_device_type").collect()[0][
                 0] == 3
         assert \
             df_monthly.where("start_of_month='2019-03-01'").select("digital_is_device_mobile").collect()[0][
@@ -210,26 +210,26 @@ class TestUnitDigital:
                 # min_digital_nummber_of_distinct_device_type_monthly_last_month
                 # min_digital_nummber_of_distinct_device_type_monthly_last_three_month
         assert \
-            df41.where("start_of_month='2019-04-01'").select("min_digital_nummber_of_device_brands_monthly_last_month").collect()[0][
+            df41.where("start_of_month='2019-04-01'").select("min_digital_number_of_device_brands_monthly_last_month").collect()[0][
                 0] == 27
         assert \
-            df41.where("start_of_month='2019-04-01'").select("min_digital_nummber_of_device_brands_monthly_last_three_month").collect()[0][
+            df41.where("start_of_month='2019-04-01'").select("min_digital_number_of_device_brands_monthly_last_three_month").collect()[0][
                 0] == 19
         assert \
-            df41.where("start_of_month='2019-04-01'").select("min_digital_nummber_of_distinct_device_type_monthly_last_month").collect()[0][
+            df41.where("start_of_month='2019-04-01'").select("min_digital_number_of_distinct_device_type_monthly_last_month").collect()[0][
                 0] == 3
         assert \
-            df41.where("start_of_month='2019-04-01'").select("min_digital_nummber_of_distinct_device_type_monthly_last_three_month").collect()[0][
+            df41.where("start_of_month='2019-04-01'").select("min_digital_number_of_distinct_device_type_monthly_last_three_month").collect()[0][
                 0] == 3
                 # max_digital_nummber_of_device_brands_monthly_last_month
                 # max_digital_nummber_of_device_brands_monthly_last_three_month
                 # max_digital_is_device_brands_apple_monthly_last_month
                 # max_digital_is_device_brands_apple_monthly_last_three_month
         assert \
-            df41.where("start_of_month='2019-04-01'").select("max_digital_nummber_of_device_brands_monthly_last_month").collect()[0][
+            df41.where("start_of_month='2019-04-01'").select("max_digital_number_of_device_brands_monthly_last_month").collect()[0][
                 0] == 27
         assert \
-            df41.where("start_of_month='2019-04-01'").select("max_digital_nummber_of_device_brands_monthly_last_three_month").collect()[0][
+            df41.where("start_of_month='2019-04-01'").select("max_digital_number_of_device_brands_monthly_last_three_month").collect()[0][
                 0] == 27
         assert \
             df41.where("start_of_month='2019-04-01'").select("max_digital_is_device_brands_apple_monthly_last_month").collect()[0][
@@ -264,10 +264,10 @@ class TestUnitDigital:
             df41.where("start_of_month='2019-04-01'").select("max_digital_is_device_brands_oppo_monthly_last_three_month").collect()[0][
                 0] == 1
         assert \
-            df41.where("start_of_month='2019-04-01'").select("max_digital_nummber_of_distinct_device_type_monthly_last_month").collect()[0][
+            df41.where("start_of_month='2019-04-01'").select("max_digital_number_of_distinct_device_type_monthly_last_month").collect()[0][
                 0] == 3
         assert \
-            df41.where("start_of_month='2019-04-01'").select("max_digital_nummber_of_distinct_device_type_monthly_last_three_month").collect()[0][
+            df41.where("start_of_month='2019-04-01'").select("max_digital_number_of_distinct_device_type_monthly_last_three_month").collect()[0][
                 0] == 3
                 # max_digital_is_device_mobile_monthly_last_month
                 # max_digital_is_device_mobile_monthly_last_three_month
@@ -344,18 +344,18 @@ class TestUnitDigital:
             df41.where("start_of_month='2019-04-01'").select("max_digital_is_device_brands_true_monthly_last_three_month").collect()[0][
                 0] == 1
         assert \
-            df41.where("start_of_month='2019-04-01'").select("avg_digital_nummber_of_device_brands_monthly_last_month").collect()[0][
+            df41.where("start_of_month='2019-04-01'").select("avg_digital_number_of_device_brands_monthly_last_month").collect()[0][
                 0] == 27
         assert \
-            abs(df41.where("start_of_month='2019-04-01'").select("avg_digital_nummber_of_device_brands_monthly_last_three_month").collect()[0][
+            abs(df41.where("start_of_month='2019-04-01'").select("avg_digital_number_of_device_brands_monthly_last_three_month").collect()[0][
                 0] - 23.3333) < 0.001
                 # avg_digital_nummber_of_distinct_device_type_monthly_last_month
                 # avg_digital_nummber_of_distinct_device_type_monthly_last_three_month
         assert \
-            df41.where("start_of_month='2019-04-01'").select("avg_digital_nummber_of_distinct_device_type_monthly_last_month").collect()[0][
+            df41.where("start_of_month='2019-04-01'").select("avg_digital_number_of_distinct_device_type_monthly_last_month").collect()[0][
                 0] == 3
         assert \
-            df41.where("start_of_month='2019-04-01'").select("avg_digital_nummber_of_distinct_device_type_monthly_last_three_month").collect()[0][
+            df41.where("start_of_month='2019-04-01'").select("avg_digital_number_of_distinct_device_type_monthly_last_three_month").collect()[0][
                 0] == 3
 
     def test_l4_2(self,project_context):
