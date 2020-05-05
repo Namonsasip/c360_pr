@@ -27,6 +27,12 @@ scoring_experiment:
   stages:
     - take_last_date
 
+report:
+  subscription_id_suffix: '' # '' for all users
+  chosen_date: '' # '' for most recent data
+  stages:
+    - take_last_date
+
 # Column to be included in every table
 key_columns:
   - key_date
