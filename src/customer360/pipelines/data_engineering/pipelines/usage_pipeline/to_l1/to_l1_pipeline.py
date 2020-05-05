@@ -43,24 +43,12 @@ from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1 import build
 def usage_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
-            # node(
-            #     usage_outgoing_ir_call_pipeline,
-            #     ["l0_usage_call_relation_sum_ir_daily",
-            #      "params:l1_usage_outgoing_call_relation_sum_ir_daily"],
-            #     "l1_usage_outgoing_call_relation_sum_ir_daily"
-            # ),
             node(
                 usage_outgoing_ir_call_pipeline,
                 ["l0_usage_call_relation_sum_ir_daily_outgoing",
                  "params:l1_usage_outgoing_call_relation_sum_ir_daily"],
                 "l1_usage_outgoing_call_relation_sum_ir_daily"
             ),
-            # node(
-            #     usage_incoming_ir_call_pipeline,
-            #     ["l0_usage_call_relation_sum_ir_daily",
-            #      "params:l1_usage_incoming_call_relation_sum_ir_daily"],
-            #     "l1_usage_incoming_call_relation_sum_ir_daily"
-            # ),
             node(
                 usage_incoming_ir_call_pipeline,
                 ["l0_usage_call_relation_sum_ir_daily_incoming",
@@ -88,24 +76,12 @@ def usage_to_l1_pipeline(**kwargs):
                                    "params:l1_usage_ru_a_vas_postpaid_prepaid_daily"],
                 'l1_usage_ru_a_vas_postpaid_prepaid_daily'
             ),
-            # node(
-            #     usage_outgoing_call_pipeline,
-            #     ["l0_usage_call_relation_sum_daily",
-            #      "params:l1_usage_outgoing_call_relation_sum_daily"],
-            #     "l1_usage_outgoing_call_relation_sum_daily"
-            # ),
             node(
                 usage_outgoing_call_pipeline,
                 ["l0_usage_call_relation_sum_daily_outgoing",
                  "params:l1_usage_outgoing_call_relation_sum_daily"],
                 "l1_usage_outgoing_call_relation_sum_daily"
             ),
-            # node(
-            #     usage_incoming_call_pipeline,
-            #     ["l0_usage_call_relation_sum_daily",
-            #      "params:l1_usage_incoming_call_relation_sum_daily"],
-            #     "l1_usage_incoming_call_relation_sum_daily"
-            # ),
             node(
                 usage_incoming_call_pipeline,
                 ["l0_usage_call_relation_sum_daily_incoming",

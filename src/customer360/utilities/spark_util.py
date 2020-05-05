@@ -16,11 +16,12 @@ def get_spark_session() -> SparkSession:
     return spark
 
 
-def get_spark_empty_df() -> DataFrame:
+def get_spark_empty_df(schema=None) -> DataFrame:
     """
     :return:
     """
-    schema = StructType([])
+    if schema is None:
+        schema = StructType([])
     spark = get_spark_session()
     src = spark.createDataFrame(spark.sparkContext.emptyRDD(), schema)
     return src

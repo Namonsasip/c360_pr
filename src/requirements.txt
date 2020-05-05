@@ -15,7 +15,6 @@ scikit-learn==0.22.2
 xgboost==1.0.2
 pandas==0.25.3
 plotnine==0.6.0
-pai==0.43.0
 lightgbm==2.3.1
 seaborn==0.10.0
 matplotlib==3.0.3
