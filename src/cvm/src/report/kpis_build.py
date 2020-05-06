@@ -71,11 +71,12 @@ def add_status(users_dates: DataFrame, profile_table: DataFrame,) -> DataFrame:
 
 
 def add_inactivity(
-    users_dates: DataFrame, usage: DataFrame, inactivity_length: int
+    users_dates: DataFrame, usage: DataFrame, inactivity_length: int, min_date: str
 ) -> DataFrame:
     """ Adds a column with flag indicating inactivity basing on usage.
 
     Args:
+        min_date: minimum date of report.
         users_dates: table with users and dates to create report for.
         usage: table with last activity date.
         inactivity_length: days of inactivity to be considered inactive.
@@ -93,7 +94,11 @@ def add_inactivity(
         last_action_date_is_null | activity_not_recent, 0
     ).otherwise(1)
 
-    usage = prepare_key_columns(usage).select(key_columns + [last_action_date_col])
+    usage = (
+        prepare_key_columns(usage)
+        .select(key_columns + [last_action_date_col])
+        .filter("key_date >= '{}'".format(min_date))
+    )
     return (
         users_dates.join(usage, on=key_columns, how="left")
         .withColumn(new_col_name, new_col_when)

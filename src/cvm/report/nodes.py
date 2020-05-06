@@ -110,5 +110,5 @@ def build_daily_kpis(
     df = add_status(df, profile_table)
     inactivity_lengths = report_parameters["inactivity_lengths"]
     for inactivity_length in inactivity_lengths:
-        df = add_inactivity(df, usage, inactivity_length)
+        df = add_inactivity(df, usage, inactivity_length, report_parameters["min_date"])
     return df
