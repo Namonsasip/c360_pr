@@ -41,11 +41,16 @@ from pyspark.sql import DataFrame
 
 
 def prepare_microsegments(
-    raw_features: DataFrame, reve: DataFrame, parameters: Dict[str, Any],
+    raw_features: DataFrame,
+    reve: DataFrame,
+    parameters: Dict[str, Any],
+    reduce_cols: bool = True,
 ) -> DataFrame:
     """ Add microsegments columns.
 
     Args:
+        reduce_cols: should columns be reduced only to key columns, microsegment and
+            microsegments.
         raw_features: Table with users to add microsegments to and pre - preprocessing
             features.
         reve: Table with monthly revenue. Assumes using l3 profile table.
@@ -56,7 +61,7 @@ def prepare_microsegments(
     micro_features = add_microsegment_features(raw_features, parameters).join(
         vol, "subscription_identifier"
     )
-    return define_microsegments(micro_features, parameters)
+    return define_microsegments(micro_features, parameters, reduce_cols)
 
 
 def produce_treatments(

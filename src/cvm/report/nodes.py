@@ -63,7 +63,9 @@ def add_micro_macro(
     """
 
     macro_added = add_macrosegments(raw_features, parameters)
-    micro_macro_added = prepare_microsegments(macro_added, reve, parameters)
+    micro_macro_added = prepare_microsegments(
+        macro_added, reve, parameters, reduce_cols=False
+    )
     return micro_macro_added
 
 

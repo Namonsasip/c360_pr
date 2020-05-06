@@ -91,11 +91,15 @@ def add_microsegment_features(df: DataFrame, parameters: Dict[str, Any]) -> Data
     return df
 
 
-def define_microsegments(df: DataFrame, parameters: Dict[str, Any],) -> DataFrame:
+def define_microsegments(
+    df: DataFrame, parameters: Dict[str, Any], reduce_cols: bool = True
+) -> DataFrame:
     """ Adds microsegment columns to given tables. Microsegments are used to connect
     with treatments.
 
     Args:
+        reduce_cols: should columns be reduced only to key columns, microsegment and
+            microsegments.
         df: DataFrame with all microsegment features.
         parameters: parameters defined in parameters.yml.
     """
@@ -118,8 +122,9 @@ def define_microsegments(df: DataFrame, parameters: Dict[str, Any],) -> DataFram
         "churn_microsegment",
         "ard_microsegment",
     ]
-
-    return df.select(cols_to_pick)
+    if reduce_cols:
+        df = df.select(cols_to_pick)
+    return df
 
 
 def add_volatility_scores(
