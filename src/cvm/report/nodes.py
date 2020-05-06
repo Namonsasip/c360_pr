@@ -75,8 +75,10 @@ def filter_out_micro_macro(all_features: DataFrame) -> DataFrame:
     """
     cols_to_pick = [
         "subscription_identifier",
-        "macrosegments",
-        "microsegments",
+        "ard_macrosegment",
+        "churn_macrosegment",
+        "ard_microsegment",
+        "churn_microsegment",
         "target_group",
     ]
     return all_features.select(cols_to_pick)
