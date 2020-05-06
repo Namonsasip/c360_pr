@@ -29,6 +29,7 @@ from datetime import date
 from typing import Any, Dict
 
 from cvm.data_prep.nodes import add_macrosegments
+from cvm.src.report.kpis_build import add_arpus, add_inactivity, add_status
 from cvm.treatments.nodes import prepare_microsegments
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as func
@@ -84,3 +85,28 @@ def filter_out_micro_macro(all_features: DataFrame) -> DataFrame:
         "target_group",
     ]
     return all_features.select(cols_to_pick)
+
+
+def build_daily_kpis(
+    users_report: DataFrame,
+    reve: DataFrame,
+    profile_table: DataFrame,
+    usage: DataFrame,
+    parameters: Dict[str, Any],
+) -> DataFrame:
+    """ Build daily kpis table.
+
+    Args:
+        parameters: parameters defined in parameters.yml.
+        reve: table with monthly revenue. Assumes using l3 profile table.
+        users_report: table with users to create report for.
+        profile_table: table with subscriber statuses.
+        usage: table with last activity date.
+    """
+    report_parameters = parameters["build_report"]
+    df = add_arpus(users_report, reve, report_parameters["min_date"])
+    df = add_status(df, profile_table)
+    inactivity_lengths = report_parameters["inactivity_lengths"]
+    for inactivity_length in inactivity_lengths:
+        df = add_inactivity(df, usage, inactivity_length)
+    return df
