@@ -47,3 +47,20 @@ def add_arpus(users_report: DataFrame, reve: DataFrame, min_date: str,) -> DataF
     return users_report.join(reve, on="subscription_identifier", how="left").fillna(
         {"rev_arpu_total_net_rev": 0}
     )
+
+
+def add_status(users_dates: DataFrame, profile_table: DataFrame,) -> DataFrame:
+    """ Adds a column with status activity.
+
+    Args:
+        users_dates: table with users and dates to create report for. Can be output of
+            add_arpus function.
+        profile_table: table with statuses for given users and dates.
+    """
+
+    key_columns = ["subscription_identifier", "key_date"]
+    cols_to_pick = ["subscription_status"]
+    profile_table = prepare_key_columns(profile_table).select(
+        key_columns + cols_to_pick
+    )
+    return users_dates.join(profile_table, on=key_columns, how="left")
