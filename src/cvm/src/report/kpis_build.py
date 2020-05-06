@@ -25,3 +25,25 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from cvm.src.utils.prepare_key_columns import prepare_key_columns
+from pyspark.sql import DataFrame
+
+
+def add_arpus(users_report: DataFrame, reve: DataFrame, min_date: str,) -> DataFrame:
+    """ Adds a column with daily revenues for given time range. Imputes the data with
+        0 if needed.
+
+    Args:
+        users_report: table with users to create report for.
+        reve: table with daily arpus.
+        min_date: minimum date of report.
+    """
+    reve_to_pick = ["subscription_identifier", "key_date", "rev_arpu_total_net_rev"]
+    reve = (
+        prepare_key_columns(reve)
+        .select(reve_to_pick)
+        .filter("key_date >= '{}'".format(min_date))
+    )
+    return users_report.join(reve, on="subscription_identifier", how="left").fillna(
+        {"rev_arpu_total_net_rev": 0}
+    )
