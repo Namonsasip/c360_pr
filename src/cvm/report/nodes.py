@@ -25,6 +25,7 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import logging
 from datetime import date
 from typing import Any, Dict
 
@@ -103,6 +104,7 @@ def build_daily_kpis(
         profile_table: table with subscriber statuses.
         usage: table with last activity date.
     """
+    logging.info("Building daily kpis")
     report_parameters = parameters["build_report"]
     df = add_arpus(users_report, reve, report_parameters["min_date"])
     df = add_status(df, profile_table)

@@ -25,6 +25,8 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import logging
+
 import pyspark.sql.functions as func
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
 from pyspark.sql import DataFrame
@@ -39,6 +41,7 @@ def add_arpus(users_report: DataFrame, reve: DataFrame, min_date: str,) -> DataF
         reve: table with daily arpus.
         min_date: minimum date of report.
     """
+    logging.info("Adding ARPU")
     reve_to_pick = ["subscription_identifier", "key_date", "rev_arpu_total_net_rev"]
     reve = (
         prepare_key_columns(reve)
@@ -58,6 +61,7 @@ def add_status(users_dates: DataFrame, profile_table: DataFrame,) -> DataFrame:
         profile_table: table with statuses for given users and dates.
     """
 
+    logging.info("Adding subscription status")
     key_columns = ["subscription_identifier", "key_date"]
     cols_to_pick = ["subscription_status"]
     profile_table = prepare_key_columns(profile_table).select(
@@ -76,6 +80,7 @@ def add_inactivity(
         usage: table with last activity date.
         inactivity_length: days of inactivity to be considered inactive.
     """
+    logging.info("Adding inactivity columns")
     key_columns = ["subscription_identifier", "key_date"]
     last_action_date_col = "last_activity_date"
     new_col_name = "inactive_{}_days".format(inactivity_length)
