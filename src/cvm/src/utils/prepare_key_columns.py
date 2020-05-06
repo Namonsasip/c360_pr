@@ -25,8 +25,9 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import logging
 
-from cvm.src.utils.list_operations import list_intersection
+from cvm.src.utils.list_operations import list_intersection, list_sub
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as func
 
@@ -48,7 +49,10 @@ def prepare_key_columns(df: DataFrame,) -> DataFrame:
     ]
 
     if len(list_intersection(df.columns, key_date_columns)) > 1:
-        raise Exception("More then one date column found.")
+        logging.info("More then one date column found. Picking event_partition_date")
+        to_drop = list_sub(key_date_columns, "event_partition_date")
+        to_drop = list_intersection(df.columns, to_drop)
+        df = df.drop(*to_drop)
 
     if "start_of_month" in df.columns:
         df = df.withColumn("start_of_month", func.add_months(df.start_of_month, 1))
