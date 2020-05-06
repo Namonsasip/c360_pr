@@ -77,7 +77,7 @@ def add_inactivity(
         inactivity_length: days of inactivity to be considered inactive.
     """
     key_columns = ["subscription_identifier", "key_date"]
-    last_action_date_col = "max_usg_last_action_date_daily_last_ninety_day"
+    last_action_date_col = "last_activity_date"
     new_col_name = "inactive_{}_days".format(inactivity_length)
 
     last_action_date_is_null = func.col(last_action_date_col).isNull()
