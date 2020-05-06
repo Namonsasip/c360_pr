@@ -28,7 +28,12 @@
 from kedro.pipeline import Pipeline, node
 
 from cvm.data_prep.nodes import create_sample_dataset, subs_date_join
-from cvm.report.nodes import add_micro_macro, filter_out_micro_macro, prepare_users
+from cvm.report.nodes import (
+    add_micro_macro,
+    build_daily_kpis,
+    filter_out_micro_macro,
+    prepare_users,
+)
 
 
 def sample_report_inputs() -> Pipeline:
@@ -108,6 +113,31 @@ def join_features() -> Pipeline:
     )
 
 
+def create_kpis() -> Pipeline:
+    """Creates kpis used for tracking."""
+    return Pipeline(
+        [
+            node(
+                build_daily_kpis,
+                [
+                    "users_micro_macro_only",
+                    "l1_revenue_prepaid_pru_f_usage_multi_daily",
+                    "l1_customer_profile_union_daily_feature",
+                    "l4_usage_prepaid_postpaid_daily_features",
+                    "parameters",
+                ],
+                "daily_kpis",
+                name="build_daily_kpis",
+            )
+        ]
+    )
+
+
 def prepare_user_microsegments() -> Pipeline:
     """ Join above pipelines"""
     return prepare_users_report() + sample_report_inputs() + join_features()
+
+
+def run_raport() -> Pipeline:
+    """ Prepares data and creates kpis"""
+    return prepare_user_microsegments() + create_kpis()
