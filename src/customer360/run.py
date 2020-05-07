@@ -297,6 +297,26 @@ class DataQualityProjectContext(ProjectContext):
 
         return catalog_dict
 
+    def _generate_dq_consistency_catalog(self):
+        params = self.config_loader.get(
+            "parameters*", "parameters*/**", "*/**/parameter*"
+        )
+
+        new_catalog_dict = {}
+        for dataset_name in params["features_for_dq"].keys():
+            new_catalog = {
+                "type": "datasets.spark_ignore_missing_path_dataset.SparkIgnoreMissingPathDataset",
+                "filepath": f"{params['dq_consistency_path_prefix']}/{dataset_name}",
+                "file_format": "parquet",
+                "save_args": {
+                    "mode": "overwrite",
+                    "partitionBy": ["corresponding_date"]
+                }
+            }
+            new_catalog_dict[f"dq_consistency_benchmark_{dataset_name}"] = new_catalog
+
+        return new_catalog_dict
+
     def _get_catalog(
         self,
         save_version: str = None,
@@ -310,6 +330,11 @@ class DataQualityProjectContext(ProjectContext):
 
         for dataset_name, each_catalog in conf_catalog.items():
             self._remove_increment_flag(each_catalog)
+
+        dq_consistency_catalog_dict = self._generate_dq_consistency_catalog()
+
+        for dq_dataset_name, dq_consistency_catalog in dq_consistency_catalog_dict.items():
+            conf_catalog[dq_dataset_name] = dq_consistency_catalog
 
         conf_creds = self._get_config_credentials()
         catalog = self._create_catalog(
