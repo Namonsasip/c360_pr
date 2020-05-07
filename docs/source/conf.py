@@ -29,7 +29,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# customer360 documentation build
+# CVM documentation build
 # configuration file, created by sphinx-quickstart.
 #
 # This file is execfile()d with the current directory set to its
@@ -54,8 +54,8 @@ from customer360 import __version__ as release
 
 # -- Project information -----------------------------------------------------
 
-project = "customer360"
-copyright = "2018-2019, QuantumBlack Visual Analytics Limited"
+project = "CVM"
+copyright = "2018-2020, QuantumBlack Visual Analytics Limited"
 author = "QuantumBlack"
 
 # The short X.Y version.
@@ -149,7 +149,7 @@ html_show_sourcelink = False
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "customer360doc"
+htmlhelp_basename = "CVMdoc"
 
 # -- Options for LaTeX output ------------------------------------------------
 
@@ -177,8 +177,8 @@ latex_elements = {
 latex_documents = [
     (
         master_doc,
-        "customer360.tex",
-        "customer360 Documentation",
+        "CVM.tex",
+        "CVM Documentation",
         "QuantumBlack",
         "manual",
     )
@@ -191,8 +191,8 @@ latex_documents = [
 man_pages = [
     (
         master_doc,
-        "customer360",
-        "customer360 Documentation",
+        "CVM",
+        "CVM Documentation",
         [author],
         1,
     )
@@ -206,11 +206,11 @@ man_pages = [
 texinfo_documents = [
     (
         master_doc,
-        "customer360",
-        "customer360 Documentation",
+        "CVM",
+        "CVM Documentation",
         author,
-        "customer360",
-        "Project customer360 codebase.",
+        "CVM",
+        "Project CVM codebase.",
         "Data-Science",
     )
 ]
