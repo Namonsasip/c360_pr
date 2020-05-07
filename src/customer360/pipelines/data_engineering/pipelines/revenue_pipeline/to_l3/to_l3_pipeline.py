@@ -33,8 +33,8 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 
-from customer360.utilities.config_parser import node_from_config
 from customer360.pipelines.data_engineering.nodes.revenue_nodes.to_l3.to_l3_nodes import *
+from customer360.utilities.config_parser import node_from_config
 
 
 def revenue_to_l3_pipeline(**kwargs):
@@ -46,11 +46,9 @@ def revenue_to_l3_pipeline(**kwargs):
                  "params:l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly"],
                 "l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_stg"
             ),
-            node(merge_with_customer_postpaid_df, ['l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_stg',
-                                                   'l3_customer_profile_include_1mo_non_active_l3_revenue_postpaid'],
+            node(process_revenue_postpaid_monthly, ['l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_stg'],
                  'l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly'
                  ),
-
 
             node(
                 node_from_config,
@@ -58,11 +56,12 @@ def revenue_to_l3_pipeline(**kwargs):
                  "params:l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"],
                 "l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_stg"
             ),
-            node(merge_with_customer_prepaid_df, ['l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_stg',
-                                                  'l3_customer_profile_include_1mo_non_active_l3_revenue_prepaid'],
+            node(merge_with_customer_prepaid_df, [
+                'l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_stg',
+                'l1_customer_profile_union_daily_feature_for_l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly'
+            ],
                  'l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly'
                  ),
-
 
         ], name="revenue_to_l3_pipeline"
     )
