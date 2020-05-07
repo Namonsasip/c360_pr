@@ -371,3 +371,26 @@ l2_geo_data_frequent_cell_4g_weekly_for_l4_geo_data_frequent_cell_4g:
     target_layer: 'l4_weekly'
     lookback: '12'
 
+l2_geo_call_count_location_weekly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l2_geo_call_count_location_weekly/
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "start_of_week"
+    read_layer: 'l1_daily'
+    target_layer: 'l2_weekly'
+
+l2_geo_call_count_location_weekly_for_l4_geo_call_count_location:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/l2_geo_call_count_location_weekly/
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l4_geo_call_count_location'
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
+    lookback: '12'

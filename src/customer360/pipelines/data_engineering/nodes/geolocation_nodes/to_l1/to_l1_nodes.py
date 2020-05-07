@@ -114,10 +114,10 @@ def l1_usage_sum_data_location_dow_intermediate(df):
     df = df.selectExpr("*",
                        "CASE WHEN gprs_type in ('GGSN','3GGSN') THEN  CONCAT(LPAD(lac, 5, "
                        "'0'),LPAD(ci, 5, '0')) WHEN gprs_type in ('4GLTE') THEN  CONCAT(LPAD("
-                       "ci, 9, '0'))  END AS cgi_partial")
-    df = df.groupBy('date_id', 'mobile_no', 'gprs_type', 'cgi_partial').agg(F.sum('no_of_call').alias('sum_call'))
+                       "ci, 9, '0'))  END AS cgi_partial",
+                       'vol_uplink_kb+vol_downlink_kb as total_vol_kb')
+    df = df.groupBy('date_id', 'mobile_no', 'gprs_type', 'cgi_partial').agg(F.sum('no_of_call').alias('sum_call'),F.sum('total_vol_kb').alias('sum_total_vol_kb'))
     df = add_start_of_week_and_month(df, "date_id")
-
     df = df.withColumn("day_of_week", F.date_format(F.col("event_partition_date"), "u"))
     return df
 
@@ -228,11 +228,6 @@ def l1_geo_favorite_cell_master_table(usage_sum_voice_location_daily, usage_sum_
        - 8: NB-IoT (currently can use 4G cell only)
     '''
 
-    #test
-    usage_sum_voice_location_daily = usage_sum_voice_location_daily.limit(100000)
-    usage_sum_data_location_daily = usage_sum_data_location_daily.limit(100000)
-
-
 
     usage_sum_voice_location_daily = usage_sum_voice_location_daily.where('service_type in ("VOICE","VOLTE")')
     usage_sum_voice_location_daily = usage_sum_voice_location_daily.selectExpr("*",
@@ -307,3 +302,22 @@ def l1_geo_favorite_cell_master_table(usage_sum_voice_location_daily, usage_sum_
                                                                                             how='left')
 
     return master_fav_cell
+
+
+def l1_geo_call_count_location_daily(df, master, sql):
+    df = df.withColumnRenamed('mobile_no', 'access_method_num')
+    df = df.select('access_method_num','cgi_partial','event_partition_date')
+    test = master.select('access_method_num','cgi_partial_home')
+    df = df.join(test, [df.cgi_partial == test.cgi_partial_home, df.access_method_num == test.access_method_num],
+                 'left').drop(test.access_method_num)
+    test = master.select('access_method_num', 'cgi_partial_office')
+    df = df.join(test, [df.cgi_partial == test.cgi_partial_office, df.access_method_num == test.access_method_num],
+                 'left').drop(test.access_method_num)
+    test = master.select('access_method_num', 'cgi_partial_other_rank_1')
+    df = df.join(test, [df.cgi_partial == test.cgi_partial_other_rank_1, df.access_method_num == test.access_method_num],
+                 'left').drop(test.access_method_num)
+    test = master.select('access_method_num', 'cgi_partial_other_rank_2')
+    df = df.join(test, [df.cgi_partial == test.cgi_partial_other_rank_2, df.access_method_num == test.access_method_num],
+                 'left').drop(test.access_method_num)
+    df = node_from_config(df, sql)
+    return df

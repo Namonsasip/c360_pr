@@ -55,7 +55,7 @@ l3_data_distance_weekend_monthly: #472,475,478
   #    standard_deviation_distance: "first(stdev_distance)"
   granularity: "start_of_month,mobile_no"
 
-l3_geo_home_work_location_id: #
+l3_geo_home_work_location_id: # 398/399
   where_clause: ""
   feature_list:
     home_location_id: "first(home_shape_id)"
@@ -127,3 +127,14 @@ l3_data_frequent_cell_4g_monthly: #442/448
     cgi_partial_rank_1: "concat_ws('', collect_list(cgi_partial_rank_1))"
     cgi_partial_rank_2: "concat_ws('', collect_list(cgi_partial_rank_2))"
   granularity: "start_of_week,mobile_no"
+
+l3_geo_call_count_location_monthly: #402,403,404,405
+  where_clause: ""
+  feature_list:
+    call_in_home_location : "sum(cgi_partial_home)"
+    call_in_work_location : "sum(cgi_partial_office)"
+    call_on_first_most_used_non_homework : "sum(cgi_partial_other_rank_1)"
+    call_on_second_most_used_non_homework : "sum(cgi_partial_other_rank_2)"
+  granularity: "start_of_month,access_method_num"
+
+

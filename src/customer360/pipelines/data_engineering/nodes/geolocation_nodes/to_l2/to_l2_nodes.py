@@ -266,3 +266,22 @@ def l2_geo_data_frequent_cell_4g_weekly(df, sql):  # in progress 4g_all 442,448
     df = node_from_config(ranked, sql)
 
     return df
+
+def l2_geo_call_count_location_weekly(df,master,sql):
+    df = df.withColumnRenamed('mobile_no', 'access_method_num')
+    df = df.select('access_method_num','cgi_partial','start_of_week')
+    test = master.select('access_method_num','cgi_partial_home')
+    df = df.join(test, [df.cgi_partial == test.cgi_partial_home, df.access_method_num == test.access_method_num],
+                 'left').drop(test.access_method_num)
+    test = master.select('access_method_num', 'cgi_partial_office')
+    df = df.join(test, [df.cgi_partial == test.cgi_partial_office, df.access_method_num == test.access_method_num],
+                 'left').drop(test.access_method_num)
+    test = master.select('access_method_num', 'cgi_partial_other_rank_1')
+    df = df.join(test, [df.cgi_partial == test.cgi_partial_other_rank_1, df.access_method_num == test.access_method_num],
+                 'left').drop(test.access_method_num)
+    test = master.select('access_method_num', 'cgi_partial_other_rank_2')
+    df = df.join(test, [df.cgi_partial == test.cgi_partial_other_rank_2, df.access_method_num == test.access_method_num],
+                 'left').drop(test.access_method_num)
+    df = node_from_config(df, sql)
+    return df
+
