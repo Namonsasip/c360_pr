@@ -12,12 +12,15 @@ from src.data_quality.dq_util import get_config_parameters, \
     get_outlier_column, \
     add_most_frequent_value, \
     replace_asterisk_feature, \
-    get_expected_partition_count_formula
+    get_expected_partition_count_formula, \
+    melt, \
+    add_suffix_to_df_columns
 
 from kedro.pipeline.node import Node
 from kedro.io.core import DataSetError
 from pyspark.sql import DataFrame
 import pyspark.sql.functions as F
+from pyspark.sql.types import *
 from pyspark.storagelevel import StorageLevel
 
 
@@ -48,7 +51,7 @@ def sample_subscription_identifier(
 
     sample_fraction = min(sample_size / distinct_sub_id_count, 1.0)
     sampled_sub_id_df = distinct_sub_id_df.sample(withReplacement=False, fraction=sample_fraction)
-    sampled_sub_id_df = sampled_sub_id_df.withColumn("created_date", F.current_date())
+    sampled_sub_id_df = sampled_sub_id_df.withColumn("_sample_created_date", F.current_date())
 
     return sampled_sub_id_df
 
@@ -111,10 +114,12 @@ def generate_dq_nodes():
     nodes = []
     accuracy_node_output_list = []
     availability_node_output_list = []
+    consistency_node_output_list = []
+
     selected_dataset = get_config_parameters()['features_for_dq']
     for dataset_name, feature_list in selected_dataset.items():
 
-        ################ Accuracy check ################
+        ################ Accuracy and Completeness check ################
         output_catalog = "dq_accuracy_{}".format(dataset_name)
         node = Node(
             func=update_wrapper(
@@ -148,8 +153,27 @@ def generate_dq_nodes():
         nodes.append(availability_node)
         availability_node_output_list.append(availability_output_catalog)
 
+        ################ Consistency check ################
+        consistency_output_catalog = "dq_consistency_{}".format(dataset_name)
+        consistency_node = Node(
+            func=update_wrapper(
+                wrapper=partial(run_consistency_logic, dataset_name=dataset_name),
+                wrapped=run_consistency_logic
+            ),
+            inputs=[dataset_name,
+                    "dq_consistency_benchmark_{}".format(dataset_name),
+                    "dq_sampled_subscription_identifier",
+                    "params:features_for_dq",
+                    "params:benchmark_start_date",
+                    "params:benchmark_end_date",
+                    "all_catalog_and_feature_exist"],
+            outputs=consistency_output_catalog
+        )
+        nodes.append(consistency_node)
+        consistency_node_output_list.append(consistency_output_catalog)
+
     # Since node output must be unique, we create MemoryDataSet for each
-    # accuracy node output and then merge it with node below
+    # node output above and then merge it with node below
     accuracy_merger_node = Node(
         func=dq_merger_nodes,
         inputs=accuracy_node_output_list,
@@ -163,6 +187,13 @@ def generate_dq_nodes():
         outputs="dq_availability"
     )
     nodes.append(availability_merger_node)
+
+    consistency_merger_node = Node(
+        func=dq_merger_nodes,
+        inputs=consistency_node_output_list,
+        outputs="dq_consistency"
+    )
+    nodes.append(consistency_merger_node)
 
     return nodes
 
@@ -288,3 +319,109 @@ def run_availability_logic(
     result_df = spark.sql(sql_stmt)
 
     return result_df
+
+
+def run_consistency_logic(
+        new_df: DataFrame,
+        old_df: DataFrame,
+        sampled_sub_id_df: DataFrame,
+        dq_config: dict,
+        benchmark_start_date: str,
+        benchmark_end_date: str,
+        all_catalog_and_feature_exist: DataFrame,  # dependency to ensure this node runs after all checks are passed
+        dataset_name: str
+):
+    ctx = get_dq_context()
+    partition_col = get_partition_col(new_df, dataset_name)
+    granularity_cols = {partition_col, "subscription_identifier"}
+
+    features_list = dq_config[dataset_name]
+    features_list = replace_asterisk_feature(features_list, dataset_name)
+    features_list = list(map(lambda x: x["feature"], features_list))
+
+    new_df = (new_df
+              .filter((F.col(partition_col) >= F.to_date(F.lit(benchmark_start_date))) &
+                      (F.col(partition_col) <= F.to_date(F.lit(benchmark_end_date))))
+              .select(*set(features_list + list(granularity_cols))))
+
+    sub_id_sampled_date, new_df = get_dq_sampled_records(new_df, sampled_sub_id_df)
+
+    if old_df.head() is None or len(old_df.head()) == 0:
+        new_df = new_df.withColumnRenamed(partition_col, "corresponding_date")
+        ctx.catalog.save(f"dq_consistency_benchmark_{dataset_name}", new_df)
+
+        return get_spark_empty_df(schema=StructType([StructField("dataset_name", StringType(), True),
+                                                     StructField("run_date", DateType(), True),
+                                                     StructField("feature_column_name", StringType(), True)]))
+
+    old_df = old_df.withColumnRenamed("corresponding_date", partition_col)
+
+    new_df_cols = new_df.columns
+    old_df_cols = old_df.columns
+    columns_exist_in_both = set(new_df_cols).intersection(set(old_df_cols))
+    columns_not_exist_in_both = set(new_df_cols).symmetric_difference(set(old_df_cols))
+
+    # If subscription_identifier and partition_col is missing raise error
+    if not all(var in list(columns_exist_in_both) for var in granularity_cols):
+        raise ValueError(f"subscription_identifier or {partition_col} is missing for dataset: {dataset_name}!")
+
+    df_old_new_merged = None
+
+    # Select common columns
+    new_df = new_df.select(*columns_exist_in_both)
+    old_df = old_df.select(*columns_exist_in_both)
+
+    common_columns_without_granularity = list(columns_exist_in_both - granularity_cols)
+    
+    if len(common_columns_without_granularity) != 0:
+
+        # Add old and new suffix to columns and join for same msisdn and weekstart
+        new_df = add_suffix_to_df_columns(new_df, "_new", columns=common_columns_without_granularity)
+        old_df = add_suffix_to_df_columns(old_df, "_old", columns=common_columns_without_granularity)
+
+        # use outer because we want to detect missing partition (or duplicated granularity) as well
+        df_old_new_merged = new_df.join(old_df, on=list(granularity_cols), how="outer")
+
+        def _is_same(col_name):
+            return ((F.isnull(F.col(f"{col_name}_old")) & F.isnull(F.col(f"{col_name}_new"))) |
+                    (F.col(f"{col_name}_old") == F.col(f"{col_name}_new"))).cast(IntegerType())
+
+        # Check if old and new value are same or null
+        for column in common_columns_without_granularity:
+            df_old_new_merged = df_old_new_merged.withColumn(f"{column}_is_eq", _is_same(column))
+
+        df_old_new_merged = (df_old_new_merged
+                             .select(list(granularity_cols)
+                                     + [F.col(col) for col in df_old_new_merged.columns if col.endswith("_is_eq")]))
+
+        df_old_new_merged = df_old_new_merged.na.fill(0.0)
+
+    # We checked this for added or removed columns
+    if len(columns_not_exist_in_both) != 0:
+
+        # this happened if the columns are completely changed
+        # except for subscription_identifier and partition_col
+        # (already selected above)
+        if df_old_new_merged is None:
+            df_old_new_merged = new_df
+            
+        for each_col in columns_not_exist_in_both:
+            df_old_new_merged = df_old_new_merged.withColumn(f"{each_col}_is_eq", F.lit(0))
+
+    # Count the number or same records for each column
+    df_same_percent = (df_old_new_merged
+                       .groupby(partition_col)
+                       .agg(*[F.mean(col).alias(f"{col.replace('_is_eq', '')}__same_percent")
+                              for col in df_old_new_merged.columns if col.endswith("_is_eq")]))
+
+    df_same_percent = melt_qa_result(df_same_percent, partition_col)
+
+    df_same_percent = (df_same_percent
+                       .withColumn("run_date", F.current_date())
+                       .withColumn("dataset_name", F.lit(dataset_name)))
+
+    # this is to avoid running every process at the end which causes
+    # long GC pauses before the spark job is even started
+    df_same_percent.persist(StorageLevel.MEMORY_AND_DISK).count()
+
+    return df_same_percent
