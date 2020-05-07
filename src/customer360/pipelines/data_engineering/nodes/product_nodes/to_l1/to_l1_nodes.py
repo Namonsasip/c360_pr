@@ -1,12 +1,10 @@
 from pyspark.sql import DataFrame
-from src.customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
-from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols
 from pyspark.sql import functions as F
 from pyspark.sql.types  import *
-from src.customer360.utilities.spark_util import get_spark_empty_df
+from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
-    data_non_availability_and_missing_check, execute_sql
+    data_non_availability_and_missing_check
 
 
 def union_master_package_table(
