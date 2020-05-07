@@ -1,4 +1,4 @@
-l1_cam_post_channel_with_highest_conversion:
+l1_campaign_post_pre_daily:
   where_clause: ""
   feature_list:
     campaign_overall_count: "max(campaign_overall_count)"
