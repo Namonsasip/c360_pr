@@ -31,38 +31,106 @@ from kedro.pipeline import Pipeline, node
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import l1_massive_processing
 from customer360.pipelines.data_engineering.nodes.complaints_nodes.to_l1.to_l1_nodes import change_grouped_column_name
+from customer360.pipelines.data_engineering.nodes.complaints_nodes.to_l1.to_l1_nodes import *
+
+from src.customer360.pipelines.data_engineering.nodes.complaints_nodes.to_l1.to_l1_nodes import \
+    dac_for_complanints_to_l1_intermediate_pipeline
 
 
 def complaints_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
+            #node(
+            #    l1_massive_processing,
+            #    ["l0_usage_call_relation_sum_daily_for_l1_complaints_call_to_competitor_features",
+            #     "params:l1_complaints_call_to_competitor_features",
+            #     "l1_customer_profile_union_daily_feature_for_l1_complaints_call_to_competitor_features"],
+            #    "l1_complaints_call_to_competitor_features"
+            #),
+            node(
+                dac_for_complanints_to_l1_intermediate_pipeline,
+                ["l0_usage_call_relation_sum_daily_for_l1_complaints_call_to_competitor_features",
+                 "l1_customer_profile_union_daily_feature_for_l1_complaints_call_to_competitor_features",
+                 "params:l1_complaints_call_to_competitor_features_tbl"],
+                ["int_l0_usage_call_relation_sum_daily_for_l1_complaints_call_to_competitor_features",
+                 "int_l1_customer_profile_union_daily_feature_for_l1_complaints_call_to_competitor_features"]
+            ),
             node(
                 l1_massive_processing,
-                ["l0_usage_call_relation_sum_daily_for_l1_complaints_call_to_competitor_features",
+                ["int_l0_usage_call_relation_sum_daily_for_l1_complaints_call_to_competitor_features",
                  "params:l1_complaints_call_to_competitor_features",
-                 "l1_customer_profile_union_daily_feature_for_l1_complaints_call_to_competitor_features"],
+                 "int_l1_customer_profile_union_daily_feature_for_l1_complaints_call_to_competitor_features"],
                 "l1_complaints_call_to_competitor_features"
             ),
+
+            #node(
+            #    l1_massive_processing,
+            #    ["l0_complaints_acc_atsr_outbound_daily",
+            #     "params:l1_complaints_nps_after_call",
+            #     "l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_call"],
+            #    "l1_complaints_nps_after_call"
+            #),
+            node(
+                dac_for_complanints_to_l1_intermediate_pipeline,
+                ["l0_complaints_acc_atsr_outbound_daily",
+                 "l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_call",
+                 "params:l1_complaints_nps_after_call_tbl"],
+                ["int_l0_complaints_acc_atsr_outbound_daily",
+                 "int_l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_call"]
+            ),
             node(
                 l1_massive_processing,
-                ["l0_complaints_acc_atsr_outbound_daily",
+                ["int_l0_complaints_acc_atsr_outbound_daily",
                  "params:l1_complaints_nps_after_call",
-                 "l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_call"],
+                 "int_l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_call"],
                 "l1_complaints_nps_after_call"
             ),
+
+            #node(
+            #    l1_massive_processing,
+            #    ["l0_complaints_acc_ai_chatbot_survey_daily",
+            #     "params:l1_complaints_nps_after_chatbot",
+            #     "l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_chatbot"],
+            #    "l1_complaints_nps_after_chatbot"
+            #),
+            node(
+                dac_for_complanints_to_l1_intermediate_pipeline,
+                ["l0_complaints_acc_ai_chatbot_survey_daily",
+                 "l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_chatbot",
+                 "params:l1_complaints_nps_after_chatbot_tbl"],
+                ["int_l0_complaints_acc_ai_chatbot_survey_daily",
+                 "int_l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_chatbot"]
+            ),
             node(
                 l1_massive_processing,
-                ["l0_complaints_acc_ai_chatbot_survey_daily",
+                ["int_l0_complaints_acc_ai_chatbot_survey_daily",
                  "params:l1_complaints_nps_after_chatbot",
-                 "l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_chatbot"],
+                 "int_l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_chatbot"],
                 "l1_complaints_nps_after_chatbot"
             ),
+
+            #node(
+            #    l1_massive_processing,
+            #    ["l0_complaints_acc_qmt_csi_daily",
+            #     "params:l1_complaints_nps_after_store_visit",
+            #     "l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_store_visit"],
+            #    "l1_complaints_nps_after_store_visit"
+            #),
+            node(
+                dac_for_complanints_to_l1_intermediate_pipeline,
+                ["l0_complaints_acc_qmt_csi_daily",
+                 "l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_store_visit",
+                 "params:l1_complaints_nps_after_store_visit_tbl"],
+                ["int_l0_complaints_acc_qmt_csi_daily",
+                 "int_l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_store_visit"]
+            ),
             node(
                 l1_massive_processing,
-                ["l0_complaints_acc_qmt_csi_daily",
+                ["int_l0_complaints_acc_qmt_csi_daily",
                  "params:l1_complaints_nps_after_store_visit",
-                 "l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_store_visit"],
+                 "int_l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_store_visit"],
                 "l1_complaints_nps_after_store_visit"
             ),
+
         ]
     )
