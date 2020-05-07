@@ -28,9 +28,9 @@ def merge_with_customer_prepaid_df(source_df: DataFrame,
 
     cust_df = data_non_availability_and_missing_check(
         df=cust_df, grouping="monthly",
-        par_col="start_of_month",
+        par_col="event_partition_date",
         target_table_name="l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
-        missing_data_check_flg='Y')
+        missing_data_check_flg='N')
 
     # new section to handle data latency
     min_value = union_dataframes_with_missing_cols(
