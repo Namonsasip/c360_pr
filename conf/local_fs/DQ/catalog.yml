@@ -22,3 +22,10 @@ dq_availability:
   save_args:
     mode: "overwrite"
     partitionBy: ["dataset_name", "run_date"]
+
+dq_consistency:
+  <<: *spark_parquet
+  filepath: data/DQ/dq_consistency/
+  save_args:
+    mode: "append"
+    partitionBy: ["dataset_name", "run_date"]
