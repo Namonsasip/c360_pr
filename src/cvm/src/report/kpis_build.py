@@ -42,7 +42,13 @@ def add_arpus(users_report: DataFrame, reve: DataFrame, min_date: str,) -> DataF
         min_date: minimum date of report.
     """
     logging.info("Adding ARPU")
-    reve_to_pick = ["subscription_identifier", "key_date", "rev_arpu_total_net_rev"]
+    reve_to_pick = [
+        "subscription_identifier",
+        "key_date",
+        "rev_arpu_total_net_rev",
+        "rev_arpu_voice",
+        "rev_arpu_data_rev",
+    ]
     reve = (
         prepare_key_columns(reve)
         .select(reve_to_pick)
