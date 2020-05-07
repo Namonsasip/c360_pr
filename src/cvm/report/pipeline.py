@@ -138,6 +138,6 @@ def prepare_user_microsegments() -> Pipeline:
     return prepare_users_report() + sample_report_inputs() + join_features()
 
 
-def run_raport() -> Pipeline:
+def run_report() -> Pipeline:
     """ Prepares data and creates kpis"""
     return prepare_user_microsegments() + create_kpis()
