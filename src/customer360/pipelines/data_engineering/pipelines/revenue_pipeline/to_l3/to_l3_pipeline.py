@@ -46,11 +46,9 @@ def revenue_to_l3_pipeline(**kwargs):
                  "params:l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly"],
                 "l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_stg"
             ),
-            node(merge_with_customer_postpaid_df, ['l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_stg',
-                                                   'l3_customer_profile_include_1mo_non_active_l3_revenue_postpaid'],
+            node(process_revenue_postpaid_monthly, ['l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_stg'],
                  'l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly'
                  ),
-
 
             node(
                 node_from_config,
