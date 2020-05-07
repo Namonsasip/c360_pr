@@ -75,4 +75,4 @@ volatility_length: 5
 # pai parameters
 pai_runs_path: '/dbfs/mnt/customer360-blob-data/cvm/pai01/runs'
 pai_artifacts_path: '/dbfs/mnt/customer360-blob-data/cvm/pai01/artifacts'
-pai_experiment_name: '100_features_reduce_correlation_thr'
+pai_experiment_name: 'force_call_center'
