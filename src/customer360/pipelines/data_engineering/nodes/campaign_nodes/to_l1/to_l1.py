@@ -168,6 +168,9 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
                                                                 par_col="partition_date",
                                                                 target_table_name="l1_campaign_post_pre_daily")
 
+    if check_empty_dfs([postpaid, prepaid, contacts_ma, contact_list_ussd]):
+        return [get_spark_empty_df(), get_spark_empty_df()]
+
     min_value = union_dataframes_with_missing_cols(
         [
             postpaid.select(
@@ -190,8 +193,6 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
     contact_list_ussd = contact_list_ussd.filter(
         F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
 
-    if check_empty_dfs([postpaid, prepaid, contacts_ma, contact_list_ussd]):
-        return [get_spark_empty_df(), get_spark_empty_df()]
 
     ################################# End Implementing Data availability checks ###############################
 
