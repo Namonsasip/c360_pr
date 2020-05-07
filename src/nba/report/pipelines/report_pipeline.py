@@ -29,50 +29,16 @@ def create_campaign_view_report_pipeline() -> Pipeline:
 
 
 def create_use_case_view_report_data() -> Pipeline:
-    mock_report_running_date = "2020-02-09"
+    mock_report_running_date = "2020-04-25"
     mock_report_running_date_list = [
-        "2020-02-01",
-        "2020-02-02",
-        "2020-02-03",
-        "2020-02-04",
-        "2020-02-05",
-        "2020-02-06",
-        "2020-02-07",
-        "2020-02-08",
-        "2020-02-09",
-        # "2020-02-10",
-        # "2020-02-11",
-        # "2020-02-12",
-        # "2020-02-13",
-        # "2020-02-14",
-        # "2020-02-15",
-        # "2020-02-16",
-        # "2020-02-17",
-        # "2020-02-18",
-        # "2020-02-19",
-        # "2020-02-20",
-        # "2020-02-21",
-        # "2020-02-22",
-        # "2020-02-23",
-        # "2020-02-24",
-        # "2020-02-25",
-        # "2020-02-26",
-        # "2020-02-27",
-        # "2020-02-28",
-        # "2020-02-29",
-        # "2020-04-11",
-        # "2020-04-12",
-        # "2020-04-13",
-        # "2020-04-14",
-        # "2020-04-15",
-        # "2020-04-16",
-        # "2020-04-17",
-        # "2020-04-18",
-        # "2020-04-19",
-        # "2020-04-20",
+        "2020-04-21",
+        "2020-04-22",
+        "2020-04-23",
+        "2020-04-24",
+        "2020-04-25",
     ]
     start_date = datetime.strptime(mock_report_running_date, "%Y-%m-%d") + timedelta(
-        days=-91
+        days=-120
     )
     start_date_input = datetime.strptime(
         mock_report_running_date, "%Y-%m-%d"
@@ -90,21 +56,21 @@ def create_use_case_view_report_data() -> Pipeline:
             #     name="create_use_case_campaign_mapping_table",
             #     tags=["create_use_case_campaign_mapping_table",],
             # ),
-            # node(
-            #     partial(
-            #         create_report_campaign_tracking_table,
-            #         date_from=start_date_input,
-            #         date_to=mock_report_running_date,
-            #     ),
-            #     {
-            #         "cvm_prepaid_customer_groups": "cvm_prepaid_customer_groups",
-            #         "l0_campaign_tracking_contact_list_pre": "l0_campaign_tracking_contact_list_pre",
-            #         "use_case_campaign_mapping": "use_case_campaign_mapping",
-            #     },
-            #     "campaign_response_input_table",
-            #     name="campaign_response_input_table",
-            #     tags=["campaign_response_input_table",],
-            # ),
+            node(
+                partial(
+                    create_report_campaign_tracking_table,
+                    date_from=start_date_input,
+                    date_to=mock_report_running_date,
+                ),
+                {
+                    "cvm_prepaid_customer_groups": "cvm_prepaid_customer_groups",
+                    "l0_campaign_tracking_contact_list_pre": "l0_campaign_tracking_contact_list_pre",
+                    "use_case_campaign_mapping": "use_case_campaign_mapping",
+                },
+                "campaign_response_input_table",
+                name="campaign_response_input_table",
+                tags=["campaign_response_input_table",],
+            ),
             # node(
             #     partial(
             #         create_input_data_for_reporting_kpis,
@@ -154,31 +120,31 @@ def create_use_case_view_report_data() -> Pipeline:
             #     name="plot_daily_kpis_by_group_report",
             #     tags=["plot_daily_kpis_by_group_report"],
             # ),
-            node(
-                partial(
-                    create_use_case_view_report,
-                    day_list=mock_report_running_date_list,  # TODO make dynamic
-                    aggregate_period=[1, 7, 30],
-                    dormant_days_agg_periods=[5, 7, 14, 30, 60, 90],
-                ),
-                inputs={
-                    "use_case_campaign_mapping": "use_case_campaign_mapping",
-                    "cvm_prepaid_customer_groups": "cvm_prepaid_customer_groups",
-                    "campaign_response_input_table": "campaign_response_input_table",
-                    "reporting_kpis": "reporting_kpis",
-                    "reporting_kpis_input": "reporting_kpis_input",
-                },
-                outputs="use_case_view_report_table",
-                name="use_case_view_report_table",
-                tags=["use_case_view_report_table",],
-            ),
-            node(
-                partial(store_historical_usecase_view_report),
-                inputs={"use_case_view_report_table": "use_case_view_report_table",},
-                outputs="historical_use_case_view_report_table",
-                name="historical_use_case_view_report_table",
-                tags=["historical_use_case_view_report_table",],
-            ),
+            # node(
+            #     partial(
+            #         create_use_case_view_report,
+            #         day_list=mock_report_running_date_list,  # TODO make dynamic
+            #         aggregate_period=[1, 7, 30],
+            #         dormant_days_agg_periods=[5, 7, 14, 30, 60, 90],
+            #     ),
+            #     inputs={
+            #         "use_case_campaign_mapping": "use_case_campaign_mapping",
+            #         "cvm_prepaid_customer_groups": "cvm_prepaid_customer_groups",
+            #         "campaign_response_input_table": "campaign_response_input_table",
+            #         "reporting_kpis": "reporting_kpis",
+            #         "reporting_kpis_input": "reporting_kpis_input",
+            #     },
+            #     outputs="use_case_view_report_table",
+            #     name="use_case_view_report_table",
+            #     tags=["use_case_view_report_table",],
+            # ),
+            # node(
+            #     partial(store_historical_usecase_view_report),
+            #     inputs={"use_case_view_report_table": "use_case_view_report_table",},
+            #     outputs="historical_use_case_view_report_table",
+            #     name="historical_use_case_view_report_table",
+            #     tags=["historical_use_case_view_report_table",],
+            # ),
         ],
         tags=["churn_ard_report"],
     )
