@@ -1,10 +1,11 @@
 from pyspark.sql import DataFrame
-
-from src.customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
-from src.customer360.pipelines.data_engineering.nodes.product_nodes.to_l1.to_l1_nodes import union_master_package_table
-from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols
 from pyspark.sql import functions as F
-from pyspark.sql.types  import *
+from pyspark.sql.types import *
+
+from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, \
+    check_empty_dfs
+from src.customer360.pipelines.data_engineering.nodes.product_nodes.to_l1.to_l1_nodes import union_master_package_table
+from src.customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 
 
 def get_activated_deactivated_features(
@@ -31,7 +32,8 @@ def get_activated_deactivated_features(
                 F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
             prepaid_ontop_master_df.select(
                 F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
-            postpaid_ontop_master_df.select(F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date"))
+            postpaid_ontop_master_df.select(
+                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date"))
         ]
     ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
 
@@ -335,3 +337,19 @@ def get_activated_deactivated_features(
     """)
 
     return result_df
+
+
+def get_product_package_promotion_group_tariff_weekly(source_df: DataFrame) -> DataFrame:
+    """
+    :param source_df:
+    :return:
+    """
+    if check_empty_dfs([source_df]):
+        return get_spark_empty_df()
+
+    source_df = source_df.withColumn("start_of_week",
+                                     F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd'))
+
+    source_df = source_df.select("start_of_week", "promotion_group_tariff", "package_id").distinct()
+
+    return source_df
