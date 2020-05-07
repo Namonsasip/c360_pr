@@ -66,6 +66,8 @@ must_have_features:
   - sum_usg_data_weekday_usage_sum_weekly_last_four_week
   - sum_usg_outgoing_weekend_number_calls_sum_weekly_last_four_week
   - sum_usg_outgoing_weekday_number_calls_sum_weekly_last_four_week
+  # enforce usage of call center feature
+  - sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_two_week
 
 # volatility
 volatility_length: 5
