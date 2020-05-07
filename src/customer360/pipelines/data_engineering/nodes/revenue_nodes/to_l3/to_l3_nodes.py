@@ -66,7 +66,7 @@ def merge_with_customer_prepaid_df(source_df: DataFrame,
     return final_df
 
 
-def process_revenue_postpaid_monthly(source_df: DataFrame) -> DataFrame:
+def merge_with_customer_postpaid_df(source_df: DataFrame) -> DataFrame:
     """
     :param source_df:
     :return:
