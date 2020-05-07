@@ -247,6 +247,7 @@ def run_accuracy_logic(
         "min({col}) as {col}__min",
         "max({col}) as {col}__max",
         "(sum(case when {col} is null then 1 else 0 end)/count(*))*100 as {col}__null_percentage",
+        "approx_count_distinct({col}) as {col}__approx_count_distinct",
 
         f"percentile_approx({{col}}, "
         f"array({','.join(map(str, percentiles['percentile_list']))}), {percentiles['accuracy']}) "
