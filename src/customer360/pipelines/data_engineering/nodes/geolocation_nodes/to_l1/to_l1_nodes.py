@@ -265,7 +265,7 @@ def l1_geo_favorite_cell_master_table(usage_sum_voice_location_daily, usage_sum_
     merged = merged.withColumn("day_night",
                                F.when(((F.col('hour_id') >= 20) & (F.col('hour_id') <= 8)), F.lit('Night')).otherwise(
                                    F.lit("Day")))
-    win = Window.partitionBy("access_method_num").orderBy(F.col("no_of_call").desc())
+    win = Window.partitionBy("access_method_num").orderBy(F.col("no_of_call").desc(),F.col("cgi_partial"))
     home = merged.where("day_night = 'Night' or day_type = 'Weekend'").groupBy("access_method_num", "cgi_partial").agg(
         F.sum(F.col("no_of_call")).alias("no_of_call"))
     office = merged.where("day_night = 'Day' and day_type = 'Weekday'").groupBy("access_method_num", "cgi_partial").agg(
