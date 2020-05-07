@@ -259,7 +259,7 @@ class ProjectContext(KedroContext):
                     caller_globals[obj_name] = getattr(function_module, obj_name)
 
 
-def run_package(pipelines=None, project_context=None):
+def run_package(pipelines=None, project_context=None, tags=None):
 
     # entry point for running pip-install projects
     # using `<project_package>` command
@@ -269,7 +269,7 @@ def run_package(pipelines=None, project_context=None):
 
     if pipelines is not None:
         for each_pipeline in pipelines:
-            project_context.run(pipeline_name=each_pipeline)
+            project_context.run(pipeline_name=each_pipeline, tags=tags)
         return
     # project_context.run(pipeline_name='customer_profile_to_l3_pipeline')
     # project_context.run()
@@ -346,7 +346,11 @@ class DataQualityProjectContext(ProjectContext):
 
 def run_data_quality_pipeline(pipelines):
     project_context = DataQualityProjectContext(project_path=Path.cwd(), env=conf)
-    run_package(pipelines=pipelines, project_context=project_context)
+    run_package(
+        pipelines=pipelines,
+        project_context=project_context,
+        tags=["dq_consistency"]
+    )
 
 
 def run_selected_nodes(pipeline_name, node_names=None, env="base"):

@@ -129,7 +129,10 @@ def _generate_accuracy_and_completeness_nodes(
                     "params:percentiles",
                     "all_catalog_and_feature_exist"
                     ],
-            outputs=output_catalog
+            outputs=output_catalog,
+            tags=["dq_accuracy_and_completeness",
+                  "dq_accuracy",
+                  "dq_completeness"]
         )
 
         nodes.append(node)
@@ -140,7 +143,10 @@ def _generate_accuracy_and_completeness_nodes(
     accuracy_merger_node = Node(
         func=dq_merger_nodes,
         inputs=accuracy_node_output_list,
-        outputs="dq_accuracy_and_completeness"
+        outputs="dq_accuracy_and_completeness",
+        tags=["dq_accuracy_and_completeness",
+              "dq_accuracy",
+              "dq_completeness"]
     )
     nodes.append(accuracy_merger_node)
     return nodes
@@ -161,7 +167,8 @@ def _generate_availability_nodes(
             ),
             inputs=[dataset_name,
                     "all_catalog_and_feature_exist"],
-            outputs=availability_output_catalog
+            outputs=availability_output_catalog,
+            tags=["dq_availability"]
         )
 
         nodes.append(availability_node)
@@ -170,7 +177,8 @@ def _generate_availability_nodes(
     availability_merger_node = Node(
         func=dq_merger_nodes,
         inputs=availability_node_output_list,
-        outputs="dq_availability"
+        outputs="dq_availability",
+        tags=["dq_availability"]
     )
     nodes.append(availability_merger_node)
     return nodes
@@ -195,7 +203,8 @@ def _generate_consistency_nodes(
                     "params:benchmark_start_date",
                     "params:benchmark_end_date",
                     "all_catalog_and_feature_exist"],
-            outputs=consistency_output_catalog
+            outputs=consistency_output_catalog,
+            tags=["dq_consistency"]
         )
         nodes.append(consistency_node)
         consistency_node_output_list.append(consistency_output_catalog)
@@ -203,7 +212,8 @@ def _generate_consistency_nodes(
     consistency_merger_node = Node(
         func=dq_merger_nodes,
         inputs=consistency_node_output_list,
-        outputs="dq_consistency"
+        outputs="dq_consistency",
+        tags=["dq_consistency"]
     )
     nodes.append(consistency_merger_node)
     return nodes
@@ -213,8 +223,8 @@ def generate_dq_nodes():
     nodes = []
     selected_dataset = get_config_parameters()['features_for_dq']
 
-    # nodes.extend(_generate_accuracy_and_completeness_nodes(selected_dataset))
-    # nodes.extend(_generate_availability_nodes(selected_dataset))
+    nodes.extend(_generate_accuracy_and_completeness_nodes(selected_dataset))
+    nodes.extend(_generate_availability_nodes(selected_dataset))
     nodes.extend(_generate_consistency_nodes(selected_dataset))
 
     return nodes

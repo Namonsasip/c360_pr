@@ -1,3 +1,5 @@
+from functools import reduce
+
 from kedro.pipeline import Pipeline, node
 
 from data_quality.nodes import generate_dq_nodes, \
@@ -8,6 +10,8 @@ from data_quality.nodes import generate_dq_nodes, \
 def data_quality_pipeline(**kwargs):
     dq_nodes = generate_dq_nodes()
 
+    check_catalog_tags = list(reduce(lambda x, y: x.union(y.tags), dq_nodes, set()))
+
     return Pipeline(
         [
             node(
@@ -16,7 +20,8 @@ def data_quality_pipeline(**kwargs):
 
                 # MemoryDataSet to ensure execution order. Otherwise,
                 # dq_nodes can run before the checks completed
-                outputs="all_catalog_and_feature_exist"
+                outputs="all_catalog_and_feature_exist",
+                tags=check_catalog_tags
             ),
             *dq_nodes
         ]
