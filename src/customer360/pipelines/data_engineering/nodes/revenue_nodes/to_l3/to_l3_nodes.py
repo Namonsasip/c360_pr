@@ -4,6 +4,8 @@ from pyspark.sql import functions as F
 from customer360.utilities.re_usable_functions import check_empty_dfs, \
     data_non_availability_and_missing_check, union_dataframes_with_missing_cols
 
+from customer360.utilities.spark_util import get_spark_empty_df
+
 
 def merge_with_customer_prepaid_df(source_df: DataFrame,
                                    cust_df: DataFrame) -> DataFrame:
@@ -16,7 +18,7 @@ def merge_with_customer_prepaid_df(source_df: DataFrame,
 
     ################################# Start Implementing Data availability checks ###############################
     if check_empty_dfs([source_df, cust_df]):
-        return source_df
+        return get_spark_empty_df()
 
     source_df = data_non_availability_and_missing_check(
         df=source_df, grouping="monthly",
@@ -44,7 +46,7 @@ def merge_with_customer_prepaid_df(source_df: DataFrame,
     cust_df = cust_df.filter(F.col("start_of_month") <= min_value)
 
     if check_empty_dfs([source_df, cust_df]):
-        return source_df
+        return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
 
@@ -72,7 +74,7 @@ def process_revenue_postpaid_monthly(source_df: DataFrame) -> DataFrame:
 
     ################################# Start Implementing Data availability checks ###############################
     if check_empty_dfs([source_df]):
-        return source_df
+        return get_spark_empty_df()
 
     source_df = data_non_availability_and_missing_check(
         df=source_df, grouping="monthly",
@@ -81,7 +83,7 @@ def process_revenue_postpaid_monthly(source_df: DataFrame) -> DataFrame:
         missing_data_check_flg='N')
 
     if check_empty_dfs([source_df]):
-        return source_df
+        return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
 
