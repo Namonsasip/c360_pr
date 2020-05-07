@@ -16,7 +16,7 @@ def change_grouped_column_name(
 
     return df
 
-def dac_for_complanints_to_l1_intermediate_pipeline(input_df: DataFrame, cust_df: DataFrame, target_table_name: str):
+def dac_for_complaints_to_l1_pipeline(input_df: DataFrame, cust_df: DataFrame, target_table_name: str):
 
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df, cust_df]):
