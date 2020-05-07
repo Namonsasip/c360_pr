@@ -201,9 +201,7 @@ temp_l0_streaming_soc_mobile_app_daily = [
 ]
 global daily_customer_profile
 daily_customer_profile = [
-    ["1-TEST", "test", datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'), "null", "THAI", "null", "N", "N", "Y", "Y",
-     "3G537", "NULL", "null", "null", "3574", "117", "SA", "Classic", "Classic", "3G", "National_id_card",
-     datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'), "Pre-paid", "null",
+    ["1-TEST", "test", datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'), "null", "THAI", "null", "N", "N", "Y", "Y","3G537", "NULL", "null", "null", "3574", "117", "SA", "Classic", "Classic", "3G", "National_id_card",datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'), "Pre-paid", "null",
      datetime.datetime.strptime('2020-01-06', '%Y-%m-%d'), datetime.datetime.strptime('2020-01-01', '%Y-%m-%d')],
     ["1-TEST", "test", datetime.datetime.strptime('2020-01-01', '%Y-%m-%d'), "null", "THAI", "null", "N", "N", "Y", "Y",
      "3G537", "NULL", "null", "null", "3574", "117", "SA", "Classic", "Classic", "3G", "National_id_card",

@@ -54,7 +54,7 @@ historical_use_case_view_report_table:
 reporting_kpis:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/NBA/reporting_kpis/
+  filepath: /mnt/customer360-blob-data/C360/NBA/reporting_kpis_tbl/
   save_args:
     mode: "overwrite"
     partitionBy: ["join_date"]
