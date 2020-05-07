@@ -344,12 +344,12 @@ class DataQualityProjectContext(ProjectContext):
         return catalog
 
 
-def run_data_quality_pipeline(pipelines):
+def run_data_quality_pipeline(pipelines, tags=None):
     project_context = DataQualityProjectContext(project_path=Path.cwd(), env=conf)
     run_package(
         pipelines=pipelines,
         project_context=project_context,
-        tags=["dq_consistency"]
+        tags=tags
     )
 
 
