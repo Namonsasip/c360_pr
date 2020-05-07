@@ -65,13 +65,13 @@ def get_dq_incremental_records(
 
 def get_dq_sampled_records(
         input_df: DataFrame,
-        sampled_sub_id_df: DataFrame
+        sampled_sub_id_df: DataFrame,
 ) -> Tuple[datetime, DataFrame]:
     # get only the latest sampled one
-    max_sampled_date = sampled_sub_id_df.select(f.max(f.col("created_date"))).collect()[0][0]
+    max_sampled_date = sampled_sub_id_df.select(f.max(f.col("_sample_created_date"))).collect()[0][0]
 
     sampled_df = input_df.join(
-        f.broadcast(sampled_sub_id_df.filter(f.col("created_date") == max_sampled_date)),
+        f.broadcast(sampled_sub_id_df.filter(f.col("_sample_created_date") == max_sampled_date)),
         on=["subscription_identifier"],
         how="inner"
     )
@@ -244,8 +244,18 @@ def get_column_name_of_type(df, required_types=None):
 def replace_asterisk_feature(
         features_list: List[Dict],
         dataset_name: str,
-        numeric_columns_only=True
+        numeric_columns_only=False
 ) -> List[Dict]:
+    """
+    replace `feature: '*'` with all the columns in the dataset
+
+    :param features_list: take from dq parameters.yml
+    :param dataset_name: name of dataset to retrieve
+    :param numeric_columns_only: filter out all non numeric columns
+
+    :return: modified features_list if `feature: '*'` is found
+    """
+
     feature_name_set = set(map(lambda x: x["feature"], features_list))
 
     if "*" not in feature_name_set:
@@ -286,3 +296,28 @@ def get_expected_partition_count_formula(
         expected_partition_cnt_formula = 'months_between(max({partition_col}), min({partition_col})) + 1'
 
     return expected_partition_cnt_formula
+
+
+def add_suffix_to_df_columns(
+        df: DataFrame,
+        suffix: str,
+        columns: list = None
+) -> DataFrame:
+    """
+    Add suffix to the column names of dataframe
+    Args:
+        df (pyspark.sql.DataFrame): Dataframe on which we add suffix on columns
+        suffix (str): Suffix
+        columns (list): Columns on which we want to add suffix. Default: None
+
+    Returns:
+        Dataframe with columns renamed with suffix added
+    """
+    # If columns list are not provided all suffix on all the columns of dataframe
+    if not columns:
+        columns = df.columns
+
+    for column in columns:
+        df = df.withColumnRenamed(column, column + suffix)
+
+    return df
