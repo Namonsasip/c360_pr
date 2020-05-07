@@ -91,8 +91,8 @@ def add_inactivity(
         func.col("key_date"), -inactivity_length
     )
     new_col_when = func.when(
-        last_action_date_is_null | activity_not_recent, 0
-    ).otherwise(1)
+        last_action_date_is_null | activity_not_recent, 1
+    ).otherwise(0)
 
     usage = (
         prepare_key_columns(usage)
