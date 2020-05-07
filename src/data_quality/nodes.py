@@ -110,16 +110,13 @@ def dq_merger_nodes(
     return result_df
 
 
-def generate_dq_nodes():
-    nodes = []
+def _generate_accuracy_and_completeness_nodes(
+        selected_dataset: Dict
+) -> List[Node]:
     accuracy_node_output_list = []
-    availability_node_output_list = []
-    consistency_node_output_list = []
+    nodes = []
 
-    selected_dataset = get_config_parameters()['features_for_dq']
     for dataset_name, feature_list in selected_dataset.items():
-
-        ################ Accuracy and Completeness check ################
         output_catalog = "dq_accuracy_{}".format(dataset_name)
         node = Node(
             func=update_wrapper(
@@ -138,7 +135,24 @@ def generate_dq_nodes():
         nodes.append(node)
         accuracy_node_output_list.append(output_catalog)
 
-        ################ Availability check ################
+    # Since node output must be unique, we create MemoryDataSet for each
+    # node output above and then merge it with node below
+    accuracy_merger_node = Node(
+        func=dq_merger_nodes,
+        inputs=accuracy_node_output_list,
+        outputs="dq_accuracy_and_completeness"
+    )
+    nodes.append(accuracy_merger_node)
+    return nodes
+
+
+def _generate_availability_nodes(
+        selected_dataset: Dict
+) -> List[Node]:
+    nodes = []
+    availability_node_output_list = []
+
+    for dataset_name, feature_list in selected_dataset.items():
         availability_output_catalog = "dq_availability_{}".format(dataset_name)
         availability_node = Node(
             func=update_wrapper(
@@ -153,7 +167,21 @@ def generate_dq_nodes():
         nodes.append(availability_node)
         availability_node_output_list.append(availability_output_catalog)
 
-        ################ Consistency check ################
+    availability_merger_node = Node(
+        func=dq_merger_nodes,
+        inputs=availability_node_output_list,
+        outputs="dq_availability"
+    )
+    nodes.append(availability_merger_node)
+    return nodes
+
+
+def _generate_consistency_nodes(
+        selected_dataset: Dict,
+) -> List[Node]:
+    nodes = []
+    consistency_node_output_list = []
+    for dataset_name, feature_list in selected_dataset.items():
         consistency_output_catalog = "dq_consistency_{}".format(dataset_name)
         consistency_node = Node(
             func=update_wrapper(
@@ -172,28 +200,22 @@ def generate_dq_nodes():
         nodes.append(consistency_node)
         consistency_node_output_list.append(consistency_output_catalog)
 
-    # Since node output must be unique, we create MemoryDataSet for each
-    # node output above and then merge it with node below
-    accuracy_merger_node = Node(
-        func=dq_merger_nodes,
-        inputs=accuracy_node_output_list,
-        outputs="dq_accuracy_and_completeness"
-    )
-    nodes.append(accuracy_merger_node)
-
-    availability_merger_node = Node(
-        func=dq_merger_nodes,
-        inputs=availability_node_output_list,
-        outputs="dq_availability"
-    )
-    nodes.append(availability_merger_node)
-
     consistency_merger_node = Node(
         func=dq_merger_nodes,
         inputs=consistency_node_output_list,
         outputs="dq_consistency"
     )
     nodes.append(consistency_merger_node)
+    return nodes
+
+
+def generate_dq_nodes():
+    nodes = []
+    selected_dataset = get_config_parameters()['features_for_dq']
+
+    # nodes.extend(_generate_accuracy_and_completeness_nodes(selected_dataset))
+    # nodes.extend(_generate_availability_nodes(selected_dataset))
+    nodes.extend(_generate_consistency_nodes(selected_dataset))
 
     return nodes
 
