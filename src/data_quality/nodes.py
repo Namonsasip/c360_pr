@@ -343,6 +343,31 @@ def run_availability_logic(
     return result_df
 
 
+def _prepare_dq_consistency_dataset(
+        input_df: DataFrame,
+        sampled_sub_id_df,
+        dq_config: Dict,
+        benchmark_start_date: str,
+        benchmark_end_date: str,
+        dataset_name: str
+) -> DataFrame:
+
+    partition_col = get_partition_col(input_df, dataset_name)
+
+    features_list = dq_config[dataset_name]
+    features_list = replace_asterisk_feature(features_list, dataset_name)
+    features_list = list(map(lambda x: x["feature"], features_list))
+
+    filtered_new_df = (input_df
+                       .filter((F.col(partition_col) >= F.to_date(F.lit(benchmark_start_date))) &
+                               (F.col(partition_col) <= F.to_date(F.lit(benchmark_end_date))))
+                       .select(*set(features_list + [partition_col, "subscription_identifier"])))
+
+    sub_id_sampled_date, filtered_new_df = get_dq_sampled_records(filtered_new_df, sampled_sub_id_df)
+
+    return filtered_new_df
+
+
 def run_consistency_logic(
         new_df: DataFrame,
         old_df: DataFrame,
@@ -353,21 +378,35 @@ def run_consistency_logic(
         all_catalog_and_feature_exist: DataFrame,  # dependency to ensure this node runs after all checks are passed
         dataset_name: str
 ):
+    """
+    Logic to compare current dataset to previously benchmarked dataset
+    to calculate how much difference are there
+
+    :param new_df: current data to compare with benchmark
+    :param old_df: benchmarked data
+    :param sampled_sub_id_df: dataframe containing list of sampled subscription_identifier
+    :param dq_config:
+    :param benchmark_start_date:
+    :param benchmark_end_date:
+    :param all_catalog_and_feature_exist:
+    :param dataset_name:
+    :return:
+    """
     ctx = get_dq_context()
     partition_col = get_partition_col(new_df, dataset_name)
     granularity_cols = {partition_col, "subscription_identifier"}
 
-    features_list = dq_config[dataset_name]
-    features_list = replace_asterisk_feature(features_list, dataset_name)
-    features_list = list(map(lambda x: x["feature"], features_list))
+    new_df = _prepare_dq_consistency_dataset(
+        input_df=new_df,
+        sampled_sub_id_df=sampled_sub_id_df,
+        dq_config=dq_config,
+        benchmark_start_date=benchmark_start_date,
+        benchmark_end_date=benchmark_end_date,
+        dataset_name=dataset_name
+    )
 
-    new_df = (new_df
-              .filter((F.col(partition_col) >= F.to_date(F.lit(benchmark_start_date))) &
-                      (F.col(partition_col) <= F.to_date(F.lit(benchmark_end_date))))
-              .select(*set(features_list + list(granularity_cols))))
-
-    sub_id_sampled_date, new_df = get_dq_sampled_records(new_df, sampled_sub_id_df)
-
+    # if no benchmark is found, save current df as benchmark and save empty consistency result
+    # because there's nothing to compare to
     if old_df.head() is None or len(old_df.head()) == 0:
         new_df = new_df.withColumnRenamed(partition_col, "corresponding_date")
         ctx.catalog.save(f"dq_consistency_benchmark_{dataset_name}", new_df)
@@ -408,7 +447,7 @@ def run_consistency_logic(
             return ((F.isnull(F.col(f"{col_name}_old")) & F.isnull(F.col(f"{col_name}_new"))) |
                     (F.col(f"{col_name}_old") == F.col(f"{col_name}_new"))).cast(IntegerType())
 
-        # Check if old and new value are same or null
+        # Check if old and new value are the same
         for column in common_columns_without_granularity:
             df_old_new_merged = df_old_new_merged.withColumn(f"{column}_is_eq", _is_same(column))
 
@@ -439,6 +478,7 @@ def run_consistency_logic(
     df_same_percent = melt_qa_result(df_same_percent, partition_col)
 
     df_same_percent = (df_same_percent
+                       .withColumn("same_percent", F.col("same_percent")*100)
                        .withColumn("run_date", F.current_date())
                        .withColumn("dataset_name", F.lit(dataset_name)))
 
