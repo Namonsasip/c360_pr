@@ -22,7 +22,7 @@ def get_activated_deactivated_features(
     if check_empty_dfs([cust_promo_df, prepaid_main_master_df
                            , prepaid_ontop_master_df, postpaid_main_master_df
                         ,postpaid_ontop_master_df]):
-        return [get_spark_empty_df(), get_spark_empty_df()]
+        return get_spark_empty_df()
 
     cust_promo_df = data_non_availability_and_missing_check(df=prepaid_main_master_df
          , grouping="weekly", par_col="partition_date",target_table_name="l2_product_activated_deactivated_features_weekly"
@@ -47,15 +47,6 @@ def get_activated_deactivated_features(
     ################################# End Implementing Data availability checks ###############################
 
 
-
-
-
-
-    if (len(cust_promo_df.head(1)) == 0 | len(prepaid_main_master_df.head(1)) == 0 |
-            len(postpaid_main_master_df.head(1)) == 0 | len(prepaid_ontop_master_df.head(1)) == 0 |
-            len(postpaid_ontop_master_df.head(1)) == 0):
-        return get_spark_empty_df()
-
     min_value = union_dataframes_with_missing_cols(
         [
             cust_promo_df.select(
@@ -72,6 +63,15 @@ def get_activated_deactivated_features(
 
     cust_promo_df.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
     cust_promo_df.createOrReplaceTempView("cust_promo_df")
+
+    prepaid_main_master_df = prepaid_main_master_df.filter(
+        F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+    prepaid_ontop_master_df = prepaid_ontop_master_df.filter(
+        F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+    postpaid_main_master_df = postpaid_main_master_df.filter(
+        F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+    postpaid_ontop_master_df = postpaid_ontop_master_df.filter(
+        F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
 
     union_master_package_table(
         prepaid_main_master_df,

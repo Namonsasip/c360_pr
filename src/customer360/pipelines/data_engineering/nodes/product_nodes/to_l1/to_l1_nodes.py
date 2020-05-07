@@ -8,6 +8,7 @@ from src.customer360.utilities.spark_util import get_spark_empty_df
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
     data_non_availability_and_missing_check, execute_sql
 
+
 def union_master_package_table(
         prepaid_main_master_df: DataFrame,
         prepaid_ontop_master_df: DataFrame,
@@ -83,7 +84,7 @@ def join_with_master_package(
     ################################# Start Implementing Data availability checks ###############################
     if check_empty_dfs([prepaid_main_master_df, prepaid_ontop_master_df, postpaid_main_master_df
                         ,postpaid_ontop_master_df]):
-        return [get_spark_empty_df(), get_spark_empty_df()]
+        return get_spark_empty_df()
 
 
     prepaid_main_master_df = data_non_availability_and_missing_check(df=prepaid_main_master_df
@@ -102,16 +103,6 @@ def join_with_master_package(
     ################################# End Implementing Data availability checks ###############################
 
 
-
-    if (len(grouped_cust_promo_df.head(1)) == 0 | len(prepaid_main_master_df.head(1)) == 0 |
-        len(prepaid_ontop_master_df.head(1)) == 0 | len(postpaid_main_master_df.head(1)) == 0 |
-        len(postpaid_ontop_master_df.head(1)) == 0):
-        return get_spark_empty_df()
-
-
-
-
-
     min_value = union_dataframes_with_missing_cols(
         [
             grouped_cust_promo_df.select(
@@ -126,8 +117,13 @@ def join_with_master_package(
         ]
     ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
 
-    grouped_cust_promo_df.filter(F.col("event_partition_date") <= min_value)
+    grouped_cust_promo_df = grouped_cust_promo_df.filter(F.col("event_partition_date") <= min_value)
     grouped_cust_promo_df.createOrReplaceTempView("grouped_cust_promo_df")
+
+    prepaid_main_master_df = prepaid_main_master_df.filter(F.to_date(F.col("partition_date").cast(StringType()),'yyyyMMdd') <= min_value)
+    prepaid_ontop_master_df = prepaid_ontop_master_df.filter(F.to_date(F.col("partition_date").cast(StringType()),'yyyyMMdd') <= min_value)
+    postpaid_main_master_df = postpaid_main_master_df.filter(F.to_date(F.col("partition_date").cast(StringType()),'yyyyMMdd') <= min_value)
+    postpaid_ontop_master_df = postpaid_ontop_master_df.filter(F.to_date(F.col("partition_date").cast(StringType()),'yyyyMMdd') <= min_value)
 
     union_master_package_table(
         prepaid_main_master_df,
