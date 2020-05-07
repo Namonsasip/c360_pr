@@ -41,7 +41,7 @@ def add_arpus(users_report: DataFrame, reve: DataFrame, min_date: str,) -> DataF
         reve: table with daily arpus.
         min_date: minimum date of report.
     """
-    logging.info("Adding ARPU")
+    logging.info("Adding ARPUs")
     reve_to_pick = [
         "subscription_identifier",
         "key_date",
@@ -87,10 +87,10 @@ def add_inactivity(
         usage: table with last activity date.
         inactivity_length: days of inactivity to be considered inactive.
     """
-    logging.info("Adding inactivity columns")
     key_columns = ["subscription_identifier", "key_date"]
     last_action_date_col = "last_activity_date"
     new_col_name = "inactive_{}_days".format(inactivity_length)
+    logging.info("Adding {}".format(new_col_name))
 
     last_action_date_is_null = func.col(last_action_date_col).isNull()
     activity_not_recent = func.col(last_action_date_col) < func.date_add(
