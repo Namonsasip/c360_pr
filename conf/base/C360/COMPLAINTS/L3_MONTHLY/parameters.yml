@@ -2,3 +2,6 @@
 # Parameters for the example pipeline. Feel free to delete these once you
 # remove the example pipeline from pipeline.py and the example nodes in
 # `src/pipelines/`
+
+l3_complaints_call_to_competitor_features_tbl: "l3_complaints_call_to_competitor_features"
+l3_complaints_nps_scoring_tbl: "l3_complaints_nps_scoring"

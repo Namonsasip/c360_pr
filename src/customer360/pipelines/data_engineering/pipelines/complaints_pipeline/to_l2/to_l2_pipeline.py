@@ -31,7 +31,7 @@ from kedro.pipeline import Pipeline, node
 from customer360.utilities.config_parser import node_from_config
 
 from src.customer360.pipelines.data_engineering.nodes.complaints_nodes.to_l2.to_l2_nodes import \
-    dac_for_complaints_to_l2_pipeline
+    dac_for_complaints_to_l2_pipeline_from_l1
 
 
 def complaints_to_l2_pipeline(**kwargs):
@@ -45,7 +45,7 @@ def complaints_to_l2_pipeline(**kwargs):
             #),
 
             node(
-                dac_for_complaints_to_l2_pipeline,
+                dac_for_complaints_to_l2_pipeline_from_l1,
                 ["l1_complaints_call_to_competitor_features_for_l2_complaints_call_to_competitor_features",
                  "params:l2_complaints_call_to_competitor_features_tbl"],
                 "int_l1_complaints_call_to_competitor_features_for_l2_complaints_call_to_competitor_features"
@@ -64,7 +64,7 @@ def complaints_to_l2_pipeline(**kwargs):
             #    "l2_complaints_nps_after_call"
             #),
             node(
-                dac_for_complaints_to_l2_pipeline,
+                dac_for_complaints_to_l2_pipeline_from_l1,
                 ["l1_complaints_nps_after_call_for_l2_complaints_nps_after_call",
                  "params:l2_complaints_nps_scoring_tbl"],
                 "int_l1_complaints_nps_after_call_for_l2_complaints_nps_after_call"
@@ -83,7 +83,7 @@ def complaints_to_l2_pipeline(**kwargs):
             #    "l2_complaints_nps_after_chatbot"
             #),
             node(
-                dac_for_complaints_to_l2_pipeline,
+                dac_for_complaints_to_l2_pipeline_from_l1,
                 ["l1_complaints_nps_after_chatbot_for_l2_complaints_nps_after_chatbot",
                  "params:l2_complaints_nps_scoring_tbl"],
                 "int_l1_complaints_nps_after_chatbot_for_l2_complaints_nps_after_chatbot"
@@ -102,7 +102,7 @@ def complaints_to_l2_pipeline(**kwargs):
             #    "l2_complaints_nps_after_store_visit"
             #)
             node(
-                dac_for_complaints_to_l2_pipeline,
+                dac_for_complaints_to_l2_pipeline_from_l1,
                 ["l1_complaints_nps_after_store_visit_for_l2_complaints_nps_after_store_visit",
                  "params:l2_complaints_nps_scoring_tbl"],
                 "int_l1_complaints_nps_after_store_visit_for_l2_complaints_nps_after_store_visit"
