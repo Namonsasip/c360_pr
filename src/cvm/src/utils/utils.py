@@ -30,7 +30,6 @@ from random import random
 from typing import Any, Callable, Dict, List
 
 import pandas
-
 from cvm.src.utils.list_targets import list_targets
 from pyspark.sql import DataFrame
 
@@ -84,7 +83,7 @@ def iterate_over_usecases_macrosegments_targets(
 
     def _iter_for_usecase(use_chosen):
         fun_values = {}
-        all_macrosegments = macrosegments[use_chosen]
+        all_macrosegments = list(macrosegments[use_chosen])
         if add_global_macrosegment:
             all_macrosegments += ["global"]
         for macrosegment_chosen in all_macrosegments:
