@@ -32,16 +32,15 @@ from typing import Any, Dict, List
 import matplotlib
 import matplotlib.pyplot
 import numpy
-import pandas
-from matplotlib.backends.backend_template import FigureCanvas
-from matplotlib.figure import Figure
-from sklearn import metrics
-from sklearn.ensemble import RandomForestClassifier
-
 import pai
+import pandas
 from cvm.src.utils.list_targets import list_targets
 from cvm.src.utils.utils import iterate_over_usecases_macrosegments_targets
+from matplotlib.backends.backend_template import FigureCanvas
+from matplotlib.figure import Figure
 from pyspark.sql import DataFrame
+from sklearn import metrics
+from sklearn.ensemble import RandomForestClassifier
 
 
 def round_to_float(x):
@@ -207,7 +206,7 @@ def validate_rf(df: DataFrame, parameters: Dict[str, Any],) -> Dict[str, Any]:
         log.info("Validating {} use case.".format(use_case_chosen))
         use_case_diags = {}
 
-        for macrosegment in macrosegments[use_case_chosen] + ["global"]:
+        for macrosegment in list(macrosegments[use_case_chosen]) + ["global"]:
             use_case_diags[macrosegment] = _validate_macrosegment(
                 df_validate, use_case_chosen, macrosegment
             )
