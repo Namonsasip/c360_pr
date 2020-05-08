@@ -1,6 +1,7 @@
 from pyspark.sql import DataFrame
 
 from src.customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
+from customer360.utilities.re_usable_functions import check_empty_dfs
 
 
 def add_l4_product_ratio_features(
@@ -39,3 +40,14 @@ def add_l4_product_ratio_features(
     """)
 
     return result_df
+
+
+def get_product_package_promotion_group_tariff_features(source_df: DataFrame) -> DataFrame:
+    """
+    :param source_df:
+    :return:
+    """
+    if check_empty_dfs([source_df]):
+        return get_spark_empty_df()
+
+    return source_df

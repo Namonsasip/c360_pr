@@ -142,7 +142,7 @@ def _get_full_data(src_data, fea_dict):
 
         target_dimension_col = fea_dict["target_dimension_col"]
 
-        logging.info("data_range:", data_range)
+        logging.info("data_range : {}".format(data_range))
 
     elif read_from.lower() == 'l2':
         data_range = "12"
@@ -151,7 +151,7 @@ def _get_full_data(src_data, fea_dict):
         fix_dimension_where_cond = fea_dict.get("fix_dimension_where_cond")
 
         target_dimension_col = fea_dict["target_dimension_col"]
-        logging.info("data_range:", data_range)
+        logging.info("data_range : {}".format(data_range))
 
     elif read_from.lower() == 'l3':
         data_range = "3"
@@ -160,7 +160,7 @@ def _get_full_data(src_data, fea_dict):
         fix_dimension_where_cond = fea_dict.get("fix_dimension_where_cond")
 
         target_dimension_col = fea_dict["target_dimension_col"]
-        logging.info("data_range:", data_range)
+        logging.info("data_range : {}".format(data_range))
 
     else:
         raise ValueError("read_from is mandatory. Please specify either 'l1', l2', or 'l3'")

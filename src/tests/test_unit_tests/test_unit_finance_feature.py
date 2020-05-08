@@ -3,14 +3,13 @@
 from IPython.core.display import display
 from pyspark.sql.types import *
 from customer360.utilities.config_parser import node_from_config, expansion, l4_rolling_window
-# from customer360.pipelines.data_engineering.nodes.customer_profile_nodes.to_l3.to_l3_nodes import *
-# from datetime import datetime
+
 import datetime
 import pandas as pd
 import random
 from pyspark.sql import functions as F
-from customer360.pipelines.data_engineering.nodes.revenue_nodes.to_l3 import merge_with_customer_prepaid_df, \
-    merge_with_customer_postpaid_df
+from customer360.pipelines.data_engineering.nodes.revenue_nodes.to_l3 import merge_with_customer_prepaid_df\
+    ,merge_with_customer_postpaid_df
 
 
 # import random

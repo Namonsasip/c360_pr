@@ -43,7 +43,8 @@ def build_usage_l2_layer(data_frame: DataFrame, dict_obj: dict) -> DataFrame:
     data_frame = data_non_availability_and_missing_check(df=data_frame, grouping="weekly",
                                                          par_col="event_partition_date",
                                                          target_table_name="l2_usage_postpaid_prepaid_weekly",
-                                                         missing_data_check_flg='Y')
+                                                         missing_data_check_flg='Y',
+                                                         exception_partitions=['2019-07-29'])
 
     if check_empty_dfs([data_frame]):
         return get_spark_empty_df()
