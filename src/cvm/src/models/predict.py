@@ -30,14 +30,13 @@ import logging
 from typing import Any, Callable, Dict
 
 import pandas as pd
-from sklearn.ensemble import RandomForestClassifier
-
-from cvm.src.utils.list_operations import list_sub
+from cvm.src.utils.list_operations import list_intersection, list_sub
 from cvm.src.utils.list_targets import list_targets
 from pyspark import SparkContext
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as func
 from pyspark.sql.types import DoubleType
+from sklearn.ensemble import RandomForestClassifier
 
 
 def pyspark_predict_sklearn(
@@ -122,12 +121,12 @@ def pyspark_predict_sklearn(
         df2 = df2.drop(*cols_to_drop)
         return df1.join(df2, key_columns, "left")
 
-    cols_to_pick = key_columns + segments_columns + pred_cols
-    joined_tables = (
-        functools.reduce(join_on, use_case_preds).select(cols_to_pick).distinct()
+    joined_tables = functools.reduce(join_on, use_case_preds)
+    cols_to_pick = list_intersection(
+        key_columns + segments_columns + pred_cols + target_cols, joined_tables.columns
     )
 
-    return joined_tables
+    return joined_tables.select(cols_to_pick).distinct()
 
 
 def pyspark_predict_rf(
