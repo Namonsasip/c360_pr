@@ -1,6 +1,7 @@
 build_report:
   min_date: '2020-03-01'
   inactivity_lengths:
+    - 1
     - 7
     - 14
     - 30
