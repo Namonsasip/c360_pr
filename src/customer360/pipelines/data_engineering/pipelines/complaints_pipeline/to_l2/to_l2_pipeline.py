@@ -26,8 +26,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from kedro.pipeline import Pipeline, node
 
+from kedro.pipeline import Pipeline, node
+from customer360.pipelines.data_engineering.nodes.complaints_nodes.to_l2.to_l2_nodes import *
 from customer360.utilities.config_parser import node_from_config
 
 from src.customer360.pipelines.data_engineering.nodes.complaints_nodes.to_l2.to_l2_nodes import \
