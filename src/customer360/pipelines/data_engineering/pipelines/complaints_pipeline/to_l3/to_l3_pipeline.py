@@ -89,7 +89,7 @@ def complaints_to_l3_pipeline(**kwargs):
             ),
             node(
                 node_from_config,
-                ["l1_complaints_nps_after_chatbot_for_l3_complaints_nps_after_chatbot",
+                ["int_l1_complaints_nps_after_chatbot_for_l3_complaints_nps_after_chatbot",
                  "params:l3_complaints_nps_scoring"],
                 "l3_complaints_nps_after_chatbot"
             ),
@@ -108,7 +108,7 @@ def complaints_to_l3_pipeline(**kwargs):
             ),
             node(
                 node_from_config,
-                ["l1_complaints_nps_after_store_visit_for_l3_complaints_nps_after_store_visit",
+                ["int_l1_complaints_nps_after_store_visit_for_l3_complaints_nps_after_store_visit",
                  "params:l3_complaints_nps_scoring"],
                 "l3_complaints_nps_after_store_visit"
             )
