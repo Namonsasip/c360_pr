@@ -9,7 +9,7 @@ def geo_to_l1_pipeline(**kwargs):
             # number_of_bs_used
             node(
                 l1_int_number_of_bs_used,
-                ["l0_geo_footfall_daily_for_l1_int_geo_cust_cell_visit_time_daily",
+                ["l0_geo_cust_cell_visit_time_daily_for_l1_int_geo_cust_cell_visit_time_daily",
                  ],
                 "l1_int_geo_cust_cell_visit_time_daily"
             ),
@@ -31,7 +31,7 @@ def geo_to_l1_pipeline(**kwargs):
             ),
 
             node(
-                l1_geo_voice_distance_daily_intermediate,
+                l1_geo_voice_distance_daily_intermediate, #added cgi_partial
                 ["l0_usage_sum_voice_location_daily_for_l1_geo_voice_distance_daily_intermediate",
                  ],
                 "l1_geo_voice_distance_daily_intermediate"
@@ -49,7 +49,7 @@ def geo_to_l1_pipeline(**kwargs):
 
 
             node(
-                l1_first_data_session_cell_identifier_daily,
+                l1_first_data_session_cell_identifier_daily, #added cgi_partial
                 ["l0_usage_sum_data_location_daily_for_l1_geo_first_data_session_cell_identifier_daily",
                  "params:l1_first_data_session_cell_identifier"],
                 "l1_geo_first_data_session_cell_identifier_daily"
@@ -57,7 +57,7 @@ def geo_to_l1_pipeline(**kwargs):
             ),
 
             node(
-                l1_usage_sum_data_location_dow_intermediate,
+                l1_usage_sum_data_location_dow_intermediate, #added cgi_partial
                 ["l0_usage_sum_data_location_daily_for_l1_geo_usage_sum_data_location_dow_intermediate",
                ],
                 "l1_geo_usage_sum_data_location_dow_intermediate"
@@ -88,53 +88,76 @@ def geo_to_l1_pipeline(**kwargs):
 
             ),
 
-            # node(#weekday 434,437,443,449,452,455,458,461,464
-            #     l1_geo_data_frequent_cell_weekday_daily,
-            #     ["l1_geo_usage_sum_data_location_dow_intermediate_for_l1_geo_data_frequent_cell_weekday_daily",
-            #      "params:l1_data_frequent_cell_weekday_daily"],
-            #     "l1_geo_data_frequent_cell_weekday_daily"
-            #
-            # ),
-            #
-            # node(#weekend 435,439,445,450,453,456,459,462,465
-            #     l1_geo_data_frequent_cell_weekend_daily,
-            #     ["l1_geo_usage_sum_data_location_dow_intermediate_for_l1_geo_data_frequent_cell_weekend_daily",
-            #      "params:l1_data_frequent_cell_weekend_daily"],
-            #     "l1_geo_data_frequent_cell_weekend_daily"
-            #
-            # ),
-            #
-            # node(#all 436, 441,447,451,454,457,460,463
-            #     l1_geo_data_frequent_cell_daily,
-            #     ["l1_geo_usage_sum_data_location_dow_intermediate_for_l1_geo_data_frequent_cell_daily",
-            #      "params:l1_data_frequent_cell_daily"],
-            #     "l1_geo_data_frequent_cell_daily"
-            #
-            # ),
-            #
-            # node(#4g_weekday 438,444
-            #     l1_geo_data_frequent_cell_4g_weekday_daily,
-            #     ["l1_geo_usage_sum_data_location_dow_intermediate_for_l1_geo_data_frequent_cell_4g_weekday_daily",
-            #      "params:l1_data_frequent_cell_4g_weekday_daily"],
-            #     "l1_geo_data_frequent_cell_4g_weekday_daily"
-            #
-            # ),
-            #
-            # node(#4g_weekend 440,446
-            #     l1_geo_data_frequent_cell_4g_weekend_daily,
-            #     ["l1_geo_usage_sum_data_location_dow_intermediate_for_l1_geo_data_frequent_cell_4g_weekend_daily",
-            #      "params:l1_data_frequent_cell_4g_weekend_daily"],
-            #     "l1_geo_data_frequent_cell_4g_weekend_daily"
-            #
-            # ),
-            #
-            # node(#4g_all 442,448
-            #     l1_geo_data_frequent_cell_4g_daily,
-            #     ["l1_geo_usage_sum_data_location_dow_intermediate_for_l1_geo_data_frequent_cell_4g_daily",
-            #      "params:l1_data_frequent_cell_4g_daily"],
-            #     "l1_geo_data_frequent_cell_4g_daily"
-            #
-            # ),
+            node(#weekday 434,437,443,449,452,455,458,461,464
+                l1_geo_data_frequent_cell_weekday_daily,
+                ["l1_geo_usage_sum_data_location_dow_intermediate_for_l1_geo_data_frequent_cell_weekday_daily",
+                 "params:l1_data_frequent_cell_weekday_daily"],
+                "l1_geo_data_frequent_cell_weekday_daily"
+
+            ),
+
+            node(#weekend 435,439,445,450,453,456,459,462,465
+                l1_geo_data_frequent_cell_weekend_daily,
+                ["l1_geo_usage_sum_data_location_dow_intermediate_for_l1_geo_data_frequent_cell_weekend_daily",
+                 "params:l1_data_frequent_cell_weekend_daily"],
+                "l1_geo_data_frequent_cell_weekend_daily"
+
+            ),
+
+            node(#all 436, 441,447,451,454,457,460,463
+                l1_geo_data_frequent_cell_daily,
+                ["l1_geo_usage_sum_data_location_dow_intermediate_for_l1_geo_data_frequent_cell_daily",
+                 "params:l1_data_frequent_cell_daily"],
+                "l1_geo_data_frequent_cell_daily"
+
+            ),
+
+            node(#4g_weekday 438,444
+                l1_geo_data_frequent_cell_4g_weekday_daily,
+                ["l1_geo_usage_sum_data_location_dow_intermediate_for_l1_geo_data_frequent_cell_4g_weekday_daily",
+                 "params:l1_data_frequent_cell_4g_weekday_daily"],
+                "l1_geo_data_frequent_cell_4g_weekday_daily"
+
+            ),
+
+            node(#4g_weekend 440,446
+                l1_geo_data_frequent_cell_4g_weekend_daily,
+                ["l1_geo_usage_sum_data_location_dow_intermediate_for_l1_geo_data_frequent_cell_4g_weekend_daily",
+                 "params:l1_data_frequent_cell_4g_weekend_daily"],
+                "l1_geo_data_frequent_cell_4g_weekend_daily"
+
+            ),
+
+            node(#4g_all 442,448
+                l1_geo_data_frequent_cell_4g_daily,
+                ["l1_geo_usage_sum_data_location_dow_intermediate_for_l1_geo_data_frequent_cell_4g_daily",
+                 "params:l1_data_frequent_cell_4g_daily"],
+                "l1_geo_data_frequent_cell_4g_daily"
+
+            ),
+
+            node(
+                l1_geo_favorite_cell_master_table,
+                ["l0_usage_sum_voice_location_daily_for_l1_geo_favorite_cell_master_table",
+                "l0_usage_sum_data_location_daily_for_l1_geo_favorite_cell_master_table"],
+                "l1_geo_favorite_cell_master_table"
+            ),
+
+            node(
+                l1_geo_call_count_location_daily,
+                ["l1_geo_voice_distance_daily_intermediate_for_l1_geo_call_count_location_daily",
+                 "l1_geo_favorite_cell_master_table",
+                "params:l1_geo_call_count_location_daily"],
+                "l1_geo_call_count_location_daily"
+            ),
+
+            node(
+                l1_geo_data_traffic_location_daily,
+                ["l1_geo_voice_distance_daily_intermediate_for_l1_geo_data_traffic_location_daily",
+                 "l1_geo_favorite_cell_master_table",
+                 "params:l1_geo_data_traffic_location_daily"],
+                "l1_geo_data_traffic_location_daily"
+            ),
 
         ], name="geo_to_l1_pipeline"
     )

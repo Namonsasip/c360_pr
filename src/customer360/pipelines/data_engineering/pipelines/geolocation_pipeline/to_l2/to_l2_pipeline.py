@@ -117,6 +117,23 @@ def geo_to_l2_pipeline(**kwargs):
 
             ),
 
+            node(
+                l2_geo_call_count_location_weekly,
+                ["l1_geo_usage_sum_data_location_dow_intermediate_for_l2_geo_call_count_location_weekly",
+                 "l1_geo_favorite_cell_master_table",
+                 "params:l2_geo_call_count_location_weekly"],
+                "l2_geo_call_count_location_weekly"
+
+            ),
+
+            node(
+                l2_geo_data_traffic_location_weekly,
+                ["l1_geo_usage_sum_data_location_dow_intermediate_for_l2_geo_data_traffic_location_weekly",
+                 "l1_geo_favorite_cell_master_table",
+                 "params:l2_geo_data_traffic_location_weekly"],
+                "l2_geo_data_traffic_location_weekly"
+
+            ),
 
         ], name="geo_to_l2_pipeline"
     )

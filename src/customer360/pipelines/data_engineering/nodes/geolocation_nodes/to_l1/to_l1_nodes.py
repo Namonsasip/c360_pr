@@ -116,7 +116,9 @@ def l1_usage_sum_data_location_dow_intermediate(df):
                        "'0'),LPAD(ci, 5, '0')) WHEN gprs_type in ('4GLTE') THEN  CONCAT(LPAD("
                        "ci, 9, '0'))  END AS cgi_partial",
                        'vol_uplink_kb+vol_downlink_kb as total_vol_kb')
-    df = df.groupBy('date_id', 'mobile_no', 'gprs_type', 'cgi_partial').agg(F.sum('no_of_call').alias('sum_call'),F.sum('total_vol_kb').alias('sum_total_vol_kb'))
+    df = df.groupBy('date_id', 'mobile_no', 'gprs_type', 'cgi_partial').agg(F.sum('no_of_call').alias('sum_call'),
+                                                                            F.sum('total_vol_kb').alias(
+                                                                                'sum_total_vol_kb'))
     df = add_start_of_week_and_month(df, "date_id")
     df = df.withColumn("day_of_week", F.date_format(F.col("event_partition_date"), "u"))
     return df
@@ -228,7 +230,6 @@ def l1_geo_favorite_cell_master_table(usage_sum_voice_location_daily, usage_sum_
        - 8: NB-IoT (currently can use 4G cell only)
     '''
 
-
     usage_sum_voice_location_daily = usage_sum_voice_location_daily.where('service_type in ("VOICE","VOLTE")')
     usage_sum_voice_location_daily = usage_sum_voice_location_daily.selectExpr("*",
                                                                                "CASE WHEN service_type in ('VOICE') "
@@ -265,7 +266,7 @@ def l1_geo_favorite_cell_master_table(usage_sum_voice_location_daily, usage_sum_
     merged = merged.withColumn("day_night",
                                F.when(((F.col('hour_id') >= 20) & (F.col('hour_id') <= 8)), F.lit('Night')).otherwise(
                                    F.lit("Day")))
-    win = Window.partitionBy("access_method_num").orderBy(F.col("no_of_call").desc(),F.col("cgi_partial"))
+    win = Window.partitionBy("access_method_num").orderBy(F.col("no_of_call").desc(), F.col("cgi_partial"))
     home = merged.where("day_night = 'Night' or day_type = 'Weekend'").groupBy("access_method_num", "cgi_partial").agg(
         F.sum(F.col("no_of_call")).alias("no_of_call"))
     office = merged.where("day_night = 'Day' and day_type = 'Weekday'").groupBy("access_method_num", "cgi_partial").agg(
@@ -305,19 +306,91 @@ def l1_geo_favorite_cell_master_table(usage_sum_voice_location_daily, usage_sum_
 
 
 def l1_geo_call_count_location_daily(df, master, sql):
+    # df = df.withColumnRenamed('mobile_no', 'access_method_num')
+    # df = df.select('access_method_num', 'cgi_partial', 'event_partition_date')
+    # test = master.select('access_method_num', 'cgi_partial_home')
+    # df = df.join(test, [df.cgi_partial == test.cgi_partial_home, df.access_method_num == test.access_method_num],
+    #              'left').drop(test.access_method_num)
+    # test = master.select('access_method_num', 'cgi_partial_office')
+    # df = df.join(test, [df.cgi_partial == test.cgi_partial_office, df.access_method_num == test.access_method_num],
+    #              'left').drop(test.access_method_num)
+    # test = master.select('access_method_num', 'cgi_partial_other_rank_1')
+    # df = df.join(test,
+    #              [df.cgi_partial == test.cgi_partial_other_rank_1, df.access_method_num == test.access_method_num],
+    #              'left').drop(test.access_method_num)
+    # test = master.select('access_method_num', 'cgi_partial_other_rank_2')
+    # df = df.join(test,
+    #              [df.cgi_partial == test.cgi_partial_other_rank_2, df.access_method_num == test.access_method_num],
+    #              'left').drop(test.access_method_num)
     df = df.withColumnRenamed('mobile_no', 'access_method_num')
-    df = df.select('access_method_num','cgi_partial','event_partition_date')
-    test = master.select('access_method_num','cgi_partial_home')
+    data_usage = df.groupBy('access_method_num', 'cgi_partial', 'event_partition_date').agg(
+        F.sum('sum_call').alias('sum_call')).drop('event_partition_date')
+    df = df.select('access_method_num', 'cgi_partial', 'event_partition_date')
+    test = master.select('access_method_num', 'cgi_partial_home').join(data_usage, [
+        master.access_method_num == data_usage.access_method_num, master.cgi_partial_home == data_usage.cgi_partial],
+                                                                       'left').drop(data_usage.access_method_num).drop(
+        data_usage.cgi_partial).withColumnRenamed('sum_call', 'sum_call_home')
     df = df.join(test, [df.cgi_partial == test.cgi_partial_home, df.access_method_num == test.access_method_num],
                  'left').drop(test.access_method_num)
-    test = master.select('access_method_num', 'cgi_partial_office')
+    test = master.select('access_method_num', 'cgi_partial_office').join(data_usage, [
+        master.access_method_num == data_usage.access_method_num, master.cgi_partial_office == data_usage.cgi_partial],
+                                                                         'left').drop(
+        data_usage.access_method_num).drop(data_usage.cgi_partial).withColumnRenamed('sum_call',
+                                                                                     'sum_call_office')
     df = df.join(test, [df.cgi_partial == test.cgi_partial_office, df.access_method_num == test.access_method_num],
                  'left').drop(test.access_method_num)
-    test = master.select('access_method_num', 'cgi_partial_other_rank_1')
-    df = df.join(test, [df.cgi_partial == test.cgi_partial_other_rank_1, df.access_method_num == test.access_method_num],
+    test = master.select('access_method_num', 'cgi_partial_other_rank_1').join(data_usage, [
+        master.access_method_num == data_usage.access_method_num,
+        master.cgi_partial_other_rank_1 == data_usage.cgi_partial], 'left').drop(data_usage.access_method_num).drop(
+        data_usage.cgi_partial).withColumnRenamed('sum_call', 'sum_call_other_rank_1')
+    df = df.join(test,
+                 [df.cgi_partial == test.cgi_partial_other_rank_1, df.access_method_num == test.access_method_num],
                  'left').drop(test.access_method_num)
-    test = master.select('access_method_num', 'cgi_partial_other_rank_2')
-    df = df.join(test, [df.cgi_partial == test.cgi_partial_other_rank_2, df.access_method_num == test.access_method_num],
+    test = master.select('access_method_num', 'cgi_partial_other_rank_2').join(data_usage, [
+        master.access_method_num == data_usage.access_method_num,
+        master.cgi_partial_other_rank_2 == data_usage.cgi_partial], 'left').drop(data_usage.access_method_num).drop(
+        data_usage.cgi_partial).withColumnRenamed('sum_call', 'sum_call_other_rank_2')
+    df = df.join(test,
+                 [df.cgi_partial == test.cgi_partial_other_rank_2, df.access_method_num == test.access_method_num],
                  'left').drop(test.access_method_num)
+
+
+    df = node_from_config(df, sql)
+    return df
+
+
+def l1_geo_data_traffic_location_daily(df, master, sql):
+    df = df.withColumnRenamed('mobile_no', 'access_method_num')
+    data_usage = df.groupBy('access_method_num', 'cgi_partial', 'event_partition_date').agg(
+        F.sum('sum_total_vol_kb').alias('sum_total_vol_kb')).drop('event_partition_date')
+    df = df.select('access_method_num', 'cgi_partial', 'event_partition_date')
+    test = master.select('access_method_num', 'cgi_partial_home').join(data_usage, [
+        master.access_method_num == data_usage.access_method_num, master.cgi_partial_home == data_usage.cgi_partial],
+                                                                       'left').drop(data_usage.access_method_num).drop(
+        data_usage.cgi_partial).withColumnRenamed('sum_total_vol_kb', 'sum_total_vol_kb_home')
+    df = df.join(test, [df.cgi_partial == test.cgi_partial_home, df.access_method_num == test.access_method_num],
+                 'left').drop(test.access_method_num)
+    test = master.select('access_method_num', 'cgi_partial_office').join(data_usage, [
+        master.access_method_num == data_usage.access_method_num, master.cgi_partial_office == data_usage.cgi_partial],
+                                                                         'left').drop(
+        data_usage.access_method_num).drop(data_usage.cgi_partial).withColumnRenamed('sum_total_vol_kb',
+                                                                                     'sum_total_vol_kb_office')
+    df = df.join(test, [df.cgi_partial == test.cgi_partial_office, df.access_method_num == test.access_method_num],
+                 'left').drop(test.access_method_num)
+    test = master.select('access_method_num', 'cgi_partial_other_rank_1').join(data_usage, [
+        master.access_method_num == data_usage.access_method_num,
+        master.cgi_partial_other_rank_1 == data_usage.cgi_partial], 'left').drop(data_usage.access_method_num).drop(
+        data_usage.cgi_partial).withColumnRenamed('sum_total_vol_kb', 'sum_total_vol_kb_other_rank_1')
+    df = df.join(test,
+                 [df.cgi_partial == test.cgi_partial_other_rank_1, df.access_method_num == test.access_method_num],
+                 'left').drop(test.access_method_num)
+    test = master.select('access_method_num', 'cgi_partial_other_rank_2').join(data_usage, [
+        master.access_method_num == data_usage.access_method_num,
+        master.cgi_partial_other_rank_2 == data_usage.cgi_partial], 'left').drop(data_usage.access_method_num).drop(
+        data_usage.cgi_partial).withColumnRenamed('sum_total_vol_kb', 'sum_total_vol_kb_other_rank_2')
+    df = df.join(test,
+                 [df.cgi_partial == test.cgi_partial_other_rank_2, df.access_method_num == test.access_method_num],
+                 'left').drop(test.access_method_num)
+
     df = node_from_config(df, sql)
     return df

@@ -63,9 +63,26 @@ l1_data_distance_weekend_daily: #472,475,478
 l1_geo_call_count_location_daily: #402,403,404,405
   where_clause: ""
   feature_list:
-    call_in_home_location : "sum(cgi_partial_home)"
-    call_in_work_location : "sum(cgi_partial_office)"
-    call_on_first_most_used_non_homework : "sum(cgi_partial_other_rank_1)"
-    call_on_second_most_used_non_homework : "sum(cgi_partial_other_rank_2)"
+    cgi_partial_home : "sum(cgi_partial_home)"
+    sum_call_home : "sum(sum_call_home)"
+    cgi_partial_office : "sum(cgi_partial_office)"
+    sum_call_office : "sum(sum_call_office)"
+    cgi_partial_other_rank_1 : "sum(cgi_partial_other_rank_1)"
+    sum_call_other_rank_1 : "sum(sum_call_other_rank_1)"
+    cgi_partial_other_rank_2 : "sum(cgi_partial_other_rank_2)"
+    sum_call_other_rank_2 : "sum(sum_call_other_rank_2)"
+  granularity: "event_partition_date,access_method_num"
+
+l1_geo_data_traffic_location_daily: #406-413
+  where_clause: ""
+  feature_list:
+    cgi_partial_home : "sum(cgi_partial_home)"
+    sum_total_vol_kb_home : "sum(sum_total_vol_kb_home)"
+    cgi_partial_office : "sum(cgi_partial_office)"
+    sum_total_vol_kb_office : "sum(sum_total_vol_kb_office)"
+    cgi_partial_other_rank_1 : "sum(cgi_partial_other_rank_1)"
+    sum_total_vol_kb_rank_1 : "sum(sum_total_vol_kb_other_rank_1)"
+    cgi_partial_other_rank_2 : "sum(cgi_partial_other_rank_2)"
+    sum_total_vol_kb_rank_2 : "sum(sum_total_vol_kb_other_rank_2)"
   granularity: "event_partition_date,access_method_num"
 

@@ -105,5 +105,24 @@ def geo_to_l3_pipeline(**kwargs):
 
             ),
 
+            node(
+                l3_geo_call_count_location_monthly,
+                ["l1_geo_usage_sum_data_location_dow_intermediate_for_l3_geo_call_count_location_monthly",
+                 "l1_geo_favorite_cell_master_table",
+                 "params:l3_geo_call_count_location_monthly"],
+                "l3_geo_call_count_location_monthly"
+
+            ),
+
+            node(
+                l3_geo_data_traffic_location_monthly,
+                ["l1_geo_usage_sum_data_location_dow_intermediate_for_l3_geo_data_traffic_location_monthly",
+                 "l1_geo_favorite_cell_master_table",
+                 "params:l3_geo_data_traffic_location_monthly"],
+                "l3_geo_data_traffic_location_monthly"
+
+            ),
+
+
         ], name="geo_to_l3_pipeline"
     )

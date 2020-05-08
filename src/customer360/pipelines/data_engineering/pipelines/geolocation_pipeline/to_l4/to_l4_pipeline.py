@@ -102,6 +102,21 @@ def geo_to_l4_pipeline(**kwargs):
 
             ),
 
+            node(
+                l4_rolling_window,
+                ["l2_geo_call_count_location_weekly_for_l4_geo_call_count_location",
+                 "params:l4_geo_call_count_location"],
+                "l4_geo_call_count_location"
+
+            ),
+
+            node(
+                l4_rolling_window,
+                ["l2_geo_data_traffic_location_weekly_for_l4_geo_data_traffic_location",
+                 "params:l4_geo_data_traffic_location"],
+                "l4_geo_data_traffic_location"
+
+            ),
 
         ], name="geo_to_l4_pipeline"
     )

@@ -80,7 +80,15 @@ l4_data_frequent_cell_4g_monthly:
 l4_geo_call_count_location: #402,403,404,405
   partition_by: ["access_method_num"]
   feature_list:
-    avg: ["call_in_home_location","call_in_work_location","call_on_first_most_used_non_homework","call_on_second_most_used_non_homework"]
-    max: ["call_in_home_location","call_in_work_location","call_on_first_most_used_non_homework","call_on_second_most_used_non_homework"]
-    min: ["call_in_home_location","call_in_work_location","call_on_first_most_used_non_homework","call_on_second_most_used_non_homework"]
+    avg: ["sum_call_home","sum_call_office","sum_call_other_rank_1","sum_call_other_rank_2"]
+    max: ["sum_call_home","sum_call_office","sum_call_other_rank_1","sum_call_other_rank_2"]
+    min: ["sum_call_home","sum_call_office","sum_call_other_rank_1","sum_call_other_rank_2"]
+  read_from: "l2"
+
+l4_geo_data_traffic_location: #406-413
+  partition_by: ["access_method_num"]
+  feature_list:
+    avg: ["sum_total_vol_kb_home","sum_total_vol_kb_office","sum_total_vol_kb_other_rank_1","sum_total_vol_kb_other_rank_2"]
+    max: ["sum_total_vol_kb_home","sum_total_vol_kb_office","sum_total_vol_kb_other_rank_1","sum_total_vol_kb_other_rank_2"]
+    min: ["sum_total_vol_kb_home","sum_total_vol_kb_office","sum_total_vol_kb_other_rank_1","sum_total_vol_kb_other_rank_2"]
   read_from: "l2"

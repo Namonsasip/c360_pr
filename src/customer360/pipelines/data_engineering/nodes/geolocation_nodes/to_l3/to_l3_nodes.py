@@ -243,18 +243,71 @@ def l3_geo_data_frequent_cell_4g_monthly(df, sql):
 
 def l3_geo_call_count_location_monthly(df, master, sql):
     df = df.withColumnRenamed('mobile_no', 'access_method_num')
-    df = df.select('access_method_num','cgi_partial','start_of_month')
-    test = master.select('access_method_num','cgi_partial_home')
+    data_usage = df.groupBy('access_method_num', 'cgi_partial', 'start_of_month').agg(
+        F.sum('sum_call').alias('sum_call')).drop('start_of_month')
+    df = df.select('access_method_num', 'cgi_partial', 'start_of_month')
+    test = master.select('access_method_num', 'cgi_partial_home').join(data_usage, [
+        master.access_method_num == data_usage.access_method_num, master.cgi_partial_home == data_usage.cgi_partial],
+                                                                       'left').drop(data_usage.access_method_num).drop(
+        data_usage.cgi_partial).withColumnRenamed('sum_call', 'sum_call_home')
     df = df.join(test, [df.cgi_partial == test.cgi_partial_home, df.access_method_num == test.access_method_num],
                  'left').drop(test.access_method_num)
-    test = master.select('access_method_num', 'cgi_partial_office')
+    test = master.select('access_method_num', 'cgi_partial_office').join(data_usage, [
+        master.access_method_num == data_usage.access_method_num, master.cgi_partial_office == data_usage.cgi_partial],
+                                                                         'left').drop(
+        data_usage.access_method_num).drop(data_usage.cgi_partial).withColumnRenamed('sum_call',
+                                                                                     'sum_call_office')
     df = df.join(test, [df.cgi_partial == test.cgi_partial_office, df.access_method_num == test.access_method_num],
                  'left').drop(test.access_method_num)
-    test = master.select('access_method_num', 'cgi_partial_other_rank_1')
-    df = df.join(test, [df.cgi_partial == test.cgi_partial_other_rank_1, df.access_method_num == test.access_method_num],
+    test = master.select('access_method_num', 'cgi_partial_other_rank_1').join(data_usage, [
+        master.access_method_num == data_usage.access_method_num,
+        master.cgi_partial_other_rank_1 == data_usage.cgi_partial], 'left').drop(data_usage.access_method_num).drop(
+        data_usage.cgi_partial).withColumnRenamed('sum_call', 'sum_call_other_rank_1')
+    df = df.join(test,
+                 [df.cgi_partial == test.cgi_partial_other_rank_1, df.access_method_num == test.access_method_num],
                  'left').drop(test.access_method_num)
-    test = master.select('access_method_num', 'cgi_partial_other_rank_2')
-    df = df.join(test, [df.cgi_partial == test.cgi_partial_other_rank_2, df.access_method_num == test.access_method_num],
+    test = master.select('access_method_num', 'cgi_partial_other_rank_2').join(data_usage, [
+        master.access_method_num == data_usage.access_method_num,
+        master.cgi_partial_other_rank_2 == data_usage.cgi_partial], 'left').drop(data_usage.access_method_num).drop(
+        data_usage.cgi_partial).withColumnRenamed('sum_call', 'sum_call_other_rank_2')
+    df = df.join(test,
+                 [df.cgi_partial == test.cgi_partial_other_rank_2, df.access_method_num == test.access_method_num],
                  'left').drop(test.access_method_num)
+
+
+    df = node_from_config(df, sql)
+def l3_geo_data_traffic_location_monthly(df,master,sql):
+    df = df.withColumnRenamed('mobile_no', 'access_method_num')
+    data_usage = df.groupBy('access_method_num', 'cgi_partial', 'start_of_month').agg(
+        F.sum('sum_total_vol_kb').alias('sum_total_vol_kb')).drop('start_of_month')
+    df = df.select('access_method_num', 'cgi_partial', 'start_of_month')
+    test = master.select('access_method_num', 'cgi_partial_home').join(data_usage, [
+        master.access_method_num == data_usage.access_method_num, master.cgi_partial_home == data_usage.cgi_partial],
+                                                                       'left').drop(data_usage.access_method_num).drop(
+        data_usage.cgi_partial).withColumnRenamed('sum_total_vol_kb', 'sum_total_vol_kb_home')
+    df = df.join(test, [df.cgi_partial == test.cgi_partial_home, df.access_method_num == test.access_method_num],
+                 'left').drop(test.access_method_num)
+    test = master.select('access_method_num', 'cgi_partial_office').join(data_usage, [
+        master.access_method_num == data_usage.access_method_num, master.cgi_partial_office == data_usage.cgi_partial],
+                                                                         'left').drop(
+        data_usage.access_method_num).drop(data_usage.cgi_partial).withColumnRenamed('sum_total_vol_kb',
+                                                                                     'sum_total_vol_kb_office')
+    df = df.join(test, [df.cgi_partial == test.cgi_partial_office, df.access_method_num == test.access_method_num],
+                 'left').drop(test.access_method_num)
+    test = master.select('access_method_num', 'cgi_partial_other_rank_1').join(data_usage, [
+        master.access_method_num == data_usage.access_method_num,
+        master.cgi_partial_other_rank_1 == data_usage.cgi_partial], 'left').drop(data_usage.access_method_num).drop(
+        data_usage.cgi_partial).withColumnRenamed('sum_total_vol_kb', 'sum_total_vol_kb_other_rank_1')
+    df = df.join(test,
+                 [df.cgi_partial == test.cgi_partial_other_rank_1, df.access_method_num == test.access_method_num],
+                 'left').drop(test.access_method_num)
+    test = master.select('access_method_num', 'cgi_partial_other_rank_2').join(data_usage, [
+        master.access_method_num == data_usage.access_method_num,
+        master.cgi_partial_other_rank_2 == data_usage.cgi_partial], 'left').drop(data_usage.access_method_num).drop(
+        data_usage.cgi_partial).withColumnRenamed('sum_total_vol_kb', 'sum_total_vol_kb_other_rank_2')
+    df = df.join(test,
+                 [df.cgi_partial == test.cgi_partial_other_rank_2, df.access_method_num == test.access_method_num],
+                 'left').drop(test.access_method_num)
+
     df = node_from_config(df, sql)
     return df
