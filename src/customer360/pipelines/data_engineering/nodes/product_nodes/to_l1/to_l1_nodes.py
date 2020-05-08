@@ -211,7 +211,7 @@ def join_with_master_package(
     return result_df
 
 
-def product_customer_promotion_for_daily(input_df) -> DataFrame:
+def dac_product_customer_promotion_for_daily(input_df) -> DataFrame:
     """
     :return:
     """
@@ -230,7 +230,8 @@ def product_customer_promotion_for_daily(input_df) -> DataFrame:
 
     return input_df
 
-def product_fbb_a_customer_promotion_current_for_daily(input_df) -> DataFrame:
+
+def dac_product_fbb_a_customer_promotion_current_for_daily(input_df) -> DataFrame:
     """
     :return:
     """
