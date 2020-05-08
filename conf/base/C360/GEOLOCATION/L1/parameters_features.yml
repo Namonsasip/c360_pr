@@ -1,4 +1,4 @@
-l1_number_of_bs_used: #396
+l1_number_of_bs_used: #396  Number of BS used
   where_clause: ""
   feature_list:
     number_of_bs_used: "size(cell_id_list)"
@@ -73,7 +73,7 @@ l1_geo_call_count_location_daily: #402,403,404,405
     sum_call_other_rank_2 : "sum(sum_call_other_rank_2)"
   granularity: "event_partition_date,access_method_num"
 
-l1_geo_data_traffic_location_daily: #406-413
+l1_geo_data_traffic_location_daily: #Data traffic
   where_clause: ""
   feature_list:
     cgi_partial_home : "sum(cgi_partial_home)"
