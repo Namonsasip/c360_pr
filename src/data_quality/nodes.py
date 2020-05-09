@@ -546,9 +546,9 @@ def generate_latency_formula(
                                            date_end="date_trunc('week', current_date())",
                                            date_start=f"max({partition_col})")
 
-    return get_partition_count_formula(partition_col,
-                                       date_end="date_trunc('month', current_date())",
-                                       date_start=f"max({partition_col})")
+    return "{} - 1".format(get_partition_count_formula(partition_col,
+                                                       date_end="date_trunc('month', current_date())",
+                                                       date_start=f"max({partition_col})"))
 
 
 def run_timeliness_logic(
