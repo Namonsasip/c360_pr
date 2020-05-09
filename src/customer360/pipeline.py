@@ -170,7 +170,7 @@ from .pipelines.data_engineering.pipelines.usage_pipeline import (
 )
 
 from .pipelines.data_engineering.pipelines.util_pipeline import (
-    lineage_dependency_pipeline
+    lineage_dependency_pipeline, ops_report_pipeline
 )
 
 
@@ -258,6 +258,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "product_to_l2_pipeline": product_to_l2_pipeline(),
         "product_to_l4_pipeline": product_to_l4_pipeline(),
         "lineage_dependency_pipeline": lineage_dependency_pipeline(),
+        "ops_report_pipeline": ops_report_pipeline(),
         # "de": data_engineering_pipeline,
     }
 
