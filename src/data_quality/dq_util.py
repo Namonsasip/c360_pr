@@ -30,7 +30,8 @@ def get_partition_col(
         "event_partition_date",
         "start_of_week",
         "start_of_month",
-        "partition_month"
+        "partition_month",
+        "partition_date",
     ]
 
     partition_col = None
@@ -275,25 +276,29 @@ def replace_asterisk_feature(
     return result_list
 
 
-def get_expected_partition_count_formula(
-        partition_col: str
+def get_partition_count_formula(
+        partition_col: str,
+        date_end: str,
+        date_start: str
 ) -> str:
 
     """
     given a partition column name, get the formula to get expected
-    partition count assuming all data are complete
+    partition count between two values
 
     :param partition_col: partition column name (event_partition_date,
-            start_of_week, start_of_month, or partition_month)
+            start_of_week, start_of_month, or partition_month),
+    :param date_end: end date/partition for the formula
+    :param date_start: start date/partition for the formula
     """
 
     expected_partition_cnt_formula = None
-    if partition_col == 'event_partition_date':
-        expected_partition_cnt_formula = 'datediff(max({partition_col}), min({partition_col})) + 1'
+    if partition_col == 'event_partition_date' or partition_col == 'partition_date':
+        expected_partition_cnt_formula = f'datediff({date_end}, {date_start}) + 1'
     elif partition_col == 'start_of_week':
-        expected_partition_cnt_formula = '(datediff(max({partition_col}), min({partition_col})) / 7) + 1'
+        expected_partition_cnt_formula = f'(datediff({date_end}, {date_start}) / 7) + 1'
     elif partition_col == 'start_of_month' or 'partition_month':
-        expected_partition_cnt_formula = 'months_between(max({partition_col}), min({partition_col})) + 1'
+        expected_partition_cnt_formula = f'months_between({date_end}, {date_start}) + 1'
 
     return expected_partition_cnt_formula
 
