@@ -3,7 +3,8 @@ from pyspark.sql import DataFrame
 from pyspark.sql.types import StringType
 
 from customer360.utilities.config_parser import node_from_config
-from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check
+from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check, \
+    union_dataframes_with_missing_cols
 from src.customer360.utilities.spark_util import get_spark_empty_df
 
 
@@ -18,35 +19,59 @@ def build_digital_l3_monthly_features(cxense_user_profile: DataFrame,
     """
 
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([cxense_user_profile]):
+    if check_empty_dfs([cxense_user_profile, cust_df]):
         return get_spark_empty_df()
 
-    cxense_user_profile = data_non_availability_and_missing_check(df=cxense_user_profile, grouping="monthly",
-                                                                  par_col="partition_month",
-                                                                  target_table_name="l3_digital_cxenxse_user_profile_monthly")
+    cxense_user_profile = data_non_availability_and_missing_check(
+        df=cxense_user_profile, grouping="monthly",
+        par_col="partition_month",
+        target_table_name="l3_digital_cxenxse_user_profile_monthly")
 
-    if check_empty_dfs([cxense_user_profile]):
+    cust_df = data_non_availability_and_missing_check(
+        df=cust_df, grouping="monthly",
+        par_col="event_partition_date",
+        target_table_name="l3_digital_cxenxse_user_profile_monthly",
+        missing_data_check_flg='N')
+
+    # new section to handle data latency
+    cxense_user_profile = cxense_user_profile\
+        .withColumn("partition_month", f.col("partition_month").cast(StringType())) \
+        .withColumn("start_of_month", f.to_date(f.date_trunc('month', f.to_date(f.col("partition_month"), 'yyyyMM'))))
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            cxense_user_profile.select(
+                f.max(f.col("start_of_month")).alias("max_date")),
+            cust_df.select(
+                f.max(f.col("start_of_month")).alias("max_date"))
+        ]
+    ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    cxense_user_profile = cxense_user_profile.filter(f.col("start_of_month") <= min_value)
+    cust_df = cust_df.filter(f.col("start_of_month") <= min_value)
+
+    if check_empty_dfs([cxense_user_profile, cust_df]):
         return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
 
     cxense_user_profile = cxense_user_profile.withColumnRenamed("mobile_no", "access_method_num") \
-        .withColumn("partition_month", f.col("partition_month").cast(StringType())) \
-        .withColumn("start_of_month", f.to_date(f.date_trunc('month', f.to_date(f.col("partition_month"), 'yyyyMM')))) \
         .withColumn("device_type", f.when(f.col("groups") == "device-type", f.col("item"))
                     .otherwise(f.lit(None)))
 
     return_df = node_from_config(cxense_user_profile, node_config_dict)
 
-    # merging with customer dimension table
-    cust_df_cols = ['access_method_num', 'partition_month', 'subscription_identifier']
+    # This code will populate a subscriber id to the data set.
+    cust_df_cols = ['access_method_num', 'start_of_month', 'subscription_identifier']
     join_key = ['access_method_num', 'start_of_month']
 
-    cust_df = cust_df.select(cust_df_cols).withColumnRenamed("partition_month", "start_of_month")
+    cust_df = cust_df.select(cust_df_cols)\
+        .drop_duplicates(subset=["subscription_identifier", "access_method_num", "start_of_month"])
 
     final_df = return_df.join(cust_df, join_key)
 
-    final_df = final_df.where("subscription_identifier is not null AND start_of_month is not null") \
-        .drop_duplicates(subset=["subscription_identifier", "start_of_month"])
+    final_df = final_df.where("subscription_identifier is not null and start_of_month is not null")
+
+    final_df = final_df.drop_duplicates(subset=["subscription_identifier", "start_of_month"])
 
     return final_df
