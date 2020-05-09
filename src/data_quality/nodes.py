@@ -12,7 +12,7 @@ from src.data_quality.dq_util import get_config_parameters, \
     get_outlier_column, \
     add_most_frequent_value, \
     replace_asterisk_feature, \
-    get_expected_partition_count_formula, \
+    get_partition_count_formula, \
     melt, \
     add_suffix_to_df_columns
 
@@ -219,6 +219,36 @@ def _generate_consistency_nodes(
     return nodes
 
 
+def _generate_timeliness_nodes(
+        selected_dataset: Dict,
+) -> List[Node]:
+    nodes = []
+    timeliness_node_output_list = []
+    for dataset_name, feature_list in selected_dataset.items():
+        timeliness_output_catalog = "dq_timeliness_{}".format(dataset_name)
+        timeliness_node = Node(
+            func=update_wrapper(
+                wrapper=partial(run_timeliness_logic, dataset_name=dataset_name),
+                wrapped=run_timeliness_logic
+            ),
+            inputs=[dataset_name,
+                    "all_catalog_and_feature_exist"],
+            outputs=timeliness_output_catalog,
+            tags=["dq_timeliness"]
+        )
+        nodes.append(timeliness_node)
+        timeliness_node_output_list.append(timeliness_output_catalog)
+
+    timeliness_merger_node = Node(
+        func=dq_merger_nodes,
+        inputs=timeliness_node_output_list,
+        outputs="dq_timeliness",
+        tags=["dq_timeliness"]
+    )
+    nodes.append(timeliness_merger_node)
+    return nodes
+
+
 def generate_dq_nodes():
     nodes = []
     selected_dataset = get_config_parameters()['features_for_dq']
@@ -226,6 +256,7 @@ def generate_dq_nodes():
     nodes.extend(_generate_accuracy_and_completeness_nodes(selected_dataset))
     nodes.extend(_generate_availability_nodes(selected_dataset))
     nodes.extend(_generate_consistency_nodes(selected_dataset))
+    nodes.extend(_generate_timeliness_nodes(selected_dataset))
 
     return nodes
 
@@ -330,7 +361,9 @@ def run_availability_logic(
 ) -> DataFrame:
 
     partition_col = get_partition_col(input_df, dataset_name)
-    expected_partition_cnt_formula = get_expected_partition_count_formula(partition_col)
+    expected_partition_cnt_formula = get_partition_count_formula(partition_col=partition_col,
+                                                                 date_end=f"max({partition_col})",
+                                                                 date_start=f"min({partition_col})")
 
     input_df.createOrReplaceTempView("input_df")
 
@@ -498,3 +531,90 @@ def run_consistency_logic(
     df_same_percent.persist(StorageLevel.MEMORY_AND_DISK).count()
 
     return df_same_percent
+
+
+def generate_latency_formula(
+        partition_col: str
+) -> str:
+    if partition_col == 'event_partition_date' or partition_col == 'partition_date':
+        return get_partition_count_formula(partition_col,
+                                           date_end="current_date()",
+                                           date_start=f"max({partition_col})")
+
+    if partition_col == 'start_of_week':
+        return get_partition_count_formula(partition_col,
+                                           date_end="date_trunc('week', current_date())",
+                                           date_start=f"max({partition_col})")
+
+    return get_partition_count_formula(partition_col,
+                                       date_end="date_trunc('month', current_date())",
+                                       date_start=f"max({partition_col})")
+
+
+def run_timeliness_logic(
+        input_df: DataFrame,
+        all_catalog_and_feature_exist: DataFrame,
+        dataset_name: str
+):
+    input_df.createOrReplaceTempView("input_df")
+    partition_col = get_partition_col(input_df, dataset_name)
+    ctx = get_dq_context()
+    spark = get_spark_session()
+
+    initial_stats_for_input_df = """
+        select
+            '{dataset_name}' as dataset_name, 
+            '{partition_col}' as granularity,
+            max({partition_col}) as max_partition,
+            {latency_formula} as partition_latency,
+            current_timestamp() as execution_ts,
+            0.0 as latency_increase_from_last_run,
+            current_date() as run_date
+        from input_df
+    """.format(latency_formula=generate_latency_formula(partition_col),
+               dataset_name=dataset_name,
+               partition_col=partition_col)
+
+    try:
+        dq_timeliness = ctx.catalog.load("dq_timeliness")
+        dq_timeliness.createOrReplaceTempView("dq_timeliness")
+    except DataSetError:
+        # no dq_timeliness yet, create initial stats
+        result_df = spark.sql(initial_stats_for_input_df)
+        return result_df
+
+    result_df = spark.sql("""
+        with unioned_df as (
+            {initial_stats_for_input_df}
+            union (
+                select
+                    t1.dataset_name,
+                    t1.granularity,
+                    t1.max_partition,
+                    t1.partition_latency,
+                    t1.execution_ts,
+                    t1.latency_increase_from_last_run,
+                    t1.run_date
+                from dq_timeliness t1
+                where t1.dataset_name = '{dataset_name}'
+                  and t1.run_date = (select max(run_date) from dq_timeliness t2)
+            )
+        )
+        select
+            unioned_df.dataset_name,
+            unioned_df.granularity,
+            unioned_df.max_partition,
+            unioned_df.partition_latency,
+            unioned_df.execution_ts,
+            unioned_df.run_date,
+            coalesce(
+                partition_latency - lag(partition_latency, 1) over (partition by dataset_name order by execution_ts asc),
+                latency_increase_from_last_run) as latency_increase_from_last_run
+        from unioned_df
+        
+    """.format(initial_stats_for_input_df=initial_stats_for_input_df,
+               latency_formula=generate_latency_formula(partition_col),
+               dataset_name=dataset_name,
+               partition_col=partition_col))
+
+    return result_df
