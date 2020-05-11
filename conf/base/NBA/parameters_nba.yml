@@ -1,18 +1,19 @@
 
 nba_master_table_date_min: "2019-10-15"
-nba_master_table_date_max: "2020-02-29"
+nba_master_table_date_max: "2020-03-31"
 
 nba_min_feature_days_lag: 5  # TODO validate lag
 
 # Parameters for model training
-nba_model_group_column_prioritized: campaign_name
+nba_model_group_column_prioritized: campaign_child_code
 nba_model_group_column_non_prioritized: campaign_category
 nba_model_group_column: model_group
 
 nba_acceptance_model_target_column: target_response
-nba_arpu_model_target_column: target_relative_arpu_increase_30d
+nba_arpu_30d_model_target_column: target_relative_arpu_increase_30d
+nba_arpu_7d_model_target_column: target_relative_arpu_increase_7d
 
-nba_model_min_obs_per_class_for_model: 100
+nba_model_min_obs_per_class_for_model: 500
 nba_model_max_rows_per_group: 1000000
 nba_model_train_sampling_ratio: 0.8
 
@@ -27,11 +28,12 @@ nba_model_model_params:
    random_state: 123456
    importance_type: "gain"
 
-#nba_model_pai_storage_path: "dbfs://mnt/customer360-blob-data/NBA/pai_from20200424/"
-nba_model_pai_storage_path: "/dbfs/mnt/customer360-blob-data/NBA/pai_local_from20200427_4"
+nba_pai_runs_uri: # TODO PLEASE COMPLETE WITH DATABASE URI
+nba_pai_artifacts_uri: "dbfs://mnt/customer360-blob-data/NBA/pai_20200511/"
 
 # Columns to track in NBA, they will be added in the PAI run info
 nba_extra_tag_columns_pai:
+  - child_name
   - campaign_category
   - campaign_child_code
   - campaign_type
@@ -56,7 +58,6 @@ nba_prioritized_campaigns_child_codes:
   - "1-87970101195"
   - "1-54451059058"
   - "1-80630046121"
-  - "1-83933732974"
   - "1-76784686510"
   - "1-79530935324"
   - "1-86264889941"
@@ -77,7 +78,6 @@ nba_prioritized_campaigns_child_codes:
   - "1-87970101204"
   - "1-86545475121"
   - "1-77521335684"
-  - "1-69708668918"
   - "1-77516159323"
   - "1-85820246910"
   - "1-84228520290"
@@ -108,12 +108,10 @@ nba_prioritized_campaigns_child_codes:
   - "1-85307823834"
   - "1-85307823837"
   - "1-69825842851"
-  - "1-62402989244"
   - "1-85412125341"
   - "1-85412125344"
   - "200309-199"
   - "1-62076734859"
-  - "200318-12"
   - "1-66302497134"
   - "1-70306418171"
   - "1-70306418174"
@@ -129,7 +127,6 @@ nba_prioritized_campaigns_child_codes:
   - "1-90160950202"
   - "200312-33"
   - "1-82216451704"
-  - "200318-8"
   - "200323-19"
   - "200224-45"
   - "1-90529876760"
@@ -328,9 +325,6 @@ nba_model_explanatory_features:
    - subscription_status_numeric
    - cust_active_this_month_numeric
    - norms_net_revenue
-   - sum_payments_top_ups_daily_last_seven_day
-   - sum_payments_top_ups_daily_last_thirty_day
-   - sum_payments_top_ups_daily_last_ninety_day
    - sum_payments_arpu_last_month
    - sum_payments_arpu_last_three_month
    - sum_payments_arpu_gprs_last_month
@@ -386,4 +380,16 @@ nba_model_explanatory_features:
    - sum_usg_incoming_local_data_volume_4G_sum_weekly_last_four_week
    - sum_usg_outgoing_total_call_duration_sum_weekly_last_week
    - sum_usg_outgoing_total_call_duration_sum_weekly_last_twelve_week
+
+## Backtesting parameters
+backtesting_model_groups_to_score:
+  - "campaign_child_code=1-76784686504"
+  - "campaign_child_code=1-47725105277"
+  - "campaign_child_code=1-84074046175"
+backtesting_models_to_score:
+  z_20200508_015902_acceptance_30d_Miguel_: "prediction_acceptance"
+  z_20200508_015902_arpu_30d_Miguel_: "prediction_arpu_30d"
+  z_20200508_023932_arpu_7d_Miguel_: "prediction_arpu_7d"
+
+backtesting_scoring_chunk_size: 500000
 
