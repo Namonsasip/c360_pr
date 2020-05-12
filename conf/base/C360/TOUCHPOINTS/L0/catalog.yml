@@ -6,7 +6,7 @@ l0_touchpoint_service_order_profile_daily:
 l0_touchpoints_acc_ivr_log_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: dbfs:/mnt/customer360-blob-data/C360/TOUCHPOINTS/touchpoints_acc_ivr_log_daily
+  filepath: dbfs:/mnt/customer360-blob-data/C360/TOUCHPOINTS/touchpoints_acc_ivr_log
 
 l0_touchpoints_acc_kiosk_machine_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet

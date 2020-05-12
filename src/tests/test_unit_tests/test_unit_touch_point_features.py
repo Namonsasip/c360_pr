@@ -4,7 +4,83 @@ import pandas as pd
 import random
 from pyspark.sql import functions as F
 from datetime import timedelta, datetime
+from pyspark.sql.types import *
+from customer360.utilities.re_usable_functions import *
 
+
+global ivr_test
+ivr_test = [
+["test","20201006","1","1","1","1","1","1","1","1","1","1",datetime.strptime('2020-01-06', '%Y-%m-%d'),datetime.strptime('2020-01-01', '%Y-%m-%d'),datetime.strptime('2020-01-06', '%Y-%m-%d')],
+["test","20200107","1","1","1","1","1","1","1","1","1","1",datetime.strptime('2020-01-06', '%Y-%m-%d'),datetime.strptime('2020-01-01', '%Y-%m-%d'),datetime.strptime('2020-01-07', '%Y-%m-%d')]
+]
+
+global daily_customer_profile
+daily_customer_profile = [
+    ["1-TEST", "test", datetime.strptime('2020-01-06', '%Y-%m-%d'), "null", "THAI", "null", "N", "N", "Y", "Y",
+     "3G537", "NULL", "null", "null", "3574", "117", "SA", "Classic", "Classic", "3G", "National_id_card",
+     "20200106", datetime.strptime('2020-01-06', '%Y-%m-%d'), "Pre-paid", "null",
+     datetime.strptime('2020-01-06', '%Y-%m-%d'), datetime.strptime('2020-01-01', '%Y-%m-%d')],
+["1-TEST", "test", datetime.strptime('2020-01-06', '%Y-%m-%d'), "null", "THAI", "null", "N", "N", "Y", "Y",
+     "3G537", "NULL", "null", "null", "3574", "117", "SA", "Classic", "Classic", "3G", "National_id_card",
+     "20200107", datetime.strptime('2020-01-07', '%Y-%m-%d'), "Pre-paid", "null",
+     datetime.strptime('2020-01-06', '%Y-%m-%d'), datetime.strptime('2020-01-01', '%Y-%m-%d')]
+]
+
+def set_value(project_context):
+    var_project_context = project_context['ProjectContext']
+    spark = project_context['Spark']
+
+    rdd1 = spark.sparkContext.parallelize(ivr_test)
+    global df_ivr_log
+    df_ivr_log = spark.createDataFrame(rdd1,schema=StructType([
+        StructField("mobile_number", StringType(), True),
+        StructField("partition_date", StringType(), True),
+        StructField("touchpoints_num_of_call_ivr", StringType(), True),
+        StructField("touchpoints_num_of_disconnection_by_ivr", StringType(), True),
+        StructField("touchpoints_num_of_disconnection_by_customer", StringType(), True),
+        StructField("touchpoints_num_of_disconnection_by_transfer_agent", StringType(), True),
+        StructField("touchpoints_ivr_moring_calls", StringType(), True),
+        StructField("touchpoints_ivr_afternoon_calls", StringType(), True),
+        StructField("touchpoints_evening_calls", StringType(), True),
+        StructField("touchpoints_night_calls", StringType(), True),
+        StructField("touchpoints_distinct_languages_chosen", StringType(), True),
+        StructField("touchpoints_unsuccesful_connect_tuxedo", StringType(), True),
+        StructField("start_of_week", DateType(), True),
+        StructField("start_of_month", DateType(), True),
+        StructField("event_partition_date", DateType(), True)
+    ]))
+
+    rdd1 = spark.sparkContext.parallelize(daily_customer_profile)
+    global customer_pro
+    customer_pro = spark.createDataFrame(rdd1, schema=StructType([
+        StructField("subscription_identifier", StringType(), True),
+        StructField("access_method_num", StringType(), True),
+        StructField("register_date", DateType(), True),
+        StructField("zipcode", StringType(), True),
+        StructField("prefer_language", StringType(), True),
+        StructField("company_size", StringType(), True),
+        StructField("corporate_flag", StringType(), True),
+        StructField("prefer_language_eng", StringType(), True),
+        StructField("prefer_language_thai", StringType(), True),
+        StructField("prefer_language_other", StringType(), True),
+        StructField("current_package_id", StringType(), True),
+        StructField("current_package_name", StringType(), True),
+        StructField("age", StringType(), True),
+        StructField("gender", StringType(), True),
+        StructField("subscriber_tenure_day", StringType(), True),
+        StructField("subscriber_tenure_month", StringType(), True),
+        StructField("subscription_status", StringType(), True),
+        StructField("customer_segment", StringType(), True),
+        StructField("serenade_status", StringType(), True),
+        StructField("network_type", StringType(), True),
+        StructField("national_id_card", StringType(), True),
+        StructField("partition_date", StringType(), True),
+        StructField("event_partition_date", DateType(), True),
+        StructField("charge_type", StringType(), True),
+        StructField("billing_account_no", StringType(), True),
+        StructField("start_of_week", DateType(), True),
+        StructField("start_of_month", DateType(), True)
+    ]))
 
 class TestUnitTp:
 
@@ -690,7 +766,6 @@ class TestUnitTp:
             'params:l4_touchpoints_nim_work_features'))
 
         return l4_nim_work
-
 
     def test_nim_work_sum(self,project_context):
 
@@ -2149,7 +2224,6 @@ class TestUnitTp:
                 "start_of_week = '2020-01-20'").select(
                 "max_touchpoints_num_of_consultation_online_sum_weekly_last_twelve_week").collect()[0][
                 0] == 3
-
     def test_nim_work(self,project_context):
  
         var_project_context = project_context['ProjectContext']
@@ -2508,9 +2582,27 @@ class TestUnitTp:
                 "touchpoints_num_of_consultation_online_sum").collect()[0][
                 0] == 6
 
-      
-        
-        
-       
+    def test_ivr_l1_to_l4(self,project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
 
-#
+        set_value(project_context)
+
+        test= df_ivr_log.withColumnRenamed("mobile_number","access_method_num")
+        l1_ivr = test.join(customer_pro,on=["access_method_num","event_partition_date","start_of_week"],how="left")
+
+        l1_ivr.show()
+
+        l2_ivr = l2_massive_processing_with_expansion(l1_ivr,var_project_context.catalog.load(
+            'params:l2_touchpoints_ivr_features'))
+        l2_ivr.show()
+
+        l3_ivr = expansion(l1_ivr, var_project_context.catalog.load(
+            'params:l3_touchpoints_ivr_features'))
+        l3_ivr.show()
+
+        l4_ivr = l4_rolling_window(l2_ivr,var_project_context.catalog.load(
+            'params:l4_touchpoints_ivr_features'))
+        l4_ivr.show()
+
+        exit(2)

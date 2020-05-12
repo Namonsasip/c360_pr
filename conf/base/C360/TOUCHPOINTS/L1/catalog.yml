@@ -150,3 +150,9 @@ l1_touchpoints_ivr_features:
     read_layer: 'l1_daily'
     target_layer: 'l2_weekly'
     lookback: '0'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
