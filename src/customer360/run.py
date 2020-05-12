@@ -49,7 +49,7 @@ from kedro.versioning import Journal
 from customer360.utilities.spark_util import get_spark_session
 from customer360.utilities.generate_dependency_dataset import generate_dependency_dataset
 
-from customer360.pipeline import create_pipelines
+from customer360.pipeline import create_pipelines, create_dq_pipeline
 
 try:
     findspark.init()
@@ -267,6 +267,9 @@ def run_package(pipelines=None, project_context=None, tags=None):
         project_context = load_context(Path.cwd(), env=conf)
     spark = get_spark_session()
 
+    if any([dq_pipeline in pipelines for dq_pipeline in create_dq_pipeline().keys()]):
+        project_context = DataQualityProjectContext(project_path=Path.cwd(), env=conf)
+
     if pipelines is not None:
         for each_pipeline in pipelines:
             project_context.run(pipeline_name=each_pipeline, tags=tags)
@@ -344,15 +347,6 @@ class DataQualityProjectContext(ProjectContext):
         return catalog
 
 
-def run_data_quality_pipeline(pipelines, tags=None):
-    project_context = DataQualityProjectContext(project_path=Path.cwd(), env=conf)
-    run_package(
-        pipelines=pipelines,
-        project_context=project_context,
-        tags=tags
-    )
-
-
 def run_selected_nodes(pipeline_name, node_names=None, env="base"):
     # entry point for running pip-install projects
     # using `<project_package>` command
@@ -366,7 +360,10 @@ if __name__ == "__main__":
     # run_package()
 
     # uncomment below to run data_quality_pipeline locally
-    run_data_quality_pipeline(pipelines=[
-        # 'subscription_id_sampling_pipeline',
-        'data_quality_pipeline'
-    ])
+    run_package(
+        pipelines=[
+            # 'subscription_id_sampling_pipeline',
+            'data_quality_pipeline'
+        ],
+        tags=["dq_accuracy"]
+    )
