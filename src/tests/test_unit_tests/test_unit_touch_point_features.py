@@ -2597,7 +2597,8 @@ class TestUnitTp:
             'params:l2_touchpoints_ivr_features'))
         l2_ivr.show()
 
-        l3_ivr = expansion(l1_ivr, var_project_context.catalog.load(
+        l1_ivr_start_of_month = test.join(customer_pro, on=["access_method_num", "event_partition_date", "start_of_month"], how="left")
+        l3_ivr = expansion(l1_ivr_start_of_month, var_project_context.catalog.load(
             'params:l3_touchpoints_ivr_features'))
         l3_ivr.show()
 
