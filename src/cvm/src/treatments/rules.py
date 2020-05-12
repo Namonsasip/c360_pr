@@ -132,13 +132,22 @@ class rule:
             "subscription_identifier"
         )
 
-    def apply_rule(self, df: DataFrame, treatment_size_bound: int = None) -> DataFrame:
+    def apply_rule(
+        self,
+        df: DataFrame,
+        treatment_order_policy: str = None,
+        treatment_size_bound: int = None,
+    ) -> DataFrame:
         """ Create table with subscription identifiers and campaign codes.
 
         Args:
+            treatment_order_policy: order policy used when there is no rule-specific
+                order policy.
             df: DataFrame of applicable population with feature columns.
             treatment_size_bound: maximum size of users group that can be assigned to
                 campaign.
         """
+        if self.order_policy is None:
+            self.order_policy = treatment_order_policy
         rule_applied = self._get_top_users_by_order_policy(df, treatment_size_bound)
         return rule_applied.withColumn("campaign_code", F.lit(self.campaign_code))
