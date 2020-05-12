@@ -1,5 +1,6 @@
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
+from pyspark.sql import Window
 
 from customer360.utilities.re_usable_functions import check_empty_dfs, \
     data_non_availability_and_missing_check, union_dataframes_with_missing_cols
@@ -54,8 +55,12 @@ def merge_with_customer_prepaid_df(source_df: DataFrame,
     cust_df_cols = ['access_method_num', 'start_of_month', 'subscription_identifier']
     join_key = ['access_method_num', 'start_of_month']
 
-    cust_df = cust_df.where("charge_type = 'Pre-paid'").select(cust_df_cols) \
-        .drop_duplicates(subset=["subscription_identifier", "access_method_num", "start_of_month"])
+    win = Window.partitionBy("access_method_num").orderBy(F.col("event_partition_date").desc())
+
+    cust_df = cust_df.where("charge_type = 'Pre-paid'")\
+              .withColumn("rnk", F.row_number().over(win))\
+              .where("rnk = 1")\
+              .select(cust_df_cols)
 
     final_df = source_df.join(cust_df, join_key)
 
