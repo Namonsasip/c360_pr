@@ -27,6 +27,7 @@
 # limitations under the License.
 from typing import Any, Dict
 
+import pyspark.sql.functions as F
 from cvm.src.utils.utils import return_none_if_missing
 from pyspark.sql import DataFrame
 
@@ -107,8 +108,21 @@ class rule:
             treatment_size_bound,
             self.limit_per_code,
         ]
-        n = min(
+        self.rule_users_group_size = min(
             [bound for bound in campaign_code_group_size_bounds if bound is not None]
         )
         policy = order_policy(self.order_policy)
-        return policy.get_top_users(filtered_df, n)
+        return policy.get_top_users(filtered_df, self.rule_users_group_size).select(
+            "subscription_identifier"
+        )
+
+    def apply_rule(self, df: DataFrame, treatment_size_bound: int = None) -> DataFrame:
+        """ Create table with subscription identifiers and campaign codes.
+
+        Args:
+            df: DataFrame of applicable population with feature columns.
+            treatment_size_bound: maximum size of users group that can be assigned to
+                campaign.
+        """
+        rule_applied = self._get_top_users_by_order_policy(df, treatment_size_bound)
+        return rule_applied.withColumn("campaign_code", F.lit(self.campaign_code))
