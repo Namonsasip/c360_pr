@@ -65,12 +65,8 @@ def build_digital_l3_monthly_features(cxense_user_profile: DataFrame,
     cust_df_cols = ['access_method_num', 'start_of_month', 'subscription_identifier']
     join_key = ['access_method_num', 'start_of_month']
 
-    win = Window.partitionBy("access_method_num").orderBy(f.col("event_partition_date").desc())
-
-    cust_df = cust_df.where("charge_type = 'Pre-paid'") \
-        .withColumn("rnk", f.row_number().over(win)) \
-        .where("rnk = 1") \
-        .select(cust_df_cols)
+    cust_df = cust_df.select(cust_df_cols) \
+              .drop_duplicates(subset=["subscription_identifier", "access_method_num", "start_of_month"])
 
     final_df = return_df.join(cust_df, join_key)
 
