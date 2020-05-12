@@ -68,6 +68,22 @@ def verify_rule(rule_dict: Dict[str, Any]):
         raise Exception("Conditions are missing")
 
 
+def verify_treatment(treatment_dict: Dict[str, Any]):
+    """ Look for erroneous input in treatment.
+
+    Args:
+        treatment_dict: dictionary as in parameters_treatment_rules.yml
+    """
+    if len(list(treatment_dict.keys())) != 1:
+        raise Exception("Single treatment must be supplied")
+    treatment_name = list(treatment_dict.keys())[0]
+    rules_details = treatment_dict[treatment_name]
+    if len(list(rules_details.keys())) == 0:
+        raise Exception("Treatment must contain rules")
+    for rule_details in rules_details:
+        verify_rule(rule_details)
+
+
 class rule:
     """Create, assign, manipulate treatment rule"""
 
