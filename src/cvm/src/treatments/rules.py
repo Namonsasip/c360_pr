@@ -25,6 +25,9 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from typing import Any, Dict
+
+from cvm.src.utils.utils import return_none_if_missing
 from pyspark.sql import DataFrame
 
 
@@ -34,7 +37,7 @@ class order_policy:
     def __init__(self, order_str: str):
         self.order_str = order_str
 
-    def get_top_users(self, df: DataFrame, n: int):
+    def get_top_users(self, df: DataFrame, n: int) -> DataFrame:
         """ Returns top `n` users from table `df` sorted in descending order defined
         by policy.
 
@@ -48,3 +51,30 @@ class order_policy:
             .limit(n)
             .drop("order_policy")
         )
+
+
+def verify_rule(rule_dict: Dict[str, Any]):
+    """ Look for erroneous input in rule.
+
+    Args:
+        rule_dict: dictionary as in parameters_treatment_rules.yml
+    """
+    if len(list(rule_dict.keys())) != 1:
+        raise Exception("Campaign must have one code")
+    campaign_code = list(rule_dict.keys())[0]
+    rule_details = rule_dict[campaign_code]
+    if "conditions" not in rule_details:
+        raise Exception("Conditions are missing")
+
+
+class rule:
+    """Create, assign, manipulate treatment rule"""
+
+    def __init__(self, rule_dict: Dict[str, Any]):
+        verify_rule(rule_dict)
+        self.campaign_code = list(rule_dict.keys())[0]
+        rule_details = rule_dict[self.campaign_code]
+        self.limit_per_code = return_none_if_missing(rule_details, "limit_per_code")
+        self.order_policy = return_none_if_missing(rule_details, "order_policy")
+        self.variant = return_none_if_missing(rule_details, "variant")
+        self.conditions = return_none_if_missing(rule_details, "conditions")
