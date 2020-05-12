@@ -90,3 +90,25 @@ class rule:
         ]
         filter_str = " and ".join(conditions_in_parenthesis)
         return df.filter(filter_str)
+
+    def _get_top_users_by_order_policy(
+        self, df: DataFrame, treatment_size_bound: int = None
+    ) -> DataFrame:
+        """ Returns top users by order policy to assign to campaign code.
+
+        Args:
+            df: DataFrame of applicable population with feature columns.
+            treatment_size_bound: users number assigned to campaign code upper bound.
+        """
+        filtered_df = self._filter_with_conditions(df)
+        addressable_users_number = filtered_df.count()
+        campaign_code_group_size_bounds = [
+            addressable_users_number,
+            treatment_size_bound,
+            self.limit_per_code,
+        ]
+        n = min(
+            [bound for bound in campaign_code_group_size_bounds if bound is not None]
+        )
+        policy = order_policy(self.order_policy)
+        return policy.get_top_users(filtered_df, n)
