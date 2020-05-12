@@ -78,3 +78,15 @@ class rule:
         self.order_policy = return_none_if_missing(rule_details, "order_policy")
         self.variant = return_none_if_missing(rule_details, "variant")
         self.conditions = return_none_if_missing(rule_details, "conditions")
+
+    def _filter_with_conditions(self, df: DataFrame) -> DataFrame:
+        """ Filter given table according to conditions.
+
+        Args:
+            df: input DataFrame.
+        """
+        conditions_in_parenthesis = [
+            "({})".format(condition) for condition in self.conditions
+        ]
+        filter_str = " and ".join(conditions_in_parenthesis)
+        return df.filter(filter_str)
