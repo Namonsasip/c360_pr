@@ -181,3 +181,16 @@ def pyspark_to_pandas(df, n_partitions=None):
     df_pandas = pandas.concat(df_pandas)
     df_pandas.columns = df.columns
     return df_pandas
+
+
+def return_none_if_missing(d: Dict, key: str) -> Any:
+    """ Returns `d[key]` if applicable, None otherwise.
+
+    Args:
+        d: input dictionary.
+        key: key queried.
+    """
+    if key in d:
+        return d[key]
+    else:
+        return None
