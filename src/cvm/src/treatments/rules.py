@@ -151,3 +151,24 @@ class rule:
             self.order_policy = treatment_order_policy
         rule_applied = self._get_top_users_by_order_policy(df, treatment_size_bound)
         return rule_applied.withColumn("campaign_code", F.lit(self.campaign_code))
+
+
+class treatment:
+    """ Create, assign, manipulate treatments"""
+
+    def __init__(self, treatment_dict: Dict[str, Any]):
+        verify_treatment(treatment_dict)
+        self.treatment_name = list(treatment_dict.keys())[0]
+        treatment_details = treatment_dict[self.treatment_name]
+        self.treatment_size = return_none_if_missing(
+            treatment_details, "treatment_size"
+        )
+        self.order_policy = return_none_if_missing(treatment_details, "order_policy")
+        rules_dict = treatment_details["rules"]
+        rules_list = [
+            {
+                campaign_code: rules_dict[campaign_code]
+                for campaign_code in rules_dict.keys()
+            }
+        ]
+        self.rules = [rule(rule_dict) for rule_dict in rules_list]
