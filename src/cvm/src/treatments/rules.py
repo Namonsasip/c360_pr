@@ -25,6 +25,7 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import functools
 import logging
 from typing import Any, Dict, List
 
@@ -257,4 +258,26 @@ class treatment:
         rules = self._get_rules_for_variant(variant_chosen)
         return self._apply_rules(df, rules, self.treatment_size).withColumn(
             "variant", F.lit(variant_chosen or "default")
+        )
+
+    def _apply_all_variants(self, df: DataFrame) -> DataFrame:
+        """Apply all variants possible, assumes df has column variant, ie assigning
+        users to variants was performed"""
+        variants = self._get_all_variants()
+        if len(variants) == 0:
+            return self._apply_variant(df)
+        else:
+            variants_applied = [
+                self._apply_variant(df, variant) for variant in variants
+            ]
+            return functools.reduct(lambda df1, df2: df1.union(df2), variants_applied)
+
+    def apply_treatment(self, df: DataFrame) -> DataFrame:
+        """Perform applying of treatment"""
+        logging.info("Applying treatment {}".format(self.treatment_name))
+        if self._multiple_variants():
+            df = self._assign_users_to_variants(df)
+        treatment_applied = self._apply_all_variants(df)
+        return treatment_applied.withColumn(
+            "treatment_name", F.lit(self.treatment_name)
         )
