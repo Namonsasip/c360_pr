@@ -22,6 +22,7 @@ l2_revenue_prepaid_weekly:
       "rev_arpu_days_0_rev",
       "rev_arpu_days_data_0_rev",
       "rev_arpu_days_data_ppu_0_rev",
+      "rev_arpu_days_data_pkg_0_rev",
       "rev_arpu_days_4g_data_0_rev",
       "rev_arpu_days_2g_3g_data_0_rev",
       "rev_arpu_days_4g_data_pkg_0_rev",
@@ -79,6 +80,7 @@ l2_revenue_prepaid_weekly:
       "rev_arpu_diff_rev_per_unit_2g_3g_vs_4g",
       "rev_arpu_diff_voice_intra_non_intra",
       "rev_arpu_diff_voice_intra_non_intra_per_min",
+      "rev_arpu_diff_voice_intra_non_intra_per_call"
     ]
     min: [
       "rev_arpu_share_of_exc_reward_over_total_rev",
