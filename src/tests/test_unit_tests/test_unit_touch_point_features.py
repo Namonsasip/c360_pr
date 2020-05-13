@@ -2607,3 +2607,281 @@ class TestUnitTp:
         l4_ivr.show()
 
         exit(2)
+
+    def test_ivr_l2(self, project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+
+        test= df_ivr_log.withColumnRenamed("mobile_number","access_method_num")
+        l1_ivr = test.join(customer_pro,on=["access_method_num","event_partition_date","start_of_week"],how="left")
+
+        l2_ivr = l2_massive_processing_with_expansion(l1_ivr,var_project_context.catalog.load(
+            'params:l2_touchpoints_ivr_features'))
+        l2_ivr.show()
+
+        ##################################### Sum ######################################################################
+        assert round(float(
+            l2_ivr.where("start_of_week = '2020-01-06'").select("touchpoints_num_of_call_ivr_sum").collect()[0][0]),
+                     2) == 2
+        assert round(float(l2_ivr.where("start_of_week = '2020-01-06'").select(
+            "touchpoints_num_of_disconnection_by_ivr_sum").collect()[0][0]), 2) == 2
+        assert round(float(l2_ivr.where("start_of_week = '2020-01-06'").select(
+            "touchpoints_num_of_disconnection_by_customer_sum").collect()[0][0]), 2) == 2
+        assert round(float(l2_ivr.where("start_of_week = '2020-01-06'").select(
+            "touchpoints_num_of_disconnection_by_transfer_agent_sum").collect()[0][0]), 2) == 2
+        assert round(float(
+            l2_ivr.where("start_of_week = '2020-01-06'").select("touchpoints_ivr_moring_calls_sum").collect()[0][0]),
+                     2) == 2
+        assert round(float(
+            l2_ivr.where("start_of_week = '2020-01-06'").select("touchpoints_ivr_afternoon_calls_sum").collect()[0][0]),
+                     2) == 2
+        assert round(
+            float(l2_ivr.where("start_of_week = '2020-01-06'").select("touchpoints_evening_calls_sum").collect()[0][0]),
+            2) == 2
+        assert round(
+            float(l2_ivr.where("start_of_week = '2020-01-06'").select("touchpoints_night_calls_sum").collect()[0][0]),
+            2) == 2
+        assert round(float(
+            l2_ivr.where("start_of_week = '2020-01-06'").select("touchpoints_distinct_languages_chosen_sum").collect()[
+                0][0]), 2) == 2
+        assert round(float(
+            l2_ivr.where("start_of_week = '2020-01-06'").select("touchpoints_unsuccesful_connect_tuxedo_sum").collect()[
+                0][0]), 2) == 2
+
+        ####################################### AVG ###################################################################
+
+        assert round(float(
+            l2_ivr.where("start_of_week = '2020-01-06'").select("touchpoints_num_of_call_ivr_avg").collect()[0][0]),
+                     2) == 1
+        assert round(float(l2_ivr.where("start_of_week = '2020-01-06'").select(
+            "touchpoints_num_of_disconnection_by_ivr_avg").collect()[0][0]), 2) == 1
+        assert round(float(l2_ivr.where("start_of_week = '2020-01-06'").select(
+            "touchpoints_num_of_disconnection_by_customer_avg").collect()[0][0]), 2) == 1
+        assert round(float(l2_ivr.where("start_of_week = '2020-01-06'").select(
+            "touchpoints_num_of_disconnection_by_transfer_agent_avg").collect()[0][0]), 2) == 1
+        assert round(float(
+            l2_ivr.where("start_of_week = '2020-01-06'").select("touchpoints_ivr_moring_calls_avg").collect()[0][0]),
+                     2) == 1
+        assert round(float(
+            l2_ivr.where("start_of_week = '2020-01-06'").select("touchpoints_ivr_afternoon_calls_avg").collect()[0][0]),
+                     2) == 1
+        assert round(
+            float(l2_ivr.where("start_of_week = '2020-01-06'").select("touchpoints_evening_calls_avg").collect()[0][0]),
+            2) == 1
+        assert round(
+            float(l2_ivr.where("start_of_week = '2020-01-06'").select("touchpoints_night_calls_avg").collect()[0][0]),
+            2) == 1
+        assert round(float(
+            l2_ivr.where("start_of_week = '2020-01-06'").select("touchpoints_distinct_languages_chosen_avg").collect()[
+                0][0]), 2) == 1
+        assert round(float(
+            l2_ivr.where("start_of_week = '2020-01-06'").select("touchpoints_unsuccesful_connect_tuxedo_avg").collect()[
+                0][0]), 2) == 1
+
+        ############################### MAX #########################################################################
+
+        assert round(float(
+            l2_ivr.where("start_of_week = '2020-01-06'").select("touchpoints_num_of_call_ivr_max").collect()[0][0]),
+                     2) == 1
+        assert round(float(l2_ivr.where("start_of_week = '2020-01-06'").select(
+            "touchpoints_num_of_disconnection_by_ivr_max").collect()[0][0]), 2) == 1
+        assert round(float(l2_ivr.where("start_of_week = '2020-01-06'").select(
+            "touchpoints_num_of_disconnection_by_customer_max").collect()[0][0]), 2) == 1
+        assert round(float(l2_ivr.where("start_of_week = '2020-01-06'").select(
+            "touchpoints_num_of_disconnection_by_transfer_agent_max").collect()[0][0]), 2) == 1
+        assert round(float(
+            l2_ivr.where("start_of_week = '2020-01-06'").select("touchpoints_ivr_moring_calls_max").collect()[0][0]),
+                     2) == 1
+        assert round(float(
+            l2_ivr.where("start_of_week = '2020-01-06'").select("touchpoints_ivr_afternoon_calls_max").collect()[0][0]),
+                     2) == 1
+        assert round(
+            float(l2_ivr.where("start_of_week = '2020-01-06'").select("touchpoints_evening_calls_max").collect()[0][0]),
+            2) == 1
+        assert round(
+            float(l2_ivr.where("start_of_week = '2020-01-06'").select("touchpoints_night_calls_max").collect()[0][0]),
+            2) == 1
+        assert round(float(
+            l2_ivr.where("start_of_week = '2020-01-06'").select("touchpoints_distinct_languages_chosen_max").collect()[
+                0][0]), 2) == 1
+        assert round(float(
+            l2_ivr.where("start_of_week = '2020-01-06'").select("touchpoints_unsuccesful_connect_tuxedo_max").collect()[
+                0][0]), 2) == 1
+
+        ################################## MIN ########################################################################
+
+        assert round(float(
+            l2_ivr.where("start_of_week = '2020-01-06'").select("touchpoints_num_of_call_ivr_min").collect()[0][0]),
+                     2) == 1
+        assert round(float(l2_ivr.where("start_of_week = '2020-01-06'").select(
+            "touchpoints_num_of_disconnection_by_ivr_min").collect()[0][0]), 2) == 1
+        assert round(float(l2_ivr.where("start_of_week = '2020-01-06'").select(
+            "touchpoints_num_of_disconnection_by_customer_min").collect()[0][0]), 2) == 1
+        assert round(float(l2_ivr.where("start_of_week = '2020-01-06'").select(
+            "touchpoints_num_of_disconnection_by_transfer_agent_min").collect()[0][0]), 2) == 1
+        assert round(float(
+            l2_ivr.where("start_of_week = '2020-01-06'").select("touchpoints_ivr_moring_calls_min").collect()[0][0]),
+                     2) == 1
+        assert round(float(
+            l2_ivr.where("start_of_week = '2020-01-06'").select("touchpoints_ivr_afternoon_calls_min").collect()[0][0]),
+                     2) == 1
+        assert round(
+            float(l2_ivr.where("start_of_week = '2020-01-06'").select("touchpoints_evening_calls_min").collect()[0][0]),
+            2) == 1
+        assert round(
+            float(l2_ivr.where("start_of_week = '2020-01-06'").select("touchpoints_night_calls_min").collect()[0][0]),
+            2) == 1
+        assert round(float(
+            l2_ivr.where("start_of_week = '2020-01-06'").select("touchpoints_distinct_languages_chosen_min").collect()[
+                0][0]), 2) == 1
+        assert round(float(
+            l2_ivr.where("start_of_week = '2020-01-06'").select("touchpoints_unsuccesful_connect_tuxedo_min").collect()[
+                0][0]), 2) == 1
+
+    def test_ivr_l3(self, project_context):
+        var_project_context = project_context['ProjectContext']
+        spark = project_context['Spark']
+
+        set_value(project_context)
+
+        test = df_ivr_log.withColumnRenamed("mobile_number", "access_method_num")
+        l1_ivr_start_of_month = test.join(customer_pro,on=["access_method_num", "event_partition_date", "start_of_month"],
+                                          how="left")
+        l3_ivr = expansion(l1_ivr_start_of_month, var_project_context.catalog.load(
+            'params:l3_touchpoints_ivr_features'))
+        l3_ivr.show()
+
+        ##################################### Sum ######################################################################
+        assert round(float(
+            l3_ivr.where("start_of_month = '2020-01-01'").select("touchpoints_num_of_call_ivr_sum").collect()[0][0]),
+            2) == 2
+        assert round(float(l3_ivr.where("start_of_month = '2020-01-01'").select(
+            "touchpoints_num_of_disconnection_by_ivr_sum").collect()[0][0]), 2) == 2
+        assert round(float(l3_ivr.where("start_of_month = '2020-01-01'").select(
+            "touchpoints_num_of_disconnection_by_customer_sum").collect()[0][0]), 2) == 2
+        assert round(float(l3_ivr.where("start_of_month = '2020-01-01'").select(
+            "touchpoints_num_of_disconnection_by_transfer_agent_sum").collect()[0][0]), 2) == 2
+        assert round(float(
+            l3_ivr.where("start_of_month = '2020-01-01'").select("touchpoints_ivr_moring_calls_sum").collect()[0][0]),
+            2) == 2
+        assert round(float(
+            l3_ivr.where("start_of_month = '2020-01-01'").select("touchpoints_ivr_afternoon_calls_sum").collect()[0][
+                0]),
+            2) == 2
+        assert round(
+            float(
+                l3_ivr.where("start_of_month = '2020-01-01'").select("touchpoints_evening_calls_sum").collect()[0][0]),
+            2) == 2
+        assert round(
+            float(l3_ivr.where("start_of_month = '2020-01-01'").select("touchpoints_night_calls_sum").collect()[0][0]),
+            2) == 2
+        assert round(float(
+            l3_ivr.where("start_of_month = '2020-01-01'").select("touchpoints_distinct_languages_chosen_sum").collect()[
+                0][0]), 2) == 2
+        assert round(float(
+            l3_ivr.where("start_of_month = '2020-01-01'").select(
+                "touchpoints_unsuccesful_connect_tuxedo_sum").collect()[
+                0][0]), 2) == 2
+
+        ####################################### AVG ###################################################################
+
+        assert round(float(
+            l3_ivr.where("start_of_month = '2020-01-01'").select("touchpoints_num_of_call_ivr_avg").collect()[0][0]),
+            2) == 1
+        assert round(float(l3_ivr.where("start_of_month = '2020-01-01'").select(
+            "touchpoints_num_of_disconnection_by_ivr_avg").collect()[0][0]), 2) == 1
+        assert round(float(l3_ivr.where("start_of_month = '2020-01-01'").select(
+            "touchpoints_num_of_disconnection_by_customer_avg").collect()[0][0]), 2) == 1
+        assert round(float(l3_ivr.where("start_of_month = '2020-01-01'").select(
+            "touchpoints_num_of_disconnection_by_transfer_agent_avg").collect()[0][0]), 2) == 1
+        assert round(float(
+            l3_ivr.where("start_of_month = '2020-01-01'").select("touchpoints_ivr_moring_calls_avg").collect()[0][0]),
+            2) == 1
+        assert round(float(
+            l3_ivr.where("start_of_month = '2020-01-01'").select("touchpoints_ivr_afternoon_calls_avg").collect()[0][
+                0]),
+            2) == 1
+        assert round(
+            float(
+                l3_ivr.where("start_of_month = '2020-01-01'").select("touchpoints_evening_calls_avg").collect()[0][0]),
+            2) == 1
+        assert round(
+            float(l3_ivr.where("start_of_month = '2020-01-01'").select("touchpoints_night_calls_avg").collect()[0][0]),
+            2) == 1
+        assert round(float(
+            l3_ivr.where("start_of_month = '2020-01-01'").select("touchpoints_distinct_languages_chosen_avg").collect()[
+                0][0]), 2) == 1
+        assert round(float(
+            l3_ivr.where("start_of_month = '2020-01-01'").select(
+                "touchpoints_unsuccesful_connect_tuxedo_avg").collect()[
+                0][0]), 2) == 1
+
+        ############################### MAX #########################################################################
+
+        assert round(float(
+            l3_ivr.where("start_of_month = '2020-01-01'").select("touchpoints_num_of_call_ivr_max").collect()[0][0]),
+            2) == 1
+        assert round(float(l3_ivr.where("start_of_month = '2020-01-01'").select(
+            "touchpoints_num_of_disconnection_by_ivr_max").collect()[0][0]), 2) == 1
+        assert round(float(l3_ivr.where("start_of_month = '2020-01-01'").select(
+            "touchpoints_num_of_disconnection_by_customer_max").collect()[0][0]), 2) == 1
+        assert round(float(l3_ivr.where("start_of_month = '2020-01-01'").select(
+            "touchpoints_num_of_disconnection_by_transfer_agent_max").collect()[0][0]), 2) == 1
+        assert round(float(
+            l3_ivr.where("start_of_month = '2020-01-01'").select("touchpoints_ivr_moring_calls_max").collect()[0][0]),
+            2) == 1
+        assert round(float(
+            l3_ivr.where("start_of_month = '2020-01-01'").select("touchpoints_ivr_afternoon_calls_max").collect()[0][
+                0]),
+            2) == 1
+        assert round(
+            float(
+                l3_ivr.where("start_of_month = '2020-01-01'").select("touchpoints_evening_calls_max").collect()[0][0]),
+            2) == 1
+        assert round(
+            float(l3_ivr.where("start_of_month = '2020-01-01'").select("touchpoints_night_calls_max").collect()[0][0]),
+            2) == 1
+        assert round(float(
+            l3_ivr.where("start_of_month = '2020-01-01'").select("touchpoints_distinct_languages_chosen_max").collect()[
+                0][0]), 2) == 1
+        assert round(float(
+            l3_ivr.where("start_of_month = '2020-01-01'").select(
+                "touchpoints_unsuccesful_connect_tuxedo_max").collect()[
+                0][0]), 2) == 1
+
+        ################################## MIN ########################################################################
+
+        assert round(float(
+            l3_ivr.where("start_of_month = '2020-01-01'").select("touchpoints_num_of_call_ivr_min").collect()[0][0]),
+            2) == 1
+        assert round(float(l3_ivr.where("start_of_month = '2020-01-01'").select(
+            "touchpoints_num_of_disconnection_by_ivr_min").collect()[0][0]), 2) == 1
+        assert round(float(l3_ivr.where("start_of_month = '2020-01-01'").select(
+            "touchpoints_num_of_disconnection_by_customer_min").collect()[0][0]), 2) == 1
+        assert round(float(l3_ivr.where("start_of_month = '2020-01-01'").select(
+            "touchpoints_num_of_disconnection_by_transfer_agent_min").collect()[0][0]), 2) == 1
+        assert round(float(
+            l3_ivr.where("start_of_month = '2020-01-01'").select("touchpoints_ivr_moring_calls_min").collect()[0][0]),
+            2) == 1
+        assert round(float(
+            l3_ivr.where("start_of_month = '2020-01-01'").select("touchpoints_ivr_afternoon_calls_min").collect()[0][
+                0]),
+            2) == 1
+        assert round(
+            float(
+                l3_ivr.where("start_of_month = '2020-01-01'").select("touchpoints_evening_calls_min").collect()[0][0]),
+            2) == 1
+        assert round(
+            float(l3_ivr.where("start_of_month = '2020-01-01'").select("touchpoints_night_calls_min").collect()[0][0]),
+            2) == 1
+        assert round(float(
+            l3_ivr.where("start_of_month = '2020-01-01'").select("touchpoints_distinct_languages_chosen_min").collect()[
+                0][0]), 2) == 1
+        assert round(float(
+            l3_ivr.where("start_of_month = '2020-01-01'").select(
+                "touchpoints_unsuccesful_connect_tuxedo_min").collect()[
+                0][0]), 2) == 1
+
+
