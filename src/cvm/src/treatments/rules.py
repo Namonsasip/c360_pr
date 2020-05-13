@@ -248,11 +248,15 @@ class treatment:
         ]
         return len(variants) > 0
 
-    def _apply_variant(self, df: DataFrame, variant_chosen: str) -> DataFrame:
+    def _apply_variant(self, df: DataFrame, variant_chosen: str = None) -> DataFrame:
         """Apply variant of rules, assumes df has column variant, ie assigning users
         to variants was performed"""
-        df = df.filter("variant == '{}'".format(variant_chosen))
-        rules = self._get_rules_for_variant(variant_chosen)
+        if variant_chosen is not None:
+            df = df.filter("variant == '{}'".format(variant_chosen))
+            rules = self._get_rules_for_variant(variant_chosen)
+            variant_chosen = "default"
+        else:
+            rules = self.rules
         return self._apply_rules(df, rules, self.treatment_size).withColumn(
             "variant", F.lit(variant_chosen)
         )
