@@ -175,7 +175,11 @@ class treatment:
 
     def _get_all_variants(self) -> List:
         """List all variants present in rules"""
-        variants = [treatment_rule.variant for treatment_rule in self.rules]
+        variants = [
+            treatment_rule.variant
+            for treatment_rule in self.rules
+            if treatment_rule.variant is not None
+        ]
         return list(set(variants))
 
     def _get_rules_for_variant(self, variant: str) -> List:
@@ -235,7 +239,6 @@ class treatment:
                 ", ".join(variants)
             )
         )
-        variants = [variant for variant in variants if variant is not None]
         n = len(variants)
         df = df.withColumn("variant_id", F.floor(F.rand() * n))
         whens = [F.when(F.col("variant_id") == i, variants[i]) for i in range(0, n)]
@@ -243,9 +246,7 @@ class treatment:
 
     def _multiple_variants(self) -> bool:
         """Returns True if multiple variants found"""
-        variants = [
-            variant for variant in self._get_all_variants() if variant is not None
-        ]
+        variants = self._get_all_variants()
         return len(variants) > 0
 
     def _apply_variant(self, df: DataFrame, variant_chosen: str = None) -> DataFrame:
@@ -253,10 +254,8 @@ class treatment:
         to variants was performed"""
         if variant_chosen is not None:
             df = df.filter("variant == '{}'".format(variant_chosen))
-            rules = self._get_rules_for_variant(variant_chosen)
             variant_chosen = "default"
-        else:
-            rules = self.rules
+        rules = self._get_rules_for_variant(variant_chosen)
         return self._apply_rules(df, rules, self.treatment_size).withColumn(
             "variant", F.lit(variant_chosen)
         )
