@@ -27,7 +27,7 @@ def massive_processing(input_df, sql, output_df_catalog):
     :return:
     """
 
-    if len(input_df.head(1)) == 0:
+    if check_empty_dfs([input_df]):
         return input_df
 
     def divide_chunks(l, n):
@@ -45,7 +45,7 @@ def massive_processing(input_df, sql, output_df_catalog):
     mvv_new = list(divide_chunks(mvv_array, 5))
     add_list = mvv_new
 
-    first_item = add_list[0]
+    first_item = add_list[-1]
 
     add_list.remove(first_item)
     for curr_item in add_list:
@@ -371,7 +371,7 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
     mvv_array = list(divide_chunks(mvv_array, 5))
     add_list = mvv_array
 
-    first_item = add_list[0]
+    first_item = add_list[-1]
     add_list.remove(first_item)
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))

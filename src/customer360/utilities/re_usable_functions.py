@@ -217,7 +217,7 @@ def _massive_processing(
     mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
     add_list = mvv_new
 
-    first_item = add_list[0]
+    first_item = add_list[-1]
 
     add_list.remove(first_item)
     for curr_item in add_list:

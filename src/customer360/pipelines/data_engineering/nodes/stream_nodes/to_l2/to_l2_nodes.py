@@ -9,7 +9,7 @@ conf = os.getenv("CONF", None)
 
 
 def generate_l2_fav_streaming_day(input_df, app_list):
-    if len(input_df.head(1)) == 0:
+    if check_empty_dfs([input_df]):
         return input_df
 
     spark = get_spark_session()
