@@ -154,7 +154,7 @@ class rule:
 
 
 class treatment:
-    """ Create, assign, manipulate treatment"""
+    """ Create, assign, manipulate treatment in all variants"""
 
     def __init__(self, treatment_dict: Dict[str, Any]):
         verify_treatment(treatment_dict)
@@ -166,10 +166,8 @@ class treatment:
         self.order_policy = return_none_if_missing(treatment_details, "order_policy")
         rules_dict = treatment_details["rules"]
         rules_list = [
-            {
-                campaign_code: rules_dict[campaign_code]
-                for campaign_code in rules_dict.keys()
-            }
+            {campaign_code: rules_dict[campaign_code]}
+            for campaign_code in rules_dict.keys()
         ]
         self.rules = [rule(rule_dict) for rule_dict in rules_list]
 
@@ -177,3 +175,51 @@ class treatment:
         """List all variants present in rules"""
         variants = [treatment_rule.variant for treatment_rule in self.rules]
         return list(set(variants))
+
+    def _get_rules_for_variant(self, variant: str) -> List:
+        """Filter rules for chosen variant"""
+        if variant is None:
+            return self.rules
+        else:
+            return [
+                rule_chosen
+                for rule_chosen in self.rules
+                if not rule_chosen.variant != variant
+            ]
+
+    def _apply_rules(
+        self, df: DataFrame, rules_to_apply: List[rule], groups_size_bound: int = None
+    ) -> DataFrame:
+        """Apply treatment to given set of users and variables"""
+        # derive limit from rules sizes if not supplied
+        if groups_size_bound is None:
+            groups_size_bound = sum(
+                [
+                    rule_chosen.limit_per_code
+                    for rule_chosen in rules_to_apply
+                    if rule_chosen.limit_per_code is not None
+                ]
+            )
+        rules_applied = None
+        for rule_chosen in rules_to_apply:
+            # remove users with rules
+            if rules_applied is not None:
+                df = df.join(
+                    rules_applied.select("subscription_identifier"),
+                    on="subscription_identifier",
+                    how="left_anti",
+                )
+            # apply rule
+            rule_applied = rule_chosen.apply_rule(
+                df, self.order_policy, groups_size_bound
+            )
+            # add to table with rest of rules applied
+            if rules_applied is None:
+                rules_applied = rule_applied
+            else:
+                rules_applied = rules_applied.union(rule_applied)
+            # update size
+            groups_size_bound -= rule_chosen.rule_users_group_size
+            if groups_size_bound < 0:
+                groups_size_bound = 0
+        return rules_applied
