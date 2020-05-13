@@ -55,6 +55,13 @@ def touchpoints_to_l1_pipeline(**kwargs):
                  "params:l1_touchpoints_nim_work_features",
                  "l1_customer_profile_union_daily_feature_for_l1_touchpoints_nim_work_features"],
                 "l1_touchpoints_nim_work_features"
+            ),
+            node(
+                l1_massive_processing,
+                ["l0_touchpoints_acc_ivr_log_daily",
+                 "params:l1_touchpoints_ivr_features",
+                 "l1_customer_profile_union_daily_feature_for_l1_touchpoints_ivr_features"],
+                "l1_touchpoints_ivr_features"
             )
         ]
     )
