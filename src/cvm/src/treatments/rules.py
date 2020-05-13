@@ -25,6 +25,7 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import logging
 from typing import Any, Dict, List
 
 import pyspark.sql.functions as F
@@ -147,6 +148,7 @@ class rule:
             treatment_size_bound: maximum size of users group that can be assigned to
                 campaign.
         """
+        logging.info("Applying rule for campaign code: {}".format(self.campaign_code))
         if self.order_policy is None:
             self.order_policy = treatment_order_policy
         rule_applied = self._get_top_users_by_order_policy(df, treatment_size_bound)
@@ -223,3 +225,18 @@ class treatment:
             if groups_size_bound < 0:
                 groups_size_bound = 0
         return rules_applied
+
+    def _assign_users_to_variants(self, df: DataFrame):
+        """ Randomly assigns users to variants from given rules, assumes there is more
+        then one variant"""
+        variants = self._get_all_variants()
+        logging.info(
+            "Randomizing variants, following variants found {}".format(
+                ", ".join(variants)
+            )
+        )
+        variants = [variant for variant in variants if variant is not None]
+        n = len(variants)
+        df = df.withColumn("variant_id", F.floor(F.rand() * n))
+        whens = [F.when(F.col("variant_id") == i, variants[i]) for i in range(0, n)]
+        return df.withColumn("variant", F.coalesce(whens)).drop("variant_id")
