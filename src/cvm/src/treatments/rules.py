@@ -25,7 +25,7 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 import pyspark.sql.functions as F
 from cvm.src.utils.utils import return_none_if_missing
@@ -154,7 +154,7 @@ class rule:
 
 
 class treatment:
-    """ Create, assign, manipulate treatments"""
+    """ Create, assign, manipulate treatment"""
 
     def __init__(self, treatment_dict: Dict[str, Any]):
         verify_treatment(treatment_dict)
@@ -172,3 +172,8 @@ class treatment:
             }
         ]
         self.rules = [rule(rule_dict) for rule_dict in rules_list]
+
+    def _get_all_variants(self) -> List:
+        """List all variants present in rules"""
+        variants = [treatment_rule.variant for treatment_rule in self.rules]
+        return list(set(variants))

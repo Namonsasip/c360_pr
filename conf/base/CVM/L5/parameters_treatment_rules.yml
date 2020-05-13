@@ -45,11 +45,12 @@
 #     2. Rules applied in order of presence in file.
 #         - users are filtered according to `conditions`
 #         - users are sorted in descending order according to `order_policy`
-#         - top `limit_per_code` users get assigned to `campaign_code`
+#         - top `limit_per_code` users get assigned to `campaign_code`, applied to variant
 #     3. If `order_policy` is not specified for rule then treatment's `order_policy` is used.
-#     4. Only `treatment_size` users can be picked for treatment (overrides `limit_per_code` if needed).
+#     4. Only `treatment_size` users can be picked for treatment variant (overrides `limit_per_code` if needed).
 #
-#     `treatment_size`: desired maximum size of the treatment, can be omitted - then no limit
+#     `treatment_size`: desired maximum size of the treatment, can be omitted - then no limit, limit is applied per
+#        variant
 #     `order_policy`: sql-style string describing ordering variable based on which campaigns without overwritten order
 #         policies are picked, must be specified
 #     `rules`: specific rules describing conditions to pick treatments,
