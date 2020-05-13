@@ -240,3 +240,10 @@ class treatment:
         df = df.withColumn("variant_id", F.floor(F.rand() * n))
         whens = [F.when(F.col("variant_id") == i, variants[i]) for i in range(0, n)]
         return df.withColumn("variant", F.coalesce(whens)).drop("variant_id")
+
+    def _multiple_variants(self) -> bool:
+        """Returns True if multiple variants found"""
+        variants = [
+            variant for variant in self._get_all_variants() if variant is not None
+        ]
+        return len(variants) > 0
