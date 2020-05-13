@@ -270,7 +270,7 @@ class treatment:
             variants_applied = [
                 self._apply_variant(df, variant) for variant in variants
             ]
-            return functools.reduct(lambda df1, df2: df1.union(df2), variants_applied)
+            return functools.reduce(lambda df1, df2: df1.union(df2), variants_applied)
 
     def apply_treatment(self, df: DataFrame) -> DataFrame:
         """Perform applying of treatment"""
@@ -281,3 +281,16 @@ class treatment:
         return treatment_applied.withColumn(
             "treatment_name", F.lit(self.treatment_name)
         )
+
+
+class multiple_treatments:
+    """Create, manipulate, assign, use multiple treatments"""
+
+    def __init__(self, treatments_dict: Dict[str, Any]):
+        treatments_list = [
+            {treatment_name: treatments_dict[treatment_name]}
+            for treatment_name in treatments_dict.keys()
+        ]
+        self.treatments = [
+            treatment(treatment_dict) for treatment_dict in treatments_list
+        ]
