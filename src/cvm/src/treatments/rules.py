@@ -254,8 +254,7 @@ class treatment:
         to variants was performed"""
         if variant_chosen is not None:
             df = df.filter("variant == '{}'".format(variant_chosen))
-            variant_chosen = "default"
         rules = self._get_rules_for_variant(variant_chosen)
         return self._apply_rules(df, rules, self.treatment_size).withColumn(
-            "variant", F.lit(variant_chosen)
+            "variant", F.lit(variant_chosen or "default")
         )
