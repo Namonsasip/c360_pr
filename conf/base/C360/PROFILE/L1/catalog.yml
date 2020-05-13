@@ -201,7 +201,7 @@ l1_customer_profile_union_daily_feature_for_l1_touchpoints_ivr_features:
   file_format: "parquet"
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l1_touchpoints_ivr_features'
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'

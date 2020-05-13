@@ -68,7 +68,7 @@ l3_touchpoints_ivr_features:
   filepath: /mnt/customer360-blob-output/C360/TOUCHPOINTS/l3_features/l3_touchpoints_ivr_features/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_month"
     read_layer: 'l1_daily'
