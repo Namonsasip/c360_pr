@@ -1,14 +1,15 @@
 l1_number_of_bs_used: #396  Number of BS used
   where_clause: ""
   feature_list:
-    number_of_bs_used: "size(cell_id_list)"
-  granularity: "event_partition_date,imsi,cell_id_list"
+    distinct_number_of_bs_used: "size(cell_id_set)"
+    total_number_of_bs_used: "size(cell_id_list)"
+  granularity: "event_partition_date,imsi,cell_id_list,cell_id_set"
 
 l1_number_of_location_with_transactions: #397
   where_clause: ""
   feature_list:
     num_location_with_transactions: "size(location_list)"
-  granularity: "event_partition_date,imsi,location_list"
+  granularity: "event_partition_date,access_method_num,location_list"
 
 l1_voice_distance_daily: #425,426,427,428
   where_clause: ""
@@ -86,3 +87,16 @@ l1_geo_data_traffic_location_daily: #Data traffic
     sum_total_vol_kb_rank_2 : "sum(sum_total_vol_kb_other_rank_2)"
   granularity: "event_partition_date,access_method_num"
 
+l1_geo_data_share_location_daily:
+  where_clause: ""
+  feature_list:
+    data_share_home_percent: "sum(sum_total_vol_kb_home)/sum(sum_total_vol_kb)*100"
+    data_share_office_percent: "sum(sum_total_vol_kb_office)/sum(sum_total_vol_kb)*100"
+    data_share_other_rank_1_percent: "sum(sum_total_vol_kb_other_rank_1)/sum(sum_total_vol_kb)*100"
+    data_share_other_rank_2_percent: "sum(sum_total_vol_kb_other_rank_2)/sum(sum_total_vol_kb)*100"
+    total_all: "sum(sum_total_vol_kb)"
+    total_home: "sum(sum_total_vol_kb_home)"
+    total_office: "sum(sum_total_vol_kb_office)"
+    total_other_rank_1: "sum(sum_total_vol_kb_other_rank_1)"
+    total_other_rank_2: "sum(sum_total_vol_kb_other_rank_2)"
+  granularity: "event_partition_date,access_method_num"

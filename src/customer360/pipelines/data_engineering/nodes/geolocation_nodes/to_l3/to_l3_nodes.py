@@ -167,9 +167,8 @@ def l3_geo_data_frequent_cell_weekday_monthly(df, sql):
                                                        F.when(ranked.rank == 3, ranked.sum_call)).withColumn(
         'sum_rank_4', F.when(ranked.rank == 4, ranked.sum_call)).withColumn('sum_rank_5', F.when(ranked.rank == 5,
                                                                                                  ranked.sum_call)).withColumn(
-        'lac_rank_1', F.when(ranked.rank == 1, ranked.lac)).withColumn('ci_rank_1',
-                                                                       F.when(ranked.rank == 1, ranked.ci)).withColumn(
-        'lac_rank_2', F.when(ranked.rank == 1, ranked.lac)).withColumn('ci_rank_2', F.when(ranked.rank == 1, ranked.ci))
+        'cgi_partial_rank_1', F.when(ranked.rank == 1, ranked.cgi_partial)).withColumn(
+        'cgi_partial_rank_2', F.when(ranked.rank == 1, ranked.cgi_partial))
     df = node_from_config(ranked, sql)
     return df
 
@@ -183,9 +182,8 @@ def l3_geo_data_frequent_cell_weekend_monthly(df, sql):
                                                        F.when(ranked.rank == 3, ranked.sum_call)).withColumn(
         'sum_rank_4', F.when(ranked.rank == 4, ranked.sum_call)).withColumn('sum_rank_5', F.when(ranked.rank == 5,
                                                                                                  ranked.sum_call)).withColumn(
-        'lac_rank_1', F.when(ranked.rank == 1, ranked.lac)).withColumn('ci_rank_1',
-                                                                       F.when(ranked.rank == 1, ranked.ci)).withColumn(
-        'lac_rank_2', F.when(ranked.rank == 1, ranked.lac)).withColumn('ci_rank_2', F.when(ranked.rank == 1, ranked.ci))
+        'cgi_partial_rank_1', F.when(ranked.rank == 1, ranked.cgi_partial)).withColumn(
+        'cgi_partial_rank_2', F.when(ranked.rank == 1, ranked.cgi_partial))
     df = node_from_config(ranked, sql)
     return df
 
@@ -198,9 +196,8 @@ def l3_geo_data_frequent_cell_monthly(df, sql):
                                                        F.when(ranked.rank == 3, ranked.sum_call)).withColumn(
         'sum_rank_4', F.when(ranked.rank == 4, ranked.sum_call)).withColumn('sum_rank_5', F.when(ranked.rank == 5,
                                                                                                  ranked.sum_call)).withColumn(
-        'lac_rank_1', F.when(ranked.rank == 1, ranked.lac)).withColumn('ci_rank_1',
-                                                                       F.when(ranked.rank == 1, ranked.ci)).withColumn(
-        'lac_rank_2', F.when(ranked.rank == 1, ranked.lac)).withColumn('ci_rank_2', F.when(ranked.rank == 1, ranked.ci))
+        'cgi_partial_rank_1', F.when(ranked.rank == 1, ranked.cgi_partial)).withColumn(
+        'cgi_partial_rank_2', F.when(ranked.rank == 1, ranked.cgi_partial))
     df = node_from_config(ranked, sql)
     return df
 
@@ -210,9 +207,8 @@ def l3_geo_data_frequent_cell_4g_weekday_monthly(df, sql):
     ranked = df.selectExpr('*',
                            'row_number() over(partition by mobile_no,start_of_month order by sum_call DESC) as rank')
     ranked = ranked.withColumn(
-        'lac_rank_1', F.when(ranked.rank == 1, ranked.lac)).withColumn('ci_rank_1',
-                                                                       F.when(ranked.rank == 1, ranked.ci)).withColumn(
-        'lac_rank_2', F.when(ranked.rank == 1, ranked.lac)).withColumn('ci_rank_2', F.when(ranked.rank == 1, ranked.ci))
+        'cgi_partial_rank_1', F.when(ranked.rank == 1, ranked.cgi_partial)).withColumn(
+        'cgi_partial_rank_2', F.when(ranked.rank == 1, ranked.cgi_partial))
     df = node_from_config(ranked, sql)
     return df
 
@@ -222,9 +218,8 @@ def l3_geo_data_frequent_cell_4g_weekend_monthly(df, sql):
     ranked = df.selectExpr('*',
                            'row_number() over(partition by mobile_no,start_of_month order by sum_call DESC) as rank')
     ranked = ranked.withColumn(
-        'lac_rank_1', F.when(ranked.rank == 1, ranked.lac)).withColumn('ci_rank_1',
-                                                                       F.when(ranked.rank == 1, ranked.ci)).withColumn(
-        'lac_rank_2', F.when(ranked.rank == 1, ranked.lac)).withColumn('ci_rank_2', F.when(ranked.rank == 1, ranked.ci))
+        'cgi_partial_rank_1', F.when(ranked.rank == 1, ranked.cgi_partial)).withColumn(
+        'cgi_partial_rank_2', F.when(ranked.rank == 1, ranked.cgi_partial))
     df = node_from_config(ranked, sql)
     return df
 
@@ -234,9 +229,8 @@ def l3_geo_data_frequent_cell_4g_monthly(df, sql):
     ranked = df.selectExpr('*',
                            'row_number() over(partition by mobile_no,start_of_month order by sum_call DESC) as rank')
     ranked = ranked.withColumn(
-        'lac_rank_1', F.when(ranked.rank == 1, ranked.lac)).withColumn('ci_rank_1',
-                                                                       F.when(ranked.rank == 1, ranked.ci)).withColumn(
-        'lac_rank_2', F.when(ranked.rank == 1, ranked.lac)).withColumn('ci_rank_2', F.when(ranked.rank == 1, ranked.ci))
+        'cgi_partial_rank_1', F.when(ranked.rank == 1, ranked.cgi_partial)).withColumn(
+        'cgi_partial_rank_2', F.when(ranked.rank == 1, ranked.cgi_partial))
     df = node_from_config(ranked, sql)
     return df
 
@@ -274,9 +268,11 @@ def l3_geo_call_count_location_monthly(df, master, sql):
                  [df.cgi_partial == test.cgi_partial_other_rank_2, df.access_method_num == test.access_method_num],
                  'left').drop(test.access_method_num)
 
-
     df = node_from_config(df, sql)
-def l3_geo_data_traffic_location_monthly(df,master,sql):
+    return df
+
+
+def l3_geo_data_traffic_location_monthly(df, master, sql):
     df = df.withColumnRenamed('mobile_no', 'access_method_num')
     data_usage = df.groupBy('access_method_num', 'cgi_partial', 'start_of_month').agg(
         F.sum('sum_total_vol_kb').alias('sum_total_vol_kb')).drop('start_of_month')
@@ -310,4 +306,58 @@ def l3_geo_data_traffic_location_monthly(df,master,sql):
                  'left').drop(test.access_method_num)
 
     df = node_from_config(df, sql)
+    return df
+
+
+def l3_geo_data_share_location_monthly(data_loc_int, master, sql):
+    master_home = master.select('access_method_num', 'cgi_partial_home', 'cgi_partial_office',
+                                'cgi_partial_other_rank_1', 'cgi_partial_other_rank_2')
+    # select event_partition_date / start_of_week / start_of_month   base on  daily/weekly/monthly
+    data_for_join = data_loc_int.select('start_of_month', 'sum_total_vol_kb', 'mobile_no', 'cgi_partial')
+    home_usage = master_home.join(data_for_join, [master_home.access_method_num == data_for_join.mobile_no,
+                                                  master_home.cgi_partial_home == data_for_join.cgi_partial],
+                                  'left').drop('mobile_no', 'cgi_partial').withColumnRenamed('sum_total_vol_kb',
+                                                                                             'sum_total_vol_kb_home').drop(
+        'cgi_partial_office', 'cgi_partial_other_rank_1', 'cgi_partial_other_rank_2')
+
+    office_usage = master_home.join(data_for_join, [master_home.access_method_num == data_for_join.mobile_no,
+                                                    master_home.cgi_partial_office == data_for_join.cgi_partial],
+                                    'left').drop('mobile_no', 'cgi_partial').withColumnRenamed('sum_total_vol_kb',
+                                                                                               'sum_total_vol_kb_office').drop(
+        'cgi_partial_home', 'cgi_partial_other_rank_1', 'cgi_partial_other_rank_2')
+
+    other1_usage = master_home.join(data_for_join, [master_home.access_method_num == data_for_join.mobile_no,
+                                                    master_home.cgi_partial_other_rank_1 == data_for_join.cgi_partial],
+                                    'left').drop('mobile_no', 'cgi_partial').withColumnRenamed('sum_total_vol_kb',
+                                                                                               'sum_total_vol_kb_other_rank_1').drop(
+        'cgi_partial_home', 'cgi_partial_office', 'cgi_partial_other_rank_2')
+
+    other2_usage = master_home.join(data_for_join, [master_home.access_method_num == data_for_join.mobile_no,
+                                                    master_home.cgi_partial_other_rank_2 == data_for_join.cgi_partial],
+                                    'left').drop('mobile_no', 'cgi_partial').withColumnRenamed('sum_total_vol_kb',
+                                                                                               'sum_total_vol_kb_other_rank_2').drop(
+        'cgi_partial_home', 'cgi_partial_office', 'cgi_partial_other_rank_1')
+
+    df = data_for_join.join(home_usage, [data_loc_int.mobile_no == home_usage.access_method_num,
+                                         data_loc_int.cgi_partial == home_usage.cgi_partial_home], 'left').drop(
+        home_usage.start_of_month).drop(
+        'access_method_num')
+    # .drop(home_usage.event_partition_date)
+    df = df.join(office_usage,
+                 [df.mobile_no == office_usage.access_method_num, df.cgi_partial == office_usage.cgi_partial_office],
+                 'left').drop(office_usage.start_of_month).drop('access_method_num')
+    # df=df.drop(office_usage.event_partition_date)
+
+    df = df.join(other1_usage, [df.mobile_no == other1_usage.access_method_num,
+                                df.cgi_partial == other1_usage.cgi_partial_other_rank_1], 'left').drop(
+        other1_usage.start_of_month).drop(
+        'access_method_num')
+    # .drop(other1_usage.event_partition_date)
+    df = df.join(other2_usage, [df.mobile_no == other2_usage.access_method_num,
+                                df.cgi_partial == other2_usage.cgi_partial_other_rank_2], 'left').drop(
+        other2_usage.start_of_month).drop(
+        'access_method_num').withColumnRenamed('mobile_no', 'access_method_num')
+
+    df = node_from_config(df, sql)
+
     return df

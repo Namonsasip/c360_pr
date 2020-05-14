@@ -1,8 +1,9 @@
 l2_number_of_bs_used: #396
   where_clause: ""
   feature_list:
-    number_of_bs_used: "size(distinct_list)"
-  granularity: "start_of_week,imsi,distinct_list"
+    distinct_number_of_bs_used: "size(cell_id_set)"
+    total_number_of_bs_used: "size(cell_id_list)"
+  granularity: "start_of_week,imsi,cell_id_set,cell_id_list"
 
 
 l2_number_of_location_with_transactions: #397
@@ -153,3 +154,18 @@ l2_geo_data_traffic_location_weekly: #406-413
     cgi_partial_other_rank_2 : "sum(cgi_partial_other_rank_2)"
     sum_total_vol_kb_rank_2 : "sum(sum_total_vol_kb_other_rank_2)"
   granularity: "start_of_week,access_method_num"
+
+l2_geo_data_share_location_weekly:
+  where_clause: ""
+  feature_list:
+    data_share_home_percent: "sum(sum_total_vol_kb_home)/sum(sum_total_vol_kb)*100"
+    data_share_office_percent: "sum(sum_total_vol_kb_office)/sum(sum_total_vol_kb)*100"
+    data_share_other_rank_1_percent: "sum(sum_total_vol_kb_other_rank_1)/sum(sum_total_vol_kb)*100"
+    data_share_other_rank_2_percent: "sum(sum_total_vol_kb_other_rank_2)/sum(sum_total_vol_kb)*100"
+    total_all: "sum(sum_total_vol_kb)"
+    total_home: "sum(sum_total_vol_kb_home)"
+    total_office: "sum(sum_total_vol_kb_office)"
+    total_other_rank_1: "sum(sum_total_vol_kb_other_rank_1)"
+    total_other_rank_2: "sum(sum_total_vol_kb_other_rank_2)"
+  granularity: "start_of_week,access_method_num"
+

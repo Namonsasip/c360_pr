@@ -123,6 +123,14 @@ def geo_to_l3_pipeline(**kwargs):
 
             ),
 
+            node(
+                l3_geo_data_share_location_monthly,
+                ["l1_geo_voice_distance_daily_intermediate_for_l3_geo_data_share_location_monthly",
+                 "l1_geo_favorite_cell_master_table",
+                 "params:l3_geo_data_share_location_monthly"],
+                "l3_geo_data_share_location_monthly"
+            ),
+
 
         ], name="geo_to_l3_pipeline"
     )
