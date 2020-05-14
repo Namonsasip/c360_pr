@@ -15,3 +15,5 @@ features_for_dq:
 
   l3_customer_profile_include_1mo_non_active:
     - feature: "*"
+    - feature: "age"
+      calculate_most_freq_value: True
