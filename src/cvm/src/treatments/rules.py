@@ -294,3 +294,12 @@ class multiple_treatments:
         self.treatments = [
             treatment(treatment_dict) for treatment_dict in treatments_list
         ]
+
+    def apply_treatments(self, df: DataFrame) -> DataFrame:
+        logging.info("Applying treatment {}".format(self.treatment_name))
+        if self._multiple_variants():
+            df = self._assign_users_to_variants(df)
+        treatment_applied = self._apply_all_variants(df)
+        return treatment_applied.withColumn(
+            "treatment_name", F.lit(self.treatment_name)
+        )
