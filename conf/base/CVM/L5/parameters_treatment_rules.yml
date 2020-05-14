@@ -57,3 +57,365 @@
 #     `variant`: each user is randomly assigned to one of the variants, if not specified then rule is part of all
 #         variants
 #     `conditions`: sql-like conditions used to filter users before assigning rules
+
+churn:
+  treatment_size: 48000
+  order_policy: "churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred"
+  rules:
+    200407-5:
+        variant: '1'
+        conditions:
+            - "churn_microsegment == 'positive_arpu_m1'"
+    200407-23:
+        variant: '2'
+        conditions:
+            - "churn_microsegment == 'positive_arpu_m1'"
+    200421-27:
+        variant: '1'
+        conditions:
+            - "churn_microsegment == 'positive_arpu_m2'"
+    200421-28:
+        variant: '2'
+        conditions:
+            - "churn_microsegment == 'positive_arpu_m2'"
+    200407-24:
+        variant: '3'
+        conditions:
+            - "churn_microsegment == 'positive_arpu_m2'"
+    200407-7:
+        variant: '1'
+        conditions:
+            - "churn_microsegment == 'positive_arpu_m3'"
+    200407-25:
+        variant: '2'
+        conditions:
+            - "churn_microsegment == 'positive_arpu_m3'"
+    200421-29:
+        variant: '1'
+        conditions:
+            - "churn_microsegment == 'positive_arpu_m4'"
+    200421-30:
+        variant: '2'
+        conditions:
+            - "churn_microsegment == 'positive_arpu_m4'"
+    200407-26:
+        variant: '3'
+        conditions:
+            - "churn_microsegment == 'positive_arpu_m4'"
+    200407-9:
+        variant: '1'
+        conditions:
+            - "churn_microsegment == 'positive_arpu_m5'"
+    200407-27:
+        variant: '2'
+        conditions:
+            - "churn_microsegment == 'positive_arpu_m5'"
+    200505-36:
+        variant: '1'
+        conditions:
+            - "churn_microsegment == 'positive_arpu_m6'"
+    200505-37:
+        variant: '2'
+        conditions:
+            - "churn_microsegment == 'positive_arpu_m6'"
+    200407-28:
+        variant: '3'
+        conditions:
+            - "churn_microsegment == 'positive_arpu_m6'"
+    200505-38:
+        variant: '1'
+        conditions:
+            - "churn_microsegment == 'positive_arpu_m7'"
+    200505-39:
+        variant: '2'
+        conditions:
+            - "churn_microsegment == 'positive_arpu_m7'"
+    200407-29:
+        variant: '3'
+        conditions:
+            - "churn_microsegment == 'positive_arpu_m7'"
+    200505-40:
+        variant: '1'
+        conditions:
+            - "churn_microsegment == 'positive_arpu_m8'"
+    200505-41:
+        variant: '2'
+        conditions:
+            - "churn_microsegment == 'positive_arpu_m8'"
+    200407-30:
+        variant: '3'
+        conditions:
+            - "churn_microsegment == 'positive_arpu_m8'"
+    200407-13:
+        variant: '1'
+        conditions:
+            - "churn_microsegment == 'positive_arpu_m9'"
+    200407-31:
+        variant: '2'
+        conditions:
+            - "churn_microsegment == 'positive_arpu_m9'"
+    200421-31:
+        variant: '1'
+        conditions:
+            - "churn_microsegment == 'positive_arpu_m10'"
+    200421-32:
+        variant: '2'
+        conditions:
+            - "churn_microsegment == 'positive_arpu_m10'"
+    200421-33:
+        variant: '3'
+        conditions:
+            - "churn_microsegment == 'positive_arpu_m10'"
+    200421-34:
+        variant: '4'
+        conditions:
+            - "churn_microsegment == 'positive_arpu_m10'"
+    200407-32:
+        variant: '5'
+        conditions:
+            - "churn_microsegment == 'positive_arpu_m10'"
+    200407-15:
+        variant: '1'
+        conditions:
+            - "churn_microsegment == 'zero_arpu_m1'"
+    200407-33:
+        variant: '2'
+        conditions:
+            - "churn_microsegment == 'zero_arpu_m1'"
+    200407-16:
+        variant: '1'
+        conditions:
+            - "churn_microsegment == 'zero_arpu_m2'"
+    200407-34:
+        variant: '2'
+        conditions:
+            - "churn_microsegment == 'zero_arpu_m2'"
+    200407-17:
+        variant: '1'
+        conditions:
+            - "churn_microsegment == 'zero_arpu_m3'"
+    200407-35:
+        variant: '2'
+        conditions:
+            - "churn_microsegment == 'zero_arpu_m3'"
+    200407-18:
+        variant: '1'
+        conditions:
+            - "churn_microsegment == 'zero_arpu_m4'"
+    200407-36:
+        variant: '2'
+        conditions:
+            - "churn_microsegment == 'zero_arpu_m4'"
+    200407-19:
+        variant: '1'
+        conditions:
+            - "churn_microsegment == 'zero_arpu_m5'"
+    200407-37:
+        variant: '2'
+        conditions:
+            - "churn_microsegment == 'zero_arpu_m5'"
+    200407-20:
+        variant: '1'
+        conditions:
+            - "churn_microsegment == 'zero_arpu_m6'"
+    200407-38:
+        variant: '2'
+        conditions:
+            - "churn_microsegment == 'zero_arpu_m6'"
+    200407-21:
+        variant: '1'
+        conditions:
+            - "churn_microsegment == 'zero_arpu_m7'"
+    200407-39:
+        variant: '2'
+        conditions:
+            - "churn_microsegment == 'zero_arpu_m7'"
+    200407-22:
+        variant: '1'
+        conditions:
+            - "churn_microsegment == 'zero_arpu_m8'"
+    200407-40:
+        variant: '2'
+        conditions:
+            - "churn_microsegment == 'zero_arpu_m8'"
+ard:
+  treatment_size: 16000
+  order_policy: "dilution1_pred + dilution2_pred"
+  rules:
+    200429-4:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'high_arpu_high_tenure_m1'"
+    200429-5:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'high_arpu_high_tenure_m2'"
+    200429-6:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'high_arpu_high_tenure_m3'"
+    200429-7:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'high_arpu_high_tenure_m4'"
+    200422-16:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'high_arpu_high_tenure_m5'"
+    200429-8:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'high_arpu_high_tenure_m6'"
+    200508-9:
+        variant: '1'
+        conditions:
+            - "ard_microsegment == 'high_arpu_high_tenure_m7'"
+    200508-10:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'high_arpu_high_tenure_m7'"
+    200508-11:
+        variant: '3'
+        conditions:
+            - "ard_microsegment == 'high_arpu_high_tenure_m7'"
+    200429-9:
+        variant: '4'
+        conditions:
+            - "ard_microsegment == 'high_arpu_high_tenure_m7'"
+    200508-12:
+        variant: '1'
+        conditions:
+            - "ard_microsegment == 'high_arpu_high_tenure_m8'"
+    200508-13:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'high_arpu_high_tenure_m8'"
+    200429-10:
+        variant: '3'
+        conditions:
+            - "ard_microsegment == 'high_arpu_high_tenure_m8'"
+    200429-11:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'high_arpu_low_tenure_m1'"
+    200429-12:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'high_arpu_low_tenure_m2'"
+    200429-13:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'high_arpu_low_tenure_m3'"
+    200429-14:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'high_arpu_low_tenure_m4'"
+    200429-15:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'high_arpu_low_tenure_m5'"
+    200429-16:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'high_arpu_low_tenure_m6'"
+    200429-17:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'high_arpu_low_tenure_m7'"
+    200429-18:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'high_arpu_low_tenure_m8'"
+    200429-20:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'low_arpu_high_tenure_m1'"
+    200429-21:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'low_arpu_high_tenure_m2'"
+    200429-22:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'low_arpu_high_tenure_m3'"
+    200430-3:
+        variant: '1'
+        conditions:
+            - "ard_microsegment == 'low_arpu_high_tenure_m4'"
+    200430-4:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'low_arpu_high_tenure_m4'"
+    200505-18:
+        variant: '3'
+        conditions:
+            - "ard_microsegment == 'low_arpu_high_tenure_m4'"
+    200429-23:
+        variant: '4'
+        conditions:
+            - "ard_microsegment == 'low_arpu_high_tenure_m4'"
+    200429-24:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'low_arpu_high_tenure_m5'"
+    200429-25:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'low_arpu_high_tenure_m6'"
+    200429-26:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'low_arpu_high_tenure_m7'"
+    200430-5:
+        variant: '1'
+        conditions:
+            - "ard_microsegment == 'low_arpu_high_tenure_m8'"
+    200430-6:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'low_arpu_high_tenure_m8'"
+    200222-17:
+        variant: '3'
+        conditions:
+            - "ard_microsegment == 'low_arpu_high_tenure_m8'"
+    200429-27:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'low_arpu_low_tenure_m1'"
+    200429-28:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'low_arpu_low_tenure_m2'"
+    200429-29:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'low_arpu_low_tenure_m3'"
+    200429-30:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'low_arpu_low_tenure_m4'"
+    200429-31:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'low_arpu_low_tenure_m5'"
+    200410-13:
+        variant: '1'
+        conditions:
+            - "ard_microsegment == 'low_arpu_low_tenure_m6'"
+    200429-32:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'low_arpu_low_tenure_m6'"
+    200409-7:
+        variant: '1'
+        conditions:
+            - "ard_microsegment == 'low_arpu_low_tenure_m7'"
+    200429-33:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'low_arpu_low_tenure_m7'"
+    200429-34:
+        variant: '2'
+        conditions:
+            - "ard_microsegment == 'low_arpu_low_tenure_m8'"
+
