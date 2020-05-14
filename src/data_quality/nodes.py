@@ -279,6 +279,7 @@ def run_accuracy_logic(
         "max({col}) as {col}__max",
         "(sum(case when {col} is null then 1 else 0 end)/count(*))*100 as {col}__null_percentage",
         "approx_count_distinct({col}) as {col}__approx_count_distinct",
+        "count(*) as {col}__count_all",
 
         f"percentile_approx({{col}}, "
         f"array({','.join(map(str, percentiles['percentile_list']))}), {percentiles['accuracy']}) "
@@ -332,20 +333,20 @@ def run_accuracy_logic(
     result_df = spark.sql(sql_stmt)
     result_df = melt_qa_result(result_df, partition_col)
 
-    # result_df = add_most_frequent_value(
-    #     melted_result_df=result_df,
-    #     features_list=features_list,
-    #     partition_col=partition_col
-    # )
+    result_df = add_most_frequent_value(
+        melted_result_df=result_df,
+        features_list=features_list,
+        partition_col=partition_col
+    )
 
     if "percentiles" in result_df.columns:
         result_df = break_percentile_columns(result_df, percentiles["percentile_list"])
 
     result_df = (result_df
-                 # .withColumn("most_frequent_value_percentage", (F.col("most_freq_value_count")/F.col("count"))*100)
                  .withColumn("run_date", F.current_timestamp())
                  .withColumn("dataset_name", F.lit(dataset_name))
-                 .withColumn("sub_id_sample_creation_date", F.lit(sample_creation_date)))
+                 .withColumn("sub_id_sample_creation_date", F.lit(sample_creation_date))
+                 .drop("count_all"))
 
     # this is to avoid running every process at the end which causes
     # long GC pauses before the spark job is even started

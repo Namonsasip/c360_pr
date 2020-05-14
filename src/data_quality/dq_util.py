@@ -183,6 +183,9 @@ def add_most_frequent_value(
 
     most_freq_df = None
     for each_feature in features_list:
+        if not each_feature.get("calculate_most_freq_value"):
+            continue
+
         most_freq_sql_stmt = """
             select {col} as {col}__most_freq_value, 
                    {partition_col} as {partition_col}, 
@@ -208,13 +211,17 @@ def add_most_frequent_value(
         else:
             most_freq_df = most_freq_df.unionByName(df)
 
-    result_df = merge_all(
-        dfs=[melted_result_df, most_freq_df],
-        how="outer",
-        on=["corresponding_date", "granularity", "feature_column_name"]
-    )
+    if most_freq_df is not None:
+        melted_result_df = merge_all(
+            dfs=[melted_result_df, most_freq_df],
+            how="outer",
+            on=["corresponding_date", "granularity", "feature_column_name"]
+        )
+        melted_result_df = (melted_result_df
+                            .withColumn("most_frequent_value_percentage",
+                                        (f.col("most_freq_value_count")/f.col("count_all"))*100))
 
-    return result_df
+    return melted_result_df
 
 
 def get_column_name_of_type(df, required_types=None):
