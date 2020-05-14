@@ -230,29 +230,23 @@ class Treatment:
                     if rule_chosen.limit_per_code is not None
                 ]
             )
-        rules_applied = None
+        blacklisted_users = UsersBlacklist()
+        rules_applied = []
         for rule_chosen in rules_to_apply:
             # remove users with rules
-            if rules_applied is not None:
-                df = df.join(
-                    rules_applied.select("subscription_identifier"),
-                    on="subscription_identifier",
-                    how="left_anti",
-                )
+            df = blacklisted_users.drop_blacklisted(df)
             # apply rule
             rule_applied = rule_chosen.apply_rule(
                 df, self.order_policy, groups_size_bound
             )
-            # add to table with rest of rules applied
-            if rules_applied is None:
-                rules_applied = rule_applied
-            else:
-                rules_applied = rules_applied.union(rule_applied)
+            rules_applied.append(rule_applied)
+            # update users blacklist
+            blacklisted_users.add(rule_applied)
             # update size
             groups_size_bound -= rule_chosen.rule_users_group_size
             if groups_size_bound < 0:
                 groups_size_bound = 0
-        return rules_applied
+        return functools.reduce(lambda df1, df2: df1.union(df2), rules_applied)
 
     def _assign_users_to_variants(self, df: DataFrame):
         """ Randomly assigns users to variants from given rules, assumes there is more
