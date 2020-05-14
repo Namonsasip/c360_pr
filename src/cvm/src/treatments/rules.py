@@ -92,13 +92,14 @@ class UsersBlacklist:
     def __init__(self):
         self.blacklisted_users = None
 
-    def add(self, df: DataFrame):
+    def add(self, df: DataFrame = None):
         """Add users to blacklist"""
-        to_add = df.select("subscription_identifier").distinct()
-        if self.blacklisted_users is None:
-            self.blacklisted_users = to_add
-        else:
-            self.blacklisted_users = self.blacklisted_users.union(to_add).distinct()
+        if df is not None:
+            to_add = df.select("subscription_identifier").distinct()
+            if self.blacklisted_users is None:
+                self.blacklisted_users = to_add
+            else:
+                self.blacklisted_users = self.blacklisted_users.union(to_add).distinct()
 
     def drop_blacklisted(self, df: DataFrame):
         if self.blacklisted_users is None:
@@ -317,3 +318,12 @@ class MultipleTreatments:
     ) -> DataFrame:
         """ Apply multiple treatments"""
         logging.info("Applying treatment {}".format(self.treatment_name))
+        users_blacklist = UsersBlacklist()
+        users_blacklist.add(blacklisted_users)
+        treatments_applied = []
+        for treatment in self.treatments:
+            df = users_blacklist.drop_blacklisted(df)
+            treatment_applied = treatment.apply_treatment(df)
+            treatments_applied.append(treatment_applied)
+            users_blacklist.add(treatment_applied)
+        return functools.reduce(lambda df1, df2: df1.union(df2), treatment_applied)
