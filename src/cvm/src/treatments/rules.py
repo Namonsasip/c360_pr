@@ -317,7 +317,7 @@ class MultipleTreatments:
         self, df: DataFrame, blacklisted_users: DataFrame = None
     ) -> DataFrame:
         """ Apply multiple treatments"""
-        logging.info("Applying treatment {}".format(self.treatment_name))
+        logging.info("Applying treatments")
         users_blacklist = UsersBlacklist()
         users_blacklist.add(blacklisted_users)
         treatments_applied = []
