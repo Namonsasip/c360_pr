@@ -34,7 +34,7 @@ from cvm.src.utils.utils import return_none_if_missing
 from pyspark.sql import DataFrame
 
 
-class order_policy:
+class OrderPolicy:
     """Class prepares order policy to sort and serves top users according to it"""
 
     def __init__(self, order_str: str):
@@ -86,7 +86,30 @@ def verify_treatment(treatment_dict: Dict[str, Any]):
         verify_rule(rule_details)
 
 
-class rule:
+class UsersBlacklist:
+    """ Keep score of who was already picked for treatment / rule"""
+
+    def __init__(self):
+        self.blacklisted_users = None
+
+    def add(self, df: DataFrame):
+        """Add users to blacklist"""
+        to_add = df.select("subscription_identifier").distinct()
+        if self.blacklisted_users is None:
+            self.blacklisted_users = to_add
+        else:
+            self.blacklisted_users = self.blacklisted_users.union(to_add).distinct()
+
+    def drop_blacklisted(self, df: DataFrame):
+        if self.blacklisted_users is None:
+            return df
+        else:
+            return df.join(
+                self.blacklisted_users, on="subscription_identifier", how="left_anti"
+            )
+
+
+class Rule:
     """Create, assign, manipulate treatment rule"""
 
     def __init__(self, rule_dict: Dict[str, Any]):
@@ -129,7 +152,7 @@ class rule:
         self.rule_users_group_size = min(
             [bound for bound in campaign_code_group_size_bounds if bound is not None]
         )
-        policy = order_policy(self.order_policy)
+        policy = OrderPolicy(self.order_policy)
         return policy.get_top_users(filtered_df, self.rule_users_group_size).select(
             "subscription_identifier"
         )
@@ -156,7 +179,7 @@ class rule:
         return rule_applied.withColumn("campaign_code", F.lit(self.campaign_code))
 
 
-class treatment:
+class Treatment:
     """ Create, assign, manipulate treatment in all variants"""
 
     def __init__(self, treatment_dict: Dict[str, Any]):
@@ -172,7 +195,7 @@ class treatment:
             {campaign_code: rules_dict[campaign_code]}
             for campaign_code in rules_dict.keys()
         ]
-        self.rules = [rule(rule_dict) for rule_dict in rules_list]
+        self.rules = [Rule(rule_dict) for rule_dict in rules_list]
 
     def _get_all_variants(self) -> List:
         """List all variants present in rules"""
@@ -195,7 +218,7 @@ class treatment:
             ]
 
     def _apply_rules(
-        self, df: DataFrame, rules_to_apply: List[rule], groups_size_bound: int = None
+        self, df: DataFrame, rules_to_apply: List[Rule], groups_size_bound: int = None
     ) -> DataFrame:
         """Apply treatment to given set of users and variables"""
         # derive limit from rules sizes if not supplied
@@ -283,7 +306,7 @@ class treatment:
         )
 
 
-class multiple_treatments:
+class MultipleTreatments:
     """Create, manipulate, assign, use multiple treatments"""
 
     def __init__(self, treatments_dict: Dict[str, Any]):
@@ -292,14 +315,11 @@ class multiple_treatments:
             for treatment_name in treatments_dict.keys()
         ]
         self.treatments = [
-            treatment(treatment_dict) for treatment_dict in treatments_list
+            Treatment(treatment_dict) for treatment_dict in treatments_list
         ]
 
-    def apply_treatments(self, df: DataFrame) -> DataFrame:
+    def apply_treatments(
+        self, df: DataFrame, blacklisted_users: DataFrame = None
+    ) -> DataFrame:
+        """ Apply multiple treatments"""
         logging.info("Applying treatment {}".format(self.treatment_name))
-        if self._multiple_variants():
-            df = self._assign_users_to_variants(df)
-        treatment_applied = self._apply_all_variants(df)
-        return treatment_applied.withColumn(
-            "treatment_name", F.lit(self.treatment_name)
-        )
