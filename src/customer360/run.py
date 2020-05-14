@@ -336,8 +336,7 @@ class DataQualityProjectContext(ProjectContext):
 
         dq_consistency_catalog_dict = self._generate_dq_consistency_catalog()
 
-        for dq_dataset_name, dq_consistency_catalog in dq_consistency_catalog_dict.items():
-            conf_catalog[dq_dataset_name] = dq_consistency_catalog
+        conf_catalog.update(dq_consistency_catalog_dict)
 
         conf_creds = self._get_config_credentials()
         catalog = self._create_catalog(
