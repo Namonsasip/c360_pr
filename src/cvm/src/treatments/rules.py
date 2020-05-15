@@ -62,10 +62,8 @@ def verify_rule(rule_dict: Dict[str, Any]):
     Args:
         rule_dict: dictionary as in parameters_treatment_rules.yml
     """
-    if len(list(rule_dict.keys())) != 1:
-        raise Exception("Campaign must have one code")
-    campaign_code = list(rule_dict.keys())[0]
-    rule_details = rule_dict[campaign_code]
+    rule_name = list(rule_dict.keys())[0]
+    rule_details = rule_dict[rule_name]
     if "conditions" not in rule_details:
         raise Exception("Conditions are missing")
     if "campaign_code" not in rule_details:
