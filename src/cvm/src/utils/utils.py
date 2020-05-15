@@ -26,6 +26,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import string
+from datetime import date
 from random import random
 from typing import Any, Callable, Dict, List
 
@@ -194,3 +195,17 @@ def return_none_if_missing(d: Dict, key: str) -> Any:
         return d[key]
     else:
         return None
+
+
+def get_today(parameters: Dict[str, Any],) -> str:
+    """ Returns scoring date if specified in parameters or today's date otherwise.
+
+    Args:
+        parameters: parameters defined in parameters.yml.
+    """
+    chosen_date = parameters["scoring"]["chosen_date"]
+    if chosen_date == "" or chosen_date is None:
+        today = date.today().strftime("%Y-%m-%d")
+    else:
+        today = chosen_date
+    return today
