@@ -116,7 +116,7 @@ def loyalty_number_of_points_spend_for_each_category(customer_prof: DataFrame
     join_key = ["access_method_num", "event_partition_date", "start_of_week"]
 
     input_df = input_df.where("point_tran_type_id in (15,35) and refund_session_id is null and project_id is not null") \
-        .select(f.col("mobile_no").alias("access_method_num"), "tran_date", "project_id", "points") \
+        .select(f.col("msisdn").alias("access_method_num"), "tran_date", "project_id", "points") \
         .withColumn("event_partition_date", f.to_date(f.col("tran_date"))) \
         .withColumn("start_of_week", f.to_date(f.date_trunc('week', f.col("tran_date")))) \
         .groupBy(["access_method_num", "event_partition_date", "start_of_week", "project_id"]) \
