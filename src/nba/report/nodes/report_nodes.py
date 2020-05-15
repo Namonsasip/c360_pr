@@ -16,7 +16,7 @@ from customer360.utilities.spark_util import get_spark_session
 
 def create_report_campaign_tracking_table(
     cvm_prepaid_customer_groups: DataFrame,
-    l0_campaign_tracking_contact_list_pre: DataFrame,
+    l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
     use_case_campaign_mapping: DataFrame,
     date_from: datetime,
     date_to: datetime,
@@ -24,14 +24,14 @@ def create_report_campaign_tracking_table(
     """
     Args:
         cvm_prepaid_customer_groups: cvm sandbox target group
-        l0_campaign_tracking_contact_list_pre: C360 l0 campaign response data
+        l0_campaign_tracking_contact_list_pre_full_load: C360 l0 campaign response data
         use_case_campaign_mapping: campaign child code mapping table of each usecase
         report_create_campaign_tracking_table_parameters: parameters use to create campaign tracking table
         day: day string #TODO make dynamic
     Returns: DataFrame of campaign data for report making
     """
     # reduce data period to 90 days #TODO change to proper number
-    campaign_tracking_sdf_filter = l0_campaign_tracking_contact_list_pre.filter(
+    campaign_tracking_sdf_filter = l0_campaign_tracking_contact_list_pre_full_load.filter(
         F.col("contact_date").between(date_from, date_to)
     )
     campaign_tracking_sdf_filter = campaign_tracking_sdf_filter.selectExpr(
@@ -707,31 +707,34 @@ def create_use_case_view_report(
     return df_use_case_view_report_all
 
 
-def create_general_marketing_performance_report(
-    use_case_campaign_mapping: DataFrame,
-    cvm_prepaid_customer_groups: DataFrame,
-    campaign_response_input_table: DataFrame,
-    reporting_kpis: DataFrame,
-    reporting_kpis_input: DataFrame,
-    day_list: List[str],
-    aggregate_period: List[int],
-    dormant_days_agg_periods: List[int],
+def process_date(date):
+    """
+    This function processes date from string form (e.g. "2018-01-01") to proper date format.
+    """
+    date = datetime.strptime(date, "%Y-%m-%d").date()
+    return date
+
+
+def daterange(start_date, end_date):
+    """
+    This function returns list of dates: one for each day between start and end date passed as arguments.
+    """
+    start_date = process_date(start_date)
+    end_date = process_date(end_date)
+    for n in range(int((end_date - start_date).days) + 1):
+        yield start_date + timedelta(n)
+
+
+def create_distinct_aggregate_campaign_feature(
+    l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
 ) -> DataFrame:
+    day = "2020-05-01"
+    # l0_campaign_tracking_contact_list_pre_full_load = catalog.load("l0_campaign_tracking_contact_list_pre_full_load")
     spark = get_spark_session()
-    l0_campaign_tracking_contact_list_pre = catalog.load(
-        "l0_campaign_tracking_contact_list_pre"
-    )
-    reporting_kpis = catalog.load("reporting_kpis")
-    reporting_kpis_input = catalog.load("reporting_kpis_input")
-    day_list = ["2020-02-01", "2020-02-02"]
-    aggregate_period = [1, 7, 30]
-    dormant_days_agg_periods = [5, 7, 14, 30, 45, 60, 90]
-    day = "2020-04-10"
+    start_day = datetime.date(datetime.strptime(day, "%Y-%m-%d")) - timedelta(31)
+    start_day_data = datetime.date(datetime.strptime(day, "%Y-%m-%d")) - timedelta(60)
 
-    start_day = datetime.date(datetime.strptime(day, "%Y-%m-%d")) - timedelta(90)
-    start_day_data = datetime.date(datetime.strptime(day, "%Y-%m-%d")) - timedelta(100)
-
-    l0_campaign_tracking_contact_list_pre = l0_campaign_tracking_contact_list_pre.selectExpr(
+    l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.selectExpr(
         "*", "date(contact_date) as join_date"
     ).filter(
         F.col("join_date").between(
@@ -739,12 +742,12 @@ def create_general_marketing_performance_report(
         )
     )
     campaign_child_tbl = (
-        l0_campaign_tracking_contact_list_pre.groupby(["campaign_child_code"])
+        l0_campaign_tracking_contact_list_pre_full_load.groupby(["campaign_child_code"])
         .agg(F.count("*").alias("c"))
         .drop("c")
     )
     campaign_response_yn = (
-        l0_campaign_tracking_contact_list_pre.groupby(
+        l0_campaign_tracking_contact_list_pre_full_load.groupby(
             ["campaign_child_code", "response"]
         )
         .agg(F.count("*").alias("c"))
@@ -768,13 +771,152 @@ LEFT JOIN
 (SELECT campaign_child_code,response FROM campaign_response_yn WHERE response = 'N') f_no
 ON f_no.campaign_child_code = main.campaign_child_code"""
     )
-    l0_campaign_tracking_contact_list_pre = l0_campaign_tracking_contact_list_pre.join(
+    l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.join(
         campaign_tracking_yn, ["campaign_child_code"], "left"
     )
-    l0_campaign_tracking_contact_list_pre = l0_campaign_tracking_contact_list_pre.withColumn(
+    l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.withColumn(
         "response_integer", F.when(F.col("response") == "Y", 1).otherwise(0)
     )
-    campaign_daily_kpis = l0_campaign_tracking_contact_list_pre.groupby(
+    distinct_campaign_kpis = l0_campaign_tracking_contact_list_pre_full_load.withColumn(
+        "G", F.lit("1")
+    )
+    distinct_campaign_features_daily = (
+        distinct_campaign_kpis.filter(
+            F.col("join_date").between(
+                start_day, datetime.date(datetime.strptime(day, "%Y-%m-%d"))
+            )
+        )
+        .groupby("join_date")
+        .agg(
+            F.countDistinct("subscription_identifier").alias(
+                "Distinct_prepaid_sub_targeted_1_day_Today"
+            ),
+            F.countDistinct(
+                F.when(F.col("response_integer") == 1, F.col("subscription_identifier"))
+            ).alias("Distinct_prepaid_sub_responders_1_day_Today"),
+            F.countDistinct("campaign_child_code").alias(
+                "Distinct_campaigns_running_1_Day_Today"
+            ),
+        )
+    )
+    iterate_distinct = 0
+    for d in list(daterange(start_day.strftime("%Y-%m-%d"), day)):
+        d_str = d.strftime("%Y-%m-%d")
+        start_window = d - timedelta(6)
+        tmp = (
+            distinct_campaign_kpis.where(
+                "date(contact_date) >= date('"
+                + start_window.strftime("%Y-%m-%d")
+                + "') AND date(contact_date) <= date('"
+                + d_str
+                + "')"
+            )
+            .groupby("G")
+            .agg(
+                F.countDistinct("subscription_identifier").alias(
+                    "Distinct_prepaid_sub_targeted_7_day_Today"
+                ),
+                F.countDistinct(
+                    F.when(
+                        F.col("response_integer") == 1, F.col("subscription_identifier")
+                    )
+                ).alias("Distinct_prepaid_sub_responders_7_day_Today"),
+                F.countDistinct("campaign_child_code").alias(
+                    "Distinct_campaigns_running_7_Day_Today"
+                ),
+            )
+            .selectExpr(
+                "date('" + d_str + "') as join_date",
+                "Distinct_prepaid_sub_targeted_7_day_Today",
+                "Distinct_prepaid_sub_responders_7_day_Today",
+                "Distinct_campaigns_running_7_Day_Today",
+            )
+        )
+        if iterate_distinct == 0:
+            distinct_campaign_features_weekly = tmp
+        else:
+            distinct_campaign_features_weekly = distinct_campaign_features_weekly.union(
+                tmp
+            )
+        iterate_distinct = iterate_distinct + 1
+
+    distinct_campaign_features = distinct_campaign_features_daily.join(
+        distinct_campaign_features_weekly, ["join_date"], "left"
+    )
+    return distinct_campaign_features
+
+
+def create_general_marketing_performance_report(
+    use_case_campaign_mapping: DataFrame,
+    cvm_prepaid_customer_groups: DataFrame,
+    campaign_response_input_table: DataFrame,
+    reporting_kpis: DataFrame,
+    reporting_kpis_input: DataFrame,
+    distinct_aggregate_campaign_feature_tbl: DataFrame,
+    day_list: List[str],
+    aggregate_period: List[int],
+    dormant_days_agg_periods: List[int],
+) -> DataFrame:
+    spark = get_spark_session()
+    prepaid_no_activity_daily = catalog.load("prepaid_no_activity_daily")
+    l0_campaign_tracking_contact_list_pre_full_load = catalog.load(
+        "l0_campaign_tracking_contact_list_pre_full_load"
+    )
+    distinct_aggregate_campaign_feature_tbl = catalog.load(
+        "distinct_aggregate_campaign_feature_tbl"
+    )
+    reporting_kpis = catalog.load("reporting_kpis")
+    aggregate_period = [7, 30]
+    dormant_days_agg_periods = [5, 7, 14, 30, 45, 60, 90]
+    day = "2020-04-28"
+
+    start_day = datetime.date(datetime.strptime(day, "%Y-%m-%d")) - timedelta(90)
+    start_day_data = datetime.date(datetime.strptime(day, "%Y-%m-%d")) - timedelta(100)
+
+    l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.selectExpr(
+        "*", "date(contact_date) as join_date"
+    ).filter(
+        F.col("join_date").between(
+            start_day_data, datetime.date(datetime.strptime(day, "%Y-%m-%d"))
+        )
+    )
+    campaign_child_tbl = (
+        l0_campaign_tracking_contact_list_pre_full_load.groupby(["campaign_child_code"])
+        .agg(F.count("*").alias("c"))
+        .drop("c")
+    )
+    campaign_response_yn = (
+        l0_campaign_tracking_contact_list_pre_full_load.groupby(
+            ["campaign_child_code", "response"]
+        )
+        .agg(F.count("*").alias("c"))
+        .drop("c")
+    )
+
+    campaign_response_yn.createOrReplaceTempView("campaign_response_yn")
+    campaign_child_tbl.createOrReplaceTempView("campaign_child_tbl")
+    campaign_tracking_yn = spark.sql(
+        """SELECT main.campaign_child_code,
+CASE WHEN COALESCE(f_yes.response,'empty') = 'empty' AND COALESCE(f_no.response,'empty') = 'empty' THEN 0 
+ELSE 1 END AS response_tracking_yn,
+CASE WHEN  COALESCE(f_yes.response,'empty') = 'empty' AND COALESCE(f_no.response,'empty') = 'N' THEN 1
+ELSE 0 END AS zero_response_campaign_yn,
+f_yes.response as response_y_flag,f_no.response as response_n_flag FROM 
+(SELECT campaign_child_code FROM campaign_child_tbl) main
+LEFT JOIN
+(SELECT campaign_child_code,response FROM campaign_response_yn WHERE response = 'Y') f_yes
+ON f_yes.campaign_child_code = main.campaign_child_code
+LEFT JOIN
+(SELECT campaign_child_code,response FROM campaign_response_yn WHERE response = 'N') f_no
+ON f_no.campaign_child_code = main.campaign_child_code"""
+    )
+    l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.join(
+        campaign_tracking_yn, ["campaign_child_code"], "left"
+    )
+    l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.withColumn(
+        "response_integer", F.when(F.col("response") == "Y", 1).otherwise(0)
+    )
+    campaign_daily_kpis = l0_campaign_tracking_contact_list_pre_full_load.groupby(
         "join_date"
     ).agg(
         F.count("*").alias("All_campaign_transactions"),
@@ -814,17 +956,11 @@ ON f_no.campaign_child_code = main.campaign_child_code"""
                 ]
             )
         )
-    campaign_daily_kpis = campaign_daily_kpis.drop(
-        "All_campaign_transactions",
-        "All_campaign_transactions_with_response_tracking",
-        "Campaign_Transactions_Responded",
-        "timestamp",
-        "G",
-    )
-
-    distinact_campaign_kpis = l0_campaign_tracking_contact_list_pre.withColumn(
-        "G", F.lit("1")
-    )
+    campaign_daily_kpis = campaign_daily_kpis.drop("timestamp", "G",)
+    for c in columns_to_aggregate:
+        campaign_daily_kpis = campaign_daily_kpis.withColumnRenamed(
+            c, c + "_1_Day_Today"
+        )
 
     reporting_kpis = reporting_kpis.filter(
         F.col("join_date").between(
@@ -935,6 +1071,7 @@ ON f_no.campaign_child_code = main.campaign_child_code"""
 
     active_sub_kpis_agg_last_week = active_sub_kpis_agg.selectExpr(
         "date_add(join_date,7) as join_date",
+        "Total_active_prepaid_subscribers_1_Day_Today as Total_active_prepaid_subscribers_1_Day_Last_week",
         "Total_nonzero_1_Day_revenue_active_prepaid_subscribers_1_Day_Today as Total_nonzero_1_Day_revenue_active_prepaid_subscribers_1_Day_Last_week",
         "Total_nonzero_7_Day_revenue_active_prepaid_subscribers_1_Day_Today as Total_nonzero_7_Day_revenue_active_prepaid_subscribers_1_Day_Last_week",
         "Total_nonzero_30_Day_revenue_active_prepaid_subscribers_1_Day_Today as Total_nonzero_30_Day_revenue_active_prepaid_subscribers_1_Day_Last_week",
@@ -957,20 +1094,50 @@ ON f_no.campaign_child_code = main.campaign_child_code"""
         "Campaign_Transactions_Responded_30_day_Today as Campaign_Transactions_Responded_30_day_Last_week",
     )
     spine_table = spine_table.join(campaign_kpis_last_week, ["join_date"], "left")
-    spine_table = (
-        spine_table.withColumn("Distinct_prepaid_sub_responders_1_day_Today", F.lit(""))
-        .withColumn("Distinct_prepaid_sub_responders_7_day_Today", F.lit(""))
-        .withColumn("Distinct_prepaid_sub_responders_1_day_Last_week", F.lit(""))
-        .withColumn("Distinct_prepaid_sub_responders_7_day_Last_week", F.lit(""))
-        .withColumn("Distinct_prepaid_sub_targeted_1_day_Today", F.lit(""))
-        .withColumn("Distinct_prepaid_sub_targeted_7_day_Today", F.lit(""))
-        .withColumn("Candidate_transactions_7_Day_Today", F.lit(""))
-        .withColumn("Candidate_transactions_7_Day_Last_week", F.lit(""))
+
+    spine_table = spine_table.join(
+        distinct_aggregate_campaign_feature_tbl, ["join_date"], "left"
     )
+
+    distinct_campaign_features_last_week = distinct_aggregate_campaign_feature_tbl.selectExpr(
+        "date_add(join_date,7) as join_date",
+        "Distinct_prepaid_sub_targeted_1_day_Today as Distinct_prepaid_sub_targeted_1_day_Last_week",
+        "Distinct_prepaid_sub_responders_1_day_Today as Distinct_prepaid_sub_responders_1_day_Last_week",
+        "Distinct_campaigns_running_1_Day_Today as Distinct_campaigns_running_1_Day_Last_week",
+        "Distinct_prepaid_sub_targeted_7_day_Today as Distinct_prepaid_sub_targeted_7_day_Last_week",
+        "Distinct_prepaid_sub_responders_7_day_Today as Distinct_prepaid_sub_responders_7_day_Last_week",
+        "Distinct_campaigns_running_7_Day_Today as Distinct_campaigns_running_7_Day_Last_week",
+    )
+    spine_table = spine_table.join(
+        distinct_campaign_features_last_week, ["join_date"], "left"
+    )
+    spine_table = spine_table.withColumn(
+        "Candidate_transactions_7_Day_Today", F.lit("")
+    ).withColumn("Candidate_transactions_7_Day_Last_week", F.lit(""))
+
+    total_sub_daily = (
+        prepaid_no_activity_daily.groupby("ddate")
+        .agg(
+            F.countDistinct("analytic_id").alias(
+                "Total_prepaid_subscribers_1_Day_Today"
+            )
+        )
+        .selectExpr("Total_prepaid_subscribers_1_Day_Today", "date(ddate) as join_date")
+    )
+
+    spine_table = spine_table.join(total_sub_daily, ["join_date"], "left")
+
+    total_sub_last_week = total_sub_daily.selectExpr(
+        "date_add(join_date,7) as join_date",
+        "Total_prepaid_subscribers_1_Day_Today as Total_prepaid_subscribers_1_Day_Last_week",
+    )
+
+    spine_table = spine_table.join(total_sub_last_week, ["join_date"], "left")
+
     spine_table.repartition(1).write.format("com.databricks.spark.csv").option(
         "header", "true"
     ).save(
-        "/mnt/data-exploration-blob/ds-storage/users/thansiy/general_overview_report_first_draft.csv"
+        "/mnt/data-exploration-blob/ds-storage/users/thansiy/general_overview_report_20200508_6"
     )
     return spine_table
 

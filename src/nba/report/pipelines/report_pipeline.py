@@ -29,13 +29,15 @@ def create_campaign_view_report_pipeline() -> Pipeline:
 
 
 def create_use_case_view_report_data() -> Pipeline:
-    mock_report_running_date = "2020-04-25"
+    mock_report_running_date = "2020-05-02"
     mock_report_running_date_list = [
-        "2020-04-21",
-        "2020-04-22",
-        "2020-04-23",
-        "2020-04-24",
-        "2020-04-25",
+        "2020-04-26",
+        "2020-04-27",
+        "2020-04-28",
+        "2020-04-29",
+        "2020-04-30",
+        "2020-05-01",
+        "2020-05-02",
     ]
     start_date = datetime.strptime(mock_report_running_date, "%Y-%m-%d") + timedelta(
         days=-120
@@ -56,21 +58,21 @@ def create_use_case_view_report_data() -> Pipeline:
             #     name="create_use_case_campaign_mapping_table",
             #     tags=["create_use_case_campaign_mapping_table",],
             # ),
-            node(
-                partial(
-                    create_report_campaign_tracking_table,
-                    date_from=start_date_input,
-                    date_to=mock_report_running_date,
-                ),
-                {
-                    "cvm_prepaid_customer_groups": "cvm_prepaid_customer_groups",
-                    "l0_campaign_tracking_contact_list_pre": "l0_campaign_tracking_contact_list_pre",
-                    "use_case_campaign_mapping": "use_case_campaign_mapping",
-                },
-                "campaign_response_input_table",
-                name="campaign_response_input_table",
-                tags=["campaign_response_input_table",],
-            ),
+            # node(
+            #     partial(
+            #         create_report_campaign_tracking_table,
+            #         date_from=start_date_input,
+            #         date_to=mock_report_running_date,
+            #     ),
+            #     {
+            #         "cvm_prepaid_customer_groups": "cvm_prepaid_customer_groups",
+            #         "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
+            #         "use_case_campaign_mapping": "use_case_campaign_mapping",
+            #     },
+            #     "campaign_response_input_table",
+            #     name="campaign_response_input_table",
+            #     tags=["campaign_response_input_table",],
+            # ),
             # node(
             #     partial(
             #         create_input_data_for_reporting_kpis,
@@ -145,6 +147,13 @@ def create_use_case_view_report_data() -> Pipeline:
             #     name="historical_use_case_view_report_table",
             #     tags=["historical_use_case_view_report_table",],
             # ),
+            node(
+                create_distinct_aggregate_campaign_feature,
+                inputs={
+                    "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
+                },
+                outputs="distinct_aggregate_campaign_feature_tbl",
+            ),
         ],
         tags=["churn_ard_report"],
     )

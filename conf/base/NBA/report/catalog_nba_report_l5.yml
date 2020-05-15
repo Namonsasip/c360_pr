@@ -75,3 +75,11 @@ campaign_view_report_tbl:
   save_args:
     mode: "overwrite"
     partitionBy: ["contact_date"]
+
+distinct_aggregate_campaign_feature_tbl:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/distinct_aggregate_campaign_feature_tbl/
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["join_date"]
