@@ -1,31 +1,3 @@
-cutoffs:
-  ard:
-    low_arpu_low_tenure:
-      dilution1: 0.5
-      dilution2: 0.3
-    low_arpu_high_tenure:
-      dilution1: 0.45
-      dilution2: 0.35
-    high_arpu_low_tenure:
-      dilution1: 0.4
-      dilution2: 0.4
-    high_arpu_high_tenure:
-      dilution1: 0.5
-      dilution2: 0.45
-  churn:
-    positive_arpu:
-      churn5: 0.25
-      churn15: 0.18
-      churn30: 0.17
-      churn45: 0.14
-      churn60: 0.13
-    zero_arpu:
-      churn5: 0.53
-      churn15: 0.46
-      churn30: 0.42
-      churn45: 0.38
-      churn60: 0.38
-
 treatment_sizes:
   ard: 48000
   churn: 30000
