@@ -82,8 +82,12 @@ def verify_treatment(treatment_dict: Dict[str, Any]):
     treatment_details = treatment_dict[treatment_name]
     if "rules" not in treatment_details:
         raise Exception("Treatment must contain rules")
-    for rule_name in treatment_details["rules"]:
-        verify_rule(treatment_details["rules"][rule_name])
+    rules = [
+        {rule_name: treatment_details["rules"][rule_name]}
+        for rule_name in treatment_details["rules"]
+    ]
+    for rule in rules:
+        verify_rule(rule)
 
 
 class UsersBlacklist:
