@@ -59,10 +59,10 @@ def generate_treatments(sample_type: str) -> Pipeline:
             node(
                 produce_treatments,
                 [
-                    "features_macrosegments_scoring",
-                    "parameters",
                     "propensity_scores_{}".format(sample_type),
                     "treatments_chosen_history",
+                    "parameters",
+                    "features_macrosegments_scoring",
                 ],
                 ["treatments_chosen", "treatments_chosen_history2"],
                 name="produce_treatments",
