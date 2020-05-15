@@ -30,6 +30,7 @@ from typing import Any, Dict
 
 import pandas
 from cvm.src.targets.churn_targets import add_days
+from cvm.src.treatments.rules import MultipleTreatments
 from cvm.src.utils.utils import get_today
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as func
@@ -59,13 +60,25 @@ def get_recently_contacted(
     return recent_users
 
 
-def get_treatments_propositions():
-    """ Generate treatments propositions for rule based treatments, churn and ard.
+def get_treatments_propositions(
+    propensities, features_macrosegments_scoring, parameters, treatments_history
+):
+    """ Generate treatments propositions basing on rules treatment.
 
     Args:
     Returns:
         Table with users, microsegments and treatments chosen.
     """
+    recently_contacted = get_recently_contacted(parameters, treatments_history)
+    propensities_with_features = propensities.join(
+        features_macrosegments_scoring, on="subscription_identifier", how="left"
+    )
+    treatments_dict = parameters["treatment_rules"]
+    treatments = MultipleTreatments(treatments_dict)
+    treatments_propositions = treatments.apply_treatments(
+        propensities_with_features, recently_contacted
+    )
+    return treatments_propositions.withColumnRenamed("treatment_name", "use_case")
 
 
 def update_history_with_treatments_propositions(
