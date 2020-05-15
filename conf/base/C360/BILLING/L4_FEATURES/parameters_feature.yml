@@ -157,8 +157,8 @@ l4_payments_bill_shock:
     access_method_num: "access_method_num"
     register_date: "register_date"
     subscription_identifier: "subscription_identifier"
-    bill_stmt_tot_balance_due_amt: "bill_stmt_tot_balance_due_amt"
-    bill_shock_flag: "case when bill_stmt_tot_balance_due_amt > (2 * avg(bill_stmt_tot_balance_due_amt)
+    bill_stmt_tot_net_revenue_amt: "bill_stmt_tot_net_revenue_amt"
+    bill_shock_flag: "case when bill_stmt_tot_net_revenue_amt > (2 * avg(bill_stmt_tot_net_revenue_amt)
         over(partition by access_method_num,register_date,subscription_identifier order by cast(cast(date(billing_stmt_period_eff_date) as timestamp) as long) asc
         RANGE BETWEEN 6*30*24*60*60 PRECEDING AND 1 PRECEDING)) then 'Y' else 'N' end"
   granularity: ""
