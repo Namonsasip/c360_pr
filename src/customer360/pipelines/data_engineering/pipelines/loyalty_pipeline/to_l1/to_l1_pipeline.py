@@ -23,7 +23,7 @@ def loyalty_to_l1_pipeline(**kwargs):
                 loyalty_number_of_rewards_redeemed_for_each_category,
                 ["l1_customer_profile_union_daily_feature_for_l1_loyalty_number_of_rewards",
                  "l0_loyalty_drm_t_aunjai_point_collection_daily_for_l1_loyalty_number_of_rewards"],
-                "l1_loyalty_number_of_rewards_redeemed_daily"
+                "l1_loyalty_number_of_rewards_daily"
             ),
 
             # Number of points spend for each category

@@ -62,11 +62,11 @@ def loyalty_number_of_rewards_redeemed_for_each_category(customer_prof: DataFram
         return get_spark_empty_df()
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
-                                                       target_table_name="l1_loyalty_number_of_rewards_redeemed_daily")
+                                                       target_table_name="l1_loyalty_number_of_rewards_daily")
 
     customer_prof = data_non_availability_and_missing_check(df=customer_prof, grouping="daily",
                                                             par_col="event_partition_date",
-                                                            target_table_name="l1_loyalty_number_of_rewards_redeemed_daily")
+                                                            target_table_name="l1_loyalty_number_of_rewards_daily")
 
     if check_empty_dfs([input_df, customer_prof]):
         return get_spark_empty_df()
