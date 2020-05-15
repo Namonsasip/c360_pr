@@ -105,12 +105,13 @@ def update_history_with_treatments_propositions(
     """
 
     logging.info("Updating treatments history")
-    today = get_today(parameters)
-    return treatments_history.filter(f"key_date != '{today}'").union(
-        treatments_propositions.withColumn("key_date", func.lit(today)).select(
-            treatments_history.columns
-        )
-    )
+    # today = get_today(parameters)
+    # treatments_history = treatments_history.filter(f"key_date != '{today}'").union(
+    #     treatments_propositions.withColumn("key_date", func.lit(today)).select(
+    #         treatments_history.columns
+    #     )
+    # )
+    return treatments_history
 
 
 def serve_treatments_chosen(
