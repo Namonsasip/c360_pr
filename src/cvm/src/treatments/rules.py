@@ -269,7 +269,7 @@ class Treatment:
             func.when(func.col("variant_id") == i, func.lit(variants[i]))
             for i in range(0, n)
         ]
-        return df.withColumn("variant", func.coalesce(whens)).drop("variant_id")
+        return df.withColumn("variant", func.coalesce(*whens)).drop("variant_id")
 
     def _multiple_variants(self) -> bool:
         """Returns True if multiple variants found"""
