@@ -326,4 +326,4 @@ class MultipleTreatments:
             treatment_applied = treatment.apply_treatment(df)
             treatments_applied.append(treatment_applied)
             users_blacklist.add(treatment_applied)
-        return functools.reduce(lambda df1, df2: df1.union(df2), treatment_applied)
+        return functools.reduce(lambda df1, df2: df1.union(df2), treatments_applied)
