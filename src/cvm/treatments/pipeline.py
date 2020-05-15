@@ -25,13 +25,12 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from kedro.pipeline import Pipeline, node
-
 from cvm.treatments.nodes import (
     deploy_treatments,
     prepare_microsegments,
     produce_treatments,
 )
+from kedro.pipeline import Pipeline, node
 
 
 def generate_treatments(sample_type: str) -> Pipeline:
@@ -60,12 +59,10 @@ def generate_treatments(sample_type: str) -> Pipeline:
             node(
                 produce_treatments,
                 [
-                    "propensity_scores_{}".format(sample_type),
-                    "microsegments_{}".format(sample_type),
-                    "microsegments_treatments",
-                    "treatments_chosen_history",
-                    "parameters",
                     "features_macrosegments_scoring",
+                    "parameters",
+                    "propensity_scores_{}".format(sample_type),
+                    "treatments_chosen_history",
                 ],
                 ["treatments_chosen", "treatments_chosen_history2"],
                 name="produce_treatments",
