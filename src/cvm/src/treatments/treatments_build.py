@@ -61,11 +61,18 @@ def get_recently_contacted(
 
 
 def get_treatments_propositions(
-    propensities, features_macrosegments_scoring, parameters, treatments_history
-):
+    propensities: DataFrame,
+    features_macrosegments_scoring: DataFrame,
+    parameters: Dict[str, Any],
+    treatments_history: DataFrame,
+) -> DataFrame:
     """ Generate treatments propositions basing on rules treatment.
 
     Args:
+        propensities: scores created by models.
+        features_macrosegments_scoring: features used to run conditions on.
+        parameters: parameters defined in parameters.yml.
+        treatments_history: table with history of treatments.
     Returns:
         Table with users, microsegments and treatments chosen.
     """
