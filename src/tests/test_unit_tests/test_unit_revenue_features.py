@@ -414,9 +414,9 @@ StructField("rev_arpu_diff_rev_by_pkg_ppu_2g_3g",StringType(), True),
 StructField("rev_arpu_diff_rev_2g_3g_vs_4g",StringType(), True),
 StructField("rev_arpu_diff_rev_per_unit_2g_3g_vs_4g",StringType(), True),
 StructField("rev_arpu_voice",StringType(), True),
-StructField("rev_arpu_voice_intra",StringType(), True),
+StructField("rev_arpu_voice_intra_ppu",StringType(), True),
 StructField("rev_arpu_share_voice_intra",StringType(), True),
-StructField("rev_arpu_voice_non_intra",StringType(), True),
+StructField("rev_arpu_voice_non_intra_ppu",StringType(), True),
 StructField("rev_arpu_share_voice_non_intra",StringType(), True),
 StructField("rev_arpu_voice_per_call",StringType(), True),
 StructField("rev_arpu_voice_intra_per_call",StringType(), True),
@@ -551,12 +551,12 @@ class TestUnitRevenue:
         assert test.where("access_method_num = 'test'").select("rev_arpu_diff_rev_per_unit_2g_3g_vs_4g").collect()[0][0] == None
         assert round(float(test.where("access_method_num = 'test'").select("rev_arpu_voice").collect()[0][0]),
                      2) == 2.14
-        assert round(float(test.where("access_method_num = 'test'").select("rev_arpu_voice_intra").collect()[0][0]),
+        assert round(float(test.where("access_method_num = 'test'").select("rev_arpu_voice_intra_ppu").collect()[0][0]),
                      2) == 1
         assert round(
             float(test.where("access_method_num = 'test'").select("rev_arpu_share_voice_intra").collect()[0][0]),
             2) == 0.47
-        assert round(float(test.where("access_method_num = 'test'").select("rev_arpu_voice_non_intra").collect()[0][0]),
+        assert round(float(test.where("access_method_num = 'test'").select("rev_arpu_voice_non_intra_ppu").collect()[0][0]),
                      2) == 2.14
         assert round(
             float(test.where("access_method_num = 'test'").select("rev_arpu_share_voice_non_intra").collect()[0][0]),
@@ -757,10 +757,10 @@ class TestUnitRevenue:
             "rev_arpu_voice_sum").collect()[0][0] == 2
         assert \
         l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
-            "rev_arpu_voice_intra_sum").collect()[0][0] == 2
+            "rev_arpu_voice_intra_ppu_sum").collect()[0][0] == 2
         assert \
         l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
-            "rev_arpu_voice_non_intra_sum").collect()[0][0] == 2
+            "rev_arpu_voice_non_intra_ppu_sum").collect()[0][0] == 2
         assert \
         l2_revenue_prepaid_weekly.where("subscription_identifier = '1-TEST' and start_of_week = '2020-01-27'").select(
             "rev_arpu_voice_per_call_sum").collect()[0][0] == 2

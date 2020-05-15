@@ -1,7 +1,0 @@
-l4_customer_profile_ltv_to_date:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/PROFILE/l4_features/ltv_to_date/
-  file_format: "parquet"
-  save_args:
-    partitionBy: ["partition_month"]
-    mode: "overwrite"
