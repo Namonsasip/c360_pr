@@ -8,14 +8,19 @@ def product_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                node_from_config,
-                ["l0_product_customer_promotion_for_daily",
-                 "params:int_l1_product_active_customer_promotion_features"],
+                dac_product_customer_promotion_for_daily,
+                "l0_product_customer_promotion_for_daily",
                 "int_l1_product_active_customer_promotion_features"
             ),
             node(
-                join_with_master_package,
+                node_from_config,
                 ["int_l1_product_active_customer_promotion_features",
+                 "params:int_l1_product_active_customer_promotion_features"],
+                "int_l1_product_active_customer_promotion_features_temp"
+            ),
+            node(
+                join_with_master_package,
+                ["int_l1_product_active_customer_promotion_features_temp",
                  "l0_product_pru_m_package_master_group_for_daily",
                  "l0_product_pru_m_ontop_master_for_daily",
                  "l0_product_ru_m_main_promotion_cvm_proj_for_daily",
@@ -23,12 +28,17 @@ def product_to_l1_pipeline(**kwargs):
                 "l1_product_active_customer_promotion_features_daily"
             ),
 
-            # FBB data
+            node(
+                dac_product_fbb_a_customer_promotion_current_for_daily,
+                "l0_product_fbb_a_customer_promotion_current_for_daily",
+                "int_l1_product_active_fbb_customer_features_daily"
+            ),
             node(
                 node_from_config,
-                ["l0_product_fbb_a_customer_promotion_current_for_daily",
+                ["int_l1_product_active_fbb_customer_features_daily",
                  "params:l1_product_active_fbb_customer_features"],
                 "l1_product_active_fbb_customer_features_daily"
             )
+
         ]
     )

@@ -1,6 +1,7 @@
 # Config file for query generator
 l1_customer_profile_union_daily_feature:
   customer_pre:
+    imsi: imsi
     subscription_identifier: "subscription_identifier"
     access_method_num: "mobile_no"
     register_date: "register_date"
@@ -34,6 +35,7 @@ l1_customer_profile_union_daily_feature:
     royal_family_flag: "royal_family_flag"
 
   customer_post:
+    imsi: imsi
     subscription_identifier: "subscription_identifier"
     access_method_num: "mobile_no"
     register_date: "register_date"
@@ -67,6 +69,7 @@ l1_customer_profile_union_daily_feature:
     royal_family_flag: "royal_family_flag"
 
   customer_non_mobile:
+    imsi: imsi
     subscription_identifier: "subscription_identifier"
     access_method_num: "mobile_no"
     register_date: "register_date"
