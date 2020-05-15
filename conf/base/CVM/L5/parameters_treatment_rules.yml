@@ -4,7 +4,8 @@
 #     treatment_size: 15000
 #     order_policy: "subscriber_tenure + churn5_pred"
 #     rules:
-#         campaign_code1:
+#         rule1:
+#             campaign_code: campaign_code1
 #             limit_per_code: 1000
 #             order_policy: "churn60_pred + churn5_pred"
 #             variant: 'A'
@@ -12,7 +13,8 @@
 #                 - "ard_microsegment == 'positive_arpu_m3'"
 #                 - "sum_rev_arpu_total_revenue_monthly_last_month >= 50"
 #                 - "subscriber_tenure >= 12"
-#         campaign_code2:
+#         rule2:
+#             campaign_code: campaign_code2
 #             limit_per_code: 1000
 #             order_policy: "churn60_pred + churn5_pred"
 #             variant: 'B'
@@ -20,7 +22,8 @@
 #                 - "ard_microsegment == 'positive_arpu_m3'"
 #                 - "sum_rev_arpu_total_revenue_monthly_last_month >= 50"
 #                 - "subscriber_tenure <= 12"
-#         campaign_code3:
+#         rule3:
+#             campaign_code: campaign_code3
 #             limit_per_code: 3000
 #             order_policy: "churn60_pred + churn5_pred"
 #             conditions:
@@ -29,7 +32,8 @@
 #       treatment_size: 13000
 #       order_policy: "dilution1_pred + churn5_pred"
 #       rules:
-#           campaign_code1:
+#         rule4:
+#             campaign_code: campaign_code4
 #               limit_per_code: 3000
 #               order_policy: "churn60_pred"
 #               conditions:
