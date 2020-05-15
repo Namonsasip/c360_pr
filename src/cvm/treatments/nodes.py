@@ -71,17 +71,23 @@ def produce_treatments(
     treatments_history: DataFrame,
     parameters: Dict[str, Any],
     features_macrosegments_scoring: DataFrame,
+    microsegments: DataFrame,
 ) -> Tuple[DataFrame, DataFrame]:
     """  Generates treatments and updated treatments history.
 
     Args:
+        microsegments: users and microsegments table.
         features_macrosegments_scoring: table with features to run rules on.
         parameters: parameters defined in parameters.yml.
         propensities: table with propensities.
         treatments_history: Table with history of treatments.
     """
     treatments_propositions = get_treatments_propositions(
-        propensities, features_macrosegments_scoring, parameters, treatments_history,
+        propensities,
+        features_macrosegments_scoring,
+        parameters,
+        treatments_history,
+        microsegments,
     )
     treatments_history = update_history_with_treatments_propositions(
         treatments_propositions, treatments_history, parameters

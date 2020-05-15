@@ -65,6 +65,7 @@ def get_treatments_propositions(
     features_macrosegments_scoring: DataFrame,
     parameters: Dict[str, Any],
     treatments_history: DataFrame,
+    microsegments: DataFrame,
 ) -> DataFrame:
     """ Generate treatments propositions basing on rules treatment.
 
@@ -73,13 +74,14 @@ def get_treatments_propositions(
         features_macrosegments_scoring: features used to run conditions on.
         parameters: parameters defined in parameters.yml.
         treatments_history: table with history of treatments.
+        microsegments: users and microsegments table.
     Returns:
         Table with users, microsegments and treatments chosen.
     """
     recently_contacted = get_recently_contacted(parameters, treatments_history)
     propensities_with_features = propensities.join(
         features_macrosegments_scoring, on="subscription_identifier", how="left"
-    )
+    ).join(microsegments, on="subscription_identifier", how="left")
     treatments_dict = parameters["treatment_rules"]
     treatments = MultipleTreatments(treatments_dict)
     treatments_propositions = treatments.apply_treatments(
