@@ -266,7 +266,8 @@ class Treatment:
         n = len(variants)
         df = df.withColumn("variant_id", func.floor(func.rand() * n))
         whens = [
-            func.when(func.col("variant_id") == i, variants[i]) for i in range(0, n)
+            func.when(func.col("variant_id") == i, func.lit(variants[i]))
+            for i in range(0, n)
         ]
         return df.withColumn("variant", func.coalesce(whens)).drop("variant_id")
 
