@@ -68,6 +68,8 @@ def verify_rule(rule_dict: Dict[str, Any]):
     rule_details = rule_dict[campaign_code]
     if "conditions" not in rule_details:
         raise Exception("Conditions are missing")
+    if "campaign_code" not in rule_details:
+        raise Exception("Campaign code is missing")
 
 
 def verify_treatment(treatment_dict: Dict[str, Any]):
@@ -79,11 +81,11 @@ def verify_treatment(treatment_dict: Dict[str, Any]):
     if len(list(treatment_dict.keys())) != 1:
         raise Exception("Single treatment must be supplied")
     treatment_name = list(treatment_dict.keys())[0]
-    rules_details = treatment_dict[treatment_name]
-    if len(list(rules_details.keys())) == 0:
+    treatment_details = treatment_dict[treatment_name]
+    if "rules" not in treatment_details:
         raise Exception("Treatment must contain rules")
-    for rule_details in rules_details:
-        verify_rule(rule_details)
+    for rule_name in treatment_details["rules"]:
+        verify_rule(treatment_details["rules"][rule_name])
 
 
 class UsersBlacklist:
