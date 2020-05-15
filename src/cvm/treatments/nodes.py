@@ -29,14 +29,16 @@ import logging
 from typing import Any, Dict, Tuple
 
 import pandas
-
 from cvm.src.treatments.deploy_treatments import deploy_contact, prepare_campaigns_table
 from cvm.src.treatments.microsegments import (
     add_microsegment_features,
     add_volatility_scores,
     define_microsegments,
 )
-from cvm.src.treatments.treatments_build import generate_treatments_chosen
+from cvm.src.treatments.treatments_build import (
+    get_treatments_propositions,
+    update_history_with_treatments_propositions,
+)
 from pyspark.sql import DataFrame
 
 
@@ -66,34 +68,25 @@ def prepare_microsegments(
 
 def produce_treatments(
     propensities: DataFrame,
-    microsegments: DataFrame,
-    treatment_dictionary: pandas.DataFrame,
     treatments_history: DataFrame,
     parameters: Dict[str, Any],
     features_macrosegments_scoring: DataFrame,
-    treatment_rules: Dict[str, Any] = None,
 ) -> Tuple[DataFrame, DataFrame]:
     """  Generates treatments and updated treatments history.
 
     Args:
         features_macrosegments_scoring: table with features to run rules on.
-        microsegments: List of users and assigned microsegments.
         parameters: parameters defined in parameters.yml.
         propensities: table with propensities.
-        treatment_dictionary: Table of microsegment to treatment mapping.
-        treatment_rules: manually defined rules to assign treatment.
         treatments_history: Table with history of treatments.
     """
-
-    return generate_treatments_chosen(
-        propensities,
-        microsegments,
-        treatment_dictionary,
-        treatments_history,
-        parameters,
-        features_macrosegments_scoring,
-        treatment_rules,
+    treatments_propositions = get_treatments_propositions(
+        propensities, features_macrosegments_scoring, parameters, treatments_history,
     )
+    treatments_history = update_history_with_treatments_propositions(
+        treatments_propositions, treatments_history, parameters
+    )
+    return treatments_propositions, treatments_history
 
 
 def deploy_treatments(
