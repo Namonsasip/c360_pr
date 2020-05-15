@@ -29,7 +29,7 @@ import functools
 import logging
 from typing import Any, Dict, List
 
-import pyspark.sql.functions as F
+import pyspark.sql.functions as func
 from cvm.src.utils.utils import return_none_if_missing
 from pyspark.sql import DataFrame
 
@@ -177,7 +177,7 @@ class Rule:
         if self.order_policy is None:
             self.order_policy = treatment_order_policy
         rule_applied = self._get_top_users_by_order_policy(df, treatment_size_bound)
-        return rule_applied.withColumn("campaign_code", F.lit(self.campaign_code))
+        return rule_applied.withColumn("campaign_code", func.lit(self.campaign_code))
 
 
 class Treatment:
@@ -259,9 +259,11 @@ class Treatment:
             )
         )
         n = len(variants)
-        df = df.withColumn("variant_id", F.floor(F.rand() * n))
-        whens = [F.when(F.col("variant_id") == i, variants[i]) for i in range(0, n)]
-        return df.withColumn("variant", F.coalesce(whens)).drop("variant_id")
+        df = df.withColumn("variant_id", func.floor(func.rand() * n))
+        whens = [
+            func.when(func.col("variant_id") == i, variants[i]) for i in range(0, n)
+        ]
+        return df.withColumn("variant", func.coalesce(whens)).drop("variant_id")
 
     def _multiple_variants(self) -> bool:
         """Returns True if multiple variants found"""
@@ -275,7 +277,7 @@ class Treatment:
             df = df.filter("variant == '{}'".format(variant_chosen))
         rules = self._get_rules_for_variant(variant_chosen)
         return self._apply_rules(df, rules, self.treatment_size).withColumn(
-            "variant", F.lit(variant_chosen or "default")
+            "variant", func.lit(variant_chosen or "default")
         )
 
     def _apply_all_variants(self, df: DataFrame) -> DataFrame:
@@ -297,7 +299,7 @@ class Treatment:
             df = self._assign_users_to_variants(df)
         treatment_applied = self._apply_all_variants(df)
         return treatment_applied.withColumn(
-            "treatment_name", F.lit(self.treatment_name)
+            "treatment_name", func.lit(self.treatment_name)
         )
 
 
