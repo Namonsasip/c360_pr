@@ -59,7 +59,7 @@ def massive_processing_with_customer(input_df: DataFrame
     add_list = mvv_new
     customer_df = customer_df.where("charge_type = 'Pre-paid'") \
         .select("access_method_num", "subscription_identifier", "event_partition_date", "start_of_week")
-    first_item = add_list[0]
+    first_item = add_list[-1]
 
     add_list.remove(first_item)
     for curr_item in add_list:
