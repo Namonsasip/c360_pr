@@ -914,7 +914,7 @@ l4_revenue_prepaid_pru_f_usage_multi_features:
       'rev_arpu_days_0_rev_sum',
       'rev_arpu_days_data_0_rev_sum',
       'rev_arpu_days_data_ppu_0_rev_sum',
-      "rev_arpu_days_data_on_top_pkg_sum",
+      "rev_arpu_days_data_on_top_pkg_0_rev_sum",
       'rev_arpu_days_4g_data_0_rev_sum',
       'rev_arpu_days_2g_3g_data_0_rev_sum',
       'rev_arpu_days_4g_data_on_top_pkg_0_rev_sum',

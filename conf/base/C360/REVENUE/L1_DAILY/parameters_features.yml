@@ -94,7 +94,7 @@ l1_revenue_prepaid_pru_f_usage_multi_daily:
     THEN 1 ELSE 0 END"
     rev_arpu_days_data_0_rev: "CASE WHEN total_net_tariff_gprs_revenue = 0 OR
     total_net_tariff_revenue is NULL THEN 1 ELSE 0 END"
-    rev_arpu_days_data_on_top_pkg: "CASE WHEN total_net_tariff_gprs_package = 0 OR
+    rev_arpu_days_data_on_top_pkg_0_rev: "CASE WHEN total_net_tariff_gprs_package = 0 OR
     total_net_tariff_revenue is NULL THEN 1 ELSE 0 END"
     rev_arpu_days_data_ppu_0_rev: "CASE WHEN total_net_tariff_gprs_exc_package = 0 OR
     total_net_tariff_revenue is NULL THEN 1 ELSE 0 END"
