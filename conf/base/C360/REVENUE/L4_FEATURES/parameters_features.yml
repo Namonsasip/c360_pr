@@ -899,7 +899,7 @@ l4_revenue_prepaid_pru_f_usage_multi_features:
       'rev_arpu_data_rev_by_ppu_sum',
       'rev_arpu_data_rev_4g_sum',
       "rev_arpu_data_rev_by_on_top_pkg_sum",
-      "rev_arpu_number_of_on_top_pkg_sum",
+      "rev_arpu_data_number_of_on_top_pkg_sum",
       'rev_arpu_data_rev_by_on_top_4g_sum',
       'rev_arpu_data_rev_by_ppu_4g_sum',
       'rev_arpu_data_rev_2g_3g_sum',
@@ -956,7 +956,7 @@ l4_revenue_prepaid_pru_f_usage_multi_features:
           'rev_arpu_diff_voice_intra_non_intra_avg',
           'rev_arpu_diff_voice_intra_non_intra_per_min_avg',
           'rev_arpu_diff_voice_intra_non_intra_per_call_avg']
-    max: ["rev_arpu_last_date_on_top_pkg_max",
+    max: ["rev_arpu_data_last_date_on_top_pkg_max",
           "rev_arpu_share_of_exc_reward_over_total_rev_max",
           "rev_arpu_share_of_revenue_reward_over_total_rev_max",
           "rev_arpu_share_data_rev_4g_max",

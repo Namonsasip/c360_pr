@@ -8,7 +8,7 @@ l2_revenue_prepaid_weekly:
       "rev_arpu_net_tariff_rev_exc_reward",
       "rev_arpu_data_rev",
       "rev_arpu_data_rev_by_on_top_pkg",
-      "rev_arpu_number_of_on_top_pkg",
+      "rev_arpu_data_number_of_on_top_pkg",
       "rev_arpu_data_rev_by_ppu",
       "rev_arpu_data_rev_4g",
       "rev_arpu_data_rev_by_on_top_4g",
@@ -49,7 +49,7 @@ l2_revenue_prepaid_weekly:
       "rev_arpu_voice_non_intra_per_minute",
     ]
     max: [
-          "rev_arpu_last_date_on_top_pkg",
+          "rev_arpu_data_last_date_on_top_pkg",
           "rev_arpu_share_of_exc_reward_over_total_rev",
           "rev_arpu_share_of_revenue_reward_over_total_rev",
           "rev_arpu_share_data_rev_4g",
