@@ -117,7 +117,7 @@ class UsersBlacklist:
 class Rule:
     """Create, assign, manipulate treatment rule"""
 
-    def __init__(self, rule_dict: Dict[str, Any]):
+    def __init__(self, rule_dict: Dict[str, Any], treatment_name: str):
         verify_rule(rule_dict)
         self.rule_name = list(rule_dict.keys())[0]
         rule_details = rule_dict[self.rule_name]
@@ -126,6 +126,7 @@ class Rule:
         self.order_policy = return_none_if_missing(rule_details, "order_policy")
         self.variant = return_none_if_missing(rule_details, "variant")
         self.conditions = return_none_if_missing(rule_details, "conditions")
+        self.treatment_name = treatment_name
 
     def _filter_with_conditions(self, df: DataFrame) -> DataFrame:
         """ Filter given table according to conditions.
