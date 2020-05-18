@@ -85,7 +85,7 @@ def get_treatments_propositions(
     ).join(microsegments, on="subscription_identifier", how="left")
     treatments_dict = parameters["treatment_rules"]
     treatments = MultipleTreatments(treatments_dict)
-    SparkContext.setCheckpointDir(dirName=parameters["spark_checkpoint_path"])
+    SparkContext.getOrCreate().setCheckpointDir(parameters["spark_checkpoint_path"])
     treatments_propositions = treatments.apply_treatments(
         propensities_with_features, recently_contacted
     )
