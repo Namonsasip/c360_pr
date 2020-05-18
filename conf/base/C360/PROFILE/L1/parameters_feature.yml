@@ -2,7 +2,7 @@
 l1_customer_profile_union_daily_feature:
   customer_pre:
     imsi: imsi
-    subscription_identifier: "subscription_identifier"
+    old_subscription_identifier: "subscription_identifier"
     access_method_num: "mobile_no"
     register_date: "register_date"
     zipcode: "zipcode"
@@ -36,7 +36,7 @@ l1_customer_profile_union_daily_feature:
 
   customer_post:
     imsi: imsi
-    subscription_identifier: "subscription_identifier"
+    old_subscription_identifier: "subscription_identifier"
     access_method_num: "mobile_no"
     register_date: "register_date"
     zipcode: "zipcode"
@@ -70,7 +70,7 @@ l1_customer_profile_union_daily_feature:
 
   customer_non_mobile:
     imsi: imsi
-    subscription_identifier: "subscription_identifier"
+    old_subscription_identifier: "subscription_identifier"
     access_method_num: "mobile_no"
     register_date: "register_date"
     zipcode: "zipcode"
