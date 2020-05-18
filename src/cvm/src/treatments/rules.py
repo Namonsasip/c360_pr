@@ -29,6 +29,7 @@ import logging
 from typing import Any, Dict, List
 
 import pyspark.sql.functions as func
+from cvm.src.utils.list_operations import list_sub
 from cvm.src.utils.utils import return_none_if_missing
 from pyspark.sql import DataFrame, Window
 
@@ -326,12 +327,12 @@ class Treatment:
     def apply_treatment(self, df: DataFrame) -> DataFrame:
         """Perform applying of treatment"""
         logging.info("Applying treatment {}".format(self.treatment_name))
+        must_have_cols = ["treatment_name", "campaign_code"]
+        for missing_col in list_sub(must_have_cols, df.column):
+            df = df.withColumn(missing_col, func.lit(None))
         if self._multiple_variants():
             df = self._assign_users_to_variants(df)
-        treatment_applied = self._apply_all_variants(df)
-        return treatment_applied.withColumn(
-            "treatment_name", func.lit(self.treatment_name)
-        )
+        return self._apply_all_variants(df)
 
 
 class MultipleTreatments:
