@@ -193,7 +193,8 @@ class Rule:
         df = self._add_user_applicable_column(df, variant_chosen)
         df = self._add_row_number_on_order_policy(df)
         df = self._mark_campaign_for_top_users(df, rule_group_size)
-        return df.drop("policy_row_number", "user_applicable", "sort_on_col")
+        df = df.drop("policy_row_number", "user_applicable", "sort_on_col").cache()
+        return df
 
 
 class Treatment:
