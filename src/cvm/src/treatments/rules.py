@@ -31,7 +31,7 @@ from typing import Any, Dict, List
 
 import pyspark.sql.functions as func
 from cvm.src.utils.utils import return_none_if_missing
-from pyspark.sql import DataFrame
+from pyspark.sql import DataFrame, Window
 
 
 class OrderPolicy:
@@ -112,6 +112,24 @@ class UsersBlacklist:
             return df.join(
                 self.blacklisted_users, on="subscription_identifier", how="left_anti"
             )
+
+
+def add_column_based_on_order_policy(
+    df: DataFrame, order_policy: str, new_col_name: str
+) -> DataFrame:
+    """ Adds row number column defined per `order_policy` descending order.
+
+    Args:
+        df: table to add order column to.
+        order_policy: definition of order.
+        new_col_name: name of constructed column.
+    """
+    order_window = Window.orderBy(func.col("sort_on_col")).desc()
+    return (
+        df.selectExpr("*", "{} as sort_on_col".format(order_policy))
+        .withColumn(new_col_name, func.row_number().over(order_window))
+        .drop("sort_on_col")
+    )
 
 
 class Rule:
