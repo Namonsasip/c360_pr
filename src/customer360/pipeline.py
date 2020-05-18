@@ -50,6 +50,7 @@ from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.
 from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l3.to_l3_pipeline import (
     customer_profile_to_l3_pipeline,
     customer_profile_billing_level_to_l3_pipeline,
+    unioned_customer_profile_to_l3_pipeline
 )
 from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l4.to_l4_pipeline import (
     customer_profile_to_l4_pipeline,
@@ -204,6 +205,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "customer_profile_to_l1_pipeline": customer_profile_to_l1_pipeline(),
         "customer_profile_to_l2_pipeline": customer_profile_to_l2_pipeline(),
         "customer_profile_to_l3_pipeline": customer_profile_to_l3_pipeline(),
+        "unioned_customer_profile_to_l3_pipeline": unioned_customer_profile_to_l3_pipeline(),
         "customer_profile_billing_level_to_l3_pipeline": customer_profile_billing_level_to_l3_pipeline(),
         "customer_profile_to_l4_pipeline": customer_profile_to_l4_pipeline(),
         "usage_to_l1_pipeline": usage_to_l1_pipeline(),
