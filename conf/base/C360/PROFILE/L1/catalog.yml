@@ -10,7 +10,7 @@
 l1_customer_profile_union_daily_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   file_format: "parquet"
   save_args:
     increment_flag: 'yes'
@@ -25,7 +25,7 @@ l1_customer_profile_union_daily_feature_for_device:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_devices_summary_customer_handset_daily'
@@ -37,7 +37,7 @@ l1_customer_profile_union_daily_features_for_revenue_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_revenue_prepaid_pru_f_usage_multi_daily'
@@ -51,7 +51,7 @@ l1_customer_profile_union_daily_feature_for_usage:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_usage_postpaid_prepaid_daily'
@@ -64,7 +64,7 @@ l1_customer_profile_union_daily_feature_for_l1_billing_and_payments_daily_topup_
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_billing_and_payments_daily_topup_and_volume'
@@ -79,7 +79,7 @@ l1_customer_profile_union_daily_feature_for_l1_billing_and_payments_daily_rpu_ro
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_billing_and_payments_daily_rpu_roaming'
@@ -93,7 +93,7 @@ l1_customer_profile_union_daily_feature_for_l1_billing_and_payments_daily_before
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_billing_and_payments_daily_before_top_up_balance'
@@ -107,7 +107,7 @@ l1_customer_profile_union_daily_feature_for_l1_billing_and_payments_daily_top_up
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_billing_and_payments_daily_top_up_channels'
@@ -121,7 +121,7 @@ l1_customer_profile_union_daily_feature_for_l1_billing_and_payments_daily_most_p
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_billing_and_payments_daily_most_popular_top_up_channel'
@@ -134,7 +134,7 @@ l1_customer_profile_union_daily_feature_for_l1_billing_and_payments_daily_popula
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_billing_and_payments_daily_popular_topup_day'
@@ -148,7 +148,7 @@ l1_customer_profile_union_daily_feature_for_l1_billing_and_payments_daily_time_s
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_billing_and_payments_daily_time_since_last_top_up'
@@ -161,7 +161,7 @@ l1_customer_profile_union_daily_feature_for_l1_touchpoints_to_call_center_featur
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_touchpoints_to_call_center_features'
@@ -174,7 +174,7 @@ l1_customer_profile_union_daily_feature_for_l1_touchpoints_from_call_center_feat
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_touchpoints_from_call_center_features'
@@ -187,7 +187,7 @@ l1_customer_profile_union_daily_feature_for_l1_touchpoints_nim_work_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_touchpoints_nim_work_features'
@@ -199,7 +199,7 @@ l1_customer_profile_union_daily_feature_for_l1_touchpoints_ivr_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'no'
     lookup_table_name: 'l1_touchpoints_ivr_features'
@@ -213,7 +213,7 @@ l1_customer_profile_union_daily_feature_for_l2_billing_and_payments_weekly_topup
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_billing_and_payments_weekly_topup_time_diff'
@@ -227,7 +227,7 @@ l1_customer_profile_union_daily_feature_for_l2_billing_and_payments_weekly_last_
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_billing_and_payments_weekly_last_top_up_channel'
@@ -239,7 +239,7 @@ l1_customer_profile_union_daily_feature_for_l1_loyalty_number_of_services:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_loyalty_number_of_services_daily'
@@ -252,7 +252,7 @@ l1_customer_profile_union_daily_feature_for_l1_loyalty_number_of_rewards:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_loyalty_number_of_rewards_daily'
@@ -265,7 +265,7 @@ l1_customer_profile_union_daily_feature_for_l1_loyalty_number_of_points_spend:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_loyalty_number_of_points_spend_daily'
@@ -277,7 +277,7 @@ l1_customer_profile_union_daily_feature_for_l1_loyalty_priv_point_ba_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_loyalty_priv_point_ba_daily'
@@ -291,7 +291,7 @@ l1_customer_profile_union_daily_feature_for_int_l1_streaming_content_type_featur
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'int_l1_streaming_content_type_features'
@@ -304,7 +304,7 @@ l1_customer_profile_union_daily_feature_for_int_l1_streaming_tv_channel_features
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'int_l1_streaming_tv_channel_features'
@@ -317,7 +317,7 @@ l1_customer_profile_union_daily_feature_for_int_l1_streaming_video_service_featu
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'int_l1_streaming_video_service_feature'
@@ -330,7 +330,7 @@ l1_customer_profile_union_daily_feature_for_int_l1_streaming_music_service_featu
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'int_l1_streaming_video_service_feature'
@@ -343,7 +343,7 @@ l1_customer_profile_union_daily_feature_for_int_l1_streaming_esport_service_feat
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'int_l1_streaming_esport_service_feature'
@@ -356,7 +356,7 @@ l1_customer_profile_union_daily_feature_for_l1_streaming_visit_count_and_downloa
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_streaming_visit_count_and_download_traffic_feature'
@@ -369,7 +369,7 @@ l1_customer_profile_union_daily_feature_for_int_l1_streaming_sum_per_day:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'int_l1_streaming_sum_per_day'
@@ -382,7 +382,7 @@ l1_customer_profile_union_daily_feature_l1_streaming_session_duration_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_streaming_session_duration_feature'
@@ -394,7 +394,7 @@ l1_customer_profile_union_daily_feature_for_l4_streaming_fav_tv_show_by_episode_
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l4_streaming_fav_tv_show_by_episode_watched'
@@ -406,7 +406,7 @@ l1_customer_profile_union_daily_feature_for_l1_complaints_call_to_competitor_fea
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_complaints_call_to_competitor_features'
@@ -418,7 +418,7 @@ l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_call:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_complaints_nps_after_call'
@@ -430,7 +430,7 @@ l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_chatbot:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_complaints_nps_after_chatbot'
@@ -442,7 +442,7 @@ l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_store_visit:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_complaints_nps_after_store_visit'
@@ -455,7 +455,7 @@ l1_customer_profile_union_daily_feature_for_l1_network_good_and_bad_cells_featur
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_network_good_and_bad_cells_features'
@@ -467,7 +467,7 @@ l1_customer_profile_union_daily_feature_for_l1_network_voice_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_network_voice_features'
@@ -479,7 +479,7 @@ l1_customer_profile_union_daily_feature_for_l1_network_share_of_3g_time_in_total
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_network_share_of_3g_time_in_total_time'
@@ -491,7 +491,7 @@ l1_customer_profile_union_daily_feature_for_l1_network_data_traffic_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_network_data_traffic_features'
@@ -503,7 +503,7 @@ l1_customer_profile_union_daily_feature_for_l1_network_data_cqi:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_network_data_cqi'
@@ -515,7 +515,7 @@ l1_customer_profile_union_daily_feature_for_l1_network_im_cqi:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_network_im_cqi'
@@ -527,7 +527,7 @@ l1_customer_profile_union_daily_feature_for_l1_network_streaming_cqi:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_network_streaming_cqi'
@@ -539,7 +539,7 @@ l1_customer_profile_union_daily_feature_for_l1_network_web_cqi:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_network_web_cqi'
@@ -551,7 +551,7 @@ l1_customer_profile_union_daily_feature_for_l1_network_voip_cqi:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_network_voip_cqi'
@@ -564,7 +564,7 @@ l1_customer_profile_union_daily_feature_for_l1_network_volte_cqi:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_network_volte_cqi'
@@ -576,7 +576,7 @@ l1_customer_profile_union_daily_feature_for_usage_for_l2_digital_cxenxse_site_tr
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
   file_format: "parquet"
-  metadata_table_path: 'base_path/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_digital_cxenxse_site_traffic_weekly'
