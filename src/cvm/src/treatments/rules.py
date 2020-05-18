@@ -180,8 +180,8 @@ class Rule:
                 campaign.
         """
         logging.info(
-            "Applying rule for treatment: {}, campaign code: {}".format(
-                self.treatment_name, self.campaign_code
+            "Applying rule for treatment: {}, rule_name: {}, campaign code: {}".format(
+                self.treatment_name, self.rule_name, self.campaign_code
             )
         )
         if self.order_policy is None:
