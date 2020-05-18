@@ -114,7 +114,7 @@ class UsersBlacklist:
             )
 
 
-def add_column_based_on_order_policy(
+def add_row_number_on_order_policy(
     df: DataFrame, order_policy: str, new_col_name: str
 ) -> DataFrame:
     """ Adds row number column defined per `order_policy` descending order.
