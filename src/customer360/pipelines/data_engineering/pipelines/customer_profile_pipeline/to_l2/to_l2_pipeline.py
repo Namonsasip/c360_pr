@@ -28,32 +28,16 @@
 
 from kedro.pipeline import Pipeline, node
 
-from customer360.utilities.config_parser import node_from_config
-from customer360.pipelines.data_engineering.nodes.customer_profile_nodes.to_l1.to_l1_nodes import *
-from customer360.utilities.re_usable_functions import add_start_of_week_and_month
+from customer360.pipelines.data_engineering.nodes.customer_profile_nodes.to_l2.to_l2_nodes import *
 
 
-def customer_profile_to_l1_pipeline(**kwargs):
+def customer_profile_to_l2_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                union_daily_cust_profile,
-                ["l0_customer_profile_profile_customer_profile_pre_current",
-                 "l0_customer_profile_profile_customer_profile_post_current",
-                 "l0_customer_profile_profile_customer_profile_post_non_mobile_current_non_mobile_current",
-                 "params:l1_customer_profile_union_daily_feature"],
-                "int_l1_customer_profile_union_daily_feature"
+                union_weekly_cust_profile,
+                ["l1_customer_profile_union_daily_feature_for_l2_customer_profile_union_weekly_feature"],
+                "l2_customer_profile_union_weekly_feature"
             ),
-            node(
-                generate_modified_subscription_identifier,
-                ["int_l1_customer_profile_union_daily_feature"],
-                "int_modified_sub_id_l1_customer_profile_union_daily_feature"
-            ),
-            node(
-                add_start_of_week_and_month,
-                ["int_modified_sub_id_l1_customer_profile_union_daily_feature",
-                 "params:customer_profile_partition_col"],
-                "l1_customer_profile_union_daily_feature"
-            )
         ]
     )
