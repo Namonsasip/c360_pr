@@ -82,12 +82,12 @@ l1_revenue_prepaid_pru_f_usage_multi_daily:
     rev_arpu_voice_intra_per_call: "(total_net_tariff_basic_intra / total_call_basic_exc_free_pack_intra)"
     rev_arpu_voice_non_intra_per_call: "(total_net_tariff_basic_non_intra / total_call_basic_exc_free_pack_non_intra)"
     rev_arpu_voice_per_minute: "(total_net_tariff_revenue_basic + total_net_tariff_revenue_monthly) / (total_min_basic_free_pack + total_minute_basic_exc_free_pack)"
-    rev_arpu_voice_intra_per_minute: "(total_net_tariff_basic_intra) / (total_minute_basic_free_pack_intra + total_minute_basic_exc_free_pack_intra)"
-    rev_arpu_voice_non_intra_per_minute: "(total_net_tariff_basic_non_intra) / (total_minute_basic_free_pack_non_intra   + total_minute_basic_exc_free_pack_non_intra)"
+    rev_arpu_voice_intra_per_minute: "(total_net_tariff_basic_intra) / (total_minute_basic_exc_free_pack_intra)"
+    rev_arpu_voice_non_intra_per_minute: "(total_net_tariff_basic_non_intra) / ( total_minute_basic_exc_free_pack_non_intra)"
     rev_arpu_diff_voice_intra_non_intra: "abs((total_net_tariff_basic_intra - total_net_tariff_basic_non_intra))"
     rev_arpu_diff_voice_intra_non_intra_per_min:
-      "abs(((total_net_tariff_basic_intra) / (total_minute_basic_free_pack_intra + total_minute_basic_exc_free_pack_intra))
-       - ((total_net_tariff_basic_non_intra) / (total_minute_basic_free_pack_non_intra   + total_minute_basic_exc_free_pack_non_intra)))"
+      "abs(((total_net_tariff_basic_intra) / (total_minute_basic_exc_free_pack_intra))
+       - ((total_net_tariff_basic_non_intra) / ( total_minute_basic_exc_free_pack_non_intra)))"
     rev_arpu_diff_voice_intra_non_intra_per_call:
       "abs((total_net_tariff_basic_intra / total_call_basic_exc_free_pack_intra) - (total_net_tariff_basic_non_intra / total_minute_basic_free_pack_non_intra))"
     rev_arpu_days_0_rev: "CASE WHEN total_net_tariff_revenue = 0 OR total_net_tariff_revenue is NULL
@@ -138,11 +138,11 @@ l1_revenue_prepaid_pru_f_usage_multi_daily:
     rev_arpu_days_voice_per_min_0_rev: "CASE WHEN (total_net_tariff_revenue_basic + total_net_tariff_revenue_monthly) / (total_min_basic_free_pack + total_minute_basic_exc_free_pack) = 0 OR
       (total_net_tariff_revenue_basic + total_net_tariff_revenue_monthly) / (total_min_basic_free_pack + total_minute_basic_exc_free_pack) is NULL THEN 1 ELSE 0 END"
 
-    rev_arpu_days_voice_intra_per_min_0_rev: "CASE WHEN (total_net_tariff_basic_intra) / (total_minute_basic_free_pack_intra + total_minute_basic_exc_free_pack_intra) = 0 OR
-    (total_net_tariff_basic_intra) / (total_minute_basic_free_pack_intra + total_minute_basic_exc_free_pack_intra) is NULL THEN 1 ELSE 0 END"
+    rev_arpu_days_voice_intra_per_min_0_rev: "CASE WHEN (total_net_tariff_basic_intra) / (total_minute_basic_exc_free_pack_intra) = 0 OR
+    (total_net_tariff_basic_intra) / (total_minute_basic_exc_free_pack_intra) is NULL THEN 1 ELSE 0 END"
 
-    rev_arpu_days_voice_non_intra_per_min_0_rev: "CASE WHEN (total_net_tariff_basic_non_intra) / (total_minute_basic_free_pack_non_intra   + total_minute_basic_exc_free_pack_non_intra) = 0 OR
-    (total_net_tariff_basic_non_intra) / (total_minute_basic_free_pack_non_intra   + total_minute_basic_exc_free_pack_non_intra) is NULL THEN 1 ELSE 0 END"
+    rev_arpu_days_voice_non_intra_per_min_0_rev: "CASE WHEN (total_net_tariff_basic_non_intra) / ( total_minute_basic_exc_free_pack_non_intra) = 0 OR
+    (total_net_tariff_basic_non_intra) / ( total_minute_basic_exc_free_pack_non_intra) is NULL THEN 1 ELSE 0 END"
 
     rev_arpu_data_last_date_on_top_pkg: "CASE WHEN lower(has_ontop_gprs_yn) = 'y' THEN date(day_id) else NULL END"
 
