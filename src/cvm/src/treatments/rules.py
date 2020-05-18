@@ -132,8 +132,8 @@ class Rule:
             df: table to add order column to.
         """
         df = df.selectExpr("*", "{} as sort_on_col".format(self.order_policy))
-        order_window = (
-            Window.partitionBy("user_applicable").orderBy("sort_on_col").desc()
+        order_window = Window.partitionBy("user_applicable").orderBy(
+            func.col("sort_on_col").desc()
         )
         df = df.withColumn("policy_row_number", func.row_number().over(order_window))
         return df
