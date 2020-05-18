@@ -164,12 +164,16 @@ class Rule:
             df: table with both mentioned columns.
             users_num: number of users to pick.
         """
-        assign_condition = func.when(
-            (func.col("user_applicable") == 1)
-            & (func.col("policy_row_number") <= users_num),
-            self.campaign_code,
-        ).otherwise(func.col("campaign_code"))
-        return df.withColumn("campaign_code", assign_condition)
+        assign_condition = (func.col("user_applicable") == 1) & (
+            func.col("policy_row_number") <= users_num
+        )
+        self.rule_users_group_size = df.filter(assign_condition).count()
+        return df.withColumn(
+            "campaign_code",
+            func.when(assign_condition, self.campaign_code).otherwise(
+                func.col("campaign_code")
+            ),
+        )
 
     def apply_rule(
         self,
@@ -254,23 +258,13 @@ class Treatment:
                     if rule_chosen.limit_per_code is not None
                 ]
             )
-        blacklisted_users = UsersBlacklist()
-        rules_applied = []
         for rule_chosen in rules_to_apply:
-            # remove users with rules
-            df = blacklisted_users.drop_blacklisted(df)
-            # apply rule
-            rule_applied = rule_chosen.apply_rule(
-                df, self.order_policy, groups_size_bound
-            )
-            rules_applied.append(rule_applied)
-            # update users blacklist
-            blacklisted_users.add(rule_applied)
-            # update size
-            groups_size_bound -= rule_chosen.rule_users_group_size
-            if groups_size_bound < 0:
-                groups_size_bound = 0
-        return functools.reduce(lambda df1, df2: df1.union(df2), rules_applied)
+            if groups_size_bound > 0:
+                df = rule_chosen.apply_rule(df, self.order_policy, groups_size_bound)
+                groups_size_bound -= rule_chosen.rule_users_group_size
+                if groups_size_bound < 0:
+                    groups_size_bound = 0
+        return df
 
     def _assign_users_to_variants(self, df: DataFrame):
         """ Randomly assigns users to variants from given rules, assumes there is more
