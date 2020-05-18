@@ -153,7 +153,8 @@ def union_monthly_cust_profile(
     if check_empty_dfs([cust_prof_daily_df]):
         return get_spark_empty_df()
 
-    cust_prof_daily_df = data_non_availability_and_missing_check(df=cust_prof_daily_df, grouping="daily",
+    cust_prof_daily_df = data_non_availability_and_missing_check(df=cust_prof_daily_df, grouping="monthly",
+                                                                 missing_data_check_flg='Y',
                                                                  par_col="event_partition_date",
                                                                  target_table_name="l3_customer_profile_union_monthly_feature")
 
