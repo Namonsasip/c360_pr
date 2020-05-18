@@ -128,23 +128,6 @@ class Rule:
         self.conditions = return_none_if_missing(rule_details, "conditions")
         self.treatment_name = treatment_name
 
-    def _add_row_number_on_order_policy(self, df: DataFrame) -> DataFrame:
-        """ Adds row number column defined per `order_policy` descending order.
-
-        Args:
-            df: table to add order column to.
-        """
-        policy = OrderPolicy(self.order_policy)
-        df = df.selectExpr("*", "{} as sort_on_col".format(policy)).withColumn(
-            "has_campaign_code",
-            func.when(func.col("campaign_code").isNull(), 0).otherwise(1),
-        )
-        order_window = (
-            Window.partitionBy("has_campaign_code").orderBy("sort_on_col").desc()
-        )
-        df = df.withColumn("policy_row_number", func.row_number().over(order_window))
-        return df.drop("has_campaign_code", "sort_on_col")
-
     def _add_user_applicable_column(self, df: DataFrame) -> DataFrame:
         """ Add column `user_applicable` marking who can be targeted.
 
@@ -158,6 +141,20 @@ class Rule:
         applicable_str = conditions_joined + " and campaign_code is null"
         case_then = "case when " + applicable_str + " then 1 else 0 end"
         return df.selectExpr("*", "{} as user_applicable".format(case_then))
+
+    def _add_row_number_on_order_policy(self, df: DataFrame) -> DataFrame:
+        """ Adds row number column defined per `order_policy` descending order.
+
+        Args:
+            df: table to add order column to.
+        """
+        policy = OrderPolicy(self.order_policy)
+        df = df.selectExpr("*", "{} as sort_on_col".format(policy))
+        order_window = (
+            Window.partitionBy("user_applicable").orderBy("sort_on_col").desc()
+        )
+        df = df.withColumn("policy_row_number", func.row_number().over(order_window))
+        return df.drop("user_applicable", "sort_on_col")
 
     def _get_top_users_by_order_policy(
         self, df: DataFrame, treatment_size_bound: int = None
