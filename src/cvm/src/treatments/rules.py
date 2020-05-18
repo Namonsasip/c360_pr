@@ -128,10 +128,13 @@ class Rule:
         self.conditions = return_none_if_missing(rule_details, "conditions")
         self.treatment_name = treatment_name
 
-    def _add_user_applicable_column(self, df: DataFrame) -> DataFrame:
+    def _add_user_applicable_column(
+        self, df: DataFrame, variant_chosen: str = None
+    ) -> DataFrame:
         """ Add column `user_applicable` marking who can be targeted.
 
         Args:
+            variant_chosen: chosen variant.
             df: input DataFrame.
         """
         conditions_in_parenthesis = [
@@ -139,6 +142,8 @@ class Rule:
         ]
         conditions_joined = " and ".join(conditions_in_parenthesis)
         applicable_str = conditions_joined + " and campaign_code is null"
+        if variant_chosen is not None:
+            applicable_str += " and variant == '{}'".format(variant_chosen)
         case_then = "case when " + applicable_str + " then 1 else 0 end"
         return df.selectExpr("*", "{} as user_applicable".format(case_then))
 
