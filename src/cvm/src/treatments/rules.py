@@ -145,8 +145,8 @@ class Rule:
         df = df.withColumn("policy_row_number", func.row_number().over(order_window))
         return df.drop("has_campaign_code", "sort_on_col")
 
-    def _filter_with_conditions(self, df: DataFrame) -> DataFrame:
-        """ Filter given table according to conditions.
+    def _add_user_applicable_column(self, df: DataFrame) -> DataFrame:
+        """ Add column `user_applicable` marking who can be targeted.
 
         Args:
             df: input DataFrame.
@@ -154,8 +154,10 @@ class Rule:
         conditions_in_parenthesis = [
             "({})".format(condition) for condition in self.conditions
         ]
-        filter_str = " and ".join(conditions_in_parenthesis)
-        return df.filter(filter_str)
+        conditions_joined = " and ".join(conditions_in_parenthesis)
+        applicable_str = conditions_joined + " and campaign_code is null"
+        case_then = "case when " + applicable_str + " then 1 else 0 end"
+        return df.selectExpr("*", "{} as user_applicable".format(case_then))
 
     def _get_top_users_by_order_policy(
         self, df: DataFrame, treatment_size_bound: int = None
