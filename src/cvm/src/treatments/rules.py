@@ -114,24 +114,6 @@ class UsersBlacklist:
             )
 
 
-def add_row_number_on_order_policy(
-    df: DataFrame, order_policy: str, new_col_name: str
-) -> DataFrame:
-    """ Adds row number column defined per `order_policy` descending order.
-
-    Args:
-        df: table to add order column to.
-        order_policy: definition of order.
-        new_col_name: name of constructed column.
-    """
-    order_window = Window.orderBy(func.col("sort_on_col")).desc()
-    return (
-        df.selectExpr("*", "{} as sort_on_col".format(order_policy))
-        .withColumn(new_col_name, func.row_number().over(order_window))
-        .drop("sort_on_col")
-    )
-
-
 class Rule:
     """Create, assign, manipulate treatment rule"""
 
@@ -145,6 +127,23 @@ class Rule:
         self.variant = return_none_if_missing(rule_details, "variant")
         self.conditions = return_none_if_missing(rule_details, "conditions")
         self.treatment_name = treatment_name
+
+    def _add_row_number_on_order_policy(self, df: DataFrame) -> DataFrame:
+        """ Adds row number column defined per `order_policy` descending order.
+
+        Args:
+            df: table to add order column to.
+        """
+        policy = OrderPolicy(self.order_policy)
+        df = df.selectExpr("*", "{} as sort_on_col".format(policy)).withColumn(
+            "has_campaign_code",
+            func.when(func.col("campaign_code").isNull(), 0).otherwise(1),
+        )
+        order_window = (
+            Window.partitionBy("has_campaign_code").orderBy("sort_on_col").desc()
+        )
+        df = df.withColumn("policy_row_number", func.row_number().over(order_window))
+        return df.drop("has_campaign_code", "sort_on_col")
 
     def _filter_with_conditions(self, df: DataFrame) -> DataFrame:
         """ Filter given table according to conditions.
