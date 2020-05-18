@@ -55,8 +55,7 @@ def merge_with_customer_prepaid_df(source_df: DataFrame,
     cust_df_cols = ['access_method_num', 'start_of_month', 'subscription_identifier']
     join_key = ['access_method_num', 'start_of_month']
 
-    cust_df = cust_df.select(cust_df_cols) \
-    .drop_duplicates(subset=["subscription_identifier", "access_method_num", "start_of_month"])
+    cust_df = cust_df.select(cust_df_cols)
 
     final_df = source_df.join(cust_df, join_key)
 
