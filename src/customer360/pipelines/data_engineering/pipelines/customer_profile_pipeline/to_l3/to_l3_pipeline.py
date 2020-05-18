@@ -56,6 +56,18 @@ def customer_profile_to_l3_pipeline(**kwargs):
     )
 
 
+def unioned_customer_profile_to_l3_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                union_monthly_cust_profile,
+                ["l1_customer_profile_union_daily_feature_for_l3_customer_profile_union_monthly_feature"],
+                "l3_customer_profile_union_monthly_feature"
+            )
+        ]
+    )
+
+
 def customer_profile_billing_level_to_l3_pipeline(**kwargs):
     return Pipeline(
         [
