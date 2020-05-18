@@ -306,11 +306,8 @@ class Treatment:
         to variants was performed"""
         if variant_chosen is not None:
             logging.info("Applying treatments for variant {}".format(variant_chosen))
-            df = df.filter("variant == '{}'".format(variant_chosen))
         rules = self._get_rules_for_variant(variant_chosen)
-        return self._apply_rules(df, rules, self.treatment_size).withColumn(
-            "variant", func.lit(variant_chosen or "default")
-        )
+        return self._apply_rules(df, rules, self.treatment_size, variant_chosen)
 
     def _apply_all_variants(self, df: DataFrame) -> DataFrame:
         """Apply all variants possible, assumes df has column variant, ie assigning
