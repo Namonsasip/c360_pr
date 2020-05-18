@@ -253,7 +253,11 @@ class Treatment:
             ]
 
     def _apply_rules(
-        self, df: DataFrame, rules_to_apply: List[Rule], groups_size_bound: int = None
+        self,
+        df: DataFrame,
+        rules_to_apply: List[Rule],
+        groups_size_bound: int = None,
+        variant_chosen: str = None,
     ) -> DataFrame:
         """Apply treatment to given set of users and variables"""
         # derive limit from rules sizes if not supplied
@@ -267,7 +271,9 @@ class Treatment:
             )
         for rule_chosen in rules_to_apply:
             if groups_size_bound > 0:
-                df = rule_chosen.apply_rule(df, self.order_policy, groups_size_bound)
+                df = rule_chosen.apply_rule(
+                    df, variant_chosen, self.order_policy, groups_size_bound
+                )
                 groups_size_bound -= rule_chosen.rule_users_group_size
                 if groups_size_bound < 0:
                     groups_size_bound = 0
