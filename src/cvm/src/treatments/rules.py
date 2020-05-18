@@ -347,6 +347,7 @@ class MultipleTreatments:
         """ Apply multiple treatments"""
         logging.info("Applying treatments")
         users_blacklist = UsersBlacklist()
+        logging.info("Dropping recently contacted")
         users_blacklist.add(blacklisted_users)
         treatments_applied = []
         for treatment in self.treatments:
