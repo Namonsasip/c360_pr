@@ -34,28 +34,6 @@ from cvm.src.utils.utils import return_none_if_missing
 from pyspark.sql import DataFrame, Window
 
 
-class OrderPolicy:
-    """Class prepares order policy to sort and serves top users according to it"""
-
-    def __init__(self, order_str: str):
-        self.order_str = order_str
-
-    def get_top_users(self, df: DataFrame, n: int) -> DataFrame:
-        """ Returns top `n` users from table `df` sorted in descending order defined
-        by policy.
-
-        Args:
-            df: table to return top `n` rows from.
-            n: number of rows to return from.
-        """
-        return (
-            df.selectExpr("*", "{} as order_policy".format(self.order_str))
-            .orderBy("order_policy", ascending=False)
-            .limit(n)
-            .drop("order_policy")
-        )
-
-
 def verify_rule(rule_dict: Dict[str, Any]):
     """ Look for erroneous input in rule.
 
@@ -153,8 +131,7 @@ class Rule:
         Args:
             df: table to add order column to.
         """
-        policy = OrderPolicy(self.order_policy)
-        df = df.selectExpr("*", "{} as sort_on_col".format(policy))
+        df = df.selectExpr("*", "{} as sort_on_col".format(self.order_policy))
         order_window = (
             Window.partitionBy("user_applicable").orderBy("sort_on_col").desc()
         )
