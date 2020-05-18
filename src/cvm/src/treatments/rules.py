@@ -349,10 +349,9 @@ class MultipleTreatments:
         users_blacklist = UsersBlacklist()
         logging.info("Dropping recently contacted")
         users_blacklist.add(blacklisted_users)
-        treatments_applied = []
+        df = df.withColumn("treatment_name", func.lit(None)).withColumn(
+            "campaign_code", func.lit(None)
+        )
         for treatment in self.treatments:
-            df = users_blacklist.drop_blacklisted(df)
-            treatment_applied = treatment.apply_treatment(df)
-            treatments_applied.append(treatment_applied)
-            users_blacklist.add(treatment_applied)
-        return functools.reduce(lambda df1, df2: df1.union(df2), treatments_applied)
+            df = treatment.apply_treatment(df)
+        return df
