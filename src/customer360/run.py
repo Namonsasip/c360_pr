@@ -126,13 +126,14 @@ class ProjectContext(KedroContext):
 
                             new_target_path = orignal_path.replace("base_path/"+curr_domain["search_pattern"],
                                                                    curr_domain["target_path_on_prem_prefix"])
-                            print(orignal_path)
+
                             catalog._data_sets[curr_catalog].__setattr__("_filepath", new_target_path)
 
                         else:
 
                             new_source_path = orignal_path.replace("base_path/"+curr_domain["search_pattern"],
                                                                    curr_domain["source_path_on_prem_prefix"])
+                            catalog._data_sets[curr_catalog].__setattr__("_filepath", new_source_path)
 
 
         exit(2)
