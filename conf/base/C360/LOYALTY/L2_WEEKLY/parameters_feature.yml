@@ -29,18 +29,18 @@ l2_loyalty_number_of_services_weekly:
 l2_loyalty_number_of_rewards_redeemed_weekly:
   where_clause: ""
   feature_list:
-    loyalty_services_total: "count(*)"
-    loyalty_services_travel: "sum(CASE WHEN lower(category_id) like '%travel%'
+    loyalty_rewards_total: "count(*)"
+    loyalty_rewards_travel: "sum(CASE WHEN lower(category_id) like '%travel%'
                                         or lower(category_text) like '%travel%' THEN 1 ELSE 0 END)"
-    loyalty_services_ais_rewards: "sum(CASE WHEN lower(category_id) like '%ais rewards%'
+    loyalty_rewards_ais_rewards: "sum(CASE WHEN lower(category_id) like '%ais rewards%'
                                         or lower(category_text) like '%ais rewards%' THEN 1 ELSE 0 END)"
-    loyalty_services_entertainment: "sum(CASE WHEN lower(category_id) like '%entertainment%'
+    loyalty_rewards_entertainment: "sum(CASE WHEN lower(category_id) like '%entertainment%'
                                         or lower(category_text) like '%entertainment%' THEN 1 ELSE 0 END)"
-    loyalty_services_food_and_drink: "sum(CASE WHEN lower(category_id) like '%food%'
+    loyalty_rewards_food_and_drink: "sum(CASE WHEN lower(category_id) like '%food%'
                                         or lower(category_text) like '%food%' THEN 1 ELSE 0 END)"
-    loyalty_services_lifestyle: "sum(CASE WHEN lower(category_id) like '%lifestyle%'
+    loyalty_rewards_lifestyle: "sum(CASE WHEN lower(category_id) like '%lifestyle%'
                                         or lower(category_text) like '%lifestyle%' THEN 1 ELSE 0 END)"
-    loyalty_services_others: "sum(CASE WHEN (category_id is null) or (lower(category_id) NOT like '%tra%'
+    loyalty_rewards_others: "sum(CASE WHEN (category_id is null) or (lower(category_id) NOT like '%tra%'
                                                                        AND lower(category_id) NOT like '%ais rewards%'
                                                                        AND lower(category_id) NOT like '%entertainment%'
                                                                        AND lower(category_id) NOT like '%food%'

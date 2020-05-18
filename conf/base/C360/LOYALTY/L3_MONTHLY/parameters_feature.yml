@@ -5,6 +5,7 @@ l3_loyalty_point_balance_statuses_monthly:
     loyalty_points_total_balance: "max(final_points)"
     loyalty_points_last_modified_date: "max(modified_date)"
     loyalty_points_last_expired_date: "max(expired_date)"
+    loyalty_is_status_classic: "max(CASE WHEN lower(mobile_segment) = 'classic' THEN 1 ELSE 0 END)"
     loyalty_is_status_emerald: "max(CASE WHEN lower(mobile_segment) = 'emerald' THEN 1 ELSE 0 END)"
     loyalty_is_status_gold: "max(CASE WHEN lower(mobile_segment) = 'gold' THEN 1 ELSE 0 END)"
     loyalty_is_status_platinum: "max(CASE WHEN lower(mobile_segment) = 'platinum' THEN 1 ELSE 0 END)"
