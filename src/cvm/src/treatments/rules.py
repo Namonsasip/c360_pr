@@ -177,6 +177,11 @@ class Rule:
             func.when(assign_condition, self.campaign_code).otherwise(
                 func.col("campaign_code")
             ),
+        ).withColumn(
+            "treatment_name",
+            func.when(assign_condition, self.treatment_name).otherwise(
+                func.col("treatment_name")
+            ),
         )
 
     def apply_rule(
