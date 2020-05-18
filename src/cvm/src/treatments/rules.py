@@ -154,7 +154,22 @@ class Rule:
             Window.partitionBy("user_applicable").orderBy("sort_on_col").desc()
         )
         df = df.withColumn("policy_row_number", func.row_number().over(order_window))
-        return df.drop("user_applicable", "sort_on_col")
+        return df
+
+    def _mark_campaign_for_top_users(self, df: DataFrame, users_num: int) -> DataFrame:
+        """ Modify `campaign_code` column to assign campaign to top users according to
+            `policy_row_number` column from applicable population.
+
+        Args:
+            df: table with both mentioned columns.
+            users_num: number of users to pick.
+        """
+        assign_condition = func.when(
+            (func.col("user_applicable") == 1)
+            & (func.col("policy_row_number") <= users_num),
+            self.campaign_code,
+        ).otherwise(func.col("campaign_code"))
+        return df.withColumn("campaign_code", assign_condition)
 
     def _get_top_users_by_order_policy(
         self, df: DataFrame, treatment_size_bound: int = None
