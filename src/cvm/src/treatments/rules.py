@@ -25,7 +25,6 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import functools
 import logging
 from typing import Any, Dict, List
 
@@ -315,11 +314,9 @@ class Treatment:
         variants = self._get_all_variants()
         if len(variants) == 0:
             return self._apply_variant(df)
-        else:
-            variants_applied = [
-                self._apply_variant(df, variant) for variant in variants
-            ]
-            return functools.reduce(lambda df1, df2: df1.union(df2), variants_applied)
+        for variant_chosen in variants:
+            df = self._apply_variant(df, variant_chosen)
+        return df
 
     def apply_treatment(self, df: DataFrame) -> DataFrame:
         """Perform applying of treatment"""
