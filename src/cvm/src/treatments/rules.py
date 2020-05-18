@@ -171,50 +171,36 @@ class Rule:
         ).otherwise(func.col("campaign_code"))
         return df.withColumn("campaign_code", assign_condition)
 
-    def _get_top_users_by_order_policy(
-        self, df: DataFrame, treatment_size_bound: int = None
-    ) -> DataFrame:
-        """ Returns top users by order policy to assign to campaign code.
-
-        Args:
-            df: DataFrame of applicable population with feature columns.
-            treatment_size_bound: users number assigned to campaign code upper bound.
-        """
-        filtered_df = self._filter_with_conditions(df)
-        addressable_users_number = filtered_df.count()
-        campaign_code_group_size_bounds = [
-            addressable_users_number,
-            treatment_size_bound,
-            self.limit_per_code,
-        ]
-        self.rule_users_group_size = min(
-            [bound for bound in campaign_code_group_size_bounds if bound is not None]
-        )
-        policy = OrderPolicy(self.order_policy)
-        return policy.get_top_users(filtered_df, self.rule_users_group_size).select(
-            "subscription_identifier"
-        )
-
     def apply_rule(
         self,
         df: DataFrame,
         treatment_order_policy: str = None,
         treatment_size_bound: int = None,
     ) -> DataFrame:
-        """ Create table with subscription identifiers and campaign codes.
+        """ Update `campaign_code` column to include campaigns from the rule.
 
         Args:
             treatment_order_policy: order policy used when there is no rule-specific
                 order policy.
-            df: DataFrame of applicable population with feature columns.
+            df: DataFrame with users, features, campaigns.
             treatment_size_bound: maximum size of users group that can be assigned to
                 campaign.
         """
-        logging.info("Applying rule for campaign code: {}".format(self.campaign_code))
+        logging.info(
+            "Applying rule for treatment: {}, campaign code: {}".format(
+                self.treatment_name, self.campaign_code
+            )
+        )
         if self.order_policy is None:
             self.order_policy = treatment_order_policy
-        rule_applied = self._get_top_users_by_order_policy(df, treatment_size_bound)
-        return rule_applied.withColumn("campaign_code", func.lit(self.campaign_code))
+        if treatment_size_bound is not None:
+            rule_group_size = min([self.limit_per_code, treatment_size_bound])
+        else:
+            rule_group_size = self.limit_per_code
+        df = self._add_user_applicable_column(df)
+        df = self._add_row_number_on_order_policy(df)
+        df = self._mark_campaign_for_top_users(df, rule_group_size)
+        return df.drop("policy_row_number", "user_applicable", "sort_on_col")
 
 
 class Treatment:
