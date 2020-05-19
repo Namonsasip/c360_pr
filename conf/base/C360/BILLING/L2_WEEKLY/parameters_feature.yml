@@ -11,7 +11,6 @@ l2_billing_and_payment_feature_time_diff_bw_topups_weekly_intermdeiate:
   where_clause: ""
   feature_list:
     access_method_num: "access_method_num"
-    national_id_card: "national_id_card"
     register_date: "register_date"
     recharge_time: "recharge_time"
     payments_time_diff: "datediff(recharge_time,lag(recharge_time,1) over(partition by date_trunc('week',date(recharge_date))
@@ -97,7 +96,7 @@ l2_last_topup_channel:
   where_clause: ""
   feature_list:
     access_method_num: "access_method_num"
-    national_id_card: "national_id_card"
+    #national_id_card: "national_id_card"
     register_date: "register_date"
     recharge_time: "recharge_time"
     start_of_week: "start_of_week"

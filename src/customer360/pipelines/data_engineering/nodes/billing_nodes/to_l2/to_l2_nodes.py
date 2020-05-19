@@ -408,6 +408,7 @@ def billing_last_three_topup_volume_weekly(input_df, sql) -> DataFrame:
 def derives_in_customer_profile(customer_prof):
     customer_prof = customer_prof.select("access_method_num",
                                          "subscription_identifier",
+                                         "national_id_card",
                                          f.to_date("register_date").alias("register_date"),
                                          "event_partition_date",
                                          "charge_type")
@@ -499,6 +500,7 @@ def billing_time_diff_between_topups_weekly(customer_profile_df, input_df, sql) 
 def recharge_data_with_customer_profile_joined(customer_prof, recharge_data):
     customer_prof = customer_prof.select("access_method_num",
                                          "subscription_identifier",
+                                         "national_id_card",
                                          f.to_date("register_date").alias("register_date"),
                                          "start_of_week",
                                          "charge_type")

@@ -178,7 +178,7 @@ l4_missed_bills:
 l4_popular_topup_day_initial:
   partition_by: ["access_method_num","register_date","subscription_identifier","payment_popular_day","national_id_card"]
   ranked_lookup_enable_flag: 'yes'
-  fix_dimension_cols: "access_method_num,register_date,subscription_identifier,start_of_week"
+  fix_dimension_cols: "access_method_num,register_date,subscription_identifier,start_of_week,national_id_card"
   target_dimension_col: "payment_popular_day"
   feature_list:
     sum: ["payment_popular_day_topup_count"]
@@ -197,7 +197,7 @@ l4_popular_topup_day:
 l4_popular_topup_hour_initial:
   partition_by: ["access_method_num","register_date","subscription_identifier","payment_popular_hour","national_id_card"]
   ranked_lookup_enable_flag: 'yes'
-  fix_dimension_cols: "access_method_num,register_date,subscription_identifier,start_of_week"
+  fix_dimension_cols: "access_method_num,register_date,subscription_identifier,start_of_week,national_id_card"
   target_dimension_col: "payment_popular_hour"
   feature_list:
     sum: ["payment_popular_hour_topup_count"]
@@ -223,7 +223,7 @@ l4_overdue_bills:
 l4_most_popular_topup_channel_initial:
   partition_by: ["access_method_num","register_date","subscription_identifier","recharge_topup_event_type_name","national_id_card"]
   ranked_lookup_enable_flag: 'yes'
-  fix_dimension_cols: "access_method_num,register_date,subscription_identifier,start_of_week"
+  fix_dimension_cols: "access_method_num,register_date,subscription_identifier,start_of_week,national_id_card"
   target_dimension_col: "recharge_topup_event_type_name"
   feature_list:
     sum: ["payments_total_top_up"]

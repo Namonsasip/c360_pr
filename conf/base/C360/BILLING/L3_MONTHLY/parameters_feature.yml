@@ -21,7 +21,7 @@ l3_billing_and_payment_feature_time_diff_bw_topups_monthly_intermdeiate:
   where_clause: ""
   feature_list:
     access_method_num: "access_method_num"
-    national_id_card: "national_id_card"
+    #national_id_card: "national_id_card"
     register_date: "register_date"
     payments_time_diff: "datediff(recharge_time,lag(recharge_time,1) over(partition by date_trunc('month',date(recharge_date))
       ,access_method_num,register_date order by recharge_time))"
