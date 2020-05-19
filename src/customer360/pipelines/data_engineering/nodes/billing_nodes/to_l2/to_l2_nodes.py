@@ -50,7 +50,7 @@ def massive_processing(input_df, customer_prof_input_df, join_function, sql, par
     mvv_new = list(divide_chunks(mvv_array, 1))
     add_list = mvv_new
 
-    first_item = add_list[0]
+    first_item = add_list[-1]
 
     add_list.remove(first_item)
     for curr_item in add_list:
@@ -90,7 +90,7 @@ def massive_processing_weekly(data_frame: DataFrame, dict_obj: dict, output_df_c
     logging.info("Dates to run for {0}".format(str(mvv_array)))
     mvv_new = list(divide_chunks(mvv_array, 1))
     add_list = mvv_new
-    first_item = add_list[0]
+    first_item = add_list[-1]
     add_list.remove(first_item)
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
@@ -138,7 +138,7 @@ def customized_processing(data_frame: DataFrame, cust_prof: DataFrame, recharge_
     mvv_new = list(divide_chunks(mvv_array, 1))
     add_list = mvv_new
 
-    first_item = add_list[0]
+    first_item = add_list[-1]
 
     add_list.remove(first_item)
     for curr_item in add_list:
@@ -408,6 +408,7 @@ def billing_last_three_topup_volume_weekly(input_df, sql) -> DataFrame:
 def derives_in_customer_profile(customer_prof):
     customer_prof = customer_prof.select("access_method_num",
                                          "subscription_identifier",
+                                         "national_id_card",
                                          f.to_date("register_date").alias("register_date"),
                                          "event_partition_date",
                                          "charge_type")
@@ -499,6 +500,7 @@ def billing_time_diff_between_topups_weekly(customer_profile_df, input_df, sql) 
 def recharge_data_with_customer_profile_joined(customer_prof, recharge_data):
     customer_prof = customer_prof.select("access_method_num",
                                          "subscription_identifier",
+                                         "national_id_card",
                                          f.to_date("register_date").alias("register_date"),
                                          "start_of_week",
                                          "charge_type")

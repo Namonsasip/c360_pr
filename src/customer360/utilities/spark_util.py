@@ -1,7 +1,11 @@
 from pyspark.sql import SparkSession, DataFrame
 from pyspark.sql.types import *
 
+
 def get_spark_session() -> SparkSession:
+    """
+    :return:
+    """
     spark = SparkSession.builder.getOrCreate()
 
     spark.conf.set("spark.sql.parquet.binaryAsString", "true")
@@ -12,6 +16,8 @@ def get_spark_session() -> SparkSession:
     # Dont delete this line. This allow spark to only overwrite the partition
     # saved to parquet instead of entire table folder
     spark.conf.set("spark.sql.sources.partitionOverwriteMode", "DYNAMIC")
+
+    spark.conf.set("spark.sql.parquet.mergeSchema", "true")
 
     return spark
 

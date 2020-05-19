@@ -35,6 +35,7 @@ def billing_to_l1_pipeline(**kwargs):
             node(
                 billing_topup_channels,
                 ["l0_billing_and_payments_rt_t_recharge_daily_for_l1_billing_and_payments_daily_top_up_channels", "l1_customer_profile_union_daily_feature_for_l1_billing_and_payments_daily_top_up_channels",
+                 "l0_billing_topup_type_for_l1_billing_and_payments_daily_top_up_channels",
                  "params:l1_billing_and_payment_top_up_channels"],
                 "l1_billing_and_payments_daily_top_up_channels"
             ),

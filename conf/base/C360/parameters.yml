@@ -1,0 +1,17 @@
+# Parameters for the example pipeline. Feel free to delete these once you
+# remove the example pipeline from pipeline.py and the example nodes in
+# `src/pipelines/`
+
+cloud_on_prim_path_conversion:
+  -
+      search_pattern: "/PROFILE/"
+      source_path_on_cloud_prefix: "/mnt/customer360-blob-data/C360/PROFILE"
+      source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/CUSTOMER_PROFILE"
+      target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/PROFILE"
+      target_path_on_prem_prefix: "/projects/prod/c360/data/CUSTOMER_PROFILE"
+
+
+metadata_path:
+    on_cloud: '/mnt/customer360-blob-output/C360/metadata_table'
+    on_premise: '/mnt/customer360-blob-output/C360/metadata_table'
+

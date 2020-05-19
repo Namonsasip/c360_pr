@@ -51,6 +51,12 @@ def touchpoints_to_l3_pipeline(**kwargs):
                 ["l1_touchpoints_nim_work_features_for_l3_touchpoints_nim_work_features",
                  "params:l3_touchpoints_nim_work_features"],
                 "l3_touchpoints_nim_work_features"
+            ),
+            node(
+                expansion,
+                ["l1_touchpoints_ivr_features",
+                 "params:l3_touchpoints_ivr_features"],
+                "l3_touchpoints_ivr_features"
             )
         ]
     )

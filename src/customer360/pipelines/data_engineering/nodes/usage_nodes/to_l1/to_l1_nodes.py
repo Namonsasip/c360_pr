@@ -7,10 +7,9 @@ from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 
 from customer360.utilities.config_parser import node_from_config
-from src.customer360.utilities.spark_util import get_spark_empty_df
-
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
     data_non_availability_and_missing_check, execute_sql
+from src.customer360.utilities.spark_util import get_spark_empty_df
 
 conf = os.getenv("CONF", None)
 
@@ -28,7 +27,7 @@ def massive_processing(input_df, sql, output_df_catalog):
     :return:
     """
 
-    if len(input_df.head(1)) == 0:
+    if check_empty_dfs([input_df]):
         return input_df
 
     def divide_chunks(l, n):
@@ -46,7 +45,7 @@ def massive_processing(input_df, sql, output_df_catalog):
     mvv_new = list(divide_chunks(mvv_array, 5))
     add_list = mvv_new
 
-    first_item = add_list[0]
+    first_item = add_list[-1]
 
     add_list.remove(first_item)
     for curr_item in add_list:
@@ -372,7 +371,7 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
     mvv_array = list(divide_chunks(mvv_array, 5))
     add_list = mvv_array
 
-    first_item = add_list[0]
+    first_item = add_list[-1]
     add_list.remove(first_item)
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
@@ -382,7 +381,8 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
             .select(sel_cols)
 
         output_df = cust_df.join(output_df, join_cols, how="left")
-        output_df = output_df.where("subscription_identifier is not null and access_method_num is not null")
+        output_df = output_df.where(
+            "subscription_identifier is not null and access_method_num is not null and start_of_week is not null")
         CNTX.catalog.save("l1_usage_postpaid_prepaid_daily", output_df.drop(*drop_cols))
 
     logging.info("running for dates {0}".format(str(first_item)))
@@ -391,6 +391,7 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
         .select(sel_cols)
     return_df = execute_sql(data_frame=return_df, table_name='roaming_incoming_outgoing_data', sql_str=final_df_str)
     return_df = cust_df.join(return_df, join_cols, how="left")
-    return_df = return_df.where("subscription_identifier is not null and access_method_num is not null")
+    return_df = return_df.where(
+        "subscription_identifier is not null and access_method_num is not null and start_of_week is not null")
 
     return return_df.drop(*drop_cols)

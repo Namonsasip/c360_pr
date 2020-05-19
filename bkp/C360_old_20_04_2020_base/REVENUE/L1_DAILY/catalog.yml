@@ -1,8 +1,0 @@
-## korn edit 15/4/2020 create new feature
-l1_revenue_prepaid_pru_f_usage_multi_daily:
-  filepath: /mnt/customer360-blob-output/C360/REVENUE/l1_feature/l1_revenue_prepaid_pru_f_usage_multi_daily/
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-
-
-
