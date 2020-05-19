@@ -889,7 +889,7 @@ l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
   granularity: ""
 
 l4_revenue_prepaid_pru_f_usage_multi_features:
-  partition_by: ["subscription_identifier"]
+  partition_by: ["national_id_card, access_method_num, subscription_identifier"]
   feature_list:
     sum: [
       'rev_arpu_total_net_rev_sum',
