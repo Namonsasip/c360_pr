@@ -150,18 +150,10 @@ class ProjectContext(KedroContext):
                             meta_data_path = str(catalog._data_sets[curr_catalog].__getattribute__("_metadata_table_path"))
                             new_meta_data_path = meta_data_path.replace("metadata_path", metadata_table)
                             catalog._data_sets[curr_catalog].__setattr__("_metadata_table_path", new_meta_data_path)
-                            t_tuple = (meta_data_path, new_meta_data_path)
-                            temp_list.append(t_tuple)
 
                         except Exception as e:
                             logging.info("No Meta-Data Found While Replacing Paths")
 
-            import pandas as pd
-            df = pd.DataFrame(temp_list, columns=['old_path', 'new_path'])
-            df.to_csv("/Users/ankitkansal/IdeaProjects/project-samudra/data/UTIL/path.csv")
-
-
-        exit(2)
         return catalog
 
     def run(self, **kwargs):
