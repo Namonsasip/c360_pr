@@ -92,6 +92,20 @@ def get_treatments_propositions(
     return (
         treatments_propositions.withColumnRenamed("treatment_name", "use_case")
         .withColumn("date", func.lit(get_today(parameters)))
+        .withColumn(
+            "microsegment",
+            func.when(
+                func.col("use_case") == "churn",
+                func.col("churn_microsegment").otherwise("ard_microsegment"),
+            ),
+        )
+        .withColumn(
+            "macrosegment",
+            func.when(
+                func.col("use_case") == "churn",
+                func.col("churn_macrosegment").otherwise("ard_macrosegment"),
+            ),
+        )
         .select(
             [
                 "microsegment",
