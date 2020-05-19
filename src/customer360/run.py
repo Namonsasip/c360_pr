@@ -114,9 +114,10 @@ class ProjectContext(KedroContext):
         catalog.add_feed_dict(self._get_feed_dict())
         # This code is to handle cloud vs on-prem env
         running_environment = os.getenv("RUNNING_ENVIRONMENT", None)
-
+        temp_list = []
         for curr_domain in catalog.load("params:cloud_on_prim_path_conversion"):
             search_pattern = curr_domain["search_pattern"]
+            replace_pattern = search_pattern.replace("/", "")
             if running_environment.lower() == 'on_premise':
                 source_prefix = curr_domain["source_path_on_prem_prefix"]
                 target_prefix = curr_domain["target_path_on_prem_prefix"]
@@ -128,25 +129,37 @@ class ProjectContext(KedroContext):
             for curr_catalog in catalog.list():
                 if type(catalog._data_sets[curr_catalog]).__name__ == "SparkDbfsDataSet":
                     original_path = str(catalog._data_sets[curr_catalog].__getattribute__("_filepath"))
-                    if curr_domain["search_pattern"] in original_path:
-                        if ('l1_features' in original_path) or \
-                                ('l2_features' in original_path) or \
-                                ('l3_features' in original_path) or \
-                                ('l4_features' in original_path):
+                    original_path_lower = original_path.lower()
+                    if search_pattern.lower() in original_path_lower:
+                        print("Above", curr_catalog, original_path_lower)
+                        if 'l1_features' in original_path_lower or 'l2_features' in original_path_lower or \
+                            'l3_features' in original_path_lower or 'l4_features' in original_path_lower:
+                            print("Below", curr_catalog)
 
-                            new_target_path = original_path.replace("base_path/{}".format(search_pattern), target_prefix)
+                            new_target_path = original_path.replace("base_path/{}".format(replace_pattern), target_prefix)
                             catalog._data_sets[curr_catalog].__setattr__("_filepath", new_target_path)
+                            t_tuple = (original_path, new_target_path)
+                            temp_list.append(t_tuple)
 
                         else:
-                            new_source_path = original_path.replace("base_path/{}".format(search_pattern), source_prefix)
+                            new_source_path = original_path.replace("base_path/{}".format(replace_pattern), source_prefix)
                             catalog._data_sets[curr_catalog].__setattr__("_filepath", new_source_path)
+                            t_tuple = (original_path, new_source_path)
+                            temp_list.append(t_tuple)
                         try:
                             meta_data_path = str(catalog._data_sets[curr_catalog].__getattribute__("_metadata_table_path"))
                             new_meta_data_path = meta_data_path.replace("metadata_path", metadata_table)
                             catalog._data_sets[curr_catalog].__setattr__("_metadata_table_path", new_meta_data_path)
+                            t_tuple = (meta_data_path, new_meta_data_path)
+                            temp_list.append(t_tuple)
 
                         except Exception as e:
                             logging.info("No Meta-Data Found While Replacing Paths")
+
+            import pandas as pd
+            df = pd.DataFrame(temp_list, columns=['old_path', 'new_path'])
+            df.to_csv("/Users/ankitkansal/IdeaProjects/project-samudra/data/UTIL/path.csv")
+
 
         exit(2)
         return catalog

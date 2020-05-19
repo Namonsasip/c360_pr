@@ -21,8 +21,8 @@ l1_customer_profile_union_daily_feature:
 
 l1_customer_profile_union_daily_feature_for_l2_customer_profile_union_weekly_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
     increment_flag: 'yes'
@@ -35,8 +35,8 @@ l1_customer_profile_union_daily_feature_for_l2_customer_profile_union_weekly_fea
 
 l1_customer_profile_union_daily_feature_for_l3_customer_profile_union_monthly_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  metadata_table_path: 'metadata_path'
   file_format: "parquet"
   load_args:
     increment_flag: 'yes'
