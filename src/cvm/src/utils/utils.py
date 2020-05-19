@@ -233,4 +233,4 @@ def join_multiple(key_columns: List[str], *dfs: DataFrame) -> DataFrame:
         key_columns: column names of columns to join on.
         *dfs: DataFrames to join.
     """
-    return functools.reduce(lambda df1, df2: join_on(df1, df2, key_columns), *dfs)
+    return functools.reduce(lambda df1, df2: join_on(df1, df2, key_columns), [*dfs])
