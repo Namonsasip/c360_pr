@@ -23,7 +23,7 @@ l2_loyalty_number_of_services_weekly:
                                                                        AND lower(category_text) NOT like '%food%'
                                                                        AND lower(category_text) NOT like '%lifestyle%') THEN 1 ELSE 0 END)"
     loyalty_privilege_registered_date: "max(to_date(register_date))"
-  granularity: "start_of_week,subscription_identifier"
+  granularity: "start_of_week,access_method_num,subscription_identifier,national_id_card"
 
 
 l2_loyalty_number_of_rewards_redeemed_weekly:
@@ -50,7 +50,8 @@ l2_loyalty_number_of_rewards_redeemed_weekly:
                                                                        AND lower(category_text) NOT like '%entertainment%'
                                                                        AND lower(category_text) NOT like '%food%'
                                                                        AND lower(category_text) NOT like '%lifestyle%') THEN 1 ELSE 0 END)"
-  granularity: "start_of_week,subscription_identifier"
+
+  granularity: "start_of_week,access_method_num,subscription_identifier,national_id_card"
 
 
 l2_loyalty_number_of_points_spend_weekly:
@@ -77,4 +78,5 @@ l2_loyalty_number_of_points_spend_weekly:
                                      AND lower(category_text) NOT like '%entertainment%'
                                      AND lower(category_text) NOT like '%food%'
                                      AND lower(category_text) NOT like '%lifestyle%') THEN 1 ELSE 0 END)"
-  granularity: "start_of_week, subscription_identifier"
+
+  granularity: "start_of_week,access_method_num,subscription_identifier,national_id_card"
