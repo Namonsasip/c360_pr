@@ -31,7 +31,7 @@ from typing import Any, Dict
 import pandas
 from cvm.src.targets.churn_targets import add_days
 from cvm.src.treatments.rules import MultipleTreatments
-from cvm.src.utils.utils import get_today
+from cvm.src.utils.utils import get_today, join_multiple
 from pyspark import SparkContext
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as func
@@ -81,9 +81,12 @@ def get_treatments_propositions(
     """
     # create treatments propositions
     recently_contacted = get_recently_contacted(parameters, treatments_history)
-    propensities_with_features = propensities.join(
-        features_macrosegments_scoring, on="subscription_identifier", how="left"
-    ).join(microsegments, on="subscription_identifier", how="left")
+    propensities_with_features = join_multiple(
+        ["subscription_identifier"],
+        propensities,
+        features_macrosegments_scoring,
+        microsegments,
+    )
     treatments_dict = parameters["treatment_rules"]
     SparkContext.getOrCreate().setCheckpointDir(parameters["spark_checkpoint_path"])
     treatments = MultipleTreatments(treatments_dict)

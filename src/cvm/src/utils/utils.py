@@ -25,6 +25,7 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import functools
 import string
 from datetime import date
 from random import random
@@ -209,3 +210,27 @@ def get_today(parameters: Dict[str, Any],) -> str:
     else:
         today = chosen_date
     return today
+
+
+def join_on(df1: DataFrame, df2: DataFrame, key_columns: List[str]) -> DataFrame:
+    """ Joins given DataFrames with left join, drops duplicate columns before.
+
+    Args:
+        df1: left DataFrame.
+        df2: right DataFrame.
+        key_columns: column names of columns to join on.
+    """
+    cols_to_drop = [col_name for col_name in df1.columns if col_name in df2.columns]
+    cols_to_drop = list(set(cols_to_drop) - set(key_columns))
+    df2 = df2.drop(*cols_to_drop)
+    return df1.join(df2, key_columns, "left")
+
+
+def join_multiple(key_columns: List[str], *dfs: DataFrame) -> DataFrame:
+    """ Left join multiple DataFrames dropping multiple columns.
+
+    Args:
+        key_columns: column names of columns to join on.
+        *dfs: DataFrames to join.
+    """
+    return functools.reduce(lambda df1, df2: join_on(df1, df2, key_columns), *dfs)
