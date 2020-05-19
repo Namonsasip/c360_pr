@@ -79,9 +79,15 @@ def get_treatments_propositions(
         Table with users, microsegments and treatments chosen.
     """
     recently_contacted = get_recently_contacted(parameters, treatments_history)
-    propensities_with_features = propensities.join(
-        features_macrosegments_scoring, on="subscription_identifier", how="left"
-    ).join(microsegments, on="subscription_identifier", how="left")
+    propensities_with_features = (
+        propensities.join(
+            features_macrosegments_scoring, on="subscription_identifier", how="left"
+        )
+        .join(microsegments, on="subscription_identifier", how="left")
+        .toPandas()
+    )
+    logging.info("Switched to pandas")
+    logging.info(propensities_with_features.memory_usage())
     treatments_dict = parameters["treatment_rules"]
     treatments = MultipleTreatments(treatments_dict)
     treatments_propositions = treatments.apply_treatments(
