@@ -3,10 +3,24 @@ l0_touchpoint_service_order_profile_daily:
   file_format: "parquet"
   filepath: dbfs:/mnt/customer360-blob-data/C360/TOUCHPOINTS/touchpoint_service_order_profile_daily
 
+#l0_touchpoints_acc_ivr_log_daily:
+#  type: kedro.contrib.io.pyspark.SparkDataSet
+#  file_format: "parquet"
+#  filepath: dbfs:/mnt/customer360-blob-data/C360/TOUCHPOINTS/touchpoints_acc_ivr_log
+
+
 l0_touchpoints_acc_ivr_log_daily:
-  type: kedro.contrib.io.pyspark.SparkDataSet
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/TOUCHPOINTS/touchpoints_acc_ivr_log/
   file_format: "parquet"
-  filepath: dbfs:/mnt/customer360-blob-data/C360/TOUCHPOINTS/touchpoints_acc_ivr_log_daily
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_touchpoints_ivr_features'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
 
 l0_touchpoints_acc_kiosk_machine_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet

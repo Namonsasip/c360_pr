@@ -173,17 +173,17 @@ l3_customer_profile_include_1mo_non_active_for_l4_billing_statement_history_bill
     lookback: '0'
 
 
-l3_customer_profile_include_1mo_non_active_for_l3_digital_cxenxse_user_profile_monthly:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
-  file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l3_digital_cxenxse_user_profile_monthly'
-    read_layer: 'l3_monthly_customer_profile'
-    target_layer: 'l3_monthly'
-    lookback: '0'
+#l3_customer_profile_include_1mo_non_active_for_l3_digital_cxenxse_user_profile_monthly:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  filepath: /mnt/customer360-blob-output/C360/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
+#  file_format: "parquet"
+#  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+#  load_args:
+#    increment_flag: 'yes'
+#    lookup_table_name: 'l3_digital_cxenxse_user_profile_monthly'
+#    read_layer: 'l3_monthly_customer_profile'
+#    target_layer: 'l3_monthly'
+#    lookback: '0'
 
 
 l3_customer_profile_include_1mo_non_active:
@@ -198,6 +198,35 @@ l3_customer_profile_include_1mo_non_active:
     read_layer: 'l0_monthly'
     target_layer: 'l3_monthly'
 
+l3_customer_profile_union_monthly_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l3_features/l3_customer_profile_union_monthly_feature/
+  file_format: "parquet"
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_customer_profile_union_monthly_feature_include_1mo_non_active'
+    read_layer: 'l3_monthly'
+    target_layer: 'l3_monthly'
+    lookback: '1'
+
+l3_customer_profile_union_monthly_feature_include_1mo_non_active:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l3_features/l3_customer_profile_union_monthly_feature_include_1mo_non_active/
+  file_format: "parquet"
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l3_monthly'
+    target_layer: 'l3_monthly'
 
 l3_customer_profile_billing_level_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet

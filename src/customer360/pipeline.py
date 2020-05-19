@@ -44,9 +44,13 @@ from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4.to_
 from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l1.to_l1_pipeline import (
     customer_profile_to_l1_pipeline,
 )
+from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l2.to_l2_pipeline import (
+    customer_profile_to_l2_pipeline,
+)
 from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l3.to_l3_pipeline import (
     customer_profile_to_l3_pipeline,
     customer_profile_billing_level_to_l3_pipeline,
+    unioned_customer_profile_to_l3_pipeline
 )
 from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l4.to_l4_pipeline import (
     customer_profile_to_l4_pipeline,
@@ -171,7 +175,7 @@ from .pipelines.data_engineering.pipelines.usage_pipeline import (
 )
 
 from .pipelines.data_engineering.pipelines.util_pipeline import (
-    lineage_dependency_pipeline
+    lineage_dependency_pipeline, ops_report_pipeline
 )
 
 
@@ -200,7 +204,9 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "usage_to_l3_pipeline": usage_to_l3_pipeline(),
         "usage_to_l4_pipeline": usage_to_l4_pipeline(),
         "customer_profile_to_l1_pipeline": customer_profile_to_l1_pipeline(),
+        "customer_profile_to_l2_pipeline": customer_profile_to_l2_pipeline(),
         "customer_profile_to_l3_pipeline": customer_profile_to_l3_pipeline(),
+        "unioned_customer_profile_to_l3_pipeline": unioned_customer_profile_to_l3_pipeline(),
         "customer_profile_billing_level_to_l3_pipeline": customer_profile_billing_level_to_l3_pipeline(),
         "customer_profile_to_l4_pipeline": customer_profile_to_l4_pipeline(),
         "usage_to_l1_pipeline": usage_to_l1_pipeline(),
@@ -259,6 +265,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "product_to_l2_pipeline": product_to_l2_pipeline(),
         "product_to_l4_pipeline": product_to_l4_pipeline(),
         "lineage_dependency_pipeline": lineage_dependency_pipeline(),
+        "ops_report_pipeline": ops_report_pipeline(),
         # "de": data_engineering_pipeline,
     }
 

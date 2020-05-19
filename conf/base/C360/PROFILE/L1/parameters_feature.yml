@@ -1,7 +1,8 @@
 # Config file for query generator
 l1_customer_profile_union_daily_feature:
   customer_pre:
-    subscription_identifier: "subscription_identifier"
+    imsi: imsi
+    old_subscription_identifier: "subscription_identifier"
     access_method_num: "mobile_no"
     register_date: "register_date"
     zipcode: "zipcode"
@@ -9,9 +10,9 @@ l1_customer_profile_union_daily_feature:
     company_size: "null"
     corporate_flag: "case when (upper(cust_type) = 'B') then 'Y' else 'N' end"
     prefer_language_eng: "case when lower(prefer_language) like 'eng%' then 'Y' else 'N' end"
-    prefer_language_thai: "case when lower(prefer_language) like 'thai%' then 'Y' else 'N' end"
+    prefer_language_thai: "case when lower(prefer_language) like 'tha%' then 'Y' else 'N' end"
     prefer_language_other: >
-      case when lower(prefer_language) not like 'thai%' or
+      case when lower(prefer_language) not like 'tha%' or
                lower(prefer_language) not like 'eng%'
                then 'Y' else 'N' end
     current_package_id: package_id
@@ -34,7 +35,8 @@ l1_customer_profile_union_daily_feature:
     royal_family_flag: "royal_family_flag"
 
   customer_post:
-    subscription_identifier: "subscription_identifier"
+    imsi: imsi
+    old_subscription_identifier: "subscription_identifier"
     access_method_num: "mobile_no"
     register_date: "register_date"
     zipcode: "zipcode"
@@ -42,9 +44,9 @@ l1_customer_profile_union_daily_feature:
     company_size: "corp_account_size"
     corporate_flag: "case when (upper(cust_type) = 'B') or (upper(cust_type) = 'R' and upper(rsme_flag) = 'Y') then 'Y' else 'N' end"
     prefer_language_eng: "case when lower(prefer_language) like 'eng%' then 'Y' else 'N' end"
-    prefer_language_thai: "case when lower(prefer_language) like 'thai%' then 'Y' else 'N' end"
+    prefer_language_thai: "case when lower(prefer_language) like 'tha%' then 'Y' else 'N' end"
     prefer_language_other: >
-      case when lower(prefer_language) not like 'thai%' or
+      case when lower(prefer_language) not like 'tha%' or
                lower(prefer_language) not like 'eng%'
                then 'Y' else 'N' end
     current_package_id: current_promotion_id_ma
@@ -67,7 +69,8 @@ l1_customer_profile_union_daily_feature:
     royal_family_flag: "royal_family_flag"
 
   customer_non_mobile:
-    subscription_identifier: "subscription_identifier"
+    imsi: imsi
+    old_subscription_identifier: "subscription_identifier"
     access_method_num: "mobile_no"
     register_date: "register_date"
     zipcode: "zipcode"
@@ -75,9 +78,9 @@ l1_customer_profile_union_daily_feature:
     company_size: "corp_account_size"
     corporate_flag: "case when (upper(cust_type) = 'B') or (upper(cust_type) = 'R' and upper(rsme_flag) = 'Y') then 'Y' else 'N' end"
     prefer_language_eng: "case when lower(prefer_language) like 'eng%' then 'Y' else 'N' end"
-    prefer_language_thai: "case when lower(prefer_language) like 'thai%' then 'Y' else 'N' end"
+    prefer_language_thai: "case when lower(prefer_language) like 'tha%' then 'Y' else 'N' end"
     prefer_language_other: >
-      case when lower(prefer_language) not like 'thai%' or
+      case when lower(prefer_language) not like 'tha%' or
                lower(prefer_language) not like 'eng%'
                then 'Y' else 'N' end
     current_package_id: current_promotion_id_ma

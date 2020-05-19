@@ -19,7 +19,32 @@ l1_customer_profile_union_daily_feature:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
+l1_customer_profile_union_daily_feature_for_l2_customer_profile_union_weekly_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l2_customer_profile_union_weekly_feature'
+    mode: "overwrite"
+    read_layer: 'l1_daily'
+    target_layer: 'l2_weekly'
+    lookback: '0'
 
+
+l1_customer_profile_union_daily_feature_for_l3_customer_profile_union_monthly_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_customer_profile_union_monthly_feature'
+    mode: "overwrite"
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
 
 l1_customer_profile_union_daily_feature_for_device:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -191,6 +216,18 @@ l1_customer_profile_union_daily_feature_for_l1_touchpoints_nim_work_features:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_touchpoints_nim_work_features'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_customer_profile_union_daily_feature_for_l1_touchpoints_ivr_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  file_format: "parquet"
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_touchpoints_ivr_features'
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
@@ -580,6 +617,18 @@ l1_customer_profile_union_daily_feature_for_l3_revenue_prepaid_ru_f_sum_revenue_
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+l1_customer_profile_union_daily_feature_for_l3_digital_cxenxse_user_profile_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  file_format: "parquet"
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_digital_cxenxse_user_profile_monthly'
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
     lookback: '0'
