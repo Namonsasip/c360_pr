@@ -79,6 +79,7 @@ def get_treatments_propositions(
     Returns:
         Table with users, microsegments and treatments chosen.
     """
+    # create treatments propositions
     recently_contacted = get_recently_contacted(parameters, treatments_history)
     propensities_with_features = propensities.join(
         features_macrosegments_scoring, on="subscription_identifier", how="left"
@@ -89,7 +90,8 @@ def get_treatments_propositions(
     treatments_propositions = treatments.apply_treatments(
         propensities_with_features, recently_contacted
     )
-    return (
+    # change output format
+    treatments_propositions_pandas = (
         treatments_propositions.withColumnRenamed("treatment_name", "use_case")
         .withColumn("date", func.lit(get_today(parameters)))
         .withColumn(
@@ -118,6 +120,7 @@ def get_treatments_propositions(
         )
         .toPandas()
     )
+    return treatments_propositions_pandas
 
 
 def update_history_with_treatments_propositions(
