@@ -89,7 +89,21 @@ def get_treatments_propositions(
     treatments_propositions = treatments.apply_treatments(
         propensities_with_features, recently_contacted
     )
-    return treatments_propositions.withColumnRenamed("treatment_name", "use_case")
+    return (
+        treatments_propositions.withColumnRenamed("treatment_name", "use_case")
+        .withColumn("date", func.lit(get_today(parameters)))
+        .select(
+            [
+                "microsegment",
+                "subscription_identifier",
+                "macrosegment",
+                "use_case",
+                "campaign_code",
+                "date",
+            ]
+        )
+        .toPandas()
+    )
 
 
 def update_history_with_treatments_propositions(
