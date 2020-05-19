@@ -114,6 +114,7 @@ class ProjectContext(KedroContext):
         catalog.add_feed_dict(self._get_feed_dict())
         # This code is to handle cloud vs on-prem env
         running_environment = os.getenv("RUNNING_ENVIRONMENT", None)
+
         for curr_domain in catalog.load("params:cloud_on_prim_path_conversion"):
             search_pattern = curr_domain["search_pattern"]
             if running_environment.lower() == 'on_premise':
@@ -121,23 +122,23 @@ class ProjectContext(KedroContext):
                 target_prefix = curr_domain["target_path_on_prem_prefix"]
                 metadata_table = catalog.load("params:metadata_path")['on_premise']
             else:
-                source_prefix = curr_domain["source_path_cloud_prefix"]
-                target_prefix = curr_domain["target_path_cloud_prefix"]
+                source_prefix = curr_domain["source_path_on_cloud_prefix"]
+                target_prefix = curr_domain["target_path_on_cloud_prefix"]
                 metadata_table = catalog.load("params:metadata_path")['on_cloud']
             for curr_catalog in catalog.list():
                 if type(catalog._data_sets[curr_catalog]).__name__ == "SparkDbfsDataSet":
-                    orignal_path = str(catalog._data_sets[curr_catalog].__getattribute__("_filepath"))
-                    if curr_domain["search_pattern"] in orignal_path:
-                        if ('l1_features' in orignal_path) or \
-                                ('l2_features' in orignal_path) or \
-                                ('l3_features' in orignal_path) or \
-                                ('l4_features' in orignal_path):
+                    original_path = str(catalog._data_sets[curr_catalog].__getattribute__("_filepath"))
+                    if curr_domain["search_pattern"] in original_path:
+                        if ('l1_features' in original_path) or \
+                                ('l2_features' in original_path) or \
+                                ('l3_features' in original_path) or \
+                                ('l4_features' in original_path):
 
-                            new_target_path = orignal_path.replace("base_path/{}".format(search_pattern), target_prefix)
+                            new_target_path = original_path.replace("base_path/{}".format(search_pattern), target_prefix)
                             catalog._data_sets[curr_catalog].__setattr__("_filepath", new_target_path)
 
                         else:
-                            new_source_path = orignal_path.replace("base_path/{}".format(search_pattern), source_prefix)
+                            new_source_path = original_path.replace("base_path/{}".format(search_pattern), source_prefix)
                             catalog._data_sets[curr_catalog].__setattr__("_filepath", new_source_path)
                         try:
                             meta_data_path = str(catalog._data_sets[curr_catalog].__getattribute__("_metadata_table_path"))
@@ -146,9 +147,6 @@ class ProjectContext(KedroContext):
 
                         except Exception as e:
                             logging.info("No Meta-Data Found While Replacing Paths")
-
-
-
 
         exit(2)
         return catalog
