@@ -15,7 +15,7 @@ from pyspark.sql.functions import countDistinct
 
 
 conf = os.getenv("CONF", None)
-run_mode = os.getenv("RUN_MODE", None)
+run_mode = os.getenv("DATA_AVAILABILITY_CHECKS", None)
 log = logging.getLogger(__name__)
 
 
@@ -353,7 +353,7 @@ def data_non_availability_and_missing_check(df, grouping, par_col, target_table_
     """
     logging.info("Entering data_non_availability_and_missing_check")
     if run_mode is not None:
-        if (run_mode.upper() == 'UNIT_TEST') | (run_mode.upper() == 'LOCAL_FS'):
+        if (run_mode.upper() == 'UNIT_TEST') | (run_mode.upper() == 'LOCAL_FS') | (run_mode.upper() == 'NO'):
             logging.info("Exiting data_non_availability_and_missing_check as OS ENV RUN_MODE  = {}".format(run_mode))
             return df
     logging.info("Executing data_non_availability_and_missing_check IMP: OS ENV RUN_MODE NO UNIT TEST CASE SELECTED")

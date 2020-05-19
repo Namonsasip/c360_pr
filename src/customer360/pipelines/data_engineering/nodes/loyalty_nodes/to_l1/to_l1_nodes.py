@@ -33,7 +33,8 @@ def loyalty_number_of_services_for_each_category(customer_prof: DataFrame
 
     ################################# End Implementing Data availability checks ###############################
 
-    customer_prof = customer_prof.select("access_method_num",
+    customer_prof = customer_prof.select("national_id_card"
+                                         "access_method_num",
                                          "subscription_identifier",
                                          "event_partition_date",
                                          "start_of_week")
@@ -71,7 +72,8 @@ def loyalty_number_of_rewards_redeemed_for_each_category(customer_prof: DataFram
     if check_empty_dfs([input_df, customer_prof]):
         return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
-    customer_prof = customer_prof.select("access_method_num",
+    customer_prof = customer_prof.select("national_id_card"
+                                         "access_method_num",
                                          "subscription_identifier",
                                          "event_partition_date",
                                          "start_of_week")
@@ -109,7 +111,8 @@ def loyalty_number_of_points_spend_for_each_category(customer_prof: DataFrame
     if check_empty_dfs([input_df, customer_prof]):
         return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
-    customer_prof = customer_prof.select("access_method_num",
+    customer_prof = customer_prof.select("national_id_card"
+                                         "access_method_num",
                                          "subscription_identifier",
                                          "event_partition_date",
                                          "start_of_week")
@@ -163,7 +166,8 @@ def loyalty_number_of_points_balance(customer_prof: DataFrame
     if check_empty_dfs([input_df, customer_prof, l0_loyalty_priv_point_bonus_ba]):
         return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df()]
     ################################# End Implementing Data availability checks ###############################
-    customer_prof = customer_prof.select("access_method_num",
+    customer_prof = customer_prof.select("national_id_card"
+                                         "access_method_num",
                                          "subscription_identifier",
                                          "event_partition_date",
                                          "start_of_week")
