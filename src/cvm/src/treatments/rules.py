@@ -261,6 +261,7 @@ class Treatment:
                 )
                 # set checkpoint once in a while to speed up calculation
                 if random.random() <= 1 / 20:
+                    logging.info("Setting up checkpoint")
                     df = df.checkpoint()
                 # update group size
                 groups_size_bound -= rule_chosen.rule_users_group_size
