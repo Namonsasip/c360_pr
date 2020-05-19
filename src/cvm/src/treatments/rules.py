@@ -26,6 +26,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import logging
+from random import random
 from typing import Any, Dict, List
 
 import pyspark.sql.functions as func
@@ -254,9 +255,14 @@ class Treatment:
             )
         for rule_chosen in rules_to_apply:
             if groups_size_bound > 0:
+                # update rule
                 df = rule_chosen.apply_rule(
                     df, variant_chosen, self.order_policy, groups_size_bound
                 )
+                # set checkpoint once in a while to speed up calculation
+                if random.random() <= 1 / 20:
+                    df = df.checkpoint()
+                # update group size
                 groups_size_bound -= rule_chosen.rule_users_group_size
                 if groups_size_bound < 0:
                     groups_size_bound = 0
