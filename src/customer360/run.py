@@ -296,7 +296,7 @@ class ProjectContext(KedroContext):
                     caller_globals[obj_name] = getattr(function_module, obj_name)
 
 
-def run_package(pipelines=['revenue_to_l4_weekly_pipeline']):
+def run_package(pipelines=None):
 
     # entry point for running pip-install projects
     # using `<project_package>` command
