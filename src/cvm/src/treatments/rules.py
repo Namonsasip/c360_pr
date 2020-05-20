@@ -239,13 +239,14 @@ class Treatment:
     def _truncate_assigned_campaigns(self, df: DataFrame, variant_chosen: str = None):
         """Reduce number of people assigned to campaigns to fulfill treatment size
         condition. Top users according to order policy are picked"""
+        current_treatment_variant = func.col("treatment_name") == self.treatment_name
+        if variant_chosen is not None:
+            current_treatment_variant &= func.col("variant") == variant_chosen
         df = df.selectExpr(
-            "*",
-            "{} as sort_on_col".format(self.order_policy),
-            """case when treatment_name == '{}' then 1 else 0
-             end as has_current_treatment""".format(
-                self.treatment_name
-            ),
+            "*", "{} as sort_on_col".format(self.order_policy),
+        ).withColumn(
+            "has_current_treatment",
+            func.when(current_treatment_variant, 1).otherwise(0),
         )
         treatment_lp_window = Window.partitionBy("has_current_treatment").orderBy(
             func.col("sort_on_col").desc()
@@ -256,8 +257,6 @@ class Treatment:
         to_truncate = (func.col("has_current_treatment") == 1) & (
             func.col("lp_in_treatment") >= self.treatment_size
         )
-        if variant_chosen is not None:
-            to_truncate = to_truncate & (func.col("variant") == variant_chosen)
         df = df.withColumn(
             "treatment_name",
             func.when(to_truncate, func.lit(None)).otherwise(
