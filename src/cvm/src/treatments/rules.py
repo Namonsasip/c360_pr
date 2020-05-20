@@ -149,7 +149,6 @@ class Rule:
         assign_condition = (func.col("user_applicable") == 1) & (
             func.col("policy_row_number") <= users_num
         )
-        self.rule_users_group_size = df.filter(assign_condition).count()
         return df.withColumn(
             "campaign_code",
             func.when(assign_condition, self.campaign_code).otherwise(
