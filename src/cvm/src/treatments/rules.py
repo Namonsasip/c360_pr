@@ -167,7 +167,6 @@ class Rule:
         df: DataFrame,
         variant_chosen: str = None,
         treatment_order_policy: str = None,
-        treatment_size_bound: int = None,
     ) -> DataFrame:
         """ Update `campaign_code` column to include campaigns from the rule.
 
@@ -176,8 +175,6 @@ class Rule:
             treatment_order_policy: order policy used when there is no rule-specific
                 order policy.
             df: DataFrame with users, features, campaigns.
-            treatment_size_bound: maximum size of users group that can be assigned to
-                campaign.
         """
         logging.info(
             "Applying rule for treatment: {}, rule_name: {}, campaign code: {}".format(
@@ -186,13 +183,9 @@ class Rule:
         )
         if self.order_policy is None:
             self.order_policy = treatment_order_policy
-        if treatment_size_bound is not None:
-            rule_group_size = min([self.limit_per_code, treatment_size_bound])
-        else:
-            rule_group_size = self.limit_per_code
         df = self._add_user_applicable_column(df, variant_chosen)
         df = self._add_row_number_on_order_policy(df)
-        df = self._mark_campaign_for_top_users(df, rule_group_size)
+        df = self._mark_campaign_for_top_users(df, self.limit_per_code)
         df = df.drop("policy_row_number", "user_applicable", "sort_on_col")
         return df
 
