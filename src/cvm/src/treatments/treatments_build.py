@@ -60,16 +60,46 @@ def get_recently_contacted(
     return recent_users
 
 
+def treatments_featurize(
+    propensities: DataFrame,
+    features_macrosegments_scoring: DataFrame,
+    microsegments: DataFrame,
+    profile: DataFrame,
+    main_packs: DataFrame,
+) -> DataFrame:
+    """ Prepare table with users and features needed for treatments generation
+
+    Args:
+        propensities: scores created by models.
+        features_macrosegments_scoring: features used to run conditions on.
+        microsegments: users and microsegments table.
+        profile: table with users, their package and monthly revenue.
+        main_packs: table describing prepaid main packages.
+    """
+    propensities_with_features = join_multiple(
+        ["subscription_identifier"],
+        propensities,
+        features_macrosegments_scoring,
+        microsegments,
+    )
+    treatments_features = propensities_with_features
+    return treatments_features
+
+
 def get_treatments_propositions(
     propensities: DataFrame,
     features_macrosegments_scoring: DataFrame,
     parameters: Dict[str, Any],
     treatments_history: DataFrame,
     microsegments: DataFrame,
+    profile: DataFrame,
+    main_packs: DataFrame,
 ) -> DataFrame:
     """ Generate treatments propositions basing on rules treatment.
 
     Args:
+        profile: table with users, their package and monthly revenue.
+        main_packs: table describing prepaid main packages.
         propensities: scores created by models.
         features_macrosegments_scoring: features used to run conditions on.
         parameters: parameters defined in parameters.yml.
@@ -80,14 +110,10 @@ def get_treatments_propositions(
     """
     # create treatments propositions
     recently_contacted = get_recently_contacted(parameters, treatments_history)
-    propensities_with_features = join_multiple(
-        ["subscription_identifier"],
-        propensities,
-        features_macrosegments_scoring,
-        microsegments,
+    propensities_with_features = treatments_featurize(
+        propensities, features_macrosegments_scoring, microsegments, profile, main_packs
     )
-    treatments_dict = parameters["treatment_rules"]
-    treatments = MultipleTreatments(treatments_dict)
+    treatments = MultipleTreatments(parameters["treatment_rules"])
     treatments_propositions = treatments.apply_treatments(
         propensities_with_features, recently_contacted
     )
