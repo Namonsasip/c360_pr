@@ -99,13 +99,13 @@ def get_treatments_propositions(
             "microsegment",
             func.when(
                 func.col("use_case") == "churn", func.col("churn_microsegment")
-            ).otherwise("ard_microsegment"),
+            ).otherwise(func.col("ard_microsegment")),
         )
         .withColumn(
             "macrosegment",
             func.when(
                 func.col("use_case") == "churn", func.col("churn_macrosegment")
-            ).otherwise("ard_macrosegment"),
+            ).otherwise(func.col("ard_macrosegment")),
         )
         .select(
             [
