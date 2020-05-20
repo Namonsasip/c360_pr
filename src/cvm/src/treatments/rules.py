@@ -236,6 +236,35 @@ class Treatment:
             df = rule_chosen.apply_rule(df, variant_chosen, self.order_policy)
         return df
 
+    def _truncate_assigned_campaigns(self, df: DataFrame):
+        """Reduce number of people assigned to campaigns to fulfill treatment size
+        condition. Top users according to order policy are picked"""
+        df = df.selectExpr(
+            "*",
+            "{} as sort_on_col".format(self.order_policy),
+            "case when campaign_code is null then 1 else 0 end as has_campaign",
+        )
+        treatment_lp_window = Window.partitionBy("has_campaign").orderBy(
+            func.col("sort_on_col").desc()
+        )
+        df = df.withColumn(
+            "lp_in_treatment", func.row_number().over(treatment_lp_window)
+        )
+        to_truncate = (func.col("has_treatment") == 1) & (
+            func.col("lp_in_treatment") >= self.treatment_size
+        )
+        df = df.withColumn(
+            "treatment_name",
+            func.when(to_truncate, func.lit(None)).otherwise(
+                func.col("treatment_name")
+            ),
+        ).withColumn(
+            "campaign_code",
+            func.when(to_truncate, func.lit(None)).otherwise(func.col("campaign_code")),
+        )
+        to_drop = ["sort_on_col", "has_campaign", "lp_in_treatment"]
+        return df.drop(*to_drop)
+
     def _assign_users_to_variants(self, df: DataFrame):
         """ Randomly assigns users to variants from given rules, assumes there is more
         then one variant"""
