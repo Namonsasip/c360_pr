@@ -236,23 +236,28 @@ class Treatment:
             df = rule_chosen.apply_rule(df, variant_chosen, self.order_policy)
         return df
 
-    def _truncate_assigned_campaigns(self, df: DataFrame):
+    def _truncate_assigned_campaigns(self, df: DataFrame, variant_chosen: str = None):
         """Reduce number of people assigned to campaigns to fulfill treatment size
         condition. Top users according to order policy are picked"""
         df = df.selectExpr(
             "*",
             "{} as sort_on_col".format(self.order_policy),
-            "case when campaign_code is null then 1 else 0 end as has_campaign",
+            """case when treatment_name == '{}' then 1 else 0
+             end as has_current_treatment""".format(
+                self.treatment_name
+            ),
         )
-        treatment_lp_window = Window.partitionBy("has_campaign").orderBy(
+        treatment_lp_window = Window.partitionBy("has_current_treatment").orderBy(
             func.col("sort_on_col").desc()
         )
         df = df.withColumn(
             "lp_in_treatment", func.row_number().over(treatment_lp_window)
         )
-        to_truncate = (func.col("has_treatment") == 1) & (
+        to_truncate = (func.col("has_current_treatment") == 1) & (
             func.col("lp_in_treatment") >= self.treatment_size
         )
+        if variant_chosen is not None:
+            to_truncate = to_truncate & (func.col("variant") == variant_chosen)
         df = df.withColumn(
             "treatment_name",
             func.when(to_truncate, func.lit(None)).otherwise(
@@ -262,7 +267,7 @@ class Treatment:
             "campaign_code",
             func.when(to_truncate, func.lit(None)).otherwise(func.col("campaign_code")),
         )
-        to_drop = ["sort_on_col", "has_campaign", "lp_in_treatment"]
+        to_drop = ["sort_on_col", "has_current_treatment", "lp_in_treatment"]
         return df.drop(*to_drop)
 
     def _assign_users_to_variants(self, df: DataFrame):
