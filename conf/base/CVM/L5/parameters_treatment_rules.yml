@@ -64,7 +64,7 @@
 
 treatment_rules:
   churn:
-    treatment_size: 30000
+    treatment_size: 1000
     order_policy: "churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred"
     rules:
       rule1:
