@@ -66,6 +66,7 @@ def treatments_featurize(
     microsegments: DataFrame,
     profile: DataFrame,
     main_packs: DataFrame,
+    parameters: Dict[str, Any],
 ) -> DataFrame:
     """ Prepare table with users and features needed for treatments generation
 
@@ -75,6 +76,7 @@ def treatments_featurize(
         microsegments: users and microsegments table.
         profile: table with users, their package and monthly revenue.
         main_packs: table describing prepaid main packages.
+        parameters: parameters defined in parameters.yml.
     """
     propensities_with_features = join_multiple(
         ["subscription_identifier"],
@@ -111,7 +113,12 @@ def get_treatments_propositions(
     # create treatments propositions
     recently_contacted = get_recently_contacted(parameters, treatments_history)
     propensities_with_features = treatments_featurize(
-        propensities, features_macrosegments_scoring, microsegments, profile, main_packs
+        propensities,
+        features_macrosegments_scoring,
+        microsegments,
+        profile,
+        main_packs,
+        parameters,
     )
     treatments = MultipleTreatments(parameters["treatment_rules"])
     treatments_propositions = treatments.apply_treatments(
