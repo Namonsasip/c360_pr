@@ -32,7 +32,6 @@ import pandas
 from cvm.src.targets.churn_targets import add_days
 from cvm.src.treatments.rules import MultipleTreatments
 from cvm.src.utils.utils import get_today, join_multiple
-from pyspark import SparkContext
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as func
 
@@ -88,7 +87,6 @@ def get_treatments_propositions(
         microsegments,
     )
     treatments_dict = parameters["treatment_rules"]
-    SparkContext.getOrCreate().setCheckpointDir(parameters["spark_checkpoint_path"])
     treatments = MultipleTreatments(treatments_dict)
     treatments_propositions = treatments.apply_treatments(
         propensities_with_features, recently_contacted
