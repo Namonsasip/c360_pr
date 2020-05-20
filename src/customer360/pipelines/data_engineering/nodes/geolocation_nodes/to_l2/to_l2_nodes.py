@@ -33,8 +33,8 @@ def l2_number_of_bs_used(input_df,sql):
 def l2_number_of_location_with_transactions(input_df, sql):
     df = input_df.withColumn("start_of_week", f.to_date(f.date_trunc('week', "event_partition_date"))) \
         .drop('event_partition_date')
-    df = (df.groupby('imsi', 'start_of_week').agg(F.collect_set("location_list")))
-    df = df.select("imsi", "start_of_week",
+    df = (df.groupby('access_method_num', 'start_of_week').agg(F.collect_set("location_list")))
+    df = df.select("access_method_num", "start_of_week",
                    f.array_distinct(f.flatten("collect_set(location_list)")).alias('distinct_list'),
                    )
     print('beforenodetest')
@@ -143,6 +143,8 @@ def l2_geo_data_distance_weekday_weekly(df, sql):
     df = df.drop('max', 'sorted_sum', 'length_without_max', 'list_without_max', 'distance_list')
 
     df = node_from_config(df, sql)
+    print('debugtest')
+    df.show()
     return df
 
 
@@ -177,7 +179,7 @@ def l2_geo_data_distance_weekend_weekly(df, sql):
     return df
 
 
-def l2_geo_data_frequent_cell_weekday_weekly(df, sql):  # in progress weekday 434,437,443,449,452,455,458,461,464
+def l2_geo_data_frequent_cell_weekday_weekly(df, sql):
     # 434 = groupby lac+ci count
     # 437 lac + ci with most  (first most)
     # 443  second most
@@ -214,7 +216,7 @@ def l2_geo_data_frequent_cell_weekday_weekly(df, sql):  # in progress weekday 43
     return df
 
 
-def l2_geo_data_frequent_cell_weekend_weekly(df, sql):  # in progress weekend 435,439,445,450,453,456,459,462,465
+def l2_geo_data_frequent_cell_weekend_weekly(df, sql):
     df = df.where('day_of_week in (6,7)')
     ranked = df.selectExpr('*',
                            'row_number() over(partition by mobile_no,start_of_week order by sum_call DESC) as rank')
@@ -229,7 +231,7 @@ def l2_geo_data_frequent_cell_weekend_weekly(df, sql):  # in progress weekend 43
     return df
 
 
-def l2_geo_data_frequent_cell_weekly(df, sql):  # in progress all 436, 441,447,451,454,457,460,463
+def l2_geo_data_frequent_cell_weekly(df, sql):
     ranked = df.selectExpr('*',
                            'row_number() over(partition by mobile_no,start_of_week order by sum_call DESC) as rank')
 
@@ -244,7 +246,7 @@ def l2_geo_data_frequent_cell_weekly(df, sql):  # in progress all 436, 441,447,4
     return df
 
 
-def l2_geo_data_frequent_cell_4g_weekday_weekly(df, sql):  # in progress 4g_weekday 438,444
+def l2_geo_data_frequent_cell_4g_weekday_weekly(df, sql):
     df = df.where('day_of_week in (1,2,3,4,5)').where('gprs_type="4GLTE"')
     ranked = df.selectExpr('*',
                            'row_number() over(partition by mobile_no,start_of_week order by sum_call DESC) as rank')
@@ -256,7 +258,7 @@ def l2_geo_data_frequent_cell_4g_weekday_weekly(df, sql):  # in progress 4g_week
     return df
 
 
-def l2_geo_data_frequent_cell_4g_weekend_weekly(df, sql):  # in progress 4g_weekend 440,446
+def l2_geo_data_frequent_cell_4g_weekend_weekly(df, sql):
     df = df.where('day_of_week in (6,7)').where('gprs_type="4GLTE"')
     ranked = df.selectExpr('*',
                            'row_number() over(partition by mobile_no,start_of_week order by sum_call DESC) as rank')
@@ -268,7 +270,7 @@ def l2_geo_data_frequent_cell_4g_weekend_weekly(df, sql):  # in progress 4g_week
     return df
 
 
-def l2_geo_data_frequent_cell_4g_weekly(df, sql):  # in progress 4g_all 442,448
+def l2_geo_data_frequent_cell_4g_weekly(df, sql):
     df = df.where('gprs_type="4GLTE"')
     ranked = df.selectExpr('*',
                            'row_number() over(partition by mobile_no,start_of_week order by sum_call DESC) as rank')

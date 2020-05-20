@@ -25,11 +25,10 @@ l1_first_data_session_cell_identifier: #470
   where_clause: "where rank = 1"
   feature_list:
     event_partition_date: "date_id"
-    mobile_no: "mobile_no"
     gprs_type: "gprs_type"
     imei: "imei"
     cgi_partial: "cgi_partial"
-  granularity: ""
+  granularity: "access_method_num"
 
 l1_data_distance_daily: #473,476,479
   where_clause: ""
@@ -39,7 +38,7 @@ l1_data_distance_daily: #473,476,479
     minimum_distance: "first(min_distance)"
     maximum_distance: "first(max_distance)"
 #    standard_deviation_distance: "first(stdev_distance)"
-  granularity: "event_partition_date,mobile_no"
+  granularity: "event_partition_date,access_method_num"
 
 l1_data_distance_weekday_daily: #471,474,477
   where_clause: ""
@@ -49,7 +48,7 @@ l1_data_distance_weekday_daily: #471,474,477
     minimum_distance: "first(min_distance)"
     maximum_distance: "first(max_distance)"
   #    standard_deviation_distance: "first(stdev_distance)"
-  granularity: "event_partition_date,mobile_no"
+  granularity: "event_partition_date,access_method_num"
 
 l1_data_distance_weekend_daily: #472,475,478
   where_clause: ""
@@ -59,7 +58,7 @@ l1_data_distance_weekend_daily: #472,475,478
     minimum_distance: "first(min_distance)"
     maximum_distance: "first(max_distance)"
   #    standard_deviation_distance: "first(stdev_distance)"
-  granularity: "event_partition_date,mobile_no"
+  granularity: "event_partition_date,access_method_num"
 
 l1_geo_call_count_location_daily: #402,403,404,405
   where_clause: ""

@@ -2,6 +2,8 @@ import pyspark.sql.functions as f
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 from pyspark.sql import types as T
+
+from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1.to_l1_nodes import gen_max_sql
 from customer360.utilities.config_parser import node_from_config
 from kedro.context.context import load_context
 from pathlib import Path
@@ -10,7 +12,8 @@ import os
 import statistics
 from pyspark.sql import Window
 
-from customer360.utilities.re_usable_functions import add_start_of_week_and_month, union_dataframes_with_missing_cols
+from customer360.utilities.re_usable_functions import add_start_of_week_and_month, union_dataframes_with_missing_cols, \
+    execute_sql
 
 
 def l1_geo_number_of_bs_used(input_df,master,sql):
@@ -131,6 +134,7 @@ def l1_first_data_session_cell_identifier_daily(df, sql):  # partial cgi added
     df = df.selectExpr("*",
                        "CASE WHEN gprs_type in ('GGSN','3GGSN') THEN  CONCAT(LPAD(lac, 5, '0'),LPAD(ci, 5, '0')) WHEN "
                        "gprs_type in ('4GLTE') THEN  CONCAT(LPAD(ci, 9, '0')) END AS cgi_partial")
+    df = df.withColumnRenamed('mobile_no','access_method_num')
     df = node_from_config(df, sql)
     return df
 
@@ -177,7 +181,7 @@ def l1_geo_data_distance_daily(df, sql):
     df = df.selectExpr("*", query)
     # df = df.withColumn('stdev_distance', stdev_udf('distance_list'))
     df = df.drop('max', 'sorted_sum', 'length_without_max', 'list_without_max', 'distance_list')
-
+    df = df.withColumnRenamed('mobile_no','access_method_num')
     df = node_from_config(df, sql)
 
     return df
@@ -209,7 +213,7 @@ def l1_geo_data_distance_weekday_daily(df, sql):
     df = df.selectExpr("*", query)
     # df = df.withColumn('stdev_distance', stdev_udf('distance_list'))
     df = df.drop('max', 'sorted_sum', 'length_without_max', 'list_without_max', 'distance_list')
-
+    df = df.withColumnRenamed('mobile_no','access_method_num')
     df = node_from_config(df, sql)
     return df
 
@@ -240,7 +244,7 @@ def l1_geo_data_distance_weekend_daily(df, sql):
     df = df.selectExpr("*", query)
     # df = df.withColumn('stdev_distance', stdev_udf('distance_list'))
     df = df.drop('max', 'sorted_sum', 'length_without_max', 'list_without_max', 'distance_list')
-
+    df = df.withColumnRenamed('mobile_no', 'access_method_num')
     df = node_from_config(df, sql)
 
     return df
@@ -483,5 +487,36 @@ def l1_geo_data_share_location_daily(data_loc_int,master,sql):
     print('testdebug')
     df.show(20,False)
     df = node_from_config(df, sql)
+
+    return df
+
+def l1_union_features(l1_geo_number_of_bs_used
+,l1_geo_number_of_location_with_transactions
+,l1_geo_voice_distance_daily
+,l1_geo_first_data_session_cell_identifier_daily
+,l1_geo_data_distance_daily
+,l1_geo_data_distance_weekday_daily
+,l1_geo_data_distance_weekend_daily
+,l1_geo_call_count_location_daily
+,l1_geo_data_traffic_location_daily
+,l1_geo_data_share_location_daily):
+    df_list=[l1_geo_number_of_bs_used
+        ,l1_geo_number_of_location_with_transactions
+        ,l1_geo_voice_distance_daily
+        ,l1_geo_first_data_session_cell_identifier_daily
+        ,l1_geo_data_distance_daily
+        ,l1_geo_data_distance_weekday_daily
+        ,l1_geo_data_distance_weekend_daily
+        ,l1_geo_call_count_location_daily
+        ,l1_geo_data_traffic_location_daily
+        ,l1_geo_data_share_location_daily]
+    df = union_dataframes_with_missing_cols(df_list)
+    print('test1')
+    df.show()
+
+    sql = gen_max_sql(df,'test',['access_method_num','event_partition_date'])
+    df = execute_sql(df,'test',sql)
+    print('test2')
+    df.show()
 
     return df

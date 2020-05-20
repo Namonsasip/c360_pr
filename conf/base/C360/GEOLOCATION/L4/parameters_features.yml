@@ -1,14 +1,18 @@
 l4_number_of_bs_used: #396
   partition_by: ["imsi"]
   feature_list:
-    avg: ["number_of_bs_used"]
+    avg: ["distinct_number_of_bs_used","total_number_of_bs_used"]
+    max: ["distinct_number_of_bs_used","total_number_of_bs_used"]
+    min: ["distinct_number_of_bs_used","total_number_of_bs_used"]
   read_from: "l2"
 
 
 l4_number_of_location_with_transactions: #397
-  partition_by: ["imsi"]
+  partition_by: ["access_method_num"]
   feature_list:
     avg: ["num_location_with_transactions"]
+    max: ["num_location_with_transactions"]
+    min: ["num_location_with_transactions"]
   read_from: "l2"
 
 l4_voice_distance_daily: #425,426,427,428
@@ -27,54 +31,32 @@ l4_data_distance_monthly: #471,472,473,474,475,476,477,478,479
     min: ["average_distance","minimum_distance","maximum_distance"]
   read_from: "l2"
 
-l4_data_frequent_cell_weekday_monthly:
+l4_data_frequent_cell_weekday:
   partition_by: ["mobile_no"]
   feature_list:
-    avg: ["sum_no_of_call_rank_1","sum_no_of_call_rank_2","sum_no_of_call_rank_3","sum_no_of_call_rank_4","sum_no_of_call_rank_5","Number_of_Unique_Cells"]
-    max: ["sum_no_of_call_rank_1","sum_no_of_call_rank_2","sum_no_of_call_rank_3","sum_no_of_call_rank_4","sum_no_of_call_rank_5","Number_of_Unique_Cells"]
-    min: ["sum_no_of_call_rank_1","sum_no_of_call_rank_2","sum_no_of_call_rank_3","sum_no_of_call_rank_4","sum_no_of_call_rank_5","Number_of_Unique_Cells"]
+    avg: ["sum_no_of_call_rank_1","sum_no_of_call_rank_2","sum_no_of_call_rank_3","sum_no_of_call_rank_4","sum_no_of_call_rank_5","Number_of_Unique_Cells","sum_no_of_call_all"]
+    max: ["sum_no_of_call_rank_1","sum_no_of_call_rank_2","sum_no_of_call_rank_3","sum_no_of_call_rank_4","sum_no_of_call_rank_5","Number_of_Unique_Cells","sum_no_of_call_all"]
+    min: ["sum_no_of_call_rank_1","sum_no_of_call_rank_2","sum_no_of_call_rank_3","sum_no_of_call_rank_4","sum_no_of_call_rank_5","Number_of_Unique_Cells","sum_no_of_call_all"]
   read_from: "l2"
 
 
-l4_data_frequent_cell_weekend_monthly:
+l4_data_frequent_cell_weekend:
   partition_by: ["mobile_no"]
   feature_list:
-    avg: ["sum_no_of_call_rank_1","sum_no_of_call_rank_2","sum_no_of_call_rank_3","sum_no_of_call_rank_4","sum_no_of_call_rank_5","Number_of_Unique_Cells"]
-    max: ["sum_no_of_call_rank_1","sum_no_of_call_rank_2","sum_no_of_call_rank_3","sum_no_of_call_rank_4","sum_no_of_call_rank_5","Number_of_Unique_Cells"]
-    min: ["sum_no_of_call_rank_1","sum_no_of_call_rank_2","sum_no_of_call_rank_3","sum_no_of_call_rank_4","sum_no_of_call_rank_5","Number_of_Unique_Cells"]
+    avg: ["sum_no_of_call_rank_1","sum_no_of_call_rank_2","sum_no_of_call_rank_3","sum_no_of_call_rank_4","sum_no_of_call_rank_5","Number_of_Unique_Cells","sum_no_of_call_all"]
+    max: ["sum_no_of_call_rank_1","sum_no_of_call_rank_2","sum_no_of_call_rank_3","sum_no_of_call_rank_4","sum_no_of_call_rank_5","Number_of_Unique_Cells","sum_no_of_call_all"]
+    min: ["sum_no_of_call_rank_1","sum_no_of_call_rank_2","sum_no_of_call_rank_3","sum_no_of_call_rank_4","sum_no_of_call_rank_5","Number_of_Unique_Cells","sum_no_of_call_all"]
   read_from: "l2"
 
-l4_data_frequent_cell_monthly:
+l4_data_frequent_cell:
   partition_by: ["mobile_no"]
   feature_list:
-    avg: ["sum_no_of_call_rank_1","sum_no_of_call_rank_2","sum_no_of_call_rank_3","sum_no_of_call_rank_4","sum_no_of_call_rank_5","Number_of_Unique_Cells"]
-    max: ["sum_no_of_call_rank_1","sum_no_of_call_rank_2","sum_no_of_call_rank_3","sum_no_of_call_rank_4","sum_no_of_call_rank_5","Number_of_Unique_Cells"]
-    min: ["sum_no_of_call_rank_1","sum_no_of_call_rank_2","sum_no_of_call_rank_3","sum_no_of_call_rank_4","sum_no_of_call_rank_5","Number_of_Unique_Cells"]
+    avg: ["sum_no_of_call_rank_1","sum_no_of_call_rank_2","sum_no_of_call_rank_3","sum_no_of_call_rank_4","sum_no_of_call_rank_5","Number_of_Unique_Cells","sum_no_of_call_all"]
+    max: ["sum_no_of_call_rank_1","sum_no_of_call_rank_2","sum_no_of_call_rank_3","sum_no_of_call_rank_4","sum_no_of_call_rank_5","Number_of_Unique_Cells","sum_no_of_call_all"]
+    min: ["sum_no_of_call_rank_1","sum_no_of_call_rank_2","sum_no_of_call_rank_3","sum_no_of_call_rank_4","sum_no_of_call_rank_5","Number_of_Unique_Cells","sum_no_of_call_all"]
   read_from: "l2"
 
-l4_data_frequent_cell_4g_weekday_monthly:
-  partition_by: ["mobile_no"]
-  feature_list:
-    avg: ["average_distance","minimum_distance","maximum_distance"]
-    max: ["average_distance","minimum_distance","maximum_distance"]
-    min: ["average_distance","minimum_distance","maximum_distance"]
-  read_from: "l2"
 
-l4_data_frequent_cell_4g_weekend_monthly:
-  partition_by: ["mobile_no"]
-  feature_list:
-    avg: ["average_distance","minimum_distance","maximum_distance"]
-    max: ["average_distance","minimum_distance","maximum_distance"]
-    min: ["average_distance","minimum_distance","maximum_distance"]
-  read_from: "l2"
-
-l4_data_frequent_cell_4g_monthly:
-  partition_by: ["mobile_no"]
-  feature_list:
-    avg: ["average_distance","minimum_distance","maximum_distance"]
-    max: ["average_distance","minimum_distance","maximum_distance"]
-    min: ["average_distance","minimum_distance","maximum_distance"]
-  read_from: "l2"
 
 
 l4_geo_call_count_location: #402,403,404,405
@@ -92,3 +74,40 @@ l4_geo_data_traffic_location: #406-413
     max: ["sum_total_vol_kb_home","sum_total_vol_kb_office","sum_total_vol_kb_other_rank_1","sum_total_vol_kb_other_rank_2"]
     min: ["sum_total_vol_kb_home","sum_total_vol_kb_office","sum_total_vol_kb_other_rank_1","sum_total_vol_kb_other_rank_2"]
   read_from: "l2"
+
+l4_geo_data_share_location:
+  partition_by: ["access_method_num"]
+  feature_list:
+    avg: ["data_share_home_percent","data_share_office_percent","data_share_other_rank_1_percent","data_share_other_rank_2_percent"]
+    max: ["data_share_home_percent","data_share_office_percent","data_share_other_rank_1_percent","data_share_other_rank_2_percent"]
+    min: ["data_share_home_percent","data_share_office_percent","data_share_other_rank_1_percent","data_share_other_rank_2_percent"]
+  read_from: "l2"
+
+
+
+
+
+# backup
+#l4_data_frequent_cell_4g_weekday:
+#  partition_by: ["mobile_no"]
+#  feature_list:
+#    avg: ["sum_no_of_call_rank_1","sum_no_of_call_rank_2","sum_no_of_call_rank_3","sum_no_of_call_rank_4","sum_no_of_call_rank_5","Number_of_Unique_Cells","sum_no_of_call_all","Number_of_Unique_Cells"]
+#    max: ["sum_no_of_call_rank_1","sum_no_of_call_rank_2","sum_no_of_call_rank_3","sum_no_of_call_rank_4","sum_no_of_call_rank_5","Number_of_Unique_Cells","sum_no_of_call_all","Number_of_Unique_Cells"]
+#    min: ["sum_no_of_call_rank_1","sum_no_of_call_rank_2","sum_no_of_call_rank_3","sum_no_of_call_rank_4","sum_no_of_call_rank_5","Number_of_Unique_Cells","sum_no_of_call_all","Number_of_Unique_Cells"]
+#  read_from: "l2"
+#
+#l4_data_frequent_cell_4g_weekend:
+#  partition_by: ["mobile_no"]
+#  feature_list:
+#    avg: ["sum_no_of_call_rank_1","sum_no_of_call_rank_2","sum_no_of_call_rank_3","sum_no_of_call_rank_4","sum_no_of_call_rank_5","Number_of_Unique_Cells","sum_no_of_call_all","Number_of_Unique_Cells"]
+#    max: ["sum_no_of_call_rank_1","sum_no_of_call_rank_2","sum_no_of_call_rank_3","sum_no_of_call_rank_4","sum_no_of_call_rank_5","Number_of_Unique_Cells","sum_no_of_call_all","Number_of_Unique_Cells"]
+#    min: ["sum_no_of_call_rank_1","sum_no_of_call_rank_2","sum_no_of_call_rank_3","sum_no_of_call_rank_4","sum_no_of_call_rank_5","Number_of_Unique_Cells","sum_no_of_call_all","Number_of_Unique_Cells"]
+#  read_from: "l2"
+#
+#l4_data_frequent_cell_4g:
+#  partition_by: ["mobile_no"]
+#  feature_list:
+#    avg: ["sum_no_of_call_rank_1","sum_no_of_call_rank_2","sum_no_of_call_rank_3","sum_no_of_call_rank_4","sum_no_of_call_rank_5","Number_of_Unique_Cells","sum_no_of_call_all","Number_of_Unique_Cells"]
+#    max: ["sum_no_of_call_rank_1","sum_no_of_call_rank_2","sum_no_of_call_rank_3","sum_no_of_call_rank_4","sum_no_of_call_rank_5","Number_of_Unique_Cells","sum_no_of_call_all","Number_of_Unique_Cells"]
+#    min: ["sum_no_of_call_rank_1","sum_no_of_call_rank_2","sum_no_of_call_rank_3","sum_no_of_call_rank_4","sum_no_of_call_rank_5","Number_of_Unique_Cells","sum_no_of_call_all","Number_of_Unique_Cells"]
+#  read_from: "l2"
