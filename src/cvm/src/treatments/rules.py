@@ -228,32 +228,12 @@ class Treatment:
             ]
 
     def _apply_rules(
-        self,
-        df: DataFrame,
-        rules_to_apply: List[Rule],
-        groups_size_bound: int = None,
-        variant_chosen: str = None,
+        self, df: DataFrame, rules_to_apply: List[Rule], variant_chosen: str = None,
     ) -> DataFrame:
-        """Apply treatment to given set of users and variables"""
-        # derive limit from rules sizes if not supplied
-        if groups_size_bound is None:
-            groups_size_bound = sum(
-                [
-                    rule_chosen.limit_per_code
-                    for rule_chosen in rules_to_apply
-                    if rule_chosen.limit_per_code is not None
-                ]
-            )
+        """Apply treatment to given set of users and variables disregarding treatment
+        size"""
         for rule_chosen in rules_to_apply:
-            if groups_size_bound > 0:
-                # update rule
-                df = rule_chosen.apply_rule(
-                    df, variant_chosen, self.order_policy, groups_size_bound
-                )
-                # update group size
-                groups_size_bound -= rule_chosen.rule_users_group_size
-                if groups_size_bound < 0:
-                    groups_size_bound = 0
+            df = rule_chosen.apply_rule(df, variant_chosen, self.order_policy)
         return df
 
     def _assign_users_to_variants(self, df: DataFrame):
