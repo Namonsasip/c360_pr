@@ -7,9 +7,9 @@ l2_campaign_postpaid_prepaid_weekly:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l4_campaign_postpaid_prepaid_features'
-    read_layer: 'l2_weekly'
-    target_layer: 'l4_weekly'
-    lookback: '12'
+    read_layer: 'l2_weekly_read_custom_lookback'
+    target_layer: 'l4_weekly_write_custom_lookback'
+    lookback: '20'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -25,9 +25,9 @@ l2_campaign_top_channel_weekly:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l4_campaign_top_channel_features'
-    read_layer: 'l2_weekly'
-    target_layer: 'l4_weekly'
-    lookback: '12'
+    read_layer: 'l2_weekly_read_custom_lookback'
+    target_layer: 'l4_weekly_write_custom_lookback'
+    lookback: '20'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"

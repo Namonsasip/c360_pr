@@ -139,6 +139,7 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
                                              prepaid: DataFrame,
                                              contacts_ma: DataFrame,
                                              contact_list_ussd: DataFrame,
+                                             cust_prof,
                                              dictionary_obj,
                                              dictionary_obj_2) -> [DataFrame, DataFrame]:
     """
@@ -152,7 +153,7 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
     """
 
     ################################# Start Implementing Data availability checks ###############################
-    if check_empty_dfs([postpaid, prepaid, contacts_ma, contact_list_ussd]):
+    if check_empty_dfs([postpaid, prepaid, contacts_ma, contact_list_ussd, cust_prof]):
         return [get_spark_empty_df(), get_spark_empty_df()]
 
     postpaid = data_non_availability_and_missing_check(df=postpaid, grouping="daily", par_col="partition_date",
@@ -168,7 +169,10 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
                                                                 par_col="partition_date",
                                                                 target_table_name="l1_campaign_post_pre_daily")
 
-    if check_empty_dfs([postpaid, prepaid, contacts_ma, contact_list_ussd]):
+    cust_prof = data_non_availability_and_missing_check(df=cust_prof, grouping="daily", par_col="event_partition_date",
+                                                       target_table_name="l1_campaign_post_pre_daily")
+
+    if check_empty_dfs([postpaid, prepaid, contacts_ma, contact_list_ussd, cust_prof]):
         return [get_spark_empty_df(), get_spark_empty_df()]
 
     min_value = union_dataframes_with_missing_cols(
@@ -181,6 +185,8 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
                 F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
             contact_list_ussd.select(
                 F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
+            cust_prof.select(
+                F.max(F.col("event_partition_date")).alias("max_date")),
         ]
     ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
 
@@ -193,10 +199,19 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
     contact_list_ussd = contact_list_ussd.filter(
         F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
 
+    cust_prof = cust_prof.filter(F.col("event_partition_date") <= min_value)
+    cust_prof = cust_prof.select("access_method_num", "subscription_identifier",
+                                 "national_id_card", "event_partition_date")
 
     ################################# End Implementing Data availability checks ###############################
 
     first_df, second_df = massive_processing(postpaid, prepaid, contacts_ma, contact_list_ussd
                                              , dictionary_obj, dictionary_obj_2)
+
+    join_cols = ["subscription_identifier", "event_partition_date"]
+
+    first_df = first_df.join(cust_prof, join_cols, how='inner')
+
+    second_df = second_df.join(cust_prof, join_cols, how='inner')
 
     return [first_df, second_df]
