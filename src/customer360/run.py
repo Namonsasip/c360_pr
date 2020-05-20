@@ -306,7 +306,7 @@ def run_package(pipelines=None):
     # entry point for running pip-install projects
     # using `<project_package>` command
     project_context = load_context(Path.cwd(), env=conf)
-    spark = get_spark_session()
+    spark = get_spark_session(spark_conf_dict = project_context.catalog.load("params:spark_conf"))
 
     if pipelines is not None:
         for each_pipeline in pipelines:
