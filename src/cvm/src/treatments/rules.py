@@ -346,4 +346,4 @@ class MultipleTreatments:
         )
         for treatment in self.treatments:
             df = treatment.apply_treatment(df)
-        return df
+        return df.filter("campaign_code is not null")
