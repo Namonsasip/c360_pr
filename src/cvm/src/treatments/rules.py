@@ -224,7 +224,7 @@ class Treatment:
             return [
                 rule_chosen
                 for rule_chosen in self.rules
-                if not rule_chosen.variant != variant
+                if (rule_chosen.variant is None) or (rule_chosen.variant == variant)
             ]
 
     def _apply_rules(
