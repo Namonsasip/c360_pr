@@ -1,0 +1,26 @@
+spark.driver.maxResultSize: 10g
+spark.driver.memory: 16g
+spark.driver.memoryOverhead: 4096
+spark.dynamicAllocation.enabled: true
+spark.dynamicAllocation.initialExecutors: 1
+spark.dynamicAllocation.maxExecutors: 120
+spark.dynamicAllocation.minExecutors: 20
+spark.executor.cores: 4
+spark.executor.memory: 16g
+spark.hadoop.fs.permissions.umask-mode: "002"
+spark.kryoserializer.buffer.max: 512m
+spark.shuffle.service.enabled: true
+spark.sql.broadcastTimeout: 1000
+spark.sql.hive.convertMetastoreParquet: false
+spark.sql.parquet.compression.codec: snappy
+spark.sql.shuffle.partitions: 1000
+spark.sql.sources.partitionOverwriteMode: dynamic
+spark.yarn.driver.memoryOverhead: 4096
+spark.yarn.executor.memoryOverhead: 4096
+spark.yarn.maxAppAttempts: 2
+yarn.nodemanager.vmem-check-enabled: false
+spark.master: yarn-client
+spark.sql.parquet.binaryAsString: true
+spark.sql.execution.arrow.enabled: false
+spark.sql.parquet.mergeSchema: true
+
