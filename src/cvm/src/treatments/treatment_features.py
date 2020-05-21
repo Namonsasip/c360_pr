@@ -59,7 +59,7 @@ def add_other_sim_card_features(
         # calculate number of simcards per national id
         .groupBy("national_id_card")
         .agg(func.count("subscription_identifier").alias("number_of_simcards"))
-        .filter("number_of_simcard >= 2 and number_of_simcard <= 4")
+        .filter("number_of_simcards >= 2 and number_of_simcards <= 4")
         .select(["national_id_card", "number_of_simcards"])
     )
     # calculate statistics
