@@ -69,7 +69,7 @@ def add_other_sim_card_features(
             "card_age_rn",
             func.row_number().over(
                 Window.partitionBy("national_id_card").orderBy(
-                    func.col("subscription_tenure")
+                    func.col("subscriber_tenure")
                 )
             ),
         )
@@ -86,7 +86,7 @@ def add_other_sim_card_features(
             "card_age_rn",
             func.row_number().over(
                 Window.partitionBy("national_id_card").orderBy(
-                    func.col("subscription_tenure").desc()
+                    func.col("subscriber_tenure").desc()
                 )
             ),
         )
