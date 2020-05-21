@@ -77,7 +77,7 @@ def add_other_sim_card_features(
         .selectExpr(
             "national_id_card",
             "norms_net_revenue as revenue_on_youngest_card",
-            "youngest_card_tenure",
+            "subscriber_tenure as youngest_card_tenure",
         )
     )
     national_id_card_stats_oldest_card = (
@@ -94,7 +94,7 @@ def add_other_sim_card_features(
         .selectExpr(
             "national_id_card",
             "norms_net_revenue as revenue_on_oldest_card",
-            "oldest_card_tenure",
+            "subscriber_tenure as oldest_card_tenure",
         )
     )
     national_id_card_stats = national_id_card_stats_oldest_card.join(
