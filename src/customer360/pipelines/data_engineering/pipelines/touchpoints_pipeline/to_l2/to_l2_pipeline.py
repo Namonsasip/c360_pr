@@ -29,32 +29,61 @@
 from kedro.pipeline import Pipeline, node
 
 from customer360.utilities.re_usable_functions import l2_massive_processing_with_expansion
+from src.customer360.pipelines.data_engineering.nodes.touchpoints_nodes.to_l2.to_l2_nodes import *
+
 
 
 def touchpoints_to_l2_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                l2_massive_processing_with_expansion,
+                dac_for_touchpoints_to_l2_pipeline_from_l1,
                 ["l1_touchpoints_to_call_center_features_for_l2_touchpoints_to_call_center_features",
+                 "params:l2_touchpoints_to_call_center_features_tbl"],
+                "intermediate_l2_touchpoints_to_call_center_features"
+            ),
+            node(
+                l2_massive_processing_with_expansion,
+                ["intermediate_l2_touchpoints_to_call_center_features",
                  "params:l2_touchpoints_to_call_center_features"],
                 "l2_touchpoints_to_call_center_features"
             ),
+
+            node(
+                dac_for_touchpoints_to_l2_pipeline_from_l1,
+                ["l1_touchpoints_from_call_center_features_for_l2_touchpoints_from_call_center_features",
+                 "params:l2_touchpoints_from_call_center_features_tbl"],
+                "intermediate_l2_touchpoints_from_call_center_features"
+            ),
             node(
                 l2_massive_processing_with_expansion,
-                ["l1_touchpoints_from_call_center_features_for_l2_touchpoints_from_call_center_features",
+                ["intermediate_l2_touchpoints_from_call_center_features",
                  "params:l2_touchpoints_from_call_center_features"],
                 "l2_touchpoints_from_call_center_features"
             ),
+
             node(
-                l2_massive_processing_with_expansion,
+                dac_for_touchpoints_to_l2_pipeline_from_l1,
                 ["l1_touchpoints_nim_work_features_for_l2_touchpoints_nim_work_features",
-                 "params:l2_touchpoints_nim_work_features"],
-                "l2_touchpoints_nim_work_features"
+                 "params:l2_touchpoints_nim_work_features_tbl"],
+                "intermediate_l2_touchpoints_nim_work_features"
             ),
             node(
                 l2_massive_processing_with_expansion,
+                ["intermediate_l2_touchpoints_nim_work_features",
+                 "params:l2_touchpoints_nim_work_features"],
+                "l2_touchpoints_nim_work_features"
+            ),
+
+            node(
+                dac_for_touchpoints_to_l2_pipeline_from_l1,
                 ["l1_touchpoints_ivr_features",
+                 "params:l2_touchpoints_ivr_features_tbl"],
+                "intermediate_l2_touchpoints_ivr_features"
+            ),
+            node(
+                l2_massive_processing_with_expansion,
+                ["intermediate_l2_touchpoints_ivr_features",
                  "params:l2_touchpoints_ivr_features"],
                 "l2_touchpoints_ivr_features"
             )
