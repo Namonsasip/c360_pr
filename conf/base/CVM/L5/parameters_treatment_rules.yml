@@ -315,7 +315,7 @@ treatment_rules:
         campaign_code: 200407-7
         limit_per_code: 1500
         variant: '1'
-        conitions:
+        conditions:
           - "churn_microsegment == 'positive_arpu_m3'"
       rule7:
         campaign_code: 200407-25
