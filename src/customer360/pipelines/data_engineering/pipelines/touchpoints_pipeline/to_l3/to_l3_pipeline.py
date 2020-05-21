@@ -52,11 +52,11 @@ def touchpoints_to_l3_pipeline(**kwargs):
                 dac_for_touchpoints_to_l3_pipeline_from_l1,
                 ["l1_touchpoints_from_call_center_features_for_l3_touchpoints_from_call_center_features",
                  "params:l3_touchpoints_from_call_center_features_tbl"],
-                "int_l3_touchpoints_to_call_center_features"
+                "int_l3_touchpoints_from_call_center_features"
             ),
             node(
                 expansion,
-                ["int_l3_touchpoints_to_call_center_features",
+                ["int_l3_touchpoints_from_call_center_features",
                  "params:l3_touchpoints_from_call_center_features"],
                 "l3_touchpoints_from_call_center_features"
             ),
@@ -65,11 +65,11 @@ def touchpoints_to_l3_pipeline(**kwargs):
                 dac_for_touchpoints_to_l3_pipeline_from_l1,
                 ["l1_touchpoints_nim_work_features_for_l3_touchpoints_nim_work_features",
                  "params:l3_touchpoints_nim_work_features_tbl"],
-                "int_l3_touchpoints_to_call_center_features"
+                "int_l3_touchpoints_nim_work_features"
             ),
             node(
                 expansion,
-                ["int_l3_touchpoints_to_call_center_features",
+                ["int_l3_touchpoints_nim_work_features",
                  "params:l3_touchpoints_nim_work_features"],
                 "l3_touchpoints_nim_work_features"
             ),
@@ -78,11 +78,11 @@ def touchpoints_to_l3_pipeline(**kwargs):
                 dac_for_touchpoints_to_l3_pipeline_from_l1,
                 ["l1_touchpoints_ivr_features",
                  "params:l3_touchpoints_ivr_features_tbl"],
-                "int_l3_touchpoints_to_call_center_features"
+                "int_l3_touchpoints_ivr_features"
             ),
             node(
                 expansion,
-                ["int_l3_touchpoints_to_call_center_features",
+                ["int_l3_touchpoints_ivr_features",
                  "params:l3_touchpoints_ivr_features"],
                 "l3_touchpoints_ivr_features"
             )
