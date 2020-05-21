@@ -43,9 +43,9 @@ def verify_rule(rule_dict: Dict[str, Any]):
     rule_name = list(rule_dict.keys())[0]
     rule_details = rule_dict[rule_name]
     if "conditions" not in rule_details:
-        raise Exception("Conditions are missing")
+        raise Exception("Conditions are missing in rule {}".format(rule_name))
     if "campaign_code" not in rule_details:
-        raise Exception("Campaign code is missing")
+        raise Exception("Campaign code is missing in rule {}".format(rule_name))
 
 
 def verify_treatment(treatment_dict: Dict[str, Any]):
@@ -59,7 +59,9 @@ def verify_treatment(treatment_dict: Dict[str, Any]):
     treatment_name = list(treatment_dict.keys())[0]
     treatment_details = treatment_dict[treatment_name]
     if "rules" not in treatment_details:
-        raise Exception("Treatment must contain rules")
+        raise Exception(
+            "Treatment must contain rules, checkout treatment {}".format(treatment_name)
+        )
     rules = [
         {rule_name: treatment_details["rules"][rule_name]}
         for rule_name in treatment_details["rules"]
