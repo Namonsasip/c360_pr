@@ -360,9 +360,6 @@ class MultipleTreatments:
         users_blacklist = UsersBlacklist()
         logging.info("Dropping recently contacted")
         users_blacklist.add(blacklisted_users)
-        df = df.withColumn("treatment_name", func.lit(None)).withColumn(
-            "campaign_code", func.lit(None)
-        )
         for treatment in self.treatments:
             df = treatment.apply_treatment(df)
         return df.filter("campaign_code is not null")
