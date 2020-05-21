@@ -329,7 +329,7 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
         ]
     ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
 
-    drop_cols = ["access_method_num", "called_no", "caller_no", "call_start_dt", "day_id"]
+    drop_cols = ["called_no", "caller_no", "call_start_dt", "day_id"]
     union_df = union_dataframes_with_missing_cols([
         l1_usage_outgoing_call_relation_sum_daily_stg, l1_usage_incoming_call_relation_sum_daily_stg,
         l1_usage_outgoing_call_relation_sum_ir_daily_stg, l1_usage_incoming_call_relation_sum_ir_daily_stg,
@@ -354,6 +354,7 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
     sel_cols = ['access_method_num',
                 'event_partition_date',
                 "subscription_identifier",
+                "national_id_card",
                 "start_of_week",
                 "start_of_month"
                 ]
