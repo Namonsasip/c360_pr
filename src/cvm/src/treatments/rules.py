@@ -203,7 +203,7 @@ class Treatment:
             {campaign_code: rules_dict[campaign_code]}
             for campaign_code in rules_dict.keys()
         ]
-        self.rules = [Rule(rule_dict, self.treatment_name) for rule_dict in rules_list]
+        self.rules = [Rule(rule_dict) for rule_dict in rules_list]
 
     def _get_all_variants(self) -> List:
         """List all variants present in rules"""
