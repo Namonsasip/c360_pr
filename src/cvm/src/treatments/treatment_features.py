@@ -67,7 +67,7 @@ def add_other_sim_card_features(
         number_of_simcards.join(recent_profile, on="national_id_card")
         .withColumn(
             "card_age_rn",
-            func.row_number.over(
+            func.row_number().over(
                 Window.partitionBy("national_id_card").orderBy(
                     func.col("subscription_tenure").orderBy(
                         func.col("subscription_tenure")
@@ -86,7 +86,7 @@ def add_other_sim_card_features(
         number_of_simcards.join(recent_profile, on="national_id_card")
         .withColumn(
             "card_age_rn",
-            func.row_number.over(
+            func.row_number().over(
                 Window.partitionBy("national_id_card").orderBy(
                     func.col("subscription_tenure").orderBy(
                         func.col("subscription_tenure").desc()
