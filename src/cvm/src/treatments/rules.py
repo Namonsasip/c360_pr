@@ -311,7 +311,7 @@ class Treatment:
     def apply_treatment(self, df: DataFrame) -> DataFrame:
         """Perform applying of treatment"""
         logging.info("Applying treatment {}".format(self.treatment_id))
-        must_have_cols = ["treatment_name", "campaign_code"]
+        must_have_cols = ["treatment_name", "campaign_code", "usecase"]
         for missing_col in list_sub(must_have_cols, df.columns):
             df = df.withColumn(missing_col, func.lit(None))
         if self._multiple_variants():
