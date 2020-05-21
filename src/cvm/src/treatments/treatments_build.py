@@ -129,8 +129,7 @@ def get_treatments_propositions(
     )
     # change output format
     treatments_propositions_pandas = (
-        treatments_propositions.withColumnRenamed("treatment_name", "use_case")
-        .withColumn("date", func.lit(get_today(parameters)))
+        treatments_propositions.withColumn("date", func.lit(get_today(parameters)))
         .withColumn(
             "microsegment",
             func.when(
