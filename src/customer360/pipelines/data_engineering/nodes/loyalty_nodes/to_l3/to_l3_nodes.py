@@ -72,6 +72,10 @@ def build_loyalty_point_balance_statuses_monthly(
 
     win_ba_bonus = Window.partitionBy("billing_account", "start_of_month").orderBy(f.col("event_partition_date").desc())
 
+    win_input_df = Window.partitionBy("billing_account", "national_id_card", "access_method_num",
+                                      "subscription_identifier", "start_of_month").orderBy(
+        f.col("event_partition_date").desc())
+
     l1_loyalty_priv_point_bonus_ba_daily = l1_loyalty_priv_point_bonus_ba_daily \
         .withColumn("rnk", f.row_number().over(win_ba_bonus)) \
         .withColumnRenamed("points", "bonus_points") \
@@ -82,12 +86,19 @@ def build_loyalty_point_balance_statuses_monthly(
         .withColumnRenamed("points", "ba_points") \
         .filter(f.col("rnk = 1"))
 
+    input_df = input_df \
+        .withColumn("loyalty_register_program_points_date", f.max("loyalty_register_program_points_date").over(win_input_df))\
+        .withColumn("rnk", f.row_number().over(win_input_df)) \
+        .filter(f.col("rnk = 1"))
+
     points_merged_monthly = l1_loyalty_priv_point_bonus_ba_daily.join(l1_loyalty_priv_point_ba_daily,
                                                                       ["billing_account", "start_of_month"], "outer")
 
     points_merged_monthly = points_merged_monthly.withColumn("final_points",
                                                              f.coalesce(f.col("bonus_points", 0)) +
                                                              f.coalesce(f.col("ba_points"), 0)) \
+        .withColumn("expired_date", f.when(f.col("ba_expired_date") > f.col("bonus_ba_expired_date")
+                                           , f.col("ba_expired_date")).otherwise(f.col("bonus_ba_expired_date"))) \
         .select("billing_account", "start_of_month", "final_points", "expired_date")
 
     return_df = input_df.join(points_merged_monthly, ["billing_account", "start_of_month"], how="left")
