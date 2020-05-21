@@ -31,6 +31,7 @@ from typing import Any, Dict
 import pandas
 from cvm.src.targets.churn_targets import add_days
 from cvm.src.treatments.rules import MultipleTreatments
+from cvm.src.treatments.treatment_features import add_other_sim_card_features
 from cvm.src.utils.utils import get_today, join_multiple
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as func
@@ -64,7 +65,7 @@ def treatments_featurize(
     propensities: DataFrame,
     features_macrosegments_scoring: DataFrame,
     microsegments: DataFrame,
-    profile: DataFrame,
+    recent_profile: DataFrame,
     main_packs: DataFrame,
     parameters: Dict[str, Any],
 ) -> DataFrame:
@@ -74,7 +75,7 @@ def treatments_featurize(
         propensities: scores created by models.
         features_macrosegments_scoring: features used to run conditions on.
         microsegments: users and microsegments table.
-        profile: table with users, their package and monthly revenue.
+        recent_profile: table with users' national ids, only last date.
         main_packs: table describing prepaid main packages.
         parameters: parameters defined in parameters.yml.
     """
@@ -84,7 +85,9 @@ def treatments_featurize(
         features_macrosegments_scoring,
         microsegments,
     )
-    treatments_features = propensities_with_features
+    treatments_features = add_other_sim_card_features(
+        propensities_with_features, recent_profile, main_packs, parameters
+    )
     return treatments_features
 
 
