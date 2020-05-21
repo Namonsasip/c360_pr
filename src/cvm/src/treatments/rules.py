@@ -194,18 +194,22 @@ class Treatment:
 
     def __init__(self, treatment_dict: Dict[str, Any]):
         verify_treatment(treatment_dict)
-        self.treatment_name = list(treatment_dict.keys())[0]
-        treatment_details = treatment_dict[self.treatment_name]
+        self.treatment_id = list(treatment_dict.keys())[0]
+        treatment_details = treatment_dict[self.treatment_id]
+        self.treatment_name = return_none_if_missing(
+            treatment_details, "treatment_name"
+        )
         self.treatment_size = return_none_if_missing(
             treatment_details, "treatment_size"
         )
         self.order_policy = return_none_if_missing(treatment_details, "order_policy")
+        self.usecase = return_none_if_missing(treatment_details, "usecase")
         rules_dict = treatment_details["rules"]
         rules_list = [
             {campaign_code: rules_dict[campaign_code]}
             for campaign_code in rules_dict.keys()
         ]
-        self.rules = [Rule(rule_dict, self.treatment_name) for rule_dict in rules_list]
+        self.rules = [Rule(rule_dict, self.treatment_id) for rule_dict in rules_list]
 
     def _get_all_variants(self) -> List:
         """List all variants present in rules"""
@@ -239,7 +243,7 @@ class Treatment:
     def _truncate_assigned_campaigns(self, df: DataFrame, variant_chosen: str = None):
         """Reduce number of people assigned to campaigns to fulfill treatment size
         condition. Top users according to order policy are picked"""
-        current_treatment_variant = func.col("treatment_name") == self.treatment_name
+        current_treatment_variant = func.col("treatment_name") == self.treatment_id
         if variant_chosen is not None:
             current_treatment_variant &= func.col("variant") == variant_chosen
         df = df.selectExpr(
@@ -312,7 +316,7 @@ class Treatment:
 
     def apply_treatment(self, df: DataFrame) -> DataFrame:
         """Perform applying of treatment"""
-        logging.info("Applying treatment {}".format(self.treatment_name))
+        logging.info("Applying treatment {}".format(self.treatment_id))
         must_have_cols = ["treatment_name", "campaign_code"]
         for missing_col in list_sub(must_have_cols, df.columns):
             df = df.withColumn(missing_col, func.lit(None))
