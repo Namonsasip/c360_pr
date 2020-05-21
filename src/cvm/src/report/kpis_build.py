@@ -71,6 +71,7 @@ def add_status(users_dates: DataFrame, profile_table: DataFrame,) -> DataFrame:
     """
 
     logging.info("Adding subscription status")
+    profile_table = prepare_key_columns(profile_table)
     key_columns = ["subscription_identifier", "key_date"]
     cols_to_pick = ["subscription_status"]
     profile_table = prepare_key_columns(profile_table).select(
