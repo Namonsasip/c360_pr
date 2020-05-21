@@ -128,9 +128,7 @@ def geo_to_l1_union_pipeline(**kwargs):
         [
             node(
                 l1_union_features,
-                [
-                    # "l1_geo_number_of_bs_used",      imsi
-                 "l1_geo_number_of_location_with_transactions",
+                ["l1_geo_number_of_location_with_transactions",
                  "l1_geo_voice_distance_daily",
                  "l1_geo_first_data_session_cell_identifier_daily",
                  "l1_geo_data_distance_daily",
@@ -139,7 +137,7 @@ def geo_to_l1_union_pipeline(**kwargs):
                  "l1_geo_call_count_location_daily",
                  "l1_geo_data_traffic_location_daily",
                  "l1_geo_data_share_location_daily",
-                 ],
+                 ],   # "l1_geo_number_of_bs_used",  imsi
                 "l1_geo_union_features_daily"
             ),
         ], name="geo_to_l1_union_pipeline"

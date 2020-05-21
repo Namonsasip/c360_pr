@@ -490,8 +490,9 @@ def l1_geo_data_share_location_daily(data_loc_int,master,sql):
 
     return df
 
-def l1_union_features(l1_geo_number_of_bs_used
-,l1_geo_number_of_location_with_transactions
+def l1_union_features(
+        # l1_geo_number_of_bs_used,
+        l1_geo_number_of_location_with_transactions
 ,l1_geo_voice_distance_daily
 ,l1_geo_first_data_session_cell_identifier_daily
 ,l1_geo_data_distance_daily
@@ -500,8 +501,9 @@ def l1_union_features(l1_geo_number_of_bs_used
 ,l1_geo_call_count_location_daily
 ,l1_geo_data_traffic_location_daily
 ,l1_geo_data_share_location_daily):
-    df_list=[l1_geo_number_of_bs_used
-        ,l1_geo_number_of_location_with_transactions
+    df_list=[
+        # l1_geo_number_of_bs_used,
+        l1_geo_number_of_location_with_transactions
         ,l1_geo_voice_distance_daily
         ,l1_geo_first_data_session_cell_identifier_daily
         ,l1_geo_data_distance_daily

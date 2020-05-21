@@ -80,7 +80,7 @@ def l2_first_data_session_cell_identifier_weekly(df, sql):
     df = df.withColumn("start_of_week", F.to_date(F.date_trunc('week', F.col('event_partition_date'))))
     df = df.selectExpr('*',
                        'row_number() over(partition by mobile_no,start_of_week order by event_partition_date ASC) as rank_weekly')
-
+    df = df.withColumnRenamed('mobile_no','access_method_num')
     return df
 
 
@@ -109,7 +109,7 @@ def l2_geo_data_distance_weekly(df, sql):
     df = df.selectExpr("*", query)
     # df = df.withColumn('stdev_distance', stdev_udf('distance_list'))
     df = df.drop('max', 'sorted_sum', 'length_without_max', 'list_without_max', 'distance_list')
-
+    df = df.withColumnRenamed('mobile_no', 'access_method_num')
     df = node_from_config(df, sql)
 
     return df
@@ -141,10 +141,8 @@ def l2_geo_data_distance_weekday_weekly(df, sql):
     df = df.selectExpr("*", query)
     # df = df.withColumn('stdev_distance', stdev_udf('distance_list'))
     df = df.drop('max', 'sorted_sum', 'length_without_max', 'list_without_max', 'distance_list')
-
+    df = df.withColumnRenamed('mobile_no', 'access_method_num')
     df = node_from_config(df, sql)
-    print('debugtest')
-    df.show()
     return df
 
 
@@ -174,7 +172,7 @@ def l2_geo_data_distance_weekend_weekly(df, sql):
     df = df.selectExpr("*", query)
     # df = df.withColumn('stdev_distance', stdev_udf('distance_list'))
     df = df.drop('max', 'sorted_sum', 'length_without_max', 'list_without_max', 'distance_list')
-
+    df = df.withColumnRenamed('mobile_no', 'access_method_num')
     df = node_from_config(df, sql)
     return df
 
@@ -199,6 +197,7 @@ def l2_geo_data_frequent_cell_weekday_weekly(df, sql):
                                                                                                  ranked.sum_call)).withColumn(
         'cgi_partial_rank_1', F.when(ranked.rank == 1, ranked.cgi_partial)).withColumn('cgi_partial_rank_2',
                                                                        F.when(ranked.rank == 2, ranked.cgi_partial))
+    df = df.withColumnRenamed('mobile_no', 'access_method_num')
     df = node_from_config(ranked, sql)
     # agg = ranked.groupBy('mobile_no', 'start_of_week').agg(F.sum('sum_rank_1').alias('sum_no_of_call_rank_1'),
     #                                                        F.sum('sum_rank_2').alias('sum_no_of_call_rank_2'),
@@ -227,6 +226,7 @@ def l2_geo_data_frequent_cell_weekend_weekly(df, sql):
                                                                                                  ranked.sum_call)).withColumn(
         'cgi_partial_rank_1', F.when(ranked.rank == 1, ranked.cgi_partial)).withColumn('cgi_partial_rank_2',
                                                                        F.when(ranked.rank == 2, ranked.cgi_partial))
+    df = df.withColumnRenamed('mobile_no', 'access_method_num')
     df = node_from_config(ranked, sql)
     return df
 
@@ -242,6 +242,7 @@ def l2_geo_data_frequent_cell_weekly(df, sql):
                                                                                                  ranked.sum_call)).withColumn(
         'cgi_partial_rank_1', F.when(ranked.rank == 1, ranked.cgi_partial)).withColumn('cgi_partial_rank_2',
                                                                        F.when(ranked.rank == 2, ranked.cgi_partial))
+    df = df.withColumnRenamed('mobile_no', 'access_method_num')
     df = node_from_config(ranked, sql)
     return df
 
@@ -253,6 +254,7 @@ def l2_geo_data_frequent_cell_4g_weekday_weekly(df, sql):
     ranked = ranked.withColumn(
         'cgi_partial_rank_1', F.when(ranked.rank == 1, ranked.cgi_partial)).withColumn('cgi_partial_rank_2',
                                                                        F.when(ranked.rank == 2, ranked.cgi_partial))
+    df = df.withColumnRenamed('mobile_no', 'access_method_num')
     df = node_from_config(ranked, sql)
 
     return df
@@ -265,6 +267,7 @@ def l2_geo_data_frequent_cell_4g_weekend_weekly(df, sql):
     ranked = ranked.withColumn(
         'cgi_partial_rank_1', F.when(ranked.rank == 1, ranked.cgi_partial)).withColumn('cgi_partial_rank_2',
                                                                        F.when(ranked.rank == 2, ranked.cgi_partial))
+    df = df.withColumnRenamed('mobile_no', 'access_method_num')
     df = node_from_config(ranked, sql)
 
     return df
@@ -277,6 +280,7 @@ def l2_geo_data_frequent_cell_4g_weekly(df, sql):
     ranked = ranked.withColumn(
         'cgi_partial_rank_1', F.when(ranked.rank == 1, ranked.cgi_partial)).withColumn('cgi_partial_rank_2',
                                                                        F.when(ranked.rank == 2, ranked.cgi_partial))
+    df = df.withColumnRenamed('mobile_no', 'access_method_num')
     df = node_from_config(ranked, sql)
 
     return df

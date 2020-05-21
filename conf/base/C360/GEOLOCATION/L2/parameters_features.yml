@@ -27,12 +27,11 @@ l2_first_data_session_cell_identifier: #470
   where_clause: "where rank_weekly = 1"
   feature_list:
     start_of_week: "start_of_week"
-    mobile_no: "mobile_no"
     gprs_type: "gprs_type"
     imei: "imei"
     lac: "lac"
     ci: "ci"
-  granularity: ""
+  granularity: "access_method_num,start_of_week"
 
 l2_data_distance_weekly: #473,476,479
   where_clause: ""
@@ -42,7 +41,7 @@ l2_data_distance_weekly: #473,476,479
     minimum_distance: "first(min_distance)"
     maximum_distance: "first(max_distance)"
 #    standard_deviation_distance: "first(stdev_distance)"
-  granularity: "start_of_week,mobile_no"
+  granularity: "start_of_week,access_method_num"
 
 l2_data_distance_weekday_weekly: #471,474,477
   where_clause: ""
@@ -52,7 +51,7 @@ l2_data_distance_weekday_weekly: #471,474,477
     minimum_distance: "first(min_distance)"
     maximum_distance: "first(max_distance)"
   #    standard_deviation_distance: "first(stdev_distance)"
-  granularity: "start_of_week,mobile_no"
+  granularity: "start_of_week,access_method_num"
 
 l2_data_distance_weekend_weekly: #472,475,478
   where_clause: ""
@@ -62,7 +61,7 @@ l2_data_distance_weekend_weekly: #472,475,478
     minimum_distance: "first(min_distance)"
     maximum_distance: "first(max_distance)"
   #    standard_deviation_distance: "first(stdev_distance)"
-  granularity: "start_of_week,mobile_no"
+  granularity: "start_of_week,access_method_num"
 
 l2_data_frequent_cell_weekday_weekly: #434/437/443/449/452/455/458/461/464
   where_clause: ""
@@ -76,7 +75,7 @@ l2_data_frequent_cell_weekday_weekly: #434/437/443/449/452/455/458/461/464
     Number_of_Unique_Cells: "count(1)"
     cgi_partial_rank_1: "concat_ws('', collect_list(cgi_partial_rank_1))"
     cgi_partial_rank_2: "concat_ws('', collect_list(cgi_partial_rank_2))"
-  granularity: "start_of_week,mobile_no"
+  granularity: "start_of_week,access_method_num"
 
 l2_data_frequent_cell_weekend_weekly: #435/439/445/450/453/456/459/462/465
   where_clause: ""
@@ -90,7 +89,7 @@ l2_data_frequent_cell_weekend_weekly: #435/439/445/450/453/456/459/462/465
     Number_of_Unique_Cells: "count(1)"
     cgi_partial_rank_1: "concat_ws('', collect_list(cgi_partial_rank_1))"
     cgi_partial_rank_2: "concat_ws('', collect_list(cgi_partial_rank_2))"
-  granularity: "start_of_week,mobile_no"
+  granularity: "start_of_week,access_method_num"
 
 l2_data_frequent_cell_weekly: #436/441/447/451/454/457/460/463
   where_clause: ""
@@ -104,7 +103,7 @@ l2_data_frequent_cell_weekly: #436/441/447/451/454/457/460/463
     Number_of_Unique_Cells: "count(1)"
     cgi_partial_rank_1: "concat_ws('', collect_list(cgi_partial_rank_1))"
     cgi_partial_rank_2: "concat_ws('', collect_list(cgi_partial_rank_2))"
-  granularity: "start_of_week,mobile_no"
+  granularity: "start_of_week,access_method_num"
 
 
 
@@ -114,21 +113,21 @@ l2_data_frequent_cell_4g_weekday_weekly: #438/444
   feature_list:
     cgi_partial_rank_1: "concat_ws('', collect_list(cgi_partial_rank_1))"
     cgi_partial_rank_2: "concat_ws('', collect_list(cgi_partial_rank_2))"
-  granularity: "start_of_week,mobile_no"
+  granularity: "start_of_week,access_method_num"
 
 l2_data_frequent_cell_4g_weekend_weekly: #440/446
   where_clause: ""
   feature_list:
     cgi_partial_rank_1: "concat_ws('', collect_list(cgi_partial_rank_1))"
     cgi_partial_rank_2: "concat_ws('', collect_list(cgi_partial_rank_2))"
-  granularity: "start_of_week,mobile_no"
+  granularity: "start_of_week,access_method_num"
 
 l2_data_frequent_cell_4g_weekly: #442/448
   where_clause: ""
   feature_list:
     cgi_partial_rank_1: "concat_ws('', collect_list(cgi_partial_rank_1))"
     cgi_partial_rank_2: "concat_ws('', collect_list(cgi_partial_rank_2))"
-  granularity: "start_of_week,mobile_no"
+  granularity: "start_of_week,access_method_num"
 
 l2_geo_call_count_location_weekly: #402,403,404,405
   where_clause: ""

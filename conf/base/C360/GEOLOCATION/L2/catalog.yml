@@ -216,12 +216,6 @@ l2_geo_data_distance_weekend_weekly_for_l4_geo_data_distance_weekend:
     target_layer: 'l4_weekly'
     lookback: '12'
 
-
-
-###################
-
-
-
 l2_geo_data_frequent_cell_weekday_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"

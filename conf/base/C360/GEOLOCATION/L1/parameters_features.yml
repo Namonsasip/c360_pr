@@ -28,7 +28,7 @@ l1_first_data_session_cell_identifier: #470
     gprs_type: "gprs_type"
     imei: "imei"
     cgi_partial: "cgi_partial"
-  granularity: "access_method_num"
+  granularity: "access_method_num,event_partition_date"
 
 l1_data_distance_daily: #473,476,479
   where_clause: ""
