@@ -308,6 +308,22 @@ class Treatment:
             df = self._apply_variant(df, variant_chosen)
         return df
 
+    @staticmethod
+    def _fill_for_users_with_campaign(
+        df: DataFrame, column_to_fill: str, value_to_fill: str
+    ) -> DataFrame:
+        """ For users with current treatment set value of column `column_to_fill` to
+        `value_to_fill`"""
+        current_campaign_cond = (
+            func.col(column_to_fill).isNull() & func.col("campaign_code").isNotNull()
+        )
+        return df.withColumn(
+            column_to_fill,
+            func.when(current_campaign_cond, func.lit(value_to_fill)).otherwise(
+                func.col(column_to_fill)
+            ),
+        )
+
     def apply_treatment(self, df: DataFrame) -> DataFrame:
         """Perform applying of treatment"""
         logging.info("Applying treatment {}".format(self.treatment_id))
@@ -316,7 +332,12 @@ class Treatment:
             df = df.withColumn(missing_col, func.lit(None))
         if self._multiple_variants():
             df = self._assign_users_to_variants(df)
-        return self._apply_all_variants(df)
+        df = self._apply_all_variants(df)
+        df = Treatment._fill_for_users_with_campaign(
+            df, "treatment_name", self.treatment_name
+        )
+        df = Treatment._fill_for_users_with_campaign(df, "usecase", self.usecase)
+        return df
 
 
 class MultipleTreatments:
