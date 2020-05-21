@@ -67,7 +67,7 @@ treatment_rules:
   treatment_test_churn_positive_arpu_m2:
     treatment_name: "test_churn_positive_arpu_m2"
     treatment_size: 1500
-    usecase: "churn"
+    use_case: "churn"
     order_policy: "churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred"
     rules:
       rule3:
@@ -91,7 +91,7 @@ treatment_rules:
   treatment_test_churn_positive_arpu_m4:
     treatment_name: "test_churn_positive_arpu_m4"
     treatment_size: 1500
-    usecase: "churn"
+    use_case: "churn"
     order_policy: "churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred"
     rules:
       rule8:
@@ -115,7 +115,7 @@ treatment_rules:
   treatment_test_churn_positive_arpu_m6:
     treatment_name: "test_churn_positive_arpu_m6"
     treatment_size: 1500
-    usecase: "churn"
+    use_case: "churn"
     order_policy: "churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred"
     rules:
       rule13:
@@ -139,7 +139,7 @@ treatment_rules:
   treatment_test_churn_positive_arpu_m7:
     treatment_name: "test_churn_positive_arpu_m7"
     treatment_size: 1500
-    usecase: "churn"
+    use_case: "churn"
     order_policy: "churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred"
     rules:
       rule16:
@@ -163,7 +163,7 @@ treatment_rules:
   treatment_test_churn_positive_arpu_m8:
     treatment_name: "test_churn_positive_arpu_m8"
     treatment_size: 1500
-    usecase: "churn"
+    use_case: "churn"
     order_policy: "churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred"
     rules:
       rule19:
@@ -187,7 +187,7 @@ treatment_rules:
   treatment_test_churn_positive_arpu_m10:
     treatment_name: "test_churn_positive_arpu_m10"
     treatment_size: 2500
-    usecase: "churn"
+    use_case: "churn"
     order_policy: "churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred"
     rules:
       rule24:
@@ -223,7 +223,7 @@ treatment_rules:
   treatment_test_churn_zero_arpu_m8:
     treatment_name: "test_churn_zero_arpu_m8"
     treatment_size: 6000
-    usecase: "churn"
+    use_case: "churn"
     order_policy: "churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred"
     rules:
       rule43:
@@ -265,7 +265,7 @@ treatment_rules:
   treatment_test_ard_high_arpu_high_tenure_m7:
     treatment_name: "test_ard_high_arpu_high_tenure_m7"
     treatment_size: 4000
-    usecase: "ard"
+    use_case: "ard"
     order_policy: "dilution1_pred + dilution2_pred"
     rules:
       rule61:
@@ -296,7 +296,7 @@ treatment_rules:
   treatment_no_test_churn_positive_arpu:
     treatment_name: "no_test_churn_positive_arpu"
     treatment_size: 5000
-    usecase: "churn"
+    use_case: "churn"
     order_policy: "churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred"
     rules:
       rule1:
@@ -350,7 +350,7 @@ treatment_rules:
   treatment_no_test_churn_zero_arpu:
     treatment_name: "no_test_churn_zero_arpu"
     treatment_size: 9000
-    usecase: "churn"
+    use_case: "churn"
     order_policy: "churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred"
     rules:
       rule29:
@@ -440,7 +440,7 @@ treatment_rules:
   treatment_no_test_ard_high_arpu_high_tenure:
     treatment_name: "no_test_ard_high_arpu_high_tenure"
     treatment_size: 8000
-    usecase: "ard"
+    use_case: "ard"
     order_policy: "dilution1_pred + dilution2_pred"
     rules:
       rule49:
@@ -530,7 +530,7 @@ treatment_rules:
   treatment_no_test_ard_high_arpu_low_tenure:
     treatment_name: "no_test_ard_high_arpu_low_tenure"
     treatment_size: 12000
-    usecase: "ard"
+    use_case: "ard"
     order_policy: "dilution1_pred + dilution2_pred"
     rules:
       rule67:
@@ -632,7 +632,7 @@ treatment_rules:
   treatment_no_test_ard_low_arpu_high_tenure:
     treatment_name: "no_test_ard_low_arpu_high_tenure"
     treatment_size: 12000
-    usecase: "ard"
+    use_case: "ard"
     order_policy: "dilution1_pred + dilution2_pred"
     rules:
       rule83:
@@ -734,7 +734,7 @@ treatment_rules:
   treatment_no_test_ard_low_arpu_low_tenure:
     treatment_name: "no_test_ard_low_arpu_low_tenure"
     treatment_size: 12000
-    usecase: "ard"
+    use_case: "ard"
     order_policy: "dilution1_pred + dilution2_pred"
     rules:
       rule99:

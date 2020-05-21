@@ -197,7 +197,7 @@ class Treatment:
             treatment_details, "treatment_size"
         )
         self.order_policy = return_none_if_missing(treatment_details, "order_policy")
-        self.usecase = return_none_if_missing(treatment_details, "usecase")
+        self.use_case = return_none_if_missing(treatment_details, "use_case")
         rules_dict = treatment_details["rules"]
         rules_list = [
             {campaign_code: rules_dict[campaign_code]}
@@ -327,7 +327,7 @@ class Treatment:
     def apply_treatment(self, df: DataFrame) -> DataFrame:
         """Perform applying of treatment"""
         logging.info("Applying treatment {}".format(self.treatment_id))
-        must_have_cols = ["treatment_name", "campaign_code", "usecase"]
+        must_have_cols = ["treatment_name", "campaign_code", "use_case"]
         for missing_col in list_sub(must_have_cols, df.columns):
             df = df.withColumn(missing_col, func.lit(None))
         if self._multiple_variants():
@@ -336,7 +336,7 @@ class Treatment:
         df = Treatment._fill_for_users_with_campaign(
             df, "treatment_name", self.treatment_name
         )
-        df = Treatment._fill_for_users_with_campaign(df, "usecase", self.usecase)
+        df = Treatment._fill_for_users_with_campaign(df, "use_case", self.use_case)
         return df
 
 
