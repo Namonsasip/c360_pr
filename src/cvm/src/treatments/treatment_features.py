@@ -58,7 +58,7 @@ def add_other_sim_card_features(
         recent_profile.join(normal_main_packs, on="current_package_id")
         # calculate number of simcards per national id
         .groupBy("national_id_card")
-        .agg(func.count("subscriber_identifier").alias("number_of_simcards"))
+        .agg(func.count("subscription_identifier").alias("number_of_simcards"))
         .filter("number_of_simcard >= 2 and number_of_simcard <= 4")
         .select(["national_id_card", "number_of_simcards"])
     )
@@ -69,7 +69,9 @@ def add_other_sim_card_features(
             "card_age_rn",
             func.row_number.over(
                 Window.partitionBy("national_id_card").orderBy(
-                    func.col("subscriber_tenure").orderBy(func.col("subscriber_tenure"))
+                    func.col("subscription_tenure").orderBy(
+                        func.col("subscription_tenure")
+                    )
                 )
             ),
         )
@@ -86,8 +88,8 @@ def add_other_sim_card_features(
             "card_age_rn",
             func.row_number.over(
                 Window.partitionBy("national_id_card").orderBy(
-                    func.col("subscriber_tenure").orderBy(
-                        func.col("subscriber_tenure").desc()
+                    func.col("subscription_tenure").orderBy(
+                        func.col("subscription_tenure").desc()
                     )
                 )
             ),
