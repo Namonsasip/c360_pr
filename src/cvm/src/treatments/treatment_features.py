@@ -57,35 +57,35 @@ def add_other_sim_card_features(
         # keep only normal packages
         recent_profile.join(normal_main_packs, on="current_package_id")
         # calculate number of simcards per national id
-        .groupBy("national_id")
+        .groupBy("national_id_card")
         .agg(func.count("subscriber_identifier").alias("number_of_simcards"))
         .filter("number_of_simcard >= 2 and number_of_simcard <= 4")
-        .select(["national_id", "number_of_simcards"])
+        .select(["national_id_card", "number_of_simcards"])
     )
     # calculate statistics
-    national_id_stats_youngest_card = (
-        number_of_simcards.join(recent_profile, on="national_id")
+    national_id_card_stats_youngest_card = (
+        number_of_simcards.join(recent_profile, on="national_id_card")
         .withColumn(
             "card_age_rn",
             func.row_number.over(
-                Window.partitionBy("national_id").orderBy(
+                Window.partitionBy("national_id_card").orderBy(
                     func.col("subscriber_tenure").orderBy(func.col("subscriber_tenure"))
                 )
             ),
         )
         .filter("card_age_rn == 1")
         .selectExpr(
-            "national_id",
+            "national_id_card",
             "norms_net_revenue as revenue_on_youngest_card",
             "youngest_card_tenure",
         )
     )
-    national_id_stats_oldest_card = (
-        number_of_simcards.join(recent_profile, on="national_id")
+    national_id_card_stats_oldest_card = (
+        number_of_simcards.join(recent_profile, on="national_id_card")
         .withColumn(
             "card_age_rn",
             func.row_number.over(
-                Window.partitionBy("national_id").orderBy(
+                Window.partitionBy("national_id_card").orderBy(
                     func.col("subscriber_tenure").orderBy(
                         func.col("subscriber_tenure").desc()
                     )
@@ -94,15 +94,15 @@ def add_other_sim_card_features(
         )
         .filter("card_age_rn == 1")
         .selectExpr(
-            "national_id",
+            "national_id_card",
             "norms_net_revenue as revenue_on_oldest_card",
             "oldest_card_tenure",
         )
     )
-    national_id_stats = national_id_stats_oldest_card.join(
-        national_id_stats_youngest_card, on="national_id"
+    national_id_card_stats = national_id_card_stats_oldest_card.join(
+        national_id_card_stats_youngest_card, on="national_id_card"
     )
     # join to given table
-    df = df.join(national_id_stats, on="national_id", how="left")
+    df = df.join(national_id_card_stats, on="national_id_card", how="left")
 
     return df
