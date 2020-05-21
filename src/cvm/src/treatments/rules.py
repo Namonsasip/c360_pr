@@ -95,7 +95,7 @@ class UsersBlacklist:
 class Rule:
     """Create, assign, manipulate treatment rule"""
 
-    def __init__(self, rule_dict: Dict[str, Any], treatment_name: str):
+    def __init__(self, rule_dict: Dict[str, Any]):
         verify_rule(rule_dict)
         self.rule_name = list(rule_dict.keys())[0]
         rule_details = rule_dict[self.rule_name]
@@ -104,7 +104,6 @@ class Rule:
         self.order_policy = return_none_if_missing(rule_details, "order_policy")
         self.variant = return_none_if_missing(rule_details, "variant")
         self.conditions = return_none_if_missing(rule_details, "conditions")
-        self.treatment_name = treatment_name
 
     def _add_user_applicable_column(
         self, df: DataFrame, variant_chosen: str = None
@@ -154,11 +153,6 @@ class Rule:
             func.when(assign_condition, self.campaign_code).otherwise(
                 func.col("campaign_code")
             ),
-        ).withColumn(
-            "treatment_name",
-            func.when(assign_condition, self.treatment_name).otherwise(
-                func.col("treatment_name")
-            ),
         )
 
     def apply_rule(
@@ -176,8 +170,8 @@ class Rule:
             df: DataFrame with users, features, campaigns.
         """
         logging.info(
-            "Applying rule for treatment: {}, rule_name: {}, campaign code: {}".format(
-                self.treatment_name, self.rule_name, self.campaign_code
+            "Applying rule for rule: {}, campaign code: {}".format(
+                self.rule_name, self.campaign_code
             )
         )
         if self.order_policy is None:
