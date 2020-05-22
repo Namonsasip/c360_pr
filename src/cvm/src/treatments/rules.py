@@ -258,13 +258,13 @@ class Treatment:
             func.col("lp_in_treatment") >= self.treatment_size
         )
         df = df.withColumn(
+            "campaign_code",
+            func.when(to_truncate, func.lit(None)).otherwise(func.col("campaign_code")),
+        ).withColumn(
             "treatment_name",
             func.when(to_truncate, func.lit(None)).otherwise(
                 func.col("treatment_name")
             ),
-        ).withColumn(
-            "campaign_code",
-            func.when(to_truncate, func.lit(None)).otherwise(func.col("campaign_code")),
         )
         to_drop = ["sort_on_col", "has_current_treatment", "lp_in_treatment"]
         return df.drop(*to_drop)
