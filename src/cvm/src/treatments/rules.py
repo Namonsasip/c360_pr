@@ -207,9 +207,7 @@ class Treatment:
         self.treatment_size = str(
             return_none_if_missing(treatment_details, "treatment_size")
         )
-        self.order_policy = str(
-            return_none_if_missing(treatment_details, "order_policy")
-        )
+        self.order_policy = treatment_details["order_policy"]
         self.use_case = str(return_none_if_missing(treatment_details, "use_case"))
         rules_dict = treatment_details["rules"]
         rules_list = [
