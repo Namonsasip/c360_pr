@@ -2,8 +2,8 @@
 l1_campaign_post_pre_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/CAMPAIGN/l1_features/l1_campaign_post_pre_daily/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/CAMPAIGN/l1_features/l1_campaign_post_pre_daily/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_campaign_postpaid_prepaid_weekly'
@@ -21,8 +21,8 @@ l1_campaign_post_pre_daily:
 l1_campaign_post_pre_daily_for_l3_campaign_postpaid_prepaid_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/CAMPAIGN/l1_features/l1_campaign_post_pre_daily/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/CAMPAIGN/l1_features/l1_campaign_post_pre_daily/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_campaign_postpaid_prepaid_monthly'
@@ -33,8 +33,8 @@ l1_campaign_post_pre_daily_for_l3_campaign_postpaid_prepaid_monthly:
 l1_campaign_top_channel_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/CAMPAIGN/l1_features/l1_campaign_top_channel_daily/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/CAMPAIGN/l1_features/l1_campaign_top_channel_daily/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_campaign_top_channel_weekly'
@@ -51,8 +51,8 @@ l1_campaign_top_channel_daily:
 l1_campaign_top_channel_daily_for_l3_campaign_top_channel_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/CAMPAIGN/l1_features/l1_campaign_top_channel_daily/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/CAMPAIGN/l1_features/l1_campaign_top_channel_daily/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_campaign_postpaid_prepaid_monthly'

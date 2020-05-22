@@ -1,8 +1,8 @@
 l2_usage_postpaid_prepaid_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/USAGE/l2_features/l2_usage_postpaid_prepaid_weekly/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/USAGE/l2_features/l2_usage_postpaid_prepaid_weekly/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -15,8 +15,8 @@ l2_usage_postpaid_prepaid_weekly:
 l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_max:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/USAGE/l2_features/l2_usage_postpaid_prepaid_weekly/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/USAGE/l2_features/l2_usage_postpaid_prepaid_weekly/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l4_usage_postpaid_prepaid_weekly_features_max'
@@ -29,8 +29,8 @@ l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_max:
 l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_min:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/USAGE/l2_features/l2_usage_postpaid_prepaid_weekly/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/USAGE/l2_features/l2_usage_postpaid_prepaid_weekly/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l4_usage_postpaid_prepaid_weekly_features_min'
@@ -43,8 +43,8 @@ l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_min:
 l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_avg:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/USAGE/l2_features/l2_usage_postpaid_prepaid_weekly/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/USAGE/l2_features/l2_usage_postpaid_prepaid_weekly/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l4_usage_postpaid_prepaid_weekly_features_avg'
@@ -57,8 +57,8 @@ l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_avg:
 l2_usage_postpaid_prepaid_weekly_for_l4_postpaid_prepaid_weekly_features_sum:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/USAGE/l2_features/l2_usage_postpaid_prepaid_weekly/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/USAGE/l2_features/l2_usage_postpaid_prepaid_weekly/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l4_usage_postpaid_prepaid_weekly_features_sum'
