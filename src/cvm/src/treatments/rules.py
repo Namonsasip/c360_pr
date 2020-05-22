@@ -126,6 +126,7 @@ class Rule:
         if variant_chosen is not None:
             applicable_str += " and variant == '{}'".format(variant_chosen)
         case_then = "case when " + applicable_str + " then 1 else 0 end"
+        logging.info("case then genereated: {}".format(case_then))
         return df.selectExpr("*", "{} as user_applicable".format(case_then))
 
     def _add_row_number_on_order_policy(self, df: DataFrame) -> DataFrame:
