@@ -126,7 +126,7 @@ class Rule:
         if variant_chosen is not None:
             applicable_str += " and variant == '{}'".format(variant_chosen)
         case_then = "case when " + applicable_str + " then 1 else 0 end"
-        logging.info("case then genereated: {}".format(case_then))
+        logging.info("case then generated: {}".format(case_then))  # TODO drop
         return df.selectExpr("*", "{} as user_applicable".format(case_then))
 
     def _add_row_number_on_order_policy(self, df: DataFrame) -> DataFrame:
@@ -184,6 +184,7 @@ class Rule:
         if self.order_policy is None:
             self.order_policy = treatment_order_policy
         df = self._add_user_applicable_column(df, variant_chosen)
+        logging.info("list of applicable users created")  # TODO drop
         df = self._add_row_number_on_order_policy(df)
         df = self._mark_campaign_for_top_users(df, int(self.limit_per_code))
         df = df.drop("policy_row_number", "user_applicable", "sort_on_col")
