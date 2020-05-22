@@ -136,6 +136,7 @@ class Rule:
         """
         if self.order_policy is None:
             raise Exception("No order policy for rule {}".format(self.rule_name))
+        logging.info("Using order policy: {}".format(self.order_policy))
         df = df.selectExpr("*", "{} as sort_on_col".format(self.order_policy))
         order_window = Window.partitionBy("user_applicable").orderBy(
             func.col("sort_on_col").desc()
@@ -183,6 +184,7 @@ class Rule:
         if self.order_policy is None:
             self.order_policy = treatment_order_policy
         df = self._add_user_applicable_column(df, variant_chosen)
+        logging.info("added applicable")  # TODO drop
         df = self._add_row_number_on_order_policy(df)
         logging.info("row_number added")  # TODO drop
         df = self._mark_campaign_for_top_users(df, int(self.limit_per_code))
