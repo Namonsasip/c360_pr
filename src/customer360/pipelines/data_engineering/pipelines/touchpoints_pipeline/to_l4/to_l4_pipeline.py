@@ -51,6 +51,12 @@ def touchpoints_to_l4_pipeline(**kwargs):
                 ["l2_touchpoints_nim_work_features",
                  "params:l4_touchpoints_nim_work_features"],
                 "l4_touchpoints_nim_work_features"
+            ),
+            node(
+                l4_rolling_window,
+                ["l2_touchpoints_ivr_features",
+                 "params:l4_touchpoints_ivr_features"],
+                "l4_touchpoints_ivr_features"
             )
         ]
     )

@@ -17,6 +17,7 @@ l1_revenue_prepaid_pru_f_usage_multi_daily_for_l2_revenue_prepaid_pru_f_usage_mu
   file_format: "parquet"
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
+    mergeSchema: "true"
     increment_flag: 'yes'
     lookup_table_name: 'l2_revenue_prepaid_pru_f_usage_multi_weekly'
     read_layer: 'l1_daily'
@@ -29,6 +30,7 @@ l1_revenue_prepaid_pru_f_usage_multi_daily_for_l4_revenue_prepaid_daily_features
   file_format: "parquet"
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
+    mergeSchema: "true"
     increment_flag: 'yes'
     lookup_table_name: 'l4_revenue_prepaid_daily_features'
     read_layer: 'l1_daily'

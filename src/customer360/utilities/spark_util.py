@@ -17,6 +17,8 @@ def get_spark_session() -> SparkSession:
     # saved to parquet instead of entire table folder
     spark.conf.set("spark.sql.sources.partitionOverwriteMode", "DYNAMIC")
 
+    spark.conf.set("spark.sql.parquet.mergeSchema", "true")
+
     return spark
 
 
