@@ -59,6 +59,20 @@ cloud_on_prim_path_conversion:
       target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/STREAM"
       target_path_on_prem_prefix: "/projects/prod/c360/data/STREAMING"
 
+  -
+      search_pattern: "/NETWORK/"
+      source_path_on_cloud_prefix: "/mnt/customer360-blob-data/C360/NETWORK"
+      source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/NETWORK"
+      target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/NETWORK"
+      target_path_on_prem_prefix: "/projects/prod/c360/data/NETWORK"
+
+  -
+      search_pattern: "/PRODUCT/"
+      source_path_on_cloud_prefix: "/mnt/customer360-blob-data/C360/PRODUCT"
+      source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/PRODUCT_AND_SERVICES"
+      target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/PRODUCT"
+      target_path_on_prem_prefix: "/projects/prod/c360/data/PRODUCT_AND_SERVICES"
+
 
 metadata_path:
     on_cloud: '/mnt/customer360-blob-output/C360/metadata_table'
