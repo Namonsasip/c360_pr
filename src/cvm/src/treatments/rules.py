@@ -101,11 +101,13 @@ class Rule:
         verify_rule(rule_dict)
         self.rule_name = list(rule_dict.keys())[0]
         rule_details = rule_dict[self.rule_name]
-        self.campaign_code = return_none_if_missing(rule_details, "campaign_code")
-        self.limit_per_code = return_none_if_missing(rule_details, "limit_per_code")
-        self.order_policy = return_none_if_missing(rule_details, "order_policy")
-        self.variant = return_none_if_missing(rule_details, "variant")
-        self.conditions = return_none_if_missing(rule_details, "conditions")
+        self.campaign_code = str(return_none_if_missing(rule_details, "campaign_code"))
+        self.limit_per_code = str(
+            return_none_if_missing(rule_details, "limit_per_code")
+        )
+        self.order_policy = str(return_none_if_missing(rule_details, "order_policy"))
+        self.variant = str(return_none_if_missing(rule_details, "variant"))
+        self.conditions = str(return_none_if_missing(rule_details, "conditions"))
 
     def _add_user_applicable_column(
         self, df: DataFrame, variant_chosen: str = None
