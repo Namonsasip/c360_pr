@@ -134,6 +134,8 @@ class Rule:
         Args:
             df: table to add order column to.
         """
+        if self.order_policy is None:
+            raise Exception("No order policy for rule {}".format(self.rule_name))
         df = df.selectExpr("*", "{} as sort_on_col".format(self.order_policy))
         order_window = Window.partitionBy("user_applicable").orderBy(
             func.col("sort_on_col").desc()
