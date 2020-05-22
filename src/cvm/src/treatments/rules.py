@@ -183,6 +183,7 @@ class Rule:
             self.order_policy = treatment_order_policy
         if self.order_policy is None:
             raise Exception("No order policy for rule {}".format(self.rule_name))
+        logging.info("Order policy is: {}".format(self.order_policy))
         df = self._add_user_applicable_column(df, variant_chosen)
         logging.info("added applicable")  # TODO drop
         df = self._add_row_number_on_order_policy(df)
