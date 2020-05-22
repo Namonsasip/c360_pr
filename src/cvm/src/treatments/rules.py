@@ -105,7 +105,7 @@ class Rule:
         self.limit_per_code = str(
             return_none_if_missing(rule_details, "limit_per_code")
         )
-        self.order_policy = str(return_none_if_missing(rule_details, "order_policy"))
+        self.order_policy = return_none_if_missing(rule_details, "order_policy")
         self.variant = str(return_none_if_missing(rule_details, "variant"))
         self.conditions = return_none_if_missing(rule_details, "conditions")
 
@@ -181,15 +181,10 @@ class Rule:
         )
         if self.order_policy is None:
             self.order_policy = treatment_order_policy
-        if self.order_policy is None:
-            raise Exception("No order policy for rule {}".format(self.rule_name))
         logging.info("Order policy is: {}".format(self.order_policy))
         df = self._add_user_applicable_column(df, variant_chosen)
-        logging.info("added applicable")  # TODO drop
         df = self._add_row_number_on_order_policy(df)
-        logging.info("row_number added")  # TODO drop
         df = self._mark_campaign_for_top_users(df, int(self.limit_per_code))
-        logging.info("top users generated")  # TODO drop
         df = df.drop("policy_row_number", "user_applicable", "sort_on_col")
         return df
 
@@ -208,9 +203,6 @@ class Treatment:
             return_none_if_missing(treatment_details, "treatment_size")
         )
         self.order_policy = treatment_details["order_policy"]
-        logging.info(
-            "treatment order policy: {}".format(self.order_policy)
-        )  # TODO drop
         self.use_case = str(return_none_if_missing(treatment_details, "use_case"))
         rules_dict = treatment_details["rules"]
         rules_list = [
