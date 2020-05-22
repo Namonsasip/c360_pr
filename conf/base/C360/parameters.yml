@@ -62,5 +62,5 @@ cloud_on_prim_path_conversion:
 
 metadata_path:
     on_cloud: '/mnt/customer360-blob-output/C360/metadata_table'
-    on_premise: '/mnt/customer360-blob-output/C360/metadata_table'
+    on_premise: '/projects/prod/c360/data/metadata/metadata_table'
 
