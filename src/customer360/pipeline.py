@@ -55,17 +55,12 @@ from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.
 from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l4.to_l4_pipeline import (
     customer_profile_to_l4_pipeline,
 )
-from cvm.data_prep.pipeline import (
-    create_cvm_prepare_inputs_samples,
-    create_cvm_targets,
-    create_cvm_training_data,
-    create_cvm_scoring_data,
-)
-from cvm.modelling.pipeline import create_train_model, create_predictions
-from cvm.preprocessing.pipeline import (
-    create_cvm_preprocessing_scoring,
-    create_cvm_preprocessing,
-)
+from cvm.data_prep.pipeline import training_data_prepare, scoring_data_prepare, \
+    extract_features, rfe_only
+from cvm.modelling.pipeline import train_model, score_model
+from cvm.preprocessing.pipeline import preprocessing_fit, preprocessing_transform
+from cvm.report.pipeline import prepare_user_microsegments, create_kpis, run_report
+from cvm.treatments.pipeline import generate_treatments
 from nba.backtesting.backtesting_pipeline import create_nba_backtesting_pipeline
 from nba.model_input.model_input_pipeline import create_nba_model_input_pipeline
 from nba.models.models_pipeline import create_nba_models_pipeline
