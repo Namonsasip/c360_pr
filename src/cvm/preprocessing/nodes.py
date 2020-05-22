@@ -28,6 +28,7 @@
 import logging
 from typing import Any, Dict, List, Tuple
 
+from customer360.utilities.spark_util import get_spark_session
 from cvm.src.preprocesssing.preprocessing import (
     drop_blacklisted_columns,
     filter_out_nulls,
@@ -108,6 +109,8 @@ def pipeline_transform(
 
     log = logging.getLogger(__name__)
     df = prepare_key_columns(df)
+    # set spark conf
+    get_spark_session()
     important_param = get_clean_important_variables(important_param, parameters)
     log.info(f"Started with {len(df.columns)} columns")
 
