@@ -208,6 +208,9 @@ class Treatment:
             return_none_if_missing(treatment_details, "treatment_size")
         )
         self.order_policy = treatment_details["order_policy"]
+        logging.info(
+            "treatment order policy: {}".format(self.order_policy)
+        )  # TODO drop
         self.use_case = str(return_none_if_missing(treatment_details, "use_case"))
         rules_dict = treatment_details["rules"]
         rules_list = [
