@@ -239,7 +239,7 @@ class Treatment:
     def _truncate_assigned_campaigns(self, df: DataFrame, variant_chosen: str = None):
         """Reduce number of people assigned to campaigns to fulfill treatment size
         condition. Top users according to order policy are picked"""
-        current_treatment_variant = func.col("treatment_name") == self.treatment_id
+        current_treatment_variant = func.col("treatment_name") == self.treatment_name
         if variant_chosen is not None:
             current_treatment_variant &= func.col("variant") == variant_chosen
         df = df.selectExpr(
