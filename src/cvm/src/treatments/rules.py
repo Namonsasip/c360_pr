@@ -182,7 +182,7 @@ class Rule:
             self.order_policy = treatment_order_policy
         df = self._add_user_applicable_column(df, variant_chosen)
         df = self._add_row_number_on_order_policy(df)
-        df = self._mark_campaign_for_top_users(df, self.limit_per_code)
+        df = self._mark_campaign_for_top_users(df, int(self.limit_per_code))
         df = df.drop("policy_row_number", "user_applicable", "sort_on_col")
         return df
 
