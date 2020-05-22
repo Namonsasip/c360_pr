@@ -259,6 +259,10 @@ class Treatment:
         )
         users_before = df.filter("has_current_treatment == 1").count()
         users_after = df.filter(to_truncate).count()
+        treatment_users = df.filter(
+            func.col("treatment_name") == self.treatment_name
+        ).count()
+        variant_users = df.filter(func.col("variant") == variant_chosen).count()
         df = df.withColumn(
             "campaign_code",
             func.when(to_truncate, func.lit(None)).otherwise(func.col("campaign_code")),
@@ -270,8 +274,9 @@ class Treatment:
         )
         to_drop = ["sort_on_col", "has_current_treatment", "lp_in_treatment"]
         logging.info(
-            "Treatment truncated from {} users to {} users".format(
-                users_before, users_after
+            """Treatment truncated from {} users to {} users,
+             in treatment: {}, in variant: {}""".format(
+                users_before, users_after, treatment_users, variant_users
             )
         )
         return df.drop(*to_drop)
