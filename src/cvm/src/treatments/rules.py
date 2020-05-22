@@ -257,6 +257,8 @@ class Treatment:
         to_truncate = (func.col("has_current_treatment") == 1) & (
             func.col("lp_in_treatment") >= self.treatment_size
         )
+        users_before = df.filter("has_current_treatment == 1").count()
+        users_after = df.filter(to_truncate).count()
         df = df.withColumn(
             "campaign_code",
             func.when(to_truncate, func.lit(None)).otherwise(func.col("campaign_code")),
@@ -267,6 +269,11 @@ class Treatment:
             ),
         )
         to_drop = ["sort_on_col", "has_current_treatment", "lp_in_treatment"]
+        logging.info(
+            "Treatment truncated from {} users tp {} users".format(
+                users_before, users_after
+            )
+        )
         return df.drop(*to_drop)
 
     def _assign_users_to_variants(self, df: DataFrame):
