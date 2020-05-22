@@ -13,15 +13,15 @@ conf = os.getenv("CONF", None)
 running_environment = os.getenv("RUNNING_ENVIRONMENT", None)
 PROJECT_NAME = "project-samudra"
 
-CNTX = load_context(Path.cwd(), env=conf)
 
-
-def get_spark_session(spark_conf_dict= CNTX.catalog.load("params:spark_conf")) -> SparkSession:
+def get_spark_session() -> SparkSession:
     """
     :return:
     """
     if running_environment.lower() == 'on_premise':
-        spark_conf = SparkConf().setAll(spark_conf_dict.items())
+        CNTX = load_context(Path.cwd(), env=conf)
+        parameter = CNTX.catalog.load("params:spark_conf")
+        spark_conf = SparkConf().setAll(parameter.items())
 
         spark_session_conf = (
             SparkSession.builder.appName(
