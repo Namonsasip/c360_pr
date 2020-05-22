@@ -107,7 +107,7 @@ class Rule:
         )
         self.order_policy = str(return_none_if_missing(rule_details, "order_policy"))
         self.variant = str(return_none_if_missing(rule_details, "variant"))
-        self.conditions = str(return_none_if_missing(rule_details, "conditions"))
+        self.conditions = return_none_if_missing(rule_details, "conditions")
 
     def _add_user_applicable_column(
         self, df: DataFrame, variant_chosen: str = None
