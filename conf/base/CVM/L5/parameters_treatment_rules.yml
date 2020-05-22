@@ -439,7 +439,7 @@ treatment_rules:
           - "churn_microsegment == 'zero_arpu_m7'"
   treatment_no_test_ard_high_arpu_high_tenure:
     treatment_name: "no_test_ard_high_arpu_high_tenure"
-    treatment_size: 8000
+    treatment_size: 4000
     use_case: "ard"
     order_policy: "dilution1_pred + dilution2_pred"
     rules:
@@ -529,7 +529,7 @@ treatment_rules:
           - "ard_microsegment == 'high_arpu_high_tenure_m8'"
   treatment_no_test_ard_high_arpu_low_tenure:
     treatment_name: "no_test_ard_high_arpu_low_tenure"
-    treatment_size: 12000
+    treatment_size: 6000
     use_case: "ard"
     order_policy: "dilution1_pred + dilution2_pred"
     rules:
@@ -631,7 +631,7 @@ treatment_rules:
           - "ard_microsegment == 'high_arpu_low_tenure_m8'"
   treatment_no_test_ard_low_arpu_high_tenure:
     treatment_name: "no_test_ard_low_arpu_high_tenure"
-    treatment_size: 12000
+    treatment_size: 6000
     use_case: "ard"
     order_policy: "dilution1_pred + dilution2_pred"
     rules:
@@ -733,7 +733,7 @@ treatment_rules:
           - "ard_microsegment == 'low_arpu_high_tenure_m8'"
   treatment_no_test_ard_low_arpu_low_tenure:
     treatment_name: "no_test_ard_low_arpu_low_tenure"
-    treatment_size: 12000
+    treatment_size: 6000
     use_case: "ard"
     order_policy: "dilution1_pred + dilution2_pred"
     rules:
