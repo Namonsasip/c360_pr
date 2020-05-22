@@ -284,6 +284,7 @@ def run_selected_nodes(pipeline_name, node_names=None, env="base"):
     # entry point for running pip-install projects
     # using `<project_package>` command
     project_context = load_context(Path.cwd(), env=env)
+    spark = get_spark_session()
     project_context.run(node_names=node_names, pipeline_name=pipeline_name)
 
 
