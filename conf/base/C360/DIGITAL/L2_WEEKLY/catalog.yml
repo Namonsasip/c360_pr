@@ -1,8 +1,8 @@
 l2_digital_cxenxse_site_traffic_weekly:
-  filepath: /mnt/customer360-blob-output/C360/DIGITAL/l2_features/l2_digital_cxenxse_site_traffic_weekly/
+  filepath: base_path/DIGITAL/l2_features/l2_digital_cxenxse_site_traffic_weekly/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -18,10 +18,10 @@ l2_digital_cxenxse_site_traffic_weekly:
 
 
 l2_digital_cxenxse_site_traffic_popular_host_weekly:
-  filepath: /mnt/customer360-blob-output/C360/DIGITAL/l2_features/l2_digital_cxenxse_site_traffic_popular_host_weekly/
+  filepath: base_path/DIGITAL/l2_features/l2_digital_cxenxse_site_traffic_popular_host_weekly/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -36,10 +36,10 @@ l2_digital_cxenxse_site_traffic_popular_host_weekly:
     lookback: '12'
 
 l2_digital_cxenxse_site_traffic_popular_postalcode_weekly:
-  filepath: /mnt/customer360-blob-output/C360/DIGITAL/l2_features/l2_digital_cxenxse_site_traffic_popular_postalcode_weekly/
+  filepath: base_path/DIGITAL/l2_features/l2_digital_cxenxse_site_traffic_popular_postalcode_weekly/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -54,10 +54,10 @@ l2_digital_cxenxse_site_traffic_popular_postalcode_weekly:
     lookback: '12'
 
 l2_digital_cxenxse_site_traffic_popular_referrerquery_weekly:
-  filepath: /mnt/customer360-blob-output/C360/DIGITAL/l2_features/l2_digital_cxenxse_site_traffic_popular_referrerquery_weekly/
+  filepath: base_path/DIGITAL/l2_features/l2_digital_cxenxse_site_traffic_popular_referrerquery_weekly/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -72,10 +72,10 @@ l2_digital_cxenxse_site_traffic_popular_referrerquery_weekly:
     lookback: '12'
 
 l2_digital_cxenxse_site_traffic_popular_referrerhost_weekly:
-  filepath: /mnt/customer360-blob-output/C360/DIGITAL/l2_features/l2_digital_cxenxse_site_traffic_popular_referrerhost_weekly/
+  filepath: base_path/DIGITAL/l2_features/l2_digital_cxenxse_site_traffic_popular_referrerhost_weekly/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"

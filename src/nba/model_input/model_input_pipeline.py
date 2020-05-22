@@ -9,6 +9,8 @@ from nba.model_input.model_input_nodes import (
     node_l5_nba_master_table_chunk_debug_arpu,
     node_l5_nba_master_table_chunk_debug_acceptance,
     node_l5_nba_customer_profile,
+    node_prioritized_campaigns_analysis,
+    node_l5_nba_campaign_master,
 )
 
 
@@ -25,11 +27,23 @@ def create_nba_model_input_pipeline() -> Pipeline:
                 tags=["l5_nba_customer_profile"],
             ),
             node(
+                node_l5_nba_campaign_master,
+                inputs={
+                    "campaign_history_master_active": "campaign_history_master_active",
+                },
+                outputs="l5_nba_campaign_master",
+                name="l5_nba_campaign_master",
+                tags=["l5_nba_campaign_master"],
+            ),
+            node(
                 node_l5_nba_master_table_spine,
                 inputs={
                     "l0_campaign_tracking_contact_list_pre": "l0_campaign_tracking_contact_list_pre_full_load",
                     "l4_revenue_prepaid_daily_features": "l4_revenue_prepaid_daily_features",
-                    "campaign_history_master_active": "campaign_history_master_active",
+                    "l5_nba_campaign_master": "l5_nba_campaign_master",
+                    "prioritized_campaign_child_codes": "params:nba_prioritized_campaigns_child_codes",
+                    "nba_model_group_column_prioritized": "params:nba_model_group_column_prioritized",
+                    "nba_model_group_column_non_prioritized": "params:nba_model_group_column_non_prioritized",
                     "date_min": "params:nba_master_table_date_min",
                     "date_max": "params:nba_master_table_date_max",
                     "min_feature_days_lag": "params:nba_min_feature_days_lag",
@@ -97,6 +111,19 @@ def create_nba_model_input_pipeline() -> Pipeline:
                 ],
                 name="l5_nba_master_table_chunk_debug_arpu",
                 tags=["l5_nba_master_table_chunk_debug_arpu",],
+            ),
+            node(
+                node_prioritized_campaigns_analysis,
+                inputs={
+                    "df_master": "l5_nba_master_table",
+                    "prioritized_campaign_child_codes": "params:nba_prioritized_campaigns_child_codes",
+                    "nba_model_group_column_prioritized": "params:nba_model_group_column_prioritized",
+                    "nba_model_group_column_non_prioritized": "params:nba_model_group_column_non_prioritized",
+                    "extra_keep_columns": "params:nba_extra_tag_columns_pai",
+                },
+                outputs="prioritized_campaigns_analysis",
+                name="prioritized_campaigns_analysis",
+                tags=["prioritized_campaigns_analysis"],
             ),
         ],
         tags="nba_model_input",

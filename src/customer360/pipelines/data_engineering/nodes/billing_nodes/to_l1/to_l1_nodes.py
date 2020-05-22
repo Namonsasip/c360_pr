@@ -150,7 +150,7 @@ def billing_before_topup_balance(input_df, customer_prof, sql) -> DataFrame:
     return return_df
 
 
-def billing_topup_channels(input_df, customer_prof, topup_type_ref, sql) -> DataFrame:
+def billing_topup_channels(input_df, customer_prof, sql) -> DataFrame:
     """
     :return:
     """

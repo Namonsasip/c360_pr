@@ -321,7 +321,7 @@ class TestUnitProfile:
                                                StructField("contract_start_month", StringType(), True),
                                                StructField("mobile_segment", StringType(), True),
                                                StructField("network_type", StringType(), True),
-                                               StructField("trade_cmd_channel_type", StringType(), True),
+                                               StructField("order_channel_new", StringType(), True),
                                                StructField("first_act_region", StringType(), True),
                                                StructField("main_promo_name", StringType(), True),
                                                StructField("main_promo_id", StringType(), True),

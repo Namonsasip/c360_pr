@@ -6,7 +6,7 @@ spark_conf:
   spark.dynamicAllocation.initialExecutors: 1
   spark.dynamicAllocation.maxExecutors: 60
   spark.dynamicAllocation.minExecutors: 1
-  spark.executor.cores: 8
+  spark.executor.cores: 4
   spark.executor.memory: 16g
   spark.hadoop.fs.permissions.umask-mode: "002"
   spark.kryoserializer.buffer.max: 512m

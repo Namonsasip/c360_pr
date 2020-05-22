@@ -1,7 +1,7 @@
 #l1_usage_outgoing_call_relation_sum_daily:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/USAGE/l1_features/l1_usage_outgoing_call_relation_sum_daily/
+#  filepath: base_path/USAGE/l1_features/l1_usage_outgoing_call_relation_sum_daily/
 #  save_args:
 #    mode: "overwrite"
 #    partitionBy: ["event_partition_date"]
@@ -9,7 +9,7 @@
 #l1_usage_incoming_call_relation_sum_daily:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/USAGE/l1_features/l1_usage_incoming_call_relation_sum_daily/
+#  filepath: base_path/USAGE/l1_features/l1_usage_incoming_call_relation_sum_daily/
 #  save_args:
 #    mode: "overwrite"
 #    partitionBy: ["event_partition_date"]
@@ -17,7 +17,7 @@
 #l1_usage_outgoing_call_relation_sum_ir_daily:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/USAGE/l1_features/l1_usage_outgoing_call_relation_sum_ir_daily/
+#  filepath: base_path/USAGE/l1_features/l1_usage_outgoing_call_relation_sum_ir_daily/
 #  save_args:
 #    mode: "overwrite"
 #    partitionBy: ["event_partition_date"]
@@ -25,7 +25,7 @@
 #l1_usage_incoming_call_relation_sum_ir_daily:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/USAGE/l1_features/l1_usage_incoming_call_relation_sum_ir_daily/
+#  filepath: base_path/USAGE/l1_features/l1_usage_incoming_call_relation_sum_ir_daily/
 #  save_args:
 #    mode: "overwrite"
 #    partitionBy: ["event_partition_date"]
@@ -33,7 +33,7 @@
 #l1_usage_ru_a_gprs_cbs_usage_daily:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/USAGE/l1_features/l1_usage_ru_a_gprs_cbs_usage_daily/
+#  filepath: base_path/USAGE/l1_features/l1_usage_ru_a_gprs_cbs_usage_daily/
 #  save_args:
 #    mode: "overwrite"
 #    partitionBy: ["event_partition_date"]
@@ -41,7 +41,7 @@
 #l1_usage_ru_a_vas_postpaid_usg_daily:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/USAGE/l1_features/l1_usage_ru_a_vas_postpaid_usg_daily/
+#  filepath: base_path/USAGE/l1_features/l1_usage_ru_a_vas_postpaid_usg_daily/
 #  save_args:
 #    mode: "overwrite"
 #    partitionBy: ["event_partition_date"]
@@ -49,7 +49,7 @@
 #l1_usage_ru_a_vas_postpaid_prepaid_daily:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/USAGE/l1_features/l1_usage_ru_a_vas_postpaid_prepaid_daily/
+#  filepath: base_path/USAGE/l1_features/l1_usage_ru_a_vas_postpaid_prepaid_daily/
 #  save_args:
 #    mode: "overwrite"
 #    partitionBy: ["event_partition_date"]
@@ -57,7 +57,7 @@
 #l1_usage_postpaid_prepaid_daily:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/USAGE/l1_features/l1_usage_postpaid_prepaid_daily/
+#  filepath: base_path/USAGE/l1_features/l1_usage_postpaid_prepaid_daily/
 #  save_args:
 #    mode: "overwrite"
 #    partitionBy: ["event_partition_date"]
@@ -71,8 +71,8 @@
 l1_usage_outgoing_call_relation_sum_ir_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/USAGE/l1_features/l1_usage_outgoing_call_relation_sum_ir_daily/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/USAGE/l1_features/l1_usage_outgoing_call_relation_sum_ir_daily/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_usage_postpaid_prepaid_daily'
@@ -89,8 +89,8 @@ l1_usage_outgoing_call_relation_sum_ir_daily:
 l1_usage_incoming_call_relation_sum_ir_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/USAGE/l1_features/l1_usage_incoming_call_relation_sum_ir_daily/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/USAGE/l1_features/l1_usage_incoming_call_relation_sum_ir_daily/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_usage_postpaid_prepaid_daily'
@@ -107,9 +107,9 @@ l1_usage_incoming_call_relation_sum_ir_daily:
 
 l1_usage_ru_a_gprs_cbs_usage_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/USAGE/l1_features/l1_usage_ru_a_gprs_cbs_usage_daily/
+  filepath: base_path/USAGE/l1_features/l1_usage_ru_a_gprs_cbs_usage_daily/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_usage_postpaid_prepaid_daily'
@@ -125,9 +125,9 @@ l1_usage_ru_a_gprs_cbs_usage_daily:
 
 l1_usage_ru_a_vas_postpaid_usg_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/USAGE/l1_features/l1_usage_ru_a_vas_postpaid_usg_daily/
+  filepath: base_path/USAGE/l1_features/l1_usage_ru_a_vas_postpaid_usg_daily/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_usage_postpaid_prepaid_daily'
@@ -144,8 +144,8 @@ l1_usage_ru_a_vas_postpaid_usg_daily:
 l1_usage_ru_a_vas_postpaid_prepaid_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/USAGE/l1_features/l1_usage_ru_a_vas_postpaid_prepaid_daily/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/USAGE/l1_features/l1_usage_ru_a_vas_postpaid_prepaid_daily/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_usage_postpaid_prepaid_daily'
@@ -163,8 +163,8 @@ l1_usage_ru_a_vas_postpaid_prepaid_daily:
 l1_usage_outgoing_call_relation_sum_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/USAGE/l1_features/l1_usage_outgoing_call_relation_sum_daily/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/USAGE/l1_features/l1_usage_outgoing_call_relation_sum_daily/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_usage_postpaid_prepaid_daily'
@@ -182,8 +182,8 @@ l1_usage_outgoing_call_relation_sum_daily:
 l1_usage_incoming_call_relation_sum_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/USAGE/l1_features/l1_usage_incoming_call_relation_sum_daily/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/USAGE/l1_features/l1_usage_incoming_call_relation_sum_daily/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_usage_postpaid_prepaid_daily'
@@ -201,8 +201,8 @@ l1_usage_incoming_call_relation_sum_daily:
 l1_usage_postpaid_prepaid_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/USAGE/l1_features/l1_usage_postpaid_prepaid_daily/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/USAGE/l1_features/l1_usage_postpaid_prepaid_daily/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -214,8 +214,8 @@ l1_usage_postpaid_prepaid_daily:
 l1_usage_postpaid_prepaid_daily_for_l2_postpaid_prepaid_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/USAGE/l1_features/l1_usage_postpaid_prepaid_daily/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/USAGE/l1_features/l1_usage_postpaid_prepaid_daily/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_usage_postpaid_prepaid_weekly'
@@ -227,8 +227,8 @@ l1_usage_postpaid_prepaid_daily_for_l2_postpaid_prepaid_weekly:
 l1_usage_postpaid_prepaid_daily_for_l4_postpaid_prepaid_daily_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/USAGE/l1_features/l1_usage_postpaid_prepaid_daily/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/USAGE/l1_features/l1_usage_postpaid_prepaid_daily/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l4_usage_prepaid_postpaid_daily_features'
@@ -239,8 +239,8 @@ l1_usage_postpaid_prepaid_daily_for_l4_postpaid_prepaid_daily_feature:
 l1_usage_postpaid_prepaid_daily_for_l3_postpaid_prepaid_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/USAGE/l1_features/l1_usage_postpaid_prepaid_daily/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/USAGE/l1_features/l1_usage_postpaid_prepaid_daily/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_usage_postpaid_prepaid_monthly'
