@@ -50,7 +50,7 @@ def prepare_key_columns(df: DataFrame,) -> DataFrame:
 
     if len(list_intersection(df.columns, key_date_columns)) > 1:
         logging.info("More then one date column found. Picking event_partition_date")
-        to_drop = list_sub(key_date_columns, "event_partition_date")
+        to_drop = list_sub(key_date_columns, ["event_partition_date"])
         to_drop = list_intersection(df.columns, to_drop)
         df = df.drop(*to_drop)
 
