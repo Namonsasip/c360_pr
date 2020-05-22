@@ -270,7 +270,7 @@ class Treatment:
         )
         to_drop = ["sort_on_col", "has_current_treatment", "lp_in_treatment"]
         logging.info(
-            "Treatment truncated from {} users tp {} users".format(
+            "Treatment truncated from {} users to {} users".format(
                 users_before, users_after
             )
         )
@@ -304,8 +304,12 @@ class Treatment:
         if variant_chosen is not None:
             logging.info("Applying treatments for variant {}".format(variant_chosen))
         rules = self._get_rules_for_variant(variant_chosen)
-        variant_applied = self._apply_rules(df, rules, variant_chosen)
-        return self._truncate_assigned_campaigns(variant_applied, variant_chosen)
+        df = self._apply_rules(df, rules, variant_chosen)
+        df = Treatment._fill_for_users_with_campaign(
+            df, "treatment_name", self.treatment_name
+        )
+        df = Treatment._fill_for_users_with_campaign(df, "use_case", self.use_case)
+        return self._truncate_assigned_campaigns(df, variant_chosen)
 
     def _apply_all_variants(self, df: DataFrame) -> DataFrame:
         """Apply all variants possible, assumes df has column variant, ie assigning
@@ -342,10 +346,6 @@ class Treatment:
         if self._multiple_variants():
             df = self._assign_users_to_variants(df)
         df = self._apply_all_variants(df)
-        df = Treatment._fill_for_users_with_campaign(
-            df, "treatment_name", self.treatment_name
-        )
-        df = Treatment._fill_for_users_with_campaign(df, "use_case", self.use_case)
         return df
 
 
