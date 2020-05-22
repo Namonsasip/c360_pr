@@ -134,7 +134,6 @@ class Rule:
         Args:
             df: table to add order column to.
         """
-        logging.info("Using order policy: {}".format(self.order_policy))
         df = df.selectExpr("*", "{} as sort_on_col".format(self.order_policy))
         order_window = Window.partitionBy("user_applicable").orderBy(
             func.col("sort_on_col").desc()
@@ -181,7 +180,6 @@ class Rule:
         )
         if self.order_policy is None:
             self.order_policy = treatment_order_policy
-        logging.info("Order policy is: {}".format(self.order_policy))
         df = self._add_user_applicable_column(df, variant_chosen)
         df = self._add_row_number_on_order_policy(df)
         df = self._mark_campaign_for_top_users(df, int(self.limit_per_code))
