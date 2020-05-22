@@ -192,14 +192,16 @@ class Treatment:
         verify_treatment(treatment_dict)
         self.treatment_id = list(treatment_dict.keys())[0]
         treatment_details = treatment_dict[self.treatment_id]
-        self.treatment_name = return_none_if_missing(
-            treatment_details, "treatment_name"
+        self.treatment_name = str(
+            return_none_if_missing(treatment_details, "treatment_name")
         )
-        self.treatment_size = return_none_if_missing(
-            treatment_details, "treatment_size"
+        self.treatment_size = str(
+            return_none_if_missing(treatment_details, "treatment_size")
         )
-        self.order_policy = return_none_if_missing(treatment_details, "order_policy")
-        self.use_case = return_none_if_missing(treatment_details, "use_case")
+        self.order_policy = str(
+            return_none_if_missing(treatment_details, "order_policy")
+        )
+        self.use_case = str(return_none_if_missing(treatment_details, "use_case"))
         rules_dict = treatment_details["rules"]
         rules_list = [
             {campaign_code: rules_dict[campaign_code]}
