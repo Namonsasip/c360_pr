@@ -256,6 +256,7 @@ class Treatment:
         df = df.withColumn(
             "lp_in_treatment", func.row_number().over(treatment_lp_window)
         )
+        users_before = df.filter(current_treatment_variant).count()  # TODO drop
         to_truncate = (func.col("has_current_treatment") == 1) & (
             func.col("lp_in_treatment") >= self.treatment_size
         )
@@ -270,10 +271,11 @@ class Treatment:
         )
         to_drop = ["sort_on_col", "has_current_treatment", "lp_in_treatment"]
         logging.info(
-            "Picked {} users for treatment {}, variant {}".format(
+            "Picked {} users for treatment {}, variant {}, started with {}".format(
                 df.filter(current_treatment_variant).count(),
                 self.treatment_name,
                 variant_chosen,
+                users_before,
             )
         )  # TODO drop
         return df.drop(*to_drop)
