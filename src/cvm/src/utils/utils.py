@@ -27,11 +27,12 @@
 # limitations under the License.
 import functools
 import string
-from datetime import date
+from datetime import datetime
 from random import random
 from typing import Any, Callable, Dict, List
 
 import pandas
+import pytz
 from cvm.src.utils.list_targets import list_targets
 from pyspark.sql import DataFrame
 
@@ -206,7 +207,8 @@ def get_today(parameters: Dict[str, Any],) -> str:
     """
     chosen_date = parameters["scoring"]["chosen_date"]
     if chosen_date == "" or chosen_date is None:
-        today = date.today().strftime("%Y-%m-%d")
+        utc_now = pytz.utc.localize(datetime.utcnow())
+        today = utc_now.astimezone(pytz.timezone("Asia/Bangkok")).strftime("%Y-%m-%d")
     else:
         today = chosen_date
     return today
