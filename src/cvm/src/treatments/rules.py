@@ -153,8 +153,10 @@ class Rule:
             func.col("policy_row_number") <= users_num
         )
         logging.info(
-            "For rule {}, assigned {} users".format(
-                self.rule_name, df.filter(assign_condition).count()
+            "For rule {}, assigned {} users out of {} applicable".format(
+                self.rule_name,
+                df.filter(assign_condition).count(),
+                df.filter("user_applicable == 1").count(),
             )
         )  # TODO drop
         return df.withColumn(
