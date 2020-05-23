@@ -269,6 +269,13 @@ class Treatment:
             ),
         )
         to_drop = ["sort_on_col", "has_current_treatment", "lp_in_treatment"]
+        logging.info(
+            "Picked {} users for treatment {}, variant {}".format(
+                df.filter(current_treatment_variant).count(),
+                self.treatment_name,
+                variant_chosen,
+            )
+        )  # TODO drop
         return df.drop(*to_drop)
 
     def _assign_users_to_variants(self, df: DataFrame):
