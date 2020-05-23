@@ -152,6 +152,11 @@ class Rule:
         assign_condition = (func.col("user_applicable") == 1) & (
             func.col("policy_row_number") <= users_num
         )
+        logging.info(
+            "For rule {}, assigned {} users".format(
+                self.rule_name, df.filter(assign_condition).count()
+            )
+        )  # TODO drop
         return df.withColumn(
             "campaign_code",
             func.when(assign_condition, self.campaign_code).otherwise(
