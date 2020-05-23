@@ -1,14 +1,14 @@
 # PREPAID MAIN MASTER
 #l0_product_pru_m_package_master_group:
 #  type: kedro.contrib.io.pyspark.SparkDataSet
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/PRODUCT/product_pru_m_package_master_group/
+#  filepath: dbfs:base_path/PRODUCT/product_pru_m_package_master_group/
 #  file_format: "parquet"
 
 l0_product_pru_m_package_master_group_for_daily:
-  filepath: /mnt/customer360-blob-data/C360/PRODUCT/product_pru_m_package_master_group/
+  filepath: base_path/PRODUCT/product_pru_m_package_master_group/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_product_active_customer_promotion_features_daily'
@@ -17,10 +17,10 @@ l0_product_pru_m_package_master_group_for_daily:
     lookback: '0'
 
 l0_product_pru_m_package_master_group_for_weekly:
-  filepath: /mnt/customer360-blob-data/C360/PRODUCT/product_pru_m_package_master_group/
+  filepath: base_path/PRODUCT/product_pru_m_package_master_group/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_product_activated_deactivated_features_weekly'
@@ -29,10 +29,10 @@ l0_product_pru_m_package_master_group_for_weekly:
     lookback: '0'
 
 l0_product_pru_m_package_master_group_for_l2_product_package_promotion_group_tariff:
-  filepath: /mnt/customer360-blob-data/C360/PRODUCT/product_pru_m_package_master_group/
+  filepath: base_path/PRODUCT/product_pru_m_package_master_group/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_product_package_promotion_group_tariff_weekly'
@@ -42,14 +42,14 @@ l0_product_pru_m_package_master_group_for_l2_product_package_promotion_group_tar
 
 #l0_product_customer_promotion_daily:
 #  type: kedro.contrib.io.pyspark.SparkDataSet
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/PRODUCT/product_customer_promotion_daily/
+#  filepath: dbfs:base_path/PRODUCT/product_customer_promotion_daily/
 #  file_format: "parquet"
 
 l0_product_customer_promotion_for_daily:
-  filepath: /mnt/customer360-blob-data/C360/PRODUCT/product_customer_promotion_daily/
+  filepath: base_path/PRODUCT/product_customer_promotion_daily/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_product_active_customer_promotion_features_daily'
@@ -58,10 +58,10 @@ l0_product_customer_promotion_for_daily:
     lookback: '0'
 
 l0_product_customer_promotion_for_weekly:
-  filepath: /mnt/customer360-blob-data/C360/PRODUCT/product_customer_promotion_daily/
+  filepath: base_path/PRODUCT/product_customer_promotion_daily/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_product_activated_deactivated_features_weekly'
@@ -72,15 +72,15 @@ l0_product_customer_promotion_for_weekly:
 # PREPAID ONTOP MASTER
 #l0_product_pru_m_ontop_master:
 #  type: kedro.contrib.io.pyspark.SparkDataSet
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/PRODUCT/product_pru_m_ontop_master/
+#  filepath: dbfs:base_path/PRODUCT/product_pru_m_ontop_master/
 #  file_format: "parquet"
 
 # PREPAID ONTOP MASTER
 l0_product_pru_m_ontop_master_for_daily:
-  filepath: /mnt/customer360-blob-data/C360/PRODUCT/product_pru_m_ontop_master/
+  filepath: base_path/PRODUCT/product_pru_m_ontop_master/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_product_active_customer_promotion_features_daily'
@@ -89,10 +89,10 @@ l0_product_pru_m_ontop_master_for_daily:
     lookback: '0'
 
 l0_product_pru_m_ontop_master_for_weekly:
-  filepath: /mnt/customer360-blob-data/C360/PRODUCT/product_pru_m_ontop_master/
+  filepath: base_path/PRODUCT/product_pru_m_ontop_master/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_product_activated_deactivated_features_weekly'
@@ -103,14 +103,14 @@ l0_product_pru_m_ontop_master_for_weekly:
 # POSTPAID MAIN MASTER
 #l0_product_ru_m_main_promotion_cvm_proj:
 #  type: kedro.contrib.io.pyspark.SparkDataSet
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/PRODUCT/product_ru_m_main_promotion_cvm_proj/
+#  filepath: dbfs:base_path/PRODUCT/product_ru_m_main_promotion_cvm_proj/
 #  file_format: "parquet"
 
 l0_product_ru_m_main_promotion_cvm_proj_for_daily:
-  filepath: /mnt/customer360-blob-data/C360/PRODUCT/product_ru_m_main_promotion_cvm_proj/
+  filepath: base_path/PRODUCT/product_ru_m_main_promotion_cvm_proj/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_product_active_customer_promotion_features_daily'
@@ -119,10 +119,10 @@ l0_product_ru_m_main_promotion_cvm_proj_for_daily:
     lookback: '0'
 
 l0_product_ru_m_main_promotion_cvm_proj_for_weekly:
-  filepath: /mnt/customer360-blob-data/C360/PRODUCT/product_ru_m_main_promotion_cvm_proj/
+  filepath: base_path/PRODUCT/product_ru_m_main_promotion_cvm_proj/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_product_activated_deactivated_features_weekly'
@@ -133,14 +133,14 @@ l0_product_ru_m_main_promotion_cvm_proj_for_weekly:
 # POSTPAID ONTOP MASTER
 #l0_product_ru_m_ontop_promotion_cvm_proj:
 #  type: kedro.contrib.io.pyspark.SparkDataSet
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/PRODUCT/product_ru_m_ontop_promotion_cvm_proj/
+#  filepath: dbfs:base_path/PRODUCT/product_ru_m_ontop_promotion_cvm_proj/
 #  file_format: "parquet"
 
 l0_product_ru_m_ontop_promotion_cvm_proj_for_daily:
-  filepath: /mnt/customer360-blob-data/C360/PRODUCT/product_ru_m_ontop_promotion_cvm_proj/
+  filepath: base_path/PRODUCT/product_ru_m_ontop_promotion_cvm_proj/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_product_active_customer_promotion_features_daily'
@@ -149,10 +149,10 @@ l0_product_ru_m_ontop_promotion_cvm_proj_for_daily:
     lookback: '0'
 
 l0_product_ru_m_ontop_promotion_cvm_proj_for_weekly:
-  filepath: /mnt/customer360-blob-data/C360/PRODUCT/product_ru_m_ontop_promotion_cvm_proj/
+  filepath: base_path/PRODUCT/product_ru_m_ontop_promotion_cvm_proj/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_product_activated_deactivated_features_weekly'
@@ -163,19 +163,19 @@ l0_product_ru_m_ontop_promotion_cvm_proj_for_weekly:
 
 l0_product_ir_package:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/PRODUCT/product_ir_package/
+  filepath: base_path/PRODUCT/product_ir_package/
   file_format: "parquet"
 
 #l0_product_fbb_a_customer_promotion_current:
 #  type: kedro.contrib.io.pyspark.SparkDataSet
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/PRODUCT/product_fbb_a_customer_promotion_current/
+#  filepath: dbfs:base_path/PRODUCT/product_fbb_a_customer_promotion_current/
 #  file_format: "parquet"
 
 l0_product_fbb_a_customer_promotion_current_for_daily:
-  filepath: /mnt/customer360-blob-data/C360/PRODUCT/product_fbb_a_customer_promotion_current/
+  filepath: base_path/PRODUCT/product_fbb_a_customer_promotion_current/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_product_active_fbb_customer_features_daily'
