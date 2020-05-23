@@ -122,10 +122,11 @@ class Rule:
             "({})".format(condition) for condition in self.conditions
         ]
         conditions_joined = " and ".join(conditions_in_parenthesis)
-        applicable_str = conditions_joined + " and campaign_code is null"
+        applicable_str = conditions_joined + " and (campaign_code is null)"
         if variant_chosen is not None:
-            applicable_str += " and variant == '{}'".format(variant_chosen)
+            applicable_str += " and (variant == '{}')".format(variant_chosen)
         case_then = "case when " + applicable_str + " then 1 else 0 end"
+        logging.info("case then gen: {}".format(case_then))
         return df.selectExpr("*", "{} as user_applicable".format(case_then))
 
     def _add_row_number_on_order_policy(self, df: DataFrame) -> DataFrame:
