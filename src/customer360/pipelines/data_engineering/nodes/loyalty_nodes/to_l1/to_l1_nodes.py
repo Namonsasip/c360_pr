@@ -3,49 +3,81 @@ import os
 import pyspark.sql.functions as f
 from pyspark.sql import DataFrame
 
-from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check
+from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check \
+    , add_event_week_and_month_from_yyyymmdd, union_dataframes_with_missing_cols
 from customer360.utilities.spark_util import get_spark_empty_df
 
 conf = os.getenv("CONF", None)
 
 
 def loyalty_number_of_services_for_each_category(customer_prof: DataFrame
-                                                 , input_df: DataFrame) -> DataFrame:
+                                                 , input_df: DataFrame
+                                                 , aunjai_point_collection: DataFrame) -> DataFrame:
     """
     :param customer_prof:
     :param input_df:
+    :param aunjai_point_collection:
     :return:
     """
 
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([input_df, customer_prof]):
+    if check_empty_dfs([input_df, customer_prof, aunjai_point_collection]):
         return get_spark_empty_df()
 
-    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
-                                                       target_table_name="l1_loyalty_number_of_services_daily")
+    input_df = data_non_availability_and_missing_check(
+        df=input_df, grouping="daily", par_col="partition_date",
+        target_table_name="l1_loyalty_number_of_services_daily")
 
-    customer_prof = data_non_availability_and_missing_check(df=customer_prof, grouping="daily",
-                                                            par_col="event_partition_date",
-                                                            target_table_name="l1_loyalty_number_of_services_daily")
+    input_df = add_event_week_and_month_from_yyyymmdd(input_df=input_df
+                                                      , column="partition_date")
 
-    if check_empty_dfs([input_df, customer_prof]):
+    customer_prof = data_non_availability_and_missing_check(
+        df=customer_prof, grouping="daily",
+        par_col="event_partition_date",
+        target_table_name="l1_loyalty_number_of_services_daily")
+
+    aunjai_point_collection = data_non_availability_and_missing_check(
+        df=aunjai_point_collection, grouping="daily",
+        par_col="partition_date",
+        target_table_name="l1_loyalty_number_of_services_daily")
+    aunjai_point_collection = add_event_week_and_month_from_yyyymmdd(input_df=aunjai_point_collection,
+                                                                     column="partition_date")
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            input_df.select(
+                f.max(f.col("event_partition_date")).alias("max_date")),
+            customer_prof.select(
+                f.max(f.col("event_partition_date")).alias("max_date")),
+            aunjai_point_collection.select(
+                f.max(f.col("event_partition_date")).alias("max_date")),
+        ]
+    ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    input_df = input_df.filter(f.col("event_partition_date") <= min_value)
+    customer_prof = customer_prof.filter(f.col("event_partition_date") <= min_value)
+    aunjai_point_collection = aunjai_point_collection.filter(f.col("event_partition_date") <= min_value)
+
+    if check_empty_dfs([input_df, customer_prof, aunjai_point_collection]):
         return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
 
-    customer_prof = customer_prof.select("national_id_card"
-                                         "access_method_num",
-                                         "subscription_identifier",
-                                         "event_partition_date",
-                                         "start_of_week")
     join_key = ["access_method_num", "event_partition_date", "start_of_week"]
+    customer_cols = ["national_id_card", "access_method_num", "subscription_identifier", "event_partition_date",
+                     "start_of_week"]
+    customer_prof = customer_prof.select(customer_cols)
 
-    input_df = input_df.select(f.col("mobile_no").alias("access_method_num"), "response_date", "project_id",
-                               "register_date") \
-        .withColumn("event_partition_date", f.to_date(f.col("response_date"))) \
-        .withColumn("start_of_week", f.to_date(f.date_trunc('week', f.col("response_date"))))
+    input_df = input_df.where("upper(group_project) = 'PRIVILEGE'") \
+        .select(f.col("mobile_no").alias("access_method_num"), "project_id", "event_partition_date", "start_of_week")
 
-    return_df = customer_prof.join(input_df, join_key)
+    aunjai_point_collection = aunjai_point_collection.where("msg_event_id = 13 and project_type_id = 6"
+                                                            "and upper(project_subtype) like 'REDEEM%' ") \
+        .select(f.col("mobile_no").alias("access_method_num"), "project_id", "event_partition_date", "start_of_week")
+
+    merged_data_set = union_dataframes_with_missing_cols(input_df, aunjai_point_collection)
+
+    return_df = customer_prof.join(merged_data_set, join_key)
 
     return return_df
 
@@ -184,7 +216,7 @@ def loyalty_number_of_points_balance(customer_prof: DataFrame
                 , "mobile_segment", "billing_account", "loyalty_register_program_points"
                 , "start_of_month", "event_partition_date")
 
-    l0_loyalty_priv_point_bonus_ba = l0_loyalty_priv_point_bonus_ba\
+    l0_loyalty_priv_point_bonus_ba = l0_loyalty_priv_point_bonus_ba \
         .select("billing_account", "points", "modified_date"
                 , f.to_date(f.col("expired_date")).alias("bonus_ba_expired_date")) \
         .withColumn("event_partition_date", f.to_date(f.col("modified_date"))) \
