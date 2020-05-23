@@ -335,6 +335,13 @@ class Treatment:
             func.col(column_to_fill).isNull() & func.col("campaign_code").isNotNull()
         )
         logging.info(
+            "Found {} rows with campaign code and no treatment".format(
+                df.filter(
+                    "campaign_code is not null and treatment_name is null"
+                ).count()
+            )
+        )  # TODO drop
+        logging.info(
             "Filled {} rows with {}, column {}".format(
                 df.filter(current_campaign_cond).count(), value_to_fill, column_to_fill
             )
