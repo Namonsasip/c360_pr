@@ -334,6 +334,11 @@ class Treatment:
         current_campaign_cond = (
             func.col(column_to_fill).isNull() & func.col("campaign_code").isNotNull()
         )
+        logging.info(
+            "Filled {} rows with {}, column {}".format(
+                df.filter(current_campaign_cond).count(), value_to_fill, column_to_fill
+            )
+        )  # TODO drop
         return df.withColumn(
             column_to_fill,
             func.when(current_campaign_cond, func.lit(value_to_fill)).otherwise(
