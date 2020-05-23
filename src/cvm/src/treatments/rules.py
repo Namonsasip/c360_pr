@@ -126,8 +126,6 @@ class Rule:
         if variant_chosen is not None:
             applicable_str += " and (variant == '{}')".format(variant_chosen)
         case_then = "case when " + applicable_str + " then 1 else 0 end"
-        case_then = "case when " + conditions_joined + " then 1 else 0 end"  # TODO drop
-        logging.info("case then gen: {}".format(case_then))  # TODO drop
         return df.selectExpr("*", "{} as user_applicable".format(case_then))
 
     def _add_row_number_on_order_policy(self, df: DataFrame) -> DataFrame:
@@ -154,13 +152,6 @@ class Rule:
         assign_condition = (func.col("user_applicable") == 1) & (
             func.col("policy_row_number") <= users_num
         )
-        logging.info(
-            "For rule {}, assigned {} users out of {} applicable".format(
-                self.rule_name,
-                df.filter(assign_condition).count(),
-                df.filter("user_applicable == 1").count(),
-            )
-        )  # TODO drop
         return df.withColumn(
             "campaign_code",
             func.when(assign_condition, self.campaign_code).otherwise(
@@ -265,7 +256,6 @@ class Treatment:
         df = df.withColumn(
             "lp_in_treatment", func.row_number().over(treatment_lp_window)
         )
-        users_before = df.filter(current_treatment_variant).count()  # TODO drop
         to_truncate = (func.col("has_current_treatment") == 1) & (
             func.col("lp_in_treatment") >= self.treatment_size
         )
@@ -279,14 +269,6 @@ class Treatment:
             ),
         )
         to_drop = ["sort_on_col", "has_current_treatment", "lp_in_treatment"]
-        logging.info(
-            "Picked {} users for treatment {}, variant {}, started with {}".format(
-                df.filter(current_treatment_variant).count(),
-                self.treatment_name,
-                variant_chosen,
-                users_before,
-            )
-        )  # TODO drop
         return df.drop(*to_drop)
 
     def _assign_users_to_variants(self, df: DataFrame):
@@ -343,18 +325,6 @@ class Treatment:
         current_campaign_cond = (
             func.col(column_to_fill).isNull() & func.col("campaign_code").isNotNull()
         )
-        logging.info(
-            "Found {} rows with campaign code and no treatment".format(
-                df.filter(
-                    "campaign_code is not null and treatment_name is null"
-                ).count()
-            )
-        )  # TODO drop
-        logging.info(
-            "Filled {} rows with {}, column {}".format(
-                df.filter(current_campaign_cond).count(), value_to_fill, column_to_fill
-            )
-        )  # TODO drop
         return df.withColumn(
             column_to_fill,
             func.when(current_campaign_cond, func.lit(value_to_fill)).otherwise(

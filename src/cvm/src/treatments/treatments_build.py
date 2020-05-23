@@ -88,13 +88,6 @@ def treatments_featurize(
     treatments_features = add_other_sim_card_features(
         propensities_with_features, recent_profile, main_packs, parameters
     )
-    logging.info(
-        "(ard_microsegment == 'high_arpu_high_tenure_m2') count is {}".format(
-            treatments_features.filter(
-                "(ard_microsegment == 'high_arpu_high_tenure_m2')"
-            ).count()
-        )
-    )  # TODO drop
     return treatments_features
 
 
