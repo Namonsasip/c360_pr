@@ -32,8 +32,6 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 """
 import re
 
-from kedro.pipeline import Pipeline, node
-
 from cvm.data_prep.nodes import (
     add_ard_targets,
     add_churn_targets,
@@ -47,6 +45,7 @@ from cvm.data_prep.nodes import (
     train_test_split,
 )
 from cvm.preprocessing.nodes import pipeline_fit
+from kedro.pipeline import Pipeline, node
 
 
 def create_users_from_tg(sample_type: str) -> Pipeline:
@@ -62,7 +61,11 @@ def create_users_from_tg(sample_type: str) -> Pipeline:
         [
             node(
                 create_users_from_cgtg,
-                ["cvm_prepaid_customer_groups", "params:{}".format(sample_type)],
+                [
+                    "cvm_prepaid_customer_groups",
+                    "params:{}".format(sample_type),
+                    "parameters",
+                ],
                 "cvm_users_list_" + sample_type,
                 name="create_users_list_tgcg_" + sample_type,
             ),
@@ -84,6 +87,7 @@ def create_users_from_active(sample_type: str) -> Pipeline:
                 create_sample_dataset,
                 [
                     "l3_customer_profile_include_1mo_non_active",
+                    "parameters",
                     "params:" + sample_type,
                 ],
                 "active_users_sample_" + sample_type,
@@ -123,7 +127,7 @@ def sample_inputs(sample_type: str) -> Pipeline:
     nodes_list = [
         node(
             create_sample_dataset,
-            [dataset_name, "params:" + sample_type],
+            [dataset_name, "parameters", "params:" + sample_type],
             re.sub("_no_inc", "", dataset_name) + "_" + sample_type,
             name="sample_" + dataset_name + "_" + sample_type,
         )

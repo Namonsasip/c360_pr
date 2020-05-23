@@ -25,8 +25,6 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from kedro.pipeline import Pipeline, node
-
 from cvm.data_prep.nodes import create_sample_dataset, subs_date_join
 from cvm.report.nodes import (
     add_micro_macro,
@@ -34,6 +32,7 @@ from cvm.report.nodes import (
     filter_out_micro_macro,
     prepare_users,
 )
+from kedro.pipeline import Pipeline, node
 
 
 def sample_report_inputs() -> Pipeline:
@@ -67,7 +66,7 @@ def prepare_users_report() -> Pipeline:
         [
             node(
                 prepare_users,
-                "cvm_prepaid_customer_groups",
+                ["cvm_prepaid_customer_groups", "parameters"],
                 "users_report",
                 name="create_users_report",
             )

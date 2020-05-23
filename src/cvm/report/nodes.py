@@ -26,23 +26,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import logging
-from datetime import date
 from typing import Any, Dict
 
 from cvm.data_prep.nodes import add_macrosegments
 from cvm.src.report.kpis_build import add_arpus, add_inactivity, add_status
+from cvm.src.utils.utils import get_today
 from cvm.treatments.nodes import prepare_microsegments
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as func
 
 
-def prepare_users(customer_groups: DataFrame) -> DataFrame:
+def prepare_users(customer_groups: DataFrame, parameters: Dict[str, Any],) -> DataFrame:
+
     """ Creates users table for reporting purposes.
 
     Args:
         customer_groups: Table with target, control and bau groups.
+        parameters: parameters defined in parameters.yml.
     """
-    today = date.today().strftime("%Y-%m-%d")
+    today = get_today(parameters)
     return (
         customer_groups.filter("target_group in ('TG', 'CG', 'BAU')")
         .select(["crm_sub_id", "target_group"])

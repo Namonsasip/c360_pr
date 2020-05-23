@@ -27,9 +27,10 @@
 # limitations under the License.
 
 import logging
-from datetime import date
+from typing import Any, Dict
 
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
+from cvm.src.utils.utils import get_today
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as func
 
@@ -53,13 +54,16 @@ def get_latest_date(df: DataFrame, maximum_date: str = None) -> str:
     return max_date
 
 
-def filter_latest_date(df: DataFrame, maximum_date: str = None) -> DataFrame:
+def filter_latest_date(
+    df: DataFrame, parameters: Dict[str, Any], maximum_date: str = None
+) -> DataFrame:
     """ Filters given DataFrame, leaving only latest date entries.
 
     Args:
         df:  Input DataFrame.
         maximum_date: later dates will be ignored, if None then latest date present
             is returned.
+        parameters: parameters defined in parameters.yml.
     """
 
     log = logging.getLogger(__name__)
@@ -73,7 +77,7 @@ def filter_latest_date(df: DataFrame, maximum_date: str = None) -> DataFrame:
     )
 
     if maximum_date is None or maximum_date in ["today", ""]:
-        today = date.today().strftime("%Y-%m-%d")
+        today = get_today(parameters)
     else:
         today = maximum_date
     df = df.withColumn("key_date", func.lit(today))

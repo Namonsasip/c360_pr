@@ -27,7 +27,6 @@
 # limitations under the License.
 import functools
 import logging
-from datetime import date
 from typing import Any, Dict, List, Tuple
 
 import pyspark.sql.functions as func
@@ -38,12 +37,18 @@ from cvm.src.utils.incremental_manipulation import filter_latest_date, filter_us
 from cvm.src.utils.list_targets import list_targets
 from cvm.src.utils.parametrized_features import build_feature_from_parameters
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
-from cvm.src.utils.utils import get_clean_important_variables, impute_from_parameters
+from cvm.src.utils.utils import (
+    get_clean_important_variables,
+    get_today,
+    impute_from_parameters,
+)
 from pyspark.sql import DataFrame
 
 
 def create_users_from_cgtg(
-    customer_groups: DataFrame, sampling_parameters: Dict[str, Any]
+    customer_groups: DataFrame,
+    sampling_parameters: Dict[str, Any],
+    parameters: Dict[str, Any],
 ) -> DataFrame:
     """ Creates users table to use during scoring using customer groups
     table.
@@ -51,13 +56,10 @@ def create_users_from_cgtg(
     Args:
         customer_groups: Table with target, control and bau groups.
         sampling_parameters: sampling parameters defined in parameters.yml.
+        parameters: parameters defined in parameters.yml.
     """
 
-    date_chosen = sampling_parameters["chosen_date"]
-    if date_chosen == "today" or date_chosen == "" or date_chosen is None:
-        today = date.today().strftime("%Y-%m-%d")
-    else:
-        today = date_chosen
+    today = get_today(parameters)
     df = (
         customer_groups.filter("target_group == 'TG'")
         .select("crm_sub_id")
@@ -264,7 +266,7 @@ def subs_date_join(parameters: Dict[str, Any], *args: DataFrame,) -> DataFrame:
 
 
 def create_sample_dataset(
-    df: DataFrame, sampling_parameters: Dict[str, Any],
+    df: DataFrame, parameters: Dict[str, Any], sampling_parameters: Dict[str, Any],
 ) -> DataFrame:
     """ Create sample of given table. Used to limit users and / or pick chosen date from
     data.
@@ -272,6 +274,7 @@ def create_sample_dataset(
     Args:
         df: given table.
         sampling_parameters: sampling parameters defined in parameters.yml.
+        parameters: parameters defined in parameters.yml.
     Returns:
         Sample of table.
     """
@@ -280,7 +283,7 @@ def create_sample_dataset(
 
     sampling_stages = {
         "filter_users": lambda dfx: filter_users(dfx, subscription_id_suffix),
-        "take_last_date": lambda dfx: filter_latest_date(dfx, max_date),
+        "take_last_date": lambda dfx: filter_latest_date(dfx, parameters, max_date),
     }
 
     starting_rows = df.count()
