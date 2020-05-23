@@ -11,6 +11,7 @@ l4_loyalty_number_of_services_features:
           "loyalty_services_shopping", "loyalty_lucky_draw", "loyalty_services_internet",
           "loyalty_services_device_discount", "loyalty_services_line_stickers", "loyalty_services_aunjai_premium",
           "loyalty_services_airport"]
+    max: ["loyalty_privilige_registered_date"]
   read_from: "l2"
 
 l4_loyalty_number_of_rewards_redeemed_features:

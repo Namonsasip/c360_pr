@@ -73,7 +73,8 @@ def loyalty_number_of_services_for_each_category(customer_prof: DataFrame
     input_df = input_df.where("upper(group_project) = 'PRIVILEGE'") \
         .select(f.col("mobile_no").alias("access_method_num"), "project_id", "response_date")
 
-    input_df = add_start_of_week_and_month(input_df, "response_date")
+    input_df = add_start_of_week_and_month(input_df, "response_date")\
+               .withColumnRenamed("response_date", "loyalty_privilige_registered_date")
 
     aunjai_point_collection = aunjai_point_collection.where("msg_event_id = 13 and project_type_id = 6"
                                                             "and upper(project_subtype) like 'REDEEM%' ") \
