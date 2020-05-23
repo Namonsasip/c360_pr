@@ -127,9 +127,7 @@ class Rule:
             applicable_str += " and (variant == '{}')".format(variant_chosen)
         case_then = "case when " + applicable_str + " then 1 else 0 end"
         case_then = (
-            "case when "
-            + "(variant == '{}')".format(variant_chosen)
-            + " then 1 else 0 end"
+            "case when " + "(campaign_code is null)" + " then 1 else 0 end"
         )  # TODO drop
         logging.info("case then gen: {}".format(case_then))  # TODO drop
         return df.selectExpr("*", "{} as user_applicable".format(case_then))
