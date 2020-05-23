@@ -98,7 +98,7 @@ def produce_treatments(
     treatments_history = update_history_with_treatments_propositions(
         treatments_propositions, treatments_history, parameters
     )
-    return treatments_propositions, treatments_history
+    return treatments_propositions.toPandas(), treatments_history
 
 
 def deploy_treatments(

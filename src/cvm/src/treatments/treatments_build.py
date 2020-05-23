@@ -128,7 +128,7 @@ def get_treatments_propositions(
         propensities_with_features, recently_contacted
     )
     # change output format
-    treatments_propositions_pandas = (
+    treatments_propositions = (
         treatments_propositions.withColumn("date", func.lit(get_today(parameters)))
         .withColumn(
             "microsegment",
@@ -152,9 +152,8 @@ def get_treatments_propositions(
                 "date",
             ]
         )
-        .toPandas()
     )
-    return treatments_propositions_pandas
+    return treatments_propositions
 
 
 def update_history_with_treatments_propositions(
