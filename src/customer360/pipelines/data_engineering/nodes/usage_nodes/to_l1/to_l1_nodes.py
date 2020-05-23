@@ -329,7 +329,7 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
         ]
     ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
 
-    drop_cols = ["access_method_num", "called_no", "caller_no", "call_start_dt", "day_id"]
+    drop_cols = ["called_no", "caller_no", "call_start_dt", "day_id"]
     union_df = union_dataframes_with_missing_cols([
         l1_usage_outgoing_call_relation_sum_daily_stg, l1_usage_incoming_call_relation_sum_daily_stg,
         l1_usage_outgoing_call_relation_sum_ir_daily_stg, l1_usage_incoming_call_relation_sum_ir_daily_stg,
@@ -353,14 +353,14 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
     final_df_str = gen_max_sql(union_df, 'roaming_incoming_outgoing_data', group_cols)
     sel_cols = ['access_method_num',
                 'event_partition_date',
-                "subscription_identifier"]
+                "subscription_identifier",
+                "national_id_card",
+                "start_of_week",
+                "start_of_month"
+                ]
 
-    join_cols = ['access_method_num',
-                 'event_partition_date']
+    join_cols = ['access_method_num', 'event_partition_date', "start_of_week", "start_of_month"]
 
-    """
-    :return:
-    """
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = union_df
     dates_list = data_frame.select('event_partition_date').distinct().collect()
@@ -368,7 +368,7 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_array = list(divide_chunks(mvv_array, 5))
+    mvv_array = list(divide_chunks(mvv_array, 30))
     add_list = mvv_array
 
     first_item = add_list[-1]
@@ -382,7 +382,7 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
 
         output_df = cust_df.join(output_df, join_cols, how="left")
         output_df = output_df.where(
-            "subscription_identifier is not null and access_method_num is not null and start_of_week is not null")
+            "subscription_identifier is not null and access_method_num is not null")
         CNTX.catalog.save("l1_usage_postpaid_prepaid_daily", output_df.drop(*drop_cols))
 
     logging.info("running for dates {0}".format(str(first_item)))
@@ -392,6 +392,6 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
     return_df = execute_sql(data_frame=return_df, table_name='roaming_incoming_outgoing_data', sql_str=final_df_str)
     return_df = cust_df.join(return_df, join_cols, how="left")
     return_df = return_df.where(
-        "subscription_identifier is not null and access_method_num is not null and start_of_week is not null")
+        "subscription_identifier is not null and access_method_num is not null")
 
     return return_df.drop(*drop_cols)

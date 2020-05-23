@@ -35,14 +35,14 @@ from customer360.pipelines.data_engineering.nodes.customer_profile_nodes.to_l4.t
 def customer_profile_to_l4_pipeline(**kwargs):
     return Pipeline(
         [
-            node(df_copy_for_l4_customer_profile_ltv_to_date,
-                 "l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l4_customer_profile_ltv_to_date",
-                 "int_l4_customer_profile_ltv_to_date"
-                 ),
+            # node(df_copy_for_l4_customer_profile_ltv_to_date,
+            #      "l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l4_customer_profile_ltv_to_date",
+            #      "int_l4_customer_profile_ltv_to_date"
+            #      ),
             node(
-                node_from_config,
-                ["int_l4_customer_profile_ltv_to_date",
-                 "params:l4_customer_profile_ltv_to_date"],
+                calculate_ltv_to_date,
+                ["l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_for_l4_customer_profile_ltv_to_date",
+                 "l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_for_l4_customer_profile_ltv_to_date"],
                 "l4_customer_profile_ltv_to_date"
             ),
         ]

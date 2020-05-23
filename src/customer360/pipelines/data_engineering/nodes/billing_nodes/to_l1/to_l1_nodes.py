@@ -150,7 +150,7 @@ def billing_before_topup_balance(input_df, customer_prof, sql) -> DataFrame:
     return return_df
 
 
-def billing_topup_channels(input_df, customer_prof, topup_type_ref, sql) -> DataFrame:
+def billing_topup_channels(input_df, customer_prof, sql) -> DataFrame:
     """
     :return:
     """
@@ -162,8 +162,8 @@ def billing_topup_channels(input_df, customer_prof, topup_type_ref, sql) -> Data
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
                                                        target_table_name="l1_billing_and_payments_daily_top_up_channels")
 
-    input_df = input_df.join(topup_type_ref, input_df.recharge_type == topup_type_ref.recharge_topup_event_type_cd,
-                            'left')
+    # input_df = input_df.join(topup_type_ref, input_df.recharge_type == topup_type_ref.recharge_topup_event_type_cd,
+    #                         'left')
 
     customer_prof = data_non_availability_and_missing_check(df=customer_prof, grouping="daily",
                                                             par_col="event_partition_date",

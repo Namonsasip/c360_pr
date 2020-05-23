@@ -17,6 +17,7 @@ from pyspark.sql.functions import countDistinct
 conf = os.getenv("CONF", None)
 run_mode = os.getenv("DATA_AVAILABILITY_CHECKS", None)
 log = logging.getLogger(__name__)
+running_environment = os.getenv("RUNNING_ENVIRONMENT", None)
 
 
 def union_dataframes_with_missing_cols(df_input_or_list, *args):
@@ -351,6 +352,7 @@ def data_non_availability_and_missing_check(df, grouping, par_col, target_table_
                 skipped while checking for missing data.
     :return:
     """
+
     logging.info("Entering data_non_availability_and_missing_check")
     if run_mode is not None:
         if (run_mode.upper() == 'UNIT_TEST') | (run_mode.upper() == 'LOCAL_FS') | (run_mode.upper() == 'NO'):
@@ -358,11 +360,14 @@ def data_non_availability_and_missing_check(df, grouping, par_col, target_table_
             return df
     logging.info("Executing data_non_availability_and_missing_check IMP: OS ENV RUN_MODE NO UNIT TEST CASE SELECTED")
     spark = get_spark_session()
-    running_environment = os.getenv("RUNNING_ENVIRONMENT", None)
+
     if running_environment.lower() == 'on_premise':
-     mtdt_tbl = spark.read.parquet('/projects/prod/c360/data/metadata/metadata_table/')
+        mtdt_tbl = spark.read.parquet('/projects/prod/c360/data/metadata/metadata_table/')
     else:
-     mtdt_tbl = spark.read.parquet('/mnt/customer360-blob-output/C360/metadata_table/')
+        mtdt_tbl = spark.read.parquet('/mnt/customer360-blob-output/C360/metadata_table/')
+
+    #mtdt_tbl = spark.read.parquet('/mnt/customer360-blob-output/C360/metadata_table/')
+
     mtdt_tbl.createOrReplaceTempView("mtdt_tbl")
     df.createOrReplaceTempView("df")
 
