@@ -50,7 +50,7 @@ def sample_report_inputs() -> Pipeline:
     nodes_list = [
         node(
             create_sample_dataset,
-            [dataset_name, "params:" + sample_type],
+            [dataset_name, "parameters", "params:" + sample_type],
             dataset_name + "_" + sample_type,
             name="sample_" + dataset_name + "_" + sample_type,
         )
