@@ -118,7 +118,8 @@ def loyalty_number_of_rewards_redeemed_for_each_category(customer_prof: DataFram
 
     input_df = input_df.where("msg_event_id = 13") \
         .select(f.col("mobile_no").alias("access_method_num"), "project_id", "response_date")
-    input_df = add_start_of_week_and_month(input_df, "response_date")
+    input_df = add_start_of_week_and_month(input_df, "response_date") \
+               .withColumnRenamed("response_date", "loyalty_rewards_registered_date")
 
     return_df = customer_prof.join(input_df, join_key)
 
