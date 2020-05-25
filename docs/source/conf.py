@@ -51,11 +51,6 @@ from kedro.cli.utils import find_stylesheets
 from recommonmark.transform import AutoStructify
 
 from customer360 import __version__ as release
-from secrets import (
-    confluence_server_url,
-    confluence_server_user,
-    confluence_server_pass,
-)
 
 # -- Project information -----------------------------------------------------
 
