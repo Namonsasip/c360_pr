@@ -60,8 +60,12 @@ active_users_sample_scoring:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_active_users_sample_scoring/
 
-microsegments_scoring:
+microsegments_input_scoring:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_microsegments_scoring/
 
+# the same as above - used because of kedro design
+microsegments_output_scoring:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_microsegments_scoring/
 
