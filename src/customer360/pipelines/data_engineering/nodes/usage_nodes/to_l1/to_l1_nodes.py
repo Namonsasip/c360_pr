@@ -460,3 +460,14 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
         "subscription_identifier is not null and access_method_num is not null")
 
     return return_df.drop(*drop_cols)
+
+
+def usage_favourite_number_master_pipeline(input_df, sql) -> DataFrame:
+    """
+    :return:
+    """
+    return_df = node_from_config(input_df, sql)
+    win = Window.partitionBy("caller_no").orderBy(F.col("cnt_call").desc())
+    return_df = return_df.withColumn("rnk", F.row_number().over(win)).filter("rnk <= 10")\
+                         .withColumn("favourite_flag", F.lit('Y'))
+    return return_df
