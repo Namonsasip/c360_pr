@@ -53,7 +53,7 @@ def generate_treatments(sample_type: str) -> Pipeline:
                     "l3_customer_profile_include_1mo_non_active",
                     "parameters",
                 ],
-                "microsegments_{}".format(sample_type),
+                "microsegments_output_{}".format(sample_type),
                 name="create_microsegments_{}".format(sample_type),
             ),
             node(
@@ -63,7 +63,7 @@ def generate_treatments(sample_type: str) -> Pipeline:
                     "treatments_chosen_history_input",
                     "parameters",
                     "features_macrosegments_scoring",
-                    "microsegments_{}".format(sample_type),
+                    "microsegments_input_{}".format(sample_type),
                     "l3_customer_profile_include_1mo_non_active_{}".format(sample_type),
                     "l0_product_pru_m_package_master_group_for_daily",
                 ],
