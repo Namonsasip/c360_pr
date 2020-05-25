@@ -74,12 +74,12 @@ def pop_most_recent(
         return (
             history_before_today,
             history_before_today.filter(
-                "created_date == '{}'".format(most_recent_date_in_history)
-            ).drop("created_date"),
+                "date_created == '{}'".format(most_recent_date_in_history)
+            ).drop("date_created"),
         )
     else:
         logging.info("No recent entry found, recalculating")
         history_updated = history_df.append(
-            update_df.withColumn("created_date", lit(today))
+            update_df.withColumn("date_created", lit(today))
         )
         return history_updated, update_df
