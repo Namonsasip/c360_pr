@@ -159,7 +159,7 @@ venv.bak/
 .mypy_cache/
 
 # secrets
-src/secrets.py
+secrets.py
 
 data/data_analysis.py
 data/L1_DAILY
