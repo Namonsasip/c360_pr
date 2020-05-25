@@ -168,7 +168,7 @@ def l3_geo_data_frequent_cell_weekday_monthly(df, sql):
         'sum_rank_4', F.when(ranked.rank == 4, ranked.sum_call)).withColumn('sum_rank_5', F.when(ranked.rank == 5,
                                                                                                  ranked.sum_call)).withColumn(
         'cgi_partial_rank_1', F.when(ranked.rank == 1, ranked.cgi_partial)).withColumn(
-        'cgi_partial_rank_2', F.when(ranked.rank == 1, ranked.cgi_partial))
+        'cgi_partial_rank_2', F.when(ranked.rank == 1, ranked.cgi_partial).withColumn('most_frequent_cell_type',F.when(ranked.rank == 1, ranked.gprs_type)).withColumn('second_most_frequent_tell_type',F.when(ranked.rank == 2, ranked.gprs_type)))
     df = node_from_config(ranked, sql)
     return df
 
@@ -183,7 +183,7 @@ def l3_geo_data_frequent_cell_weekend_monthly(df, sql):
         'sum_rank_4', F.when(ranked.rank == 4, ranked.sum_call)).withColumn('sum_rank_5', F.when(ranked.rank == 5,
                                                                                                  ranked.sum_call)).withColumn(
         'cgi_partial_rank_1', F.when(ranked.rank == 1, ranked.cgi_partial)).withColumn(
-        'cgi_partial_rank_2', F.when(ranked.rank == 1, ranked.cgi_partial))
+        'cgi_partial_rank_2', F.when(ranked.rank == 1, ranked.cgi_partial).withColumn('most_frequent_cell_type',F.when(ranked.rank == 1, ranked.gprs_type)).withColumn('second_most_frequent_tell_type',F.when(ranked.rank == 2, ranked.gprs_type)))
     df = node_from_config(ranked, sql)
     return df
 
@@ -197,42 +197,42 @@ def l3_geo_data_frequent_cell_monthly(df, sql):
         'sum_rank_4', F.when(ranked.rank == 4, ranked.sum_call)).withColumn('sum_rank_5', F.when(ranked.rank == 5,
                                                                                                  ranked.sum_call)).withColumn(
         'cgi_partial_rank_1', F.when(ranked.rank == 1, ranked.cgi_partial)).withColumn(
-        'cgi_partial_rank_2', F.when(ranked.rank == 1, ranked.cgi_partial))
+        'cgi_partial_rank_2', F.when(ranked.rank == 1, ranked.cgi_partial).withColumn('most_frequent_cell_type',F.when(ranked.rank == 1, ranked.gprs_type)).withColumn('second_most_frequent_tell_type',F.when(ranked.rank == 2, ranked.gprs_type)))
     df = node_from_config(ranked, sql)
     return df
 
-
-def l3_geo_data_frequent_cell_4g_weekday_monthly(df, sql):
-    df = df.where('day_of_week in (1,2,3,4,5)').where('gprs_type="4GLTE"')
-    ranked = df.selectExpr('*',
-                           'row_number() over(partition by mobile_no,start_of_month order by sum_call DESC) as rank')
-    ranked = ranked.withColumn(
-        'cgi_partial_rank_1', F.when(ranked.rank == 1, ranked.cgi_partial)).withColumn(
-        'cgi_partial_rank_2', F.when(ranked.rank == 1, ranked.cgi_partial))
-    df = node_from_config(ranked, sql)
-    return df
-
-
-def l3_geo_data_frequent_cell_4g_weekend_monthly(df, sql):
-    df = df.where('day_of_week in (6,7)').where('gprs_type="4GLTE"')
-    ranked = df.selectExpr('*',
-                           'row_number() over(partition by mobile_no,start_of_month order by sum_call DESC) as rank')
-    ranked = ranked.withColumn(
-        'cgi_partial_rank_1', F.when(ranked.rank == 1, ranked.cgi_partial)).withColumn(
-        'cgi_partial_rank_2', F.when(ranked.rank == 1, ranked.cgi_partial))
-    df = node_from_config(ranked, sql)
-    return df
-
-
-def l3_geo_data_frequent_cell_4g_monthly(df, sql):
-    df = df.where('gprs_type="4GLTE"')
-    ranked = df.selectExpr('*',
-                           'row_number() over(partition by mobile_no,start_of_month order by sum_call DESC) as rank')
-    ranked = ranked.withColumn(
-        'cgi_partial_rank_1', F.when(ranked.rank == 1, ranked.cgi_partial)).withColumn(
-        'cgi_partial_rank_2', F.when(ranked.rank == 1, ranked.cgi_partial))
-    df = node_from_config(ranked, sql)
-    return df
+#
+# def l3_geo_data_frequent_cell_4g_weekday_monthly(df, sql):
+#     df = df.where('day_of_week in (1,2,3,4,5)').where('gprs_type="4GLTE"')
+#     ranked = df.selectExpr('*',
+#                            'row_number() over(partition by mobile_no,start_of_month order by sum_call DESC) as rank')
+#     ranked = ranked.withColumn(
+#         'cgi_partial_rank_1', F.when(ranked.rank == 1, ranked.cgi_partial)).withColumn(
+#         'cgi_partial_rank_2', F.when(ranked.rank == 1, ranked.cgi_partial))
+#     df = node_from_config(ranked, sql)
+#     return df
+#
+#
+# def l3_geo_data_frequent_cell_4g_weekend_monthly(df, sql):
+#     df = df.where('day_of_week in (6,7)').where('gprs_type="4GLTE"')
+#     ranked = df.selectExpr('*',
+#                            'row_number() over(partition by mobile_no,start_of_month order by sum_call DESC) as rank')
+#     ranked = ranked.withColumn(
+#         'cgi_partial_rank_1', F.when(ranked.rank == 1, ranked.cgi_partial)).withColumn(
+#         'cgi_partial_rank_2', F.when(ranked.rank == 1, ranked.cgi_partial))
+#     df = node_from_config(ranked, sql)
+#     return df
+#
+#
+# def l3_geo_data_frequent_cell_4g_monthly(df, sql):
+#     df = df.where('gprs_type="4GLTE"')
+#     ranked = df.selectExpr('*',
+#                            'row_number() over(partition by mobile_no,start_of_month order by sum_call DESC) as rank')
+#     ranked = ranked.withColumn(
+#         'cgi_partial_rank_1', F.when(ranked.rank == 1, ranked.cgi_partial)).withColumn(
+#         'cgi_partial_rank_2', F.when(ranked.rank == 1, ranked.cgi_partial))
+#     df = node_from_config(ranked, sql)
+#     return df
 
 
 def l3_geo_call_count_location_monthly(df, master, sql):

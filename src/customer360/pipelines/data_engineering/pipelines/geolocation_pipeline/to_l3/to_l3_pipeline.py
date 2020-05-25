@@ -81,29 +81,29 @@ def geo_to_l3_pipeline(**kwargs):
 
             ),
 
-            node(  # 4g_weekday 438,444
-                l3_geo_data_frequent_cell_4g_weekday_monthly,
-                ["l1_geo_usage_sum_data_location_dow_intermediate_for_l3_geo_data_frequent_cell_4g_weekday_monthly",
-                 "params:l3_data_frequent_cell_4g_weekday_monthly"],
-                "l3_geo_data_frequent_cell_4g_weekday_monthly"
-
-            ),
-
-            node(  # 4g_weekend 440,446
-                l3_geo_data_frequent_cell_4g_weekend_monthly,
-                ["l1_geo_usage_sum_data_location_dow_intermediate_for_l3_geo_data_frequent_cell_4g_weekend_monthly",
-                 "params:l3_data_frequent_cell_4g_weekend_monthly"],
-                "l3_geo_data_frequent_cell_4g_weekend_monthly"
-
-            ),
-
-            node(  # 4g_all 442,448
-                l3_geo_data_frequent_cell_4g_monthly,
-                ["l1_geo_usage_sum_data_location_dow_intermediate_for_l3_geo_data_frequent_cell_4g_monthly",
-                 "params:l3_data_frequent_cell_4g_monthly"],
-                "l3_geo_data_frequent_cell_4g_monthly"
-
-            ),
+            # node(  # 4g_weekday 438,444
+            #     l3_geo_data_frequent_cell_4g_weekday_monthly,
+            #     ["l1_geo_usage_sum_data_location_dow_intermediate_for_l3_geo_data_frequent_cell_4g_weekday_monthly",
+            #      "params:l3_data_frequent_cell_4g_weekday_monthly"],
+            #     "l3_geo_data_frequent_cell_4g_weekday_monthly"
+            #
+            # ),
+            #
+            # node(  # 4g_weekend 440,446
+            #     l3_geo_data_frequent_cell_4g_weekend_monthly,
+            #     ["l1_geo_usage_sum_data_location_dow_intermediate_for_l3_geo_data_frequent_cell_4g_weekend_monthly",
+            #      "params:l3_data_frequent_cell_4g_weekend_monthly"],
+            #     "l3_geo_data_frequent_cell_4g_weekend_monthly"
+            #
+            # ),
+            #
+            # node(  # 4g_all 442,448
+            #     l3_geo_data_frequent_cell_4g_monthly,
+            #     ["l1_geo_usage_sum_data_location_dow_intermediate_for_l3_geo_data_frequent_cell_4g_monthly",
+            #      "params:l3_data_frequent_cell_4g_monthly"],
+            #     "l3_geo_data_frequent_cell_4g_monthly"
+            #
+            # ),
 
             node(
                 l3_geo_call_count_location_monthly,

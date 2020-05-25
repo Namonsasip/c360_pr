@@ -24,10 +24,9 @@ l1_voice_distance_daily: #425,426,427,428
 l1_first_data_session_cell_identifier: #470
   where_clause: "where rank = 1"
   feature_list:
-    event_partition_date: "date_id"
-    gprs_type: "gprs_type"
-    imei: "imei"
-    cgi_partial: "cgi_partial"
+    gprs_type: "first(gprs_type)"
+    imei: "first(imei)"
+    cgi_partial: "first(cgi_partial)"
   granularity: "access_method_num,event_partition_date"
 
 l1_data_distance_daily: #473,476,479

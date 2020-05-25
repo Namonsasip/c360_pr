@@ -89,29 +89,7 @@ def geo_to_l2_pipeline(**kwargs):
 
             ),
 
-            node(  # 4g_weekday 438,444
-                l2_geo_data_frequent_cell_4g_weekday_weekly,
-                ["l1_geo_usage_sum_data_location_dow_intermediate_for_l2_geo_data_frequent_cell_4g_weekday_weekly",
-                 "params:l2_data_frequent_cell_4g_weekday_weekly"],
-                "l2_geo_data_frequent_cell_4g_weekday_weekly"
 
-            ),
-
-            node(  # 4g_weekend 440,446
-                l2_geo_data_frequent_cell_4g_weekend_weekly,
-                ["l1_geo_usage_sum_data_location_dow_intermediate_for_l2_geo_data_frequent_cell_4g_weekend_weekly",
-                 "params:l2_data_frequent_cell_4g_weekend_weekly"],
-                "l2_geo_data_frequent_cell_4g_weekend_weekly"
-
-            ),
-
-            node(  # 4g_all 442,448
-                l2_geo_data_frequent_cell_4g_weekly,
-                ["l1_geo_usage_sum_data_location_dow_intermediate_for_l2_geo_data_frequent_cell_4g_weekly",
-                 "params:l2_data_frequent_cell_4g_weekly"],
-                "l2_geo_data_frequent_cell_4g_weekly"
-
-            ),
 
             node(
                 l2_geo_call_count_location_weekly,
@@ -141,3 +119,30 @@ def geo_to_l2_pipeline(**kwargs):
 
         ], name="geo_to_l2_pipeline"
     )
+
+
+
+#backup
+# node(  # 4g_weekday 438,444
+#     l2_geo_data_frequent_cell_4g_weekday_weekly,
+#     ["l1_geo_usage_sum_data_location_dow_intermediate_for_l2_geo_data_frequent_cell_4g_weekday_weekly",
+#      "params:l2_data_frequent_cell_4g_weekday_weekly"],
+#     "l2_geo_data_frequent_cell_4g_weekday_weekly"
+#
+# ),
+#
+# node(  # 4g_weekend 440,446
+#     l2_geo_data_frequent_cell_4g_weekend_weekly,
+#     ["l1_geo_usage_sum_data_location_dow_intermediate_for_l2_geo_data_frequent_cell_4g_weekend_weekly",
+#      "params:l2_data_frequent_cell_4g_weekend_weekly"],
+#     "l2_geo_data_frequent_cell_4g_weekend_weekly"
+#
+# ),
+#
+# node(  # 4g_all 442,448
+#     l2_geo_data_frequent_cell_4g_weekly,
+#     ["l1_geo_usage_sum_data_location_dow_intermediate_for_l2_geo_data_frequent_cell_4g_weekly",
+#      "params:l2_data_frequent_cell_4g_weekly"],
+#     "l2_geo_data_frequent_cell_4g_weekly"
+#
+# ),
