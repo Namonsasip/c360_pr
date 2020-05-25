@@ -158,6 +158,9 @@ venv.bak/
 # mypy
 .mypy_cache/
 
+# secrets
+secrets.py
+
 data/data_analysis.py
 data/L1_DAILY
 data/L2_WEEKLY
