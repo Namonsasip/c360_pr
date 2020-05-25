@@ -62,6 +62,11 @@ def pop_most_recent(
     if today is None:
         today = get_today(parameters)
     recent_date = add_days(today, -recalculate_period_days)
+
+    if "date_created" not in history_df.columns:
+        logging.info("Column `date_created` not found, rebuilding history")
+        return update_df.withColumn("date_created", lit(today)), update_df
+
     history_before_today = history_df.filter(
         "date_created <= '{}'".format(recent_date, today)
     )
@@ -69,6 +74,7 @@ def pop_most_recent(
         history_before_today, date_col_name="date_created"
     )
     recent_history_found = most_recent_date_in_history >= recent_date
+
     if recent_history_found:
         logging.info("Using entry from {}".format(most_recent_date_in_history))
         return (
