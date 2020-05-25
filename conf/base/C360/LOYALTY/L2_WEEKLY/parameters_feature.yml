@@ -9,7 +9,8 @@ l2_loyalty_number_of_services_weekly:
     loyalty_services_entertainment: "sum(CASE WHEN lower(category_id) like '%entertainment%'
         or lower(category_text) like '%entertainment%' THEN 1 ELSE 0 END)"
     loyalty_services_food_and_drink: "sum(CASE WHEN lower(category_id) like '%food%'
-        or lower(category_text) like '%food%' THEN 1 ELSE 0 END)"
+        or lower(category_text) like '%food%' or lower(category_id) like '%coffee77%'
+        or lower(category_text) like '%coffee77%' THEN 1 ELSE 0 END)"
     loyalty_services_lifestyle: "sum(CASE WHEN lower(category_id) like '%lifestyle%'
         or lower(category_text) like '%lifestyle%' THEN 1 ELSE 0 END)"
     loyalty_services_airport: "sum(CASE WHEN lower(category_id) like '%airport%'
@@ -26,23 +27,33 @@ l2_loyalty_number_of_services_weekly:
         or lower(category_text) like '%shopping%' THEN 1 ELSE 0 END)"
     loyalty_services_line_stickers: "sum(CASE WHEN lower(category_id) like '%line stickers%'
         or lower(category_text) like '%line stickers%' THEN 1 ELSE 0 END)"
-    loyalty_services_others: "sum(CASE WHEN (category_id is null) or (lower(category_id) NOT like '%tra%'
-                                                                       AND lower(category_id) NOT like '%ais rewards%'
-                                                                       AND lower(category_id) NOT like '%entertainment%'
-                                                                       AND lower(category_id) NOT like '%food%'
-                                                                       AND lower(category_id) NOT like '%lifestyle%'
-                                                                       AND lower(category_text) NOT like '%travel%'
-                                                                       AND lower(category_text) NOT like '%ais rewards%'
-                                                                       AND lower(category_text) NOT like '%entertainment%'
-                                                                       AND lower(category_text) NOT like '%food%'
-                                                                       AND lower(category_text) NOT like '%airport%'
-                                                                       AND lower(category_text) NOT like '%aunjai premium%'
-                                                                       AND lower(category_text) NOT like '%device discount%'
-                                                                       AND lower(category_text) NOT like '%internet%'
-                                                                       AND lower(category_text) NOT like '%lucky draw%'
-                                                                       AND lower(category_text) NOT like '%shopping%'
-                                                                       AND lower(category_text) NOT like '%line stickers%'
-                                                                       AND lower(category_text) NOT like '%lifestyle%') THEN 1 ELSE 0 END)"
+    loyalty_services_others: "sum(CASE WHEN (category_id is null) or (lower(category_id) NOT like '%travel%'
+                                      AND lower(category_id) NOT like '%ais rewards%'
+                                      AND lower(category_id) NOT like '%entertainment%'
+                                      AND lower(category_id) NOT like '%food%'
+                                      AND lower(category_id) NOT like '%coffee77%'
+                                      AND lower(category_id) NOT like '%lifestyle%'
+                                      AND lower(category_id) NOT like '%airport%'
+                                      AND lower(category_id) NOT like '%aunjai premium%'
+                                      AND lower(category_id) NOT like '%device discount%'
+                                      AND lower(category_id) NOT like '%internet%'
+                                      AND lower(category_id) NOT like '%lucky draw%'
+                                      AND lower(category_id) NOT like '%shopping%'
+                                      AND lower(category_id) NOT like '%line stickers%'
+                                      AND lower(category_text) NOT like '%travel%'
+                                      AND lower(category_text) NOT like '%ais rewards%'
+                                      AND lower(category_text) NOT like '%entertainment%'
+                                      AND lower(category_text) NOT like '%food%'
+                                      AND lower(category_text) NOT like '%coffee77%'
+                                      AND lower(category_text) NOT like '%lifestyle%'
+                                      AND lower(category_text) NOT like '%airport%'
+                                      AND lower(category_text) NOT like '%aunjai premium%'
+                                      AND lower(category_text) NOT like '%device discount%'
+                                      AND lower(category_text) NOT like '%internet%'
+                                      AND lower(category_text) NOT like '%lucky draw%'
+                                      AND lower(category_text) NOT like '%shopping%'
+                                      AND lower(category_text) NOT like '%line stickers%'
+                                      AND lower(category_text) NOT like '%lifestyle%') THEN 1 ELSE 0 END)"
 
     loyalty_privilige_registered_date: "max(loyalty_privilige_registered_date)"
   granularity: "start_of_week,access_method_num,subscription_identifier,national_id_card"
@@ -59,7 +70,8 @@ l2_loyalty_number_of_rewards_redeemed_weekly:
     loyalty_rewards_entertainment: "sum(CASE WHEN lower(category_id) like '%entertainment%'
         or lower(category_text) like '%entertainment%' THEN 1 ELSE 0 END)"
     loyalty_rewards_food_and_drink: "sum(CASE WHEN lower(category_id) like '%food%'
-        or lower(category_text) like '%food%' THEN 1 ELSE 0 END)"
+                                            or lower(category_text) like '%food%' or lower(category_id) like '%coffee77%'
+                                            or lower(category_text) like '%coffee77%' THEN 1 ELSE 0 END)"
     loyalty_rewards_lifestyle: "sum(CASE WHEN lower(category_id) like '%lifestyle%'
         or lower(category_text) like '%lifestyle%' THEN 1 ELSE 0 END)"
     loyalty_rewards_airport: "sum(CASE WHEN lower(category_id) like '%airport%'
@@ -76,23 +88,33 @@ l2_loyalty_number_of_rewards_redeemed_weekly:
         or lower(category_text) like '%shopping%' THEN 1 ELSE 0 END)"
     loyalty_rewards_line_stickers: "sum(CASE WHEN lower(category_id) like '%line stickers%'
         or lower(category_text) like '%line stickers%' THEN 1 ELSE 0 END)"
-    loyalty_rewards_others: "sum(CASE WHEN (category_id is null) or (lower(category_id) NOT like '%tra%'
-                                                                       AND lower(category_id) NOT like '%ais rewards%'
-                                                                       AND lower(category_id) NOT like '%entertainment%'
-                                                                       AND lower(category_id) NOT like '%food%'
-                                                                       AND lower(category_id) NOT like '%lifestyle%'
-                                                                       AND lower(category_text) NOT like '%travel%'
-                                                                       AND lower(category_text) NOT like '%ais rewards%'
-                                                                       AND lower(category_text) NOT like '%entertainment%'
-                                                                       AND lower(category_text) NOT like '%food%'
-                                                                       AND lower(category_text) NOT like '%airport%'
-                                                                       AND lower(category_text) NOT like '%aunjai premium%'
-                                                                       AND lower(category_text) NOT like '%device discount%'
-                                                                       AND lower(category_text) NOT like '%internet%'
-                                                                       AND lower(category_text) NOT like '%lucky draw%'
-                                                                       AND lower(category_text) NOT like '%shopping%'
-                                                                       AND lower(category_text) NOT like '%line stickers%'
-                                                                       AND lower(category_text) NOT like '%lifestyle%') THEN 1 ELSE 0 END)"
+    loyalty_rewards_others: "sum(CASE WHEN (category_id is null) or (lower(category_id) NOT like '%travel%'
+                                     AND lower(category_id) NOT like '%ais rewards%'
+                                     AND lower(category_id) NOT like '%entertainment%'
+                                     AND lower(category_id) NOT like '%food%'
+                                     AND lower(category_id) NOT like '%coffee77%'
+                                     AND lower(category_id) NOT like '%lifestyle%'
+                                     AND lower(category_id) NOT like '%airport%'
+                                     AND lower(category_id) NOT like '%aunjai premium%'
+                                     AND lower(category_id) NOT like '%device discount%'
+                                     AND lower(category_id) NOT like '%internet%'
+                                     AND lower(category_id) NOT like '%lucky draw%'
+                                     AND lower(category_id) NOT like '%shopping%'
+                                     AND lower(category_id) NOT like '%line stickers%'
+                                     AND lower(category_text) NOT like '%travel%'
+                                     AND lower(category_text) NOT like '%ais rewards%'
+                                     AND lower(category_text) NOT like '%entertainment%'
+                                     AND lower(category_text) NOT like '%food%'
+                                     AND lower(category_text) NOT like '%coffee77%'
+                                     AND lower(category_text) NOT like '%lifestyle%'
+                                     AND lower(category_text) NOT like '%airport%'
+                                     AND lower(category_text) NOT like '%aunjai premium%'
+                                     AND lower(category_text) NOT like '%device discount%'
+                                     AND lower(category_text) NOT like '%internet%'
+                                     AND lower(category_text) NOT like '%lucky draw%'
+                                     AND lower(category_text) NOT like '%shopping%'
+                                     AND lower(category_text) NOT like '%line stickers%'
+                                     AND lower(category_text) NOT like '%lifestyle%') THEN 1 ELSE 0 END)"
     loyalty_rewards_registered_date: "max(loyalty_rewards_registered_date)"
 
   granularity: "start_of_week,access_method_num,subscription_identifier,national_id_card"
@@ -109,7 +131,8 @@ l2_loyalty_number_of_points_spend_weekly:
     loyalty_points_spend_entertainment: "sum(CASE WHEN lower(category_id) like '%entertainment%'
                                     or lower(category_text) like '%entertainment%' THEN loyalty_points_spend ELSE 0 END)"
     loyalty_points_spend_food_and_drink: "sum(CASE WHEN lower(category_id) like '%food%'
-                                    or lower(category_text) like '%food%' THEN loyalty_points_spend ELSE 0 END)"
+                                        or lower(category_text) like '%food%' or lower(category_id) like '%coffee77%'
+                                        or lower(category_text) like '%coffee77%' THEN loyalty_points_spend ELSE 0 END)"
     loyalty_points_spend_lifestyle: "sum(CASE WHEN lower(category_id) like '%lifestyle%'
                                          or lower(category_text) like '%lifestyle%' THEN loyalty_points_spend ELSE 0 END)"
     loyalty_points_spend_airport: "sum(CASE WHEN lower(category_id) like '%airport%'
@@ -126,15 +149,25 @@ l2_loyalty_number_of_points_spend_weekly:
         or lower(category_text) like '%shopping%' THEN loyalty_points_spend ELSE 0 END)"
     loyalty_points_spend_line_stickers: "sum(CASE WHEN lower(category_id) like '%line stickers%'
         or lower(category_text) like '%line stickers%' THEN loyalty_points_spend ELSE 0 END)"
-    loyalty_points_spend_others: "sum(CASE WHEN (category_id is null) or (lower(category_id) NOT like '%tra%'
+    loyalty_points_spend_others: "sum(CASE WHEN (category_id is null) or (lower(category_id) NOT like '%travel%'
     AND lower(category_id) NOT like '%ais rewards%'
     AND lower(category_id) NOT like '%entertainment%'
     AND lower(category_id) NOT like '%food%'
+    AND lower(category_id) NOT like '%coffee77%'
     AND lower(category_id) NOT like '%lifestyle%'
+    AND lower(category_id) NOT like '%airport%'
+    AND lower(category_id) NOT like '%aunjai premium%'
+    AND lower(category_id) NOT like '%device discount%'
+    AND lower(category_id) NOT like '%internet%'
+    AND lower(category_id) NOT like '%lucky draw%'
+    AND lower(category_id) NOT like '%shopping%'
+    AND lower(category_id) NOT like '%line stickers%'
     AND lower(category_text) NOT like '%travel%'
     AND lower(category_text) NOT like '%ais rewards%'
     AND lower(category_text) NOT like '%entertainment%'
     AND lower(category_text) NOT like '%food%'
+    AND lower(category_text) NOT like '%coffee77%'
+    AND lower(category_text) NOT like '%lifestyle%'
     AND lower(category_text) NOT like '%airport%'
     AND lower(category_text) NOT like '%aunjai premium%'
     AND lower(category_text) NOT like '%device discount%'
