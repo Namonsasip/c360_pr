@@ -34,11 +34,11 @@ treatments_chosen:
   type: kedro.io.csv_local.CSVLocalDataSet
   filepath: /dbfs/mnt/customer360-cvm/treatments_chosen.csv
 
-treatments_chosen_history:
+treatments_chosen_history_input:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_treatments_chosen_history/
 
 # The same as above - used when the dataset is both an input and output of a node
-treatments_chosen_history2:
+treatments_chosen_history_output:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_treatments_chosen_history/

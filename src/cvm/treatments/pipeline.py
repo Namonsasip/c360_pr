@@ -60,14 +60,14 @@ def generate_treatments(sample_type: str) -> Pipeline:
                 produce_treatments,
                 [
                     "propensity_scores_{}".format(sample_type),
-                    "treatments_chosen_history",
+                    "treatments_chosen_history_input",
                     "parameters",
                     "features_macrosegments_scoring",
                     "microsegments_{}".format(sample_type),
                     "l3_customer_profile_include_1mo_non_active_{}".format(sample_type),
                     "l0_product_pru_m_package_master_group_for_daily",
                 ],
-                ["treatments_chosen", "treatments_chosen_history2"],
+                ["treatments_chosen", "treatments_chosen_history_output"],
                 name="produce_treatments",
             ),
             node(
