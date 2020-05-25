@@ -35,22 +35,25 @@ from pyspark.sql import DataFrame
 from pyspark.sql import functions as func
 
 
-def get_latest_date(df: DataFrame, maximum_date: str = None) -> str:
+def get_latest_date(
+    df: DataFrame, maximum_date: str = None, date_col_name: str = "key_date"
+) -> str:
     """ Returns last date available in given dataset.
 
     Args:
+        date_col_name: name of column with date.
         df: Given DataFrame.
         maximum_date: later dates will be ignored, if None then latest date present
             is returned.
     """
 
     df = prepare_key_columns(df)
-    if "key_date" not in df.columns:
+    if date_col_name not in df.columns:
         raise Exception("Date column not found.")
 
     if maximum_date is not None and maximum_date not in ["today", ""]:
-        df = df.filter("key_date <= '{}'".format(maximum_date))
-    max_date = df.select("key_date").agg(func.max("key_date")).collect()[0][0]
+        df = df.filter("{} <= '{}'".format(date_col_name, maximum_date))
+    max_date = df.select(date_col_name).agg(func.max(date_col_name)).collect()[0][0]
     return max_date
 
 
