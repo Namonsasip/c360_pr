@@ -51,7 +51,11 @@ from kedro.cli.utils import find_stylesheets
 from recommonmark.transform import AutoStructify
 
 from customer360 import __version__ as release
-from secrets import *
+from secrets import (
+    confluence_server_url,
+    confluence_server_user,
+    confluence_server_pass,
+)
 
 # -- Project information -----------------------------------------------------
 
@@ -182,28 +186,14 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (
-        master_doc,
-        "CVM.tex",
-        "CVM Documentation",
-        "QuantumBlack",
-        "manual",
-    )
+    (master_doc, "CVM.tex", "CVM Documentation", "QuantumBlack", "manual",)
 ]
 
 # -- Options for manual page output ------------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    (
-        master_doc,
-        "CVM",
-        "CVM Documentation",
-        [author],
-        1,
-    )
-]
+man_pages = [(master_doc, "CVM", "CVM Documentation", [author], 1,)]
 
 # -- Options for Texinfo output ----------------------------------------------
 
