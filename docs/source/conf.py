@@ -51,6 +51,7 @@ from kedro.cli.utils import find_stylesheets
 from recommonmark.transform import AutoStructify
 
 from customer360 import __version__ as release
+import secrets
 
 # -- Project information -----------------------------------------------------
 
