@@ -168,6 +168,7 @@ from .pipelines.data_engineering.pipelines.touchpoints_pipeline.to_l4.to_l4_pipe
 
 from .pipelines.data_engineering.pipelines.usage_pipeline import (
     usage_to_l1_pipeline,
+    usage_create_master_data_for_favourite_feature,
     usage_to_l2_pipeline,
     usage_to_l3_pipeline,
     usage_to_l4_pipeline,
@@ -199,6 +200,8 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         # + device_to_l1_pipeline(),
         # + device_to_l2_pipeline()
         # + device_to_l4_pipeline()
+        "usage_to_l1_pipeline": usage_to_l1_pipeline(),
+        "usage_create_master_data_for_favourite_feature": usage_create_master_data_for_favourite_feature(),
         "usage_to_l4_daily_pipeline": usage_to_l4_daily_pipeline(),
         "usage_to_l2_pipeline": usage_to_l2_pipeline(),
         "usage_to_l3_pipeline": usage_to_l3_pipeline(),
@@ -209,7 +212,6 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "unioned_customer_profile_to_l3_pipeline": unioned_customer_profile_to_l3_pipeline(),
         "customer_profile_billing_level_to_l3_pipeline": customer_profile_billing_level_to_l3_pipeline(),
         "customer_profile_to_l4_pipeline": customer_profile_to_l4_pipeline(),
-        "usage_to_l1_pipeline": usage_to_l1_pipeline(),
         "billing_to_l1_pipeline": billing_to_l1_pipeline(),
         "billing_l0_to_l3_pipeline": billing_l0_to_l3_pipeline(),
         "billing_l1_to_l3_pipeline": billing_l1_to_l3_pipeline(),

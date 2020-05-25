@@ -1,9 +1,10 @@
 import logging
+import logging
 import os
 from pathlib import Path
 
 from kedro.context.context import load_context
-from pyspark.sql import DataFrame
+from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
 
 from customer360.utilities.config_parser import node_from_config
@@ -22,8 +23,59 @@ def gen_max_sql(data_frame, table_name, group):
     return final_str
 
 
+def massive_processing_join_master(input_df: DataFrame
+                                   , master_data: DataFrame
+                                   , sql: dict
+                                   , output_df_catalog: str):
+    """
+    :param input_df:
+    :param master_data:
+    :param sql:
+    :param output_df_catalog:
+    :return:
+    """
+
+    if len(input_df.head(1)) == 0:
+        return input_df
+
+    def divide_chunks(l, n):
+        # looping till length l
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    CNTX = load_context(Path.cwd(), env=conf)
+    data_frame = input_df
+    dates_list = data_frame.select('partition_date').distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+
+    mvv_new = list(divide_chunks(mvv_array, 5))
+    add_list = mvv_new
+
+    first_item = add_list[-1]
+
+    add_list.remove(first_item)
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        small_df = data_frame.filter(F.col("partition_date").isin(*[curr_item]))
+        small_df = small_df.join(master_data, ["caller_no", "called_no"], how="left")
+        output_df = node_from_config(small_df, sql)
+        CNTX.catalog.save(output_df_catalog, output_df)
+
+    logging.info("Final date to run for {0}".format(str(first_item)))
+    return_df = data_frame.filter(F.col("partition_date").isin(*[first_item]))
+    return_df = return_df.join(master_data, ["caller_no", "called_no"], how="left")
+    return_df = node_from_config(return_df, sql)
+
+    return return_df
+
+
 def massive_processing(input_df, sql, output_df_catalog):
     """
+    :param input_df:
+    :param sql:
+    :param output_df_catalog:
     :return:
     """
 
@@ -78,72 +130,85 @@ def merge_with_customer_df(source_df: DataFrame,
     return final_df
 
 
-def usage_outgoing_ir_call_pipeline(input_df, sql) -> DataFrame:
+def usage_outgoing_ir_call_pipeline(input_df: DataFrame, master_df: DataFrame, sql: dict) -> DataFrame:
     """
+    :param input_df:
+    :param master_df:
+    :param sql:
     :return:
     """
 
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([input_df]):
+    if check_empty_dfs([input_df, master_df]):
         return get_spark_empty_df()
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
                                                        target_table_name="l1_usage_outgoing_call_relation_sum_ir_daily")
 
-    if check_empty_dfs([input_df]):
+    if check_empty_dfs([input_df, master_df]):
         return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
 
-    return_df = massive_processing(input_df, sql, "l1_usage_outgoing_call_relation_sum_ir_daily")
+    return_df = massive_processing_join_master(input_df, master_df, sql, "l1_usage_outgoing_call_relation_sum_ir_daily")
     return return_df
 
 
-def usage_incoming_ir_call_pipeline(input_df, sql) -> DataFrame:
+def usage_incoming_ir_call_pipeline(input_df: DataFrame, master_df: DataFrame, sql: dict) -> DataFrame:
     """
     :return:
     """
 
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([input_df]):
+    if check_empty_dfs([input_df, master_df]):
         return get_spark_empty_df()
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
                                                        target_table_name="l1_usage_incoming_call_relation_sum_ir_daily")
 
-    if check_empty_dfs([input_df]):
+    if check_empty_dfs([input_df, master_df]):
         return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
 
-    return_df = massive_processing(input_df, sql, "l1_usage_incoming_call_relation_sum_ir_daily")
+    return_df = massive_processing_join_master(input_df, master_df, sql, "l1_usage_incoming_call_relation_sum_ir_daily")
     return return_df
 
 
-def usage_outgoing_call_pipeline(input_df, sql) -> DataFrame:
+def usage_outgoing_call_pipeline(input_df: DataFrame
+                                 , master_data: DataFrame
+                                 , sql: dict) -> DataFrame:
     """
+    :param input_df:
+    :param master_data:
+    :param sql:
     :return:
     """
 
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([input_df]):
+    if check_empty_dfs([input_df, master_data]):
         return get_spark_empty_df()
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
                                                        target_table_name="l1_usage_outgoing_call_relation_sum_daily",
                                                        exception_partitions=['2019-12-01'])
 
-    if check_empty_dfs([input_df]):
+    if check_empty_dfs([input_df, master_data]):
         return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
 
-    return_df = massive_processing(input_df, sql, "l1_usage_outgoing_call_relation_sum_daily")
+    return_df = massive_processing_join_master(input_df, master_data, sql, "l1_usage_outgoing_call_relation_sum_daily")
     return return_df
 
 
-def usage_incoming_call_pipeline(input_df, sql) -> DataFrame:
+def usage_incoming_call_pipeline(input_df: DataFrame
+                                 , master_data: DataFrame
+                                 , sql: dict) -> DataFrame:
     """
+    :param input_df:
+    :param master_data:
+    :param sql:
     :return:
     """
 
@@ -160,7 +225,7 @@ def usage_incoming_call_pipeline(input_df, sql) -> DataFrame:
 
     ################################# End Implementing Data availability checks ###############################
 
-    return_df = massive_processing(input_df, sql, "l1_usage_incoming_call_relation_sum_daily")
+    return_df = massive_processing_join_master(input_df, master_data, sql, "l1_usage_incoming_call_relation_sum_daily")
     return return_df
 
 

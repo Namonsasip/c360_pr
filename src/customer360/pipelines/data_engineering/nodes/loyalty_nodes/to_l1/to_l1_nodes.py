@@ -173,20 +173,27 @@ def loyalty_number_of_points_balance(customer_prof: DataFrame
                                          "start_of_week")
     join_key = ["access_method_num", "event_partition_date", "start_of_week"]
 
-    input_df = input_df.select(f.col("mobile_no").alias("access_method_num"), "response_date", "mobile_status_date"
-                               , "mobile_segment", "billing_account") \
-        .withColumn("event_partition_date", f.to_date(f.col("response_date"))) \
-        .withColumn("start_of_week", f.to_date(f.date_trunc('week', f.col("response_date")))) \
-        .withColumn("start_of_month", f.to_date(f.date_trunc('month', f.col("response_date"))))
+    input_df = input_df.withColumn("event_partition_date", f.to_date(f.col("response_date"))) \
+        .withColumn("start_of_month", f.to_date(f.date_trunc('month', f.col("response_date")))) \
+        .withColumn("loyalty_register_program_points_date",
+                    f.when((f.col("msg_event_id").isin(33, 34))
+                           & (f.upper(f.col("aunjai_flag").like('REGISTER%'))), f.col("event_partition_date"))
+                    .otherwise(f.lit(None))
+                    ) \
+        .select(f.col("mobile_no").alias("access_method_num"), "mobile_status_date"
+                , "mobile_segment", "billing_account", "loyalty_register_program_points"
+                , "start_of_month", "event_partition_date")
 
-    l0_loyalty_priv_point_bonus_ba = l0_loyalty_priv_point_bonus_ba.select("billing_account", "points", "modified_date") \
+    l0_loyalty_priv_point_bonus_ba = l0_loyalty_priv_point_bonus_ba\
+        .select("billing_account", "points", "modified_date"
+                , f.to_date(f.col("expired_date")).alias("bonus_ba_expired_date")) \
         .withColumn("event_partition_date", f.to_date(f.col("modified_date"))) \
         .withColumn("start_of_week", f.to_date(f.date_trunc('week', f.col("modified_date")))) \
         .withColumn("start_of_month", f.to_date(f.date_trunc('month', f.col("modified_date"))))
 
     l0_loyalty_priv_point_ba = l0_loyalty_priv_point_ba.select("billing_account", "points", "modified_date",
                                                                "expired_date") \
-        .withColumn("expired_date", f.to_date(f.col("expired_date"))) \
+        .withColumn("ba_expired_date", f.to_date(f.col("expired_date"))) \
         .withColumn("event_partition_date", f.to_date(f.col("modified_date"))) \
         .withColumn("start_of_week", f.to_date(f.date_trunc('week', f.col("modified_date")))) \
         .withColumn("start_of_month", f.to_date(f.date_trunc('month', f.col("modified_date"))))
