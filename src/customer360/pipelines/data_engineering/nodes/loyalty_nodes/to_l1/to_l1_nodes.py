@@ -56,7 +56,8 @@ def loyalty_number_of_services_for_each_category(customer_prof: DataFrame
 
     drop_cols = ["event_partition_date", "start_of_week", "start_of_month"]
     input_df = input_df.filter(f.col("event_partition_date") <= min_value).drop(*drop_cols)
-    aunjai_point_collection = aunjai_point_collection.filter(f.col("event_partition_date") <= min_value).drop(*drop_cols)
+    aunjai_point_collection = aunjai_point_collection.filter(f.col("event_partition_date") <= min_value).drop(
+        *drop_cols)
 
     customer_prof = customer_prof.filter(f.col("event_partition_date") <= min_value)
 
@@ -73,14 +74,15 @@ def loyalty_number_of_services_for_each_category(customer_prof: DataFrame
     input_df = input_df.where("upper(group_project) = 'PRIVILEGE'") \
         .select(f.col("mobile_no").alias("access_method_num"), "project_id", "response_date")
 
-    input_df = add_start_of_week_and_month(input_df, "response_date")\
-               .withColumnRenamed("response_date", "loyalty_privilige_registered_date")
+    input_df = add_start_of_week_and_month(input_df, "response_date") \
+        .withColumnRenamed("response_date", "loyalty_privilige_registered_date")
 
     aunjai_point_collection = aunjai_point_collection.where("msg_event_id = 13 and project_type_id = 6"
                                                             "and upper(project_subtype) like 'REDEEM%' ") \
         .select(f.col("mobile_no").alias("access_method_num"), "project_id", "response_date")
 
-    aunjai_point_collection = add_start_of_week_and_month(aunjai_point_collection, "response_date")
+    aunjai_point_collection = add_start_of_week_and_month(aunjai_point_collection, "response_date") \
+        .withColumnRenamed("response_date", "loyalty_redeem_point_registered_date")
 
     merged_data_set = union_dataframes_with_missing_cols(input_df, aunjai_point_collection)
 
@@ -119,7 +121,7 @@ def loyalty_number_of_rewards_redeemed_for_each_category(customer_prof: DataFram
     input_df = input_df.where("msg_event_id = 13") \
         .select(f.col("mobile_no").alias("access_method_num"), "project_id", "response_date")
     input_df = add_start_of_week_and_month(input_df, "response_date") \
-               .withColumnRenamed("response_date", "loyalty_rewards_registered_date")
+        .withColumnRenamed("response_date", "loyalty_rewards_registered_date")
 
     return_df = customer_prof.join(input_df, join_key)
 
@@ -194,12 +196,6 @@ def loyalty_number_of_points_balance(customer_prof: DataFrame
         par_col="event_partition_date",
         target_table_name="l1_loyalty_priv_point_ba_daily")
 
-    # l0_loyalty_priv_point_bonus_ba = data_non_availability_and_missing_check(
-    #     df=l0_loyalty_priv_point_bonus_ba,
-    #     grouping="daily",
-    #     par_col="partition_date",
-    #     target_table_name="l1_loyalty_priv_point_bonus_ba_daily")
-
     if check_empty_dfs([input_df, customer_prof]):
         return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
@@ -209,29 +205,21 @@ def loyalty_number_of_points_balance(customer_prof: DataFrame
     customer_prof = customer_prof.select(customer_cols)
 
     input_df = input_df.withColumn("loyalty_register_program_points_date",
-                    f.when((f.col("msg_event_id").isin(33, 34))
-                           & (f.upper(f.col("aunjai_flag").like('REGISTER%'))), f.col("response_date"))
-                    .otherwise(f.lit(None))
-                    ) \
-        .select(f.col("mobile_no").alias("access_method_num"), "mobile_status_date"
-                , "mobile_segment", "billing_account", "loyalty_register_program_points_date"
-                , "expired_date", "modified_date", "points", "response_date")
+                                   f.when((f.col("msg_event_id").isin(33, 34))
+                                          & (f.upper(f.col("aunjai_flag").like('REGISTER%'))), f.col("response_date"))
+                                   .otherwise(f.lit(None))
+                                   ).select(f.col("mobile_no").alias("access_method_num")
+                                            # "mobile_status_date"
+                                            , "mobile_segment"
+                                            , "points_balance_per_sub"
+                                            , "point_expire_curr_year"
+                                            , "point_expire_next_year"
+                                            , "max_modified_date"
+                                            , "max_expire_date"
+                                            , "loyalty_register_program_points_date"
+                                            , "response_date")
 
     input_df = add_start_of_week_and_month(input_df)
-
-    # l0_loyalty_priv_point_bonus_ba = l0_loyalty_priv_point_bonus_ba \
-    #     .select("billing_account", "points", "modified_date"
-    #             , f.to_date(f.col("expired_date")).alias("bonus_ba_expired_date")) \
-    #     .withColumn("event_partition_date", f.to_date(f.col("modified_date"))) \
-    #     .withColumn("start_of_week", f.to_date(f.date_trunc('week', f.col("modified_date")))) \
-    #     .withColumn("start_of_month", f.to_date(f.date_trunc('month', f.col("modified_date"))))
-    #
-    # l0_loyalty_priv_point_ba = l0_loyalty_priv_point_ba.select("billing_account", "points", "modified_date",
-    #                                                            "expired_date") \
-    #     .withColumn("ba_expired_date", f.to_date(f.col("expired_date"))) \
-    #     .withColumn("event_partition_date", f.to_date(f.col("modified_date"))) \
-    #     .withColumn("start_of_week", f.to_date(f.date_trunc('week', f.col("modified_date")))) \
-    #     .withColumn("start_of_month", f.to_date(f.date_trunc('month', f.col("modified_date"))))
 
     return_df = customer_prof.join(input_df, join_key)
 
