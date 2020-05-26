@@ -1,25 +1,25 @@
 l0_streaming_ida_mobile_domain_summary_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/STREAM/stream_ida_mobile_domain_summary_daily/
+  filepath: base_path/STREAM/stream_ida_mobile_domain_summary_daily/
   file_format: parquet
 
 l0_streaming_ida_mobile_search_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/STREAM/stream_ida_mobile_search_daily/
+  filepath: base_path/STREAM/stream_ida_mobile_search_daily/
   file_format: parquet
 
 #l0_streaming_ru_a_onair_vimmi_usage_daily:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/stream_ru_a_onair_vimmi_usage_daily/
+#  filepath: dbfs:base_path/STREAM/stream_ru_a_onair_vimmi_usage_daily/
 #  file_format: parquet
 #  load_args:
 #    mergeSchema: true
 
 l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_content_type_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/STREAM/stream_ru_a_onair_vimmi_usage_daily/
+  filepath: base_path/STREAM/stream_ru_a_onair_vimmi_usage_daily/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     mergeSchema: true
@@ -31,9 +31,9 @@ l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_content_type_feat
 
 l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_tv_channel_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/STREAM/stream_ru_a_onair_vimmi_usage_daily/
+  filepath: base_path/STREAM/stream_ru_a_onair_vimmi_usage_daily/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     mergeSchema: true
@@ -46,9 +46,9 @@ l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_tv_channel_featur
 
 l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l0_streaming_vimmi_table:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/STREAM/stream_ru_a_onair_vimmi_usage_daily/
+  filepath: base_path/STREAM/stream_ru_a_onair_vimmi_usage_daily/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     mergeSchema: true
@@ -60,9 +60,9 @@ l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l0_streaming_vimmi_table:
 
 l0_streaming_ru_a_onair_vimmi_usage_daily_for_l1_streaming_fav_tv_show_by_episode_watched:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/STREAM/stream_ru_a_onair_vimmi_usage_daily/
+  filepath: base_path/STREAM/stream_ru_a_onair_vimmi_usage_daily/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     mergeSchema: true
@@ -74,15 +74,15 @@ l0_streaming_ru_a_onair_vimmi_usage_daily_for_l1_streaming_fav_tv_show_by_episod
 
 #l0_streaming_soc_mobile_app_daily:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/stream_soc_mobile_app_daily/
+#  filepath: dbfs:base_path/STREAM/stream_soc_mobile_app_daily/
 #  file_format: parquet
 
 
 l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_video_service_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/STREAM/stream_soc_mobile_app_daily/
+  filepath: base_path/STREAM/stream_soc_mobile_app_daily/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     mergeSchema: true
@@ -94,9 +94,9 @@ l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_video_service_feature:
 
 l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_music_service_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/STREAM/stream_soc_mobile_app_daily/
+  filepath: base_path/STREAM/stream_soc_mobile_app_daily/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     mergeSchema: true
@@ -108,9 +108,9 @@ l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_music_service_feature:
 
 l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_esport_service_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/STREAM/stream_soc_mobile_app_daily/
+  filepath: base_path/STREAM/stream_soc_mobile_app_daily/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     mergeSchema: true
@@ -122,9 +122,9 @@ l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_esport_service_feature:
 
 l0_streaming_soc_mobile_app_daily_for_l1_streaming_visit_count_and_download_traffic_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/STREAM/stream_soc_mobile_app_daily/
+  filepath: base_path/STREAM/stream_soc_mobile_app_daily/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     mergeSchema: true
@@ -136,9 +136,9 @@ l0_streaming_soc_mobile_app_daily_for_l1_streaming_visit_count_and_download_traf
 
 l0_streaming_soc_mobile_app_daily_for_l1_streaming_session_duration_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/STREAM/stream_soc_mobile_app_daily/
+  filepath: base_path/STREAM/stream_soc_mobile_app_daily/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     mergeSchema: true

@@ -1,8 +1,8 @@
 l2_network_voice_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/NETWORK/l2_features/l2_network_voice_features/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/NETWORK/l2_features/l2_network_voice_features/
+  metadata_table_path: 'metadata_path'
   save_args:
     partitionBy: "start_of_week"
     mode: "overwrite"
@@ -20,8 +20,8 @@ l2_network_voice_features:
 #l2_network_voice_features_for_l4_network_voice_features:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/NETWORK/l2_features/l2_network_voice_features/
-#  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+#  filepath: base_path/NETWORK/l2_features/l2_network_voice_features/
+#  metadata_table_path: 'metadata_path'
 #  load_args:
 #    partitionBy: ["start_of_week"]
 #    mode: "overwrite"
@@ -34,8 +34,8 @@ l2_network_voice_features:
 l2_network_good_and_bad_cells_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/NETWORK/l2_features/l2_network_good_and_bad_cells_features/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/NETWORK/l2_features/l2_network_good_and_bad_cells_features/
+  metadata_table_path: 'metadata_path'
   save_args:
     partitionBy: "start_of_week"
     mode: "overwrite"
@@ -53,7 +53,7 @@ l2_network_good_and_bad_cells_features:
 #l2_network_good_and_bad_cells_features_for_l4_network_good_and_bad_cells_features:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/NETWORK/l2_features/l2_network_good_and_bad_cells_features/
+#  filepath: base_path/NETWORK/l2_features/l2_network_good_and_bad_cells_features/
 #  load_args:
 #    partitionBy: ["start_of_week"]
 #    mode: "overwrite"
@@ -66,8 +66,8 @@ l2_network_good_and_bad_cells_features:
 l2_network_share_of_3g_time_in_total_time:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/NETWORK/l2_features/l2_network_share_of_3g_time_in_total_time/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/NETWORK/l2_features/l2_network_share_of_3g_time_in_total_time/
+  metadata_table_path: 'metadata_path'
   save_args:
     partitionBy: "start_of_week"
     mode: "overwrite"
@@ -85,8 +85,8 @@ l2_network_share_of_3g_time_in_total_time:
 #l2_network_share_of_3g_time_in_total_time_for_l4_network_share_of_3g_time_in_total_time:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/NETWORK/l2_features/l2_network_share_of_3g_time_in_total_time/
-#  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+#  filepath: base_path/NETWORK/l2_features/l2_network_share_of_3g_time_in_total_time/
+#  metadata_table_path: 'metadata_path'
 #  save_args:
 #    partitionBy: "start_of_week"
 #    mode: "overwrite"
@@ -104,8 +104,8 @@ l2_network_share_of_3g_time_in_total_time:
 l2_network_data_traffic_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/NETWORK/l2_features/l2_network_data_traffic_features/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/NETWORK/l2_features/l2_network_data_traffic_features/
+  metadata_table_path: 'metadata_path'
   save_args:
     partitionBy: "start_of_week"
     mode: "overwrite"
@@ -123,7 +123,7 @@ l2_network_data_traffic_features:
 #l2_network_data_traffic_features_for_l4_network_data_traffic_features:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/NETWORK/l2_features/l2_network_data_traffic_features/
+#  filepath: base_path/NETWORK/l2_features/l2_network_data_traffic_features/
 #  load_args:
 #    partitionBy: ["start_of_week"]
 #    mode: "overwrite"
@@ -136,8 +136,8 @@ l2_network_data_traffic_features:
 l2_network_data_cqi:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/NETWORK/l2_features/l2_network_data_cqi/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/NETWORK/l2_features/l2_network_data_cqi/
+  metadata_table_path: 'metadata_path'
   save_args:
     partitionBy: "start_of_week"
     mode: "overwrite"
@@ -155,7 +155,7 @@ l2_network_data_cqi:
 #l2_network_data_cqi_for_l4_network_data_cqi:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/NETWORK/l2_features/l2_network_data_cqi/
+#  filepath: base_path/NETWORK/l2_features/l2_network_data_cqi/
 #  load_args:
 #    partitionBy: ["start_of_week"]
 #    mode: "overwrite"
@@ -168,8 +168,8 @@ l2_network_data_cqi:
 l2_network_im_cqi:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/NETWORK/l2_features/l2_network_im_cqi/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/NETWORK/l2_features/l2_network_im_cqi/
+  metadata_table_path: 'metadata_path'
   save_args:
     partitionBy: "start_of_week"
     mode: "overwrite"
@@ -187,7 +187,7 @@ l2_network_im_cqi:
 #l2_network_im_cqi_for_l4_network_im_cqi:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/NETWORK/l2_features/l2_network_im_cqi/
+#  filepath: base_path/NETWORK/l2_features/l2_network_im_cqi/
 #  load_args:
 #    partitionBy: ["start_of_week"]
 #    mode: "overwrite"
@@ -200,8 +200,8 @@ l2_network_im_cqi:
 l2_network_streaming_cqi:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/NETWORK/l2_features/l2_network_streaming_cqi/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/NETWORK/l2_features/l2_network_streaming_cqi/
+  metadata_table_path: 'metadata_path'
   save_args:
     partitionBy: "start_of_week"
     mode: "overwrite"
@@ -219,7 +219,7 @@ l2_network_streaming_cqi:
 #l2_network_streaming_cqi_for_l4_network_streaming_cqi:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/NETWORK/l2_features/l2_network_streaming_cqi/
+#  filepath: base_path/NETWORK/l2_features/l2_network_streaming_cqi/
 #  load_args:
 #    partitionBy: ["start_of_week"]
 #    mode: "overwrite"
@@ -232,8 +232,8 @@ l2_network_streaming_cqi:
 l2_network_web_cqi:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/NETWORK/l2_features/l2_network_web_cqi/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/NETWORK/l2_features/l2_network_web_cqi/
+  metadata_table_path: 'metadata_path'
   save_args:
     partitionBy: "start_of_week"
     mode: "overwrite"
@@ -251,7 +251,7 @@ l2_network_web_cqi:
 #l2_network_web_cqi_for_l4_network_web_cqi:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/NETWORK/l2_features/l2_network_web_cqi/
+#  filepath: base_path/NETWORK/l2_features/l2_network_web_cqi/
 #  load_args:
 #    partitionBy: ["start_of_week"]
 #    mode: "overwrite"
@@ -264,8 +264,8 @@ l2_network_web_cqi:
 l2_network_voip_cqi:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/NETWORK/l2_features/l2_network_voip_cqi/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/NETWORK/l2_features/l2_network_voip_cqi/
+  metadata_table_path: 'metadata_path'
   save_args:
     partitionBy: "start_of_week"
     mode: "overwrite"
@@ -283,7 +283,7 @@ l2_network_voip_cqi:
 #l2_network_voip_cqi_for_l4_network_voip_cqi:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/NETWORK/l2_features/l2_network_voip_cqi/
+#  filepath: base_path/NETWORK/l2_features/l2_network_voip_cqi/
 #  load_args:
 #    partitionBy: ["start_of_week"]
 #    mode: "overwrite"
@@ -296,8 +296,8 @@ l2_network_voip_cqi:
 l2_network_volte_cqi:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/NETWORK/l2_features/l2_network_volte_cqi/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/NETWORK/l2_features/l2_network_volte_cqi/
+  metadata_table_path: 'metadata_path'
   save_args:
     partitionBy: "start_of_week"
     mode: "overwrite"
@@ -315,7 +315,7 @@ l2_network_volte_cqi:
 #l2_network_volte_cqi_for_l4_network_volte_cqi:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/NETWORK/l2_features/l2_network_volte_cqi/
+#  filepath: base_path/NETWORK/l2_features/l2_network_volte_cqi/
 #  load_args:
 #    partitionBy: ["start_of_week"]
 #    mode: "overwrite"

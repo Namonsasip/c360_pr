@@ -1,5 +1,5 @@
 l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int:
-  partition_by: ["subscription_identifier"]
+  partition_by: ["national_id_card, access_method_num, subscription_identifier"]
   feature_list:
     min: ['rev_arpu_total_revenue' ,
           'rev_arpu_total_gprs_net_revenue' ,
@@ -118,6 +118,8 @@ l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly:
   feature_list:
     subscription_identifier: "subscription_identifier"
     start_of_month: "start_of_month"
+    national_id_card: "national_id_card"
+    access_method_num: "access_method_num"
     min_rev_arpu_total_revenue_monthly_last_month: 'min_rev_arpu_total_revenue_monthly_last_month'
     min_rev_arpu_total_revenue_monthly_last_three_month: 'min_rev_arpu_total_revenue_monthly_last_three_month'
     min_rev_arpu_total_gprs_net_revenue_monthly_last_month: 'min_rev_arpu_total_gprs_net_revenue_monthly_last_month'
@@ -423,28 +425,28 @@ l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly:
     avg_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_month_over_three_month: 'avg_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_month / avg_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_three_month'
     avg_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_month_over_three_month: 'avg_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_month / avg_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_three_month'
     avg_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_month_over_three_month: 'avg_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_month / avg_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_three_month'
-    stddev_rev_arpu_total_voice_net_tariff_rev_ppu_monthly_last_month: 'stddev_rev_arpu_total_voice_net_tariff_rev_ppu_monthly_last_month' ,
-    stddev_rev_arpu_total_voice_net_tariff_rev_ppu_monthly_last_three_month: 'stddev_rev_arpu_total_voice_net_tariff_rev_ppu_monthly_last_month' ,
-    stddev_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_month: 'stddev_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_month' ,
-    stddev_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_three_month: 'stddev_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_month' ,
-    stddev_rev_arpu_total_gprs_net_tariff_rev_ppu_monthly_last_month: 'stddev_rev_arpu_total_gprs_net_tariff_rev_ppu_monthly_last_month' ,
-    stddev_rev_arpu_total_gprs_net_tariff_rev_ppu_monthly_last_three_month: 'stddev_rev_arpu_total_gprs_net_tariff_rev_ppu_monthly_last_month' ,
-    stddev_rev_arpu_total_sms_net_tariff_rev_ppu_monthly_last_month: 'stddev_rev_arpu_total_sms_net_tariff_rev_ppu_monthly_last_month' ,
-    stddev_rev_arpu_total_sms_net_tariff_rev_ppu_monthly_last_three_month: 'stddev_rev_arpu_total_sms_net_tariff_rev_ppu_monthly_last_month' ,
-    stddev_rev_rev_arpu_total_mms_net_tariff_rev_ppu_monthly_last_month: 'stddev_rev_arpu_total_mms_net_tariff_rev_ppu_monthly_last_month' ,
-    stddev_rev_arpu_total_mms_net_tariff_rev_ppu_monthly_last_three_month: 'stddev_rev_arpu_total_mms_net_tariff_rev_ppu_monthly_last_month' ,
-    stddev_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_month: 'stddev_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_month' ,
-    stddev_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_three_month: 'stddev_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_month' ,
-    stddev_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_month: 'stddev_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_month' ,
-    stddev_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_three_month: 'stddev_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_month' ,
-    stddev_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_month: 'stddev_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_month' ,
-    stddev_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_three_month: 'stddev_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_month' ,
+    stddev_rev_arpu_total_voice_net_tariff_rev_ppu_monthly_last_month: 'stddev_rev_arpu_total_voice_net_tariff_rev_ppu_monthly_last_month'
+    stddev_rev_arpu_total_voice_net_tariff_rev_ppu_monthly_last_three_month: 'stddev_rev_arpu_total_voice_net_tariff_rev_ppu_monthly_last_three_month'
+    stddev_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_month: 'stddev_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_month'
+    stddev_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_three_month: 'stddev_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_three_month'
+    stddev_rev_arpu_total_gprs_net_tariff_rev_ppu_monthly_last_month: 'stddev_rev_arpu_total_gprs_net_tariff_rev_ppu_monthly_last_month'
+    stddev_rev_arpu_total_gprs_net_tariff_rev_ppu_monthly_last_three_month: 'stddev_rev_arpu_total_gprs_net_tariff_rev_ppu_monthly_last_three_month'
+    stddev_rev_arpu_total_sms_net_tariff_rev_ppu_monthly_last_month: 'stddev_rev_arpu_total_sms_net_tariff_rev_ppu_monthly_last_month'
+    stddev_rev_arpu_total_sms_net_tariff_rev_ppu_monthly_last_three_month: 'stddev_rev_arpu_total_sms_net_tariff_rev_ppu_monthly_last_three_month'
+    stddev_rev_rev_arpu_total_mms_net_tariff_rev_ppu_monthly_last_month: 'stddev_rev_arpu_total_mms_net_tariff_rev_ppu_monthly_last_month'
+    stddev_rev_arpu_total_mms_net_tariff_rev_ppu_monthly_last_three_month: 'stddev_rev_arpu_total_mms_net_tariff_rev_ppu_monthly_last_three_month'
+    stddev_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_month: 'stddev_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_month'
+    stddev_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_three_month: 'stddev_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_three_month'
+    stddev_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_month: 'stddev_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_month'
+    stddev_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_three_month: 'stddev_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_three_month'
+    stddev_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_month: 'stddev_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_month'
+    stddev_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_three_month: 'stddev_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_three_month'
 
   granularity: ""
 
 
 l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_int:
-  partition_by: ["subscription_identifier"]
+  partition_by: ["national_id_card, access_method_num, subscription_identifier"]
   feature_list:
     min: ['rev_arpu_total_revenue' ,
           'rev_arpu_total_gprs_net_revenue' ,
@@ -532,6 +534,7 @@ l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_int:
           'rev_arpu_total_ir_net_tariff_rev_ppu', ]
     stddev: ['rev_arpu_total_voice_net_tariff_rev_ppu' ,
              'rev_arpu_total_gprs_net_tariff_rev_ppu' ,
+            # 'rev_arpu_total_vas_net_revenue',
              'rev_arpu_total_sms_net_tariff_rev_ppu' ,
              'rev_arpu_total_mms_net_tariff_rev_ppu' ,
              'rev_arpu_total_others_net_tariff_rev_ppu' ,
@@ -545,6 +548,8 @@ l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
   feature_list:
     subscription_identifier: "subscription_identifier"
     start_of_month: "start_of_month"
+    national_id_card: "national_id_card"
+    access_method_num: "access_method_num"
     min_rev_arpu_total_revenue_monthly_last_month: 'min_rev_arpu_total_revenue_monthly_last_month'
     min_rev_arpu_total_revenue_monthly_last_three_month: 'min_rev_arpu_total_revenue_monthly_last_three_month'
     min_rev_arpu_total_gprs_net_revenue_monthly_last_month: 'min_rev_arpu_total_gprs_net_revenue_monthly_last_month'
@@ -846,27 +851,23 @@ l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
     avg_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_month_over_three_month: 'avg_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_month / avg_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_three_month'
     avg_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_month_over_three_month: 'avg_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_month / avg_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_three_month'
 
-    stddev_rev_arpu_total_voice_net_tariff_rev_ppu_monthly_last_month: 'stddev_rev_arpu_total_voice_net_tariff_rev_ppu_monthly_last_month' ,
-    stddev_rev_arpu_total_voice_net_tariff_rev_ppu_monthly_last_three_month: 'stddev_rev_arpu_total_voice_net_tariff_rev_ppu_monthly_last_month' ,
-
-    stddev_rev_arpu_total_gprs_net_tariff_rev_ppu_monthly_last_month: 'stddev_rev_arpu_total_gprs_net_tariff_rev_ppu_monthly_last_month' ,
-    stddev_rev_arpu_total_gprs_net_tariff_rev_ppu_monthly_last_three_month: 'stddev_rev_arpu_total_gprs_net_tariff_rev_ppu_monthly_last_month' ,
-
-    stddev_rev_arpu_total_sms_net_tariff_rev_ppu_monthly_last_month: 'stddev_rev_arpu_total_sms_net_tariff_rev_ppu_monthly_last_month' ,
-    stddev_rev_arpu_total_sms_net_tariff_rev_ppu_monthly_last_three_month: 'stddev_rev_arpu_total_sms_net_tariff_rev_ppu_monthly_last_month' ,
-
-    stddev_rev_arpu_total_mms_net_tariff_rev_ppu_monthly_last_month: 'stddev_rev_arpu_total_mms_net_tariff_rev_ppu_monthly_last_month' ,
-    stddev_rev_arpu_total_mms_net_tariff_rev_ppu_monthly_last_three_month: 'stddev_rev_arpu_total_mms_net_tariff_rev_ppu_monthly_last_month' ,
-
-    stddev_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_month: 'stddev_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_month' ,
-    stddev_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_three_month: 'stddev_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_month' ,
-
-    stddev_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_month: 'stddev_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_month' ,
-    stddev_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_three_month: 'stddev_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_month' ,
-
-    stddev_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_month: 'stddev_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_month' ,
-    stddev_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_three_month: 'stddev_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_month' ,
-
+    stddev_rev_arpu_total_voice_net_tariff_rev_ppu_monthly_last_month: 'stddev_rev_arpu_total_voice_net_tariff_rev_ppu_monthly_last_month'
+    stddev_rev_arpu_total_voice_net_tariff_rev_ppu_monthly_last_three_month: 'stddev_rev_arpu_total_voice_net_tariff_rev_ppu_monthly_last_three_month'
+   # stddev_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_month: 'stddev_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_month'
+   # stddev_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_three_month: 'stddev_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_three_month'
+    stddev_rev_arpu_total_gprs_net_tariff_rev_ppu_monthly_last_month: 'stddev_rev_arpu_total_gprs_net_tariff_rev_ppu_monthly_last_month'
+    stddev_rev_arpu_total_gprs_net_tariff_rev_ppu_monthly_last_three_month: 'stddev_rev_arpu_total_gprs_net_tariff_rev_ppu_monthly_last_three_month'
+    stddev_rev_arpu_total_sms_net_tariff_rev_ppu_monthly_last_month: 'stddev_rev_arpu_total_sms_net_tariff_rev_ppu_monthly_last_month'
+    stddev_rev_arpu_total_sms_net_tariff_rev_ppu_monthly_last_three_month: 'stddev_rev_arpu_total_sms_net_tariff_rev_ppu_monthly_last_three_month'
+    stddev_rev_rev_arpu_total_mms_net_tariff_rev_ppu_monthly_last_month: 'stddev_rev_arpu_total_mms_net_tariff_rev_ppu_monthly_last_month'
+    stddev_rev_arpu_total_mms_net_tariff_rev_ppu_monthly_last_three_month: 'stddev_rev_arpu_total_mms_net_tariff_rev_ppu_monthly_last_three_month'
+    stddev_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_month: 'stddev_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_month'
+    stddev_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_three_month: 'stddev_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_three_month'
+    stddev_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_month: 'stddev_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_month'
+    stddev_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_three_month: 'stddev_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_three_month'
+    stddev_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_month: 'stddev_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_month'
+    stddev_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_three_month: 'stddev_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_three_month'
+    
     min_rev_arpu_total_vas_net_revenue_monthly_last_month: 'min_rev_arpu_total_vas_net_revenue_monthly_last_month'
     min_rev_arpu_total_vas_net_revenue_monthly_last_three_month: 'min_rev_arpu_total_vas_net_revenue_monthly_last_three_month'
     max_rev_arpu_total_vas_net_revenue_monthly_last_month: 'max_rev_arpu_total_vas_net_revenue_monthly_last_month'
@@ -878,35 +879,35 @@ l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
 
     sum_rev_arpu_total_vas_net_revenue_monthly_last_month_over_three_month: 'sum_rev_arpu_total_vas_net_revenue_monthly_last_month / sum_rev_arpu_total_vas_net_revenue_monthly_last_three_month'
     min_rev_arpu_total_vas_net_revenue_monthly_last_month_over_three_month: 'min_rev_arpu_total_vas_net_revenue_monthly_last_month / min_rev_arpu_total_vas_net_revenue_monthly_last_three_month'
-    min_rev_arpu_total_vas_net_tariff_rev_mth_monthly_last_month_over_three_month: 'min_rev_arpu_total_vas_net_tariff_rev_mth_monthly_last_month / min_rev_arpu_total_vas_net_tariff_rev_mth_monthly_last_three_month'
-    min_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_month_over_three_month: 'min_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_month / min_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_three_month'
+   # min_rev_arpu_total_vas_net_tariff_rev_mth_monthly_last_month_over_three_month: 'min_rev_arpu_total_vas_net_tariff_rev_mth_monthly_last_month / min_rev_arpu_total_vas_net_tariff_rev_mth_monthly_last_three_month'
+   # min_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_month_over_three_month: 'min_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_month / min_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_three_month'
     max_rev_arpu_total_vas_net_revenue_monthly_last_month_over_three_month: 'max_rev_arpu_total_vas_net_revenue_monthly_last_month / max_rev_arpu_total_vas_net_revenue_monthly_last_three_month'
-    max_rev_arpu_total_vas_net_tariff_rev_mth_monthly_last_month_over_three_month: 'max_rev_arpu_total_vas_net_tariff_rev_mth_monthly_last_month / max_rev_arpu_total_vas_net_tariff_rev_mth_monthly_last_three_month'
-    max_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_month_over_three_month: 'max_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_month / max_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_three_month'
-    sum_rev_arpu_total_vas_net_tariff_rev_mth_monthly_last_month_over_three_month: 'sum_rev_arpu_total_vas_net_tariff_rev_mth_monthly_last_month / sum_rev_arpu_total_vas_net_tariff_rev_mth_monthly_last_three_month'
-    sum_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_month_over_three_month: 'sum_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_month /sum_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_three_month'
+   # max_rev_arpu_total_vas_net_tariff_rev_mth_monthly_last_month_over_three_month: 'max_rev_arpu_total_vas_net_tariff_rev_mth_monthly_last_month / max_rev_arpu_total_vas_net_tariff_rev_mth_monthly_last_three_month'
+    #max_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_month_over_three_month: 'max_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_month / max_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_three_month'
+   # sum_rev_arpu_total_vas_net_tariff_rev_mth_monthly_last_month_over_three_month: 'sum_rev_arpu_total_vas_net_tariff_rev_mth_monthly_last_month / sum_rev_arpu_total_vas_net_tariff_rev_mth_monthly_last_three_month'
+   # sum_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_month_over_three_month: 'sum_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_month /sum_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_three_month'
     avg_rev_arpu_total_vas_net_revenue_monthly_last_month_over_three_month: 'avg_rev_arpu_total_vas_net_revenue_monthly_last_month / avg_rev_arpu_total_vas_net_revenue_monthly_last_three_month'
-    avg_rev_arpu_total_vas_net_tariff_rev_mth_monthly_last_month_over_three_month: 'avg_rev_arpu_total_vas_net_tariff_rev_mth_monthly_last_month / avg_rev_arpu_total_vas_net_tariff_rev_mth_monthly_last_three_month'
-    avg_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_month_over_three_month: 'avg_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_month / avg_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_three_month'
+   # avg_rev_arpu_total_vas_net_tariff_rev_mth_monthly_last_month_over_three_month: 'avg_rev_arpu_total_vas_net_tariff_rev_mth_monthly_last_month / avg_rev_arpu_total_vas_net_tariff_rev_mth_monthly_last_three_month'
+   # avg_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_month_over_three_month: 'avg_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_month / avg_rev_arpu_total_vas_net_tariff_rev_ppu_monthly_last_three_month'
 
   granularity: ""
 
 l4_revenue_prepaid_pru_f_usage_multi_features:
-  partition_by: ["subscription_identifier"]
+  partition_by: ["national_id_card, access_method_num, subscription_identifier"]
   feature_list:
     sum: [
       'rev_arpu_total_net_rev_sum',
       'rev_arpu_net_tariff_rev_reward_sum',
       'rev_arpu_net_tariff_rev_exc_reward_sum',
       'rev_arpu_data_rev_sum',
-      'rev_arpu_data_rev_by_pkg_sum',
       'rev_arpu_data_rev_by_ppu_sum',
       'rev_arpu_data_rev_4g_sum',
-      'rev_arpu_number_of_ontop_pkg_sum',
-      'rev_arpu_data_rev_by_pkg_4g_sum',
+      "rev_arpu_data_rev_by_on_top_pkg_sum",
+      "rev_arpu_data_number_of_on_top_pkg_sum",
+      'rev_arpu_data_rev_by_on_top_4g_sum',
       'rev_arpu_data_rev_by_ppu_4g_sum',
       'rev_arpu_data_rev_2g_3g_sum',
-      'rev_arpu_data_rev_by_pkg_2g_3g_sum',
+      'rev_arpu_data_rev_by_on_top_pkg_2g_3g_sum',
       'rev_arpu_data_rev_by_ppu_2g_3g_sum',
       'rev_arpu_data_rev_by_per_unit_sum',
       'rev_arpu_data_rev_per_unit_2g_3g_sum',
@@ -914,11 +915,11 @@ l4_revenue_prepaid_pru_f_usage_multi_features:
       'rev_arpu_days_0_rev_sum',
       'rev_arpu_days_data_0_rev_sum',
       'rev_arpu_days_data_ppu_0_rev_sum',
-      "rev_arpu_days_data_pkg_0_rev",
+      "rev_arpu_days_data_on_top_pkg_0_rev_sum",
       'rev_arpu_days_4g_data_0_rev_sum',
       'rev_arpu_days_2g_3g_data_0_rev_sum',
-      'rev_arpu_days_4g_data_pkg_0_rev_sum',
-      'rev_arpu_days_2g_3g_data_pkg_0_rev_sum',
+      'rev_arpu_days_4g_data_on_top_pkg_0_rev_sum',
+      'rev_arpu_days_2g_3g_data_on_top_pkg_0_rev_sum',
       'rev_arpu_days_4g_data_ppu_0_rev_sum',
       'rev_arpu_days_2g_3g_data_ppu_0_rev_sum',
       'rev_arpu_days_voice_0_rev_sum',
@@ -931,8 +932,8 @@ l4_revenue_prepaid_pru_f_usage_multi_features:
       'rev_arpu_days_voice_intra_per_min_0_rev_sum',
       'rev_arpu_days_voice_non_intra_per_min_0_rev_sum',
       'rev_arpu_voice_sum',
-      'rev_arpu_voice_intra_sum',
-      'rev_arpu_voice_non_intra_sum',
+      'rev_arpu_voice_intra_ppu_sum',
+      'rev_arpu_voice_non_intra_ppu_sum',
       'rev_arpu_voice_per_call_sum',
       'rev_arpu_voice_intra_per_call_sum',
       'rev_arpu_voice_non_intra_per_call_sum',
@@ -947,11 +948,11 @@ l4_revenue_prepaid_pru_f_usage_multi_features:
           'rev_arpu_share_data_rev_by_pkg_4g_avg',
           'rev_arpu_share_data_rev_by_ppu_4g_avg',
           'rev_arpu_share_data_rev_2g_3g_avg',
-          'rev_arpu_share_data_rev_by_pkg_2g_3g_avg',
+          'rev_arpu_share_data_rev_by_on_top_pkg_2g_3g_avg',
           'rev_arpu_share_data_rev_by_ppu_2g_3g_avg',
-          'rev_arpu_diff_rev_by_pkg_ppu_avg',
-          'rev_arpu_diff_rev_by_pkg_ppu_4g_avg',
-          'rev_arpu_diff_rev_by_pkg_ppu_2g_3g_avg',
+          'rev_arpu_diff_rev_by_on_top_pkg_ppu_avg',
+          'rev_arpu_diff_rev_by_on_top_pkg_ppu_4g_avg',
+          'rev_arpu_diff_rev_by_on_top_pkg_ppu_2g_3g_avg',
           'rev_arpu_diff_rev_2g_3g_vs_4g_avg',
           'rev_arpu_diff_rev_per_unit_2g_3g_vs_4g_avg',
           'rev_arpu_share_voice_intra_avg',
@@ -959,14 +960,14 @@ l4_revenue_prepaid_pru_f_usage_multi_features:
           'rev_arpu_diff_voice_intra_non_intra_avg',
           'rev_arpu_diff_voice_intra_non_intra_per_min_avg',
           'rev_arpu_diff_voice_intra_non_intra_per_call_avg']
-    max: ["rev_arpu_last_date_on_top_pkg_max",
+    max: ["rev_arpu_data_last_date_on_top_pkg_max",
           "rev_arpu_share_of_exc_reward_over_total_rev_max",
           "rev_arpu_share_of_revenue_reward_over_total_rev_max",
           "rev_arpu_share_data_rev_4g_max",
           "rev_arpu_share_data_rev_by_pkg_4g_max",
           "rev_arpu_share_data_rev_by_ppu_4g_max",
           "rev_arpu_share_data_rev_2g_3g_max",
-          "rev_arpu_share_data_rev_by_pkg_2g_3g_max",
+          "rev_arpu_share_data_rev_by_on_top_pkg_2g_3g_max",
           "rev_arpu_share_data_rev_by_ppu_2g_3g_max",
           "rev_arpu_share_voice_intra_max",
           "rev_arpu_share_voice_non_intra_max",]
@@ -976,7 +977,7 @@ l4_revenue_prepaid_pru_f_usage_multi_features:
           "rev_arpu_share_data_rev_by_pkg_4g_min",
           "rev_arpu_share_data_rev_by_ppu_4g_min",
           "rev_arpu_share_data_rev_2g_3g_min",
-          "rev_arpu_share_data_rev_by_pkg_2g_3g_min",
+          "rev_arpu_share_data_rev_by_on_top_pkg_2g_3g_min",
           "rev_arpu_share_data_rev_by_ppu_2g_3g_min",
           "rev_arpu_share_voice_intra_min",
           "rev_arpu_share_voice_non_intra_min",]

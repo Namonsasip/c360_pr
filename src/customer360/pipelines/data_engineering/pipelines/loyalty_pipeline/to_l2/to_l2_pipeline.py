@@ -24,7 +24,7 @@ def loyalty_to_l2_pipeline(**kwargs):
             # Number of redeemed rewards in each category
             node(
                 build_loyalty_number_of_rewards_redeemed_weekly,
-                ["l1_loyalty_number_of_rewards_redeemed_daily",
+                ["l1_loyalty_number_of_rewards_daily",
                  "l0_loyalty_priv_project",
                  "l0_loyalty_priv_category",
                  "params:l2_loyalty_number_of_rewards_redeemed_weekly"],
@@ -38,6 +38,12 @@ def loyalty_to_l2_pipeline(**kwargs):
                  "l0_loyalty_priv_category",
                  "params:l2_loyalty_number_of_points_spend_weekly"],
                 "l2_loyalty_number_of_points_spend_weekly"
+            ),
+            node(
+                build_loyalty_point_balance_statuses_weekly,
+                ["l1_loyalty_drm_t_aunjai_point_collection_with_customers_for_point_bal_daily",
+                 "params:l2_loyalty_point_balance_statuses_weekly"],
+                "l2_loyalty_point_balance_statuses_weekly"
             ),
 
         ]
