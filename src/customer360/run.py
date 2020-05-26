@@ -66,38 +66,6 @@ class ProjectContext(KedroContext):
     """Users can override the remaining methods from the parent class here,
     or create new ones (e.g. as required by plugins)
     """
-    def __init__(
-        self,
-        project_path: Union[Path, str],
-        env: str = None,
-        extra_params: Dict[str, Any] = None,
-    ):
-        super().__init__(project_path, env, extra_params)
-        self._spark_session = None
-        self.init_spark_session()
-
-    def init_spark_session(self, yarn=True) -> None:
-        """Initialises a SparkSession using the config defined in project's conf folder."""
-
-        if self._spark_session:
-            return self._spark_session
-        parameters = self.config_loader.get("spark*", "spark*/**")
-        spark_conf = SparkConf().setAll(parameters.items())
-
-        spark_session_conf = (
-            SparkSession.builder.appName(
-                "{}_{}".format(self.project_name, getpass.getuser())
-            )
-            .enableHiveSupport()
-            .config(conf=spark_conf)
-        )
-        if yarn:
-            self._spark_session = spark_session_conf.master("yarn-client").getOrCreate()
-        else:
-            self._spark_session = spark_session_conf.getOrCreate()
-
-        self._spark_session.sparkContext.setLogLevel("WARN")
-
     project_name = "project-samudra"
     project_version = "0.15.5"
 
