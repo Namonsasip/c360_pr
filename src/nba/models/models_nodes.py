@@ -1,6 +1,6 @@
 import os
+import re
 from pathlib import Path
-from time import sleep
 from typing import List, Any, Dict, Callable, Tuple
 
 import matplotlib.pyplot as plt
@@ -23,6 +23,10 @@ from pyspark.sql.types import (
 )
 from sklearn.metrics import auc, roc_curve
 from sklearn.model_selection import train_test_split
+
+from customer360.utilities.spark_util import get_spark_session
+
+MODELLING_N_OBS_THRESHOLD = 500
 
 
 def calculate_extra_pai_metrics(
@@ -51,9 +55,7 @@ def calculate_extra_pai_metrics(
                 "original_n_obs_positive_target"
             ),
             F.mean(target_column).alias("original_target_mean"),
-            (F.stddev(target_column) / F.mean(target_column)).alias(
-                "original_target_normalized_stdev"
-            ),
+            (F.stddev(target_column)).alias("original_target_stdev"),
             (F.max(target_column)).alias("original_target_max"),
             (F.min(target_column)).alias("original_target_min"),
         )
@@ -103,9 +105,11 @@ def create_model_function(
             train_sampling_ratio: float,
             model_params: Dict[str, Any],
             min_obs_per_class_for_model: int,
+            extra_tag_columns: List[str],
             pai_run_prefix: str,
             pdf_extra_pai_metrics: pd.DataFrame,
-            pai_storage_path: str,
+            pai_runs_uri: str,
+            pai_artifacts_uri: str,
             regression_clip_target_quantiles: Tuple[float, float] = None,
         ) -> pd.DataFrame:
             """
@@ -125,12 +129,15 @@ def create_model_function(
                 min_obs_per_class_for_model: minimum observations within each class
                     from the target variable that are required to confidently train
                     a model
+                extra_tag_columns: other columns from the master table to add as a tag,
+                    they should be unique
                 regression_clip_target_quantiles: (only applicable for regression)
                     Tuple with the quantiles to clip the target before model training
                 pai_run_prefix: prefix that the pai run will have. The name will be the
                     prefix concatenated with the group
                 pdf_extra_pai_metrics: extra pai metrics to log
-                pai_storage_path: path where pai run will be stored
+                pai_runs_uri: uri where pai run will be stored
+                pai_artifacts_uri: uri where pai run will be stored
 
             Returns:
                 A pandas DataFrame with some info on the execution
@@ -280,8 +287,15 @@ def create_model_function(
                     ),
                 )
 
+            def pai_log_metrics_fix(metrics_dict):
+                fixed_metrics_dict = {
+                    k: (int(v) if isinstance(v, np.int64) else float(v))
+                    for k, v in metrics_dict.items()
+                }
+                pai.log_metrics(fixed_metrics_dict)
+
             current_group = pdf_master_chunk[group_column].iloc[0]
-            current_group_description = pdf_master_chunk["campaign_name"].iloc[0]
+
             pai_run_name = pai_run_prefix + current_group
 
             pdf_extra_pai_metrics_filtered = pdf_extra_pai_metrics[
@@ -302,13 +316,12 @@ def create_model_function(
                 ]
             elif model_type == "regression":
                 original_metrics += [
-                    "original_target_normalized_stdev",
+                    "original_target_stdev",
                     "original_target_min",
                     "original_target_max",
                 ]
 
             for metric in original_metrics:
-
                 pai_metrics_dict[metric] = pdf_extra_pai_metrics_filtered[metric].iloc[
                     0
                 ]
@@ -333,18 +346,17 @@ def create_model_function(
                     "modelling_n_obs_positive_target"
                 ] = modelling_n_obs_positive_target
             elif model_type == "regression":
-                modelling_target_normalized_stdev = (
-                    pdf_master_chunk[target_column].std()
-                    / pdf_master_chunk[target_column].mean()
-                )
-                pai_metrics_dict[
-                    "modelling_target_normalized_stdev"
-                ] = modelling_target_normalized_stdev
+                modelling_target_stdev = pdf_master_chunk[target_column].std()
+                pai_metrics_dict["modelling_target_stdev"] = modelling_target_stdev
 
             modelling_target_mean = np.mean(pdf_master_chunk[target_column])
             pai_metrics_dict["modelling_target_mean"] = modelling_target_mean
             # Configure and start pai run
-            pai.set_config(experiment=current_group, storage_runs=pai_storage_path)
+            pai.set_config(
+                experiment=current_group,
+                storage_runs=pai_runs_uri,
+                storage_artifacts=pai_artifacts_uri,
+            )
 
             if pai.active_run():
                 raise AssertionError(
@@ -359,15 +371,36 @@ def create_model_function(
                 tmp_path = Path("data/tmp") / run_id
                 os.makedirs(tmp_path, exist_ok=True)
 
-                pai.add_tags([f"z_{pai_run_prefix}", model_type])
-                pai.log_note(current_group_description)
+                pai.add_tags(
+                    [f"z_{pai_run_prefix}", model_type, f"modelled_by_{group_column}"]
+                )
 
-                pai.log_metrics(pai_metrics_dict)
+                if extra_tag_columns:
+                    for c in extra_tag_columns:
+                        if len(pdf_master_chunk[c].unique()) == 1:
+                            pai.add_tags(
+                                [
+                                    re.sub(
+                                        r"[^A-Za-z0-9\.\-_]",
+                                        "",
+                                        f"{c}-{pdf_master_chunk[c].iloc[0]}".replace(
+                                            " ", "_"
+                                        ),
+                                    )
+                                ]
+                            )
+                        else:
+                            pai.add_tags([f"{c} not unique"])
+                            pai.log_note(
+                                f"{c} is not unique for this run, possible values are {', '.join(pdf_master_chunk[c].fillna('NULL').unique())}"
+                            )
+
+                pai_log_metrics_fix(pai_metrics_dict)
 
                 pai.log_params(
                     {
                         "target_column": target_column,
-                        "model_type": model_type,
+                        "model_objective": model_type,
                         "regression_clip_target_quantiles": regression_clip_target_quantiles,
                     }
                 )
@@ -377,6 +410,14 @@ def create_model_function(
                 if modelling_perc_obs_target_null != 0:
                     pai.log_note(
                         "There are observations with NA target in the modelling data"
+                    )
+                    able_to_model_flag = False
+
+                if modelling_n_obs < MODELLING_N_OBS_THRESHOLD:
+                    pai.log_note(
+                        f"There are not enough observations to reliably train a model. "
+                        f"Minimum required is {MODELLING_N_OBS_THRESHOLD}, "
+                        f"found {modelling_n_obs}"
                     )
                     able_to_model_flag = False
 
@@ -425,9 +466,13 @@ def create_model_function(
 
                     # Train the model
                     pai.add_tags(["Able to model"])
-
+                    pdf_master_chunk = pdf_master_chunk.sort_values(
+                        ["subscription_identifier", "contact_date"]
+                    )
                     pdf_train, pdf_test = train_test_split(
-                        pdf_master_chunk, train_size=train_sampling_ratio
+                        pdf_master_chunk,
+                        train_size=train_sampling_ratio,
+                        random_state=123,
                     )
 
                     pai.log_params(
@@ -471,7 +516,7 @@ def create_model_function(
                             ),
                         )
 
-                        pai.log_metrics(
+                        pai_log_metrics_fix(
                             {
                                 "train_auc": train_auc,
                                 "test_auc": test_auc,
@@ -563,14 +608,8 @@ def create_model_function(
 
                         pai.log_model(model)
 
-                        train_relative_mae = (
-                            model.evals_result_["train"]["l1"][-1]
-                            / modelling_target_mean
-                        )
-                        test_relative_mae = (
-                            model.evals_result_["test"]["l1"][-1]
-                            / modelling_target_mean
-                        )
+                        train_mae = model.evals_result_["train"]["l1"][-1]
+                        test_mae = model.evals_result_["test"]["l1"][-1]
 
                         pai.log_features(
                             features=explanatory_features,
@@ -580,12 +619,17 @@ def create_model_function(
                             ),
                         )
 
-                        pai.log_metrics(
+                        pai_log_metrics_fix(
                             {
-                                "train_relative_mae": train_relative_mae,
-                                "test_relative_mae": test_relative_mae,
-                                "train_test_relative_mae_diff": train_relative_mae
-                                - test_relative_mae,
+                                "train_mae": train_mae,
+                                "test_mae": test_mae,
+                                "test_benchmark_target_average": np.mean(
+                                    np.abs(
+                                        pdf_test[target_column]
+                                        - pdf_test[target_column].mean()
+                                    )
+                                ),
+                                "train_test_mae_diff": train_mae - test_mae,
                             }
                         )
 
@@ -662,11 +706,12 @@ def create_model_function(
     return model_function
 
 
-def train_multiple_models(
+def  train_multiple_models(
     df_master: pyspark.sql.DataFrame,
     group_column: str,
     explanatory_features: List[str],
     target_column: str,
+    extra_keep_columns: List[str] = None,
     max_rows_per_group: int = None,
     **kwargs: Any,
 ) -> pyspark.sql.DataFrame:
@@ -679,6 +724,9 @@ def train_multiple_models(
         explanatory_features: list of features name to learn from. Must exist in
             df_master
         target_column: column with target variable
+        extra_keep_columns: extra columns that will be kept in the master when doing the
+            pandas UDF, should only be restricted to the ones that will be used since
+            this might consume a lot of memory
         max_rows_per_group: maximum rows that the train set of the model will have.
             If for a group the number of rows is larget it will be randomly sampled down
         **kwargs: further arguments to pass to the modelling function, they are not all
@@ -688,20 +736,34 @@ def train_multiple_models(
     Returns:
         A spark DataFrame with info about the training
     """
+
+    explanatory_features.sort()
+
+    if extra_keep_columns is None:
+        extra_keep_columns = []
+
+    # Increase number of partitions when training models to ensure data stays small
+    spark = get_spark_session()
+    spark.conf.set("spark.sql.shuffle.partitions", 2100)
+
     # To reduce the size of the pandas DataFrames only select the columns we really need
     # Also cast decimal type columns cause they don't get properly converted to pandas
     df_master_only_necessary_columns = df_master.select(
+        "subscription_identifier",
+        "contact_date",
         group_column,
         target_column,
-        "campaign_name",
-        *[
-            F.col(column_name).cast(FloatType())
-            if column_type.startswith("decimal")
-            else F.col(column_name)
-            for column_name, column_type in df_master.select(
-                *explanatory_features
-            ).dtypes
-        ],
+        *(
+            extra_keep_columns
+            + [
+                F.col(column_name).cast(FloatType())
+                if column_type.startswith("decimal")
+                else F.col(column_name)
+                for column_name, column_type in df_master.select(
+                    *explanatory_features
+                ).dtypes
+            ]
+        ),
     )
 
     pdf_extra_pai_metrics = calculate_extra_pai_metrics(
@@ -730,6 +792,7 @@ def train_multiple_models(
             explanatory_features=explanatory_features,
             target_column=target_column,
             pdf_extra_pai_metrics=pdf_extra_pai_metrics,
+            extra_tag_columns=extra_keep_columns,
             **kwargs,
         )
     )

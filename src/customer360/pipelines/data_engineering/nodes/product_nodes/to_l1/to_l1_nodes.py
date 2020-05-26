@@ -1,8 +1,10 @@
 from pyspark.sql import DataFrame
-from src.customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
-from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols
 from pyspark.sql import functions as F
 from pyspark.sql.types  import *
+from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
+
+from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
+    data_non_availability_and_missing_check
 
 
 def union_master_package_table(
@@ -77,10 +79,27 @@ def join_with_master_package(
 ) -> DataFrame:
     spark = get_spark_session()
 
-    if (len(grouped_cust_promo_df.head(1)) == 0 | len(prepaid_main_master_df.head(1)) == 0 |
-        len(prepaid_ontop_master_df.head(1)) == 0 | len(postpaid_main_master_df.head(1)) == 0 |
-        len(postpaid_ontop_master_df.head(1)) == 0):
+    ################################# Start Implementing Data availability checks ###############################
+    if check_empty_dfs([prepaid_main_master_df, prepaid_ontop_master_df, postpaid_main_master_df
+                        ,postpaid_ontop_master_df]):
         return get_spark_empty_df()
+
+
+    prepaid_main_master_df = data_non_availability_and_missing_check(df=prepaid_main_master_df
+         ,grouping="weekly", par_col="partition_date",target_table_name="l1_product_active_customer_promotion_features_daily")
+    prepaid_ontop_master_df = data_non_availability_and_missing_check(df=prepaid_ontop_master_df
+         , grouping="weekly", par_col="partition_date",target_table_name="l1_product_active_customer_promotion_features_daily")
+    postpaid_main_master_df = data_non_availability_and_missing_check(df=postpaid_main_master_df
+        , grouping="weekly", par_col="partition_date",target_table_name="l1_product_active_customer_promotion_features_daily")
+    postpaid_ontop_master_df = data_non_availability_and_missing_check(df=postpaid_ontop_master_df
+        , grouping="weekly", par_col="partition_date",target_table_name="l1_product_active_customer_promotion_features_daily")
+
+    if check_empty_dfs([prepaid_main_master_df, prepaid_ontop_master_df, postpaid_main_master_df
+                           , postpaid_ontop_master_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+
 
     min_value = union_dataframes_with_missing_cols(
         [
@@ -96,8 +115,13 @@ def join_with_master_package(
         ]
     ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
 
-    grouped_cust_promo_df.filter(F.col("event_partition_date") <= min_value)
+    grouped_cust_promo_df = grouped_cust_promo_df.filter(F.col("event_partition_date") <= min_value)
     grouped_cust_promo_df.createOrReplaceTempView("grouped_cust_promo_df")
+
+    prepaid_main_master_df = prepaid_main_master_df.filter(F.to_date(F.col("partition_date").cast(StringType()),'yyyyMMdd') <= min_value)
+    prepaid_ontop_master_df = prepaid_ontop_master_df.filter(F.to_date(F.col("partition_date").cast(StringType()),'yyyyMMdd') <= min_value)
+    postpaid_main_master_df = postpaid_main_master_df.filter(F.to_date(F.col("partition_date").cast(StringType()),'yyyyMMdd') <= min_value)
+    postpaid_ontop_master_df = postpaid_ontop_master_df.filter(F.to_date(F.col("partition_date").cast(StringType()),'yyyyMMdd') <= min_value)
 
     union_master_package_table(
         prepaid_main_master_df,
@@ -186,3 +210,42 @@ def join_with_master_package(
 
     return result_df
 
+
+def dac_product_customer_promotion_for_daily(input_df) -> DataFrame:
+    """
+    :return:
+    """
+
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="weekly", par_col="partition_date",
+                                                       target_table_name="l1_product_active_customer_promotion_features_daily")
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+
+    return input_df
+
+
+def dac_product_fbb_a_customer_promotion_current_for_daily(input_df) -> DataFrame:
+    """
+    :return:
+    """
+
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
+                                            target_table_name="l1_product_active_fbb_customer_features_daily")
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+
+    return input_df

@@ -3,4 +3,4 @@ l4_customer_profile_ltv_to_date:
   filepath: data/L4_FEATURES/PROFILE/ltv_to_date/
   file_format: "parquet"
   save_args:
-    partitionBy: ["partition_month"]
+    partitionBy: ["start_of_month"]

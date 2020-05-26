@@ -6,7 +6,8 @@ from pathlib import Path, PurePosixPath, WindowsPath
 from warnings import warn
 
 from hdfs import HdfsError, InsecureClient
-from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import DataFrame
+from customer360.utilities.spark_util import get_spark_session
 from pyspark.sql.utils import AnalysisException
 from s3fs import S3FileSystem
 
@@ -210,9 +211,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
     @staticmethod
     def _get_spark():
-        spark = SparkSession.builder.appName("project_customer_360").getOrCreate()
-        spark.conf.set("spark.sql.sources.partitionOverwriteMode", "dynamic")
-        spark.conf.set("spark.sql.parquet.binaryAsString", "true")
+        spark = get_spark_session()
         return spark
 
     def _create_metadata_table(self, spark):
@@ -445,6 +444,15 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     "select * from src_data where {0} > date_sub(date(date_trunc('week', to_date(cast('{1}' as String)))), 7*({2}))".format(
                     filter_col, tgt_filter_date, lookback_fltr))
 
+            elif read_layer.lower() == "l2_weekly_read_custom_lookback" and target_layer.lower() == 'l4_weekly_write_custom_lookback':
+                filter_col = "start_of_week"
+                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
+                print("filter_col:", filter_col)
+                print("lookback_fltr:", lookback_fltr)
+                src_incremental_data = spark.sql(
+                    "select * from src_data where {0} > date_sub(date(date_trunc('week', to_date(cast('{1}' as String)))), 7*({2}))".format(
+                        filter_col, tgt_filter_date, lookback_fltr))
+
             elif read_layer.lower() == "l4_weekly" and target_layer.lower() == 'l4_weekly':
                 filter_col = "start_of_week"
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
@@ -489,6 +497,15 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
             elif read_layer.lower() == "l3_monthly_customer_profile" and target_layer.lower() == 'l3_monthly':
                 filter_col = "partition_month"
+                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
+                print("filter_col:", filter_col)
+                print("lookback_fltr:", lookback_fltr)
+                src_incremental_data = spark.sql(
+                "select * from src_data where {0} > add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), -{2})".format(
+                    filter_col, tgt_filter_date, lookback_fltr))
+
+            elif read_layer.lower() == "l3_monthly" and target_layer.lower() == 'l3_monthly':
+                filter_col = "start_of_month"
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 print("filter_col:", filter_col)
                 print("lookback_fltr:", lookback_fltr)
