@@ -84,13 +84,7 @@ extensions = [
     "nbsphinx",
     "recommonmark",
     "sphinx_copybutton",
-    "sphinxcontrib.confluencebuilder",
 ]
-
-# confluence builder configuration
-confluence_publish = True
-confluence_space_name = "CU"
-confluence_parent_page = "Documentation"
 
 # enable autosummary plugin (table of contents for modules/classes/class
 # methods)
