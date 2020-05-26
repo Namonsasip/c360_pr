@@ -109,7 +109,8 @@ def _l1_join_with_customer_profile(
         current_item
 ) -> DataFrame:
 
-    cust_profile_col_to_select = list(config["join_column_with_cust_profile"].keys()) + ["start_of_week", "start_of_month", "subscription_identifier"]
+    cust_profile_col_to_select = list(config["join_column_with_cust_profile"].keys()) + \
+                                 ["start_of_week", "start_of_month", "subscription_identifier", "national_id_card"]
     cust_profile_col_to_select = list(set(cust_profile_col_to_select))  # remove duplicates
 
     if not isinstance(current_item[0], datetime):
@@ -134,7 +135,8 @@ def _l2_join_with_customer_profile(
         current_item
 ) -> DataFrame:
 
-    cust_profile_col_selection = set(list(config["join_column_with_cust_profile"].keys()) + ["subscription_identifier"])
+    cust_profile_col_selection = set(list(config["join_column_with_cust_profile"].keys())
+                                     + ["subscription_identifier", "national_id_card"])
     # grouping all distinct customer per week
     filtered_cust_profile_df = (cust_profile_df
                                 .filter(F.col("start_of_week").isin(current_item))
@@ -159,7 +161,8 @@ def _l3_join_with_customer_profile(
     config["join_column_with_cust_profile"]["start_of_month"] = config["join_column_with_cust_profile"]["partition_month"]
     del config["join_column_with_cust_profile"]["partition_month"]
 
-    cust_profile_col_selection = set(list(config["join_column_with_cust_profile"].keys()) + ["subscription_identifier"])
+    cust_profile_col_selection = set(list(config["join_column_with_cust_profile"].keys())
+                                     + ["subscription_identifier", "national_id_card"])
 
     filtered_cust_profile_df = (cust_profile_df
                                 .withColumnRenamed("partition_month", "start_of_month")
