@@ -241,7 +241,7 @@ def filter_out_nulls(df: DataFrame) -> Tuple[DataFrame, List]:
     return df, null_columns
 
 
-def get_string_indexers(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
+def get_string_indexers(df: DataFrame, parameters: Dict[str, Any]) -> List[Any]:
     """ Returns stages indexing strings.
 
     Args:
