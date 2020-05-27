@@ -340,15 +340,15 @@ def run_accuracy_logic(
         partition_col=partition_col
     )
 
+    if "percentiles" in result_df.columns:
+        result_df = break_percentile_columns(result_df, percentiles["percentile_list"])
+
     result_df = add_outlier_percentage_based_on_iqr(
         raw_df=sampled_df,
         melted_df=result_df,
         partition_col=partition_col,
         features_list=features_list
     )
-
-    if "percentiles" in result_df.columns:
-        result_df = break_percentile_columns(result_df, percentiles["percentile_list"])
 
     result_df = (result_df
                  .withColumn("run_date", F.current_timestamp())

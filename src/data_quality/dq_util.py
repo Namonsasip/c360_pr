@@ -7,6 +7,7 @@ import os
 from datetime import datetime
 from typing import *
 from functools import reduce
+from itertools import chain
 
 from src.customer360.utilities.re_usable_functions import get_spark_session
 
@@ -347,9 +348,9 @@ def add_outlier_percentage_based_on_iqr(
                           .groupBy("corresponding_date")
                           .pivot("feature_column_name")
                           .agg(
-                                f.first(f.col("`percentile_0.25`")).alias("q1"),
-                                f.first(f.col("`percentile_0.75`")).alias("q3"),
-                                (f.first(f.col("`percentile_0.75`")) - f.first(f.col("`percentile_0.25`"))).alias("iqr"),
+                                f.first(f.col("`percentile_0.25`")).alias("_q1"),
+                                f.first(f.col("`percentile_0.75`")).alias("_q3"),
+                                (f.first(f.col("`percentile_0.75`")) - f.first(f.col("`percentile_0.25`"))).alias("_iqr"),
                           )
                           .withColumnRenamed("corresponding_date", partition_col))
 
@@ -360,17 +361,23 @@ def add_outlier_percentage_based_on_iqr(
         *[
             f.count(
                 f.when(f.col(num_col) <
-                       (f.col(f"{num_col}_q1") - (1.5 * (f.col(f"{num_col}_iqr")))), 1)
+                       (f.col(f"{num_col}__q1") - (1.5 * (f.col(f"{num_col}__iqr")))), 1)
             ).cast(LongType()).alias(f"{num_col}__count_lower_outlier")
             for num_col in feature_list
         ],
         *[
             f.count(
                 f.when(f.col(num_col) >
-                       (f.col(f"{num_col}_q3") + (1.5 * (f.col(f"{num_col}_iqr")))), 1)
+                       (f.col(f"{num_col}__q3") + (1.5 * (f.col(f"{num_col}__iqr")))), 1)
             ).cast(LongType()).alias(f"{num_col}__count_higher_outlier")
             for num_col in feature_list
-        ]
+        ],
+        *list(chain.from_iterable([
+            [f.first(f.col(f"{num_col}__q1")).alias(f"{num_col}__q1"),
+             f.first(f.col(f"{num_col}__q3")).alias(f"{num_col}__q3"),
+             f.first(f.col(f"{num_col}__iqr")).alias(f"{num_col}__iqr")]
+            for num_col in feature_list
+        ]))
     )
 
     outlier_results_melted = melt_qa_result(outlier_results, partition_col)
