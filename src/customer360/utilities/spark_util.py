@@ -43,7 +43,7 @@ def get_spark_session() -> SparkSession:
         # Dont delete this line. This allow spark to only overwrite the partition
         # saved to parquet instead of entire table folder
         spark.conf.set("spark.sql.sources.partitionOverwriteMode", "DYNAMIC")
-        spark.conf.set("spark.sql.parquet.mergeSchema", "true")
+       # spark.conf.set("spark.sql.parquet.mergeSchema", "true")
 
     spark.sparkContext.setLogLevel("WARN")
 
