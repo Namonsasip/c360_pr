@@ -14,7 +14,8 @@ from src.data_quality.dq_util import get_config_parameters, \
     replace_asterisk_feature, \
     get_partition_count_formula, \
     melt, \
-    add_suffix_to_df_columns
+    add_suffix_to_df_columns, \
+    add_outlier_percentage_based_on_iqr
 
 from kedro.pipeline.node import Node
 from kedro.io.core import DataSetError
@@ -337,6 +338,13 @@ def run_accuracy_logic(
         melted_result_df=result_df,
         features_list=features_list,
         partition_col=partition_col
+    )
+
+    result_df = add_outlier_percentage_based_on_iqr(
+        raw_df=sampled_df,
+        melted_df=result_df,
+        partition_col=partition_col,
+        features_list=features_list
     )
 
     if "percentiles" in result_df.columns:
