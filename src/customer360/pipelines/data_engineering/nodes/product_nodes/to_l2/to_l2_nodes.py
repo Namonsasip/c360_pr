@@ -14,6 +14,7 @@ def get_activated_deactivated_features(
         prepaid_ontop_master_df,
         postpaid_main_master_df,
         postpaid_ontop_master_df,
+        weekly_cust_prof_df
 ) -> DataFrame:
     spark = get_spark_session()
 
@@ -137,6 +138,7 @@ def get_activated_deactivated_features(
                 on ontop_df.promotion_code = cp_df.promo_cd
                 and ontop_df.partition_date = cp_df.partition_date
         ),
+        -- Intermediate activate/deactivate type of features (see confluence for feature dictionary)
         int_act_deact_features as (
             select 
                 subscription_identifier, 
@@ -369,6 +371,12 @@ def get_activated_deactivated_features(
             product_activated_one_off_voice_ontop_packages/product_activated_rolling_voice_ontop_packages as product_ratio_of_activated_one_off_to_rolling_voice_ontop
         from int_act_deact_features
     """)
+
+    result_df = (weekly_cust_prof_df
+                 .select("access_method_num", "national_id_card", "subscription_identifier", "start_of_week")
+                 .join(result_df,
+                       on=["subscription_identifier", "start_of_week"],
+                       how="left"))
 
     return result_df
 
