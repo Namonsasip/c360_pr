@@ -12,7 +12,26 @@ Welcome to project's customer360 API docs!
    01_introduction
 
 .. toctree::
+   :maxdepth: 2
+   :caption: Getting started
+
+   02_getting_started
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Description
+
+   03_description
+
+.. toctree::
+   :maxdepth: 2
+   :caption: How-tos
+
+   04_howtos
+
+.. toctree::
    :maxdepth: 4
+   :caption: Code reference
 
    modules
 
