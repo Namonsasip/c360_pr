@@ -1,9 +1,9 @@
 
 l0_loyalty_drm_s_aunjai_register_distinct_sub_monthly_for_l3_loyalty_point_balance_statuses_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/LOYALTY/loyalty_drm_s_aunjai_register_distinct_sub/
+  filepath: base_path/LOYALTY/loyalty_drm_s_aunjai_register_distinct_sub/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_loyalty_point_balance_statuses_monthly'
@@ -13,9 +13,9 @@ l0_loyalty_drm_s_aunjai_register_distinct_sub_monthly_for_l3_loyalty_point_balan
 
 l0_loyalty_drm_t_privilege_success:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/LOYALTY/loyalty_drm_t_privilege_success/
+  filepath: base_path/LOYALTY/loyalty_drm_t_privilege_success/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_loyalty_number_of_services_daily'
@@ -25,23 +25,23 @@ l0_loyalty_drm_t_privilege_success:
 
 l0_loyalty_priv_category:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/LOYALTY/loyalty_priv_category/
+  filepath: base_path/LOYALTY/loyalty_priv_category/
   file_format: parquet
   load_args:
     increment_flag: 'no'
 
 l0_loyalty_priv_project:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/LOYALTY/loyalty_priv_project/
+  filepath: base_path/LOYALTY/loyalty_priv_project/
   file_format: parquet
   load_args:
     increment_flag: 'no'
 
 l0_loyalty_priv_point_transaction:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/LOYALTY/loyalty_priv_point_transaction/
+  filepath: base_path/LOYALTY/loyalty_priv_point_transaction/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_loyalty_number_of_points_spend_daily'
@@ -51,9 +51,9 @@ l0_loyalty_priv_point_transaction:
 
 l0_loyalty_drm_t_aunjai_point_collection_daily_for_l1_loyalty_number_of_rewards:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/LOYALTY/loyalty_drm_t_aunjai_point_collection_daily/
+  filepath: base_path/LOYALTY/loyalty_drm_t_aunjai_point_collection_daily/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_loyalty_number_of_rewards_daily'
@@ -63,9 +63,9 @@ l0_loyalty_drm_t_aunjai_point_collection_daily_for_l1_loyalty_number_of_rewards:
 
 l0_loyalty_drm_t_aunjai_point_collection_daily_for_l1_loyalty_number_of_services_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/LOYALTY/loyalty_drm_t_aunjai_point_collection_daily/
+  filepath: base_path/LOYALTY/loyalty_drm_t_aunjai_point_collection_daily/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_loyalty_number_of_services_daily'
