@@ -6,9 +6,15 @@ Welcome to project's customer360 API docs!
 =============================================
 
 .. toctree::
+   :maxdepth: 2
+   :caption: Introduction
+   01_introduction
+
+.. toctree::
    :maxdepth: 4
 
    modules
+
 
 
 Indices and tables
