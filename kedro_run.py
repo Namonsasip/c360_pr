@@ -1,15 +1,26 @@
 import subprocess
 import shlex
+import os
+
+pipeline_to_run = os.environ["pipeline_to_run"]
+env_to_use = os.environ["CONF"]
+
+kedro_run_cmd = "kedro run --pipeline=" + f'"{pipeline_to_run}"' + " --env=" + env_to_use
+
+print(kedro_run_cmd)
 
 def run_command(command):
-    process = subprocess.Popen(shlex.split(command), stdout=subprocess.PIPE, cwd='/home/cdsw/customer360/')
-    while True:
-        output = process.stdout.readline()
-        if output == '' and process.poll() is not None:
-            break
-        if output:
-            print(output.strip())
-    rc = process.poll()
-    return rc
+    process = subprocess.Popen(shlex.split(command), stdout=subprocess.PIPE, cwd='/home/cdsw/customer360/', encoding='utf8')
+    with open("logfile.txt", "w") as log_file:
+      while process.poll() is None:
+          output = process.stdout.readline()
+          if output == '' and process.poll() is not None:
+              break
+          if output:
+              if output.startswith("Above") or output.startswith("Below"):
+                pass
+              else:
+                print(output.strip())
+                log_file.write(output)
 
-run_command("kedro run --pipeline=customer_profile_to_l1_pipeline")
+run_command(kedro_run_cmd)
