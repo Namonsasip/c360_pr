@@ -76,6 +76,3 @@ volatility_length: 5
 pai_runs_path: '/dbfs/mnt/customer360-blob-data/cvm/pai01/runs'
 pai_artifacts_path: '/dbfs/mnt/customer360-blob-data/cvm/pai01/artifacts'
 pai_experiment_name: 'force_call_center'
-
-# subscription id replacement dictionary path
-id_replace_dict_path: '/mnt/customer360-blob-output/C360/PROFILE/l1_features/l1_customer_profile_union_daily_feature/'
