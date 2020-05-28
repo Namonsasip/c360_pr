@@ -34,6 +34,8 @@ from cvm.report.nodes import (
 )
 from kedro.pipeline import Pipeline, node
 
+from src.cvm.src.temporary_fixes.sub_id_replace import replace_sub_ids
+
 
 def sample_report_inputs() -> Pipeline:
     """ Creates samples for report input datasets. """
@@ -117,7 +119,7 @@ def create_kpis() -> Pipeline:
     return Pipeline(
         [
             node(
-                build_daily_kpis,
+                replace_sub_ids(build_daily_kpis),
                 [
                     "users_micro_macro_only",
                     "l1_revenue_prepaid_pru_f_usage_multi_daily",
