@@ -85,7 +85,7 @@ def get_activated_deactivated_features(
     result_df = spark.sql("""
         with enriched_cust_promo_df as (
             select
-                cp_df.crm_subscription_id as subscription_identifier,
+                cp_df.crm_subscription_id as old_subscription_identifier,
                 cp_df.promo_end_dttm as promo_end_dttm,
                 cp_df.promo_status_end_dttm as promo_status_end_dttm,
                 cp_df.promo_start_dttm as promo_start_dttm,
@@ -141,7 +141,7 @@ def get_activated_deactivated_features(
         -- Intermediate activate/deactivate type of features (see confluence for feature dictionary)
         int_act_deact_features as (
             select 
-                subscription_identifier, 
+                old_subscription_identifier, 
                 start_of_week,
                 
                 sum(case when 
@@ -360,7 +360,7 @@ def get_activated_deactivated_features(
                     then 1 else 0 end) as product_deactivated_package_due_to_expired_reason
                     
             from enriched_cust_promo_df
-            group by subscription_identifier, start_of_week
+            group by old_subscription_identifier, start_of_week
         )
         select
             *,
@@ -372,10 +372,16 @@ def get_activated_deactivated_features(
         from int_act_deact_features
     """)
 
+    # left join with cust profile on old_subscription_identifier
+    # because of the subscription_identifier contains new logic
     result_df = (weekly_cust_prof_df
-                 .select("access_method_num", "national_id_card", "subscription_identifier", "start_of_week")
+                 .select("access_method_num",
+                         "national_id_card",
+                         "old_subscription_identifier",
+                         "subscription_identifier",
+                         "start_of_week")
                  .join(result_df,
-                       on=["subscription_identifier", "start_of_week"],
+                       on=["old_subscription_identifier", "start_of_week"],
                        how="left"))
 
     return result_df
