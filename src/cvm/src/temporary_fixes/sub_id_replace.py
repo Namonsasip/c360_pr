@@ -18,7 +18,7 @@ class SubIdReplacer:
             func.col("event_partition_date").desc()
         )
         self.replacement_dictionary = (
-            profile.filter("charge_type == 'Pre-paid")
+            profile.filter("charge_type == 'Pre-paid'")
             .withColumn("date_lp", func.row_number().over(window_latest))
             .filter("date_lp == 1")
             .select(["old_subscription_identifier", "subscription_identifier"])
