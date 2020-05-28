@@ -26,6 +26,9 @@ percentiles:
   accuracy: 80
   percentile_list:
     - 0.1
+    - 0.25  # do not removed. For outlier calculation
+    - 0.5
+    - 0.75  # do not removed. For outlier calculation
     - 0.9
 
 dq_consistency_path_prefix: /mnt/customer360-blob-output/DQ/dq_consistency_benchmark_dataset/

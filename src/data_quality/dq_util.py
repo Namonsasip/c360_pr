@@ -1,11 +1,13 @@
 from pathlib import Path
 from pyspark.sql import functions as f
 from pyspark.sql import DataFrame
+from pyspark.sql.types import LongType
 
 import os
 from datetime import datetime
 from typing import *
 from functools import reduce
+from itertools import chain
 
 from src.customer360.utilities.re_usable_functions import get_spark_session
 
@@ -333,3 +335,58 @@ def add_suffix_to_df_columns(
         df = df.withColumnRenamed(column, column + suffix)
 
     return df
+
+
+def add_outlier_percentage_based_on_iqr(
+        raw_df: DataFrame,
+        melted_df: DataFrame,
+        partition_col: str,
+        features_list: List[Dict]
+):
+    modified_melted_df = (melted_df
+                          .select("corresponding_date", "feature_column_name", "`percentile_0.25`", "`percentile_0.75`")
+                          .groupBy("corresponding_date")
+                          .pivot("feature_column_name")
+                          .agg(
+                                f.first(f.col("`percentile_0.25`")).alias("_q1"),
+                                f.first(f.col("`percentile_0.75`")).alias("_q3"),
+                                (f.first(f.col("`percentile_0.75`")) - f.first(f.col("`percentile_0.25`"))).alias("_iqr"),
+                          )
+                          .withColumnRenamed("corresponding_date", partition_col))
+
+    joined_df = raw_df.join(f.broadcast(modified_melted_df), on=partition_col, how="inner")
+    feature_list = list(map(lambda x: x["feature"], features_list))
+
+    outlier_results = joined_df.groupBy([partition_col]).agg(
+        *[
+            f.count(
+                f.when(f.col(num_col) <
+                       (f.col(f"{num_col}__q1") - (1.5 * (f.col(f"{num_col}__iqr")))), 1)
+            ).cast(LongType()).alias(f"{num_col}__count_lower_outlier")
+            for num_col in feature_list
+        ],
+        *[
+            f.count(
+                f.when(f.col(num_col) >
+                       (f.col(f"{num_col}__q3") + (1.5 * (f.col(f"{num_col}__iqr")))), 1)
+            ).cast(LongType()).alias(f"{num_col}__count_higher_outlier")
+            for num_col in feature_list
+        ],
+        *list(chain.from_iterable([
+            [f.first(f.col(f"{num_col}__q1")).alias(f"{num_col}__q1"),
+             f.first(f.col(f"{num_col}__q3")).alias(f"{num_col}__q3"),
+             f.first(f.col(f"{num_col}__iqr")).alias(f"{num_col}__iqr")]
+            for num_col in feature_list
+        ]))
+    )
+
+    outlier_results_melted = melt_qa_result(outlier_results, partition_col)
+
+    result_df = merge_all(
+        [melted_df, outlier_results_melted],
+        how="outer",
+        on=["corresponding_date", "granularity", "feature_column_name"]
+    )
+
+    return result_df
+
