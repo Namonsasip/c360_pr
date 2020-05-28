@@ -9,7 +9,9 @@ from src.customer360.utilities.spark_util import get_spark_session
 
 class SubIdReplacer:
     def __init__(self, profile_path):
-        logging.info("Creating `subscription_identifier` replacement dictionary")
+        logging.getLogger(__name__).info(
+            "Creating `subscription_identifier` replacement dictionary"
+        )
         spark = get_spark_session()
         profile = spark.read.parquet(profile_path)
         window_latest = Window.partitionBy("old_subscription_identifier").orderBy(
@@ -23,7 +25,9 @@ class SubIdReplacer:
         )
 
     def replace_old_sub_id(self, df):
-        logging.info("Replacing `subscription_identifier` to new version")
+        logging.getLogger(__name__).info(
+            "Replacing `subscription_identifier` to new version"
+        )
         return (
             df.withColumnRenamed(
                 "subscription_identifier", "old_subscription_identifier"
@@ -34,7 +38,9 @@ class SubIdReplacer:
 
     @staticmethod
     def check_if_replacement_needed(df):
-        logging.info("Checking if replacing `subscription_identifier` needed")
+        logging.getLogger(__name__).info(
+            "Checking if replacing `subscription_identifier` needed"
+        )
         max_sub_id_len = df.agg(
             func.max(func.length(func.col("subscription_identifier")))
         ).collect()[0][0]
@@ -44,7 +50,7 @@ class SubIdReplacer:
         if SubIdReplacer.check_if_replacement_needed(df):
             return self.replace_old_sub_id(df)
         else:
-            logging.info("Replacement not needed")
+            logging.getLogger(__name__).info("Replacement not needed")
             return df
 
 
