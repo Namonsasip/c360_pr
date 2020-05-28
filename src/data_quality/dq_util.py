@@ -388,5 +388,5 @@ def add_outlier_percentage_based_on_iqr(
         on=["corresponding_date", "granularity", "feature_column_name"]
     )
 
-    return result_df.repartition(1)
+    return result_df
 
