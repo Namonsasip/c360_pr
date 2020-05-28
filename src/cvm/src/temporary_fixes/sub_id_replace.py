@@ -38,7 +38,7 @@ class SubIdReplacer:
         max_sub_id_len = df.agg(
             func.max(func.length(func.col("subscription_identifier")))
         ).collect()[0][0]
-        return max_sub_id_len >= 16
+        return max_sub_id_len < 16
 
     def replace_if_needed(self, df):
         if SubIdReplacer.check_if_replacement_needed(df):
