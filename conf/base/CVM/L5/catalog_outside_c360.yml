@@ -1,0 +1,10 @@
+_spark_parquet: &spark_parquet
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  save_args:
+    mode: "overwrite"
+
+# preferred package from upsell model
+important_columns:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/mck_databases/prod_dataupsell/conso_package_preferences
