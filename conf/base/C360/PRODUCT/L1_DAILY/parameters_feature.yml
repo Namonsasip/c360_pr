@@ -30,6 +30,10 @@ int_l1_product_active_customer_promotion_features:
 
   event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
   granularity: "crm_subscription_id, partition_date"
+  join_column_with_cust_profile:
+    old_subscription_identifier: crm_subscription_id
+    event_partition_date: partition_date
+  partition_num_per_job: 10
 
 
 l1_product_active_fbb_customer_features:
@@ -43,3 +47,7 @@ l1_product_active_fbb_customer_features:
     product_avg_offering_download_rate: avg(offering_download_rate)
   event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
   granularity: "crm_subscription_id, partition_date"
+  join_column_with_cust_profile:
+    old_subscription_identifier: crm_subscription_id
+    event_partition_date: partition_date
+  partition_num_per_job: 10
