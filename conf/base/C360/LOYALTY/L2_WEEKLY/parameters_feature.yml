@@ -56,7 +56,6 @@ l2_loyalty_number_of_services_weekly:
                                       AND lower(category_text) NOT like '%lifestyle%') THEN 1 ELSE 0 END)"
 
     loyalty_privilige_registered_date: "max(loyalty_privilige_registered_date)"
-    loyalty_redeem_point_registered_date: "max(loyalty_redeem_point_registered_date)"
   granularity: "start_of_week,access_method_num,subscription_identifier,national_id_card"
 
 
