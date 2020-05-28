@@ -57,8 +57,7 @@ def loyalty_number_of_points_balance(customer_prof: DataFrame
     customer_cols = ["national_id_card", "access_method_num", "subscription_identifier", "start_of_month"]
     customer_prof = customer_prof.select(customer_cols)
 
-    input_df_temp = input_df.filter((f.col("msg_event_id").isin(33, 34)) &
-                                    (f.upper(f.col("aunjai_flag").like('REGISTER%'))), f.col("response_date"))\
+    input_df_temp = input_df.filter(f.col("register_date").isNotNull())\
                             .groupBy("mobile_no", "start_of_month")\
                             .agg(f.max("response_date").alias("loyalty_register_program_points_date"))
 
@@ -78,7 +77,7 @@ def loyalty_number_of_points_balance(customer_prof: DataFrame
                                             , "max_expire_date"
                                             , "loyalty_register_program_points_date")
 
-    merged_with_customer = merged_df.join(merged_df, join_key)
+    merged_with_customer = merged_df.join(customer_prof, join_key)
     return_df = node_from_config(merged_with_customer, l3_loyalty_point_balance_statuses_monthly)
 
     return return_df
