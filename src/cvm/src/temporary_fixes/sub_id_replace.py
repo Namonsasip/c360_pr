@@ -28,6 +28,8 @@ class SubIdReplacer:
         logging.getLogger(__name__).info(
             "Replacing `subscription_identifier` to new version"
         )
+        if "old_subscription_identifier" in df.columns:
+            df = df.drop("old_subscription_identifier")
         return (
             df.withColumnRenamed(
                 "subscription_identifier", "old_subscription_identifier"
