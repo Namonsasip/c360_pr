@@ -5,6 +5,6 @@ _spark_parquet: &spark_parquet
     mode: "overwrite"
 
 # preferred package from upsell model
-important_columns:
+preferred_package:
   <<: *spark_parquet
   filepath: dbfs:/mnt/mck_databases/prod_dataupsell/conso_package_preferences
