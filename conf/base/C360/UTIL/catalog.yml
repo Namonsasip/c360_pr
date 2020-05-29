@@ -1,8 +1,7 @@
 util_dependency_report:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/UTIL/dependency_report/
-  #filepath: data/UTIL/dependency_report/
+  filepath: util_path/UTILITIES/dependency_report/
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
@@ -12,8 +11,7 @@ util_dependency_report:
 util_feature_report:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/UTIL/util_feature_report/
-  #filepath: data/UTIL/util_feature_report/
+  filepath: util_path/UTILITIES/util_feature_report/
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
@@ -23,12 +21,12 @@ util_feature_report:
 util_audit_metadata_table:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/metadata_table/
+  filepath: util_path/UTILITIES/metadata_table/
 
 util_ops_report:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/ops_report/
+  filepath: util_path/UTILITIES/ops_report/
   save_args:
     increment_flag: 'no'
     mode: "overwrite"

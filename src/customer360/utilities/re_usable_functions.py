@@ -380,11 +380,9 @@ def data_non_availability_and_missing_check(df, grouping, par_col, target_table_
     spark = get_spark_session()
 
     if running_environment.lower() == 'on_premise':
-        mtdt_tbl = spark.read.parquet('/projects/prod/c360/data/metadata/metadata_table/')
+        mtdt_tbl = spark.read.parquet('/projects/prod/c360/data/UTILITIES/metadata_table')
     else:
-        mtdt_tbl = spark.read.parquet('/mnt/customer360-blob-output/C360/metadata_table/')
-
-    #mtdt_tbl = spark.read.parquet('/mnt/customer360-blob-output/C360/metadata_table/')
+        mtdt_tbl = spark.read.parquet('/mnt/customer360-blob-output/C360/UTILITIES/metadata_table')
 
     mtdt_tbl.createOrReplaceTempView("mtdt_tbl")
     df.createOrReplaceTempView("df")
