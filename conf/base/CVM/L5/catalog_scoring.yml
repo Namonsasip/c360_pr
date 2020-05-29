@@ -56,9 +56,9 @@ propensity_scores_scoring:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_propensity_scores/
 
-treatment_features_scoring:
+treatments_features_scoring:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_treatment_features_scoring/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_treatments_features_scoring/
 
 active_users_sample_scoring:
   <<: *spark_parquet

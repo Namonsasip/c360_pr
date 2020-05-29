@@ -68,7 +68,7 @@ def generate_treatments(sample_type: str) -> Pipeline:
                     "l0_product_pru_m_package_master_group_for_daily",
                     "parameters",
                 ],
-                "treatment_features_{}".format(sample_type),
+                "treatments_features_{}".format(sample_type),
                 name="produce_treatments_features",
             ),
             node(
@@ -76,7 +76,7 @@ def generate_treatments(sample_type: str) -> Pipeline:
                 [
                     "treatments_chosen_history_input",
                     "parameters",
-                    "treatment_features_{}".format(sample_type),
+                    "treatments_features_{}".format(sample_type),
                 ],
                 ["treatments_chosen", "treatments_chosen_history_output"],
                 name="produce_treatments",
