@@ -154,3 +154,39 @@ def build_loyalty_number_of_points_spend_weekly(l1_loyalty_number_of_points_spen
 
     return return_df
 
+
+def build_loyalty_point_balance_statuses_weekly(
+        l1_loyalty_drm_t_aunjai_point_collection_with_customers_for_point_bal_daily: DataFrame,
+        l2_loyalty_point_balance_statuses_weekly: dict) -> DataFrame:
+    """
+    :param l1_loyalty_drm_t_aunjai_point_collection_with_customers_for_point_bal_daily:
+    :param l2_loyalty_point_balance_statuses_weekly:
+    :return:
+    """
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([l1_loyalty_drm_t_aunjai_point_collection_with_customers_for_point_bal_daily]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(
+        df=l1_loyalty_drm_t_aunjai_point_collection_with_customers_for_point_bal_daily,
+        grouping="weekly",
+        par_col="event_partition_date",
+        target_table_name="l3_loyalty_point_balance_statuses_monthly",
+    )
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+    win_input_df = Window.partitionBy("national_id_card", "access_method_num",
+                                      "subscription_identifier", "start_of_week").orderBy(
+        f.col("event_partition_date").desc())
+
+    input_df = input_df \
+        .withColumn("loyalty_register_program_points_date", f.max("loyalty_register_program_points_date").over(win_input_df)) \
+        .withColumn("rnk", f.row_number().over(win_input_df)) \
+        .filter(f.col("rnk = 1"))
+
+    return_df = node_from_config(input_df, l2_loyalty_point_balance_statuses_weekly)
+
+    return return_df

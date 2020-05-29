@@ -81,6 +81,21 @@ def add_start_of_week_and_month(input_df, date_column="day_id"):
     return input_df
 
 
+def add_event_week_and_month_from_yyyymmdd(input_df: DataFrame, column: str) -> DataFrame:
+    """
+    :param input_df:
+    :param column:
+    :return:
+    """
+    input_col = column
+    event_partition_date = "event_partition_date"
+    input_df = input_df.withColumn("event_partition_date", F.to_date(F.col(input_col).cast(StringType()), 'yyyyMMdd'))
+    input_df = input_df.withColumn("start_of_week", F.to_date(F.date_trunc('week', F.col(event_partition_date))))
+    input_df = input_df.withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col(event_partition_date))))
+
+    return input_df
+
+
 def __divide_chunks(l, n):
     # looping till length l
     for i in range(0, len(l), n):

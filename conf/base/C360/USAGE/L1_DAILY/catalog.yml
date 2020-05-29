@@ -1,72 +1,3 @@
-#l1_usage_outgoing_call_relation_sum_daily:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  file_format: "parquet"
-#  filepath: base_path/USAGE/l1_features/l1_usage_outgoing_call_relation_sum_daily/
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: ["event_partition_date"]
-
-#l1_usage_incoming_call_relation_sum_daily:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  file_format: "parquet"
-#  filepath: base_path/USAGE/l1_features/l1_usage_incoming_call_relation_sum_daily/
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: ["event_partition_date"]
-
-#l1_usage_outgoing_call_relation_sum_ir_daily:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  file_format: "parquet"
-#  filepath: base_path/USAGE/l1_features/l1_usage_outgoing_call_relation_sum_ir_daily/
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: ["event_partition_date"]
-
-#l1_usage_incoming_call_relation_sum_ir_daily:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  file_format: "parquet"
-#  filepath: base_path/USAGE/l1_features/l1_usage_incoming_call_relation_sum_ir_daily/
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: ["event_partition_date"]
-
-#l1_usage_ru_a_gprs_cbs_usage_daily:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  file_format: "parquet"
-#  filepath: base_path/USAGE/l1_features/l1_usage_ru_a_gprs_cbs_usage_daily/
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: ["event_partition_date"]
-
-#l1_usage_ru_a_vas_postpaid_usg_daily:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  file_format: "parquet"
-#  filepath: base_path/USAGE/l1_features/l1_usage_ru_a_vas_postpaid_usg_daily/
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: ["event_partition_date"]
-
-#l1_usage_ru_a_vas_postpaid_prepaid_daily:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  file_format: "parquet"
-#  filepath: base_path/USAGE/l1_features/l1_usage_ru_a_vas_postpaid_prepaid_daily/
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: ["event_partition_date"]
-
-#l1_usage_postpaid_prepaid_daily:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  file_format: "parquet"
-#  filepath: base_path/USAGE/l1_features/l1_usage_postpaid_prepaid_daily/
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: ["event_partition_date"]
-
-
-
-
-
-
 
 l1_usage_outgoing_call_relation_sum_ir_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -79,6 +10,7 @@ l1_usage_outgoing_call_relation_sum_ir_daily:
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    mergeSchema: 'true'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -97,6 +29,7 @@ l1_usage_incoming_call_relation_sum_ir_daily:
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    mergeSchema: 'true'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -116,6 +49,7 @@ l1_usage_ru_a_gprs_cbs_usage_daily:
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    mergeSchema: 'true'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -134,6 +68,7 @@ l1_usage_ru_a_vas_postpaid_usg_daily:
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    mergeSchema: 'true'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -152,6 +87,7 @@ l1_usage_ru_a_vas_postpaid_prepaid_daily:
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    mergeSchema: 'true'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -171,6 +107,7 @@ l1_usage_outgoing_call_relation_sum_daily:
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    mergeSchema: 'true'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -190,6 +127,7 @@ l1_usage_incoming_call_relation_sum_daily:
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'
+    mergeSchema: 'true'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -222,6 +160,7 @@ l1_usage_postpaid_prepaid_daily_for_l2_postpaid_prepaid_weekly:
     read_layer: 'l1_daily'
     target_layer: 'l2_weekly'
     lookback: '0'
+    mergeSchema: 'true'
 
 
 l1_usage_postpaid_prepaid_daily_for_l4_postpaid_prepaid_daily_feature:
@@ -235,6 +174,7 @@ l1_usage_postpaid_prepaid_daily_for_l4_postpaid_prepaid_daily_feature:
     read_layer: 'l1_daily'
     target_layer: 'l4_daily'
     lookback: '90'
+    mergeSchema: 'true'
 
 l1_usage_postpaid_prepaid_daily_for_l3_postpaid_prepaid_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -247,3 +187,15 @@ l1_usage_postpaid_prepaid_daily_for_l3_postpaid_prepaid_monthly:
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
     lookback: '0'
+    mergeSchema: 'true'
+
+### dev feature -  favourite number ###
+
+l1_usage_favourite_number_master:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/USAGE/l1_usage_favourite_number_master/
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+
