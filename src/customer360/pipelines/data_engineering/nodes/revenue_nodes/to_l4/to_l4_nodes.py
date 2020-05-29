@@ -1,10 +1,11 @@
 from customer360.utilities.spark_util import get_spark_empty_df
-from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check, get_spark_session
+from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check, \
+    get_spark_session
 
 from pyspark.sql import DataFrame
 
-def df_copy_for_l4_customer_profile_ltv_to_date(input_df):
 
+def df_copy_for_l4_customer_profile_ltv_to_date(input_df):
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
