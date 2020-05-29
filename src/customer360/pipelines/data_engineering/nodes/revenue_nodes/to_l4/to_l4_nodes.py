@@ -1,10 +1,11 @@
 from customer360.utilities.spark_util import get_spark_empty_df
-from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check, get_spark_session
+from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check, \
+    get_spark_session
 
 from pyspark.sql import DataFrame
 
-def df_copy_for_l4_customer_profile_ltv_to_date(input_df):
 
+def df_copy_for_l4_customer_profile_ltv_to_date(input_df):
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -31,13 +32,11 @@ def calculate_ltv_to_date(
 
     prepaid_revenue_df = data_non_availability_and_missing_check(df=prepaid_revenue_df, grouping="monthly",
                                                                  par_col="start_of_month",
-                                                                 target_table_name="l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
-                                                                 missing_data_check_flg='Y')
+                                                                 target_table_name="l4_revenue_ltv_to_date")
 
     postpaid_revenue_df = data_non_availability_and_missing_check(df=prepaid_revenue_df, grouping="monthly",
                                                                   par_col="start_of_month",
-                                                                  target_table_name="l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly",
-                                                                  missing_data_check_flg='Y')
+                                                                  target_table_name="l4_revenue_ltv_to_date")
 
     if check_empty_dfs([prepaid_revenue_df, postpaid_revenue_df]):
         return get_spark_empty_df()
