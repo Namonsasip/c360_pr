@@ -52,9 +52,6 @@ from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.
     customer_profile_billing_level_to_l3_pipeline,
     unioned_customer_profile_to_l3_pipeline
 )
-from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l4.to_l4_pipeline import (
-    customer_profile_to_l4_pipeline,
-)
 from cvm.data_prep.pipeline import (
     create_cvm_prepare_inputs_samples,
     create_cvm_targets,
@@ -215,7 +212,6 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "customer_profile_to_l3_pipeline": customer_profile_to_l3_pipeline(),
         "unioned_customer_profile_to_l3_pipeline": unioned_customer_profile_to_l3_pipeline(),
         "customer_profile_billing_level_to_l3_pipeline": customer_profile_billing_level_to_l3_pipeline(),
-        "customer_profile_to_l4_pipeline": customer_profile_to_l4_pipeline(),
         "billing_to_l1_pipeline": billing_to_l1_pipeline(),
         "billing_l0_to_l3_pipeline": billing_l0_to_l3_pipeline(),
         "billing_l1_to_l3_pipeline": billing_l1_to_l3_pipeline(),
