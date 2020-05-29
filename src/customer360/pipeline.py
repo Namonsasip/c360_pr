@@ -343,27 +343,3 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
             all_pipelines[pipeline_name] = pipeline_object
 
     return all_pipelines
-
-
-def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
-    """Create the project's pipeline.
-    Args:
-        kwargs: Ignore any additional arguments added in the future.
-    Returns:
-        A mapping from a pipeline name to a ``Pipeline`` object.
-    """
-    all_pipelines = {}
-
-    for pipeline_name, pipeline_object in itertools.chain(
-        create_c360_pipeline(**kwargs).items(),
-        create_cvm_pipeline(**kwargs).items(),
-        create_nba_pipeline(**kwargs).items(),
-    ):
-        # If many pipelines have nodes under the same modular
-        # pipeline, combine the results
-        if pipeline_name in all_pipelines.keys():
-            all_pipelines[pipeline_name] += pipeline_object
-        else:
-            all_pipelines[pipeline_name] = pipeline_object
-
-    return all_pipelines
