@@ -42,7 +42,7 @@ def sales_to_l4_pipeline(**kwargs):
             node(
                 l4_rolling_window,
                 ["l2_sales_number_and_volume_transaction_weekly",
-                 "params:l4_usage_postpaid_prepaid_weekly_features_max"],
+                 "params:l4_sales_on_top_transaction"],
                 "l4_sales_number_and_volume_transaction_weekly"
 
             )
