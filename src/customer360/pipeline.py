@@ -277,9 +277,9 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
             + generate_treatments("scoring")
         ),
         "cvm_full_scoring_experiment": (
-            scoring_data_prepare("scoring_experiment")
-            + preprocessing_transform("scoring_experiment")
-            + score_model("scoring_experiment")
+            scoring_data_prepare("huaw_experiment")
+            + preprocessing_transform("huaw_experiment")
+            + score_model("huaw_experiment")
         ),
         "cvm_full_features_extraction": extract_features,
         "cvm_rfe_only": rfe_only,
