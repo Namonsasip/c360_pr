@@ -1,0 +1,9 @@
+l0_mst_poi_shape:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/GEO/geo_mst_lm_poi_shape/
+  file_format: parquet
+
+l0_mst_cell_masterplan:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/GEO/geo_mst_cell_masterplan/
+  file_format: parquet
