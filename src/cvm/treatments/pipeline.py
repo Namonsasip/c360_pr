@@ -27,6 +27,7 @@
 # limitations under the License.
 from kedro.pipeline import Pipeline, node
 
+from src.cvm.src.temporary_fixes.sub_id_replace import replace_sub_ids
 from src.cvm.treatments.nodes import (
     create_treatments_features,
     deploy_treatments,
@@ -49,7 +50,7 @@ def generate_treatments(sample_type: str) -> Pipeline:
     return Pipeline(
         [
             node(
-                prepare_microsegments,
+                replace_sub_ids(prepare_microsegments),
                 [
                     "features_macrosegments_{}".format(sample_type),
                     "l3_customer_profile_include_1mo_non_active",
@@ -59,7 +60,7 @@ def generate_treatments(sample_type: str) -> Pipeline:
                 name="create_microsegments_{}".format(sample_type),
             ),
             node(
-                create_treatments_features,
+                replace_sub_ids(create_treatments_features),
                 [
                     "propensity_scores_{}".format(sample_type),
                     "features_macrosegments_scoring",
