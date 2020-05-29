@@ -80,6 +80,13 @@ cloud_on_prim_path_conversion:
       target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/BILLING"
       target_path_on_prem_prefix: "/projects/prod/c360/data/BILLING_AND_PAYMENT"
 
+  -
+      search_pattern: "/SALES/"
+      source_path_on_cloud_prefix: "/mnt/customer360-blob-data/C360/SALES"
+      source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/SALES"
+      target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/SALES"
+      target_path_on_prem_prefix: "/projects/prod/c360/data/SALES"
+
 metadata_path:
     on_cloud: '/mnt/customer360-blob-output/C360/metadata_table'
     on_premise: '/projects/prod/c360/data/metadata/metadata_table'
