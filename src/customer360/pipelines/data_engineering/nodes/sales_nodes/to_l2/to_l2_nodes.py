@@ -107,7 +107,7 @@ def sale_product_customer_master_features(sale_df: DataFrame,
 
     customer_cols = ['access_method_num',
                      'subscription_identifier',
-                     'national_id',
+                     'national_id_card',
                      'start_of_week']
 
     cust_join_cols = ['start_of_week', 'access_method_num']
