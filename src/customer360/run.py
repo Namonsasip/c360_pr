@@ -35,8 +35,9 @@ import logging.config
 import os
 from functools import partial
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Union
 from warnings import warn
+import getpass
 
 import findspark
 from kedro.config import MissingConfigException
@@ -45,6 +46,8 @@ from kedro.io import DataCatalog
 from kedro.pipeline import Pipeline
 from kedro.pipeline.node import Node
 from kedro.versioning import Journal
+from pyspark import SparkConf
+from pyspark.sql import SparkSession
 
 from customer360.utilities.spark_util import get_spark_session
 from customer360.utilities.generate_dependency_dataset import generate_dependency_dataset
@@ -63,7 +66,6 @@ class ProjectContext(KedroContext):
     """Users can override the remaining methods from the parent class here,
     or create new ones (e.g. as required by plugins)
     """
-
     project_name = "project-samudra"
     project_version = "0.15.5"
 
