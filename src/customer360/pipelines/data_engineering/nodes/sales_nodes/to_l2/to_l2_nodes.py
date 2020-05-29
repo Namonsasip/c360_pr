@@ -84,7 +84,7 @@ def sale_product_customer_master_features(sale_df: DataFrame,
     product_df = product_df.withColumn("start_of_week", f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd'))
     product_df = product_df.withColumn("rn", expr(
         "row_number() over(partition by start_of_week,promotion_code order by start_of_week desc)"))
-    product_df = product_df.where("rn = 1")
+    product_df = product_df.where("rn = 1").drop("rn")
     product_df = product_df.withColumnRenamed("promotion_code", "offering_code").drop("partition_date")
 
 
@@ -99,6 +99,7 @@ def sale_product_customer_master_features(sale_df: DataFrame,
     master_name_features_temp = master_name_features_temp.withColumn("rn", expr(
         "row_number() over(partition by start_of_week,access_method_num order by start_of_week desc)"))
     master_name_features = master_name_features_temp.where("rn = 1")
+    master_name_features = master_name_features.drop("rn")
 
     master_sales_features_join_cols = ['start_of_week', 'access_method_num']
 
