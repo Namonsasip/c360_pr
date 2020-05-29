@@ -175,6 +175,14 @@ from .pipelines.data_engineering.pipelines.usage_pipeline import (
     usage_to_l4_daily_pipeline,
 )
 
+from .pipelines.data_engineering.pipelines.sales_pipeline.to_l2.to_l2_pipeline import (
+    sales_to_l2_pipeline,
+)
+
+from .pipelines.data_engineering.pipelines.sales_pipeline.to_l4.to_l4_weekly_pipeline import (
+    sales_to_l4_pipeline,
+)
+
 from .pipelines.data_engineering.pipelines.util_pipeline import (
     lineage_dependency_pipeline, ops_report_pipeline
 )
@@ -266,6 +274,8 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "product_to_l1_pipeline": product_to_l1_pipeline(),
         "product_to_l2_pipeline": product_to_l2_pipeline(),
         "product_to_l4_pipeline": product_to_l4_pipeline(),
+        "sales_to_l2_pipeline": sales_to_l2_pipeline(),
+        "sales_to_l4_pipeline": sales_to_l4_pipeline(),
         "lineage_dependency_pipeline": lineage_dependency_pipeline(),
         "ops_report_pipeline": ops_report_pipeline(),
         # "de": data_engineering_pipeline,
