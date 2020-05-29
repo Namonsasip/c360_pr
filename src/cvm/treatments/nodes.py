@@ -37,6 +37,7 @@ from cvm.src.treatments.microsegments import (
 )
 from cvm.src.treatments.treatments_build import (
     get_treatments_propositions,
+    treatments_featurize,
     update_history_with_treatments_propositions,
 )
 from pyspark.sql import DataFrame
@@ -64,6 +65,34 @@ def prepare_microsegments(
         vol, "subscription_identifier"
     )
     return define_microsegments(micro_features, parameters, reduce_cols)
+
+
+def create_treatments_features(
+    propensities: DataFrame,
+    features_macrosegments_scoring: DataFrame,
+    microsegments: DataFrame,
+    recent_profile: DataFrame,
+    main_packs: DataFrame,
+    parameters: Dict[str, Any],
+) -> DataFrame:
+    """ Prepare table with users and features needed for treatments generation
+
+    Args:
+        propensities: scores created by models.
+        features_macrosegments_scoring: features used to run conditions on.
+        microsegments: users and microsegments table.
+        recent_profile: table with users' national ids, only last date.
+        main_packs: table describing prepaid main packages.
+        parameters: parameters defined in parameters.yml.
+    """
+    return treatments_featurize(
+        propensities,
+        features_macrosegments_scoring,
+        microsegments,
+        recent_profile,
+        main_packs,
+        parameters,
+    )
 
 
 def produce_treatments(
