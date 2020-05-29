@@ -1,0 +1,234 @@
+#
+#l4_geo_number_of_bs_used:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  file_format: "parquet"
+#  filepath: /mnt/customer360-blob-data/C360/GEO/l4_features/geo_number_of_bs_used/
+#  save_args:
+#    partitionBy: ["start_of_week"]
+#    mode: "overwrite"
+#
+#
+#
+#l4_geo_number_of_location_with_transactions:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  file_format: "parquet"
+#  filepath: /mnt/customer360-blob-data/C360/GEO/l4_features/geo_number_of_location_with_transactions/
+#  save_args:
+#    partitionBy: ["start_of_week"]
+#    mode: "overwrite"
+#
+#l4_geo_voice_distance_daily:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  file_format: "parquet"
+#  filepath: /mnt/customer360-blob-data/C360/GEO/l4_features/geo_voice_distance_daily/
+#  save_args:
+#    partitionBy: ["start_of_week"]
+#    mode: "overwrite"
+#
+#l4_geo_data_distance:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  file_format: "parquet"
+#  filepath: /mnt/customer360-blob-data/C360/GEO/l4_features/geo_data_distance/
+#  save_args:
+#    partitionBy: ["start_of_week"]
+#    mode: "overwrite"
+#
+#
+#l4_geo_data_distance_weekday:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  file_format: "parquet"
+#  filepath: /mnt/customer360-blob-data/C360/GEO/l4_features/geo_data_distance_weekday/
+#  save_args:
+#    partitionBy: ["start_of_week"]
+#    mode: "overwrite"
+#
+#
+#l4_geo_data_distance_weekend:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  file_format: "parquet"
+#  filepath: /mnt/customer360-blob-data/C360/GEO/l4_features/geo_data_distance_weekend/
+#  save_args:
+#    partitionBy: ["start_of_week"]
+#    mode: "overwrite"
+
+################# catalog for incremental added below
+
+l4_geo_number_of_bs_used:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/l4_geo_number_of_bs_used/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "start_of_week"
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
+
+l4_geo_number_of_location_with_transactions:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/l4_geo_number_of_location_with_transactions/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "start_of_week"
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
+
+l4_geo_voice_distance_daily:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/l4_geo_voice_distance_daily/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "start_of_week"
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
+
+l4_geo_data_distance:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/l4_geo_data_distance/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "start_of_week"
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
+
+l4_geo_data_distance_weekday:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/l4_geo_data_distance_weekday/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "start_of_week"
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
+
+l4_geo_data_distance_weekend:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/l4_geo_data_distance_weekend/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "start_of_week"
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
+
+l4_geo_data_frequent_cell_weekday:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/l4_geo_data_frequent_cell_weekday/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "start_of_week"
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
+
+l4_geo_data_frequent_cell_weekend:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/l4_geo_data_frequent_cell_weekend/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "start_of_week"
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
+
+l4_geo_data_frequent_cell:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/l4_geo_data_frequent_cell/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "start_of_week"
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
+
+l4_geo_data_frequent_cell_4g_weekday:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/l4_geo_data_frequent_cell_4g_weekday/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "start_of_week"
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
+
+l4_geo_data_frequent_cell_4g_weekend:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/l4_geo_data_frequent_cell_4g_weekend/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "start_of_week"
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
+
+l4_geo_data_frequent_cell_4g:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/l4_geo_data_frequent_cell_4g/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "start_of_week"
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
+
+l4_geo_call_count_location:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/l4_geo_call_count_location/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "start_of_week"
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
+
+l4_geo_data_traffic_location:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/l4_geo_data_traffic_location/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "start_of_week"
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
+
+l4_geo_data_share_location:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/l4_geo_data_share_location/
+  file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "start_of_week"
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
