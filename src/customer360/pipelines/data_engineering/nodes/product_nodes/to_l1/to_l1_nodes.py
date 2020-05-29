@@ -164,7 +164,9 @@ def join_with_master_package(
                 product_landline_flag,
                 product_mobile_flag,
                 
-                crm_subscription_id as subscription_identifier, 
+                subscription_identifier,
+                national_id_card,
+                access_method_num, 
                 partition_date,
                 start_of_week,
                 start_of_month,

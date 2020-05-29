@@ -55,7 +55,7 @@ def df_copy_for_l3_customer_profile_billing_level_volume_of_active_contracts(inp
     return input_df
 
 
-def add_last_month_inactive_user(input_df, config):
+def add_last_month_inactive_user(input_df):
     if check_empty_dfs([input_df]):
         return input_df
 
@@ -64,7 +64,7 @@ def add_last_month_inactive_user(input_df, config):
 
     inactive_cust_feature_list = []
     normal_feature_list = []
-    for each_feature in config["feature_list"].keys():
+    for each_feature in input_df.columns:
         if each_feature == 'partition_month':
             # To forward inactive customer to next month
             inactive_cust_feature_list.append("df1.next_month as partition_month")
