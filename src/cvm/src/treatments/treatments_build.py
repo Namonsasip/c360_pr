@@ -92,40 +92,25 @@ def treatments_featurize(
 
 
 def get_treatments_propositions(
-    propensities: DataFrame,
-    features_macrosegments_scoring: DataFrame,
     parameters: Dict[str, Any],
     treatments_history: DataFrame,
-    microsegments: DataFrame,
-    profile: DataFrame,
-    main_packs: DataFrame,
+    treatments_features: DataFrame,
 ) -> DataFrame:
     """ Generate treatments propositions basing on rules treatment.
 
     Args:
-        profile: table with users, their package and monthly revenue.
-        main_packs: table describing prepaid main packages.
-        propensities: scores created by models.
-        features_macrosegments_scoring: features used to run conditions on.
+        treatments_features: features used for treatments, output of treatment
+            featurizer.
         parameters: parameters defined in parameters.yml.
         treatments_history: table with history of treatments.
-        microsegments: users and microsegments table.
     Returns:
         Table with users, microsegments and treatments chosen.
     """
     # create treatments propositions
     recently_contacted = get_recently_contacted(parameters, treatments_history)
-    propensities_with_features = treatments_featurize(
-        propensities,
-        features_macrosegments_scoring,
-        microsegments,
-        profile,
-        main_packs,
-        parameters,
-    )
     treatments = MultipleTreatments(parameters["treatment_rules"])
     treatments_propositions = treatments.apply_treatments(
-        propensities_with_features, recently_contacted
+        treatments_features, recently_contacted
     )
     # change output format
     treatments_propositions = (

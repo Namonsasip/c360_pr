@@ -67,33 +67,20 @@ def prepare_microsegments(
 
 
 def produce_treatments(
-    propensities: DataFrame,
     treatments_history: DataFrame,
     parameters: Dict[str, Any],
-    features_macrosegments_scoring: DataFrame,
-    microsegments: DataFrame,
-    recent_profile: DataFrame,
-    main_packs: DataFrame,
+    treatments_features: DataFrame,
 ) -> Tuple[DataFrame, DataFrame]:
     """  Generates treatments and updated treatments history.
 
     Args:
-        microsegments: users and microsegments table.
-        features_macrosegments_scoring: table with features to run rules on.
+        treatments_features: features used for treatments, output of treatment
+            featurizer.
         parameters: parameters defined in parameters.yml.
-        propensities: table with propensities.
-        treatments_history: Table with history of treatments.
-        recent_profile: table with users' national ids, only last date.
-        main_packs: table describing prepaid main packages.
+        treatments_history: table with history of treatments.
     """
     treatments_propositions = get_treatments_propositions(
-        propensities,
-        features_macrosegments_scoring,
-        parameters,
-        treatments_history,
-        microsegments,
-        recent_profile,
-        main_packs,
+        parameters, treatments_history, treatments_features,
     )
     treatments_history = update_history_with_treatments_propositions(
         treatments_propositions, treatments_history, parameters
