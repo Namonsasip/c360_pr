@@ -35,7 +35,8 @@ def sale_product_customer_master_features(sale_df: DataFrame,
         df=sale_df,
         grouping="weekly", par_col="partition_date",
         target_table_name="l2_sales_number_and_volume_transaction_weekly",
-        missing_data_check_flg='Y')
+        missing_data_check_flg='Y',
+        exception_partitions=['2019-12-30'])
 
     product_df = data_non_availability_and_missing_check(
         df=product_df,
