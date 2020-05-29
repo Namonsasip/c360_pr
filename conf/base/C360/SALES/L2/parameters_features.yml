@@ -298,7 +298,7 @@ l2_sales_feature_on_top_transactions_latest:
     start_of_week,
     access_method_num
     order by event_start_dttm desc)"
-    
+
     granularity: ""
 
 
