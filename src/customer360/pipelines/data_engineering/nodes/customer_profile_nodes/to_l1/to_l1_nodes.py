@@ -1,6 +1,7 @@
 from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check
 
+from pyspark.sql import DataFrame, functions as f
 
 def union_daily_cust_profile(
         cust_pre,
@@ -84,3 +85,15 @@ def union_daily_cust_profile(
     df = spark.sql(sql_stmt)
 
     return df
+
+
+def generate_modified_subscription_identifier(
+        cust_profile_df: DataFrame
+) -> DataFrame:
+    cust_profile_df = (cust_profile_df
+                       .withColumn("subscription_identifier",
+                                   f.expr("case when lower(charge_type) = 'pre-paid' then "
+                                          "concat(access_method_num, '-', date_format(register_date, 'yyyyMMdd')) "
+                                          "else old_subscription_identifier end")))
+
+    return cust_profile_df

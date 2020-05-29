@@ -44,12 +44,13 @@ from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l4.to_
 from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l1.to_l1_pipeline import (
     customer_profile_to_l1_pipeline,
 )
+from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l2.to_l2_pipeline import (
+    customer_profile_to_l2_pipeline,
+)
 from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l3.to_l3_pipeline import (
     customer_profile_to_l3_pipeline,
     customer_profile_billing_level_to_l3_pipeline,
-)
-from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l4.to_l4_pipeline import (
-    customer_profile_to_l4_pipeline,
+    unioned_customer_profile_to_l3_pipeline
 )
 from cvm.data_prep.pipeline import (
     create_cvm_prepare_inputs_samples,
@@ -62,6 +63,7 @@ from cvm.preprocessing.pipeline import (
     create_cvm_preprocessing_scoring,
     create_cvm_preprocessing,
 )
+from nba.backtesting.backtesting_pipeline import create_nba_backtesting_pipeline
 from nba.model_input.model_input_pipeline import create_nba_model_input_pipeline
 from nba.models.models_pipeline import create_nba_models_pipeline
 from nba.report.pipelines.campaign_importance_volume_pipeline import (
@@ -175,14 +177,18 @@ from .pipelines.data_engineering.pipelines.touchpoints_pipeline.to_l4.to_l4_pipe
 
 from .pipelines.data_engineering.pipelines.usage_pipeline import (
     usage_to_l1_pipeline,
+    usage_create_master_data_for_favourite_feature,
     usage_to_l2_pipeline,
     usage_to_l3_pipeline,
     usage_to_l4_pipeline,
     usage_to_l4_daily_pipeline,
 )
-
+from data_quality.pipeline import (
+    data_quality_pipeline,
+    subscription_id_sampling_pipeline
+)
 from .pipelines.data_engineering.pipelines.util_pipeline import (
-    lineage_dependency_pipeline
+    lineage_dependency_pipeline, ops_report_pipeline
 )
 
 
@@ -208,15 +214,17 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         # + device_to_l2_pipeline()
         # + device_to_l4_pipeline()
 
+        "usage_to_l1_pipeline": usage_to_l1_pipeline(),
+        "usage_create_master_data_for_favourite_feature": usage_create_master_data_for_favourite_feature(),
         "usage_to_l4_daily_pipeline": usage_to_l4_daily_pipeline(),
         "usage_to_l2_pipeline": usage_to_l2_pipeline(),
         "usage_to_l3_pipeline": usage_to_l3_pipeline(),
         "usage_to_l4_pipeline": usage_to_l4_pipeline(),
         "customer_profile_to_l1_pipeline": customer_profile_to_l1_pipeline(),
+        "customer_profile_to_l2_pipeline": customer_profile_to_l2_pipeline(),
         "customer_profile_to_l3_pipeline": customer_profile_to_l3_pipeline(),
+        "unioned_customer_profile_to_l3_pipeline": unioned_customer_profile_to_l3_pipeline(),
         "customer_profile_billing_level_to_l3_pipeline": customer_profile_billing_level_to_l3_pipeline(),
-        "customer_profile_to_l4_pipeline": customer_profile_to_l4_pipeline(),
-        "usage_to_l1_pipeline": usage_to_l1_pipeline(),
         "billing_to_l1_pipeline": billing_to_l1_pipeline(),
         "billing_l0_to_l3_pipeline": billing_l0_to_l3_pipeline(),
         "billing_l1_to_l3_pipeline": billing_l1_to_l3_pipeline(),
@@ -275,6 +283,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "product_to_l2_pipeline": product_to_l2_pipeline(),
         "product_to_l4_pipeline": product_to_l4_pipeline(),
         "lineage_dependency_pipeline": lineage_dependency_pipeline(),
+        "ops_report_pipeline": ops_report_pipeline(),
         # "de": data_engineering_pipeline,
         "geo_to_l1_intermediate_pipeline": geo_to_l1_intermediate_pipeline(),
         "geo_to_l1_pipeline": geo_to_l1_pipeline(),
@@ -323,6 +332,14 @@ def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
         + create_nba_model_input_pipeline()
         + create_nba_models_pipeline()
         + campaign_importance_volume()
+        + create_nba_backtesting_pipeline()
+    }
+
+
+def create_dq_pipeline(**kwargs) -> Dict[str, Pipeline]:
+    return {
+        "data_quality_pipeline": data_quality_pipeline(),
+        "subscription_id_sampling_pipeline": subscription_id_sampling_pipeline()
     }
 
 
@@ -339,6 +356,7 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         create_c360_pipeline(**kwargs).items(),
         create_cvm_pipeline(**kwargs).items(),
         create_nba_pipeline(**kwargs).items(),
+        create_dq_pipeline(**kwargs).items()
     ):
         # If many pipelines have nodes under the same modular
         # pipeline, combine the results

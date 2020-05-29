@@ -8,7 +8,7 @@ int_l3_streaming_content_type_features:
                                     order by sum(duration_sum) desc)"
         duration_sum: "sum(duration_sum)"
         traffic_volume_sum: "sum(traffic_volume_sum)"
-    granularity: "subscription_identifier, date(register_date), start_of_month, content_group"
+    granularity: "access_method_num, national_id_card, subscription_identifier, date(register_date), start_of_month, content_group"
 
 l3_streaming_fav_content_group_by_volume:
     where_clause: "where traffic_rank = 1"
@@ -42,7 +42,7 @@ int_l3_streaming_tv_channel_features:
         tv_channel_rank_by_duration: "row_number() over (partition by subscription_identifier, date(register_date), start_of_month
                                     order by sum(duration_sum) desc)"
         duration_sum: "sum(duration_sum)"
-    granularity: "subscription_identifier, date(register_date), start_of_month, title"
+    granularity: "access_method_num, national_id_card, subscription_identifier, date(register_date), start_of_month, title"
 
 l3_streaming_fav_tv_channel_by_volume:
     where_clause: "where tv_channel_rank_by_volume = 1"
@@ -72,6 +72,7 @@ int_l3_streaming_tv_show_features:
         num_of_episode_watched_rank: "row_number() over (partition by access_method_num, date(register_date), start_of_month
                                                     order by count(distinct title) desc)"
 
+    # we group directly from source and join with customer profile below
     granularity: "access_method_num, date(register_date), start_of_month, series_title"
 
 l3_streaming_fav_tv_show_by_episode_watched:
@@ -100,7 +101,7 @@ int_l3_streaming_service_feature:
         visit_count: "sum(visit_count)"
         visit_count_rank: "row_number() over (partition by subscription_identifier, application_group, start_of_month
                                                     order by sum(visit_count) desc)"
-    granularity: "subscription_identifier, application, application_group, start_of_month"
+    granularity: "access_method_num, national_id_card, subscription_identifier, application, application_group, start_of_month"
 
 
 l3_streaming_fav_service_by_download_feature:
@@ -166,7 +167,7 @@ l3_streaming_visit_count_and_download_traffic_feature:
               "visit_count_gmail",
               "visit_count_amazon"
         ]
-    granularity: "subscription_identifier, start_of_month"
+    granularity: "access_method_num, national_id_card, subscription_identifier, start_of_month"
 
 
 # number of visit and volume of download traffic
@@ -199,7 +200,7 @@ int_l3_streaming_sum_per_day:
               "download_kb_traffic_bigo_esport",
               "download_kb_traffic_mixer_esport",
               "download_kb_traffic_steamtv_esport"]
-    granularity: "subscription_identifier, day_of_week, start_of_month"
+    granularity: "access_method_num, national_id_card, subscription_identifier, day_of_week, start_of_month"
 
 int_l3_streaming_ranked_of_day_per_month:
   feature_list:
@@ -316,4 +317,4 @@ l3_streaming_session_duration_feature:
         avg_session_duration_per_day_mixer_esport: "sum(sum_session_duration_mixer_esport)/dayofmonth(last_day(start_of_month))"
         avg_session_duration_per_day_steamtv_esport: "sum(sum_session_duration_steamtv_esport)/dayofmonth(last_day(start_of_month))"
 
-    granularity: "subscription_identifier, start_of_month"
+    granularity: "access_method_num, national_id_card, subscription_identifier, start_of_month"

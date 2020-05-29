@@ -1,9 +1,10 @@
 from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check
 
+from pyspark.sql import DataFrame, functions as f
+
 
 def df_copy_for_l3_customer_profile_include_1mo_non_active(input_df):
-
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -21,7 +22,6 @@ def df_copy_for_l3_customer_profile_include_1mo_non_active(input_df):
 
 
 def df_copy_for_l3_customer_profile_billing_level_features(input_df):
-
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -39,7 +39,6 @@ def df_copy_for_l3_customer_profile_billing_level_features(input_df):
 
 
 def df_copy_for_l3_customer_profile_billing_level_volume_of_active_contracts(input_df):
-
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -56,20 +55,18 @@ def df_copy_for_l3_customer_profile_billing_level_volume_of_active_contracts(inp
     return input_df
 
 
-
-def add_last_month_inactive_user(input_df, config):
-
+def add_last_month_inactive_user(input_df):
     if check_empty_dfs([input_df]):
         return input_df
-
 
     input_df.createOrReplaceTempView("input_df")
     spark = get_spark_session()
 
     inactive_cust_feature_list = []
     normal_feature_list = []
-    for each_feature in config["feature_list"].keys():
+    for each_feature in input_df.columns:
         if each_feature == 'partition_month':
+            # To forward inactive customer to next month
             inactive_cust_feature_list.append("df1.next_month as partition_month")
             normal_feature_list.append(each_feature)
             continue
@@ -145,5 +142,90 @@ def merge_union_and_basic_features(union_features, basic_features):
 
     # just pick 1 since it's join key
     df = df.drop("activation_date", "crm_sub_id", "mobile_no")
+
+    return df
+
+
+def union_monthly_cust_profile(
+        cust_prof_daily_df: DataFrame
+):
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([cust_prof_daily_df]):
+        return get_spark_empty_df()
+
+    cust_prof_daily_df = data_non_availability_and_missing_check(df=cust_prof_daily_df, grouping="monthly",
+                                                                 missing_data_check_flg='Y',
+                                                                 par_col="event_partition_date",
+                                                                 target_table_name="l3_customer_profile_union_monthly_feature")
+
+    if check_empty_dfs([cust_prof_daily_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+
+    cust_prof_daily_df.createOrReplaceTempView("cust_prof_daily_df")
+
+    sql_stmt = """
+        with ranked_cust_profile as (
+            select 
+                *,
+                row_number() over (partition by subscription_identifier, start_of_month
+                                    order by event_partition_date desc) as _rnk
+            from cust_prof_daily_df
+        )
+        select *
+        from ranked_cust_profile
+        where _rnk = 1
+    """
+
+    spark = get_spark_session()
+    df = spark.sql(sql_stmt)
+    df = df.drop("_rnk")
+
+    return df
+
+
+def add_last_month_unioned_inactive_user(
+        monthly_cust_profile_df: DataFrame
+):
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([monthly_cust_profile_df]):
+        return get_spark_empty_df()
+
+    monthly_cust_profile_df = data_non_availability_and_missing_check(df=monthly_cust_profile_df, grouping="monthly",
+                                                                      par_col="start_of_month",
+                                                                      target_table_name="l3_customer_profile_union_monthly_feature_include_1mo_non_active")
+
+    if check_empty_dfs([monthly_cust_profile_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+
+    spark = get_spark_session()
+
+    monthly_cust_profile_df = (monthly_cust_profile_df
+                               .withColumn("cust_active_this_month", f.lit("Y"))
+                               .withColumn("last_month", f.add_months(f.col("start_of_month"), -1)))
+
+    monthly_cust_profile_df.createOrReplaceTempView("input_df")
+
+    non_active_customer_df = (spark.sql("""
+                                    select *
+                                    from (
+                                        select * from input_df 
+                                        where start_of_month != (select max(start_of_month) from input_df)
+                                    ) df1
+                                    left anti join input_df df2
+                                    on df1.start_of_month = df2.last_month
+                                            and df1.subscription_identifier = df2.subscription_identifier
+                                    
+                                """)
+                              .withColumn("cust_active_this_month", f.lit("N"))
+                              # To forward inactive customer to next month
+                              .withColumn("start_of_month", f.add_months(f.col("start_of_month"), 1)))
+
+    df = (non_active_customer_df
+          .unionByName(monthly_cust_profile_df)
+          .drop("last_month"))
 
     return df
