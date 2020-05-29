@@ -76,7 +76,7 @@ def sale_product_customer_master_features(sale_df: DataFrame,
 
     sale_product_join_cols = ['start_of_week', 'offering_code']
 
-    sale_df = sale_cols.select(sale_cols)
+    sale_df = sale_df.select(sale_cols)
     sale_df = sale_df.withColumn("start_of_week", f.to_date(f.date_trunc("week", f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd'))))
     sale_df = sale_df.drop("partition_date")
 
