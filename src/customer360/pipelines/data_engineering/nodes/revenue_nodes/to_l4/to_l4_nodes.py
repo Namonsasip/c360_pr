@@ -44,8 +44,13 @@ def calculate_ltv_to_date(
 
     ################################# End Implementing Data availability checks ###############################
 
-    prepaid_revenue_df = prepaid_revenue_df.select("subscription_identifier", "start_of_month", "rev_arpu_total_revenue")
-    postpaid_revenue_df = postpaid_revenue_df.select("subscription_identifier", "start_of_month", "rev_arpu_total_revenue")
+    identifier = ["subscription_identifier",
+                  "access_method_num",
+                  "national_id_card"]
+    granularity_col = identifier + ["start_of_month"]
+
+    prepaid_revenue_df = prepaid_revenue_df.select(granularity_col + ["rev_arpu_total_revenue"])
+    postpaid_revenue_df = postpaid_revenue_df.select(granularity_col + ["rev_arpu_total_revenue"])
 
     combined_revenue_df = prepaid_revenue_df.unionByName(postpaid_revenue_df)
 
@@ -55,18 +60,17 @@ def calculate_ltv_to_date(
     df = spark.sql("""
         with combined_rpu as (
             select
-                subscription_identifier, 
-                start_of_month,
+                {granularity_col},
                 sum(rev_arpu_total_revenue) as rev_arpu_total_revenue
             from combined_revenue_df
-            group by subscription_identifier, start_of_month
+            group by {granularity_col}
         ) 
         select 
-            subscription_identifier, 
-            start_of_month,
-            sum(rev_arpu_total_revenue) over (partition by subscription_identifier
+            {granularity_col},
+            sum(rev_arpu_total_revenue) over (partition by {identifier}
                                               order by start_of_month asc) as ltv_to_date
         from combined_rpu
-    """)
+    """.format(granularity_col=", ".join(granularity_col),
+               identifier=", ".join(identifier)))
 
     return df
