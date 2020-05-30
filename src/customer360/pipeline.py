@@ -172,6 +172,7 @@ from .pipelines.data_engineering.pipelines.usage_pipeline import (
 from .pipelines.data_engineering.pipelines.util_pipeline import (
     lineage_dependency_pipeline, ops_report_pipeline
 )
+from ..cvm.data_prep.pipeline import create_cvm_targets_huaw_exp
 
 
 def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
@@ -282,6 +283,7 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
             + score_model("huaw_experiment")
             + generate_treatments("huaw_experiment")
         ),
+        "cvm_huaw_churn_targets": create_cvm_targets_huaw_exp(),
         "cvm_full_features_extraction": extract_features,
         "cvm_rfe_only": rfe_only,
         "cvm_prepare_report_micro": prepare_user_microsegments(),
