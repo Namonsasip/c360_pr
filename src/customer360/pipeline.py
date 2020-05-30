@@ -56,7 +56,7 @@ from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.
     customer_profile_to_l4_pipeline,
 )
 from cvm.data_prep.pipeline import training_data_prepare, scoring_data_prepare, \
-    extract_features, rfe_only
+    extract_features, rfe_only, create_cvm_targets_huaw_exp
 from cvm.modelling.pipeline import train_model, score_model
 from cvm.preprocessing.pipeline import preprocessing_fit, preprocessing_transform
 from cvm.report.pipeline import prepare_user_microsegments, create_kpis, run_report
@@ -167,7 +167,6 @@ from .pipelines.data_engineering.pipelines.usage_pipeline import (
 from .pipelines.data_engineering.pipelines.util_pipeline import (
     lineage_dependency_pipeline, ops_report_pipeline
 )
-from ..cvm.data_prep.pipeline import create_cvm_targets_huaw_exp
 
 
 def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
