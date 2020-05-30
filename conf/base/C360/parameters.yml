@@ -94,6 +94,13 @@ cloud_on_prim_path_conversion:
       target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/SALES"
       target_path_on_prem_prefix: "/projects/prod/c360/data/SALES"
 
+  -
+    search_pattern: "/COMPLAINTS/"
+    source_path_on_cloud_prefix: "/mnt/customer360-blob-data/C360/COMPLAINTS"
+    source_path_on_prem_prefix: "hdfs://10.237.82.9:8020/C360/CUSTOMER_SATISFACTION"
+    target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/COMPLAINTS"
+    target_path_on_prem_prefix: "/projects/prod/c360/data/CUSTOMER_SATISFACTION"
+
 metadata_path:
     on_cloud_metadata: '/mnt/customer360-blob-output/C360/UTILITIES/metadata_table'
     on_premise_metadata: '/projects/prod/c360/data/UTILITIES/metadata_table'
