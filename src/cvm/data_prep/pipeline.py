@@ -357,7 +357,7 @@ def create_cvm_targets_huaw_exp():
             node(
                 replace_sub_ids(add_churn_targets),
                 [
-                    "cvm_users_list_scoring",
+                    "cvm_users_list_huaw_scoring",
                     "l4_usage_prepaid_postpaid_daily_features",
                     "parameters",
                     "params:huaw_experiment",
