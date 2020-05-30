@@ -161,6 +161,8 @@ class ProjectContext(KedroContext):
                     if '/utilities/' in original_path_lower:
                         new_util_path = original_path.replace("util_path", util_path)
                         catalog._data_sets[curr_catalog].__setattr__("_filepath", new_util_path)
+                        t_tuple = (original_path, new_util_path)
+                        temp_list.append(t_tuple)
 
         return catalog
 
