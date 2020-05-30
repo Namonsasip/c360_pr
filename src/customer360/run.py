@@ -60,6 +60,7 @@ except ValueError as err:
     logging.info("findspark.init() failed with error " + str(err))
 
 conf = os.getenv("CONF", None)
+running_environment = os.getenv("RUNNING_ENVIRONMENT", None)
 
 
 class ProjectContext(KedroContext):
@@ -115,7 +116,6 @@ class ProjectContext(KedroContext):
         )
         catalog.add_feed_dict(self._get_feed_dict())
         # This code is to handle cloud vs on-prem env
-        running_environment = os.getenv("RUNNING_ENVIRONMENT", None)
         temp_list = []
         for curr_domain in catalog.load("params:cloud_on_prim_path_conversion"):
             search_pattern = curr_domain["search_pattern"]
@@ -158,9 +158,9 @@ class ProjectContext(KedroContext):
                         except Exception as e:
                             logging.info("No Meta-Data Found While Replacing Paths")
 
-                        if '/UTILITIES/' in original_path_lower:
-                            new_util_path = original_path.replace("util_path", util_path)
-                            catalog._data_sets[curr_catalog].__setattr__("_filepath", new_util_path)
+                    if '/utilities/' in original_path_lower:
+                        new_util_path = original_path.replace("util_path", util_path)
+                        catalog._data_sets[curr_catalog].__setattr__("_filepath", new_util_path)
 
         return catalog
 
@@ -408,9 +408,5 @@ if __name__ == "__main__":
 
     # uncomment below to run data_quality_pipeline locally
     run_package(
-        pipelines=[
-            # 'subscription_id_sampling_pipeline',
-            'data_quality_pipeline'
-        ],
-        tags=["dq_accuracy"]
+        pipelines=[],
     )
