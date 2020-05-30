@@ -330,7 +330,7 @@ def scoring_data_prepare(sample_type: str) -> Pipeline:
         Kedro pipeline.
     """
     return (
-        create_users_from_tg(sample_type)
+        create_users_from_active(sample_type)
         + sample_inputs(sample_type)
         + prepare_features_macrosegments(sample_type)
     )
