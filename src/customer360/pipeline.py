@@ -61,13 +61,8 @@ from cvm.modelling.pipeline import train_model, score_model
 from cvm.preprocessing.pipeline import preprocessing_fit, preprocessing_transform
 from cvm.report.pipeline import prepare_user_microsegments, create_kpis, run_report
 from cvm.treatments.pipeline import generate_treatments
-from nba.backtesting.backtesting_pipeline import create_nba_backtesting_pipeline
 from nba.model_input.model_input_pipeline import create_nba_model_input_pipeline
 from nba.models.models_pipeline import create_nba_models_pipeline
-from nba.report.pipelines.campaign_importance_volume_pipeline import (
-    campaign_importance_volume,
-)
-from nba.report.pipelines.report_pipeline import create_use_case_view_report_data
 from .pipelines.data_engineering.pipelines.campaign_pipeline import (
     campaign_to_l1_pipeline,
     campaign_to_l2_pipeline,
