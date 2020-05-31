@@ -7,3 +7,8 @@ l0_mst_cell_masterplan:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-data/C360/GEO/geo_mst_cell_masterplan/
   file_format: parquet
+
+l0_geo_cust_cell_visit_time:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time_daily/
+  file_format: parquet

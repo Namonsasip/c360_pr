@@ -19,7 +19,8 @@ def geo_to_l1_pipeline(**kwargs):
             node(
                 l1_geo_test,
                 ["l0_mst_poi_shape",
-                 "l0_mst_cell_masterplan"
+                 "l0_mst_cell_masterplan",
+                 "l0_geo_cust_cell_visit_time"
                  ],
                 "l1_test_pipeline"
             ),
