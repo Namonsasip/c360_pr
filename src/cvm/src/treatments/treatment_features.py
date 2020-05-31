@@ -25,6 +25,7 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import logging
 from typing import Any, Dict
 
 import pyspark.sql.functions as func
@@ -54,6 +55,9 @@ def add_other_sim_card_features(
         .distinct()
         .withColumnRenamed("package_id", "current_package_id")
     )
+    logging.getLogger(__name__).info(
+        "{} applicable packages found".format(normal_main_packs.count())
+    )
     number_of_simcards = (
         # keep only normal packages
         recent_profile.join(normal_main_packs, on="current_package_id")
@@ -62,6 +66,9 @@ def add_other_sim_card_features(
         .agg(func.count("subscription_identifier").alias("number_of_simcards"))
         .filter("number_of_simcards >= 2 and number_of_simcards <= 4")
         .select(["national_id_card", "number_of_simcards"])
+    )
+    logging.getLogger(__name__).info(
+        "{} users with multiple simcards found".format(number_of_simcards.count())
     )
     # calculate statistics
     national_id_card_stats_youngest_card = (
