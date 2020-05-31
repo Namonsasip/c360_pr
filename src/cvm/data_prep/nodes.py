@@ -30,6 +30,8 @@ import logging
 from typing import Any, Dict, List, Tuple
 
 import pyspark.sql.functions as func
+from pyspark.sql import DataFrame
+
 from cvm.src.targets.ard_targets import get_ard_targets
 from cvm.src.targets.churn_targets import filter_usage, get_churn_targets
 from cvm.src.utils.feature_selection import feature_selection
@@ -42,7 +44,6 @@ from cvm.src.utils.utils import (
     get_today,
     impute_from_parameters,
 )
-from pyspark.sql import DataFrame
 
 
 def create_users_from_cgtg(
@@ -71,7 +72,10 @@ def create_users_from_cgtg(
 
 
 def create_users_from_active_users(
-    profile: DataFrame, main_packs: DataFrame, sampling_parameters: Dict[str, Any]
+    profile: DataFrame,
+    main_packs: DataFrame,
+    sampling_parameters: Dict[str, Any],
+    parameters: Dict[str, Any],
 ) -> DataFrame:
     """Create l5_cvm_one_day_users_table - one day table of users used for
     training and validating.
@@ -80,13 +84,14 @@ def create_users_from_active_users(
         profile: monthly customer profiles.
         main_packs: pre-paid main packages description.
         sampling_parameters: sampling parameters defined in parameters.yml.
+        parameters: parameters defined in parameters.yml.
     """
 
     profile = prepare_key_columns(profile)
     date_chosen = sampling_parameters["chosen_date"]
     if date_chosen == "today" or date_chosen == "":
         date_chosen = None
-    users = filter_latest_date(profile, date_chosen)
+    users = filter_latest_date(profile, parameters, date_chosen)
     users = users.filter(
         "charge_type == 'Pre-paid' \
          AND subscription_status == 'SA' \

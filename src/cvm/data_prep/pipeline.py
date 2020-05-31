@@ -32,6 +32,8 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 """
 import re
 
+from kedro.pipeline import Pipeline, node
+
 from cvm.data_prep.nodes import (
     add_ard_targets,
     add_churn_targets,
@@ -45,8 +47,6 @@ from cvm.data_prep.nodes import (
     train_test_split,
 )
 from cvm.preprocessing.nodes import pipeline_fit
-from kedro.pipeline import Pipeline, node
-
 from src.cvm.src.temporary_fixes.sub_id_replace import replace_sub_ids
 
 
@@ -101,6 +101,7 @@ def create_users_from_active(sample_type: str) -> Pipeline:
                     "active_users_sample_" + sample_type,
                     "l0_product_pru_m_package_master_group_for_daily",
                     "params:" + sample_type,
+                    "parameters",
                 ],
                 "cvm_users_list_" + sample_type,
                 name="create_cvm_users_list_active_users_" + sample_type,
