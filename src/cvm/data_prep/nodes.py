@@ -105,8 +105,10 @@ def create_users_from_active_users(
         "promotion_group_tariff not in ('SIM 2 Fly', \
          'Net SIM', 'Traveller SIM')"
     )
-    main_packs = main_packs.select("package_id").withColumnRenamed(
-        "package_id", "current_package_id"
+    main_packs = (
+        main_packs.select("package_id")
+        .distinct()
+        .withColumnRenamed("package_id", "current_package_id")
     )
     users = users.join(main_packs, ["current_package_id"], "inner")
     columns_to_pick = ["key_date", "subscription_identifier"]

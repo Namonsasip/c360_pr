@@ -51,6 +51,7 @@ def add_other_sim_card_features(
              'Net SIM', 'Traveller SIM')"""
         )
         .select("package_id")
+        .distinct()
         .withColumnRenamed("package_id", "current_package_id")
     )
     number_of_simcards = (
