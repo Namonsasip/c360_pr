@@ -37,7 +37,6 @@ from functools import partial
 from pathlib import Path
 from typing import Any, Dict, Union
 from warnings import warn
-import getpass
 
 import findspark
 from kedro.config import MissingConfigException
@@ -46,8 +45,7 @@ from kedro.io import DataCatalog
 from kedro.pipeline import Pipeline
 from kedro.pipeline.node import Node
 from kedro.versioning import Journal
-from pyspark import SparkConf
-from pyspark.sql import SparkSession
+from customer360.utilities.auto_path_mapping import auto_path_mapping_project_context
 
 from customer360.utilities.spark_util import get_spark_session
 from customer360.utilities.generate_dependency_dataset import generate_dependency_dataset
@@ -116,53 +114,8 @@ class ProjectContext(KedroContext):
         )
         catalog.add_feed_dict(self._get_feed_dict())
         # This code is to handle cloud vs on-prem env
-        temp_list = []
-        for curr_domain in catalog.load("params:cloud_on_prim_path_conversion"):
-            search_pattern = curr_domain["search_pattern"]
-            replace_pattern = search_pattern.replace("/", "")
-            if running_environment.lower() == 'on_premise':
-                source_prefix = curr_domain["source_path_on_prem_prefix"]
-                target_prefix = curr_domain["target_path_on_prem_prefix"]
-                metadata_table = catalog.load("params:metadata_path")['on_premise_metadata']
-                util_path = catalog.load("params:metadata_path")['on_premise_util']
-            else:
-                source_prefix = curr_domain["source_path_on_cloud_prefix"]
-                target_prefix = curr_domain["target_path_on_cloud_prefix"]
-                metadata_table = catalog.load("params:metadata_path")['on_cloud_metadata']
-                util_path = catalog.load("params:metadata_path")['on_cloud_util']
-            for curr_catalog in catalog.list():
-                if type(catalog._data_sets[curr_catalog]).__name__ == "SparkDbfsDataSet":
-                    original_path = str(catalog._data_sets[curr_catalog].__getattribute__("_filepath"))
-                    original_path_lower = original_path.lower()
-                    if search_pattern.lower() in original_path_lower:
-                        if 'l1_features' in original_path_lower or 'l2_features' in original_path_lower or \
-                                'l3_features' in original_path_lower or 'l4_features' in original_path_lower:
+        catalog = auto_path_mapping_project_context(catalog)
 
-                            new_target_path = original_path.replace("base_path/{}".format(replace_pattern),
-                                                                    target_prefix)
-                            catalog._data_sets[curr_catalog].__setattr__("_filepath", new_target_path)
-                            t_tuple = (original_path, new_target_path)
-                            temp_list.append(t_tuple)
-
-                        else:
-                            new_source_path = original_path.replace("base_path/{}".format(replace_pattern),
-                                                                    source_prefix)
-                            catalog._data_sets[curr_catalog].__setattr__("_filepath", new_source_path)
-                            t_tuple = (original_path, new_source_path)
-                            temp_list.append(t_tuple)
-                        try:
-                            meta_data_path = str(
-                                catalog._data_sets[curr_catalog].__getattribute__("_metadata_table_path"))
-                            new_meta_data_path = meta_data_path.replace("metadata_path", metadata_table)
-                            catalog._data_sets[curr_catalog].__setattr__("_metadata_table_path", new_meta_data_path)
-                        except Exception as e:
-                            logging.info("No Meta-Data Found While Replacing Paths")
-
-                    if '/utilities/' in original_path_lower:
-                        new_util_path = original_path.replace("util_path", util_path)
-                        catalog._data_sets[curr_catalog].__setattr__("_filepath", new_util_path)
-                        t_tuple = (original_path, new_util_path)
-                        temp_list.append(t_tuple)
 
         return catalog
 
@@ -354,12 +307,16 @@ class DataQualityProjectContext(ProjectContext):
         params = self.config_loader.get(
             "parameters*", "parameters*/**", "*/**/parameter*"
         )
+        if running_environment.lower() == 'on_premise':
+            dq_path = params['metadata_path']['on_premise_dq']
+        else:
+            dq_path = params['metadata_path']['on_cloud_dq']
 
         new_catalog_dict = {}
         for dataset_name in params["features_for_dq"].keys():
             new_catalog = {
                 "type": "datasets.spark_ignore_missing_path_dataset.SparkIgnoreMissingPathDataset",
-                "filepath": f"{params['dq_consistency_path_prefix']}/{dataset_name}",
+                "filepath": f"{dq_path}/{dataset_name}",
                 "file_format": "parquet",
                 "save_args": {
                     "mode": "overwrite",
@@ -367,7 +324,6 @@ class DataQualityProjectContext(ProjectContext):
                 }
             }
             new_catalog_dict[f"dq_consistency_benchmark_{dataset_name}"] = new_catalog
-
         return new_catalog_dict
 
     def _get_catalog(

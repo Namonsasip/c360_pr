@@ -106,6 +106,9 @@ metadata_path:
     on_premise_metadata: '/projects/prod/c360/data/UTILITIES/metadata_table'
     on_cloud_util: '/mnt/customer360-blob-output/C360'
     on_premise_util: '/projects/prod/c360/data'
+    on_cloud_dq: '/mnt/customer360-blob-output/C360'
+    on_premise_dq: '/projects/prod/c360/data'
+
 
 
 
