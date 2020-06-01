@@ -1,0 +1,7 @@
+l1_area_from_ais_store_daily:
+  where_clause: ""
+  feature_list:
+    imsi: "IMSI"
+    duration: "sum(DURATION)"
+    count: "sum(count(1))"
+  granularity: "imsi,event_partition_date,start_of_week,start_of_month"

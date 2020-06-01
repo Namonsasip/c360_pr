@@ -9,4 +9,6 @@ import os
 from pyspark.sql import types as T
 import statistics
 
-
+def l3_geo_area_from_ais_store_monthly(df,sql):
+    df = node_from_config(df, sql)
+    return df

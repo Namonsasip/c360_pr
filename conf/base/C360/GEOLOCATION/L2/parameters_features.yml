@@ -1,0 +1,7 @@
+l2_area_from_ais_store_weekly:
+  where_clause: ""
+  feature_list:
+    imsi: "first(imsi)"
+    duration: "sum(duration)"
+    count: "sum(count)"
+  granularity: "imsi,start_of_week"

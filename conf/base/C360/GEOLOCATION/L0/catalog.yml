@@ -10,5 +10,6 @@ l0_mst_cell_masterplan:
 
 l0_geo_cust_cell_visit_time:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time_daily/
+#  filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time_daily/
+  filepath: /mnt/customer360-blob-data/C360/GEO/sample/geo_cust_cell_visit_time_daily_2/  #sample data for test
   file_format: parquet
