@@ -8,6 +8,7 @@ cvm_users_list_huaw_experiment:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_cvm_users_list_huaw_experiment/
 
+# input tables samples
 l3_customer_profile_include_1mo_non_active_huaw_experiment:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l3_customer_profile_include_1mo_non_active_huaw_experiment/
@@ -31,6 +32,31 @@ l4_usage_postpaid_prepaid_weekly_features_sum_huaw_experiment:
 l4_touchpoints_to_call_center_features_huaw_experiment:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_touchpoints_to_call_center_features_huaw_experiment/
+
+# input samples with mapped sub ids / temp fix
+l3_customer_profile_include_1mo_non_active_sub_ids_mapped_huaw_experiment:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l3_customer_profile_include_1mo_non_active_sub_ids_mapped_huaw_experiment/
+
+l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_sub_ids_mapped_huaw_experiment:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_sub_ids_mapped_huaw_experiment/
+
+l4_usage_prepaid_postpaid_daily_features_sub_ids_mapped_huaw_experiment:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_usage_prepaid_postpaid_daily_features_sub_ids_mapped_huaw_experiment/
+
+l4_daily_feature_topup_and_volume_sub_ids_mapped_huaw_experiment:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_daily_feature_topup_and_volume_sub_ids_mapped_huaw_experiment/
+
+l4_usage_postpaid_prepaid_weekly_features_sum_sub_ids_mapped_huaw_experiment:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_usage_postpaid_prepaid_weekly_features_sum_sub_ids_mapped_huaw_experiment/
+
+l4_touchpoints_to_call_center_features_sub_ids_mapped_huaw_experiment:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_touchpoints_to_call_center_features_sub_ids_mapped_huaw_experiment/
 
 ard_targets_huaw_experiment:
   <<: *spark_parquet
