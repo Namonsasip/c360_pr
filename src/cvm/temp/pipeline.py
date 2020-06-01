@@ -28,7 +28,7 @@
 from kedro.pipeline import Pipeline, node
 
 from cvm.src.temporary_fixes.sub_id_replace import get_mapped_dataset_name
-from cvm.temp.nodes import create_sub_id_mapping
+from cvm.temp.nodes import create_sub_id_mapping, map_sub_ids
 
 
 def create_sub_id_mapping_pipeline() -> Pipeline:
@@ -63,7 +63,7 @@ def map_sub_ids_of_input_datasets(sample_type: str) -> Pipeline:
     ]
     nodes_list = [
         node(
-            func=map_sub_ids_of_input_datasets,
+            func=map_sub_ids,
             inputs=[input_dataset, "sub_id_mapping"],
             outputs=get_mapped_dataset_name(input_dataset, sample_type),
             name="map_sub_ids_for_{}".format(input_dataset),
