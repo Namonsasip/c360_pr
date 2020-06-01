@@ -1,0 +1,14 @@
+_spark_parquet: &spark_parquet
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  save_args:
+    mode: "overwrite"
+
+# full datasets with sub ids mapped / temp fix
+l3_customer_profile_include_1mo_non_active_sub_ids_mapped:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l3_customer_profile_include_1mo_non_active_sub_ids_mapped/
+
+l4_usage_prepaid_postpaid_daily_features_sub_ids_mapped:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_usage_prepaid_postpaid_daily_features_sub_ids_mapped/
