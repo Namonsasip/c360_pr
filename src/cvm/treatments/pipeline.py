@@ -52,7 +52,7 @@ def generate_treatments(sample_type: str) -> Pipeline:
                 prepare_microsegments,
                 [
                     "features_macrosegments_{}".format(sample_type),
-                    "l3_customer_profile_include_1mo_non_active",
+                    "l3_customer_profile_include_1mo_non_active_sub_ids_mapped",
                     "parameters",
                 ],
                 "microsegments_output_{}".format(sample_type),
@@ -64,7 +64,8 @@ def generate_treatments(sample_type: str) -> Pipeline:
                     "propensity_scores_{}".format(sample_type),
                     "features_macrosegments_scoring",
                     "microsegments_input_{}".format(sample_type),
-                    "l3_customer_profile_include_1mo_non_active_{}".format(sample_type),
+                    "l3_customer_profile_include_1mo_non_active_"
+                    + "sub_ids_mapped_{}".format(sample_type),
                     "l0_product_pru_m_package_master_group_for_daily",
                     "parameters",
                 ],

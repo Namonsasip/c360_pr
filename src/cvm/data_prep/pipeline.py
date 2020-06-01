@@ -87,7 +87,7 @@ def create_users_from_active(sample_type: str) -> Pipeline:
             node(
                 create_sample_dataset,
                 [
-                    "l3_customer_profile_include_1mo_non_active",
+                    "l3_customer_profile_include_1mo_non_active_sub_ids_mapped",
                     "parameters",
                     "params:" + sample_type,
                 ],
@@ -204,14 +204,19 @@ def prepare_features_macrosegments(sample_type: str):
                 [
                     "important_columns",
                     "parameters",
-                    "cvm_users_list_" + sample_type,
-                    "l3_customer_profile_include_1mo_non_active_" + sample_type,
-                    "l4_daily_feature_topup_and_volume_" + sample_type,
-                    "l4_usage_prepaid_postpaid_daily_features_" + sample_type,
-                    "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_"
+                    "cvm_users_list_sub_ids_mapped_" + sample_type,
+                    "l3_customer_profile_include_1mo_non_active_sub_ids_mapped_"
                     + sample_type,
-                    "l4_usage_postpaid_prepaid_weekly_features_sum_" + sample_type,
-                    "l4_touchpoints_to_call_center_features_" + sample_type,
+                    "l4_daily_feature_topup_and_volume_sub_ids_mapped_" + sample_type,
+                    "l4_usage_prepaid_postpaid_daily_features_sub_ids_mapped_"
+                    + sample_type,
+                    "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_"
+                    + "sub_ids_mapped_"
+                    + sample_type,
+                    "l4_usage_postpaid_prepaid_weekly_features_sum_sub_ids_mapped_"
+                    + sample_type,
+                    "l4_touchpoints_to_call_center_features_sub_ids_mapped_"
+                    + sample_type,
                 ]
                 + targets_datasets,
                 "features_targets_" + sample_type,
@@ -357,7 +362,7 @@ def create_cvm_targets_huaw_exp():
                 add_churn_targets,
                 [
                     "cvm_users_list_huaw_experiment",
-                    "l4_usage_prepaid_postpaid_daily_features",
+                    "l4_usage_prepaid_postpaid_daily_features_sub_ids_mapped",
                     "parameters",
                     "params:huaw_experiment",
                 ],
