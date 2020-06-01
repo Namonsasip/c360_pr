@@ -47,7 +47,7 @@ def massive_processing(input_df, customer_prof_input_df, join_function, sql, par
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 1))
+    mvv_new = list(divide_chunks(mvv_array, 2))
     add_list = mvv_new
 
     first_item = add_list[-1]
@@ -88,7 +88,7 @@ def massive_processing_weekly(data_frame: DataFrame, dict_obj: dict, output_df_c
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
-    mvv_new = list(divide_chunks(mvv_array, 1))
+    mvv_new = list(divide_chunks(mvv_array, 2))
     add_list = mvv_new
     first_item = add_list[-1]
     add_list.remove(first_item)
@@ -121,7 +121,7 @@ def massive_processing_weekly_2(data_frame: DataFrame, dict_obj1: dict, dict_obj
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
-    mvv_new = list(divide_chunks(mvv_array, 1))
+    mvv_new = list(divide_chunks(mvv_array, 2))
     add_list = mvv_new
     first_item = add_list[-1]
     add_list.remove(first_item)
@@ -170,7 +170,7 @@ def customized_processing(data_frame: DataFrame, cust_prof: DataFrame, recharge_
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 1))
+    mvv_new = list(divide_chunks(mvv_array, 2))
     add_list = mvv_new
 
     first_item = add_list[-1]
