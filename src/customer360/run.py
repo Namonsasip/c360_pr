@@ -115,8 +115,6 @@ class ProjectContext(KedroContext):
         catalog.add_feed_dict(self._get_feed_dict())
         # This code is to handle cloud vs on-prem env
         catalog = auto_path_mapping_project_context(catalog)
-
-
         return catalog
 
     def run(self, **kwargs):
