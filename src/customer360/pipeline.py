@@ -60,6 +60,7 @@ from cvm.data_prep.pipeline import training_data_prepare, scoring_data_prepare, 
 from cvm.modelling.pipeline import train_model, score_model
 from cvm.preprocessing.pipeline import preprocessing_fit, preprocessing_transform
 from cvm.report.pipeline import prepare_user_microsegments, create_kpis, run_report
+from cvm.temp.pipeline import create_sub_id_mapping_pipeline
 from cvm.treatments.pipeline import generate_treatments
 from nba.model_input.model_input_pipeline import create_nba_model_input_pipeline
 from nba.models.models_pipeline import create_nba_models_pipeline
@@ -282,7 +283,8 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "cvm_rfe_only": rfe_only,
         "cvm_prepare_report_micro": prepare_user_microsegments(),
         "cvm_create_kpis": create_kpis(),
-        "cvm_create_report": run_report()
+        "cvm_create_report": run_report(),
+        "cvm_create_sub_id_mapping": create_sub_id_mapping_pipeline()
     }
 
 
