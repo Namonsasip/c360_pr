@@ -63,9 +63,9 @@ features_for_dq:
 #    - feature: avg_payments_arpu_voice_last_month
 #    - feature: avg_payments_arpu_voice_last_three_month
 #    - feature: payments_one_month_over_three_month_dynamics_arpu
-#  l4_billing_rolling_window_rpu_roaming:
-#    - feature: sum_payments_arpu_roaming_weekly_last_week
-#    - feature: sum_payments_arpu_roaming_weekly_last_twelve_week
+  l4_billing_rolling_window_rpu_roaming:
+    - feature: sum_payments_arpu_roaming_weekly_last_week
+    - feature: sum_payments_arpu_roaming_weekly_last_twelve_week
 #  l4_billing_rolling_window_before_top_up_balance:
 #    - feature: sum_payments_before_top_up_balance_weekly_last_week
 #    - feature: sum_payments_before_top_up_balance_weekly_last_four_week
@@ -142,6 +142,5 @@ features_for_dq:
 #    - feature: '*'
 #  l4_usage_postpaid_prepaid_weekly_features_sum:
 #    - feature: '*'
-  l4_device_summary_features:
-    - feature: '*'
-
+#  l4_device_summary_features:
+#    - feature: '*'
