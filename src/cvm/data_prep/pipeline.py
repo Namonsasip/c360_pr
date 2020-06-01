@@ -47,6 +47,7 @@ from cvm.data_prep.nodes import (
     train_test_split,
 )
 from cvm.preprocessing.nodes import pipeline_fit
+from cvm.temp.pipeline import map_sub_ids_of_input_datasets
 
 
 def create_users_from_tg(sample_type: str) -> Pipeline:
@@ -341,8 +342,9 @@ def scoring_data_prepare(sample_type: str) -> Pipeline:
 
 
 extract_features = (
-    create_users_from_active("fe")
-    + sample_inputs("fe")
+    sample_inputs("fe")
+    + map_sub_ids_of_input_datasets("huaw_experiment")
+    + create_users_from_active("fe")
     + create_cvm_targets("fe")
     + create_cvm_important_columns()
 )
