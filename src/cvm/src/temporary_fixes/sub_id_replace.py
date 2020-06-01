@@ -1,5 +1,6 @@
 # This is a temporary fix replacing old style subscription id with new one using
 import logging
+import re
 
 import pyspark.sql.functions as func
 from pyspark.sql import DataFrame
@@ -51,3 +52,19 @@ def replace_sub_id_if_needed(
         replacement_dictionary: table with sub id mapping
     """
     return SubIdReplacer(replacement_dictionary).replace_if_needed(df)
+
+
+def get_mapped_dataset_name(dataset_name: str, sample_type: str = None) -> str:
+    """ Parse dataset catalog name to get name of dataset after mapping sub ids.
+
+    Args:
+        dataset_name: input dataset name
+        sample_type: type of sample, may be "scoring", "training" or custom
+    """
+    new_suffix_prefix = "sub_ids_mapped"
+    if sample_type is not None:
+        regex_to_remove = r"_{}$".format(sample_type)
+        dataset_name = re.sub(regex_to_remove, "", dataset_name)
+        return dataset_name + "_" + new_suffix_prefix + "_" + sample_type
+    else:
+        return dataset_name + "_" + new_suffix_prefix

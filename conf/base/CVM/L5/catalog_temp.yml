@@ -4,6 +4,10 @@ _spark_parquet: &spark_parquet
   save_args:
     mode: "overwrite"
 
+sub_id_mapping:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_sub_id_mapping/
+
 # full datasets with sub ids mapped / temp fix
 l3_customer_profile_include_1mo_non_active_sub_ids_mapped:
   <<: *spark_parquet

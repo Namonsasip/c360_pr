@@ -30,12 +30,14 @@ import logging
 import pyspark.sql.functions as func
 from pyspark.sql import DataFrame, Window
 
+from cvm.src.temporary_fixes.sub_id_replace import replace_sub_id_if_needed
+
 
 def create_sub_id_mapping(l1_profile: DataFrame) -> DataFrame:
     """ Create mapping table from old sub id to new one.
 
     Args:
-        l1_profile:
+        l1_profile: l1 profile table with old and new sub id
     """
     logging.getLogger(__name__).info(
         "Creating `subscription_identifier` replacement dictionary"
@@ -49,3 +51,13 @@ def create_sub_id_mapping(l1_profile: DataFrame) -> DataFrame:
         .filter("date_lp == 1")
         .select(["old_subscription_identifier", "subscription_identifier"])
     )
+
+
+def map_sub_ids(df: DataFrame, replacement_dictionary: DataFrame) -> DataFrame:
+    """ Map sub ids of `df` if needed.
+
+    Args:
+        df: table to map
+        replacement_dictionary: table with mapping
+    """
+    return replace_sub_id_if_needed(df, replacement_dictionary)

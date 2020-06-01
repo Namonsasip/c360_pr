@@ -27,6 +27,7 @@
 # limitations under the License.
 from kedro.pipeline import Pipeline, node
 
+from cvm.src.temporary_fixes.sub_id_replace import get_mapped_dataset_name
 from cvm.temp.nodes import create_sub_id_mapping
 
 
@@ -42,3 +43,31 @@ def create_sub_id_mapping_pipeline() -> Pipeline:
             )
         ]
     )
+
+
+def map_sub_ids_of_input_datasets(sample_type: str) -> Pipeline:
+    """ Maps all input datasets to new sub ids
+
+    Args:
+        sample_type: type of sample, may be "scoring", "training" or custom
+    """
+    input_datasets = [
+        "l3_customer_profile_include_1mo_non_active",
+        "l4_usage_prepaid_postpaid_daily_features",
+        "l3_customer_profile_include_1mo_non_active_scoring",
+        "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_scoring",
+        "l4_usage_prepaid_postpaid_daily_features_scoring",
+        "l4_daily_feature_topup_and_volume_scoring",
+        "l4_usage_postpaid_prepaid_weekly_features_sum_scoring",
+        "l4_touchpoints_to_call_center_features_scoring",
+    ]
+    nodes_list = [
+        node(
+            func=map_sub_ids_of_input_datasets,
+            inputs=[input_dataset, "sub_id_mapping"],
+            outputs=get_mapped_dataset_name(input_dataset, sample_type),
+            name="map_sub_ids_for_{}".format(input_dataset),
+        )
+        for input_dataset in input_datasets
+    ]
+    return Pipeline(nodes_list)
