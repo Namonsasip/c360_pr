@@ -52,24 +52,24 @@ from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.
     customer_profile_billing_level_to_l3_pipeline,
     unioned_customer_profile_to_l3_pipeline
 )
-# from cvm.data_prep.pipeline import (
-#     create_cvm_prepare_inputs_samples,
-#     create_cvm_targets,
-#     create_cvm_training_data,
-#     create_cvm_scoring_data,
-# )
-# from cvm.modelling.pipeline import create_train_model, create_predictions
-# from cvm.preprocessing.pipeline import (
-#     create_cvm_preprocessing_scoring,
-#     create_cvm_preprocessing,
-# )
-# from nba.backtesting.backtesting_pipeline import create_nba_backtesting_pipeline
-# from nba.model_input.model_input_pipeline import create_nba_model_input_pipeline
-# from nba.models.models_pipeline import create_nba_models_pipeline
-# from nba.report.pipelines.campaign_importance_volume_pipeline import (
-#     campaign_importance_volume,
-# )
-# from nba.report.pipelines.report_pipeline import create_use_case_view_report_data
+from cvm.data_prep.pipeline import (
+    create_cvm_prepare_inputs_samples,
+    create_cvm_targets,
+    create_cvm_training_data,
+    create_cvm_scoring_data,
+)
+from cvm.modelling.pipeline import create_train_model, create_predictions
+from cvm.preprocessing.pipeline import (
+    create_cvm_preprocessing_scoring,
+    create_cvm_preprocessing,
+)
+from nba.backtesting.backtesting_pipeline import create_nba_backtesting_pipeline
+from nba.model_input.model_input_pipeline import create_nba_model_input_pipeline
+from nba.models.models_pipeline import create_nba_models_pipeline
+from nba.report.pipelines.campaign_importance_volume_pipeline import (
+    campaign_importance_volume,
+)
+from nba.report.pipelines.report_pipeline import create_use_case_view_report_data
 from .pipelines.data_engineering.pipelines.campaign_pipeline import (
     campaign_to_l1_pipeline,
     campaign_to_l2_pipeline,
@@ -193,23 +193,6 @@ from .pipelines.data_engineering.pipelines.util_pipeline import (
 def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
 
     return {
-        # "__default__": usage_to_l1_pipeline()
-        # + usage_to_l2_pipeline()
-        # + usage_to_l4_pipeline()
-        # + customer_profile_to_l3_pipeline()
-        # + customer_profile_to_l4_pipeline()
-        # + customer_profile_billing_level_to_l3_pipeline()
-        # + billing_to_l1_pipeline()
-        # + billing_to_l2_pipeline()
-        # + billing_to_l3_pipeline()
-        # + billing_to_l4_pipeline_daily()
-        # + billing_to_l4_pipeline_weekly()
-        # + billing_to_l4_pipeline_monthly()
-        # + revenue_to_l3_pipeline()
-        # + revenue_to_l4_pipeline()
-        # + device_to_l1_pipeline(),
-        # + device_to_l2_pipeline()
-        # + device_to_l4_pipeline()
         "usage_to_l1_pipeline": usage_to_l1_pipeline(),
         "usage_create_master_data_for_favourite_feature": usage_create_master_data_for_favourite_feature(),
         "usage_to_l4_daily_pipeline": usage_to_l4_daily_pipeline(),
@@ -238,7 +221,6 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "digital_to_l4_monthly_pipeline": digital_to_l4_monthly_pipeline(),
         "digital_to_l4_weekly_pipeline": digital_to_l4_weekly_pipeline(),
         "digital_to_l4_weekly_favourite_pipeline": digital_to_l4_weekly_favourite_pipeline(),
-        # "device_to_l3_pipeline": device_to_l3_pipeline(),
         "streaming_to_l1_intermediate_pipeline": streaming_to_l1_intermediate_pipeline(),
         "streaming_to_l1_pipeline": streaming_to_l1_pipeline(),
         "streaming_to_l2_pipeline": streaming_to_l2_pipeline(),
@@ -280,49 +262,48 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "sales_to_l4_pipeline": sales_to_l4_pipeline(),
         "lineage_dependency_pipeline": lineage_dependency_pipeline(),
         "ops_report_pipeline": ops_report_pipeline(),
-        # "de": data_engineering_pipeline,
     }
 
 
 def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
     return {
-        # "cvm_setup_training_data_sample": create_cvm_prepare_inputs_samples("sample")
-        # + create_cvm_targets("sample")
-        # + create_cvm_training_data("sample"),
-        # "cvm_training_preprocess_sample": create_cvm_preprocessing_scoring("sample"),
-        # "cvm_train_model_sample": create_train_model("sample"),
-        # "cvm_setup_scoring_data_sample": create_cvm_prepare_inputs_samples(
-        #     "scoring_sample"
-        # )
-        # + create_cvm_scoring_data("scoring_sample"),
-        # "cvm_scoring_combine_data": create_cvm_scoring_data("scoring_sample"),
-        # "cvm_scoring_preprocess_sample": create_cvm_preprocessing_scoring(
-        #     "scoring_sample"
-        # ),
-        # "cvm_predict_model_sample": create_predictions("scoring_sample", "dev"),
-        # "cvm_setup_training_data_dev": create_cvm_prepare_inputs_samples("dev")
-        # + create_cvm_targets("dev")
-        # + create_cvm_training_data("dev"),
-        # "cvm_training_combine_data": create_cvm_training_data("dev"),
-        # "cvm_training_preprocess_dev": create_cvm_preprocessing("dev"),
-        # "cvm_train_model_dev": create_train_model("dev"),
-        # "cvm_setup_scoring_data_dev": create_cvm_prepare_inputs_samples("scoring_dev")
-        # + create_cvm_scoring_data("scoring_dev"),
-        # "cvm_scoring_preprocess_dev": create_cvm_preprocessing_scoring("scoring_dev"),
-        # "cvm_predict_model_dev": create_predictions("scoring_dev", "dev"),
-        # "cvm_validate_model_dev": create_predictions(
-        #     "sample", "dev", "l5_cvm_one_day_train_preprocessed_sample"
-        # ),
+        "cvm_setup_training_data_sample": create_cvm_prepare_inputs_samples("sample")
+        + create_cvm_targets("sample")
+        + create_cvm_training_data("sample"),
+        "cvm_training_preprocess_sample": create_cvm_preprocessing_scoring("sample"),
+        "cvm_train_model_sample": create_train_model("sample"),
+        "cvm_setup_scoring_data_sample": create_cvm_prepare_inputs_samples(
+            "scoring_sample"
+        )
+        + create_cvm_scoring_data("scoring_sample"),
+        "cvm_scoring_combine_data": create_cvm_scoring_data("scoring_sample"),
+        "cvm_scoring_preprocess_sample": create_cvm_preprocessing_scoring(
+            "scoring_sample"
+        ),
+        "cvm_predict_model_sample": create_predictions("scoring_sample", "dev"),
+        "cvm_setup_training_data_dev": create_cvm_prepare_inputs_samples("dev")
+        + create_cvm_targets("dev")
+        + create_cvm_training_data("dev"),
+        "cvm_training_combine_data": create_cvm_training_data("dev"),
+        "cvm_training_preprocess_dev": create_cvm_preprocessing("dev"),
+        "cvm_train_model_dev": create_train_model("dev"),
+        "cvm_setup_scoring_data_dev": create_cvm_prepare_inputs_samples("scoring_dev")
+        + create_cvm_scoring_data("scoring_dev"),
+        "cvm_scoring_preprocess_dev": create_cvm_preprocessing_scoring("scoring_dev"),
+        "cvm_predict_model_dev": create_predictions("scoring_dev", "dev"),
+        "cvm_validate_model_dev": create_predictions(
+            "sample", "dev", "l5_cvm_one_day_train_preprocessed_sample"
+        ),
     }
 
 
 def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
     return {
-        # "__default__": create_use_case_view_report_data()
-        # + create_nba_model_input_pipeline()
-        # + create_nba_models_pipeline()
-        # + campaign_importance_volume()
-        # + create_nba_backtesting_pipeline()
+        "__default__": create_use_case_view_report_data()
+        + create_nba_model_input_pipeline()
+        + create_nba_models_pipeline()
+        + campaign_importance_volume()
+        + create_nba_backtesting_pipeline()
     }
 
 
