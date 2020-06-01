@@ -134,6 +134,15 @@ l0_streaming_soc_mobile_app_daily_for_l1_streaming_visit_count_and_download_traf
     lookback: '0'
 
 
+l0_mobile_app_master_for_l1_streaming_session_duration_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/mobile_app_master/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'no'
+
+
 l0_streaming_soc_mobile_app_daily_for_l1_streaming_session_duration_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/stream_soc_mobile_app_daily/

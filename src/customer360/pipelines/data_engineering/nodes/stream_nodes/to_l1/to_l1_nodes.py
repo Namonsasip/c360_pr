@@ -2,7 +2,7 @@ import os
 from src.customer360.utilities.spark_util import get_spark_empty_df
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
     data_non_availability_and_missing_check
-from pyspark.sql import functions as f, DataFrame
+from pyspark.sql import functions as f, DataFrame, Window
 from pyspark.sql.types import *
 
 
@@ -73,3 +73,24 @@ def dac_for_streaming_to_l1_pipeline_from_l0(input_df: DataFrame, target_table_n
     ################################# End Implementing Data availability checks ###############################
 
     return input_df
+
+
+def application_duration(streaming_df: DataFrame, application_df: DataFrame) -> DataFrame:
+
+    w_recent_partition = Window.partitionBy("application_id").orderBy(f.col("partition_month").desc())
+    w_lag_stream = Window.partitionBy("sid").orderBy(f.col("begin_time"))
+
+    application_df = (application_df
+                      .withColumn("rank", f.row_number().over(w_recent_partition))
+                      .where(f.col("rank") == 1)
+                      .withColumnRenamed("application_name", "application")
+                      ).alias("application_df")
+
+    joined_df = (streaming_df.alias("streaming_df")
+                 .join(application_df, f.col("streaming_df.app_id") == f.col("application_df.application_id"), "left_outer")
+                 .withColumn("lead_begin_time", f.lead(f.col("begin_time")).over(w_lag_stream))
+                 .withColumn("duration", f.col("lead_begin_time") - f.col("begin_time"))  # duration in seconds
+                 .select(streaming_df.columns + ["application", "duration"])
+                 )
+
+    return joined_df
