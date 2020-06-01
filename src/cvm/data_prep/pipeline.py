@@ -47,7 +47,6 @@ from cvm.data_prep.nodes import (
     train_test_split,
 )
 from cvm.preprocessing.nodes import pipeline_fit
-from src.cvm.src.temporary_fixes.sub_id_replace import replace_sub_ids
 
 
 def create_users_from_tg(sample_type: str) -> Pipeline:
@@ -62,7 +61,7 @@ def create_users_from_tg(sample_type: str) -> Pipeline:
     return Pipeline(
         [
             node(
-                replace_sub_ids(create_users_from_cgtg),
+                create_users_from_cgtg,
                 [
                     "cvm_prepaid_customer_groups",
                     "params:{}".format(sample_type),
@@ -86,7 +85,7 @@ def create_users_from_active(sample_type: str) -> Pipeline:
     return Pipeline(
         [
             node(
-                replace_sub_ids(create_sample_dataset),
+                create_sample_dataset,
                 [
                     "l3_customer_profile_include_1mo_non_active",
                     "parameters",
@@ -96,7 +95,7 @@ def create_users_from_active(sample_type: str) -> Pipeline:
                 name="create_active_users_sample_" + sample_type,
             ),
             node(
-                replace_sub_ids(create_users_from_active_users),
+                create_users_from_active_users,
                 [
                     "active_users_sample_" + sample_type,
                     "l0_product_pru_m_package_master_group_for_daily",
@@ -129,7 +128,7 @@ def sample_inputs(sample_type: str) -> Pipeline:
 
     nodes_list = [
         node(
-            replace_sub_ids(create_sample_dataset),
+            create_sample_dataset,
             [dataset_name, "parameters", "params:" + sample_type],
             re.sub("_no_inc", "", dataset_name) + "_" + sample_type,
             name="sample_" + dataset_name + "_" + sample_type,
@@ -155,7 +154,7 @@ def create_cvm_targets(sample_type: str):
     return Pipeline(
         [
             node(
-                replace_sub_ids(add_ard_targets),
+                add_ard_targets,
                 [
                     "cvm_users_list_" + sample_type,
                     "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
@@ -166,7 +165,7 @@ def create_cvm_targets(sample_type: str):
                 name="create_ard_targets_" + sample_type,
             ),
             node(
-                replace_sub_ids(add_churn_targets),
+                add_churn_targets,
                 [
                     "cvm_users_list_" + sample_type,
                     "l4_usage_prepaid_postpaid_daily_features",
@@ -201,7 +200,7 @@ def prepare_features_macrosegments(sample_type: str):
     return Pipeline(
         [
             node(
-                replace_sub_ids(subs_date_join_important_only),
+                subs_date_join_important_only,
                 [
                     "important_columns",
                     "parameters",
@@ -268,7 +267,7 @@ def create_cvm_important_columns():
     return Pipeline(
         {
             node(
-                replace_sub_ids(subs_date_join),
+                subs_date_join,
                 [
                     "parameters",
                     "cvm_users_list_" + sample_type,
@@ -355,7 +354,7 @@ def create_cvm_targets_huaw_exp():
     return Pipeline(
         [
             node(
-                replace_sub_ids(add_churn_targets),
+                add_churn_targets,
                 [
                     "cvm_users_list_huaw_experiment",
                     "l4_usage_prepaid_postpaid_daily_features",
