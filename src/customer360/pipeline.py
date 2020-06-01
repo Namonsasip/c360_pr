@@ -281,7 +281,7 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
         ),
         "cvm_huaw_churn_targets": create_cvm_targets_huaw_exp(),
         "cvm_full_features_extraction": extract_features,
-        "cvm_map_sub_ids": map_sub_ids_of_input_datasets(),
+        "cvm_map_sub_ids": map_sub_ids_of_input_datasets("huaw_experiment"),
         "cvm_rfe_only": rfe_only,
         "cvm_prepare_report_micro": prepare_user_microsegments(),
         "cvm_create_kpis": create_kpis(),
