@@ -335,16 +335,16 @@ def scoring_data_prepare(sample_type: str) -> Pipeline:
         Kedro pipeline.
     """
     return (
-        create_users_from_active(sample_type)
-        + sample_inputs(sample_type)
+        sample_inputs(sample_type)
+        + map_sub_ids_of_input_datasets(sample_type)
+        + create_users_from_active(sample_type)
         + prepare_features_macrosegments(sample_type)
     )
 
 
 extract_features = (
-    sample_inputs("fe")
-    + map_sub_ids_of_input_datasets("huaw_experiment")
-    + create_users_from_active("fe")
+    create_users_from_active("fe")
+    + sample_inputs("fe")
     + create_cvm_targets("fe")
     + create_cvm_important_columns()
 )
