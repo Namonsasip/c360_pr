@@ -62,9 +62,11 @@ def get_mapped_dataset_name(dataset_name: str, sample_type: str = None) -> str:
         sample_type: type of sample, may be "scoring", "training" or custom
     """
     new_suffix_prefix = "sub_ids_mapped"
-    if sample_type is not None:
-        regex_to_remove = r"_{}$".format(sample_type)
-        dataset_name = re.sub(regex_to_remove, "", dataset_name)
-        return dataset_name + "_" + new_suffix_prefix + "_" + sample_type
-    else:
+    if sample_type is None:
         return dataset_name + "_" + new_suffix_prefix
+    sample_type_regex = r"_{}$".format(sample_type)
+    sample_type_found = re.match(sample_type_regex, dataset_name) is not None
+    if not sample_type_found:
+        return dataset_name + "_" + new_suffix_prefix
+    dataset_name = re.sub(sample_type_regex, "", dataset_name)
+    return dataset_name + "_" + new_suffix_prefix + "_" + sample_type
