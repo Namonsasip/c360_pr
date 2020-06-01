@@ -193,23 +193,6 @@ from .pipelines.data_engineering.pipelines.util_pipeline import (
 def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
 
     return {
-        # "__default__": usage_to_l1_pipeline()
-        # + usage_to_l2_pipeline()
-        # + usage_to_l4_pipeline()
-        # + customer_profile_to_l3_pipeline()
-        # + customer_profile_to_l4_pipeline()
-        # + customer_profile_billing_level_to_l3_pipeline()
-        # + billing_to_l1_pipeline()
-        # + billing_to_l2_pipeline()
-        # + billing_to_l3_pipeline()
-        # + billing_to_l4_pipeline_daily()
-        # + billing_to_l4_pipeline_weekly()
-        # + billing_to_l4_pipeline_monthly()
-        # + revenue_to_l3_pipeline()
-        # + revenue_to_l4_pipeline()
-        # + device_to_l1_pipeline(),
-        # + device_to_l2_pipeline()
-        # + device_to_l4_pipeline()
         "usage_to_l1_pipeline": usage_to_l1_pipeline(),
         "usage_create_master_data_for_favourite_feature": usage_create_master_data_for_favourite_feature(),
         "usage_to_l4_daily_pipeline": usage_to_l4_daily_pipeline(),
@@ -238,7 +221,6 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "digital_to_l4_monthly_pipeline": digital_to_l4_monthly_pipeline(),
         "digital_to_l4_weekly_pipeline": digital_to_l4_weekly_pipeline(),
         "digital_to_l4_weekly_favourite_pipeline": digital_to_l4_weekly_favourite_pipeline(),
-        # "device_to_l3_pipeline": device_to_l3_pipeline(),
         "streaming_to_l1_intermediate_pipeline": streaming_to_l1_intermediate_pipeline(),
         "streaming_to_l1_pipeline": streaming_to_l1_pipeline(),
         "streaming_to_l2_pipeline": streaming_to_l2_pipeline(),
@@ -280,7 +262,6 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "sales_to_l4_pipeline": sales_to_l4_pipeline(),
         "lineage_dependency_pipeline": lineage_dependency_pipeline(),
         "ops_report_pipeline": ops_report_pipeline(),
-        # "de": data_engineering_pipeline,
     }
 
 
