@@ -536,6 +536,11 @@ def top_up_channel_joined_data(input_df, topup_type_ref):
 
     ################################# End Implementing Data availability checks ###############################
 
+    topup_type_ref = topup_type_ref.withColumn("rn", expr(
+        "row_number() over(partition by recharge_topup_event_type_cd order by partition_date desc)"))
+
+    topup_type_ref = topup_type_ref.where("rn = 1").drop("rn")
+
     output_df = input_df.join(topup_type_ref, input_df.recharge_type == topup_type_ref.recharge_topup_event_type_cd,
                               'left')
 
@@ -543,6 +548,11 @@ def top_up_channel_joined_data(input_df, topup_type_ref):
 
 
 def top_up_channel_joined_data_for_weekly_last_top_up_channel(input_df, topup_type_ref):
+
+    topup_type_ref = topup_type_ref.withColumn("rn", expr(
+        "row_number() over(partition by recharge_topup_event_type_cd order by partition_date desc)"))
+
+    topup_type_ref = topup_type_ref.where("rn = 1").drop("rn")
 
     output_df = input_df.join(topup_type_ref, input_df.recharge_type == topup_type_ref.recharge_topup_event_type_cd,
                               'left')
