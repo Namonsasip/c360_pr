@@ -39,8 +39,8 @@ def usage_to_l2_pipeline(**kwargs):
     return Pipeline(
         [
             node(build_usage_l2_layer,
-                 ["l1_usage_postpaid_prepaid_daily",
-                  "params:l2_usage_postpaid_prepaid_daily"],
+                 ["l1_usage_postpaid_prepaid_daily_for_l2_postpaid_prepaid_weekly",
+                  "params:l2_usage_postpaid_prepaid_weekly"],
                  "l2_usage_postpaid_prepaid_weekly"
                  ),
 

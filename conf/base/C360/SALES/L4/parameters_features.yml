@@ -1,0 +1,73 @@
+l4_sales_on_top_transaction:
+  partition_by: ["access_method_num","subscription_identifier","national_id_card"]
+  feature_list:
+    sum: [
+    "ussd_number_of_on_top_transaction",
+    "ussd_volume_of_on_top_transaction",
+    "ussd_number_of_data_activation_on_top_transaction",
+    "ussd_volume_of_data_activation_on_top_transaction",
+    "ussd_number_of_voice_activation_on_top_transaction",
+    "ussd_volume_of_voice_activation_on_top_transaction",
+    "ussd_number_of_sms_activation_on_top_transaction",
+    "ussd_volume_of_sms_activation_on_top_transaction",
+    "ussd_number_of_vas_activation_on_top_transaction",
+    "ussd_volume_of_vas_activation_on_top_transaction",
+
+    "call_center_number_of_on_top_transaction",
+    "call_center_volume_of_on_top_transaction",
+    "call_center_number_of_data_activation_on_top_transaction",
+    "call_center_volume_of_data_activation_on_top_transaction",
+    "call_center_number_of_voice_activation_on_top_transaction",
+    "call_center_volume_of_voice_activation_on_top_transaction",
+    "call_center_number_of_sms_activation_on_top_transaction",
+    "call_center_volume_of_sms_activation_on_top_transaction",
+    "call_center_number_of_vas_activation_on_top_transaction",
+    "call_center_volume_of_vas_activation_on_top_transaction",
+
+    "my_ais_app_number_of_on_top_transaction",
+    "my_ais_app_volume_of_on_top_transaction",
+    "my_ais_app_number_of_data_activation_on_top_transaction",
+    "my_ais_app_volume_of_data_activation_on_top_transaction",
+    "my_ais_app_number_of_voice_activation_on_top_transaction",
+    "my_ais_app_volume_of_voice_activation_on_top_transaction",
+    "my_ais_app_number_of_sms_activation_on_top_transaction",
+    "my_ais_app_volume_of_sms_activation_on_top_transaction",
+    "my_ais_app_number_of_vas_activation_on_top_transaction",
+    "my_ais_app_volume_of_vas_activation_on_top_transaction",
+
+    "retail_stores_number_of_on_top_transaction",
+    "retail_stores_volume_of_on_top_transaction",
+    "retail_stores_number_of_data_activation_on_top_transaction",
+    "retail_stores_volume_of_data_activation_on_top_transaction",
+    "retail_stores_number_of_voice_activation_on_top_transaction",
+    "retail_stores_volume_of_voice_activation_on_top_transaction",
+    "retail_stores_number_of_sms_activation_on_top_transaction",
+    "retail_stores_volume_of_sms_activation_on_top_transaction",
+    "retail_stores_number_of_vas_activation_on_top_transaction",
+    "retail_stores_volume_of_vas_activation_on_top_transaction",
+
+    "web_portal_number_of_on_top_transaction",
+    "web_portal_volume_of_on_top_transaction",
+    "web_portal_number_of_data_activation_on_top_transaction",
+    "web_portal_volume_of_data_activation_on_top_transaction",
+    "web_portal_number_of_voice_activation_on_top_transaction",
+    "web_portal_volume_of_voice_activation_on_top_transaction",
+    "web_portal_number_of_sms_activation_on_top_transaction",
+    "web_portal_volume_of_sms_activation_on_top_transaction",
+    "web_portal_number_of_vas_activation_on_top_transaction",
+    "web_portal_volume_of_vas_activation_on_top_transaction",
+
+    "share_of_number_ussd_on_top_transaction",
+    "share_of_volume_ussd_on_top_transaction",
+    "share_of_number_call_center_on_top_transaction",
+    "share_of_volume_call_center_on_top_transaction",
+    "share_of_number_my_ais_app_on_top_transaction",
+    "share_of_volume_my_ais_app_on_top_transaction",
+    "share_of_number_retail_stores_on_top_transaction",
+    "share_of_volume_retail_stores_on_top_transaction",
+    "share_of_number_web_portal_number_on_top_transaction",
+    "share_of_volume_web_portal_number_on_top_transaction"
+    ]
+  read_from: "l2"
+
+

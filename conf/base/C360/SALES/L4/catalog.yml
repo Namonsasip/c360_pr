@@ -1,0 +1,11 @@
+l4_sales_number_and_volume_transaction_weekly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/SALES/l4_features/l4_sales_number_and_volume_transaction_weekly/
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    partitionBy: "start_of_week"
+    mode: "overwrite"
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'

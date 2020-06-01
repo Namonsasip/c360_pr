@@ -1,6 +1,6 @@
 from customer360.utilities.config_parser import l4_rolling_window
 from pyspark.sql.functions import monotonically_increasing_id
-from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols
+from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 
@@ -11,6 +11,10 @@ def split_and_run_daily(data_frame, dict_obj) -> DataFrame:
     :param dict_obj: 
     :return: 
     """
+
+    if check_empty_dfs([data_frame]):
+        return data_frame
+
     unique_ids = data_frame.select("subscription_identifier").distinct()
     unique_ids = unique_ids.withColumn("id", monotonically_increasing_id())
 

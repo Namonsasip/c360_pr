@@ -30,28 +30,49 @@ from kedro.pipeline import Pipeline, node
 
 from customer360.utilities.config_parser import node_from_config
 from customer360.pipelines.data_engineering.nodes.customer_profile_nodes.to_l3.to_l3_nodes import *
+from customer360.pipelines.data_engineering.nodes.customer_profile_nodes.to_l1.to_l1_nodes import *
 
 
 def customer_profile_to_l3_pipeline(**kwargs):
     return Pipeline(
         [
+            node(df_copy_for_l3_customer_profile_include_1mo_non_active,
+                 "l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3_1mo_non_active",
+                 "int_l3_customer_profile_basic_features_1"
+                 ),
+
             node(
                 node_from_config,
-                ["l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly",
+                ["int_l3_customer_profile_basic_features_1",
                  "params:int_l3_customer_profile_basic_features"],
-                "int_l3_customer_profile_basic_features"
+                "int_l3_customer_profile_basic_features_2"
+            ),
+            node(
+                generate_modified_subscription_identifier,
+                ["int_l3_customer_profile_basic_features_2"],
+                "int_l3_customer_profile_basic_features_3"
             ),
             node(
                 add_last_month_inactive_user,
-                ["int_l3_customer_profile_basic_features",
-                 "params:int_l3_customer_profile_basic_features"],
+                ["int_l3_customer_profile_basic_features_3"],
                 "l3_customer_profile_include_1mo_non_active"
             ),
+        ]
+    )
+
+
+def unioned_customer_profile_to_l3_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
+                union_monthly_cust_profile,
+                ["l1_customer_profile_union_daily_feature_for_l3_customer_profile_union_monthly_feature"],
+                "l3_customer_profile_union_monthly_feature"
+            ),
             # node(
-            #     merge_union_and_basic_features,
-            #     ['int_l3_customer_profile_union_features',
-            #      'int_l3_customer_profile_basic_features'],
-            #     "l3_customer_profile_features"
+            #     add_last_month_unioned_inactive_user,
+            #     ["l3_customer_profile_union_monthly_feature"],
+            #     "l3_customer_profile_union_monthly_feature_include_1mo_non_active"
             # )
         ]
     )
@@ -60,15 +81,23 @@ def customer_profile_to_l3_pipeline(**kwargs):
 def customer_profile_billing_level_to_l3_pipeline(**kwargs):
     return Pipeline(
         [
+            node(df_copy_for_l3_customer_profile_billing_level_features,
+                 "l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3_customer_profile_billing_level_features",
+                 "int_l3_customer_profile_billing_level_features"
+                 ),
             node(
                 node_from_config,
-                ['l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly',
+                ['int_l3_customer_profile_billing_level_features',
                  "params:l3_customer_profile_billing_level_features"],
                 "l3_customer_profile_billing_level_features"
             ),
+            node(df_copy_for_l3_customer_profile_billing_level_volume_of_active_contracts,
+                 "l0_billing_statement_history_monthly_for_l3_customer_profile_billing_level_volume_of_active_contracts",
+                 "int_l3_customer_profile_billing_level_volume_of_active_contracts"
+                 ),
             node(
                 node_from_config,
-                ['l0_billing_statement_history_monthly',
+                ['int_l3_customer_profile_billing_level_volume_of_active_contracts',
                  "params:l3_customer_profile_billing_level_volume_of_active_contracts"],
                 "l3_customer_profile_billing_level_volume_of_active_contracts"
             )

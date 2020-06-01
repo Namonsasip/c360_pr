@@ -6,6 +6,10 @@ from kedro.context.context import load_context
 from pathlib import Path
 import logging
 import os
+from src.customer360.utilities.spark_util import get_spark_empty_df
+from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
+    data_non_availability_and_missing_check
+from pyspark.sql.types import *
 
 conf = os.getenv("CONF", None)
 
@@ -15,6 +19,18 @@ def massive_processing(input_df, customer_prof_input_df, join_function, sql, par
     """
     :return:
     """
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            input_df.select(
+                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
+            customer_prof_input_df.select(
+                F.max(F.col("event_partition_date")).alias("max_date")),
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    input_df = input_df.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+    customer_prof_input_df = customer_prof_input_df.filter(F.col("event_partition_date") <= min_value)
 
     def divide_chunks(l, n):
 
@@ -28,12 +44,13 @@ def massive_processing(input_df, customer_prof_input_df, join_function, sql, par
     cust_data_frame = customer_prof_input_df.where("charge_type = '" + cust_type + "'")
     dates_list = cust_data_frame.select(f.to_date(cust_partition_date).alias(cust_partition_date)).distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 2))
+    mvv_new = list(divide_chunks(mvv_array, 15))
     add_list = mvv_new
 
-    first_item = add_list[0]
+    first_item = add_list[-1]
 
     add_list.remove(first_item)
     for curr_item in add_list:
@@ -57,6 +74,23 @@ def billing_topup_count_and_volume_node(input_df, customer_prof, sql) -> DataFra
     """
     :return:
     """
+
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df, customer_prof]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
+                                                       target_table_name="l1_billing_and_payments_daily_topup_and_volume")
+
+    customer_prof = data_non_availability_and_missing_check(df=customer_prof, grouping="daily",
+                                                            par_col="event_partition_date",
+                                                            target_table_name="l1_billing_and_payments_daily_topup_and_volume")
+
+    if check_empty_dfs([input_df, customer_prof]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+
     return_df = massive_processing(input_df, customer_prof, daily_recharge_data_with_customer_profile, sql,
                                    'recharge_date', 'event_partition_date', "Pre-paid",
                                    "l1_billing_and_payments_daily_topup_and_volume")
@@ -67,6 +101,23 @@ def billing_daily_rpu_roaming(input_df, customer_prof, sql) -> DataFrame:
     """
     :return:
     """
+
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df, customer_prof]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
+                                                       target_table_name="l1_billing_and_payments_daily_rpu_roaming")
+
+    customer_prof = data_non_availability_and_missing_check(df=customer_prof, grouping="daily",
+                                                            par_col="event_partition_date",
+                                                            target_table_name="l1_billing_and_payments_daily_rpu_roaming")
+
+    if check_empty_dfs([input_df, customer_prof]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+
     return_df = massive_processing(input_df, customer_prof, daily_roaming_data_with_customer_profile, sql, 'date_id',
                                    'event_partition_date', "Post-paid", "l1_billing_and_payments_daily_rpu_roaming")
     return return_df
@@ -76,6 +127,23 @@ def billing_before_topup_balance(input_df, customer_prof, sql) -> DataFrame:
     """
     :return:
     """
+
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df, customer_prof]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
+                                                       target_table_name="l1_billing_and_payments_daily_before_top_up_balance")
+
+    customer_prof = data_non_availability_and_missing_check(df=customer_prof, grouping="daily",
+                                                            par_col="event_partition_date",
+                                                            target_table_name="l1_billing_and_payments_daily_before_top_up_balance")
+
+    if check_empty_dfs([input_df, customer_prof]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+
     return_df = massive_processing(input_df, customer_prof, daily_sa_account_data_with_customer_profile, sql,
                                    'recharge_date', 'event_partition_date', "Pre-paid",
                                    "l1_billing_and_payments_daily_before_top_up_balance")
@@ -86,6 +154,26 @@ def billing_topup_channels(input_df, customer_prof, sql) -> DataFrame:
     """
     :return:
     """
+
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df, customer_prof]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
+                                                       target_table_name="l1_billing_and_payments_daily_top_up_channels")
+
+    # input_df = input_df.join(topup_type_ref, input_df.recharge_type == topup_type_ref.recharge_topup_event_type_cd,
+    #                         'left')
+
+    customer_prof = data_non_availability_and_missing_check(df=customer_prof, grouping="daily",
+                                                            par_col="event_partition_date",
+                                                            target_table_name="l1_billing_and_payments_daily_top_up_channels")
+
+    if check_empty_dfs([input_df, customer_prof]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+
     return_df = massive_processing(input_df, customer_prof, daily_recharge_data_with_customer_profile, sql,
                                    'recharge_date', 'event_partition_date', "Pre-paid",
                                    "l1_billing_and_payments_daily_top_up_channels")
@@ -96,6 +184,23 @@ def billing_most_popular_topup_channel(input_df, customer_prof, sql) -> DataFram
     """
     :return:
     """
+
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df, customer_prof]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
+                                                       target_table_name="l1_billing_and_payments_daily_most_popular_top_up_channel")
+
+    customer_prof = data_non_availability_and_missing_check(df=customer_prof, grouping="daily",
+                                                            par_col="event_partition_date",
+                                                            target_table_name="l1_billing_and_payments_daily_most_popular_top_up_channel")
+
+    if check_empty_dfs([input_df, customer_prof]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+
     return_df = massive_processing(input_df, customer_prof, daily_recharge_data_with_customer_profile, sql,
                                    'recharge_date', 'event_partition_date', "Pre-paid",
                                    "l1_billing_and_payments_daily_most_popular_top_up_channel")
@@ -106,6 +211,23 @@ def billing_popular_topup_day_hour(input_df, customer_prof, sql) -> DataFrame:
     """
     :return:
     """
+
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df, customer_prof]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
+                                                       target_table_name="l1_billing_and_payments_daily_popular_topup_day")
+
+    customer_prof = data_non_availability_and_missing_check(df=customer_prof, grouping="daily",
+                                                            par_col="event_partition_date",
+                                                            target_table_name="l1_billing_and_payments_daily_popular_topup_day")
+
+    if check_empty_dfs([input_df, customer_prof]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+
     return_df = massive_processing(input_df, customer_prof, daily_recharge_data_with_customer_profile, sql,
                                    'recharge_date', 'event_partition_date', "Pre-paid",
                                    "l1_billing_and_payments_daily_popular_topup_day")
@@ -116,6 +238,23 @@ def billing_time_since_last_topup(input_df, customer_prof, sql) -> DataFrame:
     """
     :return:
     """
+
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df, customer_prof]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
+                                                       target_table_name="l1_billing_and_payments_daily_time_since_last_top_up")
+
+    customer_prof = data_non_availability_and_missing_check(df=customer_prof, grouping="daily",
+                                                            par_col="event_partition_date",
+                                                            target_table_name="l1_billing_and_payments_daily_time_since_last_top_up")
+
+    if check_empty_dfs([input_df, customer_prof]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+
     return_df = massive_processing(input_df, customer_prof, daily_recharge_data_with_customer_profile, sql,
                                    'recharge_date', 'event_partition_date', "Pre-paid",
                                    "l1_billing_and_payments_daily_time_since_last_top_up")
@@ -125,6 +264,7 @@ def billing_time_since_last_topup(input_df, customer_prof, sql) -> DataFrame:
 def derives_in_customer_profile(customer_prof):
     customer_prof = customer_prof.select("access_method_num",
                                          "subscription_identifier",
+                                         "national_id_card",
                                          f.to_date("register_date").alias("register_date"),
                                          "event_partition_date",
                                          "charge_type")

@@ -4,6 +4,8 @@ from customer360.utilities.config_parser import expansion
 from kedro.context.context import load_context
 from pathlib import Path
 import logging, os
+from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check
+from src.customer360.utilities.spark_util import get_spark_empty_df
 
 conf = os.getenv("CONF", None)
 
@@ -34,6 +36,21 @@ def build_usage_l2_layer(data_frame: DataFrame, dict_obj: dict) -> DataFrame:
     :return:
     """
 
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([data_frame]):
+        return get_spark_empty_df()
+
+    data_frame = data_non_availability_and_missing_check(df=data_frame, grouping="weekly",
+                                                         par_col="event_partition_date",
+                                                         target_table_name="l2_usage_postpaid_prepaid_weekly",
+                                                         missing_data_check_flg='Y',
+                                                         exception_partitions=['2019-07-29'])
+
+    if check_empty_dfs([data_frame]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+
     def divide_chunks(l, n):
         # looping till length l
         for i in range(0, len(l), n):
@@ -49,7 +66,7 @@ def build_usage_l2_layer(data_frame: DataFrame, dict_obj: dict) -> DataFrame:
     mvv_new = list(divide_chunks(mvv_array, 5))
     add_list = mvv_new
 
-    first_item = add_list[0]
+    first_item = add_list[-1]
 
     add_list.remove(first_item)
     for curr_item in add_list:
