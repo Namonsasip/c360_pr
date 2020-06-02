@@ -78,7 +78,7 @@ def dac_for_streaming_to_l1_pipeline_from_l0(input_df: DataFrame, target_table_n
 def application_duration(streaming_df: DataFrame, application_df: DataFrame) -> DataFrame:
 
     w_recent_partition = Window.partitionBy("application_id").orderBy(f.col("partition_month").desc())
-    w_lag_stream = Window.partitionBy("sid").orderBy(f.col("begin_time"))
+    w_lag_stream = Window.partitionBy("msisdn", "partition_date").orderBy(f.col("begin_time"))
 
     application_df = (application_df
                       .withColumn("rank", f.row_number().over(w_recent_partition))
