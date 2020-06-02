@@ -54,6 +54,9 @@ def map_sub_ids_of_input_datasets(sample_type: str) -> Pipeline:
     input_datasets = [
         "l3_customer_profile_include_1mo_non_active",
         "l4_usage_prepaid_postpaid_daily_features",
+        "l4_daily_feature_topup_and_volume",
+        "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
+        "l4_usage_postpaid_prepaid_weekly_features_sum",
         "l3_customer_profile_include_1mo_non_active_{}".format(sample_type),
         "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_{}".format(sample_type),
         "l4_usage_prepaid_postpaid_daily_features_{}".format(sample_type),

@@ -16,3 +16,15 @@ l3_customer_profile_include_1mo_non_active_sub_ids_mapped:
 l4_usage_prepaid_postpaid_daily_features_sub_ids_mapped:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_usage_prepaid_postpaid_daily_features_sub_ids_mapped/
+
+l4_daily_feature_topup_and_volume_sub_ids_mapped:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_daily_feature_topup_and_volum_sub_ids_mappede/
+
+l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_sub_ids_mapped:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthl_sub_ids_mappedy/
+
+l4_usage_postpaid_prepaid_weekly_features_sum_sub_ids_mapped:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_usage_postpaid_prepaid_weekly_features_sum_sub_ids_mapped/
