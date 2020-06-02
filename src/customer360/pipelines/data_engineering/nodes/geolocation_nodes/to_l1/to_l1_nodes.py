@@ -17,10 +17,7 @@ from customer360.utilities.re_usable_functions import add_start_of_week_and_mont
 from customer360.utilities.spark_util import get_spark_session
 
 
-def l1_geo_test(shape,masterplan,geo_cust_cell_visit_time):
-
-    #select only one partition for testing
-    geo_cust_cell_visit_time=geo_cust_cell_visit_time.where('partition_date="20200115"')
+def l1_geo_area_from_ais_store_daily(shape,masterplan,geo_cust_cell_visit_time,sql):
     geo_cust_cell_visit_time  = add_start_of_week_and_month(geo_cust_cell_visit_time, "time_in")
     # .withColumn("recharge_time", F.lit(datetime.strptime("01/01/2020 08:35:55", '%d/%m/%Y %H:%M:%S')))
     # input_df = input_df.withColumn("start_of_week", F.to_date(F.date_trunc('week', F.col(date_column))))
@@ -57,12 +54,13 @@ def l1_geo_test(shape,masterplan,geo_cust_cell_visit_time):
     df.createOrReplaceTempView('TEMP_GEO_AIS_SHOP')
 
     geo_cust_cell_visit_time.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
-    df2 = ss.sql("SELECT A.IMSI,A.event_partition_date,A.start_of_week,A.start_of_month,SUM(DURATION) AS DURATION \
+    df2 = ss.sql("SELECT A.IMSI,A.event_partition_date,A.start_of_week,A.start_of_month,SUM(DURATION) AS DURATION,count(1) AS NUM_OF_TIMES_PER_DAY \
     FROM GEO_CUST_CELL_VISIT_TIME A,\
     TEMP_GEO_AIS_SHOP B \
     WHERE A.LOCATION_ID = B.LOCATION_ID \
     GROUP BY 1,2,3,4")
 
 
+    df2=node_from_config(df2,sql)
 
     return df2

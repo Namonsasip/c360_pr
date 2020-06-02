@@ -1,0 +1,10 @@
+l4_geo_area_from_ais_store:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_area_from_ais_store/
+  file_format: parquet
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'

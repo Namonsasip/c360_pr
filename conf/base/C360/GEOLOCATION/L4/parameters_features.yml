@@ -1,0 +1,7 @@
+l4_area_from_ais_store:
+  partition_by: ["imsi"]
+  feature_list:
+    avg: ["duration","count"]
+    max: ["duration","count"]
+    min: ["duration","count"]
+  read_from: "l2"

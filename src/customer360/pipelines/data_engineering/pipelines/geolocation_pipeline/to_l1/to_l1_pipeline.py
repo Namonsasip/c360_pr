@@ -17,12 +17,13 @@ def geo_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                l1_geo_test,
+                l1_geo_area_from_ais_store_daily,
                 ["l0_mst_poi_shape",
                  "l0_mst_cell_masterplan",
-                 "l0_geo_cust_cell_visit_time"
+                 "l0_geo_cust_cell_visit_time",
+                 "params:l1_area_from_ais_store_daily"
                  ],
-                "l1_test_pipeline"
+                "l1_geo_area_from_ais_store_daily"
             ),
 
         ], name="geo_to_l1_pipeline"
