@@ -47,7 +47,6 @@ from cvm.data_prep.nodes import (
     train_test_split,
 )
 from cvm.preprocessing.nodes import pipeline_fit
-from cvm.temp.nodes import map_sub_ids
 from cvm.temp.pipeline import map_sub_ids_of_input_datasets
 
 
@@ -65,20 +64,12 @@ def create_users_from_tg(sample_type: str) -> Pipeline:
             node(
                 create_users_from_cgtg,
                 [
-                    "cvm_prepaid_customer_groups",
+                    "cvm_prepaid_customer_groups_sub_ids_mapped",
                     "params:{}".format(sample_type),
                     "parameters",
                 ],
                 "cvm_users_list_" + sample_type,
                 name="create_users_list_tgcg_" + sample_type,
-            ),
-            node(
-                func=map_sub_ids,
-                inputs=["cvm_users_list_" + sample_type, "sub_id_mapping"],
-                outputs="cvm_users_list_sub_ids_mapped_" + sample_type,
-                name="map_sub_ids_for_{}".format(
-                    "cvm_users_list_active_users_" + sample_type
-                ),
             ),
         ]
     )
@@ -115,14 +106,6 @@ def create_users_from_active(sample_type: str) -> Pipeline:
                 "cvm_users_list_" + sample_type,
                 name="create_cvm_users_list_active_users_" + sample_type,
             ),
-            node(
-                func=map_sub_ids,
-                inputs=["cvm_users_list_" + sample_type, "sub_id_mapping"],
-                outputs="cvm_users_list_sub_ids_mapped_" + sample_type,
-                name="map_sub_ids_for_{}".format(
-                    "cvm_users_list_active_users_" + sample_type
-                ),
-            ),
         ]
     )
 
@@ -141,14 +124,19 @@ def sample_inputs(sample_type: str) -> Pipeline:
         "l4_usage_prepaid_postpaid_daily_features",
         "l4_daily_feature_topup_and_volume",
         "l4_usage_postpaid_prepaid_weekly_features_sum",
-        "l4_touchpokints_to_call_center_features",
+        "l4_touchpoints_to_call_center_features",
     ]
 
     nodes_list = [
         node(
             create_sample_dataset,
-            [dataset_name, "parameters", "params:" + sample_type],
-            re.sub("_no_inc", "", dataset_name) + "_" + sample_type,
+            inputs=[
+                dataset_name + "_sub_ids_mapped",  # temp fix
+                "parameters",
+                "params:" + sample_type,
+            ],
+            # when not incremental version of dataset is used
+            outputs=re.sub("_no_inc", "", dataset_name) + "_" + sample_type,
             name="sample_" + dataset_name + "_" + sample_type,
         )
         for dataset_name in datasets_to_sample
@@ -175,7 +163,8 @@ def create_cvm_targets(sample_type: str):
                 add_ard_targets,
                 [
                     "cvm_users_list_" + sample_type,
-                    "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
+                    "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"
+                    + "_sub_ids_mapped",
                     "parameters",
                     "params:" + sample_type,
                 ],
@@ -187,6 +176,7 @@ def create_cvm_targets(sample_type: str):
                 [
                     "cvm_users_list_" + sample_type,
                     "l4_usage_prepaid_postpaid_daily_features",
+                    +"_sub_ids_mapped",
                     "parameters",
                     "params:" + sample_type,
                 ],
@@ -222,19 +212,14 @@ def prepare_features_macrosegments(sample_type: str):
                 [
                     "important_columns",
                     "parameters",
-                    "cvm_users_list_sub_ids_mapped_" + sample_type,
-                    "l3_customer_profile_include_1mo_non_active_sub_ids_mapped_"
-                    + sample_type,
-                    "l4_daily_feature_topup_and_volume_sub_ids_mapped_" + sample_type,
-                    "l4_usage_prepaid_postpaid_daily_features_sub_ids_mapped_"
-                    + sample_type,
+                    "cvm_users_list_" + sample_type,
+                    "l3_customer_profile_include_1mo_non_active_" + sample_type,
+                    "l4_daily_feature_topup_and_volume_" + sample_type,
+                    "l4_usage_prepaid_postpaid_daily_features_" + sample_type,
                     "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_"
-                    + "sub_ids_mapped_"
                     + sample_type,
-                    "l4_usage_postpaid_prepaid_weekly_features_sum_sub_ids_mapped_"
-                    + sample_type,
-                    "l4_touchpoints_to_call_center_features_sub_ids_mapped_"
-                    + sample_type,
+                    "l4_usage_postpaid_prepaid_weekly_features_sum_" + sample_type,
+                    "l4_touchpoints_to_call_center_features_" + sample_type,
                 ]
                 + targets_datasets,
                 "features_targets_" + sample_type,
@@ -380,7 +365,7 @@ def create_cvm_targets_huaw_exp():
             node(
                 add_churn_targets,
                 [
-                    "cvm_users_list_sub_ids_mapped_huaw_experiment",
+                    "cvm_users_list_huaw_experiment",
                     "l4_usage_prepaid_postpaid_daily_features_sub_ids_mapped",
                     "parameters",
                     "params:huaw_experiment",

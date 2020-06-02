@@ -57,12 +57,7 @@ def map_sub_ids_of_input_datasets(sample_type: str) -> Pipeline:
         "l4_daily_feature_topup_and_volume",
         "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
         "l4_usage_postpaid_prepaid_weekly_features_sum",
-        "l3_customer_profile_include_1mo_non_active_{}".format(sample_type),
-        "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_{}".format(sample_type),
-        "l4_usage_prepaid_postpaid_daily_features_{}".format(sample_type),
-        "l4_daily_feature_topup_and_volume_{}".format(sample_type),
-        "l4_usage_postpaid_prepaid_weekly_features_sum_{}".format(sample_type),
-        "l4_touchpoints_to_call_center_features_{}".format(sample_type),
+        "cvm_prepaid_customer_groups_sub_ids_mapped",
     ]
     nodes_list = [
         node(
