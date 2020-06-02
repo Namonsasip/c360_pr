@@ -175,8 +175,7 @@ def create_cvm_targets(sample_type: str):
                 add_churn_targets,
                 [
                     "cvm_users_list_" + sample_type,
-                    "l4_usage_prepaid_postpaid_daily_features",
-                    +"_sub_ids_mapped",
+                    "l4_usage_prepaid_postpaid_daily_features" + "_sub_ids_mapped",
                     "parameters",
                     "params:" + sample_type,
                 ],
