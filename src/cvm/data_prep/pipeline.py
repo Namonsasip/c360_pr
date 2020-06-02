@@ -380,7 +380,7 @@ def create_cvm_targets_huaw_exp():
             node(
                 add_churn_targets,
                 [
-                    "cvm_users_list_huaw_experiment",
+                    "cvm_users_list_sub_ids_mapped_huaw_experiment",
                     "l4_usage_prepaid_postpaid_daily_features_sub_ids_mapped",
                     "parameters",
                     "params:huaw_experiment",
