@@ -364,11 +364,46 @@ def streaming_to_l1_pipeline(**kwargs):
                  "int_l1_customer_profile_union_daily_feature_l1_streaming_session_duration_feature"]
             ),
             node(
-                l1_massive_processing,
+                application_duration,
                 ["int_l0_streaming_soc_mobile_app_daily_for_l1_streaming_session_duration_feature",
+                 "l0_mobile_app_master_for_l1_streaming_session_duration_feature"],
+                "int_l0_streaming_soc_mobile_app_daily_for_l1_streaming_session_duration_feature_application"
+            ),
+            node(
+                l1_massive_processing,
+                ["int_l0_streaming_soc_mobile_app_daily_for_l1_streaming_session_duration_feature_application",
                  "params:l1_streaming_session_duration_feature",
                  "int_l1_customer_profile_union_daily_feature_l1_streaming_session_duration_feature"],
                 "l1_streaming_session_duration_feature"
             )
         ], name="streaming_to_l1_pipeline"
+    )
+
+
+def streaming_to_l1_session_duration_pipeline(**kwargs):
+    return Pipeline(
+        [
+            # session duration
+            node(
+                dac_for_streaming_to_l1_intermediate_pipeline,
+                ["l0_streaming_soc_mobile_app_daily_for_l1_streaming_session_duration_feature",
+                 "l1_customer_profile_union_daily_feature_l1_streaming_session_duration_feature",
+                 "params:l1_streaming_session_duration_feature_tbl"],
+                ["int_l0_streaming_soc_mobile_app_daily_for_l1_streaming_session_duration_feature",
+                 "int_l1_customer_profile_union_daily_feature_l1_streaming_session_duration_feature"]
+            ),
+            node(
+                application_duration,
+                ["int_l0_streaming_soc_mobile_app_daily_for_l1_streaming_session_duration_feature",
+                 "l0_mobile_app_master_for_l1_streaming_session_duration_feature"],
+                "int_l0_streaming_soc_mobile_app_daily_for_l1_streaming_session_duration_feature_application"
+            ),
+            node(
+                l1_massive_processing,
+                ["int_l0_streaming_soc_mobile_app_daily_for_l1_streaming_session_duration_feature_application",
+                 "params:l1_streaming_session_duration_feature",
+                 "int_l1_customer_profile_union_daily_feature_l1_streaming_session_duration_feature"],
+                "l1_streaming_session_duration_feature"
+            )
+        ], name="streaming_to_l1_session_duration_pipeline"
     )

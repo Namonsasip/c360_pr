@@ -532,7 +532,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         except AnalysisException as e:
             log.exception("Exception raised", str(e))
 
-    def _update_metadata_table(self, spark, metadata_table_path, target_table_name, filepath, write_mode, file_format, partitionBy, mergeSchema):
+    def _update_metadata_table(self, spark, metadata_table_path, target_table_name, filepath, write_mode, file_format, partitionBy, read_layer, target_layer, mergeSchema):
 
         if mergeSchema is not None and mergeSchema.lower() == "true":
             current_target_data = spark.read.format(file_format).option("mergeSchema", 'true').load(filepath)
@@ -565,6 +565,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 .withColumn("write_mode", F.lit(write_mode))
                 .withColumn("target_max_data_load_date", F.to_date(F.lit(metadata_table_update_max_date), "yyyy-MM-dd"))
                 .withColumn("updated_on", F.current_date())
+                .withColumn("read_layer", F.lit(read_layer))
+                .withColumn("target_layer", F.lit(target_layer))
                 .drop("id")
         )
 
@@ -635,7 +637,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                         file_format).save(filewritepath)
                     print("Updating metadata table for lookback dataset scenario")
                     self._update_metadata_table(spark, metadata_table_path, target_table_name, filewritepath,
-                                                mode, file_format, partitionBy, mergeSchema)
+                                                mode, file_format, partitionBy, read_layer, target_layer, mergeSchema)
 
             else:
                 print("write dataframe without lookback scenario")
@@ -645,7 +647,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 print("Updating metadata table")
 
                 self._update_metadata_table(spark, metadata_table_path, target_table_name, filewritepath, mode,
-                                            file_format, partitionBy, mergeSchema)
+                                            file_format, partitionBy, read_layer, target_layer, mergeSchema)
 
     def _load(self) -> DataFrame:
         print("Entering load function")
