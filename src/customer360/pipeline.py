@@ -52,9 +52,6 @@ from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.
     customer_profile_billing_level_to_l3_pipeline,
     unioned_customer_profile_to_l3_pipeline
 )
-from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l4.to_l4_pipeline import (
-    customer_profile_to_l4_pipeline,
-)
 from cvm.data_prep.pipeline import (
     create_cvm_prepare_inputs_samples,
     create_cvm_targets,
@@ -108,8 +105,9 @@ from .pipelines.data_engineering.pipelines.digital_pipeline import (
 from .pipelines.data_engineering.pipelines.loyalty_pipeline import (
     loyalty_to_l1_pipeline,
     loyalty_to_l2_pipeline,
-    loyalty_to_l4_pipeline,
-    loyalty_to_l3_pipeline
+    loyalty_to_l3_pipeline,
+    loyalty_to_l4_weekly_pipeline,
+    loyalty_to_l4_monthly_pipeline
 )
 from .pipelines.data_engineering.pipelines.network_pipeline.to_l1.to_l1_pipeline import (
     network_to_l1_pipeline,
@@ -174,6 +172,10 @@ from .pipelines.data_engineering.pipelines.usage_pipeline import (
     usage_to_l4_pipeline,
     usage_to_l4_daily_pipeline,
 )
+from data_quality.pipeline import (
+    data_quality_pipeline,
+    subscription_id_sampling_pipeline
+)
 
 from .pipelines.data_engineering.pipelines.sales_pipeline.to_l2.to_l2_pipeline import (
     sales_to_l2_pipeline,
@@ -219,7 +221,6 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "customer_profile_to_l3_pipeline": customer_profile_to_l3_pipeline(),
         "unioned_customer_profile_to_l3_pipeline": unioned_customer_profile_to_l3_pipeline(),
         "customer_profile_billing_level_to_l3_pipeline": customer_profile_billing_level_to_l3_pipeline(),
-        "customer_profile_to_l4_pipeline": customer_profile_to_l4_pipeline(),
         "billing_to_l1_pipeline": billing_to_l1_pipeline(),
         "billing_l0_to_l3_pipeline": billing_l0_to_l3_pipeline(),
         "billing_l1_to_l3_pipeline": billing_l1_to_l3_pipeline(),
@@ -265,8 +266,9 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "campaign_to_l4_ranking_pipeline": campaign_to_l4_ranking_pipeline(),
         "loyalty_to_l1_pipeline": loyalty_to_l1_pipeline(),
         "loyalty_to_l2_pipeline": loyalty_to_l2_pipeline(),
-        "loyalty_to_l4_pipeline": loyalty_to_l4_pipeline(),
         "loyalty_to_l3_pipeline": loyalty_to_l3_pipeline(),
+        "loyalty_to_l4_weekly_pipeline": loyalty_to_l4_weekly_pipeline(),
+        "loyalty_to_l4_monthly_pipeline": loyalty_to_l4_monthly_pipeline(),
         "network_to_l1_pipeline": network_to_l1_pipeline(),
         "network_to_l2_pipeline": network_to_l2_pipeline(),
         "network_to_l3_pipeline": network_to_l3_pipeline(),
@@ -324,6 +326,13 @@ def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
     }
 
 
+def create_dq_pipeline(**kwargs) -> Dict[str, Pipeline]:
+    return {
+        "data_quality_pipeline": data_quality_pipeline(),
+        "subscription_id_sampling_pipeline": subscription_id_sampling_pipeline()
+    }
+
+
 def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
     """Create the project's pipeline.
     Args:
@@ -337,6 +346,7 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         create_c360_pipeline(**kwargs).items(),
         create_cvm_pipeline(**kwargs).items(),
         create_nba_pipeline(**kwargs).items(),
+        create_dq_pipeline(**kwargs).items()
     ):
         # If many pipelines have nodes under the same modular
         # pipeline, combine the results

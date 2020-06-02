@@ -35,8 +35,9 @@ from kedro.pipeline import Pipeline, node
 
 from customer360.utilities.config_parser import l4_rolling_window
 from customer360.utilities.config_parser import node_from_config
+from customer360.pipelines.data_engineering.nodes.revenue_nodes.to_l4.to_l4_nodes import *
 
-####
+
 def revenue_to_l4_monthly_pipeline(**kwargs):
     return Pipeline(
         [
@@ -64,6 +65,12 @@ def revenue_to_l4_monthly_pipeline(**kwargs):
                 ["l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_stg",
                  "params:l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"],
                 "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"
+            ),
+            node(
+                calculate_ltv_to_date,
+                ["l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_for_l4_customer_profile_ltv_to_date",
+                 "l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_for_l4_customer_profile_ltv_to_date"],
+                "l4_revenue_ltv_to_date"
             ),
 
         ], name="revenue_to_l4_pipeline"

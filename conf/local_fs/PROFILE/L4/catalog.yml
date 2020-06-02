@@ -1,6 +1,0 @@
-l4_customer_profile_ltv_to_date:
-  type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: data/L4_FEATURES/PROFILE/ltv_to_date/
-  file_format: "parquet"
-  save_args:
-    partitionBy: ["start_of_month"]

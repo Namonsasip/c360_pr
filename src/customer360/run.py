@@ -52,7 +52,7 @@ from pyspark.sql import SparkSession
 from customer360.utilities.spark_util import get_spark_session
 from customer360.utilities.generate_dependency_dataset import generate_dependency_dataset
 
-from customer360.pipeline import create_pipelines
+from customer360.pipeline import create_pipelines, create_dq_pipeline
 
 try:
     findspark.init()
@@ -303,16 +303,20 @@ class ProjectContext(KedroContext):
                     caller_globals[obj_name] = getattr(function_module, obj_name)
 
 
-def run_package(pipelines=None):
+def run_package(pipelines=None, project_context=None, tags=None):
 
     # entry point for running pip-install projects
     # using `<project_package>` command
-    project_context = load_context(Path.cwd(), env=conf)
+    if project_context is None:
+        project_context = load_context(Path.cwd(), env=conf)
     spark = get_spark_session()
+
+    if any([dq_pipeline in pipelines for dq_pipeline in create_dq_pipeline().keys()]):
+        project_context = DataQualityProjectContext(project_path=Path.cwd(), env=conf)
 
     if pipelines is not None:
         for each_pipeline in pipelines:
-            project_context.run(pipeline_name=each_pipeline)
+            project_context.run(pipeline_name=each_pipeline, tags=tags)
         return
     # project_context.run(pipeline_name='customer_profile_to_l3_pipeline')
     # project_context.run()
@@ -322,6 +326,68 @@ def run_package(pipelines=None):
     #
     # project_context = load_context(Path.cwd(), env='base')
     # project_context.run(pipeline_name="customer_profile_to_l4_pipeline")
+
+
+class DataQualityProjectContext(ProjectContext):
+    def _remove_increment_flag(self, catalog_dict):
+        """
+            Set all the incremental_flag in catalog to 'no'
+            for data quality pipeline
+
+            The incremental load in data quality will be handled separately
+        """
+        if catalog_dict.get("load_args") is None:
+            return catalog_dict
+
+        if catalog_dict.get("load_args").get("increment_flag") is not None:
+            catalog_dict["load_args"]["increment_flag"] = 'no'
+
+        return catalog_dict
+
+    def _generate_dq_consistency_catalog(self):
+        params = self.config_loader.get(
+            "parameters*", "parameters*/**", "*/**/parameter*"
+        )
+
+        new_catalog_dict = {}
+        for dataset_name in params["features_for_dq"].keys():
+            new_catalog = {
+                "type": "datasets.spark_ignore_missing_path_dataset.SparkIgnoreMissingPathDataset",
+                "filepath": f"{params['dq_consistency_path_prefix']}/{dataset_name}",
+                "file_format": "parquet",
+                "save_args": {
+                    "mode": "overwrite",
+                    "partitionBy": ["corresponding_date"]
+                }
+            }
+            new_catalog_dict[f"dq_consistency_benchmark_{dataset_name}"] = new_catalog
+
+        return new_catalog_dict
+
+    def _get_catalog(
+        self,
+        save_version: str = None,
+        journal: Journal = None,
+        load_versions: Dict[str, str] = None,
+    ) -> DataCatalog:
+
+        conf_catalog = self.config_loader.get(
+            "catalog*", "catalog*/**", "*/**/catalog*"
+        )
+
+        for dataset_name, each_catalog in conf_catalog.items():
+            self._remove_increment_flag(each_catalog)
+
+        dq_consistency_catalog_dict = self._generate_dq_consistency_catalog()
+
+        conf_catalog.update(dq_consistency_catalog_dict)
+
+        conf_creds = self._get_config_credentials()
+        catalog = self._create_catalog(
+            conf_catalog, conf_creds, save_version, journal, load_versions
+        )
+        catalog.add_feed_dict(self._get_feed_dict())
+        return catalog
 
 
 def run_selected_nodes(pipeline_name, node_names=None, env="base"):
@@ -334,4 +400,13 @@ def run_selected_nodes(pipeline_name, node_names=None, env="base"):
 if __name__ == "__main__":
     # entry point for running pip-installed projects
     # using `python -m <project_package>.run` command
-    run_package()
+    # run_package()
+
+    # uncomment below to run data_quality_pipeline locally
+    run_package(
+        pipelines=[
+            # 'subscription_id_sampling_pipeline',
+            'data_quality_pipeline'
+        ],
+        tags=["dq_accuracy"]
+    )

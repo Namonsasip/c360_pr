@@ -1,6 +1,6 @@
 l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: data/L0/PROFILE/profile_drm_t_active_profile_customer_journey_monthly/
+  filepath: data/L0/PROFILE/profile_drm_t_active_profile_customer_journey/
   file_format: "parquet"
 
 l0_customer_profile_profile_customer_profile_post_current:

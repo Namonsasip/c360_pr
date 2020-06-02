@@ -10,7 +10,7 @@ int_l2_streaming_content_type_features:
         duration_sum: "sum(duration_sum)"
         traffic_volume_sum: "sum(traffic_volume_sum)"
 
-    granularity: "subscription_identifier, date(register_date), start_of_week, content_group"
+    granularity: "access_method_num, national_id_card, subscription_identifier, date(register_date), start_of_week, content_group"
     output_catalog: "int_l2_streaming_content_type_features"
     partition_num_per_job: 5
 
@@ -48,7 +48,7 @@ int_l2_streaming_tv_channel_features:
                                     order by sum(duration_sum) desc)"
         duration_sum: "sum(duration_sum)"
 
-    granularity: "subscription_identifier, date(register_date), start_of_week, title"
+    granularity: "access_method_num, national_id_card, subscription_identifier, date(register_date), start_of_week, title"
 
 l2_streaming_fav_tv_channel_by_volume:
     where_clause: "where tv_channel_rank_by_volume = 1"
@@ -77,6 +77,7 @@ int_l2_streaming_tv_show_features:
         num_of_episode_watched_rank: "row_number() over (partition by access_method_num, date(register_date), start_of_week
                                                     order by count(distinct title) desc)"
 
+    # we group directly from source before joining to customer profile below
     granularity: "access_method_num, date(register_date), start_of_week, series_title"
 
 l2_streaming_fav_tv_show_by_episode_watched:
@@ -104,7 +105,7 @@ int_l2_streaming_service_feature: &int_l2_streaming_service_feature
         visit_count: "sum(visit_count)"
         visit_count_rank: "row_number() over (partition by subscription_identifier, application_group, start_of_week
                                                     order by sum(visit_count) desc)"
-    granularity: "subscription_identifier, application, application_group, start_of_week"
+    granularity: "access_method_num, national_id_card, subscription_identifier, application, application_group, start_of_week"
     partition_num_per_job: 5
 
 int_l2_streaming_video_service_feature:
@@ -185,7 +186,7 @@ l2_streaming_visit_count_and_download_traffic_feature:
               "visit_count_gmail",
               "visit_count_amazon"
         ]
-    granularity: "subscription_identifier, start_of_week"
+    granularity: "access_method_num, national_id_card, subscription_identifier, start_of_week"
     output_catalog: "l2_streaming_visit_count_and_download_traffic_feature"
     partition_num_per_job: 5
 
@@ -219,7 +220,7 @@ int_l2_streaming_sum_per_day:
               "download_kb_traffic_bigo_esport",
               "download_kb_traffic_mixer_esport",
               "download_kb_traffic_steamtv_esport"]
-    granularity: "subscription_identifier, day_of_week, start_of_week"
+    granularity: "access_method_num, national_id_card, subscription_identifier, day_of_week, start_of_week"
     output_catalog: "int_l2_streaming_sum_per_day"
     partition_num_per_job: 5
 
@@ -337,6 +338,6 @@ l2_streaming_session_duration_feature:
         avg_session_duration_per_day_mixer_esport: "sum(sum_session_duration_mixer_esport)/7"
         avg_session_duration_per_day_steamtv_esport: "sum(sum_session_duration_steamtv_esport)/7"
 
-    granularity: "subscription_identifier, start_of_week"
+    granularity: "access_method_num, national_id_card, subscription_identifier, start_of_week"
     output_catalog: "l2_streaming_session_duration_feature"
     partition_num_per_job: 5
