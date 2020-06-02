@@ -22,12 +22,7 @@ l0_campaign_tracking_contact_list_fbb:
   filepath: base_path/CAMPAIGN/campaign_tracking_contact_list_fbb/
   load_args:
     mergeSchema: true
-#l0_campaign_clm_campaign_contacts_ma:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  file_format: "parquet"
-#  filepath: base_path/CAMPAIGN/campaign_clm_campaign_contacts_ma/
-#  load_args:
-#    mergeSchema: true
+
 l0_campaign_tracking_contact_list_post:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
