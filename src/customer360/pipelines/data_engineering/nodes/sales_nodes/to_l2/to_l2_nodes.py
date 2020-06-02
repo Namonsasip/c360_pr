@@ -17,13 +17,16 @@ def sale_product_customer_master_features(sale_df: DataFrame,
                                  product_df: DataFrame,
                                  customer_df: DataFrame,
                                  volume_feature_dict,
-                                 name_feature_dict) -> DataFrame:
+                                 name_feature_dict,
+                                 exception_partitions_list) -> DataFrame:
     """
+
     :param sale_df:
     :param product_df:
     :param customer_df:
     :param volume_feature_dict:
     :param name_feature_dict:
+    :param exception_partitions_list:
     :return:
     """
 
@@ -36,7 +39,7 @@ def sale_product_customer_master_features(sale_df: DataFrame,
         grouping="weekly", par_col="partition_date",
         target_table_name="l2_sales_number_and_volume_transaction_weekly",
         missing_data_check_flg='Y',
-        exception_partitions=['2019-12-30'])
+        exception_partitions = exception_partitions_list)
 
     product_df = data_non_availability_and_missing_check(
         df=product_df,
