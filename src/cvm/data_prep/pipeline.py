@@ -47,6 +47,8 @@ from cvm.data_prep.nodes import (
     train_test_split,
 )
 from cvm.preprocessing.nodes import pipeline_fit
+from cvm.src.temporary_fixes.sub_id_replace import get_mapped_dataset_name
+from cvm.temp.nodes import map_sub_ids
 from cvm.temp.pipeline import map_sub_ids_of_input_datasets
 
 
@@ -70,6 +72,19 @@ def create_users_from_tg(sample_type: str) -> Pipeline:
                 ],
                 "cvm_users_list_" + sample_type,
                 name="create_users_list_tgcg_" + sample_type,
+            ),
+            node(
+                func=map_sub_ids,
+                inputs=[
+                    "create_cvm_users_list_active_users_" + sample_type,
+                    "sub_id_mapping",
+                ],
+                outputs=get_mapped_dataset_name(
+                    "create_cvm_users_list_active_users_" + sample_type, sample_type
+                ),
+                name="map_sub_ids_for_{}".format(
+                    "create_cvm_users_list_active_users_" + sample_type
+                ),
             ),
         ]
     )
@@ -106,6 +121,19 @@ def create_users_from_active(sample_type: str) -> Pipeline:
                 "cvm_users_list_" + sample_type,
                 name="create_cvm_users_list_active_users_" + sample_type,
             ),
+            node(
+                func=map_sub_ids,
+                inputs=[
+                    "create_cvm_users_list_active_users_" + sample_type,
+                    "sub_id_mapping",
+                ],
+                outputs=get_mapped_dataset_name(
+                    "create_cvm_users_list_active_users_" + sample_type, sample_type
+                ),
+                name="map_sub_ids_for_{}".format(
+                    "create_cvm_users_list_active_users_" + sample_type
+                ),
+            ),
         ]
     )
 
@@ -124,7 +152,7 @@ def sample_inputs(sample_type: str) -> Pipeline:
         "l4_usage_prepaid_postpaid_daily_features",
         "l4_daily_feature_topup_and_volume",
         "l4_usage_postpaid_prepaid_weekly_features_sum",
-        "l4_touchpoints_to_call_center_features",
+        "l4_touchpokints_to_call_center_features",
     ]
 
     nodes_list = [
