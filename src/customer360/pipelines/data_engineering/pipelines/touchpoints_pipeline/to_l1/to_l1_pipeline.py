@@ -57,7 +57,8 @@ def touchpoints_to_l1_pipeline(**kwargs):
                 dac_for_touchpoints_to_l1_intermediate_pipeline,
                 ["l0_usage_call_relation_sum_daily_for_l1_touchpoints_from_call_center_features",
                  "l1_customer_profile_union_daily_feature_for_l1_touchpoints_from_call_center_features",
-                 "params:l1_touchpoints_from_call_center_features_tbl"],
+                 "params:l1_touchpoints_from_call_center_features_tbl",
+                 "params:exception_partition_list_for_l0_usage_call_relation_sum_daily_for_l1_touchpoints_from_call_center_features"],
                 ["int_l0_usage_call_relation_sum_daily_for_l1_touchpoints_from_call_center_features",
                  "int_l1_customer_profile_union_daily_feature_for_l1_touchpoints_from_call_center_features"]
             ),
