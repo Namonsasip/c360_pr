@@ -1,4 +1,0 @@
-l0_geo_mst_cell_masterplan_current:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/GEO/geo_mst_cell_masterplan_current/
-  file_format: parquet

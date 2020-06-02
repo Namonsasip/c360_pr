@@ -3,14 +3,16 @@ import os
 import pyspark.sql.functions as f
 from pyspark.sql import DataFrame
 
-from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check
+from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check \
+    , add_event_week_and_month_from_yyyymmdd, union_dataframes_with_missing_cols, add_start_of_week_and_month
 from customer360.utilities.spark_util import get_spark_empty_df
 
 conf = os.getenv("CONF", None)
 
 
 def loyalty_number_of_services_for_each_category(customer_prof: DataFrame
-                                                 , input_df: DataFrame) -> DataFrame:
+                                                 , input_df: DataFrame
+                                                 ) -> DataFrame:
     """
     :param customer_prof:
     :param input_df:
@@ -18,31 +20,50 @@ def loyalty_number_of_services_for_each_category(customer_prof: DataFrame
     """
 
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([input_df, customer_prof]):
+    if check_empty_dfs([input_df, customer_prof, aunjai_point_collection]):
         return get_spark_empty_df()
 
-    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
-                                                       target_table_name="l1_loyalty_number_of_services_daily")
+    input_df = data_non_availability_and_missing_check(
+        df=input_df, grouping="daily", par_col="partition_date",
+        target_table_name="l1_loyalty_number_of_services_daily")
 
-    customer_prof = data_non_availability_and_missing_check(df=customer_prof, grouping="daily",
-                                                            par_col="event_partition_date",
-                                                            target_table_name="l1_loyalty_number_of_services_daily")
+    input_df = add_event_week_and_month_from_yyyymmdd(input_df=input_df
+                                                      , column="partition_date")
+
+    customer_prof = data_non_availability_and_missing_check(
+        df=customer_prof, grouping="daily",
+        par_col="event_partition_date",
+        target_table_name="l1_loyalty_number_of_services_daily")
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            input_df.select(
+                f.max(f.col("event_partition_date")).alias("max_date")),
+            customer_prof.select(
+                f.max(f.col("event_partition_date")).alias("max_date")),
+        ]
+    ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    drop_cols = ["event_partition_date", "start_of_week", "start_of_month"]
+
+    input_df = input_df.filter(f.col("event_partition_date") <= min_value).drop(*drop_cols)
+    customer_prof = customer_prof.filter(f.col("event_partition_date") <= min_value)
 
     if check_empty_dfs([input_df, customer_prof]):
         return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
 
-    customer_prof = customer_prof.select("access_method_num",
-                                         "subscription_identifier",
-                                         "event_partition_date",
-                                         "start_of_week")
-    join_key = ["access_method_num", "event_partition_date", "start_of_week"]
+    join_key = ["access_method_num", "event_partition_date", "start_of_week", "start_of_month"]
+    customer_cols = ["national_id_card", "access_method_num", "subscription_identifier", "event_partition_date",
+                     "start_of_week", "start_of_month"]
+    customer_prof = customer_prof.select(customer_cols)
 
-    input_df = input_df.select(f.col("mobile_no").alias("access_method_num"), "response_date", "project_id",
-                               "register_date") \
-        .withColumn("event_partition_date", f.to_date(f.col("response_date"))) \
-        .withColumn("start_of_week", f.to_date(f.date_trunc('week', f.col("response_date"))))
+    input_df = input_df.where("upper(group_project) = 'PRIVILEGE'") \
+        .select(f.col("mobile_no").alias("access_method_num"), "project_id", "response_date")
+
+    input_df = add_start_of_week_and_month(input_df, "response_date") \
+        .withColumnRenamed("response_date", "loyalty_privilige_registered_date")
 
     return_df = customer_prof.join(input_df, join_key)
 
@@ -62,25 +83,24 @@ def loyalty_number_of_rewards_redeemed_for_each_category(customer_prof: DataFram
         return get_spark_empty_df()
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
-                                                       target_table_name="l1_loyalty_number_of_rewards_redeemed_daily")
+                                                       target_table_name="l1_loyalty_number_of_rewards_daily")
 
     customer_prof = data_non_availability_and_missing_check(df=customer_prof, grouping="daily",
                                                             par_col="event_partition_date",
-                                                            target_table_name="l1_loyalty_number_of_rewards_redeemed_daily")
+                                                            target_table_name="l1_loyalty_number_of_rewards_daily")
 
     if check_empty_dfs([input_df, customer_prof]):
         return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
-    customer_prof = customer_prof.select("access_method_num",
-                                         "subscription_identifier",
-                                         "event_partition_date",
-                                         "start_of_week")
-    join_key = ["access_method_num", "event_partition_date", "start_of_week"]
+    join_key = ["access_method_num", "event_partition_date", "start_of_week", "start_of_month"]
+    customer_cols = ["national_id_card", "access_method_num", "subscription_identifier", "event_partition_date",
+                     "start_of_week", "start_of_month"]
+    customer_prof = customer_prof.select(customer_cols)
 
     input_df = input_df.where("msg_event_id = 13") \
-        .select(f.col("mobile_no").alias("access_method_num"), "response_date", "project_id") \
-        .withColumn("event_partition_date", f.to_date(f.col("response_date"))) \
-        .withColumn("start_of_week", f.to_date(f.date_trunc('week', f.col("response_date"))))
+        .select(f.col("mobile_no").alias("access_method_num"), "project_id", "response_date")
+    input_df = add_start_of_week_and_month(input_df, "response_date") \
+        .withColumnRenamed("response_date", "loyalty_rewards_registered_date")
 
     return_df = customer_prof.join(input_df, join_key)
 
@@ -109,84 +129,20 @@ def loyalty_number_of_points_spend_for_each_category(customer_prof: DataFrame
     if check_empty_dfs([input_df, customer_prof]):
         return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
-    customer_prof = customer_prof.select("access_method_num",
-                                         "subscription_identifier",
-                                         "event_partition_date",
-                                         "start_of_week")
-    join_key = ["access_method_num", "event_partition_date", "start_of_week"]
+    join_key = ["access_method_num", "event_partition_date", "start_of_week", "start_of_month"]
+    customer_cols = ["national_id_card", "access_method_num", "subscription_identifier", "event_partition_date",
+                     "start_of_week", "start_of_month"]
+    customer_prof = customer_prof.select(customer_cols)
 
     input_df = input_df.where("point_tran_type_id in (15,35) and refund_session_id is null and project_id is not null") \
-        .select(f.col("mobile_no").alias("access_method_num"), "tran_date", "project_id", "points") \
-        .withColumn("event_partition_date", f.to_date(f.col("tran_date"))) \
-        .withColumn("start_of_week", f.to_date(f.date_trunc('week', f.col("tran_date")))) \
-        .groupBy(["access_method_num", "event_partition_date", "start_of_week", "project_id"]) \
-        .agg(f.sum("points").alias("loyalty_points_spend")) \
-        .select("access_method_num", "event_partition_date", "start_of_week", "project_id", "loyalty_points_spend")
+        .select(f.col("msisdn").alias("access_method_num"), "tran_date", "project_id", "points")
+
+    input_df = add_start_of_week_and_month(input_df, "tran_date")
+
+    input_df = input_df.groupBy(["access_method_num", "event_partition_date", "start_of_week",
+                                 "start_of_month", "project_id"]) \
+        .agg(f.sum("points").alias("loyalty_points_spend"))
 
     return_df = customer_prof.join(input_df, join_key)
 
     return return_df
-
-
-def loyalty_number_of_points_balance(customer_prof: DataFrame
-                                     , input_df: DataFrame
-                                     , l0_loyalty_priv_point_bonus_ba: DataFrame
-                                     , l0_loyalty_priv_point_ba: DataFrame
-                                     ) -> DataFrame:
-    """
-    :param customer_prof:
-    :param input_df:
-    :param l0_loyalty_priv_point_bonus_ba:
-    :param l0_loyalty_priv_point_ba:
-    :return:
-    """
-
-    ################################# Start Implementing Data availability checks #############################
-    # No check for weekly data to be used at daily level for this special case
-    if check_empty_dfs([input_df, customer_prof, l0_loyalty_priv_point_bonus_ba]):
-        return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df()]
-
-    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
-                                                       target_table_name="l1_loyalty_priv_point_ba_daily")
-
-    customer_prof = data_non_availability_and_missing_check(
-        df=customer_prof, grouping="daily",
-        par_col="event_partition_date",
-        target_table_name="l1_loyalty_priv_point_ba_daily")
-
-    l0_loyalty_priv_point_bonus_ba = data_non_availability_and_missing_check(
-        df=l0_loyalty_priv_point_bonus_ba,
-        grouping="daily",
-        par_col="partition_date",
-        target_table_name="l1_loyalty_priv_point_bonus_ba_daily")
-
-    if check_empty_dfs([input_df, customer_prof, l0_loyalty_priv_point_bonus_ba]):
-        return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df()]
-    ################################# End Implementing Data availability checks ###############################
-    customer_prof = customer_prof.select("access_method_num",
-                                         "subscription_identifier",
-                                         "event_partition_date",
-                                         "start_of_week")
-    join_key = ["access_method_num", "event_partition_date", "start_of_week"]
-
-    input_df = input_df.select(f.col("mobile_no").alias("access_method_num"), "response_date", "mobile_status_date"
-                               , "mobile_segment", "billing_account") \
-        .withColumn("event_partition_date", f.to_date(f.col("response_date"))) \
-        .withColumn("start_of_week", f.to_date(f.date_trunc('week', f.col("response_date")))) \
-        .withColumn("start_of_month", f.to_date(f.date_trunc('month', f.col("response_date"))))
-
-    l0_loyalty_priv_point_bonus_ba = l0_loyalty_priv_point_bonus_ba.select("billing_account", "points", "modified_date") \
-        .withColumn("event_partition_date", f.to_date(f.col("modified_date"))) \
-        .withColumn("start_of_week", f.to_date(f.date_trunc('week', f.col("modified_date")))) \
-        .withColumn("start_of_month", f.to_date(f.date_trunc('month', f.col("modified_date"))))
-
-    l0_loyalty_priv_point_ba = l0_loyalty_priv_point_ba.select("billing_account", "points", "modified_date",
-                                                               "expired_date") \
-        .withColumn("expired_date", f.to_date(f.col("expired_date"))) \
-        .withColumn("event_partition_date", f.to_date(f.col("modified_date"))) \
-        .withColumn("start_of_week", f.to_date(f.date_trunc('week', f.col("modified_date")))) \
-        .withColumn("start_of_month", f.to_date(f.date_trunc('month', f.col("modified_date"))))
-
-    return_df = customer_prof.join(input_df, join_key)
-
-    return [return_df, l0_loyalty_priv_point_bonus_ba, l0_loyalty_priv_point_ba]

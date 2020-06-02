@@ -3,46 +3,50 @@ l1_billing_and_payment_feature_top_up_and_count:
   feature_list:
     payments_top_ups: "sum(case when date(recharge_date) is not null then 1 else 0 end)"
     payments_top_up_volume: "sum(face_value)"
-  granularity: "start_of_month,start_of_week,event_partition_date,access_method_num,register_date,subscription_identifier"
+  granularity: "start_of_month,start_of_week,event_partition_date,access_method_num,register_date,subscription_identifier,national_id_card"
 
 
 l1_billing_and_payment_rpu_roaming:
   where_clause: "where event_partition_date is not null"
   feature_list:
     payments_arpu_roaming: "sum(ir_call_charge_amount)"
-  granularity: "start_of_month,start_of_week,event_partition_date,access_method_num,register_date,subscription_identifier"
+  granularity: "start_of_month,start_of_week,event_partition_date,access_method_num,register_date,subscription_identifier,national_id_card"
 
 
 l1_billing_and_payment_before_top_up_balance:
   where_clause: "where event_partition_date is not null"
   feature_list:
     payments_before_top_up_balance: "avg(pre_bal_amt)"
-  granularity: "start_of_month,start_of_week,event_partition_date,access_method_num,register_date,subscription_identifier"
+  granularity: "start_of_month,start_of_week,event_partition_date,access_method_num,register_date,subscription_identifier,national_id_card"
 
 
 l1_billing_and_payment_top_up_channels:
   where_clause: "where event_partition_date is not null"
   feature_list:
-    payments_top_ups_by_bank_atm_cdm: "sum(case when recharge_type in ('4','B6','B3','B1','B4','B5','B7','B8','41','B2','B9','44','B58','B53','B10','B11') then 1 else 0 end)"
-    payments_top_up_vol_by_bank_atm_cdm: "sum(case when recharge_type in ('4','B6','B3','B1','B4','B5','B7','B8','41','B2','B9','44','B58','B53','B10','B11') then face_value else 0 end)"
-    payments_top_ups_by_cash_card: "sum(case when recharge_type in ('3','B0') then 1 else 0 end)"
-    payments_top_up_vol_by_cash_card: "sum(case when recharge_type in ('3','B0') then face_value else 0 end)"
-    payments_top_ups_by_digital_online_self_service: "sum(case when recharge_type in ('6','7','8','32','43','16','33','65','37','55','31','36','63','45','B43','B38','B26','B24','B22','B59','B25','B30','B72','B27','B76','B44','B40','B23','B57','B74','B33','B13','B41','B29','B17','B32','B21','B28','B35','B20','B42','B12','B31','B15','B36','B34') then 1 else 0 end)"
-    payments_top_up_vol_by_digital_online_self_service: "sum(case when recharge_type in ('6','7','8','32','43','16','33','65','37','55','31','36','63','45','B43','B38','B26','B24','B22','B59','B25','B30','B72','B27','B76','B44','B40','B23','B57','B74','B33','B13','B41','B29','B17','B32','B21','B28','B35','B20','B42','B12','B31','B15','B36','B34') then face_value else 0 end)"
-    payments_top_ups_by_epin_slip: "sum(case when recharge_type in ('1') then 1 else 0 end)"
-    payments_top_up_vol_by_epin_slip: "sum(case when recharge_type in ('1') then face_value else 0 end)"
-    payments_top_ups_by_epos: "sum(case when recharge_type in ('5','18','19','46','53','48','B47','B49','B39','B46','B55','B69','B48') then 1 else 0 end)"
-    payments_top_up_vol_by_epos: "sum(case when recharge_type in ('5','18','19','46','53','48','B47','B49','B39','B46','B55','B69','B48') then face_value else 0 end)"
-    payments_top_ups_by_rom: "sum(case when recharge_type in ('B50','51') then 1 else 0 end)"
-    payments_top_up_vol_by_rom: "sum(case when recharge_type in ('B50','51') then face_value else 0 end)"
-  granularity: "start_of_month,start_of_week,event_partition_date,access_method_num,register_date,subscription_identifier"
+    payments_top_ups_by_bank_atm_cdm: "sum(case when recharge_type_group ='Bank ATM&CDM' then 1 else 0 end)"
+    payments_top_up_vol_by_bank_atm_cdm: "sum(case when recharge_type_group ='Bank ATM&CDM'  then face_value else cast(0 as double) end)"
+    payments_top_ups_by_cash_card: "sum(case when recharge_type_group ='Cash card' then 1 else 0 end)"
+    payments_top_up_vol_by_cash_card: "sum(case when recharge_type_group ='Cash card'  then face_value else cast(0 as double) end)"
+    payments_top_ups_by_digital_online_self_service: "sum(case when recharge_type_group ='Digital Online Self service' then 1 else 0 end)"
+    payments_top_up_vol_by_digital_online_self_service: "sum(case when recharge_type_group ='Digital Online Self service'  then face_value else cast(0 as double) end)"
+    payments_top_ups_by_epin_slip: "sum(case when recharge_type_group ='ePIN Slip'  then 1 else 0 end)"
+    payments_top_up_vol_by_epin_slip: "sum(case when recharge_type_group ='ePIN Slip'  then face_value else cast(0 as double) end)"
+    payments_top_ups_by_epos: "sum(case when recharge_type_group ='EPOS'  then 1 else 0 end)"
+    payments_top_up_vol_by_epos: "sum(case when recharge_type_group ='EPOS'  then face_value else cast(0 as double) end)"
+    payments_top_ups_by_rom: "sum(case when recharge_type_group ='ROM'  then 1 else 0 end)"
+    payments_top_up_vol_by_rom: "sum(case when recharge_type_group ='ROM'  then face_value else cast(0 as double) end)"
+    payments_top_ups_by_mpay_non_vending: "sum(case when recharge_type_group ='mPay Non-Vending'  then 1 else 0 end)"
+    payments_top_up_vol_by_mpay_non_vending: "sum(case when recharge_type_group ='mPay Non-Vending'  then face_value else cast(0 as double) end)"
+    payments_top_ups_by_mpay_vending: "sum(case when recharge_type_group ='mPay Vending'  then 1 else 0 end)"
+    payments_top_up_vol_by_mpay_vending: "sum(case when recharge_type_group ='mPay Vending'  then face_value else cast(0 as double) end)"
+  granularity: "start_of_month,start_of_week,event_partition_date,access_method_num,register_date,subscription_identifier,national_id_card"
 
 
 l1_billing_and_payment_most_popular_topup_channel:
   where_clause: "where event_partition_date is not null"
   feature_list:
     payments_total_top_up: "sum(case when date(recharge_date) is not null then 1 else 0 end)"
-  granularity: "start_of_month,start_of_week,event_partition_date,register_date,access_method_num,subscription_identifier,recharge_type"
+  granularity: "start_of_month,start_of_week,event_partition_date,register_date,access_method_num,subscription_identifier,recharge_type,national_id_card"
 
 
 
@@ -52,6 +56,7 @@ l1_billing_and_payment_popular_topup_day:
     access_method_num: "access_method_num"
     register_date: "register_date"
     subscription_identifier: "subscription_identifier"
+    national_id_card: "national_id_card"
     payment_popular_day: "dayofweek(recharge_date)"
     payment_popular_hour: "hour(recharge_time)"
   granularity: ""
@@ -63,6 +68,7 @@ l1_time_since_last_top_up:
     access_method_num: "access_method_num"
     register_date: "register_date"
     subscription_identifier: "subscription_identifier"
+    national_id_card: "national_id_card"
     recharge_time: "recharge_time"
     face_value: "face_value"
   granularity: ""

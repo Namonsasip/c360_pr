@@ -10,7 +10,7 @@ conf = os.getenv("CONF", "local")
 
 
 def generate_l3_fav_streaming_day(input_df, app_list):
-    if len(input_df.head(1)) == 0:
+    if check_empty_dfs([input_df]):
         return input_df
 
     spark = get_spark_session()
@@ -22,6 +22,8 @@ def generate_l3_fav_streaming_day(input_df, app_list):
     for each_app in app_list:
         df = spark.sql("""
             select
+                access_method_num, 
+                national_id_card, 
                 subscription_identifier,
                 start_of_month,
                 day_of_week as fav_{each_app}_streaming_day_of_week,

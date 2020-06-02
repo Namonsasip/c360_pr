@@ -57,9 +57,19 @@ def massive_processing_with_customer(input_df: DataFrame
 
     mvv_new = list(divide_chunks(mvv_array, 5))
     add_list = mvv_new
-    customer_df = customer_df.where("charge_type = 'Pre-paid'") \
-        .select("access_method_num", "subscription_identifier", "event_partition_date", "start_of_week")
-    first_item = add_list[0]
+
+    sel_cols = ['access_method_num',
+                'event_partition_date',
+                "subscription_identifier",
+                "start_of_week",
+                "start_of_month",
+                "national_id_card"
+                ]
+    join_cols = ['access_method_num', 'event_partition_date', "start_of_week", "start_of_month"]
+
+    customer_df = customer_df.where("charge_type = 'Pre-paid'").select(sel_cols)
+
+    first_item = add_list[-1]
 
     add_list.remove(first_item)
     for curr_item in add_list:
@@ -68,7 +78,7 @@ def massive_processing_with_customer(input_df: DataFrame
             .drop_duplicates(subset=["access_method_num", "partition_date"])
         small_cus_df = customer_df.filter(F.col("event_partition_date").isin(*[curr_item]))
         output_df = node_from_config(small_df, sql)
-        output_df = small_cus_df.join(output_df, ["access_method_num", "event_partition_date", "start_of_week"], "left")
+        output_df = small_cus_df.join(output_df, join_cols, "left")
         CNTX.catalog.save("l1_revenue_prepaid_pru_f_usage_multi_daily", output_df)
 
     logging.info("Final date to run for {0}".format(str(first_item)))
@@ -76,5 +86,5 @@ def massive_processing_with_customer(input_df: DataFrame
         .drop_duplicates(subset=["access_method_num", "partition_date"])
     return_df = node_from_config(return_df, sql)
     small_cus_df = customer_df.filter(F.col("event_partition_date").isin(*[first_item]))
-    return_df = small_cus_df.join(return_df, ["access_method_num", "event_partition_date", "start_of_week"], "left")
+    return_df = small_cus_df.join(return_df, join_cols, "left")
     return return_df
