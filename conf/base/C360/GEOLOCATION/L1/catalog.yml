@@ -1,13 +1,13 @@
-l1_test_pipeline:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/test_pipeline
-  file_format: parquet
-  save_args:
-    increment_flag: 'no'
-    mode: "overwrite"
-#    partitionBy: "event_partition_date"
-#    read_layer: 'l0_daily'
-#    target_layer: 'l1_daily'
+#l1_test_pipeline:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  filepath: /mnt/customer360-blob-output/C360/GEO/test_pipeline
+#  file_format: parquet
+#  save_args:
+#    increment_flag: 'no'
+#    mode: "overwrite"
+##    partitionBy: "event_partition_date"
+##    read_layer: 'l0_daily'
+##    target_layer: 'l1_daily'
 
 l1_geo_area_from_ais_store_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -38,6 +38,39 @@ l1_geo_area_from_ais_store_daily_for_l3_geo_area_from_ais_store_monthly:
   load_args:
     increment_flag: 'no'
     lookup_table_name: 'l3_area_from_ais_store_monthly'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+l1_geo_area_from_competitor_store_daily:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l1_features/geo_area_from_competitor_store_daily/
+  file_format: parquet
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+
+l1_geo_area_from_competitor_store_daily_for_l2_geo_area_from_competitor_store_weekly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l1_features/geo_area_from_competitor_store_daily/
+  file_format: parquet
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l2_area_from_competitor_store_weekly'
+    read_layer: 'l1_daily'
+    target_layer: 'l2_weekly'
+    lookback: '0'
+
+l1_geo_area_from_competitor_store_daily_for_l3_geo_area_from_competitor_store_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l1_features/geo_area_from_competitor_store_daily/
+  file_format: parquet
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l3_area_from_competitor_store_monthly'
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
     lookback: '0'

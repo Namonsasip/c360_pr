@@ -1,7 +1,17 @@
 l4_area_from_ais_store:
   partition_by: ["imsi"]
   feature_list:
-    avg: ["duration","count"]
-    max: ["duration","count"]
-    min: ["duration","count"]
+    avg: ["duration","num_of_times"]
+    max: ["duration","num_of_times"]
+    min: ["duration","num_of_times"]
+    sum: ["duration","num_of_times"]
+  read_from: "l2"
+
+l4_area_from_competitor_store:
+  partition_by: ["imsi"]
+  feature_list:
+    avg: ["duration","num_of_times"]
+    max: ["duration","num_of_times"]
+    min: ["duration","num_of_times"]
+    sum: ["duration","num_of_times"]
   read_from: "l2"

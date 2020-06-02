@@ -1,7 +1,13 @@
 l3_area_from_ais_store_monthly:
   where_clause: ""
   feature_list:
-    imsi: "first(imsi)"
     duration: "sum(duration)"
-    count: "sum(count)"
+    num_of_times: "sum(num_of_times)"
+  granularity: "imsi,start_of_month"
+
+l3_area_from_competitor_store_monthly:
+  where_clause: ""
+  feature_list:
+    duration: "sum(duration)"
+    num_of_times: "sum(num_of_times)"
   granularity: "imsi,start_of_month"
