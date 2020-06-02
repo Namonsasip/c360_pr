@@ -14,33 +14,37 @@ class SubIdReplacer:
         logging.getLogger(__name__).info(
             "Replacing `subscription_identifier` to new version"
         )
-        if "crm_sub_id" in df.columns:
-            subscription_identifier_col = "crm_sub_id"
-        else:
-            subscription_identifier_col = "subscription_identifier"
         if "old_subscription_identifier" in df.columns:
             df = df.drop("old_subscription_identifier")
         return (
             df.withColumnRenamed(
-                subscription_identifier_col, "old_subscription_identifier"
+                self.subscription_identifier_col, "old_subscription_identifier"
             )
             .join(self.replacement_dictionary, on="old_subscription_identifier")
             .drop("old_subscription_identifier")
-            .withColumnRenamed("subscription_identifier", subscription_identifier_col)
+            .withColumnRenamed(
+                self.subscription_identifier_col, "subscription_identifier"
+            )
         )
 
-    @staticmethod
-    def check_if_replacement_needed(df):
+    def check_if_replacement_needed(self, df):
         logging.getLogger(__name__).info(
             "Checking if replacing `subscription_identifier` needed"
         )
         max_sub_id_len = df.agg(
-            func.max(func.length(func.col("subscription_identifier")))
+            func.max(func.length(func.col(self.subscription_identifier_col)))
         ).collect()[0][0]
         return max_sub_id_len < 16
 
+    def _set_sub_id_col(self, df):
+        if "crm_sub_id" in df.columns:
+            self.subscription_identifier_col = "crm_sub_id"
+        else:
+            self.subscription_identifier_col = "subscription_identifier"
+
     def replace_if_needed(self, df):
-        if SubIdReplacer.check_if_replacement_needed(df):
+        self._set_sub_id_col(df)
+        if self.check_if_replacement_needed(df):
             return self.replace_old_sub_id(df)
         else:
             logging.getLogger(__name__).info("Replacement not needed")
