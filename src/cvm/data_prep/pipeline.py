@@ -75,15 +75,12 @@ def create_users_from_tg(sample_type: str) -> Pipeline:
             ),
             node(
                 func=map_sub_ids,
-                inputs=[
-                    "create_cvm_users_list_active_users_" + sample_type,
-                    "sub_id_mapping",
-                ],
+                inputs=["cvm_users_list_" + sample_type, "sub_id_mapping"],
                 outputs=get_mapped_dataset_name(
                     "create_cvm_users_list_active_users_" + sample_type, sample_type
                 ),
                 name="map_sub_ids_for_{}".format(
-                    "create_cvm_users_list_active_users_" + sample_type
+                    "cvm_users_list_active_users_" + sample_type
                 ),
             ),
         ]
@@ -123,15 +120,12 @@ def create_users_from_active(sample_type: str) -> Pipeline:
             ),
             node(
                 func=map_sub_ids,
-                inputs=[
-                    "create_cvm_users_list_active_users_" + sample_type,
-                    "sub_id_mapping",
-                ],
+                inputs=["cvm_users_list_" + sample_type, "sub_id_mapping"],
                 outputs=get_mapped_dataset_name(
                     "create_cvm_users_list_active_users_" + sample_type, sample_type
                 ),
                 name="map_sub_ids_for_{}".format(
-                    "create_cvm_users_list_active_users_" + sample_type
+                    "cvm_users_list_active_users_" + sample_type
                 ),
             ),
         ]
