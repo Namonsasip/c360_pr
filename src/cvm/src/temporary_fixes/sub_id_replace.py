@@ -14,14 +14,19 @@ class SubIdReplacer:
         logging.getLogger(__name__).info(
             "Replacing `subscription_identifier` to new version"
         )
+        if "crm_sub_id" in df.columns:
+            subscription_identifier_col = "crm_sub_id"
+        else:
+            subscription_identifier_col = "subscription_identifier"
         if "old_subscription_identifier" in df.columns:
             df = df.drop("old_subscription_identifier")
         return (
             df.withColumnRenamed(
-                "subscription_identifier", "old_subscription_identifier"
+                subscription_identifier_col, "old_subscription_identifier"
             )
             .join(self.replacement_dictionary, on="old_subscription_identifier")
             .drop("old_subscription_identifier")
+            .withColumnRenamed("subscription_identifier", subscription_identifier_col)
         )
 
     @staticmethod
