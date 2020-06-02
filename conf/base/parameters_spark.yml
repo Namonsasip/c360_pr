@@ -5,3 +5,4 @@ spark_conf:
   spark.executor.memory: 64g
   spark.sql.sources.partitionOverwriteMode: dynamic
   spark.sql.parquet.binaryAsString: true
+  spark.hadoop.fs.permissions.umask-mode: "022"
