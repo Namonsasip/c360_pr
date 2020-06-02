@@ -65,7 +65,7 @@ def get_mapped_dataset_name(dataset_name: str, sample_type: str = None) -> str:
     if sample_type is None:
         return dataset_name + "_" + new_suffix_prefix
     sample_type_regex = r"_{}$".format(sample_type)
-    sample_type_found = re.match(sample_type_regex, dataset_name) is not None
+    sample_type_found = re.search(sample_type_regex, dataset_name) is not None
     if not sample_type_found:
         return dataset_name + "_" + new_suffix_prefix
     dataset_name = re.sub(sample_type_regex, "", dataset_name)
