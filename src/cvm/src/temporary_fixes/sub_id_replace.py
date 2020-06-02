@@ -23,7 +23,7 @@ class SubIdReplacer:
             .join(self.replacement_dictionary, on="old_subscription_identifier")
             .drop("old_subscription_identifier")
             .withColumnRenamed(
-                self.subscription_identifier_col, "subscription_identifier"
+                "subscription_identifier", self.subscription_identifier_col
             )
         )
 
