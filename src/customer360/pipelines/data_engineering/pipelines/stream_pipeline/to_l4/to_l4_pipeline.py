@@ -171,9 +171,6 @@ def streaming_l2_to_l4_pipeline(**kwargs):
                 "l4_streaming_fav_esport_service_by_visit_count_feature"
             ),
 
-
-
-
             node(
                 l4_rolling_window,
                 ["l2_streaming_visit_count_and_download_traffic_feature_for_l4_streaming_visit_count_and_download_traffic_feature",
@@ -194,7 +191,13 @@ def streaming_l2_to_l4_pipeline(**kwargs):
                  "params:streaming_app"],
                 None
             ),
+        ], name="streaming_l2_to_l4_pipeline"
+    )
 
+
+def streaming_l2_to_l4_session_duration_pipeline(**kwargs):
+    return Pipeline(
+        [
             # session duration
             node(
                 l4_rolling_window,
@@ -202,7 +205,7 @@ def streaming_l2_to_l4_pipeline(**kwargs):
                  "params:l4_streaming_session_duration_feature"],
                 "l4_streaming_session_duration_feature"
             ),
-        ], name="streaming_l2_to_l4_pipeline"
+        ], name="streaming_l2_to_l4_session_duration_pipeline"
     )
 
 

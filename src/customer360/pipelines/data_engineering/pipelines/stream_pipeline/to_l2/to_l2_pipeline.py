@@ -384,3 +384,23 @@ def streaming_to_l2_pipeline(**kwargs):
             )
         ], name="streaming_to_l2_pipeline"
     )
+
+
+def streaming_to_l2_session_duration_pipeline(**kwargs):
+    return Pipeline(
+        [
+            # session duration
+            node(
+                dac_for_streaming_to_l2_pipeline_from_l1,
+                ["l1_streaming_session_duration_feature_for_l2_streaming_session_duration_feature",
+                 "params:l2_streaming_session_duration_feature_tbl"],
+                "intermediate_l2_streaming_session_duration_feature"
+            ),
+            node(
+                l2_massive_processing,
+                ["intermediate_l2_streaming_session_duration_feature",
+                 "params:l2_streaming_session_duration_feature"],
+                "l2_streaming_session_duration_feature"
+            )
+        ], name="streaming_to_l2_session_duration_pipeline"
+    )
