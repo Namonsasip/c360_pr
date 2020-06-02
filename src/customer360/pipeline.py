@@ -279,7 +279,8 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
             + score_model("huaw_experiment")
             + generate_treatments("huaw_experiment")
         ),
-        "cvm_huaw_churn_targets": create_users_from_tg() + create_cvm_targets_huaw_exp(),
+        "cvm_huaw_churn_targets": create_users_from_tg("huaw_experiment")
+                                  + create_cvm_targets_huaw_exp(),
         "cvm_full_features_extraction": extract_features,
         "cvm_map_sub_ids": map_sub_ids_of_input_datasets("huaw_experiment"),
         "cvm_rfe_only": rfe_only,
