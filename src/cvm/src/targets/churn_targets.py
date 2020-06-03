@@ -59,7 +59,7 @@ def get_churn_targets(
     inactivity_length = target_parameters["inactivity_length"]
     blindspot = target_parameters["blindspot"]
     logging.getLogger(__name__).info(
-        "Creating {}, assuming {} days of blindspot, and {} days of inactivity".format(
+        "Creating {}, assuming {} days of blindspot and {} days of inactivity".format(
             colname, blindspot, inactivity_length
         )
     )
