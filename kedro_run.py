@@ -28,4 +28,7 @@ def run_command(command):
     return process.returncode
 
 
-run_command(kedro_run_cmd)
+if run_command(kedro_run_cmd) == 0:
+    exit(0)
+else:
+    exit(1)
