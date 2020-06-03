@@ -7,10 +7,6 @@ _spark_parquet: &spark_parquet
 cvm_users_list_huaw_experiment:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_cvm_users_list_huaw_experiment/
-  
-cvm_users_list_sub_ids_mapped_huaw_experiment:
-  <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_cvm_users_list_sub_ids_mapped_huaw_experiment/
 
 # input tables samples
 l3_customer_profile_include_1mo_non_active_huaw_experiment:
