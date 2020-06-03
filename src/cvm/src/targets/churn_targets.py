@@ -157,6 +157,5 @@ def filter_usage(
     users = prepare_key_columns(users)
     users_subs_ids = users.select("subscription_identifier").distinct()
     usage = users_subs_ids.join(usage, "subscription_identifier", "inner")
-    logging.getLogger(__name__).info("Rows in churn table: {}".format(usage.count()))
 
     return usage
