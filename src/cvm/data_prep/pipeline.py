@@ -338,7 +338,7 @@ def scoring_data_prepare(sample_type: str) -> Pipeline:
     return (
         sample_inputs(sample_type)
         + map_sub_ids_of_input_datasets(sample_type)
-        + create_users_from_active(sample_type)
+        + create_users_from_tg(sample_type)
         + prepare_features_macrosegments(sample_type)
     )
 
