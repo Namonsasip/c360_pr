@@ -40,7 +40,7 @@ def union_weekly_cust_profile(
 
     spark = get_spark_session()
     df = spark.sql(sql_stmt)
-    df = df.drop("_rnk")
+    df = df.drop("_rnk", "event_partition_date")
 
     return df
 
