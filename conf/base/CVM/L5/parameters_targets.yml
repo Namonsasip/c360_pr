@@ -39,8 +39,3 @@ targets:
       inactivity_length: 60
       blindspot: 14
       target_type: 'class'
-    churn90:
-      colname: 'churn90'
-      inactivity_length: 90
-      blindspot: 14
-      target_type: 'class'
