@@ -1,6 +1,5 @@
 import logging
 
-
 def auto_path_mapping_project_context(catalog, running_environment):
     """
     :param catalog:
@@ -15,7 +14,6 @@ def auto_path_mapping_project_context(catalog, running_environment):
         metadata_table = catalog.load("params:metadata_path")['on_cloud_metadata']
         util_path = catalog.load("params:metadata_path")['on_cloud_util']
         dq_path = catalog.load("params:metadata_path")['on_cloud_dq']
-
     for curr_domain in catalog.load("params:cloud_on_prim_path_conversion"):
         search_pattern = curr_domain["search_pattern"]
         replace_pattern = search_pattern.replace("/", "")
