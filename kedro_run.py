@@ -19,7 +19,7 @@ def run_command(command):
             if output == '' and process.poll() is not None:
                 break
             if output:
-                if output.startswith("Above") or output.startswith("Below"):
+                if output.startswith("[Stage"):
                     pass
                 else:
                     print(output.strip())
