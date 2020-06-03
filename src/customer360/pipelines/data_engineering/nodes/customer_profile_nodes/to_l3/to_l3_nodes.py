@@ -162,7 +162,7 @@ def union_monthly_cust_profile(
         return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
-
+    cust_prof_daily_df = cust_prof_daily_df.drop("start_of_week")
     cust_prof_daily_df.createOrReplaceTempView("cust_prof_daily_df")
 
     sql_stmt = """
