@@ -44,7 +44,8 @@ def sales_to_l2_pipeline(**kwargs):
                  "l0_product_pru_m_ontop_master_for_l2_sales_number_and_volume_transaction_weekly",
                  "l2_customer_profile_union_weekly_feature_for_l2_sales_number_and_volume_transaction_weekly",
                  "params:l2_sales_number_and_volume_transaction",
-                 "params:l2_sales_feature_on_top_transactions_latest"],
+                 "params:l2_sales_feature_on_top_transactions_latest",
+                 "params:exception_partition_list_for_l0_sales_drm_t_ontop_package_channel"],
                 "l2_sales_number_and_volume_transaction_weekly"
                  ),
 

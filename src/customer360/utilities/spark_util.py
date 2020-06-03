@@ -52,6 +52,8 @@ def get_spark_session() -> SparkSession:
 
 def get_spark_empty_df(schema=None) -> DataFrame:
     """
+    Purpose: This is a helper function which is used to create and return an empty dataset.
+    It can be used at multiple places in the code wherever required.
     :return:
     """
     if schema is None:

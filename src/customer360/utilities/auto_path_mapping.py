@@ -1,26 +1,30 @@
 import logging
 
+
 def auto_path_mapping_project_context(catalog, running_environment):
     """
     :param catalog:
     :return:
     """
     temp_list = []
+    if running_environment.lower() == 'on_premise':
+        metadata_table = catalog.load("params:metadata_path")['on_premise_metadata']
+        util_path = catalog.load("params:metadata_path")['on_premise_util']
+        dq_path = catalog.load("params:metadata_path")['on_premise_dq']
+    else:
+        metadata_table = catalog.load("params:metadata_path")['on_cloud_metadata']
+        util_path = catalog.load("params:metadata_path")['on_cloud_util']
+        dq_path = catalog.load("params:metadata_path")['on_cloud_dq']
+
     for curr_domain in catalog.load("params:cloud_on_prim_path_conversion"):
         search_pattern = curr_domain["search_pattern"]
         replace_pattern = search_pattern.replace("/", "")
         if running_environment.lower() == 'on_premise':
             source_prefix = curr_domain["source_path_on_prem_prefix"]
             target_prefix = curr_domain["target_path_on_prem_prefix"]
-            metadata_table = catalog.load("params:metadata_path")['on_premise_metadata']
-            util_path = catalog.load("params:metadata_path")['on_premise_util']
-            dq_path = catalog.load("params:metadata_path")['on_premise_dq']
         else:
             source_prefix = curr_domain["source_path_on_cloud_prefix"]
             target_prefix = curr_domain["target_path_on_cloud_prefix"]
-            metadata_table = catalog.load("params:metadata_path")['on_cloud_metadata']
-            util_path = catalog.load("params:metadata_path")['on_cloud_util']
-            dq_path = catalog.load("params:metadata_path")['on_cloud_dq']
         for curr_catalog in catalog.list():
             if type(catalog._data_sets[curr_catalog]).__name__ == "SparkDbfsDataSet"\
                     or type(catalog._data_sets[curr_catalog]).__name__ == "SparkIgnoreMissingPathDataset":
