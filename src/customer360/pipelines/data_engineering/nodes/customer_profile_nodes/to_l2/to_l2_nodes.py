@@ -22,6 +22,7 @@ def union_weekly_cust_profile(
 
     ################################# End Implementing Data availability checks ###############################
 
+    cust_prof_daily_df = cust_prof_daily_df.drop("start_of_month")
     cust_prof_daily_df.createOrReplaceTempView("cust_prof_daily_df")
 
     sql_stmt = """
