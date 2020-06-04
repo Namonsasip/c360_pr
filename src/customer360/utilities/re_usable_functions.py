@@ -42,6 +42,13 @@ def union_dataframes_with_missing_cols(df_input_or_list, *args):
 
 
 def check_empty_dfs(df_input_or_list):
+    """
+    Purpose: Its purpose is to check whether the input datasets are empty or not.
+    You can input a single or a list of datasets. The return value would be an empty dataset if any one of the
+    input dataset is empty other-wise the function will return false.
+    :param df_input_or_list:
+    :return:
+    """
     if type(df_input_or_list) is list:
         df_list = df_input_or_list
     elif type(df_input_or_list) is DataFrame:
@@ -109,7 +116,8 @@ def _l1_join_with_customer_profile(
         current_item
 ) -> DataFrame:
 
-    cust_profile_col_to_select = list(config["join_column_with_cust_profile"].keys()) + ["start_of_week", "start_of_month", "subscription_identifier"]
+    cust_profile_col_to_select = list(config["join_column_with_cust_profile"].keys()) + \
+                                 ["start_of_week", "start_of_month", "access_method_num", "subscription_identifier", "national_id_card"]
     cust_profile_col_to_select = list(set(cust_profile_col_to_select))  # remove duplicates
 
     if not isinstance(current_item[0], datetime):
@@ -134,7 +142,8 @@ def _l2_join_with_customer_profile(
         current_item
 ) -> DataFrame:
 
-    cust_profile_col_selection = set(list(config["join_column_with_cust_profile"].keys()) + ["subscription_identifier"])
+    cust_profile_col_selection = set(list(config["join_column_with_cust_profile"].keys())
+                                     + ["access_method_num", "subscription_identifier", "national_id_card"])
     # grouping all distinct customer per week
     filtered_cust_profile_df = (cust_profile_df
                                 .filter(F.col("start_of_week").isin(current_item))
@@ -159,7 +168,8 @@ def _l3_join_with_customer_profile(
     config["join_column_with_cust_profile"]["start_of_month"] = config["join_column_with_cust_profile"]["partition_month"]
     del config["join_column_with_cust_profile"]["partition_month"]
 
-    cust_profile_col_selection = set(list(config["join_column_with_cust_profile"].keys()) + ["subscription_identifier"])
+    cust_profile_col_selection = set(list(config["join_column_with_cust_profile"].keys())
+                                     + ["access_method_num", "subscription_identifier", "national_id_card"])
 
     filtered_cust_profile_df = (cust_profile_df
                                 .withColumnRenamed("partition_month", "start_of_month")
@@ -350,6 +360,7 @@ def __is_valid_input_df(
 def data_non_availability_and_missing_check(df, grouping, par_col, target_table_name, missing_data_check_flg='N',
                                             exception_partitions=None):
     """
+    Purpose:
     This function will check two scenario's:
         1. Whether any partition (daily/weekly/monthly) is completely missing or not.
         2. Whether any daily level data partition (only in case of weekly/monthly) is missing or not.
@@ -377,11 +388,9 @@ def data_non_availability_and_missing_check(df, grouping, par_col, target_table_
     spark = get_spark_session()
 
     if running_environment.lower() == 'on_premise':
-        mtdt_tbl = spark.read.parquet('/projects/prod/c360/data/metadata/metadata_table/')
+        mtdt_tbl = spark.read.parquet('/projects/prod/c360/data/UTILITIES/metadata_table')
     else:
-        mtdt_tbl = spark.read.parquet('/mnt/customer360-blob-output/C360/metadata_table/')
-
-    #mtdt_tbl = spark.read.parquet('/mnt/customer360-blob-output/C360/metadata_table/')
+        mtdt_tbl = spark.read.parquet('/mnt/customer360-blob-output/C360/UTILITIES/metadata_table')
 
     mtdt_tbl.createOrReplaceTempView("mtdt_tbl")
     df.createOrReplaceTempView("df")

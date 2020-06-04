@@ -1,0 +1,295 @@
+
+l2_sales_number_and_volume_transaction:
+  feature_list:
+    # ---------------- share -------------
+    share_of_number_ussd_on_top_transaction: "(sum(case when (lower(cmd_channel_type) = 'ussd') then 1 else 0 end))/count(*)"
+    share_of_volume_ussd_on_top_transaction: "(sum(case when (lower(cmd_channel_type) = 'ussd') then promotion_price_amount else 0 end))/count(*)"
+
+    share_of_number_call_center_on_top_transaction: "(sum(case when (lower(cmd_channel_type) = 'call center' or lower(cmd_channel_type) like 'ivr%' )then 1 else 0 end))/count(*)"
+    share_of_volume_call_center_on_top_transaction: "(sum(case when (lower(cmd_channel_type) = 'call center' or lower(cmd_channel_type) like 'ivr%' )then promotion_price_amount else 0 end))/count(*)"
+
+    share_of_number_my_ais_app_on_top_transaction: "(sum(case when (lower(cmd_channel_type) = 'online channel' and lower(cmd_channel_sub_type) = 'myais' ) then 1 else 0 end))/count(*)"
+    share_of_volume_my_ais_app_on_top_transaction: "(sum(case when (lower(cmd_channel_type) = 'online channel' and lower(cmd_channel_sub_type) = 'myais' ) then promotion_price_amount else 0 end))/count(*)"
+
+    share_of_number_retail_stores_on_top_transaction: "(sum(case when ( lower(cmd_channel_type) like 'ais%' or
+                                                    lower(cmd_channel_type) = 'asp shop' or
+                                                    lower(cmd_channel_type) = 'corperate'  or
+                                                    lower(cmd_channel_type) = 'dealer' or
+                                                    lower(cmd_channel_type) = 'direct sale' or
+                                                    lower(cmd_channel_type) = 'easy app' or
+                                                    lower(cmd_channel_type) = 'it channel' or
+                                                    lower(cmd_channel_type) = 'modern trade' or
+                                                    lower(cmd_channel_type) = 'retail chain' or
+                                                    lower(cmd_channel_type) = 'sales' or
+                                                    lower(cmd_channel_type) = 'telecom' or
+                                                    lower(cmd_channel_type) = 'telewiz shop') then 1 else 0 end))/count(*)"
+    share_of_volume_retail_stores_on_top_transaction: "(sum(case when ( lower(cmd_channel_type) like 'ais%' or
+                                                    lower(cmd_channel_type) = 'asp shop' or
+                                                    lower(cmd_channel_type) = 'corperate'  or
+                                                    lower(cmd_channel_type) = 'dealer' or
+                                                    lower(cmd_channel_type) = 'direct sale' or
+                                                    lower(cmd_channel_type) = 'easy app' or
+                                                    lower(cmd_channel_type) = 'it channel' or
+                                                    lower(cmd_channel_type) = 'modern trade' or
+                                                    lower(cmd_channel_type) = 'retail chain' or
+                                                    lower(cmd_channel_type) = 'sales' or
+                                                    lower(cmd_channel_type) = 'telecom' or
+                                                    lower(cmd_channel_type) = 'telewiz shop') then promotion_price_amount else 0 end))/count(*)"
+
+    share_of_number_web_portal_number_on_top_transaction: "(sum(case when ((lower(cmd_channel_type) = 'online channel' and (lower(cmd_channel_sub_type) != 'myais' or lower(cmd_channel_sub_type) is null)) or
+    lower(cmd_channel_type) = 'eservice' or
+    lower(cmd_channel_type) = 'online'  or
+    lower(cmd_channel_type) = 'onlinestore' ) then 1 else 0 end))/count(*)"
+    share_of_volume_web_portal_number_on_top_transaction: "(sum(case when ((lower(cmd_channel_type) = 'online channel' and (lower(cmd_channel_sub_type) != 'myais' or lower(cmd_channel_sub_type) is null)) or
+    lower(cmd_channel_type) = 'eservice' or
+    lower(cmd_channel_type) = 'online'  or
+    lower(cmd_channel_type) = 'onlinestore' ) then promotion_price_amount else 0 end))/count(*)"
+    # --------------- ussd -----------
+    ussd_number_of_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'ussd') then 1 else 0 end)"
+    ussd_volume_of_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'ussd') then promotion_price_amount else 0 end)"
+    ussd_number_of_data_activation_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'ussd' and lower(package_type) = 'data') then 1 else 0 end)"
+    ussd_volume_of_data_activation_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'ussd' and lower(package_type) = 'data') then promotion_price_amount else 0 end)"
+    ussd_number_of_voice_activation_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'ussd' and lower(package_type) = 'voice') then 1 else 0 end)"
+    ussd_volume_of_voice_activation_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'ussd' and lower(package_type) = 'voice') then promotion_price_amount else 0 end)"
+    ussd_number_of_sms_activation_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'ussd' and lower(package_type) = 'sms') then 1 else 0 end)"
+    ussd_volume_of_sms_activation_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'ussd' and lower(package_type) = 'sms') then promotion_price_amount else 0 end)"
+    ussd_number_of_vas_activation_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'ussd') then 1 else 0 end)"
+    ussd_volume_of_vas_activation_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'ussd') then promotion_price_amount else 0 end)"
+
+    # -----------call center ------------------
+    call_center_number_of_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'call center' or lower(cmd_channel_type) like 'ivr%' )then 1 else 0 end)"
+    call_center_volume_of_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'call center' or lower(cmd_channel_type) like 'ivr%' )then promotion_price_amount else 0 end)"
+    call_center_number_of_data_activation_on_top_transaction: "sum(case when ((lower(cmd_channel_type) = 'call center' or lower(cmd_channel_type) like 'ivr%') and lower(package_type) = 'data') then 1 else 0 end)"
+    call_center_volume_of_data_activation_on_top_transaction: "sum(case when ((lower(cmd_channel_type) = 'call center' or lower(cmd_channel_type) like 'ivr%') and lower(package_type) = 'data') then promotion_price_amount else 0 end)"
+    call_center_number_of_voice_activation_on_top_transaction: "sum(case when ((lower(cmd_channel_type) = 'call center' or lower(cmd_channel_type) like 'ivr%') and lower(package_type) = 'voice') then 1 else 0 end)"
+    call_center_volume_of_voice_activation_on_top_transaction: "sum(case when ((lower(cmd_channel_type) = 'call center' or lower(cmd_channel_type) like 'ivr%') and lower(package_type) = 'voice') then promotion_price_amount else 0 end)"
+    call_center_number_of_sms_activation_on_top_transaction:  "sum(case when ((lower(cmd_channel_type) = 'call center' or lower(cmd_channel_type) like 'ivr%') and lower(package_type) = 'sms') then 1 else 0 end)"
+    call_center_volume_of_sms_activation_on_top_transaction: "sum(case when ((lower(cmd_channel_type) = 'call center' or lower(cmd_channel_type) like 'ivr%') and lower(package_type) = 'sms') then promotion_price_amount else 0 end)"
+    call_center_number_of_vas_activation_on_top_transaction: "sum(case when ((lower(cmd_channel_type) = 'call center' or lower(cmd_channel_type) like 'ivr%')) then 1 else 0 end)"
+    call_center_volume_of_vas_activation_on_top_transaction: "sum(case when ((lower(cmd_channel_type) = 'call center' or lower(cmd_channel_type) like 'ivr%')) then promotion_price_amount else 0 end)"
+
+    # --------------------- my ais app --------------------
+    my_ais_app_number_of_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'online channel' and lower(cmd_channel_sub_type) = 'myais' ) then 1 else 0 end)"
+    my_ais_app_volume_of_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'online channel' and lower(cmd_channel_sub_type) = 'myais' ) then promotion_price_amount else 0 end)"
+    my_ais_app_number_of_data_activation_on_top_transaction:  "sum(case when (lower(cmd_channel_type) = 'ussd' and lower(package_type) = 'data') then 1 else 0 end)"
+    my_ais_app_volume_of_data_activation_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'ussd' and lower(package_type) = 'data') then promotion_price_amount else 0 end)"
+    my_ais_app_number_of_voice_activation_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'ussd' and lower(package_type) = 'voice') then 1 else 0 end)"
+    my_ais_app_volume_of_voice_activation_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'ussd' and lower(package_type) = 'voice') then promotion_price_amount else 0 end)"
+    my_ais_app_number_of_sms_activation_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'ussd' and lower(package_type) = 'sms') then 1 else 0 end)"
+    my_ais_app_volume_of_sms_activation_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'ussd' and lower(package_type) = 'sms') then promotion_price_amount else 0 end)"
+    my_ais_app_number_of_vas_activation_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'ussd') then 1 else 0 end)"
+    my_ais_app_volume_of_vas_activation_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'ussd') then promotion_price_amount else 0 end)"
+    # -------------------- retail store -------------
+    retail_stores_number_of_on_top_transaction: "sum(case when ( lower(cmd_channel_type) like 'ais%' or
+                                                    lower(cmd_channel_type) = 'asp shop' or
+                                                    lower(cmd_channel_type) = 'corperate'  or
+                                                    lower(cmd_channel_type) = 'dealer' or
+                                                    lower(cmd_channel_type) = 'direct sale' or
+                                                    lower(cmd_channel_type) = 'easy app' or
+                                                    lower(cmd_channel_type) = 'it channel' or
+                                                    lower(cmd_channel_type) = 'modern trade' or
+                                                    lower(cmd_channel_type) = 'retail chain' or
+                                                    lower(cmd_channel_type) = 'sales' or
+                                                    lower(cmd_channel_type) = 'telecom' or
+                                                    lower(cmd_channel_type) = 'telewiz shop') then 1 else 0 end)"
+    retail_stores_volume_of_on_top_transaction: "sum(case when ( lower(cmd_channel_type) like 'ais%' or
+                                                    lower(cmd_channel_type) = 'asp shop' or
+                                                    lower(cmd_channel_type) = 'corperate'  or
+                                                    lower(cmd_channel_type) = 'dealer' or
+                                                    lower(cmd_channel_type) = 'direct sale' or
+                                                    lower(cmd_channel_type) = 'easy app' or
+                                                    lower(cmd_channel_type) = 'it channel' or
+                                                    lower(cmd_channel_type) = 'modern trade' or
+                                                    lower(cmd_channel_type) = 'retail chain' or
+                                                    lower(cmd_channel_type) = 'sales' or
+                                                    lower(cmd_channel_type) = 'telecom' or
+                                                    lower(cmd_channel_type) = 'telewiz shop') then promotion_price_amount else 0 end)"
+    retail_stores_number_of_data_activation_on_top_transaction: "sum(case when ((lower(cmd_channel_type) like 'ais%' or
+    lower(cmd_channel_type) = 'asp shop' or
+    lower(cmd_channel_type) = 'corperate'  or
+    lower(cmd_channel_type) = 'dealer' or
+    lower(cmd_channel_type) = 'direct sale' or
+    lower(cmd_channel_type) = 'easy app' or
+    lower(cmd_channel_type) = 'it channel' or
+    lower(cmd_channel_type) = 'modern trade' or
+    lower(cmd_channel_type) = 'retail chain' or
+    lower(cmd_channel_type) = 'sales' or
+    lower(cmd_channel_type) = 'telecom' or
+    lower(cmd_channel_type) = 'telewiz shop') and lower(package_type) = 'data') then 1 else 0 end)"
+    retail_stores_volume_of_data_activation_on_top_transaction: "sum(case when ((lower(cmd_channel_type) like 'ais%' or
+    lower(cmd_channel_type) = 'asp shop' or
+    lower(cmd_channel_type) = 'corperate'  or
+    lower(cmd_channel_type) = 'dealer' or
+    lower(cmd_channel_type) = 'direct sale' or
+    lower(cmd_channel_type) = 'easy app' or
+    lower(cmd_channel_type) = 'it channel' or
+    lower(cmd_channel_type) = 'modern trade' or
+    lower(cmd_channel_type) = 'retail chain' or
+    lower(cmd_channel_type) = 'sales' or
+    lower(cmd_channel_type) = 'telecom' or
+    lower(cmd_channel_type) = 'telewiz shop') and lower(package_type) = 'data') then promotion_price_amount else 0 end)"
+    retail_stores_number_of_voice_activation_on_top_transaction: "sum(case when ((lower(cmd_channel_type) like 'ais%' or
+    lower(cmd_channel_type) = 'asp shop' or
+    lower(cmd_channel_type) = 'corperate'  or
+    lower(cmd_channel_type) = 'dealer' or
+    lower(cmd_channel_type) = 'direct sale' or
+    lower(cmd_channel_type) = 'easy app' or
+    lower(cmd_channel_type) = 'it channel' or
+    lower(cmd_channel_type) = 'modern trade' or
+    lower(cmd_channel_type) = 'retail chain' or
+    lower(cmd_channel_type) = 'sales' or
+    lower(cmd_channel_type) = 'telecom' or
+    lower(cmd_channel_type) = 'telewiz shop') and lower(package_type) = 'voice') then 1 else 0 end)"
+    retail_stores_volume_of_voice_activation_on_top_transaction: "sum(case when ((lower(cmd_channel_type) like 'ais%' or
+    lower(cmd_channel_type) = 'asp shop' or
+    lower(cmd_channel_type) = 'corperate'  or
+    lower(cmd_channel_type) = 'dealer' or
+    lower(cmd_channel_type) = 'direct sale' or
+    lower(cmd_channel_type) = 'easy app' or
+    lower(cmd_channel_type) = 'it channel' or
+    lower(cmd_channel_type) = 'modern trade' or
+    lower(cmd_channel_type) = 'retail chain' or
+    lower(cmd_channel_type) = 'sales' or
+    lower(cmd_channel_type) = 'telecom' or
+    lower(cmd_channel_type) = 'telewiz shop') and lower(package_type) = 'voice') then promotion_price_amount else 0 end)"
+    retail_stores_number_of_sms_activation_on_top_transaction: "sum(case when ((lower(cmd_channel_type) like 'ais%' or
+    lower(cmd_channel_type) = 'asp shop' or
+    lower(cmd_channel_type) = 'corperate'  or
+    lower(cmd_channel_type) = 'dealer' or
+    lower(cmd_channel_type) = 'direct sale' or
+    lower(cmd_channel_type) = 'easy app' or
+    lower(cmd_channel_type) = 'it channel' or
+    lower(cmd_channel_type) = 'modern trade' or
+    lower(cmd_channel_type) = 'retail chain' or
+    lower(cmd_channel_type) = 'sales' or
+    lower(cmd_channel_type) = 'telecom' or
+    lower(cmd_channel_type) = 'telewiz shop') and lower(package_type) = 'sms') then 1 else 0 end)"
+    retail_stores_volume_of_sms_activation_on_top_transaction: "sum(case when ((lower(cmd_channel_type) like 'ais%' or
+    lower(cmd_channel_type) = 'asp shop' or
+    lower(cmd_channel_type) = 'corperate'  or
+    lower(cmd_channel_type) = 'dealer' or
+    lower(cmd_channel_type) = 'direct sale' or
+    lower(cmd_channel_type) = 'easy app' or
+    lower(cmd_channel_type) = 'it channel' or
+    lower(cmd_channel_type) = 'modern trade' or
+    lower(cmd_channel_type) = 'retail chain' or
+    lower(cmd_channel_type) = 'sales' or
+    lower(cmd_channel_type) = 'telecom' or
+    lower(cmd_channel_type) = 'telewiz shop') and lower(package_type) = 'sms') then promotion_price_amount else 0 end)"
+    retail_stores_number_of_vas_activation_on_top_transaction: "sum(case when ((lower(cmd_channel_type) like 'ais%' or
+    lower(cmd_channel_type) = 'asp shop' or
+    lower(cmd_channel_type) = 'corperate'  or
+    lower(cmd_channel_type) = 'dealer' or
+    lower(cmd_channel_type) = 'direct sale' or
+    lower(cmd_channel_type) = 'easy app' or
+    lower(cmd_channel_type) = 'it channel' or
+    lower(cmd_channel_type) = 'modern trade' or
+    lower(cmd_channel_type) = 'retail chain' or
+    lower(cmd_channel_type) = 'sales' or
+    lower(cmd_channel_type) = 'telecom' or
+    lower(cmd_channel_type) = 'telewiz shop')) then 1 else 0 end)"
+    retail_stores_volume_of_vas_activation_on_top_transaction: "sum(case when ((lower(cmd_channel_type) like 'ais%' or
+    lower(cmd_channel_type) = 'asp shop' or
+    lower(cmd_channel_type) = 'corperate'  or
+    lower(cmd_channel_type) = 'dealer' or
+    lower(cmd_channel_type) = 'direct sale' or
+    lower(cmd_channel_type) = 'easy app' or
+    lower(cmd_channel_type) = 'it channel' or
+    lower(cmd_channel_type) = 'modern trade' or
+    lower(cmd_channel_type) = 'retail chain' or
+    lower(cmd_channel_type) = 'sales' or
+    lower(cmd_channel_type) = 'telecom' or
+    lower(cmd_channel_type) = 'telewiz shop')) then promotion_price_amount else 0 end)"
+
+    web_portal_number_of_on_top_transaction:  "sum(case when ((lower(cmd_channel_type) = 'online channel' and (lower(cmd_channel_sub_type) != 'myais' or lower(cmd_channel_sub_type) is null)) or
+    lower(cmd_channel_type) = 'eservice' or
+    lower(cmd_channel_type) = 'online'  or
+    lower(cmd_channel_type) = 'onlinestore' ) then 1 else 0 end)"
+    web_portal_volume_of_on_top_transaction:  "sum(case when ((lower(cmd_channel_type) = 'online channel' and (lower(cmd_channel_sub_type) != 'myais' or lower(cmd_channel_sub_type) is null)) or
+    lower(cmd_channel_type) = 'eservice' or
+    lower(cmd_channel_type) = 'online'  or
+    lower(cmd_channel_type) = 'onlinestore' ) then promotion_price_amount else 0 end)"
+
+    web_portal_number_of_data_activation_on_top_transaction: "sum(case when (((lower(cmd_channel_type) = 'online channel' and (lower(cmd_channel_sub_type) != 'myais' or lower(cmd_channel_sub_type) is null)) or
+    lower(cmd_channel_type) = 'eservice' or
+    lower(cmd_channel_type) = 'online'  or
+    lower(cmd_channel_type) = 'onlinestore' ) and lower(package_type) = 'data') then 1 else 0 end)"
+    web_portal_volume_of_data_activation_on_top_transaction: "sum(case when (((lower(cmd_channel_type) = 'online channel' and (lower(cmd_channel_sub_type) != 'myais' or lower(cmd_channel_sub_type) is null)) or
+    lower(cmd_channel_type) = 'eservice' or
+    lower(cmd_channel_type) = 'online'  or
+    lower(cmd_channel_type) = 'onlinestore' ) and lower(package_type) = 'data') then promotion_price_amount else 0 end)"
+    web_portal_number_of_voice_activation_on_top_transaction: "sum(case when (((lower(cmd_channel_type) = 'online channel' and (lower(cmd_channel_sub_type) != 'myais' or lower(cmd_channel_sub_type) is null)) or
+    lower(cmd_channel_type) = 'eservice' or
+    lower(cmd_channel_type) = 'online'  or
+    lower(cmd_channel_type) = 'onlinestore' ) and lower(package_type) = 'voice') then 1 else 0 end)"
+    web_portal_volume_of_voice_activation_on_top_transaction: "sum(case when (((lower(cmd_channel_type) = 'online channel' and (lower(cmd_channel_sub_type) != 'myais' or lower(cmd_channel_sub_type) is null)) or
+    lower(cmd_channel_type) = 'eservice' or
+    lower(cmd_channel_type) = 'online'  or
+    lower(cmd_channel_type) = 'onlinestore' ) and lower(package_type) = 'voice') then promotion_price_amount else 0 end)"
+    web_portal_number_of_sms_activation_on_top_transaction: "sum(case when (((lower(cmd_channel_type) = 'online channel' and (lower(cmd_channel_sub_type) != 'myais' or lower(cmd_channel_sub_type) is null)) or
+    lower(cmd_channel_type) = 'eservice' or
+    lower(cmd_channel_type) = 'online'  or
+    lower(cmd_channel_type) = 'onlinestore' ) and lower(package_type) = 'sms') then 1 else 0 end)"
+    web_portal_volume_of_sms_activation_on_top_transaction: "sum(case when (((lower(cmd_channel_type) = 'online channel' and (lower(cmd_channel_sub_type) != 'myais' or lower(cmd_channel_sub_type) is null)) or
+    lower(cmd_channel_type) = 'eservice' or
+    lower(cmd_channel_type) = 'online'  or
+    lower(cmd_channel_type) = 'onlinestore' ) and lower(package_type) = 'sms') then promotion_price_amount else 0 end)"
+    web_portal_number_of_vas_activation_on_top_transaction: "sum(case when (((lower(cmd_channel_type) = 'online channel' and (lower(cmd_channel_sub_type) != 'myais' or lower(cmd_channel_sub_type) is null)) or
+    lower(cmd_channel_type) = 'eservice' or
+    lower(cmd_channel_type) = 'online'  or
+    lower(cmd_channel_type) = 'onlinestore' )) then 1 else 0 end)"
+    web_portal_volume_of_vas_activation_on_top_transaction: "sum(case when (((lower(cmd_channel_type) = 'online channel' and (lower(cmd_channel_sub_type) != 'myais' or lower(cmd_channel_sub_type) is null)) or
+    lower(cmd_channel_type) = 'eservice' or
+    lower(cmd_channel_type) = 'online'  or
+    lower(cmd_channel_type) = 'onlinestore' )) then promotion_price_amount else 0 end)"
+
+  granularity: "start_of_week,access_method_num"
+
+# ----------lastest ------------------
+l2_sales_feature_on_top_transactions_latest:
+  feature_list:
+    start_of_week: "start_of_week"
+    access_method_num: "access_method_num"
+    ussd_name_of_latest_on_top_transaction: "first_value( (case when (lower(cmd_channel_type) = 'ussd') then offering_title else null end), true) over(partition by
+    start_of_week,
+    access_method_num
+    order by event_start_dttm desc)"
+
+    call_center_name_of_latest_on_top_transaction: "first_value( (case when (lower(cmd_channel_type) = 'call center' or lower(cmd_channel_type) like 'ivr%' ) then offering_title else null end), true) over(partition by
+    start_of_week,
+    access_method_num
+    order by event_start_dttm desc)"
+
+    my_ais_app_name_of_latest_on_top_transaction: "first_value( (case when (lower(cmd_channel_type) = 'online channel' and lower(cmd_channel_sub_type) = 'myais') then offering_title else null end), true) over(partition by
+    start_of_week,
+    access_method_num
+    order by event_start_dttm desc)"
+
+    web_portal_name_of_latest_on_top_transaction: "first_value( (case when ((lower(cmd_channel_type) = 'online channel' and (lower(cmd_channel_sub_type) != 'myais' or lower(cmd_channel_sub_type) is null)) or
+    lower(cmd_channel_type) = 'eservice' or
+    lower(cmd_channel_type) = 'online'  or
+    lower(cmd_channel_type) = 'onlinestore' ) then offering_title else null end) , true) over(partition by
+    start_of_week,
+    access_method_num
+    order by event_start_dttm desc)"
+
+    retail_storesname_of_latest_on_top_transaction: "first_value( (case when (lower(cmd_channel_type) like 'ais%' or
+    lower(cmd_channel_type) = 'asp shop' or
+    lower(cmd_channel_type) = 'corperate'  or
+    lower(cmd_channel_type) = 'dealer' or
+    lower(cmd_channel_type) = 'direct sale' or
+    lower(cmd_channel_type) = 'easy app' or
+    lower(cmd_channel_type) = 'it channel' or
+    lower(cmd_channel_type) = 'modern trade' or
+    lower(cmd_channel_type) = 'retail chain' or
+    lower(cmd_channel_type) = 'sales' or
+    lower(cmd_channel_type) = 'telecom' or
+    lower(cmd_channel_type) = 'telewiz shop') then offering_title else null end), true) over(partition by
+    start_of_week,
+    access_method_num
+    order by event_start_dttm desc)"
+
+  granularity: ""
+
+
+

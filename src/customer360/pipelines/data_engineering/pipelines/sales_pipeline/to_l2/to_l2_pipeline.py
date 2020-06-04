@@ -25,25 +25,29 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""Example code for the nodes in the example pipeline. This code is meant
+just for illustrating basic Kedro features.
+
+PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
+"""
 
 from kedro.pipeline import Pipeline, node
-
-from customer360.utilities.config_parser import node_from_config
-from customer360.pipelines.data_engineering.nodes.customer_profile_nodes.to_l4.to_l4_nodes import *
+from customer360.pipelines.data_engineering.nodes.sales_nodes.to_l2.to_l2_nodes import *
 
 
-def customer_profile_to_l4_pipeline(**kwargs):
+def sales_to_l2_pipeline(**kwargs):
     return Pipeline(
         [
-            # node(df_copy_for_l4_customer_profile_ltv_to_date,
-            #      "l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l4_customer_profile_ltv_to_date",
-            #      "int_l4_customer_profile_ltv_to_date"
-            #      ),
             node(
-                calculate_ltv_to_date,
-                ["l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_for_l4_customer_profile_ltv_to_date",
-                 "l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_for_l4_customer_profile_ltv_to_date"],
-                "l4_customer_profile_ltv_to_date"
-            ),
-        ]
+                sale_product_customer_master_features,
+                ["l0_sales_drm_t_ontop_package_channel",
+                 "l0_product_pru_m_ontop_master_for_l2_sales_number_and_volume_transaction_weekly",
+                 "l2_customer_profile_union_weekly_feature_for_l2_sales_number_and_volume_transaction_weekly",
+                 "params:l2_sales_number_and_volume_transaction",
+                 "params:l2_sales_feature_on_top_transactions_latest",
+                 "params:exception_partition_list_for_l0_sales_drm_t_ontop_package_channel"],
+                "l2_sales_number_and_volume_transaction_weekly"
+                 ),
+
+        ], name="sales_to_l2_pipeline"
     )

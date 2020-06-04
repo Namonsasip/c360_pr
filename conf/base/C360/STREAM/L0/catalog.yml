@@ -22,7 +22,6 @@ l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_content_type_feat
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    mergeSchema: true
     lookup_table_name: 'int_l1_streaming_content_type_features'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -36,7 +35,6 @@ l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_tv_channel_featur
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    mergeSchema: true
     lookup_table_name: 'int_l1_streaming_tv_channel_features'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -51,7 +49,6 @@ l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l0_streaming_vimmi_table:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    mergeSchema: true
     lookup_table_name: 'int_l0_streaming_vimmi_table'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -65,7 +62,6 @@ l0_streaming_ru_a_onair_vimmi_usage_daily_for_l1_streaming_fav_tv_show_by_episod
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    mergeSchema: true
     lookup_table_name: 'l1_streaming_fav_tv_show_by_episode_watched'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -85,7 +81,6 @@ l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_video_service_feature:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    mergeSchema: true
     lookup_table_name: 'int_l1_streaming_video_service_feature'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -99,7 +94,6 @@ l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_music_service_feature:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    mergeSchema: true
     lookup_table_name: 'int_l1_streaming_music_service_feature'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -113,7 +107,6 @@ l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_esport_service_feature:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    mergeSchema: true
     lookup_table_name: 'int_l1_streaming_esport_service_feature'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -127,21 +120,28 @@ l0_streaming_soc_mobile_app_daily_for_l1_streaming_visit_count_and_download_traf
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    mergeSchema: true
     lookup_table_name: 'l1_streaming_visit_count_and_download_traffic_feature'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
 
 
+l0_mobile_app_master_for_l1_streaming_session_duration_feature:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/mobile_app_master/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'no'
+
+
 l0_streaming_soc_mobile_app_daily_for_l1_streaming_session_duration_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/stream_soc_mobile_app_daily/
+  filepath: base_path/STREAM/stream_soc_mobile_app_daily_temp/ # TODO: Change to real path provided by AIS
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    mergeSchema: true
     lookup_table_name: 'l1_streaming_session_duration_feature'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'

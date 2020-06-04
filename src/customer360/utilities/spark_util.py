@@ -43,7 +43,7 @@ def get_spark_session() -> SparkSession:
         # Dont delete this line. This allow spark to only overwrite the partition
         # saved to parquet instead of entire table folder
         spark.conf.set("spark.sql.sources.partitionOverwriteMode", "DYNAMIC")
-        spark.conf.set("spark.sql.parquet.mergeSchema", "true")
+       # spark.conf.set("spark.sql.parquet.mergeSchema", "true")
 
     spark.sparkContext.setLogLevel("WARN")
 
@@ -52,6 +52,8 @@ def get_spark_session() -> SparkSession:
 
 def get_spark_empty_df(schema=None) -> DataFrame:
     """
+    Purpose: This is a helper function which is used to create and return an empty dataset.
+    It can be used at multiple places in the code wherever required.
     :return:
     """
     if schema is None:
