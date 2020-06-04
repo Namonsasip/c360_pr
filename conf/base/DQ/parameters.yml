@@ -34,7 +34,7 @@ percentiles:
 dq_consistency_path_prefix: /mnt/customer360-blob-output/DQ/dq_consistency_benchmark_dataset/
 
 benchmark_start_date: "2019-08-01"
-benchmark_end_date: "2019-12-31"
+benchmark_end_date: "2020-04-30"
 
 features_for_dq:
 #  l3_customer_profile_include_1mo_non_active:
@@ -129,8 +129,8 @@ features_for_dq:
 #    - feature: max_device_smartphone_weekly_last_week
 #    - feature: max_device_standardphone_weekly_last_week
 #    - feature: max_device_legacyphone_weekly_last_week
-l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
-    - feature: max_rev_arpu_total_revenue_monthly_last_three_month
+#l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
+#    - feature: max_rev_arpu_total_revenue_monthly_last_three_month
 #  l4_streaming_visit_count_and_download_traffic_feature:
 #    - feature: sum_download_kb_traffic_youtube_video_sum_weekly_last_twelve_week
 #    - feature: sum_download_kb_traffic_facebook_video_sum_weekly_last_week
@@ -140,7 +140,7 @@ l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
 #    - feature: sum_download_kb_traffic_netflix_video_sum_weekly_last_week
 #  l4_usage_prepaid_postpaid_daily_features:
 #    - feature: '*'
-#  l4_usage_postpaid_prepaid_weekly_features_sum:
-#    - feature: '*'
+  l4_usage_postpaid_prepaid_weekly_features_sum:
+    - feature: '*'
 #  l4_device_summary_features:
 #    - feature: '*'
