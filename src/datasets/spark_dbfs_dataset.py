@@ -298,8 +298,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             logging.info("Source data is fetched")
             logging.info("Checking whether source data is empty or not")
 
-            #if len(src_data.head(1)) == 0:
-            if src_data.count() == 0:
+            if len(src_data.head(1)) == 0:
+            #if src_data.count() == 0:
                 raise ValueError("Source dataset is empty")
             elif lookup_table_name is None or lookup_table_name == "":
                 raise ValueError("lookup table name can't be empty")
