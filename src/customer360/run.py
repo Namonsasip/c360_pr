@@ -347,6 +347,8 @@ class DataQualityProjectContext(ProjectContext):
             conf_catalog, conf_creds, save_version, journal, load_versions
         )
         catalog.add_feed_dict(self._get_feed_dict())
+
+        catalog = auto_path_mapping_project_context(catalog, running_environment)
         return catalog
 
 
