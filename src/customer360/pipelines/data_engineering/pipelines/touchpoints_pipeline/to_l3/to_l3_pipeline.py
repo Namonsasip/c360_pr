@@ -78,7 +78,7 @@ def touchpoints_to_l3_pipeline(**kwargs):
 
             node(
                 dac_for_touchpoints_to_l3_pipeline_from_l1,
-                ["l1_touchpoints_ivr_features",
+                ["l1_touchpoints_ivr_features_for_l3_touchpoints_ivr_features",
                  "params:l3_touchpoints_ivr_features_tbl"],
                 "int_l3_touchpoints_ivr_features"
             ),
