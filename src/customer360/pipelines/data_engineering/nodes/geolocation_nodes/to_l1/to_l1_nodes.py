@@ -19,34 +19,14 @@ from customer360.utilities.spark_util import get_spark_session
 
 def l1_geo_area_from_ais_store_daily(shape,masterplan,geo_cust_cell_visit_time,sql):
     geo_cust_cell_visit_time  = add_start_of_week_and_month(geo_cust_cell_visit_time, "time_in")
-    # .withColumn("recharge_time", F.lit(datetime.strptime("01/01/2020 08:35:55", '%d/%m/%Y %H:%M:%S')))
-    # input_df = input_df.withColumn("start_of_week", F.to_date(F.date_trunc('week', F.col(date_column))))
-    # input_df = input_df.withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col(date_column))))
-    # input_df = input_df.withColumn("event_partition_date", F.to_date(F.col(date_column)))
     geo_cust_cell_visit_time.show()
 
     max_date = masterplan.selectExpr('max(partition_date)').collect()[0][0]
     masterplan=masterplan.where('partition_date='+str(max_date))
     max_date = shape.selectExpr('max(partition_month)').collect()[0][0]
     shape=shape.where('partition_month='+str(max_date))
-
-    print('test_shape')
-    print(shape.count())
-    print(masterplan.count())
-    print(geo_cust_cell_visit_time.count())
-    shape.show()
     masterplan.createOrReplaceTempView("mst_cell_masterplan")
     shape.createOrReplaceTempView("mst_poi_shape")
-    # stmt ="""
-    # 	SELECT A.LANDMARK_SUB_NAME_EN,
-	# B.LOCATION_ID,B.LOCATION_NAME,
-	# CAST((ACOS(COS(RADIANS(90-A.LANDMARK_LATITUDE))*COS(RADIANS(90-B.LATITUDE))+SIN(RADIANS(90-A.LANDMARK_LATITUDE))*SIN(RADIANS(90-B.LATITUDE))*COS(RADIANS(A.LANDMARK_LONGITUDE - B.LONGITUDE)))*6371) AS DECIMAL(13,2)) AS DISTANCE_KM
-	# FROM mst_poi_shape A,
-	# mst_cell_masterplan B
-	# WHERE  A.landmark_cat_name_en IN ('AIS')
-	# AND CAST((ACOS(COS(RADIANS(90-A.LANDMARK_LATITUDE))*COS(RADIANS(90-B.LATITUDE))+SIN(RADIANS(90-A.LANDMARK_LATITUDE))*SIN(RADIANS(90-B.LATITUDE))*COS(RADIANS(A.LANDMARK_LONGITUDE - B.LONGITUDE)))*6371) AS DECIMAL(13,2)) <= (0.5)
-	# GROUP BY 1,2,3,4
-    # """
 
     ss = get_spark_session()
     df=ss.sql("""
@@ -60,24 +40,19 @@ def l1_geo_area_from_ais_store_daily(shape,masterplan,geo_cust_cell_visit_time,s
     GROUP BY 1,2,3,4
     """)
     df.cache()
-    print('testsetset')
-    # df.show()
     df.createOrReplaceTempView('TEMP_GEO_AIS_SHOP')
 
     geo_cust_cell_visit_time.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
 
-    print('start_ss')
     df2 = ss.sql("""SELECT A.IMSI,A.event_partition_date,A.start_of_week,A.start_of_month,SUM(DURATION) AS DURATION,count(1) AS NUM_OF_TIMES_PER_DAY 
     FROM GEO_CUST_CELL_VISIT_TIME A,
     TEMP_GEO_AIS_SHOP B 
     WHERE A.LOCATION_ID = B.LOCATION_ID 
     GROUP BY 1,2,3,4""")
     df2.cache()
-    print('end_ss')
-    df2.count()
-    df2.show()
     df2=node_from_config(df2,sql)
-
+    df.unpersist()
+    df2.unpersist()
     return df2
 
 def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit_time,sql):
@@ -89,11 +64,6 @@ def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit
     max_date = shape.selectExpr('max(partition_month)').collect()[0][0]
     shape = shape.where('partition_month=' + str(max_date))
 
-    print('test_shape')
-    print(shape.count())
-    print(masterplan.count())
-    print(geo_cust_cell_visit_time.count())
-    shape.show()
     masterplan.createOrReplaceTempView("mst_cell_masterplan")
     shape.createOrReplaceTempView("mst_poi_shape")
 
@@ -110,8 +80,6 @@ def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit
         GROUP BY 1,2,3,4
         """)
     df.cache()
-    print('testsetset')
-    df.show()
     df.createOrReplaceTempView('TEMP_GEO_AIS_SHOP')
 
     geo_cust_cell_visit_time.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
@@ -122,10 +90,10 @@ def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit
         WHERE A.LOCATION_ID = B.LOCATION_ID 
         GROUP BY 1,2,3,4""")
     df2.cache()
-    print('end_ss')
-    df2.count()
-    df2.show()
+
     df2 = node_from_config(df2, sql)
+    df.unpersist()
+    df2.unpersist()
 
     return df2
 
