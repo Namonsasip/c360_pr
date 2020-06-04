@@ -15,3 +15,7 @@ def l2_geo_area_from_ais_store_weekly(df,sql):
     df =node_from_config(df,sql)
 
     return df
+
+def l2_geo_area_from_competitor_store_weekly(df,sql):
+    df =node_from_config(df,sql)
+    return df
