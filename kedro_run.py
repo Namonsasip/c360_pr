@@ -11,7 +11,7 @@ print(kedro_run_cmd)
 
 
 def run_command(command):
-    process = subprocess.Popen(shlex.split(command), stdout=subprocess.PIPE, cwd='/home/cdsw/customer360/',
+    process = subprocess.Popen(shlex.split(command), stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd='/home/cdsw/customer360/',
                                encoding='utf8')
     with open("logfile.txt", "w") as log_file:
         while process.poll() is None:
@@ -24,8 +24,13 @@ def run_command(command):
                 else:
                     print(output.strip())
                     log_file.write(output)
-    process.communicate()
+    output, error = process.communicate()
+    if error:
+        return 1
     return process.returncode
 
 
-run_command(kedro_run_cmd)
+if run_command(kedro_run_cmd) == 0:
+    exit(0)
+else:
+    exit(1)

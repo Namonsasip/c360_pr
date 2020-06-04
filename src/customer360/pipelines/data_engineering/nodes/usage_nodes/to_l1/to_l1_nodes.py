@@ -177,7 +177,8 @@ def usage_incoming_ir_call_pipeline(input_df: DataFrame, master_df: DataFrame, s
 
 def usage_outgoing_call_pipeline(input_df: DataFrame
                                  , master_data: DataFrame
-                                 , sql: dict) -> DataFrame:
+                                 , sql: dict
+                                 , exception_partition=None) -> DataFrame:
     """
     :param input_df:
     :param master_data:
@@ -191,7 +192,7 @@ def usage_outgoing_call_pipeline(input_df: DataFrame
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
                                                        target_table_name="l1_usage_outgoing_call_relation_sum_daily",
-                                                       exception_partitions=['2019-12-01'])
+                                                       exception_partitions=exception_partition)
 
     if check_empty_dfs([input_df, master_data]):
         return get_spark_empty_df()
@@ -204,7 +205,8 @@ def usage_outgoing_call_pipeline(input_df: DataFrame
 
 def usage_incoming_call_pipeline(input_df: DataFrame
                                  , master_data: DataFrame
-                                 , sql: dict) -> DataFrame:
+                                 , sql: dict
+                                 , exception_partition=None) -> DataFrame:
     """
     :param input_df:
     :param master_data:
@@ -218,7 +220,7 @@ def usage_incoming_call_pipeline(input_df: DataFrame
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
                                                        target_table_name="l1_usage_incoming_call_relation_sum_daily",
-                                                       exception_partitions=['2019-12-01'])
+                                                       exception_partitions=exception_partition)
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -229,7 +231,7 @@ def usage_incoming_call_pipeline(input_df: DataFrame
     return return_df
 
 
-def usage_data_prepaid_pipeline(input_df, sql) -> DataFrame:
+def usage_data_prepaid_pipeline(input_df, sql, exception_partition=None) -> DataFrame:
     """
     :return:
     """
@@ -240,7 +242,7 @@ def usage_data_prepaid_pipeline(input_df, sql) -> DataFrame:
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
                                                        target_table_name="l1_usage_ru_a_gprs_cbs_usage_daily",
-                                                       exception_partitions=['2020-02-03'])
+                                                       exception_partitions=exception_partition)
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -312,7 +314,11 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
                                    l1_usage_ru_a_gprs_cbs_usage_daily_stg: DataFrame,
                                    l1_usage_ru_a_vas_postpaid_usg_daily_stg: DataFrame,
                                    l1_usage_ru_a_vas_postpaid_prepaid_daily_stg: DataFrame,
-                                   l1_customer_profile_union_daily_feature: DataFrame) -> DataFrame:
+                                   l1_customer_profile_union_daily_feature: DataFrame,
+                                   exception_partition_of_l1_usage_outgoing_call_relation_sum_daily_stg=None,
+                                   exception_partition_of_l1_usage_incoming_call_relation_sum_daily_stg=None,
+                                   exception_partition_of_l1_usage_ru_a_gprs_cbs_usage_daily_stg=None,
+                                   ) -> DataFrame:
     """
     :param l1_usage_outgoing_call_relation_sum_daily_stg:
     :param l1_usage_incoming_call_relation_sum_daily_stg:
@@ -337,13 +343,13 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
         df=l1_usage_outgoing_call_relation_sum_daily_stg,
         grouping="daily", par_col="event_partition_date",
         target_table_name="l1_usage_postpaid_prepaid_daily",
-        exception_partitions=['2019-12-01', '2020-01-03'])
+        exception_partitions=exception_partition_of_l1_usage_outgoing_call_relation_sum_daily_stg)
 
     l1_usage_incoming_call_relation_sum_daily_stg = data_non_availability_and_missing_check(
         df=l1_usage_incoming_call_relation_sum_daily_stg,
         grouping="daily", par_col="event_partition_date",
         target_table_name="l1_usage_postpaid_prepaid_daily",
-        exception_partitions=['2019-12-01'])
+        exception_partitions=exception_partition_of_l1_usage_incoming_call_relation_sum_daily_stg)
 
     l1_usage_outgoing_call_relation_sum_ir_daily_stg = data_non_availability_and_missing_check(
         df=l1_usage_outgoing_call_relation_sum_ir_daily_stg,
@@ -359,7 +365,7 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
         df=l1_usage_ru_a_gprs_cbs_usage_daily_stg,
         grouping="daily", par_col="event_partition_date",
         target_table_name="l1_usage_postpaid_prepaid_daily",
-        exception_partitions=['2020-02-03'])
+        exception_partitions=exception_partition_of_l1_usage_ru_a_gprs_cbs_usage_daily_stg)
 
     l1_usage_ru_a_vas_postpaid_usg_daily_stg = data_non_availability_and_missing_check(
         df=l1_usage_ru_a_vas_postpaid_usg_daily_stg,
