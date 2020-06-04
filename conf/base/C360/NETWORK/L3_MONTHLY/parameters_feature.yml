@@ -95,3 +95,10 @@ l3_network_volte_cqi:
     sum_volte_cqi: sum(sum_volte_cqi)
     count_volte_cqi: sum(count_volte_cqi)
   granularity: "subscription_identifier, start_of_month"
+
+l3_network_user_cqi:
+  feature_list:
+    network_cei_user_qoe: sum(sum_user_cqi)/sum(count_user_cqi)
+    sum_user_cqi: sum(sum_user_cqi)
+    count_user_cqi: sum(count_user_cqi)
+  granularity: "subscription_identifier, start_of_month"

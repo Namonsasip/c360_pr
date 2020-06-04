@@ -657,3 +657,35 @@ def build_network_volte_cqi(
                                       l1_network_volte_cqi,
                                       cust_df)
     return return_df
+
+
+def merge_user_cqi(
+        voice_cqi_df: DataFrame,
+        data_cqi_df: DataFrame,
+        im_cqi_df: DataFrame,
+        streaming_cqi_df: DataFrame,
+        web_cqi_df: DataFrame,
+        voip_cqi_df: DataFrame,
+        volte_cqi_df: DataFrame
+) -> DataFrame:
+
+    common_join_columns = [
+        "access_method_num",
+        "event_partition_date",
+        "start_of_week",
+        "subscription_identifier",
+        "start_of_month",
+    ]
+
+    return (voice_cqi_df
+            .join(data_cqi_df, on=common_join_columns, how="inner")
+            .join(im_cqi_df, on=common_join_columns, how="inner")
+            .join(streaming_cqi_df, on=common_join_columns, how="inner")
+            .join(web_cqi_df, on=common_join_columns, how="inner")
+            .join(voip_cqi_df, on=common_join_columns, how="inner")
+            .join(volte_cqi_df, on=common_join_columns, how="inner")
+            .withColumn("sum_user_cqi", f.col("sum_im_cqi") + f.col("sum_streaming_cqi") + f.col("sum_web_cqi") + f.col("sum_voip_cqi") + f.col("sum_volte_cqi"))
+            .withColumn("count_user_cqi", f.col("count_im_cqi") + f.col("count_streaming_cqi") + f.col("count_web_cqi") + f.col("count_voip_cqi") + f.col("count_volte_cqi"))
+            .withColumn("avg_user_cqi", f.col("sum_user_cqi") / f.col("count_user_cqi"))
+            .select(common_join_columns + ["sum_user_cqi", "count_user_cqi", "avg_user_cqi"])
+            )

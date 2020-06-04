@@ -130,6 +130,19 @@ def network_to_l1_pipeline(**kwargs):
                  "params:l1_network_volte_cqi",
                  "l1_customer_profile_union_daily_feature_for_l1_network_volte_cqi"],
                 "l1_network_volte_cqi"
-            )
+            ),
+            node(
+                merge_user_cqi,
+                [
+                    "l1_network_voice_features",
+                    "l1_network_data_cqi",
+                    "l1_network_im_cqi",
+                    "l1_network_streaming_cqi",
+                    "l1_network_web_cqi",
+                    "l1_network_voip_cqi",
+                    "l1_network_volte_cqi",
+                ],
+                "l1_network_user_cqi"
+            ),
         ]
     )

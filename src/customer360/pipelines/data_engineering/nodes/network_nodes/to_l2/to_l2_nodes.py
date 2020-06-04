@@ -328,3 +328,33 @@ def build_l2_network_volte_cqi(
     return_df = node_from_config(input_df, parameter)
 
     return return_df
+
+
+def build_l2_network_user_cqi(
+        input_df: DataFrame,
+        parameter: dict) -> DataFrame:
+    """
+
+    :param input_df:
+    :param parameter:
+    :return:
+    """
+
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs(
+            [input_df]):
+        return get_spark_empty_df()
+
+    input_df = \
+        data_non_availability_and_missing_check(
+            df=input_df, grouping="weekly",
+            par_col="event_partition_date",
+            target_table_name="l2_network_user_cqi",
+            missing_data_check_flg='Y')
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+    ################################# End Implementing Data availability checks ###############################
+    return_df = node_from_config(input_df, parameter)
+
+    return return_df

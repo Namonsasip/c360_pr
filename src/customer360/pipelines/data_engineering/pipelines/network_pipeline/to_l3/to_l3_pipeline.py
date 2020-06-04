@@ -75,5 +75,11 @@ def network_to_l3_pipeline(**kwargs):
                  "params:l3_network_volte_cqi"],
                 "l3_network_volte_cqi"
             ),
+            node(
+                build_l3_network_user_cqi,
+                ["l1_network_user_cqi_for_l3_network_user_cqi",
+                 "params:l3_user_volte_cqi"],
+                "l3_network_user_cqi"
+            ),
         ]
     )

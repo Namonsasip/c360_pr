@@ -70,3 +70,9 @@ l4_network_volte_cqi:
   read_from: "l2"
   feature_list:
     avg: ["network_cei_volte_qoe"]
+
+l4_network_user_cqi:
+  partition_by: ["subscription_identifier"]
+  read_from: "l2"
+  feature_list:
+    avg: ["network_cei_user_qoe"]

@@ -1,6 +1,8 @@
 int_l1_network_voice_features:
   feature_list:
     cei_voice_qoe: "avg(cei_voice_qoe)"
+    sum_voice_cqi: "sum(cei_voice_qoe)"
+    count_voice_cqi: count(*)
     share_of_drop_calls: "sum(cei_voice_voice_drops_after_answers_moc + cei_voice_voice_drops_after_answers_mtc)/sum(cei_voice_call_proceeding_times)"
     drop_call_count: "sum(cei_voice_voice_drops_after_answers_moc + cei_voice_voice_drops_after_answers_mtc)"
     drop_call_in_3g_count: "sum(case when char_length(cs_cgi) = 13 then
@@ -16,6 +18,8 @@ int_l1_network_voice_features:
 l1_network_voice_features:
   feature_list:
     network_cei_voice_qoe: cei_voice_qoe
+    sum_cei_voice_qoe: sum_voice_cqi
+    count_cei_voice_qoe: count_voice_cqi
     network_change_of_share_of_drop_call: "share_of_drop_calls/lag(share_of_drop_calls, 1, 0)
                                     over (partition by msisdn order by event_partition_date  asc)"
     network_share_of_drop_calls: share_of_drop_calls

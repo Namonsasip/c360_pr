@@ -77,5 +77,11 @@ def network_to_l2_pipeline(**kwargs):
                  "params:l2_network_volte_cqi"],
                 "l2_network_volte_cqi"
             ),
+            node(
+                build_l2_network_user_cqi,
+                ["l1_network_user_cqi_for_l2_network_user_cqi",
+                 "params:l2_network_user_cqi"],
+                "l2_network_user_cqi"
+            ),
         ]
     )
