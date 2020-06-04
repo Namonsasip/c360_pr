@@ -100,7 +100,6 @@ def add_other_sim_card_features(
             "national_id_card",
             "norms_net_revenue as revenue_on_oldest_card",
             "subscriber_tenure as oldest_card_tenure",
-            "number_of_simcards",
         )
     )
     national_id_card_stats = national_id_card_stats_oldest_card.join(
