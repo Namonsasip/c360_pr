@@ -589,7 +589,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
         logging.info("mergeSchema: {}".format(mergeSchema))
 
         logging.info("Checking whether the dataset to write is empty or not")
-        if len(dataframe_to_write.head(1)) == 0:
+        if dataframe_to_write.count() == 0:
             logging.info("No new partitions to write from source")
         elif partitionBy is None or partitionBy == "" or partitionBy == '' or mode is None or mode == "" or mode == '':
             raise ValueError(
