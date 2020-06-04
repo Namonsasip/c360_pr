@@ -5,7 +5,9 @@ from pyspark.sql import DataFrame, functions as f
 
 
 def union_weekly_cust_profile(
-        cust_prof_daily_df: DataFrame
+        cust_prof_daily_df: DataFrame,
+        exception_partition=None
+
 ):
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([cust_prof_daily_df]):
@@ -15,7 +17,7 @@ def union_weekly_cust_profile(
                                                                  par_col="event_partition_date",
                                                                  missing_data_check_flg='Y',
                                                                  target_table_name="l2_customer_profile_union_weekly_feature",
-                                                                 exception_partitions=['2019-07-29'])
+                                                                 exception_partitions=exception_partition)
 
     if check_empty_dfs([cust_prof_daily_df]):
         return get_spark_empty_df()
