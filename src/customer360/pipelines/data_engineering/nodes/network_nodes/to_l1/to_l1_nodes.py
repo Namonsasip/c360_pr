@@ -659,33 +659,40 @@ def build_network_volte_cqi(
     return return_df
 
 
-def merge_user_cqi(
-        voice_cqi_df: DataFrame,
-        data_cqi_df: DataFrame,
-        im_cqi_df: DataFrame,
-        streaming_cqi_df: DataFrame,
-        web_cqi_df: DataFrame,
-        voip_cqi_df: DataFrame,
-        volte_cqi_df: DataFrame
-) -> DataFrame:
+def build_network_user_cqi(
+        l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi: DataFrame,
+        l1_network_volte_cqi: dict,
+        l1_customer_profile_union_daily_feature_for_l1_network_user_cqi: DataFrame) -> DataFrame:
+    """
+    :param l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi:
+    :param l1_network_voip_cqi:
+    :param l1_customer_profile_union_daily_feature_for_l1_network_voip_cqi:
+    :return:
+    """
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs(
+            [l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi,
+             l1_customer_profile_union_daily_feature_for_l1_network_user_cqi]):
+        return get_spark_empty_df()
 
-    common_join_columns = [
-        "access_method_num",
-        "event_partition_date",
-        "start_of_week",
-        "subscription_identifier",
-        "start_of_month",
-    ]
+    l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi = \
+        data_non_availability_and_missing_check(
+            df=l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi, grouping="daily",
+            par_col="partition_date",
+            target_table_name="l1_network_user_cqi")
 
-    return (voice_cqi_df
-            .join(data_cqi_df, on=common_join_columns, how="inner")
-            .join(im_cqi_df, on=common_join_columns, how="inner")
-            .join(streaming_cqi_df, on=common_join_columns, how="inner")
-            .join(web_cqi_df, on=common_join_columns, how="inner")
-            .join(voip_cqi_df, on=common_join_columns, how="inner")
-            .join(volte_cqi_df, on=common_join_columns, how="inner")
-            .withColumn("sum_user_cqi", f.col("sum_im_cqi") + f.col("sum_streaming_cqi") + f.col("sum_web_cqi") + f.col("sum_voip_cqi") + f.col("sum_volte_cqi"))
-            .withColumn("count_user_cqi", f.col("count_im_cqi") + f.col("count_streaming_cqi") + f.col("count_web_cqi") + f.col("count_voip_cqi") + f.col("count_volte_cqi"))
-            .withColumn("avg_user_cqi", f.col("sum_user_cqi") / f.col("count_user_cqi"))
-            .select(common_join_columns + ["sum_user_cqi", "count_user_cqi", "avg_user_cqi"])
-            )
+    cust_df = data_non_availability_and_missing_check(
+        df=l1_customer_profile_union_daily_feature_for_l1_network_user_cqi, grouping="daily",
+        par_col="event_partition_date",
+        target_table_name="l1_network_user_cqi")
+
+    # Min function is not required as driving table is network and join is based on that
+
+    if check_empty_dfs([l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi, cust_df]):
+        return get_spark_empty_df()
+    ################################# End Implementing Data availability checks ###############################
+
+    return_df = l1_massive_processing(l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi,
+                                      l1_network_volte_cqi,
+                                      cust_df)
+    return return_df
