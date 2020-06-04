@@ -64,11 +64,7 @@ def add_other_sim_card_features(
         # calculate number of simcards per national id
         .groupBy("national_id_card")
         .agg(func.count("subscription_identifier").alias("number_of_simcards"))
-        .filter("number_of_simcards >= 2 and number_of_simcards <= 4")
         .select(["national_id_card", "number_of_simcards"])
-    )
-    logging.getLogger(__name__).info(
-        "{} users with multiple simcards found".format(number_of_simcards.count())
     )
     # calculate statistics
     national_id_card_stats_youngest_card = (
@@ -86,6 +82,7 @@ def add_other_sim_card_features(
             "national_id_card",
             "norms_net_revenue as revenue_on_youngest_card",
             "subscriber_tenure as youngest_card_tenure",
+            "number_of_simcards",
         )
     )
     national_id_card_stats_oldest_card = (
@@ -103,6 +100,7 @@ def add_other_sim_card_features(
             "national_id_card",
             "norms_net_revenue as revenue_on_oldest_card",
             "subscriber_tenure as oldest_card_tenure",
+            "number_of_simcards",
         )
     )
     national_id_card_stats = national_id_card_stats_oldest_card.join(
