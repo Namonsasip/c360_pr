@@ -74,3 +74,49 @@ l1_geo_area_from_competitor_store_daily_for_l3_geo_area_from_competitor_store_mo
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
     lookback: '0'
+
+# Home and Work location
+#-----------------------------------------------------------------------------------------------------------------------
+l1_geo_home_location_id_daily:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l1_features/geo_home_location_id_daily/
+  file_format: parquet
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+
+l1_geo_work_location_id_daily:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l1_features/geo_work_location_id_daily/
+  file_format: parquet
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+
+l1_geo_home_location_id_daily_for_l2_geo_home_location_id_weekly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l1_features/geo_home_location_id_daily/
+  file_format: parquet
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+
+l1_geo_work_location_id_daily_for_l2_geo_work_location_id_weekly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l1_features/geo_work_location_id_daily/
+  file_format: parquet
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
