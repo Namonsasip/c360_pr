@@ -216,14 +216,26 @@ l0_billing_topup_type_for_l2_billing_and_payments_weekly_last_top_up_channel:
     lookback: '0'
 
 
-l0_billing_topup_type_for_l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate:
+#l0_billing_topup_type_for_l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  filepath: base_path/BILLING/billing_recharge_topup_event_type/
+#  file_format: parquet
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'yes'
+#    lookup_table_name: 'l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate'
+#    read_layer: 'l0_weekly'
+#    target_layer: 'l2_weekly'
+#    lookback: '0'
+
+l0_billing_topup_type_for_l2_billing_and_payments_weekly_most_popular_top_up_channel:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/BILLING/billing_recharge_topup_event_type/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate'
+    lookup_table_name: 'l2_billing_and_payments_weekly_most_popular_top_up_channel'
     read_layer: 'l0_weekly'
     target_layer: 'l2_weekly'
     lookback: '0'

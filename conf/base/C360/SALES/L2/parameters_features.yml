@@ -1,25 +1,15 @@
-#l2_sales_join_master_weekly:
-#  feature_list:
-#    cmd_channel_type: "cmd_channel_type"
-#    cmd_channel_sub_type: "cmd_channel_sub_type"
-#    promotion_price_amount: "promotion_price_amount"
-#    offering_title: "offering_title"
-#    package_type: "package_type"
-#    access_method_num: "access_method_num"
-#    start_of_week: "start_of_week"
-#  granularity: ""
 
 l2_sales_number_and_volume_transaction:
   feature_list:
     # ---------------- share -------------
-    share_of_number_ussd_on_top_transaction: "(sum(case when (lower(cmd_channel_type) = 'ussd') then 1 else 0 end))/(sum(case when (lower(cmd_channel_type) = 'ussd') then 1 else 0 end))"
-    share_of_volume_ussd_on_top_transaction: "(sum(case when (lower(cmd_channel_type) = 'ussd') then promotion_price_amount else 0 end))/(sum(case when (lower(cmd_channel_type) = 'ussd') then promotion_price_amount else 0 end))"
+    share_of_number_ussd_on_top_transaction: "(sum(case when (lower(cmd_channel_type) = 'ussd') then 1 else 0 end))/count(*)"
+    share_of_volume_ussd_on_top_transaction: "(sum(case when (lower(cmd_channel_type) = 'ussd') then promotion_price_amount else 0 end))/count(*)"
 
-    share_of_number_call_center_on_top_transaction: "(sum(case when (lower(cmd_channel_type) = 'call center' or lower(cmd_channel_type) like 'ivr%' )then 1 else 0 end))/(sum(case when (lower(cmd_channel_type) = 'ussd') then 1 else 0 end))"
-    share_of_volume_call_center_on_top_transaction: "(sum(case when (lower(cmd_channel_type) = 'call center' or lower(cmd_channel_type) like 'ivr%' )then promotion_price_amount else 0 end))/(sum(case when (lower(cmd_channel_type) = 'ussd') then promotion_price_amount else 0 end))"
+    share_of_number_call_center_on_top_transaction: "(sum(case when (lower(cmd_channel_type) = 'call center' or lower(cmd_channel_type) like 'ivr%' )then 1 else 0 end))/count(*)"
+    share_of_volume_call_center_on_top_transaction: "(sum(case when (lower(cmd_channel_type) = 'call center' or lower(cmd_channel_type) like 'ivr%' )then promotion_price_amount else 0 end))/count(*)"
 
-    share_of_number_my_ais_app_on_top_transaction: "(sum(case when (lower(cmd_channel_type) = 'online channel' and lower(cmd_channel_sub_type) = 'myais' ) then 1 else 0 end))/sum(case when (lower(cmd_channel_type) = 'ussd') then 1 else 0 end)"
-    share_of_volume_my_ais_app_on_top_transaction: "(sum(case when (lower(cmd_channel_type) = 'online channel' and lower(cmd_channel_sub_type) = 'myais' ) then promotion_price_amount else 0 end))/(sum(case when (lower(cmd_channel_type) = 'ussd') then promotion_price_amount else 0 end))"
+    share_of_number_my_ais_app_on_top_transaction: "(sum(case when (lower(cmd_channel_type) = 'online channel' and lower(cmd_channel_sub_type) = 'myais' ) then 1 else 0 end))/count(*)"
+    share_of_volume_my_ais_app_on_top_transaction: "(sum(case when (lower(cmd_channel_type) = 'online channel' and lower(cmd_channel_sub_type) = 'myais' ) then promotion_price_amount else 0 end))/count(*)"
 
     share_of_number_retail_stores_on_top_transaction: "(sum(case when ( lower(cmd_channel_type) like 'ais%' or
                                                     lower(cmd_channel_type) = 'asp shop' or
@@ -32,7 +22,7 @@ l2_sales_number_and_volume_transaction:
                                                     lower(cmd_channel_type) = 'retail chain' or
                                                     lower(cmd_channel_type) = 'sales' or
                                                     lower(cmd_channel_type) = 'telecom' or
-                                                    lower(cmd_channel_type) = 'telewiz shop') then 1 else 0 end))/(sum(case when (lower(cmd_channel_type) = 'ussd') then 1 else 0 end))"
+                                                    lower(cmd_channel_type) = 'telewiz shop') then 1 else 0 end))/count(*)"
     share_of_volume_retail_stores_on_top_transaction: "(sum(case when ( lower(cmd_channel_type) like 'ais%' or
                                                     lower(cmd_channel_type) = 'asp shop' or
                                                     lower(cmd_channel_type) = 'corperate'  or
@@ -44,16 +34,16 @@ l2_sales_number_and_volume_transaction:
                                                     lower(cmd_channel_type) = 'retail chain' or
                                                     lower(cmd_channel_type) = 'sales' or
                                                     lower(cmd_channel_type) = 'telecom' or
-                                                    lower(cmd_channel_type) = 'telewiz shop') then promotion_price_amount else 0 end))/sum(case when (lower(cmd_channel_type) = 'ussd') then promotion_price_amount else 0 end)"
+                                                    lower(cmd_channel_type) = 'telewiz shop') then promotion_price_amount else 0 end))/count(*)"
 
     share_of_number_web_portal_number_on_top_transaction: "(sum(case when ((lower(cmd_channel_type) = 'online channel' and (lower(cmd_channel_sub_type) != 'myais' or lower(cmd_channel_sub_type) is null)) or
     lower(cmd_channel_type) = 'eservice' or
     lower(cmd_channel_type) = 'online'  or
-    lower(cmd_channel_type) = 'onlinestore' ) then 1 else 0 end))/(sum(case when (lower(cmd_channel_type) = 'ussd') then 1 else 0 end))"
+    lower(cmd_channel_type) = 'onlinestore' ) then 1 else 0 end))/count(*)"
     share_of_volume_web_portal_number_on_top_transaction: "(sum(case when ((lower(cmd_channel_type) = 'online channel' and (lower(cmd_channel_sub_type) != 'myais' or lower(cmd_channel_sub_type) is null)) or
     lower(cmd_channel_type) = 'eservice' or
     lower(cmd_channel_type) = 'online'  or
-    lower(cmd_channel_type) = 'onlinestore' ) then promotion_price_amount else 0 end))/(sum(case when (lower(cmd_channel_type) = 'ussd') then promotion_price_amount else 0 end))"
+    lower(cmd_channel_type) = 'onlinestore' ) then promotion_price_amount else 0 end))/count(*)"
     # --------------- ussd -----------
     ussd_number_of_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'ussd') then 1 else 0 end)"
     ussd_volume_of_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'ussd') then promotion_price_amount else 0 end)"
@@ -301,77 +291,5 @@ l2_sales_feature_on_top_transactions_latest:
 
   granularity: ""
 
-
-
-#l2_sales_feature_on_top_transactions_ussd_lastest:
-#  where_clause: "where lower(cmd_channel_type) = 'ussd' "
-#  feature_list:
-#    start_of_week: "start_of_week"
-#    access_method_num: "access_method_num"
-#    ussd_name_of_latest_on_top_transaction: "first_value(offering_title) over(partition by
-#             start_of_week,
-#             access_method_num
-#             order by start_of_week desc)"
-#  granularity: ""
-
-
-#l2_sales_feature_on_top_transactions_call_center_lastest:
-#  where_clause: "where (lower(cmd_channel_type) = 'call center' or lower(cmd_channel_type) like 'ivr%' )"
-#  feature_list:
-#    start_of_week: "start_of_week"
-#    access_method_num: "access_method_num"
-#    call_center_name_of_latest_on_top_transaction: "first_value(offering_title) over(partition by
-#             start_of_week,
-#             access_method_num
-#             order by start_of_week desc)"
-#  granularity: ""
-
-
-#l2_sales_feature_on_top_transactions_my_ais_app_lastest:
-#  where_clause: "where (lower(cmd_channel_type) = 'online channel' and lower(cmd_channel_sub_type) = 'myais')"
-#  feature_list:
-#    start_of_week: "start_of_week"
-#    access_method_num: "access_method_num"
-#    my_ais_app_name_of_latest_on_top_transaction: "first_value(offering_title) over(partition by
-#             start_of_week,
-#             access_method_num
-#             order by start_of_week desc)"
-#  granularity: ""
-
-#l2_sales_feature_on_top_transactions_web_portal_lastest:
-#  where_clause: "where ((lower(cmd_channel_type) = 'online channel' and (lower(cmd_channel_sub_type) != 'myais' or lower(cmd_channel_sub_type) is null)) or
-#    lower(cmd_channel_type) = 'eservice' or
-#    lower(cmd_channel_type) = 'online'  or
-#    lower(cmd_channel_type) = 'onlinestore' )"
-#  feature_list:
-#    start_of_week: "start_of_week"
-#    access_method_num: "access_method_num"
-#    web_portal_name_of_latest_on_top_transaction: "first_value(offering_title) over(partition by
-#             start_of_week,
-#             access_method_num
-#             order by start_of_week desc)"
-#  granularity: ""
-
-#l2_sales_feature_on_top_transactions_retail_stores_lastest:
-#  where_clause: "where (lower(cmd_channel_type) like 'ais%' or
-#    lower(cmd_channel_type) = 'asp shop' or
-#    lower(cmd_channel_type) = 'corperate'  or
-#    lower(cmd_channel_type) = 'dealer' or
-#    lower(cmd_channel_type) = 'direct sale' or
-#    lower(cmd_channel_type) = 'easy app' or
-#    lower(cmd_channel_type) = 'it channel' or
-#    lower(cmd_channel_type) = 'modern trade' or
-#    lower(cmd_channel_type) = 'retail chain' or
-#    lower(cmd_channel_type) = 'sales' or
-#    lower(cmd_channel_type) = 'telecom' or
-#    lower(cmd_channel_type) = 'telewiz shop')"
-#  feature_list:
-#    start_of_week: "start_of_week"
-#    access_method_num: "access_method_num"
-#    retail_storesname_of_latest_on_top_transaction: "first_value(offering_title) over(partition by
-#             start_of_week,
-#             access_method_num
-#             order by start_of_week desc)"
-#  granularity: ""
 
 

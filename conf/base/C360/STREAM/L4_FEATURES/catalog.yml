@@ -7,7 +7,7 @@
 #    mode: "overwrite"
 #    partitionBy: ["start_of_week"]
 
-int_l4_streaming_content_type_features@save:
+int_l4_streaming_content_type_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l4_features/int_l4_streaming_content_type_features/
   file_format: parquet
@@ -20,7 +20,7 @@ int_l4_streaming_content_type_features@save:
     target_layer: 'l4_weekly'
 
 
-int_l4_streaming_content_type_features@load_l4_streaming_fav_content_group_by_volume:
+int_l4_streaming_content_type_features_for_load_l4_streaming_fav_content_group_by_volume:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l4_features/int_l4_streaming_content_type_features/
   file_format: parquet
@@ -33,7 +33,7 @@ int_l4_streaming_content_type_features@load_l4_streaming_fav_content_group_by_vo
     lookback: '0'
 
 
-int_l4_streaming_content_type_features@load_l4_streaming_fav_content_group_by_duration:
+int_l4_streaming_content_type_features_for_load_l4_streaming_fav_content_group_by_duration:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l4_features/int_l4_streaming_content_type_features/
   file_format: parquet
@@ -91,7 +91,7 @@ l4_streaming_fav_content_group_by_duration:
 
 
 
-int_l4_streaming_tv_channel_features@save:
+int_l4_streaming_tv_channel_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l4_features/int_l4_streaming_tv_channel_features/
   file_format: parquet
@@ -104,7 +104,7 @@ int_l4_streaming_tv_channel_features@save:
     target_layer: 'l4_weekly'
 
 
-int_l4_streaming_tv_channel_features@l4_streaming_fav_tv_channel_by_volume:
+int_l4_streaming_tv_channel_features_for_l4_streaming_fav_tv_channel_by_volume:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l4_features/int_l4_streaming_tv_channel_features/
   file_format: parquet
@@ -116,7 +116,7 @@ int_l4_streaming_tv_channel_features@l4_streaming_fav_tv_channel_by_volume:
     target_layer: 'l4_weekly'
     lookback: '0'
 
-int_l4_streaming_tv_channel_features@l4_streaming_fav_tv_channel_by_duration:
+int_l4_streaming_tv_channel_features_for_l4_streaming_fav_tv_channel_by_duration:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l4_features/int_l4_streaming_tv_channel_features/
   file_format: parquet
@@ -198,7 +198,7 @@ l4_streaming_fav_tv_show_by_episode_watched:
 
 
 
-int_l4_streaming_video_service_feature@save:
+int_l4_streaming_video_service_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l4_features/int_l4_streaming_video_service_feature/
   file_format: parquet
@@ -211,7 +211,7 @@ int_l4_streaming_video_service_feature@save:
     target_layer: 'l4_weekly'
 
 
-int_l4_streaming_video_service_feature@l4_streaming_fav_video_service_by_download_feature:
+int_l4_streaming_video_service_feature_for_l4_streaming_fav_video_service_by_download_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l4_features/int_l4_streaming_video_service_feature/
   file_format: parquet
@@ -224,7 +224,7 @@ int_l4_streaming_video_service_feature@l4_streaming_fav_video_service_by_downloa
     lookback: '0'
 
 
-int_l4_streaming_video_service_feature@l4_streaming_2nd_fav_video_service_by_download_feature:
+int_l4_streaming_video_service_feature_for_l4_streaming_2nd_fav_video_service_by_download_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l4_features/int_l4_streaming_video_service_feature/
   file_format: parquet
@@ -237,7 +237,7 @@ int_l4_streaming_video_service_feature@l4_streaming_2nd_fav_video_service_by_dow
     lookback: '0'
 
 
-int_l4_streaming_video_service_feature@l4_streaming_fav_video_service_by_visit_count_feature:
+int_l4_streaming_video_service_feature_for_l4_streaming_fav_video_service_by_visit_count_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l4_features/int_l4_streaming_video_service_feature/
   file_format: parquet
@@ -324,7 +324,7 @@ l4_streaming_fav_video_service_by_visit_count_feature:
 
 
 
-int_l4_streaming_music_service_feature@save:
+int_l4_streaming_music_service_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l4_features/int_l4_streaming_music_service_feature/
   file_format: parquet
@@ -337,7 +337,7 @@ int_l4_streaming_music_service_feature@save:
     target_layer: 'l4_weekly'
 
 
-int_l4_streaming_music_service_feature@l4_streaming_fav_music_service_by_download_feature:
+int_l4_streaming_music_service_feature_for_l4_streaming_fav_music_service_by_download_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l4_features/int_l4_streaming_music_service_feature/
   file_format: parquet
@@ -350,7 +350,7 @@ int_l4_streaming_music_service_feature@l4_streaming_fav_music_service_by_downloa
     lookback: '0'
 
 
-int_l4_streaming_music_service_feature@l4_streaming_2nd_fav_music_service_by_download_feature:
+int_l4_streaming_music_service_feature_for_l4_streaming_2nd_fav_music_service_by_download_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l4_features/int_l4_streaming_music_service_feature/
   file_format: parquet
@@ -363,7 +363,7 @@ int_l4_streaming_music_service_feature@l4_streaming_2nd_fav_music_service_by_dow
     lookback: '0'
 
 
-int_l4_streaming_music_service_feature@l4_streaming_fav_music_service_by_visit_count_feature:
+int_l4_streaming_music_service_feature_for_l4_streaming_fav_music_service_by_visit_count_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l4_features/int_l4_streaming_music_service_feature/
   file_format: parquet
@@ -448,7 +448,7 @@ l4_streaming_fav_music_service_by_visit_count_feature:
 
 
 
-int_l4_streaming_esport_service_feature@save:
+int_l4_streaming_esport_service_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l4_features/int_l4_streaming_esport_service_feature/
   file_format: parquet
@@ -461,7 +461,7 @@ int_l4_streaming_esport_service_feature@save:
     target_layer: 'l4_weekly'
 
 
-int_l4_streaming_esport_service_feature@l4_streaming_fav_esport_service_by_download_feature:
+int_l4_streaming_esport_service_feature_for_l4_streaming_fav_esport_service_by_download_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l4_features/int_l4_streaming_esport_service_feature/
   file_format: parquet
@@ -474,7 +474,7 @@ int_l4_streaming_esport_service_feature@l4_streaming_fav_esport_service_by_downl
     lookback: '0'
 
 
-int_l4_streaming_esport_service_feature@l4_streaming_2nd_fav_esport_service_by_download_feature:
+int_l4_streaming_esport_service_feature_for_l4_streaming_2nd_fav_esport_service_by_download_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l4_features/int_l4_streaming_esport_service_feature/
   file_format: parquet
@@ -487,7 +487,7 @@ int_l4_streaming_esport_service_feature@l4_streaming_2nd_fav_esport_service_by_d
     lookback: '0'
 
 
-int_l4_streaming_esport_service_feature@l4_streaming_fav_esport_service_by_visit_count_feature:
+int_l4_streaming_esport_service_feature_for_l4_streaming_fav_esport_service_by_visit_count_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/l4_features/int_l4_streaming_esport_service_feature/
   file_format: parquet
