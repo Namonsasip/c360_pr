@@ -1,0 +1,5 @@
+mapping_for_model_training:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_dataupsell
+    table: mapping_for_model_training29052020
+    write_mode: overwrite
