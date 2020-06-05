@@ -21,7 +21,7 @@ scoring:
   stages:
     - take_last_date
 
-huaw_experiment:
+scoring_experiment:
   subscription_id_suffix: '' # '' for all users
   chosen_date: '2020-01-08' # '' for most recent data
   stages:
