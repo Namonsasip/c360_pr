@@ -56,7 +56,7 @@ from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.
     customer_profile_to_l4_pipeline,
 )
 from cvm.data_prep.pipeline import training_data_prepare, scoring_data_prepare, \
-    extract_features, rfe_only, create_cvm_targets_huaw_exp, create_users_from_tg, \
+    extract_features, rfe_only, create_users_from_tg, \
     create_users_from_active
 from cvm.modelling.pipeline import train_model, score_model
 from cvm.preprocessing.pipeline import preprocessing_fit, preprocessing_transform
@@ -275,15 +275,13 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
             + generate_treatments("scoring")
         ),
         "cvm_full_scoring_experiment": (
-            scoring_data_prepare("huaw_experiment")
-            + preprocessing_transform("huaw_experiment")
-            + score_model("huaw_experiment")
-            + generate_treatments("huaw_experiment")
+            scoring_data_prepare("scoring_experiment")
+            + preprocessing_transform("scoring_experiment")
+            + score_model("scoring_experiment")
+            + generate_treatments("scoring_experiment")
         ),
-        "cvm_huaw_churn_targets": create_users_from_active("huaw_experiment")
-                                  + create_cvm_targets_huaw_exp(),
         "cvm_full_features_extraction": extract_features,
-        "cvm_map_sub_ids": map_sub_ids_of_input_datasets("huaw_experiment"),
+        "cvm_map_sub_ids": map_sub_ids_of_input_datasets("scoring"),
         "cvm_rfe_only": rfe_only,
         "cvm_prepare_report_micro": prepare_user_microsegments(),
         "cvm_create_kpis": create_kpis(),

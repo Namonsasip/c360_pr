@@ -348,27 +348,3 @@ extract_features = (
     + create_cvm_important_columns()
 )
 rfe_only = create_cvm_important_columns()
-
-
-def create_cvm_targets_huaw_exp():
-    """ Create pipeline generating 90 days churn column used for experiment.
-
-    Returns:
-        Kedro pipeline.
-    """
-
-    return Pipeline(
-        [
-            node(
-                add_churn_targets,
-                [
-                    "cvm_users_list_huaw_experiment",
-                    "l4_usage_prepaid_postpaid_daily_features_sub_ids_mapped",
-                    "parameters",
-                    "params:huaw_experiment",
-                ],
-                "churn_targets_huaw_experiment",
-                name="create_churn_targets_huaw_experiment",
-            ),
-        ]
-    )
