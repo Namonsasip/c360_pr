@@ -273,7 +273,7 @@ l2_sales_feature_on_top_transactions_latest:
     access_method_num
     order by event_start_dttm desc)"
 
-    retail_storesname_of_latest_on_top_transaction: "first_value( (case when (lower(cmd_channel_type) like 'ais%' or
+    retail_stores_name_of_latest_on_top_transaction: "first_value( (case when (lower(cmd_channel_type) like 'ais%' or
     lower(cmd_channel_type) = 'asp shop' or
     lower(cmd_channel_type) = 'corperate'  or
     lower(cmd_channel_type) = 'dealer' or
