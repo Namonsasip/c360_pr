@@ -425,7 +425,7 @@ def build_network_data_traffic_features(
     return return_df
 
 
-def builld_network_data_cqi(
+def build_network_data_cqi(
         l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi: DataFrame,
         l1_network_data_cqi: dict,
         l1_customer_profile_union_daily_feature_for_l1_network_data_cqi: DataFrame) -> DataFrame:

@@ -147,7 +147,7 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_volte_cqi:
     target_layer: 'l1_daily'
     lookback: '0'
 
-l0_network_sdr_dyn_cea_cei_cei_user_1day_for_l1_network_user_cqi:
+l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: base_path/NETWORK/network_sdr_dyn_cea_cei_cei_usr_1day

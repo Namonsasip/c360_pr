@@ -84,12 +84,6 @@ def network_to_l2_pipeline(**kwargs):
                 "l2_network_user_cqi"
             ),
             node(
-                build_l2_network_user_cqi,
-                ["l1_network_user_cqi_for_l2_network_user_cqi",
-                 "params:l2_network_user_cqi"],
-                "l2_network_user_cqi"
-            ),
-            node(
                 build_l2_network_file_transfer_cqi,
                 ["l1_network_file_transfer_cqi_for_l2_network_file_transfer_cqi",
                  "params:l2_network_file_transfer_cqi"],
