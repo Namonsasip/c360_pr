@@ -51,8 +51,16 @@ def geo_to_l1_pipeline(**kwargs):
                  "params:l1_geo_work_location_id_daily"
                  ],
                 "l1_geo_work_location_id_daily"
-            )
+            ),
 
+            node(
+                l1_geo_top_visit_exclude_homework_daily,
+                ["l0_geo_cust_cell_visit_time_for_l1_geo_top_visit_exclude_homework",
+                 "l1_homework_master_for_l1_geo_top_visit_exclude_homework",
+                 "params:l1_geo_top_visit_exclude_homework"
+                 ],
+                "l1_geo_top_visit_exclude_homework"
+            )
 
         ], name="geo_to_l1_pipeline"
     )

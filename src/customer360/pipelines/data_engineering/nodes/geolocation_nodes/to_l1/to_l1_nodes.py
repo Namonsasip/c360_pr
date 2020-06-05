@@ -175,7 +175,7 @@ def l1_geo_work_location_id_daily(geo_cust_cell_visit_time, sql):
         ,time_in
         ,time_out
         ,cell_id
-        ,location_id, latitude, longitude
+        ,location_id, latitude, longitude   
         ,case when ((hour_in >= 8 and hour_in < 18) and hour_out > 18) then (to_unix_timestamp(to_timestamp(concat(partition_date, ' 18:00:00'), 'yyyyMMdd HH:mm:ss')) - (to_unix_timestamp(time_in)))
         ,case when ((hour_in >= 8 and hour_in < 18) and hour_out > 18) then (to_unix_timestamp(to_timestamp(concat('20200325', ' 18:00:00'), 'yyyyMMdd HH:mm:ss')) - (to_unix_timestamp(time_in)))
         else duration end as duration
@@ -199,3 +199,20 @@ def l1_geo_work_location_id_daily(geo_cust_cell_visit_time, sql):
     # Use parameter_feature
     df2 = node_from_config(df, sql)
     return df2
+
+def l1_geo_top_visit_exclude_homework_daily(df,homework,sql):
+    df.createOrReplaceTempView('geo_cust_visit_time')
+    homework.createOrReplaceTempView('homework_master')
+
+
+
+    ss = get_spark_session()
+    df = ss.sql("""
+        xxxxxxxxxxxxxx
+        """)
+
+
+
+    df = node_from_config(df,sql)
+
+    return df
