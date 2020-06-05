@@ -29,12 +29,13 @@ import logging
 from typing import Any, Dict
 
 import pandas
+from pyspark.sql import DataFrame
+from pyspark.sql import functions as func
+
 from cvm.src.targets.churn_targets import add_days
 from cvm.src.treatments.rules import MultipleTreatments
 from cvm.src.treatments.treatment_features import add_other_sim_card_features
 from cvm.src.utils.utils import get_today, join_multiple
-from pyspark.sql import DataFrame
-from pyspark.sql import functions as func
 
 
 def get_recently_contacted(
@@ -156,15 +157,19 @@ def update_history_with_treatments_propositions(
     Returns:
         Updated `treatments_history`.
     """
-
-    logging.info("Updating treatments history")
-    today = get_today(parameters)
-    treatments_history = treatments_history.filter(f"key_date != '{today}'").union(
-        treatments_propositions.withColumn("key_date", func.lit(today)).select(
-            treatments_history.columns
+    skip = parameters["treatment_output"]["skip_sending"] == "yes"
+    if skip:
+        logging.getLogger(__name__).info("Skipping updating treatments history")
+        return treatments_history
+    else:
+        logging.getLogger(__name__).info("Updating treatments history")
+        today = get_today(parameters)
+        treatments_history = treatments_history.filter(f"key_date != '{today}'").union(
+            treatments_propositions.withColumn("key_date", func.lit(today)).select(
+                treatments_history.columns
+            )
         )
-    )
-    return treatments_history
+        return treatments_history
 
 
 def serve_treatments_chosen(
