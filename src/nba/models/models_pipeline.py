@@ -112,7 +112,7 @@ def create_nba_models_pipeline() -> Pipeline:
                 },
                 outputs="unused_memory_dataset_nba_acceptance_models_training",
                 name="nba_acceptance_models_training",
-                tags=["nba_acceptance_models_training"],
+                tags=["nba_acceptance_models_training", "nba_models"],
             ),
             node(
                 partial(
@@ -140,7 +140,7 @@ def create_nba_models_pipeline() -> Pipeline:
                 },
                 outputs="unused_memory_dataset_nba_arpu_30d_models_training",
                 name="nba_arpu_30d_models_training",
-                tags=["nba_arpu_30d_models_training"],
+                tags=["nba_arpu_30d_models_training", "nba_models"],
             ),
             node(
                 partial(
@@ -168,8 +168,8 @@ def create_nba_models_pipeline() -> Pipeline:
                 },
                 outputs="unused_memory_dataset_nba_arpu_7d_models_training",
                 name="nba_arpu_7d_models_training",
-                tags=["nba_arpu_7d_models_training"],
+                tags=["nba_arpu_7d_models_training", "nba_models"],
             ),
         ],
-        tags="nba_models",
+        tags="nba_models_pipeline",
     )

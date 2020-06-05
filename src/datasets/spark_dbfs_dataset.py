@@ -298,8 +298,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             logging.info("Source data is fetched")
             logging.info("Checking whether source data is empty or not")
 
-            if len(src_data.head(1)) == 0:
-            #if src_data.count() == 0:
+            # if len(src_data.head(1)) == 0:
+            if src_data.count() == 0:
                 raise ValueError("Source dataset is empty")
             elif lookup_table_name is None or lookup_table_name == "":
                 raise ValueError("lookup table name can't be empty")
@@ -591,6 +591,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
 
         logging.info("Checking whether the dataset to write is empty or not")
         if dataframe_to_write.count() == 0:
+        # if len(dataframe_to_write.head(1)) == 0:
             logging.info("No new partitions to write from source")
         elif partitionBy is None or partitionBy == "" or partitionBy == '' or mode is None or mode == "" or mode == '':
             raise ValueError(
@@ -621,7 +622,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     "select * from df_to_write where {0} > to_date(cast('{1}' as String)) ".format(filter_col,
                                                                                                    tgt_filter_date))
 
-                #if len(df_with_lookback_to_write.head(1)) == 0:
+                #if len(df_with_lookback_to_write.if len(df_with_lookback_to_write.head(1)) == 0:(1)) == 0:
                 if df_with_lookback_to_write.count() == 0:
                     logging.info("No new partitions to write at target dataset")
                 else:
