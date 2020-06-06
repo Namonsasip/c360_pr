@@ -1,8 +1,8 @@
 from customer360.utilities.spark_util import get_spark_empty_df
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check, \
-    get_spark_session
+    get_spark_session, union_dataframes_with_missing_cols
 
-from pyspark.sql import DataFrame
+from pyspark.sql import DataFrame, functions as f
 
 
 def df_copy_for_l4_customer_profile_ltv_to_date(input_df):
@@ -37,6 +37,19 @@ def calculate_ltv_to_date(
     postpaid_revenue_df = data_non_availability_and_missing_check(df=prepaid_revenue_df, grouping="monthly",
                                                                   par_col="start_of_month",
                                                                   target_table_name="l4_revenue_ltv_to_date")
+
+    # new section to handle data latency
+    min_value = union_dataframes_with_missing_cols(
+        [
+            prepaid_revenue_df.select(
+                f.max(f.col("start_of_month")).alias("max_date")),
+            postpaid_revenue_df.select(
+                f.max(f.col("start_of_month")).alias("max_date")),
+        ]
+    ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    prepaid_revenue_df = prepaid_revenue_df.filter(f.col("start_of_month") <= min_value)
+    postpaid_revenue_df = postpaid_revenue_df.filter(f.col("start_of_month") <= min_value)
 
     if check_empty_dfs([prepaid_revenue_df, postpaid_revenue_df]):
         return get_spark_empty_df()
