@@ -1,6 +1,6 @@
 import subprocess
 import shlex
-import os
+import os, sys
 
 pipeline_to_run = os.environ["pipeline_to_run"]
 env_to_use = os.environ["CONF"]
@@ -50,5 +50,8 @@ def run_command(command):
     return rc
 
 
-run_command(kedro_run_cmd)
+return_flag = run_command(kedro_run_cmd)
+if return_flag:
+    if return_flag != 0:
+        sys.exit(2)
 
