@@ -45,10 +45,10 @@ def run_command(command):
         if output:
             print(output.strip())
     rc = process.poll()
+    if rc:
+        print("Return Code {}".format(rc))
     return rc
 
 
 return_flag = run_command(kedro_run_cmd)
-if return_flag != 0:
-    print("something went wrong, check logs")
 
