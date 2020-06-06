@@ -105,7 +105,7 @@ l2_network_user_cqi:
 
 l2_network_file_transfer_cqi:
   feature_list:
-    network_cei_file_transfer_qoe: sum(sum_user_cqi)/sum(count_user_cqi)
-    sum_file_transfer_cqi: sum(sum_user_cqi)
-    count_file_transfer_cqi: sum(count_user_cqi)
+    network_cei_file_transfer_qoe: sum(sum_file_transfer_cqi)/sum(count_file_transfer_cqi)
+    sum_file_transfer_cqi: sum(sum_file_transfer_cqi)
+    count_file_transfer_cqi: sum(count_file_transfer_cqi)
   granularity: "subscription_identifier, start_of_week"

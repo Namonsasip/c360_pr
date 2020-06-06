@@ -661,11 +661,11 @@ def build_network_volte_cqi(
 
 def build_network_user_cqi(
         l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi: DataFrame,
-        l1_network_volte_cqi: dict,
+        l1_network_user_cqi: dict,
         l1_customer_profile_union_daily_feature_for_l1_network_user_cqi: DataFrame) -> DataFrame:
     """
     :param l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi:
-    :param l1_network_voip_cqi:
+    :param l1_network_user_cqi:
     :param l1_customer_profile_union_daily_feature_for_l1_network_voip_cqi:
     :return:
     """
@@ -693,14 +693,14 @@ def build_network_user_cqi(
     ################################# End Implementing Data availability checks ###############################
 
     return_df = l1_massive_processing(l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi,
-                                      l1_network_volte_cqi,
+                                      l1_network_user_cqi,
                                       cust_df)
     return return_df
 
 
 def build_network_file_transfer_cqi(
         l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi: DataFrame,
-        l1_network_volte_cqi: dict,
+        l1_network_file_transfer_cqi: dict,
         l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi: DataFrame) -> DataFrame:
     """
     :param l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi:
@@ -732,6 +732,6 @@ def build_network_file_transfer_cqi(
     ################################# End Implementing Data availability checks ###############################
 
     return_df = l1_massive_processing(l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi,
-                                      l1_network_volte_cqi,
+                                      l1_network_file_transfer_cqi,
                                       cust_df)
     return return_df
