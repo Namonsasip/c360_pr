@@ -1,7 +1,11 @@
 from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check
-
+from kedro.context.context import load_context
+from pathlib import Path
+import os, logging
 from pyspark.sql import DataFrame, functions as f
+
+conf = os.getenv("CONF", None)
 
 
 def df_copy_for_l3_customer_profile_include_1mo_non_active(input_df):
@@ -162,7 +166,7 @@ def union_monthly_cust_profile(
         return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
-
+    cust_prof_daily_df = cust_prof_daily_df.drop("start_of_week")
     cust_prof_daily_df.createOrReplaceTempView("cust_prof_daily_df")
 
     sql_stmt = """
@@ -178,11 +182,37 @@ def union_monthly_cust_profile(
         where _rnk = 1
     """
 
-    spark = get_spark_session()
-    df = spark.sql(sql_stmt)
-    df = df.drop("_rnk")
+    def divide_chunks(l, n):
+        # looping till length l
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
 
-    return df
+    CNTX = load_context(Path.cwd(), env=conf)
+    dates_list = cust_prof_daily_df.select('start_of_month').distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+
+    mvv_new = list(divide_chunks(mvv_array, 1))
+    add_list = mvv_new
+
+    first_item = add_list[-1]
+
+    add_list.remove(first_item)
+    spark = get_spark_session()
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        small_df = cust_prof_daily_df.filter(f.col("start_of_month").isin(*[curr_item]))
+        small_df.createOrReplaceTempView("cust_prof_daily_df")
+        small_df = spark.sql(sql_stmt).drop("_rnk", "event_partition_date")
+        CNTX.catalog.save("l3_customer_profile_union_monthly_feature", small_df)
+
+    logging.info("Final date to run for {0}".format(str(first_item)))
+    return_df = cust_prof_daily_df.filter(f.col("start_of_month").isin(*[first_item]))
+    return_df.createOrReplaceTempView("cust_prof_daily_df")
+    return_df = spark.sql(sql_stmt).drop("_rnk", "event_partition_date")
+
+    return return_df
 
 
 def add_last_month_unioned_inactive_user(
