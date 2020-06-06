@@ -50,5 +50,5 @@ def run_command(command):
     return rc
 
 
-return_flag = run_command(kedro_run_cmd)
+run_command(kedro_run_cmd)
 
