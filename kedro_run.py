@@ -51,4 +51,4 @@ def run_command(command):
 return_flag = run_command(kedro_run_cmd)
 if return_flag != 0:
     print("something went wrong, check logs")
-    exit(2)
+
