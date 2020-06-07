@@ -3,7 +3,7 @@ spark_conf:
   spark.executor.cores: 5
   spark.executor.memory: 64g
   spark.dynamicAllocation.enabled: true
-  spark.dynamicAllocation.initialExecutors: 1
+  spark.dynamicAllocation.initialExecutors: 20
   spark.dynamicAllocation.maxExecutors: 100
   spark.sql.sources.partitionOverwriteMode: dynamic
   spark.sql.parquet.binaryAsString: true
