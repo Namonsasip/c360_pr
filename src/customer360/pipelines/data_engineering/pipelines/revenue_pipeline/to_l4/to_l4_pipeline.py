@@ -45,7 +45,12 @@ def revenue_to_l4_monthly_pipeline(**kwargs):
                 revenue_l4_dataset_monthly_datasets,
                 [
                     "l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly",
-                    "params:l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int",
+                    "params:l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int_min",
+                    "params:l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int_max",
+                    "params:l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int_sum",
+                    "params:l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int_avg",
+                    "params:l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int_stddev",
+
                     "params:l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly"
                 ],
                 "l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly"
