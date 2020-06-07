@@ -201,10 +201,9 @@ def _get_full_data(src_data, fea_dict):
         return full_data
 
 
-def l4_rolling_window(input_df, config):
-    # check with Saurabh, but it think it is not needed.
-    # if len(input_df.head(1)) == 0:
-    #     return input_df
+def l4_rolling_window(input_df: DataFrame, config: dict):
+    if len(input_df.head(1)) == 0:
+        return input_df
     ranked_lookup_enable_flag = config.get('ranked_lookup_enable_flag', "No")
 
     if ranked_lookup_enable_flag.lower() == 'yes':
@@ -383,10 +382,14 @@ def create_window_statement(
                        end_interval=end_interval)
 
 
-def node_from_config(input_df, config) -> DataFrame:
-    # check with Saurabh but it do not think it is needed now.
-    # if len(input_df.head(1)) == 0:
-    #     return input_df
+def node_from_config(input_df: DataFrame, config: dict) -> DataFrame:
+    """
+    :param input_df:
+    :param config:
+    :return:
+    """
+    if len(input_df.head(1)) == 0:
+        return input_df
 
     table_name = "input_table"
     input_df.createOrReplaceTempView(table_name)

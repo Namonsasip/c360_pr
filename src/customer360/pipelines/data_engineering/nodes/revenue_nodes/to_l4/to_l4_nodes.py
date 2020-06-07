@@ -100,10 +100,7 @@ def revenue_l4_dataset_monthly_datasets(input_df: DataFrame,
     :param node_from_config_dict:
     :return:
     """
-    input_df = input_df.persist(StorageLevel.DISK_ONLY_2)
-    input_df = l4_rolling_window(input_df,rolling_window_dict)
-
-
+    input_df = input_df.where("start_of_month < '2020-01-01'")
+    input_df = l4_rolling_window(input_df, rolling_window_dict)
     input_df = node_from_config(input_df, node_from_config_dict)
-    input_df.unpersist()
     return input_df
