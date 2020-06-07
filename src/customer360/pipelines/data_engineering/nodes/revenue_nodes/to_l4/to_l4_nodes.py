@@ -34,7 +34,7 @@ def calculate_ltv_to_date(
                                                                  par_col="start_of_month",
                                                                  target_table_name="l4_revenue_ltv_to_date")
 
-    postpaid_revenue_df = data_non_availability_and_missing_check(df=prepaid_revenue_df, grouping="monthly",
+    postpaid_revenue_df = data_non_availability_and_missing_check(df=postpaid_revenue_df, grouping="monthly",
                                                                   par_col="start_of_month",
                                                                   target_table_name="l4_revenue_ltv_to_date")
 
