@@ -101,6 +101,6 @@ def revenue_l4_dataset_monthly_datasets(input_df: DataFrame,
     """
     input_df = l4_rolling_window(input_df,rolling_window_dict)
 
-    input_df.cache()
+    input_df = input_df.cache()
     input_df = node_from_config(input_df, node_from_config_dict)
     return input_df

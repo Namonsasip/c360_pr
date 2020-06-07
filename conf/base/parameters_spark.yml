@@ -12,3 +12,4 @@ spark_conf:
   spark.debug.maxToStringFields: 100
   spark.port.maxRetries: 100
   spark.shuffle.partitions: 1000
+  spark.executor.extraJavaOptions: "-Xss512m"
