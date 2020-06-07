@@ -4,6 +4,7 @@ from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_
 from customer360.utilities.config_parser import l4_rolling_window
 from customer360.utilities.config_parser import node_from_config
 from pyspark.sql import DataFrame, functions as f
+from pyspark.storagelevel import StorageLevel
 
 
 def df_copy_for_l4_customer_profile_ltv_to_date(input_df):
@@ -99,8 +100,10 @@ def revenue_l4_dataset_monthly_datasets(input_df: DataFrame,
     :param node_from_config_dict:
     :return:
     """
+    input_df = input_df.persist(StorageLevel.DISK_ONLY_2)
     input_df = l4_rolling_window(input_df,rolling_window_dict)
 
-    input_df = input_df.cache()
+
     input_df = node_from_config(input_df, node_from_config_dict)
+    input_df.unpersist()
     return input_df
