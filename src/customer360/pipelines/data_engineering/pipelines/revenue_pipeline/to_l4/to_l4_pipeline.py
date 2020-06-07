@@ -51,21 +51,21 @@ def revenue_to_l4_monthly_pipeline(**kwargs):
                 "l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly"
             ),
 
-            node(
-                revenue_l4_dataset_monthly_datasets,
-                [
-                    "l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
-                    "params:l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_int",
-                    "params:l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"
-                ],
-                "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"
-            ),
-            node(
-                calculate_ltv_to_date,
-                ["l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_for_l4_customer_profile_ltv_to_date",
-                 "l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_for_l4_customer_profile_ltv_to_date"],
-                "l4_revenue_ltv_to_date"
-                ),
+            # node(
+            #     revenue_l4_dataset_monthly_datasets,
+            #     [
+            #         "l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
+            #         "params:l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_int",
+            #         "params:l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"
+            #     ],
+            #     "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"
+            # ),
+            # node(
+            #     calculate_ltv_to_date,
+            #     ["l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_for_l4_customer_profile_ltv_to_date",
+            #      "l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_for_l4_customer_profile_ltv_to_date"],
+            #     "l4_revenue_ltv_to_date"
+            #     ),
 
         ], name="revenue_to_l4_pipeline"
     )

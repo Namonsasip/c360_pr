@@ -202,8 +202,15 @@ def _get_full_data(src_data, fea_dict):
 
 
 def l4_rolling_window(input_df: DataFrame, config: dict):
+    """
+    :param input_df:
+    :param config:
+    :return:
+    """
     if len(input_df.head(1)) == 0:
+        logging.info("l4_rolling_window -> df == 0 records found in input dataset")
         return input_df
+    logging.info("l4_rolling_window -> df > 0 records found in input dataset")
     ranked_lookup_enable_flag = config.get('ranked_lookup_enable_flag', "No")
 
     if ranked_lookup_enable_flag.lower() == 'yes':
