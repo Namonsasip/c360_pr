@@ -38,7 +38,7 @@ def loyalty_to_l2_pipeline(**kwargs):
                  "l0_loyalty_priv_category",
                  "params:l2_loyalty_number_of_points_spend_weekly"],
                 "l2_loyalty_number_of_points_spend_weekly"
-            ),
+            )
 
         ]
     )

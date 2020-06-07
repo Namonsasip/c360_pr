@@ -5,16 +5,24 @@ from pyspark import SparkConf
 from pyspark.sql import SparkSession, DataFrame
 from pyspark.sql.types import *
 
+from pathlib import Path
+from kedro.context.context import load_context
+
+conf = os.getenv("CONF", None)
+
 running_environment = os.getenv("RUNNING_ENVIRONMENT", None)
 PROJECT_NAME = "project-samudra"
 
 
-def get_spark_session(spark_conf_dict=None) -> SparkSession:
+def get_spark_session() -> SparkSession:
     """
     :return:
     """
     if running_environment.lower() == 'on_premise':
-        spark_conf = SparkConf().setAll(spark_conf_dict.items())
+        CNTX = load_context(Path.cwd(), env=conf)
+        parameter = CNTX.catalog.load("params:spark_conf")
+        spark_conf = SparkConf().setAll(parameter.items())
+
         spark_session_conf = (
             SparkSession.builder.appName(
                 "{}_{}".format(PROJECT_NAME, getpass.getuser())
@@ -35,13 +43,17 @@ def get_spark_session(spark_conf_dict=None) -> SparkSession:
         # Dont delete this line. This allow spark to only overwrite the partition
         # saved to parquet instead of entire table folder
         spark.conf.set("spark.sql.sources.partitionOverwriteMode", "DYNAMIC")
-        spark.conf.set("spark.sql.parquet.mergeSchema", "true")
+       # spark.conf.set("spark.sql.parquet.mergeSchema", "true")
+
+    spark.sparkContext.setLogLevel("WARN")
 
     return spark
 
 
 def get_spark_empty_df(schema=None) -> DataFrame:
     """
+    Purpose: This is a helper function which is used to create and return an empty dataset.
+    It can be used at multiple places in the code wherever required.
     :return:
     """
     if schema is None:

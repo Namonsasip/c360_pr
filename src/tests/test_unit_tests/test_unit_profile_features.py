@@ -321,7 +321,7 @@ class TestUnitProfile:
                                                StructField("contract_start_month", StringType(), True),
                                                StructField("mobile_segment", StringType(), True),
                                                StructField("network_type", StringType(), True),
-                                               StructField("trade_cmd_channel_type", StringType(), True),
+                                               StructField("order_channel_new", StringType(), True),
                                                StructField("first_act_region", StringType(), True),
                                                StructField("main_promo_name", StringType(), True),
                                                StructField("main_promo_id", StringType(), True),
@@ -338,8 +338,7 @@ class TestUnitProfile:
             'params:int_l3_customer_profile_basic_features'))
 
         korn2.show()
-        korn3 = add_last_month_inactive_user(korn2, var_project_context.catalog.load(
-            'params:int_l3_customer_profile_basic_features'))
+        korn3 = add_last_month_inactive_user(korn2)
 
     def test_l4_customer_profile_features(self, project_context):
         var_project_context = project_context['ProjectContext']

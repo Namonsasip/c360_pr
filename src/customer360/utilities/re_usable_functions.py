@@ -17,6 +17,7 @@ from pyspark.sql.functions import countDistinct
 conf = os.getenv("CONF", None)
 run_mode = os.getenv("DATA_AVAILABILITY_CHECKS", None)
 log = logging.getLogger(__name__)
+running_environment = os.getenv("RUNNING_ENVIRONMENT", None)
 
 
 def union_dataframes_with_missing_cols(df_input_or_list, *args):
@@ -41,6 +42,13 @@ def union_dataframes_with_missing_cols(df_input_or_list, *args):
 
 
 def check_empty_dfs(df_input_or_list):
+    """
+    Purpose: Its purpose is to check whether the input datasets are empty or not.
+    You can input a single or a list of datasets. The return value would be an empty dataset if any one of the
+    input dataset is empty other-wise the function will return false.
+    :param df_input_or_list:
+    :return:
+    """
     if type(df_input_or_list) is list:
         df_list = df_input_or_list
     elif type(df_input_or_list) is DataFrame:
@@ -80,6 +88,21 @@ def add_start_of_week_and_month(input_df, date_column="day_id"):
     return input_df
 
 
+def add_event_week_and_month_from_yyyymmdd(input_df: DataFrame, column: str) -> DataFrame:
+    """
+    :param input_df:
+    :param column:
+    :return:
+    """
+    input_col = column
+    event_partition_date = "event_partition_date"
+    input_df = input_df.withColumn("event_partition_date", F.to_date(F.col(input_col).cast(StringType()), 'yyyyMMdd'))
+    input_df = input_df.withColumn("start_of_week", F.to_date(F.date_trunc('week', F.col(event_partition_date))))
+    input_df = input_df.withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col(event_partition_date))))
+
+    return input_df
+
+
 def __divide_chunks(l, n):
     # looping till length l
     for i in range(0, len(l), n):
@@ -93,7 +116,8 @@ def _l1_join_with_customer_profile(
         current_item
 ) -> DataFrame:
 
-    cust_profile_col_to_select = list(config["join_column_with_cust_profile"].keys()) + ["start_of_week", "start_of_month", "subscription_identifier"]
+    cust_profile_col_to_select = list(config["join_column_with_cust_profile"].keys()) + \
+                                 ["start_of_week", "start_of_month", "access_method_num", "subscription_identifier", "national_id_card"]
     cust_profile_col_to_select = list(set(cust_profile_col_to_select))  # remove duplicates
 
     if not isinstance(current_item[0], datetime):
@@ -118,7 +142,8 @@ def _l2_join_with_customer_profile(
         current_item
 ) -> DataFrame:
 
-    cust_profile_col_selection = set(list(config["join_column_with_cust_profile"].keys()) + ["subscription_identifier"])
+    cust_profile_col_selection = set(list(config["join_column_with_cust_profile"].keys())
+                                     + ["access_method_num", "subscription_identifier", "national_id_card"])
     # grouping all distinct customer per week
     filtered_cust_profile_df = (cust_profile_df
                                 .filter(F.col("start_of_week").isin(current_item))
@@ -143,7 +168,8 @@ def _l3_join_with_customer_profile(
     config["join_column_with_cust_profile"]["start_of_month"] = config["join_column_with_cust_profile"]["partition_month"]
     del config["join_column_with_cust_profile"]["partition_month"]
 
-    cust_profile_col_selection = set(list(config["join_column_with_cust_profile"].keys()) + ["subscription_identifier"])
+    cust_profile_col_selection = set(list(config["join_column_with_cust_profile"].keys())
+                                     + ["access_method_num", "subscription_identifier", "national_id_card"])
 
     filtered_cust_profile_df = (cust_profile_df
                                 .withColumnRenamed("partition_month", "start_of_month")
@@ -334,6 +360,7 @@ def __is_valid_input_df(
 def data_non_availability_and_missing_check(df, grouping, par_col, target_table_name, missing_data_check_flg='N',
                                             exception_partitions=None):
     """
+    Purpose:
     This function will check two scenario's:
         1. Whether any partition (daily/weekly/monthly) is completely missing or not.
         2. Whether any daily level data partition (only in case of weekly/monthly) is missing or not.
@@ -351,6 +378,7 @@ def data_non_availability_and_missing_check(df, grouping, par_col, target_table_
                 skipped while checking for missing data.
     :return:
     """
+
     logging.info("Entering data_non_availability_and_missing_check")
     if run_mode is not None:
         if (run_mode.upper() == 'UNIT_TEST') | (run_mode.upper() == 'LOCAL_FS') | (run_mode.upper() == 'NO'):
@@ -358,7 +386,12 @@ def data_non_availability_and_missing_check(df, grouping, par_col, target_table_
             return df
     logging.info("Executing data_non_availability_and_missing_check IMP: OS ENV RUN_MODE NO UNIT TEST CASE SELECTED")
     spark = get_spark_session()
-    mtdt_tbl = spark.read.parquet('/mnt/customer360-blob-output/C360/metadata_table/')
+
+    if running_environment.lower() == 'on_premise':
+        mtdt_tbl = spark.read.parquet('/projects/prod/c360/data/UTILITIES/metadata_table')
+    else:
+        mtdt_tbl = spark.read.parquet('/mnt/customer360-blob-output/C360/UTILITIES/metadata_table')
+
     mtdt_tbl.createOrReplaceTempView("mtdt_tbl")
     df.createOrReplaceTempView("df")
 

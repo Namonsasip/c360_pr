@@ -2,8 +2,8 @@
 l3_campaign_postpaid_prepaid_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/CAMPAIGN/l3_features/l3_campaign_postpaid_prepaid_monthly/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/CAMPAIGN/l3_features/l3_campaign_postpaid_prepaid_monthly/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -14,8 +14,8 @@ l3_campaign_postpaid_prepaid_monthly:
 l3_campaign_top_channel_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/CAMPAIGN/l3_features/l3_campaign_top_channel_monthly/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/CAMPAIGN/l3_features/l3_campaign_top_channel_monthly/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"

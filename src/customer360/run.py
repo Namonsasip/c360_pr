@@ -35,21 +35,22 @@ import logging.config
 import os
 from functools import partial
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Union
 from warnings import warn
 
-import findspark
+import findspark, datetime
 from kedro.config import MissingConfigException
 from kedro.context import KedroContext, load_context
 from kedro.io import DataCatalog
 from kedro.pipeline import Pipeline
 from kedro.pipeline.node import Node
 from kedro.versioning import Journal
+from customer360.utilities.auto_path_mapping import auto_path_mapping_project_context
 
 from customer360.utilities.spark_util import get_spark_session
 from customer360.utilities.generate_dependency_dataset import generate_dependency_dataset
 
-from customer360.pipeline import create_pipelines
+from customer360.pipeline import create_pipelines, create_dq_pipeline
 
 try:
     findspark.init()
@@ -57,18 +58,37 @@ except ValueError as err:
     logging.info("findspark.init() failed with error " + str(err))
 
 conf = os.getenv("CONF", None)
+running_environment = os.getenv("RUNNING_ENVIRONMENT", None)
+pipeline_to_run = os.getenv("PIPELINE_TO_RUN", None)
+
+LOG_FILE_NAME = str(datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"))
+if pipeline_to_run:
+    LOG_FILE_NAME = "{}_{}".format(pipeline_to_run, str(datetime.datetime.now().strftime("%Y_%m_%d_%H_%M")))
 
 
 class ProjectContext(KedroContext):
     """Users can override the remaining methods from the parent class here,
     or create new ones (e.g. as required by plugins)
     """
-
     project_name = "project-samudra"
     project_version = "0.15.5"
 
     def _get_pipelines(self) -> Dict[str, Pipeline]:
         return create_pipelines()
+
+    def _setup_logging(self) -> None:
+        """Register logging specified in logging directory."""
+
+        conf_logging = self.config_loader.get("logging*", "logging*/**")
+        info_file_path = conf_logging['handlers']['info_file_handler']['filename']
+        info_file_path_new = info_file_path.replace(".", "_{}.".format(LOG_FILE_NAME))
+
+        error_file_path = conf_logging['handlers']['error_file_handler']['filename']
+        error_file_path_new = error_file_path.replace(".", "_{}.".format(LOG_FILE_NAME))
+
+        conf_logging['handlers']['info_file_handler']['filename'] = info_file_path_new
+        conf_logging['handlers']['error_file_handler']['filename'] = error_file_path_new
+        logging.config.dictConfig(conf_logging)
 
     @property
     def params(self) -> Dict[str, Any]:
@@ -93,10 +113,10 @@ class ProjectContext(KedroContext):
         return params
 
     def _get_catalog(
-        self,
-        save_version: str = None,
-        journal: Journal = None,
-        load_versions: Dict[str, str] = None,
+            self,
+            save_version: str = None,
+            journal: Journal = None,
+            load_versions: Dict[str, str] = None,
     ) -> DataCatalog:
         """A hook for changing the creation of a DataCatalog instance.
 
@@ -113,47 +133,7 @@ class ProjectContext(KedroContext):
         )
         catalog.add_feed_dict(self._get_feed_dict())
         # This code is to handle cloud vs on-prem env
-        running_environment = os.getenv("RUNNING_ENVIRONMENT", None)
-        temp_list = []
-        for curr_domain in catalog.load("params:cloud_on_prim_path_conversion"):
-            search_pattern = curr_domain["search_pattern"]
-            replace_pattern = search_pattern.replace("/", "")
-            if running_environment.lower() == 'on_premise':
-                source_prefix = curr_domain["source_path_on_prem_prefix"]
-                target_prefix = curr_domain["target_path_on_prem_prefix"]
-                metadata_table = catalog.load("params:metadata_path")['on_premise']
-            else:
-                source_prefix = curr_domain["source_path_on_cloud_prefix"]
-                target_prefix = curr_domain["target_path_on_cloud_prefix"]
-                metadata_table = catalog.load("params:metadata_path")['on_cloud']
-            for curr_catalog in catalog.list():
-                if type(catalog._data_sets[curr_catalog]).__name__ == "SparkDbfsDataSet":
-                    original_path = str(catalog._data_sets[curr_catalog].__getattribute__("_filepath"))
-                    original_path_lower = original_path.lower()
-                    if search_pattern.lower() in original_path_lower:
-                        print("Above", curr_catalog, original_path_lower)
-                        if 'l1_features' in original_path_lower or 'l2_features' in original_path_lower or \
-                            'l3_features' in original_path_lower or 'l4_features' in original_path_lower:
-                            print("Below", curr_catalog)
-
-                            new_target_path = original_path.replace("base_path/{}".format(replace_pattern), target_prefix)
-                            catalog._data_sets[curr_catalog].__setattr__("_filepath", new_target_path)
-                            t_tuple = (original_path, new_target_path)
-                            temp_list.append(t_tuple)
-
-                        else:
-                            new_source_path = original_path.replace("base_path/{}".format(replace_pattern), source_prefix)
-                            catalog._data_sets[curr_catalog].__setattr__("_filepath", new_source_path)
-                            t_tuple = (original_path, new_source_path)
-                            temp_list.append(t_tuple)
-                        try:
-                            meta_data_path = str(catalog._data_sets[curr_catalog].__getattribute__("_metadata_table_path"))
-                            new_meta_data_path = meta_data_path.replace("metadata_path", metadata_table)
-                            catalog._data_sets[curr_catalog].__setattr__("_metadata_table_path", new_meta_data_path)
-
-                        except Exception as e:
-                            logging.info("No Meta-Data Found While Replacing Paths")
-
+        catalog = auto_path_mapping_project_context(catalog, running_environment)
         return catalog
 
     def run(self, **kwargs):
@@ -163,7 +143,7 @@ class ProjectContext(KedroContext):
         return super().run(**kwargs)
 
     def load_node_inputs(
-        self, node_name: str, pipeline_name: str = None, import_full_module: bool = True
+            self, node_name: str, pipeline_name: str = None, import_full_module: bool = True
     ):
         """
         Loads all inputs of a node into the namespace from which this function was called.
@@ -214,8 +194,8 @@ class ProjectContext(KedroContext):
         if isinstance(node_func, partial):
             partial_args = node_func.args
             node_args = (
-                ["parameter_from_functools_partial"] * len(partial_args)
-            ) + node_args
+                                ["parameter_from_functools_partial"] * len(partial_args)
+                        ) + node_args
             node_loaded_args = list(partial_args) + node_loaded_args
             partial_kwargs = node_func.keywords
             for key, value in partial_kwargs.items():
@@ -226,18 +206,18 @@ class ProjectContext(KedroContext):
         # Bind the node inputs to the parametes of the function
         bound_signature_parameters = (
             inspect.signature(node_func, follow_wrapped=False)
-            .bind(*node_args, **node_kwargs)
-            .signature.parameters
+                .bind(*node_args, **node_kwargs)
+                .signature.parameters
         )
         bound_params_dataset_names = (
             inspect.signature(node_func, follow_wrapped=False)
-            .bind(*node_args, **node_kwargs)
-            .arguments
+                .bind(*node_args, **node_kwargs)
+                .arguments
         )
         bound_params_dataset_content = (
             inspect.signature(node_func, follow_wrapped=False)
-            .bind(*node_loaded_args, **node_loaded_kwargs)
-            .arguments
+                .bind(*node_loaded_args, **node_loaded_kwargs)
+                .arguments
         )
 
         # We load the argument details to be able to identify *args and **kwargs
@@ -278,10 +258,9 @@ class ProjectContext(KedroContext):
                         "Set `"
                         + parameter_name
                         + "` (**kwrgs parameter) to {} (empty dictionary)"
-                        " since it was not specified"
+                          " since it was not specified"
                     )
                     caller_globals[parameter_name] = {}
-
 
         # Import all names that are defined in the module,
         # so that all references and dependencies within
@@ -301,16 +280,19 @@ class ProjectContext(KedroContext):
                     caller_globals[obj_name] = getattr(function_module, obj_name)
 
 
-def run_package(pipelines=None):
-
+def run_package(pipelines=None, project_context=None, tags=None):
     # entry point for running pip-install projects
     # using `<project_package>` command
-    project_context = load_context(Path.cwd(), env=conf)
-    spark = get_spark_session(spark_conf_dict = project_context.catalog.load("params:spark_conf"))
+    if project_context is None:
+        project_context = load_context(Path.cwd(), env=conf)
+    spark = get_spark_session()
+
+    if any([dq_pipeline in pipelines for dq_pipeline in create_dq_pipeline().keys()]):
+        project_context = DataQualityProjectContext(project_path=Path.cwd(), env=conf)
 
     if pipelines is not None:
         for each_pipeline in pipelines:
-            project_context.run(pipeline_name=each_pipeline)
+            project_context.run(pipeline_name=each_pipeline, tags=tags)
         return
     # project_context.run(pipeline_name='customer_profile_to_l3_pipeline')
     # project_context.run()
@@ -320,6 +302,73 @@ def run_package(pipelines=None):
     #
     # project_context = load_context(Path.cwd(), env='base')
     # project_context.run(pipeline_name="customer_profile_to_l4_pipeline")
+
+
+class DataQualityProjectContext(ProjectContext):
+    def _remove_increment_flag(self, catalog_dict):
+        """
+            Set all the incremental_flag in catalog to 'no'
+            for data quality pipeline
+
+            The incremental load in data quality will be handled separately
+        """
+        if catalog_dict.get("load_args") is None:
+            return catalog_dict
+
+        if catalog_dict.get("load_args").get("increment_flag") is not None:
+            catalog_dict["load_args"]["increment_flag"] = 'no'
+
+        return catalog_dict
+
+    def _generate_dq_consistency_catalog(self):
+        params = self.config_loader.get(
+            "parameters*", "parameters*/**", "*/**/parameter*"
+        )
+        if running_environment.lower() == 'on_premise':
+            dq_path = params['metadata_path']['on_premise_dq']
+        else:
+            dq_path = params['metadata_path']['on_cloud_dq']
+
+        new_catalog_dict = {}
+        for dataset_name in params["features_for_dq"].keys():
+            new_catalog = {
+                "type": "datasets.spark_ignore_missing_path_dataset.SparkIgnoreMissingPathDataset",
+                "filepath": f"{dq_path}/{dataset_name}",
+                "file_format": "parquet",
+                "save_args": {
+                    "mode": "overwrite",
+                    "partitionBy": ["corresponding_date"]
+                }
+            }
+            new_catalog_dict[f"dq_consistency_benchmark_{dataset_name}"] = new_catalog
+        return new_catalog_dict
+
+    def _get_catalog(
+            self,
+            save_version: str = None,
+            journal: Journal = None,
+            load_versions: Dict[str, str] = None,
+    ) -> DataCatalog:
+
+        conf_catalog = self.config_loader.get(
+            "catalog*", "catalog*/**", "*/**/catalog*"
+        )
+
+        for dataset_name, each_catalog in conf_catalog.items():
+            self._remove_increment_flag(each_catalog)
+
+        dq_consistency_catalog_dict = self._generate_dq_consistency_catalog()
+
+        conf_catalog.update(dq_consistency_catalog_dict)
+
+        conf_creds = self._get_config_credentials()
+        catalog = self._create_catalog(
+            conf_catalog, conf_creds, save_version, journal, load_versions
+        )
+        catalog.add_feed_dict(self._get_feed_dict())
+
+        catalog = auto_path_mapping_project_context(catalog, running_environment)
+        return catalog
 
 
 def run_selected_nodes(pipeline_name, node_names=None, env="base"):
@@ -332,4 +381,9 @@ def run_selected_nodes(pipeline_name, node_names=None, env="base"):
 if __name__ == "__main__":
     # entry point for running pip-installed projects
     # using `python -m <project_package>.run` command
-    run_package()
+    # run_package()
+
+    # uncomment below to run data_quality_pipeline locally
+    run_package(
+        pipelines=[],
+    )
