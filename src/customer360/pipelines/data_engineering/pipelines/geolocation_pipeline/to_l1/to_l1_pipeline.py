@@ -38,19 +38,19 @@ def geo_to_l1_pipeline(**kwargs):
 
             # Home and Work location_id
             node(
-                l1_geo_home_location_id_daily,
+                l1_geo_home_duration_on_location_id_daily,
                 ["l0_geo_cust_cell_visit_time_for_l1_geo_home_location_id_daily",
-                 "params:l1_geo_home_location_id_daily"
+                 "params:l1_geo_home_duration_on_location_id_daily"
                  ],
-                "l1_geo_home_location_id_daily"
+                "l1_geo_home_duration_on_location_id_daily"
             ),
 
             node(
-                l1_geo_work_location_id_daily,
+                l1_geo_work_duration_on_location_id_daily,
                 ["l0_geo_cust_cell_visit_time_for_l1_geo_work_location_id_daily",
-                 "params:l1_geo_work_location_id_daily"
+                 "params:l1_geo_work_duration_on_location_id_daily"
                  ],
-                "l1_geo_work_location_id_daily"
+                "l1_geo_work_duration_on_location_id_daily"
             ),
 
             node(

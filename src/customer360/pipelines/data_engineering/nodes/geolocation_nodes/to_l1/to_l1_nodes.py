@@ -13,7 +13,7 @@ import statistics
 from pyspark.sql import Window
 
 from customer360.utilities.re_usable_functions import add_start_of_week_and_month, union_dataframes_with_missing_cols, \
-    execute_sql
+    execute_sql, add_event_week_and_month_from_yyyymmdd
 from customer360.utilities.spark_util import get_spark_session
 
 
@@ -99,48 +99,59 @@ def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit
 
 # Test for Home && Work location_id daily
 # --------------------------------------------------------------------------------------------------------------------------------------------
-def l1_geo_home_location_id_daily(geo_cust_cell_visit_time, sql):
+def l1_geo_home_duration_on_location_id_daily(geo_cust_cell_visit_time, sql):
     """
     :param geo_cust_cell_visit_time: dataframe from L0\catalog.yml
     :param sql: sql from L1\parameters_features.yml
     :return:
     """
-    # Add 3 columes: start_of_week, start_of_month, event_partition_date
+    # Add 3 columes: event_partition_date, start_of_week, start_of_month
     geo_cust_cell_visit_time.cache()
-    geo_cust_cell_visit_time = add_start_of_week_and_month(geo_cust_cell_visit_time, "time_in")
+    geo_cust_cell_visit_time = add_event_week_and_month_from_yyyymmdd(geo_cust_cell_visit_time, "partition_date")
+    # geo_cust_cell_visit_time = add_start_of_week_and_month(geo_cust_cell_visit_time, "time_in")
 
     # Get spark session
     spark = get_spark_session()
 
-    # Aggregate table daily: geo_cust_cell_visit_time
+    # Fix Time on Home Location
     geo_cust_cell_visit_time.createOrReplaceTempView('geo_cust_cell_visit_time')
-    df = spark.sql("""
-        select a.imsi
-        ,a.location_id, a.latitude, a.longitude
-        ,sum(duration) as duration
-        ,case when sum(a.duration) / count(1) < 2 then 1
-        else count(1) end as incident
-        -- ,row_number() over ( partition by a.imsi order by sum(duration) desc) as rank
-        from (
+    geo_cust_cell_visit_time_home = spark.sql("""
         select imsi, time_in, time_out, cell_id, location_id, latitude, longitude
-        ,case when (hour_in < 18 and hour_out > 18) then (to_unix_timestamp(time_out) - to_unix_timestamp(to_timestamp(concat(partition_date, ' 18:00:00'), 'yyyyMMdd HH:mm:ss')))
-        when (hour_in < 6 and hour_out > 6) then (to_unix_timestamp(to_timestamp(concat(partition_date, ' 06:00:00'), 'yyyyMMdd HH:mm:ss')) - to_unix_timestamp(time_out))
-        else duration end as duration
+        ,case
+            when (hour_in < 18 and hour_out > 18) then ( to_unix_timestamp(time_out) - (to_unix_timestamp(event_partition_date) + 64800) )
+            when (hour_in < 6 and hour_out > 6) then ( (to_unix_timestamp(event_partition_date) + 21600) - to_unix_timestamp(time_out) )
+            else duration 
+        end as duration
+        ,event_partition_date, start_of_week, start_of_month
         from geo_cust_cell_visit_time
         where duration <> 0
         and (hour_in >= 18)  -- Obviously
         or (hour_in < 18 and hour_out > 18)  -- minus time_out - 18:00:00
         or (hour_in < 6 and hour_out > 6)  -- minus 06:00:00 - time_in
         or (hour_out <=6)  -- Obviously
+    """)
+    geo_cust_cell_visit_time_home.cache()
+
+    # Aggregate table daily: geo_cust_cell_visit_time_home
+    geo_cust_cell_visit_time_home.createOrReplaceTempView('geo_cust_cell_visit_time_home')
+    df = spark.sql("""
+        select 
+        a.imsi
+        ,a.location_id, a.latitude, a.longitude
+        ,sum(a.duration) as duration
+        ,a.event_partition_date, a.start_of_week, a.start_of_month
+        ,row_number() over ( partition by a.imsi order by sum(a.duration) desc) as rank
+        from (
+            geo_cust_cell_visit_time_home
         ) a
-        group by a.imsi, a.location_id, a.latitude, a.longitude
-        -- order by imsi desc , rank
+        group by a.imsi, a.location_id, a.latitude, a.longitude, a.event_partition_date, a.start_of_week, a.start_of_month
     """)
     df.cache()
+    # imsi | location_id | latitude | longitude | duration | event_partition_date | start_of_week | start_of_month | rank
     # df.createOrReplaceTempView("geo_home_location_id_daily")
 
     # Check DataFrame from SQL query statement
-    print("Start for check result from sql query statement")
+    print("Start for check the result from sql query statement.")
     df.count()
     df.show()
 
@@ -148,47 +159,52 @@ def l1_geo_home_location_id_daily(geo_cust_cell_visit_time, sql):
     df2 = node_from_config(df, sql)
     return df2
 
-def l1_geo_work_location_id_daily(geo_cust_cell_visit_time, sql):
+def l1_geo_work_duration_on_location_id_daily(geo_cust_cell_visit_time, sql):
     """
     :param geo_cust_cell_visit_time: dataframe from L0\catalog.yml
     :param sql: sql from L1\parameters_features.yml
     :return:
     """
-    # Add 3 columes: start_of_week, start_of_month, event_partition_date
+    # Add 3 columes: event_partition_date, start_of_week, start_of_month
     geo_cust_cell_visit_time.cache()
-    geo_cust_cell_visit_time = add_start_of_week_and_month(geo_cust_cell_visit_time, "time_in")
+    geo_cust_cell_visit_time = add_event_week_and_month_from_yyyymmdd(geo_cust_cell_visit_time, "partition_date")
+    # geo_cust_cell_visit_time = add_start_of_week_and_month(geo_cust_cell_visit_time, "time_in")
 
     # Get spark session
     spark = get_spark_session()
 
-    # Aggregate table daily: geo_cust_cell_visit_time
+    # Fix Time on Home Location
     geo_cust_cell_visit_time.createOrReplaceTempView('geo_cust_cell_visit_time')
+    geo_cust_cell_visit_time_work = spark.sql("""
+            select imsi, time_in, time_out, location_id, latitude, longitude,
+            case
+                when ((hour_in >= 8 and hour_in < 18) and hour_out > 18) then ( (to_unix_timestamp(event_partition_date) + 64800) - (to_unix_timestamp(time_in)) )
+                else duration
+            end as duration
+           ,event_partition_date, start_of_week, start_of_month
+            from geo_cust_cell_visit_time
+            where duration <> 0
+            and
+            (((hour_in >= 8 and hour_in < 18) and hour_out <= 18) -- Obviously
+             or ((hour_in >= 8 and hour_in < 18) and hour_out > 18)) -- minus 18: 00:00 - time_in
+        """)
+    geo_cust_cell_visit_time_work.cache()
+
+    # Aggregate table daily: geo_cust_cell_visit_time_work
+    geo_cust_cell_visit_time_work.createOrReplaceTempView('geo_cust_cell_visit_time_work')
     df = spark.sql("""
         select a.imsi
         ,a.location_id, a.latitude, a.longitude
         ,sum(a.duration) as duration
-        ,case when sum(a.duration) / count(1) < 2 then 1
-        else count(1) end as incident
+        ,a.event_partition_date, a.start_of_week, a.start_of_month
         ,row_number() over ( partition by a.imsi order by sum(duration) desc) as rank
         from (
-        select imsi
-        ,time_in
-        ,time_out
-        ,cell_id
-        ,location_id, latitude, longitude   
-        ,case when ((hour_in >= 8 and hour_in < 18) and hour_out > 18) then (to_unix_timestamp(to_timestamp(concat(partition_date, ' 18:00:00'), 'yyyyMMdd HH:mm:ss')) - (to_unix_timestamp(time_in)))
-        ,case when ((hour_in >= 8 and hour_in < 18) and hour_out > 18) then (to_unix_timestamp(to_timestamp(concat('20200325', ' 18:00:00'), 'yyyyMMdd HH:mm:ss')) - (to_unix_timestamp(time_in)))
-        else duration end as duration
-        from temp_view_load_cell_visit
-        where duration <> 0
-        and 
-        (((hour_in >= 8 and hour_in < 18) and hour_out <= 18)  -- Obviously
-        or ((hour_in >= 8 and hour_in < 18) and hour_out > 18))  -- minus 18:00:00 - time_in
+        geo_cust_cell_visit_time_work
         ) a
-        group by a.imsi, a.location_id, a.latitude, a.longitude
-        -- order by imsi desc , rank
+        group by a.imsi, a.location_id, a.latitude, a.longitude, a.event_partition_date, a.start_of_week, a.start_of_month
     """)
     df.cache()
+    # imsi | location_id | latitude | longitude | duration | event_partition_date | start_of_week | start_of_month | rank
     # df.createOrReplaceTempView("geo_work_location_id_daily")
 
     # Check DataFrame from SQL query statement
@@ -199,6 +215,7 @@ def l1_geo_work_location_id_daily(geo_cust_cell_visit_time, sql):
     # Use parameter_feature
     df2 = node_from_config(df, sql)
     return df2
+# --------------------------------------------------------------------------------------------------------------------------------------------
 
 def l1_geo_top_visit_exclude_homework_daily(df,homework,sql):
     df.createOrReplaceTempView('geo_cust_visit_time')

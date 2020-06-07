@@ -14,7 +14,7 @@ l0_geo_cust_cell_visit_time_for_l1_geo_area_from_ais_store_daily:
   filepath: /mnt/customer360-blob-data/C360/GEO/sample/geo_cust_cell_visit_time_daily_2/  #sample data for test
   file_format: parquet
 
-l0_geo_cust_location_visit_hr:
+l0_geo_cust_location_visit_hr:  # New dataset for optional way, which can agg by Hour
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_location_visit_hr/
   file_format: parquet
@@ -35,17 +35,19 @@ l0_geo_cust_cell_visit_time_for_l1_geo_area_from_competitor_store_daily:
   filepath: /mnt/customer360-blob-data/C360/GEO/sample/geo_cust_cell_visit_time_daily/  #sample data for test
   file_format: parquet
 
+#-----------------------------------------------------------------------------------------------------------------------
 l0_geo_cust_cell_visit_time_for_l1_geo_home_location_id_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time_daily/
-  filepath: base_path/GEO/sample/geo_cust_cell_visit_time_daily/  #sample data for test
+  filepath: base_path/GEO/sample/geo_cust_cell_visit_time_daily_2/  #sample data for test
   file_format: parquet
 
 l0_geo_cust_cell_visit_time_for_l1_geo_work_location_id_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time_daily/
-  filepath: /mnt/customer360-blob-data/C360/GEO/sample/geo_cust_cell_visit_time_daily/  #sample data for test
+  filepath: base_path/GEO/sample/geo_cust_cell_visit_time_daily_2/  #sample data for test
   file_format: parquet
+#-----------------------------------------------------------------------------------------------------------------------
 
 l0_geo_cust_cell_visit_time_for_l1_geo_top_visit_exclude_homework:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
