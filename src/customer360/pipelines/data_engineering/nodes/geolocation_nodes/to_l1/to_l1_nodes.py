@@ -235,19 +235,3 @@ def l1_geo_work_duration_on_location_id_daily(geo_cust_cell_visit_time, sql):
     return df2
 # --------------------------------------------------------------------------------------------------------------------------------------------
 
-def l1_geo_top_visit_exclude_homework_daily(df,homework,sql):
-    df.createOrReplaceTempView('geo_cust_visit_time')
-    homework.createOrReplaceTempView('homework_master')
-
-
-
-    ss = get_spark_session()
-    df = ss.sql("""
-        xxxxxxxxxxxxxx
-        """)
-
-
-
-    df = node_from_config(df,sql)
-
-    return df
