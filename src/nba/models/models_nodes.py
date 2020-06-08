@@ -294,6 +294,9 @@ def create_model_function(
                 }
                 pai.log_metrics(fixed_metrics_dict)
 
+            ## Sort features since MLflow does not guarantee the order
+            explanatory_features.sort()
+
             current_group = pdf_master_chunk[group_column].iloc[0]
 
             pai_run_name = pai_run_prefix + current_group
@@ -706,7 +709,7 @@ def create_model_function(
     return model_function
 
 
-def  train_multiple_models(
+def train_multiple_models(
     df_master: pyspark.sql.DataFrame,
     group_column: str,
     explanatory_features: List[str],

@@ -29,7 +29,7 @@ def usage_merge_all_data(l2_usage_call_relation_sum_weekly: DataFrame,
     return final_df
 
 
-def build_usage_l2_layer(data_frame: DataFrame, dict_obj: dict) -> DataFrame:
+def build_usage_l2_layer(data_frame: DataFrame, dict_obj: dict, exception_partition=None) -> DataFrame:
     """
     :param data_frame:
     :param dict_obj:
@@ -44,7 +44,7 @@ def build_usage_l2_layer(data_frame: DataFrame, dict_obj: dict) -> DataFrame:
                                                          par_col="event_partition_date",
                                                          target_table_name="l2_usage_postpaid_prepaid_weekly",
                                                          missing_data_check_flg='Y',
-                                                         exception_partitions=['2019-07-29'])
+                                                         exception_partitions=exception_partition)
 
     if check_empty_dfs([data_frame]):
         return get_spark_empty_df()
