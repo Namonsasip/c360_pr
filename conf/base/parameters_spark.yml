@@ -8,9 +8,9 @@ spark_conf:
   spark.sql.sources.partitionOverwriteMode: dynamic
   spark.sql.parquet.binaryAsString: true
   spark.hadoop.fs.permissions.umask-mode: "022"
-  spark.executor.memoryOverhead: 10g
+  spark.executor.memoryOverhead: 20g
   spark.debug.maxToStringFields: 100
   spark.port.maxRetries: 100
-  spark.shuffle.partitions: 1200
+  spark.sql.shuffle.partitions: 1200
   spark.sql.files.maxPartitionBytes: 536870912
 #  spark.executor.extraJavaOptions: "-Xss512m"
