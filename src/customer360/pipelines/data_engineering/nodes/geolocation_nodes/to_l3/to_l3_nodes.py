@@ -39,52 +39,64 @@ def l3_geo_home_duration_location_id_monthly(home_duration_dayily, sql):
     # Get spark session
     spark = get_spark_session()
 
-    df_weekend = spark.sql("""
-        select
-        imsi,
-        location_id, latitude, longitude
-        ,start_of_month
-        sum(duration) as duration
-        ,row_number() over ( partition by imsi order by sum(duration) desc) as rank
+    df_combine_week = spark.sql("""
+        select imsi,
+            location_id, latitude, longitude
+            ,start_of_month, week_type,
+            sum(duration) as duration
+            ,row_number() over ( partition by imsi, week_type order by sum(duration) desc) as rank
         from home_duration_dayily_with_weektype
-        where week_type = 'weekend'
-        group by imsi, location_id, latitude, longitude, start_of_month
+        group by imsi, location_id, latitude, longitude, start_of_month, week_type
     """)
-    # imsi | location_id | latitude | longitude | duration | week_type | start_of_month | rank
-    df_weekend.cache()
-    df_weekend = df_weekend[df_weekend['rank']==1]
-    df_weekend.createOrReplaceTempView('df_weekend')
+    df_combine_week.cache()
 
-    df_weekday = spark.sql("""
-        select
-        imsi,
-        location_id, latitude, longitude
-        ,start_of_month
-        sum(duration) as duration
-        ,row_number() over ( partition by imsi order by sum(duration) desc) as rank
-        from home_duration_dayily_with_weektype
-        where week_type = 'weekday'
-        group by imsi, location_id, latitude, longitude, start_of_month
-    """)
-    df_weekday.cache()
-    df_weekday = df_weekday[df_weekday['rank'] == 1]
-    df_weekday.createOrReplaceTempView('df_weekday')
+    # df_weekend = spark.sql("""
+    #     select
+    #     imsi,
+    #     location_id, latitude, longitude
+    #     ,start_of_month
+    #     sum(duration) as duration
+    #     ,row_number() over ( partition by imsi order by sum(duration) desc) as rank
+    #     from home_duration_dayily_with_weektype
+    #     where week_type = 'weekend'
+    #     group by imsi, location_id, latitude, longitude, start_of_month
+    # """)
+    # # imsi | location_id | latitude | longitude | duration | week_type | start_of_month | rank
+    # df_weekend.cache()
+    # df_weekend = df_weekend[df_weekend['rank']==1]
+    # df_weekend.createOrReplaceTempView('df_weekend')
+    #
+    # df_weekday = spark.sql("""
+    #     select
+    #     imsi,
+    #     location_id, latitude, longitude
+    #     ,start_of_month
+    #     sum(duration) as duration
+    #     ,row_number() over ( partition by imsi order by sum(duration) desc) as rank
+    #     from home_duration_dayily_with_weektype
+    #     where week_type = 'weekday'
+    #     group by imsi, location_id, latitude, longitude, start_of_month
+    # """)
+    # df_weekday.cache()
+    # df_weekday = df_weekday[df_weekday['rank'] == 1]
+    # df_weekday.createOrReplaceTempView('df_weekday')
+    #
+    # df = spark.sql("""
+    #     select
+    #     a.imsi as imsi,
+    #     a.location_id as home_weekday_loation_id,
+    #     a.latitude as home_weekday_latitude,
+    #     a.longitude as home_weekday_longitude,
+    #     b.location_id as home_weekend_loation_id,
+    #     b.latitude as home_weekend_latitude,
+    #     b.longitude as home_weekend_longitude
+    #     from df_weekday a
+    #     inner join df_weekend b
+    #     on a.imsi = b.imsi and a.start_of_month = b.start_of_month
+    # """)
 
-    df = spark.sql("""
-        select
-        a.imsi as imsi,
-        a.location_id as home_weekday_loation_id,
-        a.latitude as home_weekday_latitude,
-        a.longitude as home_weekday_longitude,
-        b.location_id as home_weekend_loation_id,
-        b.latitude as home_weekend_latitude,
-        b.longitude as home_weekend_longitude
-        from df_weekday a
-        inner join df_weekend b
-        on a.imsi = b.imsi and a.start_of_month = b.start_of_month
-    """)
-
-    df2 = node_from_config(df, sql)
+    # df2 = node_from_config(df, sql)
+    df2 = node_from_config(df_combine_week, sql)
     return df2
 
 
