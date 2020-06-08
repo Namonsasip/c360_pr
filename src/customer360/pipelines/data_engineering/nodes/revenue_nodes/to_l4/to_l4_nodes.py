@@ -128,8 +128,7 @@ def revenue_l4_dataset_weekly_datasets(input_df: DataFrame,
                                        rolling_window_dict_min: dict,
                                        rolling_window_dict_max: dict,
                                        rolling_window_dict_sum: dict,
-                                       rolling_window_dict_avg: dict,
-                                       rolling_window_dict_stddev: dict,
+                                       rolling_window_dict_avg: dict
                                        ) -> DataFrame:
     """
     :param input_df:
