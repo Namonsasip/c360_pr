@@ -16,29 +16,29 @@ def build_network_voice_features(int_l1_network_voice_features: DataFrame,
     :param l1_customer_profile_union_daily_feature_for_l1_network_voice_features:
     :return:
     """
-    ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs(
-            [int_l1_network_voice_features, l1_customer_profile_union_daily_feature_for_l1_network_voice_features]):
-        return get_spark_empty_df()
-
-    input_df = data_non_availability_and_missing_check(df=int_l1_network_voice_features, grouping="daily",
-                                                       par_col="event_partition_date",
-                                                       target_table_name="l1_network_voice_features")
-
-    cust_df = data_non_availability_and_missing_check(
-        df=l1_customer_profile_union_daily_feature_for_l1_network_voice_features, grouping="daily",
-        par_col="event_partition_date",
-        target_table_name="l1_network_voice_features")
-
-    # Min function is not required as driving table is network and join is based on that
-
-    if check_empty_dfs([input_df, cust_df]):
-        return get_spark_empty_df()
-    ################################# End Implementing Data availability checks ###############################
+    # ################################# Start Implementing Data availability checks #############################
+    # if check_empty_dfs(
+    #         [int_l1_network_voice_features, l1_customer_profile_union_daily_feature_for_l1_network_voice_features]):
+    #     return get_spark_empty_df()
+    #
+    # input_df = data_non_availability_and_missing_check(df=int_l1_network_voice_features, grouping="daily",
+    #                                                    par_col="event_partition_date",
+    #                                                    target_table_name="l1_network_voice_features")
+    #
+    # cust_df = data_non_availability_and_missing_check(
+    #     df=l1_customer_profile_union_daily_feature_for_l1_network_voice_features, grouping="daily",
+    #     par_col="event_partition_date",
+    #     target_table_name="l1_network_voice_features")
+    #
+    # # Min function is not required as driving table is network and join is based on that
+    #
+    # if check_empty_dfs([input_df, cust_df]):
+    #     return get_spark_empty_df()
+    # ################################# End Implementing Data availability checks ###############################
 
     return_df = l1_massive_processing(int_l1_network_voice_features,
                                       l1_network_voice_features,
-                                      cust_df)
+                                      l1_customer_profile_union_daily_feature_for_l1_network_voice_features)
     return return_df
 
 
@@ -68,144 +68,144 @@ def build_network_good_and_bad_cells_features(
     :param l1_network_good_and_bad_cells_features:
     :return:
     """
-    ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs(
-            [l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features,
-             l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features,
-             l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features,
-             l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features,
-             l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features,
-             l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features,
-
-             l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features,
-             l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features,
-
-             l1_customer_profile_union_daily_feature_for_l1_network_good_and_bad_cells_features
-             ]):
-        return get_spark_empty_df()
-
-    l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features = \
-        data_non_availability_and_missing_check(
-            df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features,
-            grouping="daily",
-            par_col="partition_date",
-            target_table_name="l1_network_good_and_bad_cells_features")
-
-    l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features = \
-        data_non_availability_and_missing_check(
-            df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features,
-            grouping="daily",
-            par_col="partition_date",
-            target_table_name="l1_network_good_and_bad_cells_features")
-
-    l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features = \
-        data_non_availability_and_missing_check(
-            df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features,
-            grouping="daily",
-            par_col="partition_date",
-            target_table_name="l1_network_good_and_bad_cells_features")
-
-    l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features = \
-        data_non_availability_and_missing_check(
-            df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features,
-            grouping="daily",
-            par_col="partition_date",
-            target_table_name="l1_network_good_and_bad_cells_features")
-
-    l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features = \
-        data_non_availability_and_missing_check(
-            df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features,
-            grouping="daily",
-            par_col="partition_date",
-            target_table_name="l1_network_good_and_bad_cells_features")
-
-    l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features = \
-        data_non_availability_and_missing_check(
-            df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features,
-            grouping="daily",
-            par_col="partition_date",
-            target_table_name="l1_network_good_and_bad_cells_features")
-
-    l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features = \
-        data_non_availability_and_missing_check(
-            df=l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features, grouping="daily",
-            par_col="partition_date",
-            target_table_name="l1_network_good_and_bad_cells_features")
-
-    l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features = \
-        data_non_availability_and_missing_check(
-            df=l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features, grouping="daily",
-            par_col="partition_date",
-            target_table_name="l1_network_good_and_bad_cells_features")
-
-    l1_customer_profile_union_daily_feature_for_l1_network_good_and_bad_cells_features = \
-        data_non_availability_and_missing_check(
-            df=l1_customer_profile_union_daily_feature_for_l1_network_good_and_bad_cells_features, grouping="daily",
-            par_col="even_partition_date",
-            target_table_name="l1_network_good_and_bad_cells_features")
-
-    if check_empty_dfs(
-            [l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features,
-             l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features,
-             l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features,
-             l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features,
-             l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features,
-             l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features,
-
-             l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features,
-             l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features,
-
-             l1_customer_profile_union_daily_feature_for_l1_network_good_and_bad_cells_features]):
-        return get_spark_empty_df()
-
-    # For min custoner check is not required as it will be a left join to customer from driving table
-    min_value = union_dataframes_with_missing_cols(
-        [
-            l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features.select(
-                f.max(f.col("partition_date")).alias("max_date")),
-            l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features.select(
-                f.max(f.col("partition_date")).alias("max_date")),
-            l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features.select(
-                f.max(f.col("partition_date")).alias("max_date")),
-            l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features.select(
-                f.max(f.col("partition_date")).alias("max_date")),
-            l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features.select(
-                f.max(f.col("partition_date")).alias("max_date")),
-            l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features.select(
-                f.max(f.col("partition_date")).alias("max_date")),
-            l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features.select(
-                f.max(f.col("partition_date")).alias("max_date")),
-            l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features.select(
-                f.max(f.col("partition_date")).alias("max_date")),
-        ]
-    ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
-
-    l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features = \
-        l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features \
-            .filter(f.col("partition_date") <= min_value)
-    l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features = \
-        l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features \
-            .filter(f.col("partition_date") <= min_value)
-    l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features = \
-        l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features \
-            .filter(f.col("partition_date") <= min_value)
-    l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features = \
-        l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features \
-            .filter(f.col("partition_date") <= min_value)
-    l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features = \
-        l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features \
-            .filter(f.col("partition_date") <= min_value)
-    l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features = \
-        l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features \
-            .filter(f.col("partition_date") <= min_value)
-    l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features = \
-        l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features \
-            .filter(f.col("partition_date") <= min_value)
-    l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features = \
-        l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features \
-            .filter(f.col("partition_date") <= min_value)
-
-    ################################# End Implementing Data availability checks ###############################
+    # ################################# Start Implementing Data availability checks #############################
+    # if check_empty_dfs(
+    #         [l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features,
+    #          l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features,
+    #          l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features,
+    #          l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features,
+    #          l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features,
+    #          l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features,
+    #
+    #          l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features,
+    #          l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features,
+    #
+    #          l1_customer_profile_union_daily_feature_for_l1_network_good_and_bad_cells_features
+    #          ]):
+    #     return get_spark_empty_df()
+    #
+    # l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features = \
+    #     data_non_availability_and_missing_check(
+    #         df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features,
+    #         grouping="daily",
+    #         par_col="partition_date",
+    #         target_table_name="l1_network_good_and_bad_cells_features")
+    #
+    # l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features = \
+    #     data_non_availability_and_missing_check(
+    #         df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features,
+    #         grouping="daily",
+    #         par_col="partition_date",
+    #         target_table_name="l1_network_good_and_bad_cells_features")
+    #
+    # l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features = \
+    #     data_non_availability_and_missing_check(
+    #         df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features,
+    #         grouping="daily",
+    #         par_col="partition_date",
+    #         target_table_name="l1_network_good_and_bad_cells_features")
+    #
+    # l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features = \
+    #     data_non_availability_and_missing_check(
+    #         df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features,
+    #         grouping="daily",
+    #         par_col="partition_date",
+    #         target_table_name="l1_network_good_and_bad_cells_features")
+    #
+    # l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features = \
+    #     data_non_availability_and_missing_check(
+    #         df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features,
+    #         grouping="daily",
+    #         par_col="partition_date",
+    #         target_table_name="l1_network_good_and_bad_cells_features")
+    #
+    # l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features = \
+    #     data_non_availability_and_missing_check(
+    #         df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features,
+    #         grouping="daily",
+    #         par_col="partition_date",
+    #         target_table_name="l1_network_good_and_bad_cells_features")
+    #
+    # l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features = \
+    #     data_non_availability_and_missing_check(
+    #         df=l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features, grouping="daily",
+    #         par_col="partition_date",
+    #         target_table_name="l1_network_good_and_bad_cells_features")
+    #
+    # l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features = \
+    #     data_non_availability_and_missing_check(
+    #         df=l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features, grouping="daily",
+    #         par_col="partition_date",
+    #         target_table_name="l1_network_good_and_bad_cells_features")
+    #
+    # l1_customer_profile_union_daily_feature_for_l1_network_good_and_bad_cells_features = \
+    #     data_non_availability_and_missing_check(
+    #         df=l1_customer_profile_union_daily_feature_for_l1_network_good_and_bad_cells_features, grouping="daily",
+    #         par_col="even_partition_date",
+    #         target_table_name="l1_network_good_and_bad_cells_features")
+    #
+    # if check_empty_dfs(
+    #         [l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features,
+    #          l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features,
+    #          l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features,
+    #          l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features,
+    #          l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features,
+    #          l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features,
+    #
+    #          l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features,
+    #          l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features,
+    #
+    #          l1_customer_profile_union_daily_feature_for_l1_network_good_and_bad_cells_features]):
+    #     return get_spark_empty_df()
+    #
+    # # For min custoner check is not required as it will be a left join to customer from driving table
+    # min_value = union_dataframes_with_missing_cols(
+    #     [
+    #         l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features.select(
+    #             f.max(f.col("partition_date")).alias("max_date")),
+    #         l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features.select(
+    #             f.max(f.col("partition_date")).alias("max_date")),
+    #         l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features.select(
+    #             f.max(f.col("partition_date")).alias("max_date")),
+    #         l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features.select(
+    #             f.max(f.col("partition_date")).alias("max_date")),
+    #         l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features.select(
+    #             f.max(f.col("partition_date")).alias("max_date")),
+    #         l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features.select(
+    #             f.max(f.col("partition_date")).alias("max_date")),
+    #         l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features.select(
+    #             f.max(f.col("partition_date")).alias("max_date")),
+    #         l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features.select(
+    #             f.max(f.col("partition_date")).alias("max_date")),
+    #     ]
+    # ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
+    #
+    # l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features = \
+    #     l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features \
+    #         .filter(f.col("partition_date") <= min_value)
+    # l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features = \
+    #     l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features \
+    #         .filter(f.col("partition_date") <= min_value)
+    # l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features = \
+    #     l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features \
+    #         .filter(f.col("partition_date") <= min_value)
+    # l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features = \
+    #     l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features \
+    #         .filter(f.col("partition_date") <= min_value)
+    # l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features = \
+    #     l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features \
+    #         .filter(f.col("partition_date") <= min_value)
+    # l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features = \
+    #     l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features \
+    #         .filter(f.col("partition_date") <= min_value)
+    # l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features = \
+    #     l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features \
+    #         .filter(f.col("partition_date") <= min_value)
+    # l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features = \
+    #     l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features \
+    #         .filter(f.col("partition_date") <= min_value)
+    #
+    # ################################# End Implementing Data availability checks ###############################
 
     get_good_and_bad_cells_for_each_customer_df = get_good_and_bad_cells_for_each_customer(
         l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features,
@@ -356,32 +356,32 @@ def build_network_share_of_3g_time_in_total_time(
     :param l1_customer_profile_union_daily_feature_for_l1_network_share_of_3g_time_in_total_time:
     :return:
     """
-    ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs(
-            [l0_usage_sum_voice_location_daily_for_l1_network_share_of_3g_time_in_total_time,
-             l1_customer_profile_union_daily_feature_for_l1_network_share_of_3g_time_in_total_time]):
-        return get_spark_empty_df()
-
-    l0_usage_sum_voice_location_daily_for_l1_network_share_of_3g_time_in_total_time = \
-        data_non_availability_and_missing_check(
-            df=l0_usage_sum_voice_location_daily_for_l1_network_share_of_3g_time_in_total_time, grouping="daily",
-            par_col="partition_date",
-            target_table_name="l1_network_share_of_3g_time_in_total_time")
-
-    cust_df = data_non_availability_and_missing_check(
-        df=l1_customer_profile_union_daily_feature_for_l1_network_share_of_3g_time_in_total_time, grouping="daily",
-        par_col="event_partition_date",
-        target_table_name="l1_network_share_of_3g_time_in_total_time")
-
-    # Min function is not required as driving table is network and join is based on that
-
-    if check_empty_dfs([l0_usage_sum_voice_location_daily_for_l1_network_share_of_3g_time_in_total_time, cust_df]):
-        return get_spark_empty_df()
-    ################################# End Implementing Data availability checks ###############################
+    # ################################# Start Implementing Data availability checks #############################
+    # if check_empty_dfs(
+    #         [l0_usage_sum_voice_location_daily_for_l1_network_share_of_3g_time_in_total_time,
+    #          l1_customer_profile_union_daily_feature_for_l1_network_share_of_3g_time_in_total_time]):
+    #     return get_spark_empty_df()
+    #
+    # l0_usage_sum_voice_location_daily_for_l1_network_share_of_3g_time_in_total_time = \
+    #     data_non_availability_and_missing_check(
+    #         df=l0_usage_sum_voice_location_daily_for_l1_network_share_of_3g_time_in_total_time, grouping="daily",
+    #         par_col="partition_date",
+    #         target_table_name="l1_network_share_of_3g_time_in_total_time")
+    #
+    # cust_df = data_non_availability_and_missing_check(
+    #     df=l1_customer_profile_union_daily_feature_for_l1_network_share_of_3g_time_in_total_time, grouping="daily",
+    #     par_col="event_partition_date",
+    #     target_table_name="l1_network_share_of_3g_time_in_total_time")
+    #
+    # # Min function is not required as driving table is network and join is based on that
+    #
+    # if check_empty_dfs([l0_usage_sum_voice_location_daily_for_l1_network_share_of_3g_time_in_total_time, cust_df]):
+    #     return get_spark_empty_df()
+    # ################################# End Implementing Data availability checks ###############################
 
     return_df = l1_massive_processing(l0_usage_sum_voice_location_daily_for_l1_network_share_of_3g_time_in_total_time,
                                       l1_network_share_of_3g_time_in_total_time,
-                                      cust_df)
+                                      l1_customer_profile_union_daily_feature_for_l1_network_share_of_3g_time_in_total_time)
     return return_df
 
 
@@ -396,32 +396,32 @@ def build_network_data_traffic_features(
     :param l1_customer_profile_union_daily_feature_for_l1_network_data_traffic_features:
     :return:
     """
-    ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs(
-            [int_l1_network_data_traffic_features,
-             l1_customer_profile_union_daily_feature_for_l1_network_data_traffic_features]):
-        return get_spark_empty_df()
-
-    int_l1_network_data_traffic_features = \
-        data_non_availability_and_missing_check(
-            df=int_l1_network_data_traffic_features, grouping="daily",
-            par_col="event_partition_date",
-            target_table_name="l1_network_data_traffic_features")
-
-    cust_df = data_non_availability_and_missing_check(
-        df=l1_customer_profile_union_daily_feature_for_l1_network_data_traffic_features, grouping="daily",
-        par_col="event_partition_date",
-        target_table_name="l1_network_data_traffic_features")
-
-    # Min function is not required as driving table is network and join is based on that
-
-    if check_empty_dfs([int_l1_network_data_traffic_features, cust_df]):
-        return get_spark_empty_df()
-    ################################# End Implementing Data availability checks ###############################
+    # ################################# Start Implementing Data availability checks #############################
+    # if check_empty_dfs(
+    #         [int_l1_network_data_traffic_features,
+    #          l1_customer_profile_union_daily_feature_for_l1_network_data_traffic_features]):
+    #     return get_spark_empty_df()
+    #
+    # int_l1_network_data_traffic_features = \
+    #     data_non_availability_and_missing_check(
+    #         df=int_l1_network_data_traffic_features, grouping="daily",
+    #         par_col="event_partition_date",
+    #         target_table_name="l1_network_data_traffic_features")
+    #
+    # cust_df = data_non_availability_and_missing_check(
+    #     df=l1_customer_profile_union_daily_feature_for_l1_network_data_traffic_features, grouping="daily",
+    #     par_col="event_partition_date",
+    #     target_table_name="l1_network_data_traffic_features")
+    #
+    # # Min function is not required as driving table is network and join is based on that
+    #
+    # if check_empty_dfs([int_l1_network_data_traffic_features, cust_df]):
+    #     return get_spark_empty_df()
+    # ################################# End Implementing Data availability checks ###############################
 
     return_df = l1_massive_processing(int_l1_network_data_traffic_features,
                                       l1_network_data_traffic_features,
-                                      cust_df)
+                                      l1_customer_profile_union_daily_feature_for_l1_network_data_traffic_features)
     return return_df
 
 
@@ -435,32 +435,32 @@ def build_network_data_cqi(
     :param l1_customer_profile_union_daily_feature_for_l1_network_data_cqi:
     :return:
     """
-    ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs(
-            [l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi,
-             l1_customer_profile_union_daily_feature_for_l1_network_data_cqi]):
-        return get_spark_empty_df()
-
-    l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi = \
-        data_non_availability_and_missing_check(
-            df=l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi, grouping="daily",
-            par_col="partition_date",
-            target_table_name="l1_network_data_cqi")
-
-    cust_df = data_non_availability_and_missing_check(
-        df=l1_customer_profile_union_daily_feature_for_l1_network_data_cqi, grouping="daily",
-        par_col="event_partition_date",
-        target_table_name="l1_network_data_cqi")
-
-    # Min function is not required as driving table is network and join is based on that
-
-    if check_empty_dfs([l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi, cust_df]):
-        return get_spark_empty_df()
-    ################################# End Implementing Data availability checks ###############################
+    # ################################# Start Implementing Data availability checks #############################
+    # if check_empty_dfs(
+    #         [l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi,
+    #          l1_customer_profile_union_daily_feature_for_l1_network_data_cqi]):
+    #     return get_spark_empty_df()
+    #
+    # l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi = \
+    #     data_non_availability_and_missing_check(
+    #         df=l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi, grouping="daily",
+    #         par_col="partition_date",
+    #         target_table_name="l1_network_data_cqi")
+    #
+    # cust_df = data_non_availability_and_missing_check(
+    #     df=l1_customer_profile_union_daily_feature_for_l1_network_data_cqi, grouping="daily",
+    #     par_col="event_partition_date",
+    #     target_table_name="l1_network_data_cqi")
+    #
+    # # Min function is not required as driving table is network and join is based on that
+    #
+    # if check_empty_dfs([l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi, cust_df]):
+    #     return get_spark_empty_df()
+    # ################################# End Implementing Data availability checks ###############################
 
     return_df = l1_massive_processing(l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi,
                                       l1_network_data_cqi,
-                                      cust_df)
+                                      l1_customer_profile_union_daily_feature_for_l1_network_data_cqi)
     return return_df
 
 
@@ -473,32 +473,32 @@ def build_network_im_cqi(l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_
     :param l1_customer_profile_union_daily_feature_for_l1_network_im_cqi:
     :return:
     """
-    ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs(
-            [l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi,
-             l1_customer_profile_union_daily_feature_for_l1_network_im_cqi]):
-        return get_spark_empty_df()
-
-    l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi = \
-        data_non_availability_and_missing_check(
-            df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi, grouping="daily",
-            par_col="partition_date",
-            target_table_name="l1_network_im_cqi")
-
-    cust_df = data_non_availability_and_missing_check(
-        df=l1_customer_profile_union_daily_feature_for_l1_network_im_cqi, grouping="daily",
-        par_col="event_partition_date",
-        target_table_name="l1_network_im_cqi")
-
-    # Min function is not required as driving table is network and join is based on that
-
-    if check_empty_dfs([l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi, cust_df]):
-        return get_spark_empty_df()
-    ################################# End Implementing Data availability checks ###############################
+    # ################################# Start Implementing Data availability checks #############################
+    # if check_empty_dfs(
+    #         [l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi,
+    #          l1_customer_profile_union_daily_feature_for_l1_network_im_cqi]):
+    #     return get_spark_empty_df()
+    #
+    # l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi = \
+    #     data_non_availability_and_missing_check(
+    #         df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi, grouping="daily",
+    #         par_col="partition_date",
+    #         target_table_name="l1_network_im_cqi")
+    #
+    # cust_df = data_non_availability_and_missing_check(
+    #     df=l1_customer_profile_union_daily_feature_for_l1_network_im_cqi, grouping="daily",
+    #     par_col="event_partition_date",
+    #     target_table_name="l1_network_im_cqi")
+    #
+    # # Min function is not required as driving table is network and join is based on that
+    #
+    # if check_empty_dfs([l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi, cust_df]):
+    #     return get_spark_empty_df()
+    # ################################# End Implementing Data availability checks ###############################
 
     return_df = l1_massive_processing(l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi,
                                       l1_network_im_cqi,
-                                      cust_df)
+                                      l1_customer_profile_union_daily_feature_for_l1_network_im_cqi)
     return return_df
 
 
@@ -512,32 +512,32 @@ def build_network_streaming_cqi(
     :param l1_customer_profile_union_daily_feature_for_l1_network_streaming_cqi:
     :return:
     """
-    ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs(
-            [l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_streaming_cqi,
-             l1_customer_profile_union_daily_feature_for_l1_network_streaming_cqi]):
-        return get_spark_empty_df()
-
-    l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_streaming_cqi = \
-        data_non_availability_and_missing_check(
-            df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_streaming_cqi, grouping="daily",
-            par_col="partition_date",
-            target_table_name="l1_network_streaming_cqi")
-
-    cust_df = data_non_availability_and_missing_check(
-        df=l1_customer_profile_union_daily_feature_for_l1_network_streaming_cqi, grouping="daily",
-        par_col="event_partition_date",
-        target_table_name="l1_network_streaming_cqi")
-
-    # Min function is not required as driving table is network and join is based on that
-
-    if check_empty_dfs([l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_streaming_cqi, cust_df]):
-        return get_spark_empty_df()
-    ################################# End Implementing Data availability checks ###############################
+    # ################################# Start Implementing Data availability checks #############################
+    # if check_empty_dfs(
+    #         [l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_streaming_cqi,
+    #          l1_customer_profile_union_daily_feature_for_l1_network_streaming_cqi]):
+    #     return get_spark_empty_df()
+    #
+    # l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_streaming_cqi = \
+    #     data_non_availability_and_missing_check(
+    #         df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_streaming_cqi, grouping="daily",
+    #         par_col="partition_date",
+    #         target_table_name="l1_network_streaming_cqi")
+    #
+    # cust_df = data_non_availability_and_missing_check(
+    #     df=l1_customer_profile_union_daily_feature_for_l1_network_streaming_cqi, grouping="daily",
+    #     par_col="event_partition_date",
+    #     target_table_name="l1_network_streaming_cqi")
+    #
+    # # Min function is not required as driving table is network and join is based on that
+    #
+    # if check_empty_dfs([l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_streaming_cqi, cust_df]):
+    #     return get_spark_empty_df()
+    # ################################# End Implementing Data availability checks ###############################
 
     return_df = l1_massive_processing(l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_streaming_cqi,
                                       l1_network_streaming_cqi,
-                                      cust_df)
+                                      l1_customer_profile_union_daily_feature_for_l1_network_streaming_cqi)
     return return_df
 
 
@@ -552,32 +552,32 @@ def build_network_web_cqi(
     :param l1_customer_profile_union_daily_feature_for_l1_network_web_cqi:
     :return:
     """
-    ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs(
-            [l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi,
-             l1_customer_profile_union_daily_feature_for_l1_network_web_cqi]):
-        return get_spark_empty_df()
-
-    l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi = \
-        data_non_availability_and_missing_check(
-            df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi, grouping="daily",
-            par_col="partition_date",
-            target_table_name="l1_network_web_cqi")
-
-    cust_df = data_non_availability_and_missing_check(
-        df=l1_customer_profile_union_daily_feature_for_l1_network_web_cqi, grouping="daily",
-        par_col="event_partition_date",
-        target_table_name="l1_network_web_cqi")
-
-    # Min function is not required as driving table is network and join is based on that
-
-    if check_empty_dfs([l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi, cust_df]):
-        return get_spark_empty_df()
-    ################################# End Implementing Data availability checks ###############################
+    # ################################# Start Implementing Data availability checks #############################
+    # if check_empty_dfs(
+    #         [l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi,
+    #          l1_customer_profile_union_daily_feature_for_l1_network_web_cqi]):
+    #     return get_spark_empty_df()
+    #
+    # l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi = \
+    #     data_non_availability_and_missing_check(
+    #         df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi, grouping="daily",
+    #         par_col="partition_date",
+    #         target_table_name="l1_network_web_cqi")
+    #
+    # cust_df = data_non_availability_and_missing_check(
+    #     df=l1_customer_profile_union_daily_feature_for_l1_network_web_cqi, grouping="daily",
+    #     par_col="event_partition_date",
+    #     target_table_name="l1_network_web_cqi")
+    #
+    # # Min function is not required as driving table is network and join is based on that
+    #
+    # if check_empty_dfs([l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi, cust_df]):
+    #     return get_spark_empty_df()
+    # ################################# End Implementing Data availability checks ###############################
 
     return_df = l1_massive_processing(l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi,
                                       l1_network_web_cqi,
-                                      cust_df)
+                                      l1_customer_profile_union_daily_feature_for_l1_network_web_cqi)
     return return_df
 
 
@@ -591,32 +591,32 @@ def build_network_voip_cqi(
     :param l1_customer_profile_union_daily_feature_for_l1_network_voip_cqi:
     :return:
     """
-    ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs(
-            [l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi,
-             l1_customer_profile_union_daily_feature_for_l1_network_voip_cqi]):
-        return get_spark_empty_df()
-
-    l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi = \
-        data_non_availability_and_missing_check(
-            df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi, grouping="daily",
-            par_col="partition_date",
-            target_table_name="l1_network_voip_cqi")
-
-    cust_df = data_non_availability_and_missing_check(
-        df=l1_customer_profile_union_daily_feature_for_l1_network_voip_cqi, grouping="daily",
-        par_col="event_partition_date",
-        target_table_name="l1_network_voip_cqi")
-
-    # Min function is not required as driving table is network and join is based on that
-
-    if check_empty_dfs([l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi, cust_df]):
-        return get_spark_empty_df()
-    ################################# End Implementing Data availability checks ###############################
+    # ################################# Start Implementing Data availability checks #############################
+    # if check_empty_dfs(
+    #         [l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi,
+    #          l1_customer_profile_union_daily_feature_for_l1_network_voip_cqi]):
+    #     return get_spark_empty_df()
+    #
+    # l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi = \
+    #     data_non_availability_and_missing_check(
+    #         df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi, grouping="daily",
+    #         par_col="partition_date",
+    #         target_table_name="l1_network_voip_cqi")
+    #
+    # cust_df = data_non_availability_and_missing_check(
+    #     df=l1_customer_profile_union_daily_feature_for_l1_network_voip_cqi, grouping="daily",
+    #     par_col="event_partition_date",
+    #     target_table_name="l1_network_voip_cqi")
+    #
+    # # Min function is not required as driving table is network and join is based on that
+    #
+    # if check_empty_dfs([l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi, cust_df]):
+    #     return get_spark_empty_df()
+    # ################################# End Implementing Data availability checks ###############################
 
     return_df = l1_massive_processing(l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi,
                                       l1_network_voip_cqi,
-                                      cust_df)
+                                      l1_customer_profile_union_daily_feature_for_l1_network_voip_cqi)
     return return_df
 
 
@@ -630,32 +630,32 @@ def build_network_volte_cqi(
     :param l1_customer_profile_union_daily_feature_for_l1_network_voip_cqi:
     :return:
     """
-    ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs(
-            [l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_volte_cqi,
-             l1_customer_profile_union_daily_feature_for_l1_network_volte_cqi]):
-        return get_spark_empty_df()
-
-    l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_volte_cqi = \
-        data_non_availability_and_missing_check(
-            df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_volte_cqi, grouping="daily",
-            par_col="partition_date",
-            target_table_name="l1_network_volte_cqi")
-
-    cust_df = data_non_availability_and_missing_check(
-        df=l1_customer_profile_union_daily_feature_for_l1_network_volte_cqi, grouping="daily",
-        par_col="event_partition_date",
-        target_table_name="l1_network_volte_cqi")
-
-    # Min function is not required as driving table is network and join is based on that
-
-    if check_empty_dfs([l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_volte_cqi, cust_df]):
-        return get_spark_empty_df()
-    ################################# End Implementing Data availability checks ###############################
+    # ################################# Start Implementing Data availability checks #############################
+    # if check_empty_dfs(
+    #         [l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_volte_cqi,
+    #          l1_customer_profile_union_daily_feature_for_l1_network_volte_cqi]):
+    #     return get_spark_empty_df()
+    #
+    # l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_volte_cqi = \
+    #     data_non_availability_and_missing_check(
+    #         df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_volte_cqi, grouping="daily",
+    #         par_col="partition_date",
+    #         target_table_name="l1_network_volte_cqi")
+    #
+    # cust_df = data_non_availability_and_missing_check(
+    #     df=l1_customer_profile_union_daily_feature_for_l1_network_volte_cqi, grouping="daily",
+    #     par_col="event_partition_date",
+    #     target_table_name="l1_network_volte_cqi")
+    #
+    # # Min function is not required as driving table is network and join is based on that
+    #
+    # if check_empty_dfs([l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_volte_cqi, cust_df]):
+    #     return get_spark_empty_df()
+    # ################################# End Implementing Data availability checks ###############################
 
     return_df = l1_massive_processing(l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_volte_cqi,
                                       l1_network_volte_cqi,
-                                      cust_df)
+                                      l1_customer_profile_union_daily_feature_for_l1_network_volte_cqi)
     return return_df
 
 
@@ -669,32 +669,41 @@ def build_network_user_cqi(
     :param l1_customer_profile_union_daily_feature_for_l1_network_voip_cqi:
     :return:
     """
-    ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs(
-            [l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi,
-             l1_customer_profile_union_daily_feature_for_l1_network_user_cqi]):
-        return get_spark_empty_df()
+    # ################################# Start Implementing Data availability checks #############################
+    # if check_empty_dfs(
+    #         [l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi,
+    #          l1_customer_profile_union_daily_feature_for_l1_network_user_cqi]):
+    #     return get_spark_empty_df()
+    #
+    # l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi = \
+    #     data_non_availability_and_missing_check(
+    #         df=l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi, grouping="daily",
+    #         par_col="partition_date",
+    #         target_table_name="l1_network_user_cqi")
+    #
+    # cust_df = data_non_availability_and_missing_check(
+    #     df=l1_customer_profile_union_daily_feature_for_l1_network_user_cqi, grouping="daily",
+    #     par_col="event_partition_date",
+    #     target_table_name="l1_network_user_cqi")
+    #
+    # # Min function is not required as driving table is network and join is based on that
+    #
+    # if check_empty_dfs([l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi, cust_df]):
+    #     return get_spark_empty_df()
+    # ################################# End Implementing Data availability checks ###############################
 
-    l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi = \
-        data_non_availability_and_missing_check(
-            df=l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi, grouping="daily",
-            par_col="partition_date",
-            target_table_name="l1_network_user_cqi")
-
-    cust_df = data_non_availability_and_missing_check(
-        df=l1_customer_profile_union_daily_feature_for_l1_network_user_cqi, grouping="daily",
-        par_col="event_partition_date",
-        target_table_name="l1_network_user_cqi")
-
-    # Min function is not required as driving table is network and join is based on that
-
-    if check_empty_dfs([l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi, cust_df]):
-        return get_spark_empty_df()
-    ################################# End Implementing Data availability checks ###############################
+    # TODO Delete me - start
+    l1_customer_profile_union_daily_feature_for_l1_network_user_cqi = (
+        l1_customer_profile_union_daily_feature_for_l1_network_user_cqi.join(
+            l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi,
+            l1_customer_profile_union_daily_feature_for_l1_network_user_cqi.access_method_num == l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi.msisdn
+        )
+    )
+    # TODO Delete me - end
 
     return_df = l1_massive_processing(l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi,
                                       l1_network_user_cqi,
-                                      cust_df)
+                                      l1_customer_profile_union_daily_feature_for_l1_network_user_cqi)
     return return_df
 
 
@@ -708,30 +717,39 @@ def build_network_file_transfer_cqi(
     :param l1_customer_profile_union_daily_feature_for_l1_network_voip_cqi:
     :return:
     """
-    ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs(
-            [l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi,
-             l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi]):
-        return get_spark_empty_df()
+    # ################################# Start Implementing Data availability checks #############################
+    # if check_empty_dfs(
+    #         [l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi,
+    #          l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi]):
+    #     return get_spark_empty_df()
+    #
+    # l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi = \
+    #     data_non_availability_and_missing_check(
+    #         df=l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi, grouping="daily",
+    #         par_col="partition_date",
+    #         target_table_name="l1_network_user_cqi")
+    #
+    # cust_df = data_non_availability_and_missing_check(
+    #     df=l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi, grouping="daily",
+    #     par_col="event_partition_date",
+    #     target_table_name="l1_network_user_cqi")
+    #
+    # # Min function is not required as driving table is network and join is based on that
+    #
+    # if check_empty_dfs([l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi, cust_df]):
+    #     return get_spark_empty_df()
+    # ################################# End Implementing Data availability checks ###############################
 
-    l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi = \
-        data_non_availability_and_missing_check(
-            df=l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi, grouping="daily",
-            par_col="partition_date",
-            target_table_name="l1_network_user_cqi")
-
-    cust_df = data_non_availability_and_missing_check(
-        df=l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi, grouping="daily",
-        par_col="event_partition_date",
-        target_table_name="l1_network_user_cqi")
-
-    # Min function is not required as driving table is network and join is based on that
-
-    if check_empty_dfs([l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi, cust_df]):
-        return get_spark_empty_df()
-    ################################# End Implementing Data availability checks ###############################
+    # TODO Delete me - start
+    l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi = (
+        l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi.join(
+            l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi,
+            l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi.access_method_num == l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi.msisdn
+        )
+    )
+    # TODO Delete me - end
 
     return_df = l1_massive_processing(l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi,
                                       l1_network_file_transfer_cqi,
-                                      cust_df)
+                                      l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi)
     return return_df
