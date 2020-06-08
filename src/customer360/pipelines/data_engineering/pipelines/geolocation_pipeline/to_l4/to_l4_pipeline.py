@@ -35,6 +35,14 @@ def geo_to_l4_pipeline(**kwargs):
             #     "l4_geo_area_from_competitor_store"
             # ),
 
+            node(
+                l4_geo_home_work_location_id,
+                ["l0_geo_cust_cell_visit_time_for_l4_geo_home_work_location_id",
+                 "params:l4_geo_home_work_location_id"
+                 ],
+                "l4_geo_home_work_location_id"
+            )
+
         ], name="geo_to_l4_pipeline"
     )
 

@@ -24,3 +24,19 @@ l4_area_from_competitor_store:
     min: ["duration","num_of_times"]
     sum: ["duration","num_of_times"]
   read_from: "l2"
+
+l4_geo_home_work_location_id:
+  where_clause: ""
+  feature_list:
+    imsi: "imsi"
+    start_of_month: "start_of_month"
+    home_weekday_location_id: "home_weekday_location_id"
+    home_weekday_latitude: "home_weekday_latitude"
+    home_weekday_longitude: "home_weekday_longitude"
+    home_weekend_location_id: "home_weekend_location_id"
+    home_weekend_latitude: "home_weekend_latitude"
+    home_weekend_longitude: "home_weekend_longitude"
+    work_location_id: "work_location_id"
+    work_latitude: "work_latitude"
+    work_longitude: "work_longitude"
+  granularity: ""

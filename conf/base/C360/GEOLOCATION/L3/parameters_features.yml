@@ -16,24 +16,3 @@ l3_area_from_competitor_store_monthly:
     duration: "sum(duration)"
     num_of_times: "sum(num_of_times)"
   granularity: "imsi,start_of_month"
-
-# Home and Work location
-#-----------------------------------------------------------------------------------------------------------------------
-l3_geo_home_duration_location_id_monthly:
-  where_clause: "rank = 1"
-  feature_list:
-    imsi: "imsi"
-    home_location_id: "loation_id"
-    home_latitude: "latitude"
-    home_longitude: "longitude"
-    home_week_type: "week_type"
-  granularity: ""
-
-l3_geo_work_duration_location_id_monthly:
-  where_clause: "rank = 1"
-  feature_list:
-    imsi: "imsi"
-    work_location_id: "location_id"
-    work_latitude: "latitude"
-    work_longitude: "longitude"
-  granularity: ""
