@@ -2,9 +2,10 @@ spark_conf:
   spark.driver.memory: 256g
   spark.executor.cores: 4
   spark.executor.memory: 48g
-  spark.dynamicAllocation.enabled: true
-  spark.dynamicAllocation.initialExecutors: 20
-  spark.dynamicAllocation.maxExecutors: 100
+  spark.dynamicAllocation.enabled: false
+  #spark.dynamicAllocation.initialExecutors: 20
+  #spark.dynamicAllocation.maxExecutors: 100
+  spark.executor.instances: 50
   spark.sql.sources.partitionOverwriteMode: dynamic
   spark.sql.parquet.binaryAsString: true
   spark.hadoop.fs.permissions.umask-mode: "002"
