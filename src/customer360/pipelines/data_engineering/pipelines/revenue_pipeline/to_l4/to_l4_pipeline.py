@@ -100,9 +100,9 @@ def revenue_to_l4_weekly_pipeline(**kwargs):
             node(
                 revenue_l4_dataset_weekly_datasets,
                 ["l2_revenue_prepaid_pru_f_usage_multi_weekly",
-                 "params:l4_revenue_prepaid_pru_f_usage_multi_features_min"
-                 "params:l4_revenue_prepaid_pru_f_usage_multi_features_max"
-                 "params:l4_revenue_prepaid_pru_f_usage_multi_features_sum"
+                 "params:l4_revenue_prepaid_pru_f_usage_multi_features_min",
+                 "params:l4_revenue_prepaid_pru_f_usage_multi_features_max",
+                 "params:l4_revenue_prepaid_pru_f_usage_multi_features_sum",
                  "params:l4_revenue_prepaid_pru_f_usage_multi_features_avg"
                  ],
                 "l4_revenue_prepaid_pru_f_usage_multi_features"
