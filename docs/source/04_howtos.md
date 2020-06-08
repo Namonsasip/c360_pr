@@ -14,3 +14,6 @@ Check out function `cvm.src.utils.parametrized_features.build_feature_from_param
 1. Modify `scoring_experiment.chosen_date` in `conf/base/CVM/L5/parameters.yml` to desired one.
 2. Run `cvm_full_scoring_experiment`.
 3. Datasets are saved according to `conf/base/CVM/L5/catalog_scoring_experiment.yml`.
+
+### How to modify assigned treatment codes?
+Modify `conf/base/CVM/L5/parameters_treatment_rules.yml`.

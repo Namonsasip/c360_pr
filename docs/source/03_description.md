@@ -125,7 +125,6 @@ Table with users and campaign codes (`treatments_chosen` in catalog) is loaded a
 to format agreed with campaign team. Then the tables, one for each use case are saved
 in agreed paths.
 
-### How to modify treatments?
 
 ## Report submodule
 
