@@ -16,7 +16,6 @@ def geo_to_l3_pipeline(**kwargs):
                 "l3_geo_time_spent_by_location_monthly"
             ),
 
-
             # node(
             #     l3_geo_area_from_ais_store_monthly,
             #     ["l1_geo_area_from_ais_store_daily_for_l3_geo_area_from_ais_store_monthly",
