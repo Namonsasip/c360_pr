@@ -112,6 +112,9 @@ def revenue_l4_dataset_monthly_datasets(input_df: DataFrame,
     :param node_from_config_dict:
     :return:
     """
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
     join_key = ["national_id_card", "access_method_num", "subscription_identifier", "start_of_month"]
     rolling_df_min = l4_rolling_window(input_df, rolling_window_dict_min)
     rolling_df_max = l4_rolling_window(input_df, rolling_window_dict_max)
@@ -142,6 +145,9 @@ def revenue_l4_dataset_weekly_datasets(input_df: DataFrame,
     :param rolling_window_dict_avg:
     :return:
     """
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
     CNTX = load_context(Path.cwd(), env=conf)
     join_key = ["national_id_card", "access_method_num", "subscription_identifier", "start_of_week"]
     rolling_df_min = l4_rolling_window(input_df, rolling_window_dict_min)
