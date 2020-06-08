@@ -106,7 +106,7 @@ meet all the necessary conditions then `limit_per_code`?
 This is where `order_policy` steps in. This field is used to determine the priority in 
 which users are assigned to rules. The bigger the value of `order_policy` the more likely 
 user is to be targeted with campaign. `order_policy` can be defined using any feature,
-not only propensities. So for example we could pick users according to `churn60_pre * size_of_shoe` 
+not only propensities. So for example we could pick users according to `churn60_pred * size_of_shoe` 
 had we had `size_of_shoe` feature.
 
 The set of users assigned to a campaign by rule is limited by `limit_per_code`.
