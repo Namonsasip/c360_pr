@@ -4,7 +4,11 @@ from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_
 from customer360.utilities.config_parser import l4_rolling_window
 from customer360.utilities.config_parser import node_from_config
 from pyspark.sql import DataFrame, functions as f
-from pyspark.storagelevel import StorageLevel
+import os
+from pathlib import Path
+from kedro.context.context import load_context
+
+conf = os.getenv("CONF", None)
 
 
 def df_copy_for_l4_customer_profile_ltv_to_date(input_df):
@@ -138,11 +142,24 @@ def revenue_l4_dataset_weekly_datasets(input_df: DataFrame,
     :param rolling_window_dict_avg:
     :return:
     """
+    CNTX = load_context(Path.cwd(), env=conf)
     join_key = ["national_id_card", "access_method_num", "subscription_identifier", "start_of_week"]
     rolling_df_min = l4_rolling_window(input_df, rolling_window_dict_min)
+    CNTX.catalog.save("l4_revenue_prepaid_pru_f_usage_multi_features_min", rolling_df_min)
+
     rolling_df_max = l4_rolling_window(input_df, rolling_window_dict_max)
+    CNTX.catalog.save("l4_revenue_prepaid_pru_f_usage_multi_features_max", rolling_df_max)
+
     rolling_df_sum = l4_rolling_window(input_df, rolling_window_dict_sum)
+    CNTX.catalog.save("l4_revenue_prepaid_pru_f_usage_multi_features_sum", rolling_df_sum)
+
     rolling_df_avg = l4_rolling_window(input_df, rolling_window_dict_avg)
+    CNTX.catalog.save("l4_revenue_prepaid_pru_f_usage_multi_features_avg", rolling_df_avg)
+
+    rolling_df_min = CNTX.catalog.load("l4_revenue_prepaid_pru_f_usage_multi_features_min")
+    rolling_df_max = CNTX.catalog.load("l4_revenue_prepaid_pru_f_usage_multi_features_max")
+    rolling_df_sum = CNTX.catalog.load("l4_revenue_prepaid_pru_f_usage_multi_features_sum")
+    rolling_df_avg = CNTX.catalog.load("l4_revenue_prepaid_pru_f_usage_multi_features_avg")
 
     merged_df = rolling_df_min.join(rolling_df_max, join_key) \
         .join(rolling_df_sum, join_key) \
