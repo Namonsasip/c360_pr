@@ -136,7 +136,6 @@ def revenue_l4_dataset_weekly_datasets(input_df: DataFrame,
     :param rolling_window_dict_max:
     :param rolling_window_dict_sum:
     :param rolling_window_dict_avg:
-    :param rolling_window_dict_stddev:
     :return:
     """
     join_key = ["national_id_card", "access_method_num", "subscription_identifier", "start_of_week"]
