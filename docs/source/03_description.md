@@ -131,7 +131,26 @@ as described above.
 
 ![](.images/03_description_images/bcd42654.png)
 
+You can modify `skip_sending` field in `conf/base/CVM/L5/parameters_treatment.yml`.
+If set to `"yes"` then the produced table with users and campaign codes assigned will
+not be deployed (sent to campaign team), nor will it be saved to treatments history.
+Anything different then `"yes"`, for example `"no"` or `"ไม่"` will send and save the
+treatments chosen.
 
+![](.images/03_description_images/002a6224.png)
+
+Another parameter - `treatments_cadence` from `conf/base/CVM/L5/parameters_treatment.yml`.
+If it set to `7` it means that every user can get a campaign no more often then once
+every `7` days.
+
+![](.images/03_description_images/a13e8066.png)
+
+Paths from `conf/base/CVM/L5/parameters_treatment.yml`.
+Those are used to tell the pipeline where to save the users and campaigns table.
+The `{}` here are filled with timestamp on time of saving with timestamp in the format
+defined in the same file.
+
+![](.images/03_description_images/57778792.png)
 
 ## Report submodule
 
