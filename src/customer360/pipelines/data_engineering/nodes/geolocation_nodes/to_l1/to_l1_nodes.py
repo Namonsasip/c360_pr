@@ -16,6 +16,24 @@ from customer360.utilities.re_usable_functions import add_start_of_week_and_mont
     execute_sql, add_event_week_and_month_from_yyyymmdd
 from customer360.utilities.spark_util import get_spark_session
 
+def l1_geo_time_spent_by_location_daily(df,sql):
+    df = add_start_of_week_and_month(df, "time_in")
+    print('debug1')
+    df.show()
+    ss = get_spark_session()
+    df.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
+    stmt = """
+    SELECT IMSI,LOCATION_ID,SUM(DURATION) AS SUM_DURATION,event_partition_date,start_of_week,start_of_month
+    FROM GEO_CUST_CELL_VISIT_TIME
+    GROUP BY IMSI,LOCATION_ID,event_partition_date,start_of_week,start_of_month
+    """
+    df = ss.sql(stmt)
+    print('debug1')
+    df.show()
+
+    # df = node_from_config(df,sql)
+
+    return df
 
 def l1_geo_area_from_ais_store_daily(shape,masterplan,geo_cust_cell_visit_time,sql):
     geo_cust_cell_visit_time  = add_start_of_week_and_month(geo_cust_cell_visit_time, "time_in")

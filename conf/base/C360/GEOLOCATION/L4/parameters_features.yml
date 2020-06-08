@@ -1,3 +1,12 @@
+l4_geo_time_spent_by_location:
+  partition_by: ["imsi,location_id"]
+  feature_list:
+    avg: ["sum_duration"]
+    max: ["sum_duration"]
+    min: ["sum_duration"]
+    sum: ["sum_duration"]
+  read_from: "l2"
+
 l4_area_from_ais_store:
   partition_by: ["imsi"]
   feature_list:

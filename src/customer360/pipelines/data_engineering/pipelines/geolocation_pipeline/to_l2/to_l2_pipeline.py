@@ -8,6 +8,15 @@ from customer360.pipelines.data_engineering.nodes.geolocation_nodes.to_l2.to_l2_
 def geo_to_l2_pipeline(**kwargs):
     return Pipeline(
         [
+
+            node(
+                l2_geo_time_spent_by_location_weekly,
+                ["l1_geo_time_spent_by_location_daily_for_l2_geo_time_spent_by_location_weekly",
+                 "params:l2_geo_time_spent_by_location_weekly"
+                 ],
+                "l2_geo_time_spent_by_location_weekly"
+            ),
+
             node(
                 l2_geo_area_from_ais_store_weekly,
                 ["l1_geo_area_from_ais_store_daily_for_l2_geo_area_from_ais_store_weekly",

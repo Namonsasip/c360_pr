@@ -1,3 +1,8 @@
+l3_geo_time_spent_by_location_monthly:
+  feature_list:
+    sum_duration: "sum(sum_duration)"
+  granularity: "imsi,start_of_month,location_id"
+
 l3_area_from_ais_store_monthly:
   where_clause: ""
   feature_list:

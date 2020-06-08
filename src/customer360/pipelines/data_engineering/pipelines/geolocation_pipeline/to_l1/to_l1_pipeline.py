@@ -16,51 +16,61 @@ def geo_to_l1_intermediate_pipeline(**kwargs):
 def geo_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
-            node(
-                l1_geo_area_from_ais_store_daily,
-                ["l0_mst_poi_shape_for_l1_geo_area_from_ais_store_daily",
-                 "l0_mst_cell_masterplan_for_l1_geo_area_from_ais_store_daily",
-                 "l0_geo_cust_cell_visit_time_for_l1_geo_area_from_ais_store_daily",
-                 "params:l1_area_from_ais_store_daily"
-                 ],
-                "l1_geo_area_from_ais_store_daily"
-            ),
 
             node(
-                l1_geo_area_from_competitor_store_daily,
-                ["l0_mst_poi_shape_for_l1_geo_area_from_competitor_store_daily",
-                 "l0_mst_cell_masterplan_for_l1_geo_area_from_competitor_store_daily",
-                 "l0_geo_cust_cell_visit_time_for_l1_geo_area_from_competitor_store_daily",
-                 "params:l1_area_from_competitor_store_daily"
+                l1_geo_time_spent_by_location_daily,
+                ["l0_geo_cust_cell_visit_time_for_l1_geo_time_spent_by_location_daily",
+                 "params:l1_geo_time_spent_by_location_daily"
                  ],
-                "l1_geo_area_from_competitor_store_daily"
+                "l1_geo_time_spent_by_location_daily"
+
             ),
 
-            # Home and Work location_id
-            node(
-                l1_geo_home_duration_on_location_id_daily,
-                ["l0_geo_cust_cell_visit_time_for_l1_geo_home_location_id_daily",
-                 "params:l1_geo_home_duration_on_location_id_daily"
-                 ],
-                "l1_geo_home_duration_on_location_id_daily"
-            ),
-
-            node(
-                l1_geo_work_duration_on_location_id_daily,
-                ["l0_geo_cust_cell_visit_time_for_l1_geo_work_location_id_daily",
-                 "params:l1_geo_work_duration_on_location_id_daily"
-                 ],
-                "l1_geo_work_duration_on_location_id_daily"
-            ),
-
-            node(
-                l1_geo_top_visit_exclude_homework_daily,
-                ["l0_geo_cust_cell_visit_time_for_l1_geo_top_visit_exclude_homework",
-                 "l1_homework_master_for_l1_geo_top_visit_exclude_homework",
-                 "params:l1_geo_top_visit_exclude_homework"
-                 ],
-                "l1_geo_top_visit_exclude_homework"
-            )
+            # node(
+            #     l1_geo_area_from_ais_store_daily,
+            #     ["l0_mst_poi_shape_for_l1_geo_area_from_ais_store_daily",
+            #      "l0_mst_cell_masterplan_for_l1_geo_area_from_ais_store_daily",
+            #      "l0_geo_cust_cell_visit_time_for_l1_geo_area_from_ais_store_daily",
+            #      "params:l1_area_from_ais_store_daily"
+            #      ],
+            #     "l1_geo_area_from_ais_store_daily"
+            # ),
+            #
+            # node(
+            #     l1_geo_area_from_competitor_store_daily,
+            #     ["l0_mst_poi_shape_for_l1_geo_area_from_competitor_store_daily",
+            #      "l0_mst_cell_masterplan_for_l1_geo_area_from_competitor_store_daily",
+            #      "l0_geo_cust_cell_visit_time_for_l1_geo_area_from_competitor_store_daily",
+            #      "params:l1_area_from_competitor_store_daily"
+            #      ],
+            #     "l1_geo_area_from_competitor_store_daily"
+            # ),
+            #
+            # # Home and Work location_id
+            # node(
+            #     l1_geo_home_duration_on_location_id_daily,
+            #     ["l0_geo_cust_cell_visit_time_for_l1_geo_home_location_id_daily",
+            #      "params:l1_geo_home_duration_on_location_id_daily"
+            #      ],
+            #     "l1_geo_home_duration_on_location_id_daily"
+            # ),
+            #
+            # node(
+            #     l1_geo_work_duration_on_location_id_daily,
+            #     ["l0_geo_cust_cell_visit_time_for_l1_geo_work_location_id_daily",
+            #      "params:l1_geo_work_duration_on_location_id_daily"
+            #      ],
+            #     "l1_geo_work_duration_on_location_id_daily"
+            # ),
+            #
+            # node(
+            #     l1_geo_top_visit_exclude_homework_daily,
+            #     ["l0_geo_cust_cell_visit_time_for_l1_geo_top_visit_exclude_homework",
+            #      "l1_homework_master_for_l1_geo_top_visit_exclude_homework",
+            #      "params:l1_geo_top_visit_exclude_homework"
+            #      ],
+            #     "l1_geo_top_visit_exclude_homework"
+            # )
 
         ], name="geo_to_l1_pipeline"
     )
