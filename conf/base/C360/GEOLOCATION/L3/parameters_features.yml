@@ -15,15 +15,13 @@ l3_area_from_competitor_store_monthly:
 # Home and Work location
 #-----------------------------------------------------------------------------------------------------------------------
 l3_geo_home_duration_location_id_monthly:
-  where_clause: ""
+  where_clause: "rank = 1"
   feature_list:
     imsi: "imsi"
-    home_weekday_location_id: "home_weekday_loation_id"
-    home_weekday_latitude: "home_weekday_latitude"
-    home_weekday_longitude: "home_weekday_longitude"
-    home_weekend_location_id: "home_weekend_loation_id"
-    home_weekend_latitude: "home_weekend_latitude"
-    home_weekend_longitude: "home_weekend_longitude"
+    home_location_id: "loation_id"
+    home_latitude: "latitude"
+    home_longitude: "longitude"
+    home_week_type: "week_type"
   granularity: ""
 
 l3_geo_work_duration_location_id_monthly:
