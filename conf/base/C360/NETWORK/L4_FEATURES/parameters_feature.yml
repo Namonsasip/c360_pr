@@ -8,6 +8,10 @@ l4_network_voice_features:
           "network_failed_incoming_call_attempt",
           "network_failed_outgoing_call_attempt"]
     avg: ["network_cei_voice_qoe"]
+    subscription_identifier: subscription_identifier
+    start_of_week: start_of_week
+    access_method_number: access_method_number
+    national_id_card: national_id_card
   read_from: "l2"
 
 l4_network_good_and_bad_cells_features:
@@ -19,6 +23,11 @@ l4_network_good_and_bad_cells_features:
           "network_cell_id_count",
           "network_total_transaction_good_cells",
           "network_total_transaction_bad_cells"]
+    subscription_identifier: subscription_identifier
+    start_of_week: start_of_week
+    access_method_number: access_method_number
+    national_id_card: national_id_card
+
 
 l4_network_share_of_3g_time_in_total_time:
   partition_by: ["subscription_identifier"]
@@ -26,6 +35,10 @@ l4_network_share_of_3g_time_in_total_time:
   feature_list:
     sum: ["network_total_3g_time",
           "network_total_time"]
+    subscription_identifier: subscription_identifier
+    start_of_week: start_of_week
+    access_method_number: access_method_number
+    national_id_card: national_id_card
 
 l4_network_data_traffic_features:
   partition_by: ["subscription_identifier"]
@@ -34,51 +47,87 @@ l4_network_data_traffic_features:
     sum: ["network_total_3g_traffic",
           "network_total_4g_traffic",
           "network_total_traffic"]
+    subscription_identifier: subscription_identifier
+    start_of_week: start_of_week
+    access_method_number: access_method_number
+    national_id_card: national_id_card
 
 l4_network_data_cqi:
   partition_by: ["subscription_identifier"]
   read_from: "l2"
   feature_list:
     avg: ["network_data_cqi"]
+    subscription_identifier: subscription_identifier
+    start_of_week: start_of_week
+    access_method_number: access_method_number
+    national_id_card: national_id_card
 
 l4_network_im_cqi:
   partition_by: ["subscription_identifier"]
   read_from: "l2"
   feature_list:
     avg: ["network_cei_im_qoe"]
+    subscription_identifier: subscription_identifier
+    start_of_week: start_of_week
+    access_method_number: access_method_number
+    national_id_card: national_id_card
 
 l4_network_streaming_cqi:
   partition_by: ["subscription_identifier"]
   read_from: "l2"
   feature_list:
     avg: ["network_cei_stream_qoe"]
+    subscription_identifier: subscription_identifier
+    start_of_week: start_of_week
+    access_method_number: access_method_number
+    national_id_card: national_id_card
 
 l4_network_web_cqi:
   partition_by: ["subscription_identifier"]
   read_from: "l2"
   feature_list:
     avg: ["network_cei_web_qoe"]
+    subscription_identifier: subscription_identifier
+    start_of_week: start_of_week
+    access_method_number: access_method_number
+    national_id_card: national_id_card
 
 l4_network_voip_cqi:
   partition_by: ["subscription_identifier"]
   read_from: "l2"
   feature_list:
     avg: ["network_cei_voip_qoe"]
+    subscription_identifier: subscription_identifier
+    start_of_week: start_of_week
+    access_method_number: access_method_number
+    national_id_card: national_id_card
 
 l4_network_volte_cqi:
   partition_by: ["subscription_identifier"]
   read_from: "l2"
   feature_list:
     avg: ["network_cei_volte_qoe"]
+    subscription_identifier: subscription_identifier
+    start_of_week: start_of_week
+    access_method_number: access_method_number
+    national_id_card: national_id_card
 
 l4_network_user_cqi:
   partition_by: ["subscription_identifier"]
   read_from: "l2"
   feature_list:
     avg: ["network_cei_user_qoe"]
+    subscription_identifier: subscription_identifier
+    start_of_week: start_of_week
+    access_method_number: access_method_number
+    national_id_card: national_id_card
 
 l4_network_file_transfer_cqi:
   partition_by: ["subscription_identifier"]
   read_from: "l2"
   feature_list:
     avg: ["network_cei_file_transfer_qoe"]
+    subscription_identifier: subscription_identifier
+    start_of_week: start_of_week
+    access_method_number: access_method_number
+    national_id_card: national_id_card
