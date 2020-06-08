@@ -693,12 +693,15 @@ def build_network_user_cqi(
     # ################################# End Implementing Data availability checks ###############################
 
     # TODO Delete me - start
+    print("Before cust prof: ", l1_customer_profile_union_daily_feature_for_l1_network_user_cqi.count(), l1_customer_profile_union_daily_feature_for_l1_network_user_cqi.select("access_method_num").distinct().count())
+
+    msisdns_df = l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi.select("msisdn").distinct()
+    msisdns = [row.msisdn for row in msisdns_df.collect()]
+
     l1_customer_profile_union_daily_feature_for_l1_network_user_cqi = (
-        l1_customer_profile_union_daily_feature_for_l1_network_user_cqi.join(
-            l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi,
-            l1_customer_profile_union_daily_feature_for_l1_network_user_cqi.access_method_num == l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi.msisdn
-        )
+        l1_customer_profile_union_daily_feature_for_l1_network_user_cqi.filter(f.col("access_method_num").isin(msisdns))
     )
+    print("After cust prof: ", l1_customer_profile_union_daily_feature_for_l1_network_user_cqi.count(), l1_customer_profile_union_daily_feature_for_l1_network_user_cqi.select("access_method_num").distinct().count())
     # TODO Delete me - end
 
     return_df = l1_massive_processing(l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi,
@@ -741,12 +744,15 @@ def build_network_file_transfer_cqi(
     # ################################# End Implementing Data availability checks ###############################
 
     # TODO Delete me - start
-    l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi = (
-        l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi.join(
-            l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi,
-            l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi.access_method_num == l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi.msisdn
-        )
+    print("Before cust prof: ", l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi.count(), l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi.select("access_method_num").distinct().count())
+
+    msisdns_df = l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi.select("msisdn").distinct()
+    msisdns = [row.msisdn for row in msisdns_df.collect()]
+
+    l1_customer_profile_union_daily_feature_for_l1_network_user_cqi = (
+        l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi.filter(f.col("access_method_num").isin(msisdns))
     )
+    print("After cust prof: ", l1_customer_profile_union_daily_feature_for_l1_network_user_cqi.count(), l1_customer_profile_union_daily_feature_for_l1_network_user_cqi.select("access_method_num").distinct().count())
     # TODO Delete me - end
 
     return_df = l1_massive_processing(l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi,
