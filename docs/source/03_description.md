@@ -123,7 +123,14 @@ The treatments history is updated and treatments are saved and deployed.
 ### What does it mean to deploy the treatments?
 Table with users and campaign codes (`treatments_chosen` in catalog) is loaded and transformed
 to format agreed with campaign team. Then the tables, one for each use case are saved
-in agreed paths.
+in agreed paths. 
+
+### What parameters can I modify to change the treatments?
+First and foremost you can modify whole `conf/base/CVM/L5/parameters_treatment_rules.yml`
+as described above. 
+
+![](.images/03_description_images/bcd42654.png)
+
 
 
 ## Report submodule
@@ -134,3 +141,5 @@ If you want to have a persistent set of scoring sets use scoring experiment.
 Scoring experiment sets are described in `conf/base/CVM/L5/catalog_scoring_experiment.yml`.
 These are output path for a scoring experiment sets.
 To run scoring experiment use pipeline `cvm_full_scoring_experiment` from `src/customer360/pipeline.py`.
+
+
