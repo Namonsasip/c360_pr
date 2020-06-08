@@ -1,4 +1,5 @@
 import pyspark.sql.functions as f
+from pyspark.sql.types import StringType
 from pyspark.sql import DataFrame
 
 from customer360.utilities.re_usable_functions import check_empty_dfs, \
@@ -693,15 +694,19 @@ def build_network_user_cqi(
     # ################################# End Implementing Data availability checks ###############################
 
     # TODO Delete me - start
-    print("Before cust prof: ", l1_customer_profile_union_daily_feature_for_l1_network_user_cqi.count(), l1_customer_profile_union_daily_feature_for_l1_network_user_cqi.select("access_method_num").distinct().count())
+    msisdn_eventdate_df = l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi.select(
+        "msisdn",
+        f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd').alias(
+            "event_date_temp")).distinct()
 
-    msisdns_df = l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi.select("msisdn").distinct()
-    msisdns = [row.msisdn for row in msisdns_df.collect()]
-
-    l1_customer_profile_union_daily_feature_for_l1_network_user_cqi = (
-        l1_customer_profile_union_daily_feature_for_l1_network_user_cqi.filter(f.col("access_method_num").isin(msisdns))
+    l1_customer_profile_union_daily_feature_for_l1_network_user_cqi = l1_customer_profile_union_daily_feature_for_l1_network_user_cqi.join(
+        msisdn_eventdate_df,
+        (
+                    l1_customer_profile_union_daily_feature_for_l1_network_user_cqi.access_method_num == msisdn_eventdate_df.msisdn) &
+        (
+                    l1_customer_profile_union_daily_feature_for_l1_network_user_cqi.event_partition_date == msisdn_eventdate_df.event_date_temp),
+        "inner"
     )
-    print("After cust prof: ", l1_customer_profile_union_daily_feature_for_l1_network_user_cqi.count(), l1_customer_profile_union_daily_feature_for_l1_network_user_cqi.select("access_method_num").distinct().count())
     # TODO Delete me - end
 
     return_df = l1_massive_processing(l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi,
@@ -744,15 +749,17 @@ def build_network_file_transfer_cqi(
     # ################################# End Implementing Data availability checks ###############################
 
     # TODO Delete me - start
-    print("Before cust prof: ", l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi.count(), l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi.select("access_method_num").distinct().count())
+    msisdn_eventdate_df = l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi.select(
+        "msisdn",
+        f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd').alias(
+            "event_date_temp")).distinct()
 
-    msisdns_df = l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi.select("msisdn").distinct()
-    msisdns = [row.msisdn for row in msisdns_df.collect()]
-
-    l1_customer_profile_union_daily_feature_for_l1_network_user_cqi = (
-        l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi.filter(f.col("access_method_num").isin(msisdns))
+    l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi = l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi.join(
+        msisdn_eventdate_df,
+        (l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi.access_method_num == msisdn_eventdate_df.msisdn) &
+        (l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi.event_partition_date == msisdn_eventdate_df.event_date_temp),
+        "inner"
     )
-    print("After cust prof: ", l1_customer_profile_union_daily_feature_for_l1_network_user_cqi.count(), l1_customer_profile_union_daily_feature_for_l1_network_user_cqi.select("access_method_num").distinct().count())
     # TODO Delete me - end
 
     return_df = l1_massive_processing(l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi,
