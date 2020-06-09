@@ -25,3 +25,113 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import logging
+from typing import Any, Dict
+
+from cvm.src.utils.incremental_manipulation import filter_latest_date, filter_users
+from cvm.src.utils.prepare_key_columns import prepare_key_columns
+from cvm.src.utils.utils import get_today
+from pyspark.sql import DataFrame
+from pyspark.sql import functions as func
+
+
+def create_users_from_cgtg(
+    customer_groups: DataFrame,
+    sampling_parameters: Dict[str, Any],
+    parameters: Dict[str, Any],
+) -> DataFrame:
+    """ Creates users table to use during scoring using customer groups
+    table.
+
+    Args:
+        customer_groups: Table with target, control and bau groups.
+        sampling_parameters: sampling parameters defined in parameters.yml.
+        parameters: parameters defined in parameters.yml.
+    """
+
+    today = get_today(parameters)
+    df = (
+        customer_groups.filter("target_group == 'TG'")
+        .select("crm_sub_id")
+        .distinct()
+        .withColumn("key_date", func.lit(today))
+        .withColumnRenamed("crm_sub_id", "subscription_identifier")
+    )
+    return df
+
+
+def create_users_from_active_users(
+    profile: DataFrame,
+    main_packs: DataFrame,
+    sampling_parameters: Dict[str, Any],
+    parameters: Dict[str, Any],
+) -> DataFrame:
+    """Create l5_cvm_one_day_users_table - one day table of users used for
+    training and validating.
+
+    Args:
+        profile: monthly customer profiles.
+        main_packs: pre-paid main packages description.
+        sampling_parameters: sampling parameters defined in parameters.yml.
+        parameters: parameters defined in parameters.yml.
+    """
+
+    profile = prepare_key_columns(profile)
+    date_chosen = sampling_parameters["chosen_date"]
+    if date_chosen == "today" or date_chosen == "":
+        date_chosen = None
+    users = filter_latest_date(profile, parameters, date_chosen)
+    users = users.filter(
+        "charge_type == 'Pre-paid' \
+         AND subscription_status == 'SA' \
+         AND subscription_identifier is not null \
+         AND subscription_identifier not in ('null', 'NA') \
+         AND cust_active_this_month = 'Y'"
+    )
+    users = users.filter("subscriber_tenure >= 4")
+
+    main_packs = main_packs.filter(
+        "promotion_group_tariff not in ('SIM 2 Fly', \
+         'Net SIM', 'Traveller SIM')"
+    )
+    main_packs = (
+        main_packs.select("package_id")
+        .distinct()
+        .withColumnRenamed("package_id", "current_package_id")
+    )
+    users = users.join(main_packs, ["current_package_id"], "inner")
+    columns_to_pick = ["key_date", "subscription_identifier"]
+    users = users.select(columns_to_pick)
+
+    return users.distinct()
+
+
+def create_sample_dataset(
+    df: DataFrame, parameters: Dict[str, Any], sampling_parameters: Dict[str, Any],
+) -> DataFrame:
+    """ Create sample of given table. Used to limit users and / or pick chosen date from
+    data.
+
+    Args:
+        df: given table.
+        sampling_parameters: sampling parameters defined in parameters.yml.
+        parameters: parameters defined in parameters.yml.
+    Returns:
+        Sample of table.
+    """
+    subscription_id_suffix = sampling_parameters["subscription_id_suffix"]
+    max_date = sampling_parameters["chosen_date"]
+
+    sampling_stages = {
+        "filter_users": lambda dfx: filter_users(dfx, subscription_id_suffix),
+        "take_last_date": lambda dfx: filter_latest_date(dfx, parameters, max_date),
+    }
+
+    starting_rows = df.count()
+    for stage in sampling_parameters["stages"]:
+        df = sampling_stages[stage](df)
+
+    log = logging.getLogger(__name__)
+    log.info(f"Sample has {df.count()} rows, down from {starting_rows} rows.")
+
+    return df

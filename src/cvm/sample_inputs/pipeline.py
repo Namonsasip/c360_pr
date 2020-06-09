@@ -25,3 +25,106 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import re
+
+from cvm.sample_inputs.nodes import (
+    create_sample_dataset,
+    create_users_from_active_users,
+    create_users_from_cgtg,
+)
+from kedro.pipeline import Pipeline, node
+
+
+def create_users_from_tg(sample_type: str) -> Pipeline:
+    """ Creates users table to use during training / scoring using predefined target
+    group.
+
+    Args:
+        sample_type: "scoring" if list created for scoring, "training" if list created
+            for training.
+    """
+
+    return Pipeline(
+        [
+            node(
+                create_users_from_cgtg,
+                [
+                    "cvm_prepaid_customer_groups_sub_ids_mapped",
+                    "params:{}".format(sample_type),
+                    "parameters",
+                ],
+                "cvm_users_list_" + sample_type,
+                name="create_users_list_tgcg_" + sample_type,
+            ),
+        ]
+    )
+
+
+def create_users_from_active(sample_type: str) -> Pipeline:
+    """ Creates users table to use during training / scoring using list of active users.
+
+    Args:
+        sample_type: "scoring" if list created for scoring, "training" if list created
+            for training.
+    """
+
+    return Pipeline(
+        [
+            node(
+                create_sample_dataset,
+                [
+                    "l3_customer_profile_include_1mo_non_active_sub_ids_mapped",
+                    "parameters",
+                    "params:" + sample_type,
+                ],
+                "active_users_sample_" + sample_type,
+                name="create_active_users_sample_" + sample_type,
+            ),
+            node(
+                create_users_from_active_users,
+                [
+                    "active_users_sample_" + sample_type,
+                    "l0_product_pru_m_package_master_group_for_daily",
+                    "params:" + sample_type,
+                    "parameters",
+                ],
+                "cvm_users_list_" + sample_type,
+                name="create_cvm_users_list_active_users_" + sample_type,
+            ),
+        ]
+    )
+
+
+def sample_inputs(sample_type: str) -> Pipeline:
+    """ Creates samples for input datasets.
+
+    Args:
+        sample_type: "scoring" if list created for scoring, "training" if list created
+            for training.
+    """
+
+    datasets_to_sample = [
+        "l3_customer_profile_include_1mo_non_active",
+        "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
+        "l4_usage_prepaid_postpaid_daily_features",
+        "l4_daily_feature_topup_and_volume",
+        "l4_usage_postpaid_prepaid_weekly_features_sum",
+        "l4_touchpoints_to_call_center_features",
+    ]
+
+    nodes_list = [
+        node(
+            create_sample_dataset,
+            inputs=[
+                dataset_name + "_sub_ids_mapped",  # temp fix
+                "parameters",
+                "params:" + sample_type,
+            ],
+            # when not incremental version of dataset is used
+            outputs=re.sub("_no_inc", "", dataset_name) + "_" + sample_type,
+            name="sample_" + dataset_name + "_" + sample_type,
+        )
+        for dataset_name in datasets_to_sample
+    ]
+
+    return Pipeline(nodes_list)

@@ -25,15 +25,15 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from kedro.pipeline import Pipeline, node
-
-from cvm.data_prep.nodes import create_sample_dataset, subs_date_join
+from cvm.data_prep.nodes import subs_date_join
 from cvm.report.nodes import (
     add_micro_macro,
     build_daily_kpis,
     filter_out_micro_macro,
     prepare_users,
 )
+from cvm.sample_inputs.nodes import create_sample_dataset
+from kedro.pipeline import Pipeline, node
 
 
 def sample_report_inputs() -> Pipeline:
