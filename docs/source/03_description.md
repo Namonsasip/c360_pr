@@ -194,11 +194,6 @@ E.g. `limit_per_code: 500` means every A/B testing size will be 500 per treatmen
 ### What happens when we have chosen campaign codes?
 The treatments history is updated and treatments are saved and deployed.
 
-### What does it mean to deploy the treatments?
-Table with users and campaign codes (`treatments_chosen` in catalog) is loaded and transformed
-to format agreed with campaign team. Then the tables, one for each use case are saved
-in agreed paths. 
-
 ### What parameters can I modify to change the treatments?
 First and foremost you can modify whole `conf/base/CVM/L5/parameters_treatment_rules.yml`
 as described above. 
@@ -229,7 +224,15 @@ Those are used to tell the pipeline where to save the users and campaigns table.
 The `{}` here are filled with timestamp on time of saving with timestamp in the format
 defined in the same file.
 
+Remember you reference to this in the treatments rule yaml file using the `use_case` field.
+
 ![](.images/03_description_images/57778792.png)
+
+### What does it mean to deploy the treatments?
+Table with users and campaign codes (`treatments_chosen` in catalog) is loaded and transformed
+to format agreed with campaign team. Then the tables, one for each use case are saved
+in agreed paths. 
+
 
 ## Report submodule
 
