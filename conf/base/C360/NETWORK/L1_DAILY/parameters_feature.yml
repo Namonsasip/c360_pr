@@ -190,7 +190,6 @@ l1_network_user_cqi:
   granularity: "msisdn, partition_date"
   event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
   output_catalog: "l1_network_user_cqi"
-  where_clause: "where partition_date > 20200518"
   join_column_with_cust_profile:
     access_method_num: msisdn
     event_partition_date: event_partition_date
@@ -204,7 +203,6 @@ l1_network_file_transfer_cqi:
   granularity: "msisdn, partition_date"
   event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
   output_catalog: "l1_network_file_transfer_cqi"
-  where_clause: "where partition_date > 20200518"
   join_column_with_cust_profile:
     access_method_num: msisdn
     event_partition_date: event_partition_date

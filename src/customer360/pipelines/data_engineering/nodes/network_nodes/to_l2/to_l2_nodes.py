@@ -16,21 +16,21 @@ def build_l2_network_voice_features(
     :param parameter:
     :return:
     """
-    # ################################# Start Implementing Data availability checks #############################
-    # if check_empty_dfs(
-    #         [input_df]):
-    #     return get_spark_empty_df()
-    #
-    # input_df = \
-    #     data_non_availability_and_missing_check(
-    #         df=input_df, grouping="weekly",
-    #         par_col="event_partition_date",
-    #         target_table_name="l2_network_voice_features",
-    #         missing_data_check_flg='Y')
-    #
-    # if check_empty_dfs([input_df]):
-    #     return get_spark_empty_df()
-    # ################################# End Implementing Data availability checks ###############################
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs(
+            [input_df]):
+        return get_spark_empty_df()
+
+    input_df = \
+        data_non_availability_and_missing_check(
+            df=input_df, grouping="weekly",
+            par_col="event_partition_date",
+            target_table_name="l2_network_voice_features",
+            missing_data_check_flg='Y')
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+    ################################# End Implementing Data availability checks ###############################
 
     return_df = node_from_config(input_df, parameter)
 
@@ -46,21 +46,21 @@ def build_l2_network_good_and_bad_cells_features(
     :param parameter:
     :return:
     """
-    # ################################# Start Implementing Data availability checks #############################
-    # if check_empty_dfs(
-    #         [input_df]):
-    #     return get_spark_empty_df()
-    #
-    # input_df = \
-    #     data_non_availability_and_missing_check(
-    #         df=input_df, grouping="weekly",
-    #         par_col="event_partition_date",
-    #         target_table_name="l2_network_good_and_bad_cells_features",
-    #         missing_data_check_flg='Y')
-    #
-    # if check_empty_dfs([input_df]):
-    #     return get_spark_empty_df()
-    # ################################# End Implementing Data availability checks ###############################
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs(
+            [input_df]):
+        return get_spark_empty_df()
+
+    input_df = \
+        data_non_availability_and_missing_check(
+            df=input_df, grouping="weekly",
+            par_col="event_partition_date",
+            target_table_name="l2_network_good_and_bad_cells_features",
+            missing_data_check_flg='Y')
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+    ################################# End Implementing Data availability checks ###############################
 
     return_df = node_from_config(input_df, parameter)
 
@@ -76,21 +76,21 @@ def build_l2_network_share_of_3g_time_in_total_time(
     :param parameter:
     :return:
     """
-    # ################################# Start Implementing Data availability checks #############################
-    # if check_empty_dfs(
-    #         [input_df]):
-    #     return get_spark_empty_df()
-    #
-    # input_df = \
-    #     data_non_availability_and_missing_check(
-    #         df=input_df, grouping="weekly",
-    #         par_col="event_partition_date",
-    #         target_table_name="l2_network_share_of_3g_time_in_total_time",
-    #         missing_data_check_flg='Y')
-    #
-    # if check_empty_dfs([input_df]):
-    #     return get_spark_empty_df()
-    # ################################# End Implementing Data availability checks ###############################
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs(
+            [input_df]):
+        return get_spark_empty_df()
+
+    input_df = \
+        data_non_availability_and_missing_check(
+            df=input_df, grouping="weekly",
+            par_col="event_partition_date",
+            target_table_name="l2_network_share_of_3g_time_in_total_time",
+            missing_data_check_flg='Y')
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+    ################################# End Implementing Data availability checks ###############################
 
     return_df = node_from_config(input_df, parameter)
 
@@ -106,21 +106,21 @@ def build_l2_network_data_traffic_features(
     :param parameter:
     :return:
     """
-    # ################################# Start Implementing Data availability checks #############################
-    # if check_empty_dfs(
-    #         [input_df]):
-    #     return get_spark_empty_df()
-    #
-    # input_df = \
-    #     data_non_availability_and_missing_check(
-    #         df=input_df, grouping="weekly",
-    #         par_col="event_partition_date",
-    #         target_table_name="l2_network_data_traffic_features",
-    #         missing_data_check_flg='Y')
-    #
-    # if check_empty_dfs([input_df]):
-    #     return get_spark_empty_df()
-    # ################################# End Implementing Data availability checks ###############################
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs(
+            [input_df]):
+        return get_spark_empty_df()
+
+    input_df = \
+        data_non_availability_and_missing_check(
+            df=input_df, grouping="weekly",
+            par_col="event_partition_date",
+            target_table_name="l2_network_data_traffic_features",
+            missing_data_check_flg='Y')
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+    ################################# End Implementing Data availability checks ###############################
 
     return_df = node_from_config(input_df, parameter)
 
@@ -136,21 +136,21 @@ def build_l2_network_data_cqi(
     :param parameter:
     :return:
     """
-    # ################################# Start Implementing Data availability checks #############################
-    # if check_empty_dfs(
-    #         [input_df]):
-    #     return get_spark_empty_df()
-    #
-    # input_df = \
-    #     data_non_availability_and_missing_check(
-    #         df=input_df, grouping="weekly",
-    #         par_col="event_partition_date",
-    #         target_table_name="l2_network_data_cqi",
-    #         missing_data_check_flg='Y')
-    #
-    # if check_empty_dfs([input_df]):
-    #     return get_spark_empty_df()
-    # ################################# End Implementing Data availability checks ###############################
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs(
+            [input_df]):
+        return get_spark_empty_df()
+
+    input_df = \
+        data_non_availability_and_missing_check(
+            df=input_df, grouping="weekly",
+            par_col="event_partition_date",
+            target_table_name="l2_network_data_cqi",
+            missing_data_check_flg='Y')
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+    ################################# End Implementing Data availability checks ###############################
     return_df = node_from_config(input_df, parameter)
 
     return return_df
@@ -165,21 +165,21 @@ def build_l2_network_im_cqi(
     :param parameter:
     :return:
     """
-    # ################################# Start Implementing Data availability checks #############################
-    # if check_empty_dfs(
-    #         [input_df]):
-    #     return get_spark_empty_df()
-    #
-    # input_df = \
-    #     data_non_availability_and_missing_check(
-    #         df=input_df, grouping="weekly",
-    #         par_col="event_partition_date",
-    #         target_table_name="l2_network_im_cqi",
-    #         missing_data_check_flg='Y')
-    #
-    # if check_empty_dfs([input_df]):
-    #     return get_spark_empty_df()
-    # ################################# End Implementing Data availability checks ###############################
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs(
+            [input_df]):
+        return get_spark_empty_df()
+
+    input_df = \
+        data_non_availability_and_missing_check(
+            df=input_df, grouping="weekly",
+            par_col="event_partition_date",
+            target_table_name="l2_network_im_cqi",
+            missing_data_check_flg='Y')
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+    ################################# End Implementing Data availability checks ###############################
     return_df = node_from_config(input_df, parameter)
 
     return return_df
@@ -194,21 +194,21 @@ def build_l2_network_im_cqi(
     :param parameter:
     :return:
     """
-    # ################################# Start Implementing Data availability checks #############################
-    # if check_empty_dfs(
-    #         [input_df]):
-    #     return get_spark_empty_df()
-    #
-    # input_df = \
-    #     data_non_availability_and_missing_check(
-    #         df=input_df, grouping="weekly",
-    #         par_col="event_partition_date",
-    #         target_table_name="l2_network_im_cqi",
-    #         missing_data_check_flg='Y')
-    #
-    # if check_empty_dfs([input_df]):
-    #     return get_spark_empty_df()
-    # ################################# End Implementing Data availability checks ###############################
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs(
+            [input_df]):
+        return get_spark_empty_df()
+
+    input_df = \
+        data_non_availability_and_missing_check(
+            df=input_df, grouping="weekly",
+            par_col="event_partition_date",
+            target_table_name="l2_network_im_cqi",
+            missing_data_check_flg='Y')
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+    ################################# End Implementing Data availability checks ###############################
     return_df = node_from_config(input_df, parameter)
 
     return return_df
@@ -223,21 +223,21 @@ def build_l2_network_streaming_cqi(
     :param parameter:
     :return:
     """
-    # ################################# Start Implementing Data availability checks #############################
-    # if check_empty_dfs(
-    #         [input_df]):
-    #     return get_spark_empty_df()
-    #
-    # input_df = \
-    #     data_non_availability_and_missing_check(
-    #         df=input_df, grouping="weekly",
-    #         par_col="event_partition_date",
-    #         target_table_name="l2_network_streaming_cqi",
-    #         missing_data_check_flg='Y')
-    #
-    # if check_empty_dfs([input_df]):
-    #     return get_spark_empty_df()
-    # ################################# End Implementing Data availability checks ###############################
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs(
+            [input_df]):
+        return get_spark_empty_df()
+
+    input_df = \
+        data_non_availability_and_missing_check(
+            df=input_df, grouping="weekly",
+            par_col="event_partition_date",
+            target_table_name="l2_network_streaming_cqi",
+            missing_data_check_flg='Y')
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+    ################################# End Implementing Data availability checks ###############################
     return_df = node_from_config(input_df, parameter)
 
     return return_df
@@ -252,21 +252,21 @@ def build_l2_network_web_cqi(
     :param parameter:
     :return:
     """
-    # ################################# Start Implementing Data availability checks #############################
-    # if check_empty_dfs(
-    #         [input_df]):
-    #     return get_spark_empty_df()
-    #
-    # input_df = \
-    #     data_non_availability_and_missing_check(
-    #         df=input_df, grouping="weekly",
-    #         par_col="event_partition_date",
-    #         target_table_name="l2_network_web_cqi",
-    #         missing_data_check_flg='Y')
-    #
-    # if check_empty_dfs([input_df]):
-    #     return get_spark_empty_df()
-    # ################################# End Implementing Data availability checks ###############################
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs(
+            [input_df]):
+        return get_spark_empty_df()
+
+    input_df = \
+        data_non_availability_and_missing_check(
+            df=input_df, grouping="weekly",
+            par_col="event_partition_date",
+            target_table_name="l2_network_web_cqi",
+            missing_data_check_flg='Y')
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+    ################################# End Implementing Data availability checks ###############################
     return_df = node_from_config(input_df, parameter)
 
     return return_df
@@ -281,21 +281,21 @@ def build_l2_network_voip_cqi(
     :param parameter:
     :return:
     """
-    # ################################# Start Implementing Data availability checks #############################
-    # if check_empty_dfs(
-    #         [input_df]):
-    #     return get_spark_empty_df()
-    #
-    # input_df = \
-    #     data_non_availability_and_missing_check(
-    #         df=input_df, grouping="weekly",
-    #         par_col="event_partition_date",
-    #         target_table_name="l2_network_voip_cqi",
-    #         missing_data_check_flg='Y')
-    #
-    # if check_empty_dfs([input_df]):
-    #     return get_spark_empty_df()
-    # ################################# End Implementing Data availability checks ###############################
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs(
+            [input_df]):
+        return get_spark_empty_df()
+
+    input_df = \
+        data_non_availability_and_missing_check(
+            df=input_df, grouping="weekly",
+            par_col="event_partition_date",
+            target_table_name="l2_network_voip_cqi",
+            missing_data_check_flg='Y')
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+    ################################# End Implementing Data availability checks ###############################
     return_df = node_from_config(input_df, parameter)
 
     return return_df
@@ -310,21 +310,21 @@ def build_l2_network_volte_cqi(
     :param parameter:
     :return:
     """
-    # ################################# Start Implementing Data availability checks #############################
-    # if check_empty_dfs(
-    #         [input_df]):
-    #     return get_spark_empty_df()
-    #
-    # input_df = \
-    #     data_non_availability_and_missing_check(
-    #         df=input_df, grouping="weekly",
-    #         par_col="event_partition_date",
-    #         target_table_name="l2_network_volte_cqi",
-    #         missing_data_check_flg='Y')
-    #
-    # if check_empty_dfs([input_df]):
-    #     return get_spark_empty_df()
-    # ################################# End Implementing Data availability checks ###############################
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs(
+            [input_df]):
+        return get_spark_empty_df()
+
+    input_df = \
+        data_non_availability_and_missing_check(
+            df=input_df, grouping="weekly",
+            par_col="event_partition_date",
+            target_table_name="l2_network_volte_cqi",
+            missing_data_check_flg='Y')
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+    ################################# End Implementing Data availability checks ###############################
     return_df = node_from_config(input_df, parameter)
 
     return return_df
@@ -340,21 +340,21 @@ def build_l2_network_user_cqi(
     :return:
     """
 
-    # ################################# Start Implementing Data availability checks #############################
-    # if check_empty_dfs(
-    #         [input_df]):
-    #     return get_spark_empty_df()
-    #
-    # input_df = \
-    #     data_non_availability_and_missing_check(
-    #         df=input_df, grouping="weekly",
-    #         par_col="event_partition_date",
-    #         target_table_name="l2_network_user_cqi",
-    #         missing_data_check_flg='Y')
-    #
-    # if check_empty_dfs([input_df]):
-    #     return get_spark_empty_df()
-    # ################################# End Implementing Data availability checks ###############################
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs(
+            [input_df]):
+        return get_spark_empty_df()
+
+    input_df = \
+        data_non_availability_and_missing_check(
+            df=input_df, grouping="weekly",
+            par_col="event_partition_date",
+            target_table_name="l2_network_user_cqi",
+            missing_data_check_flg='Y')
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+    ################################# End Implementing Data availability checks ###############################
     return_df = node_from_config(input_df, parameter)
 
     return return_df
@@ -370,21 +370,21 @@ def build_l2_network_file_transfer_cqi(
     :return:
     """
 
-    # ################################# Start Implementing Data availability checks #############################
-    # if check_empty_dfs(
-    #         [input_df]):
-    #     return get_spark_empty_df()
-    #
-    # input_df = \
-    #     data_non_availability_and_missing_check(
-    #         df=input_df, grouping="weekly",
-    #         par_col="event_partition_date",
-    #         target_table_name="l2_network_file_transfer_cqi",
-    #         missing_data_check_flg='Y')
-    #
-    # if check_empty_dfs([input_df]):
-    #     return get_spark_empty_df()
-    # ################################# End Implementing Data availability checks ###############################
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs(
+            [input_df]):
+        return get_spark_empty_df()
+
+    input_df = \
+        data_non_availability_and_missing_check(
+            df=input_df, grouping="weekly",
+            par_col="event_partition_date",
+            target_table_name="l2_network_file_transfer_cqi",
+            missing_data_check_flg='Y')
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+    ################################# End Implementing Data availability checks ###############################
     return_df = node_from_config(input_df, parameter)
 
     return return_df

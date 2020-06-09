@@ -10,8 +10,7 @@ from kedro.context.context import load_context
 
 conf = os.getenv("CONF", None)
 
-# running_environment = os.getenv("RUNNING_ENVIRONMENT", None)
-running_environment = "cloud"
+running_environment = os.getenv("RUNNING_ENVIRONMENT", None)
 PROJECT_NAME = "project-samudra"
 
 
