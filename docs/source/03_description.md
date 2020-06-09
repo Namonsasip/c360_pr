@@ -48,6 +48,73 @@ microsegments, macrosegments and also C360 data.
 It picks clients to be targeted with a campaign as well as the campaign code itself.
 The code for this section can be found at `src/cvm/treatments`.
 
+### How are treatments defined?
+
+Example treatment and possible fields.
+
+```yaml
+   treatment_name1:
+      treatment_size: 15000
+      order_policy: "subscriber_tenure + churn5_pred"
+        rules:
+          rule1:
+            campaign_code: campaign_code1
+            limit_per_code: 1000
+            order_policy: "churn60_pred + churn5_pred"
+            variant: 'A'
+            conditions:
+              - "ard_microsegment == 'positive_arpu_m3'"
+              - "sum_rev_arpu_total_revenue_monthly_last_month >= 50"
+              - "subscriber_tenure >= 12"
+         rule2:
+           campaign_code: campaign_code2
+           limit_per_code: 1000
+           order_policy: "churn60_pred + churn5_pred"
+           variant: 'B'
+           conditions:
+             - "ard_microsegment == 'positive_arpu_m3'"
+             - "sum_rev_arpu_total_revenue_monthly_last_month >= 50"
+             - "subscriber_tenure <= 12"
+         rule3:
+             campaign_code: campaign_code3
+             limit_per_code: 3000
+             order_policy: "churn60_pred + churn5_pred"
+             conditions:
+               - "ard_microsegment == 'positive_arpu_m3'"
+    treatment_name2:
+      treatment_size: 13000
+      order_policy: "dilution1_pred + churn5_pred"
+      rules:
+        rule4:
+          campaign_code: campaign_code4
+          limit_per_code: 3000
+          order_policy: "churn60_pred"
+          conditions:
+            - "ard_microsegment == 'positive_arpu_m4'"
+            - "sum_rev_arpu_total_revenue_monthly_last_month >= 50"
+            - "subscriber_tenure >= 12"
+```
+
+Treatments are applied according to order in this file starting form the top treatment going down the list. If user
+gets assigned to one of the treatments then he is removed from further assigning. Treatments allow for variants, that
+is multiple A/B(/C/D...) versions of treatments designed for similar users. Treatment assignment is conducted as
+follows:
+1. If treatment has variants then eligible users are randomly assigned to one of the variants.
+2. Rules applied in order of presence in file.
+  - users are filtered according to `conditions`
+  - users are sorted in descending order according to `order_policy`
+  - top `limit_per_code` users get assigned to `campaign_code`, applied to variant
+3. If `order_policy` is not specified for rule then treatment's `order_policy` is used.
+4. Only `treatment_size` users can be picked for treatment variant (overrides `limit_per_code` if needed).
+  - `treatment_size`: desired maximum size of the treatment, can be omitted - then no limit, limit is applied per
+       variant
+  - `order_policy`: sql-style string describing ordering variable based on which campaigns without overwritten order
+        policies are picked, must be specified
+  - `rules`: specific rules describing conditions to pick treatments,
+  - `variant`: each user is randomly assigned to one of the variants, if not specified then rule is part of all
+        variants
+  - `conditions`: sql-like conditions used to filter users before assigning rules
+
 ### How are users and campaigns chosen?
 Users are chosen according to `conf/base/CVM/L5/parameters_treatment_rules.yml` 
 and `conf/base/CVM/L5/parameters_treatment.yml`.
