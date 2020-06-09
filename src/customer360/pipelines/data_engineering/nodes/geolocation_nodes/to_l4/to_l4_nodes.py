@@ -147,12 +147,12 @@ def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
           select imsi,
             start_of_month,
             week_type,
-            max(Sum) as duration
+            max(Sum) as Sum
           from df_home_combine_week_monthly_sum_last_3_day
           group by 1,2,3
         ) a
         left join df_home_combine_week_monthly_sum_last_3_day b
-        on a.imsi = b.imsi and a.start_of_month = b.start_of_month and a.sum = b.sum and a.week_type = b.week_type
+        on a.imsi = b.imsi and a.start_of_month = b.start_of_month and a.Sum = b.Sum and a.week_type = b.week_type
         group by 1,2,3,4,5,6
     """)
     df_home_location.cache()
@@ -178,12 +178,12 @@ def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
             from (
               select imsi,
                 start_of_month,
-                max(Sum) as duration
+                max(Sum) as Sum
               from df_home_combine_week_monthly_sum_last_3_day
               group by 1,2
             ) a
             left join df_home_combine_week_monthly_sum_last_3_day b
-            on a.imsi = b.imsi and a.start_of_month = b.start_of_month and a.sum = b.sum
+            on a.imsi = b.imsi and a.start_of_month = b.start_of_month and a.Sum = b.Sum
             group by 1,2,3,4,5
         """)
     df_work_location.cache()
