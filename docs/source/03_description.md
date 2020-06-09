@@ -184,6 +184,13 @@ top `treatment_size` users are picked. According to `order_policy`. `treatment_s
 to treatment variant, so **maximum number of users assigned to treatment is `treatment_size` * number of variants**.
 Rules are applied in the same order as in `conf/base/CVM/L5/parameters_treatment_rules.yml` file.
 
+### Why do we need to set `limit_per_code`?
+`limit_per_code` is used to set target limit especially during A/B testing. This allows you
+to know for certain how many customers you want to target per treatment cycle.
+
+E.g. `limit_per_code: 500` means every A/B testing size will be 500 per treatment cycle. 
+(500 for test A, 500 for test B, 500 for CG etc.. daily/weekly) 
+
 ### What happens when we have chosen campaign codes?
 The treatments history is updated and treatments are saved and deployed.
 
