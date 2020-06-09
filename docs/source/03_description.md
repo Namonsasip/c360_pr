@@ -108,8 +108,8 @@ follows:
 4. Only `treatment_size` users can be picked for treatment variant (overrides `limit_per_code` if needed).
   - `treatment_size`: desired maximum size of the treatment, can be omitted - then no limit, limit is applied per
        variant
-  - `order_policy`: sql-style string describing ordering variable based on which campaigns without overwritten order
-        policies are picked, must be specified
+  - `order_policy`: sql-style string describing ordering variable based on which campaigns are picked,
+   must be specified, can be overwritten by `order_policy` field in a rule
   - `rules`: specific rules describing conditions to pick treatments,
   - `variant`: each user is randomly assigned to one of the variants, if not specified then rule is part of all
         variants
