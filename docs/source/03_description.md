@@ -204,6 +204,11 @@ not be deployed (sent to campaign team), nor will it be saved to treatments hist
 Anything different then `"yes"`, for example `"no"` or `"ไม่"` will send and save the
 treatments chosen.
 
+Regardless of the 'skip_sending' field, output from the model will then be saved on C360 
+at`/dbfs/mnt/customer360-cvm/treatments_chosen.csv`. 
+This will be overwritten every time scoring is conducted. 
+
+
 ![](.images/03_description_images/002a6224.png)
 
 Another parameter - `treatments_cadence` from `conf/base/CVM/L5/parameters_treatment.yml`.
