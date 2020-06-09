@@ -14,8 +14,15 @@ def product_to_l1_pipeline(**kwargs):
                 "int_l1_product_active_customer_promotion_features"
             ),
             node(
+                union_with_prepaid,
+                # ["l0_prepaid_ontop_product_customer_promotion_for_daily",
+                ["l0_prepaid_main_product_customer_promotion_for_daily",
+                 "int_l1_product_active_customer_promotion_features"],
+                "int_l1_product_active_customer_promotion_features_union"
+            ),
+            node(
                 l1_massive_processing,
-                ["int_l1_product_active_customer_promotion_features",
+                ["int_l1_product_active_customer_promotion_features_union",
                  "params:int_l1_product_active_customer_promotion_features",
                  "l1_customer_profile_union_daily_feature_for_int_l1_product_active_customer_promotion_features"],
                 "int_l1_product_active_customer_promotion_features_temp"
@@ -30,18 +37,18 @@ def product_to_l1_pipeline(**kwargs):
                 "l1_product_active_customer_promotion_features_daily"
             ),
 
-            node(
-                dac_product_fbb_a_customer_promotion_current_for_daily,
-                "l0_product_fbb_a_customer_promotion_current_for_daily",
-                "int_l1_product_active_fbb_customer_features_daily"
-            ),
-            node(
-                l1_massive_processing,
-                ["int_l1_product_active_fbb_customer_features_daily",
-                 "params:l1_product_active_fbb_customer_features",
-                 "l1_customer_profile_union_daily_feature_for_l1_product_active_fbb_customer_features_daily"],
-                "l1_product_active_fbb_customer_features_daily"
-            )
+            # node(
+            #     dac_product_fbb_a_customer_promotion_current_for_daily,
+            #     "l0_product_fbb_a_customer_promotion_current_for_daily",
+            #     "int_l1_product_active_fbb_customer_features_daily"
+            # ),
+            # node(
+            #     l1_massive_processing,
+            #     ["int_l1_product_active_fbb_customer_features_daily",
+            #      "params:l1_product_active_fbb_customer_features",
+            #      "l1_customer_profile_union_daily_feature_for_l1_product_active_fbb_customer_features_daily"],
+            #     "l1_product_active_fbb_customer_features_daily"
+            # )
 
         ]
     )

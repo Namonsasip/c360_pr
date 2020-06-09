@@ -69,6 +69,11 @@ def union_master_package_table(
     unioned_ontop_master.createOrReplaceTempView("unioned_ontop_master")
     unioned_ontop_master.cache()
 
+    # print("unioned_main_master")
+    # unioned_main_master.show(10, False)
+    # print("unioned_ontop_master")
+    # unioned_ontop_master.show(10, False)
+
 
 def join_with_master_package(
         grouped_cust_promo_df,
@@ -79,27 +84,33 @@ def join_with_master_package(
 ) -> DataFrame:
     spark = get_spark_session()
 
-    ################################# Start Implementing Data availability checks ###############################
-    if check_empty_dfs([prepaid_main_master_df, prepaid_ontop_master_df, postpaid_main_master_df
-                        ,postpaid_ontop_master_df]):
-        return get_spark_empty_df()
+    # ################################# Start Implementing Data availability checks ###############################
+    # if check_empty_dfs([prepaid_main_master_df, prepaid_ontop_master_df, postpaid_main_master_df
+    #                     ,postpaid_ontop_master_df]):
+    #     return get_spark_empty_df()
+    #
+    #
+    # prepaid_main_master_df = data_non_availability_and_missing_check(df=prepaid_main_master_df
+    #      ,grouping="weekly", par_col="partition_date",target_table_name="l1_product_active_customer_promotion_features_daily")
+    # prepaid_ontop_master_df = data_non_availability_and_missing_check(df=prepaid_ontop_master_df
+    #      , grouping="weekly", par_col="partition_date",target_table_name="l1_product_active_customer_promotion_features_daily")
+    # postpaid_main_master_df = data_non_availability_and_missing_check(df=postpaid_main_master_df
+    #     , grouping="weekly", par_col="partition_date",target_table_name="l1_product_active_customer_promotion_features_daily")
+    # postpaid_ontop_master_df = data_non_availability_and_missing_check(df=postpaid_ontop_master_df
+    #     , grouping="weekly", par_col="partition_date",target_table_name="l1_product_active_customer_promotion_features_daily")
+    #
+    # if check_empty_dfs([prepaid_main_master_df, prepaid_ontop_master_df, postpaid_main_master_df
+    #                        , postpaid_ontop_master_df]):
+    #     return get_spark_empty_df()
+    #
+    # ################################# End Implementing Data availability checks ###############################
 
-
-    prepaid_main_master_df = data_non_availability_and_missing_check(df=prepaid_main_master_df
-         ,grouping="weekly", par_col="partition_date",target_table_name="l1_product_active_customer_promotion_features_daily")
-    prepaid_ontop_master_df = data_non_availability_and_missing_check(df=prepaid_ontop_master_df
-         , grouping="weekly", par_col="partition_date",target_table_name="l1_product_active_customer_promotion_features_daily")
-    postpaid_main_master_df = data_non_availability_and_missing_check(df=postpaid_main_master_df
-        , grouping="weekly", par_col="partition_date",target_table_name="l1_product_active_customer_promotion_features_daily")
-    postpaid_ontop_master_df = data_non_availability_and_missing_check(df=postpaid_ontop_master_df
-        , grouping="weekly", par_col="partition_date",target_table_name="l1_product_active_customer_promotion_features_daily")
-
-    if check_empty_dfs([prepaid_main_master_df, prepaid_ontop_master_df, postpaid_main_master_df
-                           , postpaid_ontop_master_df]):
-        return get_spark_empty_df()
-
-    ################################# End Implementing Data availability checks ###############################
-
+    grouped_cust_promo_df.filter(F.col("access_method_num").isin([
+        "H+Qh3mvgVftwZLr26rzpc+Fo9Z1CsMCmbvI6cJWmBN4N8iOuC24pob9lE0xe01FG",
+        "l+PoGikDG2NhkqHvpPEORmm1O4GZES8zcJ31dEAbyaROyi5cpiVMUBZUqJGc1f9U",
+        "HehqZXiNVovT6M.r+BaCT7fhKfvfsrzCrPpxZDMN3Ee.hls2hZ2vv9K+gKu9yoHa",
+        "HZBYTDGI+nZiRG0gJcr7rCZxzORAI1Ge9z4NucAcWQsbh7G.k6CMLkV5+NOtXDQX",
+    ])).show()
 
     min_value = union_dataframes_with_missing_cols(
         [
@@ -167,7 +178,6 @@ def join_with_master_package(
                 subscription_identifier,
                 national_id_card,
                 access_method_num, 
-                partition_date,
                 start_of_week,
                 start_of_month,
                 event_partition_date
@@ -199,15 +209,15 @@ def join_with_master_package(
         from flatten_cust_promo_df cp_df
         left join unioned_main_master main_df
             on main_df.promotion_code = cp_df.product_main_package_promo_cd
-            and main_df.partition_date = cp_df.partition_date
+            and to_date(cast(main_df.partition_date as string), 'yyyyMMdd') = cp_df.event_partition_date
             
         left join unioned_ontop_master ontop_df1
             on ontop_df1.promotion_code = cp_df.product_ontop_1_package_promo_cd
-            and ontop_df1.partition_date = cp_df.partition_date
+            and to_date(cast(ontop_df1.partition_date as string), 'yyyyMMdd') = cp_df.event_partition_date
             
         left join unioned_ontop_master ontop_df2
             on ontop_df2.promotion_code = cp_df.product_ontop_2_package_promo_cd
-            and ontop_df2.partition_date = cp_df.partition_date
+            and to_date(cast(ontop_df2.partition_date as string), 'yyyyMMdd') = cp_df.event_partition_date
     """)
 
     return result_df
@@ -218,17 +228,17 @@ def dac_product_customer_promotion_for_daily(input_df) -> DataFrame:
     :return:
     """
 
-    ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([input_df]):
-        return get_spark_empty_df()
-
-    input_df = data_non_availability_and_missing_check(df=input_df, grouping="weekly", par_col="partition_date",
-                                                       target_table_name="l1_product_active_customer_promotion_features_daily")
-
-    if check_empty_dfs([input_df]):
-        return get_spark_empty_df()
-
-    ################################# End Implementing Data availability checks ###############################
+    # ################################# Start Implementing Data availability checks #############################
+    # if check_empty_dfs([input_df]):
+    #     return get_spark_empty_df()
+    #
+    # input_df = data_non_availability_and_missing_check(df=input_df, grouping="weekly", par_col="partition_date",
+    #                                                    target_table_name="l1_product_active_customer_promotion_features_daily")
+    #
+    # if check_empty_dfs([input_df]):
+    #     return get_spark_empty_df()
+    #
+    # ################################# End Implementing Data availability checks ###############################
 
     return input_df
 
@@ -251,3 +261,85 @@ def dac_product_fbb_a_customer_promotion_current_for_daily(input_df) -> DataFram
     ################################# End Implementing Data availability checks ###############################
 
     return input_df
+
+
+def union_with_prepaid(prepaid_main_df: DataFrame, postpaid_df: DataFrame) -> DataFrame:
+
+    prepaid_main_new_df = prepaid_main_df.select(
+        F.lit("pre-paid").alias("promo_charge_type"),
+        F.lit("main").alias("promo_class"),
+        F.lit(None).alias("previous_main_promotion_id"),
+        F.when(
+            (F.col("request_status") == "C") & (
+                F.coalesce(F.col("trans_type").cast(StringType()), F.lit("N")).isin(["N", "F"])),
+            F.col("effective_date")
+        ).otherwise(F.lit(None)).alias("previous_promo_end_dttm"),
+        F.when(
+            (F.col("request_status") == "C") & (
+                F.coalesce(F.col("trans_type").cast(StringType()), F.lit("N")).isin(["N", "F"])),
+            F.col("package_id")
+        ).otherwise(F.lit(None)).alias("promo_cd"),
+        F.lit(None).alias("promo_user_cat_cd"),
+        F.col("access_method_num").alias("mobile_num"),
+        F.lit(None).alias("crm_subscription_id"),   # Temporary - will be replaced from customer profile table
+        F.col("expire_date").alias("promo_end_dttm"),
+        F.col("expire_date").alias("promo_status_end_dttm"),
+        F.lit(None).alias("promo_package_price"),   # Temporary - will be replaced from product promotion table
+        F.lit(None).alias("promo_name"),            # Temporary - will be replaced from product promotion table
+        F.col("partition_date").cast(StringType()).alias("partition_date"),
+        F.lit("Recurring").alias("promo_price_type"),
+        F.col("effective_date").alias("promo_start_dttm"),
+        # F.when(
+        #     F.to_date(F.col("expire_date").cast(StringType()), 'yyyy-MM-dd') >
+        #     F.to_date(F.col("expire_date").cast(StringType()), 'yyyy-MM-dd')
+        # ),
+        F.lit("active").alias("promo_status"),
+    )
+
+    # prepaid_main_df = prepaid_main_df.select(
+    #     F.lit("pre-paid").alias("promo_charge_type"),
+    #     F.lit("main").alias("promo_class"),
+    #     F.when(
+    #         (F.col("request_status") == "C") & (F.coalesce(F.col("trans_type"), "N").isin(["N", "F"])),
+    #         F.col("old_package_id")
+    #     ).otherwise(F.lit(None)).alias("old_package_id"),
+    #     F.when(
+    #         (F.col("request_status") == "C") & (F.coalesce(F.col("trans_type"), "N").isin(["N", "F"])),
+    #         F.col("effective_date")
+    #     ).otherwise(F.lit(None)).alias("effective_date"),
+    #     F.when(
+    #         (F.col("request_status") == "C") & (F.coalesce(F.col("trans_type"), "N").isin(["N", "F"])),
+    #         F.col("package_id")
+    #     ).otherwise(F.lit(None)).alias("package_id"),
+    #     F.lit(None).alias("promo_user_cat_cd"),
+    #     F.col("access_method_num").alias("mobile_num"),
+    #     F.col("expire_date").alias("promo_end_dttm"),
+    #     F.col("expire_date").alias("promo_status_end_dttm"),
+    #     F.col("partition_date"),
+    #     F.lit("recurring").alias("promo_price_type"),
+    #     F.col("effective_date").alias("promo_start_dttm")
+    # )
+
+    postpaid_new_df = postpaid_df.select(
+        "promo_charge_type",
+        "promo_class",
+        "previous_main_promotion_id",
+        "previous_promo_end_dttm",
+        "promo_cd",
+        "promo_user_cat_cd",
+        "mobile_num",
+        "crm_subscription_id",
+        "promo_end_dttm",
+        "promo_status_end_dttm",
+        "promo_package_price",
+        "promo_name",
+        F.col("partition_date").cast(StringType()).alias("partition_date"),
+        "promo_price_type",
+        "promo_start_dttm",
+        "promo_status"
+    )
+
+    print(prepaid_main_new_df.columns)
+    print(postpaid_new_df.columns)
+
+    return prepaid_main_new_df.unionByName(postpaid_new_df)
