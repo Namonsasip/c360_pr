@@ -20,13 +20,13 @@ l1_usage_outgoing_call_relation_sum_daily:
 
     usg_outgoing_relative_favourite_numbers_local_number_of_calls: "sum(case when service_type IN ('VOICE') AND favourite_flag = 'Y' AND idd_flag = 'N' THEN total_successful_call else 0 end) / sum(case when service_type IN ('VOICE') AND idd_flag = 'N' THEN total_successful_call else 0 end)"
 
-    usg_outgoing_favourite_numbers_sms_number: "sum(case when service_type IN ('SMS') AND favourite_flag = 'Y' THEN total_durations else 0 end)"
+    usg_outgoing_favourite_numbers_sms_number: "sum(case when service_type IN ('SMS') AND favourite_flag = 'Y' THEN total_successful_call else 0 end)"
 
-    usg_outgoing_favourite_numbers_local_sms_number: "sum(case when service_type IN ('SMS') AND favourite_flag = 'Y' AND idd_flag = 'N' THEN total_durations else 0 end)"
+    usg_outgoing_favourite_numbers_local_sms_number: "sum(case when service_type IN ('SMS') AND favourite_flag = 'Y' AND idd_flag = 'N' THEN total_successful_call else 0 end)"
 
-    usg_outgoing_relative_favourite_numbers_sms_number: "sum(case when service_type IN ('SMS') AND favourite_flag = 'Y' THEN total_durations else 0 end) / sum(case when service_type IN ('SMS')  THEN total_durations else 0 end)"
+    usg_outgoing_relative_favourite_numbers_sms_number: "sum(case when service_type IN ('SMS') AND favourite_flag = 'Y' THEN total_successful_call else 0 end) / sum(case when service_type IN ('SMS')  THEN total_successful_call else 0 end)"
 
-    usg_outgoing_relative_favourite_numbers_local_sms_number: "sum(case when service_type IN ('SMS') AND favourite_flag = 'Y' AND idd_flag = 'N' THEN total_durations else 0 end) / sum(case when service_type IN ('SMS') AND idd_flag = 'N' THEN total_durations else 0 end)"
+    usg_outgoing_relative_favourite_numbers_local_sms_number: "sum(case when service_type IN ('SMS') AND favourite_flag = 'Y' AND idd_flag = 'N' THEN total_successful_call else 0 end) / sum(case when service_type IN ('SMS') AND idd_flag = 'N' THEN total_successful_call else 0 end)"
 
     usg_outgoing_total_call_duration: "sum(case when service_type IN ('VOICE') THEN total_durations else 0 end)"
 
@@ -61,7 +61,7 @@ l1_usage_outgoing_call_relation_sum_daily:
 
     usg_outgoing_local_ais_sms: "sum(case when service_type IN ('SMS')
                                      AND called_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')
-                                     AND idd_flag = 'N' THEN total_durations else 0 end)"
+                                     AND idd_flag = 'N' THEN total_successful_call else 0 end)"
 
     usg_outgoing_number_calls_upto_5_mins: "sum(case when service_type IN ('VOICE')
                                                 AND total_durations <= 300 THEN total_successful_call else 0 end)"
@@ -294,7 +294,7 @@ l1_usage_outgoing_call_relation_sum_daily:
                                          AND called_network_type = 'DTAC' THEN total_successful_call else 0 end)"
 
     usg_outgoing_true_number_sms: "sum(case when service_type IN ('SMS')
-                                         AND called_network_type = 'TRUE' THEN total_durations else 0 end)"
+                                         AND called_network_type = 'TRUE' THEN total_successful_call else 0 end)"
   granularity: "caller_no, day_id"
   event_date_column: "date(day_id)"
 
@@ -319,13 +319,13 @@ l1_usage_incoming_call_relation_sum_daily:
 
     usg_incoming_relative_favourite_numbers_local_number_of_calls: "sum(case when service_type IN ('VOICE') AND favourite_flag = 'Y' AND idd_flag = 'N' THEN total_successful_call else 0 end) / sum(case when service_type IN ('VOICE') AND idd_flag = 'N' THEN total_successful_call else 0 end)"
 
-    usg_incoming_favourite_numbers_sms_number: "sum(case when service_type IN ('SMS') AND favourite_flag = 'Y' THEN total_durations else 0 end)"
+    usg_incoming_favourite_numbers_sms_number: "sum(case when service_type IN ('SMS') AND favourite_flag = 'Y' THEN total_successful_call else 0 end)"
 
-    usg_incoming_favourite_numbers_local_sms_number: "sum(case when service_type IN ('SMS') AND favourite_flag = 'Y' AND idd_flag = 'N' THEN total_durations else 0 end)"
+    usg_incoming_favourite_numbers_local_sms_number: "sum(case when service_type IN ('SMS') AND favourite_flag = 'Y' AND idd_flag = 'N' THEN total_successful_call else 0 end)"
 
-    usg_incoming_relative_favourite_numbers_sms_number: "sum(case when service_type IN ('SMS') AND favourite_flag = 'Y' THEN total_durations else 0 end) / sum(case when service_type IN ('SMS')  THEN total_durations else 0 end)"
+    usg_incoming_relative_favourite_numbers_sms_number: "sum(case when service_type IN ('SMS') AND favourite_flag = 'Y' THEN total_successful_call else 0 end) / sum(case when service_type IN ('SMS')  THEN total_successful_call else 0 end)"
 
-    usg_incoming_relative_favourite_numbers_local_sms_number: "sum(case when service_type IN ('SMS') AND favourite_flag = 'Y' AND idd_flag = 'N' THEN total_durations else 0 end) / sum(case when service_type IN ('SMS') AND idd_flag = 'N' THEN total_durations else 0 end)"
+    usg_incoming_relative_favourite_numbers_local_sms_number: "sum(case when service_type IN ('SMS') AND favourite_flag = 'Y' AND idd_flag = 'N' THEN total_successful_call else 0 end) / sum(case when service_type IN ('SMS') AND idd_flag = 'N' THEN total_successful_call else 0 end)"
 
     usg_incoming_total_call_duration: "sum(case when service_type IN ('VOICE') THEN total_durations else 0 end)"
 
@@ -354,14 +354,14 @@ l1_usage_incoming_call_relation_sum_daily:
                                                 AND caller_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')
                                                 THEN total_successful_call else 0 end)"
 
-    usg_incoming_total_sms: "sum(case when service_type IN ('SMS') THEN total_durations else 0 end)"
+    usg_incoming_total_sms: "sum(case when service_type IN ('SMS') THEN total_successful_call else 0 end)"
 
     usg_incoming_local_sms: "sum(case when service_type IN ('SMS')
-                                 AND idd_flag = 'N' THEN total_durations else 0 end)"
+                                 AND idd_flag = 'N' THEN total_successful_call else 0 end)"
 
     usg_incoming_local_ais_sms: "sum(case when service_type IN ('SMS')
                                      AND caller_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')
-                                     AND idd_flag = 'N' THEN total_durations else 0 end)"
+                                     AND idd_flag = 'N' THEN total_successful_call else 0 end)"
 
     usg_incoming_number_calls_upto_5_mins: "sum(case when service_type IN ('VOICE')
                                                 AND total_durations <= 300 THEN total_successful_call else 0 end)"
@@ -593,7 +593,7 @@ l1_usage_incoming_call_relation_sum_daily:
                                          AND caller_network_type = 'DTAC' THEN total_successful_call else 0 end)"
 
     usg_incoming_true_number_sms: "sum(case when service_type IN ('SMS')
-                                         AND caller_network_type = 'TRUE' THEN total_durations else 0 end)"
+                                         AND caller_network_type = 'TRUE' THEN total_successful_call else 0 end)"
 
   granularity: "called_no, day_id"
   event_date_column: "date(day_id)"
@@ -962,11 +962,11 @@ l1_usage_outgoing_call_relation_sum_ir_daily:
     usg_outgoing_favourite_numbers_roaming_number_of_calls: "sum(case when service_type IN ('VOICE') AND favourite_flag = 'Y' THEN total_successful_call else 0 end)"
     usg_outgoing_relative_numbers_roaming_call_duration: "sum(case when service_type IN ('VOICE') AND favourite_flag = 'Y' THEN total_durations else 0 end) / sum(case when service_type IN ('VOICE') THEN total_durations else 0 end)"
     usg_outgoing_relative_numbers_roaming_number_of_calls: "sum(case when service_type IN ('VOICE') AND favourite_flag = 'Y' THEN total_successful_call else 0 end) / sum(case when service_type IN ('VOICE') THEN total_successful_call else 0 end)"
-    usg_outgoing_favourite_numbers_roaming_sms_number: "sum(case when service_type IN ('SMS', 'IR_SMS') AND favourite_flag = 'Y' THEN total_durations else 0 end)"
-    usg_outgoing_relative_favourite_numbers_roaming_sms_number: "sum(case when service_type IN ('SMS', 'IR_SMS') AND favourite_flag = 'Y' THEN total_durations else 0 end) / sum(case when service_type IN ('SMS', 'IR_SMS') THEN total_durations else 0 end)"
+    usg_outgoing_favourite_numbers_roaming_sms_number: "sum(case when service_type IN ('SMS', 'IR_SMS') AND favourite_flag = 'Y' THEN total_successful_call else 0 end)"
+    usg_outgoing_relative_favourite_numbers_roaming_sms_number: "sum(case when service_type IN ('SMS', 'IR_SMS') AND favourite_flag = 'Y' THEN total_successful_call else 0 end) / sum(case when service_type IN ('SMS', 'IR_SMS') THEN total_successful_call else 0 end)"
     usg_outgoing_roaming_call_duration: "sum(case when service_type IN ('VOICE') THEN total_durations else 0 end)"
     usg_outgoing_roaming_number_calls: "sum(case when service_type IN ('VOICE') THEN total_successful_call else 0 end)"
-    usg_outgoing_roaming_total_sms: "sum(case when service_type IN ('SMS', 'IR_SMS') THEN total_durations else 0 end)"
+    usg_outgoing_roaming_total_sms: "sum(case when service_type IN ('SMS', 'IR_SMS') THEN total_successful_call else 0 end)"
     usg_outgoing_roaming_last_sms_date: "max(case when service_type IN ('SMS', 'IR_SMS') THEN date(day_id) else null end)"
     usg_last_sms_date: "max(case when service_type IN ('SMS', 'IR_SMS') THEN date(day_id) else null end)"
     usg_last_action_date: "max(date(day_id))"
@@ -984,11 +984,11 @@ l1_usage_incoming_call_relation_sum_ir_daily:
     usg_incoming_favourite_numbers_roaming_number_of_calls: "sum(case when service_type IN ('VOICE') AND favourite_flag = 'Y' THEN total_successful_call else 0 end)"
     usg_incoming_relative_numbers_roaming_call_duration: "sum(case when service_type IN ('VOICE') AND favourite_flag = 'Y' THEN total_durations else 0 end) / sum(case when service_type IN ('VOICE') THEN total_durations else 0 end)"
     usg_incoming_relative_numbers_roaming_number_of_calls: "sum(case when service_type IN ('VOICE') AND favourite_flag = 'Y' THEN total_successful_call else 0 end) / sum(case when service_type IN ('VOICE') THEN total_successful_call else 0 end)"
-    usg_incoming_favourite_numbers_roaming_sms_number: "sum(case when service_type IN ('SMS', 'IR_SMS') AND favourite_flag = 'Y' THEN total_durations else 0 end)"
-    usg_incoming_relative_favourite_numbers_roaming_sms_number: "sum(case when service_type IN ('SMS', 'IR_SMS') AND favourite_flag = 'Y' THEN total_durations else 0 end) / sum(case when service_type IN ('SMS', 'IR_SMS') THEN total_durations else 0 end)"
+    usg_incoming_favourite_numbers_roaming_sms_number: "sum(case when service_type IN ('SMS', 'IR_SMS') AND favourite_flag = 'Y' THEN total_successful_call else 0 end)"
+    usg_incoming_relative_favourite_numbers_roaming_sms_number: "sum(case when service_type IN ('SMS', 'IR_SMS') AND favourite_flag = 'Y' THEN total_successful_call else 0 end) / sum(case when service_type IN ('SMS', 'IR_SMS') THEN total_successful_call else 0 end)"
     usg_incoming_roaming_call_duration: "sum(case when service_type IN ('VOICE') THEN total_durations else 0 end)"
     usg_incoming_roaming_number_calls: "sum(case when service_type IN ('VOICE') THEN total_successful_call else 0 end)"
-    usg_incoming_roaming_total_sms: "sum(case when service_type IN ('SMS', 'IR_SMS') THEN total_durations else 0 end)"
+    usg_incoming_roaming_total_sms: "sum(case when service_type IN ('SMS', 'IR_SMS') THEN total_successful_call else 0 end)"
     usg_incoming_roaming_last_sms_date: "max(case when service_type IN ('SMS', 'IR_SMS') THEN date(day_id) else null end)"
     usg_last_sms_date: "max(case when service_type IN ('SMS', 'IR_SMS') THEN date(day_id) else null end)"
     usg_last_action_date: "max(date(day_id))"
