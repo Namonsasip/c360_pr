@@ -693,21 +693,21 @@ def build_network_user_cqi(
     #     return get_spark_empty_df()
     # ################################# End Implementing Data availability checks ###############################
 
-    # TODO Delete me - start
-    msisdn_eventdate_df = l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi.select(
-        "msisdn",
-        f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd').alias(
-            "event_date_temp")).distinct()
-
-    l1_customer_profile_union_daily_feature_for_l1_network_user_cqi = l1_customer_profile_union_daily_feature_for_l1_network_user_cqi.join(
-        msisdn_eventdate_df,
-        (
-                    l1_customer_profile_union_daily_feature_for_l1_network_user_cqi.access_method_num == msisdn_eventdate_df.msisdn) &
-        (
-                    l1_customer_profile_union_daily_feature_for_l1_network_user_cqi.event_partition_date == msisdn_eventdate_df.event_date_temp),
-        "inner"
-    )
-    # TODO Delete me - end
+    # # TODO Delete me - start
+    # msisdn_eventdate_df = l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi.select(
+    #     "msisdn",
+    #     f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd').alias(
+    #         "event_date_temp")).distinct()
+    # 
+    # l1_customer_profile_union_daily_feature_for_l1_network_user_cqi = l1_customer_profile_union_daily_feature_for_l1_network_user_cqi.join(
+    #     msisdn_eventdate_df,
+    #     (
+    #                 l1_customer_profile_union_daily_feature_for_l1_network_user_cqi.access_method_num == msisdn_eventdate_df.msisdn) &
+    #     (
+    #                 l1_customer_profile_union_daily_feature_for_l1_network_user_cqi.event_partition_date == msisdn_eventdate_df.event_date_temp),
+    #     "inner"
+    # )
+    # # TODO Delete me - end
 
     return_df = l1_massive_processing(l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi,
                                       l1_network_user_cqi,
@@ -748,19 +748,19 @@ def build_network_file_transfer_cqi(
     #     return get_spark_empty_df()
     # ################################# End Implementing Data availability checks ###############################
 
-    # TODO Delete me - start
-    msisdn_eventdate_df = l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi.select(
-        "msisdn",
-        f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd').alias(
-            "event_date_temp")).distinct()
-
-    l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi = l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi.join(
-        msisdn_eventdate_df,
-        (l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi.access_method_num == msisdn_eventdate_df.msisdn) &
-        (l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi.event_partition_date == msisdn_eventdate_df.event_date_temp),
-        "inner"
-    )
-    # TODO Delete me - end
+    # # TODO Delete me - start
+    # msisdn_eventdate_df = l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi.select(
+    #     "msisdn",
+    #     f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd').alias(
+    #         "event_date_temp")).distinct()
+    #
+    # l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi = l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi.join(
+    #     msisdn_eventdate_df,
+    #     (l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi.access_method_num == msisdn_eventdate_df.msisdn) &
+    #     (l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi.event_partition_date == msisdn_eventdate_df.event_date_temp),
+    #     "inner"
+    # )
+    # # TODO Delete me - end
 
     return_df = l1_massive_processing(l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi,
                                       l1_network_file_transfer_cqi,
