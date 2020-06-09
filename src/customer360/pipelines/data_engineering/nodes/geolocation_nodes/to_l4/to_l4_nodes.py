@@ -36,10 +36,10 @@ def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
             event_partition_date, start_of_month
         from geo_cust_cell_visit_time
         where duration <> 0
-        and (hour_in >= 18)
+        and ((hour_in >= 18)
         or (hour_in < 18 and hour_out > 18)
         or (hour_in < 6 and hour_out > 6)
-        or (hour_out <=6)
+        or (hour_out <=6))
     """)
     geo_cust_cell_visit_time_home.cache()
 
@@ -49,8 +49,8 @@ def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
         select 
             a.imsi
             ,a.location_id, a.latitude, a.longitude
-            ,sum(a.duration) as duration
             ,a.event_partition_date, a.start_of_month
+            ,sum(a.duration) as duration
         from (
             geo_cust_cell_visit_time_home
         ) a
@@ -62,7 +62,7 @@ def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
     # Check DataFrame from SQL query statement
     print("Start for check the result from sql query statement of HOME")
     df_home_daily.count()
-    df_home_daily.show()
+    df_home_daily.show(10)
 
     geo_cust_cell_visit_time_work = spark.sql("""
             select imsi, time_in, time_out, location_id, latitude, longitude,
@@ -85,8 +85,8 @@ def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
     df_work_daily = spark.sql("""
         select a.imsi
             ,a.location_id, a.latitude, a.longitude
-            ,sum(a.duration) as duration
             ,a.event_partition_date, a.start_of_month
+            ,sum(a.duration) as duration
         from (
         geo_cust_cell_visit_time_work
         ) a
@@ -99,7 +99,7 @@ def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
     # Check DataFrame from SQL query statement
     print("Start for check result from sql query statement of WORK")
     df_work_daily.count()
-    df_work_daily.show()
+    df_work_daily.show(10)
 
     # Add column Weekend and Weekday
     home_duration_dayily_with_weektype = df_home_daily.withColumn("week_type", F.when((F.dayofweek('event_partition_date') == 1) | (F.dayofweek('event_partition_date') == 7), 'weekend') \
@@ -158,10 +158,16 @@ def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
     df_home_location.cache()
     spark.catalog.dropTempView("df_home_combine_week_monthly_sum_last_3_day")
 
-    w_work = Window().partitionBy(F.col('imsi'), F.col('location_id')).orderBy(F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
-    df_home_combine_week_monthly_sum_last_3_day = df_home_combine_week_monthly.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd")).withColumn("Sum", F.sum("duration").over(w_work))
+    # Check DataFrame from SQL query statement
+    print("Start for check result from sql query statement of HOME")
+    df_home_location.count()
+    df_home_location.show(10)
 
-    df_work_monthly.createOrReplaceTempView('df_work_monthly')
+
+    w_work = Window().partitionBy(F.col('imsi'), F.col('location_id')).orderBy(F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
+    df_home_combine_week_monthly_sum_last_3_day = df_work_monthly.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd")).withColumn("Sum", F.sum("duration").over(w_work))
+
+    df_home_combine_week_monthly_sum_last_3_day.createOrReplaceTempView('df_home_combine_week_monthly_sum_last_3_day')
     df_work_location = spark.sql("""
             select
                 a.imsi,
@@ -173,15 +179,20 @@ def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
               select imsi,
                 start_of_month,
                 max(Sum) as duration
-              from df_work_monthly
+              from df_home_combine_week_monthly_sum_last_3_day
               group by 1,2
             ) a
-            left join df_work_monthly b
+            left join df_home_combine_week_monthly_sum_last_3_day b
             on a.imsi = b.imsi and a.start_of_month = b.start_of_month and a.sum = b.sum
             group by 1,2,3,4,5
         """)
     df_work_location.cache()
     spark.catalog.dropTempView("df_work_monthly")
+
+    # Check DataFrame from SQL query statement
+    print("Start for check result from sql query statement of WORK")
+    df_work_location.count()
+    df_work_location.show(10)
 
     df_home_location.createOrReplaceTempView('df_home_location')
     df_work_location.createOrReplaceTempView('df_work_location')
@@ -213,7 +224,12 @@ def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
     # Check DataFrame from SQL query statement
     print("Start for check the result from sql query statement FINAL")
     df_combine_home_work.count()
-    df_combine_home_work.show()
+    df_combine_home_work.show(10)
 
     df = node_from_config(df_combine_home_work, sql)
     return df
+
+def l4_geo_population_aroud_home(geo_home_work_loation_id, cell_masterplan,sql):
+    geo_home_work_loation_id.cache()
+    cell_masterplan.cache()
+    return None
