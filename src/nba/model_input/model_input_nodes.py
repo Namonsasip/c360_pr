@@ -107,7 +107,9 @@ def node_l5_nba_master_table_spine(
     spark = get_spark_session()
     spark.conf.set("spark.sql.shuffle.partitions", 2000)
 
-    l0_campaign_tracking_contact_list_pre = l0_campaign_tracking_contact_list_pre.filter(
+    l0_campaign_tracking_contact_list_pre = l0_campaign_tracking_contact_list_pre.withColumn(
+        "contact_date", F.col("contact_date").cast(DateType())
+    ).filter(
         F.col("contact_date").between(date_min, date_max)
     )
 
@@ -144,37 +146,8 @@ def node_l5_nba_master_table_spine(
         .otherwise(None),
     )
 
-    # Add different timeframe columns to join with features
-    # Need we assume a lag of min_feature_days_lag to create the features and
-    # also need to subtract a month because start_of_month references the first day of
-    # the month for which the feature was calculated
-    df_spine = df_spine.withColumn(
-        "start_of_month",
-        F.add_months(
-            F.date_trunc(
-                "month", F.date_sub(F.col("contact_date"), days=min_feature_days_lag),
-            ),
-            months=-1,
-        ),
-    )
-    df_spine = df_spine.withColumn("partition_month", F.col("start_of_month"))
-
-    # start_of_week references the first day of the week for which the feature was
-    # calculated so we subtract 7 days to not take future data
-    df_spine = df_spine.withColumn(
-        "start_of_week",
-        F.date_sub(
-            F.date_trunc(
-                "week", F.date_sub(F.col("contact_date"), days=min_feature_days_lag)
-            ),
-            days=7,
-        ),
-    )
-
-    # event_partition_date references the day for which the feature was calculated
-    df_spine = df_spine.withColumn(
-        "event_partition_date",
-        F.date_sub(F.col("contact_date"), days=min_feature_days_lag),
+    df_spine = add_c60_dates_columns(
+        df_spine, date_column="contact_date", min_feature_days_lag=min_feature_days_lag
     )
 
     # Impute ARPU uplift columns as NA means that subscriber had 0 ARPU
@@ -268,15 +241,31 @@ def node_l5_nba_master_table_spine(
         & (F.substring("campaign_child_code", 1, 4) != "Pull")
     )
 
-    df_spine = df_spine.withColumn(
+    df_spine = add_model_group_column(
+        df_spine,
+        nba_model_group_column_non_prioritized,
+        nba_model_group_column_prioritized,
+        prioritized_campaign_child_codes,
+    )
+
+    return df_spine
+
+
+def add_model_group_column(
+    df,
+    nba_model_group_column_non_prioritized,
+    nba_model_group_column_prioritized,
+    prioritized_campaign_child_codes,
+):
+
+    df = df.withColumn(
         "campaign_prioritized",
         F.when(
             F.col("campaign_child_code").isin(prioritized_campaign_child_codes),
             F.lit(1),
         ).otherwise(F.lit(0)),
     )
-
-    df_spine = df_spine.withColumn(
+    df = df.withColumn(
         "model_group",
         F.when(
             F.col("campaign_prioritized") == 1,
@@ -299,9 +288,63 @@ def node_l5_nba_master_table_spine(
 
     # Fill NAs in group column as that can lead to problems later when converting to
     # pandas and training models
-    df_spine = df_spine.fillna("NULL", subset="model_group")
+    df = df.fillna("NULL", subset="model_group")
 
-    return df_spine
+    return df
+
+
+def add_c60_dates_columns(
+    df: DataFrame, date_column: str, min_feature_days_lag: int
+) -> DataFrame:
+
+    """
+    Adds necessary time columns to join with C360 features
+    Args:
+        df:
+        date_column:
+        min_feature_days_lag:
+
+    Returns:
+
+    """
+    # Add different timeframe columns to join with features
+    # Need we assume a lag of min_feature_days_lag to create the features and
+    # also need to subtract a month because start_of_month references the first day of
+    # the month for which the feature was calculated
+    df = df.withColumn(
+        "start_of_month",
+        F.add_months(
+            F.date_trunc(
+                "month", F.date_sub(F.col(date_column), days=min_feature_days_lag),
+            ),
+            months=-1,
+        ),
+    )
+    df = df.withColumn("partition_month", F.col("start_of_month"))
+
+    # start_of_week references the first day of the week for which the feature was
+    # calculated so we subtract 7 days to not take future data
+    df = df.withColumn(
+        "start_of_week",
+        F.date_sub(
+            F.date_trunc(
+                "week", F.date_sub(F.col(date_column), days=min_feature_days_lag)
+            ),
+            days=7,
+        ),
+    )
+
+    # event_partition_date references the day for which the feature was calculated
+    df = df.withColumn(
+        "event_partition_date",
+        F.date_sub(F.col(date_column), days=min_feature_days_lag),
+    )
+
+    # Add day of week and month as features
+    df = df.withColumn("day_of_week", F.dayofweek(date_column))
+    df = df.withColumn("day_of_month", F.dayofmonth(date_column))
+
+    return df
 
 
 def node_l5_nba_master_table(

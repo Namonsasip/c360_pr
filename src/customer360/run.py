@@ -38,7 +38,7 @@ from pathlib import Path
 from typing import Any, Dict, Union
 from warnings import warn
 
-import findspark
+import findspark, datetime
 from kedro.config import MissingConfigException
 from kedro.context import KedroContext, load_context
 from kedro.io import DataCatalog
@@ -59,6 +59,11 @@ except ValueError as err:
 
 conf = os.getenv("CONF", None)
 running_environment = os.getenv("RUNNING_ENVIRONMENT", None)
+pipeline_to_run = os.getenv("PIPELINE_TO_RUN", None)
+
+LOG_FILE_NAME = str(datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"))
+if pipeline_to_run:
+    LOG_FILE_NAME = "{}_{}".format(pipeline_to_run, str(datetime.datetime.now().strftime("%Y_%m_%d_%H_%M")))
 
 
 class ProjectContext(KedroContext):
@@ -70,6 +75,20 @@ class ProjectContext(KedroContext):
 
     def _get_pipelines(self) -> Dict[str, Pipeline]:
         return create_pipelines()
+
+    def _setup_logging(self) -> None:
+        """Register logging specified in logging directory."""
+
+        conf_logging = self.config_loader.get("logging*", "logging*/**")
+        info_file_path = conf_logging['handlers']['info_file_handler']['filename']
+        info_file_path_new = info_file_path.replace(".", "_{}.".format(LOG_FILE_NAME))
+
+        error_file_path = conf_logging['handlers']['error_file_handler']['filename']
+        error_file_path_new = error_file_path.replace(".", "_{}.".format(LOG_FILE_NAME))
+
+        conf_logging['handlers']['info_file_handler']['filename'] = info_file_path_new
+        conf_logging['handlers']['error_file_handler']['filename'] = error_file_path_new
+        logging.config.dictConfig(conf_logging)
 
     @property
     def params(self) -> Dict[str, Any]:
@@ -347,6 +366,8 @@ class DataQualityProjectContext(ProjectContext):
             conf_catalog, conf_creds, save_version, journal, load_versions
         )
         catalog.add_feed_dict(self._get_feed_dict())
+
+        catalog = auto_path_mapping_project_context(catalog, running_environment)
         return catalog
 
 
