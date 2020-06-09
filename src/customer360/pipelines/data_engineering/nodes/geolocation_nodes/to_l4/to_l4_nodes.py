@@ -39,6 +39,9 @@ def l4_geo_top_visit_exclude_homework(sum_duration,homework,sql):
 
 def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
 
+    # Filter 3 4 5
+    geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20200301')
+
     # Add 2 columns: event_partition_date, start_of_month
     geo_cust_cell_visit_time.cache()
     geo_cust_cell_visit_time = geo_cust_cell_visit_time.withColumn("event_partition_date", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))
