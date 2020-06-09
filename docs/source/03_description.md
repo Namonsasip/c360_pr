@@ -53,46 +53,46 @@ The code for this section can be found at `src/cvm/treatments`.
 Example treatment and possible fields.
 
 ```yaml
-   treatment_name1:
-      treatment_size: 15000
-      order_policy: "subscriber_tenure + churn5_pred"
-        rules:
-          rule1:
-            campaign_code: campaign_code1
-            limit_per_code: 1000
-            order_policy: "churn60_pred + churn5_pred"
-            variant: 'A'
-            conditions:
-              - "ard_microsegment == 'positive_arpu_m3'"
-              - "sum_rev_arpu_total_revenue_monthly_last_month >= 50"
-              - "subscriber_tenure >= 12"
-         rule2:
-           campaign_code: campaign_code2
-           limit_per_code: 1000
-           order_policy: "churn60_pred + churn5_pred"
-           variant: 'B'
-           conditions:
-             - "ard_microsegment == 'positive_arpu_m3'"
-             - "sum_rev_arpu_total_revenue_monthly_last_month >= 50"
-             - "subscriber_tenure <= 12"
-         rule3:
-             campaign_code: campaign_code3
-             limit_per_code: 3000
-             order_policy: "churn60_pred + churn5_pred"
-             conditions:
-               - "ard_microsegment == 'positive_arpu_m3'"
-    treatment_name2:
-      treatment_size: 13000
-      order_policy: "dilution1_pred + churn5_pred"
-      rules:
-        rule4:
-          campaign_code: campaign_code4
-          limit_per_code: 3000
-          order_policy: "churn60_pred"
-          conditions:
-            - "ard_microsegment == 'positive_arpu_m4'"
-            - "sum_rev_arpu_total_revenue_monthly_last_month >= 50"
-            - "subscriber_tenure >= 12"
+treatment_name1:
+  treatment_size: 15000
+  order_policy: "subscriber_tenure + churn5_pred"
+    rules:
+      rule1:
+        campaign_code: campaign_code1
+        limit_per_code: 1000
+        order_policy: "churn60_pred + churn5_pred"
+        variant: 'A'
+        conditions:
+          - "ard_microsegment == 'positive_arpu_m3'"
+          - "sum_rev_arpu_total_revenue_monthly_last_month >= 50"
+          - "subscriber_tenure >= 12"
+     rule2:
+       campaign_code: campaign_code2
+       limit_per_code: 1000
+       order_policy: "churn60_pred + churn5_pred"
+       variant: 'B'
+       conditions:
+         - "ard_microsegment == 'positive_arpu_m3'"
+         - "sum_rev_arpu_total_revenue_monthly_last_month >= 50"
+         - "subscriber_tenure <= 12"
+     rule3:
+         campaign_code: campaign_code3
+         limit_per_code: 3000
+         order_policy: "churn60_pred + churn5_pred"
+         conditions:
+           - "ard_microsegment == 'positive_arpu_m3'"
+treatment_name2:
+  treatment_size: 13000
+  order_policy: "dilution1_pred + churn5_pred"
+  rules:
+    rule4:
+      campaign_code: campaign_code4
+      limit_per_code: 3000
+      order_policy: "churn60_pred"
+      conditions:
+        - "ard_microsegment == 'positive_arpu_m4'"
+        - "sum_rev_arpu_total_revenue_monthly_last_month >= 50"
+        - "subscriber_tenure >= 12"
 ```
 
 Treatments are applied according to order in this file starting form the top treatment going down the list. If user
