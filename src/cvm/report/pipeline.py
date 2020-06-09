@@ -51,7 +51,7 @@ def sample_report_inputs() -> Pipeline:
     nodes_list = [
         node(
             create_sample_dataset,
-            [dataset_name + "_sub_ids_mapped", "parameters", "params:" + sample_type],
+            [dataset_name, "parameters", "params:" + sample_type],
             dataset_name + "_" + sample_type,
             name="sample_" + dataset_name + "_" + sample_type,
         )
@@ -67,7 +67,7 @@ def prepare_users_report() -> Pipeline:
         [
             node(
                 prepare_users,
-                ["cvm_prepaid_customer_groups_sub_ids_mapped", "parameters"],
+                ["cvm_prepaid_customer_groups", "parameters"],
                 "users_report",
                 name="create_users_report",
             )

@@ -8,10 +8,6 @@ cvm_users_list_scoring:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_cvm_users_list_scoring/
 
-cvm_users_list_sub_ids_mapped_scoring:
-  <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_cvm_users_list_sub_ids_mapped_scoring/
-
 # input samples
 l3_customer_profile_include_1mo_non_active_scoring:
   <<: *spark_parquet

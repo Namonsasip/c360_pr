@@ -57,12 +57,12 @@ from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.
 )
 from cvm.data_prep.pipeline import training_data_prepare, scoring_data_prepare, \
     extract_features, rfe_only
-from cvm.sample_inputs.pipeline import create_users_from_tg, create_users_from_active
+from cvm.sample_inputs.pipeline import create_users_from_tg, create_users_from_active, \
+    create_sub_id_mapping_pipeline
 from cvm.modelling.pipeline import train_model, score_model
 from cvm.preprocessing.pipeline import preprocessing_fit, preprocessing_transform
 from cvm.report.pipeline import prepare_user_microsegments, create_kpis, run_report
-from cvm.temp.pipeline import create_sub_id_mapping_pipeline, \
-    map_sub_ids_of_input_datasets
+from cvm.temp.pipeline import map_sub_ids_of_input_datasets
 from cvm.treatments.pipeline import generate_treatments
 from nba.model_input.model_input_pipeline import create_nba_model_input_pipeline
 from nba.models.models_pipeline import create_nba_models_pipeline

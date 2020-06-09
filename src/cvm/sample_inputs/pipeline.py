@@ -29,6 +29,7 @@ import re
 
 from cvm.sample_inputs.nodes import (
     create_sample_dataset,
+    create_sub_id_mapping,
     create_users_from_active_users,
     create_users_from_cgtg,
 )
@@ -49,7 +50,7 @@ def create_users_from_tg(sample_type: str) -> Pipeline:
             node(
                 create_users_from_cgtg,
                 [
-                    "cvm_prepaid_customer_groups_sub_ids_mapped",
+                    "cvm_prepaid_customer_groups",
                     "params:{}".format(sample_type),
                     "parameters",
                 ],
@@ -73,7 +74,7 @@ def create_users_from_active(sample_type: str) -> Pipeline:
             node(
                 create_sample_dataset,
                 [
-                    "l3_customer_profile_include_1mo_non_active_sub_ids_mapped",
+                    "l3_customer_profile_include_1mo_non_active",
                     "parameters",
                     "params:" + sample_type,
                 ],
@@ -115,11 +116,7 @@ def sample_inputs(sample_type: str) -> Pipeline:
     nodes_list = [
         node(
             create_sample_dataset,
-            inputs=[
-                dataset_name + "_sub_ids_mapped",  # temp fix
-                "parameters",
-                "params:" + sample_type,
-            ],
+            inputs=[dataset_name, "parameters", "params:" + sample_type],
             # when not incremental version of dataset is used
             outputs=re.sub("_no_inc", "", dataset_name) + "_" + sample_type,
             name="sample_" + dataset_name + "_" + sample_type,
@@ -128,3 +125,17 @@ def sample_inputs(sample_type: str) -> Pipeline:
     ]
 
     return Pipeline(nodes_list)
+
+
+def create_sub_id_mapping_pipeline() -> Pipeline:
+    """Creates sub id mapping table"""
+    return Pipeline(
+        [
+            node(
+                create_sub_id_mapping,
+                ["l1_customer_profile_union_daily_feature"],
+                "sub_id_mapping",
+                name="create_sub_id_mapping",
+            )
+        ]
+    )

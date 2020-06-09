@@ -31,7 +31,7 @@ from typing import Any, Dict
 from cvm.src.utils.incremental_manipulation import filter_latest_date, filter_users
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
 from cvm.src.utils.utils import get_today
-from pyspark.sql import DataFrame
+from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as func
 
 
@@ -135,3 +135,23 @@ def create_sample_dataset(
     log.info(f"Sample has {df.count()} rows, down from {starting_rows} rows.")
 
     return df
+
+
+def create_sub_id_mapping(l1_profile: DataFrame) -> DataFrame:
+    """ Create mapping table from old sub id to new one.
+
+    Args:
+        l1_profile: l1 profile table with old and new sub id
+    """
+    logging.getLogger(__name__).info(
+        "Creating `subscription_identifier` replacement dictionary"
+    )
+    window_latest = Window.partitionBy("old_subscription_identifier").orderBy(
+        func.col("event_partition_date").desc()
+    )
+    return (
+        l1_profile.filter("charge_type == 'Pre-paid'")
+        .withColumn("date_lp", func.row_number().over(window_latest))
+        .filter("date_lp == 1")
+        .select(["old_subscription_identifier", "subscription_identifier"])
+    )

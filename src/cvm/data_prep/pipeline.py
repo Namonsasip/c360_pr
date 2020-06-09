@@ -67,8 +67,7 @@ def create_cvm_targets(sample_type: str):
                 add_ard_targets,
                 [
                     "cvm_users_list_" + sample_type,
-                    "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"
-                    + "_sub_ids_mapped",
+                    "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
                     "parameters",
                     "params:" + sample_type,
                 ],
@@ -79,7 +78,7 @@ def create_cvm_targets(sample_type: str):
                 add_churn_targets,
                 [
                     "cvm_users_list_" + sample_type,
-                    "l4_usage_prepaid_postpaid_daily_features" + "_sub_ids_mapped",
+                    "l4_usage_prepaid_postpaid_daily_features",
                     "parameters",
                     "params:" + sample_type,
                 ],
