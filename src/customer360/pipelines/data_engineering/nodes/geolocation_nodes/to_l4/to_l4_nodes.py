@@ -13,8 +13,34 @@ import statistics
 from pyspark.sql import Window
 from customer360.utilities.spark_util import get_spark_session
 
+def l4_geo_top_visit_exclude_homework(sum_duration,homework,sql):
+
+    result = sum_duration.join(homework, [sum_duration.imsi == homework.imsi,
+                                          sum_duration.location_id == homework.home_weekday_location_id],
+                               'left').select(sum_duration.imsi, 'location_id', 'sum_duration',
+                                              sum_duration.start_of_month)
+    result = result.join(homework,
+                         [result.imsi == homework.imsi, sum_duration.location_id == homework.home_weekend_location_id],
+                         'left').select(result.imsi, 'location_id', 'sum_duration', result.start_of_month)
+    result = result.join(homework,
+                         [result.imsi == homework.imsi, sum_duration.location_id == homework.work_location_id],
+                         'left').select(result.imsi, 'location_id', 'sum_duration', result.start_of_month)
+    win = Window.partitionBy("start_of_month", "imsi").orderBy(F.col("sum_duration").desc(), F.col("location_id"))
+    result = result.withColumn("rank", F.row_number().over(win))
+    rank1 = result.where('rank=1').withColumn('top_location_1st',F.col('location_id')).drop('location_id','rank')
+    rank2 = result.where('rank=2').withColumn('top_location_2nd',F.col('location_id')).drop('location_id','rank')
+    rank3 = result.where('rank=3').withColumn('top_location_3rd',F.col('location_id')).drop('location_id','rank')
+
+    df = rank1.union(rank2).union(rank3)
+    df.show()
+    # df = node_from_config(df,sql)
+
+    return df
 
 def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
+
+    # Filter 3 4 5
+    geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20200301')
 
     # Add 2 columns: event_partition_date, start_of_month
     geo_cust_cell_visit_time.cache()
