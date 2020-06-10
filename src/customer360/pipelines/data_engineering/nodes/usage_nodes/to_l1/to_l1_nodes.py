@@ -315,9 +315,9 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
                                    l1_usage_ru_a_vas_postpaid_usg_daily_stg: DataFrame,
                                    l1_usage_ru_a_vas_postpaid_prepaid_daily_stg: DataFrame,
                                    l1_customer_profile_union_daily_feature: DataFrame,
-                                   exception_partition_of_l1_usage_outgoing_call_relation_sum_daily_stg=None,
-                                   exception_partition_of_l1_usage_incoming_call_relation_sum_daily_stg=None,
-                                   exception_partition_of_l1_usage_ru_a_gprs_cbs_usage_daily_stg=None,
+                                   # exception_partition_of_l1_usage_outgoing_call_relation_sum_daily_stg=None,
+                                   # exception_partition_of_l1_usage_incoming_call_relation_sum_daily_stg=None,
+                                   # exception_partition_of_l1_usage_ru_a_gprs_cbs_usage_daily_stg=None,
                                    ) -> DataFrame:
     """
     :param l1_usage_outgoing_call_relation_sum_daily_stg:
@@ -339,48 +339,48 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
                         l1_usage_ru_a_vas_postpaid_prepaid_daily_stg, l1_customer_profile_union_daily_feature]):
         return get_spark_empty_df()
 
-    l1_usage_outgoing_call_relation_sum_daily_stg = data_non_availability_and_missing_check(
-        df=l1_usage_outgoing_call_relation_sum_daily_stg,
-        grouping="daily", par_col="event_partition_date",
-        target_table_name="l1_usage_postpaid_prepaid_daily",
-        exception_partitions=exception_partition_of_l1_usage_outgoing_call_relation_sum_daily_stg)
-
-    l1_usage_incoming_call_relation_sum_daily_stg = data_non_availability_and_missing_check(
-        df=l1_usage_incoming_call_relation_sum_daily_stg,
-        grouping="daily", par_col="event_partition_date",
-        target_table_name="l1_usage_postpaid_prepaid_daily",
-        exception_partitions=exception_partition_of_l1_usage_incoming_call_relation_sum_daily_stg)
-
-    l1_usage_outgoing_call_relation_sum_ir_daily_stg = data_non_availability_and_missing_check(
-        df=l1_usage_outgoing_call_relation_sum_ir_daily_stg,
-        grouping="daily", par_col="event_partition_date",
-        target_table_name="l1_usage_postpaid_prepaid_daily")
-
-    l1_usage_incoming_call_relation_sum_ir_daily_stg = data_non_availability_and_missing_check(
-        df=l1_usage_incoming_call_relation_sum_ir_daily_stg,
-        grouping="daily", par_col="event_partition_date",
-        target_table_name="l1_usage_postpaid_prepaid_daily")
-
-    l1_usage_ru_a_gprs_cbs_usage_daily_stg = data_non_availability_and_missing_check(
-        df=l1_usage_ru_a_gprs_cbs_usage_daily_stg,
-        grouping="daily", par_col="event_partition_date",
-        target_table_name="l1_usage_postpaid_prepaid_daily",
-        exception_partitions=exception_partition_of_l1_usage_ru_a_gprs_cbs_usage_daily_stg)
-
-    l1_usage_ru_a_vas_postpaid_usg_daily_stg = data_non_availability_and_missing_check(
-        df=l1_usage_ru_a_vas_postpaid_usg_daily_stg,
-        grouping="daily", par_col="event_partition_date",
-        target_table_name="l1_usage_postpaid_prepaid_daily")
-
-    l1_usage_ru_a_vas_postpaid_prepaid_daily_stg = data_non_availability_and_missing_check(
-        df=l1_usage_ru_a_vas_postpaid_prepaid_daily_stg,
-        grouping="daily", par_col="event_partition_date",
-        target_table_name="l1_usage_postpaid_prepaid_daily")
-
-    l1_customer_profile_union_daily_feature = data_non_availability_and_missing_check(
-        df=l1_customer_profile_union_daily_feature,
-        grouping="daily", par_col="event_partition_date",
-        target_table_name="l1_usage_postpaid_prepaid_daily")
+    # l1_usage_outgoing_call_relation_sum_daily_stg = data_non_availability_and_missing_check(
+    #     df=l1_usage_outgoing_call_relation_sum_daily_stg,
+    #     grouping="daily", par_col="event_partition_date",
+    #     target_table_name="l1_usage_postpaid_prepaid_daily",
+    #     exception_partitions=exception_partition_of_l1_usage_outgoing_call_relation_sum_daily_stg)
+    #
+    # l1_usage_incoming_call_relation_sum_daily_stg = data_non_availability_and_missing_check(
+    #     df=l1_usage_incoming_call_relation_sum_daily_stg,
+    #     grouping="daily", par_col="event_partition_date",
+    #     target_table_name="l1_usage_postpaid_prepaid_daily",
+    #     exception_partitions=exception_partition_of_l1_usage_incoming_call_relation_sum_daily_stg)
+    #
+    # l1_usage_outgoing_call_relation_sum_ir_daily_stg = data_non_availability_and_missing_check(
+    #     df=l1_usage_outgoing_call_relation_sum_ir_daily_stg,
+    #     grouping="daily", par_col="event_partition_date",
+    #     target_table_name="l1_usage_postpaid_prepaid_daily")
+    #
+    # l1_usage_incoming_call_relation_sum_ir_daily_stg = data_non_availability_and_missing_check(
+    #     df=l1_usage_incoming_call_relation_sum_ir_daily_stg,
+    #     grouping="daily", par_col="event_partition_date",
+    #     target_table_name="l1_usage_postpaid_prepaid_daily")
+    #
+    # l1_usage_ru_a_gprs_cbs_usage_daily_stg = data_non_availability_and_missing_check(
+    #     df=l1_usage_ru_a_gprs_cbs_usage_daily_stg,
+    #     grouping="daily", par_col="event_partition_date",
+    #     target_table_name="l1_usage_postpaid_prepaid_daily",
+    #     exception_partitions=exception_partition_of_l1_usage_ru_a_gprs_cbs_usage_daily_stg)
+    #
+    # l1_usage_ru_a_vas_postpaid_usg_daily_stg = data_non_availability_and_missing_check(
+    #     df=l1_usage_ru_a_vas_postpaid_usg_daily_stg,
+    #     grouping="daily", par_col="event_partition_date",
+    #     target_table_name="l1_usage_postpaid_prepaid_daily")
+    #
+    # l1_usage_ru_a_vas_postpaid_prepaid_daily_stg = data_non_availability_and_missing_check(
+    #     df=l1_usage_ru_a_vas_postpaid_prepaid_daily_stg,
+    #     grouping="daily", par_col="event_partition_date",
+    #     target_table_name="l1_usage_postpaid_prepaid_daily")
+    #
+    # l1_customer_profile_union_daily_feature = data_non_availability_and_missing_check(
+    #     df=l1_customer_profile_union_daily_feature,
+    #     grouping="daily", par_col="event_partition_date",
+    #     target_table_name="l1_usage_postpaid_prepaid_daily")
 
     # new section to handle data latency
     min_value = union_dataframes_with_missing_cols(
