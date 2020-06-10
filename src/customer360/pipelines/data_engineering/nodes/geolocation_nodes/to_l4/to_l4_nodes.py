@@ -32,8 +32,7 @@ def l4_geo_top_visit_exclude_homework(sum_duration,homework,sql):
     rank3 = result.where('rank=3').withColumn('top_location_3rd',F.col('location_id')).drop('location_id','rank')
 
     df = rank1.union(rank2).union(rank3)
-    df.show()
-    # df = node_from_config(df,sql)
+
 
     return df
 
@@ -87,8 +86,7 @@ def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
 
     # Check DataFrame from SQL query statement
     print("Start for check the result from sql query statement of HOME")
-    df_home_daily.count()
-    df_home_daily.show(10)
+
 
     geo_cust_cell_visit_time_work = spark.sql("""
             select imsi, time_in, time_out, location_id, latitude, longitude,
@@ -124,8 +122,7 @@ def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
 
     # Check DataFrame from SQL query statement
     print("Start for check result from sql query statement of WORK")
-    df_work_daily.count()
-    df_work_daily.show(10)
+
 
     # Add column Weekend and Weekday
     home_duration_dayily_with_weektype = df_home_daily.withColumn("week_type", F.when((F.dayofweek('event_partition_date') == 1) | (F.dayofweek('event_partition_date') == 7), 'weekend') \
@@ -186,8 +183,7 @@ def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
 
     # Check DataFrame from SQL query statement
     print("Start for check result from sql query statement of HOME")
-    df_home_location.count()
-    df_home_location.show(10)
+
 
 
     w_work = Window().partitionBy(F.col('imsi'), F.col('location_id')).orderBy(F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
@@ -217,8 +213,7 @@ def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
 
     # Check DataFrame from SQL query statement
     print("Start for check result from sql query statement of WORK")
-    df_work_location.count()
-    df_work_location.show(10)
+
 
     df_home_location.createOrReplaceTempView('df_home_location')
     df_work_location.createOrReplaceTempView('df_work_location')
@@ -249,8 +244,7 @@ def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
 
     # Check DataFrame from SQL query statement
     print("Start for check the result from sql query statement FINAL")
-    df_combine_home_work.count()
-    df_combine_home_work.show(10)
+
 
     df = node_from_config(df_combine_home_work, sql)
     return df
