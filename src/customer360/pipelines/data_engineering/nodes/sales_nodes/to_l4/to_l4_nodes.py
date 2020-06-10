@@ -30,7 +30,7 @@ def sales_l4_rolling_window(input_df: DataFrame,
     join_key = ["national_id_card", "access_method_num", "subscription_identifier", "start_of_week"]
 
     metadata = CNTX.catalog.load("util_audit_metadata_table")
-    max_date = metadata.filter(f.col("table_name") == "l4_revenue_prepaid_pru_f_usage_multi_features") \
+    max_date = metadata.filter(f.col("table_name") == "l4_sales_number_and_volume_transaction_weekly") \
         .select(f.max(f.col("target_max_data_load_date")).alias("max_date")) \
         .withColumn("max_date", f.coalesce(f.col("max_date"), f.to_date(f.lit('1970-01-01'), 'yyyy-MM-dd'))) \
         .collect()[0].max_date
