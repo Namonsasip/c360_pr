@@ -236,6 +236,21 @@ in agreed paths.
 
 ## Report submodule
 
+### KPIs to be tracked
+
+#### Churn: % of active customer at the end of tracking period 
+
+Formula is 
+
+KPI<sub>churn</sub> = (# of customers with status not equal to active OR # of customers with inactive days more than 60) 
+/ (# of customers are the start of tracking period)
+
+#### ARD: % of customers with >20% average dilution throughout the tracking period 
+
+KPI<sub>ARD</sub> = (# of customers with average daily ARPU during tracking period 
+< 80% of average daily ARPU 30 days before tracking period) / (# of customers are the start of tracking period)
+
+
 ## Scoring experiment
 Scoring experiment is set of tables that are changed during one run of scoring.
 If you want to have a persistent set of scoring sets use scoring experiment.
