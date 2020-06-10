@@ -14,16 +14,19 @@ from pyspark.sql import Window
 from customer360.utilities.spark_util import get_spark_session
 
 def l4_geo_top_visit_exclude_homework(sum_duration,homework,sql):
+    win = Window().partitionBy('imsi').orderBy(F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
+    sum_duration_3mo = sum_duration.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd")).withColumn(
+        "Sum", F.sum("sum_duration").over(win))
 
-    result = sum_duration.join(homework, [sum_duration.imsi == homework.imsi,
-                                          sum_duration.location_id == homework.home_weekday_location_id],
-                               'left').select(sum_duration.imsi, 'location_id', 'sum_duration',
-                                              sum_duration.start_of_month)
+    result = sum_duration_3mo.join(homework, [sum_duration_3mo.imsi == homework.imsi,
+                                          sum_duration_3mo.location_id == homework.home_weekday_location_id],
+                               'left').select(sum_duration_3mo.imsi, 'location_id', 'sum_duration',
+                                              sum_duration_3mo.start_of_month)
     result = result.join(homework,
-                         [result.imsi == homework.imsi, sum_duration.location_id == homework.home_weekend_location_id],
+                         [result.imsi == homework.imsi, result.location_id == homework.home_weekend_location_id],
                          'left').select(result.imsi, 'location_id', 'sum_duration', result.start_of_month)
     result = result.join(homework,
-                         [result.imsi == homework.imsi, sum_duration.location_id == homework.work_location_id],
+                         [result.imsi == homework.imsi, result.location_id == homework.work_location_id],
                          'left').select(result.imsi, 'location_id', 'sum_duration', result.start_of_month)
     win = Window.partitionBy("start_of_month", "imsi").orderBy(F.col("sum_duration").desc(), F.col("location_id"))
     result = result.withColumn("rank", F.row_number().over(win))
