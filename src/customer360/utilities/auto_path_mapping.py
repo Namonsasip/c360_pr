@@ -64,4 +64,13 @@ def auto_path_mapping_project_context(catalog, running_environment):
                     t_tuple = (original_path, new_dq_path)
                     temp_list.append(t_tuple)
 
+            elif type(catalog._data_sets[curr_catalog]).__name__ == "SparkDataSet":
+                original_path = str(catalog._data_sets[curr_catalog].__getattribute__("_filepath"))
+                original_path_lower = original_path.lower()
+                if '/dq/' in original_path_lower:
+                    new_dq_path = original_path.replace("dq_path", dq_path)
+                    catalog._data_sets[curr_catalog].__setattr__("_filepath", new_dq_path)
+                    t_tuple = (original_path, new_dq_path)
+                    temp_list.append(t_tuple)
+
     return catalog
