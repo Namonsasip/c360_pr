@@ -5,11 +5,13 @@ from customer360.utilities.re_usable_functions import check_empty_dfs, \
     data_non_availability_and_missing_check
 from customer360.utilities.re_usable_functions import l1_massive_processing, union_dataframes_with_missing_cols
 from customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
+from typing import List
 
 
 def build_network_voice_features(int_l1_network_voice_features: DataFrame,
                                  l1_network_voice_features: dict,
-                                 l1_customer_profile_union_daily_feature_for_l1_network_voice_features: DataFrame) -> DataFrame:
+                                 l1_customer_profile_union_daily_feature_for_l1_network_voice_features: DataFrame,
+                                 exception_partition_list_for_l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day: List[str]) -> DataFrame:
     """
     :param int_l1_network_voice_features:
     :param l1_network_voice_features:
@@ -23,7 +25,8 @@ def build_network_voice_features(int_l1_network_voice_features: DataFrame,
 
     input_df = data_non_availability_and_missing_check(df=int_l1_network_voice_features, grouping="daily",
                                                        par_col="event_partition_date",
-                                                       target_table_name="l1_network_voice_features")
+                                                       target_table_name="l1_network_voice_features",
+                                                       exception_partitions=exception_partition_list_for_l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day)
 
     cust_df = data_non_availability_and_missing_check(
         df=l1_customer_profile_union_daily_feature_for_l1_network_voice_features, grouping="daily",
@@ -54,7 +57,13 @@ def build_network_good_and_bad_cells_features(
         l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features: DataFrame,
 
         l1_customer_profile_union_daily_feature_for_l1_network_good_and_bad_cells_features: DataFrame,
-        l1_network_good_and_bad_cells_features: dict) -> DataFrame:
+        l1_network_good_and_bad_cells_features: dict,
+
+        exception_partition_list_for_l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day: List[str],
+        exception_partition_list_for_l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day: List[str],
+        exception_partition_list_for_l0_geo_mst_cell_masterplan_current: List[str],
+
+) -> DataFrame:
     """
     :param l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features:
     :param l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features:
@@ -80,7 +89,7 @@ def build_network_good_and_bad_cells_features(
              l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features,
              l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features,
 
-             l1_customer_profile_union_daily_feature_for_l1_network_good_and_bad_cells_features
+             l1_customer_profile_union_daily_feature_for_l1_network_good_and_bad_cells_features,
              ]):
         return get_spark_empty_df()
 
@@ -103,7 +112,8 @@ def build_network_good_and_bad_cells_features(
             df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features,
             grouping="daily",
             par_col="partition_date",
-            target_table_name="l1_network_good_and_bad_cells_features")
+            target_table_name="l1_network_good_and_bad_cells_features",
+            exception_partitions=exception_partition_list_for_l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day)
 
     l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features = \
         data_non_availability_and_missing_check(
@@ -124,13 +134,15 @@ def build_network_good_and_bad_cells_features(
             df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features,
             grouping="daily",
             par_col="partition_date",
-            target_table_name="l1_network_good_and_bad_cells_features")
+            target_table_name="l1_network_good_and_bad_cells_features",
+            exception_partitions=exception_partition_list_for_l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day)
 
     l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features = \
         data_non_availability_and_missing_check(
             df=l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features, grouping="daily",
             par_col="partition_date",
-            target_table_name="l1_network_good_and_bad_cells_features")
+            target_table_name="l1_network_good_and_bad_cells_features",
+            exception_partitions=exception_partition_list_for_l0_geo_mst_cell_masterplan_current)
 
     l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features = \
         data_non_availability_and_missing_check(
@@ -428,11 +440,13 @@ def build_network_data_traffic_features(
 def build_network_data_cqi(
         l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi: DataFrame,
         l1_network_data_cqi: dict,
-        l1_customer_profile_union_daily_feature_for_l1_network_data_cqi: DataFrame) -> DataFrame:
+        l1_customer_profile_union_daily_feature_for_l1_network_data_cqi: DataFrame,
+        exception_partition_list_for_l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day: List[str]) -> DataFrame:
     """
     :param l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi:
     :param l1_network_data_cqi:
     :param l1_customer_profile_union_daily_feature_for_l1_network_data_cqi:
+    :param exception_partition_list_for_l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day:
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
@@ -445,7 +459,8 @@ def build_network_data_cqi(
         data_non_availability_and_missing_check(
             df=l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi, grouping="daily",
             par_col="partition_date",
-            target_table_name="l1_network_data_cqi")
+            target_table_name="l1_network_data_cqi",
+            exception_partitions=exception_partition_list_for_l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day)
 
     cust_df = data_non_availability_and_missing_check(
         df=l1_customer_profile_union_daily_feature_for_l1_network_data_cqi, grouping="daily",
@@ -544,12 +559,14 @@ def build_network_streaming_cqi(
 def build_network_web_cqi(
         l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi: DataFrame,
         l1_network_web_cqi: dict,
-        l1_customer_profile_union_daily_feature_for_l1_network_web_cqi: DataFrame) -> DataFrame:
+        l1_customer_profile_union_daily_feature_for_l1_network_web_cqi: DataFrame,
+        exception_partition_list_for_l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day: List[str]) -> DataFrame:
     """
 
     :param l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi:
     :param l1_network_web_cqi:
     :param l1_customer_profile_union_daily_feature_for_l1_network_web_cqi:
+    :param exception_partition_list_for_l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day:
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
@@ -562,7 +579,8 @@ def build_network_web_cqi(
         data_non_availability_and_missing_check(
             df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi, grouping="daily",
             par_col="partition_date",
-            target_table_name="l1_network_web_cqi")
+            target_table_name="l1_network_web_cqi",
+            exception_partitions=exception_partition_list_for_l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day)
 
     cust_df = data_non_availability_and_missing_check(
         df=l1_customer_profile_union_daily_feature_for_l1_network_web_cqi, grouping="daily",
@@ -662,11 +680,13 @@ def build_network_volte_cqi(
 def build_network_user_cqi(
         l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi: DataFrame,
         l1_network_user_cqi: dict,
-        l1_customer_profile_union_daily_feature_for_l1_network_user_cqi: DataFrame) -> DataFrame:
+        l1_customer_profile_union_daily_feature_for_l1_network_user_cqi: DataFrame,
+        exception_partition_list_for_l0_network_sdr_dyn_cea_cei_cei_usr_1day: List[str]) -> DataFrame:
     """
-    :param l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi:
+    :param l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi:
     :param l1_network_user_cqi:
-    :param l1_customer_profile_union_daily_feature_for_l1_network_voip_cqi:
+    :param l1_customer_profile_union_daily_feature_for_l1_network_user_cqi:
+    :param exception_partition_list_for_l0_network_sdr_dyn_cea_cei_cei_usr_1day:
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
@@ -679,7 +699,8 @@ def build_network_user_cqi(
         data_non_availability_and_missing_check(
             df=l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi, grouping="daily",
             par_col="partition_date",
-            target_table_name="l1_network_user_cqi")
+            target_table_name="l1_network_user_cqi",
+            exception_partitions=exception_partition_list_for_l0_network_sdr_dyn_cea_cei_cei_usr_1day)
 
     cust_df = data_non_availability_and_missing_check(
         df=l1_customer_profile_union_daily_feature_for_l1_network_user_cqi, grouping="daily",
@@ -703,9 +724,9 @@ def build_network_file_transfer_cqi(
         l1_network_file_transfer_cqi: dict,
         l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi: DataFrame) -> DataFrame:
     """
-    :param l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi:
-    :param l1_network_voip_cqi:
-    :param l1_customer_profile_union_daily_feature_for_l1_network_voip_cqi:
+    :param l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi:
+    :param l1_network_file_transfer_cqi:
+    :param l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi:
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
