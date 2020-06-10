@@ -1,19 +1,18 @@
 import logging
 from typing import Dict, List
 
-import pai
 import pandas as pd
 import pyspark
 from pyspark.sql import Window, DataFrame
 from pyspark.sql import functions as F
-from pyspark.sql.functions import pandas_udf, PandasUDFType
-from pyspark.sql.types import DoubleType, DateType
 
 from customer360.utilities.spark_util import get_spark_session
 from nba.model_input.model_input_nodes import (
-    add_c60_dates_columns,
+    add_c360_dates_columns,
     add_model_group_column,
 )
+
+from nba.models.models_nodes import score_nba_models
 
 # TODO delete
 DATES_LIST = [
@@ -24,118 +23,6 @@ DATES_LIST = [
     "2020-01-24",
     "2020-01-29",
 ]
-
-
-def score_nba_models(
-    df_master: pyspark.sql.DataFrame,
-    primary_key_columns: List[str],
-    model_group_column: str,
-    models_to_score: Dict[str, str],
-    scoring_chunk_size: int,
-    pai_runs_uri: str,
-    pai_artifacts_uri: str,
-    explanatory_features: List[str] = None,
-) -> pyspark.sql.DataFrame:
-    # Define schema for the udf.
-    schema = df_master.select(
-        *(
-            primary_key_columns
-            + [
-                F.lit(999.99).cast(DoubleType()).alias(prediction_colname)
-                for prediction_colname in models_to_score.values()
-            ]
-        )
-    ).schema
-
-    @pandas_udf(schema, PandasUDFType.GROUPED_MAP)
-    def predict_pandas_udf(pdf):
-        pai.set_config(
-            storage_runs=pai_runs_uri, storage_artifacts=pai_artifacts_uri,
-        )
-
-        current_model_group = pdf[model_group_column].iloc[0]
-        pd_results = pd.DataFrame()
-
-        for current_tag, prediction_colname in models_to_score.items():
-            current_run = pai.load_runs(
-                experiment=current_model_group, tags=[current_tag]
-            )
-            assert (
-                len(current_run) > 0
-            ), f"There are no runs for experiment {current_model_group} and tag {current_tag}"
-
-            assert (
-                len(current_run) < 2
-            ), f"There are more than 1 runs for experiment {current_model_group} and tag {current_tag}"
-
-            current_run_id = current_run["run_id"].iloc[0]
-            current_model = pai.load_model(run_id=current_run_id)
-            df_current_model_features = pai.load_features(run_id=current_run_id)
-            current_model_features = df_current_model_features["feature_list"].iloc[0]
-            # We sort features because MLflow does not preserve feature order
-            # Models should also be trained with features sorted
-            current_model_features.sort()
-            X = pdf[current_model_features]
-            if "binary" in current_run["tags"].iloc[0]:
-                pd_results[prediction_colname] = current_model.predict_proba(
-                    X, num_threads=1, n_jobs=1
-                )[:, 1]
-            elif "regression" in current_run["tags"].iloc[0]:
-                pd_results[prediction_colname] = current_model.predict(
-                    X, num_threads=1, n_jobs=1
-                )
-            else:
-                raise ValueError(
-                    "Unrecognized model type while predicting, model has"
-                    "neither 'binary' or 'regression' tags"
-                )
-            for pk_col in primary_key_columns:
-                pd_results.loc[:, pk_col] = pdf.loc[:, pk_col]
-
-        return pd_results
-
-    df_master = df_master.withColumn(
-        "partition",
-        F.floor(
-            F.count(F.lit(1)).over(Window.partitionBy(model_group_column))
-            / scoring_chunk_size
-            * F.rand()
-        ),
-    )
-    if not explanatory_features:
-        # Keep only necessary columns to make the pandas transformation more lightweight
-        pai.set_config(
-            storage_runs=pai_runs_uri, storage_artifacts=pai_artifacts_uri,
-        )
-        explanatory_features = set()
-        for current_tag in models_to_score.keys():
-
-            df_features = pai.load_features(tags=current_tag)
-            current_model_features = set(
-                [
-                    f.replace("importance_", "")
-                    for f in df_features.columns
-                    if f.startswith("importance_")
-                ]
-            )
-            explanatory_features = explanatory_features.union(current_model_features)
-        explanatory_features = list(explanatory_features)
-
-    df_master_necessary_columns = df_master.select(
-        model_group_column,
-        "partition",
-        *(  # Don't add model group column twice in case it's a PK column
-            list(set(primary_key_columns) - set([model_group_column]))
-            + explanatory_features
-        ),
-    )
-
-    df_scored = df_master_necessary_columns.groupby(
-        model_group_column, "partition"
-    ).apply(predict_pandas_udf)
-    df_master_scored = df_master.join(df_scored, on=primary_key_columns, how="left")
-
-    return df_master_scored
 
 
 def calculate_impact_scenario(
@@ -432,7 +319,7 @@ def l5_nba_backtesting_pcm_eligible_spine(
         how="left",
     )
 
-    df_spine = add_c60_dates_columns(
+    df_spine = add_c360_dates_columns(
         df_spine,
         date_column="candidate_date",
         min_feature_days_lag=min_feature_days_lag,

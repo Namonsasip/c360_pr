@@ -11,6 +11,7 @@ from nba.model_input.model_input_nodes import (
     node_l5_nba_customer_profile,
     node_prioritized_campaigns_analysis,
     node_l5_nba_campaign_master,
+    node_l5_average_arpu_untie_lookup,
 )
 
 
@@ -39,18 +40,20 @@ def create_nba_model_input_pipeline() -> Pipeline:
                 node_l5_nba_master_table_spine,
                 inputs={
                     "l0_campaign_tracking_contact_list_pre": "l0_campaign_tracking_contact_list_pre_full_load",
+                    "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
                     "l4_revenue_prepaid_daily_features": "l4_revenue_prepaid_daily_features",
                     "l5_nba_campaign_master": "l5_nba_campaign_master",
                     "prioritized_campaign_child_codes": "params:nba_prioritized_campaigns_child_codes",
                     "nba_model_group_column_prioritized": "params:nba_model_group_column_prioritized",
                     "nba_model_group_column_non_prioritized": "params:nba_model_group_column_non_prioritized",
+                    "nba_model_use_cases_child_codes": "params:nba_model_use_cases_child_codes",
                     "date_min": "params:nba_master_table_date_min",
                     "date_max": "params:nba_master_table_date_max",
                     "min_feature_days_lag": "params:nba_min_feature_days_lag",
                 },
                 outputs="l5_nba_master_table_spine",
                 name="l5_nba_master_table_spine",
-                tags=["l5_nba_master_table_spine"],
+                tags=["l5_nba_master_table_spine", "nba_masters"],
             ),
             node(
                 node_l5_nba_master_table,
@@ -73,14 +76,21 @@ def create_nba_model_input_pipeline() -> Pipeline:
                 },
                 outputs="l5_nba_master_table",
                 name="l5_nba_master_table",
-                tags=["l5_nba_master_table"],
+                tags=["l5_nba_master_table", "nba_masters"],
             ),
             node(
                 node_l5_nba_master_table_only_accepted,
                 inputs={"l5_nba_master_table": "l5_nba_master_table"},
                 outputs="l5_nba_master_table_only_accepted",
                 name="l5_nba_master_table_only_accepted",
-                tags=["l5_nba_master_table_only_accepted"],
+                tags=["l5_nba_master_table_only_accepted", "nba_masters"],
+            ),
+            node(
+                node_l5_average_arpu_untie_lookup,
+                inputs={"l5_nba_master_table_spine": "l5_nba_master_table_spine"},
+                outputs="l5_average_arpu_untie_lookup",
+                name="l5_average_arpu_untie_lookup",
+                tags=["l5_average_arpu_untie_lookup"],
             ),
             node(
                 partial(
@@ -116,9 +126,6 @@ def create_nba_model_input_pipeline() -> Pipeline:
                 node_prioritized_campaigns_analysis,
                 inputs={
                     "df_master": "l5_nba_master_table",
-                    "prioritized_campaign_child_codes": "params:nba_prioritized_campaigns_child_codes",
-                    "nba_model_group_column_prioritized": "params:nba_model_group_column_prioritized",
-                    "nba_model_group_column_non_prioritized": "params:nba_model_group_column_non_prioritized",
                     "extra_keep_columns": "params:nba_extra_tag_columns_pai",
                 },
                 outputs="prioritized_campaigns_analysis",
