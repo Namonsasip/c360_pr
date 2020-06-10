@@ -49,12 +49,7 @@ def create_users_from_tg(sample_type: str) -> Pipeline:
         [
             node(
                 create_users_from_cgtg,
-                [
-                    "cvm_prepaid_customer_groups",
-                    "sub_id_mapping",
-                    "params:{}".format(sample_type),
-                    "parameters",
-                ],
+                ["cvm_prepaid_customer_groups", "sub_id_mapping", "parameters"],
                 "cvm_users_list_" + sample_type,
                 name="create_users_list_tgcg_" + sample_type,
             ),

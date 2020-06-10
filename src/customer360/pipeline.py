@@ -280,7 +280,6 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
             + generate_treatments("scoring_experiment")
         ),
         "cvm_full_features_extraction": extract_features,
-        "cvm_map_sub_ids": map_sub_ids_of_input_datasets("scoring"),
         "cvm_rfe_only": rfe_only,
         "cvm_prepare_report_micro": prepare_user_microsegments(),
         "cvm_create_kpis": create_kpis(),
