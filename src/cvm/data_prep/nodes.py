@@ -174,7 +174,8 @@ def subs_date_join_important_only(
 
 
 def subs_date_join(parameters: Dict[str, Any], *args: DataFrame,) -> DataFrame:
-    """ Left join all tables by given keys.
+    """ Left join all tables by given keys. Join using `subscription_identifier` or
+    `old_subscription_identifier`.
 
     Args:
         parameters: parameters defined in parameters.yml.
