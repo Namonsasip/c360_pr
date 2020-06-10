@@ -42,7 +42,7 @@ l0_product_customer_promotion_for_daily:
 # CUSTOMER PROMOTION - PRE PAID ONTOP
 l0_product_pru_m_ontop_master_for_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: data/L0/PRODUCT/product_pru_m_ontop_master/
+  filepath: data/L0/PRODUCT/product_ru_a_mobile_feature_package/
   file_format: "parquet"
 
 # CUSTOMER PROMOTION - PRE PAID MAIN
