@@ -7,9 +7,9 @@ from nba.backtesting.backtesting_nodes import (
     l5_nba_backtesting_master_expanded_scored,
     l5_nba_backtesting_master_scored,
     l5_nba_backtesting_pcm_eligible_spine,
-    score_nba_models,
     l5_nba_backtesting_master_expanded_queue_distribution_scored,
 )
+from nba.models.models_nodes import score_nba_models
 from nba.model_input.model_input_nodes import node_l5_nba_master_table
 
 
