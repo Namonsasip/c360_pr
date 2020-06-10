@@ -26,10 +26,10 @@ l4_sales_on_top_transaction_first:
     ]
   read_from: "l2"
 
-  l4_sales_on_top_transaction_second:
-    partition_by: ["access_method_num","subscription_identifier","national_id_card"]
-    feature_list:
-      sum: [
+l4_sales_on_top_transaction_second:
+  partition_by: ["access_method_num","subscription_identifier","national_id_card"]
+  feature_list:
+    sum: [
         "retail_stores_number_of_on_top_transaction",
         "retail_stores_volume_of_on_top_transaction",
         "retail_stores_number_of_data_activation_on_top_transaction",
@@ -52,12 +52,12 @@ l4_sales_on_top_transaction_first:
         "web_portal_number_of_vas_activation_on_top_transaction",
         "web_portal_volume_of_vas_activation_on_top_transaction",
       ]
-    read_from: "l2"
+  read_from: "l2"
 
-  l4_sales_on_top_transaction_third:
-    partition_by: ["access_method_num","subscription_identifier","national_id_card"]
-    feature_list:
-      sum: [
+l4_sales_on_top_transaction_third:
+  partition_by: ["access_method_num","subscription_identifier","national_id_card"]
+  feature_list:
+    sum: [
         "my_ais_app_number_of_on_top_transaction",
         "my_ais_app_volume_of_on_top_transaction",
         "my_ais_app_number_of_data_activation_on_top_transaction",
@@ -81,5 +81,5 @@ l4_sales_on_top_transaction_first:
         "share_of_volume_web_portal_number_on_top_transaction"
 
       ]
-    read_from: "l2"
+  read_from: "l2"
 
