@@ -132,19 +132,26 @@ def train_test_split(
 
 
 def subs_date_join_important_only(
-    important_param: List[Any], parameters: Dict[str, Any], *args: DataFrame,
+    important_param: List[Any],
+    parameters: Dict[str, Any],
+    users: DataFrame,
+    *args: DataFrame,
 ) -> DataFrame:
-    """ Left join all tables with important variables by given keys.
+    """ Left join all tables with important variables by given keys. Join using
+     `subscription_identifier` or `old_subscription_identifier`.
 
     Args:
+        users: table with users, has to have both `old_subscription_identifier` and
+            `subscription_identifier` columns.
         important_param: List of important columns.
         parameters: parameters defined in parameters.yml.
-        *args: Tables to join.
+        *args: tables to join, each has to have either `old_subscription_identifier` or
+            `subscription_identifier` column.
     Returns:
         Left joined and filtered tables.
     """
 
-    keys = parameters["key_columns"]
+    keys = parameters["key_columns"] + ["old_subscription_identifier"]
     segments = parameters["segment_columns"]
     must_have_features = parameters["must_have_features"]
     targets = list_targets(parameters)
@@ -164,36 +171,61 @@ def subs_date_join_important_only(
         for tab in tables
     ]
 
-    def join_on(df1, df2):
-        cols_to_drop = [col_name for col_name in df1.columns if col_name in df2.columns]
-        cols_to_drop = list(set(cols_to_drop) - set(keys))
-        df2 = df2.drop(*cols_to_drop)
-        return df1.join(df2, keys, "left")
-
-    return functools.reduce(join_on, tables)
+    return subs_date_join(parameters, users, *tables)
 
 
-def subs_date_join(parameters: Dict[str, Any], *args: DataFrame,) -> DataFrame:
+def subs_date_join(
+    parameters: Dict[str, Any], users: DataFrame, *args: DataFrame,
+) -> DataFrame:
     """ Left join all tables by given keys. Join using `subscription_identifier` or
     `old_subscription_identifier`.
 
     Args:
+        users: table with users, has to have both `old_subscription_identifier` and
+            `subscription_identifier` columns.
         parameters: parameters defined in parameters.yml.
-        *args: Tables to join.
+        *args: tables to join, each has to have either `old_subscription_identifier` or
+            `subscription_identifier` column.
     Returns:
         Left joined tables.
     """
 
-    keys = parameters["key_columns"]
     tables = [prepare_key_columns(tab) for tab in args]
+    tables_without_sub_ids = [
+        tab
+        for tab in tables
+        if ("old_subscription_identifier" not in tab.columns)
+        and ("subscription_identifier" not in tab.columns)
+    ]
+    no_sub_id_present = len(tables_without_sub_ids) == 0
+    if no_sub_id_present:
+        raise Exception(
+            "Not every table has `old_subscription_identifier`"
+            + " or `subscription_identifier`"
+        )
+    old_sub_id_tables = [
+        tab for tab in tables if "old_subscription_identifier" in tab.columns
+    ]
+    sub_id_tables = [tab for tab in tables if "subscription_identifier" in tab.columns]
 
-    def join_on(df1, df2):
+    def join_on(df1, df2, keys):
         cols_to_drop = [col_name for col_name in df1.columns if col_name in df2.columns]
         cols_to_drop = list(set(cols_to_drop) - set(keys))
         df2 = df2.drop(*cols_to_drop)
         return df1.join(df2, keys, "left")
 
-    return functools.reduce(join_on, tables)
+    old_sub_ids_joined = functools.reduce(
+        functools.partial(join_on, keys=["old_subscription_identifier", "key_date"]),
+        [users] + old_sub_id_tables,
+    )
+    sub_ids_joined = functools.reduce(
+        functools.partial(join_on, keys=["subscription_identifier", "key_date"]),
+        [users] + sub_id_tables,
+    )
+
+    return join_on(
+        old_sub_ids_joined, sub_ids_joined, keys=["subscription_identifier", "key_date"]
+    ).drop("old_subscription_identifier")
 
 
 def add_macrosegments(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
