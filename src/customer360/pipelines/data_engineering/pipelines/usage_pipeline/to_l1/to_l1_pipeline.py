@@ -108,7 +108,7 @@ def usage_to_l1_pipeline(**kwargs):
                 usage_outgoing_call_pipeline,
                 ["l0_usage_call_relation_sum_daily_outgoing",
                  "l1_usage_favourite_number_master",
-                 "params:l1_usage_outgoing_call_relation_sum_daily"
+                 "params:l1_usage_outgoing_call_relation_sum_daily",
                  "params:exception_partition_list_for_l0_usage_call_relation_sum_daily_outgoing"
                  ],
                 "l1_usage_outgoing_call_relation_sum_daily"
