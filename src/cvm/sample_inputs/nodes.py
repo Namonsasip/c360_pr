@@ -36,16 +36,14 @@ from pyspark.sql import functions as func
 
 
 def create_users_from_cgtg(
-    customer_groups: DataFrame,
-    sampling_parameters: Dict[str, Any],
-    parameters: Dict[str, Any],
+    customer_groups: DataFrame, sub_id_mapping: DataFrame, parameters: Dict[str, Any],
 ) -> DataFrame:
     """ Creates users table to use during scoring using customer groups
     table.
 
     Args:
-        customer_groups: Table with target, control and bau groups.
-        sampling_parameters: sampling parameters defined in parameters.yml.
+        sub_id_mapping: table with old and new subscription identifiers.
+        customer_groups: table with target, control and bau groups.
         parameters: parameters defined in parameters.yml.
     """
 
@@ -55,7 +53,8 @@ def create_users_from_cgtg(
         .select("crm_sub_id")
         .distinct()
         .withColumn("key_date", func.lit(today))
-        .withColumnRenamed("crm_sub_id", "subscription_identifier")
+        .withColumnRenamed("crm_sub_id", "old_subscription_identifier")
+        .join(sub_id_mapping, on="old_subscription_identifier")
     )
     return df
 
@@ -63,6 +62,7 @@ def create_users_from_cgtg(
 def create_users_from_active_users(
     profile: DataFrame,
     main_packs: DataFrame,
+    sub_id_mapping: DataFrame,
     sampling_parameters: Dict[str, Any],
     parameters: Dict[str, Any],
 ) -> DataFrame:
@@ -70,6 +70,7 @@ def create_users_from_active_users(
     training and validating.
 
     Args:
+        sub_id_mapping: table with old and new subscription identifiers.
         profile: monthly customer profiles.
         main_packs: pre-paid main packages description.
         sampling_parameters: sampling parameters defined in parameters.yml.
@@ -101,9 +102,9 @@ def create_users_from_active_users(
     )
     users = users.join(main_packs, ["current_package_id"], "inner")
     columns_to_pick = ["key_date", "subscription_identifier"]
-    users = users.select(columns_to_pick)
-
-    return users.distinct()
+    users = users.select(columns_to_pick).distinct()
+    users = users.join(sub_id_mapping, on="subscription_identifier")
+    return users
 
 
 def create_sample_dataset(

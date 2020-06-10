@@ -51,6 +51,7 @@ def create_users_from_tg(sample_type: str) -> Pipeline:
                 create_users_from_cgtg,
                 [
                     "cvm_prepaid_customer_groups",
+                    "sub_id_mapping",
                     "params:{}".format(sample_type),
                     "parameters",
                 ],
@@ -86,6 +87,7 @@ def create_users_from_active(sample_type: str) -> Pipeline:
                 [
                     "active_users_sample_" + sample_type,
                     "l0_product_pru_m_package_master_group_for_daily",
+                    "sub_id_mapping",
                     "params:" + sample_type,
                     "parameters",
                 ],
