@@ -1,4 +1,5 @@
 int_l1_postpaid:
+  # TODO Confirm - doing first on every column isn't ideal, is groupBy optional?
   feature_list:
     promo_charge_type: "first(promo_charge_type)"
     promo_class: "first(promo_class)"
@@ -14,7 +15,6 @@ int_l1_postpaid:
     promo_price_type: "first(promo_price_type)"
     promo_start_dttm: "first(promo_start_dttm)"
     promo_status: "first(promo_status)"
-
   event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
   granularity: "crm_subscription_id, partition_date"
   join_column_with_cust_profile:
@@ -22,30 +22,6 @@ int_l1_postpaid:
     event_partition_date: event_partition_date
 
   partition_num_per_job: 10
-
-l1_prepaid_join:
-  feature_list:
-    promo_charge_type: "first(promo_charge_type)"
-    promo_class: "first(promo_class)"
-    previous_main_promotion_id: "first(previous_main_promotion_id)"
-    previous_promo_end_dttm: "first(previous_promo_end_dttm)"
-    promo_cd: "first(promo_cd)"
-    promo_user_cat_cd: "first(promo_user_cat_cd)"
-    mobile_num: "first(mobile_num)"
-    promo_end_dttm: "first(promo_end_dttm)"
-    promo_status_end_dttm: "first(promo_status_end_dttm)"
-    promo_package_price: "first(promo_package_price)"
-    promo_name: "first(promo_name)"
-    promo_price_type: "first(promo_price_type)"
-    promo_start_dttm: "first(promo_start_dttm)"
-    promo_status: "first(promo_status)"
-  event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
-  granularity: "access_method_num, partition_date"
-  join_column_with_cust_profile:
-    access_method_num: access_method_num
-    event_partition_date: event_partition_date
-  partition_num_per_job: 10
-
 
 int_l1_product_active_customer_promotion_features:
   where_clause: "where lower(promo_status) = 'active'"
@@ -76,6 +52,9 @@ int_l1_product_active_customer_promotion_features:
     product_fbb_flag: "max(boolean(lower(promo_user_cat_cd) like '%fbb%'))"
     product_landline_flag: "max(boolean(lower(promo_name) like '%landline%'))"
     product_mobile_flag: "max(boolean(mobile_num is not null))"
+    subscription_identifier: "first(subscription_identifier)"       # TODO Confirm - is there an alternative approach?
+    national_id_card: "first(national_id_card)"                     # TODO Confirm - is there an alternative approach?
+    access_method_num: "first(access_method_num)"                   # TODO Confirm - is there an alternative approach?
 
   event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
   granularity: "crm_subscription_id, partition_date"

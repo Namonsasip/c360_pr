@@ -5,7 +5,7 @@ from pyspark.sql.window import Window
 from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
-    data_non_availability_and_missing_check
+    data_non_availability_and_missing_check, l1_massive_processing
 
 
 def union_master_package_table(
@@ -70,11 +70,6 @@ def union_master_package_table(
     unioned_ontop_master.createOrReplaceTempView("unioned_ontop_master")
     unioned_ontop_master.cache()
 
-    # print("unioned_main_master")
-    # unioned_main_master.show(10, False)
-    # print("unioned_ontop_master")
-    # unioned_ontop_master.show(10, False)
-
 
 def join_with_master_package(
         grouped_cust_promo_df,
@@ -105,13 +100,6 @@ def join_with_master_package(
     #     return get_spark_empty_df()
     #
     # ################################# End Implementing Data availability checks ###############################
-
-    grouped_cust_promo_df.filter(F.col("access_method_num").isin([
-        "H+Qh3mvgVftwZLr26rzpc+Fo9Z1CsMCmbvI6cJWmBN4N8iOuC24pob9lE0xe01FG",
-        "l+PoGikDG2NhkqHvpPEORmm1O4GZES8zcJ31dEAbyaROyi5cpiVMUBZUqJGc1f9U",
-        "HehqZXiNVovT6M.r+BaCT7fhKfvfsrzCrPpxZDMN3Ee.hls2hZ2vv9K+gKu9yoHa",
-        "HZBYTDGI+nZiRG0gJcr7rCZxzORAI1Ge9z4NucAcWQsbh7G.k6CMLkV5+NOtXDQX",
-    ])).show()
 
     min_value = union_dataframes_with_missing_cols(
         [
@@ -274,23 +262,7 @@ def l1_prepaid_processing(prepaid_main_df: DataFrame,
     prepaid_ontop_df = prepaid_ontop_df.alias("prepaid_ontop_df")
     main_master_promotion_df = main_master_promotion_df.alias("main_master_promotion_df")
     ontop_master_promotion_df = ontop_master_promotion_df.alias("ontop_master_promotion_df")
-
-    customer_profile_columns = []
-
-    # prepaid_main_customer_df = (prepaid_main_df
-    #                                .join(customer_profile_df,
-    #                                      (F.col("prepaid_main_df.access_method_num") == F.col("customer_profile_df.access_method_num")) &
-    #                                      (F.to_date(F.col("prepaid_main_df.partition_date").cast(StringType()), "yyyyMMdd") >=
-    #                                       F.to_date(F.col("customer_profile_df.register_date").cast(StringType()), "yyyyMMdd")),
-    #                                      "inner"
-    #                                      )
-    #                                .withColumn("max_register_date", F.max("register_date")
-    #                                            .over(Window.partitionBy("prepaid_main_df.access_method_num", "prepaid_main_df.partition_date")))
-    #                                .where(F.col("register_date") == F.col("max_register_date"))
-    #                                .select([f"prepaid_main_df.{i}" for i in prepaid_main_df.columns] + ["register_date"])
-    #                                )
-
-    # prepaid_main_customer_df = prepaid_main_customer_df.alias("prepaid_main_customer_df")
+    customer_profile_df = customer_profile_df.alias("customer_profile_df")
 
     prepaid_main_master_promotion_df = (prepaid_main_df
                                    .join(main_master_promotion_df, "package_id", "inner")
@@ -331,8 +303,7 @@ def l1_prepaid_processing(prepaid_main_df: DataFrame,
         F.col("partition_date").cast(StringType()).alias("partition_date"),
         F.lit("Recurring").alias("promo_price_type"),
         F.to_date(F.col("effective_date").cast(StringType()), 'yyyy-MM-dd').alias("promo_start_dttm"),
-        F.col("promo_status").alias("promo_status"),
-        # F.col("register_date").alias("register_date")
+        F.col("promo_status").alias("promo_status")
     ))
 
     prepaid_ontop_master_promotion_df = (prepaid_ontop_df
@@ -359,13 +330,39 @@ def l1_prepaid_processing(prepaid_main_df: DataFrame,
         F.lit("active").alias("promo_status")
     ))
 
-    return prepaid_main_new_df.unionByName(prepaid_ontop_new_df)
+    prepaid_union = prepaid_main_new_df.unionByName(prepaid_ontop_new_df).alias("prepaid_union")
+
+    max_register_date_window = Window.partitionBy("prepaid_union.access_method_num", "prepaid_union.partition_date")
+    customer_profile_columns = [
+        "start_of_week", "start_of_month", "subscription_identifier", "national_id_card",
+        "old_subscription_identifier", "register_date", "event_partition_date"
+    ]
+
+    prepaid_union_cus_df = (prepaid_union
+        .join(customer_profile_df,
+              (F.col("prepaid_union.access_method_num") == F.col(
+                  "customer_profile_df.access_method_num")) &
+              (F.to_date(F.col("prepaid_union.partition_date").cast(StringType()),
+                         "yyyyMMdd") >=
+               F.to_date(F.col("customer_profile_df.register_date").cast(StringType()),
+                         "yyyyMMdd")),
+              "inner"
+              )
+        .withColumn("max_register_date", F.max("register_date").over(max_register_date_window))
+        .where(F.col("register_date") == F.col("max_register_date"))
+        .select(
+            [f"prepaid_union.{i}" for i in prepaid_union.columns] + customer_profile_columns
+        )
+    )
+
+    return prepaid_union_cus_df
 
 
 def union_prepaid_postpaid(postpaid_df: DataFrame, prepaid_df: DataFrame) -> DataFrame:
 
-    prepaid_df.printSchema()
-    postpaid_df.printSchema()
+    # Handle crm_subscription_id
+    prepaid_df = prepaid_df.withColumn("crm_subscription_id", F.col("old_subscription_identifier"))
+    postpaid_df = postpaid_df.withColumn("crm_subscription_id", F.col("old_subscription_identifier"))
 
     columns_to_select = [
         'access_method_num',
@@ -388,13 +385,36 @@ def union_prepaid_postpaid(postpaid_df: DataFrame, prepaid_df: DataFrame) -> Dat
         'promo_user_cat_cd',
         'start_of_month',
         'start_of_week',
-        'subscription_identifier'
+        'subscription_identifier',
+        'crm_subscription_id'
     ]
 
     prepaid_df = prepaid_df.select(columns_to_select)
     postpaid_df = postpaid_df.select(columns_to_select)
 
-    print("Null partition prepaid_df", prepaid_df.filter(F.col("partition_date").isNull()).count())
-    print("Null partition postpaid_df", postpaid_df.filter(F.col("partition_date").isNull()).count())
-
     return prepaid_df.unionByName(postpaid_df)
+
+
+def l1_build_product(
+    product_df: DataFrame,
+    int_l1_product_active_customer_promotion_features: dict
+) -> DataFrame:
+
+    ################################# Start Implementing Data availability checks #############################
+    # product_df = data_non_availability_and_missing_check(
+    #     df=product_df,
+    #     grouping="daily", par_col="partition_date",
+    #     target_table_name="int_l1_product_active_customer_promotion_features_temp",
+    #     missing_data_check_flg='Y')
+
+    min_value = union_dataframes_with_missing_cols([
+            product_df.select(F.max(F.col("partition_date")).alias("max_date")),
+    ]).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    product_df = product_df.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+
+    ################################# End Implementing Data availability checks ###############################
+
+    return_df = l1_massive_processing(product_df, int_l1_product_active_customer_promotion_features)
+
+    return return_df
