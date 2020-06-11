@@ -622,14 +622,20 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     "select * from df_to_write where {0} > to_date(cast('{1}' as String)) ".format(filter_col,
                                                                                                    tgt_filter_date))
 
-                if len(df_with_lookback_to_write.head(1)) == 0:
-                # if df_with_lookback_to_write.count() == 0:
-                    logging.info("No new partitions to write at target dataset")
-                else:
-                    df_with_lookback_to_write.write.partitionBy(partitionBy).mode(mode).format(
+                # if len(df_with_lookback_to_write.head(1)) == 0:
+                # # if df_with_lookback_to_write.count() == 0:
+                #     logging.info("No new partitions to write at target dataset")
+                # else:
+                #     df_with_lookback_to_write.write.partitionBy(partitionBy).mode(mode).format(
+                #         file_format).save(filewritepath)
+                #     logging.info("Updating metadata table for lookback dataset scenario")
+                #     self._update_metadata_table(spark, metadata_table_path, target_table_name, filewritepath,
+                #                                 mode, file_format, partitionBy, read_layer, target_layer, mergeSchema)
+
+                df_with_lookback_to_write.write.partitionBy(partitionBy).mode(mode).format(
                         file_format).save(filewritepath)
-                    logging.info("Updating metadata table for lookback dataset scenario")
-                    self._update_metadata_table(spark, metadata_table_path, target_table_name, filewritepath,
+                logging.info("Updating metadata table for lookback dataset scenario")
+                self._update_metadata_table(spark, metadata_table_path, target_table_name, filewritepath,
                                                 mode, file_format, partitionBy, read_layer, target_layer, mergeSchema)
 
             else:
