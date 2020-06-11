@@ -257,6 +257,11 @@ def l4_geo_home_weekday_city_citizens(home_work_location_id, master, sql):
     max_date = master.selectExpr('max(partition_date)').collect()[0][0]
     master = master.where('partition_date=' + str(max_date))
 
+    # Add start_of_month in master
+    master = master.withColumn("start_of_month", F.to_date(F.date_trunc('month', F.to_date(F.col("partition_date").cast(StringType()),
+                                                                             'yyyyMMdd'))))
+    master.drop('partition_date')
+
     # Join Home and master
     home_location_id_master = home_work_location_id.join(master,
                                                          [
