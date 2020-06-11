@@ -13,7 +13,7 @@ import statistics
 from pyspark.sql import Window
 from customer360.utilities.spark_util import get_spark_session
 
-def l4_geo_top_visit_exclude_homework(sum_duration,homework,sql):
+def l4_geo_top_visit_exclude_homework(sum_duration,homework):
     win = Window().partitionBy('imsi').orderBy(F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
     sum_duration_3mo = sum_duration.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd")).withColumn(
         "Sum", F.sum("sum_duration").over(win))
@@ -30,12 +30,15 @@ def l4_geo_top_visit_exclude_homework(sum_duration,homework,sql):
                          'left').select(result.imsi, 'location_id', 'sum_duration', result.start_of_month)
     win = Window.partitionBy("start_of_month", "imsi").orderBy(F.col("sum_duration").desc(), F.col("location_id"))
     result = result.withColumn("rank", F.row_number().over(win))
-    rank1 = result.where('rank=1').withColumn('top_location_1st',F.col('location_id')).drop('location_id','rank')
-    rank2 = result.where('rank=2').withColumn('top_location_2nd',F.col('location_id')).drop('location_id','rank')
-    rank3 = result.where('rank=3').withColumn('top_location_3rd',F.col('location_id')).drop('location_id','rank')
+    rank1 = result.where('rank=1').withColumn('top_location_1st',F.col('location_id')).drop('location_id','rank','sum_duration')
+    rank2 = result.where('rank=2').withColumn('top_location_2nd',F.col('location_id')).drop('location_id','rank','sum_duration')
+    rank3 = result.where('rank=3').withColumn('top_location_3rd',F.col('location_id')).drop('location_id','rank','sum_duration')
 
-    df = rank1.union(rank2).union(rank3)
-    print('dummy for merge conflict')
+
+    df = rank1.join(rank2,['imsi','start_of_month'],'full').join(rank3,['imsi','start_of_month'],'full')
+
+    print('testtest')
+    df.show()
 
     return df
 
