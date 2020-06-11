@@ -36,7 +36,7 @@ l5_nba_master_table_only_accepted:
 l5_average_arpu_untie_lookup:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/NBA/l5_nba_master_table_only_accepted/
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_average_arpu_untie_lookup/
   save_args:
     mode: "overwrite"
 
