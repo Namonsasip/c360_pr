@@ -30,11 +30,11 @@ import logging
 from typing import Any, Dict, List, Tuple
 
 import pyspark.sql.functions as func
+from cvm.src.features.parametrized_features import build_feature_from_parameters
 from cvm.src.targets.ard_targets import get_ard_targets
 from cvm.src.targets.churn_targets import filter_usage, get_churn_targets
 from cvm.src.utils.feature_selection import feature_selection
 from cvm.src.utils.list_targets import list_targets
-from cvm.src.utils.parametrized_features import build_feature_from_parameters
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
 from cvm.src.utils.utils import get_clean_important_variables, impute_from_parameters
 from pyspark.sql import DataFrame
