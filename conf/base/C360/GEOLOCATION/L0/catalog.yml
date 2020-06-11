@@ -14,6 +14,11 @@ l0_mst_cell_masterplan_for_l1_geo_area_from_ais_store_daily:
   filepath: /mnt/customer360-blob-data/C360/GEO/geo_mst_cell_masterplan/
   file_format: parquet
 
+l0_mst_cell_masterplan_for_l4_geo_home_weekday_city_citizens:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/GEO/geo_mst_cell_masterplan/
+  file_format: parquet
+
 l0_geo_cust_cell_visit_time_for_l1_geo_area_from_ais_store_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time_daily/

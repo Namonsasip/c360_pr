@@ -249,7 +249,31 @@ def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
     df = node_from_config(df_combine_home_work, sql)
     return df
 
-def l4_geo_population_aroud_home(geo_home_work_loation_id, cell_masterplan,sql):
-    geo_home_work_loation_id.cache()
-    cell_masterplan.cache()
-    return None
+def l4_geo_home_weekday_city_citizens(home_work_location_id, master, sql):
+
+    # Get last master
+    max_date = master.selectExpr('max(partition_date)').collect()[0][0]
+    master = master.where('partition_date=' + str(max_date))
+
+    # Join Home and master
+    home_location_id_master = home_work_location_id.join(master,
+                         [home_work_location_id.home_weekday_location_id == master.location_id, home_work_location_id.start_of_month == master.start_of_month],
+                         'left').select(home_work_location_id.start_of_month, 'imsi', 'home_weekday_location_id', 'region_name', 'province_name', 'district_name', 'sub_district_name')
+
+    # Check DataFrame from SQL query statement
+    print("Start for check the result from sql query statement JOIN")
+
+    home_weekday_window = Window().partitionBy(F.col('start_of_month'), F.col('region_name'),
+                              F.col('province_name'), F.col('district_name'),
+                              F.col('sub_district_name'))
+
+    home_location_id_master = home_location_id_master.withColumn('citizens', F.approx_count_distinct(F.col("imsi")).over(home_weekday_window)) \
+        .dropDuplicates(['start_of_month', 'region_name', 'province_name', 'district_name', 'sub_district_name', 'citizens']) \
+        .select('start_of_month', 'region_name', 'province_name', 'district_name', 'sub_district_name', 'citizens')
+
+    # Check DataFrame from SQL query statement
+    print("Start for check the result from sql query statement WINDOW")
+
+    df = node_from_config(home_location_id_master, sql)
+
+    return df
