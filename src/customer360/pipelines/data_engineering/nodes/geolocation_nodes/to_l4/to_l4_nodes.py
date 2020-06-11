@@ -35,7 +35,7 @@ def l4_geo_top_visit_exclude_homework(sum_duration,homework,sql):
     rank3 = result.where('rank=3').withColumn('top_location_3rd',F.col('location_id')).drop('location_id','rank')
 
     df = rank1.union(rank2).union(rank3)
-
+    print('dummy for merge conflict')
 
     return df
 
