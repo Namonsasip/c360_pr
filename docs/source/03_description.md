@@ -41,6 +41,66 @@ These could be changed in `parameters_*.yml` files.
 
 ## Data preparation submodule
 
+## Modelling submodule
+The thing that everybody focuses on when talking about CVM projects are the prediction models.
+Once we have all data prepared we can preprocess the data, train new models and use already
+trained models to predict future revenue dilution / churn propensity. There are multiple models
+for multiple macrosegments. All models are validated. Results of validation and models
+themselves are saved on Performance AI server.
+
+### How does preprocessing work?
+Preprocessing is a process of preparing the data specifically for the models to train / predict.
+Preprocessing is done by pipelines listed in `src/cvm/preprocessing/pipeline.py`.
+Let's assume that the model we want to use in prediction does not allow for `null` values
+in the data. That means that for this model we have to impute those values. This could be not
+true for another model class, thus feature imputation is part of preprocessing pipeline.
+
+Imagine we choose to use median imputation strategy. In order to be able to fill missing data
+with median we have to first calculate those using training data and use those calculated
+median when predicting daily. That means we have to save the medians aside for prediction.
+The same remark can be applied to many preprocessing stages that we can do (eg scaling the data).
+Because of that preprocessing pipeline has to be trained and saved aside to be used in the future.
+Hence the existence of `pipeline_fit` and `pipeline_transform`.
+
+Currently following stages are applied to data in preprocessing pipeline:
+- dropping predefined blacklisted columns
+- filtering important columns
+- changing numerical features to float data types
+- filtering out all `null` columns
+- indexing string columns
+- median imputation of all numerical columns
+
+### What is macrosegments and modelling relation?
+Each macrosegment and target have separate targets to be trained to.
+
+### How are models trained?
+For each macrosegment and target data is preprocessed and converted to `pandas.DataFrame`.
+Then the model is trained using `sklearn` library. Checkout `src/cvm/modelling/nodes.py`.
+
+![](.images/03_description_images/0b947f51.png)
+
+If you want to change parameters / model itself, modify constructor above. Currently using
+`RandomForestClassifier`.
+
+### How are models validated?
+Before training of the models validation sample is set aside.
+Then trained model is used to predict on the data. The predictions are then used to 
+calculate metrics like AUC, precision, recall. 
+
+### What is Performance AI?
+Performance AI is a models tracking tool. Every model trained and metric created in validation
+stage is saved on Performance AI server. 
+
+![](.images/03_description_images/0a8d68ae.png)
+
+Models are saved in a group called `experiment`. One experiment is a set of models for all 
+macrosegments.
+
+### How are models used in daily predictions?
+Models are loaded from `random_forest` dataset (checkout catalog). These are broadcasted to
+`pyspark` nodes. Then, locally on each node, `pyspark` DataFrames are converted to `pandas.DataFrame`
+and fed into the model creating the propensity scores.
+
 ## Treatments submodule
 Treatments are the only reason for existence of C360 pipeline.
 The treatments submodule runs using data created in previous stages - it uses propensity scores,
@@ -55,34 +115,36 @@ Example treatment and possible fields.
 ```yaml
 treatment_name1:
   treatment_size: 15000
+  use_case: "churn"
   order_policy: "subscriber_tenure + churn5_pred"
-    rules:
-      rule1:
-        campaign_code: campaign_code1
-        limit_per_code: 1000
-        order_policy: "churn60_pred + churn5_pred"
-        variant: 'A'
-        conditions:
-          - "ard_microsegment == 'positive_arpu_m3'"
-          - "sum_rev_arpu_total_revenue_monthly_last_month >= 50"
-          - "subscriber_tenure >= 12"
-     rule2:
-       campaign_code: campaign_code2
-       limit_per_code: 1000
-       order_policy: "churn60_pred + churn5_pred"
-       variant: 'B'
-       conditions:
-         - "ard_microsegment == 'positive_arpu_m3'"
-         - "sum_rev_arpu_total_revenue_monthly_last_month >= 50"
-         - "subscriber_tenure <= 12"
-     rule3:
-         campaign_code: campaign_code3
-         limit_per_code: 3000
-         order_policy: "churn60_pred + churn5_pred"
-         conditions:
-           - "ard_microsegment == 'positive_arpu_m3'"
+  rules:
+    rule1:
+      campaign_code: campaign_code1
+      limit_per_code: 1000
+      order_policy: "churn60_pred + churn5_pred"
+      variant: 'A'
+      conditions:
+        - "ard_microsegment == 'positive_arpu_m3'"
+        - "sum_rev_arpu_total_revenue_monthly_last_month >= 50"
+        - "subscriber_tenure >= 12"
+   rule2:
+     campaign_code: campaign_code2
+     limit_per_code: 1000
+     order_policy: "churn60_pred + churn5_pred"
+     variant: 'B'
+     conditions:
+       - "ard_microsegment == 'positive_arpu_m3'"
+       - "sum_rev_arpu_total_revenue_monthly_last_month >= 50"
+       - "subscriber_tenure <= 12"
+   rule3:
+     campaign_code: campaign_code3
+     limit_per_code: 3000
+     order_policy: "churn60_pred + churn5_pred"
+     conditions:
+       - "ard_microsegment == 'positive_arpu_m3'"
 treatment_name2:
   treatment_size: 13000
+  use_case: "ard"
   order_policy: "dilution1_pred + churn5_pred"
   rules:
     rule4:
