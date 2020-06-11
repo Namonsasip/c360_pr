@@ -28,12 +28,11 @@
 import logging
 from typing import Any, Dict, Tuple
 
-from pyspark.sql import DataFrame
-from pyspark.sql.functions import lit
-
 from cvm.src.targets.churn_targets import add_days
 from cvm.src.utils.incremental_manipulation import get_latest_date
 from cvm.src.utils.utils import get_today
+from pyspark.sql import DataFrame
+from pyspark.sql.functions import lit
 
 
 def pop_most_recent(
