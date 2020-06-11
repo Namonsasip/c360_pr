@@ -39,12 +39,11 @@ l1_prepaid_join:
     promo_price_type: "first(promo_price_type)"
     promo_start_dttm: "first(promo_start_dttm)"
     promo_status: "first(promo_status)"
-    event_partition_date: event_partition_date
-
+  event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
   granularity: "access_method_num, partition_date"
   join_column_with_cust_profile:
     access_method_num: access_method_num
-    partition_date: partition_date
+    event_partition_date: event_partition_date
   partition_num_per_job: 10
 
 

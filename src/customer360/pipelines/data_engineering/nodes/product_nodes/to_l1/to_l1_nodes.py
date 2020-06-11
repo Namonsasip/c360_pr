@@ -364,10 +364,14 @@ def l1_prepaid_processing(prepaid_main_df: DataFrame,
 
 def union_prepaid_postpaid(postpaid_df: DataFrame, prepaid_df: DataFrame) -> DataFrame:
 
+    prepaid_df.printSchema()
+    postpaid_df.printSchema()
+
     columns_to_select = [
         'access_method_num',
         'mobile_num',
         'national_id_card',
+        'partition_date',
         'event_partition_date',
         'previous_main_promotion_id',
         'previous_promo_end_dttm',
@@ -390,7 +394,7 @@ def union_prepaid_postpaid(postpaid_df: DataFrame, prepaid_df: DataFrame) -> Dat
     prepaid_df = prepaid_df.select(columns_to_select)
     postpaid_df = postpaid_df.select(columns_to_select)
 
-    prepaid_df.printSchema()
-    postpaid_df.printSchema()
+    print("Null partition prepaid_df", prepaid_df.filter(F.col("partition_date").isNull()).count())
+    print("Null partition postpaid_df", postpaid_df.filter(F.col("partition_date").isNull()).count())
 
     return prepaid_df.unionByName(postpaid_df)

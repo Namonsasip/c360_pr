@@ -56,12 +56,12 @@ def product_to_l1_pipeline(**kwargs):
                 "int_l1_product_active_customer_promotion_features_union"
             ),
 
-            # node(
-            #     l1_massive_processing,
-            #     ["int_l1_product_active_customer_promotion_features_union",
-            #      "params:int_l1_product_active_customer_promotion_features"],
-            #     "int_l1_product_active_customer_promotion_features_temp"
-            # ),
+            node(
+                l1_massive_processing,
+                ["int_l1_product_active_customer_promotion_features_union",
+                 "params:int_l1_product_active_customer_promotion_features"],
+                "int_l1_product_active_customer_promotion_features_temp"
+            ),
 
             # node(
             #     join_with_master_package,
