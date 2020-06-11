@@ -47,16 +47,15 @@ def build_digital_l2_weekly_features(cxense_site_traffic: DataFrame,
 
     ################################# End Implementing Data availability checks ###############################
 
-    cust_df_cols = ['access_method_num', 'start_of_week', 'subscription_identifier']
+    cust_df_cols = ['access_method_num', 'start_of_week', 'subscription_identifier', "national_id_card"]
     join_cols = ['access_method_num', 'start_of_week']
-    cxense_site_traffic = cxense_site_traffic.withColumnRenamed("hash_id", "access_method_num") \
+    cxense_site_traffic = cxense_site_traffic.withColumnRenamed("mobile_no", "access_method_num") \
         .withColumn("partition_date", f.col("partition_date").cast(StringType())) \
         .withColumn("start_of_week", f.to_date(f.date_trunc('week', f.to_date(f.col("partition_date"), 'yyyyMMdd'))))
 
-    cust_df = cust_df.select(cust_df_cols).drop_duplicates(subset=["subscription_identifier", "start_of_week"])
+    cust_df = cust_df.select(cust_df_cols)
 
     cxense_site_traffic = cxense_site_traffic.join(cust_df, join_cols)
-    # cxense_site_traffic = cxense_site_traffic.withColumn("subscription_identifier", f.lit('ABCD'))
 
     weekly_features = node_from_config(cxense_site_traffic, weekly_dict)
     popular_url = node_from_config(cxense_site_traffic, popular_url_dict)

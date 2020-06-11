@@ -43,7 +43,7 @@ def digital_to_l2_pipeline(**kwargs):
                 build_digital_l2_weekly_features,
                 [
                  "l0_digital_cxenxse_site_traffic",
-                 "l1_customer_profile_union_daily_feature_for_usage_for_l2_digital_cxenxse_site_traffic_browser_active_time_weekly",
+                 "l2_customer_profile_union_weekly_feature_for_l2_digital_cxenxse_site_traffic_browser_active_time_weekly",
                  "params:l2_digital_cxenxse_site_traffic_weekly",
                  "params:l2_digital_cxenxse_site_traffic_popular_host_weekly",
                  "params:l2_digital_cxenxse_site_traffic_popular_postalcode_weekly",
