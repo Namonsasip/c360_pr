@@ -188,3 +188,4 @@ def create_data_upsell_master_spine_table(l5_du_target_variable_tbl: DataFrame,
             - set(["subscription_identifier", "event_partition_date"])
         ),
     )
+    return df_spine
