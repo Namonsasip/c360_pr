@@ -53,7 +53,7 @@ def geo_to_l4_pipeline(**kwargs):
 
             node(
                 l4_geo_home_weekday_city_citizens,
-                ["l4_geo_home_work_location_id_for_l4_geo_home_weeAkday_city_citizens",
+                ["l4_geo_home_work_location_id_for_l4_geo_home_weekday_city_citizens",
                  "l0_mst_cell_masterplan_for_l4_geo_home_weekday_city_citizens",
                  "params:l4_geo_home_weekday_city_citizens"
                  ],
