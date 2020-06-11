@@ -25,10 +25,10 @@ l4_area_from_competitor_store:
     sum: ["duration","num_of_times"]
   read_from: "l2"
 
-l4_geo_top_visit_exclude_homework:
-  partition_by: ["imsi"]
-  feature_list:
-    imsi: "imsi"
+#l4_geo_top_visit_exclude_homework:
+#  partition_by: ["imsi"]
+#  feature_list:
+#    imsi: "imsi"
 
 l4_geo_home_work_location_id:
   where_clause: ""
