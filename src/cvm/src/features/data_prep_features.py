@@ -28,17 +28,19 @@
 import logging
 from typing import Any, Dict
 
+import pyspark.sql.functions as func
 from cvm.src.features.parametrized_features import build_feature_from_parameters
 from cvm.src.utils.utils import impute_from_parameters
 from pandas import DataFrame
 
 
 def generate_macrosegments(
-    raw_features: DataFrame, parameters: Dict[str, Any]
+    raw_features: DataFrame, parameters: Dict[str, Any], key_date: str
 ) -> DataFrame:
     """ Setup macrosegments table.
 
     Args:
+        key_date: date to create macrosegments for.
         raw_features: DataFrame with all features.
         parameters: parameters defined in parameters.yml.
     Returns:
@@ -52,5 +54,7 @@ def generate_macrosegments(
         raw_features = build_feature_from_parameters(
             raw_features, use_case + "_macrosegment", macrosegments_defs[use_case]
         )
+    macrosegment_cols = [use_case + "_macrosegment" for use_case in macrosegments_defs]
+    cols_to_pick = macrosegment_cols + ["subscription_identifier"]
 
-    return raw_features
+    return raw_features.select(cols_to_pick).withColumn("key_date", func.lit(key_date))
