@@ -13,8 +13,8 @@ import statistics
 from pyspark.sql import Window
 from customer360.utilities.spark_util import get_spark_session
 
-def l4_geo_top_visit_exclude_homework(sum_duration,homework,sql):
 
+def l4_geo_top_visit_exclude_homework(sum_duration, homework, sql):
     result = sum_duration.join(homework, [sum_duration.imsi == homework.imsi,
                                           sum_duration.location_id == homework.home_weekday_location_id],
                                'left').select(sum_duration.imsi, 'location_id', 'sum_duration',
@@ -27,24 +27,26 @@ def l4_geo_top_visit_exclude_homework(sum_duration,homework,sql):
                          'left').select(result.imsi, 'location_id', 'sum_duration', result.start_of_month)
     win = Window.partitionBy("start_of_month", "imsi").orderBy(F.col("sum_duration").desc(), F.col("location_id"))
     result = result.withColumn("rank", F.row_number().over(win))
-    rank1 = result.where('rank=1').withColumn('top_location_1st',F.col('location_id')).drop('location_id','rank')
-    rank2 = result.where('rank=2').withColumn('top_location_2nd',F.col('location_id')).drop('location_id','rank')
-    rank3 = result.where('rank=3').withColumn('top_location_3rd',F.col('location_id')).drop('location_id','rank')
+    rank1 = result.where('rank=1').withColumn('top_location_1st', F.col('location_id')).drop('location_id', 'rank')
+    rank2 = result.where('rank=2').withColumn('top_location_2nd', F.col('location_id')).drop('location_id', 'rank')
+    rank3 = result.where('rank=3').withColumn('top_location_3rd', F.col('location_id')).drop('location_id', 'rank')
 
     df = rank1.union(rank2).union(rank3)
 
-
     return df
 
-def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
 
+def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
     # Filter 3 4 5
     geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20200301')
 
     # Add 2 columns: event_partition_date, start_of_month
     geo_cust_cell_visit_time.cache()
-    geo_cust_cell_visit_time = geo_cust_cell_visit_time.withColumn("event_partition_date", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))
-    geo_cust_cell_visit_time = geo_cust_cell_visit_time.withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col("event_partition_date"))))
+    geo_cust_cell_visit_time = geo_cust_cell_visit_time.withColumn("event_partition_date",
+                                                                   F.to_date(F.col("partition_date").cast(StringType()),
+                                                                             'yyyyMMdd'))
+    geo_cust_cell_visit_time = geo_cust_cell_visit_time.withColumn("start_of_month", F.to_date(
+        F.date_trunc('month', F.col("event_partition_date"))))
 
     # Get spark session
     spark = get_spark_session()
@@ -87,7 +89,6 @@ def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
     # Check DataFrame from SQL query statement
     print("Start for check the result from sql query statement of HOME")
 
-
     geo_cust_cell_visit_time_work = spark.sql("""
             select imsi, time_in, time_out, location_id, latitude, longitude,
                 case
@@ -123,11 +124,11 @@ def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
     # Check DataFrame from SQL query statement
     print("Start for check result from sql query statement of WORK")
 
-
     # Add column Weekend and Weekday
-    home_duration_dayily_with_weektype = df_home_daily.withColumn("week_type", F.when((F.dayofweek('event_partition_date') == 1) | (F.dayofweek('event_partition_date') == 7), 'weekend') \
-                                                            .otherwise('weekday').cast(StringType())
-                                                            )
+    home_duration_dayily_with_weektype = df_home_daily.withColumn("week_type", F.when(
+        (F.dayofweek('event_partition_date') == 1) | (F.dayofweek('event_partition_date') == 7), 'weekend') \
+                                                                  .otherwise('weekday').cast(StringType())
+                                                                  )
     home_duration_dayily_with_weektype.cache()
     home_duration_dayily_with_weektype.createOrReplaceTempView('home_duration_dayily_with_weektype')
 
@@ -154,8 +155,10 @@ def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
     df_work_monthly.cache()
     spark.catalog.dropTempView("df_work_daily")
 
-    w_home = Window().partitionBy(F.col('imsi'), F.col('location_id'), F.col('week_type')).orderBy(F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
-    df_home_combine_week_monthly_sum_last_3_day = df_home_combine_week_monthly.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd")).withColumn("Sum", F.sum("duration").over(w_home))
+    w_home = Window().partitionBy(F.col('imsi'), F.col('location_id'), F.col('week_type')).orderBy(
+        F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
+    df_home_combine_week_monthly_sum_last_3_day = df_home_combine_week_monthly.withColumn("Month", F.to_timestamp(
+        "start_of_month", "yyyy-MM-dd")).withColumn("Sum", F.sum("duration").over(w_home))
 
     df_home_combine_week_monthly_sum_last_3_day.createOrReplaceTempView('df_home_combine_week_monthly_sum_last_3_day')
     df_home_location = spark.sql("""
@@ -184,10 +187,11 @@ def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
     # Check DataFrame from SQL query statement
     print("Start for check result from sql query statement of HOME")
 
-
-
-    w_work = Window().partitionBy(F.col('imsi'), F.col('location_id')).orderBy(F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
-    df_home_combine_week_monthly_sum_last_3_day = df_work_monthly.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd")).withColumn("Sum", F.sum("duration").over(w_work))
+    w_work = Window().partitionBy(F.col('imsi'), F.col('location_id')).orderBy(
+        F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
+    df_home_combine_week_monthly_sum_last_3_day = df_work_monthly.withColumn("Month", F.to_timestamp("start_of_month",
+                                                                                                     "yyyy-MM-dd")).withColumn(
+        "Sum", F.sum("duration").over(w_work))
 
     df_home_combine_week_monthly_sum_last_3_day.createOrReplaceTempView('df_home_combine_week_monthly_sum_last_3_day')
     df_work_location = spark.sql("""
@@ -213,7 +217,6 @@ def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
 
     # Check DataFrame from SQL query statement
     print("Start for check result from sql query statement of WORK")
-
 
     df_home_location.createOrReplaceTempView('df_home_location')
     df_work_location.createOrReplaceTempView('df_work_location')
@@ -245,35 +248,41 @@ def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
     # Check DataFrame from SQL query statement
     print("Start for check the result from sql query statement FINAL")
 
-
     df = node_from_config(df_combine_home_work, sql)
     return df
 
-def l4_geo_home_weekday_city_citizens(home_work_location_id, master, sql):
 
+def l4_geo_home_weekday_city_citizens(home_work_location_id, master, sql):
     # Get last master
     max_date = master.selectExpr('max(partition_date)').collect()[0][0]
     master = master.where('partition_date=' + str(max_date))
 
     # Join Home and master
     home_location_id_master = home_work_location_id.join(master,
-                         [home_work_location_id.home_weekday_location_id == master.location_id, home_work_location_id.start_of_month == master.start_of_month],
-                         'left').select(home_work_location_id.start_of_month, 'imsi', 'home_weekday_location_id', 'region_name', 'province_name', 'district_name', 'sub_district_name')
+                                                         [
+                                                             home_work_location_id.home_weekday_location_id == master.location_id,
+                                                             home_work_location_id.start_of_month == master.start_of_month],
+                                                         'left').select(home_work_location_id.start_of_month, 'imsi',
+                                                                        'home_weekday_location_id', 'region_name',
+                                                                        'province_name', 'district_name',
+                                                                        'sub_district_name')
 
     # Check DataFrame from SQL query statement
     print("Start for check the result from sql query statement JOIN")
 
     home_weekday_window = Window().partitionBy(F.col('start_of_month'), F.col('region_name'),
-                              F.col('province_name'), F.col('district_name'),
-                              F.col('sub_district_name'))
+                                               F.col('province_name'), F.col('district_name'),
+                                               F.col('sub_district_name'))
 
-    home_location_id_master = home_location_id_master.withColumn('citizens', F.approx_count_distinct(F.col("imsi")).over(home_weekday_window)) \
-        .dropDuplicates(['start_of_month', 'region_name', 'province_name', 'district_name', 'sub_district_name', 'citizens']) \
+    home_location_id_master = home_location_id_master.withColumn('citizens',
+                                                                 F.approx_count_distinct(F.col("imsi")).over(
+                                                                     home_weekday_window)) \
+        .dropDuplicates(
+        ['start_of_month', 'region_name', 'province_name', 'district_name', 'sub_district_name', 'citizens']) \
         .select('start_of_month', 'region_name', 'province_name', 'district_name', 'sub_district_name', 'citizens')
 
     # Check DataFrame from SQL query statement
     print("Start for check the result from sql query statement WINDOW")
 
-    df = node_from_config(home_location_id_master, sql)
-
-    return df
+    df_01 = node_from_config(home_location_id_master, sql)
+    return df_01
