@@ -34,6 +34,7 @@ def l4_geo_top_visit_exclude_homework(sum_duration,homework):
     rank2 = result.where('rank=2').withColumn('top_location_2nd',F.col('location_id')).drop('location_id','rank','sum_duration')
     rank3 = result.where('rank=3').withColumn('top_location_3rd',F.col('location_id')).drop('location_id','rank','sum_duration')
 
+
     df = rank1.join(rank2,['imsi','start_of_month'],'full').join(rank3,['imsi','start_of_month'],'full')
 
     print('testtest')
