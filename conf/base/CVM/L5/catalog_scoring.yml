@@ -58,11 +58,11 @@ microsegments_macrosegments_scoring:
 
 microsegments_macrosegments_history_input_scoring:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_microsegments_macrosegments_history_input_scoring/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_microsegments_macrosegments_history_scoring/
 
 microsegments_macrosegments_history_output_scoring:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_microsegments_macrosegments_history_output_scoring/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_microsegments_macrosegments_history_scoring/
 
 train_sample_scoring:
   <<: *spark_parquet
