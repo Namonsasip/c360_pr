@@ -63,8 +63,7 @@ def get_recently_contacted(
 
 def treatments_featurize(
     propensities: DataFrame,
-    features_macrosegments_scoring: DataFrame,
-    microsegments: DataFrame,
+    prediction_sample: DataFrame,
     recent_profile: DataFrame,
     main_packs: DataFrame,
     parameters: Dict[str, Any],
@@ -72,18 +71,14 @@ def treatments_featurize(
     """ Prepare table with users and features needed for treatments generation
 
     Args:
+        prediction_sample: table with microsegments and all features needed.
         propensities: scores created by models.
-        features_macrosegments_scoring: features used to run conditions on.
-        microsegments: users and microsegments table.
         recent_profile: table with users' national ids, only last date.
         main_packs: table describing prepaid main packages.
         parameters: parameters defined in parameters.yml.
     """
     propensities_with_features = join_multiple(
-        ["subscription_identifier"],
-        propensities,
-        features_macrosegments_scoring,
-        microsegments,
+        ["subscription_identifier"], propensities, prediction_sample,
     )
     treatments_features = add_other_sim_card_features(
         propensities_with_features, recent_profile, main_packs, parameters

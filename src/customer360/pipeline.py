@@ -302,7 +302,7 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "cvm_create_kpis": create_kpis(),
         "cvm_create_report": run_report(),
         "cvm_sample_inputs": prepare_input_tables("scoring"),
-        "cvm_test": score_model("scoring"),
+        "cvm_test": generate_treatments("scoring"),
     }
 
 
