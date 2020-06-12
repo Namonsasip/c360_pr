@@ -125,11 +125,11 @@ def create_sample_dataset(
     Returns:
         Sample of table.
     """
-    subscription_id_suffix = sampling_parameters["subscription_id_suffix"]
+    subscription_id_hash_suffix = sampling_parameters["subscription_id_hash_suffix"]
     max_date = sampling_parameters["chosen_date"]
 
     sampling_stages = {
-        "filter_users": lambda dfx: filter_users(dfx, subscription_id_suffix),
+        "filter_users": lambda dfx: filter_users(dfx, subscription_id_hash_suffix),
         "take_last_date": lambda dfx: filter_latest_date(dfx, parameters, max_date),
     }
 
