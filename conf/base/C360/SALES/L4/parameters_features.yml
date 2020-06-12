@@ -57,6 +57,39 @@ l4_sales_on_top_transaction:
     "web_portal_number_of_vas_activation_on_top_transaction",
     "web_portal_volume_of_vas_activation_on_top_transaction",
 
+    "rom_number_of_on_top_transaction",
+    "rom_volume_of_on_top_transaction",
+    "rom_number_of_data_activation_on_top_transaction",
+    "rom_volume_of_data_activation_on_top_transaction",
+    "rom_number_of_voice_activation_on_top_transaction",
+    "rom_volume_of_voice_activation_on_top_transaction",
+    "rom_number_of_sms_activation_on_top_transaction",
+    "rom_volume_of_sms_activation_on_top_transaction",
+    "rom_number_of_vas_activation_on_top_transaction",
+    "rom_volume_of_vas_activation_on_top_transaction",
+
+    "ais_shop_number_of_on_top_transaction",
+    "ais_shop_volume_of_on_top_transaction",
+    "ais_shop_number_of_data_activation_on_top_transaction",
+    "ais_shop_volume_of_data_activation_on_top_transaction",
+    "ais_shop_number_of_voice_activation_on_top_transaction",
+    "ais_shop_volume_of_voice_activation_on_top_transaction",
+    "ais_shop_number_of_sms_activation_on_top_transaction",
+    "ais_shop_volume_of_sms_activation_on_top_transaction",
+    "ais_shop_number_of_vas_activation_on_top_transaction",
+    "ais_shop_volume_of_vas_activation_on_top_transaction",
+
+    "mpay_shop_number_of_on_top_transaction",
+    "mpay_shop_volume_of_on_top_transaction",
+    "mpay_shop_number_of_data_activation_on_top_transaction",
+    "mpay_shop_volume_of_data_activation_on_top_transaction",
+    "mpay_shop_number_of_voice_activation_on_top_transaction",
+    "mpay_shop_volume_of_voice_activation_on_top_transaction",
+    "mpay_shop_number_of_sms_activation_on_top_transaction",
+    "mpay_shop_volume_of_sms_activation_on_top_transaction",
+    "mpay_shop_number_of_vas_activation_on_top_transaction",
+    "mpay_shop_volume_of_vas_activation_on_top_transaction"
+
     "share_of_number_ussd_on_top_transaction",
     "share_of_volume_ussd_on_top_transaction",
     "share_of_number_call_center_on_top_transaction",
@@ -66,7 +99,13 @@ l4_sales_on_top_transaction:
     "share_of_number_retail_stores_on_top_transaction",
     "share_of_volume_retail_stores_on_top_transaction",
     "share_of_number_web_portal_number_on_top_transaction",
-    "share_of_volume_web_portal_number_on_top_transaction"
+    "share_of_volume_web_portal_number_on_top_transaction",
+    "share_of_number_rom_on_top_transaction",
+    "share_of_volume_rom_on_top_transaction",
+    "share_of_number_ais_shop_on_top_transaction",
+    "share_of_volume_ais_shop_on_top_transaction",
+    "share_of_number_mpay_on_top_transaction",
+    "share_of_volume_mpay_on_top_transaction"
     ]
   read_from: "l2"
 
