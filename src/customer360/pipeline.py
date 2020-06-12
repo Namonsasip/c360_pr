@@ -285,7 +285,7 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "cvm_create_kpis": create_kpis(),
         "cvm_create_report": run_report(),
         "cvm_sample_inputs": prepare_input_tables("scoring"),
-        "cvm_test": join_raw_features()
+        "cvm_test": join_raw_features("scoring")
     }
 
 
