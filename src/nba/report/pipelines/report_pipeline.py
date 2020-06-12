@@ -92,7 +92,7 @@ def create_use_case_view_report_data() -> Pipeline:
                     "dm43_promotion_prepaid": "dm43_promotion_prepaid",
                     "dm01_fin_top_up": "dm01_fin_top_up",
                     "dm15_mobile_usage_aggr_prepaid": "dm15_mobile_usage_aggr_prepaid",
-                    "dm07_sub_clnt_info":"dm07_sub_clnt_info",
+                    "dm07_sub_clnt_info": "dm07_sub_clnt_info",
                     "prepaid_no_activity_daily": "prepaid_no_activity_daily",
                 },
                 outputs="reporting_kpis_input",
