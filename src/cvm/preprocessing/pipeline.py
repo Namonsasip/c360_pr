@@ -26,9 +26,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from kedro.pipeline import Pipeline, node
-
 from cvm.preprocessing.nodes import pipeline_fit, pipeline_transform
+from kedro.pipeline import Pipeline, node
 
 
 def preprocessing_fit() -> Pipeline:
@@ -84,14 +83,14 @@ def preprocessing_transform(sample_type: str) -> Pipeline:
             node(
                 pipeline_transform,
                 [
-                    "features_macrosegments_{}".format(sample_type),
+                    "prediction_sample_{}".format(sample_type),
                     "important_columns",
                     "preprocessing_pipeline",
                     "parameters",
                     "null_columns",
                 ],
-                "sample_preprocessed_{}".format(sample_type),
-                name="preprocessing_transform_{}_sample".format(sample_type),
+                "prediction_sample_preprocessed_{}".format(sample_type),
+                name="preprocessing_transform",
             ),
         ]
     )
