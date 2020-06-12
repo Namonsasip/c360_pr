@@ -65,29 +65,16 @@ microsegments_macrosegments_history_output_scoring_experiment:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_microsegments_macrosegments_history_scoring_experiment/
 
-train_sample_scoring_experiment:
+prediction_sample_scoring_experiment:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_train_sample_scoring_experiment/
-
-test_sample_scoring_experiment:
-  <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_test_sample_scoring_experiment/
+  filepath: dbfs:/mnt/customer359-blob-data/C360/CVM/l5_cvm_prediction_sample_scoring_experiment/
 
 # preprocessing
-train_sample_preprocessed_scoring_experiment:
+prediction_sample_preprocessed_scoring_experiment:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_train_sample_preprocessed_scoring_experiment/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_prediction_sample_preprocessed_scoring_experiment/
 
-test_sample_preprocessed_scoring_experiment:
-  <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_test_sample_preprocessed_scoring_experiment/
-
-test_sample_predictions_scoring_experiment:
-  <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_test_sample_predictions_scoring_experiment/
-
+# propensities
 propensity_scores_scoring_experiment:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_propensity_scores_scoring_experiment/
-
-
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_propensity_scores/
