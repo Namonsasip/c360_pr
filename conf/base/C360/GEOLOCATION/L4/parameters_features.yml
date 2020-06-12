@@ -47,3 +47,97 @@ l4_geo_home_work_location_id:
     work_latitude: "work_latitude"
     work_longitude: "work_longitude"
   granularity: ""
+
+
+##==============================Update 2020-06-12 by Thatt529==========================================##
+
+###total_distance_km###
+l4_geo_total_distance_km:
+  partition_by: ["imsi"]
+  feature_list:
+    avg: ["total_distance_km"]
+    max: ["total_distance_km"]
+    min: ["total_distance_km"]
+    sum: ["total_distance_km"]
+  read_from: "l2"
+
+###Traffic_fav_location###
+l4_geo_use_traffic_home_work_weekly:
+  partition_by: ["imsi"]
+  feature_list:
+    sum: ["Home_traffic_KB","Work_traffic_KB","Top1_location_traffic_KB","Top2_location_traffic_KB"]
+  read_from: "l2"
+
+###Number_of_base_station###
+l4_number_of_base_station:
+  partition_by: ["imsi","start_of_week"]
+  feature_list:
+    avg: ["count_location","count_dist_location","count_cell_id"]
+    max: ["count_location","count_dist_location","count_cell_id"]
+    min: ["count_location","count_dist_location","count_cell_id"]
+    sum: ["count_location","count_dist_location","count_cell_id"]
+  read_from: "l2"
+
+###feature_sum_voice_location###
+l4_geo_call_home_work_location_weekly:
+  partition_by: ["imsi"]
+  feature_list:
+    sum: ["call_count_location_home_weekday","call_count_location_work","call_count_location_top_1st","call_count_location_top_2nd"]
+  read_from: "l2"
+
+###Number of Unique Cells Used###
+l4_geo_number_unique_cell:
+  partition_by: ["event_partition_date"]
+  feature_list:
+    avg: ["durations_num"]
+    max: ["durations_num"]
+    min: ["durations_num"]
+  read_from: "l1"
+
+###feature_AIS_store###
+l4_geo_last_AIS_store_visit:
+  where_clause: "landmark_cat_name_en in ('AIS')"
+  feature_list:
+    imsi: "imsi"
+    store_location_id:  "geo_shape_id"
+    store_name: "landmark_name_th"
+    store_category: "landmark_sub_name_en"
+    last_visit: "time_in"
+    partition_month: "partition_month"
+  granularity: ""
+
+l4_geo_most_AIS_store_visit:
+  where_clause: "landmark_cat_name_en in ('AIS')"
+  feature_list:
+    imsi: "imsi"
+    store_location_id:  "geo_shape_id"
+    store_name: "landmark_name_th"
+    store_category: "landmark_sub_name_en"
+    visit_count: "count(time_in)"
+    partition_month: "partition_month"
+  granularity: ""
+
+l4_geo_store_close_to_home:
+  where_clause: ""
+  feature_list:
+    imsi: "imsi"
+    weekday_home_id:  "home_weekday_location_id"
+    range_from_weekday_home:  "range_from_weekday_home"
+    weekday_branch_name:  "wd_location"
+    weekday_branch_location_id: "wd_location_id"
+    weekend_home_id:  "home_weekend_location_id"
+    range_from_weekend_home:  "range_from_weekend_home"
+    weekend_branch_name:  "we_location"
+    weekend_branch_location_id: "we_location_id"
+  granularity: ""
+
+l4_geo_store_close_to_work:
+  where_clause: ""
+  feature_list:
+    imsi: "imsi"
+    weekday_home_id:  "work_location_id"
+    range_from_weekday_home:  "range_from_work"
+    weekday_branch_name:  "branch"
+    weekday_branch_location_id: "branch_location_id"
+  granularity: ""
+

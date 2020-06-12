@@ -32,6 +32,45 @@ def geo_to_l2_pipeline(**kwargs):
                  ],
                 "l2_geo_area_from_competitor_store_weekly"
             ),
+            ##==============================Update 2020-06-12 by Thatt529==========================================##
+
+            ###total_distance_km###
+            node(
+                l2_geo_total_distance_km_weekly,
+                ["l1_geo_total_distance_km_daily_for_l2_geo_total_distance_km_weekly",
+                 "params:l2_geo_total_distance_km_weekly"
+                 ],
+                "l2_geo_total_distance_km_weekly"
+            ),
+
+            ###Traffic_fav_location###
+            node(
+                l2_geo_use_traffic_home_work_weekly,
+                ["l1_geo_use_traffic_home_work",
+                 "params:l2_geo_use_traffic_home_work_weekly"
+                 ],
+                "l2_geo_use_traffic_home_work_weekly"
+            ),
+
+            ###Number_of_base_station###
+            node(
+                l2_geo_data_count_location_weekly,
+                ["l1_int_geo_cust_cell_visit_time_for_l1_geo_number_of_bs_used"
+                 "params:l2_geo_data_count_location_weekly"],
+                "l2_geo_data_count_location_weekly"
+            ),
+
+            ###feature_sum_voice_location###
+            node(
+                l2_geo_call_home_work_location_weekly,
+                ["l1_geo_call_location_home_work_daily_for_l2_geo_call_location_home_work_weekly",
+                 "params:l2_geo_call_location_home_work_weekly"
+                 ],
+                "l2_geo_call_location_home_work_weekly"
+            ),
+
+            ###feature_AIS_store###
+
 
         ], name="geo_to_l2_pipeline"
     )

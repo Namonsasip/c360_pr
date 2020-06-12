@@ -137,3 +137,111 @@ l1_geo_total_distance_km_daily_for_l3_geo_total_distance_km_monthly:
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
     lookback: '0'
+
+###Traffic_fav_location###
+l1_geo_use_traffic_home_work:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l1_features/geo_use_traffic_most_location/
+  file_format: parquet
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+
+l1_geo_use_traffic_home_work_for_l2_geo_use_traffic_home_work_weekly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l1_features/geo_use_traffic_most_location/
+  file_format: parquet
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'geo_use_traffic_home_work_weekly'
+    read_layer: 'l1_daily'
+    target_layer: 'l2_weekly'
+    lookback: '0'
+
+l1_geo_use_traffic_home_work_weekly_for_l3_geo_use_traffic_home_work_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l1_features/geo_use_traffic_most_location/
+  file_format: parquet
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l3_geo_use_traffic_home_work_monthly'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+
+###Number_of_base_station###
+l1_int_geo_cust_cell_visit_time_for_l1_geo_number_of_bs_used_20200101:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  filepath: /mnt/customer360-blob-data/C360/GEO/l1_features/geo_cust_cell_visit_time/
+  metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_geo_number_of_bs_used'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+###feature_sum_voice_location###
+l1_geo_call_location_home_work_daily:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l1_features/geo_call_location_home_work_daily/
+  file_format: parquet
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+
+l1_geo_call_location_home_work_daily_for_l2_geo_call_location_home_work_weekly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_call_location_home_work_weekly/
+  file_format: parquet
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l2_geo_call_location_home_work_weekly'
+    read_layer: 'l1_daily'
+    target_layer: 'l2_weekly'
+    lookback: '0'
+
+l1_geo_call_location_home_work_daily_for_l3_geo_call_location_home_work_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l3_features/geo_call_location_home_work_monthly/
+  file_format: parquet
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l3_geo_call_location_home_work_monthly'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+###Number of Unique Cells Used###
+l1_int_geo_num_unique_cell_for_l1_geo:
+        type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+        file_format: "parquet"
+        filepath: /mnt/customer360-blob-data/C360/GEO/l1_features/usage_sum_data_location_daily_l1/
+        metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+        load_args:
+          increment_flag: 'no'
+          partitionBy: "event_partition_date"
+          read_layer: 'l1_daily'
+          target_layer: 'l1_daily'
+          lookback: '0'
+
+
+###feature_AIS_store###
+l1_location_of_visit_ais_store_daily_for_l4_location_of_last_visit_ais_store:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-data/C360/GEO/l1_features/geo_location_of_visit_ais_store_daily/
+  file_format:  parquet
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l4_location_of_last_visit_ais_store'
+    read_layer: 'l1_daily'
+    target_layer: 'l4_weekly'
+    lookback: '0'

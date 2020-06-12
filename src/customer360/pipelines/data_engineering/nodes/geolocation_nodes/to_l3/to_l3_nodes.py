@@ -23,3 +23,22 @@ def l3_geo_area_from_competitor_store_monthly(df,sql):
     df = node_from_config(df, sql)
     return df
 
+##==============================Update 2020-06-12 by Thatt529==========================================##
+
+###total_distance_km###
+def l3_geo_total_distance_km_monthly(df,sql):
+    df = node_from_config(df, sql)
+    return df
+
+###Traffic_fav_location###
+def l3_geo_use_Share_traffic_monthly(df,sql):
+    l3_df = df.withColumn("start_of_month", F.to_date(F.date_trunc('month', "event_partition_date"))).drop( 'event_partition_date')
+    l3_df_2 = node_from_config(l3_df,sql)
+    return l3_df_2
+
+###feature_sum_voice_location###
+def l3_geo_call_location_home_work_monthly(df,sql):
+    l3_df = df.withColumn("start_of_month", F.to_date(F.date_trunc('month', "event_partition_date"))).drop( 'event_partition_date')
+    l3_df_2 = node_from_config(l3_df,sql)
+    return l3_df_2
+

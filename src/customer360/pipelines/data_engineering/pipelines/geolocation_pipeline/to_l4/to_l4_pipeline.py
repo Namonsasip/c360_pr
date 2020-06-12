@@ -49,6 +49,80 @@ def geo_to_l4_pipeline(**kwargs):
                  "params:l4_geo_home_work_location_id"
                  ],
                 "l4_geo_home_work_location_id"
+            ),
+            ##==============================Update 2020-06-12 by Thatt529==========================================##
+
+            ###total_distance_km###
+            node(
+                l4_rolling_window,
+                ["l2_geo_total_distance_km_weekly_for_l4_geo_total_distance_km",
+                 "params:l4_geo_total_distance_km"
+                 ],
+                "l4_geo_total_distance_km"
+            ),
+
+            ###Traffic_fav_location###
+            node(
+                l4_Share_traffic,
+                ["l2_geo_area_from_competitor_store_weekly_for_l4_geo_area_from_competitor_store",
+                 "params:l4_area_from_competitor_store"
+                 ],
+                "l4_geo_use_traffic_home_work_weekly"
+            ),
+
+            ###Number_of_base_station###
+            node(
+                l4_rolling_window,
+                ["l2_geo_cust_cell_visit_time_weekly_for_l4_geo_cust_cell_visit_time",
+                 "params:l4_number_of_base_station"],
+                "l4_number_of_base_station"
+            ),
+
+            ###feature_sum_voice_location###
+            node(
+                l4_rolling_window,
+                ["l2_geo_call_location_home_work_weekly_for_l4_geo_call_location_home_work_weekly",
+                 "params:l4_geo_call_location_home_work_weekly"
+                 ],
+                "l4_geo_call_location_home_work_weekly"
+            ),
+
+            ###Number of Unique Cells Used###
+            node(
+                l4_rolling_window,
+                ["l1_geo_cust_cell_visit_time_for_weekly",
+                 "params:l4_geo_number_unique_cell"],
+                "l4_geo_number_unique_cell"
+            ),
+
+            ###feature_AIS_store###
+            node(
+                l4_geo_last_AIS_store_visit,
+                ["l1_location_of_visit_ais_store_daily_for_l4_location_of_last_visit_ais_store",
+                 "params:l4_geo_last_AIS_store_visit"
+                 ],
+                "l4_geo_last_AIS_store_visit"
+            ),
+            node(
+                l4_geo_most_AIS_store_visit,
+                ["l1_location_of_visit_ais_store_daily_for_l4_location_of_last_visit_ais_store",
+                 "params:l4_geo_most_AIS_store_visit"
+                 ],
+                "l4_geo_most_AIS_store_visit"
+            ),
+            node(
+                l4_geo_store_close_to_home,
+                ["l4_geo_home_work_location_id",
+                 "params:l4_geo_store_close_to_home"
+                 ],
+                "l4_geo_store_close_to_home"
+            ),
+            node(
+                l4_geo_store_close_to_work,
+                ["l4_geo_home_work_location_id",
+                 "params:l4_geo_store_close_to_work"
+                 ],
+                "l4_geo_store_close_to_work"
             )
 
         ], name="geo_to_l4_pipeline"

@@ -16,3 +16,41 @@ l3_area_from_competitor_store_monthly:
     duration: "sum(duration)"
     num_of_times: "sum(num_of_times)"
   granularity: "imsi,start_of_month"
+
+
+##==============================Update 2020-06-12 by Thatt529==========================================##
+
+###total_distance_km###
+l3_geo_total_distance_km_monthly:
+  where_clause: ""
+  feature_list:
+    total_distance_km: "sum(total_distance_km)"
+  granularity: "imsi,start_of_month"
+
+###Traffic_fav_location###
+l3_geo_use_traffic_home_work_weekly:
+  where_clause: ""
+    feature_list:
+      Home_traffic_KB: "sum(Home_traffic_KB),"
+      Work_traffic_KB: "sum(Work_traffic_KB),"
+      Top1_location_traffic_KB: "sum(Top1_traffic_KB),"
+      Top2_location_traffic_KB: "sum(Top2_traffic_KB),"
+      share_Home_traffic_KB: "(sum(Home_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_traffic_KB)+sum(Top2_traffic_KB)),"
+      share_Work_traffic_KB: "(sum(Work_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_traffic_KB)+sum(Top2_traffic_KB),"
+      share_Top1_location_traffic_KB: "(sum(Top1_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_traffic_KB)+sum(Top2_traffic_KB),"
+      share_Top2_location_traffic_KB: "(sum(Top2_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_traffic_KB)+sum(Top2_traffic_KB),"
+    granularity: "imsi,start_of_month"
+
+###feature_sum_voice_location###
+l3_geo_call_location_home_work_monthly:
+  where_clause: ""
+    feature_list:
+      call_count_location_home_weekday: "sum(call_count_location_home_weekday),"
+      call_count_location_work: "sum(call_count_location_work),"
+      call_count_location_top_1st: "sum(call_count_location_top_1st),"
+      call_count_location_top_2nd: "sum(call_count_location_top_2nd),"
+    granularity: "imsi,start_of_month"
+
+
+###Number of Unique Cells Used###
+
