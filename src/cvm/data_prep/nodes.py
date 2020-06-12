@@ -159,7 +159,8 @@ def create_pred_sample(
         parameters: parameters defined in parameters.yml.
     """
     df = raw_features.join(microsegments, on="subscription_identifier")
-    df = add_volatility_scores(df, reve, parameters)
+    vol = add_volatility_scores(df, reve, parameters)
+    df = df.join(vol, on="subscription_identifier")
     return filter_important_only(df, important_param, parameters)
 
 
