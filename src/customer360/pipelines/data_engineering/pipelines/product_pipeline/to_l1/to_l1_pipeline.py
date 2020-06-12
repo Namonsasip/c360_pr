@@ -9,6 +9,7 @@ def product_to_l1_pipeline(**kwargs):
         [
             # Post-paid
 
+            # TODO : Confirm that can use same DAC function for multiple tables
             node(
                 dac_product_customer_promotion_for_daily,
                 "l0_product_customer_promotion_for_daily",
