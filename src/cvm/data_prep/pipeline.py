@@ -179,7 +179,6 @@ def create_cvm_microsegments(sample_type: str) -> Pipeline:
         "parameters",
         "raw_features_{}",
         "l3_customer_profile_include_1mo_non_active",
-        "microsegments_macrosegments_history_input_{}",
     ]
     inputs = [dataset.format(sample_type) for dataset in inputs]
     outputs = [
