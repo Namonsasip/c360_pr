@@ -1,4 +1,5 @@
 import logging
+import os
 from typing import Dict, List, Tuple, Union
 
 import pandas as pd
@@ -33,17 +34,17 @@ def node_l5_nba_customer_profile(
     )
 
     df_customer_profile = df_customer_profile.withColumn(
-        "customer_segment_numeric",
-        F.when(F.col("customer_segment") == "Classic", 0)
-        .when(F.col("customer_segment") == "Standard", 1)
-        .when(F.col("customer_segment") == "Gold", 2)
-        .when(F.col("customer_segment") == "Platinum", 3)
-        .when(F.col("customer_segment") == "Platinum Plus", 4)
-        .when(F.col("customer_segment") == "Emerald", 5)
-        .when(F.col("customer_segment") == "Prospect Gold", 6)
-        .when(F.col("customer_segment") == "Prospect Platinum", 7)
-        .when(F.col("customer_segment") == "Prospect Plat Plus", 8)
-        .when(F.col("customer_segment") == "Prospect Emerald", 9),
+        "mobile_segment_numeric",
+        F.when(F.col("mobile_segment") == "Classic", 0)
+        .when(F.col("mobile_segment") == "Standard", 1)
+        .when(F.col("mobile_segment") == "Gold", 2)
+        .when(F.col("mobile_segment") == "Platinum", 3)
+        .when(F.col("mobile_segment") == "Platinum Plus", 4)
+        .when(F.col("mobile_segment") == "Emerald", 5)
+        .when(F.col("mobile_segment") == "Prospect Gold", 6)
+        .when(F.col("mobile_segment") == "Prospect Platinum", 7)
+        .when(F.col("mobile_segment") == "Prospect Plat Plus", 8)
+        .when(F.col("mobile_segment") == "Prospect Emerald", 9),
     )
 
     df_customer_profile = df_customer_profile.withColumn(
@@ -76,11 +77,13 @@ def node_l5_nba_campaign_master(campaign_history_master_active: DataFrame) -> Da
 
 def node_l5_nba_master_table_spine(
     l0_campaign_tracking_contact_list_pre: DataFrame,
+    l1_customer_profile_union_daily_feature_full_load: DataFrame,
     l4_revenue_prepaid_daily_features: DataFrame,
     l5_nba_campaign_master: DataFrame,
     prioritized_campaign_child_codes: List[str],
     nba_model_group_column_prioritized: str,
     nba_model_group_column_non_prioritized: str,
+    nba_model_use_cases_child_codes: Dict[str, List[str]],
     date_min: str,  # YYYY-MM-DD
     date_max: str,  # YYYY-MM-DD
     min_feature_days_lag: int,
@@ -89,20 +92,29 @@ def node_l5_nba_master_table_spine(
 
     Args:
         l0_campaign_tracking_contact_list_pre:
+        l1_customer_profile_union_daily_feature_full_load: L1 customer profile, this is necessary
+            since subscription identifier meaning is different in L0 from other C360
+            levels, so in order to join an L0 with L4 we need tu arrange the keys
         l4_revenue_prepaid_daily_features:
         l5_nba_campaign_master:
         prioritized_campaign_child_codes: List of prioritized campaign child codes
         nba_model_group_column_prioritized: column that contains the group for which
-            prioritized cmpaigns will be trained on
-        nba_model_group_column_non_prioritized: column that contains the group for which
-            non-prioritized cmpaigns will be trained on
-        date_min:
-        date_max:
+            prioritized campaigns will be trained on
+        nba_model_group_column_non_prioritized: column that contains the group for which+
+            non-prioritized campaigns will be trained on
+        date_min: Minimum date that the spine will have. Should be a string with
+            YYYY-MM-DD format. Please consider that for the 30 day ARPU target
+            the daily ARPU is required for the 30 days before contact_date
+        date_max: Maximum date that the spine will have. Should be a string with
+            YYYY-MM-DD format. Please consider that for the 30 day ARPU target
+            the daily ARPU is required for the 30 days after contact_date, so make
+            sure you have ARPU data for at least 30 days after
         min_feature_days_lag:
 
     Returns:
 
     """
+
     # Increase number of partitions when creating master table to avoid huge joins
     spark = get_spark_session()
     spark.conf.set("spark.sql.shuffle.partitions", 2000)
@@ -146,8 +158,21 @@ def node_l5_nba_master_table_spine(
         .otherwise(None),
     )
 
-    df_spine = add_c60_dates_columns(
+    df_spine = add_c360_dates_columns(
         df_spine, date_column="contact_date", min_feature_days_lag=min_feature_days_lag
+    )
+
+    # subscription_identifier is different in L0 and all other C360 levels, so we need to add
+    # both of them to the spine, for which we use l1 customer profile as an auxiliary table
+    df_spine = df_spine.withColumnRenamed(
+        "subscription_identifier", "old_subscription_identifier"
+    ).withColumnRenamed("mobile_no", "access_method_num")
+    df_spine = df_spine.join(
+        l1_customer_profile_union_daily_feature_full_load.select(
+            "subscription_identifier", "access_method_num", "event_partition_date",
+        ),
+        on=["access_method_num", "event_partition_date"],
+        how="left",
     )
 
     # Impute ARPU uplift columns as NA means that subscriber had 0 ARPU
@@ -236,8 +261,7 @@ def node_l5_nba_master_table_spine(
 
     # Filter master table to model only with relevant campaigns
     df_spine = df_spine.filter(
-        (F.col("campaign_type") == "Rule-based")
-        & (F.col("campaign_sub_type") == "Non-trigger")
+        (F.col("campaign_sub_type") == "Non-trigger")
         & (F.substring("campaign_child_code", 1, 4) != "Pull")
     )
 
@@ -245,6 +269,7 @@ def node_l5_nba_master_table_spine(
         df_spine,
         nba_model_group_column_non_prioritized,
         nba_model_group_column_prioritized,
+        nba_model_use_cases_child_codes,
         prioritized_campaign_child_codes,
     )
 
@@ -252,11 +277,14 @@ def node_l5_nba_master_table_spine(
 
 
 def add_model_group_column(
-    df,
-    nba_model_group_column_non_prioritized,
-    nba_model_group_column_prioritized,
-    prioritized_campaign_child_codes,
+    df: pyspark.sql.DataFrame,
+    nba_model_group_column_non_prioritized: str,
+    nba_model_group_column_prioritized: str,
+    nba_model_use_cases_child_codes: Dict[str, List[str]],
+    prioritized_campaign_child_codes: List[str],
 ):
+
+    spark = get_spark_session()
 
     df = df.withColumn(
         "campaign_prioritized",
@@ -265,26 +293,61 @@ def add_model_group_column(
             F.lit(1),
         ).otherwise(F.lit(0)),
     )
+
+    # Create an auxiliary DataFrame with the name of the model group column that
+    # corresponds to each model-based campaign
+    df_model_use_cases_mapping = spark.createDataFrame(
+        pd.concat(
+            [
+                pd.DataFrame(
+                    {
+                        "campaign_child_code": use_case_child_codes,
+                        "aux_model_use_case_name": f"model_use_case={use_case_name}",
+                    }
+                )
+                for use_case_name, use_case_child_codes in nba_model_use_cases_child_codes.items()
+            ]
+        )
+    )
+
+    df = df.join(
+        F.broadcast(df_model_use_cases_mapping), on="campaign_child_code", how="left"
+    )
+
     df = df.withColumn(
         "model_group",
+        # Model based creates a group for each use case
         F.when(
-            F.col("campaign_prioritized") == 1,
-            F.concat(
-                F.lit(f"{nba_model_group_column_prioritized}="),
-                F.when(
-                    F.isnull(F.col(nba_model_group_column_prioritized)), F.lit("NULL")
-                ).otherwise(F.col(nba_model_group_column_prioritized)),
+            # (F.col("campaign_type") == "Model-based") &
+            (~F.isnull("aux_model_use_case_name")),
+            F.col("aux_model_use_case_name"),
+        ).when(
+            # Rule based campaigns
+            (F.col("campaign_type") == "Rule-based"),
+            F.when(
+                # Prioritized campaigns create a model for each campaign child code
+                F.col("campaign_prioritized") == 1,
+                F.concat(
+                    F.lit(f"{nba_model_group_column_prioritized}="),
+                    F.when(
+                        F.isnull(F.col(nba_model_group_column_prioritized)),
+                        F.lit("NULL"),
+                    ).otherwise(F.col(nba_model_group_column_prioritized)),
+                ),
+            ).otherwise(
+                # Non prioritized campaigns create a model for each campaign objective
+                F.concat(
+                    F.lit(f"{nba_model_group_column_non_prioritized}="),
+                    F.when(
+                        F.isnull(F.col(nba_model_group_column_non_prioritized)),
+                        F.lit("NULL"),
+                    ).otherwise(F.col(nba_model_group_column_non_prioritized)),
+                )
             ),
-        ).otherwise(
-            F.concat(
-                F.lit(f"{nba_model_group_column_non_prioritized}="),
-                F.when(
-                    F.isnull(F.col(nba_model_group_column_non_prioritized)),
-                    F.lit("NULL"),
-                ).otherwise(F.col(nba_model_group_column_non_prioritized)),
-            )
         ),
     )
+
+    df = df.drop("aux_model_use_case_name")
 
     # Fill NAs in group column as that can lead to problems later when converting to
     # pandas and training models
@@ -293,7 +356,7 @@ def add_model_group_column(
     return df
 
 
-def add_c60_dates_columns(
+def add_c360_dates_columns(
     df: DataFrame, date_column: str, min_feature_days_lag: int
 ) -> DataFrame:
 
@@ -352,7 +415,20 @@ def node_l5_nba_master_table(
     subset_features: Dict[str, List[str]],
     **kwargs: DataFrame,
 ) -> DataFrame:
+    """
+    Left-joins C360 features to a spine, assumes the spine already contains all the date
+    columns required for the join. This is a very computationally expensive operationE
+    and can take a long time and require a large cluster (e.g. 40 Standard_E16s_v3).
+    Args:
+        l5_nba_master_table_spine:
+        subset_features: Dictionary where keys are table names and values are a list of
+            strings with the features name to keep. No need to specify key (subscriber
+            and date) columns in here as they will be automatically selected
+        **kwargs: tables to join, key is table name and value is the DataFrame
 
+    Returns: the master tables with all features
+
+    """
     # Increase number of partitions when creating master table to avoid huge joins
     spark = get_spark_session()
     spark.conf.set("spark.sql.shuffle.partitions", 2000)
@@ -366,6 +442,7 @@ def node_l5_nba_master_table(
         "start_of_month",
         "start_of_week",
     ]
+    pdf_tables = pd.DataFrame()
 
     for table_name, df_features in kwargs.items():
 
@@ -386,7 +463,41 @@ def node_l5_nba_master_table(
         elif len(table_time_column_set) == 1:
             table_time_column = table_time_column_set.pop()
 
-        key_columns = non_date_join_cols + [table_time_column]
+        # Temporary trick to join while C360 features are not migrated to
+        # the new subscription_identifier
+        subs_sample = (
+            df_features.select("subscription_identifier")
+            .sample(1e-3)
+            .limit(100)
+            .toPandas()
+        )
+        max_sub_len = max(subs_sample["subscription_identifier"].apply(len))
+        is_old_id = max_sub_len < 30
+        longest_id = list(subs_sample["subscription_identifier"][subs_sample['subscription_identifier'].apply(len) == max_sub_len])[0]
+
+        if is_old_id:
+            logging.warning(
+                f"OLD!!!! Table {table_name} has old ID: largest is: {longest_id}. Len is: {max_sub_len}"
+            )
+            key_columns = ["old_subscription_identifier"] + [table_time_column]
+            df_features = df_features.withColumnRenamed(
+                "subscription_identifier", "old_subscription_identifier"
+            )
+            pdf_tables = pd.concat([pdf_tables, pd.DataFrame({
+                "table":[table_name],
+                "type":["old"],
+                "longest_id":[longest_id],
+            })])
+        else:
+            logging.warning(
+                f"NEW!!!! Table {table_name} has new ID: largest is: {longest_id}. Len is: {max_sub_len}"
+            )
+            key_columns = non_date_join_cols + [table_time_column]
+            pdf_tables = pd.concat([pdf_tables, pd.DataFrame({
+                "table": [table_name],
+                "type": ["new"],
+                "longest_id": [longest_id],
+            })])
 
         if table_name in subset_features.keys():
             df_features = df_features.select(
@@ -409,6 +520,8 @@ def node_l5_nba_master_table(
             )
 
         df_master = df_master.join(df_features, on=key_columns, how="left")
+
+    pdf_tables.to_csv(os.path.join("data", "join_ID_info.csv"), index=False)
 
     # Cast decimal type columns cause they don't get properly converted to pandas
     df_master = df_master.select(
@@ -465,37 +578,18 @@ def node_l5_nba_master_table_chunk_debug_arpu(
     return l5_nba_master_table_chunk_debug, pdf_extra_pai_metrics
 
 
+def node_l5_average_arpu_untie_lookup(
+    l5_nba_master_table_spine: DataFrame,
+) -> DataFrame:
+    df_untie = l5_nba_master_table_spine.groupby("campaign_child_code").agg(
+        F.mean("target_relative_arpu_increase_30d").alias("average_arpu_increase_30d")
+    )
+    return df_untie
+
+
 def node_prioritized_campaigns_analysis(
-    df_master: pyspark.sql.DataFrame,
-    prioritized_campaign_child_codes: List[str],
-    nba_model_group_column_prioritized: str,
-    nba_model_group_column_non_prioritized: str,
-    extra_keep_columns: List[str],
+    df_master: pyspark.sql.DataFrame, extra_keep_columns: List[str],
 ) -> pd.DataFrame:
-
-    df_master = df_master.withColumn(
-        "campaign_prioritized",
-        F.when(
-            F.col("campaign_child_code").isin(prioritized_campaign_child_codes),
-            F.lit(1),
-        ).otherwise(F.lit(0)),
-    )
-
-    df_master = df_master.withColumn(
-        "model_group",
-        F.when(
-            F.col("campaign_prioritized") == 1,
-            F.concat(
-                F.lit(f"{nba_model_group_column_prioritized}="),
-                F.col(nba_model_group_column_prioritized),
-            ),
-        ).otherwise(
-            F.concat(
-                F.lit(f"{nba_model_group_column_non_prioritized}="),
-                F.col(nba_model_group_column_non_prioritized),
-            )
-        ),
-    )
 
     pdf_report = (
         df_master.groupby("model_group")
@@ -592,11 +686,5 @@ def node_prioritized_campaigns_analysis(
         )
         .toPandas()
     )
-
-    pdf_report = pdf_report.merge(
-        pd.DataFrame({"campaign_child_code": prioritized_campaign_child_codes}),
-        on=["campaign_child_code"],
-        how="outer",
-    ).sort_values(["n_sent_contacts"], ascending=False)
 
     return pdf_report
