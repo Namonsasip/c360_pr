@@ -145,18 +145,21 @@ def train_test_split(
 def create_pred_sample(
     raw_features: DataFrame,
     microsegments: DataFrame,
+    reve: DataFrame,
     important_param: List[Any],
     parameters: Dict[str, Any],
 ) -> DataFrame:
     """ Creates prediction for scoring.
 
     Args:
+        reve: monthly revenue data.
         raw_features: joined table with C360 features.
         microsegments: table with macro- and microsegments.
         important_param: List of important columns.
         parameters: parameters defined in parameters.yml.
     """
     df = raw_features.join(microsegments, on="subscription_identifier")
+    df = add_volatility_scores(df, reve, parameters)
     return filter_important_only(df, important_param, parameters)
 
 

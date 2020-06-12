@@ -134,8 +134,7 @@ def add_volatility_scores(
 
     Args:
         users: DataFrame with users, subscription_identifier column will be
-        used.
-        Rest will be kept.
+        used. Rest will be kept.
         reve: Monthly revenue data.
         parameters: parameters defined in parameters.yml.
     """

@@ -206,6 +206,7 @@ def create_prediction_sample(sample_type: str) -> Pipeline:
     inputs = [
         "raw_features_{}",
         "microsegments_macrosegments_{}",
+        "l3_customer_profile_include_1mo_non_active",
         "important_columns",
         "parameters",
     ]
