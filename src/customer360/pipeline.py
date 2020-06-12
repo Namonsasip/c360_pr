@@ -58,7 +58,7 @@ from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.
 from cvm.data_prep.pipeline import training_data_prepare, scoring_data_prepare, \
     extract_features, rfe_only
 from cvm.sample_inputs.pipeline import create_users_from_tg, create_users_from_active, \
-    create_sub_id_mapping_pipeline
+    create_sub_id_mapping_pipeline, prepare_input_tables
 from cvm.modelling.pipeline import train_model, score_model
 from cvm.preprocessing.pipeline import preprocessing_fit, preprocessing_transform
 from cvm.report.pipeline import prepare_user_microsegments, create_kpis, run_report
@@ -284,6 +284,7 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "cvm_prepare_report_micro": prepare_user_microsegments(),
         "cvm_create_kpis": create_kpis(),
         "cvm_create_report": run_report(),
+        "cvm_sample_inputs": prepare_input_tables("scoring"),
         "cvm_create_sub_id_mapping": create_sub_id_mapping_pipeline()
     }
 
