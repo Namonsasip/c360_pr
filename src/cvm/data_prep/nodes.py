@@ -161,7 +161,7 @@ def create_pred_sample(
     df = raw_features.join(microsegments, on="subscription_identifier")
     vol = add_volatility_scores(df, reve, parameters)
     df = df.join(vol, on="subscription_identifier")
-    return filter_important_only(df, important_param, parameters)
+    return filter_important_only(df, important_param, parameters, include_targets=False)
 
 
 def subs_date_join_important_only(

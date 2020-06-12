@@ -60,12 +60,16 @@ def generate_macrosegments(
 
 
 def filter_important_only(
-    df: DataFrame, important_param: List[Any], parameters: Dict[str, Any],
+    df: DataFrame,
+    important_param: List[Any],
+    parameters: Dict[str, Any],
+    include_targets: bool,
 ) -> DataFrame:
     """ Filters out columns from a given table. Leaves only important columns and
     key columns.
 
     Args:
+        include_targets: should targets be picked.
         df: table to be filtered.
         important_param: List of important columns.
         parameters: parameters defined in parameters.yml.
@@ -75,5 +79,7 @@ def filter_important_only(
     must_have_features = parameters["must_have_features"]
     targets = list_targets(parameters)
     important_param = get_clean_important_variables(important_param, parameters)
-    cols_to_leave = keys + segments + must_have_features + targets + important_param
+    cols_to_leave = keys + segments + must_have_features + important_param
+    if include_targets:
+        cols_to_leave += targets
     return df.select(cols_to_leave)
