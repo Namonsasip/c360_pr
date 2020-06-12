@@ -88,7 +88,7 @@ l4_sales_on_top_transaction:
     "mpay_shop_number_of_sms_activation_on_top_transaction",
     "mpay_shop_volume_of_sms_activation_on_top_transaction",
     "mpay_shop_number_of_vas_activation_on_top_transaction",
-    "mpay_shop_volume_of_vas_activation_on_top_transaction"
+    "mpay_shop_volume_of_vas_activation_on_top_transaction",
 
     "share_of_number_ussd_on_top_transaction",
     "share_of_volume_ussd_on_top_transaction",
