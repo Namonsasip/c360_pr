@@ -30,6 +30,7 @@ from cvm.data_prep.nodes import (
     add_ard_targets,
     add_churn_targets,
     add_macrosegments,
+    create_pred_sample,
     feature_selection_all_target,
     get_micro_macrosegments,
     subs_date_join,
@@ -212,7 +213,7 @@ def create_prediction_sample(sample_type: str) -> Pipeline:
     return Pipeline(
         [
             node(
-                func=create_prediction_sample,
+                func=create_pred_sample,
                 inputs=inputs,
                 outputs="prediction_sample_{}".format(sample_type),
                 name="create_prediction_sample",

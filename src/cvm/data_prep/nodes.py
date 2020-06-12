@@ -142,7 +142,7 @@ def train_test_split(
     return train, test
 
 
-def create_prediction_sample(
+def create_pred_sample(
     raw_features: DataFrame,
     microsegments: DataFrame,
     important_param: List[Any],
