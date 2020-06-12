@@ -30,7 +30,7 @@ from typing import Any, Dict, Tuple
 
 from cvm.src.targets.churn_targets import add_days
 from cvm.src.utils.incremental_manipulation import get_latest_date
-from cvm.src.utils.utils import get_today
+from cvm.src.utils.utils import get_today, refresh_parquet
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import lit
 
@@ -68,11 +68,17 @@ def pop_most_recent(
 
     if history_df is None:
         logging.info("Using update table to initialize history")
-        return update_df.withColumn("key_date", lit(today)), update_df
+        return (
+            refresh_parquet(update_df.withColumn("key_date", lit(today)), parameters),
+            update_df,
+        )
 
     if "key_date" not in history_df.columns:
         logging.info("Column `key_date` not found, rebuilding history")
-        return update_df.withColumn("key_date", lit(today)), update_df
+        return (
+            refresh_parquet(update_df.withColumn("key_date", lit(today)), parameters),
+            update_df,
+        )
 
     history_before_today = history_df.filter("key_date <= '{}'".format(today))
     most_recent_date_in_history = get_latest_date(
@@ -92,10 +98,10 @@ def pop_most_recent(
 
     if recent_history_found and recent_history_found_for_every_user:
         logging.info("Using entry from {}".format(most_recent_date_in_history))
-        return history_df, recent_history.drop("key_date")
+        return refresh_parquet(history_df, parameters), recent_history.drop("key_date")
     else:
         logging.info("No recent entry found, recalculating")
         history_updated = history_df.append(
             update_df.withColumn("key_date", lit(today))
         )
-        return history_updated, update_df
+        return refresh_parquet(history_updated, parameters), update_df
