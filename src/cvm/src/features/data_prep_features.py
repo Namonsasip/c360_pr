@@ -26,11 +26,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import logging
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from cvm.src.features.parametrized_features import build_feature_from_parameters
-from cvm.src.utils.utils import impute_from_parameters
-from pandas import DataFrame
+from cvm.src.utils.list_targets import list_targets
+from cvm.src.utils.utils import get_clean_important_variables, impute_from_parameters
+from pyspark.sql import DataFrame
 
 
 def generate_macrosegments(
@@ -56,3 +57,23 @@ def generate_macrosegments(
     cols_to_pick = macrosegment_cols + ["subscription_identifier"]
 
     return raw_features.select(cols_to_pick)
+
+
+def filter_important_only(
+    df: DataFrame, important_param: List[Any], parameters: Dict[str, Any],
+) -> DataFrame:
+    """ Filters out columns from a given table. Leaves only important columns and
+    key columns.
+
+    Args:
+        df: table to be filtered.
+        important_param: List of important columns.
+        parameters: parameters defined in parameters.yml.
+    """
+    keys = parameters["key_columns"]
+    segments = parameters["segment_columns"]
+    must_have_features = parameters["must_have_features"]
+    targets = list_targets(parameters)
+    important_param = get_clean_important_variables(important_param, parameters)
+    cols_to_leave = keys + segments + must_have_features + targets + important_param
+    return df.select(cols_to_leave)

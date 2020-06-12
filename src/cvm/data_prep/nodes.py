@@ -30,6 +30,7 @@ import logging
 from typing import Any, Dict, List, Tuple
 
 import pyspark.sql.functions as func
+from cvm.src.features.data_prep_features import filter_important_only
 from cvm.src.features.keep_table_history import pop_most_recent
 from cvm.src.features.microsegments import (
     add_microsegment_features,
@@ -139,6 +140,24 @@ def train_test_split(
     test = train_test.filter("train_test == 'test'").drop("train_test")
 
     return train, test
+
+
+def create_prediction_sample(
+    raw_features: DataFrame,
+    microsegments: DataFrame,
+    important_param: List[Any],
+    parameters: Dict[str, Any],
+) -> DataFrame:
+    """ Creates prediction for scoring.
+
+    Args:
+        raw_features: joined table with C360 features.
+        microsegments: table with macro- and microsegments.
+        important_param: List of important columns.
+        parameters: parameters defined in parameters.yml.
+    """
+    df = raw_features.join(microsegments, on="subscription_identifier")
+    return filter_important_only(df, important_param, parameters)
 
 
 def subs_date_join_important_only(

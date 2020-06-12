@@ -199,6 +199,32 @@ def create_cvm_microsegments(sample_type: str) -> Pipeline:
     )
 
 
+def create_prediction_sample(sample_type: str) -> Pipeline:
+    """ Creates table for scoring.
+
+    Args:
+        sample_type: "scoring" if list created for scoring, "scoring_experiment" if list
+            created for scoring_experiment.
+    """
+    inputs = [
+        "raw_features_{}",
+        "microsegments_macrosegments_{}",
+        "important_param",
+        "parameters",
+    ]
+    inputs = [dataset.format(sample_type) for dataset in inputs]
+    return Pipeline(
+        [
+            node(
+                func=create_prediction_sample,
+                inputs=inputs,
+                outputs="prediction_sample_{}".format(sample_type),
+                name="create_prediction_sample",
+            )
+        ]
+    )
+
+
 def create_cvm_training_data(sample_type: str):
     """ Creates pipeline preparing data. Can create data pipeline for full dataset or
     given sample_type.
