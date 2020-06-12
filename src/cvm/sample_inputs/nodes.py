@@ -108,12 +108,17 @@ def create_users_from_active_users(
 
 
 def create_sample_dataset(
-    df: DataFrame, parameters: Dict[str, Any], sampling_parameters: Dict[str, Any],
+    df: DataFrame,
+    parameters: Dict[str, Any],
+    sampling_parameters: Dict[str, Any],
+    using_old_subscription_identifier: bool = False,
 ) -> DataFrame:
     """ Create sample of given table. Used to limit users and / or pick chosen date from
     data.
 
     Args:
+        using_old_subscription_identifier: if table contains old sub id, make it visible
+            in sample
         df: given table.
         sampling_parameters: sampling parameters defined in parameters.yml.
         parameters: parameters defined in parameters.yml.
@@ -131,6 +136,11 @@ def create_sample_dataset(
     starting_rows = df.count()
     for stage in sampling_parameters["stages"]:
         df = sampling_stages[stage](df)
+
+    if using_old_subscription_identifier:
+        df = df.withColumnRenamed(
+            "subscription_identifier", "old_subscription_identifier"
+        )
 
     log = logging.getLogger(__name__)
     log.info(f"Sample has {df.count()} rows, down from {starting_rows} rows.")

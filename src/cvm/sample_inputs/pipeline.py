@@ -26,6 +26,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import re
+from functools import partial
 
 from cvm.sample_inputs.nodes import (
     create_sample_dataset,
@@ -109,10 +110,14 @@ def sample_inputs(sample_type: str) -> Pipeline:
         "l4_usage_postpaid_prepaid_weekly_features_sum",
         "l4_touchpoints_to_call_center_features",
     ]
+    old_sub_id_datasets = ["l4_touchpoints_to_call_center_features"]
 
     nodes_list = [
         node(
-            create_sample_dataset,
+            partial(
+                create_sample_dataset,
+                using_old_subscription_identifier=dataset_name in old_sub_id_datasets,
+            ),
             inputs=[dataset_name, "parameters", "params:" + sample_type],
             # when not incremental version of dataset is used
             outputs=re.sub("_no_inc", "", dataset_name) + "_" + sample_type,
