@@ -197,7 +197,7 @@ def subs_date_join(
         if ("old_subscription_identifier" not in tab.columns)
         and ("subscription_identifier" not in tab.columns)
     ]
-    no_sub_id_present = len(tables_without_sub_ids) == 0
+    no_sub_id_present = len(tables_without_sub_ids) > 0
     if no_sub_id_present:
         raise Exception(
             "Not every table has `old_subscription_identifier`"
