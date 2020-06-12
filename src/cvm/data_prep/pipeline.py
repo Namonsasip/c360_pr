@@ -25,11 +25,6 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Example code for the nodes in the example pipeline. This code is meant
-just for illustrating basic Kedro features.
-
-PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
-"""
 
 from cvm.data_prep.nodes import (
     add_ard_targets,
@@ -47,6 +42,37 @@ from cvm.sample_inputs.pipeline import (
     sample_inputs,
 )
 from kedro.pipeline import Pipeline, node
+
+
+def join_raw_features(sample_type: str) -> Pipeline:
+    """ Join used tables to create master table with all C360 features.
+
+    Args:
+        sample_type: "scoring" if list created for scoring, "training" if list
+         created for training.
+    """
+    inputs_to_join = [
+        "cvm_users_list_{}",
+        "l3_customer_profile_include_1mo_non_active_{}",
+        "l4_daily_feature_topup_and_volume_{}",
+        "l4_usage_prepaid_postpaid_daily_features_{}",
+        "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_{}",
+        "l4_usage_postpaid_prepaid_weekly_features_sum_{}",
+        "l4_touchpoints_to_call_center_features_{}",
+    ]
+    inputs_to_join = [
+        input_dataset.format(sample_type) for input_dataset in inputs_to_join
+    ]
+    return Pipeline(
+        [
+            node(
+                func=subs_date_join,
+                inputs=["parameters"] + inputs_to_join,
+                outputs="raw_features_{}".format(sample_type),
+                name="create_raw_features_{}".format(sample_type),
+            )
+        ]
+    )
 
 
 def create_cvm_targets(sample_type: str):
