@@ -68,15 +68,13 @@ def pop_most_recent(
 
     if history_df is None:
         logging.info("Using update table to initialize history")
-        return (
-            refresh_parquet(update_df.withColumn("key_date", lit(today)), parameters),
-            update_df,
-        )
+        return update_df.withColumn("key_date", lit(today)), update_df
 
+    history_df = refresh_parquet(history_df, parameters)
     if "key_date" not in history_df.columns:
         logging.info("Column `key_date` not found, rebuilding history")
         return (
-            refresh_parquet(update_df.withColumn("key_date", lit(today)), parameters),
+            update_df.withColumn("key_date", lit(today)),
             update_df,
         )
 
@@ -98,10 +96,10 @@ def pop_most_recent(
 
     if recent_history_found and recent_history_found_for_every_user:
         logging.info("Using entry from {}".format(most_recent_date_in_history))
-        return refresh_parquet(history_df, parameters), recent_history.drop("key_date")
+        return history_df, recent_history.drop("key_date")
     else:
         logging.info("No recent entry found, recalculating")
         history_updated = history_df.append(
             update_df.withColumn("key_date", lit(today))
         )
-        return refresh_parquet(history_updated, parameters), update_df
+        return history_updated, update_df
