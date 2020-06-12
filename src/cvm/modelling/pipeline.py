@@ -26,9 +26,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from kedro.pipeline import Pipeline, node
-
 from cvm.modelling.nodes import predict_rf, train_rf, validate_log_rf
+from kedro.pipeline import Pipeline, node
 
 
 def train_model() -> Pipeline:
@@ -87,7 +86,7 @@ def score_model(sample_type: str) -> Pipeline:
             node(
                 predict_rf,
                 [
-                    "sample_preprocessed_{}".format(sample_type),
+                    "prediction_sample_preprocessed_{}".format(sample_type),
                     "random_forest",
                     "parameters",
                 ],
