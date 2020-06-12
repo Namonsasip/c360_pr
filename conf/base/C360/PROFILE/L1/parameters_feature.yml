@@ -34,6 +34,7 @@ l1_customer_profile_union_daily_feature:
     vip_flag: "vip_flag"
     royal_family_flag: "royal_family_flag"
     time_with_current_package: "null"
+    foreign_flag: "null"
 
   customer_post:
     imsi: imsi
@@ -72,6 +73,7 @@ l1_customer_profile_union_daily_feature:
     vip_flag: "vip_flag"
     royal_family_flag: "royal_family_flag"
     time_with_current_package: "datediff(current_date(), current_promotion_effdate_ma)"
+    foreign_flag: "case when cust_type = 'R' and cust_s_type = 'FOR' THEN 'Y' else 'N' end"
 
   customer_non_mobile:
     imsi: imsi
@@ -110,5 +112,6 @@ l1_customer_profile_union_daily_feature:
     vip_flag: "vip_flag"
     royal_family_flag: "royal_family_flag"
     time_with_current_package: "datediff(current_date(), current_promotion_effdate_ma)"
+    foreign_flag: "case when cust_type = 'R' and cust_s_type = 'FOR' THEN 'Y' else 'N' end"
 
 customer_profile_partition_col: "partition_date"
