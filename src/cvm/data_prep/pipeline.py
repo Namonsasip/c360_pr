@@ -31,6 +31,7 @@ from cvm.data_prep.nodes import (
     add_churn_targets,
     add_macrosegments,
     feature_selection_all_target,
+    get_micro_macrosegments,
     subs_date_join,
     subs_date_join_important_only,
     train_test_split,
@@ -159,6 +160,41 @@ def prepare_features_macrosegments(sample_type: str):
                 "features_macrosegments_" + sample_type,
                 name="create_features_macrosegments_" + sample_type,
             ),
+        ]
+    )
+
+
+def create_cvm_microsegments(sample_type: str) -> Pipeline:
+    """ Creates pipeline creating macrosegments and microsegments for scoring purposes.
+    Uses microsegment history to make them more stable.
+
+    Args:
+        sample_type: "scoring" if list created for scoring, "training" if list created
+            for training.
+
+    Returns:
+        Kedro pipeline.
+    """
+    inputs = [
+        "parameters",
+        "raw_features_{}",
+        "l3_customer_profile_include_1mo_non_active",
+        "microsegments_macrosegments_history_input_{}",
+    ]
+    inputs = [dataset.format(sample_type) for dataset in inputs]
+    outputs = [
+        "microsegments_macrosegments_history_output_{}",
+        "microsegments_macrosegments_{}",
+    ]
+    outputs = [dataset.format(sample_type) for dataset in outputs]
+    return Pipeline(
+        [
+            node(
+                func=get_micro_macrosegments,
+                inputs=inputs,
+                outputs=outputs,
+                name="create_microsegments",
+            )
         ]
     )
 

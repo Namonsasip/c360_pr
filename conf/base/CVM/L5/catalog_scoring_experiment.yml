@@ -53,9 +53,9 @@ churn_targets_scoring_experiment:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_churn_targets_scoring_experiment/
 
-macrosegments_scoring_experiment:
+microsegments_macrosegments_scoring_experiment:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_macrosegments_scoring_experiment/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_microsegments_macrosegments_scoring_experiment/
 
 microsegments_macrosegments_input_scoring_experiment:
   <<: *spark_parquet
