@@ -99,17 +99,20 @@ def produce_treatments(
     treatments_history: DataFrame,
     parameters: Dict[str, Any],
     treatments_features: DataFrame,
+    users: DataFrame,
 ) -> Tuple[DataFrame, DataFrame]:
     """  Generates treatments and updated treatments history.
 
     Args:
+        users: table with users and dates to create targets for, used to map to old sub
+            id.
         treatments_features: features used for treatments, output of treatment
             featurizer.
         parameters: parameters defined in parameters.yml.
         treatments_history: table with history of treatments.
     """
     treatments_propositions = get_treatments_propositions(
-        parameters, treatments_history, treatments_features,
+        parameters, treatments_history, treatments_features, users
     )
     treatments_history = update_history_with_treatments_propositions(
         treatments_propositions, treatments_history, parameters

@@ -29,13 +29,12 @@ import logging
 from typing import Any, Dict
 
 import pandas
-from pyspark.sql import DataFrame
-from pyspark.sql import functions as func
-
 from cvm.src.targets.churn_targets import add_days
 from cvm.src.treatments.rules import MultipleTreatments
 from cvm.src.treatments.treatment_features import add_other_sim_card_features
 from cvm.src.utils.utils import get_today, join_multiple
+from pyspark.sql import DataFrame
+from pyspark.sql import functions as func
 
 
 def get_recently_contacted(
@@ -96,6 +95,7 @@ def get_treatments_propositions(
     parameters: Dict[str, Any],
     treatments_history: DataFrame,
     treatments_features: DataFrame,
+    users: DataFrame,
 ) -> DataFrame:
     """ Generate treatments propositions basing on rules treatment.
 
@@ -104,6 +104,8 @@ def get_treatments_propositions(
             featurizer.
         parameters: parameters defined in parameters.yml.
         treatments_history: table with history of treatments.
+        users: table with users and dates to create targets for, used to map to old sub
+            id.
     Returns:
         Table with users, microsegments and treatments chosen.
     """
@@ -113,6 +115,7 @@ def get_treatments_propositions(
     treatments_propositions = treatments.apply_treatments(
         treatments_features, recently_contacted
     )
+    users = users.select("old_subscription_identifier", "subscription_identifier")
     # change output format
     treatments_propositions = (
         treatments_propositions.withColumn("date", func.lit(get_today(parameters)))
@@ -128,10 +131,12 @@ def get_treatments_propositions(
                 func.col("use_case") == "churn", func.col("churn_macrosegment")
             ).otherwise(func.col("ard_macrosegment")),
         )
+        .join(users, on="subscription_identifier")
         .select(
             [
                 "microsegment",
                 "subscription_identifier",
+                "old_subscription_identifier",
                 "macrosegment",
                 "use_case",
                 "campaign_code",
@@ -164,7 +169,9 @@ def update_history_with_treatments_propositions(
     else:
         logging.getLogger(__name__).info("Updating treatments history")
         today = get_today(parameters)
-        treatments_history = treatments_history.filter(f"key_date != '{today}'").union(
+        treatments_history = treatments_history.filter(
+            f"key_date != '{today}'"
+        ).unionByName(
             treatments_propositions.withColumn("key_date", func.lit(today)).select(
                 treatments_history.columns
             )
