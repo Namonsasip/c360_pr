@@ -52,3 +52,12 @@ l0_geo_cust_cell_visit_time_for_l1_geo_top_visit_exclude_homework:
 #  filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time_daily/
   filepath: /mnt/customer360-blob-data/C360/GEO/sample/geo_cust_cell_visit_time_daily_2/  #sample data for test
   file_format: parquet
+
+##==============================Update 2020-06-12 by Thatt529==========================================##
+
+###total_distance_km###
+l0_geo_cust_cell_visit_time_simple_data_daily:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time_daily/
+  filepath: /mnt/customer360-blob-data/C360/GEO/sample/geo_cust_cell_visit_time_sample/
+  file_format: parquet
