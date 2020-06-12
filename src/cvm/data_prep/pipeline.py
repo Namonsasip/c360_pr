@@ -37,11 +37,7 @@ from cvm.data_prep.nodes import (
     train_test_split,
 )
 from cvm.preprocessing.nodes import pipeline_fit
-from cvm.sample_inputs.pipeline import (
-    create_users_from_active,
-    create_users_from_tg,
-    sample_inputs,
-)
+from cvm.sample_inputs.pipeline import create_users_from_active, sample_inputs
 from kedro.pipeline import Pipeline, node
 
 
@@ -327,9 +323,9 @@ def scoring_data_prepare(sample_type: str) -> Pipeline:
         Kedro pipeline.
     """
     return (
-        sample_inputs(sample_type)
-        + create_users_from_tg(sample_type)
-        + prepare_features_macrosegments(sample_type)
+        join_raw_features(sample_type)
+        + create_cvm_microsegments(sample_type)
+        + create_prediction_sample(sample_type)
     )
 
 
