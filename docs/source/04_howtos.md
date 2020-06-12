@@ -35,3 +35,19 @@ Modify the constructor of `sklearn` model in `src/cvm/modelling/nodes.py` and re
 
 If you want to change parameters / model itself, modify constructor above. Currently using
 `RandomForestClassifier`.
+
+### How to modify the preprocessing step?
+
+### How to access and edit documentation?
+
+### How to browse through all the data set available?
+
+### How to select input for model training?
+
+### How to edit target for model training?
+
+### How to deploy campaign contact list from model?
+
+### How to run nodes in databricks?
+
+### How to check the logging?
