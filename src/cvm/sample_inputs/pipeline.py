@@ -136,3 +136,13 @@ def create_sub_id_mapping_pipeline() -> Pipeline:
             )
         ]
     )
+
+
+def prepare_input_tables(sample_type: str) -> Pipeline:
+    """ Creates samples for input datasets and prepares users sample.
+
+    Args:
+        sample_type: "scoring" if list created for scoring, "training" if list created
+            for training.
+    """
+    return create_users_from_tg(sample_type) + sample_inputs(sample_type)
