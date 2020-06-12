@@ -52,7 +52,7 @@ def prepare_campaigns_table(
 
     use_case_treatments.rename(
         columns={
-            "subscription_identifier": "crm_subscription_id",
+            "old_subscription_identifier": "crm_subscription_id",
             "campaign_code": "dummy01",
         },
         inplace=True,
