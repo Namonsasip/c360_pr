@@ -67,6 +67,7 @@ def pop_most_recent(
     recent_date = add_days(today, -recalculate_period_days)
 
     if history_df is None:
+        logging.info("Using update table to initialize history")
         return update_df.withColumn("key_date", lit(today)), update_df
 
     if "key_date" not in history_df.columns:
