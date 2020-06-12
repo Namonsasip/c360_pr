@@ -14,10 +14,10 @@ from pyspark.sql.types import *
 from pyspark.sql.functions import countDistinct
 
 
-conf = os.getenv("CONF", None)
+conf = os.getenv("CONF", "base")
 run_mode = os.getenv("DATA_AVAILABILITY_CHECKS", None)
 log = logging.getLogger(__name__)
-running_environment = os.getenv("RUNNING_ENVIRONMENT", None)
+running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 
 
 def union_dataframes_with_missing_cols(df_input_or_list, *args):
@@ -602,7 +602,7 @@ def data_non_availability_and_missing_check(df, grouping, par_col, target_table_
                 #print("No missing data partitions found")
                 df = df
             else:
-                logging.info("Few missing data partitions are not found in source data for these weekly partitions: {}".format(
+                logging.info("Few data partitions are not found in source data for these weekly partitions: {}".format(
                     missing_data_partition))
                 logging.info(
                     "Getting the data before minimum missing data partitions from source dataframe for further processing")

@@ -128,3 +128,29 @@ l4_network_volte_cqi:
     target_layer: 'l4_weekly'
     lookback: '12'
 
+l4_network_user_cqi:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: data/L4_FEATURES/NETWORK/l4_network_user_cqi/
+  save_args:
+    partitionBy: ["start_of_week"]
+    mode: "overwrite"
+    increment_flag: 'no'
+    lookup_table_name: 'l4_network_user_cqi'
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
+    lookback: '12'
+
+l4_network_file_transfer_cqi:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: data/L4_FEATURES/NETWORK/l4_network_file_transfer_cqi/
+  save_args:
+    partitionBy: ["start_of_week"]
+    mode: "overwrite"
+    increment_flag: 'no'
+    lookup_table_name: 'l4_network_file_transfer_cqi'
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
+    lookback: '12'
+

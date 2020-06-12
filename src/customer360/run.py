@@ -58,7 +58,7 @@ except ValueError as err:
     logging.info("findspark.init() failed with error " + str(err))
 
 conf = os.getenv("CONF", None)
-running_environment = os.getenv("RUNNING_ENVIRONMENT", None)
+running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 pipeline_to_run = os.getenv("PIPELINE_TO_RUN", None)
 
 LOG_FILE_NAME = str(datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"))
