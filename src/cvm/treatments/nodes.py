@@ -70,6 +70,7 @@ def prepare_microsegments(
 def create_treatments_features(
     propensities: DataFrame,
     prediction_sample: DataFrame,
+    microsegments: DataFrame,
     recent_profile: DataFrame,
     main_packs: DataFrame,
     parameters: Dict[str, Any],
@@ -78,13 +79,19 @@ def create_treatments_features(
 
     Args:
         propensities: scores created by models.
-        prediction_sample: table with microsegments and features needed.
+        prediction_sample: table with features needed.
+        microsegments: table with microsegments.
         recent_profile: table with users' national ids, only last date.
         main_packs: table describing prepaid main packages.
         parameters: parameters defined in parameters.yml.
     """
     return treatments_featurize(
-        propensities, prediction_sample, recent_profile, main_packs, parameters,
+        propensities,
+        prediction_sample,
+        microsegments,
+        recent_profile,
+        main_packs,
+        parameters,
     )
 
 
