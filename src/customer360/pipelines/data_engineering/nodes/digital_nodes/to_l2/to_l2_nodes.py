@@ -1,4 +1,5 @@
 import pyspark.sql.functions as f
+from pyspark.sql.functions import expr
 from pyspark.sql import DataFrame
 from pyspark.sql.types import StringType
 
@@ -54,6 +55,10 @@ def build_digital_l2_weekly_features(cxense_site_traffic: DataFrame,
         .withColumn("start_of_week", f.to_date(f.date_trunc('week', f.to_date(f.col("partition_date"), 'yyyyMMdd'))))
 
     cust_df = cust_df.select(cust_df_cols)
+    cust_df = cust_df.withColumn("rn", expr(
+        "row_number() over(partition by start_of_week,access_method_num order by start_of_week desc)"))
+    cust_df = cust_df.where("rn = 1")
+    cust_df = cust_df.drop("rn")
 
     cxense_site_traffic = cxense_site_traffic.join(cust_df, join_cols)
 
