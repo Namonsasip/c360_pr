@@ -198,23 +198,18 @@ def join_with_master_package(
         from flatten_cust_promo_df cp_df
         left join unioned_main_master main_df
             on main_df.promotion_code = cp_df.product_main_package_promo_cd
-            and main_df.partition_date = cp_df.partition_date
+            and to_date(cast(main_df.partition_date as string), 'yyyyMMdd') = cp_df.event_partition_date
             
         left join unioned_ontop_master ontop_df1
             on ontop_df1.promotion_code = cp_df.product_ontop_1_package_promo_cd
-            and ontop_df1.partition_date = cp_df.partition_date
+            and to_date(cast(ontop_df1.partition_date as string), 'yyyyMMdd') = cp_df.event_partition_date
             
         left join unioned_ontop_master ontop_df2
             on ontop_df2.promotion_code = cp_df.product_ontop_2_package_promo_cd
-            and ontop_df2.partition_date = cp_df.partition_date
+            and to_date(cast(ontop_df2.partition_date as string), 'yyyyMMdd') = cp_df.event_partition_date
     """)
 
     return result_df
-
-    # TODO : Double check if 201, 205 or 209 works. If not, revert to:
-    # and to_date(cast(main_df.partition_date as string), 'yyyyMMdd') = cp_df.event_partition_date
-    # and to_date(cast(ontop_df1.partition_date as string), 'yyyyMMdd') = cp_df.event_partition_date
-    # and and to_date(cast(ontop_df2.partition_date as string), 'yyyyMMdd') = cp_df.event_partition_date
 
 
 def dac_product_customer_promotion_for_daily(input_df) -> DataFrame:
@@ -411,6 +406,7 @@ def l1_build_product(
         grouping="daily", par_col="partition_date",
         target_table_name="int_l1_product_active_customer_promotion_features_temp",
         missing_data_check_flg='Y')
+    ################################# End Implementing Data availability checks ###############################
 
     min_value = union_dataframes_with_missing_cols([
             product_df.select(F.max(F.col("partition_date")).alias("max_date")),
@@ -418,7 +414,6 @@ def l1_build_product(
 
     product_df = product_df.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
 
-    ################################# End Implementing Data availability checks ###############################
 
     return_df = l1_massive_processing(product_df, int_l1_product_active_customer_promotion_features)
 

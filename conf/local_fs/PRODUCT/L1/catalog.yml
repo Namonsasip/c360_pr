@@ -6,7 +6,7 @@ l1_product_active_customer_promotion_features_daily:
     partitionBy: ["event_partition_date"]
     mode: "overwrite"
 
-l1_product_active_fbb_customer_features:
+l1_product_active_fbb_customer_features_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
   filepath: data/L1_DAILY/PRODUCT/l1_product_active_fbb_customer_features/

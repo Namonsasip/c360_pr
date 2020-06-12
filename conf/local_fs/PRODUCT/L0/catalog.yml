@@ -28,7 +28,7 @@ l0_product_ir_package:
   filepath: data/L0/PRODUCT/product_ir_package/
   file_format: "parquet"
 
-l0_product_fbb_a_customer_promotion_current:
+l0_product_fbb_a_customer_promotion_current_for_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
   filepath: data/L0/PRODUCT/product_fbb_a_customer_promotion_current/
   file_format: "parquet"

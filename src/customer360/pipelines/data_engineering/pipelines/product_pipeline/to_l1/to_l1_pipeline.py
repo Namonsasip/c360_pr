@@ -9,7 +9,6 @@ def product_to_l1_pipeline(**kwargs):
         [
             # Post-paid
 
-            # TODO : Confirm that can use same DAC function for multiple tables
             node(
                 dac_product_customer_promotion_for_daily,
                 "l0_product_customer_promotion_for_daily",
@@ -17,10 +16,10 @@ def product_to_l1_pipeline(**kwargs):
             ),
             node(
                 l1_massive_processing,
-                ["l0_product_customer_promotion_for_daily",
+                ["int_l1_product_active_customer_promotion_features",
                  "params:int_l1_postpaid",
                  "l1_customer_profile_union_daily_feature_for_int_l1_product_active_customer_promotion_features"],
-                "int_l1_postpaid_product_active_customer_promotion_features_temp"
+                "int_l1_postpaid_product_active_customer_promotion_features"
             ),
 
             # Pre-paid
@@ -28,28 +27,28 @@ def product_to_l1_pipeline(**kwargs):
             node(
                 dac_product_customer_promotion_for_daily,
                 "l0_prepaid_main_product_customer_promotion_for_daily",
-                "int_l1_product_active_customer_promotion_features"
+                "int_l1_prepaid_ontop_product_active_customer_promotion_features"
             ),
             node(
                 dac_product_customer_promotion_for_daily,
                 "l0_prepaid_ontop_product_customer_promotion_for_daily",
-                "int_l1_product_active_customer_promotion_features"
+                "int_l1_prepaid_main_product_active_customer_promotion_features"
             ),
             node(
                 l1_prepaid_processing,
-                ["l0_prepaid_main_product_customer_promotion_for_daily",
-                 "l0_prepaid_ontop_product_customer_promotion_for_daily",
+                ["int_l1_prepaid_ontop_product_active_customer_promotion_features",
+                 "int_l1_prepaid_main_product_active_customer_promotion_features",
                  "l1_customer_profile_union_daily_feature_for_int_l1_product_active_customer_promotion_features",
                  "l0_product_pru_m_package_master_group_for_daily",
                  "l0_product_pru_m_ontop_master_for_daily"],
-                "int_l1_prepaid_product_active_customer_promotion_features_temp"
+                "int_l1_prepaid_product_active_customer_promotion_features"
             ),
 
             # Generic function
             node(
                 union_prepaid_postpaid,
-                ["int_l1_postpaid_product_active_customer_promotion_features_temp",
-                 "int_l1_prepaid_product_active_customer_promotion_features_temp"],
+                ["int_l1_postpaid_product_active_customer_promotion_features",
+                 "int_l1_prepaid_product_active_customer_promotion_features"],
                 "int_l1_product_active_customer_promotion_features_union"
             ),
 
