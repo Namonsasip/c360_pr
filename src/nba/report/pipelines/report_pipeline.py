@@ -37,6 +37,7 @@ def create_campaign_view_report_pipeline() -> Pipeline:
 
 
 def create_use_case_view_report_data() -> Pipeline:
+    # mock_report_running_date = "2020-06-06"  # fixed date
     mock_report_running_date = (datetime.now() + timedelta(hours=7)).strftime("%Y-%m-%d")  # Dynamic Test
     report_running_date_start = datetime.strptime(mock_report_running_date, "%Y-%m-%d") + timedelta(
         days=-10
