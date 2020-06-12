@@ -4,8 +4,23 @@ l0_product_pru_m_package_master_group_for_daily:
   filepath: data/L0/PRODUCT/product_pru_m_package_master_group/
   file_format: "parquet"
 
+l0_product_pru_m_package_master_group_for_weekly:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L0/PRODUCT/product_pru_m_package_master_group/
+  file_format: "parquet"
+
+l0_product_pru_m_package_master_group_for_l2_product_package_promotion_group_tariff:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L0/PRODUCT/product_pru_m_package_master_group/
+  file_format: "parquet"
+
 # PREPAID ONTOP MASTER - PRODUCT INFORMATION
 l0_product_pru_m_ontop_master_for_daily:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L0/PRODUCT/product_pru_m_ontop_master/
+  file_format: "parquet"
+
+l0_product_pru_m_ontop_master_for_weekly:
   type: kedro.contrib.io.pyspark.SparkDataSet
   filepath: data/L0/PRODUCT/product_pru_m_ontop_master/
   file_format: "parquet"
@@ -16,8 +31,18 @@ l0_product_ru_m_main_promotion_cvm_proj_for_daily:
   filepath: data/L0/PRODUCT/product_ru_m_main_promotion_cvm_proj/
   file_format: "parquet"
 
+l0_product_ru_m_main_promotion_cvm_proj_for_weekly:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L0/PRODUCT/product_ru_m_main_promotion_cvm_proj/
+  file_format: "parquet"
+
 # POSTPAID ONTOP MASTER - PRODUCT INFORMATION
 l0_product_ru_m_ontop_promotion_cvm_proj_for_daily:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L0/PRODUCT/product_ru_m_ontop_promotion_cvm_proj/
+  file_format: "parquet"
+
+l0_product_ru_m_ontop_promotion_cvm_proj_for_weekly:
   type: kedro.contrib.io.pyspark.SparkDataSet
   filepath: data/L0/PRODUCT/product_ru_m_ontop_promotion_cvm_proj/
   file_format: "parquet"
@@ -52,6 +77,11 @@ l0_prepaid_main_product_customer_promotion_for_daily:
   file_format: "parquet"
 
 l1_customer_profile_union_daily_feature_for_int_l1_product_active_customer_promotion_features:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L1_DAILY/PROFILE/l1_customer_profile_union_daily_feature/
+  file_format: "parquet"
+
+l1_customer_profile_union_daily_feature_for_l1_product_active_fbb_customer_features_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
   filepath: data/L1_DAILY/PROFILE/l1_customer_profile_union_daily_feature/
   file_format: "parquet"

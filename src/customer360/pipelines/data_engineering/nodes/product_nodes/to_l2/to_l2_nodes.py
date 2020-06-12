@@ -396,7 +396,9 @@ def get_product_package_promotion_group_tariff_weekly(source_df: DataFrame) -> D
         return get_spark_empty_df()
 
     source_df = source_df.withColumn("start_of_week",
-                                     F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd'))
+                                     F.lit(source_df.agg(
+                                         F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd')
+                                     ).collect()[0][0]))
 
     source_df = source_df.select("start_of_week", "promotion_group_tariff", "package_id").distinct()
 

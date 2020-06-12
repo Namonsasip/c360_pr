@@ -74,5 +74,5 @@ l1_product_active_fbb_customer_features:
   granularity: "crm_subscription_id, partition_date"
   join_column_with_cust_profile:
     old_subscription_identifier: crm_subscription_id
-    event_partition_date: partition_date
+    event_partition_date: event_partition_date
   partition_num_per_job: 10

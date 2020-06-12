@@ -49,12 +49,12 @@ def product_to_l1_pipeline(**kwargs):
                 union_prepaid_postpaid,
                 ["int_l1_postpaid_product_active_customer_promotion_features",
                  "int_l1_prepaid_product_active_customer_promotion_features"],
-                "int_l1_product_active_customer_promotion_features_union"
+                "l1_product_active_customer_promotion_features_prepaid_postpaid"
             ),
 
             node(
                 l1_build_product,
-                ["int_l1_product_active_customer_promotion_features_union",
+                ["l1_product_active_customer_promotion_features_prepaid_postpaid",
                  "params:int_l1_product_active_customer_promotion_features"],
                 "int_l1_product_active_customer_promotion_features_temp"
             ),
