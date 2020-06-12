@@ -72,6 +72,8 @@ from nba.report.pipelines.campaign_importance_volume_pipeline import (
     campaign_importance_volume,
 )
 from nba.report.pipelines.report_pipeline import create_use_case_view_report_data
+from du.model_input.model_input_pipeline import(create_du_model_input_pipeline,
+)
 from .pipelines.data_engineering.pipelines.campaign_pipeline import (
     campaign_to_l1_pipeline,
     campaign_to_l2_pipeline,
@@ -316,6 +318,10 @@ def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
         # + create_nba_gender_age_imputation_pipeline()
     }
 
+def create_du_pipeline(**kwargs) -> Dict[str,Pipeline]:
+    return {
+        "create_du_model_input": create_du_model_input_pipeline()
+    }
 
 def create_dq_pipeline(**kwargs) -> Dict[str, Pipeline]:
     return {
@@ -337,7 +343,8 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         create_c360_pipeline(**kwargs).items(),
         create_cvm_pipeline(**kwargs).items(),
         create_nba_pipeline(**kwargs).items(),
-        create_dq_pipeline(**kwargs).items()
+        create_dq_pipeline(**kwargs).items(),
+        create_du_pipeline(**kwargs).items()
     ):
         # If many pipelines have nodes under the same modular
         # pipeline, combine the results

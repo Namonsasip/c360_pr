@@ -65,7 +65,8 @@ def node_l5_du_target_variable_table(
         "rework_macro_product",
         F.concat(
             F.col("Macro_product"),
-            F.lit("_") + F.col("Macro_product_Offer_type"),
+            F.lit("_"),
+            F.col("Macro_product_Offer_type"),
             F.lit("_"),
             F.col("Discount_predefine_range"),
         ),
@@ -73,7 +74,7 @@ def node_l5_du_target_variable_table(
 
     start_day_data = datetime.date(
         datetime.strptime(running_day, "%Y-%m-%d")
-    ) - timedelta(60)
+    ) - timedelta(120)
 
     l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.selectExpr(
         "*",
@@ -94,16 +95,18 @@ def node_l5_du_target_variable_table(
         "COUNT_PRODUCT_SELL_IN_CMP",
         "Discount_predefine_range",
         "rework_macro_product",
-    ).union(btl_campaign_mapping.select(
-        "campaign_child_code",
-        "Package_name",
-        "macro_product",
-        "Macro_product_Offer_type",
-        "Discount_percent",
-        "COUNT_PRODUCT_SELL_IN_CMP",
-        "Discount_predefine_range",
-        "rework_macro_product",
-    ))
+    ).union(
+        btl_campaign_mapping.select(
+            "campaign_child_code",
+            "Package_name",
+            "macro_product",
+            "Macro_product_Offer_type",
+            "Discount_percent",
+            "COUNT_PRODUCT_SELL_IN_CMP",
+            "Discount_predefine_range",
+            "rework_macro_product",
+        )
+    )
     upsell_model_campaign_tracking = l0_campaign_tracking_contact_list_pre_full_load.join(
         upsell_model_campaign_mapping, ["campaign_child_code"], "inner"
     ).selectExpr(
@@ -131,7 +134,9 @@ def node_l5_du_target_variable_table(
             "register_date",
             "contact_date_dt",
         ]
-    ).agg(F.max("update_date_dt").alias("update_date_dt"))
+    ).agg(
+        F.max("update_date_dt").alias("update_date_dt")
+    )
     upsell_model_campaign_tracking = upsell_model_campaign_tracking.join(
         upsell_model_campaign_tracking_latest_update,
         [
@@ -146,26 +151,37 @@ def node_l5_du_target_variable_table(
 
     # Customer Must response to the campaign within 4 days to be identify as Response = True
     upsell_model_campaign_tracking = upsell_model_campaign_tracking.withColumn(
-        "response",
+        "target_response",
         F.expr(
             """CASE WHEN contact_date_dt >= date_sub(response_date_dt,4) THEN 1 ELSE 0 END"""
         ),
     )
-    upsell_model_campaign_tracking.where("response = 1").show()
+    upsell_model_campaign_tracking = upsell_model_campaign_tracking.withColumnRenamed(
+        "contact_date_dt", "contact_date"
+    )
+    upsell_model_campaign_tracking.where("target_response = 1").show()
     return upsell_model_campaign_tracking
 
-def create_data_upsell_master_spine_table(l5_du_target_variable_tbl: DataFrame,
-                                          l1_customer_profile_union_daily_feature_full_load: DataFrame,
-                                          l4_revenue_prepaid_daily_features: DataFrame,
-                                          min_feature_days_lag: int,
-                                          ) -> DataFrame:
 
+def node_l5_du_master_spine_table(
+    l5_du_target_variable_tbl: DataFrame,
+    l1_customer_profile_union_daily_feature_full_load: DataFrame,
+    l4_revenue_prepaid_daily_features: DataFrame,
+    min_feature_days_lag: int,
+) -> DataFrame:
 
     ######## For testing Purpose
-    min_feature_days_lag = 5
+    # l5_du_target_variable_tbl = catalog.load("l5_du_target_variable_tbl")
+    # l1_customer_profile_union_daily_feature_full_load = catalog.load("l1_customer_profile_union_daily_feature_full_load")
+    # l4_revenue_prepaid_daily_features = catalog.load("l4_revenue_prepaid_daily_features")
+    # min_feature_days_lag = 5
+    ########
+
     # NBA Function
     df_spine = add_c360_dates_columns(
-        l5_du_target_variable_tbl, date_column="contact_date_dt", min_feature_days_lag=min_feature_days_lag
+        l5_du_target_variable_tbl,
+        date_column="contact_date",
+        min_feature_days_lag=min_feature_days_lag,
     )
     # subscription_identifier is different in L0 and all other C360 levels, so we need to add
     # both of them to the spine, for which we use l1 customer profile as an auxiliary table
@@ -186,6 +202,78 @@ def create_data_upsell_master_spine_table(l5_du_target_variable_tbl: DataFrame,
         subset=list(
             set(l4_revenue_prepaid_daily_features.columns)
             - set(["subscription_identifier", "event_partition_date"])
+        ),
+    )
+    # Add ARPU uplift
+    for n_days, feature_name in [
+        (30, "sum_rev_arpu_total_net_rev_daily_last_thirty_day"),
+        (7, "sum_rev_arpu_total_net_rev_daily_last_seven_day"),
+    ]:
+        df_arpu_before = l4_revenue_prepaid_daily_features.select(
+            "subscription_identifier", "event_partition_date", feature_name,
+        )
+        df_arpu_after = l4_revenue_prepaid_daily_features.select(
+            "subscription_identifier",
+            F.date_sub(F.col("event_partition_date"), n_days).alias(
+                "event_partition_date"
+            ),
+            F.col(feature_name).alias(f"{feature_name}_after"),
+        )
+        df_arpu_uplift = df_arpu_before.join(
+            df_arpu_after,
+            how="inner",
+            on=["subscription_identifier", "event_partition_date"],
+        ).withColumn(
+            f"target_relative_arpu_increase_{n_days}d",
+            (F.col(f"{feature_name}_after") - F.col(feature_name)),
+        )
+
+        # Add the average ARPU on each day for all subscribers in case we want to
+        # normalize the ARPU target later
+        df_arpu_uplift = (
+            df_arpu_uplift.withColumn(
+                f"{feature_name}_avg_all_subs",
+                F.mean(feature_name).over(Window.partitionBy("event_partition_date")),
+            )
+            .withColumn(
+                f"{feature_name}_after_avg_all_subs",
+                F.mean(f"{feature_name}_after").over(
+                    Window.partitionBy("event_partition_date")
+                ),
+            )
+            .withColumn(
+                f"target_relative_arpu_increase_{n_days}d_avg_all_subs",
+                F.mean(f"target_relative_arpu_increase_{n_days}d").over(
+                    Window.partitionBy("event_partition_date")
+                ),
+            )
+        )
+
+        df_spine = df_spine.join(
+            df_arpu_uplift,
+            on=["subscription_identifier", "event_partition_date"],
+            how="left",
+        )
+
+    # Remove duplicates to make sure the tuple (subscriber, date, child code, is unique)
+    # We order by the target to prioritize tracked responses with a positive response
+    df_spine = df_spine.withColumn(
+        "aux_row_number",
+        F.row_number().over(
+            Window.partitionBy(
+                "subscription_identifier", "contact_date", "campaign_child_code"
+            ).orderBy(F.col("target_response").desc_nulls_last())
+        ),
+    )
+    df_spine = df_spine.filter(F.col("aux_row_number") == 1).drop("aux_row_number")
+    df_spine = df_spine.withColumn(
+        "du_spine_primary_key",
+        F.concat(
+            F.col("subscription_identifier"),
+            F.lit("_"),
+            F.col("contact_date"),
+            F.lit("_"),
+            F.col("rework_macro_product"),
         ),
     )
     return df_spine
