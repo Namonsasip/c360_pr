@@ -206,7 +206,7 @@ def create_prediction_sample(sample_type: str) -> Pipeline:
     inputs = [
         "raw_features_{}",
         "microsegments_macrosegments_{}",
-        "important_param",
+        "important_columns",
         "parameters",
     ]
     inputs = [dataset.format(sample_type) for dataset in inputs]
