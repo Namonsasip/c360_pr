@@ -89,7 +89,7 @@ def complaints_to_l2_pipeline(**kwargs):
                 run_for_complaints_to_l2_pipeline_from_l1,
                 [
                     "l1_complaints_nps_after_call_for_l2_complaints_nps_after_call",
-                    "params:l2_complaints_nps_scoring_tbl",
+                    "params:l2_complaints_nps_after_call_tbl",
                     "params:l2_complaints_nps_scoring"
                 ],
                 "l2_complaints_nps_after_call"
