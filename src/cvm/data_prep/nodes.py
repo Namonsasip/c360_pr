@@ -30,13 +30,23 @@ import logging
 from typing import Any, Dict, List, Tuple
 
 import pyspark.sql.functions as func
+from cvm.src.features.keep_table_history import pop_most_recent
+from cvm.src.features.microsegments import (
+    add_microsegment_features,
+    add_volatility_scores,
+    define_microsegments,
+)
 from cvm.src.features.parametrized_features import build_feature_from_parameters
 from cvm.src.targets.ard_targets import get_ard_targets
 from cvm.src.targets.churn_targets import filter_usage, get_churn_targets
 from cvm.src.utils.feature_selection import feature_selection
 from cvm.src.utils.list_targets import list_targets
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
-from cvm.src.utils.utils import get_clean_important_variables, impute_from_parameters
+from cvm.src.utils.utils import (
+    get_clean_important_variables,
+    get_today,
+    impute_from_parameters,
+)
 from pyspark.sql import DataFrame
 
 
@@ -247,6 +257,50 @@ def add_macrosegments(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
         )
 
     return df
+
+
+def get_micro_macrosegments(
+    parameters: Dict[str, Any],
+    raw_features: DataFrame,
+    reve: DataFrame,
+    micro_macrosegments_history: DataFrame = None,
+) -> Tuple[DataFrame, DataFrame]:
+    """ Creates micro- and macrosegments table. Updates history. If recently updated
+    microsegments found in history then not update is being done. Used for scoring.
+
+    Args:
+        parameters: parameters defined in parameters.yml.
+        raw_features: joined features from C360.
+        reve: monthly revenue data.
+        micro_macrosegments_history: table with user to microsegment mapping history.
+    """
+    log = logging.getLogger(__name__)
+    log.info("Creating macrosegments and microsegments")
+
+    macrosegments_defs = parameters["macrosegments"]
+    history_update_cadence = parameters["microsegments_update_cadence"]
+    today = get_today(parameters)
+
+    # define macrosegments
+    df = raw_features
+    for use_case in macrosegments_defs:
+        df = build_feature_from_parameters(
+            df, use_case + "_macrosegment", macrosegments_defs[use_case]
+        )
+
+    # define microsegments
+    vol = add_volatility_scores(df, reve, parameters)
+    df = add_microsegment_features(df, parameters).join(vol, "subscription_identifier")
+    df = define_microsegments(df, parameters, reduce_cols=True)
+
+    return pop_most_recent(
+        history_df=micro_macrosegments_history,
+        update_df=df,
+        recalculate_period_days=history_update_cadence,
+        parameters=parameters,
+        users_required=raw_features.select("subscription_identifier"),
+        today=today,
+    )
 
 
 def feature_selection_all_target(
