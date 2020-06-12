@@ -52,13 +52,13 @@ churn_targets_scoring:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_churn_targets_scoring/
 
-microsegments_macrosegments_input_scoring:
+microsegments_macrosegments_history_input_scoring:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_microsegments_scoring/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_microsegments_macrosegments_history_input_scoring/
 
-microsegments_macrosegments_output_scoring:
+microsegments_macrosegments_history_output_scoring:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_microsegments_scoring/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_microsegments_macrosegments_history_output_scoring/
 
 train_sample_scoring:
   <<: *spark_parquet
