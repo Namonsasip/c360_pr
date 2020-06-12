@@ -66,11 +66,11 @@ def pop_most_recent(
         today = get_today(parameters)
     recent_date = add_days(today, -recalculate_period_days)
 
-    if "key_date" not in history_df.columns:
-        logging.info("Column `key_date` not found, rebuilding history")
+    if history_df is None:
         return update_df.withColumn("key_date", lit(today)), update_df
 
-    if history_df is None:
+    if "key_date" not in history_df.columns:
+        logging.info("Column `key_date` not found, rebuilding history")
         return update_df.withColumn("key_date", lit(today)), update_df
 
     history_before_today = history_df.filter(
