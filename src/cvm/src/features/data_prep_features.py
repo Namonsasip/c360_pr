@@ -82,4 +82,5 @@ def filter_important_only(
     cols_to_leave = keys + segments + must_have_features + important_param
     if include_targets:
         cols_to_leave += targets
+    cols_to_leave = list(set(cols_to_leave))
     return df.select(cols_to_leave)
