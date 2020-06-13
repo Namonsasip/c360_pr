@@ -117,6 +117,10 @@ def sale_product_customer_master_features(sale_df: DataFrame,
     cust_join_cols = ['start_of_week', 'access_method_num']
 
     customer_df = customer_df.select(customer_cols)
+    customer_df = customer_df.withColumn("rn", expr(
+        "row_number() over(partition by start_of_week,access_method_num order by start_of_week desc)"))
+    customer_df = customer_df.where("rn = 1")
+    customer_df = customer_df.drop("rn")
 
     master_df = master_sales_features.join(customer_df, cust_join_cols, how='left')
 

@@ -20,7 +20,7 @@ def loyalty_number_of_services_for_each_category(customer_prof: DataFrame
     """
 
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([input_df, customer_prof, aunjai_point_collection]):
+    if check_empty_dfs([input_df, customer_prof]):
         return get_spark_empty_df()
 
     input_df = data_non_availability_and_missing_check(

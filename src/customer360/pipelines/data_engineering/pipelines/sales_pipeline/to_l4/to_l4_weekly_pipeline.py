@@ -32,17 +32,19 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 """
 
 from kedro.pipeline import Pipeline, node
-
-from customer360.utilities.config_parser import l4_rolling_window
+from customer360.pipelines.data_engineering.nodes.sales_nodes.to_l4.to_l4_nodes import sales_l4_rolling_window
 
 
 def sales_to_l4_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                l4_rolling_window,
+                sales_l4_rolling_window,
                 ["l2_sales_number_and_volume_transaction_weekly",
-                 "params:l4_sales_on_top_transaction"],
+                 "params:l4_sales_on_top_transaction_first",
+                 "params:l4_sales_on_top_transaction_second",
+                 "params:l4_sales_on_top_transaction_third",
+                 ],
                 "l4_sales_number_and_volume_transaction_weekly"
 
             )

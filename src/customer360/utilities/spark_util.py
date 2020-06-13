@@ -8,9 +8,9 @@ from pyspark.sql.types import *
 from pathlib import Path
 from kedro.context.context import load_context
 
-conf = os.getenv("CONF", None)
+conf = os.getenv("CONF", "base")
 
-running_environment = os.getenv("RUNNING_ENVIRONMENT", None)
+running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 PROJECT_NAME = "project-samudra"
 
 

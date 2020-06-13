@@ -45,7 +45,12 @@ def revenue_to_l4_monthly_pipeline(**kwargs):
                 revenue_l4_dataset_monthly_datasets,
                 [
                     "l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly",
-                    "params:l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int",
+                    "params:l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int_min",
+                    "params:l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int_max",
+                    "params:l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int_sum",
+                    "params:l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int_avg",
+                    "params:l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly_int_stddev",
+
                     "params:l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly"
                 ],
                 "l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly"
@@ -55,7 +60,11 @@ def revenue_to_l4_monthly_pipeline(**kwargs):
                 revenue_l4_dataset_monthly_datasets,
                 [
                     "l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
-                    "params:l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_int",
+                    "params:l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_int_min",
+                    "params:l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_int_max",
+                    "params:l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_int_sum",
+                    "params:l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_int_avg",
+                    "params:l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_int_stddev",
                     "params:l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"
                 ],
                 "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly"
@@ -89,9 +98,13 @@ def revenue_to_l4_weekly_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                l4_rolling_window,
+                revenue_l4_dataset_weekly_datasets,
                 ["l2_revenue_prepaid_pru_f_usage_multi_weekly",
-                 "params:l4_revenue_prepaid_pru_f_usage_multi_features"],
+                 "params:l4_revenue_prepaid_pru_f_usage_multi_features_first_set",
+                 "params:l4_revenue_prepaid_pru_f_usage_multi_features_second_set",
+                 "params:l4_revenue_prepaid_pru_f_usage_multi_features_third_set",
+                 "params:l4_revenue_prepaid_pru_f_usage_multi_features_fourth_set"
+                 ],
                 "l4_revenue_prepaid_pru_f_usage_multi_features"
             ),
 
