@@ -65,7 +65,7 @@ def complaints_to_l3_pipeline(**kwargs):
             node(
                 dac_for_complaints_to_l3_pipeline_from_l1,
                 ["l1_complaints_nps_after_call_for_l3_complaints_nps_after_call",
-                 "params:l3_complaints_nps_scoring_tbl"],
+                 "params:l3_complaints_nps_after_call_tbl"],
                 "int_l1_complaints_nps_after_call_for_l3_complaints_nps_after_call"
             ),
             node(
@@ -84,7 +84,7 @@ def complaints_to_l3_pipeline(**kwargs):
             node(
                 dac_for_complaints_to_l3_pipeline_from_l1,
                 ["l1_complaints_nps_after_chatbot_for_l3_complaints_nps_after_chatbot",
-                 "params:l3_complaints_nps_scoring_tbl"],
+                 "params:l3_complaints_nps_after_chatbot_tbl"],
                 "int_l1_complaints_nps_after_chatbot_for_l3_complaints_nps_after_chatbot"
             ),
             node(
@@ -103,7 +103,7 @@ def complaints_to_l3_pipeline(**kwargs):
             node(
                 dac_for_complaints_to_l3_pipeline_from_l1,
                 ["l1_complaints_nps_after_store_visit_for_l3_complaints_nps_after_store_visit",
-                 "params:l3_complaints_nps_scoring_tbl"],
+                 "params:l3_complaints_nps_after_store_visit_tbl"],
                 "int_l1_complaints_nps_after_store_visit_for_l3_complaints_nps_after_store_visit"
             ),
             node(
