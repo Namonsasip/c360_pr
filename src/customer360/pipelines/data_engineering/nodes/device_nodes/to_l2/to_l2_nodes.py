@@ -11,11 +11,13 @@ from src.customer360.utilities.spark_util import get_spark_empty_df
 
 def device_summary_with_configuration(hs_summary: DataFrame
                                       , hs_configs: DataFrame
-                                      , exception_partitions_hs_config: list) -> DataFrame:
+                                      , exception_partitions_hs_config: list
+                                      , exception_partitions_hs_summary: list) -> DataFrame:
     """
     :param hs_summary:
     :param hs_configs:
     :param exception_partitions_hs_config:
+    , exception_partitions_hs_summary:
     :return:
     """
 
@@ -26,7 +28,8 @@ def device_summary_with_configuration(hs_summary: DataFrame
     hs_summary = data_non_availability_and_missing_check(df=hs_summary, grouping="weekly",
                                                          par_col="event_partition_date",
                                                          target_table_name="l2_device_summary_with_config_weekly",
-                                                         missing_data_check_flg='Y')
+                                                         missing_data_check_flg='Y',
+                                                         exception_partitions=exception_partitions_hs_summary)
 
     hs_configs = data_non_availability_and_missing_check(df=hs_configs, grouping="weekly", par_col="partition_date",
                                                          target_table_name="l2_device_summary_with_config_weekly",
