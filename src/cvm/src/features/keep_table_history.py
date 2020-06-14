@@ -82,7 +82,9 @@ def pop_most_recent(
     most_recent_date_in_history = get_latest_date(
         history_before_today, date_col_name="key_date"
     )
-    recent_history_found = most_recent_date_in_history >= recent_date
+    recent_history_found = (most_recent_date_in_history is not None) and (
+        most_recent_date_in_history >= recent_date
+    )
     recent_history = history_before_today.filter(
         "key_date == '{}'".format(most_recent_date_in_history)
     )
