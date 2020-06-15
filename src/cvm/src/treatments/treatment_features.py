@@ -112,6 +112,7 @@ def add_other_sim_card_features(
     df = df.join(national_id_card_stats, on="national_id_card", how="left")
 
     # add internal churn flag
+    logging.getLogger(__name__).info("Adding internal churn flag")
     is_internal_churner = (
         (func.col("number_of_simcards") >= 2)
         and (func.col("number_of_simcards") <= 4)
