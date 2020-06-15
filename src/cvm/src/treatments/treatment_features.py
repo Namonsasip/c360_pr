@@ -32,6 +32,45 @@ import pyspark.sql.functions as func
 from pyspark.sql import DataFrame, Window
 
 
+def add_call_center_features(df: DataFrame,) -> DataFrame:
+    """ Add features related to users touchpoints with call center.
+    Features added include `call_center_persona`.
+
+    Args:
+        df: table with users.
+    """
+    cc_calls_last_4_weeks_col = (
+        "sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_four_week"
+    )
+    cc_calls_last_4_weeks = func.coalesce(
+        func.col(cc_calls_last_4_weeks_col), func.lit(0)
+    )
+    cc_calls_last_12_weeks_col = (
+        "sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_twelve_week"
+    )
+    cc_calls_last_12_weeks = func.coalesce(
+        func.col(cc_calls_last_12_weeks_col), func.lit(0)
+    )
+    cc_calls_last_4_12_weeks = cc_calls_last_12_weeks - cc_calls_last_4_weeks
+
+    persona_mapping = (
+        func.when(
+            (cc_calls_last_4_weeks > 0) and (cc_calls_last_4_12_weeks > 0),
+            "unsatisfied",
+        )
+        .when(
+            (cc_calls_last_4_weeks > 0) and (cc_calls_last_4_12_weeks <= 0),
+            "anomaly_detected",
+        )
+        .when(
+            (cc_calls_last_4_weeks <= 0) and (cc_calls_last_4_12_weeks > 0),
+            "problem_resolved_or_follow_up",
+        )
+        .otherwise(func.lit(None))
+    )
+    return df.withColumn("call_centre_persona", persona_mapping)
+
+
 def add_other_sim_card_features(
     df: DataFrame,
     recent_profile: DataFrame,
