@@ -54,7 +54,9 @@ def complaints_to_l3_pipeline(**kwargs):
                 run_for_complaints_to_l3_pipeline_from_l1,
                 ["l1_complaints_call_to_competitor_features_for_l3_complaints_call_to_competitor_features",
                  "params:l3_complaints_call_to_competitor_features_tbl",
-                 "params:l3_complaints_call_to_competitor_features"],
+                 "params:l3_complaints_call_to_competitor_features",
+                 "params:exception_partition_list_for_monthly_l1_complaints_call_to_competitor_features"
+                 ],
                 "l3_complaints_call_to_competitor_features"
             ),
 
@@ -74,7 +76,9 @@ def complaints_to_l3_pipeline(**kwargs):
                 run_for_complaints_to_l3_pipeline_from_l1,
                 ["l1_complaints_nps_after_call_for_l3_complaints_nps_after_call",
                  "params:l3_complaints_nps_after_call_tbl",
-                 "params:l3_complaints_nps_scoring"],
+                 "params:l3_complaints_nps_scoring",
+                 "params:exception_partition_list_for_monthly_l1_complaints_nps_after_call"
+                 ],
                 "l3_complaints_nps_after_call"
             ),
 
@@ -94,7 +98,9 @@ def complaints_to_l3_pipeline(**kwargs):
                 run_for_complaints_to_l3_pipeline_from_l1,
                 ["l1_complaints_nps_after_chatbot_for_l3_complaints_nps_after_chatbot",
                  "params:l3_complaints_nps_after_chatbot_tbl",
-                 "params:l3_complaints_nps_scoring"],
+                 "params:l3_complaints_nps_scoring",
+                 "params:exception_partition_list_for_monthly_l1_complaints_nps_after_chatbot"
+                 ],
                 "l3_complaints_nps_after_chatbot"
             ),
 
@@ -114,7 +120,9 @@ def complaints_to_l3_pipeline(**kwargs):
                 run_for_complaints_to_l3_pipeline_from_l1,
                 ["l1_complaints_nps_after_store_visit_for_l3_complaints_nps_after_store_visit",
                  "params:l3_complaints_nps_after_store_visit_tbl",
-                 "params:l3_complaints_nps_scoring"],
+                 "params:l3_complaints_nps_scoring",
+                 "params:exception_partition_list_for_monthly_l1_complaints_nps_after_store_visit"
+                 ],
                 "l3_complaints_nps_after_store_visit"
             ),
 
