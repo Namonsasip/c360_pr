@@ -39,6 +39,7 @@ def add_call_center_features(df: DataFrame,) -> DataFrame:
     Args:
         df: table with users.
     """
+    logging.getLogger(__name__).info("Adding call center features")
     cc_calls_last_4_weeks_col = (
         "sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_four_week"
     )
