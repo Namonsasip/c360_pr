@@ -17,7 +17,7 @@ def device_summary_with_configuration(hs_summary: DataFrame
     :param hs_summary:
     :param hs_configs:
     :param exception_partitions_hs_config:
-    , exception_partitions_hs_summary:
+    :param exception_partitions_hs_summary:
     :return:
     """
 
