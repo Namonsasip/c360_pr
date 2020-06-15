@@ -67,7 +67,7 @@ def prepare_users_report() -> Pipeline:
         [
             node(
                 prepare_users,
-                ["cvm_prepaid_customer_groups", "parameters"],
+                ["cvm_prepaid_customer_groups", "sub_id_mapping", "parameters"],
                 "users_report",
                 name="create_users_report",
             )

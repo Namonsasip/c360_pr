@@ -36,22 +36,27 @@ from pyspark.sql import DataFrame
 from pyspark.sql import functions as func
 
 
-def prepare_users(customer_groups: DataFrame, parameters: Dict[str, Any],) -> DataFrame:
+def prepare_users(
+    customer_groups: DataFrame, sub_id_mapping: DataFrame, parameters: Dict[str, Any],
+) -> DataFrame:
 
     """ Creates users table for reporting purposes.
 
     Args:
+        sub_id_mapping: mapping old to new sub id.
         customer_groups: Table with target, control and bau groups.
         parameters: parameters defined in parameters.yml.
     """
     today = get_today(parameters)
-    return (
+    df = (
         customer_groups.filter("target_group in ('TG', 'CG', 'BAU')")
         .select(["crm_sub_id", "target_group"])
         .distinct()
         .withColumn("key_date", func.lit(today))
-        .withColumnRenamed("crm_sub_id", "subscription_identifier")
+        .withColumnRenamed("crm_sub_id", "old_subscription_identifier")
+        .join(sub_id_mapping, on="old_subscription_identifier")
     )
+    return df
 
 
 def add_micro_macro(
