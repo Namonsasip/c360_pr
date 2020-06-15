@@ -25,13 +25,8 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from cvm.data_prep.nodes import subs_date_join
-from cvm.report.nodes import (
-    add_micro_macro,
-    build_daily_kpis,
-    filter_out_micro_macro,
-    prepare_users,
-)
+from cvm.data_prep.nodes import get_micro_macrosegments, subs_date_join
+from cvm.report.nodes import build_daily_kpis, prepare_users
 from cvm.sample_inputs.nodes import create_sample_dataset
 from kedro.pipeline import Pipeline, node
 
@@ -94,20 +89,18 @@ def join_features() -> Pipeline:
                 name="join_report_features",
             ),
             node(
-                add_micro_macro,
-                [
-                    "features_report",
-                    "l3_customer_profile_include_1mo_non_active_report",
+                func=get_micro_macrosegments,
+                inputs=[
                     "parameters",
+                    "features_report",
+                    "l3_customer_profile_include_1mo_non_active",
+                    "microsegments_macrosegments_history_input_scoring",
                 ],
-                "users_micro_macro",
+                outputs=[
+                    "microsegments_macrosegments_history_output_scoring",
+                    "users_micro_macro_only",
+                ],
                 name="prepare_micro_macro",
-            ),
-            node(
-                filter_out_micro_macro,
-                "users_micro_macro",
-                "users_micro_macro_only",
-                name="prepare_micro_macro_only",
             ),
         ]
     )
