@@ -28,7 +28,8 @@ def sales_l4_rolling_window(input_df: DataFrame,
 
     # CNTX = load_context(Path.cwd(), env=conf)
     join_key = ["national_id_card", "access_method_num", "subscription_identifier", "start_of_week"]
-
+    import logging
+    logging.info("SALES L4 Input Count -->> {0}".format(str(input_df.count())))
     # metadata = CNTX.catalog.load("util_audit_metadata_table")
     # max_date = metadata.filter(f.col("table_name") == "l4_sales_number_and_volume_transaction_weekly") \
     #     .select(f.max(f.col("target_max_data_load_date")).alias("max_date")) \
@@ -36,14 +37,17 @@ def sales_l4_rolling_window(input_df: DataFrame,
     #     .collect()[0].max_date
 
     rolling_df_first = l4_rolling_window(input_df, rolling_window_dict_first)
+    logging.info("SALES L4 rolling_df_first Count -->> {0}".format(str(rolling_df_first.count())))
     # rolling_df_first = rolling_df_first.filter(f.col("start_of_week") > max_date)
     # CNTX.catalog.save("l4_sales_number_and_volume_transaction_weekly_first", rolling_df_first)
 
     rolling_df_second = l4_rolling_window(input_df, rolling_window_dict_second)
+    logging.info("SALES L4 rolling_df_second Count -->> {0}".format(str(rolling_df_second.count())))
     # rolling_df_second = rolling_df_second.filter(f.col("start_of_week") > max_date)
     # CNTX.catalog.save("l4_sales_number_and_volume_transaction_weekly_second", rolling_df_second)
 
     rolling_df_third = l4_rolling_window(input_df, rolling_window_dict_third)
+    logging.info("SALES L4 rolling_df_third Count -->> {0}".format(str(rolling_df_third.count())))
     # rolling_df_third = rolling_df_third.filter(f.col("start_of_week") > max_date)
     # CNTX.catalog.save("l4_sales_number_and_volume_transaction_weekly_third", rolling_df_third)
 
@@ -53,5 +57,6 @@ def sales_l4_rolling_window(input_df: DataFrame,
 
     merged_df = rolling_df_first.join(rolling_df_second, join_key) \
         .join(rolling_df_third, join_key)
+    logging.info("SALES L4 merged_df Count -->> {0}".format(str(merged_df.count())))
 
     return merged_df
