@@ -437,7 +437,7 @@ def l1_location_of_visit_ais_store_daily(shape,cust_cell_visit,sql):
 ## ==============================Update 2020-06-15 by Thatt529==========================================##
 
 ###Top_3_cells_on_voice_usage###
-def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df,sql):
+def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
     ### config
     spark = get_spark_session()
 
@@ -496,5 +496,5 @@ def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df,sql):
     l1_df1.cache()
     l1_df1 = l1_df1.withColumn("start_of_week", F.to_date(F.date_trunc('week', l1_df1.event_partition_date)))
     l1_df1 = l1_df1.withColumn("start_of_month", F.to_date(F.date_trunc('month', l1_df1.event_partition_date)))
-    l1_df2 = node_from_config(l1_df1, sql)
-    return l1_df2
+    # l1_df2 = node_from_config(l1_df1, sql)
+    return l1_df1
