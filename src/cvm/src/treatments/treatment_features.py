@@ -39,6 +39,8 @@ def add_other_sim_card_features(
     parameters: Dict[str, Any],
 ) -> DataFrame:
     """ Add features for other sim card held by the same national id.
+    Features added include youngest / oldest card revenue / tenure, number of simcards,
+    internal churn flag.
 
     Args:
         df: table with users.
@@ -105,7 +107,18 @@ def add_other_sim_card_features(
     national_id_card_stats = national_id_card_stats_oldest_card.join(
         national_id_card_stats_youngest_card, on="national_id_card"
     )
+
     # join to given table
     df = df.join(national_id_card_stats, on="national_id_card", how="left")
+
+    # add internal churn flag
+    is_internal_churner = (
+        (func.col("number_of_simcards") >= 2)
+        and (func.col("number_of_simcards") <= 4)
+        and (func.col("youngest_card_tenure") <= 6)
+    )
+    df = df.withColumn(
+        "internal_churner_2_4_6", func.when(is_internal_churner, 1).otherwise(0)
+    )
 
     return df
