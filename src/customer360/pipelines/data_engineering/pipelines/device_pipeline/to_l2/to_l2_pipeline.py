@@ -13,7 +13,7 @@ def device_to_l2_pipeline(**kwargs):
                 ["l1_devices_summary_customer_handset_daily",
                  "l0_devices_handset_configurations",
                  "params:exception_partition_list_for_l0_devices_handset_configurations",
-                 "params:exception_partition_list_for_l1_devices_summary_customer_handset_daily"
+                 # "params:exception_partition_list_for_l1_devices_summary_customer_handset_daily" -- not needed
                  ],
                 "device_summary_with_config"
             ),

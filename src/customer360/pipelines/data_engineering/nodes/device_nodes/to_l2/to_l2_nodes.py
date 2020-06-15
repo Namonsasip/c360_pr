@@ -12,7 +12,8 @@ from src.customer360.utilities.spark_util import get_spark_empty_df
 def device_summary_with_configuration(hs_summary: DataFrame
                                       , hs_configs: DataFrame
                                       , exception_partitions_hs_config: list
-                                      , exception_partitions_hs_summary: list) -> DataFrame:
+                                # , exception_partitions_hs_summary: list not needed as data is uploaded on wednesday
+                                      ) -> DataFrame:
     """
     :param hs_summary:
     :param hs_configs:
