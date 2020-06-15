@@ -102,6 +102,17 @@ def geo_to_l1_pipeline(**kwargs):
                  "params:l1_location_of_visit_ais_store_daily"
                  ],
                 "l1_location_of_visit_ais_store_daily"
+            ),
+            ##==============================Update 2020-06-15 by Thatt529==========================================##
+
+            ##Top_3_cells_on_voice_usage###
+            node(
+                l1_geo_top3_cells_on_voice_usage,
+                ["l0_usage_sum_voice_location_daily_for_l1_geo_top3_cells_on_voice_usage",
+                 "l0_geo_mst_cell_masterplan_for_l1_geo_top3_cells_on_voice_usage",
+                 "l0_profile_customer_profile_ma_for_l1_geo_top3_cells_on_voice_usage",
+                 ],
+                "l1_geo_top3_cells_on_voice_usage"
             )
 
         ], name="geo_to_l1_pipeline"

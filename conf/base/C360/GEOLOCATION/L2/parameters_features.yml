@@ -60,4 +60,11 @@ l2_geo_call_location_home_work_weekly:
     call_count_location_top_2nd: "sum(call_count_location_top_2nd),"
   granularity: "imsi,start_of_week"
 
-###Number of Unique Cells Used###
+##==============================Update 2020-06-15 by Thatt529==========================================##
+
+###Top_3_cells_on_voice_usage###
+l2_geo_top3_cells_on_voice_usage:
+  where_clause: ""
+  feature_list:
+    total_distance_km: "sum(total_call)"
+  granularity: "imsi,start_of_week"

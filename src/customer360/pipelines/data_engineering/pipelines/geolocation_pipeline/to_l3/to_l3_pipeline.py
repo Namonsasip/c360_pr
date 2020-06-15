@@ -60,7 +60,16 @@ def geo_to_l3_pipeline(**kwargs):
                 "l3_geo_call_location_home_work_monthly"
             ),
 
-            ###feature_AIS_store###
+            # ==============================Update 2020-06-15 by Thatt529==========================================##
+
+            ##Top_3_cells_on_voice_usage###
+            node(
+                l3_geo_top3_cells_on_voice_usage,
+                ["l1_geo_top3_cells_on_voice_usage",
+                 "params:l3_geo_top3_cells_on_voice_usage"
+                 ],
+                "l3_geo_top3_cells_on_voice_usage"
+            )
 
 
 

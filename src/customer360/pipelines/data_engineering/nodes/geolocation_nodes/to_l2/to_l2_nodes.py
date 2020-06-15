@@ -9,6 +9,9 @@ import os
 from pyspark.sql import types as T
 import statistics
 
+from customer360.utilities.spark_util import get_spark_session
+
+
 def l2_geo_time_spent_by_location_weekly(df,sql):
     df=node_from_config(df,sql)
     return df
@@ -51,3 +54,25 @@ def l2_geo_call_home_work_location_weekly(df,sql):
     l2_df_2 =node_from_config(l2_df,sql)
     return l2_df_2
 
+## ==============================Update 2020-06-15 by Thatt529==========================================##
+
+###Top_3_cells_on_voice_usage###
+def l2_geo_top3_cells_on_voice_usage(df,sql):
+    ### config
+    spark = get_spark_session()
+
+    df = node_from_config(df, sql)
+    df.createOrReplaceTempView('top3_cells_on_voice_usage')
+    sql_query = """
+    select
+    imsi
+    ,total_call
+    ,row_number() over (partition by imsi,start_of_week order by total_call desc) as rnk
+    ,start_of_week
+    from top3_cells_on_voice_usage
+    """
+    df = spark.sql(sql_query)
+    df.cache()
+    df = df.where("rnk <= 3")
+
+    return df
