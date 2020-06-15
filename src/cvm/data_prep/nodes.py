@@ -30,7 +30,6 @@ import logging
 from typing import Any, Dict, List, Tuple
 
 import pyspark.sql.functions as func
-from cvm.src.features.data_prep_features import filter_important_only
 from cvm.src.features.keep_table_history import pop_most_recent
 from cvm.src.features.microsegments import (
     add_microsegment_features,
@@ -161,7 +160,7 @@ def create_pred_sample(
     df = raw_features.join(microsegments.drop("key_date"), on="subscription_identifier")
     vol = add_volatility_scores(df.select("subscription_identifier"), reve, parameters)
     df = df.join(vol, on="subscription_identifier")
-    return filter_important_only(df, important_param, parameters, include_targets=False)
+    return df
 
 
 def subs_date_join_important_only(
