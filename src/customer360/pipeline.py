@@ -32,7 +32,8 @@ from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l1.to_
     billing_to_l1_pipeline,
 )
 from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l2.to_l2_pipeline import (
-    billing_to_l2_intermediate_pipeline, billing_to_l2_pipeline,
+    billing_to_l2_intermediate_pipeline,
+    billing_to_l2_pipeline,
 )
 from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l3.to_l3_pipeline import (
     billing_l1_to_l3_pipeline,
@@ -50,30 +51,38 @@ from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.
 from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l3.to_l3_pipeline import (
     customer_profile_to_l3_pipeline,
     customer_profile_billing_level_to_l3_pipeline,
-    unioned_customer_profile_to_l3_pipeline
+    unioned_customer_profile_to_l3_pipeline,
 )
 from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l4.to_l4_pipeline import (
     customer_profile_to_l4_pipeline,
 )
-from cvm.data_prep.pipeline import training_data_prepare, scoring_data_prepare, \
-    extract_features, rfe_only
+from cvm.data_prep.pipeline import (
+    training_data_prepare,
+    scoring_data_prepare,
+    extract_features,
+    rfe_only,
+    join_raw_features,
+    create_cvm_microsegments,
+    create_prediction_sample,
+)
+from cvm.sample_inputs.pipeline import (
+    create_users_from_tg,
+    create_users_from_active,
+    create_sub_id_mapping_pipeline,
+    prepare_input_tables,
+)
 from cvm.modelling.pipeline import train_model, score_model
 from cvm.preprocessing.pipeline import preprocessing_fit, preprocessing_transform
 from cvm.report.pipeline import prepare_user_microsegments, create_kpis, run_report
 from cvm.treatments.pipeline import generate_treatments
-from nba.backtesting.backtesting_pipeline import create_nba_backtesting_pipeline
 from nba.model_input.model_input_pipeline import create_nba_model_input_pipeline
 from nba.models.models_pipeline import create_nba_models_pipeline
-from nba.report.pipelines.campaign_importance_volume_pipeline import (
-    campaign_importance_volume,
-)
-from nba.report.pipelines.report_pipeline import create_use_case_view_report_data
 from .pipelines.data_engineering.pipelines.campaign_pipeline import (
     campaign_to_l1_pipeline,
     campaign_to_l2_pipeline,
     campaign_to_l3_pipeline,
     campaign_to_l4_pipeline,
-    campaign_to_l4_ranking_pipeline
+    campaign_to_l4_ranking_pipeline,
 )
 
 from .pipelines.data_engineering.pipelines.complaints_pipeline.to_l1.to_l1_pipeline import (
@@ -104,7 +113,7 @@ from .pipelines.data_engineering.pipelines.loyalty_pipeline import (
     loyalty_to_l1_pipeline,
     loyalty_to_l2_pipeline,
     loyalty_to_l4_pipeline,
-    loyalty_to_l3_pipeline
+    loyalty_to_l3_pipeline,
 )
 from .pipelines.data_engineering.pipelines.network_pipeline.to_l1.to_l1_pipeline import (
     network_to_l1_pipeline,
@@ -136,7 +145,8 @@ from .pipelines.data_engineering.pipelines.revenue_pipeline import (
     revenue_to_l4_weekly_pipeline,
 )
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l1.to_l1_pipeline import (
-    streaming_to_l1_pipeline, streaming_to_l1_intermediate_pipeline
+    streaming_to_l1_pipeline,
+    streaming_to_l1_intermediate_pipeline,
 )
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l2.to_l2_pipeline import (
     streaming_to_l2_pipeline,
@@ -170,7 +180,8 @@ from .pipelines.data_engineering.pipelines.usage_pipeline import (
 )
 
 from .pipelines.data_engineering.pipelines.util_pipeline import (
-    lineage_dependency_pipeline, ops_report_pipeline
+    lineage_dependency_pipeline,
+    ops_report_pipeline,
 )
 
 
@@ -268,35 +279,35 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
 def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
     return {
         "cvm_treatments": generate_treatments("scoring"),
-        "cvm_full_training": training_data_prepare + preprocessing_fit()
-                             + train_model(),
+        "cvm_full_training": training_data_prepare
+        + preprocessing_fit()
+        + train_model(),
         "cvm_full_scoring": (
-            scoring_data_prepare("scoring")
+            prepare_input_tables("scoring")
+            + scoring_data_prepare("scoring")
             + preprocessing_transform("scoring")
             + score_model("scoring")
             + generate_treatments("scoring")
         ),
         "cvm_full_scoring_experiment": (
-            scoring_data_prepare("scoring_experiment")
+            prepare_input_tables("scoring_experiment")
+            + scoring_data_prepare("scoring_experiment")
             + preprocessing_transform("scoring_experiment")
             + score_model("scoring_experiment")
+            + generate_treatments("scoring_experiment")
         ),
         "cvm_full_features_extraction": extract_features,
         "cvm_rfe_only": rfe_only,
         "cvm_prepare_report_micro": prepare_user_microsegments(),
         "cvm_create_kpis": create_kpis(),
-        "cvm_create_report": run_report()
+        "cvm_create_report": run_report(),
+        "cvm_sample_inputs": prepare_input_tables("scoring"),
+        "cvm_test": generate_treatments("scoring"),
     }
 
 
 def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
-    return {
-        "__default__": create_use_case_view_report_data()
-        + create_nba_model_input_pipeline()
-        + create_nba_models_pipeline()
-        + campaign_importance_volume()
-        + create_nba_backtesting_pipeline()
-    }
+    return {}
 
 
 def create_pipelines(**kwargs) -> Dict[str, Pipeline]:

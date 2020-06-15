@@ -27,9 +27,10 @@
 # limitations under the License.
 import logging
 
-from cvm.src.utils.list_operations import list_intersection, list_sub
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as func
+
+from cvm.src.utils.list_operations import list_intersection, list_sub
 
 
 def prepare_key_columns(df: DataFrame,) -> DataFrame:
@@ -59,12 +60,6 @@ def prepare_key_columns(df: DataFrame,) -> DataFrame:
 
     if "start_of_week" in df.columns:
         df = df.withColumn("start_of_week", func.date_add(df.start_of_week, 7))
-
-    # temporary fix for `subscription_identifier` migration
-    if "old_subscription_identifier" in df.columns:
-        df = df.drop("subscription_identifier").withColumnRenamed(
-            "old_subscription_identifier", "subscription_identifier"
-        )
 
     for key_date_column in key_date_columns:
         df = df.withColumnRenamed(key_date_column, "key_date")

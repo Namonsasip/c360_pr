@@ -30,91 +30,25 @@ import logging
 from typing import Any, Dict, List, Tuple
 
 import pyspark.sql.functions as func
-from pyspark.sql import DataFrame
-
+from cvm.src.features.data_prep_features import filter_important_only
+from cvm.src.features.keep_table_history import pop_most_recent
+from cvm.src.features.microsegments import (
+    add_microsegment_features,
+    add_volatility_scores,
+    define_microsegments,
+)
+from cvm.src.features.parametrized_features import build_feature_from_parameters
 from cvm.src.targets.ard_targets import get_ard_targets
 from cvm.src.targets.churn_targets import filter_usage, get_churn_targets
 from cvm.src.utils.feature_selection import feature_selection
-from cvm.src.utils.incremental_manipulation import filter_latest_date, filter_users
 from cvm.src.utils.list_targets import list_targets
-from cvm.src.utils.parametrized_features import build_feature_from_parameters
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
 from cvm.src.utils.utils import (
     get_clean_important_variables,
     get_today,
     impute_from_parameters,
 )
-
-
-def create_users_from_cgtg(
-    customer_groups: DataFrame,
-    sampling_parameters: Dict[str, Any],
-    parameters: Dict[str, Any],
-) -> DataFrame:
-    """ Creates users table to use during scoring using customer groups
-    table.
-
-    Args:
-        customer_groups: Table with target, control and bau groups.
-        sampling_parameters: sampling parameters defined in parameters.yml.
-        parameters: parameters defined in parameters.yml.
-    """
-
-    today = get_today(parameters)
-    df = (
-        customer_groups.filter("target_group == 'TG'")
-        .select("crm_sub_id")
-        .distinct()
-        .withColumn("key_date", func.lit(today))
-        .withColumnRenamed("crm_sub_id", "subscription_identifier")
-    )
-    return df
-
-
-def create_users_from_active_users(
-    profile: DataFrame,
-    main_packs: DataFrame,
-    sampling_parameters: Dict[str, Any],
-    parameters: Dict[str, Any],
-) -> DataFrame:
-    """Create l5_cvm_one_day_users_table - one day table of users used for
-    training and validating.
-
-    Args:
-        profile: monthly customer profiles.
-        main_packs: pre-paid main packages description.
-        sampling_parameters: sampling parameters defined in parameters.yml.
-        parameters: parameters defined in parameters.yml.
-    """
-
-    profile = prepare_key_columns(profile)
-    date_chosen = sampling_parameters["chosen_date"]
-    if date_chosen == "today" or date_chosen == "":
-        date_chosen = None
-    users = filter_latest_date(profile, parameters, date_chosen)
-    users = users.filter(
-        "charge_type == 'Pre-paid' \
-         AND subscription_status == 'SA' \
-         AND subscription_identifier is not null \
-         AND subscription_identifier not in ('null', 'NA') \
-         AND cust_active_this_month = 'Y'"
-    )
-    users = users.filter("subscriber_tenure >= 4")
-
-    main_packs = main_packs.filter(
-        "promotion_group_tariff not in ('SIM 2 Fly', \
-         'Net SIM', 'Traveller SIM')"
-    )
-    main_packs = (
-        main_packs.select("package_id")
-        .distinct()
-        .withColumnRenamed("package_id", "current_package_id")
-    )
-    users = users.join(main_packs, ["current_package_id"], "inner")
-    columns_to_pick = ["key_date", "subscription_identifier"]
-    users = users.select(columns_to_pick)
-
-    return users.distinct()
+from pyspark.sql import DataFrame
 
 
 def add_ard_targets(
@@ -208,20 +142,49 @@ def train_test_split(
     return train, test
 
 
-def subs_date_join_important_only(
-    important_param: List[Any], parameters: Dict[str, Any], *args: DataFrame,
+def create_pred_sample(
+    raw_features: DataFrame,
+    microsegments: DataFrame,
+    reve: DataFrame,
+    important_param: List[Any],
+    parameters: Dict[str, Any],
 ) -> DataFrame:
-    """ Left join all tables with important variables by given keys.
+    """ Creates prediction for scoring.
 
     Args:
+        reve: monthly revenue data.
+        raw_features: joined table with C360 features.
+        microsegments: table with macro- and microsegments.
         important_param: List of important columns.
         parameters: parameters defined in parameters.yml.
-        *args: Tables to join.
+    """
+    df = raw_features.join(microsegments, on="subscription_identifier")
+    vol = add_volatility_scores(df.select("subscription_identifier"), reve, parameters)
+    df = df.join(vol, on="subscription_identifier")
+    return filter_important_only(df, important_param, parameters, include_targets=False)
+
+
+def subs_date_join_important_only(
+    important_param: List[Any],
+    parameters: Dict[str, Any],
+    users: DataFrame,
+    *args: DataFrame,
+) -> DataFrame:
+    """ Left join all tables with important variables by given keys. Join using
+     `subscription_identifier` or `old_subscription_identifier`.
+
+    Args:
+        users: table with users, has to have both `old_subscription_identifier` and
+            `subscription_identifier` columns.
+        important_param: List of important columns.
+        parameters: parameters defined in parameters.yml.
+        *args: tables to join, each has to have either `old_subscription_identifier` or
+            `subscription_identifier` column.
     Returns:
         Left joined and filtered tables.
     """
 
-    keys = parameters["key_columns"]
+    keys = parameters["key_columns"] + ["old_subscription_identifier"]
     segments = parameters["segment_columns"]
     must_have_features = parameters["must_have_features"]
     targets = list_targets(parameters)
@@ -241,66 +204,61 @@ def subs_date_join_important_only(
         for tab in tables
     ]
 
-    def join_on(df1, df2):
-        cols_to_drop = [col_name for col_name in df1.columns if col_name in df2.columns]
-        cols_to_drop = list(set(cols_to_drop) - set(keys))
-        df2 = df2.drop(*cols_to_drop)
-        return df1.join(df2, keys, "left")
-
-    return functools.reduce(join_on, tables)
+    return subs_date_join(parameters, users, *tables)
 
 
-def subs_date_join(parameters: Dict[str, Any], *args: DataFrame,) -> DataFrame:
-    """ Left join all tables by given keys.
+def subs_date_join(
+    parameters: Dict[str, Any], users: DataFrame, *args: DataFrame,
+) -> DataFrame:
+    """ Left join all tables by given keys. Join using `subscription_identifier` or
+    `old_subscription_identifier`.
 
     Args:
+        users: table with users, has to have both `old_subscription_identifier` and
+            `subscription_identifier` columns.
         parameters: parameters defined in parameters.yml.
-        *args: Tables to join.
+        *args: tables to join, each has to have either `old_subscription_identifier` or
+            `subscription_identifier` column.
     Returns:
         Left joined tables.
     """
 
-    keys = parameters["key_columns"]
     tables = [prepare_key_columns(tab) for tab in args]
+    tables_without_sub_ids = [
+        tab
+        for tab in tables
+        if ("old_subscription_identifier" not in tab.columns)
+        and ("subscription_identifier" not in tab.columns)
+    ]
+    no_sub_id_present = len(tables_without_sub_ids) > 0
+    if no_sub_id_present:
+        raise Exception(
+            "Not every table has `old_subscription_identifier`"
+            + " or `subscription_identifier`"
+        )
+    old_sub_id_tables = [
+        tab for tab in tables if "old_subscription_identifier" in tab.columns
+    ]
+    sub_id_tables = [tab for tab in tables if "subscription_identifier" in tab.columns]
 
-    def join_on(df1, df2):
+    def join_on(df1, df2, keys):
         cols_to_drop = [col_name for col_name in df1.columns if col_name in df2.columns]
         cols_to_drop = list(set(cols_to_drop) - set(keys))
         df2 = df2.drop(*cols_to_drop)
         return df1.join(df2, keys, "left")
 
-    return functools.reduce(join_on, tables)
+    old_sub_ids_joined = functools.reduce(
+        functools.partial(join_on, keys=["old_subscription_identifier", "key_date"]),
+        [users] + old_sub_id_tables,
+    )
+    sub_ids_joined = functools.reduce(
+        functools.partial(join_on, keys=["subscription_identifier", "key_date"]),
+        [users] + sub_id_tables,
+    )
 
-
-def create_sample_dataset(
-    df: DataFrame, parameters: Dict[str, Any], sampling_parameters: Dict[str, Any],
-) -> DataFrame:
-    """ Create sample of given table. Used to limit users and / or pick chosen date from
-    data.
-
-    Args:
-        df: given table.
-        sampling_parameters: sampling parameters defined in parameters.yml.
-        parameters: parameters defined in parameters.yml.
-    Returns:
-        Sample of table.
-    """
-    subscription_id_suffix = sampling_parameters["subscription_id_suffix"]
-    max_date = sampling_parameters["chosen_date"]
-
-    sampling_stages = {
-        "filter_users": lambda dfx: filter_users(dfx, subscription_id_suffix),
-        "take_last_date": lambda dfx: filter_latest_date(dfx, parameters, max_date),
-    }
-
-    starting_rows = df.count()
-    for stage in sampling_parameters["stages"]:
-        df = sampling_stages[stage](df)
-
-    log = logging.getLogger(__name__)
-    log.info(f"Sample has {df.count()} rows, down from {starting_rows} rows.")
-
-    return df
+    return join_on(
+        old_sub_ids_joined, sub_ids_joined, keys=["subscription_identifier", "key_date"]
+    ).drop("old_subscription_identifier")
 
 
 def add_macrosegments(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
@@ -322,6 +280,50 @@ def add_macrosegments(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
         )
 
     return df
+
+
+def get_micro_macrosegments(
+    parameters: Dict[str, Any],
+    raw_features: DataFrame,
+    reve: DataFrame,
+    micro_macrosegments_history: DataFrame = None,
+) -> Tuple[DataFrame, DataFrame]:
+    """ Creates micro- and macrosegments table. Updates history. If recently updated
+    microsegments found in history then not update is being done. Used for scoring.
+
+    Args:
+        parameters: parameters defined in parameters.yml.
+        raw_features: joined features from C360.
+        reve: monthly revenue data.
+        micro_macrosegments_history: table with user to microsegment mapping history.
+    """
+    log = logging.getLogger(__name__)
+    log.info("Creating macrosegments and microsegments")
+
+    macrosegments_defs = parameters["macrosegments"]
+    history_update_cadence = parameters["microsegments_update_cadence"]
+    today = get_today(parameters)
+
+    # define macrosegments
+    df = raw_features
+    for use_case in macrosegments_defs:
+        df = build_feature_from_parameters(
+            df, use_case + "_macrosegment", macrosegments_defs[use_case]
+        )
+
+    # define microsegments
+    vol = add_volatility_scores(df, reve, parameters)
+    df = add_microsegment_features(df, parameters).join(vol, "subscription_identifier")
+    df = define_microsegments(df, parameters, reduce_cols=True)
+
+    return pop_most_recent(
+        history_df=micro_macrosegments_history,
+        update_df=df,
+        recalculate_period_days=history_update_cadence,
+        parameters=parameters,
+        users_required=raw_features.select("subscription_identifier"),
+        today=today,
+    )
 
 
 def feature_selection_all_target(

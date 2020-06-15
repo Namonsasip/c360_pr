@@ -1,13 +1,21 @@
+
 _spark_parquet: &spark_parquet
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
   save_args:
     mode: "overwrite"
 
+# users list sample
+active_users_sample_scoring_experiment:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_active_users_sample_scoring_experiment/
+
+# users used to train on
 cvm_users_list_scoring_experiment:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_cvm_users_list_scoring_experiment/
 
+# inputs samples
 l3_customer_profile_include_1mo_non_active_scoring_experiment:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l3_customer_profile_include_1mo_non_active_scoring_experiment/
@@ -28,9 +36,14 @@ l4_usage_postpaid_prepaid_weekly_features_sum_scoring_experiment:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_usage_postpaid_prepaid_weekly_features_sum_scoring_experiment/
 
-l2_touchpoints_nim_work_features_scoring_experiment:
+l4_touchpoints_to_call_center_features_scoring_experiment:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l2_touchpoints_nim_work_features_scoring_experiment/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_touchpoints_to_call_center_features_scoring_experiment/
+
+# features created in data preparation phase
+raw_features_scoring_experiment:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_raw_features_scoring_experiment/
 
 ard_targets_scoring_experiment:
   <<: *spark_parquet
@@ -40,37 +53,33 @@ churn_targets_scoring_experiment:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_churn_targets_scoring_experiment/
 
-features_targets_scoring_experiment:
+microsegments_macrosegments_scoring_experiment:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_features_targets_scoring_experiment/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_microsegments_macrosegments_scoring_experiment/
 
-features_macrosegments_scoring_experiment:
+microsegments_macrosegments_history_input_scoring_experiment:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_features_macrosegments_scoring_experiment/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_microsegments_macrosegments_history_scoring_experiment/
 
-sample_preprocessed_scoring_experiment:
+microsegments_macrosegments_history_output_scoring_experiment:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_sample_preprocessed_scoring_experiment/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_microsegments_macrosegments_history_scoring_experiment/
 
+prediction_sample_scoring_experiment:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer359-blob-data/C360/CVM/l5_cvm_prediction_sample_scoring_experiment/
+
+# preprocessing
+prediction_sample_preprocessed_scoring_experiment:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_prediction_sample_preprocessed_scoring_experiment/
+
+# propensities
 propensity_scores_scoring_experiment:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_propensity_scores_scoring_experiment/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_propensity_scores/
 
+# features for treatments
 treatments_features_scoring_experiment:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_treatments_features_scoring_experiment/
-
-active_users_sample_scoring_experiment:
-  <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_active_users_sample_scoring_experiment/
-
-microsegments_input_scoring_experiment:
-  <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_microsegments_scoring_experiment/
-
-# the same as above - used because of kedro design
-microsegments_output_scoring_experiment:
-  <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_microsegments_scoring_experiment/
-
-

@@ -29,12 +29,12 @@ import logging
 from typing import Any, Dict, Tuple
 
 import pandas
-from cvm.src.treatments.deploy_treatments import deploy_contact, prepare_campaigns_table
-from cvm.src.treatments.microsegments import (
+from cvm.src.features.microsegments import (
     add_microsegment_features,
     add_volatility_scores,
     define_microsegments,
 )
+from cvm.src.treatments.deploy_treatments import deploy_contact, prepare_campaigns_table
 from cvm.src.treatments.treatments_build import (
     get_treatments_propositions,
     treatments_featurize,
@@ -69,7 +69,7 @@ def prepare_microsegments(
 
 def create_treatments_features(
     propensities: DataFrame,
-    features_macrosegments_scoring: DataFrame,
+    prediction_sample: DataFrame,
     microsegments: DataFrame,
     recent_profile: DataFrame,
     main_packs: DataFrame,
@@ -79,15 +79,15 @@ def create_treatments_features(
 
     Args:
         propensities: scores created by models.
-        features_macrosegments_scoring: features used to run conditions on.
-        microsegments: users and microsegments table.
+        prediction_sample: table with features needed.
+        microsegments: table with microsegments.
         recent_profile: table with users' national ids, only last date.
         main_packs: table describing prepaid main packages.
         parameters: parameters defined in parameters.yml.
     """
     return treatments_featurize(
         propensities,
-        features_macrosegments_scoring,
+        prediction_sample,
         microsegments,
         recent_profile,
         main_packs,
@@ -99,17 +99,20 @@ def produce_treatments(
     treatments_history: DataFrame,
     parameters: Dict[str, Any],
     treatments_features: DataFrame,
+    users: DataFrame,
 ) -> Tuple[DataFrame, DataFrame]:
     """  Generates treatments and updated treatments history.
 
     Args:
+        users: table with users and dates to create targets for, used to map to old sub
+            id.
         treatments_features: features used for treatments, output of treatment
             featurizer.
         parameters: parameters defined in parameters.yml.
         treatments_history: table with history of treatments.
     """
     treatments_propositions = get_treatments_propositions(
-        parameters, treatments_history, treatments_features,
+        parameters, treatments_history, treatments_features, users
     )
     treatments_history = update_history_with_treatments_propositions(
         treatments_propositions, treatments_history, parameters

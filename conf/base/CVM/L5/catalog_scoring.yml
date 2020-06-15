@@ -4,10 +4,17 @@ _spark_parquet: &spark_parquet
   save_args:
     mode: "overwrite"
 
+# users list sample
+active_users_sample_scoring:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_active_users_sample_scoring/
+
+# users used to train on
 cvm_users_list_scoring:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_cvm_users_list_scoring/
 
+# inputs samples
 l3_customer_profile_include_1mo_non_active_scoring:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l3_customer_profile_include_1mo_non_active_scoring/
@@ -32,6 +39,11 @@ l4_touchpoints_to_call_center_features_scoring:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_touchpoints_to_call_center_features_scoring/
 
+# features created in data preparation phase
+raw_features_scoring:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_raw_features_scoring/
+
 ard_targets_scoring:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_ard_targets_scoring/
@@ -40,36 +52,33 @@ churn_targets_scoring:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_churn_targets_scoring/
 
-features_targets_scoring:
+microsegments_macrosegments_scoring:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_features_targets_scoring/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_microsegments_macrosegments_scoring/
 
-features_macrosegments_scoring:
+microsegments_macrosegments_history_input_scoring:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_features_macrosegments_scoring/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_microsegments_macrosegments_history_scoring/
 
-sample_preprocessed_scoring:
+microsegments_macrosegments_history_output_scoring:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_sample_preprocessed_scoring/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_microsegments_macrosegments_history_scoring/
 
+prediction_sample_scoring:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer359-blob-data/C360/CVM/l5_cvm_prediction_sample_scoring/
+
+# preprocessing
+prediction_sample_preprocessed_scoring:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_prediction_sample_preprocessed_scoring/
+
+# propensities
 propensity_scores_scoring:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_propensity_scores/
 
+# features for treatments
 treatments_features_scoring:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_treatments_features_scoring/
-
-active_users_sample_scoring:
-  <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_active_users_sample_scoring/
-
-microsegments_input_scoring:
-  <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_microsegments_scoring/
-
-# the same as above - used because of kedro design
-microsegments_output_scoring:
-  <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_microsegments_scoring/
-

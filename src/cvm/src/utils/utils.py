@@ -33,6 +33,7 @@ from typing import Any, Callable, Dict, List
 
 import pandas
 import pytz
+from customer360.utilities.spark_util import get_spark_session
 from cvm.src.utils.list_targets import list_targets
 from pyspark.sql import DataFrame
 
@@ -236,3 +237,15 @@ def join_multiple(key_columns: List[str], *dfs: DataFrame) -> DataFrame:
         *dfs: DataFrames to join.
     """
     return functools.reduce(lambda df1, df2: join_on(df1, df2, key_columns), [*dfs])
+
+
+def refresh_parquet(df: DataFrame, parameters: Dict[str, Any],) -> DataFrame:
+    """ Allows reading and writing from the same DataFrame. Use before saving.
+
+    Args:
+        df: DataFrame to be saved.
+        parameters: parameters defined in parameters.yml.
+    """
+    temp_path = parameters["refresh_temp_path"]
+    df.write.mode("overwrite").parquet(temp_path)
+    return get_spark_session().read.parquet(temp_path)

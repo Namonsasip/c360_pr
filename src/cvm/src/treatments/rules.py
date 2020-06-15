@@ -259,15 +259,14 @@ class Treatment:
         to_truncate = (func.col("has_current_treatment") == 1) & (
             func.col("lp_in_treatment") >= self.treatment_size
         )
-        df = df.withColumn(
-            "campaign_code",
-            func.when(to_truncate, func.lit(None)).otherwise(func.col("campaign_code")),
-        ).withColumn(
-            "treatment_name",
-            func.when(to_truncate, func.lit(None)).otherwise(
-                func.col("treatment_name")
-            ),
-        )
+        cols_to_trunc = ["treatment_name", "use_case", "campaign_code"]
+        for col_to_trunc in cols_to_trunc:
+            df = df.withColumn(
+                col_to_trunc,
+                func.when(to_truncate, func.lit(None)).otherwise(
+                    func.col(col_to_trunc)
+                ),
+            )
         to_drop = ["sort_on_col", "has_current_treatment", "lp_in_treatment"]
         return df.drop(*to_drop)
 
@@ -360,10 +359,14 @@ class MultipleTreatments:
         self, df: DataFrame, blacklisted_users: DataFrame = None
     ) -> DataFrame:
         """ Apply multiple treatments"""
+        if blacklisted_users is not None:
+            logging.info("Dropping recently contacted")
+            df = df.join(
+                blacklisted_users.select("subscription_identifier"),
+                on="subscription_identifier",
+                how="left_anti",
+            )
         logging.info("Applying treatments")
-        users_blacklist = UsersBlacklist()
-        logging.info("Dropping recently contacted")
-        users_blacklist.add(blacklisted_users)
         for treatment in self.treatments:
             df = treatment.apply_treatment(df)
         return df.filter("campaign_code is not null")

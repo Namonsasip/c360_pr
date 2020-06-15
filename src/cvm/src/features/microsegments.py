@@ -28,8 +28,8 @@
 import logging
 from typing import Any, Dict
 
+from cvm.src.features.parametrized_features import build_feature_from_parameters
 from cvm.src.targets.churn_targets import add_days
-from cvm.src.utils.parametrized_features import build_feature_from_parameters
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
 from cvm.src.utils.utils import impute_from_parameters
 from pyspark.sql import DataFrame, Window
@@ -134,8 +134,7 @@ def add_volatility_scores(
 
     Args:
         users: DataFrame with users, subscription_identifier column will be
-        used.
-        Rest will be kept.
+        used. Rest will be kept.
         reve: Monthly revenue data.
         parameters: parameters defined in parameters.yml.
     """

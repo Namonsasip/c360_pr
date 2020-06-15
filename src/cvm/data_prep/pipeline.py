@@ -25,119 +25,52 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Example code for the nodes in the example pipeline. This code is meant
-just for illustrating basic Kedro features.
-
-PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
-"""
-import re
-
-from kedro.pipeline import Pipeline, node
 
 from cvm.data_prep.nodes import (
     add_ard_targets,
     add_churn_targets,
     add_macrosegments,
-    create_sample_dataset,
-    create_users_from_active_users,
-    create_users_from_cgtg,
+    create_pred_sample,
     feature_selection_all_target,
+    get_micro_macrosegments,
     subs_date_join,
     subs_date_join_important_only,
     train_test_split,
 )
 from cvm.preprocessing.nodes import pipeline_fit
-from src.cvm.src.temporary_fixes.sub_id_replace import replace_sub_ids
+from cvm.sample_inputs.pipeline import create_users_from_active, sample_inputs
+from kedro.pipeline import Pipeline, node
 
 
-def create_users_from_tg(sample_type: str) -> Pipeline:
-    """ Creates users table to use during training / scoring using predefined target
-    group.
+def join_raw_features(sample_type: str) -> Pipeline:
+    """ Join used tables to create master table with all C360 features.
 
     Args:
-        sample_type: "scoring" if list created for scoring, "training" if list created
-            for training.
+        sample_type: "scoring" if list created for scoring, "training" if list
+         created for training.
     """
-
+    inputs_to_join = [
+        "cvm_users_list_{}",
+        "l3_customer_profile_include_1mo_non_active_{}",
+        "l4_daily_feature_topup_and_volume_{}",
+        "l4_usage_prepaid_postpaid_daily_features_{}",
+        "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_{}",
+        "l4_usage_postpaid_prepaid_weekly_features_sum_{}",
+        "l4_touchpoints_to_call_center_features_{}",
+    ]
+    inputs_to_join = [
+        input_dataset.format(sample_type) for input_dataset in inputs_to_join
+    ]
     return Pipeline(
         [
             node(
-                replace_sub_ids(create_users_from_cgtg),
-                [
-                    "cvm_prepaid_customer_groups",
-                    "params:{}".format(sample_type),
-                    "parameters",
-                ],
-                "cvm_users_list_" + sample_type,
-                name="create_users_list_tgcg_" + sample_type,
-            ),
+                func=subs_date_join,
+                inputs=["parameters"] + inputs_to_join,
+                outputs="raw_features_{}".format(sample_type),
+                name="create_raw_features_{}".format(sample_type),
+            )
         ]
     )
-
-
-def create_users_from_active(sample_type: str) -> Pipeline:
-    """ Creates users table to use during training / scoring using list of active users.
-
-    Args:
-        sample_type: "scoring" if list created for scoring, "training" if list created
-            for training.
-    """
-
-    return Pipeline(
-        [
-            node(
-                replace_sub_ids(create_sample_dataset),
-                [
-                    "l3_customer_profile_include_1mo_non_active",
-                    "parameters",
-                    "params:" + sample_type,
-                ],
-                "active_users_sample_" + sample_type,
-                name="create_active_users_sample_" + sample_type,
-            ),
-            node(
-                replace_sub_ids(create_users_from_active_users),
-                [
-                    "active_users_sample_" + sample_type,
-                    "l0_product_pru_m_package_master_group_for_daily",
-                    "params:" + sample_type,
-                    "parameters",
-                ],
-                "cvm_users_list_" + sample_type,
-                name="create_cvm_users_list_active_users_" + sample_type,
-            ),
-        ]
-    )
-
-
-def sample_inputs(sample_type: str) -> Pipeline:
-    """ Creates samples for input datasets.
-
-    Args:
-        sample_type: "scoring" if list created for scoring, "training" if list created
-            for training.
-    """
-
-    datasets_to_sample = [
-        "l3_customer_profile_include_1mo_non_active",
-        "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
-        "l4_usage_prepaid_postpaid_daily_features",
-        "l4_daily_feature_topup_and_volume",
-        "l4_usage_postpaid_prepaid_weekly_features_sum",
-        "l4_touchpoints_to_call_center_features",
-    ]
-
-    nodes_list = [
-        node(
-            replace_sub_ids(create_sample_dataset),
-            [dataset_name, "parameters", "params:" + sample_type],
-            re.sub("_no_inc", "", dataset_name) + "_" + sample_type,
-            name="sample_" + dataset_name + "_" + sample_type,
-        )
-        for dataset_name in datasets_to_sample
-    ]
-
-    return Pipeline(nodes_list)
 
 
 def create_cvm_targets(sample_type: str):
@@ -155,7 +88,7 @@ def create_cvm_targets(sample_type: str):
     return Pipeline(
         [
             node(
-                replace_sub_ids(add_ard_targets),
+                add_ard_targets,
                 [
                     "cvm_users_list_" + sample_type,
                     "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
@@ -166,7 +99,7 @@ def create_cvm_targets(sample_type: str):
                 name="create_ard_targets_" + sample_type,
             ),
             node(
-                replace_sub_ids(add_churn_targets),
+                add_churn_targets,
                 [
                     "cvm_users_list_" + sample_type,
                     "l4_usage_prepaid_postpaid_daily_features",
@@ -201,7 +134,7 @@ def prepare_features_macrosegments(sample_type: str):
     return Pipeline(
         [
             node(
-                replace_sub_ids(subs_date_join_important_only),
+                subs_date_join_important_only,
                 [
                     "important_columns",
                     "parameters",
@@ -224,6 +157,68 @@ def prepare_features_macrosegments(sample_type: str):
                 "features_macrosegments_" + sample_type,
                 name="create_features_macrosegments_" + sample_type,
             ),
+        ]
+    )
+
+
+def create_cvm_microsegments(sample_type: str) -> Pipeline:
+    """ Creates pipeline creating macrosegments and microsegments for scoring purposes.
+    Uses microsegment history to make them more stable.
+
+    Args:
+        sample_type: "scoring" if list created for scoring, "training" if list created
+            for training.
+
+    Returns:
+        Kedro pipeline.
+    """
+    inputs = [
+        "parameters",
+        "raw_features_{}",
+        "l3_customer_profile_include_1mo_non_active",
+        "microsegments_macrosegments_history_input_{}",
+    ]
+    inputs = [dataset.format(sample_type) for dataset in inputs]
+    outputs = [
+        "microsegments_macrosegments_history_output_{}",
+        "microsegments_macrosegments_{}",
+    ]
+    outputs = [dataset.format(sample_type) for dataset in outputs]
+    return Pipeline(
+        [
+            node(
+                func=get_micro_macrosegments,
+                inputs=inputs,
+                outputs=outputs,
+                name="create_microsegments",
+            )
+        ]
+    )
+
+
+def create_prediction_sample(sample_type: str) -> Pipeline:
+    """ Creates table for scoring.
+
+    Args:
+        sample_type: "scoring" if list created for scoring, "scoring_experiment" if list
+            created for scoring_experiment.
+    """
+    inputs = [
+        "raw_features_{}",
+        "microsegments_macrosegments_{}",
+        "l3_customer_profile_include_1mo_non_active",
+        "important_columns",
+        "parameters",
+    ]
+    inputs = [dataset.format(sample_type) for dataset in inputs]
+    return Pipeline(
+        [
+            node(
+                func=create_pred_sample,
+                inputs=inputs,
+                outputs="prediction_sample_{}".format(sample_type),
+                name="create_prediction_sample",
+            )
         ]
     )
 
@@ -268,7 +263,7 @@ def create_cvm_important_columns():
     return Pipeline(
         {
             node(
-                replace_sub_ids(subs_date_join),
+                subs_date_join,
                 [
                     "parameters",
                     "cvm_users_list_" + sample_type,
@@ -330,9 +325,9 @@ def scoring_data_prepare(sample_type: str) -> Pipeline:
         Kedro pipeline.
     """
     return (
-        create_users_from_tg(sample_type)
-        + sample_inputs(sample_type)
-        + prepare_features_macrosegments(sample_type)
+        join_raw_features(sample_type)
+        + create_cvm_microsegments(sample_type)
+        + create_prediction_sample(sample_type)
     )
 
 

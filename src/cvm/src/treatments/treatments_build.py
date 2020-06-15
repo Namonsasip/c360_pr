@@ -63,7 +63,7 @@ def get_recently_contacted(
 
 def treatments_featurize(
     propensities: DataFrame,
-    features_macrosegments_scoring: DataFrame,
+    prediction_sample: DataFrame,
     microsegments: DataFrame,
     recent_profile: DataFrame,
     main_packs: DataFrame,
@@ -72,18 +72,15 @@ def treatments_featurize(
     """ Prepare table with users and features needed for treatments generation
 
     Args:
+        microsegments: table with microsegments.
+        prediction_sample: table with all features needed.
         propensities: scores created by models.
-        features_macrosegments_scoring: features used to run conditions on.
-        microsegments: users and microsegments table.
         recent_profile: table with users' national ids, only last date.
         main_packs: table describing prepaid main packages.
         parameters: parameters defined in parameters.yml.
     """
     propensities_with_features = join_multiple(
-        ["subscription_identifier"],
-        propensities,
-        features_macrosegments_scoring,
-        microsegments,
+        ["subscription_identifier"], propensities, prediction_sample, microsegments
     )
     treatments_features = add_other_sim_card_features(
         propensities_with_features, recent_profile, main_packs, parameters
@@ -95,6 +92,7 @@ def get_treatments_propositions(
     parameters: Dict[str, Any],
     treatments_history: DataFrame,
     treatments_features: DataFrame,
+    users: DataFrame,
 ) -> DataFrame:
     """ Generate treatments propositions basing on rules treatment.
 
@@ -103,6 +101,8 @@ def get_treatments_propositions(
             featurizer.
         parameters: parameters defined in parameters.yml.
         treatments_history: table with history of treatments.
+        users: table with users and dates to create targets for, used to map to old sub
+            id.
     Returns:
         Table with users, microsegments and treatments chosen.
     """
@@ -112,6 +112,7 @@ def get_treatments_propositions(
     treatments_propositions = treatments.apply_treatments(
         treatments_features, recently_contacted
     )
+    users = users.select("old_subscription_identifier", "subscription_identifier")
     # change output format
     treatments_propositions = (
         treatments_propositions.withColumn("date", func.lit(get_today(parameters)))
@@ -127,10 +128,12 @@ def get_treatments_propositions(
                 func.col("use_case") == "churn", func.col("churn_macrosegment")
             ).otherwise(func.col("ard_macrosegment")),
         )
+        .join(users, on="subscription_identifier")
         .select(
             [
                 "microsegment",
                 "subscription_identifier",
+                "old_subscription_identifier",
                 "macrosegment",
                 "use_case",
                 "campaign_code",
@@ -156,15 +159,21 @@ def update_history_with_treatments_propositions(
     Returns:
         Updated `treatments_history`.
     """
-
-    logging.info("Updating treatments history")
-    today = get_today(parameters)
-    treatments_history = treatments_history.filter(f"key_date != '{today}'").union(
-        treatments_propositions.withColumn("key_date", func.lit(today)).select(
-            treatments_history.columns
+    skip = parameters["treatment_output"]["skip_sending"] == "yes"
+    if skip:
+        logging.getLogger(__name__).info("Skipping updating treatments history")
+        return treatments_history
+    else:
+        logging.getLogger(__name__).info("Updating treatments history")
+        today = get_today(parameters)
+        treatments_history = treatments_history.filter(
+            f"key_date != '{today}'"
+        ).unionByName(
+            treatments_propositions.withColumn("key_date", func.lit(today)).select(
+                treatments_history.columns
+            )
         )
-    )
-    return treatments_history
+        return treatments_history
 
 
 def serve_treatments_chosen(

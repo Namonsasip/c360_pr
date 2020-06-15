@@ -25,16 +25,15 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from kedro.pipeline import Pipeline, node
-
-from cvm.data_prep.nodes import create_sample_dataset, subs_date_join
+from cvm.data_prep.nodes import subs_date_join
 from cvm.report.nodes import (
     add_micro_macro,
     build_daily_kpis,
     filter_out_micro_macro,
     prepare_users,
 )
-from cvm.src.temporary_fixes.sub_id_replace import replace_sub_ids
+from cvm.sample_inputs.nodes import create_sample_dataset
+from kedro.pipeline import Pipeline, node
 
 
 def sample_report_inputs() -> Pipeline:
@@ -119,7 +118,7 @@ def create_kpis() -> Pipeline:
     return Pipeline(
         [
             node(
-                replace_sub_ids(build_daily_kpis),
+                build_daily_kpis,
                 [
                     "users_micro_macro_only",
                     "l1_revenue_prepaid_pru_f_usage_multi_daily",

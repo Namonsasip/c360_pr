@@ -88,34 +88,36 @@ def filter_latest_date(
     return df
 
 
-def filter_users(df: DataFrame, subscription_id_suffix: str) -> DataFrame:
+def filter_users(df: DataFrame, subscription_id_hash_suffix: str) -> DataFrame:
     """ Create dev sample of given table basing on users' subscription_identifiers.
 
     Args:
-        subscription_id_suffix: suffix to filter subscription_identifier with.
+        subscription_id_hash_suffix: suffix to filter subscription_identifier with.
         df: given table.
     Returns:
         Sample of table.
     """
 
     log = logging.getLogger(__name__)
-    log.info(f"Filtering users, suffix chosen '{subscription_id_suffix}'")
+    log.info(f"Filtering users, suffix chosen '{subscription_id_hash_suffix}'")
 
-    if subscription_id_suffix is None:
+    if subscription_id_hash_suffix is None:
         return df
 
     if "subscription_identifier" not in df.columns:
         raise Exception("Column subscription_identifier not found.")
 
-    suffix_length = len(subscription_id_suffix)
-    df = df.withColumn(
-        "subscription_identifier_last_letter",
-        df.subscription_identifier.substr(-suffix_length, suffix_length),
+    suffix_length = len(subscription_id_hash_suffix)
+    df = (
+        df.withColumn(
+            "sub_id_hash", func.sha2(func.col("subscription_identifier"), 256)
+        )
+        .withColumn(
+            "sub_id_hash_suffix",
+            func.col("sub_id_hash").substr(-suffix_length, suffix_length),
+        )
+        .filter("sub_id_hash_suffix == '{}'".format(subscription_id_hash_suffix))
+        .drop(*["sub_id_hash", "sub_id_hash_suffix"])
     )
-    subs_filter = "subscription_identifier_last_letter == '{}'".format(
-        subscription_id_suffix
-    )
-
-    df = df.filter(subs_filter).drop("subscription_identifier_last_letter")
 
     return df

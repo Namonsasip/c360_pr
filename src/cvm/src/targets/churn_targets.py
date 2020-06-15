@@ -28,11 +28,13 @@
 
 
 import datetime
+import logging
 from typing import Any, Dict, Tuple
 
-from cvm.src.utils.prepare_key_columns import prepare_key_columns
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as func
+
+from cvm.src.utils.prepare_key_columns import prepare_key_columns
 
 
 def get_churn_targets(
@@ -56,6 +58,11 @@ def get_churn_targets(
     colname = target_parameters["colname"]
     inactivity_length = target_parameters["inactivity_length"]
     blindspot = target_parameters["blindspot"]
+    logging.getLogger(__name__).info(
+        "Creating {}, assuming {} days of blindspot and {} days of inactivity".format(
+            colname, blindspot, inactivity_length
+        )
+    )
 
     usage = usage.withColumnRenamed("key_date", "target_date")
     usage = usage.filter(

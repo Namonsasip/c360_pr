@@ -1,7 +1,7 @@
 # sampling parameter
 training:
   train_share: 0.9 # the rest is validation set
-  subscription_id_suffix: 'A' # '' for all users
+  subscription_id_hash_suffix: 'a' # '' for all users
   chosen_date: '2019-10-01' # '' for most recent data
   stages:
     - filter_users
@@ -9,26 +9,26 @@ training:
 
 fe:
   train_share: 0.9 # the rest is validation set
-  subscription_id_suffix: 'AA' # '' for all users
+  subscription_id_hash_suffix: 'aa' # '' for all users
   chosen_date: '2019-10-01' # '' for most recent data
   stages:
     - filter_users
     - take_last_date
 
 scoring:
-  subscription_id_suffix: '' # '' for all users
+  subscription_id_hash_suffix: '' # '' for all users
   chosen_date: '' # '' for most recent data
   stages:
     - take_last_date
 
 scoring_experiment:
-  subscription_id_suffix: '' # '' for all users
-  chosen_date: '' # '' for most recent data
+  subscription_id_hash_suffix: '' # '' for all users
+  chosen_date: '2020-01-08' # '' for most recent data
   stages:
     - take_last_date
 
 report:
-  subscription_id_suffix: '' # '' for all users
+  subscription_id_hash_suffix: '' # '' for all users
   chosen_date: '' # '' for most recent data
   stages:
     - take_last_date
@@ -72,7 +72,13 @@ must_have_features:
 # volatility
 volatility_length: 5
 
+# how often should the scoring microsegments be updated
+microsegments_update_cadence: 30
+
 # pai parameters
 pai_runs_path: '/dbfs/mnt/customer360-blob-data/cvm/pai01/runs'
 pai_artifacts_path: '/dbfs/mnt/customer360-blob-data/cvm/pai01/artifacts'
 pai_experiment_name: 'force_call_center'
+
+# path used to create temp copies for refreshments
+refresh_temp_path: '/dbfs/mnt/customer359-blob-data/C360/CVM/l5_cvm_temp/'

@@ -27,11 +27,9 @@
 # limitations under the License.
 from kedro.pipeline import Pipeline, node
 
-from src.cvm.src.temporary_fixes.sub_id_replace import replace_sub_ids
 from src.cvm.treatments.nodes import (
     create_treatments_features,
     deploy_treatments,
-    prepare_microsegments,
     produce_treatments,
 )
 
@@ -50,21 +48,11 @@ def generate_treatments(sample_type: str) -> Pipeline:
     return Pipeline(
         [
             node(
-                replace_sub_ids(prepare_microsegments),
-                [
-                    "features_macrosegments_{}".format(sample_type),
-                    "l3_customer_profile_include_1mo_non_active",
-                    "parameters",
-                ],
-                "microsegments_output_{}".format(sample_type),
-                name="create_microsegments_{}".format(sample_type),
-            ),
-            node(
-                replace_sub_ids(create_treatments_features),
+                create_treatments_features,
                 [
                     "propensity_scores_{}".format(sample_type),
-                    "features_macrosegments_scoring",
-                    "microsegments_input_{}".format(sample_type),
+                    "prediction_sample_{}".format(sample_type),
+                    "microsegments_macrosegments_{}".format(sample_type),
                     "l3_customer_profile_include_1mo_non_active_{}".format(sample_type),
                     "l0_product_pru_m_package_master_group_for_daily",
                     "parameters",
@@ -78,6 +66,7 @@ def generate_treatments(sample_type: str) -> Pipeline:
                     "treatments_chosen_history_input",
                     "parameters",
                     "treatments_features_{}".format(sample_type),
+                    "cvm_users_list_{}".format(sample_type),
                 ],
                 ["treatments_chosen", "treatments_chosen_history_output"],
                 name="produce_treatments",
