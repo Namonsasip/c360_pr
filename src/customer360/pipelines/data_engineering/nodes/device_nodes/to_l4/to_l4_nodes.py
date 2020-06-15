@@ -8,9 +8,8 @@ import os
 
 
 def device_l4_rolling_window(input_df: DataFrame,
-                            rolling_window_dict_first: dict,
-                            rolling_window_dict_second: dict,
-                            ) -> DataFrame:
+                             rolling_window_dict_first: dict,
+                             rolling_window_dict_second: dict) -> DataFrame:
     """
     :param input_df:
     :param rolling_window_dict_first:
@@ -20,7 +19,7 @@ def device_l4_rolling_window(input_df: DataFrame,
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
-    group_cols = ["access_method_num", "subscription_identifier", "national_id_card", "start_of_week"]
+    group_cols = ["subscription_identifier", "access_method_num", "national_id_card", "start_of_week"]
 
     rolling_df_first = l4_rolling_window(input_df, rolling_window_dict_first)
 

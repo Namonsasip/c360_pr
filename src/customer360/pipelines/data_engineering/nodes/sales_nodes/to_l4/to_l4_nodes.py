@@ -23,7 +23,7 @@ def sales_l4_rolling_window(input_df: DataFrame,
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
-    group_cols = ["national_id_card", "access_method_num", "subscription_identifier", "start_of_week"]
+    group_cols = ["subscription_identifier", "access_method_num", "national_id_card", "start_of_week"]
 
     rolling_df_first = l4_rolling_window(input_df, rolling_window_dict_first)
     rolling_df_second = l4_rolling_window(input_df, rolling_window_dict_second)
