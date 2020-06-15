@@ -71,10 +71,10 @@ def get_dq_sampled_records(
         sampled_sub_id_df: DataFrame,
 ) -> Tuple[datetime, DataFrame]:
     # get only the latest sampled one
-    max_sampled_date = sampled_sub_id_df.select(f.max(f.col("_sample_created_date"))).collect()[0][0]
+    max_sampled_date = sampled_sub_id_df.select(f.max(f.col("created_date"))).collect()[0][0]
 
     sampled_df = input_df.join(
-        f.broadcast(sampled_sub_id_df.filter(f.col("_sample_created_date") == max_sampled_date)),
+        f.broadcast(sampled_sub_id_df.filter(f.col("created_date") == max_sampled_date)),
         on=["subscription_identifier"],
         how="inner"
     )
