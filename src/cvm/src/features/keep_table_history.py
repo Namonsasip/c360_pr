@@ -101,7 +101,5 @@ def pop_most_recent(
         return history_df, recent_history.drop("key_date")
     else:
         logging.info("No recent entry found, recalculating")
-        history_updated = history_df.append(
-            update_df.withColumn("key_date", lit(today))
-        )
+        history_updated = history_df.union(update_df.withColumn("key_date", lit(today)))
         return history_updated, update_df
