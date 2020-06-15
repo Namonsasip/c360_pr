@@ -42,3 +42,25 @@ def l3_geo_call_location_home_work_monthly(df,sql):
     l3_df_2 = node_from_config(l3_df,sql)
     return l3_df_2
 
+## ==============================Update 2020-06-15 by Thatt529==========================================##
+
+###Top_3_cells_on_voice_usage###
+def l3_geo_top3_cells_on_voice_usage(df,sql):
+    ### config
+    spark = get_spark_session()
+
+    df = node_from_config(df, sql)
+    df.createOrReplaceTempView('top3_cells_on_voice_usage')
+    sql_query = """
+        select
+        imsi
+        ,total_call
+        ,row_number() over (partition by imsi,start_of_month order by total_call desc) as rnk
+        ,start_of_month
+        from top3_cells_on_voice_usage
+        """
+    df = spark.sql(sql_query)
+    df.cache()
+    df = df.where("rnk <= 3")
+
+    return df

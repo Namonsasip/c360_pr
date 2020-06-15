@@ -129,9 +129,8 @@ def geo_to_l4_pipeline(**kwargs):
             ##Top_3_cells_on_voice_usage###
             node(
                 l4_geo_top3_cells_on_voice_usage,
-                ["l0_usage_sum_voice_location_daily_for_l4_geo_top3_cells_on_voice_usage",
-                 "l0_geo_mst_cell_masterplan_for_l4_geo_top3_cells_on_voice_usage",
-                 "l0_profile_customer_profile_ma_for_l4_geo_top3_cells_on_voice_usage"
+                ["l2_geo_top3_cells_on_voice_usage",
+                 "params:l4_geo_top3_cells_on_voice_usage"
                  ],
                 "l4_geo_top3_cells_on_voice_usage"
             )

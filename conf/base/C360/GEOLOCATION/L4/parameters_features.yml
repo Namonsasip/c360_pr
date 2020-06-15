@@ -141,3 +141,12 @@ l4_geo_store_close_to_work:
     weekday_branch_location_id: "branch_location_id"
   granularity: ""
 
+##==============================Update 2020-06-15 by Thatt529==========================================##
+
+###Top_3_cells_on_voice_usage###
+l4_geo_top3_cells_on_voice_usage:
+  partition_by: ["imsi","rnk"]
+  feature_list:
+    sum: ["total_call"]
+  read_from: "l2"
+

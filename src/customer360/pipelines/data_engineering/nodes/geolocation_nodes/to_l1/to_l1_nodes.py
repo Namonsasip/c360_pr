@@ -433,3 +433,68 @@ def l1_location_of_visit_ais_store_daily(shape,cust_cell_visit,sql):
 
     store_visit = node_from_config(df,sql)
     return store_visit
+
+## ==============================Update 2020-06-15 by Thatt529==========================================##
+
+###Top_3_cells_on_voice_usage###
+def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df,sql):
+    ### config
+    spark = get_spark_session()
+
+    ### add partition_date
+    l0_df_usage1 = usage_df.withColumn("event_partition_date",F.to_date(usage_df.date_id.cast(DateType()), "yyyyMMdd"))
+
+    ### last_date
+    geo_last_date = geo_df.agg(F.max("partition_date")).collect()[0][0]
+    profile_last_date = profile_df.agg(F.max("partition_month")).collect()[0][0]
+
+    ### where
+    l0_df_geo1 = spark.read.parquet("dbfs:/mnt/customer360-blob-data/C360/GEO/geo_mst_cell_masterplan/partition_date=" + str(geo_last_date) + "/")
+    l0_df_profile1 = profile_df.where("partition_month = '" + str(profile_last_date) + "'")
+
+    # create temp
+    l0_df_usage1.createOrReplaceTempView('usage_sum_voice_location_daily')
+    l0_df_geo1.createOrReplaceTempView('geo_mst_cell_masterplan')
+    l0_df_profile1.createOrReplaceTempView('profile_customer_profile_ma')
+
+    ### spark_sql
+    sql_query = """
+    select
+    c.imsi
+    ,b.latitude
+    ,b.longitude
+    ,sum(a.no_of_call+a.no_of_inc) as total_call
+    ,a.event_partition_date
+    from usage_sum_voice_location_daily a
+    join profile_customer_profile_ma c
+    on a.access_method_num = c.access_method_num
+    left join geo_mst_cell_masterplan b
+    on a.lac = b.lac
+    and a.ci = b.ci
+    where service_type in ('VOICE','VOLTE')
+    group by 1,2,3,5
+    order by 1,2,3,5
+    """
+    l1_df = spark.sql(sql_query)
+    l1_df.createOrReplaceTempView('L4_temp_table')
+
+    sql_query1 = """
+    select
+    imsi
+    ,latitude
+    ,longitude
+    ,total_call
+    ,row_number() over (partition by imsi,event_partition_date order by total_call desc) as rnk
+    ,event_partition_date
+    from L4_temp_table
+    where imsi is not null
+    and latitude is not null 
+    and longitude is not null
+    """
+    l1_df1 = spark.sql(sql_query1)
+    l1_df.cache()
+    l1_df1.cache()
+    l1_df1 = l1_df1.withColumn("start_of_week", F.to_date(F.date_trunc('week', l1_df1.event_partition_date)))
+    l1_df1 = l1_df1.withColumn("start_of_month", F.to_date(F.date_trunc('month', l1_df1.event_partition_date)))
+    l1_df2 = node_from_config(l1_df1, sql)
+    return l1_df2

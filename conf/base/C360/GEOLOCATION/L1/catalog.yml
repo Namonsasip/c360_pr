@@ -223,7 +223,7 @@ l1_geo_call_location_home_work_daily_for_l3_geo_call_location_home_work_monthly:
 ###Number of Unique Cells Used###
 l1_int_geo_num_unique_cell_for_l1_geo:
         type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-        file_format: "parquet"
+        file_format: parquet
         filepath: /mnt/customer360-blob-data/C360/GEO/l1_features/usage_sum_data_location_daily_l1/
         metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
         load_args:
@@ -245,3 +245,23 @@ l1_location_of_visit_ais_store_daily_for_l4_location_of_last_visit_ais_store:
     read_layer: 'l1_daily'
     target_layer: 'l4_weekly'
     lookback: '0'
+
+##==============================Update 2020-06-15 by Thatt529==========================================##
+
+###Top_3_cells_on_voice_usage###
+l1_geo_top3_cells_on_voice_usage:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l1_features/geo_top3_cells_on_voice_usage/
+  file_format:  parquet
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l2_geo_top3_cells_on_voice_usage'
+    read_layer: 'l1_daily'
+    target_layer: 'l2_weekly'
+    lookback: '0'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'

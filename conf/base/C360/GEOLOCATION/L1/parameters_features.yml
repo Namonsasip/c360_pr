@@ -59,3 +59,17 @@ l1_location_of_visit_ais_store_daily:
       last_visit: "time_in"
       partition_month:  "substr(partition_date,0,6)"
   granularity:  ""
+
+
+##==============================Update 2020-06-15 by Thatt529==========================================##
+
+###Top_3_cells_on_voice_usage###
+l1_geo_top3_cells_on_voice_usage:
+  where_clause: ""
+    feature_list:
+      latitude:  "latitude"
+      longitude: "longitude"
+      total_call: "total_call"
+      start_of_week: "start_of_week"
+      start_of_month: "start_of_month"
+    granularity:  "imsi,rnk,event_partition_date"
