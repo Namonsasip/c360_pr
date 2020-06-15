@@ -117,18 +117,3 @@ def geo_to_l1_union_pipeline(**kwargs):
     )
 
 
-##==============================Update 2020-06-12 by Thatt529==========================================##
-
-###total_distance_km###
-
-
-###Traffic_fav_location###
-
-
-###Number_of_base_station###
-
-
-###feature_sum_voice_location###
-
-
-###Number of Unique Cells Used###
