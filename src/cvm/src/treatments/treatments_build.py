@@ -31,7 +31,10 @@ from typing import Any, Dict
 import pandas
 from cvm.src.targets.churn_targets import add_days
 from cvm.src.treatments.rules import MultipleTreatments
-from cvm.src.treatments.treatment_features import add_other_sim_card_features
+from cvm.src.treatments.treatment_features import (
+    add_call_center_features,
+    add_other_sim_card_features,
+)
 from cvm.src.utils.utils import get_today, join_multiple
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as func
@@ -85,6 +88,7 @@ def treatments_featurize(
     treatments_features = add_other_sim_card_features(
         propensities_with_features, recent_profile, main_packs, parameters
     )
+    treatments_features = add_call_center_features(treatments_features)
     return treatments_features
 
 
