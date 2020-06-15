@@ -123,6 +123,17 @@ def geo_to_l4_pipeline(**kwargs):
                  "params:l4_geo_store_close_to_work"
                  ],
                 "l4_geo_store_close_to_work"
+            ),
+            #==============================Update 2020-06-15 by Thatt529==========================================##
+
+            ##Top_3_cells_on_voice_usage###
+            node(
+                l4_geo_top3_cells_on_voice_usage,
+                ["l0_usage_sum_voice_location_daily_for_l4_geo_top3_cells_on_voice_usage",
+                 "l0_geo_mst_cell_masterplan_for_l4_geo_top3_cells_on_voice_usage",
+                 "l0_profile_customer_profile_ma_for_l4_geo_top3_cells_on_voice_usage"
+                 ],
+                "l4_geo_top3_cells_on_voice_usage"
             )
 
         ], name="geo_to_l4_pipeline"

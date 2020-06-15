@@ -2,6 +2,7 @@ import pyspark.sql.functions as f
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 from pyspark.sql import types as T
+from pyspark.sql.types import *
 
 from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1.to_l1_nodes import gen_max_sql
 from customer360.utilities.config_parser import node_from_config
