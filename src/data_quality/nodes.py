@@ -270,32 +270,30 @@ def run_accuracy_logic(
     all_catalog_and_feature_exist: DataFrame,  # dependency to ensure this node runs after all checks are passed
     dataset_name: str
 ) -> DataFrame:
-    dq_accuracy_df_schema = StructType(
-        List(
-            StructField("granularity", StringType()),
-            StructField("feature_column_name", StringType()),
-            StructField("approx_count_distinct", LongType()),
-            StructField("null_percentage", DoubleType()),
-            StructField("min", DecimalType(38, 3)),
-            StructField("avg", DecimalType(38, 7)),
-            StructField("count", LongType()),
-            StructField("max", DecimalType(38, 3)),
-            StructField("percentile_0.1", DecimalType(38, 3)),
-            StructField("percentile_0.25", DecimalType(38, 3)),
-            StructField("percentile_0.5", DecimalType(38, 3)),
-            StructField("percentile_0.75", DecimalType(38, 3)),
-            StructField("percentile_0.9", DecimalType(38, 3)),
-            StructField("count_higher_outlier", LongType()),
-            StructField("q1", DecimalType(38, 3)),
-            StructField("iqr", DecimalType(38, 3)),
-            StructField("q3", DecimalType(38, 3)),
-            StructField("count_lower_outlier", LongType()),
-            StructField("run_date", TimestampType()),
-            StructField("sub_id_sample_creation_date", DateType()),
-            StructField("dataset_name", StringType()),
-            StructField("corresponding_date", DateType())
-        )
-    )
+    dq_accuracy_df_schema = StructType([
+        StructField("granularity", StringType()),
+        StructField("feature_column_name", StringType()),
+        StructField("approx_count_distinct", LongType()),
+        StructField("null_percentage", DoubleType()),
+        StructField("min", DecimalType(38, 3)),
+        StructField("avg", DecimalType(38, 7)),
+        StructField("count", LongType()),
+        StructField("max", DecimalType(38, 3)),
+        StructField("percentile_0.1", DecimalType(38, 3)),
+        StructField("percentile_0.25", DecimalType(38, 3)),
+        StructField("percentile_0.5", DecimalType(38, 3)),
+        StructField("percentile_0.75", DecimalType(38, 3)),
+        StructField("percentile_0.9", DecimalType(38, 3)),
+        StructField("count_higher_outlier", LongType()),
+        StructField("q1", DecimalType(38, 3)),
+        StructField("iqr", DecimalType(38, 3)),
+        StructField("q3", DecimalType(38, 3)),
+        StructField("count_lower_outlier", LongType()),
+        StructField("run_date", TimestampType()),
+        StructField("sub_id_sample_creation_date", DateType()),
+        StructField("dataset_name", StringType()),
+        StructField("corresponding_date", DateType())
+    ])
 
     features_list = dq_config[dataset_name]
     features_list = replace_asterisk_feature(features_list, dataset_name, numeric_columns_only=True)
