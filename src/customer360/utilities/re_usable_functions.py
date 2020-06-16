@@ -20,6 +20,19 @@ log = logging.getLogger(__name__)
 running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 
 
+def gen_max_sql(data_frame, table_name, group):
+    """
+    :param data_frame:
+    :param table_name:
+    :param group:
+    :return:
+    """
+    grp_str = ', '.join(group)
+    col_to_iterate = ["max(" + x + ")" + " as " + x for x in data_frame.columns if x not in group]
+    all_cols = ', '.join(col_to_iterate)
+    final_str = "select {0}, {1} {2} {3} group by {4}".format(grp_str, all_cols, "from", table_name, grp_str)
+    return final_str
+
 def union_dataframes_with_missing_cols(df_input_or_list, *args):
     if type(df_input_or_list) is list:
         df_list = df_input_or_list
