@@ -23,6 +23,5 @@ l1_area_from_competitor_store_daily:
 l1_geo_cust_subseqently_distance_daily:
   where_clause: ""
   feature_list:
-    imsi: "imsi"
     distance_km: "sum(distance_km)"
   granularity: "imsi, event_partition_date"
