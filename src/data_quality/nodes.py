@@ -304,11 +304,11 @@ def run_accuracy_logic(
         filtered_input_df = input_df
 
     if filtered_input_df.head() is None:
-        return get_spark_empty_df(schema=dq_accuracy_df.schema)
+        return get_spark_empty_df()
 
     sample_creation_date, sampled_df = get_dq_sampled_records(filtered_input_df, sampled_sub_id_df)
     if sampled_df.head() is None:
-        return get_spark_empty_df(schema=dq_accuracy_df.schema)
+        return get_spark_empty_df()
 
     sampled_df.createOrReplaceTempView("sampled_df")
 
