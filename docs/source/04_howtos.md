@@ -86,6 +86,8 @@ These are also saved in clusters logs.
 
 ![](.images/04_howtos_images/88c22d8c.png)
 
+And on dbfs in path `/dbfs/mnt/customer360-blob-data/cvm/logs/`.
+
 ## Documentation how tos
 
 ### How to access and edit documentation?
