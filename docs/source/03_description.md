@@ -38,8 +38,52 @@ That could include for example scoring date, size of training sample, flags for 
 These could be changed in `parameters_*.yml` files.
 
 ## Sampling submodule
+Before any dataset is used it is sampled first. Sampling is done to reduce the amount of data and 
+try to minimize time / memory requirements. Sampling procedures vary depending on the purpose
+of sampling and can be parametrized using `conf/base/CVM/L5/parameters.yml`.
+
+![](.images/03_description_images/85058161.png)
+
+Sampling is done in stages defined by `stages` field.
+Stage called `take_last_date` leaves only the most recent entry available.
+If `chosen_date` is supplied then `take_last_date` return last date available for given input
+dataset before the date specified in `chosen_date`. If `chosen_date` is left empty then today's date
+is used.
+
+Another option is to filter out users. In the case of scoring predefined list of users is used.
+For training and feature extraction purposes active users that meet agreed conditions 
+(prepaid, active, with proper main packages) are sampled. 
+
+How are users sampled? First `subscription_identifier` is hashed and then users with hash suffix defined
+in field `subscription_id_hash_suffix` are picked. Why is that so complicated? Couldn't we just sample
+some random percentage? This procedure makes the sample representative (same as random sample) and it
+ensures that each time we want to get the same sample we get it. One could argue that the same can 
+be achieved with seeds, but this could be more complicated due to spark design.
+
+Sampling is done in `src/cvm/sample_inputs/pipeline.py`.
 
 ## Data preparation submodule
+Once we have all inputs sampled we prepare them for future use. 
+First we join them with `cvm.data_prep.pipeline.join_raw_features`. 
+This function can join using both new `subscription_identifer` and an old one, so one can mix
+C360 data tables and cloud datasets.
+
+Then targets datasets are created in `cvm.data_prep.pipeline.create_cvm_targets`. 
+These are parametrized by `conf/base/CVM/L5/parameters_targets.yml`.
+
+![](.images/04_howtos_images/cd317e48.png)
+
+Macrosegments and microsegments are defined using `conf/base/CVM/L5/parameters_microsegments.yml` 
+and `conf/base/CVM/L5/parameters_macrosegments.yml`. Microsegments and macrosegments can be modified
+by modifying those files.
+
+![](.images/03_description_images/9f8e4ee7.png)
+
+Important note. Microsegments are recalculated once per `microsegments_update_cadence` days.
+If scoring pipeline needs microsegments and finds microsegments not older than 
+`microsegments_update_cadence` days in microsegments history then these are used.
+
+![](.images/03_description_images/81b2c144.png)
 
 ## Modelling submodule
 The thing that everybody focuses on when talking about CVM projects are the prediction models.
