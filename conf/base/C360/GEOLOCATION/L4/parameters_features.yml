@@ -56,3 +56,12 @@ l4_geo_home_weekday_city_citizens:
     home_weekday_sub_district_name: "sub_district_name"
     citizens: "citizens"
   granularity: ""
+
+l4_geo_cust_subseqently_distance:
+  partition_by: ["imsi"]
+  feature_list:
+    avg: ["distance_km", "weekday_distance_km", "weekend_distance_km"]
+    min: ["distance_km", "weekday_distance_km", "weekend_distance_km"]
+    max: ["distance_km", "weekday_distance_km", "weekend_distance_km"]
+    sum: ["distance_km", "weekday_distance_km", "weekend_distance_km"]
+  read_from: "l2" # Mean calculate look up back

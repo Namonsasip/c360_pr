@@ -19,3 +19,10 @@ l1_area_from_competitor_store_daily:
     duration: "first_value(DURATION)"
     num_of_times: "first_value(NUM_OF_TIMES_PER_DAY)"
   granularity: "imsi,event_partition_date,start_of_week,start_of_month"
+
+l1_geo_cust_subseqently_distance_daily:
+  where_clause: ""
+  feature_list:
+    imsi: "imsi"
+    distance_km: "sum(distance_km)"
+  granularity: "imsi, event_partition_date"

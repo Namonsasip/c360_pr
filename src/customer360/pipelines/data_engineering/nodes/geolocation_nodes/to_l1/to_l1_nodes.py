@@ -11,6 +11,7 @@ import logging
 import os
 import statistics
 from pyspark.sql import Window
+from pyspark.sql.types import *
 
 from customer360.utilities.re_usable_functions import add_start_of_week_and_month, union_dataframes_with_missing_cols, \
     execute_sql, add_event_week_and_month_from_yyyymmdd
@@ -129,5 +130,50 @@ def l1_geo_top_visit_exclude_homework_daily(df,homework,sql):
 
 
     df = node_from_config(df,sql)
+
+    return df
+
+def l1_geo_cust_subseqently_distance(cell_visit, sql):
+
+    # Drop unneeded column
+    cell_visit = cell_visit.drop('cgi', 'time_out', 'hour_in', 'hour_out')
+    cell_visit = cell_visit.where(F.col("imsi").isNotNull())
+
+    # Add event_partition_date and start_of_week
+    cell_visit = cell_visit.withColumn("event_partition_date", F.to_date(F.col('partition_date').cast(StringType()), 'yyyyMMdd'))
+    cell_visit = cell_visit.drop('partition_date')
+    # cell_visit = cell_visit.withColumn("start_of_week", F.to_date(F.date_trunc('week', F.col('event_partition_date')))).drop('partition_date')
+
+    # Window for lead function
+    w_lead = Window().partitionBy('imsi', 'event_partition_date').orderBy('time_in')
+
+    # Merge cell_visit table
+    cell_visit = cell_visit.withColumn('location_id_next', F.lead('location_id', 1).over(w_lead)).select('imsi', 'time_in', 'location_id_next', 'location_id', 'latitude', 'longitude')
+    cell_visit = cell_visit.filter('location_id_next != location_id').drop('location_id_next')
+
+    # Add latitude and longitude
+    cell_visit_lat_long = cell_visit.withColumn('latitude_next', F.lead('latitude', 1).over(w_lead)).withColumn('longitude_next', F.lead('longitude', 1).over(w_lead))
+
+    # Calculate distance
+    cell_visit_distance = cell_visit_lat_long.withColumn('distance_km',
+                                                         F.when(cell_visit_lat_long.latitude_next.isNull(),
+                                                                0.00).otherwise(
+                                                             (F.acos(F.cos(
+                                                                 F.radians(90 - cell_visit_lat_long.latitude)) * F.cos(
+                                                                 F.radians(
+                                                                     90 - cell_visit_lat_long.latitude_next)) + F.sin(
+                                                                 F.radians(90 - cell_visit_lat_long.latitude)) * F.sin(
+                                                                 F.radians(
+                                                                     90 - cell_visit_lat_long.latitude_next)) * F.cos(
+                                                                 F.radians(
+                                                                     cell_visit_lat_long.longitude_next - cell_visit_lat_long.longitude))) * 6371).cast(
+                                                                 'double')))
+
+    cell_visit_distance =cell_visit_distance.drop('latitude_next').drop('longitude_next')
+
+    # Sum of distance group by imsi, start_of_month
+    # cell_visit_distance_sum = cell_visit_distance.groupBy('imsi', 'event_partition_date').agg({'distance_km':'sum'}).select('imsi', 'event_partition_date', 'sum(distance_km')
+
+    df = node_from_config(cell_visit_distance, sql)
 
     return df

@@ -58,6 +58,14 @@ def geo_to_l4_pipeline(**kwargs):
                  "params:l4_geo_home_weekday_city_citizens"
                  ],
                 "l4_geo_home_weekday_city_citizens"
+            ),
+
+            node(
+                l4_rolling_window,
+                ["l2_geo_cust_subseqently_distance_weekly_for_l4_geo_cust_subseqently_distance",
+                 "params:l4_geo_cust_subseqently_distance"
+                 ],
+                "l4_geo_cust_subseqently_distance"
             )
 
         ], name="geo_to_l4_pipeline"

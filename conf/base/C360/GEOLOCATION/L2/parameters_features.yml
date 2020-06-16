@@ -17,3 +17,12 @@ l2_area_from_competitor_store_weekly:
     duration: "sum(duration)"
     num_of_times: "sum(num_of_times)"
   granularity: "imsi,start_of_week"
+
+l2_geo_cust_subseqently_distance_weekly:
+  where_clause: ""
+  feature_list:
+    imsi: "imsi"
+    distance_km: "distance_km"
+    weekday_distance_km: "weekday_distance_km"
+    weekend_distance_km: "weekend_distance_km"
+  granularity: "imsi,start_of_week"
