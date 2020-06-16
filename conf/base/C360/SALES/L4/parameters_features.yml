@@ -121,3 +121,99 @@ l4_sales_on_top_transaction_third:
     ]
   read_from: "l2"
 
+
+
+
+# new--------------------------------
+# 4
+
+# share_of_number_ussd_main_transaction
+# share_of_volume_ussd_main_transaction
+# share_of_number_call_center_main_transaction
+# share_of_volume_call_center_main_transaction
+# share_of_number_my_ais_app_main_transaction
+# share_of_volume_my_ais_app_main_transaction
+# share_of_number_retail_stores_main_transaction
+# share_of_volume_retail_stores_main_transaction
+# share_of_number_web_portal_number_main_transaction
+# share_of_volume_web_portal_number_main_transaction
+# share_of_number_rom_main_transaction
+# share_of_volume_rom_main_transaction
+# share_of_number_ais_shop_main_transaction
+# share_of_volume_ais_shop_main_transaction
+# share_of_number_mpay_main_transaction
+# share_of_volume_mpay_main_transaction
+# # ------------------8-type 8feature--------
+# ussd_number_of_main_transaction:
+# ussd_volume_of_main_transaction:
+# ussd_number_of_data_activation_main_transaction:
+# ussd_volume_of_data_activation_main_transaction:
+# ussd_number_of_voice_activation_main_transaction:
+# ussd_volume_of_voice_activation_main_transaction:
+# ussd_number_of_voice_data_activation_main_transaction:
+# ussd_volume_of_voice_data_activation_main_transaction: "sum(case when (lower(cmd_channel_type) = 'ussd' and lower(service_group) = 'voice+data') then offering_price else 0 end)"
+#  # -----------call center ------------------
+# call_center_number_of_main_transaction:
+# call_center_volume_of_main_transaction:
+# call_center_number_of_data_activation_main_transaction:
+# call_center_volume_of_data_activation_main_transaction:
+# call_center_number_of_voice_activation_main_transaction:
+# call_center_volume_of_voice_activation_main_transaction:
+# call_center_number_of_voice_data_activation_main_transaction:
+# call_center_volume_of_voice_data_activation_main_transaction: "sum(case when ((lower(cmd_channel_type) = 'call center' or lower(cmd_channel_type) = 'ivr' or  lower(cmd_channel_type) = 'ivr_acc') and lower(service_group) = 'voice+data') then offering_price else 0 end)"
+#     # --------------------- my ais app --------------------
+# my_ais_app_number_of_main_transaction:
+# my_ais_app_volume_of_main_transaction:
+# my_ais_app_number_of_data_activation_main_transaction:
+# my_ais_app_volume_of_data_activation_main_transaction:
+# my_ais_app_number_of_voice_activation_main_transaction:
+# my_ais_app_volume_of_voice_activation_main_transaction:
+# my_ais_app_number_of_voice_data_activation_main_transaction:
+# my_ais_app_volume_of_voice_data_activation_main_transaction:
+# # -------------------- retail store -------------
+#     retail_stores_number_of_main_transaction
+#     retail_stores_volume_of_main_transaction
+#     retail_stores_number_of_data_activation_main_transaction
+#     retail_stores_volume_of_data_activation_main_transaction
+#     retail_stores_number_of_voice_activation_main_transaction
+#     retail_stores_volume_of_voice_activation_main_transaction
+#     retail_stores_number_of_voice_data_activation_main_transaction
+#     retail_stores_volume_of_voice_data_activation_main_transaction
+# # ---------------web portal -------------------
+# web_portal_number_of_main_transaction
+# web_portal_volume_of_main_transaction
+# web_portal_number_of_data_activation_main_transaction
+# web_portal_volume_of_data_activation_main_transaction
+# web_portal_number_of_voice_activation_main_transaction
+# web_portal_volume_of_voice_activation_main_transaction
+# web_portal_number_of_voice_data_activation_main_transaction
+# web_portal_volume_of_voice_data_activation_main_transaction
+#    # -----------------ROM----------------
+#     rom_number_of_main_transaction:
+#     rom_volume_of_main_transaction:
+#     rom_number_of_data_activation_main_transaction:
+#     rom_volume_of_data_activation_main_transaction:
+#     rom_number_of_voice_activation_main_transaction:
+#     rom_volume_of_voice_activation_main_transaction:
+#     rom_number_of_voice_data_activation_main_transaction:
+#     rom_volume_of_voice_data_activation_main_transaction:
+    
+#       # ------------------ AIS SHOP ---------------
+#     ais_shop_number_of_main_transaction:
+#     ais_shop_volume_of_main_transaction:
+#     ais_shop_number_of_data_activation_main_transaction: 
+#     ais_shop_volume_of_data_activation_main_transaction: 
+#     ais_shop_number_of_voice_activation_main_transaction:
+#     ais_shop_volume_of_voice_activation_main_transaction: 
+#     ais_shop_number_of_voice_data_activation_main_transaction:
+#     ais_shop_volume_of_voice_data_activation_main_transaction:
+    
+#         # ----------------- mpay --------------------
+#     mpay_shop_number_of_main_transaction:
+#     mpay_shop_volume_of_main_transaction: 
+#     mpay_shop_number_of_data_activation_main_transaction:
+#     mpay_shop_volume_of_data_activation_main_transaction:
+#     mpay_shop_number_of_voice_activation_main_transaction:
+#     mpay_shop_volume_of_voice_activation_main_transaction:
+#     mpay_shop_number_of_voice_data_activation_main_transaction:
+#     mpay_shop_volume_of_voice_data_activation_main_transaction: 

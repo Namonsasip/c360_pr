@@ -40,12 +40,21 @@ def sales_to_l4_pipeline(**kwargs):
         [
             node(
                 sales_l4_rolling_window,
-                ["l2_sales_number_and_volume_transaction_weekly",
+                ["l2_sales_number_and_volume_on_top_transaction_weekly",
                  "params:l4_sales_on_top_transaction_first",
                  "params:l4_sales_on_top_transaction_second",
                  "params:l4_sales_on_top_transaction_third",
                  ],
-                "l4_sales_number_and_volume_transaction_weekly"
+                "l4_sales_number_and_volume_on_top_transaction_weekly"
+
+            node(
+                sales_l4_rolling_window,
+                ["l2_sales_number_and_volume_main_transaction_weekly",
+                 "params:l4_sales_main_transaction_first",
+                 "params:l4_sales_main_transaction_second",
+                 "params:l4_sales_main_transaction_third",
+                 ],
+                "l4_sales_number_and_volume_main_transaction_weekly"
 
             )
 
