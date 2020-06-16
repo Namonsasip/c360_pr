@@ -181,9 +181,9 @@ def l1_geo_total_distance_km_daily(l0_df, sql):
     l1_df1.count()
     l1_df1.show()
 
-    # l1_df2 = node_from_config(l1_df1, sql)
+    l1_df2 = node_from_config(l1_df1, sql)
 
-    return l1_df1
+    return l1_df2
 
 ###Traffic_fav_location###
 def use_home_work(geo_mst_cell_masterplan,geo_home_work_data,profile_customer_profile_ma):

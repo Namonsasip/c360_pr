@@ -55,10 +55,10 @@ l4_geo_home_work_location_id:
 l4_geo_total_distance_km:
   partition_by: ["imsi"]
   feature_list:
-    max: ["total_distance_km"]
-    min: ["total_distance_km"]
-    avg: ["total_distance_km"]
-    sum: ["total_distance_km"]
+    avg: ["avg_distance_km"]
+    max: ["max_distance_km"]
+    min: ["min_distance_km"]
+    sum: ["sum_distance_km"]
   read_from: "l2"
 
 
