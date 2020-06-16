@@ -66,7 +66,7 @@ def geo_to_l4_pipeline(**kwargs):
                  "params:l4_geo_cust_subseqently_distance"
                  ],
                 "l4_geo_cust_subseqently_distance"
-
+            ),
             ##==============================Update 2020-06-12 by Thatt529==========================================##
 
             ###total_distance_km###

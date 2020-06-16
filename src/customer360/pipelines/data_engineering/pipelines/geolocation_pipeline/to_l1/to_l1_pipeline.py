@@ -61,6 +61,7 @@ def geo_to_l1_pipeline(**kwargs):
                  "params:l1_geo_cust_subseqently_distance_daily"
                  ],
                 "l1_geo_cust_subseqently_distance_daily"
+            ),
 
             ##==============================Update 2020-06-12 by Thatt529==========================================##
 

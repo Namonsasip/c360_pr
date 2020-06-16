@@ -78,8 +78,7 @@ def geo_to_l2_pipeline(**kwargs):
                  "params:l2_geo_top3_cells_on_voice_usage"
                  ],
                 "l2_geo_top3_cells_on_voice_usage"
-            )
-
+            ),
 
             node(
                 l2_geo_cust_subseqently_distance_weekly,
