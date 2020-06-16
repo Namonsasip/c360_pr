@@ -153,8 +153,12 @@ def l1_geo_cust_subseqently_distance(cell_visit, sql):
     cell_visit = cell_visit.withColumn('location_id_next', F.lead('location_id', 1).over(w_lead)).select('imsi', 'time_in', 'location_id_next', 'location_id', 'latitude', 'longitude')
     cell_visit = cell_visit.filter('location_id_next != location_id').drop('location_id_next')
 
+    print('Debug Here!!')
+
     # Add latitude and longitude
     cell_visit_lat_long = cell_visit.withColumn('latitude_next', F.lead('latitude', 1).over(w_lead)).withColumn('longitude_next', F.lead('longitude', 1).over(w_lead))
+
+    print('Debug Here!!')
 
     # Calculate distance
     cell_visit_distance = cell_visit_lat_long.withColumn('distance_km',
