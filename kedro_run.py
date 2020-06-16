@@ -37,7 +37,7 @@ print(kedro_run_cmd)
 # 
 def run_command(command):
     process = subprocess.Popen(shlex.split(command), stdout=subprocess.PIPE,
-                               cwd='/home/cdsw/customer360/', encoding='utf8')
+                               cwd='/home/cdsw/customer360/', encoding='utf8', bufsize=-1)
     while True:
         output = process.stdout.readline()
         if output == '' and process.poll() is not None:
