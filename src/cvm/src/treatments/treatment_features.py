@@ -56,15 +56,14 @@ def add_call_center_features(df: DataFrame,) -> DataFrame:
 
     persona_mapping = (
         func.when(
-            (cc_calls_last_4_weeks > 0) and (cc_calls_last_4_12_weeks > 0),
-            "unsatisfied",
+            (cc_calls_last_4_weeks > 0) & (cc_calls_last_4_12_weeks > 0), "unsatisfied",
         )
         .when(
-            (cc_calls_last_4_weeks > 0) and (cc_calls_last_4_12_weeks <= 0),
+            (cc_calls_last_4_weeks > 0) & (cc_calls_last_4_12_weeks <= 0),
             "anomaly_detected",
         )
         .when(
-            (cc_calls_last_4_weeks <= 0) and (cc_calls_last_4_12_weeks > 0),
+            (cc_calls_last_4_weeks <= 0) & (cc_calls_last_4_12_weeks > 0),
             "problem_resolved_or_follow_up",
         )
         .otherwise(func.lit(None))
@@ -155,8 +154,8 @@ def add_other_sim_card_features(
     logging.getLogger(__name__).info("Adding internal churn flag")
     is_internal_churner = (
         (func.col("number_of_simcards") >= 2)
-        and (func.col("number_of_simcards") <= 4)
-        and (func.col("youngest_card_tenure") <= 6)
+        & (func.col("number_of_simcards") <= 4)
+        & (func.col("youngest_card_tenure") <= 6)
     )
     df = df.withColumn(
         "internal_churner_2_4_6", func.when(is_internal_churner, 1).otherwise(0)
