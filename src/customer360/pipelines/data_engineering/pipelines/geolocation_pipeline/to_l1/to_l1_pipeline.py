@@ -67,10 +67,10 @@ def geo_to_l1_pipeline(**kwargs):
     )
 
 
-# def geo_to_l1_union_pipeline(**kwargs):
-#     return Pipeline(
-#         [
-#
-#
-#         ], name="geo_to_l1_union_pipeline"
-#     )
+def geo_to_l1_union_pipeline(**kwargs):
+    return Pipeline(
+        [
+
+
+        ], name="geo_to_l1_union_pipeline"
+    )
