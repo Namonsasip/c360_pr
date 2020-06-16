@@ -16,7 +16,7 @@ from src.data_quality.dq_util import get_config_parameters, \
     melt, \
     add_suffix_to_df_columns, \
     add_outlier_percentage_based_on_iqr
-
+from pyspark.sql.types import *
 from kedro.pipeline.node import Node
 from kedro.io.core import DataSetError
 from pyspark.sql import DataFrame
@@ -270,6 +270,33 @@ def run_accuracy_logic(
     all_catalog_and_feature_exist: DataFrame,  # dependency to ensure this node runs after all checks are passed
     dataset_name: str
 ) -> DataFrame:
+    dq_accuracy_df_schema = StructType(
+        List(
+            StructField("granularity", StringType),
+            StructField("feature_column_name", StringType),
+            StructField("approx_count_distinct", LongType),
+            StructField("null_percentage", DoubleType),
+            StructField("min", DecimalType(38, 3)),
+            StructField("avg", DecimalType(38, 7)),
+            StructField("count", LongType),
+            StructField("max", DecimalType(38, 3)),
+            StructField("percentile_0.1", DecimalType(38, 3)),
+            StructField("percentile_0.25", DecimalType(38, 3)),
+            StructField("percentile_0.5", DecimalType(38, 3)),
+            StructField("percentile_0.75", DecimalType(38, 3)),
+            StructField("percentile_0.9", DecimalType(38, 3)),
+            StructField("count_higher_outlier", LongType),
+            StructField("q1", DecimalType(38, 3)),
+            StructField("iqr", DecimalType(38, 3)),
+            StructField("q3", DecimalType(38, 3)),
+            StructField("count_lower_outlier", LongType),
+            StructField("run_date", TimestampType),
+            StructField("sub_id_sample_creation_date", DateType),
+            StructField("dataset_name", StringType),
+            StructField("corresponding_date", DateType)
+        )
+    )
+
     features_list = dq_config[dataset_name]
     features_list = replace_asterisk_feature(features_list, dataset_name, numeric_columns_only=True)
 
@@ -290,8 +317,9 @@ def run_accuracy_logic(
     partition_col = get_partition_col(input_df, dataset_name)
 
     ctx = get_dq_context()
-    dq_accuracy_df = ctx.catalog.load("dq_accuracy_and_completeness")
     try:
+        dq_accuracy_df = ctx.catalog.load("dq_accuracy_and_completeness")
+
         filtered_input_df = get_dq_incremental_records(
             input_df=input_df,
             dq_accuracy_df=dq_accuracy_df,
@@ -303,11 +331,11 @@ def run_accuracy_logic(
         filtered_input_df = input_df
 
     if filtered_input_df.head() is None:
-        return get_spark_empty_df(schema=dq_accuracy_df.schema)
+        return get_spark_empty_df(schema=dq_accuracy_df_schema)
 
     sample_creation_date, sampled_df = get_dq_sampled_records(filtered_input_df, sampled_sub_id_df)
     if sampled_df.head() is None:
-        return get_spark_empty_df(schema=dq_accuracy_df.schema)
+        return get_spark_empty_df(schema=dq_accuracy_df_schema)
 
     sampled_df.createOrReplaceTempView("sampled_df")
 
