@@ -13,27 +13,28 @@ def date_range(start_dt, end_dt = None):
         yield start_dt.strftime("%Y-%m-%d")
         start_dt += timedelta(days=1)
 
-def create_campaign_view_report_pipeline() -> Pipeline:
-    return Pipeline(
-        [
-            node(
-                partial(
-                    create_campaign_view_report,
-                    aggregate_period=[1, 7, 30],
-                    day="2020-03-01",
-                ),
-                inputs={
-                    "campaign_response_input_table": "campaign_response_input_table",
-                    "cvm_prepaid_customer_groups": "cvm_prepaid_customer_groups",
-                    "use_case_campaign_mapping": "use_case_campaign_mapping",
-                    "reporting_kpis": "reporting_kpis",
-                },
-                outputs="campaign_view_report_tbl",
-                name="campaign_view",
-                tags=["campaign_view"],
-            ),
-        ]
-    )
+# obsoleted
+# def create_campaign_view_report_pipeline() -> Pipeline:
+#     return Pipeline(
+#         [
+#             node(
+#                 partial(
+#                     create_campaign_view_report,
+#                     aggregate_period=[1, 7, 30],
+#                     day="2020-03-01",
+#                 ),
+#                 inputs={
+#                     "campaign_response_input_table": "campaign_response_input_table",
+#                     "cvm_prepaid_customer_groups": "cvm_prepaid_customer_groups",
+#                     "use_case_campaign_mapping": "use_case_campaign_mapping",
+#                     "reporting_kpis": "reporting_kpis",
+#                 },
+#                 outputs="campaign_view_report_tbl",
+#                 name="campaign_view",
+#                 tags=["campaign_view"],
+#             ),
+#         ]
+#     )
 
 
 def create_use_case_view_report_data() -> Pipeline:
