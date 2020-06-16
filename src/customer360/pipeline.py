@@ -95,7 +95,7 @@ from .pipelines.data_engineering.pipelines.complaints_pipeline.to_l4.to_l4_pipel
 from .pipelines.data_engineering.pipelines.device_pipeline import (
     device_to_l1_pipeline,
     device_to_l2_pipeline,
-    device_to_l4_pipeline,
+    #device_to_l4_pipeline,
 )
 from .pipelines.data_engineering.pipelines.digital_pipeline import (
     digital_to_l2_pipeline,
@@ -218,7 +218,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "billing_to_l4_pipeline_daily": billing_to_l4_pipeline_daily(),
         "device_to_l1_pipeline": device_to_l1_pipeline(),
         "device_to_l2_pipeline": device_to_l2_pipeline(),
-        "device_to_l4_pipeline": device_to_l4_pipeline(),
+        #"device_to_l4_pipeline": device_to_l4_pipeline(),
         "digital_to_l2_pipeline": digital_to_l2_pipeline(),
         "digital_to_l3_pipeline": digital_to_l3_pipeline(),
         "digital_to_l4_monthly_pipeline": digital_to_l4_monthly_pipeline(),
