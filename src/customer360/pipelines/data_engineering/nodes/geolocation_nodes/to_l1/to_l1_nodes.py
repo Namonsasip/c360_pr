@@ -151,11 +151,14 @@ def l1_geo_cust_subseqently_distance(cell_visit, sql):
 
     # Merge cell_visit table
     cell_visit = cell_visit.withColumn('location_id_next', F.lead('location_id', 1).over(w_lead)).select('imsi', 'time_in', 'location_id_next', 'location_id', 'latitude', 'longitude')
-    cell_visit = cell_visit.filter('location_id_next != location_id').drop('location_id_next')
+    cell_visit = cell_visit.filter('location_id_next != location_id')
+    cell_visit = cell_visit.drop('location_id_next')
 
     print('Debug Here!!')
 
     # Add latitude and longitude
+    print(cell_visit.printSchema())
+
     cell_visit_lat = cell_visit.withColumn('latitude_next', F.lead('latitude', 1).over(w_lead))
     cell_visit_lat_long = cell_visit_lat.withColumn('longitude_next', F.lead('longitude', 1).over(w_lead))
 
