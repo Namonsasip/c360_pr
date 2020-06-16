@@ -1,6 +1,6 @@
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
-from pyspark.sql.types  import *
+from pyspark.sql.types import *
 from pyspark.sql.window import Window
 from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 
@@ -105,22 +105,27 @@ def join_with_master_package(
             grouped_cust_promo_df.select(
                 F.max(F.col("event_partition_date")).alias("max_date")),
             prepaid_main_master_df.select(
-                F.to_date(F.max(F.col("partition_date")).cast(StringType()),'yyyyMMdd').alias("max_date")),
+                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
             prepaid_ontop_master_df.select(
-                F.to_date(F.max(F.col("partition_date")).cast(StringType()),'yyyyMMdd').alias("max_date")),
+                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
             postpaid_main_master_df.select(
-                F.to_date(F.max(F.col("partition_date")).cast(StringType()),'yyyyMMdd').alias("max_date")),
-            postpaid_ontop_master_df.select(F.to_date(F.max(F.col("partition_date")).cast(StringType()),'yyyyMMdd').alias("max_date")),
+                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
+            postpaid_ontop_master_df.select(
+                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
         ]
     ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
 
     grouped_cust_promo_df = grouped_cust_promo_df.filter(F.col("event_partition_date") <= min_value)
     grouped_cust_promo_df.createOrReplaceTempView("grouped_cust_promo_df")
 
-    prepaid_main_master_df = prepaid_main_master_df.filter(F.to_date(F.col("partition_date").cast(StringType()),'yyyyMMdd') <= min_value)
-    prepaid_ontop_master_df = prepaid_ontop_master_df.filter(F.to_date(F.col("partition_date").cast(StringType()),'yyyyMMdd') <= min_value)
-    postpaid_main_master_df = postpaid_main_master_df.filter(F.to_date(F.col("partition_date").cast(StringType()),'yyyyMMdd') <= min_value)
-    postpaid_ontop_master_df = postpaid_ontop_master_df.filter(F.to_date(F.col("partition_date").cast(StringType()),'yyyyMMdd') <= min_value)
+    prepaid_main_master_df = prepaid_main_master_df.filter(
+        F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+    prepaid_ontop_master_df = prepaid_ontop_master_df.filter(
+        F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+    postpaid_main_master_df = postpaid_main_master_df.filter(
+        F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+    postpaid_ontop_master_df = postpaid_ontop_master_df.filter(
+        F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
 
     union_master_package_table(
         prepaid_main_master_df,
@@ -249,30 +254,34 @@ def dac_product_customer_promotion_for_daily(postpaid_df: DataFrame,
     min_value = union_dataframes_with_missing_cols(
         [
             postpaid_df.select(
-                F.to_date(F.max(F.col("partition_date")).cast(StringType()),'yyyyMMdd').alias("max_date")),
+                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
             prepaid_main_df.select(
-                F.to_date(F.max(F.col("partition_date")).cast(StringType()),'yyyyMMdd').alias("max_date")),
+                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
             # Comment out because data only available from June 10 2020:
             # prepaid_ontop_df.select(
             #     F.to_date(F.max(F.col("partition_date")).cast(StringType()),'yyyyMMdd').alias("max_date")),
             customer_profile_df.select(
                 F.max(F.col("event_partition_date")).alias("max_date")),
             prepaid_product_master_df.select(
-                F.to_date(F.max(F.col("partition_date")).cast(StringType()),'yyyyMMdd').alias("max_date")),
+                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
             prepaid_product_ontop_df.select(
-                F.to_date(F.max(F.col("partition_date")).cast(StringType()),'yyyyMMdd').alias("max_date")),
+                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
         ]
     ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
 
-    postpaid_df = postpaid_df.filter(F.to_date(F.col("partition_date").cast(StringType()),'yyyyMMdd') <= min_value)
-    prepaid_main_df = prepaid_main_df.filter(F.to_date(F.col("partition_date").cast(StringType()),'yyyyMMdd') <= min_value)
+    postpaid_df = postpaid_df.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+    prepaid_main_df = prepaid_main_df.filter(
+        F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
     # Comment out because data only available from June 10 2020:
     # prepaid_ontop_df = prepaid_ontop_df.filter(F.to_date(F.col("partition_date").cast(StringType()),'yyyyMMdd') <= min_value)
     customer_profile_df = customer_profile_df.filter(F.col("event_partition_date") <= min_value)
-    prepaid_product_master_df = prepaid_product_master_df.filter(F.to_date(F.col("partition_date").cast(StringType()),'yyyyMMdd') <= min_value)
-    prepaid_product_ontop_df = prepaid_product_ontop_df.filter(F.to_date(F.col("partition_date").cast(StringType()),'yyyyMMdd') <= min_value)
+    prepaid_product_master_df = prepaid_product_master_df.filter(
+        F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+    prepaid_product_ontop_df = prepaid_product_ontop_df.filter(
+        F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
 
-    return [postpaid_df, prepaid_ontop_df, prepaid_main_df, customer_profile_df, prepaid_product_master_df, prepaid_product_ontop_df]
+    return [postpaid_df, prepaid_ontop_df, prepaid_main_df, customer_profile_df, prepaid_product_master_df,
+            prepaid_product_ontop_df]
 
 
 def dac_product_fbb_a_customer_promotion_current_for_daily(input_df) -> DataFrame:
@@ -301,7 +310,6 @@ def l1_prepaid_postpaid_processing(prepaid_main_df: DataFrame,
                                    customer_profile_df: DataFrame,
                                    main_master_promotion_df: DataFrame,
                                    ontop_master_promotion_df: DataFrame) -> DataFrame:
-
     ############################################## Start Define Aliases ############################################
 
     prepaid_main_df = prepaid_main_df.alias("prepaid_main_df")
@@ -318,7 +326,6 @@ def l1_prepaid_postpaid_processing(prepaid_main_df: DataFrame,
 
     ############################################### End Define Aliases #############################################
 
-
     ########################################### Start Pre-Paid Processing #########################################
 
     product_prepaid_df = _prepare_prepaid(prepaid_main_df, prepaid_ontop_df,
@@ -327,20 +334,20 @@ def l1_prepaid_postpaid_processing(prepaid_main_df: DataFrame,
     max_register_date_window = Window.partitionBy("prepaid_union.access_method_num", "prepaid_union.partition_date")
 
     prepaid_union_cus_df = (customer_profile_df
-                            .join(product_prepaid_df,
-                                  (F.col("prepaid_union.access_method_num") == F.col(
-                                      "customer_profile_df.access_method_num")) &
-                                  (F.to_date(F.col("prepaid_union.partition_date").cast(StringType()),
-                                             "yyyyMMdd") >=
-                                   F.to_date(F.col("customer_profile_df.register_date").cast(StringType()),
-                                             "yyyyMMdd")),
-                                  "left_outer"
-                                  )
-                            .withColumn("max_register_date", F.max("register_date").over(max_register_date_window))
-                            .where(F.col("register_date") == F.col("max_register_date"))
-                            .select(
-                                [f"prepaid_union.{i}" for i in product_prepaid_df.columns] + customer_profile_columns
-                            ))
+        .join(product_prepaid_df,
+              (F.col("prepaid_union.access_method_num") == F.col(
+                  "customer_profile_df.access_method_num")) &
+              (F.to_date(F.col("prepaid_union.partition_date").cast(StringType()),
+                         "yyyyMMdd") >=
+               F.to_date(F.col("customer_profile_df.register_date").cast(StringType()),
+                         "yyyyMMdd")),
+              "left_outer"
+              )
+        .withColumn("max_register_date", F.max("register_date").over(max_register_date_window))
+        .where(F.col("register_date") == F.col("max_register_date"))
+        .select(
+        [f"prepaid_union.{i}" for i in product_prepaid_df.columns] + customer_profile_columns
+    ))
 
     ############################################ End Pre-Paid Processing ##########################################
 
@@ -349,7 +356,8 @@ def l1_prepaid_postpaid_processing(prepaid_main_df: DataFrame,
     postpaid_cus_df = customer_profile_df.join(
         postpaid_df,
         (F.col("customer_profile_df.old_subscription_identifier") == F.col("postpaid_df.crm_subscription_id")) &
-        (F.col("customer_profile_df.event_partition_date") == F.to_date(F.col("postpaid_df.partition_date").cast(StringType()),'yyyyMMdd')),
+        (F.col("customer_profile_df.event_partition_date") == F.to_date(
+            F.col("postpaid_df.partition_date").cast(StringType()), 'yyyyMMdd')),
         "left_outer"
     ).select([f"postpaid_df.{i}" for i in postpaid_df.columns] + customer_profile_columns + ["access_method_num"])
 
@@ -361,7 +369,6 @@ def l1_prepaid_postpaid_processing(prepaid_main_df: DataFrame,
 
 
 def _safe_join_dimension(dimension_df: DataFrame, unique_keys: list) -> DataFrame:
-
     unique_keys_str = ",".join(unique_keys)
 
     return (dimension_df
@@ -378,9 +385,22 @@ def _prepare_prepaid(
         main_master_promotion_df: DataFrame,
         ontop_master_promotion_df: DataFrame
 ) -> DataFrame:
+    main_master_promotion_df = _safe_join_dimension(
+        main_master_promotion_df,
+        ["package_id", "partition_date"]
+    ).alias("main_master_promotion_df")
 
-    main_master_promotion_df = _safe_join_dimension(main_master_promotion_df, ["package_id", "partition_date"])
-    ontop_master_promotion_df = _safe_join_dimension(ontop_master_promotion_df, ["promotion_code", "partition_date"])
+    ontop_master_promotion_df = _safe_join_dimension(
+        ontop_master_promotion_df,
+        ["promotion_code", "partition_date"]
+    ).alias("ontop_master_promotion_df")
+
+    prepaid_main_df = prepaid_main_df.withColumn("partition_date",
+                                                 F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd')
+                                                 ).alias("prepaid_main_df")
+    prepaid_ontop_df = prepaid_ontop_df.withColumn("partition_date",
+                                                   F.to_date(F.col("partition_date").cast(StringType()),
+                                                             'yyyyMMdd')).alias("prepaid_ontop_df")
 
     prepaid_main_master_promotion_df = (prepaid_main_df
                                         .join(main_master_promotion_df, ["package_id", "partition_date"], "inner")
@@ -462,7 +482,6 @@ def _prepare_prepaid(
 
 
 def _union_prepaid_postpaid(postpaid_df: DataFrame, prepaid_df: DataFrame) -> DataFrame:
-
     # Handle crm_subscription_id
     prepaid_df = prepaid_df.withColumn("crm_subscription_id", F.col("old_subscription_identifier"))
     postpaid_df = postpaid_df.withColumn("crm_subscription_id", F.col("old_subscription_identifier"))
@@ -499,10 +518,9 @@ def _union_prepaid_postpaid(postpaid_df: DataFrame, prepaid_df: DataFrame) -> Da
 
 
 def l1_build_product(
-    product_df: DataFrame,
-    int_l1_product_active_customer_promotion_features: dict
+        product_df: DataFrame,
+        int_l1_product_active_customer_promotion_features: dict
 ) -> DataFrame:
-
     ################################# Start Implementing Data availability checks #############################
     product_df = data_non_availability_and_missing_check(
         df=product_df,
@@ -512,11 +530,10 @@ def l1_build_product(
     ################################# End Implementing Data availability checks ###############################
 
     min_value = union_dataframes_with_missing_cols([
-            product_df.select(F.max(F.col("partition_date")).alias("max_date")),
+        product_df.select(F.max(F.col("partition_date")).alias("max_date")),
     ]).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
 
     product_df = product_df.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
-
 
     return_df = l1_massive_processing(product_df, int_l1_product_active_customer_promotion_features)
 
