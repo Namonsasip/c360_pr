@@ -68,6 +68,12 @@ def l2_geo_cust_subseqently_distance_weekly(df, sql):
                 df_finish_week.weekday_distance_km, df_week_type.distance_km.alias('weekend_distance_km'))
     # | imsi | start_of_week | distance_km | weekday_distance_km | weekend_distance_km |
 
+    print('Start use node from config')
 
-    df = node_from_config(df_finish_week_2, sql)
+    df = df_finish_week_2.groupBy('imsi', 'start_of_week', 'distance_km', 'weekday_distance_km', 'weekend_distance_km') \
+        .agg({'imsi': 'count'}).withColumnRenamed('count(imsi)', 'count_row') \
+        .select('imsi', 'start_of_week', 'distance_km', 'weekday_distance_km', 'weekend_distance_km')
+
+    # df = node_from_config(df_finish_week_2, sql)
+
     return df
