@@ -301,21 +301,22 @@ def l1_prepaid_processing(prepaid_main_df: DataFrame,
         F.col("promo_package_price").alias("promo_package_price"),
         F.col("promo_name").alias("promo_name"),
         F.col("partition_date").cast(StringType()).alias("partition_date"),
-        F.lit("Recurring").alias("promo_price_type"),
+        F.lit("recurring").alias("promo_price_type"),
         F.to_date(F.col("effective_date").cast(StringType()), 'yyyy-MM-dd').alias("promo_start_dttm"),
         F.col("promo_status").alias("promo_status")
     ))
 
-    prepaid_ontop_master_promotion_df = (prepaid_ontop_df
-                                         .join(ontop_master_promotion_df, F.col("prepaid_ontop_df.offering_id") == F.col("ontop_master_promotion_df.promotion_code"), "inner")
-                                         .filter(F.col("recurring") == "Y")
-                                         )
+    prepaid_ontop_master_promotion_df = prepaid_ontop_df.join(
+        ontop_master_promotion_df,
+        F.col("prepaid_ontop_df.offering_id") == F.col("ontop_master_promotion_df.promotion_code"),
+        "inner"
+    )
 
     prepaid_ontop_new_df = (prepaid_ontop_master_promotion_df.select(
         F.lit("pre-paid").alias("promo_charge_type"),
         F.lit("on-top").alias("promo_class"),
         F.lit(None).alias("previous_main_promotion_id"),
-        F.lit(None).cast('timestamp').alias("previous_promo_end_dttm"),  # TODO: Confirm
+        F.lit(None).cast('timestamp').alias("previous_promo_end_dttm"),
         F.col("offering_id").alias("promo_cd"),
         F.lit(None).cast('string').alias("promo_user_cat_cd"),
         F.col("access_method_num").alias("mobile_num"),
@@ -325,7 +326,7 @@ def l1_prepaid_processing(prepaid_main_df: DataFrame,
         F.col("price").alias("promo_package_price"),
         F.col("offering_title").alias("promo_name"),
         F.col("prepaid_ontop_df.partition_date").cast(StringType()).alias("partition_date"),
-        F.col("recurring").alias("promo_price_type"),
+        F.when(F.lower(F.col("recurring")) == "y", F.lit("recurring")).otherwise("non-recurring").alias("promo_price_type"),
         F.to_date(F.coalesce(F.col("event_start_dttm"), F.lit("9999-12-31")), 'yyyy-MM-dd').alias("promo_start_dttm"),
         F.lit("active").alias("promo_status")
     ))
