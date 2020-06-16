@@ -4,7 +4,7 @@ from pyspark.sql import functions as F
 from pyspark.sql import types as T
 from pyspark.sql.types import *
 from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1.to_l1_nodes import gen_max_sql
-from customer360.utilities.config_parser import node_from_config
+from customer360.utilities.config_parser import node_from_config, l4_rolling_window
 from kedro.context.context import load_context
 from pathlib import Path
 import logging
@@ -19,26 +19,30 @@ def l4_geo_top_visit_exclude_homework(sum_duration,homework):
         "Sum", F.sum("sum_duration").over(win))
 
     result = sum_duration_3mo.join(homework, [sum_duration_3mo.imsi == homework.imsi,
-                                          sum_duration_3mo.location_id == homework.home_weekday_location_id],
-                               'left').select(sum_duration_3mo.imsi, 'location_id', 'sum_duration',
-                                              sum_duration_3mo.start_of_month)
+                                              sum_duration_3mo.location_id == homework.home_weekday_location_id,
+                                              sum_duration_3mo.start_of_month == homework.start_of_month],
+                                   'left').select(sum_duration_3mo.imsi, 'location_id', 'sum_duration',
+                                                  sum_duration_3mo.start_of_month)
     result = result.join(homework,
-                         [result.imsi == homework.imsi, result.location_id == homework.home_weekend_location_id],
+                         [result.imsi == homework.imsi, result.location_id == homework.home_weekend_location_id,
+                          result.start_of_month == homework.start_of_month],
                          'left').select(result.imsi, 'location_id', 'sum_duration', result.start_of_month)
     result = result.join(homework,
-                         [result.imsi == homework.imsi, result.location_id == homework.work_location_id],
+                         [result.imsi == homework.imsi, result.location_id == homework.work_location_id,
+                          result.start_of_month == homework.start_of_month],
                          'left').select(result.imsi, 'location_id', 'sum_duration', result.start_of_month)
     win = Window.partitionBy("start_of_month", "imsi").orderBy(F.col("sum_duration").desc(), F.col("location_id"))
     result = result.withColumn("rank", F.row_number().over(win))
-    rank1 = result.where('rank=1').withColumn('top_location_1st',F.col('location_id')).drop('location_id','rank','sum_duration')
-    rank2 = result.where('rank=2').withColumn('top_location_2nd',F.col('location_id')).drop('location_id','rank','sum_duration')
-    rank3 = result.where('rank=3').withColumn('top_location_3rd',F.col('location_id')).drop('location_id','rank','sum_duration')
-
-    df = rank1.join(rank2,['imsi','start_of_month'],'full').join(rank3,['imsi','start_of_month'],'full')
-
-    print('testtest')
-    df.show()
     
+    rank1 = result.where('rank=1').withColumn('top_location_1st', F.col('location_id')).drop('location_id', 'rank',
+                                                                                             'sum_duration')
+    rank2 = result.where('rank=2').withColumn('top_location_2nd', F.col('location_id')).drop('location_id', 'rank',
+                                                                                             'sum_duration')
+    rank3 = result.where('rank=3').withColumn('top_location_3rd', F.col('location_id')).drop('location_id', 'rank',
+                                                                                             'sum_duration')
+    df = rank1.join(rank2, ['imsi', 'start_of_month'], 'full').join(rank3, ['imsi', 'start_of_month'], 'full')
+    print('test')
+    df.show()
     return df
 
 
@@ -257,7 +261,6 @@ def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
     df = node_from_config(df_combine_home_work, sql)
     return df
 
-
 def l4_geo_home_weekday_city_citizens(home_work_location_id, master, sql):
     # Get last master
     max_date = master.selectExpr('max(partition_date)').collect()[0][0]
@@ -297,3 +300,155 @@ def l4_geo_home_weekday_city_citizens(home_work_location_id, master, sql):
 
     df_01 = node_from_config(home_location_id_master, sql)
     return df_01
+
+def l4_geo_population_aroud_home(geo_home_work_loation_id, cell_masterplan,sql):
+    geo_home_work_loation_id.cache()
+    cell_masterplan.cache()
+    return None
+
+
+##==============================Update 2020-06-12 by Thatt529==========================================##
+
+###Traffic_fav_location###
+def l4_Share_traffic(df,sql):
+    df2=l4_rolling_window(df,sql)
+    df2.createOrReplaceTempView('GEO_TEMP_00')
+    spark = get_spark_session()
+    df_sum = spark.sql(""" SELECT *,
+    (sum_Home_traffic_KB_weekly_last_week*100)/(sum_Home_traffic_KB_weekly_last_week+sum_Work_traffic_KB_weekly_last_week+sum_Top1_location_traffic_KB_weekly_last_week+sum_Top2_location_traffic_KB_weekly_last_week) AS share_Home_traffic_KB_weekly_last_week,
+    (sum_Work_traffic_KB_weekly_last_week*100)/(sum_Home_traffic_KB_weekly_last_week+sum_Work_traffic_KB_weekly_last_week+sum_Top1_location_traffic_KB_weekly_last_week+sum_Top2_location_traffic_KB_weekly_last_week) AS share_Home_traffic_KB_weekly_last_week,
+    (sum_Top1_location_traffic_KB_weekly_last_week*100)/(sum_Home_traffic_KB_weekly_last_week+sum_Work_traffic_KB_weekly_last_week+sum_Top1_location_traffic_KB_weekly_last_week+sum_Top2_location_traffic_KB_weekly_last_week) AS share_Home_traffic_KB_weekly_last_week,
+    (sum_Top2_location_traffic_KB_weekly_last_week*100)/(sum_Home_traffic_KB_weekly_last_week+sum_Work_traffic_KB_weekly_last_week+sum_Top1_location_traffic_KB_weekly_last_week+sum_Top2_location_traffic_KB_weekly_last_week) AS share_Home_traffic_KB_weekly_last_week,
+    (sum_Home_traffic_KB_weekly_last_two_week*100)/(sum_Home_traffic_KB_weekly_last_two_week+sum_Work_traffic_KB_weekly_last_two_week+sum_Top1_location_traffic_KB_weekly_last_two_week+sum_Top2_traffic_KB_weekly_last_two_week) AS SUM_TRAFFIC_weekly_last_two_week,
+    (sum_Work_traffic_KB_weekly_last_two_week*100)/(sum_Home_traffic_KB_weekly_last_two_week+sum_Work_traffic_KB_weekly_last_two_week+sum_Top1_location_traffic_KB_weekly_last_two_week+sum_Top2_traffic_KB_weekly_last_two_week) AS SUM_TRAFFIC_weekly_last_two_week,
+    (sum_Top1_location_traffic_KB_weekly_last_two_week*100)/(sum_Home_traffic_KB_weekly_last_two_week+sum_Work_traffic_KB_weekly_last_two_week+sum_Top1_location_traffic_KB_weekly_last_two_week+sum_Top2_traffic_KB_weekly_last_two_week) AS SUM_TRAFFIC_weekly_last_two_week,
+    (sum_Top2_location_traffic_KB_weekly_last_two_week*100)/(sum_Home_traffic_KB_weekly_last_two_week+sum_Work_traffic_KB_weekly_last_two_week+sum_Top1_location_traffic_KB_weekly_last_two_week+sum_Top2_traffic_KB_weekly_last_two_week) AS SUM_TRAFFIC_weekly_last_two_week,
+    (sum_Home_traffic_KB_weekly_last_four_week*100)/(sum_Home_traffic_KB_weekly_last_four_week+sum_Work_traffic_KB_weekly_last_four_week+sum_Top1_location_traffic_KB_weekly_last_four_week+sum_Top2_traffic_KB_weekly_last_four_week) AS SUM_TRAFFIC_weekly_last_four_week,
+    (sum_Work_traffic_KB_weekly_last_four_week*100)/(sum_Home_traffic_KB_weekly_last_four_week+sum_Work_traffic_KB_weekly_last_four_week+sum_Top1_location_traffic_KB_weekly_last_four_week+sum_Top2_traffic_KB_weekly_last_four_week) AS SUM_TRAFFIC_weekly_last_four_week,
+    (sum_Top1_location_traffic_KB_weekly_last_four_week*100)/(sum_Home_traffic_KB_weekly_last_four_week+sum_Work_traffic_KB_weekly_last_four_week+sum_Top1_location_traffic_KB_weekly_last_four_week+sum_Top2_traffic_KB_weekly_last_four_week) AS SUM_TRAFFIC_weekly_last_four_week,
+    (sum_Top2_location_traffic_KB_weekly_last_four_week*100)/(sum_Home_traffic_KB_weekly_last_four_week+sum_Work_traffic_KB_weekly_last_four_week+sum_Top1_location_traffic_KB_weekly_last_four_week+sum_Top2_traffic_KB_weekly_last_four_week) AS SUM_TRAFFIC_weekly_last_four_week,
+    (sum_Home_traffic_KB_weekly_last_twelve_week*100)/(sum_Home_traffic_KB_weekly_last_twelve_week+sum_Work_traffic_KB_weekly_last_twelve_week+sum_Top1_location_traffic_KB_weekly_last_twelve_week+sum_Top2_traffic_KB_weekly_last_twelve_week) AS SUM_TRAFFIC_weekly_last_twelve_week,
+    (sum_Work_traffic_KB_weekly_last_twelve_week*100)/(sum_Home_traffic_KB_weekly_last_twelve_week+sum_Work_traffic_KB_weekly_last_twelve_week+sum_Top1_location_traffic_KB_weekly_last_twelve_week+sum_Top2_traffic_KB_weekly_last_twelve_week) AS SUM_TRAFFIC_weekly_last_twelve_week,
+    (sum_Top1_location_traffic_KB_weekly_last_twelve_week*100)/(sum_Home_traffic_KB_weekly_last_twelve_week+sum_Work_traffic_KB_weekly_last_twelve_week+sum_Top1_location_traffic_KB_weekly_last_twelve_week+sum_Top2_traffic_KB_weekly_last_twelve_week) AS SUM_TRAFFIC_weekly_last_twelve_week,
+    (sum_Top2_location_traffic_KB_weekly_last_twelve_week*100)/(sum_Home_traffic_KB_weekly_last_twelve_week+sum_Work_traffic_KB_weekly_last_twelve_week+sum_Top1_location_traffic_KB_weekly_last_twelve_week+sum_Top2_traffic_KB_weekly_last_twelve_week) AS SUM_TRAFFIC_weekly_last_twelve_week,
+    FROM GEO_TEMP_00 
+    """)
+    return df_sum
+
+
+
+###feature_AIS_store###
+def l4_geo_last_AIS_store_visit(raw,sql):
+    max_date = raw.selectExpr('max(partition_month)').collect()[0][0]
+    raw.cache()
+    raw = raw.where('partition_month=' + str(max_date))
+    raw.createOrReplaceTempView('GEO_AIS_VISITED_SHOP')
+    # Get spark session
+    spark = get_spark_session()
+    df = spark.sql("""
+            SELECT imsi,location_id,landmark_name_th,landmark_sub_name_en,MAX(TIME_IN) as last_visited,partition_month
+            FROM GEO_AIS_VISITED_SHOP
+            GROUP BY 1,2,3,4,6;
+         """)
+
+    df.cache()
+    print("Start for check result from sql query statement")
+    df.count()
+    df.show()
+
+    out = node_from_config(df, sql)
+    return out
+
+def l4_geo_most_AIS_store_visit(raw,sql):
+    max_date = raw.selectExpr('max(partition_month)').collect()[0][0]
+    raw.cache()
+    raw = raw.where('partition_month=' + str(max_date))
+    raw.createOrReplaceTempView('GEO_AIS_VISITED_SHOP')
+    # Get spark session
+    spark = get_spark_session()
+    df = spark.sql("""
+            SELECT imsi,location_id,landmark_name_th,landmark_sub_name_en,COUNT(TIME_IN) as last_visited,partition_month
+            FROM GEO_AIS_VISITED_SHOP
+            GROUP BY 1,2,3,4,6;
+         """)
+
+    df.cache()
+    print("Start for check result from sql query statement")
+    df.count()
+    df.show()
+
+    out = node_from_config(df, sql)
+    return out
+
+def l4_geo_store_close_to_home(home_work,sql):
+    home_work.cache()
+    month_id = home_work.selectExpr('max(start_of_month)').collect()[0][0]
+    home_work = home_work.where('start_of_month=' + str(month_id))
+    home_work.createOrReplaceTempView('home_work_location')
+    spark = get_spark_session()
+    locations = spark.read.parquet("dbfs:/mnt/customer360-blob-data/C360/GEO/geo_mst_lm_poi_shape")
+    locations.createOrReplaceTempView('MST_LM_POI_SHAPE')
+    df = spark.sql("""
+            select A.*,B.landmark_name_th,B.landmark_latitude,B.landmark_longitude,B.geo_shape_id
+            from home_work_sample A cross join mst_lm_poi_shape B
+            where B.landmark_cat_name_en = 'AIS'
+        """)
+    df.createOrReplaceTempView('home_work_ais_store')
+
+    home_weekday = spark.sql("""
+            select imsi,home_weekday_location_id,MIN(CAST((ACOS(COS(RADIANS(90-LANDMARK_LATITUDE))*COS(RADIANS(90-HOME_WEEKDAY_LATITUDE))+SIN(RADIANS(90-LANDMARK_LATITUDE))*SIN(RADIANS(90-HOME_WEEKDAY_LATITUDE))*COS(RADIANS(LANDMARK_LONGITUDE - HOME_WEEKDAY_LONGITUDE)))*6371) AS DECIMAL(13,2))) AS range_from_weekday_home, first(landmark_name_th) as branch, first(geo_shape_id) as branch_location_id
+            from home_work_ais_store
+            where CAST((ACOS(COS(RADIANS(90-LANDMARK_LATITUDE))*COS(RADIANS(90-HOME_WEEKDAY_LATITUDE))+SIN(RADIANS(90-LANDMARK_LATITUDE))*SIN(RADIANS(90-HOME_WEEKDAY_LATITUDE))*COS(RADIANS(LANDMARK_LONGITUDE - HOME_WEEKDAY_LONGITUDE)))*6371) AS DECIMAL(13,2)) <= 100
+            group by 1,2
+        """)
+
+    home_weekend = spark.sql("""
+            select imsi,home_weekend_location_id,MIN(CAST((ACOS(COS(RADIANS(90-LANDMARK_LATITUDE))*COS(RADIANS(90-HOME_WEEKEND_LATITUDE))+SIN(RADIANS(90-LANDMARK_LATITUDE))*SIN(RADIANS(90-HOME_WEEKEND_LATITUDE))*COS(RADIANS(LANDMARK_LONGITUDE - HOME_WEEKEND_LONGITUDE)))*6371) AS DECIMAL(13,2))) AS range_from_weekend_home, first(landmark_name_th) as branch, first(geo_shape_id) as branch_location_id
+            from home_work_ais_store
+            where CAST((ACOS(COS(RADIANS(90-LANDMARK_LATITUDE))*COS(RADIANS(90-HOME_WEEKEND_LATITUDE))+SIN(RADIANS(90-LANDMARK_LATITUDE))*SIN(RADIANS(90-HOME_WEEKEND_LATITUDE))*COS(RADIANS(LANDMARK_LONGITUDE - HOME_WEEKEND_LONGITUDE)))*6371) AS DECIMAL(13,2)) <= 100
+            group by 1,2
+        """)
+    home_weekday.createOrReplaceTempView('home_weekday')
+    home_weekend.createOrReplaceTempView('home_weekend')
+
+    df2 = spark.sql("""
+            select a.imsi,a.home_weekday_location_id,a.range_from_weekday_home,a.branch as wd_location,a.branch_location_id as wd_location_id,b.home_weekend_location_id,b.range_from_weekend_home,b.branch as we_location,b.branch_location_id as we_location_id
+            from home_weekday a left join home_weekend b
+            on a.imsi = b.imsi
+        """)
+    df2.cache()
+    out = node_from_config(df2, sql)
+    return out
+
+def l4_geo_store_close_to_work(home_work,sql):
+    home_work.cache()
+    month_id = home_work.selectExpr('max(start_of_month)').collect()[0][0]
+    home_work = home_work.where('start_of_month=' + str(month_id))
+    home_work.createOrReplaceTempView('home_work_location')
+    spark = get_spark_session()
+    locations = spark.read.parquet("dbfs:/mnt/customer360-blob-data/C360/GEO/geo_mst_lm_poi_shape")
+    locations.createOrReplaceTempView('MST_LM_POI_SHAPE')
+    df = spark.sql("""
+                select A.*,B.landmark_name_th,B.landmark_latitude,B.landmark_longitude,B.geo_shape_id
+                from home_work_sample A cross join mst_lm_poi_shape B
+                where B.landmark_cat_name_en = 'AIS'
+            """)
+    df.createOrReplaceTempView('home_work_ais_store')
+
+    df2 = spark.sql("""
+            select imsi,work_location_id, MIN(CAST((ACOS(COS(RADIANS(90-LANDMARK_LATITUDE))*COS(RADIANS(90-WORK_LATITUDE))+SIN(RADIANS(90-LANDMARK_LATITUDE))*SIN(RADIANS(90-WORK_LATITUDE))*COS(RADIANS(LANDMARK_LONGITUDE - WORK_LONGITUDE)))*6371) AS DECIMAL(13,2))) AS range_from_work, first(landmark_name_th) as branch, first(geo_shape_id) as branch_location_id
+            from home_work_ais_store
+            where CAST((ACOS(COS(RADIANS(90-LANDMARK_LATITUDE))*COS(RADIANS(90-WORK_LATITUDE))+SIN(RADIANS(90-LANDMARK_LATITUDE))*SIN(RADIANS(90-WORK_LATITUDE))*COS(RADIANS(LANDMARK_LONGITUDE - WORK_LONGITUDE)))*6371) AS DECIMAL(13,2)) <= 100
+            group by 1,2
+        """)
+    df2.cache()
+    out = node_from_config(df2,sql)
+    return out
+
+##==============================Update 2020-06-15 by Thatt529==========================================##
+
+###Top_3_cells_on_voice_usage###
+def l4_geo_top3_cells_on_voice_usage(df,sql):
+
+
+    return

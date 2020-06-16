@@ -65,6 +65,20 @@ l4_geo_home_weekday_city_citizens:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
+    partitionBy: "start_of_week"
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly''
+
+##==============================Update 2020-06-12 by Thatt529==========================================##
+
+###total_distance_km###
+l4_geo_total_distance_km:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_total_distance_km/
+  file_format: parquet
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
     partitionBy: "start_of_month"
     read_layer: 'l4_monthly'
     target_layer: 'l4_monthly'
@@ -72,10 +86,116 @@ l4_geo_home_weekday_city_citizens:
 l4_geo_cust_subseqently_distance:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_cust_subseqently_distance/
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "start_of_week"
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
+
+###Traffic_fav_location###
+l4_geo_use_traffic_home_work_weekly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_use_traffic_most_location_weekly/
   file_format: parquet
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
+
+###Number_of_base_station###
+l4_number_of_base_station:
+      type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+      filepath: /mnt/customer360-blob-data/C360/GEO/l4_features/geo_number_of_base_station/
+      file_format: parquet
+      save_args:
+        increment_flag: 'no'
+        mode: "overwrite"
+        partitionBy: "start_of_week"
+        read_layer: 'l2_weekly'
+        target_layer: 'l4_weekly'
+
+###feature_sum_voice_location###
+l4_geo_call_location_home_work_weekly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_call_location_home_work_weekly/
+  file_format: parquet
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "start_of_week"
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
+
+###Number of Unique Cells Used###
+l4_geo_num_cell_id:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/usage_sum_data_location/
+  file_format: parquet
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    read_layer: 'l1_daily'
+    target_layer: 'l4_weekly'
+
+###feature_AIS_store###
+l4_geo_last_AIS_store_visit:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_last_AIS_store_visit/
+  file_format: parquet
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy:  "partition_month"
+    read_layer: 'l1_daily'
     target_layer: 'l4_monthly'
+
+l4_geo_most_AIS_store_visit:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_most_AIS_store_visit/
+  file_format: parquet
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy:  "partition_month"
+    read_layer: 'l1_daily'
+    target_layer: 'l4_monthly'
+
+l4_geo_store_close_to_home:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_store_close_to_home/
+  file_format: parquet
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy:  "start_of_month"
+    read_layer: 'l1_daily'
+    target_layer: 'l4_monthly'
+
+l4_geo_store_close_to_work:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_store_close_to_work/
+  file_format: parquet
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy:  "start_of_month"
+    read_layer: 'l1_daily'
+    target_layer: 'l4_monthly'
+
+##==============================Update 2020-06-15 by Thatt529==========================================##
+
+###Top_3_cells_on_voice_usage###
+l4_geo_top3_cells_on_voice_usage:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_top3_cells_on_voice_usage/
+  file_format: parquet
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy:  "start_of_week"
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
