@@ -37,29 +37,29 @@ handlers:
   journal_file_handler:
     class: kedro.versioning.journal.JournalFileHandler
     level: INFO
-    base_dir: logs/journals
+    base_dir: /dbfs/mnt/customer360-blob-data/cvm/logs/journals.log
     formatter: json_formatter
 
 loggers:
   anyconfig:
     level: WARNING
     handlers: [console, info_file_handler, error_file_handler]
-    propagate: no
+    propagate: true
 
   kedro.io:
     level: INFO
     handlers: [console, info_file_handler, error_file_handler]
-    propagate: no
+    propagate: true
 
   kedro.pipeline:
     level: INFO
     handlers: [console, info_file_handler, error_file_handler]
-    propagate: no
+    propagate: true
 
   kedro.journal:
     level: INFO
     handlers: [journal_file_handler]
-    propagate: no
+    propagate: true
 
 root:
   level: INFO
