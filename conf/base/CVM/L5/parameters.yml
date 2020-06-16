@@ -81,4 +81,4 @@ pai_artifacts_path: '/dbfs/mnt/customer360-blob-data/cvm/pai01/artifacts'
 pai_experiment_name: 'force_call_center'
 
 # path used to create temp copies for refreshments
-refresh_temp_path: '/dbfs/mnt/customer359-blob-data/C360/CVM/l5_cvm_temp/'
+refresh_temp_path: '/dbfs/mnt/customer360-blob-data/C360/CVM/l5_cvm_temp/'
