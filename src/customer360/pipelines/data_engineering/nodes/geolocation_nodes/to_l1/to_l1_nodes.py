@@ -156,7 +156,8 @@ def l1_geo_cust_subseqently_distance(cell_visit, sql):
     print('Debug Here!!')
 
     # Add latitude and longitude
-    cell_visit_lat_long = cell_visit.withColumn('latitude_next', F.lead('latitude', 1).over(w_lead)).withColumn('longitude_next', F.lead('longitude', 1).over(w_lead))
+    cell_visit_lat = cell_visit.withColumn('latitude_next', F.lead('latitude', 1).over(w_lead))
+    cell_visit_lat_long = cell_visit_lat.withColumn('longitude_next', F.lead('longitude', 1).over(w_lead))
 
     print('Debug Here!!')
 
