@@ -12,10 +12,18 @@ def product_to_l1_pipeline(**kwargs):
                 dac_product_customer_promotion_for_daily,
                 ["l0_product_customer_promotion_for_daily",
                  "l0_revenue_sa_t_package_trans_for_l0_revenue_prepaid_main_product_customer_promotion_daily",
-                 "l0_prepaid_ontop_product_customer_promotion_for_daily"],
+                 "l0_prepaid_ontop_product_customer_promotion_for_daily",
+                 "l1_customer_profile_union_daily_feature_for_int_l1_product_active_customer_promotion_features",
+                 "l0_product_pru_m_package_master_group_for_daily",
+                 "l0_product_pru_m_ontop_master_for_weekly"
+                 ],
                 ["int_l1_product_active_customer_promotion_features",
                  "int_l1_prepaid_ontop_product_active_customer_promotion_features",
-                 "int_l1_prepaid_main_product_active_customer_promotion_features"]
+                 "int_l1_prepaid_main_product_active_customer_promotion_features",
+                 "int_l1_customer_profile_union_daily_feature_for_int_l1_product_active_customer_promotion_features",
+                 "int_l0_product_pru_m_package_master_group_for_daily",
+                 "int_l0_product_pru_m_ontop_master_for_weekly",
+                 ]
             ),
 
             node(
@@ -23,9 +31,9 @@ def product_to_l1_pipeline(**kwargs):
                 ["int_l1_prepaid_main_product_active_customer_promotion_features",
                  "int_l1_prepaid_ontop_product_active_customer_promotion_features",
                  "int_l1_product_active_customer_promotion_features",
-                 "l1_customer_profile_union_daily_feature_for_int_l1_product_active_customer_promotion_features",
-                 "l0_product_pru_m_package_master_group_for_daily",
-                 "l0_product_pru_m_ontop_master_for_weekly"],
+                 "int_l1_customer_profile_union_daily_feature_for_int_l1_product_active_customer_promotion_features",
+                 "int_l0_product_pru_m_package_master_group_for_daily",
+                 "int_l0_product_pru_m_ontop_master_for_weekly"],
                 "l1_product_active_customer_promotion_features_prepaid_postpaid"
             ),
 
