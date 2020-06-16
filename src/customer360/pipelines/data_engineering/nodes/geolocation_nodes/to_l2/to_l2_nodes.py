@@ -38,13 +38,20 @@ def l2_geo_cust_subseqently_distance_weekly(df, sql):
                                                                   .otherwise('weekday').cast(StringType())
                                                                   )
 
+    print(df.printSchema())
+
     # start_of_week, weekday= , weekend=
     df_week_type = df.groupBy('imsi', 'start_of_week', 'week_type') \
         .agg({'distance_km': 'sum'}).withColumnRenamed('sum(distance_km)', 'distance_km') \
         .select('imsi', 'start_of_week', 'week_type', 'distance_km')
+
+    print("Group by pass with week_type")
+
     df_week = df.groupBy('imsi', 'start_of_week') \
         .agg({'distance_km': 'sum'}).withColumnRenamed('sum(distance_km)', 'distance_km') \
         .select('imsi', 'start_of_week', 'distance_km')
+
+    print("Group by pass")
 
     # Left join weekday and weekend
     df_finish_week = df_week.join(df_week_type, [df_week.imsi == df_week_type.imsi,
