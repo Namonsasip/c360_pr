@@ -82,3 +82,8 @@ pai_experiment_name: 'force_call_center'
 
 # path used to create temp copies for refreshments
 refresh_temp_path: '/dbfs/mnt/customer360-blob-data/C360/CVM/l5_cvm_temp/'
+
+# dbfs logs path
+logs_path:
+  output_path_template: '/dbfs/mnt/customer360-blob-data/cvm/logs/logs_{}'
+  output_path_date_format: '%Y%m%d%H%M%S'

@@ -28,6 +28,7 @@
 from kedro.pipeline import Pipeline, node
 
 from src.cvm.treatments.nodes import (
+    copy_logs_to_dbfs,
     create_treatments_features,
     deploy_treatments,
     produce_treatments,
@@ -76,6 +77,12 @@ def generate_treatments(sample_type: str) -> Pipeline:
                 ["treatments_chosen", "parameters"],
                 None,
                 name="deploy_treatments",
+            ),
+            node(
+                func=copy_logs_to_dbfs,
+                inputs=["parameters"],
+                outputs=None,
+                name="copy_logs",
             ),
         ]
     )

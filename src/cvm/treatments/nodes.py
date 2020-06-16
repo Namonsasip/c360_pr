@@ -26,9 +26,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import logging
+import os
+from datetime import datetime
+from distutils.dir_util import copy_tree
 from typing import Any, Dict, Tuple
 
 import pandas
+import pytz
 from cvm.src.features.microsegments import (
     add_microsegment_features,
     add_volatility_scores,
@@ -140,3 +144,22 @@ def deploy_treatments(
             deploy_contact(campaign_table_prepared, parameters, use_case)
     else:
         logging.info("Sending treatments skipped")
+
+
+def copy_logs_to_dbfs(parameters: Dict[str, Any],):
+    """ Databricks is unable to write logs to dbfs, because random writes are not
+    supported. Because of that logs are saved in logs/ folder first and then this node
+    copies the logs to persistent dbfs path.
+
+    Args:
+        parameters: parameters defined in parameters.yml. Used to define path of logs.
+    """
+    utc_now = pytz.utc.localize(datetime.utcnow())
+    created_date = utc_now.astimezone(pytz.timezone("Asia/Bangkok"))
+    output_path_template = parameters["logs_path"]["output_path_template"]
+    output_path_date_format = parameters["logs_path"]["output_path_date_format"]
+    output_path_date = created_date.strftime(output_path_date_format)
+    output_path = output_path_template.format(output_path_date)
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    logging.getLogger(__name__).info("Saving logs to {}".format(output_path))
+    copy_tree("logs/", output_path)
