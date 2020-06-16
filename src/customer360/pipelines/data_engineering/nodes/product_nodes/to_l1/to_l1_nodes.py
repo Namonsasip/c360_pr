@@ -212,24 +212,42 @@ def join_with_master_package(
     return result_df
 
 
-def dac_product_customer_promotion_for_daily(input_df) -> DataFrame:
-    """
-    :return:
-    """
+def dac_product_customer_promotion_for_daily(postpaid_df: DataFrame, prepaid_main_df: DataFrame, prepaid_ontop_df: DataFrame) -> list:
 
-    ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([input_df]):
+    ################################# Start Implementing Data availability checks ###############################
+    if check_empty_dfs([postpaid_df, prepaid_main_df, prepaid_ontop_df]):
         return get_spark_empty_df()
 
-    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
-                                                       target_table_name="l1_product_active_customer_promotion_features_daily")
+    postpaid_df = data_non_availability_and_missing_check(
+        df=postpaid_df,grouping="daily", par_col="partition_date", target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid")
 
-    if check_empty_dfs([input_df]):
+    prepaid_main_df = data_non_availability_and_missing_check(
+        df=prepaid_main_df, grouping="daily", par_col="partition_date", target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid")
+
+    prepaid_ontop_df = data_non_availability_and_missing_check(
+        df=prepaid_ontop_df, grouping="daily", par_col="partition_date", target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid")
+
+    if check_empty_dfs([postpaid_df, prepaid_main_df, prepaid_ontop_df]):
         return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
 
-    return input_df
+    min_value = union_dataframes_with_missing_cols(
+        [
+            postpaid_df.select(
+                F.to_date(F.max(F.col("partition_date")).cast(StringType()),'yyyyMMdd').alias("max_date")),
+            prepaid_main_df.select(
+                F.to_date(F.max(F.col("partition_date")).cast(StringType()),'yyyyMMdd').alias("max_date")),
+            prepaid_ontop_df.select(
+                F.to_date(F.max(F.col("partition_date")).cast(StringType()),'yyyyMMdd').alias("max_date")),
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    postpaid_df = postpaid_df.filter(F.to_date(F.col("partition_date").cast(StringType()),'yyyyMMdd') <= min_value)
+    prepaid_main_df = prepaid_main_df.filter(F.to_date(F.col("partition_date").cast(StringType()),'yyyyMMdd') <= min_value)
+    prepaid_ontop_df = prepaid_ontop_df.filter(F.to_date(F.col("partition_date").cast(StringType()),'yyyyMMdd') <= min_value)
+
+    return [postpaid_df, prepaid_main_df, prepaid_ontop_df]
 
 
 def dac_product_fbb_a_customer_promotion_current_for_daily(input_df) -> DataFrame:

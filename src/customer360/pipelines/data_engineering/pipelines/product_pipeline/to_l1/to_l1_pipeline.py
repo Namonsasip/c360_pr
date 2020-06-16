@@ -7,13 +7,21 @@ def product_to_l1_pipeline(**kwargs):
 
     return Pipeline(
         [
-            # Post-paid
 
+            # Data availability checks
             node(
                 dac_product_customer_promotion_for_daily,
-                "l0_product_customer_promotion_for_daily",
-                "int_l1_product_active_customer_promotion_features"
+                ["l0_product_customer_promotion_for_daily",
+                 "l0_revenue_sa_t_package_trans_for_l0_revenue_prepaid_main_product_customer_promotion_daily",
+                 "l0_prepaid_ontop_product_customer_promotion_for_daily"
+                 ],
+                ["int_l1_product_active_customer_promotion_features",
+                 "int_l1_prepaid_ontop_product_active_customer_promotion_features",
+                 "int_l1_prepaid_main_product_active_customer_promotion_features"
+                 ]
             ),
+
+            # Post-paid
             node(
                 l1_massive_processing,
                 ["int_l1_product_active_customer_promotion_features",
@@ -23,17 +31,6 @@ def product_to_l1_pipeline(**kwargs):
             ),
 
             # Pre-paid
-
-            node(
-                dac_product_customer_promotion_for_daily,
-                "l0_revenue_sa_t_package_trans_for_l0_revenue_prepaid_main_product_customer_promotion_daily",
-                "int_l1_prepaid_ontop_product_active_customer_promotion_features"
-            ),
-            node(
-                dac_product_customer_promotion_for_daily,
-                "l0_prepaid_ontop_product_customer_promotion_for_daily",
-                "int_l1_prepaid_main_product_active_customer_promotion_features"
-            ),
             node(
                 l1_prepaid_processing,
                 ["int_l1_prepaid_ontop_product_active_customer_promotion_features",
@@ -44,7 +41,6 @@ def product_to_l1_pipeline(**kwargs):
                 "int_l1_prepaid_product_active_customer_promotion_features"
             ),
 
-            # Generic function
             node(
                 union_prepaid_postpaid,
                 ["int_l1_postpaid_product_active_customer_promotion_features",
