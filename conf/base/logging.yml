@@ -37,7 +37,7 @@ handlers:
   journal_file_handler:
     class: kedro.versioning.journal.JournalFileHandler
     level: INFO
-    base_dir: /dbfs/mnt/customer360-blob-data/cvm/logs/journals.log
+    base_dir: /dbfs/mnt/customer360-blob-data/cvm/logs/journals
     formatter: json_formatter
 
 loggers:
