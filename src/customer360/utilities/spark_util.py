@@ -37,6 +37,8 @@ def get_spark_session() -> SparkSession:
 
         spark.conf.set("spark.sql.parquet.binaryAsString", "true")
 
+        spark.conf.set("spark.sql.autoBroadcastJoinThreshold", -1)
+
         # pyarrow is not working so disable it for now
         spark.conf.set("spark.sql.execution.arrow.enabled", "false")
 
