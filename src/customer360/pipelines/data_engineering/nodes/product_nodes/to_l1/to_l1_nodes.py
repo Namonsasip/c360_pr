@@ -85,7 +85,6 @@ def join_with_master_package(
                         ,postpaid_ontop_master_df]):
         return get_spark_empty_df()
 
-
     prepaid_main_master_df = data_non_availability_and_missing_check(df=prepaid_main_master_df
          ,grouping="weekly", par_col="partition_date",target_table_name="l1_product_active_customer_promotion_features_daily")
     prepaid_ontop_master_df = data_non_availability_and_missing_check(df=prepaid_ontop_master_df
@@ -216,19 +215,19 @@ def dac_product_customer_promotion_for_daily(postpaid_df: DataFrame, prepaid_mai
 
     ################################# Start Implementing Data availability checks ###############################
     if check_empty_dfs([postpaid_df, prepaid_main_df, prepaid_ontop_df]):
-        return get_spark_empty_df()
+        return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df()]
 
     postpaid_df = data_non_availability_and_missing_check(
-        df=postpaid_df,grouping="daily", par_col="partition_date", target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid")
+        df=postpaid_df,grouping="weekly", par_col="partition_date", target_table_name="l1_product_active_customer_promotion_features_daily")
 
     prepaid_main_df = data_non_availability_and_missing_check(
-        df=prepaid_main_df, grouping="daily", par_col="partition_date", target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid")
+        df=prepaid_main_df, grouping="weekly", par_col="partition_date", target_table_name="l1_product_active_customer_promotion_features_daily")
 
     prepaid_ontop_df = data_non_availability_and_missing_check(
-        df=prepaid_ontop_df, grouping="daily", par_col="partition_date", target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid")
+        df=prepaid_ontop_df, grouping="weekly", par_col="partition_date", target_table_name="l1_product_active_customer_promotion_features_daily")
 
     if check_empty_dfs([postpaid_df, prepaid_main_df, prepaid_ontop_df]):
-        return get_spark_empty_df()
+        return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df()]
 
     ################################# End Implementing Data availability checks ###############################
 
