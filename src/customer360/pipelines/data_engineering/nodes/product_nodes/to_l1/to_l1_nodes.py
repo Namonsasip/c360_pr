@@ -312,23 +312,25 @@ def l1_prepaid_processing(prepaid_main_df: DataFrame,
         "inner"
     )
 
-    prepaid_ontop_new_df = (prepaid_ontop_master_promotion_df.select(
-        F.lit("pre-paid").alias("promo_charge_type"),
-        F.lit("on-top").alias("promo_class"),
-        F.lit(None).alias("previous_main_promotion_id"),
-        F.lit(None).cast('timestamp').alias("previous_promo_end_dttm"),
-        F.col("offering_id").alias("promo_cd"),
-        F.lit(None).cast('string').alias("promo_user_cat_cd"),
-        F.col("access_method_num").alias("mobile_num"),
-        F.col("access_method_num").alias("access_method_num"),
-        F.to_date(F.coalesce(F.col("event_end_dttm"), F.lit("9999-12-31")), 'yyyy-MM-dd').alias("promo_end_dttm"),
-        F.to_date(F.coalesce(F.col("event_end_dttm"), F.lit("9999-12-31")), 'yyyy-MM-dd').alias("promo_status_end_dttm"),
-        F.col("price").alias("promo_package_price"),
-        F.col("offering_title").alias("promo_name"),
-        F.col("prepaid_ontop_df.partition_date").cast(StringType()).alias("partition_date"),
-        F.when(F.lower(F.col("recurring")) == "y", F.lit("recurring")).otherwise("non-recurring").alias("promo_price_type"),
-        F.to_date(F.coalesce(F.col("event_start_dttm"), F.lit("9999-12-31")), 'yyyy-MM-dd').alias("promo_start_dttm"),
-        F.lit("active").alias("promo_status")
+    prepaid_ontop_new_df = (prepaid_ontop_master_promotion_df
+        .filter(F.lower(F.col("is_main_pro")) == "n")
+        .select(
+            F.lit("pre-paid").alias("promo_charge_type"),
+            F.lit("on-top").alias("promo_class"),
+            F.lit(None).alias("previous_main_promotion_id"),
+            F.lit(None).cast('timestamp').alias("previous_promo_end_dttm"),
+            F.col("offering_id").alias("promo_cd"),
+            F.lit(None).cast('string').alias("promo_user_cat_cd"),
+            F.col("access_method_num").alias("mobile_num"),
+            F.col("access_method_num").alias("access_method_num"),
+            F.to_date(F.coalesce(F.col("event_end_dttm"), F.lit("9999-12-31")), 'yyyy-MM-dd').alias("promo_end_dttm"),
+            F.to_date(F.coalesce(F.col("event_end_dttm"), F.lit("9999-12-31")), 'yyyy-MM-dd').alias("promo_status_end_dttm"),
+            F.col("price").alias("promo_package_price"),
+            F.col("offering_title").alias("promo_name"),
+            F.col("prepaid_ontop_df.partition_date").cast(StringType()).alias("partition_date"),
+            F.when(F.lower(F.col("recurring")) == "y", F.lit("recurring")).otherwise("non-recurring").alias("promo_price_type"),
+            F.to_date(F.coalesce(F.col("event_start_dttm"), F.lit("9999-12-31")), 'yyyy-MM-dd').alias("promo_start_dttm"),
+            F.lit("active").alias("promo_status")
     ))
 
     prepaid_union = prepaid_main_new_df.unionByName(prepaid_ontop_new_df).alias("prepaid_union")
