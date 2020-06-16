@@ -144,6 +144,8 @@ def l1_geo_cust_subseqently_distance(cell_visit, sql):
     cell_visit = cell_visit.drop('partition_date')
     # cell_visit = cell_visit.withColumn("start_of_week", F.to_date(F.date_trunc('week', F.col('event_partition_date')))).drop('partition_date')
 
+    print(cell_visit.printSchema())
+
     # Window for lead function
     w_lead = Window().partitionBy('imsi', 'event_partition_date').orderBy('time_in')
 
