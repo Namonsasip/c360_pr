@@ -134,15 +134,16 @@ def loyalty_number_of_points_spend_for_each_category(customer_prof: DataFrame
                      "start_of_week", "start_of_month"]
     customer_prof = customer_prof.select(customer_cols)
 
-    input_df = input_df.where("point_tran_type_id in (15,35) and refund_session_id is null and project_id is not null") \
+    selective_df = input_df.where(
+        "point_tran_type_id in (15,35) and refund_session_id is null and project_id is not null") \
         .select(f.col("msisdn").alias("access_method_num"), "tran_date", "project_id", "points")
 
-    input_df = add_start_of_week_and_month(input_df, "tran_date")
+    date_curated_df = add_start_of_week_and_month(selective_df, "tran_date")
 
-    input_df = input_df.groupBy(["access_method_num", "event_partition_date", "start_of_week",
-                                 "start_of_month", "project_id"]) \
+    grouped_df = date_curated_df.groupBy(["access_method_num", "event_partition_date", "start_of_week",
+                                          "start_of_month", "project_id"]) \
         .agg(f.sum("points").alias("loyalty_points_spend"))
 
-    return_df = customer_prof.join(input_df, join_key)
+    return_df = customer_prof.join(grouped_df, join_key)
 
     return return_df
