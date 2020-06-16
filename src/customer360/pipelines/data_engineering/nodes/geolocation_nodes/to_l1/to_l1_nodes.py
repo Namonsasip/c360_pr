@@ -174,8 +174,10 @@ def l1_geo_cust_subseqently_distance(cell_visit, sql):
     cell_visit_distance =cell_visit_distance.drop('latitude_next').drop('longitude_next')
 
     # Sum of distance group by imsi, start_of_month
-    # cell_visit_distance_sum = cell_visit_distance.groupBy('imsi', 'event_partition_date').agg({'distance_km':'sum'}).select('imsi', 'event_partition_date', 'sum(distance_km')
+    df = cell_visit_distance.groupBy('imsi', 'event_partition_date') \
+        .agg({'distance_km':'sum'}).withColumnRenamed('sum(distance_km)', 'distance_km') \
+        .select('imsi', 'event_partition_date', 'distance_km')
 
-    df = node_from_config(cell_visit_distance, sql)
+    # df = node_from_config(cell_visit_distance, sql)
 
     return df
