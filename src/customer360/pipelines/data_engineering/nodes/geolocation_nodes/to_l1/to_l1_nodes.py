@@ -136,7 +136,7 @@ def l1_geo_top_visit_exclude_homework_daily(df,homework,sql):
 def l1_geo_cust_subseqently_distance(cell_visit, sql):
 
     # Drop unneeded column
-    cell_visit = cell_visit.drop('cgi', 'time_out', 'hour_in', 'hour_out')
+    cell_visit = cell_visit.drop('cell_id', 'time_out', 'hour_in', 'hour_out')
     cell_visit = cell_visit.where(F.col("imsi").isNotNull())
 
     # Add event_partition_date and start_of_week
