@@ -247,7 +247,7 @@ def dac_product_customer_promotion_for_daily(postpaid_df: DataFrame, prepaid_mai
     prepaid_main_df = prepaid_main_df.filter(F.to_date(F.col("partition_date").cast(StringType()),'yyyyMMdd') <= min_value)
     prepaid_ontop_df = prepaid_ontop_df.filter(F.to_date(F.col("partition_date").cast(StringType()),'yyyyMMdd') <= min_value)
 
-    return [postpaid_df, prepaid_main_df, prepaid_ontop_df]
+    return [postpaid_df, prepaid_ontop_df, prepaid_main_df]
 
 
 def dac_product_fbb_a_customer_promotion_current_for_daily(input_df) -> DataFrame:
@@ -270,27 +270,90 @@ def dac_product_fbb_a_customer_promotion_current_for_daily(input_df) -> DataFram
     return input_df
 
 
-def l1_prepaid_processing(prepaid_main_df: DataFrame,
-                          prepaid_ontop_df: DataFrame,
-                          customer_profile_df: DataFrame,
-                          main_master_promotion_df: DataFrame,
-                          ontop_master_promotion_df: DataFrame) -> DataFrame:
+def l1_prepaid_postpaid_processing(prepaid_main_df: DataFrame,
+                                   prepaid_ontop_df: DataFrame,
+                                   postpaid_df: DataFrame,
+                                   customer_profile_df: DataFrame,
+                                   main_master_promotion_df: DataFrame,
+                                   ontop_master_promotion_df: DataFrame) -> DataFrame:
+
+    ############################################## Start Define Aliases ############################################
 
     prepaid_main_df = prepaid_main_df.alias("prepaid_main_df")
     prepaid_ontop_df = prepaid_ontop_df.alias("prepaid_ontop_df")
     main_master_promotion_df = main_master_promotion_df.alias("main_master_promotion_df")
     ontop_master_promotion_df = ontop_master_promotion_df.alias("ontop_master_promotion_df")
     customer_profile_df = customer_profile_df.alias("customer_profile_df")
+    postpaid_df = postpaid_df.alias("postpaid_df")
+
+    customer_profile_columns = [
+        "start_of_week", "start_of_month", "subscription_identifier", "national_id_card",
+        "old_subscription_identifier", "register_date", "event_partition_date"
+    ]
+
+    ############################################### End Define Aliases #############################################
+
+
+    ########################################### Start Pre-Paid Processing #########################################
+
+    product_prepaid_df = _prepare_prepaid(prepaid_main_df, prepaid_ontop_df,
+                                          main_master_promotion_df, ontop_master_promotion_df)
+
+    max_register_date_window = Window.partitionBy("prepaid_union.access_method_num", "prepaid_union.partition_date")
+
+    prepaid_union_cus_df = (product_prepaid_df
+        .join(customer_profile_df,
+              (F.col("prepaid_union.access_method_num") == F.col(
+                  "customer_profile_df.access_method_num")) &
+              (F.to_date(F.col("prepaid_union.partition_date").cast(StringType()),
+                         "yyyyMMdd") >=
+               F.to_date(F.col("customer_profile_df.register_date").cast(StringType()),
+                         "yyyyMMdd")),
+              "inner"
+              )
+        .withColumn("max_register_date", F.max("register_date").over(max_register_date_window))
+        .where(F.col("register_date") == F.col("max_register_date"))
+        .select(
+            [f"prepaid_union.{i}" for i in product_prepaid_df.columns] + customer_profile_columns
+        )
+    )
+
+    ############################################ End Pre-Paid Processing ##########################################
+
+    ########################################### Start Post-Paid Processing #########################################
+
+    postpaid_cus_df = customer_profile_df.join(
+        postpaid_df,
+        (F.col("customer_profile_df.old_subscription_identifier") == F.col("postpaid_df.crm_subscription_id")) &
+        (F.col("customer_profile_df.event_partition_date") == F.to_date(F.col("postpaid_df.partition_date").cast(StringType()),'yyyyMMdd')),
+        "left_outer"
+    ).select([f"postpaid_df.{i}" for i in postpaid_df.columns] + customer_profile_columns + ["access_method_num"])
+
+    ############################################ End Post-Paid Processing ##########################################
+
+    union_df = _union_prepaid_postpaid(prepaid_union_cus_df, postpaid_cus_df)
+
+    return union_df
+
+
+def _prepare_prepaid(
+        prepaid_main_df: DataFrame,
+        prepaid_ontop_df: DataFrame,
+        main_master_promotion_df: DataFrame,
+        ontop_master_promotion_df: DataFrame
+) -> DataFrame:
 
     prepaid_main_master_promotion_df = (prepaid_main_df
-                                   .join(main_master_promotion_df, "package_id", "inner")
-                                   .withColumn("offering_end_dt", F.to_date(F.col("offering_end_dt").cast(StringType()), 'yyyyMMdd'))
-                                   .select([f"prepaid_main_df.{i}" for i in prepaid_main_df.columns] + [
-                                        F.col("service_fee_tariff").alias("promo_package_price"),
-                                        F.col("offering_desc").alias("promo_name"),
-                                        F.when(F.col("offering_end_dt") > F.current_date(), F.lit("active")).otherwise(F.lit("inactive")).alias("promo_status")
-                                    ])
-                                   )
+                                        .join(main_master_promotion_df, "package_id", "inner")
+                                        .withColumn("offering_end_dt",
+                                                    F.to_date(F.col("offering_end_dt").cast(StringType()), 'yyyyMMdd'))
+                                        .select([f"prepaid_main_df.{i}" for i in prepaid_main_df.columns] + [
+        F.col("service_fee_tariff").alias("promo_package_price"),
+        F.col("offering_desc").alias("promo_name"),
+        F.when(F.col("offering_end_dt") > F.current_date(), F.lit("active")).otherwise(F.lit("inactive")).alias(
+            "promo_status")
+    ])
+                                        )
 
     prepaid_main_new_df = (prepaid_main_master_promotion_df.select(
         F.lit("pre-paid").alias("promo_charge_type"),
@@ -333,53 +396,32 @@ def l1_prepaid_processing(prepaid_main_df: DataFrame,
     prepaid_ontop_new_df = (prepaid_ontop_master_promotion_df
         .filter(F.lower(F.col("is_main_pro")) == "n")
         .select(
-            F.lit("pre-paid").alias("promo_charge_type"),
-            F.lit("on-top").alias("promo_class"),
-            F.lit(None).alias("previous_main_promotion_id"),
-            F.lit(None).cast('timestamp').alias("previous_promo_end_dttm"),
-            F.col("offering_id").alias("promo_cd"),
-            F.lit(None).cast('string').alias("promo_user_cat_cd"),
-            F.col("access_method_num").alias("mobile_num"),
-            F.col("access_method_num").alias("access_method_num"),
-            F.to_date(F.coalesce(F.col("event_end_dttm"), F.lit("9999-12-31")), 'yyyy-MM-dd').alias("promo_end_dttm"),
-            F.to_date(F.coalesce(F.col("event_end_dttm"), F.lit("9999-12-31")), 'yyyy-MM-dd').alias("promo_status_end_dttm"),
-            F.col("price").alias("promo_package_price"),
-            F.col("offering_title").alias("promo_name"),
-            F.col("prepaid_ontop_df.partition_date").cast(StringType()).alias("partition_date"),
-            F.when(F.lower(F.col("recurring")) == "y", F.lit("recurring")).otherwise("non-recurring").alias("promo_price_type"),
-            F.to_date(F.coalesce(F.col("event_start_dttm"), F.lit("9999-12-31")), 'yyyy-MM-dd').alias("promo_start_dttm"),
-            F.lit("active").alias("promo_status")
+        F.lit("pre-paid").alias("promo_charge_type"),
+        F.lit("on-top").alias("promo_class"),
+        F.lit(None).alias("previous_main_promotion_id"),
+        F.lit(None).cast('timestamp').alias("previous_promo_end_dttm"),
+        F.col("offering_id").alias("promo_cd"),
+        F.lit(None).cast('string').alias("promo_user_cat_cd"),
+        F.col("access_method_num").alias("mobile_num"),
+        F.col("access_method_num").alias("access_method_num"),
+        F.to_date(F.coalesce(F.col("event_end_dttm"), F.lit("9999-12-31")), 'yyyy-MM-dd').alias("promo_end_dttm"),
+        F.to_date(F.coalesce(F.col("event_end_dttm"), F.lit("9999-12-31")), 'yyyy-MM-dd').alias(
+            "promo_status_end_dttm"),
+        F.col("price").alias("promo_package_price"),
+        F.col("offering_title").alias("promo_name"),
+        F.col("prepaid_ontop_df.partition_date").cast(StringType()).alias("partition_date"),
+        F.when(F.lower(F.col("recurring")) == "y", F.lit("recurring")).otherwise("non-recurring").alias(
+            "promo_price_type"),
+        F.to_date(F.coalesce(F.col("event_start_dttm"), F.lit("9999-12-31")), 'yyyy-MM-dd').alias("promo_start_dttm"),
+        F.lit("active").alias("promo_status")
     ))
 
     prepaid_union = prepaid_main_new_df.unionByName(prepaid_ontop_new_df).alias("prepaid_union")
 
-    max_register_date_window = Window.partitionBy("prepaid_union.access_method_num", "prepaid_union.partition_date")
-    customer_profile_columns = [
-        "start_of_week", "start_of_month", "subscription_identifier", "national_id_card",
-        "old_subscription_identifier", "register_date", "event_partition_date"
-    ]
-
-    prepaid_union_cus_df = (prepaid_union
-        .join(customer_profile_df,
-              (F.col("prepaid_union.access_method_num") == F.col(
-                  "customer_profile_df.access_method_num")) &
-              (F.to_date(F.col("prepaid_union.partition_date").cast(StringType()),
-                         "yyyyMMdd") >=
-               F.to_date(F.col("customer_profile_df.register_date").cast(StringType()),
-                         "yyyyMMdd")),
-              "inner"
-              )
-        .withColumn("max_register_date", F.max("register_date").over(max_register_date_window))
-        .where(F.col("register_date") == F.col("max_register_date"))
-        .select(
-            [f"prepaid_union.{i}" for i in prepaid_union.columns] + customer_profile_columns
-        )
-    )
-
-    return prepaid_union_cus_df
+    return prepaid_union
 
 
-def union_prepaid_postpaid(postpaid_df: DataFrame, prepaid_df: DataFrame) -> DataFrame:
+def _union_prepaid_postpaid(postpaid_df: DataFrame, prepaid_df: DataFrame) -> DataFrame:
 
     # Handle crm_subscription_id
     prepaid_df = prepaid_df.withColumn("crm_subscription_id", F.col("old_subscription_identifier"))
