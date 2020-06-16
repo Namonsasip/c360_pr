@@ -24,7 +24,7 @@ l3_area_from_competitor_store_monthly:
 l3_geo_total_distance_km_monthly:
   where_clause: ""
   feature_list:
-    total_distance_km: "sum(total_distance_km)"
+    total_distance_km: "total_distance_km"
   granularity: "imsi,start_of_month"
 
 ###Traffic_fav_location###

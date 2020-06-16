@@ -24,7 +24,10 @@ l2_area_from_competitor_store_weekly:
 l2_geo_total_distance_km_weekly:
   where_clause: ""
   feature_list:
-    total_distance_km: "sum(total_distance_km)"
+    max_distance_km: "max(max_distance_km)"
+    min_distance_km: "min(min_distance_km)"
+    avg_distance_km: "avg(avg_distance_km)"
+    sum_distance_km: "sum(sum_distance_km)"
   granularity: "imsi,start_of_week"
 
 ###Traffic_fav_location###

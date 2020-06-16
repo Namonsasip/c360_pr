@@ -30,9 +30,10 @@ def l2_geo_area_from_competitor_store_weekly(df,sql):
 ##==============================Update 2020-06-12 by Thatt529==========================================##
 
 ###total_distance_km###
-def l2_geo_total_distance_km_weekly(df,sql):
-    df = node_from_config(df,sql)
-    return df
+def l2_geo_total_distance_km_weekly(df, sql):
+    df1 = df.select("imsi", "total_distance_km", "start_of_week")
+    # df = node_from_config(df,sql)
+    return df1
 
 ###Traffic_fav_location###
 def   l2_geo_use_traffic_home_work_weekly(df,sql):

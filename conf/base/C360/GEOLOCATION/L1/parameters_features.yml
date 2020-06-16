@@ -26,7 +26,10 @@ l1_area_from_competitor_store_daily:
 l1_geo_total_distance_km_daily:
   where_clause: ""
   feature_list:
-    total_distance_km: "sum(total_distance_km)"
+    max_distance_km: "max(total_distance_km)"
+    min_distance_km: "min(total_distance_km)"
+    avg_distance_km: "avg(total_distance_km)"
+    sum_distance_km: "sum(total_distance_km)"
   granularity: "imsi,event_partition_date,start_of_week,start_of_month"
 
 ###Number_of_base_station###
