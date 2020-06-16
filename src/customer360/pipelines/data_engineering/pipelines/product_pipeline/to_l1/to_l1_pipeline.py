@@ -26,7 +26,7 @@ def product_to_l1_pipeline(**kwargs):
 
             node(
                 dac_product_customer_promotion_for_daily,
-                "l0_prepaid_main_product_customer_promotion_for_daily",
+                "l0_revenue_sa_t_package_trans_for_l0_revenue_prepaid_main_product_customer_promotion_daily",
                 "int_l1_prepaid_ontop_product_active_customer_promotion_features"
             ),
             node(
@@ -40,7 +40,7 @@ def product_to_l1_pipeline(**kwargs):
                  "int_l1_prepaid_main_product_active_customer_promotion_features",
                  "l1_customer_profile_union_daily_feature_for_int_l1_product_active_customer_promotion_features",
                  "l0_product_pru_m_package_master_group_for_daily",
-                 "l0_product_pru_m_ontop_master_for_daily"],
+                 "l0_product_pru_m_ontop_master_for_weekly"],
                 "int_l1_prepaid_product_active_customer_promotion_features"
             ),
 
@@ -63,7 +63,7 @@ def product_to_l1_pipeline(**kwargs):
                 join_with_master_package,
                 ["int_l1_product_active_customer_promotion_features_temp",
                  "l0_product_pru_m_package_master_group_for_daily",
-                 "l0_product_pru_m_ontop_master_for_daily",
+                 "l0_product_pru_m_ontop_master_for_weekly",
                  "l0_product_ru_m_main_promotion_cvm_proj_for_daily",
                  "l0_product_ru_m_ontop_promotion_cvm_proj_for_daily"],
                 "l1_product_active_customer_promotion_features_daily"
