@@ -81,8 +81,8 @@ def l2_geo_cust_subseqently_distance_weekly(df, sql):
 ##==============================Update 2020-06-12 by Thatt529==========================================##
 
 ###total_distance_km###
-def l2_geo_total_distance_km_weekly(df,sql):
-    df = node_from_config(df,sql)
+def l2_geo_total_distance_km_weekly(df, sql):
+    df = node_from_config(df, sql)
     return df
 
 ###Traffic_fav_location###

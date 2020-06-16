@@ -72,11 +72,12 @@ l4_geo_cust_subseqently_distance:
 l4_geo_total_distance_km:
   partition_by: ["imsi"]
   feature_list:
-    avg: ["total_distance_km"]
-    max: ["total_distance_km"]
-    min: ["total_distance_km"]
-    sum: ["total_distance_km"]
+    avg: ["avg_distance_km"]
+    max: ["max_distance_km"]
+    min: ["min_distance_km"]
+    sum: ["sum_distance_km"]
   read_from: "l2"
+
 
 ###Traffic_fav_location###
 l4_geo_use_traffic_home_work_weekly:
