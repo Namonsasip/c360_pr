@@ -44,10 +44,13 @@ from kedro.context import KedroContext, load_context
 from kedro.io import DataCatalog
 from kedro.pipeline import Pipeline
 from kedro.pipeline.node import Node
+from kedro.utils import load_obj
 from kedro.versioning import Journal
 
 from customer360.utilities.spark_util import get_spark_session
-from customer360.utilities.generate_dependency_dataset import generate_dependency_dataset
+from customer360.utilities.generate_dependency_dataset import (
+    generate_dependency_dataset,
+)
 
 from customer360.pipeline import create_pipelines
 
@@ -240,7 +243,6 @@ class ProjectContext(KedroContext):
                     )
                     caller_globals[parameter_name] = {}
 
-
         # Import all names that are defined in the module,
         # so that all references and dependencies within
         # the function code are defined
@@ -285,7 +287,11 @@ def run_selected_nodes(pipeline_name, node_names=None, env="base"):
     # using `<project_package>` command
     project_context = load_context(Path.cwd(), env=env)
     spark = get_spark_session()
-    project_context.run(node_names=node_names, pipeline_name=pipeline_name)
+    project_context.run(
+        node_names=node_names,
+        pipeline_name=pipeline_name,
+        runner=load_obj("ParallelRunner", "kedro.runner"),
+    )
 
 
 if __name__ == "__main__":
