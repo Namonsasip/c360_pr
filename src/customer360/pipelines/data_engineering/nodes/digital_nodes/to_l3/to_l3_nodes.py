@@ -1,4 +1,5 @@
 import pyspark.sql.functions as f
+from pyspark.sql.functions import expr
 from pyspark.sql import DataFrame, Window
 from pyspark.sql.types import StringType
 
@@ -29,9 +30,8 @@ def build_digital_l3_monthly_features(cxense_user_profile: DataFrame,
 
     cust_df = data_non_availability_and_missing_check(
         df=cust_df, grouping="monthly",
-        par_col="event_partition_date",
-        target_table_name="l3_digital_cxenxse_user_profile_monthly",
-        missing_data_check_flg='N')
+        par_col="start_of_month",
+        target_table_name="l3_digital_cxenxse_user_profile_monthly")
 
     # new section to handle data latency
     cxense_user_profile = cxense_user_profile\
@@ -62,10 +62,14 @@ def build_digital_l3_monthly_features(cxense_user_profile: DataFrame,
     return_df = node_from_config(cxense_user_profile, node_config_dict)
 
     # This code will populate a subscriber id to the data set.
-    cust_df_cols = ['access_method_num', 'start_of_month', 'subscription_identifier']
+    cust_df_cols = ["subscription_identifier", "access_method_num", "national_id_card", "start_of_month"]
     join_key = ['access_method_num', 'start_of_month']
 
     cust_df = cust_df.select(cust_df_cols)
+    cust_df = cust_df.withColumn("rn", expr(
+        "row_number() over(partition by start_of_month,access_method_num order by start_of_month desc)"))
+    cust_df = cust_df.where("rn = 1")
+    cust_df = cust_df.drop("rn")
 
     final_df = return_df.join(cust_df, join_key)
 
