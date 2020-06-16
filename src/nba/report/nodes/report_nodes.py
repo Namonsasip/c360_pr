@@ -115,9 +115,10 @@ def create_input_data_for_reporting_kpis(
         "target_group",
         "created_date as control_group_created_date",
     )
-    #TODO Make customer profile dynamic
+    # Only use the latest profile data
+    max_ddate = dm07_sub_clnt_info.agg({"ddate": "max"}).collect()[0][0].strftime("%Y-%m-%d")
     dm07_sub_clnt_info = dm07_sub_clnt_info.where(
-        "ddate = date('2020-03-31') AND charge_type = 'Pre-paid'"
+        "ddate = date('" + max_ddate + "') AND charge_type = 'Pre-paid'"
     ).selectExpr(
         "analytic_id",
         "date(activation_date) as register_date",
