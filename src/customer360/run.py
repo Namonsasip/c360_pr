@@ -290,7 +290,7 @@ def run_selected_nodes(pipeline_name, node_names=None, env="base"):
     project_context.run(
         node_names=node_names,
         pipeline_name=pipeline_name,
-        runner=load_obj("ParallelRunner", "kedro.runner"),
+        runner=load_obj("ParallelRunner", "kedro.runner")(),
     )
 
 
