@@ -9,29 +9,29 @@ def geo_to_l2_pipeline(**kwargs):
     return Pipeline(
         [
 
-            # node(
-            #     l2_geo_time_spent_by_location_weekly,
-            #     ["l1_geo_time_spent_by_location_daily_for_l2_geo_time_spent_by_location_weekly",
-            #      "params:l2_geo_time_spent_by_location_weekly"
-            #      ],
-            #     "l2_geo_time_spent_by_location_weekly"
-            # ),
-            #
-            # node(
-            #     l2_geo_area_from_ais_store_weekly,
-            #     ["l1_geo_area_from_ais_store_daily_for_l2_geo_area_from_ais_store_weekly",
-            #      "params:l2_area_from_ais_store_weekly"
-            #      ],
-            #     "l2_geo_area_from_ais_store_weekly"
-            # ),
-            #
-            # node(
-            #     l2_geo_area_from_competitor_store_weekly,
-            #     ["l1_geo_area_from_competitor_store_daily_for_l2_geo_area_from_competitor_store_weekly",
-            #      "params:l2_area_from_competitor_store_weekly"
-            #      ],
-            #     "l2_geo_area_from_competitor_store_weekly"
-            # ),
+            node(
+                l2_geo_time_spent_by_location_weekly,
+                ["l1_geo_time_spent_by_location_daily_for_l2_geo_time_spent_by_location_weekly",
+                 "params:l2_geo_time_spent_by_location_weekly"
+                 ],
+                "l2_geo_time_spent_by_location_weekly"
+            ),
+
+            node(
+                l2_geo_area_from_ais_store_weekly,
+                ["l1_geo_area_from_ais_store_daily_for_l2_geo_area_from_ais_store_weekly",
+                 "params:l2_area_from_ais_store_weekly"
+                 ],
+                "l2_geo_area_from_ais_store_weekly"
+            ),
+
+            node(
+                l2_geo_area_from_competitor_store_weekly,
+                ["l1_geo_area_from_competitor_store_daily_for_l2_geo_area_from_competitor_store_weekly",
+                 "params:l2_area_from_competitor_store_weekly"
+                 ],
+                "l2_geo_area_from_competitor_store_weekly"
+            ),
 
             node(
                 l2_geo_cust_subseqently_distance_weekly,
