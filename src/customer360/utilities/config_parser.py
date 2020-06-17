@@ -322,6 +322,124 @@ def l4_rolling_window(input_df: DataFrame, config: dict):
     return df
 
 
+def l4_rolling_window_de(input_df: DataFrame, config: dict):
+    """
+    :param input_df:
+    :param config:
+    :return:
+    """
+    if len(input_df.head(1)) == 0:
+        logging.info("l4_rolling_window -> df == 0 records found in input dataset")
+        return input_df
+    logging.info("l4_rolling_window -> df > 0 records found in input dataset")
+    ranked_lookup_enable_flag = config.get('ranked_lookup_enable_flag', "No")
+
+    if ranked_lookup_enable_flag.lower() == 'yes':
+        full_data = _get_full_data(input_df, config)
+        input_df = full_data
+
+    table_name = "input_table"
+    input_df.createOrReplaceTempView(table_name)
+
+    sql_stmt = """
+        select 
+            {}
+        from input_table
+        {}
+    """
+
+    features = []
+
+    features.extend(config["partition_by"])
+
+    read_from = config.get("read_from")
+    features.append(__get_l4_time_granularity_column(read_from))
+    features = list(set(features))  # Remove duplicates
+
+    for agg_function, column_list in config["feature_list"].items():
+        for each_feature_column in column_list:
+            if read_from == 'l1':
+                features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
+                    function=agg_function,
+                    feature_column=each_feature_column,
+                    window=create_daily_lookback_window(7, config["partition_by"]),
+                    column_name="{}_daily_last_seven_day".format(each_feature_column)
+                ))
+
+                features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
+                    function=agg_function,
+                    feature_column=each_feature_column,
+                    window=create_daily_lookback_window(14, config["partition_by"]),
+                    column_name="{}_daily_last_fourteen_day".format(each_feature_column)
+                ))
+
+                features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
+                    function=agg_function,
+                    feature_column=each_feature_column,
+                    window=create_daily_lookback_window(30, config["partition_by"]),
+                    column_name="{}_daily_last_thirty_day".format(each_feature_column)
+                ))
+
+                features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
+                    function=agg_function,
+                    feature_column=each_feature_column,
+                    window=create_daily_lookback_window(90, config["partition_by"]),
+                    column_name="{}_daily_last_ninety_day".format(each_feature_column)
+                ))
+
+            elif read_from == 'l2':
+                features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
+                    function=agg_function,
+                    feature_column=each_feature_column,
+                    window=create_weekly_lookback_window(1, config["partition_by"]),
+                    column_name="{}_weekly_last_week".format(each_feature_column)
+                ))
+
+                features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
+                    function=agg_function,
+                    feature_column=each_feature_column,
+                    window=create_weekly_lookback_window(2, config["partition_by"]),
+                    column_name="{}_weekly_last_two_week".format(each_feature_column)
+                ))
+
+                features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
+                    function=agg_function,
+                    feature_column=each_feature_column,
+                    window=create_weekly_lookback_window(4, config["partition_by"]),
+                    column_name="{}_weekly_last_four_week".format(each_feature_column)
+                ))
+
+                features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
+                    function=agg_function,
+                    feature_column=each_feature_column,
+                    window=create_weekly_lookback_window(12, config["partition_by"]),
+                    column_name="{}_weekly_last_twelve_week".format(each_feature_column)
+                ))
+            else:
+                features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
+                    function=agg_function,
+                    feature_column=each_feature_column,
+                    window=create_monthly_lookback_window(1, config["partition_by"]),
+                    column_name="{}_monthly_last_month".format(each_feature_column)
+                ))
+
+                features.append("{function}({feature_column}) over ({window}) as {column_name}".format(
+                    function=agg_function,
+                    feature_column=each_feature_column,
+                    window=create_monthly_lookback_window(3, config["partition_by"]),
+                    column_name="{}_monthly_last_three_month".format(each_feature_column)
+                ))
+
+    sql_stmt = sql_stmt.format(',\n'.join(features),
+                               config.get("where_clause", ""))
+
+    logging.info("SQL QUERY {}".format(sql_stmt))
+
+    spark = get_spark_session()
+    df = spark.sql(sql_stmt)
+
+    return df
+
 def create_daily_lookback_window(
         num_of_days,
         partition_column,
