@@ -123,6 +123,7 @@ def add_network_churn(network_churn: DataFrame, users: DataFrame) -> DataFrame:
         network_churn: table with users that churned, not from C360.
         users: table with users.
     """
+    logging.getLogger(__name__).info("Adding network based churn")
     network_churn = (
         network_churn.withColumn(
             "key_date", func.date_format(func.col("day_code"), "yyyy-MM-dd")
