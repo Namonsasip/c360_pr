@@ -15,6 +15,6 @@ network_churn:
   filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_pru_a_churn_sub_daily/
 
 # users target, control and bau groups
-cvm_prepaid_customer_groups:
+cvm_customer_groups:
   <<: *spark_parquet
   filepath: /mnt/customer360-cvm/cvm_prepaid_customer_groups
