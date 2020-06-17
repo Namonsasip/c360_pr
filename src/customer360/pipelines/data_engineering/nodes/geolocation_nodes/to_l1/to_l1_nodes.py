@@ -551,6 +551,7 @@ def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
     return l1_df1
 
 def l1_geo_number_of_bs_used(geo_cust_cell, sql):
-    geo_cust_cell = geo_cust_cell.withColumn("event_partition_date", F.to_date(geo_cust_cell.partition_date.cast(DateType()), "yyyyMMdd"))
+    geo_cust_cell = geo_cust_cell.withColumn("event_partition_date", F.to_date(F.col('partition_date').cast(StringType()), 'yyyyMMdd'))
+    geo_cust_cell = geo_cust_cell.drop('partition_date')
     df = node_from_config(geo_cust_cell, sql)
     return df
