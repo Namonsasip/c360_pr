@@ -35,8 +35,10 @@ def loyalty_number_of_points_balance(customer_prof: DataFrame
         par_col="start_of_month",
         target_table_name="l3_loyalty_point_balance_statuses_monthly")
 
+    # Adding business checks
+    input_df = input_df.where("month_id is not null")
     input_df = add_start_of_week_and_month(input_df=input_df, date_column="month_id")\
-               .drop(["start_of_week", "event_partition_date"])
+        .drop("start_of_week", "event_partition_date")
 
     min_value = union_dataframes_with_missing_cols(
         [
@@ -65,8 +67,8 @@ def loyalty_number_of_points_balance(customer_prof: DataFrame
 
     input_df = input_df.withColumn("rnk", f.row_number().over(win))\
                        .where("rnk = 1")
-    merged_df = input_df.join(input_df_temp, ["start_of_month", "mobile_no"], how="left")
 
+    merged_df = input_df.join(input_df_temp, ["start_of_month", "mobile_no"], how="left")
     merged_df = merged_df.select(f.col("mobile_no").alias("access_method_num")
                                             # "mobile_status_date"
                                             , "mobile_segment"
@@ -75,7 +77,8 @@ def loyalty_number_of_points_balance(customer_prof: DataFrame
                                             , "point_expire_next_year"
                                             , "max_modified_date"
                                             , "max_expire_date"
-                                            , "loyalty_register_program_points_date")
+                                            , "loyalty_register_program_points_date"
+                                            , "start_of_month")
 
     merged_with_customer = merged_df.join(customer_prof, join_key)
     return_df = node_from_config(merged_with_customer, l3_loyalty_point_balance_statuses_monthly)
