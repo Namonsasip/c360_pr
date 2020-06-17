@@ -179,7 +179,7 @@ l1_geo_use_traffic_home_work_weekly_for_l3_geo_use_traffic_home_work_monthly:
 
 
 ###Number_of_base_station###
-l1_int_geo_cust_cell_visit_time_for_l1_geo_number_of_bs_used_20200101:
+l1_int_geo_cust_cell_visit_time_for_l1_geo_number_of_bs_used:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
   filepath: /mnt/customer360-blob-data/C360/GEO/l1_features/geo_cust_cell_visit_time/
