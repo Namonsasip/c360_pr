@@ -97,6 +97,20 @@ def geo_to_l2_pipeline(**kwargs):
                  "params:l2_geo_distance_top_call"
                  ],
                 "l2_geo_distance_top_call"
+            ),
+
+            # 47 The favourite location
+            # node(
+            #     l2_the_favourite_locations_weekly,
+            #     ["l1_the_favourite_locations_daily"],
+            #     "l2_the_favourite_locations_monthly"
+            # ),
+
+            # 27 Same favourite location for weekend and weekday
+            node(
+                l2_same_favourite_location_weekend_weekday_weekly,
+                ["l0_geo_cust_cell_visit_time_for_l2_same_favourite_location_weekend_weekday"],
+                "l2_same_favourite_location_weekend_weekday_weekly"
             )
 
         ], name="geo_to_l2_pipeline"

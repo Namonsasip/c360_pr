@@ -64,3 +64,24 @@ def l3_geo_top3_cells_on_voice_usage(df,sql):
     df = df.where("rnk <= 3")
 
     return df
+
+# 47 The favourite location
+def l3_the_favourite_locations_monthly(l1_df_the_favourite_location_daily):
+    ### config
+    spark = get_spark_session()
+    l1_df_the_favourite_location_daily.createOrReplaceTempView('l1_df_the_favourite_location_daily')
+    sql_query = """
+    select
+    mobile_no
+    ,start_of_month
+    ,lac	
+    ,ci
+    ,sum(vol_3g) as vol_3g
+    ,sum(vol_4g) as vol_4g
+    ,sum(vol_5g) as vol_5g
+    from l1_df_the_favourite_location_daily
+    group by 1,2,3,4
+    order by 2,1,3,4
+    """
+    l3 = spark.sql(sql_query)
+    return l3

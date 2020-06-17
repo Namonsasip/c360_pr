@@ -80,9 +80,14 @@ def geo_to_l3_pipeline(**kwargs):
                  "params:l3_geo_distance_top_call"
                  ],
                 "l3_geo_distance_top_call"
+            ),
+
+            # 47 The favourite location
+            node(
+                l3_the_favourite_locations_monthly,
+                ["l1_the_favourite_locations_daily"],
+                "l3_the_favourite_locations_monthly"
             )
-
-
 
         ], name="geo_to_l3_pipeline"
     )
