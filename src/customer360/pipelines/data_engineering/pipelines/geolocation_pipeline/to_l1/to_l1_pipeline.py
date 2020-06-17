@@ -87,7 +87,7 @@ def geo_to_l1_pipeline(**kwargs):
             ###Number_of_base_station###
             node(
                 node_from_config,
-                ["l0_geo_cust_cell_visit_time_daily_for_l1_geo_number_of_bs_used0",
+                ["l0_geo_cust_cell_visit_time_daily_for_l1_geo_number_of_bs_used",
                  "params:l1_geo_data_count_location_id"
                  ],
                 "l1_int_geo_cust_cell_visit_time_for_l1_geo_number_of_bs_used"
