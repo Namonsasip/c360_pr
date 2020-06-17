@@ -91,6 +91,11 @@ def dq_merger_nodes(
     :return: unioned DataFrame
     """
 
+    spark = get_spark_session()
+    print("Before change: ", spark.conf.get("spark.sql.autoBroadcastJoinThreshold"))
+    spark.conf.set("spark.sql.autoBroadcastJoinThreshold", -1)
+    print("After change: ", spark.conf.get("spark.sql.autoBroadcastJoinThreshold"))
+
     all_cols = []
     for each_df in args:
         all_cols.extend(each_df.columns)
