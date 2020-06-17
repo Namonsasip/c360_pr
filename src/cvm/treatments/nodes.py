@@ -118,6 +118,7 @@ def produce_treatments(
     treatments_propositions = get_treatments_propositions(
         parameters, treatments_history, treatments_features, users
     )
+    treatments_propositions = treatments_propositions.cache()
     treatments_history = update_history_with_treatments_propositions(
         treatments_propositions, treatments_history, parameters
     )
