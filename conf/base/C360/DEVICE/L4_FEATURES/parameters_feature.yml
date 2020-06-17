@@ -6,7 +6,8 @@ l4_device_summary_with_config_features_first_part:
           "device_most_used_handset_oppo", "device_most_used_handset_apple", "device_most_used_handset_xiaomi",
           "device_most_used_handset_others"]
     avg: ["device_number_of_phone_updates"]
-    max: ["device_high_range", "device_mid_range", "device_low_range", "device_smartphone", "device_standardphone"]
+    max: ["device_high_range", "device_mid_range", "device_low_range", "device_smartphone", "device_standardphone",
+          "devices_uses_both_sim_slot"]
   read_from: "l2"
 
 
