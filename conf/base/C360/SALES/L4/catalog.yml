@@ -10,10 +10,10 @@ l4_sales_number_and_volume_on_top_transaction_weekly:
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
 
-l2_sales_number_and_volume_main_transaction_weekly:
+l4_sales_number_and_volume_main_transaction_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/SALES/l4_features/l2_sales_number_and_volume_main_transaction_weekly/
+  filepath: base_path/SALES/l4_features/l4_sales_number_and_volume_main_transaction_weekly/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
