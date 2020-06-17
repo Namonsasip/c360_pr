@@ -13,11 +13,13 @@ conf = os.getenv("CONF", None)
 
 
 def build_loyalty_number_of_services_weekly(l1_loyalty_number_of_services_daily: DataFrame,
+                                            exception_partitions: list,
                                             l0_loyalty_priv_project: DataFrame,
                                             l0_loyalty_priv_category: DataFrame,
                                             l2_loyalty_number_of_services_weekly: dict) -> DataFrame:
     """
     :param l1_loyalty_number_of_services_daily:
+    :param exception_partitions:
     :param l0_loyalty_priv_project:
     :param l0_loyalty_priv_category:
     :param l2_loyalty_number_of_services_weekly:
@@ -28,10 +30,12 @@ def build_loyalty_number_of_services_weekly(l1_loyalty_number_of_services_daily:
                         l0_loyalty_priv_category]):
         return get_spark_empty_df()
 
-    input_df = data_non_availability_and_missing_check(df=l1_loyalty_number_of_services_daily, grouping="weekly",
-                                                       par_col="event_partition_date",
-                                                       target_table_name="l2_loyalty_number_of_services_weekly",
-                                                       missing_data_check_flg='Y')
+    input_df = data_non_availability_and_missing_check(
+        df=l1_loyalty_number_of_services_daily, grouping="weekly",
+        par_col="event_partition_date",
+        target_table_name="l2_loyalty_number_of_services_weekly",
+        missing_data_check_flg='Y',
+        exception_partitions=exception_partitions)
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -59,11 +63,13 @@ def build_loyalty_number_of_services_weekly(l1_loyalty_number_of_services_daily:
 
 
 def build_loyalty_number_of_rewards_redeemed_weekly(l1_loyalty_number_of_rewards_redeemed_daily: DataFrame,
+                                                    exception_partitions: list,
                                                     l0_loyalty_priv_project: DataFrame,
                                                     l0_loyalty_priv_category: DataFrame,
                                                     l2_loyalty_number_of_rewards_redeemed_weekly: dict) -> DataFrame:
     """
     :param l1_loyalty_number_of_rewards_redeemed_daily:
+    :param exception_partitions:
     :param l0_loyalty_priv_project:
     :param l0_loyalty_priv_category:
     :param l2_loyalty_number_of_services_weekly:
@@ -74,11 +80,13 @@ def build_loyalty_number_of_rewards_redeemed_weekly(l1_loyalty_number_of_rewards
                         l0_loyalty_priv_category]):
         return get_spark_empty_df()
 
-    input_df = data_non_availability_and_missing_check(df=l1_loyalty_number_of_rewards_redeemed_daily,
-                                                       grouping="weekly",
-                                                       par_col="event_partition_date",
-                                                       target_table_name="l2_loyalty_number_of_rewards_redeemed_weekly",
-                                                       missing_data_check_flg='Y')
+    input_df = data_non_availability_and_missing_check(
+        df=l1_loyalty_number_of_rewards_redeemed_daily,
+        grouping="weekly",
+        par_col="event_partition_date",
+        target_table_name="l2_loyalty_number_of_rewards_redeemed_weekly",
+        missing_data_check_flg='Y',
+        exception_partitions=exception_partitions)
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -108,14 +116,16 @@ def build_loyalty_number_of_rewards_redeemed_weekly(l1_loyalty_number_of_rewards
 
 
 def build_loyalty_number_of_points_spend_weekly(l1_loyalty_number_of_points_spend_daily: DataFrame,
+                                                exception_partitions: list,
                                                 l0_loyalty_priv_project: DataFrame,
                                                 l0_loyalty_priv_category: DataFrame,
                                                 l2_loyalty_number_of_rewards_redeemed_weekly: dict) -> DataFrame:
     """
-    :param l1_loyalty_number_of_rewards_redeemed_daily:
+    :param l1_loyalty_number_of_points_spend_daily:
+    :param exception_partitions:
     :param l0_loyalty_priv_project:
     :param l0_loyalty_priv_category:
-    :param l2_loyalty_number_of_services_weekly:
+    :param l2_loyalty_number_of_rewards_redeemed_weekly:
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
@@ -123,11 +133,13 @@ def build_loyalty_number_of_points_spend_weekly(l1_loyalty_number_of_points_spen
                         l0_loyalty_priv_category]):
         return get_spark_empty_df()
 
-    input_df = data_non_availability_and_missing_check(df=l1_loyalty_number_of_points_spend_daily,
-                                                       grouping="weekly",
-                                                       par_col="event_partition_date",
-                                                       target_table_name="l2_loyalty_number_of_points_spend_weekly",
-                                                       missing_data_check_flg='Y')
+    input_df = data_non_availability_and_missing_check(
+        df=l1_loyalty_number_of_points_spend_daily,
+        grouping="weekly",
+        par_col="event_partition_date",
+        target_table_name="l2_loyalty_number_of_points_spend_weekly",
+        missing_data_check_flg='Y',
+        exception_partitions=exception_partitions)
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -151,42 +163,5 @@ def build_loyalty_number_of_points_spend_weekly(l1_loyalty_number_of_points_spen
     return_df = input_df.join(proj_cat_joined, ['project_id'], how="inner")
 
     return_df = node_from_config(return_df, l2_loyalty_number_of_rewards_redeemed_weekly)
-
-    return return_df
-
-
-def build_loyalty_point_balance_statuses_weekly(
-        l1_loyalty_drm_t_aunjai_point_collection_with_customers_for_point_bal_daily: DataFrame,
-        l2_loyalty_point_balance_statuses_weekly: dict) -> DataFrame:
-    """
-    :param l1_loyalty_drm_t_aunjai_point_collection_with_customers_for_point_bal_daily:
-    :param l2_loyalty_point_balance_statuses_weekly:
-    :return:
-    """
-    ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([l1_loyalty_drm_t_aunjai_point_collection_with_customers_for_point_bal_daily]):
-        return get_spark_empty_df()
-
-    input_df = data_non_availability_and_missing_check(
-        df=l1_loyalty_drm_t_aunjai_point_collection_with_customers_for_point_bal_daily,
-        grouping="weekly",
-        par_col="event_partition_date",
-        target_table_name="l3_loyalty_point_balance_statuses_monthly",
-    )
-
-    if check_empty_dfs([input_df]):
-        return get_spark_empty_df()
-
-    ################################# End Implementing Data availability checks ###############################
-    win_input_df = Window.partitionBy("national_id_card", "access_method_num",
-                                      "subscription_identifier", "start_of_week").orderBy(
-        f.col("event_partition_date").desc())
-
-    input_df = input_df \
-        .withColumn("loyalty_register_program_points_date", f.max("loyalty_register_program_points_date").over(win_input_df)) \
-        .withColumn("rnk", f.row_number().over(win_input_df)) \
-        .filter(f.col("rnk = 1"))
-
-    return_df = node_from_config(input_df, l2_loyalty_point_balance_statuses_weekly)
 
     return return_df
