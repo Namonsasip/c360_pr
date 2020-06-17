@@ -68,29 +68,31 @@ def geo_to_l1_pipeline(**kwargs):
             ###total_distance_km###
             node(l1_geo_total_distance_km_daily,
                  ["l0_geo_cust_cell_visit_time_simple_data_daily",
-                  "params:l1_geo_total_distance_km_daily"],
+                  "params:l1_geo_total_distance_km_daily"
+                  ],
                  "l1_geo_total_distance_km_daily"
             ),
 
-            ###Traffic_fav_location###
-            # node(
-            #     L1_data_traffic_home_work_Top1_TOP2,
-            #     ["l0_geo_mst_cell_masterplan_current_for_l1_use_non_homework_features",
-            #      "l0_geo_home_work_data_for_l1_use_non_homework_features",
-            #      "l0_profile_customer_profile_ma_for_l1_use_non_homework_features",
-            #      "l0_usage_sum_data_location_daily_for_l1_use_non_homework_features"
-            #      ],
-            #     "l1_geo_use_traffic_home_work"
-            # ),
+            ##Traffic_fav_location###
+            node(
+                L1_data_traffic_home_work_Top1_TOP2,
+                ["l0_geo_mst_cell_masterplan_current_for_l1_use_non_homework_features",
+                 "l0_geo_home_work_data_for_l1_use_non_homework_features",
+                 "l0_profile_customer_profile_ma_for_l1_use_non_homework_features",
+                 "l0_usage_sum_data_location_daily_for_l1_use_non_homework_features"
+                 ],
+                "l1_geo_use_traffic_home_work"
+            ),
 
             ###Number_of_base_station###
             node(
-                node_from_config,
+                l1_geo_number_of_bs_used,
                 ["l0_geo_cust_cell_visit_time_daily_for_l1_geo_number_of_bs_used",
-                 "params:l1_geo_data_count_location_id"],
-                "l1_int_geo_cust_cell_visit_time_for_l1_geo_number_of_bs_used"
+                 "params:l1_geo_data_count_location_id"
+                 ],
+                "l1_geo_number_of_bs_used"
             ),
-
+            
             ###feature_sum_voice_location###
             node(
                 l1_call_location_home_work,

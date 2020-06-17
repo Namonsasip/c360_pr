@@ -551,7 +551,6 @@ def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
     # l1_df2 = node_from_config(l1_df1, sql)
     return l1_df1
 
-
 ## ==============================Update 2020-06-17 by Thatt529==========================================##
 
 ###distance_top_call###
@@ -593,3 +592,9 @@ def l1_geo_distance_top_call(df):
     l1_df1.show(5)
 
     return l1_df1
+
+def l1_geo_number_of_bs_used(geo_cust_cell, sql):
+    geo_cust_cell = geo_cust_cell.withColumn("event_partition_date", F.to_date(F.col('partition_date').cast(StringType()), 'yyyyMMdd'))
+    geo_cust_cell = geo_cust_cell.drop('partition_date')
+    df = node_from_config(geo_cust_cell, sql)
+    return df

@@ -122,7 +122,7 @@ l4_geo_use_traffic_home_work_weekly:
     target_layer: 'l4_weekly'
 
 ###Number_of_base_station###
-l4_number_of_base_station:
+l4_geo_number_of_base_station:
       type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
       filepath: /mnt/customer360-blob-data/C360/GEO/l4_features/geo_number_of_base_station/
       file_format: parquet

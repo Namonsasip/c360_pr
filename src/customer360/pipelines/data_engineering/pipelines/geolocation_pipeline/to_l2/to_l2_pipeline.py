@@ -55,10 +55,11 @@ def geo_to_l2_pipeline(**kwargs):
             ###Number_of_base_station###
             node(
                 l2_geo_data_count_location_weekly,
-                ["l1_int_geo_cust_cell_visit_time_for_l1_geo_number_of_bs_used",
-                 "params:l2_geo_data_count_location_weekly"],
-                "l2_geo_data_count_location_weekly"
-            ),
+                ["l1_geo_number_of_bs_used",
+                 "params:l2_geo_number_of_base_station_weekly"
+                 ],
+                "l2_geo_number_of_base_station_weekly"
+            )
 
             ###feature_sum_voice_location###
             node(

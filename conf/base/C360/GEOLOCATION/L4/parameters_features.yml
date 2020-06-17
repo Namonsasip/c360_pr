@@ -98,13 +98,13 @@ l4_geo_use_traffic_home_work_weekly:
   read_from: "l2"
 
 ###Number_of_base_station###
-l4_number_of_base_station:
-  partition_by: ["imsi"]
+l4_geo_number_of_base_station:
+  partition_by: ["imsi","start_of_week"]
   feature_list:
-    avg: ["count_location","count_dist_location","count_cell_id"]
-    max: ["count_location","count_dist_location","count_cell_id"]
-    min: ["count_location","count_dist_location","count_cell_id"]
-    sum: ["count_location","count_dist_location","count_cell_id"]
+    avg: ["sum_count_location_id","sum_count_distinct_location_id","sum_count_cell_id"]
+    max: ["sum_count_location_id","sum_count_distinct_location_id","sum_count_cell_id"]
+    min: ["sum_count_location_id","sum_count_distinct_location_id","sum_count_cell_id"]
+    sum: ["sum_count_location_id","sum_count_distinct_location_id","sum_count_cell_id"]
   read_from: "l2"
 
 ###feature_sum_voice_location###

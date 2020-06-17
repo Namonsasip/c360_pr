@@ -54,12 +54,12 @@ l2_geo_use_traffic_home_work_weekly:
   granularity: "imsi,start_of_week"
 
 ###Number_of_base_station###
-l2_geo_data_count_location_weekly:
+l2_geo_number_of_base_station_weekly:
   where_clause: ""
   feature_list:
-    sum_count_location_id: "sum(sum_count_location_id)"
-    sum_count_distinct_location_id: "sum(sum_count_distinct_location_id)"
-    sum_count_cell_id: "sum(sum_count_cell_id)"
+    sum_count_location_id: "sum(data_count_location_id)"
+    sum_count_distinct_location_id: "sum(data_count_distinct_location_id)"
+    sum_count_cell_id: "sum(data_count_cell_id)"
   granularity: "imsi,start_of_week"
 
 ###feature_sum_voice_location###
