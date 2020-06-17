@@ -1,4 +1,4 @@
-import os
+import os, logging
 
 import pyspark.sql.functions as f
 from pyspark.sql import DataFrame
@@ -47,7 +47,13 @@ def loyalty_number_of_services_for_each_category(customer_prof: DataFrame
 
     drop_cols = ["event_partition_date", "start_of_week", "start_of_month"]
 
-    input_df = input_df.filter(f.col("event_partition_date") <= min_value).drop(*drop_cols)
+    input_df = input_df.filter(f.col("event_partition_date") <= min_value).drop(*drop_cols)\
+                       .filter(f.col("response_date").isNotNull())
+
+    # some business level filters
+    logging.info("Applying Business Level Filters")
+    input_df = input_df.where("upper(group_project) = 'PRIVILEGE'")
+
     customer_prof = customer_prof.filter(f.col("event_partition_date") <= min_value)
 
     if check_empty_dfs([input_df, customer_prof]):
@@ -60,13 +66,13 @@ def loyalty_number_of_services_for_each_category(customer_prof: DataFrame
                      "start_of_week", "start_of_month"]
     customer_prof = customer_prof.select(customer_cols)
 
-    input_df = input_df.where("upper(group_project) = 'PRIVILEGE'") \
+    selective_df = input_df.where("upper(group_project) = 'PRIVILEGE'") \
         .select(f.col("mobile_no").alias("access_method_num"), "project_id", "response_date")
 
-    input_df = add_start_of_week_and_month(input_df, "response_date") \
+    dated_df = add_start_of_week_and_month(input_df=selective_df, date_column="response_date") \
         .withColumnRenamed("response_date", "loyalty_privilige_registered_date")
 
-    return_df = customer_prof.join(input_df, join_key)
+    return_df = customer_prof.join(dated_df, join_key)
 
     return return_df
 
@@ -127,7 +133,7 @@ def loyalty_number_of_points_spend_for_each_category(customer_prof: DataFrame,
     input_df = input_df.withColumn("filtered_date",
                                    f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd')) \
         .filter(f.col("tran_date").isNotNull()) \
-        .filter(f.col("filtered_date") == f.to_date(f.col("tra_date")))
+        .filter(f.col("filtered_date") == f.to_date(f.col("tran_date")))
 
     customer_prof = data_non_availability_and_missing_check(df=customer_prof, grouping="daily",
                                                             par_col="event_partition_date",
