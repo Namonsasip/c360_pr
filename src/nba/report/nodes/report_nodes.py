@@ -115,8 +115,10 @@ def create_input_data_for_reporting_kpis(
         "target_group",
         "created_date as control_group_created_date",
     )
+    # Only use the latest profile data
+    max_ddate = dm07_sub_clnt_info.agg({"ddate": "max"}).collect()[0][0].strftime("%Y-%m-%d")
     dm07_sub_clnt_info = dm07_sub_clnt_info.where(
-        "ddate = date('2020-03-31') AND charge_type = 'Pre-paid'"
+        "ddate = date('" + max_ddate + "') AND charge_type = 'Pre-paid'"
     ).selectExpr(
         "analytic_id",
         "date(activation_date) as register_date",
@@ -307,7 +309,7 @@ def node_reporting_kpis(
             )
         )
     for col in columns_to_aggregate:
-        df_reporting_kpis = df_reporting_kpis.drop(col)
+        df_reporting_kpis = df_reporting_kpis.withColumnRenamed(col, col + "_1_day")
     # This will eliminate the extra auxiliary dates we loaded for window aggregation,
     # Just leaving the data that is complete
     df_reporting_kpis = df_reporting_kpis.filter(
@@ -493,7 +495,9 @@ def create_use_case_view_report(
                 )
             )
         for col in columns_to_aggregate:
-            df_campaign_aggregate_input = df_campaign_aggregate_input.drop(col)
+            df_campaign_aggregate_input = df_campaign_aggregate_input.withColumnRenamed(
+                col, col + "_1_day"
+            )
         # Filter only the days for which we calculate report
         reporting_kpis_present = reporting_kpis.filter(F.col("join_date") == day)
 
@@ -847,28 +851,26 @@ ON f_no.campaign_child_code = main.campaign_child_code"""
 
 
 def create_general_marketing_performance_report(
-    use_case_campaign_mapping: DataFrame,
-    cvm_prepaid_customer_groups: DataFrame,
-    campaign_response_input_table: DataFrame,
     reporting_kpis: DataFrame,
-    reporting_kpis_input: DataFrame,
     distinct_aggregate_campaign_feature_tbl: DataFrame,
-    day_list: List[str],
+    l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
+    prepaid_no_activity_daily: DataFrame,
     aggregate_period: List[int],
     dormant_days_agg_periods: List[int],
+    day,
 ) -> DataFrame:
     spark = get_spark_session()
-    prepaid_no_activity_daily = catalog.load("prepaid_no_activity_daily")
-    l0_campaign_tracking_contact_list_pre_full_load = catalog.load(
-        "l0_campaign_tracking_contact_list_pre_full_load"
-    )
-    distinct_aggregate_campaign_feature_tbl = catalog.load(
-        "distinct_aggregate_campaign_feature_tbl"
-    )
-    reporting_kpis = catalog.load("reporting_kpis")
-    aggregate_period = [7, 30]
-    dormant_days_agg_periods = [5, 7, 14, 30, 45, 60, 90]
-    day = "2020-04-28"
+    # prepaid_no_activity_daily = catalog.load("prepaid_no_activity_daily")
+    # l0_campaign_tracking_contact_list_pre_full_load = catalog.load(
+    #     "l0_campaign_tracking_contact_list_pre_full_load"
+    # )
+    # distinct_aggregate_campaign_feature_tbl = catalog.load(
+    #     "distinct_aggregate_campaign_feature_tbl"
+    # )
+    # reporting_kpis = catalog.load("reporting_kpis")
+    # aggregate_period = [7, 30]
+    # dormant_days_agg_periods = [5, 7, 14, 30, 45, 60, 90]
+    # day = "2020-04-28"
 
     start_day = datetime.date(datetime.strptime(day, "%Y-%m-%d")) - timedelta(90)
     start_day_data = datetime.date(datetime.strptime(day, "%Y-%m-%d")) - timedelta(100)
@@ -1134,11 +1136,11 @@ ON f_no.campaign_child_code = main.campaign_child_code"""
 
     spine_table = spine_table.join(total_sub_last_week, ["join_date"], "left")
 
-    spine_table.repartition(1).write.format("com.databricks.spark.csv").option(
-        "header", "true"
-    ).save(
-        "/mnt/data-exploration-blob/ds-storage/users/thansiy/general_overview_report_20200508_6"
-    )
+    # spine_table.repartition(1).write.format("com.databricks.spark.csv").option(
+    #     "header", "true"
+    # ).save(
+    #     "/mnt/data-exploration-blob/ds-storage/users/thansiy/general_overview_report_20200508_6"
+    # )
     return spine_table
 
 
