@@ -116,7 +116,9 @@ def create_input_data_for_reporting_kpis(
         "created_date as control_group_created_date",
     )
     # Only use the latest profile data
-    max_ddate = dm07_sub_clnt_info.agg({"ddate": "max"}).collect()[0][0].strftime("%Y-%m-%d")
+    max_ddate = (
+        dm07_sub_clnt_info.agg({"ddate": "max"}).collect()[0][0].strftime("%Y-%m-%d")
+    )
     dm07_sub_clnt_info = dm07_sub_clnt_info.where(
         "ddate = date('" + max_ddate + "') AND charge_type = 'Pre-paid'"
     ).selectExpr(
@@ -1296,16 +1298,534 @@ def store_historical_usecase_view_report(use_case_view_report_table) -> DataFram
     return group_by_campaign_group_tbl
 
 
-def create_campaign_view_report_input() -> DataFrame:
-    return None
+def create_campaign_view_report_input(
+    l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
+    l0_campaign_history_master_active: DataFrame,
+    use_case_campaign_mapping: DataFrame,
+    reporting_kpis: DataFrame,
+    date_from,
+    date_to,
+) -> DataFrame:
+    l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.filter(
+        F.col("contact_date").between(date_from, date_to)
+    )
+    # Select every campaign by using latest information we has
+    # TODO Modify to join campaign master with campaign transaction based on master date
+    # TODO Set re-run process in case master table might be delay
+    l0_campaign_history_master_active_present = l0_campaign_history_master_active.groupby(
+        "child_code"
+    ).agg(
+        F.max("month_id").alias("month_id")
+    )
+    l0_campaign_history_master_active = l0_campaign_history_master_active.join(
+        l0_campaign_history_master_active_present, ["child_code", "month_id"], "inner"
+    )
+    # only select relavant columns for report
+    # TODO in the future more column might be use as the business required
+    l0_campaign_history_master_active = l0_campaign_history_master_active.selectExpr(
+        "child_code as campaign_child_code",
+        "campaign_type",
+        "campaign_sub_type",
+        "campaign_category",
+        "offer_category",
+        "offer_type",
+        "effort_condition",
+    )
+    l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.selectExpr(
+        "subscription_identifier",
+        "register_date",
+        "campaign_type as campaign_treatment_type",
+        "campaign_group",
+        "response_type",
+        "campaign_channel",
+        "campaign_child_code",
+        "campaign_name",
+        "contact_date",
+        "contact_control_group",
+        "response",
+        "response_date",
+    )
+    # Joining campaign transaction with Campaign Master table
+    l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.join(
+        l0_campaign_history_master_active, ["campaign_child_code"], "left"
+    )
+    # Transform response Y/N into integer value
+    l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.withColumn(
+        "response_integer", F.when(F.col("response") == "Y", 1).otherwise(0)
+    )
+    # Joining with CHURN AND ARD usecase Campaign Mapping
+    l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.join(
+        use_case_campaign_mapping, ["campaign_child_code"], "left"
+    )
+
+    reporting_kpis = reporting_kpis.drop("timestamp",)
+    reporting_kpis = reporting_kpis.withColumnRenamed("join_date", "contact_date")
+
+    ######## Create campaign view report input data
+    # This part of code is computationally expensive,
+    # required atleast 15 Nodes of Standard_E16s_v3 to run the data for 1 months
+    # Which mean This part made the whole function
+    # Require to be optimize in daily process by limiting the number of day to re-run/update
+
+    # Currently, We define that revenue after feature is calculate after 4 days of campaign invitation (Campaign period)
+    # Since Reporting KPIs already calculate revenue feature for the 1D(Today) 7D(Last 7D include today) and 30D
+    # So we could join by specific date and use them right away
+    # Example in case of Revenue 7D features we will add 10 day to the contact date
+    # So if the customer was contact on 1st Jun we are taking feature of 11sh Jun to be join
+    # Hence Revenue 7D features of 11th Jun calculate from 5th 6th 7th 8th 9th 10th 11st Jun
+
+    reporting_kpis_before = reporting_kpis.selectExpr(
+        "subscription_identifier",
+        "register_date",
+        "contact_date",
+        "target_group as use_case_control_group",
+        "ontop_data_number_of_transaction_1_day as ontop_data_number_of_transaction_1_day_before",
+        "ontop_data_total_net_tariff_1_day as ontop_data_total_net_tariff_1_day_before",
+        "ontop_voice_number_of_transaction_1_day as ontop_voice_number_of_transaction_1_day_before",
+        "ontop_voice_total_net_tariff_1_day as ontop_voice_total_net_tariff_1_day_before",
+        "all_ppu_charge_1_day as all_ppu_charge_1_day_before",
+        "top_up_value_1_day as top_up_value_1_day_before",
+        "total_revenue_1_day as total_revenue_1_day_before",
+        "total_number_ontop_purchase_1_day as total_number_ontop_purchase_1_day_before",
+        "CASE WHEN no_activity_n_days >= 5 THEN 1 ELSE 0 END as dormant_5_day_1d_before",
+        "CASE WHEN no_activity_n_days >= 7 THEN 1 ELSE 0 END as dormant_7_day_1d_before",
+        "CASE WHEN no_activity_n_days >= 14 THEN 1 ELSE 0 END as dormant_14_day_1d_before",
+        "CASE WHEN no_activity_n_days >= 30 THEN 1 ELSE 0 END as dormant_30_day_1d_before",
+        "CASE WHEN no_activity_n_days >= 60 THEN 1 ELSE 0 END as dormant_60_day_1d_before",
+        "CASE WHEN no_activity_n_days >= 90 THEN 1 ELSE 0    END as dormant_90_day_1d_before",
+        "ontop_data_number_of_transaction_7_day as ontop_data_number_of_transaction_7_day_before",
+        "ontop_data_total_net_tariff_7_day as ontop_data_total_net_tariff_7_day_before",
+        "ontop_voice_number_of_transaction_7_day as ontop_voice_number_of_transaction_7_day_before",
+        "ontop_voice_total_net_tariff_7_day as ontop_voice_total_net_tariff_7_day_before",
+        "all_ppu_charge_7_day as all_ppu_charge_7_day_before",
+        "top_up_value_7_day as top_up_value_7_day_before",
+        "total_revenue_7_day as total_revenue_7_day_before",
+        "total_number_ontop_purchase_7_day as total_number_ontop_purchase_7_day_before",
+        "ontop_data_number_of_transaction_30_day as ontop_data_number_of_transaction_30_day_before",
+        "ontop_data_total_net_tariff_30_day as ontop_data_total_net_tariff_30_day_before",
+        "ontop_voice_number_of_transaction_30_day as ontop_voice_number_of_transaction_30_day_before",
+        "ontop_voice_total_net_tariff_30_day as ontop_voice_total_net_tariff_30_day_before",
+        "all_ppu_charge_30_day as all_ppu_charge_30_day_before",
+        "top_up_value_30_day as top_up_value_30_day_before",
+        "total_revenue_30_day as total_revenue_30_day_before",
+        "total_number_ontop_purchase_30_day as total_number_ontop_purchase_30_day_before",
+    )
+
+    reporting_kpis_7d_before = reporting_kpis.selectExpr(
+        "subscription_identifier",
+        "register_date",
+        "date_add(contact_date,-10) as contact_date",
+        "CASE WHEN no_activity_n_days >= 5 THEN 1 ELSE 0 END as dormant_5_day_7d_before",
+        "CASE WHEN no_activity_n_days >= 7 THEN 1 ELSE 0 END as dormant_7_day_7d_before",
+        "CASE WHEN no_activity_n_days >= 14 THEN 1 ELSE 0 END as dormant_14_day_7d_before",
+        "CASE WHEN no_activity_n_days >= 30 THEN 1 ELSE 0 END as dormant_30_day_7d_before",
+        "CASE WHEN no_activity_n_days >= 60 THEN 1 ELSE 0 END as dormant_60_day_7d_before",
+        "CASE WHEN no_activity_n_days >= 90 THEN 1 ELSE 0    END as dormant_90_day_7d_before",
+    )
+    reporting_kpis_30d_before = reporting_kpis.selectExpr(
+        "subscription_identifier",
+        "register_date",
+        "date_add(contact_date,-33) as contact_date",
+        "CASE WHEN no_activity_n_days >= 5 THEN 1 ELSE 0 END as dormant_5_day_30d_before",
+        "CASE WHEN no_activity_n_days >= 7 THEN 1 ELSE 0 END as dormant_7_day_30d_before",
+        "CASE WHEN no_activity_n_days >= 14 THEN 1 ELSE 0 END as dormant_14_day_30d_before",
+        "CASE WHEN no_activity_n_days >= 30 THEN 1 ELSE 0 END as dormant_30_day_30d_before",
+        "CASE WHEN no_activity_n_days >= 60 THEN 1 ELSE 0 END as dormant_60_day_30d_before",
+        "CASE WHEN no_activity_n_days >= 90 THEN 1 ELSE 0    END as dormant_90_day_30d_before",
+    )
+    reporting_kpis_1d_after = reporting_kpis.selectExpr(
+        "subscription_identifier",
+        "register_date",
+        "date_add(contact_date,4) as contact_date",
+        "ontop_data_number_of_transaction_1_day as ontop_data_number_of_transaction_1_day_after",
+        "ontop_data_total_net_tariff_1_day as ontop_data_total_net_tariff_1_day_after",
+        "ontop_voice_number_of_transaction_1_day as ontop_voice_number_of_transaction_1_day_after",
+        "ontop_voice_total_net_tariff_1_day as ontop_voice_total_net_tariff_1_day_after",
+        "all_ppu_charge_1_day as all_ppu_charge_1_day_after",
+        "top_up_value_1_day as top_up_value_1_day_after",
+        "total_revenue_1_day as total_revenue_1_day_after",
+        "total_number_ontop_purchase_1_day as total_number_ontop_purchase_1_day_after",
+        "CASE WHEN no_activity_n_days >= 5 THEN 1 ELSE 0 END as dormant_5_day_1d_after",
+        "CASE WHEN no_activity_n_days >= 7 THEN 1 ELSE 0 END as dormant_7_day_1d_after",
+        "CASE WHEN no_activity_n_days >= 14 THEN 1 ELSE 0 END as dormant_14_day_1d_after",
+        "CASE WHEN no_activity_n_days >= 30 THEN 1 ELSE 0 END as dormant_30_day_1d_after",
+        "CASE WHEN no_activity_n_days >= 60 THEN 1 ELSE 0 END as dormant_60_day_1d_after",
+        "CASE WHEN no_activity_n_days >= 90 THEN 1 ELSE 0 END as dormant_90_day_1d_after",
+    )
+    reporting_kpis_7d_after = reporting_kpis.selectExpr(
+        "subscription_identifier",
+        "register_date",
+        "date_add(contact_date,10) as contact_date",
+        "ontop_data_number_of_transaction_7_day as ontop_data_number_of_transaction_7_day_after",
+        "ontop_data_total_net_tariff_7_day as ontop_data_total_net_tariff_7_day_after",
+        "ontop_voice_number_of_transaction_7_day as ontop_voice_number_of_transaction_7_day_after",
+        "ontop_voice_total_net_tariff_7_day as ontop_voice_total_net_tariff_7_day_after",
+        "all_ppu_charge_7_day as all_ppu_charge_7_day_after",
+        "top_up_value_7_day as top_up_value_7_day_after",
+        "total_revenue_7_day as total_revenue_7_day_after",
+        "total_number_ontop_purchase_7_day as total_number_ontop_purchase_7_day_after",
+        "CASE WHEN no_activity_n_days >= 5 THEN 1 ELSE 0 END as dormant_5_day_7d_after",
+        "CASE WHEN no_activity_n_days >= 7 THEN 1 ELSE 0 END as dormant_7_day_7d_after",
+        "CASE WHEN no_activity_n_days >= 14 THEN 1 ELSE 0 END as dormant_14_day_7d_after",
+        "CASE WHEN no_activity_n_days >= 30 THEN 1 ELSE 0 END as dormant_30_day_7d_after",
+        "CASE WHEN no_activity_n_days >= 60 THEN 1 ELSE 0 END as dormant_60_day_7d_after",
+        "CASE WHEN no_activity_n_days >= 90 THEN 1 ELSE 0 END as dormant_90_day_7d_after",
+    )
+    reporting_kpis_30d_after = reporting_kpis.selectExpr(
+        "subscription_identifier",
+        "register_date",
+        "date_add(contact_date,33) as contact_date",
+        "ontop_data_number_of_transaction_30_day as ontop_data_number_of_transaction_30_day_after",
+        "ontop_data_total_net_tariff_30_day as ontop_data_total_net_tariff_30_day_after",
+        "ontop_voice_number_of_transaction_30_day as ontop_voice_number_of_transaction_30_day_after",
+        "ontop_voice_total_net_tariff_30_day as ontop_voice_total_net_tariff_30_day_after",
+        "all_ppu_charge_30_day as all_ppu_charge_30_day_after",
+        "top_up_value_30_day as top_up_value_30_day_after",
+        "total_revenue_30_day as total_revenue_30_day_after",
+        "total_number_ontop_purchase_30_day as total_number_ontop_purchase_30_day_after",
+        "CASE WHERE no_activity_n_days >= 5 THEN 1 ELSE 0 END as dormant_5_day_30d_after",
+        "CASE WHEN no_activity_n_days >= 7 THEN 1 ELSE 0 END as dormant_7_day_30d_after",
+        "CASE WHEN no_activity_n_days >= 14 THEN 1 ELSE 0 END as dormant_14_day_30d_after",
+        "CASE WHEN no_activity_n_days >= 30 THEN 1 ELSE 0 END as dormant_30_day_30d_after",
+        "CASE WHEN no_activity_n_days >= 60 THEN 1 ELSE 0 END as dormant_60_day_30d_after",
+        "CASE WHEN no_activity_n_days >= 90 THEN 1 ELSE 0 END as dormant_90_day_30d_after",
+    )
+
+    mapping_tbl = use_case_campaign_mapping.selectExpr(
+        "campaign_project_group",
+        "campaign_child_code",
+        "target_group as defined_campaign_target_group",
+        "usecase",
+    )
+    campaign_view_report_input = l0_campaign_tracking_contact_list_pre_full_load.join(
+        reporting_kpis_1d_after,
+        ["subscription_identifier", "register_date", "contact_date"],
+        "left",
+    )
+    campaign_view_report_input = campaign_view_report_input.join(
+        reporting_kpis_7d_after,
+        ["subscription_identifier", "register_date", "contact_date"],
+        "left",
+    )
+    campaign_view_report_input = campaign_view_report_input.join(
+        reporting_kpis_30d_after,
+        ["subscription_identifier", "register_date", "contact_date"],
+        "left",
+    )
+    campaign_view_report_input = campaign_view_report_input.join(
+        reporting_kpis_before,
+        ["subscription_identifier", "register_date", "contact_date"],
+        "left",
+    )
+    campaign_view_report_input = campaign_view_report_input.join(
+        reporting_kpis_7d_before,
+        ["subscription_identifier", "register_date", "contact_date"],
+        "left",
+    )
+
+    campaign_view_report_input = campaign_view_report_input.join(
+        reporting_kpis_30d_before,
+        ["subscription_identifier", "register_date", "contact_date"],
+        "left",
+    )
+
+    campaign_view_report_input = campaign_view_report_input.join(
+        mapping_tbl, ["campaign_child_code"], "left",
+    )
+
+    return campaign_view_report_input
+
+
+def create_aggregate_campaign_view_features(
+    campaign_view_report_input: DataFrame, date_to, date_from, aggregate_period,
+) -> DataFrame:
+    spark = get_spark_session()
+    # Create all date within running period to make sure that every campaign has record
+    # for each day even if the value is 0, so that we could show in the report.
+    df_date_period = spark.sql(
+        f"SELECT sequence("
+        f"  to_date('{date_from.strftime('%Y-%m-%d')}'),"
+        f"  to_date('{date_to.strftime('%Y-%m-%d')}'), interval 1 day"
+        f") as contact_date"
+    ).withColumn("contact_date", F.explode(F.col("contact_date")))
+    columns_to_avg = [
+        # 1D Feature after (Day after End campaign period)
+        "ontop_data_number_of_transaction_1_day_after",
+        "ontop_data_total_net_tariff_1_day_after",
+        "ontop_voice_number_of_transaction_1_day_after",
+        "ontop_voice_total_net_tariff_1_day_after",
+        "all_ppu_charge_1_day_after",
+        "top_up_value_1_day_after",
+        "total_revenue_1_day_after",
+        "total_number_ontop_purchase_1_day_after",
+        # 7D feature after
+        "ontop_data_number_of_transaction_7_day_after",
+        "ontop_data_total_net_tariff_7_day_after",
+        "ontop_voice_number_of_transaction_7_day_after",
+        "ontop_voice_total_net_tariff_7_day_after",
+        "all_ppu_charge_7_day_after",
+        "top_up_value_7_day_after",
+        "total_revenue_7_day_after",
+        "total_number_ontop_purchase_7_day_after",
+        # 30D Feature after
+        "ontop_data_number_of_transaction_30_day_after",
+        "ontop_data_total_net_tariff_30_day_after",
+        "ontop_voice_number_of_transaction_30_day_after",
+        "ontop_voice_total_net_tariff_30_day_after",
+        "all_ppu_charge_30_day_after",
+        "top_up_value_30day_after",
+        "total_revenue_30_day_after",
+        "total_number_ontop_purchase_30_day_after",
+        # 1D Feature before
+        "ontop_data_number_of_transaction_1_day_before",
+        "ontop_data_total_net_tariff_1_day_before",
+        "ontop_voice_number_of_transaction_1_day_before",
+        "ontop_voice_total_net_tariff_1_day_before",
+        "all_ppu_charge_1_day_before",
+        "top_up_value_1_day_before",
+        "total_revenue_1_day_before",
+        "total_number_ontop_purchase_1_day_before",
+        # 7D Feature before
+        "ontop_data_number_of_transaction_7_day_before",
+        "ontop_data_total_net_tariff_7_day_before",
+        "ontop_voice_number_of_transaction_7_day_before",
+        "ontop_voice_total_net_tariff_7_day_before",
+        "all_ppu_charge_7_day_before",
+        "top_up_value_7_day_before",
+        "total_revenue_7_day_before",
+        "total_number_ontop_purchase_7_day_before",
+        # 30D Feature before
+        "ontop_data_number_of_transaction_30_day_before",
+        "ontop_data_total_net_tariff_30_day_before",
+        "ontop_voice_number_of_transaction_30_day_before",
+        "ontop_voice_total_net_tariff_30_day_before",
+        "all_ppu_charge_30_day_before",
+        "top_up_value_30_day_before",
+        "total_revenue_30_day_before",
+        "total_number_ontop_purchase_30_day_before",
+    ]
+    columns_to_sum = [
+        "dormant_5_day_1d_after",
+        "dormant_7_day_1d_after",
+        "dormant_14_day_1d_after",
+        "dormant_30_day_1d_after",
+        "dormant_60_day_1d_after",
+        "dormant_90_day_1d_after",
+        "dormant_5_day_7d_after",
+        "dormant_7_day_7d_after",
+        "dormant_14_day_7d_after",
+        "dormant_30_day_7d_after",
+        "dormant_60_day_7d_after",
+        "dormant_90_day_7d_after",
+        "dormant_5_day_30d_after",
+        "dormant_7_day_30d_after",
+        "dormant_14_day_30d_after",
+        "dormant_30_day_30d_after",
+        "dormant_60_day_30d_after",
+        "dormant_90_day_30d_after",
+        "dormant_5_day_1d_before",
+        "dormant_7_day_1d_before",
+        "dormant_14_day_1d_before",
+        "dormant_30_day_1d_before",
+        "dormant_60_day_1d_before",
+        "dormant_90_day_1d_before",
+        "dormant_5_day_7d_before",
+        "dormant_7_day_7d_before",
+        "dormant_14_day_7d_before",
+        "dormant_30_day_7d_before",
+        "dormant_60_day_7d_before",
+        "dormant_90_day_7d_before",
+        "dormant_5_day_30d_before",
+        "dormant_7_day_30d_before",
+        "dormant_14_day_30d_before",
+        "dormant_30_day_30d_before",
+        "dormant_60_day_30d_before",
+        "dormant_90_day_30d_before",
+    ]
+    exprs = [
+        F.count("*").alias("n_campaign_sent"),
+        F.count("response_integer").alias("n_campaign_accepted"),
+        F.countDistinct("subscription_identifier").alias("n_subscriber_targeted"),
+        F.countDistinct(
+            F.when(F.col("response_integer") == 1, F.col("subscription_identifier"))
+        ).alias("n_subscriber_accepted"),
+    ]
+    exprs.append([F.avg(x).alias(x) for x in columns_to_avg])
+    exprs.append([F.sum(x).alias(x) for x in columns_to_sum])
+    aggregate_campaign_view_features = campaign_view_report_input.groupBy(
+        [
+            "campaign_child_code",
+            "campaign_name",
+            "campaign_type",
+            "campaign_sub_type",
+            "campaign_category",
+            "offer_category",
+            "offer_type",
+            "effort_condition",
+            "campaign_treatment_type",
+            "campaign_group",
+            "response_type",
+            "campaign_channel",
+            "contact_control_group",
+            "contact_date",
+            "defined_campaign_target_group",
+            "usecase",
+        ]
+    ).agg(*exprs)
+    campaign_combination_list = (
+        aggregate_campaign_view_features.groupBy("campaign_child_code")
+        .agg(F.count("*").alias("CNT"))
+        .drop("CNT")
+    )
+    # Cross join all existing campaign with running date period
+    campaign_combination_date = campaign_combination_list.crossJoin(df_date_period)
+
+    aggregate_campaign_view_features = campaign_combination_date.join(
+        aggregate_campaign_view_features,
+        ["campaign_child_code", "contact_date"],
+        "left",
+    )
+
+    # Aggregate campaign common features
+    columns_to_aggregate = [
+        "n_campaign_sent",
+        "n_campaign_accepted",
+        "n_subscriber_targeted",
+        "n_subscriber_accepted",
+    ]
+    aggregate_campaign_view_features = aggregate_campaign_view_features.withColumn(
+        "timestamp", F.col("contact_date").astype("Timestamp").cast("long"),
+    )
+
+    for period in aggregate_period:
+        window_func = (
+            Window.partitionBy(
+                ["campaign_child_code", "contact_control_group", "usecase"]
+            )
+            .orderBy(F.col("timestamp"))
+            .rangeBetween(
+                -((period + 1) * 86400), Window.currentRow
+            )  # 86400 is the number of seconds in a day
+        )
+
+        aggregate_campaign_view_features = aggregate_campaign_view_features.select(
+            *(
+                aggregate_campaign_view_features.columns
+                + [
+                    F.sum(column).over(window_func).alias(f"{column}_{period}_day")
+                    for column in columns_to_aggregate
+                ]
+            )
+        )
+    for a in columns_to_aggregate:
+        aggregate_campaign_view_features = aggregate_campaign_view_features.withColumnRenamed(
+            a, a + "_1_day"
+        )
+    return aggregate_campaign_view_features
 
 
 def create_campaign_view_report(
-    campaign_response_input_table: DataFrame,
-    cvm_prepaid_customer_groups: DataFrame,
-    use_case_campaign_mapping: DataFrame,
-    reporting_kpis: DataFrame,
-    aggregate_period: List[int],
-    day: str,
+    aggregate_campaign_view_features: DataFrame,
+    l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
+    date_from,
+    date_to,
 ) -> DataFrame:
-    return None
+    spark = get_spark_session()
+    l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.filter(
+        F.col("contact_date").between(date_from, date_to)
+    )
+    # Only rerun campaign view report starting from date_from till date_to
+    aggregate_campaign_view_features = aggregate_campaign_view_features.filter(
+        F.col("contact_date").between(date_from, date_to)
+    )
+    campaign_child_tbl = (
+        l0_campaign_tracking_contact_list_pre_full_load.groupby(["campaign_child_code"])
+        .agg(F.count("*").alias("c"))
+        .drop("c")
+    )
+    campaign_response_yn = (
+        l0_campaign_tracking_contact_list_pre_full_load.groupby(
+            ["campaign_child_code", "response"]
+        )
+        .agg(F.count("*").alias("c"))
+        .drop("c")
+    )
+
+    campaign_response_yn.createOrReplaceTempView("campaign_response_yn")
+    campaign_child_tbl.createOrReplaceTempView("campaign_child_tbl")
+    campaign_tracking_yn = spark.sql(
+        """SELECT main.campaign_child_code,
+CASE WHEN COALESCE(f_yes.response,'empty') = 'empty' AND COALESCE(f_no.response,'empty') = 'empty' THEN 0 
+ELSE 1 END AS response_tracking_yn,
+CASE WHEN  COALESCE(f_yes.response,'empty') = 'empty' AND COALESCE(f_no.response,'empty') = 'N' THEN 1
+ELSE 0 END AS zero_response_campaign_yn,
+f_yes.response as response_y_flag,f_no.response as response_n_flag FROM 
+(SELECT campaign_child_code FROM campaign_child_tbl) main
+LEFT JOIN
+(SELECT campaign_child_code,response FROM campaign_response_yn WHERE response = 'Y') f_yes
+ON f_yes.campaign_child_code = main.campaign_child_code
+LEFT JOIN
+(SELECT campaign_child_code,response FROM campaign_response_yn WHERE response = 'N') f_no
+ON f_no.campaign_child_code = main.campaign_child_code"""
+    )
+
+    daily_cmp_table_contacted = aggregate_campaign_view_features.where(
+        "contact_control_group = 'Contact group'"
+    )
+    daily_cmp_table_control = aggregate_campaign_view_features.where(
+        "contact_control_group = 'Control group'"
+    )
+    for col in daily_cmp_table_contacted.columns:
+        if col not in (
+            "campaign_child_code",
+            "campaign_name",
+            "campaign_type",
+            "campaign_sub_type",
+            "campaign_category",
+            "offer_category",
+            "offer_type",
+            "effort_condition",
+            "campaign_treatment_type",
+            "campaign_group",
+            "response_type",
+            "campaign_channel",
+            "contact_control_group",
+            "contact_date",
+            "defined_campaign_target_group",
+            "usecase",
+        ):
+            daily_cmp_table_contacted = daily_cmp_table_contacted.withColumnRenamed(
+                col, col + "_Targeted"
+            )
+    for col in daily_cmp_table_control.columns:
+        if col not in (
+            "campaign_child_code",
+            "contact_control_group",
+            "contact_date",
+            "defined_campaign_target_group",
+            "usecase",
+        ):
+            daily_cmp_table_control = daily_cmp_table_control.withColumnRenamed(
+                col, col + "_Not_Targeted"
+            )
+
+    daily_cmp_table_contacted = daily_cmp_table_contacted.withColumnRenamed(
+        "contact_control_group", "contact_group_flag_value"
+    )
+    daily_cmp_table_control = daily_cmp_table_control.withColumnRenamed(
+        "contact_control_group", "control_group_flag_value"
+    )
+    campaign_view_report = daily_cmp_table_contacted.join(
+        daily_cmp_table_control,
+        [
+            "campaign_child_code",
+            "contact_date",
+            "defined_campaign_target_group",
+            "usecase",
+        ],
+        "left",
+    )
+    campaign_view_report = campaign_view_report.join(
+        campaign_tracking_yn, ["campaign_child_code"], "left"
+    )
+    return campaign_view_report
