@@ -68,7 +68,8 @@ def geo_to_l1_pipeline(**kwargs):
             ###total_distance_km###
             node(l1_geo_total_distance_km_daily,
                  ["l0_geo_cust_cell_visit_time_simple_data_daily",
-                  "params:l1_geo_total_distance_km_daily"],
+                  "params:l1_geo_total_distance_km_daily"
+                  ],
                  "l1_geo_total_distance_km_daily"
             ),
 
@@ -78,7 +79,7 @@ def geo_to_l1_pipeline(**kwargs):
                 ["l0_geo_mst_cell_masterplan_current_for_l1_use_non_homework_features",
                  "l0_geo_home_work_data_for_l1_use_non_homework_features",
                  "l0_profile_customer_profile_ma_for_l1_use_non_homework_features",
-                 "l0_usage_sum_data_location_daily_for_l1_use_non_homework_features",
+                 "l0_usage_sum_data_location_daily_for_l1_use_non_homework_features"
                  ],
                 "l1_geo_use_traffic_home_work"
             ),
@@ -87,7 +88,8 @@ def geo_to_l1_pipeline(**kwargs):
             node(
                 node_from_config,
                 ["l0_geo_cust_cell_visit_time_daily_for_l1_geo_number_of_bs_used0",
-                 "params:l1_geo_data_count_location_id"],
+                 "params:l1_geo_data_count_location_id"
+                 ],
                 "l1_int_geo_cust_cell_visit_time_for_l1_geo_number_of_bs_used"
             ),
 
@@ -119,7 +121,7 @@ def geo_to_l1_pipeline(**kwargs):
                 l1_geo_top3_cells_on_voice_usage,
                 ["l0_usage_sum_voice_location_daily_for_l1_geo_top3_cells_on_voice_usage",
                  "l0_geo_mst_cell_masterplan_for_l1_geo_top3_cells_on_voice_usage",
-                 "l0_profile_customer_profile_ma_for_l1_geo_top3_cells_on_voice_usage",
+                 "l0_profile_customer_profile_ma_for_l1_geo_top3_cells_on_voice_usage"
                  ],
                 "l1_geo_top3_cells_on_voice_usage"
             )
