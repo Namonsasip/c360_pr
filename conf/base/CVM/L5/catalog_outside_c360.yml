@@ -12,7 +12,7 @@ preferred_package:
 # churn data
 network_churn:
   <<: *spark_parquet
-  filepath: dbfs://mnt/customer360-blob-data/C360/NETWORK/network_pru_a_churn_sub_daily/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/NETWORK/network_pru_a_churn_sub_daily/
 
 # users target, control and bau groups
 cvm_prepaid_customer_groups:
