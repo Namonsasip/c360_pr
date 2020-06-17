@@ -78,7 +78,7 @@ def geo_to_l1_pipeline(**kwargs):
                 ["l0_geo_mst_cell_masterplan_current_for_l1_use_non_homework_features",
                  "l0_geo_home_work_data_for_l1_use_non_homework_features",
                  "l0_profile_customer_profile_ma_for_l1_use_non_homework_features",
-                 "l0_usage_sum_data_location_daily_for_l1_use_non_homework_features",
+                 "l0_usage_sum_data_location_daily_for_l1_use_non_homework_features"
                  ],
                 "l1_geo_use_traffic_home_work"
             ),
@@ -119,7 +119,7 @@ def geo_to_l1_pipeline(**kwargs):
                 l1_geo_top3_cells_on_voice_usage,
                 ["l0_usage_sum_voice_location_daily_for_l1_geo_top3_cells_on_voice_usage",
                  "l0_geo_mst_cell_masterplan_for_l1_geo_top3_cells_on_voice_usage",
-                 "l0_profile_customer_profile_ma_for_l1_geo_top3_cells_on_voice_usage",
+                 "l0_profile_customer_profile_ma_for_l1_geo_top3_cells_on_voice_usage"
                  ],
                 "l1_geo_top3_cells_on_voice_usage"
             )
