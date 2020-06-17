@@ -91,7 +91,8 @@ def geo_to_l4_pipeline(**kwargs):
             node(
                 l4_rolling_window,
                 ["l2_geo_number_of_base_station_weekly_for_l4_geo_number_of_base_station",
-                 "params:l4_geo_number_of_base_station"],
+                 "params:l4_geo_number_of_base_station"
+                 ],
                 "l4_geo_number_of_base_station"
             )
 
