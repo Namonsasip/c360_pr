@@ -114,3 +114,46 @@ def add_inactivity(
         .withColumn(new_col_name, new_col_when)
         .drop(last_action_date_col)
     )
+
+
+def add_network_churn(network_churn: DataFrame, users: DataFrame) -> DataFrame:
+    """ Adds a column with churn defined by network churn table.
+
+    Args:
+        network_churn: table with users that churned, not from C360.
+        users: table with users.
+    """
+    network_churn = (
+        network_churn.withColumn(
+            "key_date", func.date_format(func.col("day_code"), "yyyy-MM-dd")
+        )
+        .withColumn(
+            "subscription_identifier",
+            func.concat(
+                func.col("access_method_num"),
+                func.lit("-"),
+                func.date_format(func.col("register_date"), "yyyyMMdd"),
+            ),
+        )
+        .select(["churn_type", "subscription_identifier", "key_date"])
+    )
+    churns = (
+        network_churn.filter(
+            "churn_type in ('Terminate from Non PI', "
+            + " 'Terminate', 'Terminate from CT', 'CT')"
+        )
+        .drop("churn_type")
+        .withColumn("terminated", func.lit(1))
+    )
+    reactivates = (
+        network_churn.filter("churn_type == 'Reactive'")
+        .drop("churn_type")
+        .withColumn("reactive", func.lit(1))
+    )
+    users = (
+        users.join(churns, on=["subscription_identifier", "key_date"], how="left")
+        .withColumn("terminated", func.coalesce(func.col("terminated"), func.lit(0)))
+        .join(reactivates, on=["subscription_identifier", "key_date"], how="left")
+        .withColumn("reactive", func.coalesce(func.col("reactive"), func.lit(0)))
+    )
+    return users

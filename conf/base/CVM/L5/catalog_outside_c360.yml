@@ -8,3 +8,8 @@ _spark_parquet: &spark_parquet
 preferred_package:
   <<: *spark_parquet
   filepath: dbfs:/mnt/mck_databases/prod_dataupsell/conso_package_preferences
+
+# churn data
+network_churn:
+  <<: *spark_parquet
+  filepath: dbfs://mnt/customer360-blob-data/C360/NETWORK/network_pru_a_churn_sub_daily/

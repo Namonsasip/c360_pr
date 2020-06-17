@@ -115,6 +115,7 @@ def create_kpis() -> Pipeline:
                 [
                     "users_report",
                     "users_micro_macro_only",
+                    "network_churn",
                     "l1_revenue_prepaid_pru_f_usage_multi_daily",
                     "l1_customer_profile_union_daily_feature",
                     "l4_usage_prepaid_postpaid_daily_features",

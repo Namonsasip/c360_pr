@@ -29,7 +29,12 @@ import logging
 from typing import Any, Dict
 
 from cvm.data_prep.nodes import add_macrosegments
-from cvm.src.report.kpis_build import add_arpus, add_inactivity, add_status
+from cvm.src.report.kpis_build import (
+    add_arpus,
+    add_inactivity,
+    add_network_churn,
+    add_status,
+)
 from cvm.src.utils.utils import get_today
 from cvm.treatments.nodes import prepare_microsegments
 from pyspark.sql import DataFrame
@@ -98,6 +103,7 @@ def filter_out_micro_macro(all_features: DataFrame) -> DataFrame:
 def build_daily_kpis(
     users_report: DataFrame,
     microsegments: DataFrame,
+    network_churn: DataFrame,
     reve: DataFrame,
     profile_table: DataFrame,
     usage: DataFrame,
@@ -106,6 +112,7 @@ def build_daily_kpis(
     """ Build daily kpis table.
 
     Args:
+        network_churn: table with users that churned, not from C360.
         microsegments: table with macrosegments and microsegments.
         parameters: parameters defined in parameters.yml.
         reve: table with monthly revenue. Assumes using l3 profile table.
@@ -118,6 +125,7 @@ def build_daily_kpis(
     df = add_arpus(users_report, reve, report_parameters["min_date"])
     df = add_status(df, profile_table)
     df = df.join(microsegments, on="subscription_identifier")
+    df = add_network_churn(network_churn, df)
     inactivity_lengths = report_parameters["inactivity_lengths"]
     for inactivity_length in inactivity_lengths:
         df = add_inactivity(df, usage, inactivity_length, report_parameters["min_date"])
