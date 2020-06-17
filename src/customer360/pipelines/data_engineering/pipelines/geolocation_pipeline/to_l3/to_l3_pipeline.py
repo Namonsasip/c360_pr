@@ -43,13 +43,13 @@ def geo_to_l3_pipeline(**kwargs):
             ),
 
             ###Traffic_fav_location###
-            node(
-                l3_geo_use_Share_traffic_monthly,
-                ["l3_geo_use_traffic_home_work_monthly_for_l3_geo_Share_traffic_monthly",
-                 "params:l3_geo_use_traffic_home_work_weekly"
-                 ],
-                "l3_geo_Share_traffic_monthly"
-            ),
+            # node(
+            #     l3_geo_use_Share_traffic_monthly,
+            #     ["l3_geo_use_traffic_home_work_monthly_for_l3_geo_Share_traffic_monthly",
+            #      "params:l3_geo_use_traffic_home_work_weekly"
+            #      ],
+            #     "l3_geo_Share_traffic_monthly"
+            # ),
 
             ###feature_sum_voice_location###
             node(
