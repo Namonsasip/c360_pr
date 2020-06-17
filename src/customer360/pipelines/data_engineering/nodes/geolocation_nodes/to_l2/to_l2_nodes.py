@@ -127,3 +127,32 @@ def l2_geo_top3_cells_on_voice_usage(df,sql):
     df = df.where("rnk <= 3")
 
     return df
+
+
+#27 Same favourite location for weekend and weekday
+def l2_same_favourite_location_weekend_weekday_weekly(l0_geo_cust_cell_visit_time_df):
+    ### config
+    spark = get_spark_session()
+
+
+    # Assign day_of_week to weekday or weekend
+    geo_df = l0_geo_cust_cell_visit_time_df.withColumn("start_of_week", F.to_date(F.date_trunc('week', "time_in")))\
+        .withColumn("start_of_month",F.to_date(F.date_trunc('month',"time_in")))
+    l0_geo_cust_cell_visit_time_df.createOrReplaceTempView('l0_geo_cust_cell_visit_time_df')
+
+    sql_query = """
+    select
+    imsi
+    ,start_of_week
+    ,case when dayofweek(time_in) = 2 or dayofweek(time_in) = 3 or 
+    dayofweek(time_in) = 4 or dayofweek(time_in) = 5 or dayofweek(time_in) = 6 then "weekday"
+    else "weekend"
+    end as weektype
+    ,location_id
+    ,sum(duration) as duration_sumtime
+    from geo_df
+    where imsi is not NULL
+    group by 1,2,3,4 order by 1,2,3,4,5 desc
+    """
+    l2 = spark.sql(sql_query)
+    return l2

@@ -593,8 +593,91 @@ def l1_geo_distance_top_call(df):
 
     return l1_df1
 
+
 def l1_geo_number_of_bs_used(geo_cust_cell, sql):
     geo_cust_cell = geo_cust_cell.withColumn("event_partition_date", F.to_date(F.col('partition_date').cast(StringType()), 'yyyyMMdd'))
     geo_cust_cell = geo_cust_cell.drop('partition_date')
     df = node_from_config(geo_cust_cell, sql)
     return df
+
+# Form
+# 47 l1_the_favourite_locations_daily ====================
+
+
+def l1_the_favourite_locations_daily(geo_df_masterplan, usage_df_location):
+    ### config
+    spark = get_spark_session()
+
+    ### last_date
+    geo_last_date = geo_df_masterplan.agg(F.max("partition_date")).collect()[0][0]
+
+    ### where
+    geo_df_masterplan = geo_df_masterplan.where("partition_date = '" + str(geo_last_date) + "'")
+
+    ### table view path
+    geo_df_masterplan.createOrReplaceTempView("geo_mst_cell_masterplan")
+
+    ### add partition_date
+    sum_data_location = usage_df_location.withColumn("start_of_week",
+                                                     F.to_date(F.date_trunc('week', F.col("date_id")))).withColumn(
+        "start_of_month", F.to_date(F.date_trunc('month', F.col("date_id"))))
+    sum_data_location.createOrReplaceTempView('sum_data_location')
+
+    # CreateTempView
+    geo_df_masterplan.createOrReplaceTempView('geo_df_masterplan')
+    usage_df_location.createOrReplaceTempView('usage_df_location')
+
+    sql_l1_1 = """
+    select 
+    b.mobile_no
+    ,b.date_id
+    ,mp.location_id
+    ,b.lac as lac
+    ,b.ci as ci
+    ,b.gprs_type
+    ,mp.latitude
+    ,mp.longitude
+    ,b.start_of_week
+    ,b.start_of_month
+    ,case when 
+    	dayofweek(b.date_id) = 2 
+    	or dayofweek(b.date_id) = 3 
+    	or dayofweek(b.date_id) = 4 
+    	or dayofweek(b.date_id) = 5 
+    	or dayofweek(b.date_id) = 6 
+    then 	"weekday"
+    else	"weekend"
+    end as weektype
+
+    ,sum(b.no_of_call) as all_no_of_call
+    ,sum(b.vol_downlink_kb+b.vol_uplink_kb) as all_usage_data_kb
+
+    ,case when lower(b.gprs_type) like "3g%"
+    then sum(b.vol_uplink_kb+b.vol_downlink_kb)
+    else 0
+    end 				
+    as vol_3g
+
+    ,case when lower(b.gprs_type) like "4g%"
+    then sum(b.vol_uplink_kb+b.vol_downlink_kb)
+    else 0
+    end 				
+    as vol_4g
+
+    ,case when lower(b.gprs_type) like "5g%"
+    then sum(b.vol_uplink_kb+b.vol_downlink_kb)
+    else 0
+    end 				
+    as vol_5g
+
+    from sum_data_location b  
+    left join geo_mst_cell_masterplan mp
+    on b.lac = mp.lac
+    and b.ci = mp.ci
+    where mp.location_id is not NULL
+    GROUP BY b.mobile_no,b.date_id,mp.location_id,b.lac,b.ci,b.gprs_type,weektype,mp.latitude,mp.longitude,b.start_of_week,b.start_of_month
+    order by date_id
+    """
+    l1 = spark.sql(sql_l1_1)
+    return l1
+
