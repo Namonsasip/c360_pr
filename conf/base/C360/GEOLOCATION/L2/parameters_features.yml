@@ -33,10 +33,10 @@ l2_geo_cust_subseqently_distance_weekly:
 l2_geo_total_distance_km_weekly:
   where_clause: ""
   feature_list:
-    avg_distance_km: "avg(avg_distance_km)"
-    max_distance_km: "max(max_distance_km)"
-    min_distance_km: "min(min_distance_km)"
-    sum_distance_km: "sum(sum_distance_km)"
+    avg_distance_km: "avg(total_distance_km)"
+    max_distance_km: "max(total_distance_km)"
+    min_distance_km: "min(total_distance_km)"
+    sum_distance_km: "sum(total_distance_km)"
   granularity: "imsi,start_of_week"
 
 ###Traffic_fav_location###
@@ -66,10 +66,10 @@ l2_geo_data_count_location_weekly:
 l2_geo_call_location_home_work_weekly:
   where_clause: ""
   feature_list:
-    call_count_location_home_weekday: "sum(call_count_location_home_weekday),"
-    call_count_location_work: "sum(call_count_location_work),"
-    call_count_location_top_1st: "sum(call_count_location_top_1st),"
-    call_count_location_top_2nd: "sum(call_count_location_top_2nd),"
+    call_count_location_home_weekday: "sum(call_count_location_home_weekday)"
+    call_count_location_work: "sum(call_count_location_work)"
+    call_count_location_top_1st: "sum(call_count_location_top_1st)"
+    call_count_location_top_2nd: "sum(call_count_location_top_2nd)"
   granularity: "imsi,start_of_week"
 
 ##==============================Update 2020-06-15 by Thatt529==========================================##
