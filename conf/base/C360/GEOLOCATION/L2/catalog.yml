@@ -143,7 +143,7 @@ l2_geo_number_of_base_station_weekly:
 l2_geo_number_of_base_station_weekly_for_l4_geo_number_of_base_station:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
-  filepath: /mnt/customer360-blob-data/C360/GEO/l2_features/geo_number_of_base_station/
+  filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_number_of_base_station/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'no'

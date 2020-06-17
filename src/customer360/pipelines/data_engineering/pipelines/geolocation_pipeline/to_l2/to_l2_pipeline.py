@@ -56,7 +56,8 @@ def geo_to_l2_pipeline(**kwargs):
             node(
                 l2_geo_data_count_location_weekly,
                 ["l1_geo_number_of_bs_used",
-                 "params:l2_geo_number_of_base_station_weekly"],
+                 "params:l2_geo_number_of_base_station_weekly"
+                 ],
                 "l2_geo_number_of_base_station_weekly"
             )
 
