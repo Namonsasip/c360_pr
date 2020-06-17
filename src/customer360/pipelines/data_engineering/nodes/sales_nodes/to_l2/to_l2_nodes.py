@@ -152,7 +152,9 @@ def sale_product_customer_master_main_features(sale_df: DataFrame,
     #select only main package
     sale_df = sale_df.select(sale_cols).filter("lower(offering_promotion_class) = 'main'")
     sale_df = sale_df.withColumn("start_of_week", f.to_date(f.date_trunc("week", f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd'))))
-    sale_df = sale_df.withColumnRenamed("offering_cd", "offering_code").drop("partition_date")
+    sale_df = sale_df.withColumnRenamed("offering_cd", "offering_code").drop("partition_date") \
+                    .withColumnRenamed("mobile_num","access_method_num") \
+                    .withColumnRenamed("crm_subscription_id","subscription_identifier")
 
     product_df = product_df.select(product_cols)
     product_df = product_df.withColumn("start_of_week", f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd'))
@@ -171,25 +173,25 @@ def sale_product_customer_master_main_features(sale_df: DataFrame,
     #creating name features
     master_name_features_temp = node_from_config(sale_product_master_df, name_feature_dict)
     master_name_features_temp = master_name_features_temp.withColumn("rn", expr(
-        "row_number() over(partition by start_of_week,mobile_num,crm_subscription_id order by start_of_week desc)"))
+        "row_number() over(partition by start_of_week,access_method_num,subscription_identifier order by start_of_week desc)"))
     master_name_features = master_name_features_temp.where("rn = 1")
     master_name_features = master_name_features.drop("rn")
 
-    master_sales_features_join_cols = ['start_of_week','mobile_num', 'crm_subscription_id']
+    master_sales_features_join_cols = ['start_of_week','access_method_num', 'subscription_identifier']
 
     #joining volume and name feature to create one master feature table
     master_sales_features = master_volume_features.join(master_name_features, master_sales_features_join_cols, how='left')
-# --------------------which column can join with customer profile -----------
+
     customer_cols = ['access_method_num',
                      'subscription_identifier',
                      'national_id_card',
                      'start_of_week']
 
-    cust_join_cols = ['start_of_week', 'access_method_num']
+    cust_join_cols = ['start_of_week', 'access_method_num','subscription_identifier']
 
     customer_df = customer_df.select(customer_cols)
     customer_df = customer_df.withColumn("rn", expr(
-        "row_number() over(partition by start_of_week,access_method_num order by start_of_week desc)"))
+        "row_number() over(partition by start_of_week,access_method_num,subscription_identifier order by start_of_week desc)"))
     customer_df = customer_df.where("rn = 1")
     customer_df = customer_df.drop("rn")
 

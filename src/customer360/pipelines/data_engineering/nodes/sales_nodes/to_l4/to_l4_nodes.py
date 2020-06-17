@@ -15,6 +15,7 @@ def sales_l4_rolling_window(input_df: DataFrame,
                             rolling_window_dict_first: dict,
                             rolling_window_dict_second: dict,
                             rolling_window_dict_third: dict,
+                            rolling_window_dict_fourth: dict,
                             ) -> DataFrame:
     """
     :param input_df:
@@ -46,12 +47,13 @@ def sales_l4_rolling_window(input_df: DataFrame,
     rolling_df_third = l4_rolling_window(input_df, rolling_window_dict_third)
     # rolling_df_third = rolling_df_third.filter(f.col("start_of_week") > max_date)
     # CNTX.catalog.save("l4_sales_number_and_volume_transaction_weekly_third", rolling_df_third)
-
+    rolling_df_fourth = l4_rolling_window(input_df, rolling_window_dict_fourth)
     # rolling_df_first = CNTX.catalog.load("l4_sales_number_and_volume_transaction_weekly_first")
     # rolling_df_second = CNTX.catalog.load("l4_sales_number_and_volume_transaction_weekly_second")
     # rolling_df_third = CNTX.catalog.load("l4_sales_number_and_volume_transaction_weekly_third")
 
     merged_df = rolling_df_first.join(rolling_df_second, join_key) \
-        .join(rolling_df_third, join_key)
+        .join(rolling_df_third, join_key) \
+        .join(rolling_df_fourth, join_key)
 
     return merged_df
