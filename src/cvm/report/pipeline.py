@@ -113,6 +113,7 @@ def create_kpis() -> Pipeline:
             node(
                 build_daily_kpis,
                 [
+                    "users_report",
                     "users_micro_macro_only",
                     "l1_revenue_prepaid_pru_f_usage_multi_daily",
                     "l1_customer_profile_union_daily_feature",
