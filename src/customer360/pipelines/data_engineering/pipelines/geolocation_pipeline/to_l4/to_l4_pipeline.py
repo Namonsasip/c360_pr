@@ -145,11 +145,32 @@ def geo_to_l4_pipeline(**kwargs):
 
             ##Top_3_cells_on_voice_usage###
             node(
-                l4_geo_top3_cells_on_voice_usage,
+                l4_rolling_window,
                 ["l2_geo_top3_cells_on_voice_usage",
                  "params:l4_geo_top3_cells_on_voice_usage"
                  ],
                 "l4_geo_top3_cells_on_voice_usage"
+            ),
+
+            ##==============================Update 2020-06-17 by Thatt529==========================================##
+
+            ##distance_top_call###
+            node(
+                l4_rolling_window,
+                ["l2_geo_distance_top_call",
+                 "params:l4_geo_distance_top_call"
+                 ],
+                "l4_geo_distance_top_call"
+            ),
+
+            ###Distance between nearest store and most visited store###
+            node(
+                l4_geo_range_from_most_visited,
+                ["l1_location_of_visit_ais_store_daily_for_l4_location_of_last_visit_ais_store",
+                 "l4_geo_store_close_to_home"
+                 "params:l4_geo_range_from_most_visited"
+                 ],
+                "l4_geo_range_from_most_visited"
             )
 
         ], name="geo_to_l4_pipeline"

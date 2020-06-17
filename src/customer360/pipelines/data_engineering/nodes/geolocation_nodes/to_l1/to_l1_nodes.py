@@ -3,6 +3,7 @@ from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 from pyspark.sql import types as T
 from pyspark.sql.types import *
+from pyspark.sql import functions as F
 
 from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1.to_l1_nodes import gen_max_sql
 from customer360.utilities.config_parser import node_from_config
@@ -554,6 +555,40 @@ def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
 
 ###distance_top_call###
 def l1_geo_distance_top_call(df):
+    ### config
+    spark = get_spark_session()
 
+    # create temp
+    df.createOrReplaceTempView('geo_top3_cells_on_voice_usage')
 
-    return df
+    sql_query = """
+    select
+    a.imsi
+    ,case when b.latitude is null and b.longitude is null then 0 
+      else cast((acos(cos(radians(90-a.latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.latitude))*sin(radians(90-b.latitude))*cos(radians(a.longitude - b.longitude)))*6371) as decimal(13,2)) 
+      end as top_distance_km
+    ,a.event_partition_date
+    ,a.start_of_week
+    ,a.start_of_month
+    from geo_top3_cells_on_voice_usage a
+    left join geo_top3_cells_on_voice_usage b
+    on a.imsi = b.imsi
+    and a.event_partition_date = b.event_partition_date
+    and b.rnk >= 2
+    where a.rnk = 1
+    order by 1,3,4,5
+
+    """
+    l1_df = spark.sql(sql_query)
+    l1_df1 = l1_df.groupBy("imsi", "event_partition_date", "start_of_week", "start_of_month").agg(
+        F.max("top_distance_km").alias("max_distance_top_call"), F.min("top_distance_km").alias("min_distance_top_call"),
+        F.avg("top_distance_km").alias("avg_distance_top_call"), F.when(
+            F.sqrt(F.avg(l1_df.top_distance_km * l1_df.top_distance_km) - F.pow(F.avg(l1_df.top_distance_km), F.lit(2))).cast(
+                "string") == 'NaN', 0).otherwise(
+            F.sqrt(F.avg(l1_df.top_distance_km * l1_df.top_distance_km) - F.pow(F.avg(l1_df.top_distance_km), F.lit(2)))).alias(
+            "sd_distance_top_call"), F.sum("top_distance_km").alias("sum_distance_top_call"))
+    l1_df.cache()
+    l1_df1.cache()
+    l1_df1.show(5)
+
+    return l1_df1

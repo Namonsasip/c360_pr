@@ -88,7 +88,7 @@ l4_geo_use_traffic_home_work_weekly:
 
 ###Number_of_base_station###
 l4_number_of_base_station:
-  partition_by: ["imsi","start_of_week"]
+  partition_by: ["imsi"]
   feature_list:
     avg: ["count_location","count_dist_location","count_cell_id"]
     max: ["count_location","count_dist_location","count_cell_id"]
@@ -105,7 +105,7 @@ l4_geo_call_home_work_location_weekly:
 
 ###Number of Unique Cells Used###
 l4_geo_number_unique_cell:
-  partition_by: ["event_partition_date"]
+  partition_by: ["mo"]
   feature_list:
     avg: ["durations_num"]
     max: ["durations_num"]
@@ -153,12 +153,11 @@ l4_geo_store_close_to_work:
   where_clause: ""
   feature_list:
     imsi: "imsi"
-    weekday_home_id:  "work_location_id"
-    range_from_weekday_home:  "range_from_work"
-    weekday_branch_name:  "branch"
-    weekday_branch_location_id: "branch_location_id"
+    work_id:  "work_location_id"
+    range_from_work:  "range_from_work"
+    work_branch_name:  "branch"
+    work_branch_location_id: "branch_location_id"
   granularity: ""
-
 ##==============================Update 2020-06-15 by Thatt529==========================================##
 
 ###Top_3_cells_on_voice_usage###
@@ -167,3 +166,31 @@ l4_geo_top3_cells_on_voice_usage:
   feature_list:
     sum: ["total_call"]
   read_from: "l2"
+
+
+##==============================Update 2020-06-17 by Thatt529==========================================##
+
+###distance_top_call###
+l4_geo_distance_top_call:
+  partition_by: ["imsi"]
+  feature_list:
+    avg: ["avg_distance_top_call"]
+    max: ["max_distance_top_call"]
+    min: ["min_distance_top_call"]
+    stddev: ["sd_distance_top_call"]
+    sum: ["sum_distance_top_call"]
+  read_from: "l2"
+
+
+###Distance between nearest store and most visited store###
+l4_geo_range_from_most_visited:
+  where_clause: ""
+  feature_list:
+    imsi: "imsi"
+    weekday_home_id:  "home_weekday_location_id"
+    nearest_branch_name: "near_location"
+    nearest_branch_loc_id:  "near_location_id"
+    most_visit_branch_name: "most_location"
+    most_visit_branch_id: "most_location_id"
+    range_from_near_to_most_visit: "range_diff"
+    partition_month:  "partition_month"

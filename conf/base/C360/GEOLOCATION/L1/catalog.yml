@@ -284,7 +284,7 @@ l1_geo_top3_cells_on_voice_usage:
 
 ##==============================Update 2020-06-17 by Thatt529==========================================##
 
-###Top_3_cells_on_voice_usage###
+###distance_top_call###
 l1_geo_distance_top_call:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/GEO/l1_features/geo_distance_top_call/

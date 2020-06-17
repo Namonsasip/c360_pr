@@ -92,12 +92,33 @@ l3_geo_top3_cells_on_voice_usage:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
+    partitionBy: "start_of_month"
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
   load_args:
     increment_flag: 'no'
     lookup_table_name: 'l4_geo_top3_cells_on_voice_usage'
+    read_layer: 'l3_monthly'
+    target_layer: 'l4_monthly'
+    lookback: '0'
+
+
+##==============================Update 2020-06-17 by Thatt529==========================================##
+
+###distance_top_call###
+l3_geo_distance_top_call:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l3_features/geo_distance_top_call/
+  file_format: parquet
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l4_geo_distance_top_call'
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
     lookback: '0'

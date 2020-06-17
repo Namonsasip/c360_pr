@@ -86,6 +86,17 @@ def geo_to_l2_pipeline(**kwargs):
                  "params:l2_geo_cust_subseqently_distance_weekly"
                  ],
                 "l2_geo_cust_subseqently_distance_weekly"
+            ),
+
+            ##==============================Update 2020-06-17 by Thatt529==========================================##
+
+            ##distance_top_call###
+            node(
+                node_from_config,
+                ["l1_geo_distance_top_call",
+                 "params:l2_geo_distance_top_call"
+                 ],
+                "l2_geo_distance_top_call"
             )
 
         ], name="geo_to_l2_pipeline"
