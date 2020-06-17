@@ -25,7 +25,7 @@ l0_geo_cust_cell_visit_time_for_l1_geo_area_from_ais_store_daily:
   filepath: /mnt/customer360-blob-data/C360/GEO/sample/geo_cust_cell_visit_time_daily_2/  #sample data for test
   file_format: parquet
 
-l0_geo_cust_location_visit_hr:  # New dataset for optional way, which can agg by Hour
+l0_geo_cust_location_visit_hr_for_l4_geo_work_area_center_average:  # New dataset for optional way, which can agg by Hour
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_location_visit_hr/
   file_format: parquet
