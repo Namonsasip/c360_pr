@@ -94,7 +94,7 @@ def geo_to_l4_pipeline(**kwargs):
                  "params:l4_geo_number_of_base_station"
                  ],
                 "l4_geo_number_of_base_station"
-            )
+            ),
 
             ###feature_sum_voice_location###
             node(

@@ -59,7 +59,7 @@ def geo_to_l2_pipeline(**kwargs):
                  "params:l2_geo_number_of_base_station_weekly"
                  ],
                 "l2_geo_number_of_base_station_weekly"
-            )
+            ),
 
             ###feature_sum_voice_location###
             node(
