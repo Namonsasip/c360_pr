@@ -79,13 +79,13 @@ def geo_to_l4_pipeline(**kwargs):
             ),
 
             ###Traffic_fav_location###
-            node(
-                l4_Share_traffic,
-                ["l2_geo_area_from_competitor_store_weekly_for_l4_geo_area_from_competitor_store",
-                 "params:l4_area_from_competitor_store"
-                 ],
-                "l4_geo_use_traffic_home_work_weekly"
-            ),
+            # node(
+            #     l4_Share_traffic,
+            #     ["l2_geo_area_from_competitor_store_weekly_for_l4_geo_area_from_competitor_store",
+            #      "params:l4_area_from_competitor_store"
+            #      ],
+            #     "l4_geo_use_traffic_home_work_weekly"
+            # ),
 
             ###Number_of_base_station###
             node(
@@ -150,6 +150,15 @@ def geo_to_l4_pipeline(**kwargs):
                  "params:l4_geo_top3_cells_on_voice_usage"
                  ],
                 "l4_geo_top3_cells_on_voice_usage"
+            ),
+
+            node(
+                l4_geo_work_area_center_average,
+                ["l0_geo_cust_location_visit_hr_for_l4_geo_work_area_center_average",
+                 "l4_geo_home_work_location_id_for_l4_geo_work_area_center_average",
+                 "params:l4_geo_work_area_center_average"
+                 ],
+                "l4_geo_work_area_center_average"
             )
 
         ], name="geo_to_l4_pipeline"
