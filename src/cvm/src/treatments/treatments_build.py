@@ -142,6 +142,7 @@ def get_treatments_propositions(
                 "use_case",
                 "campaign_code",
                 "date",
+                "treatment_name",
             ]
         )
     )
