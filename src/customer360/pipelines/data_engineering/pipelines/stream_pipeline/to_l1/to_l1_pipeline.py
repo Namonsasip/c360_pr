@@ -41,6 +41,18 @@ from customer360.pipelines.data_engineering.nodes.stream_nodes.to_l1.to_l1_nodes
 def streaming_to_l1_intermediate_pipeline(**kwargs):
     return Pipeline(
         [
+
+            node(
+                dac_for_streaming_to_l1_intermediate_pipeline,
+                ["l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_content_type_features_and_int_l1_streaming_tv_channel_features",
+                 "params:int_l1_streaming_content_type_features_tbl",
+                 "params:int_l1_streaming_tv_channel_features_tbl",
+                 "l1_customer_profile_union_daily_feature_for_int_l1_streaming_content_type_features_and_int_l1_streaming_tv_channel_features"],
+                ["int_l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_content_type_features",
+                 "int_l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_tv_channel_features",
+                 "l1_customer_profile_union_daily_feature_for_int_l1_streaming_content_type_features_and_int_l1_streaming_tv_channel_features"]
+            ),
+
             # node(
             #     l1_massive_processing,
             #     ["l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_content_type_features",
@@ -48,14 +60,16 @@ def streaming_to_l1_intermediate_pipeline(**kwargs):
             #      "l1_customer_profile_union_daily_feature_for_int_l1_streaming_content_type_features"],
             #     "int_l1_streaming_content_type_features"
             # ),
-            node(
-                dac_for_streaming_to_l1_intermediate_pipeline,
-                ["l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_content_type_features",
-                 "l1_customer_profile_union_daily_feature_for_int_l1_streaming_content_type_features",
-                 "params:int_l1_streaming_content_type_features_tbl"],
-                ["int_l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_content_type_features",
-                 "int_l1_customer_profile_union_daily_feature_for_int_l1_streaming_content_type_features"]
-            ),
+
+            # COMMENTED OUT BELOW:
+            # node(
+            #     dac_for_streaming_to_l1_intermediate_pipeline,
+            #     ["l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_content_type_features",
+            #      "l1_customer_profile_union_daily_feature_for_int_l1_streaming_content_type_features",
+            #      "params:int_l1_streaming_content_type_features_tbl"],
+            #     ["int_l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_content_type_features",
+            #      "int_l1_customer_profile_union_daily_feature_for_int_l1_streaming_content_type_features"]
+            # ),
             node(
                 l1_massive_processing,
                 ["int_l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_content_type_features",
@@ -72,14 +86,15 @@ def streaming_to_l1_intermediate_pipeline(**kwargs):
             # #     "int_l1_streaming_tv_channel_features"
             # # ),
 
-            node(
-                dac_for_streaming_to_l1_intermediate_pipeline,
-                ["l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_tv_channel_features",
-                 "l1_customer_profile_union_daily_feature_for_int_l1_streaming_tv_channel_features",
-                 "params:int_l1_streaming_tv_channel_features_tbl"],
-                ["int_l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_tv_channel_features",
-                 "int_l1_customer_profile_union_daily_feature_for_int_l1_streaming_tv_channel_features"]
-            ),
+            # COMMENTED OUT BELOW:
+            # node(
+            #     dac_for_streaming_to_l1_intermediate_pipeline,
+            #     ["l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_tv_channel_features",
+            #      "l1_customer_profile_union_daily_feature_for_int_l1_streaming_tv_channel_features",
+            #      "params:int_l1_streaming_tv_channel_features_tbl"],
+            #     ["int_l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_tv_channel_features",
+            #      "int_l1_customer_profile_union_daily_feature_for_int_l1_streaming_tv_channel_features"]
+            # ),
             node(
                 l1_massive_processing,
                 ["int_l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_tv_channel_features",
