@@ -75,7 +75,7 @@ def generate_treatments(sample_type: str) -> Pipeline:
             node(
                 deploy_treatments,
                 ["treatments_chosen", "parameters"],
-                ["treatments_deployed"],
+                "treatments_deployed",
                 name="deploy_treatments",
             ),
             node(
