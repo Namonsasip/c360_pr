@@ -67,7 +67,7 @@ l4_geo_home_weekday_city_citizens:
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l2_weekly'
-    target_layer: 'l4_weekly''
+    target_layer: 'l4_weekly'
 
 ##==============================Update 2020-06-12 by Thatt529==========================================##
 
