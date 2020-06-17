@@ -144,9 +144,11 @@ def deploy_treatments(
             deploy_contact(campaign_table_prepared, parameters, use_case)
     else:
         logging.info("Sending treatments skipped")
+    # return True to tell kedro that this node has to happen before copying the logs
+    return True
 
 
-def copy_logs_to_dbfs(parameters: Dict[str, Any],):
+def copy_logs_to_dbfs(parameters: Dict[str, Any], treatments_deployed: bool):
     """ Databricks is unable to write logs to dbfs, because random writes are not
     supported. Because of that logs are saved in logs/ folder first and then this node
     copies the logs to persistent dbfs path.

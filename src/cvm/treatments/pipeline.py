@@ -75,12 +75,12 @@ def generate_treatments(sample_type: str) -> Pipeline:
             node(
                 deploy_treatments,
                 ["treatments_chosen", "parameters"],
-                None,
+                ["treatments_deployed"],
                 name="deploy_treatments",
             ),
             node(
                 func=copy_logs_to_dbfs,
-                inputs=["parameters"],
+                inputs=["parameters", "treatments_deployed"],
                 outputs=None,
                 name="copy_logs",
             ),
