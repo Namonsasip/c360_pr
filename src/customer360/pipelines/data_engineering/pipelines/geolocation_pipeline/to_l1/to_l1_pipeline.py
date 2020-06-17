@@ -119,7 +119,18 @@ def geo_to_l1_pipeline(**kwargs):
                 l1_geo_top3_cells_on_voice_usage,
                 ["l0_usage_sum_voice_location_daily_for_l1_geo_top3_cells_on_voice_usage",
                  "l0_geo_mst_cell_masterplan_for_l1_geo_top3_cells_on_voice_usage",
-                 "l0_profile_customer_profile_ma_for_l1_geo_top3_cells_on_voice_usage",
+                 "l0_profile_customer_profile_ma_for_l1_geo_top3_cells_on_voice_usage"
+                 ],
+                "l1_geo_top3_cells_on_voice_usage"
+            ),
+
+            ##==============================Update 2020-06-17 by Thatt529==========================================##
+
+            ##distance_top_call###
+            node(
+                l1_geo_distance_top_call,
+                ["l1_geo_top3_cells_on_voice_usage",
+                 ""
                  ],
                 "l1_geo_top3_cells_on_voice_usage"
             )
