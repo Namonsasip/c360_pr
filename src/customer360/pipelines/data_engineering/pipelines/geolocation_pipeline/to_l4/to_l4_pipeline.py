@@ -90,9 +90,9 @@ def geo_to_l4_pipeline(**kwargs):
             ###Number_of_base_station###
             node(
                 l4_rolling_window,
-                ["l2_geo_cust_cell_visit_time_weekly_for_l4_geo_cust_cell_visit_time",
-                 "params:l4_number_of_base_station"],
-                "l4_number_of_base_station"
+                ["l2_geo_number_of_base_station_weekly_for_l4_geo_number_of_base_station",
+                 "params:l4_geo_number_of_base_station"],
+                "l4_geo_number_of_base_station"
             )
 
             # ###feature_sum_voice_location###

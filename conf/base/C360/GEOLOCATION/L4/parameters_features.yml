@@ -98,7 +98,7 @@ l4_geo_use_traffic_home_work_weekly:
   read_from: "l2"
 
 ###Number_of_base_station###
-l4_number_of_base_station:
+l4_geo_number_of_base_station:
   partition_by: ["imsi","start_of_week"]
   feature_list:
     avg: ["count_location","count_dist_location","count_cell_id"]

@@ -93,8 +93,8 @@ def   l2_geo_use_traffic_home_work_weekly(df,sql):
 
 ###Number_of_base_station###
 def l2_geo_data_count_location_weekly(L1_DF,sql):
-    L2_DF = L1_DF.withColumn("START_OF_WEEK", F.to_date(F.date_trunc('WEEK', "EVENT_PARTITION_DATE"))).drop(
-        'EVENT_PARTITION_DATE')
+    L2_DF = L1_DF.withColumn("START_OF_WEEK", F.to_date(F.date_trunc('WEEK', "event_partition_date"))).drop(
+        'event_partition_date')
     df = node_from_config(L2_DF, sql)
     return df
 
