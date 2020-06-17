@@ -62,1196 +62,1072 @@
 #         variants
 #     `conditions`: sql-like conditions used to filter users before assigning rules
 treatment_rules:
-  a1_internal_churn_treatment:
-    order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
-    rules:
-      00a07a91-f728-49bd-900d-9eb54bd4a988:
-        campaign_code: 200612-14
-        conditions:
-        - churn_microsegment in ('positive_arpu_m7','positive_arpu_m8','positive_arpu_m9','positive_arpu_m10')
-        - internal_churner_2_4_6 == 1
-        limit_per_code: 100
-        variant: 1
-      0cd65248-1fe4-4d0e-a2a9-37b02d341d69:
-        campaign_code: 200612-12
-        conditions:
-        - churn_microsegment in ('positive_arpu_m4','positive_arpu_m5','positive_arpu_m6')
-        - internal_churner_2_4_6 == 1
-        limit_per_code: 100
-        variant: 1
-      9ed0c400-19fb-41d6-a2c5-2e05ae18ff37:
-        campaign_code: 200612-14
-        conditions:
-        - churn_microsegment in ('zero_arpu_m1','zero_arpu_m2','zero_arpu_m3','zero_arpu_m4','zero_arpu_m5','zero_arpu_m6','zero_arpu_m7','zero_arpu_m8')
-        - internal_churner_2_4_6 == 1
-        limit_per_code: 100
-        variant: 1
-      bc711bfb-95e8-4538-bee4-a7f48dd20d08:
-        campaign_code: 200612-10
-        conditions:
-        - churn_microsegment in ('positive_arpu_m1','positive_arpu_m2','positive_arpu_m3')
-        - internal_churner_2_4_6 == 1
-        limit_per_code: 100
-        variant: 1
-    treatment_name: a1_internal_churn_treatment
-    treatment_size: 300
-    use_case: churn
-  a2_call_centre_treatment:
-    order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
-    rules:
-      9fa991b1-b0f7-46f9-a849-f9b752caeba7:
-        campaign_code: 200612-19
-        conditions:
-        - call_centre_persona == 'anomaly_detected'
-        limit_per_code: 100
-        variant: 1
-      edfca1a3-c899-4efb-8068-9d3ac603ae6e:
-        campaign_code: 200612-16
-        conditions:
-        - call_centre_persona == 'problem_resolved_or_follow_up'
-        limit_per_code: 100
-        variant: 1
-      f95100b5-c6eb-4d4b-828f-ec6b64ad6d2f:
-        campaign_code: 200612-16
-        conditions:
-        - call_centre_persona == 'unsatisfied'
-        limit_per_code: 100
-        variant: 1
-    treatment_name: a2_call_centre_treatment
-    treatment_size: 300
-    use_case: churn
-  test_A_B_churn_positive_arpu_m6:
-    order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
-    rules:
-      18c815d2-4ff8-4186-8c73-fd314069f66f:
-        campaign_code: 200505-36
-        conditions:
-        - churn_microsegment == 'positive_arpu_m6'
-        limit_per_code: 500
-        variant: 1
-      4befe41d-8cf0-4959-8278-2392ce75dc04:
-        campaign_code: 200505-37
-        conditions:
-        - churn_microsegment == 'positive_arpu_m6'
-        limit_per_code: 500
-        variant: 2
-      b7702cee-e9fa-443c-bb77-67a98f95c629:
-        campaign_code: 200407-28
-        conditions:
-        - churn_microsegment == 'positive_arpu_m6'
-        limit_per_code: 500
-        variant: 3
-    treatment_name: test_A_B_churn_positive_arpu_m6
-    treatment_size: 500
-    use_case: churn
-  test_A_B_churn_positive_arpu_m7:
-    order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
-    rules:
-      6f962212-bcfd-410d-a972-19f8a7950353:
-        campaign_code: 200505-39
-        conditions:
-        - churn_microsegment == 'positive_arpu_m7'
-        limit_per_code: 500
-        variant: 2
-      f8b911d1-61ee-4996-80c1-764c71b36eaa:
-        campaign_code: 200505-38
-        conditions:
-        - churn_microsegment == 'positive_arpu_m7'
-        limit_per_code: 500
-        variant: 1
-      fae01f6f-e711-4501-b9ed-5db53f20bcd1:
-        campaign_code: 200407-29
-        conditions:
-        - churn_microsegment == 'positive_arpu_m7'
-        limit_per_code: 500
-        variant: 3
-    treatment_name: test_A_B_churn_positive_arpu_m7
-    treatment_size: 500
-    use_case: churn
-  test_A_B_churn_positive_arpu_m8:
-    order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
-    rules:
-      0e2554b6-7c7f-421c-af57-4114b8d0153e:
-        campaign_code: 200505-40
-        conditions:
-        - churn_microsegment == 'positive_arpu_m8'
-        limit_per_code: 500
-        variant: 1
-      49081309-2b44-4164-894f-8ea653d4ab75:
-        campaign_code: 200505-41
-        conditions:
-        - churn_microsegment == 'positive_arpu_m8'
-        limit_per_code: 500
-        variant: 2
-      b7cddf61-292d-42c0-92a3-39819703df01:
-        campaign_code: 200407-30
-        conditions:
-        - churn_microsegment == 'positive_arpu_m8'
-        limit_per_code: 500
-        variant: 3
-    treatment_name: test_A_B_churn_positive_arpu_m8
-    treatment_size: 500
-    use_case: churn
-  test_A_B_churn_zero_arpu_m8:
-    order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
-    rules:
-      2d188c28-4c8c-4cfe-b445-eb6ff28e5ab4:
-        campaign_code: 200515-4
-        conditions:
-        - churn_microsegment == 'zero_arpu_m8'
-        limit_per_code: 1000
-        variant: 4
-      46a5ddba-b06a-4c36-96e7-43b0a6936051:
-        campaign_code: 200515-5
-        conditions:
-        - churn_microsegment == 'zero_arpu_m8'
-        limit_per_code: 1000
-        variant: 5
-      82733bea-f088-4b8b-a540-0e19dc2fcc70:
-        campaign_code: 200407-58
-        conditions:
-        - churn_microsegment == 'zero_arpu_m8'
-        limit_per_code: 1000
-        variant: 2
-      9c1476c8-b2db-4c76-ad00-ea830ef4490b:
-        campaign_code: 200407-40
-        conditions:
-        - churn_microsegment == 'zero_arpu_m8'
-        limit_per_code: 1000
-        variant: 6
-      d5694365-f42f-49ea-b7c4-c1981fc4ad9f:
-        campaign_code: 200407-22
-        conditions:
-        - churn_microsegment == 'zero_arpu_m8'
-        limit_per_code: 1000
-        variant: 1
-      de2485ce-b314-436e-bcff-0c092852b455:
-        campaign_code: 200407-76
-        conditions:
-        - churn_microsegment == 'zero_arpu_m8'
-        limit_per_code: 1000
-        variant: 3
-    treatment_name: test_A_B_churn_zero_arpu_m8
-    treatment_size: 1000
-    use_case: churn
-  test_A_B_z_ard_high_arpu_high_tenure_m7:
-    order_policy: dilution1_pred + dilution2_pred
-    rules:
-      5e24964a-64e5-4c08-b77d-30c188791b81:
-        campaign_code: 200527-2
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m7'
-        limit_per_code: 500
-        variant: 2
-      85ab2bbc-d127-4736-b25c-560df2f8b71d:
-        campaign_code: 200429-9
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m7'
-        limit_per_code: 500
-        variant: 3
-      b4a800c3-7be6-46ce-8e3f-6cedd019014d:
-        campaign_code: 200508-10
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m7'
-        limit_per_code: 500
-        variant: 1
-    treatment_name: test_A_B_z_ard_high_arpu_high_tenure_m7
-    treatment_size: 500
-    use_case: ard
-  test_A_B_z_ard_high_arpu_high_tenure_m8:
-    order_policy: dilution1_pred + dilution2_pred
-    rules:
-      cfb8c091-bee4-4c03-8bc7-cd401bba3932:
-        campaign_code: 200429-10
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m8'
-        limit_per_code: 500
-        variant: 3
-      d2c7362e-5eb8-48dc-b783-c7a4ff74ad29:
-        campaign_code: 200527-1
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m8'
-        limit_per_code: 500
-        variant: 2
-      f86352a2-3c37-4a61-9931-a24c2c61f64f:
-        campaign_code: 200508-12
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m8'
-        limit_per_code: 500
-        variant: 1
-    treatment_name: test_A_B_z_ard_high_arpu_high_tenure_m8
-    treatment_size: 500
-    use_case: ard
   treatment_no_test_churn_positive_arpu:
     order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
     rules:
-      0b61f1f6-b4ea-42c4-93ea-95ee7cf52b3e:
-        campaign_code: 200407-31
-        conditions:
-        - churn_microsegment == 'positive_arpu_m9'
-        limit_per_code: 1000
-        variant: 2
-      23b10385-62c8-415b-b340-8d1d22086844:
-        campaign_code: 200407-9
-        conditions:
-        - churn_microsegment == 'positive_arpu_m5'
-        limit_per_code: 1000
-        variant: 1
-      44355c28-221f-4d08-aca7-fb8c8808532d:
-        campaign_code: 200407-7
-        conditions:
-        - churn_microsegment == 'positive_arpu_m3'
-        limit_per_code: 1000
-        variant: 1
-      60b143c5-7737-4f54-8431-8eb49ac8813c:
-        campaign_code: 200407-8
-        conditions:
-        - churn_microsegment == 'positive_arpu_m4'
-        limit_per_code: 1000
-        variant: 1
-      67c5a7bd-6478-4e82-8a26-a2fcf2b2b563:
-        campaign_code: 200407-13
-        conditions:
-        - churn_microsegment == 'positive_arpu_m9'
-        limit_per_code: 1000
-        variant: 1
-      6d673ed9-3d93-4172-b1bf-8c0d3637d8d0:
-        campaign_code: 200407-5
-        conditions:
-        - churn_microsegment == 'positive_arpu_m1'
-        limit_per_code: 1000
-        variant: 1
-      82d0eeeb-9739-4bf3-91be-4f02e3a2f161:
-        campaign_code: 200407-6
-        conditions:
-        - churn_microsegment == 'positive_arpu_m2'
-        limit_per_code: 1000
-        variant: 1
-      93fb51cc-8794-4055-b9ce-8284d63480f1:
+      09db9ed8-5ab7-435d-8eb6-b70f4fb3928c:
         campaign_code: 200407-26
         conditions:
         - churn_microsegment == 'positive_arpu_m4'
         limit_per_code: 1000
         variant: 2
-      9bc77a73-db41-4a47-b139-703b0cd453fd:
-        campaign_code: 200407-24
+      0a4940a1-a181-4495-9620-71590e44caf0:
+        campaign_code: 200407-5
         conditions:
-        - churn_microsegment == 'positive_arpu_m2'
-        limit_per_code: 1000
-        variant: 2
-      ab99af33-002e-4b73-9d5a-01fbfde715c6:
-        campaign_code: 200407-14
-        conditions:
-        - churn_microsegment == 'positive_arpu_m10'
+        - churn_microsegment == 'positive_arpu_m1'
         limit_per_code: 1000
         variant: 1
-      d0d68b85-2edc-4889-8f3a-6593b9f0a0fb:
+      1035c2b3-6f02-4532-aa99-2ba90df73b0f:
         campaign_code: 200407-27
         conditions:
         - churn_microsegment == 'positive_arpu_m5'
         limit_per_code: 1000
         variant: 2
-      d64190a8-0f4e-4efb-b0e1-966705ea75e9:
+      15e149fb-fdc7-4b43-9241-4aed5e8b40ea:
+        campaign_code: 200407-12
+        conditions:
+        - churn_microsegment == 'positive_arpu_m8'
+        limit_per_code: 1000
+        variant: 1
+      165997a2-3026-4c62-872a-77b45310e7ca:
+        campaign_code: 200407-11
+        conditions:
+        - churn_microsegment == 'positive_arpu_m7'
+        limit_per_code: 1000
+        variant: 1
+      19f1106b-7f8e-4d6b-b210-c001e72cc861:
+        campaign_code: 200407-29
+        conditions:
+        - churn_microsegment == 'positive_arpu_m7'
+        limit_per_code: 1000
+        variant: 2
+      1ad1a5eb-131f-4301-a19c-61db3a4f81e9:
         campaign_code: 200407-32
         conditions:
         - churn_microsegment == 'positive_arpu_m10'
         limit_per_code: 1000
         variant: 2
-      e11560f0-8523-443e-ab72-2b5d22602c27:
+      20013eca-492d-4346-81da-e607a3f53084:
+        campaign_code: 200407-6
+        conditions:
+        - churn_microsegment == 'positive_arpu_m2'
+        limit_per_code: 1000
+        variant: 1
+      3a222222-f66b-460e-a4e8-176cb8865dfe:
+        campaign_code: 200407-7
+        conditions:
+        - churn_microsegment == 'positive_arpu_m3'
+        limit_per_code: 1000
+        variant: 1
+      4eb6469e-f464-4833-ae62-2360d5af31c6:
+        campaign_code: 200407-9
+        conditions:
+        - churn_microsegment == 'positive_arpu_m5'
+        limit_per_code: 1000
+        variant: 1
+      6b5d897d-d15f-47e9-aacf-e4cd5b01d2aa:
+        campaign_code: 200407-10
+        conditions:
+        - churn_microsegment == 'positive_arpu_m6'
+        limit_per_code: 1000
+        variant: 1
+      7d9dac37-48a0-4c5d-bc41-64e91721a5d7:
+        campaign_code: 200407-28
+        conditions:
+        - churn_microsegment == 'positive_arpu_m6'
+        limit_per_code: 1000
+        variant: 2
+      b01ddb9b-8583-41bb-9a65-5ab8b80436df:
+        campaign_code: 200407-31
+        conditions:
+        - churn_microsegment == 'positive_arpu_m9'
+        limit_per_code: 1000
+        variant: 2
+      baae1593-6b17-4b9f-8bc7-b06a103360d1:
         campaign_code: 200407-23
         conditions:
         - churn_microsegment == 'positive_arpu_m1'
         limit_per_code: 1000
         variant: 2
-      e9e83403-1234-4d0d-b402-3d70a9de59df:
+      c99ed88b-a38b-4ee7-9913-9f3b2e7dac2f:
         campaign_code: 200407-25
         conditions:
         - churn_microsegment == 'positive_arpu_m3'
         limit_per_code: 1000
         variant: 2
+      cc6ae02f-3786-493f-945f-427407c9793a:
+        campaign_code: 200407-30
+        conditions:
+        - churn_microsegment == 'positive_arpu_m8'
+        limit_per_code: 1000
+        variant: 2
+      d2657ab9-f3b0-4d2a-903d-52a1edad2a47:
+        campaign_code: 200407-8
+        conditions:
+        - churn_microsegment == 'positive_arpu_m4'
+        limit_per_code: 1000
+        variant: 1
+      dafd6e77-44cb-44a4-8dbc-1e60e2c8691f:
+        campaign_code: 200407-24
+        conditions:
+        - churn_microsegment == 'positive_arpu_m2'
+        limit_per_code: 1000
+        variant: 2
+      deff60cf-cdcf-49b7-85bc-a8afb34f195f:
+        campaign_code: 200407-13
+        conditions:
+        - churn_microsegment == 'positive_arpu_m9'
+        limit_per_code: 1000
+        variant: 1
+      f8265f9a-69b0-438d-9f5a-10003385be79:
+        campaign_code: 200407-14
+        conditions:
+        - churn_microsegment == 'positive_arpu_m10'
+        limit_per_code: 1000
+        variant: 1
     treatment_name: treatment_no_test_churn_positive_arpu
-    treatment_size: 5200
+    treatment_size: 7400
     use_case: churn
   treatment_no_test_churn_zero_arpu:
     order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
     rules:
-      2e16e75c-310e-4906-a680-d1b9c4962afd:
-        campaign_code: 200407-37
-        conditions:
-        - churn_microsegment == 'zero_arpu_m5'
-        limit_per_code: 1000
-        variant: 2
-      328e744d-0279-43db-965a-565369acbf6a:
-        campaign_code: 200407-34
-        conditions:
-        - churn_microsegment == 'zero_arpu_m2'
-        limit_per_code: 1000
-        variant: 2
-      3e0504eb-27d4-43ab-ba7a-36994bd83582:
-        campaign_code: 200407-19
-        conditions:
-        - churn_microsegment == 'zero_arpu_m5'
-        limit_per_code: 1000
-        variant: 1
-      3efac3cb-a49e-48ee-92b8-5090f55bd3a7:
-        campaign_code: 200407-21
-        conditions:
-        - churn_microsegment == 'zero_arpu_m7'
-        limit_per_code: 1000
-        variant: 1
-      6e619d71-4c2a-4e4f-9a00-8b5b5b20ca2f:
-        campaign_code: 200407-36
-        conditions:
-        - churn_microsegment == 'zero_arpu_m4'
-        limit_per_code: 1000
-        variant: 2
-      7717c0a2-827f-4c7f-9e52-f97db86eaff8:
-        campaign_code: 200407-16
-        conditions:
-        - churn_microsegment == 'zero_arpu_m2'
-        limit_per_code: 1000
-        variant: 1
-      7ac6e2b4-a1a5-4ce0-9665-735553da603e:
-        campaign_code: 200407-38
-        conditions:
-        - churn_microsegment == 'zero_arpu_m6'
-        limit_per_code: 1000
-        variant: 2
-      7e917f0e-9124-4f71-b491-77ba35bd1ac2:
-        campaign_code: 200407-39
-        conditions:
-        - churn_microsegment == 'zero_arpu_m7'
-        limit_per_code: 1000
-        variant: 2
-      99364c58-4f6d-47e3-b8ca-6a63b46a0e12:
-        campaign_code: 200407-33
-        conditions:
-        - churn_microsegment == 'zero_arpu_m1'
-        limit_per_code: 1000
-        variant: 2
-      a28fc055-f5a5-4152-8a7a-24ec631d1f1f:
-        campaign_code: 200407-20
-        conditions:
-        - churn_microsegment == 'zero_arpu_m6'
-        limit_per_code: 1000
-        variant: 1
-      ae7396f9-cb4a-4288-8752-086c2d010049:
-        campaign_code: 200407-15
-        conditions:
-        - churn_microsegment == 'zero_arpu_m1'
-        limit_per_code: 1000
-        variant: 1
-      d13b0110-987d-4414-ba2d-b25f63edff62:
+      0dea576f-d12b-422c-a99e-1fee0ce48553:
         campaign_code: 200407-35
         conditions:
         - churn_microsegment == 'zero_arpu_m3'
-        limit_per_code: 1000
+        limit_per_code: 3700
         variant: 2
-      f56331e1-52b6-440c-b762-8a671f5d6275:
+      2ff9b328-5d9d-4069-8d54-5c5448147ba7:
+        campaign_code: 200407-36
+        conditions:
+        - churn_microsegment == 'zero_arpu_m4'
+        limit_per_code: 3700
+        variant: 2
+      38261901-e1a0-492b-b1d0-99810a4693fe:
+        campaign_code: 200407-38
+        conditions:
+        - churn_microsegment == 'zero_arpu_m6'
+        limit_per_code: 3700
+        variant: 2
+      4f85b4a2-823e-4873-84f4-4e1e94e2587b:
         campaign_code: 200407-18
         conditions:
         - churn_microsegment == 'zero_arpu_m4'
-        limit_per_code: 1000
+        limit_per_code: 3700
         variant: 1
-      fa112fbf-bcfd-4590-bf0a-f57534b7740b:
+      52e23551-e36e-4300-a3e2-ee5d359be3ab:
+        campaign_code: 200407-19
+        conditions:
+        - churn_microsegment == 'zero_arpu_m5'
+        limit_per_code: 3700
+        variant: 1
+      554cc183-0117-4a5b-a9b3-ae79967362e5:
+        campaign_code: 200407-34
+        conditions:
+        - churn_microsegment == 'zero_arpu_m2'
+        limit_per_code: 3700
+        variant: 2
+      599bd7a6-5285-4684-b78e-46bdfab05dbf:
+        campaign_code: 200407-21
+        conditions:
+        - churn_microsegment == 'zero_arpu_m7'
+        limit_per_code: 3700
+        variant: 1
+      5d0a5b23-bdb2-425e-b2b6-03b5d5c129ed:
+        campaign_code: 200407-16
+        conditions:
+        - churn_microsegment == 'zero_arpu_m2'
+        limit_per_code: 3700
+        variant: 1
+      644f98f9-8d63-4b4a-9c85-01cbb076a23e:
         campaign_code: 200407-17
         conditions:
         - churn_microsegment == 'zero_arpu_m3'
-        limit_per_code: 1000
+        limit_per_code: 3700
+        variant: 1
+      6686209c-54b3-4033-8f97-0591a9128434:
+        campaign_code: 200407-33
+        conditions:
+        - churn_microsegment == 'zero_arpu_m1'
+        limit_per_code: 3700
+        variant: 2
+      6df35988-9b99-436c-bf27-b3ae56d8e8cd:
+        campaign_code: 200407-22
+        conditions:
+        - churn_microsegment == 'zero_arpu_m8'
+        limit_per_code: 3700
+        variant: 1
+      84acad1c-e750-48de-95d7-a8dd621449f5:
+        campaign_code: 200407-39
+        conditions:
+        - churn_microsegment == 'zero_arpu_m7'
+        limit_per_code: 3700
+        variant: 2
+      8f25f67f-ee40-4681-87e9-0c705846187e:
+        campaign_code: 200407-20
+        conditions:
+        - churn_microsegment == 'zero_arpu_m6'
+        limit_per_code: 3700
+        variant: 1
+      990f4305-dcb4-4835-b068-80a3e008bdea:
+        campaign_code: 200407-37
+        conditions:
+        - churn_microsegment == 'zero_arpu_m5'
+        limit_per_code: 3700
+        variant: 2
+      a699b1f0-ea27-43ba-ab73-49fdaaab23d3:
+        campaign_code: 200407-40
+        conditions:
+        - churn_microsegment == 'zero_arpu_m8'
+        limit_per_code: 3700
+        variant: 2
+      abda4742-4241-479c-8b15-86270e3913d3:
+        campaign_code: 200407-15
+        conditions:
+        - churn_microsegment == 'zero_arpu_m1'
+        limit_per_code: 3700
         variant: 1
     treatment_name: treatment_no_test_churn_zero_arpu
-    treatment_size: 4400
+    treatment_size: 7400
     use_case: churn
-  treatment_no_test_z1_ard_d20d10_high_arpu_high_tenure:
+  treatment_z0_AB_test_ard_high_arpu_high_tenure_m7:
     order_policy: dilution1_pred + dilution2_pred
     rules:
-      2f90a0cb-3e78-4dde-a84d-5cef2c6e8732:
-        campaign_code: 200520-5
+      7a9d80bf-306c-4741-8ec9-4c18db3723c7:
+        campaign_code: 200429-9
         conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m5'
-        limit_per_code: 100
+        - ard_microsegment == 'high_arpu_high_tenure_m7'
+        limit_per_code: 500
+        variant: 3
+      8b7beb2f-65e1-4f62-84cd-c509ad3a74fd:
+        campaign_code: 200508-10
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m7'
+        limit_per_code: 500
         variant: 1
-      547aaadc-ffa2-4cfe-9bb4-ea92b48611d5:
-        campaign_code: 200520-7
+      ece2ab15-425d-421b-a3cf-6ab7e0448b50:
+        campaign_code: 200527-2
         conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m6'
-        limit_per_code: 100
+        - ard_microsegment == 'high_arpu_high_tenure_m7'
+        limit_per_code: 500
+        variant: 2
+    treatment_name: treatment_z0_AB_test_ard_high_arpu_high_tenure_m7
+    treatment_size: 500
+    use_case: ard
+  treatment_z0_AB_test_ard_high_arpu_high_tenure_m8:
+    order_policy: dilution1_pred + dilution2_pred
+    rules:
+      6b78fb2c-72a5-413a-a899-d2ab46798492:
+        campaign_code: 200527-1
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m8'
+        limit_per_code: 500
+        variant: 2
+      7f41ab24-ff14-45b9-8700-502282b75a0a:
+        campaign_code: 200429-10
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m8'
+        limit_per_code: 500
+        variant: 3
+      bbc61a15-162f-4ca6-9994-87da1de1eb63:
+        campaign_code: 200508-12
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m8'
+        limit_per_code: 500
         variant: 1
-      55e59a04-4848-4a80-b814-1774cd7138fc:
-        campaign_code: 200415-20
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m2'
-        limit_per_code: 100
-        variant: 1
-      63643a43-77fe-4a1c-97bf-82e43d78a916:
-        campaign_code: 200429-8
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m6'
-        limit_per_code: 100
-        variant: 2
-      94250dcb-df7c-4c6e-87e1-4ce2e1e42bbc:
-        campaign_code: 200429-6
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m3'
-        limit_per_code: 100
-        variant: 2
-      bd0333ce-b2e8-4049-8449-5a8057d44a10:
-        campaign_code: 200422-16
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m5'
-        limit_per_code: 100
-        variant: 2
-      bef16444-191c-4f57-aefc-db1778463eeb:
-        campaign_code: 200518-11
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m4'
-        limit_per_code: 100
-        variant: 1
-      c7515859-33cd-4f83-88fd-ed0a0756821a:
-        campaign_code: 200429-7
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m4'
-        limit_per_code: 100
-        variant: 2
-      d1f04de7-e88d-4af9-b993-4ec12a0be66f:
+    treatment_name: treatment_z0_AB_test_ard_high_arpu_high_tenure_m8
+    treatment_size: 500
+    use_case: ard
+  treatment_z1_no_test_ard_d20d10_high_arpu_high_tenure:
+    order_policy: dilution1_pred + dilution2_pred
+    rules:
+      0385f96f-b327-4f1e-87cf-f52fbfc7d7cd:
         campaign_code: 200429-5
         conditions:
         - ard_microsegment == 'high_arpu_high_tenure_m2'
         limit_per_code: 100
         variant: 2
-      df66b62c-f156-46f0-9905-9c25c40020bd:
+      25721950-ffe2-4334-b92f-d921559157af:
+        campaign_code: 200415-20
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m1'
+        limit_per_code: 100
+        variant: 1
+      26fe9f32-bdda-47d5-92b7-8ad49889bb5c:
+        campaign_code: 200520-7
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m6'
+        limit_per_code: 100
+        variant: 1
+      58bbebb1-ea78-4d77-bfab-293e1692a666:
+        campaign_code: 200422-16
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m5'
+        limit_per_code: 100
+        variant: 2
+      66dd2a95-c360-4ee8-9cb9-aa8bcb663d64:
+        campaign_code: 200508-10
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m3'
+        limit_per_code: 100
+        variant: 1
+      7e03fb9d-4480-4a9d-9ee5-8664b54380c6:
+        campaign_code: 200429-8
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m6'
+        limit_per_code: 100
+        variant: 2
+      848cb773-8574-4574-9a03-1360987a1d4b:
+        campaign_code: 200429-6
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m3'
+        limit_per_code: 100
+        variant: 2
+      9fa7fb96-3ada-4414-afe5-6cdeeea268aa:
+        campaign_code: 200415-20
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m2'
+        limit_per_code: 100
+        variant: 1
+      bfe85ae2-a488-4e1b-9e86-ae1514fc81af:
         campaign_code: 200429-4
         conditions:
         - ard_microsegment == 'high_arpu_high_tenure_m1'
         limit_per_code: 100
         variant: 2
-      f07c2048-1c47-4a41-84ed-853eecdd27ba:
-        campaign_code: 200415-20
+      cbe43629-9a83-41fa-ab15-3fede628fd31:
+        campaign_code: 200520-5
         conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m1'
+        - ard_microsegment == 'high_arpu_high_tenure_m5'
         limit_per_code: 100
         variant: 1
-      fa90ad1a-7262-4441-8e6b-fa0d0f2829ba:
-        campaign_code: 200508-10
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m3'
-        limit_per_code: 100
-        variant: 1
-    treatment_name: treatment_no_test_z1_ard_d20d10_high_arpu_high_tenure
-    treatment_size: 500
-    use_case: ard
-  treatment_no_test_z1_ard_d20d10_high_arpu_low_tenure:
-    order_policy: dilution1_pred + dilution2_pred
-    rules:
-      04c3285d-f9ec-4f1d-9e82-d70b491b48d4:
-        campaign_code: 200415-20
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m1'
-        limit_per_code: 200
-        variant: 1
-      04f23241-6466-40fd-9d0d-4f4b8786b11c:
-        campaign_code: 200429-12
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m2'
-        limit_per_code: 200
-        variant: 2
-      2e4aec1d-3f7c-4e15-8bd2-d4b1c278d99b:
-        campaign_code: 200429-17
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m7'
-        limit_per_code: 200
-        variant: 2
-      2f413fdb-768f-46d4-9ae3-677f8c5346f0:
-        campaign_code: 200429-14
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m4'
-        limit_per_code: 200
-        variant: 2
-      56cf76f1-33ee-4796-817d-0308da311155:
+      cc2fbcc2-a586-477a-ae00-9da288488302:
         campaign_code: 200518-11
         conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m4'
-        limit_per_code: 200
+        - ard_microsegment == 'high_arpu_high_tenure_m4'
+        limit_per_code: 100
         variant: 1
-      60a2cd2a-31fd-43a4-b2f9-e4e9a0ea9235:
-        campaign_code: 200508-10
+      fdcffe1e-9a7e-4d41-8e75-e83954babff8:
+        campaign_code: 200429-7
         conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m3'
-        limit_per_code: 200
-        variant: 1
-      69e43679-308e-4ab8-8376-4161b4c7411f:
-        campaign_code: 200415-20
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m6'
-        limit_per_code: 200
-        variant: 1
-      6a8af444-eb49-49ba-ae29-f10ed0ee5ad3:
-        campaign_code: 200429-15
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m5'
-        limit_per_code: 200
+        - ard_microsegment == 'high_arpu_high_tenure_m4'
+        limit_per_code: 100
         variant: 2
-      6b19f156-de84-421d-8a0a-e08a0635535d:
-        campaign_code: 200415-20
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m5'
-        limit_per_code: 200
-        variant: 1
-      93a9f05f-4475-462a-95c2-332940f7892c:
-        campaign_code: 200429-13
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m3'
-        limit_per_code: 200
-        variant: 2
-      a0298a39-7cf6-491a-b683-ae25609e73cf:
+    treatment_name: treatment_z1_no_test_ard_d20d10_high_arpu_high_tenure
+    treatment_size: 500
+    use_case: ard
+  treatment_z1_no_test_ard_d20d10_high_arpu_low_tenure:
+    order_policy: dilution1_pred + dilution2_pred
+    rules:
+      0eea1a5f-e608-4db3-b984-9ecdc908bf08:
         campaign_code: 200508-12
         conditions:
         - ard_microsegment == 'high_arpu_low_tenure_m8'
         limit_per_code: 200
         variant: 1
-      bf4065dc-fb66-495e-84b0-e899a7cc21ab:
-        campaign_code: 200429-11
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m1'
-        limit_per_code: 200
-        variant: 2
-      e24f156a-0b9d-403e-8af0-c76c3f251b87:
-        campaign_code: 200508-10
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m7'
-        limit_per_code: 200
-        variant: 1
-      e360a9a6-a343-41d9-9135-6d7ddea68552:
+      128c93a7-dd00-45df-bbe2-4c40b11e5b84:
         campaign_code: 200429-16
         conditions:
         - ard_microsegment == 'high_arpu_low_tenure_m6'
         limit_per_code: 200
         variant: 2
-      ed189b8b-a0e1-4c52-91bb-8a47e8f7221a:
+      20fb12b8-2fcb-4c41-a9a1-0a0994450636:
+        campaign_code: 200508-10
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m7'
+        limit_per_code: 200
+        variant: 1
+      29bbc7ce-7bc0-44ac-804a-51cc8a525c65:
+        campaign_code: 200429-13
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m3'
+        limit_per_code: 200
+        variant: 2
+      2c219b31-12b7-43ab-97ad-382493ed073c:
+        campaign_code: 200429-12
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m2'
+        limit_per_code: 200
+        variant: 2
+      2e22cc21-994d-4342-9473-56410bd328b1:
+        campaign_code: 200429-14
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m4'
+        limit_per_code: 200
+        variant: 2
+      58b599f0-4ad2-403e-9d15-7cc18f4be057:
+        campaign_code: 200415-20
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m2'
+        limit_per_code: 200
+        variant: 1
+      633f2801-fe76-47e5-bbf0-bb287aa2f9ef:
+        campaign_code: 200415-20
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m6'
+        limit_per_code: 200
+        variant: 1
+      6f665a40-39e7-461a-8370-bf6e47bcebec:
+        campaign_code: 200429-15
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m5'
+        limit_per_code: 200
+        variant: 2
+      71090c61-2855-424c-a193-6c0e3dd04664:
+        campaign_code: 200429-17
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m7'
+        limit_per_code: 200
+        variant: 2
+      95d50d93-d198-4525-800f-ee64dfddc3ee:
+        campaign_code: 200508-10
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m3'
+        limit_per_code: 200
+        variant: 1
+      9d76626b-dfd6-4553-aeac-137daf1f023d:
+        campaign_code: 200415-20
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m5'
+        limit_per_code: 200
+        variant: 1
+      a2168506-27aa-482e-ad96-58b1388fd9c5:
+        campaign_code: 200415-20
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m1'
+        limit_per_code: 200
+        variant: 1
+      c286aba6-2363-48f6-83f0-366034031dde:
+        campaign_code: 200429-11
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m1'
+        limit_per_code: 200
+        variant: 2
+      d66bb472-242a-4498-83b7-af6d7b7632af:
         campaign_code: 200429-18
         conditions:
         - ard_microsegment == 'high_arpu_low_tenure_m8'
         limit_per_code: 200
         variant: 2
-      f6fde79a-5161-45fc-a828-3bfc147e1a28:
-        campaign_code: 200415-20
+      f32f2392-0068-4948-a255-ee3dd98af911:
+        campaign_code: 200518-11
         conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m2'
+        - ard_microsegment == 'high_arpu_low_tenure_m4'
         limit_per_code: 200
         variant: 1
-    treatment_name: treatment_no_test_z1_ard_d20d10_high_arpu_low_tenure
+    treatment_name: treatment_z1_no_test_ard_d20d10_high_arpu_low_tenure
     treatment_size: 1250
     use_case: ard
-  treatment_no_test_z1_ard_d20d10_low_arpu_high_tenure:
+  treatment_z1_no_test_ard_d20d10_low_arpu_high_tenure:
     order_policy: dilution1_pred + dilution2_pred
     rules:
-      1341e63d-57f1-4bef-b842-526299212b6b:
-        campaign_code: 200430-4
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m3'
-        limit_per_code: 200
-        variant: 1
-      24c9dcdc-f100-492a-ad3f-7272055818ee:
-        campaign_code: 200430-4
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m7'
-        limit_per_code: 200
-        variant: 1
-      25a8a6ec-cfb2-449a-ad60-8d57d27bf18d:
-        campaign_code: 200429-23
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m4'
-        limit_per_code: 200
-        variant: 2
-      29de0ef8-1fd4-49f1-b2eb-f44548c65fa3:
-        campaign_code: 200430-4
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m6'
-        limit_per_code: 200
-        variant: 1
-      46eff61a-658a-40b8-82b0-90b9f18c0f68:
-        campaign_code: 200430-3
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m2'
-        limit_per_code: 200
-        variant: 1
-      67de7a79-6fdd-4698-bff6-2590bd2be0c4:
+      03e84e6f-500b-4402-80c8-438f992762c0:
         campaign_code: 200429-26
         conditions:
         - ard_microsegment == 'low_arpu_high_tenure_m7'
         limit_per_code: 200
         variant: 2
-      6835f9e3-d455-4913-97a4-410f2798d167:
+      17a093eb-8dd7-413a-9dcb-7e03e077acb6:
+        campaign_code: 200429-23
+        conditions:
+        - ard_microsegment == 'low_arpu_high_tenure_m4'
+        limit_per_code: 200
+        variant: 2
+      2e58a854-8047-458e-aa9a-97e8296f0984:
         campaign_code: 200429-25
         conditions:
         - ard_microsegment == 'low_arpu_high_tenure_m6'
         limit_per_code: 200
         variant: 2
-      6b76504c-2995-45fd-b23f-5424aaafee42:
-        campaign_code: 200429-22
+      4a5ef6ea-e23e-4365-87d0-50a5540fee2e:
+        campaign_code: 200430-4
         conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m3'
+        - ard_microsegment == 'low_arpu_high_tenure_m6'
         limit_per_code: 200
-        variant: 2
-      705441e7-af8c-4a8f-9c54-9f810ec03225:
+        variant: 1
+      4b165624-e618-4546-ae97-277bd117f6b4:
         campaign_code: 200430-4
         conditions:
         - ard_microsegment == 'low_arpu_high_tenure_m8'
         limit_per_code: 200
         variant: 1
-      8f31519c-5cd2-4551-83ad-585e69961a7a:
-        campaign_code: 200430-4
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m5'
-        limit_per_code: 200
-        variant: 1
-      9dd5dbaf-b82c-409c-ab08-af2d2490d74b:
-        campaign_code: 200422-17
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m8'
-        limit_per_code: 200
-        variant: 3
-      b873d16e-8b61-47ad-a928-f924132991c2:
-        campaign_code: 200430-3
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m1'
-        limit_per_code: 200
-        variant: 1
-      b952f362-9a4a-422f-973a-0e2ae13cd856:
-        campaign_code: 200430-4
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m4'
-        limit_per_code: 200
-        variant: 1
-      f1ca77ee-59d9-4e3b-acc4-ca5436a427bb:
+      50302005-b656-4500-af8c-ec2d06b055d1:
         campaign_code: 200429-20
         conditions:
         - ard_microsegment == 'low_arpu_high_tenure_m1'
         limit_per_code: 200
         variant: 2
-      fb3832bb-1552-436a-898b-a68cff2d7ae0:
-        campaign_code: 200429-24
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m5'
-        limit_per_code: 200
-        variant: 2
-      ffcc9941-c995-49ac-9d80-f19285e2e9ac:
+      5f9b6875-9ad8-4aa0-ae8b-3c8f3e66f5f8:
         campaign_code: 200429-21
         conditions:
         - ard_microsegment == 'low_arpu_high_tenure_m2'
         limit_per_code: 200
         variant: 2
-    treatment_name: treatment_no_test_z1_ard_d20d10_low_arpu_high_tenure
-    treatment_size: 1250
-    use_case: ard
-  treatment_no_test_z1_ard_d20d10_low_arpu_low_tenure:
-    order_policy: dilution1_pred + dilution2_pred
-    rules:
-      0b8ed919-9808-4082-a323-23fdde8501d7:
+      66c781a1-85e0-4f01-b596-627d82e6c234:
         campaign_code: 200430-4
         conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m8'
+        - ard_microsegment == 'low_arpu_high_tenure_m7'
         limit_per_code: 200
         variant: 1
-      0d8039ab-ad00-4ce3-a0ea-e8a6b2fc5d45:
-        campaign_code: 200430-4
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m6'
-        limit_per_code: 200
-        variant: 1
-      2781e349-ed6b-46f8-b4e7-c40fabd1c9ea:
+      85039cd4-4480-4c14-9f7b-0d2102496d5b:
         campaign_code: 200430-3
         conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m1'
+        - ard_microsegment == 'low_arpu_high_tenure_m1'
         limit_per_code: 200
         variant: 1
-      375c233d-b65c-4f55-8155-3e18e3a118fd:
+      86185de0-de1d-4ece-bd67-9bd198854b69:
         campaign_code: 200430-4
         conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m7'
+        - ard_microsegment == 'low_arpu_high_tenure_m4'
         limit_per_code: 200
         variant: 1
-      3db9b4e3-10c5-4a4a-bd4e-db39ed97defb:
+      876f1bbc-4e0b-4fa2-9142-e2f150ef40be:
+        campaign_code: 200430-3
+        conditions:
+        - ard_microsegment == 'low_arpu_high_tenure_m2'
+        limit_per_code: 200
+        variant: 1
+      af88e640-c08f-48c5-8677-cdb70f7a45a5:
+        campaign_code: 200429-24
+        conditions:
+        - ard_microsegment == 'low_arpu_high_tenure_m5'
+        limit_per_code: 200
+        variant: 2
+      bec74ff4-1527-4385-845d-fd5cd71ff7ae:
         campaign_code: 200430-4
         conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m5'
+        - ard_microsegment == 'low_arpu_high_tenure_m5'
         limit_per_code: 200
         variant: 1
-      430975b0-0d06-444d-aa04-547739a730fa:
+      c46e325b-4903-4c56-b9a0-713c6a85ab80:
+        campaign_code: 200429-22
+        conditions:
+        - ard_microsegment == 'low_arpu_high_tenure_m3'
+        limit_per_code: 200
+        variant: 2
+      cd250970-03ae-4356-ac48-80fee50dae4a:
         campaign_code: 200430-4
         conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m3'
+        - ard_microsegment == 'low_arpu_high_tenure_m3'
         limit_per_code: 200
         variant: 1
-      59c84f5d-cfc4-45ca-9a42-0f9dadf2c851:
-        campaign_code: 200430-4
+      d0130e93-8744-4f23-8902-24a4762666e3:
+        campaign_code: 200422-17
         conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m4'
+        - ard_microsegment == 'low_arpu_high_tenure_m8'
         limit_per_code: 200
-        variant: 1
-      5be1dd7b-c375-4735-87ef-9f790bb042d5:
-        campaign_code: 200429-31
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m5'
-        limit_per_code: 200
-        variant: 2
-      75469186-a781-4630-8718-1f65638709cf:
-        campaign_code: 200429-32
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m6'
-        limit_per_code: 200
-        variant: 2
-      8e4e3749-6438-44fc-ac2f-b064ee4eb6be:
-        campaign_code: 200429-28
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m2'
-        limit_per_code: 200
-        variant: 2
-      bc4ceda8-0c1d-42de-b5ab-de28c3af3618:
-        campaign_code: 200429-29
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m3'
-        limit_per_code: 200
-        variant: 2
-      cfc2d78b-dca9-4149-be8c-f77af630be1a:
-        campaign_code: 200429-33
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m7'
-        limit_per_code: 200
-        variant: 2
-      d1a9982b-80fc-4e67-b5f6-10447c253576:
+        variant: 3
+    treatment_name: treatment_z1_no_test_ard_d20d10_low_arpu_high_tenure
+    treatment_size: 1250
+    use_case: ard
+  treatment_z1_no_test_ard_d20d10_low_arpu_low_tenure:
+    order_policy: dilution1_pred + dilution2_pred
+    rules:
+      2cac2fe6-00b2-4a8f-8c51-111103d7d59e:
         campaign_code: 200429-34
         conditions:
         - ard_microsegment == 'low_arpu_low_tenure_m8'
         limit_per_code: 200
         variant: 2
-      e829a1d0-08ac-436f-8460-cd9ed08924c5:
+      3882f04b-9e24-4e39-b393-f58f0ad86d2e:
+        campaign_code: 200430-4
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m4'
+        limit_per_code: 200
+        variant: 1
+      4ba0e342-1900-4eb6-9b55-a1ee145fb539:
+        campaign_code: 200430-3
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m2'
+        limit_per_code: 200
+        variant: 1
+      6ee11e25-210a-4b5e-8b59-a47a18622bfc:
+        campaign_code: 200430-3
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m1'
+        limit_per_code: 200
+        variant: 1
+      774cdb6d-57a1-4c1c-b1a4-3d2ab207ca98:
+        campaign_code: 200430-4
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m6'
+        limit_per_code: 200
+        variant: 1
+      7dbf6bb6-d95c-4d1d-bcd2-a1ef407f493c:
+        campaign_code: 200429-33
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m7'
+        limit_per_code: 200
+        variant: 2
+      98cd7d5e-8c2b-419f-9b5f-79a63c63b622:
         campaign_code: 200429-27
         conditions:
         - ard_microsegment == 'low_arpu_low_tenure_m1'
         limit_per_code: 200
         variant: 2
-      eaae8651-7369-46e3-89af-e1f99ab09f1b:
+      b5dddb93-84a9-427d-b146-44832738da9a:
+        campaign_code: 200430-4
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m5'
+        limit_per_code: 200
+        variant: 1
+      bda6a4cf-9ee3-442c-b6b0-d0d72d7fe6e2:
+        campaign_code: 200430-4
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m8'
+        limit_per_code: 200
+        variant: 1
+      be33bbbe-5c88-40e8-8feb-4fc33b9e1545:
         campaign_code: 200429-30
         conditions:
         - ard_microsegment == 'low_arpu_low_tenure_m4'
         limit_per_code: 200
         variant: 2
-      fcf5d3a3-dc8b-4cd0-8521-12bb936b5b76:
-        campaign_code: 200430-3
+      c16ab691-3535-44f6-b6e9-38dc9890babc:
+        campaign_code: 200430-4
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m7'
+        limit_per_code: 200
+        variant: 1
+      c8bc26f1-9e9f-42ed-966e-518db1630058:
+        campaign_code: 200429-32
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m6'
+        limit_per_code: 200
+        variant: 2
+      cc5812a4-dc9b-4bde-86c4-095e601866ce:
+        campaign_code: 200430-4
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m3'
+        limit_per_code: 200
+        variant: 1
+      e2910afe-bf38-4c46-9224-a5abf08d316b:
+        campaign_code: 200429-31
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m5'
+        limit_per_code: 200
+        variant: 2
+      f0bdfb8a-2f5b-4ed6-b404-32ee76e52140:
+        campaign_code: 200429-29
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m3'
+        limit_per_code: 200
+        variant: 2
+      f146535d-5d73-480f-bf6f-ddec3df0a448:
+        campaign_code: 200429-28
         conditions:
         - ard_microsegment == 'low_arpu_low_tenure_m2'
         limit_per_code: 200
-        variant: 1
-    treatment_name: treatment_no_test_z1_ard_d20d10_low_arpu_low_tenure
+        variant: 2
+    treatment_name: treatment_z1_no_test_ard_d20d10_low_arpu_low_tenure
     treatment_size: 1250
     use_case: ard
-  treatment_no_test_z2_ard_d10_high_arpu_high_tenure:
+  treatment_z2_no_test_ard_d10_high_arpu_high_tenure:
     order_policy: dilution1_pred
     rules:
-      2925f562-a466-4a7b-a3d9-8d8cdbea6879:
-        campaign_code: 200518-10
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m1'
-        limit_per_code: 1000
-        variant: 1
-      4a775023-a179-4608-9585-423e23fc9165:
-        campaign_code: 200615-6
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m6'
-        limit_per_code: 1000
-        variant: 2
-      4e4b4c48-984b-4cd1-b7c9-5860d5d74c6c:
-        campaign_code: 200615-1
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m1'
-        limit_per_code: 1000
-        variant: 2
-      6bea326d-fe09-411c-b408-038e5bf951ab:
-        campaign_code: 200615-2
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m2'
-        limit_per_code: 1000
-        variant: 2
-      8810f3b3-e1f6-49d4-b5a0-6e222b648f7a:
-        campaign_code: 200518-10
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m2'
-        limit_per_code: 1000
-        variant: 1
-      9108f377-b594-43ad-b5e8-ec028fe06bd5:
-        campaign_code: 200415-20
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m5'
-        limit_per_code: 1000
-        variant: 1
-      91c5a1e1-a27a-43c2-b1fd-42a06596b330:
+      0215ac93-1cad-4d4a-8190-265cc6b344bd:
         campaign_code: 200508-12
         conditions:
         - ard_microsegment == 'high_arpu_high_tenure_m8'
         limit_per_code: 1000
         variant: 1
-      c661e9fd-f7f3-4fd1-b389-fe8fcc79b185:
-        campaign_code: 200615-8
+      0b2afbf3-2b85-4878-b4f7-6d69415182c9:
+        campaign_code: 200415-20
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m5'
+        limit_per_code: 1000
+        variant: 1
+      1435c96e-ef31-46ae-a218-2733705e32c3:
+        campaign_code: 200429-4
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m1'
+        limit_per_code: 1000
+        variant: 2
+      3509b6f4-6856-4c82-8b25-e767a9bc1c3c:
+        campaign_code: 200429-10
         conditions:
         - ard_microsegment == 'high_arpu_high_tenure_m8'
         limit_per_code: 1000
         variant: 2
-      c7fa95fb-7b79-4cca-b989-d201e3260630:
-        campaign_code: 200615-4
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m4'
-        limit_per_code: 1000
-        variant: 2
-      d33aba69-e58a-43c0-a24c-7df2df71d925:
-        campaign_code: 200615-3
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m3'
-        limit_per_code: 1000
-        variant: 2
-      d795d2f7-8d5c-4b74-b4ec-e5218da0a625:
-        campaign_code: 200508-10
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m7'
-        limit_per_code: 1000
-        variant: 1
-      d96705be-284a-44c1-b605-e9cdd14e6d94:
-        campaign_code: 200615-5
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m5'
-        limit_per_code: 1000
-        variant: 2
-      df544398-8ff0-49d1-87f2-4430684362dc:
-        campaign_code: 200508-10
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m3'
-        limit_per_code: 1000
-        variant: 1
-      e3a544a2-0789-4f5f-864a-2ba3dfe6b341:
-        campaign_code: 200615-7
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m7'
-        limit_per_code: 1000
-        variant: 2
-      fa9d9454-c8a4-4556-ac6e-e74258545f48:
-        campaign_code: 200518-11
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m4'
-        limit_per_code: 1000
-        variant: 1
-      fbe948ec-c427-460a-aefc-7c3bda2b4e7e:
+      484d9890-6004-4545-b071-900398e0dd7e:
         campaign_code: 200415-20
         conditions:
         - ard_microsegment == 'high_arpu_high_tenure_m6'
         limit_per_code: 1000
         variant: 1
-    treatment_name: treatment_no_test_z2_ard_d10_high_arpu_high_tenure
+      557baa6f-4d2e-4e40-ab4d-1306dafc0b66:
+        campaign_code: 200518-10
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m1'
+        limit_per_code: 1000
+        variant: 1
+      6d0d8a2b-0d52-40bb-b2a2-2b3e024ae6ec:
+        campaign_code: 200518-10
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m2'
+        limit_per_code: 1000
+        variant: 1
+      89950031-e927-4d01-b11e-fae7b7b29313:
+        campaign_code: 200508-10
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m7'
+        limit_per_code: 1000
+        variant: 1
+      9b88b308-e157-4939-b75e-751a2ca025ce:
+        campaign_code: 200508-10
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m3'
+        limit_per_code: 1000
+        variant: 1
+      9c4c4463-e759-4c1b-83cd-c9c4937cc940:
+        campaign_code: 200429-5
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m2'
+        limit_per_code: 1000
+        variant: 2
+      9ec86083-6b17-4a6d-ad31-42e5dfde1ba5:
+        campaign_code: 200429-7
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m4'
+        limit_per_code: 1000
+        variant: 2
+      cc42683d-4cd0-4f5f-a5f1-21664eade752:
+        campaign_code: 200429-9
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m7'
+        limit_per_code: 1000
+        variant: 2
+      cf85782a-fea2-4696-a2fa-26df9ed09859:
+        campaign_code: 200429-8
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m6'
+        limit_per_code: 1000
+        variant: 2
+      e1e07e5f-e811-497a-b253-e51e57348258:
+        campaign_code: 200429-6
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m3'
+        limit_per_code: 1000
+        variant: 2
+      e81601c4-aa99-40b1-aa29-3f205381e6d9:
+        campaign_code: 200422-16
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m5'
+        limit_per_code: 1000
+        variant: 2
+      f10828ef-80da-4561-8f82-c0cd4e168f8e:
+        campaign_code: 200518-11
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m4'
+        limit_per_code: 1000
+        variant: 1
+    treatment_name: treatment_z2_no_test_ard_d10_high_arpu_high_tenure
     treatment_size: 4750
     use_case: ard
-  treatment_no_test_z2_ard_d10_high_arpu_low_tenure:
+  treatment_z2_no_test_ard_d10_high_arpu_low_tenure:
     order_policy: dilution1_pred
     rules:
-      13830d38-dd56-4d95-adb6-3debe419bb48:
-        campaign_code: 200518-11
+      3934790a-d641-4763-8d6b-b575f6ec505c:
+        campaign_code: 200429-12
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m2'
+        limit_per_code: 1000
+        variant: 2
+      48f08ed0-2804-4e68-90ba-c780e294a29f:
+        campaign_code: 200429-17
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m7'
+        limit_per_code: 1000
+        variant: 2
+      5595dc48-3203-422f-8bec-9d8301312fff:
+        campaign_code: 200429-11
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m1'
+        limit_per_code: 1000
+        variant: 2
+      60abc660-1ff3-480b-801d-69163fc70a91:
+        campaign_code: 200429-16
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m6'
+        limit_per_code: 1000
+        variant: 2
+      6aa53baf-e228-4f7c-97e1-b81302c65873:
+        campaign_code: 200429-18
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m8'
+        limit_per_code: 1000
+        variant: 2
+      75d33b76-c8cd-4649-baee-433d5fec4b19:
+        campaign_code: 200429-14
         conditions:
         - ard_microsegment == 'high_arpu_low_tenure_m4'
         limit_per_code: 1000
+        variant: 2
+      81c46819-93b8-4f22-9c32-9d2ed10a684e:
+        campaign_code: 200508-10
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m3'
+        limit_per_code: 1000
         variant: 1
-      22d8cb80-e603-46db-b426-dc84e1a4af58:
+      8f7a5cd5-5baa-4a6b-b718-dc70af76e802:
+        campaign_code: 200508-10
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m7'
+        limit_per_code: 1000
+        variant: 1
+      8ff4199c-7f6f-4e93-b629-ccdf790adada:
         campaign_code: 200518-10
         conditions:
         - ard_microsegment == 'high_arpu_low_tenure_m2'
         limit_per_code: 1000
         variant: 1
-      2687d1d4-5acb-4de7-b957-b4a3c30aa1be:
-        campaign_code: 200615-11
+      9237e3f5-5ffa-4617-afec-9525ef4cecdb:
+        campaign_code: 200429-13
         conditions:
         - ard_microsegment == 'high_arpu_low_tenure_m3'
         limit_per_code: 1000
         variant: 2
-      310479ae-c190-4b57-9db9-ab2f045d9b59:
-        campaign_code: 200615-13
+      b08ef6f5-a73b-49af-90ea-fd6998daa2d5:
+        campaign_code: 200415-20
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m6'
+        limit_per_code: 1000
+        variant: 1
+      e00ed175-ded7-4ed2-8f13-6cec8dcb035b:
+        campaign_code: 200518-10
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m1'
+        limit_per_code: 1000
+        variant: 1
+      e9d70af0-0557-4f11-9e03-dbcdcf505669:
+        campaign_code: 200429-15
         conditions:
         - ard_microsegment == 'high_arpu_low_tenure_m5'
         limit_per_code: 1000
         variant: 2
-      35f70cdf-dd28-442d-80e0-793caa4e29c8:
+      ea3d9c8a-4f68-47c1-bb05-0db4b7281bcf:
         campaign_code: 200508-12
         conditions:
         - ard_microsegment == 'high_arpu_low_tenure_m8'
         limit_per_code: 1000
         variant: 1
-      76f5f4e9-3d17-4b54-a1a1-ac45b3fa5d4a:
-        campaign_code: 200415-20
+      f9799dbc-751f-4d93-9a2a-02486a608200:
+        campaign_code: 200518-11
         conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m6'
+        - ard_microsegment == 'high_arpu_low_tenure_m4'
         limit_per_code: 1000
         variant: 1
-      90189508-2234-4244-bf09-d5a14084f789:
-        campaign_code: 200615-14
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m6'
-        limit_per_code: 1000
-        variant: 2
-      9fd8fcee-db80-42e1-8ed3-a00a84528683:
-        campaign_code: 200518-10
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m1'
-        limit_per_code: 1000
-        variant: 1
-      d1eae798-e745-40ed-94bf-b85bc75729b7:
-        campaign_code: 200615-15
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m7'
-        limit_per_code: 1000
-        variant: 2
-      d2538f58-5372-4f23-91a4-927746808700:
+      fa6b7b15-a374-4388-b542-60b1db113243:
         campaign_code: 200415-20
         conditions:
         - ard_microsegment == 'high_arpu_low_tenure_m5'
         limit_per_code: 1000
         variant: 1
-      dec159a5-ac8c-4c77-ad39-e67125561982:
-        campaign_code: 200508-10
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m3'
-        limit_per_code: 1000
-        variant: 1
-      dffad75a-e2c8-448f-82b5-04a942a5ef35:
-        campaign_code: 200615-9
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m1'
-        limit_per_code: 1000
-        variant: 2
-      e7ec32a0-5639-4b57-b8a9-5eea3db73d83:
-        campaign_code: 200615-16
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m8'
-        limit_per_code: 1000
-        variant: 2
-      ec45835b-6caf-4458-bda0-8b20b5164b15:
-        campaign_code: 200508-10
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m7'
-        limit_per_code: 1000
-        variant: 1
-      f0e5b800-eaef-4362-8160-48325ecfb428:
-        campaign_code: 200615-12
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m4'
-        limit_per_code: 1000
-        variant: 2
-      f3c2cf85-b046-4e05-bde5-f2462f446ab4:
-        campaign_code: 200615-10
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m2'
-        limit_per_code: 1000
-        variant: 2
-    treatment_name: treatment_no_test_z2_ard_d10_high_arpu_low_tenure
+    treatment_name: treatment_z2_no_test_ard_d10_high_arpu_low_tenure
     treatment_size: 5250
     use_case: ard
-  treatment_no_test_z2_ard_d10_low_arpu_high_tenure:
+  treatment_z2_no_test_ard_d10_low_arpu_high_tenure:
     order_policy: dilution1_pred
     rules:
-      034995dd-26a5-4ca2-915f-bff996e2b39f:
-        campaign_code: 200615-17
+      01664d1c-fc4b-4e19-b507-f4abcf7d8303:
+        campaign_code: 200429-25
         conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m1'
+        - ard_microsegment == 'low_arpu_high_tenure_m6'
         limit_per_code: 1000
         variant: 2
-      0c113c68-456b-4992-b3bc-e3879fb7111e:
-        campaign_code: 200615-21
+      0e5de162-5908-42a7-acee-b2cf6bdcfeb2:
+        campaign_code: 200429-24
         conditions:
         - ard_microsegment == 'low_arpu_high_tenure_m5'
         limit_per_code: 1000
         variant: 2
-      255c9beb-5f22-419c-af5f-ba71706bb672:
-        campaign_code: 200615-19
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m3'
-        limit_per_code: 1000
-        variant: 2
-      3597cdf7-6103-4daf-bb43-6aeb331953d4:
-        campaign_code: 200615-22
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m6'
-        limit_per_code: 1000
-        variant: 2
-      389cb002-aa84-4344-8363-ac676f0a9081:
-        campaign_code: 200430-3
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m6'
-        limit_per_code: 1000
-        variant: 1
-      3ba2738e-4d6b-4e55-a5c2-1a9dc9c19a96:
-        campaign_code: 200430-3
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m1'
-        limit_per_code: 1000
-        variant: 1
-      59dd1c48-559f-421d-a947-a8c1d9a19ead:
-        campaign_code: 200430-3
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m7'
-        limit_per_code: 1000
-        variant: 1
-      6a55109e-99f0-4923-87d7-c8aa2518561d:
-        campaign_code: 200615-24
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m8'
-        limit_per_code: 1000
-        variant: 2
-      705d47ff-c30e-4a08-a5c8-17283ccba84a:
-        campaign_code: 200430-3
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m3'
-        limit_per_code: 1000
-        variant: 1
-      82cca1a0-f2a0-4789-8923-c97ddb22fbbe:
-        campaign_code: 200615-20
+      20620aa4-f6a1-4e8f-8be3-2803e3c7403e:
+        campaign_code: 200429-23
         conditions:
         - ard_microsegment == 'low_arpu_high_tenure_m4'
         limit_per_code: 1000
         variant: 2
-      a72a7ce4-96a3-4bb6-bd63-f1ba7877c064:
-        campaign_code: 200430-3
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m5'
-        limit_per_code: 1000
-        variant: 1
-      bbd9e9dc-88af-44f4-ad9b-9e25688f5e3c:
+      3bf774d3-a8f2-4450-b0f2-4564e317f2e5:
         campaign_code: 200430-3
         conditions:
         - ard_microsegment == 'low_arpu_high_tenure_m2'
         limit_per_code: 1000
         variant: 1
-      d13078b7-90dd-4b62-80db-f23174c71f2b:
-        campaign_code: 200430-3
+      41efbb10-f2ea-4894-9aa1-f74cb28b87b6:
+        campaign_code: 200429-21
         conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m8'
-        limit_per_code: 1000
-        variant: 1
-      d4fe66f5-1bdc-4a23-9bbc-cc76e1eeab48:
-        campaign_code: 200615-23
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m7'
+        - ard_microsegment == 'low_arpu_high_tenure_m2'
         limit_per_code: 1000
         variant: 2
-      d76b5dca-1e5a-4e78-8497-cde6cde496e4:
+      506f1116-71f5-4936-bc0c-d93729b82357:
+        campaign_code: 200430-3
+        conditions:
+        - ard_microsegment == 'low_arpu_high_tenure_m1'
+        limit_per_code: 1000
+        variant: 1
+      7c0031f9-16b0-4e0b-becd-005b42d7529a:
+        campaign_code: 200429-22
+        conditions:
+        - ard_microsegment == 'low_arpu_high_tenure_m3'
+        limit_per_code: 1000
+        variant: 2
+      8092585b-c223-4fd6-a50c-7a22d78f8e1c:
+        campaign_code: 200430-3
+        conditions:
+        - ard_microsegment == 'low_arpu_high_tenure_m6'
+        limit_per_code: 1000
+        variant: 1
+      86fb88c0-0277-4a40-a5ca-48dc12c5150e:
+        campaign_code: 200430-3
+        conditions:
+        - ard_microsegment == 'low_arpu_high_tenure_m5'
+        limit_per_code: 1000
+        variant: 1
+      9644f00d-2e87-4153-b28b-df5793c0491d:
         campaign_code: 200430-3
         conditions:
         - ard_microsegment == 'low_arpu_high_tenure_m4'
         limit_per_code: 1000
         variant: 1
-      fedbe0f4-ea62-4385-bf99-a69996ba0d77:
-        campaign_code: 200615-18
+      b0956724-332d-4644-be77-a25117cf1a31:
+        campaign_code: 200430-3
         conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m2'
+        - ard_microsegment == 'low_arpu_high_tenure_m8'
+        limit_per_code: 1000
+        variant: 1
+      bd019fac-b482-46a8-afa9-bf0eb679fd6f:
+        campaign_code: 200430-3
+        conditions:
+        - ard_microsegment == 'low_arpu_high_tenure_m7'
+        limit_per_code: 1000
+        variant: 1
+      c18c3daa-ff1c-4820-8c3f-9f9c74277eb8:
+        campaign_code: 200429-20
+        conditions:
+        - ard_microsegment == 'low_arpu_high_tenure_m1'
         limit_per_code: 1000
         variant: 2
-    treatment_name: treatment_no_test_z2_ard_d10_low_arpu_high_tenure
+      c3430300-3666-419d-85e3-fd9c5babbe24:
+        campaign_code: 200429-26
+        conditions:
+        - ard_microsegment == 'low_arpu_high_tenure_m7'
+        limit_per_code: 1000
+        variant: 2
+      cb79f501-c25b-4d89-ac36-8fd095a4f7d6:
+        campaign_code: 200422-17
+        conditions:
+        - ard_microsegment == 'low_arpu_high_tenure_m8'
+        limit_per_code: 1000
+        variant: 2
+      ecaf4454-4f74-41da-81c2-b02b60987466:
+        campaign_code: 200430-3
+        conditions:
+        - ard_microsegment == 'low_arpu_high_tenure_m3'
+        limit_per_code: 1000
+        variant: 1
+    treatment_name: treatment_z2_no_test_ard_d10_low_arpu_high_tenure
     treatment_size: 5250
     use_case: ard
-  treatment_no_test_z2_ard_d10_low_arpu_low_tenure:
+  treatment_z2_no_test_ard_d10_low_arpu_low_tenure:
     order_policy: dilution1_pred
     rules:
-      000680a7-f284-4aa0-b218-2a7bea744fe8:
-        campaign_code: 200615-31
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m7'
-        limit_per_code: 1000
-        variant: 2
-      095ed44a-3589-44b7-9ccf-5d37af74b62b:
-        campaign_code: 200615-27
+      0fe38356-23fe-48ad-8def-be7ad2df447b:
+        campaign_code: 200429-29
         conditions:
         - ard_microsegment == 'low_arpu_low_tenure_m3'
         limit_per_code: 1000
         variant: 2
-      0ef829e4-efb0-43ba-8f87-cde82b1f8b34:
-        campaign_code: 200430-3
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m4'
-        limit_per_code: 1000
-        variant: 1
-      3ddc4091-2db9-469d-b3b4-c361fa166af6:
-        campaign_code: 200615-30
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m6'
-        limit_per_code: 1000
-        variant: 2
-      4d1d0857-1762-4368-955a-4cd041073294:
-        campaign_code: 200430-3
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m1'
-        limit_per_code: 1000
-        variant: 1
-      5b0abd50-6180-4376-84ba-76f01a7687ef:
-        campaign_code: 200430-3
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m2'
-        limit_per_code: 1000
-        variant: 1
-      5d54d42e-462e-478a-93ae-ddf1504a1763:
-        campaign_code: 200615-32
+      1d9f1629-a07d-4d4d-acb9-6b8bffba17cd:
+        campaign_code: 200429-34
         conditions:
         - ard_microsegment == 'low_arpu_low_tenure_m8'
         limit_per_code: 1000
         variant: 2
-      6fb06ccb-6a72-4c83-a334-d0a205fe2c48:
-        campaign_code: 200430-3
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m6'
-        limit_per_code: 1000
-        variant: 1
-      7eab91a6-782a-40ba-a5fd-743df9dfb13a:
-        campaign_code: 200615-29
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m5'
-        limit_per_code: 1000
-        variant: 2
-      a54a4e40-3a8e-461a-a2a6-a555e7c0bb93:
-        campaign_code: 200615-28
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m4'
-        limit_per_code: 1000
-        variant: 2
-      ad791474-94df-4566-91cf-522b097c0a44:
-        campaign_code: 200615-25
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m1'
-        limit_per_code: 1000
-        variant: 2
-      c2631b94-715e-40ea-93ba-1573778ef64a:
-        campaign_code: 200430-3
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m3'
-        limit_per_code: 1000
-        variant: 1
-      c975051b-3aa9-4479-a577-bfc2c38fa621:
+      224d6805-6dfe-4aa3-a205-ff4b21c3ad99:
         campaign_code: 200430-3
         conditions:
         - ard_microsegment == 'low_arpu_low_tenure_m8'
         limit_per_code: 1000
         variant: 1
-      d762dae2-ae28-42c0-86a2-e13644cd3102:
+      4449cb1d-5f03-4475-ab03-60548722bbb4:
+        campaign_code: 200430-3
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m3'
+        limit_per_code: 1000
+        variant: 1
+      479ba09b-bc47-49cc-98fd-1c9b1af065f8:
+        campaign_code: 200430-3
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m1'
+        limit_per_code: 1000
+        variant: 1
+      63bae269-3b14-4236-885e-573aa9aeee81:
+        campaign_code: 200429-32
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m6'
+        limit_per_code: 1000
+        variant: 2
+      68af95ac-5932-41d0-abe3-4a7ae487ecb8:
+        campaign_code: 200430-3
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m4'
+        limit_per_code: 1000
+        variant: 1
+      8695e532-741d-4d1c-bdb5-96fc07684bec:
+        campaign_code: 200430-3
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m2'
+        limit_per_code: 1000
+        variant: 1
+      9965f62a-ea94-4af7-81ac-cd9316d02894:
+        campaign_code: 200429-27
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m1'
+        limit_per_code: 1000
+        variant: 2
+      aea178d3-b951-4095-b81f-8524999dfc66:
+        campaign_code: 200430-3
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m6'
+        limit_per_code: 1000
+        variant: 1
+      b1680243-6886-4757-adbc-3ed3654ab522:
         campaign_code: 200430-3
         conditions:
         - ard_microsegment == 'low_arpu_low_tenure_m5'
         limit_per_code: 1000
         variant: 1
-      ddd0da16-a548-4194-a20e-be4463f8b7d0:
-        campaign_code: 200615-26
+      b2616815-bdd2-48c1-96cc-0187aa5a2a6d:
+        campaign_code: 200429-30
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m4'
+        limit_per_code: 1000
+        variant: 2
+      b572c6c5-a2c4-4844-9513-d28d043a1ec5:
+        campaign_code: 200429-33
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m7'
+        limit_per_code: 1000
+        variant: 2
+      c3be336b-3ad8-4e0b-ad3e-f9ef84e1ed47:
+        campaign_code: 200429-28
         conditions:
         - ard_microsegment == 'low_arpu_low_tenure_m2'
         limit_per_code: 1000
         variant: 2
-      e58dcadc-c65b-4659-81f7-8ead6170844b:
+      db691ca5-2d90-40ec-bf6a-807aa167f805:
         campaign_code: 200430-3
         conditions:
         - ard_microsegment == 'low_arpu_low_tenure_m7'
         limit_per_code: 1000
         variant: 1
-    treatment_name: treatment_no_test_z2_ard_d10_low_arpu_low_tenure
+      e87e3b74-e163-423a-9b50-51076fc5080c:
+        campaign_code: 200429-31
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m5'
+        limit_per_code: 1000
+        variant: 2
+    treatment_name: treatment_z2_no_test_ard_d10_low_arpu_low_tenure
     treatment_size: 5250
     use_case: ard
 
