@@ -69,6 +69,17 @@ def geo_to_l3_pipeline(**kwargs):
                  "params:l3_geo_top3_cells_on_voice_usage"
                  ],
                 "l3_geo_top3_cells_on_voice_usage"
+            ),
+
+            ##==============================Update 2020-06-17 by Thatt529==========================================##
+
+            ##distance_top_call###
+            node(
+                node_from_config,
+                ["l1_geo_distance_top_call",
+                 "params:l3_geo_distance_top_call"
+                 ],
+                "l3_geo_distance_top_call"
             )
 
 

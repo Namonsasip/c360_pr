@@ -371,11 +371,13 @@ def l4_geo_most_AIS_store_visit(raw, sql):
     # Get spark session
     spark = get_spark_session()
     df = spark.sql("""
-            SELECT imsi,location_id,landmark_name_th,landmark_sub_name_en,COUNT(TIME_IN) as last_visited,partition_month
-            FROM GEO_AIS_VISITED_SHOP
-            GROUP BY 1,2,3,4,6;
+            SELECT imsi,location_id,landmark_name_th,landmark_sub_name_en,most_visited,partition_month
+            FROM (SELECT imsi,location_id,landmark_name_th,landmark_sub_name_en,row_number() over(partition by LOCATION_ID order by COUNT(TIME_IN)) as row_number,COUNT(TIME_IN) as most_visited,landmark_latitude,landmark_longitude,partition_month
+                FROM GEO_AIS_VISITED_SHOP
+                GROUP BY 1,2,3,4,7,8,9
+                ) A
+                where A.row_number = 1;
          """)
-
     df.cache()
     print("Start for check result from sql query statement")
     df.count()
@@ -452,12 +454,38 @@ def l4_geo_store_close_to_work(home_work, sql):
     return out
 
 
-##==============================Update 2020-06-15 by Thatt529==========================================##
+##==============================Update 2020-06-17 by Thatt529==========================================##
 
-###Top_3_cells_on_voice_usage###
-def l4_geo_top3_cells_on_voice_usage(df, sql):
-    return
+###Distance between nearest store and most visited store###
+def l4_geo_range_from_most_visited(most,close,sql):
+    most.cache()
+    month_id = most.selectExpr('max(partition_month)').collect()[0][0]
+    most = most.where('partition_month=' + str(month_id))
+    most.createOrReplaceTempView('GEO_AIS_VISITED_SHOP')
+    month_id = close.selectExpr('max(start_of_month)').collect()[0][0]
+    close = close.where('start_of_month=' + str(month_id))
+    close.createOrReplaceTempView('closest_store')
+    spark = get_spark_session()
+    most_visit = spark.sql("""
+                SELECT imsi,location_id,landmark_name_th,landmark_sub_name_en,most_visited,landmark_latitude,landmark_longitude,partition_month
+                FROM (SELECT imsi,location_id,landmark_name_th,landmark_sub_name_en,row_number() over(partition by LOCATION_ID order by COUNT(TIME_IN)) as row_number,COUNT(TIME_IN) as most_visited,landmark_latitude,landmark_longitude,partition_month
+                FROM GEO_AIS_VISITED_SHOP
+                GROUP BY 1,2,3,4,7,8,9
+                ) A
+                where A.row_number = 1;
+             """)
 
+    most_visit.cache()
+    most_visit.createOrReplaceTempView('most_visit_store')
+    locations = spark.read.parquet("dbfs:/mnt/customer360-blob-data/C360/GEO/geo_mst_lm_poi_shape")
+    locations.createOrReplaceTempView('POI_SHAPE')
+    closest = spark.sql("""
+                select A.imsi,A.home_weekday_location_id,A.weekday_branch_name,A.weekday_branch_location_id,B.landmark_latitude as store_latitude,B.landmark_longitude as store_longitude
+                from closest_store A, poi_shape B
+                where A.weekday_branch_location_id = B.geo_shape_id
+            """)
+    closest.cache()
+    closest.createOrReplaceTempView('closest_store_with_co')
 
 def l4_geo_work_area_center_average(visti_hr, home_work, sql):
     # Clean data
@@ -492,8 +520,7 @@ def l4_geo_work_area_center_average(visti_hr, home_work, sql):
 
     # Drop duplicate
     visit_hr_agg_monthly_3month = visit_hr_agg_monthly_3month \
-        .drop_duplicates(
-        subset=['imsi', 'start_of_month', 'location_id', 'latitude', 'longitude', '3_duration', '3_incident', '3_days']) \
+        .drop_duplicates(subset=['imsi', 'start_of_month', 'location_id', 'latitude', 'longitude', '3_duration', '3_incident', '3_days']) \
         .select('imsi', 'start_of_month', 'location_id', 'latitude', 'longitude', '3_duration', '3_incident', '3_days')
 
     visit_hr_agg_monthly_3month = visit_hr_agg_monthly_3month.withColumnRenamed('3_duration', 'duration') \
@@ -559,3 +586,13 @@ def l4_geo_work_area_center_average(visti_hr, home_work, sql):
                 'work_avg_longitude', 'distance_difference', 'radius')
 
     return work_final
+
+    # range_diff = spark.sql("""
+    #             select A.imsi,B.home_weekday_location_id,B.weekday_branch_name,B.weekday_branch_location_id,A.landmark_name_th,A.location_id,CAST((ACOS(COS(RADIANS(90-A.LANDMARK_LATITUDE))*COS(RADIANS(90-STORE_LATITUDE))+SIN(RADIANS(90-A.LANDMARK_LATITUDE))*SIN(RADIANS(90-STORE_LATITUDE))*COS(RADIANS(A.LANDMARK_LONGITUDE - STORE_LONGITUDE)))*6371) AS DECIMAL(13,2)) as range_diff,A.partition_month
+    #             from most_visit_store A join closest_store_with_co B
+    #             on A.imsi = B.imsi
+    #         """)
+    # range_diff.cache()
+    # out = node_from_config(range_diff, sql)
+    # return out
+
