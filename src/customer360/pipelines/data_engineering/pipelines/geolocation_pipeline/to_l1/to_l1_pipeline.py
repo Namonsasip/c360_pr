@@ -129,10 +129,8 @@ def geo_to_l1_pipeline(**kwargs):
             ##distance_top_call###
             node(
                 l1_geo_distance_top_call,
-                ["l1_geo_top3_cells_on_voice_usage",
-                 ""
-                 ],
-                "l1_geo_top3_cells_on_voice_usage"
+                "l1_geo_top3_cells_on_voice_usage",
+                "l1_geo_distance_top_call"
             )
 
         ], name="geo_to_l1_pipeline"
