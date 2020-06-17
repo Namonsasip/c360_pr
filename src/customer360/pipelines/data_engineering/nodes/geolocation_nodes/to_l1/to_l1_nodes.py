@@ -495,7 +495,8 @@ def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
     l0_df_usage1 = usage_df.withColumn("event_partition_date",F.to_date(usage_df.date_id.cast(DateType()), "yyyyMMdd"))
 
     ### last_date
-    geo_last_date = geo_df.agg(F.max("partition_date")).collect()[0][0]
+    # geo_last_date = geo_df.agg(F.max("partition_date")).collect()[0][0]
+    geo_last_date = "20200612"
     profile_last_date = profile_df.agg(F.max("partition_month")).collect()[0][0]
 
     ### where
