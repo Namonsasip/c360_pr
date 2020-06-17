@@ -154,6 +154,8 @@ def copy_logs_to_dbfs(parameters: Dict[str, Any], treatments_deployed: bool):
     copies the logs to persistent dbfs path.
 
     Args:
+        treatments_deployed: parameters used to tell kedro that this node has to
+            happen after treatments deployment.
         parameters: parameters defined in parameters.yml. Used to define path of logs.
     """
     utc_now = pytz.utc.localize(datetime.utcnow())
