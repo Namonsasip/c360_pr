@@ -122,6 +122,8 @@ def build_daily_kpis(
     """
     logging.info("Building daily kpis")
     report_parameters = parameters["build_report"]
+    if "key_date" in users_report.columns:
+        users_report = users_report.drop("key_date")
     df = add_arpus(users_report, reve, report_parameters["min_date"])
     df = add_status(df, profile_table)
     df = df.join(microsegments, on="subscription_identifier")
