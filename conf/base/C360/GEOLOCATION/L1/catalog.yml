@@ -237,16 +237,16 @@ l1_geo_call_location_home_work_daily_for_l3_geo_call_location_home_work_monthly:
 
 ###Number of Unique Cells Used###
 l1_int_geo_num_unique_cell_for_l1_geo:
-        type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-        file_format: parquet
-        filepath: /mnt/customer360-blob-data/C360/GEO/l1_features/usage_sum_data_location_daily_l1/
-        metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
-        load_args:
-          increment_flag: 'no'
-          partitionBy: "event_partition_date"
-          read_layer: 'l1_daily'
-          target_layer: 'l1_daily'
-          lookback: '0'
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: parquet
+  filepath: /mnt/customer360-blob-data/C360/GEO/l1_features/usage_sum_data_location_daily_l1/
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  load_args:
+    increment_flag: 'no'
+    partitionBy: "event_partition_date"
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
 
 
 ###feature_AIS_store###

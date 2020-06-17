@@ -50,22 +50,22 @@ l1_geo_data_count_location_id:
 
 ###Number of Unique Cells Used###
 l1_geo_number_unique_cell_id:
-      where_clause: ""
-      feature_list:
-        data_num_unique_cell: "durations_num"
-      granularity: "event_partition_date"
+  where_clause: ""
+  feature_list:
+    data_num_unique_cell: "durations_num"
+  granularity: "event_partition_date"
 
 ###feature_AIS_store###
 l1_location_of_visit_ais_store_daily:
   where_clause: "landmark_cat_name_en in ('AIS')"
   feature_list:
-      imsi: "imsi"
-      store_location_id:  "geo_shape_id"
-      store_name: "landmark_name_th"
-      store_category: "landmark_sub_name_en"
-      store_latitude: "landmark_latitude"
-      store_longitude:  "landmark_longitude"
-      last_visit: "time_in"
-      partition_month:  "substr(partition_date,0,6)"
+    imsi: "imsi"
+    store_location_id:  "geo_shape_id"
+    store_name: "landmark_name_th"
+    store_category: "landmark_sub_name_en"
+    store_latitude: "landmark_latitude"
+    store_longitude:  "landmark_longitude"
+    last_visit: "time_in"
+    partition_month:  "substr(partition_date,0,6)"
   granularity:  ""
 
