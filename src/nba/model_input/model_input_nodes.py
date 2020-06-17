@@ -67,8 +67,20 @@ def node_l5_nba_customer_profile(
 
 
 def node_l5_nba_campaign_master(campaign_history_master_active: DataFrame) -> DataFrame:
+    # Some child codes are duplicated so take only last one
+    l5_nba_campaign_master = campaign_history_master_active.withColumn(
+        "aux_date_order",
+        F.row_number().over(
+            Window.partitionBy("child_code").orderBy(
+                F.col("month_id").desc()
+            )
+        ),
+    )
+    l5_nba_campaign_master = l5_nba_campaign_master.filter(
+        F.col("aux_date_order") == 1
+    ).drop("aux_date_order")
 
-    l5_nba_campaign_master = campaign_history_master_active.replace(
+    l5_nba_campaign_master = l5_nba_campaign_master.replace(
         "Cross Sell", value="Cross/ Up sell", subset="campaign_category"
     )
 
