@@ -85,7 +85,7 @@ def streaming_to_l1_intermediate_pipeline(**kwargs):
                   "params:l1_streaming_fav_content_group_by_duration",
 
                   # TV Channel features
-                  "params:int_l1_streaming_tv_channel_features_tbl",
+                  "params:int_l1_streaming_tv_channel_features",
                   "params:l1_streaming_fav_tv_channel_by_volume",
                   "params:l1_streaming_fav_tv_channel_by_duration",
                   
