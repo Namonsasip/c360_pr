@@ -407,7 +407,7 @@ def l4_geo_store_close_to_home(home_work, locations, sql):
     home_work = home_work.where(F.col('start_of_month') == str(month_id))
     home_work.createOrReplaceTempView('home_work_location')
 
-    print("DEBUG--------------------------(1)")
+    # print("DEBUG--------------------------(1)")
     spark = get_spark_session()
     locations.createOrReplaceTempView('mst_lm_poi_shape')
     df = spark.sql("""
@@ -416,7 +416,7 @@ def l4_geo_store_close_to_home(home_work, locations, sql):
             where B.landmark_cat_name_en = 'AIS'
         """)
     df.createOrReplaceTempView('home_work_ais_store')
-    print("DEBUG--------------------------(2)")
+    # print("DEBUG--------------------------(2)")
 
     home_weekday = spark.sql("""
             select imsi,home_weekday_location_id,MIN(CAST((ACOS(COS(RADIANS(90-LANDMARK_LATITUDE))*COS(RADIANS(90-HOME_WEEKDAY_LATITUDE))+SIN(RADIANS(90-LANDMARK_LATITUDE))*SIN(RADIANS(90-HOME_WEEKDAY_LATITUDE))*COS(RADIANS(LANDMARK_LONGITUDE - HOME_WEEKDAY_LONGITUDE)))*6371) AS DECIMAL(13,2))) AS range_from_weekday_home, first(landmark_name_th) as branch, first(geo_shape_id) as branch_location_id
@@ -433,7 +433,7 @@ def l4_geo_store_close_to_home(home_work, locations, sql):
         """)
     home_weekday.createOrReplaceTempView('home_weekday')
     home_weekend.createOrReplaceTempView('home_weekend')
-    print("DEBUG--------------------------(3)")
+    # print("DEBUG--------------------------(3)")
 
     df2 = spark.sql("""
             select a.imsi,a.home_weekday_location_id,a.range_from_weekday_home,a.branch as wd_location,a.branch_location_id as wd_location_id,b.home_weekend_location_id,b.range_from_weekend_home,b.branch as we_location,b.branch_location_id as we_location_id
@@ -446,16 +446,16 @@ def l4_geo_store_close_to_home(home_work, locations, sql):
 
 
 def l4_geo_store_close_to_work(home_work, locations, sql):
-    home_work.cache()
+    # home_work.cache()
     month_id = home_work.selectExpr('max(start_of_month)').collect()[0][0]
-    home_work = home_work.where('start_of_month=' + str(month_id))
+    home_work = home_work.where(F.col('start_of_month') == str(month_id))
     home_work.createOrReplaceTempView('home_work_location')
     spark = get_spark_session()
     # locations = spark.read.parquet("dbfs:/mnt/customer360-blob-data/C360/GEO/geo_mst_lm_poi_shape")
     locations.createOrReplaceTempView('MST_LM_POI_SHAPE')
     df = spark.sql("""
                 select A.*,B.landmark_name_th,B.landmark_latitude,B.landmark_longitude,B.geo_shape_id
-                from home_work_sample A cross join mst_lm_poi_shape B
+                from home_work_location A cross join mst_lm_poi_shape B
                 where B.landmark_cat_name_en = 'AIS'
             """)
     df.createOrReplaceTempView('home_work_ais_store')
