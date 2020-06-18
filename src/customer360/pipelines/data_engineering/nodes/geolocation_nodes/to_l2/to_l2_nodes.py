@@ -129,6 +129,31 @@ def l2_geo_top3_cells_on_voice_usage(df,sql):
     return df
 
 
+
+
+
+### 47 l1_the_favourite_locations_daily ====================\
+def l2_the_favourite_locations_weekly(l1_df_the_favourite_location_daily):
+    ### config
+    spark = get_spark_session()
+    l1_df_the_favourite_location_daily.createOrReplaceTempView('l1_df_the_favourite_location_daily')
+    sql_query = """
+    select
+    mobile_no
+    ,start_of_week
+    ,lac	
+    ,ci
+    ,sum(vol_3g) as vol_3g
+    ,sum(vol_4g) as vol_4g
+    ,sum(vol_5g) as vol_5g
+    from l1_df_the_favourite_location_daily
+    group by 1,2,3,4
+    order by 2,1,3,4
+    """
+    l2 = spark.sql(sql_query)
+    return l2
+
+
 #27 Same favourite location for weekend and weekday
 def l2_same_favourite_location_weekend_weekday_weekly(l0_geo_cust_cell_visit_time_df):
     ### config
@@ -138,6 +163,7 @@ def l2_same_favourite_location_weekend_weekday_weekly(l0_geo_cust_cell_visit_tim
     # Assign day_of_week to weekday or weekend
     geo_df = l0_geo_cust_cell_visit_time_df.withColumn("start_of_week", F.to_date(F.date_trunc('week', "time_in")))\
         .withColumn("start_of_month",F.to_date(F.date_trunc('month',"time_in")))
+
     l0_geo_cust_cell_visit_time_df.createOrReplaceTempView('l0_geo_cust_cell_visit_time_df')
 
     sql_query = """
@@ -156,3 +182,4 @@ def l2_same_favourite_location_weekend_weekday_weekly(l0_geo_cust_cell_visit_tim
     """
     l2 = spark.sql(sql_query)
     return l2
+
