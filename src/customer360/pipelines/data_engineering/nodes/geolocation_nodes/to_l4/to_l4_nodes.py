@@ -1056,8 +1056,8 @@ def l4_geo_number_most_frequent_count(l1_favourite_location, l4_most_frequency, 
     l1_favourite_location.createOrReplaceTempView('geo_location_data')
     l4_most_frequency.createOrReplaceTempView('l4_most_frequency')
 
-    l0_df1 = l1_favourite_location_1.withColumn("event_partition_date",
-                                                F.to_date(l1_favourite_location_1.date_id.cast(DateType()),
+    l0_df1 = l1_favourite_location.withColumn("event_partition_date",
+                                                F.to_date(l1_favourite_location.date_id.cast(DateType()),
                                                           "yyyy-MM-dd")).drop("date_id")
     l0_df1.createOrReplaceTempView('geo_location_data_1')
     spark = get_spark_session()

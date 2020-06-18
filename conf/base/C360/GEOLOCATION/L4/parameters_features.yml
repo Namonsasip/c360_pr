@@ -176,7 +176,7 @@ l4_geo_store_close_to_work:
 
 ###Top_3_cells_on_voice_usage###
 l4_geo_top3_cells_on_voice_usage:
-  partition_by: ["imsi","rnk"]
+  partition_by: ["imsi","rnk","latitude","longitude"]
   feature_list:
     sum: ["total_call"]
   read_from: "l2"

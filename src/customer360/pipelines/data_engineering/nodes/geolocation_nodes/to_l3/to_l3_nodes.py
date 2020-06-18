@@ -54,6 +54,8 @@ def l3_geo_top3_cells_on_voice_usage(df,sql):
     sql_query = """
         select
         imsi
+        ,latitude
+        ,longitude
         ,total_call
         ,row_number() over (partition by imsi,start_of_month order by total_call desc) as rnk
         ,start_of_month

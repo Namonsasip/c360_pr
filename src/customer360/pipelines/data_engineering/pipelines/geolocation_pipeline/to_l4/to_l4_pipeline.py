@@ -143,7 +143,7 @@ def geo_to_l4_pipeline(**kwargs):
                  ],
                 "l4_geo_store_close_to_work"
             ),
-            #==============================Update 2020-06-15 by Thatt529==========================================##
+            ##==============================Update 2020-06-15 by Thatt529==========================================##
 
             ##Top_3_cells_on_voice_usage###
             node(
@@ -269,39 +269,39 @@ def geo_to_l4_pipeline(**kwargs):
                 "l4_the_second_frequently_location_4g"
             ),
 
-            # ###============== Number of used most frequent =====================
-            # node(
-            #     l4_geo_number_most_frequent,
-            #     ["รอของพี่ฟอร์ม",
-            #      "params:l4_area_from_number_of_used_most_frequent"
-            #      ],
-            #     "l4_geo_from_number_of_used_most_frequent"
-            # ),
-            #
-            # node(
-            #     l4_geo_number_most_frequent,
-            #     ["รอของพี่ฟอร์ม",
-            #      "params:l4_area_from_number_of_used_most_frequent"
-            #      ],
-            #     "l4_geo_from_l1_most_favourite_location"
-            # ),
-            #
-            # ### ============== Number of used most frequent top five =====================
-            # node(
-            #     l4_geo_number_most_frequent_top_five,
-            #     ["รอของพี่ฟอร์ม",
-            #      "params:l4_area_from_number_of_used_most_frequent_top_5"
-            #      ],
-            #     "l4_geo_from_number_of_used_most_frequent"
-            # ),
-            #
-            # node(
-            #     l4_geo_number_most_frequent_top_five,
-            #     ["รอของพี่ฟอร์ม",
-            #      "params:l4_area_from_number_of_used_most_frequent_top_5"
-            #      ],
-            #     "l4_geo_from_l1_most_favourite_location"
-            # )
+            ###============== Number of used most frequent =====================
+            node(
+                l4_geo_number_most_frequent_top_five,
+                ["l4_the_most_frequently_location_weekdays",
+                 "params:l4_area_from_number_of_used_most_frequent_top_5"
+                 ],
+                "l4_geo_from_number_of_used_most_frequent"
+            ),
+
+            node(
+                l4_geo_number_most_frequent_top_five,
+                ["l4_the_most_frequently_location",
+                 "params:l4_area_from_number_of_used_most_frequent_top_5"
+                 ],
+                "l4_geo_from_l1_most_favourite_location"
+            ),
+
+            ### ============== Number of used most frequent top five =====================
+            node(
+                l4_geo_number_most_frequent,
+                ["l4_the_most_frequently_location_weekdays",
+                 "params:l4_area_from_number_of_used_most_frequent"
+                 ],
+                "l4_geo_from_number_of_used_most_frequent"
+            ),
+
+            node(
+                l4_geo_number_most_frequent,
+                ["l4_the_most_frequently_location",
+                 "params:l4_area_from_number_of_used_most_frequent"
+                 ],
+                "l4_geo_from_l1_most_favourite_location"
+            ),
 
         ], name="geo_to_l4_pipeline"
     )

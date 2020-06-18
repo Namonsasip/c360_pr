@@ -78,8 +78,8 @@ l2_geo_call_location_home_work_weekly:
 l2_geo_top3_cells_on_voice_usage:
   where_clause: ""
   feature_list:
-    total_distance_km: "sum(total_call)"
-  granularity: "imsi,start_of_week"
+    total_call: "sum(total_call)"
+  granularity: "imsi,latitude,longitude,start_of_week"
 
 
 
