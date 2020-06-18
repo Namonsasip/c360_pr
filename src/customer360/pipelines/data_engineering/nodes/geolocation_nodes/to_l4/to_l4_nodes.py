@@ -490,7 +490,7 @@ def l4_geo_range_from_most_visited(most,close,sql):
 def l4_geo_work_area_center_average(visti_hr, home_work, sql):
     # Clean data
     visit_hr_drop = visti_hr.drop('partition_hour')
-    visit_hr_drop = visit_hr_drop.where("hour > 5 and hour < 19").drop('partition_date')
+    visit_hr_drop = visit_hr_drop.where("hour > 5 and hour < 19")
     work = home_work.drop('ome_weekday_location_id:string', 'home_weekday_latitude', 'home_weekday_longitude',
                           'home_weekend_location_id', 'home_weekend_latitude', 'home_weekend_longitude')
 
