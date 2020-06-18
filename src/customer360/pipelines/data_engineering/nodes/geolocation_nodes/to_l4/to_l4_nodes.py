@@ -404,7 +404,7 @@ def l4_geo_most_AIS_store_visit(raw, sql):
 def l4_geo_store_close_to_home(home_work, locations, sql):
 
     month_id = home_work.selectExpr('max(start_of_month)').collect()[0][0]
-    home_work = home_work.where(F.col('start_of_month=') == str(month_id))
+    home_work = home_work.where(F.col('start_of_month') == str(month_id))
     home_work.createOrReplaceTempView('home_work_location')
 
     print("DEBUG--------------------------(1)")
