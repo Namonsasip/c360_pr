@@ -132,6 +132,7 @@ def geo_to_l4_pipeline(**kwargs):
             node(
                 l4_geo_store_close_to_home,
                 ["l4_geo_home_work_location_id",
+                 "l0_mst_poi_shape_for_l1_geo_area_from_ais_store_daily",
                  "params:l4_geo_store_close_to_home"
                  ],
                 "l4_geo_store_close_to_home"

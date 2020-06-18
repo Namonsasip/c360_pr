@@ -401,7 +401,7 @@ def l4_geo_most_AIS_store_visit(raw, sql):
     return out
 
 
-def l4_geo_store_close_to_home(home_work, sql):
+def l4_geo_store_close_to_home(home_work, locations, sql):
     home_work.cache()
     month_id = home_work.selectExpr('max(start_of_month)').collect()[0][0]
     home_work = home_work.where('start_of_month=' == month_id)
@@ -409,8 +409,8 @@ def l4_geo_store_close_to_home(home_work, sql):
 
     print("DEBUG--------------------------(1)")
     spark = get_spark_session()
-    locations = spark.read.parquet("dbfs:/mnt/customer360-blob-data/C360/GEO/geo_mst_lm_poi_shape")
-    locations.createOrReplaceTempView('MST_LM_POI_SHAPE')
+    # locations = spark.read.parquet("dbfs:/mnt/customer360-blob-data/C360/GEO/geo_mst_lm_poi_shape")
+    locations.createOrReplaceTempView('mst_lm_poi_shape')
     df = spark.sql("""
             select A.*,B.landmark_name_th,B.landmark_latitude,B.landmark_longitude,B.geo_shape_id
             from home_work_sample A cross join mst_lm_poi_shape B
@@ -446,13 +446,13 @@ def l4_geo_store_close_to_home(home_work, sql):
     return out
 
 
-def l4_geo_store_close_to_work(home_work, sql):
+def l4_geo_store_close_to_work(home_work, locations, sql):
     home_work.cache()
     month_id = home_work.selectExpr('max(start_of_month)').collect()[0][0]
     home_work = home_work.where('start_of_month=' + str(month_id))
     home_work.createOrReplaceTempView('home_work_location')
     spark = get_spark_session()
-    locations = spark.read.parquet("dbfs:/mnt/customer360-blob-data/C360/GEO/geo_mst_lm_poi_shape")
+    # locations = spark.read.parquet("dbfs:/mnt/customer360-blob-data/C360/GEO/geo_mst_lm_poi_shape")
     locations.createOrReplaceTempView('MST_LM_POI_SHAPE')
     df = spark.sql("""
                 select A.*,B.landmark_name_th,B.landmark_latitude,B.landmark_longitude,B.geo_shape_id
