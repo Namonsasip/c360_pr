@@ -564,20 +564,22 @@ def l4_geo_work_area_center_average(visti_hr, home_work, sql):
         .select(work_center_average.imsi, work_center_average.start_of_month, 'avg_latitude',
                 'avg_longitude', 'work_latitude', 'work_longitude')
 
+    print('Debug step: START----------------------------------------------- (1)')
     work_center_average_diff = work_center_average_diff.withColumn('distance_difference', F.when(
         (work_center_average_diff.work_latitude.isNull()) | (work_center_average_diff.work_longitude.isNull()), 0.0) \
                                                                    .otherwise((F.acos(F.cos(
         F.radians(90 - F.col('avg_latitude'))) * F.cos(
-        F.radians(90 - F.col('latitude'))) + F.sin( \
+        F.radians(90 - F.col('work_latitude'))) + F.sin( \
         F.radians(90 - F.col('avg_latitude'))) * F.sin(
-        F.radians(90 - F.col('latitude'))) * F.cos(
+        F.radians(90 - F.col('work_latitude'))) * F.cos(
         F.radians( \
             F.col('avg_longitude') - F.col(
-                'longitude')))) * 6371).cast('double'))
+                'work_longitude')))) * 6371).cast('double'))
                                                                    )
+    print('Debug step: START----------------------------------------------- (2)')
     work_center_average_diff = work_center_average_diff.withColumnRenamed('avg_latitude', 'work_avg_latitude') \
         .withColumnRenamed('avg_longitude', 'work_avg_longitude')
-
+    print('Debug step: START----------------------------------------------- (3)')
     work_final = work_center_average_diff.join(work_radius,
                                                [work_center_average_diff.imsi == work_radius.imsi, \
                                                 work_center_average_diff.start_of_month == work_radius.start_of_month],
