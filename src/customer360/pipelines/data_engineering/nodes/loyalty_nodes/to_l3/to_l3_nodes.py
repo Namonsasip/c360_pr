@@ -80,7 +80,7 @@ def loyalty_number_of_points_balance(customer_prof: DataFrame
                                             , "loyalty_register_program_points_date"
                                             , "start_of_month")
 
-    merged_with_customer = merged_df.join(customer_prof, join_key, 'left')
+    merged_with_customer = merged_df.join(customer_prof, join_key)
     return_df = node_from_config(merged_with_customer, l3_loyalty_point_balance_statuses_monthly)
 
     return return_df

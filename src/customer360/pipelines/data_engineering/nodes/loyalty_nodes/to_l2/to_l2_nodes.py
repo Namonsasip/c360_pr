@@ -34,7 +34,6 @@ def build_loyalty_number_of_services_weekly(l1_loyalty_number_of_services_daily:
         df=l1_loyalty_number_of_services_daily, grouping="weekly",
         par_col="event_partition_date",
         target_table_name="l2_loyalty_number_of_services_weekly",
-        missing_data_check_flg='Y',
         exception_partitions=exception_partitions)
 
     if check_empty_dfs([input_df]):
@@ -85,7 +84,6 @@ def build_loyalty_number_of_rewards_redeemed_weekly(l1_loyalty_number_of_rewards
         grouping="weekly",
         par_col="event_partition_date",
         target_table_name="l2_loyalty_number_of_rewards_redeemed_weekly",
-        missing_data_check_flg='Y',
         exception_partitions=exception_partitions)
 
     if check_empty_dfs([input_df]):
@@ -138,7 +136,6 @@ def build_loyalty_number_of_points_spend_weekly(l1_loyalty_number_of_points_spen
         grouping="weekly",
         par_col="event_partition_date",
         target_table_name="l2_loyalty_number_of_points_spend_weekly",
-        missing_data_check_flg='Y',
         exception_partitions=exception_partitions)
 
     if check_empty_dfs([input_df]):
