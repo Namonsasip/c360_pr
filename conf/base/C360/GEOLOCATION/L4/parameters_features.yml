@@ -115,7 +115,7 @@ l4_geo_call_home_work_location_weekly:
   read_from: "l2"
 
 ###Number of Unique Cells Used###
-l4_geo_number_unique_cell:
+l4_geo_number_unique_cell_used:
   partition_by: ["event_partition_date"]
   feature_list:
     avg: ["durations"]
