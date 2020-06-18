@@ -474,7 +474,15 @@ def l1_location_of_visit_ais_store_daily(shape,cust_cell_visit,sql):
     # Get spark session
     spark = get_spark_session()
     df = spark.sql("""
-        SELECT DISTINCT imsi,p1.location_id,landmark_name_th,landmark_sub_name_en,landmark_latitude,landmark_longitude,time_in,substr(partition_date,0,6) as partition_month
+        SELECT DISTINCT 
+            imsi,
+            p1.location_id,
+            landmark_name_th,
+            landmark_sub_name_en,
+            landmark_latitude,
+            landmark_longitude,
+            time_in,
+            substr(partition_date,0,6) as partition_month
         FROM GEO_CUST_CELL_VISIT_TIME p1 join geo_mst_lm_poi_shape  p2
         WHERE p1.location_id =  p2.geo_shape_id
         AND p2.PARTITION_NAME = 'INTERNAL'
