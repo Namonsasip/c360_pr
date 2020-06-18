@@ -9,68 +9,68 @@ def geo_to_l2_pipeline(**kwargs):
     return Pipeline(
         [
 
+            node(
+                l2_geo_time_spent_by_location_weekly,
+                ["l1_geo_time_spent_by_location_daily_for_l2_geo_time_spent_by_location_weekly",
+                 "params:l2_geo_time_spent_by_location_weekly"
+                 ],
+                "l2_geo_time_spent_by_location_weekly"
+            ),
+
+            node(
+                l2_geo_area_from_ais_store_weekly,
+                ["l1_geo_area_from_ais_store_daily_for_l2_geo_area_from_ais_store_weekly",
+                 "params:l2_area_from_ais_store_weekly"
+                 ],
+                "l2_geo_area_from_ais_store_weekly"
+            ),
+
+            node(
+                l2_geo_area_from_competitor_store_weekly,
+                ["l1_geo_area_from_competitor_store_daily_for_l2_geo_area_from_competitor_store_weekly",
+                 "params:l2_area_from_competitor_store_weekly"
+                 ],
+                "l2_geo_area_from_competitor_store_weekly"
+            ),
+            ##==============================Update 2020-06-12 by Thatt529==========================================##
+
+            ###total_distance_km###
+            node(
+                l2_geo_total_distance_km_weekly,
+                ["l1_geo_total_distance_km_daily_for_l2_geo_total_distance_km_weekly",
+                 "params:l2_geo_total_distance_km_weekly"
+                 ],
+                "l2_geo_total_distance_km_weekly"
+            ),
+
+            ###Traffic_fav_location###
             # node(
-            #     l2_geo_time_spent_by_location_weekly,
-            #     ["l1_geo_time_spent_by_location_daily_for_l2_geo_time_spent_by_location_weekly",
-            #      "params:l2_geo_time_spent_by_location_weekly"
+            #     l2_geo_use_traffic_home_work_weekly,
+            #     ["l1_geo_use_traffic_home_work",
+            #      "params:l2_geo_use_traffic_home_work_weekly"
             #      ],
-            #     "l2_geo_time_spent_by_location_weekly"
-            # ),
-            #
-            # node(
-            #     l2_geo_area_from_ais_store_weekly,
-            #     ["l1_geo_area_from_ais_store_daily_for_l2_geo_area_from_ais_store_weekly",
-            #      "params:l2_area_from_ais_store_weekly"
-            #      ],
-            #     "l2_geo_area_from_ais_store_weekly"
-            # ),
-            #
-            # node(
-            #     l2_geo_area_from_competitor_store_weekly,
-            #     ["l1_geo_area_from_competitor_store_daily_for_l2_geo_area_from_competitor_store_weekly",
-            #      "params:l2_area_from_competitor_store_weekly"
-            #      ],
-            #     "l2_geo_area_from_competitor_store_weekly"
-            # ),
-            # ##==============================Update 2020-06-12 by Thatt529==========================================##
-            #
-            # ###total_distance_km###
-            # node(
-            #     l2_geo_total_distance_km_weekly,
-            #     ["l1_geo_total_distance_km_daily_for_l2_geo_total_distance_km_weekly",
-            #      "params:l2_geo_total_distance_km_weekly"
-            #      ],
-            #     "l2_geo_total_distance_km_weekly"
-            # ),
-            #
-            # ###Traffic_fav_location###
-            # # node(
-            # #     l2_geo_use_traffic_home_work_weekly,
-            # #     ["l1_geo_use_traffic_home_work",
-            # #      "params:l2_geo_use_traffic_home_work_weekly"
-            # #      ],
-            # #     "l2_geo_use_traffic_home_work_weekly"
-            # # ),
-            #
-            # ###Number_of_base_station###
-            # node(
-            #     l2_geo_data_count_location_weekly,
-            #     ["l1_geo_number_of_bs_used",
-            #      "params:l2_geo_number_of_base_station_weekly"
-            #      ],
-            #     "l2_geo_number_of_base_station_weekly"
-            # ),
-            #
-            # ###feature_sum_voice_location###
-            # node(
-            #     l2_geo_call_home_work_location_weekly,
-            #     ["l1_geo_call_location_home_work_daily_for_l2_geo_call_location_home_work_weekly",
-            #      "params:l2_geo_call_location_home_work_weekly"
-            #      ],
-            #     "l2_geo_call_location_home_work_weekly"
+            #     "l2_geo_use_traffic_home_work_weekly"
             # ),
 
-            # ==============================Update 2020-06-15 by Thatt529==========================================##
+            ###Number_of_base_station###
+            node(
+                l2_geo_data_count_location_weekly,
+                ["l1_geo_number_of_bs_used",
+                 "params:l2_geo_number_of_base_station_weekly"
+                 ],
+                "l2_geo_number_of_base_station_weekly"
+            ),
+
+            ###feature_sum_voice_location###
+            node(
+                l2_geo_call_home_work_location_weekly,
+                ["l1_geo_call_location_home_work_daily_for_l2_geo_call_location_home_work_weekly",
+                 "params:l2_geo_call_location_home_work_weekly"
+                 ],
+                "l2_geo_call_location_home_work_weekly"
+            ),
+
+            ## ==============================Update 2020-06-15 by Thatt529==========================================##
 
             ##Top_3_cells_on_voice_usage###
             node(
@@ -80,39 +80,39 @@ def geo_to_l2_pipeline(**kwargs):
                  ],
                 "l2_geo_top3_cells_on_voice_usage"
             ),
-            #
-            # node(
-            #     l2_geo_cust_subseqently_distance_weekly,
-            #     ["l1_geo_cust_subseqently_distance_daily_for_l2_geo_cust_subseqently_distance_weekly",
-            #      "params:l2_geo_cust_subseqently_distance_weekly"
-            #      ],
-            #     "l2_geo_cust_subseqently_distance_weekly"
-            # ),
-            #
-            # ##==============================Update 2020-06-17 by Thatt529==========================================##
-            #
-            # ##distance_top_call###
-            # node(
-            #     node_from_config,
-            #     ["l1_geo_distance_top_call",
-            #      "params:l2_geo_distance_top_call"
-            #      ],
-            #     "l2_geo_distance_top_call"
-            # ),
-            #
-            # # 47 The favourite location
-            # node(
-            #     l2_the_favourite_locations_weekly,
-            #     ["l1_the_favourite_locations_daily"],
-            #     "l2_the_favourite_locations_weekly"
-            # ),
-            #
-            # # 27 Same favourite location for weekend and weekday
-            # node(
-            #     l2_same_favourite_location_weekend_weekday_weekly,
-            #     ["l0_geo_cust_cell_visit_time_for_l2_same_favourite_location_weekend_weekday"],
-            #     "l2_same_favourite_location_weekend_weekday_weekly"
-            # )
+
+            node(
+                l2_geo_cust_subseqently_distance_weekly,
+                ["l1_geo_cust_subseqently_distance_daily_for_l2_geo_cust_subseqently_distance_weekly",
+                 "params:l2_geo_cust_subseqently_distance_weekly"
+                 ],
+                "l2_geo_cust_subseqently_distance_weekly"
+            ),
+
+            ##==============================Update 2020-06-17 by Thatt529==========================================##
+
+            ##distance_top_call###
+            node(
+                node_from_config,
+                ["l1_geo_distance_top_call",
+                 "params:l2_geo_distance_top_call"
+                 ],
+                "l2_geo_distance_top_call"
+            ),
+
+            # 47 The favourite location
+            node(
+                l2_the_favourite_locations_weekly,
+                ["l1_the_favourite_locations_daily"],
+                "l2_the_favourite_locations_weekly"
+            ),
+
+            # 27 Same favourite location for weekend and weekday
+            node(
+                l2_same_favourite_location_weekend_weekday_weekly,
+                ["l0_geo_cust_cell_visit_time_for_l2_same_favourite_location_weekend_weekday"],
+                "l2_same_favourite_location_weekend_weekday_weekly"
+            )
 
         ], name="geo_to_l2_pipeline"
     )
