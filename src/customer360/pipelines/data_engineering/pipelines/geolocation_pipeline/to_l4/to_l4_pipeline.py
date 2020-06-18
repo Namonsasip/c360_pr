@@ -109,9 +109,10 @@ def geo_to_l4_pipeline(**kwargs):
             node(
                 l4_geo_number_unique_cell_used,
                 ["l0_usage_sum_data_location_daily_for_l4_geo_number_unique_cell_used",
-                 "params:l4_geo_number_unique_cell_used"],
+                 "params:l4_geo_number_unique_cell_used"
+                 ],
                 "l4_geo_number_unique_cell_used"
-            ),
+            )
             #
             # ###feature_AIS_store###
             # node(
@@ -152,16 +153,16 @@ def geo_to_l4_pipeline(**kwargs):
             #      ],
             #     "l4_geo_top3_cells_on_voice_usage"
             # ),
-
-            node(
-                l4_geo_work_area_center_average,
-                ["l0_geo_cust_location_visit_hr_for_l4_geo_work_area_center_average",
-                 "l4_geo_home_work_location_id_for_l4_geo_work_area_center_average",
-                 "params:l4_geo_work_area_center_average"
-                 ],
-                "l4_geo_work_area_center_average"
-            )
-
+            #
+            # node(
+            #     l4_geo_work_area_center_average,
+            #     ["l0_geo_cust_location_visit_hr_for_l4_geo_work_area_center_average",
+            #      "l4_geo_home_work_location_id_for_l4_geo_work_area_center_average",
+            #      "params:l4_geo_work_area_center_average"
+            #      ],
+            #     "l4_geo_work_area_center_average"
+            # )
+            #
             # ##==============================Update 2020-06-17 by Thatt529==========================================##
             #
             # ##distance_top_call###
