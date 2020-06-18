@@ -468,9 +468,9 @@ def l1_location_of_visit_ais_store_daily(shape,cust_cell_visit,sql):
     store_shape = shape.where('landmark_cat_name_en like "%AIS%"')
     store_shape.createOrReplaceTempView('geo_mst_lm_poi_shape')
 
-    # max_date = cust_cell_visit.selectExpr('max(partition_date)').collect()[0][0]
-    # cust_cell_visit.cache()
-    # cust_cell_visit = cust_cell_visit.where('partition_date='+str(max_date))
+    max_date = cust_cell_visit.selectExpr('max(partition_date)').collect()[0][0]
+    cust_cell_visit.cache()
+    cust_cell_visit = cust_cell_visit.where('partition_date='+str(max_date))
     cust_cell_visit = cust_cell_visit.withColumn("event_partition_date",
                                        F.to_date(F.col('partition_date').cast(StringType()), 'yyyyMMdd'))
     cust_cell_visit.createOrReplaceTempView('geo_cust_cell_visit_time')

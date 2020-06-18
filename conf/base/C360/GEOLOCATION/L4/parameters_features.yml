@@ -131,10 +131,10 @@ l4_geo_last_AIS_store_visit:
   where_clause: "landmark_cat_name_en in ('AIS')"
   feature_list:
     imsi: "imsi"
-    store_location_id:  "geo_shape_id"
+    store_location_id:  "location_id"
     store_name: "landmark_name_th"
     store_category: "landmark_sub_name_en"
-    last_visit: "time_in"
+    last_visit: "last_visited"
     partition_month: "partition_month"
   granularity: ""
 
@@ -142,10 +142,10 @@ l4_geo_most_AIS_store_visit:
   where_clause: "landmark_cat_name_en in ('AIS')"
   feature_list:
     imsi: "imsi"
-    store_location_id:  "geo_shape_id"
+    store_location_id:  "location_id"
     store_name: "landmark_name_th"
     store_category: "landmark_sub_name_en"
-    visit_count: "count(time_in)"
+    visit_count: "most_visited"
     partition_month: "partition_month"
   granularity: ""
 

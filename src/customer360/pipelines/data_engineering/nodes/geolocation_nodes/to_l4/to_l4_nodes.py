@@ -356,8 +356,8 @@ def l4_geo_last_AIS_store_visit(raw, sql):
 
     df.cache()
     print("Start for check result from sql query statement")
-    df.count()
-    df.show()
+    # df.count()
+    # df.show()
 
     out = node_from_config(df, sql)
     return out
@@ -380,8 +380,8 @@ def l4_geo_most_AIS_store_visit(raw, sql):
          """)
     df.cache()
     print("Start for check result from sql query statement")
-    df.count()
-    df.show()
+    # df.count()
+    # df.show()
 
     out = node_from_config(df, sql)
     return out
