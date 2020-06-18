@@ -215,7 +215,10 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
                           l1_streaming_fav_tv_channel_by_duration_df)
 
         # TV Show features
-        CNTX.catalog.save("int_l0_streaming_vimmi_table", joined_data_with_cust)
+        selective_df = joined_data_with_cust.\
+            select("subscription_identifier", "event_partition_date", "start_of_week", "start_of_month",
+                   "access_method_num", "register_date", "national_id_card", "content_group", "title", "series_title")
+        CNTX.catalog.save("int_l0_streaming_vimmi_table", selective_df)
 
         # section for favorites episodes
         int_l1_streaming_tv_show_features = node_from_config(joined_data_with_cust,
@@ -255,11 +258,17 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
     l1_streaming_fav_tv_show_by_episode_watched = node_from_config(int_l1_streaming_tv_show_features,
                                                                    l1_streaming_fav_tv_show_by_episode_watched_dict)
 
+    # TV Show features
+    selective_df = joined_data_with_cust. \
+        select("subscription_identifier", "event_partition_date", "start_of_week", "start_of_month",
+               "access_method_num", "register_date", "national_id_card", "content_group", "title", "series_title")
+
     return [int_l1_streaming_content_type_features, l1_streaming_fav_content_group_by_volume_df,
             l1_streaming_fav_content_group_by_duration_df,
             int_l1_streaming_tv_channel_features,
             l1_streaming_fav_tv_channel_by_volume_df, l1_streaming_fav_tv_channel_by_duration_df,
-            joined_data_with_cust, l1_streaming_fav_tv_show_by_episode_watched
+            selective_df,
+            l1_streaming_fav_tv_show_by_episode_watched
             ]
 
 
@@ -280,30 +289,33 @@ def stream_process_soc_mobile_data(input_data: DataFrame,
                                    l1_streaming_visit_count_and_download_traffic_feature_dict: dict
                                    ) -> [DataFrame, DataFrame, DataFrame, DataFrame, DataFrame,
                                          DataFrame, DataFrame, DataFrame, DataFrame, DataFrame]:
+
+    input_df = input_data
+    customer_df = cust_profile_df
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([input_data, cust_profile_df]):
-        return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
-                get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
-                get_spark_empty_df(), get_spark_empty_df()]
-
-    input_df = data_non_availability_and_missing_check(
-        df=input_data,
-        grouping="daily",
-        par_col="partition_date",
-        target_table_name="int_l1_streaming_video_service_feature")
-
-    customer_df = data_non_availability_and_missing_check(
-        df=cust_profile_df,
-        grouping="daily",
-        par_col="event_partition_date",
-        target_table_name="int_l1_streaming_video_service_feature")
-
-    if check_empty_dfs([input_df, customer_df]):
-        return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
-                get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
-                get_spark_empty_df(), get_spark_empty_df()]
-
-    ################################# End Implementing Data availability checks ###############################
+    # if check_empty_dfs([input_data, cust_profile_df]):
+    #     return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
+    #             get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
+    #             get_spark_empty_df(), get_spark_empty_df()]
+    #
+    # input_df = data_non_availability_and_missing_check(
+    #     df=input_data,
+    #     grouping="daily",
+    #     par_col="partition_date",
+    #     target_table_name="int_l1_streaming_video_service_feature")
+    #
+    # customer_df = data_non_availability_and_missing_check(
+    #     df=cust_profile_df,
+    #     grouping="daily",
+    #     par_col="event_partition_date",
+    #     target_table_name="int_l1_streaming_video_service_feature")
+    #
+    # if check_empty_dfs([input_df, customer_df]):
+    #     return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
+    #             get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
+    #             get_spark_empty_df(), get_spark_empty_df()]
+    #
+    # ################################# End Implementing Data availability checks ###############################
     def divide_chunks(l, n):
         # looping till length l
         for i in range(0, len(l), n):
@@ -322,7 +334,7 @@ def stream_process_soc_mobile_data(input_data: DataFrame,
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = input_df
     data_frame = add_event_week_and_month_from_yyyymmdd(data_frame, "partition_date")
-    dates_list = data_frame.select('partition_date').distinct().collect()
+    dates_list = data_frame.select('event_partition_date').distinct().collect()
     mvv_array = [row[0] for row in dates_list]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
@@ -334,8 +346,8 @@ def stream_process_soc_mobile_data(input_data: DataFrame,
     add_list.remove(first_item)
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
-        small_df = data_frame.filter(f.col("partition_date").isin(*[curr_item]))
-        cust_df = customer_df.filter((f.col("partition_date").isin(*[curr_item]))).select(sel_cols)
+        small_df = data_frame.filter(f.col("event_partition_date").isin(*[curr_item]))
+        cust_df = customer_df.filter((f.col("event_partition_date").isin(*[curr_item]))).select(sel_cols)
         joined_data_with_cust = small_df.join(cust_df, join_cols, 'left')
 
         int_l1_streaming_video_service_feature = node_from_config(joined_data_with_cust,
