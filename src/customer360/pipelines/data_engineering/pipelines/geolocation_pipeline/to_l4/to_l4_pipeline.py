@@ -105,13 +105,13 @@ def geo_to_l4_pipeline(**kwargs):
             #     "l4_geo_call_location_home_work_weekly"
             # ),
             #
-            # ###Number of Unique Cells Used###
-            # node(
-            #     l4_rolling_window,
-            #     ["l1_geo_cust_cell_visit_time_for_weekly",
-            #      "params:l4_geo_number_unique_cell"],
-            #     "l4_geo_number_unique_cell"
-            # ),
+            ###Number of Unique Cells Used###
+            node(
+                l4_geo_number_unique_cell_used,
+                ["l0_usage_sum_data_location_daily_for_l4_geo_number_unique_cell_used",
+                 "params:l4_geo_number_unique_cell_used"],
+                "l4_geo_number_unique_cell_used"
+            ),
             #
             # ###feature_AIS_store###
             # node(
