@@ -48,10 +48,10 @@ l3_geo_use_traffic_home_work_weekly:
 l3_geo_call_location_home_work_monthly:
   where_clause: ""
   feature_list:
-    call_count_location_home_weekday: "sum(call_count_location_home_weekday),"
-    call_count_location_work: "sum(call_count_location_work),"
-    call_count_location_top_1st: "sum(call_count_location_top_1st),"
-    call_count_location_top_2nd: "sum(call_count_location_top_2nd),"
+    call_count_location_home_weekday: "sum(call_count_location_home_weekday)"
+    call_count_location_work: "sum(call_count_location_work)"
+    call_count_location_top_1st: "sum(call_count_location_top_1st)"
+    call_count_location_top_2nd: "sum(call_count_location_top_2nd)"
   granularity: "imsi,start_of_month"
 
 

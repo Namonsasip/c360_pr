@@ -166,7 +166,7 @@ l2_geo_call_location_home_work_weekly:
 
 l2_geo_call_location_home_work_weekly_for_l4_geo_call_location_home_work_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_call_location_home_work_weekly/
+  filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_call_location_home_work_weekly/
   file_format: parquet
   load_args:
     increment_flag: 'no'

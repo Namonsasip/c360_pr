@@ -221,7 +221,7 @@ l1_geo_cust_subseqently_distance_daily_for_l2_geo_cust_subseqently_distance_week
 
 l1_geo_call_location_home_work_daily_for_l2_geo_call_location_home_work_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_call_location_home_work_weekly/
+  filepath: /mnt/customer360-blob-output/C360/GEO/l1_features/geo_call_location_home_work_daily/
   file_format: parquet
   load_args:
     increment_flag: 'no'
@@ -232,7 +232,7 @@ l1_geo_call_location_home_work_daily_for_l2_geo_call_location_home_work_weekly:
 
 l1_geo_call_location_home_work_daily_for_l3_geo_call_location_home_work_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l3_features/geo_call_location_home_work_monthly/
+  filepath: /mnt/customer360-blob-output/C360/GEO/l1_features/geo_call_location_home_work_daily/
   file_format: parquet
   load_args:
     increment_flag: 'no'
