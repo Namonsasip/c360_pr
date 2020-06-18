@@ -412,7 +412,7 @@ def l4_geo_store_close_to_home(home_work, locations, sql):
     locations.createOrReplaceTempView('mst_lm_poi_shape')
     df = spark.sql("""
             select A.*,B.landmark_name_th,B.landmark_latitude,B.landmark_longitude,B.geo_shape_id
-            from home_work_sample A cross join mst_lm_poi_shape B
+            from home_work_location A cross join mst_lm_poi_shape B
             where B.landmark_cat_name_en = 'AIS'
         """)
     df.createOrReplaceTempView('home_work_ais_store')
