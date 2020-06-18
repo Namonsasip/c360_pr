@@ -126,6 +126,7 @@ def sale_product_customer_master_on_top_features(sale_df: DataFrame,
 
     return master_df
 
+
 def sale_product_customer_master_main_features(sale_df: DataFrame,
                                  product_df: DataFrame,
                                  customer_df: DataFrame,
@@ -143,6 +144,52 @@ def sale_product_customer_master_main_features(sale_df: DataFrame,
     :return:
     """
 
+    ################################# Start Implementing Data availability checks ###############################
+    if check_empty_dfs([sale_df, product_df, customer_df]):
+        return get_spark_empty_df()
+
+    sale_df = data_non_availability_and_missing_check(
+        df=sale_df,
+        grouping="weekly", par_col="partition_date",
+        target_table_name="l2_sales_number_and_volume_main_transaction_weekly",
+        missing_data_check_flg='Y',
+        exception_partitions=exception_partitions_list)
+
+    product_df = data_non_availability_and_missing_check(
+        df=product_df,
+        grouping="weekly", par_col="partition_date",
+        target_table_name="l2_sales_number_and_volume_main_transaction_weekly")
+
+    customer_df = data_non_availability_and_missing_check(
+        df=customer_df,
+        grouping="weekly", par_col="start_of_week",
+        target_table_name="l2_sales_number_and_volume_main_transaction_weekly")
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            sale_df.select(
+                f.max(f.to_date(
+                    f.date_trunc("week", f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd')))).alias(
+                    "max_date")),
+            product_df.select(
+                f.max(f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd')).alias("max_date")),
+            customer_df.select(
+                f.max(f.col("start_of_week")).alias("max_date")),
+        ]
+    ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    sale_df = sale_df.filter(
+        f.to_date(f.date_trunc("week", f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd'))) <= min_value)
+
+    product_df = product_df.filter(f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+
+    customer_df = customer_df.filter(f.col("start_of_week") <= min_value)
+
+    if check_empty_dfs([sale_df, product_df, customer_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+
     sale_cols = ['service_order_item_id', 'partition_date', 'service_order_item_eff_dttm',
                  'offering_title', 'offering_cd', 'offering_promotion_class', 'mobile_num', 'crm_subscription_id', 'offering_price', 'cmd_channel_type', 'cmd_channel_sub_type']
     product_cols = ['partition_date', 'service_group', 'promotion_code']
@@ -150,7 +197,7 @@ def sale_product_customer_master_main_features(sale_df: DataFrame,
     sale_product_join_cols = ['start_of_week', 'offering_code']
 
     #select only main package
-    sale_df = sale_df.select(sale_cols).filter("lower(offering_promotion_class) = 'main'")
+    sale_df = sale_df.select(sale_cols).where("lower(offering_promotion_class) = 'main'")
     sale_df = sale_df.withColumn("start_of_week", f.to_date(f.date_trunc("week", f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd'))))
     sale_df = sale_df.withColumnRenamed("offering_cd", "offering_code").drop("partition_date") \
                     .withColumnRenamed("mobile_num","access_method_num") \
