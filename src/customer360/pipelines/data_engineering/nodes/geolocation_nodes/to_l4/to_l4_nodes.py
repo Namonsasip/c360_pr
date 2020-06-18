@@ -490,7 +490,7 @@ def l4_geo_range_from_most_visited(most,close,sql):
 def l4_geo_work_area_center_average(visti_hr, home_work, sql):
     # Clean data
     visit_hr_drop = visti_hr.drop('partition_hour')
-    visit_hr_drop = visit_hr_drop.where("hour > 5 and hour < 19").drop('partition_date')
+    visit_hr_drop = visit_hr_drop.where("hour > 5 and hour < 19")
     work = home_work.drop('ome_weekday_location_id:string', 'home_weekday_latitude', 'home_weekday_longitude',
                           'home_weekend_location_id', 'home_weekend_latitude', 'home_weekend_longitude')
 
@@ -568,13 +568,14 @@ def l4_geo_work_area_center_average(visti_hr, home_work, sql):
         (work_center_average_diff.work_latitude.isNull()) | (work_center_average_diff.work_longitude.isNull()), 0.0) \
                                                                    .otherwise((F.acos(F.cos(
         F.radians(90 - F.col('avg_latitude'))) * F.cos(
-        F.radians(90 - F.col('latitude'))) + F.sin( \
+        F.radians(90 - F.col('work_latitude'))) + F.sin( \
         F.radians(90 - F.col('avg_latitude'))) * F.sin(
-        F.radians(90 - F.col('latitude'))) * F.cos(
+        F.radians(90 - F.col('work_latitude'))) * F.cos(
         F.radians( \
             F.col('avg_longitude') - F.col(
-                'longitude')))) * 6371).cast('double'))
+                'work_longitude')))) * 6371).cast('double'))
                                                                    )
+
     work_center_average_diff = work_center_average_diff.withColumnRenamed('avg_latitude', 'work_avg_latitude') \
         .withColumnRenamed('avg_longitude', 'work_avg_longitude')
 
@@ -1173,4 +1174,44 @@ def l4_geo_number_most_frequent_top_five(l1_favourite_location, l4_most_frequenc
     out3 = node_from_config(geo_location_data_avg_weekend, sql)
 
     return out1, out2, out3
+
+
+###Number of Unique Cells Used###
+def l4_geo_number_unique_cell_used(l1_df_1, sql):
+    # get result and split weektype
+    l1_df_2 = l1_df_1.withColumn("event_partition_date",
+                                 F.to_date(l1_df_1.partition_date.cast(StringType()), "yyyyMMdd")).drop("partition_date")
+
+    spark = get_spark_session()
+    l1_df_2.createOrReplaceTempView('usage_sum_data_location_daily')
+
+    l1_df_4 = spark.sql("""select count(mobile_no) AS mobile_no , lac , ci
+        ,case when
+            dayofweek(event_partition_date) = 2
+            or dayofweek(event_partition_date) = 3
+            or dayofweek(event_partition_date) = 4
+            or dayofweek(event_partition_date) = 5
+            or dayofweek(event_partition_date) = 6
+        then     "weekday"
+        else    "weekend"
+        end as weektype,
+        event_partition_date
+        from usage_sum_data_location_daily
+        group by lac , ci, event_partition_date
+    """)
+    l1_df_4.createOrReplaceTempView('usage_sum_data_count')
+
+    # calculate weektype
+    l4_df_1 = l1_df_4.groupBy("event_partition_date", "weektype") \
+        .agg(F.sum("mobile_no").alias("durations"))
+
+    l4_df_2 = l4_df_1.groupBy("event_partition_date", "weektype").agg(F.avg("durations").alias("avg_duration"),
+                                                          F.max("durations").alias("max_duration"),
+                                                          F.min("durations").alias("min_duration"),
+                                                          F.sum("durations").alias("sum_duration"))
+
+    l4_df_2.cache()
+
+    out = node_from_config(l4_df_2, sql)
+    return out
 
