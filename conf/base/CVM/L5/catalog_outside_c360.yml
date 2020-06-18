@@ -8,3 +8,10 @@ _spark_parquet: &spark_parquet
 preferred_package:
   <<: *spark_parquet
   filepath: dbfs:/mnt/mck_databases/prod_dataupsell/conso_package_preferences
+
+# recommend product from data upsell table
+experiment_data_upsell_final_score:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_delta
+    table: experiment_data_upsell_final_score
+    write_mode: overwrite
