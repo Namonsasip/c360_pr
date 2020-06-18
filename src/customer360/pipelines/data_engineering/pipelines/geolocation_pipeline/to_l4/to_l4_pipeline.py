@@ -79,13 +79,18 @@ def geo_to_l4_pipeline(**kwargs):
             ),
 
             ###Traffic_fav_location###
-            # node(
-            #     l4_Share_traffic,
-            #     ["l2_geo_area_from_competitor_store_weekly_for_l4_geo_area_from_competitor_store",
-            #      "params:l4_area_from_competitor_store"
-            #      ],
-            #     "l4_geo_use_traffic_home_work_weekly"
-            # ),
+            node(
+                l4_rolling_window,
+                ["l2_geo_use_traffic_home_work_weekly",
+                 "params:l4_geo_use_traffic_home_work_weekly"
+                 ],
+                "int_l4_geo_use_traffic_home_work_weekly"
+            ),
+            node(
+                l4_Share_traffic,
+                "int_l4_geo_use_traffic_home_work_weekly",
+                "l4_geo_use_traffic_home_work_weekly"
+            ),
 
             ###Number_of_base_station###
             node(

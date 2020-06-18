@@ -45,12 +45,12 @@ l2_geo_use_traffic_home_work_weekly:
   feature_list:
     Home_traffic_KB: "sum(Home_traffic_KB)"
     Work_traffic_KB: "sum(Work_traffic_KB)"
-    Top1_location_traffic_KB: "sum(Top1_traffic_KB)"
-    Top2_location_traffic_KB: "sum(Top2_traffic_KB)"
-    share_Home_traffic_KB: "(sum(Home_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_traffic_KB)+sum(Top2_traffic_KB))"
-    share_Work_traffic_KB: "(sum(Work_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_traffic_KB)+sum(Top2_traffic_KB)"
-    share_Top1_location_traffic_KB: "(sum(Top1_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_traffic_KB)+sum(Top2_traffic_KB)"
-    share_Top2_location_traffic_KB: "(sum(Top2_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_traffic_KB)+sum(Top2_traffic_KB)"
+    Top1_location_traffic_KB: "sum(Top1_location_traffic_KB)"
+    Top2_location_traffic_KB: "sum(Top2_location_traffic_KB)"
+    share_Home_traffic_KB: "(sum(Home_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_location_traffic_KB)+sum(Top2_location_traffic_KB))"
+    share_Work_traffic_KB: "(sum(Work_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_location_traffic_KB)+sum(Top2_location_traffic_KB))"
+    share_Top1_location_traffic_KB: "(sum(Top1_location_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_location_traffic_KB)+sum(Top2_location_traffic_KB))"
+    share_Top2_location_traffic_KB: "(sum(Top2_location_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_location_traffic_KB)+sum(Top2_location_traffic_KB))"
   granularity: "imsi,start_of_week"
 
 ###Number_of_base_station###

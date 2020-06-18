@@ -86,9 +86,9 @@ def l2_geo_total_distance_km_weekly(df, sql):
     return df
 
 ###Traffic_fav_location###
-def   l2_geo_use_traffic_home_work_weekly(df,sql):
-    l2_df = df.withColumn("start_of_week", F.to_date(F.date_trunc('week', "event_partition_date"))).drop( 'event_partition_date')
-    l2_df_2 =node_from_config(l2_df,sql)
+def   l2_geo_use_traffic_home_work_weekly(df, sql):
+    l2_df = df.withColumn("start_of_week", F.to_date(F.date_trunc('week', "event_partition_date"))).drop('event_partition_date')
+    l2_df_2 = node_from_config(l2_df, sql)
     return l2_df_2
 
 ###Number_of_base_station###
