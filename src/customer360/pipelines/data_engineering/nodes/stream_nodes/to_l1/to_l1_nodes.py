@@ -108,8 +108,8 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
                                     l1_streaming_fav_tv_channel_by_volume_dict: dict,
                                     l1_streaming_fav_tv_channel_by_duration_dict: dict,
 
-                                    int_l1_streaming_tv_show_features_dict,
-                                    l1_streaming_fav_tv_show_by_episode_watched_dict,
+                                    int_l1_streaming_tv_show_features_dict: dict,
+                                    l1_streaming_fav_tv_show_by_episode_watched_dict: dict,
                                     ) -> [DataFrame, DataFrame, DataFrame, DataFrame, DataFrame, DataFrame, DataFrame
     , DataFrame]:
     """
