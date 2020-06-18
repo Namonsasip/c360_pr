@@ -357,7 +357,7 @@ def l4_geo_last_AIS_store_visit(raw, sql):
                 MAX(last_visit) as last_visited,
                 partition_month
             FROM GEO_AIS_VISITED_SHOP
-            GROUP BY 1,2,3,4,6;
+            GROUP BY 1,2,3,4,6
          """)
 
     df.cache()
@@ -382,15 +382,15 @@ def l4_geo_most_AIS_store_visit(raw, sql):
                     store_location_id as location_id,
                     store_name as landmark_name_th,
                     store_category as landmark_sub_name_en,
-                    row_number() over(partition by store_location_id order by COUNT(last_visit)) as row_number,
                     COUNT(last_visit) as most_visited,
+                    row_number() over(partition by store_location_id order by COUNT(last_visit)) as row_number,
                     store_latitude as landmark_latitude,
                     store_longitude as landmark_longitude,
                     partition_month
                 FROM GEO_AIS_VISITED_SHOP
                 GROUP BY 1,2,3,4,7,8,9
                 ) A
-                where A.row_number = 1;
+                where A.row_number = 1
          """)
     df.cache()
     print("Start for check result from sql query statement")
