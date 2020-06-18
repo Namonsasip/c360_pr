@@ -45,6 +45,7 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
+import logging
 import re
 
 from kedro.cli.utils import find_stylesheets
@@ -237,6 +238,7 @@ def setup(app):
     app.connect("autodoc-skip-member", skip)
     # add Kedro stylesheets
     for stylesheet in find_stylesheets():
+        logging.getLogger(__name__).info("Adding static file {}".format(stylesheet))
         app.add_stylesheet(stylesheet)
     # enable rendering RST tables in Markdown
     app.add_config_value("recommonmark_config", {"enable_eval_rst": True}, True)
