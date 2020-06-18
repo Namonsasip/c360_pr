@@ -61,8 +61,8 @@ l3_geo_call_location_home_work_monthly:
 l3_geo_top3_cells_on_voice_usage:
   where_clause: ""
   feature_list:
-    total_distance_km: "sum(total_call)"
-  granularity: "imsi,start_of_month"
+    total_call: "sum(total_call)"
+  granularity: "imsi,latitude,longitude,start_of_month"
 
 
 ##==============================Update 2020-06-17 by Thatt529==========================================##
