@@ -1212,6 +1212,6 @@ def l4_geo_number_unique_cell_used(l1_df_1, sql):
 
     l4_df_2.cache()
 
-    out = node_from_config(l4_df_1, sql)
+    out = node_from_config(l4_df_2, sql)
     return out
 
