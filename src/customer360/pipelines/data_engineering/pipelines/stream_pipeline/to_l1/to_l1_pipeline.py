@@ -118,7 +118,7 @@ def streaming_to_l1_intermediate_pipeline(**kwargs):
                   # fav music service by download traffic
                   "params:int_l1_streaming_music_service_feature",
                   "params:l1_streaming_fav_music_service_by_download_feature",
-                  "params:l1_streaming_2nd_fav_music_service_by_download_feature"
+                  "params:l1_streaming_2nd_fav_music_service_by_download_feature",
 
                   # # # fav esport service by download traffic
                   "params:int_l1_streaming_esport_service_feature",
