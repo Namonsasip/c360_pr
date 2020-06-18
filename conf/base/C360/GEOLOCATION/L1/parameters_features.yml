@@ -67,6 +67,7 @@ l1_location_of_visit_ais_store_daily:
     store_longitude:  "landmark_longitude"
     last_visit: "time_in"
     partition_month:  "partition_month"
+    event_partition_date: "event_partition_date"
   granularity:  ""
 
 
