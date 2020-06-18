@@ -96,65 +96,94 @@ def streaming_to_l1_intermediate_pipeline(**kwargs):
                   ],
                  [
                   # Content Type Features
-                  'int_l1_streaming_content_type_features', 'int_l1_streaming_tv_channel_features',
-                  'l1_streaming_fav_content_group_by_volume',
+                  "int_l1_streaming_content_type_features", "int_l1_streaming_tv_channel_features",
+                  "l1_streaming_fav_content_group_by_volume",
                   # TV Channel features
-                  'l1_streaming_fav_content_group_by_duration',
-                  'l1_streaming_fav_tv_channel_by_volume_df', 'l1_streaming_fav_tv_channel_by_duration_df',
+                  "l1_streaming_fav_content_group_by_duration",
+                  "l1_streaming_fav_tv_channel_by_volume_df", "l1_streaming_fav_tv_channel_by_duration_df",
                   # TV Show features
-                  'int_l0_streaming_vimmi_table',
+                  "int_l0_streaming_vimmi_table",
                   # Favorite Episode
-                  'l1_streaming_fav_tv_show_by_episode_watched'
+                  "l1_streaming_fav_tv_show_by_episode_watched"
                   ]
                  ),
 
-            node(
-                dac_for_streaming_to_l1_intermediate_pipeline,
-                ["l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_video_service_feature",
-                 "l1_customer_profile_union_daily_feature_for_int_l1_streaming_video_service_feature",
-                 "params:int_l1_streaming_video_service_feature_tbl"],
-                ["int_l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_video_service_feature",
-                 "int_l1_customer_profile_union_daily_feature_for_int_l1_streaming_video_service_feature"]
-            ),
-            node(
-                l1_massive_processing,
-                ["int_l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_video_service_feature",
-                 "params:int_l1_streaming_video_service_feature",
-                 "int_l1_customer_profile_union_daily_feature_for_int_l1_streaming_video_service_feature"],
-                "int_l1_streaming_video_service_feature"
-            ),
+            node(stream_process_soc_mobile_data,
+                 ["l0_streaming_soc_mobile_app_daily_for_multiple_outputs",
+                  "l1_customer_profile_union_daily_feature_for_int_l1_streaming_video_service_feature",
+                  # # fav video service by download traffic
+                  "params:int_l1_streaming_video_service_feature",
+                  "params:l1_streaming_fav_video_service_by_download_feature",
+                  "params:l1_streaming_2nd_fav_video_service_by_download_feature",
+                  # fav music service by download traffic
+                  "params:int_l1_streaming_music_service_feature",
+                  "params:l1_streaming_fav_music_service_by_download_feature",
+                  "params:l1_streaming_2nd_fav_music_service_by_download_feature"
 
-            node(
-                dac_for_streaming_to_l1_intermediate_pipeline,
-                ["l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_music_service_feature",
-                 "l1_customer_profile_union_daily_feature_for_int_l1_streaming_music_service_feature",
-                 "params:int_l1_streaming_music_service_feature_tbl"],
-                ["int_l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_music_service_feature",
-                 "int_l1_customer_profile_union_daily_feature_for_int_l1_streaming_music_service_feature"]
-            ),
-            node(
-                l1_massive_processing,
-                ["int_l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_music_service_feature",
-                 "params:int_l1_streaming_music_service_feature",
-                 "int_l1_customer_profile_union_daily_feature_for_int_l1_streaming_music_service_feature"],
-                "int_l1_streaming_music_service_feature"
-            ),
+                  # # # fav esport service by download traffic
+                  "params:int_l1_streaming_esport_service_feature",
+                  "params:l1_streaming_fav_esport_service_by_download_feature",
+                  "params:l1_streaming_2nd_fav_esport_service_by_download_feature",
 
-            node(
-                dac_for_streaming_to_l1_intermediate_pipeline,
-                ["l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_esport_service_feature",
-                 "l1_customer_profile_union_daily_feature_for_int_l1_streaming_esport_service_feature",
-                 "params:int_l1_streaming_esport_service_feature_tbl"],
-                ["int_l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_esport_service_feature",
-                 "int_l1_customer_profile_union_daily_feature_for_int_l1_streaming_esport_service_feature"]
-            ),
-            node(
-                l1_massive_processing,
-                ["int_l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_esport_service_feature",
-                 "params:int_l1_streaming_esport_service_feature",
-                 "int_l1_customer_profile_union_daily_feature_for_int_l1_streaming_esport_service_feature"],
-                "int_l1_streaming_esport_service_feature"
-            ),
+                  # # number of visit and volume of download traffic
+                  "params:l1_streaming_visit_count_and_download_traffic_feature"
+                  ],
+                 ["int_l1_streaming_video_service_feature", "l1_streaming_fav_video_service_by_download_feature",
+                  "l1_streaming_2nd_fav_video_service_by_download_feature",
+                  "int_l1_streaming_music_service_feature", "l1_streaming_fav_music_service_by_download_feature",
+                  "l1_streaming_2nd_fav_music_service_by_download_feature",
+                  "int_l1_streaming_esport_service_feature", "l1_streaming_fav_esport_service_by_download_feature",
+                  "l1_streaming_2nd_fav_esport_service_by_download_feature",
+                  "l1_streaming_visit_count_and_download_traffic_feature"]
+                 ),
+
+            # node(
+            #     dac_for_streaming_to_l1_intermediate_pipeline,
+            #     ["l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_video_service_feature",
+            #      "l1_customer_profile_union_daily_feature_for_int_l1_streaming_video_service_feature",
+            #      "params:int_l1_streaming_video_service_feature_tbl"],
+            #     ["int_l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_video_service_feature",
+            #      "int_l1_customer_profile_union_daily_feature_for_int_l1_streaming_video_service_feature"]
+            # ),
+            # node(
+            #     l1_massive_processing,
+            #     ["int_l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_video_service_feature",
+            #      "params:int_l1_streaming_video_service_feature",
+            #      "int_l1_customer_profile_union_daily_feature_for_int_l1_streaming_video_service_feature"],
+            #     "int_l1_streaming_video_service_feature"
+            # ),
+            #
+            # node(
+            #     dac_for_streaming_to_l1_intermediate_pipeline,
+            #     ["l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_music_service_feature",
+            #      "l1_customer_profile_union_daily_feature_for_int_l1_streaming_music_service_feature",
+            #      "params:int_l1_streaming_music_service_feature_tbl"],
+            #     ["int_l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_music_service_feature",
+            #      "int_l1_customer_profile_union_daily_feature_for_int_l1_streaming_music_service_feature"]
+            # ),
+            # node(
+            #     l1_massive_processing,
+            #     ["int_l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_music_service_feature",
+            #      "params:int_l1_streaming_music_service_feature",
+            #      "int_l1_customer_profile_union_daily_feature_for_int_l1_streaming_music_service_feature"],
+            #     "int_l1_streaming_music_service_feature"
+            # ),
+
+            # node(
+            #     dac_for_streaming_to_l1_intermediate_pipeline,
+            #     ["l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_esport_service_feature",
+            #      "l1_customer_profile_union_daily_feature_for_int_l1_streaming_esport_service_feature",
+            #      "params:int_l1_streaming_esport_service_feature_tbl"],
+            #     ["int_l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_esport_service_feature",
+            #      "int_l1_customer_profile_union_daily_feature_for_int_l1_streaming_esport_service_feature"]
+            # ),
+            # node(
+            #     l1_massive_processing,
+            #     ["int_l0_streaming_soc_mobile_app_daily_for_int_l1_streaming_esport_service_feature",
+            #      "params:int_l1_streaming_esport_service_feature",
+            #      "int_l1_customer_profile_union_daily_feature_for_int_l1_streaming_esport_service_feature"],
+            #     "int_l1_streaming_esport_service_feature"
+            # ),
 
         ]
     )
@@ -253,101 +282,101 @@ def streaming_to_l1_pipeline(**kwargs):
             #     "l1_streaming_fav_tv_show_by_episode_watched"
             # ),
 
-            # fav video service by download traffic
-            node(
-                dac_for_streaming_to_l1_pipeline,
-                ["int_l1_streaming_video_service_feature_for_l1_streaming_fav_video_service_by_download_feature",
-                 "params:l1_streaming_fav_video_service_by_download_feature_tbl"],
-                "int_l1_streaming_fav_video_service_by_download_feature"
-            ),
-            node(
-                node_from_config,
-                ["int_l1_streaming_fav_video_service_by_download_feature",
-                 "params:l1_streaming_fav_video_service_by_download_feature"],
-                "l1_streaming_fav_video_service_by_download_feature"
-            ),
+            # # fav video service by download traffic
+            # node(
+            #     dac_for_streaming_to_l1_pipeline,
+            #     ["int_l1_streaming_video_service_feature_for_l1_streaming_fav_video_service_by_download_feature",
+            #      "params:l1_streaming_fav_video_service_by_download_feature_tbl"],
+            #     "int_l1_streaming_fav_video_service_by_download_feature"
+            # ),
+            # node(
+            #     node_from_config,
+            #     ["int_l1_streaming_fav_video_service_by_download_feature",
+            #      "params:l1_streaming_fav_video_service_by_download_feature"],
+            #     "l1_streaming_fav_video_service_by_download_feature"
+            # ),
+            #
+            # node(
+            #     dac_for_streaming_to_l1_pipeline,
+            #     ["int_l1_streaming_video_service_feature_for_l1_streaming_2nd_fav_video_service_by_download_feature",
+            #      "params:l1_streaming_2nd_fav_video_service_by_download_feature_tbl"],
+            #     "int_l1_streaming_2nd_fav_video_service_by_download_feature"
+            # ),
+            # node(
+            #     node_from_config,
+            #     ["int_l1_streaming_2nd_fav_video_service_by_download_feature",
+            #      "params:l1_streaming_2nd_fav_video_service_by_download_feature"],
+            #     "l1_streaming_2nd_fav_video_service_by_download_feature"
+            # ),
 
-            node(
-                dac_for_streaming_to_l1_pipeline,
-                ["int_l1_streaming_video_service_feature_for_l1_streaming_2nd_fav_video_service_by_download_feature",
-                 "params:l1_streaming_2nd_fav_video_service_by_download_feature_tbl"],
-                "int_l1_streaming_2nd_fav_video_service_by_download_feature"
-            ),
-            node(
-                node_from_config,
-                ["int_l1_streaming_2nd_fav_video_service_by_download_feature",
-                 "params:l1_streaming_2nd_fav_video_service_by_download_feature"],
-                "l1_streaming_2nd_fav_video_service_by_download_feature"
-            ),
+            # # # fav music service by download traffic
+            # node(
+            #     dac_for_streaming_to_l1_pipeline,
+            #     ["int_l1_streaming_music_service_feature_for_l1_streaming_fav_music_service_by_download_feature",
+            #      "params:l1_streaming_fav_music_service_by_download_feature_tbl"],
+            #     "int_l1_streaming_fav_music_service_by_download_feature"
+            # ),
+            # node(
+            #     node_from_config,
+            #     ["int_l1_streaming_fav_music_service_by_download_feature",
+            #      "params:l1_streaming_fav_music_service_by_download_feature"],
+            #     "l1_streaming_fav_music_service_by_download_feature"
+            # ),
+            # node(
+            #     dac_for_streaming_to_l1_pipeline,
+            #     ["int_l1_streaming_music_service_feature_for_streaming_2nd_fav_music_service_by_download_feature",
+            #      "params:l1_streaming_2nd_fav_music_service_by_download_feature_tbl"],
+            #     "int_l1_streaming_2nd_fav_music_service_by_download_feature"
+            # ),
+            # node(
+            #     node_from_config,
+            #     ["int_l1_streaming_2nd_fav_music_service_by_download_feature",
+            #      "params:l1_streaming_2nd_fav_music_service_by_download_feature"],
+            #     "l1_streaming_2nd_fav_music_service_by_download_feature"
+            # ),
 
-            # # fav music service by download traffic
-            node(
-                dac_for_streaming_to_l1_pipeline,
-                ["int_l1_streaming_music_service_feature_for_l1_streaming_fav_music_service_by_download_feature",
-                 "params:l1_streaming_fav_music_service_by_download_feature_tbl"],
-                "int_l1_streaming_fav_music_service_by_download_feature"
-            ),
-            node(
-                node_from_config,
-                ["int_l1_streaming_fav_music_service_by_download_feature",
-                 "params:l1_streaming_fav_music_service_by_download_feature"],
-                "l1_streaming_fav_music_service_by_download_feature"
-            ),
-            node(
-                dac_for_streaming_to_l1_pipeline,
-                ["int_l1_streaming_music_service_feature_for_streaming_2nd_fav_music_service_by_download_feature",
-                 "params:l1_streaming_2nd_fav_music_service_by_download_feature_tbl"],
-                "int_l1_streaming_2nd_fav_music_service_by_download_feature"
-            ),
-            node(
-                node_from_config,
-                ["int_l1_streaming_2nd_fav_music_service_by_download_feature",
-                 "params:l1_streaming_2nd_fav_music_service_by_download_feature"],
-                "l1_streaming_2nd_fav_music_service_by_download_feature"
-            ),
+            # # # fav esport service by download traffic
+            # node(
+            #     dac_for_streaming_to_l1_pipeline,
+            #     ["int_l1_streaming_esport_service_feature_for_l1_streaming_fav_esport_service_by_download_feature",
+            #      "params:l1_streaming_fav_esport_service_by_download_feature_tbl"],
+            #     "int_l1_streaming_fav_esport_service_by_download_feature"
+            # ),
+            # node(
+            #     node_from_config,
+            #     ["int_l1_streaming_fav_esport_service_by_download_feature",
+            #      "params:l1_streaming_fav_esport_service_by_download_feature"],
+            #     "l1_streaming_fav_esport_service_by_download_feature"
+            # ),
+            # node(
+            #     dac_for_streaming_to_l1_pipeline,
+            #     ["int_l1_streaming_esport_service_feature_for_l1_streaming_2nd_fav_esport_service_by_download_feature",
+            #      "params:l1_streaming_2nd_fav_esport_service_by_download_feature_tbl"],
+            #     "int_l1_streaming_2nd_fav_esport_service_by_download_feature"
+            # ),
+            # node(
+            #     node_from_config,
+            #     ["int_l1_streaming_2nd_fav_esport_service_by_download_feature",
+            #      "params:l1_streaming_2nd_fav_esport_service_by_download_feature"],
+            #     "l1_streaming_2nd_fav_esport_service_by_download_feature"
+            # ),
 
-            # # fav esport service by download traffic
-            node(
-                dac_for_streaming_to_l1_pipeline,
-                ["int_l1_streaming_esport_service_feature_for_l1_streaming_fav_esport_service_by_download_feature",
-                 "params:l1_streaming_fav_esport_service_by_download_feature_tbl"],
-                "int_l1_streaming_fav_esport_service_by_download_feature"
-            ),
-            node(
-                node_from_config,
-                ["int_l1_streaming_fav_esport_service_by_download_feature",
-                 "params:l1_streaming_fav_esport_service_by_download_feature"],
-                "l1_streaming_fav_esport_service_by_download_feature"
-            ),
-            node(
-                dac_for_streaming_to_l1_pipeline,
-                ["int_l1_streaming_esport_service_feature_for_l1_streaming_2nd_fav_esport_service_by_download_feature",
-                 "params:l1_streaming_2nd_fav_esport_service_by_download_feature_tbl"],
-                "int_l1_streaming_2nd_fav_esport_service_by_download_feature"
-            ),
-            node(
-                node_from_config,
-                ["int_l1_streaming_2nd_fav_esport_service_by_download_feature",
-                 "params:l1_streaming_2nd_fav_esport_service_by_download_feature"],
-                "l1_streaming_2nd_fav_esport_service_by_download_feature"
-            ),
-
-            # number of visit and volume of download traffic
-            node(
-                dac_for_streaming_to_l1_intermediate_pipeline,
-                ["l0_streaming_soc_mobile_app_daily_for_l1_streaming_visit_count_and_download_traffic_feature",
-                 "l1_customer_profile_union_daily_feature_for_l1_streaming_visit_count_and_download_traffic_feature",
-                 "params:l1_streaming_visit_count_and_download_traffic_feature_tbl"],
-                ["int_l0_streaming_soc_mobile_app_daily_for_l1_streaming_visit_count_and_download_traffic_feature",
-                 "int_l1_customer_profile_union_daily_feature_for_l1_streaming_visit_count_and_download_traffic_feature"]
-            ),
-            node(
-                l1_massive_processing,
-                ["int_l0_streaming_soc_mobile_app_daily_for_l1_streaming_visit_count_and_download_traffic_feature",
-                 "params:l1_streaming_visit_count_and_download_traffic_feature",
-                 "int_l1_customer_profile_union_daily_feature_for_l1_streaming_visit_count_and_download_traffic_feature"],
-                "l1_streaming_visit_count_and_download_traffic_feature"
-            ),
+            # # number of visit and volume of download traffic
+            # node(
+            #     dac_for_streaming_to_l1_intermediate_pipeline,
+            #     ["l0_streaming_soc_mobile_app_daily_for_l1_streaming_visit_count_and_download_traffic_feature",
+            #      "l1_customer_profile_union_daily_feature_for_l1_streaming_visit_count_and_download_traffic_feature",
+            #      "params:l1_streaming_visit_count_and_download_traffic_feature_tbl"],
+            #     ["int_l0_streaming_soc_mobile_app_daily_for_l1_streaming_visit_count_and_download_traffic_feature",
+            #      "int_l1_customer_profile_union_daily_feature_for_l1_streaming_visit_count_and_download_traffic_feature"]
+            # ),
+            # node(
+            #     l1_massive_processing,
+            #     ["int_l0_streaming_soc_mobile_app_daily_for_l1_streaming_visit_count_and_download_traffic_feature",
+            #      "params:l1_streaming_visit_count_and_download_traffic_feature",
+            #      "int_l1_customer_profile_union_daily_feature_for_l1_streaming_visit_count_and_download_traffic_feature"],
+            #     "l1_streaming_visit_count_and_download_traffic_feature"
+            # ),
 
         ], name="streaming_to_l1_pipeline"
     )

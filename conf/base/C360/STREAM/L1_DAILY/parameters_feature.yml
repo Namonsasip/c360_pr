@@ -121,103 +121,132 @@ l1_streaming_fav_tv_show_by_episode_watched:
 int_l1_streaming_video_service_feature:
     where_clause: "where lower(application_group) = 'videoplayers_editors'"
     feature_list:
-        sum_download_kb_traffic_rank: "row_number() over (partition by mobile_no, application_group, partition_date
+        sum_download_kb_traffic_rank: "row_number() over (partition by subscription_identifier, access_method_num,
+                                       national_id_card, date(register_date), event_partition_date, application_group
                                                     order by sum(download_kb) desc)"
         sum_download_kb_traffic: "sum(download_kb)"
         visit_count: "1" # counting active days
-    granularity: "mobile_no, application, application_group, partition_date"
-    event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
+    granularity: "subscription_identifier, access_method_num, national_id_card, date(register_date),
+                  event_partition_date , application_group"
     output_catalog: "int_l1_streaming_video_service_feature"
-    join_column_with_cust_profile:
-        access_method_num: mobile_no
-        event_partition_date: event_partition_date
-    partition_num_per_job: 10
 
 l1_streaming_fav_video_service_by_download_feature:
     where_clause: "where sum_download_kb_traffic_rank = 1"
     feature_list:
-        subscription_identifier: "subscription_identifier"
+        access_method_num: access_method_num
+        subscription_identifier: subscription_identifier
+        event_partition_date: event_partition_date
+        start_of_week: start_of_week
+        start_of_month: start_of_month
+        register_date: register_date
+        national_id_card: national_id_card
         fav_video_service_by_download_kb_traffic: "application"
         sum_download_kb_traffic: "sum_download_kb_traffic"
     granularity: ""
-    event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
+    output_catalog: "l1_streaming_fav_video_service_by_download_feature"
 
 l1_streaming_2nd_fav_video_service_by_download_feature:
     where_clause: "where sum_download_kb_traffic_rank = 2"
     feature_list:
-        subscription_identifier: "subscription_identifier"
+        access_method_num: access_method_num
+        subscription_identifier: subscription_identifier
+        event_partition_date: event_partition_date
+        start_of_week: start_of_week
+        start_of_month: start_of_month
+        register_date: register_date
+        national_id_card: national_id_card
         second_fav_video_service_by_download_kb_traffic: "application"
         sum_download_kb_traffic: "sum_download_kb_traffic"
     granularity: ""
-    event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
+    output_catalog: "l1_streaming_2nd_fav_video_service_by_download_feature"
 
  # Fav music service by download traffic
 int_l1_streaming_music_service_feature:
     where_clause: "where lower(application_group) = 'music_audio'"
     feature_list:
-        sum_download_kb_traffic_rank: "row_number() over (partition by mobile_no, application_group, partition_date
-                                                    order by sum(download_kb) desc)"
+        sum_download_kb_traffic_rank: "row_number() over (partition by subscription_identifier, access_method_num,
+                                       national_id_card, date(register_date), event_partition_date, application_group
+                                       order by sum(download_kb) desc)"
         sum_download_kb_traffic: "sum(download_kb)"
         visit_count: "1" # counting active days
-    granularity: "mobile_no, application, application_group, partition_date"
-    event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
+    granularity: "subscription_identifier, access_method_num,
+                  national_id_card, date(register_date), event_partition_date, application_group"
     output_catalog: "int_l1_streaming_music_service_feature"
-    join_column_with_cust_profile:
-        access_method_num: mobile_no
-        event_partition_date: event_partition_date
-    partition_num_per_job: 10
+
 
 l1_streaming_fav_music_service_by_download_feature:
     where_clause: "where sum_download_kb_traffic_rank = 1"
     feature_list:
-        subscription_identifier: "subscription_identifier"
+        access_method_num: access_method_num
+        subscription_identifier: subscription_identifier
+        event_partition_date: event_partition_date
+        start_of_week: start_of_week
+        start_of_month: start_of_month
+        register_date: register_date
+        national_id_card: national_id_card
         fav_music_service_by_download_kb_traffic: "application"
         sum_download_kb_traffic: "sum_download_kb_traffic"
     granularity: ""
-    event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
+    output_catalog: "l1_streaming_fav_music_service_by_download_feature"
 
 l1_streaming_2nd_fav_music_service_by_download_feature:
     where_clause: "where sum_download_kb_traffic_rank = 2"
     feature_list:
-        subscription_identifier: "subscription_identifier"
+        access_method_num: access_method_num
+        subscription_identifier: subscription_identifier
+        event_partition_date: event_partition_date
+        start_of_week: start_of_week
+        start_of_month: start_of_month
+        register_date: register_date
+        national_id_card: national_id_card
         second_fav_music_service_by_download_kb_traffic: "application"
         sum_download_kb_traffic: "sum_download_kb_traffic"
     granularity: ""
-    event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
+    output_catalog: "l1_streaming_2nd_fav_music_service_by_download_feature"
 
  # Fav esport service by download traffic
 int_l1_streaming_esport_service_feature:
     where_clause: "where lower(application_group) = 'game'"
     feature_list:
-        sum_download_kb_traffic_rank: "row_number() over (partition by mobile_no, application_group, partition_date
-                                                    order by sum(download_kb) desc)"
+        sum_download_kb_traffic_rank: "row_number() over (partition by subscription_identifier, access_method_num,
+                                       national_id_card, date(register_date), event_partition_date, application_group
+                                       order by sum(download_kb) desc)"
         sum_download_kb_traffic: "sum(download_kb)"
         visit_count: "1" # counting active days
-    granularity: "mobile_no, application, application_group, partition_date"
-    event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
+    granularity: "subscription_identifier, access_method_num,
+                 national_id_card, date(register_date), event_partition_date, application_group"
     output_catalog: "int_l1_streaming_esport_service_feature"
-    join_column_with_cust_profile:
-        access_method_num: mobile_no
-        event_partition_date: event_partition_date
-    partition_num_per_job: 10
 
 l1_streaming_fav_esport_service_by_download_feature:
     where_clause: "where sum_download_kb_traffic_rank = 1"
     feature_list:
-        subscription_identifier: "subscription_identifier"
+        access_method_num: access_method_num
+        subscription_identifier: subscription_identifier
+        event_partition_date: event_partition_date
+        start_of_week: start_of_week
+        start_of_month: start_of_month
+        register_date: register_date
+        national_id_card: national_id_card
         fav_esport_service_by_download_kb_traffic: "application"
         sum_download_kb_traffic: "sum_download_kb_traffic"
     granularity: ""
-    event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
+    output_catalog: "l1_streaming_fav_esport_service_by_download_feature"
+
 
 l1_streaming_2nd_fav_esport_service_by_download_feature:
     where_clause: "where sum_download_kb_traffic_rank = 2"
     feature_list:
-        subscription_identifier: "subscription_identifier"
+        access_method_num: access_method_num
+        subscription_identifier: subscription_identifier
+        event_partition_date: event_partition_date
+        start_of_week: start_of_week
+        start_of_month: start_of_month
+        register_date: register_date
+        national_id_card: national_id_card
         second_fav_esport_service_by_download_kb_traffic: "application"
         sum_download_kb_traffic: "sum_download_kb_traffic"
     granularity: ""
-    event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
+    output_catalog: "l1_streaming_fav_esport_service_by_download_feature"
 
 # number of visit and volume of download traffic
 l1_streaming_visit_count_and_download_traffic_feature:
@@ -262,13 +291,9 @@ l1_streaming_visit_count_and_download_traffic_feature:
 
         # 1 for Monday, 7 for Sunday
         day_of_week: "date_format(to_date(cast(partition_date as string), 'yyyyMMdd'), 'u')"
-    granularity: "mobile_no, partition_date"
-    event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
+    granularity: "subscription_identifier, access_method_num, national_id_card, date(register_date), event_partition_date"
     output_catalog: "l1_streaming_visit_count_and_download_traffic_feature"
-    join_column_with_cust_profile:
-        access_method_num: mobile_no
-        event_partition_date: event_partition_date # after aggregation
-    partition_num_per_job: 10
+
 
 l1_streaming_session_duration_feature:
     feature_list:
