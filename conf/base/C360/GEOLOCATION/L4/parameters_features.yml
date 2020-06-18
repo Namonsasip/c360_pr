@@ -128,7 +128,7 @@ l4_geo_number_unique_cell_used:
 
 ###feature_AIS_store###
 l4_geo_last_AIS_store_visit:
-  where_clause: "landmark_cat_name_en in ('AIS')"
+  where_clause: ""
   feature_list:
     imsi: "imsi"
     store_location_id:  "location_id"
@@ -139,7 +139,7 @@ l4_geo_last_AIS_store_visit:
   granularity: ""
 
 l4_geo_most_AIS_store_visit:
-  where_clause: "landmark_cat_name_en in ('AIS')"
+  where_clause: ""
   feature_list:
     imsi: "imsi"
     store_location_id:  "location_id"
