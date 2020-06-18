@@ -35,19 +35,19 @@ from src.customer360.pipelines.data_engineering.nodes.touchpoints_nodes.to_l2.to
 def touchpoints_to_l2_pipeline(**kwargs):
     return Pipeline(
         [
-            node(
-                dac_for_touchpoints_to_l2_pipeline_from_l1,
-                ["l1_touchpoints_to_call_center_features_for_l2_touchpoints_to_call_center_features",
-                 "params:l2_touchpoints_to_call_center_features_tbl",
-                 "params:exception_partition_list_for_l1_touchpoints_to_call_center_features_for_l2_touchpoints_to_call_center_features"],
-                "intermediate_l2_touchpoints_to_call_center_features"
-            ),
-            node(
-                l2_massive_processing_with_expansion,
-                ["intermediate_l2_touchpoints_to_call_center_features",
-                 "params:l2_touchpoints_to_call_center_features"],
-                "l2_touchpoints_to_call_center_features"
-            ),
+            # node(
+            #     dac_for_touchpoints_to_l2_pipeline_from_l1,
+            #     ["l1_touchpoints_to_call_center_features_for_l2_touchpoints_to_call_center_features",
+            #      "params:l2_touchpoints_to_call_center_features_tbl",
+            #      "params:exception_partition_list_for_l1_touchpoints_to_call_center_features_for_l2_touchpoints_to_call_center_features"],
+            #     "intermediate_l2_touchpoints_to_call_center_features"
+            # ),
+            # node(
+            #     l2_massive_processing_with_expansion,
+            #     ["intermediate_l2_touchpoints_to_call_center_features",
+            #      "params:l2_touchpoints_to_call_center_features"],
+            #     "l2_touchpoints_to_call_center_features"
+            # ),
 
             node(
                 dac_for_touchpoints_to_l2_pipeline_from_l1,
