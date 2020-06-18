@@ -94,7 +94,9 @@ def dq_merger_nodes(
     spark = get_spark_session()
     print("Before change: ", spark.conf.get("spark.sql.autoBroadcastJoinThreshold"))
     spark.conf.set("spark.sql.autoBroadcastJoinThreshold", -1)
+    spark.conf.set("spark.sql.broadcastTimeout", -1)
     print("After change: ", spark.conf.get("spark.sql.autoBroadcastJoinThreshold"))
+    print("After change: ", spark.conf.get("spark.sql.broadcastTimeout"))
 
     all_cols = []
     for each_df in args:
