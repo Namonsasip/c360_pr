@@ -608,16 +608,16 @@ def l1_geo_number_of_bs_used(geo_cust_cell, sql):
 # 47 l1_the_favourite_locations_daily ====================
 
 
-def l1_the_favourite_locations_daily(geo_df_masterplan, usage_df_location):
+def l1_the_favourite_locations_daily(usage_df_location,geo_df_masterplan):
     ### config
     spark = get_spark_session()
-
+    # start commment here if use sample data
     ### last_date
     geo_last_date = geo_df_masterplan.agg(F.max("partition_date")).collect()[0][0]
 
     ### where
     geo_df_masterplan = geo_df_masterplan.where("partition_date = '" + str(geo_last_date) + "'")
-
+    # stop commment here if use sample data
     ### table view path
     geo_df_masterplan.createOrReplaceTempView("geo_mst_cell_masterplan")
 
