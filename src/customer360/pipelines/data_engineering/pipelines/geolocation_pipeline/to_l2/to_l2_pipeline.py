@@ -70,7 +70,7 @@ def geo_to_l2_pipeline(**kwargs):
                 "l2_geo_call_location_home_work_weekly"
             ),
 
-            # ==============================Update 2020-06-15 by Thatt529==========================================##
+            ## ==============================Update 2020-06-15 by Thatt529==========================================##
 
             ##Top_3_cells_on_voice_usage###
             node(
@@ -101,11 +101,11 @@ def geo_to_l2_pipeline(**kwargs):
             ),
 
             # 47 The favourite location
-            # node(
-            #     l2_the_favourite_locations_weekly,
-            #     ["l1_the_favourite_locations_daily"],
-            #     "l2_the_favourite_locations_monthly"
-            # ),
+            node(
+                l2_the_favourite_locations_weekly,
+                ["l1_the_favourite_locations_daily"],
+                "l2_the_favourite_locations_weekly"
+            ),
 
             # 27 Same favourite location for weekend and weekday
             node(
