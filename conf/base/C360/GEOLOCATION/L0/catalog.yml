@@ -76,7 +76,7 @@ l0_geo_cust_cell_visit_time_simple_data_daily:
 ###Traffic_fav_location###
 l0_geo_mst_cell_masterplan_current_for_l1_use_non_homework_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/GEO/geo_mst_cell_masterplan/
+  filepath: /mnt/customer360-blob-data/C360/GEO/geo_mst_cell_masterplan/partition_date=20200617/
   file_format: parquet
 
 l0_geo_home_work_data_for_l1_use_non_homework_features:
