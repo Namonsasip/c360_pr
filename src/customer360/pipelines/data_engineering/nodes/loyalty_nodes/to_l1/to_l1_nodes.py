@@ -72,7 +72,7 @@ def loyalty_number_of_services_for_each_category(customer_prof: DataFrame
     dated_df = add_start_of_week_and_month(input_df=selective_df, date_column="response_date") \
         .withColumnRenamed("response_date", "loyalty_privilige_registered_date")
 
-    return_df = customer_prof.join(dated_df, join_key)
+    return_df = customer_prof.join(dated_df, join_key, 'left')
 
     return return_df
 
@@ -109,7 +109,7 @@ def loyalty_number_of_rewards_redeemed_for_each_category(customer_prof: DataFram
     input_df = add_start_of_week_and_month(input_df, "response_date") \
         .withColumnRenamed("response_date", "loyalty_rewards_registered_date")
 
-    return_df = customer_prof.join(input_df, join_key)
+    return_df = customer_prof.join(input_df, join_key, 'left')
 
     return return_df
 
@@ -157,6 +157,6 @@ def loyalty_number_of_points_spend_for_each_category(customer_prof: DataFrame,
                                           "start_of_month", "project_id"]) \
         .agg(f.sum("points").alias("loyalty_points_spend"))
 
-    return_df = customer_prof.join(grouped_df, join_key)
+    return_df = customer_prof.join(grouped_df, join_key, 'left')
 
     return return_df
