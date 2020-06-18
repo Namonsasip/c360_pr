@@ -228,8 +228,8 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
         CNTX.catalog.save(l1_streaming_fav_tv_show_by_episode_watched_dict['output_catalog'],
                           l1_streaming_fav_tv_show_by_episode_watched)
 
-    small_df = data_frame.filter(f.col("partition_date").isin(*[first_item]))
-    cust_df = customer_df.filter((f.col("partition_date").isin(*[first_item]))).select(sel_cols)
+    small_df = data_frame.filter(f.col("event_partition_date").isin(*[first_item]))
+    cust_df = customer_df.filter((f.col("event_partition_date").isin(*[first_item]))).select(sel_cols)
     joined_data_with_cust = small_df.join(cust_df, join_cols, 'left')
 
     # section for int_l1_streaming_content_type_features
@@ -400,6 +400,10 @@ def stream_process_soc_mobile_data(input_data: DataFrame,
             l1_streaming_visit_count_and_download_traffic_feature_dict)
         CNTX.catalog.save(l1_streaming_visit_count_and_download_traffic_feature_dict['output_catalog'],
                           l1_streaming_visit_count_and_download_traffic_feature)
+
+    small_df = data_frame.filter(f.col("event_partition_date").isin(*[first_item]))
+    cust_df = customer_df.filter((f.col("event_partition_date").isin(*[first_item]))).select(sel_cols)
+    joined_data_with_cust = small_df.join(cust_df, join_cols, 'left')
 
     int_l1_streaming_video_service_feature = node_from_config(joined_data_with_cust,
                                                               int_l1_streaming_video_service_feature_dict)
