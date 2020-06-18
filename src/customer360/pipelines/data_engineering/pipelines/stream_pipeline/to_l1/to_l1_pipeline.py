@@ -41,6 +41,7 @@ from customer360.pipelines.data_engineering.nodes.stream_nodes.to_l1.to_l1_nodes
 def streaming_to_l1_intermediate_pipeline(**kwargs):
     return Pipeline(
         [
+            # MOVED TO SECTION 1
             # node(
             #     dac_for_streaming_to_l1_intermediate_pipeline,
             #     ["l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_content_type_features",
@@ -73,6 +74,8 @@ def streaming_to_l1_intermediate_pipeline(**kwargs):
             # ),
             # The above four nodes will be clubbed into  one node for optimization as well from down second pipeline
             # i have added 8 nodes and merged into this one
+
+            # SECTION 1 BELOW
             node(stream_process_ru_a_onair_vimmi,
                  ["l0_streaming_ru_a_onair_vimmi_usage_daily_for_multiple_outputs",
                   "l1_customer_profile_union_daily_feature_for_int_l1_streaming_content_type_features",
@@ -85,11 +88,23 @@ def streaming_to_l1_intermediate_pipeline(**kwargs):
                   "params:int_l1_streaming_tv_channel_features_tbl",
                   "params:l1_streaming_fav_tv_channel_by_volume",
                   "params:l1_streaming_fav_tv_channel_by_duration"
+                  
+                  # Favorite Episode
+                  "params:int_l1_streaming_tv_show_features",
+                  "params:l1_streaming_fav_tv_show_by_episode_watched",
 
                   ],
-                 ['int_l1_streaming_content_type_features', 'int_l1_streaming_tv_channel_features',
-                  'l1_streaming_fav_content_group_by_volume', 'l1_streaming_fav_content_group_by_duration',
-                  'l1_streaming_fav_tv_channel_by_volume_df', 'l1_streaming_fav_tv_channel_by_duration_df'
+                 [
+                  # Content Type Features
+                  'int_l1_streaming_content_type_features', 'int_l1_streaming_tv_channel_features',
+                  'l1_streaming_fav_content_group_by_volume',
+                  # TV Channel features
+                  'l1_streaming_fav_content_group_by_duration',
+                  'l1_streaming_fav_tv_channel_by_volume_df', 'l1_streaming_fav_tv_channel_by_duration_df',
+                  # TV Show features
+                  'int_l0_streaming_vimmi_table',
+                  # Favorite Episode
+                  'l1_streaming_fav_tv_show_by_episode_watched'
                   ]
                  ),
 
@@ -148,6 +163,7 @@ def streaming_to_l1_intermediate_pipeline(**kwargs):
 def streaming_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
+            # MOVED TO SECTION 1
             # Content Type Features
             # node(
             #     dac_for_streaming_to_l1_pipeline,
@@ -205,39 +221,39 @@ def streaming_to_l1_pipeline(**kwargs):
             #     "l1_streaming_fav_tv_channel_by_duration"
             # ),
 
-            # TV Show features
-            node(
-                dac_for_streaming_to_l1_pipeline_from_l0,
-                ["l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l0_streaming_vimmi_table",
-                 "params:int_l0_streaming_vimmi_table_tbl"],
-                "intermediate_int_l0_streaming_vimmi_table"
-            ),
-            node(
-                add_start_of_week_and_month,
-                ["intermediate_int_l0_streaming_vimmi_table"],
-                "int_l0_streaming_vimmi_table"
-            ),
+            # # TV Show features
+            # node(
+            #     dac_for_streaming_to_l1_pipeline_from_l0,
+            #     ["l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l0_streaming_vimmi_table",
+            #      "params:int_l0_streaming_vimmi_table_tbl"],
+            #     "intermediate_int_l0_streaming_vimmi_table"
+            # ),
+            # node(
+            #     add_start_of_week_and_month,
+            #     ["intermediate_int_l0_streaming_vimmi_table"],
+            #     "int_l0_streaming_vimmi_table"
+            # ),
 
-            node(
-                dac_for_streaming_to_l1_pipeline_from_l0,
-                ["l0_streaming_ru_a_onair_vimmi_usage_daily_for_l1_streaming_fav_tv_show_by_episode_watched",
-                 "params:l1_streaming_fav_tv_show_by_episode_watched_tbl"],
-                "intermediate_int_l1_streaming_tv_show_features"
-            ),
-            node(
-                node_from_config,
-                ["intermediate_int_l1_streaming_tv_show_features",
-                 "params:int_l1_streaming_tv_show_features"],
-                "int_l1_streaming_tv_show_features"
-            ),
-            node(
-                node_from_config,
-                ["int_l1_streaming_tv_show_features",
-                 "params:l1_streaming_fav_tv_show_by_episode_watched"],
-                "l1_streaming_fav_tv_show_by_episode_watched"
-            ),
-            #
-            # # fav video service by download traffic
+            # node(
+            #     dac_for_streaming_to_l1_pipeline_from_l0,
+            #     ["l0_streaming_ru_a_onair_vimmi_usage_daily_for_l1_streaming_fav_tv_show_by_episode_watched",
+            #      "params:l1_streaming_fav_tv_show_by_episode_watched_tbl"],
+            #     "intermediate_int_l1_streaming_tv_show_features"
+            # ),
+            # node(
+            #     node_from_config,
+            #     ["intermediate_int_l1_streaming_tv_show_features",
+            #      "params:int_l1_streaming_tv_show_features"],
+            #     "int_l1_streaming_tv_show_features"
+            # ),
+            # node(
+            #     node_from_config,
+            #     ["int_l1_streaming_tv_show_features",
+            #      "params:l1_streaming_fav_tv_show_by_episode_watched"],
+            #     "l1_streaming_fav_tv_show_by_episode_watched"
+            # ),
+
+            # fav video service by download traffic
             node(
                 dac_for_streaming_to_l1_pipeline,
                 ["int_l1_streaming_video_service_feature_for_l1_streaming_fav_video_service_by_download_feature",
