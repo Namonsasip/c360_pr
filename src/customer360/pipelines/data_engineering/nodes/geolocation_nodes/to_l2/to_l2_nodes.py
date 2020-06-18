@@ -167,7 +167,7 @@ def l2_same_favourite_location_weekend_weekday_weekly(l0_geo_cust_cell_visit_tim
         .withColumn("start_of_month",F.to_date(F.date_trunc('month',"time_in")))
 
     l0_geo_cust_cell_visit_time_df.createOrReplaceTempView('l0_geo_cust_cell_visit_time_df')
-
+    geo_df.createOrReplaceTempView('geo_df')
     sql_query = """
     select
     imsi
