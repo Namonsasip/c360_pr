@@ -483,8 +483,8 @@ def l1_location_of_visit_ais_store_daily(shape,cust_cell_visit,sql):
 
     df.cache()
     print("Start for check result from sql query statement")
-    df.count()
-    df.show()
+    # df.count()
+    # df.show()
 
     store_visit = node_from_config(df,sql)
     return store_visit
