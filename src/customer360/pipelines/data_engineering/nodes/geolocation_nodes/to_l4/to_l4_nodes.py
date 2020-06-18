@@ -349,7 +349,13 @@ def l4_geo_last_AIS_store_visit(raw, sql):
     # Get spark session
     spark = get_spark_session()
     df = spark.sql("""
-            SELECT imsi,location_id,landmark_name_th,landmark_sub_name_en,MAX(TIME_IN) as last_visited,partition_month
+            SELECT 
+                imsi,
+                store_location_id as location_id,
+                store_name as landmark_name_th,
+                store_category as landmark_sub_name_en,
+                MAX(last_visit) as last_visited,
+                partition_month
             FROM GEO_AIS_VISITED_SHOP
             GROUP BY 1,2,3,4,6;
          """)
@@ -372,7 +378,15 @@ def l4_geo_most_AIS_store_visit(raw, sql):
     spark = get_spark_session()
     df = spark.sql("""
             SELECT imsi,location_id,landmark_name_th,landmark_sub_name_en,most_visited,partition_month
-            FROM (SELECT imsi,location_id,landmark_name_th,landmark_sub_name_en,row_number() over(partition by LOCATION_ID order by COUNT(TIME_IN)) as row_number,COUNT(TIME_IN) as most_visited,landmark_latitude,landmark_longitude,partition_month
+            FROM (SELECT imsi,
+                    store_location_id as location_id,
+                    store_name as landmark_name_th,
+                    store_category as landmark_sub_name_en,
+                    row_number() over(partition by store_location_id order by COUNT(last_visit)) as row_number,
+                    COUNT(last_visit) as most_visited,
+                    store_latitude as landmark_latitude,
+                    store_longitude as landmark_longitude,
+                    partition_month
                 FROM GEO_AIS_VISITED_SHOP
                 GROUP BY 1,2,3,4,7,8,9
                 ) A
