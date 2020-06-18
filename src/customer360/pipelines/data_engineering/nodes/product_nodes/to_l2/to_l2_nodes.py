@@ -13,8 +13,7 @@ def get_activated_deactivated_features(
         prepaid_main_master_df,
         prepaid_ontop_master_df,
         postpaid_main_master_df,
-        postpaid_ontop_master_df,
-        weekly_cust_prof_df
+        postpaid_ontop_master_df
 ) -> DataFrame:
     spark = get_spark_session()
 
@@ -374,15 +373,15 @@ def get_activated_deactivated_features(
 
     # left join with cust profile on old_subscription_identifier
     # because of the subscription_identifier contains new logic
-    result_df = (weekly_cust_prof_df
-                 .select("access_method_num",
-                         "national_id_card",
-                         "old_subscription_identifier",
-                         "subscription_identifier",
-                         "start_of_week")
-                 .join(result_df,
-                       on=["old_subscription_identifier", "start_of_week"],
-                       how="left"))
+    # result_df = (weekly_cust_prof_df
+    #              .select("access_method_num",
+    #                      "national_id_card",
+    #                      "old_subscription_identifier",
+    #                      "subscription_identifier",
+    #                      "start_of_week")
+    #              .join(result_df,
+    #                    on=["old_subscription_identifier", "start_of_week"],
+    #                    how="left"))
 
     return result_df
 
@@ -396,7 +395,9 @@ def get_product_package_promotion_group_tariff_weekly(source_df: DataFrame) -> D
         return get_spark_empty_df()
 
     source_df = source_df.withColumn("start_of_week",
-                                     F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd'))
+                                     F.lit(source_df.agg(
+                                         F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd')
+                                     ).collect()[0][0]))
 
     source_df = source_df.select("start_of_week", "promotion_group_tariff", "package_id").distinct()
 
