@@ -478,7 +478,7 @@ def l1_location_of_visit_ais_store_daily(shape,cust_cell_visit,sql):
         FROM GEO_CUST_CELL_VISIT_TIME p1 join geo_mst_lm_poi_shape  p2
         WHERE p1.location_id =  p2.geo_shape_id
         AND p2.PARTITION_NAME = 'INTERNAL'
-        AND p2.LANDMARK_CAT_NAME_EN IN ('AIS') ;
+        AND p2.LANDMARK_CAT_NAME_EN IN ('AIS')
      """)
 
     df.cache()
