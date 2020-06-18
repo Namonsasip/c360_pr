@@ -1205,13 +1205,13 @@ def l4_geo_number_unique_cell_used(l1_df_1, sql):
     l4_df_1 = l1_df_4.groupBy("event_partition_date", "weektype") \
         .agg(F.sum("mobile_no").alias("durations"))
 
-    l4_df_2 = l4_df_1.groupBy("event_partition_date").agg(F.avg("durations").alias("avg_duration"),
+    l4_df_2 = l4_df_1.groupBy("event_partition_date", "weektype").agg(F.avg("durations").alias("avg_duration"),
                                                           F.max("durations").alias("max_duration"),
                                                           F.min("durations").alias("min_duration"),
                                                           F.sum("durations").alias("sum_duration"))
 
     l4_df_2.cache()
 
-    out = l4_rolling_window(l4_df_1, sql)
+    out = node_from_config(l4_df_1, sql)
     return out
 

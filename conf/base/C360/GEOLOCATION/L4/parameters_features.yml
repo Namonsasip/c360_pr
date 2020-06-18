@@ -116,12 +116,15 @@ l4_geo_call_home_work_location_weekly:
 
 ###Number of Unique Cells Used###
 l4_geo_number_unique_cell_used:
-  partition_by: ["event_partition_date"]
+  where_clause: ""
   feature_list:
-    avg: ["durations"]
-    max: ["durations"]
-    min: ["durations"]
-  read_from: "l0"
+    event_partition_date: "event_partition_date"
+    weektype: "weektype"
+    avg_duration: "avg_duration"
+    max_duration: "max_duration"
+    min_duration: "min_duration"
+    sum_duration: "sum_duration"
+  granularity: ""
 
 ###feature_AIS_store###
 l4_geo_last_AIS_store_visit:
