@@ -239,7 +239,8 @@ def usage_data_prepaid_pipeline(input_df, sql, exception_partition=None) -> Data
         return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
-
+    input_df = input_df.withColumn("data_upload_amt", F.col("data_upload_amt") / 1024) \
+                        .withColumn("data_download_amt", F.col("data_download_amt") / 1024)
     return_df = massive_processing(input_df, sql, "l1_usage_ru_a_gprs_cbs_usage_daily")
     return return_df
 
