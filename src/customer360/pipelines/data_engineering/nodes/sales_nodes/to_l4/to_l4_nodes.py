@@ -29,8 +29,9 @@ def sales_l4_rolling_window(input_df: DataFrame,
     rolling_df_first = l4_rolling_window(input_df, rolling_window_dict_first)
     rolling_df_second = l4_rolling_window(input_df, rolling_window_dict_second)
     rolling_df_third = l4_rolling_window(input_df, rolling_window_dict_third)
+    rolling_df_fourth = l4_rolling_window(input_df, rolling_window_dict_fourth)
 
-    union_df = union_dataframes_with_missing_cols([rolling_df_first, rolling_df_second, rolling_df_third])
+    union_df = union_dataframes_with_missing_cols([rolling_df_first, rolling_df_second, rolling_df_third,rolling_df_fourth])
 
     final_df_str = gen_max_sql(union_df, 'tmp_table_name', group_cols)
     merged_df = execute_sql(union_df, 'tmp_table_name', final_df_str)
