@@ -76,12 +76,13 @@ l0_geo_cust_cell_visit_time_simple_data_daily:
 ###Traffic_fav_location###
 l0_geo_mst_cell_masterplan_current_for_l1_use_non_homework_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/GEO/geo_mst_cell_masterplan/
+#  filepath: /mnt/customer360-blob-data/C360/GEO/geo_mst_cell_masterplan/
+  filepath: /mnt/customer360-blob-data/C360/GEO/geo_mst_cell_masterplan/partition_date=20200612  #remove this after lac+ci is in all partition
   file_format: parquet
 
 l0_geo_home_work_data_for_l1_use_non_homework_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/GEO/sample/geo_home_work_data/
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_home_work_location_id/
   file_format: parquet
 
 
@@ -112,7 +113,8 @@ l0_geo_cust_cell_visit_time_daily_for_l1_geo_number_of_bs_used:
 ###feature_sum_voice_location###
 l0_usage_sum_voice_location_daily_for_l1_homework_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_sum_voice_location_daily/
+#  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_sum_voice_location_daily/
+  filepath: /mnt/customer360-blob-output/C360/GEO/sample/usage_sum_voice_location_daily/  #sample data
   file_format: parquet
 
 l0_geo_top_visit_exclude_homework_for_l1_sum_voice_daily:

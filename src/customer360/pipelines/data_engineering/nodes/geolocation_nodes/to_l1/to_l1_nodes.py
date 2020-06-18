@@ -294,7 +294,7 @@ def L1_data_traffic_home_work_Top1_TOP2(geo_mst_cell_masterplan,geo_home_work_da
 
 
 ###feature_sum_voice_location###
-def homework_join_master_profile(cell_masterplan,geo_homework,profile_ma,usage_sum_voice,Column_Name):
+def homework_join_master_profile(cell_masterplan,geo_homework,profile_ma,Column_Name):
     geo_homework.createOrReplaceTempView('geo_homework')
     cell_masterplan.createOrReplaceTempView('cell_masterplan')
     profile_ma.createOrReplaceTempView('profile_ma')
@@ -335,7 +335,7 @@ def geo_top_visit_join_master_profile(cell_masterplan,geo_top_visit,profile_ma,C
     df_temp_00 = spark.sql(f'''
       select a.imsi,
       a.{Column_Name},
-      b.lac as {Column_Name}_lac,s
+      b.lac as {Column_Name}_lac,
       b.ci as {Column_Name}_ci
       from geo_top_visit a
       left join cell_masterplan b
@@ -359,14 +359,18 @@ def geo_top_visit_join_master_profile(cell_masterplan,geo_top_visit,profile_ma,C
     return df_temp_01
 
 def l1_call_location_home_work(cell_masterplan,geo_homework,profile_ma,usage_sum_voice,geo_top_visit_exc_homework):
+    geo_homework = geo_homework.join(geo_top_visit_exc_homework,'imsi','full')
+    usage_sum_voice.createOrReplaceTempView('usage_voice')
     homework_join_master_profile(cell_masterplan,geo_homework,profile_ma,
                                  "home_weekday").createOrReplaceTempView('home_weekday')
     homework_join_master_profile(cell_masterplan, geo_homework,profile_ma,
                                  "work").createOrReplaceTempView('work')
     geo_top_visit_join_master_profile(cell_masterplan,geo_homework,profile_ma,
-                                 "top_location_1st").createOrReplaceTempView('top_1st')
+                                 "top_location_1st").createOrReplaceTempView('top_location_1st')
     geo_top_visit_join_master_profile(cell_masterplan, geo_homework,profile_ma,
-                                 "top_location_2nd").createOrReplaceTempView('top_2nd')
+                                 "top_location_2nd").createOrReplaceTempView('top_location_2nd')
+
+
 
 
     def sum_voice_daily(df_temp_01):
@@ -377,27 +381,27 @@ def l1_call_location_home_work(cell_masterplan,geo_homework,profile_ma,usage_sum
           ,sum(b.no_of_call+b.no_of_inc) as call_count_location_{df_temp_01}  
           from {df_temp_01} a
           left join usage_voice b
-          where b.service_type in ('VOICE','VOLTE')
           on a.access_method_num = b.access_method_num
-          and a.home_weekday_lac = b.lac
-          and a.home_weekday_ci = b.ci
+          where b.service_type in ('VOICE','VOLTE')
+          and a.{df_temp_01}_lac = b.lac
+          and a.{df_temp_01}_ci = b.ci
           group by 1,2
           ''')
         return df_sum_voice
 
     sum_voice_daily('home_weekday').createOrReplaceTempView('df_call_home_weekday')
     sum_voice_daily('work').createOrReplaceTempView('df_call_work')
-    sum_voice_daily('location_top_1st').createOrReplaceTempView('df_call_top_1st')
-    sum_voice_daily('location_top_2nd').createOrReplaceTempView('df_call_top_2nd')
+    sum_voice_daily('top_location_1st').createOrReplaceTempView('df_call_top_1st')
+    sum_voice_daily('top_location_2nd').createOrReplaceTempView('df_call_top_2nd')
 
     spark = get_spark_session()
     df_sum_voice_daily = spark.sql('''
-        select a.event_partiiton_date
+        select a.event_partiiton_date as event_partition_date
         ,a.imsi
         ,a.call_count_location_home_weekday  
         ,b.call_count_location_work
-        ,c.call_count_location_top_1st
-        ,d.call_count_location_top_1st
+        ,c.call_count_location_top_location_1st as call_count_location_top_1st
+        ,d.call_count_location_top_location_2nd as call_count_location_top_2nd
         from df_call_home_weekday a
         join df_call_work b
             on a.event_partiiton_date = b.event_partiiton_date and a.imsi = b.imsi
