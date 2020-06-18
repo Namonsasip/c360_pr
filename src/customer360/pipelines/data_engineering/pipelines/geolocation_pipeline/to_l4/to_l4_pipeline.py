@@ -115,20 +115,20 @@ def geo_to_l4_pipeline(**kwargs):
             # ),
 
             ###feature_AIS_store###
-            node(
-                l4_geo_last_AIS_store_visit,
-                ["l1_location_of_visit_ais_store_daily_for_l4_location_of_last_visit_ais_store",
-                 "params:l4_geo_last_AIS_store_visit"
-                 ],
-                "l4_geo_last_AIS_store_visit"
-            )
             # node(
-            #     l4_geo_most_AIS_store_visit,
+            #     l4_geo_last_AIS_store_visit,
             #     ["l1_location_of_visit_ais_store_daily_for_l4_location_of_last_visit_ais_store",
-            #      "params:l4_geo_most_AIS_store_visit"
+            #      "params:l4_geo_last_AIS_store_visit"
             #      ],
-            #     "l4_geo_most_AIS_store_visit"
-            # )
+            #     "l4_geo_last_AIS_store_visit"
+            # ),
+            node(
+                l4_geo_most_AIS_store_visit,
+                ["l1_location_of_visit_ais_store_daily_for_l4_location_of_last_visit_ais_store",
+                 "params:l4_geo_most_AIS_store_visit"
+                 ],
+                "l4_geo_most_AIS_store_visit"
+            )
             # node(
             #     l4_geo_store_close_to_home,
             #     ["l4_geo_home_work_location_id",
