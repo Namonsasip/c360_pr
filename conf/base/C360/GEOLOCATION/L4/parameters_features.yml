@@ -94,7 +94,7 @@ l4_geo_total_distance_km:
 l4_geo_use_traffic_home_work_weekly:
   partition_by: ["imsi"]
   feature_list:
-    sum: ["Home_traffic_KB","Work_traffic_KB","Top1_location_traffic_KB","Top2_location_traffic_KB"]
+    sum: ["Home_traffic_KB","Work_traffic_KB","Top1_location_traffic_KB","Top2_location_traffic_KB","share_Home_traffic_KB","share_Work_traffic_KB","share_Top1_location_traffic_KB","share_Top2_location_traffic_KB"]
   read_from: "l2"
 
 ###Number_of_base_station###
