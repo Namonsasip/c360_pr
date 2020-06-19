@@ -2,7 +2,7 @@ import pyspark.sql.functions as f
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 from pyspark.sql.types import *
-from customer360.utilities.config_parser import node_from_config
+from customer360.utilities.config_parser import node_from_config, expansion
 from kedro.context.context import load_context
 from pathlib import Path
 import logging
@@ -81,14 +81,15 @@ def l2_geo_cust_subseqently_distance_weekly(df, sql):
 ##==============================Update 2020-06-12 by Thatt529==========================================##
 
 ###total_distance_km###
-def l2_geo_total_distance_km_weekly(df, sql):
-    df = node_from_config(df, sql)
-    return df
+def l2_geo_total_distance_km_weekly(return_df: DataFrame, sql: dict):
+    # return_df = expansion(return_df, sql)
+    return_df = node_from_config(return_df, sql)
+    return return_df
 
 ###Traffic_fav_location###
-def   l2_geo_use_traffic_home_work_weekly(df,sql):
-    l2_df = df.withColumn("start_of_week", F.to_date(F.date_trunc('week', "event_partition_date"))).drop( 'event_partition_date')
-    l2_df_2 =node_from_config(l2_df,sql)
+def   l2_geo_use_traffic_home_work_weekly(df, sql):
+    l2_df = df.withColumn("start_of_week", F.to_date(F.date_trunc('week', "event_partition_date"))).drop('event_partition_date')
+    l2_df_2 = node_from_config(l2_df, sql)
     return l2_df_2
 
 ###Number_of_base_station###

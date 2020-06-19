@@ -24,9 +24,9 @@ l3_area_from_competitor_store_monthly:
 l3_geo_total_distance_km_monthly:
   where_clause: ""
   feature_list:
-    avg_distance_km: "sum(avg_distance_km)"
-    max_distance_km: "sum(max_distance_km)"
-    min_distance_km: "sum(min_distance_km)"
+    avg_distance_km: "avg(sum_distance_km)"
+    max_distance_km: "max(sum_distance_km)"
+    min_distance_km: "min(sum_distance_km)"
     sum_distance_km: "sum(sum_distance_km)"
   granularity: "imsi,start_of_month"
 
@@ -34,14 +34,14 @@ l3_geo_total_distance_km_monthly:
 l3_geo_use_traffic_home_work_weekly:
   where_clause: ""
   feature_list:
-    Home_traffic_KB: "sum(Home_traffic_KB),"
-    Work_traffic_KB: "sum(Work_traffic_KB),"
-    Top1_location_traffic_KB: "sum(Top1_traffic_KB),"
-    Top2_location_traffic_KB: "sum(Top2_traffic_KB),"
-    share_Home_traffic_KB: "(sum(Home_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_traffic_KB)+sum(Top2_traffic_KB)),"
-    share_Work_traffic_KB: "(sum(Work_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_traffic_KB)+sum(Top2_traffic_KB),"
-    share_Top1_location_traffic_KB: "(sum(Top1_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_traffic_KB)+sum(Top2_traffic_KB),"
-    share_Top2_location_traffic_KB: "(sum(Top2_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_traffic_KB)+sum(Top2_traffic_KB),"
+    Home_traffic_KB: "sum(Home_traffic_KB)"
+    Work_traffic_KB: "sum(Work_traffic_KB)"
+    Top1_location_traffic_KB: "sum(Top1_location_traffic_KB)"
+    Top2_location_traffic_KB: "sum(Top2_location_traffic_KB)"
+    share_Home_traffic_KB: "(sum(Home_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_location_traffic_KB)+sum(Top2_location_traffic_KB))"
+    share_Work_traffic_KB: "(sum(Work_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_location_traffic_KB)+sum(Top2_location_traffic_KB))"
+    share_Top1_location_traffic_KB: "(sum(Top1_location_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_location_traffic_KB)+sum(Top2_location_traffic_KB))"
+    share_Top2_location_traffic_KB: "(sum(Top2_location_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_location_traffic_KB)+sum(Top2_location_traffic_KB))"
   granularity: "imsi,start_of_month"
 
 ###feature_sum_voice_location###

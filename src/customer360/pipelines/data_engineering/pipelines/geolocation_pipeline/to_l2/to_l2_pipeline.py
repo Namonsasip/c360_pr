@@ -44,13 +44,13 @@ def geo_to_l2_pipeline(**kwargs):
             ),
 
             ###Traffic_fav_location###
-            # node(
-            #     l2_geo_use_traffic_home_work_weekly,
-            #     ["l1_geo_use_traffic_home_work",
-            #      "params:l2_geo_use_traffic_home_work_weekly"
-            #      ],
-            #     "l2_geo_use_traffic_home_work_weekly"
-            # ),
+            node(
+                l2_geo_use_traffic_home_work_weekly,
+                ["l1_geo_use_traffic_home_work_for_l2_geo_use_traffic_home_work_weekly",
+                 "params:l2_geo_use_traffic_home_work_weekly"
+                 ],
+                "l2_geo_use_traffic_home_work_weekly"
+            ),
 
             ###Number_of_base_station###
             node(
