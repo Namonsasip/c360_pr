@@ -193,7 +193,8 @@ l4_geo_most_AIS_store_visit:
 
 l4_geo_store_close_to_home:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_store_close_to_home/
+#  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_store_close_to_home/
+  filepath: /mnt/customer360-blob-data/C360/GEO/sample/geo_home_work_data_2/
   file_format: parquet
   save_args:
     increment_flag: 'no'
@@ -204,7 +205,8 @@ l4_geo_store_close_to_home:
 
 l4_geo_store_close_to_work:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_store_close_to_work/
+#  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_store_close_to_work/
+  filepath: /mnt/customer360-blob-data/C360/GEO/sample/geo_home_work_data_2/
   file_format: parquet
   save_args:
     increment_flag: 'no'
