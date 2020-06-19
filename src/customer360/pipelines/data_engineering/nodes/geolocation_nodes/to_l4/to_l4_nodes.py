@@ -1123,7 +1123,7 @@ def l4_geo_number_most_frequent_top_five_weekday(l1_favourite_location, l4_most_
         from l4_most_frequency a
         left join geo_location_data_1 b
         on a.mobile_no = b.mobile_no
-        where a.ROW = '1'
+        where a.ROW = 1
         AND b.weektype = 'weekday'
         group by 1,2,3,4,5
         """)
