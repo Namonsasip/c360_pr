@@ -139,10 +139,7 @@ def add_network_churn(network_churn: DataFrame, users: DataFrame) -> DataFrame:
         .select(["churn_type", "subscription_identifier", "key_date"])
     )
     churns = (
-        network_churn.filter(
-            "churn_type in ('Terminate from Non PI', "
-            + " 'Terminate', 'Terminate from CT', 'CT')"
-        )
+        network_churn.filter("churn_type in ('Terminate', 'CT')")
         .drop("churn_type")
         .withColumn("terminated", func.lit(1))
     )
