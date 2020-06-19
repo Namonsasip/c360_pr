@@ -1092,7 +1092,7 @@ def l4_geo_number_most_frequent_weekend(geo_l1_favourite_location_date, geo_l4_m
         join geo_l1_favourite_location b
         where b.WEEKTYPE = "weekend"
         AND a.mobile_no = b.mobile_no
-        group by 1,2,3
+        group by 1,2,3,4
         """)
     geo_location_data_cal = geo_location_data_used.groupBy("mobile_no", "start_of_week").agg(
         F.avg("distance_km").alias("avg_distance_km"),
