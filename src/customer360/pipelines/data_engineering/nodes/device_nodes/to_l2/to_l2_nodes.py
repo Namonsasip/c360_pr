@@ -70,4 +70,5 @@ def device_summary_with_configuration(hs_summary: DataFrame,
                                   (hs_summary.handset_model_code == hs_configs.hs_model_code) &
                                   (hs_summary.start_of_week == hs_configs.start_of_week), "left") \
         .drop(hs_configs.start_of_week)
+    joined_data.groupBy("start_of_week", "dual_user_yn").agg(F.count(F.col("dual_user_yn"))).show(1000)
     return joined_data
