@@ -414,7 +414,7 @@ l4_geo_from_number_of_used_most_frequent_weekdays:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "event_partition_date"
+    partitionBy: "start_of_week"
     read_layer: 'l4_weekly'
     target_layer: 'l4_weekly'
 
@@ -425,7 +425,7 @@ l4_geo_from_number_of_used_most_frequent_weekends:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "event_partition_date"
+    partitionBy: "start_of_week"
     read_layer: 'l4_weekly'
     target_layer: 'l4_weekly'
 
@@ -448,7 +448,7 @@ l4_geo_number_most_frequent_top_five_weekdays:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
+    partitionBy: "event_partition_date"
     read_layer: 'l4_weekly'
     target_layer: 'l4_weekly'
 
@@ -459,7 +459,7 @@ l4_geo_number_most_frequent_top_five_weekends:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "start_of_week"
+    partitionBy: "event_partition_date"
     read_layer: 'l4_weekly'
     target_layer: 'l4_weekly'
 
