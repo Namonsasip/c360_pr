@@ -200,13 +200,15 @@ def return_none_if_missing(d: Dict, key: str) -> Any:
         return None
 
 
-def get_today(parameters: Dict[str, Any],) -> str:
+def get_today(parameters: Dict[str, Any], sample_type: str = "scoring") -> str:
     """ Returns scoring date if specified in parameters or today's date otherwise.
 
     Args:
+        sample_type: can be "scoring" or "scoring_experiment", used to fetch chosen_date
+            from parameters.
         parameters: parameters defined in parameters.yml.
     """
-    chosen_date = parameters["scoring"]["chosen_date"]
+    chosen_date = parameters[sample_type]["chosen_date"]
     if chosen_date == "" or chosen_date is None:
         utc_now = pytz.utc.localize(datetime.utcnow())
         today = utc_now.astimezone(pytz.timezone("Asia/Bangkok")).strftime("%Y-%m-%d")
