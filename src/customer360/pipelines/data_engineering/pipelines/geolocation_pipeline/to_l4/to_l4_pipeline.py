@@ -278,14 +278,14 @@ def geo_to_l4_pipeline(**kwargs):
             # ),
             #
             ###============== Number of used most frequent top five =====================
-            node(
-                l4_geo_number_most_frequent_top_five_weekday,
-                ["l1_the_favourite_locations_daily",
-                 "l4_the_most_frequently_location_weekdays",
-                 "params:l4_area_from_number_of_used_most_frequent_top_5_weekday"
-                 ],
-                "l4_geo_number_most_frequent_top_five_weekdays"
-            )
+            # node(
+            #     l4_geo_number_most_frequent_top_five_weekday,
+            #     ["l1_the_favourite_locations_daily",
+            #      "l4_the_most_frequently_location_weekdays",
+            #      "params:l4_area_from_number_of_used_most_frequent_top_5_weekday"
+            #      ],
+            #     "l4_geo_number_most_frequent_top_five_weekdays"
+            # ),
             # node(
             #     l4_geo_number_most_frequent_top_five_weekend,
             #     ["l1_the_favourite_locations_daily",
@@ -302,15 +302,15 @@ def geo_to_l4_pipeline(**kwargs):
             #      ],
             #     "l4_geo_number_most_frequent_top_five"
             # ),
-            # ### ============== Number of used most frequent =====================
-            # node(
-            #     l4_geo_number_most_frequent_weekday,
-            #     ["l1_the_favourite_locations_daily",
-            #      "l4_the_most_frequently_location_weekdays",
-            #      "params:l4_area_from_number_of_used_most_frequent_weekdays"
-            #      ],
-            #     "l4_geo_from_number_of_used_most_frequent_weekdays"
-            # ),
+            ### ============== Number of used most frequent =====================
+            node(
+                l4_geo_number_most_frequent_weekday,
+                ["l1_the_favourite_locations_daily",
+                 "l4_the_most_frequently_location_weekdays",
+                 "params:l4_area_from_number_of_used_most_frequent_weekdays"
+                 ],
+                "l4_geo_from_number_of_used_most_frequent_weekdays"
+            )
             # node(
             #     l4_geo_number_most_frequent_weekend,
             #     ["l1_the_favourite_locations_daily",
