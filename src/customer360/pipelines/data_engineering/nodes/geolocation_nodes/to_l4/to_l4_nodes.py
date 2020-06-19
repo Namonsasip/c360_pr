@@ -676,7 +676,7 @@ def l4_the_most_frequently_location_weekends(l1_df_the_favourite_location_daily)
     ,SUM(all_usage_data_kb) as   most_data_used_kb_weekend
     ,ROW_NUMBER() OVER(partition by mobile_no,start_of_week ORDER BY SUM(All_usage_data_kb) desc) as the_most
     from (
-    select * from l1_feature47_2 
+    select * from l1_df_the_favourite_location_daily 
     where weektype = "weekend" 
     )
     group by mobile_no,start_of_week,v_most_data_used_cell_weekend,latitude,longitude
@@ -793,13 +793,12 @@ def l4_the_second_frequently_location_weekdays(l1_df_the_favourite_location_dail
     mobile_no
     ,start_of_week
     ,location_id
-    ,location_id
     ,latitude
     ,longitude
     ,sum(all_no_of_call) as sum_all_no_of_call_weekday
     ,SUM(all_usage_data_kb) as most_data_used_kb_weekday
     ,ROW_NUMBER() OVER(partition by mobile_no,start_of_week ORDER BY SUM(all_usage_data_kb)  desc) as the_most
-    from l1_feature47_2
+    from l1_df_the_favourite_location_daily
     group by mobile_no,start_of_week,location_id,latitude,longitude
     order by mobile_no,start_of_week,the_most asc
     )
@@ -955,7 +954,7 @@ def l4_the_second_frequently_location(l1_df_the_favourite_location_daily):
     ,sum(all_no_of_call) as sum_all_no_of_call
     ,SUM(All_usage_data_kb) as v_most_data_used_kb_1
     ,ROW_NUMBER() OVER(partition by mobile_no,start_of_week ORDER BY SUM(All_usage_data_kb) desc) as the_most
-    from l1_feature47_2
+    from l1_df_the_favourite_location_daily
     group by mobile_no,start_of_week,v_most_data_used_cell_1,latitude,longitude
     order by mobile_no,start_of_week,the_most asc
     )
@@ -995,7 +994,7 @@ def l4_the_second_frequently_location_4g(l1_df_the_favourite_location_daily):
     ,sum(all_no_of_call) as sum_all_no_of_call_4g
     ,SUM(vol_4g) as v_most_data_used_kb_4G_1
     ,ROW_NUMBER() OVER(partition by mobile_no,start_of_week ORDER BY SUM(vol_4g) desc) as the_most
-    from l1_feature47_2
+    from l1_df_the_favourite_location_daily
     where lower(gprs_type) like '%4g%'
 
     group by mobile_no,start_of_week,v_most_data_used_cell_4G_1,latitude,longitude
