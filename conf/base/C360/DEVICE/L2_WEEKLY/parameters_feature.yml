@@ -33,6 +33,7 @@ l2_device_summary_with_config:
     device_is_device_os_others: "max(case when lower(os) NOT IN ('ios', 'android') then 1 else 0 end)"
     device_purchased_from_ais: "max(case when lower(handset_channel) = 'ais' then 1 else 0 end)"
     device_supports_dual_sim: "max(case when dual_sim = 'Y' then 1 else 0 end)"
+    devices_uses_both_sim_slot: "max(case when dual_user_yn = 'Y' then 1 else 0 end)"
     device_supports_video_call: "max(case when video_call = 'Y' then 1 else 0 end)"
     device_supports_google_map: "max(case when google_map = 'Y' then 1 else 0 end)"
     device_supports_wds: "max(case when handset_wds_flag = 'Y' then 1 else 0 end)"

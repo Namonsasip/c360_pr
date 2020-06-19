@@ -21,7 +21,7 @@ l2_loyalty_number_of_services_weekly:
         or lower(category_text) like '%device discount%' THEN 1 ELSE 0 END)"
     loyalty_services_internet: "sum(CASE WHEN lower(category_id) like '%internet%'
         or lower(category_text) like '%internet%' THEN 1 ELSE 0 END)"
-    loyalty_lucky_draw: "sum(CASE WHEN lower(category_id) like '%lucky draw%'
+    loyalty_services_lucky_draw: "sum(CASE WHEN lower(category_id) like '%lucky draw%'
         or lower(category_text) like '%lucky draw%' THEN 1 ELSE 0 END)"
     loyalty_services_shopping: "sum(CASE WHEN lower(category_id) like '%shopping%'
         or lower(category_text) like '%shopping%' THEN 1 ELSE 0 END)"
@@ -82,7 +82,7 @@ l2_loyalty_number_of_rewards_redeemed_weekly:
         or lower(category_text) like '%device discount%' THEN 1 ELSE 0 END)"
     loyalty_rewards_internet: "sum(CASE WHEN lower(category_id) like '%internet%'
         or lower(category_text) like '%internet%' THEN 1 ELSE 0 END)"
-    loyalty_rewards_draw: "sum(CASE WHEN lower(category_id) like '%lucky draw%'
+    loyalty_rewards_luckky_draw: "sum(CASE WHEN lower(category_id) like '%lucky draw%'
         or lower(category_text) like '%lucky draw%' THEN 1 ELSE 0 END)"
     loyalty_rewards_shopping: "sum(CASE WHEN lower(category_id) like '%shopping%'
         or lower(category_text) like '%shopping%' THEN 1 ELSE 0 END)"
@@ -143,7 +143,7 @@ l2_loyalty_number_of_points_spend_weekly:
         or lower(category_text) like '%device discount%' THEN loyalty_points_spend ELSE 0 END)"
     loyalty_points_spend_internet: "sum(CASE WHEN lower(category_id) like '%internet%'
         or lower(category_text) like '%internet%' THEN loyalty_points_spend ELSE 0 END)"
-    loyalty_points_spend_draw: "sum(CASE WHEN lower(category_id) like '%lucky draw%'
+    loyalty_points_spend_lucky_draw: "sum(CASE WHEN lower(category_id) like '%lucky draw%'
         or lower(category_text) like '%lucky draw%' THEN loyalty_points_spend ELSE 0 END)"
     loyalty_points_spend_shopping: "sum(CASE WHEN lower(category_id) like '%shopping%'
         or lower(category_text) like '%shopping%' THEN loyalty_points_spend ELSE 0 END)"

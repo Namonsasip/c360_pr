@@ -20,6 +20,19 @@ log = logging.getLogger(__name__)
 running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 
 
+def gen_max_sql(data_frame, table_name, group):
+    """
+    :param data_frame:
+    :param table_name:
+    :param group:
+    :return:
+    """
+    grp_str = ', '.join(group)
+    col_to_iterate = ["max(" + x + ")" + " as " + x for x in data_frame.columns if x not in group]
+    all_cols = ', '.join(col_to_iterate)
+    final_str = "select {0}, {1} {2} {3} group by {4}".format(grp_str, all_cols, "from", table_name, grp_str)
+    return final_str
+
 def union_dataframes_with_missing_cols(df_input_or_list, *args):
     if type(df_input_or_list) is list:
         df_list = df_input_or_list
@@ -81,9 +94,9 @@ def add_start_of_week_and_month(input_df, date_column="day_id"):
     if len(input_df.head(1)) == 0:
         return input_df
 
-    input_df = input_df.withColumn("start_of_week", F.to_date(F.date_trunc('week', F.col(date_column))))
-    input_df = input_df.withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col(date_column))))
-    input_df = input_df.withColumn("event_partition_date", F.to_date(F.col(date_column)))
+    input_df = input_df.withColumn("start_of_week", F.to_date(F.date_trunc('week', F.col(date_column))))\
+        .withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col(date_column))))\
+        .withColumn("event_partition_date", F.to_date(F.col(date_column)))
 
     return input_df
 
