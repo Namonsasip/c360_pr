@@ -213,6 +213,7 @@ l4_area_from_number_of_used_most_frequent_weekdays:
   where_clause: ""
   feature_list:
     mobile_no: "mobile_no"
+    start_of_week: "start_of_week"
     avg_distance_km:  "avg_distance_km"
     max_distance_km:  "max_distance_km"
     min_distance_km:  "min_distance_km"
@@ -224,6 +225,7 @@ l4_area_from_number_of_used_most_frequent_weekends:
   where_clause: ""
   feature_list:
     mobile_no: "mobile_no"
+    start_of_week: "start_of_week"
     avg_distance_km:  "avg_distance_km"
     max_distance_km:  "max_distance_km"
     min_distance_km:  "min_distance_km"
