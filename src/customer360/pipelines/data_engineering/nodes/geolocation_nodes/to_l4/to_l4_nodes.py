@@ -1054,17 +1054,17 @@ def l4_geo_number_most_frequent_weekday(geo_l1_favourite_location_date,geo_l4_mo
         geo_location_data_used = spark.sql("""
         select
         b.mobile_no
+        , b.weektype
+        , a.start_of_week
         ,case when a.latitude is null and a.longitude is null then 0 
           else cast((acos(cos(radians(90-b.latitude))*cos(radians(90-a.latitude))+sin(radians(90-b.latitude))*sin(radians(90-a.latitude))*cos(radians(b.longitude - a.longitude)))*6371) as decimal(13,2)) 
           end as distance_km
         , sum(b.all_no_of_call) as NUMBER_OF_DATA_SESSION
-        , b.weektype
-        , a.start_of_week
         FROM geo_l4_most_frequency a
         join geo_l1_favourite_location b
         where b.WEEKTYPE = "weekday"
         AND a.mobile_no = b.mobile_no
-        group by 1,2,3,4,5
+        group by 1,2,3
         """)
         geo_location_data_cal = geo_location_data_used.groupBy("mobile_no", "start_of_week").agg(
                                                                     F.avg("distance_km").alias("avg_distance_km"),
@@ -1082,17 +1082,17 @@ def l4_geo_number_most_frequent_weekend(geo_l1_favourite_location_date, geo_l4_m
     geo_location_data_used = spark.sql("""
         select
         b.mobile_no
+        , b.weektype
+        , a.start_of_week
         ,case when a.latitude is null and a.longitude is null then 0 
           else cast((acos(cos(radians(90-b.latitude))*cos(radians(90-a.latitude))+sin(radians(90-b.latitude))*sin(radians(90-a.latitude))*cos(radians(b.longitude - a.longitude)))*6371) as decimal(13,2)) 
           end as distance_km
         , sum(b.all_no_of_call) as NUMBER_OF_DATA_SESSION
-        , b.weektype
-        , a.start_of_week
         FROM geo_l4_most_frequency a
         join geo_l1_favourite_location b
         where b.WEEKTYPE = "weekend"
         AND a.mobile_no = b.mobile_no
-        group by 1,2,3,4,5
+        group by 1,2,3,
         """)
     geo_location_data_cal = geo_location_data_used.groupBy("mobile_no", "start_of_week").agg(
         F.avg("distance_km").alias("avg_distance_km"),
