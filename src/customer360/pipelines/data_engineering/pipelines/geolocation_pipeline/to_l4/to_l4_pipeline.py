@@ -277,49 +277,47 @@ def geo_to_l4_pipeline(**kwargs):
             #     "l4_the_second_frequently_location_4g"
             # ),
             #
-            ###============== Number of used most frequent =====================
+            ###============== Number of used most frequent top five =====================
             node(
                 l4_geo_number_most_frequent_top_five_weekday,
                 ["l1_the_favourite_locations_daily",
                  "l4_the_most_frequently_location_weekdays",
-                 "params:l4_area_from_number_of_used_most_frequent_top_5"
+                 "params:l4_area_from_number_of_used_most_frequent_top_5_weekday"
                  ],
-                "l4_geo_from_number_of_used_most_frequent"
+                "l4_geo_number_most_frequent_top_five_weekdays"
             ),
-
             node(
                 l4_geo_number_most_frequent_top_five_weekend,
                 ["l1_the_favourite_locations_daily",
                  "l4_the_most_frequently_location_weekends",
-                 "params:l4_area_from_number_of_used_most_frequent_top_5"
+                 "params:l4_area_from_number_of_used_most_frequent_top_5_weekend"
                  ],
-                "l4_geo_from_number_of_used_most_frequent"
+                "l4_geo_number_most_frequent_top_five_weekends"
             ),
-
             node(
                 l4_geo_number_most_frequent_top_five,
                 ["l1_the_favourite_locations_daily",
                  "l4_the_most_frequently_location",
                  "params:l4_area_from_number_of_used_most_frequent_top_5"
                  ],
-                "l4_geo_from_number_of_used_most_frequent"
+                "l4_geo_number_most_frequent_top_five"
             ),
-
-            ### ============== Number of used most frequent top five =====================
+            ### ============== Number of used most frequent =====================
             node(
-                l4_geo_number_most_frequent,
-                ["l4_the_most_frequently_location_weekdays",
-                 "params:l4_area_from_number_of_used_most_frequent"
+                l4_geo_number_most_frequent_weekday,
+                ["l1_the_favourite_locations_daily",
+                 "l4_the_most_frequently_location_weekdays",
+                 "params:l4_area_from_number_of_used_most_frequent_weekdays"
                  ],
-                "l4_geo_from_l1_most_favourite_location"
+                "l4_geo_from_number_of_used_most_frequent_weekdays"
             ),
-
             node(
-                l4_geo_number_most_frequent,
-                ["l4_the_most_frequently_location",
-                 "params:l4_area_from_number_of_used_most_frequent"
+                l4_geo_number_most_frequent_weekend,
+                ["l1_the_favourite_locations_daily",
+                 "l4_the_most_frequently_location_weekends",
+                 "params:l4_area_from_number_of_used_most_frequent_weekends"
                  ],
-                "l4_geo_from_l1_most_favourite_location"
+                "l4_geo_from_number_of_used_most_frequent_weekends"
             )
 
         ], name="geo_to_l4_pipeline"

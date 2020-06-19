@@ -1047,93 +1047,62 @@ def l4_the_second_frequently_location_4g(l1_df_the_favourite_location_daily):
     return l4_59
 
 
-# =========================== Number most frequent ============================================
-def l4_geo_number_most_frequent(l1_favourite_location, geo_l4_most_frequency, sql):
-    l1_favourite_location.createOrReplaceTempView('geo_location_data')
+# =========================== Number most frequent weekday============================================
+def l4_geo_number_most_frequent_weekday(geo_l1_favourite_location_date,geo_l4_most_frequency, sql):
+        geo_l1_favourite_location_date.createOrReplaceTempView('geo_l1_favourite_location')
+        geo_l4_most_frequency.createOrReplaceTempView('geo_l4_most_frequency')
+        spark = get_spark_session()
+        geo_location_data_used = spark.sql("""
+        select
+        b.mobile_no
+        ,case when a.latitude is null and a.longitude is null then 0 
+          else cast((acos(cos(radians(90-b.latitude))*cos(radians(90-a.latitude))+sin(radians(90-b.latitude))*sin(radians(90-a.latitude))*cos(radians(b.longitude - a.longitude)))*6371) as decimal(13,2)) 
+          end as distance_km
+        , sum(b.all_no_of_call) as NUMBER_OF_DATA_SESSION
+        , b.weektype
+        FROM geo_l4_most_frequency a
+        join geo_l1_favourite_location b
+        where b.WEEKTYPE = "weekday"
+        AND a.mobile_no = b.mobile_no
+        group by 1,2,3,5
+        order by 1,2,3
+        """)
+        geo_location_data_cal = geo_location_data_used.groupBy("mobile_no").agg(
+                                                                    F.avg("distance_km").alias("avg_distance_km"),
+                                                                    F.max("distance_km").alias("max_distance_km"),
+                                                                    F.min("distance_km").alias("min_distance_km"),
+                                                                    F.sum("distance_km").alias("sum_distance_km"))
+        geo_location_data_cal.cache()
+        out = node_from_config(geo_location_data_cal, sql)
+        return out
+# =========================== Number most frequent weekend ============================================
+def l4_geo_number_most_frequent_weekend(geo_l1_favourite_location_date, geo_l4_most_frequency, sql):
+    geo_l1_favourite_location_date.createOrReplaceTempView('geo_l1_favourite_location')
     geo_l4_most_frequency.createOrReplaceTempView('geo_l4_most_frequency')
     spark = get_spark_session()
-
-    # map masterplan to get lat/long
-    geo_location_id_master_plan = spark.sql("""
-    select a.latitude as latitude_landmark, a.longitude as longitude_landmark, a.location_id
-    from geo_master_plan a
-    left join geo_location_id_frequent b
-    on a.location_id = b.location_id
-    """)
-    geo_location_id_master_plan.createOrReplaceTempView('geo_location_id_master_plan')
-
-    # query to get result distanc km
-    geo_location_data_used_l4 = spark.sql("""
-    select
-    a.mobile_no
-    , a.start_of_week
-    ,case when a.latitude is null and a.longitude is null then 0 
-      else cast((acos(cos(radians(90-a.latitude))*cos(radians(90-b.latitude_landmark))+sin(radians(90-a.latitude))*sin(radians(90-b.latitude_landmark))*cos(radians(a.longitude - b.longitude_landmark)))*6371) as decimal(13,2)) 
-      end as distance_km
-    , sum(a.sum_all_no_of_call) as NUMBER_OF_DATA_SESSION
-    FROM geo_l4_most_frequency a
-    join geo_location_id_master_plan b
-    where a.location_id = b.location_id
-    group by 1,2,3
-    order by 1,2,3
-    """)
-    geo_location_data_used_l4.createOrReplaceTempView('geo_location_data_used_l4')
-
-    # get average, max, min, sum from distanc km
-    geo_location_data_cal = geo_location_data_used_l4.groupBy("mobile_no", "start_of_week").agg(
-        F.avg("distance_km").alias("avg_distance_km"), F.max("distance_km").alias("max_distance_km"),
-        F.min("distance_km").alias("min_distance_km"), F.sum("distance_km").alias("sum_distance_km"))
-    geo_location_data_cal.orderBy("mobile_no", "start_of_week")
+    geo_location_data_used = spark.sql("""
+        select
+        b.mobile_no
+        ,case when a.latitude is null and a.longitude is null then 0 
+          else cast((acos(cos(radians(90-b.latitude))*cos(radians(90-a.latitude))+sin(radians(90-b.latitude))*sin(radians(90-a.latitude))*cos(radians(b.longitude - a.longitude)))*6371) as decimal(13,2)) 
+          end as distance_km
+        , sum(b.all_no_of_call) as NUMBER_OF_DATA_SESSION
+        , b.weektype
+        FROM geo_l4_most_frequency a
+        join geo_l1_favourite_location b
+        where b.WEEKTYPE = "weekend"
+        AND a.mobile_no = b.mobile_no
+        group by 1,2,3,5
+        order by 1,2,3
+        """)
+    geo_location_data_cal = geo_location_data_used.groupBy("mobile_no").agg(
+        F.avg("distance_km").alias("avg_distance_km"),
+        F.max("distance_km").alias("max_distance_km"),
+        F.min("distance_km").alias("min_distance_km"),
+        F.sum("distance_km").alias("sum_distance_km"))
     geo_location_data_cal.cache()
-
     out = node_from_config(geo_location_data_cal, sql)
     return out
-
-
-# =========================== Number most frequent count ============================================
-def l4_geo_number_most_frequent_count(l1_favourite_location, l4_most_frequency, sql):
-    l1_favourite_location.createOrReplaceTempView('geo_location_data')
-    l4_most_frequency.createOrReplaceTempView('l4_most_frequency')
-
-    l0_df1 = l1_favourite_location.withColumn("event_partition_date",
-                                                F.to_date(l1_favourite_location.date_id.cast(DateType()),
-                                                          "yyyy-MM-dd")).drop("date_id")
-    l0_df1.createOrReplaceTempView('geo_location_data_1')
-    spark = get_spark_session()
-
-    geo_location_count_weekday = spark.sql("""
-    select 
-    b.event_partition_date, b.mobile_no, b.weektype , a.sum_all_no_of_call, a.the_most
-    from geo_l4_most_frequency_1 a
-    left join geo_location_data_1 b
-    on a.mobile_no = b.mobile_no
-    where b.weektype = 'weekday'
-    group by 1,2,3,4,5
-    """)
-
-    geo_location_count_weekend = spark.sql("""
-    select 
-    b.event_partition_date, b.mobile_no, b.weektype , a.sum_all_no_of_call, a.the_most
-    from geo_l4_most_frequency_1 a
-    left join geo_location_data_1 b
-    on a.mobile_no = b.mobile_no
-    where b.weektype = 'weekend'
-    group by 1,2,3,4,5
-    """)
-
-    geo_location_count_weekday_1 = geo_location_count_weekday.groupBy("event_partition_date").agg(
-        F.count("sum_all_no_of_call").alias("count_all_no_of_call_weekday"))
-    geo_location_count_weekday_1.orderBy("event_partition_date")
-
-    geo_location_count_weekend_1 = geo_location_count_weekend.groupBy("event_partition_date").agg(
-        F.count("sum_all_no_of_call").alias("count_all_no_of_call_weekend"))
-    geo_location_count_weekend_1.orderBy("event_partition_date")
-
-    out1 = node_from_config(geo_location_count_weekday_1, sql)
-    out2 = node_from_config(geo_location_count_weekend_1, sql)
-
-    return out1, out2
-
 
 # =========================== Number most frequent top five ============================================
 def l4_geo_number_most_frequent_top_five_weekday(l1_favourite_location, l4_most_frequency, sql):
