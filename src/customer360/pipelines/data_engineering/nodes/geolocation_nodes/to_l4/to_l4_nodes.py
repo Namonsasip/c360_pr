@@ -1116,7 +1116,7 @@ def l4_geo_number_most_frequent_top_five_weekday(l1_favourite_location, l4_most_
     geo_location_data_weekday = spark.sql("""
         select 
             b.event_partition_date,
-            b.mobile_no, b.weektype,
+            b.mobile_no, 
             b.weektype,
             a.sum_all_no_of_call,
             a.ROW
