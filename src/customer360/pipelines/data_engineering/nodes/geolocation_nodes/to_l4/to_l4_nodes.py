@@ -1136,6 +1136,71 @@ def l4_geo_number_most_frequent_count(l1_favourite_location, l4_most_frequency, 
 
 
 # =========================== Number most frequent top five ============================================
+def l4_geo_number_most_frequent_top_five_weekday(l1_favourite_location, l4_most_frequency, sql):
+    l1_favourite_location.createOrReplaceTempView('geo_location_data')
+    l4_most_frequency.createOrReplaceTempView('l4_most_frequency')
+
+    l0_df1 = l1_favourite_location.withColumn("event_partition_date",
+                                              F.to_date(l1_favourite_location.date_id.cast(DateType()),
+                                                        "yyyy-MM-dd")).drop("date_id")
+    spark = get_spark_session()
+    geo_location_data_weekday = spark.sql("""
+        select 
+        b.event_partition_date, b.mobile_no, b.weektype , a.sum_all_no_of_call, a.the_most
+        from geo_l4_most_frequency_1 a
+        left join geo_location_data_1 b
+        on a.mobile_no = b.mobile_no
+        where a.the_most = '1'
+        AND b.weektype = 'weekday'
+        group by 1,2,3,4,5
+        """)
+
+    # =================================== Number most frequent weekday ====================================================
+    geo_location_data_calcu_weekday = geo_location_data_weekday.groupBy("mobile_no", "event_partition_date").agg(
+        F.sum("sum_all_no_of_call").alias("sum_all_no_of_call_weekday"))
+
+    geo_location_data_avg_weekday = geo_location_data_calcu_weekday.groupBy("event_partition_date").agg(
+        F.avg("sum_all_no_of_call_weekday").alias("avg_all_no_of_call_weekday"),
+        F.max("sum_all_no_of_call_weekday").alias("max_all_no_of_call_weekday"),
+        F.min("sum_all_no_of_call_weekday").alias("min_all_no_of_call_weekday"),
+        F.count("sum_all_no_of_call_weekday").alias("count_sum_all_no_of_call_weekday"))
+
+    out2 = node_from_config(geo_location_data_avg_weekday, sql)
+
+    return out2
+
+def l4_geo_number_most_frequent_top_five_weekend(l1_favourite_location, l4_most_frequency, sql):
+    l1_favourite_location.createOrReplaceTempView('geo_location_data')
+    l4_most_frequency.createOrReplaceTempView('l4_most_frequency')
+
+    l0_df1 = l1_favourite_location.withColumn("event_partition_date",
+                                              F.to_date(l1_favourite_location.date_id.cast(DateType()),
+                                                        "yyyy-MM-dd")).drop("date_id")
+    spark = get_spark_session()
+    geo_location_data_weekend = spark.sql("""
+        select 
+        b.event_partition_date, b.mobile_no, b.weektype , a.sum_all_no_of_call, a.the_most
+        from geo_l4_most_frequency_1 a
+        left join geo_location_data_1 b
+        on a.mobile_no = b.mobile_no
+        where a.the_most = '1'
+        AND b.weektype = 'weekend'
+        group by 1,2,3,4,5
+        """)
+
+    # =================================== Number most frequent weekend ====================================================
+    geo_location_data_calcu_weekend = geo_location_data_weekend.groupBy("mobile_no", "event_partition_date").agg(
+        F.sum("sum_all_no_of_call").alias("sum_all_no_of_call_weekend"))
+
+    geo_location_data_avg_weekend = geo_location_data_calcu_weekend.groupBy("event_partition_date").agg(
+        F.avg("sum_all_no_of_call_weekend").alias("avg_all_no_of_call_weekend"),
+        F.max("sum_all_no_of_call_weekend").alias("max_all_no_of_call_weekend"),
+        F.min("sum_all_no_of_call_weekend").alias("min_all_no_of_call_weekend"), F.count("sum_all_no_of_call_weekend"))
+
+    out3 = node_from_config(geo_location_data_avg_weekend, sql)
+
+    return out3
+
 def l4_geo_number_most_frequent_top_five(l1_favourite_location, l4_most_frequency, sql):
     l1_favourite_location.createOrReplaceTempView('geo_location_data')
     l4_most_frequency.createOrReplaceTempView('l4_most_frequency')
@@ -1156,28 +1221,6 @@ def l4_geo_number_most_frequent_top_five(l1_favourite_location, l4_most_frequenc
     group by 1,2,3,4,5
     """)
 
-    geo_location_data_weekday = spark.sql("""
-    select 
-    b.event_partition_date, b.mobile_no, b.weektype , a.sum_all_no_of_call, a.the_most
-    from geo_l4_most_frequency_1 a
-    left join geo_location_data_1 b
-    on a.mobile_no = b.mobile_no
-    where a.the_most = '1'
-    AND b.weektype = 'weekday'
-    group by 1,2,3,4,5
-    """)
-
-    geo_location_data_weekend = spark.sql("""
-    select 
-    b.event_partition_date, b.mobile_no, b.weektype , a.sum_all_no_of_call, a.the_most
-    from geo_l4_most_frequency_1 a
-    left join geo_location_data_1 b
-    on a.mobile_no = b.mobile_no
-    where a.the_most = '1'
-    AND b.weektype = 'weekend'
-    group by 1,2,3,4,5
-    """)
-
     # =================================== Number most frequent All ====================================================
     geo_location_data_calcu_all = geo_location_data_all.groupBy("mobile_no", "event_partition_date").agg(
         F.sum("sum_all_no_of_call").alias("sum_all_no_of_call_all"))
@@ -1189,30 +1232,7 @@ def l4_geo_number_most_frequent_top_five(l1_favourite_location, l4_most_frequenc
 
     out1 = node_from_config(geo_location_data_avg_all, sql)
 
-    # =================================== Number most frequent weekday ====================================================
-    geo_location_data_calcu_weekday = geo_location_data_weekday.groupBy("mobile_no", "event_partition_date").agg(
-        F.sum("sum_all_no_of_call").alias("sum_all_no_of_call_weekday"))
-
-    geo_location_data_avg_weekday = geo_location_data_calcu_weekday.groupBy("event_partition_date").agg(
-        F.avg("sum_all_no_of_call_weekday").alias("avg_all_no_of_call_weekday"),
-        F.max("sum_all_no_of_call_weekday").alias("max_all_no_of_call_weekday"),
-        F.min("sum_all_no_of_call_weekday").alias("min_all_no_of_call_weekday"),
-        F.count("sum_all_no_of_call_weekday").alias("count_sum_all_no_of_call_weekday"))
-
-    out2 = node_from_config(geo_location_data_avg_weekday, sql)
-
-    # =================================== Number most frequent weekend ====================================================
-    geo_location_data_calcu_weekend = geo_location_data_weekend.groupBy("mobile_no", "event_partition_date").agg(
-        F.sum("sum_all_no_of_call").alias("sum_all_no_of_call_weekend"))
-
-    geo_location_data_avg_weekend = geo_location_data_calcu_weekend.groupBy("event_partition_date").agg(
-        F.avg("sum_all_no_of_call_weekend").alias("avg_all_no_of_call_weekend"),
-        F.max("sum_all_no_of_call_weekend").alias("max_all_no_of_call_weekend"),
-        F.min("sum_all_no_of_call_weekend").alias("min_all_no_of_call_weekend"), F.count("sum_all_no_of_call_weekend"))
-
-    out3 = node_from_config(geo_location_data_avg_weekend, sql)
-
-    return out1, out2, out3
+    return out1
 
 
 ###Number of Unique Cells Used###

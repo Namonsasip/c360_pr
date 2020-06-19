@@ -406,7 +406,7 @@ l4_the_second_frequently_location_4g:
     target_layer: 'l4_weekly'
 
 
-###Number of used most###
+#============== Number of used most frequent =====================
 l4_geo_from_number_of_used_most_frequent:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360_OUTPUT/LIST_FILE/sample_geo/l4_feauture52_The_most_frequently_used_Location_data_sessions
@@ -418,6 +418,7 @@ l4_geo_from_number_of_used_most_frequent:
     read_layer: 'l4_weekly'
     target_layer: 'l4_weekly'
 
+#============== Number of used most favourite location =====================
 l4_geo_from_l1_most_favourite_location:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360_OUTPUT/LIST_FILE/sample_geo/l1_feauture47_Favourite_location_2
