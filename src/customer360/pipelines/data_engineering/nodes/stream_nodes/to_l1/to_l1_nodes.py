@@ -330,7 +330,7 @@ def stream_process_soc_mobile_data(input_data: DataFrame,
                 "start_of_week",
                 "start_of_month",
                 ]
-    join_cols = ['access_method_num', 'event_partition_date', "start_of_week", "start_of_month", "register_date"]
+    join_cols = ['access_method_num', 'event_partition_date', "start_of_week", "start_of_month"]
 
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = input_df
