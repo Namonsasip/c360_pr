@@ -134,7 +134,7 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
         df=vimmi_usage_daily,
         grouping="daily",
         par_col="partition_date",
-        target_table_name="int_l1_streaming_tv_channel_features")
+        target_table_name="l1_streaming_fav_tv_show_by_episode_watched")
 
     customer_df = data_non_availability_and_missing_check(
         df=customer_df,
@@ -299,7 +299,7 @@ def stream_process_soc_mobile_data(input_data: DataFrame,
         df=input_data,
         grouping="daily",
         par_col="partition_date",
-        target_table_name="int_l1_streaming_video_service_feature")
+        target_table_name="l1_streaming_visit_count_and_download_traffic_feature")
 
     customer_df = data_non_availability_and_missing_check(
         df=cust_profile_df,
