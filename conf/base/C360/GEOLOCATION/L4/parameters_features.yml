@@ -229,28 +229,35 @@ l4_area_from_number_of_used_most_frequent_weekends:
 
 #============== Number of used most frequent top 5 =====================
 l4_area_from_number_of_used_most_frequent_top_5:
-  partition_by: ["event_partition_date"]
+  where_clause: ""
   feature_list:
-    avg: ["avg_all_no_of_call_all", "avg_all_no_of_call_weekday", "avg_all_no_of_call_weekend"]
-    max: ["max_all_no_of_call_all", "max_all_no_of_call_weekday", "max_all_no_of_call_weekend"]
-    min: ["min_all_no_of_call_all", "min_all_no_of_call_weekday", "min_all_no_of_call_weekend"]
-    sum: ["sum_all_no_of_call_all", "sum_all_no_of_call_weekday", "sum_all_no_of_call_weekend"]
-  read_from: "l4"
+    mobile_no: "mobile_no"
+    event_partition_date:  "event_partition_date"
+    sum_all_no_of_call_weekend:  "sum_all_no_of_call_all"
+    avg_all_no_of_call_weekend:  "avg_all_no_of_call_all"
+    max_all_no_of_call_weekend: "max_all_no_of_call_all"
+    min_all_no_of_call_weekend: "min_all_no_of_call_all"
+  granularity: ""
 
 l4_area_from_number_of_used_most_frequent_top_5_weekday:
-  partition_by: ["event_partition_date"]
+  where_clause: ""
   feature_list:
-    avg: ["avg_all_no_of_call_all", "avg_all_no_of_call_weekday", "avg_all_no_of_call_weekend"]
-    max: ["max_all_no_of_call_all", "max_all_no_of_call_weekday", "max_all_no_of_call_weekend"]
-    min: ["min_all_no_of_call_all", "min_all_no_of_call_weekday", "min_all_no_of_call_weekend"]
-    sum: ["sum_all_no_of_call_all", "sum_all_no_of_call_weekday", "sum_all_no_of_call_weekend"]
-  read_from: "l4"
+    mobile_no: "mobile_no"
+    event_partition_date:  "event_partition_date"
+    sum_all_no_of_call_weekend:  "sum_all_no_of_call_weekday"
+    avg_all_no_of_call_weekend:  "avg_all_no_of_call_weekday"
+    max_all_no_of_call_weekend: "max_all_no_of_call_weekday"
+    min_all_no_of_call_weekend: "min_all_no_of_call_weekday"
+  granularity: ""
+
 
 l4_area_from_number_of_used_most_frequent_top_5_weekend:
-  partition_by: ["event_partition_date"]
+  where_clause: ""
   feature_list:
-    avg: ["avg_all_no_of_call_all", "avg_all_no_of_call_weekday", "avg_all_no_of_call_weekend"]
-    max: ["max_all_no_of_call_all", "max_all_no_of_call_weekday", "max_all_no_of_call_weekend"]
-    min: ["min_all_no_of_call_all", "min_all_no_of_call_weekday", "min_all_no_of_call_weekend"]
-    sum: ["sum_all_no_of_call_all", "sum_all_no_of_call_weekday", "sum_all_no_of_call_weekend"]
-  read_from: "l4"
+    mobile_no: "mobile_no"
+    event_partition_date:  "event_partition_date"
+    sum_all_no_of_call_weekend:  "sum_all_no_of_call_weekend"
+    avg_all_no_of_call_weekend:  "avg_all_no_of_call_weekend"
+    max_all_no_of_call_weekend: "max_all_no_of_call_weekend"
+    min_all_no_of_call_weekend: "min_all_no_of_call_weekend"
+  granularity: ""

@@ -1124,10 +1124,11 @@ def l4_geo_number_most_frequent_top_five_weekday(l1_favourite_location, l4_most_
         """)
 
     # =================================== Number most frequent weekday ====================================================
-    geo_location_data_calcu_weekday = geo_location_data_weekday.groupBy("mobile_no", "event_partition_date").agg(
-        F.sum("sum_all_no_of_call").alias("sum_all_no_of_call_weekday"))
+    # geo_location_data_calcu_weekday = geo_location_data_weekday.groupBy("mobile_no", "event_partition_date").agg(
+    #     F.sum("sum_all_no_of_call").alias("sum_all_no_of_call_weekday"))
 
-    geo_location_data_avg_weekday = geo_location_data_calcu_weekday.groupBy("event_partition_date").agg(
+    geo_location_data_avg_weekday = geo_location_data_weekday.groupBy("mobile_no","event_partition_date").agg(
+        F.sum("sum_all_no_of_call").alias("sum_all_no_of_call_weekday"),
         F.avg("sum_all_no_of_call_weekday").alias("avg_all_no_of_call_weekday"),
         F.max("sum_all_no_of_call_weekday").alias("max_all_no_of_call_weekday"),
         F.min("sum_all_no_of_call_weekday").alias("min_all_no_of_call_weekday"),
@@ -1157,13 +1158,15 @@ def l4_geo_number_most_frequent_top_five_weekend(l1_favourite_location, l4_most_
         """)
 
     # =================================== Number most frequent weekend ====================================================
-    geo_location_data_calcu_weekend = geo_location_data_weekend.groupBy("mobile_no", "event_partition_date").agg(
-        F.sum("sum_all_no_of_call").alias("sum_all_no_of_call_weekend"))
+    # geo_location_data_calcu_weekend = geo_location_data_weekend.groupBy("mobile_no", "event_partition_date").agg(
+    #     F.sum("sum_all_no_of_call").alias("sum_all_no_of_call_weekend"))
 
-    geo_location_data_avg_weekend = geo_location_data_calcu_weekend.groupBy("event_partition_date").agg(
+    geo_location_data_avg_weekend = geo_location_data_weekend.groupBy("mobile_no", "event_partition_date").agg(
+        F.sum("sum_all_no_of_call").alias("sum_all_no_of_call_weekend"),
         F.avg("sum_all_no_of_call_weekend").alias("avg_all_no_of_call_weekend"),
         F.max("sum_all_no_of_call_weekend").alias("max_all_no_of_call_weekend"),
-        F.min("sum_all_no_of_call_weekend").alias("min_all_no_of_call_weekend"), F.count("sum_all_no_of_call_weekend"))
+        F.min("sum_all_no_of_call_weekend").alias("min_all_no_of_call_weekend"),
+        F.count("sum_all_no_of_call_weekend"))
 
     out3 = node_from_config(geo_location_data_avg_weekend, sql)
 
@@ -1190,9 +1193,11 @@ def l4_geo_number_most_frequent_top_five(l1_favourite_location, l4_most_frequenc
     """)
 
     # =================================== Number most frequent All ====================================================
-    geo_location_data_calcu_all = geo_location_data_all.groupBy("mobile_no", "event_partition_date").agg(
-        F.sum("sum_all_no_of_call").alias("sum_all_no_of_call_all"))
-    geo_location_data_avg_all = geo_location_data_calcu_all.groupBy("event_partition_date").agg(
+    # geo_location_data_calcu_all = geo_location_data_all.groupBy("mobile_no", "event_partition_date").agg(
+    #     F.sum("sum_all_no_of_call").alias("sum_all_no_of_call_all"))
+
+    geo_location_data_avg_all = geo_location_data_all.groupBy("event_partition_date").agg(
+        F.sum("sum_all_no_of_call").alias("sum_all_no_of_call_all"),
         F.avg("sum_all_no_of_call_all").alias("avg_all_no_of_call_all"),
         F.max("sum_all_no_of_call_all").alias("max_all_no_of_call_all"),
         F.min("sum_all_no_of_call_all").alias("min_all_no_of_call_all"),
