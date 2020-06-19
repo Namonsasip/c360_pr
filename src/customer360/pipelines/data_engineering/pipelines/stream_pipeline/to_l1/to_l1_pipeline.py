@@ -78,7 +78,7 @@ def streaming_to_l1_intermediate_pipeline(**kwargs):
             # SECTION 1 BELOW
             node(stream_process_ru_a_onair_vimmi,
                  ["l0_streaming_ru_a_onair_vimmi_usage_daily_for_multiple_outputs",
-                  "l1_customer_profile_union_daily_feature_for_int_l1_streaming_content_type_features",
+                  "l1_customer_profile_union_daily_feature_for_l1_streaming_fav_tv_show_by_episode_watched",
                   # Content Type Features
                   "params:int_l1_streaming_content_type_features",
                   "params:l1_streaming_fav_content_group_by_volume",
@@ -110,7 +110,7 @@ def streaming_to_l1_intermediate_pipeline(**kwargs):
 
             node(stream_process_soc_mobile_data,
                  ["l0_streaming_soc_mobile_app_daily_for_multiple_outputs",
-                  "l1_customer_profile_union_daily_feature_for_int_l1_streaming_video_service_feature",
+                  "l1_customer_profile_union_daily_feature_for_l1_streaming_visit_count_and_download_traffic_feature",
                   # # fav video service by download traffic
                   "params:int_l1_streaming_video_service_feature",
                   "params:l1_streaming_fav_video_service_by_download_feature",
