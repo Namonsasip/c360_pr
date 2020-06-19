@@ -290,8 +290,9 @@ def stream_process_soc_mobile_data(input_data: DataFrame,
                                    ) -> [DataFrame, DataFrame, DataFrame, DataFrame, DataFrame,
                                          DataFrame, DataFrame, DataFrame, DataFrame, DataFrame]:
 
-    input_df = input_data
-    customer_df = cust_profile_df
+    input_df = input_data.where("partition_date = 20200101")
+    customer_df = cust_profile_df.where("event_partition_date = '2020-01-01'")
+
     ################################# Start Implementing Data availability checks #############################
     # if check_empty_dfs([input_data, cust_profile_df]):
     #     return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
@@ -333,6 +334,7 @@ def stream_process_soc_mobile_data(input_data: DataFrame,
 
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = input_df
+    data_frame = data_frame.withColumnRenamed("mobile_no", "access_method_num")
     data_frame = add_event_week_and_month_from_yyyymmdd(data_frame, "partition_date")
     dates_list = data_frame.select('event_partition_date').distinct().collect()
     mvv_array = [row[0] for row in dates_list]
