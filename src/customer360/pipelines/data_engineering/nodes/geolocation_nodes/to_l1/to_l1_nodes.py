@@ -487,27 +487,39 @@ def l1_geo_cust_subseqently_distance(cell_visit, sql):
 
 ###feature_AIS_store###
 def l1_location_of_visit_ais_store_daily(shape,cust_cell_visit,sql):
-    max_date = cust_cell_visit.selectExpr('max(partition_date)').collect()[0][0]
     shape.cache()
     store_shape = shape.where('landmark_cat_name_en like "%AIS%"')
     store_shape.createOrReplaceTempView('geo_mst_lm_poi_shape')
+
+    max_date = cust_cell_visit.selectExpr('max(partition_date)').collect()[0][0]
     cust_cell_visit.cache()
     cust_cell_visit = cust_cell_visit.where('partition_date='+str(max_date))
+    cust_cell_visit = cust_cell_visit.withColumn("event_partition_date",
+                                       F.to_date(F.col('partition_date').cast(StringType()), 'yyyyMMdd'))
     cust_cell_visit.createOrReplaceTempView('geo_cust_cell_visit_time')
     # Get spark session
     spark = get_spark_session()
     df = spark.sql("""
-        SELECT DISTINCT imsi,p1.location_id,landmark_name_th,landmark_sub_name_en,landmark_latitude,landmark_longitude,time_in,substr(partition_date,0,6) as partition_month
-        FROM GEO_CUST_CELL_VISIT_TIME p1 join geo_mst_lm_poi_shape  p2
+        SELECT DISTINCT 
+            imsi,
+            p1.location_id,
+            landmark_name_th,
+            landmark_sub_name_en,
+            landmark_latitude,
+            landmark_longitude,
+            time_in,
+            substr(partition_date,0,6) as partition_month,
+            event_partition_date
+        FROM geo_cust_cell_visit_time p1 join geo_mst_lm_poi_shape  p2
         WHERE p1.location_id =  p2.geo_shape_id
         AND p2.PARTITION_NAME = 'INTERNAL'
-        AND p2.LANDMARK_CAT_NAME_EN IN ('AIS') ;
+        AND p2.LANDMARK_CAT_NAME_EN IN ('AIS')
      """)
 
     df.cache()
     print("Start for check result from sql query statement")
-    df.count()
-    df.show()
+    # df.count()
+    # df.show()
 
     store_visit = node_from_config(df,sql)
     return store_visit

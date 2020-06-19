@@ -54,16 +54,17 @@ l1_geo_number_unique_cell_id:
 
 ###feature_AIS_store###
 l1_location_of_visit_ais_store_daily:
-  where_clause: "landmark_cat_name_en in ('AIS')"
+  where_clause: ""
   feature_list:
     imsi: "imsi"
-    store_location_id:  "geo_shape_id"
+    store_location_id:  "location_id"
     store_name: "landmark_name_th"
     store_category: "landmark_sub_name_en"
     store_latitude: "landmark_latitude"
     store_longitude:  "landmark_longitude"
     last_visit: "time_in"
-    partition_month:  "substr(partition_date,0,6)"
+    partition_month:  "partition_month"
+    event_partition_date: "event_partition_date"
   granularity:  ""
 
 

@@ -193,23 +193,25 @@ l4_geo_most_AIS_store_visit:
 
 l4_geo_store_close_to_home:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_store_close_to_home/
+#  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_store_close_to_home/
+  filepath: /mnt/customer360-blob-data/C360/GEO/sample/geo_home_work_data_2/
   file_format: parquet
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy:  "start_of_month"
+#    partitionBy:  "start_of_month"
     read_layer: 'l1_daily'
     target_layer: 'l4_monthly'
 
 l4_geo_store_close_to_work:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_store_close_to_work/
+#  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_store_close_to_work/
+  filepath: /mnt/customer360-blob-data/C360/GEO/sample/geo_home_work_data_2/
   file_format: parquet
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy:  "start_of_month"
+#    partitionBy:  "start_of_month"
     read_layer: 'l1_daily'
     target_layer: 'l4_monthly'
 
@@ -404,10 +406,10 @@ l4_the_second_frequently_location_4g:
     target_layer: 'l4_weekly'
 
 
-###Number of used most###
-l4_geo_from_number_of_used_most_frequent:
+#============== Number of used most frequent =====================
+l4_geo_from_number_of_used_most_frequent_weekdays:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360_OUTPUT/LIST_FILE/sample_geo/l4_feauture52_The_most_frequently_used_Location_data_sessions
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_from_number_of_used_most_frequent_weekdays
   file_format: parquet
   save_args:
     increment_flag: 'no'
@@ -416,9 +418,9 @@ l4_geo_from_number_of_used_most_frequent:
     read_layer: 'l4_weekly'
     target_layer: 'l4_weekly'
 
-l4_geo_from_l1_most_favourite_location:
+l4_geo_from_number_of_used_most_frequent_weekends:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360_OUTPUT/LIST_FILE/sample_geo/l1_feauture47_Favourite_location_2
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_from_number_of_used_most_frequent_weekends
   file_format: parquet
   save_args:
     increment_flag: 'no'
@@ -426,6 +428,41 @@ l4_geo_from_l1_most_favourite_location:
     partitionBy: "event_partition_date"
     read_layer: 'l4_weekly'
     target_layer: 'l4_weekly'
+
+#============== Number of used most frequent top five =====================
+l4_geo_number_most_frequent_top_five:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_number_most_frequent_top_five
+  file_format: parquet
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    read_layer: 'l4_weekly'
+    target_layer: 'l4_weekly'
+
+l4_geo_number_most_frequent_top_five_weekdays:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_number_most_frequent_top_five_weekdays
+  file_format: parquet
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    read_layer: 'l4_weekly'
+    target_layer: 'l4_weekly'
+
+l4_geo_number_most_frequent_top_five_weekends:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_number_most_frequent_top_five_weekends
+  file_format: parquet
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    read_layer: 'l4_weekly'
+    target_layer: 'l4_weekly'
+
 
 
 

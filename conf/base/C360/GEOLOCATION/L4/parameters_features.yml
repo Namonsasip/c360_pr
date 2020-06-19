@@ -128,24 +128,24 @@ l4_geo_number_unique_cell_used:
 
 ###feature_AIS_store###
 l4_geo_last_AIS_store_visit:
-  where_clause: "landmark_cat_name_en in ('AIS')"
+  where_clause: ""
   feature_list:
     imsi: "imsi"
-    store_location_id:  "geo_shape_id"
+    store_location_id:  "location_id"
     store_name: "landmark_name_th"
     store_category: "landmark_sub_name_en"
-    last_visit: "time_in"
+    last_visit: "last_visited"
     partition_month: "partition_month"
   granularity: ""
 
 l4_geo_most_AIS_store_visit:
-  where_clause: "landmark_cat_name_en in ('AIS')"
+  where_clause: ""
   feature_list:
     imsi: "imsi"
-    store_location_id:  "geo_shape_id"
+    store_location_id:  "location_id"
     store_name: "landmark_name_th"
     store_category: "landmark_sub_name_en"
-    visit_count: "count(time_in)"
+    visit_count: "most_visited"
     partition_month: "partition_month"
   granularity: ""
 
@@ -209,7 +209,16 @@ l4_geo_range_from_most_visited:
     partition_month:  "partition_month"
 
 ###Number of used most###
-l4_area_from_number_of_used_most_frequent:
+l4_area_from_number_of_used_most_frequent_weekdays:
+  partition_by: ["start_of_week"]
+  feature_list:
+    avg: ["distance_km"]
+    max: ["distance_km"]
+    min: ["distance_km"]
+    sum: ["distance_km"]
+  read_from: "l4"
+
+l4_area_from_number_of_used_most_frequent_weekends:
   partition_by: ["start_of_week"]
   feature_list:
     avg: ["distance_km"]
@@ -220,6 +229,24 @@ l4_area_from_number_of_used_most_frequent:
 
 #============== Number of used most frequent top 5 =====================
 l4_area_from_number_of_used_most_frequent_top_5:
+  partition_by: ["event_partition_date"]
+  feature_list:
+    avg: ["avg_all_no_of_call_all", "avg_all_no_of_call_weekday", "avg_all_no_of_call_weekend"]
+    max: ["max_all_no_of_call_all", "max_all_no_of_call_weekday", "max_all_no_of_call_weekend"]
+    min: ["min_all_no_of_call_all", "min_all_no_of_call_weekday", "min_all_no_of_call_weekend"]
+    sum: ["sum_all_no_of_call_all", "sum_all_no_of_call_weekday", "sum_all_no_of_call_weekend"]
+  read_from: "l4"
+
+l4_area_from_number_of_used_most_frequent_top_5_weekday:
+  partition_by: ["event_partition_date"]
+  feature_list:
+    avg: ["avg_all_no_of_call_all", "avg_all_no_of_call_weekday", "avg_all_no_of_call_weekend"]
+    max: ["max_all_no_of_call_all", "max_all_no_of_call_weekday", "max_all_no_of_call_weekend"]
+    min: ["min_all_no_of_call_all", "min_all_no_of_call_weekday", "min_all_no_of_call_weekend"]
+    sum: ["sum_all_no_of_call_all", "sum_all_no_of_call_weekday", "sum_all_no_of_call_weekend"]
+  read_from: "l4"
+
+l4_area_from_number_of_used_most_frequent_top_5_weekend:
   partition_by: ["event_partition_date"]
   feature_list:
     avg: ["avg_all_no_of_call_all", "avg_all_no_of_call_weekday", "avg_all_no_of_call_weekend"]
