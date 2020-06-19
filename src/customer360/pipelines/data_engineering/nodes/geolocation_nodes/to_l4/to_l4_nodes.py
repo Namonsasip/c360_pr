@@ -1134,10 +1134,10 @@ def l4_geo_number_most_frequent_top_five_weekday(l1_favourite_location, l4_most_
 
     geo_location_data_avg_weekday = geo_location_data_weekday.groupBy("mobile_no","event_partition_date").agg(
         F.sum("sum_all_no_of_call").alias("sum_all_no_of_call_weekday"),
-        F.avg("sum_all_no_of_call_weekday").alias("avg_all_no_of_call_weekday"),
-        F.max("sum_all_no_of_call_weekday").alias("max_all_no_of_call_weekday"),
-        F.min("sum_all_no_of_call_weekday").alias("min_all_no_of_call_weekday"),
-        F.count("sum_all_no_of_call_weekday").alias("count_sum_all_no_of_call_weekday"))
+        F.avg("sum_all_no_of_call").alias("avg_all_no_of_call_weekday"),
+        F.max("sum_all_no_of_call").alias("max_all_no_of_call_weekday"),
+        F.min("sum_all_no_of_call").alias("min_all_no_of_call_weekday"),
+        F.count("sum_all_no_of_call").alias("count_sum_all_no_of_call_weekday"))
 
     out2 = node_from_config(geo_location_data_avg_weekday, sql)
 
@@ -1173,10 +1173,10 @@ def l4_geo_number_most_frequent_top_five_weekend(l1_favourite_location, l4_most_
 
     geo_location_data_avg_weekend = geo_location_data_weekend.groupBy("mobile_no", "event_partition_date").agg(
         F.sum("sum_all_no_of_call").alias("sum_all_no_of_call_weekend"),
-        F.avg("sum_all_no_of_call_weekend").alias("avg_all_no_of_call_weekend"),
-        F.max("sum_all_no_of_call_weekend").alias("max_all_no_of_call_weekend"),
-        F.min("sum_all_no_of_call_weekend").alias("min_all_no_of_call_weekend"),
-        F.count("sum_all_no_of_call_weekend"))
+        F.avg("sum_all_no_of_call").alias("avg_all_no_of_call_weekend"),
+        F.max("sum_all_no_of_call").alias("max_all_no_of_call_weekend"),
+        F.min("sum_all_no_of_call").alias("min_all_no_of_call_weekend"),
+        F.count("sum_all_no_of_call"))
 
     out3 = node_from_config(geo_location_data_avg_weekend, sql)
 
@@ -1212,10 +1212,10 @@ def l4_geo_number_most_frequent_top_five(l1_favourite_location, l4_most_frequenc
 
     geo_location_data_avg_all = geo_location_data_all.groupBy("event_partition_date").agg(
         F.sum("sum_all_no_of_call").alias("sum_all_no_of_call_all"),
-        F.avg("sum_all_no_of_call_all").alias("avg_all_no_of_call_all"),
-        F.max("sum_all_no_of_call_all").alias("max_all_no_of_call_all"),
-        F.min("sum_all_no_of_call_all").alias("min_all_no_of_call_all"),
-        F.count("sum_all_no_of_call_all").alias("count_sum_all_no_of_call_all"))
+        F.avg("sum_all_no_of_call").alias("avg_all_no_of_call_all"),
+        F.max("sum_all_no_of_call").alias("max_all_no_of_call_all"),
+        F.min("sum_all_no_of_call").alias("min_all_no_of_call_all"),
+        F.count("sum_all_no_of_call").alias("count_sum_all_no_of_call_all"))
 
     out1 = node_from_config(geo_location_data_avg_all, sql)
 
