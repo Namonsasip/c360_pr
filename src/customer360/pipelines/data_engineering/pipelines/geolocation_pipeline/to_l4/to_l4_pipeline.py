@@ -135,22 +135,22 @@ def geo_to_l4_pipeline(**kwargs):
             #      ],
             #     "l4_geo_most_AIS_store_visit"
             # ),
-            node(
-                l4_geo_store_close_to_home,
-                ["l4_geo_home_work_location_id",
-                 "l0_mst_poi_shape_for_l1_geo_area_from_ais_store_daily",
-                 "params:l4_geo_store_close_to_home"
-                 ],
-                "l4_geo_store_close_to_home"
-            ),
             # node(
-            #     l4_geo_store_close_to_work,
+            #     l4_geo_store_close_to_home,
             #     ["l4_geo_home_work_location_id",
-            #     "l0_mst_poi_shape_for_l1_geo_area_from_ais_store_daily",
-            #      "params:l4_geo_store_close_to_work"
+            #      "l0_mst_poi_shape_for_l1_geo_area_from_ais_store_daily",
+            #      "params:l4_geo_store_close_to_home"
             #      ],
-            #     "l4_geo_store_close_to_work"
+            #     "l4_geo_store_close_to_home"
             # ),
+            node(
+                l4_geo_store_close_to_work,
+                ["l4_geo_home_work_location_id",
+                "l0_mst_poi_shape_for_l1_geo_area_from_ais_store_daily",
+                 "params:l4_geo_store_close_to_work"
+                 ],
+                "l4_geo_store_close_to_work"
+            )
             # ##==============================Update 2020-06-15 by Thatt529==========================================##
             #
             # ##Top_3_cells_on_voice_usage###
