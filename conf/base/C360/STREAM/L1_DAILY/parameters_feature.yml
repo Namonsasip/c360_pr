@@ -290,7 +290,7 @@ l1_streaming_visit_count_and_download_traffic_feature:
         visit_count_amazon: "case when sum(case when lower(application) in ('amazon', 'amazon_shopping_app') then 1 else 0 end) >= 1 then 1 else 0 end"
 
         # 1 for Monday, 7 for Sunday
-        day_of_week: "date_format(to_date(cast(partition_date as string), 'yyyyMMdd'), 'u')"
+        day_of_week: "date_format(event_partition_date, 'u')"
     granularity: "subscription_identifier, access_method_num, national_id_card, date(register_date),
                  event_partition_date, start_of_week, start_of_month"
     output_catalog: "l1_streaming_visit_count_and_download_traffic_feature"
