@@ -210,22 +210,25 @@ l4_geo_range_from_most_visited:
 
 ###Number of used most###
 l4_area_from_number_of_used_most_frequent_weekdays:
-  partition_by: ["start_of_week"]
+  where_clause: ""
   feature_list:
-    avg: ["distance_km"]
-    max: ["distance_km"]
-    min: ["distance_km"]
-    sum: ["distance_km"]
-  read_from: "l4"
+    mobile_no: "mobile_no"
+    avg_distance_km:  "avg_distance_km"
+    max_distance_km:  "max_distance_km"
+    min_distance_km:  "min_distance_km"
+    sum_distance_km: "sum_distance_km"
+  granularity: ""
+
 
 l4_area_from_number_of_used_most_frequent_weekends:
-  partition_by: ["start_of_week"]
+  where_clause: ""
   feature_list:
-    avg: ["distance_km"]
-    max: ["distance_km"]
-    min: ["distance_km"]
-    sum: ["distance_km"]
-  read_from: "l4"
+    mobile_no: "mobile_no"
+    avg_distance_km:  "avg_distance_km"
+    max_distance_km:  "max_distance_km"
+    min_distance_km:  "min_distance_km"
+    sum_distance_km: "sum_distance_km"
+  granularity: ""
 
 #============== Number of used most frequent top 5 =====================
 l4_area_from_number_of_used_most_frequent_top_5:

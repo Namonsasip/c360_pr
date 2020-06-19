@@ -1059,14 +1059,14 @@ def l4_geo_number_most_frequent_weekday(geo_l1_favourite_location_date,geo_l4_mo
           end as distance_km
         , sum(b.all_no_of_call) as NUMBER_OF_DATA_SESSION
         , b.weektype
+        , a.start_of_week
         FROM geo_l4_most_frequency a
         join geo_l1_favourite_location b
         where b.WEEKTYPE = "weekday"
         AND a.mobile_no = b.mobile_no
-        group by 1,2,3,5
-        order by 1,2,3
+        group by 1,2,3,4,5
         """)
-        geo_location_data_cal = geo_location_data_used.groupBy("mobile_no").agg(
+        geo_location_data_cal = geo_location_data_used.groupBy("mobile_no", "start_of_week").agg(
                                                                     F.avg("distance_km").alias("avg_distance_km"),
                                                                     F.max("distance_km").alias("max_distance_km"),
                                                                     F.min("distance_km").alias("min_distance_km"),
@@ -1087,14 +1087,14 @@ def l4_geo_number_most_frequent_weekend(geo_l1_favourite_location_date, geo_l4_m
           end as distance_km
         , sum(b.all_no_of_call) as NUMBER_OF_DATA_SESSION
         , b.weektype
+        , a.start_of_week
         FROM geo_l4_most_frequency a
         join geo_l1_favourite_location b
         where b.WEEKTYPE = "weekend"
         AND a.mobile_no = b.mobile_no
-        group by 1,2,3,5
-        order by 1,2,3
+        group by 1,2,3,4,5
         """)
-    geo_location_data_cal = geo_location_data_used.groupBy("mobile_no").agg(
+    geo_location_data_cal = geo_location_data_used.groupBy("mobile_no", "start_of_week").agg(
         F.avg("distance_km").alias("avg_distance_km"),
         F.max("distance_km").alias("max_distance_km"),
         F.min("distance_km").alias("min_distance_km"),
