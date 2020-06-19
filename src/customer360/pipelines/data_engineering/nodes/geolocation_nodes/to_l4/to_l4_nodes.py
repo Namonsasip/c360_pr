@@ -1115,11 +1115,15 @@ def l4_geo_number_most_frequent_top_five_weekday(l1_favourite_location, l4_most_
     l0_df1.createOrReplaceTempView('geo_location_data_1')
     geo_location_data_weekday = spark.sql("""
         select 
-        b.event_partition_date, b.mobile_no, b.weektype , a.sum_all_no_of_call, a.the_most
+            b.event_partition_date,
+            b.mobile_no, b.weektype,
+            b.weektype,
+            a.sum_all_no_of_call,
+            a.ROW
         from l4_most_frequency a
         left join geo_location_data_1 b
         on a.mobile_no = b.mobile_no
-        where a.the_most = '1'
+        where a.ROW = '1'
         AND b.weektype = 'weekday'
         group by 1,2,3,4,5
         """)
@@ -1150,11 +1154,15 @@ def l4_geo_number_most_frequent_top_five_weekend(l1_favourite_location, l4_most_
     l0_df1.createOrReplaceTempView('geo_location_data_1')
     geo_location_data_weekend = spark.sql("""
         select 
-        b.event_partition_date, b.mobile_no, b.weektype , a.sum_all_no_of_call, a.the_most
+            b.event_partition_date,
+            b.mobile_no,
+            b.weektype ,
+            a.sum_all_no_of_call,
+            a.ROW
         from l4_most_frequency a
         left join geo_location_data_1 b
         on a.mobile_no = b.mobile_no
-        where a.the_most = '1'
+        where a.ROW = '1'
         AND b.weektype = 'weekend'
         group by 1,2,3,4,5
         """)
@@ -1186,11 +1194,15 @@ def l4_geo_number_most_frequent_top_five(l1_favourite_location, l4_most_frequenc
 
     geo_location_data_all = spark.sql("""
     select 
-    b.event_partition_date, b.mobile_no, b.weektype , a.sum_all_no_of_call, a.the_most
+        b.event_partition_date,
+        b.mobile_no,
+        b.weektype,
+        a.sum_all_no_of_call,
+        a.ROW
     from l4_most_frequency a
     left join geo_location_data_1 b
     on a.mobile_no = b.mobile_no
-    where a.the_most = '1'
+    where a.ROW = '1'
     group by 1,2,3,4,5
     """)
 
