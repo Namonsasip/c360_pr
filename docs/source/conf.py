@@ -237,8 +237,12 @@ def setup(app):
     app.connect("autodoc-process-docstring", autodoc_process_docstring)
     app.connect("autodoc-skip-member", skip)
     # add Kedro stylesheets
-    for stylesheet in find_stylesheets():
-        logging.getLogger(__name__).info("Adding static file {}".format(stylesheet))
+    stylesheets = [
+        "css/copybutton.css",
+        "css/qb1-sphinx-rtd.css",
+        "css/theme-overrides.css",
+    ]
+    for stylesheet in stylesheets:
         app.add_stylesheet(stylesheet)
     # enable rendering RST tables in Markdown
     app.add_config_value("recommonmark_config", {"enable_eval_rst": True}, True)
