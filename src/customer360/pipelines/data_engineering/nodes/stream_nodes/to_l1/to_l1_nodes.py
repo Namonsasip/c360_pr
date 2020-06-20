@@ -140,7 +140,7 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
         df=customer_df,
         grouping="daily",
         par_col="event_partition_date",
-        target_table_name="int_l1_streaming_tv_channel_features")
+        target_table_name="l1_streaming_fav_tv_show_by_episode_watched")
 
     if check_empty_dfs([input_df, customer_df]):
         return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
@@ -305,7 +305,7 @@ def stream_process_soc_mobile_data(input_data: DataFrame,
         df=cust_profile_df,
         grouping="daily",
         par_col="event_partition_date",
-        target_table_name="int_l1_streaming_video_service_feature")
+        target_table_name="l1_streaming_visit_count_and_download_traffic_feature")
 
     if check_empty_dfs([input_df, customer_df]):
         return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
