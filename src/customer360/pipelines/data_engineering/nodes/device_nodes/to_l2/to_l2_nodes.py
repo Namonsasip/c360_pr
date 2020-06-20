@@ -19,20 +19,20 @@ def device_summary_with_configuration(hs_summary: DataFrame,
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
-    # if check_empty_dfs([hs_summary, hs_configs]):
-    #     return get_spark_empty_df()
-    #
-    # hs_summary = data_non_availability_and_missing_check(df=hs_summary, grouping="weekly",
-    #                                                      par_col="event_partition_date",
-    #                                                      target_table_name="l2_device_summary_with_config_weekly",
-    #                                                      missing_data_check_flg='Y',
-    #                                                      exception_partitions=exception_partitions_hs_summary)
-    #
-    # hs_configs = data_non_availability_and_missing_check(df=hs_configs, grouping="weekly", par_col="partition_date",
-    #                                                      target_table_name="l2_device_summary_with_config_weekly")
-    #
-    # if check_empty_dfs([hs_summary, hs_configs]):
-    #     return get_spark_empty_df()
+    if check_empty_dfs([hs_summary, hs_configs]):
+        return get_spark_empty_df()
+
+    hs_summary = data_non_availability_and_missing_check(df=hs_summary, grouping="weekly",
+                                                         par_col="event_partition_date",
+                                                         target_table_name="l2_device_summary_with_config_weekly",
+                                                         missing_data_check_flg='Y',
+                                                         exception_partitions=exception_partitions_hs_summary)
+
+    hs_configs = data_non_availability_and_missing_check(df=hs_configs, grouping="weekly", par_col="partition_date",
+                                                         target_table_name="l2_device_summary_with_config_weekly")
+
+    if check_empty_dfs([hs_summary, hs_configs]):
+        return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
 
@@ -63,12 +63,10 @@ def device_summary_with_configuration(hs_summary: DataFrame,
 
     hs_summary = hs_summary.filter(F.col("start_of_week") <= min_value)
     hs_configs = hs_configs.filter(F.col("start_of_week") <= min_value)
-    hs_summary.groupBy("start_of_week", "dual_user_yn").agg(F.count(F.col("dual_user_yn"))).show(1000)
 
     joined_data = hs_summary.join(hs_configs,
                                   (hs_summary.handset_brand_code == hs_configs.hs_brand_code) &
                                   (hs_summary.handset_model_code == hs_configs.hs_model_code) &
                                   (hs_summary.start_of_week == hs_configs.start_of_week), "left") \
         .drop(hs_configs.start_of_week)
-    joined_data.groupBy("start_of_week", "dual_user_yn").agg(F.count(F.col("dual_user_yn"))).show(1000)
     return joined_data
