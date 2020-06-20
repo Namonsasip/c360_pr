@@ -100,7 +100,7 @@ def streaming_to_l1_intermediate_pipeline(**kwargs):
                   "l1_streaming_fav_content_group_by_volume",
                   # TV Channel features
                   "l1_streaming_fav_content_group_by_duration",
-                  "l1_streaming_fav_tv_channel_by_volume_df", "l1_streaming_fav_tv_channel_by_duration_df",
+                  "l1_streaming_fav_tv_channel_by_volume", "l1_streaming_fav_tv_channel_by_duration",
                   # TV Show features
                   "int_l0_streaming_vimmi_table",
                   # Favorite Episode
