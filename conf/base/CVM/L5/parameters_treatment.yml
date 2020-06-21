@@ -14,3 +14,9 @@ treatment_output:
   churn:
     output_path_template: '/dbfs/mnt/customer360-blob-output/CVM_OUTPUT/cvm_prepaid_churn_output/CVM_Prepaid_churn_model_V2_{}/treatments.csv'
     output_path_date_format: '%Y%m%d%H%M%S'
+
+# anti down-sell rules for package recommend table
+treatment_package_rec:
+  condition:
+    - offer_price > preferred_package_price
+    - offer_speed_kbps > preferred_speed_number
