@@ -4,35 +4,35 @@ _spark_parquet: &spark_parquet
 
 dq_sampled_subscription_identifier: &dq_sampled_subscription_identifier
   <<: *spark_parquet
-  filepath: dq_path/DQ/dq_sampled_subscription_identifier/
+  filepath: dq_path/DQ/dq_sampled_subscription_identifier/nba_features/
   save_args:
     partitionBy: ["created_date"]
     mode: "append"
 
 dq_accuracy_and_completeness:
   <<: *spark_parquet
-  filepath: dq_path/DQ/nba_test/dq_accuracy_and_completeness/
+  filepath: dq_path/DQ/nba_test/dq_accuracy_and_completeness/nba_features/
   save_args:
     mode: "append"
     partitionBy: ["dataset_name", "corresponding_date"]
 
 dq_availability:
   <<: *spark_parquet
-  filepath: dq_path/DQ/dq_availability/
+  filepath: dq_path/DQ/dq_availability/nba_features/
   save_args:
     mode: "overwrite"
     partitionBy: ["dataset_name", "run_date"]
 
 dq_consistency:
   <<: *spark_parquet
-  filepath: dq_path/DQ/dq_consistency/
+  filepath: dq_path/DQ/dq_consistency/nba_features/
   save_args:
     mode: "append"
     partitionBy: ["dataset_name", "run_date"]
 
 dq_timeliness:
   <<: *spark_parquet
-  filepath: dq_path/DQ/dq_timeliness/
+  filepath: dq_path/DQ/dq_timeliness/nba_features/
   save_args:
     mode: "overwrite"
     partitionBy: ["dataset_name", "run_date"]
