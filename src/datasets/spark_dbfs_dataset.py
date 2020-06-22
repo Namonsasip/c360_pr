@@ -335,6 +335,15 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 "select * from src_data where to_date(cast({0} as String),'yyyyMM') > add_months(date(date_trunc('month',to_date(cast('{1}' as String)))),-{2})".format(
                     filter_col, tgt_filter_date, lookback_fltr))
 
+            elif read_layer.lower() == "l0_customer_profile_1mo_non_active_monthly" and target_layer.lower() == 'l3_monthly':
+                filter_col = "partition_month"
+                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
+                print("filter_col:", filter_col)
+                print("lookback_fltr:", lookback_fltr)
+                src_incremental_data = spark.sql(
+                "select * from src_data where to_date(cast({0} as String),'yyyyMM') > add_months(date(date_trunc('month',to_date(cast('{1}' as String)))),-{2})".format(
+                    filter_col, tgt_filter_date, lookback_fltr))
+
             elif read_layer.lower() == "l0_monthly" and target_layer.lower() == 'l4_monthly':
                 filter_col = "partition_month"
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
@@ -576,9 +585,11 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
             raise ValueError(
                 "Please check, read_layer and target_layer value can't be None or Empty for incremental load")
         else:
-            if (read_layer.lower() == "l1_daily" and target_layer.lower() == 'l4_daily') or (
-                    read_layer.lower() == "l2_weekly" and target_layer.lower() == 'l4_weekly') or (
-                    read_layer.lower() == "l3_monthly" and target_layer.lower() == 'l4_monthly'):
+            if (read_layer.lower() == "l1_daily" and target_layer.lower() == "l4_daily") or (
+                    read_layer.lower() == "l2_weekly" and target_layer.lower() == "l4_weekly") or (
+                    read_layer.lower() == "l3_monthly" and target_layer.lower() == "l4_monthly") or (
+                    read_layer.lower() == "l0_customer_profile_1mo_non_active_monthly" and target_layer.lower() == "l3_monthly"
+            ):
 
                 #Remove after first run happens
                 logging.info("Writing dataframe with lookback scenario")

@@ -11,7 +11,7 @@ l2_sales_number_and_volume_on_top_transaction_weekly:
     target_layer: 'l2_weekly'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l4_sales_number_and_volume_transaction_weekly'
+    lookup_table_name: 'l4_sales_number_and_volume_on_top_transaction_weekly'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
     lookback: '12'
@@ -29,7 +29,7 @@ l2_sales_number_and_volume_main_transaction_weekly:
     target_layer: 'l2_weekly'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l4_sales_number_and_volume_transaction_weekly'
+    lookup_table_name: 'l4_sales_number_and_volume_main_transaction_weekly'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
     lookback: '12'
