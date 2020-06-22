@@ -341,6 +341,39 @@ in agreed paths.
 
 
 ## Report submodule
+We have the scoring, we have the treatments, we use all of that to send campaigns to users.
+It would be very nice if we could check the impact of the campaigns sent.
+
+Every day pipeline called `cvm_create_report` is run to create statistics used to 
+observe, track and assess the impact. To track churn multiple metrics are used.
+These include churn defined using the `network_pru_a_churn_sub_daily` table and 
+churn defined as some predefined number of days of inactivity.
+You can change the lengths of inactivities in `conf/base/CVM/L5/parameters_report.yml`.
+
+![](.images/03_description_images/0c1b0b6d.png)
+
+To make computation faster only data entries added after`min_date` are used.
+
+`cvm_create_report` pipeline sources the data and updates table saved in 
+`dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_daily_kpis/`.
+On top of churn statistics the table includes:
+- crm_sub_id
+- new sub id, that is access method number and registration date
+- target group - before and after reshuffle
+- revenue data
+  - total
+  - voice
+  - data
+- subscription status
+- macrosegments for ard and churn
+- microsegments for ard and churn
+
+The table is used in notebooks like this [one](https://southeastasia.azuredatabricks.net/?o=334552184297553#notebook/266775204939146/command/2247608900692205)
+to create graphs and reports showing the impact.
+
+![](.images/03_description_images/f038268c.png)
+
+![](.images/03_description_images/e7d7625d.png)
 
 ### KPIs to be tracked
 
