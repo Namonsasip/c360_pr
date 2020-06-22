@@ -30,9 +30,8 @@ def build_digital_l3_monthly_features(cxense_user_profile: DataFrame,
 
     cust_df = data_non_availability_and_missing_check(
         df=cust_df, grouping="monthly",
-        par_col="event_partition_date",
-        target_table_name="l3_digital_cxenxse_user_profile_monthly",
-        missing_data_check_flg='N')
+        par_col="start_of_month",
+        target_table_name="l3_digital_cxenxse_user_profile_monthly")
 
     # new section to handle data latency
     cxense_user_profile = cxense_user_profile\

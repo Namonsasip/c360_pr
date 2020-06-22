@@ -37,10 +37,8 @@ def build_digital_l2_weekly_features(cxense_site_traffic: DataFrame,
 
     cust_df = data_non_availability_and_missing_check(
         df=cust_df, grouping="weekly",
-        par_col="event_partition_date",
-        target_table_name="l2_digital_cxenxse_site_traffic_weekly",
-        missing_data_check_flg='Y'
-    )
+        par_col="start_of_week",
+        target_table_name="l2_digital_cxenxse_site_traffic_weekly")
 
     if check_empty_dfs([cxense_site_traffic, cust_df]):
         return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df()
