@@ -20,10 +20,16 @@ l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi:
     target_layer: 'l1_daily'
     lookback: '0'
 
-l0_network_sdr_dyn_cea_cei_qoe_cell_usr_fileaccess_1day:
+l0_network_sdr_dyn_cea_cei_qoe_cell_usr_fileaccess_1day_for_l1_network_file_transfer_cqi:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
   filepath: data/L0/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_fileaccess_1day
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_network_file_transfer_cqi'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
 
 l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features:
   type: kedro.contrib.io.pyspark.SparkDataSet
@@ -135,18 +141,13 @@ l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_volte_cqi:
     target_layer: 'l1_daily'
     lookback: '0'
 
-l0_network_sdr_dyn_cea_cei_voiceqoe_usr_1day:
+l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi:
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
-  filepath: data/L0/NETWORK/network_sdr_dyn_cea_cei_voiceqoe_usr_1day
-
-l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features:
-  type: kedro.contrib.io.pyspark.SparkDataSet
-  file_format: "parquet"
-  filepath: data/L0/NETWORK/network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day
+  filepath: data/L0/NETWORK/network_sdr_dyn_cea_cei_cei_usr_1day
   load_args:
     increment_flag: 'no'
-    lookup_table_name: 'l1_network_good_and_bad_cells_features'
+    lookup_table_name: 'l1_network_user_cqi'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'

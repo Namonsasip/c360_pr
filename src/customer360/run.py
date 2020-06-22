@@ -38,7 +38,7 @@ from pathlib import Path
 from typing import Any, Dict, Union
 from warnings import warn
 
-import findspark
+import findspark, datetime
 from kedro.config import MissingConfigException
 from kedro.context import KedroContext, load_context
 from kedro.io import DataCatalog
@@ -58,7 +58,12 @@ except ValueError as err:
     logging.info("findspark.init() failed with error " + str(err))
 
 conf = os.getenv("CONF", None)
-running_environment = os.getenv("RUNNING_ENVIRONMENT", None)
+running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
+pipeline_to_run = os.getenv("PIPELINE_TO_RUN", None)
+
+LOG_FILE_NAME = str(datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"))
+if pipeline_to_run:
+    LOG_FILE_NAME = "{}_{}".format(pipeline_to_run, str(datetime.datetime.now().strftime("%Y_%m_%d_%H_%M")))
 
 
 class ProjectContext(KedroContext):
@@ -70,6 +75,20 @@ class ProjectContext(KedroContext):
 
     def _get_pipelines(self) -> Dict[str, Pipeline]:
         return create_pipelines()
+
+    def _setup_logging(self) -> None:
+        """Register logging specified in logging directory."""
+
+        conf_logging = self.config_loader.get("logging*", "logging*/**")
+        info_file_path = conf_logging['handlers']['info_file_handler']['filename']
+        info_file_path_new = info_file_path.replace(".", "_{}.".format(LOG_FILE_NAME))
+
+        error_file_path = conf_logging['handlers']['error_file_handler']['filename']
+        error_file_path_new = error_file_path.replace(".", "_{}.".format(LOG_FILE_NAME))
+
+        conf_logging['handlers']['info_file_handler']['filename'] = info_file_path_new
+        conf_logging['handlers']['error_file_handler']['filename'] = error_file_path_new
+        logging.config.dictConfig(conf_logging)
 
     @property
     def params(self) -> Dict[str, Any]:
@@ -274,7 +293,11 @@ def run_package(pipelines=None, project_context=None, tags=None):
     if pipelines is not None:
         for each_pipeline in pipelines:
             project_context.run(pipeline_name=each_pipeline, tags=tags)
-        return
+    else:
+        project_context.run(tags=tags)
+
+    return
+
     # project_context.run(pipeline_name='customer_profile_to_l3_pipeline')
     # project_context.run()
     # Replace line above with below to run on databricks cluster
