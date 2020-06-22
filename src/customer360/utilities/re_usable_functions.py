@@ -615,7 +615,7 @@ def data_non_availability_and_missing_check(df, grouping, par_col, target_table_
                 #print("No missing data partitions found")
                 df = df
             else:
-                logging.info("Few missing data partitions are not found in source data for these weekly partitions: {}".format(
+                logging.info("Few data partitions are not found in source data for these weekly partitions: {}".format(
                     missing_data_partition))
                 logging.info(
                     "Getting the data before minimum missing data partitions from source dataframe for further processing")
