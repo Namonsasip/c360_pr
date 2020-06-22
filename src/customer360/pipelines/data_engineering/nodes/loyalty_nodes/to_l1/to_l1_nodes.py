@@ -48,11 +48,6 @@ def loyalty_number_of_services_for_each_category(customer_prof: DataFrame
     drop_cols = ["event_partition_date", "start_of_week", "start_of_month"]
 
     input_df = input_df.filter(f.col("event_partition_date") <= min_value).drop(*drop_cols) \
-        .filter(f.col("response_date").isNotNull())
-
-    # some business level filters
-    logging.info("Applying Business Level Filters")
-    input_df = input_df.where("upper(group_project) = 'PRIVILEGE'")
 
     customer_prof = customer_prof.filter(f.col("event_partition_date") <= min_value)
 
@@ -112,8 +107,7 @@ def loyalty_number_of_rewards_redeemed_for_each_category(customer_prof: DataFram
 
     drop_cols = ["event_partition_date", "start_of_week", "start_of_month"]
 
-    input_df = input_df.filter(f.col("event_partition_date") <= min_value).drop(*drop_cols) \
-               .filter(f.col("response_date").isNotNull())
+    input_df = input_df.filter(f.col("event_partition_date") <= min_value).drop(*drop_cols)
 
     customer_prof = customer_prof.filter(f.col("event_partition_date") <= min_value)
 
@@ -173,6 +167,7 @@ def loyalty_number_of_points_spend_for_each_category(customer_prof: DataFrame,
     drop_cols = ["event_partition_date", "start_of_week", "start_of_month"]
 
     input_df = input_df.filter(f.col("filtered_date") <= min_value).drop(*drop_cols)
+
     customer_prof = customer_prof.filter(f.col("event_partition_date") <= min_value)
 
     if check_empty_dfs([input_df, customer_prof]):
