@@ -34,6 +34,10 @@ treatments_chosen:
   type: kedro.io.csv_local.CSVLocalDataSet
   filepath: /dbfs/mnt/customer360-cvm/treatments_chosen.csv
 
+treatments_chosen_translated:
+  type: kedro.io.csv_local.CSVLocalDataSet
+  filepath: /dbfs/mnt/customer360-cvm/treatments_chosen_translated.csv
+
 treatments_chosen_history_input:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_treatments_chosen_history/
@@ -47,3 +51,8 @@ treatments_chosen_history_output:
 treatments_deployed:
   type: kedro.io.PickleLocalDataSet
   filepath: /dbfs/mnt/customer360-cvm/treatments_deployed
+
+# table for ATL to BTL mapping
+ard_btl_offer_mapping:
+  type: kedro.io.csv_local.CSVLocalDataSet
+  filepath: /dbfs/mnt/customer360-cvm/ard_btl_offer_mapping.csv
