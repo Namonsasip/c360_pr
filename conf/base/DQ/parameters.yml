@@ -38,14 +38,14 @@ benchmark_end_date: "2020-04-30"
 
 features_for_dq:
   l3_customer_profile_include_1mo_non_active:
-    - feature: day_of_week
-    - feature: day_of_month
+#    - feature: day_of_week
+#    - feature: day_of_month
     - feature: age
     - feature: subscriber_tenure
-    - feature: charge_type_numeric
-    - feature: mobile_segment_numeric
-    - feature: subscription_status_numeric
-    - feature: norms_net_revenue
+#    - feature: charge_type_numeric
+#    - feature: mobile_segment_numeric
+#    - feature: subscription_status_numeric
+#    - feature: norms_net_revenue
 #  l4_billing_rolling_window_topup_and_volume:
 #    - feature: sum_payments_top_ups_last_week
 #    - feature: sum_payments_top_ups_last_four_week
@@ -84,22 +84,22 @@ features_for_dq:
 #  l4_billing_rolling_window_rpu_roaming:
 #    - feature: sum_payments_arpu_roaming_weekly_last_week
 #    - feature: sum_payments_arpu_roaming_weekly_last_twelve_week
-#  l4_billing_rolling_window_before_top_up_balance:
-#    - feature: sum_payments_before_top_up_balance_weekly_last_week
-#    - feature: sum_payments_before_top_up_balance_weekly_last_four_week
-#  l4_billing_rolling_window_top_up_channels:
+  l4_billing_rolling_window_before_top_up_balance:
+    - feature: sum_payments_before_top_up_balance_weekly_last_week
+    - feature: sum_payments_before_top_up_balance_weekly_last_four_week
+  l4_billing_rolling_window_top_up_channels:
 #    - feature: sum_payments_top_ups_by_bank_atm_cdm_weekly_last_twelve_week
 #    - feature: sum_payments_top_up_vol_by_bank_atm_cdm_weekly_last_twelve_week
 #    - feature: sum_payments_top_ups_by_cash_card_weekly_last_twelve_week
 #    - feature: sum_payments_top_up_vol_by_cash_card_weekly_last_twelve_week
 #    - feature: sum_payments_top_ups_by_digital_online_self_service_weekly_last_twelve_week
-#    - feature: sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_twelve_week
+    - feature: sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_twelve_week
 #    - feature: sum_payments_top_ups_by_epin_slip_weekly_last_twelve_week
 #    - feature: sum_payments_top_up_vol_by_epin_slip_weekly_last_twelve_week
 #    - feature: sum_payments_top_ups_by_epos_weekly_last_twelve_week
 #    - feature: sum_payments_top_up_vol_by_epos_weekly_last_twelve_week
-#    - feature: sum_payments_top_ups_by_rom_weekly_last_twelve_week
-#    - feature: sum_payments_top_up_vol_by_rom_weekly_last_twelve_week
+    - feature: sum_payments_top_ups_by_rom_weekly_last_twelve_week
+    - feature: sum_payments_top_up_vol_by_rom_weekly_last_twelve_week
 #  l4_daily_feature_topup_and_volume:
 #    - feature: '*'
   l4_campaign_postpaid_prepaid_features:
@@ -174,6 +174,17 @@ features_for_dq:
     - feature: sum_usg_outgoing_total_call_duration_daily_last_seven_day
     - feature: sum_usg_outgoing_total_sms_daily_last_ninety_day
     - feature: sum_usg_outgoing_total_sms_daily_last_seven_day
+#    - feature: sum_usg_incoming_data_volume_sum_weekly_last_week
+#    - feature: sum_usg_incoming_data_volume_sum_weekly_last_twelve_week
+#    - feature: sum_usg_incoming_data_volume_2G_3G_sum_weekly_last_four_week
+#    - feature: sum_usg_incoming_data_volume_4G_sum_weekly_last_four_week
+#    - feature: sum_usg_incoming_local_data_volume_sum_weekly_last_four_week
+#    - feature: sum_usg_incoming_local_data_volume_2G_3G_sum_weekly_last_four_week
+#    - feature: sum_usg_incoming_local_data_volume_4G_sum_weekly_last_four_week
+#    - feature: sum_usg_outgoing_total_call_duration_sum_weekly_last_week
+#    - feature: sum_usg_outgoing_total_call_duration_sum_weekly_last_twelve_week
+#    - feature: '*'
+  l4_usage_postpaid_prepaid_weekly_features_sum:
     - feature: sum_usg_incoming_data_volume_sum_weekly_last_week
     - feature: sum_usg_incoming_data_volume_sum_weekly_last_twelve_week
     - feature: sum_usg_incoming_data_volume_2G_3G_sum_weekly_last_four_week
@@ -183,8 +194,6 @@ features_for_dq:
     - feature: sum_usg_incoming_local_data_volume_4G_sum_weekly_last_four_week
     - feature: sum_usg_outgoing_total_call_duration_sum_weekly_last_week
     - feature: sum_usg_outgoing_total_call_duration_sum_weekly_last_twelve_week
-#    - feature: '*'
-#  l4_usage_postpaid_prepaid_weekly_features_sum:
 #    - feature: '*'
 #  l4_device_summary_features:
 #    - feature: '*'
