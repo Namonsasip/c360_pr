@@ -41,6 +41,28 @@ def create_gender_age_imputation_clusters(
     clip_features_limits: Tuple[float, float] = (-5, 5),
 ) -> DataFrame:
 
+    # In case a national ID card has more then 2 sims,
+    # only keep the age and gender of one, choosing the
+    # one with most tenure
+    df_master = df_master.withColumn(
+        "aux_order",
+        F.row_number().over(
+            Window.partitionBy("national_id_card", "event_partition_date").orderBy(
+                F.col("subscriber_tenure").desc()
+            )
+        ),
+    )
+    for imputation_col in ["age", "gender"]:
+        df_master = df_master.withColumn(
+            f"original_{imputation_col}", F.col(imputation_col)
+        )
+        df_master = df_master.withColumn(
+            imputation_col,
+            F.when(
+                F.col("aux_order") == 1, F.col(imputation_col),            ),
+        )
+    df_master = df_master.drop("aux_order")
+
     # Fix gender feature
     df_master = df_master.withColumn(
         "gender",
