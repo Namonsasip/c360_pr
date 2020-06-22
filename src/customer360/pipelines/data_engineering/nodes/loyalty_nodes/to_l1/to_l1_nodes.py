@@ -47,8 +47,8 @@ def loyalty_number_of_services_for_each_category(customer_prof: DataFrame
 
     drop_cols = ["event_partition_date", "start_of_week", "start_of_month"]
 
-    input_df = input_df.filter(f.col("event_partition_date") <= min_value).drop(*drop_cols)\
-                       .filter(f.col("response_date").isNotNull())
+    input_df = input_df.filter(f.col("event_partition_date") <= min_value).drop(*drop_cols) \
+        .filter(f.col("response_date").isNotNull())
 
     # some business level filters
     logging.info("Applying Business Level Filters")
@@ -69,10 +69,12 @@ def loyalty_number_of_services_for_each_category(customer_prof: DataFrame
     selective_df = input_df.where("upper(group_project) = 'PRIVILEGE'") \
         .select(f.col("mobile_no").alias("access_method_num"), "project_id", "response_date")
 
-    dated_df = add_start_of_week_and_month(input_df=selective_df, date_column="response_date") \
-        .withColumnRenamed("response_date", "loyalty_privilige_registered_date")
+    dated_df = add_start_of_week_and_month(input_df=selective_df, date_column="response_date")
 
-    return_df = customer_prof.join(dated_df, join_key)
+    dated_df = dated_df.withColumnRenamed("response_date", "loyalty_privilige_registered_date") \
+        .withColumn("flag_with_orignal_data", f.lit(1))
+
+    return_df = customer_prof.join(dated_df, join_key, 'left')
 
     return return_df
 
@@ -107,9 +109,10 @@ def loyalty_number_of_rewards_redeemed_for_each_category(customer_prof: DataFram
     input_df = input_df.where("msg_event_id = 13") \
         .select(f.col("mobile_no").alias("access_method_num"), "project_id", "response_date")
     input_df = add_start_of_week_and_month(input_df, "response_date") \
-        .withColumnRenamed("response_date", "loyalty_rewards_registered_date")
+        .withColumnRenamed("response_date", "loyalty_rewards_registered_date")\
+        .withColumn("flag_with_orignal_data", f.lit(1))
 
-    return_df = customer_prof.join(input_df, join_key)
+    return_df = customer_prof.join(input_df, join_key, 'left')
 
     return return_df
 
@@ -155,8 +158,9 @@ def loyalty_number_of_points_spend_for_each_category(customer_prof: DataFrame,
 
     grouped_df = date_curated_df.groupBy(["access_method_num", "event_partition_date", "start_of_week",
                                           "start_of_month", "project_id"]) \
-        .agg(f.sum("points").alias("loyalty_points_spend"))
+        .agg(f.sum("points").alias("loyalty_points_spend"))\
+        .withColumn("flag_with_orignal_data", f.lit(1))
 
-    return_df = customer_prof.join(grouped_df, join_key)
+    return_df = grouped_df.join(customer_prof, join_key, 'left')
 
     return return_df
