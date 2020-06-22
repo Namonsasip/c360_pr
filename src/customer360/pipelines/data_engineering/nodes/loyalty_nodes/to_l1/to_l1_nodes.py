@@ -74,10 +74,7 @@ def loyalty_number_of_services_for_each_category(customer_prof: DataFrame
     dated_df = dated_df.withColumnRenamed("response_date", "loyalty_privilige_registered_date") \
         .withColumn("flag_with_orignal_data", f.lit(1))
 
-    distinct_dates = dated_df.select("event_partition_date").distinct()
-
     return_df = customer_prof.join(dated_df, join_key, 'left')
-    return_df = return_df.join(distinct_dates, ['event_partition_date'])
 
     return return_df
 
@@ -115,10 +112,7 @@ def loyalty_number_of_rewards_redeemed_for_each_category(customer_prof: DataFram
         .withColumnRenamed("response_date", "loyalty_rewards_registered_date")\
         .withColumn("flag_with_orignal_data", f.lit(1))
 
-    distinct_dates = input_df.select("event_partition_date").distinct()
-
     return_df = customer_prof.join(input_df, join_key, 'left')
-    return_df = return_df.join(distinct_dates, ['event_partition_date'])
 
     return return_df
 
@@ -167,9 +161,6 @@ def loyalty_number_of_points_spend_for_each_category(customer_prof: DataFrame,
         .agg(f.sum("points").alias("loyalty_points_spend"))\
         .withColumn("flag_with_orignal_data", f.lit(1))
 
-    distinct_dates = grouped_df.select("event_partition_date").distinct()
-
     return_df = grouped_df.join(customer_prof, join_key, 'left')
-    return_df = return_df.join(distinct_dates, ['event_partition_date'])
 
     return return_df
