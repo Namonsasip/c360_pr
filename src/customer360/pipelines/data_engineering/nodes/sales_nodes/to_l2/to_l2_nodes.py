@@ -56,7 +56,7 @@ def sale_product_customer_master_on_top_features(sale_df: DataFrame,
             sale_df.select(
                 f.max(f.to_date(f.date_trunc("week", f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd')))).alias("max_date")),
             product_df.select(
-                f.max(f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd')).alias("max_date")),
+                f.max(f.to_date(f.date_trunc("week", f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd')))).alias("max_date")),
             customer_df.select(
                 f.max(f.col("start_of_week")).alias("max_date")),
         ]
@@ -64,7 +64,7 @@ def sale_product_customer_master_on_top_features(sale_df: DataFrame,
 
     sale_df = sale_df.filter(f.to_date(f.date_trunc("week", f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd'))) <= min_value)
 
-    product_df = product_df.filter(f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+    product_df = product_df.filter(f.to_date(f.date_trunc("week", f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd'))) <= min_value)
 
     customer_df = customer_df.filter(f.col("start_of_week") <= min_value)
 
@@ -84,7 +84,7 @@ def sale_product_customer_master_on_top_features(sale_df: DataFrame,
     sale_df = sale_df.drop("partition_date")
 
     product_df = product_df.select(product_cols)
-    product_df = product_df.withColumn("start_of_week", f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd'))
+    product_df = product_df.withColumn("start_of_week", f.to_date(f.date_trunc("week", f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd'))))
     product_df = product_df.withColumn("rn", expr(
         "row_number() over(partition by start_of_week,promotion_code order by start_of_week desc)"))
     product_df = product_df.where("rn = 1").drop("rn")
@@ -172,7 +172,7 @@ def sale_product_customer_master_main_features(sale_df: DataFrame,
                     f.date_trunc("week", f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd')))).alias(
                     "max_date")),
             product_df.select(
-                f.max(f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd')).alias("max_date")),
+                f.max(f.to_date(f.date_trunc("week", f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd')))).alias("max_date")),
             customer_df.select(
                 f.max(f.col("start_of_week")).alias("max_date")),
         ]
@@ -181,7 +181,7 @@ def sale_product_customer_master_main_features(sale_df: DataFrame,
     sale_df = sale_df.filter(
         f.to_date(f.date_trunc("week", f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd'))) <= min_value)
 
-    product_df = product_df.filter(f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+    product_df = product_df.filter(f.to_date(f.date_trunc("week", f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd'))) <= min_value)
 
     customer_df = customer_df.filter(f.col("start_of_week") <= min_value)
 
@@ -205,7 +205,7 @@ def sale_product_customer_master_main_features(sale_df: DataFrame,
 
     
     product_df = product_df.select(product_cols)
-    product_df = product_df.withColumn("start_of_week", f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd'))
+    product_df = product_df.withColumn("start_of_week", f.to_date(f.date_trunc("week", f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd'))))
     product_df = product_df.withColumn("rn", expr(
         "row_number() over(partition by start_of_week,promotion_code order by start_of_week desc)"))
     product_df = product_df.where("rn = 1").drop("rn")
