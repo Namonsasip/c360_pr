@@ -1,7 +1,36 @@
 # How tos
 
-### How to run code?
-Use main-kedro notebook.
+### How to explore the code?
+Imagine you ask yourself 'how is scoring performed?' or 'when microsegments are created?'.
+To answer these question the best way is to check it in the code or documentation.
+Since we use `kedro` to keep track of the pipelines, the code follows specific structure.
+
+The projects code is organized into pipelines. Pipeline is set of nodes (functions) and data
+(could parquet tables, csv files, etc). All pipelines are stored in `src/customer360/pipeline.py`.
+
+![](.images/04_howtos_images/d03a0d86.png)
+
+To check the details of chosen pipeline right click on interesting part of code and 
+choose `Go To` → `Declaration or Usages`.  
+
+![](.images/04_howtos_images/b490d3fc.png)
+
+Now you should be transferred to declaration of used function.
+Below nodes are listed. Node consists of function used, inputs, outputs and node name.
+
+![](.images/04_howtos_images/5418e550.png)
+
+Node names can be used to run single nodes. Inputs and outputs refer to catalog names 
+of dataset.
+
+Let's look at the example, this is the definition of pipeline called `preprocessing_fit`.
+It consists of two nodes. Every node has 4 arguments: function used,
+catalog names of inputs, catalog names of outputs and a node name.
+Let’s see the details of `pipeline_fit` function using `Go To` → `Declaration or Usages`.
+
+![](.images/04_howtos_images/32740055.png)
+
+We can see the details of fitting the preprocessing pipeline.
 
 ### How to modify microsegments?
 Microsegments are built using the definition in file `conf/base/CVM/L5/parameters_microsegments.yml`.
@@ -48,6 +77,13 @@ Alternatively, explore catalog files in `conf/base/C360`. These contain list of 
 For example, daily revenue tables are listed in `conf/base/C360/REVENUE/L1_DAILY/catalog.yml`.
 
 ![](.images/04_howtos_images/5c506852.png)
+
+Datasets used in our use case can be accessed in `conf/base/CVM/L5`.
+
+![](.images/04_howtos_images/16a59123.png)
+
+Each entry is a datasets. The first line is the catalog name of the dataset.
+ The same one as used in pipelines. Paths are included below.
 
 ### How to select input for model training?
 Inputs are listed in `cvm.data_prep.pipeline.join_raw_features`. To add a new one add 
