@@ -20,6 +20,7 @@ from customer360.utilities.re_usable_functions import add_start_of_week_and_mont
 from customer360.utilities.spark_util import get_spark_session
 
 def l1_geo_time_spent_by_location_daily(df,sql):
+    df = df.filter('partition_date >= 20200301')
     df = add_start_of_week_and_month(df, "time_in")
     print('debug1')
     df.show()
@@ -39,6 +40,8 @@ def l1_geo_time_spent_by_location_daily(df,sql):
     return df
 
 def l1_geo_area_from_ais_store_daily(shape,masterplan,geo_cust_cell_visit_time,sql):
+    geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20200301')
+
     geo_cust_cell_visit_time  = add_start_of_week_and_month(geo_cust_cell_visit_time, "time_in")
     geo_cust_cell_visit_time.show()
 
@@ -77,6 +80,8 @@ def l1_geo_area_from_ais_store_daily(shape,masterplan,geo_cust_cell_visit_time,s
     return df2
 
 def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit_time,sql):
+    geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20200301')
+
     geo_cust_cell_visit_time.cache()
     geo_cust_cell_visit_time = add_start_of_week_and_month(geo_cust_cell_visit_time, "time_in")
 
