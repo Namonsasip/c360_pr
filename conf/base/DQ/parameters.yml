@@ -184,16 +184,16 @@ features_for_dq:
 #    - feature: sum_usg_outgoing_total_call_duration_sum_weekly_last_week
 #    - feature: sum_usg_outgoing_total_call_duration_sum_weekly_last_twelve_week
 #    - feature: '*'
-  l4_usage_postpaid_prepaid_weekly_features_sum:
-    - feature: sum_usg_incoming_data_volume_sum_weekly_last_week
-    - feature: sum_usg_incoming_data_volume_sum_weekly_last_twelve_week
-    - feature: sum_usg_incoming_data_volume_2G_3G_sum_weekly_last_four_week
-    - feature: sum_usg_incoming_data_volume_4G_sum_weekly_last_four_week
-    - feature: sum_usg_incoming_local_data_volume_sum_weekly_last_four_week
-    - feature: sum_usg_incoming_local_data_volume_2G_3G_sum_weekly_last_four_week
-    - feature: sum_usg_incoming_local_data_volume_4G_sum_weekly_last_four_week
-    - feature: sum_usg_outgoing_total_call_duration_sum_weekly_last_week
-    - feature: sum_usg_outgoing_total_call_duration_sum_weekly_last_twelve_week
+#  l4_usage_postpaid_prepaid_weekly_features_sum:
+#    - feature: sum_usg_incoming_data_volume_sum_weekly_last_week
+#    - feature: sum_usg_incoming_data_volume_sum_weekly_last_twelve_week
+#    - feature: sum_usg_incoming_data_volume_2G_3G_sum_weekly_last_four_week
+#    - feature: sum_usg_incoming_data_volume_4G_sum_weekly_last_four_week
+#    - feature: sum_usg_incoming_local_data_volume_sum_weekly_last_four_week
+#    - feature: sum_usg_incoming_local_data_volume_2G_3G_sum_weekly_last_four_week
+#    - feature: sum_usg_incoming_local_data_volume_4G_sum_weekly_last_four_week
+#    - feature: sum_usg_outgoing_total_call_duration_sum_weekly_last_week
+#    - feature: sum_usg_outgoing_total_call_duration_sum_weekly_last_twelve_week
 #    - feature: '*'
 #  l4_device_summary_features:
 #    - feature: '*'
