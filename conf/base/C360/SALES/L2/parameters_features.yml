@@ -71,14 +71,14 @@ l2_sales_number_and_volume_transaction:
     # --------------------- my ais app --------------------
     my_ais_app_number_of_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'online channel' and lower(cmd_channel_sub_type) = 'myais' ) then 1 else 0 end)"
     my_ais_app_volume_of_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'online channel' and lower(cmd_channel_sub_type) = 'myais' ) then promotion_price_amount else 0 end)"
-    my_ais_app_number_of_data_activation_on_top_transaction:  "sum(case when (lower(cmd_channel_type) = 'ussd' and lower(package_type) = 'data') then 1 else 0 end)"
-    my_ais_app_volume_of_data_activation_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'ussd' and lower(package_type) = 'data') then promotion_price_amount else 0 end)"
-    my_ais_app_number_of_voice_activation_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'ussd' and lower(package_type) = 'voice') then 1 else 0 end)"
-    my_ais_app_volume_of_voice_activation_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'ussd' and lower(package_type) = 'voice') then promotion_price_amount else 0 end)"
-    my_ais_app_number_of_sms_activation_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'ussd' and lower(package_type) = 'sms') then 1 else 0 end)"
-    my_ais_app_volume_of_sms_activation_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'ussd' and lower(package_type) = 'sms') then promotion_price_amount else 0 end)"
-    my_ais_app_number_of_vas_activation_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'ussd') then 1 else 0 end)"
-    my_ais_app_volume_of_vas_activation_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'ussd') then promotion_price_amount else 0 end)"
+    my_ais_app_number_of_data_activation_on_top_transaction:  "sum(case when (lower(cmd_channel_type) = 'online channel' and lower(cmd_channel_sub_type) = 'myais'  and lower(package_type) = 'data') then 1 else 0 end)"
+    my_ais_app_volume_of_data_activation_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'online channel' and lower(cmd_channel_sub_type) = 'myais'  and lower(package_type) = 'data') then promotion_price_amount else 0 end)"
+    my_ais_app_number_of_voice_activation_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'online channel' and lower(cmd_channel_sub_type) = 'myais'  and lower(package_type) = 'voice') then 1 else 0 end)"
+    my_ais_app_volume_of_voice_activation_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'online channel' and lower(cmd_channel_sub_type) = 'myais'  and lower(package_type) = 'voice') then promotion_price_amount else 0 end)"
+    my_ais_app_number_of_sms_activation_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'online channel' and lower(cmd_channel_sub_type) = 'myais'  and lower(package_type) = 'sms') then 1 else 0 end)"
+    my_ais_app_volume_of_sms_activation_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'online channel' and lower(cmd_channel_sub_type) = 'myais'  and lower(package_type) = 'sms') then promotion_price_amount else 0 end)"
+    my_ais_app_number_of_vas_activation_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'online channel' and lower(cmd_channel_sub_type) = 'myais' ) then 1 else 0 end)"
+    my_ais_app_volume_of_vas_activation_on_top_transaction: "sum(case when (lower(cmd_channel_type) = 'online channel' and lower(cmd_channel_sub_type) = 'myais' ) then promotion_price_amount else 0 end)"
     # -------------------- retail store -------------
     retail_stores_number_of_on_top_transaction: "sum(case when ( lower(cmd_channel_type) like 'ais%' or
                                                     lower(cmd_channel_type) = 'asp shop' or
@@ -273,7 +273,7 @@ l2_sales_feature_on_top_transactions_latest:
     access_method_num
     order by event_start_dttm desc)"
 
-    retail_storesname_of_latest_on_top_transaction: "first_value( (case when (lower(cmd_channel_type) like 'ais%' or
+    retail_stores_name_of_latest_on_top_transaction: "first_value( (case when (lower(cmd_channel_type) like 'ais%' or
     lower(cmd_channel_type) = 'asp shop' or
     lower(cmd_channel_type) = 'corperate'  or
     lower(cmd_channel_type) = 'dealer' or
