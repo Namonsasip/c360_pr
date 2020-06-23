@@ -212,7 +212,7 @@ def create_use_case_view_report_data() -> Pipeline:
                     date_to=datetime.strptime(mock_report_running_date, "%Y-%m-%d"),
                     aggregate_period=[7, 30],
                 ),
-                inputs={"campaign_view_report_input": "campaign_view_report_input",},
+                inputs={"campaign_view_report_input": "campaign_view_report_input_tbl",},
                 outputs="aggregate_campaign_view_features_tbl",
                 name="create_aggregate_campaign_view_features",
                 tags=["create_aggregate_campaign_view_features"],
