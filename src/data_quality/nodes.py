@@ -258,10 +258,10 @@ def generate_dq_nodes():
     nodes = []
     selected_dataset = get_config_parameters()['features_for_dq']
 
-    # nodes.extend(_generate_accuracy_and_completeness_nodes(selected_dataset))
-    # nodes.extend(_generate_availability_nodes(selected_dataset))
+    nodes.extend(_generate_accuracy_and_completeness_nodes(selected_dataset))
+    nodes.extend(_generate_availability_nodes(selected_dataset))
     nodes.extend(_generate_consistency_nodes(selected_dataset))
-    # nodes.extend(_generate_timeliness_nodes(selected_dataset))
+    nodes.extend(_generate_timeliness_nodes(selected_dataset))
 
     return nodes
 
