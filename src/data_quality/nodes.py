@@ -447,6 +447,8 @@ def _prepare_dq_consistency_dataset(
 
     sub_id_sampled_date, filtered_new_df = get_dq_sampled_records(filtered_new_df, sampled_sub_id_df)
 
+    filtered_new_df = filtered_new_df.drop("created_date")
+
     return filtered_new_df
 
 
