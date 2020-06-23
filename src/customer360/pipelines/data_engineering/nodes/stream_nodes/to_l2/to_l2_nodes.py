@@ -11,10 +11,12 @@ from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_s
 conf = os.getenv("CONF", None)
 
 
-def generate_l2_fav_streaming_day(input_df, app_list):
-    if check_empty_dfs([input_df]):
-        return input_df
-
+def generate_l2_fav_streaming_day(input_df: DataFrame, app_list: list):
+    """
+    :param input_df:
+    :param app_list:
+    :return:
+    """
     spark = get_spark_session()
     input_df.createOrReplaceTempView("input_df")
 
@@ -412,3 +414,166 @@ def streaming_to_l2_music_service_by_download(input_df: DataFrame,
     return [int_l2_streaming_music_service_feature, l2_streaming_fav_music_service_by_download_feature,
             l2_streaming_2nd_fav_music_service_by_download_feature,
             l2_streaming_fav_music_service_by_visit_count_feature]
+
+
+def streaming_to_l2_esoprt_service_by_download(input_df: DataFrame,
+                                               int_l2_streaming_esport_service_feature_dict: dict,
+                                               l2_streaming_fav_esport_service_by_download_feature_dict: dict,
+                                               l2_streaming_2nd_fav_esport_service_by_download_feature_dict: dict,
+                                               l2_streaming_fav_esport_service_by_visit_count_feature_dict: dict) -> [
+    DataFrame,
+    DataFrame,
+    DataFrame,
+    DataFrame]:
+    """
+    :param input_df:
+    :param int_l2_streaming_esport_service_feature_dict:
+    :param l2_streaming_fav_esport_service_by_download_feature_dict:
+    :param l2_streaming_2nd_fav_esport_service_by_download_feature_dict:
+    :param l2_streaming_fav_esport_service_by_visit_count_feature_dict:
+    :return:
+    """
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(
+        df=input_df, grouping="weekly", par_col="event_partition_date",
+        missing_data_check_flg='Y',
+        target_table_name=l2_streaming_fav_esport_service_by_visit_count_feature_dict["output_catalog"])
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+
+    def divide_chunks(l, n):
+        # looping till length l
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    CNTX = load_context(Path.cwd(), env=conf)
+    data_frame = input_df
+    dates_list = data_frame.select('start_of_week').distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+
+    mvv_new = list(divide_chunks(mvv_array, 5))
+    add_list = mvv_new
+
+    first_item = add_list[-1]
+
+    add_list.remove(first_item)
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        small_df = data_frame.filter(F.col("start_of_week").isin(*[curr_item]))
+        int_l2_streaming_esport_service_feature = node_from_config(small_df, int_l2_streaming_esport_service_feature_dict)
+        CNTX.catalog.save(int_l2_streaming_esport_service_feature_dict["output_catalog"],
+                          int_l2_streaming_esport_service_feature)
+
+        l2_streaming_fav_esport_service_by_download_feature = node_from_config(
+            int_l2_streaming_esport_service_feature,
+            l2_streaming_fav_esport_service_by_download_feature_dict)
+        CNTX.catalog.save(l2_streaming_fav_esport_service_by_download_feature_dict["output_catalog"],
+                          l2_streaming_fav_esport_service_by_download_feature)
+
+        l2_streaming_2nd_fav_esport_service_by_download_feature = node_from_config(
+            int_l2_streaming_esport_service_feature,
+            l2_streaming_2nd_fav_esport_service_by_download_feature_dict)
+        CNTX.catalog.save(l2_streaming_2nd_fav_esport_service_by_download_feature_dict["output_catalog"],
+                          l2_streaming_2nd_fav_esport_service_by_download_feature)
+
+        l2_streaming_fav_esport_service_by_visit_count_feature = node_from_config(
+            int_l2_streaming_esport_service_feature,
+            l2_streaming_fav_esport_service_by_visit_count_feature_dict)
+        CNTX.catalog.save(l2_streaming_fav_esport_service_by_visit_count_feature_dict["output_catalog"],
+                          l2_streaming_fav_esport_service_by_visit_count_feature)
+
+    logging.info("Final date to run for {0}".format(str(first_item)))
+    small_df = data_frame.filter(F.col("start_of_week").isin(*[first_item]))
+    int_l2_streaming_esport_service_feature = node_from_config(small_df, int_l2_streaming_esport_service_feature_dict)
+
+    l2_streaming_fav_esport_service_by_download_feature = node_from_config(
+        int_l2_streaming_esport_service_feature,
+        l2_streaming_fav_esport_service_by_download_feature_dict)
+
+    l2_streaming_2nd_fav_esport_service_by_download_feature = node_from_config(
+        int_l2_streaming_esport_service_feature,
+        l2_streaming_2nd_fav_esport_service_by_download_feature_dict)
+
+    l2_streaming_fav_esport_service_by_visit_count_feature = node_from_config(
+        int_l2_streaming_esport_service_feature,
+        l2_streaming_fav_esport_service_by_visit_count_feature_dict)
+
+    return [int_l2_streaming_esport_service_feature, l2_streaming_fav_esport_service_by_download_feature,
+            l2_streaming_2nd_fav_esport_service_by_download_feature,
+            l2_streaming_fav_esport_service_by_visit_count_feature]
+
+
+def streaming_streaming_ranked_of_day_per_week(input_df: DataFrame,
+                                               int_l2_streaming_sum_per_day_dict: dict,
+                                               int_l2_streaming_ranked_of_day_per_week_dict: dict,
+                                               streaming_app_list: list) -> DataFrame:
+    """
+    :param input_df:
+    :param int_l2_streaming_sum_per_day_dict:
+    :param int_l2_streaming_ranked_of_day_per_week_dict:
+    :param streaming_app_list:
+    :return:
+    """
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(
+        df=input_df, grouping="weekly", par_col="event_partition_date",
+        missing_data_check_flg='Y',
+        target_table_name=int_l2_streaming_sum_per_day_dict["output_catalog"])
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+
+    def divide_chunks(l, n):
+        # looping till length l
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    CNTX = load_context(Path.cwd(), env=conf)
+    data_frame = input_df
+    dates_list = data_frame.select('start_of_week').distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+
+    mvv_new = list(divide_chunks(mvv_array, 5))
+    add_list = mvv_new
+
+    first_item = add_list[-1]
+
+    add_list.remove(first_item)
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        small_df = data_frame.filter(F.col("start_of_week").isin(*[curr_item]))
+        int_l2_streaming_sum_per_day = node_from_config(small_df, int_l2_streaming_sum_per_day_dict)
+        CNTX.catalog.save(int_l2_streaming_sum_per_day_dict["output_catalog"],
+                          int_l2_streaming_sum_per_day)
+
+        int_l2_streaming_ranked_of_day_per_week = node_from_config(int_l2_streaming_sum_per_day,
+                                                                   int_l2_streaming_ranked_of_day_per_week_dict)
+
+        generate_l2_fav_streaming_day(int_l2_streaming_ranked_of_day_per_week, streaming_app_list)
+
+    logging.info("Final date to run for {0}".format(str(first_item)))
+    small_df = data_frame.filter(F.col("start_of_week").isin(*[first_item]))
+
+    int_l2_streaming_sum_per_day = node_from_config(small_df, int_l2_streaming_sum_per_day_dict)
+
+    int_l2_streaming_ranked_of_day_per_week = node_from_config(int_l2_streaming_sum_per_day,
+                                                               int_l2_streaming_ranked_of_day_per_week_dict)
+
+    generate_l2_fav_streaming_day(int_l2_streaming_ranked_of_day_per_week, streaming_app_list)
+
+    return int_l2_streaming_sum_per_day

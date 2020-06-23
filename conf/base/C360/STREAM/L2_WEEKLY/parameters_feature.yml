@@ -155,6 +155,10 @@ l2_streaming_fav_music_service_by_download_feature:
   <<: *l2_streaming_fav_service_by_download_feature
   output_catalog: "l2_streaming_fav_music_service_by_download_feature"
 
+l2_streaming_fav_esport_service_by_download_feature:
+  <<: *l2_streaming_fav_service_by_download_feature
+  output_catalog: "l2_streaming_fav_esport_service_by_download_feature"
+
 l2_streaming_2nd_fav_service_by_download_feature: &l2_streaming_2nd_fav_service_by_download_feature
     where_clause: "where sum_download_kb_traffic_rank = 2"
     feature_list:
@@ -175,6 +179,9 @@ l2_streaming_2nd_fav_music_service_by_download_feature:
   <<: *l2_streaming_2nd_fav_service_by_download_feature
   output_catalog: "l2_streaming_2nd_fav_music_service_by_download_feature"
 
+l2_streaming_2nd_fav_esport_service_by_download_feature:
+  <<: *l2_streaming_2nd_fav_service_by_download_feature
+    output_catalog: "l2_streaming_2nd_fav_esport_service_by_download_feature"
 
 l2_streaming_fav_service_by_visit_count_feature: &l2_streaming_fav_service_by_visit_count_feature
     where_clause: "where visit_count_rank = 1"
@@ -195,6 +202,10 @@ l2_streaming_fav_video_service_by_visit_count_feature:
 l2_streaming_fav_music_service_by_visit_count_feature:
   <<: *l2_streaming_fav_service_by_visit_count_feature
   output_catalog: "l2_streaming_fav_music_service_by_visit_count_feature"
+
+l2_streaming_fav_esport_service_by_visit_count_feature:
+  <<: *l2_streaming_fav_service_by_visit_count_feature
+  output_catalog: "l2_streaming_fav_esport_service_by_visit_count_feature"
 
 
 # number of visit and volume of download traffic
@@ -292,8 +303,7 @@ int_l2_streaming_ranked_of_day_per_week:
     download_kb_traffic_steamtv_esport_sum: "download_kb_traffic_steamtv_esport_sum"
 
     youtube_video_by_download_rank: "row_number() over (partition by access_method_num, national_id_card,
-     subscription_identifier start_of_week
-                                      order by download_kb_traffic_youtube_video_sum desc)"
+     subscription_identifier, start_of_week order by download_kb_traffic_youtube_video_sum desc)"
     facebook_video_by_download_rank: "row_number() over (partition by access_method_num, national_id_card,
     subscription_identifier, start_of_week order by download_kb_traffic_facebook_video_sum desc)"
     linetv_video_by_download_rank: "row_number() over (partition by access_method_num, national_id_card,
@@ -318,7 +328,6 @@ int_l2_streaming_ranked_of_day_per_week:
     subscription_identifier, start_of_week order by download_kb_traffic_mixer_esport_sum desc)"
     steamtv_esport_by_download_rank: "row_number() over (partition by access_method_num, national_id_card,
     subscription_identifier, start_of_week order by download_kb_traffic_steamtv_esport_sum desc)"
-
   granularity: ""
 
 l2_streaming_session_duration_feature:

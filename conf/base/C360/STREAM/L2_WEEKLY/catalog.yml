@@ -698,17 +698,17 @@ int_l2_streaming_sum_per_day:
     target_layer: 'l2_weekly'
 
 
-int_l2_streaming_sum_per_day_for_l2_streaming_fav_youtube_video_streaming_day_of_week_feature:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l2_features/int_l2_streaming_sum_per_day/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l2_streaming_fav_youtube_video_streaming_day_of_week_feature'
-    read_layer: 'l2_weekly'
-    target_layer: 'l2_weekly'
-    lookback: '0'
+#int_l2_streaming_sum_per_day_for_l2_streaming_fav_youtube_video_streaming_day_of_week_feature:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  filepath: base_path/STREAM/l2_features/int_l2_streaming_sum_per_day/
+#  file_format: parquet
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'yes'
+#    lookup_table_name: 'l2_streaming_fav_youtube_video_streaming_day_of_week_feature'
+#    read_layer: 'l2_weekly'
+#    target_layer: 'l2_weekly'
+#    lookback: '0'
 
 int_l2_streaming_sum_per_day_for_l4_streaming_fav_youtube_video_streaming_day_of_week_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
