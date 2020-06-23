@@ -45,7 +45,7 @@ def sales_to_l4_pipeline(**kwargs):
                  "params:l4_sales_on_top_transaction_second",
                  "params:l4_sales_on_top_transaction_third",
                  "params:l4_sales_on_top_transaction_fourth",
-                 "parmas:l4_sales_number_and_volume_on_top_transaction_weekly"
+                 "params:l4_sales_number_and_volume_on_top_transaction_weekly"
                  ],
                 "l4_sales_number_and_volume_on_top_transaction_weekly"
             ),
@@ -56,7 +56,7 @@ def sales_to_l4_pipeline(**kwargs):
                  "params:l4_sales_main_transaction_second",
                  "params:l4_sales_main_transaction_third",
                  "params:l4_sales_main_transaction_fourth",
-                 "parmas:l4_sales_number_and_volume_main_transaction_weekly"
+                 "params:l4_sales_number_and_volume_main_transaction_weekly"
                  ],
                 "l4_sales_number_and_volume_main_transaction_weekly"
 
