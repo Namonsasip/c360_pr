@@ -10,7 +10,6 @@ from pyspark.sql.types import *
 conf = os.getenv("CONF", None)
 
 
-
 def pre_process_df(data_frame: DataFrame,
                    contacts_ma_small: DataFrame,
                    contacts_ussd_small: DataFrame) -> [DataFrame, DataFrame]:
@@ -108,6 +107,11 @@ def pre_process_df(data_frame: DataFrame,
 
     final_df = final_df.join(total_campaign, ["subscription_identifier", "contact_date"], how="left")
 
+    final_df = final_df \
+        .withColumnRenamed("subscription_identifier", "old_subscription_identifier")
+    campaign_channel_top_df = campaign_channel_top_df \
+        .withColumnRenamed("subscription_identifier", "old_subscription_identifier")
+
     return final_df, campaign_channel_top_df
 
 
@@ -139,14 +143,15 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
                                              prepaid: DataFrame,
                                              contacts_ma: DataFrame,
                                              contact_list_ussd: DataFrame,
-                                             cust_prof,
-                                             dictionary_obj,
-                                             dictionary_obj_2) -> [DataFrame, DataFrame]:
+                                             cust_prof: DataFrame,
+                                             dictionary_obj: dict,
+                                             dictionary_obj_2: dict) -> [DataFrame, DataFrame]:
     """
     :param postpaid:
     :param prepaid:
-    :param contacts_ma
-    :param contact_list_ussd
+    :param contacts_ma:
+    :param contact_list_ussd:
+    :param cust_prof:
     :param dictionary_obj:
     :param dictionary_obj_2:
     :return:
@@ -170,7 +175,7 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
                                                                 target_table_name="l1_campaign_post_pre_daily")
 
     cust_prof = data_non_availability_and_missing_check(df=cust_prof, grouping="daily", par_col="event_partition_date",
-                                                       target_table_name="l1_campaign_post_pre_daily")
+                                                        target_table_name="l1_campaign_post_pre_daily")
 
     if check_empty_dfs([postpaid, prepaid, contacts_ma, contact_list_ussd, cust_prof]):
         return [get_spark_empty_df(), get_spark_empty_df()]

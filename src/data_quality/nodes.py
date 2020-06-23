@@ -52,7 +52,7 @@ def sample_subscription_identifier(
 
     sample_fraction = min(sample_size / distinct_sub_id_count, 1.0)
     sampled_sub_id_df = distinct_sub_id_df.sample(withReplacement=False, fraction=sample_fraction)
-    sampled_sub_id_df = sampled_sub_id_df.withColumn("_sample_created_date", F.current_date())
+    sampled_sub_id_df = sampled_sub_id_df.withColumn("created_date", F.current_date())
 
     return sampled_sub_id_df
 

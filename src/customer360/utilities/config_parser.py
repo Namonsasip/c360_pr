@@ -6,9 +6,6 @@ from pyspark.sql import DataFrame
 from pyspark.sql.functions import concat_ws,explode
 from functools import reduce
 
-
-#from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols
-
 # Query generator class
 class QueryGenerator:
 
