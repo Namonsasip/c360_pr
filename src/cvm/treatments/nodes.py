@@ -134,7 +134,7 @@ def package_translation(
         df_package: DataFrame,
         df_mapping: DataFrame,
         parameters: Dict[str, Any],
-) -> DataFrame:
+) -> pandas.DataFrame:
     """  Overwrite existing campaign_code with eligible package_preference
 
     Args:
