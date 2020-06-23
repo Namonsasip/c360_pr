@@ -184,9 +184,11 @@ def package_translation(
     df_join = df_join.filter("MAID_ATL IS NOT NULL").drop('max_prob_calibrated_cmp')
 
     # Get package type according to treatment_name
+    df_join = df_join.withColumn("offer_map", func.lit(None))
     for rule in parameters["package_btl_mapping"]:
         df_join = df_join.withColumn("offer_map", when(col("treatment_name").startswith(rule),
-                                                       func.lit(parameters["package_btl_mapping"][rule])))
+                                                       func.lit(parameters["package_btl_mapping"][rule])).otherwise(
+            col("offer_map")))
 
     df_out = df_join.withColumn("offer_id", when(col("offer_map") == 'ATL',
                                                  col("MAID_ATL")).when(col("offer_map") == 'BTL_PRICE',
