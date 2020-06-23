@@ -46,8 +46,15 @@ treatments_chosen_spark:
     header: True
 
 treatments_chosen_translated:
-  type: kedro.io.csv_local.CSVLocalDataSet
-  filepath: /dbfs/mnt/customer360-cvm/treatments_chosen_translated.csv
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: dbfs"/mnt/customer360-cvm/treatments_chosen_translated.csv
+  file_format: csv
+  load_args:
+    header: True
+    inferSchema: True
+  save_args:
+    sep: ','
+    header: True
 
 treatments_chosen_history_input:
   <<: *spark_parquet

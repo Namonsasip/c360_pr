@@ -134,7 +134,7 @@ def package_translation(
         df_package: DataFrame,
         df_mapping: DataFrame,
         parameters: Dict[str, Any],
-) -> pandas.DataFrame:
+) -> DataFrame:
     """  Overwrite existing campaign_code with eligible package_preference
 
     Args:
@@ -194,7 +194,7 @@ def package_translation(
     df_out = df_out.withColumn('campaign_code',
                                when(col("offer_id").isNotNull(), col("offer_id")).otherwise(col("campaign_code")))
 
-    return df_out.toPandas()
+    return df_out
 
 
 def deploy_treatments(
