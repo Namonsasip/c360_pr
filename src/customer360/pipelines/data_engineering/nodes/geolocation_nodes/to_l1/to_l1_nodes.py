@@ -26,16 +26,16 @@ running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 
 def l1_geo_time_spent_by_location_daily(df,sql):
     df = df.filter('partition_date >= 20200201 and partition_date<=20200531')
-    df = add_start_of_week_and_month(df, "time_in")
-    df.cache()
+    # df = add_start_of_week_and_month(df, "time_in")
+    # df.cache()
     #####################################
     sql =  """
     SELECT IMSI,LOCATION_ID,SUM(DURATION) AS SUM_DURATION,event_partition_date,start_of_week,start_of_month
     FROM GEO_CUST_CELL_VISIT_TIME
     GROUP BY IMSI,LOCATION_ID,event_partition_date,start_of_week,start_of_month
     """
-    return_df = massive_processing_weekly(df, sql, "l1_geo_time_spent_by_location_daily")
-    df.unpersist()
+    return_df = massive_processing_weekly(df, sql, "l1_geo_time_spent_by_location_daily",'partition_date')
+    # df.unpersist()
     #######################################
     return return_df
 
@@ -726,7 +726,7 @@ def l1_the_favourite_locations_daily(usage_df_location,geo_df_masterplan):
     l1 = spark.sql(sql_l1_1)
     return l1
 
-def massive_processing_weekly(data_frame: DataFrame, sql, output_df_catalog) -> DataFrame:
+def massive_processing_weekly(data_frame: DataFrame, sql, output_df_catalog,partition_col) -> DataFrame:
     """
     :param data_frame:
     :param dict_obj:
@@ -741,7 +741,7 @@ def massive_processing_weekly(data_frame: DataFrame, sql, output_df_catalog) -> 
     ss = get_spark_session()
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = data_frame
-    dates_list = data_frame.select('event_partition_date').distinct().collect()
+    dates_list = data_frame.select(partition_col).distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
@@ -751,12 +751,13 @@ def massive_processing_weekly(data_frame: DataFrame, sql, output_df_catalog) -> 
     add_list.remove(first_item)
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
-        small_df = data_frame.filter(f.col("event_partition_date").isin(*[curr_item]))
+        small_df = data_frame.filter(f.col(partition_col).isin(*[curr_item]))
+        small_df = add_start_of_week_and_month(small_df, "time_in")
         small_df.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
         output_df = ss.sql(sql)
         CNTX.catalog.save(output_df_catalog, output_df)
     logging.info("Final date to run for {0}".format(str(first_item)))
-    return_df = data_frame.filter(f.col("event_partition_date").isin(*[first_item]))
+    return_df = data_frame.filter(f.col(partition_col).isin(*[first_item]))
     return_df.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
     return_df = ss.sql(sql)
     return return_df
