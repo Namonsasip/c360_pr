@@ -387,7 +387,7 @@ def run_accuracy_logic(
 
     # this is to avoid running every process at the end which causes
     # long GC pauses before the spark job is even started
-    result_df.persist(StorageLevel.MEMORY_AND_DISK).count()
+    # result_df.persist(StorageLevel.MEMORY_AND_DISK).count()
 
     return result_df
 
