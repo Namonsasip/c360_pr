@@ -194,7 +194,7 @@ def package_translation(
     df_out = df_out.withColumn('campaign_code',
                                when(col("offer_id").isNotNull(), col("offer_id")).otherwise(col("campaign_code")))
 
-    return df_out
+    return df_out.toPandas()
 
 
 def deploy_treatments(
