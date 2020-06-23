@@ -264,7 +264,10 @@ def pick_one_per_subscriber(
         df: table to filter rows for.
         col_name: col_name to make unique.
     """
-    order_win = Window.partitionBy(col_name).orderBy("key_date")
+    order_col = [column_name for column_name in df.columns if column_name != col_name][
+        0
+    ]
+    order_win = Window.partitionBy(col_name).orderBy(order_col)
     return (
         df.withColumn("row_no", func.row_number().over(order_win))
         .filter("row_no == 1")
