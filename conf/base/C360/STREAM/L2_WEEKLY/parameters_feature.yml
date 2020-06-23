@@ -26,6 +26,7 @@ l2_streaming_fav_content_group_by_volume:
         traffic_volume_mb_sum: traffic_volume_sum
         start_of_week: start_of_week
     granularity: ""
+    output_catalog: "l2_streaming_fav_content_group_by_volume"
 
 l2_streaming_fav_content_group_by_duration:
     where_clause: "where duration_rank = 1"
@@ -38,6 +39,7 @@ l2_streaming_fav_content_group_by_duration:
         duration_sum: duration_sum
         start_of_week: start_of_week
     granularity: ""
+    output_catalog: "l2_streaming_fav_content_group_by_duration"
 
 
 
@@ -54,6 +56,7 @@ int_l2_streaming_tv_channel_features:
         duration_sum: "sum(duration_sum)"
 
     granularity: "subscription_identifier, access_method_num, national_id_card, date(register_date), start_of_week, title"
+    output_catalog: "int_l2_streaming_tv_channel_features"
 
 l2_streaming_fav_tv_channel_by_volume:
     where_clause: "where tv_channel_rank_by_volume = 1"
@@ -66,6 +69,7 @@ l2_streaming_fav_tv_channel_by_volume:
         traffic_volume_mb_sum: traffic_volume_sum
         start_of_week: start_of_week
     granularity: ""
+    output_catalog: "l2_streaming_fav_tv_channel_by_volume"
 
 l2_streaming_fav_tv_channel_by_duration:
     where_clause: "where tv_channel_rank_by_duration = 1"
@@ -78,6 +82,7 @@ l2_streaming_fav_tv_channel_by_duration:
         duration_sum: duration_sum
         start_of_week: start_of_week
     granularity: ""
+    output_catalog: "l2_streaming_fav_tv_channel_by_duration"
 
 # TV Show features
 int_l2_streaming_tv_show_features:
@@ -130,7 +135,7 @@ int_l2_streaming_esport_service_feature:
     output_catalog: "int_l2_streaming_esport_service_feature"
 
 
-l2_streaming_fav_service_by_download_feature:
+l2_streaming_fav_service_by_download_feature: &l2_streaming_fav_service_by_download_feature
     where_clause: "where sum_download_kb_traffic_rank = 1"
     feature_list:
         subscription_identifier: subscription_identifier
@@ -142,8 +147,15 @@ l2_streaming_fav_service_by_download_feature:
         start_of_week: "start_of_week"
     granularity: ""
 
+l2_streaming_fav_video_service_by_download_feature:
+  <<: *l2_streaming_fav_service_by_download_feature
+  output_catalog: "l2_streaming_fav_video_service_by_download_feature"
 
-l2_streaming_2nd_fav_service_by_download_feature:
+l2_streaming_fav_music_service_by_download_feature:
+  <<: *l2_streaming_fav_service_by_download_feature
+  output_catalog: "l2_streaming_fav_music_service_by_download_feature"
+
+l2_streaming_2nd_fav_service_by_download_feature: &l2_streaming_2nd_fav_service_by_download_feature
     where_clause: "where sum_download_kb_traffic_rank = 2"
     feature_list:
         subscription_identifier: subscription_identifier
@@ -155,8 +167,16 @@ l2_streaming_2nd_fav_service_by_download_feature:
         start_of_week: "start_of_week"
     granularity: ""
 
+l2_streaming_2nd_fav_video_service_by_download_feature:
+  <<: *l2_streaming_2nd_fav_service_by_download_feature
+  output_catalog: "l2_streaming_2nd_fav_video_service_by_download_feature"
 
-l2_streaming_fav_service_by_visit_count_feature:
+l2_streaming_2nd_fav_music_service_by_download_feature:
+  <<: *l2_streaming_2nd_fav_service_by_download_feature
+  output_catalog: "l2_streaming_2nd_fav_music_service_by_download_feature"
+
+
+l2_streaming_fav_service_by_visit_count_feature: &l2_streaming_fav_service_by_visit_count_feature
     where_clause: "where visit_count_rank = 1"
     feature_list:
         subscription_identifier: subscription_identifier
@@ -167,6 +187,14 @@ l2_streaming_fav_service_by_visit_count_feature:
         visit_count: "visit_count"
         start_of_week: "start_of_week"
     granularity: ""
+
+l2_streaming_fav_video_service_by_visit_count_feature:
+  <<: *l2_streaming_fav_service_by_visit_count_feature
+  output_catalog: "l2_streaming_fav_video_service_by_visit_count_feature"
+
+l2_streaming_fav_music_service_by_visit_count_feature:
+  <<: *l2_streaming_fav_service_by_visit_count_feature
+  output_catalog: "l2_streaming_fav_music_service_by_visit_count_feature"
 
 
 # number of visit and volume of download traffic
