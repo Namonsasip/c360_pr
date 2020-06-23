@@ -187,8 +187,7 @@ def package_translation(
     df_join = df_join.withColumn("offer_map", func.lit(None))
     for rule in parameters["package_btl_mapping"]:
         df_join = df_join.withColumn("offer_map", when(col("treatment_name").startswith(rule),
-                                                       func.lit(parameters["package_btl_mapping"][rule])).otherwise(
-            col("offer_map")))
+                                                       func.lit(parameters["package_btl_mapping"][rule])).otherwise(col("offer_map")))
 
     df_out = df_join.withColumn("offer_id", when(col("offer_map") == 'ATL',
                                                  col("MAID_ATL")).when(col("offer_map") == 'BTL_PRICE',
