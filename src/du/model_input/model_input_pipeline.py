@@ -53,6 +53,7 @@ def create_du_model_input_pipeline() -> Pipeline:
                     # "l4_streaming_visit_count_and_download_traffic_feature": "l4_streaming_visit_count_and_download_traffic_feature",
                     "l4_usage_prepaid_postpaid_daily_features": "l4_usage_prepaid_postpaid_daily_features",
                     "l4_usage_postpaid_prepaid_weekly_features_sum": "l4_usage_postpaid_prepaid_weekly_features_sum",
+                    "l4_product_activated_deactivated_features":"l4_product_activated_deactivated_features"
                 },
                 outputs="l5_du_master_tbl",
                 name="l5_du_master_tbl",
