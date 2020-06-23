@@ -49,12 +49,14 @@ def l4_geo_top_visit_exclude_homework(sum_duration, homework):
 
 def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
     # Filter 3 4 5
-    geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20200301')
+    # geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20200301')
+
 
     # Add 2 columns: event_partition_date, start_of_month
     # geo_cust_cell_visit_time.cache()
     geo_cust_cell_visit_time = geo_cust_cell_visit_time.withColumn("event_partition_date", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))
     geo_cust_cell_visit_time = geo_cust_cell_visit_time.withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col("event_partition_date"))))
+    list_imsi = geo_cust_cell_visit_time.groupBy('imsi', 'start_of_month').count().distinct()
 
     geo_cust_time_of_home = geo_cust_cell_visit_time.where('duration <> 0 and ((hour_in >= 18) or (hour_in < 18 and hour_out > 18) or (hour_in < 6 and hour_out > 6) or (hour_out <=6))')\
         .select('imsi', 'time_in', 'time_out', 'location_id', 'latitude', 'longitude', 'event_partition_date', 'start_of_month',\
@@ -108,6 +110,7 @@ def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
                                                  'home_weekday_location_id', 'home_weekday_latitude',
                                                  'home_weekday_longitude', 'location_id', 'latitude',
                                                  'longitude')
+
     home_work.show(100)
 
     home_work_final = home_work.join(home_last_3m_weekend, ['imsi', 'start_of_month'], 'left').select(home_work.imsi, home_work.start_of_month,
