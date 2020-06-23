@@ -48,12 +48,10 @@ def l4_geo_top_visit_exclude_homework(sum_duration, homework):
 
 
 def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
-    # Filter 3 4 5
-    # geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20200301')
-
+    # Filter 2,3,4,5
+    geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20200201 and partition_date <= 20200531')
 
     # Add 2 columns: event_partition_date, start_of_month
-    # geo_cust_cell_visit_time.cache()
     geo_cust_cell_visit_time = geo_cust_cell_visit_time.withColumn("event_partition_date", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))
     geo_cust_cell_visit_time = geo_cust_cell_visit_time.withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col("event_partition_date"))))
     list_imsi = geo_cust_cell_visit_time.groupBy('imsi', 'start_of_month').count().distinct()
@@ -106,12 +104,12 @@ def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
     work_last_3m = work_last_3m.withColumn('row_num', F.row_number().over(w_work_num_row))
     work_last_3m = work_last_3m.where('row_num = 1').drop('row_num')
 
+    work_last_3m = list_imsi.join(work_last_3m, ['imsi', 'start_of_month'], 'left').select(work_last_3m.imsi, work_last_3m.start_of_month, 'location_id', 'latitude', 'longitude')
+
     home_work = work_last_3m.join(home_last_3m_weekday, ['imsi', 'start_of_month'], 'left').select(work_last_3m.start_of_month, work_last_3m.imsi,
                                                  'home_weekday_location_id', 'home_weekday_latitude',
                                                  'home_weekday_longitude', 'location_id', 'latitude',
                                                  'longitude')
-
-    home_work.show(100)
 
     home_work_final = home_work.join(home_last_3m_weekend, ['imsi', 'start_of_month'], 'left').select(home_work.imsi, home_work.start_of_month,
                                               'home_weekday_location_id',
@@ -121,7 +119,7 @@ def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
                                               (F.col('location_id').alias('work_location_id')),
                                               (F.col('latitude').alias('work_latitude')),
                                               (F.col('longitude').alias('work_longitude')))
-    home_work_final.show(100)
+
     df = node_from_config(home_work_final, sql)
     return df
 
