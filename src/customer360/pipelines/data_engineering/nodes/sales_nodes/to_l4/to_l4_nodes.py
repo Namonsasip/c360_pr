@@ -24,6 +24,7 @@ def sales_l4_rolling_window(input_df: DataFrame,
     :param rolling_window_dict_first:
     :param rolling_window_dict_second:
     :param rolling_window_dict_third:
+    :param rolling_window_dict_fourth:
     :param table_name
     :return:
     """
@@ -38,8 +39,6 @@ def sales_l4_rolling_window(input_df: DataFrame,
         .select(f.max(f.col("target_max_data_load_date")).alias("max_date")) \
         .withColumn("max_date", f.coalesce(f.col("max_date"), f.to_date(f.lit('1970-01-01'), 'yyyy-MM-dd'))) \
         .collect()[0].max_date
-
-    group_cols = ["subscription_identifier", "access_method_num", "national_id_card", "start_of_week"]
 
     rolling_df_first = l4_rolling_window(input_df, rolling_window_dict_first)
     rolling_df_first = rolling_df_first.filter(f.col("start_of_week") > max_date)
@@ -62,7 +61,8 @@ def sales_l4_rolling_window(input_df: DataFrame,
     rolling_df_third = CNTX.catalog.load("l4_sales_temp_3")
     rolling_df_fourth = CNTX.catalog.load("l4_sales_temp_4")
 
-    union_df = union_dataframes_with_missing_cols([rolling_df_first, rolling_df_second, rolling_df_third, rolling_df_fourth])
+    union_df = union_dataframes_with_missing_cols([rolling_df_first, rolling_df_second, rolling_df_third,
+                                                   rolling_df_fourth])
 
     final_df_str = gen_max_sql(union_df, 'tmp_table_name', group_cols)
     merged_df = execute_sql(union_df, 'tmp_table_name', final_df_str)
