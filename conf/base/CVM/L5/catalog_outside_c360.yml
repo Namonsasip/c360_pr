@@ -25,10 +25,3 @@ experiment_data_upsell_final_score:
     database: prod_dataupsell
     table: experiment_data_upsell_final_score
     write_mode: overwrite
-
-# customer profile with analytic_id
-dm07_sub_clnt_info:
-    type: datasets.spark_hive_dataset.SparkHiveDataSet
-    database: prod_delta
-    table: dm07_sub_clnt_info
-    write_mode: overwrite
