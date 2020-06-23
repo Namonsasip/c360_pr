@@ -225,7 +225,6 @@ def create_use_case_view_report_data() -> Pipeline:
                     + timedelta(days=-50),
                     # until present day we ran
                     date_to=datetime.strptime(mock_report_running_date, "%Y-%m-%d"),
-                    aggregate_period=[7, 30],
                 ),
                 inputs={
                     "aggregate_campaign_view_features_tbl": "aggregate_campaign_view_features_tbl",
