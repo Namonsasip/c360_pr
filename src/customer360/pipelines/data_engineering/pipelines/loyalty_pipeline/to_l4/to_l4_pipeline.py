@@ -71,9 +71,10 @@ def loyalty_to_l4_monthly_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                l4_rolling_window,
+                l4_loyalty_point_balance_statuses_features,
                 ["l3_loyalty_point_balance_statuses_monthly",
-                 "params:l4_loyalty_point_balance_statuses_features"],
+                 "params:l4_loyalty_point_balance_statuses_features_first",
+                 "params:l4_loyalty_point_balance_statuses_features_second"],
                 "l4_loyalty_point_balance_statuses_features"
             )
         ]
