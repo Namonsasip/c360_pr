@@ -181,7 +181,7 @@ l2_streaming_2nd_fav_music_service_by_download_feature:
 
 l2_streaming_2nd_fav_esport_service_by_download_feature:
   <<: *l2_streaming_2nd_fav_service_by_download_feature
-    output_catalog: "l2_streaming_2nd_fav_esport_service_by_download_feature"
+  output_catalog: "l2_streaming_2nd_fav_esport_service_by_download_feature"
 
 l2_streaming_fav_service_by_visit_count_feature: &l2_streaming_fav_service_by_visit_count_feature
     where_clause: "where visit_count_rank = 1"
