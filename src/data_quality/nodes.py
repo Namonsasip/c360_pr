@@ -92,11 +92,8 @@ def dq_merger_nodes(
     """
 
     spark = get_spark_session()
-    print("Before change: ", spark.conf.get("spark.sql.autoBroadcastJoinThreshold"))
     spark.conf.set("spark.sql.autoBroadcastJoinThreshold", -1)
     spark.conf.set("spark.sql.broadcastTimeout", -1)
-    print("After change: ", spark.conf.get("spark.sql.autoBroadcastJoinThreshold"))
-    print("After change: ", spark.conf.get("spark.sql.broadcastTimeout"))
 
     all_cols = []
     for each_df in args:
@@ -261,10 +258,10 @@ def generate_dq_nodes():
     nodes = []
     selected_dataset = get_config_parameters()['features_for_dq']
 
-    nodes.extend(_generate_accuracy_and_completeness_nodes(selected_dataset))
-    nodes.extend(_generate_availability_nodes(selected_dataset))
+    # nodes.extend(_generate_accuracy_and_completeness_nodes(selected_dataset))
+    # nodes.extend(_generate_availability_nodes(selected_dataset))
     nodes.extend(_generate_consistency_nodes(selected_dataset))
-    nodes.extend(_generate_timeliness_nodes(selected_dataset))
+    # nodes.extend(_generate_timeliness_nodes(selected_dataset))
 
     return nodes
 
