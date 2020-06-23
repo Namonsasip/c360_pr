@@ -76,7 +76,7 @@ def generate_treatments(sample_type: str) -> Pipeline:
             node(
                 package_translation,
                 [
-                    "treatments_chosen",
+                    "treatments_chosen_spark",
                     "dm07_sub_clnt_info",
                     "experiment_data_upsell_final_score",
                     "ard_btl_offer_mapping",

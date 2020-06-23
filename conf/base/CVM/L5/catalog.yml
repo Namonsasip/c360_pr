@@ -35,8 +35,8 @@ treatments_chosen:
   filepath: /dbfs/mnt/customer360-cvm/treatments_chosen.csv
 
 treatments_chosen_spark:
-  type: kedro.contrib.io.pyspark.spark_data_set
-  filepath: dbfs:/mnt/customer360-cvm/treatments_chosen.csv
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: /mnt/customer360-cvm/treatments_chosen.csv
   file_format: csv
   load_args:
     header: True
@@ -65,8 +65,8 @@ treatments_deployed:
 
 # table for ATL to BTL mapping
 ard_btl_offer_mapping:
-  type: kedro.contrib.io.pyspark.spark_data_set
-  filepath: /dbfs/mnt/customer360-cvm/ard_btl_offer_mapping.csv
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: /mnt/customer360-cvm/ard_btl_offer_mapping.csv
   file_format: csv
   load_args:
     header: True
