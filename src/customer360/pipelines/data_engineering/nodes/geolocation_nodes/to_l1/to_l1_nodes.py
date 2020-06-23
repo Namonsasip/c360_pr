@@ -34,24 +34,7 @@ def l1_geo_time_spent_by_location_daily(df,sql):
     GROUP BY IMSI,LOCATION_ID,event_partition_date,start_of_week,start_of_month
     """
     df = massive_processing_weekly(df, sql, "l1_geo_time_spent_by_location_daily")
-
     #######################################
-
-    # print('debug1')
-    # df.show()
-    # ss = get_spark_session()
-    # df.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
-    # stmt = """
-    # SELECT IMSI,LOCATION_ID,SUM(DURATION) AS SUM_DURATION,event_partition_date,start_of_week,start_of_month
-    # FROM GEO_CUST_CELL_VISIT_TIME
-    # GROUP BY IMSI,LOCATION_ID,event_partition_date,start_of_week,start_of_month
-    # """
-    # df = ss.sql(stmt)
-    # print('debug1')
-    # df.show()
-
-    # df = node_from_config(df,sql)
-
     return df
 
 def l1_geo_area_from_ais_store_daily(shape,masterplan,geo_cust_cell_visit_time,sql):
