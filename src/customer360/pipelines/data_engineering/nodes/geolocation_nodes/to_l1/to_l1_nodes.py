@@ -749,7 +749,7 @@ def massive_processing_weekly(data_frame: DataFrame, sql, output_df_catalog) -> 
     add_list.remove(first_item)
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
-        small_df = data_frame.filter(f.col("start_of_week").isin(*[curr_item]))
+        small_df = data_frame.filter(f.col("event_partition_date").isin(*[curr_item]))
         small_df.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
         output_df = ss.sql(sql)
         CNTX.catalog.save(output_df_catalog, output_df)
