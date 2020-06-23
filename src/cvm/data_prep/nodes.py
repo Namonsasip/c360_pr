@@ -316,7 +316,7 @@ def get_micro_macrosegments(
     df = add_microsegment_features(df, parameters).join(vol, "subscription_identifier")
     df = define_microsegments(df, parameters, reduce_cols=True)
 
-    return pop_most_recent(
+    history, microsegments = pop_most_recent(
         history_df=micro_macrosegments_history,
         update_df=df,
         recalculate_period_days=history_update_cadence,
@@ -324,6 +324,8 @@ def get_micro_macrosegments(
         users_required=raw_features.select("subscription_identifier"),
         today=today,
     )
+
+    return history, pick_one_per_subscriber(microsegments)
 
 
 def feature_selection_all_target(

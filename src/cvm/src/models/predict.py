@@ -32,6 +32,7 @@ from typing import Any, Callable, Dict
 import pandas as pd
 from cvm.src.utils.list_operations import list_intersection, list_sub
 from cvm.src.utils.list_targets import list_targets
+from cvm.src.utils.utils import pick_one_per_subscriber
 from pyspark import SparkContext
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as func
@@ -125,8 +126,7 @@ def pyspark_predict_sklearn(
     cols_to_pick = list_intersection(
         key_columns + segments_columns + pred_cols + target_cols, joined_tables.columns
     )
-
-    return joined_tables.select(cols_to_pick).distinct()
+    return pick_one_per_subscriber(joined_tables.select(cols_to_pick))
 
 
 def pyspark_predict_rf(

@@ -30,7 +30,7 @@ from typing import Any, Dict, List
 
 import pyspark.sql.functions as func
 from cvm.src.utils.list_operations import list_sub
-from cvm.src.utils.utils import return_none_if_missing
+from cvm.src.utils.utils import pick_one_per_subscriber, return_none_if_missing
 from pyspark.sql import DataFrame, Window
 
 
@@ -369,4 +369,4 @@ class MultipleTreatments:
         logging.info("Applying treatments")
         for treatment in self.treatments:
             df = treatment.apply_treatment(df)
-        return df.filter("campaign_code is not null")
+        return pick_one_per_subscriber(df.filter("campaign_code is not null"))
