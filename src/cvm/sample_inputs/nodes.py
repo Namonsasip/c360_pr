@@ -143,7 +143,10 @@ def create_sample_dataset(
         )
 
     log = logging.getLogger(__name__)
-    df = pick_one_per_subscriber(df)
+    if "subscription_identifier" in df.columns:
+        df = pick_one_per_subscriber(df)
+    elif "old_subscription_identifier" in df.columns:
+        df = pick_one_per_subscriber(df, col_name="old_subscription_identifier")
     log.info(f"Sample has {df.count()} rows, down from {starting_rows} rows.")
 
     return df
