@@ -1725,7 +1725,7 @@ def create_aggregate_campaign_view_features(
 
 
 def create_campaign_view_report(
-    aggregate_campaign_view_features: DataFrame,
+    aggregate_campaign_view_features_tbl: DataFrame,
     l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
     date_from,
     date_to,
@@ -1735,7 +1735,7 @@ def create_campaign_view_report(
         F.col("contact_date").between(date_from, date_to)
     )
     # Only rerun campaign view report starting from date_from till date_to
-    aggregate_campaign_view_features = aggregate_campaign_view_features.filter(
+    aggregate_campaign_view_features = aggregate_campaign_view_features_tbl.filter(
         F.col("contact_date").between(date_from, date_to)
     )
     campaign_child_tbl = (
