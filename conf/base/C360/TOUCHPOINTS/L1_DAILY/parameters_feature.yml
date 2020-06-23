@@ -1,7 +1,12 @@
 l1_touchpoints_to_call_center_features:
   # AIS 1175 and AIS-SRN 1148
   where_clause: "where called_no = 'hYAUKs+f31uJzUZp3iM5F.fO8CgW7107gM602izDqDn.6GjSvNd8lhU6af7ItzfP' or
-                called_no = '98MkP5bMx1ykVd8RBE3C.XztcSxOJmjcyHAUmXwvCHW2Bb+cKKwh1kqv0.QI4ddw'"
+                called_no = '98MkP5bMx1ykVd8RBE3C.XztcSxOJmjcyHAUmXwvCHW2Bb+cKKwh1kqv0.QI4ddw' or
+                called_no = '0SUAExF.ULAW1AfkPeM9hn4MIbCHizRswjZuNlZOs.IJRACVbg+R4o4laSXLCjFe' or
+                called_no = 'obouXE8otQHA7VC3AE1tNZyL0Mc8KOKJtdBIYbq3SHAMJmuqf7f8ZE0UoZMbTvgP' or
+                called_no = '2Vzo005mRjpWkbpJSiRwf60.Y2T7PxwrapZuyNGHhjvcH8Re9HJtL3mVbVOsly08' or
+                called_no = 'xOQNQIqZMfY3kZKG1ivBxmsduVl2Ojaxss6ti9pRiKEjzx9VhlM3b5ibymHuWt9u' or
+                called_no = 'tPjcxRk5ZegTT2VqyO3atdFjKetHomtgQbU7BJ1+Coz+DG3CwSugIs6FAH0u6b8Z'"
   feature_list:
     touchpoints_number_of_calls_on_cc: "sum(total_successful_call)"
     touchpoints_duration_of_calls_on_cc: "sum(total_durations)"
@@ -17,7 +22,12 @@ l1_touchpoints_to_call_center_features:
 l1_touchpoints_from_call_center_features:
   # AIS 1175 and AIS-SRN 1148
   where_clause: "where caller_no = 'hYAUKs+f31uJzUZp3iM5F.fO8CgW7107gM602izDqDn.6GjSvNd8lhU6af7ItzfP' or
-                 caller_no = '98MkP5bMx1ykVd8RBE3C.XztcSxOJmjcyHAUmXwvCHW2Bb+cKKwh1kqv0.QI4ddw'"
+                                caller_no = '98MkP5bMx1ykVd8RBE3C.XztcSxOJmjcyHAUmXwvCHW2Bb+cKKwh1kqv0.QI4ddw' or
+                                caller_no = '0SUAExF.ULAW1AfkPeM9hn4MIbCHizRswjZuNlZOs.IJRACVbg+R4o4laSXLCjFe' or
+                                caller_no = 'obouXE8otQHA7VC3AE1tNZyL0Mc8KOKJtdBIYbq3SHAMJmuqf7f8ZE0UoZMbTvgP' or
+                                caller_no = '2Vzo005mRjpWkbpJSiRwf60.Y2T7PxwrapZuyNGHhjvcH8Re9HJtL3mVbVOsly08' or
+                                caller_no = 'xOQNQIqZMfY3kZKG1ivBxmsduVl2Ojaxss6ti9pRiKEjzx9VhlM3b5ibymHuWt9u' or
+                                caller_no = 'tPjcxRk5ZegTT2VqyO3atdFjKetHomtgQbU7BJ1+Coz+DG3CwSugIs6FAH0u6b8Z'"
   feature_list:
     touchpoints_number_of_calls_from_cc: "sum(total_successful_call)"
     touchpoints_duration_of_calls_from_cc: "sum(total_durations)"

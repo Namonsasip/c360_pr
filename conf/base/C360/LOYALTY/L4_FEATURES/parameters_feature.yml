@@ -39,7 +39,6 @@ l4_loyalty_number_of_rewards_redeemed_features_second:
           "loyalty_rewards_food_and_drink","loyalty_rewards_lifestyle","loyalty_rewards_others"]
     avg: ["loyalty_rewards_total","loyalty_rewards_travel","loyalty_rewards_ais_rewards","loyalty_rewards_entertainment",
           "loyalty_rewards_food_and_drink","loyalty_rewards_lifestyle","loyalty_rewards_others"]
-    max: ["loyalty_rewards_registered_date"]
   read_from: "l2"
 
 l4_loyalty_number_of_points_spend_features_first:
