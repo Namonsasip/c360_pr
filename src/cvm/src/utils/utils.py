@@ -32,10 +32,11 @@ from random import random
 from typing import Any, Callable, Dict, List
 
 import pandas
+import pyspark.sql.functions as func
 import pytz
 from customer360.utilities.spark_util import get_spark_session
 from cvm.src.utils.list_targets import list_targets
-from pyspark.sql import DataFrame
+from pyspark.sql import DataFrame, Window
 
 
 def map_over_deep_dict(
@@ -251,3 +252,21 @@ def refresh_parquet(df: DataFrame, parameters: Dict[str, Any],) -> DataFrame:
     temp_path = parameters["refresh_temp_path"]
     df.write.mode("overwrite").parquet(temp_path)
     return get_spark_session().read.parquet(temp_path)
+
+
+def pick_one_per_subscriber(
+    df: DataFrame, col_name: str = "subscription_identifier"
+) -> DataFrame:
+    """ Some inputs have more then one row per `subscription_identifier`. This function
+    picks only one row for such cases.
+
+    Args:
+        df: table to filter rows for.
+        col_name: col_name to make unique.
+    """
+    order_win = Window.partitionBy(col_name).orderBy("key_date")
+    return (
+        df.withColumn("row_no", func.row_number().over(order_win))
+        .filter("row_no == 1")
+        .drop("row_no")
+    )

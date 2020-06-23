@@ -46,6 +46,7 @@ from cvm.src.utils.utils import (
     get_clean_important_variables,
     get_today,
     impute_from_parameters,
+    pick_one_per_subscriber,
 )
 from pyspark.sql import DataFrame
 
@@ -254,10 +255,10 @@ def subs_date_join(
         functools.partial(join_on, keys=["subscription_identifier", "key_date"]),
         [users] + sub_id_tables,
     )
-
-    return join_on(
+    joined = join_on(
         old_sub_ids_joined, sub_ids_joined, keys=["subscription_identifier", "key_date"]
     ).drop("old_subscription_identifier")
+    return pick_one_per_subscriber(joined)
 
 
 def add_macrosegments(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:

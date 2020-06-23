@@ -30,7 +30,7 @@ from typing import Any, Dict
 
 from cvm.src.utils.incremental_manipulation import filter_latest_date, filter_users
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
-from cvm.src.utils.utils import get_today
+from cvm.src.utils.utils import get_today, pick_one_per_subscriber
 from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as func
 
@@ -143,6 +143,7 @@ def create_sample_dataset(
         )
 
     log = logging.getLogger(__name__)
+    df = pick_one_per_subscriber(df)
     log.info(f"Sample has {df.count()} rows, down from {starting_rows} rows.")
 
     return df
