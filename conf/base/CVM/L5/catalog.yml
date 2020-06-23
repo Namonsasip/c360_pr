@@ -47,7 +47,7 @@ treatments_chosen_spark:
 
 treatments_chosen_translated:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: dbfs/mnt/customer360-cvm/treatments_chosen_translated.csv
+  filepath: /mnt/customer360-cvm/treatments_chosen_translated.csv
   file_format: csv
   load_args:
     header: True
