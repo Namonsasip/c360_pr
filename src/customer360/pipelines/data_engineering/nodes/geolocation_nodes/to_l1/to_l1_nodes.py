@@ -16,29 +16,30 @@ from pyspark.sql import Window
 from pyspark.sql.types import *
 
 from customer360.utilities.re_usable_functions import add_start_of_week_and_month, union_dataframes_with_missing_cols, \
-    execute_sql, add_event_week_and_month_from_yyyymmdd
+    execute_sql, add_event_week_and_month_from_yyyymmdd, __divide_chunks
 from customer360.utilities.spark_util import get_spark_session
 
+conf = os.getenv("CONF", "base")
+run_mode = os.getenv("DATA_AVAILABILITY_CHECKS", None)
+log = logging.getLogger(__name__)
+running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
+
 def l1_geo_time_spent_by_location_daily(df,sql):
+    df = df.filter('partition_date >= 20200301')
     df = add_start_of_week_and_month(df, "time_in")
-    print('debug1')
-    df.show()
-    ss = get_spark_session()
-    df.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
-    stmt = """
+    #####################################
+    sql =  """
     SELECT IMSI,LOCATION_ID,SUM(DURATION) AS SUM_DURATION,event_partition_date,start_of_week,start_of_month
     FROM GEO_CUST_CELL_VISIT_TIME
     GROUP BY IMSI,LOCATION_ID,event_partition_date,start_of_week,start_of_month
     """
-    df = ss.sql(stmt)
-    print('debug1')
-    df.show()
-
-    # df = node_from_config(df,sql)
-
+    df = massive_processing_weekly(df, sql, "l1_geo_time_spent_by_location_daily")
+    #######################################
     return df
 
 def l1_geo_area_from_ais_store_daily(shape,masterplan,geo_cust_cell_visit_time,sql):
+    geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20200301')
+
     geo_cust_cell_visit_time  = add_start_of_week_and_month(geo_cust_cell_visit_time, "time_in")
     geo_cust_cell_visit_time.show()
 
@@ -77,6 +78,8 @@ def l1_geo_area_from_ais_store_daily(shape,masterplan,geo_cust_cell_visit_time,s
     return df2
 
 def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit_time,sql):
+    geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20200301')
+
     geo_cust_cell_visit_time.cache()
     geo_cust_cell_visit_time = add_start_of_week_and_month(geo_cust_cell_visit_time, "time_in")
 
@@ -721,3 +724,37 @@ def l1_the_favourite_locations_daily(usage_df_location,geo_df_masterplan):
     l1 = spark.sql(sql_l1_1)
     return l1
 
+def massive_processing_weekly(data_frame: DataFrame, sql, output_df_catalog) -> DataFrame:
+    """
+    :param data_frame:
+    :param dict_obj:
+    :return:
+    """
+
+    def divide_chunks(l, n):
+        # looping till length l
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    ss = get_spark_session()
+    CNTX = load_context(Path.cwd(), env=conf)
+    data_frame = data_frame
+    dates_list = data_frame.select('event_partition_date').distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+    mvv_new = list(divide_chunks(mvv_array, 2))
+    add_list = mvv_new
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        small_df = data_frame.filter(f.col("start_of_week").isin(*[curr_item]))
+        small_df.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
+        output_df = ss.sql(sql)
+        CNTX.catalog.save(output_df_catalog, output_df)
+    logging.info("Final date to run for {0}".format(str(first_item)))
+    return_df = data_frame.filter(f.col("event_partition_date").isin(*[first_item]))
+    return_df.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
+    return_df = ss.sql(sql)
+    return return_df
