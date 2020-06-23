@@ -724,7 +724,7 @@ def l1_the_favourite_locations_daily(usage_df_location,geo_df_masterplan):
     l1 = spark.sql(sql_l1_1)
     return l1
 
-def massive_processing_weekly(data_frame: DataFrame, dict_obj: dict, output_df_catalog) -> DataFrame:
+def massive_processing_weekly(data_frame: DataFrame, sql, output_df_catalog) -> DataFrame:
     """
     :param data_frame:
     :param dict_obj:
@@ -736,6 +736,7 @@ def massive_processing_weekly(data_frame: DataFrame, dict_obj: dict, output_df_c
         for i in range(0, len(l), n):
             yield l[i:i + n]
 
+    ss = get_spark_session()
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = data_frame
     dates_list = data_frame.select('event_partition_date').distinct().collect()
@@ -749,9 +750,11 @@ def massive_processing_weekly(data_frame: DataFrame, dict_obj: dict, output_df_c
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         small_df = data_frame.filter(f.col("start_of_week").isin(*[curr_item]))
-        output_df = node_from_config(small_df, dict_obj)
+        small_df.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
+        output_df = ss.sql(sql)
         CNTX.catalog.save(output_df_catalog, output_df)
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(f.col("event_partition_date").isin(*[first_item]))
-    return_df = node_from_config(return_df, dict_obj)
+    return_df.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
+    return_df = ss.sql(sql)
     return return_df
