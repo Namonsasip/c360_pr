@@ -63,6 +63,9 @@ def prepare_campaigns_table(
         ["data_date", "crm_subscription_id", "dummy01", "dummy02", "dummy03"]
     ]
 
+    # trim column to not exceed 50 char
+    use_case_treatments['dummy03'] = use_case_treatments['dummy03'].str.slice(0, 50)
+
     if use_case == "churn":
         use_case_treatments["project_name"] = "CVM_Prepaid_churn_model_V2"
     return use_case_treatments
