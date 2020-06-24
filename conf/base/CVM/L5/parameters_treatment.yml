@@ -23,5 +23,5 @@ treatment_package_rec:
 
 # treatment ATL to BTL mapping
 package_btl_mapping:
-  treatment_z1_no_test_ard_d20d10_: 'BTL_PRICE'
-  treatment_z2_no_test_ard_d10_: 'ATL'
+  z1_notest_ard_d20d10: 'BTL_PRICE'
+  z2_notest_ard_d10: 'ATL'
