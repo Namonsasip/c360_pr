@@ -31,7 +31,7 @@ l4_area_from_competitor_store:
 #    imsi: "imsi"
 
 int_l4_geo_home_location_id_monthly:
-  where_clause: "duration != 0 and ((hour_in >= 18) or (hour_in < 18 and hour_out > 18) or (hour_in < 6 and hour_out > 6) or (hour_out <=6))"
+  where_clause: "where duration != 0 and ((hour_in >= 18) or (hour_in < 18 and hour_out > 18) or (hour_in < 6 and hour_out > 6) or (hour_out <=6))"
   feature_list:
     week_type: "cast((case when (dayofweek(event_partition_date) = 1) and (dayofweek(event_partition_date) = 7) then 'weekend' \
                 else 'weekday' end) as string)"
@@ -44,7 +44,7 @@ int_l4_geo_home_location_id_monthly:
   partition_num_per_job: 5
 
 int_l4_geo_work_location_id_monthly:
-  where_clause: "duration != 0 and (((hour_in >= 8 and hour_in < 18) and hour_out <= 18) or ((hour_in >= 8 and hour_in < 18) and hour_out > 18))"
+  where_clause: "where duration != 0 and (((hour_in >= 8 and hour_in < 18) and hour_out <= 18) or ((hour_in >= 8 and hour_in < 18) and hour_out > 18))"
   feature_list:
     duration: "sum(case when ((hour_in >= 8) and (hour_in < 18)) and (hour_out > 18)
                   then (cast(to_unix_timestamp(event_partition_date) as long) + 64800) - (cast(to_timestamp(time_in) as long))
