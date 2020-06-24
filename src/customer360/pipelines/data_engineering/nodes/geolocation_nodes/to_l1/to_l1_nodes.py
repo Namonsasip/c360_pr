@@ -123,17 +123,6 @@ def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit
 
     return df2
 
-def l1_geo_top_visit_exclude_homework_daily(df,homework,sql):
-    df.createOrReplaceTempView('geo_cust_visit_time')
-    homework.createOrReplaceTempView('homework_master')
-
-    ss = get_spark_session()
-    df = ss.sql("""
-        xxxxxxxxxxxxxx
-        """)
-
-    df = node_from_config(df,sql)
-    return df
 
 ##==============================Update 2020-06-12 by Thatt529==========================================##
 

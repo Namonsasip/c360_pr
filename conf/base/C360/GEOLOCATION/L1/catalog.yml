@@ -97,11 +97,6 @@ l1_geo_area_from_competitor_store_daily_for_l3_geo_area_from_competitor_store_mo
     target_layer: 'l3_monthly'
     lookback: '0'
 
-l1_homework_master_for_l1_geo_top_visit_exclude_homework:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/GEO/sample/geo_home_work_data/ #sample data
-  file_format: parquet
-
 l1_geo_cust_subseqently_distance_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/GEO/l1_features/geo_cust_subseqently_distance_daily/
