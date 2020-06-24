@@ -5,6 +5,7 @@ from pyspark.sql import types as T
 from pyspark.sql.types import *
 from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1.to_l1_nodes import gen_max_sql
 from customer360.utilities.config_parser import node_from_config, l4_rolling_window
+from customer360.utilities.re_usable_functions import l3_massive_processing, l1_massive_processing
 from kedro.context.context import load_context
 from pathlib import Path
 import logging
@@ -47,32 +48,31 @@ def l4_geo_top_visit_exclude_homework(sum_duration, homework):
     return df
 
 
-def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
+def int_l4_geo_home_work_location_id(geo_cust_cell_visit_time, home_config, work_config, list_imsi_config):
     # Filter 2,3,4,5
     geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20200201 and partition_date <= 20200531')
 
     # Add 2 columns: event_partition_date, start_of_month
     geo_cust_cell_visit_time = geo_cust_cell_visit_time.withColumn("event_partition_date", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))
     geo_cust_cell_visit_time = geo_cust_cell_visit_time.withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col("event_partition_date"))))
-    list_imsi = geo_cust_cell_visit_time.groupBy('imsi', 'start_of_month').count().distinct()
 
-    geo_cust_time_of_home = geo_cust_cell_visit_time.where('duration <> 0 and ((hour_in >= 18) or (hour_in < 18 and hour_out > 18) or (hour_in < 6 and hour_out > 6) or (hour_out <=6))')\
-        .select('imsi', 'time_in', 'time_out', 'location_id', 'latitude', 'longitude', 'event_partition_date', 'start_of_month',\
-                (F.when((F.col('hour_in') < 18) & (F.col('hour_out') > 18),\
-                F.to_timestamp(F.col('time_out')).cast('long') - (F.to_timestamp(F.col('event_partition_date')).cast('long') + 64800))\
-                 .when((F.col('hour_in') < 6) & (F.col('hour_out') > 6),\
-                (F.to_timestamp(F.col('event_partition_date')).cast('long') + 21600) - F.to_timestamp(F.col('time_out')).cast('long'))\
-                 .otherwise(F.col('duration')).alias('duration')))
+    # massive for list imsi for each month
+    list_imsi = l3_massive_processing(geo_cust_cell_visit_time, list_imsi_config)
 
-    geo_cust_time_of_home = geo_cust_time_of_home.withColumn("week_type", F.when(
-        (F.dayofweek('event_partition_date') == 1) | (F.dayofweek('event_partition_date') == 7), 'weekend') \
-        .otherwise('weekday').cast(StringType())).groupBy('imsi'
-            ,'location_id', 'latitude', 'longitude'
-            , 'week_type', 'start_of_month').agg(F.sum('duration').alias('duration'), F.count('event_partition_date').alias('days'))
+    # filter time of home
+    home_monthly = l1_massive_processing(geo_cust_cell_visit_time, home_config)
+
+    # filter time of work
+    work_monthly = l1_massive_processing(geo_cust_cell_visit_time, work_config)
+
+    return [home_monthly, work_monthly, list_imsi]
+
+def l4_geo_home_work_location_id(home_monthly, work_monthly, list_imsi, sql):
 
     w_home = Window().partitionBy('imsi', 'location_id', 'week_type').orderBy(
         F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
-    home_last_3m = geo_cust_time_of_home.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd")).withColumn("duration_3m", F.sum("duration").over(w_home)).withColumn("days_3m", F.sum('days').over(w_home))
+    # home_last_3m = geo_cust_time_of_home.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd")).withColumn("duration_3m", F.sum("duration").over(w_home)).withColumn("days_3m", F.sum('days').over(w_home))
+    home_last_3m = home_monthly.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd")).withColumn("duration_3m", F.sum("duration").over(w_home)).withColumn("days_3m", F.sum('days').over(w_home))
     home_last_3m = home_last_3m.dropDuplicates(['imsi', 'start_of_month', 'location_id', 'duration_3m', 'days_3m']).select('imsi', 'start_of_month', 'week_type', 'location_id', 'latitude', 'longitude', 'duration_3m', 'days_3m')
 
     w_num_row = Window().partitionBy('imsi', 'location_id', 'week_type', 'start_of_month').orderBy(F.col('duration_3m').desc(), F.col('days_3m').desc())
@@ -87,15 +87,9 @@ def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
                                                                                                (F.col('latitude').alias('home_weekend_latitude')),
                                                                                                (F.col('longitude').alias('home_weekend_longitude')))
 
-    geo_cust_time_of_work = geo_cust_cell_visit_time.where('duration <> 0 and (((hour_in >= 8 and hour_in < 18) and hour_out <= 18) or ((hour_in >= 8 and hour_in < 18) and hour_out > 18))')\
-        .select('imsi', 'time_in', 'time_out', 'location_id', 'latitude', 'longitude', 'event_partition_date', 'start_of_month',
-        (F.when(((F.col('hour_in') >= 8) & (F.col('hour_in') < 18)) & (F.col('hour_out') > 18),
-                (F.to_timestamp(F.col('event_partition_date')).cast('long') + 64800) - (F.to_timestamp(F.col('time_in')).cast('long'))).otherwise(F.col('duration')).alias('duration')))\
-        .groupBy('imsi', 'location_id', 'latitude', 'longitude', 'start_of_month').agg(F.sum('duration').alias('duration'), F.approx_count_distinct('event_partition_date').alias('days'))
-
     w_work = Window().partitionBy('imsi', 'location_id').orderBy(
         F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
-    work_last_3m = geo_cust_time_of_work.withColumn("Month", F.to_timestamp(
+    work_last_3m = work_monthly.withColumn("Month", F.to_timestamp(
         "start_of_month", "yyyy-MM-dd")).withColumn("duration_3m", F.sum("duration").over(w_work)).withColumn("days_3m", F.sum('days').over(w_work))
     work_last_3m = work_last_3m.dropDuplicates(['imsi', 'start_of_month', 'location_id', 'duration_3m', 'days_3m'])\
         .select('imsi', 'start_of_month', 'location_id', 'latitude', 'longitude', 'duration_3m', 'days_3m')
