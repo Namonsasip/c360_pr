@@ -56,7 +56,7 @@ def int_l4_geo_home_work_location_id(geo_cust_cell_visit_time, home_config, work
     geo_cust_cell_visit_time = geo_cust_cell_visit_time.withColumn("event_partition_date", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))
     geo_cust_cell_visit_time = geo_cust_cell_visit_time.withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col("event_partition_date"))))
 
-    geo_cust_cell_visit_time_week_type = geo_cust_cell_visit_time.withColumn('week_type', F.when(F.dayofweek(F.col('event_partition_date')) == 1) & (F.dayofweek(F.col('event_partition_date')) == 7), 'weekend').otherwise('weekday').cast(StringType())
+    geo_cust_cell_visit_time_week_type = geo_cust_cell_visit_time.withColumn('week_type', F.when(((F.dayofweek(F.col('event_partition_date')) == 1) & (F.dayofweek(F.col('event_partition_date')) == 7)), 'weekend').otherwise('weekday').cast(StringType())
 
     # massive for list imsi for each month
     list_imsi = l3_massive_processing(geo_cust_cell_visit_time, list_imsi_config)
