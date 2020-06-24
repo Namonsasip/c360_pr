@@ -16,7 +16,7 @@ from src.data_quality.dq_util import get_config_parameters, \
     melt, \
     add_suffix_to_df_columns, \
     add_outlier_percentage_based_on_iqr
-from pyspark.sql.types import *
+
 from kedro.pipeline.node import Node
 from kedro.io.core import DataSetError
 from pyspark.sql import DataFrame
@@ -278,24 +278,24 @@ def run_accuracy_logic(
     dq_accuracy_df_schema = StructType([
         StructField("granularity", StringType()),
         StructField("feature_column_name", StringType()),
-        StructField("approx_count_distinct", LongType()),
+        StructField("approx_count_distinct", IntegerType()),
         StructField("null_percentage", DoubleType()),
-        StructField("min", DecimalType(38, 3)),
-        StructField("avg", DecimalType(38, 7)),
-        StructField("count", LongType()),
-        StructField("max", DecimalType(38, 3)),
-        StructField("percentile_0.1", DecimalType(38, 3)),
-        StructField("percentile_0.25", DecimalType(38, 3)),
-        StructField("percentile_0.5", DecimalType(38, 3)),
-        StructField("percentile_0.75", DecimalType(38, 3)),
-        StructField("percentile_0.9", DecimalType(38, 3)),
-        StructField("count_higher_outlier", LongType()),
-        StructField("q1", DecimalType(38, 3)),
-        StructField("iqr", DecimalType(38, 3)),
-        StructField("q3", DecimalType(38, 3)),
-        StructField("count_lower_outlier", LongType()),
+        StructField("min", DoubleType()),
+        StructField("avg", DoubleType()),
+        StructField("count", IntegerType()),
+        StructField("max", DoubleType()),
+        StructField("percentile_0.1", DoubleType()),
+        StructField("percentile_0.25", DoubleType()),
+        StructField("percentile_0.5", DoubleType()),
+        StructField("percentile_0.75", DoubleType()),
+        StructField("percentile_0.9", DoubleType()),
+        StructField("count_higher_outlier", DoubleType()),
+        StructField("q1", DoubleType()),
+        StructField("iqr", DoubleType()),
+        StructField("q3", DoubleType()),
+        StructField("count_lower_outlier", DoubleType()),
         StructField("run_date", TimestampType()),
-        StructField("sub_id_sample_creation_date", DateType()),
+        StructField("sub_id_sample_creation_date", StringType()),
         StructField("dataset_name", StringType()),
         StructField("corresponding_date", DateType())
     ])

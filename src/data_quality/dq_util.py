@@ -1,7 +1,7 @@
 from pathlib import Path
 from pyspark.sql import functions as f
 from pyspark.sql import DataFrame
-from pyspark.sql.types import LongType, DoubleType
+from pyspark.sql.types import DoubleType
 
 import os
 from datetime import datetime
