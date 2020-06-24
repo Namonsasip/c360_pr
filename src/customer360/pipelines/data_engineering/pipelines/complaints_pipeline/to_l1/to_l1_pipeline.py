@@ -90,21 +90,21 @@ def complaints_to_l1_pipeline(**kwargs):
             ),
 
 
-            node(
-                dac_for_complaints_to_l1_pipeline,
-                ["l0_complaints_acc_qmt_csi_daily",
-                 "l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_store_visit",
-                 "params:l1_complaints_nps_after_store_visit_tbl"],
-                ["int_l0_complaints_acc_qmt_csi_daily",
-                 "int_l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_store_visit"]
-            ),
-            node(
-                l1_massive_processing,
-                ["int_l0_complaints_acc_qmt_csi_daily",
-                 "params:l1_complaints_nps_after_store_visit",
-                 "int_l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_store_visit"],
-                "l1_complaints_nps_after_store_visit"
-            ),
+            # node(
+            #     dac_for_complaints_to_l1_pipeline,
+            #     ["l0_complaints_acc_qmt_csi_daily",
+            #      "l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_store_visit",
+            #      "params:l1_complaints_nps_after_store_visit_tbl"],
+            #     ["int_l0_complaints_acc_qmt_csi_daily",
+            #      "int_l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_store_visit"]
+            # ),
+            # node(
+            #     l1_massive_processing,
+            #     ["int_l0_complaints_acc_qmt_csi_daily",
+            #      "params:l1_complaints_nps_after_store_visit",
+            #      "int_l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_store_visit"],
+            #     "l1_complaints_nps_after_store_visit"
+            # ),
 
         ]
     )
