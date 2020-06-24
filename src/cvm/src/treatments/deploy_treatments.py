@@ -55,11 +55,12 @@ def prepare_campaigns_table(
             "old_subscription_identifier": "crm_subscription_id",
             "campaign_code": "dummy01",
             "microsegment": "dummy02",
+            "treatment_name": "dummy03",
         },
         inplace=True,
     )
     use_case_treatments = use_case_treatments[
-        ["data_date", "crm_subscription_id", "dummy01", "dummy02"]
+        ["data_date", "crm_subscription_id", "dummy01", "dummy02", "dummy03"]
     ]
 
     if use_case == "churn":
