@@ -609,7 +609,7 @@ def run_timeliness_logic(
             cast(max({partition_col}) as string) as max_partition,
             cast({latency_formula} as string) as partition_latency,
             current_timestamp() as execution_ts,
-            cast(lit(0.0) as double) as latency_increase_from_last_run,
+            cast(0.0 as double) as latency_increase_from_last_run,
             current_date() as run_date
         from input_df
     """.format(latency_formula=generate_latency_formula(partition_col),
