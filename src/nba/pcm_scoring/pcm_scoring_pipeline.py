@@ -3,6 +3,7 @@ from kedro.pipeline import Pipeline, node
 from nba.pcm_scoring.pcm_scoring_nodes import (
     join_c360_features_latest_date,
     l5_pcm_candidate_with_campaign_info,
+    l5_nba_pcm_candidate_scored,
 )
 
 
@@ -14,6 +15,7 @@ def create_nba_pcm_scoring_pipeline() -> Pipeline:
                 inputs={
                     "pcm_candidate": "pcm_candidate",
                     "l5_nba_campaign_master": "l5_nba_campaign_master",
+                    "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
                 },
                 outputs="l5_pcm_candidate_with_campaign_info",
                 name="l5_pcm_candidate_with_campaign_info",
@@ -42,22 +44,22 @@ def create_nba_pcm_scoring_pipeline() -> Pipeline:
                 name="l5_pcm_scoring_master",
                 tags=["l5_pcm_scoring_master"],
             ),
-            # node(
-            #     l5_nba_pcm_candidate_scored,
-            #     inputs={
-            #         "df_master":"l5_pcm_scoring_master",
-            # "l5_average_arpu_untie_lookup":"l5_average_arpu_untie_lookup",
-            # "model_group_column": "params:nba_model_group_column",
-            # acceptance_model_tag:
-            # arpu_model_tag:
-            # "pai_runs_uri": "params:nba_pai_runs_uri",
-            # "pai_artifacts_uri": "params:nba_pai_artifacts_uri",
-            # "scoring_chunk_size": "params:backtesting_scoring_chunk_size",
-            #
-            #     },
-            #     outputs="l5_pcm_candidate_with_campaign_info",
-            #     name="l5_pcm_candidate_with_campaign_info",
-            #     tags=["l5_pcm_candidate_with_campaign_info"],
-            # ),
-        ]
+            node(
+                l5_nba_pcm_candidate_scored,
+                inputs={
+                    "df_master": "l5_pcm_scoring_master",
+                    "l5_average_arpu_untie_lookup": "l5_average_arpu_untie_lookup",
+                    "model_group_column": "params:nba_model_group_column",
+                    "acceptance_model_tag": "params:nba_pcm_scoring_acceptance_model_tag",
+                    "arpu_model_tag": "params:nba_pcm_scoring_arpu_model_tag",
+                    "pai_runs_uri": "params:nba_pai_runs_uri",
+                    "pai_artifacts_uri": "params:nba_pai_artifacts_uri",
+                    "scoring_chunk_size": "params:backtesting_scoring_chunk_size",
+                },
+                outputs="l5_pcm_candidate_scored",
+                name="l5_pcm_candidate_scored",
+                tags=["l5_pcm_candidate_scored"],
+            ),
+        ],
+        tags="pcm_scoring_pipeline",
     )
