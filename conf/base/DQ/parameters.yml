@@ -84,31 +84,31 @@ features_for_dq:
 #  l4_billing_rolling_window_rpu_roaming:
 #    - feature: sum_payments_arpu_roaming_weekly_last_week
 #    - feature: sum_payments_arpu_roaming_weekly_last_twelve_week
-  l4_billing_rolling_window_before_top_up_balance:
-    - feature: sum_payments_before_top_up_balance_weekly_last_week
-    - feature: sum_payments_before_top_up_balance_weekly_last_four_week
-  l4_billing_rolling_window_top_up_channels:
-#    - feature: sum_payments_top_ups_by_bank_atm_cdm_weekly_last_twelve_week
-#    - feature: sum_payments_top_up_vol_by_bank_atm_cdm_weekly_last_twelve_week
-#    - feature: sum_payments_top_ups_by_cash_card_weekly_last_twelve_week
-#    - feature: sum_payments_top_up_vol_by_cash_card_weekly_last_twelve_week
-#    - feature: sum_payments_top_ups_by_digital_online_self_service_weekly_last_twelve_week
-    - feature: sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_twelve_week
-#    - feature: sum_payments_top_ups_by_epin_slip_weekly_last_twelve_week
-#    - feature: sum_payments_top_up_vol_by_epin_slip_weekly_last_twelve_week
-#    - feature: sum_payments_top_ups_by_epos_weekly_last_twelve_week
-#    - feature: sum_payments_top_up_vol_by_epos_weekly_last_twelve_week
-    - feature: sum_payments_top_ups_by_rom_weekly_last_twelve_week
-    - feature: sum_payments_top_up_vol_by_rom_weekly_last_twelve_week
-#  l4_daily_feature_topup_and_volume:
-#    - feature: '*'
-  l4_campaign_postpaid_prepaid_features:
-    - feature: sum_campaign_overall_count_sum_weekly_last_week
-    - feature: sum_campaign_overall_count_sum_weekly_last_four_week
-    - feature: sum_campaign_overall_count_sum_weekly_last_twelve_week
-    - feature: sum_campaign_total_by_sms_sum_weekly_last_week
-    - feature: sum_campaign_total_by_sms_sum_weekly_last_twelve_week
-    - feature: sum_campaign_total_others_by_sms_sum_weekly_last_week
+#  l4_billing_rolling_window_before_top_up_balance:
+#    - feature: sum_payments_before_top_up_balance_weekly_last_week
+#    - feature: sum_payments_before_top_up_balance_weekly_last_four_week
+#  l4_billing_rolling_window_top_up_channels:
+##    - feature: sum_payments_top_ups_by_bank_atm_cdm_weekly_last_twelve_week
+##    - feature: sum_payments_top_up_vol_by_bank_atm_cdm_weekly_last_twelve_week
+##    - feature: sum_payments_top_ups_by_cash_card_weekly_last_twelve_week
+##    - feature: sum_payments_top_up_vol_by_cash_card_weekly_last_twelve_week
+##    - feature: sum_payments_top_ups_by_digital_online_self_service_weekly_last_twelve_week
+#    - feature: sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_twelve_week
+##    - feature: sum_payments_top_ups_by_epin_slip_weekly_last_twelve_week
+##    - feature: sum_payments_top_up_vol_by_epin_slip_weekly_last_twelve_week
+##    - feature: sum_payments_top_ups_by_epos_weekly_last_twelve_week
+##    - feature: sum_payments_top_up_vol_by_epos_weekly_last_twelve_week
+#    - feature: sum_payments_top_ups_by_rom_weekly_last_twelve_week
+#    - feature: sum_payments_top_up_vol_by_rom_weekly_last_twelve_week
+##  l4_daily_feature_topup_and_volume:
+##    - feature: '*'
+#  l4_campaign_postpaid_prepaid_features:
+#    - feature: sum_campaign_overall_count_sum_weekly_last_week
+#    - feature: sum_campaign_overall_count_sum_weekly_last_four_week
+#    - feature: sum_campaign_overall_count_sum_weekly_last_twelve_week
+#    - feature: sum_campaign_total_by_sms_sum_weekly_last_week
+#    - feature: sum_campaign_total_by_sms_sum_weekly_last_twelve_week
+#    - feature: sum_campaign_total_others_by_sms_sum_weekly_last_week
 #    - feature: sum_campaign_overall_count_sum_weekly_last_week
 #    - feature: sum_campaign_overall_count_sum_weekly_last_two_week
 #    - feature: sum_campaign_overall_count_sum_weekly_last_four_week
