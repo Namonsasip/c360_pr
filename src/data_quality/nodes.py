@@ -295,7 +295,7 @@ def run_accuracy_logic(
         StructField("q3", DoubleType()),
         StructField("count_lower_outlier", DoubleType()),
         StructField("run_date", TimestampType()),
-        StructField("sub_id_sample_creation_date", StringType()),
+        StructField("sub_id_sample_creation_date", DateType()),
         StructField("dataset_name", StringType()),
         StructField("corresponding_date", DateType())
     ])
