@@ -55,7 +55,8 @@ def prepare_users(
     today = get_today(parameters)
     df = (
         customer_groups.filter(
-            "target_group in ('TG_2020_CVM_V2', 'CG_2020_CVM_V2', 'BAU_2020_CVM_V2')"
+            "target_group in ('TG_2020_CVM_V2', 'CG_2020_CVM_V2', 'BAU_2020_CVM_V2', "
+            "'TG', 'CG', 'BAU')"
         )
         .select(["crm_sub_id", "target_group"])
         .distinct()
