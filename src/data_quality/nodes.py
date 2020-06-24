@@ -609,7 +609,7 @@ def run_timeliness_logic(
             cast(max({partition_col}) as string) as max_partition,
             cast({latency_formula} as string) as partition_latency,
             current_timestamp() as execution_ts,
-            cast(0.0 as double) as latency_increase_from_last_run,
+            cast(lit(0.0) as double) as latency_increase_from_last_run,
             current_date() as run_date
         from input_df
     """.format(latency_formula=generate_latency_formula(partition_col),
@@ -619,7 +619,7 @@ def run_timeliness_logic(
     try:
         dq_timeliness = ctx.catalog.load("dq_timeliness")
         dq_timeliness.createOrReplaceTempView("dq_timeliness")
-    except DataSetError:
+    except:
         # no dq_timeliness yet, create initial stats
         result_df = spark.sql(initial_stats_for_input_df)
         return result_df
