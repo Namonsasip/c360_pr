@@ -33,8 +33,6 @@ l4_area_from_competitor_store:
 int_l4_geo_home_location_id_monthly:
   where_clause: "where duration != 0 and ((hour_in >= 18) or (hour_in < 18 and hour_out > 18) or (hour_in < 6 and hour_out > 6) or (hour_out <=6))"
   feature_list:
-    week_type: "cast((case when (dayofweek(event_partition_date) = 1) and (dayofweek(event_partition_date) = 7) then 'weekend' \
-                else 'weekday' end) as string)"
     duration: "sum(case when hour_in < 18 and hour_out > 18 then cast(to_unix_timestamp(time_out) as long) - (cast(to_unix_timestamp(event_partition_date) as long) + 64800)
                   when hour_in < 6 and hour_out > 6 then (cast(to_unix_timestamp(event_partition_date) as long) + 21600) - cast(to_unix_timestamp(time_out) as long)
                   else duration end)"
