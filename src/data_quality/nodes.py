@@ -94,6 +94,7 @@ def dq_merger_nodes(
     spark = get_spark_session()
     spark.conf.set("spark.sql.autoBroadcastJoinThreshold", -1)
     spark.conf.set("spark.sql.broadcastTimeout", -1)
+    spark.conf.set("spark.sql.parquet.mergeSchema", "false")
 
     all_cols = []
     for each_df in args:
@@ -303,13 +304,13 @@ def run_accuracy_logic(
     features_list = replace_asterisk_feature(features_list, dataset_name, numeric_columns_only=True)
 
     agg_functions = [
-        "count({col}) as {col}__count",
-        "avg({col}) as {col}__avg",
-        "min({col}) as {col}__min",
-        "max({col}) as {col}__max",
-        "(sum(case when {col} is null then 1 else 0 end)/count(*))*100 as {col}__null_percentage",
-        "approx_count_distinct({col}) as {col}__approx_count_distinct",
-        "count(*) as {col}__count_all",
+        "cast(count({col}) as int) as {col}__count",
+        "cast(avg({col}) as double) as {col}__avg",
+        "cast(min({col}) as double) as {col}__min",
+        "cast(max({col}) as double) as {col}__max",
+        "cast((sum(case when {col} is null then 1 else 0 end)/count(*))*100 as double) as {col}__null_percentage",
+        "cast(approx_count_distinct({col}) as int) as {col}__approx_count_distinct",
+        "cast(count(*) as int) as {col}__count_all",
 
         f"percentile_approx({{col}}, "
         f"array({','.join(map(str, percentiles['percentile_list']))}), {percentiles['accuracy']}) "
@@ -407,12 +408,12 @@ def run_availability_logic(
 
     sql_stmt = """
         select
-            '{partition_col}' as granularity,
-            max({partition_col}) as max_partition,
-            min({partition_col}) as min_partition,
+            cast('{partition_col}' as string) as granularity,
+            cast(max({partition_col}) as string) as max_partition,
+            cast(min({partition_col}) as string) as min_partition,
             count(distinct({partition_col})) as distinct_partition,
             cast(({expected_partition_cnt_formula}) - count(distinct({partition_col})) as integer) as missing_partition_count,
-            '{dataset_name}' as dataset_name,
+            cast('{dataset_name}' as string) as dataset_name,
             current_date() as run_date
         from input_df
     """.format(partition_col=partition_col,
@@ -562,7 +563,7 @@ def run_consistency_logic(
     df_same_percent = melt_qa_result(df_same_percent, partition_col)
 
     df_same_percent = (df_same_percent
-                       .withColumn("same_percent", F.col("same_percent")*100)
+                       .withColumn("same_percent", (F.col("same_percent")*100).cast(DoubleType()))
                        .withColumn("run_date", F.current_date())
                        .withColumn("dataset_name", F.lit(dataset_name)))
 
@@ -603,12 +604,12 @@ def run_timeliness_logic(
 
     initial_stats_for_input_df = """
         select
-            '{dataset_name}' as dataset_name, 
-            '{partition_col}' as granularity,
-            max({partition_col}) as max_partition,
-            {latency_formula} as partition_latency,
+            cast('{dataset_name}' as string) as dataset_name, 
+            cast('{partition_col}' as string) as granularity,
+            cast(max({partition_col}) as string) as max_partition,
+            cast({latency_formula} as string) as partition_latency,
             current_timestamp() as execution_ts,
-            0.0 as latency_increase_from_last_run,
+            cast(lit(0.0) as double) as latency_increase_from_last_run,
             current_date() as run_date
         from input_df
     """.format(latency_formula=generate_latency_formula(partition_col),
@@ -628,12 +629,12 @@ def run_timeliness_logic(
             {initial_stats_for_input_df}
             union (
                 select
-                    t1.dataset_name,
-                    t1.granularity,
-                    t1.max_partition,
-                    t1.partition_latency,
+                    cast(t1.dataset_name as string),
+                    cast(t1.granularity as string),
+                    cast(t1.max_partition as string),
+                    cast(t1.partition_latency as string),
                     t1.execution_ts,
-                    t1.latency_increase_from_last_run,
+                    cast(t1.latency_increase_from_last_run as double),
                     t1.run_date
                 from dq_timeliness t1
                 where t1.dataset_name = '{dataset_name}'
@@ -647,9 +648,12 @@ def run_timeliness_logic(
             unioned_df.partition_latency,
             unioned_df.execution_ts,
             unioned_df.run_date,
-            coalesce(
-                partition_latency - lag(partition_latency, 1) over (partition by dataset_name order by execution_ts asc),
-                latency_increase_from_last_run) as latency_increase_from_last_run
+            cast(
+                coalesce(
+                    partition_latency - lag(partition_latency, 1) over (partition by dataset_name order by execution_ts asc),
+                    latency_increase_from_last_run
+                ) as string
+            ) as latency_increase_from_last_run
         from unioned_df
         
     """.format(initial_stats_for_input_df=initial_stats_for_input_df,
