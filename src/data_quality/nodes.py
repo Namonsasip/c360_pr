@@ -390,7 +390,7 @@ def run_accuracy_logic(
     # long GC pauses before the spark job is even started
     # result_df.persist(StorageLevel.MEMORY_AND_DISK).count()
 
-    return result_df
+    return result_df.repartition(1)
 
 
 def run_availability_logic(
@@ -423,7 +423,7 @@ def run_availability_logic(
     spark = get_spark_session()
     result_df = spark.sql(sql_stmt)
 
-    return result_df
+    return result_df.repartition(1)
 
 
 def _prepare_dq_consistency_dataset(
@@ -450,7 +450,7 @@ def _prepare_dq_consistency_dataset(
 
     filtered_new_df = filtered_new_df.drop("created_date")
 
-    return filtered_new_df
+    return filtered_new_df.repartition(1)
 
 
 def run_consistency_logic(
@@ -571,7 +571,7 @@ def run_consistency_logic(
     # long GC pauses before the spark job is even started
     df_same_percent.persist(StorageLevel.MEMORY_AND_DISK).count()
 
-    return df_same_percent
+    return df_same_percent.repartition(1)
 
 
 def generate_latency_formula(
