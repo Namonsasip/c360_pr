@@ -73,7 +73,7 @@ must_have_features:
 volatility_length: 5
 
 # how often should the scoring microsegments be updated
-microsegments_update_cadence: 1
+microsegments_update_cadence: 30
 
 # pai parameters
 pai_runs_path: '/dbfs/mnt/customer360-blob-data/cvm/pai01/runs'
