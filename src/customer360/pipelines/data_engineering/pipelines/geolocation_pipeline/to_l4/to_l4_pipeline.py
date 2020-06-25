@@ -44,17 +44,17 @@ def geo_to_l4_pipeline(**kwargs):
             # ),
 
             # Home and Work Feature
-            # node(
-            #     int_l4_geo_home_work_location_id,  # partition_date is main column to massive processing
-            #     ["l0_geo_cust_cell_visit_time_for_int_l4_geo_home_work_location_id",
-            #      "params:int_l4_geo_home_location_id_monthly",
-            #      "params:int_l4_geo_work_location_id_monthly",
-            #      "params:int_l4_geo_list_imsi_monthly"
-            #      ],
-            #     ["int_l4_geo_home_location_id_monthly",
-            #      "int_l4_geo_work_location_id_monthly",
-            #      "int_l4_geo_list_imsi_monthly"]
-            # ),
+            node(
+                int_l4_geo_home_work_location_id,  # partition_date is main column to massive processing
+                ["l0_geo_cust_cell_visit_time_for_int_l4_geo_home_work_location_id",
+                 "params:int_l4_geo_home_location_id_monthly",
+                 "params:int_l4_geo_work_location_id_monthly",
+                 "params:int_l4_geo_list_imsi_monthly"
+                 ],
+                ["int_l4_geo_home_location_id_monthly",
+                 "int_l4_geo_work_location_id_monthly",
+                 "int_l4_geo_list_imsi_monthly"]
+            ),
             node(
                 l4_geo_home_work_location_id,
                 ["int_l4_geo_home_location_id_monthly",
