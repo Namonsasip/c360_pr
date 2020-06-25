@@ -25,7 +25,7 @@ log = logging.getLogger(__name__)
 running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 
 def l1_geo_time_spent_by_location_daily(df,sql):
-    df = df.filter('partition_date >= 20200201 and partition_date<=20200531')
+    df = df.filter('partition_date >= 20190801 and partition_date<=20191031')
     # df = add_start_of_week_and_month(df, "time_in")
     # df.cache()
     #####################################
