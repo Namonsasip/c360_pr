@@ -758,6 +758,7 @@ def massive_processing_weekly(data_frame: DataFrame, sql, output_df_catalog,part
         CNTX.catalog.save(output_df_catalog, output_df)
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(f.col(partition_col).isin(*[first_item]))
+    return_df = add_start_of_week_and_month(return_df, "time_in")
     return_df.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
     return_df = ss.sql(sql)
     return return_df
