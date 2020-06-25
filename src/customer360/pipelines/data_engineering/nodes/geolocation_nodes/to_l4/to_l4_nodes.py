@@ -50,7 +50,7 @@ def l4_geo_top_visit_exclude_homework(sum_duration, homework):
 
 def int_l4_geo_home_work_location_id(geo_cust_cell_visit_time, home_config, work_config, list_imsi_config):
     # Filter 2,3,4,5
-    # geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20190801 and partition_date <= 20191031')
+    geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20190801 and partition_date <= 20191031')
 
     # Add 2 columns: event_partition_date, start_of_month
     geo_cust_cell_visit_time = geo_cust_cell_visit_time.withColumn("event_partition_date", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))
