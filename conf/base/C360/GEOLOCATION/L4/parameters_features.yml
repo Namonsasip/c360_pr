@@ -55,7 +55,7 @@ int_l4_geo_work_location_id_monthly:
 int_l4_geo_list_imsi_monthly:
   where_clause: ""
   feature_list:
-    days: "approx_count_distinct(imsi)"
+    count: "approx_count_distinct(imsi)"
   granularity: "imsi, start_of_month"
   output_catalog: "int_l4_geo_list_imsi_monthly"
   partition_num_per_job: 5
