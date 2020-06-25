@@ -19,30 +19,30 @@ int_l2_streaming_content_type_features:
     target_layer: 'l2_weekly'
 
 
-int_l2_streaming_content_type_features_for_l2_streaming_fav_content_group_by_volume:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l2_features/int_l2_streaming_content_type_features/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l2_streaming_fav_content_group_by_volume'
-    read_layer: 'l2_weekly'
-    target_layer: 'l2_weekly'
-    lookback: '0'
-
-
-int_l2_streaming_content_type_features_for_l2_streaming_fav_content_group_by_duration:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l2_features/int_l2_streaming_content_type_features/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l2_streaming_fav_content_group_by_duration'
-    read_layer: 'l2_weekly'
-    target_layer: 'l2_weekly'
-    lookback: '0'
+#int_l2_streaming_content_type_features_for_l2_streaming_fav_content_group_by_volume:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  filepath: base_path/STREAM/l2_features/int_l2_streaming_content_type_features/
+#  file_format: parquet
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'yes'
+#    lookup_table_name: 'l2_streaming_fav_content_group_by_volume'
+#    read_layer: 'l2_weekly'
+#    target_layer: 'l2_weekly'
+#    lookback: '0'
+#
+#
+#int_l2_streaming_content_type_features_for_l2_streaming_fav_content_group_by_duration:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  filepath: base_path/STREAM/l2_features/int_l2_streaming_content_type_features/
+#  file_format: parquet
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'yes'
+#    lookup_table_name: 'l2_streaming_fav_content_group_by_duration'
+#    read_layer: 'l2_weekly'
+#    target_layer: 'l2_weekly'
+#    lookback: '0'
 
 int_l2_streaming_content_type_features_for_int_l4_streaming_content_type_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -120,30 +120,30 @@ int_l2_streaming_tv_channel_features:
     target_layer: 'l2_weekly'
 
 
-int_l2_streaming_tv_channel_features_for_l2_streaming_fav_tv_channel_by_volume:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l2_features/int_l2_streaming_tv_channel_features/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l2_streaming_fav_tv_channel_by_volume'
-    read_layer: 'l2_weekly'
-    target_layer: 'l2_weekly'
-    lookback: '0'
+#int_l2_streaming_tv_channel_features_for_l2_streaming_fav_tv_channel_by_volume:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  filepath: base_path/STREAM/l2_features/int_l2_streaming_tv_channel_features/
+#  file_format: parquet
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'yes'
+#    lookup_table_name: 'l2_streaming_fav_tv_channel_by_volume'
+#    read_layer: 'l2_weekly'
+#    target_layer: 'l2_weekly'
+#    lookback: '0'
 
 
-int_l2_streaming_tv_channel_features_for_l2_streaming_fav_tv_channel_by_duration:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l2_features/int_l2_streaming_tv_channel_features/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l2_streaming_fav_tv_channel_by_duration'
-    read_layer: 'l2_weekly'
-    target_layer: 'l2_weekly'
-    lookback: '0'
+#int_l2_streaming_tv_channel_features_for_l2_streaming_fav_tv_channel_by_duration:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  filepath: base_path/STREAM/l2_features/int_l2_streaming_tv_channel_features/
+#  file_format: parquet
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'yes'
+#    lookup_table_name: 'l2_streaming_fav_tv_channel_by_duration'
+#    read_layer: 'l2_weekly'
+#    target_layer: 'l2_weekly'
+#    lookback: '0'
 
 
 int_l2_streaming_tv_channel_features_for_int_l4_streaming_tv_channel_features:
@@ -247,43 +247,43 @@ int_l2_streaming_video_service_feature:
     target_layer: 'l2_weekly'
 
 
-int_l2_streaming_video_service_feature_for_l2_streaming_fav_video_service_by_download_feature:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l2_features/int_l2_streaming_video_service_feature/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l2_streaming_fav_video_service_by_download_feature'
-    read_layer: 'l2_weekly'
-    target_layer: 'l2_weekly'
-    lookback: '0'
-
-
-int_l2_streaming_video_service_feature_for_l2_streaming_2nd_fav_video_service_by_download_feature:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l2_features/int_l2_streaming_video_service_feature/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l2_streaming_2nd_fav_video_service_by_download_feature'
-    read_layer: 'l2_weekly'
-    target_layer: 'l2_weekly'
-    lookback: '0'
-
-
-int_l2_streaming_video_service_feature_for_l2_streaming_fav_video_service_by_visit_count_feature:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l2_features/int_l2_streaming_video_service_feature/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l2_streaming_fav_video_service_by_visit_count_feature'
-    read_layer: 'l2_weekly'
-    target_layer: 'l2_weekly'
-    lookback: '0'
+#int_l2_streaming_video_service_feature_for_l2_streaming_fav_video_service_by_download_feature:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  filepath: base_path/STREAM/l2_features/int_l2_streaming_video_service_feature/
+#  file_format: parquet
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'yes'
+#    lookup_table_name: 'l2_streaming_fav_video_service_by_download_feature'
+#    read_layer: 'l2_weekly'
+#    target_layer: 'l2_weekly'
+#    lookback: '0'
+#
+#
+#int_l2_streaming_video_service_feature_for_l2_streaming_2nd_fav_video_service_by_download_feature:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  filepath: base_path/STREAM/l2_features/int_l2_streaming_video_service_feature/
+#  file_format: parquet
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'yes'
+#    lookup_table_name: 'l2_streaming_2nd_fav_video_service_by_download_feature'
+#    read_layer: 'l2_weekly'
+#    target_layer: 'l2_weekly'
+#    lookback: '0'
+#
+#
+#int_l2_streaming_video_service_feature_for_l2_streaming_fav_video_service_by_visit_count_feature:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  filepath: base_path/STREAM/l2_features/int_l2_streaming_video_service_feature/
+#  file_format: parquet
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'yes'
+#    lookup_table_name: 'l2_streaming_fav_video_service_by_visit_count_feature'
+#    read_layer: 'l2_weekly'
+#    target_layer: 'l2_weekly'
+#    lookback: '0'
 
 
 int_l2_streaming_video_service_feature_for_int_l4_streaming_video_service_feature:
@@ -389,43 +389,43 @@ int_l2_streaming_music_service_feature:
     target_layer: 'l2_weekly'
 
 
-int_l2_streaming_music_service_feature_for_l2_streaming_fav_music_service_by_download_feature:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l2_features/int_l2_streaming_music_service_feature/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l2_streaming_fav_music_service_by_download_feature'
-    read_layer: 'l2_weekly'
-    target_layer: 'l2_weekly'
-    lookback: '0'
-
-
-int_l2_streaming_music_service_feature_for_l2_streaming_2nd_fav_music_service_by_download_feature:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l2_features/int_l2_streaming_music_service_feature/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l2_streaming_2nd_fav_music_service_by_download_feature'
-    read_layer: 'l2_weekly'
-    target_layer: 'l2_weekly'
-    lookback: '0'
-
-
-int_l2_streaming_music_service_feature_for_l2_streaming_fav_music_service_by_visit_count_feature:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l2_features/int_l2_streaming_music_service_feature/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l2_streaming_fav_music_service_by_visit_count_feature'
-    read_layer: 'l2_weekly'
-    target_layer: 'l2_weekly'
-    lookback: '0'
+#int_l2_streaming_music_service_feature_for_l2_streaming_fav_music_service_by_download_feature:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  filepath: base_path/STREAM/l2_features/int_l2_streaming_music_service_feature/
+#  file_format: parquet
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'yes'
+#    lookup_table_name: 'l2_streaming_fav_music_service_by_download_feature'
+#    read_layer: 'l2_weekly'
+#    target_layer: 'l2_weekly'
+#    lookback: '0'
+#
+#
+#int_l2_streaming_music_service_feature_for_l2_streaming_2nd_fav_music_service_by_download_feature:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  filepath: base_path/STREAM/l2_features/int_l2_streaming_music_service_feature/
+#  file_format: parquet
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'yes'
+#    lookup_table_name: 'l2_streaming_2nd_fav_music_service_by_download_feature'
+#    read_layer: 'l2_weekly'
+#    target_layer: 'l2_weekly'
+#    lookback: '0'
+#
+#
+#int_l2_streaming_music_service_feature_for_l2_streaming_fav_music_service_by_visit_count_feature:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  filepath: base_path/STREAM/l2_features/int_l2_streaming_music_service_feature/
+#  file_format: parquet
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'yes'
+#    lookup_table_name: 'l2_streaming_fav_music_service_by_visit_count_feature'
+#    read_layer: 'l2_weekly'
+#    target_layer: 'l2_weekly'
+#    lookback: '0'
 
 int_l2_streaming_music_service_feature_for_int_l4_streaming_music_service_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -698,17 +698,17 @@ int_l2_streaming_sum_per_day:
     target_layer: 'l2_weekly'
 
 
-int_l2_streaming_sum_per_day_for_l2_streaming_fav_youtube_video_streaming_day_of_week_feature:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/l2_features/int_l2_streaming_sum_per_day/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l2_streaming_fav_youtube_video_streaming_day_of_week_feature'
-    read_layer: 'l2_weekly'
-    target_layer: 'l2_weekly'
-    lookback: '0'
+#int_l2_streaming_sum_per_day_for_l2_streaming_fav_youtube_video_streaming_day_of_week_feature:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  filepath: base_path/STREAM/l2_features/int_l2_streaming_sum_per_day/
+#  file_format: parquet
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'yes'
+#    lookup_table_name: 'l2_streaming_fav_youtube_video_streaming_day_of_week_feature'
+#    read_layer: 'l2_weekly'
+#    target_layer: 'l2_weekly'
+#    lookback: '0'
 
 int_l2_streaming_sum_per_day_for_l4_streaming_fav_youtube_video_streaming_day_of_week_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet

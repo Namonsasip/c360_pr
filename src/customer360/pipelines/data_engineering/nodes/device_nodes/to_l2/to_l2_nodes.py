@@ -40,8 +40,8 @@ def device_summary_with_configuration(hs_summary: DataFrame,
     hs_configs = hs_configs.withColumn("start_of_week",
                                        f.to_date(f.date_trunc('week', f.to_date(f.col("partition_date"), 'yyyyMMdd'))))
 
-    hs_config_sel = ["start_of_week", "hs_brand_code", "hs_model_code", "month_id", "os",
-                     "launchprice", "saleprice", "gprs_handset_support", "hsdpa", "google_map", "video_call"]
+    hs_config_sel = ["start_of_week", "hs_brand_code", "hs_model_code", "month_id", "os", "launchprice", "saleprice",
+                     "gprs_handset_support", "hsdpa", "google_map", "video_call"]
 
     hs_configs = hs_configs.select(hs_config_sel)
 
