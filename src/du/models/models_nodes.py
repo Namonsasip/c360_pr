@@ -2,7 +2,7 @@ import os
 import re
 from pathlib import Path
 from typing import List, Any, Dict, Callable, Tuple
-
+import logging
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -25,8 +25,33 @@ from sklearn.metrics import auc, roc_curve
 from sklearn.model_selection import train_test_split
 
 from customer360.utilities.spark_util import get_spark_session
+from customer360.utilities.datetime_utils import get_local_datetime
 
 MODELLING_N_OBS_THRESHOLD = 500
+
+
+def get_dbutils(spark):
+    try:
+        from pyspark.dbutils import DBUtils
+
+        dbutils = DBUtils(spark)
+    except ImportError:
+        import IPython
+
+        dbutils = IPython.get_ipython().user_ns["dbutils"]
+    return dbutils
+
+
+def file_exists(path, dbutils):
+    try:
+        dbutils.fs.ls(path)
+        return True
+    except Exception as e:
+        if "java.io.FileNotFoundException" in str(e):
+            return False
+        else:
+            raise
+
 
 def calculate_extra_pai_metrics(
     df_master: pyspark.sql.DataFrame, target_column: str, by: str
@@ -61,6 +86,7 @@ def calculate_extra_pai_metrics(
         .toPandas()
     )
     return pdf_extra_pai_metrics
+
 
 def create_model_function(
     as_pandas_udf: bool, **kwargs: Any,
@@ -294,7 +320,7 @@ def create_model_function(
             explanatory_features.sort()
 
             current_group = pdf_master_chunk[group_column].iloc[0]
-            #prefix %Y%m%d_%H%M%S_du_thanasiy_dev_{rework_macro_product}
+            # prefix %Y%m%d_%H%M%S_du_thanasiy_dev_{rework_macro_product}
             pai_run_name = pai_run_prefix + current_group
 
             pdf_extra_pai_metrics_filtered = pdf_extra_pai_metrics[
@@ -352,9 +378,10 @@ def create_model_function(
             pai_metrics_dict["modelling_target_mean"] = modelling_target_mean
 
             # path for each model run
-            tmp_path = Path("data/tmp/"+pai_run_name)
-            os.makedirs(tmp_path, exist_ok=True)
-
+            tmp_path = pai_runs_uri + pai_run_name
+            tmp_path_for_python = pai_artifacts_uri + pai_run_name
+            # if not file_exists(tmp_path, dbutils):
+            #     dbutils.fs.mkdirs(tmp_path)
             able_to_model_flag = True
             if modelling_perc_obs_target_null != 0:
                 able_to_model_flag = False
@@ -374,7 +401,6 @@ def create_model_function(
                     < min_obs_per_class_for_model
                 ):
                     able_to_model_flag = False
-
                 if (
                     pai_metrics_dict["original_n_obs"]
                     - pai_metrics_dict["original_n_obs_positive_target"]
@@ -422,22 +448,22 @@ def create_model_function(
                         pdf_test[explanatory_features]
                     )[:, 1]
                     # save model
-                    model.booster_.save_model(pai_runs_uri + pai_run_name + "/" + model_type)
+                    model.booster_.save_model(tmp_path_for_python + "/" + model_type)
                     # pai.log_model(model)
 
                     train_auc = model.evals_result_["train"]["auc"][-1]
                     test_auc = model.evals_result_["test"]["auc"][-1]
 
-                    if os.path.isfile(tmp_path / "roc_curve.png"):
-                        raise AssertionError(
-                            f"There is already a file in the tmp directory "
-                            f"when running the {current_group} model"
-                        )
+                    # if file_exists(tmp_path + "/roc_curve.png", dbutils):
+                    #     raise AssertionError(
+                    #         f"There is already a file in the tmp directory "
+                    #         f"when running the {current_group} model"
+                    #     )
 
                     plot_roc_curve(
                         y_true=pdf_test[target_column],
                         y_score=test_predictions,
-                        filepath=tmp_path / "roc_curve.png",
+                        filepath=tmp_path_for_python + "/roc_curve.png",
                     )
 
                     # Calculate and plot AUC per round
@@ -453,7 +479,7 @@ def create_model_function(
                         id_vars=["set", "round"], var_name="metric"
                     )
                     pdf_metrics_melted.to_csv(
-                        tmp_path / "metrics_by_round.csv", index=False
+                        tmp_path_for_python + "/metrics_by_round.csv", index=False
                     )
 
                     (  # Plot the AUC of each set in each round
@@ -464,14 +490,14 @@ def create_model_function(
                         + ylab("AUC")
                         + geom_line()
                         + ggtitle(f"AUC per round (tree) for {current_group}")
-                    ).save(tmp_path / "auc_per_round.png")
+                    ).save(tmp_path_for_python + "/auc_per_round.png")
 
                     # Create a CSV report with percentile metrics
                     df_metrics_by_percentile = get_metrics_by_percentile(
                         y_true=pdf_test[target_column], y_pred=test_predictions
                     )
                     df_metrics_by_percentile.to_csv(
-                        tmp_path / "metrics_by_percentile.csv", index=False
+                        tmp_path_for_python + "/metrics_by_percentile.csv", index=False
                     )
 
                 elif model_type == "regression":
@@ -490,9 +516,8 @@ def create_model_function(
                     )
 
                     test_predictions = model.predict(pdf_test[explanatory_features])
-
                     # pai.log_model(model)
-                    model.booster_.save_model(pai_runs_uri + pai_run_name + "/" + model_type)
+                    model.booster_.save_model(tmp_path_for_python + "/" + model_type)
                     # save model
                     train_mae = model.evals_result_["train"]["l1"][-1]
                     test_mae = model.evals_result_["test"]["l1"][-1]
@@ -512,7 +537,7 @@ def create_model_function(
                         + ggtitle(
                             f"ARPU uplift distribution for real target and model prediction"
                         )
-                    ).save(tmp_path / "ARPU_uplift_distribution.png")
+                    ).save(tmp_path_for_python + "/ARPU_uplift_distribution.png")
 
                     # Calculate and plot AUC per round
                     pdf_metrics = pd.DataFrame()
@@ -527,7 +552,7 @@ def create_model_function(
                         id_vars=["set", "round"], var_name="metric"
                     )
                     pdf_metrics_melted.to_csv(
-                        tmp_path / "metrics_by_round.csv", index=False
+                        tmp_path_for_python + "/metrics_by_round.csv", index=False
                     )
 
                     (  # Plot the MAE of each set in each round
@@ -538,14 +563,12 @@ def create_model_function(
                         + ylab("MAE")
                         + geom_line()
                         + ggtitle(f"MAE per round (tree) for {current_group}")
-                    ).save(tmp_path / "mae_per_round.png")
+                    ).save(tmp_path_for_python + "/mae_per_round.png")
 
                     df_to_return = pd.DataFrame(
                         {
                             "able_to_model_flag": int(able_to_model_flag),
-                            "train_set_primary_keys": pdf_train[
-                                "du_spine_primary_key"
-                            ],
+                            "train_set_primary_keys": pdf_train["du_spine_primary_key"],
                         }
                     )
 
@@ -561,6 +584,7 @@ def create_model_function(
         )
 
     return model_function
+
 
 def train_multiple_models(
     df_master: pyspark.sql.DataFrame,
@@ -592,6 +616,19 @@ def train_multiple_models(
     Returns:
         A spark DataFrame with info about the training
     """
+    df_master = catalog.load("l5_du_master_tbl")
+    explanatory_features = catalog.load("params:du_model_explanatory_features")
+    target_column = catalog.load("params:du_acceptance_model_target_column")
+    group_column = catalog.load("params:du_model_group_column")
+    train_sampling_ratio = catalog.load("params:du_model_train_sampling_ratio")
+    model_params = catalog.load("params:du_model_model_params")
+    max_rows_per_group = catalog.load("params:du_model_max_rows_per_group")
+    min_obs_per_class_for_model = catalog.load(
+        "params:du_model_min_obs_per_class_for_model"
+    )
+    extra_keep_columns = catalog.load("params:du_extra_tag_columns_pai")
+    pai_runs_uri = catalog.load("params:du_pai_artifacts_uri")
+    pai_artifacts_uri = catalog.load("params:du_pai_artifacts_uri")
 
     explanatory_features.sort()
 
@@ -641,7 +678,21 @@ def train_multiple_models(
         df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
             F.rand() * F.col("aux_n_rows_per_group") / max_rows_per_group <= 1
         ).drop("aux_n_rows_per_group")
+    logging.info("start calling create model function")
+    #
+    dbutils = get_dbutils(spark)
+    pai_run_prefix = (
+        f"{get_local_datetime().strftime('%Y%m%d_%H%M%S')}_" f"du_thanasiy_" f"dev_"
+    )
 
+    tmp_path = pai_runs_uri + pai_run_prefix
+
+    mvv_list = df_master_only_necessary_columns.groupby(group_column).agg(
+        F.count("*").alias("CNT")).drop("CNT").collect()
+    for m in mvv_list:
+        model_path = tmp_path + "/" + m[0]
+        if not file_exists(model_path, dbutils):
+            dbutils.fs.mkdirs(model_path)
     df_training_info = df_master_only_necessary_columns.groupby(group_column).apply(
         create_model_function(
             as_pandas_udf=True,
@@ -650,8 +701,29 @@ def train_multiple_models(
             target_column=target_column,
             pdf_extra_pai_metrics=pdf_extra_pai_metrics,
             extra_tag_columns=extra_keep_columns,
+            pai_run_prefix=pai_run_prefix,
             **kwargs,
         )
     )
-
+    logging.info("done create model function")
     return df_training_info
+
+
+
+# df_training_info = df_master_only_necessary_columns.groupby(group_column).apply(
+#     create_model_function(
+#         as_pandas_udf=True,
+#         group_column=group_column,
+#         explanatory_features=explanatory_features,
+#         target_column=target_column,
+#         pdf_extra_pai_metrics=pdf_extra_pai_metrics,
+#         extra_tag_columns=extra_keep_columns,
+#         model_type="binary",
+#         pai_run_prefix="testing_naja_naija",
+#         train_sampling_ratio=train_sampling_ratio,
+#         model_params=model_params,
+#         min_obs_per_class_for_model=min_obs_per_class_for_model,
+#         pai_runs_uri=pai_runs_uri,
+#         pai_artifacts_uri=pai_artifacts_uri,
+#
+#     ))
