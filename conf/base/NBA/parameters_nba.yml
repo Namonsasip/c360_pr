@@ -191,6 +191,7 @@ nba_model_input_features:
     - activation_region
     - current_package_name
     - current_package_id
+    - national_id_card
     - cust_active_this_month
     - norms_net_revenue
     - charge_type_numeric

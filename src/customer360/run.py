@@ -293,7 +293,11 @@ def run_package(pipelines=None, project_context=None, tags=None):
     if pipelines is not None:
         for each_pipeline in pipelines:
             project_context.run(pipeline_name=each_pipeline, tags=tags)
-        return
+    else:
+        project_context.run(tags=tags)
+
+    return
+
     # project_context.run(pipeline_name='customer_profile_to_l3_pipeline')
     # project_context.run()
     # Replace line above with below to run on databricks cluster
