@@ -68,11 +68,14 @@ def int_l4_geo_home_work_location_id(geo_cust_cell_visit_time, home_config, work
 
 def l4_geo_home_work_location_id(home_monthly, work_monthly, list_imsi, sql):
 
-    w_home = Window().partitionBy('imsi', 'location_id', 'week_type').orderBy(
-        F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
+    w_home = Window().partitionBy('imsi', 'location_id', 'week_type').orderBy(F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
     # home_last_3m = geo_cust_time_of_home.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd")).withColumn("duration_3m", F.sum("duration").over(w_home)).withColumn("days_3m", F.sum('days').over(w_home))
-    home_last_3m = home_monthly.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd")).withColumn("duration_3m", F.sum("duration").over(w_home)).withColumn("days_3m", F.sum('days').over(w_home))
-    home_last_3m = home_last_3m.dropDuplicates(['imsi', 'start_of_month', 'location_id', 'duration_3m', 'days_3m']).select('imsi', 'start_of_month', 'week_type', 'location_id', 'latitude', 'longitude', 'duration_3m', 'days_3m')
+    print("DEBUG------------------------------------------(1)")
+    home_last_3m = home_monthly.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd"))\
+        .withColumn("duration_3m", F.sum("duration").over(w_home))\
+        .withColumn("days_3m", F.sum('days').over(w_home))
+    home_last_3m = home_last_3m.dropDuplicates(['imsi', 'week_type', 'start_of_month', 'location_id', 'duration_3m', 'days_3m'])\
+        .select('imsi', 'start_of_month', 'week_type', 'location_id', 'latitude', 'longitude', 'duration_3m', 'days_3m')
 
     w_num_row = Window().partitionBy('imsi', 'location_id', 'week_type', 'start_of_month').orderBy(F.col('duration_3m').desc(), F.col('days_3m').desc())
     home_last_3m = home_last_3m.withColumn('row_num', F.row_number().over(w_num_row))
@@ -86,10 +89,11 @@ def l4_geo_home_work_location_id(home_monthly, work_monthly, list_imsi, sql):
                                                                                                (F.col('latitude').alias('home_weekend_latitude')),
                                                                                                (F.col('longitude').alias('home_weekend_longitude')))
 
-    w_work = Window().partitionBy('imsi', 'location_id').orderBy(
-        F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
-    work_last_3m = work_monthly.withColumn("Month", F.to_timestamp(
-        "start_of_month", "yyyy-MM-dd")).withColumn("duration_3m", F.sum("duration").over(w_work)).withColumn("days_3m", F.sum('days').over(w_work))
+    w_work = Window().partitionBy('imsi', 'location_id').orderBy(F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
+    print("DEBUG------------------------------------------(2)")
+    work_last_3m = work_monthly.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd"))\
+        .withColumn("duration_3m", F.sum("duration").over(w_work))\
+        .withColumn("days_3m", F.sum('days').over(w_work))
     work_last_3m = work_last_3m.dropDuplicates(['imsi', 'start_of_month', 'location_id', 'duration_3m', 'days_3m'])\
         .select('imsi', 'start_of_month', 'location_id', 'latitude', 'longitude', 'duration_3m', 'days_3m')
 
@@ -99,6 +103,7 @@ def l4_geo_home_work_location_id(home_monthly, work_monthly, list_imsi, sql):
 
     work_last_3m = list_imsi.join(work_last_3m, ['imsi', 'start_of_month'], 'left').select(work_last_3m.imsi, work_last_3m.start_of_month, 'location_id', 'latitude', 'longitude')
 
+    print("DEBUG------------------------------------------(3)")
     home_work = work_last_3m.join(home_last_3m_weekday, ['imsi', 'start_of_month'], 'left').select(work_last_3m.start_of_month, work_last_3m.imsi,
                                                  'home_weekday_location_id', 'home_weekday_latitude',
                                                  'home_weekday_longitude', 'location_id', 'latitude',
