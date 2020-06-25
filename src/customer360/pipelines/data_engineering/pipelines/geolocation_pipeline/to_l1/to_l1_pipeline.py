@@ -47,15 +47,6 @@ def geo_to_l1_pipeline(**kwargs):
             ),
 
             node(
-                l1_geo_top_visit_exclude_homework_daily,
-                ["l0_geo_cust_cell_visit_time_for_l1_geo_top_visit_exclude_homework",
-                 "l1_homework_master_for_l1_geo_top_visit_exclude_homework",
-                 "params:l1_geo_top_visit_exclude_homework"
-                 ],
-                "l1_geo_top_visit_exclude_homework"
-            ),
-
-            node(
                 l1_geo_cust_subseqently_distance,
                 ["l0_geo_cust_cell_visit_time_for_l1_geo_cust_subseqently_distance_daily",
                  "params:l1_geo_cust_subseqently_distance_daily"

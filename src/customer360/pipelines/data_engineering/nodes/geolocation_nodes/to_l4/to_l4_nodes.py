@@ -50,7 +50,7 @@ def l4_geo_top_visit_exclude_homework(sum_duration, homework):
 
 def int_l4_geo_home_work_location_id(geo_cust_cell_visit_time, home_config, work_config, list_imsi_config):
     # Filter 2,3,4,5
-    geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20200201 and partition_date <= 20200531')
+    geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20190801 and partition_date <= 20191031')
 
     # Add 2 columns: event_partition_date, start_of_month
     geo_cust_cell_visit_time = geo_cust_cell_visit_time.withColumn("event_partition_date", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))
@@ -58,16 +58,13 @@ def int_l4_geo_home_work_location_id(geo_cust_cell_visit_time, home_config, work
 
     geo_cust_cell_visit_time_week_type = geo_cust_cell_visit_time.withColumn('week_type', F.when(((F.dayofweek(F.col('event_partition_date')) == 1) & (F.dayofweek(F.col('event_partition_date')) == 7)), 'weekend').otherwise('weekday').cast(StringType()))
 
-    # massive for list imsi for each month
-    list_imsi = l3_massive_processing(geo_cust_cell_visit_time, list_imsi_config)
+    l3_massive_processing(geo_cust_cell_visit_time, list_imsi_config)
 
-    # filter time of home
-    home_monthly = l1_massive_processing(geo_cust_cell_visit_time_week_type, home_config)
+    l1_massive_processing(geo_cust_cell_visit_time_week_type, home_config)
 
-    # filter time of work
-    work_monthly = l1_massive_processing(geo_cust_cell_visit_time, work_config)
+    l1_massive_processing(geo_cust_cell_visit_time, work_config)
 
-    return [home_monthly, work_monthly, list_imsi]
+    return None
 
 def l4_geo_home_work_location_id(home_monthly, work_monthly, list_imsi, sql):
 

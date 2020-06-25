@@ -31,7 +31,7 @@ l4_geo_area_from_competitor_store:
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
 
-
+# Home and Work feature
 int_l4_geo_home_location_id_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/int_l4_geo_home_location_id_monthly/
@@ -44,6 +44,13 @@ int_l4_geo_home_location_id_monthly:
     partitionBy: "start_of_month"
     read_layer: 'l0_daily'
     target_layer: 'l4_monthly'
+  load_args:
+    increment_flag: 'yes'
+#    increment_flag: 'no'
+    lookup_table_name: 'l4_geo_home_work_location_id'
+    read_layer: 'l4_monthly'
+    target_layer: 'l4_monthly'
+    lookback: '0'
 
 int_l4_geo_work_location_id_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -57,6 +64,13 @@ int_l4_geo_work_location_id_monthly:
     partitionBy: "start_of_month"
     read_layer: 'l0_daily'
     target_layer: 'l4_monthly'
+  load_args:
+    increment_flag: 'yes'
+#    increment_flag: 'no'
+    lookup_table_name: 'l4_geo_home_work_location_id'
+    read_layer: 'l4_monthly'
+    target_layer: 'l4_monthly'
+    lookback: '0'
 
 int_l4_geo_list_imsi_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -70,14 +84,23 @@ int_l4_geo_list_imsi_monthly:
     partitionBy: "start_of_month"
     read_layer: 'l0_daily'
     target_layer: 'l4_monthly'
+  load_args:
+    increment_flag: 'yes'
+#    increment_flag: 'no'
+    lookup_table_name: 'l4_geo_home_work_location_id'
+    read_layer: 'l4_monthly'
+    target_layer: 'l4_monthly'
+    lookback: '0'
 
 l4_geo_home_work_location_id:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_home_work_location_id_3/
-#  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_home_work_location_id_2/
+#  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_home_work_location_id/
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/l4_geo_home_work_location_id/s
   file_format: parquet
+  metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
+#    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_month"
     read_layer: 'l0_daily'
