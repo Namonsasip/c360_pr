@@ -21,8 +21,8 @@ def create_nba_gender_age_imputation_pipeline() -> Pipeline:
             node(
                 partial(
                     l5_all_subscribers_master_table_spine,
-                    date_min="2020-03-01",
-                    date_max="2020-03-01",
+                    date_min="2020-02-01",
+                    date_max="2020-02-01",
                 ),
                 inputs={
                     "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
@@ -36,7 +36,7 @@ def create_nba_gender_age_imputation_pipeline() -> Pipeline:
                 inputs={
                     "subset_features": "params:nba_model_input_features",
                     "l5_nba_master_table_spine": "l5_all_subscribers_master_table_spine",
-                    "l5_nba_customer_profile": "l5_nba_customer_profile",
+                    "l3_customer_profile_include_1mo_non_active": "l3_customer_profile_include_1mo_non_active",
                     "l4_billing_rolling_window_topup_and_volume": "l4_billing_rolling_window_topup_and_volume",
                     "l4_billing_rolling_window_rpu": "l4_billing_rolling_window_rpu",
                     "l4_billing_rolling_window_rpu_roaming": "l4_billing_rolling_window_rpu_roaming",
@@ -49,6 +49,7 @@ def create_nba_gender_age_imputation_pipeline() -> Pipeline:
                     # "l4_streaming_visit_count_and_download_traffic_feature": "l4_streaming_visit_count_and_download_traffic_feature",
                     "l4_usage_prepaid_postpaid_daily_features": "l4_usage_prepaid_postpaid_daily_features",
                     "l4_usage_postpaid_prepaid_weekly_features_sum": "l4_usage_postpaid_prepaid_weekly_features_sum",
+                    "l4_touchpoints_to_call_center_features": "l4_touchpoints_to_call_center_features",
                 },
                 outputs="l5_all_subscribers_master_table",
                 name="l5_all_subscribers_master_table",

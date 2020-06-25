@@ -180,7 +180,8 @@ nba_model_use_cases_child_codes:
 
 # Parameters for master table (model input)
 nba_model_input_features:
-  l5_nba_customer_profile:
+  l3_customer_profile_include_1mo_non_active:
+    - charge_type
     - subscription_status
     - age
     - gender
@@ -189,16 +190,12 @@ nba_model_input_features:
     - acquisition_channel
     - subscriber_tenure
     - activation_region
+    - city_of_residence
     - current_package_name
     - current_package_id
     - national_id_card
     - cust_active_this_month
     - norms_net_revenue
-    - charge_type_numeric
-    - network_type_numeric
-    - mobile_segment_numeric
-    - subscription_status_numeric
-    - cust_active_this_month_numeric
   l4_billing_rolling_window_topup_and_volume:
     - sum_payments_top_ups_last_week
     - sum_payments_top_ups_last_four_week
@@ -275,6 +272,8 @@ nba_model_input_features:
     - sum_campaign_total_upsell_xsell_by_myais_app_sum_weekly_last_twelve_week
   l4_device_summary_features:
     - sum_device_most_used_handset_apple_weekly_last_week
+    - sum_device_most_used_handset_oppo_weekly_last_week
+    - sum_device_most_used_handset_samsung_weekly_last_week
     - max_device_high_range_weekly_last_week
     - max_device_mid_range_weekly_last_week
     - max_device_low_range_weekly_last_week
@@ -303,13 +302,15 @@ nba_model_input_features:
     - sum_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_month
     - sum_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_month
     - sum_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_month
-  l4_streaming_visit_count_and_download_traffic_feature:
-    - sum_download_kb_traffic_youtube_video_sum_weekly_last_twelve_week
-    - sum_download_kb_traffic_facebook_video_sum_weekly_last_week
-    - sum_download_kb_traffic_facebook_video_sum_weekly_last_twelve_week
-    - sum_download_kb_traffic_linetv_video_sum_weekly_last_week
-    - sum_download_kb_traffic_ais_play_video_sum_weekly_last_week
-    - sum_download_kb_traffic_netflix_video_sum_weekly_last_week
+  l4_streaming_visit_count_and_download_traffic_feature_full_load_data_blob:
+    - sum_download_kb_traffic_youtube_video_sum_weekly_last_four_week
+    - sum_download_kb_traffic_facebook_video_sum_weekly_last_four_week
+    - sum_download_kb_traffic_linetv_video_sum_weekly_last_four_week
+    - sum_download_kb_traffic_ais_play_video_sum_weekly_last_four_week
+    - sum_download_kb_traffic_netflix_video_sum_weekly_last_four_week
+    - sum_download_kb_traffic_spotify_music_sum_weekly_last_four_week
+    - sum_download_kb_traffic_twitch_esport_sum_weekly_last_four_week
+    - sum_download_kb_traffic_mixer_esport_sum_weekly_last_four_week
   l4_usage_prepaid_postpaid_daily_features:
     - sum_usg_incoming_total_call_duration_daily_last_ninety_day
     - sum_usg_incoming_total_call_duration_daily_last_seven_day
@@ -351,6 +352,11 @@ nba_model_input_features:
     - sum_usg_outgoing_total_sms_sum_weekly_last_week
     - sum_usg_outgoing_total_sms_sum_weekly_last_four_week
     - sum_usg_outgoing_total_sms_sum_weekly_last_twelve_week
+  l4_touchpoints_to_call_center_features:
+    - sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_week
+    - sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_two_week
+    - sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_four_week
+    - sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_twelve_week
 
 
 nba_model_explanatory_features:
