@@ -101,7 +101,7 @@ def l4_geo_home_work_location_id(home_monthly, work_monthly, list_imsi, sql):
     work_last_3m = work_last_3m.withColumn('row_num', F.row_number().over(w_work_num_row))
     work_last_3m = work_last_3m.where('row_num = 1').drop('row_num')
 
-    work_last_3m = list_imsi.join(work_last_3m, ['imsi', 'start_of_month'], 'left').select(work_last_3m.imsi, work_last_3m.start_of_month, 'location_id', 'latitude', 'longitude')
+    work_last_3m = list_imsi.join(work_last_3m, ['imsi', 'start_of_month'], 'left').select(list_imsi.imsi, list_imsi.start_of_month, 'location_id', 'latitude', 'longitude')
 
     print("DEBUG------------------------------------------(3)")
     home_work = work_last_3m.join(home_last_3m_weekday, ['imsi', 'start_of_month'], 'left').select(work_last_3m.start_of_month, work_last_3m.imsi,
