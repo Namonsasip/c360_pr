@@ -44,13 +44,13 @@ int_l4_geo_home_location_id_monthly:
     partitionBy: "start_of_month"
     read_layer: 'l0_daily'
     target_layer: 'l4_monthly'
-  load_args:
-#    increment_flag: 'yes'
-    increment_flag: 'no'
-    lookup_table_name: 'l4_geo_home_work_location_id'
-    read_layer: 'l4_monthly'
-    target_layer: 'l4_monthly'
-    lookback: '0'
+#  load_args:
+##    increment_flag: 'yes'
+#    increment_flag: 'no'
+#    lookup_table_name: 'l4_geo_home_work_location_id'
+#    read_layer: 'l4_monthly'
+#    target_layer: 'l4_monthly'
+#    lookback: '0'
 
 int_l4_geo_work_location_id_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -64,13 +64,13 @@ int_l4_geo_work_location_id_monthly:
     partitionBy: "start_of_month"
     read_layer: 'l0_daily'
     target_layer: 'l4_monthly'
-  load_args:
-#    increment_flag: 'yes'
-    increment_flag: 'no'
-    lookup_table_name: 'l4_geo_home_work_location_id'
-    read_layer: 'l4_monthly'
-    target_layer: 'l4_monthly'
-    lookback: '0'
+#  load_args:
+##    increment_flag: 'yes'
+#    increment_flag: 'no'
+#    lookup_table_name: 'l4_geo_home_work_location_id'
+#    read_layer: 'l4_monthly'
+#    target_layer: 'l4_monthly'
+#    lookback: '0'
 
 int_l4_geo_list_imsi_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -84,13 +84,13 @@ int_l4_geo_list_imsi_monthly:
     partitionBy: "start_of_month"
     read_layer: 'l0_daily'
     target_layer: 'l4_monthly'
-  load_args:
-#    increment_flag: 'yes'
-    increment_flag: 'no'
-    lookup_table_name: 'l4_geo_home_work_location_id'
-    read_layer: 'l4_monthly'
-    target_layer: 'l4_monthly'
-    lookback: '0'
+#  load_args:
+##    increment_flag: 'yes'
+#    increment_flag: 'no'
+#    lookup_table_name: 'l4_geo_home_work_location_id'
+#    read_layer: 'l4_monthly'
+#    target_layer: 'l4_monthly'
+#    lookback: '0'
 
 l4_geo_home_work_location_id:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
