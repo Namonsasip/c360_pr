@@ -34,17 +34,13 @@ def get_spark_session() -> SparkSession:
 
     else:
         spark = SparkSession.builder.getOrCreate()
-
         spark.conf.set("spark.sql.parquet.binaryAsString", "true")
-
-        spark.conf.set("spark.sql.autoBroadcastJoinThreshold", -1)
-
         # pyarrow is not working so disable it for now
         spark.conf.set("spark.sql.execution.arrow.enabled", "false")
-
         # Dont delete this line. This allow spark to only overwrite the partition
         # saved to parquet instead of entire table folder
         spark.conf.set("spark.sql.sources.partitionOverwriteMode", "DYNAMIC")
+        spark.conf.set("spark.sql.autoBroadcastJoinThreshold", -1)
        # spark.conf.set("spark.sql.parquet.mergeSchema", "true")
 
     spark.sparkContext.setLogLevel("WARN")
