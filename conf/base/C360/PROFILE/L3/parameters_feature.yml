@@ -49,7 +49,7 @@ l3_customer_profile_billing_level_features:
     start_of_month: "max(to_date(cast(partition_month as String),'yyyyMM'))"
     number_of_mobile_devices: "sum(case when imei is not null then 1 else 0 end)"
     number_of_mobile_sims: "sum(case when sim_serial_no is not null then 1 else 0 end)"
-    number_of_active_contracts: "count(*)"
+    number_of_active_contracts: "sum(case when contract_end_yn = 'N' then 1 else 0 end)"
   granularity: "ba_id, partition_month"
 
 
