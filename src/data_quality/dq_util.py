@@ -1,7 +1,7 @@
 from pathlib import Path
 from pyspark.sql import functions as f
 from pyspark.sql import DataFrame
-from pyspark.sql.types import LongType
+from pyspark.sql.types import DoubleType
 
 import os
 from datetime import datetime
@@ -89,7 +89,7 @@ def break_percentile_columns(
     for idx, percentile in enumerate(percentile_list):
         input_df = input_df.withColumn(
             f"percentile_{percentile}",
-            f.expr(f"case when percentiles is not null then percentiles[{idx}] else null end")
+            f.expr(f"case when percentiles is not null then cast(percentiles[{idx}] as double) else null end")
         )
     input_df = input_df.drop("percentiles")
 
@@ -221,7 +221,7 @@ def add_most_frequent_value(
         )
         melted_result_df = (melted_result_df
                             .withColumn("most_frequent_value_percentage",
-                                        (f.col("most_freq_value_count")/f.col("count_all"))*100))
+                                        ((f.col("most_freq_value_count")/f.col("count_all"))*100).cast(DoubleType())))
 
     return melted_result_df
 
@@ -362,20 +362,20 @@ def add_outlier_percentage_based_on_iqr(
             f.count(
                 f.when(f.col(num_col) <
                        (f.col(f"{num_col}__q1") - (1.5 * (f.col(f"{num_col}__iqr")))), 1)
-            ).cast(LongType()).alias(f"{num_col}__count_lower_outlier")
+            ).cast(DoubleType()).alias(f"{num_col}__count_lower_outlier")
             for num_col in feature_list
         ],
         *[
             f.count(
                 f.when(f.col(num_col) >
                        (f.col(f"{num_col}__q3") + (1.5 * (f.col(f"{num_col}__iqr")))), 1)
-            ).cast(LongType()).alias(f"{num_col}__count_higher_outlier")
+            ).cast(DoubleType()).alias(f"{num_col}__count_higher_outlier")
             for num_col in feature_list
         ],
         *list(chain.from_iterable([
-            [f.first(f.col(f"{num_col}__q1")).alias(f"{num_col}__q1"),
-             f.first(f.col(f"{num_col}__q3")).alias(f"{num_col}__q3"),
-             f.first(f.col(f"{num_col}__iqr")).alias(f"{num_col}__iqr")]
+            [f.first(f.col(f"{num_col}__q1")).cast(DoubleType()).alias(f"{num_col}__q1"),
+             f.first(f.col(f"{num_col}__q3")).cast(DoubleType()).alias(f"{num_col}__q3"),
+             f.first(f.col(f"{num_col}__iqr")).cast(DoubleType()).alias(f"{num_col}__iqr")]
             for num_col in feature_list
         ]))
     )

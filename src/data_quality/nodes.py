@@ -91,6 +91,11 @@ def dq_merger_nodes(
     :return: unioned DataFrame
     """
 
+    spark = get_spark_session()
+    spark.conf.set("spark.sql.autoBroadcastJoinThreshold", -1)
+    spark.conf.set("spark.sql.broadcastTimeout", -1)
+    spark.conf.set("spark.sql.parquet.mergeSchema", "false")
+
     all_cols = []
     for each_df in args:
         all_cols.extend(each_df.columns)
@@ -270,17 +275,42 @@ def run_accuracy_logic(
     all_catalog_and_feature_exist: DataFrame,  # dependency to ensure this node runs after all checks are passed
     dataset_name: str
 ) -> DataFrame:
+    dq_accuracy_df_schema = StructType([
+        StructField("granularity", StringType()),
+        StructField("feature_column_name", StringType()),
+        StructField("approx_count_distinct", IntegerType()),
+        StructField("null_percentage", DoubleType()),
+        StructField("min", DoubleType()),
+        StructField("avg", DoubleType()),
+        StructField("count", IntegerType()),
+        StructField("max", DoubleType()),
+        StructField("percentile_0.1", DoubleType()),
+        StructField("percentile_0.25", DoubleType()),
+        StructField("percentile_0.5", DoubleType()),
+        StructField("percentile_0.75", DoubleType()),
+        StructField("percentile_0.9", DoubleType()),
+        StructField("count_higher_outlier", DoubleType()),
+        StructField("q1", DoubleType()),
+        StructField("iqr", DoubleType()),
+        StructField("q3", DoubleType()),
+        StructField("count_lower_outlier", DoubleType()),
+        StructField("run_date", TimestampType()),
+        StructField("sub_id_sample_creation_date", DateType()),
+        StructField("dataset_name", StringType()),
+        StructField("corresponding_date", DateType())
+    ])
+
     features_list = dq_config[dataset_name]
     features_list = replace_asterisk_feature(features_list, dataset_name, numeric_columns_only=True)
 
     agg_functions = [
-        "count({col}) as {col}__count",
-        "avg({col}) as {col}__avg",
-        "min({col}) as {col}__min",
-        "max({col}) as {col}__max",
-        "(sum(case when {col} is null then 1 else 0 end)/count(*))*100 as {col}__null_percentage",
-        "approx_count_distinct({col}) as {col}__approx_count_distinct",
-        "count(*) as {col}__count_all",
+        "cast(count({col}) as int) as {col}__count",
+        "cast(avg({col}) as double) as {col}__avg",
+        "cast(min({col}) as double) as {col}__min",
+        "cast(max({col}) as double) as {col}__max",
+        "cast((sum(case when {col} is null then 1 else 0 end)/count(*))*100 as double) as {col}__null_percentage",
+        "cast(approx_count_distinct({col}) as int) as {col}__approx_count_distinct",
+        "cast(count(*) as int) as {col}__count_all",
 
         f"percentile_approx({{col}}, "
         f"array({','.join(map(str, percentiles['percentile_list']))}), {percentiles['accuracy']}) "
@@ -304,11 +334,11 @@ def run_accuracy_logic(
         filtered_input_df = input_df
 
     if filtered_input_df.head() is None:
-        return get_spark_empty_df(schema=dq_accuracy_df.schema)
+        return get_spark_empty_df(schema=dq_accuracy_df_schema)
 
     sample_creation_date, sampled_df = get_dq_sampled_records(filtered_input_df, sampled_sub_id_df)
     if sampled_df.head() is None:
-        return get_spark_empty_df(schema=dq_accuracy_df.schema)
+        return get_spark_empty_df(schema=dq_accuracy_df_schema)
 
     sampled_df.createOrReplaceTempView("sampled_df")
 
@@ -360,7 +390,7 @@ def run_accuracy_logic(
     # long GC pauses before the spark job is even started
     result_df.persist(StorageLevel.MEMORY_AND_DISK).count()
 
-    return result_df
+    return result_df.repartition(1)
 
 
 def run_availability_logic(
@@ -378,12 +408,12 @@ def run_availability_logic(
 
     sql_stmt = """
         select
-            '{partition_col}' as granularity,
-            max({partition_col}) as max_partition,
-            min({partition_col}) as min_partition,
+            cast('{partition_col}' as string) as granularity,
+            cast(max({partition_col}) as string) as max_partition,
+            cast(min({partition_col}) as string) as min_partition,
             count(distinct({partition_col})) as distinct_partition,
             cast(({expected_partition_cnt_formula}) - count(distinct({partition_col})) as integer) as missing_partition_count,
-            '{dataset_name}' as dataset_name,
+            cast('{dataset_name}' as string) as dataset_name,
             current_date() as run_date
         from input_df
     """.format(partition_col=partition_col,
@@ -393,7 +423,7 @@ def run_availability_logic(
     spark = get_spark_session()
     result_df = spark.sql(sql_stmt)
 
-    return result_df
+    return result_df.repartition(1)
 
 
 def _prepare_dq_consistency_dataset(
@@ -418,7 +448,9 @@ def _prepare_dq_consistency_dataset(
 
     sub_id_sampled_date, filtered_new_df = get_dq_sampled_records(filtered_new_df, sampled_sub_id_df)
 
-    return filtered_new_df
+    filtered_new_df = filtered_new_df.drop("created_date")
+
+    return filtered_new_df.repartition(1)
 
 
 def run_consistency_logic(
@@ -531,7 +563,7 @@ def run_consistency_logic(
     df_same_percent = melt_qa_result(df_same_percent, partition_col)
 
     df_same_percent = (df_same_percent
-                       .withColumn("same_percent", F.col("same_percent")*100)
+                       .withColumn("same_percent", (F.col("same_percent")*100).cast(DoubleType()))
                        .withColumn("run_date", F.current_date())
                        .withColumn("dataset_name", F.lit(dataset_name)))
 
@@ -539,7 +571,7 @@ def run_consistency_logic(
     # long GC pauses before the spark job is even started
     df_same_percent.persist(StorageLevel.MEMORY_AND_DISK).count()
 
-    return df_same_percent
+    return df_same_percent.repartition(1)
 
 
 def generate_latency_formula(
@@ -572,12 +604,12 @@ def run_timeliness_logic(
 
     initial_stats_for_input_df = """
         select
-            '{dataset_name}' as dataset_name, 
-            '{partition_col}' as granularity,
-            max({partition_col}) as max_partition,
-            {latency_formula} as partition_latency,
+            cast('{dataset_name}' as string) as dataset_name, 
+            cast('{partition_col}' as string) as granularity,
+            cast(max({partition_col}) as string) as max_partition,
+            cast({latency_formula} as string) as partition_latency,
             current_timestamp() as execution_ts,
-            0.0 as latency_increase_from_last_run,
+            cast(0.0 as double) as latency_increase_from_last_run,
             current_date() as run_date
         from input_df
     """.format(latency_formula=generate_latency_formula(partition_col),
@@ -587,7 +619,7 @@ def run_timeliness_logic(
     try:
         dq_timeliness = ctx.catalog.load("dq_timeliness")
         dq_timeliness.createOrReplaceTempView("dq_timeliness")
-    except DataSetError:
+    except:
         # no dq_timeliness yet, create initial stats
         result_df = spark.sql(initial_stats_for_input_df)
         return result_df
@@ -597,12 +629,12 @@ def run_timeliness_logic(
             {initial_stats_for_input_df}
             union (
                 select
-                    t1.dataset_name,
-                    t1.granularity,
-                    t1.max_partition,
-                    t1.partition_latency,
+                    cast(t1.dataset_name as string),
+                    cast(t1.granularity as string),
+                    cast(t1.max_partition as string),
+                    cast(t1.partition_latency as string),
                     t1.execution_ts,
-                    t1.latency_increase_from_last_run,
+                    cast(t1.latency_increase_from_last_run as double),
                     t1.run_date
                 from dq_timeliness t1
                 where t1.dataset_name = '{dataset_name}'
@@ -616,9 +648,12 @@ def run_timeliness_logic(
             unioned_df.partition_latency,
             unioned_df.execution_ts,
             unioned_df.run_date,
-            coalesce(
-                partition_latency - lag(partition_latency, 1) over (partition by dataset_name order by execution_ts asc),
-                latency_increase_from_last_run) as latency_increase_from_last_run
+            cast(
+                coalesce(
+                    partition_latency - lag(partition_latency, 1) over (partition by dataset_name order by execution_ts asc),
+                    latency_increase_from_last_run
+                ) as string
+            ) as latency_increase_from_last_run
         from unioned_df
         
     """.format(initial_stats_for_input_df=initial_stats_for_input_df,
