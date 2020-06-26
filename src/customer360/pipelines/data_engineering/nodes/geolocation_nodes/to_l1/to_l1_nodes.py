@@ -34,7 +34,7 @@ def l1_geo_time_spent_by_location_daily(df,sql):
     FROM GEO_CUST_CELL_VISIT_TIME
     GROUP BY IMSI,LOCATION_ID,event_partition_date,start_of_week,start_of_month
     """
-    return_df = massive_processing_weekly(df, sql, "l1_geo_time_spent_by_location_daily",'partition_date')
+    return_df = massive_processing_time_spent_daily(df, sql, "l1_geo_time_spent_by_location_daily", 'partition_date')
     # df.unpersist()
     #######################################
     return return_df
@@ -726,7 +726,7 @@ def l1_the_favourite_locations_daily(usage_df_location,geo_df_masterplan):
     l1 = spark.sql(sql_l1_1)
     return l1
 
-def massive_processing_weekly(data_frame: DataFrame, sql, output_df_catalog,partition_col) -> DataFrame:
+def massive_processing_time_spent_daily(data_frame: DataFrame, sql, output_df_catalog, partition_col) -> DataFrame:
     """
     :param data_frame:
     :param dict_obj:

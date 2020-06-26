@@ -11,9 +11,14 @@ from pyspark.sql import types as T
 import statistics
 from customer360.utilities.spark_util import get_spark_session
 
+conf = os.getenv("CONF", "base")
+run_mode = os.getenv("DATA_AVAILABILITY_CHECKS", None)
+log = logging.getLogger(__name__)
+running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
+
 
 def l2_geo_time_spent_by_location_weekly(df,sql):
-    df=node_from_config(df,sql)
+    df = massive_processing_time_spent_weekly(df, sql, "l2_geo_time_spent_by_location_weekly", 'start_of_week')
     return df
 
 
@@ -186,3 +191,40 @@ def l2_same_favourite_location_weekend_weekday_weekly(l0_geo_cust_cell_visit_tim
     l2 = spark.sql(sql_query)
     return l2
 
+def massive_processing_time_spent_weekly(data_frame: DataFrame, sql, output_df_catalog, partition_col) -> DataFrame:
+    """
+    :param data_frame:
+    :param dict_obj:
+    :return:
+    """
+
+    def divide_chunks(l, n):
+        # looping till length l
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    CNTX = load_context(Path.cwd(), env=conf)
+    data_frame = data_frame
+    dates_list = data_frame.select(partition_col).distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+    mvv_new = list(divide_chunks(mvv_array, 2))
+    add_list = mvv_new
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        small_df = data_frame.filter(f.col(partition_col).isin(*[curr_item]))
+        small_df = node_from_config(small_df, sql)
+        # small_df = add_start_of_week_and_month(small_df, "time_in")
+        # small_df.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
+        # output_df = ss.sql(sql)
+        CNTX.catalog.save(output_df_catalog, small_df)
+    logging.info("Final date to run for {0}".format(str(first_item)))
+    return_df = data_frame.filter(f.col(partition_col).isin(*[first_item]))
+    return_df = node_from_config(return_df, sql)
+    # return_df = add_start_of_week_and_month(return_df, "time_in")
+    # return_df.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
+    # return_df = ss.sql(sql)
+    return return_df
