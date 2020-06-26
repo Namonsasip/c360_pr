@@ -355,7 +355,6 @@ def create_du_pipeline(**kwargs) -> Dict[str,Pipeline]:
     return {
         "create_du_model_input": create_du_model_input_pipeline(),
         "create_du_model": create_du_models_pipeline(),
-        "create_nba_models_pipeline": create_nba_models_pipeline(),
     }
 
 def create_dq_pipeline(**kwargs) -> Dict[str, Pipeline]:

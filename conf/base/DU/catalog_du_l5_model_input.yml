@@ -18,3 +18,11 @@ l5_du_master_tbl:
   filepath: /mnt/customer360-blob-data/C360/DU/l5_du_master_tbl/
   save_args:
     mode: "overwrite"
+
+master_table_chunk_debug_extra_pai_metrics_acceptance_du:
+  type: kedro.io.CSVLocalDataSet
+  filepath: data/L5/DU/master_table_chunk_debug_extra_pai_metrics_acceptance.csv
+
+l5_du_master_table_chunk_debug_acceptance:
+  type: kedro.io.ParquetLocalDataSet
+  filepath: data/L5/DU/l5_du_master_table_chunk_debug_acceptance.parquet
