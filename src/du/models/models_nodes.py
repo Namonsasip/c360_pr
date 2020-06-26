@@ -448,7 +448,7 @@ def create_model_function(
                         pdf_test[explanatory_features]
                     )[:, 1]
                     # save model
-                    model.booster_.save_model(tmp_path_for_python + "/" + model_type)
+                    # model.booster_.save_model(tmp_path_for_python + "/" + model_type)
                     # pai.log_model(model)
 
                     train_auc = model.evals_result_["train"]["auc"][-1]
@@ -460,11 +460,11 @@ def create_model_function(
                     #         f"when running the {current_group} model"
                     #     )
 
-                    plot_roc_curve(
-                        y_true=pdf_test[target_column],
-                        y_score=test_predictions,
-                        filepath=tmp_path_for_python + "/roc_curve.png",
-                    )
+                    # plot_roc_curve(
+                    #     y_true=pdf_test[target_column],
+                    #     y_score=test_predictions,
+                    #     filepath=tmp_path_for_python + "/roc_curve.png",
+                    # )
 
                     # Calculate and plot AUC per round
                     pdf_metrics = pd.DataFrame()
@@ -478,27 +478,27 @@ def create_model_function(
                     pdf_metrics_melted = pdf_metrics.melt(
                         id_vars=["set", "round"], var_name="metric"
                     )
-                    pdf_metrics_melted.to_csv(
-                        tmp_path_for_python + "/metrics_by_round.csv", index=False
-                    )
-
-                    (  # Plot the AUC of each set in each round
-                        ggplot(
-                            pdf_metrics_melted[pdf_metrics_melted["metric"] == "auc"],
-                            aes(x="round", y="value", color="set"),
-                        )
-                        + ylab("AUC")
-                        + geom_line()
-                        + ggtitle(f"AUC per round (tree) for {current_group}")
-                    ).save(tmp_path_for_python + "/auc_per_round.png")
-
-                    # Create a CSV report with percentile metrics
-                    df_metrics_by_percentile = get_metrics_by_percentile(
-                        y_true=pdf_test[target_column], y_pred=test_predictions
-                    )
-                    df_metrics_by_percentile.to_csv(
-                        tmp_path_for_python + "/metrics_by_percentile.csv", index=False
-                    )
+                    # pdf_metrics_melted.to_csv(
+                    #     tmp_path_for_python + "/metrics_by_round.csv", index=False
+                    # )
+                    #
+                    # (  # Plot the AUC of each set in each round
+                    #     ggplot(
+                    #         pdf_metrics_melted[pdf_metrics_melted["metric"] == "auc"],
+                    #         aes(x="round", y="value", color="set"),
+                    #     )
+                    #     + ylab("AUC")
+                    #     + geom_line()
+                    #     + ggtitle(f"AUC per round (tree) for {current_group}")
+                    # ).save(tmp_path_for_python + "/auc_per_round.png")
+                    #
+                    # # Create a CSV report with percentile metrics
+                    # df_metrics_by_percentile = get_metrics_by_percentile(
+                    #     y_true=pdf_test[target_column], y_pred=test_predictions
+                    # )
+                    # df_metrics_by_percentile.to_csv(
+                    #     tmp_path_for_python + "/metrics_by_percentile.csv", index=False
+                    # )
 
                 elif model_type == "regression":
                     model = LGBMRegressor(**model_params).fit(
@@ -517,27 +517,27 @@ def create_model_function(
 
                     test_predictions = model.predict(pdf_test[explanatory_features])
                     # pai.log_model(model)
-                    model.booster_.save_model(tmp_path_for_python + "/" + model_type)
+                    # model.booster_.save_model(tmp_path_for_python + "/" + model_type)
                     # save model
                     train_mae = model.evals_result_["train"]["l1"][-1]
                     test_mae = model.evals_result_["test"]["l1"][-1]
 
                     # Plot target and score distributions
-                    (
-                        ggplot(
-                            pd.DataFrame(
-                                {
-                                    "Real": pdf_test[target_column],
-                                    "Predicted": test_predictions,
-                                }
-                            ).melt(var_name="Source", value_name="ARPU_uplift"),
-                            aes(x="ARPU_uplift", fill="Source"),
-                        )
-                        + geom_density(alpha=0.5)
-                        + ggtitle(
-                            f"ARPU uplift distribution for real target and model prediction"
-                        )
-                    ).save(tmp_path_for_python + "/ARPU_uplift_distribution.png")
+                    # (
+                    #     ggplot(
+                    #         pd.DataFrame(
+                    #             {
+                    #                 "Real": pdf_test[target_column],
+                    #                 "Predicted": test_predictions,
+                    #             }
+                    #         ).melt(var_name="Source", value_name="ARPU_uplift"),
+                    #         aes(x="ARPU_uplift", fill="Source"),
+                    #     )
+                    #     + geom_density(alpha=0.5)
+                    #     + ggtitle(
+                    #         f"ARPU uplift distribution for real target and model prediction"
+                    #     )
+                    # ).save(tmp_path_for_python + "/ARPU_uplift_distribution.png")
 
                     # Calculate and plot AUC per round
                     pdf_metrics = pd.DataFrame()
@@ -551,19 +551,19 @@ def create_model_function(
                     pdf_metrics_melted = pdf_metrics.melt(
                         id_vars=["set", "round"], var_name="metric"
                     )
-                    pdf_metrics_melted.to_csv(
-                        tmp_path_for_python + "/metrics_by_round.csv", index=False
-                    )
+                    # pdf_metrics_melted.to_csv(
+                    #     tmp_path_for_python + "/metrics_by_round.csv", index=False
+                    # )
 
-                    (  # Plot the MAE of each set in each round
-                        ggplot(
-                            pdf_metrics_melted[pdf_metrics_melted["metric"] == "l1"],
-                            aes(x="round", y="value", color="set"),
-                        )
-                        + ylab("MAE")
-                        + geom_line()
-                        + ggtitle(f"MAE per round (tree) for {current_group}")
-                    ).save(tmp_path_for_python + "/mae_per_round.png")
+                    # (  # Plot the MAE of each set in each round
+                    #     ggplot(
+                    #         pdf_metrics_melted[pdf_metrics_melted["metric"] == "l1"],
+                    #         aes(x="round", y="value", color="set"),
+                    #     )
+                    #     + ylab("MAE")
+                    #     + geom_line()
+                    #     + ggtitle(f"MAE per round (tree) for {current_group}")
+                    # ).save(tmp_path_for_python + "/mae_per_round.png")
 
                     df_to_return = pd.DataFrame(
                         {
@@ -687,8 +687,12 @@ def train_multiple_models(
 
     tmp_path = pai_runs_uri + pai_run_prefix
 
-    mvv_list = df_master_only_necessary_columns.groupby(group_column).agg(
-        F.count("*").alias("CNT")).drop("CNT").collect()
+    mvv_list = (
+        df_master_only_necessary_columns.groupby(group_column)
+        .agg(F.count("*").alias("CNT"))
+        .drop("CNT")
+        .collect()
+    )
     for m in mvv_list:
         model_path = tmp_path + "/" + m[0]
         if not file_exists(model_path, dbutils):
@@ -706,8 +710,8 @@ def train_multiple_models(
         )
     )
     logging.info("done create model function")
-    return df_training_info
 
+    return df_training_info
 
 
 # df_training_info = df_master_only_necessary_columns.groupby(group_column).apply(
@@ -719,7 +723,7 @@ def train_multiple_models(
 #         pdf_extra_pai_metrics=pdf_extra_pai_metrics,
 #         extra_tag_columns=extra_keep_columns,
 #         model_type="binary",
-#         pai_run_prefix="testing_naja_naija",
+#         pai_run_prefix="testing_naja_naija/",
 #         train_sampling_ratio=train_sampling_ratio,
 #         model_params=model_params,
 #         min_obs_per_class_for_model=min_obs_per_class_for_model,

@@ -1,7 +1,7 @@
 import re
 from datetime import datetime
 from datetime import timedelta
-from typing import Dict, Any, List
+from typing import Dict, List, Tuple, Union
 
 import pandas as pd
 import plotnine
@@ -13,7 +13,7 @@ from pyspark.sql.types import DateType
 
 from customer360.utilities.spark_util import get_spark_session
 from nba.model_input.model_input_nodes import add_c360_dates_columns
-
+from du.models.models_nodes import calculate_extra_pai_metrics
 
 def node_l5_du_target_variable_table(
     l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
@@ -277,3 +277,18 @@ def node_l5_du_master_spine_table(
         ),
     )
     return df_spine
+
+def node_l5_du_master_table_chunk_debug_acceptance(
+    l5_du_master_table: DataFrame, group_target: str, sampling_rate: float
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    df_chunk = l5_du_master_table.filter(F.col("rework_macro_product") == group_target)
+
+    pdf_extra_pai_metrics = calculate_extra_pai_metrics(
+        l5_du_master_table, target_column="target_response", by="rework_macro_product"
+    )
+    l5_du_master_table_chunk_debug = (
+        df_chunk.filter(~F.isnull(F.col("target_response")))
+        .sample(sampling_rate)
+        .toPandas()
+    )
+    return l5_du_master_table_chunk_debug, pdf_extra_pai_metrics
