@@ -114,36 +114,36 @@ def geo_to_l1_pipeline(**kwargs):
                  "params:l1_location_of_visit_ais_store_daily"
                  ],
                 "l1_location_of_visit_ais_store_daily"
+            ),
+            ##==============================Update 2020-06-15 by Thatt529==========================================##
+
+            ##Top_3_cells_on_voice_usage###
+            node(
+                l1_geo_top3_cells_on_voice_usage,
+                ["l0_usage_sum_voice_location_daily_for_l1_geo_top3_cells_on_voice_usage",
+                 "l0_geo_mst_cell_masterplan_for_l1_geo_top3_cells_on_voice_usage",
+                 "l0_profile_customer_profile_ma_for_l1_geo_top3_cells_on_voice_usage"
+                 ],
+                "l1_geo_top3_cells_on_voice_usage"
+            ),
+
+            ##==============================Update 2020-06-17 by Thatt529==========================================##
+
+            ##distance_top_call###
+            node(
+                l1_geo_distance_top_call,
+                "l1_geo_top3_cells_on_voice_usage",
+                "l1_geo_distance_top_call"
+            ),
+
+            ##47 the_favourite_locations
+            node(
+                l1_the_favourite_locations_daily,
+                ["l0_usage_sum_data_location_daily_for_l1_the_favourite_locations",
+                 "l0_geo_mst_cell_masterplan_for_l1_the_favourite_locations"
+                 ],
+                "l1_the_favourite_locations_daily"
             )
-            # ##==============================Update 2020-06-15 by Thatt529==========================================##
-            #
-            # ##Top_3_cells_on_voice_usage###
-            # node(
-            #     l1_geo_top3_cells_on_voice_usage,
-            #     ["l0_usage_sum_voice_location_daily_for_l1_geo_top3_cells_on_voice_usage",
-            #      "l0_geo_mst_cell_masterplan_for_l1_geo_top3_cells_on_voice_usage",
-            #      "l0_profile_customer_profile_ma_for_l1_geo_top3_cells_on_voice_usage"
-            #      ],
-            #     "l1_geo_top3_cells_on_voice_usage"
-            # ),
-            #
-            # ##==============================Update 2020-06-17 by Thatt529==========================================##
-            #
-            # ##distance_top_call###
-            # node(
-            #     l1_geo_distance_top_call,
-            #     "l1_geo_top3_cells_on_voice_usage",
-            #     "l1_geo_distance_top_call"
-            # ),
-            #
-            # ##47 the_favourite_locations
-            # node(
-            #     l1_the_favourite_locations_daily,
-            #     ["l0_usage_sum_data_location_daily_for_l1_the_favourite_locations",
-            #      "l0_geo_mst_cell_masterplan_for_l1_the_favourite_locations"
-            #      ],
-            #     "l1_the_favourite_locations_daily"
-            # )
 
         ], name="geo_to_l1_pipeline"
     )
