@@ -68,7 +68,7 @@ def massive_processing_for_home_work(
         # Work
         after_output_df_work = CNTX.catalog.load(config_work["output_catalog"])
         output_df_work = _int_l4_geo_work_location_id_monthly(small_df, config_work)
-        output_df_work.select(after_output_df_work.columns)
+        output_df_work = output_df_work.select(after_output_df_work.columns)
         output_df_work_union = after_output_df_work.union(output_df_work)
         output_df_work_union = output_df_work_union.groupBy("imsi", "location_id", "latitude", "longitude", "start_of_month")\
             .agg(F.sum("duration").alias("duration"), F.sum("days").alias("days"))
@@ -77,7 +77,7 @@ def massive_processing_for_home_work(
         # Home
         after_output_df_home = CNTX.catalog.load(config_home["output_catalog"])
         output_df_home = _int_l4_geo_home_location_id_monthly(small_df, config_home)
-        output_df_home.select(after_output_df_home.columns)
+        output_df_home = output_df_home.select(after_output_df_home.columns)
         output_df_home_union = after_output_df_home.union(output_df_home)
         output_df_home_union = output_df_home_union.groupBy("imsi", "location_id", "latitude", "longitude", "work_type", "start_of_month")\
             .agg(F.sum("duration").alias("duration"), F.sum("days").alias("days"))
@@ -94,7 +94,7 @@ def massive_processing_for_home_work(
     # Work
     after_output_df_work = CNTX.catalog.load(config_work["output_catalog"])
     output_df_work = _int_l4_geo_work_location_id_monthly(return_df, config_work)
-    output_df_work.select(after_output_df_work.columns)
+    output_df_work = output_df_work.select(after_output_df_work.columns)
     output_df_work_union = after_output_df_work.union(output_df_work)
     output_df_work_union = output_df_work_union.groupBy("imsi", "location_id", "latitude", "longitude",
                                                         "start_of_month") \
@@ -104,7 +104,7 @@ def massive_processing_for_home_work(
     # Home
     after_output_df_home = CNTX.catalog.load(config_home["output_catalog"])
     output_df_home = _int_l4_geo_home_location_id_monthly(return_df, config_home)
-    output_df_home.select(after_output_df_home.columns)
+    output_df_home = output_df_home.select(after_output_df_home.columns)
     output_df_home_union = after_output_df_home.union(output_df_home)
     output_df_home_union = output_df_home_union.groupBy("imsi", "location_id", "latitude", "longitude", "work_type",
                                                         "start_of_month") \
