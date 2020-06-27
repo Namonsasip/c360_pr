@@ -49,7 +49,7 @@ def geo_to_l4_pipeline(**kwargs):
                 massive_processing_for_home_work,  # partition_date is main column to massive processing
                 ["l0_geo_cust_cell_visit_time_for_int_l4_geo_home_work_location_id",
                  "params:int_l4_geo_home_location_id_monthly",
-                 "params:int_l4_geo_work_location_id_monthly",
+                 "params:int_l4_geo_work_location_id_monthly"
                  ],
                 ["int_l4_geo_home_location_id_monthly",
                  "int_l4_geo_work_location_id_monthly"
