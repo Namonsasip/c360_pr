@@ -23,7 +23,7 @@ def massive_processing_for_home_work(
         source_partition_col="partition_date"
 ):
     # filter
-    input_df = input_df.filter('partition_date >= 20190801 and partition_date <= 20191031')
+    # input_df = input_df.filter('partition_date >= 20190801 and partition_date <= 20191031')
 
     CNTX = load_context(Path.cwd(), env=os.getenv("CONF", "base"))
     data_frame = input_df
