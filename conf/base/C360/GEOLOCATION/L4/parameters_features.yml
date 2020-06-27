@@ -39,7 +39,7 @@ int_l4_geo_home_location_id_monthly:
     days: "approx_count_distinct(event_partition_date)"
   granularity: "imsi, location_id, latitude, longitude, week_type, start_of_month"
   output_catalog: "int_l4_geo_home_location_id_monthly"
-  partition_num_per_job: 5
+  partition_num_per_job: 10
 
 int_l4_geo_work_location_id_monthly:
   where_clause: "where duration != 0 and (((hour_in >= 8 and hour_in < 18) and hour_out <= 18) or ((hour_in >= 8 and hour_in < 18) and hour_out > 18))"
@@ -50,15 +50,7 @@ int_l4_geo_work_location_id_monthly:
     days: "approx_count_distinct(event_partition_date)"
   granularity: "imsi, location_id, latitude, longitude, start_of_month"
   output_catalog: "int_l4_geo_work_location_id_monthly"
-  partition_num_per_job: 5
-
-int_l4_geo_list_imsi_monthly:
-  where_clause: ""
-  feature_list:
-    count: "approx_count_distinct(imsi)"
-  granularity: "imsi, start_of_month"
-  output_catalog: "int_l4_geo_list_imsi_monthly"
-  partition_num_per_job: 5
+  partition_num_per_job: 10
 
 l4_geo_home_work_location_id:
   where_clause: ""

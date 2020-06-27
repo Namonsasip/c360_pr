@@ -5,7 +5,7 @@ from pyspark.sql import types as T
 from pyspark.sql.types import *
 from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1.to_l1_nodes import gen_max_sql
 from customer360.utilities.config_parser import node_from_config, l4_rolling_window
-from customer360.utilities.re_usable_functions import l3_massive_processing, l1_massive_processing
+from customer360.utilities.re_usable_functions import l3_massive_processing, l1_massive_processing, __divide_chunks
 from kedro.context.context import load_context
 from pathlib import Path
 import logging
@@ -13,6 +13,95 @@ import os
 import statistics
 from pyspark.sql import Window
 from customer360.utilities.spark_util import get_spark_session
+
+
+# Set function for massive process: Daily --> Monthly
+def massive_processing_for_home_work(
+        input_df,
+        config_home,
+        config_work,
+        source_partition_col="partition_date"
+) -> list(DataFrame):
+    # filter
+    input_df = input_df.filter('partition_date >= 20190801 and partition_date <= 20191031')
+
+    CNTX = load_context(Path.cwd(), env=os.getenv("CONF", "base"))
+    data_frame = input_df
+    dates_list = data_frame.select(source_partition_col).distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+
+    partition_num_per_job = config_home.get("partition_num_per_job", 1)
+    mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
+    add_list = mvv_new
+
+    #Set first dataframe to merge
+    last_item = add_list[0]
+    small_df_last = data_frame.filter(F.col(source_partition_col).isin(*[last_item]))
+    # Add 2 columns: event_partition_date, start_of_month
+    small_df_last = small_df_last.withColumn("event_partition_date", F.to_date(F.col("partition_date").cast(StringType()),'yyyyMMdd'))
+    small_df_last = small_df_last.withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col("event_partition_date"))))
+
+    # Work
+    output_df_work = _int_l4_geo_work_location_id_monthly(small_df_last, config_home)
+    CNTX.catalog.save(config_work["output_catalog"], output_df_work)
+
+    # Home
+    output_df_home = _int_l4_geo_home_location_id_monthly(small_df_last, config_home)
+    CNTX.catalog.save(config_home["output_catalog"], output_df_home)
+    add_list.remove(last_item)
+
+
+    first_item = add_list[-1]
+
+    add_list.remove(first_item)
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        small_df = data_frame.filter(F.col(source_partition_col).isin(*[curr_item]))
+
+        # Add 2 columns: event_partition_date, start_of_month
+        small_df = small_df.withColumn("event_partition_date", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))
+        small_df = small_df.withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col("event_partition_date"))))
+
+        # Work
+        after_output_df_work = CNTX.catalog.load(config_work["output_catalog"])
+        output_df_work = _int_l4_geo_work_location_id_monthly(small_df, config_home)
+        output_df_work_union = after_output_df_work.union(output_df_work)
+        output_df_work_union = output_df_work_union.groupBy("imsi", "location_id", "latitude", "longitude", "start_of_month")\
+            .agg(F.sum("duration").alias("duration"), F.sum("days").alias("days"))
+        CNTX.catalog.save(config_work["output_catalog"], output_df_work_union)
+
+        # Home
+        after_output_df_home = CNTX.catalog.load(config_home["output_catalog"])
+        output_df_home = _int_l4_geo_home_location_id_monthly(small_df, config_home)
+        output_df_home_union = after_output_df_home.union(output_df_home)
+        output_df_home_union = output_df_home_union.groupBy("imsi", "location_id", "latitude", "longitude", "work_type", "start_of_month")\
+            .agg(F.sum("duration").alias("duration"), F.sum("days").alias("days"))
+        CNTX.catalog.save(config_home["output_catalog"], output_df_home_union)
+
+
+    logging.info("Final date to run for {0}".format(str(first_item)))
+    return_df = data_frame.filter(F.col(source_partition_col).isin(*[first_item]))
+    # Work
+    after_output_df_work = CNTX.catalog.load(config_work["output_catalog"])
+    output_df_work = _int_l4_geo_work_location_id_monthly(return_df, config_home)
+    output_df_work_union = after_output_df_work.union(output_df_work)
+    output_df_work_union = output_df_work_union.groupBy("imsi", "location_id", "latitude", "longitude",
+                                                        "start_of_month") \
+        .agg(F.sum("duration").alias("duration"), F.sum("days").alias("days"))
+    # CNTX.catalog.save(config_work["output_catalog"], output_df_work_union)
+
+    # Home
+    after_output_df_home = CNTX.catalog.load(config_home["output_catalog"])
+    output_df_home = _int_l4_geo_home_location_id_monthly(return_df, config_home)
+    output_df_home_union = after_output_df_home.union(output_df_home)
+    output_df_home_union = output_df_home_union.groupBy("imsi", "location_id", "latitude", "longitude", "work_type",
+                                                        "start_of_month") \
+        .agg(F.sum("duration").alias("duration"), F.sum("days").alias("days"))
+    # CNTX.catalog.save(config_home["output_catalog"], output_df_home_union)
+
+    return [output_df_home_union, output_df_work_union]
 
 
 def l4_geo_top_visit_exclude_homework(sum_duration, homework):
@@ -47,29 +136,21 @@ def l4_geo_top_visit_exclude_homework(sum_duration, homework):
     df.show()
     return df
 
+def _int_l4_geo_home_location_id_monthly(df, config):
+    # Add column week_type
+    df = df.withColumn('week_type', F.when(((F.dayofweek(F.col('event_partition_date')) == 1) & (F.dayofweek(F.col('event_partition_date')) == 7)), 'weekend')
+                                                                             .otherwise('weekday').cast(StringType()))
+    df = node_from_config(df, config)
 
-def int_l4_geo_home_work_location_id(geo_cust_cell_visit_time, home_config, work_config, list_imsi_config):
-    # Filter 2,3,4,5
-    geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20190801 and partition_date <= 20191031')
+    return df
 
-    # Add 2 columns: event_partition_date, start_of_month
-    geo_cust_cell_visit_time = geo_cust_cell_visit_time.withColumn("event_partition_date", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))
-    geo_cust_cell_visit_time = geo_cust_cell_visit_time.withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col("event_partition_date"))))
+def _int_l4_geo_work_location_id_monthly(df, config):
+    df = node_from_config(df, config)
+    return df
 
-    geo_cust_cell_visit_time_week_type = geo_cust_cell_visit_time.withColumn('week_type', F.when(((F.dayofweek(F.col('event_partition_date')) == 1) & (F.dayofweek(F.col('event_partition_date')) == 7)), 'weekend').otherwise('weekday').cast(StringType()))
-
-    list_imsi = l3_massive_processing(geo_cust_cell_visit_time, list_imsi_config)
-
-    home_monthly = l1_massive_processing(geo_cust_cell_visit_time_week_type, home_config)
-
-    work_monthly = l1_massive_processing(geo_cust_cell_visit_time, work_config)
-
-    return [home_monthly, work_monthly, list_imsi]
-
-def l4_geo_home_work_location_id(home_monthly, work_monthly, list_imsi, sql):
+def l4_geo_home_work_location_id(home_monthly, work_monthly, sql):
 
     w_home = Window().partitionBy('imsi', 'location_id', 'week_type').orderBy(F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
-    # home_last_3m = geo_cust_time_of_home.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd")).withColumn("duration_3m", F.sum("duration").over(w_home)).withColumn("days_3m", F.sum('days').over(w_home))
     home_last_3m = home_monthly.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd"))\
         .withColumn("duration_3m", F.sum("duration").over(w_home))\
         .withColumn("days_3m", F.sum('days').over(w_home))
@@ -102,15 +183,17 @@ def l4_geo_home_work_location_id(home_monthly, work_monthly, list_imsi, sql):
     work_last_3m = work_last_3m.where('row_num = 1').drop('row_num')
     print("DEBUG------------------------------------------(3)")
 
-    work_last_3m = list_imsi.join(work_last_3m, ['imsi', 'start_of_month'], 'left').select(list_imsi.imsi, list_imsi.start_of_month, 'location_id', 'latitude', 'longitude')
+    # work_last_3m = list_imsi.join(work_last_3m, ['imsi', 'start_of_month'], 'left').select(list_imsi.imsi, list_imsi.start_of_month, 'location_id', 'latitude', 'longitude')
 
     print("DEBUG------------------------------------------(4)")
-    home_work = work_last_3m.join(home_last_3m_weekday, ['imsi', 'start_of_month'], 'left').select(work_last_3m.start_of_month, work_last_3m.imsi,
+    home_work = work_last_3m.join(home_last_3m_weekday, ['imsi', 'start_of_month'], 'fullouter').select((F.when(work_last_3m.start_of_month.isNull(), home_last_3m_weekday.start_of_month).otherwise(work_last_3m.start_of_month).alias('start_of_month')),
+                                                (F.when(work_last_3m.imsi.isNull(), home_last_3m_weekday.imsi).otherwise(work_last_3m.imsi).alias('imsi')),
                                                  'home_weekday_location_id', 'home_weekday_latitude',
                                                  'home_weekday_longitude', 'location_id', 'latitude',
                                                  'longitude')
 
-    home_work_final = home_work.join(home_last_3m_weekend, ['imsi', 'start_of_month'], 'left').select(home_work.imsi, home_work.start_of_month,
+    home_work_final = home_work.join(home_last_3m_weekend, ['imsi', 'start_of_month'], 'fullouter').select((F.when(home_work.start_of_month.isNull(), home_last_3m_weekend.start_of_month).otherwise(home_work.start_of_month).alias('start_of_month')),
+                                                (F.when(home_work.imsi.isNull(), home_last_3m_weekend.imsi).otherwise(home_work.imsi).alias('imsi')),
                                               'home_weekday_location_id',
                                               'home_weekday_latitude', 'home_weekday_longitude',
                                               'home_weekend_location_id',
