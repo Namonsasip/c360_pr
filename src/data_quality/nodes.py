@@ -388,6 +388,9 @@ def run_accuracy_logic(
 
     # this is to avoid running every process at the end which causes
     # long GC pauses before the spark job is even started
+    spark = get_spark_session()
+    spark.conf.set("spark.sql.autoBroadcastJoinThreshold", -1)
+    spark.conf.set("spark.sql.broadcastTimeout", -1)
     result_df.persist(StorageLevel.MEMORY_AND_DISK).count()
 
     return result_df.repartition(1)
@@ -569,6 +572,9 @@ def run_consistency_logic(
 
     # this is to avoid running every process at the end which causes
     # long GC pauses before the spark job is even started
+    spark = get_spark_session()
+    spark.conf.set("spark.sql.autoBroadcastJoinThreshold", -1)
+    spark.conf.set("spark.sql.broadcastTimeout", -1)
     df_same_percent.persist(StorageLevel.MEMORY_AND_DISK).count()
 
     return df_same_percent.repartition(1)
