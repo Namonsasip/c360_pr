@@ -84,6 +84,11 @@ def massive_processing_for_home_work(
 
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(F.col(source_partition_col).isin(*[first_item]))
+    # Add 2 columns: event_partition_date, start_of_month
+    return_df = return_df.withColumn("event_partition_date",
+                                             F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))
+    return_df = return_df.withColumn("start_of_month",
+                                             F.to_date(F.date_trunc('month', F.col("event_partition_date"))))
     # Work
     after_output_df_work = CNTX.catalog.load(config_work["output_catalog"])
     output_df_work = _int_l4_geo_work_location_id_monthly(return_df, config_work)
