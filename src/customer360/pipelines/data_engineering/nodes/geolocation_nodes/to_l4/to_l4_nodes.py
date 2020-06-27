@@ -37,20 +37,21 @@ def massive_processing_for_home_work(
     add_list = mvv_new
 
     #Set first dataframe to merge
-    last_item = add_list[0]
-    small_df_last = data_frame.filter(F.col(source_partition_col).isin(*[last_item]))
-    # Add 2 columns: event_partition_date, start_of_month
-    small_df_last = small_df_last.withColumn("event_partition_date", F.to_date(F.col("partition_date").cast(StringType()),'yyyyMMdd'))
-    small_df_last = small_df_last.withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col("event_partition_date"))))
+    if len(add_list) != 1:
+        last_item = add_list[0]
+        small_df_last = data_frame.filter(F.col(source_partition_col).isin(*[last_item]))
+        # Add 2 columns: event_partition_date, start_of_month
+        small_df_last = small_df_last.withColumn("event_partition_date", F.to_date(F.col("partition_date").cast(StringType()),'yyyyMMdd'))
+        small_df_last = small_df_last.withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col("event_partition_date"))))
 
-    # Work
-    output_df_work = _int_l4_geo_work_location_id_monthly(small_df_last, config_home)
-    CNTX.catalog.save(config_work["output_catalog"], output_df_work)
+        # Work
+        output_df_work = _int_l4_geo_work_location_id_monthly(small_df_last, config_home)
+        CNTX.catalog.save(config_work["output_catalog"], output_df_work)
 
-    # Home
-    output_df_home = _int_l4_geo_home_location_id_monthly(small_df_last, config_home)
-    CNTX.catalog.save(config_home["output_catalog"], output_df_home)
-    add_list.remove(last_item)
+        # Home
+        output_df_home = _int_l4_geo_home_location_id_monthly(small_df_last, config_home)
+        CNTX.catalog.save(config_home["output_catalog"], output_df_home)
+        add_list.remove(last_item)
 
 
     first_item = add_list[-1]
