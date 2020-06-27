@@ -566,7 +566,7 @@ def streaming_streaming_ranked_of_day_per_week(input_df: DataFrame,
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         small_df = data_frame.filter(F.col("start_of_week").isin(*[curr_item]))
-        int_l2_streaming_sum_per_day = node_from_config(small_df, int_l2_streaming_sum_per_day_dict)
+        int_l2_streaming_sum_per_day = expansion(small_df, int_l2_streaming_sum_per_day_dict)
         CNTX.catalog.save(int_l2_streaming_sum_per_day_dict["output_catalog"],
                           int_l2_streaming_sum_per_day)
 
