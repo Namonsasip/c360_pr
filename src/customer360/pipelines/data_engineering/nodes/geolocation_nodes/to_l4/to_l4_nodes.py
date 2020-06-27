@@ -192,18 +192,22 @@ def l4_geo_home_work_location_id(home_monthly, work_monthly, sql):
     work_last_3m = work_last_3m.withColumn('row_num', F.row_number().over(w_work_num_row))
     work_last_3m = work_last_3m.where('row_num = 1').drop('row_num')
     print("DEBUG------------------------------------------(3)")
+    list_imsi_work = work_last_3m.select('imsi', 'start_of_month')
+    list_imsi_home_weekday = home_last_3m_weekday.select('imsi', 'start_of_month')
+    list_imsi_wuhd = list_imsi_work.union(list_imsi_home_weekday).distinct()
+    list_imsi_home_weekend = home_last_3m_weekend.select('imsi', 'start_of_month')
+    list_imsi = list_imsi_wuhd.union(list_imsi_home_weekend).distinct()
 
-    # work_last_3m = list_imsi.join(work_last_3m, ['imsi', 'start_of_month'], 'left').select(list_imsi.imsi, list_imsi.start_of_month, 'location_id', 'latitude', 'longitude')
+
+    work_last_3m = list_imsi.join(work_last_3m, ['imsi', 'start_of_month'], 'left').select(list_imsi.imsi, list_imsi.start_of_month, 'location_id', 'latitude', 'longitude')
 
     print("DEBUG------------------------------------------(4)")
-    home_work = work_last_3m.join(home_last_3m_weekday, ['imsi', 'start_of_month'], 'fullouter').select((F.when(work_last_3m.start_of_month.isNull(), home_last_3m_weekday.start_of_month).otherwise(work_last_3m.start_of_month).alias('start_of_month')),
-                                                (F.when(work_last_3m.imsi.isNull(), home_last_3m_weekday.imsi).otherwise(work_last_3m.imsi).alias('imsi')),
+    home_work = work_last_3m.join(home_last_3m_weekday, ['imsi', 'start_of_month'], 'left').select(work_last_3m.start_of_month, work_last_3m.imsi,
                                                  'home_weekday_location_id', 'home_weekday_latitude',
                                                  'home_weekday_longitude', 'location_id', 'latitude',
                                                  'longitude')
 
-    home_work_final = home_work.join(home_last_3m_weekend, ['imsi', 'start_of_month'], 'fullouter').select((F.when(home_work.start_of_month.isNull(), home_last_3m_weekend.start_of_month).otherwise(home_work.start_of_month).alias('start_of_month')),
-                                                (F.when(home_work.imsi.isNull(), home_last_3m_weekend.imsi).otherwise(home_work.imsi).alias('imsi')),
+    home_work_final = home_work.join(home_last_3m_weekend, ['imsi', 'start_of_month'], 'left').select(home_work.start_of_month, home_work.imsi,
                                               'home_weekday_location_id',
                                               'home_weekday_latitude', 'home_weekday_longitude',
                                               'home_weekend_location_id',
