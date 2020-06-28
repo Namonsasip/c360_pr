@@ -166,16 +166,16 @@ features_for_dq:
 #    - feature: sum_download_kb_traffic_netflix_video_sum_weekly_last_week
 
   # FOLLOWING TAKES VERY LONG, INVESTIGATE:
-  l4_usage_prepaid_postpaid_daily_features:
-    - feature: sum_usg_incoming_total_call_duration_daily_last_ninety_day
-    - feature: sum_usg_incoming_total_call_duration_daily_last_seven_day
-    - feature: sum_usg_outgoing_data_volume_daily_last_fourteen_day
-    - feature: sum_usg_outgoing_data_volume_daily_last_ninety_day
-    - feature: sum_usg_outgoing_data_volume_daily_last_seven_day
-    - feature: sum_usg_outgoing_total_call_duration_daily_last_ninety_day
-    - feature: sum_usg_outgoing_total_call_duration_daily_last_seven_day
-    - feature: sum_usg_outgoing_total_sms_daily_last_ninety_day
-    - feature: sum_usg_outgoing_total_sms_daily_last_seven_day
+#  l4_usage_prepaid_postpaid_daily_features:
+#    - feature: sum_usg_incoming_total_call_duration_daily_last_ninety_day
+#    - feature: sum_usg_incoming_total_call_duration_daily_last_seven_day
+#    - feature: sum_usg_outgoing_data_volume_daily_last_fourteen_day
+#    - feature: sum_usg_outgoing_data_volume_daily_last_ninety_day
+#    - feature: sum_usg_outgoing_data_volume_daily_last_seven_day
+#    - feature: sum_usg_outgoing_total_call_duration_daily_last_ninety_day
+#    - feature: sum_usg_outgoing_total_call_duration_daily_last_seven_day
+#    - feature: sum_usg_outgoing_total_sms_daily_last_ninety_day
+#    - feature: sum_usg_outgoing_total_sms_daily_last_seven_day
 
   # END
 #    - feature: sum_usg_incoming_data_volume_sum_weekly_last_week
