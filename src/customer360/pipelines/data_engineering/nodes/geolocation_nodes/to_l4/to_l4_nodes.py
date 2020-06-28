@@ -79,7 +79,7 @@ def massive_processing_for_home_work(
         output_df_home = _int_l4_geo_home_location_id_monthly(small_df, config_home)
         output_df_home = output_df_home.select(after_output_df_home.columns)
         output_df_home_union = after_output_df_home.union(output_df_home)
-        output_df_home_union = output_df_home_union.groupBy("imsi", "location_id", "latitude", "longitude", "work_type", "start_of_month")\
+        output_df_home_union = output_df_home_union.groupBy("imsi", "location_id", "latitude", "longitude", "week_type", "start_of_month")\
             .agg(F.sum("duration").alias("duration"), F.sum("days").alias("days"))
         CNTX.catalog.save(config_home["output_catalog"], output_df_home_union)
 
