@@ -69,7 +69,9 @@ def check_empty_dfs(df_input_or_list):
 
     ret_obj = False
     for df in df_list:
-        if len(df.head(1)) == 0 or df is None:
+        if df is None:
+            return True
+        elif len(df.head(1)) == 0:
             return True
         else:
             pass
