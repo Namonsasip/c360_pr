@@ -26,31 +26,10 @@ from sklearn.model_selection import train_test_split
 
 from customer360.utilities.spark_util import get_spark_session
 from customer360.utilities.datetime_utils import get_local_datetime
+import mlflow
+from mlflow import lightgbm as mlflowlightgbm
 
 MODELLING_N_OBS_THRESHOLD = 500
-
-
-def get_dbutils(spark):
-    try:
-        from pyspark.dbutils import DBUtils
-
-        dbutils = DBUtils(spark)
-    except ImportError:
-        import IPython
-
-        dbutils = IPython.get_ipython().user_ns["dbutils"]
-    return dbutils
-
-
-def file_exists(path, dbutils):
-    try:
-        dbutils.fs.ls(path)
-        return True
-    except Exception as e:
-        if "java.io.FileNotFoundException" in str(e):
-            return False
-        else:
-            raise
 
 
 def calculate_extra_pai_metrics(
@@ -240,6 +219,31 @@ def create_model_function(
                 else:
                     plt.show()
 
+            def plot_important(features, importance, filepath, max_num_features=None):
+                if max_num_features is None:
+                    indices = np.argsort(importance)
+                else:
+                    indices = np.argsort(importance)[-max_num_features:]
+                features = np.array(features)[indices]
+                importance = importance[indices]
+                num_features = len(features)
+                # If num_features > 10, increase the figure height to prevent the plot
+                # from being too dense.
+                w, h = [6.4, 4.8]  # matplotlib's default figure size
+                h = h + 0.1 * num_features if num_features > 10 else h
+                fig, ax = plt.subplots(figsize=(w, h))
+                yloc = np.arange(num_features)
+                ax.barh(yloc, importance, align="center", height=0.5)
+                ax.set_yticks(yloc)
+                ax.set_yticklabels(features)
+                ax.set_xlabel("Importance")
+                ax.set_title("Feature Importance")
+                fig.tight_layout()
+                if filepath:
+                    fig.savefig(filepath, dpi=70)
+                else:
+                    fig.show()
+
             def get_metrics_by_percentile(y_true, y_pred) -> pd.DataFrame:
                 """
                  Performance report generation function to check model performance at percentile level.
@@ -320,8 +324,9 @@ def create_model_function(
             explanatory_features.sort()
 
             current_group = pdf_master_chunk[group_column].iloc[0]
+
             # prefix %Y%m%d_%H%M%S_du_thanasiy_dev_{rework_macro_product}
-            pai_run_name = pai_run_prefix + current_group
+            pai_run_name = pai_run_prefix + current_group + "_"
 
             pdf_extra_pai_metrics_filtered = pdf_extra_pai_metrics[
                 pdf_extra_pai_metrics["group"] == current_group
@@ -378,193 +383,312 @@ def create_model_function(
             pai_metrics_dict["modelling_target_mean"] = modelling_target_mean
 
             # path for each model run
-            tmp_path = pai_runs_uri + pai_run_name
-            tmp_path_for_python = pai_artifacts_uri + pai_run_name
-            # if not file_exists(tmp_path, dbutils):
-            #     dbutils.fs.mkdirs(tmp_path)
-            able_to_model_flag = True
-            if modelling_perc_obs_target_null != 0:
-                able_to_model_flag = False
-
-            if modelling_n_obs < MODELLING_N_OBS_THRESHOLD:
-                able_to_model_flag = False
-
-            if pai_metrics_dict["original_perc_obs_target_null"] == 1:
-                able_to_model_flag = False
-
-            if len(pdf_master_chunk[target_column].unique()) <= 1:
-                able_to_model_flag = False
-
-            if model_type == "binary":
-                if (
-                    pai_metrics_dict["original_n_obs_positive_target"]
-                    < min_obs_per_class_for_model
-                ):
-                    able_to_model_flag = False
-                if (
-                    pai_metrics_dict["original_n_obs"]
-                    - pai_metrics_dict["original_n_obs_positive_target"]
-                    < min_obs_per_class_for_model
-                ):
-                    able_to_model_flag = False
-
-            # build the DataFrame to return
-            df_to_return = pd.DataFrame(
-                {
-                    "able_to_model_flag": [int(able_to_model_flag)],
-                    "train_set_primary_keys": ["NULL"],
-                }
-            )
-
-            if not able_to_model_flag:
-                # Unable to train a model, end execution
-                return df_to_return
+            mlflow_path = "/Shared/data_upsell/lightgbm"
+            if mlflow.get_experiment_by_name(mlflow_path) is None:
+                mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
             else:
+                mlflow_experiment_id = mlflow.get_experiment_by_name(
+                    mlflow_path
+                ).experiment_id
+            with mlflow.start_run(
+                experiment_id=mlflow_experiment_id, run_name=current_group
+            ):
+                run_id = mlflow.tracking.fluent._get_or_start_run().info.run_id
+                tp = pai_run_name + run_id
+                tmp_path = Path("data/tmp") / tp
+                os.makedirs(tmp_path, exist_ok=True)
 
-                # Train the model
-                pdf_master_chunk = pdf_master_chunk.sort_values(
-                    ["subscription_identifier", "contact_date"]
+                mlflow.log_params(
+                    {
+                        "Version": 1,
+                        "target_column": target_column,
+                        "model_objective": model_type,
+                        "regression_clip_target_quantiles": regression_clip_target_quantiles,
+                    }
                 )
-                pdf_train, pdf_test = train_test_split(
-                    pdf_master_chunk, train_size=train_sampling_ratio, random_state=123,
-                )
+
+                able_to_model_flag = True
+                if modelling_perc_obs_target_null != 0:
+                    able_to_model_flag = False
+                    mlflow.set_tag(
+                        "Unable to model",
+                        "There are observations with NA target in the modelling data",
+                    )
+
+                if modelling_n_obs < MODELLING_N_OBS_THRESHOLD:
+                    able_to_model_flag = False
+                    mlflow.set_tag(
+                        "Unable to model",
+                        f"There are not enough observations to reliably train a model. "
+                        f"Minimum required is {MODELLING_N_OBS_THRESHOLD}, "
+                        f"found {modelling_n_obs}",
+                    )
+
+                if pai_metrics_dict["original_perc_obs_target_null"] == 1:
+                    able_to_model_flag = False
+                    mlflow.set_tag(
+                        "Unable to model",
+                        "The are no observations with non-null target",
+                    )
+
+                if len(pdf_master_chunk[target_column].unique()) <= 1:
+                    able_to_model_flag = False
+                    mlflow.set_tag(
+                        "Unable to model", "Target variable has only one unique value"
+                    )
 
                 if model_type == "binary":
-                    model = LGBMClassifier(**model_params).fit(
-                        pdf_train[explanatory_features],
-                        pdf_train[target_column],
-                        eval_set=[
-                            (
-                                pdf_train[explanatory_features],
-                                pdf_train[target_column],
-                            ),
-                            (pdf_test[explanatory_features], pdf_test[target_column],),
-                        ],
-                        eval_names=["train", "test"],
-                        eval_metric="auc",
-                    )
-
-                    test_predictions = model.predict_proba(
-                        pdf_test[explanatory_features]
-                    )[:, 1]
-                    # save model
-                    # model.booster_.save_model(tmp_path_for_python + "/" + model_type)
-                    # pai.log_model(model)
-
-                    train_auc = model.evals_result_["train"]["auc"][-1]
-                    test_auc = model.evals_result_["test"]["auc"][-1]
-
-                    # if file_exists(tmp_path + "/roc_curve.png", dbutils):
-                    #     raise AssertionError(
-                    #         f"There is already a file in the tmp directory "
-                    #         f"when running the {current_group} model"
-                    #     )
-
-                    # plot_roc_curve(
-                    #     y_true=pdf_test[target_column],
-                    #     y_score=test_predictions,
-                    #     filepath=tmp_path_for_python + "/roc_curve.png",
-                    # )
-
-                    # Calculate and plot AUC per round
-                    pdf_metrics = pd.DataFrame()
-                    for valid_set_name, metrics_dict in model.evals_result_.items():
-                        metrics_dict["set"] = valid_set_name
-                        pdf_metrics_partial = pd.DataFrame(metrics_dict)
-                        pdf_metrics_partial["round"] = range(
-                            1, pdf_metrics_partial.shape[0] + 1
+                    if (
+                        pai_metrics_dict["original_n_obs_positive_target"]
+                        < min_obs_per_class_for_model
+                    ):
+                        able_to_model_flag = False
+                        mlflow.set_tag(
+                            "Unable to model",
+                            f"The number of positive responses is not enough to reliably train a model. "
+                            f"There are {pai_metrics_dict['original_n_obs_positive_target']} "
+                            f"observations while minimum required is {min_obs_per_class_for_model}",
                         )
-                        pdf_metrics = pd.concat([pdf_metrics, pdf_metrics_partial])
-                    pdf_metrics_melted = pdf_metrics.melt(
-                        id_vars=["set", "round"], var_name="metric"
-                    )
-                    # pdf_metrics_melted.to_csv(
-                    #     tmp_path_for_python + "/metrics_by_round.csv", index=False
-                    # )
-                    #
-                    # (  # Plot the AUC of each set in each round
-                    #     ggplot(
-                    #         pdf_metrics_melted[pdf_metrics_melted["metric"] == "auc"],
-                    #         aes(x="round", y="value", color="set"),
-                    #     )
-                    #     + ylab("AUC")
-                    #     + geom_line()
-                    #     + ggtitle(f"AUC per round (tree) for {current_group}")
-                    # ).save(tmp_path_for_python + "/auc_per_round.png")
-                    #
-                    # # Create a CSV report with percentile metrics
-                    # df_metrics_by_percentile = get_metrics_by_percentile(
-                    #     y_true=pdf_test[target_column], y_pred=test_predictions
-                    # )
-                    # df_metrics_by_percentile.to_csv(
-                    #     tmp_path_for_python + "/metrics_by_percentile.csv", index=False
-                    # )
-
-                elif model_type == "regression":
-                    model = LGBMRegressor(**model_params).fit(
-                        pdf_train[explanatory_features],
-                        pdf_train[target_column],
-                        eval_set=[
-                            (
-                                pdf_train[explanatory_features],
-                                pdf_train[target_column],
-                            ),
-                            (pdf_test[explanatory_features], pdf_test[target_column],),
-                        ],
-                        eval_names=["train", "test"],
-                        eval_metric="mae",
-                    )
-
-                    test_predictions = model.predict(pdf_test[explanatory_features])
-                    # pai.log_model(model)
-                    # model.booster_.save_model(tmp_path_for_python + "/" + model_type)
-                    # save model
-                    train_mae = model.evals_result_["train"]["l1"][-1]
-                    test_mae = model.evals_result_["test"]["l1"][-1]
-
-                    # Plot target and score distributions
-                    # (
-                    #     ggplot(
-                    #         pd.DataFrame(
-                    #             {
-                    #                 "Real": pdf_test[target_column],
-                    #                 "Predicted": test_predictions,
-                    #             }
-                    #         ).melt(var_name="Source", value_name="ARPU_uplift"),
-                    #         aes(x="ARPU_uplift", fill="Source"),
-                    #     )
-                    #     + geom_density(alpha=0.5)
-                    #     + ggtitle(
-                    #         f"ARPU uplift distribution for real target and model prediction"
-                    #     )
-                    # ).save(tmp_path_for_python + "/ARPU_uplift_distribution.png")
-
-                    # Calculate and plot AUC per round
-                    pdf_metrics = pd.DataFrame()
-                    for valid_set_name, metrics_dict in model.evals_result_.items():
-                        metrics_dict["set"] = valid_set_name
-                        pdf_metrics_partial = pd.DataFrame(metrics_dict)
-                        pdf_metrics_partial["round"] = range(
-                            1, pdf_metrics_partial.shape[0] + 1
+                    if (
+                        pai_metrics_dict["original_n_obs"]
+                        - pai_metrics_dict["original_n_obs_positive_target"]
+                        < min_obs_per_class_for_model
+                    ):
+                        able_to_model_flag = False
+                        mlflow.set_tag(
+                            "Unable to model",
+                            f"The number of negative responses is not enough to reliably train a model. "
+                            f"There are {pai_metrics_dict['original_n_obs_positive_target']} "
+                            f"observations while minimum required is {min_obs_per_class_for_model}",
                         )
-                        pdf_metrics = pd.concat([pdf_metrics, pdf_metrics_partial])
-                    pdf_metrics_melted = pdf_metrics.melt(
-                        id_vars=["set", "round"], var_name="metric"
+
+                # build the DataFrame to return
+                df_to_return = pd.DataFrame(
+                    {
+                        "able_to_model_flag": [int(able_to_model_flag)],
+                        "train_set_primary_keys": ["NULL"],
+                    }
+                )
+                if not able_to_model_flag:
+                    # Unable to train a model, end execution
+                    mlflow.log_param("Able_to_model", False)
+                    return df_to_return
+                else:
+                    mlflow.log_param("Able_to_model", True)
+                    # Train the model
+                    pdf_master_chunk = pdf_master_chunk.sort_values(
+                        ["subscription_identifier", "contact_date"]
                     )
-                    # pdf_metrics_melted.to_csv(
-                    #     tmp_path_for_python + "/metrics_by_round.csv", index=False
-                    # )
+                    pdf_train, pdf_test = train_test_split(
+                        pdf_master_chunk,
+                        train_size=train_sampling_ratio,
+                        random_state=123,
+                    )
+                    mlflow.log_params(
+                        {
+                            "train_sampling_ratio": train_sampling_ratio,
+                            "model_params": model_params,
+                        }
+                    )
+                    if model_type == "binary":
+                        model = LGBMClassifier(**model_params).fit(
+                            pdf_train[explanatory_features],
+                            pdf_train[target_column],
+                            eval_set=[
+                                (
+                                    pdf_train[explanatory_features],
+                                    pdf_train[target_column],
+                                ),
+                                (
+                                    pdf_test[explanatory_features],
+                                    pdf_test[target_column],
+                                ),
+                            ],
+                            eval_names=["train", "test"],
+                            eval_metric="auc",
+                        )
 
-                    # (  # Plot the MAE of each set in each round
-                    #     ggplot(
-                    #         pdf_metrics_melted[pdf_metrics_melted["metric"] == "l1"],
-                    #         aes(x="round", y="value", color="set"),
-                    #     )
-                    #     + ylab("MAE")
-                    #     + geom_line()
-                    #     + ggtitle(f"MAE per round (tree) for {current_group}")
-                    # ).save(tmp_path_for_python + "/mae_per_round.png")
+                        test_predictions = model.predict_proba(
+                            pdf_test[explanatory_features]
+                        )[:, 1]
+                        plot_important(
+                            explanatory_features,
+                            model.feature_importances_,
+                            filepath=tmp_path / "important_features.png",
+                            max_num_features=20,
+                        )
+                        mlflow.log_artifact(
+                            str(tmp_path / "important_features.png"), artifact_path=""
+                        )
+                        mlflowlightgbm.log_model(model.booster_, artifact_path="")
 
+                        train_auc = model.evals_result_["train"]["auc"][-1]
+                        test_auc = model.evals_result_["test"]["auc"][-1]
+                        mlflow.log_metric("train_auc", train_auc)
+                        mlflow.log_metric("test_auc", test_auc)
+                        mlflow.log_metric("train_test_auc_diff", train_auc - test_auc)
+
+                        if os.path.isfile(tmp_path / "roc_curve.png"):
+                            raise AssertionError(
+                                f"There is already a file in the tmp directory "
+                                f"when running the {current_group} model"
+                            )
+
+                        # Plot ROC curve
+                        plot_roc_curve(
+                            y_true=pdf_test[target_column],
+                            y_score=test_predictions,
+                            filepath=tmp_path / "roc_curve.png",
+                        )
+
+                        # Calculate and plot AUC per round
+                        pdf_metrics = pd.DataFrame()
+                        for valid_set_name, metrics_dict in model.evals_result_.items():
+                            metrics_dict["set"] = valid_set_name
+                            pdf_metrics_partial = pd.DataFrame(metrics_dict)
+                            pdf_metrics_partial["round"] = range(
+                                1, pdf_metrics_partial.shape[0] + 1
+                            )
+                            pdf_metrics = pd.concat([pdf_metrics, pdf_metrics_partial])
+                        pdf_metrics_melted = pdf_metrics.melt(
+                            id_vars=["set", "round"], var_name="metric"
+                        )
+                        pdf_metrics_melted.to_csv(
+                            tmp_path / "metrics_by_round.csv", index=False
+                        )
+
+                        (  # Plot the AUC of each set in each round
+                            ggplot(
+                                pdf_metrics_melted[
+                                    pdf_metrics_melted["metric"] == "auc"
+                                ],
+                                aes(x="round", y="value", color="set"),
+                            )
+                            + ylab("AUC")
+                            + geom_line()
+                            + ggtitle(f"AUC per round (tree) for {current_group}")
+                        ).save(tmp_path / "auc_per_round.png")
+
+                        # Create a CSV report with percentile metrics
+                        df_metrics_by_percentile = get_metrics_by_percentile(
+                            y_true=pdf_test[target_column], y_pred=test_predictions
+                        )
+                        df_metrics_by_percentile.to_csv(
+                            tmp_path / "metrics_by_percentile.csv", index=False
+                        )
+                        mlflow.log_artifact(
+                            str(tmp_path / "roc_curve.png"), artifact_path=""
+                        )
+                        mlflow.log_artifact(
+                            str(tmp_path / "metrics_by_round.csv"), artifact_path=""
+                        )
+                        mlflow.log_artifact(
+                            str(tmp_path / "auc_per_round.png"), artifact_path=""
+                        )
+                        mlflow.log_artifact(
+                            str(tmp_path / "metrics_by_percentile.csv"),
+                            artifact_path="",
+                        )
+
+                    elif model_type == "regression":
+                        model = LGBMRegressor(**model_params).fit(
+                            pdf_train[explanatory_features],
+                            pdf_train[target_column],
+                            eval_set=[
+                                (
+                                    pdf_train[explanatory_features],
+                                    pdf_train[target_column],
+                                ),
+                                (
+                                    pdf_test[explanatory_features],
+                                    pdf_test[target_column],
+                                ),
+                            ],
+                            eval_names=["train", "test"],
+                            eval_metric="mae",
+                        )
+
+                        test_predictions = model.predict(pdf_test[explanatory_features])
+                        mlflowlightgbm.log_model(model.booster_, artifact_path="")
+
+                        train_mae = model.evals_result_["train"]["l1"][-1]
+                        test_mae = model.evals_result_["test"]["l1"][-1]
+                        mlflow.log_metric("train_mae", train_mae)
+                        mlflow.log_metric("test_mae", test_mae)
+                        mlflow.log_metric(
+                            "test_benchmark_target_average",
+                            np.mean(
+                                np.abs(
+                                    pdf_test[target_column]
+                                    - pdf_test[target_column].mean()
+                                )
+                            ),
+                        )
+                        plot_important(
+                            explanatory_features,
+                            model.feature_importances_,
+                            filepath=tmp_path / "important_features.png",
+                            max_num_features=20,
+                        )
+                        mlflow.log_artifact(
+                            str(tmp_path / "important_features.png"), artifact_path=""
+                        )
+                        mlflow.log_metric("train_test_mae_diff", train_mae - test_mae)
+                        # Plot target and score distributions
+                        (
+                            ggplot(
+                                pd.DataFrame(
+                                    {
+                                        "Real": pdf_test[target_column],
+                                        "Predicted": test_predictions,
+                                    }
+                                ).melt(var_name="Source", value_name="ARPU_uplift"),
+                                aes(x="ARPU_uplift", fill="Source"),
+                            )
+                            + geom_density(alpha=0.5)
+                            + ggtitle(
+                                f"ARPU uplift distribution for real target and model prediction"
+                            )
+                        ).save(tmp_path / "ARPU_uplift_distribution.png")
+
+                        # Calculate and plot AUC per round
+                        pdf_metrics = pd.DataFrame()
+                        for valid_set_name, metrics_dict in model.evals_result_.items():
+                            metrics_dict["set"] = valid_set_name
+                            pdf_metrics_partial = pd.DataFrame(metrics_dict)
+                            pdf_metrics_partial["round"] = range(
+                                1, pdf_metrics_partial.shape[0] + 1
+                            )
+                            pdf_metrics = pd.concat([pdf_metrics, pdf_metrics_partial])
+                        pdf_metrics_melted = pdf_metrics.melt(
+                            id_vars=["set", "round"], var_name="metric"
+                        )
+                        pdf_metrics_melted.to_csv(
+                            tmp_path / "metrics_by_round.csv", index=False
+                        )
+
+                        (  # Plot the MAE of each set in each round
+                            ggplot(
+                                pdf_metrics_melted[
+                                    pdf_metrics_melted["metric"] == "l1"
+                                ],
+                                aes(x="round", y="value", color="set"),
+                            )
+                            + ylab("MAE")
+                            + geom_line()
+                            + ggtitle(f"MAE per round (tree) for {current_group}")
+                        ).save(tmp_path / "mae_per_round.png")
+
+                        mlflow.log_artifact(
+                            str(tmp_path / "ARPU_uplift_distribution.png"),
+                            artifact_path="",
+                        )
+                        mlflow.log_artifact(
+                            str(tmp_path / "metrics_by_round.csv"), artifact_path=""
+                        )
+                        mlflow.log_artifact(
+                            str(tmp_path / "mae_per_round.png"), artifact_path=""
+                        )
                     df_to_return = pd.DataFrame(
                         {
                             "able_to_model_flag": int(able_to_model_flag),
@@ -616,19 +740,6 @@ def train_multiple_models(
     Returns:
         A spark DataFrame with info about the training
     """
-    df_master = catalog.load("l5_du_master_tbl")
-    explanatory_features = catalog.load("params:du_model_explanatory_features")
-    target_column = catalog.load("params:du_acceptance_model_target_column")
-    group_column = catalog.load("params:du_model_group_column")
-    train_sampling_ratio = catalog.load("params:du_model_train_sampling_ratio")
-    model_params = catalog.load("params:du_model_model_params")
-    max_rows_per_group = catalog.load("params:du_model_max_rows_per_group")
-    min_obs_per_class_for_model = catalog.load(
-        "params:du_model_min_obs_per_class_for_model"
-    )
-    extra_keep_columns = catalog.load("params:du_extra_tag_columns_pai")
-    pai_runs_uri = catalog.load("params:du_pai_artifacts_uri")
-    pai_artifacts_uri = catalog.load("params:du_pai_artifacts_uri")
 
     explanatory_features.sort()
 
@@ -678,25 +789,7 @@ def train_multiple_models(
         df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
             F.rand() * F.col("aux_n_rows_per_group") / max_rows_per_group <= 1
         ).drop("aux_n_rows_per_group")
-    logging.info("start calling create model function")
-    #
-    dbutils = get_dbutils(spark)
-    pai_run_prefix = (
-        f"{get_local_datetime().strftime('%Y%m%d_%H%M%S')}_" f"du_thanasiy_" f"dev_"
-    )
 
-    tmp_path = pai_runs_uri + pai_run_prefix
-
-    mvv_list = (
-        df_master_only_necessary_columns.groupby(group_column)
-        .agg(F.count("*").alias("CNT"))
-        .drop("CNT")
-        .collect()
-    )
-    for m in mvv_list:
-        model_path = tmp_path + "/" + m[0]
-        if not file_exists(model_path, dbutils):
-            dbutils.fs.mkdirs(model_path)
     df_training_info = df_master_only_necessary_columns.groupby(group_column).apply(
         create_model_function(
             as_pandas_udf=True,
@@ -705,15 +798,164 @@ def train_multiple_models(
             target_column=target_column,
             pdf_extra_pai_metrics=pdf_extra_pai_metrics,
             extra_tag_columns=extra_keep_columns,
-            pai_run_prefix=pai_run_prefix,
             **kwargs,
         )
     )
-    logging.info("done create model function")
-
     return df_training_info
 
 
+def train_single_model_call(
+    df_master: pyspark.sql.DataFrame,
+    group_column: str,
+    explanatory_features: List[str],
+    target_column: str,
+    target_group,
+    extra_keep_columns: List[str] = None,
+    max_rows_per_group: int = None,
+    **kwargs: Any,
+) -> pyspark.sql.DataFrame:
+
+    explanatory_features.sort()
+
+    if extra_keep_columns is None:
+        extra_keep_columns = []
+
+    # Increase number of partitions when training models to ensure data stays small
+    spark = get_spark_session()
+    spark.conf.set("spark.sql.shuffle.partitions", 2100)
+    df_master = df_master.where("rework_macro_product ='" + target_group + "'")
+    # To reduce the size of the pandas DataFrames only select the columns we really need
+    # Also cast decimal type columns cause they don't get properly converted to pandas
+    df_master_only_necessary_columns = df_master.select(
+        "subscription_identifier",
+        "contact_date",
+        "du_spine_primary_key",
+        group_column,
+        target_column,
+        *(
+            extra_keep_columns
+            + [
+                F.col(column_name).cast(FloatType())
+                if column_type.startswith("decimal")
+                else F.col(column_name)
+                for column_name, column_type in df_master.select(
+                    *explanatory_features
+                ).dtypes
+            ]
+        ),
+    )
+
+    pdf_extra_pai_metrics = calculate_extra_pai_metrics(
+        df_master_only_necessary_columns, target_column, group_column
+    )
+
+    # Filter rows with NA target to reduce size of pandas DataFrames within pandas udf
+    df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
+        ~F.isnull(F.col(target_column))
+    )
+
+    # df_training_info = df_master_only_necessary_columns.groupby(group_column).apply(
+    #     create_model_function(
+    #         as_pandas_udf=False,
+    #         group_column=group_column,
+    #         explanatory_features=explanatory_features,
+    #         target_column=target_column,
+    #         pdf_extra_pai_metrics=pdf_extra_pai_metrics,
+    #         extra_tag_columns=extra_keep_columns,
+    #         **kwargs,
+    #     )
+    # )
+    # Sample down if data is too large to reliably train a model
+    if max_rows_per_group is not None:
+        df_master_only_necessary_columns = df_master_only_necessary_columns.withColumn(
+            "aux_n_rows_per_group",
+            F.count(F.lit(1)).over(Window.partitionBy(group_column)),
+        )
+        df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
+            F.rand() * F.col("aux_n_rows_per_group") / max_rows_per_group <= 1
+        ).drop("aux_n_rows_per_group")
+    pdf_master_only_necessary_columns = df_master_only_necessary_columns.toPandas()
+    df_training_info = lambda pdf_master_chunk, pdf_extra_pai_metrics: create_model_function(
+        as_pandas_udf=False,
+        group_column=group_column,
+        explanatory_features=explanatory_features,
+        target_column=target_column,
+        pdf_extra_pai_metrics=pdf_extra_pai_metrics,
+        extra_tag_columns=extra_keep_columns,
+        pdf_master_chunk=pdf_master_only_necessary_columns,
+        **kwargs,
+    )(
+        pdf_master_chunk
+    )
+    return df_training_info
+
+
+#
+# pai_run_prefix="dummy_acceptance_"
+# df_master = catalog.load("l5_du_master_tbl")
+# group_column = catalog.load("params:du_model_group_column")
+# explanatory_features = catalog.load("params:du_model_explanatory_features")
+# target_column= catalog.load("params:du_acceptance_model_target_column")
+# train_sampling_ratio= catalog.load("params:du_model_train_sampling_ratio")
+# model_params= catalog.load("params:du_model_model_params")
+# max_rows_per_group= catalog.load("params:du_model_max_rows_per_group")
+# min_obs_per_class_for_model= catalog.load("params:du_model_min_obs_per_class_for_model")
+# extra_keep_columns= catalog.load("params:du_extra_tag_columns_pai")
+# pai_runs_uri= catalog.load("params:du_pai_runs_uri")
+# pai_artifacts_uri= catalog.load("params:du_pai_artifacts_uri")
+# explanatory_features.sort()
+#
+# if extra_keep_columns is None:
+#     extra_keep_columns = []
+#
+# # Increase number of partitions when training models to ensure data stays small
+# spark = get_spark_session()
+# spark.conf.set("spark.sql.shuffle.partitions", 2100)
+#
+# # To reduce the size of the pandas DataFrames only select the columns we really need
+# # Also cast decimal type columns cause they don't get properly converted to pandas
+# df_master_only_necessary_columns = df_master.select(
+#     "subscription_identifier",
+#     "contact_date",
+#     "du_spine_primary_key",
+#     group_column,
+#     target_column,
+#     *(
+#             extra_keep_columns
+#             + [
+#                 F.col(column_name).cast(FloatType())
+#                 if column_type.startswith("decimal")
+#                 else F.col(column_name)
+#                 for column_name, column_type in df_master.select(
+#             *explanatory_features
+#         ).dtypes
+#             ]
+#     ),
+# )
+#
+# pdf_extra_pai_metrics = calculate_extra_pai_metrics(
+#     df_master_only_necessary_columns, target_column, group_column
+# )
+#
+# # Filter rows with NA target to reduce size of pandas DataFrames within pandas udf
+# df_master_only_necessary_columns = df_master_only_necessary_columns.filter(
+#     ~F.isnull(F.col(target_column))
+# )
+#
+# # Sample down if data is too large to reliably train a model
+# if max_rows_per_group is not None:
+#     df_master_only_necessary_columns = df_master_only_necessary_columns.withColumn(
+#         "aux_n_rows_per_group",
+#         F.count(F.lit(1)).over(Window.partitionBy(group_column)),
+#     )
+#     test_df = df_master_only_necessary_columns.filter(
+#         F.rand() * F.col("aux_n_rows_per_group") / max_rows_per_group <= 1
+#     ).drop("aux_n_rows_per_group")
+#
+# pdf_extra_pai_metrics_test = calculate_extra_pai_metrics(
+#     test_df, target_column, group_column
+# )
+#
 # df_training_info = df_master_only_necessary_columns.groupby(group_column).apply(
 #     create_model_function(
 #         as_pandas_udf=True,
@@ -723,7 +965,7 @@ def train_multiple_models(
 #         pdf_extra_pai_metrics=pdf_extra_pai_metrics,
 #         extra_tag_columns=extra_keep_columns,
 #         model_type="binary",
-#         pai_run_prefix="testing_naja_naija/",
+#         pai_run_prefix=pai_run_prefix,
 #         train_sampling_ratio=train_sampling_ratio,
 #         model_params=model_params,
 #         min_obs_per_class_for_model=min_obs_per_class_for_model,

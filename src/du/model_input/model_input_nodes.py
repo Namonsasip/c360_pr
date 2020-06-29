@@ -278,6 +278,11 @@ def node_l5_du_master_spine_table(
     )
     return df_spine
 
+def node_l5_du_master_table_only_accepted(
+    l5_du_master_table: DataFrame,
+) -> DataFrame:
+    return l5_du_master_table.filter(F.col("target_response") == 1)
+
 def node_l5_du_master_table_chunk_debug_acceptance(
     l5_du_master_table: DataFrame, group_target: str, sampling_rate: float
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
