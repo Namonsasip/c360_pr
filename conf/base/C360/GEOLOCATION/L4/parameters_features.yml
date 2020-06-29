@@ -30,6 +30,28 @@ l4_area_from_competitor_store:
 #  feature_list:
 #    imsi: "imsi"
 
+int_l4_geo_home_location_id_monthly:
+  where_clause: "where duration != 0 and ((hour_in >= 18) or (hour_in < 18 and hour_out > 18) or (hour_in < 6 and hour_out > 6) or (hour_out <=6))"
+  feature_list:
+    duration: "sum(case when hour_in < 18 and hour_out > 18 then cast(to_unix_timestamp(time_out) as long) - (cast(to_unix_timestamp(event_partition_date) as long) + 64800)
+                  when hour_in < 6 and hour_out > 6 then (cast(to_unix_timestamp(event_partition_date) as long) + 21600) - cast(to_unix_timestamp(time_out) as long)
+                  else duration end)"
+    days: "approx_count_distinct(event_partition_date)"
+  granularity: "imsi, location_id, latitude, longitude, week_type, start_of_month"
+  output_catalog: "int_l4_geo_home_location_id_monthly"
+  partition_num_per_job: 10
+
+int_l4_geo_work_location_id_monthly:
+  where_clause: "where duration != 0 and (((hour_in >= 8 and hour_in < 18) and hour_out <= 18) or ((hour_in >= 8 and hour_in < 18) and hour_out > 18))"
+  feature_list:
+    duration: "sum(case when ((hour_in >= 8) and (hour_in < 18)) and (hour_out > 18)
+                  then (cast(to_unix_timestamp(event_partition_date) as long) + 64800) - (cast(to_timestamp(time_in) as long))
+                  else duration end)"
+    days: "approx_count_distinct(event_partition_date)"
+  granularity: "imsi, location_id, latitude, longitude, start_of_month"
+  output_catalog: "int_l4_geo_work_location_id_monthly"
+  partition_num_per_job: 10
+
 l4_geo_home_work_location_id:
   where_clause: ""
   feature_list:

@@ -5,6 +5,7 @@ from pyspark.sql import types as T
 from pyspark.sql.types import *
 from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1.to_l1_nodes import gen_max_sql
 from customer360.utilities.config_parser import node_from_config, l4_rolling_window
+from customer360.utilities.re_usable_functions import l3_massive_processing, l1_massive_processing, __divide_chunks
 from kedro.context.context import load_context
 from pathlib import Path
 import logging
@@ -12,6 +13,107 @@ import os
 import statistics
 from pyspark.sql import Window
 from customer360.utilities.spark_util import get_spark_session
+
+
+# Set function for massive process: Daily --> Monthly
+def massive_processing_for_home_work(
+        input_df,
+        config_home,
+        config_work,
+        source_partition_col="partition_date"
+):
+    # filter
+    input_df = input_df.filter('partition_date >= 20190801 and partition_date <= 20191031')
+
+    CNTX = load_context(Path.cwd(), env=os.getenv("CONF", "base"))
+    data_frame = input_df
+    dates_list = data_frame.select(source_partition_col).distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+
+    partition_num_per_job = config_home.get("partition_num_per_job", 1)
+    mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
+    add_list = mvv_new
+
+    #Set first dataframe to merge
+    if len(add_list) != 1:
+        last_item = add_list[0]
+        logging.info("First date to run for {0}".format(str(last_item)))
+        small_df_last = data_frame.filter(F.col(source_partition_col).isin(*[last_item]))
+
+        # Add 2 columns: event_partition_date, start_of_month
+        small_df_last = small_df_last.withColumn("event_partition_date", F.to_date(F.col("partition_date").cast(StringType()),'yyyyMMdd'))
+        small_df_last = small_df_last.withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col("event_partition_date"))))
+
+        # Work
+        output_df_work = _int_l4_geo_work_location_id_monthly(small_df_last, config_work)
+        CNTX.catalog.save(config_work["output_catalog"], output_df_work)
+
+        # Home
+        output_df_home = _int_l4_geo_home_location_id_monthly(small_df_last, config_home)
+        CNTX.catalog.save(config_home["output_catalog"], output_df_home)
+        add_list.remove(last_item)
+
+
+    first_item = add_list[-1]
+
+    add_list.remove(first_item)
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        small_df = data_frame.filter(F.col(source_partition_col).isin(*[curr_item]))
+
+        # Add 2 columns: event_partition_date, start_of_month
+        small_df = small_df.withColumn("event_partition_date", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))
+        small_df = small_df.withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col("event_partition_date"))))
+
+        # Work
+        after_output_df_work = CNTX.catalog.load(config_work["output_catalog"])
+        output_df_work = _int_l4_geo_work_location_id_monthly(small_df, config_work)
+        output_df_work = output_df_work.select(after_output_df_work.columns)
+        output_df_work_union = after_output_df_work.union(output_df_work)
+        output_df_work_union = output_df_work_union.groupBy("imsi", "location_id", "latitude", "longitude", "start_of_month")\
+            .agg(F.sum("duration").alias("duration"), F.sum("days").alias("days"))
+        CNTX.catalog.save(config_work["output_catalog"], output_df_work_union)
+
+        # Home
+        after_output_df_home = CNTX.catalog.load(config_home["output_catalog"])
+        output_df_home = _int_l4_geo_home_location_id_monthly(small_df, config_home)
+        output_df_home = output_df_home.select(after_output_df_home.columns)
+        output_df_home_union = after_output_df_home.union(output_df_home)
+        output_df_home_union = output_df_home_union.groupBy("imsi", "location_id", "latitude", "longitude", "week_type", "start_of_month")\
+            .agg(F.sum("duration").alias("duration"), F.sum("days").alias("days"))
+        CNTX.catalog.save(config_home["output_catalog"], output_df_home_union)
+
+
+    logging.info("Final date to run for {0}".format(str(first_item)))
+    return_df = data_frame.filter(F.col(source_partition_col).isin(*[first_item]))
+    # Add 2 columns: event_partition_date, start_of_month
+    return_df = return_df.withColumn("event_partition_date",
+                                             F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))
+    return_df = return_df.withColumn("start_of_month",
+                                             F.to_date(F.date_trunc('month', F.col("event_partition_date"))))
+    # Work
+    after_output_df_work = CNTX.catalog.load(config_work["output_catalog"])
+    output_df_work = _int_l4_geo_work_location_id_monthly(return_df, config_work)
+    output_df_work = output_df_work.select(after_output_df_work.columns)
+    output_df_work_union = after_output_df_work.union(output_df_work)
+    output_df_work_union = output_df_work_union.groupBy("imsi", "location_id", "latitude", "longitude",
+                                                        "start_of_month") \
+        .agg(F.sum("duration").alias("duration"), F.sum("days").alias("days"))
+    # CNTX.catalog.save(config_work["output_catalog"], output_df_work_union)
+
+    # Home
+    after_output_df_home = CNTX.catalog.load(config_home["output_catalog"])
+    output_df_home = _int_l4_geo_home_location_id_monthly(return_df, config_home)
+    output_df_home = output_df_home.select(after_output_df_home.columns)
+    output_df_home_union = after_output_df_home.union(output_df_home)
+    output_df_home_union = output_df_home_union.groupBy("imsi", "location_id", "latitude", "longitude", "week_type",
+                                                        "start_of_month") \
+        .agg(F.sum("duration").alias("duration"), F.sum("days").alias("days"))
+    # CNTX.catalog.save(config_home["output_catalog"], output_df_home_union)
+
+    return [output_df_home_union, output_df_work_union]
 
 
 def l4_geo_top_visit_exclude_homework(sum_duration, homework):
@@ -46,220 +148,77 @@ def l4_geo_top_visit_exclude_homework(sum_duration, homework):
     df.show()
     return df
 
+def _int_l4_geo_home_location_id_monthly(df, config):
+    # Add column week_type
+    df = df.withColumn('week_type', F.when(((F.dayofweek(F.col('event_partition_date')) == 1) & (F.dayofweek(F.col('event_partition_date')) == 7)), 'weekend')
+                                                                             .otherwise('weekday').cast(StringType()))
+    df = node_from_config(df, config)
 
-def l4_geo_home_work_location_id(geo_cust_cell_visit_time, sql):
-    # Filter 3 4 5
-    geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20200301')
+    return df
 
-    # Add 2 columns: event_partition_date, start_of_month
-    geo_cust_cell_visit_time.cache()
-    geo_cust_cell_visit_time = geo_cust_cell_visit_time.withColumn("event_partition_date",
-                                                                   F.to_date(F.col("partition_date").cast(StringType()),
-                                                                             'yyyyMMdd'))
-    geo_cust_cell_visit_time = geo_cust_cell_visit_time.withColumn("start_of_month", F.to_date(
-        F.date_trunc('month', F.col("event_partition_date"))))
+def _int_l4_geo_work_location_id_monthly(df, config):
+    df = node_from_config(df, config)
+    return df
 
-    # Get spark session
-    spark = get_spark_session()
+def l4_geo_home_work_location_id(home_monthly, work_monthly, sql):
 
-    # Fix Time on Home Location
-    geo_cust_cell_visit_time.createOrReplaceTempView('geo_cust_cell_visit_time')
-    geo_cust_cell_visit_time_home = spark.sql("""
-        select imsi, time_in, time_out, location_id, latitude, longitude,
-            case
-                when (hour_in < 18 and hour_out > 18) then ( to_unix_timestamp(time_out) - (to_unix_timestamp(event_partition_date) + 64800) )
-                when (hour_in < 6 and hour_out > 6) then ( (to_unix_timestamp(event_partition_date) + 21600) - to_unix_timestamp(time_out) )
-                else duration 
-            end as duration,
-            event_partition_date, start_of_month
-        from geo_cust_cell_visit_time
-        where duration <> 0
-        and ((hour_in >= 18)
-        or (hour_in < 18 and hour_out > 18)
-        or (hour_in < 6 and hour_out > 6)
-        or (hour_out <=6))
-    """)
-    geo_cust_cell_visit_time_home.cache()
+    w_home = Window().partitionBy('imsi', 'location_id', 'week_type').orderBy(F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
+    home_last_3m = home_monthly.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd"))\
+        .withColumn("duration_3m", F.sum("duration").over(w_home))\
+        .withColumn("days_3m", F.sum('days').over(w_home))
+    home_last_3m = home_last_3m.dropDuplicates(['imsi', 'week_type', 'start_of_month', 'location_id', 'duration_3m', 'days_3m'])\
+        .select('imsi', 'start_of_month', 'week_type', 'location_id', 'latitude', 'longitude', 'duration_3m', 'days_3m')
 
-    # Aggregate table daily: geo_cust_cell_visit_time_home
-    geo_cust_cell_visit_time_home.createOrReplaceTempView('geo_cust_cell_visit_time_home')
-    df_home_daily = spark.sql("""
-        select 
-            a.imsi
-            ,a.location_id, a.latitude, a.longitude
-            ,a.event_partition_date, a.start_of_month
-            ,sum(a.duration) as duration
-        from (
-            geo_cust_cell_visit_time_home
-        ) a
-        group by a.imsi, a.location_id, a.latitude, a.longitude, a.event_partition_date, a.start_of_month
-    """)
-    df_home_daily.cache()
-    spark.catalog.dropTempView("geo_cust_cell_visit_time_home")
+    w_num_row = Window().partitionBy('imsi', 'location_id', 'week_type', 'start_of_month').orderBy(F.col('duration_3m').desc(), F.col('days_3m').desc())
+    home_last_3m = home_last_3m.withColumn('row_num', F.row_number().over(w_num_row))
 
-    # Check DataFrame from SQL query statement
-    print("Start for check the result from sql query statement of HOME")
+    home_last_3m = home_last_3m.where('row_num = 1').drop('row_num')
+    home_last_3m_weekday = home_last_3m.where("week_type = 'weekday'").select('imsi', 'start_of_month', (F.col('location_id').alias('home_weekday_location_id')),
+                                                                                               (F.col('latitude').alias('home_weekday_latitude')),
+                                                                                               (F.col('longitude').alias('home_weekday_longitude')))
+    home_last_3m_weekend = home_last_3m.where("week_type = 'weekend'").select('imsi', 'start_of_month',
+                                                                                               (F.col('location_id').alias('home_weekend_location_id')),
+                                                                                               (F.col('latitude').alias('home_weekend_latitude')),
+                                                                                               (F.col('longitude').alias('home_weekend_longitude')))
 
-    geo_cust_cell_visit_time_work = spark.sql("""
-            select imsi, time_in, time_out, location_id, latitude, longitude,
-                case
-                    when ((hour_in >= 8 and hour_in < 18) and hour_out > 18) then ( (to_unix_timestamp(event_partition_date) + 64800) - (to_unix_timestamp(time_in)) )
-                    else duration
-                end as duration
-               ,event_partition_date, start_of_month
-            from geo_cust_cell_visit_time
-            where duration <> 0
-            and
-            (((hour_in >= 8 and hour_in < 18) and hour_out <= 18)
-             or ((hour_in >= 8 and hour_in < 18) and hour_out > 18))
-        """)
-    geo_cust_cell_visit_time_work.cache()
-    spark.catalog.dropTempView("geo_cust_cell_visit_time")
+    w_work = Window().partitionBy('imsi', 'location_id').orderBy(F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
+    work_last_3m = work_monthly.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd"))\
+        .withColumn("duration_3m", F.sum("duration").over(w_work))\
+        .withColumn("days_3m", F.sum('days').over(w_work))
 
-    # Aggregate table daily: geo_cust_cell_visit_time_work
-    geo_cust_cell_visit_time_work.createOrReplaceTempView('geo_cust_cell_visit_time_work')
-    df_work_daily = spark.sql("""
-        select a.imsi
-            ,a.location_id, a.latitude, a.longitude
-            ,a.event_partition_date, a.start_of_month
-            ,sum(a.duration) as duration
-        from (
-        geo_cust_cell_visit_time_work
-        ) a
-        group by a.imsi, a.location_id, a.latitude, a.longitude, a.event_partition_date, a.start_of_month
-    """)
-    df_work_daily.cache()
-    df_work_daily.createOrReplaceTempView("df_work_daily")
-    spark.catalog.dropTempView("geo_cust_cell_visit_time_work")
+    work_last_3m = work_last_3m.dropDuplicates(['imsi', 'start_of_month', 'location_id', 'duration_3m', 'days_3m'])\
+        .select('imsi', 'start_of_month', 'location_id', 'latitude', 'longitude', 'duration_3m', 'days_3m')
 
-    # Check DataFrame from SQL query statement
-    print("Start for check result from sql query statement of WORK")
 
-    # Add column Weekend and Weekday
-    home_duration_dayily_with_weektype = df_home_daily.withColumn("week_type", F.when(
-        (F.dayofweek('event_partition_date') == 1) | (F.dayofweek('event_partition_date') == 7), 'weekend') \
-                                                                  .otherwise('weekday').cast(StringType())
-                                                                  )
-    home_duration_dayily_with_weektype.cache()
-    home_duration_dayily_with_weektype.createOrReplaceTempView('home_duration_dayily_with_weektype')
+    w_work_num_row = Window().partitionBy('imsi', 'location_id', 'start_of_month').orderBy(F.col('duration_3m').desc(), F.col('days_3m').desc())
+    work_last_3m = work_last_3m.withColumn('row_num', F.row_number().over(w_work_num_row))
+    work_last_3m = work_last_3m.where('row_num = 1').drop('row_num')
 
-    df_home_combine_week_monthly = spark.sql("""
-        select imsi,
-            location_id, latitude, longitude,
-            start_of_month, week_type,
-            sum(duration) as duration
-        from home_duration_dayily_with_weektype
-        group by imsi, location_id, latitude, longitude, start_of_month, week_type
-    """)
-    df_home_combine_week_monthly.cache()
-    spark.catalog.dropTempView("home_duration_dayily_with_weektype")
+    list_imsi_work = work_last_3m.select('imsi', 'start_of_month')
+    list_imsi_home_weekday = home_last_3m_weekday.select('imsi', 'start_of_month')
+    list_imsi_wuhd = list_imsi_work.union(list_imsi_home_weekday).distinct()
+    list_imsi_home_weekend = home_last_3m_weekend.select('imsi', 'start_of_month')
+    list_imsi = list_imsi_wuhd.union(list_imsi_home_weekend).distinct()
 
-    df_work_monthly = spark.sql("""
-        select
-            imsi,
-            location_id, latitude, longitude,
-            start_of_month
-            ,sum(duration) as duration
-        from df_work_daily
-        group by imsi, location_id, latitude, longitude, start_of_month
-    """)
-    df_work_monthly.cache()
-    spark.catalog.dropTempView("df_work_daily")
 
-    w_home = Window().partitionBy(F.col('imsi'), F.col('location_id'), F.col('week_type')).orderBy(
-        F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
-    df_home_combine_week_monthly_sum_last_3_day = df_home_combine_week_monthly.withColumn("Month", F.to_timestamp(
-        "start_of_month", "yyyy-MM-dd")).withColumn("Sum", F.sum("duration").over(w_home))
+    work_last_3m = list_imsi.join(work_last_3m, ['imsi', 'start_of_month'], 'left').select(list_imsi.imsi, list_imsi.start_of_month, 'location_id', 'latitude', 'longitude')
 
-    df_home_combine_week_monthly_sum_last_3_day.createOrReplaceTempView('df_home_combine_week_monthly_sum_last_3_day')
-    df_home_location = spark.sql("""
-        select
-            a.imsi,
-            a.start_of_month,
-            a.week_type,
-            b.location_id,
-            b.latitude,
-            b.longitude
-        from (
-          select imsi,
-            start_of_month,
-            week_type,
-            max(Sum) as Sum
-          from df_home_combine_week_monthly_sum_last_3_day
-          group by 1,2,3
-        ) a
-        left join df_home_combine_week_monthly_sum_last_3_day b
-        on a.imsi = b.imsi and a.start_of_month = b.start_of_month and a.Sum = b.Sum and a.week_type = b.week_type
-        group by 1,2,3,4,5,6
-    """)
-    df_home_location.cache()
-    spark.catalog.dropTempView("df_home_combine_week_monthly_sum_last_3_day")
 
-    # Check DataFrame from SQL query statement
-    print("Start for check result from sql query statement of HOME")
+    home_work = work_last_3m.join(home_last_3m_weekday, ['imsi', 'start_of_month'], 'left').select(work_last_3m.start_of_month, work_last_3m.imsi,
+                                                 'home_weekday_location_id', 'home_weekday_latitude',
+                                                 'home_weekday_longitude', 'location_id', 'latitude',
+                                                 'longitude')
 
-    w_work = Window().partitionBy(F.col('imsi'), F.col('location_id')).orderBy(
-        F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
-    df_home_combine_week_monthly_sum_last_3_day = df_work_monthly.withColumn("Month", F.to_timestamp("start_of_month",
-                                                                                                     "yyyy-MM-dd")).withColumn(
-        "Sum", F.sum("duration").over(w_work))
+    home_work_final = home_work.join(home_last_3m_weekend, ['imsi', 'start_of_month'], 'left').select(home_work.start_of_month, home_work.imsi,
+                                              'home_weekday_location_id',
+                                              'home_weekday_latitude', 'home_weekday_longitude',
+                                              'home_weekend_location_id',
+                                              'home_weekend_latitude', 'home_weekend_longitude',
+                                              (F.col('location_id').alias('work_location_id')),
+                                              (F.col('latitude').alias('work_latitude')),
+                                              (F.col('longitude').alias('work_longitude')))
 
-    df_home_combine_week_monthly_sum_last_3_day.createOrReplaceTempView('df_home_combine_week_monthly_sum_last_3_day')
-    df_work_location = spark.sql("""
-            select
-                a.imsi,
-                a.start_of_month,
-                b.location_id,
-                b.latitude,
-                b.longitude
-            from (
-              select imsi,
-                start_of_month,
-                max(Sum) as Sum
-              from df_home_combine_week_monthly_sum_last_3_day
-              group by 1,2
-            ) a
-            left join df_home_combine_week_monthly_sum_last_3_day b
-            on a.imsi = b.imsi and a.start_of_month = b.start_of_month and a.Sum = b.Sum
-            group by 1,2,3,4,5
-        """)
-    df_work_location.cache()
-    spark.catalog.dropTempView("df_work_monthly")
-
-    # Check DataFrame from SQL query statement
-    print("Start for check result from sql query statement of WORK")
-
-    df_home_location.createOrReplaceTempView('df_home_location')
-    df_work_location.createOrReplaceTempView('df_work_location')
-
-    df_combine_home_work = spark.sql("""
-        select
-            a.imsi,
-            a.start_of_month,
-            b.location_id as home_weekday_location_id,
-            b.latitude as home_weekday_latitude,
-            b.longitude as home_weekday_longitude,
-            c.location_id as home_weekend_location_id,
-            c.latitude as home_weekend_latitude,
-            c.longitude as home_weekend_longitude,
-            a.location_id as work_location_id,
-            a.latitude as work_latitude,
-            a.longitude as work_longitude
-        from df_work_location a
-        left join df_home_location b
-        on b.week_type = 'weekday' and a.imsi = b.imsi and a.start_of_month = b.start_of_month
-        left join df_home_location c
-        on c.week_type = 'weekend' and a.imsi = c.imsi and a.start_of_month = c.start_of_month
-        group by 1,2,3,4,5,6,7,8,9,10,11
-    """)
-    df_combine_home_work.cache()
-    spark.catalog.dropTempView("df_home_location")
-    spark.catalog.dropTempView("df_work_location")
-
-    # Check DataFrame from SQL query statement
-    print("Start for check the result from sql query statement FINAL")
-
-    df = node_from_config(df_combine_home_work, sql)
+    df = node_from_config(home_work_final, sql)
     return df
 
 

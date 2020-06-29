@@ -138,6 +138,16 @@ def l2_geo_top3_cells_on_voice_usage(df,sql):
 
 
 
+###distance_top_call###
+def l2_geo_distance_top_call(l1_df):
+    l1_df1 = l1_df.groupBy("imsi", "start_of_week").agg(
+        F.max("top_distance_km").alias("max_distance_top_call"), F.min("top_distance_km").alias("min_distance_top_call"),
+        F.avg("top_distance_km").alias("avg_distance_top_call"), F.when(
+            F.sqrt(F.avg(l1_df.top_distance_km * l1_df.top_distance_km) - F.pow(F.avg(l1_df.top_distance_km), F.lit(2))).cast(
+                "string") == 'NaN', 0).otherwise(
+            F.sqrt(F.avg(l1_df.top_distance_km * l1_df.top_distance_km) - F.pow(F.avg(l1_df.top_distance_km), F.lit(2)))).alias(
+            "sd_distance_top_call"),F.sun("top_distance_km").alias("sum_distance_top_call"))
+    return l1_df1
 
 
 ### 47 l1_the_favourite_locations_daily ====================\

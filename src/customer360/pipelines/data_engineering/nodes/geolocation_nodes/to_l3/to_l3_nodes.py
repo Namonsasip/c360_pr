@@ -67,6 +67,18 @@ def l3_geo_top3_cells_on_voice_usage(df,sql):
 
     return df
 
+
+def l3_geo_distance_top_call(df):
+    df = df.groupBy("imsi", "start_of_month").agg(
+        F.max("top_distance_km").alias("max_distance_top_call"),
+        F.min("top_distance_km").alias("min_distance_top_call"),
+        F.avg("top_distance_km").alias("avg_distance_top_call"),
+        F.when(F.sqrt(F.avg(df.top_distance_km * df.top_distance_km) - F.pow(F.avg(df.top_distance_km),F.lit(2))).cast("string") == 'NaN', 0).otherwise(F.sqrt(F.avg(df.top_distance_km * df.top_distance_km) - F.pow(F.avg(df.top_distance_km),F.lit(2)))).alias("sd_distance_top_call"),
+        F.sun("top_distance_km").alias("sum_distance_top_call"))
+    return df
+
+
+
 # 47 The favourite location
 def l3_the_favourite_locations_monthly(l1_df_the_favourite_location_daily):
     ### config

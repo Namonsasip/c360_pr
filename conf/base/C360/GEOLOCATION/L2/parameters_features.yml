@@ -89,7 +89,7 @@ l2_geo_top3_cells_on_voice_usage:
   where_clause: ""
   feature_list:
     total_call: "sum(total_call)"
-  granularity: "imsi,latitude,longitude,start_of_week"
+  granularity: "imsi,latitude,longitude,rnk,start_of_week"
 
 
 

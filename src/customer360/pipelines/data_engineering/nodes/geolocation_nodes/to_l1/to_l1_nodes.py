@@ -123,17 +123,6 @@ def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit
 
     return df2
 
-def l1_geo_top_visit_exclude_homework_daily(df,homework,sql):
-    df.createOrReplaceTempView('geo_cust_visit_time')
-    homework.createOrReplaceTempView('homework_master')
-
-    ss = get_spark_session()
-    df = ss.sql("""
-        xxxxxxxxxxxxxx
-        """)
-
-    df = node_from_config(df,sql)
-    return df
 
 ##==============================Update 2020-06-12 by Thatt529==========================================##
 
@@ -625,18 +614,10 @@ def l1_geo_distance_top_call(df):
 
     """
     l1_df = spark.sql(sql_query)
-    l1_df1 = l1_df.groupBy("imsi", "event_partition_date", "start_of_week", "start_of_month").agg(
-        F.max("top_distance_km").alias("max_distance_top_call"), F.min("top_distance_km").alias("min_distance_top_call"),
-        F.avg("top_distance_km").alias("avg_distance_top_call"), F.when(
-            F.sqrt(F.avg(l1_df.top_distance_km * l1_df.top_distance_km) - F.pow(F.avg(l1_df.top_distance_km), F.lit(2))).cast(
-                "string") == 'NaN', 0).otherwise(
-            F.sqrt(F.avg(l1_df.top_distance_km * l1_df.top_distance_km) - F.pow(F.avg(l1_df.top_distance_km), F.lit(2)))).alias(
-            "sd_distance_top_call"), F.sum("top_distance_km").alias("sum_distance_top_call"))
     l1_df.cache()
-    l1_df1.cache()
-    l1_df1.show(5)
+    l1_df.show(5)
 
-    return l1_df1
+    return l1_df
 
 
 def l1_geo_number_of_bs_used(geo_cust_cell, sql):
