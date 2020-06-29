@@ -319,22 +319,24 @@ def run_accuracy_logic(
 
     partition_col = get_partition_col(input_df, dataset_name)
 
-    ctx = get_dq_context()
-    try:
-        dq_accuracy_df = ctx.catalog.load("dq_accuracy_and_completeness")
+    # ctx = get_dq_context()
+    # try:
+    #     dq_accuracy_df = ctx.catalog.load("dq_accuracy_and_completeness")
+    #
+    #     filtered_input_df = get_dq_incremental_records(
+    #         input_df=input_df,
+    #         dq_accuracy_df=dq_accuracy_df,
+    #         dataset_name=dataset_name,
+    #         partition_col=partition_col
+    #     )
+    # except DataSetError:
+    #     # no dq_accuracy table means the pipeline is never executed
+    #     filtered_input_df = input_df
 
-        filtered_input_df = get_dq_incremental_records(
-            input_df=input_df,
-            dq_accuracy_df=dq_accuracy_df,
-            dataset_name=dataset_name,
-            partition_col=partition_col
-        )
-    except DataSetError:
-        # no dq_accuracy table means the pipeline is never executed
-        filtered_input_df = input_df
+    # if filtered_input_df.head() is None:
+    #     return get_spark_empty_df(schema=dq_accuracy_df_schema)
 
-    if filtered_input_df.head() is None:
-        return get_spark_empty_df(schema=dq_accuracy_df_schema)
+    filtered_input_df = input_df
 
     sample_creation_date, sampled_df = get_dq_sampled_records(filtered_input_df, sampled_sub_id_df)
     if sampled_df.head() is None:
