@@ -6,6 +6,7 @@ from du.model_input.model_input_nodes import (
     node_l5_du_target_variable_table,
     node_l5_du_master_spine_table,
     node_l5_du_master_table_chunk_debug_acceptance,
+    node_l5_du_master_table_only_accepted,
 )
 
 from nba.model_input.model_input_nodes import node_l5_nba_master_table
@@ -59,19 +60,26 @@ def create_du_model_input_pipeline() -> Pipeline:
             #     name="l5_du_master_tbl",
             #     tags=["l5_du_master_tbl", "du_masters"],
             # ),
+            # node(
+            #     partial(
+            #         node_l5_du_master_table_chunk_debug_acceptance,
+            #         group_target="Data_NonStop_4Mbps_1_ATL",
+            #         sampling_rate=1e-4,
+            #     ),
+            #     inputs={"l5_du_master_table": "l5_du_master_tbl",},
+            #     outputs=[
+            #         "l5_du_master_table_chunk_debug_acceptance",
+            #         "master_table_chunk_debug_extra_pai_metrics_acceptance_du",
+            #     ],
+            #     name="l5_du_master_table_chunk_debug_acceptance",
+            #     tags=["l5_du_master_table_chunk_debug_acceptance",],
+            # ),
             node(
-                partial(
-                    node_l5_du_master_table_chunk_debug_acceptance,
-                    group_target="Data_NonStop_4Mbps_1_ATL",
-                    sampling_rate=1e-5,
-                ),
-                inputs={"l5_du_master_table": "l5_du_master_tbl",},
-                outputs=[
-                    "l5_du_master_table_chunk_debug_acceptance",
-                    "master_table_chunk_debug_extra_pai_metrics_acceptance_du",
-                ],
-                name="l5_du_master_table_chunk_debug_acceptance",
-                tags=["l5_du_master_table_chunk_debug_acceptance",],
+                node_l5_du_master_table_only_accepted,
+                inputs={"l5_du_master_table": "l5_du_master_tbl"},
+                outputs="l5_du_master_table_only_accepted",
+                name="l5_du_master_table_only_accepted",
+                tags=["l5_du_master_table_only_accepted", "du_masters"],
             ),
         ]
     )
