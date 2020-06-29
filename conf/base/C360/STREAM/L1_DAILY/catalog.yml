@@ -181,7 +181,7 @@ int_l1_streaming_tv_channel_features_for_int_l2_streaming_tv_channel_features:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l2_streaming_fav_video_service_by_visit_count_feature'
+    lookup_table_name: 'l2_streaming_fav_tv_channel_by_duration'
     read_layer: 'l1_daily'
     target_layer: 'l2_weekly'
     lookback: '0'
@@ -389,7 +389,7 @@ int_l1_streaming_video_service_feature_for_int_l2_streaming_video_service_featur
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'int_l2_streaming_video_service_feature'
+    lookup_table_name: 'l2_streaming_fav_video_service_by_visit_count_feature'
     read_layer: 'l1_daily'
     target_layer: 'l2_weekly'
     lookback: '0'
