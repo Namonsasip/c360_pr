@@ -39,7 +39,9 @@ def massive_processing_for_home_work(
     #Set first dataframe to merge
     if len(add_list) != 1:
         last_item = add_list[0]
+        logging.info("First date to run for {0}".format(str(last_item)))
         small_df_last = data_frame.filter(F.col(source_partition_col).isin(*[last_item]))
+
         # Add 2 columns: event_partition_date, start_of_month
         small_df_last = small_df_last.withColumn("event_partition_date", F.to_date(F.col("partition_date").cast(StringType()),'yyyyMMdd'))
         small_df_last = small_df_last.withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col("event_partition_date"))))
@@ -183,15 +185,15 @@ def l4_geo_home_work_location_id(home_monthly, work_monthly, sql):
     work_last_3m = work_monthly.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd"))\
         .withColumn("duration_3m", F.sum("duration").over(w_work))\
         .withColumn("days_3m", F.sum('days').over(w_work))
-    print("DEBUG------------------------------------------(1)")
+
     work_last_3m = work_last_3m.dropDuplicates(['imsi', 'start_of_month', 'location_id', 'duration_3m', 'days_3m'])\
         .select('imsi', 'start_of_month', 'location_id', 'latitude', 'longitude', 'duration_3m', 'days_3m')
-    print("DEBUG------------------------------------------(2)")
+
 
     w_work_num_row = Window().partitionBy('imsi', 'location_id', 'start_of_month').orderBy(F.col('duration_3m').desc(), F.col('days_3m').desc())
     work_last_3m = work_last_3m.withColumn('row_num', F.row_number().over(w_work_num_row))
     work_last_3m = work_last_3m.where('row_num = 1').drop('row_num')
-    print("DEBUG------------------------------------------(3)")
+
     list_imsi_work = work_last_3m.select('imsi', 'start_of_month')
     list_imsi_home_weekday = home_last_3m_weekday.select('imsi', 'start_of_month')
     list_imsi_wuhd = list_imsi_work.union(list_imsi_home_weekday).distinct()
@@ -201,7 +203,7 @@ def l4_geo_home_work_location_id(home_monthly, work_monthly, sql):
 
     work_last_3m = list_imsi.join(work_last_3m, ['imsi', 'start_of_month'], 'left').select(list_imsi.imsi, list_imsi.start_of_month, 'location_id', 'latitude', 'longitude')
 
-    print("DEBUG------------------------------------------(4)")
+
     home_work = work_last_3m.join(home_last_3m_weekday, ['imsi', 'start_of_month'], 'left').select(work_last_3m.start_of_month, work_last_3m.imsi,
                                                  'home_weekday_location_id', 'home_weekday_latitude',
                                                  'home_weekday_longitude', 'location_id', 'latitude',
