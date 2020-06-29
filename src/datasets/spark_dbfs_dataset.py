@@ -341,7 +341,7 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 print("filter_col:", filter_col)
                 print("lookback_fltr:", lookback_fltr)
                 new_data = spark.sql(
-                    "select * from src_data where {0} > date(date_trunc('month', to_date(cast('{1}' as String)))) ".format(filter_col, tgt_filter_date))
+                    "select * from src_data where to_date(cast({0} as String),'yyyyMM') > date(date_trunc('month', to_date(cast('{1}' as String)))) ".format(filter_col, tgt_filter_date))
                 if len(new_data.head(1)) == 0:
                     return new_data
                 else:
