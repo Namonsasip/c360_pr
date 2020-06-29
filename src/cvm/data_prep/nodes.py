@@ -261,8 +261,8 @@ def subs_date_join(
     return pick_one_per_subscriber(joined)
 
 
-def add_macrosegments(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
-    """ Add macrosegments columns.
+def get_macrosegments(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
+    """ Get macrosegments columns.
 
     Args:
         df: DataFrame with all features.
@@ -279,7 +279,10 @@ def add_macrosegments(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
             df, use_case + "_macrosegment", macrosegments_defs[use_case]
         )
 
-    return df
+    macrosegment_cols = [use_case + "_macrosegment"]
+    cols_to_pick = parameters["key_columns"] + macrosegment_cols
+
+    return df.select(cols_to_pick)
 
 
 def get_micro_macrosegments(

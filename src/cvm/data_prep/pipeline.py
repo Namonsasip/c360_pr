@@ -32,6 +32,7 @@ from cvm.data_prep.nodes import (
     add_macrosegments,
     create_pred_sample,
     feature_selection_all_target,
+    get_macrosegments,
     get_micro_macrosegments,
     subs_date_join,
     subs_date_join_important_only,
@@ -157,6 +158,37 @@ def prepare_features_macrosegments(sample_type: str):
                 "features_macrosegments_" + sample_type,
                 name="create_features_macrosegments_" + sample_type,
             ),
+        ]
+    )
+
+
+def create_cvm_macrosegments(sample_type: str) -> Pipeline:
+    """ Creates pipeline creating macrosegments only for training purposes.
+
+    Args:
+        sample_type: "scoring" if list created for scoring, "training" if list created
+            for training.
+
+    Returns:
+        Kedro pipeline.
+    """
+    inputs = [
+        "raw_features_{}",
+        "parameters",
+    ]
+    outputs = [
+        "macrosegments_{}",
+    ]
+    inputs = [dataset.format(sample_type) for dataset in inputs]
+    outputs = [dataset.format(sample_type) for dataset in outputs]
+    return Pipeline(
+        [
+            node(
+                func=get_macrosegments,
+                inputs=inputs,
+                outputs=outputs,
+                name="create_macrosegments",
+            )
         ]
     )
 
@@ -305,17 +337,25 @@ def create_cvm_important_columns():
     )
 
 
-training_data_prepare = (
-    create_users_from_active("training")
-    + sample_inputs("training")
-    + create_cvm_targets("training")
-    + prepare_features_macrosegments("training")
-    + create_cvm_training_data("training")
-)
-
-
 def scoring_data_prepare(sample_type: str) -> Pipeline:
     """ Create pipeline generating input data for scoring
+
+    Args:
+        sample_type: "scoring" if list created for scoring, "training" if list created
+            for training.
+
+    Returns:
+        Kedro pipeline.
+    """
+    return (
+        join_raw_features(sample_type)
+        + create_cvm_microsegments(sample_type)
+        + create_prediction_sample(sample_type)
+    )
+
+
+def training_data_prepare(sample_type: str) -> Pipeline:
+    """ Create pipeline generating input data for training
 
     Args:
         sample_type: "scoring" if list created for scoring, "training" if list created
