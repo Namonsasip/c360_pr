@@ -578,7 +578,7 @@ def streaming_streaming_ranked_of_day_per_week(input_df: DataFrame,
     logging.info("Final date to run for {0}".format(str(first_item)))
     small_df = data_frame.filter(F.col("start_of_week").isin(*[first_item]))
 
-    int_l2_streaming_sum_per_day = node_from_config(small_df, int_l2_streaming_sum_per_day_dict)
+    int_l2_streaming_sum_per_day = expansion(small_df, int_l2_streaming_sum_per_day_dict)
 
     int_l2_streaming_ranked_of_day_per_week = node_from_config(int_l2_streaming_sum_per_day,
                                                                int_l2_streaming_ranked_of_day_per_week_dict)
