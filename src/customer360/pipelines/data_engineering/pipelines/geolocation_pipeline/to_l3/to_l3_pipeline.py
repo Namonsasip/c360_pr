@@ -75,7 +75,7 @@ def geo_to_l3_pipeline(**kwargs):
 
             ##distance_top_call###
             node(
-                node_from_config,
+                l3_geo_distance_top_call,
                 ["l1_geo_distance_top_call",
                  "params:l3_geo_distance_top_call"
                  ],
