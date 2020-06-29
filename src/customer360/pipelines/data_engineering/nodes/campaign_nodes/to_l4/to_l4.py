@@ -7,8 +7,8 @@ def add_relative_time_features(data_frame: DataFrame) -> DataFrame:
     :param data_frame:
     :return:
     """
-    # if len(data_frame.head(1)) == 0:
-    #     return data_frame
+    if len(data_frame.head(1)) == 0:
+        return data_frame
 
     data_frame = data_frame.withColumn(
         "sum_campaign_total_upsell_xsell_by_call_center_sum_weekly_last_four_week_over_twelve_weeks"
