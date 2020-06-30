@@ -285,6 +285,26 @@ def get_macrosegments(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
     return df.select(cols_to_pick)
 
 
+def add_macrosegments(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
+    """ Add macrosegments columns.
+    Args:
+        df: DataFrame with all features.
+        parameters: parameters defined in parameters.yml.
+    Returns:
+        Input DataFrame with extra column marking macrosegment.
+    """
+
+    logging.info("Defining macrosegments")
+    df = impute_from_parameters(df, parameters)
+    macrosegments_defs = parameters["macrosegments"]
+    for use_case in macrosegments_defs:
+        df = build_feature_from_parameters(
+            df, use_case + "_macrosegment", macrosegments_defs[use_case]
+        )
+
+    return df
+
+
 def get_micro_macrosegments(
     parameters: Dict[str, Any],
     raw_features: DataFrame,
