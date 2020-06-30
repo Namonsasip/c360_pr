@@ -9,6 +9,7 @@ import os
 
 conf = os.getenv("CONF", None)
 
+
 def device_l4_rolling_window(input_df: DataFrame,
                              rolling_window_dict_first: dict,
                              rolling_window_dict_second: dict) -> DataFrame:
