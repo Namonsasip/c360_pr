@@ -85,6 +85,7 @@ extensions = [
     "nbsphinx",
     "recommonmark",
     "sphinx_copybutton",
+    "rst2pdf.pdfbuilder",
 ]
 
 # enable autosummary plugin (table of contents for modules/classes/class
@@ -178,6 +179,12 @@ latex_elements = {
 latex_documents = [
     (master_doc, "CVM.tex", "CVM Documentation", "QuantumBlack", "manual",)
 ]
+
+# -- Options for pdf output --------------------------------------------------
+# Grouping the document tree into pdf files. List of tuples
+# (source start file, target name, title,
+#  author, documentclass [howto, manual, or own class]).
+pdf_documents = [("index", u"rst2pdf", u"CVM docs", u"QuantumBlack"),]
 
 # -- Options for manual page output ------------------------------------------
 
