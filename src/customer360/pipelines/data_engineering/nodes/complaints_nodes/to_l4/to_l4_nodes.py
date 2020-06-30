@@ -21,6 +21,7 @@ def l4_complaints_nps(
                 subscription_identifier,
                 start_of_week,
                 access_method_num,
+                national_id_card,
                 sum(complaints_avg_nps*record_count) over (
                             partition by subscription_identifier,access_method_num,national_id_card 
                             order by cast(cast(start_of_week as timestamp) as long) asc
@@ -70,6 +71,7 @@ def l4_complaints_nps(
             subscription_identifier,
             start_of_week,
             access_method_num,
+            national_id_card,
             total_nps_last_week/count_nps_last_week as complaints_avg_nps_last_week,
             total_nps_last_two_week/count_nps_last_two_week as complaints_avg_nps_last_two_week,
             total_nps_last_four_week/count_nps_last_four_week as complaints_avg_nps_last_four_week,
