@@ -340,7 +340,12 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "1"
                 print("filter_col:", filter_col)
                 print("lookback_fltr:", lookback_fltr)
-                src_incremental_data = spark.sql(
+                new_data = spark.sql(
+                    "select * from src_data where to_date(cast({0} as String),'yyyyMM') > date(date_trunc('month', to_date(cast('{1}' as String)))) ".format(filter_col, tgt_filter_date))
+                if len(new_data.head(1)) == 0:
+                    return new_data
+                else:
+                    src_incremental_data = spark.sql(
                 "select * from src_data where to_date(cast({0} as String),'yyyyMM') > add_months(date(date_trunc('month',to_date(cast('{1}' as String)))),-{2})".format(
                     filter_col, tgt_filter_date, lookback_fltr))
 
@@ -434,7 +439,14 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
                 print("filter_col:", filter_col)
                 print("lookback_fltr:", lookback_fltr)
-                src_incremental_data = spark.sql(
+                new_data = spark.sql(
+                    "select * from src_data where {0} > date(date_trunc('week', to_date(cast('{1}' as String)))) ".format(filter_col, tgt_filter_date))
+                if len(new_data.head(1)) == 0:
+                    return new_data
+                # if 1==2:
+                #     print("remove after first run")
+                else:
+                    src_incremental_data = spark.sql(
                     "select * from src_data where {0} > date_sub(date(date_trunc('week', to_date(cast('{1}' as String)))), 7*({2}))".format(
                         filter_col, tgt_filter_date, lookback_fltr))
 
@@ -466,6 +478,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     "select * from src_data where {0} > date(date_trunc('month', to_date(cast('{1}' as String)))) ".format(filter_col, tgt_filter_date))
                 if len(new_data.head(1)) == 0:
                     return new_data
+                # if 1==2:
+                #     print("remove after first run")
                 else:
                     src_incremental_data = spark.sql(
                     "select * from src_data where {0} > add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), -{2})".format(
@@ -598,8 +612,8 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 # logging.info("Updating metadata table for lookback dataset scenario")
                 # self._update_metadata_table(spark, metadata_table_path, target_table_name, filewritepath,
                 #                             mode, file_format, partitionBy, read_layer, target_layer, mergeSchema)
-
-                #Remove after first run happens
+                #
+                # #Remove after first run happens
 
                 logging.info("Selecting only new data partition to write for lookback scenario's")
                 target_max_data_load_date = self._get_metadata_max_data_date(spark, target_table_name)

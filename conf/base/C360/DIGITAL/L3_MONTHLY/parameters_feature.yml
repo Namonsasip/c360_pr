@@ -2,8 +2,8 @@
 l3_digital_cxenxse_user_profile_monthly:
   where_clause: ""
   feature_list:
-    digital_number_of_device_brands: "sum(case WHEN groups = 'device-brand' AND lower(item) IS NOT NULL
-                                       THEN 1 ELSE 0 END)"
+    digital_number_of_device_brands: "count(device_brand)"
+    digital_number_of_distinct_device_brands: "count(Distinct device_brand)"
     digital_is_device_brands_apple: "max(case WHEN groups = 'device-brand' AND lower(item) = 'apple'
                                        THEN 1 ELSE 0 END)"
     digital_is_device_brands_samsung: "max(case WHEN groups = 'device-brand' AND lower(item) = 'samsung'
@@ -19,6 +19,7 @@ l3_digital_cxenxse_user_profile_monthly:
     digital_is_device_brands_true: "max(case WHEN groups = 'device-brand' AND lower(item) = 'true'
                                        THEN 1 ELSE 0 END)"
     digital_number_of_distinct_device_type: "count(Distinct device_type)"
+    digital_number_of_device_type: "count(device_type)"
 
     digital_is_device_mobile: "max(case WHEN lower(device_type) = 'mobile' THEN 1 ELSE 0 END)"
 
