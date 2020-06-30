@@ -22,45 +22,45 @@ def l4_complaints_nps(
                 start_of_week,
                 access_method_num,
                 sum(complaints_avg_nps*record_count) over (
-                            partition by subscription_identifier,access_method_num 
+                            partition by subscription_identifier,access_method_num,national_id_card 
                             order by cast(cast(start_of_week as timestamp) as long) asc
                             range between 604800 preceding and 1 preceding
                             ) as total_nps_last_week,
                 sum(record_count) over (
-                            partition by subscription_identifier,access_method_num 
+                            partition by subscription_identifier,access_method_num,national_id_card 
                             order by cast(cast(start_of_week as timestamp) as long) asc
                             range between 604800 preceding and 1 preceding
                             ) as count_nps_last_week,
                             
                 sum(complaints_avg_nps*record_count) over (
-                            partition by subscription_identifier,access_method_num 
+                            partition by subscription_identifier,access_method_num,national_id_card 
                             order by cast(cast(start_of_week as timestamp) as long) asc
                             range between 1209600 preceding and 1 preceding
                             ) as total_nps_last_two_week,
                 sum(record_count) over (
-                            partition by subscription_identifier,access_method_num 
+                            partition by subscription_identifier,access_method_num,national_id_card 
                             order by cast(cast(start_of_week as timestamp) as long) asc
                             range between 1209600 preceding and 1 preceding
                             ) as count_nps_last_two_week,
                             
                 sum(complaints_avg_nps*record_count) over (
-                            partition by subscription_identifier,access_method_num 
+                            partition by subscription_identifier,access_method_num,national_id_card 
                             order by cast(cast(start_of_week as timestamp) as long) asc
                             range between 2419200 preceding and 1 preceding
                             ) as total_nps_last_four_week,
                 sum(record_count) over (
-                            partition by subscription_identifier 
+                            partition by subscription_identifier,access_method_num,national_id_card 
                             order by cast(cast(start_of_week as timestamp) as long) asc
                             range between 2419200 preceding and 1 preceding
                             ) as count_nps_last_four_week,
                             
                 sum(complaints_avg_nps*record_count) over (
-                            partition by subscription_identifier,access_method_num 
+                            partition by subscription_identifier,access_method_num,national_id_card 
                             order by cast(cast(start_of_week as timestamp) as long) asc
                             range between 7257600 preceding and 1 preceding
                             ) as total_nps_last_twelve_week,
                 sum(record_count) over (
-                            partition by subscription_identifier,access_method_num 
+                            partition by subscription_identifier,access_method_num,national_id_card 
                             order by cast(cast(start_of_week as timestamp) as long) asc
                             range between 7257600 preceding and 1 preceding
                             ) as count_nps_last_twelve_week
