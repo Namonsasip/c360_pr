@@ -151,6 +151,6 @@ def prepare_input_tables(sample_type: str) -> Pipeline:
             for training.
     """
     create_users = create_users_from_tg
-    if sample_type == "training":
+    if sample_type in ["training", "fe"]:
         create_users = create_users_from_active
     return create_users(sample_type) + sample_inputs(sample_type)

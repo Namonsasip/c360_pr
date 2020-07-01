@@ -64,7 +64,7 @@ from cvm.data_prep.pipeline import (
     join_raw_features,
     create_cvm_microsegments,
     create_prediction_sample,
-)
+    create_cvm_important_columns)
 from cvm.sample_inputs.pipeline import (
     create_users_from_tg,
     create_users_from_active,
@@ -299,8 +299,12 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
             + score_model("scoring_experiment")
             + generate_treatments("scoring_experiment")
         ),
-        "cvm_full_features_extraction": extract_features,
-        "cvm_rfe_only": rfe_only,
+        "cvm_full_features_extraction": (
+            prepare_input_tables("fe")
+            + training_data_prepare("fe")
+            + create_cvm_important_columns()
+        ),
+        "cvm_rfe_only": create_cvm_important_columns(),
         "cvm_prepare_report_micro": prepare_user_microsegments(),
         "cvm_create_kpis": create_kpis(),
         "cvm_create_report": run_report(),

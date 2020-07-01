@@ -25,6 +25,7 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import functools
 
 from cvm.data_prep.nodes import (
     add_ard_targets,
@@ -213,58 +214,25 @@ def create_cvm_important_columns():
         Kedro pipeline.
     """
 
-    sample_type = "fe"
-    targets_datasets = [
-        "churn_targets_" + sample_type,
-        "ard_targets_" + sample_type,
-    ]
-
     return Pipeline(
-        {
+        [
             node(
-                subs_date_join,
-                [
-                    "parameters",
-                    "cvm_users_list_" + sample_type,
-                    "l3_customer_profile_include_1mo_non_active_" + sample_type,
-                    "l4_daily_feature_topup_and_volume_" + sample_type,
-                    "l4_usage_prepaid_postpaid_daily_features_" + sample_type,
-                    "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_"
-                    + sample_type,
-                    "l4_usage_postpaid_prepaid_weekly_features_sum_" + sample_type,
-                    "l4_touchpoints_to_call_center_features_" + sample_type,
-                ]
-                + targets_datasets,
-                "features_targets_fe",
-                name="create_features_targets_fe",
-            ),
-            node(
-                get_macrosegments,
-                [
-                    "features_targets_fe",
-                    "l3_customer_profile_include_1mo_non_active_fe",
-                    "parameters",
-                ],
-                "features_macrosegments_fe",
-                name="create_features_macrosegments_fe",
-            ),
-            node(
-                lambda df, parameters: pipeline_fit(df, [], parameters),
-                ["features_macrosegments_fe", "parameters"],
-                [
-                    "sample_preprocessed_fe",
+                func=functools.partial(pipeline_fit, important_param=[]),
+                inputs=["train_sample_fe", "parameters"],
+                outputs=[
+                    "train_sample_preprocessed_fe",
                     "preprocessing_pipeline_fe",
-                    "null_columns_fe",
+                    "null_columns",
                 ],
                 name="preprocessing_fit_fe",
             ),
             node(
-                feature_selection_all_target,
-                ["sample_preprocessed_fe", "parameters"],
-                "important_columns",
+                func=feature_selection_all_target,
+                inputs=["train_sample_preprocessed_fe", "parameters"],
+                outputs="important_columns",
                 name="feature_selection",
             ),
-        }
+        ]
     )
 
 
