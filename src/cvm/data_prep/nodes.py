@@ -313,6 +313,7 @@ def add_macrosegments(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
 def get_micro_macrosegments(
     parameters: Dict[str, Any],
     raw_features: DataFrame,
+    recent_profile: DataFrame,
     reve: DataFrame,
     micro_macrosegments_history: DataFrame = None,
 ) -> Tuple[DataFrame, DataFrame]:
@@ -322,6 +323,7 @@ def get_micro_macrosegments(
     Args:
         parameters: parameters defined in parameters.yml.
         raw_features: joined features from C360.
+        recent_profile: profile table for last date.
         reve: monthly revenue data.
         micro_macrosegments_history: table with user to microsegment mapping history.
     """
@@ -334,6 +336,7 @@ def get_micro_macrosegments(
 
     # define macrosegments
     df = raw_features
+    df = add_macrosegments_features(df, recent_profile)
     for use_case in macrosegments_defs:
         df = build_feature_from_parameters(
             df, use_case + "_macrosegment", macrosegments_defs[use_case]
