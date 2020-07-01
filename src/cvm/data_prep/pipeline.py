@@ -25,7 +25,6 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import functools
 
 from cvm.data_prep.nodes import (
     add_ard_targets,
@@ -217,7 +216,7 @@ def create_cvm_important_columns():
     return Pipeline(
         [
             node(
-                func=functools.partial(pipeline_fit, important_param=[]),
+                func=pipeline_fit,
                 inputs=["train_sample_fe", "parameters"],
                 outputs=[
                     "train_sample_preprocessed_fe",

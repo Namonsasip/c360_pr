@@ -44,7 +44,7 @@ from pyspark.sql import DataFrame
 
 
 def pipeline_fit(
-    df: DataFrame, important_param: List[Any], parameters: Dict[str, Any]
+    df: DataFrame, parameters: Dict[str, Any], important_param: List[Any] = []
 ) -> Tuple[DataFrame, Pipeline, List]:
     """ Fits preprocessing pipeline to given table and runs the pipeline on it.
 
