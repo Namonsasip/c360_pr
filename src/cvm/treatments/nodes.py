@@ -137,7 +137,8 @@ def produce_treatments_translated(
         user_mapping: DataFrame,
         package_preference: DataFrame,
         offer_mapping: DataFrame,
-) -> Tuple[DataFrame, DataFrame]:
+) -> DataFrame:
+# ) -> Tuple[DataFrame, DataFrame]:
     """  Generates treatments and updated treatments history.
 
     Args:
