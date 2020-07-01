@@ -86,7 +86,7 @@ def generate_treatments(sample_type: str) -> Pipeline:
                     "ard_btl_offer_mapping",
                 ],
                 ["treatments_chosen", "treatments_chosen_history_output"],
-                name="produce_treatments",
+                name="produce_treatments_translated",
             ),
             # node(
             #     package_translation,
