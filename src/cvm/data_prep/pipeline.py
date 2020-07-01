@@ -290,7 +290,7 @@ def training_data_prepare(sample_type: str) -> Pipeline:
     Returns:
         Kedro pipeline.
     """
-    return join_raw_features(sample_type)
+    return join_raw_features(sample_type) + create_training_sample(sample_type)
 
 
 extract_features = (
