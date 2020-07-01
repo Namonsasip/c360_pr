@@ -282,7 +282,7 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "cvm_full_training": (
             prepare_input_tables("training")
             + training_data_prepare("training")
-            + preprocessing_fit("training")
+            + preprocessing_fit()
             + train_model()
         ),
         "cvm_full_scoring": (
