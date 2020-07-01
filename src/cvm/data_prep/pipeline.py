@@ -110,7 +110,11 @@ def create_training_sample(sample_type: str):
             ),
             node(
                 func=get_macrosegments,
-                inputs=["raw_features_{}".format(sample_type), "parameters"],
+                inputs=[
+                    "raw_features_{}".format(sample_type),
+                    "l3_customer_profile_include_1mo_non_active_{}".format(sample_type),
+                    "parameters",
+                ],
                 outputs="macrosegments_{}".format(sample_type),
                 name="create_macrosegments",
             ),

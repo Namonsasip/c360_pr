@@ -30,6 +30,7 @@ import logging
 from typing import Any, Dict, List, Tuple
 
 import pyspark.sql.functions as func
+from cvm.src.features.data_prep_features import add_macrosegments_features
 from cvm.src.features.keep_table_history import pop_most_recent
 from cvm.src.features.microsegments import (
     add_microsegment_features,
@@ -261,11 +262,14 @@ def subs_date_join(
     return pick_one_per_subscriber(joined)
 
 
-def get_macrosegments(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
+def get_macrosegments(
+    df: DataFrame, recent_profile: DataFrame, parameters: Dict[str, Any],
+) -> DataFrame:
     """ Get macrosegments columns.
 
     Args:
         df: DataFrame with all features.
+        recent_profile: profile table for last date.
         parameters: parameters defined in parameters.yml.
     Returns:
         Input DataFrame with extra column marking macrosegment.
@@ -273,6 +277,7 @@ def get_macrosegments(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
 
     logging.info("Defining macrosegments")
     df = impute_from_parameters(df, parameters)
+    df = add_macrosegments_features(df, recent_profile)
     macrosegments_defs = parameters["macrosegments"]
     for use_case in macrosegments_defs:
         df = build_feature_from_parameters(

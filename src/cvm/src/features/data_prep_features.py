@@ -106,3 +106,15 @@ def add_number_of_simcards(df: DataFrame, recent_profile: DataFrame,) -> DataFra
     return df.join(simcard_count_df, on="subscription_identifier", how="left").fillna(
         {"number_of_simcards_for_national_id": 1}
     )
+
+
+def add_macrosegments_features(
+    raw_features: DataFrame, recent_profile: DataFrame,
+) -> DataFrame:
+    """ Adds features needed for macrosegments definition.
+
+    Args:
+        raw_features: joined C360 features.
+        recent_profile: profile table for last date.
+    """
+    return add_number_of_simcards(raw_features, recent_profile)
