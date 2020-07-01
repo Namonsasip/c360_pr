@@ -78,7 +78,11 @@ def add_ard_targets(
     ]
 
     def join_targets(df1, df2):
-        return df1.join(df2, ["key_date", "subscription_identifier"], "full")
+        keys = ["key_date", "subscription_identifier"]
+        cols_to_drop = [col_name for col_name in df1.columns if col_name in df2.columns]
+        cols_to_drop = list(set(cols_to_drop) - set(keys))
+        df2 = df2.drop(*cols_to_drop)
+        return df1.join(df2, keys, "full")
 
     return functools.reduce(join_targets, ard_target_tables)
 
@@ -112,7 +116,11 @@ def add_churn_targets(
     ]
 
     def join_targets(df1, df2):
-        return df1.join(df2, ["key_date", "subscription_identifier"], "full")
+        keys = ["key_date", "subscription_identifier"]
+        cols_to_drop = [col_name for col_name in df1.columns if col_name in df2.columns]
+        cols_to_drop = list(set(cols_to_drop) - set(keys))
+        df2 = df2.drop(*cols_to_drop)
+        return df1.join(df2, keys, "full")
 
     return functools.reduce(join_targets, churn_target_tables)
 
