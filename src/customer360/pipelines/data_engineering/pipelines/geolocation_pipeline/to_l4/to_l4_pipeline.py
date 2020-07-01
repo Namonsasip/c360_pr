@@ -38,8 +38,8 @@ def geo_to_l4_pipeline(**kwargs):
             node(
                 l4_geo_top_visit_exclude_homework,
                 ["l3_geo_time_spent_by_location_monthly_for_l4_geo_top_visit_exclude_homework",
-                 "l4_geo_home_work_location_id",
-                 # "params:l4_geo_top_visit_exclude_homework"
+                 "l4_geo_home_work_location_id"
+                 # ,"params:l4_geo_top_visit_exclude_homework"
                  ],
                 "l4_geo_top_visit_exclude_homework"
             ),
@@ -62,7 +62,7 @@ def geo_to_l4_pipeline(**kwargs):
                  "params:l4_geo_home_work_location_id"
                  ],
                 "l4_geo_home_work_location_id"
-            )
+            ),
 
             node(
                 l4_geo_home_weekday_city_citizens,
