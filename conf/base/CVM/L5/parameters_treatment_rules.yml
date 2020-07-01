@@ -61,6 +61,8 @@
 #     `variant`: each user is randomly assigned to one of the variants, if not specified then rule is part of all
 #         variants
 #     `conditions`: sql-like conditions used to filter users before assigning rules
+# add a line of comments
+
 treatment_rules:
   a1_internal_churn_treatment:
     order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
