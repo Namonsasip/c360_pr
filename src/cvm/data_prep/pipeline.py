@@ -34,6 +34,7 @@ from cvm.data_prep.nodes import (
     get_macrosegments,
     get_micro_macrosegments,
     subs_date_join,
+    train_test_split,
 )
 from cvm.preprocessing.nodes import pipeline_fit
 from cvm.sample_inputs.pipeline import create_users_from_active, sample_inputs
@@ -112,6 +113,27 @@ def create_training_sample(sample_type: str):
                 inputs=["raw_features_{}".format(sample_type), "parameters"],
                 outputs="macrosegments_{}".format(sample_type),
                 name="create_macrosegments",
+            ),
+            node(
+                func=subs_date_join,
+                inputs=[
+                    "parameters",
+                    "raw_features_{}".format(sample_type),
+                    "ard_targets_{}".format(sample_type),
+                    "churn_targets_{}".format(sample_type),
+                    "macrosegments_{}".format(sample_type),
+                ],
+                outputs="training_features_{}".format(sample_type),
+                name="create_training_sample",
+            ),
+            node(
+                func=train_test_split,
+                inputs="training_features_{}".format(sample_type),
+                outputs=[
+                    "train_sample_{}".format(sample_type),
+                    "test_sample_{}".format(sample_type),
+                ],
+                name="split_train_test",
             ),
         ]
     )
