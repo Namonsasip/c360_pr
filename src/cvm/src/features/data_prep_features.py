@@ -28,10 +28,11 @@
 import logging
 from typing import Any, Dict, List
 
+import pyspark.sql.functions as func
 from cvm.src.features.parametrized_features import build_feature_from_parameters
 from cvm.src.utils.list_targets import list_targets
 from cvm.src.utils.utils import get_clean_important_variables, impute_from_parameters
-from pyspark.sql import DataFrame
+from pyspark.sql import DataFrame, Window
 
 
 def generate_macrosegments(
@@ -84,3 +85,24 @@ def filter_important_only(
         cols_to_leave += targets
     cols_to_leave = list(set(cols_to_leave))
     return df.select(cols_to_leave)
+
+
+def add_number_of_simcards(df: DataFrame, recent_profile: DataFrame,) -> DataFrame:
+    """ Augment the given dataset with `number_of_simcards_for_national_id` feature.
+
+    Args:
+        df: dataset to augment.
+        recent_profile: profile table for last date.
+    """
+
+    national_card_id_partition = Window.partitionBy("national_id_card")
+    simcard_count = func.count("*").over(national_card_id_partition)
+    simcard_count_df = (
+        recent_profile.filter("national_id_card is not null")
+        .withColumn("number_of_simcards_for_national_id", simcard_count)
+        .select(["subscription_identifier", "number_of_simcards_for_national_id"])
+        .distinct()
+    )
+    return df.join(simcard_count_df, on="subscription_identifier", how="left").fillna(
+        {"number_of_simcards_for_national_id": 1}
+    )
