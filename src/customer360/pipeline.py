@@ -78,6 +78,10 @@ from du.model_input.model_input_pipeline import(create_du_model_input_pipeline,
 )
 from du.models.models_pipeline import(create_du_models_pipeline,
 )
+
+from du.experiment.group_manage_pipeline import(create_du_test_group_pipeline,
+        update_du_test_group_pipeline,
+)
 from .pipelines.data_engineering.pipelines.campaign_pipeline import (
     campaign_to_l1_pipeline,
     campaign_to_l2_pipeline,
@@ -355,6 +359,7 @@ def create_du_pipeline(**kwargs) -> Dict[str,Pipeline]:
     return {
         "create_du_model_input": create_du_model_input_pipeline(),
         "create_du_model": create_du_models_pipeline(),
+        "create_du_test_group": create_du_test_group_pipeline(),
     }
 
 def create_dq_pipeline(**kwargs) -> Dict[str, Pipeline]:

@@ -3,3 +3,31 @@ mapping_for_model_training:
     database: prod_dataupsell
     table: mapping_for_model_training29052020
     write_mode: overwrite
+
+l0_test_groups_experiment4_30062020:
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: "parquet"
+    filepath: /mnt/customer360-blob-data/C360/DU/l0_test_groups_experiment4_30062020/
+    save_args:
+        mode: "overwrite"
+
+l5_sanity_checking_experiment4_30062020:
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: "parquet"
+    filepath: /mnt/customer360-blob-data/C360/DU/l5_sanity_checking_experiment4_30062020/
+    save_args:
+        mode: "overwrite"
+
+l0_gcg_20200701:
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: "parquet"
+    filepath: /mnt/customer360-blob-data/C360/NBA/l0_gcg_20200701/
+    save_args:
+        mode: "overwrite"
+
+l5_sanity_checking_gcg_20200701:
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: "parquet"
+    filepath: /mnt/customer360-blob-data/C360/NBA/l5_sanity_checking_gcg_20200701/
+    save_args:
+        mode: "overwrite"
