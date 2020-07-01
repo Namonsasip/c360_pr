@@ -85,7 +85,7 @@ def generate_treatments(sample_type: str) -> Pipeline:
                     "experiment_data_upsell_final_score",
                     "ard_btl_offer_mapping",
                 ],
-                ["treatments_chosen", "treatments_chosen_history_output"],
+                ["treatments_chosen"],
                 name="produce_treatments_translated",
             ),
             # node(
