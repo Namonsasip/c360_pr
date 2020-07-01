@@ -132,7 +132,7 @@ def create_training_sample(sample_type: str):
             ),
             node(
                 func=train_test_split,
-                inputs="training_features_{}".format(sample_type),
+                inputs=["training_features_{}".format(sample_type), "parameters"],
                 outputs=[
                     "train_sample_{}".format(sample_type),
                     "test_sample_{}".format(sample_type),
