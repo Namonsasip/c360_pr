@@ -279,7 +279,7 @@ def get_macrosegments(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
             df, use_case + "_macrosegment", macrosegments_defs[use_case]
         )
 
-    macrosegment_cols = [use_case + "_macrosegment"]
+    macrosegment_cols = [use_case + "_macrosegment" for use_case in macrosegments_defs]
     cols_to_pick = parameters["key_columns"] + macrosegment_cols
 
     return df.select(cols_to_pick)
