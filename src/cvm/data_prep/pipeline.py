@@ -122,6 +122,7 @@ def create_training_sample(sample_type: str):
                 func=subs_date_join,
                 inputs=[
                     "parameters",
+                    "cvm_users_list_{}".format(sample_type),
                     "raw_features_{}".format(sample_type),
                     "ard_targets_{}".format(sample_type),
                     "churn_targets_{}".format(sample_type),
