@@ -150,4 +150,7 @@ def prepare_input_tables(sample_type: str) -> Pipeline:
         sample_type: "scoring" if list created for scoring, "training" if list created
             for training.
     """
-    return create_users_from_tg(sample_type) + sample_inputs(sample_type)
+    create_users = create_users_from_tg
+    if sample_type == "training":
+        create_users = create_users_from_active
+    return create_users(sample_type) + sample_inputs(sample_type)
