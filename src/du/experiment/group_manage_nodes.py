@@ -1,0 +1,333 @@
+import re
+from datetime import datetime
+from datetime import timedelta
+from typing import Dict, List, Tuple, Union
+
+import pandas as pd
+import plotnine
+from plotnine import *
+from pyspark.sql import DataFrame
+from pyspark.sql import Window
+from pyspark.sql import functions as F
+from pyspark.sql.types import DateType
+
+
+def create_prepaid_test_groups(
+    l0_customer_profile_profile_customer_profile_pre_current_full_load: DataFrame,
+    sampling_rate,
+    test_group_name,
+    test_group_flag,
+) -> DataFrame:
+    # l0_customer_profile_profile_customer_profile_pre_current_full_load = catalog.load(
+    #     "l0_customer_profile_profile_customer_profile_pre_current_full_load"
+    # )
+    # sampling_rate = [0.9, 0.1]
+    # test_group_name = ["target_group", "control_group"]
+    # test_group_flag = ["TG", "CG"]
+    # max_date = (
+    #     l0_customer_profile_profile_customer_profile_pre_current_full_load.withColumn(
+    #         "G", F.lit(1)
+    #     )
+    #     .groupby("G")
+    #     .agg(F.max("partition_date").alias("max_partition_date"))
+    #     .collect()
+    # )
+    # prepaid_customer_profile_latest = l0_customer_profile_profile_customer_profile_pre_current_full_load.where(
+    #     "partition_date = " + str(max_date[0][1]) + ""
+    # )
+    prepaid_customer_profile_latest = l0_customer_profile_profile_customer_profile_pre_current_full_load.where(
+        "partition_date = 20200531"
+    )
+    prepaid_customer_profile_latest = prepaid_customer_profile_latest.select(
+        "subscription_identifier",
+        "mobile_status",
+        "register_date",
+        "service_month",
+        "age",
+        "gender",
+        "mobile_segment",
+        "promotion_name",
+        "product_type",
+        "promotion_group_tariff",
+        "vip_flag",
+        "royal_family_flag",
+        "staff_promotion_flag",
+        "smartphone_flag",
+        "partition_date",
+    )
+    gomo = prepaid_customer_profile_latest.where("promotion_name LIKE '%GOMO%'")
+    gomo = gomo.select("subscription_identifier", "register_date")
+    simtofly = prepaid_customer_profile_latest.where(
+        "promotion_group_tariff = 'SIM 2 Fly'"
+    )
+    simtofly = simtofly.select("subscription_identifier", "register_date")
+    vip_rf = prepaid_customer_profile_latest.where(
+        "vip_flag = 'Y' AND royal_family_flag = 'Y'"
+    )
+    vip_rf = vip_rf.select("subscription_identifier", "register_date")
+    vip_rf_simtofly_gomo = gomo.union(simtofly).union(vip_rf)
+    default_customer = prepaid_customer_profile_latest.join(
+        vip_rf_simtofly_gomo, ["subscription_identifier", "register_date"], "leftanti"
+    )
+    default_customer = default_customer.select(
+        "subscription_identifier", "register_date"
+    )
+    groups = default_customer.randomSplit(sampling_rate)
+    test_groups = vip_rf_simtofly_gomo.withColumn(
+        "group_name", F.lit("vip_rf_simtofly_gomo")
+    ).withColumn("group_flag", F.lit("V"))
+    iterate_n = 0
+    for g in groups:
+        test_groups = test_groups.union(
+            g.withColumn("group_name", F.lit(test_group_name[iterate_n])).withColumn(
+                "group_flag", F.lit(test_group_flag[iterate_n])
+            )
+        )
+        iterate_n += 1
+    test_groups = test_groups.join(
+        prepaid_customer_profile_latest,
+        ["subscription_identifier", "register_date"],
+        "inner",
+    )
+    return test_groups
+
+
+def create_sanity_check_for_random_test_group(
+    df_test_group: DataFrame,
+    l3_customer_profile_include_1mo_non_active: DataFrame,
+    l3_usage_postpaid_prepaid_monthly: DataFrame,
+    group_name_column: str,
+    group_flag_column: str,
+    csv_file_path: str,
+) -> DataFrame:
+    # l3_customer_profile_include_1mo_non_active = catalog.load(
+    #     "l3_customer_profile_include_1mo_non_active"
+    # )
+    # l3_usage_postpaid_prepaid_monthly = catalog.load(
+    #     "l3_usage_postpaid_prepaid_monthly"
+    # )
+
+    # df_test_group = catalog.load("l0_test_groups_experiment4_30062020")
+    # group_name_column = "group_name"
+    # group_flag_column = "group_flag"
+    l3_customer_profile_include_1mo_non_active = l3_customer_profile_include_1mo_non_active.selectExpr(
+        "old_subscription_identifier as subscription_identifier",
+        "access_method_num",
+        "register_date",
+        "charge_type",
+        "city_of_residence",
+        "cust_active_this_month",
+        "norms_net_revenue",
+        "date(partition_month) as partition_month",
+    )
+    max_date = (
+        l3_customer_profile_include_1mo_non_active.withColumn("G", F.lit(1))
+        .groupby("G")
+        .agg(F.max("partition_month").alias("max_partition_month"))
+        .collect()
+    )
+
+    monthly_customer_profile_latest = l3_customer_profile_include_1mo_non_active.where(
+        "partition_month = date('" + str(max_date[0][1]) + "')"
+    )
+
+    l3_usage_postpaid_prepaid_monthly = l3_usage_postpaid_prepaid_monthly.where(
+        "start_of_month = date('2020-05-01')"
+    )
+    sanity_checking_features = df_test_group.join(
+        monthly_customer_profile_latest,
+        ["subscription_identifier", "register_date"],
+        "inner",
+    )
+    sanity_checking_features = (
+        sanity_checking_features.withColumn(
+            "city_of_residence_XU",
+            F.when(F.col("city_of_residence") == "XU", 1).otherwise(0),
+        )
+        .withColumn(
+            "city_of_residence_SL",
+            F.when(F.col("city_of_residence") == "SL", 1).otherwise(0),
+        )
+        .withColumn(
+            "city_of_residence_NL",
+            F.when(F.col("city_of_residence") == "NL", 1).otherwise(0),
+        )
+        .withColumn(
+            "city_of_residence_XL",
+            F.when(F.col("city_of_residence") == "XL", 1).otherwise(0),
+        )
+        .withColumn(
+            "city_of_residence_CN",
+            F.when(F.col("city_of_residence") == "CN", 1).otherwise(0),
+        )
+        .withColumn(
+            "city_of_residence_SU",
+            F.when(F.col("city_of_residence") == "SU", 1).otherwise(0),
+        )
+        .withColumn(
+            "city_of_residence_NU",
+            F.when(F.col("city_of_residence") == "NU", 1).otherwise(0),
+        )
+        .withColumn(
+            "city_of_residence_CW",
+            F.when(F.col("city_of_residence") == "CW", 1).otherwise(0),
+        )
+        .withColumn(
+            "city_of_residence_CE",
+            F.when(F.col("city_of_residence") == "CE", 1).otherwise(0),
+        )
+        .withColumn(
+            "city_of_residence_CB",
+            F.when(F.col("city_of_residence") == "CB", 1).otherwise(0),
+        )
+        .withColumn(
+            "city_of_residence_null",
+            F.when(F.col("city_of_residence").isNull(), 1).otherwise(0),
+        )
+    )
+
+    sanity_checking_features = sanity_checking_features.withColumn(
+        "smartphone_integer", F.when(F.col("smartphone_flag") == "Y", 1).otherwise(0)
+    )
+
+    sanity_checking_features = sanity_checking_features.join(
+        l3_usage_postpaid_prepaid_monthly.selectExpr(
+            "access_method_num",
+            "usg_total_data_volume_sum/1000000 as usg_total_data_volume_sum_mb",
+            "usg_outgoing_total_call_duration_sum",
+            "usg_incoming_total_call_duration_sum",
+        ),
+        ["access_method_num"],
+        "inner",
+    )
+    sanity_checking_features = sanity_checking_features.withColumn(
+        "data_user", F.when(F.col("usg_total_data_volume_sum_mb") < 10, 0).otherwise(1)
+    )
+
+    sanity_checking_features = (
+        sanity_checking_features.withColumn(
+            "ARPU_range_0", F.when(F.col("norms_net_revenue") == 0, 1).otherwise(0),
+        )
+        .withColumn(
+            "ARPU_range_1_100",
+            F.when(
+                (F.col("norms_net_revenue") > 0) & (F.col("norms_net_revenue") <= 100),
+                1,
+            ).otherwise(0),
+        )
+        .withColumn(
+            "ARPU_range_101_200",
+            F.when(
+                (F.col("norms_net_revenue") > 100)
+                & (F.col("norms_net_revenue") <= 200),
+                1,
+            ).otherwise(0),
+        )
+        .withColumn(
+            "ARPU_range_201_300",
+            F.when(
+                (F.col("norms_net_revenue") > 200)
+                & (F.col("norms_net_revenue") <= 300),
+                1,
+            ).otherwise(0),
+        )
+        .withColumn(
+            "ARPU_range_301_400",
+            F.when(
+                (F.col("norms_net_revenue") > 300)
+                & (F.col("norms_net_revenue") <= 400),
+                1,
+            ).otherwise(0),
+        )
+        .withColumn(
+            "ARPU_range_401", F.when(F.col("norms_net_revenue") > 400, 1).otherwise(0),
+        )
+    )
+
+    sanity_checking_features = (
+        sanity_checking_features.withColumn(
+            "Service_month_range_0_3", F.when(F.col("service_month") <= 3, 1).otherwise(0),
+        )
+        .withColumn(
+            "Service_month_range_3_18",
+            F.when(
+                (F.col("service_month") > 3) & (F.col("service_month") <= 18),
+                1,
+            ).otherwise(0),
+        )
+            .withColumn(
+            "Service_month_range_18_up",
+            F.when(
+                (F.col("service_month") > 18),
+                1,
+            ).otherwise(0),
+        )
+    )
+
+
+    pdf_sanity_check = (
+        sanity_checking_features.groupby(group_name_column, group_flag_column)
+        .agg(
+            F.count("*").alias("TOTAL_SUB"),
+            F.avg("service_month").alias("Avg_service_month"),
+            F.stddev("service_month").alias("Stddev_service_month"),
+            F.avg("norms_net_revenue").alias("Avg_Arpu_monthly"),
+            F.stddev("norms_net_revenue").alias("Stddev_Arpu_monthly"),
+            F.sum("Service_month_range_0_3").alias("sum_service_month_0_3"),
+            F.sum("Service_month_range_3_18").alias("sum_service_month_3_18"),
+            F.sum("Service_month_range_18_up").alias("sum_service_month_18_up"),
+            F.sum("ARPU_range_0").alias("sum_zero_arpu"),
+            F.sum("ARPU_range_1_100").alias("sum_ARPU_range_1_100"),
+            F.sum("ARPU_range_101_200").alias("sum_ARPU_range_101_200"),
+            F.sum("ARPU_range_201_300").alias("sum_ARPU_range_201_300"),
+            F.sum("ARPU_range_301_400").alias("sum_ARPU_range_301_400"),
+            F.sum("ARPU_range_401").alias("sum_ARPU_range_401_up"),
+            F.sum("city_of_residence_XU").alias("sum_city_of_residence_XU"),
+            F.sum("city_of_residence_SL").alias("sum_city_of_residence_SL"),
+            F.sum("city_of_residence_NL").alias("sum_city_of_residence_NL"),
+            F.sum("city_of_residence_XL").alias("sum_city_of_residence_XL"),
+            F.sum("city_of_residence_CB").alias("sum_city_of_residence_CB"),
+            F.sum("city_of_residence_CN").alias("sum_city_of_residence_CN"),
+            F.sum("city_of_residence_SU").alias("sum_city_of_residence_SU"),
+            F.sum("city_of_residence_NU").alias("sum_city_of_residence_NU"),
+            F.sum("city_of_residence_CW").alias("sum_city_of_residence_CW"),
+            F.sum("city_of_residence_CE").alias("sum_city_of_residence_CE"),
+            F.sum("city_of_residence_null").alias("sum_city_of_residence_null"),
+            F.sum("smartphone_integer").alias("sum_smartphone_user"),
+            F.sum("data_user").alias("sum_data_user"),
+        )
+        .selectExpr(
+            group_name_column,
+            group_flag_column,
+            "TOTAL_SUB",
+            "Avg_service_month",
+            "Stddev_service_month",
+            "sum_service_month_0_3/TOTAL_SUB AS percent_sub_service_month_0_3",
+            "sum_service_month_3_18/TOTAL_SUB AS percent_sub_service_month_3_18",
+            "sum_service_month_18_up/TOTAL_SUB AS percent_sub_service_month_18_up",
+            "Avg_Arpu_monthly",
+            "Stddev_Arpu_monthly",
+            "sum_zero_arpu/TOTAL_SUB AS percent_sub_zero_arpu",
+            "sum_ARPU_range_1_100/TOTAL_SUB AS percent_sub_arpu_range_1_100",
+            "sum_ARPU_range_101_200/TOTAL_SUB AS percent_sub_arpu_range_101_200",
+            "sum_ARPU_range_201_300/TOTAL_SUB AS percent_sub_arpu_range_201_300",
+            "sum_ARPU_range_301_400/TOTAL_SUB AS percent_sub_arpu_range_301_400",
+            "sum_ARPU_range_401_up/TOTAL_SUB AS percent_sub_arpu_range_401_up",
+            "(sum_city_of_residence_XU/TOTAL_SUB) AS percent_city_of_residence_XU",
+            "(sum_city_of_residence_SL/TOTAL_SUB) AS percent_city_of_residence_SL",
+            "(sum_city_of_residence_NL/TOTAL_SUB) AS percent_city_of_residence_NL",
+            "(sum_city_of_residence_XL/TOTAL_SUB) AS percent_city_of_residence_XL",
+            "(sum_city_of_residence_CB/TOTAL_SUB) AS percent_city_of_residence_CB",
+            "(sum_city_of_residence_CN/TOTAL_SUB) AS percent_city_of_residence_CN",
+            "(sum_city_of_residence_SU/TOTAL_SUB) AS percent_city_of_residence_SU",
+            "(sum_city_of_residence_NU/TOTAL_SUB) AS percent_city_of_residence_NU",
+            "(sum_city_of_residence_CW/TOTAL_SUB) AS percent_city_of_residence_CW",
+            "(sum_city_of_residence_CE/TOTAL_SUB) AS percent_city_of_residence_CE",
+            "(sum_city_of_residence_null/TOTAL_SUB) AS percent_city_of_residence_null",
+            "(sum_smartphone_user/TOTAL_SUB) AS percent_smartphone_penetration",
+            "(sum_data_user/TOTAL_SUB) AS percent_data_user",
+        )
+        .toPandas()
+    )
+    pdf_sanity_check.to_csv(csv_file_path, index=False)
+    return sanity_checking_features
