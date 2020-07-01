@@ -91,53 +91,28 @@ def create_training_sample(sample_type: str):
                     "cvm_users_list_{}".format(sample_type),
                     "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly",
                     "parameters",
-                    "params:" + sample_type,
+                    "params:{}".format(sample_type),
                 ],
-                outputs="ard_targets_" + sample_type,
+                outputs="ard_targets_{}".format(sample_type),
                 name="create_ard_targets",
             ),
             node(
-                add_churn_targets,
-                [
-                    "cvm_users_list_" + sample_type,
+                func=add_churn_targets,
+                inputs=[
+                    "cvm_users_list_{}".format(sample_type),
                     "l4_usage_prepaid_postpaid_daily_features",
                     "parameters",
-                    "params:" + sample_type,
+                    "params:{}".format(sample_type),
                 ],
-                "churn_targets_" + sample_type,
-                name="create_churn_targets_" + sample_type,
+                outputs="churn_targets_{}".format(sample_type),
+                name="create_churn_targets",
             ),
-        ]
-    )
-
-
-def create_cvm_macrosegments(sample_type: str) -> Pipeline:
-    """ Creates pipeline creating macrosegments only for training purposes.
-
-    Args:
-        sample_type: "scoring" if list created for scoring, "training" if list created
-            for training.
-
-    Returns:
-        Kedro pipeline.
-    """
-    inputs = [
-        "raw_features_{}",
-        "parameters",
-    ]
-    outputs = [
-        "macrosegments_{}",
-    ]
-    inputs = [dataset.format(sample_type) for dataset in inputs]
-    outputs = [dataset.format(sample_type) for dataset in outputs]
-    return Pipeline(
-        [
             node(
                 func=get_macrosegments,
-                inputs=inputs,
-                outputs=outputs,
+                inputs=["raw_features_{}".format(sample_type), "parameters"],
+                outputs="macrosegments_{}".format(sample_type),
                 name="create_macrosegments",
-            )
+            ),
         ]
     )
 
@@ -289,7 +264,7 @@ def training_data_prepare(sample_type: str) -> Pipeline:
     Returns:
         Kedro pipeline.
     """
-    return join_raw_features(sample_type) + create_cvm_macrosegments(sample_type)
+    return join_raw_features(sample_type)
 
 
 extract_features = (
