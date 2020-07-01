@@ -240,7 +240,11 @@ def create_cvm_important_columns():
             ),
             node(
                 get_macrosegments,
-                ["features_targets_fe", "parameters"],
+                [
+                    "features_targets_fe",
+                    "l3_customer_profile_include_1mo_non_active_fe",
+                    "parameters",
+                ],
                 "features_macrosegments_fe",
                 name="create_features_macrosegments_fe",
             ),
