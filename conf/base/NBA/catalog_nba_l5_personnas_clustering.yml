@@ -1,7 +1,28 @@
+l5_customer_ids:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-cvm/customer_ids
+  save_args:
+    mode: "overwrite"
+
+l5_all_subscribers_master_table_customer_level:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_all_subscribers_master_table_customer_level/
+  save_args:
+    mode: "overwrite"
+
 l5_personnas_clustering_master:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/NBA/l5_personnas_clustering_master/
+  save_args:
+    mode: "overwrite"
+
+l5_personnas_clustering_master_customer_level:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_personnas_clustering_master_customer_level/
   save_args:
     mode: "overwrite"
 

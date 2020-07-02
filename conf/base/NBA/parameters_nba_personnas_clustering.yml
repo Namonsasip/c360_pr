@@ -94,9 +94,6 @@ nba_personnas_clustering_features:
   - sum_campaign_total_upsell_xsell_by_myais_app_sum_weekly_last_week
   - sum_campaign_total_upsell_xsell_by_myais_app_sum_weekly_last_twelve_week
 #  l4_device_summary_features:
-  - sum_device_most_used_handset_apple_weekly_last_week
-  - sum_device_most_used_handset_oppo_weekly_last_week
-  - sum_device_most_used_handset_samsung_weekly_last_week
   - max_device_high_range_weekly_last_week
   - max_device_mid_range_weekly_last_week
   - max_device_low_range_weekly_last_week
@@ -182,10 +179,24 @@ nba_personnas_clustering_features:
   - charge_type_is_Post_paid
   - charge_type_is_Pre_paid
   - charge_type_is_Hybrid_Post
+  - devices_uses_both_sim_slot
 #  - region_is_city
+  - sum_rev_arpu_total_revenue_monthly_last_three_month_postpaid
+  - sum_rev_arpu_total_gprs_net_revenue_monthly_last_three_month_postpaid
+  - sum_rev_arpu_total_vas_net_revenue_monthly_last_three_month_postpaid
+  - sum_rev_arpu_total_sms_net_revenue_monthly_last_three_month_postpaid
+  - sum_rev_arpu_total_others_net_revenue_monthly_last_three_month_postpaid
+  - sum_rev_arpu_total_voice_net_revenue_monthly_last_three_month_postpaid
+  - sum_rev_arpu_total_mms_net_revenue_monthly_last_three_month_postpaid
+  - sum_rev_arpu_total_ir_net_revenue_monthly_last_three_month_postpaid
+  - sum_rev_arpu_total_idd_net_revenue_monthly_last_three_month_postpaid
+
 
 # These features are used for the report but not for the clustering
 nba_personnas_clustering_reporting_features:
+  - sum_device_most_used_handset_apple_weekly_last_week
+  - sum_device_most_used_handset_oppo_weekly_last_week
+  - sum_device_most_used_handset_samsung_weekly_last_week
   - region_is_CENTRAL_WEST
   - region_is_CENTRAL_NORTH
   - region_is_CENTRAL_BANGKOK

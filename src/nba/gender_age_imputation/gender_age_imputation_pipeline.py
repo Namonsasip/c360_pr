@@ -50,6 +50,8 @@ def create_nba_gender_age_imputation_pipeline() -> Pipeline:
                     "l4_usage_prepaid_postpaid_daily_features": "l4_usage_prepaid_postpaid_daily_features",
                     "l4_usage_postpaid_prepaid_weekly_features_sum": "l4_usage_postpaid_prepaid_weekly_features_sum",
                     "l4_touchpoints_to_call_center_features": "l4_touchpoints_to_call_center_features",
+                    "l2_device_summary_with_config_weekly_full_load": "l2_device_summary_with_config_weekly_full_load",
+                    "l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly":"l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly",
                 },
                 outputs="l5_all_subscribers_master_table",
                 name="l5_all_subscribers_master_table",

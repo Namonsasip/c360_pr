@@ -16,6 +16,53 @@ from pyspark.sql import functions as F
 from pyspark.sql.types import FloatType
 
 
+def l5_all_subscribers_master_table_customer_level(
+    df_master: DataFrame,
+    l5_customer_ids: DataFrame,
+    l4_streaming_visit_count_and_download_traffic_feature_full_load_data_blob,
+    subset_features,
+):
+
+    # Add streaming features from an old snapshot as the official version is not yet available
+    df_master = df_master.join(
+        l4_streaming_visit_count_and_download_traffic_feature_full_load_data_blob.select(
+            "access_method_num",
+            "start_of_week",
+            *subset_features[
+                "l4_streaming_visit_count_and_download_traffic_feature_full_load_data_blob"
+            ],
+        ),
+        on=["access_method_num", "start_of_week"],
+        how="left",
+    )
+
+    df_master_with_customer_id = df_master.join(
+        l5_customer_ids, on="subscription_identifier", how = "left"
+    )
+    df_master_with_customer_id = df_master_with_customer_id.withColumn(
+        "customer_id_high_certainty",
+        F.when(
+            F.isnull("customer_id_high_certainty"), F.col("subscription_identifier")
+        ).otherwise(F.col("customer_id_high_certainty")),
+    )
+
+    df_master_customer_level = df_master_with_customer_id.groupby(
+        "customer_id_high_certainty"
+    ).agg(
+        *[
+            (
+                F.first(column_name).alias(column_name)
+                if column_type in ["string", "date"]
+                else F.mean(column_name).alias(column_name)
+            )
+            for column_name, column_type in df_master_with_customer_id.dtypes
+            if column_name != "customer_id_high_certainty"
+        ]
+    )
+
+    return df_master_customer_level
+
+
 def personnas_clustering(
     df_master: DataFrame,
     clustering_features: List[str],

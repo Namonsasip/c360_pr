@@ -357,6 +357,19 @@ nba_model_input_features:
     - sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_two_week
     - sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_four_week
     - sum_touchpoints_number_of_calls_on_cc_sum_weekly_last_twelve_week
+  l2_device_summary_with_config_weekly_full_load:
+    - device_supports_dual_sim
+    - devices_uses_both_sim_slot
+  l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly:
+    - sum_rev_arpu_total_revenue_monthly_last_three_month
+    - sum_rev_arpu_total_gprs_net_revenue_monthly_last_three_month
+    - sum_rev_arpu_total_vas_net_revenue_monthly_last_three_month
+    - sum_rev_arpu_total_sms_net_revenue_monthly_last_three_month
+    - sum_rev_arpu_total_others_net_revenue_monthly_last_three_month
+    - sum_rev_arpu_total_voice_net_revenue_monthly_last_three_month
+    - sum_rev_arpu_total_mms_net_revenue_monthly_last_three_month
+    - sum_rev_arpu_total_ir_net_revenue_monthly_last_three_month
+    - sum_rev_arpu_total_idd_net_revenue_monthly_last_three_month
 
 
 nba_model_explanatory_features:
@@ -411,6 +424,8 @@ nba_model_explanatory_features:
    - sum_usg_incoming_local_data_volume_4G_sum_weekly_last_four_week
    - sum_usg_outgoing_total_call_duration_sum_weekly_last_week
    - sum_usg_outgoing_total_call_duration_sum_weekly_last_twelve_week
+
+
 
 ## Backtesting parameters
 backtesting_model_groups_to_score:
