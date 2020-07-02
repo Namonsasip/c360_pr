@@ -434,8 +434,6 @@ treatment_rules:
     treatment_size: 12500
     use_case: churn
 
-
-
 ### ARD treatments starts here
   z1_notest_ard_d20d10_h_arpu_l_tenure:
     order_policy: dilution1_pred + dilution2_pred

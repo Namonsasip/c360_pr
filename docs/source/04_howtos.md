@@ -91,8 +91,8 @@ catalog name of desired dataset to sampling procedure and supply the sample to m
 
 ### How to edit target for model training?
 Targets following `churn` and `ard` logic are parametrized in `conf/base/CVM/L5/parameters_targets.yml`.
-
-![](.images/04_howtos_images/cd317e48.png)
+![](.images/04_howtos_images/b3a52883.png)
+![](.images/04_howtos_images/15812f00.png)
 
 You can add 17 days churn with 15 days blindspot by modifying the mentioned file.
 If you want to extend the targets logic modify functions building the targets: 
@@ -184,3 +184,30 @@ Open `04_howtos.md` and modify the file.
 Use git to push the changes.
 
 ![](.images/04_howtos_images/ba4b4102.png)
+
+### How to update 
+#### For generation and saving of YAML 
+1. Receive the excel / CSV from team
+2. Save the CSV in the same folder as your python notebook
+3. Open the `convert to yaml.ipynb`, and make sure the `pandas.read_csv("XXXXX.csv")` is updated   
+4. Run the commands to generate your desired yaml file
+
+
+#### For saving treatment rules into the code base before daily scoring
+1. Checkout to `cvm/master` (or relevant CVM model branch) on your git
+1. Navigate to `conf\base\CVM\L5\parameters_treatment_rules.yml`
+1. Delete and replace the Churn / ARD treatment rules section only
+1. Commit the changes ( Ctrl + K ) using the label, `[treatments] Update rules xxxx `, 
+where xxx could denote `ARD / Churn, date yyyymmdd, for reason`
+1. Push the changes 
+1. (optional) Check that changes have been pushed to repository
+
+Treatment rules in the yaml file starts with churn, then ARD as below
+![](.images/04_howtos_images/7e40b55e.png)
+
+Pro tip: 
+- Use `Ctrl Shift -` to collapse all
+- Use `Ctrl Shift +` to expand all
+- Point your cursor on the collapse tree to quickly inspect it's contents
+ 
+ ![](.images/04_howtos_images/0d21435b.png)
