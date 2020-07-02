@@ -56,23 +56,23 @@ def geo_to_l4_pipeline(**kwargs):
             #      ]
             # ),
             # List imsi from int_HOME/WORK
-            node(
-                l4_geo_home_work_list_imsi,  # partition_date is main column to massive processing
-                ["int_l4_geo_home_location_id_monthly",
-                 "int_l4_geo_work_location_id_monthly"
-                 ],
-                ["geo_home_work_list_imsi_stg"
-                 ]
-            ),
-            node(
-                l4_geo_home_work_location_id,
-                ["int_l4_geo_home_location_id_monthly",
-                 "int_l4_geo_work_location_id_monthly",
-                 "geo_home_work_list_imsi_stg",
-                 "params:l4_geo_home_work_location_id"
-                 ],
-                "l4_geo_home_work_location_id"
-            ),
+            # node(
+            #     l4_geo_home_work_list_imsi,  # partition_date is main column to massive processing
+            #     ["int_l4_geo_home_location_id_monthly",
+            #      "int_l4_geo_work_location_id_monthly"
+            #      ],
+            #     ["geo_home_work_list_imsi_stg"
+            #      ]
+            # ),
+            # node(
+            #     l4_geo_home_work_location_id,
+            #     ["int_l4_geo_home_location_id_monthly",
+            #      "int_l4_geo_work_location_id_monthly",
+            #      "geo_home_work_list_imsi_stg",
+            #      "params:l4_geo_home_work_location_id"
+            #      ],
+            #     "l4_geo_home_work_location_id"
+            # ),
 
             # node(
             #     l4_geo_home_weekday_city_citizens,
@@ -91,16 +91,16 @@ def geo_to_l4_pipeline(**kwargs):
             #     "l4_geo_cust_subseqently_distance"
             # ),
             # ##==============================Update 2020-06-12 by Thatt529==========================================##
-            #
-            # ###total_distance_km###
-            # node(
-            #     l4_rolling_window_de,
-            #     ["l2_geo_total_distance_km_weekly_for_l4_geo_total_distance_km",
-            #      "params:l4_geo_total_distance_km"
-            #      ],
-            #     "l4_geo_total_distance_km"
-            # ),
-            #
+
+            ###total_distance_km###
+            node(
+                l4_rolling_window_de,
+                ["l2_geo_total_distance_km_weekly_for_l4_geo_total_distance_km",
+                 "params:l4_geo_total_distance_km"
+                 ],
+                "l4_geo_total_distance_km"
+            ),
+
             # ###Traffic_fav_location###
             # node(
             #     l4_rolling_window,

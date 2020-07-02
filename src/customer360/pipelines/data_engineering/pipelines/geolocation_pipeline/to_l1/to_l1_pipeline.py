@@ -25,17 +25,17 @@ def geo_to_l1_pipeline(**kwargs):
             #     "l1_geo_time_spent_by_location_daily"
             #
             # ),
-
-            node(
-                l1_geo_area_from_ais_store_daily,
-                ["l0_mst_poi_shape_for_l1_geo_area_from_ais_store_daily",
-                 "l0_mst_cell_masterplan_for_l1_geo_area_from_ais_store_daily",
-                 "l0_geo_cust_cell_visit_time_for_l1_geo_area_from_ais_store_daily",
-                 "params:l1_area_from_ais_store_daily"
-                 ],
-                "l1_geo_area_from_ais_store_daily"
-            ),
-
+            #
+            # node(
+            #     l1_geo_area_from_ais_store_daily,
+            #     ["l0_mst_poi_shape_for_l1_geo_area_from_ais_store_daily",
+            #      "l0_mst_cell_masterplan_for_l1_geo_area_from_ais_store_daily",
+            #      "l0_geo_cust_cell_visit_time_for_l1_geo_area_from_ais_store_daily",
+            #      "params:l1_area_from_ais_store_daily"
+            #      ],
+            #     "l1_geo_area_from_ais_store_daily"
+            # ),
+            #
             # node(
             #     l1_geo_area_from_competitor_store_daily,
             #     ["l0_mst_poi_shape_for_l1_geo_area_from_competitor_store_daily",
@@ -53,16 +53,16 @@ def geo_to_l1_pipeline(**kwargs):
             #      ],
             #     "l1_geo_cust_subseqently_distance_daily"
             # ),
-            #
-            # ##==============================Update 2020-06-12 by Thatt529==========================================##
-            #
-            # ###total_distance_km###
-            # node(l1_geo_total_distance_km_daily,
-            #      ["l0_geo_cust_cell_visit_time_simple_data_daily",
-            #       "params:l1_geo_total_distance_km_daily"
-            #       ],
-            #      "l1_geo_total_distance_km_daily"
-            # ),
+
+            ##==============================Update 2020-06-12 by Thatt529==========================================##
+
+            ###total_distance_km###
+            node(l1_geo_total_distance_km_daily,
+                 ["l0_geo_cust_cell_visit_time_simple_data_daily",
+                  "params:l1_geo_total_distance_km_daily"
+                  ],
+                 "l1_geo_total_distance_km_daily"
+            ),
             #
             # ##Traffic_fav_location###
             # node(
