@@ -438,100 +438,100 @@ treatment_rules:
   z1_notest_ard_d20d10_h_arpu_l_tenure:
     order_policy: dilution1_pred + dilution2_pred
     rules:
-      0a49ae44-8b5b-4809-ad80-e2ea9f665957:
+      103af37e-856f-42e0-ad26-6140511bff3f:
+        campaign_code: DataOTC.27.2
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m1'
+        limit_per_code: 800
+        variant: 1
+      2e4da3ea-76d1-4ce0-af0a-dd0dfa86e165:
         campaign_code: DataOTC.27.14
         conditions:
         - ard_microsegment == 'high_arpu_low_tenure_m5'
         limit_per_code: 800
         variant: 2
-      1cc84a29-b7c0-4810-92a2-dcc99000e901:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m8'
-        limit_per_code: 800
-        variant: 2
-      214f7d92-f512-4a8e-ae4c-ffc4b8d8e383:
+      2ef13513-3f51-4cfa-bf7a-2cd759542328:
         campaign_code: DataOTC.27.7
         conditions:
         - ard_microsegment == 'high_arpu_low_tenure_m7'
         limit_per_code: 800
         variant: 1
-      39b5d235-15b4-4a12-9d8c-068e7c0450e3:
+      3b030564-2045-4aa8-a6f1-264635589512:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m6'
+        limit_per_code: 800
+        variant: 2
+      493701df-c5c1-4c4c-a23c-328a5932c5df:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m1'
+        limit_per_code: 800
+        variant: 2
+      5874603f-1f57-4825-9e43-8391814177ed:
+        campaign_code: DataOTC.27.2
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m6'
+        limit_per_code: 800
+        variant: 1
+      59a20321-d219-4032-96e2-067af321789c:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m3'
+        limit_per_code: 800
+        variant: 2
+      682147a5-f69d-4656-a169-0e7fba4f758f:
+        campaign_code: DataOTC.27.7
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m3'
+        limit_per_code: 800
+        variant: 1
+      6fbc35aa-1704-44fa-88ef-864eb04b4fa5:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m2'
+        limit_per_code: 800
+        variant: 2
+      7186a8ea-899c-49f4-8b56-b567cd95c02e:
+        campaign_code: DataOTC.27.2
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m2'
+        limit_per_code: 800
+        variant: 1
+      72fd5896-9cf2-4701-b3af-912ac159654b:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m4'
+        limit_per_code: 800
+        variant: 2
+      7b961159-f586-4705-aaed-1cf9dd9bd969:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m8'
+        limit_per_code: 800
+        variant: 2
+      a6be1e07-d0fd-484b-9fe8-b9d9ac70391a:
         campaign_code: DataOTC.27.8
         conditions:
         - ard_microsegment == 'high_arpu_low_tenure_m8'
         limit_per_code: 800
         variant: 1
-      43d04693-5b79-4e42-a32c-de8e8793adc7:
-        campaign_code: DataOTC.27.2
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m5'
-        limit_per_code: 800
-        variant: 1
-      43d3a79e-307d-4ff9-8c7f-789b98988b67:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m3'
-        limit_per_code: 800
-        variant: 2
-      48a966cf-dcb8-433e-a0d7-49006069c730:
-        campaign_code: DataOTC.27.7
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m3'
-        limit_per_code: 800
-        variant: 1
-      523be59b-905a-4b6d-be75-7c5b7eb0b9e6:
+      ddc60336-34aa-4bb4-932e-90fbb86488ec:
         campaign_code: DataOTC.27.14
         conditions:
         - ard_microsegment == 'high_arpu_low_tenure_m7'
         limit_per_code: 800
         variant: 2
-      75f4eca2-9223-4368-957d-6e8e8cb6eaad:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m4'
-        limit_per_code: 800
-        variant: 2
-      7a499d3e-1d2d-4897-9cda-715acbe57eb4:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m1'
-        limit_per_code: 800
-        variant: 2
-      9909eeb6-4612-46a0-baa9-95644a5427db:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m2'
-        limit_per_code: 800
-        variant: 2
-      9ea67b70-760e-4c79-b6a2-a8e193159c63:
+      fc30ff40-882a-49af-9fd6-7faac6884430:
         campaign_code: DataOTC.27.2
         conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m2'
+        - ard_microsegment == 'high_arpu_low_tenure_m5'
         limit_per_code: 800
         variant: 1
-      a6677c71-704a-456c-8b67-80b5844d57dd:
-        campaign_code: DataOTC.27.2
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m6'
-        limit_per_code: 800
-        variant: 1
-      acad7363-b1ec-4ddc-81ea-2356981bfdf4:
+      ffff2679-9ca4-49f5-abc9-d087ce7b873d:
         campaign_code: DataOTC.27.10
         conditions:
         - ard_microsegment == 'high_arpu_low_tenure_m4'
-        limit_per_code: 800
-        variant: 1
-      b24a8113-7a8c-463b-b322-c07c00632a8f:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m6'
-        limit_per_code: 800
-        variant: 2
-      bdc4eeb6-de1f-4f5c-8637-ef201077ecec:
-        campaign_code: DataOTC.27.2
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m1'
         limit_per_code: 800
         variant: 1
     treatment_name: z1_notest_ard_d20d10_h_arpu_l_tenure
@@ -540,100 +540,100 @@ treatment_rules:
   z1_notest_ard_d20d10_high_arpu_old:
     order_policy: dilution1_pred + dilution2_pred
     rules:
-      16097e04-062d-4318-8bb2-275c550866a3:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m8'
-        limit_per_code: 2300
-        variant: 2
-      26a9d041-ef6c-422a-be21-45766cd3a316:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m5'
-        limit_per_code: 2300
-        variant: 2
-      274cb316-2c3a-4dc1-a9a6-be96895d298a:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m7'
-        limit_per_code: 2300
-        variant: 2
-      2c64c04e-4503-4c57-9cda-b78d9fdab213:
-        campaign_code: DataOTC.27.7
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m3'
-        limit_per_code: 2300
-        variant: 1
-      40ebe77f-7fa2-495b-8bab-b2266c8ba192:
-        campaign_code: DataOTC.27.4
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m5'
-        limit_per_code: 2300
-        variant: 1
-      61824a10-ecfe-4ff3-86e8-a45d6cf8f0b3:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m1'
-        limit_per_code: 2300
-        variant: 2
-      645ffc9f-02bb-426a-ab58-372c9982518e:
-        campaign_code: DataOTC.27.2
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m1'
-        limit_per_code: 2300
-        variant: 1
-      70e8d083-a594-4d94-878d-3672807cf943:
+      0359cd41-a031-48aa-acb1-6740e3629434:
         campaign_code: DataOTC.27.14
         conditions:
         - ard_microsegment == 'high_arpu_high_tenure_m4'
         limit_per_code: 2300
         variant: 2
-      7ead3bcf-9c4d-46d0-9dc9-e63a7567a64a:
-        campaign_code: DataOTC.27.7
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m7'
-        limit_per_code: 2300
-        variant: 1
-      818224af-1660-4983-ba60-91c08f980e88:
+      183d2004-2a1f-455f-aede-b311628a4f6e:
         campaign_code: DataOTC.27.4
         conditions:
         - ard_microsegment == 'high_arpu_high_tenure_m6'
         limit_per_code: 2300
         variant: 1
-      a9ed3e02-974d-4d50-adc7-20fe0956683e:
-        campaign_code: DataOTC.27.8
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m8'
-        limit_per_code: 2300
-        variant: 1
-      b12b06f9-363d-4213-b529-53e494dc7c99:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m6'
-        limit_per_code: 2300
-        variant: 2
-      b5516f6e-95dc-4b15-9c54-2246a29e96c2:
+      3b0db6d7-45f7-4ed5-95e3-522426234caf:
         campaign_code: DataOTC.27.14
         conditions:
         - ard_microsegment == 'high_arpu_high_tenure_m2'
         limit_per_code: 2300
         variant: 2
-      bd9ab943-4c72-4246-8236-67a639ec1af9:
+      4f1380ef-ebec-452a-8a08-90c09f2e86b7:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m5'
+        limit_per_code: 2300
+        variant: 2
+      614f6179-8c9d-442d-9a93-d4f58e4aaf2e:
+        campaign_code: DataOTC.27.4
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m5'
+        limit_per_code: 2300
+        variant: 1
+      656a6535-8d28-45a8-b77e-9224a750f1cb:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m6'
+        limit_per_code: 2300
+        variant: 2
+      66c84024-b465-4e07-a647-69f5123aba35:
+        campaign_code: DataOTC.27.2
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m1'
+        limit_per_code: 2300
+        variant: 1
+      bb38a3a9-5548-47e1-9408-55fb132bb172:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m1'
+        limit_per_code: 2300
+        variant: 2
+      c602199c-d38d-43bc-aa27-89c40dd45e04:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m7'
+        limit_per_code: 2300
+        variant: 2
+      ca462685-7662-415c-9196-92971e530e64:
         campaign_code: DataOTC.27.10
         conditions:
         - ard_microsegment == 'high_arpu_high_tenure_m4'
         limit_per_code: 2300
         variant: 1
-      d9d4b09a-1617-4b01-9ca6-7863647bcceb:
+      d2b34ec6-a634-49ab-bea7-6116f0354135:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m8'
+        limit_per_code: 2300
+        variant: 2
+      d89b28ad-682c-4f68-ae37-90bac39f274b:
+        campaign_code: DataOTC.27.7
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m7'
+        limit_per_code: 2300
+        variant: 1
+      db873d4b-eb0f-46f1-a074-63a1c74daf95:
         campaign_code: DataOTC.27.14
         conditions:
         - ard_microsegment == 'high_arpu_high_tenure_m3'
         limit_per_code: 2300
         variant: 2
-      db6ce65f-8223-4b19-b70e-65d54f14de50:
+      dc4feb49-f3a2-45bf-902f-fc0995453a84:
+        campaign_code: DataOTC.27.7
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m3'
+        limit_per_code: 2300
+        variant: 1
+      f29d982d-fccd-41f4-bb17-44312e5650b5:
         campaign_code: DataOTC.27.2
         conditions:
         - ard_microsegment == 'high_arpu_high_tenure_m2'
+        limit_per_code: 2300
+        variant: 1
+      fe3081b0-1e5a-478d-a88b-ebb6a13698de:
+        campaign_code: DataOTC.27.8
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m8'
         limit_per_code: 2300
         variant: 1
     treatment_name: z1_notest_ard_d20d10_high_arpu_old
@@ -642,100 +642,100 @@ treatment_rules:
   z1_notest_ard_d20d10_l_arpu_l_tenure:
     order_policy: dilution1_pred + dilution2_pred
     rules:
-      0dee2d45-e141-4378-bacf-e790c91b62ce:
-        campaign_code: DataOTC.27.6
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m3'
-        limit_per_code: 800
-        variant: 1
-      1730a91b-a946-4909-8ffc-70f04308391e:
-        campaign_code: DataOTC.27.6
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m6'
-        limit_per_code: 800
-        variant: 1
-      27546896-2b22-4376-ac95-68f6aabdc690:
-        campaign_code: DataOTC.27.6
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m7'
-        limit_per_code: 800
-        variant: 1
-      2f357f9c-e10e-4c01-a8f6-d674c514a0df:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m8'
-        limit_per_code: 800
-        variant: 2
-      32bdff62-5877-42bf-b342-756e053d011c:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m7'
-        limit_per_code: 800
-        variant: 2
-      3b770803-7ac9-4e34-920a-5e3f5014d239:
-        campaign_code: DataOTC.27.6
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m5'
-        limit_per_code: 800
-        variant: 1
-      3ceebe44-cde9-431f-baaf-e8ccd97809ab:
-        campaign_code: DataOTC.27.11
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m1'
-        limit_per_code: 800
-        variant: 1
-      4252b79f-96aa-418a-85a3-438166263ca0:
-        campaign_code: DataOTC.27.6
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m8'
-        limit_per_code: 800
-        variant: 1
-      7aba475b-4f64-4d58-96cb-7cb692fadc8b:
-        campaign_code: DataOTC.27.6
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m4'
-        limit_per_code: 800
-        variant: 1
-      8c7df86b-72ce-4f60-8c9d-5936627679df:
-        campaign_code: DataOTC.27.11
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m2'
-        limit_per_code: 800
-        variant: 1
-      92899265-ec5a-409a-8d3f-fd1509d9f79d:
+      0381e67f-a27a-4443-b09e-f23c64892116:
         campaign_code: DataOTC.27.14
         conditions:
         - ard_microsegment == 'low_arpu_low_tenure_m3'
         limit_per_code: 800
         variant: 2
-      9abde63d-4b2e-4d45-af29-78ebd4ac2203:
-        campaign_code: DataOTC.27.14
+      05f54a10-faea-4e8f-a610-ac32102039fe:
+        campaign_code: DataOTC.27.6
         conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m1'
+        - ard_microsegment == 'low_arpu_low_tenure_m8'
         limit_per_code: 800
-        variant: 2
-      ad4695f4-af87-4a8b-9d0a-74ef8eb701a3:
+        variant: 1
+      0af46950-904d-4be5-a20e-22b70948c8f3:
+        campaign_code: DataOTC.27.6
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m6'
+        limit_per_code: 800
+        variant: 1
+      19546bc8-83cb-4555-a7fb-6fb561332710:
         campaign_code: DataOTC.27.14
         conditions:
         - ard_microsegment == 'low_arpu_low_tenure_m2'
         limit_per_code: 800
         variant: 2
-      c0c2ce2f-9e31-474d-bfd8-457cdc0c4792:
+      2d9dc8fd-ef6c-4047-bc82-4219da7fa2bc:
+        campaign_code: DataOTC.27.6
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m7'
+        limit_per_code: 800
+        variant: 1
+      35eb8326-38bf-41a3-8e10-46194f9110c9:
+        campaign_code: DataOTC.27.11
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m2'
+        limit_per_code: 800
+        variant: 1
+      51081326-84b3-4a59-9326-011327b624a2:
         campaign_code: DataOTC.27.14
         conditions:
         - ard_microsegment == 'low_arpu_low_tenure_m4'
         limit_per_code: 800
         variant: 2
-      d224807e-5fa3-4cac-848c-5e00ad7bdc84:
-        campaign_code: DataOTC.27.14
+      6c0e408b-a596-4294-8533-fd17d39d6a68:
+        campaign_code: DataOTC.27.6
         conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m6'
+        - ard_microsegment == 'low_arpu_low_tenure_m4'
         limit_per_code: 800
-        variant: 2
-      fedeeb34-2327-4c5c-bf47-4edff637d6db:
+        variant: 1
+      73ac152c-a3a7-41e9-bbf4-00ab8ee91110:
         campaign_code: DataOTC.27.14
         conditions:
         - ard_microsegment == 'low_arpu_low_tenure_m5'
+        limit_per_code: 800
+        variant: 2
+      8b90a87c-14be-43af-a35c-26df767f0f18:
+        campaign_code: DataOTC.27.11
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m1'
+        limit_per_code: 800
+        variant: 1
+      a050812a-2832-4c7b-8a6b-f76a851d6775:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m8'
+        limit_per_code: 800
+        variant: 2
+      ab4af1f7-60af-44a3-9691-125e5a0ab458:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m1'
+        limit_per_code: 800
+        variant: 2
+      b3d48a23-9bc0-4d65-bf09-5ed326e9a801:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m7'
+        limit_per_code: 800
+        variant: 2
+      cc977989-e222-4c54-aed9-e124cd7ed90c:
+        campaign_code: DataOTC.27.6
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m3'
+        limit_per_code: 800
+        variant: 1
+      cfbfe6e3-5bc5-4cd9-95e0-8f86a5f2edcd:
+        campaign_code: DataOTC.27.6
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m5'
+        limit_per_code: 800
+        variant: 1
+      f6bdadeb-5dd8-4d88-9869-51b3a4d98f52:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m6'
         limit_per_code: 800
         variant: 2
     treatment_name: z1_notest_ard_d20d10_l_arpu_l_tenure
@@ -744,97 +744,97 @@ treatment_rules:
   z1_notest_ard_d20d10_low_arpu_old:
     order_policy: dilution1_pred + dilution2_pred
     rules:
-      206bc67a-79ff-4a9e-b1a9-81e85b438364:
-        campaign_code: DataOTC.27.6
+      02b39620-9259-4de3-867a-42230c1d42af:
+        campaign_code: DataOTC.27.14
         conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m8'
+        - ard_microsegment == 'low_arpu_high_tenure_m1'
+        limit_per_code: 3100
+        variant: 2
+      35528439-f2a8-45b3-940d-767c458392ee:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'low_arpu_high_tenure_m4'
+        limit_per_code: 3100
+        variant: 2
+      367d2c52-69c5-4647-8348-f016a01313e6:
+        campaign_code: DataOTC.27.11
+        conditions:
+        - ard_microsegment == 'low_arpu_high_tenure_m2'
         limit_per_code: 3100
         variant: 1
-      38bf338a-152c-4fec-9df8-a6dca9135d52:
+      3eb9fcd7-e5df-424e-a425-fbf786e2260b:
+        campaign_code: DataOTC.27.11
+        conditions:
+        - ard_microsegment == 'low_arpu_high_tenure_m1'
+        limit_per_code: 3100
+        variant: 1
+      3f4c2cdf-7aee-4d32-a3d8-29bde610f333:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'low_arpu_high_tenure_m7'
+        limit_per_code: 3100
+        variant: 2
+      4e3a1552-7caf-4cc8-b501-dde053a80b58:
+        campaign_code: DataOTC.27.6
+        conditions:
+        - ard_microsegment == 'low_arpu_high_tenure_m4'
+        limit_per_code: 3100
+        variant: 1
+      507b4bc4-32ff-4f8d-a513-990693c5f0a9:
         campaign_code: DataOTC.27.14
         conditions:
         - ard_microsegment == 'low_arpu_high_tenure_m2'
         limit_per_code: 3100
         variant: 2
-      3cbb3608-dbbc-4288-aab6-a9847e608fdd:
+      5ac3a75d-7ad2-4fcf-8c4d-118809825e5c:
+        campaign_code: DataOTC.27.6
+        conditions:
+        - ard_microsegment == 'low_arpu_high_tenure_m6'
+        limit_per_code: 3100
+        variant: 1
+      6629043f-0c8b-44b9-b70c-5ed45195d522:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'low_arpu_high_tenure_m6'
+        limit_per_code: 3100
+        variant: 2
+      7a302c41-da41-4758-9bda-5ac4094025c8:
+        campaign_code: DataOTC.27.6
+        conditions:
+        - ard_microsegment == 'low_arpu_high_tenure_m3'
+        limit_per_code: 3100
+        variant: 1
+      97137446-3639-4a51-b9f8-99180eb4687f:
+        campaign_code: DataOTC.27.6
+        conditions:
+        - ard_microsegment == 'low_arpu_high_tenure_m8'
+        limit_per_code: 3100
+        variant: 1
+      a4938851-124a-488d-a4b3-f8953a8e2dc9:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'low_arpu_high_tenure_m3'
+        limit_per_code: 3100
+        variant: 2
+      bb8bb946-e040-43a9-b302-4f216e906710:
         campaign_code: DataOTC.27.6
         conditions:
         - ard_microsegment == 'low_arpu_high_tenure_m7'
         limit_per_code: 3100
         variant: 1
-      719952a5-b5d6-4b2f-a04c-41ec226e80b7:
+      cac0e7ef-e5de-4ef4-957b-f327089b9527:
         campaign_code: DataOTC.27.14
         conditions:
         - ard_microsegment == 'low_arpu_high_tenure_m8'
         limit_per_code: 3100
         variant: 3
-      80cdb63a-be0e-478c-8201-bc992d1ecde8:
-        campaign_code: DataOTC.27.11
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m2'
-        limit_per_code: 3100
-        variant: 1
-      9f9909f3-106c-41bd-9eeb-8904454de2ba:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m7'
-        limit_per_code: 3100
-        variant: 2
-      a2f78b34-3bd0-4409-b310-8217b0bc55a8:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m3'
-        limit_per_code: 3100
-        variant: 2
-      a4099360-001a-4bad-bc26-fdee96100c98:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m4'
-        limit_per_code: 3100
-        variant: 2
-      a60b39b1-fadb-4254-bfb7-7f65d1d47bc5:
-        campaign_code: DataOTC.27.6
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m4'
-        limit_per_code: 3100
-        variant: 1
-      b5ea9ed1-5dd1-428c-9881-cdef61a175ca:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m6'
-        limit_per_code: 3100
-        variant: 2
-      bbc7f189-ecc1-4efe-baff-939fdec70a59:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m1'
-        limit_per_code: 3100
-        variant: 2
-      bec942f5-d5ae-445e-8955-12ab9fbf2051:
-        campaign_code: DataOTC.27.11
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m1'
-        limit_per_code: 3100
-        variant: 1
-      bfbd2bbf-8c7d-4395-85b1-b0fafd0a7240:
-        campaign_code: DataOTC.27.6
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m6'
-        limit_per_code: 3100
-        variant: 1
-      cba10ecd-c534-40f8-abb3-e8067769abdf:
+      def50e9a-b939-40c4-8688-0c18587f8e62:
         campaign_code: DataOTC.27.6
         conditions:
         - ard_microsegment == 'low_arpu_high_tenure_m5'
         limit_per_code: 3100
         variant: 1
-      ef4723f4-e616-4f38-8539-b6e405d88ae6:
-        campaign_code: DataOTC.27.6
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m3'
-        limit_per_code: 3100
-        variant: 1
-      fab82bc6-fa6b-4593-9f1a-acd818158628:
+      f97cd5e4-859d-4b47-aec2-869f8b55af2b:
         campaign_code: DataOTC.27.14
         conditions:
         - ard_microsegment == 'low_arpu_high_tenure_m5'
@@ -846,100 +846,100 @@ treatment_rules:
   z2_notest_ard_d10_h_arpu_l_tenure:
     order_policy: dilution1_pred
     rules:
-      12209200-8775-4524-a5fe-fb061598a07e:
-        campaign_code: DataOTC.27.2
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m5'
-        limit_per_code: 300
-        variant: 1
-      2aef4511-c8dd-455e-8ff4-40cce2810f58:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m6'
-        limit_per_code: 300
-        variant: 2
-      2b9a5d93-1e67-42e5-bf57-4edd52507d06:
-        campaign_code: DataOTC.27.1
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m2'
-        limit_per_code: 300
-        variant: 1
-      2ba3f264-d3ad-49b0-ab2d-97dd0a09eff6:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m4'
-        limit_per_code: 300
-        variant: 2
-      31746002-78f6-403c-bff3-ea1791f5a2b9:
-        campaign_code: DataOTC.27.8
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m8'
-        limit_per_code: 300
-        variant: 1
-      36e484ee-3df5-4c5b-b20c-fe6435fd747d:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m5'
-        limit_per_code: 300
-        variant: 2
-      3fbf2cb2-bb87-4183-b39c-b00eb0e66bd3:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m3'
-        limit_per_code: 300
-        variant: 2
-      5a9dee20-d337-4daa-8f09-22f79a8c7fa2:
-        campaign_code: DataOTC.27.9
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m3'
-        limit_per_code: 300
-        variant: 1
-      5dd468c1-1b6d-4884-9376-840f7646d928:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m7'
-        limit_per_code: 300
-        variant: 2
-      624e2246-1e13-4816-9fac-8660af03402a:
-        campaign_code: DataOTC.27.2
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m6'
-        limit_per_code: 300
-        variant: 1
-      6e96831a-12f1-4835-a41c-fbb9135fd291:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m8'
-        limit_per_code: 300
-        variant: 2
-      85e335f0-b080-4dbe-8309-9dd0e518a846:
+      3050dc00-12d9-416a-8e3c-19130e37f9b3:
         campaign_code: DataOTC.27.14
         conditions:
         - ard_microsegment == 'high_arpu_low_tenure_m2'
         limit_per_code: 300
         variant: 2
-      a581f500-82d7-40b1-85d9-5de730ae91c3:
-        campaign_code: DataOTC.27.1
-        conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m1'
-        limit_per_code: 300
-        variant: 1
-      e3fd8dc1-5005-40f8-9550-d20287e63faa:
+      355d2998-01a2-470c-a7b9-8e8caaf40acb:
         campaign_code: DataOTC.27.10
         conditions:
         - ard_microsegment == 'high_arpu_low_tenure_m4'
         limit_per_code: 300
         variant: 1
-      ecaedb70-4019-48dd-af59-8728cb89ff0b:
+      3b64f6f0-9e26-4a07-a25e-e8382415ca4b:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m1'
+        limit_per_code: 300
+        variant: 2
+      47e4c911-f46e-4f3b-ab72-3792bd2f2e84:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m6'
+        limit_per_code: 300
+        variant: 2
+      604de68e-f3b6-4c55-a6dd-2ec06c87d17d:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m8'
+        limit_per_code: 300
+        variant: 2
+      60cbd2b5-be99-44bf-aa09-3dc710cf44a4:
+        campaign_code: DataOTC.27.2
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m6'
+        limit_per_code: 300
+        variant: 1
+      6e6e731e-f274-4b23-a0ad-4abcb838aefd:
+        campaign_code: DataOTC.27.1
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m2'
+        limit_per_code: 300
+        variant: 1
+      85d3acc7-9bc8-4b33-8d49-014dadf5bf9f:
+        campaign_code: DataOTC.27.8
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m8'
+        limit_per_code: 300
+        variant: 1
+      b2b4a734-10c7-4e09-813a-9013125dc05c:
+        campaign_code: DataOTC.27.9
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m3'
+        limit_per_code: 300
+        variant: 1
+      c6665aec-c5b5-4071-958a-d46a4b3a6991:
+        campaign_code: DataOTC.27.1
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m1'
+        limit_per_code: 300
+        variant: 1
+      d26db1cd-c20b-4681-9e39-2d3d251f8f4a:
+        campaign_code: DataOTC.27.2
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m5'
+        limit_per_code: 300
+        variant: 1
+      d6694685-8ea4-4816-b646-40bbb5e825f6:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m7'
+        limit_per_code: 300
+        variant: 2
+      d6e1c831-2e5c-4634-afd5-7265f82944be:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m4'
+        limit_per_code: 300
+        variant: 2
+      e76ecd50-f197-432f-b163-030fb5a215f5:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'high_arpu_low_tenure_m5'
+        limit_per_code: 300
+        variant: 2
+      f379c310-160f-4f07-a34f-ecd72597fa6e:
         campaign_code: DataOTC.27.7
         conditions:
         - ard_microsegment == 'high_arpu_low_tenure_m7'
         limit_per_code: 300
         variant: 1
-      f082e62c-e76d-4652-bcd6-d6a393b46c1a:
+      fc5afee6-f488-4e35-962e-7487ae9e5b71:
         campaign_code: DataOTC.27.14
         conditions:
-        - ard_microsegment == 'high_arpu_low_tenure_m1'
+        - ard_microsegment == 'high_arpu_low_tenure_m3'
         limit_per_code: 300
         variant: 2
     treatment_name: z2_notest_ard_d10_h_arpu_l_tenure
@@ -948,301 +948,301 @@ treatment_rules:
   z2_notest_ard_d10_high_arpu_old:
     order_policy: dilution1_pred
     rules:
-      155a1cb6-9e9c-4a9d-b280-8deaec845ec2:
-        campaign_code: DataOTC.27.1
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m1'
-        limit_per_code: 1900
-        variant: 1
-      27211718-fd69-47c4-a243-8facffe0b864:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m3'
-        limit_per_code: 1900
-        variant: 2
-      33f14461-0281-4c98-a132-81fa84f11f16:
+      033e8df1-c394-4ad2-b994-fcedc65cbf31:
         campaign_code: DataOTC.27.14
         conditions:
         - ard_microsegment == 'high_arpu_high_tenure_m8'
         limit_per_code: 1900
         variant: 2
-      34596ac3-f8f9-412a-8c0a-ccb68c4041e5:
+      192851ee-c12f-4b18-b071-bb0cc24bbc61:
         campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m6'
-        limit_per_code: 1900
-        variant: 2
-      57144b9c-845d-4370-a82a-1f7af7d13474:
-        campaign_code: DataOTC.27.7
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m7'
-        limit_per_code: 1900
-        variant: 1
-      5e5b1e3b-5376-4411-85c5-ae772c020185:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m5'
-        limit_per_code: 1900
-        variant: 2
-      61f3a936-160d-43bd-94ec-995c8cff5c63:
-        campaign_code: DataOTC.27.9
         conditions:
         - ard_microsegment == 'high_arpu_high_tenure_m3'
         limit_per_code: 1900
-        variant: 1
-      6684507a-bcd9-4d6c-b1bc-5d601ae8bd9d:
+        variant: 2
+      33bd3233-e163-4b7e-9298-f009192aae00:
         campaign_code: DataOTC.27.2
         conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m6'
+        - ard_microsegment == 'high_arpu_high_tenure_m5'
         limit_per_code: 1900
         variant: 1
-      84fa25df-632b-4856-be92-6947f2df6cb9:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m4'
-        limit_per_code: 1900
-        variant: 2
-      96537870-8822-4c27-8743-5c3bb5da5bb7:
+      4db7c5fe-310b-4167-9fd9-fce242a8d944:
         campaign_code: DataOTC.27.8
         conditions:
         - ard_microsegment == 'high_arpu_high_tenure_m8'
         limit_per_code: 1900
         variant: 1
-      aae77c54-1b8f-4161-a2ed-5bd167390eec:
+      7c3f6152-dfd9-4757-bac2-3bb97f308fd1:
         campaign_code: DataOTC.27.10
         conditions:
         - ard_microsegment == 'high_arpu_high_tenure_m4'
         limit_per_code: 1900
         variant: 1
-      b07c7eeb-9d4f-45ad-82aa-6a319fa72314:
-        campaign_code: DataOTC.27.14
+      8355ca27-21fe-43d5-ac41-8ef08e9714d4:
+        campaign_code: DataOTC.27.9
         conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m7'
-        limit_per_code: 1900
-        variant: 2
-      b177df53-40e7-47d3-9a7e-445993b5b9ce:
-        campaign_code: DataOTC.27.2
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m5'
+        - ard_microsegment == 'high_arpu_high_tenure_m3'
         limit_per_code: 1900
         variant: 1
-      b42f3f44-3e48-41c8-9b88-c0ef7f99f287:
-        campaign_code: DataOTC.27.1
-        conditions:
-        - ard_microsegment == 'high_arpu_high_tenure_m2'
-        limit_per_code: 1900
-        variant: 1
-      cf041ed1-52c4-4eb1-a562-97be86ba4c34:
+      af88b6ce-155f-4ca2-9410-853ee06fe0bc:
         campaign_code: DataOTC.27.14
         conditions:
         - ard_microsegment == 'high_arpu_high_tenure_m2'
         limit_per_code: 1900
         variant: 2
-      dfa4c833-efaa-4116-919b-4b69c635ad4e:
+      b2672382-5bb2-4089-8714-8b55b787e426:
         campaign_code: DataOTC.27.14
         conditions:
         - ard_microsegment == 'high_arpu_high_tenure_m1'
         limit_per_code: 1900
         variant: 2
+      b7f34fe8-83bb-44f7-98c9-30827105d390:
+        campaign_code: DataOTC.27.1
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m2'
+        limit_per_code: 1900
+        variant: 1
+      c3c26ff9-eb6f-42ae-a1a4-2a616810c017:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m7'
+        limit_per_code: 1900
+        variant: 2
+      d7eb216f-4872-434e-b07d-ca5f3aae290d:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m5'
+        limit_per_code: 1900
+        variant: 2
+      db34bd67-6b10-41de-81c9-9648599bad3e:
+        campaign_code: DataOTC.27.1
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m1'
+        limit_per_code: 1900
+        variant: 1
+      e6040711-e8f5-4609-a4a8-168651588ba3:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m6'
+        limit_per_code: 1900
+        variant: 2
+      e7a1ba0d-d623-48e9-a0c5-07a146f938f3:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m4'
+        limit_per_code: 1900
+        variant: 2
+      e7fc0a86-27e2-4ef1-846f-d7000782cd77:
+        campaign_code: DataOTC.27.2
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m6'
+        limit_per_code: 1900
+        variant: 1
+      f2e11866-96fe-485f-b3bf-54558419fee0:
+        campaign_code: DataOTC.27.7
+        conditions:
+        - ard_microsegment == 'high_arpu_high_tenure_m7'
+        limit_per_code: 1900
+        variant: 1
     treatment_name: z2_notest_ard_d10_high_arpu_old
     treatment_size: 6000
     use_case: ard
   z2_notest_ard_d10_l_arpu_l_tenure:
     order_policy: dilution1_pred
     rules:
-      02996a80-01ee-454e-a216-6b380783f2b9:
+      01102194-f586-474c-a2dc-3205fdb9dfee:
         campaign_code: DataOTC.27.14
         conditions:
         - ard_microsegment == 'low_arpu_low_tenure_m2'
         limit_per_code: 200
         variant: 2
-      18e977d9-9ceb-4017-aad7-3fbc8244224a:
+      027228be-3cf5-41e2-bd01-f35c4ae7de47:
         campaign_code: DataOTC.27.14
         conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m7'
+        - ard_microsegment == 'low_arpu_low_tenure_m6'
         limit_per_code: 200
         variant: 2
-      3a15e1eb-497b-4bec-b70b-80a2950d3c92:
+      3f928b24-d4ec-451e-98e0-39ed860a41b7:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m5'
+        limit_per_code: 200
+        variant: 2
+      55fcec78-826c-4f35-9b2b-94dadad358b4:
         campaign_code: DataOTC.27.5
         conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m5'
+        - ard_microsegment == 'low_arpu_low_tenure_m3'
         limit_per_code: 200
         variant: 1
-      3a489f31-96c2-431c-a4d6-21e231180f91:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m5'
-        limit_per_code: 200
-        variant: 2
-      4924550e-3609-4676-aec1-a3b50a91ac7c:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m8'
-        limit_per_code: 200
-        variant: 2
-      5085302f-6fc5-4d3a-93d0-aae0d8ad3e8e:
+      65e2de7a-7c2c-418a-b47a-e8b23bd6a9af:
         campaign_code: DataOTC.27.5
         conditions:
         - ard_microsegment == 'low_arpu_low_tenure_m4'
         limit_per_code: 200
         variant: 1
-      51d82780-d3a2-48d5-805f-0553a0219245:
+      66f198d2-cd16-4f34-8438-4f7319b820de:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m1'
+        limit_per_code: 200
+        variant: 2
+      6b6eaafe-3ade-4d0f-9b36-3e27d705e342:
         campaign_code: DataOTC.27.5
         conditions:
         - ard_microsegment == 'low_arpu_low_tenure_m6'
         limit_per_code: 200
         variant: 1
-      84999916-258e-4d7d-8778-1f17498527b5:
-        campaign_code: DataOTC.27.5
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m8'
-        limit_per_code: 200
-        variant: 1
-      85d13309-8911-419a-8470-39ca0b95bcda:
-        campaign_code: DataOTC.27.11
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m1'
-        limit_per_code: 200
-        variant: 1
-      b01f2580-b884-4e38-a4a6-689bc4f6f819:
+      6d0eb5a1-1c18-457e-9521-c5f62d387578:
         campaign_code: DataOTC.27.14
         conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m1'
+        - ard_microsegment == 'low_arpu_low_tenure_m3'
         limit_per_code: 200
         variant: 2
-      b8d8c9b9-7db6-473e-a6e1-0111af91c09c:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m4'
-        limit_per_code: 200
-        variant: 2
-      ca89644f-588e-41a2-9b9c-3f8ee87d99cc:
+      6dfce9e5-020e-42c0-82ce-48f1e89afd72:
         campaign_code: DataOTC.27.11
         conditions:
         - ard_microsegment == 'low_arpu_low_tenure_m2'
         limit_per_code: 200
         variant: 1
-      d21f01cd-9901-4122-baac-23a9261c2175:
+      79647a8a-f02a-4926-b0fe-26d264596bec:
         campaign_code: DataOTC.27.5
         conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m3'
+        - ard_microsegment == 'low_arpu_low_tenure_m8'
         limit_per_code: 200
         variant: 1
-      d782f772-2fbd-498d-b308-84feea88a40e:
+      858c1353-a724-4934-b0b1-54e6d0951e47:
         campaign_code: DataOTC.27.14
         conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m3'
+        - ard_microsegment == 'low_arpu_low_tenure_m8'
         limit_per_code: 200
         variant: 2
-      f083a3c3-6c71-4fb3-be31-66b41649e898:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'low_arpu_low_tenure_m6'
-        limit_per_code: 200
-        variant: 2
-      ff417c76-872d-4dd1-86ba-f942963ff9dd:
+      9e8b5972-cf5f-40db-a716-954f92f83979:
         campaign_code: DataOTC.27.5
         conditions:
         - ard_microsegment == 'low_arpu_low_tenure_m7'
         limit_per_code: 200
         variant: 1
+      af089ab6-19d6-4904-9565-eb7feb0a9318:
+        campaign_code: DataOTC.27.11
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m1'
+        limit_per_code: 200
+        variant: 1
+      c5e245de-9a92-46a3-a85a-653328b66fb5:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m4'
+        limit_per_code: 200
+        variant: 2
+      cd74135e-78a7-4400-866b-82bdbf6e1f6b:
+        campaign_code: DataOTC.27.5
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m5'
+        limit_per_code: 200
+        variant: 1
+      cedf1656-747a-4f40-ae5f-9fe8b1e17775:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'low_arpu_low_tenure_m7'
+        limit_per_code: 200
+        variant: 2
     treatment_name: z2_notest_ard_d10_l_arpu_l_tenure
     treatment_size: 500
     use_case: ard
   z2_notest_ard_d10_low_arpu_old:
     order_policy: dilution1_pred
     rules:
-      03975cde-97d5-4535-a25c-38c6865d9440:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m7'
-        limit_per_code: 500
-        variant: 2
-      26c41fd1-298f-486b-af09-a6afd800f690:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m5'
-        limit_per_code: 500
-        variant: 2
-      3fcc9f94-6f2a-4cc5-b1f6-71e6a7b58a51:
-        campaign_code: DataOTC.27.5
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m5'
-        limit_per_code: 500
-        variant: 1
-      5a4771c1-b420-4047-b56b-c75c3bb1e004:
+      107638a0-45e0-4563-971b-ad4451ff6154:
         campaign_code: DataOTC.27.14
         conditions:
         - ard_microsegment == 'low_arpu_high_tenure_m8'
         limit_per_code: 500
         variant: 2
-      63374e9a-50c2-4777-b535-3670e9542b35:
+      2a81e9b5-ec13-430f-9a43-cfe440295906:
+        campaign_code: DataOTC.27.5
+        conditions:
+        - ard_microsegment == 'low_arpu_high_tenure_m6'
+        limit_per_code: 500
+        variant: 1
+      480d7b29-aafa-4761-9f36-ca0671ad30af:
+        campaign_code: DataOTC.27.5
+        conditions:
+        - ard_microsegment == 'low_arpu_high_tenure_m5'
+        limit_per_code: 500
+        variant: 1
+      55ae93c2-5e82-4589-a9cd-4807c9daf94e:
+        campaign_code: DataOTC.27.5
+        conditions:
+        - ard_microsegment == 'low_arpu_high_tenure_m7'
+        limit_per_code: 500
+        variant: 1
+      58746dcf-cfb4-4721-b484-a0df1b6aafb1:
         campaign_code: DataOTC.27.14
         conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m1'
+        - ard_microsegment == 'low_arpu_high_tenure_m3'
         limit_per_code: 500
         variant: 2
-      77b1bd18-697d-4a64-afdc-fad605693c31:
+      5de361f4-d908-41dc-9739-8c897600e6c0:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'low_arpu_high_tenure_m5'
+        limit_per_code: 500
+        variant: 2
+      67eea9f7-7c66-42e8-9223-8fbbe6174232:
+        campaign_code: DataOTC.27.14
+        conditions:
+        - ard_microsegment == 'low_arpu_high_tenure_m4'
+        limit_per_code: 500
+        variant: 2
+      738a91ca-9c23-4cb5-a415-7df3fc4e9ed2:
         campaign_code: DataOTC.27.14
         conditions:
         - ard_microsegment == 'low_arpu_high_tenure_m6'
         limit_per_code: 500
         variant: 2
-      82cc22b8-d67d-4317-9a61-cf808ec47706:
+      742bdb3b-e872-4258-b177-acf74254b6ac:
+        campaign_code: DataOTC.27.11
+        conditions:
+        - ard_microsegment == 'low_arpu_high_tenure_m1'
+        limit_per_code: 500
+        variant: 1
+      79e9dd86-770f-4dc1-a41a-0c4a2c8c7b37:
         campaign_code: DataOTC.27.5
         conditions:
         - ard_microsegment == 'low_arpu_high_tenure_m3'
         limit_per_code: 500
         variant: 1
-      8f80afd3-2445-4abd-ac74-66b306d4bc9e:
-        campaign_code: DataOTC.27.5
+      87e30125-2318-4af8-ae5a-32c679ceda46:
+        campaign_code: DataOTC.27.14
         conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m8'
+        - ard_microsegment == 'low_arpu_high_tenure_m7'
         limit_per_code: 500
-        variant: 1
-      a1412181-95f5-48fc-bb81-05495a7fd795:
+        variant: 2
+      8c8f6c3d-689b-44c2-be71-faa1b8e547c2:
         campaign_code: DataOTC.27.11
         conditions:
         - ard_microsegment == 'low_arpu_high_tenure_m2'
         limit_per_code: 500
         variant: 1
-      a869dbb3-1c8a-461b-b71a-b4f9f0bbe192:
+      9be3be72-f495-49e4-951a-f23d0d8ab4c0:
         campaign_code: DataOTC.27.5
         conditions:
         - ard_microsegment == 'low_arpu_high_tenure_m4'
         limit_per_code: 500
         variant: 1
-      b03f2a25-8592-4960-9c24-e9d742aa2ba2:
+      ef990f48-824e-4961-85a2-23d71bfe4ada:
         campaign_code: DataOTC.27.5
         conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m6'
+        - ard_microsegment == 'low_arpu_high_tenure_m8'
         limit_per_code: 500
         variant: 1
-      d50f9324-d588-4b44-912f-8fd678d7a0b9:
+      ef9d7577-b0de-4c66-8b0d-22a28d65a831:
         campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m3'
-        limit_per_code: 500
-        variant: 2
-      df1c32ea-0f7c-4541-883b-7ec7fbadb451:
-        campaign_code: DataOTC.27.5
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m7'
-        limit_per_code: 500
-        variant: 1
-      e5ffca7f-a69a-43dc-ab63-d4595745df29:
-        campaign_code: DataOTC.27.14
-        conditions:
-        - ard_microsegment == 'low_arpu_high_tenure_m4'
-        limit_per_code: 500
-        variant: 2
-      e957ed24-41bb-48a2-9101-567382edead5:
-        campaign_code: DataOTC.27.11
         conditions:
         - ard_microsegment == 'low_arpu_high_tenure_m1'
         limit_per_code: 500
-        variant: 1
-      f5ea6386-aeec-4aa3-a929-524c376ad245:
+        variant: 2
+      f0795f6b-5f3a-4c9e-a6e5-5dec17233867:
         campaign_code: DataOTC.27.14
         conditions:
         - ard_microsegment == 'low_arpu_high_tenure_m2'
@@ -1251,3 +1251,4 @@ treatment_rules:
     treatment_name: z2_notest_ard_d10_low_arpu_old
     treatment_size: 1500
     use_case: ard
+
