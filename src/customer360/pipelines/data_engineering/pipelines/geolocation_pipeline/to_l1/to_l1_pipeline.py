@@ -34,7 +34,7 @@ def geo_to_l1_pipeline(**kwargs):
                  "params:l1_area_from_ais_store_daily"
                  ],
                 "l1_geo_area_from_ais_store_daily"
-            ),
+            )
 
             # node(
             #     l1_geo_area_from_competitor_store_daily,
