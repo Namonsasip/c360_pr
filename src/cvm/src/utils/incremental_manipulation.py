@@ -102,6 +102,8 @@ def filter_users(df: DataFrame, subscription_id_hash_suffix: List[str]) -> DataF
 
     if subscription_id_hash_suffix is None:
         return df
+    if not isinstance(subscription_id_hash_suffix, list):
+        subscription_id_hash_suffix = [subscription_id_hash_suffix]
 
     if "subscription_identifier" not in df.columns:
         raise Exception("Column subscription_identifier not found.")
