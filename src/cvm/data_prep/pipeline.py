@@ -37,7 +37,6 @@ from cvm.data_prep.nodes import (
     train_test_split,
 )
 from cvm.preprocessing.nodes import pipeline_fit
-from cvm.sample_inputs.pipeline import create_users_from_active, sample_inputs
 from kedro.pipeline import Pipeline, node
 
 
@@ -264,11 +263,3 @@ def training_data_prepare(sample_type: str) -> Pipeline:
         Kedro pipeline.
     """
     return join_raw_features(sample_type) + create_training_sample(sample_type)
-
-
-extract_features = (
-    create_users_from_active("fe")
-    + sample_inputs("fe")
-    + create_cvm_important_columns()
-)
-rfe_only = create_cvm_important_columns()
