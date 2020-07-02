@@ -55,10 +55,20 @@ def geo_to_l4_pipeline(**kwargs):
                  "int_l4_geo_work_location_id_monthly"
                  ]
             ),
+            # List imsi from int_HOME/WORK
+            node(
+                l4_geo_home_work_list_imsi,  # partition_date is main column to massive processing
+                ["int_l4_geo_home_location_id_monthly",
+                 "int_l4_geo_work_location_id_monthly"
+                 ],
+                ["geo_home_work_list_imsi_stg"
+                 ]
+            ),
             node(
                 l4_geo_home_work_location_id,
                 ["int_l4_geo_home_location_id_monthly",
                  "int_l4_geo_work_location_id_monthly",
+                 "geo_home_work_list_imsi_stg",
                  "params:l4_geo_home_work_location_id"
                  ],
                 "l4_geo_home_work_location_id"
