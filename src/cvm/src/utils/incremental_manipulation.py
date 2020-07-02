@@ -113,7 +113,7 @@ def filter_users(df: DataFrame, subscription_id_hash_suffix: List[str]) -> DataF
     ]
     suffixes_sql = "(" + ", ".join(suffixes_in_quotes) + ")"
     log.info(f"Filtering users, suffixes chosen: {suffixes_sql}")
-    suffix_length = len(subscription_id_hash_suffix)
+    suffix_length = len(subscription_id_hash_suffix[0])
     df = (
         # add a hash
         df.withColumn(
