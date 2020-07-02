@@ -35,6 +35,8 @@ def massive_processing_for_home_work(
     partition_num_per_job = config_home.get("partition_num_per_job", 1)
     mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
     add_list = mvv_new
+    print("DEBUG ---------------------> (1)")
+    print(add_list)
 
     #Set first dataframe to merge
     if len(add_list) != 1:
