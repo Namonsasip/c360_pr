@@ -73,7 +73,7 @@ def massive_processing_for_home_work(
         # Home
         output_df_home = _int_l4_geo_home_location_id_monthly(small_df_last, config_home)
 
-        return [output_df_work, output_df_home]
+        return [output_df_home, output_df_work]
 
     first_item = add_list[-1]
 
