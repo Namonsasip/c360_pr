@@ -54,8 +54,8 @@ def l5_du_scored(
     # Data upsell generate score for every possible upsell campaign
 
     df_master_scored = score_du_models(
-        df_master=df_master.filter(F.col("to_be_scored") == 1),
-        primary_key_columns=["nba_spine_primary_key"],
+        df_master=df_master,
+        primary_key_columns=["access_method_num"],
         model_group_column=model_group_column,
         models_to_score={
             acceptance_model_tag: "propensity",
@@ -67,4 +67,4 @@ def l5_du_scored(
         pai_artifacts_uri=pai_artifacts_uri,
         **kwargs,
     )
-    return df_master
+    return df_master_scored

@@ -1018,15 +1018,15 @@ def score_du_models(
                 experiment_ids=mlflow_experiment_id,
                 filter_string="params.model_objective='"
                 + current_tag
-                + "' AND params.Version=1 AND tags.mlflow.runName ='" +
-                 current_model_group + "'",
+                + "' AND params.Version=1 AND tags.mlflow.runName ='"
+                + current_model_group
+                + "'",
                 run_view_type=1,
                 max_results=1,
                 order_by=None,
             )
 
             current_model = mlflowlightgbm.load_model(mlflow_run.artifact_uri.values[0])
-
 
             # We sort features because MLflow does not preserve feature order
             # Models should also be trained with features sorted
@@ -1064,18 +1064,24 @@ def score_du_models(
         order_by=None,
     )
     all_run_data.columns
+    all_run_data[model_group_column] = all_run_data["tags.mlflow.runName"]
     mlflow_sdf = spark.createDataFrame(all_run_data.astype(str))
-    eligible_model = mlflow_sdf.selectExpr(
-        "tags.mlflow.runName as " + model_group_column
-    )
+    eligible_model = mlflow_sdf.selectExpr(model_group_column)
     scoring_combination = df_master.select(
         "subscription_identifier",
         "old_subscription_identifier",
         "access_method_num",
         "register_date",
-    ).crossjoin(eligible_model)
+    ).crossJoin(eligible_model)
     df_master = scoring_combination.join(
-        df_master, ["subscription_identifier", "old_subscription_identifier",], "inner"
+        df_master,
+        [
+            "subscription_identifier",
+            "old_subscription_identifier",
+            "access_method_num",
+            "register_date",
+        ],
+        "inner",
     )
     # This part of code suppose to distribute chuck of each sub required to be score
     # For each of the model
@@ -1102,3 +1108,45 @@ def score_du_models(
     df_master_scored = df_master.join(df_scored, on=primary_key_columns, how="left")
 
     return df_master_scored
+    #
+    # df_master = catalog.load("l5_du_scoring_master")
+    # explanatory_features = catalog.load("params:du_model_explanatory_features")
+    # df_master_scored = score_du_models(
+    #     df_master=df_master,
+    #     primary_key_columns=["access_method_num"],
+    #     model_group_column="model_name",
+    #     models_to_score={"binary": "propensity", "regression": "arpu_uplift",},
+    #     scoring_chunk_size=500000,
+    #     explanatory_features=explanatory_features,
+    #     pai_runs_uri="pai_runs_uri",
+    #     pai_artifacts_uri="pai_artifacts_uri",
+    # )
+    #
+    # mlflow_path = "/Shared/data_upsell/lightgbm"
+    # if mlflow.get_experiment_by_name(mlflow_path) is None:
+    #     mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
+    # else:
+    #     mlflow_experiment_id = mlflow.get_experiment_by_name(mlflow_path).experiment_id
+    #
+    # all_run_data = mlflow.search_runs(
+    #     experiment_ids=mlflow_experiment_id,
+    #     filter_string="params.model_objective='binary' AND params.Able_to_model = 'True' AND params.Version=1",
+    #     run_view_type=1,
+    #     max_results=100,
+    #     order_by=None,
+    # )
+    #
+    # df_master = catalog.load("l5_du_scoring_master")
+    # primary_key_columns = ["access_method_num"]
+    # model_group_column = "model_name"
+    # explanatory_features = catalog.load("params:du_model_explanatory_features")
+    # df_master.withColumn(model_group_column, F.lit("1")).withColumn(
+    #     "partition", F.lit("1")
+    # ).select(
+    #     model_group_column,
+    #     "partition",
+    #     *(  # Don't add model group column twice in case it's a PK column
+    #         list(set(primary_key_columns) - set([model_group_column]))
+    #         + explanatory_features
+    #     ),
+    # )
