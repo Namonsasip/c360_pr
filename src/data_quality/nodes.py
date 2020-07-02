@@ -373,6 +373,14 @@ def run_accuracy_logic(
     if "percentiles" in result_df.columns:
         result_df = break_percentile_columns(result_df, percentiles["percentile_list"])
 
+    # this is to avoid running every process at the end which causes
+    # long GC pauses before the spark job is even started
+    # need to execute before so that percentiles don't move
+    spark = get_spark_session()
+    spark.conf.set("spark.sql.autoBroadcastJoinThreshold", -1)
+    spark.conf.set("spark.sql.broadcastTimeout", -1)
+    result_df.persist(StorageLevel.MEMORY_AND_DISK).count()
+
     result_df = add_outlier_percentage_based_on_iqr(
         raw_df=sampled_df,
         melted_df=result_df,
@@ -386,8 +394,6 @@ def run_accuracy_logic(
                  .withColumn("sub_id_sample_creation_date", F.lit(sample_creation_date))
                  .drop("count_all"))
 
-    # this is to avoid running every process at the end which causes
-    # long GC pauses before the spark job is even started
     spark = get_spark_session()
     spark.conf.set("spark.sql.autoBroadcastJoinThreshold", -1)
     spark.conf.set("spark.sql.broadcastTimeout", -1)
@@ -658,7 +664,7 @@ def run_timeliness_logic(
                 coalesce(
                     partition_latency - lag(partition_latency, 1) over (partition by dataset_name order by execution_ts asc),
                     latency_increase_from_last_run
-                ) as string
+                ) as double
             ) as latency_increase_from_last_run
         from unioned_df
         
