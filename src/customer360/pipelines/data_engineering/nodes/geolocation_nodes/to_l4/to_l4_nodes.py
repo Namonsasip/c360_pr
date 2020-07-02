@@ -37,6 +37,7 @@ def massive_processing_for_home_work(
     add_list = mvv_new
     print("DEBUG ---------------------> (1)")
     print(add_list)
+    print(len(add_list))
 
     #Set first dataframe to merge
     if len(add_list) != 1:
@@ -57,7 +58,8 @@ def massive_processing_for_home_work(
         CNTX.catalog.save(config_home["output_catalog"], output_df_home)
         add_list.remove(last_item)
     elif len(add_list) == 1:
-        small_df_last = data_frame.filter(F.col(source_partition_col).isin(*[add_list]))
+        last_item = add_list[0]
+        small_df_last = data_frame.filter(F.col(source_partition_col).isin(*[last_item]))
 
         # Add 2 columns: event_partition_date, start_of_month
         small_df_last = small_df_last.withColumn("event_partition_date",
@@ -70,7 +72,7 @@ def massive_processing_for_home_work(
 
         # Home
         output_df_home = _int_l4_geo_home_location_id_monthly(small_df_last, config_home)
-        
+
         return [output_df_work, output_df_home]
 
     first_item = add_list[-1]
