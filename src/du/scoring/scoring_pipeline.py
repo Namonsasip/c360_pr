@@ -2,6 +2,7 @@ from kedro.pipeline import Pipeline, node
 
 from du.scoring.scoring_nodes import (
     l5_scoring_profile,
+    l5_du_scored
 )
 
 from nba.pcm_scoring.pcm_scoring_nodes import (
@@ -42,6 +43,23 @@ def create_du_scoring_pipeline() -> Pipeline:
                 outputs="l5_du_scoring_master",
                 name="l5_du_scoring_master",
                 tags=["l5_du_scoring_master"],
+            ),
+            node(
+                l5_du_scored,
+                inputs={
+                    "df_master": "l5_du_scoring_master",
+                    "l5_average_arpu_untie_lookup": "l5_average_arpu_untie_lookup",
+                    "model_group_column": "model_name",
+                    "explanatory_features":"params:du_model_explanatory_features",
+                    "acceptance_model_tag": "binary",
+                    "arpu_model_tag": "regression",
+                    "pai_runs_uri": "params:nba_pai_runs_uri",
+                    "pai_artifacts_uri": "params:nba_pai_artifacts_uri",
+                    "scoring_chunk_size": 500000,
+                },
+                outputs="l5_du_scored",
+                name="l5_du_scored",
+                tags=["l5_du_scored"],
             ),
         ],
         tags="du_scoring_pipeline",

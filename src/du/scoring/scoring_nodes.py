@@ -9,7 +9,7 @@ from pyspark.sql import functions as F
 from pyspark.sql.types import FloatType, IntegerType
 
 from customer360.utilities.spark_util import get_spark_session
-
+from du.models.models_nodes import score_du_models
 # get latest available daily profile from c360 feature
 def l5_scoring_profile(
     l1_customer_profile_union_daily_feature_full_load: DataFrame,
@@ -42,24 +42,27 @@ def l5_du_scored(
     df_master: DataFrame,
     l5_average_arpu_untie_lookup: DataFrame,
     model_group_column: str,
+    explanatory_features,
     acceptance_model_tag: str,
     arpu_model_tag: str,
     pai_runs_uri: str,
     pai_artifacts_uri: str,
     scoring_chunk_size: int = 500000,
+
     **kwargs,
 ):
     # Data upsell generate score for every possible upsell campaign
 
-    df_master_scored = score_nba_models(
+    df_master_scored = score_du_models(
         df_master=df_master.filter(F.col("to_be_scored") == 1),
         primary_key_columns=["nba_spine_primary_key"],
         model_group_column=model_group_column,
         models_to_score={
-            acceptance_model_tag: "prediction_acceptance",
-            arpu_model_tag: "prediction_arpu",
+            acceptance_model_tag: "propensity",
+            arpu_model_tag: "arpu_uplift",
         },
         scoring_chunk_size=scoring_chunk_size,
+        explanatory_features=explanatory_features,
         pai_runs_uri=pai_runs_uri,
         pai_artifacts_uri=pai_artifacts_uri,
         **kwargs,
