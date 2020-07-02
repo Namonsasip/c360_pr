@@ -61,7 +61,7 @@ def geo_to_l4_pipeline(**kwargs):
                 ["int_l4_geo_home_location_id_monthly",
                  "int_l4_geo_work_location_id_monthly"
                  ],
-                "geo_home_work_list_imsi_stg"
+                "geo_home_work_list_imsi_stg"  # In memory Dataframe
             ),
 
             node(
@@ -69,15 +69,15 @@ def geo_to_l4_pipeline(**kwargs):
                 ["int_l4_geo_work_location_id_monthly",
                  "geo_home_work_list_imsi_stg"
                  ],
-                "int_work_location_id"
+                "int_work_location_id"  # In memory Dataframe
             ),
 
             node(
                 int_geo_home_location_id,
                 ["int_l4_geo_home_location_id_monthly"
                  ],
-                ["int_home_weekday_location_id",
-                 "int_home_weekend_location_id"
+                ["int_home_weekday_location_id",  # In memory Dataframe
+                 "int_home_weekend_location_id"  # In memory Dataframe
                  ]
             ),
 
