@@ -973,3 +973,104 @@ def train_single_model_call(
 #         pai_artifacts_uri=pai_artifacts_uri,
 #
 #     ))
+
+def score_du_models(
+    df_master: pyspark.sql.DataFrame,
+    primary_key_columns: List[str],
+    model_group_column: str,
+    models_to_score: Dict[str, str],
+    pai_runs_uri: str,
+    pai_artifacts_uri: str,
+    explanatory_features: List[str] = None,
+    scoring_chunk_size: int = 500000,
+) -> pyspark.sql.DataFrame:
+    # Define schema for the udf.
+    schema = df_master.select(
+        *(
+            primary_key_columns
+            + [
+                F.lit(999.99).cast(DoubleType()).alias(prediction_colname)
+                for prediction_colname in models_to_score.values()
+            ]
+        )
+    ).schema
+
+    @pandas_udf(schema, PandasUDFType.GROUPED_MAP)
+    def predict_pandas_udf(pdf):
+        pai.set_config(
+            storage_runs=pai_runs_uri, storage_artifacts=pai_artifacts_uri,
+        )
+
+        current_model_group = pdf[model_group_column].iloc[0]
+        pd_results = pd.DataFrame()
+
+        for current_tag, prediction_colname in models_to_score.items():
+            current_run = pai.load_runs(
+                experiment=current_model_group, tags=[current_tag]
+            )
+            assert (
+                    len(current_run) > 0
+            ), f"There are no runs for experiment {current_model_group} and tag {current_tag}"
+
+            assert (
+                    len(current_run) < 2
+            ), f"There are more than 1 runs for experiment {current_model_group} and tag {current_tag}"
+
+            current_run_id = current_run["run_id"].iloc[0]
+            current_model = pai.load_model(run_id=current_run_id)
+            df_current_model_features = pai.load_features(run_id=current_run_id)
+            current_model_features = df_current_model_features["feature_list"].iloc[0]
+            # We sort features because MLflow does not preserve feature order
+            # Models should also be trained with features sorted
+            current_model_features.sort()
+            X = pdf[current_model_features]
+            if "binary" in current_run["tags"].iloc[0]:
+                pd_results[prediction_colname] = current_model.predict_proba(
+                    X, num_threads=1, n_jobs=1
+                )[:, 1]
+            elif "regression" in current_run["tags"].iloc[0]:
+                pd_results[prediction_colname] = current_model.predict(
+                    X, num_threads=1, n_jobs=1
+                )
+            else:
+                raise ValueError(
+                    "Unrecognized model type while predicting, model has"
+                    "neither 'binary' or 'regression' tags"
+                )
+            for pk_col in primary_key_columns:
+                pd_results.loc[:, pk_col] = pdf.loc[:, pk_col]
+
+        return pd_results
+    # This part of code suppose to distribute chuck of each sub required to be score
+    # For each of the model
+    # df_master = df_master.withColumn(
+    #     "partition",
+    #     F.floor(
+    #         F.count(F.lit(1)).over(Window.partitionBy(model_group_column))
+    #         / scoring_chunk_size
+    #         * F.rand()
+    #     ),
+    # )
+    mlflow_path = "/Shared/data_upsell/lightgbm"
+    if mlflow.get_experiment_by_name(mlflow_path) is None:
+        mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
+    else:
+        mlflow_experiment_id = mlflow.get_experiment_by_name(
+            mlflow_path
+        ).experiment_id
+
+    df_master_necessary_columns = df_master.select(
+        model_group_column,
+        "partition",
+        *(  # Don't add model group column twice in case it's a PK column
+                list(set(primary_key_columns) - set([model_group_column]))
+                + explanatory_features
+        ),
+    )
+
+    df_scored = df_master_necessary_columns.groupby(
+        model_group_column, "partition"
+    ).apply(predict_pandas_udf)
+    df_master_scored = df_master.join(df_scored, on=primary_key_columns, how="left")
+
+    return df_master_scored
