@@ -17,6 +17,7 @@ def sales_l4_rolling_window(input_df: DataFrame,
                             rolling_window_dict_second: dict,
                             rolling_window_dict_third: dict,
                             rolling_window_dict_fourth: dict,
+                            rolling_window_dict_fifth: dict,
                             table_name: str
                             ) -> DataFrame:
     """
@@ -25,6 +26,7 @@ def sales_l4_rolling_window(input_df: DataFrame,
     :param rolling_window_dict_second:
     :param rolling_window_dict_third:
     :param rolling_window_dict_fourth:
+    :param rolling_window_dict_fifth:
     :param table_name
     :return:
     """
@@ -56,13 +58,18 @@ def sales_l4_rolling_window(input_df: DataFrame,
     rolling_df_fourth = rolling_df_fourth.filter(f.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_sales_temp_4", rolling_df_fourth)
 
+    rolling_df_fifth = l4_rolling_window(input_df, rolling_window_dict_fifth)
+    rolling_df_fifth = rolling_df_fifth.filter(f.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_sales_temp_5", rolling_df_fifth)
+
     rolling_df_first = CNTX.catalog.load("l4_sales_temp_1")
     rolling_df_second = CNTX.catalog.load("l4_sales_temp_2")
     rolling_df_third = CNTX.catalog.load("l4_sales_temp_3")
     rolling_df_fourth = CNTX.catalog.load("l4_sales_temp_4")
+    rolling_df_fifth = CNTX.catalog.load("l4_sales_temp_5")
 
     union_df = union_dataframes_with_missing_cols([rolling_df_first, rolling_df_second, rolling_df_third,
-                                                   rolling_df_fourth])
+                                                   rolling_df_fourth, rolling_df_fifth])
 
     final_df_str = gen_max_sql(union_df, 'tmp_table_name', group_cols)
     merged_df = execute_sql(union_df, 'tmp_table_name', final_df_str)

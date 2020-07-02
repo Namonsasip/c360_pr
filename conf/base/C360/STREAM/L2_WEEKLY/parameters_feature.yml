@@ -119,7 +119,7 @@ int_l2_streaming_service_feature: &int_l2_streaming_service_feature
         visit_count_rank: "row_number() over (partition by subscription_identifier, access_method_num,
                            national_id_card, date(register_date), start_of_week
                            order by sum(visit_count) desc)"
-    granularity: "access_method_num, national_id_card, subscription_identifier, application, start_of_week"
+    granularity: "subscription_identifier, access_method_num, national_id_card, date(register_date), start_of_week, application"
     partition_num_per_job: 5
 
 int_l2_streaming_video_service_feature:
@@ -243,7 +243,8 @@ l2_streaming_visit_count_and_download_traffic_feature:
               "visit_count_gmail",
               "visit_count_amazon"
         ]
-    granularity: "access_method_num, national_id_card, subscription_identifier, start_of_week"
+    granularity: "subscription_identifier, access_method_num, national_id_card, date(register_date),
+                  start_of_week"
     output_catalog: "l2_streaming_visit_count_and_download_traffic_feature"
     partition_num_per_job: 5
 
