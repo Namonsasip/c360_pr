@@ -89,7 +89,7 @@ def geo_to_l4_pipeline(**kwargs):
                  "params:l4_geo_home_work_location_id"
                  ],
                 "l4_geo_home_work_location_id"
-            ),
+            )
 
             # node(
             #     l4_geo_home_weekday_city_citizens,
