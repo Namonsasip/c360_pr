@@ -9,6 +9,13 @@ du_model_min_obs_per_class_for_model: 500
 du_model_max_rows_per_group: 1000000
 du_model_train_sampling_ratio: 0.8
 
+du_scoring_chunk_size: 500000
+
+du_model_scoring_group_column: model_name
+du_acceptance_model_tag: binary
+du_arpu_model_tag: regression
+
+
 du_regression_clip_target_quantiles_arpuu: [0.05, 0.95]
 
 du_model_model_params:
@@ -294,9 +301,9 @@ du_model_input_features:
     - sum_product_deactivated_package_due_to_expired_reason_weekly_last_four_week
     - sum_product_deactivated_package_due_to_expired_reason_weekly_last_twelve_week
 
+#   - day_of_week
+#   - day_of_month
 du_model_explanatory_features:
-   - day_of_week
-   - day_of_month
    - age
    - subscriber_tenure
    - charge_type_numeric
