@@ -61,8 +61,7 @@ def geo_to_l4_pipeline(**kwargs):
                 ["int_l4_geo_home_location_id_monthly",
                  "int_l4_geo_work_location_id_monthly"
                  ],
-                ["geo_home_work_list_imsi_stg"
-                 ]
+                "geo_home_work_list_imsi_stg"
             ),
             node(
                 l4_geo_home_work_location_id,
