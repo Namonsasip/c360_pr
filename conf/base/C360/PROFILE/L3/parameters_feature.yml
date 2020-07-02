@@ -20,11 +20,11 @@ int_l3_customer_profile_basic_features:
 #                                    to_date(contract_start_month))"  # wrong formula
     mobile_segment: "mobile_segment"
     serenade_flag: "case when lower(charge_type) = 'pre-paid' then
-                            case when mobile_segment = 'MS_CLASSIC' then 'N' else 'Y' end
-                      else case when lower(mobile_segment) like 'classic%'
-                                      or lower(mobile_segment) like 'standard%'
-                                      or lower(mobile_segment) like 'prospect%'
-                                      then 'N' else 'Y' end
+                            case when lower(mobile_segment) like 'classic%'
+                                                                  or lower(mobile_segment) like 'standard%'
+                                                                  or lower(mobile_segment) like 'prospect%'
+                                                                  then 'N' else 'Y' end
+                      else case when mobile_segment = 'MS_CLASSIC' then 'N' else 'Y' end
                       end"
     network_type: "network_type"
     acquisition_channel: "order_channel_new"
