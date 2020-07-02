@@ -1,7 +1,7 @@
 # sampling parameter
 training:
   train_share: 0.9 # the rest is validation set
-  subscription_id_hash_suffix: 'a' # '' for all users
+  subscription_id_hash_suffix: '00' # '' for all users
   chosen_date: '2019-12-01' # '' for most recent data
   stages:
     - filter_users
