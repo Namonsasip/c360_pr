@@ -34,7 +34,8 @@ l4_geo_area_from_competitor_store:
 #=================== Home and Work feature ===================
 int_l4_geo_home_location_id_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/int_l4_geo_home_location_id_monthly/
+#  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/int_l4_geo_home_location_id_monthly/
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/int_l4_geo_home_location_id_monthly_test/
   file_format: parquet
 #  metadata_table_path: 'metadata_path'
   save_args:
@@ -54,7 +55,8 @@ int_l4_geo_home_location_id_monthly:
 
 int_l4_geo_work_location_id_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/int_l4_geo_work_location_id_monthly/
+#  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/int_l4_geo_work_location_id_monthly/
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/int_l4_geo_work_location_id_monthly_test/
   file_format: parquet
 #  metadata_table_path: 'metadata_path'
   save_args:
@@ -74,8 +76,8 @@ int_l4_geo_work_location_id_monthly:
 
 l4_geo_home_work_location_id:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_home_work_location_id_2/
-  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/l4_geo_home_work_location_id/
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_home_work_location_id_test/
+#  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/l4_geo_home_work_location_id/
   file_format: parquet
 #  metadata_table_path: 'metadata_path'
   save_args:
