@@ -152,13 +152,16 @@ def produce_treatments_translated(
         parameters, treatments_history, treatments_features, users
     )
     treatments_propositions = treatments_propositions.cache()
-    treatments_propositions_translated = package_translation(
-        treatments_propositions,
-        user_mapping,
-        package_preference,
-        offer_mapping,
-        parameters,
-    )
+    if parameters["skip_pref_pack_translation"] == "yes":
+        treatments_propositions_translated = treatments_propositions
+    else:
+        treatments_propositions_translated = package_translation(
+            treatments_propositions,
+            user_mapping,
+            package_preference,
+            offer_mapping,
+            parameters,
+        )
     treatments_history = update_history_with_treatments_propositions(
         treatments_propositions_translated, treatments_history, parameters
     )
