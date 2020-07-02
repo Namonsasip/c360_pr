@@ -396,7 +396,7 @@ def create_model_function(
                     for c in extra_tag_columns:
                         if len(pdf_master_chunk[c].unique()) == 1:
                             pai.add_tags(
-                                [#Remove special characters as they are not allowed
+                                [  # Remove special characters as they are not allowed
                                     re.sub(
                                         r"[^A-Za-z0-9\.\-_]",
                                         "",
@@ -716,7 +716,9 @@ def create_model_function(
                     df_to_return = pd.DataFrame(
                         {
                             "able_to_model_flag": int(able_to_model_flag),
-                            "train_set_primary_keys": pdf_train["nba_spine_primary_key"],
+                            "train_set_primary_keys": pdf_train[
+                                "nba_spine_primary_key"
+                            ],
                         }
                     )
 
