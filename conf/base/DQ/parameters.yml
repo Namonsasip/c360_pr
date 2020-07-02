@@ -146,22 +146,22 @@ features_for_dq:
 #    - feature: sum_usg_incoming_data_volume_2G_3G_sum_weekly_last_four_week
 #    - feature: sum_usg_incoming_roaming_data_volume_sum_weekly_last_week
 #    - feature: sum_usg_outgoing_data_volume_4G_sum_weekly_last_twelve_week
-    - feature: sum_usg_outgoing_night_time_calls_duration_sum_weekly_last_week
-    - feature: sum_usg_outgoing_night_time_calls_duration_sum_weekly_last_two_week
-    - feature: sum_usg_outgoing_night_time_calls_duration_sum_weekly_last_four_week
-    - feature: sum_usg_outgoing_night_time_calls_duration_sum_weekly_last_twelve_week
-    - feature: sum_usg_outgoing_morning_time_calls_duration_sum_weekly_last_week
-    - feature: sum_usg_outgoing_morning_time_calls_duration_sum_weekly_last_two_week
-    - feature: sum_usg_outgoing_morning_time_calls_duration_sum_weekly_last_four_week
-    - feature: sum_usg_outgoing_morning_time_calls_duration_sum_weekly_last_twelve_week
-#    - feature:
-#    - feature:
-#    - feature:
-#    - feature:
-#    - feature:
-#    - feature:
-#    - feature:
-#    - feature:
+#    - feature: sum_usg_outgoing_night_time_calls_duration_sum_weekly_last_week
+#    - feature: sum_usg_outgoing_night_time_calls_duration_sum_weekly_last_two_week
+#    - feature: sum_usg_outgoing_night_time_calls_duration_sum_weekly_last_four_week
+#    - feature: sum_usg_outgoing_night_time_calls_duration_sum_weekly_last_twelve_week
+#    - feature: sum_usg_outgoing_morning_time_calls_duration_sum_weekly_last_week
+#    - feature: sum_usg_outgoing_morning_time_calls_duration_sum_weekly_last_two_week
+#    - feature: sum_usg_outgoing_morning_time_calls_duration_sum_weekly_last_four_week
+#    - feature: sum_usg_outgoing_morning_time_calls_duration_sum_weekly_last_twelve_week
+    - feature: sum_usg_incoming_night_time_call_duration_sum_weekly_last_week
+    - feature: sum_usg_incoming_night_time_call_duration_sum_weekly_last_two_week
+    - feature: sum_usg_incoming_night_time_call_duration_sum_weekly_last_four_week
+    - feature: sum_usg_incoming_night_time_call_duration_sum_weekly_last_twelve_week
+    - feature: sum_usg_incoming_morning_time_call_duration_sum_weekly_last_week
+    - feature: sum_usg_incoming_morning_time_call_duration_sum_weekly_last_two_week
+    - feature: sum_usg_incoming_morning_time_call_duration_sum_weekly_last_four_week
+    - feature: sum_usg_incoming_morning_time_call_duration_sum_weekly_last_twelve_week
 #    - feature: '*'
 #  l4_usage_prepaid_postpaid_daily_features:
 #    - feature: '*'
