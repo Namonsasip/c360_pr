@@ -161,7 +161,7 @@ def _int_l4_geo_work_location_id_monthly(df, config):
     return df
 
 
-def l4_geo_home_work_list_imsi(home_monthly, work_monthly):
+def int_geo_home_work_list_imsi(home_monthly, work_monthly):
     list_imsi_work = work_monthly.select('imsi', 'start_of_month').distinct()
     list_imsi_home = home_monthly.select('imsi', 'start_of_month').distinct()
     list_imsi = list_imsi_work.union(list_imsi_home).distinct()
@@ -169,8 +169,28 @@ def l4_geo_home_work_list_imsi(home_monthly, work_monthly):
     return list_imsi
 
 
-def l4_geo_home_work_location_id(home_monthly, work_monthly, list_imsi, sql):
+def int_geo_work_location_id(work_monthly, list_imsi):
+    # Work
+    w_work = Window().partitionBy('imsi', 'location_id').orderBy(F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
+    work_last_3m = work_monthly.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd"))\
+        .withColumn("duration_3m", F.sum("duration").over(w_work))\
+        .withColumn("days_3m", F.sum('days').over(w_work))
 
+    work_last_3m = work_last_3m.dropDuplicates(['imsi', 'start_of_month', 'location_id', 'duration_3m', 'days_3m'])\
+        .select('imsi', 'start_of_month', 'location_id', 'latitude', 'longitude', 'duration_3m', 'days_3m')
+
+
+    w_work_num_row = Window().partitionBy('imsi', 'location_id', 'start_of_month').orderBy(F.col('duration_3m').desc(), F.col('days_3m').desc())
+    work_last_3m = work_last_3m.withColumn('row_num', F.row_number().over(w_work_num_row))
+    work_last_3m = work_last_3m.where('row_num = 1').drop('row_num')
+
+    work_last_3m = list_imsi.join(work_last_3m, ['imsi', 'start_of_month'], 'left').select(list_imsi.imsi, list_imsi.start_of_month, 'location_id', 'latitude', 'longitude')
+
+    return work_last_3m
+
+
+def int_geo_home_location_id(home_monthly):
+    # Home weekday & weekend
     w_home = Window().partitionBy('imsi', 'location_id', 'week_type').orderBy(F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
     home_last_3m = home_monthly.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd"))\
         .withColumn("duration_3m", F.sum("duration").over(w_home))\
@@ -189,43 +209,24 @@ def l4_geo_home_work_location_id(home_monthly, work_monthly, list_imsi, sql):
                                                                                                (F.col('location_id').alias('home_weekend_location_id')),
                                                                                                (F.col('latitude').alias('home_weekend_latitude')),
                                                                                                (F.col('longitude').alias('home_weekend_longitude')))
+    return [home_last_3m_weekday, home_last_3m_weekend]
 
-    w_work = Window().partitionBy('imsi', 'location_id').orderBy(F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
-    work_last_3m = work_monthly.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd"))\
-        .withColumn("duration_3m", F.sum("duration").over(w_work))\
-        .withColumn("days_3m", F.sum('days').over(w_work))
+def l4_geo_home_work_location_id(home_last_3m_weekday, home_last_3m_weekend, work_last_3m, sql):
+    home_work = work_last_3m.join(home_last_3m_weekday, ['imsi', 'start_of_month'], 'left').select(
+        work_last_3m.start_of_month, work_last_3m.imsi,
+        'home_weekday_location_id', 'home_weekday_latitude',
+        'home_weekday_longitude', 'location_id', 'latitude',
+        'longitude')
 
-    work_last_3m = work_last_3m.dropDuplicates(['imsi', 'start_of_month', 'location_id', 'duration_3m', 'days_3m'])\
-        .select('imsi', 'start_of_month', 'location_id', 'latitude', 'longitude', 'duration_3m', 'days_3m')
-
-
-    w_work_num_row = Window().partitionBy('imsi', 'location_id', 'start_of_month').orderBy(F.col('duration_3m').desc(), F.col('days_3m').desc())
-    work_last_3m = work_last_3m.withColumn('row_num', F.row_number().over(w_work_num_row))
-    work_last_3m = work_last_3m.where('row_num = 1').drop('row_num')
-
-    # list_imsi_work = work_last_3m.select('imsi', 'start_of_month')
-    # list_imsi_home_weekday = home_last_3m_weekday.select('imsi', 'start_of_month')
-    # list_imsi_wuhd = list_imsi_work.union(list_imsi_home_weekday).distinct()
-    # list_imsi_home_weekend = home_last_3m_weekend.select('imsi', 'start_of_month')
-    # list_imsi = list_imsi_wuhd.union(list_imsi_home_weekend).distinct()
-
-
-    work_last_3m = list_imsi.join(work_last_3m, ['imsi', 'start_of_month'], 'left').select(list_imsi.imsi, list_imsi.start_of_month, 'location_id', 'latitude', 'longitude')
-
-
-    home_work = work_last_3m.join(home_last_3m_weekday, ['imsi', 'start_of_month'], 'left').select(work_last_3m.start_of_month, work_last_3m.imsi,
-                                                 'home_weekday_location_id', 'home_weekday_latitude',
-                                                 'home_weekday_longitude', 'location_id', 'latitude',
-                                                 'longitude')
-
-    home_work_final = home_work.join(home_last_3m_weekend, ['imsi', 'start_of_month'], 'left').select(home_work.start_of_month, home_work.imsi,
-                                              'home_weekday_location_id',
-                                              'home_weekday_latitude', 'home_weekday_longitude',
-                                              'home_weekend_location_id',
-                                              'home_weekend_latitude', 'home_weekend_longitude',
-                                              (F.col('location_id').alias('work_location_id')),
-                                              (F.col('latitude').alias('work_latitude')),
-                                              (F.col('longitude').alias('work_longitude')))
+    home_work_final = home_work.join(home_last_3m_weekend, ['imsi', 'start_of_month'], 'left').select(
+        home_work.start_of_month, home_work.imsi,
+        'home_weekday_location_id',
+        'home_weekday_latitude', 'home_weekday_longitude',
+        'home_weekend_location_id',
+        'home_weekend_latitude', 'home_weekend_longitude',
+        (F.col('location_id').alias('work_location_id')),
+        (F.col('latitude').alias('work_latitude')),
+        (F.col('longitude').alias('work_longitude')))
 
     df = node_from_config(home_work_final, sql)
     return df
