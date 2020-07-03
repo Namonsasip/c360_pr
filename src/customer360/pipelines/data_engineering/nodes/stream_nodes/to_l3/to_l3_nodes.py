@@ -5,7 +5,8 @@ from customer360.utilities.config_parser import node_from_config, expansion
 from kedro.context.context import load_context
 from pathlib import Path
 import logging, os
-from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check
+from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check,\
+    union_dataframes_with_missing_cols
 from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 
 conf = os.getenv("CONF", None)
@@ -50,7 +51,8 @@ def dac_for_streaming_to_l3_pipeline_from_l1(input_df: DataFrame, target_table_n
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="monthly", par_col="event_partition_date",
                                                        target_table_name=target_table_name,
-                                                       missing_data_check_flg='Y')
+                                                       missing_data_check_flg='Y',
+                                                       exception_partitions=["2020-03-30"])
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -300,3 +302,85 @@ def streaming_streaming_fav_tv_show_by_episode_watched_features(
     return l3_streaming_fav_tv_show_by_episode_watched
 
 
+def streaming_fav_service_download_traffic_visit_count(
+        input_df: DataFrame,
+        int_l3_streaming_service_feature_dict,
+        favourite_dict: dict,
+        second_favourite_dict: dict,
+        fav_count_dict: dict) -> [DataFrame, DataFrame, DataFrame]:
+
+    """
+    :param input_df:
+    :param int_l3_streaming_service_feature_dict:
+    :param favourite_dict:
+    :param second_favourite_dict:
+    :param fav_count_dict:
+    :return:
+    """
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df]):
+        return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df()]
+
+    input_df = data_non_availability_and_missing_check(
+        df=input_df, grouping="monthly", par_col="event_partition_date",
+        missing_data_check_flg='Y',
+        target_table_name=fav_count_dict["output_catalog"],
+        exception_partitions=["2020-03-30"])
+
+    if check_empty_dfs([input_df]):
+        return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df()]
+
+    ################################# End Implementing Data availability checks ###############################
+
+    def divide_chunks(l, n):
+        # looping till length l
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    CNTX = load_context(Path.cwd(), env=conf)
+    data_frame = input_df
+    dates_list = data_frame.select('start_of_month').distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+
+    mvv_new = list(divide_chunks(mvv_array, 2))
+    add_list = mvv_new
+
+    first_item = add_list[-1]
+
+    add_list.remove(first_item)
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        small_df = data_frame.filter(F.col("start_of_month").isin(*[curr_item]))
+        int_l3_streaming_service_feature = node_from_config(small_df, int_l3_streaming_service_feature_dict)
+
+        favourite_video = node_from_config(int_l3_streaming_service_feature, favourite_dict)
+        CNTX.catalog.save(favourite_dict["output_catalog"],
+                          favourite_video)
+
+        second_favourite = node_from_config(int_l3_streaming_service_feature, second_favourite_dict)
+        CNTX.catalog.save(second_favourite_dict["output_catalog"],
+                          second_favourite)
+
+        fav_count = node_from_config(int_l3_streaming_service_feature, fav_count_dict)
+        CNTX.catalog.save(fav_count_dict["output_catalog"],
+                          fav_count)
+
+    logging.info("Final date to run for {0}".format(str(first_item)))
+    small_df = data_frame.filter(F.col("start_of_week").isin(*[first_item]))
+    int_l3_streaming_service_feature = node_from_config(small_df, int_l3_streaming_service_feature_dict)
+
+    favourite_video = node_from_config(int_l3_streaming_service_feature, favourite_dict)
+    CNTX.catalog.save(favourite_dict["output_catalog"],
+                      favourite_video)
+
+    second_favourite = node_from_config(int_l3_streaming_service_feature, second_favourite_dict)
+    CNTX.catalog.save(second_favourite_dict["output_catalog"],
+                      second_favourite)
+
+    fav_count = node_from_config(int_l3_streaming_service_feature, fav_count_dict)
+    CNTX.catalog.save(fav_count_dict["output_catalog"],
+                      fav_count)
+
+    return [favourite_video, second_favourite, fav_count]
