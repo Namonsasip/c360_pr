@@ -160,7 +160,16 @@ def _int_l4_geo_work_location_id_monthly(df, config):
     df = node_from_config(df, config)
     return df
 
-def l4_geo_home_work_location_id(home_monthly, work_monthly, sql):
+
+def l4_geo_home_work_list_imsi(home_monthly, work_monthly):
+    list_imsi_work = work_monthly.select('imsi', 'start_of_month').distinct()
+    list_imsi_home = home_monthly.select('imsi', 'start_of_month').distinct()
+    list_imsi = list_imsi_work.union(list_imsi_home).distinct()
+
+    return list_imsi
+
+
+def l4_geo_home_work_location_id(home_monthly, work_monthly, list_imsi, sql):
 
     w_home = Window().partitionBy('imsi', 'location_id', 'week_type').orderBy(F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
     home_last_3m = home_monthly.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd"))\
@@ -194,11 +203,11 @@ def l4_geo_home_work_location_id(home_monthly, work_monthly, sql):
     work_last_3m = work_last_3m.withColumn('row_num', F.row_number().over(w_work_num_row))
     work_last_3m = work_last_3m.where('row_num = 1').drop('row_num')
 
-    list_imsi_work = work_last_3m.select('imsi', 'start_of_month')
-    list_imsi_home_weekday = home_last_3m_weekday.select('imsi', 'start_of_month')
-    list_imsi_wuhd = list_imsi_work.union(list_imsi_home_weekday).distinct()
-    list_imsi_home_weekend = home_last_3m_weekend.select('imsi', 'start_of_month')
-    list_imsi = list_imsi_wuhd.union(list_imsi_home_weekend).distinct()
+    # list_imsi_work = work_last_3m.select('imsi', 'start_of_month')
+    # list_imsi_home_weekday = home_last_3m_weekday.select('imsi', 'start_of_month')
+    # list_imsi_wuhd = list_imsi_work.union(list_imsi_home_weekday).distinct()
+    # list_imsi_home_weekend = home_last_3m_weekend.select('imsi', 'start_of_month')
+    # list_imsi = list_imsi_wuhd.union(list_imsi_home_weekend).distinct()
 
 
     work_last_3m = list_imsi.join(work_last_3m, ['imsi', 'start_of_month'], 'left').select(list_imsi.imsi, list_imsi.start_of_month, 'location_id', 'latitude', 'longitude')

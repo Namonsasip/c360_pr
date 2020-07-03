@@ -45,20 +45,30 @@ def geo_to_l4_pipeline(**kwargs):
             # ),
 
             # Home and Work Feature
+            # node(
+            #     massive_processing_for_home_work,  # partition_date is main column to massive processing
+            #     ["l0_geo_cust_cell_visit_time_for_int_l4_geo_home_work_location_id",
+            #      "params:int_l4_geo_home_location_id_monthly",
+            #      "params:int_l4_geo_work_location_id_monthly"
+            #      ],
+            #     ["int_l4_geo_home_location_id_monthly",
+            #      "int_l4_geo_work_location_id_monthly"
+            #      ]
+            # ),
+            # List imsi from int_HOME/WORK
             node(
-                massive_processing_for_home_work,  # partition_date is main column to massive processing
-                ["l0_geo_cust_cell_visit_time_for_int_l4_geo_home_work_location_id",
-                 "params:int_l4_geo_home_location_id_monthly",
-                 "params:int_l4_geo_work_location_id_monthly"
-                 ],
+                l4_geo_home_work_list_imsi,  # partition_date is main column to massive processing
                 ["int_l4_geo_home_location_id_monthly",
                  "int_l4_geo_work_location_id_monthly"
+                 ],
+                ["geo_home_work_list_imsi_stg"
                  ]
             ),
             node(
                 l4_geo_home_work_location_id,
                 ["int_l4_geo_home_location_id_monthly",
                  "int_l4_geo_work_location_id_monthly",
+                 "geo_home_work_list_imsi_stg",
                  "params:l4_geo_home_work_location_id"
                  ],
                 "l4_geo_home_work_location_id"
