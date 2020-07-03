@@ -1,5 +1,5 @@
 import logging
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 
 import pandas as pd
 from pyspark.ml import Pipeline
@@ -19,8 +19,8 @@ from pyspark.sql.types import FloatType
 def l5_all_subscribers_master_table_customer_level(
     df_master: DataFrame,
     l5_customer_ids: DataFrame,
-    l4_streaming_visit_count_and_download_traffic_feature_full_load_data_blob,
-    subset_features,
+    l4_streaming_visit_count_and_download_traffic_feature_full_load_data_blob: DataFrame,
+    subset_features: Dict[str, List[str]],
 ):
 
     # Add streaming features from an old snapshot as the official version is not yet available
@@ -37,7 +37,7 @@ def l5_all_subscribers_master_table_customer_level(
     )
 
     df_master_with_customer_id = df_master.join(
-        l5_customer_ids, on="subscription_identifier", how = "left"
+        l5_customer_ids, on="subscription_identifier", how="left"
     )
     df_master_with_customer_id = df_master_with_customer_id.withColumn(
         "customer_id_high_certainty",
@@ -46,18 +46,24 @@ def l5_all_subscribers_master_table_customer_level(
         ).otherwise(F.col("customer_id_high_certainty")),
     )
 
+    # Change the key of the table to be account (a.k.a. customer) level
+    # For numeric features take the average and for non-numeric (date, string)
+    # take the first observation
     df_master_customer_level = df_master_with_customer_id.groupby(
         "customer_id_high_certainty"
     ).agg(
-        *[
-            (
-                F.first(column_name).alias(column_name)
-                if column_type in ["string", "date"]
-                else F.mean(column_name).alias(column_name)
-            )
-            for column_name, column_type in df_master_with_customer_id.dtypes
-            if column_name != "customer_id_high_certainty"
-        ]
+        *(
+            [
+                (
+                    F.first(column_name).alias(column_name)
+                    if column_type in ["string", "date"]
+                    else F.mean(column_name).alias(column_name)
+                )
+                for column_name, column_type in df_master_with_customer_id.dtypes
+                if column_name != "customer_id_high_certainty"
+            ]
+            + [F.count(F.lit(1)).alias("number_sub_ids_in_account")]
+        )
     )
 
     return df_master_customer_level
@@ -70,6 +76,8 @@ def personnas_clustering(
     n_clusters: int = 200,
     clip_features_limits: Tuple[float, float] = (-5, 5),
 ):
+
+    # TODO review this logic for account level
     df_master = df_master.withColumn(
         "number_of_products",
         F.count(F.col("subscription_identifier")).over(
