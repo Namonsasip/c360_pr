@@ -58,3 +58,50 @@ def prepare_geolocation(geolocs: DataFrame) -> DataFrame:
         .select(cols_to_pick)
     )
     return geoloc
+
+
+def prepare_profile(profile: DataFrame) -> DataFrame:
+    """ Prepare profile data for customer id generation.
+
+    Args:
+        profile: users with zipcode, national id card, gender, age
+
+    """
+    # pick rows and columns needed for PROFILE
+    date_to_pick = "2020-02-01"
+    profile_features = [
+        "zipcode",
+        "prefer_language",
+        "age",
+        "gender",
+        "strong_national_id_card",
+        "weak_national_id_card",
+    ]
+    profile_sub_ids = ["old_subscription_identifier", "subscription_identifier", "imsi"]
+    cols_to_pick = profile_sub_ids + profile_features + ["national_id_card"]
+
+    # create weak and strong national_id_cards
+    national_id_card_partition = Window.partitionBy("national_id_card")
+    national_id_card_count = func.count("*").over(national_id_card_partition)
+    is_weak_national_id_card = (national_id_card_count > 4) & (
+        national_id_card_count < 100
+    )
+    is_strong_national_id_card = national_id_card_count <= 4
+
+    profile = (
+        profile.filter("start_of_month == '{}'".format(date_to_pick))
+        .withColumn(
+            "strong_national_id_card",
+            func.when(
+                is_strong_national_id_card, func.col("national_id_card")
+            ).otherwise(func.lit(None)),
+        )
+        .withColumn(
+            "weak_national_id_card",
+            func.when(is_weak_national_id_card, func.col("national_id_card")).otherwise(
+                func.lit(None)
+            ),
+        )
+        .select(cols_to_pick)
+    )
+    return profile
