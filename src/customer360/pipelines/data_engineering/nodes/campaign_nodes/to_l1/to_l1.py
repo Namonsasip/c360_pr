@@ -22,7 +22,7 @@ def pre_process_df(data_frame: DataFrame,
     # below lines are to prepare channels
 
     data_frame = data_frame.withColumnRenamed("campaign_child_code", "child_campaign_code")
-    ma_join_cols = ['subscription_identifier', 'child_campaign_code']
+    ma_join_cols = ['subscription_identifier', "contact_date", 'child_campaign_code']
     contacts_ma_small = contacts_ma_small\
         .select("subscription_identifier", "child_campaign_code", "channel_identifier").distinct()
 
