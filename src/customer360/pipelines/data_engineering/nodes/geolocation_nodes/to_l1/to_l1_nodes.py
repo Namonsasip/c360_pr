@@ -25,7 +25,7 @@ log = logging.getLogger(__name__)
 running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 
 def l1_geo_time_spent_by_location_daily(df,sql):
-    df = df.filter('partition_date >= 20190801 and partition_date<=20191031')
+    # df = df.filter('partition_date >= 20190801 and partition_date<=20191031')
     # df = add_start_of_week_and_month(df, "time_in")
     # df.cache()
     #####################################
@@ -40,7 +40,7 @@ def l1_geo_time_spent_by_location_daily(df,sql):
     return return_df
 
 def l1_geo_area_from_ais_store_daily(shape,masterplan,geo_cust_cell_visit_time,sql):
-    geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20200301')
+    # geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20200301')
 
     geo_cust_cell_visit_time  = add_start_of_week_and_month(geo_cust_cell_visit_time, "time_in")
     geo_cust_cell_visit_time.show()
@@ -80,7 +80,7 @@ def l1_geo_area_from_ais_store_daily(shape,masterplan,geo_cust_cell_visit_time,s
     return df2
 
 def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit_time,sql):
-    geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20200301')
+    # geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20200301')
 
     geo_cust_cell_visit_time.cache()
     geo_cust_cell_visit_time = add_start_of_week_and_month(geo_cust_cell_visit_time, "time_in")

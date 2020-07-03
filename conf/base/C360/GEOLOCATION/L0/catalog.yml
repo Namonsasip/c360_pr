@@ -6,8 +6,7 @@ l0_geo_cust_cell_visit_time_for_l1_geo_time_spent_by_location_daily:
 
 l0_mst_poi_shape_for_l1_geo_area_from_ais_store_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: /mnt/customer360-blob-data/C360/GEO/geo_mst_lm_poi_shape/
-  filepath: /mnt/customer360-blob-data/C360/GEO/sample/geo_cust_cell_visit_time_daily/  #sample data for test
+  filepath: /mnt/customer360-blob-data/C360/GEO/geo_mst_lm_poi_shape/
   file_format: parquet
 
 l0_mst_cell_masterplan_for_l1_geo_area_from_ais_store_daily:
@@ -22,7 +21,8 @@ l0_mst_cell_masterplan_for_l4_geo_home_weekday_city_citizens:
 
 l0_geo_cust_cell_visit_time_for_l1_geo_area_from_ais_store_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time/
+#  filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time/
+  filepath: /mnt/customer360-blob-data/C360/GEO/sample/geo_cust_cell_visit_time_daily/  #sample data for test
   file_format: parquet
 
 l0_geo_cust_location_visit_hr_for_l4_geo_work_area_center_average:  # New dataset for optional way, which can agg by Hour
