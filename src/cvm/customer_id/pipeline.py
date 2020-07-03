@@ -25,3 +25,34 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from cvm.customer_id.nodes import create_customer_edges, create_customer_ids
+from kedro.pipeline import Pipeline, node
+
+
+def create_customer_id() -> Pipeline:
+    """ Creates customers ids. """
+    return Pipeline(
+        [
+            node(
+                func=create_customer_edges,
+                inputs=[
+                    "geo_home_work_location_id",
+                    "l3_customer_profile_union_monthly_feature",
+                    "l1_devices_summary_customer_handset_daily",
+                    "parameters",
+                ],
+                outputs="customer_id_edges",
+                name="create_customer_edges",
+            ),
+            node(
+                func=create_customer_ids,
+                inputs=[
+                    "l3_customer_profile_union_monthly_feature",
+                    "customer_id_edges",
+                    "parameters",
+                ],
+                outputs="customer_ids",
+                name="create_customer_ids",
+            ),
+        ]
+    )

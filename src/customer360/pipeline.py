@@ -56,6 +56,7 @@ from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.
 from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l4.to_l4_pipeline import (
     customer_profile_to_l4_pipeline,
 )
+from cvm.customer_id.pipeline import create_customer_id
 from cvm.data_prep.pipeline import (
     training_data_prepare,
     scoring_data_prepare,
@@ -296,6 +297,7 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
             + training_data_prepare("fe")
             + create_cvm_important_columns()
         ),
+        "cvm_customer_id": create_customer_id(),
         "cvm_rfe_only": create_cvm_important_columns(),
         "cvm_prepare_report_micro": prepare_user_microsegments(),
         "cvm_create_kpis": create_kpis(),

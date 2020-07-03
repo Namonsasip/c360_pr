@@ -57,3 +57,8 @@ customer_id_edges:
 customer_ids:
   <<: *spark_parquet
   filepath: /dbfs/mnt/customer360-cvm/customer_ids2
+
+# geolocation data
+geo_home_work_location_id:
+  <<: *spark_parquet
+  filepath: /dbfs/mnt/customer360-blob-output/C360/GEO/l4_features/geo_home_work_location_id/
