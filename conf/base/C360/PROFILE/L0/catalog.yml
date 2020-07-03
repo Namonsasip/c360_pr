@@ -23,6 +23,13 @@ l0_customer_profile_profile_customer_profile_pre_current:
    target_layer: 'l1_daily'
    lookback: '0'
 
+l0_customer_profile_profile_customer_profile_post_current_full_load:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/profile_customer_profile_post/
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  load_args:
+   increment_flag: 'yes'
 
 l0_customer_profile_profile_customer_profile_post_current:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
