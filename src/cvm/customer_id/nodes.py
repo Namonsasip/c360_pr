@@ -38,6 +38,7 @@ from cvm.src.features.customer_id_features import (
     prepare_geolocation,
     prepare_profile,
 )
+from pyspark.context import SparkContext
 from pyspark.sql import DataFrame
 
 
@@ -87,6 +88,7 @@ def create_customer_ids(
         edges: connections between subscriptions.
 
     """
+    SparkContext.getOrCreate().setCheckpointDir(parameters["checkpoint_path"])
     vertices = (
         prepare_profile(profile)
         .withColumn("id", func.col("subscription_identifier"))
