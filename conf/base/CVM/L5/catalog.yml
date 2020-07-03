@@ -50,10 +50,10 @@ treatments_deployed:
 
 # connection edges
 customer_id_edges:
-  type: kedro.io.PickleLocalDataSet
+  <<: *spark_parquet
   filepath: /dbfs/mnt/customer360-cvm/customer_id_edges3
 
 # customer ids
 customer_ids:
-  type: kedro.io.PickleLocalDataSet
+  <<: *spark_parquet
   filepath: /dbfs/mnt/customer360-cvm/customer_ids2
