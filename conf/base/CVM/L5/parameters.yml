@@ -89,6 +89,9 @@ pai_experiment_name: 'internal_churn_02'
 # path used to create temp copies for refreshments
 refresh_temp_path: '/dbfs/mnt/customer360-blob-data/C360/CVM/l5_cvm_temp/'
 
+# path used for checkpoints
+checkpoint_path: '/dbfs/mnt/customer360-blob-data/C360/CVM/l5_cvm_checkpoint/'
+
 # dbfs logs path
 logs_path:
   output_path_template: '/dbfs/mnt/customer360-blob-data/cvm/logs/logs_{}'

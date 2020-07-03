@@ -25,6 +25,8 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import logging
+
 import pyspark.sql.functions as func
 from pyspark.sql import DataFrame, Window
 
@@ -127,3 +129,100 @@ def prepare_device(device: DataFrame) -> DataFrame:
         cols_to_pick
     )
     return device
+
+
+def make_undirected(edges: DataFrame) -> DataFrame:
+    """ Make sure the edge table represents undirected graph.
+
+    Args:
+        edges: table with `src` and `dst` columns representing graphs columns.
+    """
+    logging.info("Making the graph edges undirected")
+    return (
+        edges.selectExpr("src as x", "dst as y", "weight")
+        .withColumn(
+            "src",
+            func.when(func.col("x") <= func.col("y"), func.col("x")).otherwise(
+                func.col("y")
+            ),
+        )
+        .withColumn(
+            "dst",
+            func.when(func.col("x") > func.col("y"), func.col("x")).otherwise(
+                func.col("y")
+            ),
+        )
+        .drop(*["x", "y"])
+    )
+
+
+def add_weighted_edges(edges1: DataFrame, edges2: DataFrame) -> DataFrame:
+    """ Combines two edges representing tables. Weights are added.
+
+    Args:
+        edges1: table with `src` and `dst` columns representing graphs columns.
+        edges2: table with `src` and `dst` columns representing graphs columns.
+
+    Returns:
+
+    """
+    logging.info("Summing edges")
+    return (
+        edges1.unionByName(edges2)
+        .groupby(["src", "dst"])
+        .agg(func.sum("weight").alias("weight"))
+    )
+
+
+def clean_too_many_appearances(
+    df: DataFrame, feature: str, too_many: int = 1000
+) -> DataFrame:
+    """ Replace values with `too_many` or more values of `feature` with null.
+
+    Args:
+        df: table to modify.
+        feature: name of column to modify.
+        too_many: threshold above which values are turned to null.
+
+    Returns:
+
+    """
+    feature_partition = Window.partitionBy(feature)
+    msisdns_count = func.count("*").over(feature_partition)
+    to_clean = msisdns_count >= too_many
+    nullify_too_many = func.when(to_clean, func.lit(None)).otherwise(func.col(feature))
+    return df.withColumn(feature, nullify_too_many)
+
+
+def create_edges_for_feature(
+    df: DataFrame, feature_name: str, weight: float
+) -> DataFrame:
+    """ Create table representing edges from table with features.
+
+    Args:
+        df: table with features.
+        feature_name: feature from `df` to create edges for.
+        weight: strength to be assigned to edge.
+    """
+    df = clean_too_many_appearances(df, feature_name)
+    features = df.filter("{} is not null".format(feature_name)).select(
+        ["subscription_identifier", feature_name]
+    )
+    features_left = features.withColumnRenamed(
+        "subscription_identifier", "subscription_identifier_left"
+    )
+    features_right = features.withColumnRenamed(
+        "subscription_identifier", "subscription_identifier_right"
+    )
+    features_edges = (
+        features_left.join(features_right, on=feature_name)
+        .selectExpr(
+            "subscription_identifier_left as src",
+            "subscription_identifier_right as dst",
+        )
+        .withColumn("weight", func.lit(weight))
+        .select(["src", "dst", "weight"])
+        .filter("src != dst")
+        .distinct()
+    )
+    return make_undirected(features_edges)
