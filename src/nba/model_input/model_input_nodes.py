@@ -516,6 +516,11 @@ def node_l5_nba_master_table(
                 *(key_columns + subset_features[table_name])
             )
 
+        # Since postpaid revenue share name with prepaid, rename them
+        if table_name == "l4_revenue_postpaid_ru_f_sum_revenue_by_service_monthly":
+            for feature in subset_features[table_name]:
+                df_features = df_features.withColumnRenamed(feature, f"{feature}_postpaid")
+
         duplicated_columns = [
             col_name
             for col_name in df_master.columns
@@ -523,13 +528,12 @@ def node_l5_nba_master_table(
         ]
         duplicated_columns = list(set(duplicated_columns) - set(key_columns))
         if duplicated_columns:
-            # logging.warning(f"Duplicated column names {', '.join(duplicated_columns)}"
-            #                 f" found when joining, they will be dropped from one table")
             raise ValueError(
                 f"Duplicated column names {', '.join(duplicated_columns)} found"
                 f" when joining features table {table_name} to the master table. "
                 f"Columns of {table_name} are: {', '.join(df_features.columns)}"
             )
+
 
         df_master = df_master.join(df_features, on=key_columns, how="left")
 
