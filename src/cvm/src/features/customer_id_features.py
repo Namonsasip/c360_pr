@@ -28,6 +28,7 @@
 import logging
 
 import pyspark.sql.functions as func
+from graphframes import GraphFrame
 from pyspark.sql import DataFrame, Window
 
 
@@ -226,3 +227,20 @@ def create_edges_for_feature(
         .distinct()
     )
     return make_undirected(features_edges)
+
+
+def generate_customers(
+    vertices: DataFrame, edg: DataFrame, new_col_name: str
+) -> DataFrame:
+    """ Assign customer id by joining the connected components.
+
+    Args:
+        vertices: table with vertices ids.
+        edg: table with edges to find connected components for.
+        new_col_name: output name for component id.
+    """
+    return (
+        GraphFrame(vertices, edg)
+        .connectedComponents()
+        .withColumn(new_col_name, func.col("component"))
+    )
