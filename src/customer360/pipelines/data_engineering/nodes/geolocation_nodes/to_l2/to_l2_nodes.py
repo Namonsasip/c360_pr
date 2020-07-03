@@ -146,7 +146,7 @@ def l2_geo_distance_top_call(l1_df):
             F.sqrt(F.avg(l1_df.top_distance_km * l1_df.top_distance_km) - F.pow(F.avg(l1_df.top_distance_km), F.lit(2))).cast(
                 "string") == 'NaN', 0).otherwise(
             F.sqrt(F.avg(l1_df.top_distance_km * l1_df.top_distance_km) - F.pow(F.avg(l1_df.top_distance_km), F.lit(2)))).alias(
-            "sd_distance_top_call"),F.sun("top_distance_km").alias("sum_distance_top_call"))
+            "sd_distance_top_call"),F.sum("top_distance_km").alias("sum_distance_top_call"))
     return l1_df1
 
 
