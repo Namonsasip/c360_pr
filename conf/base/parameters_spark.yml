@@ -26,12 +26,12 @@ spark_conf:
   spark.dynamicAllocation.enabled: false
   #spark.dynamicAllocation.initialExecutors: 50
   #spark.dynamicAllocation.maxExecutors: 100
-  spark.executor.instances: 100
+  spark.executor.instances: 140
   spark.sql.sources.partitionOverwriteMode: dynamic
   spark.sql.parquet.binaryAsString: true
   spark.hadoop.fs.permissions.umask-mode: "002"
   spark.executor.memoryOverhead: 16g
-  spark.debug.maxToStringFields: 130
+  spark.debug.maxToStringFields: 140
   spark.port.maxRetries: 100
   spark.sql.shuffle.partitions: 1500
   spark.sql.files.maxPartitionBytes: 1073741824
