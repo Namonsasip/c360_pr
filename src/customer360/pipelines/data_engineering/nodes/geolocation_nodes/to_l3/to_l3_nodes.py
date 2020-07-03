@@ -79,7 +79,7 @@ def l3_geo_distance_top_call(df):
         F.min("top_distance_km").alias("min_distance_top_call"),
         F.avg("top_distance_km").alias("avg_distance_top_call"),
         F.when(F.sqrt(F.avg(df.top_distance_km * df.top_distance_km) - F.pow(F.avg(df.top_distance_km),F.lit(2))).cast("string") == 'NaN', 0).otherwise(F.sqrt(F.avg(df.top_distance_km * df.top_distance_km) - F.pow(F.avg(df.top_distance_km),F.lit(2)))).alias("sd_distance_top_call"),
-        F.sun("top_distance_km").alias("sum_distance_top_call"))
+        F.sum("top_distance_km").alias("sum_distance_top_call"))
     return df
 
 

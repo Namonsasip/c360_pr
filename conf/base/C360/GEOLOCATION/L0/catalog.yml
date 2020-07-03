@@ -134,8 +134,8 @@ l0_geo_top_visit_exclude_homework_for_l1_sum_voice_daily:
 ###Top_3_cells_on_voice_usage###
 l0_usage_sum_voice_location_daily_for_l1_geo_top3_cells_on_voice_usage:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_sum_voice_location_daily/
-#  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_sum_voice_location_daily/partition_date=20200501/
+#  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_sum_voice_location_daily/
+  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_sum_voice_location_daily/partition_date=20200501/
   file_format: parquet
 
 l0_geo_mst_cell_masterplan_for_l1_geo_top3_cells_on_voice_usage:

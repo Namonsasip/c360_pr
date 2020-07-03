@@ -94,9 +94,7 @@ def geo_to_l2_pipeline(**kwargs):
             ##distance_top_call###
             node(
                 l2_geo_distance_top_call,
-                ["l1_geo_distance_top_call",
-                 # "params:l2_geo_distance_top_call"
-                 ],
+                "l1_geo_distance_top_call",
                 "l2_geo_distance_top_call"
             ),
 
