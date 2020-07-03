@@ -25,3 +25,50 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import functools
+import logging
+from typing import Any, Dict
+
+from cvm.src.features.customer_id_features import (
+    add_weighted_edges,
+    create_edges_for_feature,
+    prepare_device,
+    prepare_geolocation,
+    prepare_profile,
+)
+from pyspark.sql import DataFrame
+
+
+def create_customer_edges(
+    geolocs: DataFrame,
+    profile: DataFrame,
+    device: DataFrame,
+    parameters: Dict[str, Any],
+) -> DataFrame:
+    """ Prepare table with weighted edges of connection between subscriptions.
+
+    Args:
+        geolocs: table with users locations.
+        profile: table with users profiles.
+        device: table with information about users devices.
+        parameters: parameters defined in parameters.yml
+
+    """
+    geolocs = prepare_geolocation(geolocs)
+    profile = prepare_profile(profile)
+    device = prepare_device(device)
+
+    # join tables
+    df = profile.join(device, on="subscription_identifier", how="left")
+    df = df.join(geolocs, on="imsi", how="left")
+    # prepare vertices for graph computation
+    weights = parameters["customer_id_weights"]
+
+    # create edges
+    feature_edges = []
+    for feature_name in weights:
+        logging.info("Creating edges for {}".format(feature_name))
+        weight = weights[feature_name]
+        feature_edges.append(create_edges_for_feature(df, feature_name, weight))
+    edges = functools.reduce(add_weighted_edges, feature_edges)
+    return edges

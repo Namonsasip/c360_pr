@@ -98,7 +98,7 @@ logs_path:
   output_path_date_format: '%Y%m%d%H%M%S'
 
 # weights used to create customer id
-weights:
+customer_id_weights:
   zipcode: 6
   age: 4
   handset_imei: 9
