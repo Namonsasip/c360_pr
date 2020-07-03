@@ -37,6 +37,8 @@ def build_loyalty_number_of_services_weekly(l1_loyalty_number_of_services_daily:
         missing_data_check_flg='Y',
         exception_partitions=exception_partitions)
 
+    input_df = input_df.filter(f.col("flag_with_orignal_data").isNotNull())
+
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
@@ -88,6 +90,7 @@ def build_loyalty_number_of_rewards_redeemed_weekly(l1_loyalty_number_of_rewards
         missing_data_check_flg='Y',
         exception_partitions=exception_partitions)
 
+    input_df = input_df.filter(f.col("flag_with_orignal_data").isNotNull())
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
@@ -140,6 +143,8 @@ def build_loyalty_number_of_points_spend_weekly(l1_loyalty_number_of_points_spen
         target_table_name="l2_loyalty_number_of_points_spend_weekly",
         missing_data_check_flg='Y',
         exception_partitions=exception_partitions)
+
+    input_df = input_df.filter(f.col("flag_with_orignal_data").isNotNull())
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()

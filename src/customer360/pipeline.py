@@ -141,7 +141,8 @@ from .pipelines.data_engineering.pipelines.revenue_pipeline import (
     revenue_to_l4_weekly_pipeline,
 )
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l1.to_l1_pipeline import (
-    streaming_to_l1_pipeline, streaming_to_l1_intermediate_pipeline, streaming_to_l1_session_duration_pipeline
+    streaming_to_l1_onair_vimmi_pipeline, streaming_to_l1_soc_mobile_data_pipeline,
+    streaming_to_l1_session_duration_pipeline
 )
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l2.to_l2_pipeline import (
     streaming_to_l2_intermediate_pipeline, streaming_to_l2_pipeline, streaming_to_l2_session_duration_pipeline
@@ -177,7 +178,8 @@ from .pipelines.data_engineering.pipelines.usage_pipeline import (
 )
 from data_quality.pipeline import (
     data_quality_pipeline,
-    subscription_id_sampling_pipeline
+    subscription_id_sampling_pipeline,
+    threshold_analysis_pipeline
 )
 
 from .pipelines.data_engineering.pipelines.sales_pipeline.to_l2.to_l2_pipeline import (
@@ -224,9 +226,9 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "digital_to_l4_monthly_pipeline": digital_to_l4_monthly_pipeline(),
         "digital_to_l4_weekly_pipeline": digital_to_l4_weekly_pipeline(),
         "digital_to_l4_weekly_favourite_pipeline": digital_to_l4_weekly_favourite_pipeline(),
-        "streaming_to_l1_intermediate_pipeline": streaming_to_l1_intermediate_pipeline(),
+        "streaming_to_l1_onair_vimmi_pipeline": streaming_to_l1_onair_vimmi_pipeline(),
+        "streaming_to_l1_soc_mobile_data_pipeline": streaming_to_l1_soc_mobile_data_pipeline(),
         "streaming_to_l1_session_duration_pipeline": streaming_to_l1_session_duration_pipeline(),
-        "streaming_to_l1_pipeline": streaming_to_l1_pipeline(),
         "streaming_to_l2_intermediate_pipeline": streaming_to_l2_intermediate_pipeline(),
         "streaming_to_l2_pipeline": streaming_to_l2_pipeline(),
         "streaming_to_l2_session_duration_pipeline": streaming_to_l2_session_duration_pipeline(),
@@ -320,7 +322,8 @@ def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
 def create_dq_pipeline(**kwargs) -> Dict[str, Pipeline]:
     return {
         "data_quality_pipeline": data_quality_pipeline(),
-        "subscription_id_sampling_pipeline": subscription_id_sampling_pipeline()
+        "subscription_id_sampling_pipeline": subscription_id_sampling_pipeline(),
+        "threshold_analysis_pipeline": threshold_analysis_pipeline(),
     }
 
 

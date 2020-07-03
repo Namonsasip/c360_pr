@@ -35,13 +35,13 @@ l1_complaints_call_to_competitor_features_for_l3_complaints_call_to_competitor_f
     target_layer: 'l3_monthly'
     lookback: '0'
 
-l1_complaints_nps_score:
-  type: kedro.contrib.io.pyspark.SparkDataSet
-  file_format: "parquet"
-  filepath: base_path/COMPLAINTS/l1_features/l1_complaints_nps_score/
-  save_args:
-    partitionBy: ["event_partition_date"]
-    mode: "overwrite"
+#l1_complaints_nps_score:
+#  type: kedro.contrib.io.pyspark.SparkDataSet
+#  file_format: "parquet"
+#  filepath: base_path/COMPLAINTS/l1_features/l1_complaints_nps_score/
+#  save_args:
+#    partitionBy: ["event_partition_date"]
+#    mode: "overwrite"
 
 
 l1_complaints_nps_after_call:

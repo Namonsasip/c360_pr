@@ -15,7 +15,7 @@ l4_device_summary_features:
 l4_device_summary_features_first:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/REVENUE/l4_features/l4_device_summary_features_first/
+  filepath: base_path/DEVICE/l4_features/l4_device_summary_features_first/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
@@ -24,7 +24,7 @@ l4_device_summary_features_first:
 l4_device_summary_features_second:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: base_path/REVENUE/l4_features/l4_device_summary_features_second/
+  filepath: base_path/DEVICE/l4_features/l4_device_summary_features_second/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
