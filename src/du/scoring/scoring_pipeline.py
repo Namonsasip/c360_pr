@@ -52,6 +52,7 @@ def create_du_scoring_pipeline() -> Pipeline:
                     "model_group_column": "params:du_model_scoring_group_column",
                     "explanatory_features":"params:du_model_explanatory_features",
                     "acceptance_model_tag": "params:du_acceptance_model_tag",
+                    "mlflow_model_version":"params:du_mlflow_model_version_prediction",
                     "arpu_model_tag": "params:du_arpu_model_tag",
                     "pai_runs_uri": "params:nba_pai_runs_uri",
                     "pai_artifacts_uri": "params:nba_pai_artifacts_uri",

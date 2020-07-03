@@ -10,6 +10,7 @@ import pyspark
 import pyspark.sql.functions as F
 import seaborn as sns
 from lightgbm import LGBMClassifier, LGBMRegressor
+import lightgbm
 from plotnine import *
 from pyspark.sql import Window, functions as F
 from pyspark.sql.functions import pandas_udf, PandasUDFType
@@ -118,6 +119,7 @@ def create_model_function(
             pdf_extra_pai_metrics: pd.DataFrame,
             pai_runs_uri: str,
             pai_artifacts_uri: str,
+            mlflow_model_version: int,
             regression_clip_target_quantiles: Tuple[float, float] = None,
         ) -> pd.DataFrame:
             """
@@ -400,7 +402,7 @@ def create_model_function(
 
                 mlflow.log_params(
                     {
-                        "Version": 1,
+                        "Version": mlflow_model_version,
                         "target_column": target_column,
                         "model_objective": model_type,
                         "regression_clip_target_quantiles": regression_clip_target_quantiles,
@@ -983,6 +985,7 @@ def score_du_models(
     pai_runs_uri: str,
     pai_artifacts_uri: str,
     explanatory_features: List[str],
+    mlflow_model_version:int,
     scoring_chunk_size: int = 500000,
 ) -> pyspark.sql.DataFrame:
     spark = get_spark_session()
@@ -1012,13 +1015,14 @@ def score_du_models(
 
         for current_tag, prediction_colname in models_to_score.items():
             # current_model_group = "Data_NonStop_4Mbps_1_ATL"
-            # current_tag = "binary"
+            # current_tag = "regression"
             # prediction_colname = "propensity"
+            # mlflow_model_version = "2"
             mlflow_run = mlflow.search_runs(
                 experiment_ids=mlflow_experiment_id,
                 filter_string="params.model_objective='"
                 + current_tag
-                + "' AND params.Version=1 AND tags.mlflow.runName ='"
+                + "' AND params.Version="+str(mlflow_model_version)+" AND tags.mlflow.runName ='"
                 + current_model_group
                 + "'",
                 run_view_type=1,
@@ -1027,15 +1031,14 @@ def score_du_models(
             )
 
             current_model = mlflowlightgbm.load_model(mlflow_run.artifact_uri.values[0])
-
             # We sort features because MLflow does not preserve feature order
             # Models should also be trained with features sorted
             explanatory_features.sort()
             X = pdf[explanatory_features]
             if "binary" == current_tag:
-                pd_results[prediction_colname] = current_model.predict_proba(
+                pd_results[prediction_colname] = current_model.predict(
                     X, num_threads=1, n_jobs=1
-                )[:, 1]
+                )
             elif "regression" == current_tag:
                 pd_results[prediction_colname] = current_model.predict(
                     X, num_threads=1, n_jobs=1
@@ -1055,10 +1058,10 @@ def score_du_models(
         mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
     else:
         mlflow_experiment_id = mlflow.get_experiment_by_name(mlflow_path).experiment_id
-
+    # model_group_column = "model_name"
     all_run_data = mlflow.search_runs(
         experiment_ids=mlflow_experiment_id,
-        filter_string="params.model_objective='binary' AND params.Able_to_model = 'True' AND params.Version=1",
+        filter_string="params.model_objective='binary' AND params.Able_to_model = 'True' AND params.Version=2",
         run_view_type=1,
         max_results=100,
         order_by=None,
@@ -1066,26 +1069,12 @@ def score_du_models(
     all_run_data.columns
     all_run_data[model_group_column] = all_run_data["tags.mlflow.runName"]
     mlflow_sdf = spark.createDataFrame(all_run_data.astype(str))
+    # df_master = catalog.load("l5_du_scoring_master")
     eligible_model = mlflow_sdf.selectExpr(model_group_column)
-    scoring_combination = df_master.select(
-        "subscription_identifier",
-        "old_subscription_identifier",
-        "access_method_num",
-        "register_date",
-    ).crossJoin(eligible_model)
-    df_master = scoring_combination.join(
-        df_master,
-        [
-            "subscription_identifier",
-            "old_subscription_identifier",
-            "access_method_num",
-            "register_date",
-        ],
-        "inner",
-    )
+    df_master_upsell = df_master.crossJoin(F.broadcast(eligible_model))
     # This part of code suppose to distribute chuck of each sub required to be score
     # For each of the model
-    df_master = df_master.withColumn(
+    df_master_upsell = df_master_upsell.withColumn(
         "partition",
         F.floor(
             F.count(F.lit(1)).over(Window.partitionBy(model_group_column))
@@ -1093,7 +1082,7 @@ def score_du_models(
             * F.rand()
         ),
     )
-    df_master_necessary_columns = df_master.select(
+    df_master_necessary_columns = df_master_upsell.select(
         model_group_column,
         "partition",
         *(  # Don't add model group column twice in case it's a PK column
@@ -1105,7 +1094,8 @@ def score_du_models(
     df_scored = df_master_necessary_columns.groupby("model_name", "partition").apply(
         predict_pandas_udf
     )
-    df_master_scored = df_master.join(df_scored, on=primary_key_columns, how="left")
+
+    df_master_scored = df_scored.join(df_master, on=primary_key_columns, how="left")
 
     return df_master_scored
     #
@@ -1149,4 +1139,29 @@ def score_du_models(
     #         list(set(primary_key_columns) - set([model_group_column]))
     #         + explanatory_features
     #     ),
+    # )
+    # current_model_group = "Data_NonStop_4Mbps_1_ATL"
+    # current_tag = "regression"
+    # prediction_colname = "propensity"
+    # mlflow_run = mlflow.search_runs(
+    #     experiment_ids=mlflow_experiment_id,
+    #     filter_string="params.model_objective='"
+    #                   + current_tag
+    #                   + "' AND params.Version=2 AND tags.mlflow.runName ='"
+    #                   + current_model_group
+    #                   + "'",
+    #     run_view_type=1,
+    #     max_results=1,
+    #     order_by=None,
+    # )
+    # current_model = mlflowlightgbm.load_model(mlflow_run.artifact_uri.values[0])
+    #
+    # df_master_verysmall = df_master.withColumn("model_name",F.lit("Data_NonStop_4Mbps_1_ATL")).limit(100)
+    # pdf = df_master_verysmall.toPandas()
+    # explanatory_features.sort()
+    #
+    # X = pdf[explanatory_features]
+    # pd_results = pd.DataFrame()
+    # pd_results[prediction_colname] = current_model.predict(
+    #     X, num_threads=1, n_jobs=1
     # )

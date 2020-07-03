@@ -10,6 +10,7 @@ from pyspark.sql.types import FloatType, IntegerType
 
 from customer360.utilities.spark_util import get_spark_session
 from du.models.models_nodes import score_du_models
+
 # get latest available daily profile from c360 feature
 def l5_scoring_profile(
     l1_customer_profile_union_daily_feature_full_load: DataFrame,
@@ -44,18 +45,23 @@ def l5_du_scored(
     model_group_column: str,
     explanatory_features,
     acceptance_model_tag: str,
+    mlflow_model_version:str,
     arpu_model_tag: str,
     pai_runs_uri: str,
     pai_artifacts_uri: str,
     scoring_chunk_size: int = 500000,
-
     **kwargs,
 ):
     # Data upsell generate score for every possible upsell campaign
 
     df_master_scored = score_du_models(
         df_master=df_master,
-        primary_key_columns=["access_method_num"],
+        primary_key_columns=[
+            "subscription_identifier",
+            "old_subscription_identifier",
+            "access_method_num",
+            "register_date",
+        ],
         model_group_column=model_group_column,
         models_to_score={
             acceptance_model_tag: "propensity",
@@ -65,6 +71,7 @@ def l5_du_scored(
         explanatory_features=explanatory_features,
         pai_runs_uri=pai_runs_uri,
         pai_artifacts_uri=pai_artifacts_uri,
+        mlflow_model_version=mlflow_model_version,
         **kwargs,
     )
     return df_master_scored
