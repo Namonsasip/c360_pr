@@ -84,7 +84,7 @@ microsegments_update_cadence: 30
 # pai parameters
 pai_runs_path: '/dbfs/mnt/customer360-blob-data/cvm/pai01/runs'
 pai_artifacts_path: '/dbfs/mnt/customer360-blob-data/cvm/pai01/artifacts'
-pai_experiment_name: 'internal_churn_01'
+pai_experiment_name: 'internal_churn_02'
 
 # path used to create temp copies for refreshments
 refresh_temp_path: '/dbfs/mnt/customer360-blob-data/C360/CVM/l5_cvm_temp/'
