@@ -105,3 +105,25 @@ def prepare_profile(profile: DataFrame) -> DataFrame:
         .select(cols_to_pick)
     )
     return profile
+
+
+def prepare_device(device: DataFrame) -> DataFrame:
+    """ Prepare device data for customer id generation.
+
+    Args:
+        device: table describing details of device used by customer.
+    """
+    # pick rows and columns needed for device table
+    date_to_pick = "2020-02-01"
+    device_features = [
+        "handset_imei",
+        "dual_sim",
+    ]
+    device_sub_ids = [
+        "subscription_identifier",
+    ]
+    cols_to_pick = device_sub_ids + device_features
+    device = device.filter("event_partition_date == '{}'".format(date_to_pick)).select(
+        cols_to_pick
+    )
+    return device
