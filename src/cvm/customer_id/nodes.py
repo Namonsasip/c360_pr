@@ -29,9 +29,11 @@ import functools
 import logging
 from typing import Any, Dict
 
+import pyspark.sql.functions as func
 from cvm.src.features.customer_id_features import (
     add_weighted_edges,
     create_edges_for_feature,
+    generate_customers,
     prepare_device,
     prepare_geolocation,
     prepare_profile,
@@ -72,3 +74,36 @@ def create_customer_edges(
         feature_edges.append(create_edges_for_feature(df, feature_name, weight))
     edges = functools.reduce(add_weighted_edges, feature_edges)
     return edges
+
+
+def create_customer_ids(
+    profile: DataFrame, edges: DataFrame, parameters: Dict[str, Any],
+) -> DataFrame:
+    """ Creates customer ids by joining connected components defined by edges.
+
+    Args:
+        profile: table with users profiles.
+        parameters: parameters defined in parameters.yml.
+        edges: connections between subscriptions.
+
+    """
+    vertices = (
+        prepare_profile(profile)
+        .withColumn("id", func.col("subscription_identifier"))
+        .select("id")
+        .distinct()
+    )
+    thresholds = parameters["customer_id_thresholds"]
+    customers = []
+    for col_name in thresholds:
+        min_weight = thresholds[col_name]
+        edg = edges.filter("weight >= {}".format(min_weight))
+        customers.append(
+            generate_customers(vertices, edg, col_name).select(
+                "subscription_identifier", col_name
+            )
+        )
+    customer_ids = functools.reduce(
+        lambda df1, df2: df1.join(df2, on="subscription_identifier"), customers
+    )
+    return customer_ids
