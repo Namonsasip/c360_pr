@@ -390,6 +390,15 @@ def add_outlier_percentage_based_on_iqr(
         on=["corresponding_date", "granularity", "feature_column_name"]
     )
 
+    # Because approx_percentile is an approximation function (with accuracy percentage) and due to Spark's lazy
+    # evaluation, occasionally the percentiles get re-calculated on 'action' functions and generates different values.
+    # This fix keeps q1/pecentile_0.25 consistent and q3/percentile_0.75 consistent
+
+    result_df = (result_df
+                 .withColumn("`percentile_0.25`", f.col("q1"))
+                 .withColumn("`percentile_0.75`", f.col("q3"))
+                 )
+
     return result_df
 
 
