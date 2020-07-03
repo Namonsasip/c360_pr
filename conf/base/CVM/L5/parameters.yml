@@ -96,3 +96,20 @@ checkpoint_path: '/dbfs/mnt/customer360-blob-data/C360/CVM/l5_cvm_checkpoint/'
 logs_path:
   output_path_template: '/dbfs/mnt/customer360-blob-data/cvm/logs/logs_{}'
   output_path_date_format: '%Y%m%d%H%M%S'
+
+# weights used to create customer id
+weights:
+  zipcode: 6
+  age: 4
+  handset_imei: 9
+  home_weekday_location_id: 9
+  home_weekend_location_id: 8.5
+  work_location_id: 8.5
+  strong_national_id_card: 30
+  weak_national_id_card: 4
+
+# threshold for customer connections
+customer_id_thresholds:
+  customer_id_high_certainty: 25
+  customer_id_medium_certainty: 10
+  customer_id_low_certainty: 1
