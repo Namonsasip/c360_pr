@@ -111,7 +111,7 @@ def streaming_to_l3_content_type_features(input_df: DataFrame,
         df=input_df, grouping="monthly", par_col="event_partition_date",
         missing_data_check_flg='Y',
         target_table_name=l3_streaming_fav_content_group_by_duration_dict["output_catalog"],
-        exception_partitions=["2020-03-30"])
+        exception_partitions=["2020-04-01"])
 
     if check_empty_dfs([input_df]):
         return [get_spark_empty_df(), get_spark_empty_df()]
