@@ -9,6 +9,7 @@ from pyspark.sql import functions as F
 from pyspark.sql.types import FloatType, IntegerType
 
 from customer360.utilities.spark_util import get_spark_session
+from nba.model_input.model_input_nodes import add_model_group_column
 from nba.models.models_nodes import score_nba_models
 
 
@@ -220,15 +221,39 @@ def join_c360_features_latest_date(
 def l5_nba_pcm_candidate_scored(
     df_master: pyspark.sql.DataFrame,
     l5_average_arpu_untie_lookup: pyspark.sql.DataFrame,
-    model_group_column: str,
+    prioritized_campaign_child_codes: List[str],
+    nba_model_group_column_prioritized: str,
+    nba_model_group_column_non_prioritized: str,
+    nba_model_use_cases_child_codes: Dict[str, List[str]],
     acceptance_model_tag: str,
     arpu_model_tag: str,
     pai_runs_uri: str,
     pai_artifacts_uri: str,
+    explanatory_features: List[str],
     scoring_chunk_size: int = 500000,
     **kwargs,
 ):
+    # Add day of week and month as features
+    df_master = df_master.withColumn("day_of_week", F.dayofweek("candidate_date"))
+    df_master = df_master.withColumn("day_of_month", F.dayofmonth("candidate_date"))
 
+    df_master = add_model_group_column(
+        df_master,
+        nba_model_group_column_non_prioritized,
+        nba_model_group_column_prioritized,
+        nba_model_use_cases_child_codes,
+        prioritized_campaign_child_codes,
+    )
+    df_master = df_master.withColumn(
+        "nba_spine_primary_key",
+        F.concat(
+            F.col("subscription_identifier"),
+            F.lit("_"),
+            F.col("candidate_date"),
+            F.lit("_"),
+            F.col("campaign_child_code"),
+        ),
+    )
     # Since NBA does not generate a score foe every possible campaign,
     # create a column to mark for which we should score
     # This logic will probably be slightly different in the future sicne
@@ -239,8 +264,8 @@ def l5_nba_pcm_candidate_scored(
         F.when(
             (F.col("campaign_sub_type") == "Non-trigger")
             & (F.substring("campaign_child_code", 1, 4) != "Pull")
-            & (F.col(model_group_column) != "NULL")
-            & (~F.isnull(F.col(model_group_column))),
+            & (F.col("model_group") != "NULL")
+            & (~F.isnull(F.col("model_group"))),
             F.lit(1),
         ).otherwise(F.lit(0)),
     )
@@ -249,7 +274,7 @@ def l5_nba_pcm_candidate_scored(
     df_master_scored = score_nba_models(
         df_master=df_master.filter(F.col("to_be_scored") == 1),
         primary_key_columns=["nba_spine_primary_key"],
-        model_group_column=model_group_column,
+        model_group_column="model_group",
         models_to_score={
             acceptance_model_tag: "prediction_acceptance",
             arpu_model_tag: "prediction_arpu",
@@ -257,6 +282,8 @@ def l5_nba_pcm_candidate_scored(
         scoring_chunk_size=scoring_chunk_size,
         pai_runs_uri=pai_runs_uri,
         pai_artifacts_uri=pai_artifacts_uri,
+        missing_model_default_value=0,  # Give NBA score of 0 in case we don't have a model
+        explanatory_features=explanatory_features,
         **kwargs,
     )
 
@@ -267,15 +294,15 @@ def l5_nba_pcm_candidate_scored(
     df_master_scored = df_master_scored.withColumn(
         "priority_category",
         F.when(
-            F.col(model_group_column).startswith("model_use_case"),
+            F.col("model_group").startswith("model_use_case"),
             "00300_arpu_increasing_model_based",
         )
         .when(
-            F.col(model_group_column).startswith("campaign_child_code"),
+            F.col("model_group").startswith("campaign_child_code"),
             "00400_prioritized_rule_based",
         )
         .when(
-            F.col(model_group_column).startswith("campaign_category"),
+            F.col("model_group").startswith("campaign_category"),
             "00500_non_prioritized_rule_based",
         ),
     )
@@ -296,8 +323,14 @@ def l5_nba_pcm_candidate_scored(
     df_master = df_master.withColumn(
         "nba_score", F.col("prediction_acceptance") * F.col("prediction_arpu")
     )
-    # In case we don't have a model use 0 as NBA score
-    df_master = df_master.fillna(0, subset=["nba_score"])
+
+    # For Information campaigns NBA score will be 0
+    df_master = df_master.withColumn(
+        "nba_score",
+        F.when(F.col("campaign_category") == "Information", F.lit(0)).otherwise(
+            F.col("nba_score")
+        ),
+    )
 
     # In case the NGCM score is the same for several campaigns (i.e.
     # two non-prioritized campaigns from the same category), we use the
@@ -333,7 +366,7 @@ def l5_nba_pcm_candidate_scored(
             F.lit(int(4000)),
         )
         .when(  # Churn prevention will have the highest priority among non-prioritized rule-based
-            (F.col("campaign_objective") == "Churn Prevention")
+            (F.col("campaign_category") == "Churn Prevention")
             & (F.col("priority_category") == "00500_non_prioritized_rule_based"),
             F.lit(int(5400)),
         )
@@ -388,4 +421,13 @@ def l5_nba_pcm_candidate_scored(
         ).cast(IntegerType()),
     )
 
+    # For campaigns that are not to be scored just
+    # return the same score that was given
+    # We cannot replicate this currently because PCM candidate does
+    # not have the score, but NGCM will give it
+    # TODO change this for NGCM
+    # df_master.withColumn(
+    #     "ngcm_score",
+    #     F.when(F.col("to_be_scored") == 1, F.col("ngcm_score")).otherwise(F.col("NGCM_initial score"))
+    # )
     return df_master

@@ -2,6 +2,8 @@ from pathlib import Path
 from pyspark.sql import functions as f
 from pyspark.sql import DataFrame
 from pyspark.sql.types import DoubleType
+from pyspark.sql.functions import udf
+from pyspark.sql.types import LongType, StringType
 
 import os
 from datetime import datetime
@@ -388,5 +390,41 @@ def add_outlier_percentage_based_on_iqr(
         on=["corresponding_date", "granularity", "feature_column_name"]
     )
 
+    # Because approx_percentile is an approximation function (with accuracy percentage) and due to Spark's lazy
+    # evaluation, occasionally the percentiles get re-calculated on 'action' functions and generates different values.
+    # This fix keeps q1/pecentile_0.25 consistent and q3/percentile_0.75 consistent
+
+    result_df = (result_df
+                 .withColumn("`percentile_0.25`", f.col("q1"))
+                 .withColumn("`percentile_0.75`", f.col("q3"))
+                 )
+
     return result_df
 
+
+fea_to_domain_dict = {
+    "payment": "billing",
+    "campaign": "campaign",
+    "complaint": "complaint",
+    "device": "device",
+    "digital": "digital",
+    "loyalty": "loyalty",
+    "network": "network",
+    "product": "product",
+    "customer": "customer profile",
+    "arpu": "revenue",
+    "transaction": "sales",
+    "visit_count": "stream",
+    "download_kb_traffic": "stream",
+    "session_duration": "stream",
+    "touchpoints": "touchpoints",
+    "usg": "usage"
+}
+
+
+@udf(returnType=StringType())
+def extract_domain(col_name):
+    for fea, domain in fea_to_domain_dict.items():
+        if fea in col_name:
+            return domain
+    return "uncategorized"
