@@ -90,7 +90,7 @@ l4_streaming_fav_tv_show_by_episode_watched:
 
 # fav streaming content type (reused for music, video, and esport)
 int_l4_streaming_service_feature:
-  partition_by: ["access_method_num", "national_id_card", "subscription_identifier", "application"]
+  partition_by: ["access_method_num", "national_id_card", "subscription_identifier", "application", "register_date"]
   ranked_lookup_enable_flag: 'No'
   fix_dimension_cols: "access_method_num,national_id_card,subscription_identifier,start_of_week, register_date"
   target_dimension_col: "application"
