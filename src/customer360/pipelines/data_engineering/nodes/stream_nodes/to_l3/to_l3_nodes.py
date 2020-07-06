@@ -111,7 +111,7 @@ def streaming_to_l3_content_type_features(input_df: DataFrame,
         df=input_df, grouping="monthly", par_col="event_partition_date",
         missing_data_check_flg='Y',
         target_table_name=l3_streaming_fav_content_group_by_duration_dict["output_catalog"],
-        exception_partitions=["2020-03-30"])
+        exception_partitions=["2020-04-01"])
 
     if check_empty_dfs([input_df]):
         return [get_spark_empty_df(), get_spark_empty_df()]
@@ -227,7 +227,7 @@ def streaming_to_l3_tv_channel_type_features(input_df: DataFrame,
                           l3_streaming_fav_tv_channel_by_duration)
 
     logging.info("Final date to run for {0}".format(str(first_item)))
-    small_df = data_frame.filter(F.col("start_of_week").isin(*[first_item]))
+    small_df = data_frame.filter(F.col("start_of_month").isin(*[first_item]))
     int_l3_streaming_tv_channel_features = node_from_config(small_df, int_l3_streaming_tv_channel_features_dict)
 
     l3_streaming_fav_tv_channel_by_volume = node_from_config(int_l3_streaming_tv_channel_features,
@@ -293,7 +293,7 @@ def streaming_streaming_fav_tv_show_by_episode_watched_features(
                           l3_streaming_fav_tv_show_by_episode_watched)
 
     logging.info("Final date to run for {0}".format(str(first_item)))
-    small_df = data_frame.filter(F.col("start_of_week").isin(*[first_item]))
+    small_df = data_frame.filter(F.col("start_of_month").isin(*[first_item]))
     int_l3_streaming_tv_show_features = node_from_config(small_df, int_l3_streaming_tv_show_features_dict)
 
     l3_streaming_fav_tv_show_by_episode_watched = node_from_config(int_l3_streaming_tv_show_features,
@@ -368,7 +368,7 @@ def streaming_fav_service_download_traffic_visit_count(
                           fav_count)
 
     logging.info("Final date to run for {0}".format(str(first_item)))
-    small_df = data_frame.filter(F.col("start_of_week").isin(*[first_item]))
+    small_df = data_frame.filter(F.col("start_of_month").isin(*[first_item]))
     int_l3_streaming_service_feature = node_from_config(small_df, int_l3_streaming_service_feature_dict)
 
     favourite_video = node_from_config(int_l3_streaming_service_feature, favourite_dict)
