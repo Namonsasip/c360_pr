@@ -51,7 +51,7 @@ int_l2_streaming_content_type_features_for_int_l4_streaming_content_type_feature
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'int_l4_streaming_content_type_features'
+    lookup_table_name: 'l4_streaming_fav_content_group_by_duration'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
     lookback: '12'
@@ -153,7 +153,7 @@ int_l2_streaming_tv_channel_features_for_int_l4_streaming_tv_channel_features:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'int_l4_streaming_tv_channel_features'
+    lookup_table_name: 'l4_streaming_fav_tv_channel_by_duration'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
     lookback: '12'
@@ -293,7 +293,7 @@ int_l2_streaming_video_service_feature_for_int_l4_streaming_video_service_featur
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'int_l4_streaming_video_service_feature'
+    lookup_table_name: 'l4_streaming_fav_video_service_by_visit_count_feature'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
     lookback: '12'
@@ -434,7 +434,7 @@ int_l2_streaming_music_service_feature_for_int_l4_streaming_music_service_featur
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'int_l4_streaming_music_service_feature'
+    lookup_table_name: 'l4_streaming_fav_music_service_by_visit_count_feature'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
     lookback: '12'
@@ -572,7 +572,7 @@ int_l2_streaming_esport_service_feature_for_int_l4_streaming_music_service_featu
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'int_l4_streaming_esport_service_feature'
+    lookup_table_name: 'l4_streaming_fav_esport_service_by_visit_count_feature'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
     lookback: '12'
