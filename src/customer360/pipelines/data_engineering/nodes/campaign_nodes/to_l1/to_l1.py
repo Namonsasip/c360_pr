@@ -24,7 +24,7 @@ def pre_process_df(data_frame: DataFrame,
     data_frame = data_frame.withColumnRenamed("campaign_child_code", "child_campaign_code")
     ma_join_cols = ['subscription_identifier', "contact_date", 'child_campaign_code']
     contacts_ma_small = contacts_ma_small\
-        .select("subscription_identifier", "child_campaign_code", "channel_identifier").distinct()
+        .select("subscription_identifier", "child_campaign_code", "contact_date", "channel_identifier").distinct()
 
     data_frame = data_frame.join(contacts_ma_small, ma_join_cols, how="left")
 

@@ -113,7 +113,7 @@ int_l3_streaming_service_feature:
         visit_count_rank: "row_number() over (partition by subscription_identifier, access_method_num, national_id_card,
          date(register_date), start_of_month order by sum(visit_count) desc)"
     granularity: "subscription_identifier, access_method_num, national_id_card, date(register_date), start_of_month,
-     application, application_group"
+     application"
 
 
 l3_streaming_fav_service_by_download_feature:
