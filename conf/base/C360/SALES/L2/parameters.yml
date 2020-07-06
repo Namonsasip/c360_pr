@@ -1,4 +1,6 @@
-# Parameters for the example pipeline. Feel free to delete these once you
-# remove the example pipeline from pipeline.py and the example nodes in
-# `src/pipelines/`
+
+exception_partition_list_for_l0_sales_drm_t_ontop_package_channel: ['2019-12-30']
+
+exception_partition_list_for_l0_sales_drm_t_main_package_channel: ['2019-12-30']
+
 

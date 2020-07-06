@@ -90,6 +90,10 @@ def union_daily_cust_profile(
 def generate_modified_subscription_identifier(
         cust_profile_df: DataFrame
 ) -> DataFrame:
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([cust_profile_df]):
+        return get_spark_empty_df()
+
     cust_profile_df = (cust_profile_df
                        .withColumn("subscription_identifier",
                                    f.expr("case when lower(charge_type) = 'pre-paid' then "

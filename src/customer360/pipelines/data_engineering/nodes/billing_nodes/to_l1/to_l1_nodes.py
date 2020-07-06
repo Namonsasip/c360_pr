@@ -47,10 +47,10 @@ def massive_processing(input_df, customer_prof_input_df, join_function, sql, par
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 5))
+    mvv_new = list(divide_chunks(mvv_array, 15))
     add_list = mvv_new
 
-    first_item = add_list[0]
+    first_item = add_list[-1]
 
     add_list.remove(first_item)
     for curr_item in add_list:
@@ -162,6 +162,9 @@ def billing_topup_channels(input_df, customer_prof, sql) -> DataFrame:
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
                                                        target_table_name="l1_billing_and_payments_daily_top_up_channels")
 
+    # input_df = input_df.join(topup_type_ref, input_df.recharge_type == topup_type_ref.recharge_topup_event_type_cd,
+    #                         'left')
+
     customer_prof = data_non_availability_and_missing_check(df=customer_prof, grouping="daily",
                                                             par_col="event_partition_date",
                                                             target_table_name="l1_billing_and_payments_daily_top_up_channels")
@@ -261,6 +264,7 @@ def billing_time_since_last_topup(input_df, customer_prof, sql) -> DataFrame:
 def derives_in_customer_profile(customer_prof):
     customer_prof = customer_prof.select("access_method_num",
                                          "subscription_identifier",
+                                         "national_id_card",
                                          f.to_date("register_date").alias("register_date"),
                                          "event_partition_date",
                                          "charge_type")

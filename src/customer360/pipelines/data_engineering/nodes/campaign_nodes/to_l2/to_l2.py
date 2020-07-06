@@ -33,13 +33,15 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
                                                                              grouping="weekly",
                                                                              par_col="event_partition_date",
                                                                              target_table_name="l2_campaign_postpaid_prepaid_weekly",
-                                                                             missing_data_check_flg='Y')
+                                                                             missing_data_check_flg='Y',
+                                                                             exception_partitions=["2019-09-30"])
 
     l1_campaign_top_channel_daily = data_non_availability_and_missing_check(df=l1_campaign_top_channel_daily,
                                                                             grouping="weekly",
                                                                             par_col="event_partition_date",
                                                                             target_table_name="l2_campaign_top_channel_weekly",
-                                                                            missing_data_check_flg='Y')
+                                                                            missing_data_check_flg='Y',
+                                                                            exception_partitions=["2019-09-30"])
 
     if check_empty_dfs([l1_campaign_post_pre_fbb_daily, l1_campaign_top_channel_daily]):
         return [get_spark_empty_df(), get_spark_empty_df()]
@@ -61,7 +63,7 @@ def build_campaign_l2_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     mvv_new = list(divide_chunks(mvv_array, 5))
     add_list = mvv_new
 
-    first_item = add_list[0]
+    first_item = add_list[-1]
 
     add_list.remove(first_item)
     for curr_item in add_list:

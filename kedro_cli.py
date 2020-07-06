@@ -237,6 +237,12 @@ def run(
         config,
         params,
 ):
+    # needed since some of the modules directly access `customer360`
+    # instead of `src.customer360`
+    sys.path.append(os.path.abspath(f"{Path.cwd()}/src"))
+    from src.customer360.pipeline import create_dq_pipeline
+    from src.customer360.run import DataQualityProjectContext
+
     """Run the pipeline."""
     if parallel and runner:
         raise KedroCliError(
@@ -249,7 +255,16 @@ def run(
 
     if pipeline is not None:
         for pipe in list(pipeline.split(',')):
-            context = load_context(Path.cwd(), env=env, extra_params=params)
+            if pipe in create_dq_pipeline().keys():
+                # Override the context creation if it's data quality pipeline.
+                # Since there's no way to specify different context
+                # due to `Path.cwd()` being harcoded
+                context = DataQualityProjectContext(project_path=Path.cwd(), env=env, extra_params=params)
+                print("dq")
+            else:
+                context = load_context(Path.cwd(), env=env, extra_params=params)
+                print("non-dq")
+
             context.run(
             tags=tag,
             runner=runner_class(),

@@ -43,7 +43,7 @@ def massive_processing(input_df, customer_prof_input_df, join_function, sql, par
     mvv_new = list(divide_chunks(mvv_array, 2))
     add_list = mvv_new
 
-    first_item = add_list[0]
+    first_item = add_list[-1]
 
     add_list.remove(first_item)
     for curr_item in add_list:
@@ -108,9 +108,9 @@ def massive_processing_monthly(data_frame: DataFrame, dict_obj: dict, output_df_
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
-    mvv_new = list(divide_chunks(mvv_array, 1))
+    mvv_new = list(divide_chunks(mvv_array, 2))
     add_list = mvv_new
-    first_item = add_list[0]
+    first_item = add_list[-1]
     add_list.remove(first_item)
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
@@ -156,10 +156,10 @@ def process_last_topup_channel(data_frame: DataFrame, cust_prof: DataFrame, sql:
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 1))
+    mvv_new = list(divide_chunks(mvv_array, 2))
     add_list = mvv_new
 
-    first_item = add_list[0]
+    first_item = add_list[-1]
 
     add_list.remove(first_item)
     for curr_item in add_list:
@@ -548,9 +548,7 @@ def billing_time_diff_between_topups_monthly(customer_profile_df, input_df, sql)
 
 
 def billing_data_joined(billing_monthly, payment_daily, target_table_name: str):
-    # Need to check becasue billing_monthly and payment_daily are getting joined on a different column than partition_month
 
-    table_name = target_table_name.split('_tbl')[0]
 
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([billing_monthly, payment_daily]):
@@ -558,30 +556,39 @@ def billing_data_joined(billing_monthly, payment_daily, target_table_name: str):
 
     payment_daily = data_non_availability_and_missing_check(df=payment_daily, grouping="monthly",
                                                             par_col="partition_date",
-                                                            target_table_name=table_name,
-                                                            missing_data_check_flg='Y')
+                                                            target_table_name=target_table_name,
+                                                      #      missing_data_check_flg='Y'
+      #missing data check is removed because 30 days worth of data is uploaded daily for "payment_daily" dataset
+                                                            )
 
     if check_empty_dfs([billing_monthly, payment_daily]):
         return get_spark_empty_df()
 
+    payment_daily = payment_daily.withColumn("start_of_month", f.to_date(
+                    f.date_trunc('month', f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd'))))
+
+
     min_value = union_dataframes_with_missing_cols(
         [
             payment_daily.select(
-                f.max(f.to_date(
-                    f.date_trunc('month', f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd')))).alias(
+                f.max(f.col("start_of_month")).alias(
                     "max_date")),
             billing_monthly.select(
                 f.max(f.col("start_of_month")).alias("max_date")),
         ]
     ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
 
-    payment_daily = payment_daily.filter(f.to_date(
-        f.date_trunc('month', f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd'))) <= min_value)
+    payment_daily = payment_daily.filter(f.col("start_of_month") <= min_value)
     billing_monthly = billing_monthly.filter(f.col("start_of_month") <= min_value)
+
+    payment_daily = payment_daily.withColumn("rn", expr(
+        "row_number() over(partition by partition_month_new,account_identifier,billing_statement_identifier,bill_seq_no order by partition_date desc)"))
+    payment_daily = payment_daily.filter("rn = 1").drop("rn")
 
     ################################# End Implementing Data availability checks ###############################
 
     output_df = billing_monthly.join(payment_daily,
+                                     (billing_monthly.start_of_month == payment_daily.start_of_month) &
                                      (billing_monthly.account_identifier == payment_daily.account_identifier) &
                                      (
                                              billing_monthly.billing_statement_identifier == payment_daily.billing_statement_identifier) &
@@ -597,6 +604,7 @@ def derives_in_customer_profile(customer_prof):
     customer_prof = customer_prof.select("access_method_num",
                                          "billing_account_no",
                                          "subscription_identifier",
+                                         "national_id_card",
                                          f.to_date("register_date").alias("register_date"),
                                          "partition_month",
                                          "charge_type",
@@ -666,6 +674,9 @@ def billing_statement_hist_data_with_customer_profile(customer_prof, billing_his
     customer_prof = derives_in_customer_profile(customer_prof) \
         .where("charge_type = 'Post-paid' and cust_active_this_month = 'Y'")
 
+    customer_prof = customer_prof.withColumn("cnt", expr(
+        "count(access_method_num) over (partition by partition_month ,billing_account_no order by billing_account_no)"))
+
     customer_prof = data_non_availability_and_missing_check(df=customer_prof, grouping="monthly",
                                                             par_col="start_of_month",
                                                             target_table_name=target_table_name)
@@ -692,7 +703,7 @@ def billing_statement_hist_data_with_customer_profile(customer_prof, billing_his
 
     output_df = customer_prof.join(billing_hist, (customer_prof.billing_account_no == billing_hist.account_num) &
                                    (customer_prof.start_of_month == f.to_date(
-                                       f.date_trunc('month', billing_hist.billing_stmt_period_eff_date))), 'left')
+                                       f.date_trunc('month', billing_hist.bill_stmt_period_end_dt))), 'left')
 
     return output_df
 
@@ -743,6 +754,7 @@ def bill_payment_daily_data_with_customer_profile(customer_prof, pc_t_data):
 def recharge_data_with_customer_profile_joined(customer_prof, recharge_data):
     customer_prof = customer_prof.select("access_method_num",
                                          "subscription_identifier",
+                                         "national_id_card",
                                          f.to_date("register_date").alias("register_date"),
                                          "start_of_month",
                                          "charge_type")

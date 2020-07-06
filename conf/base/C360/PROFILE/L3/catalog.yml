@@ -1,65 +1,9 @@
-#l3_customer_profile_include_1mo_non_active:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: /mnt/customer360-blob-output/C360/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
-#  file_format: "parquet"
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: ["partition_month"]
-
-
-#l3_customer_profile_billing_level_features:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: /mnt/customer360-blob-output/C360/PROFILE/l3_features/billing_level_features/
-#  file_format: "parquet"
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: ["partition_month"]
-
-
-#l3_customer_profile_billing_level_volume_of_active_contracts:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: /mnt/customer360-blob-output/C360/PROFILE/l3_features/volume_of_active_contracts/
-#  file_format: "parquet"
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: ["partition_month"]
-
-
-
-#################################################################################
-### New entries for incremental read for revenue domain
-
-#l3_customer_profile_include_1mo_non_active_l3_revenue_postpaid:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: /mnt/customer360-blob-output/C360/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
-#  file_format: "parquet"
-#  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
-#  load_args:
-#    increment_flag: 'yes'
-#    lookup_table_name: 'l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly'
-#    read_layer: 'l3_monthly_customer_profile'
-#    target_layer: 'l3_monthly'
-#    lookback: '0'
-
-l3_customer_profile_include_1mo_non_active_l3_revenue_prepaid:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
-  file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly'
-    read_layer: 'l3_monthly_customer_profile'
-    target_layer: 'l3_monthly'
-    lookback: '0'
-
-
 
 l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_rpu:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
+  filepath: base_path/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_billing_and_payments_monthly_rpu'
@@ -71,9 +15,9 @@ l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_r
 
 l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_topup_time_diff:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
+  filepath: base_path/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_billing_and_payments_monthly_topup_time_diff'
@@ -84,9 +28,9 @@ l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_t
 
 l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_automated_payments:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
+  filepath: base_path/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_billing_and_payments_monthly_automated_payments'
@@ -97,9 +41,9 @@ l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_a
 
 l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_bill_volume:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
+  filepath: base_path/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_billing_and_payments_monthly_bill_volume'
@@ -111,9 +55,9 @@ l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_b
 
 l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_missed_bills:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
+  filepath: base_path/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_billing_and_payments_monthly_missed_bills'
@@ -124,9 +68,9 @@ l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_m
 
 l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_overdue_bills:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
+  filepath: base_path/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_billing_and_payments_monthly_overdue_bills'
@@ -137,9 +81,9 @@ l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_o
 
 l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
+  filepath: base_path/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume'
@@ -150,9 +94,9 @@ l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_l
 
 l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_last_top_up_channel:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
+  filepath: base_path/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_billing_and_payments_monthly_last_top_up_channel'
@@ -162,9 +106,9 @@ l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_l
 
 l3_customer_profile_include_1mo_non_active_for_l4_billing_statement_history_billshock:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
+  filepath: base_path/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l4_billing_statement_history_billshock'
@@ -172,37 +116,23 @@ l3_customer_profile_include_1mo_non_active_for_l4_billing_statement_history_bill
     target_layer: 'l4_monthly'
     lookback: '0'
 
-
-#l3_customer_profile_include_1mo_non_active_for_l3_digital_cxenxse_user_profile_monthly:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: /mnt/customer360-blob-output/C360/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
-#  file_format: "parquet"
-#  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
-#  load_args:
-#    increment_flag: 'yes'
-#    lookup_table_name: 'l3_digital_cxenxse_user_profile_monthly'
-#    read_layer: 'l3_monthly_customer_profile'
-#    target_layer: 'l3_monthly'
-#    lookback: '0'
-
-
 l3_customer_profile_include_1mo_non_active:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
+  metadata_table_path: 'metadata_path'
   file_format: "parquet"
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "partition_month"
-    read_layer: 'l0_monthly'
+    read_layer: 'l0_monthly_1_month_look_back'
     target_layer: 'l3_monthly'
 
 l3_customer_profile_union_monthly_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/PROFILE/l3_features/l3_customer_profile_union_monthly_feature/
+  filepath: base_path/PROFILE/l3_features/l3_customer_profile_union_monthly_feature/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -216,22 +146,70 @@ l3_customer_profile_union_monthly_feature:
     target_layer: 'l3_monthly'
     lookback: '1'
 
-l3_customer_profile_union_monthly_feature_include_1mo_non_active:
+#l3_customer_profile_union_monthly_feature_include_1mo_non_active:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  filepath: base_path/PROFILE/l3_features/l3_customer_profile_union_monthly_feature_include_1mo_non_active/
+#  file_format: "parquet"
+#  metadata_table_path: 'metadata_path'
+#  save_args:
+#    increment_flag: 'yes'
+#    mode: "overwrite"
+#    partitionBy: "start_of_month"
+#    read_layer: 'l3_monthly'
+#    target_layer: 'l3_monthly'
+
+l3_customer_profile_union_monthly_feature_for_l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/PROFILE/l3_features/l3_customer_profile_union_monthly_feature_include_1mo_non_active/
+  filepath: base_path/PROFILE/l3_features/l3_customer_profile_union_monthly_feature/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
-  save_args:
+  metadata_table_path: 'metadata_path'
+  load_args:
     increment_flag: 'yes'
-    mode: "overwrite"
-    partitionBy: "start_of_month"
+    lookup_table_name: 'l3_revenue_prepaid_ru_f_sum_revenue_by_service_monthly'
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
+    lookback: '0'
+
+l3_customer_profile_union_monthly_feature_for_l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/l3_features/l3_customer_profile_union_monthly_feature/
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_revenue_postpaid_ru_f_sum_revenue_by_service_monthly'
+    read_layer: 'l3_monthly'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+l3_customer_profile_union_monthly_feature_for_l3_digital_cxenxse_user_profile_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/l3_features/l3_customer_profile_union_monthly_feature/
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_digital_cxenxse_user_profile_monthly'
+    read_layer: 'l3_monthly'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+l3_customer_profile_union_monthly_feature_for_l3_loyalty_point_balance_statuses_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/l3_features/l3_customer_profile_union_monthly_feature/
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_loyalty_point_balance_statuses_monthly'
+    read_layer: 'l3_monthly'
+    target_layer: 'l3_monthly'
+    lookback: '0'
 
 l3_customer_profile_billing_level_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/PROFILE/l3_features/l3_customer_profile_billing_level_features/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/PROFILE/l3_features/l3_customer_profile_billing_level_features/
+  metadata_table_path: 'metadata_path'
   file_format: "parquet"
   save_args:
     increment_flag: 'yes'
@@ -243,8 +221,8 @@ l3_customer_profile_billing_level_features:
 
 l3_customer_profile_billing_level_volume_of_active_contracts:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/PROFILE/l3_features/l3_customer_profile_billing_level_volume_of_active_contracts/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/PROFILE/l3_features/l3_customer_profile_billing_level_volume_of_active_contracts/
+  metadata_table_path: 'metadata_path'
   file_format: "parquet"
   save_args:
     increment_flag: 'yes'
@@ -256,9 +234,9 @@ l3_customer_profile_billing_level_volume_of_active_contracts:
 
 l3_customer_profile_include_1mo_non_active_for_l3_streaming_fav_tv_show_by_episode_watched:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
+  filepath: base_path/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_billing_and_payments_monthly_overdue_bills'
