@@ -47,7 +47,7 @@ def generate_l4_fav_streaming_day(input_df, template_config, app_list):
 
 
 def streaming_two_output_function(input_df: DataFrame,
-                                config_one: dict,
+                                  config_one: dict,
                                   config_two: dict,
                                   config_three: dict,
                                   ) -> [DataFrame, DataFrame]:
@@ -66,11 +66,11 @@ def streaming_two_output_function(input_df: DataFrame,
 
 
 def streaming_three_output_function(input_df: DataFrame,
-                                  config_one: dict,
-                                  config_two: dict,
-                                  config_three: dict,
-                                  config_fourth: dict,
-                                  ) -> [DataFrame, DataFrame]:
+                                    config_one: dict,
+                                    config_two: dict,
+                                    config_three: dict,
+                                    config_fourth: dict,
+                                    ) -> [DataFrame, DataFrame]:
     """
     :param input_df:
     :param config_one:
