@@ -388,18 +388,18 @@ def run_accuracy_logic(
         features_list=features_list
     )
 
-    result_df = (result_df
-                 .withColumn("run_date", F.current_timestamp())
-                 .withColumn("dataset_name", F.lit(dataset_name))
-                 .withColumn("sub_id_sample_creation_date", F.lit(sample_creation_date))
-                 .drop("count_all"))
+    result_with_outliers_df = (result_df
+                               .withColumn("run_date", F.current_timestamp())
+                               .withColumn("dataset_name", F.lit(dataset_name))
+                               .withColumn("sub_id_sample_creation_date", F.lit(sample_creation_date))
+                               .drop("count_all"))
 
     spark = get_spark_session()
     spark.conf.set("spark.sql.autoBroadcastJoinThreshold", -1)
     spark.conf.set("spark.sql.broadcastTimeout", -1)
-    result_df.persist(StorageLevel.MEMORY_AND_DISK).count()
+    result_with_outliers_df.persist(StorageLevel.MEMORY_AND_DISK).count()
 
-    return result_df.repartition(1)
+    return result_with_outliers_df.repartition(1)
 
 
 def run_availability_logic(
