@@ -166,9 +166,9 @@ l4_streaming_visit_count_and_download_traffic_feature:
   read_from: "l2"
 
 int_l4_streaming_download_traffic_per_day_of_week:
-  partition_by: ["access_method_num", "national_id_card", "subscription_identifier", "day_of_week", "register_date"]
+  partition_by: ["access_method_num", "national_id_card", "subscription_identifier", "day_of_week"]
   ranked_lookup_enable_flag: 'No'
-  fix_dimension_cols: "access_method_num,national_id_card,subscription_identifier,start_of_week,register_date"
+  fix_dimension_cols: "access_method_num,national_id_card,subscription_identifier,start_of_week"
   target_dimension_col: "day_of_week"
   feature_list:
     sum: ["download_kb_traffic_youtube_video_sum",
@@ -192,7 +192,7 @@ int_l4_streaming_ranked_of_day_per_rolling_week:
   feature_column:
     fav_{app}_streaming_day_of_week: "day_of_week"
 
-  partition_by: ["access_method_num", "national_id_card", "subscription_identifier", "start_of_week", "register_date"]
+  partition_by: ["access_method_num", "national_id_card", "subscription_identifier", "start_of_week"]
   order_by_column_prefix: "sum_download_kb_traffic_{app}_sum"
   read_from: "l2"
   to_join: False  # will be joined in generate_l4_fav_streaming_day() after custom select condition
