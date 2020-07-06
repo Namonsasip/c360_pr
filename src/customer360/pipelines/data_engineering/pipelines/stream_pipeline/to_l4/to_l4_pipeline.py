@@ -65,8 +65,6 @@ def streaming_l2_to_l4_pipeline(**kwargs):
                 "l4_streaming_fav_content_group_by_duration"
             ),
 
-
-
             # TV Channel features
             node(
                 l4_rolling_window,
@@ -86,7 +84,6 @@ def streaming_l2_to_l4_pipeline(**kwargs):
                  "params:l4_streaming_fav_tv_channel_by_duration"],
                 "l4_streaming_fav_tv_channel_by_duration"
             ),
-
 
             # fav video service feature
             node(
@@ -114,9 +111,6 @@ def streaming_l2_to_l4_pipeline(**kwargs):
                 "l4_streaming_fav_video_service_by_visit_count_feature"
             ),
 
-
-
-
             # fav music service feature
             node(
                 l4_rolling_window,
@@ -142,8 +136,6 @@ def streaming_l2_to_l4_pipeline(**kwargs):
                  "params:l4_streaming_fav_service_by_visit_count_feature"],
                 "l4_streaming_fav_music_service_by_visit_count_feature"
             ),
-
-
 
             # fav esport service feature
             node(
@@ -173,8 +165,9 @@ def streaming_l2_to_l4_pipeline(**kwargs):
 
             node(
                 l4_rolling_window,
-                ["l2_streaming_visit_count_and_download_traffic_feature_for_l4_streaming_visit_count_and_download_traffic_feature",
-                 "params:l4_streaming_visit_count_and_download_traffic_feature"],
+                [
+                    "l2_streaming_visit_count_and_download_traffic_feature_for_l4_streaming_visit_count_and_download_traffic_feature",
+                    "params:l4_streaming_visit_count_and_download_traffic_feature"],
                 "l4_streaming_visit_count_and_download_traffic_feature"
             ),
 
@@ -219,14 +212,23 @@ def streaming_l1_to_l4_pipeline(**kwargs):
                  "params:int_l4_streaming_tv_show_features_1"],
                 "int_l4_streaming_tv_show_features_1"
             ),
-            # group it per week because we read directly from L1
+            # # group it per week because we read directly from L1
+            # node(
+            #     l2_massive_processing,  # Since we are directly reading from L1, we can use this method
+            #     ["int_l4_streaming_tv_show_features_1",
+            #      "params:int_l4_streaming_tv_show_features_2",
+            #      "l1_customer_profile_union_daily_feature_for_l4_streaming_fav_tv_show_by_episode_watched"],
+            #     "int_l4_streaming_tv_show_features_2"
+            # ),
             node(
-                l2_massive_processing,  # Since we are directly reading from L1, we can use this method
-                ["int_l4_streaming_tv_show_features_1",
-                 "params:int_l4_streaming_tv_show_features_2",
-                 "l1_customer_profile_union_daily_feature_for_l4_streaming_fav_tv_show_by_episode_watched"],
+                node_from_config,
+                [
+                    'int_l4_streaming_tv_show_features_1',
+                    "params:int_l4_streaming_tv_show_features_2"
+                ],
                 "int_l4_streaming_tv_show_features_2"
             ),
+
             node(
                 l4_rolling_ranked_window,
                 ["int_l4_streaming_tv_show_features_2",
