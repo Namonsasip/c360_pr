@@ -33,6 +33,7 @@ from cvm.src.targets.churn_targets import add_days
 from cvm.src.treatments.rules import MultipleTreatments
 from cvm.src.treatments.treatment_features import (
     add_call_center_features,
+    add_churn_ard_optimizer_features,
     add_other_sim_card_features,
 )
 from cvm.src.utils.utils import get_today, join_multiple
@@ -89,6 +90,9 @@ def treatments_featurize(
         propensities_with_features, recent_profile, main_packs, parameters
     )
     treatments_features = add_call_center_features(treatments_features)
+    treatments_features = add_churn_ard_optimizer_features(
+        treatments_features, propensities, parameters
+    )
     return treatments_features
 
 
