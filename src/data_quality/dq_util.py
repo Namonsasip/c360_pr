@@ -57,13 +57,13 @@ def get_dq_incremental_records(
     dataset_name: str,
     partition_col: str
 ) -> DataFrame:
-    last_processed_date = (dq_accuracy_df
-                           .filter(f.col("dataset_name") == dataset_name)
-                           .select(f.max(f.col("corresponding_date")))
-                           .head())
-
-    if last_processed_date is not None and last_processed_date[0] is not None:
-        input_df = input_df.filter(f.col(partition_col) > last_processed_date[0])
+    # last_processed_date = (dq_accuracy_df
+    #                        .filter(f.col("dataset_name") == dataset_name)
+    #                        .select(f.max(f.col("corresponding_date")))
+    #                        .head())
+    #
+    # if last_processed_date is not None and last_processed_date[0] is not None:
+    #     input_df = input_df.filter(f.col(partition_col) > last_processed_date[0])
 
     return input_df
 
