@@ -120,6 +120,7 @@ def create_kpis() -> Pipeline:
                     "l1_customer_profile_union_daily_feature",
                     "l4_usage_prepaid_postpaid_daily_features",
                     "parameters",
+                    "prepaid_no_activity_daily",
                 ],
                 outputs="daily_kpis",
                 name="build_daily_kpis",

@@ -155,3 +155,16 @@ def add_network_churn(network_churn: DataFrame, users: DataFrame) -> DataFrame:
         .withColumn("reactive", func.coalesce(func.col("reactive"), func.lit(0)))
     )
     return users
+
+
+def add_prepaid_no_activity_daily(
+    prepaid_no_activity_daily: DataFrame, users: DataFrame
+) -> DataFrame:
+    """ Adds lack of activity columns based on `prepaid_no_activity_daily` table.
+
+    Args:
+        prepaid_no_activity_daily: table with daily markers for lack of activity for
+            prepaid users.
+        users: table to extend with no activity columns.
+    """
+    return users

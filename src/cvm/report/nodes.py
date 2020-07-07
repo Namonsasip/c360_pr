@@ -32,6 +32,7 @@ from cvm.src.report.kpis_build import (
     add_arpus,
     add_inactivity,
     add_network_churn,
+    add_prepaid_no_activity_daily,
     add_status,
 )
 from cvm.src.utils.utils import get_today
@@ -73,10 +74,12 @@ def build_daily_kpis(
     profile_table: DataFrame,
     usage: DataFrame,
     parameters: Dict[str, Any],
+    prepaid_no_activity_daily: DataFrame,
 ) -> DataFrame:
     """ Build daily kpis table.
 
     Args:
+        prepaid_no_activity_daily: cloud table with lack of activity for prepaid.
         network_churn: table with users that churned, not from C360.
         microsegments: table with macrosegments and microsegments.
         parameters: parameters defined in parameters.yml.
@@ -93,6 +96,7 @@ def build_daily_kpis(
     df = add_status(df, profile_table)
     df = df.join(microsegments, on="subscription_identifier")
     df = add_network_churn(network_churn, df)
+    df = add_prepaid_no_activity_daily(prepaid_no_activity_daily, df)
     inactivity_lengths = report_parameters["inactivity_lengths"]
     for inactivity_length in inactivity_lengths:
         df = add_inactivity(df, usage, inactivity_length, report_parameters["min_date"])
