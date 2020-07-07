@@ -37,7 +37,7 @@ def l3_geo_total_distance_km_monthly(df,sql):
 
 ###Traffic_fav_location###
 def l3_geo_use_Share_traffic_monthly(df,sql):
-    l3_df = df.withColumn("start_of_month", F.to_date(F.date_trunc('month', "start_of_week"))).drop( 'start_of_week')
+    l3_df = df.withColumn("start_of_month", F.to_date(F.date_trunc('month', "event_partition_date"))).drop( 'event_partition_date')
     l3_df_2 = node_from_config(l3_df,sql)
     return l3_df_2
 
