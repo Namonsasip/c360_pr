@@ -619,6 +619,58 @@ def l4_geo_work_area_center_average(visti_hr, home_work, sql):
 
 
 # Form ==============
+#27 Same favourite location for weekend and weekday
+def l4_same_favourite_location_weekend_weekday_weekly(l2_same_favourite_location_weekend_weekday_weekly):
+    ### config
+    spark = get_spark_session()
+    l2_same_favourite_location_weekend_weekday_weekly.createOrReplaceTempView('l4_geo')
+
+    # Top 5 selected
+
+    sql_query = """ select imsi
+		,start_of_week
+		,location_id
+		,duration_sum
+		,ROW
+		from l4_geo
+		where ROW <= 5
+		order by 1,2,4 desc
+		"""
+    l4 = spark.sql(sql_query)
+    l4.createOrReplaceTempView('l4')
+    return (l4)
+
+
+# 47 l4_the_favourite_locations_daily ====================
+def l4_the_favourite_locations_daily(l1_the_favourite_locations_daily):
+
+    ### config
+    spark = get_spark_session()
+    l1_the_favourite_locations_daily.createOrReplaceTempView('l1_geo')
+
+    # Top 5 selected
+
+    sql_query = """ select 
+                    mobile_no
+                    ,date_id
+                    ,location_id
+                    ,gprs_type
+                    ,all_usage_data_kb
+                    ,the_most
+                    from(
+                    select 
+                    mobile_no
+                    ,date_id
+                    ,location_id
+                    ,gprs_type
+                    ,all_usage_data_kb
+                    ,ROW_NUMBER() OVER(partition by mobile_no,date_id,location_id,gprs_type ORDER BY all_usage_data_kb desc) as the_most
+                    from l1_geo)
+                    where the_most <= 5
+		"""
+    l4 = spark.sql(sql_query)
+    l4.createOrReplaceTempView('l4')
+    return (l4)
 
 # 48 The most frequently used Location for data sessions on weekdays (Mon to Fri)
 def l4_the_most_frequently_location_weekdays(l1_df_the_favourite_location_daily):
