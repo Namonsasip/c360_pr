@@ -743,3 +743,27 @@ def massive_processing_time_spent_daily(data_frame: DataFrame, sql, output_df_ca
     return_df.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
     return_df = ss.sql(sql)
     return return_df
+
+def l1_number_of_unique_cell_daily(usage_sum_data_location):
+    spark = get_spark_session()
+    usage_sum_data_location = usage_sum_data_location.withColumn("event_partition_date",F.to_date(usage_sum_data_location.date_id))
+    usage_sum_data_location.createOrReplaceTempView('usage_sum_data_location_daily')
+
+    l1_df_4 = spark.sql("""select count(distinct mobile_no) AS MOBILE_NO , LAC , CI
+    ,case when
+        dayofweek(event_partition_date) = 2
+        or dayofweek(event_partition_date) = 3
+        or dayofweek(event_partition_date) = 4
+        or dayofweek(event_partition_date) = 5
+        or dayofweek(event_partition_date) = 6
+    then   "weekday"
+    else   "weekend"
+    end as WEEKTYPE,
+    event_partition_date
+    from usage_sum_data_location_daily
+    group by lac , ci, event_partition_date""")
+
+    # l1_df_4.createOrReplaceTempView('usage_sum_data_count')
+    # l1 = spark.sql(l1_df_4)
+
+    return l1_df_4
