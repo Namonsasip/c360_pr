@@ -296,6 +296,7 @@ def get_micro_macrosegments(
     macrosegments_defs = parameters["macrosegments"]
     history_update_cadence = parameters["microsegments_update_cadence"]
     today = get_today(parameters)
+    force_racalculation = parameters["force_micro_macrosegments_recalculation"] == "yes"
 
     # define macrosegments
     df = raw_features
@@ -310,14 +311,21 @@ def get_micro_macrosegments(
     df = add_microsegment_features(df, parameters).join(vol, "subscription_identifier")
     df = define_microsegments(df, parameters, reduce_cols=True)
 
-    history, microsegments = pop_most_recent(
-        history_df=micro_macrosegments_history,
-        update_df=df,
-        recalculate_period_days=history_update_cadence,
-        parameters=parameters,
-        users_required=raw_features.select("subscription_identifier"),
-        today=today,
-    )
+    if not force_racalculation:
+        history, microsegments = pop_most_recent(
+            history_df=micro_macrosegments_history,
+            update_df=df,
+            recalculate_period_days=history_update_cadence,
+            parameters=parameters,
+            users_required=raw_features.select("subscription_identifier"),
+            today=today,
+        )
+    else:
+        log.info(
+            "Recalculation of microsegments and macrosegments forced by parameters"
+        )
+        history = micro_macrosegments_history
+        microsegments = df.withColumn("key_date", func.lit(today))
 
     return history, pick_one_per_subscriber(microsegments)
 
