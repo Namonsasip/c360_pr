@@ -131,4 +131,4 @@ l2_touchpoints_ivr_features:
     lookup_table_name: 'l4_touchpoints_ivr_features'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
-    lookback: 'l2'
+    lookback: '12'

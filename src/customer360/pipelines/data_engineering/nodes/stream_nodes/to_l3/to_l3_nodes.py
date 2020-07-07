@@ -11,7 +11,7 @@ from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_s
 
 conf = os.getenv("CONF", None)
 
-# Defaulted date in DAC is  exception_partitions=["2020-03-30"] as we are reading from April Starting
+# Defaulted date in DAC is  exception_partitions=["2020-04-01"] as we are reading from April Starting
 
 
 def generate_l3_fav_streaming_day(input_df, app_list):
@@ -52,7 +52,7 @@ def dac_for_streaming_to_l3_pipeline_from_l1(input_df: DataFrame, target_table_n
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="monthly", par_col="event_partition_date",
                                                        target_table_name=target_table_name,
                                                        missing_data_check_flg='Y',
-                                                       exception_partitions=["2020-03-30"])
+                                                       exception_partitions=["2020-04-01"])
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -62,32 +62,32 @@ def dac_for_streaming_to_l3_pipeline_from_l1(input_df: DataFrame, target_table_n
     return input_df
 
 
-def dac_for_l3_streaming_fav_tv_show_by_episode_watched(input_df: DataFrame, cust_df: DataFrame):
-    ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([input_df, cust_df]):
-        return [get_spark_empty_df(), get_spark_empty_df]
-
-    cust_df = data_non_availability_and_missing_check(df=cust_df, grouping="monthly", par_col="partition_month",
-                                                      target_table_name="l3_billing_and_payments_monthly_overdue_bills")
-
-    if check_empty_dfs([input_df, cust_df]):
-        return [get_spark_empty_df(), get_spark_empty_df()]
-
-    min_value = union_dataframes_with_missing_cols(
-        [
-            input_df.select(
-                F.max(F.col("start_of_month")).alias("max_date")),
-            cust_df.select(
-                F.max(F.col("partition_month")).alias("max_date")),
-        ]
-    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
-
-    input_df = input_df.filter(F.col("start_of_month") <= min_value)
-    cust_df = cust_df.filter(F.col("partition_month") <= min_value)
-
-    ################################# End Implementing Data availability checks ###############################
-
-    return [input_df, cust_df]
+# def dac_for_l3_streaming_fav_tv_show_by_episode_watched(input_df: DataFrame, cust_df: DataFrame):
+#     ################################# Start Implementing Data availability checks #############################
+#     if check_empty_dfs([input_df, cust_df]):
+#         return [get_spark_empty_df(), get_spark_empty_df]
+#
+#     cust_df = data_non_availability_and_missing_check(df=cust_df, grouping="monthly", par_col="partition_month",
+#                                                       target_table_name="l3_billing_and_payments_monthly_overdue_bills")
+#
+#     if check_empty_dfs([input_df, cust_df]):
+#         return [get_spark_empty_df(), get_spark_empty_df()]
+#
+#     min_value = union_dataframes_with_missing_cols(
+#         [
+#             input_df.select(
+#                 F.max(F.col("start_of_month")).alias("max_date")),
+#             cust_df.select(
+#                 F.max(F.col("partition_month")).alias("max_date")),
+#         ]
+#     ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+#
+#     input_df = input_df.filter(F.col("start_of_month") <= min_value)
+#     cust_df = cust_df.filter(F.col("partition_month") <= min_value)
+#
+#     ################################# End Implementing Data availability checks ###############################
+#
+#     return [input_df, cust_df]
 
 
 def streaming_to_l3_content_type_features(input_df: DataFrame,
@@ -111,7 +111,7 @@ def streaming_to_l3_content_type_features(input_df: DataFrame,
         df=input_df, grouping="monthly", par_col="event_partition_date",
         missing_data_check_flg='Y',
         target_table_name=l3_streaming_fav_content_group_by_duration_dict["output_catalog"],
-        exception_partitions=["2020-03-30"])
+        exception_partitions=["2020-04-01"])
 
     if check_empty_dfs([input_df]):
         return [get_spark_empty_df(), get_spark_empty_df()]
@@ -184,7 +184,7 @@ def streaming_to_l3_tv_channel_type_features(input_df: DataFrame,
         df=input_df, grouping="monthly", par_col="event_partition_date",
         missing_data_check_flg='Y',
         target_table_name=l3_streaming_fav_tv_channel_by_duration_dict["output_catalog"],
-        exception_partitions=["2020-03-30"])
+        exception_partitions=["2020-04-01"])
 
     if check_empty_dfs([input_df]):
         return [get_spark_empty_df(), get_spark_empty_df()]
@@ -227,7 +227,7 @@ def streaming_to_l3_tv_channel_type_features(input_df: DataFrame,
                           l3_streaming_fav_tv_channel_by_duration)
 
     logging.info("Final date to run for {0}".format(str(first_item)))
-    small_df = data_frame.filter(F.col("start_of_week").isin(*[first_item]))
+    small_df = data_frame.filter(F.col("start_of_month").isin(*[first_item]))
     int_l3_streaming_tv_channel_features = node_from_config(small_df, int_l3_streaming_tv_channel_features_dict)
 
     l3_streaming_fav_tv_channel_by_volume = node_from_config(int_l3_streaming_tv_channel_features,
@@ -257,7 +257,7 @@ def streaming_streaming_fav_tv_show_by_episode_watched_features(
         df=input_df, grouping="monthly", par_col="event_partition_date",
         missing_data_check_flg='Y',
         target_table_name=l3_streaming_fav_tv_show_by_episode_watched_dict["output_catalog"],
-        exception_partitions=["2020-03-30"])
+        exception_partitions=["2020-04-01"])
 
     if check_empty_dfs([input_df]):
         return  get_spark_empty_df()
@@ -293,7 +293,7 @@ def streaming_streaming_fav_tv_show_by_episode_watched_features(
                           l3_streaming_fav_tv_show_by_episode_watched)
 
     logging.info("Final date to run for {0}".format(str(first_item)))
-    small_df = data_frame.filter(F.col("start_of_week").isin(*[first_item]))
+    small_df = data_frame.filter(F.col("start_of_month").isin(*[first_item]))
     int_l3_streaming_tv_show_features = node_from_config(small_df, int_l3_streaming_tv_show_features_dict)
 
     l3_streaming_fav_tv_show_by_episode_watched = node_from_config(int_l3_streaming_tv_show_features,
@@ -325,7 +325,7 @@ def streaming_fav_service_download_traffic_visit_count(
         df=input_df, grouping="monthly", par_col="event_partition_date",
         missing_data_check_flg='Y',
         target_table_name=fav_count_dict["output_catalog"],
-        exception_partitions=["2020-03-30"])
+        exception_partitions=["2020-04-01"])
 
     if check_empty_dfs([input_df]):
         return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df()]
@@ -368,7 +368,7 @@ def streaming_fav_service_download_traffic_visit_count(
                           fav_count)
 
     logging.info("Final date to run for {0}".format(str(first_item)))
-    small_df = data_frame.filter(F.col("start_of_week").isin(*[first_item]))
+    small_df = data_frame.filter(F.col("start_of_month").isin(*[first_item]))
     int_l3_streaming_service_feature = node_from_config(small_df, int_l3_streaming_service_feature_dict)
 
     favourite_video = node_from_config(int_l3_streaming_service_feature, favourite_dict)
