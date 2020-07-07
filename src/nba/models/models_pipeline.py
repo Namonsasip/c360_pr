@@ -110,9 +110,9 @@ def create_nba_models_pipeline() -> Pipeline:
                     "pai_runs_uri": "params:nba_pai_runs_uri",
                     "pai_artifacts_uri": "params:nba_pai_artifacts_uri",
                 },
-                outputs="unused_memory_dataset_nba_acceptance_models_training",
+                outputs="nba_acceptance_models_train_set",
                 name="nba_acceptance_models_training",
-                tags=["nba_acceptance_models_training"],
+                tags=["nba_acceptance_models_training", "nba_models"],
             ),
             node(
                 partial(
@@ -126,7 +126,7 @@ def create_nba_models_pipeline() -> Pipeline:
                 ),
                 inputs={
                     "df_master": "l5_nba_master_table_only_accepted",
-                     "group_column": "params:nba_model_group_column",
+                    "group_column": "params:nba_model_group_column",
                     "explanatory_features": "params:nba_model_explanatory_features",
                     "target_column": "params:nba_arpu_30d_model_target_column",
                     "train_sampling_ratio": "params:nba_model_train_sampling_ratio",
@@ -138,9 +138,9 @@ def create_nba_models_pipeline() -> Pipeline:
                     "pai_artifacts_uri": "params:nba_pai_artifacts_uri",
                     "regression_clip_target_quantiles": "params:regression_clip_target_quantiles_arpu",
                 },
-                outputs="unused_memory_dataset_nba_arpu_30d_models_training",
+                outputs="nba_arpu_30d_models_train_set",
                 name="nba_arpu_30d_models_training",
-                tags=["nba_arpu_30d_models_training"],
+                tags=["nba_arpu_30d_models_training", "nba_models"],
             ),
             node(
                 partial(
@@ -154,7 +154,7 @@ def create_nba_models_pipeline() -> Pipeline:
                 ),
                 inputs={
                     "df_master": "l5_nba_master_table_only_accepted",
-                     "group_column": "params:nba_model_group_column",
+                    "group_column": "params:nba_model_group_column",
                     "explanatory_features": "params:nba_model_explanatory_features",
                     "target_column": "params:nba_arpu_7d_model_target_column",
                     "train_sampling_ratio": "params:nba_model_train_sampling_ratio",
@@ -166,10 +166,10 @@ def create_nba_models_pipeline() -> Pipeline:
                     "pai_artifacts_uri": "params:nba_pai_artifacts_uri",
                     "regression_clip_target_quantiles": "params:regression_clip_target_quantiles_arpu",
                 },
-                outputs="unused_memory_dataset_nba_arpu_7d_models_training",
+                outputs="nba_arpu_7d_models_train_set",
                 name="nba_arpu_7d_models_training",
-                tags=["nba_arpu_7d_models_training"],
+                tags=["nba_arpu_7d_models_training", "nba_models"],
             ),
         ],
-        tags="nba_models",
+        tags="nba_models_pipeline",
     )

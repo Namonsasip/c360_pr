@@ -162,3 +162,31 @@ def add_other_sim_card_features(
     )
 
     return df
+
+
+def add_churn_ard_optimizer_features(
+    df: DataFrame, propensities: DataFrame, parameters: Dict[str, Any],
+) -> DataFrame:
+    """ Adds estimated churn / ard campaign return.
+
+    Args:
+        df: table with users
+        propensities: users propensities
+        parameters: parameters defined in parameters.yml
+    """
+    optimization_parameters = parameters["use_case_optimize"]
+    ard_cost = optimization_parameters["ard_cost"]
+    churn_cost = optimization_parameters["churn_cost"]
+    costs = (
+        propensities.withColumn(
+            "optimizer_churn_cost", churn_cost * func.col("churn60_pred")
+        )
+        .withColumn("optimizer_ard_cost", ard_cost * func.col("dilution2_pred"))
+        .select(
+            ["subscription_identifier", "optimizer_churn_cost", "optimizer_ard_cost"]
+        )
+    )
+    df = df.join(costs, on="subscription_identifier", how="left").fillna(
+        {"optimizer_churn_cost": 0, "optimizer_ard_cost": 0}
+    )
+    return df

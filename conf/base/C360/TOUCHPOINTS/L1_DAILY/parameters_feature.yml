@@ -1,0 +1,116 @@
+l1_touchpoints_to_call_center_features:
+  # AIS 1175 and AIS-SRN 1148
+  where_clause: "where called_no = 'hYAUKs+f31uJzUZp3iM5F.fO8CgW7107gM602izDqDn.6GjSvNd8lhU6af7ItzfP' or
+                called_no = '98MkP5bMx1ykVd8RBE3C.XztcSxOJmjcyHAUmXwvCHW2Bb+cKKwh1kqv0.QI4ddw' or
+                called_no = '0SUAExF.ULAW1AfkPeM9hn4MIbCHizRswjZuNlZOs.IJRACVbg+R4o4laSXLCjFe' or
+                called_no = 'obouXE8otQHA7VC3AE1tNZyL0Mc8KOKJtdBIYbq3SHAMJmuqf7f8ZE0UoZMbTvgP' or
+                called_no = '2Vzo005mRjpWkbpJSiRwf60.Y2T7PxwrapZuyNGHhjvcH8Re9HJtL3mVbVOsly08' or
+                called_no = 'xOQNQIqZMfY3kZKG1ivBxmsduVl2Ojaxss6ti9pRiKEjzx9VhlM3b5ibymHuWt9u' or
+                called_no = 'tPjcxRk5ZegTT2VqyO3atdFjKetHomtgQbU7BJ1+Coz+DG3CwSugIs6FAH0u6b8Z'"
+  feature_list:
+    touchpoints_number_of_calls_on_cc: "sum(total_successful_call)"
+    touchpoints_duration_of_calls_on_cc: "sum(total_durations)"
+  granularity: "caller_no, day_id"
+  event_date_column: "date(day_id)"
+  join_column_with_cust_profile:
+    access_method_num: caller_no
+    event_partition_date: event_partition_date
+  partition_num_per_job: 60
+  output_catalog: "l1_touchpoints_to_call_center_features"
+
+
+l1_touchpoints_from_call_center_features:
+  # AIS 1175 and AIS-SRN 1148
+  where_clause: "where caller_no = 'hYAUKs+f31uJzUZp3iM5F.fO8CgW7107gM602izDqDn.6GjSvNd8lhU6af7ItzfP' or
+                                caller_no = '98MkP5bMx1ykVd8RBE3C.XztcSxOJmjcyHAUmXwvCHW2Bb+cKKwh1kqv0.QI4ddw' or
+                                caller_no = '0SUAExF.ULAW1AfkPeM9hn4MIbCHizRswjZuNlZOs.IJRACVbg+R4o4laSXLCjFe' or
+                                caller_no = 'obouXE8otQHA7VC3AE1tNZyL0Mc8KOKJtdBIYbq3SHAMJmuqf7f8ZE0UoZMbTvgP' or
+                                caller_no = '2Vzo005mRjpWkbpJSiRwf60.Y2T7PxwrapZuyNGHhjvcH8Re9HJtL3mVbVOsly08' or
+                                caller_no = 'xOQNQIqZMfY3kZKG1ivBxmsduVl2Ojaxss6ti9pRiKEjzx9VhlM3b5ibymHuWt9u' or
+                                caller_no = 'tPjcxRk5ZegTT2VqyO3atdFjKetHomtgQbU7BJ1+Coz+DG3CwSugIs6FAH0u6b8Z'"
+  feature_list:
+    touchpoints_number_of_calls_from_cc: "sum(total_successful_call)"
+    touchpoints_duration_of_calls_from_cc: "sum(total_durations)"
+  granularity: "called_no, day_id"
+  event_date_column: "date(day_id)"
+  join_column_with_cust_profile:
+    access_method_num: called_no
+    event_partition_date: event_partition_date
+  partition_num_per_job: 60
+  output_catalog: "l1_touchpoints_from_call_center_features"
+
+l1_touchpoints_nim_work_features:
+  where_clause: "where mobilenumber is not null"
+  feature_list:
+    touchpoints_num_of_commercial_question_with_cc: "count(distinct(case when lower(InteractionType) like '%phone%'
+                                          or lower(InteractionType) = 'voice' then caseID else null end))"
+    touchpoints_num_of_claims_with_cc: "count(distinct(case when lower(InteractionType) like '%phone%'
+                                          or lower(InteractionType) = 'voice' then tt_caseID else null end))"
+    touchpoints_num_of_consultation_with_cc: "sum(case when lower(topic) like '%information%'
+                                  and (lower(InteractionType) like '%phone%' or lower(InteractionType) = 'voice') then 1 else 0 end)"
+
+    touchpoints_num_of_commercial_question_in_store: "count(distinct(case when lower(InteractionType) like '%offline%' then caseID else null end))"
+    touchpoints_num_of_claims_in_store: "count(distinct(case when lower(InteractionType) like '%offline%' then tt_caseID else null end))"
+    touchpoints_num_of_consultation_in_store: "sum(case when lower(topic) like '%information%' and lower(InteractionType) like '%offline%' then 1 else 0 end)"
+
+    touchpoints_num_of_commercial_question_with_chatbot: "count(distinct(case when lower(InteractionType) like '%bot%' then caseID else null end))"
+    touchpoints_num_of_claims_with_chatbot: "count(distinct(case when lower(InteractionType) like '%bot%' then tt_caseID else null end))"
+    touchpoints_num_of_consultation_with_chatbot: "sum(case when lower(topic) like '%information%' and lower(InteractionType) like '%bot%' then 1 else 0 end)"
+    touchpoints_num_of_chatbot_visit: "sum(case when lower(InteractionType) like '%bot%' then 1 else 0 end)"
+    touchpoints_num_of_days_with_chatbot: "case when sum(case when lower(InteractionType) like '%bot%' then 1 else 0 end) > 0 then 1 else 0 end"
+
+    touchpoints_num_of_commercial_question_with_ais_app: "count(distinct(case when lower(InteractionType) like '%my%ais%' then caseID else null end))"
+    touchpoints_num_of_claims_with_ais_app: "count(distinct(case when lower(InteractionType) like '%my%ais%' then tt_caseID else null end))"
+    touchpoints_num_of_consultation_with_ais_app: "sum(case when lower(topic) like '%information%' and lower(InteractionType) like '%my%ais%' then 1 else 0 end)"
+    touchpoints_num_of_days_with_ais_app: "case when sum(case when lower(InteractionType) like '%my%ais%' then 1 else 0 end) > 0 then 1 else 0 end"
+
+
+    touchpoints_num_of_commercial_question_online: "count(distinct(case when lower(InteractionType) like '%email%'
+                                                                 or lower(InteractionType) like '%facebook%'
+                                                                 or lower(InteractionType) like '%instagram%'
+                                                                 or lower(InteractionType) like '%pantip%'
+                                                                 or lower(InteractionType) like '%social%'
+                                                                 or lower(InteractionType) like '%twitter%'
+                                                                 or lower(InteractionType) like '%youtube%' then caseID else null end))"
+    touchpoints_num_of_claims_with_online: "count(distinct(case when lower(InteractionType) like '%email%'
+                                                         or lower(InteractionType) like '%facebook%'
+                                                         or lower(InteractionType) like '%instagram%'
+                                                         or lower(InteractionType) like '%pantip%'
+                                                         or lower(InteractionType) like '%social%'
+                                                         or lower(InteractionType) like '%twitter%'
+                                                         or lower(InteractionType) like '%youtube%' then tt_caseID else null end))"
+    touchpoints_num_of_consultation_online: "sum(case when lower(topic) like '%information%' and (lower(InteractionType) like '%email%'
+                                                        or lower(InteractionType) like '%facebook%'
+                                                        or lower(InteractionType) like '%instagram%'
+                                                        or lower(InteractionType) like '%pantip%'
+                                                        or lower(InteractionType) like '%social%'
+                                                        or lower(InteractionType) like '%twitter%'
+                                                        or lower(InteractionType) like '%youtube%') then 1 else 0 end)"
+  granularity: "mobilenumber, partition_date"
+  event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
+  join_column_with_cust_profile:
+    access_method_num: mobilenumber
+    event_partition_date: event_partition_date
+  partition_num_per_job: 60
+  output_catalog: "l1_touchpoints_nim_work_features"
+
+l1_touchpoints_ivr_features:
+  where_clause: ""
+  feature_list:
+    touchpoints_num_of_call_ivr: "count(distinct(call_id))"
+    touchpoints_num_of_disconnection_by_ivr: "count(distinct(case when lower(discon_type) = 'ivr' then call_id else null end))"
+    touchpoints_num_of_disconnection_by_customer: "count(distinct(case when lower(discon_type) = 'clr' then call_id else null end))"
+    touchpoints_num_of_disconnection_by_transfer_agent: "count(distinct(case when lower(discon_type) = 'ivrtrn' then call_id else null end))"
+    touchpoints_ivr_moring_calls: "count(case when extract(hour from req_datetime) IN (6, 7, 8, 9, 10, 11, 12) THEN call_id else null end)"
+    touchpoints_ivr_afternoon_calls: "count(case when extract(hour from req_datetime) IN (13, 14, 15, 16, 17, 18) THEN call_id else null end)"
+    touchpoints_evening_calls: "count(case when extract(hour from req_datetime) IN (19, 20, 21, 22, 23, 24) THEN call_id else null end)"
+    touchpoints_night_calls: "count(case when extract(hour from req_datetime) IN (0, 1, 2, 3, 4, 5) THEN call_id else null end)"
+    touchpoints_distinct_languages_chosen: "count(case when lower(lang_id) NOT IN ('thai') then call_id else null end)"
+    touchpoints_unsuccesful_connect_tuxedo: "count(case when lower(tux_connection) = 'n' then call_id else null end)"
+  granularity: "mobile_number , partition_date"
+  event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
+  join_column_with_cust_profile:
+    access_method_num: mobile_number
+    event_partition_date: event_partition_date
+  partition_num_per_job: 60
+  output_catalog: "l1_touchpoints_ivr_features"

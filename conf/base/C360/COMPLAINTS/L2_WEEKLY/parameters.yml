@@ -2,6 +2,13 @@
 # Parameters for the example pipeline. Feel free to delete these once you
 # remove the example pipeline from pipeline.py and the example nodes in
 # `src/pipelines/`
-
 l2_complaints_call_to_competitor_features_tbl: "l2_complaints_call_to_competitor_features"
 l2_complaints_nps_scoring_tbl: "l2_complaints_nps_scoring"
+l2_complaints_nps_after_call_tbl: "l2_complaints_nps_after_call"
+l2_complaints_nps_after_store_visit_tbl: "l2_complaints_nps_after_store_visit"
+l2_complaints_nps_after_chatbot_tbl: "l2_complaints_nps_after_chatbot"
+
+exception_partition_list_for_l1_complaints_call_to_competitor_features: ["2019-11-25","2019-07-29"]
+exception_partition_list_for_l1_complaints_nps_after_call: ["2019-07-29"]
+exception_partition_list_for_l1_complaints_nps_after_chatbot: ["2019-07-29"]
+exception_partition_list_for_l1_complaints_nps_after_store_visit: ["2019-07-29"]

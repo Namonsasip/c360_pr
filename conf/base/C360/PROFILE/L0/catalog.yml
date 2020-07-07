@@ -1,30 +1,14 @@
-#l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: dbfs:/mnt/customer360-blob-output/C360/PROFILE/profile_drm_t_active_profile_customer_journey/
-#  file_format: "parquet"
-
-#l0_customer_profile_profile_customer_profile_post_current:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: dbfs:/mnt/customer360-blob-output/C360/PROFILE/profile_customer_profile_post/
-#  file_format: "parquet"
-
-#l0_customer_profile_profile_customer_profile_post_non_mobile_current_non_mobile_current:
-    ##  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  ##  filepath: dbfs:/mnt/customer360-blob-output/C360/PROFILE/profile_customer_profile_post_non_mobile/
-  ##  file_format: "parquet"
-
-#l0_customer_profile_profile_customer_profile_pre_current:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: dbfs:/mnt/customer360-blob-output/C360/PROFILE/profile_customer_profile_pre/
-#  file_format: "parquet"
-
+l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/profile_drm_t_active_profile_customer_journey/
+  file_format: "parquet"
 
 
 l0_customer_profile_profile_customer_profile_pre_current:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/PROFILE/profile_customer_profile_pre/
+  filepath: base_path/PROFILE/profile_customer_profile_pre/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
    increment_flag: 'yes'
    lookup_table_name: 'l1_customer_profile_union_daily_feature'
@@ -35,9 +19,9 @@ l0_customer_profile_profile_customer_profile_pre_current:
 
 l0_customer_profile_profile_customer_profile_post_current:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/PROFILE/profile_customer_profile_post/
+  filepath: base_path/PROFILE/profile_customer_profile_post/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
    increment_flag: 'yes'
    lookup_table_name: 'l1_customer_profile_union_daily_feature'
@@ -48,9 +32,9 @@ l0_customer_profile_profile_customer_profile_post_current:
 
 l0_customer_profile_profile_customer_profile_post_non_mobile_current_non_mobile_current:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/PROFILE/profile_customer_profile_post_non_mobile/
+  filepath: base_path/PROFILE/profile_customer_profile_post_non_mobile/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
    increment_flag: 'yes'
    lookup_table_name: 'l1_customer_profile_union_daily_feature'
@@ -62,22 +46,22 @@ l0_customer_profile_profile_customer_profile_post_non_mobile_current_non_mobile_
 
 l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3_1mo_non_active:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/PROFILE/profile_drm_t_active_profile_customer_journey/
+  filepath: base_path/PROFILE/profile_drm_t_active_profile_customer_journey/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_customer_profile_include_1mo_non_active'
-    read_layer: 'l0_monthly'
+    read_layer: 'l0_monthly_1_month_look_back'
     target_layer: 'l3_monthly'
-    lookback: '0'
+    lookback: '1'
 
 
 l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3_customer_profile_billing_level_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/PROFILE/profile_drm_t_active_profile_customer_journey/
+  filepath: base_path/PROFILE/profile_drm_t_active_profile_customer_journey/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_customer_profile_billing_level_features'
@@ -88,9 +72,9 @@ l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3
 
 l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l4_customer_profile_ltv_to_date:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/PROFILE/profile_drm_t_active_profile_customer_journey/
+  filepath: base_path/PROFILE/profile_drm_t_active_profile_customer_journey/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l4_customer_profile_ltv_to_date'
@@ -102,9 +86,9 @@ l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l4
 
 l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3_billing_and_payments_monthly_rpu:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/PROFILE/profile_drm_t_active_profile_customer_journey/
+  filepath: base_path/PROFILE/profile_drm_t_active_profile_customer_journey/
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_billing_and_payments_monthly_rpu'

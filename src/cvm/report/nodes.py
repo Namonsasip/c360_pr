@@ -28,7 +28,6 @@
 import logging
 from typing import Any, Dict
 
-from cvm.data_prep.nodes import add_macrosegments
 from cvm.src.report.kpis_build import (
     add_arpus,
     add_inactivity,
@@ -36,7 +35,6 @@ from cvm.src.report.kpis_build import (
     add_status,
 )
 from cvm.src.utils.utils import get_today
-from cvm.treatments.nodes import prepare_microsegments
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as func
 
@@ -65,42 +63,6 @@ def prepare_users(
         .join(sub_id_mapping, on="old_subscription_identifier")
     )
     return df
-
-
-def add_micro_macro(
-    raw_features: DataFrame, reve: DataFrame, parameters: Dict[str, Any],
-) -> DataFrame:
-    """ Adds microsegment and macrosegment to C360 joined features table.
-
-    Args:
-        raw_features: Table with users to add microsegments to and pre - preprocessing
-            features.
-        reve: Table with monthly revenue. Assumes using l3 profile table.
-        parameters: parameters defined in parameters.yml.
-    """
-
-    macro_added = add_macrosegments(raw_features, parameters)
-    micro_macro_added = prepare_microsegments(
-        macro_added, reve, parameters, reduce_cols=False
-    )
-    return micro_macro_added
-
-
-def filter_out_micro_macro(all_features: DataFrame) -> DataFrame:
-    """ Pick only microsegments and macrosegments from table with all features.
-
-    Args:
-        all_features: table with raw features, macrosegments and microsegments.
-    """
-    cols_to_pick = [
-        "subscription_identifier",
-        "ard_macrosegment",
-        "churn_macrosegment",
-        "ard_microsegment",
-        "churn_microsegment",
-        "target_group",
-    ]
-    return all_features.select(cols_to_pick)
 
 
 def build_daily_kpis(

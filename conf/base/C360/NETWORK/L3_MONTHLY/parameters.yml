@@ -1,3 +1,16 @@
-# Parameters for the example pipeline. Feel free to delete these once you
-# remove the example pipeline from pipeline.py and the example nodes in
-# `src/pipelines/`
+# L1 -> L3
+
+# Start of month before 23-Jan-20
+exception_partition_list_for_l1_network_web_cqi_for_l3_network_web_cqi: ['2020-01-01']
+# Start of month before 29-July-19
+exception_partition_list_for_l1_network_user_cqi_for_l3_network_user_cqi: ['2019-07-01']
+# Start of month before 20-Jan-20
+exception_partition_list_for_l1_network_im_cqi_for_l3_network_im_cqi: ['2020-01-01']
+# Start of month before 20-Jan-20
+exception_partition_list_for_l1_network_streaming_cqi_for_l3_network_streaming_cqi: ['2020-01-01']
+# Start of month before 20-Jan-20
+exception_partition_list_for_l1_network_voip_cqi_for_l3_network_voip_cqi: ['2020-01-01']
+# Start of month before 20-Jan-20
+exception_partition_list_for_l1_network_volte_cqi_for_l3_network_volte_cqi: ['2020-01-01']
+# Start of month before 20-Jan-20
+exception_partition_list_for_l1_network_file_transfer_cqi_for_l3_network_file_transfer_cqi: ['2020-01-01']

@@ -56,9 +56,10 @@ macrosegments_training:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_macrosegments_training/
 
-training_sample_training:
+# training preparation phase
+training_features_training:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_training_sample_training/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_training_features_training/
 
 train_sample_training:
   <<: *spark_parquet

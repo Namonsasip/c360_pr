@@ -30,6 +30,7 @@ import logging
 from typing import Any, Dict, List, Tuple
 
 import pyspark.sql.functions as func
+from cvm.src.features.data_prep_features import add_macrosegments_features
 from cvm.src.features.keep_table_history import pop_most_recent
 from cvm.src.features.microsegments import (
     add_microsegment_features,
@@ -40,10 +41,8 @@ from cvm.src.features.parametrized_features import build_feature_from_parameters
 from cvm.src.targets.ard_targets import get_ard_targets
 from cvm.src.targets.churn_targets import filter_usage, get_churn_targets
 from cvm.src.utils.feature_selection import feature_selection
-from cvm.src.utils.list_targets import list_targets
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
 from cvm.src.utils.utils import (
-    get_clean_important_variables,
     get_today,
     impute_from_parameters,
     pick_one_per_subscriber,
@@ -77,7 +76,11 @@ def add_ard_targets(
     ]
 
     def join_targets(df1, df2):
-        return df1.join(df2, ["key_date", "subscription_identifier"], "full")
+        keys = ["key_date", "subscription_identifier"]
+        cols_to_drop = [col_name for col_name in df1.columns if col_name in df2.columns]
+        cols_to_drop = list(set(cols_to_drop) - set(keys))
+        df2 = df2.drop(*cols_to_drop)
+        return df1.join(df2, keys, "full")
 
     return functools.reduce(join_targets, ard_target_tables)
 
@@ -111,7 +114,11 @@ def add_churn_targets(
     ]
 
     def join_targets(df1, df2):
-        return df1.join(df2, ["key_date", "subscription_identifier"], "full")
+        keys = ["key_date", "subscription_identifier"]
+        cols_to_drop = [col_name for col_name in df1.columns if col_name in df2.columns]
+        cols_to_drop = list(set(cols_to_drop) - set(keys))
+        df2 = df2.drop(*cols_to_drop)
+        return df1.join(df2, keys, "full")
 
     return functools.reduce(join_targets, churn_target_tables)
 
@@ -162,49 +169,6 @@ def create_pred_sample(
     vol = add_volatility_scores(df.select("subscription_identifier"), reve, parameters)
     df = df.join(vol, on="subscription_identifier")
     return df
-
-
-def subs_date_join_important_only(
-    important_param: List[Any],
-    parameters: Dict[str, Any],
-    users: DataFrame,
-    *args: DataFrame,
-) -> DataFrame:
-    """ Left join all tables with important variables by given keys. Join using
-     `subscription_identifier` or `old_subscription_identifier`.
-
-    Args:
-        users: table with users, has to have both `old_subscription_identifier` and
-            `subscription_identifier` columns.
-        important_param: List of important columns.
-        parameters: parameters defined in parameters.yml.
-        *args: tables to join, each has to have either `old_subscription_identifier` or
-            `subscription_identifier` column.
-    Returns:
-        Left joined and filtered tables.
-    """
-
-    keys = parameters["key_columns"] + ["old_subscription_identifier"]
-    segments = parameters["segment_columns"]
-    must_have_features = parameters["must_have_features"]
-    targets = list_targets(parameters)
-    tables = [prepare_key_columns(tab) for tab in args]
-    important_param = get_clean_important_variables(important_param, parameters)
-
-    def filter_column(df, filter_list):
-        cols_to_drop = [
-            col_name for col_name in df.columns if col_name not in filter_list
-        ]
-        return df.drop(*cols_to_drop)
-
-    tables = [
-        filter_column(
-            tab, important_param + keys + segments + must_have_features + targets
-        )
-        for tab in tables
-    ]
-
-    return subs_date_join(parameters, users, *tables)
 
 
 def subs_date_join(
@@ -261,11 +225,14 @@ def subs_date_join(
     return pick_one_per_subscriber(joined)
 
 
-def get_macrosegments(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
+def get_macrosegments(
+    df: DataFrame, recent_profile: DataFrame, parameters: Dict[str, Any],
+) -> DataFrame:
     """ Get macrosegments columns.
 
     Args:
         df: DataFrame with all features.
+        recent_profile: profile table for last date.
         parameters: parameters defined in parameters.yml.
     Returns:
         Input DataFrame with extra column marking macrosegment.
@@ -273,6 +240,7 @@ def get_macrosegments(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
 
     logging.info("Defining macrosegments")
     df = impute_from_parameters(df, parameters)
+    df = add_macrosegments_features(df, recent_profile)
     macrosegments_defs = parameters["macrosegments"]
     for use_case in macrosegments_defs:
         df = build_feature_from_parameters(
@@ -308,6 +276,7 @@ def add_macrosegments(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
 def get_micro_macrosegments(
     parameters: Dict[str, Any],
     raw_features: DataFrame,
+    recent_profile: DataFrame,
     reve: DataFrame,
     micro_macrosegments_history: DataFrame = None,
 ) -> Tuple[DataFrame, DataFrame]:
@@ -317,6 +286,7 @@ def get_micro_macrosegments(
     Args:
         parameters: parameters defined in parameters.yml.
         raw_features: joined features from C360.
+        recent_profile: profile table for last date.
         reve: monthly revenue data.
         micro_macrosegments_history: table with user to microsegment mapping history.
     """
@@ -329,6 +299,7 @@ def get_micro_macrosegments(
 
     # define macrosegments
     df = raw_features
+    df = add_macrosegments_features(df, recent_profile)
     for use_case in macrosegments_defs:
         df = build_feature_from_parameters(
             df, use_case + "_macrosegment", macrosegments_defs[use_case]

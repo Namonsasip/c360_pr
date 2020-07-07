@@ -1,7 +1,3 @@
-treatment_sizes:
-  ard: 48000
-  churn: 30000
-
 # how often can person be targeted - in days
 treatment_cadence: 7
 
@@ -14,3 +10,8 @@ treatment_output:
   churn:
     output_path_template: '/dbfs/mnt/customer360-blob-output/CVM_OUTPUT/cvm_prepaid_churn_output/CVM_Prepaid_churn_model_V2_{}/treatments.csv'
     output_path_date_format: '%Y%m%d%H%M%S'
+
+# assumptions for ard / churn optimizer
+use_case_optimize:
+  ard_cost: 60
+  churn_cost: 300

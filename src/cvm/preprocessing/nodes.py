@@ -44,7 +44,7 @@ from pyspark.sql import DataFrame
 
 
 def pipeline_fit(
-    df: DataFrame, important_param: List[Any], parameters: Dict[str, Any]
+    df: DataFrame, parameters: Dict[str, Any], important_param=None
 ) -> Tuple[DataFrame, Pipeline, List]:
     """ Fits preprocessing pipeline to given table and runs the pipeline on it.
 
@@ -56,6 +56,8 @@ def pipeline_fit(
         String indexed table and OneHotEncoderEstimator object to use later.
     """
 
+    if important_param is None:
+        important_param = []
     log = logging.getLogger(__name__)
     df = prepare_key_columns(df)
     important_param = get_clean_important_variables(important_param, parameters)

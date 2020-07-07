@@ -256,6 +256,7 @@ def log_pai_rf(
             pai.log_model(rf_model)
             pai.log_features(rf_model.feature_names, rf_model.feature_importances_)
             models_metrics["features_num"] = len(rf_model.feature_names)
+            models_metrics["sample_size"] = rf_model.sample_size
         pai.log_metrics(models_metrics)
         pai.log_artifacts({"precision_recall_table": precision_recall_table})
         pai.log_artifacts({"ROC": roc_plot})

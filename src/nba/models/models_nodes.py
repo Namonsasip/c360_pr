@@ -1,3 +1,4 @@
+import logging
 import os
 import re
 from pathlib import Path
@@ -12,7 +13,7 @@ import pyspark.sql.functions as F
 import seaborn as sns
 from lightgbm import LGBMClassifier, LGBMRegressor
 from plotnine import *
-from pyspark.sql import Window
+from pyspark.sql import Window, functions as F
 from pyspark.sql.functions import pandas_udf, PandasUDFType
 from pyspark.sql.types import (
     DoubleType,
@@ -20,12 +21,14 @@ from pyspark.sql.types import (
     StructType,
     IntegerType,
     FloatType,
+    StringType,
 )
 from sklearn.metrics import auc, roc_curve
 from sklearn.model_selection import train_test_split
 
 from customer360.utilities.spark_util import get_spark_session
 
+# Minimum observations required to reliably train a ML model
 MODELLING_N_OBS_THRESHOLD = 500
 
 
@@ -81,7 +84,12 @@ def create_model_function(
         specified
     """
 
-    schema = StructType([StructField("able_to_model_flag", IntegerType()),])
+    schema = StructType(
+        [
+            StructField("able_to_model_flag", IntegerType()),
+            StructField("train_set_primary_keys", StringType()),
+        ]
+    )
 
     def train_single_model_wrapper(pdf_master_chunk: pd.DataFrame,) -> pd.DataFrame:
         """
@@ -288,11 +296,22 @@ def create_model_function(
                 )
 
             def pai_log_metrics_fix(metrics_dict):
+                """
+                Wrapper for logging pai metrics that supports numpy types
+                Args:
+                    metrics_dict:
+
+                Returns:
+
+                """
                 fixed_metrics_dict = {
                     k: (int(v) if isinstance(v, np.int64) else float(v))
                     for k, v in metrics_dict.items()
                 }
                 pai.log_metrics(fixed_metrics_dict)
+
+            ## Sort features since MLflow does not guarantee the order
+            explanatory_features.sort()
 
             current_group = pdf_master_chunk[group_column].iloc[0]
 
@@ -379,7 +398,7 @@ def create_model_function(
                     for c in extra_tag_columns:
                         if len(pdf_master_chunk[c].unique()) == 1:
                             pai.add_tags(
-                                [
+                                [  # Remove special characters as they are not allowed
                                     re.sub(
                                         r"[^A-Za-z0-9\.\-_]",
                                         "",
@@ -392,7 +411,8 @@ def create_model_function(
                         else:
                             pai.add_tags([f"{c} not unique"])
                             pai.log_note(
-                                f"{c} is not unique for this run, possible values are {', '.join(pdf_master_chunk[c].fillna('NULL').unique())}"
+                                f"{c} is not unique for this run, possible values are "
+                                f"{', '.join(pdf_master_chunk[c].fillna('NULL').unique())[:999]}"
                             )
 
                 pai_log_metrics_fix(pai_metrics_dict)
@@ -455,7 +475,10 @@ def create_model_function(
 
                 # build the DataFrame to return
                 df_to_return = pd.DataFrame(
-                    {"able_to_model_flag": [int(able_to_model_flag)]}
+                    {
+                        "able_to_model_flag": [int(able_to_model_flag)],
+                        "train_set_primary_keys": ["NULL"],
+                    }
                 )
 
                 if not able_to_model_flag:
@@ -692,6 +715,15 @@ def create_model_function(
                         )
                     pai.add_tags(["Finished"])
 
+                    df_to_return = pd.DataFrame(
+                        {
+                            "able_to_model_flag": int(able_to_model_flag),
+                            "train_set_primary_keys": pdf_train[
+                                "nba_spine_primary_key"
+                            ],
+                        }
+                    )
+
                 return df_to_return
 
         return train_single_model(pdf_master_chunk=pdf_master_chunk, **kwargs)
@@ -706,7 +738,7 @@ def create_model_function(
     return model_function
 
 
-def  train_multiple_models(
+def train_multiple_models(
     df_master: pyspark.sql.DataFrame,
     group_column: str,
     explanatory_features: List[str],
@@ -751,6 +783,7 @@ def  train_multiple_models(
     df_master_only_necessary_columns = df_master.select(
         "subscription_identifier",
         "contact_date",
+        "nba_spine_primary_key",
         group_column,
         target_column,
         *(
@@ -797,7 +830,177 @@ def  train_multiple_models(
         )
     )
 
-    # Trigger an action so that models get executed
-    df_training_info.count()
-
     return df_training_info
+
+
+def score_nba_models(
+    df_master: pyspark.sql.DataFrame,
+    primary_key_columns: List[str],
+    model_group_column: str,
+    models_to_score: Dict[str, str],
+    pai_runs_uri: str,
+    pai_artifacts_uri: str,
+    explanatory_features: List[str] = None,
+    missing_model_default_value: str = None,
+    scoring_chunk_size: int = 500000,
+) -> pyspark.sql.DataFrame:
+    """
+    Function for making predictions (scoring) using NBA models. Allows to score
+    multiple models (sets of models) in one go,. If a model is not found for certain
+    rows, the prediction for them will be None
+
+    :param df_master: master table where the scoring will be done. Needs to contain all
+        explanatory features required for the models
+    :param primary_key_columns: columns that are a primary key of df_master.
+        I.e. it's unique for every row
+    :param model_group_column: column that defines the partition for which a different
+        model has been trained for.
+    :param models_to_score: Dictionary where each key is the tag of a set of models
+        to score and each value is the name the column with the prediction of
+        that model will have. Each tag should contain a model for each model group.
+        The recommended tags to use for this function are the one that start with "z_"
+        and were generated in training with the `pai_run_prefix` specified
+    :param pai_runs_uri: URI where PAI runs are stored
+    :param pai_artifacts_uri: URI where PAI artifacts are stored
+    :param explanatory_features: list with all explanatory features that have been
+        used in any of the models. Each model will find it's own explanatory features,
+        but this is used for speedup in case features are known upfront. If None,
+        the explanatory features list will be retrieved from PAI, but this is more
+        time consuming
+    :param scoring_chunk_size: number of rows each scoring chunk will have. Since
+        scoring happens in a pandas UDF the size of the chunk should be small enough
+        so that each chunk fits in memory of the task asssigned to the worker in the
+        Spark cluster
+    :param missing_model_default_value: Value to return for the prediction in case the
+        model is not available. If None, an error will be returned (since None cannot be
+        returned by a pandas udf)
+    :return: df_master but with the columns with predictions added
+    """
+
+    # Define schema for the udf.
+    schema = df_master.select(
+        *(
+            primary_key_columns
+            + [
+                F.lit(999.99).cast(DoubleType()).alias(prediction_colname)
+                for prediction_colname in models_to_score.values()
+            ]
+        )
+    ).schema
+
+    @pandas_udf(schema, PandasUDFType.GROUPED_MAP)
+    def predict_pandas_udf(pdf):
+        pai.set_config(
+            storage_runs=pai_runs_uri, storage_artifacts=pai_artifacts_uri,
+        )
+
+        current_model_group = pdf[model_group_column].iloc[0]
+        pd_results = pd.DataFrame()
+
+        for pk_col in primary_key_columns:
+            pd_results.loc[:, pk_col] = pdf.loc[:, pk_col]
+
+        for current_tag, prediction_colname in models_to_score.items():
+            current_run = pai.load_runs(
+                experiment=current_model_group, tags=[current_tag]
+            )
+            if len(current_run) == 0:
+                if missing_model_default_value is None:
+                    raise ValueError(
+                        f"There are no runs for experiment {current_model_group}"
+                        f" and tag {current_tag}"
+                    )
+                else:
+                    logging.info(
+                        f"There is no PAI run for experiment "
+                        f"{current_model_group} and tag {current_tag}"
+                    )
+                    pd_results[prediction_colname] = missing_model_default_value
+                    continue
+
+            assert len(current_run) < 2, (
+                f"There are more than 1 runs for experiment "
+                f"{current_model_group} and tag {current_tag}"
+            )
+
+            current_run_id = current_run["run_id"].iloc[0]
+            if "model" not in pai.list_artifacts(run_id=current_run_id):
+                if missing_model_default_value is None:
+                    raise ValueError(
+                        f"There is no model object in the PAI run for experiment"
+                        f" {current_model_group} and tag {current_tag}"
+                    )
+                else:
+                    logging.info(
+                        f"There is no PAI run for experiment {current_model_group}"
+                        f" and tag {current_tag}"
+                    )
+                    pd_results[prediction_colname] = missing_model_default_value
+            else:
+                current_model = pai.load_model(run_id=current_run_id)
+                df_current_model_features = pai.load_features(run_id=current_run_id)
+                current_model_features = df_current_model_features["feature_list"].iloc[
+                    0
+                ]
+                # We sort features because MLflow does not preserve feature order
+                # Models should also be trained with features sorted
+                current_model_features.sort()
+                X = pdf[current_model_features]
+                if "binary" in current_run["tags"].iloc[0]:
+                    pd_results[prediction_colname] = current_model.predict_proba(
+                        X, num_threads=1, n_jobs=1
+                    )[:, 1]
+                elif "regression" in current_run["tags"].iloc[0]:
+                    pd_results[prediction_colname] = current_model.predict(
+                        X, num_threads=1, n_jobs=1
+                    )
+                else:
+                    raise ValueError(
+                        "Unrecognized model type while predicting, model has"
+                        "neither 'binary' or 'regression' tags"
+                    )
+
+        return pd_results
+
+    df_master = df_master.withColumn(
+        "partition",
+        F.floor(
+            F.count(F.lit(1)).over(Window.partitionBy(model_group_column))
+            / scoring_chunk_size
+            * F.rand()
+        ),
+    )
+    if not explanatory_features:
+        # Keep only necessary columns to make the pandas transformation more lightweight
+        pai.set_config(
+            storage_runs=pai_runs_uri, storage_artifacts=pai_artifacts_uri,
+        )
+        explanatory_features = set()
+        for current_tag in models_to_score.keys():
+
+            df_features = pai.load_features(tags=current_tag)
+            current_model_features = set(
+                [
+                    f.replace("importance_", "")
+                    for f in df_features.columns
+                    if f.startswith("importance_")
+                ]
+            )
+            explanatory_features = explanatory_features.union(current_model_features)
+        explanatory_features = list(explanatory_features)
+
+    df_master_necessary_columns = df_master.select(
+        model_group_column,
+        "partition",
+        *(  # Don't add model group column twice in case it's a PK column
+            list(set(primary_key_columns) - set([model_group_column]))
+            + explanatory_features
+        ),
+    )
+
+    df_scored = df_master_necessary_columns.groupby(
+        model_group_column, "partition"
+    ).apply(predict_pandas_udf)
+    df_master_scored = df_master.join(df_scored, on=primary_key_columns, how="left")
+
+    return df_master_scored
