@@ -63,50 +63,50 @@ def billing_to_l4_pipeline_weekly(**kwargs):
         ]
     )
 
-#
-# def billing_to_l4_ranked_pipeline_weekly(**kwargs):
-#     return Pipeline(
-#         [
-#             # Popular top up day
-#             node(
-#                 l4_rolling_window,
-#                 ["l2_billing_and_payments_weekly_popular_topup_day_intermediate_for_l4_rolling_window_popular_topup_day",
-#                  "params:l4_popular_topup_day_initial"],
-#                 "l4_rolling_window_popular_topup_day_1"
-#             ),
-#             node(
-#                 l4_rolling_ranked_window,
-#                 ["l4_rolling_window_popular_topup_day_1",
-#                  "params:l4_popular_topup_day"],
-#                 "l4_rolling_window_popular_topup_day"
-#             ),
-#
-#             # Popular top up hour
-#             node(
-#                 l4_rolling_window,
-#                 ["l2_billing_and_payments_weekly_popular_topup_hour_intermediate_for_l4_rolling_window_popular_topup_hour",
-#                  "params:l4_popular_topup_hour_initial"],
-#                 "l4_rolling_window_popular_topup_hour_1"
-#             ),
-#             node(
-#                 l4_rolling_ranked_window,
-#                 ["l4_rolling_window_popular_topup_hour_1",
-#                  "params:l4_popular_topup_hour"],
-#                 "l4_rolling_window_popular_topup_hour"
-#             ),
-#
-#             # Most popular top up channel
-#             node(
-#                 l4_rolling_window,
-#                 ["l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate_for_l4_billing_rolling_window_most_popular_topup_channel",
-#                  "params:l4_most_popular_topup_channel_initial"],
-#                 "l4_rolling_window_most_popular_topup_channel_1"
-#             ),
-#             node(
-#                 l4_rolling_ranked_window,
-#                 ["l4_rolling_window_most_popular_topup_channel_1",
-#                  "params:l4_most_popular_topup_channel"],
-#                 "l4_billing_rolling_window_most_popular_topup_channel"
-#             ),
-#         ]
-#     )
+
+def billing_to_l4_ranked_pipeline_weekly(**kwargs):
+    return Pipeline(
+        [
+            # Popular top up day
+            node(
+                l4_rolling_window,
+                ["l2_billing_and_payments_weekly_popular_topup_day_intermediate_for_l4_rolling_window_popular_topup_day",
+                 "params:l4_popular_topup_day_initial"],
+                "l4_rolling_window_popular_topup_day_1"
+            ),
+            node(
+                l4_rolling_ranked_window,
+                ["l4_rolling_window_popular_topup_day_1",
+                 "params:l4_popular_topup_day"],
+                "l4_rolling_window_popular_topup_day"
+            ),
+
+            # Popular top up hour
+            node(
+                l4_rolling_window,
+                ["l2_billing_and_payments_weekly_popular_topup_hour_intermediate_for_l4_rolling_window_popular_topup_hour",
+                 "params:l4_popular_topup_hour_initial"],
+                "l4_rolling_window_popular_topup_hour_1"
+            ),
+            node(
+                l4_rolling_ranked_window,
+                ["l4_rolling_window_popular_topup_hour_1",
+                 "params:l4_popular_topup_hour"],
+                "l4_rolling_window_popular_topup_hour"
+            ),
+
+            # Most popular top up channel
+            node(
+                l4_rolling_window,
+                ["l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate_for_l4_billing_rolling_window_most_popular_topup_channel",
+                 "params:l4_most_popular_topup_channel_initial"],
+                "l4_rolling_window_most_popular_topup_channel_1"
+            ),
+            node(
+                l4_rolling_ranked_window,
+                ["l4_rolling_window_most_popular_topup_channel_1",
+                 "params:l4_most_popular_topup_channel"],
+                "l4_billing_rolling_window_most_popular_topup_channel"
+            ),
+        ]
+    )
