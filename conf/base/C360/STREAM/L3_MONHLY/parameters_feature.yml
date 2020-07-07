@@ -22,6 +22,7 @@ l3_streaming_fav_content_group_by_volume:
         traffic_volume_mb_sum: traffic_volume_sum
         start_of_month: start_of_month
     granularity: ""
+    output_catalog: "l3_streaming_fav_content_group_by_volume"
 
 l3_streaming_fav_content_group_by_duration:
     where_clause: "where duration_rank = 1"
@@ -34,6 +35,7 @@ l3_streaming_fav_content_group_by_duration:
         duration_sum: duration_sum
         start_of_month: start_of_month
     granularity: ""
+    output_catalog: "l3_streaming_fav_content_group_by_duration"
 
 
 
@@ -60,6 +62,7 @@ l3_streaming_fav_tv_channel_by_volume:
         traffic_volume_mb_sum: traffic_volume_sum
         start_of_month: start_of_month
     granularity: ""
+    output_catalog: "l3_streaming_fav_tv_channel_by_volume"
 
 l3_streaming_fav_tv_channel_by_duration:
     where_clause: "where tv_channel_rank_by_duration = 1"
@@ -72,6 +75,7 @@ l3_streaming_fav_tv_channel_by_duration:
         duration_sum: duration_sum
         start_of_month: start_of_month
     granularity: ""
+    output_catalog: "l3_streaming_fav_tv_channel_by_duration"
 
 
 # TV Show features
@@ -95,6 +99,7 @@ l3_streaming_fav_tv_show_by_episode_watched:
         fav_tv_show_by_episode_watched: "series_title"
         start_of_month: "start_of_month"
     granularity: ""
+    output_catalog: "l3_streaming_fav_tv_show_by_episode_watched"
 
 
  # Fav service by download traffic (reused for music, video, and esport)
@@ -108,7 +113,7 @@ int_l3_streaming_service_feature:
         visit_count_rank: "row_number() over (partition by subscription_identifier, access_method_num, national_id_card,
          date(register_date), start_of_month order by sum(visit_count) desc)"
     granularity: "subscription_identifier, access_method_num, national_id_card, date(register_date), start_of_month,
-     application, application_group"
+     application"
 
 
 l3_streaming_fav_service_by_download_feature:
@@ -122,6 +127,43 @@ l3_streaming_fav_service_by_download_feature:
         start_of_month: "start_of_month"
     granularity: ""
 
+l3_streaming_fav_video_service_by_download_feature:
+    where_clause: "where sum_download_kb_traffic_rank = 1"
+    feature_list:
+        subscription_identifier: subscription_identifier
+        access_method_num: access_method_num
+        register_date: date(register_date)
+        national_id_card: national_id_card
+        sum_download_kb_traffic: "sum_download_kb_traffic"
+        start_of_month: "start_of_month"
+    granularity: ""
+    output_catalog: "l3_streaming_fav_video_service_by_download_feature"
+
+l3_streaming_fav_music_service_by_download_feature:
+    where_clause: "where sum_download_kb_traffic_rank = 1"
+    feature_list:
+        subscription_identifier: subscription_identifier
+        access_method_num: access_method_num
+        register_date: date(register_date)
+        national_id_card: national_id_card
+        sum_download_kb_traffic: "sum_download_kb_traffic"
+        start_of_month: "start_of_month"
+    granularity: ""
+    output_catalog: "l3_streaming_fav_music_service_by_download_feature"
+
+l3_streaming_fav_esport_service_by_download_feature:
+    where_clause: "where sum_download_kb_traffic_rank = 1"
+    feature_list:
+        subscription_identifier: subscription_identifier
+        access_method_num: access_method_num
+        register_date: date(register_date)
+        national_id_card: national_id_card
+        sum_download_kb_traffic: "sum_download_kb_traffic"
+        start_of_month: "start_of_month"
+    granularity: ""
+    output_catalog: "l3_streaming_fav_esport_service_by_download_feature"
+
+
 l3_streaming_2nd_fav_service_by_download_feature:
     where_clause: "where sum_download_kb_traffic_rank = 2"
     feature_list:
@@ -133,6 +175,44 @@ l3_streaming_2nd_fav_service_by_download_feature:
         start_of_month: "start_of_month"
     granularity: ""
 
+l3_streaming_2nd_fav_video_service_by_download_feature:
+    where_clause: "where sum_download_kb_traffic_rank = 2"
+    feature_list:
+        subscription_identifier: subscription_identifier
+        access_method_num: access_method_num
+        register_date: date(register_date)
+        national_id_card: national_id_card
+        sum_download_kb_traffic: "sum_download_kb_traffic"
+        start_of_month: "start_of_month"
+    granularity: ""
+    output_catalog: "l3_streaming_2nd_fav_video_service_by_download_feature"
+
+l3_streaming_2nd_fav_esport_service_by_download_feature:
+    where_clause: "where sum_download_kb_traffic_rank = 2"
+    feature_list:
+        subscription_identifier: subscription_identifier
+        access_method_num: access_method_num
+        register_date: date(register_date)
+        national_id_card: national_id_card
+        sum_download_kb_traffic: "sum_download_kb_traffic"
+        start_of_month: "start_of_month"
+    granularity: ""
+    output_catalog: "l3_streaming_2nd_fav_esport_service_by_download_feature"
+
+
+l3_streaming_2nd_fav_music_service_by_download_feature:
+    where_clause: "where sum_download_kb_traffic_rank = 2"
+    feature_list:
+        subscription_identifier: subscription_identifier
+        access_method_num: access_method_num
+        register_date: date(register_date)
+        national_id_card: national_id_card
+        sum_download_kb_traffic: "sum_download_kb_traffic"
+        start_of_month: "start_of_month"
+    granularity: ""
+    output_catalog: "l3_streaming_2nd_fav_music_service_by_download_feature"
+
+
 l3_streaming_fav_service_by_visit_count_feature:
     where_clause: "where visit_count_rank = 1"
     feature_list:
@@ -143,6 +223,42 @@ l3_streaming_fav_service_by_visit_count_feature:
         visit_count: "visit_count"
         start_of_month: "start_of_month"
     granularity: ""
+
+l3_streaming_fav_video_service_by_visit_count_feature:
+    where_clause: "where visit_count_rank = 1"
+    feature_list:
+        subscription_identifier: subscription_identifier
+        access_method_num: access_method_num
+        register_date: date(register_date)
+        national_id_card: national_id_card
+        visit_count: "visit_count"
+        start_of_month: "start_of_month"
+    granularity: ""
+    output_catalog: "l3_streaming_fav_video_service_by_visit_count_feature"
+
+l3_streaming_fav_music_service_by_visit_count_feature:
+    where_clause: "where visit_count_rank = 1"
+    feature_list:
+        subscription_identifier: subscription_identifier
+        access_method_num: access_method_num
+        register_date: date(register_date)
+        national_id_card: national_id_card
+        visit_count: "visit_count"
+        start_of_month: "start_of_month"
+    granularity: ""
+    output_catalog: "l3_streaming_fav_music_service_by_visit_count_feature"
+
+l3_streaming_fav_esport_service_by_visit_count_feature:
+    where_clause: "where visit_count_rank = 1"
+    feature_list:
+        subscription_identifier: subscription_identifier
+        access_method_num: access_method_num
+        register_date: date(register_date)
+        national_id_card: national_id_card
+        visit_count: "visit_count"
+        start_of_month: "start_of_month"
+    granularity: ""
+    output_catalog: "l3_streaming_fav_esport_service_by_visit_count_feature"
 
 
 # number of visit and volume of download traffic
@@ -183,86 +299,89 @@ l3_streaming_visit_count_and_download_traffic_feature:
     granularity: "subscription_identifier, access_method_num, national_id_card, date(register_date), start_of_month"
 
 
-## number of visit and volume of download traffic
-#int_l3_streaming_sum_per_day:
-#    feature_list:
-#        sum: ["visit_count_youtube_video",
-#              "visit_count_facebook_video",
-#              "visit_count_linetv_video",
-#              "visit_count_ais_play_video",
-#              "visit_count_netflix_video",
-#              "visit_count_hooq_video",
-#              "visit_count_iflix_video",
-#              "visit_count_spotify_music",
-#              "visit_count_joox_music",
-#              "visit_count_twitch_esport",
-#              "visit_count_bigo_esport",
-#              "visit_count_mixer_esport",
-#              "visit_count_steamtv_esport",
-#
-#              "download_kb_traffic_youtube_video",
-#              "download_kb_traffic_facebook_video",
-#              "download_kb_traffic_linetv_video",
-#              "download_kb_traffic_ais_play_video",
-#              "download_kb_traffic_netflix_video",
-#              "download_kb_traffic_hooq_video",
-#              "download_kb_traffic_iflix_video",
-#              "download_kb_traffic_spotify_music",
-#              "download_kb_traffic_joox_music",
-#              "download_kb_traffic_twitch_esport",
-#              "download_kb_traffic_bigo_esport",
-#              "download_kb_traffic_mixer_esport",
-#              "download_kb_traffic_steamtv_esport"]
-#    granularity: "subscription_identifier, access_method_num, national_id_card, date(register_date), start_of_month,
-#     day_of_week"
+# number of visit and volume of download traffic
+int_l3_streaming_sum_per_day:
+    feature_list:
+        sum: ["visit_count_youtube_video",
+              "visit_count_facebook_video",
+              "visit_count_linetv_video",
+              "visit_count_ais_play_video",
+              "visit_count_netflix_video",
+              "visit_count_hooq_video",
+              "visit_count_iflix_video",
+              "visit_count_spotify_music",
+              "visit_count_joox_music",
+              "visit_count_twitch_esport",
+              "visit_count_bigo_esport",
+              "visit_count_mixer_esport",
+              "visit_count_steamtv_esport",
 
-#int_l3_streaming_ranked_of_day_per_month:
-#  feature_list:
-#    subscription_identifier: subscription_identifier
-#    day_of_week: day_of_week
-#    start_of_month: start_of_month
-#    download_kb_traffic_youtube_video_sum: "download_kb_traffic_youtube_video_sum"
-#    download_kb_traffic_facebook_video_sum: "download_kb_traffic_facebook_video_sum"
-#    download_kb_traffic_linetv_video_sum: "download_kb_traffic_linetv_video_sum"
-#    download_kb_traffic_ais_play_video_sum: "download_kb_traffic_ais_play_video_sum"
-#    download_kb_traffic_netflix_video_sum: "download_kb_traffic_netflix_video_sum"
-#    download_kb_traffic_hooq_video_sum: "download_kb_traffic_hooq_video_sum"
-#    download_kb_traffic_iflix_video_sum: "download_kb_traffic_iflix_video_sum"
-#    download_kb_traffic_spotify_music_sum: "download_kb_traffic_spotify_music_sum"
-#    download_kb_traffic_joox_music_sum: "download_kb_traffic_joox_music_sum"
-#    download_kb_traffic_twitch_esport_sum: "download_kb_traffic_twitch_esport_sum"
-#    download_kb_traffic_bigo_esport_sum: "download_kb_traffic_bigo_esport_sum"
-#    download_kb_traffic_mixer_esport_sum: "download_kb_traffic_mixer_esport_sum"
-#    download_kb_traffic_steamtv_esport_sum: "download_kb_traffic_steamtv_esport_sum"
-#
-#    youtube_video_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-#     national_id_card, date(register_date), start_of_month order by download_kb_traffic_youtube_video_sum desc)"
-#    facebook_video_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-#     national_id_card, date(register_date), start_of_month order by download_kb_traffic_facebook_video_sum desc)"
-#    linetv_video_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-#     national_id_card, date(register_date), start_of_month order by download_kb_traffic_linetv_video_sum desc)"
-#    ais_play_video_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-#     national_id_card, date(register_date), start_of_month order by download_kb_traffic_ais_play_video_sum desc)"
-#    netflix_video_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-#     national_id_card, date(register_date), start_of_month order by download_kb_traffic_netflix_video_sum desc)"
-#    hooq_video_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-#     national_id_card, date(register_date), start_of_month order by download_kb_traffic_hooq_video_sum desc)"
-#    iflix_video_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-#     national_id_card, date(register_date), start_of_month order by download_kb_traffic_iflix_video_sum desc)"
-#    spotify_music_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-#     national_id_card, date(register_date), start_of_month order by download_kb_traffic_spotify_music_sum desc)"
-#    joox_music_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-#     national_id_card, date(register_date), start_of_month order by download_kb_traffic_joox_music_sum desc)"
-#    twitch_esport_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-#     national_id_card, date(register_date), start_of_month order by download_kb_traffic_twitch_esport_sum desc)"
-#    bigo_esport_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-#     national_id_card, date(register_date), start_of_month order by download_kb_traffic_bigo_esport_sum desc)"
-#    mixer_esport_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-#     national_id_card, date(register_date), start_of_month order by download_kb_traffic_mixer_esport_sum desc)"
-#    steamtv_esport_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-#     national_id_card, date(register_date), start_of_month order by download_kb_traffic_steamtv_esport_sum desc)"
-#
-#  granularity: ""
+              "download_kb_traffic_youtube_video",
+              "download_kb_traffic_facebook_video",
+              "download_kb_traffic_linetv_video",
+              "download_kb_traffic_ais_play_video",
+              "download_kb_traffic_netflix_video",
+              "download_kb_traffic_hooq_video",
+              "download_kb_traffic_iflix_video",
+              "download_kb_traffic_spotify_music",
+              "download_kb_traffic_joox_music",
+              "download_kb_traffic_twitch_esport",
+              "download_kb_traffic_bigo_esport",
+              "download_kb_traffic_mixer_esport",
+              "download_kb_traffic_steamtv_esport"]
+    granularity: "subscription_identifier, access_method_num, national_id_card, date(register_date), start_of_month,
+     day_of_week"
+
+int_l3_streaming_ranked_of_day_per_month:
+  feature_list:
+    subscription_identifier: subscription_identifier
+    access_method_num: access_method_num
+    national_id_card: national_id_card
+    register_date: register_date
+    day_of_week: day_of_week
+    start_of_month: start_of_month
+    download_kb_traffic_youtube_video_sum: "download_kb_traffic_youtube_video_sum"
+    download_kb_traffic_facebook_video_sum: "download_kb_traffic_facebook_video_sum"
+    download_kb_traffic_linetv_video_sum: "download_kb_traffic_linetv_video_sum"
+    download_kb_traffic_ais_play_video_sum: "download_kb_traffic_ais_play_video_sum"
+    download_kb_traffic_netflix_video_sum: "download_kb_traffic_netflix_video_sum"
+    download_kb_traffic_hooq_video_sum: "download_kb_traffic_hooq_video_sum"
+    download_kb_traffic_iflix_video_sum: "download_kb_traffic_iflix_video_sum"
+    download_kb_traffic_spotify_music_sum: "download_kb_traffic_spotify_music_sum"
+    download_kb_traffic_joox_music_sum: "download_kb_traffic_joox_music_sum"
+    download_kb_traffic_twitch_esport_sum: "download_kb_traffic_twitch_esport_sum"
+    download_kb_traffic_bigo_esport_sum: "download_kb_traffic_bigo_esport_sum"
+    download_kb_traffic_mixer_esport_sum: "download_kb_traffic_mixer_esport_sum"
+    download_kb_traffic_steamtv_esport_sum: "download_kb_traffic_steamtv_esport_sum"
+
+    youtube_video_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
+     national_id_card, date(register_date), start_of_month order by download_kb_traffic_youtube_video_sum desc)"
+    facebook_video_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
+     national_id_card, date(register_date), start_of_month order by download_kb_traffic_facebook_video_sum desc)"
+    linetv_video_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
+     national_id_card, date(register_date), start_of_month order by download_kb_traffic_linetv_video_sum desc)"
+    ais_play_video_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
+     national_id_card, date(register_date), start_of_month order by download_kb_traffic_ais_play_video_sum desc)"
+    netflix_video_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
+     national_id_card, date(register_date), start_of_month order by download_kb_traffic_netflix_video_sum desc)"
+    hooq_video_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
+     national_id_card, date(register_date), start_of_month order by download_kb_traffic_hooq_video_sum desc)"
+    iflix_video_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
+     national_id_card, date(register_date), start_of_month order by download_kb_traffic_iflix_video_sum desc)"
+    spotify_music_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
+     national_id_card, date(register_date), start_of_month order by download_kb_traffic_spotify_music_sum desc)"
+    joox_music_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
+     national_id_card, date(register_date), start_of_month order by download_kb_traffic_joox_music_sum desc)"
+    twitch_esport_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
+     national_id_card, date(register_date), start_of_month order by download_kb_traffic_twitch_esport_sum desc)"
+    bigo_esport_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
+     national_id_card, date(register_date), start_of_month order by download_kb_traffic_bigo_esport_sum desc)"
+    mixer_esport_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
+     national_id_card, date(register_date), start_of_month order by download_kb_traffic_mixer_esport_sum desc)"
+    steamtv_esport_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
+     national_id_card, date(register_date), start_of_month order by download_kb_traffic_steamtv_esport_sum desc)"
+
+  granularity: ""
 
 
 l3_streaming_session_duration_feature:

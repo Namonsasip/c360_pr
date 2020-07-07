@@ -1,3 +1,4 @@
+import logging
 import os
 import re
 from pathlib import Path
@@ -27,6 +28,7 @@ from sklearn.model_selection import train_test_split
 
 from customer360.utilities.spark_util import get_spark_session
 
+# Minimum observations required to reliably train a ML model
 MODELLING_N_OBS_THRESHOLD = 500
 
 
@@ -396,7 +398,7 @@ def create_model_function(
                     for c in extra_tag_columns:
                         if len(pdf_master_chunk[c].unique()) == 1:
                             pai.add_tags(
-                                [#Remove special characters as they are not allowed
+                                [  # Remove special characters as they are not allowed
                                     re.sub(
                                         r"[^A-Za-z0-9\.\-_]",
                                         "",
@@ -716,7 +718,9 @@ def create_model_function(
                     df_to_return = pd.DataFrame(
                         {
                             "able_to_model_flag": int(able_to_model_flag),
-                            "train_set_primary_keys": pdf_train["nba_spine_primary_key"],
+                            "train_set_primary_keys": pdf_train[
+                                "nba_spine_primary_key"
+                            ],
                         }
                     )
 
@@ -837,11 +841,13 @@ def score_nba_models(
     pai_runs_uri: str,
     pai_artifacts_uri: str,
     explanatory_features: List[str] = None,
+    missing_model_default_value: str = None,
     scoring_chunk_size: int = 500000,
 ) -> pyspark.sql.DataFrame:
     """
     Function for making predictions (scoring) using NBA models. Allows to score
-    multiple models (sets of models) in one go
+    multiple models (sets of models) in one go,. If a model is not found for certain
+    rows, the prediction for them will be None
 
     :param df_master: master table where the scoring will be done. Needs to contain all
         explanatory features required for the models
@@ -865,6 +871,9 @@ def score_nba_models(
         scoring happens in a pandas UDF the size of the chunk should be small enough
         so that each chunk fits in memory of the task asssigned to the worker in the
         Spark cluster
+    :param missing_model_default_value: Value to return for the prediction in case the
+        model is not available. If None, an error will be returned (since None cannot be
+        returned by a pandas udf)
     :return: df_master but with the columns with predictions added
     """
 
@@ -888,41 +897,68 @@ def score_nba_models(
         current_model_group = pdf[model_group_column].iloc[0]
         pd_results = pd.DataFrame()
 
+        for pk_col in primary_key_columns:
+            pd_results.loc[:, pk_col] = pdf.loc[:, pk_col]
+
         for current_tag, prediction_colname in models_to_score.items():
             current_run = pai.load_runs(
                 experiment=current_model_group, tags=[current_tag]
             )
-            assert (
-                len(current_run) > 0
-            ), f"There are no runs for experiment {current_model_group} and tag {current_tag}"
+            if len(current_run) == 0:
+                if missing_model_default_value is None:
+                    raise ValueError(
+                        f"There are no runs for experiment {current_model_group}"
+                        f" and tag {current_tag}"
+                    )
+                else:
+                    logging.info(
+                        f"There is no PAI run for experiment "
+                        f"{current_model_group} and tag {current_tag}"
+                    )
+                    pd_results[prediction_colname] = missing_model_default_value
+                    continue
 
-            assert (
-                len(current_run) < 2
-            ), f"There are more than 1 runs for experiment {current_model_group} and tag {current_tag}"
+            assert len(current_run) < 2, (
+                f"There are more than 1 runs for experiment "
+                f"{current_model_group} and tag {current_tag}"
+            )
 
             current_run_id = current_run["run_id"].iloc[0]
-            current_model = pai.load_model(run_id=current_run_id)
-            df_current_model_features = pai.load_features(run_id=current_run_id)
-            current_model_features = df_current_model_features["feature_list"].iloc[0]
-            # We sort features because MLflow does not preserve feature order
-            # Models should also be trained with features sorted
-            current_model_features.sort()
-            X = pdf[current_model_features]
-            if "binary" in current_run["tags"].iloc[0]:
-                pd_results[prediction_colname] = current_model.predict_proba(
-                    X, num_threads=1, n_jobs=1
-                )[:, 1]
-            elif "regression" in current_run["tags"].iloc[0]:
-                pd_results[prediction_colname] = current_model.predict(
-                    X, num_threads=1, n_jobs=1
-                )
+            if "model" not in pai.list_artifacts(run_id=current_run_id):
+                if missing_model_default_value is None:
+                    raise ValueError(
+                        f"There is no model object in the PAI run for experiment"
+                        f" {current_model_group} and tag {current_tag}"
+                    )
+                else:
+                    logging.info(
+                        f"There is no PAI run for experiment {current_model_group}"
+                        f" and tag {current_tag}"
+                    )
+                    pd_results[prediction_colname] = missing_model_default_value
             else:
-                raise ValueError(
-                    "Unrecognized model type while predicting, model has"
-                    "neither 'binary' or 'regression' tags"
-                )
-            for pk_col in primary_key_columns:
-                pd_results.loc[:, pk_col] = pdf.loc[:, pk_col]
+                current_model = pai.load_model(run_id=current_run_id)
+                df_current_model_features = pai.load_features(run_id=current_run_id)
+                current_model_features = df_current_model_features["feature_list"].iloc[
+                    0
+                ]
+                # We sort features because MLflow does not preserve feature order
+                # Models should also be trained with features sorted
+                current_model_features.sort()
+                X = pdf[current_model_features]
+                if "binary" in current_run["tags"].iloc[0]:
+                    pd_results[prediction_colname] = current_model.predict_proba(
+                        X, num_threads=1, n_jobs=1
+                    )[:, 1]
+                elif "regression" in current_run["tags"].iloc[0]:
+                    pd_results[prediction_colname] = current_model.predict(
+                        X, num_threads=1, n_jobs=1
+                    )
+                else:
+                    raise ValueError(
+                        "Unrecognized model type while predicting, model has"
+                        "neither 'binary' or 'regression' tags"
+                    )
 
         return pd_results
 
