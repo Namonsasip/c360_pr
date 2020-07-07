@@ -204,9 +204,9 @@ def l4_rolling_window(input_df: DataFrame, config: dict):
     :param config:
     :return:
     """
-    # if len(input_df.head(1)) == 0:
-    #     logging.info("l4_rolling_window -> df == 0 records found in input dataset")
-    #     return input_df
+    if len(input_df.head(1)) == 0:
+        logging.info("l4_rolling_window -> df == 0 records found in input dataset")
+        return input_df
     logging.info("l4_rolling_window -> df > 0 records found in input dataset")
     ranked_lookup_enable_flag = config.get('ranked_lookup_enable_flag', "No")
 
@@ -392,8 +392,8 @@ def node_from_config(input_df: DataFrame, config: dict) -> DataFrame:
     :param config:
     :return:
     """
-    # if len(input_df.head(1)) == 0:
-    #     return input_df
+    if len(input_df.head(1)) == 0:
+        return input_df
 
     table_name = "input_table"
     input_df.createOrReplaceTempView(table_name)
