@@ -167,4 +167,22 @@ def add_prepaid_no_activity_daily(
             prepaid users.
         users: table to extend with no activity columns.
     """
-    return users
+    cols_to_pick = [
+        "in_no_activity_n_days",
+        "no_activity_n_days",
+        "out_no_activity_n_days",
+        "analytic_id",
+        "register_date",
+    ]
+
+    def is_positive(col_name):
+        """ Return 1 if `col_name` is positive, 0 otherwise."""
+        return func.when(func.col(col_name) > 0, 1).otherwise(0)
+
+    no_activity = (
+        prepaid_no_activity_daily.select(cols_to_pick)
+        .withColumn("prepaid_no_activity", is_positive("no_activity_n_days"))
+        .withColumn("prepaid_no_activity_in", is_positive("in_no_activity_n_days"))
+        .withColumn("prepaid_no_activity_out", is_positive("out_no_activity_n_days"))
+    )
+    return users.join(no_activity, on=["analytic_id", "register_date"], how="left")
