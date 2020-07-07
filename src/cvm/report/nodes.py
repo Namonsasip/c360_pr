@@ -57,7 +57,7 @@ def prepare_users(
             "target_group in ('TG_2020_CVM_V2', 'CG_2020_CVM_V2', 'BAU_2020_CVM_V2', "
             "'TG', 'CG', 'BAU')"
         )
-        .select(["crm_sub_id", "target_group"])
+        .select(["crm_sub_id", "target_group", "analytic_id", "register_date"])
         .distinct()
         .withColumn("key_date", func.lit(today))
         .withColumnRenamed("crm_sub_id", "old_subscription_identifier")
