@@ -204,8 +204,7 @@ def geo_to_l4_pipeline(**kwargs):
             node(
                 l4_geo_work_area_center_average,
                 ["l0_geo_cust_location_visit_hr_for_l4_geo_work_area_center_average",
-                 "l4_geo_home_work_location_id_for_l4_geo_work_area_center_average",
-                 "params:l4_geo_work_area_center_average"
+                 "l4_geo_home_work_location_id_for_l4_geo_work_area_center_average"
                  ],
                 "l4_geo_work_area_center_average"
             ),
