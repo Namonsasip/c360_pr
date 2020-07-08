@@ -133,7 +133,7 @@ def _generate_accuracy_and_completeness_nodes(
                     "dq_sampled_subscription_identifier",
                     "params:features_for_dq",
                     "params:percentiles",
-                    "params:incremental_mode"
+                    "params:incremental_mode",
                     "all_catalog_and_feature_exist"
                     ],
             outputs=output_catalog,
