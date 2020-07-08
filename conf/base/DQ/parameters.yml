@@ -38,7 +38,7 @@ benchmark_end_date: "2020-04-30"
 
 threshold_lookback_corresponding_dates: 120
 
-incremental_mode: true # true = incremental mode activated / false = incremental mode deactivated
+incremental_mode: false # true = incremental mode activated / false = incremental mode deactivated
 
 features_for_dq:
 #  l3_customer_profile_include_1mo_non_active:
@@ -86,8 +86,8 @@ features_for_dq:
 #    - feature: sum_payments_top_up_vol_by_epos_weekly_last_twelve_week
 #    - feature: sum_payments_top_ups_by_rom_weekly_last_twelve_week
 #    - feature: sum_payments_top_up_vol_by_rom_weekly_last_twelve_week
-  l4_daily_feature_topup_and_volume:
-    - feature: '*'
+#  l4_daily_feature_topup_and_volume:
+#    - feature: '*'
 #  l4_campaign_postpaid_prepaid_features:
 #    - feature: sum_campaign_overall_count_sum_weekly_last_week
 #    - feature: sum_campaign_overall_count_sum_weekly_last_two_week
@@ -144,7 +144,7 @@ features_for_dq:
 #    - feature: sum_download_kb_traffic_netflix_video_sum_weekly_last_week
 #  l4_usage_prepaid_postpaid_daily_features:
 #    - feature: '*'
-#  l4_usage_postpaid_prepaid_weekly_features_sum:
+  l4_usage_postpaid_prepaid_weekly_features_sum:
 #    - feature: subscription_identifier
 #    - feature: sum_usg_data_sunday_usage_sum_weekly_last_two_week
 #    - feature: sum_usg_incoming_data_volume_2G_3G_sum_weekly_last_four_week
@@ -191,6 +191,30 @@ features_for_dq:
 #    - feature: sum_usg_data_wednesday_usage_sum_weekly_last_two_week
 #    - feature: sum_usg_data_wednesday_usage_sum_weekly_last_four_week
 #    - feature: sum_usg_data_wednesday_usage_sum_weekly_last_twelve_week
+#    - feature: '*'
+    - feature: sum_usg_incoming_data_volume_sum_weekly_last_week
+    - feature: sum_usg_incoming_data_volume_sum_weekly_last_two_week
+    - feature: sum_usg_incoming_data_volume_sum_weekly_last_four_week
+    - feature: sum_usg_incoming_data_volume_sum_weekly_last_twelve_week
+    - feature: sum_usg_incoming_data_volume_2G_3G_sum_weekly_last_week
+    - feature: sum_usg_incoming_data_volume_2G_3G_sum_weekly_last_two_week
+    - feature: sum_usg_incoming_data_volume_2G_3G_sum_weekly_last_twelve_week
+    - feature: sum_usg_incoming_data_volume_4G_sum_weekly_last_week
+    - feature: sum_usg_incoming_data_volume_4G_sum_weekly_last_two_week
+    - feature: sum_usg_incoming_data_volume_4G_sum_weekly_last_four_week
+    - feature: sum_usg_incoming_data_volume_4G_sum_weekly_last_twelve_week
+    - feature: sum_usg_incoming_local_data_volume_sum_weekly_last_week
+    - feature: sum_usg_incoming_local_data_volume_sum_weekly_last_two_week
+    - feature: sum_usg_incoming_local_data_volume_sum_weekly_last_four_week
+    - feature: sum_usg_incoming_local_data_volume_sum_weekly_last_twelve_week
+    - feature: sum_usg_incoming_local_data_volume_2G_3G_sum_weekly_last_week
+    - feature: sum_usg_incoming_local_data_volume_2G_3G_sum_weekly_last_two_week
+    - feature: sum_usg_incoming_local_data_volume_2G_3G_sum_weekly_last_four_week
+    - feature: sum_usg_incoming_local_data_volume_2G_3G_sum_weekly_last_twelve_week
+    - feature: sum_usg_incoming_local_data_volume_4G_sum_weekly_last_week
+    - feature: sum_usg_incoming_local_data_volume_4G_sum_weekly_last_two_week
+    - feature: sum_usg_incoming_local_data_volume_4G_sum_weekly_last_four_week
+    - feature: sum_usg_incoming_local_data_volume_4G_sum_weekly_last_twelve_week
 #  l4_usage_prepaid_postpaid_daily_features:
 #    - feature: '*'
 #  l4_usage_postpaid_prepaid_weekly_features_sum:
