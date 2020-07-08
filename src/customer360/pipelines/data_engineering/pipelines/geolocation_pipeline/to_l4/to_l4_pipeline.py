@@ -231,19 +231,14 @@ def geo_to_l4_pipeline(**kwargs):
                 "l4_geo_range_from_most_visited"
             ),
 
-            # Form
-
             # 27 Same favourite location for weekend and weekday
-
             node(
                 l4_same_favourite_location_weekend_weekday_weekly,
                 ["l2_same_favourite_location_weekend_weekday_weekly"],
                 "l4_same_favourite_location_weekend_weekday_weekly"
             ),
 
-
             ###47 the_favourite_locations###
-
             node(
                 l4_the_favourite_locations_daily,
                 ["l1_the_favourite_locations_daily"],
@@ -334,7 +329,7 @@ def geo_to_l4_pipeline(**kwargs):
                 "l4_the_second_frequently_location_4g"
             ),
 
-            ##============== Number of used most frequent top five =====================
+            # Number of used most frequent top five
             node(
                 l4_geo_number_most_frequent_top_five_weekday,
                 ["l1_the_favourite_locations_daily",
@@ -359,7 +354,8 @@ def geo_to_l4_pipeline(**kwargs):
                  ],
                 "l4_geo_number_most_frequent_top_five"
             ),
-            ## ============== Number of used most frequent =====================
+
+            # Number of used most frequent
             node(
                 l4_geo_number_most_frequent_weekday,
                 ["l1_the_favourite_locations_daily",
