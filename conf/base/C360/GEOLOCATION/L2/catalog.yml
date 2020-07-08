@@ -1,3 +1,4 @@
+#--------------------------l2_geo_time_spent_by_location_weekly---------------------------------
 l2_geo_time_spent_by_location_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_time_spent_by_location_weekly/
@@ -19,7 +20,7 @@ l2_geo_time_spent_by_location_weekly_for_l4_geo_time_spent_by_location:
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
     lookback: '0'
-
+#--------------------------l2_geo_area_from_ais_store_weekly---------------------------------
 l2_geo_area_from_ais_store_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_area_from_ais_store_weekly/
@@ -41,7 +42,7 @@ l2_geo_area_from_ais_store_weekly_for_l4_geo_area_from_ais_store:
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
     lookback: '0'
-
+#------------------------l2_geo_area_from_competitor_store_weekly-----------------------------------
 l2_geo_area_from_competitor_store_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_area_from_competitor_store_weekly/
@@ -63,15 +64,15 @@ l2_geo_area_from_competitor_store_weekly_for_l4_geo_area_from_competitor_store:
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
     lookback: '0'
-
+#------------------------l2_geo_cust_subseqently_distance_weekly-----------------------------------
 l2_geo_cust_subseqently_distance_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_cust_subseqently_distance_weekly/
   file_format: parquet
 
 ##==============================Update 2020-06-12 by Thatt529==========================================##
+#-------------------------total_distance_km----------------------------------
 
-###total_distance_km###
 l2_geo_total_distance_km_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_total_distance_km_weekly/
@@ -94,7 +95,8 @@ l2_geo_total_distance_km_weekly_for_l4_geo_total_distance_km:
     target_layer: 'l4_weekly'
     lookback: '0'
 
-###Traffic_fav_location###
+#----------------------Traffic_fav_location-------------------------------------
+
 l2_geo_use_traffic_home_work_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_use_traffic_most_location_weekly/
@@ -113,8 +115,7 @@ l2_geo_use_traffic_home_work_weekly:
     target_layer: 'l4_weekly'
     lookback: '0'
 
-
-###Number_of_base_station###
+#---------------------Number_of_base_station--------------------------------------
 l2_geo_number_of_base_station_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
@@ -139,7 +140,7 @@ l2_geo_number_of_base_station_weekly_for_l4_geo_number_of_base_station:
     target_layer: 'l4_weekly'
     lookback: '0'
 
-###feature_sum_voice_location###
+#-----------------feature_sum_voice_location------------------------------------------
 l2_geo_call_location_home_work_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_call_location_home_work_weekly/
@@ -163,7 +164,7 @@ l2_geo_call_location_home_work_weekly_for_l4_geo_call_location_home_work_weekly:
     lookback: '0'
 
 ##==============================Update 2020-06-15 by Thatt529==========================================##
-
+#----------------------Top_3_cells_on_voice_usage-------------------------------------
 ###Top_3_cells_on_voice_usage###
 l2_geo_top3_cells_on_voice_usage:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -183,7 +184,7 @@ l2_geo_top3_cells_on_voice_usage:
     lookback: '0'
 
 ##==============================Update 2020-06-17 by Thatt529==========================================##
-
+#------------------------distance_top_call-----------------------------------
 ###distance_top_call###
 l2_geo_distance_top_call:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
