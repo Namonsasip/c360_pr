@@ -174,6 +174,7 @@ def add_churn_ard_optimizer_features(
         propensities: users propensities
         parameters: parameters defined in parameters.yml
     """
+    logging.getLogger(__name__).info("Adding optimization")
     optimization_parameters = parameters["use_case_optimize"]
     ard_cost = optimization_parameters["ard_cost"]
     churn_cost = optimization_parameters["churn_cost"]
