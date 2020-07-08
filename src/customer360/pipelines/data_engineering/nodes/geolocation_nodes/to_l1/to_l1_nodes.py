@@ -16,8 +16,9 @@ from pyspark.sql import Window
 from pyspark.sql.types import *
 
 from customer360.utilities.re_usable_functions import add_start_of_week_and_month, union_dataframes_with_missing_cols, \
-    execute_sql, add_event_week_and_month_from_yyyymmdd, __divide_chunks
-from customer360.utilities.spark_util import get_spark_session
+    execute_sql, add_event_week_and_month_from_yyyymmdd, __divide_chunks, check_empty_dfs, \
+    data_non_availability_and_missing_check
+from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 
 conf = os.getenv("CONF", "base")
 run_mode = os.getenv("DATA_AVAILABILITY_CHECKS", None)
