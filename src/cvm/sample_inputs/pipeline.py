@@ -110,7 +110,7 @@ def sample_inputs(sample_type: str) -> Pipeline:
         "l4_usage_postpaid_prepaid_weekly_features_sum",
         "l4_touchpoints_to_call_center_features",
     ]
-    old_sub_id_datasets = ["l4_touchpoints_to_call_center_features"]
+    old_sub_id_datasets = []
 
     nodes_list = [
         node(
