@@ -207,4 +207,12 @@ nba_personnas_clustering_reporting_features:
   - region_is_LOWER_SOUTH
   - region_is_UPPER_SOUTH
   - region_is_LOWER_NORTH_EASTERN
+# propensities
+  - dilution1_pred
+  - dilution2_pred
+  - churn5_pred
+  - churn15_pred
+  - churn30_pred
+  - churn45_pred
+  - churn60_pred
 
