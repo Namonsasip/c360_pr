@@ -433,6 +433,9 @@ treatment_rules:
     treatment_name: treatment_no_test_churn_zero_arpu
     treatment_size: 27000
     use_case: churn
+
+### ARD treatment starts here
+
   z0_ABtest_ard_high_arpu_high_tenure_m1:
     order_policy: dilution1_pred
     rules:
