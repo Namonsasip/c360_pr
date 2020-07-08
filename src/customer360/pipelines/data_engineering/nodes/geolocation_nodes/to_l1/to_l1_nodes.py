@@ -31,12 +31,12 @@ def l1_geo_time_spent_by_location_daily(df,sql):
     # df.cache()
 
     # ----- Data Availability Checks -----
-    if check_empty_dfs([df]):
+    if check_empty_dfs(df):
         return get_spark_empty_df()
 
     df = data_non_availability_and_missing_check(df=df,grouping="daily",par_col="partition_date",target_table_name="l1_geo_time_spent_by_location_daily")
 
-    if check_empty_dfs([df]):
+    if check_empty_dfs(df):
         return get_spark_empty_df()
 
     # ----- Transformation -----
@@ -53,6 +53,17 @@ def l1_geo_time_spent_by_location_daily(df,sql):
 def l1_geo_area_from_ais_store_daily(shape,masterplan,geo_cust_cell_visit_time,sql):
     # geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20200301')
 
+    # ----- Data Availability Checks -----
+    if check_empty_dfs(geo_cust_cell_visit_time):
+        return get_spark_empty_df()
+
+    df = data_non_availability_and_missing_check(df=geo_cust_cell_visit_time, grouping="daily", par_col="partition_date",
+                                                 target_table_name="l1_location_of_visit_ais_store_daily")
+
+    if check_empty_dfs(geo_cust_cell_visit_time):
+        return get_spark_empty_df()
+
+    # ----- Transformation -----
     geo_cust_cell_visit_time  = add_start_of_week_and_month(geo_cust_cell_visit_time, "time_in")
     geo_cust_cell_visit_time.show()
 
@@ -92,7 +103,18 @@ def l1_geo_area_from_ais_store_daily(shape,masterplan,geo_cust_cell_visit_time,s
 
 def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit_time,sql):
     # geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20200301')
+    # ----- Data Availability Checks -----
+    if check_empty_dfs(geo_cust_cell_visit_time):
+        return get_spark_empty_df()
 
+    df = data_non_availability_and_missing_check(df=geo_cust_cell_visit_time, grouping="daily",
+                                                 par_col="partition_date",
+                                                 target_table_name="l1_location_of_visit_ais_store_daily")
+
+    if check_empty_dfs(geo_cust_cell_visit_time):
+        return get_spark_empty_df()
+
+    # ----- Transformation -----
     geo_cust_cell_visit_time.cache()
     geo_cust_cell_visit_time = add_start_of_week_and_month(geo_cust_cell_visit_time, "time_in")
 
