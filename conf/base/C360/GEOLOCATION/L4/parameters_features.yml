@@ -25,11 +25,6 @@ l4_area_from_competitor_store:
     sum: ["duration","num_of_times"]
   read_from: "l2"
 
-#l4_geo_top_visit_exclude_homework:
-#  partition_by: ["imsi"]
-#  feature_list:
-#    imsi: "imsi"
-
 int_l4_geo_home_location_id_monthly:
   where_clause: "where duration != 0 and ((hour_in >= 18) or (hour_in < 18 and hour_out > 18) or (hour_in < 6 and hour_out > 6) or (hour_out <=6))"
   feature_list:
@@ -66,17 +61,6 @@ l4_geo_home_work_location_id:
     work_location_id: "work_location_id"
     work_latitude: "work_latitude"
     work_longitude: "work_longitude"
-  granularity: ""
-
-l4_geo_work_area_center_average:
-  where_clause: ""
-  feature_list:
-    imsi: "imsi"
-    start_of_month: "start_of_month"
-    work_avg_latitude: "work_avg_latitude"
-    work_avg_longitude: "work_avg_longitude"
-    distance_difference: "distance_difference"
-    radius: "radius"
   granularity: ""
 
 l4_geo_home_weekday_city_citizens:
