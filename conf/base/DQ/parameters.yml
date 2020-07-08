@@ -39,7 +39,8 @@ benchmark_end_date: "2020-04-30"
 threshold_lookback_corresponding_dates: 120
 
 
-incremental_mode: false # true = incremental mode activated / false = incremental mode deactivated
+
+incremental_mode: true # true = incremental mode activated / false = incremental mode deactivated
 
 
 features_for_dq:
