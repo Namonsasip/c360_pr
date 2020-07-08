@@ -14,6 +14,7 @@ def create_nba_personnas_clustering_pipeline() -> Pipeline:
                 l5_all_subscribers_master_table_customer_level,
                 inputs={
                     "df_master": "l5_all_subscribers_master_table",
+                    "propensities": "clustering_propensities",
                     "l5_customer_ids": "l5_customer_ids",
                     "l4_streaming_visit_count_and_download_traffic_feature_full_load_data_blob": "l4_streaming_visit_count_and_download_traffic_feature_full_load_data_blob",
                     "subset_features": "params:nba_model_input_features",

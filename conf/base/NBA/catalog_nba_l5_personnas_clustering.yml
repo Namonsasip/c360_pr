@@ -33,3 +33,10 @@ personnas_clustering_model:
 l5_personnas_clustering_summary:
   type: kedro.io.CSVLocalDataSet
   filepath: data/L5/NBA/l5_personnas_clustering_summary.csv
+
+clustering_propensities:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  save_args:
+    mode: "overwrite"
+  filepath: /mnt/customer360-blob-data/C360/CVM/l5_cvm_propensity_scores_march_scoring/

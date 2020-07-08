@@ -18,6 +18,7 @@ from pyspark.sql.types import FloatType
 
 def l5_all_subscribers_master_table_customer_level(
     df_master: DataFrame,
+    propensities: DataFrame,
     l5_customer_ids: DataFrame,
     l4_streaming_visit_count_and_download_traffic_feature_full_load_data_blob: DataFrame,
     subset_features: Dict[str, List[str]],
