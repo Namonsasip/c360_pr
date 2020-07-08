@@ -64,7 +64,9 @@
 # add a line of comments
 
 treatment_rules:
-  ### churn treatment starts here
+
+### churn exploration treatment starts here
+  ### high priority churn targets (tests and business drivers)
   a1_internal_churn_treatment:
     order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
     rules:
@@ -217,30 +219,7 @@ treatment_rules:
     treatment_name: treatment_AB_test_churn_positive_arpu_m4
     treatment_size: 4500
     use_case: churn
-  treatment_AB_test_churn_positive_arpu_m5:
-    order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
-    rules:
-      4d2f8f2d-ffd7-4db6-a1d0-c1bdd4dad873:
-        campaign_code: 200625-14
-        conditions:
-        - churn_microsegment == 'positive_arpu_m5'
-        limit_per_code: 500
-        variant: 2
-      af89a666-1c03-4b64-9aab-a6ffdb8b83af:
-        campaign_code: 200625-15
-        conditions:
-        - churn_microsegment == 'positive_arpu_m5'
-        limit_per_code: 500
-        variant: 3
-      c8621223-a66e-4013-b16b-13552587f891:
-        campaign_code: 200625-13
-        conditions:
-        - churn_microsegment == 'positive_arpu_m5'
-        limit_per_code: 500
-        variant: 1
-    treatment_name: treatment_AB_test_churn_positive_arpu_m5
-    treatment_size: 4500
-    use_case: churn
+  ### no test churn section
   treatment_no_test_churn_positive_arpu:
     order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
     rules:
@@ -434,8 +413,8 @@ treatment_rules:
     treatment_size: 27000
     use_case: churn
 
-### ARD treatment starts here
-
+### ARD exploration treatment starts here
+  ### ARD TESTS
   z0_ABtest_ard_high_arpu_high_tenure_m1:
     order_policy: dilution1_pred
     rules:
@@ -514,6 +493,8 @@ treatment_rules:
     treatment_name: z0_ABtest_ard_low_arpu_high_tenure_m4
     treatment_size: 3000
     use_case: ard
+
+  ### ARD NO TESTS
   z1_notest_ard_d20d10_h_arpu_l_tenure:
     order_policy: dilution1_pred + dilution2_pred
     rules:
@@ -1294,3 +1275,15 @@ treatment_rules:
     treatment_name: z2_notest_ard_d10_low_arpu_old
     treatment_size: 2700
     use_case: ard
+
+### CHURN/ARD Optimisation & exploitation layer
+  # Very high target volume
+  # Purely to catch "rest of targets" based on conditions we missed
+
+  # churn/ARD > 1, churn_cost is >500, target size = 1mil
+  ## sent to Churn
+  ## need one code
+
+  # churn/ARD < 1, ARD_cost is >300, target size = 1mil
+  ## sent to ARD
+  ## need one code
