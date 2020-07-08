@@ -49,12 +49,10 @@ l0_geo_cust_cell_visit_time_for_l1_geo_area_from_competitor_store_daily:
 # Home and work feature
 l0_geo_cust_cell_visit_time_for_int_l4_geo_home_work_location_id:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time/
-  filepath: /mnt/customer360-blob-data/C360/GEO/sample/geo_cust_cell_visit_time_daily_2/  #sample data for test
+  filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time/
   file_format: parquet
-#  metadata_table_path: 'metadata_path'
+  metadata_table_path: 'metadata_path'
   load_args:
-#    increment_flag: 'yes'
     increment_flag: 'no'
     lookup_table_name: 'l4_geo_home_work_location_id'
     read_layer: 'l0_daily'
@@ -63,17 +61,13 @@ l0_geo_cust_cell_visit_time_for_int_l4_geo_home_work_location_id:
 
 l0_geo_cust_cell_visit_time_for_l1_geo_cust_subseqently_distance_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time/
-  filepath: /mnt/customer360-blob-data/C360/GEO/sample/geo_cust_cell_visit_time_daily_2/  #sample data for test
+  filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time/
   file_format: parquet
-  
-##==============================Update 2020-06-12 by Thatt529==========================================##
 
 ###total_distance_km###
 l0_geo_cust_cell_visit_time_simple_data_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time/
-  filepath: /mnt/customer360-blob-data/C360/GEO/sample/geo_cust_cell_visit_time_sample/
+  filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time/
   file_format: parquet
 
 ###Traffic_fav_location###
@@ -97,30 +91,26 @@ l0_profile_customer_profile_ma_for_l1_use_non_homework_features:
 
 l0_usage_sum_data_location_daily_for_l1_use_non_homework_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_sum_data_location_daily/
-  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_sum_data_location_daily/partition_date=20200501/
+  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_sum_data_location_daily/
   file_format: parquet
 
 ###Number_of_base_station###
 l0_geo_cust_cell_visit_time_daily_for_l1_geo_number_of_bs_used:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time/
-  filepath: /mnt/customer360-blob-data/C360/GEO/sample/geo_cust_cell_visit_time_daily/
+  filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time/
   file_format: parquet
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
     increment_flag: 'no'
     lookup_table_name: 'l1_geo_number_of_bs_used'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
-#  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
-
 
 ###feature_sum_voice_location###
 l0_usage_sum_voice_location_daily_for_l1_homework_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_sum_voice_location_daily/
-  filepath: /mnt/customer360-blob-output/C360/GEO/sample/usage_sum_voice_location_daily/  #sample data
+  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_sum_voice_location_daily/
   file_format: parquet
 
 l0_geo_top_visit_exclude_homework_for_l1_sum_voice_daily:
@@ -128,14 +118,10 @@ l0_geo_top_visit_exclude_homework_for_l1_sum_voice_daily:
   filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_top_visit_exclude_homework/
   file_format: parquet
 
-
-##==============================Update 2020-06-15 by Thatt529==========================================##
-
 ###Top_3_cells_on_voice_usage###
 l0_usage_sum_voice_location_daily_for_l1_geo_top3_cells_on_voice_usage:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_sum_voice_location_daily/
-  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_sum_voice_location_daily/partition_date=20200501/
+  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_sum_voice_location_daily/
   file_format: parquet
 
 l0_geo_mst_cell_masterplan_for_l1_geo_top3_cells_on_voice_usage:
