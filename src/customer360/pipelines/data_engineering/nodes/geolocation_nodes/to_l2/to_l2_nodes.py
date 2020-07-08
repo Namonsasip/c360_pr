@@ -18,7 +18,19 @@ running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 
 
 def l2_geo_time_spent_by_location_weekly(df,sql):
-    df = massive_processing_time_spent_weekly(df, sql, "l2_geo_time_spent_by_location_weekly", 'start_of_week')
+    # ----- Data Availability Checks -----
+    if check_empty_dfs([df]):
+        return get_spark_empty_df()
+
+    df = data_non_availability_and_missing_check(df=df,grouping="weekly",
+                                                 par_col="event_partition_date",
+                                                 target_table_name="l2_geo_time_spent_by_location_weekly",
+                                                 missing_data_check_flg='Y')
+    if check_empty_dfs([df]):
+        return get_spark_empty_df()
+
+    # ----- Transformation -----
+    df = massive_processing_time_spent_weekly(df,sql,"l2_geo_time_spent_by_location_weekly", 'start_of_week')
     return df
 
 

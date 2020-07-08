@@ -28,7 +28,17 @@ def l1_geo_time_spent_by_location_daily(df,sql):
     # df = df.filter('partition_date >= 20190801 and partition_date<=20191031')
     # df = add_start_of_week_and_month(df, "time_in")
     # df.cache()
-    #####################################
+
+    # ----- Data Availability Checks -----
+    if check_empty_dfs([df]):
+        return get_spark_empty_df()
+
+    df = data_non_availability_and_missing_check(df=df,grouping="daily",par_col="partition_date",target_table_name="l1_geo_time_spent_by_location_daily")
+
+    if check_empty_dfs([df]):
+        return get_spark_empty_df()
+
+    # ----- Transformation -----
     sql =  """
     SELECT IMSI,LOCATION_ID,SUM(DURATION) AS SUM_DURATION,event_partition_date,start_of_week,start_of_month
     FROM GEO_CUST_CELL_VISIT_TIME
@@ -36,7 +46,7 @@ def l1_geo_time_spent_by_location_daily(df,sql):
     """
     return_df = massive_processing_time_spent_daily(df, sql, "l1_geo_time_spent_by_location_daily", 'partition_date')
     # df.unpersist()
-    #######################################
+
     return return_df
 
 def l1_geo_area_from_ais_store_daily(shape,masterplan,geo_cust_cell_visit_time,sql):
