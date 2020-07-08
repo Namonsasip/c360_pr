@@ -4,7 +4,7 @@ l2_geo_time_spent_by_location_weekly:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_time_spent_by_location_weekly/
   file_format: parquet
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l1_daily'
@@ -15,7 +15,7 @@ l2_geo_time_spent_by_location_weekly_for_l4_geo_time_spent_by_location:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_time_spent_by_location_weekly/
   file_format: parquet
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l4_geo_time_spent_by_location'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
@@ -26,7 +26,7 @@ l2_geo_area_from_ais_store_weekly:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_area_from_ais_store_weekly/
   file_format: parquet
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l1_daily'
@@ -37,7 +37,7 @@ l2_geo_area_from_ais_store_weekly_for_l4_geo_area_from_ais_store:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_area_from_ais_store_weekly/
   file_format: parquet
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l4_area_from_ais_store'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
@@ -48,7 +48,7 @@ l2_geo_area_from_competitor_store_weekly:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_area_from_competitor_store_weekly/
   file_format: parquet
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l1_daily'
@@ -59,7 +59,7 @@ l2_geo_area_from_competitor_store_weekly_for_l4_geo_area_from_competitor_store:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_area_from_competitor_store_weekly/
   file_format: parquet
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l4_area_from_competitor_store'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
@@ -78,7 +78,7 @@ l2_geo_total_distance_km_weekly:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_total_distance_km_weekly/
   file_format: parquet
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l1_daily'
@@ -89,7 +89,7 @@ l2_geo_total_distance_km_weekly_for_l4_geo_total_distance_km:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_total_distance_km_weekly/
   file_format: parquet
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l4_geo_total_distance_km'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
@@ -102,14 +102,14 @@ l2_geo_use_traffic_home_work_weekly:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_use_traffic_most_location_weekly/
   file_format: parquet
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mode: "overwrite"
     lookup_table_name: 'l2_geo_use_traffic_home_work_weekly'
     read_layer: 'l1_daily'
     target_layer: 'l2_weekly'
     lookback: '0'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l4_geo_use_traffic_home_work_weekly'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
@@ -122,7 +122,7 @@ l2_geo_number_of_base_station_weekly:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_number_of_base_station_weekly/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l1_daily'
@@ -134,7 +134,7 @@ l2_geo_number_of_base_station_weekly_for_l4_geo_number_of_base_station:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_number_of_base_station_weekly/
   metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l4_number_of_base_station'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
@@ -146,7 +146,7 @@ l2_geo_call_location_home_work_weekly:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_call_location_home_work_weekly/
   file_format: parquet
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l1_daily'
@@ -157,7 +157,7 @@ l2_geo_call_location_home_work_weekly_for_l4_geo_call_location_home_work_weekly:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_call_location_home_work_weekly/
   file_format: parquet
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l4_geo_call_location_home_work_weekly'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
@@ -171,13 +171,13 @@ l2_geo_top3_cells_on_voice_usage:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_top3_cells_on_voice_usage/
   file_format: parquet
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l1_daily'
     target_layer: 'l2_weekly'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l4_geo_top3_cells_on_voice_usage'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
@@ -191,13 +191,13 @@ l2_geo_distance_top_call:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_distance_top_call/
   file_format:  parquet
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l4_geo_distance_top_call'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
     lookback: '0'
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l1_daily'
@@ -210,7 +210,7 @@ l2_the_favourite_locations_weekly:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/the_favourite_locations_weekly/
   file_format: parquet
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l1_the_favourite_locations_weekly'
     read_layer: 'l1_daily'
     target_layer: 'l2_weekly'
@@ -223,7 +223,7 @@ l2_same_favourite_location_weekend_weekday_weekly:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/same_favourite_location_weekend_weekday_weekly/
   file_format: parquet
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l0_geo_cust_cell_visit_time_for_l2_same_favourite_location_weekend_weekday'
     read_layer: 'l0_daily'
     target_layer: 'l2_weekly'
@@ -234,7 +234,7 @@ l2_geo_cust_subseqently_distance_weekly_for_l4_geo_cust_subseqently_distance:
   filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_cust_subseqently_distance_weekly/
   file_format: parquet
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l4_geo_cust_subseqently_distance'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
