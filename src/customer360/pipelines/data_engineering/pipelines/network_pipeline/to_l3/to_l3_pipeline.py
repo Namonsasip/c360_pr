@@ -48,32 +48,51 @@ def network_to_l3_pipeline(**kwargs):
             node(
                 build_l3_network_im_cqi,
                 ["l1_network_im_cqi_for_l3_network_im_cqi",
-                 "params:l3_network_im_cqi"],
+                 "params:l3_network_im_cqi",
+                 "params:exception_partition_list_for_l1_network_im_cqi_for_l3_network_im_cqi"],
                 "l3_network_im_cqi"
             ),
             node(
                 build_l3_network_streaming_cqi,
                 ["l1_network_streaming_cqi_for_l3_network_streaming_cqi",
-                 "params:l3_network_streaming_cqi"],
+                 "params:l3_network_streaming_cqi",
+                 "params:exception_partition_list_for_l1_network_streaming_cqi_for_l3_network_streaming_cqi"],
                 "l3_network_streaming_cqi"
             ),
             node(
                 build_l3_network_web_cqi,
                 ["l1_network_web_cqi_for_l3_network_web_cqi",
-                 "params:l3_network_web_cqi"],
+                 "params:l3_network_web_cqi",
+                 "params:exception_partition_list_for_l1_network_web_cqi_for_l3_network_web_cqi"],
                 "l3_network_web_cqi"
             ),
             node(
                 build_l3_network_voip_cqi,
                 ["l1_network_voip_cqi_for_l3_network_voip_cqi",
-                 "params:l3_network_voip_cqi"],
+                 "params:l3_network_voip_cqi",
+                 "params:exception_partition_list_for_l1_network_voip_cqi_for_l3_network_voip_cqi"],
                 "l3_network_voip_cqi"
             ),
             node(
                 build_l3_network_volte_cqi,
                 ["l1_network_volte_cqi_for_l3_network_volte_cqi",
-                 "params:l3_network_volte_cqi"],
+                 "params:l3_network_volte_cqi",
+                 "params:exception_partition_list_for_l1_network_volte_cqi_for_l3_network_volte_cqi"],
                 "l3_network_volte_cqi"
+            ),
+            node(
+                build_l3_network_user_cqi,
+                ["l1_network_user_cqi_for_l3_network_user_cqi",
+                 "params:l3_network_user_cqi",
+                 "params:exception_partition_list_for_l1_network_user_cqi_for_l3_network_user_cqi"],
+                "l3_network_user_cqi"
+            ),
+            node(
+                build_l3_network_file_transfer_cqi,
+                ["l1_network_file_transfer_cqi_for_l3_network_file_transfer_cqi",
+                 "params:l3_network_file_transfer_cqi",
+                 "params:exception_partition_list_for_l1_network_file_transfer_cqi_for_l3_network_file_transfer_cqi"],
+                "l3_network_file_transfer_cqi"
             ),
         ]
     )

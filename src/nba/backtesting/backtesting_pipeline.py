@@ -7,9 +7,9 @@ from nba.backtesting.backtesting_nodes import (
     l5_nba_backtesting_master_expanded_scored,
     l5_nba_backtesting_master_scored,
     l5_nba_backtesting_pcm_eligible_spine,
-    score_nba_models,
     l5_nba_backtesting_master_expanded_queue_distribution_scored,
 )
+from nba.models.models_nodes import score_nba_models
 from nba.model_input.model_input_nodes import node_l5_nba_master_table
 
 
@@ -98,7 +98,7 @@ def create_nba_backtesting_pipeline() -> Pipeline:
                 inputs={
                     "subset_features": "params:nba_model_input_features",
                     "l5_nba_master_table_spine": "l5_nba_backtesting_pcm_eligible_spine",
-                    "l5_nba_customer_profile": "l5_nba_customer_profile",
+                    "l3_customer_profile_include_1mo_non_active": "l3_customer_profile_include_1mo_non_active",
                     "l4_billing_rolling_window_topup_and_volume": "l4_billing_rolling_window_topup_and_volume",
                     "l4_billing_rolling_window_rpu": "l4_billing_rolling_window_rpu",
                     "l4_billing_rolling_window_rpu_roaming": "l4_billing_rolling_window_rpu_roaming",
@@ -111,6 +111,7 @@ def create_nba_backtesting_pipeline() -> Pipeline:
                     # "l4_streaming_visit_count_and_download_traffic_feature": "l4_streaming_visit_count_and_download_traffic_feature",
                     "l4_usage_prepaid_postpaid_daily_features": "l4_usage_prepaid_postpaid_daily_features",
                     "l4_usage_postpaid_prepaid_weekly_features_sum": "l4_usage_postpaid_prepaid_weekly_features_sum",
+                    "l4_touchpoints_to_call_center_features": "l4_touchpoints_to_call_center_features",
                 },
                 outputs="l5_nba_pcm_eligible_master_table",
                 name="l5_nba_pcm_eligible_master_table",
