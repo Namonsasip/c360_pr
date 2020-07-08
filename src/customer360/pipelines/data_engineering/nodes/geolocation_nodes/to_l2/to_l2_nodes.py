@@ -316,7 +316,6 @@ def l2_same_favourite_location_weekend_weekday_weekly(df):
 
 
 
-
     ### config
     spark = get_spark_session()
 
