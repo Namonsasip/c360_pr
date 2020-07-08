@@ -202,8 +202,7 @@ l4_geo_distance_top_call:
     avg: ["avg_distance_top_call"]
     max: ["max_distance_top_call"]
     min: ["min_distance_top_call"]
-    std_dev: ["sd_distance_top_call"]
-    sum: ["sum_distance_top_call"]
+    sum: ["sd_distance_top_call","sum_distance_top_call"]
   read_from: "l2"
 
 
