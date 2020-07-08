@@ -1,15 +1,15 @@
 import logging
-from typing import List, Tuple, Dict
+from typing import Dict, List, Tuple
 
 import pandas as pd
 from pyspark.ml import Pipeline
 from pyspark.ml.clustering import KMeans
 from pyspark.ml.feature import (
-    StandardScaler,
-    Imputer,
-    VectorAssembler,
-    MinMaxScaler,
     PCA,
+    Imputer,
+    MinMaxScaler,
+    StandardScaler,
+    VectorAssembler,
 )
 from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
@@ -20,17 +20,19 @@ def l5_all_subscribers_master_table_customer_level(
     df_master: DataFrame,
     propensities: DataFrame,
     l5_customer_ids: DataFrame,
-    l4_streaming_visit_count_and_download_traffic_feature_full_load_data_blob: DataFrame,
+    l4_streaming_visit_count_and_down_traffic_feature_full_load_data_blob: DataFrame,
     subset_features: Dict[str, List[str]],
 ):
 
-    # Add streaming features from an old snapshot as the official version is not yet available
+    # Add streaming features from an old snapshot as the official version is not yet
+    # available
     df_master = df_master.join(
-        l4_streaming_visit_count_and_download_traffic_feature_full_load_data_blob.select(
+        l4_streaming_visit_count_and_down_traffic_feature_full_load_data_blob.select(
             "access_method_num",
             "start_of_week",
             *subset_features[
-                "l4_streaming_visit_count_and_download_traffic_feature_full_load_data_blob"
+                "l4_streaming_visit_count_and_download_traffic"
+                "_feature_full_load_data_blob"
             ],
         ),
         on=["access_method_num", "start_of_week"],
@@ -39,7 +41,7 @@ def l5_all_subscribers_master_table_customer_level(
 
     df_master_with_customer_id = df_master.join(
         l5_customer_ids, on="subscription_identifier", how="left"
-    )
+    ).join(propensities, on="subscription_identifier", how="left")
     df_master_with_customer_id = df_master_with_customer_id.withColumn(
         "customer_id_high_certainty",
         F.when(
@@ -203,7 +205,7 @@ def personnas_clustering(
         " correct, so if you get an error you can run it in a Notebook"
     )
     pipeline_model = Pipeline(
-        stages=[imputer, assembler, scaler, clipper, pca, kmeans,]
+        stages=[imputer, assembler, scaler, clipper, pca, kmeans]
     ).fit(df_master)
 
     # Validate KMeans
