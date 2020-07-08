@@ -504,7 +504,7 @@ def l4_geo_range_from_most_visited(most,close,sql):
                 where A.weekday_branch_location_id = B.geo_shape_id
             """)
     closest.cache()
-    closest.createOrReplaceTempView('closest_store_with_co')
+    return closest
 
 
 def l4_geo_work_area_center_average(visti_hr, home_work):
