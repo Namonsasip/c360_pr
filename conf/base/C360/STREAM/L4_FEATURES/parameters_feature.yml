@@ -60,7 +60,7 @@ l4_streaming_fav_tv_channel_by_duration:
 
 int_l4_streaming_tv_show_features_1:
   # group directly from the source and join with customer profile below
-  partition_by: ["access_method_num", "register_date", "series_title"]
+  partition_by: ["subscription_identifier","access_method_num", "national_id_card", "register_date", "series_title"]
   ranked_lookup_enable_flag: 'No'
   fix_dimension_cols: "subscription_identifier,national_id_card,access_method_num,register_date,start_of_week"
   target_dimension_col: "series_title"
@@ -76,7 +76,7 @@ int_l4_streaming_tv_show_features_2:
     approx_count_distinct_title_weekly_last_two_week: max(approx_count_distinct_title_weekly_last_two_week)
     approx_count_distinct_title_weekly_last_four_week: max(approx_count_distinct_title_weekly_last_four_week)
     approx_count_distinct_title_weekly_last_twelve_week: max(approx_count_distinct_title_weekly_last_twelve_week)
-  granularity: "access_method_num,subscription_identifier,register_date, start_of_week, series_title"
+  granularity: "access_method_num,subscription_identifier,national_id_card,register_date, start_of_week, series_title"
 
 l4_streaming_fav_tv_show_by_episode_watched:
   where_clause: ""
@@ -90,7 +90,7 @@ l4_streaming_fav_tv_show_by_episode_watched:
 
 # fav streaming content type (reused for music, video, and esport)
 int_l4_streaming_service_feature:
-  partition_by: ["access_method_num", "national_id_card", "subscription_identifier", "application"]
+  partition_by: ["access_method_num", "national_id_card", "subscription_identifier", "application", "register_date"]
   ranked_lookup_enable_flag: 'No'
   fix_dimension_cols: "access_method_num,national_id_card,subscription_identifier,start_of_week, register_date"
   target_dimension_col: "application"
@@ -166,9 +166,9 @@ l4_streaming_visit_count_and_download_traffic_feature:
   read_from: "l2"
 
 int_l4_streaming_download_traffic_per_day_of_week:
-  partition_by: ["access_method_num", "national_id_card", "subscription_identifier", "day_of_week", "register_date"]
+  partition_by: ["access_method_num", "national_id_card", "subscription_identifier", "day_of_week"]
   ranked_lookup_enable_flag: 'No'
-  fix_dimension_cols: "access_method_num,national_id_card,subscription_identifier,start_of_week,register_date"
+  fix_dimension_cols: "access_method_num,national_id_card,subscription_identifier,start_of_week"
   target_dimension_col: "day_of_week"
   feature_list:
     sum: ["download_kb_traffic_youtube_video_sum",
@@ -192,7 +192,7 @@ int_l4_streaming_ranked_of_day_per_rolling_week:
   feature_column:
     fav_{app}_streaming_day_of_week: "day_of_week"
 
-  partition_by: ["access_method_num", "national_id_card", "subscription_identifier", "start_of_week", "register_date"]
+  partition_by: ["access_method_num", "national_id_card", "subscription_identifier", "start_of_week"]
   order_by_column_prefix: "sum_download_kb_traffic_{app}_sum"
   read_from: "l2"
   to_join: False  # will be joined in generate_l4_fav_streaming_day() after custom select condition

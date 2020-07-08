@@ -333,11 +333,13 @@ class DataQualityProjectContext(ProjectContext):
         else:
             dq_path = params['metadata_path']['on_cloud_dq']
 
+        dq_consistency_path_prefix = params['dq_consistency_path_prefix']
+
         new_catalog_dict = {}
         for dataset_name in params["features_for_dq"].keys():
             new_catalog = {
                 "type": "datasets.spark_ignore_missing_path_dataset.SparkIgnoreMissingPathDataset",
-                "filepath": f"{dq_path}/{dataset_name}",
+                "filepath": f"{dq_path}/{dq_consistency_path_prefix}/{dataset_name}",
                 "file_format": "parquet",
                 "save_args": {
                     "mode": "overwrite",
