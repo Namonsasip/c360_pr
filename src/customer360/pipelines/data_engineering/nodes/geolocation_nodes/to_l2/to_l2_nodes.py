@@ -9,7 +9,9 @@ import logging
 import os
 from pyspark.sql import types as T
 import statistics
-from customer360.utilities.spark_util import get_spark_session
+
+from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check
+from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 
 conf = os.getenv("CONF", "base")
 run_mode = os.getenv("DATA_AVAILABILITY_CHECKS", None)
