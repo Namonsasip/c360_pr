@@ -493,7 +493,13 @@ def l4_geo_range_from_most_visited(most,close,sql):
     locations = spark.read.parquet("dbfs:/mnt/customer360-blob-data/C360/GEO/geo_mst_lm_poi_shape")
     locations.createOrReplaceTempView('POI_SHAPE')
     closest = spark.sql("""
-                select A.imsi,A.home_weekday_location_id,A.weekday_branch_name,A.weekday_branch_location_id,B.landmark_latitude as store_latitude,B.landmark_longitude as store_longitude
+                select
+                    A.imsi,
+                    A.home_weekday_location_id,
+                    A.weekday_branch_name,
+                    A.weekday_branch_location_id,
+                    B.landmark_latitude as store_latitude,
+                    B.landmark_longitude as store_longitude
                 from closest_store A, poi_shape B
                 where A.weekday_branch_location_id = B.geo_shape_id
             """)
