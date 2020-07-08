@@ -913,6 +913,17 @@ l4_streaming_session_duration_feature:
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
 
+int_l4_streaming_download_traffic_per_day_of_week:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/l4_features/int_l4_streaming_download_traffic_per_day_of_week/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "start_of_week"
+
+
 
 
 
