@@ -504,7 +504,23 @@ def l4_geo_range_from_most_visited(most,close,sql):
                 where A.weekday_branch_location_id = B.geo_shape_id
             """)
     closest.cache()
-    return closest
+    closest.createOrReplaceTempView('closest_store_with_co')
+    range_diff = spark.sql("""
+    select 
+        A.imsi,
+        B.home_weekday_location_id,
+        B.weekday_branch_name,
+        B.weekday_branch_location_id,
+        A.landmark_name_th,
+        A.location_id,
+        CAST((ACOS(COS(RADIANS(90-A.LANDMARK_LATITUDE))*COS(RADIANS(90-STORE_LATITUDE))+SIN(RADIANS(90-A.LANDMARK_LATITUDE))*SIN(RADIANS(90-STORE_LATITUDE))*COS(RADIANS(A.LANDMARK_LONGITUDE - STORE_LONGITUDE)))*6371) AS DECIMAL(13,2)) as range_diff,
+        A.partition_month
+    from most_visit_store A join closest_store_with_co B
+    on A.imsi = B.imsi
+    """)
+    range_diff.cache()
+    out = node_from_config(range_diff, sql)
+    return out
 
 
 def l4_geo_work_area_center_average(visti_hr, home_work):
