@@ -93,6 +93,7 @@ def join_features() -> Pipeline:
                 inputs=[
                     "parameters",
                     "features_report",
+                    "l3_customer_profile_include_1mo_non_active_report",
                     "l3_customer_profile_include_1mo_non_active",
                     "microsegments_macrosegments_history_input_scoring",
                 ],
