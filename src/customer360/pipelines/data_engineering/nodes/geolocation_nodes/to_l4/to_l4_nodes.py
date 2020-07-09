@@ -1227,7 +1227,18 @@ def l4_geo_number_most_frequent_top_five_weekend(l1_favourite_location, l4_most_
 
 # =========================== Number most frequent top five All ============================================
 def l4_geo_number_most_frequent_top_five(l1_favourite_location):
+    # ----- Data Availability Checks -----
+    if check_empty_dfs([l1_favourite_location]):
+        return get_spark_empty_df()
 
+    l1_favourite_location = data_non_availability_and_missing_check(df=l1_favourite_location, grouping="daily",
+                                                                       par_col="event_partition_date",
+                                                                       target_table_name="l4_geo_number_most_frequent_top_five")
+
+    if check_empty_dfs([l1_favourite_location]):
+        return get_spark_empty_df()
+
+    # ----- Transformation -----
     l1_favourite_location.createOrReplaceTempView('geo_location_data')
 
     spark = get_spark_session()
@@ -1267,7 +1278,18 @@ def l4_geo_number_most_frequent_top_five(l1_favourite_location):
 
 ###Number of Unique Cells Used###
 def l4_geo_number_unique_cell_used(l1_df_1):
+    # ----- Data Availability Checks -----
+    if check_empty_dfs([l1_df_1]):
+        return get_spark_empty_df()
 
+    l1_df_1 = data_non_availability_and_missing_check(df=l1_df_1, grouping="daily",
+                                                                    par_col="event_partition_date",
+                                                                    target_table_name="l4_geo_number_unique_cell_used")
+
+    if check_empty_dfs([l1_df_1]):
+        return get_spark_empty_df()
+
+    # ----- Transformation -----
     spark = get_spark_session()
     l4_df_1 = l1_df_1.groupBy("event_partition_date", "weektype") \
     .agg(F.sum("mobile_no").alias("durations"))
