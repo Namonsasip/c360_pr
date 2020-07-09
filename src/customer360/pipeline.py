@@ -282,7 +282,6 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "sales_to_l4_pipeline": sales_to_l4_pipeline(),
         "lineage_dependency_pipeline": lineage_dependency_pipeline(),
         "ops_report_pipeline": ops_report_pipeline(),
-        # "de": data_engineering_pipeline,
         "geo_to_l1_intermediate_pipeline": geo_to_l1_intermediate_pipeline(),
         "geo_to_l1_pipeline": geo_to_l1_pipeline(),
         "geo_to_l1_union_pipeline": geo_to_l1_union_pipeline(),
