@@ -82,6 +82,7 @@ volatility_length: 5
 microsegments_update_cadence: 30
 
 # if "yes" then macrosegments and microsegments are forced to be recalculated
+# use when changing the microsegments or macrosegments
 force_micro_macrosegments_recalculation: 'no'
 
 # pai parameters
