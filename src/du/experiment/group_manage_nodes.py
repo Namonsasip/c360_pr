@@ -36,7 +36,7 @@ def create_prepaid_test_groups(
     #     "partition_date = " + str(max_date[0][1]) + ""
     # )
     prepaid_customer_profile_latest = l0_customer_profile_profile_customer_profile_pre_current_full_load.where(
-        "partition_date = 20200531"
+        "partition_date = 20200705"
     )
     prepaid_customer_profile_latest = prepaid_customer_profile_latest.select(
         "subscription_identifier",
@@ -55,17 +55,17 @@ def create_prepaid_test_groups(
         "smartphone_flag",
         "partition_date",
     )
-    gomo = prepaid_customer_profile_latest.where("promotion_name LIKE '%GOMO%'")
+    gomo = prepaid_customer_profile_latest.where("promotion_group_tariff = 'GOMO' OR promotion_group_tariff = 'NU Mobile' ")
     gomo = gomo.select("subscription_identifier", "register_date")
     simtofly = prepaid_customer_profile_latest.where(
         "promotion_group_tariff = 'SIM 2 Fly'"
     )
     simtofly = simtofly.select("subscription_identifier", "register_date")
     vip_rf = prepaid_customer_profile_latest.where(
-        "vip_flag = 'Y' AND royal_family_flag = 'Y'"
+        "vip_flag = 'Y' OR royal_family_flag = 'Y'"
     )
     vip_rf = vip_rf.select("subscription_identifier", "register_date")
-    vip_rf_simtofly_gomo = gomo.union(simtofly).union(vip_rf)
+    vip_rf_simtofly_gomo = gomo.union(simtofly).union(vip_rf).dropDuplicates(["subscription_identifier", "register_date"])
     default_customer = prepaid_customer_profile_latest.join(
         vip_rf_simtofly_gomo, ["subscription_identifier", "register_date"], "leftanti"
     )
@@ -91,6 +91,79 @@ def create_prepaid_test_groups(
     )
     return test_groups
 
+def create_postpaid_test_groups(
+    l0_customer_profile_profile_customer_profile_post_current_full_load: DataFrame,
+    sampling_rate,
+    test_group_name,
+    test_group_flag,
+) -> DataFrame:
+    # l0_customer_profile_profile_customer_profile_post_current_full_load = catalog.load(
+    #     "l0_customer_profile_profile_customer_profile_post_current_full_load"
+    # )
+    # sampling_rate = [0.9, 0.1]
+    # test_group_name = ["target_group", "control_group"]
+    # test_group_flag = ["TG", "CG"]
+    # max_date = (
+    #     l0_customer_profile_profile_customer_profile_post_current_full_load.withColumn(
+    #         "G", F.lit(1)
+    #     )
+    #     .groupby("G")
+    #     .agg(F.max("partition_date").alias("max_partition_date"))
+    #     .collect()
+    # )
+    # postpaid_customer_profile_latest = l0_customer_profile_profile_customer_profile_post_current_full_load.where(
+    #     "partition_date = " + str(max_date[0][1]) + ""
+    # )
+    postpaid_customer_profile_latest = l0_customer_profile_profile_customer_profile_post_current_full_load.where(
+        "partition_date = 20200705"
+    )
+    postpaid_customer_profile_latest = postpaid_customer_profile_latest.selectExpr(
+        "subscription_identifier",
+        "mobile_status",
+        "register_date",
+        "service_month",
+        "ma_age as age",
+        "register_gender_code as gender",
+        "mobile_segment",
+        "current_promotion_title_ma as promotion_name",
+        "vip_flag",
+        "royal_family_flag",
+        "staff_promotion_flag",
+        "smartphone_flag",
+        "partition_date",
+    )
+    vip = postpaid_customer_profile_latest.where(
+        "vip_flag NOT IN ('NNN')"
+    )
+    rf = postpaid_customer_profile_latest.where(
+        "royal_family_flag NOT IN ('NNN')"
+    )
+    vip_rf = vip.union(rf)
+    vip_rf = vip_rf.select("subscription_identifier", "register_date").dropDuplicates(["subscription_identifier", "register_date"])
+    default_customer = postpaid_customer_profile_latest.join(
+        vip_rf, ["subscription_identifier", "register_date"], "leftanti"
+    )
+    default_customer = default_customer.select(
+        "subscription_identifier", "register_date"
+    )
+    groups = default_customer.randomSplit(sampling_rate)
+    test_groups = vip_rf.withColumn(
+        "group_name", F.lit("vip_rf")
+    ).withColumn("group_flag", F.lit("V"))
+    iterate_n = 0
+    for g in groups:
+        test_groups = test_groups.union(
+            g.withColumn("group_name", F.lit(test_group_name[iterate_n])).withColumn(
+                "group_flag", F.lit(test_group_flag[iterate_n])
+            )
+        )
+        iterate_n += 1
+    test_groups = test_groups.join(
+        postpaid_customer_profile_latest,
+        ["subscription_identifier", "register_date"],
+        "inner",
+    )
+    return test_groups
 
 def create_sanity_check_for_random_test_group(
     df_test_group: DataFrame,
@@ -137,7 +210,7 @@ def create_sanity_check_for_random_test_group(
     sanity_checking_features = df_test_group.join(
         monthly_customer_profile_latest,
         ["subscription_identifier", "register_date"],
-        "inner",
+        "left",
     )
     sanity_checking_features = (
         sanity_checking_features.withColumn(
@@ -198,7 +271,7 @@ def create_sanity_check_for_random_test_group(
             "usg_incoming_total_call_duration_sum",
         ),
         ["access_method_num"],
-        "inner",
+        "left",
     )
     sanity_checking_features = sanity_checking_features.withColumn(
         "data_user", F.when(F.col("usg_total_data_volume_sum_mb") < 10, 0).otherwise(1)

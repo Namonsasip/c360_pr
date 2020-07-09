@@ -85,6 +85,9 @@ from du.experiment.group_manage_pipeline import(create_du_test_group_pipeline,
 from du.scoring.scoring_pipeline import(
 create_du_scoring_pipeline
 )
+from du.upsell.upsell_pipeline import(
+create_du_upsell_pipeline
+)
 from .pipelines.data_engineering.pipelines.campaign_pipeline import (
     campaign_to_l1_pipeline,
     campaign_to_l2_pipeline,
@@ -364,6 +367,7 @@ def create_du_pipeline(**kwargs) -> Dict[str,Pipeline]:
         "create_du_model": create_du_models_pipeline(),
         "create_du_test_group": create_du_test_group_pipeline(),
         "create_du_scoring": create_du_scoring_pipeline(),
+        "create_du_upsell": create_du_upsell_pipeline(),
     }
 
 def create_dq_pipeline(**kwargs) -> Dict[str, Pipeline]:
