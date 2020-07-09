@@ -9,7 +9,7 @@ def product_to_l2_pipeline(**kwargs):
         [
             node(
                 get_activated_deactivated_features,
-                ["l1_product_active_customer_promotion_features_prepaid_postpaid",
+                ["l1_product_active_customer_promotion_features_prepaid_postpaid_for_l2_product_activated_deactivated_features_weekly",
                  "l0_product_pru_m_package_master_group_for_weekly",
                  "l0_product_pru_m_ontop_master_for_weekly",
                  "l0_product_ru_m_main_promotion_cvm_proj_for_weekly",
