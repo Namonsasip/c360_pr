@@ -60,14 +60,14 @@ def prepare_key_columns(df: DataFrame,) -> DataFrame:
         key_date_column = "key_date"
     elif "event_partition_date" in key_date_columns_in_df:
         key_date_column = "event_partition_date"
-    elif len(key_date_columns_in_df) > 1:
+    elif len(key_date_columns_in_df) >= 1:
         key_date_column = key_date_columns_in_df[0]
 
     if key_date_column is not None:
         logging.getLogger(__name__).info(
             "Picked {} as key date column".format(key_date_column)
         )
-        to_drop = list_sub(key_date_columns_in_df, key_date_column)
+        to_drop = list_sub(key_date_columns_in_df, [key_date_column])
         df = df.drop(*to_drop)
         df = df.withColumnRenamed(key_date_column, "key_date")
 
