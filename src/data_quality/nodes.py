@@ -133,7 +133,7 @@ def _generate_accuracy_and_completeness_nodes(
                     "dq_sampled_subscription_identifier",
                     "params:features_for_dq",
                     "params:percentiles",
-                    "params:incremental_mode"
+                    "params:incremental_mode",
                     "all_catalog_and_feature_exist"
                     ],
             outputs=output_catalog,
@@ -321,7 +321,7 @@ def run_accuracy_logic(
 
     partition_col = get_partition_col(input_df, dataset_name)
 
-    if incremental_mode.lower() == "true":
+    if incremental_mode.lower() == "on":
 
         ctx = get_dq_context()
         try:
@@ -340,11 +340,11 @@ def run_accuracy_logic(
         if filtered_input_df.head() is None:
             return get_spark_empty_df(schema=dq_accuracy_df_schema)
 
-    elif incremental_mode.lower() == "false":
+    elif incremental_mode.lower() == "off":
         filtered_input_df = input_df
 
     else:
-        raise Exception("Please specify 'true' or 'false' for 'incremental_mode' parameter.")
+        raise Exception("Please specify 'on' or 'off' for 'incremental_mode' parameter.")
 
     sample_creation_date, sampled_df = get_dq_sampled_records(filtered_input_df, sampled_sub_id_df)
     if sampled_df.head() is None:
