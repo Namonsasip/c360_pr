@@ -29,7 +29,6 @@ int_l1_product_active_customer_promotion_features:
 
     product_fbb_flag: "max(boolean(lower(promo_user_cat_cd) like '%fbb%'))"
     product_landline_flag: "max(boolean(lower(promo_name) like '%landline%'))"
-    product_mobile_flag: "max(boolean(mobile_num is not null))"
 
   granularity: "access_method_num, event_partition_date, subscription_identifier, national_id_card, partition_date, start_of_week, start_of_month"
   partition_num_per_job: 10
