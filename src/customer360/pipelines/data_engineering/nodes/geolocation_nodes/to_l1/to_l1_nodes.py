@@ -31,19 +31,28 @@ def l1_geo_time_spent_by_location_daily(df,sql):
     # df.cache()
 
     # ----- Data Availability Checks -----
-    if check_empty_dfs(df):
+    if check_empty_dfs([df]):
         return get_spark_empty_df()
 
-    df = data_non_availability_and_missing_check(df=df,grouping="daily",par_col="partition_date",target_table_name="l1_geo_time_spent_by_location_daily")
+    df = data_non_availability_and_missing_check(df=df,
+                                                 grouping="daily",
+                                                 par_col="partition_date",
+                                                 target_table_name="l1_geo_time_spent_by_location_daily")
 
-    if check_empty_dfs(df):
+    if check_empty_dfs([df]):
         return get_spark_empty_df()
 
     # ----- Transformation -----
-    sql =  """
-    SELECT IMSI,LOCATION_ID,SUM(DURATION) AS SUM_DURATION,event_partition_date,start_of_week,start_of_month
+    sql = """
+        SELECT 
+            IMSI,
+            LOCATION_ID,
+            SUM(DURATION) AS SUM_DURATION,
+            event_partition_date,
+            start_of_week,
+            start_of_month
     FROM GEO_CUST_CELL_VISIT_TIME
-    GROUP BY IMSI,LOCATION_ID,event_partition_date,start_of_week,start_of_month
+    GROUP BY IMSI, LOCATION_ID, event_partition_date, start_of_week, start_of_month
     """
     return_df = massive_processing_time_spent_daily(df, sql, "l1_geo_time_spent_by_location_daily", 'partition_date')
     # df.unpersist()
@@ -53,10 +62,13 @@ def l1_geo_time_spent_by_location_daily(df,sql):
 def l1_geo_area_from_ais_store_daily(shape,masterplan,geo_cust_cell_visit_time,sql):
     # geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20200301')
     # ----- Data Availability Checks -----
-    if check_empty_dfs([geo_cust_cell_visit_time]):
+    if check_empty_dfs([geo_cust_cell_visit_time, shape, masterplan]):
         return get_spark_empty_df()
 
-    geo_cust_cell_visit_time = data_non_availability_and_missing_check(df=geo_cust_cell_visit_time,grouping="daily",par_col="partition_date",target_table_name="l1_geo_area_from_ais_store_daily")
+    geo_cust_cell_visit_time = data_non_availability_and_missing_check(df=geo_cust_cell_visit_time,
+                                                                       grouping="daily",
+                                                                       par_col="partition_date",
+                                                                       target_table_name="l1_geo_area_from_ais_store_daily")
 
     if check_empty_dfs([geo_cust_cell_visit_time]):
         return get_spark_empty_df()
@@ -72,31 +84,41 @@ def l1_geo_area_from_ais_store_daily(shape,masterplan,geo_cust_cell_visit_time,s
     shape.createOrReplaceTempView("mst_poi_shape")
 
     ss = get_spark_session()
-    df=ss.sql("""
-    SELECT A.LANDMARK_SUB_NAME_EN,
-    B.LOCATION_ID,B.LOCATION_NAME,
-    CAST((ACOS(COS(RADIANS(90-A.LANDMARK_LATITUDE))*COS(RADIANS(90-B.LATITUDE))+SIN(RADIANS(90-A.LANDMARK_LATITUDE))*SIN(RADIANS(90-B.LATITUDE))*COS(RADIANS(A.LANDMARK_LONGITUDE - B.LONGITUDE)))*6371) AS DECIMAL(13,2)) AS DISTANCE_KM
-    FROM mst_poi_shape A,
-    mst_cell_masterplan B
-    WHERE   A.LANDMARK_CAT_NAME_EN IN ('AIS')
-    AND CAST((ACOS(COS(RADIANS(90-A.LANDMARK_LATITUDE))*COS(RADIANS(90-B.LATITUDE))+SIN(RADIANS(90-A.LANDMARK_LATITUDE))*SIN(RADIANS(90-B.LATITUDE))*COS(RADIANS(A.LANDMARK_LONGITUDE - B.LONGITUDE)))*6371) AS DECIMAL(13,2)) <= (0.5)
-    GROUP BY 1,2,3,4
+    df = ss.sql("""
+        SELECT 
+            A.LANDMARK_SUB_NAME_EN,
+            B.LOCATION_ID,
+            B.LOCATION_NAME,
+            CAST((ACOS(COS(RADIANS(90-A.LANDMARK_LATITUDE))*COS(RADIANS(90-B.LATITUDE))+SIN(RADIANS(90-A.LANDMARK_LATITUDE))*SIN(RADIANS(90-B.LATITUDE))*COS(RADIANS(A.LANDMARK_LONGITUDE - B.LONGITUDE)))*6371) AS DECIMAL(13,2)) AS DISTANCE_KM
+        FROM mst_poi_shape A,
+            mst_cell_masterplan B
+        WHERE   A.LANDMARK_CAT_NAME_EN IN ('AIS')
+        AND CAST((ACOS(COS(RADIANS(90-A.LANDMARK_LATITUDE))*COS(RADIANS(90-B.LATITUDE))+SIN(RADIANS(90-A.LANDMARK_LATITUDE))*SIN(RADIANS(90-B.LATITUDE))*COS(RADIANS(A.LANDMARK_LONGITUDE - B.LONGITUDE)))*6371) AS DECIMAL(13,2)) <= (0.5)
+        GROUP BY 1,2,3,4
     """)
     df.cache()
     df.createOrReplaceTempView('TEMP_GEO_AIS_SHOP')
 
     geo_cust_cell_visit_time.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
 
-    df2 = ss.sql("""SELECT A.IMSI,A.event_partition_date,A.start_of_week,A.start_of_month,SUM(DURATION) AS DURATION,count(1) AS NUM_OF_TIMES_PER_DAY 
-    FROM GEO_CUST_CELL_VISIT_TIME A,
-    TEMP_GEO_AIS_SHOP B 
-    WHERE A.LOCATION_ID = B.LOCATION_ID 
-    GROUP BY 1,2,3,4""")
+    df2 = ss.sql("""
+        SELECT 
+            A.IMSI,
+            A.event_partition_date,
+            A.start_of_week,
+            A.start_of_month,
+            SUM(DURATION) AS DURATION,
+            count(1) AS NUM_OF_TIMES_PER_DAY 
+        FROM GEO_CUST_CELL_VISIT_TIME A,
+        TEMP_GEO_AIS_SHOP B 
+        WHERE A.LOCATION_ID = B.LOCATION_ID 
+        GROUP BY 1,2,3,4""")
     df2.cache()
-    df2=node_from_config(df2,sql)
+    df2 = node_from_config(df2,sql)
     df.unpersist()
     df2.unpersist()
     return df2
+
 
 def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit_time,sql):
     # geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20200301')
@@ -104,13 +126,13 @@ def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit
     if check_empty_dfs([geo_cust_cell_visit_time]):
         return get_spark_empty_df()
 
-    geo_cust_cell_visit_time = data_non_availability_and_missing_check(df=geo_cust_cell_visit_time, grouping="daily",
+    geo_cust_cell_visit_time = data_non_availability_and_missing_check(df=geo_cust_cell_visit_time,
+                                                                       grouping="daily",
                                                                        par_col="partition_date",
                                                                        target_table_name="l1_geo_area_from_competitor_store_daily")
 
     if check_empty_dfs([geo_cust_cell_visit_time]):
         return get_spark_empty_df()
-
 
     # ----- Transformation -----
     geo_cust_cell_visit_time.cache()
@@ -127,25 +149,35 @@ def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit
 
     ss = get_spark_session()
     df = ss.sql("""
-        SELECT A.LANDMARK_SUB_NAME_EN,
-        B.LOCATION_ID,B.LOCATION_NAME,
-        CAST((ACOS(COS(RADIANS(90-A.LANDMARK_LATITUDE))*COS(RADIANS(90-B.LATITUDE))+SIN(RADIANS(90-A.LANDMARK_LATITUDE))*SIN(RADIANS(90-B.LATITUDE))*COS(RADIANS(A.LANDMARK_LONGITUDE - B.LONGITUDE)))*6371) AS DECIMAL(13,2)) AS DISTANCE_KM
+        SELECT 
+            A.LANDMARK_SUB_NAME_EN,
+            B.LOCATION_ID,
+            B.LOCATION_NAME,
+            CAST((ACOS(COS(RADIANS(90-A.LANDMARK_LATITUDE))*COS(RADIANS(90-B.LATITUDE))+SIN(RADIANS(90-A.LANDMARK_LATITUDE))*SIN(RADIANS(90-B.LATITUDE))*COS(RADIANS(A.LANDMARK_LONGITUDE - B.LONGITUDE)))*6371) AS DECIMAL(13,2)) AS DISTANCE_KM
         FROM mst_poi_shape A,
-        mst_cell_masterplan B
+            mst_cell_masterplan B
         WHERE   A.LANDMARK_CAT_NAME_EN IN ('TRUE','DTAC')
         AND CAST((ACOS(COS(RADIANS(90-A.LANDMARK_LATITUDE))*COS(RADIANS(90-B.LATITUDE))+SIN(RADIANS(90-A.LANDMARK_LATITUDE))*SIN(RADIANS(90-B.LATITUDE))*COS(RADIANS(A.LANDMARK_LONGITUDE - B.LONGITUDE)))*6371) AS DECIMAL(13,2)) <= (0.5)
         GROUP BY 1,2,3,4
-        """)
+    """)
     df.cache()
     df.createOrReplaceTempView('TEMP_GEO_AIS_SHOP')
 
     geo_cust_cell_visit_time.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
 
-    df2 = ss.sql("""SELECT A.IMSI,A.event_partition_date,A.start_of_week,A.start_of_month,SUM(DURATION) AS DURATION,count(1) AS NUM_OF_TIMES_PER_DAY 
+    df2 = ss.sql("""
+        SELECT 
+            A.IMSI,
+            A.event_partition_date,
+            A.start_of_week,
+            A.start_of_month,
+            SUM(DURATION) AS DURATION,
+            count(1) AS NUM_OF_TIMES_PER_DAY 
         FROM GEO_CUST_CELL_VISIT_TIME A,
-        TEMP_GEO_AIS_SHOP B 
+            TEMP_GEO_AIS_SHOP B 
         WHERE A.LOCATION_ID = B.LOCATION_ID 
-        GROUP BY 1,2,3,4""")
+        GROUP BY 1,2,3,4
+    """)
     df2.cache()
 
     df2 = node_from_config(df2, sql)
@@ -164,9 +196,10 @@ def l1_geo_total_distance_km_daily(l0_df, sql):
     if check_empty_dfs([l0_df]):
         return get_spark_empty_df()
 
-    l0_df = data_non_availability_and_missing_check(df=l0_df, grouping="daily",
-                                                                       par_col="partition_date",
-                                                                       target_table_name="l1_geo_total_distance_km_daily")
+    l0_df = data_non_availability_and_missing_check(df=l0_df,
+                                                    grouping="daily",
+                                                    par_col="partition_date",
+                                                    target_table_name="l1_geo_total_distance_km_daily")
 
     if check_empty_dfs([l0_df]):
         return get_spark_empty_df()
@@ -180,12 +213,12 @@ def l1_geo_total_distance_km_daily(l0_df, sql):
     l0_df1.createOrReplaceTempView('geo_cust_cell_visit_time')
     sql_query = """
         select
-        imsi
-        ,time_in
-        ,latitude
-        ,longitude
-        ,event_partition_date
-        ,row_number() over (partition by imsi,event_partition_date order by time_in) as row_num
+            imsi
+            ,time_in
+            ,latitude
+            ,longitude
+            ,event_partition_date
+            ,row_number() over (partition by imsi,event_partition_date order by time_in) as row_num
         from geo_cust_cell_visit_time
         order by imsi,time_in,event_partition_date
     """
@@ -193,16 +226,17 @@ def l1_geo_total_distance_km_daily(l0_df, sql):
     l1_df.createOrReplaceTempView('geo_cust_cell_visit_time_row_num')
     sql_query1 = """
         select
-        a.imsi
-        ,a.time_in
-        ,a.latitude as latitude_start
-        ,a.longitude as longitude_start
-        ,b.latitude as latitude_end
-        ,b.longitude as longitude_end
-        ,case when b.latitude is null and b.longitude is null then 0 
-          else cast((acos(cos(radians(90-a.latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.latitude))*sin(radians(90-b.latitude))*cos(radians(a.longitude - b.longitude)))*6371) as decimal(13,2)) 
-          end as total_distance_km
-        ,a.event_partition_date
+            a.imsi
+            ,a.time_in
+            ,a.latitude as latitude_start
+            ,a.longitude as longitude_start
+            ,b.latitude as latitude_end
+            ,b.longitude as longitude_end
+            ,case 
+                when b.latitude is null and b.longitude is null then 0 
+                else cast((acos(cos(radians(90-a.latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.latitude))*sin(radians(90-b.latitude))*cos(radians(a.longitude - b.longitude)))*6371) as decimal(13,2)) 
+            end as total_distance_km
+            ,a.event_partition_date
         from geo_cust_cell_visit_time_row_num a
         left join geo_cust_cell_visit_time_row_num b
         on a.imsi = b.imsi
@@ -216,9 +250,9 @@ def l1_geo_total_distance_km_daily(l0_df, sql):
     l1_df1 = l1_df1.withColumn("start_of_month", F.to_date(F.date_trunc('month', l1_df1.event_partition_date)))
 
     # Check DataFrame from SQL query statement
-    print("Start for check result from sql query statement")
-    l1_df1.count()
-    l1_df1.show()
+    # print("Start for check result from sql query statement")
+    # l1_df1.count()
+    # l1_df1.show()
 
     l1_df2 = node_from_config(l1_df1, sql)
 
@@ -236,9 +270,12 @@ def L1_data_traffic_home_work_FN(geo_mst_cell_masterplan,geo_home_work_data,prof
     usage_sum_data_location_daily.createOrReplaceTempView('USAGE_SUM_DATA_LOCATION_DAILY')
     #TEMP1#
     GEO_TEMP_00 = spark.sql("""
-    SELECT B.IMSI,A.CI,A.LAC
-    FROM GEO_MST_CELL_MASTERPLAN A,LOCATION_HOMEWORK_NEW_1 B
-    WHERE A.LOCATION_ID=B."""+str(HOME_WORK_WEEKDAY_LOCATION_ID)+"""
+        SELECT
+            B.IMSI,
+            A.CI,
+            A.LAC
+        FROM GEO_MST_CELL_MASTERPLAN A,LOCATION_HOMEWORK_NEW_1 B
+        WHERE A.LOCATION_ID=B."""+str(HOME_WORK_WEEKDAY_LOCATION_ID)+"""
     """)
 
     GEO_TEMP_00.createOrReplaceTempView('GEO_TEMP_00')
@@ -306,7 +343,7 @@ def L1_data_traffic_top1_top2_FN(geo_mst_cell_masterplan,geo_home_work_data,prof
 
 def L1_data_traffic_home_work_Top1_TOP2(geo_mst_cell_masterplan,geo_home_work_data,profile_customer_profile_ma,usage_sum_data_location_daily,geo_exclude_home_work):
     # ----- Data Availability Checks -----
-    if check_empty_dfs([usage_sum_data_location_daily]):
+    if check_empty_dfs([usage_sum_data_location_daily, profile_customer_profile_ma]):
         return get_spark_empty_df()
 
     usage_sum_data_location_daily = data_non_availability_and_missing_check(df=usage_sum_data_location_daily,
@@ -314,20 +351,14 @@ def L1_data_traffic_home_work_Top1_TOP2(geo_mst_cell_masterplan,geo_home_work_da
                                                                             par_col="partition_date",
                                                                             target_table_name="L1_usage_sum_data_location_daily_data_traffic_home_work")
 
-    if check_empty_dfs([usage_sum_data_location_daily]):
-        return get_spark_empty_df()
-
-    if check_empty_dfs([profile_customer_profile_ma]):
-        return get_spark_empty_df()
 
     profile_customer_profile_ma = data_non_availability_and_missing_check(df=profile_customer_profile_ma,
                                                                           grouping="daily",
                                                                           par_col="partition_date",
                                                                           target_table_name="L1_usage_sum_data_location_daily_data_profile_customer_profile_ma")
 
-    if check_empty_dfs([profile_customer_profile_ma]):
+    if check_empty_dfs([usage_sum_data_location_daily, profile_customer_profile_ma]):
         return get_spark_empty_df()
-
     # ----- Transformation -----
     profile_customer_profile_ma_A = profile_customer_profile_ma.agg(F.max("partition_date")).collect()[0][0]
 
@@ -581,7 +612,7 @@ def l1_geo_cust_subseqently_distance(cell_visit, sql):
 ###feature_AIS_store###
 def l1_location_of_visit_ais_store_daily(shape,cust_cell_visit,sql):
     # ----- Data Availability Checks -----
-    if check_empty_dfs([cust_cell_visit]):
+    if check_empty_dfs([cust_cell_visit, shape]):
         return get_spark_empty_df()
 
     cust_cell_visit = data_non_availability_and_missing_check(df=cust_cell_visit,
@@ -635,7 +666,7 @@ def l1_location_of_visit_ais_store_daily(shape,cust_cell_visit,sql):
 ###Top_3_cells_on_voice_usage###
 def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
     # ----- Data Availability Checks -----
-    if check_empty_dfs([usage_df]):
+    if check_empty_dfs([usage_df, geo_df, profile_df]):
         return get_spark_empty_df()
 
     usage_df = data_non_availability_and_missing_check(df=usage_df,
@@ -710,7 +741,6 @@ def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
     # l1_df2 = node_from_config(l1_df1, sql)
     return l1_df1
 
-## ==============================Update 2020-06-17 by Thatt529==========================================##
 
 ###distance_top_call###
 def l1_geo_distance_top_call(df):
@@ -720,9 +750,9 @@ def l1_geo_distance_top_call(df):
         return get_spark_empty_df()
 
     df = data_non_availability_and_missing_check(df=df,
-                                                       grouping="daily",
-                                                       par_col="partition_date",
-                                                       target_table_name="l1_geo_distance_top_call")
+                                                 grouping="daily",
+                                                 par_col="partition_date",
+                                                 target_table_name="l1_geo_distance_top_call")
 
     if check_empty_dfs([df]):
         return get_spark_empty_df()
@@ -754,7 +784,6 @@ def l1_geo_distance_top_call(df):
     """
     l1_df = spark.sql(sql_query)
     l1_df.cache()
-    l1_df.show(5)
 
     return l1_df
 
@@ -784,7 +813,7 @@ def l1_geo_number_of_bs_used(geo_cust_cell, sql):
 
 def l1_the_favourite_locations_daily(usage_df_location,geo_df_masterplan):
     # ----- Data Availability Checks -----
-    if check_empty_dfs([usage_df_location]):
+    if check_empty_dfs([usage_df_location, geo_df_masterplan]):
         return get_spark_empty_df()
 
     usage_df_location = data_non_availability_and_missing_check(df=usage_df_location,
@@ -909,6 +938,7 @@ def massive_processing_time_spent_daily(data_frame: DataFrame, sql, output_df_ca
     return_df = ss.sql(sql)
     return return_df
 
+
 def l1_number_of_unique_cell_daily(usage_sum_data_location):
     # ----- Data Availability Checks -----
     if check_empty_dfs([usage_sum_data_location]):
@@ -940,8 +970,5 @@ def l1_number_of_unique_cell_daily(usage_sum_data_location):
     event_partition_date
     from usage_sum_data_location_daily
     group by lac , ci, event_partition_date""")
-
-    # l1_df_4.createOrReplaceTempView('usage_sum_data_count')
-    # l1 = spark.sql(l1_df_4)
 
     return l1_df_4
