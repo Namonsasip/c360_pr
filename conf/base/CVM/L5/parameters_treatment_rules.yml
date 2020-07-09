@@ -85,7 +85,7 @@ treatment_rules:
         limit_per_code: 100
         variant: 1
       27774e5b-7d7c-48d8-af3f-44e6ae695d55:
-        campaign_code: '200612-13 '
+        campaign_code: 200612-13
         conditions:
         - churn_microsegment in ('positive_arpu_m4','positive_arpu_m5','positive_arpu_m6')
         - internal_churner_2_4_6 == 1
