@@ -171,7 +171,6 @@ def join_with_master_package(
                 
                 product_fbb_flag,
                 product_landline_flag,
-                product_mobile_flag,
                 
                 subscription_identifier,
                 national_id_card,
