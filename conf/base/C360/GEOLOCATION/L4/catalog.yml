@@ -332,7 +332,7 @@ l4_geo_range_from_most_visited:
 #-----------------------27 Same favourite location for weekend and weekday------------------------------------
 l4_same_favourite_location_weekend_weekday_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/same_favourite_location_weekend_weekday_weekly/
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/l4_same_favourite_location_weekend_weekday_weekly/
   file_format: parquet
   save_args:
     increment_flag: 'no'
