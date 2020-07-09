@@ -120,12 +120,11 @@ l4_geo_call_home_work_location_weekly:
     sum: ["call_count_location_home_weekday","call_count_location_work","call_count_location_top_1st","call_count_location_top_2nd"]
   read_from: "l2"
 
-###Number of Unique Cells Used###
+### Number of Unique Cells Used ###
 l4_geo_number_unique_cell_used:
   where_clause: ""
   feature_list:
-    event_partition_date: "event_partition_date"
-    weektype: "weektype"
+    mobile_no: "mobile_no"
     avg_duration: "avg_duration"
     max_duration: "max_duration"
     min_duration: "min_duration"
