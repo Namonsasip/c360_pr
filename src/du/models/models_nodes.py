@@ -246,6 +246,10 @@ def create_model_function(
                 else:
                     fig.show()
 
+            def mean_absolute_percentage_error(y_true, y_pred):
+                y_true, y_pred = np.array(y_true), np.array(y_pred)
+                return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
+
             def get_metrics_by_percentile(y_true, y_pred) -> pd.DataFrame:
                 """
                  Performance report generation function to check model performance at percentile level.
@@ -611,7 +615,18 @@ def create_model_function(
                         )
 
                         test_predictions = model.predict(pdf_test[explanatory_features])
+                        train_predictions = model.predict(
+                            pdf_train[explanatory_features]
+                        )
                         mlflowlightgbm.log_model(model.booster_, artifact_path="")
+                        test_mape = mean_absolute_percentage_error(
+                            y_true=pdf_test[target_column], y_pred=test_predictions
+                        )
+                        train_mape = mean_absolute_percentage_error(
+                            y_true=pdf_train[target_column], y_pred=train_predictions
+                        )
+                        mlflow.log_metric("train_mape", train_mape)
+                        mlflow.log_metric("test_mape", test_mape)
 
                         train_mae = model.evals_result_["train"]["l1"][-1]
                         test_mae = model.evals_result_["test"]["l1"][-1]
@@ -985,11 +1000,12 @@ def score_du_models(
     pai_runs_uri: str,
     pai_artifacts_uri: str,
     explanatory_features: List[str],
-    mlflow_model_version:int,
+    mlflow_model_version: int,
     scoring_chunk_size: int = 500000,
 ) -> pyspark.sql.DataFrame:
     spark = get_spark_session()
     # Define schema for the udf.
+    primary_key_columns.append(model_group_column)
     schema = df_master.select(
         *(
             primary_key_columns
@@ -1022,7 +1038,9 @@ def score_du_models(
                 experiment_ids=mlflow_experiment_id,
                 filter_string="params.model_objective='"
                 + current_tag
-                + "' AND params.Version="+str(mlflow_model_version)+" AND tags.mlflow.runName ='"
+                + "' AND params.Version="
+                + str(mlflow_model_version)
+                + " AND tags.mlflow.runName ='"
                 + current_model_group
                 + "'",
                 run_view_type=1,
@@ -1048,33 +1066,15 @@ def score_du_models(
                     "Unrecognized model type while predicting, model has"
                     "neither 'binary' or 'regression' tags"
                 )
+            # pd_results[model_group_column] = current_model_group
             for pk_col in primary_key_columns:
                 pd_results.loc[:, pk_col] = pdf.loc[:, pk_col]
 
         return pd_results
 
-    mlflow_path = "/Shared/data_upsell/lightgbm"
-    if mlflow.get_experiment_by_name(mlflow_path) is None:
-        mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
-    else:
-        mlflow_experiment_id = mlflow.get_experiment_by_name(mlflow_path).experiment_id
-    # model_group_column = "model_name"
-    all_run_data = mlflow.search_runs(
-        experiment_ids=mlflow_experiment_id,
-        filter_string="params.model_objective='binary' AND params.Able_to_model = 'True' AND params.Version=2",
-        run_view_type=1,
-        max_results=100,
-        order_by=None,
-    )
-    all_run_data.columns
-    all_run_data[model_group_column] = all_run_data["tags.mlflow.runName"]
-    mlflow_sdf = spark.createDataFrame(all_run_data.astype(str))
-    # df_master = catalog.load("l5_du_scoring_master")
-    eligible_model = mlflow_sdf.selectExpr(model_group_column)
-    df_master_upsell = df_master.crossJoin(F.broadcast(eligible_model))
     # This part of code suppose to distribute chuck of each sub required to be score
     # For each of the model
-    df_master_upsell = df_master_upsell.withColumn(
+    df_master = df_master.withColumn(
         "partition",
         F.floor(
             F.count(F.lit(1)).over(Window.partitionBy(model_group_column))
@@ -1082,7 +1082,7 @@ def score_du_models(
             * F.rand()
         ),
     )
-    df_master_necessary_columns = df_master_upsell.select(
+    df_master_necessary_columns = df_master.select(
         model_group_column,
         "partition",
         *(  # Don't add model group column twice in case it's a PK column
@@ -1095,9 +1095,7 @@ def score_du_models(
         predict_pandas_udf
     )
 
-    df_master_scored = df_scored.join(df_master, on=primary_key_columns, how="left")
-
-    return df_master_scored
+    return df_scored
     #
     # df_master = catalog.load("l5_du_scoring_master")
     # explanatory_features = catalog.load("params:du_model_explanatory_features")

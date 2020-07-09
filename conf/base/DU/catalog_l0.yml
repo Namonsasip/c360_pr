@@ -18,16 +18,30 @@ l5_sanity_checking_experiment4_30062020:
     save_args:
         mode: "overwrite"
 
-l0_gcg_20200701:
+l0_gcg_pre_20200705:
     type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
     file_format: "parquet"
-    filepath: /mnt/customer360-blob-data/C360/NBA/l0_gcg_20200701/
+    filepath: /mnt/customer360-blob-data/C360/NBA/l0_gcg_pre_20200705/
     save_args:
         mode: "overwrite"
 
-l5_sanity_checking_gcg_20200701:
+l0_gcg_post_20200705:
     type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
     file_format: "parquet"
-    filepath: /mnt/customer360-blob-data/C360/NBA/l5_sanity_checking_gcg_20200701/
+    filepath: /mnt/customer360-blob-data/C360/NBA/l0_gcg_post_20200705/
+    save_args:
+        mode: "overwrite"
+
+l5_sanity_checking_gcg_pre_20200705:
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: "parquet"
+    filepath: /mnt/customer360-blob-data/C360/NBA/l5_sanity_checking_gcg_pre_20200705/
+    save_args:
+        mode: "overwrite"
+
+l5_sanity_checking_gcg_post_20200705:
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: "parquet"
+    filepath: /mnt/customer360-blob-data/C360/NBA/l5_sanity_checking_gcg_post_20200705/
     save_args:
         mode: "overwrite"
