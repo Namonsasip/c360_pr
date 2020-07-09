@@ -1225,29 +1225,32 @@ def l4_geo_number_most_frequent_top_five_weekend(l1_favourite_location, l4_most_
 
     return out3
 
-def l4_geo_number_most_frequent_top_five(l1_favourite_location, l4_most_frequency, sql):
-    l1_favourite_location.createOrReplaceTempView('geo_location_data')
-    l4_most_frequency.createOrReplaceTempView('l4_most_frequency')
+# =========================== Number most frequent top five All ============================================
+def l4_geo_number_most_frequent_top_five(l1_favourite_location):
 
-    l0_df1 = l1_favourite_location.withColumn("event_partition_date",
-                                                F.to_date(l1_favourite_location.date_id.cast(DateType()),
-                                                          "yyyy-MM-dd")).drop("date_id")
-    l0_df1.createOrReplaceTempView('geo_location_data_1')
+    l1_favourite_location.createOrReplaceTempView('geo_location_data')
+
     spark = get_spark_session()
 
     geo_location_data_all = spark.sql("""
     select 
-        b.event_partition_date,
-        b.mobile_no,
-        b.weektype,
-        a.sum_all_no_of_call,
-        a.ROW
-    from l4_most_frequency a
-    left join geo_location_data_1 b
-    on a.mobile_no = b.mobile_no
-    where a.ROW = '1'
-    group by 1,2,3,4,5
+    mobile_no, event_partition_date ,weektype ,the_most    
+    from geo_location_data
+    group by 1,2,3,4
     """)
+
+    geo_location_data_count_all = geo_location_data_all.groupBy("mobile_no", "event_partition_date").agg(F.count("mobile_no").alias("count_mobile_no"))
+
+    geo_location_data_sum_all = geo_location_data_count_all.groupBy("mobile_no", "event_partition_date").agg(F.sum("count_mobile_no").alias("sum_mobile_no"))
+
+    geo_location_data_avg_all = geo_location_data_sum_all.groupBy("mobile_no", "event_partition_date").agg(
+        F.avg("sum_mobile_no").alias("avg_sum_mobile_no"),
+        F.max("sum_mobile_no").alias("max_sum_mobile_no"),
+        F.min("sum_mobile_no").alias("min_sum_mobile_no"))
+
+    geo_location_data_avg_all.cache()
+
+    return geo_location_data_avg_all
 
     # =================================== Number most frequent All ====================================================
     geo_location_data_avg_all = geo_location_data_all.groupBy("event_partition_date").agg(
@@ -1263,41 +1266,20 @@ def l4_geo_number_most_frequent_top_five(l1_favourite_location, l4_most_frequenc
 
 
 ###Number of Unique Cells Used###
-def l4_geo_number_unique_cell_used(l1_df_1, sql):
-    # get result and split weektype
-    l1_df_2 = l1_df_1.withColumn("event_partition_date",
-                                 F.to_date(l1_df_1.partition_date.cast(StringType()), "yyyyMMdd")).drop("partition_date")
+def l4_geo_number_unique_cell_used(l1_df_1):
 
     spark = get_spark_session()
-    l1_df_2.createOrReplaceTempView('usage_sum_data_location_daily')
+    l4_df_1 = l1_df_1.groupBy("event_partition_date", "weektype") \
+    .agg(F.sum("mobile_no").alias("durations"))
 
-    l1_df_4 = spark.sql("""select count(mobile_no) AS mobile_no , lac , ci
-        ,case when
-            dayofweek(event_partition_date) = 2
-            or dayofweek(event_partition_date) = 3
-            or dayofweek(event_partition_date) = 4
-            or dayofweek(event_partition_date) = 5
-            or dayofweek(event_partition_date) = 6
-        then     "weekday"
-        else    "weekend"
-        end as weektype,
-        event_partition_date
-        from usage_sum_data_location_daily
-        group by lac , ci, event_partition_date
-    """)
-    l1_df_4.createOrReplaceTempView('usage_sum_data_count')
-
-    # calculate weektype
-    l4_df_1 = l1_df_4.groupBy("event_partition_date", "weektype") \
-        .agg(F.sum("mobile_no").alias("durations"))
-
-    l4_df_2 = l4_df_1.groupBy("event_partition_date", "weektype").agg(F.avg("durations").alias("avg_duration"),
+    l4_df_2 = l4_df_1.groupBy("event_partition_date").agg(F.avg("durations").alias("avg_duration"),
                                                           F.max("durations").alias("max_duration"),
                                                           F.min("durations").alias("min_duration"),
                                                           F.sum("durations").alias("sum_duration"))
+
     l4_df_2.cache()
-    out = node_from_config(l4_df_2, sql)
-    return out
+
+    return l4_df_2
 
 def l4_rolling_window_de(input_df: DataFrame, config: dict):
     """
