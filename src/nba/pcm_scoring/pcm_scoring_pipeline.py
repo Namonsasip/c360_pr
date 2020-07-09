@@ -3,6 +3,7 @@ from kedro.pipeline import Pipeline, node
 from nba.pcm_scoring.pcm_scoring_nodes import (
     join_c360_features_latest_date,
     l5_pcm_candidate_with_campaign_info,
+    l5_nba_pcm_candidate_scored,
 )
 
 
@@ -14,6 +15,7 @@ def create_nba_pcm_scoring_pipeline() -> Pipeline:
                 inputs={
                     "pcm_candidate": "pcm_candidate",
                     "l5_nba_campaign_master": "l5_nba_campaign_master",
+                    "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
                 },
                 outputs="l5_pcm_candidate_with_campaign_info",
                 name="l5_pcm_candidate_with_campaign_info",
@@ -24,7 +26,7 @@ def create_nba_pcm_scoring_pipeline() -> Pipeline:
                 inputs={
                     "df_spine": "l5_pcm_candidate_with_campaign_info",
                     "subset_features": "params:nba_model_input_features",
-                    "l5_nba_customer_profile": "l5_nba_customer_profile",
+                    "l3_customer_profile_include_1mo_non_active": "l3_customer_profile_include_1mo_non_active",
                     "l4_billing_rolling_window_topup_and_volume": "l4_billing_rolling_window_topup_and_volume",
                     "l4_billing_rolling_window_rpu": "l4_billing_rolling_window_rpu",
                     "l4_billing_rolling_window_rpu_roaming": "l4_billing_rolling_window_rpu_roaming",
@@ -37,27 +39,32 @@ def create_nba_pcm_scoring_pipeline() -> Pipeline:
                     # "l4_streaming_visit_count_and_download_traffic_feature": "l4_streaming_visit_count_and_download_traffic_feature",
                     "l4_usage_prepaid_postpaid_daily_features": "l4_usage_prepaid_postpaid_daily_features",
                     "l4_usage_postpaid_prepaid_weekly_features_sum": "l4_usage_postpaid_prepaid_weekly_features_sum",
+                    "l4_touchpoints_to_call_center_features": "l4_touchpoints_to_call_center_features",
                 },
                 outputs="l5_pcm_scoring_master",
                 name="l5_pcm_scoring_master",
                 tags=["l5_pcm_scoring_master"],
             ),
-            # node(
-            #     l5_nba_pcm_candidate_scored,
-            #     inputs={
-            #         "df_master":"l5_pcm_scoring_master",
-            # "l5_average_arpu_untie_lookup":"l5_average_arpu_untie_lookup",
-            # "model_group_column": "params:nba_model_group_column",
-            # acceptance_model_tag:
-            # arpu_model_tag:
-            # "pai_runs_uri": "params:nba_pai_runs_uri",
-            # "pai_artifacts_uri": "params:nba_pai_artifacts_uri",
-            # "scoring_chunk_size": "params:backtesting_scoring_chunk_size",
-            #
-            #     },
-            #     outputs="l5_pcm_candidate_with_campaign_info",
-            #     name="l5_pcm_candidate_with_campaign_info",
-            #     tags=["l5_pcm_candidate_with_campaign_info"],
-            # ),
-        ]
+            node(
+                l5_nba_pcm_candidate_scored,
+                inputs={
+                    "df_master": "l5_pcm_scoring_master",
+                    "l5_average_arpu_untie_lookup": "l5_average_arpu_untie_lookup",
+                    "prioritized_campaign_child_codes": "params:nba_prioritized_campaigns_child_codes",
+                    "nba_model_group_column_prioritized": "params:nba_model_group_column_prioritized",
+                    "nba_model_group_column_non_prioritized": "params:nba_model_group_column_non_prioritized",
+                    "nba_model_use_cases_child_codes": "params:nba_model_use_cases_child_codes",
+                    "acceptance_model_tag": "params:nba_pcm_scoring_acceptance_model_tag",
+                    "arpu_model_tag": "params:nba_pcm_scoring_arpu_model_tag",
+                    "pai_runs_uri": "params:nba_pai_runs_uri",
+                    "pai_artifacts_uri": "params:nba_pai_artifacts_uri",
+                    "explanatory_features": "params:nba_model_explanatory_features",
+                    "scoring_chunk_size": "params:backtesting_scoring_chunk_size",
+                },
+                outputs="l5_pcm_candidate_scored",
+                name="l5_pcm_candidate_scored",
+                tags=["l5_pcm_candidate_scored"],
+            ),
+        ],
+        tags="pcm_scoring_pipeline",
     )
