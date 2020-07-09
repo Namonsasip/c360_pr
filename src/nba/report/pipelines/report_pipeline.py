@@ -65,6 +65,7 @@ def create_use_case_view_report_data() -> Pipeline:
                     "campaign_churn_cvm_master": "campaign_churn_cvm_master",
                     "campaign_churn_bau_master": "campaign_churn_bau_master",
                     "campaign_ard_cvm_master": "campaign_ard_cvm_master",
+                    "campaign_ard_churn_mck_master":"campaign_ard_churn_mck_master",
                 },
                 outputs="use_case_campaign_mapping",
                 name="create_use_case_campaign_mapping_table",
@@ -194,7 +195,7 @@ def create_use_case_view_report_data() -> Pipeline:
                 ),
                 inputs={
                     "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
-                    "l0_campaign_history_master_active": "l0_campaign_history_master_active",
+                    "l0_campaign_history_master_active": "campaign_history_master_active",
                     "use_case_campaign_mapping": "use_case_campaign_mapping",
                     "reporting_kpis": "reporting_kpis",
                 },
