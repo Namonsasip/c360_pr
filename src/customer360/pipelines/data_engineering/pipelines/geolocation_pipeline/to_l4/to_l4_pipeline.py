@@ -1,6 +1,5 @@
 from kedro.pipeline import Pipeline, node
 
-from customer360.utilities.config_parser import *
 from customer360.pipelines.data_engineering.nodes.geolocation_nodes.to_l4.to_l4_nodes import *
 from customer360.utilities.re_usable_functions import l1_massive_processing
 
