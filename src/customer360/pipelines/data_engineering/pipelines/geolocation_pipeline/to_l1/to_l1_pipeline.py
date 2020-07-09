@@ -42,8 +42,6 @@ def geo_to_l1_pipeline(**kwargs):
                 "l1_geo_cust_subseqently_distance_daily"
             ),
 
-            ##==============================Update 2020-06-12 by Thatt529==========================================##
-
             ###total_distance_km###
             node(l1_geo_total_distance_km_daily,
                  ["l0_geo_cust_cell_visit_time_simple_data_daily",
@@ -94,7 +92,6 @@ def geo_to_l1_pipeline(**kwargs):
                  ],
                 "l1_location_of_visit_ais_store_daily"
             ),
-            ##==============================Update 2020-06-15 by Thatt529==========================================##
 
             ##Top_3_cells_on_voice_usage###
             node(
@@ -105,8 +102,6 @@ def geo_to_l1_pipeline(**kwargs):
                  ],
                 "l1_geo_top3_cells_on_voice_usage"
             ),
-
-            ##==============================Update 2020-06-17 by Thatt529==========================================##
 
             ##distance_top_call###
             node(

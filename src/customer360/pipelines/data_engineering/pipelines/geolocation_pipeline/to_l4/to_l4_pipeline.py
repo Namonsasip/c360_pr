@@ -43,7 +43,7 @@ def geo_to_l4_pipeline(**kwargs):
 
             ### Home and Work Feature
             node(
-                massive_processing_for_home_work,  # partition_date is main column to massive processing
+                massive_processing_for_home_work,
                 ["l0_geo_cust_cell_visit_time_for_int_l4_geo_home_work_location_id",
                  "params:int_l4_geo_home_location_id_monthly",
                  "params:int_l4_geo_work_location_id_monthly"
@@ -59,7 +59,7 @@ def geo_to_l4_pipeline(**kwargs):
                 ["int_l4_geo_home_location_id_monthly",
                  "int_l4_geo_work_location_id_monthly"
                  ],
-                "geo_home_work_list_imsi_stg"  # In memory Dataframe
+                "geo_home_work_list_imsi_stg"
             ),
 
             node(
@@ -74,8 +74,8 @@ def geo_to_l4_pipeline(**kwargs):
                 int_geo_home_location_id,
                 ["int_l4_geo_home_location_id_monthly"
                  ],
-                ["int_home_weekday_location_id",  # In memory Dataframe
-                 "int_home_weekend_location_id"  # In memory Dataframe
+                ["int_home_weekday_location_id",
+                 "int_home_weekend_location_id"
                  ]
             ),
 
@@ -105,7 +105,6 @@ def geo_to_l4_pipeline(**kwargs):
                  ],
                 "l4_geo_cust_subseqently_distance"
             ),
-            ##==============================Update 2020-06-12 by Thatt529==========================================##
 
             ###total_distance_km###
             node(
@@ -188,7 +187,6 @@ def geo_to_l4_pipeline(**kwargs):
                  ],
                 "l4_geo_store_close_to_work"
             ),
-            ##==============================Update 2020-06-15 by Thatt529==========================================##
 
             ##Top_3_cells_on_voice_usage###
             node(
@@ -206,8 +204,6 @@ def geo_to_l4_pipeline(**kwargs):
                  ],
                 "l4_geo_work_area_center_average"
             ),
-
-            ##==============================Update 2020-06-17 by Thatt529==========================================##
 
             ##distance_top_call###
             node(

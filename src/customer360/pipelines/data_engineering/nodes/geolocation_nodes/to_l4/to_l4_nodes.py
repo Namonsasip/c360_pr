@@ -33,7 +33,7 @@ def massive_processing_for_home_work(
     if check_empty_dfs(input_df):
         return get_spark_empty_df()
 
-    df = data_non_availability_and_missing_check(df=input_df, grouping="daily",
+    df = data_non_availability_and_missing_check(df=input_df, grouping="monthly",
                                                  par_col="partition_date",
                                                  target_table_name="l4_geo_home_work_location_id",
                                                  missing_data_check_flg='Y')
@@ -307,22 +307,22 @@ def l4_Share_traffic(df):
     spark = get_spark_session()
     sql_query = """
     SELECT *
-    ,(sum_Home_traffic_KB_weekly_last_week*100)/(sum_Home_traffic_KB_weekly_last_week+sum_Work_traffic_KB_weekly_last_week+sum_Top1_location_traffic_KB_weekly_last_week+sum_Top2_location_traffic_KB_weekly_last_week) AS share_Home_traffic_KB_weekly_last_week
-    ,(sum_Work_traffic_KB_weekly_last_week*100)/(sum_Home_traffic_KB_weekly_last_week+sum_Work_traffic_KB_weekly_last_week+sum_Top1_location_traffic_KB_weekly_last_week+sum_Top2_location_traffic_KB_weekly_last_week) AS share_Work_traffic_KB_weekly_last_week
-    ,(sum_Top1_location_traffic_KB_weekly_last_week*100)/(sum_Home_traffic_KB_weekly_last_week+sum_Work_traffic_KB_weekly_last_week+sum_Top1_location_traffic_KB_weekly_last_week+sum_Top2_location_traffic_KB_weekly_last_week) AS share_Top1_traffic_KB_weekly_last_week
-    ,(sum_Top2_location_traffic_KB_weekly_last_week*100)/(sum_Home_traffic_KB_weekly_last_week+sum_Work_traffic_KB_weekly_last_week+sum_Top1_location_traffic_KB_weekly_last_week+sum_Top2_location_traffic_KB_weekly_last_week) AS share_Top2_traffic_KB_weekly_last_week
-    ,(sum_Home_traffic_KB_weekly_last_two_week*100)/(sum_Home_traffic_KB_weekly_last_two_week+sum_Work_traffic_KB_weekly_last_two_week+sum_Top1_location_traffic_KB_weekly_last_two_week+sum_Top2_location_traffic_KB_weekly_last_two_week) AS share_SUM_TRAFFIC_Home_weekly_last_two_week
-    ,(sum_Work_traffic_KB_weekly_last_two_week*100)/(sum_Home_traffic_KB_weekly_last_two_week+sum_Work_traffic_KB_weekly_last_two_week+sum_Top1_location_traffic_KB_weekly_last_two_week+sum_Top2_location_traffic_KB_weekly_last_two_week) AS share_SUM_TRAFFIC_Work_weekly_last_two_week
-    ,(sum_Top1_location_traffic_KB_weekly_last_two_week*100)/(sum_Home_traffic_KB_weekly_last_two_week+sum_Work_traffic_KB_weekly_last_two_week+sum_Top1_location_traffic_KB_weekly_last_two_week+sum_Top2_location_traffic_KB_weekly_last_two_week) AS share_SUM_TRAFFIC_Top1_weekly_last_two_week
-    ,(sum_Top2_location_traffic_KB_weekly_last_two_week*100)/(sum_Home_traffic_KB_weekly_last_two_week+sum_Work_traffic_KB_weekly_last_two_week+sum_Top1_location_traffic_KB_weekly_last_two_week+sum_Top2_location_traffic_KB_weekly_last_two_week) AS share_SUM_TRAFFIC_Top2_weekly_last_two_week
-    ,(sum_Home_traffic_KB_weekly_last_four_week*100)/(sum_Home_traffic_KB_weekly_last_four_week+sum_Work_traffic_KB_weekly_last_four_week+sum_Top1_location_traffic_KB_weekly_last_four_week+sum_Top2_location_traffic_KB_weekly_last_four_week) AS share_SUM_TRAFFIC_Home_weekly_last_four_week
-    ,(sum_Work_traffic_KB_weekly_last_four_week*100)/(sum_Home_traffic_KB_weekly_last_four_week+sum_Work_traffic_KB_weekly_last_four_week+sum_Top1_location_traffic_KB_weekly_last_four_week+sum_Top2_location_traffic_KB_weekly_last_four_week) AS share_SUM_TRAFFIC_Work_weekly_last_four_week
-    ,(sum_Top1_location_traffic_KB_weekly_last_four_week*100)/(sum_Home_traffic_KB_weekly_last_four_week+sum_Work_traffic_KB_weekly_last_four_week+sum_Top1_location_traffic_KB_weekly_last_four_week+sum_Top2_location_traffic_KB_weekly_last_four_week) AS share_SUM_TRAFFIC_Top1_weekly_last_four_week
-    ,(sum_Top2_location_traffic_KB_weekly_last_four_week*100)/(sum_Home_traffic_KB_weekly_last_four_week+sum_Work_traffic_KB_weekly_last_four_week+sum_Top1_location_traffic_KB_weekly_last_four_week+sum_Top2_location_traffic_KB_weekly_last_four_week) AS share_SUM_TRAFFIC_Top2_weekly_last_four_week
-    ,(sum_Home_traffic_KB_weekly_last_twelve_week*100)/(sum_Home_traffic_KB_weekly_last_twelve_week+sum_Work_traffic_KB_weekly_last_twelve_week+sum_Top1_location_traffic_KB_weekly_last_twelve_week+sum_Top2_location_traffic_KB_weekly_last_twelve_week) AS share_SUM_TRAFFIC_Home_weekly_last_twelve_week
-    ,(sum_Work_traffic_KB_weekly_last_twelve_week*100)/(sum_Home_traffic_KB_weekly_last_twelve_week+sum_Work_traffic_KB_weekly_last_twelve_week+sum_Top1_location_traffic_KB_weekly_last_twelve_week+sum_Top2_location_traffic_KB_weekly_last_twelve_week) AS share_SUM_TRAFFIC_Work_weekly_last_twelve_week
-    ,(sum_Top1_location_traffic_KB_weekly_last_twelve_week*100)/(sum_Home_traffic_KB_weekly_last_twelve_week+sum_Work_traffic_KB_weekly_last_twelve_week+sum_Top1_location_traffic_KB_weekly_last_twelve_week+sum_Top2_location_traffic_KB_weekly_last_twelve_week) AS share_SUM_TRAFFIC_Top1_weekly_last_twelve_week
-    ,(sum_Top2_location_traffic_KB_weekly_last_twelve_week*100)/(sum_Home_traffic_KB_weekly_last_twelve_week+sum_Work_traffic_KB_weekly_last_twelve_week+sum_Top1_location_traffic_KB_weekly_last_twelve_week+sum_Top2_location_traffic_KB_weekly_last_twelve_week) AS share_SUM_TRAFFIC_Top2_weekly_last_twelve_week
+        ,(sum_Home_traffic_KB_weekly_last_week*100)/(sum_Home_traffic_KB_weekly_last_week+sum_Work_traffic_KB_weekly_last_week+sum_Top1_location_traffic_KB_weekly_last_week+sum_Top2_location_traffic_KB_weekly_last_week) AS share_Home_traffic_KB_weekly_last_week
+        ,(sum_Work_traffic_KB_weekly_last_week*100)/(sum_Home_traffic_KB_weekly_last_week+sum_Work_traffic_KB_weekly_last_week+sum_Top1_location_traffic_KB_weekly_last_week+sum_Top2_location_traffic_KB_weekly_last_week) AS share_Work_traffic_KB_weekly_last_week
+        ,(sum_Top1_location_traffic_KB_weekly_last_week*100)/(sum_Home_traffic_KB_weekly_last_week+sum_Work_traffic_KB_weekly_last_week+sum_Top1_location_traffic_KB_weekly_last_week+sum_Top2_location_traffic_KB_weekly_last_week) AS share_Top1_traffic_KB_weekly_last_week
+        ,(sum_Top2_location_traffic_KB_weekly_last_week*100)/(sum_Home_traffic_KB_weekly_last_week+sum_Work_traffic_KB_weekly_last_week+sum_Top1_location_traffic_KB_weekly_last_week+sum_Top2_location_traffic_KB_weekly_last_week) AS share_Top2_traffic_KB_weekly_last_week
+        ,(sum_Home_traffic_KB_weekly_last_two_week*100)/(sum_Home_traffic_KB_weekly_last_two_week+sum_Work_traffic_KB_weekly_last_two_week+sum_Top1_location_traffic_KB_weekly_last_two_week+sum_Top2_location_traffic_KB_weekly_last_two_week) AS share_SUM_TRAFFIC_Home_weekly_last_two_week
+        ,(sum_Work_traffic_KB_weekly_last_two_week*100)/(sum_Home_traffic_KB_weekly_last_two_week+sum_Work_traffic_KB_weekly_last_two_week+sum_Top1_location_traffic_KB_weekly_last_two_week+sum_Top2_location_traffic_KB_weekly_last_two_week) AS share_SUM_TRAFFIC_Work_weekly_last_two_week
+        ,(sum_Top1_location_traffic_KB_weekly_last_two_week*100)/(sum_Home_traffic_KB_weekly_last_two_week+sum_Work_traffic_KB_weekly_last_two_week+sum_Top1_location_traffic_KB_weekly_last_two_week+sum_Top2_location_traffic_KB_weekly_last_two_week) AS share_SUM_TRAFFIC_Top1_weekly_last_two_week
+        ,(sum_Top2_location_traffic_KB_weekly_last_two_week*100)/(sum_Home_traffic_KB_weekly_last_two_week+sum_Work_traffic_KB_weekly_last_two_week+sum_Top1_location_traffic_KB_weekly_last_two_week+sum_Top2_location_traffic_KB_weekly_last_two_week) AS share_SUM_TRAFFIC_Top2_weekly_last_two_week
+        ,(sum_Home_traffic_KB_weekly_last_four_week*100)/(sum_Home_traffic_KB_weekly_last_four_week+sum_Work_traffic_KB_weekly_last_four_week+sum_Top1_location_traffic_KB_weekly_last_four_week+sum_Top2_location_traffic_KB_weekly_last_four_week) AS share_SUM_TRAFFIC_Home_weekly_last_four_week
+        ,(sum_Work_traffic_KB_weekly_last_four_week*100)/(sum_Home_traffic_KB_weekly_last_four_week+sum_Work_traffic_KB_weekly_last_four_week+sum_Top1_location_traffic_KB_weekly_last_four_week+sum_Top2_location_traffic_KB_weekly_last_four_week) AS share_SUM_TRAFFIC_Work_weekly_last_four_week
+        ,(sum_Top1_location_traffic_KB_weekly_last_four_week*100)/(sum_Home_traffic_KB_weekly_last_four_week+sum_Work_traffic_KB_weekly_last_four_week+sum_Top1_location_traffic_KB_weekly_last_four_week+sum_Top2_location_traffic_KB_weekly_last_four_week) AS share_SUM_TRAFFIC_Top1_weekly_last_four_week
+        ,(sum_Top2_location_traffic_KB_weekly_last_four_week*100)/(sum_Home_traffic_KB_weekly_last_four_week+sum_Work_traffic_KB_weekly_last_four_week+sum_Top1_location_traffic_KB_weekly_last_four_week+sum_Top2_location_traffic_KB_weekly_last_four_week) AS share_SUM_TRAFFIC_Top2_weekly_last_four_week
+        ,(sum_Home_traffic_KB_weekly_last_twelve_week*100)/(sum_Home_traffic_KB_weekly_last_twelve_week+sum_Work_traffic_KB_weekly_last_twelve_week+sum_Top1_location_traffic_KB_weekly_last_twelve_week+sum_Top2_location_traffic_KB_weekly_last_twelve_week) AS share_SUM_TRAFFIC_Home_weekly_last_twelve_week
+        ,(sum_Work_traffic_KB_weekly_last_twelve_week*100)/(sum_Home_traffic_KB_weekly_last_twelve_week+sum_Work_traffic_KB_weekly_last_twelve_week+sum_Top1_location_traffic_KB_weekly_last_twelve_week+sum_Top2_location_traffic_KB_weekly_last_twelve_week) AS share_SUM_TRAFFIC_Work_weekly_last_twelve_week
+        ,(sum_Top1_location_traffic_KB_weekly_last_twelve_week*100)/(sum_Home_traffic_KB_weekly_last_twelve_week+sum_Work_traffic_KB_weekly_last_twelve_week+sum_Top1_location_traffic_KB_weekly_last_twelve_week+sum_Top2_location_traffic_KB_weekly_last_twelve_week) AS share_SUM_TRAFFIC_Top1_weekly_last_twelve_week
+        ,(sum_Top2_location_traffic_KB_weekly_last_twelve_week*100)/(sum_Home_traffic_KB_weekly_last_twelve_week+sum_Work_traffic_KB_weekly_last_twelve_week+sum_Top1_location_traffic_KB_weekly_last_twelve_week+sum_Top2_location_traffic_KB_weekly_last_twelve_week) AS share_SUM_TRAFFIC_Top2_weekly_last_twelve_week
     FROM GEO_TEMP_00
     """
     df_sum = spark.sql(sql_query)
@@ -525,7 +525,6 @@ def l4_geo_range_from_most_visited(most,close,sql):
 
 
 def l4_geo_work_area_center_average(visti_hr, home_work):
-
     # ----- Data Availability Checks -----
     if check_empty_dfs(visti_hr):
         return get_spark_empty_df()
@@ -635,7 +634,6 @@ def l4_geo_work_area_center_average(visti_hr, home_work):
                                                'inner') \
         .select(work_center_average_diff.imsi, work_center_average_diff.start_of_month, 'work_avg_latitude',
                 'work_avg_longitude', 'distance_difference', 'radius')
-
     return work_final
 
 
@@ -701,21 +699,21 @@ def l4_the_most_frequently_location_weekdays(l1_df_the_favourite_location_daily)
     sql_query = """ 
     select * from 
     (
-    select 
-    mobile_no
-    ,start_of_week
-    ,latitude 
-    ,longitude
-    ,location_id as v_most_data_used_cell_weekday_0
-    ,sum(all_no_of_call) as sum_all_no_of_call
-    ,SUM(all_usage_data_kb) as  most_data_used_kb_weekday_0
-    ,ROW_NUMBER() OVER(partition by mobile_no,start_of_week ORDER BY SUM(All_usage_data_kb) desc) as ROW
-    from (
-    select * from l1_df_the_favourite_location_daily 
-    where weektype = "weekday" 
-    )
-    group by mobile_no,start_of_week,location_id,latitude,longitude
-    order by mobile_no,start_of_week,row asc
+        select 
+            mobile_no
+            ,start_of_week
+            ,latitude 
+            ,longitude
+            ,location_id as v_most_data_used_cell_weekday_0
+            ,sum(all_no_of_call) as sum_all_no_of_call
+            ,SUM(all_usage_data_kb) as  most_data_used_kb_weekday_0
+            ,ROW_NUMBER() OVER(partition by mobile_no,start_of_week ORDER BY SUM(All_usage_data_kb) desc) as ROW
+        from (
+            select * from l1_df_the_favourite_location_daily 
+            where weektype = "weekday" 
+        )
+        group by mobile_no,start_of_week,location_id,latitude,longitude
+        order by mobile_no,start_of_week,row asc
     )
     where row <= 5
     """
@@ -730,23 +728,24 @@ def l4_the_most_frequently_location_weekdays_4g(l1_df_the_favourite_location_dai
     l1_df_the_favourite_location_daily.createOrReplaceTempView('l1_df_the_favourite_location_daily')
     sql_query =""" 
     select 
-    * from (
-    select 
-    mobile_no
-    ,start_of_week
-    ,location_id
-    ,SUM(all_usage_data_kb) as  most_data_used_kb_weekday_4g
-    ,sum(all_no_of_call) as sum_all_no_of_call_weekday_4g
-    ,sum(vol_4g) as vol_4g_weekday
-    ,ROW_NUMBER() OVER(partition by mobile_no,start_of_week ORDER BY SUM(All_usage_data_kb) desc) as ROW
-    from
-    (
-    select * from l1_df_the_favourite_location_daily 
-    where weektype = "weekday" 
-    and lower(gprs_type) like "4g%"
-    )
-    group by mobile_no,start_of_week,location_id
-    order by mobile_no,start_of_week,row asc
+        * 
+    from (
+        select 
+            mobile_no
+            ,start_of_week
+            ,location_id
+            ,SUM(all_usage_data_kb) as  most_data_used_kb_weekday_4g
+            ,sum(all_no_of_call) as sum_all_no_of_call_weekday_4g
+            ,sum(vol_4g) as vol_4g_weekday
+            ,ROW_NUMBER() OVER(partition by mobile_no,start_of_week ORDER BY SUM(All_usage_data_kb) desc) as ROW
+        from
+        (
+            select * 
+            from l1_df_the_favourite_location_daily 
+            where weektype = "weekday" and lower(gprs_type) like "4g%"
+        )
+        group by mobile_no,start_of_week,location_id
+        order by mobile_no,start_of_week,row asc
     )
     where row <= 5
     """

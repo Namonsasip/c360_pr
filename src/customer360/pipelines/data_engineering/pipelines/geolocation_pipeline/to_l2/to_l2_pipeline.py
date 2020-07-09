@@ -32,7 +32,6 @@ def geo_to_l2_pipeline(**kwargs):
                  ],
                 "l2_geo_area_from_competitor_store_weekly"
             ),
-            ##==============================Update 2020-06-12 by Thatt529==========================================##
 
             ###total_distance_km###
             node(
@@ -70,8 +69,6 @@ def geo_to_l2_pipeline(**kwargs):
                 "l2_geo_call_location_home_work_weekly"
             ),
 
-            ## ==============================Update 2020-06-15 by Thatt529==========================================##
-
             ##Top_3_cells_on_voice_usage###
             node(
                 l2_geo_top3_cells_on_voice_usage,
@@ -88,8 +85,6 @@ def geo_to_l2_pipeline(**kwargs):
                  ],
                 "l2_geo_cust_subseqently_distance_weekly"
             ),
-
-            ##==============================Update 2020-06-17 by Thatt529==========================================##
 
             ##distance_top_call###
             node(

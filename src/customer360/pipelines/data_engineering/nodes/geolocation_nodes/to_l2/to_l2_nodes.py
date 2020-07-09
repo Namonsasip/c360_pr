@@ -131,7 +131,6 @@ def l2_geo_cust_subseqently_distance_weekly(df, sql):
 
     return df
 
-##==============================Update 2020-06-12 by Thatt529==========================================##
 
 ###total_distance_km###
 def l2_geo_total_distance_km_weekly(df: DataFrame, sql: dict):
@@ -206,7 +205,6 @@ def l2_geo_call_home_work_location_weekly(df,sql):
     l2_df_2 =node_from_config(l2_df,sql)
     return l2_df_2
 
-## ==============================Update 2020-06-15 by Thatt529==========================================##
 
 ###Top_3_cells_on_voice_usage###
 def l2_geo_top3_cells_on_voice_usage(df,sql):
@@ -242,7 +240,6 @@ def l2_geo_top3_cells_on_voice_usage(df,sql):
     df = df.where("rnk <= 3")
 
     return df
-
 
 
 ###distance_top_call###
@@ -300,6 +297,7 @@ def l2_the_favourite_locations_weekly(df):
     """
     l2 = spark.sql(sql_query)
     return l2
+
 
 # 27 Same favourite location for weekend and weekday
 def l2_same_favourite_location_weekend_weekday_weekly(l0_geo_cust_cell_visit_time_df: DataFrame):
@@ -359,11 +357,9 @@ def l2_same_favourite_location_weekend_weekday_weekly(l0_geo_cust_cell_visit_tim
 	"""
     l2 = spark.sql(sql_query)
     #l2.createOrReplaceTempView('l2')
-    print(" ========================= l2 ======================")
-    l2.show()
-    #exit(2)
-
+    # print(" ========================= l2 ======================")
     return l2
+
 
 def massive_processing_time_spent_weekly(data_frame: DataFrame, sql, output_df_catalog, partition_col) -> DataFrame:
     """
@@ -371,7 +367,6 @@ def massive_processing_time_spent_weekly(data_frame: DataFrame, sql, output_df_c
     :param dict_obj:
     :return:
     """
-
 
     def divide_chunks(l, n):
         # looping till length l

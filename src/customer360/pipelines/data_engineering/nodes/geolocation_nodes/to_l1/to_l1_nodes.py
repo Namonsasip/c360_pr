@@ -25,6 +25,17 @@ run_mode = os.getenv("DATA_AVAILABILITY_CHECKS", None)
 log = logging.getLogger(__name__)
 running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 
+
+def get_master_data_on_max_date(input_df: DataFrame, par_col='partition_date'):
+    # Get max date of partition column
+    max_date = input_df.selectExpr('max({0})'.format(par_col)).collect()[0][0]
+
+    # Set the latest master DataFrame
+    input_df = input_df.where('{0}='.format(par_col) + str(max_date))
+
+    return input_df
+
+
 def l1_geo_time_spent_by_location_daily(df,sql):
     # df = df.filter('partition_date >= 20190801 and partition_date<=20191031')
     # df = add_start_of_week_and_month(df, "time_in")
@@ -44,20 +55,21 @@ def l1_geo_time_spent_by_location_daily(df,sql):
 
     # ----- Transformation -----
     sql = """
-        SELECT 
-            IMSI,
-            LOCATION_ID,
-            SUM(DURATION) AS SUM_DURATION,
+        select 
+            imsi,
+            location_id,
+            sum(duration) as sum_duration,
             event_partition_date,
             start_of_week,
             start_of_month
-    FROM GEO_CUST_CELL_VISIT_TIME
-    GROUP BY IMSI, LOCATION_ID, event_partition_date, start_of_week, start_of_month
+    from geo_cust_cell_visit_time
+    group by imsi, location_id, event_partition_date, start_of_week, start_of_month
     """
     return_df = massive_processing_time_spent_daily(df, sql, "l1_geo_time_spent_by_location_daily", 'partition_date')
     # df.unpersist()
 
     return return_df
+
 
 def l1_geo_area_from_ais_store_daily(shape,masterplan,geo_cust_cell_visit_time,sql):
     # geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20200301')
@@ -70,49 +82,49 @@ def l1_geo_area_from_ais_store_daily(shape,masterplan,geo_cust_cell_visit_time,s
                                                                        par_col="partition_date",
                                                                        target_table_name="l1_geo_area_from_ais_store_daily")
 
+    masterplan = get_master_data_on_max_date(masterplan, 'partition_date')
+    shape = get_master_data_on_max_date(shape, 'partition_month')
+
     if check_empty_dfs([geo_cust_cell_visit_time]):
         return get_spark_empty_df()
+
     # ----- Transformation -----
     geo_cust_cell_visit_time  = add_start_of_week_and_month(geo_cust_cell_visit_time, "time_in")
-    geo_cust_cell_visit_time.show()
 
-    max_date = masterplan.selectExpr('max(partition_date)').collect()[0][0]
-    masterplan=masterplan.where('partition_date='+str(max_date))
-    max_date = shape.selectExpr('max(partition_month)').collect()[0][0]
-    shape=shape.where('partition_month='+str(max_date))
     masterplan.createOrReplaceTempView("mst_cell_masterplan")
     shape.createOrReplaceTempView("mst_poi_shape")
 
     ss = get_spark_session()
     df = ss.sql("""
-        SELECT 
-            A.LANDMARK_SUB_NAME_EN,
-            B.LOCATION_ID,
-            B.LOCATION_NAME,
-            CAST((ACOS(COS(RADIANS(90-A.LANDMARK_LATITUDE))*COS(RADIANS(90-B.LATITUDE))+SIN(RADIANS(90-A.LANDMARK_LATITUDE))*SIN(RADIANS(90-B.LATITUDE))*COS(RADIANS(A.LANDMARK_LONGITUDE - B.LONGITUDE)))*6371) AS DECIMAL(13,2)) AS DISTANCE_KM
-        FROM mst_poi_shape A,
-            mst_cell_masterplan B
-        WHERE   A.LANDMARK_CAT_NAME_EN IN ('AIS')
-        AND CAST((ACOS(COS(RADIANS(90-A.LANDMARK_LATITUDE))*COS(RADIANS(90-B.LATITUDE))+SIN(RADIANS(90-A.LANDMARK_LATITUDE))*SIN(RADIANS(90-B.LATITUDE))*COS(RADIANS(A.LANDMARK_LONGITUDE - B.LONGITUDE)))*6371) AS DECIMAL(13,2)) <= (0.5)
-        GROUP BY 1,2,3,4
+        select 
+            a.landmark_sub_name_en,
+            b.location_id,
+            b.location_name,
+            cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) as distance_km
+        from mst_poi_shape a,
+            mst_cell_masterplan b
+        where   a.landmark_cat_name_en in ('ais')
+        and cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) <= (0.5)
+        group by 1,2,3,4
     """)
     df.cache()
-    df.createOrReplaceTempView('TEMP_GEO_AIS_SHOP')
+    df.createOrReplaceTempView('temp_geo_ais_shop')
 
-    geo_cust_cell_visit_time.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
+    geo_cust_cell_visit_time.createOrReplaceTempView('geo_cust_cell_visit_time')
 
     df2 = ss.sql("""
-        SELECT 
-            A.IMSI,
-            A.event_partition_date,
-            A.start_of_week,
-            A.start_of_month,
-            SUM(DURATION) AS DURATION,
-            count(1) AS NUM_OF_TIMES_PER_DAY 
-        FROM GEO_CUST_CELL_VISIT_TIME A,
-        TEMP_GEO_AIS_SHOP B 
-        WHERE A.LOCATION_ID = B.LOCATION_ID 
-        GROUP BY 1,2,3,4""")
+        select 
+            a.imsi,
+            a.event_partition_date,
+            a.start_of_week,
+            a.start_of_month,
+            sum(duration) as duration,
+            count(1) as num_of_times_per_day 
+        from geo_cust_cell_visit_time a,
+        temp_geo_ais_shop b 
+        where a.location_id = b.location_id 
+        group by 1,2,3,4
+    """)
     df2.cache()
     df2 = node_from_config(df2,sql)
     df.unpersist()
@@ -123,13 +135,16 @@ def l1_geo_area_from_ais_store_daily(shape,masterplan,geo_cust_cell_visit_time,s
 def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit_time,sql):
     # geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20200301')
     # ----- Data Availability Checks -----
-    if check_empty_dfs([geo_cust_cell_visit_time]):
+    if check_empty_dfs([geo_cust_cell_visit_time, shape, masterplan]):
         return get_spark_empty_df()
 
     geo_cust_cell_visit_time = data_non_availability_and_missing_check(df=geo_cust_cell_visit_time,
                                                                        grouping="daily",
                                                                        par_col="partition_date",
                                                                        target_table_name="l1_geo_area_from_competitor_store_daily")
+
+    masterplan = get_master_data_on_max_date(masterplan, 'partition_date')
+    shape = get_master_data_on_max_date(shape, 'partition_month')
 
     if check_empty_dfs([geo_cust_cell_visit_time]):
         return get_spark_empty_df()
@@ -138,45 +153,39 @@ def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit
     geo_cust_cell_visit_time.cache()
     geo_cust_cell_visit_time = add_start_of_week_and_month(geo_cust_cell_visit_time, "time_in")
 
-    max_date = masterplan.selectExpr('max(partition_date)').collect()[0][0]
-    masterplan = masterplan.where('partition_date=' + str(max_date))
-    max_date = shape.selectExpr('max(partition_month)').collect()[0][0]
-    shape = shape.where('partition_month=' + str(max_date))
-
     masterplan.createOrReplaceTempView("mst_cell_masterplan")
     shape.createOrReplaceTempView("mst_poi_shape")
 
-
     ss = get_spark_session()
     df = ss.sql("""
-        SELECT 
-            A.LANDMARK_SUB_NAME_EN,
-            B.LOCATION_ID,
-            B.LOCATION_NAME,
-            CAST((ACOS(COS(RADIANS(90-A.LANDMARK_LATITUDE))*COS(RADIANS(90-B.LATITUDE))+SIN(RADIANS(90-A.LANDMARK_LATITUDE))*SIN(RADIANS(90-B.LATITUDE))*COS(RADIANS(A.LANDMARK_LONGITUDE - B.LONGITUDE)))*6371) AS DECIMAL(13,2)) AS DISTANCE_KM
-        FROM mst_poi_shape A,
-            mst_cell_masterplan B
-        WHERE   A.LANDMARK_CAT_NAME_EN IN ('TRUE','DTAC')
-        AND CAST((ACOS(COS(RADIANS(90-A.LANDMARK_LATITUDE))*COS(RADIANS(90-B.LATITUDE))+SIN(RADIANS(90-A.LANDMARK_LATITUDE))*SIN(RADIANS(90-B.LATITUDE))*COS(RADIANS(A.LANDMARK_LONGITUDE - B.LONGITUDE)))*6371) AS DECIMAL(13,2)) <= (0.5)
-        GROUP BY 1,2,3,4
+        select 
+            a.landmark_sub_name_en,
+            b.location_id,
+            b.location_name,
+            cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) as distance_km
+        from mst_poi_shape a,
+            mst_cell_masterplan b
+        where   a.landmark_cat_name_en in ('true','dtac')
+        and cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) <= (0.5)
+        group by 1,2,3,4
     """)
     df.cache()
-    df.createOrReplaceTempView('TEMP_GEO_AIS_SHOP')
+    df.createOrReplaceTempView('temp_geo_ais_shop')
 
-    geo_cust_cell_visit_time.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
+    geo_cust_cell_visit_time.createOrReplaceTempView('geo_cust_cell_visit_time')
 
     df2 = ss.sql("""
-        SELECT 
-            A.IMSI,
-            A.event_partition_date,
-            A.start_of_week,
-            A.start_of_month,
-            SUM(DURATION) AS DURATION,
-            count(1) AS NUM_OF_TIMES_PER_DAY 
-        FROM GEO_CUST_CELL_VISIT_TIME A,
-            TEMP_GEO_AIS_SHOP B 
-        WHERE A.LOCATION_ID = B.LOCATION_ID 
-        GROUP BY 1,2,3,4
+        select 
+            a.imsi,
+            a.event_partition_date,
+            a.start_of_week,
+            a.start_of_month,
+            sum(duration) as duration,
+            count(1) as num_of_times_per_day 
+        from geo_cust_cell_visit_time a,
+            temp_geo_ais_shop b 
+        where a.location_id = b.location_id 
+        group by 1,2,3,4
     """)
     df2.cache()
 
@@ -187,11 +196,8 @@ def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit
     return df2
 
 
-##==============================Update 2020-06-12 by Thatt529==========================================##
-
 ###total_distance_km###
 def l1_geo_total_distance_km_daily(l0_df, sql):
-    # Get spark session
     # ----- Data Availability Checks -----
     if check_empty_dfs([l0_df]):
         return get_spark_empty_df()
@@ -205,6 +211,7 @@ def l1_geo_total_distance_km_daily(l0_df, sql):
         return get_spark_empty_df()
 
     # ----- Transformation -----
+    # Get spark session
     spark = get_spark_session()
 
     # Source Table
@@ -248,11 +255,6 @@ def l1_geo_total_distance_km_daily(l0_df, sql):
     l1_df1.cache()
     l1_df1 = l1_df1.withColumn("start_of_week", F.to_date(F.date_trunc('week', l1_df1.event_partition_date)))
     l1_df1 = l1_df1.withColumn("start_of_month", F.to_date(F.date_trunc('month', l1_df1.event_partition_date)))
-
-    # Check DataFrame from SQL query statement
-    # print("Start for check result from sql query statement")
-    # l1_df1.count()
-    # l1_df1.show()
 
     l1_df2 = node_from_config(l1_df1, sql)
 
@@ -343,7 +345,7 @@ def L1_data_traffic_top1_top2_FN(geo_mst_cell_masterplan,geo_home_work_data,prof
 
 def L1_data_traffic_home_work_Top1_TOP2(geo_mst_cell_masterplan,geo_home_work_data,profile_customer_profile_ma,usage_sum_data_location_daily,geo_exclude_home_work):
     # ----- Data Availability Checks -----
-    if check_empty_dfs([usage_sum_data_location_daily, profile_customer_profile_ma]):
+    if check_empty_dfs([usage_sum_data_location_daily, profile_customer_profile_ma, geo_mst_cell_masterplan, geo_home_work_data, geo_exclude_home_work]):
         return get_spark_empty_df()
 
     usage_sum_data_location_daily = data_non_availability_and_missing_check(df=usage_sum_data_location_daily,
@@ -357,17 +359,17 @@ def L1_data_traffic_home_work_Top1_TOP2(geo_mst_cell_masterplan,geo_home_work_da
                                                                           par_col="partition_date",
                                                                           target_table_name="L1_usage_sum_data_location_daily_data_profile_customer_profile_ma")
 
+    geo_mst_cell_masterplan = get_master_data_on_max_date(geo_mst_cell_masterplan, 'partition_date')
+
     if check_empty_dfs([usage_sum_data_location_daily, profile_customer_profile_ma]):
         return get_spark_empty_df()
     # ----- Transformation -----
     profile_customer_profile_ma_A = profile_customer_profile_ma.agg(F.max("partition_date")).collect()[0][0]
 
     ### where
-    profile_customer_profile_ma = profile_customer_profile_ma.where(
-        "partition_date = '" + str(profile_customer_profile_ma_A) + "'")
     spark = get_spark_session()
-    master_plan = geo_mst_cell_masterplan.agg(F.max("partition_date")).collect()[0][0]
-    geo_mst_cell_masterplan = geo_mst_cell_masterplan.where("partition_date = '"+str(master_plan)+"'")
+    profile_customer_profile_ma = profile_customer_profile_ma.where("partition_date = '" + str(profile_customer_profile_ma_A) + "'")
+
     profile_last_date = profile_customer_profile_ma.agg(F.max("partition_month")).collect()[0][0]
     profile_customer_profile_ma = profile_customer_profile_ma.where("partition_month = '"+str(profile_last_date)+"'")
     geo_home_work_last_date = geo_home_work_data.agg(F.max("start_of_month")).collect()[0][0]
@@ -379,17 +381,15 @@ def L1_data_traffic_home_work_Top1_TOP2(geo_mst_cell_masterplan,geo_home_work_da
     L1_data_traffic_home_work_FN(geo_mst_cell_masterplan, geo_home_work_data, profile_customer_profile_ma, usage_sum_data_location_daily,"WORK_LOCATION_ID").createOrReplaceTempView('Work')
     L1_data_traffic_top1_top2_FN(geo_mst_cell_masterplan, geo_exclude_home_work, profile_customer_profile_ma, usage_sum_data_location_daily, "TOP_LOCATION_1ST").createOrReplaceTempView('Top1')
     L1_data_traffic_top1_top2_FN(geo_mst_cell_masterplan, geo_exclude_home_work, profile_customer_profile_ma, usage_sum_data_location_daily, "TOP_LOCATION_2ND").createOrReplaceTempView('Top2')
-    # spark.sql("select * from home ").show(1)
-    # spark.sql("select * from Work ").show(1)
-    # spark.sql("select * from Top1 ").show(1)
-    # spark.sql("select * from Top2 ").show(1)
 
     Home_Work = spark.sql("""
-    SELECT A.DATE_ID AS event_partition_date ,
-    A.IMSI,A.TOTAL_DATA_TRAFFIC_KB AS Home_traffic_KB,
-    B.TOTAL_DATA_TRAFFIC_KB AS Work_traffic_KB,
-    C.TOTAL_DATA_TRAFFIC_KB AS Top1_location_traffic_KB,
-    D.TOTAL_DATA_TRAFFIC_KB AS Top2_location_traffic_KB
+    SELECT 
+        A.DATE_ID AS event_partition_date ,
+        A.IMSI,
+        A.TOTAL_DATA_TRAFFIC_KB AS Home_traffic_KB,
+        B.TOTAL_DATA_TRAFFIC_KB AS Work_traffic_KB,
+        C.TOTAL_DATA_TRAFFIC_KB AS Top1_location_traffic_KB,
+        D.TOTAL_DATA_TRAFFIC_KB AS Top2_location_traffic_KB
     FROM Home A 
     JOIN Work B
     ON B.DATE_ID=A.DATE_ID AND A.IMSI = B.IMSI
@@ -400,15 +400,17 @@ def L1_data_traffic_home_work_Top1_TOP2(geo_mst_cell_masterplan,geo_home_work_da
     """)
     Home_Work.createTempView('GEO_TEMP_04')
     data_traffic_location = spark.sql("""
-    SELECT event_partition_date,IMSI,
-    Home_traffic_KB,
-    Work_traffic_KB,
-    Top1_location_traffic_KB,
-    Top2_location_traffic_KB,
-    ((Home_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Home_traffic_KB,
-    ((Work_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Work_traffic_KB,
-    ((Top1_location_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Top1_location_traffic_KB,
-    ((Top2_location_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Top2_location_traffic_KB
+    SELECT 
+        event_partition_date,
+        IMSI,
+        Home_traffic_KB,
+        Work_traffic_KB,
+        Top1_location_traffic_KB,
+        Top2_location_traffic_KB,
+        ((Home_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Home_traffic_KB,
+        ((Work_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Work_traffic_KB,
+        ((Top1_location_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Top1_location_traffic_KB,
+        ((Top2_location_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Top2_location_traffic_KB
     FROM  GEO_TEMP_04
     """)
     return data_traffic_location
@@ -422,10 +424,11 @@ def homework_join_master_profile(cell_masterplan,geo_homework,profile_ma,Column_
 
     spark = get_spark_session()
     df_temp_00 = spark.sql(f'''
-      select a.imsi,
-      a.{Column_Name}_location_id,
-      b.lac as {Column_Name}_lac,
-      b.ci as {Column_Name}_ci
+      select 
+        a.imsi,
+        a.{Column_Name}_location_id,
+        b.lac as {Column_Name}_lac,
+        b.ci as {Column_Name}_ci
       from geo_homework a
       left join cell_masterplan b
         on a.{Column_Name}_location_id = b.location_id
@@ -434,14 +437,15 @@ def homework_join_master_profile(cell_masterplan,geo_homework,profile_ma,Column_
     df_temp_00.createOrReplaceTempView('temp_00')
 
     df_temp_01 = spark.sql(f'''
-      select a.imsi,
-      b.access_method_num,
-      a.{Column_Name}_location_id,
-      a.{Column_Name}_lac,
-      a.{Column_Name}_ci
+      select
+        a.imsi,
+        b.access_method_num,
+        a.{Column_Name}_location_id,
+        a.{Column_Name}_lac,
+        a.{Column_Name}_ci
       from temp_00 a
       left join profile_ma b
-      on a.imsi = b.imsi
+        on a.imsi = b.imsi
       group by 1,2,3,4,5
       ''')
 
@@ -454,10 +458,11 @@ def geo_top_visit_join_master_profile(cell_masterplan,geo_top_visit,profile_ma,C
 
     spark = get_spark_session()
     df_temp_00 = spark.sql(f'''
-      select a.imsi,
-      a.{Column_Name},
-      b.lac as {Column_Name}_lac,
-      b.ci as {Column_Name}_ci
+      select
+        a.imsi,
+        a.{Column_Name},
+        b.lac as {Column_Name}_lac,
+        b.ci as {Column_Name}_ci
       from geo_top_visit a
       left join cell_masterplan b
         on a.{Column_Name} = b.location_id
@@ -466,14 +471,15 @@ def geo_top_visit_join_master_profile(cell_masterplan,geo_top_visit,profile_ma,C
     df_temp_00.createOrReplaceTempView('temp_00')
 
     df_temp_01 = spark.sql(f'''
-      select a.imsi,
-      b.access_method_num,
-      a.{Column_Name},
-      a.{Column_Name}_lac,
-      a.{Column_Name}_ci
+      select
+        a.imsi,
+        b.access_method_num,
+        a.{Column_Name},
+        a.{Column_Name}_lac,
+        a.{Column_Name}_ci
       from temp_00 a
       left join profile_ma b
-      on a.imsi = b.imsi
+        on a.imsi = b.imsi
       group by 1,2,3,4,5
       ''')
 
@@ -482,13 +488,15 @@ def geo_top_visit_join_master_profile(cell_masterplan,geo_top_visit,profile_ma,C
 def l1_call_location_home_work(cell_masterplan,geo_homework,profile_ma,usage_sum_voice,geo_top_visit_exc_homework):
 
     # ----- Data Availability Checks -----
-    if check_empty_dfs([usage_sum_voice]):
+    if check_empty_dfs([usage_sum_voice, cell_masterplan, geo_homework, profile_ma, geo_top_visit_exc_homework]):
         return get_spark_empty_df()
 
     usage_sum_voice = data_non_availability_and_missing_check(df=usage_sum_voice,
                                                                             grouping="daily",
                                                                             par_col="partition_date",
                                                                             target_table_name="l1_call_location_home_work")
+
+    cell_masterplan = get_master_data_on_max_date(cell_masterplan, 'partition_date')
 
     if check_empty_dfs([usage_sum_voice]):
         return get_spark_empty_df()
@@ -505,24 +513,21 @@ def l1_call_location_home_work(cell_masterplan,geo_homework,profile_ma,usage_sum
     geo_top_visit_join_master_profile(cell_masterplan, geo_homework,profile_ma,
                                  "top_location_2nd").createOrReplaceTempView('top_location_2nd')
 
-
-
-
-def sum_voice_daily(df_temp_01):
-    spark = get_spark_session()
-    df_sum_voice = spark.sql(f'''
-      select cast(substr(date_id,1,10)as date) as event_partiiton_date
-      ,a.imsi
-      ,sum(b.no_of_call+b.no_of_inc) as call_count_location_{df_temp_01}  
-      from {df_temp_01} a
-      left join usage_voice b
-      on a.access_method_num = b.access_method_num
-      where b.service_type in ('VOICE','VOLTE')
-      and a.{df_temp_01}_lac = b.lac
-      and a.{df_temp_01}_ci = b.ci
-      group by 1,2
-      ''')
-    return df_sum_voice
+    def sum_voice_daily(df_temp_01):
+        spark = get_spark_session()
+        df_sum_voice = spark.sql(f'''
+          select cast(substr(date_id,1,10)as date) as event_partiiton_date
+          ,a.imsi
+          ,sum(b.no_of_call+b.no_of_inc) as call_count_location_{df_temp_01}  
+          from {df_temp_01} a
+          left join usage_voice b
+          on a.access_method_num = b.access_method_num
+          where b.service_type in ('VOICE','VOLTE')
+          and a.{df_temp_01}_lac = b.lac
+          and a.{df_temp_01}_ci = b.ci
+          group by 1,2
+          ''')
+        return df_sum_voice
 
     sum_voice_daily('home_weekday').createOrReplaceTempView('df_call_home_weekday')
     sum_voice_daily('work').createOrReplaceTempView('df_call_work')
@@ -531,12 +536,13 @@ def sum_voice_daily(df_temp_01):
 
     spark = get_spark_session()
     df_sum_voice_daily = spark.sql('''
-        select a.event_partiiton_date as event_partition_date
-        ,a.imsi
-        ,a.call_count_location_home_weekday  
-        ,b.call_count_location_work
-        ,c.call_count_location_top_location_1st as call_count_location_top_1st
-        ,d.call_count_location_top_location_2nd as call_count_location_top_2nd
+        select
+            a.event_partiiton_date as event_partition_date
+            ,a.imsi
+            ,a.call_count_location_home_weekday  
+            ,b.call_count_location_work
+            ,c.call_count_location_top_location_1st as call_count_location_top_1st
+            ,d.call_count_location_top_location_2nd as call_count_location_top_2nd
         from df_call_home_weekday a
         join df_call_work b
             on a.event_partiiton_date = b.event_partiiton_date and a.imsi = b.imsi
@@ -619,6 +625,8 @@ def l1_location_of_visit_ais_store_daily(shape,cust_cell_visit,sql):
                                                          grouping="daily",
                                                          par_col="partition_date",
                                                          target_table_name="l1_location_of_visit_ais_store_daily")
+
+    shape = get_master_data_on_max_date(shape, 'partition_month')
 
     if check_empty_dfs([cust_cell_visit]):
         return get_spark_empty_df()
@@ -765,22 +773,22 @@ def l1_geo_distance_top_call(df):
     df.createOrReplaceTempView('geo_top3_cells_on_voice_usage')
 
     sql_query = """
-    select
-    a.imsi
-    ,case when b.latitude is null and b.longitude is null then 0 
-      else cast((acos(cos(radians(90-a.latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.latitude))*sin(radians(90-b.latitude))*cos(radians(a.longitude - b.longitude)))*6371) as decimal(13,2)) 
-      end as top_distance_km
-    ,a.event_partition_date
-    ,a.start_of_week
-    ,a.start_of_month
-    from geo_top3_cells_on_voice_usage a
-    left join geo_top3_cells_on_voice_usage b
-    on a.imsi = b.imsi
-    and a.event_partition_date = b.event_partition_date
-    and b.rnk >= 2
-    where a.rnk = 1
-    order by 1,3,4,5
-
+        select
+            a.imsi
+            ,case
+                when b.latitude is null and b.longitude is null then 0 
+                else cast((acos(cos(radians(90-a.latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.latitude))*sin(radians(90-b.latitude))*cos(radians(a.longitude - b.longitude)))*6371) as decimal(13,2)) 
+                end as top_distance_km
+            ,a.event_partition_date
+            ,a.start_of_week
+            ,a.start_of_month
+        from geo_top3_cells_on_voice_usage a
+        left join geo_top3_cells_on_voice_usage b
+        on a.imsi = b.imsi
+        and a.event_partition_date = b.event_partition_date
+        and b.rnk >= 2
+        where a.rnk = 1
+        order by 1,3,4,5
     """
     l1_df = spark.sql(sql_query)
     l1_df.cache()
@@ -807,10 +815,8 @@ def l1_geo_number_of_bs_used(geo_cust_cell, sql):
     df = node_from_config(geo_cust_cell, sql)
     return df
 
-# Form
+
 # 47 l1_the_favourite_locations_daily ====================
-
-
 def l1_the_favourite_locations_daily(usage_df_location,geo_df_masterplan):
     # ----- Data Availability Checks -----
     if check_empty_dfs([usage_df_location, geo_df_masterplan]):
@@ -821,19 +827,15 @@ def l1_the_favourite_locations_daily(usage_df_location,geo_df_masterplan):
                                                  par_col="partition_date",
                                                  target_table_name="l1_the_favourite_locations_daily")
 
+    geo_df_masterplan = get_master_data_on_max_date(geo_df_masterplan, 'partition_date')
+
     if check_empty_dfs([usage_df_location]):
         return get_spark_empty_df()
 
     # ----- Transformation -----
     ### config
     spark = get_spark_session()
-    # start commment here if use sample data
-    ### last_date
-    geo_last_date = geo_df_masterplan.agg(F.max("partition_date")).collect()[0][0]
 
-    ### where
-    geo_df_masterplan = geo_df_masterplan.where("partition_date = '" + str(geo_last_date) + "'")
-    # stop commment here if use sample data
     ### table view path
     geo_df_masterplan.createOrReplaceTempView("geo_mst_cell_masterplan")
 
@@ -848,55 +850,38 @@ def l1_the_favourite_locations_daily(usage_df_location,geo_df_masterplan):
     usage_df_location.createOrReplaceTempView('usage_df_location')
 
     sql_l1_1 = """
-    select 
-    b.mobile_no
-    ,b.date_id
-    ,mp.location_id
-    ,b.lac as lac
-    ,b.ci as ci
-    ,b.gprs_type
-    ,mp.latitude
-    ,mp.longitude
-    ,b.start_of_week
-    ,b.start_of_month
-    ,case when 
-    	dayofweek(b.date_id) = 2 
-    	or dayofweek(b.date_id) = 3 
-    	or dayofweek(b.date_id) = 4 
-    	or dayofweek(b.date_id) = 5 
-    	or dayofweek(b.date_id) = 6 
-    then 	"weekday"
-    else	"weekend"
-    end as weektype
-
-    ,sum(b.no_of_call) as all_no_of_call
-    ,sum(b.vol_downlink_kb+b.vol_uplink_kb) as all_usage_data_kb
-
-    ,case when lower(b.gprs_type) like "3g%"
-    then sum(b.vol_uplink_kb+b.vol_downlink_kb)
-    else 0
-    end 				
-    as vol_3g
-
-    ,case when lower(b.gprs_type) like "4g%"
-    then sum(b.vol_uplink_kb+b.vol_downlink_kb)
-    else 0
-    end 				
-    as vol_4g
-
-    ,case when lower(b.gprs_type) like "5g%"
-    then sum(b.vol_uplink_kb+b.vol_downlink_kb)
-    else 0
-    end 				
-    as vol_5g
-
-    from sum_data_location b  
-    left join geo_mst_cell_masterplan mp
-    on b.lac = mp.lac
-    and b.ci = mp.ci
-    where mp.location_id is not NULL
-    GROUP BY b.mobile_no,b.date_id,mp.location_id,b.lac,b.ci,b.gprs_type,weektype,mp.latitude,mp.longitude,b.start_of_week,b.start_of_month
-    order by date_id
+        select 
+            b.mobile_no
+            ,b.date_id
+            ,mp.location_id
+            ,b.lac as lac
+            ,b.ci as ci
+            ,b.gprs_type
+            ,mp.latitude
+            ,mp.longitude
+            ,b.start_of_week
+            ,b.start_of_month
+            ,case 
+                when dayofweek(b.date_id) = 2 or dayofweek(b.date_id) = 3 or dayofweek(b.date_id) = 4 or dayofweek(b.date_id) = 5 or dayofweek(b.date_id) = 6 then "weekday"
+                else "weekend" end as weektype
+            ,sum(b.no_of_call) as all_no_of_call
+            ,sum(b.vol_downlink_kb+b.vol_uplink_kb) as all_usage_data_kb
+            ,case 
+                when lower(b.gprs_type) like "3g%" then sum(b.vol_uplink_kb+b.vol_downlink_kb)
+                else 0 end as vol_3g
+            ,case
+                when lower(b.gprs_type) like "4g%" then sum(b.vol_uplink_kb+b.vol_downlink_kb)
+                else 0 end as vol_4g
+            ,case
+                when lower(b.gprs_type) like "5g%" then sum(b.vol_uplink_kb+b.vol_downlink_kb) 
+                else 0 end as vol_5g
+        from sum_data_location b  
+        left join geo_mst_cell_masterplan mp
+        on b.lac = mp.lac
+        and b.ci = mp.ci
+        where mp.location_id is not NULL
+        GROUP BY b.mobile_no,b.date_id,mp.location_id,b.lac,b.ci,b.gprs_type,weektype,mp.latitude,mp.longitude,b.start_of_week,b.start_of_month
+        order by date_id
     """
     l1 = spark.sql(sql_l1_1)
     return l1
@@ -957,18 +942,21 @@ def l1_number_of_unique_cell_daily(usage_sum_data_location):
     usage_sum_data_location = usage_sum_data_location.withColumn("event_partition_date",F.to_date(usage_sum_data_location.date_id))
     usage_sum_data_location.createOrReplaceTempView('usage_sum_data_location_daily')
 
-    l1_df_4 = spark.sql("""select count(distinct mobile_no) AS MOBILE_NO , LAC , CI
-    ,case when
-        dayofweek(event_partition_date) = 2
-        or dayofweek(event_partition_date) = 3
-        or dayofweek(event_partition_date) = 4
-        or dayofweek(event_partition_date) = 5
-        or dayofweek(event_partition_date) = 6
-    then   "weekday"
-    else   "weekend"
-    end as WEEKTYPE,
-    event_partition_date
-    from usage_sum_data_location_daily
-    group by lac , ci, event_partition_date""")
+    l1_df_4 = spark.sql("""
+        select
+            count(distinct mobile_no) AS MOBILE_NO,
+            LAC,
+            CI,
+            case
+                when dayofweek(event_partition_date) = 2
+                    or dayofweek(event_partition_date) = 3
+                    or dayofweek(event_partition_date) = 4
+                    or dayofweek(event_partition_date) = 5
+                    or dayofweek(event_partition_date) = 6 then   "weekday"
+                else "weekend" end as WEEKTYPE,
+            event_partition_date
+        from usage_sum_data_location_daily
+        group by lac , ci, event_partition_date
+    """)
 
     return l1_df_4

@@ -1,7 +1,7 @@
 #----------------------- geo_time_spent_by_location -------------------------
 l0_geo_cust_cell_visit_time_for_l1_geo_time_spent_by_location_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time/
+  filepath: base_path/GEO/geo_cust_cell_visit_time/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -14,7 +14,7 @@ l0_geo_cust_cell_visit_time_for_l1_geo_time_spent_by_location_daily:
 #----------------------- mst_poi_shape_geo_area_from_ais_store_daily -------------------------
 l0_mst_poi_shape_for_l1_geo_area_from_ais_store_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/GEO/geo_mst_lm_poi_shape/
+  filepath: base_path/GEO/geo_mst_lm_poi_shape/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -27,7 +27,7 @@ l0_mst_poi_shape_for_l1_geo_area_from_ais_store_daily:
 #----------------------- mst_cell_masterplan_geo_area_from_ais_store -------------------------
 l0_mst_cell_masterplan_for_l1_geo_area_from_ais_store_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/GEO/geo_mst_cell_masterplan/
+  filepath: base_path/GEO/geo_mst_cell_masterplan/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -40,7 +40,7 @@ l0_mst_cell_masterplan_for_l1_geo_area_from_ais_store_daily:
 #----------------------- mst_cell_masterplan_geo_home_weekday_city_citizens -------------------------
 l0_mst_cell_masterplan_for_l4_geo_home_weekday_city_citizens:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/GEO/geo_mst_cell_masterplan/
+  filepath: base_path/GEO/geo_mst_cell_masterplan/
   file_format: parquet
   metadata_table_path: 'metadata_path'
     load_args:
@@ -53,7 +53,7 @@ l0_mst_cell_masterplan_for_l4_geo_home_weekday_city_citizens:
 #----------------------- geo_cust_cell_visit_time_geo_area_from_ais_store -------------------------
 l0_geo_cust_cell_visit_time_for_l1_geo_area_from_ais_store_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time/
+  filepath: base_path/GEO/geo_cust_cell_visit_time/
   file_format: parquet
   metadata_table_path: 'metadata_path'
     load_args:
@@ -66,7 +66,7 @@ l0_geo_cust_cell_visit_time_for_l1_geo_area_from_ais_store_daily:
 #----------------------- geo_cust_location_visit_hr_geo_work_area_center_average -------------------------
 l0_geo_cust_location_visit_hr_for_l4_geo_work_area_center_average:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_location_visit_hr/
+  filepath: base_path/GEO/geo_cust_location_visit_hr/
   file_format: parquet
   metadata_table_path: 'metadata_path'
     load_args:
@@ -79,7 +79,7 @@ l0_geo_cust_location_visit_hr_for_l4_geo_work_area_center_average:
 #----------------------- mst_poi_shape_geo_area_from_competitor_store -------------------------
 l0_mst_poi_shape_for_l1_geo_area_from_competitor_store_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/GEO/geo_mst_lm_poi_shape/
+  filepath: base_path/GEO/geo_mst_lm_poi_shape/
   file_format: parquet
   metadata_table_path: 'metadata_path'
     load_args:
@@ -92,7 +92,7 @@ l0_mst_poi_shape_for_l1_geo_area_from_competitor_store_daily:
 #----------------------- mst_cell_masterplan_geo_area_from_competitor_store -------------------------
 l0_mst_cell_masterplan_for_l1_geo_area_from_competitor_store_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/GEO/geo_mst_cell_masterplan/
+  filepath: base_path/GEO/geo_mst_cell_masterplan/
   file_format: parquet
   metadata_table_path: 'metadata_path'
     load_args:
@@ -105,7 +105,7 @@ l0_mst_cell_masterplan_for_l1_geo_area_from_competitor_store_daily:
 #----------------------- geo_cust_cell_visit_time_geo_area_from_competitor_store -------------------------
 l0_geo_cust_cell_visit_time_for_l1_geo_area_from_competitor_store_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time/
+  filepath: base_path/GEO/geo_cust_cell_visit_time/
   file_format: parquet
   metadata_table_path: 'metadata_path'
     load_args:
@@ -118,7 +118,7 @@ l0_geo_cust_cell_visit_time_for_l1_geo_area_from_competitor_store_daily:
 #----------------------- geo_cust_cell_visit_time_geo_home_work_location_id -------------------------
 l0_geo_cust_cell_visit_time_for_int_l4_geo_home_work_location_id:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time/
+  filepath: base_path/GEO/geo_cust_cell_visit_time/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -131,7 +131,7 @@ l0_geo_cust_cell_visit_time_for_int_l4_geo_home_work_location_id:
 #----------------------- geo_cust_cell_visit_time_geo_cust_subseqently_distance -------------------------
 l0_geo_cust_cell_visit_time_for_l1_geo_cust_subseqently_distance_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time/
+  filepath: base_path/GEO/geo_cust_cell_visit_time/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -144,7 +144,7 @@ l0_geo_cust_cell_visit_time_for_l1_geo_cust_subseqently_distance_daily:
 #----------------------- geo_cust_cell_visit_time_simple_data -------------------------
 l0_geo_cust_cell_visit_time_simple_data_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time/
+  filepath: base_path/GEO/geo_cust_cell_visit_time/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -157,7 +157,7 @@ l0_geo_cust_cell_visit_time_simple_data_daily:
 #----------------------- geo_mst_cell_masterplan_current_use_non_homework_features -------------------------
 l0_geo_mst_cell_masterplan_current_for_l1_use_non_homework_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/GEO/geo_mst_cell_masterplan/
+  filepath: base_path/GEO/geo_mst_cell_masterplan/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -183,7 +183,7 @@ l0_geo_home_work_data_for_l1_use_non_homework_features:
 #----------------------- profile_customer_profile_ma_use_non_homework_features -------------------------
 l0_profile_customer_profile_ma_for_l1_use_non_homework_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/PROFILE/profile_customer_profile_ma/
+  filepath: base_path/PROFILE/profile_customer_profile_ma/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -196,7 +196,7 @@ l0_profile_customer_profile_ma_for_l1_use_non_homework_features:
 #----------------------- usage_sum_data_location_use_non_homework_features -------------------------
 l0_usage_sum_data_location_daily_for_l1_use_non_homework_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_sum_data_location_daily/
+  filepath: base_path/USAGE/usage_sum_data_location_daily/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -209,7 +209,7 @@ l0_usage_sum_data_location_daily_for_l1_use_non_homework_features:
 #----------------------- geo_cust_cell_visit_time_for_geo_number_of_bs_used -------------------------
 l0_geo_cust_cell_visit_time_daily_for_l1_geo_number_of_bs_used:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time/
+  filepath: base_path/GEO/geo_cust_cell_visit_time/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -222,7 +222,7 @@ l0_geo_cust_cell_visit_time_daily_for_l1_geo_number_of_bs_used:
 #----------------------- usage_sum_voice_location_homework_features -------------------------
 l0_usage_sum_voice_location_daily_for_l1_homework_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_sum_voice_location_daily/
+  filepath: base_path/USAGE/usage_sum_voice_location_daily/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -235,7 +235,7 @@ l0_usage_sum_voice_location_daily_for_l1_homework_features:
 #----------------------- geo_top_visit_exclude_homework_for_l1_sum_voice -------------------------
 l0_geo_top_visit_exclude_homework_for_l1_sum_voice_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_top_visit_exclude_homework/
+  filepath: base_path/GEO/l4_features/geo_top_visit_exclude_homework/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -248,7 +248,7 @@ l0_geo_top_visit_exclude_homework_for_l1_sum_voice_daily:
 #----------------------- usage_sum_voice_location_daily_for_l1_geo_top3_cells_on_voice_usage -------------------------
 l0_usage_sum_voice_location_daily_for_l1_geo_top3_cells_on_voice_usage:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_sum_voice_location_daily/
+  filepath: base_path/USAGE/usage_sum_voice_location_daily/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -261,7 +261,7 @@ l0_usage_sum_voice_location_daily_for_l1_geo_top3_cells_on_voice_usage:
 #----------------------- geo_mst_cell_masterplan_for_l1_geo_top3_cells_on_voice_usage -------------------------
 l0_geo_mst_cell_masterplan_for_l1_geo_top3_cells_on_voice_usage:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/GEO/geo_mst_cell_masterplan/
+  filepath: base_path/GEO/geo_mst_cell_masterplan/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -274,7 +274,7 @@ l0_geo_mst_cell_masterplan_for_l1_geo_top3_cells_on_voice_usage:
 #----------------------- profile_customer_profile_ma_for_l1_geo_top3_cells_on_voice_usage -------------------------
 l0_profile_customer_profile_ma_for_l1_geo_top3_cells_on_voice_usage:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/PROFILE/profile_customer_profile_ma/
+  filepath: base_path/PROFILE/profile_customer_profile_ma/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -287,7 +287,7 @@ l0_profile_customer_profile_ma_for_l1_geo_top3_cells_on_voice_usage:
 #----------------------- usage_sum_data_location_daily_for_l1_the_favourite_locations -------------------------
 l0_usage_sum_data_location_daily_for_l1_the_favourite_locations:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_sum_data_location_daily/
+  filepath: base_path/USAGE/usage_sum_data_location_daily/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -300,7 +300,7 @@ l0_usage_sum_data_location_daily_for_l1_the_favourite_locations:
 #----------------------- geo_mst_cell_masterplan_for_l1_the_favourite_locations -------------------------
 l0_geo_mst_cell_masterplan_for_l1_the_favourite_locations:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/GEO/geo_mst_cell_masterplan/
+  filepath: base_path/GEO/geo_mst_cell_masterplan/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -313,7 +313,7 @@ l0_geo_mst_cell_masterplan_for_l1_the_favourite_locations:
 #----------------------- geo_cust_cell_visit_time_for_l2_same_favourite_location -------------------------
 l0_geo_cust_cell_visit_time_for_l2_same_favourite_location_weekend_weekday:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/GEO/geo_cust_cell_visit_time/
+  filepath: base_path/GEO/geo_cust_cell_visit_time/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -326,7 +326,7 @@ l0_geo_cust_cell_visit_time_for_l2_same_favourite_location_weekend_weekday:
 #----------------------- usage_sum_data_location_daily_for_l1_number_of_unique_cell -------------------------
 l0_usage_sum_data_location_daily_for_l1_number_of_unique_cell_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_sum_data_location_daily/
+  filepath: base_path/USAGE/usage_sum_data_location_daily/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
