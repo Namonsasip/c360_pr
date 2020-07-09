@@ -47,6 +47,11 @@ def prepare_key_columns(df: DataFrame,) -> DataFrame:
         "start_of_month",
         "start_of_week",
     ]
+
+    if "key_date" in df.columns:
+        key_date_columns = list_intersection(key_date_columns, df.columns)
+        return df.drop(*key_date_columns)
+
     key_date_columns_in_df = list_intersection(df.columns, key_date_columns)
     if len(key_date_columns_in_df) > 1:
         logging.info("More then one date column found. Picking event_partition_date")
