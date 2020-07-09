@@ -124,7 +124,7 @@ def geo_to_l1_pipeline(**kwargs):
                 "l1_the_favourite_locations_daily"
             ),
 
-            ### Number of Unique Cells Used ###
+            ## Number of Unique Cells Used ###
             node(
                 l1_number_of_unique_cell_daily,
                 ["l0_usage_sum_data_location_daily_for_l1_number_of_unique_cell_daily"
