@@ -31,12 +31,12 @@ def l1_geo_time_spent_by_location_daily(df,sql):
     # df.cache()
 
     # ----- Data Availability Checks -----
-    if check_empty_dfs([df]):
+    if check_empty_dfs(df):
         return get_spark_empty_df()
 
     df = data_non_availability_and_missing_check(df=df,grouping="daily",par_col="partition_date",target_table_name="l1_geo_time_spent_by_location_daily")
 
-    if check_empty_dfs([df]):
+    if check_empty_dfs(df):
         return get_spark_empty_df()
 
     # ----- Transformation -----
@@ -52,7 +52,15 @@ def l1_geo_time_spent_by_location_daily(df,sql):
 
 def l1_geo_area_from_ais_store_daily(shape,masterplan,geo_cust_cell_visit_time,sql):
     # geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20200301')
+    # ----- Data Availability Checks -----
+    if check_empty_dfs([geo_cust_cell_visit_time]):
+        return get_spark_empty_df()
 
+    geo_cust_cell_visit_time = data_non_availability_and_missing_check(df=geo_cust_cell_visit_time,grouping="daily",par_col="partition_date",target_table_name="l1_geo_area_from_ais_store_daily")
+
+    if check_empty_dfs([geo_cust_cell_visit_time]):
+        return get_spark_empty_df()
+    # ----- Transformation -----
     geo_cust_cell_visit_time  = add_start_of_week_and_month(geo_cust_cell_visit_time, "time_in")
     geo_cust_cell_visit_time.show()
 
@@ -92,7 +100,19 @@ def l1_geo_area_from_ais_store_daily(shape,masterplan,geo_cust_cell_visit_time,s
 
 def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit_time,sql):
     # geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20200301')
+    # ----- Data Availability Checks -----
+    if check_empty_dfs([geo_cust_cell_visit_time]):
+        return get_spark_empty_df()
 
+    geo_cust_cell_visit_time = data_non_availability_and_missing_check(df=geo_cust_cell_visit_time, grouping="daily",
+                                                                       par_col="partition_date",
+                                                                       target_table_name="l1_geo_area_from_competitor_store_daily")
+
+    if check_empty_dfs([geo_cust_cell_visit_time]):
+        return get_spark_empty_df()
+
+
+    # ----- Transformation -----
     geo_cust_cell_visit_time.cache()
     geo_cust_cell_visit_time = add_start_of_week_and_month(geo_cust_cell_visit_time, "time_in")
 
@@ -140,6 +160,18 @@ def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit
 ###total_distance_km###
 def l1_geo_total_distance_km_daily(l0_df, sql):
     # Get spark session
+    # ----- Data Availability Checks -----
+    if check_empty_dfs([l0_df]):
+        return get_spark_empty_df()
+
+    l0_df = data_non_availability_and_missing_check(df=l0_df, grouping="daily",
+                                                                       par_col="partition_date",
+                                                                       target_table_name="l1_geo_total_distance_km_daily")
+
+    if check_empty_dfs([l0_df]):
+        return get_spark_empty_df()
+
+    # ----- Transformation -----
     spark = get_spark_session()
 
     # Source Table
@@ -194,6 +226,7 @@ def l1_geo_total_distance_km_daily(l0_df, sql):
 
 ###Traffic_fav_location###
 def L1_data_traffic_home_work_FN(geo_mst_cell_masterplan,geo_home_work_data,profile_customer_profile_ma,usage_sum_data_location_daily,HOME_WORK_WEEKDAY_LOCATION_ID):
+
     ###TABLE###
     spark = get_spark_session()
 
@@ -272,6 +305,35 @@ def L1_data_traffic_top1_top2_FN(geo_mst_cell_masterplan,geo_home_work_data,prof
     return GEO_TEMP_02
 
 def L1_data_traffic_home_work_Top1_TOP2(geo_mst_cell_masterplan,geo_home_work_data,profile_customer_profile_ma,usage_sum_data_location_daily,geo_exclude_home_work):
+    # ----- Data Availability Checks -----
+    if check_empty_dfs([usage_sum_data_location_daily]):
+        return get_spark_empty_df()
+
+    usage_sum_data_location_daily = data_non_availability_and_missing_check(df=usage_sum_data_location_daily,
+                                                                            grouping="daily",
+                                                                            par_col="partition_date",
+                                                                            target_table_name="L1_usage_sum_data_location_daily_data_traffic_home_work")
+
+    if check_empty_dfs([usage_sum_data_location_daily]):
+        return get_spark_empty_df()
+
+    if check_empty_dfs([profile_customer_profile_ma]):
+        return get_spark_empty_df()
+
+    profile_customer_profile_ma = data_non_availability_and_missing_check(df=profile_customer_profile_ma,
+                                                                          grouping="daily",
+                                                                          par_col="partition_date",
+                                                                          target_table_name="L1_usage_sum_data_location_daily_data_profile_customer_profile_ma")
+
+    if check_empty_dfs([profile_customer_profile_ma]):
+        return get_spark_empty_df()
+
+    # ----- Transformation -----
+    profile_customer_profile_ma_A = profile_customer_profile_ma.agg(F.max("partition_date")).collect()[0][0]
+
+    ### where
+    profile_customer_profile_ma = profile_customer_profile_ma.where(
+        "partition_date = '" + str(profile_customer_profile_ma_A) + "'")
     spark = get_spark_session()
     master_plan = geo_mst_cell_masterplan.agg(F.max("partition_date")).collect()[0][0]
     geo_mst_cell_masterplan = geo_mst_cell_masterplan.where("partition_date = '"+str(master_plan)+"'")
@@ -387,6 +449,20 @@ def geo_top_visit_join_master_profile(cell_masterplan,geo_top_visit,profile_ma,C
     return df_temp_01
 
 def l1_call_location_home_work(cell_masterplan,geo_homework,profile_ma,usage_sum_voice,geo_top_visit_exc_homework):
+
+    # ----- Data Availability Checks -----
+    if check_empty_dfs([usage_sum_voice]):
+        return get_spark_empty_df()
+
+    usage_sum_voice = data_non_availability_and_missing_check(df=usage_sum_voice,
+                                                                            grouping="daily",
+                                                                            par_col="partition_date",
+                                                                            target_table_name="l1_call_location_home_work")
+
+    if check_empty_dfs([usage_sum_voice]):
+        return get_spark_empty_df()
+
+    # ----- Transformation -----
     geo_homework = geo_homework.join(geo_top_visit_exc_homework,'imsi','full')
     usage_sum_voice.createOrReplaceTempView('usage_voice')
     homework_join_master_profile(cell_masterplan,geo_homework,profile_ma,
@@ -401,21 +477,21 @@ def l1_call_location_home_work(cell_masterplan,geo_homework,profile_ma,usage_sum
 
 
 
-    def sum_voice_daily(df_temp_01):
-        spark = get_spark_session()
-        df_sum_voice = spark.sql(f'''
-          select cast(substr(date_id,1,10)as date) as event_partiiton_date
-          ,a.imsi
-          ,sum(b.no_of_call+b.no_of_inc) as call_count_location_{df_temp_01}  
-          from {df_temp_01} a
-          left join usage_voice b
-          on a.access_method_num = b.access_method_num
-          where b.service_type in ('VOICE','VOLTE')
-          and a.{df_temp_01}_lac = b.lac
-          and a.{df_temp_01}_ci = b.ci
-          group by 1,2
-          ''')
-        return df_sum_voice
+def sum_voice_daily(df_temp_01):
+    spark = get_spark_session()
+    df_sum_voice = spark.sql(f'''
+      select cast(substr(date_id,1,10)as date) as event_partiiton_date
+      ,a.imsi
+      ,sum(b.no_of_call+b.no_of_inc) as call_count_location_{df_temp_01}  
+      from {df_temp_01} a
+      left join usage_voice b
+      on a.access_method_num = b.access_method_num
+      where b.service_type in ('VOICE','VOLTE')
+      and a.{df_temp_01}_lac = b.lac
+      and a.{df_temp_01}_ci = b.ci
+      group by 1,2
+      ''')
+    return df_sum_voice
 
     sum_voice_daily('home_weekday').createOrReplaceTempView('df_call_home_weekday')
     sum_voice_daily('work').createOrReplaceTempView('df_call_work')
@@ -442,7 +518,19 @@ def l1_call_location_home_work(cell_masterplan,geo_homework,profile_ma,usage_sum
     return df_sum_voice_daily
 
 def l1_geo_cust_subseqently_distance(cell_visit, sql):
+    # ----- Data Availability Checks -----
+    if check_empty_dfs([cell_visit]):
+        return get_spark_empty_df()
 
+    cell_visit = data_non_availability_and_missing_check(df=cell_visit,
+                                                              grouping="daily",
+                                                              par_col="partition_date",
+                                                              target_table_name="l1_geo_cust_subseqently_distance")
+
+    if check_empty_dfs([cell_visit]):
+        return get_spark_empty_df()
+
+    # ----- Transformation -----
     # Drop unneeded column
     cell_visit = cell_visit.drop('cell_id', 'time_out', 'hour_in', 'hour_out')
     cell_visit = cell_visit.where(F.col("imsi").isNotNull())
@@ -492,6 +580,19 @@ def l1_geo_cust_subseqently_distance(cell_visit, sql):
 
 ###feature_AIS_store###
 def l1_location_of_visit_ais_store_daily(shape,cust_cell_visit,sql):
+    # ----- Data Availability Checks -----
+    if check_empty_dfs([cust_cell_visit]):
+        return get_spark_empty_df()
+
+    cust_cell_visit = data_non_availability_and_missing_check(df=cust_cell_visit,
+                                                         grouping="daily",
+                                                         par_col="partition_date",
+                                                         target_table_name="l1_location_of_visit_ais_store_daily")
+
+    if check_empty_dfs([cust_cell_visit]):
+        return get_spark_empty_df()
+
+    # ----- Transformation -----
     shape.cache()
     store_shape = shape.where('landmark_cat_name_en like "%AIS%"')
     store_shape.createOrReplaceTempView('geo_mst_lm_poi_shape')
@@ -533,6 +634,19 @@ def l1_location_of_visit_ais_store_daily(shape,cust_cell_visit,sql):
 
 ###Top_3_cells_on_voice_usage###
 def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
+    # ----- Data Availability Checks -----
+    if check_empty_dfs([usage_df]):
+        return get_spark_empty_df()
+
+    usage_df = data_non_availability_and_missing_check(df=usage_df,
+                                                              grouping="daily",
+                                                              par_col="partition_date",
+                                                              target_table_name="l1_geo_top3_cells_on_voice_usage")
+
+    if check_empty_dfs([usage_df]):
+        return get_spark_empty_df()
+
+    # ----- Transformation -----
     ### config
     spark = get_spark_session()
 
@@ -600,6 +714,20 @@ def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
 
 ###distance_top_call###
 def l1_geo_distance_top_call(df):
+
+    # ----- Data Availability Checks -----
+    if check_empty_dfs([df]):
+        return get_spark_empty_df()
+
+    df = data_non_availability_and_missing_check(df=df,
+                                                       grouping="daily",
+                                                       par_col="partition_date",
+                                                       target_table_name="l1_geo_distance_top_call")
+
+    if check_empty_dfs([df]):
+        return get_spark_empty_df()
+
+    # ----- Transformation -----
     ### config
     spark = get_spark_session()
 
@@ -632,6 +760,19 @@ def l1_geo_distance_top_call(df):
 
 
 def l1_geo_number_of_bs_used(geo_cust_cell, sql):
+    # ----- Data Availability Checks -----
+    if check_empty_dfs([geo_cust_cell]):
+        return get_spark_empty_df()
+
+    geo_cust_cell = data_non_availability_and_missing_check(df=geo_cust_cell,
+                                                 grouping="daily",
+                                                 par_col="partition_date",
+                                                 target_table_name="l1_geo_number_of_bs_used")
+
+    if check_empty_dfs([geo_cust_cell]):
+        return get_spark_empty_df()
+
+    # ----- Transformation -----
     geo_cust_cell = geo_cust_cell.withColumn("event_partition_date", F.to_date(F.col('partition_date').cast(StringType()), 'yyyyMMdd'))
     geo_cust_cell = geo_cust_cell.drop('partition_date')
     df = node_from_config(geo_cust_cell, sql)
@@ -642,6 +783,19 @@ def l1_geo_number_of_bs_used(geo_cust_cell, sql):
 
 
 def l1_the_favourite_locations_daily(usage_df_location,geo_df_masterplan):
+    # ----- Data Availability Checks -----
+    if check_empty_dfs([usage_df_location]):
+        return get_spark_empty_df()
+
+    usage_df_location = data_non_availability_and_missing_check(df=usage_df_location,
+                                                 grouping="daily",
+                                                 par_col="partition_date",
+                                                 target_table_name="l1_the_favourite_locations_daily")
+
+    if check_empty_dfs([usage_df_location]):
+        return get_spark_empty_df()
+
+    # ----- Transformation -----
     ### config
     spark = get_spark_session()
     # start commment here if use sample data
@@ -756,6 +910,19 @@ def massive_processing_time_spent_daily(data_frame: DataFrame, sql, output_df_ca
     return return_df
 
 def l1_number_of_unique_cell_daily(usage_sum_data_location):
+    # ----- Data Availability Checks -----
+    if check_empty_dfs([usage_sum_data_location]):
+        return get_spark_empty_df()
+
+    usage_sum_data_location = data_non_availability_and_missing_check(df=usage_sum_data_location,
+                                                                grouping="daily",
+                                                                par_col="partition_date",
+                                                                target_table_name="l1_number_of_unique_cell_daily")
+
+    if check_empty_dfs([usage_sum_data_location]):
+        return get_spark_empty_df()
+
+    # ----- Transformation -----
     spark = get_spark_session()
     usage_sum_data_location = usage_sum_data_location.withColumn("event_partition_date",F.to_date(usage_sum_data_location.date_id))
     usage_sum_data_location.createOrReplaceTempView('usage_sum_data_location_daily')

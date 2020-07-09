@@ -1,7 +1,7 @@
 #--------------------------l2_geo_time_spent_by_location_weekly---------------------------------
 l2_geo_time_spent_by_location_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_time_spent_by_location_weekly/
+  filepath: base_path/GEO/l2_features/geo_time_spent_by_location_weekly/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -13,7 +13,7 @@ l2_geo_time_spent_by_location_weekly:
 
 l2_geo_time_spent_by_location_weekly_for_l4_geo_time_spent_by_location:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_time_spent_by_location_weekly/
+  filepath: base_path/GEO/l2_features/geo_time_spent_by_location_weekly/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -25,7 +25,7 @@ l2_geo_time_spent_by_location_weekly_for_l4_geo_time_spent_by_location:
 #--------------------------l2_geo_area_from_ais_store_weekly---------------------------------
 l2_geo_area_from_ais_store_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_area_from_ais_store_weekly/
+  filepath: base_path/GEO/l2_features/geo_area_from_ais_store_weekly/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -37,7 +37,7 @@ l2_geo_area_from_ais_store_weekly:
 
 l2_geo_area_from_ais_store_weekly_for_l4_geo_area_from_ais_store:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_area_from_ais_store_weekly/
+  filepath: base_path/GEO/l2_features/geo_area_from_ais_store_weekly/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -49,7 +49,7 @@ l2_geo_area_from_ais_store_weekly_for_l4_geo_area_from_ais_store:
 #------------------------l2_geo_area_from_competitor_store_weekly-----------------------------------
 l2_geo_area_from_competitor_store_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_area_from_competitor_store_weekly/
+  filepath: base_path/GEO/l2_features/geo_area_from_competitor_store_weekly/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -61,7 +61,7 @@ l2_geo_area_from_competitor_store_weekly:
 
 l2_geo_area_from_competitor_store_weekly_for_l4_geo_area_from_competitor_store:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_area_from_competitor_store_weekly/
+  filepath: base_path/GEO/l2_features/geo_area_from_competitor_store_weekly/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -73,15 +73,15 @@ l2_geo_area_from_competitor_store_weekly_for_l4_geo_area_from_competitor_store:
 #------------------------l2_geo_cust_subseqently_distance_weekly-----------------------------------
 l2_geo_cust_subseqently_distance_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_cust_subseqently_distance_weekly/
+  filepath: base_path/GEO/l2_features/geo_cust_subseqently_distance_weekly/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
-      mode: "overwrite"
-      partitionBy: "start_of_week"
-      read_layer: 'l1_daily'
-      target_layer: 'l2_weekly'
+    mode: "overwrite"
+    partitionBy: "start_of_week"
+    read_layer: 'l1_daily'
+    target_layer: 'l2_weekly'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l4_geo_cust_subseqently_distance_weekly'
@@ -89,12 +89,10 @@ l2_geo_cust_subseqently_distance_weekly:
     target_layer: 'l4_weekly'
     lookback: '0'
 
-##==============================Update 2020-06-12 by Thatt529==========================================##
 #-------------------------total_distance_km----------------------------------
-
 l2_geo_total_distance_km_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_total_distance_km_weekly/
+  filepath: base_path/GEO/l2_features/geo_total_distance_km_weekly/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -106,7 +104,7 @@ l2_geo_total_distance_km_weekly:
 
 l2_geo_total_distance_km_weekly_for_l4_geo_total_distance_km:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_total_distance_km_weekly/
+  filepath: base_path/GEO/l2_features/geo_total_distance_km_weekly/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -117,18 +115,17 @@ l2_geo_total_distance_km_weekly_for_l4_geo_total_distance_km:
     lookback: '0'
 
 #----------------------Traffic_fav_location-------------------------------------
-
 l2_geo_use_traffic_home_work_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_use_traffic_most_location_weekly/
+  filepath: base_path/GEO/l2_features/geo_use_traffic_most_location_weekly/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
-      mode: "overwrite"
-      partitionBy: "start_of_week"
-      read_layer: 'l1_daily'
-      target_layer: 'l2_weekly'
+    mode: "overwrite"
+    partitionBy: "start_of_week"
+    read_layer: 'l1_daily'
+    target_layer: 'l2_weekly'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l4_geo_use_traffic_home_work_weekly'
@@ -140,7 +137,7 @@ l2_geo_use_traffic_home_work_weekly:
 l2_geo_number_of_base_station_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_number_of_base_station_weekly/
+  filepath: base_path/GEO/l2_features/geo_number_of_base_station_weekly/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
@@ -152,7 +149,7 @@ l2_geo_number_of_base_station_weekly:
 l2_geo_number_of_base_station_weekly_for_l4_geo_number_of_base_station:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_number_of_base_station_weekly/
+  filepath: base_path/GEO/l2_features/geo_number_of_base_station_weekly/
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
@@ -164,7 +161,7 @@ l2_geo_number_of_base_station_weekly_for_l4_geo_number_of_base_station:
 #-----------------feature_sum_voice_location------------------------------------------
 l2_geo_call_location_home_work_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_call_location_home_work_weekly/
+  filepath: base_path/GEO/l2_features/geo_call_location_home_work_weekly/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -176,7 +173,7 @@ l2_geo_call_location_home_work_weekly:
 
 l2_geo_call_location_home_work_weekly_for_l4_geo_call_location_home_work_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_call_location_home_work_weekly/
+  filepath: base_path/GEO/l2_features/geo_call_location_home_work_weekly/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -186,12 +183,10 @@ l2_geo_call_location_home_work_weekly_for_l4_geo_call_location_home_work_weekly:
     target_layer: 'l4_weekly'
     lookback: '0'
 
-##==============================Update 2020-06-15 by Thatt529==========================================##
-#----------------------Top_3_cells_on_voice_usage-------------------------------------
 ###Top_3_cells_on_voice_usage###
 l2_geo_top3_cells_on_voice_usage:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_top3_cells_on_voice_usage/
+  filepath: base_path/GEO/l2_features/geo_top3_cells_on_voice_usage/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -211,7 +206,7 @@ l2_geo_top3_cells_on_voice_usage:
 #------------------------distance_top_call-----------------------------------
 l2_geo_distance_top_call:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_distance_top_call/
+  filepath: base_path/GEO/l2_features/geo_distance_top_call/
   file_format:  parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -231,7 +226,7 @@ l2_geo_distance_top_call:
 #----------------------47 the_favourite_locations-------------------------------------
 l2_the_favourite_locations_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/the_favourite_locations_weekly/
+  filepath: base_path/GEO/l2_features/the_favourite_locations_weekly/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -244,7 +239,7 @@ l2_the_favourite_locations_weekly:
 #---------------------27 Same favourite location for weekend and weekday--------------------------------------
 l2_same_favourite_location_weekend_weekday_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/same_favourite_location_weekend_weekday_weekly/
+  filepath: base_path/GEO/l2_features/same_favourite_location_weekend_weekday_weekly/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -256,7 +251,7 @@ l2_same_favourite_location_weekend_weekday_weekly:
 
 l2_geo_cust_subseqently_distance_weekly_for_l4_geo_cust_subseqently_distance:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l2_features/geo_cust_subseqently_distance_weekly/
+  filepath: base_path/GEO/l2_features/geo_cust_subseqently_distance_weekly/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:

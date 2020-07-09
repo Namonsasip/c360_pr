@@ -1,6 +1,5 @@
 from kedro.pipeline import Pipeline, node
 
-from customer360.utilities.config_parser import *
 from customer360.pipelines.data_engineering.nodes.geolocation_nodes.to_l4.to_l4_nodes import *
 from customer360.utilities.re_usable_functions import l1_massive_processing
 
@@ -204,8 +203,7 @@ def geo_to_l4_pipeline(**kwargs):
             node(
                 l4_geo_work_area_center_average,
                 ["l0_geo_cust_location_visit_hr_for_l4_geo_work_area_center_average",
-                 "l4_geo_home_work_location_id_for_l4_geo_work_area_center_average",
-                 "params:l4_geo_work_area_center_average"
+                 "l4_geo_home_work_location_id_for_l4_geo_work_area_center_average"
                  ],
                 "l4_geo_work_area_center_average"
             ),

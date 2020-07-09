@@ -370,7 +370,7 @@ def l2_same_favourite_location_weekend_weekday_weekly(df):
     l2 = spark.sql(sql_query)
     l2.createOrReplaceTempView('l2')
 
-    return (l2)
+    return l2
 
 
 def massive_processing_time_spent_weekly(data_frame: DataFrame, sql, output_df_catalog, partition_col) -> DataFrame:

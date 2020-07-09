@@ -1,7 +1,7 @@
 #-----------------------l3_geo_time_spent_by_location_monthly------------------------------------
 l3_geo_time_spent_by_location_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l3_features/geo_time_spent_by_location_monthly/
+  filepath: base_path/GEO/l3_features/geo_time_spent_by_location_monthly/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -13,7 +13,7 @@ l3_geo_time_spent_by_location_monthly:
 
 l3_geo_time_spent_by_location_monthly_for_l4_geo_top_visit_exclude_homework:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l3_features/geo_time_spent_by_location_monthly/
+  filepath: base_path/GEO/l3_features/geo_time_spent_by_location_monthly/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -26,7 +26,7 @@ l3_geo_time_spent_by_location_monthly_for_l4_geo_top_visit_exclude_homework:
 #---------------------l3_geo_area_from_ais_store_monthly--------------------------------------
 l3_geo_area_from_ais_store_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l3_features/geo_area_from_ais_store_monthly/
+  filepath: base_path/GEO/l3_features/geo_area_from_ais_store_monthly/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -39,7 +39,7 @@ l3_geo_area_from_ais_store_monthly:
 #---------------------l3_geo_area_from_competitor_store_monthly--------------------------------------
 l3_geo_area_from_competitor_store_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l3_features/geo_area_from_competitor_store_monthly/
+  filepath: base_path/GEO/l3_features/geo_area_from_competitor_store_monthly/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -55,7 +55,7 @@ l3_geo_area_from_competitor_store_monthly:
 #--------------------total_distance_km---------------------------------------
 l3_geo_total_distance_km_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l3_features/geo_total_distance_km_monthly/
+  filepath: base_path/GEO/l3_features/geo_total_distance_km_monthly/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -68,7 +68,7 @@ l3_geo_total_distance_km_monthly:
 #-------------------Traffic_fav_location----------------------------------------
 l3_geo_use_traffic_home_work_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l3_features/geo_use_traffic_most_location_monthly/
+  filepath: base_path/GEO/l3_features/geo_use_traffic_most_location_monthly/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -81,7 +81,7 @@ l3_geo_use_traffic_home_work_monthly:
 #----------------feature_sum_voice_location-------------------------------------------
 l3_geo_call_location_home_work_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l3_features/geo_call_location_home_work_monthly/
+  filepath: base_path/GEO/l3_features/geo_call_location_home_work_monthly/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -97,7 +97,7 @@ l3_geo_call_location_home_work_monthly:
 #-------------------Top_3_cells_on_voice_usage----------------------------------------
 l3_geo_top3_cells_on_voice_usage:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l3_features/geo_top3_cells_on_voice_usage/
+  filepath: base_path/GEO/l3_features/geo_top3_cells_on_voice_usage/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -113,12 +113,10 @@ l3_geo_top3_cells_on_voice_usage:
     target_layer: 'l4_monthly'
     lookback: '0'
 
-
-##==============================Update 2020-06-17 by Thatt529==========================================##
 #---------------------------distance_top_call--------------------------------
 l3_geo_distance_top_call:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l3_features/geo_distance_top_call/
+  filepath: base_path/GEO/l3_features/geo_distance_top_call/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -133,10 +131,11 @@ l3_geo_distance_top_call:
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
     lookback: '0'
+
 #--------------------------the_favourite_locations---------------------------------
 l3_the_favourite_locations_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l3_features/the_favourite_locations_monthly/
+  filepath: base_path/GEO/l3_features/the_favourite_locations_monthly/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:

@@ -31,10 +31,14 @@ percentiles:
     - 0.75  # do not removed. For outlier calculation
     - 0.9
 
-dq_consistency_path_prefix: dq_path/DQ/dq_consistency_benchmark_dataset/
+dq_consistency_path_prefix: DQ/dq_consistency_benchmark_dataset
 
 benchmark_start_date: "2019-08-01"
 benchmark_end_date: "2020-04-30"
+
+threshold_lookback_corresponding_dates: 120
+
+incremental_mode: true # true = incremental mode activated / false = incremental mode deactivated
 
 features_for_dq:
 #  l3_customer_profile_include_1mo_non_active:
