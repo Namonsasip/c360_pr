@@ -61,8 +61,6 @@ def prepare_key_columns(df: DataFrame,) -> DataFrame:
         key_date_column = "event_partition_date"
     elif len(key_date_columns_in_df) == 1:
         key_date_column = key_date_columns_in_df[0]
-    elif len(key_date_columns_in_df) == 0:
-        raise Exception("No date column found, columns found: {}".format(df.columns))
 
     if "start_of_month" in df.columns:
         df = df.withColumn("start_of_month", func.add_months(df.start_of_month, 1))
