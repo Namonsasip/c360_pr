@@ -1,3 +1,10 @@
+campaign_ard_churn_mck_master:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/CVM/l5_cvm_treatments_chosen_history/
+  save_args:
+    mode: "overwrite"
+
 campaign_churn_cvm_master:
     type: datasets.spark_hive_dataset.SparkHiveDataSet
     database: nba_dev
