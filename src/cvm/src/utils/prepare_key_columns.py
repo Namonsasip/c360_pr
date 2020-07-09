@@ -48,27 +48,28 @@ def prepare_key_columns(df: DataFrame,) -> DataFrame:
         "start_of_week",
     ]
 
-    if "key_date" in df.columns:
-        key_date_columns = list_intersection(key_date_columns, df.columns)
-        return df.drop(*key_date_columns)
-
-    key_date_columns_in_df = list_intersection(df.columns, key_date_columns)
-    if len(key_date_columns_in_df) > 1:
-        logging.info("More then one date column found. Picking event_partition_date")
-        to_drop = list_sub(key_date_columns, ["event_partition_date"])
-        to_drop = list_intersection(df.columns, to_drop)
-        df = df.drop(*to_drop)
-        key_date_column = "event_partition_date"
-    elif len(key_date_columns_in_df) == 1:
-        key_date_column = key_date_columns_in_df[0]
-
     if "start_of_month" in df.columns:
         df = df.withColumn("start_of_month", func.add_months(df.start_of_month, 1))
 
     if "start_of_week" in df.columns:
         df = df.withColumn("start_of_week", func.date_add(df.start_of_week, 7))
 
-    df = df.withColumnRenamed(key_date_column, "key_date")
+    key_date_columns_in_df = list_intersection(df.columns, key_date_columns)
+    key_date_column = None
+    if "key_date" in key_date_columns_in_df:
+        key_date_column = "key_date"
+    elif "event_partition_date" in key_date_columns_in_df:
+        key_date_column = "event_partition_date"
+    elif len(key_date_columns_in_df) > 1:
+        key_date_column = key_date_columns_in_df[0]
+
+    if key_date_column is not None:
+        logging.getLogger(__name__).info(
+            "Picked {} as key date column".format(key_date_column)
+        )
+        to_drop = list_sub(key_date_columns_in_df, key_date_column)
+        df = df.drop(*to_drop)
+        df = df.withColumnRenamed(key_date_column, "key_date")
 
     df = df.withColumnRenamed(
         "max_usg_last_action_date_daily_last_ninety_day", "last_activity_date"
