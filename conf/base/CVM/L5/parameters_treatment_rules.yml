@@ -493,7 +493,6 @@ treatment_rules:
     treatment_name: z0_ABtest_ard_low_arpu_high_tenure_m4
     treatment_size: 3000
     use_case: ard
-
   ### ARD NO TESTS
   z1_notest_ard_d20d10_h_arpu_l_tenure:
     order_policy: dilution1_pred + dilution2_pred
@@ -1280,10 +1279,36 @@ treatment_rules:
   # Very high target volume
   # Purely to catch "rest of targets" based on conditions we missed
 
-  # churn/ARD > 1, churn_cost is >500, target size = 1mil
+  # churn/ARD > 1, churn_cost is >500, target size = remaining 10%+ of base
+  z99_optimisation_churn_treatment:
+    order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
+    rules:
+      e906b4cd-6e31-46bb-8656-abdee8d5575f:
+        campaign_code: ## add a campaign code for a standard champion for churn
+        conditions:
+          - churn_cost >= 300
+          - churn_cost > ard_cost
+        limit_per_code: 10000
+        variant: 1
+    treatment_name: z99_optimisation_use_case_treatment
+    treatment_size: 10000
+    use_case: churn
   ## sent to Churn
   ## need one code
 
-  # churn/ARD < 1, ARD_cost is >300, target size = 1mil
+  # churn/ARD < 1, ARD_cost is >300, target size = remaining 10%+ of base
+  z99_optimisation_ard_treatment:
+    order_policy: dilution1_pred + dilution2_pred
+    rules:
+      e906b4cd-6e31-46bb-8656-abdee8d9875d:
+        campaign_code: ## add a campaign code for a standard champion for ard
+        conditions:
+          - ard_cost >= 150
+          - ard_cost > churn_cost
+        limit_per_code: 10000
+        variant: 1
+    treatment_name: z99_optimisation_use_case_treatment
+    treatment_size: 10000
+    use_case: ard
   ## sent to ARD
   ## need one code
