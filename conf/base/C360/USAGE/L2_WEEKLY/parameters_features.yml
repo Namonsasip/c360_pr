@@ -4,6 +4,7 @@ l2_usage_postpaid_prepaid_weekly:
   feature_list:
     sum: [
       # New Favorite Features
+      'usg_incoming_offnet_local_calls_duration',
       'usg_outgoing_favourite_numbers_call_duration',
       'usg_outgoing_favourite_numbers_local_call_duration',
       'usg_outgoing_favourite_numbers_number_of_calls',
@@ -235,6 +236,7 @@ l2_usage_postpaid_prepaid_weekly:
       "usg_vas_total_number_of_call",
     ]
     max: [
+      'usg_incoming_offnet_local_calls_duration',
       'usg_outgoing_night_time_calls_duration',
       'usg_outgoing_morning_time_calls_duration',
       'usg_incoming_night_time_call_duration',
@@ -340,6 +342,7 @@ l2_usage_postpaid_prepaid_weekly:
       "usg_vas_last_action_dt"
     ]
     min: [
+      'usg_incoming_offnet_local_calls_duration',
       'usg_outgoing_night_time_calls_duration',
       'usg_outgoing_morning_time_calls_duration',
       'usg_incoming_night_time_call_duration',
@@ -433,6 +436,7 @@ l2_usage_postpaid_prepaid_weekly:
       "usg_vas_total_number_of_call"
     ]
     avg: [
+      'usg_incoming_offnet_local_calls_duration',
       'usg_outgoing_relative_favourite_numbers_call_duration',
       'usg_outgoing_relative_favourite_numbers_local_call_duration',
       'usg_outgoing_relative_favourite_numbers_number_of_calls',
