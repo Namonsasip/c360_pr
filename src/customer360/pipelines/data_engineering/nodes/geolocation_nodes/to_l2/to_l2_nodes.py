@@ -303,27 +303,27 @@ def l2_the_favourite_locations_weekly(df):
 
 
 #27 Same favourite location for weekend and weekday
-def l2_same_favourite_location_weekend_weekday_weekly(df):
+def l2_same_favourite_location_weekend_weekday_weekly(geo_df):
     # ----- Data Availability Checks -----
-    if check_empty_dfs([df]):
+    if check_empty_dfs([geo_df]):
         return get_spark_empty_df()
 
-    df = data_non_availability_and_missing_check(df=df, grouping="daily", par_col="partition_date",
-                                                 target_table_name="l2_same_favourite_location_weekend_weekday_weekly")
+    # Assign day_of_week to weekday or weekend
+    geo_df = geo_df.withColumn("start_of_week", F.to_date(F.date_trunc('week', "time_in"))) \
+        .withColumn("start_of_month", F.to_date(F.date_trunc('month', "time_in")))
 
-    if check_empty_dfs([df]):
+    geo_df = data_non_availability_and_missing_check(df=geo_df,
+                                                     grouping="weekly",
+                                                     par_col="start_of_week",
+                                                     target_table_name="l2_same_favourite_location_weekend_weekday_weekly")
+
+    if check_empty_dfs([geo_df]):
         return get_spark_empty_df()
 
 
 
     ### config
     spark = get_spark_session()
-
-    # Assign day_of_week to weekday or weekend
-    geo_df = df.withColumn("start_of_week", F.to_date(F.date_trunc('week', "time_in"))) \
-        .withColumn("start_of_month", F.to_date(F.date_trunc('month', "time_in")))
-
-    df.createOrReplaceTempView('l0_geo_cust_cell_visit_time_df')
     geo_df.createOrReplaceTempView('geo_df')
 
     sql_query = """

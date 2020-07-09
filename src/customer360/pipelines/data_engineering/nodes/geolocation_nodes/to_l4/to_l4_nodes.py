@@ -30,14 +30,14 @@ def massive_processing_for_home_work(
     CNTX = load_context(Path.cwd(), env=os.getenv("CONF", "base"))
 
     # ----- Data Availability Checks -----
-    if check_empty_dfs(input_df):
+    if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
     df = data_non_availability_and_missing_check(df=input_df, grouping="daily",
                                                  par_col="partition_date",
                                                  target_table_name="l4_geo_home_work_location_id",
                                                  missing_data_check_flg='Y')
-    if check_empty_dfs(input_df):
+    if check_empty_dfs([input_df]):
         return get_spark_empty_df()
     # ----- Transformation -----
 
@@ -527,14 +527,14 @@ def l4_geo_range_from_most_visited(most,close,sql):
 def l4_geo_work_area_center_average(visti_hr, home_work):
 
     # ----- Data Availability Checks -----
-    if check_empty_dfs(visti_hr):
+    if check_empty_dfs([visti_hr]):
         return get_spark_empty_df()
 
     df = data_non_availability_and_missing_check(df=visti_hr, grouping="daily",
                                                  par_col="partition_date",
                                                  target_table_name="l4_geo_work_area_center_average",
                                                  missing_data_check_flg='Y')
-    if check_empty_dfs(visti_hr):
+    if check_empty_dfs([visti_hr]):
         return get_spark_empty_df()
     # ----- Transformation -----
 
