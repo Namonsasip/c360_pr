@@ -1,6 +1,18 @@
 # PREPAID MAIN MASTER - PRODUCT INFORMATION
 
-l0_product_pru_m_package_master_group_for_daily:
+l0_product_pru_m_package_master_group_for_l1_prepaid_postpaid_processing:
+  filepath: base_path/PRODUCT/product_pru_m_package_master_group/
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_product_active_customer_promotion_features_prepaid_postpaid'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l0_product_pru_m_package_master_group_for_l1_product_active_customer_promotion_features_daily:
   filepath: base_path/PRODUCT/product_pru_m_package_master_group/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
@@ -45,7 +57,7 @@ l0_prepaid_ontop_product_customer_promotion_for_daily:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l1_product_active_customer_promotion_features_daily'
+    lookup_table_name: 'l1_product_active_customer_promotion_features_prepaid_postpaid'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
@@ -59,7 +71,7 @@ l0_product_customer_promotion_for_daily:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l1_product_active_customer_promotion_features_daily'
+    lookup_table_name: 'l1_product_active_customer_promotion_features_prepaid_postpaid'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
     lookback: '0'
@@ -77,7 +89,19 @@ l0_product_customer_promotion_for_weekly:
     lookback: '0'
 
 # PREPAID ON-TOP MASTER - PRODUCT INFORMATION
-l0_product_pru_m_ontop_master_for_weekly:
+l0_product_pru_m_ontop_master_for_l1_prepaid_postpaid_processing:
+  filepath: base_path/PRODUCT/product_pru_m_ontop_master/
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_product_active_customer_promotion_features_prepaid_postpaid'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l0_product_pru_m_ontop_master_for_l1_product_active_customer_promotion_features_daily:
   filepath: base_path/PRODUCT/product_pru_m_ontop_master/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
