@@ -42,13 +42,18 @@ def create_report_campaign_tracking_table(
         "date(contact_date) as contact_date",
         "date(response_date) as response_date",
     )
+
+    # TODO Modify report process to be able to recognize difference version of sampling
     cvm_prepaid_customer_groups = cvm_prepaid_customer_groups.selectExpr(
         "analytic_id",
         "date(register_date) as register_date",
         "crm_sub_id as subscription_identifier",
-        "target_group",
+        """CASE WHEN target_group = 'BAU_2020_CVM_V2' THEN 'BAU' 
+        WHEN target_group = 'TG_2020_CVM_V2' THEN 'TG'
+        WHEN target_group = 'CG_2020_CVM_V2' THEN 'CG'
+        ELSE 'old' END AS target_group""",
         "date(created_date) as control_group_created_date",
-    )
+    ).where("target_group != 'old'")
     use_case_campaign_mapping = use_case_campaign_mapping.selectExpr(
         "campaign_child_code",
         "campaign_project_group",
@@ -112,9 +117,12 @@ def create_input_data_for_reporting_kpis(
         "analytic_id",
         "date(register_date) as register_date",
         "crm_sub_id as subscription_identifier",
-        "target_group",
-        "created_date as control_group_created_date",
-    )
+        """CASE WHEN target_group = 'BAU_2020_CVM_V2' THEN 'BAU' 
+        WHEN target_group = 'TG_2020_CVM_V2' THEN 'TG'
+        WHEN target_group = 'CG_2020_CVM_V2' THEN 'CG'
+        ELSE 'old' END AS target_group""",
+        "date(created_date) as control_group_created_date",
+    ).where("target_group != 'old'")
     # Only use the latest profile data
     max_ddate = (
         dm07_sub_clnt_info.agg({"ddate": "max"}).collect()[0][0].strftime("%Y-%m-%d")
@@ -414,9 +422,12 @@ def create_use_case_view_report(
         "analytic_id",
         "date(register_date) as register_date",
         "crm_sub_id as subscription_identifier",
-        "target_group",
-        "created_date as control_group_created_date",
-    )
+        """CASE WHEN target_group = 'BAU_2020_CVM_V2' THEN 'BAU' 
+        WHEN target_group = 'TG_2020_CVM_V2' THEN 'TG'
+        WHEN target_group = 'CG_2020_CVM_V2' THEN 'CG'
+        ELSE 'old' END AS target_group""",
+        "date(created_date) as control_group_created_date",
+    ).where("target_group != 'old'")
     # Get number of Freeze customer in control group
     current_size = cvm_prepaid_customer_groups.groupby("target_group").agg(
         F.countDistinct("subscription_identifier").alias("distinct_targeted_subscriber")
@@ -1150,7 +1161,19 @@ def create_use_case_campaign_mapping_table(
     campaign_churn_cvm_master: DataFrame,
     campaign_churn_bau_master: DataFrame,
     campaign_ard_cvm_master: DataFrame,
+    campaign_ard_churn_mck_master: DataFrame,
 ) -> DataFrame:
+    campaign_ard_churn_mck_master = (
+        campaign_ard_churn_mck_master.groupby("use_case", "campaign_code")
+        .agg(F.count("*"))
+        .selectExpr(
+            "macrosegment as campaign_project_group",
+            "campaign_code as campaign_child_code",
+            "'mck' as target_group",
+            "'cvm' as report_campaign_group",
+            "CASE WHEN use_case = 'ard' THEN 'ARD' ELSE 'CHURN' END as usecase",
+        )
+    )
     campaign_churn_cvm_master = campaign_churn_cvm_master.groupBy(["child_code"]).agg(
         F.first("campaign_group").alias("campaign_project_group")
     )
@@ -1183,9 +1206,11 @@ def create_use_case_campaign_mapping_table(
         "'ARD' as usecase",
     )
 
-    campaign_mapping_master = campaign_churn_cvm_master.union(
-        campaign_churn_bau_master
-    ).union(campaign_ard_cvm_master)
+    campaign_mapping_master = (
+        campaign_churn_cvm_master.union(campaign_churn_bau_master)
+        .union(campaign_ard_cvm_master)
+        .union(campaign_ard_churn_mck_master)
+    )
     return campaign_mapping_master
 
 
@@ -1312,6 +1337,7 @@ def create_campaign_view_report_input(
     # Select every campaign by using latest information we has
     # TODO Modify to join campaign master with campaign transaction based on master date
     # TODO Set re-run process in case master table might be delay
+
     l0_campaign_history_master_active_present = l0_campaign_history_master_active.groupby(
         "child_code"
     ).agg(
