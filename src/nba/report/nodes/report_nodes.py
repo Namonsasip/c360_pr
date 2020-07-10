@@ -1164,7 +1164,7 @@ def create_use_case_campaign_mapping_table(
     campaign_ard_churn_mck_master: DataFrame,
 ) -> DataFrame:
     campaign_ard_churn_mck_master = (
-        campaign_ard_churn_mck_master.groupby("use_case", "campaign_code")
+        campaign_ard_churn_mck_master.groupby("use_case", "campaign_code","macrosegment")
         .agg(F.count("*"))
         .selectExpr(
             "macrosegment as campaign_project_group",
