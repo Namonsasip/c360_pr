@@ -154,6 +154,7 @@ l4_geo_store_close_to_home:
     range_from_weekend_home:  "range_from_weekend_home"
     weekend_branch_name:  "we_location"
     weekend_branch_location_id: "we_location_id"
+    start_of_month: "start_of_month"
   granularity: ""
 
 
@@ -165,6 +166,7 @@ l4_geo_store_close_to_work:
     range_from_work:  "range_from_work"
     work_branch_name:  "branch"
     work_branch_location_id: "branch_location_id"
+    start_of_month: "start_of_month"
   granularity: ""
 
 

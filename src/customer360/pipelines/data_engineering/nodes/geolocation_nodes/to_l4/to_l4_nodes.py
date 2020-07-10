@@ -130,11 +130,9 @@ def l4_geo_most_AIS_store_visit(raw, sql):
 
 
 def l4_geo_store_close_to_home(home_work, locations, sql):
-
     month_id = home_work.selectExpr('max(start_of_month)').collect()[0][0]
     home_work = home_work.where(F.col('start_of_month') == str(month_id))
     home_work.createOrReplaceTempView('home_work_location')
-
     spark = get_spark_session()
     locations.createOrReplaceTempView('mst_lm_poi_shape')
     df = spark.sql("""
@@ -148,27 +146,30 @@ def l4_geo_store_close_to_home(home_work, locations, sql):
             where B.landmark_cat_name_en = 'AIS'
         """)
     df.createOrReplaceTempView('home_work_ais_store')
-
     home_weekday = spark.sql("""
-            select imsi,
-                home_weekday_location_id,
-                MIN(CAST((ACOS(COS(RADIANS(90-LANDMARK_LATITUDE))*COS(RADIANS(90-HOME_WEEKDAY_LATITUDE))+SIN(RADIANS(90-LANDMARK_LATITUDE))*SIN(RADIANS(90-HOME_WEEKDAY_LATITUDE))*COS(RADIANS(LANDMARK_LONGITUDE - HOME_WEEKDAY_LONGITUDE)))*6371) AS DECIMAL(13,2))) AS range_from_weekday_home,
-                first(landmark_name_th) as branch,
-                first(geo_shape_id) as branch_location_id
-            from home_work_ais_store
-            where CAST((ACOS(COS(RADIANS(90-LANDMARK_LATITUDE))*COS(RADIANS(90-HOME_WEEKDAY_LATITUDE))+SIN(RADIANS(90-LANDMARK_LATITUDE))*SIN(RADIANS(90-HOME_WEEKDAY_LATITUDE))*COS(RADIANS(LANDMARK_LONGITUDE - HOME_WEEKDAY_LONGITUDE)))*6371) AS DECIMAL(13,2)) <= 100
-            group by 1,2
+            select a.imsi,
+                a.home_weekday_location_id,
+                MIN(CAST((ACOS(COS(RADIANS(90-a.LANDMARK_LATITUDE))*COS(RADIANS(90-a.HOME_WEEKDAY_LATITUDE))+SIN(RADIANS(90-a.LANDMARK_LATITUDE))*SIN(RADIANS(90-a.HOME_WEEKDAY_LATITUDE))*COS(RADIANS(a.LANDMARK_LONGITUDE - a.HOME_WEEKDAY_LONGITUDE)))*6371) AS DECIMAL(13,2))) AS range_from_weekday_home,
+                first(a.landmark_name_th) as branch,
+                first(a.geo_shape_id) as branch_location_id,
+                a.start_of_month
+            from (select *,CAST((ACOS(COS(RADIANS(90-LANDMARK_LATITUDE))*COS(RADIANS(90-HOME_WEEKDAY_LATITUDE))+SIN(RADIANS(90-LANDMARK_LATITUDE))*SIN(RADIANS(90-HOME_WEEKDAY_LATITUDE))*COS(RADIANS(LANDMARK_LONGITUDE - HOME_WEEKDAY_LONGITUDE)))*6371) AS DECIMAL(13,2)) as dist from home_work_ais_store ) a
+            where  a.dist <= 100
+            group by 1,2,6
         """)
-
     home_weekend = spark.sql("""
-            select imsi,home_weekend_location_id,MIN(CAST((ACOS(COS(RADIANS(90-LANDMARK_LATITUDE))*COS(RADIANS(90-HOME_WEEKEND_LATITUDE))+SIN(RADIANS(90-LANDMARK_LATITUDE))*SIN(RADIANS(90-HOME_WEEKEND_LATITUDE))*COS(RADIANS(LANDMARK_LONGITUDE - HOME_WEEKEND_LONGITUDE)))*6371) AS DECIMAL(13,2))) AS range_from_weekend_home, first(landmark_name_th) as branch, first(geo_shape_id) as branch_location_id
-            from home_work_ais_store
-            where CAST((ACOS(COS(RADIANS(90-LANDMARK_LATITUDE))*COS(RADIANS(90-HOME_WEEKEND_LATITUDE))+SIN(RADIANS(90-LANDMARK_LATITUDE))*SIN(RADIANS(90-HOME_WEEKEND_LATITUDE))*COS(RADIANS(LANDMARK_LONGITUDE - HOME_WEEKEND_LONGITUDE)))*6371) AS DECIMAL(13,2)) <= 100
-            group by 1,2
+            select a.imsi,
+                a.home_weekend_location_id,
+                MIN(CAST((ACOS(COS(RADIANS(90-a.LANDMARK_LATITUDE))*COS(RADIANS(90-a.HOME_WEEKEND_LATITUDE))+SIN(RADIANS(90-a.LANDMARK_LATITUDE))*SIN(RADIANS(90-a.HOME_WEEKEND_LATITUDE))*COS(RADIANS(a.LANDMARK_LONGITUDE - a.HOME_WEEKEND_LONGITUDE)))*6371) AS DECIMAL(13,2))) AS range_from_weekend_home, 
+                first(a.landmark_name_th) as branch, 
+                first(a.geo_shape_id) as branch_location_id,
+                a.start_of_month
+            from (select *,CAST((ACOS(COS(RADIANS(90-LANDMARK_LATITUDE))*COS(RADIANS(90-HOME_WEEKEND_LATITUDE))+SIN(RADIANS(90-LANDMARK_LATITUDE))*SIN(RADIANS(90-HOME_WEEKEND_LATITUDE))*COS(RADIANS(LANDMARK_LONGITUDE - HOME_WEEKEND_LONGITUDE)))*6371) AS DECIMAL(13,2)) as dist from home_work_ais_store ) a
+            where  a.dist <= 100
+            group by 1,2,6
         """)
     home_weekday.createOrReplaceTempView('home_weekday')
     home_weekend.createOrReplaceTempView('home_weekend')
-
     df2 = spark.sql("""
             select a.imsi,
                 a.home_weekday_location_id,
@@ -178,9 +179,11 @@ def l4_geo_store_close_to_home(home_work, locations, sql):
                 b.home_weekend_location_id,
                 b.range_from_weekend_home,
                 b.branch as we_location,
-                b.branch_location_id as we_location_id
+                b.branch_location_id as we_location_id,
+                a.start_of_month
             from home_weekday a left join home_weekend b
             on a.imsi = b.imsi
+            and a.start_of_month = b.start_of_month
         """)
     df2.cache()
     out = node_from_config(df2, sql)
