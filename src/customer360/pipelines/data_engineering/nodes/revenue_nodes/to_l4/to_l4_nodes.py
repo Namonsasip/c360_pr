@@ -64,8 +64,7 @@ def calculate_ltv_to_date(
     ################################# End Implementing Data availability checks ###############################
 
     identifier = ["subscription_identifier",
-                  "access_method_num",
-                  "national_id_card"]
+                  "access_method_num"]
     granularity_col = identifier + ["start_of_month"]
 
     prepaid_revenue_df = prepaid_revenue_df.select(granularity_col + ["rev_arpu_total_revenue"])
@@ -116,7 +115,7 @@ def revenue_l4_dataset_monthly_datasets(input_df: DataFrame,
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
-    group_cols = ["subscription_identifier", "access_method_num", "national_id_card", "start_of_month"]
+    group_cols = ["subscription_identifier", "access_method_num", "start_of_month"]
     rolling_df_min = l4_rolling_window(input_df, rolling_window_dict_min)
     rolling_df_max = l4_rolling_window(input_df, rolling_window_dict_max)
     rolling_df_sum = l4_rolling_window(input_df, rolling_window_dict_sum)
@@ -151,7 +150,7 @@ def revenue_l4_dataset_weekly_datasets(input_df: DataFrame,
         return get_spark_empty_df()
 
     CNTX = load_context(Path.cwd(), env=conf)
-    group_cols = ["subscription_identifier", "access_method_num", "national_id_card", "start_of_week"]
+    group_cols = ["subscription_identifier", "access_method_num", "start_of_week"]
 
     metadata = CNTX.catalog.load("util_audit_metadata_table")
     max_date = metadata.filter(f.col("table_name") == "l4_revenue_prepaid_pru_f_usage_multi_features") \
