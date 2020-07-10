@@ -162,7 +162,7 @@ def geo_to_l4_pipeline(**kwargs):
             ### Work area center average
             node(
                 node_from_config,
-                ["l3_geo_work_area_center_average_monthly"
+                ["l3_geo_work_area_center_average_monthly",
                  "params:l4_geo_work_area_center_average"
                  ],
                 "l4_geo_work_area_center_average"
