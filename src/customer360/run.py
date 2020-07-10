@@ -93,6 +93,7 @@ class ProjectContext(KedroContext):
     @property
     def params(self) -> Dict[str, Any]:
         """Read-only property referring to Kedro's parameters for this context.
+
         Returns:
             Parameters defined in `parameters.yml` with the addition of any
                 extra parameters passed at initialization.
@@ -118,8 +119,10 @@ class ProjectContext(KedroContext):
             load_versions: Dict[str, str] = None,
     ) -> DataCatalog:
         """A hook for changing the creation of a DataCatalog instance.
+
         Returns:
             DataCatalog defined in `conf/base`.
+
         """
         conf_catalog = self.config_loader.get(
             "catalog*", "catalog*/**", "*/**/catalog*"
@@ -154,8 +157,10 @@ class ProjectContext(KedroContext):
             import_full_module: If True, also imports all names defined within the
                 node function's module. This is useful to not have to define function
                 dependencies
+
         Raises:
             ValueError: If the pipeline does not contain a node named node_name
+
         Returns:
             Nothing, but the function alters the parent namespace
         """
@@ -308,6 +313,7 @@ class DataQualityProjectContext(ProjectContext):
         """
             Set all the incremental_flag in catalog to 'no'
             for data quality pipeline
+
             The incremental load in data quality will be handled separately
         """
         if catalog_dict.get("load_args") is None:
@@ -387,4 +393,3 @@ if __name__ == "__main__":
     run_package(
         pipelines=[],
     )
-
