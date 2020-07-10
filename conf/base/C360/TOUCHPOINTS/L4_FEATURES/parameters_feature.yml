@@ -43,6 +43,7 @@ l4_touchpoints_nim_work_features:
           "touchpoints_num_of_claims_with_ais_app_sum",
           "touchpoints_num_of_consultation_with_ais_app_sum",
           "touchpoints_num_of_days_with_ais_app_sum",
+          "touchpoints_num_of_days_with_cc_call_sum",
           "touchpoints_num_of_commercial_question_online_sum",
           "touchpoints_num_of_claims_with_online_sum",
           "touchpoints_num_of_consultation_online_sum"]
@@ -61,6 +62,7 @@ l4_touchpoints_nim_work_features:
           "touchpoints_num_of_claims_with_ais_app_sum",
           "touchpoints_num_of_consultation_with_ais_app_sum",
           "touchpoints_num_of_days_with_ais_app_sum",
+          "touchpoints_num_of_days_with_cc_call_sum",
           "touchpoints_num_of_commercial_question_online_sum",
           "touchpoints_num_of_claims_with_online_sum",
           "touchpoints_num_of_consultation_online_sum"]
@@ -79,6 +81,7 @@ l4_touchpoints_nim_work_features:
           "touchpoints_num_of_claims_with_ais_app_sum",
           "touchpoints_num_of_consultation_with_ais_app_sum",
           "touchpoints_num_of_days_with_ais_app_sum",
+          "touchpoints_num_of_days_with_cc_call_sum",
           "touchpoints_num_of_commercial_question_online_sum",
           "touchpoints_num_of_claims_with_online_sum",
           "touchpoints_num_of_consultation_online_sum"]
@@ -97,6 +100,7 @@ l4_touchpoints_nim_work_features:
           "touchpoints_num_of_claims_with_ais_app_sum",
           "touchpoints_num_of_consultation_with_ais_app_sum",
           "touchpoints_num_of_days_with_ais_app_sum",
+          "touchpoints_num_of_days_with_cc_call_sum",
           "touchpoints_num_of_commercial_question_online_sum",
           "touchpoints_num_of_claims_with_online_sum",
           "touchpoints_num_of_consultation_online_sum"]

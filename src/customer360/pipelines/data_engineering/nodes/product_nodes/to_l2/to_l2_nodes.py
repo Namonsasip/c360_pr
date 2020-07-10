@@ -91,6 +91,8 @@ def get_activated_deactivated_features(
                 cp_df.promo_class as promo_class,
                 cp_df.promo_package_price as promo_package_price,
                 cp_df.promo_name as promo_name,
+                cp_df.promo_type as promo_type,
+                cp_df.promo_status as promo_status,
                 
                 ontop_df.mm_types as mm_types,
                 
@@ -354,6 +356,8 @@ def get_activated_deactivated_features(
                 -- DEACTIVATION DUE TO EXPIRED REASONS
                 sum (case when 
                     (to_date(promo_status_end_dttm) between start_of_week and date_add (start_of_week, 7) )
+                    and lower(promo_type) = 'promotion'
+                    and lower(promo_status) = 'inactive'
                     and to_date(promo_end_dttm) = to_date(promo_status_end_dttm + interval 1 second)
                     then 1 else 0 end) as product_deactivated_package_due_to_expired_reason
                         
