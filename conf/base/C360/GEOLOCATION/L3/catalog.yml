@@ -227,7 +227,7 @@ l3_geo_home_weekday_city_citizens_monthly:
 
 
 #------------------------l3_geo_home_work_location_id_for_l3_geo_work_area_center_average_monthly-----------------------------------
-l3_geo_home_work_location_monthly_id_for_l3_geo_work_area_center_average_monthly:
+l3_geo_home_work_location_id_monthly_for_l3_geo_work_area_center_average_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/GEO/l3_features/l3_geo_home_work_location_id_monthly/
   file_format: parquet
