@@ -171,7 +171,6 @@ def join_with_master_package(
                 
                 product_fbb_flag,
                 product_landline_flag,
-                product_mobile_flag,
                 
                 subscription_identifier,
                 national_id_card,
@@ -337,7 +336,7 @@ def l1_prepaid_postpaid_processing(prepaid_main_df: DataFrame,
     product_columns = ["promo_charge_type", "promo_class", "previous_main_promotion_id", "previous_promo_end_dttm",
                        "promo_cd", "promo_user_cat_cd", "promo_end_dttm", "promo_status_end_dttm",
                        "promo_package_price", "promo_name", "promo_price_type", "promo_start_dttm", "promo_status",
-                       "mobile_num"
+                       "mobile_num", "promo_type"
                        ]
 
     customer_profile_columns = ["access_method_num", "partition_date", "start_of_week", "start_of_month",
@@ -477,7 +476,8 @@ def _prepare_prepaid(
             (F.col("partition_date") >= F.to_date(F.coalesce(F.col("effective_date"), F.lit("9999-12-31")), 'yyyy-MM-dd')) &
             (F.col("partition_date") < F.to_date(F.coalesce(F.col("expire_date"), F.lit("9999-12-31")), 'yyyy-MM-dd')),
             F.lit("active")
-        ).otherwise(F.lit("inactive")).alias("promo_status")
+        ).otherwise(F.lit("inactive")).alias("promo_status"),
+        F.lit(None).alias("promo_type")
     ))
 
     prepaid_ontop_master_promotion_df = prepaid_ontop_df.join(
@@ -511,7 +511,8 @@ def _prepare_prepaid(
                 (F.col("prepaid_ontop_df.partition_date") >= F.to_date(F.coalesce(F.col("event_start_dttm"), F.lit("9999-12-31")), 'yyyy-MM-dd')) &
                 (F.col("prepaid_ontop_df.partition_date") < F.to_date(F.coalesce(F.col("event_end_dttm"), F.lit("9999-12-31")), 'yyyy-MM-dd')),
                 F.lit("active")
-            ).otherwise(F.lit("inactive")).alias("promo_status")
+            ).otherwise(F.lit("inactive")).alias("promo_status"),
+            F.lit(None).alias("promo_type")
         )
     )
 
@@ -543,6 +544,7 @@ def _union_prepaid_postpaid(postpaid_df: DataFrame, prepaid_df: DataFrame) -> Da
         'promo_status',
         'promo_status_end_dttm',
         'promo_user_cat_cd',
+        'promo_type'
     ]
 
     prepaid_df = prepaid_df.select(columns_to_select).withColumn("prepaid_postpaid_flag", F.lit("prepaid"))
