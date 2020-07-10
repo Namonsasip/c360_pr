@@ -110,15 +110,6 @@ def impute_from_parameters(df: DataFrame, parameters: Dict[str, Any],) -> DataFr
     return df.fillna(default_values_to_apply)
 
 
-def df_to_list(df: DataFrame) -> List[Any]:
-    """ Converts one column DataFrame into list.
-
-    Args:
-        df: one column DataFrame
-    """
-    return df.rdd.flatMap(lambda x: x).collect()
-
-
 def return_none_if_missing(d: Dict, key: str) -> Any:
     """ Returns `d[key]` if applicable, None otherwise.
 
