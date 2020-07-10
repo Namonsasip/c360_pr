@@ -93,10 +93,10 @@ def build_daily_kpis(
     if "key_date" in users_report.columns:
         users_report = users_report.drop("key_date")
     df = add_arpus(users_report, reve, report_parameters["min_date"])
+    df = add_prepaid_no_activity_daily(prepaid_no_activity_daily, df)
     df = add_status(df, profile_table)
     df = df.join(microsegments, on="subscription_identifier")
     df = add_network_churn(network_churn, df)
-    df = add_prepaid_no_activity_daily(prepaid_no_activity_daily, df)
     inactivity_lengths = report_parameters["inactivity_lengths"]
     for inactivity_length in inactivity_lengths:
         df = add_inactivity(df, usage, inactivity_length, report_parameters["min_date"])
