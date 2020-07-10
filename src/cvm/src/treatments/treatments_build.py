@@ -28,7 +28,6 @@
 import logging
 from typing import Any, Dict
 
-import pandas
 from cvm.src.targets.churn_targets import add_days
 from cvm.src.treatments.rules import MultipleTreatments
 from cvm.src.treatments.treatment_features import (
@@ -183,22 +182,3 @@ def update_history_with_treatments_propositions(
             )
         )
         return treatments_history
-
-
-def serve_treatments_chosen(
-    treatments_propositions: DataFrame, parameters: Dict[str, Any],
-) -> pandas.DataFrame:
-    """ Saves the csv with treatments basing on the recent entries in treatments
-    history.
-
-    Args:
-        treatments_propositions: Table with history of treatments.
-        parameters: parameters defined in parameters.yml.
-    """
-
-    treatments_df = treatments_propositions.filter("campaign_code != 'no_treatment'")
-    today = get_today(parameters)
-    if treatments_df.count() == 0:
-        raise Exception(f"No treatments found for {today}")
-    treatments_df = treatments_df.withColumn("date", func.lit(today))
-    return treatments_df.toPandas()
