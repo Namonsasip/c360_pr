@@ -59,7 +59,7 @@ from cvm.data_prep.pipeline import (
     create_cvm_important_columns)
 from cvm.sample_inputs.pipeline import (
     prepare_input_tables,
-)
+    create_sub_id_mapping_pipeline)
 from cvm.modelling.pipeline import train_model, score_model
 from cvm.preprocessing.pipeline import preprocessing_fit, preprocessing_transform
 from cvm.report.pipeline import prepare_user_microsegments, create_kpis, run_report
@@ -312,7 +312,7 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "cvm_create_kpis": create_kpis(),
         "cvm_create_report": run_report(),
         "cvm_sample_inputs": prepare_input_tables("scoring"),
-        "cvm_test": generate_treatments("scoring"),
+        "cvm_create_sub_id_mapping": create_sub_id_mapping_pipeline(),
     }
 
 
