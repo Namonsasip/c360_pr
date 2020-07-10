@@ -70,30 +70,6 @@ def verify_treatment(treatment_dict: Dict[str, Any]):
         verify_rule(rule)
 
 
-class UsersBlacklist:
-    """ Keep score of who was already picked for treatment / rule"""
-
-    def __init__(self):
-        self.blacklisted_users = None
-
-    def add(self, df: DataFrame = None):
-        """Add users to blacklist"""
-        if df is not None:
-            to_add = df.select("subscription_identifier").distinct()
-            if self.blacklisted_users is None:
-                self.blacklisted_users = to_add
-            else:
-                self.blacklisted_users = self.blacklisted_users.union(to_add).distinct()
-
-    def drop_blacklisted(self, df: DataFrame):
-        if self.blacklisted_users is None:
-            return df
-        else:
-            return df.join(
-                self.blacklisted_users, on="subscription_identifier", how="left_anti"
-            )
-
-
 class Rule:
     """Create, assign, manipulate treatment rule"""
 
