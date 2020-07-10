@@ -26,7 +26,7 @@ log = logging.getLogger(__name__)
 running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 
 
-def get_master_data_on_max_date(input_df: DataFrame, par_col='partition_date'):
+def get_max_date_from_master_data(input_df: DataFrame, par_col='partition_date'):
     # Get max date of partition column
     max_date = input_df.selectExpr('max({0})'.format(par_col)).collect()[0][0]
 
@@ -82,8 +82,8 @@ def l1_geo_area_from_ais_store_daily(shape,masterplan,geo_cust_cell_visit_time,s
                                                                        par_col="partition_date",
                                                                        target_table_name="l1_geo_area_from_ais_store_daily")
 
-    masterplan = get_master_data_on_max_date(masterplan, 'partition_date')
-    shape = get_master_data_on_max_date(shape, 'partition_month')
+    masterplan = get_max_date_from_master_data(masterplan, 'partition_date')
+    shape = get_max_date_from_master_data(shape, 'partition_month')
 
     if check_empty_dfs([geo_cust_cell_visit_time]):
         return get_spark_empty_df()
@@ -143,8 +143,8 @@ def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit
                                                                        par_col="partition_date",
                                                                        target_table_name="l1_geo_area_from_competitor_store_daily")
 
-    masterplan = get_master_data_on_max_date(masterplan, 'partition_date')
-    shape = get_master_data_on_max_date(shape, 'partition_month')
+    masterplan = get_max_date_from_master_data(masterplan, 'partition_date')
+    shape = get_max_date_from_master_data(shape, 'partition_month')
 
     if check_empty_dfs([geo_cust_cell_visit_time]):
         return get_spark_empty_df()
@@ -359,7 +359,7 @@ def L1_data_traffic_home_work_Top1_TOP2(geo_mst_cell_masterplan,geo_home_work_da
                                                                           par_col="partition_date",
                                                                           target_table_name="L1_usage_sum_data_location_daily_data_profile_customer_profile_ma")
 
-    geo_mst_cell_masterplan = get_master_data_on_max_date(geo_mst_cell_masterplan, 'partition_date')
+    geo_mst_cell_masterplan = get_max_date_from_master_data(geo_mst_cell_masterplan, 'partition_date')
 
     if check_empty_dfs([usage_sum_data_location_daily, profile_customer_profile_ma]):
         return get_spark_empty_df()
@@ -496,7 +496,7 @@ def l1_call_location_home_work(cell_masterplan,geo_homework,profile_ma,usage_sum
                                                                             par_col="partition_date",
                                                                             target_table_name="l1_call_location_home_work")
 
-    cell_masterplan = get_master_data_on_max_date(cell_masterplan, 'partition_date')
+    cell_masterplan = get_max_date_from_master_data(cell_masterplan, 'partition_date')
 
     if check_empty_dfs([usage_sum_voice]):
         return get_spark_empty_df()
@@ -626,7 +626,7 @@ def l1_location_of_visit_ais_store_daily(shape,cust_cell_visit,sql):
                                                          par_col="partition_date",
                                                          target_table_name="l1_location_of_visit_ais_store_daily")
 
-    shape = get_master_data_on_max_date(shape, 'partition_month')
+    shape = get_max_date_from_master_data(shape, 'partition_month')
 
     if check_empty_dfs([cust_cell_visit]):
         return get_spark_empty_df()
@@ -827,7 +827,7 @@ def l1_the_favourite_locations_daily(usage_df_location,geo_df_masterplan):
                                                  par_col="partition_date",
                                                  target_table_name="l1_the_favourite_locations_daily")
 
-    geo_df_masterplan = get_master_data_on_max_date(geo_df_masterplan, 'partition_date')
+    geo_df_masterplan = get_max_date_from_master_data(geo_df_masterplan, 'partition_date')
 
     if check_empty_dfs([usage_df_location]):
         return get_spark_empty_df()
