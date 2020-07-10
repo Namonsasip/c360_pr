@@ -21,7 +21,8 @@ l2_geo_time_spent_by_location_weekly_for_l4_geo_time_spent_by_location:
     lookup_table_name: 'l4_geo_time_spent_by_location'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
-    lookback: '0'
+    lookback: '12'
+
 #--------------------------l2_geo_area_from_ais_store_weekly---------------------------------
 l2_geo_area_from_ais_store_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -45,7 +46,7 @@ l2_geo_area_from_ais_store_weekly_for_l4_geo_area_from_ais_store:
     lookup_table_name: 'l4_area_from_ais_store'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
-    lookback: '0'
+    lookback: '12'
 
 #------------------------l2_geo_area_from_competitor_store_weekly-----------------------------------
 l2_geo_area_from_competitor_store_weekly:
@@ -70,7 +71,7 @@ l2_geo_area_from_competitor_store_weekly_for_l4_geo_area_from_competitor_store:
     lookup_table_name: 'l4_area_from_competitor_store'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
-    lookback: '0'
+    lookback: '12'
 
 #------------------------l2_geo_cust_subseqently_distance_weekly-----------------------------------
 l2_geo_cust_subseqently_distance_weekly:
@@ -89,7 +90,7 @@ l2_geo_cust_subseqently_distance_weekly:
     lookup_table_name: 'l4_geo_cust_subseqently_distance_weekly'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
-    lookback: '0'
+    lookback: '12'
 
 #-------------------------total_distance_km----------------------------------
 l2_geo_total_distance_km_weekly:
@@ -114,7 +115,7 @@ l2_geo_total_distance_km_weekly_for_l4_geo_total_distance_km:
     lookup_table_name: 'l4_geo_total_distance_km'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
-    lookback: '0'
+    lookback: '12'
 
 #----------------------Traffic_fav_location-------------------------------------
 l2_geo_use_traffic_home_work_weekly:
@@ -133,7 +134,7 @@ l2_geo_use_traffic_home_work_weekly:
     lookup_table_name: 'l4_geo_use_traffic_home_work_weekly'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
-    lookback: '0'
+    lookback: '12'
 
 #---------------------Number_of_base_station--------------------------------------
 l2_geo_number_of_base_station_weekly:
@@ -158,7 +159,7 @@ l2_geo_number_of_base_station_weekly_for_l4_geo_number_of_base_station:
     lookup_table_name: 'l4_number_of_base_station'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
-    lookback: '0'
+    lookback: '12'
 
 #-----------------feature_sum_voice_location------------------------------------------
 l2_geo_call_location_home_work_weekly:
@@ -183,7 +184,7 @@ l2_geo_call_location_home_work_weekly_for_l4_geo_call_location_home_work_weekly:
     lookup_table_name: 'l4_geo_call_location_home_work_weekly'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
-    lookback: '0'
+    lookback: '12'
 
 ###Top_3_cells_on_voice_usage###
 l2_geo_top3_cells_on_voice_usage:
@@ -202,7 +203,7 @@ l2_geo_top3_cells_on_voice_usage:
     lookup_table_name: 'l4_geo_top3_cells_on_voice_usage'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
-    lookback: '0'
+    lookback: '12'
 
 #------------------------distance_top_call-----------------------------------
 l2_geo_distance_top_call:
@@ -215,14 +216,13 @@ l2_geo_distance_top_call:
     lookup_table_name: 'l4_geo_distance_top_call'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
-    lookback: '0'
+    lookback: '12'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l1_daily'
     target_layer: 'l2_weekly'
-    lookback: '0'
 
 #----------------------47 the_favourite_locations-------------------------------------
 l2_the_favourite_locations_weekly:
@@ -235,7 +235,7 @@ l2_the_favourite_locations_weekly:
     lookup_table_name: 'l1_the_favourite_locations_weekly'
     read_layer: 'l1_daily'
     target_layer: 'l2_weekly'
-    lookback: '0'
+    lookback: '12'
 
 #---------------------27 Same favourite location for weekend and weekday--------------------------------------
 l2_same_favourite_location_weekend_weekday_weekly:
@@ -248,7 +248,6 @@ l2_same_favourite_location_weekend_weekday_weekly:
     lookup_table_name: 'l0_geo_cust_cell_visit_time_for_l2_same_favourite_location_weekend_weekday'
     read_layer: 'l0_daily'
     target_layer: 'l2_weekly'
-    lookback: '0'
 
 
 l2_geo_cust_subseqently_distance_weekly_for_l4_geo_cust_subseqently_distance:
@@ -261,4 +260,4 @@ l2_geo_cust_subseqently_distance_weekly_for_l4_geo_cust_subseqently_distance:
     lookup_table_name: 'l4_geo_cust_subseqently_distance'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
-    lookback: '0'
+    lookback: '12'

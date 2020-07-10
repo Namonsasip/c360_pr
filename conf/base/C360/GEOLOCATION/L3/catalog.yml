@@ -21,7 +21,7 @@ l3_geo_time_spent_by_location_monthly_for_l4_geo_top_visit_exclude_homework:
     lookup_table_name: 'l4_geo_top_visit_exclude_homework'
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
-    lookback: '0'
+    lookback: '3'
 
 #---------------------l3_geo_area_from_ais_store_monthly--------------------------------------
 l3_geo_area_from_ais_store_monthly:
@@ -105,7 +105,7 @@ l3_geo_top3_cells_on_voice_usage:
     lookup_table_name: 'l4_geo_top3_cells_on_voice_usage'
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
-    lookback: '0'
+    lookback: '3'
 
 #---------------------------distance_top_call--------------------------------
 l3_geo_distance_top_call:
@@ -124,7 +124,7 @@ l3_geo_distance_top_call:
     lookup_table_name: 'l4_geo_distance_top_call'
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
-    lookback: '0'
+    lookback: '3'
 
 #--------------------------the_favourite_locations---------------------------------
 l3_the_favourite_locations_monthly:
