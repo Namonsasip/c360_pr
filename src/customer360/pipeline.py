@@ -111,11 +111,6 @@ from .pipelines.data_engineering.pipelines.geolocation_pipeline.to_l1.to_l1_pipe
 from .pipelines.data_engineering.pipelines.geolocation_pipeline.to_l2.to_l2_pipeline import *
 from .pipelines.data_engineering.pipelines.geolocation_pipeline.to_l3.to_l3_pipeline import *
 from .pipelines.data_engineering.pipelines.geolocation_pipeline.to_l4.to_l4_pipeline import *
-from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l1.to_l1_pipeline import *
-# from .pipelines.data_engineering.pipelines.loyalty_pipeline.to_l2.to_l2_pipeline import (
-#     loyalty_l0_to_l2_pipeline,
-#     loyalty_l1_to_l2_pipeline
-# )
 
 from .pipelines.data_engineering.pipelines.loyalty_pipeline import (
     loyalty_to_l1_pipeline,
@@ -287,7 +282,6 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "sales_to_l4_pipeline": sales_to_l4_pipeline(),
         "lineage_dependency_pipeline": lineage_dependency_pipeline(),
         "ops_report_pipeline": ops_report_pipeline(),
-        # "de": data_engineering_pipeline,
         "geo_to_l1_intermediate_pipeline": geo_to_l1_intermediate_pipeline(),
         "geo_to_l1_pipeline": geo_to_l1_pipeline(),
         "geo_to_l1_union_pipeline": geo_to_l1_union_pipeline(),
