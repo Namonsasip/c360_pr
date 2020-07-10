@@ -1163,3 +1163,64 @@ def score_du_models(
     # pd_results[prediction_colname] = current_model.predict(
     #     X, num_threads=1, n_jobs=1
     # )
+
+
+def create_daily_normalize_ontop_pack() -> pyspark.sql.DataFrame:
+    l0_product_pru_m_ontop_master_for_weekly_full_load = catalog.load(
+        "l0_product_pru_m_ontop_master_for_weekly_full_load"
+    )
+    l0_prepaid_ontop_product_customer_promotion_for_daily_full_load = catalog.load(
+        "l0_prepaid_ontop_product_customer_promotion_for_daily_full_load"
+    )
+    ontop_pack_daily = (
+        l0_prepaid_ontop_product_customer_promotion_for_daily_full_load.selectExpr(
+            "access_method_num",
+            "offering_id as promotion_code",
+            "event_start_dttm as register_date",
+            "offering_title as promotion_name",
+            "partition_date",
+        )
+        .withColumn(
+            "partition_date_str",
+            l0_prepaid_ontop_product_customer_promotion_for_daily_full_load[
+                "partition_date"
+            ].cast(StringType()),
+        )
+        .drop("partition_date")
+    )
+    ontop_pack_daily_dt = ontop_pack_daily.select(
+        "*",
+        F.to_timestamp(ontop_pack_daily.partition_date_str, "yyyyMMdd").alias(
+            "partition_date"
+        ),
+    ).drop("partition_date_str")
+
+    l1_customer_profile_union_daily_feature_full_load = catalog.load(
+        "l1_customer_profile_union_daily_feature_full_load"
+    )
+    spark.sql(
+        """CREATE TEMPORARY VIEW daily_ontop
+AS
+SELECT analytic_id,register_date as activation_date,dm42.promotion_code,promotion_name,total_net_tariff as total_net_tariff,number_of_transaction,date_id,duration, total_net_tariff as daily_spending, CAST(date_id AS date)  as ddate FROM prod_delta.dm42_promotion_prepaid dm42
+INNER JOIN ( 
+          SELECT promotion_code, duration FROM """
+        + prod_table
+        + """
+            )
+          master 
+ON master.Promotion_code = dm42.promotion_code
+WHERE month(date_id) = """
+        + str(month_run)
+        + """ AND year(date_id) = """
+        + str(year_run)
+        + """ AND duration <= 1"""
+    )
+    spark.sql("SELECT * FROM daily_ontop").write.format("orc").mode(
+        "append"
+    ).partitionBy("ddate").saveAsTable("prod.ds1_daily_ontop")
+    return df
+
+
+def create_ontop_package_preference() -> pyspark.sql.DataFrame:
+
+    return df
