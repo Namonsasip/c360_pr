@@ -43,12 +43,12 @@ l0_mst_cell_masterplan_for_l4_geo_home_weekday_city_citizens:
   filepath: base_path/GEO/geo_mst_cell_masterplan/
   file_format: parquet
   metadata_table_path: 'metadata_path'
-    load_args:
-      increment_flag: 'yes'
-      lookup_table_name: 'l4_geo_home_weekday_city_citizens'
-      read_layer: 'l0_daily'
-      target_layer: 'l4_weekly'
-      lookback: '0'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l4_geo_home_weekday_city_citizens'
+    read_layer: 'l0_daily'
+    target_layer: 'l4_weekly'
+    lookback: '0'
 
 #----------------------- geo_cust_cell_visit_time_geo_area_from_ais_store -------------------------
 l0_geo_cust_cell_visit_time_for_l1_geo_area_from_ais_store_daily:
@@ -56,12 +56,12 @@ l0_geo_cust_cell_visit_time_for_l1_geo_area_from_ais_store_daily:
   filepath: base_path/GEO/geo_cust_cell_visit_time/
   file_format: parquet
   metadata_table_path: 'metadata_path'
-    load_args:
-      increment_flag: 'yes'
-      lookup_table_name: 'l1_geo_area_from_ais_store_daily'
-      read_layer: 'l0_daily'
-      target_layer: 'l1_daily'
-      lookback: '0'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_geo_area_from_ais_store_daily'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
 
 #----------------------- geo_cust_location_visit_hr_geo_work_area_center_average -------------------------
 l0_geo_cust_location_visit_hr_for_l4_geo_work_area_center_average:
@@ -69,12 +69,12 @@ l0_geo_cust_location_visit_hr_for_l4_geo_work_area_center_average:
   filepath: base_path/GEO/geo_cust_location_visit_hr/
   file_format: parquet
   metadata_table_path: 'metadata_path'
-    load_args:
-      increment_flag: 'yes'
-      lookup_table_name: 'l4_geo_work_area_center_average'
-      read_layer: 'l0_daily'
-      target_layer: 'l4_monthly'
-      lookback: '0'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l4_geo_work_area_center_average'
+    read_layer: 'l0_daily'
+    target_layer: 'l4_monthly'
+    lookback: '0'
 
 #----------------------- mst_poi_shape_geo_area_from_competitor_store -------------------------
 l0_mst_poi_shape_for_l1_geo_area_from_competitor_store_daily:
@@ -82,12 +82,12 @@ l0_mst_poi_shape_for_l1_geo_area_from_competitor_store_daily:
   filepath: base_path/GEO/geo_mst_lm_poi_shape/
   file_format: parquet
   metadata_table_path: 'metadata_path'
-    load_args:
-      increment_flag: 'yes'
-      lookup_table_name: 'l1_geo_area_from_competitor_store_daily'
-      read_layer: 'l0_daily'
-      target_layer: 'l1_daily'
-      lookback: '0'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_geo_area_from_competitor_store_daily'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
 
 #----------------------- mst_cell_masterplan_geo_area_from_competitor_store -------------------------
 l0_mst_cell_masterplan_for_l1_geo_area_from_competitor_store_daily:
@@ -95,12 +95,12 @@ l0_mst_cell_masterplan_for_l1_geo_area_from_competitor_store_daily:
   filepath: base_path/GEO/geo_mst_cell_masterplan/
   file_format: parquet
   metadata_table_path: 'metadata_path'
-    load_args:
-      increment_flag: 'yes'
-      lookup_table_name: 'l1_geo_area_from_competitor_store_daily'
-      read_layer: 'l0_daily'
-      target_layer: 'l1_daily'
-      lookback: '0'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_geo_area_from_competitor_store_daily'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
 
 #----------------------- geo_cust_cell_visit_time_geo_area_from_competitor_store -------------------------
 l0_geo_cust_cell_visit_time_for_l1_geo_area_from_competitor_store_daily:
@@ -108,12 +108,12 @@ l0_geo_cust_cell_visit_time_for_l1_geo_area_from_competitor_store_daily:
   filepath: base_path/GEO/geo_cust_cell_visit_time/
   file_format: parquet
   metadata_table_path: 'metadata_path'
-    load_args:
-      increment_flag: 'yes'
-      lookup_table_name: 'l1_geo_area_from_competitor_store_daily'
-      read_layer: 'l0_daily'
-      target_layer: 'l1_daily'
-      lookback: '0'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_geo_area_from_competitor_store_daily'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
 
 #----------------------- geo_cust_cell_visit_time_geo_home_work_location_id -------------------------
 l0_geo_cust_cell_visit_time_for_int_l4_geo_home_work_location_id:
