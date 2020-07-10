@@ -7,6 +7,7 @@ l4_geo_time_spent_by_location:
     sum: ["sum_duration"]
   read_from: "l2"
 
+
 l4_area_from_ais_store:
   partition_by: ["imsi"]
   feature_list:
@@ -15,6 +16,7 @@ l4_area_from_ais_store:
     min: ["duration","num_of_times"]
     sum: ["duration","num_of_times"]
   read_from: "l2"
+
 
 l4_area_from_competitor_store:
   partition_by: ["imsi"]
@@ -25,27 +27,6 @@ l4_area_from_competitor_store:
     sum: ["duration","num_of_times"]
   read_from: "l2"
 
-int_l4_geo_home_location_id_monthly:
-  where_clause: "where duration != 0 and ((hour_in >= 18) or (hour_in < 18 and hour_out > 18) or (hour_in < 6 and hour_out > 6) or (hour_out <=6))"
-  feature_list:
-    duration: "sum(case when hour_in < 18 and hour_out > 18 then cast(to_unix_timestamp(time_out) as long) - (cast(to_unix_timestamp(event_partition_date) as long) + 64800)
-                  when hour_in < 6 and hour_out > 6 then (cast(to_unix_timestamp(event_partition_date) as long) + 21600) - cast(to_unix_timestamp(time_out) as long)
-                  else duration end)"
-    days: "approx_count_distinct(event_partition_date)"
-  granularity: "imsi, location_id, latitude, longitude, week_type, start_of_month"
-  output_catalog: "int_l4_geo_home_location_id_monthly"
-  partition_num_per_job: 10
-
-int_l4_geo_work_location_id_monthly:
-  where_clause: "where duration != 0 and (((hour_in >= 8 and hour_in < 18) and hour_out <= 18) or ((hour_in >= 8 and hour_in < 18) and hour_out > 18))"
-  feature_list:
-    duration: "sum(case when ((hour_in >= 8) and (hour_in < 18)) and (hour_out > 18)
-                  then (cast(to_unix_timestamp(event_partition_date) as long) + 64800) - (cast(to_timestamp(time_in) as long))
-                  else duration end)"
-    days: "approx_count_distinct(event_partition_date)"
-  granularity: "imsi, location_id, latitude, longitude, start_of_month"
-  output_catalog: "int_l4_geo_work_location_id_monthly"
-  partition_num_per_job: 10
 
 l4_geo_home_work_location_id:
   where_clause: ""
@@ -63,6 +44,7 @@ l4_geo_home_work_location_id:
     work_longitude: "work_longitude"
   granularity: ""
 
+
 l4_geo_home_weekday_city_citizens:
   where_clause: ""
   feature_list:
@@ -74,6 +56,7 @@ l4_geo_home_weekday_city_citizens:
     citizens: "citizens"
   granularity: ""
 
+
 l4_geo_cust_subseqently_distance:
   partition_by: ["imsi"]
   feature_list:
@@ -83,7 +66,6 @@ l4_geo_cust_subseqently_distance:
     sum: ["distance_km", "weekday_distance_km", "weekend_distance_km"]
   read_from: "l2" # Mean calculate look up back
 
-##==============================Update 2020-06-12 by Thatt529==========================================##
 
 ###total_distance_km###
 l4_geo_total_distance_km:
@@ -103,6 +85,7 @@ l4_geo_use_traffic_home_work_weekly:
     sum: ["Home_traffic_KB","Work_traffic_KB","Top1_location_traffic_KB","Top2_location_traffic_KB","share_Home_traffic_KB","share_Work_traffic_KB","share_Top1_location_traffic_KB","share_Top2_location_traffic_KB"]
   read_from: "l2"
 
+
 ###Number_of_base_station###
 l4_geo_number_of_base_station:
   partition_by: ["imsi","start_of_week"]
@@ -113,12 +96,14 @@ l4_geo_number_of_base_station:
     sum: ["sum_count_location_id","sum_count_distinct_location_id","sum_count_cell_id"]
   read_from: "l2"
 
+
 ###feature_sum_voice_location###
 l4_geo_call_home_work_location_weekly:
   partition_by: ["imsi"]
   feature_list:
     sum: ["call_count_location_home_weekday","call_count_location_work","call_count_location_top_1st","call_count_location_top_2nd"]
   read_from: "l2"
+
 
 ### Number of Unique Cells Used ###
 l4_geo_number_unique_cell_used:
@@ -130,6 +115,7 @@ l4_geo_number_unique_cell_used:
     min_duration: "min_duration"
     sum_duration: "sum_duration"
   granularity: ""
+
 
 ###feature_AIS_store###
 l4_geo_last_AIS_store_visit:
@@ -143,6 +129,7 @@ l4_geo_last_AIS_store_visit:
     partition_month: "partition_month"
   granularity: ""
 
+
 l4_geo_most_AIS_store_visit:
   where_clause: ""
   feature_list:
@@ -153,6 +140,7 @@ l4_geo_most_AIS_store_visit:
     visit_count: "most_visited"
     partition_month: "partition_month"
   granularity: ""
+
 
 l4_geo_store_close_to_home:
   where_clause: ""
@@ -168,6 +156,7 @@ l4_geo_store_close_to_home:
     weekend_branch_location_id: "we_location_id"
   granularity: ""
 
+
 l4_geo_store_close_to_work:
   where_clause: ""
   feature_list:
@@ -177,7 +166,7 @@ l4_geo_store_close_to_work:
     work_branch_name:  "branch"
     work_branch_location_id: "branch_location_id"
   granularity: ""
-##==============================Update 2020-06-15 by Thatt529==========================================##
+
 
 ###Top_3_cells_on_voice_usage###
 l4_geo_top3_cells_on_voice_usage:
@@ -186,8 +175,6 @@ l4_geo_top3_cells_on_voice_usage:
     sum: ["total_call"]
   read_from: "l2"
 
-
-##==============================Update 2020-06-17 by Thatt529==========================================##
 
 ###distance_top_call###
 l4_geo_distance_top_call:
@@ -213,6 +200,7 @@ l4_geo_range_from_most_visited:
     range_from_near_to_most_visit: "range_diff"
     partition_month:  "partition_month"
 
+
 ###Number of used most###
 l4_area_from_number_of_used_most_frequent_weekdays:
   where_clause: ""
@@ -225,7 +213,6 @@ l4_area_from_number_of_used_most_frequent_weekdays:
     sum_distance_km: "sum_distance_km"
   granularity: ""
 
-
 l4_area_from_number_of_used_most_frequent_weekends:
   where_clause: ""
   feature_list:
@@ -236,6 +223,7 @@ l4_area_from_number_of_used_most_frequent_weekends:
     min_distance_km:  "min_distance_km"
     sum_distance_km: "sum_distance_km"
   granularity: ""
+
 
 #============== Number of used most frequent top 5 =====================
 l4_area_from_number_of_used_most_frequent_top_5:
@@ -259,7 +247,6 @@ l4_area_from_number_of_used_most_frequent_top_5_weekday:
     max_all_no_of_call_weekend: "max_all_no_of_call_weekday"
     min_all_no_of_call_weekend: "min_all_no_of_call_weekday"
   granularity: ""
-
 
 l4_area_from_number_of_used_most_frequent_top_5_weekend:
   where_clause: ""

@@ -41,49 +41,10 @@ def geo_to_l4_pipeline(**kwargs):
                 "l4_geo_top_visit_exclude_homework"
             ),
 
-            ### Home and Work Feature
+            ### HOME/WORK location id feature
             node(
-                massive_processing_for_home_work,
-                ["l0_geo_cust_cell_visit_time_for_int_l4_geo_home_work_location_id",
-                 "params:int_l4_geo_home_location_id_monthly",
-                 "params:int_l4_geo_work_location_id_monthly"
-                 ],
-                ["int_l4_geo_home_location_id_monthly",
-                 "int_l4_geo_work_location_id_monthly"
-                 ]
-            ),
-
-            ### List imsi from int_HOME/WORK
-            node(
-                int_geo_home_work_list_imsi,
-                ["int_l4_geo_home_location_id_monthly",
-                 "int_l4_geo_work_location_id_monthly"
-                 ],
-                "geo_home_work_list_imsi_stg"
-            ),
-
-            node(
-                int_geo_work_location_id,
-                ["int_l4_geo_work_location_id_monthly",
-                 "geo_home_work_list_imsi_stg"
-                 ],
-                "int_work_location_id"  # In memory Dataframe
-            ),
-
-            node(
-                int_geo_home_location_id,
-                ["int_l4_geo_home_location_id_monthly"
-                 ],
-                ["int_home_weekday_location_id",
-                 "int_home_weekend_location_id"
-                 ]
-            ),
-
-            node(
-                l4_geo_home_work_location_id,
-                ["int_home_weekday_location_id",
-                 "int_home_weekend_location_id",
-                 "int_work_location_id",
+                node_from_config,
+                ["l3_geo_home_work_location_id_monthly",
                  "params:l4_geo_home_work_location_id"
                  ],
                 "l4_geo_home_work_location_id"

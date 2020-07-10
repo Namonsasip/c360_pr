@@ -80,6 +80,49 @@ def geo_to_l3_pipeline(**kwargs):
                 l3_the_favourite_locations_monthly,
                 ["l1_the_favourite_locations_daily"],
                 "l3_the_favourite_locations_monthly"
+            ),
+
+            ### Home and Work Feature
+            node(
+                massive_processing_for_home_work,
+                ["l0_geo_cust_cell_visit_time_for_int_l4_geo_home_work_location_id",
+                 "params:int_l3_geo_home_location_id_monthly",
+                 "params:int_l3_geo_work_location_id_monthly"
+                 ],
+                ["int_l3_geo_home_location_id_monthly",
+                 "int_l3_geo_work_location_id_monthly"
+                 ]
+            ),
+            node(
+                int_geo_home_work_list_imsi_monthly,
+                ["int_l3_geo_home_location_id_monthly",
+                 "int_l3_geo_work_location_id_monthly"
+                 ],
+                "geo_home_work_list_imsi_stg"
+            ),
+            node(
+                int_geo_work_location_id_monthly,
+                ["int_l3_geo_work_location_id_monthly",
+                 "geo_home_work_list_imsi_stg"
+                 ],
+                "int_work_location_id"  # In memory Dataframe
+            ),
+            node(
+                int_geo_home_location_id_monthly,
+                ["int_l3_geo_home_location_id_monthly"
+                 ],
+                ["int_home_weekday_location_id",
+                 "int_home_weekend_location_id"
+                 ]
+            ),
+            node(
+                l3_geo_home_work_location_id_monthly,
+                ["int_home_weekday_location_id",
+                 "int_home_weekend_location_id",
+                 "int_work_location_id",
+                 "params:l3_geo_home_work_location_id_monthly"
+                 ],
+                "l3_geo_home_work_location_id_monthly"
             )
 
         ], name="geo_to_l3_pipeline"

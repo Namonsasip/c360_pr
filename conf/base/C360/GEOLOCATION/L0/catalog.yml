@@ -123,9 +123,9 @@ l0_geo_cust_cell_visit_time_for_int_l4_geo_home_work_location_id:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l4_geo_home_work_location_id'
+    lookup_table_name: 'l3_geo_home_work_location_id_monthly'
     read_layer: 'l0_daily'
-    target_layer: 'l4_monthly'
+    target_layer: 'l3_monthly'
     lookback: '0'
 
 #----------------------- geo_cust_cell_visit_time_geo_cust_subseqently_distance -------------------------
