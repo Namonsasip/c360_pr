@@ -52,9 +52,9 @@ def geo_to_l1_pipeline(**kwargs):
 
             ##Traffic_fav_location###
             node(
-                L1_data_traffic_home_work_Top1_TOP2,
+                l1_data_traffic_home_work_top1_top2,
                 ["l0_geo_mst_cell_masterplan_current_for_l1_use_non_homework_features",
-                 "l4_geo_home_work_location_id",
+                 "l3_geo_home_work_location_id_monthly_for_l1_data_traffic_home_work_top1_top2",
                  "l0_profile_customer_profile_ma_for_l1_use_non_homework_features",
                  "l0_usage_sum_data_location_daily_for_l1_use_non_homework_features",
                  "l4_geo_top_visit_exclude_homework"

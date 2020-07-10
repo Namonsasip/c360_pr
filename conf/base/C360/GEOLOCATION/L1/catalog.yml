@@ -166,7 +166,7 @@ l1_geo_use_traffic_home_work_for_l2_geo_use_traffic_home_work_weekly:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'geo_use_traffic_home_work_weekly'
+    lookup_table_name: 'l2_geo_use_traffic_home_work_weekly'
     read_layer: 'l1_daily'
     target_layer: 'l2_weekly'
     lookback: '30'

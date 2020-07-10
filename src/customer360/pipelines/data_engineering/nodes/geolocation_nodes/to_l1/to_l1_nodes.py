@@ -261,7 +261,7 @@ def l1_geo_total_distance_km_daily(l0_df, sql):
     return l1_df2
 
 ###Traffic_fav_location###
-def L1_data_traffic_home_work_FN(geo_mst_cell_masterplan,geo_home_work_data,profile_customer_profile_ma,usage_sum_data_location_daily,HOME_WORK_WEEKDAY_LOCATION_ID):
+def l1_data_traffic_home_work_fn(geo_mst_cell_masterplan,geo_home_work_data,profile_customer_profile_ma,usage_sum_data_location_daily,HOME_WORK_WEEKDAY_LOCATION_ID):
 
     ###TABLE###
     spark = get_spark_session()
@@ -284,27 +284,34 @@ def L1_data_traffic_home_work_FN(geo_mst_cell_masterplan,geo_home_work_data,prof
 
     # TEMP2#
     GEO_TEMP_01 = spark.sql("""
-    SELECT B.ACCESS_METHOD_NUM,A.IMSI,A.LAC,A.CI
-    FROM GEO_TEMP_00 A ,PROFILE_CUSTOMER_PROFILE_MA B
-    WHERE A.IMSI = B.IMSI
-    GROUP BY A.IMSI,A.LAC,A.CI,B.ACCESS_METHOD_NUM
+        SELECT
+            B.ACCESS_METHOD_NUM,
+            A.IMSI,
+            A.LAC,
+            A.CI
+        FROM GEO_TEMP_00 A ,PROFILE_CUSTOMER_PROFILE_MA B
+        WHERE A.IMSI = B.IMSI
+        GROUP BY A.IMSI,A.LAC,A.CI,B.ACCESS_METHOD_NUM
     """)
 
     GEO_TEMP_01.createOrReplaceTempView('GEO_TEMP_01')
 
     # TEMP3#
     GEO_TEMP_02 = spark.sql("""
-    SELECT B.DATE_ID,A.IMSI,SUM(VOL_DOWNLINK_KB+VOL_UPLINK_KB) AS TOTAL_DATA_TRAFFIC_KB
-    FROM GEO_TEMP_01 A,
-    USAGE_SUM_DATA_LOCATION_DAILY B
-    WHERE A.ACCESS_METHOD_NUM = B.MOBILE_NO
-    AND B.LAC = A.LAC
-    AND A.CI = B.CI
-    GROUP BY 1,2
+        SELECT
+            B.DATE_ID,
+            A.IMSI,
+            SUM(VOL_DOWNLINK_KB+VOL_UPLINK_KB) AS TOTAL_DATA_TRAFFIC_KB
+        FROM GEO_TEMP_01 A,
+            USAGE_SUM_DATA_LOCATION_DAILY B
+        WHERE A.ACCESS_METHOD_NUM = B.MOBILE_NO
+            AND B.LAC = A.LAC
+            AND A.CI = B.CI
+        GROUP BY 1,2
     """)
     return GEO_TEMP_02
 
-def L1_data_traffic_top1_top2_FN(geo_mst_cell_masterplan,geo_home_work_data,profile_customer_profile_ma,usage_sum_data_location_daily,HOME_WORK_WEEKDAY_LOCATION_ID):
+def l1_data_traffic_top1_top2_fn(geo_mst_cell_masterplan,geo_home_work_data,profile_customer_profile_ma,usage_sum_data_location_daily,HOME_WORK_WEEKDAY_LOCATION_ID):
     ###TABLE###
     spark = get_spark_session()
 
@@ -314,36 +321,47 @@ def L1_data_traffic_top1_top2_FN(geo_mst_cell_masterplan,geo_home_work_data,prof
     usage_sum_data_location_daily.createOrReplaceTempView('USAGE_SUM_DATA_LOCATION_DAILY')
     #TEMP1#
     GEO_TEMP_00 = spark.sql("""
-    SELECT B.IMSI,A.CI,A.LAC
-    FROM GEO_MST_CELL_MASTERPLAN A,LOCATION_HOMEWORK_NEW_1 B
-    WHERE A.LOCATION_ID=B."""+str(HOME_WORK_WEEKDAY_LOCATION_ID)+"""
+        SELECT
+            B.IMSI,
+            A.CI,
+            A.LAC
+        FROM GEO_MST_CELL_MASTERPLAN A,LOCATION_HOMEWORK_NEW_1 B
+        WHERE A.LOCATION_ID=B."""+str(HOME_WORK_WEEKDAY_LOCATION_ID)+"""
     """)
 
     GEO_TEMP_00.createOrReplaceTempView('GEO_TEMP_00')
 
     # TEMP2#
     GEO_TEMP_01 = spark.sql("""
-    SELECT B.ACCESS_METHOD_NUM,A.IMSI,A.LAC,A.CI
-    FROM GEO_TEMP_00 A ,PROFILE_CUSTOMER_PROFILE_MA B
-    WHERE A.IMSI = B.IMSI
-    GROUP BY A.IMSI,A.LAC,A.CI,B.ACCESS_METHOD_NUM
+        SELECT
+            B.ACCESS_METHOD_NUM,
+            A.IMSI,
+            A.LAC,
+            A.CI
+        FROM GEO_TEMP_00 A ,PROFILE_CUSTOMER_PROFILE_MA B
+        WHERE A.IMSI = B.IMSI
+        GROUP BY A.IMSI,A.LAC,A.CI,B.ACCESS_METHOD_NUM
     """)
 
     GEO_TEMP_01.createOrReplaceTempView('GEO_TEMP_01')
 
     # TEMP3#
     GEO_TEMP_02 = spark.sql("""
-    SELECT B.DATE_ID,A.IMSI,SUM(VOL_DOWNLINK_KB+VOL_UPLINK_KB) AS TOTAL_DATA_TRAFFIC_KB
-    FROM GEO_TEMP_01 A,
-    USAGE_SUM_DATA_LOCATION_DAILY B
-    WHERE A.ACCESS_METHOD_NUM = B.MOBILE_NO
-    AND B.LAC = A.LAC
-    AND A.CI = B.CI
-    GROUP BY 1,2
+        SELECT
+            B.DATE_ID,
+            A.IMSI,
+            SUM(VOL_DOWNLINK_KB+VOL_UPLINK_KB) AS TOTAL_DATA_TRAFFIC_KB
+        FROM GEO_TEMP_01 A,
+            USAGE_SUM_DATA_LOCATION_DAILY B
+        WHERE A.ACCESS_METHOD_NUM = B.MOBILE_NO
+            AND B.LAC = A.LAC
+            AND A.CI = B.CI
+        GROUP BY 1,2
     """)
     return GEO_TEMP_02
 
-def L1_data_traffic_home_work_Top1_TOP2(geo_mst_cell_masterplan,geo_home_work_data,profile_customer_profile_ma,usage_sum_data_location_daily,geo_exclude_home_work):
+
+def l1_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,geo_home_work_data,profile_customer_profile_ma,usage_sum_data_location_daily,geo_exclude_home_work):
     # ----- Data Availability Checks -----
     if check_empty_dfs([usage_sum_data_location_daily, profile_customer_profile_ma, geo_mst_cell_masterplan, geo_home_work_data, geo_exclude_home_work]):
         return get_spark_empty_df()
@@ -377,41 +395,41 @@ def L1_data_traffic_home_work_Top1_TOP2(geo_mst_cell_masterplan,geo_home_work_da
     geo_exclude_home_work_last_date = geo_exclude_home_work.agg(F.max("start_of_month")).collect()[0][0]
     geo_exclude_home_work = geo_exclude_home_work.where("start_of_month = '" + str(geo_exclude_home_work_last_date)+"'")
 
-    L1_data_traffic_home_work_FN(geo_mst_cell_masterplan, geo_home_work_data, profile_customer_profile_ma, usage_sum_data_location_daily,"HOME_WEEKDAY_LOCATION_ID").createOrReplaceTempView('Home')
-    L1_data_traffic_home_work_FN(geo_mst_cell_masterplan, geo_home_work_data, profile_customer_profile_ma, usage_sum_data_location_daily,"WORK_LOCATION_ID").createOrReplaceTempView('Work')
-    L1_data_traffic_top1_top2_FN(geo_mst_cell_masterplan, geo_exclude_home_work, profile_customer_profile_ma, usage_sum_data_location_daily, "TOP_LOCATION_1ST").createOrReplaceTempView('Top1')
-    L1_data_traffic_top1_top2_FN(geo_mst_cell_masterplan, geo_exclude_home_work, profile_customer_profile_ma, usage_sum_data_location_daily, "TOP_LOCATION_2ND").createOrReplaceTempView('Top2')
+    l1_data_traffic_home_work_fn(geo_mst_cell_masterplan, geo_home_work_data, profile_customer_profile_ma, usage_sum_data_location_daily,"HOME_WEEKDAY_LOCATION_ID").createOrReplaceTempView('Home')
+    l1_data_traffic_home_work_fn(geo_mst_cell_masterplan, geo_home_work_data, profile_customer_profile_ma, usage_sum_data_location_daily,"WORK_LOCATION_ID").createOrReplaceTempView('Work')
+    l1_data_traffic_top1_top2_fn(geo_mst_cell_masterplan, geo_exclude_home_work, profile_customer_profile_ma, usage_sum_data_location_daily, "TOP_LOCATION_1ST").createOrReplaceTempView('Top1')
+    l1_data_traffic_top1_top2_fn(geo_mst_cell_masterplan, geo_exclude_home_work, profile_customer_profile_ma, usage_sum_data_location_daily, "TOP_LOCATION_2ND").createOrReplaceTempView('Top2')
 
     Home_Work = spark.sql("""
-    SELECT 
-        A.DATE_ID AS event_partition_date ,
-        A.IMSI,
-        A.TOTAL_DATA_TRAFFIC_KB AS Home_traffic_KB,
-        B.TOTAL_DATA_TRAFFIC_KB AS Work_traffic_KB,
-        C.TOTAL_DATA_TRAFFIC_KB AS Top1_location_traffic_KB,
-        D.TOTAL_DATA_TRAFFIC_KB AS Top2_location_traffic_KB
-    FROM Home A 
-    JOIN Work B
-    ON B.DATE_ID=A.DATE_ID AND A.IMSI = B.IMSI
-    JOIN Top1 C
-    ON C.DATE_ID=A.DATE_ID AND A.IMSI = C.IMSI
-    JOIN Top2 D
-    ON D.DATE_ID=A.DATE_ID AND D.IMSI = B.IMSI
+        SELECT 
+            A.DATE_ID AS event_partition_date ,
+            A.IMSI,
+            A.TOTAL_DATA_TRAFFIC_KB AS Home_traffic_KB,
+            B.TOTAL_DATA_TRAFFIC_KB AS Work_traffic_KB,
+            C.TOTAL_DATA_TRAFFIC_KB AS Top1_location_traffic_KB,
+            D.TOTAL_DATA_TRAFFIC_KB AS Top2_location_traffic_KB
+        FROM Home A 
+        JOIN Work B
+        ON B.DATE_ID=A.DATE_ID AND A.IMSI = B.IMSI
+        JOIN Top1 C
+        ON C.DATE_ID=A.DATE_ID AND A.IMSI = C.IMSI
+        JOIN Top2 D
+        ON D.DATE_ID=A.DATE_ID AND D.IMSI = B.IMSI
     """)
     Home_Work.createTempView('GEO_TEMP_04')
     data_traffic_location = spark.sql("""
-    SELECT 
-        event_partition_date,
-        IMSI,
-        Home_traffic_KB,
-        Work_traffic_KB,
-        Top1_location_traffic_KB,
-        Top2_location_traffic_KB,
-        ((Home_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Home_traffic_KB,
-        ((Work_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Work_traffic_KB,
-        ((Top1_location_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Top1_location_traffic_KB,
-        ((Top2_location_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Top2_location_traffic_KB
-    FROM  GEO_TEMP_04
+        SELECT 
+            event_partition_date,
+            IMSI,
+            Home_traffic_KB,
+            Work_traffic_KB,
+            Top1_location_traffic_KB,
+            Top2_location_traffic_KB,
+            ((Home_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Home_traffic_KB,
+            ((Work_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Work_traffic_KB,
+            ((Top1_location_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Top1_location_traffic_KB,
+            ((Top2_location_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Top2_location_traffic_KB
+        FROM  GEO_TEMP_04
     """)
     return data_traffic_location
 
@@ -516,17 +534,18 @@ def l1_call_location_home_work(cell_masterplan,geo_homework,profile_ma,usage_sum
     def sum_voice_daily(df_temp_01):
         spark = get_spark_session()
         df_sum_voice = spark.sql(f'''
-          select cast(substr(date_id,1,10)as date) as event_partiiton_date
-          ,a.imsi
-          ,sum(b.no_of_call+b.no_of_inc) as call_count_location_{df_temp_01}  
+          select
+            cast(substr(date_id,1,10)as date) as event_partiiton_date
+            ,a.imsi
+            ,sum(b.no_of_call+b.no_of_inc) as call_count_location_{df_temp_01}  
           from {df_temp_01} a
           left join usage_voice b
-          on a.access_method_num = b.access_method_num
+            on a.access_method_num = b.access_method_num
           where b.service_type in ('VOICE','VOLTE')
-          and a.{df_temp_01}_lac = b.lac
-          and a.{df_temp_01}_ci = b.ci
+            and a.{df_temp_01}_lac = b.lac
+             and a.{df_temp_01}_ci = b.ci
           group by 1,2
-          ''')
+        ''')
         return df_sum_voice
 
     sum_voice_daily('home_weekday').createOrReplaceTempView('df_call_home_weekday')
@@ -709,37 +728,37 @@ def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
 
     ### spark_sql
     sql_query = """
-    select
-    c.imsi
-    ,b.latitude
-    ,b.longitude
-    ,sum(a.no_of_call+a.no_of_inc) as total_call
-    ,a.event_partition_date
-    from usage_sum_voice_location_daily a
-    join profile_customer_profile_ma c
-    on a.access_method_num = c.access_method_num
-    left join geo_mst_cell_masterplan b
-    on a.lac = b.lac
-    and a.ci = b.ci
-    where service_type in ('VOICE','VOLTE')
-    group by 1,2,3,5
-    order by 1,2,3,5
+        select
+            c.imsi
+            ,b.latitude
+            ,b.longitude
+            ,sum(a.no_of_call+a.no_of_inc) as total_call
+            ,a.event_partition_date
+        from usage_sum_voice_location_daily a
+        join profile_customer_profile_ma c
+            on a.access_method_num = c.access_method_num
+        left join geo_mst_cell_masterplan b
+            on a.lac = b.lac
+            and a.ci = b.ci
+        where service_type in ('VOICE','VOLTE')
+        group by 1,2,3,5
+        order by 1,2,3,5
     """
     l1_df = spark.sql(sql_query)
     l1_df.createOrReplaceTempView('L4_temp_table')
 
     sql_query1 = """
-    select
-    imsi
-    ,latitude
-    ,longitude
-    ,total_call
-    ,row_number() over (partition by imsi,event_partition_date order by total_call desc) as rnk
-    ,event_partition_date
-    from L4_temp_table
-    where imsi is not null
-    and latitude is not null 
-    and longitude is not null
+        select
+            imsi
+            ,latitude
+            ,longitude
+            ,total_call
+            ,row_number() over (partition by imsi,event_partition_date order by total_call desc) as rnk
+            ,event_partition_date
+        from L4_temp_table
+        where imsi is not null
+            and latitude is not null 
+            and longitude is not null
     """
     l1_df1 = spark.sql(sql_query1)
     l1_df.cache()
@@ -784,9 +803,9 @@ def l1_geo_distance_top_call(df):
             ,a.start_of_month
         from geo_top3_cells_on_voice_usage a
         left join geo_top3_cells_on_voice_usage b
-        on a.imsi = b.imsi
-        and a.event_partition_date = b.event_partition_date
-        and b.rnk >= 2
+            on a.imsi = b.imsi
+            and a.event_partition_date = b.event_partition_date
+            and b.rnk >= 2
         where a.rnk = 1
         order by 1,3,4,5
     """
@@ -877,8 +896,8 @@ def l1_the_favourite_locations_daily(usage_df_location,geo_df_masterplan):
                 else 0 end as vol_5g
         from sum_data_location b  
         left join geo_mst_cell_masterplan mp
-        on b.lac = mp.lac
-        and b.ci = mp.ci
+            on b.lac = mp.lac
+            and b.ci = mp.ci
         where mp.location_id is not NULL
         GROUP BY b.mobile_no,b.date_id,mp.location_id,b.lac,b.ci,b.gprs_type,weektype,mp.latitude,mp.longitude,b.start_of_week,b.start_of_month
         order by date_id
