@@ -1165,60 +1165,140 @@ def score_du_models(
     # )
 
 
-def create_daily_normalize_ontop_pack() -> pyspark.sql.DataFrame:
-    l0_product_pru_m_ontop_master_for_weekly_full_load = catalog.load(
-        "l0_product_pru_m_ontop_master_for_weekly_full_load"
-    )
-    l0_prepaid_ontop_product_customer_promotion_for_daily_full_load = catalog.load(
-        "l0_prepaid_ontop_product_customer_promotion_for_daily_full_load"
+def create_daily_ontop_pack(
+    l0_product_pru_m_ontop_master_for_weekly_full_load: pyspark.sql.DataFrame,
+    l1_customer_profile_union_daily_feature_full_load: pyspark.sql.DataFrame,
+    l0_prepaid_ontop_product_customer_promotion_for_daily_full_load: pyspark.sql.DataFrame,
+) -> pyspark.sql.DataFrame:
+    import datetime
+
+    start_date = datetime.datetime.now() + datetime.timedelta(days=-30)
+    end_date = datetime.datetime.now()
+    # l0_product_pru_m_ontop_master_for_weekly_full_load = catalog.load(
+    #     "l0_product_pru_m_ontop_master_for_weekly_full_load"
+    # )
+    # l1_customer_profile_union_daily_feature_full_load = catalog.load(
+    #     "l1_customer_profile_union_daily_feature_full_load"
+    # )
+    #
+    # l0_prepaid_ontop_product_customer_promotion_for_daily_full_load = catalog.load(
+    #     "l0_prepaid_ontop_product_customer_promotion_for_daily_full_load"
+    # )
+    selected_l0_ontop = l0_prepaid_ontop_product_customer_promotion_for_daily_full_load.where(
+        "partition_date >= " + start_date.strftime("%Y%m%d")
     )
     ontop_pack_daily = (
-        l0_prepaid_ontop_product_customer_promotion_for_daily_full_load.selectExpr(
-            "access_method_num",
-            "offering_id as promotion_code",
-            "event_start_dttm as register_date",
-            "offering_title as promotion_name",
-            "partition_date",
+        selected_l0_ontop.selectExpr(
+            "access_method_num", "offering_id as promotion_code", "partition_date",
         )
         .withColumn(
             "partition_date_str",
-            l0_prepaid_ontop_product_customer_promotion_for_daily_full_load[
-                "partition_date"
-            ].cast(StringType()),
+            selected_l0_ontop["partition_date"].cast(StringType()),
         )
         .drop("partition_date")
     )
-    ontop_pack_daily_dt = ontop_pack_daily.select(
-        "*",
-        F.to_timestamp(ontop_pack_daily.partition_date_str, "yyyyMMdd").alias(
-            "partition_date"
-        ),
-    ).drop("partition_date_str")
+    ontop_pack_daily_dt = (
+        ontop_pack_daily.select(
+            "*",
+            F.to_timestamp(ontop_pack_daily.partition_date_str, "yyyyMMdd").alias(
+                "partition_date_timestamp"
+            ),
+        )
+        .selectExpr("*", "date(partition_date_timestamp) as partition_date")
+        .drop("partition_date_timestamp")
+    )
+    customer_profile_daily = l1_customer_profile_union_daily_feature_full_load.selectExpr(
+        "old_subscription_identifier",
+        "access_method_num",
+        "register_date",
+        "date(event_partition_date) as partition_date",
+        "date(start_of_month) as start_of_month",
+        "start_of_week",
+    )
+    customer_profile_daily = customer_profile_daily.where(
+        "partition_date >= date('" + start_date.strftime("%Y-%m-%d") + "')"
+    )
 
-    l1_customer_profile_union_daily_feature_full_load = catalog.load(
-        "l1_customer_profile_union_daily_feature_full_load"
+    master_ontop_weekly = (
+        l0_product_pru_m_ontop_master_for_weekly_full_load.where(
+            "charge_type = 'Prepaid' AND partition_date = 20200610"
+        )
+        .withColumn(
+            "partition_date_str",
+            l0_product_pru_m_ontop_master_for_weekly_full_load["partition_date"].cast(
+                StringType()
+            ),
+        )
+        .drop("partition_date")
+        .select(
+            "package_type",
+            "promotion_code",
+            "package_group",
+            "mm_types",
+            "mm_data_type",
+            "mm_data_speed",
+            "package_name_report",
+            "price_inc_vat",
+            "data_quota",
+            "duration",
+            F.to_timestamp("partition_date_str", "yyyyMMdd").alias(
+                "partition_date_timestamp"
+            ),
+        )
+        .selectExpr("*", "date(partition_date_timestamp) as partition_date")
+        .drop("partition_date_timestamp")
     )
-    spark.sql(
-        """CREATE TEMPORARY VIEW daily_ontop
-AS
-SELECT analytic_id,register_date as activation_date,dm42.promotion_code,promotion_name,total_net_tariff as total_net_tariff,number_of_transaction,date_id,duration, total_net_tariff as daily_spending, CAST(date_id AS date)  as ddate FROM prod_delta.dm42_promotion_prepaid dm42
-INNER JOIN ( 
-          SELECT promotion_code, duration FROM """
-        + prod_table
-        + """
-            )
-          master 
-ON master.Promotion_code = dm42.promotion_code
-WHERE month(date_id) = """
-        + str(month_run)
-        + """ AND year(date_id) = """
-        + str(year_run)
-        + """ AND duration <= 1"""
+    master_ontop_weekly_fixed = master_ontop_weekly.selectExpr(
+        "package_type",
+        "promotion_code",
+        "package_group",
+        "mm_types",
+        "mm_data_type",
+        "mm_data_speed",
+        "package_name_report",
+        "price_inc_vat",
+        """CASE WHEN data_quota LIKE '%GB%' THEN split(data_quota, 'GB')[0] * 1024
+                WHEN data_quota LIKE '%MB%' THEN split(data_quota, 'MB')[0]
+                WHEN data_quota LIKE '%Hr%' THEN 999999999
+                WHEN data_quota LIKE '%D' THEN 999999999
+                WHEN data_quota LIKE '%M%' THEN 999999999
+                WHEN data_quota LIKE '%Mins%' THEN 999999999
+                WHEN data_quota LIKE '%UL%' THEN 999999999
+                ELSE -1 END AS data_quota_mb""",
+        """CASE WHEN duration LIKE '%D%' THEN split(duration, 'D')[0] 
+                                        WHEN duration LIKE '%Hr%' THEN split(duration, 'Hr')[0]/24
+                                     ELSE 0 END AS duration """,
+        """CASE WHEN mm_data_Speed = 'Entertain' THEN 4096
+            WHEN mm_data_Speed = 'Social' THEN 512
+            WHEN mm_data_Speed = 'Time' THEN 51200
+            WHEN mm_data_Speed = 'Others' THEN 512
+            WHEN MM_Data_Speed = '64Kbps'				 THEN    64
+            WHEN MM_Data_Speed = '256Kbps'			 THEN   256
+      WHEN MM_Data_Speed = '384Kbps'			 THEN   384
+      WHEN MM_Data_Speed = '512Kbps'			 THEN   512
+      WHEN MM_Data_Speed = '1Mbps'				 THEN  1024
+      WHEN MM_Data_Speed = '2Mbps'  			 THEN  2048
+      WHEN MM_Data_Speed = '4Mbps'				 THEN  4096
+      WHEN MM_Data_Speed = '6Mbps'		    	 THEN  6144
+      WHEN MM_Data_Speed = '10Mbps'				 THEN 10240
+      WHEN MM_Data_Speed = 'Full speed'			 THEN 51200
+      WHEN MM_Data_Speed = 'Full Speed'		     THEN 51200
+      WHEN MM_Data_Speed = 'Full Speed - Next G' THEN 51200
+      WHEN MM_Data_Speed = '7.2Mbps'             THEN 7372
+            ELSE 0
+            END as data_speed""",
+        "partition_date as start_of_week",
     )
-    spark.sql("SELECT * FROM daily_ontop").write.format("orc").mode(
-        "append"
-    ).partitionBy("ddate").saveAsTable("prod.ds1_daily_ontop")
-    return df
+
+    ontop_pack_daily_agg = ontop_pack_daily_dt.groupby(
+        "access_method_num", "partition_date", "promotion_code", "partition_date_str"
+    ).agg(F.count("*").alias("number_of_transaction"))
+
+    daily_ontop_purchase = ontop_pack_daily_agg.join(
+        customer_profile_daily, ["access_method_num", "partition_date"], "inner"
+    ).join(master_ontop_weekly_fixed, ["promotion_code", "start_of_week"], "inner")
+
+    return daily_ontop_purchase
 
 
 def create_ontop_package_preference() -> pyspark.sql.DataFrame:

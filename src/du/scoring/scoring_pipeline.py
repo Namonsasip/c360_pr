@@ -1,12 +1,28 @@
 from kedro.pipeline import Pipeline, node
 
-from du.scoring.scoring_nodes import (
-    l5_scoring_profile,
-    l5_du_scored
-)
+from du.scoring.scoring_nodes import l5_scoring_profile, l5_du_scored
 
-from nba.pcm_scoring.pcm_scoring_nodes import (
-    join_c360_features_latest_date,)
+from nba.pcm_scoring.pcm_scoring_nodes import join_c360_features_latest_date
+
+from du.models.models_nodes import create_daily_ontop_pack
+
+
+def create_package_preference_pipeline() -> Pipeline:
+    return Pipeline(
+        [
+            node(
+                create_daily_ontop_pack,
+                inputs={
+                    "l0_product_pru_m_ontop_master_for_weekly_full_load": "l0_product_pru_m_ontop_master_for_weekly_full_load",
+                    "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
+                    "l0_prepaid_ontop_product_customer_promotion_for_daily_full_load": "l0_prepaid_ontop_product_customer_promotion_for_daily_full_load",
+                },
+                outputs="l1_ontop_purchase_daily",
+                name="l1_ontop_purchase_daily",
+                tags=["l1_ontop_purchase_daily"],
+            ),
+        ]
+    )
 
 
 def create_du_scoring_pipeline() -> Pipeline:
@@ -50,9 +66,9 @@ def create_du_scoring_pipeline() -> Pipeline:
                     "df_master": "l5_du_scoring_master",
                     "l5_average_arpu_untie_lookup": "l5_average_arpu_untie_lookup",
                     "model_group_column": "params:du_model_scoring_group_column",
-                    "explanatory_features":"params:du_model_explanatory_features",
+                    "explanatory_features": "params:du_model_explanatory_features",
                     "acceptance_model_tag": "params:du_acceptance_model_tag",
-                    "mlflow_model_version":"params:du_mlflow_model_version_prediction",
+                    "mlflow_model_version": "params:du_mlflow_model_version_prediction",
                     "arpu_model_tag": "params:du_arpu_model_tag",
                     "pai_runs_uri": "params:nba_pai_runs_uri",
                     "pai_artifacts_uri": "params:nba_pai_artifacts_uri",
