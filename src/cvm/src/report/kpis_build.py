@@ -173,6 +173,7 @@ def add_prepaid_no_activity_daily(
         "out_no_activity_n_days",
         "analytic_id",
         "register_date",
+        "date_id",
     ]
 
     def is_positive(col_name):
@@ -181,8 +182,11 @@ def add_prepaid_no_activity_daily(
 
     no_activity = (
         prepaid_no_activity_daily.select(cols_to_pick)
+        .withColumnRenamed("date_id", "key_date")
         .withColumn("prepaid_no_activity", is_positive("no_activity_n_days"))
         .withColumn("prepaid_no_activity_in", is_positive("in_no_activity_n_days"))
         .withColumn("prepaid_no_activity_out", is_positive("out_no_activity_n_days"))
     )
-    return users.join(no_activity, on=["analytic_id", "register_date"], how="left")
+    return users.join(
+        no_activity, on=["analytic_id", "register_date", "key_date"], how="left"
+    )
