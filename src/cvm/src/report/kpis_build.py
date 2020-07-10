@@ -184,7 +184,7 @@ def add_prepaid_no_activity_daily(
     no_activity = (
         prepaid_no_activity_daily.select(cols_to_pick)
         .withColumnRenamed("date_id", "key_date")
-        .filter("key_date >= '{}".format(min_date))
+        .filter("key_date >= '{}'".format(min_date))
         .withColumn("prepaid_no_activity", is_positive("no_activity_n_days"))
         .withColumn("prepaid_no_activity_in", is_positive("in_no_activity_n_days"))
         .withColumn("prepaid_no_activity_out", is_positive("out_no_activity_n_days"))
