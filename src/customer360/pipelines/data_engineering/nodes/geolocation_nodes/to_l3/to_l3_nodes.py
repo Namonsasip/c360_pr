@@ -508,3 +508,124 @@ def l3_geo_home_weekday_city_citizens_monthly(home_work_location_id, master, sql
         .select('start_of_month', 'region_name', 'province_name', 'district_name', 'sub_district_name', 'citizens')
     df = node_from_config(home_location_id_master, sql)
     return df
+
+
+def l3_geo_work_area_center_average_monthly(visti_hr, home_work):
+    # ----- Data Availability Checks -----
+    if check_empty_dfs([visti_hr, home_work]):
+        return get_spark_empty_df()
+
+    visti_hr = data_non_availability_and_missing_check(df=visti_hr,
+                                                       grouping="monthly",
+                                                       par_col="partition_date",
+                                                       target_table_name="l3_geo_work_area_center_average_monthly",
+                                                       missing_data_check_flg='Y')
+
+    home_work = data_non_availability_and_missing_check(df=home_work,
+                                                        grouping="monthly",
+                                                        par_col="start_of_month",
+                                                        target_table_name="l3_geo_work_area_center_average_monthly",
+                                                        missing_data_check_flg='Y')
+
+    if check_empty_dfs([visti_hr, home_work]):
+        return get_spark_empty_df()
+    # ----- Transformation -----
+
+    # Clean data
+    visit_hr_drop = visti_hr.drop('partition_hour')
+    visit_hr_drop = visit_hr_drop.where("hour > 5 and hour < 19")
+    work = home_work.drop('ome_weekday_location_id:string', 'home_weekday_latitude', 'home_weekday_longitude',
+                          'home_weekend_location_id', 'home_weekend_latitude', 'home_weekend_longitude')
+
+    # Add event_partition_date
+    visit_hr_drop = visit_hr_drop.withColumn("event_partition_date",
+                                             F.to_date(F.col('partition_date').cast(StringType()), 'yyyyMMdd'))
+    # Group by daily
+    visit_hr_agg = visit_hr_drop.groupBy('imsi', 'location_id', 'latitude', 'longitude', 'event_partition_date') \
+        .agg(F.sum('duration').alias('duration'), F.count('hour').alias('incident'))
+
+    # Add start_of_month
+    visit_hr_agg = visit_hr_agg.withColumn("start_of_month", F.to_date(F.date_trunc('month', "event_partition_date")))
+
+    # Group by monthly
+    visit_hr_agg_monthly = visit_hr_agg.groupBy('imsi', 'location_id', 'latitude', 'longitude', 'start_of_month') \
+        .agg(F.sum('duration').alias('duration'), F.sum('incident').alias('incident'),
+             F.count('location_id').alias('days'))
+
+    # Last 3 month aggregate
+    w_3month = Window().partitionBy(F.col('imsi'), F.col('location_id'), F.col('latitude'), F.col('longitude')).orderBy(
+        F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
+    visit_hr_agg_monthly_3month = visit_hr_agg_monthly.withColumn("Month",
+                                                                  F.to_timestamp("start_of_month", "yyyy-MM-dd")) \
+        .withColumn("3_duration", F.sum("duration").over(w_3month)) \
+        .withColumn("3_incident", F.sum("incident").over(w_3month)) \
+        .withColumn("3_days", F.sum("days").over(w_3month))
+
+    # Drop duplicate
+    visit_hr_agg_monthly_3month = visit_hr_agg_monthly_3month \
+        .drop_duplicates(subset=['imsi', 'start_of_month', 'location_id', 'latitude', 'longitude', '3_duration', '3_incident', '3_days']) \
+        .select('imsi', 'start_of_month', 'location_id', 'latitude', 'longitude', '3_duration', '3_incident', '3_days')
+
+    visit_hr_agg_monthly_3month = visit_hr_agg_monthly_3month.withColumnRenamed('3_duration', 'duration') \
+        .withColumnRenamed('3_incident', 'incident') \
+        .withColumnRenamed('3_days', 'days')
+
+    w = Window().partitionBy('imsi', 'start_of_month')
+    _score = 0.7 * (F.col('duration') / F.sum('duration').over(w)) + 0.2 * ( \
+                F.col('incident') / F.sum('incident').over(w)) + 0.1 * (F.col('days') / F.sum('days').over(w))
+
+    # Calculate score
+    visit_hr_agg_monthly_score = visit_hr_agg_monthly_3month.withColumn('score', _score)
+
+    # Calculate average lat and long
+    work_center_average = visit_hr_agg_monthly_score.groupBy('imsi', 'start_of_month') \
+        .agg(F.avg(F.col('latitude') * F.col('score')).alias('avg_latitude'), \
+             F.avg(F.col('longitude') * F.col('score')).alias('avg_longitude'))
+
+    w_order = Window().partitionBy('imsi', 'start_of_month').orderBy('score')
+    visit_hr_agg_monthly_score_normal_rank = visit_hr_agg_monthly_score.withColumn('rank', F.dense_rank().over(w_order))
+    visit_hr_agg_monthly_score_normal_rank = visit_hr_agg_monthly_score_normal_rank.where('rank > 6')
+
+    visit_hr_agg_monthly_join = work_center_average.join(visit_hr_agg_monthly_score_normal_rank, [
+        work_center_average.imsi == visit_hr_agg_monthly_score_normal_rank.imsi, \
+        work_center_average.start_of_month == visit_hr_agg_monthly_score_normal_rank.start_of_month], \
+                                                         'left') \
+        .select(work_center_average.imsi, work_center_average.start_of_month, 'avg_latitude',
+                'avg_longitude', 'latitude', 'longitude')
+
+    # Calculate radius
+    work_radius = visit_hr_agg_monthly_join.groupBy('imsi', 'start_of_month') \
+        .agg(
+        F.max((F.acos(F.cos(F.radians(90 - F.col('avg_latitude'))) * F.cos(F.radians(90 - F.col('latitude'))) + F.sin( \
+            F.radians(90 - F.col('avg_latitude'))) * F.sin(F.radians(90 - F.col('latitude'))) * F.cos(F.radians( \
+            F.col('avg_longitude') - F.col('longitude')))) * 6371).cast('double')).alias('radius'))
+
+    # Calculate difference from home_work_location_id
+    work_center_average_diff = work_center_average.join(work, [work_center_average.imsi == work.imsi, \
+                                                               work_center_average.start_of_month == work.start_of_month], \
+                                                        'left') \
+        .select(work_center_average.imsi, work_center_average.start_of_month, 'avg_latitude',
+                'avg_longitude', 'work_latitude', 'work_longitude')
+
+    work_center_average_diff = work_center_average_diff.withColumn('distance_difference', F.when(
+        (work_center_average_diff.work_latitude.isNull()) | (work_center_average_diff.work_longitude.isNull()), 0.0) \
+                                                                   .otherwise((F.acos(F.cos(
+        F.radians(90 - F.col('avg_latitude'))) * F.cos(
+        F.radians(90 - F.col('work_latitude'))) + F.sin( \
+        F.radians(90 - F.col('avg_latitude'))) * F.sin(
+        F.radians(90 - F.col('work_latitude'))) * F.cos(
+        F.radians( \
+            F.col('avg_longitude') - F.col(
+                'work_longitude')))) * 6371).cast('double'))
+                                                                   )
+
+    work_center_average_diff = work_center_average_diff.withColumnRenamed('avg_latitude', 'work_avg_latitude') \
+        .withColumnRenamed('avg_longitude', 'work_avg_longitude')
+
+    work_final = work_center_average_diff.join(work_radius,
+                                               [work_center_average_diff.imsi == work_radius.imsi, \
+                                                work_center_average_diff.start_of_month == work_radius.start_of_month],
+                                               'inner') \
+        .select(work_center_average_diff.imsi, work_center_average_diff.start_of_month, 'work_avg_latitude',
+                'work_avg_longitude', 'distance_difference', 'radius')
+    return work_final
