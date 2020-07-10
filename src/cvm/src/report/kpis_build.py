@@ -158,7 +158,7 @@ def add_network_churn(network_churn: DataFrame, users: DataFrame) -> DataFrame:
 
 
 def add_prepaid_no_activity_daily(
-    prepaid_no_activity_daily: DataFrame, users: DataFrame
+    prepaid_no_activity_daily: DataFrame, users: DataFrame, min_date: str
 ) -> DataFrame:
     """ Adds lack of activity columns based on `prepaid_no_activity_daily` table.
 
@@ -166,6 +166,7 @@ def add_prepaid_no_activity_daily(
         prepaid_no_activity_daily: table with daily markers for lack of activity for
             prepaid users.
         users: table to extend with no activity columns.
+        min_date: minimal date of report.
     """
     cols_to_pick = [
         "in_no_activity_n_days",
@@ -183,6 +184,7 @@ def add_prepaid_no_activity_daily(
     no_activity = (
         prepaid_no_activity_daily.select(cols_to_pick)
         .withColumnRenamed("date_id", "key_date")
+        .filter("key_date >= '{}".format(min_date))
         .withColumn("prepaid_no_activity", is_positive("no_activity_n_days"))
         .withColumn("prepaid_no_activity_in", is_positive("in_no_activity_n_days"))
         .withColumn("prepaid_no_activity_out", is_positive("out_no_activity_n_days"))
