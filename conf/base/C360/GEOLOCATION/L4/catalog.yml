@@ -512,7 +512,3 @@ l4_geo_number_most_frequent_top_five_weekends:
     partitionBy: "event_partition_date"
     read_layer: 'l1_daily'
     target_layer: 'l4_daily'
-
-
-
-

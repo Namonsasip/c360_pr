@@ -261,7 +261,11 @@ def l1_geo_total_distance_km_daily(l0_df, sql):
     return l1_df2
 
 ###Traffic_fav_location###
-def l1_data_traffic_home_work_fn(geo_mst_cell_masterplan,geo_home_work_data,profile_customer_profile_ma,usage_sum_data_location_daily,HOME_WORK_WEEKDAY_LOCATION_ID):
+def l1_data_traffic_home_work_fn(geo_mst_cell_masterplan,
+                                 geo_home_work_data,
+                                 profile_customer_profile_ma,
+                                 usage_sum_data_location_daily,
+                                 HOME_WORK_WEEKDAY_LOCATION_ID):
 
     ###TABLE###
     spark = get_spark_session()
@@ -311,7 +315,11 @@ def l1_data_traffic_home_work_fn(geo_mst_cell_masterplan,geo_home_work_data,prof
     """)
     return GEO_TEMP_02
 
-def l1_data_traffic_top1_top2_fn(geo_mst_cell_masterplan,geo_home_work_data,profile_customer_profile_ma,usage_sum_data_location_daily,HOME_WORK_WEEKDAY_LOCATION_ID):
+def l1_data_traffic_top1_top2_fn(geo_mst_cell_masterplan,
+                                 geo_home_work_data,
+                                 profile_customer_profile_ma,
+                                 usage_sum_data_location_daily,
+                                 HOME_WORK_WEEKDAY_LOCATION_ID):
     ###TABLE###
     spark = get_spark_session()
 
@@ -361,7 +369,11 @@ def l1_data_traffic_top1_top2_fn(geo_mst_cell_masterplan,geo_home_work_data,prof
     return GEO_TEMP_02
 
 
-def l1_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,geo_home_work_data,profile_customer_profile_ma,usage_sum_data_location_daily,geo_exclude_home_work):
+def l1_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
+                                        geo_home_work_data,
+                                        profile_customer_profile_ma,
+                                        usage_sum_data_location_daily,
+                                        geo_exclude_home_work):
     # ----- Data Availability Checks -----
     if check_empty_dfs([usage_sum_data_location_daily, profile_customer_profile_ma, geo_mst_cell_masterplan, geo_home_work_data, geo_exclude_home_work]):
         return get_spark_empty_df()
@@ -373,8 +385,8 @@ def l1_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,geo_home_work_da
 
 
     profile_customer_profile_ma = data_non_availability_and_missing_check(df=profile_customer_profile_ma,
-                                                                          grouping="daily",
-                                                                          par_col="partition_date",
+                                                                          grouping="monthly",
+                                                                          par_col="partition_month",
                                                                           target_table_name="L1_usage_sum_data_location_daily_data_profile_customer_profile_ma")
 
     geo_mst_cell_masterplan = get_max_date_from_master_data(geo_mst_cell_masterplan, 'partition_date')
@@ -514,9 +526,14 @@ def l1_call_location_home_work(cell_masterplan,geo_homework,profile_ma,usage_sum
                                                                             par_col="partition_date",
                                                                             target_table_name="l1_call_location_home_work")
 
+    profile_ma = data_non_availability_and_missing_check(df=profile_ma,
+                                                         grouping="monthly",
+                                                         par_col="partition_month",
+                                                         target_table_name="L1_usage_sum_data_location_daily_data_profile_customer_profile_ma")
+
     cell_masterplan = get_max_date_from_master_data(cell_masterplan, 'partition_date')
 
-    if check_empty_dfs([usage_sum_voice]):
+    if check_empty_dfs([usage_sum_voice, profile_ma]):
         return get_spark_empty_df()
 
     # ----- Transformation -----
@@ -688,7 +705,6 @@ def l1_location_of_visit_ais_store_daily(shape,cust_cell_visit,sql):
     store_visit = node_from_config(df,sql)
     return store_visit
 
-## ==============================Update 2020-06-15 by Thatt529==========================================##
 
 ###Top_3_cells_on_voice_usage###
 def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
@@ -701,7 +717,14 @@ def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
                                                               par_col="partition_date",
                                                               target_table_name="l1_geo_top3_cells_on_voice_usage")
 
-    if check_empty_dfs([usage_df]):
+    profile_df = data_non_availability_and_missing_check(df=profile_df,
+                                                         grouping="monthly",
+                                                         par_col="partition_month",
+                                                         target_table_name="L1_usage_sum_data_location_daily_data_profile_customer_profile_ma")
+
+    geo_df = get_max_date_from_master_data(geo_df, 'partition_date')
+
+    if check_empty_dfs([usage_df, profile_df]):
         return get_spark_empty_df()
 
     # ----- Transformation -----
