@@ -38,29 +38,6 @@ from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, count, when
 
 
-class TypeSetter(Transformer, DefaultParamsWritable, DefaultParamsReadable):
-    """ Transformer converting types of columns"""
-
-    def __init__(self, parameters):
-        super().__init__()
-        self.parameters = parameters
-
-    def _transform(self, dataset):
-        log = logging.getLogger(__name__)
-        log.info("Setting types")
-        columns_cats = classify_columns(dataset, self.parameters)
-        numerical_cols = list_intersection(dataset.columns, columns_cats["numerical"])
-        non_numerical_cols = list_sub(dataset.columns, numerical_cols)
-        dataset = dataset.select(
-            [col(num_col).cast("float") for num_col in numerical_cols]
-            + non_numerical_cols
-        )
-        return dataset
-
-    def transform(self, dataset, params=None):
-        return self._transform(dataset)
-
-
 class Dropper(Transformer, DefaultParamsWritable, DefaultParamsReadable):
     """ Transformer dropping constant set of columns"""
 
