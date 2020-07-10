@@ -1322,15 +1322,18 @@ treatment_rules:
 #      e906b4cd-6e31-46bb-8656-abdee8d5575f:
 #        campaign_code: ## add a campaign code for a standard champion for churn
 #        conditions:
-#          - churn_cost >= 300
-#          - churn_cost > ard_cost
+#          - churn_cost >= 300 # the opportunity cost of a specific target needs to be higher than a pre-defined value
+#          - churn_cost > ard_cost # this target (not already targeted in the churn/ard layer above) must be higher
+#                                  # in value when targeted by churn than in ard
 #        limit_per_code: 10000
 #        variant: 1
 #    treatment_name: z99_optimisation_use_case_treatment
 #    treatment_size: 10000
 #    use_case: churn
 #  ## sent to Churn
-#  ## need one code
+#
+#
+#
 #
 #  # churn/ARD < 1, ARD_cost is >300, target size = remaining 10%+ of base
 #  z99_optimisation_ard_treatment:
@@ -1339,8 +1342,9 @@ treatment_rules:
 #      e906b4cd-6e31-46bb-8656-abdee8d9875d:
 #        campaign_code: ## add a campaign code for a standard champion for ard
 #        conditions:
-#          - ard_cost >= 150
-#          - ard_cost > churn_cost
+#          - ard_cost >= 150 # the opportunity cost of a specific target needs to be higher than a pre-defined value
+#          - ard_cost > churn_cost # this target (not already targeted in the churn/ard layer above) must be higher
+#          # in value when targeted by ard than in churn
 #        limit_per_code: 10000
 #        variant: 1
 #    treatment_name: z99_optimisation_use_case_treatment
