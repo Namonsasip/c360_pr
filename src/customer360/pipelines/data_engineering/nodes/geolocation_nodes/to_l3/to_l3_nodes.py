@@ -462,3 +462,49 @@ def l3_geo_home_work_location_id_monthly(home_last_3m_weekday, home_last_3m_week
 
     df = node_from_config(home_work_final, sql)
     return df
+
+def l3_geo_home_weekday_city_citizens_monthly(home_work_location_id, master, sql):
+    # ----- Data Availability Checks -----
+    if check_empty_dfs([home_work_location_id, master]):
+        return get_spark_empty_df()
+
+    home_work_location_id = data_non_availability_and_missing_check(df=home_work_location_id,
+                                                                    grouping="monthly",
+                                                                    par_col="start_of_month",
+                                                                    target_table_name="l3_geo_home_weekday_city_citizens_monthly",
+                                                                    missing_data_check_flg='Y')
+    if check_empty_dfs([home_work_location_id]):
+        return get_spark_empty_df()
+
+    # Get last master
+    max_date = master.selectExpr('max(partition_date)').collect()[0][0]
+    master = master.where('partition_date=' + str(max_date))
+
+    # Add start_of_month in master
+    master = master.withColumn("start_of_month",
+                               F.to_date(F.date_trunc('month', F.to_date(F.col("partition_date").cast(StringType()),
+                                                                         'yyyyMMdd'))))
+    master.drop('partition_date')
+
+    # Join Home and master
+    home_location_id_master = home_work_location_id.join(master,
+                                                         [
+                                                             home_work_location_id.home_weekday_location_id == master.location_id,
+                                                             home_work_location_id.start_of_month == master.start_of_month],
+                                                         'left').select(home_work_location_id.start_of_month, 'imsi',
+                                                                        'home_weekday_location_id', 'region_name',
+                                                                        'province_name', 'district_name',
+                                                                        'sub_district_name')
+
+    home_weekday_window = Window().partitionBy(F.col('start_of_month'), F.col('region_name'),
+                                               F.col('province_name'), F.col('district_name'),
+                                               F.col('sub_district_name'))
+
+    home_location_id_master = home_location_id_master.withColumn('citizens',
+                                                                 F.approx_count_distinct(F.col("imsi")).over(
+                                                                     home_weekday_window)) \
+        .dropDuplicates(
+        ['start_of_month', 'region_name', 'province_name', 'district_name', 'sub_district_name', 'citizens']) \
+        .select('start_of_month', 'region_name', 'province_name', 'district_name', 'sub_district_name', 'citizens')
+    df = node_from_config(home_location_id_master, sql)
+    return df
