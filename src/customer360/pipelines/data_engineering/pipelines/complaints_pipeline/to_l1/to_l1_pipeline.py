@@ -84,13 +84,13 @@ def complaints_to_l1_pipeline(**kwargs):
                 ["int_l0_complaints_acc_ai_chatbot_survey_daily",
                  "int_l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_chatbot"]
             ),
-            node(
-                l1_massive_processing,
-                ["int_l0_complaints_acc_ai_chatbot_survey_daily",
-                 "params:l1_complaints_nps_after_chatbot",
-                 "int_l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_chatbot"],
-                "l1_complaints_nps_after_chatbot"
-            ),
+            # node(
+            #     l1_massive_processing,
+            #     ["int_l0_complaints_acc_ai_chatbot_survey_daily",
+            #      "params:l1_complaints_nps_after_chatbot",
+            #      "int_l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_chatbot"],
+            #     "l1_complaints_nps_after_chatbot"
+            # ),
 
             node(
                 dac_for_complaints_to_l1_pipeline,
