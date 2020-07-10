@@ -84,6 +84,7 @@ int_l1_network_data_traffic_features:
     total_4g_traffic: "sum(case when upper(gprs_type) in ('GGSN', '3GGSN') then vol_uplink_kb + vol_downlink_kb else 0 end)"
     total_traffic: "sum(vol_uplink_kb + vol_downlink_kb)"
   granularity: "mobile_no, partition_date"
+  event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
 
 l1_network_data_traffic_features:
   feature_list:

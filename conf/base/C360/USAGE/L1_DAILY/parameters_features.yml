@@ -346,7 +346,7 @@ l1_usage_incoming_call_relation_sum_daily:
                                                 AND caller_network_type IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')
                                                 THEN total_successful_call else 0 end)"
 
-    usg_outgoing_offnet_local_calls_duration: "sum(case when service_type IN ('VOICE')
+    usg_incoming_offnet_local_calls_duration: "sum(case when service_type IN ('VOICE')
                                                 AND caller_network_type NOT IN ('3GPost-paid', '3GPre-paid', 'AIS', 'InternalAWN', 'AWN', 'Fixed Line-AWN', 'AIS Local', 'AWNFIX', '3GHybrid-Post', 'AWNINT')
                                                 THEN total_durations else 0 end)"
 

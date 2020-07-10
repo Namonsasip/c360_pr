@@ -76,8 +76,7 @@ def massive_processing_with_customer(input_df: DataFrame
                 'event_partition_date',
                 "subscription_identifier",
                 "start_of_week",
-                "start_of_month",
-                "national_id_card"
+                "start_of_month"
                 ]
     join_cols = ['access_method_num', 'event_partition_date', "start_of_week", "start_of_month"]
 
