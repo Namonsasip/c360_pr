@@ -38,26 +38,6 @@ from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, count, when
 
 
-class Selector(Transformer, DefaultParamsWritable, DefaultParamsReadable):
-    """ Transformer selecting constant set of columns"""
-
-    def write(self):
-        pass
-
-    def __init__(self, cols_to_pick):
-        super().__init__()
-        self.cols_to_pick = cols_to_pick
-
-    def _transform(self, dataset):
-        to_pick = list_intersection(self.cols_to_pick, dataset.columns)
-        log = logging.getLogger(__name__)
-        log.info(f"{len(to_pick)} columns selected")
-        return dataset.select(to_pick)
-
-    def transform(self, dataset, params=None):
-        return self._transform(dataset)
-
-
 class TypeSetter(Transformer, DefaultParamsWritable, DefaultParamsReadable):
     """ Transformer converting types of columns"""
 
