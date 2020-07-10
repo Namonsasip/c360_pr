@@ -112,6 +112,10 @@ def add_inactivity(
     return (
         users_dates.join(usage, on=key_columns, how="left")
         .withColumn(new_col_name, new_col_when)
+        .withColumn(
+            "last_activity_date_is_null",
+            func.when(last_action_date_is_null, 1).otherwise(0),
+        )
         .drop(last_action_date_col)
     )
 
