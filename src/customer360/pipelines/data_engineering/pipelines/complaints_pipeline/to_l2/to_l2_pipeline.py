@@ -81,6 +81,16 @@ def complaints_to_l2_pipeline(**kwargs):
                 ],
                 "l2_complaints_nps_after_store_visit"
             ),
+            node(
+                run_for_complaints_to_l2_pipeline_from_l1_for_dtac_feature,
+                [
+                    "l1_complaints_traffic_to_dtac_web_resources_for_l2_complaints_traffic_to_dtac_web_resources",
+                    "params:l2_complaints_traffic_to_dtac_web_resources_tbl",
+                    "params:l2_complaints_traffic_to_dtac_web_resources",
+                    "params:exception_partition_list_for_l2_complaints_traffic_to_dtac_web_resources"
+                ],
+                "l2_complaints_traffic_to_dtac_web_resources"
+            ),
 
         ]
     )
