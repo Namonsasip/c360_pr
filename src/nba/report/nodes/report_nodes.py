@@ -1509,7 +1509,7 @@ def create_campaign_view_report_input(
         "top_up_value_30_day as top_up_value_30_day_after",
         "total_revenue_30_day as total_revenue_30_day_after",
         "total_number_ontop_purchase_30_day as total_number_ontop_purchase_30_day_after",
-        "CASE WHERE no_activity_n_days >= 5 THEN 1 ELSE 0 END as dormant_5_day_30d_after",
+        "CASE WHEN no_activity_n_days >= 5 THEN 1 ELSE 0 END as dormant_5_day_30d_after",
         "CASE WHEN no_activity_n_days >= 7 THEN 1 ELSE 0 END as dormant_7_day_30d_after",
         "CASE WHEN no_activity_n_days >= 14 THEN 1 ELSE 0 END as dormant_14_day_30d_after",
         "CASE WHEN no_activity_n_days >= 30 THEN 1 ELSE 0 END as dormant_30_day_30d_after",

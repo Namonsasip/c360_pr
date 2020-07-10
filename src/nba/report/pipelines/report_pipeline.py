@@ -201,7 +201,7 @@ def create_use_case_view_report_data() -> Pipeline:
                 },
                 outputs="campaign_view_report_input_tbl",
                 name="create_campaign_view_report_input",
-                tags=["create_campaign_view_report_input"],
+                tags=["create_campaign_view_report_input","create_campaign_view_report"],
             ),
             node(
                 partial(
@@ -216,7 +216,7 @@ def create_use_case_view_report_data() -> Pipeline:
                 inputs={"campaign_view_report_input": "campaign_view_report_input_tbl",},
                 outputs="aggregate_campaign_view_features_tbl",
                 name="create_aggregate_campaign_view_features",
-                tags=["create_aggregate_campaign_view_features"],
+                tags=["create_aggregate_campaign_view_features","create_campaign_view_report"],
             ),
             node(
                 partial(
