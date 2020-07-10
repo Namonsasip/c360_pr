@@ -85,7 +85,7 @@ def geo_to_l3_pipeline(**kwargs):
             ### Home and Work Feature
             node(
                 massive_processing_for_home_work,
-                ["l0_geo_cust_cell_visit_time_for_int_l4_geo_home_work_location_id",
+                ["l0_geo_cust_cell_visit_time_for_int_l3_geo_home_work_location_id",
                  "params:int_l3_geo_home_location_id_monthly",
                  "params:int_l3_geo_work_location_id_monthly"
                  ],
