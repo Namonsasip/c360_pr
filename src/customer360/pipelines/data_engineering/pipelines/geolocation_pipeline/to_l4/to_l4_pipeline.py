@@ -304,7 +304,7 @@ def geo_to_l4_pipeline(**kwargs):
             ),
             node(
                 l4_geo_number_most_frequent_top_five,
-                ["l4_the_favourite_locations_weekly"],
+                ["l2_the_favourite_locations_weekly"],
                 "l4_geo_number_most_frequent_top_five"
             ),
 
