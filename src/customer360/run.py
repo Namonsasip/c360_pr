@@ -293,7 +293,11 @@ def run_package(pipelines=None, project_context=None, tags=None):
     if pipelines is not None:
         for each_pipeline in pipelines:
             project_context.run(pipeline_name=each_pipeline, tags=tags)
-        return
+    else:
+        project_context.run(tags=tags)
+
+    return
+
     # project_context.run(pipeline_name='customer_profile_to_l3_pipeline')
     # project_context.run()
     # Replace line above with below to run on databricks cluster
@@ -329,11 +333,13 @@ class DataQualityProjectContext(ProjectContext):
         else:
             dq_path = params['metadata_path']['on_cloud_dq']
 
+        dq_consistency_path_prefix = params['dq_consistency_path_prefix']
+
         new_catalog_dict = {}
         for dataset_name in params["features_for_dq"].keys():
             new_catalog = {
                 "type": "datasets.spark_ignore_missing_path_dataset.SparkIgnoreMissingPathDataset",
-                "filepath": f"{dq_path}/{dataset_name}",
+                "filepath": f"{dq_path}/{dq_consistency_path_prefix}/{dataset_name}",
                 "file_format": "parquet",
                 "save_args": {
                     "mode": "overwrite",

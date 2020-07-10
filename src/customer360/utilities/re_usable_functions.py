@@ -69,7 +69,9 @@ def check_empty_dfs(df_input_or_list):
 
     ret_obj = False
     for df in df_list:
-        if len(df.head(1)) == 0:
+        if df is None:
+            return True
+        elif len(df.head(1)) == 0:
             return True
         else:
             pass
@@ -94,9 +96,9 @@ def add_start_of_week_and_month(input_df, date_column="day_id"):
     if len(input_df.head(1)) == 0:
         return input_df
 
-    input_df = input_df.withColumn("start_of_week", F.to_date(F.date_trunc('week', F.col(date_column))))
-    input_df = input_df.withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col(date_column))))
-    input_df = input_df.withColumn("event_partition_date", F.to_date(F.col(date_column)))
+    input_df = input_df.withColumn("start_of_week", F.to_date(F.date_trunc('week', F.col(date_column))))\
+        .withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col(date_column))))\
+        .withColumn("event_partition_date", F.to_date(F.col(date_column)))
 
     return input_df
 
@@ -615,7 +617,7 @@ def data_non_availability_and_missing_check(df, grouping, par_col, target_table_
                 #print("No missing data partitions found")
                 df = df
             else:
-                logging.info("Few missing data partitions are not found in source data for these weekly partitions: {}".format(
+                logging.info("Few data partitions are not found in source data for these weekly partitions: {}".format(
                     missing_data_partition))
                 logging.info(
                     "Getting the data before minimum missing data partitions from source dataframe for further processing")

@@ -96,7 +96,6 @@ def massive_processing(input_df, sql, output_df_catalog):
         logging.info("running for dates {0}".format(str(curr_item)))
         small_df = data_frame.filter(F.col("partition_date").isin(*[curr_item]))
         output_df = node_from_config(small_df, sql)
-        print("schema:", output_df.printSchema())
         CNTX.catalog.save(output_df_catalog, output_df)
 
     logging.info("Final date to run for {0}".format(str(first_item)))
@@ -240,7 +239,8 @@ def usage_data_prepaid_pipeline(input_df, sql, exception_partition=None) -> Data
         return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
-
+    input_df = input_df.withColumn("data_upload_amt", F.col("data_upload_amt") / F.lit(1024)) \
+        .withColumn("data_download_amt", F.col("data_download_amt") / F.lit(1024))
     return_df = massive_processing(input_df, sql, "l1_usage_ru_a_gprs_cbs_usage_daily")
     return return_df
 
@@ -466,6 +466,6 @@ def usage_favourite_number_master_pipeline(input_df, sql) -> DataFrame:
     """
     return_df = node_from_config(input_df, sql)
     win = Window.partitionBy("caller_no").orderBy(F.col("cnt_call").desc())
-    return_df = return_df.withColumn("rnk", F.row_number().over(win)).filter("rnk <= 10")\
-                         .withColumn("favourite_flag", F.lit('Y'))
+    return_df = return_df.withColumn("rnk", F.row_number().over(win)).filter("rnk <= 10") \
+        .withColumn("favourite_flag", F.lit('Y'))
     return return_df

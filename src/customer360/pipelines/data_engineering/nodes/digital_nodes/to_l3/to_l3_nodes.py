@@ -56,8 +56,8 @@ def build_digital_l3_monthly_features(cxense_user_profile: DataFrame,
     ################################# End Implementing Data availability checks ###############################
 
     cxense_user_profile = cxense_user_profile.withColumnRenamed("mobile_no", "access_method_num") \
-        .withColumn("device_type", f.when(f.col("groups") == "device-type", f.col("item"))
-                    .otherwise(f.lit(None)))
+        .withColumn("device_type", f.when(f.col("groups") == "device-type", f.col("item")).otherwise(f.lit(None))) \
+        .withColumn("device_brand", f.when(f.col("groups") == "device-brand", f.col("item")).otherwise(f.lit(None)))
 
     return_df = node_from_config(cxense_user_profile, node_config_dict)
 
