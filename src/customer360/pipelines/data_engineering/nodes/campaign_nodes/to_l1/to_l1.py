@@ -122,6 +122,8 @@ def massive_processing(post_paid, prepaid, contacts_ma,
     """
     # data_set_1, data_set_2
     unioned_df = union_dataframes_with_missing_cols(post_paid, prepaid)
+    # This is recently added by K.Wijitra request
+    unioned_df = unioned_df.filter(F.lower(F.col("contact_status")) != 'unqualified')
 
     output_df_1, output_df_2 = pre_process_df(unioned_df, contacts_ma)
 
