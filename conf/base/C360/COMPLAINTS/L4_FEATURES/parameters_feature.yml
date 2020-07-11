@@ -8,27 +8,11 @@ l4_complaints_call_to_competitor_features:
   read_from: "l2"
 
 l4_complaints_traffic_to_dtac_web_resources:
-  partition_by: ["access_method_num", "subscription_identifier"]
+  partition_by: ["subscription_identifier", "access_method_num"]
   feature_list:
-    sum:
-    [
-      "complaints_total_traffic_to_dtac_sum",
-      "complaints_total_trans_to_dtac_sum"
-    ]
-    max:
-    [
-      "complaints_total_traffic_to_dtac_sum",
-      "complaints_total_trans_to_dtac_sum"
-    ]
-    min:
-    [
-      "complaints_total_traffic_to_dtac_sum",
-      "complaints_total_trans_to_dtac_sum"
-    ]
-    avg:
-    [
-      "complaints_total_traffic_to_dtac_sum",
-      "complaints_total_trans_to_dtac_sum"
-    ]
+    avg: ["complaints_total_traffic_to_dtac_sum", "complaints_total_trans_to_dtac_sum"]
+    sum: ["complaints_total_traffic_to_dtac_sum", "complaints_total_trans_to_dtac_sum"]
+    max: ["complaints_total_traffic_to_dtac_sum", "complaints_total_trans_to_dtac_sum"]
+    min: ["complaints_total_traffic_to_dtac_sum", "complaints_total_trans_to_dtac_sum"]
   read_from: "l2"
 
