@@ -59,8 +59,9 @@ def complaints_to_l4_pipeline(**kwargs):
             ),
             node(
                 l4_rolling_window,
-                'l2_complaints_traffic_to_dtac_web_resources_for_l4_complaints_traffic_to_dtac_web_resources',
-                'params:l4_complaints_traffic_to_dtac_web_resources'
+                [
+                    'l2_complaints_traffic_to_dtac_web_resources_for_l4_complaints_traffic_to_dtac_web_resources',
+                    'params:l4_complaints_traffic_to_dtac_web_resources'],
                 'l4_complaints_traffic_to_dtac_web_resources'
             )
         ]
