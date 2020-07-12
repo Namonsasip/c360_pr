@@ -62,7 +62,7 @@ def build_digital_l3_monthly_features(cxense_user_profile: DataFrame,
     return_df = node_from_config(cxense_user_profile, node_config_dict)
 
     # This code will populate a subscriber id to the data set.
-    cust_df_cols = ["subscription_identifier", "access_method_num", "national_id_card", "start_of_month"]
+    cust_df_cols = ["subscription_identifier", "access_method_num", "start_of_month"]
     join_key = ['access_method_num', 'start_of_month']
 
     cust_df = cust_df.select(cust_df_cols)

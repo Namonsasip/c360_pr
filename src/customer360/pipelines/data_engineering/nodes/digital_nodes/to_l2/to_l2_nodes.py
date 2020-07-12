@@ -46,7 +46,7 @@ def build_digital_l2_weekly_features(cxense_site_traffic: DataFrame,
 
     ################################# End Implementing Data availability checks ###############################
 
-    cust_df_cols = ['access_method_num', 'start_of_week', 'subscription_identifier', "national_id_card"]
+    cust_df_cols = ['access_method_num', 'start_of_week', 'subscription_identifier']
     join_cols = ['access_method_num', 'start_of_week']
     cxense_site_traffic = cxense_site_traffic.withColumnRenamed("mobile_no", "access_method_num") \
         .withColumn("partition_date", f.col("partition_date").cast(StringType())) \
