@@ -189,7 +189,7 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
 
     cust_prof = cust_prof.filter(F.col("event_partition_date") <= min_value)
     cust_prof = cust_prof.select("access_method_num", "subscription_identifier", "old_subscription_identifier",
-                                 "national_id_card", "event_partition_date")
+                                 "event_partition_date")
 
     ################################# End Implementing Data availability checks ###############################
 
