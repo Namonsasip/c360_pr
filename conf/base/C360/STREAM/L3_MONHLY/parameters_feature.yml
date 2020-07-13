@@ -2,13 +2,13 @@
 int_l3_streaming_content_type_features:
     where_clause: ""
     feature_list:
-        traffic_rank: "row_number() over (partition by subscription_identifier, access_method_num, national_id_card,
+        traffic_rank: "row_number() over (partition by subscription_identifier, access_method_num, 
                               date(register_date), start_of_month order by sum(traffic_volume_sum) desc)"
-        duration_rank: "row_number() over (partition by subscription_identifier, access_method_num, national_id_card,
+        duration_rank: "row_number() over (partition by subscription_identifier, access_method_num, 
                                date(register_date), start_of_month order by sum(duration_sum) desc)"
         duration_sum: "sum(duration_sum)"
         traffic_volume_sum: "sum(traffic_volume_sum)"
-    granularity: "subscription_identifier, access_method_num, national_id_card, date(register_date),
+    granularity: "subscription_identifier, access_method_num,  date(register_date),
      start_of_month, content_group"
 
 l3_streaming_fav_content_group_by_volume:
@@ -17,7 +17,6 @@ l3_streaming_fav_content_group_by_volume:
         subscription_identifier: subscription_identifier
         access_method_num: access_method_num
         register_date: date(register_date)
-        national_id_card: national_id_card
         fav_content_group_by_volume: content_group
         traffic_volume_mb_sum: traffic_volume_sum
         start_of_month: start_of_month
@@ -30,7 +29,6 @@ l3_streaming_fav_content_group_by_duration:
         subscription_identifier: subscription_identifier
         access_method_num: access_method_num
         register_date: date(register_date)
-        national_id_card: national_id_card
         fav_content_group_by_duration: content_group
         duration_sum: duration_sum
         start_of_month: start_of_month
@@ -43,13 +41,13 @@ l3_streaming_fav_content_group_by_duration:
 int_l3_streaming_tv_channel_features:
     where_clause: ""
     feature_list:
-        tv_channel_rank_by_volume: "row_number() over (partition by subscription_identifier, access_method_num, national_id_card,
+        tv_channel_rank_by_volume: "row_number() over (partition by subscription_identifier, access_method_num, 
                                     date(register_date), start_of_month order by sum(traffic_volume_sum) desc)"
         traffic_volume_sum: "sum(traffic_volume_sum)"
         tv_channel_rank_by_duration: "row_number() over (partition by subscription_identifier, access_method_num,
-         national_id_card, date(register_date), start_of_month order by sum(duration_sum) desc)"
+          date(register_date), start_of_month order by sum(duration_sum) desc)"
         duration_sum: "sum(duration_sum)"
-    granularity: "subscription_identifier, access_method_num, national_id_card, date(register_date), start_of_month,
+    granularity: "subscription_identifier, access_method_num,  date(register_date), start_of_month,
      title"
 
 l3_streaming_fav_tv_channel_by_volume:
@@ -58,7 +56,6 @@ l3_streaming_fav_tv_channel_by_volume:
         subscription_identifier: subscription_identifier
         access_method_num: access_method_num
         register_date: date(register_date)
-        national_id_card: national_id_card
         traffic_volume_mb_sum: traffic_volume_sum
         start_of_month: start_of_month
     granularity: ""
@@ -70,7 +67,6 @@ l3_streaming_fav_tv_channel_by_duration:
         subscription_identifier: subscription_identifier
         access_method_num: access_method_num
         register_date: date(register_date)
-        national_id_card: national_id_card
         fav_tv_channel_by_duration: title
         duration_sum: duration_sum
         start_of_month: start_of_month
@@ -83,10 +79,10 @@ int_l3_streaming_tv_show_features:
     where_clause: "where lower(content_group) = 'episode'"
     feature_list:
         num_of_episode_watched_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-         national_id_card, date(register_date), start_of_month order by count(distinct title) desc)"
+          date(register_date), start_of_month order by count(distinct title) desc)"
 
     # we group directly from source and join with customer profile below
-    granularity: "subscription_identifier, access_method_num, national_id_card, date(register_date), start_of_month
+    granularity: "subscription_identifier, access_method_num,  date(register_date), start_of_month
     , series_title"
 
 l3_streaming_fav_tv_show_by_episode_watched:
@@ -95,7 +91,6 @@ l3_streaming_fav_tv_show_by_episode_watched:
         subscription_identifier: subscription_identifier
         access_method_num: access_method_num
         register_date: date(register_date)
-        national_id_card: national_id_card
         fav_tv_show_by_episode_watched: "series_title"
         start_of_month: "start_of_month"
     granularity: ""
@@ -106,13 +101,13 @@ l3_streaming_fav_tv_show_by_episode_watched:
 int_l3_streaming_service_feature:
     feature_list:
         sum_download_kb_traffic_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-        national_id_card, date(register_date), start_of_month order by sum(sum_download_kb_traffic) desc)"
+         date(register_date), start_of_month order by sum(sum_download_kb_traffic) desc)"
         sum_download_kb_traffic: "sum(sum_download_kb_traffic)"
 
         visit_count: "sum(visit_count)"
-        visit_count_rank: "row_number() over (partition by subscription_identifier, access_method_num, national_id_card,
+        visit_count_rank: "row_number() over (partition by subscription_identifier, access_method_num, 
          date(register_date), start_of_month order by sum(visit_count) desc)"
-    granularity: "subscription_identifier, access_method_num, national_id_card, date(register_date), start_of_month,
+    granularity: "subscription_identifier, access_method_num,  date(register_date), start_of_month,
      application"
 
 
@@ -122,7 +117,6 @@ l3_streaming_fav_service_by_download_feature:
         subscription_identifier: subscription_identifier
         access_method_num: access_method_num
         register_date: date(register_date)
-        national_id_card: national_id_card
         sum_download_kb_traffic: "sum_download_kb_traffic"
         start_of_month: "start_of_month"
     granularity: ""
@@ -133,7 +127,6 @@ l3_streaming_fav_video_service_by_download_feature:
         subscription_identifier: subscription_identifier
         access_method_num: access_method_num
         register_date: date(register_date)
-        national_id_card: national_id_card
         sum_download_kb_traffic: "sum_download_kb_traffic"
         start_of_month: "start_of_month"
     granularity: ""
@@ -145,7 +138,6 @@ l3_streaming_fav_music_service_by_download_feature:
         subscription_identifier: subscription_identifier
         access_method_num: access_method_num
         register_date: date(register_date)
-        national_id_card: national_id_card
         sum_download_kb_traffic: "sum_download_kb_traffic"
         start_of_month: "start_of_month"
     granularity: ""
@@ -157,7 +149,6 @@ l3_streaming_fav_esport_service_by_download_feature:
         subscription_identifier: subscription_identifier
         access_method_num: access_method_num
         register_date: date(register_date)
-        national_id_card: national_id_card
         sum_download_kb_traffic: "sum_download_kb_traffic"
         start_of_month: "start_of_month"
     granularity: ""
@@ -170,7 +161,6 @@ l3_streaming_2nd_fav_service_by_download_feature:
         subscription_identifier: subscription_identifier
         access_method_num: access_method_num
         register_date: date(register_date)
-        national_id_card: national_id_card
         sum_download_kb_traffic: "sum_download_kb_traffic"
         start_of_month: "start_of_month"
     granularity: ""
@@ -181,7 +171,6 @@ l3_streaming_2nd_fav_video_service_by_download_feature:
         subscription_identifier: subscription_identifier
         access_method_num: access_method_num
         register_date: date(register_date)
-        national_id_card: national_id_card
         sum_download_kb_traffic: "sum_download_kb_traffic"
         start_of_month: "start_of_month"
     granularity: ""
@@ -193,7 +182,6 @@ l3_streaming_2nd_fav_esport_service_by_download_feature:
         subscription_identifier: subscription_identifier
         access_method_num: access_method_num
         register_date: date(register_date)
-        national_id_card: national_id_card
         sum_download_kb_traffic: "sum_download_kb_traffic"
         start_of_month: "start_of_month"
     granularity: ""
@@ -206,7 +194,6 @@ l3_streaming_2nd_fav_music_service_by_download_feature:
         subscription_identifier: subscription_identifier
         access_method_num: access_method_num
         register_date: date(register_date)
-        national_id_card: national_id_card
         sum_download_kb_traffic: "sum_download_kb_traffic"
         start_of_month: "start_of_month"
     granularity: ""
@@ -219,7 +206,6 @@ l3_streaming_fav_service_by_visit_count_feature:
         subscription_identifier: subscription_identifier
         access_method_num: access_method_num
         register_date: date(register_date)
-        national_id_card: national_id_card
         visit_count: "visit_count"
         start_of_month: "start_of_month"
     granularity: ""
@@ -230,7 +216,6 @@ l3_streaming_fav_video_service_by_visit_count_feature:
         subscription_identifier: subscription_identifier
         access_method_num: access_method_num
         register_date: date(register_date)
-        national_id_card: national_id_card
         visit_count: "visit_count"
         start_of_month: "start_of_month"
     granularity: ""
@@ -242,7 +227,6 @@ l3_streaming_fav_music_service_by_visit_count_feature:
         subscription_identifier: subscription_identifier
         access_method_num: access_method_num
         register_date: date(register_date)
-        national_id_card: national_id_card
         visit_count: "visit_count"
         start_of_month: "start_of_month"
     granularity: ""
@@ -254,7 +238,6 @@ l3_streaming_fav_esport_service_by_visit_count_feature:
         subscription_identifier: subscription_identifier
         access_method_num: access_method_num
         register_date: date(register_date)
-        national_id_card: national_id_card
         visit_count: "visit_count"
         start_of_month: "start_of_month"
     granularity: ""
@@ -296,7 +279,7 @@ l3_streaming_visit_count_and_download_traffic_feature:
               "unique_number_of_day_visit_gmail",
               "unique_number_of_day_visit_amazon"
         ]
-    granularity: "subscription_identifier, access_method_num, national_id_card, date(register_date), start_of_month"
+    granularity: "subscription_identifier, access_method_num,  date(register_date), start_of_month"
 
 
 # number of visit and volume of download traffic
@@ -329,14 +312,13 @@ int_l3_streaming_sum_per_day:
               "download_kb_traffic_bigo_esport",
               "download_kb_traffic_mixer_esport",
               "download_kb_traffic_steamtv_esport"]
-    granularity: "subscription_identifier, access_method_num, national_id_card, date(register_date), start_of_month,
+    granularity: "subscription_identifier, access_method_num,  date(register_date), start_of_month,
      day_of_week"
 
 int_l3_streaming_ranked_of_day_per_month:
   feature_list:
     subscription_identifier: subscription_identifier
     access_method_num: access_method_num
-    national_id_card: national_id_card
     register_date: register_date
     day_of_week: day_of_week
     start_of_month: start_of_month
@@ -355,31 +337,31 @@ int_l3_streaming_ranked_of_day_per_month:
     download_kb_traffic_steamtv_esport_sum: "download_kb_traffic_steamtv_esport_sum"
 
     youtube_video_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-     national_id_card, date(register_date), start_of_month order by download_kb_traffic_youtube_video_sum desc)"
+      date(register_date), start_of_month order by download_kb_traffic_youtube_video_sum desc)"
     facebook_video_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-     national_id_card, date(register_date), start_of_month order by download_kb_traffic_facebook_video_sum desc)"
+      date(register_date), start_of_month order by download_kb_traffic_facebook_video_sum desc)"
     linetv_video_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-     national_id_card, date(register_date), start_of_month order by download_kb_traffic_linetv_video_sum desc)"
+      date(register_date), start_of_month order by download_kb_traffic_linetv_video_sum desc)"
     ais_play_video_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-     national_id_card, date(register_date), start_of_month order by download_kb_traffic_ais_play_video_sum desc)"
+      date(register_date), start_of_month order by download_kb_traffic_ais_play_video_sum desc)"
     netflix_video_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-     national_id_card, date(register_date), start_of_month order by download_kb_traffic_netflix_video_sum desc)"
+      date(register_date), start_of_month order by download_kb_traffic_netflix_video_sum desc)"
     hooq_video_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-     national_id_card, date(register_date), start_of_month order by download_kb_traffic_hooq_video_sum desc)"
+      date(register_date), start_of_month order by download_kb_traffic_hooq_video_sum desc)"
     iflix_video_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-     national_id_card, date(register_date), start_of_month order by download_kb_traffic_iflix_video_sum desc)"
+      date(register_date), start_of_month order by download_kb_traffic_iflix_video_sum desc)"
     spotify_music_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-     national_id_card, date(register_date), start_of_month order by download_kb_traffic_spotify_music_sum desc)"
+      date(register_date), start_of_month order by download_kb_traffic_spotify_music_sum desc)"
     joox_music_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-     national_id_card, date(register_date), start_of_month order by download_kb_traffic_joox_music_sum desc)"
+      date(register_date), start_of_month order by download_kb_traffic_joox_music_sum desc)"
     twitch_esport_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-     national_id_card, date(register_date), start_of_month order by download_kb_traffic_twitch_esport_sum desc)"
+      date(register_date), start_of_month order by download_kb_traffic_twitch_esport_sum desc)"
     bigo_esport_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-     national_id_card, date(register_date), start_of_month order by download_kb_traffic_bigo_esport_sum desc)"
+      date(register_date), start_of_month order by download_kb_traffic_bigo_esport_sum desc)"
     mixer_esport_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-     national_id_card, date(register_date), start_of_month order by download_kb_traffic_mixer_esport_sum desc)"
+      date(register_date), start_of_month order by download_kb_traffic_mixer_esport_sum desc)"
     steamtv_esport_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-     national_id_card, date(register_date), start_of_month order by download_kb_traffic_steamtv_esport_sum desc)"
+      date(register_date), start_of_month order by download_kb_traffic_steamtv_esport_sum desc)"
 
   granularity: ""
 
@@ -450,4 +432,4 @@ l3_streaming_session_duration_feature:
         avg_session_duration_per_day_mixer_esport: "sum(sum_session_duration_mixer_esport)/dayofmonth(last_day(start_of_month))"
         avg_session_duration_per_day_steamtv_esport: "sum(sum_session_duration_steamtv_esport)/dayofmonth(last_day(start_of_month))"
 
-    granularity: "subscription_identifier, access_method_num, national_id_card, date(register_date), start_of_month"
+    granularity: "subscription_identifier, access_method_num,  date(register_date), start_of_month"

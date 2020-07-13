@@ -2,15 +2,15 @@
 int_l1_streaming_content_type_features:
     where_clause: ""
     feature_list:
-        traffic_rank: "row_number() over (partition by subscription_identifier, access_method_num, national_id_card,
+        traffic_rank: "row_number() over (partition by subscription_identifier, access_method_num,
                       date(register_date), event_partition_date, start_of_week, start_of_month order by sum(volume_mb) desc)"
 
-        duration_rank: "row_number() over (partition by subscription_identifier, access_method_num, national_id_card,
+        duration_rank: "row_number() over (partition by subscription_identifier, access_method_num,
                          date(register_date), event_partition_date, start_of_week, start_of_month order by sum(duration) desc)"
         traffic_volume_sum: "sum(volume_mb)"
         duration_sum: "sum(duration)"
 
-    granularity: "subscription_identifier, access_method_num, national_id_card, date(register_date),
+    granularity: "subscription_identifier, access_method_num, date(register_date),
                  event_partition_date, start_of_week, start_of_month, content_group"
     output_catalog: "int_l1_streaming_content_type_features"
 
@@ -23,7 +23,6 @@ l1_streaming_fav_content_group_by_volume:
         start_of_week: start_of_week
         start_of_month: start_of_month
         register_date: register_date
-        national_id_card: national_id_card
         fav_content_group_by_volume: content_group
         traffic_volume_mb_sum: traffic_volume_sum
     granularity: ""
@@ -38,7 +37,6 @@ l1_streaming_fav_content_group_by_duration:
         start_of_week: start_of_week
         start_of_month: start_of_month
         register_date: register_date
-        national_id_card: national_id_card
         fav_content_group_by_duration: content_group
         duration_sum: duration_sum
     granularity: ""
@@ -49,14 +47,14 @@ int_l1_streaming_tv_channel_features:
     where_clause: "where lower(content_group) = 'channel'"
     feature_list:
         tv_channel_rank_by_volume: "row_number() over (partition by subscription_identifier, access_method_num,
-                                    national_id_card, date(register_date), event_partition_date, start_of_week,
+                                     date(register_date), event_partition_date, start_of_week,
                                     start_of_month order by sum(volume_mb) desc)"
         traffic_volume_sum: "sum(volume_mb)"
         tv_channel_rank_by_duration: "row_number() over (partition by subscription_identifier, access_method_num,
-                                      national_id_card, date(register_date), event_partition_date, start_of_week,
+                                      date(register_date), event_partition_date, start_of_week,
                                       start_of_month order by sum(duration) desc)"
         duration_sum: "sum(duration)"
-    granularity: "subscription_identifier, access_method_num, national_id_card, date(register_date),
+    granularity: "subscription_identifier, access_method_num, date(register_date),
                                   event_partition_date,start_of_week, start_of_month, title"
     output_catalog: "int_l1_streaming_tv_channel_features"
 
@@ -69,7 +67,6 @@ l1_streaming_fav_tv_channel_by_volume:
         start_of_week: start_of_week
         start_of_month: start_of_month
         register_date: register_date
-        national_id_card: national_id_card
         fav_tv_channel_by_volume: title
         traffic_volume_mb_sum: traffic_volume_sum
     granularity: ""
@@ -84,7 +81,6 @@ l1_streaming_fav_tv_channel_by_duration:
         start_of_week: start_of_week
         start_of_month: start_of_month
         register_date: register_date
-        national_id_card: national_id_card
         fav_tv_channel_by_duration: title
         duration_sum: duration_sum
     granularity: ""
@@ -96,10 +92,10 @@ int_l1_streaming_tv_show_features:
     where_clause: "where lower(content_group) = 'episode'"
     feature_list:
         num_of_episode_watched_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-                                      national_id_card, date(register_date), event_partition_date, start_of_week,
+                                        date(register_date), event_partition_date, start_of_week,
                                       start_of_month order by count(distinct title) desc)"
 
-    granularity: "subscription_identifier, access_method_num, national_id_card, date(register_date),
+    granularity: "subscription_identifier, access_method_num, date(register_date),
                  event_partition_date, start_of_week, start_of_month, series_title"
 
 l1_streaming_fav_tv_show_by_episode_watched:
@@ -111,7 +107,6 @@ l1_streaming_fav_tv_show_by_episode_watched:
         start_of_week: start_of_week
         start_of_month: start_of_month
         register_date: register_date
-        national_id_card: national_id_card
         fav_tv_show_by_episode_watched: "series_title"
     granularity: ""
     output_catalog: "l1_streaming_fav_tv_show_by_episode_watched"
@@ -122,11 +117,11 @@ int_l1_streaming_video_service_feature:
     where_clause: "where lower(application_group) = 'videoplayers_editors'"
     feature_list:
         sum_download_kb_traffic_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-                                       national_id_card, date(register_date), event_partition_date, start_of_week,
+                                        date(register_date), event_partition_date, start_of_week,
                                        start_of_month order by sum(download_kb) desc)"
         sum_download_kb_traffic: "sum(download_kb)"
         visit_count: "1" # counting active days
-    granularity: "subscription_identifier, access_method_num, national_id_card, date(register_date),
+    granularity: "subscription_identifier, access_method_num, date(register_date),
                   event_partition_date, start_of_week, start_of_month, application"
     output_catalog: "int_l1_streaming_video_service_feature"
 
@@ -139,7 +134,6 @@ l1_streaming_fav_video_service_by_download_feature:
         start_of_week: start_of_week
         start_of_month: start_of_month
         register_date: register_date
-        national_id_card: national_id_card
         fav_video_service_by_download_kb_traffic: "application"
         sum_download_kb_traffic: "sum_download_kb_traffic"
     granularity: ""
@@ -154,7 +148,6 @@ l1_streaming_2nd_fav_video_service_by_download_feature:
         start_of_week: start_of_week
         start_of_month: start_of_month
         register_date: register_date
-        national_id_card: national_id_card
         second_fav_video_service_by_download_kb_traffic: "application"
         sum_download_kb_traffic: "sum_download_kb_traffic"
     granularity: ""
@@ -165,11 +158,11 @@ int_l1_streaming_music_service_feature:
     where_clause: "where lower(application_group) = 'music_audio'"
     feature_list:
         sum_download_kb_traffic_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-                                       national_id_card, date(register_date), event_partition_date, start_of_week,
+                                        date(register_date), event_partition_date, start_of_week,
                                        start_of_month order by sum(download_kb) desc)"
         sum_download_kb_traffic: "sum(download_kb)"
         visit_count: "1" # counting active days
-    granularity: "subscription_identifier, access_method_num, national_id_card, date(register_date),
+    granularity: "subscription_identifier, access_method_num, date(register_date),
                  event_partition_date, start_of_week, start_of_month, application"
     output_catalog: "int_l1_streaming_music_service_feature"
 
@@ -183,7 +176,6 @@ l1_streaming_fav_music_service_by_download_feature:
         start_of_week: start_of_week
         start_of_month: start_of_month
         register_date: register_date
-        national_id_card: national_id_card
         fav_music_service_by_download_kb_traffic: "application"
         sum_download_kb_traffic: "sum_download_kb_traffic"
     granularity: ""
@@ -198,7 +190,6 @@ l1_streaming_2nd_fav_music_service_by_download_feature:
         start_of_week: start_of_week
         start_of_month: start_of_month
         register_date: register_date
-        national_id_card: national_id_card
         second_fav_music_service_by_download_kb_traffic: "application"
         sum_download_kb_traffic: "sum_download_kb_traffic"
     granularity: ""
@@ -209,11 +200,11 @@ int_l1_streaming_esport_service_feature:
     where_clause: "where lower(application_group) = 'game'"
     feature_list:
         sum_download_kb_traffic_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-                                       national_id_card, date(register_date), event_partition_date, start_of_week,
+                                       date(register_date), event_partition_date, start_of_week,
                                        start_of_month order by sum(download_kb) desc)"
         sum_download_kb_traffic: "sum(download_kb)"
         visit_count: "1" # counting active days
-    granularity: "subscription_identifier, access_method_num, national_id_card, date(register_date),
+    granularity: "subscription_identifier, access_method_num,  date(register_date),
                  event_partition_date, start_of_week, start_of_month, application"
     output_catalog: "int_l1_streaming_esport_service_feature"
 
@@ -226,7 +217,6 @@ l1_streaming_fav_esport_service_by_download_feature:
         start_of_week: start_of_week
         start_of_month: start_of_month
         register_date: register_date
-        national_id_card: national_id_card
         fav_esport_service_by_download_kb_traffic: "application"
         sum_download_kb_traffic: "sum_download_kb_traffic"
     granularity: ""
@@ -242,7 +232,6 @@ l1_streaming_2nd_fav_esport_service_by_download_feature:
         start_of_week: start_of_week
         start_of_month: start_of_month
         register_date: register_date
-        national_id_card: national_id_card
         second_fav_esport_service_by_download_kb_traffic: "application"
         sum_download_kb_traffic: "sum_download_kb_traffic"
     granularity: ""
@@ -291,7 +280,7 @@ l1_streaming_visit_count_and_download_traffic_feature:
 
         # 1 for Monday, 7 for Sunday
         day_of_week: "date_format(event_partition_date, 'u')"
-    granularity: "subscription_identifier, access_method_num, national_id_card, date(register_date),
+    granularity: "subscription_identifier, access_method_num, date(register_date),
                  event_partition_date, start_of_week, start_of_month"
     output_catalog: "l1_streaming_visit_count_and_download_traffic_feature"
 
