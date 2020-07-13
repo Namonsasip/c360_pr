@@ -30,9 +30,11 @@ from typing import Any, Dict
 
 from cvm.src.utils.incremental_manipulation import filter_latest_date, filter_users
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
-from cvm.src.utils.utils import get_today, pick_one_per_subscriber
+from cvm.src.utils.utils import get_today
 from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as func
+
+from src.cvm.src.utils.utils import pick_one_per_subscriber
 
 
 def create_users_from_cgtg(
