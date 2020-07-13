@@ -57,7 +57,7 @@ def loyalty_number_of_services_for_each_category(customer_prof: DataFrame
     ################################# End Implementing Data availability checks ###############################
 
     join_key = ["access_method_num", "event_partition_date", "start_of_week", "start_of_month"]
-    customer_cols = ["national_id_card", "access_method_num", "subscription_identifier", "event_partition_date",
+    customer_cols = ["access_method_num", "subscription_identifier", "event_partition_date",
                      "start_of_week", "start_of_month"]
     customer_prof = customer_prof.select(customer_cols)
 
@@ -115,7 +115,7 @@ def loyalty_number_of_rewards_redeemed_for_each_category(customer_prof: DataFram
         return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
     join_key = ["access_method_num", "event_partition_date", "start_of_week", "start_of_month"]
-    customer_cols = ["national_id_card", "access_method_num", "subscription_identifier", "event_partition_date",
+    customer_cols = ["access_method_num", "subscription_identifier", "event_partition_date",
                      "start_of_week", "start_of_month"]
     customer_prof = customer_prof.select(customer_cols)
 
@@ -174,7 +174,7 @@ def loyalty_number_of_points_spend_for_each_category(customer_prof: DataFrame,
         return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
     join_key = ["access_method_num", "event_partition_date", "start_of_week", "start_of_month"]
-    customer_cols = ["national_id_card", "access_method_num", "subscription_identifier", "event_partition_date",
+    customer_cols = ["access_method_num", "subscription_identifier", "event_partition_date",
                      "start_of_week", "start_of_month"]
     customer_prof = customer_prof.select(customer_cols)
 

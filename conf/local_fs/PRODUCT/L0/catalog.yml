@@ -1,5 +1,5 @@
 # PREPAID MAIN MASTER - PRODUCT INFORMATION
-l0_product_pru_m_package_master_group_for_daily:
+l0_product_pru_m_package_master_group_for_l1_prepaid_postpaid_processing:
   type: kedro.contrib.io.pyspark.SparkDataSet
   filepath: data/L0/PRODUCT/product_pru_m_package_master_group/
   file_format: "parquet"
@@ -14,8 +14,23 @@ l0_product_pru_m_package_master_group_for_l2_product_package_promotion_group_tar
   filepath: data/L0/PRODUCT/product_pru_m_package_master_group/
   file_format: "parquet"
 
+l0_product_pru_m_package_master_group_for_l1_product_active_customer_promotion_features_daily:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L0/PRODUCT/product_pru_m_package_master_group/
+  file_format: "parquet"
+
 # PREPAID ONTOP MASTER - PRODUCT INFORMATION
 l0_product_pru_m_ontop_master_for_weekly:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L0/PRODUCT/product_pru_m_ontop_master/
+  file_format: "parquet"
+
+l0_product_pru_m_ontop_master_for_l1_prepaid_postpaid_processing:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L0/PRODUCT/product_pru_m_ontop_master/
+  file_format: "parquet"
+
+l0_product_pru_m_ontop_master_for_l1_product_active_customer_promotion_features_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
   filepath: data/L0/PRODUCT/product_pru_m_ontop_master/
   file_format: "parquet"

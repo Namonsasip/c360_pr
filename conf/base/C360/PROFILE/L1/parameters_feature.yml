@@ -8,7 +8,7 @@ l1_customer_profile_union_daily_feature:
     zipcode: "zipcode"
     prefer_language: "prefer_language"
     corp_account_size: "null"
-    corporate_flag: "case when (upper(cust_type) = 'B') then 'Y' else 'N' end"
+    corporate_flag: "case when (upper(cust_type) = 'B') or (upper(cust_type) = 'G') then 'Y' else 'N' end"
     prefer_language_eng: "case when lower(prefer_language) like 'eng%' then 'Y' else 'N' end"
     prefer_language_thai: "case when lower(prefer_language) like 'tha%' then 'Y' else 'N' end"
     prefer_language_other: >
@@ -49,7 +49,7 @@ l1_customer_profile_union_daily_feature:
     zipcode: "zipcode"
     prefer_language: "prefer_language"
     corp_account_size: "corp_account_size"
-    corporate_flag: "case when (upper(cust_type) = 'B') or (upper(cust_type) = 'R' and upper(rsme_flag) = 'Y') then 'Y' else 'N' end"
+    corporate_flag: "case when (upper(cust_type) = 'B') or (upper(cust_type) = 'G') or (upper(cust_type) = 'R' and upper(rsme_flag) = 'Y') then 'Y' else 'N' end"
     prefer_language_eng: "case when lower(prefer_language) like 'eng%' then 'Y' else 'N' end"
     prefer_language_thai: "case when lower(prefer_language) like 'tha%' then 'Y' else 'N' end"
     prefer_language_other: >
@@ -87,7 +87,7 @@ l1_customer_profile_union_daily_feature:
     zipcode: "zipcode"
     prefer_language: "prefer_language"
     corp_account_size: "corp_account_size"
-    corporate_flag: "case when (upper(cust_type) = 'B') or (upper(cust_type) = 'R' and upper(rsme_flag) = 'Y') then 'Y' else 'N' end"
+    corporate_flag: "case when (upper(cust_type) = 'B') or (upper(cust_type) = 'G') or (upper(cust_type) = 'R' and upper(rsme_flag) = 'Y') then 'Y' else 'N' end"
     prefer_language_eng: "case when lower(prefer_language) like 'eng%' then 'Y' else 'N' end"
     prefer_language_thai: "case when lower(prefer_language) like 'tha%' then 'Y' else 'N' end"
     prefer_language_other: >

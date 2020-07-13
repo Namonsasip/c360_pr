@@ -363,10 +363,10 @@ l1_streaming_session_duration_feature:
         avg_duration_per_session_mixer_esport: "avg(case when lower(application) in ('mixerbox') then duration else 0 end)"
         avg_duration_per_session_steamtv_esport: "avg(case when lower(application) in ('valve_steam') then duration else 0 end)"
 
-    granularity: "mobile_no, partition_date"
+    granularity: "msisdn, partition_date"
     event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
     join_column_with_cust_profile:
-        access_method_num: mobile_no
+        access_method_num: msisdn
         event_partition_date: event_partition_date # after aggregation
     partition_num_per_job: 10
     output_catalog: "l1_streaming_session_duration_feature"
