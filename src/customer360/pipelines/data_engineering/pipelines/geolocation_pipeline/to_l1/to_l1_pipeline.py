@@ -50,18 +50,6 @@ def geo_to_l1_pipeline(**kwargs):
                  "l1_geo_total_distance_km_daily"
             ),
 
-            ##Traffic_fav_location###
-            node(
-                l1_data_traffic_home_work_top1_top2,
-                ["l0_geo_mst_cell_masterplan_current_for_l1_use_non_homework_features",
-                 "l1_geo_home_work_location_id_monthly_for_l1_data_traffic_home_work_top1_top2",
-                 "l0_profile_customer_profile_ma_for_l1_use_non_homework_features",
-                 "l0_usage_sum_data_location_daily_for_l1_use_non_homework_features",
-                 "l1_geo_top_visit_exclude_homework_for_l1_data_traffic_home_work_top1_top2"
-                 ],
-                "l1_geo_use_traffic_home_work"
-            ),
-
             ###Number_of_base_station###
             node(
                 l1_geo_number_of_bs_used,

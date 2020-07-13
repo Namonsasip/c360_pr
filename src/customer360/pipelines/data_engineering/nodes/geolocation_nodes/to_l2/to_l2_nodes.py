@@ -151,22 +151,22 @@ def l2_geo_total_distance_km_weekly(df: DataFrame, sql: dict):
     return df
 
 ###Traffic_fav_location###
-def   l2_geo_use_traffic_home_work_weekly(df, sql):
-    # ----- Data Availability Checks -----
-    if check_empty_dfs([df]):
-        return get_spark_empty_df()
-
-    df = data_non_availability_and_missing_check(df=df, grouping="weekly",
-                                                 par_col="event_partition_date",
-                                                 target_table_name="l2_geo_use_traffic_home_work_weekly",
-                                                 missing_data_check_flg='Y')
-    if check_empty_dfs([df]):
-        return get_spark_empty_df()
-
-
-    l2_df = df.withColumn("start_of_week", F.to_date(F.date_trunc('week', "event_partition_date"))).drop('event_partition_date')
-    l2_df_2 = node_from_config(l2_df, sql)
-    return l2_df_2
+# def   l2_geo_use_traffic_home_work_weekly(df, sql):
+#     # ----- Data Availability Checks -----
+#     if check_empty_dfs([df]):
+#         return get_spark_empty_df()
+#
+#     df = data_non_availability_and_missing_check(df=df, grouping="weekly",
+#                                                  par_col="event_partition_date",
+#                                                  target_table_name="l2_geo_use_traffic_home_work_weekly",
+#                                                  missing_data_check_flg='Y')
+#     if check_empty_dfs([df]):
+#         return get_spark_empty_df()
+#
+#
+#     l2_df = df.withColumn("start_of_week", F.to_date(F.date_trunc('week', "event_partition_date"))).drop('event_partition_date')
+#     l2_df_2 = node_from_config(l2_df, sql)
+#     return l2_df_2
 
 ###Number_of_base_station###
 def l2_geo_data_count_location_weekly(df,sql):

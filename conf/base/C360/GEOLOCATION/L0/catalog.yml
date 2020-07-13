@@ -155,16 +155,16 @@ l0_geo_cust_cell_visit_time_simple_data_daily:
     lookback: '0'
 
 #----------------------- geo_mst_cell_masterplan_current_use_non_homework_features -------------------------
-l0_geo_mst_cell_masterplan_current_for_l1_use_non_homework_features:
+l0_geo_mst_cell_masterplan_current_for_l3_use_non_homework_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/GEO/geo_mst_cell_masterplan/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l1_use_non_homework_features'
+    lookup_table_name: 'l3_use_non_homework_features'
     read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
     lookback: '0'
 
 #----------------------- geo_home_work_data_use_non_homework_features -------------------------
@@ -181,29 +181,29 @@ l0_geo_home_work_data_for_l1_use_non_homework_features:
     lookback: '0'
 
 #----------------------- profile_customer_profile_ma_use_non_homework_features -------------------------
-l0_profile_customer_profile_ma_for_l1_use_non_homework_features:
+l0_profile_customer_profile_ma_for_l3_use_non_homework_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/profile_customer_profile_ma/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l1_use_non_homework_features'
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
+    lookup_table_name: 'l3_use_non_homework_features'
+    read_layer: 'l0_monthly'
+    target_layer: 'l3_monthly'
     lookback: '0'
 
 #----------------------- usage_sum_data_location_use_non_homework_features -------------------------
-l0_usage_sum_data_location_daily_for_l1_use_non_homework_features:
+l0_usage_sum_data_location_daily_for_l3_use_non_homework_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/USAGE/usage_sum_data_location_daily/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l1_use_non_homework_features'
+    lookup_table_name: 'l3_use_non_homework_features'
     read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
     lookback: '0'
 
 #----------------------- geo_cust_cell_visit_time_for_geo_number_of_bs_used -------------------------

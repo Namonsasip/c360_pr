@@ -36,7 +36,7 @@ def geo_to_l4_pipeline(**kwargs):
             node(
                 l4_geo_top_visit_exclude_homework,
                 ["l3_geo_time_spent_by_location_monthly_for_l4_geo_top_visit_exclude_homework",
-                 "l4_geo_home_work_location_id"
+                 "l3_geo_home_work_location_id_monthly_for_l4_geo_top_visit_exclude_homework"
                  ],
                 "l4_geo_top_visit_exclude_homework"
             ),
@@ -77,19 +77,19 @@ def geo_to_l4_pipeline(**kwargs):
                 "l4_geo_total_distance_km"
             ),
 
-            ###Traffic_fav_location###
-            node(
-                l4_rolling_window,
-                ["l2_geo_use_traffic_home_work_weekly",
-                 "params:l4_geo_use_traffic_home_work_weekly"
-                 ],
-                "int_l4_geo_use_traffic_home_work_weekly"
-            ),
-            node(
-                l4_Share_traffic,
-                "int_l4_geo_use_traffic_home_work_weekly",
-                "l4_geo_use_traffic_home_work_weekly"
-            ),
+            # ###Traffic_fav_location###
+            # node(
+            #     l4_rolling_window,
+            #     ["l2_geo_use_traffic_home_work_weekly",
+            #      "params:l4_geo_use_traffic_home_work_weekly"
+            #      ],
+            #     "int_l4_geo_use_traffic_home_work_weekly"
+            # ),
+            # node(
+            #     l4_Share_traffic,
+            #     "int_l4_geo_use_traffic_home_work_weekly",
+            #     "l4_geo_use_traffic_home_work_weekly"
+            # ),
 
             ###Number_of_base_station###
             node(
