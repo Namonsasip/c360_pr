@@ -38,6 +38,18 @@ from customer360.utilities.re_usable_functions import l3_massive_processing
 from customer360.pipelines.data_engineering.nodes.stream_nodes.to_l3.to_l3_nodes import *
 
 
+def streaming_series_title_master(**kwargs):
+    return Pipeline(
+        [
+            node(series_title_master,
+                 ["l0_streaming_ru_a_onair_vimmi_usage_daily_for_series_title_master"],
+                 ["l3_streaming_series_title_master"]
+                 ),
+
+        ]
+    )
+
+
 def streaming_to_l3_pipeline(**kwargs):
     return Pipeline(
         [

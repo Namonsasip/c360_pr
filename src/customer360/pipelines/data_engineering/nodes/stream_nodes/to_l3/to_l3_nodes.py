@@ -14,6 +14,17 @@ conf = os.getenv("CONF", None)
 # Defaulted date in DAC is  exception_partitions=["2020-04-01"] as we are reading from April Starting
 
 
+def series_title_master(vimmi_usage: DataFrame) -> DataFrame:
+    """
+
+    :param vimmi_usage:
+    :return:
+    """
+    master = vimmi_usage.select("series_title", "title").groupBy("series_title").agg(F.countDistinct("title").alias("total_episode_count"))
+
+    return master
+
+
 def generate_l3_fav_streaming_day(input_df, app_list):
     if check_empty_dfs([input_df]):
         return input_df
