@@ -131,19 +131,19 @@ l4_streaming_fav_service_by_visit_count_feature:
 l4_streaming_visit_count_and_download_traffic_feature:
   partition_by: ["access_method_num", "national_id_card", "subscription_identifier", "register_date"]
   feature_list:
-    sum: ["visit_count_youtube_video_sum",
-          "visit_count_facebook_video_sum",
-          "visit_count_linetv_video_sum",
-          "visit_count_ais_play_video_sum",
-          "visit_count_netflix_video_sum",
-          "visit_count_hooq_video_sum",
-          "visit_count_iflix_video_sum",
-          "visit_count_spotify_music_sum",
-          "visit_count_joox_music_sum",
-          "visit_count_twitch_esport_sum",
-          "visit_count_bigo_esport_sum",
-          "visit_count_mixer_esport_sum",
-          "visit_count_steamtv_esport_sum",
+    sum: ["unique_number_of_day_visit_youtube_video_sum",
+          "unique_number_of_day_visit_facebook_video_sum",
+          "unique_number_of_day_visit_linetv_video_sum",
+          "unique_number_of_day_visit_ais_play_video_sum",
+          "unique_number_of_day_visit_netflix_video_sum",
+          "unique_number_of_day_visit_hooq_video_sum",
+          "unique_number_of_day_visit_iflix_video_sum",
+          "unique_number_of_day_visit_spotify_music_sum",
+          "unique_number_of_day_visit_joox_music_sum",
+          "unique_number_of_day_visit_twitch_esport_sum",
+          "unique_number_of_day_visit_bigo_esport_sum",
+          "unique_number_of_day_visit_mixer_esport_sum",
+          "unique_number_of_day_visit_steamtv_esport_sum",
           "download_kb_traffic_youtube_video_sum",
           "download_kb_traffic_facebook_video_sum",
           "download_kb_traffic_linetv_video_sum",
@@ -158,10 +158,10 @@ l4_streaming_visit_count_and_download_traffic_feature:
           "download_kb_traffic_mixer_esport_sum",
           "download_kb_traffic_steamtv_esport_sum",
 
-          "visit_count_line_sum",
-          "visit_count_twitter_sum",
-          "visit_count_gmail_sum",
-          "visit_count_amazon_sum"
+          "unique_number_of_day_visit_line_sum",
+          "unique_number_of_day_visit_twitter_sum",
+          "unique_number_of_day_visit_gmail_sum",
+          "unique_number_of_day_visit_amazon_sum"
     ]
   read_from: "l2"
 
