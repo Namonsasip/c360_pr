@@ -79,6 +79,12 @@ def sale_product_customer_master_on_top_features(sale_df: DataFrame,
 
     sale_product_join_cols = ['start_of_week', 'offering_code']
 
+
+    sale_df = (sale_df.withColumn("subscription_identifier",
+                                   f.expr("case when lower(charge_type) = 'pre-paid' then "
+                                          "concat(access_method_num, '-', date_format(register_date, 'yyyyMMdd')) "
+                                          "else crm_sub_id end")))
+
     sale_df = sale_df.select(sale_cols)
     sale_df = sale_df.withColumn("start_of_week", f.to_date(f.date_trunc("week", f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd'))))
     sale_df = sale_df.drop("partition_date")
