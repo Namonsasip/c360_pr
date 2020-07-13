@@ -41,7 +41,6 @@ def geo_to_l3_pipeline(**kwargs):
                 "l3_geo_total_distance_km_monthly"
             ),
 
-            # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
             ###Traffic_fav_location###
             node(
                 l3_data_traffic_home_work_top1_top2,
@@ -51,17 +50,15 @@ def geo_to_l3_pipeline(**kwargs):
                  "l0_usage_sum_data_location_daily_for_l1_use_non_homework_features",
                  "l3_geo_time_spent_by_location_monthly_for_l3_data_traffic_home_work_top1_top2"
                  ],
-                "int_geo_use_traffic_home_work"
+                "l3_geo_use_traffic_home_work"
             ),
-
             node(
                 l3_geo_use_Share_traffic_monthly,
-                ["int_geo_use_traffic_home_work",
+                ["l3_geo_use_traffic_home_work",
                  "params:l3_geo_use_traffic_home_work_weekly"
                  ],
                 "l3_geo_use_traffic_home_work_monthly"
             ),
-            # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
             ###feature_sum_voice_location###
             node(

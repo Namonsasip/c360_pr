@@ -118,29 +118,17 @@ l4_geo_cust_subseqently_distance:
     target_layer: 'l4_weekly'
 
 #-----------------Traffic_fav_location------------------------------------------
-#l4_geo_use_traffic_home_work_weekly:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/GEO/l4_features/geo_use_traffic_most_location_weekly/
-#  file_format: parquet
-#  metadata_table_path: 'metadata_path'
-#  save_args:
-#    increment_flag: 'yes'
-#    mode: "overwrite"
-#    partitionBy: "start_of_week"
-#    read_layer: 'l2_weekly'
-#    target_layer: 'l4_weekly'
-
-int_l4_geo_use_traffic_home_work_weekly:
+l4_geo_use_traffic_home_work_most:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l4_features/geo_use_traffic_most_location_weekly_temp/
+  filepath: base_path/GEO/l4_features/geo_use_traffic_most_location_most/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
-    partitionBy: "start_of_week"
-    read_layer: 'l2_weekly'
-    target_layer: 'l4_weekly'
+    partitionBy: "start_of_month"
+    read_layer: 'l3_monthly'
+    target_layer: 'l4_monthly'
 
 #----------------------Number_of_base_station-------------------------------------
 l4_geo_number_of_base_station:

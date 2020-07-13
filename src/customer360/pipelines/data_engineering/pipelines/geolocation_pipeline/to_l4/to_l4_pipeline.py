@@ -77,19 +77,15 @@ def geo_to_l4_pipeline(**kwargs):
                 "l4_geo_total_distance_km"
             ),
 
-            # ###Traffic_fav_location###
-            # node(
-            #     l4_rolling_window,
-            #     ["l2_geo_use_traffic_home_work_weekly",
-            #      "params:l4_geo_use_traffic_home_work_weekly"
-            #      ],
-            #     "int_l4_geo_use_traffic_home_work_weekly"
-            # ),
-            # node(
-            #     l4_Share_traffic,
-            #     "int_l4_geo_use_traffic_home_work_weekly",
-            #     "l4_geo_use_traffic_home_work_weekly"
-            # ),
+            ###Traffic_fav_location###
+            node(
+                l4_Share_traffic,
+                ["l3_geo_use_traffic_home_work_for_l4_geo_use_traffic_home_work_most",
+                "params:int_l4_geo_use_traffic_home_work_weekly",
+                "params:l4_geo_use_traffic_home_work_weekly"
+                 ],
+                "l4_geo_use_traffic_home_work_most"
+            ),
 
             ###Number_of_base_station###
             node(

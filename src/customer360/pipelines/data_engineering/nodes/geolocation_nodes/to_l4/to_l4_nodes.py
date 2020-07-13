@@ -49,7 +49,11 @@ def l4_geo_top_visit_exclude_homework(sum_duration, homework):
 
 
 ###Traffic_fav_location###
-def l4_Share_traffic(df):
+def l4_Share_traffic(df, ini_work_week,work_week):
+
+    df = node_from_config(df, ini_work_week)
+    df = l4_rolling_window(df, work_week)
+
     df.createOrReplaceTempView('GEO_TEMP_00')
     spark = get_spark_session()
     sql_query = """

@@ -42,15 +42,6 @@ def geo_to_l2_pipeline(**kwargs):
                 "l2_geo_total_distance_km_weekly"
             ),
 
-            # ###Traffic_fav_location###
-            # node(
-            #     l2_geo_use_traffic_home_work_weekly,
-            #     ["l1_geo_use_traffic_home_work_for_l2_geo_use_traffic_home_work_weekly",
-            #      "params:l2_geo_use_traffic_home_work_weekly"
-            #      ],
-            #     "l2_geo_use_traffic_home_work_weekly"
-            # ),
-
             ###Number_of_base_station###
             node(
                 l2_geo_data_count_location_weekly,

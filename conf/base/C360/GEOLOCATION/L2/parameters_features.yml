@@ -3,7 +3,6 @@ l2_geo_time_spent_by_location_weekly:
     sum_duration: "sum(sum_duration)"
   granularity: "imsi,start_of_week,location_id"
 
-
 l2_area_from_ais_store_weekly:
   where_clause: ""
   feature_list:
@@ -27,8 +26,6 @@ l2_geo_cust_subseqently_distance_weekly:
     weekend_distance_km: "weekend_distance_km"
   granularity: "imsi,start_of_week"
 
-##==============================Update 2020-06-12 by Thatt529==========================================##
-
 ###total_distance_km###
 l2_geo_total_distance_km_weekly:
   where_clause: ""
@@ -49,20 +46,6 @@ l2_geo_total_distance_km_weekly:
 #    min: "sum_distance_km"
 #  granularity: "imsi, start_of_week"
 
-###Traffic_fav_location###
-l2_geo_use_traffic_home_work_weekly:
-  where_clause: ""
-  feature_list:
-    Home_traffic_KB: "sum(Home_traffic_KB)"
-    Work_traffic_KB: "sum(Work_traffic_KB)"
-    Top1_location_traffic_KB: "sum(Top1_location_traffic_KB)"
-    Top2_location_traffic_KB: "sum(Top2_location_traffic_KB)"
-    share_Home_traffic_KB: "(sum(Home_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_location_traffic_KB)+sum(Top2_location_traffic_KB))"
-    share_Work_traffic_KB: "(sum(Work_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_location_traffic_KB)+sum(Top2_location_traffic_KB))"
-    share_Top1_location_traffic_KB: "(sum(Top1_location_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_location_traffic_KB)+sum(Top2_location_traffic_KB))"
-    share_Top2_location_traffic_KB: "(sum(Top2_location_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_location_traffic_KB)+sum(Top2_location_traffic_KB))"
-  granularity: "imsi,start_of_week"
-
 ###Number_of_base_station###
 l2_geo_number_of_base_station_weekly:
   where_clause: ""
@@ -82,18 +65,12 @@ l2_geo_call_location_home_work_weekly:
     call_count_location_top_2nd: "sum(call_count_location_top_2nd)"
   granularity: "imsi,start_of_week"
 
-##==============================Update 2020-06-15 by Thatt529==========================================##
-
 ###Top_3_cells_on_voice_usage###
 l2_geo_top3_cells_on_voice_usage:
   where_clause: ""
   feature_list:
     total_call: "sum(total_call)"
   granularity: "imsi,latitude,longitude,rnk,start_of_week"
-
-
-
-##==============================Update 2020-06-17 by Thatt529==========================================##
 
 ###distance_top_call###
 l2_geo_distance_top_call:

@@ -26,8 +26,6 @@ l1_geo_cust_subseqently_distance_daily:
     distance_km: "sum(distance_km)"
   granularity: "imsi, event_partition_date"
 
-##==============================Update 2020-06-12 by Thatt529==========================================##
-
 ###total_distance_km###
 l1_geo_total_distance_km_daily:
   where_clause: ""

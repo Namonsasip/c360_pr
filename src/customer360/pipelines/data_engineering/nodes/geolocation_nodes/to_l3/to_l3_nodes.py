@@ -854,6 +854,7 @@ def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
         FROM  GEO_TEMP_04
     """)
 
+    data_traffic_location = data_traffic_location.withColumn("start_of_week", F.to_date(F.date_trunc('week', "event_partition_date"))).drop('event_partition_date')
     data_traffic_location = data_traffic_location.withColumn("start_of_month", F.to_date(F.date_trunc('month', "event_partition_date"))).drop( 'event_partition_date')
 
     return data_traffic_location
