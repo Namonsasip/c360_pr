@@ -21,7 +21,7 @@ l1_geo_time_spent_by_location_daily_for_l2_geo_time_spent_by_location_weekly:
     lookup_table_name: 'l2_geo_time_spent_by_location_weekly'
     read_layer: 'l1_daily'
     target_layer: 'l2_weekly'
-    lookback: '30'
+    lookback: '0'
 
 l1_geo_time_spent_by_location_daily_for_l3_geo_time_spent_by_location_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -33,7 +33,7 @@ l1_geo_time_spent_by_location_daily_for_l3_geo_time_spent_by_location_monthly:
     lookup_table_name: 'l3_geo_time_spent_by_location_monthly'
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
-    lookback: '90'
+    lookback: '0'
 
 #----------------------- l1_geo_area_from_ais_store_daily -------------------------
 l1_geo_area_from_ais_store_daily:
@@ -58,7 +58,7 @@ l1_geo_area_from_ais_store_daily_for_l2_geo_area_from_ais_store_weekly:
     lookup_table_name: 'l2_area_from_ais_store_weekly'
     read_layer: 'l1_daily'
     target_layer: 'l2_weekly'
-    lookback: '30'
+    lookback: '0'
 
 l1_geo_area_from_ais_store_daily_for_l3_geo_area_from_ais_store_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -70,7 +70,7 @@ l1_geo_area_from_ais_store_daily_for_l3_geo_area_from_ais_store_monthly:
     lookup_table_name: 'l3_area_from_ais_store_monthly'
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
-    lookback: '90'
+    lookback: '0'
 
 #----------------------- l1_geo_area_from_competitor_store -------------------------
 l1_geo_area_from_competitor_store_daily:
@@ -95,7 +95,7 @@ l1_geo_area_from_competitor_store_daily_for_l2_geo_area_from_competitor_store_we
     lookup_table_name: 'l2_area_from_competitor_store_weekly'
     read_layer: 'l1_daily'
     target_layer: 'l2_weekly'
-    lookback: '30'
+    lookback: '0'
 
 l1_geo_area_from_competitor_store_daily_for_l3_geo_area_from_competitor_store_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -107,7 +107,7 @@ l1_geo_area_from_competitor_store_daily_for_l3_geo_area_from_competitor_store_mo
     lookup_table_name: 'l3_area_from_competitor_store_monthly'
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
-    lookback: '90'
+    lookback: '0'
 
 #----------------------- l1_geo_total_distance_km -------------------------
 l1_geo_total_distance_km_daily:
@@ -132,7 +132,7 @@ l1_geo_total_distance_km_daily_for_l2_geo_total_distance_km_weekly:
     lookup_table_name: 'l2_geo_total_distance_km_weekly'
     read_layer: 'l1_daily'
     target_layer: 'l2_weekly'
-    lookback: '30'
+    lookback: '0'
 
 l1_geo_total_distance_km_daily_for_l3_geo_total_distance_km_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -144,7 +144,7 @@ l1_geo_total_distance_km_daily_for_l3_geo_total_distance_km_monthly:
     lookup_table_name: 'l3_geo_total_distance_km_monthly'
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
-    lookback: '90'
+    lookback: '0'
 
 #----------------------- l1_geo_use_traffic_home_work -------------------------
 l1_geo_use_traffic_home_work:
@@ -169,7 +169,7 @@ l1_geo_use_traffic_home_work_for_l2_geo_use_traffic_home_work_weekly:
     lookup_table_name: 'l2_geo_use_traffic_home_work_weekly'
     read_layer: 'l1_daily'
     target_layer: 'l2_weekly'
-    lookback: '30'
+    lookback: '0'
 
 l1_geo_use_traffic_home_work_weekly_for_l3_geo_use_traffic_home_work_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -181,7 +181,7 @@ l1_geo_use_traffic_home_work_weekly_for_l3_geo_use_traffic_home_work_monthly:
     lookup_table_name: 'l3_geo_use_traffic_home_work_monthly'
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
-    lookback: '90'
+    lookback: '0'
 
 #----------------------- l1_geo_number_of_bs_used -------------------------
 l1_geo_number_of_bs_used:
@@ -249,7 +249,7 @@ l1_geo_call_location_home_work_daily_for_l2_geo_call_location_home_work_weekly:
     lookup_table_name: 'l2_geo_call_location_home_work_weekly'
     read_layer: 'l1_daily'
     target_layer: 'l2_weekly'
-    lookback: '30'
+    lookback: '0'
 
 l1_geo_call_location_home_work_daily_for_l3_geo_call_location_home_work_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -261,7 +261,7 @@ l1_geo_call_location_home_work_daily_for_l3_geo_call_location_home_work_monthly:
     lookup_table_name: 'l3_geo_call_location_home_work_monthly'
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
-    lookback: '90'
+    lookback: '0'
 
 #----------------------- l1_number_of_unique_cell -------------------------
 l1_number_of_unique_cell_daily:
@@ -310,7 +310,7 @@ l1_location_of_visit_ais_store_daily_for_l4_location_of_last_visit_ais_store:
     lookup_table_name: 'l4_location_of_last_visit_ais_store'
     read_layer: 'l1_daily'
     target_layer: 'l4_weekly'
-    lookback: '90'
+    lookback: '12'
 
 #----------------------- l1_geo_top3_cells_on_voice_usage -------------------------
 l1_geo_top3_cells_on_voice_usage:
@@ -323,7 +323,7 @@ l1_geo_top3_cells_on_voice_usage:
     lookup_table_name: 'l2_geo_top3_cells_on_voice_usage'
     read_layer: 'l1_daily'
     target_layer: 'l2_weekly'
-    lookback: '30'
+    lookback: '0'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -342,7 +342,7 @@ l1_geo_distance_top_call:
     lookup_table_name: 'l2_geo_distance_top_call'
     read_layer: 'l1_daily'
     target_layer: 'l2_weekly'
-    lookback: '30'
+    lookback: '0'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -361,4 +361,4 @@ l1_the_favourite_locations_daily:
     lookup_table_name: 'l1_the_favourite_locations_daily'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
-    lookback: '90'
+    lookback: '0'
