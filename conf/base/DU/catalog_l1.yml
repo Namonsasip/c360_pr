@@ -1,0 +1,7 @@
+l1_data_ontop_purchase_daily:
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: "parquet"
+    filepath: /mnt/customer360-blob-data/C360/DU/l1_data_ontop_purchase_daily/
+    save_args:
+        mode: "overwrite"
+        partitionBy: ["partition_date"]
