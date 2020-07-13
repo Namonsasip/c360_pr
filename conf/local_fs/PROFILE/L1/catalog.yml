@@ -416,6 +416,18 @@ l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_chatbot:
     target_layer: 'l1_daily'
     lookback: '0'
 
+l1_customer_profile_union_daily_feature_for_l1_complaints_traffic_to_dtac_web_resources:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: data/L1_DAILY/PROFILE/l1_customer_profile_union_daily_feature/
+  file_format: "parquet"
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_complaints_traffic_to_dtac_web_resources'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
 l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_store_visit:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: data/L1_DAILY/PROFILE/l1_customer_profile_union_daily_feature/
