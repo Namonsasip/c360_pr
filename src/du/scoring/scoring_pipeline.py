@@ -5,21 +5,23 @@ from du.scoring.scoring_nodes import l5_scoring_profile, l5_du_scored
 from nba.pcm_scoring.pcm_scoring_nodes import join_c360_features_latest_date
 
 from du.models.models_nodes import create_daily_ontop_pack
+from functools import partial
 
 
 def create_package_preference_pipeline() -> Pipeline:
     return Pipeline(
         [
             node(
-                create_daily_ontop_pack,
+                partial(create_daily_ontop_pack, is_data=True),
                 inputs={
                     "l0_product_pru_m_ontop_master_for_weekly_full_load": "l0_product_pru_m_ontop_master_for_weekly_full_load",
                     "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
-                    "l0_prepaid_ontop_product_customer_promotion_for_daily_full_load": "l0_prepaid_ontop_product_customer_promotion_for_daily_full_load",
+                    "ontop_pack": "dm42_promotion_prepaid",
+                    "usage_feature": "dm15_mobile_usage_aggr_prepaid",
                 },
-                outputs="l1_ontop_purchase_daily",
-                name="l1_ontop_purchase_daily",
-                tags=["l1_ontop_purchase_daily"],
+                outputs="l1_data_ontop_purchase_daily",
+                name="l1_data_ontop_purchase_daily",
+                tags=["l1_data_ontop_purchase_daily"],
             ),
         ]
     )

@@ -1168,7 +1168,9 @@ def score_du_models(
 def create_daily_ontop_pack(
     l0_product_pru_m_ontop_master_for_weekly_full_load: pyspark.sql.DataFrame,
     l1_customer_profile_union_daily_feature_full_load: pyspark.sql.DataFrame,
-    l0_prepaid_ontop_product_customer_promotion_for_daily_full_load: pyspark.sql.DataFrame,
+    ontop_pack: pyspark.sql.DataFrame,
+    usage_feature: pyspark.sql.DataFrame,
+    is_data,
 ) -> pyspark.sql.DataFrame:
     import datetime
 
@@ -1181,36 +1183,23 @@ def create_daily_ontop_pack(
     #     "l1_customer_profile_union_daily_feature_full_load"
     # )
     #
-    # l0_prepaid_ontop_product_customer_promotion_for_daily_full_load = catalog.load(
-    #     "l0_prepaid_ontop_product_customer_promotion_for_daily_full_load"
-    # )
-    selected_l0_ontop = l0_prepaid_ontop_product_customer_promotion_for_daily_full_load.where(
-        "partition_date >= " + start_date.strftime("%Y%m%d")
+    # ontop_pack = catalog.load("dm42_promotion_prepaid")
+    selected_l0_ontop = ontop_pack.where(
+        "ddate >= date('" + start_date.strftime("%Y-%m-%d") + "')"
     )
-    ontop_pack_daily = (
-        selected_l0_ontop.selectExpr(
-            "access_method_num", "offering_id as promotion_code", "partition_date",
-        )
-        .withColumn(
-            "partition_date_str",
-            selected_l0_ontop["partition_date"].cast(StringType()),
-        )
-        .drop("partition_date")
-    )
-    ontop_pack_daily_dt = (
-        ontop_pack_daily.select(
-            "*",
-            F.to_timestamp(ontop_pack_daily.partition_date_str, "yyyyMMdd").alias(
-                "partition_date_timestamp"
-            ),
-        )
-        .selectExpr("*", "date(partition_date_timestamp) as partition_date")
-        .drop("partition_date_timestamp")
+    ontop_pack_daily = selected_l0_ontop.selectExpr(
+        "analytic_id",
+        "crm_subscription_id as old_subscription_identifier",
+        "register_date",
+        "total_net_tariff",
+        "promotion_code",
+        "number_of_transaction",
+        "date_id as partition_date",
     )
     customer_profile_daily = l1_customer_profile_union_daily_feature_full_load.selectExpr(
         "old_subscription_identifier",
         "access_method_num",
-        "register_date",
+        "date(register_date) as register_date",
         "date(event_partition_date) as partition_date",
         "date(start_of_month) as start_of_month",
         "start_of_week",
@@ -1221,7 +1210,7 @@ def create_daily_ontop_pack(
 
     master_ontop_weekly = (
         l0_product_pru_m_ontop_master_for_weekly_full_load.where(
-            "charge_type = 'Prepaid' AND partition_date = 20200610"
+            "charge_type = 'Prepaid'"
         )
         .withColumn(
             "partition_date_str",
@@ -1238,7 +1227,6 @@ def create_daily_ontop_pack(
             "mm_data_type",
             "mm_data_speed",
             "package_name_report",
-            "price_inc_vat",
             "data_quota",
             "duration",
             F.to_timestamp("partition_date_str", "yyyyMMdd").alias(
@@ -1256,7 +1244,6 @@ def create_daily_ontop_pack(
         "mm_data_type",
         "mm_data_speed",
         "package_name_report",
-        "price_inc_vat",
         """CASE WHEN data_quota LIKE '%GB%' THEN split(data_quota, 'GB')[0] * 1024
                 WHEN data_quota LIKE '%MB%' THEN split(data_quota, 'MB')[0]
                 WHEN data_quota LIKE '%Hr%' THEN 999999999
@@ -1287,20 +1274,120 @@ def create_daily_ontop_pack(
       WHEN MM_Data_Speed = '7.2Mbps'             THEN 7372
             ELSE 0
             END as data_speed""",
-        "partition_date as start_of_week",
+        "DATE_ADD(partition_date,-2) as start_of_week",
     )
 
-    ontop_pack_daily_agg = ontop_pack_daily_dt.groupby(
-        "access_method_num", "partition_date", "promotion_code", "partition_date_str"
-    ).agg(F.count("*").alias("number_of_transaction"))
-
-    daily_ontop_purchase = ontop_pack_daily_agg.join(
-        customer_profile_daily, ["access_method_num", "partition_date"], "inner"
+    daily_ontop_purchase = ontop_pack_daily.join(
+        customer_profile_daily,
+        ["old_subscription_identifier", "register_date", "partition_date"],
+        "inner",
     ).join(master_ontop_weekly_fixed, ["promotion_code", "start_of_week"], "inner")
+    master_ontop_weekly_fixed.groupby("start_of_week").agg(
+        F.count("*").alias("CNT")
+    ).sort(F.desc("CNT")).show()
 
-    return daily_ontop_purchase
+    one_day_ontop = daily_ontop_purchase.where("duration <= 1")
+    multiple_day_ontop = (
+        daily_ontop_purchase.where("duration > 1")
+        .selectExpr(
+            "*",
+            "total_net_tariff/duration as distributed_daily_spending",
+            "partition_date AS ontop_start_date",
+            "date_add(date(partition_date), (COALESCE(duration,2)-1)) AS ontop_end_date",
+        )
+        .drop("partition_date")
+    )
+    usage_feature = usage_feature.selectExpr(
+        "analytic_id",
+        "day_id as partition_date",
+        "data_sum",
+        "voice_offnet_out_dursum + voice_onnet_out_post_dursum + voice_onnet_out_pre_dursum as voice_call_out_duration_sum",
+    )
+    one_day_ontop_usage = one_day_ontop.join(
+        usage_feature, ["analytic_id", "partition_date"], "inner"
+    )
+    cond = [
+        multiple_day_ontop.analytic_id == usage_feature.analytic_id,
+        multiple_day_ontop.ontop_end_date >= usage_feature.partition_date,
+        multiple_day_ontop.ontop_end_date <= usage_feature.partition_date,
+    ]
+    multiple_day_ontop_usage = multiple_day_ontop.join(usage_feature, cond, "inner")
+    one_day_ontop_columns = [
+        "analytic_id",
+        "partition_date",
+        "promotion_code",
+        "start_of_week",
+        "old_subscription_identifier",
+        "register_date",
+        "total_net_tariff",
+        "number_of_transaction",
+        "access_method_num",
+        "start_of_month",
+        "package_type",
+        "package_group",
+        "mm_types",
+        "mm_data_type",
+        "mm_data_speed",
+        "package_name_report",
+        "data_quota_mb",
+        "duration",
+        "data_speed",
+        "data_sum",
+        "voice_call_out_duration_sum",
+        "partition_date as ontop_start_date",
+        "partition_date as ontop_end_date",
+    ]
+    multiple_day_ontop_columns = [
+        "prod_delta.dm42_promotion_prepaid.analytic_id",
+        "partition_date",
+        "promotion_code",
+        "start_of_week",
+        "old_subscription_identifier",
+        "register_date",
+        "total_net_tariff",
+        "number_of_transaction",
+        "access_method_num",
+        "start_of_month",
+        "package_type",
+        "package_group",
+        "mm_types",
+        "mm_data_type",
+        "mm_data_speed",
+        "package_name_report",
+        "data_quota_mb",
+        "duration",
+        "data_speed",
+        "data_sum",
+        "voice_call_out_duration_sum",
+        "ontop_start_date",
+        "ontop_end_date",
+    ]
+    return (
+        one_day_ontop_usage.selectExpr(one_day_ontop_columns)
+        .union(multiple_day_ontop_usage.selectExpr(multiple_day_ontop_columns))
+        .withColumn("partition_date_str", F.date_format("partition_date", "yyyyMMdd"))
+    )
 
 
-def create_ontop_package_preference() -> pyspark.sql.DataFrame:
-
+def create_ontop_package_preference(
+    l1_data_ontop_purchase_daily: pyspark.sql.DataFrame,
+    l1_customer_profile_union_daily_feature_full_load: pyspark.sql.DataFrame,
+) -> pyspark.sql.DataFrame:
+    l1_data_ontop_purchase_daily = catalog.load("l1_data_ontop_purchase_daily")
+    l1_customer_profile_union_daily_feature_full_load = catalog.load(
+        "l1_customer_profile_union_daily_feature_full_load"
+    )
+    l1_customer_profile_union_daily_feature_full_load = (
+        l1_customer_profile_union_daily_feature_full_load.where("event_partition_date > date('2020-06-01')")
+    )
+    customer_list = l1_customer_profile_union_daily_feature_full_load.groupby(
+        "old_subscription_identifier", "register_date"
+    ).agg(F.count("*").alias("CNT")).selectExpr("old_subscription_identifier","date(register_date) as register_date")
+    date_list = (
+        l1_data_ontop_purchase_daily.groupby("start_of_week")
+        .agg(F.count("*").alias("CNT"))
+        .select("start_of_week")
+    )
+    customer_date_combine = customer_list.crossJoin(date_list)
+    customer_date_combine.join()
     return df
