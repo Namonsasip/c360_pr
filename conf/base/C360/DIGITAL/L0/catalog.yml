@@ -18,7 +18,7 @@ l0_digital_cxenxse_site_traffic:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l2_digital_cxenxse_site_traffic_weekly'
-    read_layer: 'l0_weekly'
-    target_layer: 'l2_weekly'
+    lookup_table_name: 'l1_digital_cxenxse_site_traffic_daily'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
     lookback: '0'

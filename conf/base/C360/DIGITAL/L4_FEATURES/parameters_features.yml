@@ -6,7 +6,7 @@ l4_digital_cxenzxse_user_profile_monthly_features:
     max: ['digital_number_of_device_brands', 'digital_is_device_brands_apple', 'digital_is_device_brands_samsung',
     'digital_is_device_brands_huwaei', 'digital_is_device_brands_oppo', 'digital_number_of_distinct_device_type',
     'digital_is_device_mobile', 'digital_is_device_tablet', 'digital_is_device_desktop', 'digital_is_ais_mpay_used',
-    'digital_is_my_ais_app_used', 'digital_is_serenade', 'digital_is_device_brands_ais', 'digital_is_device_brands_dtac',
+    'digital_is_my_ais_app_used', 'digital_is_device_brands_ais', 'digital_is_device_brands_dtac',
     'digital_is_device_brands_true', "digital_number_of_distinct_device_brands", "digital_number_of_device_type"
     ]
     sum: []
@@ -19,7 +19,7 @@ l4_digital_cxenxse_site_traffic_weekly_features:
   partition_by: ["subscription_identifier", "access_method_num"]
   feature_list:
     min: []
-    max: []
+    max: ["digital_is_explorer", "digital_is_serenade"]
     sum: ["digital_time_spent_browser_chrome", "digital_time_spent_browser_safari", "digital_time_spent_browser_line",
           "digital_time_spent_browser_opera","digital_time_spent_referrersocialnetwork_facebook",
           "digital_time_spent_referrerhostclass_other","digital_time_spent_referrerhostclass_direct",
