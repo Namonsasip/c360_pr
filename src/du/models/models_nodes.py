@@ -1216,6 +1216,27 @@ def drop_partition(start_date, end_date, table, partition_key):
         print("start date must be higher than the end date")
 
 
+def save_folded_package(start_date, end_date, table, partition_key):
+    spark = get_spark_session()
+    spark.sql("DROP TABLE IF EXISTS " + table + "_tmp_fold")
+    # Save Normalized On-top package record that has been activated in the previous period
+    # But only took effect on the update period
+    sdf = spark.sql(
+        "SELECT * FROM "
+        + table
+        + " WHERE ontop_start_date < date('"
+        + start_date.strftime("%Y-%m-%d")
+        + "') AND partition_date >= date('"
+        + start_date.strftime("%Y-%m-%d")
+        + "') AND partition_date <= date('"
+        + end_date.strftime("%Y-%m-%d")
+        + "')"
+    )
+    sdf.write.format("parquet").mode("append").partitionBy(partition_key).saveAsTable(
+        table + "_tmp_fold"
+    )
+
+
 def create_daily_ontop_pack(
     l0_product_pru_m_ontop_master_for_weekly_full_load: pyspark.sql.DataFrame,
     l1_customer_profile_union_daily_feature_full_load: pyspark.sql.DataFrame,
@@ -1243,14 +1264,18 @@ def create_daily_ontop_pack(
     """
     import datetime
 
+    spark = get_spark_session()
+
     # TODO Managing partition deletion for automatic process
     if start_date is None:
         start_date = datetime.datetime.now() + datetime.timedelta(days=-40)
         end_date = datetime.datetime.now() + datetime.timedelta(days=-10)
 
     if drop_replace_partition:
-        table = "prod_dataupsell."+hive_table
+
+        table = "prod_dataupsell." + hive_table
         partition_key = "partition_date"
+        save_folded_package(start_date, end_date, table, partition_key)
         drop_partition(start_date, end_date, table, partition_key)
 
     # Select period of data to work on update
@@ -1397,10 +1422,11 @@ def create_daily_ontop_pack(
         "analytic_id",
         "day_id as partition_date",
         "data_sum",
-        "voice_offnet_out_dursum + voice_onnet_out_post_dursum + voice_onnet_out_pre_dursum as voice_call_out_duration_sum",
+        f"voice_offnet_out_dursum + voice_onnet_out_post_dursum + voice_onnet_out_pre_dursum"
+        + f" as voice_call_out_duration_sum",
     )
     one_day_ontop_usage = one_day_ontop.join(
-        usage_feature, ["analytic_id", "partition_date"], "inner"
+        usage_feature, ["analytic_id", "partition_date"], "left"
     )
 
     # On-top package with multiple days of validity need to be treat differently, by joining usage within
@@ -1412,7 +1438,7 @@ def create_daily_ontop_pack(
         multiple_day_ontop.ontop_end_date >= usage_feature.partition_date,
         multiple_day_ontop.ontop_end_date <= usage_feature.partition_date,
     ]
-    multiple_day_ontop_usage = multiple_day_ontop.join(usage_feature, cond, "inner")
+    multiple_day_ontop_usage = multiple_day_ontop.join(usage_feature, cond, "left")
     one_day_ontop_columns = [
         "analytic_id",
         "partition_date",
@@ -1468,10 +1494,40 @@ def create_daily_ontop_pack(
         .union(multiple_day_ontop_usage.selectExpr(multiple_day_ontop_columns))
         .withColumn("partition_date_str", F.date_format("partition_date", "yyyyMMdd"))
     )
+    if drop_replace_partition:
+        tmp_fold = spark.sql(
+            "SELECT * FROM prod_dataupsell." + hive_table + "_tmp_fold"
+        )
+        fold_column = [
+            "analytic_id",
+            "partition_date",
+            "promotion_code",
+            "start_of_week",
+            "old_subscription_identifier",
+            "register_date",
+            "total_net_tariff",
+            "number_of_transaction",
+            "access_method_num",
+            "start_of_month",
+            "package_type",
+            "package_group",
+            "mm_types",
+            "mm_data_type",
+            "mm_data_speed",
+            "package_name_report",
+            "data_quota_mb",
+            "duration",
+            "data_speed",
+            "data_sum",
+            "voice_call_out_duration_sum",
+            "ontop_start_date",
+            "ontop_end_date",
+        ]
+        output = output.union(tmp_fold.selectExpr(fold_column))
     # Return union between one day on-top and multiple day on-top in daily aggregated
     output.write.format("parquet").mode("append").partitionBy(
         "partition_date"
-    ).saveAsTable("prod_dataupsell."+hive_table)
+    ).saveAsTable("prod_dataupsell." + hive_table)
     return ontop_pack.limit(10)
 
 

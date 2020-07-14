@@ -16,66 +16,9 @@ def create_package_preference_pipeline() -> Pipeline:
                 partial(
                     create_daily_ontop_pack,
                     hive_table="l1_data_ontop_purchase_daily_hive",
-                    start_date=datetime.datetime.strptime("2020-03-01", "%Y-%m-%d"),
-                    end_date=datetime.datetime.strptime("2020-03-31", "%Y-%m-%d"),
-                    drop_replace_partition=False,
-                ),
-                inputs={
-                    "l0_product_pru_m_ontop_master_for_weekly_full_load": "l0_product_pru_m_ontop_master_for_weekly_full_load",
-                    "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
-                    "ontop_pack": "dm42_promotion_prepaid",
-                    "usage_feature": "dm15_mobile_usage_aggr_prepaid",
-                },
-                outputs="unused_memory_dataset1",
-                name="l1_data_ontop_purchase_daily1",
-                tags=["l1_data_ontop_purchase_daily"],
-            ),
-
-            node(
-                partial(
-                    create_daily_ontop_pack,
-                    hive_table="l1_data_ontop_purchase_daily_hive",
-                    start_date=datetime.datetime.strptime("2020-04-01", "%Y-%m-%d"),
-                    end_date=datetime.datetime.strptime("2020-04-30", "%Y-%m-%d"),
-                    drop_replace_partition=False,
-                ),
-                inputs={
-                    "l0_product_pru_m_ontop_master_for_weekly_full_load": "l0_product_pru_m_ontop_master_for_weekly_full_load",
-                    "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
-                    "ontop_pack": "dm42_promotion_prepaid",
-                    "usage_feature": "dm15_mobile_usage_aggr_prepaid",
-                },
-                outputs="unused_memory_dataset2",
-                name="l1_data_ontop_purchase_daily2",
-                tags=["l1_data_ontop_purchase_daily"],
-            ),
-
-            node(
-                partial(
-                    create_daily_ontop_pack,
-                    hive_table="l1_data_ontop_purchase_daily_hive",
-                    start_date=datetime.datetime.strptime("2020-05-01", "%Y-%m-%d"),
-                    end_date=datetime.datetime.strptime("2020-05-31", "%Y-%m-%d"),
-                    drop_replace_partition=False,
-                ),
-                inputs={
-                    "l0_product_pru_m_ontop_master_for_weekly_full_load": "l0_product_pru_m_ontop_master_for_weekly_full_load",
-                    "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
-                    "ontop_pack": "dm42_promotion_prepaid",
-                    "usage_feature": "dm15_mobile_usage_aggr_prepaid",
-                },
-                outputs="unused_memory_dataset3",
-                name="l1_data_ontop_purchase_daily3",
-                tags=["l1_data_ontop_purchase_daily"],
-            ),
-
-            node(
-                partial(
-                    create_daily_ontop_pack,
-                    hive_table="l1_data_ontop_purchase_daily_hive",
                     start_date=datetime.datetime.strptime("2020-06-01", "%Y-%m-%d"),
                     end_date=datetime.datetime.strptime("2020-06-30", "%Y-%m-%d"),
-                    drop_replace_partition=False,
+                    drop_replace_partition=True,
                 ),
                 inputs={
                     "l0_product_pru_m_ontop_master_for_weekly_full_load": "l0_product_pru_m_ontop_master_for_weekly_full_load",
@@ -83,8 +26,8 @@ def create_package_preference_pipeline() -> Pipeline:
                     "ontop_pack": "dm42_promotion_prepaid",
                     "usage_feature": "dm15_mobile_usage_aggr_prepaid",
                 },
-                outputs="unused_memory_dataset4",
-                name="l1_data_ontop_purchase_daily4",
+                outputs="unused_memory_dataset_1",
+                name="l1_data_ontop_purchase_daily",
                 tags=["l1_data_ontop_purchase_daily"],
             ),
         ]
