@@ -1312,43 +1312,32 @@ treatment_rules:
     use_case: ard
 
 ### CHURN/ARD Optimisation & exploitation layer
-  # Very high target volume
-  # Purely to catch "rest of targets" based on conditions we missed
-
-#  # churn/ARD > 1, churn_cost is >500, target size = remaining 10%+ of base
 #  z99_optimisation_churn_treatment:
 #    order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
 #    rules:
 #      e906b4cd-6e31-46bb-8656-abdee8d5575f:
 #        campaign_code: ## add a campaign code for a standard champion for churn
 #        conditions:
-#          - churn_cost >= 300 # the opportunity cost of a specific target needs to be higher than a pre-defined value
+#          - churn_cost >=  # the opportunity cost of a specific target needs to be higher than a pre-defined value
 #          - churn_cost > ard_cost # this target (not already targeted in the churn/ard layer above) must be higher
 #                                  # in value when targeted by churn than in ard
 #        limit_per_code: 10000
 #        variant: 1
-#    treatment_name: z99_optimisation_use_case_treatment
+#    treatment_name: z99_optimisation_churn_treatment
 #    treatment_size: 10000
 #    use_case: churn
-#  ## sent to Churn
 #
-#
-#
-#
-#  # churn/ARD < 1, ARD_cost is >300, target size = remaining 10%+ of base
 #  z99_optimisation_ard_treatment:
 #    order_policy: dilution1_pred + dilution2_pred
 #    rules:
 #      e906b4cd-6e31-46bb-8656-abdee8d9875d:
 #        campaign_code: ## add a campaign code for a standard champion for ard
 #        conditions:
-#          - ard_cost >= 150 # the opportunity cost of a specific target needs to be higher than a pre-defined value
+#          - ard_cost >=  # the opportunity cost of a specific target needs to be higher than a pre-defined value
 #          - ard_cost > churn_cost # this target (not already targeted in the churn/ard layer above) must be higher
 #          # in value when targeted by ard than in churn
 #        limit_per_code: 10000
 #        variant: 1
-#    treatment_name: z99_optimisation_use_case_treatment
+#    treatment_name: z99_optimisation_ard_treatment
 #    treatment_size: 10000
 #    use_case: ard
-#  ## sent to ARD
-#  ## need one code
