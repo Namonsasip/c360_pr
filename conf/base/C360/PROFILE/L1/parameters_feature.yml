@@ -8,7 +8,7 @@ l1_customer_profile_union_daily_feature:
     zipcode: "zipcode"
     prefer_language: "prefer_language"
     corp_account_size: "null"
-    corporate_flag: "case when (upper(cust_type) = 'B') then 'Y' else 'N' end"
+    corporate_flag: "case when (upper(cust_type) = 'B') or (upper(cust_type) = 'G') then 'Y' else 'N' end"
     prefer_language_eng: "case when lower(prefer_language) like 'eng%' then 'Y' else 'N' end"
     prefer_language_thai: "case when lower(prefer_language) like 'tha%' then 'Y' else 'N' end"
     prefer_language_other: >
@@ -22,6 +22,7 @@ l1_customer_profile_union_daily_feature:
     subscriber_tenure_day: "datediff(to_date(cast(partition_date as STRING), 'yyyyMMdd'), to_date(register_date))"
     subscriber_tenure_month: "service_month"
     subscription_status: mobile_status
+    mobile_status_date: "mobile_status_date"
     mobile_segment: "mobile_segment"
     serenade_flag: "case when lower(mobile_segment) like 'classic%'
                                                         or lower(mobile_segment) like 'standard%'
@@ -48,7 +49,7 @@ l1_customer_profile_union_daily_feature:
     zipcode: "zipcode"
     prefer_language: "prefer_language"
     corp_account_size: "corp_account_size"
-    corporate_flag: "case when (upper(cust_type) = 'B') or (upper(cust_type) = 'R' and upper(rsme_flag) = 'Y') then 'Y' else 'N' end"
+    corporate_flag: "case when (upper(cust_type) = 'B') or (upper(cust_type) = 'G') or (upper(cust_type) = 'R' and upper(rsme_flag) = 'Y') then 'Y' else 'N' end"
     prefer_language_eng: "case when lower(prefer_language) like 'eng%' then 'Y' else 'N' end"
     prefer_language_thai: "case when lower(prefer_language) like 'tha%' then 'Y' else 'N' end"
     prefer_language_other: >
@@ -62,6 +63,7 @@ l1_customer_profile_union_daily_feature:
     subscriber_tenure_day: "datediff(to_date(cast(partition_date as STRING), 'yyyyMMdd'), to_date(register_date))"
     subscriber_tenure_month: "service_month"
     subscription_status: mobile_status
+    mobile_status_date: "mobile_status_date"
     mobile_segment: "mobile_segment"
     serenade_flag: "case when mobile_segment = 'MS_CLASSIC' then 'N' else 'Y' end"
     network_type: "network_type"
@@ -85,7 +87,7 @@ l1_customer_profile_union_daily_feature:
     zipcode: "zipcode"
     prefer_language: "prefer_language"
     corp_account_size: "corp_account_size"
-    corporate_flag: "case when (upper(cust_type) = 'B') or (upper(cust_type) = 'R' and upper(rsme_flag) = 'Y') then 'Y' else 'N' end"
+    corporate_flag: "case when (upper(cust_type) = 'B') or (upper(cust_type) = 'G') or (upper(cust_type) = 'R' and upper(rsme_flag) = 'Y') then 'Y' else 'N' end"
     prefer_language_eng: "case when lower(prefer_language) like 'eng%' then 'Y' else 'N' end"
     prefer_language_thai: "case when lower(prefer_language) like 'tha%' then 'Y' else 'N' end"
     prefer_language_other: >
@@ -99,6 +101,7 @@ l1_customer_profile_union_daily_feature:
     subscriber_tenure_day: "datediff(to_date(cast(partition_date as STRING), 'yyyyMMdd'), to_date(register_date))"
     subscriber_tenure_month: "service_month"
     subscription_status: mobile_status
+    mobile_status_date: "mobile_status_date"
     mobile_segment: "mobile_segment"
     serenade_flag: "case when mobile_segment = 'MS_CLASSIC' then 'N' else 'Y' end"
     network_type: "network_type"

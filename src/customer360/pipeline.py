@@ -65,9 +65,11 @@ from cvm.preprocessing.pipeline import (
 )
 from nba.backtesting.backtesting_pipeline import create_nba_backtesting_pipeline
 # from nba.gender_age_imputation.gender_age_imputation_pipeline import create_nba_gender_age_imputation_pipeline
+from nba.gender_age_imputation.gender_age_imputation_pipeline import create_nba_gender_age_imputation_pipeline
 from nba.model_input.model_input_pipeline import create_nba_model_input_pipeline
 from nba.models.models_pipeline import create_nba_models_pipeline
 from nba.pcm_scoring.pcm_scoring_pipeline import create_nba_pcm_scoring_pipeline
+from nba.personnas_clustering.personnas_clustering_pipeline import create_nba_personnas_clustering_pipeline
 from nba.report.pipelines.campaign_importance_volume_pipeline import (
     campaign_importance_volume,
 )
@@ -193,7 +195,8 @@ from .pipelines.data_engineering.pipelines.usage_pipeline import (
 )
 from data_quality.pipeline import (
     data_quality_pipeline,
-    subscription_id_sampling_pipeline
+    subscription_id_sampling_pipeline,
+    threshold_analysis_pipeline
 )
 
 from .pipelines.data_engineering.pipelines.sales_pipeline.to_l2.to_l2_pipeline import (
@@ -329,7 +332,8 @@ def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
         + campaign_importance_volume()
         + create_nba_backtesting_pipeline()
         + create_nba_pcm_scoring_pipeline()
-        # + create_nba_gender_age_imputation_pipeline()
+        + create_nba_gender_age_imputation_pipeline()
+        + create_nba_personnas_clustering_pipeline()
     }
 
 def create_du_pipeline(**kwargs) -> Dict[str,Pipeline]:
@@ -345,7 +349,8 @@ def create_du_pipeline(**kwargs) -> Dict[str,Pipeline]:
 def create_dq_pipeline(**kwargs) -> Dict[str, Pipeline]:
     return {
         "data_quality_pipeline": data_quality_pipeline(),
-        "subscription_id_sampling_pipeline": subscription_id_sampling_pipeline()
+        "subscription_id_sampling_pipeline": subscription_id_sampling_pipeline(),
+        "threshold_analysis_pipeline": threshold_analysis_pipeline(),
     }
 
 

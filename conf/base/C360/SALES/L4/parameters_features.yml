@@ -1,5 +1,5 @@
 l4_sales_on_top_transaction_first:
-  partition_by: ["access_method_num","subscription_identifier","national_id_card"]
+  partition_by: ["access_method_num","subscription_identifier"]
   feature_list:
     sum: [
     "ussd_number_of_on_top_transaction",
@@ -26,7 +26,7 @@ l4_sales_on_top_transaction_first:
   read_from: "l2"
 
 l4_sales_on_top_transaction_second:
-  partition_by: ["access_method_num","subscription_identifier","national_id_card"]
+  partition_by: ["access_method_num","subscription_identifier"]
   feature_list:
     sum: [
         "retail_stores_number_of_on_top_transaction",
@@ -53,7 +53,7 @@ l4_sales_on_top_transaction_second:
   read_from: "l2"
 
 l4_sales_on_top_transaction_third:
-  partition_by: ["access_method_num","subscription_identifier","national_id_card"]
+  partition_by: ["access_method_num","subscription_identifier"]
   feature_list:
     sum: [
         "my_ais_app_number_of_on_top_transaction",
@@ -80,7 +80,7 @@ l4_sales_on_top_transaction_third:
   read_from: "l2"
 
 l4_sales_on_top_transaction_fourth:
-  partition_by: ["access_method_num","subscription_identifier","national_id_card"]
+  partition_by: ["access_method_num","subscription_identifier"]
   feature_list:
     sum: [
         "rom_number_of_on_top_transaction",
@@ -107,7 +107,7 @@ l4_sales_on_top_transaction_fourth:
   read_from: "l2"
 
 l4_sales_on_top_transaction_fifth:
-  partition_by: ["access_method_num","subscription_identifier","national_id_card"]
+  partition_by: ["access_method_num","subscription_identifier"]
   feature_list:
     sum: [
       "share_of_number_rom_on_top_transaction",
@@ -134,7 +134,7 @@ l4_sales_on_top_transaction_fifth:
 
 # --------- main -----------------------
 l4_sales_main_transaction_first:
-  partition_by: ["access_method_num","subscription_identifier","national_id_card"]
+  partition_by: ["access_method_num","subscription_identifier"]
   feature_list:
     sum: [
         "ussd_number_of_main_transaction",
@@ -157,7 +157,7 @@ l4_sales_main_transaction_first:
   read_from: "l2"
 
 l4_sales_main_transaction_second:
-  partition_by: ["access_method_num","subscription_identifier","national_id_card"]
+  partition_by: ["access_method_num","subscription_identifier"]
   feature_list:
     sum: [
         "retail_stores_number_of_main_transaction",
@@ -180,7 +180,7 @@ l4_sales_main_transaction_second:
   read_from: "l2"
 
 l4_sales_main_transaction_third:
-  partition_by: ["access_method_num","subscription_identifier","national_id_card"]
+  partition_by: ["access_method_num","subscription_identifier"]
   feature_list:
     sum: [
         "my_ais_app_number_of_main_transaction",
@@ -203,7 +203,7 @@ l4_sales_main_transaction_third:
   read_from: "l2"
 
 l4_sales_main_transaction_fourth:
-  partition_by: ["access_method_num","subscription_identifier","national_id_card"]
+  partition_by: ["access_method_num","subscription_identifier"]
   feature_list:
     sum: [
         "rom_number_of_main_transaction",
@@ -226,7 +226,7 @@ l4_sales_main_transaction_fourth:
   read_from: "l2"
 
 l4_sales_main_transaction_fifth:
-  partition_by: ["access_method_num","subscription_identifier","national_id_card"]
+  partition_by: ["access_method_num","subscription_identifier"]
   feature_list:
     sum: [
       "share_of_number_ais_shop_main_transaction",

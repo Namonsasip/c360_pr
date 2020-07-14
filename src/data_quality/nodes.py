@@ -133,6 +133,7 @@ def _generate_accuracy_and_completeness_nodes(
                     "dq_sampled_subscription_identifier",
                     "params:features_for_dq",
                     "params:percentiles",
+                    "params:incremental_mode",
                     "all_catalog_and_feature_exist"
                     ],
             outputs=output_catalog,
@@ -272,6 +273,7 @@ def run_accuracy_logic(
     sampled_sub_id_df: DataFrame,
     dq_config: dict,
     percentiles: Dict,
+    incremental_mode: str,
     all_catalog_and_feature_exist: DataFrame,  # dependency to ensure this node runs after all checks are passed
     dataset_name: str
 ) -> DataFrame:
@@ -319,22 +321,30 @@ def run_accuracy_logic(
 
     partition_col = get_partition_col(input_df, dataset_name)
 
-    ctx = get_dq_context()
-    try:
-        dq_accuracy_df = ctx.catalog.load("dq_accuracy_and_completeness")
+    if incremental_mode.lower() == "on":
 
-        filtered_input_df = get_dq_incremental_records(
-            input_df=input_df,
-            dq_accuracy_df=dq_accuracy_df,
-            dataset_name=dataset_name,
-            partition_col=partition_col
-        )
-    except DataSetError:
-        # no dq_accuracy table means the pipeline is never executed
+        ctx = get_dq_context()
+        try:
+            dq_accuracy_df = ctx.catalog.load("dq_accuracy_and_completeness")
+
+            filtered_input_df = get_dq_incremental_records(
+                input_df=input_df,
+                dq_accuracy_df=dq_accuracy_df,
+                dataset_name=dataset_name,
+                partition_col=partition_col
+            )
+        except DataSetError:
+            # no dq_accuracy table means the pipeline is never executed
+            filtered_input_df = input_df
+
+        if filtered_input_df.head() is None:
+            return get_spark_empty_df(schema=dq_accuracy_df_schema)
+
+    elif incremental_mode.lower() == "off":
         filtered_input_df = input_df
 
-    if filtered_input_df.head() is None:
-        return get_spark_empty_df(schema=dq_accuracy_df_schema)
+    else:
+        raise Exception("Please specify 'on' or 'off' for 'incremental_mode' parameter.")
 
     sample_creation_date, sampled_df = get_dq_sampled_records(filtered_input_df, sampled_sub_id_df)
     if sampled_df.head() is None:
@@ -388,18 +398,18 @@ def run_accuracy_logic(
         features_list=features_list
     )
 
-    result_df = (result_df
-                 .withColumn("run_date", F.current_timestamp())
-                 .withColumn("dataset_name", F.lit(dataset_name))
-                 .withColumn("sub_id_sample_creation_date", F.lit(sample_creation_date))
-                 .drop("count_all"))
+    result_with_outliers_df = (result_df
+                               .withColumn("run_date", F.current_timestamp())
+                               .withColumn("dataset_name", F.lit(dataset_name))
+                               .withColumn("sub_id_sample_creation_date", F.lit(sample_creation_date))
+                               .drop("count_all"))
 
     spark = get_spark_session()
     spark.conf.set("spark.sql.autoBroadcastJoinThreshold", -1)
     spark.conf.set("spark.sql.broadcastTimeout", -1)
-    result_df.persist(StorageLevel.MEMORY_AND_DISK).count()
+    result_with_outliers_df.persist(StorageLevel.MEMORY_AND_DISK).count()
 
-    return result_df.repartition(1)
+    return result_with_outliers_df.repartition(1)
 
 
 def run_availability_logic(

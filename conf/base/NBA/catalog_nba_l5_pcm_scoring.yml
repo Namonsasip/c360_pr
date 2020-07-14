@@ -12,3 +12,10 @@ l5_pcm_scoring_master:
   save_args:
     mode: "overwrite"
 
+l5_pcm_candidate_scored:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_pcm_candidate_scored/
+  save_args:
+    mode: "overwrite"
+

@@ -55,9 +55,15 @@ def loyalty_number_of_points_balance(customer_prof: DataFrame
     if check_empty_dfs([input_df, customer_prof]):
         return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
-    join_key = ["access_method_num", "start_of_month"]
-    customer_cols = ["national_id_card", "access_method_num", "subscription_identifier", "start_of_month"]
+    join_key = ["subscription_identifier", "start_of_month"]
+    customer_cols = ["access_method_num", "subscription_identifier", "start_of_month"]
     customer_prof = customer_prof.select(customer_cols)
+
+    input_df = (input_df
+                       .withColumn("subscription_identifier",
+                                   f.expr("case when lower(charge_type) = 'pre-paid' then "
+                                          "concat(mobile_no, '-', date_format(register_date, 'yyyyMMdd')) "
+                                          "else crm_subscription_id end")))
 
     input_df_temp = input_df.filter(f.col("register_date").isNotNull())\
                             .groupBy("mobile_no", "start_of_month")\
@@ -70,7 +76,7 @@ def loyalty_number_of_points_balance(customer_prof: DataFrame
 
     merged_df = input_df.join(input_df_temp, ["start_of_month", "mobile_no"], how="left")
     merged_df = merged_df.select(f.col("mobile_no").alias("access_method_num")
-                                            # "mobile_status_date"
+                                            , "subscription_identifier"
                                             , "mobile_segment"
                                             , "points_balance_per_sub"
                                             , "point_expire_curr_year"
@@ -81,6 +87,10 @@ def loyalty_number_of_points_balance(customer_prof: DataFrame
                                             , "start_of_month")
 
     merged_with_customer = merged_df.join(customer_prof, join_key)
+
     return_df = node_from_config(merged_with_customer, l3_loyalty_point_balance_statuses_monthly)
 
     return return_df
+
+
+

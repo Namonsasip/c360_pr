@@ -3,6 +3,7 @@ from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_
 
 from pyspark.sql import DataFrame, functions as f
 
+
 def union_daily_cust_profile(
         cust_pre,
         cust_post,
@@ -30,44 +31,31 @@ def union_daily_cust_profile(
 
     ################################# End Implementing Data availability checks ###############################
 
+    # Getting unique data from pre-paid
+    cust_pre = cust_pre.withColumn("rn", f.expr(
+        "row_number() over(partition by mobile_no,partition_date order by register_date desc)"))
+    cust_pre = cust_pre.where("rn = 1").drop("rn")
+
+    # Getting unique data from post_paid
+    cust_post = cust_post.withColumn("rn", f.expr(
+        "row_number() over(partition by mobile_no,partition_date order by mobile_status_date desc)"))
+    cust_post = cust_post.where("rn = 1").drop("rn")
+
+    # Getting unique data from non_mobile
+    cust_non_mobile = cust_non_mobile.withColumn("rn", f.expr(
+        "row_number() over(partition by mobile_no,partition_date order by mobile_status_date desc)"))
+    cust_non_mobile = cust_non_mobile.where("rn = 1").drop("rn")
+
     cust_pre.createOrReplaceTempView("cust_pre")
     cust_post.createOrReplaceTempView("cust_post")
     cust_non_mobile.createOrReplaceTempView("cust_non_mobile")
 
     sql_stmt = """
-        with unioned_cust_profile as (
             select {cust_pre_columns} from cust_pre
             union all
             select {cust_post_columns} from cust_post
             union all
             select {cust_non_mobile_columns} from cust_non_mobile
-        ),
-        dedup_amn_reg_date as (
-            select unioned_cust_profile.access_method_num, 
-                    max(unioned_cust_profile.register_date) as register_date,
-                    unioned_cust_profile.partition_date
-            from unioned_cust_profile
-            inner join (
-              select access_method_num, 
-                     max(register_date) as register_date,
-                     partition_date
-              from unioned_cust_profile
-              group by access_method_num, partition_date
-            ) t
-            on unioned_cust_profile.access_method_num = t.access_method_num
-               and unioned_cust_profile.register_date = t.register_date
-               and unioned_cust_profile.partition_date = t.partition_date
-            group by unioned_cust_profile.access_method_num, 
-                     unioned_cust_profile.partition_date
-            having count(unioned_cust_profile.access_method_num, 
-                         unioned_cust_profile.partition_date) = 1
-        )
-        select unioned_cust_profile.*
-        from unioned_cust_profile
-        inner join dedup_amn_reg_date d
-        on unioned_cust_profile.access_method_num = d.access_method_num
-            and unioned_cust_profile.register_date = d.register_date
-            and unioned_cust_profile.partition_date = d.partition_date
     """
 
     def setup_column_to_extract(key):
@@ -83,6 +71,11 @@ def union_daily_cust_profile(
                                cust_non_mobile_columns=setup_column_to_extract("customer_non_mobile"))
     spark = get_spark_session()
     df = spark.sql(sql_stmt)
+
+    # Getting unique records from combined data
+    df = df.withColumn("rn", f.expr(
+        "row_number() over(partition by access_method_num,partition_date order by register_date desc, mobile_status_date desc )"))
+    df = df.where("rn = 1").drop("rn")
 
     return df
 

@@ -40,6 +40,19 @@ l1_customer_profile_union_daily_feature_for_l1_campaign_post_pre_daily:
     target_layer: 'l1_daily'
     lookback: '0'
 
+l1_customer_profile_union_daily_feature_for_l1_digital_cxenxse_site_traffic_daily:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  metadata_table_path: 'metadata_path'
+  file_format: "parquet"
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_digital_cxenxse_site_traffic_daily'
+    mode: "overwrite"
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
 
 l1_customer_profile_union_daily_feature_for_l2_customer_profile_union_weekly_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -53,7 +66,6 @@ l1_customer_profile_union_daily_feature_for_l2_customer_profile_union_weekly_fea
     read_layer: 'l1_daily'
     target_layer: 'l2_weekly'
     lookback: '0'
-    mergeSchema: true
 
 
 l1_customer_profile_union_daily_feature_for_l3_customer_profile_union_monthly_feature:
@@ -68,7 +80,6 @@ l1_customer_profile_union_daily_feature_for_l3_customer_profile_union_monthly_fe
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
     lookback: '0'
-    mergeSchema: true
 
 l1_customer_profile_union_daily_feature_for_device:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -673,7 +684,7 @@ l1_customer_profile_union_daily_feature_for_int_l1_product_active_customer_promo
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l1_product_active_customer_promotion_features_daily'
+    lookup_table_name: 'l1_product_active_customer_promotion_features_prepaid_postpaid'
     read_layer: 'l1_daily'
     target_layer: 'l1_daily'
     lookback: '0'

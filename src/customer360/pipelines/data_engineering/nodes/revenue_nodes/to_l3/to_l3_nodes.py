@@ -52,16 +52,18 @@ def merge_with_customer_prepaid_df(source_df: DataFrame,
     ################################# End Implementing Data availability checks ###############################
 
     # This code will populate a subscriber id to the data set.
-    cust_df_cols = ['access_method_num', 'start_of_month', 'subscription_identifier', 'national_id_card']
-    join_key = ['access_method_num', 'start_of_month']
+    cust_df_cols = ['start_of_month', 'subscription_identifier']
+    join_key = ['subscription_identifier', 'start_of_month']
+
+    source_df = (source_df
+                .withColumn("subscription_identifier",
+                            F.expr("concat(access_method_num, '-', date_format(register_date, 'yyyyMMdd')) ")))
 
     cust_df = cust_df.select(cust_df_cols)
 
     final_df = source_df.join(cust_df, join_key)
 
     final_df = final_df.where("subscription_identifier is not null and start_of_month is not null")
-
-    final_df = final_df.drop_duplicates(subset=["subscription_identifier", "start_of_month"])
 
     return final_df
 
@@ -112,7 +114,7 @@ def merge_with_customer_postpaid_df(source_df: DataFrame,
     source_df = source_df.withColumnRenamed("sub_id", "subscription_identifier")
 
     # This code will populate a subscriber id to the data set.
-    cust_df_cols = ['access_method_num', 'start_of_month', 'subscription_identifier', 'national_id_card']
+    cust_df_cols = ['access_method_num', 'start_of_month', 'subscription_identifier']
 
     join_key = ['subscription_identifier', 'start_of_month']
 
