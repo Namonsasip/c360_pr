@@ -1,3 +1,36 @@
+#Share of completed episodes Feature
+
+int_l2_streaming_share_of_completed_episodes_features:
+    where_clause: "where lower(content_group) = 'episode'"
+    feature_list:
+        episode_watched_count: "count(distinct(title))"
+    granularity: "subscription_identifier, access_method_num, date(register_date),
+                    start_of_week, series_title"
+
+
+int_l2_streaming_share_of_completed_episodes_ratio_features:
+    where_clause: ""
+    feature_list:
+        episode_watched_rank: "row_number() over (partition by subscription_identifier, access_method_num,
+                      date(register_date), start_of_week order by share_of_completed_episodes desc)"
+
+
+    granularity: "subscription_identifier, access_method_num, date(register_date),
+                        start_of_week, series_title"
+
+
+l2_streaming_fav_tv_show_by_share_of_completed_episodes:
+    where_clause: "where episode_watched_rank = 1"
+    feature_list:
+        access_method_num: access_method_num
+        subscription_identifier: subscription_identifier
+        start_of_week: start_of_week
+        register_date: register_date
+        fav_tv_show_by_share_of_completed_episodes: "series_title"
+    granularity: ""
+    output_catalog: "l2_streaming_fav_tv_show_by_share_of_completed_episodes"
+
+
 # Content Type Features
 int_l2_streaming_content_type_features:
     where_clause: ""

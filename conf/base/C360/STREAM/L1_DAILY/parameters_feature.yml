@@ -1,6 +1,6 @@
-#Episode watched Ratio Feature
+#Share of completed episodes Feature
 
-int_l1_streaming_episode_watched_features:
+int_l1_streaming_share_of_completed_episodes_features:
     where_clause: "where lower(content_group) = 'episode'"
     feature_list:
         episode_watched_count: "count(distinct(title))"
@@ -9,7 +9,7 @@ int_l1_streaming_episode_watched_features:
     #output_catalog: "int_l1_streaming_title_watched_features"
 
 
-int_l1_streaming_episode_watched_ratio_features:
+int_l1_streaming_share_of_completed_episodes_ratio_features:
     where_clause: ""
     feature_list:
         episode_watched_rank: "row_number() over (partition by subscription_identifier, access_method_num,

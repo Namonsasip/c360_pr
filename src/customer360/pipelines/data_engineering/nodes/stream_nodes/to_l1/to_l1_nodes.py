@@ -112,8 +112,8 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
                                     int_l1_streaming_tv_show_features_dict: dict,
                                     l1_streaming_fav_tv_show_by_episode_watched_dict: dict,
 
-                                    int_l1_streaming_episode_watched_features: dict,
-                                    int_l1_streaming_episode_watched_ratio_features_dict: dict,
+                                    int_l1_streaming_share_of_completed_episodes_features_dict: dict,
+                                    int_l1_streaming_share_of_completed_episodes_ratio_features_dict: dict,
                                     l1_streaming_fav_tv_show_by_share_of_completed_episodes_dict: dict,
                                     ) -> [DataFrame, DataFrame, DataFrame, DataFrame, DataFrame, DataFrame, DataFrame, DataFrame
     , DataFrame]:
@@ -231,20 +231,20 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
         CNTX.catalog.save("int_l0_streaming_vimmi_table", selective_df)
 
         # share_of_completed_episodes feature
-        int_l1_streaming_episode_watched_features = node_from_config(selective_df,
-                                                                     int_l1_streaming_episode_watched_features)
+        int_l1_streaming_share_of_completed_episodes_features = node_from_config(selective_df,
+                                                                     int_l1_streaming_share_of_completed_episodes_features_dict)
 
-        int_l1_streaming_episode_watched_ratio_features_temp = int_l1_streaming_episode_watched_features.join(
+        int_l1_streaming_share_of_completed_episodes_ratio_features_temp = int_l1_streaming_share_of_completed_episodes_features.join(
             streaming_series_title_master, on="series_title", how="left outer")
-        int_l1_streaming_episode_watched_ratio_features_temp = int_l1_streaming_episode_watched_ratio_features_temp.withColumn(
+        int_l1_streaming_share_of_completed_episodes_ratio_features_temp = int_l1_streaming_share_of_completed_episodes_ratio_features_temp.withColumn(
             "share_of_completed_episodes", (f.col("episode_watched_count") / f.coalesce(f.col("total_episode_count"), f.lit(1))))
 
-        int_l1_streaming_episode_watched_ratio_features = node_from_config(
-            int_l1_streaming_episode_watched_ratio_features_temp,
-            int_l1_streaming_episode_watched_ratio_features_dict)
+        int_l1_streaming_share_of_completed_episodes_ratio_features = node_from_config(
+            int_l1_streaming_share_of_completed_episodes_ratio_features_temp,
+            int_l1_streaming_share_of_completed_episodes_ratio_features_dict)
 
         l1_streaming_fav_tv_show_by_share_of_completed_episodes = node_from_config(
-            int_l1_streaming_episode_watched_ratio_features,
+            int_l1_streaming_share_of_completed_episodes_ratio_features,
             l1_streaming_fav_tv_show_by_share_of_completed_episodes_dict)
 
         CNTX.catalog.save(l1_streaming_fav_tv_show_by_share_of_completed_episodes_dict["output_catalog"],
@@ -294,20 +294,20 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
                "access_method_num", "register_date", "content_group", "title", "series_title")
 
     # share_of_completed_episodes feature
-    int_l1_streaming_episode_watched_features = node_from_config(selective_df,
-                                                                 int_l1_streaming_episode_watched_features)
+    int_l1_streaming_share_of_completed_episodes_features = node_from_config(selective_df,
+                                                                 int_l1_streaming_share_of_completed_episodes_features_dict)
 
-    int_l1_streaming_episode_watched_ratio_features_temp = int_l1_streaming_episode_watched_features.join(
+    int_l1_streaming_share_of_completed_episodes_ratio_features_temp = int_l1_streaming_share_of_completed_episodes_features.join(
         streaming_series_title_master, on="series_title", how="left outer")
-    int_l1_streaming_episode_watched_ratio_features_temp = int_l1_streaming_episode_watched_ratio_features_temp.withColumn(
+    int_l1_streaming_share_of_completed_episodes_ratio_features_temp = int_l1_streaming_share_of_completed_episodes_ratio_features_temp.withColumn(
         "share_of_completed_episodes", (f.col("episode_watched_count") / f.coalesce(f.col("total_episode_count"), f.lit(1))))
 
-    int_l1_streaming_episode_watched_ratio_features = node_from_config(
-        int_l1_streaming_episode_watched_ratio_features_temp,
-        int_l1_streaming_episode_watched_ratio_features_dict)
+    int_l1_streaming_share_of_completed_episodes_ratio_features = node_from_config(
+        int_l1_streaming_share_of_completed_episodes_ratio_features_temp,
+        int_l1_streaming_share_of_completed_episodes_ratio_features_dict)
 
     l1_streaming_fav_tv_show_by_share_of_completed_episodes = node_from_config(
-        int_l1_streaming_episode_watched_ratio_features,
+        int_l1_streaming_share_of_completed_episodes_ratio_features,
         l1_streaming_fav_tv_show_by_share_of_completed_episodes_dict)
 
     return [int_l1_streaming_content_type_features, l1_streaming_fav_content_group_by_volume_df,

@@ -457,6 +457,15 @@ def streaming_to_l3_pipeline(**kwargs):
                  "params:streaming_app"],
                 None
             ),
+            node(
+                streaming_to_l3_fav_tv_show_by_share_of_completed_episodes,
+                ["int_l0_streaming_vimmi_table_for_l2_streaming_fav_tv_show_by_share_of_completed_episodes",
+                 "l3_streaming_series_title_master",
+                 "params:int_l3_streaming_share_of_completed_episodes_features",
+                 "params:int_l3_streaming_share_of_completed_episodes_ratio_features",
+                 "params:l3_streaming_fav_tv_show_by_share_of_completed_episodes"],
+                "l3_streaming_fav_tv_show_by_share_of_completed_episodes"
+            ),
         ], name="streaming_to_l3_pipeline"
     )
 
