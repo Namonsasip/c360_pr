@@ -44,7 +44,7 @@ def geo_to_l1_pipeline(**kwargs):
 
             ###total_distance_km###
             node(l1_geo_total_distance_km_daily,
-                 ["l0_geo_cust_cell_visit_time_simple_data_daily",
+                 ["l0_geo_cust_cell_visit_time_for_l1_geo_total_distance_km_daily",
                   "params:l1_geo_total_distance_km_daily"
                   ],
                  "l1_geo_total_distance_km_daily"
