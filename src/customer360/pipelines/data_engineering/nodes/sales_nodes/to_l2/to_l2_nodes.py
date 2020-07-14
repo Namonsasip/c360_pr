@@ -79,7 +79,6 @@ def sale_product_customer_master_on_top_features(sale_df: DataFrame,
 
     sale_product_join_cols = ['start_of_week', 'offering_code']
 
-
     sale_df = (sale_df.withColumn("subscription_identifier",
                                    f.expr("case when lower(charge_type) = 'pre-paid' then "
                                           "concat(access_method_num, '-', date_format(register_date, 'yyyyMMdd')) "
@@ -106,25 +105,24 @@ def sale_product_customer_master_on_top_features(sale_df: DataFrame,
     #creating name features
     master_name_features_temp = node_from_config(sale_product_master_df, name_feature_dict)
     master_name_features_temp = master_name_features_temp.withColumn("rn", expr(
-        "row_number() over(partition by start_of_week,access_method_num order by start_of_week desc)"))
+        "row_number() over(partition by start_of_week,subscription_identifier order by start_of_week desc)"))
     master_name_features = master_name_features_temp.where("rn = 1")
     master_name_features = master_name_features.drop("rn")
 
-    master_sales_features_join_cols = ['start_of_week', 'access_method_num']
+    master_sales_features_join_cols = ['start_of_week', 'subscription_identifier']
 
     #joining volume and name feature to create one master feature table
     master_sales_features = master_volume_features.join(master_name_features, master_sales_features_join_cols, how='left')
 
-    customer_cols = ['access_method_num',
-                     'subscription_identifier',
+    customer_cols = [ 'subscription_identifier',
                      'national_id_card',
                      'start_of_week']
 
-    cust_join_cols = ['start_of_week', 'access_method_num']
+    cust_join_cols = ['start_of_week', 'subscription_identifier']
 
     customer_df = customer_df.select(customer_cols)
     customer_df = customer_df.withColumn("rn", expr(
-        "row_number() over(partition by start_of_week,access_method_num order by start_of_week desc)"))
+        "row_number() over(partition by start_of_week,subscription_identifier order by start_of_week desc)"))
     customer_df = customer_df.where("rn = 1")
     customer_df = customer_df.drop("rn")
 
@@ -220,32 +218,31 @@ def sale_product_customer_master_main_features(sale_df: DataFrame,
 
     #joining sales and product
     sale_product_master_df = sale_df.join(product_df, sale_product_join_cols, how='left')
-
+    
     #creating volume features
     master_volume_features = node_from_config(sale_product_master_df, volume_feature_dict)
     
     #creating name features
     master_name_features_temp = node_from_config(sale_product_master_df, name_feature_dict)
     master_name_features_temp = master_name_features_temp.withColumn("rn", expr(
-        "row_number() over(partition by start_of_week,access_method_num,subscription_identifier order by start_of_week desc)"))
+        "row_number() over(partition by start_of_week,subscription_identifier order by start_of_week desc)"))
     master_name_features = master_name_features_temp.where("rn = 1")
     master_name_features = master_name_features.drop("rn")
 
-    master_sales_features_join_cols = ['start_of_week','access_method_num', 'subscription_identifier']
+    master_sales_features_join_cols = ['start_of_week', 'subscription_identifier']
 
     #joining volume and name feature to create one master feature table
     master_sales_features = master_volume_features.join(master_name_features, master_sales_features_join_cols, how='left')
 
-    customer_cols = ['access_method_num',
-                     'subscription_identifier',
+    customer_cols = ['subscription_identifier',
                      'national_id_card',
                      'start_of_week']
 
-    cust_join_cols = ['start_of_week', 'access_method_num','subscription_identifier']
+    cust_join_cols = ['start_of_week','subscription_identifier']
 
     customer_df = customer_df.select(customer_cols)
     customer_df = customer_df.withColumn("rn", expr(
-        "row_number() over(partition by start_of_week,access_method_num,subscription_identifier order by start_of_week desc)"))
+        "row_number() over(partition by start_of_week,subscription_identifier order by start_of_week desc)"))
     customer_df = customer_df.where("rn = 1")
     customer_df = customer_df.drop("rn")
 
