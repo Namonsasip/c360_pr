@@ -65,7 +65,8 @@ def build_digital_l3_monthly_features(cxense_user_profile: DataFrame,
 
     cust_df = cust_df.select(cust_df_cols)
     cust_df = cust_df.withColumn("rn", expr(
-        "row_number() over(partition by start_of_month,access_method_num order by start_of_month desc)")) \
+        "row_number() over(partition by start_of_month,access_method_num order by "
+        "start_of_month desc, mobile_status_date desc)")) \
         .where("rn = 1")
 
     final_df = cust_df.join(cxense_user_profile, join_key)
