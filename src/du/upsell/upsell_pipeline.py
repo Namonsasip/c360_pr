@@ -18,5 +18,5 @@ def create_du_upsell_pipeline() -> Pipeline:
             tags=["l5_experiment4_eligible_upsell"],
         ),
     ],
-    tags = "xperiment4_eligible_upsell",
+    tags = ["experiment4_eligible_upsell"],
     )
