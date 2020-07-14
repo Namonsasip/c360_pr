@@ -173,7 +173,6 @@ def join_with_master_package(
                 product_landline_flag,
                 
                 subscription_identifier,
-                national_id_card,
                 access_method_num, 
                 start_of_week,
                 start_of_month,
@@ -340,7 +339,7 @@ def l1_prepaid_postpaid_processing(prepaid_main_df: DataFrame,
                        ]
 
     customer_profile_columns = ["access_method_num", "partition_date", "start_of_week", "start_of_month",
-                                "subscription_identifier", "national_id_card", "old_subscription_identifier",
+                                "subscription_identifier", "old_subscription_identifier",
                                 "register_date", "event_partition_date"
                                 ]
 
