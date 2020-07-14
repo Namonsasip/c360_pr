@@ -1,3 +1,16 @@
+l4_streaming_fav_tv_show_by_share_of_completed_episodes:
+  where_clause: ""
+  feature_list:
+     access_method_num: access_method_num
+     subscription_identifier: subscription_identifier
+     start_of_week: start_of_week
+     register_date: register_date
+     fav_tv_show_by_share_of_completed_episodes_current_week: fav_tv_show_by_share_of_completed_episodes
+     fav_tv_show_by_share_of_completed_episodes_last_week: "lag() over(partition by access_method_num,subscription_identifier,register_date,
+                                                            start_of_week order by start_of_week desc)"
+  granularity: ""
+
+
 int_l4_streaming_content_type_features:
   partition_by: ["access_method_num",  "subscription_identifier", "register_date", "content_group"]
   ranked_lookup_enable_flag: 'No'
