@@ -32,12 +32,13 @@ from cvm.src.report.kpis_build import (
     add_arpus,
     add_inactivity,
     add_network_churn,
-    add_prepaid_no_activity_daily,
     add_status,
 )
 from cvm.src.utils.utils import get_today
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as func
+
+from src.cvm.src.report.kpis_build import add_prepaid_no_activity_daily
 
 
 def prepare_users(
