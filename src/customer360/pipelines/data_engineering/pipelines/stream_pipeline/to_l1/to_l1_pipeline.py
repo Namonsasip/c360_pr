@@ -59,8 +59,8 @@ def streaming_to_l1_onair_vimmi_pipeline(**kwargs):
                   "params:l1_streaming_fav_tv_show_by_episode_watched",
 
                   #fav tv_show_by_share_of_completed_episodes
-                  "params:int_l1_streaming_share_of_completed_episodes_features"
-                  "params:int_l1_streaming_share_of_completed_episodes_ratio_features"
+                  "params:int_l1_streaming_share_of_completed_episodes_features",
+                  "params:int_l1_streaming_share_of_completed_episodes_ratio_features",
                   "params:l1_streaming_fav_tv_show_by_share_of_completed_episodes"
 
                   ],
