@@ -392,8 +392,8 @@ def node_from_config(input_df: DataFrame, config: dict) -> DataFrame:
     :param config:
     :return:
     """
-    if len(input_df.head(1)) == 0:
-        return input_df
+    # if len(input_df.head(1)) == 0:
+    #     return input_df
 
     table_name = "input_table"
     input_df.createOrReplaceTempView(table_name)

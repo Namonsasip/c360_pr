@@ -93,8 +93,8 @@ def execute_sql(data_frame, table_name, sql_str):
 
 def add_start_of_week_and_month(input_df, date_column="day_id"):
 
-    if len(input_df.head(1)) == 0:
-        return input_df
+    # if len(input_df.head(1)) == 0:
+    #     return input_df
 
     input_df = input_df.withColumn("start_of_week", F.to_date(F.date_trunc('week', F.col(date_column))))\
         .withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col(date_column))))\

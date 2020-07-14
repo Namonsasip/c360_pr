@@ -60,8 +60,8 @@ def df_copy_for_l3_customer_profile_billing_level_volume_of_active_contracts(inp
 
 
 def add_last_month_inactive_user(input_df):
-    if check_empty_dfs([input_df]):
-        return input_df
+    # if check_empty_dfs([input_df]):
+    #     return input_df
 
     input_df.createOrReplaceTempView("input_df")
     spark = get_spark_session()
@@ -154,16 +154,16 @@ def union_monthly_cust_profile(
         cust_prof_daily_df: DataFrame
 ):
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([cust_prof_daily_df]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([cust_prof_daily_df]):
+    #     return get_spark_empty_df()
 
     cust_prof_daily_df = data_non_availability_and_missing_check(df=cust_prof_daily_df, grouping="monthly",
                                                                  missing_data_check_flg='Y',
                                                                  par_col="event_partition_date",
                                                                  target_table_name="l3_customer_profile_union_monthly_feature")
 
-    if check_empty_dfs([cust_prof_daily_df]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([cust_prof_daily_df]):
+    #     return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
     cust_prof_daily_df = cust_prof_daily_df.drop("start_of_week")
