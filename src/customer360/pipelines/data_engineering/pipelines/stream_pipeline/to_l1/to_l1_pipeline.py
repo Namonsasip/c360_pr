@@ -43,7 +43,7 @@ def streaming_to_l1_onair_vimmi_pipeline(**kwargs):
             node(stream_process_ru_a_onair_vimmi,
                  ["l0_streaming_ru_a_onair_vimmi_usage_daily_for_multiple_outputs",
                   "l1_customer_profile_union_daily_feature_for_l1_streaming_fav_tv_show_by_episode_watched",
-                  "l3_streaming_series_title_master"
+                  "l3_streaming_series_title_master",
                   # Content Type Features
                   "params:int_l1_streaming_content_type_features",
                   "params:l1_streaming_fav_content_group_by_volume",
