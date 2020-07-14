@@ -405,9 +405,9 @@ def streaming_to_l3_fav_tv_show_by_share_of_completed_episodes(vimmi_usage_daily
 
     :param vimmi_usage_daily:
     :param streaming_series_title_master:
-    :param int_l2_streaming_share_of_completed_episodes_features_dict:
-    :param int_l2_streaming_share_of_completed_episodes_ratio_features_dict:
-    :param l2_streaming_fav_tv_show_by_share_of_completed_episodes_dict:
+    :param int_l3_streaming_share_of_completed_episodes_features_dict:
+    :param int_l3_streaming_share_of_completed_episodes_ratio_features_dict:
+    :param l3_streaming_fav_tv_show_by_share_of_completed_episodes_dict:
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
@@ -415,10 +415,10 @@ def streaming_to_l3_fav_tv_show_by_share_of_completed_episodes(vimmi_usage_daily
         return get_spark_empty_df()
 
     input_df = data_non_availability_and_missing_check(
-        df=vimmi_usage_daily, grouping="weekly", par_col="event_partition_date",
+        df=vimmi_usage_daily, grouping="monthly", par_col="event_partition_date",
         missing_data_check_flg='Y',
         target_table_name=l3_streaming_fav_tv_show_by_share_of_completed_episodes_dict["output_catalog"],
-        exception_partitions=["2020-01-27"])
+        exception_partitions=["2020-02-01"])
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()

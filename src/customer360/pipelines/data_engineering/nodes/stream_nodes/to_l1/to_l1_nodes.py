@@ -130,8 +130,8 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
     :param l1_streaming_fav_tv_channel_by_duration_dict:
     :param int_l1_streaming_tv_show_features_dict:
     :param l1_streaming_fav_tv_show_by_episode_watched_dict:
-    :param int_l1_streaming_episode_watched_features:
-    :param int_l1_streaming_episode_watched_ratio_features_dict:
+    :param int_l1_streaming_share_of_completed_episodes_features_dict:
+    :param int_l1_streaming_share_of_completed_episodes_ratio_features_dict:
     :param l1_streaming_fav_tv_show_by_share_of_completed_episodes_dict:
     :return:
     """
