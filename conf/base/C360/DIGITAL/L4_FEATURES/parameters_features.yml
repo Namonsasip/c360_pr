@@ -23,7 +23,10 @@ l4_digital_cxenxse_site_traffic_weekly_features:
     sum: ["digital_time_spent_browser_chrome", "digital_time_spent_browser_safari", "digital_time_spent_browser_line",
           "digital_time_spent_browser_opera","digital_time_spent_referrersocialnetwork_facebook",
           "digital_time_spent_referrerhostclass_other","digital_time_spent_referrerhostclass_direct",
-          "digital_time_spent_referrerhostclass_internal", "digital_time_spent_referrerhostclass_social"]
+          "digital_time_spent_referrerhostclass_internal", "digital_time_spent_referrerhostclass_social",
+          "digital_time_spent_referrersearch_engine_internal", "digital_time_spent_referrersearch_engine_other",
+          "digital_time_spent_referrersearch_engine_google"
+          ]
     avg: []
     stddev: []
   read_from: "l2"

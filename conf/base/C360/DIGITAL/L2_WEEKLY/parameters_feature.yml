@@ -11,6 +11,9 @@ l2_digital_cxenxse_site_traffic_weekly:
     digital_time_spent_referrerhostclass_direct: "sum(digital_time_spent_referrerhostclass_direct)"
     digital_time_spent_referrerhostclass_internal: "sum(digital_time_spent_referrerhostclass_internal)"
     digital_time_spent_referrerhostclass_social: "sum(digital_time_spent_referrerhostclass_social)"
+    digital_time_spent_referrersearch_engine_internal: "sum(digital_time_spent_referrersearch_engine_internal)"
+    digital_time_spent_referrersearch_engine_other: "sum(digital_time_spent_referrersearch_engine_other)"
+    digital_time_spent_referrersearch_engine_google: "sum(digital_time_spent_referrersearch_engine_google)"
 
     digital_is_explorer: "max(digital_is_explorer)"
 
