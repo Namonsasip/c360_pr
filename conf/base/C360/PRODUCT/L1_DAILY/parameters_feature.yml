@@ -1,5 +1,5 @@
 int_l1_product_active_customer_promotion_features:
-  where_clause: "where lower(promo_status) = 'active'"
+  where_clause: "where lower(promo_status) = 'active' and lower(promo_user_type) = 'existing'"
   feature_list:
     product_postpaid_promo_boolean: "max(case when lower(promo_charge_type) in ('post-paid', 'all', 'hybrid-post')
                             then true else false end)"
