@@ -28,4 +28,4 @@ l5_gender_age_imputed:
 
 l5_gender_age_imputation_clustering_summary_report:
   type: kedro.io.CSVLocalDataSet
-  filepath: data/L5/NBA/l5_gender_age_imputation_clustering_summary_report.csv
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_gender_age_imputation_clustering_summary_report.csv
