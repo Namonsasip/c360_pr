@@ -4,7 +4,10 @@ from du.scoring.scoring_nodes import l5_scoring_profile, l5_du_scored
 
 from nba.pcm_scoring.pcm_scoring_nodes import join_c360_features_latest_date
 
-from du.models.models_nodes import create_daily_ontop_pack
+from du.models.package_prefer_nodes import (
+    create_daily_ontop_pack,
+    create_aggregate_ontop_package_preference_input,
+)
 from functools import partial
 import datetime
 
@@ -12,23 +15,38 @@ import datetime
 def create_package_preference_pipeline() -> Pipeline:
     return Pipeline(
         [
+            # node(
+            #     partial(
+            #         create_daily_ontop_pack,
+            #         hive_table="l1_data_ontop_purchase_daily_hive",
+            #         start_date=datetime.datetime.strptime("2020-06-01", "%Y-%m-%d"),
+            #         end_date=datetime.datetime.strptime("2020-06-30", "%Y-%m-%d"),
+            #         drop_replace_partition=True,
+            #     ),
+            #     inputs={
+            #         "l0_product_pru_m_ontop_master_for_weekly_full_load": "l0_product_pru_m_ontop_master_for_weekly_full_load",
+            #         "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
+            #         "ontop_pack": "dm42_promotion_prepaid",
+            #         "usage_feature": "dm15_mobile_usage_aggr_prepaid",
+            #     },
+            #     outputs="unused_memory_dataset_1",
+            #     name="l1_data_ontop_purchase_daily",
+            #     tags=["package_preference_data","l1_data_ontop_purchase_daily"],
+            # ),
             node(
                 partial(
-                    create_daily_ontop_pack,
-                    hive_table="l1_data_ontop_purchase_daily_hive",
-                    start_date=datetime.datetime.strptime("2020-06-01", "%Y-%m-%d"),
-                    end_date=datetime.datetime.strptime("2020-06-30", "%Y-%m-%d"),
-                    drop_replace_partition=True,
+                    create_aggregate_ontop_package_preference_input,
+                    hive_table="l4_data_ontop_purchase_week_hive_aggregate_feature",
+                    aggregate_periods=[90, 60, 30],
+                    start_date=None,
+                    drop_replace_partition=False,
                 ),
                 inputs={
-                    "l0_product_pru_m_ontop_master_for_weekly_full_load": "l0_product_pru_m_ontop_master_for_weekly_full_load",
-                    "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
-                    "ontop_pack": "dm42_promotion_prepaid",
-                    "usage_feature": "dm15_mobile_usage_aggr_prepaid",
+                    "l1_data_ontop_purchase_daily": "l1_data_ontop_purchase_daily_hive",
                 },
-                outputs="unused_memory_dataset_1",
-                name="l1_data_ontop_purchase_daily",
-                tags=["l1_data_ontop_purchase_daily"],
+                outputs="unused_memory_dataset_2",
+                name="l1_data_ontop_purchase_daily_hive",
+                tags=["package_preference_data", "l1_data_ontop_purchase_daily_hive"],
             ),
         ]
     )
