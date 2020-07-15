@@ -6,8 +6,8 @@ l3_usage_postpaid_prepaid_monthly:
       # New Favorite Features
       'usg_outgoing_afternoon_voice_usage',
       'usg_incoming_afternoon_voice_usage',
-      'usg_outgoing_evening_voice_usage',
-      'usg_incoming_evening_voice_usage',
+      'usg_outgoing_evening_time_call_duration',
+      'usg_incoming_evening_time_call_duration',
       'usg_outgoing_favourite_numbers_call_duration',
       'usg_outgoing_favourite_numbers_local_call_duration',
       'usg_outgoing_favourite_numbers_number_of_calls',
