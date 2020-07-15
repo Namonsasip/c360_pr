@@ -51,7 +51,3 @@ def generate_l1_layer(device_df: DataFrame
 
     return final_df
 
-def copy(df):
-    final_df = df
-
-    return final_df
