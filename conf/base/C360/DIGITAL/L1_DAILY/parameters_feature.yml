@@ -8,6 +8,8 @@ l1_digital_cxenxse_site_traffic_daily:
     digital_time_spent_browser_opera: "sum(CASE WHEN lower(browser) = 'opera' THEN activetime ELSE 0 END)"
     digital_time_spent_referrersocialnetwork_facebook: "sum(CASE WHEN lower(referrersocialnetwork) = 'facebook'
                                                         THEN activetime ELSE 0 END)"
+    digital_time_spent_referrerhostclass_social:  "sum(CASE WHEN lower(referrerhostclass) = 'social' THEN
+    activetime ELSE 0 END)"
     digital_time_spent_referrerhostclass_other: "sum(CASE WHEN lower(referrerhostclass) = 'other'
                                                         THEN activetime ELSE 0 END)"
     digital_time_spent_referrerhostclass_direct: "sum(CASE WHEN lower(referrerhostclass) = 'direct'
