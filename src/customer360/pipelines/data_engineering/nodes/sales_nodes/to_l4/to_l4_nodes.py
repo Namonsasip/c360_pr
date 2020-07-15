@@ -64,7 +64,7 @@ def sales_l4_rolling_window(input_df: DataFrame,
     CNTX.catalog.save("l4_sales_temp_5", rolling_df_fifth)
 
     rolling_df_sixth = l4_rolling_window(input_df, rolling_window_dict_sixth)
-    rolling_df_sixth = rolling_df_fifth.filter(f.col("start_of_week") > max_date)
+    rolling_df_sixth = rolling_df_sixth.filter(f.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_sales_temp_6", rolling_df_sixth)
 
     rolling_df_first = CNTX.catalog.load("l4_sales_temp_1")
