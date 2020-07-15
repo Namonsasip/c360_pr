@@ -282,6 +282,8 @@ def usage_data_postpaid_roaming(input_df, sql) -> DataFrame:
         return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
+    input_df = input_df.withColumn("ir_gprs_call_uplink_vol", F.col("ir_gprs_call_uplink_vol")/F.lit(1024)) \
+                       .withColumn("ir_gprs_call_downlink_vol", F.col("ir_gprs_call_downlink_vol")/F.lit(1024))
 
     return_df = massive_processing(input_df, sql, "l1_usage_data_postpaid_roaming")
     return return_df
