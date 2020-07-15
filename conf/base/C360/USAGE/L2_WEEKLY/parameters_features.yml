@@ -4,8 +4,8 @@ l2_usage_postpaid_prepaid_weekly:
   feature_list:
     sum: [
       # New Favorite Features
-      'usg_outgoing_afternoon_voice_usage',
-      'usg_incoming_afternoon_voice_usage',
+      'usg_outgoing_afternoon_time_call_duration',
+      'usg_incoming_afternoon_time_call_duration',
       'usg_outgoing_evening_time_call_duration',
       'usg_incoming_evening_time_call_duration',
       'usg_incoming_offnet_local_calls_duration',

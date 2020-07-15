@@ -155,8 +155,8 @@ l1_usage_outgoing_call_relation_sum_daily:
                                           AND date_format(day_id, 'EEEE') IN ('Monday')
                                           AND hour_id IN (13, 14, 15, 16, 17, 18) THEN total_durations else 0 end)"
 
-    usg_outgoing_afternoon_voice_usage: "sum(case when service_type IN ('VOICE') AND hour_id IN (13, 14, 15, 16, 17, 18)
-     THEN total_durations else 0 end)"
+    usg_outgoing_afternoon_time_call_duration: "sum(case when service_type IN ('VOICE') AND hour_id IN
+    (13, 14, 15, 16, 17, 18) THEN total_durations else 0 end)"
 
     usg_outgoing_monday_evening_voice_usage: "sum(case when service_type IN ('VOICE')
                                           AND date_format(day_id, 'EEEE') IN ('Monday')
@@ -459,8 +459,8 @@ l1_usage_incoming_call_relation_sum_daily:
                                           AND date_format(day_id, 'EEEE') IN ('Monday')
                                           AND hour_id IN (7, 8, 9, 10, 11, 12) THEN total_durations else 0 end)"
 
-    usg_incoming_afternoon_voice_usage: "sum(case when service_type IN ('VOICE') AND hour_id IN (13, 14, 15, 16, 17, 18)
-     THEN total_durations else 0 end)"
+    usg_incoming_afternoon_time_call_duration: "sum(case when service_type IN ('VOICE') AND hour_id IN
+    (13, 14, 15, 16, 17, 18) THEN total_durations else 0 end)"
 
     usg_incoming_monday_afternoon_voice_usage: "sum(case when service_type IN ('VOICE')
                                           AND date_format(day_id, 'EEEE') IN ('Monday')
