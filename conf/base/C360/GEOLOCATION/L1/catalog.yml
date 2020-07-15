@@ -310,7 +310,7 @@ l1_location_of_visit_ais_store_daily_for_l4_location_of_last_visit_ais_store:
     lookup_table_name: 'l4_location_of_last_visit_ais_store'
     read_layer: 'l1_daily'
     target_layer: 'l4_weekly'
-    lookback: '12'
+    lookback: '14'
 
 #----------------------- l1_geo_top3_cells_on_voice_usage -------------------------
 l1_geo_top3_cells_on_voice_usage:

@@ -348,6 +348,18 @@ def l1_call_location_home_work(cell_masterplan,geo_homework,profile_ma,usage_sum
 
     cell_masterplan = get_max_date_from_master_data(cell_masterplan, 'partition_date')
 
+    min_value = union_dataframes_with_missing_cols(
+        [
+            usage_sum_voice.select(
+                F.to_date(F.date_trunc('month', F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd'))).alias("max_date")),
+            profile_ma.select(
+                F.to_date(F.max(F.col("partition_month")).cast(StringType()), 'yyyyMM').alias("max_date")),
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    usage_sum_voice = usage_sum_voice.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+    profile_ma = profile_ma.filter(F.to_date(F.col("partition_month").cast(StringType()), 'yyyyMM') <= min_value)
+
     if check_empty_dfs([usage_sum_voice, profile_ma]):
         return get_spark_empty_df()
 
@@ -538,6 +550,21 @@ def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
                                                          target_table_name="L1_usage_sum_data_location_daily_data_profile_customer_profile_ma")
 
     geo_df = get_max_date_from_master_data(geo_df, 'partition_date')
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            usage_df.select(
+                F.to_date(F.date_trunc('month',
+                                       F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd'))).alias(
+                    "max_date")),
+            profile_df.select(
+                F.to_date(F.max(F.col("partition_month")).cast(StringType()), 'yyyyMM').alias("max_date")),
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    usage_df = usage_df.filter(
+        F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+    profile_df = profile_df.filter(F.to_date(F.col("partition_month").cast(StringType()), 'yyyyMM') <= min_value)
 
     if check_empty_dfs([usage_df, profile_df]):
         return get_spark_empty_df()

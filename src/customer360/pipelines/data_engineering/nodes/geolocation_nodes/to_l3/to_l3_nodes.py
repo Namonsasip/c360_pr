@@ -519,6 +519,20 @@ def l3_geo_work_area_center_average_monthly(visti_hr, home_work):
                                                         target_table_name="l3_geo_work_area_center_average_monthly",
                                                         missing_data_check_flg='Y')
 
+    min_value = union_dataframes_with_missing_cols(
+        [
+            visti_hr.select(
+                F.to_date(F.date_trunc('month',
+                                       F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd'))).alias(
+                    "max_date")),
+            home_work.select(F.max(F.col("start_of_month")).alias("max_date")),
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    visti_hr = visti_hr.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+    home_work = home_work.filter(F.col("partition_month") <= min_value)
+
+
     if check_empty_dfs([visti_hr, home_work]):
         return get_spark_empty_df()
     # ----- Transformation -----
@@ -780,6 +794,21 @@ def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
                                                                           grouping="monthly",
                                                                           par_col="partition_month",
                                                                           target_table_name="l3_use_non_homework_features")
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            usage_sum_data_location_daily.select(
+                F.to_date(F.date_trunc('month',
+                                       F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd'))).alias(
+                    "max_date")),
+            profile_customer_profile_ma.select(
+                F.to_date(F.max(F.col("partition_month")).cast(StringType()), 'yyyyMM').alias("max_date")),
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    usage_sum_data_location_daily = usage_sum_data_location_daily.filter(
+        F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+    profile_customer_profile_ma = profile_customer_profile_ma.filter(F.to_date(F.col("partition_month").cast(StringType()), 'yyyyMM') <= min_value)
 
     geo_mst_cell_masterplan = get_max_date_from_master_data(geo_mst_cell_masterplan, 'partition_date')
 
