@@ -74,7 +74,7 @@ def sale_product_customer_master_on_top_features(sale_df: DataFrame,
     ################################# End Implementing Data availability checks ###############################
 
     sale_cols = ['access_method_num', 'partition_date', 'cmd_channel_type',
-                 'cmd_channel_sub_type', 'promotion_price_amount', 'offering_title', 'offering_code', 'event_start_dttm']
+                 'cmd_channel_sub_type', 'promotion_price_amount', 'offering_title', 'offering_code', 'event_start_dttm','subscription_identifier']
     product_cols = ['partition_date', 'package_type', 'promotion_code']
 
     sale_product_join_cols = ['start_of_week', 'offering_code']
