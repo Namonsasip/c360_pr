@@ -38,6 +38,18 @@ from customer360.utilities.re_usable_functions import l3_massive_processing
 from customer360.pipelines.data_engineering.nodes.stream_nodes.to_l3.to_l3_nodes import *
 
 
+def streaming_series_title_master(**kwargs):
+    return Pipeline(
+        [
+            node(series_title_master,
+                 ["l0_streaming_ru_a_onair_vimmi_usage_daily_for_series_title_master"],
+                 ["l3_streaming_series_title_master"]
+                 ),
+
+        ]
+    )
+
+
 def streaming_to_l3_pipeline(**kwargs):
     return Pipeline(
         [
@@ -444,6 +456,15 @@ def streaming_to_l3_pipeline(**kwargs):
                 ["int_l3_streaming_ranked_of_day_per_month",
                  "params:streaming_app"],
                 None
+            ),
+            node(
+                streaming_to_l3_fav_tv_show_by_share_of_completed_episodes,
+                ["int_l0_streaming_vimmi_table_for_l3_streaming_fav_tv_show_by_share_of_completed_episodes",
+                 "l3_streaming_series_title_master",
+                 "params:int_l3_streaming_share_of_completed_episodes_features",
+                 "params:int_l3_streaming_share_of_completed_episodes_ratio_features",
+                 "params:l3_streaming_fav_tv_show_by_share_of_completed_episodes"],
+                "l3_streaming_fav_tv_show_by_share_of_completed_episodes"
             ),
         ], name="streaming_to_l3_pipeline"
     )
