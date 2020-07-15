@@ -14,7 +14,11 @@ l1_digital_cxenxse_site_traffic_daily:
                                                         THEN activetime ELSE 0 END)"
     digital_time_spent_referrerhostclass_internal: "sum(CASE WHEN lower(referrerhostclass) = 'internal'
                                                         THEN activetime ELSE 0 END)"
-    digital_time_spent_referrerhostclass_social: "sum(CASE WHEN lower(referrerhostclass) = 'social'
+    digital_time_spent_referrersearch_engine_internal: "sum(CASE WHEN lower(referrersearchengine) = 'internal'
+                                                        THEN activetime ELSE 0 END)"
+    digital_time_spent_referrersearch_engine_other: "sum(CASE WHEN lower(referrersearchengine) = 'other'
+                                                        THEN activetime ELSE 0 END)"
+    digital_time_spent_referrersearch_engine_google: "sum(CASE WHEN lower(referrersearchengine) = 'google'
                                                         THEN activetime ELSE 0 END)"
 
     digital_is_explorer: "max(CASE WHEN digital_is_explorer = 1 THEN 1 ELSE 0 END)"

@@ -279,19 +279,19 @@ l1_usage_outgoing_call_relation_sum_daily:
 
     # check called_network_type DTAC/true value
     usg_outgoing_dtac_number_calls: "sum(case when service_type IN ('VOICE')
-                                         AND called_network_type = 'DTAC' THEN total_successful_call else 0 end)"
+    AND called_network_type IN ('DTAC','DTN','DTNFIX') THEN total_successful_call else 0 end)"
 
     usg_outgoing_dtac_call_duration: "sum(case when service_type IN ('VOICE')
-                                         AND called_network_type = 'DTAC' THEN total_durations else 0 end)"
+    AND called_network_type IN ('DTAC','DTN','DTNFIX') THEN total_durations else 0 end)"
 
     usg_outgoing_true_number_calls: "sum(case when service_type IN ('VOICE')
-                                         AND called_network_type = 'TRUE' THEN total_successful_call else 0 end)"
+    AND called_network_type IN ('TRUE','TUC','RFT','TIC') THEN total_successful_call else 0 end)"
 
     usg_outgoing_true_call_duration: "sum(case when service_type IN ('VOICE')
-                                         AND called_network_type = 'TRUE' THEN total_durations else 0 end)"
+    AND called_network_type IN ('TRUE','TUC','RFT','TIC') THEN total_durations else 0 end)"
 
     usg_outgoing_dtac_number_sms: "sum(case when service_type IN ('SMS')
-                                         AND called_network_type = 'DTAC' THEN total_successful_call else 0 end)"
+    AND called_network_type IN ('DTAC','DTN','DTNFIX') THEN total_successful_call else 0 end)"
 
     usg_outgoing_true_number_sms: "sum(case when service_type IN ('SMS')
                                          AND called_network_type = 'TRUE' THEN total_successful_call else 0 end)"
@@ -578,22 +578,22 @@ l1_usage_incoming_call_relation_sum_daily:
 
     # check called_network_type DTAC/true value
     usg_incoming_dtac_number_calls: "sum(case when service_type IN ('VOICE')
-                                         AND caller_network_type = 'DTAC' THEN total_successful_call else 0 end)"
+    AND caller_network_type IN ('DTAC','DTN','DTNFIX') THEN total_successful_call else 0 end)"
 
     usg_incoming_dtac_call_duration: "sum(case when service_type IN ('VOICE')
-                                         AND caller_network_type = 'DTAC' THEN total_durations else 0 end)"
+    AND caller_network_type IN ('DTAC','DTN','DTNFIX') THEN total_durations else 0 end)"
 
     usg_incoming_true_number_calls: "sum(case when service_type IN ('VOICE')
-                                         AND caller_network_type = 'TRUE' THEN total_successful_call else 0 end)"
+    AND caller_network_type IN ('TRUE' , 'TUC'  , 'RFT', 'TIC') THEN total_successful_call else 0 end)"
 
     usg_incoming_true_call_duration: "sum(case when service_type IN ('VOICE')
-                                         AND caller_network_type = 'TRUE' THEN total_durations else 0 end)"
+    AND caller_network_type IN ('TRUE' , 'TUC'  , 'RFT', 'TIC') THEN total_durations else 0 end)"
 
     usg_incoming_dtac_number_sms: "sum(case when service_type IN ('SMS')
-                                         AND caller_network_type = 'DTAC' THEN total_successful_call else 0 end)"
+    AND caller_network_type IN ('DTAC','DTN','DTNFIX') THEN total_successful_call else 0 end)"
 
     usg_incoming_true_number_sms: "sum(case when service_type IN ('SMS')
-                                         AND caller_network_type = 'TRUE' THEN total_successful_call else 0 end)"
+    AND caller_network_type IN ('TRUE' , 'TUC'  , 'RFT', 'TIC') THEN total_successful_call else 0 end)"
 
   granularity: "called_no, day_id"
   event_date_column: "date(day_id)"
