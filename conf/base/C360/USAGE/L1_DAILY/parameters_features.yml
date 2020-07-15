@@ -805,6 +805,29 @@ l1_usage_ru_a_gprs_cbs_usage_daily:
   granularity: "access_method_num, call_start_dt"
   event_date_column: "date(call_start_dt)"
 
+l1_usage_data_postpaid_roaming:
+  where_clause: "where call_type_code = 16"
+  feature_list:
+    usg_outgoing_roaming_data_volume: "sum(ir_gprs_call_uplink_vol)"
+    usg_outgoing_roaming_data_volume_4G: "sum(case when ir_call_type_group_code = '4G'
+    then ir_gprs_call_uplink_vol else 0 end)"
+
+    usg_outgoing_roaming_data_volume_2G_3G: "sum(case when ir_call_type_group_code = '3G'
+    then ir_gprs_call_uplink_vol else 0 end)"
+
+    usg_incoming_roaming_data_volume: "sum(ir_gprs_call_downlink_vol)"
+
+    usg_incoming_roaming_data_volume_4G: "sum(case when ir_call_type_group_code = '4G'
+    then ir_gprs_call_downlink_vol else 0 end)"
+
+    usg_incoming_roaming_data_volume_2G_3G: "sum(case when ir_call_type_group_code = '3G'
+    then ir_gprs_call_downlink_vol else 0 end)"
+
+  granularity: "access_method_num, date_id"
+  event_date_column: "date(date_id)"
+
+
+
 l1_usage_ru_a_vas_postpaid_usg_daily:
   where_clause: "where call_type_cd IN (3, 64)"
   feature_list:
