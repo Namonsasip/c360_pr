@@ -815,7 +815,7 @@ l1_usage_data_postpaid_roaming:
     usg_outgoing_roaming_data_volume_2G_3G: "sum(case when ir_call_type_group_code = '3G'
     then ir_gprs_call_uplink_vol else 0 end)"
 
-    usg_incoming_roaming_data_volume: "sum(ir_gprs_call_downlink_volir_gprs_call_downlink_vol)"
+    usg_incoming_roaming_data_volume: "sum(ir_gprs_call_downlink_vol)"
 
     usg_incoming_roaming_data_volume_4G: "sum(case when ir_call_type_group_code = '4G'
     then ir_gprs_call_downlink_vol else 0 end)"
