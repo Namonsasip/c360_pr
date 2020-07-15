@@ -3,3 +3,10 @@ l4_data_ontop_purchase_week_hive_aggregate_feature:
     database: prod_dataupsell
     table: l4_data_ontop_purchase_week_hive_aggregate_feature
     write_mode: overwrite
+
+l4_data_ontop_package_preference:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_dataupsell
+    table: l4_data_ontop_package_preference
+    write_mode: overwrite
+

@@ -65,6 +65,17 @@ def drop_partition(start_date, end_date, table, partition_key):
 
 
 def save_folded_package(start_date, end_date, table, partition_key):
+    """
+    This function save ontop normalized revenue transaction into temporary table
+    Args:
+        start_date: datetime format of start date
+        end_date: datetime format of end date
+        table: hive table name
+        partition_key: partition key column
+
+    Returns: Does not return value
+
+    """
     spark = get_spark_session()
     spark.sql("DROP TABLE IF EXISTS " + table + "_tmp_fold")
     # Save Normalized On-top package record that has been activated in the previous period
@@ -96,16 +107,19 @@ def create_daily_ontop_pack(
     drop_replace_partition=False,
 ):
     """
-
+    This function took ontop transaction, ontop package master, and daily customer profile, and daily usage as inputs,
+    performing revenue normalization for ontop package that has validity more than one day, which normally be ignored
+    in most business logic, which could cause the wrong interpret of how customer spend on daily/weekly/monthly basis
+    as the revenue will be seen as one spike for larger validity on-top packages
     Args:
         l0_product_pru_m_ontop_master_for_weekly_full_load: On-top package Master Weekly
         l1_customer_profile_union_daily_feature_full_load: C360 Customer Profile Daily
         ontop_pack: Old Cloud data-source Ontop Purchase Transaction Data/Voice Aggregated Daily
         usage_feature: Old Cloud data-source Usage Features Daily
-        hive_table:
-        start_date:
-        end_date:
-        drop_replace_partition:
+        hive_table: Hive table name to save table
+        start_date: datetime format of start date to update data
+        end_date: datetime format of end date to update data
+        drop_replace_partition: Boolean, Perform drop partition before updating
 
     Returns: Daily Revenue Normalised On-top Package with Usage Features
 
@@ -114,13 +128,12 @@ def create_daily_ontop_pack(
 
     spark = get_spark_session()
 
-    # TODO Managing partition deletion for automatic process
     if start_date is None:
         start_date = datetime.datetime.now() + datetime.timedelta(days=-40)
         end_date = datetime.datetime.now() + datetime.timedelta(days=-10)
 
+    # Drop partition that already existed to avoid data duplication
     if drop_replace_partition:
-
         table = "prod_dataupsell." + hive_table
         partition_key = "partition_date"
         save_folded_package(start_date, end_date, table, partition_key)
@@ -373,10 +386,13 @@ def create_daily_ontop_pack(
         ]
         output = output.union(tmp_fold.selectExpr(fold_column))
     # Return union between one day on-top and multiple day on-top in daily aggregated
+    # Kedro doesn't write output as hive table, which make it harder for us to manage partitioned table
+    # We consider to manually save to hive table then update catalog accordingly
     output.write.format("parquet").mode("append").partitionBy(
         "partition_date"
     ).saveAsTable("prod_dataupsell." + hive_table)
-    return ontop_pack.limit(10)
+    # Since we are not using Kedro save function, we can return any spark DataFrame as unused memory dataset
+    return ontop_pack
 
 
 def create_aggregate_ontop_package_preference_input(
@@ -386,15 +402,31 @@ def create_aggregate_ontop_package_preference_input(
     start_date=None,
     drop_replace_partition=False,
 ) -> pyspark.sql.DataFrame:
-    import datetime
+    """
+    This function return weekly aggregated input for package preference creation.
+    Features are aggregated according to provided aggregate_period,
+    The features is grouped by customer identification keys, and each unique ontop package in weekly basis
+    Args:
+        l1_data_ontop_purchase_daily: normalized ontop input
+        aggregate_periods: list of integer, number of days back from start of week to aggregate
+        hive_table: hive table name
+        start_date: date format to start aggregating data
+        drop_replace_partition: Boolean, Perform drop partition before updating
 
+    Returns:
+
+    """
+    import datetime
     if start_date is None:
         start_date = datetime.datetime.now() + datetime.timedelta(days=-40)
     end_date = datetime.datetime.now()
+    # Drop partition for table update
     if drop_replace_partition:
         table = "prod_dataupsell." + hive_table
         partition_key = "start_of_week"
         drop_partition(start_date, end_date, table, partition_key)
+
+    # List of week to update
     date_list = (
         l1_data_ontop_purchase_daily.where(
             "date(ontop_start_date) >= date('" + start_date.strftime("%Y-%m-%d") + "')"
@@ -404,8 +436,11 @@ def create_aggregate_ontop_package_preference_input(
         .select("start_of_week")
     )
     date_list.persist()
+
+    # Collect pySpark DataFrame to python List
     aggregate_date_list = date_list.toPandas().values.tolist()
 
+    # Aggregate weekly feature for each of the specify period
     i = True
     for week in aggregate_date_list:
         j = True
@@ -423,6 +458,7 @@ def create_aggregate_ontop_package_preference_input(
                     "analytic_id",
                     "old_subscription_identifier",
                     "access_method_num",
+                    "register_date",
                     "promotion_code",
                     "package_type",
                     "package_group",
@@ -466,6 +502,7 @@ def create_aggregate_ontop_package_preference_input(
                         "analytic_id",
                         "old_subscription_identifier",
                         "access_method_num",
+                        "register_date",
                         "promotion_code",
                         "package_type",
                         "package_group",
@@ -487,7 +524,161 @@ def create_aggregate_ontop_package_preference_input(
                 spine_table.withColumn("start_of_week", F.lit(week[0]))
             )
         i = False
+    # Manually save DataFrame to hive table
     final_spine_table.write.format("parquet").mode("append").partitionBy(
-        "partition_date"
+        "start_of_week"
     ).saveAsTable("prod_dataupsell." + hive_table)
     return final_spine_table
+
+
+def create_ontop_package_preference(
+    l4_data_ontop_purchase_week_hive_aggregate_feature: pyspark.sql.DataFrame,
+    aggregate_periods,
+    hive_table: str,
+    start_date=None,
+    drop_replace_partition=False,
+) -> pyspark.sql.DataFrame:
+    """
+    This function create package preference:
+        Data on-top package preference, preference score is calculated by simple ranking score using 5 angles.
+            - total_spending
+            - total_validity
+            - total_data_volume
+            - average_data_volume_per_day
+            - rank_data_speed
+        The score is rank in the sense that, the more value within each axis mean the more customer tends to
+        preferred to use that package over the period of time.
+        All 5 axis are weighted equally.
+        So after all axis has been ranked, they are all summed up and divided by 5.
+        On-top package with lowest data_ontop_package_preference_score_X_days become preferred package for that period
+    Args:
+        l4_data_ontop_purchase_week_hive_aggregate_feature:
+        aggregate_periods: list of integer, number of days back from start of week to aggregate
+        hive_table: string of hive table name
+        start_date: date format as the starting date for updating package preference
+        drop_replace_partition: Boolean, to drop partition before updating table
+
+    Returns:
+
+    """
+    import datetime
+    end_date = datetime.datetime.now()
+    if start_date is None:
+        start_date = datetime.datetime.now() + datetime.timedelta(days=-40)
+    if drop_replace_partition:
+        table = "prod_dataupsell." + hive_table
+        partition_key = "start_of_week"
+        drop_partition(start_date, end_date, table, partition_key)
+    l4_data_ontop_purchase_week_hive_aggregate_feature = l4_data_ontop_purchase_week_hive_aggregate_feature.where(
+        "start_of_week >= date('" + start_date.strftime("%Y-%m-%d") + "')"
+    )
+
+    # Column of KPIs for aggregation, these KPIs exists in all given aggregate periods
+    columns_to_aggregate = [
+        "total_spending",
+        "total_validity",
+        "total_data_volume",
+        "total_voice_call_out_duration",
+        "average_data_volume_per_day",
+        "average_voice_volume_per_day",
+    ]
+
+    # Expr for ranking, also pre-define on-top package's KPIs
+    expr = [
+        "*",
+        "rank() OVER(PARTITION BY old_subscription_identifier,start_of_week ORDER BY data_speed DESC) AS rank_data_speed",
+        "rank() OVER(PARTITION BY old_subscription_identifier,start_of_week ORDER BY data_quota_mb DESC) AS rank_data_quota_mb",
+    ]
+
+    # Use for loop to create ranking expr
+    for period in aggregate_periods:
+        for column in columns_to_aggregate:
+            expr.append(
+                "rank() OVER(PARTITION BY old_subscription_identifier,start_of_week ORDER BY "
+                + column
+                + "_"
+                + str(period)
+                + "_days"
+                + " DESC) AS rank_"
+                + column
+                + "_"
+                + str(period)
+                + "_days"
+            )
+
+    l4_data_ontop_purchase_week_hive_aggregate_feature_rank = l4_data_ontop_purchase_week_hive_aggregate_feature.selectExpr(
+        expr
+    )
+
+    # Create data on-top package score
+    for period in aggregate_periods:
+        l4_data_ontop_purchase_week_hive_aggregate_feature_rank = l4_data_ontop_purchase_week_hive_aggregate_feature_rank.withColumn(
+            "data_ontop_package_preference_score_" + str(period) + "_days",
+            (
+                F.col("rank_total_spending_" + str(period) + "_days")
+                + F.col("rank_total_validity_" + str(period) + "_days")
+                + F.col("rank_total_data_volume_" + str(period) + "_days")
+                + F.col("rank_average_data_volume_per_day_" + str(period) + "_days")
+                + F.col("rank_data_speed")
+            )
+            / 5,
+        )
+    # List of columns to be select, we use first() to select these value as we already sort DataFrame by product score
+    column_to_aggregate_groupby = [
+        "promotion_code",
+        "package_type",
+        "package_group",
+        "mm_types",
+        "mm_data_type",
+        "mm_data_speed",
+        "package_name_report",
+        "data_quota_mb",
+        "duration",
+        "data_speed",
+    ]
+
+    i = True
+    for period in aggregate_periods:
+        group_by_aggregate_expr = [
+            F.min("data_ontop_package_preference_score_" + str(period) + "_days").alias(
+                "data_ontop_package_preference_score_" + str(period) + "_days"
+            )
+        ]
+        for column in column_to_aggregate_groupby:
+            group_by_aggregate_expr.append(
+                F.first(column).alias(column + "_" + str(period) + "_days")
+            )
+        tmp_output = (
+            l4_data_ontop_purchase_week_hive_aggregate_feature_rank.sort(
+                F.asc("data_ontop_package_preference_score_" + str(period) + "_days")
+            )
+            .groupby(
+                "analytic_id",
+                "old_subscription_identifier",
+                "access_method_num",
+                "register_date",
+                "start_of_week",
+            )
+            .agg(*group_by_aggregate_expr)
+        )
+        if i:
+            output_data_ontop = tmp_output
+        else:
+            output_data_ontop = output_data_ontop.join(
+                tmp_output,
+                [
+                    "analytic_id",
+                    "old_subscription_identifier",
+                    "access_method_num",
+                    "register_date",
+                    "start_of_week",
+                ],
+                "left",
+            )
+        i = False
+
+    # Save output table
+    output_data_ontop.write.format("parquet").mode("append").partitionBy(
+        "start_of_week"
+    ).saveAsTable("prod_dataupsell." + hive_table)
+    return output_data_ontop
