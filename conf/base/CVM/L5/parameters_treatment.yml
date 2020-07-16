@@ -15,3 +15,6 @@ treatment_output:
 use_case_optimize:
   ard_cost: 60
   churn_cost: 300
+
+# how many days of inactivity does it take to not target somebody
+dormancy_threshold: 15

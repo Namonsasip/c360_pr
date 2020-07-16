@@ -117,6 +117,12 @@ def get_treatments_propositions(
     """
     # create treatments propositions
     recently_contacted = get_recently_contacted(parameters, treatments_history)
+    # filter out dormant people
+    dormancy_threshold = parameters["dormancy_threshold"]
+    treatments_features = treatments_features.filter(
+        "inactivity_days_num <= {}".format(dormancy_threshold)
+    )
+    # apply treatment rules
     treatments = MultipleTreatments(parameters["treatment_rules"])
     treatments_propositions = treatments.apply_treatments(
         treatments_features, recently_contacted
