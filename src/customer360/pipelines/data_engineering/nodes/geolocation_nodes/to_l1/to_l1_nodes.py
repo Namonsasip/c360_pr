@@ -562,8 +562,8 @@ def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
         ]
     ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
 
-    print('DEBUG ---------------------------> (1)')
-    print(min_value)
+    # print('DEBUG ---------------------------> (1)')
+    # print(min_value)
 
     usage_df = usage_df.filter(
         F.to_date(F.date_trunc('month',F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd'))) <= min_value)
@@ -571,8 +571,8 @@ def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
 
     print('DEBUG ---------------------------> (2)')
     usage_df.show(10)
-    print('DEBUG ---------------------------> (3)')
-    profile_df.show(10)
+    # print('DEBUG ---------------------------> (3)')
+    # profile_df.show(10)
 
     if check_empty_dfs([usage_df, profile_df]):
         return get_spark_empty_df()
