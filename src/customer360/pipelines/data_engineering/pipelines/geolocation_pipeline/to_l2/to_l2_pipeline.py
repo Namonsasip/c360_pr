@@ -26,13 +26,13 @@ def geo_to_l2_pipeline(**kwargs):
             ),
 
             ### runnig flag == 1
-            node(
-                l2_geo_area_from_competitor_store_weekly,
-                ["l1_geo_area_from_competitor_store_daily_for_l2_geo_area_from_competitor_store_weekly",
-                 "params:l2_area_from_competitor_store_weekly"
-                 ],
-                "l2_geo_area_from_competitor_store_weekly"
-            ),
+            # node(
+            #     l2_geo_area_from_competitor_store_weekly,
+            #     ["l1_geo_area_from_competitor_store_daily_for_l2_geo_area_from_competitor_store_weekly",
+            #      "params:l2_area_from_competitor_store_weekly"
+            #      ],
+            #     "l2_geo_area_from_competitor_store_weekly"
+            # ),
 
             ###total_distance_km###
             node(
@@ -52,6 +52,7 @@ def geo_to_l2_pipeline(**kwargs):
                 "l2_geo_number_of_base_station_weekly"
             ),
 
+            ### runnig flag == 2
             ###feature_sum_voice_location###
             node(
                 l2_geo_call_home_work_location_weekly,
