@@ -659,7 +659,7 @@ def l1_geo_distance_top_call(df):
 
     df = data_non_availability_and_missing_check(df=df,
                                                  grouping="daily",
-                                                 par_col="partition_date",
+                                                 par_col="event_partition_date",
                                                  target_table_name="l1_geo_distance_top_call")
 
     if check_empty_dfs([df]):
