@@ -27,11 +27,7 @@
 # limitations under the License.
 
 from kedro.pipeline import Pipeline, node
-
-from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import l1_massive_processing
-from customer360.pipelines.data_engineering.nodes.complaints_nodes.to_l1.to_l1_nodes import change_grouped_column_name
-from customer360.pipelines.data_engineering.nodes.complaints_nodes.to_l1.to_l1_nodes import *
 
 from src.customer360.pipelines.data_engineering.nodes.complaints_nodes.to_l1.to_l1_nodes import \
     dac_for_complaints_to_l1_pipeline
@@ -73,7 +69,6 @@ def complaints_to_l1_pipeline(**kwargs):
                  "int_l1_customer_profile_union_daily_feature_for_l1_complaints_nps_after_call"],
                 "l1_complaints_nps_after_call"
             ),
-
 
             # node(
             #     dac_for_complaints_to_l1_pipeline,
@@ -127,7 +122,7 @@ def complaints_to_l1_pipeline(**kwargs):
                     "int_l0_streamig_ida_mobile_domain_summary_daily_for_customer_satisfaction",
                     "params:l1_complaints_traffic_to_dtac_web_resources",
                     "int_l1_customer_profile_union_daily_feature_for_l1_complaints_traffic_to_dtac_web_resources"
-                 ],
+                ],
                 "l1_complaints_traffic_to_dtac_web_resources"
             ),
 
