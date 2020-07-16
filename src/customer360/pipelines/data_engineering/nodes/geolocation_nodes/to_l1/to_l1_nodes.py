@@ -549,6 +549,13 @@ def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
                                                          par_col="partition_month",
                                                          target_table_name="L1_usage_sum_data_location_daily_data_profile_customer_profile_ma")
 
+    # Debug pipeline
+    print('DEBUG ---------------------------> (1)')
+    usage_df.show(10)
+
+    print('DEBUG ---------------------------> (2)')
+    profile_df.show(10)
+
     geo_df = get_max_date_from_master_data(geo_df, 'partition_date')
 
     min_value = union_dataframes_with_missing_cols(
@@ -631,6 +638,10 @@ def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
     l1_df1 = l1_df1.withColumn("start_of_week", F.to_date(F.date_trunc('week', l1_df1.event_partition_date)))
     l1_df1 = l1_df1.withColumn("start_of_month", F.to_date(F.date_trunc('month', l1_df1.event_partition_date)))
     # l1_df2 = node_from_config(l1_df1, sql)
+
+    print('DEBUG ---------------------------> (3)')
+    l1_df1.show(10)
+
     return l1_df1
 
 
