@@ -170,7 +170,7 @@ l0_geo_mst_cell_masterplan_current_for_l3_use_non_homework_features:
 #----------------------- geo_home_work_data_use_non_homework_features -------------------------
 l0_geo_home_work_data_for_l1_use_non_homework_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_home_work_location_id/
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_home_work_location_id/  # Usage data on l4 that possible logic
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -183,7 +183,7 @@ l0_geo_home_work_data_for_l1_use_non_homework_features:
 #----------------------- profile_customer_profile_ma_use_non_homework_features -------------------------
 l0_profile_customer_profile_ma_for_l3_use_non_homework_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/PROFILE/profile_customer_profile_ma/
+  filepath: base_path/PROFILE/sample/profile_customer_profile_ma_runpipeline/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -196,7 +196,7 @@ l0_profile_customer_profile_ma_for_l3_use_non_homework_features:
 #----------------------- usage_sum_data_location_use_non_homework_features -------------------------
 l0_usage_sum_data_location_daily_for_l3_use_non_homework_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/USAGE/usage_sum_data_location_daily/
+  filepath: base_path/USAGE/sample/usage_sum_data_location_daily_runpipeline/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -222,7 +222,7 @@ l0_geo_cust_cell_visit_time_daily_for_l1_geo_number_of_bs_used:
 #----------------------- usage_sum_voice_location_homework_features -------------------------
 l0_usage_sum_voice_location_daily_for_l1_homework_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/USAGE/usage_sum_voice_location_daily/
+  filepath: base_path/USAGE/sample/usage_sum_voice_location_daily_runpipeline/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -248,7 +248,7 @@ l0_geo_top_visit_exclude_homework_for_l1_sum_voice_daily:
 #----------------------- usage_sum_voice_location_daily_for_l1_geo_top3_cells_on_voice_usage -------------------------
 l0_usage_sum_voice_location_daily_for_l1_geo_top3_cells_on_voice_usage:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/USAGE/usage_sum_voice_location_daily/
+  filepath: base_path/USAGE/sample/usage_sum_voice_location_daily_runpipeline/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -274,7 +274,7 @@ l0_geo_mst_cell_masterplan_for_l1_geo_top3_cells_on_voice_usage:
 #----------------------- profile_customer_profile_ma_for_l1_geo_top3_cells_on_voice_usage -------------------------
 l0_profile_customer_profile_ma_for_l1_geo_top3_cells_on_voice_usage:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/PROFILE/profile_customer_profile_ma/
+  filepath: base_path/PROFILE/sample/profile_customer_profile_ma_runpipeline/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -287,7 +287,7 @@ l0_profile_customer_profile_ma_for_l1_geo_top3_cells_on_voice_usage:
 #----------------------- usage_sum_data_location_daily_for_l1_the_favourite_locations -------------------------
 l0_usage_sum_data_location_daily_for_l1_the_favourite_locations:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/USAGE/usage_sum_data_location_daily/
+  filepath: base_path/USAGE/sample/usage_sum_data_location_daily_runpipeline/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -326,7 +326,7 @@ l0_geo_cust_cell_visit_time_for_l2_same_favourite_location_weekend_weekday:
 #----------------------- usage_sum_data_location_daily_for_l1_number_of_unique_cell -------------------------
 l0_usage_sum_data_location_daily_for_l1_number_of_unique_cell_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/USAGE/usage_sum_data_location_daily/
+  filepath: base_path/USAGE/sample/usage_sum_data_location_daily_runpipeline/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
