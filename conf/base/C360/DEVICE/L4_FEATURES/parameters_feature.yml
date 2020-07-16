@@ -1,6 +1,6 @@
 
 l4_device_summary_with_config_features_first_part:
-  partition_by: ["subscription_identifier", "access_method_num"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     sum: ["device_number_of_phone_updates", "device_most_used_handset_samsung", "device_most_used_handset_huawei",
           "device_most_used_handset_oppo", "device_most_used_handset_apple", "device_most_used_handset_xiaomi",
@@ -12,7 +12,7 @@ l4_device_summary_with_config_features_first_part:
 
 
 l4_device_summary_with_config_features_second_part:
-  partition_by: ["subscription_identifier", "access_method_num"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     max: ["device_legacyphone", "device_netbook", "device_tablet", "device_phablet",
           "device_supports_gprs", "device_supports_umts", "device_supports_hsdpa", "device_is_device_os_android",
