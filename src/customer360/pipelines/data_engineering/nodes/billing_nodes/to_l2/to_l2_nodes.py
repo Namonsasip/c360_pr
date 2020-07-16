@@ -103,7 +103,7 @@ def massive_processing_weekly(data_frame: DataFrame, dict_obj: dict, output_df_c
     return return_df
 
 
-def massive_processing_weekly_2(data_frame: DataFrame, dict_obj1: dict, dict_obj2: dict, output_df_catalog) -> DataFrame:
+def massive_processing_weekly_2(data_frame: DataFrame, dict_obj1: dict, dict_obj2: dict, output_df_temp_catalog, output_df_catalog) -> [DataFrame, DataFrame]:
     """
     :param data_frame:
     :param dict_obj:
@@ -130,12 +130,13 @@ def massive_processing_weekly_2(data_frame: DataFrame, dict_obj1: dict, dict_obj
         small_df = data_frame.filter(f.col("start_of_week").isin(*[curr_item]))
         output_df_temp = node_from_config(small_df, dict_obj1)
         output_df = node_from_config(output_df_temp, dict_obj2)
+        CNTX.catalog.save(output_df_temp_catalog, output_df_temp)
         CNTX.catalog.save(output_df_catalog, output_df)
     logging.info("Final date to run for {0}".format(str(first_item)))
     small_df_2 = data_frame.filter(f.col("start_of_week").isin(*[first_item]))
     return_df_temp = node_from_config(small_df_2, dict_obj1)
     return_df = node_from_config(return_df_temp, dict_obj2)
-    return return_df
+    return [return_df_temp, return_df]
 
 
 def customized_processing(data_frame: DataFrame, cust_prof: DataFrame, recharge_type_df: DataFrame, sql: dict,
@@ -324,9 +325,10 @@ def billing_popular_topup_day_weekly(input_df, sql1, sql2, exception_partition=N
         return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
-    final_df = massive_processing_weekly_2(input_df, sql1, sql2, "l2_billing_and_payments_weekly_popular_topup_day")
+    [final_temp_df, final_df] = massive_processing_weekly_2(input_df, sql1, sql2, "l2_billing_and_payments_weekly_popular_topup_day_intermediate",
+                                           "l2_billing_and_payments_weekly_popular_topup_day")
 
-    return final_df
+    return [final_temp_df, final_df]
 
 
 # def billing_popular_topup_day_weekly(input_df, sql) -> DataFrame:
@@ -365,8 +367,9 @@ def billing_popular_topup_hour_weekly(input_df, sql1, sql2, exception_partition=
 
     ################################# End Implementing Data availability checks ###############################
 
-    return_df = massive_processing_weekly_2(input_df, sql1, sql2, "l2_billing_and_payments_weekly_popular_topup_hour")
-    return return_df
+    [return_temp_df, return_df] = massive_processing_weekly_2(input_df, sql1, sql2, "l2_billing_and_payments_weekly_popular_topup_hour_intermediate",
+                                                              "l2_billing_and_payments_weekly_popular_topup_hour")
+    return [return_temp_df, return_df]
 
 
 # def billing_popular_topup_hour_weekly(input_df, sql) -> DataFrame:
@@ -580,9 +583,10 @@ def billing_most_popular_top_up_channel_weekly(input_df, topup_type_ref, sql1, s
                                    input_df.recharge_type == topup_type_ref.recharge_topup_event_type_cd,
                                    'left')
 
-    output_df = massive_processing_weekly_2(output_df_temp, sql1, sql2, "l2_billing_and_payments_weekly_most_popular_top_up_channel")
+    [output_temp_df, output_df] = massive_processing_weekly_2(output_df_temp, sql1, sql2, "l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate",
+                                            "l2_billing_and_payments_weekly_most_popular_top_up_channel")
 
-    return output_df
+    return [output_temp_df, output_df]
 
 
 def top_up_channel_joined_data_for_weekly_last_top_up_channel(input_df, topup_type_ref):
