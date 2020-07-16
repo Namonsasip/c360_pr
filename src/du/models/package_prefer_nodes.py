@@ -47,7 +47,7 @@ def drop_partition(start_date, end_date, table, partition_key):
         stmt = (
             "ALTER TABLE "
             + table
-            + "DROP IF EXISTS partition("
+            + " DROP IF EXISTS partition("
             + partition_key
             + "='"
             + drop_date
@@ -62,6 +62,7 @@ def drop_partition(start_date, end_date, table, partition_key):
             print(e)
     if time_diff < 0:
         print("start date must be higher than the end date")
+    spark.sql("REFRESH TABLE "+table)
 
 
 def save_folded_package(start_date, end_date, table, partition_key):
@@ -187,6 +188,7 @@ def create_daily_ontop_pack(
         )
         .drop("partition_date")
         .select(
+            "price_inc_vat",
             "package_type",
             "promotion_code",
             "package_group",
@@ -214,6 +216,7 @@ def create_daily_ontop_pack(
     # This weekly data is always updated on Wednesday, However C360 Weekly Data Define start of week by Monday
     # So, we -2 partition_date to get start_of_week for data mapping
     master_ontop_weekly_fixed = master_ontop_weekly.selectExpr(
+        "price_inc_vat",
         "package_type",
         "promotion_code",
         "package_group",
@@ -260,9 +263,6 @@ def create_daily_ontop_pack(
         ["old_subscription_identifier", "register_date", "partition_date"],
         "inner",
     ).join(master_ontop_weekly_fixed, ["promotion_code", "start_of_week"], "inner")
-    master_ontop_weekly_fixed.groupby("start_of_week").agg(
-        F.count("*").alias("CNT")
-    ).sort(F.desc("CNT")).show()
 
     # On-top package with 1 day or Less Validity can be join with usage feature directly
     one_day_ontop = daily_ontop_purchase.where("duration <= 1")
@@ -311,6 +311,7 @@ def create_daily_ontop_pack(
         "number_of_transaction",
         "access_method_num",
         "start_of_month",
+        "price_inc_vat",
         "package_type",
         "package_group",
         "mm_types",
@@ -336,6 +337,7 @@ def create_daily_ontop_pack(
         "number_of_transaction",
         "access_method_num",
         "start_of_month",
+        "price_inc_vat",
         "package_type",
         "package_group",
         "mm_types",
@@ -370,6 +372,7 @@ def create_daily_ontop_pack(
             "number_of_transaction",
             "access_method_num",
             "start_of_month",
+            "price_inc_vat",
             "package_type",
             "package_group",
             "mm_types",
@@ -384,7 +387,12 @@ def create_daily_ontop_pack(
             "ontop_start_date",
             "ontop_end_date",
         ]
-        output = output.union(tmp_fold.selectExpr(fold_column))
+
+        output = output.union(
+            tmp_fold.selectExpr(fold_column).withColumn(
+                "partition_date_str", F.date_format("partition_date", "yyyyMMdd")
+            )
+        )
     # Return union between one day on-top and multiple day on-top in daily aggregated
     # Kedro doesn't write output as hive table, which make it harder for us to manage partitioned table
     # We consider to manually save to hive table then update catalog accordingly
@@ -417,6 +425,7 @@ def create_aggregate_ontop_package_preference_input(
 
     """
     import datetime
+
     if start_date is None:
         start_date = datetime.datetime.now() + datetime.timedelta(days=-40)
     end_date = datetime.datetime.now()
@@ -460,6 +469,7 @@ def create_aggregate_ontop_package_preference_input(
                     "access_method_num",
                     "register_date",
                     "promotion_code",
+                    "price_inc_vat",
                     "package_type",
                     "package_group",
                     "mm_types",
@@ -504,6 +514,7 @@ def create_aggregate_ontop_package_preference_input(
                         "access_method_num",
                         "register_date",
                         "promotion_code",
+                        "price_inc_vat",
                         "package_type",
                         "package_group",
                         "mm_types",
@@ -562,6 +573,7 @@ def create_ontop_package_preference(
 
     """
     import datetime
+
     end_date = datetime.datetime.now()
     if start_date is None:
         start_date = datetime.datetime.now() + datetime.timedelta(days=-40)
@@ -626,6 +638,7 @@ def create_ontop_package_preference(
     # List of columns to be select, we use first() to select these value as we already sort DataFrame by product score
     column_to_aggregate_groupby = [
         "promotion_code",
+        "price_inc_vat",
         "package_type",
         "package_group",
         "mm_types",
@@ -642,7 +655,7 @@ def create_ontop_package_preference(
         group_by_aggregate_expr = [
             F.min("data_ontop_package_preference_score_" + str(period) + "_days").alias(
                 "data_ontop_package_preference_score_" + str(period) + "_days"
-            )
+            ),
         ]
         for column in column_to_aggregate_groupby:
             group_by_aggregate_expr.append(
