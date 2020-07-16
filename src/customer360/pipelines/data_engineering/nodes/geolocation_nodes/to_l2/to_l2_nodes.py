@@ -28,7 +28,7 @@ def l2_geo_time_spent_by_location_weekly(df,sql):
     df = data_non_availability_and_missing_check(df=df,grouping="weekly",
                                                  par_col="event_partition_date",
                                                  target_table_name="l2_geo_time_spent_by_location_weekly",
-                                                 missing_data_check_flg='Y')
+                                                 missing_data_check_flg='N')
     if check_empty_dfs([df]):
         return get_spark_empty_df()
 
@@ -45,7 +45,7 @@ def l2_geo_area_from_ais_store_weekly(df, sql):
     df = data_non_availability_and_missing_check(df=df, grouping="weekly",
                                                  par_col="event_partition_date",
                                                  target_table_name="l2_geo_area_from_ais_store_weekly",
-                                                 missing_data_check_flg='Y')
+                                                 missing_data_check_flg='N')
     if check_empty_dfs([df]):
         return get_spark_empty_df()
 
@@ -85,7 +85,7 @@ def l2_geo_cust_subseqently_distance_weekly(df, sql):
     df = data_non_availability_and_missing_check(df=df, grouping="weekly",
                                                  par_col="event_partition_date",
                                                  target_table_name="l2_geo_cust_subseqently_distance_weekly",
-                                                 missing_data_check_flg='Y')
+                                                 missing_data_check_flg='N')
     if check_empty_dfs([df]):
         return get_spark_empty_df()
 
@@ -149,7 +149,7 @@ def l2_geo_total_distance_km_weekly(df: DataFrame, sql: dict):
     df = data_non_availability_and_missing_check(df=df, grouping="weekly",
                                                  par_col="event_partition_date",
                                                  target_table_name="l2_geo_total_distance_km_weekly",
-                                                 missing_data_check_flg='Y')
+                                                 missing_data_check_flg='N')
     if check_empty_dfs([df]):
         return get_spark_empty_df()
 
@@ -167,7 +167,7 @@ def l2_geo_total_distance_km_weekly(df: DataFrame, sql: dict):
 #     df = data_non_availability_and_missing_check(df=df, grouping="weekly",
 #                                                  par_col="event_partition_date",
 #                                                  target_table_name="l2_geo_use_traffic_home_work_weekly",
-#                                                  missing_data_check_flg='Y')
+#                                                  missing_data_check_flg='N')
 #     if check_empty_dfs([df]):
 #         return get_spark_empty_df()
 #
@@ -185,7 +185,7 @@ def l2_geo_data_count_location_weekly(df,sql):
     df = data_non_availability_and_missing_check(df=df, grouping="weekly",
                                                  par_col="event_partition_date",
                                                  target_table_name="l2_geo_data_count_location_weekly",
-                                                 missing_data_check_flg='Y')
+                                                 missing_data_check_flg='N')
     if check_empty_dfs([df]):
         return get_spark_empty_df()
 
@@ -204,7 +204,7 @@ def l2_geo_call_home_work_location_weekly(df,sql):
     df = data_non_availability_and_missing_check(df=df, grouping="weekly",
                                                  par_col="event_partition_date",
                                                  target_table_name="l2_geo_call_home_work_location_weekly",
-                                                 missing_data_check_flg='Y')
+                                                 missing_data_check_flg='N')
     if check_empty_dfs([df]):
         return get_spark_empty_df()
 
@@ -223,7 +223,7 @@ def l2_geo_top3_cells_on_voice_usage(df,sql):
     df = data_non_availability_and_missing_check(df=df, grouping="weekly",
                                                  par_col="event_partition_date",
                                                  target_table_name="l2_geo_top3_cells_on_voice_usage",
-                                                 missing_data_check_flg='Y')
+                                                 missing_data_check_flg='N')
     if check_empty_dfs([df]):
         return get_spark_empty_df()
 
@@ -259,7 +259,7 @@ def l2_geo_distance_top_call(df):
     df = data_non_availability_and_missing_check(df=df, grouping="weekly",
                                                  par_col="event_partition_date",
                                                  target_table_name="l2_geo_top3_cells_on_voice_usage",
-                                                 missing_data_check_flg='Y')
+                                                 missing_data_check_flg='N')
     if check_empty_dfs([df]):
         return get_spark_empty_df()
 
@@ -282,7 +282,7 @@ def l2_the_favourite_locations_weekly(df):
     df = data_non_availability_and_missing_check(df=df, grouping="weekly",
                                                  par_col="event_partition_date",
                                                  target_table_name="l2_the_favourite_locations_weekly",
-                                                 missing_data_check_flg='Y')
+                                                 missing_data_check_flg='N')
     if check_empty_dfs([df]):
         return get_spark_empty_df()
 
