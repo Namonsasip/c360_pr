@@ -387,11 +387,11 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "90"
                 print("filter_col:", filter_col)
                 print("lookback_fltr:", lookback_fltr)
-                new_data = spark.sql("select * from src_data where {0} > to_date(cast('{1}' as String)) ".format(filter_col,tgt_filter_date))
-                if len(new_data.head(1)) == 0:
-                    return new_data
-                # if 1==2:
-                #     print("remove after first run")
+                # new_data = spark.sql("select * from src_data where {0} > to_date(cast('{1}' as String)) ".format(filter_col,tgt_filter_date))
+                # if len(new_data.head(1)) == 0:
+                #     return new_data
+                if 1==2:
+                    print("remove after first run")
                 else:
                     src_incremental_data = spark.sql(
                     "select * from src_data where {0} > date_sub(to_date(cast('{1}' as String)) , {2} )".format(filter_col, tgt_filter_date, lookback_fltr))
@@ -499,12 +499,12 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "12"
                 print("filter_col:", filter_col)
                 print("lookback_fltr:", lookback_fltr)
-                new_data = spark.sql(
-                    "select * from src_data where {0} > date(date_trunc('week', to_date(cast('{1}' as String)))) ".format(filter_col, tgt_filter_date))
-                if len(new_data.head(1)) == 0:
-                    return new_data
-                # if 1==2:
-                #     print("remove after first run")
+                # new_data = spark.sql(
+                #     "select * from src_data where {0} > date(date_trunc('week', to_date(cast('{1}' as String)))) ".format(filter_col, tgt_filter_date))
+                # if len(new_data.head(1)) == 0:
+                #     return new_data
+                if 1==2:
+                    print("remove after first run")
                 else:
                     src_incremental_data = spark.sql(
                     "select * from src_data where {0} > date_sub(date(date_trunc('week', to_date(cast('{1}' as String)))), 7*({2}))".format(
@@ -556,12 +556,12 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "3"
                 print("filter_col:", filter_col)
                 print("lookback_fltr:", lookback_fltr)
-                new_data = spark.sql(
-                    "select * from src_data where {0} > date(date_trunc('month', to_date(cast('{1}' as String)))) ".format(filter_col, tgt_filter_date))
-                if len(new_data.head(1)) == 0:
-                    return new_data
-                # if 1==2:
-                #     print("remove after first run")
+                # new_data = spark.sql(
+                #     "select * from src_data where {0} > date(date_trunc('month', to_date(cast('{1}' as String)))) ".format(filter_col, tgt_filter_date))
+                # if len(new_data.head(1)) == 0:
+                #     return new_data
+                if 1==2:
+                    print("remove after first run")
                 else:
                     src_incremental_data = spark.sql(
                     "select * from src_data where {0} > add_months(date(date_trunc('month', to_date(cast('{1}' as String)))), -{2})".format(
