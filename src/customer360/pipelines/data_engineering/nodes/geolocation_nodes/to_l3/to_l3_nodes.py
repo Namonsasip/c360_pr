@@ -40,7 +40,7 @@ def l3_geo_time_spent_by_location_monthly(df,sql):
     df = data_non_availability_and_missing_check(df=df, grouping="monthly",
                                                  par_col="event_partition_date",
                                                  target_table_name="l3_geo_time_spent_by_location_monthly",
-                                                 missing_data_check_flg='Y')
+                                                 missing_data_check_flg='N')
     if check_empty_dfs([df]):
         return get_spark_empty_df()
 
@@ -56,7 +56,7 @@ def l3_geo_area_from_ais_store_monthly(df,sql):
     df = data_non_availability_and_missing_check(df=df, grouping="monthly",
                                                  par_col="event_partition_date",
                                                  target_table_name="l3_geo_area_from_ais_store_monthly",
-                                                 missing_data_check_flg='Y')
+                                                 missing_data_check_flg='N')
     if check_empty_dfs([df]):
         return get_spark_empty_df()
 
@@ -72,7 +72,7 @@ def l3_geo_area_from_competitor_store_monthly(df,sql):
     df = data_non_availability_and_missing_check(df=df, grouping="monthly",
                                                  par_col="event_partition_date",
                                                  target_table_name="l3_geo_area_from_competitor_store_monthly",
-                                                 missing_data_check_flg='Y')
+                                                 missing_data_check_flg='N')
     if check_empty_dfs([df]):
         return get_spark_empty_df()
 
@@ -90,7 +90,7 @@ def l3_geo_total_distance_km_monthly(df,sql):
     df = data_non_availability_and_missing_check(df=df, grouping="monthly",
                                                  par_col="event_partition_date",
                                                  target_table_name="l3_geo_total_distance_km_monthly",
-                                                 missing_data_check_flg='Y')
+                                                 missing_data_check_flg='N')
     if check_empty_dfs([df]):
         return get_spark_empty_df()
 
@@ -108,7 +108,7 @@ def l3_geo_call_location_home_work_monthly(df,sql):
     df = data_non_availability_and_missing_check(df=df, grouping="monthly",
                                                  par_col="event_partition_date",
                                                  target_table_name="l3_geo_call_location_home_work_monthly",
-                                                 missing_data_check_flg='Y')
+                                                 missing_data_check_flg='N')
     if check_empty_dfs([df]):
         return get_spark_empty_df()
 
@@ -127,7 +127,7 @@ def l3_geo_top3_cells_on_voice_usage(df,sql):
     df = data_non_availability_and_missing_check(df=df, grouping="monthly",
                                                  par_col="event_partition_date",
                                                  target_table_name="l3_geo_top3_cells_on_voice_usage",
-                                                 missing_data_check_flg='Y')
+                                                 missing_data_check_flg='N')
     if check_empty_dfs([df]):
         return get_spark_empty_df()
 
@@ -162,7 +162,7 @@ def l3_geo_distance_top_call(df):
     df = data_non_availability_and_missing_check(df=df, grouping="monthly",
                                                  par_col="event_partition_date",
                                                  target_table_name="l3_geo_distance_top_call",
-                                                 missing_data_check_flg='Y')
+                                                 missing_data_check_flg='N')
     if check_empty_dfs([df]):
         return get_spark_empty_df()
 
@@ -185,7 +185,7 @@ def l3_the_favourite_locations_monthly(df):
     df = data_non_availability_and_missing_check(df=df, grouping="monthly",
                                                  par_col="event_partition_date",
                                                  target_table_name="l3_the_favourite_locations_monthly",
-                                                 missing_data_check_flg='Y')
+                                                 missing_data_check_flg='N')
     if check_empty_dfs([df]):
         return get_spark_empty_df()
 
@@ -262,7 +262,7 @@ def massive_processing_for_home_work(
     df = data_non_availability_and_missing_check(df=input_df, grouping="monthly",
                                                  par_col="partition_date",
                                                  target_table_name="l3_geo_home_work_location_id_monthly",
-                                                 missing_data_check_flg='Y')
+                                                 missing_data_check_flg='N')
     if check_empty_dfs(input_df):
         return get_spark_empty_df()
     # ----- Transformation -----
@@ -464,7 +464,7 @@ def l3_geo_home_weekday_city_citizens_monthly(home_work_location_id, master, sql
                                                                     grouping="monthly",
                                                                     par_col="start_of_month",
                                                                     target_table_name="l3_geo_home_weekday_city_citizens_monthly",
-                                                                    missing_data_check_flg='Y')
+                                                                    missing_data_check_flg='N')
     if check_empty_dfs([home_work_location_id]):
         return get_spark_empty_df()
 
@@ -511,13 +511,13 @@ def l3_geo_work_area_center_average_monthly(visti_hr, home_work):
                                                        grouping="monthly",
                                                        par_col="partition_date",
                                                        target_table_name="l3_geo_work_area_center_average_monthly",
-                                                       missing_data_check_flg='Y')
+                                                       missing_data_check_flg='N')
 
     home_work = data_non_availability_and_missing_check(df=home_work,
                                                         grouping="monthly",
                                                         par_col="start_of_month",
                                                         target_table_name="l3_geo_work_area_center_average_monthly",
-                                                        missing_data_check_flg='Y')
+                                                        missing_data_check_flg='N')
 
     min_value = union_dataframes_with_missing_cols(
         [
@@ -898,7 +898,7 @@ def l3_geo_use_Share_traffic_monthly(df, sql):
     df = data_non_availability_and_missing_check(df=df, grouping="monthly",
                                                  par_col="event_partition_date",
                                                  target_table_name="l3_use_non_homework_features",
-                                                 missing_data_check_flg='Y')
+                                                 missing_data_check_flg='N')
     if check_empty_dfs([df]):
         return get_spark_empty_df()
 

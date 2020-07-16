@@ -8,7 +8,7 @@ from customer360.pipelines.data_engineering.nodes.geolocation_nodes.to_l2.to_l2_
 def geo_to_l2_pipeline(**kwargs):
     return Pipeline(
         [
-
+            ### runnig flag == 4
             node(
                 l2_geo_time_spent_by_location_weekly,
                 ["l1_geo_time_spent_by_location_daily_for_l2_geo_time_spent_by_location_weekly",
@@ -54,13 +54,13 @@ def geo_to_l2_pipeline(**kwargs):
 
             ### runnig flag == 2
             ###feature_sum_voice_location###
-            node(
-                l2_geo_call_home_work_location_weekly,
-                ["l1_geo_call_location_home_work_daily_for_l2_geo_call_location_home_work_weekly",
-                 "params:l2_geo_call_location_home_work_weekly"
-                 ],
-                "l2_geo_call_location_home_work_weekly"
-            ),
+            # node(
+            #     l2_geo_call_home_work_location_weekly,
+            #     ["l1_geo_call_location_home_work_daily_for_l2_geo_call_location_home_work_weekly",
+            #      "params:l2_geo_call_location_home_work_weekly"
+            #      ],
+            #     "l2_geo_call_location_home_work_weekly"
+            # ),
 
             ##Top_3_cells_on_voice_usage###
             node(
@@ -93,6 +93,7 @@ def geo_to_l2_pipeline(**kwargs):
                 "l2_the_favourite_locations_weekly"
             ),
 
+            ### runnig flag == 3
             # 27 Same favourite location for weekend and weekday
             node(
                 l2_same_favourite_location_weekend_weekday_weekly,

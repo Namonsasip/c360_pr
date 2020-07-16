@@ -5,7 +5,7 @@ l4_geo_time_spent_by_location:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l2_weekly'
@@ -18,7 +18,7 @@ l4_geo_area_from_ais_store:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l2_weekly'
@@ -31,7 +31,7 @@ l4_geo_area_from_competitor_store:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l2_weekly'
@@ -44,7 +44,7 @@ l4_geo_home_work_location_id:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_month"
     read_layer: 'l3_monthly'
@@ -58,7 +58,7 @@ l4_geo_work_area_center_average:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_month"
     read_layer: 'l0_daily'
@@ -72,7 +72,7 @@ l4_geo_top_visit_exclude_homework:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_month"
     read_layer: 'l3_monthly'
@@ -85,7 +85,7 @@ l4_geo_home_weekday_city_citizens:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_month"
     read_layer: 'l3_monthly'
@@ -98,7 +98,7 @@ l4_geo_total_distance_km:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l4_monthly'
@@ -111,7 +111,7 @@ l4_geo_cust_subseqently_distance:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l2_weekly'
@@ -124,7 +124,7 @@ l4_geo_use_traffic_home_work_most:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_month"
     read_layer: 'l3_monthly'
@@ -137,7 +137,7 @@ l4_geo_number_of_base_station:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l2_weekly'
@@ -150,7 +150,7 @@ l4_geo_call_location_home_work_weekly:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l2_weekly'
@@ -163,7 +163,7 @@ l4_geo_number_unique_cell_used:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
@@ -176,7 +176,7 @@ l4_geo_last_AIS_store_visit:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy:  "partition_month"
     read_layer: 'l1_daily'
@@ -188,7 +188,7 @@ l4_geo_most_AIS_store_visit:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy:  "partition_month"
     read_layer: 'l1_daily'
@@ -200,7 +200,7 @@ l4_geo_store_close_to_home:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy:  "start_of_month"
     read_layer: 'l1_daily'
@@ -212,7 +212,7 @@ l4_geo_store_close_to_work:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy:  "start_of_month"
     read_layer: 'l1_daily'
@@ -225,7 +225,7 @@ l4_geo_top3_cells_on_voice_usage:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy:  "start_of_week"
     read_layer: 'l2_weekly'
@@ -238,7 +238,7 @@ l4_geo_distance_top_call:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy:  "start_of_week"
     read_layer: 'l2_weekly'
@@ -251,7 +251,7 @@ l4_geo_range_from_most_visited:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy:  "partition_month"
     read_layer: 'l1_daily'
@@ -278,7 +278,7 @@ l4_the_favourite_locations_daily:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy:  "event_partition_date"
     read_layer: 'l1_daily'
@@ -291,7 +291,7 @@ l4_the_most_frequently_location_weekdays:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy:  "start_of_week"
     read_layer: 'l1_daily'
@@ -304,7 +304,7 @@ l4_the_most_frequently_location_weekdays_4g:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy:  "start_of_week"
     read_layer: 'l1_daily'
@@ -317,7 +317,7 @@ l4_the_most_frequently_location_weekends:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy:  "start_of_week"
     read_layer: 'l1_daily'
@@ -330,7 +330,7 @@ l4_the_most_frequently_location_weekends_4g:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy:  "start_of_week"
     read_layer: 'l1_daily'
@@ -343,7 +343,7 @@ l4_the_most_frequently_location:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy:  "start_of_week"
     read_layer: 'l1_daily'
@@ -356,7 +356,7 @@ l4_the_most_frequently_location_4g:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy:  "start_of_week"
     read_layer: 'l1_daily'
@@ -369,7 +369,7 @@ l4_the_second_frequently_location_weekdays:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy:  "start_of_week"
     read_layer: 'l1_daily'
@@ -382,7 +382,7 @@ l4_the_second_frequently_location_weekdays_4g:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy:  "start_of_week"
     read_layer: 'l1_daily'
@@ -395,7 +395,7 @@ l4_the_second_frequently_location_weekends:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy:  "start_of_week"
     read_layer: 'l1_daily'
@@ -407,7 +407,7 @@ l4_the_second_frequently_location_weekends_4g:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy:  "start_of_week"
     read_layer: 'l1_daily'
@@ -420,7 +420,7 @@ l4_the_second_frequently_location:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy:  "start_of_week"
     read_layer: 'l1_daily'
@@ -433,7 +433,7 @@ l4_the_second_frequently_location_4g:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy:  "start_of_week"
     read_layer: 'l1_daily'
@@ -446,7 +446,7 @@ l4_geo_from_number_of_used_most_frequent_weekdays:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l4_weekly'
@@ -458,7 +458,7 @@ l4_geo_from_number_of_used_most_frequent_weekends:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "start_of_week"
     read_layer: 'l4_weekly'
@@ -471,7 +471,7 @@ l4_geo_number_most_frequent_top_five:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l4_weekly'
@@ -483,7 +483,7 @@ l4_geo_number_most_frequent_top_five_weekdays:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l1_daily'
@@ -495,7 +495,7 @@ l4_geo_number_most_frequent_top_five_weekends:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l1_daily'
