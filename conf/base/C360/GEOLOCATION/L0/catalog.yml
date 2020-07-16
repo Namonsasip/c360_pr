@@ -5,7 +5,7 @@ l0_geo_cust_cell_visit_time_for_l1_geo_time_spent_by_location_daily:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l1_geo_time_spent_by_location_daily'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -18,7 +18,7 @@ l0_mst_poi_shape_for_l1_geo_area_from_ais_store_daily:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l1_geo_area_from_ais_store_daily'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -31,7 +31,7 @@ l0_mst_cell_masterplan_for_l1_geo_area_from_ais_store_daily:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l1_geo_area_from_ais_store_daily'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -44,7 +44,7 @@ l0_mst_cell_masterplan_for_l3_geo_home_weekday_city_citizens_monthly:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l3_geo_home_weekday_city_citizens_monthly'
     read_layer: 'l0_daily'
     target_layer: 'l3_monthly'
@@ -57,7 +57,7 @@ l0_geo_cust_cell_visit_time_for_l1_geo_area_from_ais_store_daily:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l1_geo_area_from_ais_store_daily'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -70,7 +70,7 @@ l0_geo_cust_location_visit_hr_for_l3_geo_work_area_center_average_monthly:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l3_geo_work_area_center_average_monthly'
     read_layer: 'l0_daily'
     target_layer: 'l3_monthly'
@@ -83,7 +83,7 @@ l0_mst_poi_shape_for_l1_geo_area_from_competitor_store_daily:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l1_geo_area_from_competitor_store_daily'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -96,7 +96,7 @@ l0_mst_cell_masterplan_for_l1_geo_area_from_competitor_store_daily:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l1_geo_area_from_competitor_store_daily'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -109,7 +109,7 @@ l0_geo_cust_cell_visit_time_for_l1_geo_area_from_competitor_store_daily:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l1_geo_area_from_competitor_store_daily'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -122,7 +122,7 @@ l0_geo_cust_cell_visit_time_for_int_l4_geo_home_work_location_id:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l3_geo_home_work_location_id_monthly'
     read_layer: 'l0_daily'
     target_layer: 'l3_monthly'
@@ -135,7 +135,7 @@ l0_geo_cust_cell_visit_time_for_l1_geo_cust_subseqently_distance_daily:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l1_geo_cust_subseqently_distance_daily'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -148,7 +148,7 @@ l0_geo_cust_cell_visit_time_for_l1_geo_total_distance_km_daily:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l1_geo_total_distance_km_daily'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -161,10 +161,22 @@ l0_geo_mst_cell_masterplan_current_for_l3_use_non_homework_features:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l3_use_non_homework_features'
     read_layer: 'l0_daily'
     target_layer: 'l3_monthly'
+    lookback: '0'
+    
+l0_geo_mst_cell_masterplan_current_for_l1_use_non_homework_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/geo_mst_cell_masterplan/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_use_non_homework_features'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
     lookback: '0'
 
 #----------------------- geo_home_work_data_use_non_homework_features -------------------------
@@ -174,7 +186,7 @@ l0_geo_home_work_data_for_l1_use_non_homework_features:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l1_use_non_homework_features'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -187,7 +199,7 @@ l0_profile_customer_profile_ma_for_l3_use_non_homework_features:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l3_use_non_homework_features'
     read_layer: 'l0_monthly'
     target_layer: 'l3_monthly'
@@ -200,7 +212,7 @@ l0_usage_sum_data_location_daily_for_l3_use_non_homework_features:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l3_use_non_homework_features'
     read_layer: 'l0_daily'
     target_layer: 'l3_monthly'
@@ -213,7 +225,7 @@ l0_geo_cust_cell_visit_time_daily_for_l1_geo_number_of_bs_used:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l1_geo_number_of_bs_used'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -226,7 +238,7 @@ l0_usage_sum_voice_location_daily_for_l1_homework_features:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l1_homework_features'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -239,7 +251,7 @@ l0_geo_top_visit_exclude_homework_for_l1_sum_voice_daily:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l1_sum_voice_daily'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -252,7 +264,7 @@ l0_usage_sum_voice_location_daily_for_l1_geo_top3_cells_on_voice_usage:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l1_geo_top3_cells_on_voice_usage'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -265,7 +277,7 @@ l0_geo_mst_cell_masterplan_for_l1_geo_top3_cells_on_voice_usage:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l1_geo_top3_cells_on_voice_usage'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -278,7 +290,20 @@ l0_profile_customer_profile_ma_for_l1_geo_top3_cells_on_voice_usage:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
+    lookup_table_name: 'l1_geo_top3_cells_on_voice_usage'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+#----------------------- profile_customer_profile_ma_for_l1_geo_call_location_home_work -------------------------
+l0_profile_customer_profile_ma_for_l1_use_non_homework_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/sample/profile_customer_profile_ma_runpipeline/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'no'
     lookup_table_name: 'l1_geo_top3_cells_on_voice_usage'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -291,7 +316,7 @@ l0_usage_sum_data_location_daily_for_l1_the_favourite_locations:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l1_the_favourite_locations'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -304,7 +329,7 @@ l0_geo_mst_cell_masterplan_for_l1_the_favourite_locations:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l1_the_favourite_locations'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
@@ -317,7 +342,7 @@ l0_geo_cust_cell_visit_time_for_l2_same_favourite_location_weekend_weekday:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l2_same_favourite_location_weekend_weekday'
     read_layer: 'l0_daily'
     target_layer: 'l2_weekly'
@@ -330,7 +355,7 @@ l0_usage_sum_data_location_daily_for_l1_number_of_unique_cell_daily:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l1_number_of_unique_cell_daily'
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
