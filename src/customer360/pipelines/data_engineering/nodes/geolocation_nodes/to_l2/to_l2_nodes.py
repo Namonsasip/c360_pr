@@ -62,11 +62,17 @@ def l2_geo_area_from_competitor_store_weekly(df,sql):
                                                  par_col="event_partition_date",
                                                  target_table_name="l2_geo_area_from_competitor_store_weekly",
                                                  missing_data_check_flg='Y')
+
+    print('DEBUG ------------------------------> (1)')
+    df.show(10)
+
     if check_empty_dfs([df]):
         return get_spark_empty_df()
 
 
-    df =node_from_config(df,sql)
+    df = node_from_config(df,sql)
+    print('DEBUG ------------------------------> (2)')
+    df.show(10)
     return df
 
 

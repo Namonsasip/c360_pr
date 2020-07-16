@@ -25,6 +25,7 @@ def geo_to_l2_pipeline(**kwargs):
                 "l2_geo_area_from_ais_store_weekly"
             ),
 
+            ### runnig flag == 1
             node(
                 l2_geo_area_from_competitor_store_weekly,
                 ["l1_geo_area_from_competitor_store_daily_for_l2_geo_area_from_competitor_store_weekly",

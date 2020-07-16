@@ -72,7 +72,7 @@ def geo_to_l1_pipeline(**kwargs):
                 "l1_geo_call_location_home_work_daily"
             ),
 
-            ## runnig flag == 1
+            ### runnig flag == 1
             ###feature_AIS_store###
             node(
                 l1_location_of_visit_ais_store_daily,
