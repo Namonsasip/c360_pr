@@ -540,21 +540,14 @@ def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
         return get_spark_empty_df()
 
     usage_df = data_non_availability_and_missing_check(df=usage_df,
-                                                              grouping="daily",
-                                                              par_col="partition_date",
-                                                              target_table_name="l1_geo_top3_cells_on_voice_usage")
+                                                       grouping="daily",
+                                                       par_col="partition_date",
+                                                       target_table_name="l1_geo_top3_cells_on_voice_usage")
 
     profile_df = data_non_availability_and_missing_check(df=profile_df,
                                                          grouping="monthly",
                                                          par_col="partition_month",
                                                          target_table_name="L1_usage_sum_data_location_daily_data_profile_customer_profile_ma")
-
-    # Debug pipeline
-    print('DEBUG ---------------------------> (1)')
-    usage_df.show(10)
-
-    print('DEBUG ---------------------------> (2)')
-    profile_df.show(10)
 
     geo_df = get_max_date_from_master_data(geo_df, 'partition_date')
 
@@ -569,9 +562,17 @@ def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
         ]
     ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
 
+    print('DEBUG ---------------------------> (1)')
+    print(min_value)
+
     usage_df = usage_df.filter(
         F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
     profile_df = profile_df.filter(F.to_date(F.col("partition_month").cast(StringType()), 'yyyyMM') <= min_value)
+
+    print('DEBUG ---------------------------> (2)')
+    usage_df.show(10)
+    print('DEBUG ---------------------------> (3)')
+    profile_df.show(10)
 
     if check_empty_dfs([usage_df, profile_df]):
         return get_spark_empty_df()
@@ -639,7 +640,7 @@ def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
     l1_df1 = l1_df1.withColumn("start_of_month", F.to_date(F.date_trunc('month', l1_df1.event_partition_date)))
     # l1_df2 = node_from_config(l1_df1, sql)
 
-    print('DEBUG ---------------------------> (3)')
+    print('DEBUG ---------------------------> (4)')
     l1_df1.show(10)
 
     return l1_df1
