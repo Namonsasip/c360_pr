@@ -93,7 +93,7 @@ def treatments_featurize(
     treatments_features = add_churn_ard_optimizer_features(
         treatments_features, propensities, parameters
     )
-    treatments_features = add_inactivity_days_num(treatments_features)
+    treatments_features = add_inactivity_days_num(treatments_features, parameters)
     return treatments_features
 
 
