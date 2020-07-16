@@ -42,11 +42,8 @@ def sample_subscription_identifier(
 
     cust_profile_df.createOrReplaceTempView("cust_profile_df")
     distinct_sub_id_df = spark.sql("""
-        select 
-            distinct(crm_sub_id) as subscription_identifier
+        select distinct(subscription_identifier) as subscription_identifier
         from cust_profile_df
-        where crm_sub_id is not null
-          and lower(crm_sub_id) != 'na'
     """)
     distinct_sub_id_count = distinct_sub_id_df.count()
 
