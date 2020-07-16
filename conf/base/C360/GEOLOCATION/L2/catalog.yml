@@ -229,6 +229,7 @@ l2_same_favourite_location_weekend_weekday_weekly:
     lookup_table_name: 'l2_same_favourite_location_weekend_weekday_weekly'
     read_layer: 'l0_daily'
     target_layer: 'l2_weekly'
+    mode: "overwrite"
 
 
 l2_geo_cust_subseqently_distance_weekly_for_l4_geo_cust_subseqently_distance:
