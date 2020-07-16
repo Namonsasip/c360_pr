@@ -1,7 +1,7 @@
 #----------------------- geo_time_spent_by_location -------------------------
 l0_geo_cust_cell_visit_time_for_l1_geo_time_spent_by_location_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/geo_cust_cell_visit_time/
+  filepath: base_path/GEO/sample/geo_cust_cell_visit_time_runpipeline/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -53,7 +53,7 @@ l0_mst_cell_masterplan_for_l3_geo_home_weekday_city_citizens_monthly:
 #----------------------- geo_cust_cell_visit_time_geo_area_from_ais_store -------------------------
 l0_geo_cust_cell_visit_time_for_l1_geo_area_from_ais_store_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/geo_cust_cell_visit_time/
+  filepath: base_path/GEO/sample/geo_cust_cell_visit_time_runpipeline/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -105,7 +105,7 @@ l0_mst_cell_masterplan_for_l1_geo_area_from_competitor_store_daily:
 #----------------------- geo_cust_cell_visit_time_geo_area_from_competitor_store -------------------------
 l0_geo_cust_cell_visit_time_for_l1_geo_area_from_competitor_store_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/geo_cust_cell_visit_time/
+  filepath: base_path/GEO/sample/geo_cust_cell_visit_time_runpipeline/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -118,7 +118,7 @@ l0_geo_cust_cell_visit_time_for_l1_geo_area_from_competitor_store_daily:
 #----------------------- geo_cust_cell_visit_time_geo_home_work_location_id -------------------------
 l0_geo_cust_cell_visit_time_for_int_l4_geo_home_work_location_id:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/geo_cust_cell_visit_time/
+  filepath: base_path/GEO/sample/geo_cust_cell_visit_time_runpipeline/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -131,7 +131,7 @@ l0_geo_cust_cell_visit_time_for_int_l4_geo_home_work_location_id:
 #----------------------- geo_cust_cell_visit_time_geo_cust_subseqently_distance -------------------------
 l0_geo_cust_cell_visit_time_for_l1_geo_cust_subseqently_distance_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/geo_cust_cell_visit_time/
+  filepath: base_path/GEO/sample/geo_cust_cell_visit_time_runpipeline/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -144,7 +144,7 @@ l0_geo_cust_cell_visit_time_for_l1_geo_cust_subseqently_distance_daily:
 #----------------------- geo_cust_cell_visit_time_simple_data -------------------------
 l0_geo_cust_cell_visit_time_for_l1_geo_total_distance_km_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/geo_cust_cell_visit_time/
+  filepath: base_path/GEO/sample/geo_cust_cell_visit_time_runpipeline/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -209,7 +209,7 @@ l0_usage_sum_data_location_daily_for_l3_use_non_homework_features:
 #----------------------- geo_cust_cell_visit_time_for_geo_number_of_bs_used -------------------------
 l0_geo_cust_cell_visit_time_daily_for_l1_geo_number_of_bs_used:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/geo_cust_cell_visit_time/
+  filepath: base_path/GEO/sample/geo_cust_cell_visit_time_runpipeline/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -313,7 +313,7 @@ l0_geo_mst_cell_masterplan_for_l1_the_favourite_locations:
 #----------------------- geo_cust_cell_visit_time_for_l2_same_favourite_location -------------------------
 l0_geo_cust_cell_visit_time_for_l2_same_favourite_location_weekend_weekday:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/geo_cust_cell_visit_time/
+  filepath: base_path/GEO/sample/geo_cust_cell_visit_time_runpipeline/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
