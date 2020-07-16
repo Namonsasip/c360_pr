@@ -566,7 +566,7 @@ def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
     print(min_value)
 
     usage_df = usage_df.filter(
-        F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+        F.to_date(F.date_trunc('month',F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd'))) <= min_value)
     profile_df = profile_df.filter(F.to_date(F.col("partition_month").cast(StringType()), 'yyyyMM') <= min_value)
 
     print('DEBUG ---------------------------> (2)')
