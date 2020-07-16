@@ -55,6 +55,10 @@ l2_billing_and_payment_top_up_channels_weekly:
     payments_top_up_vol_by_epos: "sum(payments_top_up_vol_by_epos)"
     payments_top_ups_by_rom: "sum(payments_top_ups_by_rom)"
     payments_top_up_vol_by_rom: "sum(payments_top_up_vol_by_rom)"
+    payments_top_ups_by_mpay_non_vending: "sum(payments_top_ups_by_mpay_non_vending)"
+    payments_top_up_vol_by_mpay_non_vending: "sum(payments_top_up_vol_by_mpay_non_vending)"
+    payments_top_ups_by_mpay_vending: "sum(payments_top_ups_by_mpay_vending)"
+    payments_top_up_vol_by_mpay_vending: "sum(payments_top_up_vol_by_mpay_vending)"
     payments_top_ups_avg_by_bank_atm_cdm: "avg(payments_top_ups_by_bank_atm_cdm)"
     payments_top_up_vol_avg_by_bank_atm_cdm: "avg(payments_top_up_vol_by_bank_atm_cdm)"
     payments_top_ups_avg_by_cash_card: "avg(payments_top_ups_by_cash_card)"
@@ -67,6 +71,10 @@ l2_billing_and_payment_top_up_channels_weekly:
     payments_top_up_vol_avg_by_epos: "avg(payments_top_up_vol_by_epos)"
     payments_top_ups_avg_by_rom: "avg(payments_top_ups_by_rom)"
     payments_top_up_vol_avg_by_rom: "avg(payments_top_up_vol_by_rom)"
+    payments_top_ups_avg_by_mpay_non_vending: "avg(payments_top_ups_by_mpay_non_vending)"
+    payments_top_up_vol_avg_by_mpay_non_vending: "avg(payments_top_up_vol_by_mpay_non_vending)"
+    payments_top_ups_avg_by_mpay_vending: "avg(payments_top_ups_by_mpay_vending)"
+    payments_top_up_vol_avg_by_mpay_vending: "avg(payments_top_up_vol_by_mpay_vending)"
   granularity: "start_of_week,subscription_identifier"
 
 l2_popular_top_up_channel:
