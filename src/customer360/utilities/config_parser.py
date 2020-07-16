@@ -121,8 +121,8 @@ def union_dataframes_with_missing_cols(df_input_or_list, *args):
 
 def _get_full_data(src_data, fea_dict):
 
-    if len(src_data.head(1)) == 0:
-        return src_data
+    # if len(src_data.head(1)) == 0:
+    #     return src_data
 
     spark = get_spark_session()
 
@@ -204,9 +204,9 @@ def l4_rolling_window(input_df: DataFrame, config: dict):
     :param config:
     :return:
     """
-    if len(input_df.head(1)) == 0:
-        logging.info("l4_rolling_window -> df == 0 records found in input dataset")
-        return input_df
+    # if len(input_df.head(1)) == 0:
+    #     logging.info("l4_rolling_window -> df == 0 records found in input dataset")
+    #     return input_df
     logging.info("l4_rolling_window -> df > 0 records found in input dataset")
     ranked_lookup_enable_flag = config.get('ranked_lookup_enable_flag', "No")
 
@@ -392,8 +392,8 @@ def node_from_config(input_df: DataFrame, config: dict) -> DataFrame:
     :param config:
     :return:
     """
-    if len(input_df.head(1)) == 0:
-        return input_df
+    # if len(input_df.head(1)) == 0:
+    #     return input_df
 
     table_name = "input_table"
     input_df.createOrReplaceTempView(table_name)
@@ -417,8 +417,8 @@ def expansion(input_df, config) -> DataFrame:
     :return:
     """
 
-    if len(input_df.head(1)) == 0:
-        return input_df
+    # if len(input_df.head(1)) == 0:
+    #     return input_df
 
     table_name = "input_table"
     input_df.createOrReplaceTempView(table_name)
@@ -458,8 +458,8 @@ def __generate_l4_rolling_ranked_column(
         config
 ) -> DataFrame:
 
-    if len(input_df.head(1)) == 0:
-        return input_df
+    # if len(input_df.head(1)) == 0:
+    #     return input_df
 
     table_name = "input_table"
     input_df.createOrReplaceTempView(table_name)
@@ -616,9 +616,9 @@ def __construct_null_safe_join_condition(
 
 def join_l4_rolling_ranked_table(result_df, config):
 
-    for _, df in result_df.items():
-        if len(df.head(1)) == 0:
-            return df
+    # for _, df in result_df.items():
+    #     if len(df.head(1)) == 0:
+    #         return df
 
     feature_column = [F.col("left.{}".format(each_col)) for each_col in config["partition_by"]]
 
@@ -683,8 +683,8 @@ def l4_rolling_ranked_window(
         config
 ) -> Dict[str, DataFrame]:
 
-    if len(input_df.head(1)) == 0:
-        return input_df
+    # if len(input_df.head(1)) == 0:
+    #     return input_df
 
     ranked_df = __generate_l4_rolling_ranked_column(input_df, config)
     result_df = __generate_l4_filtered_ranked_table(ranked_df, config)
