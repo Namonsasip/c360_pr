@@ -357,7 +357,9 @@ def l1_call_location_home_work(cell_masterplan,geo_homework,profile_ma,usage_sum
         ]
     ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
 
-    usage_sum_voice = usage_sum_voice.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+    usage_sum_voice = usage_sum_voice.filter(
+        F.to_date(F.date_trunc("month", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))) <= min_value)
+
     profile_ma = profile_ma.filter(F.to_date(F.col("partition_month").cast(StringType()), 'yyyyMM') <= min_value)
 
     if check_empty_dfs([usage_sum_voice, profile_ma]):
