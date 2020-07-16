@@ -527,7 +527,7 @@ def l1_location_of_visit_ais_store_daily(shape,cust_cell_visit,sql):
      """)
 
     df.cache()
-    print("Start for check result from sql query statement")
+    # print("Start for check result from sql query statement")
     # df.count()
     # df.show()
 
@@ -564,19 +564,12 @@ def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
         ]
     ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
 
-    # print('DEBUG ---------------------------> (1)')
-    # print(min_value) # 2019-11-01
 
     usage_df = usage_df.filter(
         F.to_date(F.date_trunc("month", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))) <= min_value)
 
     profile_df = profile_df.filter(F.to_date(F.col("partition_month").cast(StringType()), 'yyyyMM') <= min_value)
 
-    print('DEBUG ---------------------------> (2)')
-    usage_df.show(10)
-
-    # print('DEBUG ---------------------------> (3)')
-    # profile_df.show(10)
 
     if check_empty_dfs([usage_df, profile_df]):
         return get_spark_empty_df()
@@ -644,8 +637,6 @@ def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
     l1_df1 = l1_df1.withColumn("start_of_month", F.to_date(F.date_trunc('month', l1_df1.event_partition_date)))
     # l1_df2 = node_from_config(l1_df1, sql)
 
-    print('DEBUG ---------------------------> (4)')
-    l1_df1.show(10)
 
     return l1_df1
 

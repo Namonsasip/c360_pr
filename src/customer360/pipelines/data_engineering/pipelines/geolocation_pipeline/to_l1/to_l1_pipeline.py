@@ -50,15 +50,15 @@ def geo_to_l1_pipeline(**kwargs):
                  "l1_geo_total_distance_km_daily"
             ),
 
-            #
-            # ###Number_of_base_station###
-            # node(
-            #     l1_geo_number_of_bs_used,
-            #     ["l0_geo_cust_cell_visit_time_daily_for_l1_geo_number_of_bs_used",
-            #      "params:l1_geo_data_count_location_id"
-            #      ],
-            #     "l1_geo_number_of_bs_used"
-            # ),
+
+            ###Number_of_base_station###
+            node(
+                l1_geo_number_of_bs_used,
+                ["l0_geo_cust_cell_visit_time_daily_for_l1_geo_number_of_bs_used",
+                 "params:l1_geo_data_count_location_id"
+                 ],
+                "l1_geo_number_of_bs_used"
+            ),
 
             ###feature_sum_voice_location###
             node(
@@ -72,16 +72,16 @@ def geo_to_l1_pipeline(**kwargs):
                 "l1_geo_call_location_home_work_daily"
             ),
 
-            ### runnig flag == 1
-            # ###feature_AIS_store###
-            # node(
-            #     l1_location_of_visit_ais_store_daily,
-            #     ["l0_mst_poi_shape_for_l1_geo_area_from_ais_store_daily",
-            #      "l0_geo_cust_cell_visit_time_for_l1_geo_time_spent_by_location_daily",
-            #      "params:l1_location_of_visit_ais_store_daily"
-            #      ],
-            #     "l1_location_of_visit_ais_store_daily"
-            # ),
+            ## runnig flag == 1
+            ###feature_AIS_store###
+            node(
+                l1_location_of_visit_ais_store_daily,
+                ["l0_mst_poi_shape_for_l1_geo_area_from_ais_store_daily",
+                 "l0_geo_cust_cell_visit_time_for_l1_geo_time_spent_by_location_daily",
+                 "params:l1_location_of_visit_ais_store_daily"
+                 ],
+                "l1_location_of_visit_ais_store_daily"
+            ),
 
             ##Top_3_cells_on_voice_usage###
             node(
