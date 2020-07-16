@@ -57,13 +57,15 @@ def l2_geo_area_from_competitor_store_weekly(df,sql):
     # ----- Data Availability Checks -----
     if check_empty_dfs([df]):
         return get_spark_empty_df()
+    print('DEBUG ------------------------------> (1)')
+    df.show(10)
 
     df = data_non_availability_and_missing_check(df=df, grouping="weekly",
                                                  par_col="event_partition_date",
                                                  target_table_name="l2_geo_area_from_competitor_store_weekly",
-                                                 missing_data_check_flg='Y')
+                                                 missing_data_check_flg='N')
 
-    print('DEBUG ------------------------------> (1)')
+    print('DEBUG ------------------------------> (2)')
     df.show(10)
 
     if check_empty_dfs([df]):
@@ -71,7 +73,7 @@ def l2_geo_area_from_competitor_store_weekly(df,sql):
 
 
     df = node_from_config(df,sql)
-    print('DEBUG ------------------------------> (2)')
+    print('DEBUG ------------------------------> (3)')
     df.show(10)
     return df
 
