@@ -1,10 +1,7 @@
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
-from pyspark.sql import Window
-
-from customer360.utilities.re_usable_functions import check_empty_dfs, \
-    data_non_availability_and_missing_check, union_dataframes_with_missing_cols
-
+from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check,\
+    union_dataframes_with_missing_cols
 from customer360.utilities.spark_util import get_spark_empty_df
 
 
@@ -63,8 +60,7 @@ def merge_with_customer_prepaid_df(source_df: DataFrame,
 
     final_df = source_df.join(cust_df, join_key)
 
-    final_df = final_df.where("subscription_identifier is not null and start_of_month is not null")\
-                       .drop("access_method_num", "register_date")
+    final_df = final_df.drop("access_method_num", "register_date", "start_of_week", "event_partition_date")
 
     return final_df
 
@@ -123,6 +119,6 @@ def merge_with_customer_postpaid_df(source_df: DataFrame,
 
     final_df = source_df.join(cust_df, join_key)
 
-    final_df = final_df.where("subscription_identifier is not null and start_of_month is not null")
+    final_df = final_df.drop("start_of_week", "event_partition_date")
 
     return final_df
