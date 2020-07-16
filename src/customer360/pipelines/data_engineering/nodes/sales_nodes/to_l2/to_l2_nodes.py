@@ -114,7 +114,7 @@ def sale_product_customer_master_on_top_features(sale_df: DataFrame,
     #joining volume and name feature to create one master feature table
     master_sales_features = master_volume_features.join(master_name_features, master_sales_features_join_cols, how='left')
 
-    customer_cols = [ 'subscription_identifier',
+    customer_cols = ['subscription_identifier',
                      'national_id_card',
                      'start_of_week']
 
@@ -195,7 +195,7 @@ def sale_product_customer_master_main_features(sale_df: DataFrame,
     ################################# End Implementing Data availability checks ###############################
 
     sale_cols = ['service_order_item_id', 'partition_date', 'service_order_item_eff_dttm',
-                 'offering_title', 'offering_cd', 'offering_promotion_class', 'mobile_num', 'crm_subscription_id', 'offering_price', 'cmd_channel_type', 'cmd_channel_sub_type']
+                 'offering_title', 'offering_cd', 'offering_promotion_class', 'crm_subscription_id', 'offering_price', 'cmd_channel_type', 'cmd_channel_sub_type']
     product_cols = ['partition_date', 'service_group', 'promotion_code']
 
     sale_product_join_cols = ['start_of_week', 'offering_code']
@@ -204,7 +204,6 @@ def sale_product_customer_master_main_features(sale_df: DataFrame,
     sale_df = sale_df.select(sale_cols).where("lower(offering_promotion_class) = 'main'")
     sale_df = sale_df.withColumn("start_of_week", f.to_date(f.date_trunc("week", f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd'))))
     sale_df = sale_df.withColumnRenamed("offering_cd", "offering_code").drop("partition_date") \
-                    .withColumnRenamed("mobile_num","access_method_num") \
                     .withColumnRenamed("crm_subscription_id","subscription_identifier")
 
     
