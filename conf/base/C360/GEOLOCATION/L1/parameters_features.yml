@@ -1,0 +1,69 @@
+l1_geo_time_spent_by_location_daily:
+  where_clause: ""
+  feature_list:
+    imsi: "imsi"
+    sum_duration: "first_value(SUM_DURATION)"
+    location_id: "location_ID"
+  granularity: "imsi,location_id,event_partition_date,start_of_week,start_of_month"
+
+l1_area_from_ais_store_daily:
+  where_clause: ""
+  feature_list:
+    duration: "first_value(DURATION)"
+    num_of_times: "first_value(NUM_OF_TIMES_PER_DAY)"
+  granularity: "imsi,event_partition_date,start_of_week,start_of_month"
+
+l1_area_from_competitor_store_daily:
+  where_clause: ""
+  feature_list:
+    duration: "first_value(DURATION)"
+    num_of_times: "first_value(NUM_OF_TIMES_PER_DAY)"
+  granularity: "imsi,event_partition_date,start_of_week,start_of_month"
+
+l1_geo_cust_subseqently_distance_daily:
+  where_clause: ""
+  feature_list:
+    distance_km: "sum(distance_km)"
+  granularity: "imsi, event_partition_date"
+
+###total_distance_km###
+l1_geo_total_distance_km_daily:
+  where_clause: ""
+  feature_list:
+    sum_distance_km: "sum(total_distance_km)"
+  granularity: "imsi,event_partition_date,start_of_week,start_of_month"
+
+###Number_of_base_station###
+l1_geo_data_count_location_id:
+  where_clause: ""
+  feature_list:
+    data_count_location_id: "COUNT(LOCATION_ID)"
+    data_count_distinct_location_id: "COUNT(DISTINCT LOCATION_ID)"
+    data_count_cell_id: "COUNT(CELL_ID)"
+  granularity: "imsi, event_partition_date"
+
+
+###Number of Unique Cells Used###
+l1_geo_number_unique_cell_id:
+  where_clause: ""
+  feature_list:
+    data_num_unique_cell: "durations_num"
+  granularity: "event_partition_date"
+
+###feature_AIS_store###
+l1_location_of_visit_ais_store_daily:
+  where_clause: ""
+  feature_list:
+    imsi: "imsi"
+    store_location_id:  "location_id"
+    store_name: "landmark_name_th"
+    store_category: "landmark_sub_name_en"
+    store_latitude: "landmark_latitude"
+    store_longitude:  "landmark_longitude"
+    last_visit: "time_in"
+    partition_month:  "partition_month"
+    event_partition_date: "event_partition_date"
+  granularity:  ""
+
+
+
