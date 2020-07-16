@@ -168,7 +168,7 @@ int_l3_geo_home_location_id_monthly:
     lookup_table_name: 'l3_geo_home_work_location_id_monthly'
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
-    lookback: '0'
+    lookback: '3'
 
 int_l3_geo_work_location_id_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -186,7 +186,7 @@ int_l3_geo_work_location_id_monthly:
     lookup_table_name: 'l3_geo_home_work_location_id_monthly'
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
-    lookback: '0'
+    lookback: '3'
 
 l3_geo_home_work_location_id_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
