@@ -155,11 +155,11 @@ def group_threshold_output(df: pyspark.sql.DataFrame) -> pyspark.sql.DataFrame:
                 f.countDistinct("feature_column_name").alias("no_of_columns"),
                 f.countDistinct("metric").alias("no_of_metrics"),
                 f.count("in_auto_manual_threshold").alias("total_count"),
-                f.count(f.when(f.col("in_auto_manual_threshold"), True)).alias("green_count"),
-                f.count(f.when(~f.col("in_auto_manual_threshold"), True)).alias("red_count"),
+                f.count(f.when(f.col("in_auto_manual_threshold"), True)).alias("in_threshold_count"),
+                f.count(f.when(~f.col("in_auto_manual_threshold"), True)).alias("out_threshold_count"),
             )
-            .withColumn("percent_green", f.round(f.col("green_count") / (f.col("green_count") + f.col("red_count")), 4))
-            .withColumn("percent_red", f.round(f.col("red_count") / (f.col("green_count") + f.col("red_count")), 4))
+            .withColumn("percent_in_threshold", f.round(f.col("in_threshold_count") / (f.col("in_threshold_count") + f.col("out_threshold_count")), 4))
+            .withColumn("percent_out_threshold", f.round(f.col("out_threshold_count") / (f.col("in_threshold_count") + f.col("out_threshold_count")), 4))
             .withColumn("run_date", f.current_date())
             )
 
