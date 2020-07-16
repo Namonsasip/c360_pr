@@ -137,7 +137,6 @@ def get_activated_deactivated_features(
         int_act_deact_features as (
             select 
                 subscription_identifier,
-                old_subscription_identifier, 
                 start_of_week,
                 
                 sum(case when 
@@ -358,7 +357,7 @@ def get_activated_deactivated_features(
                     then 1 else 0 end) as product_deactivated_package_due_to_expired_reason
                         
             from enriched_cust_promo_df
-            group by subscription_identifier, old_subscription_identifier, start_of_week
+            group by subscription_identifier, start_of_week
         )
         select
             *,
