@@ -33,6 +33,7 @@ from cvm.src.treatments.rules import MultipleTreatments
 from cvm.src.treatments.treatment_features import (
     add_call_center_features,
     add_churn_ard_optimizer_features,
+    add_inactivity_days_num,
     add_other_sim_card_features,
 )
 from cvm.src.utils.utils import get_today, join_multiple
@@ -92,6 +93,7 @@ def treatments_featurize(
     treatments_features = add_churn_ard_optimizer_features(
         treatments_features, propensities, parameters
     )
+    treatments_features = add_inactivity_days_num(treatments_features)
     return treatments_features
 
 

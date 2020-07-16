@@ -29,6 +29,7 @@ import logging
 from typing import Any, Dict
 
 import pyspark.sql.functions as func
+from cvm.src.utils.utils import get_today
 from pyspark.sql import DataFrame, Window
 
 
@@ -191,3 +192,24 @@ def add_churn_ard_optimizer_features(
         {"optimizer_churn_cost": 0, "optimizer_ard_cost": 0}
     )
     return df
+
+
+def add_inactivity_days_num(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
+    """ Adds `inactivity_days_num` feature used to filter users.
+
+    Args:
+        parameters: parameters defined in parameters.yml
+        df: treatment features, must contain `last_activity_date`.
+    """
+    logging.getLogger(__name__).info("Adding inactivity days number")
+    today = get_today(parameters)
+    value_cap = 90
+    last_activity_col = func.col("last_activity_date")
+    date_difference = func.datediff(func.lit(today), last_activity_col)
+    date_difference_capped = func.when(
+        date_difference >= value_cap, value_cap
+    ).otherwise(date_difference)
+    inactivity_col = func.when(last_activity_col.isNull(), value_cap).otherwise(
+        date_difference_capped
+    )
+    return df.withColumn("inactivity_days_num", inactivity_col)
