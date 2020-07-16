@@ -445,7 +445,6 @@ def billing_last_three_topup_volume_weekly(input_df, sql) -> DataFrame:
 def derives_in_customer_profile(customer_prof):
     customer_prof = customer_prof.select("access_method_num",
                                          "subscription_identifier",
-                                         "national_id_card",
                                          f.to_date("register_date").alias("register_date"),
                                          "event_partition_date",
                                          "charge_type")
@@ -490,10 +489,10 @@ def billing_last_top_up_channel_weekly(input_df, customer_profile_df, recharge_t
     return_df = customized_processing(input_df, customer_prof, recharge_type_df, sql,
                                       "l2_billing_and_payments_weekly_last_top_up_channel")
 
-    return_df = return_df.withColumn("rn", expr(
-        "row_number() over(partition by start_of_week,access_method_num,register_date order by recharge_time desc)"))
-
-    return_df = return_df.filter("rn = 1").drop("rn")
+    # return_df = return_df.withColumn("rn", expr(
+    #     "row_number() over(partition by start_of_week,access_method_num,register_date order by recharge_time desc)"))
+    #
+    # return_df = return_df.filter("rn = 1").drop("rn")
 
     return return_df
 
@@ -537,7 +536,6 @@ def billing_time_diff_between_topups_weekly(customer_profile_df, input_df, sql, 
 def recharge_data_with_customer_profile_joined(customer_prof, recharge_data):
     customer_prof = customer_prof.select("access_method_num",
                                          "subscription_identifier",
-                                         "national_id_card",
                                          f.to_date("register_date").alias("register_date"),
                                          "start_of_week",
                                          "charge_type")
@@ -553,7 +551,7 @@ def recharge_data_with_customer_profile_joined(customer_prof, recharge_data):
     output_df = output_df.withColumn("rn", expr(
         "row_number() over(partition by start_of_week,access_method_num,register_date order by recharge_time desc)"))
 
-    output_df = output_df.filter("rn = 1").drop("rn")
+    output_df = output_df.filter("rn = 1").drop("rn", "access_method_num", "register_date")
 
     return output_df
 
@@ -578,8 +576,9 @@ def billing_most_popular_top_up_channel_weekly(input_df, topup_type_ref, sql1, s
 
     topup_type_ref = topup_type_ref.where("rn = 1").drop("rn")
 
-    output_df_temp = input_df.join(topup_type_ref, input_df.recharge_type == topup_type_ref.recharge_topup_event_type_cd,
-                              'left')
+    output_df_temp = input_df.join(topup_type_ref,
+                                   input_df.recharge_type == topup_type_ref.recharge_topup_event_type_cd,
+                                   'left')
 
     output_df = massive_processing_weekly_2(output_df_temp, sql1, sql2, "l2_billing_and_payments_weekly_most_popular_top_up_channel")
 

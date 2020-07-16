@@ -3,21 +3,21 @@ l1_billing_and_payment_feature_top_up_and_count:
   feature_list:
     payments_top_ups: "sum(case when date(recharge_date) is not null then 1 else 0 end)"
     payments_top_up_volume: "sum(face_value)"
-  granularity: "start_of_month,start_of_week,event_partition_date,access_method_num,register_date,subscription_identifier,national_id_card"
+  granularity: "start_of_month,start_of_week,event_partition_date,access_method_num,register_date,subscription_identifier"
 
 
 l1_billing_and_payment_rpu_roaming:
   where_clause: "where event_partition_date is not null"
   feature_list:
     payments_arpu_roaming: "sum(ir_call_charge_amount)"
-  granularity: "start_of_month,start_of_week,event_partition_date,access_method_num,register_date,subscription_identifier,national_id_card"
+  granularity: "start_of_month,start_of_week,event_partition_date,access_method_num,register_date,subscription_identifier"
 
 
 l1_billing_and_payment_before_top_up_balance:
   where_clause: "where event_partition_date is not null"
   feature_list:
     payments_before_top_up_balance: "avg(pre_bal_amt)"
-  granularity: "start_of_month,start_of_week,event_partition_date,access_method_num,register_date,subscription_identifier,national_id_card"
+  granularity: "start_of_month,start_of_week,event_partition_date,access_method_num,register_date,subscription_identifier"
 
 
 l1_billing_and_payment_top_up_channels:
@@ -39,14 +39,14 @@ l1_billing_and_payment_top_up_channels:
     payments_top_up_vol_by_mpay_non_vending: "sum(case when recharge_type_group ='mPay Non-Vending'  then face_value else cast(0 as double) end)"
     payments_top_ups_by_mpay_vending: "sum(case when recharge_type_group ='mPay Vending'  then 1 else 0 end)"
     payments_top_up_vol_by_mpay_vending: "sum(case when recharge_type_group ='mPay Vending'  then face_value else cast(0 as double) end)"
-  granularity: "start_of_month,start_of_week,event_partition_date,access_method_num,register_date,subscription_identifier,national_id_card"
+  granularity: "start_of_month,start_of_week,event_partition_date,access_method_num,register_date,subscription_identifier"
 
 
 l1_billing_and_payment_most_popular_topup_channel:
   where_clause: "where event_partition_date is not null"
   feature_list:
     payments_total_top_up: "sum(case when date(recharge_date) is not null then 1 else 0 end)"
-  granularity: "start_of_month,start_of_week,event_partition_date,register_date,access_method_num,subscription_identifier,recharge_type,national_id_card"
+  granularity: "start_of_month,start_of_week,event_partition_date,register_date,access_method_num,subscription_identifier,recharge_type"
 
 
 
@@ -56,7 +56,6 @@ l1_billing_and_payment_popular_topup_day:
     access_method_num: "access_method_num"
     register_date: "register_date"
     subscription_identifier: "subscription_identifier"
-    national_id_card: "national_id_card"
     payment_popular_day: "dayofweek(recharge_date)"
     payment_popular_hour: "hour(recharge_time)"
   granularity: ""
@@ -68,7 +67,6 @@ l1_time_since_last_top_up:
     access_method_num: "access_method_num"
     register_date: "register_date"
     subscription_identifier: "subscription_identifier"
-    national_id_card: "national_id_card"
     recharge_time: "recharge_time"
     face_value: "face_value"
   granularity: ""

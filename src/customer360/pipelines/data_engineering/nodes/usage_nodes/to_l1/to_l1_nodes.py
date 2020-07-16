@@ -427,6 +427,8 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
 
     union_df = union_df.filter(F.col("event_partition_date") <= min_value)
 
+
+
     if check_empty_dfs([union_df]):
         return get_spark_empty_df()
 
@@ -447,6 +449,8 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
                 ]
 
     join_cols = ['access_method_num', 'event_partition_date', "start_of_week", "start_of_month"]
+    l1_customer_profile_union_daily_feature = l1_customer_profile_union_daily_feature\
+        .where("charge_type in ('Pre-paid', 'Post-paid') ")
 
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = union_df

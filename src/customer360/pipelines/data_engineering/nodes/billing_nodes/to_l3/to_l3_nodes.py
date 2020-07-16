@@ -604,7 +604,6 @@ def derives_in_customer_profile(customer_prof):
     customer_prof = customer_prof.select("access_method_num",
                                          "billing_account_no",
                                          "subscription_identifier",
-                                         "national_id_card",
                                          f.to_date("register_date").alias("register_date"),
                                          "partition_month",
                                          "charge_type",
@@ -754,7 +753,6 @@ def bill_payment_daily_data_with_customer_profile(customer_prof, pc_t_data):
 def recharge_data_with_customer_profile_joined(customer_prof, recharge_data):
     customer_prof = customer_prof.select("access_method_num",
                                          "subscription_identifier",
-                                         "national_id_card",
                                          f.to_date("register_date").alias("register_date"),
                                          "start_of_month",
                                          "charge_type")
@@ -770,6 +768,6 @@ def recharge_data_with_customer_profile_joined(customer_prof, recharge_data):
     output_df = output_df.withColumn("rn", expr(
         "row_number() over(partition by start_of_month,access_method_num,register_date order by register_date desc)"))
 
-    output_df = output_df.filter("rn = 1").drop("rn")
+    output_df = output_df.filter("rn = 1").drop("rn", "access_method_num", "register_date")
 
     return output_df
