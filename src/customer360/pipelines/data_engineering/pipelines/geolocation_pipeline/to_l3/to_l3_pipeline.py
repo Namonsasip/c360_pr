@@ -10,13 +10,13 @@ def geo_to_l3_pipeline(**kwargs):
         [
 
             ### runnig flag == 2
-            node(
-                l3_geo_time_spent_by_location_monthly,
-                ["l1_geo_time_spent_by_location_daily_for_l3_geo_time_spent_by_location_monthly",
-                 "params:l3_geo_time_spent_by_location_monthly"
-                 ],
-                "l3_geo_time_spent_by_location_monthly"
-            ),
+            # node(
+            #     l3_geo_time_spent_by_location_monthly,
+            #     ["l1_geo_time_spent_by_location_daily_for_l3_geo_time_spent_by_location_monthly",
+            #      "params:l3_geo_time_spent_by_location_monthly"
+            #      ],
+            #     "l3_geo_time_spent_by_location_monthly"
+            # ),
 
             node(
                 l3_geo_area_from_ais_store_monthly,
@@ -36,13 +36,13 @@ def geo_to_l3_pipeline(**kwargs):
 
             ### runnig flag == 3
             ###total_distance_km###
-            node(
-                l3_geo_total_distance_km_monthly,
-                ["l1_geo_total_distance_km_daily_for_l3_geo_total_distance_km_monthly",
-                 "params:l3_geo_total_distance_km_monthly"
-                 ],
-                "l3_geo_total_distance_km_monthly"
-            ),
+            # node(
+            #     l3_geo_total_distance_km_monthly,
+            #     ["l1_geo_total_distance_km_daily_for_l3_geo_total_distance_km_monthly",
+            #      "params:l3_geo_total_distance_km_monthly"
+            #      ],
+            #     "l3_geo_total_distance_km_monthly"
+            # ),
 
             ###Traffic_fav_location###
             node(
@@ -63,7 +63,8 @@ def geo_to_l3_pipeline(**kwargs):
                 "l3_geo_use_traffic_home_work_monthly"
             ),
 
-
+            # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> MUST FIX L0 HOME/WORK
+            # ### runnig flag == 3
             # ###feature_sum_voice_location###
             # node(
             #     l3_geo_call_location_home_work_monthly,
@@ -73,15 +74,15 @@ def geo_to_l3_pipeline(**kwargs):
             #     "l3_geo_call_location_home_work_monthly"
             # ),
 
-            ### runnig flag == 1
-            ##Top_3_cells_on_voice_usage###
-            node(
-                l3_geo_top3_cells_on_voice_usage,
-                ["l1_geo_top3_cells_on_voice_usage",
-                 "params:l3_geo_top3_cells_on_voice_usage"
-                 ],
-                "l3_geo_top3_cells_on_voice_usage"
-            ),
+            # ### runnig flag == 1
+            # ##Top_3_cells_on_voice_usage###
+            # node(
+            #     l3_geo_top3_cells_on_voice_usage,
+            #     ["l1_geo_top3_cells_on_voice_usage",
+            #      "params:l3_geo_top3_cells_on_voice_usage"
+            #      ],
+            #     "l3_geo_top3_cells_on_voice_usage"
+            # ),
 
             ##distance_top_call###
             node(
@@ -90,24 +91,27 @@ def geo_to_l3_pipeline(**kwargs):
                 "l3_geo_distance_top_call"
             ),
 
-            # 47 The favourite location
-            node(
-                l3_the_favourite_locations_monthly,
-                ["l1_the_favourite_locations_daily"],
-                "l3_the_favourite_locations_monthly"
-            ),
+            ### runnig flag == 5
+            # # 47 The favourite location
+            # node(
+            #     l3_the_favourite_locations_monthly,
+            #     ["l1_the_favourite_locations_daily"],
+            #     "l3_the_favourite_locations_monthly"
+            # ),
 
-            ### Home and Work Feature
-            node(
-                massive_processing_for_home_work,
-                ["l0_geo_cust_cell_visit_time_for_int_l3_geo_home_work_location_id",
-                 "params:int_l3_geo_home_location_id_monthly",
-                 "params:int_l3_geo_work_location_id_monthly"
-                 ],
-                ["int_l3_geo_home_location_id_monthly",
-                 "int_l3_geo_work_location_id_monthly"
-                 ]
-            ),
+            ### runnig flag == 4
+            # ### Home and Work Feature
+            # node(
+            #     massive_processing_for_home_work,
+            #     ["l0_geo_cust_cell_visit_time_for_int_l3_geo_home_work_location_id",
+            #      "params:int_l3_geo_home_location_id_monthly",
+            #      "params:int_l3_geo_work_location_id_monthly"
+            #      ],
+            #     ["int_l3_geo_home_location_id_monthly",
+            #      "int_l3_geo_work_location_id_monthly"
+            #      ]
+            # ),
+
             node(
                 int_geo_home_work_list_imsi_monthly,
                 ["int_l3_geo_home_location_id_monthly",
@@ -140,15 +144,16 @@ def geo_to_l3_pipeline(**kwargs):
                 "l3_geo_home_work_location_id_monthly"
             ),
 
-            ### Home weekday city citizens
-            node(
-                l3_geo_home_weekday_city_citizens_monthly,
-                ["l3_geo_home_work_location_id_monthly_for_l3_geo_home_weekday_city_citizens_monthly",
-                 "l0_mst_cell_masterplan_for_l3_geo_home_weekday_city_citizens_monthly",
-                 "params:l3_geo_home_weekday_city_citizens_monthly"
-                 ],
-                "l3_geo_home_weekday_city_citizens_monthly"
-            ),
+            ### runnig flag == 6
+            # ### Home weekday city citizens
+            # node(
+            #     l3_geo_home_weekday_city_citizens_monthly,
+            #     ["l3_geo_home_work_location_id_monthly_for_l3_geo_home_weekday_city_citizens_monthly",
+            #      "l0_mst_cell_masterplan_for_l3_geo_home_weekday_city_citizens_monthly",
+            #      "params:l3_geo_home_weekday_city_citizens_monthly"
+            #      ],
+            #     "l3_geo_home_weekday_city_citizens_monthly"
+            # ),
 
             ### Work area center average
             node(
