@@ -153,8 +153,14 @@ def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit
     geo_cust_cell_visit_time.cache()
     geo_cust_cell_visit_time = add_start_of_week_and_month(geo_cust_cell_visit_time, "time_in")
 
+    print('DEBUG ------------------------------> (1)')
+    geo_cust_cell_visit_time.show(10)
+
     masterplan.createOrReplaceTempView("mst_cell_masterplan")
     shape.createOrReplaceTempView("mst_poi_shape")
+
+    masterplan.show(10)
+    shape.show(10)
 
     ss = get_spark_session()
     df = ss.sql("""
@@ -172,7 +178,7 @@ def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit
     df.cache()
     df.createOrReplaceTempView('temp_geo_ais_shop')
 
-    print('DEBUG ------------------------------> (1)')
+    print('DEBUG ------------------------------> (2)')
     df.show(10)
     geo_cust_cell_visit_time.createOrReplaceTempView('geo_cust_cell_visit_time')
 
@@ -195,7 +201,7 @@ def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit
     # df.unpersist()
     # df2.unpersist()
 
-    print('DEBUG ------------------------------> (2)')
+    print('DEBUG ------------------------------> (3)')
     df2.show(10)
 
     return df2
