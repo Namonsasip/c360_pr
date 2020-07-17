@@ -58,6 +58,13 @@ def geo_to_l3_home_work_pipeline(**kwargs):
 def geo_to_l3_pipeline(**kwargs):
     return Pipeline(
         [
+            node(
+                l3_geo_top_visit_exclude_homework,
+                ["l3_geo_time_spent_by_location_monthly_for_l3_geo_top_visit_exclude_homework",
+                 "l3_geo_home_work_location_id_monthly_for_l3_geo_top_visit_exclude_homework"
+                 ],
+                "l3_geo_top_visit_exclude_homework"
+            ),
 
             ### runnig flag == 2
             # node(
