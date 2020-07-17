@@ -849,6 +849,8 @@ def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
         ]
     ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
 
+    print('DEBUG : ------------------------------------------------> (0)')
+    print(min_value)
     usage_sum_data_location_daily = usage_sum_data_location_daily.filter(
         F.to_date(F.date_trunc("month", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))) <= min_value)
     profile_customer_profile_ma = profile_customer_profile_ma.filter(F.to_date(F.col("partition_month").cast(StringType()), 'yyyyMM') <= min_value)
@@ -858,10 +860,10 @@ def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
     print('DEBUG : ------------------------------------------------> (1)')
     usage_sum_data_location_daily.show(10)
 
-    print('DEBUG : ------------------------------------------------> (1)')
+    print('DEBUG : ------------------------------------------------> (2)')
     profile_customer_profile_ma.show(10)
 
-    print('DEBUG : ------------------------------------------------> (1)')
+    print('DEBUG : ------------------------------------------------> (3)')
     geo_mst_cell_masterplan.show(10)
 
     if check_empty_dfs([usage_sum_data_location_daily, profile_customer_profile_ma]):
