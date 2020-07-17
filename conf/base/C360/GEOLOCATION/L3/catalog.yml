@@ -270,9 +270,9 @@ l3_geo_home_work_location_id_monthly_for_l3_call_location_home_work_monthly:
     target_layer: 'l3_monthly'
     lookback: '0'
 
-l3_geo_top_visit_exclude_homework_monthly_for_l3_call_location_home_work_monthly:
+l3_geo_top_visit_exclude_homework_for_l3_call_location_home_work_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l4_features/geo_top_visit_exclude_homework_monthly/
+  filepath: base_path/GEO/l3_features/geo_top_visit_exclude_homework/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
