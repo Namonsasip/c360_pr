@@ -142,7 +142,7 @@ l0_geo_cust_cell_visit_time_for_l1_geo_area_from_competitor_store_daily:
     lookback: '0'
 
 #----------------------- geo_cust_cell_visit_time_geo_home_work_location_id -------------------------
-l0_geo_cust_cell_visit_time_for_int_l4_geo_home_work_location_id:
+l0_geo_cust_cell_visit_time_for_int_l3_geo_home_work_location_id:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/GEO/sample/geo_cust_cell_visit_time_runpipeline/
   file_format: parquet
