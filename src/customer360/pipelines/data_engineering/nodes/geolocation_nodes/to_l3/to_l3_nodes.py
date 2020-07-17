@@ -864,12 +864,12 @@ def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
     # profile_customer_profile_ma_A = profile_customer_profile_ma.agg(F.max("partition_date")).collect()[0][0]
     # profile_customer_profile_ma = profile_customer_profile_ma.where("partition_date = '" + str(profile_customer_profile_ma_A) + "'")
 
-    profile_last_date = profile_customer_profile_ma.agg(F.max("partition_month")).collect()[0][0]
-    profile_customer_profile_ma = profile_customer_profile_ma.where("partition_month = '"+str(profile_last_date)+"'")
-    geo_home_work_last_date = geo_home_work_data.agg(F.max("start_of_month")).collect()[0][0]
-    geo_home_work_data = geo_home_work_data.where("start_of_month = '" + str(geo_home_work_last_date)+"'")
-    geo_exclude_home_work_last_date = geo_exclude_home_work.agg(F.max("start_of_month")).collect()[0][0]
-    geo_exclude_home_work = geo_exclude_home_work.where("start_of_month = '" + str(geo_exclude_home_work_last_date)+"'")
+    # profile_last_date = profile_customer_profile_ma.agg(F.max("partition_month")).collect()[0][0]
+    # profile_customer_profile_ma = profile_customer_profile_ma.where("partition_month = '"+str(profile_last_date)+"'")
+    # geo_home_work_last_date = geo_home_work_data.agg(F.max("start_of_month")).collect()[0][0]
+    # geo_home_work_data = geo_home_work_data.where("start_of_month = '" + str(geo_home_work_last_date)+"'")
+    # geo_exclude_home_work_last_date = geo_exclude_home_work.agg(F.max("start_of_month")).collect()[0][0]
+    # geo_exclude_home_work = geo_exclude_home_work.where("start_of_month = '" + str(geo_exclude_home_work_last_date)+"'")
 
     geo_exclude_home_work = _geo_top_visit_exclude_homework(geo_exclude_home_work, geo_home_work_data)
 
@@ -910,6 +910,8 @@ def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
         JOIN Top2 D
             ON D.DATE_ID=A.DATE_ID AND D.IMSI = B.IMSI
     """)
+
+    Home_Work = Home_Work.withColumn("event_partition_date", F.to_date(Home_Work.DATE_ID.cast(DateType()), "yyyyMMdd"))
     Home_Work.createTempView('GEO_TEMP_04')
 
     print('DEBUG : ------------------------------------------------> (1)')
