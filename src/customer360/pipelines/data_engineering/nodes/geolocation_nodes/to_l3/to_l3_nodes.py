@@ -991,7 +991,7 @@ def _homework_join_master_profile(cell_masterplan,geo_homework,profile_ma,Column
       from geo_homework a
       left join cell_masterplan b
         on a.{Column_Name}_location_id = b.location_id
-      group by 1,2,3,4
+      group by 1,2,3,4,5
       ''')
     df_temp_00.createOrReplaceTempView('temp_00')
 
@@ -1006,7 +1006,7 @@ def _homework_join_master_profile(cell_masterplan,geo_homework,profile_ma,Column
       from temp_00 a
       left join profile_ma b
         on a.imsi = b.imsi and a.start_of_month = b.start_of_month
-      group by 1,2,3,4,5
+      group by 1,2,3,4,5,6
       ''')
 
     print('DEBUG : ------------------------------------------------> _homework_join_master_profile')
@@ -1031,7 +1031,7 @@ def _geo_top_visit_join_master_profile(cell_masterplan,geo_top_visit,profile_ma,
       from geo_top_visit a
       left join cell_masterplan b
         on a.{Column_Name} = b.location_id
-      group by 1,2,3,4
+      group by 1,2,3,4,5
       ''')
     df_temp_00.createOrReplaceTempView('temp_00')
 
@@ -1046,7 +1046,7 @@ def _geo_top_visit_join_master_profile(cell_masterplan,geo_top_visit,profile_ma,
       from temp_00 a
       left join profile_ma b
         on a.imsi = b.imsi and a.start_of_month = b.start_of_month
-      group by 1,2,3,4,5
+      group by 1,2,3,4,5,6
       ''')
 
     print('DEBUG : ------------------------------------------------> _geo_top_visit_join_master_profile')
