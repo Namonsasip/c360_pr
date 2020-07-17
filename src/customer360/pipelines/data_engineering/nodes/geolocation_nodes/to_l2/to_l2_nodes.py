@@ -73,10 +73,11 @@ def l2_geo_area_from_competitor_store_weekly(df,sql):
         return get_spark_empty_df()
 
 
-    df = node_from_config(df,sql
+    df = node_from_config(df,sql)
 
     print('DEBUG : ------------------------------------------------> l2_geo_area_from_competitor_store_weekly')
     df.show(10)
+
     return df
 
 
