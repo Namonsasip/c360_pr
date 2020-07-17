@@ -761,9 +761,10 @@ def l1_the_favourite_locations_daily(usage_df_location,geo_df_masterplan):
     geo_df_masterplan.createOrReplaceTempView("geo_mst_cell_masterplan")
 
     ### add partition_date
-    sum_data_location = usage_df_location.withColumn("start_of_week",
-                                                     F.to_date(F.date_trunc('week', F.col("date_id")))).withColumn(
-        "start_of_month", F.to_date(F.date_trunc('month', F.col("date_id"))))
+    sum_data_location = usage_df_location \
+        .withColumn("start_of_week", F.to_date(F.date_trunc('week', F.col("date_id")))) \
+        .withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col("date_id"))))
+
     sum_data_location.createOrReplaceTempView('sum_data_location')
 
     # CreateTempView
@@ -801,10 +802,14 @@ def l1_the_favourite_locations_daily(usage_df_location,geo_df_masterplan):
             on b.lac = mp.lac
             and b.ci = mp.ci
         where mp.location_id is not NULL
-        GROUP BY b.mobile_no,b.date_id,mp.location_id,b.lac,b.ci,b.gprs_type,weektype,mp.latitude,mp.longitude,b.start_of_week,b.start_of_month
+        GROUP BY b.mobile_no, b.date_id, mp.location_id, b.lac,b.ci, b.gprs_type,weektype,
+            mp.latitude, mp.longitude, b.start_of_week, b.start_of_month, 
         order by date_id
     """
     l1 = spark.sql(sql_l1_1)
+
+    l1 = l1.withColumn("event_partition_date", F.to_date(l1.date_id.cast(DateType()), "yyyyMMdd"))
+
     return l1
 
 def massive_processing_time_spent_daily(data_frame: DataFrame, sql, output_df_catalog, partition_col) -> DataFrame:

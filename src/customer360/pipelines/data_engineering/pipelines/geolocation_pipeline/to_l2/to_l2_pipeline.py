@@ -18,13 +18,13 @@ def geo_to_l2_pipeline(**kwargs):
             # ),
 
             ### runnig flag == 8
-            node(
-                l2_geo_area_from_ais_store_weekly,
-                ["l1_geo_area_from_ais_store_daily_for_l2_geo_area_from_ais_store_weekly",
-                 "params:l2_area_from_ais_store_weekly"
-                 ],
-                "l2_geo_area_from_ais_store_weekly"
-            ),
+            # node(
+            #     l2_geo_area_from_ais_store_weekly,
+            #     ["l1_geo_area_from_ais_store_daily_for_l2_geo_area_from_ais_store_weekly",
+            #      "params:l2_area_from_ais_store_weekly"
+            #      ],
+            #     "l2_geo_area_from_ais_store_weekly"
+            # ),
 
             ### runnig flag == 1
             # node(
@@ -35,14 +35,15 @@ def geo_to_l2_pipeline(**kwargs):
             #     "l2_geo_area_from_competitor_store_weekly"
             # ),
 
+            ### runnig flag == 10
             ###total_distance_km###
-            node(
-                l2_geo_total_distance_km_weekly,
-                ["l1_geo_total_distance_km_daily_for_l2_geo_total_distance_km_weekly",
-                 "params:l2_geo_total_distance_km_weekly"
-                 ],
-                "l2_geo_total_distance_km_weekly"
-            ),
+            # node(
+            #     l2_geo_total_distance_km_weekly,
+            #     ["l1_geo_total_distance_km_daily_for_l2_geo_total_distance_km_weekly",
+            #      "params:l2_geo_total_distance_km_weekly"
+            #      ],
+            #     "l2_geo_total_distance_km_weekly"
+            # ),
 
             ### runnig flag == 6
             ###Number_of_base_station###
@@ -83,12 +84,13 @@ def geo_to_l2_pipeline(**kwargs):
             #     "l2_geo_cust_subseqently_distance_weekly"
             # ),
 
-            ##distance_top_call###
-            node(
-                l2_geo_distance_top_call,
-                "l1_geo_distance_top_call",
-                "l2_geo_distance_top_call"
-            ),
+            ### runnig flag == 9
+            # ##distance_top_call###
+            # node(
+            #     l2_geo_distance_top_call,
+            #     "l1_geo_distance_top_call",
+            #     "l2_geo_distance_top_call"
+            # ),
 
             # 47 The favourite location
             node(

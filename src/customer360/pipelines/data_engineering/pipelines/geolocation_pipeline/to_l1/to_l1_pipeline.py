@@ -24,15 +24,15 @@ def geo_to_l1_pipeline(**kwargs):
             #
             # ),
             #
-            node(
-                l1_geo_area_from_ais_store_daily,
-                ["l0_mst_poi_shape_for_l1_geo_area_from_ais_store_daily",
-                 "l0_mst_cell_masterplan_for_l1_geo_area_from_ais_store_daily",
-                 "l0_geo_cust_cell_visit_time_for_l1_geo_area_from_ais_store_daily",
-                 "params:l1_area_from_ais_store_daily"
-                 ],
-                "l1_geo_area_from_ais_store_daily"
-            ),
+            # node(
+            #     l1_geo_area_from_ais_store_daily,
+            #     ["l0_mst_poi_shape_for_l1_geo_area_from_ais_store_daily",
+            #      "l0_mst_cell_masterplan_for_l1_geo_area_from_ais_store_daily",
+            #      "l0_geo_cust_cell_visit_time_for_l1_geo_area_from_ais_store_daily",
+            #      "params:l1_area_from_ais_store_daily"
+            #      ],
+            #     "l1_geo_area_from_ais_store_daily"
+            # ),
             #
             # node(
             #     l1_geo_area_from_competitor_store_daily,
@@ -111,14 +111,14 @@ def geo_to_l1_pipeline(**kwargs):
             #     "l1_geo_distance_top_call"
             # ),
             #
-            # ##47 the_favourite_locations
-            # node(
-            #     l1_the_favourite_locations_daily,
-            #     ["l0_usage_sum_data_location_daily_for_l1_the_favourite_locations",
-            #      "l0_geo_mst_cell_masterplan_for_l1_the_favourite_locations"
-            #      ],
-            #     "l1_the_favourite_locations_daily"
-            # ),
+            ##47 the_favourite_locations
+            node(
+                l1_the_favourite_locations_daily,
+                ["l0_usage_sum_data_location_daily_for_l1_the_favourite_locations",
+                 "l0_geo_mst_cell_masterplan_for_l1_the_favourite_locations"
+                 ],
+                "l1_the_favourite_locations_daily"
+            ),
             #
             # ## Number of Unique Cells Used ###
             # node(
