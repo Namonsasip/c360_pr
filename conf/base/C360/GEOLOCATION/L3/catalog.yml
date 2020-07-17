@@ -164,13 +164,13 @@ int_l3_geo_home_location_id_monthly:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "start_of_month"
     read_layer: 'l0_daily'
     target_layer: 'l3_monthly'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l3_geo_home_work_location_id_monthly'
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
@@ -182,13 +182,13 @@ int_l3_geo_work_location_id_monthly:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "start_of_month"
     read_layer: 'l0_daily'
     target_layer: 'l3_monthly'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l3_geo_home_work_location_id_monthly'
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
@@ -200,13 +200,13 @@ l3_geo_home_work_location_id_monthly:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     mode: "overwrite"
     partitionBy: "start_of_month"
     read_layer: 'l0_daily'
     target_layer: 'l3_monthly'
   load_args:
-    increment_flag: 'no'
+    increment_flag: 'yes'
     lookup_table_name: 'l4_geo_home_work_location_id'
     read_layer: 'l3_monthly'
     target_layer: 'l4_monthly'
