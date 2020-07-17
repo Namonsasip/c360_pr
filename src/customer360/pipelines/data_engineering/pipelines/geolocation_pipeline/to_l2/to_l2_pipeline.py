@@ -52,15 +52,15 @@ def geo_to_l2_pipeline(**kwargs):
                 "l2_geo_number_of_base_station_weekly"
             ),
 
-            ### runnig flag == 2
-            ###feature_sum_voice_location###
-            node(
-                l2_geo_call_home_work_location_weekly,
-                ["l1_geo_call_location_home_work_daily_for_l2_geo_call_location_home_work_weekly",
-                 "params:l2_geo_call_location_home_work_weekly"
-                 ],
-                "l2_geo_call_location_home_work_weekly"
-            ),
+            # ### runnig flag == 2
+            # ###feature_sum_voice_location###
+            # node(
+            #     l2_geo_call_home_work_location_weekly,
+            #     ["l1_geo_call_location_home_work_daily_for_l2_geo_call_location_home_work_weekly",
+            #      "params:l2_geo_call_location_home_work_weekly"
+            #      ],
+            #     "l2_geo_call_location_home_work_weekly"
+            # ),
 
             ##Top_3_cells_on_voice_usage###
             node(
