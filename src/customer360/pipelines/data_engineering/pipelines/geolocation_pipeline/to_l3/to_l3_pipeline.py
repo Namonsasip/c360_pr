@@ -96,18 +96,18 @@ def geo_to_l3_pipeline(**kwargs):
             #     "l3_geo_total_distance_km_monthly"
             # ),
 
-            ### runnig flag == 9
-            # ###Traffic_fav_location###
-            # node(
-            #     l3_data_traffic_home_work_top1_top2,
-            #     ["l0_geo_mst_cell_masterplan_current_for_l3_use_non_homework_features",
-            #      "l3_geo_home_work_location_id_monthly_for_l3_data_traffic_home_work_top1_top2",
-            #      "l0_profile_customer_profile_ma_for_l3_use_non_homework_features",
-            #      "l0_usage_sum_data_location_daily_for_l3_use_non_homework_features",
-            #      "l3_geo_time_spent_by_location_monthly_for_l3_data_traffic_home_work_top1_top2"
-            #      ],
-            #     "l3_geo_use_traffic_home_work"
-            # ),
+            ## runnig flag == 9
+            ###Traffic_fav_location###
+            node(
+                l3_data_traffic_home_work_top1_top2,
+                ["l0_geo_mst_cell_masterplan_current_for_l3_use_non_homework_features",
+                 "l3_geo_home_work_location_id_monthly_for_l3_data_traffic_home_work_top1_top2",
+                 "l0_profile_customer_profile_ma_for_l3_use_non_homework_features",
+                 "l0_usage_sum_data_location_daily_for_l3_use_non_homework_features",
+                 "l3_geo_time_spent_by_location_monthly_for_l3_data_traffic_home_work_top1_top2"
+                 ],
+                "l3_geo_use_traffic_home_work"
+            ),
 
             ### runnig flag == 10
             # node(
@@ -168,53 +168,53 @@ def geo_to_l3_pipeline(**kwargs):
             #      ]
             # ),
 
-            ### runnig flag == ุ7.1
-            node(
-                int_geo_home_work_list_imsi_monthly,
-                ["int_l3_geo_home_location_id_monthly",
-                 "int_l3_geo_work_location_id_monthly"
-                 ],
-                "geo_home_work_list_imsi_stg"
-            ),
-            ### runnig flag == ุ7.2
-            node(
-                int_geo_work_location_id_monthly,
-                ["int_l3_geo_work_location_id_monthly",
-                 "geo_home_work_list_imsi_stg"
-                 ],
-                "int_work_location_id"  # In memory Dataframe
-            ),
-
-            ### runnig flag == ุ7
-            node(
-                int_geo_home_location_id_monthly,
-                ["int_l3_geo_home_location_id_monthly"
-                 ],
-                ["int_home_weekday_location_id",
-                 "int_home_weekend_location_id"
-                 ]
-            ),
-            ### runnig flag == ุ7.4
-            node(
-                l3_geo_home_work_location_id_monthly,
-                ["int_home_weekday_location_id",
-                 "int_home_weekend_location_id",
-                 "int_work_location_id",
-                 "params:l3_geo_home_work_location_id_monthly"
-                 ],
-                "l3_geo_home_work_location_id_monthly"
-            ),
+            # ### runnig flag == ุ7.1
+            # node(
+            #     int_geo_home_work_list_imsi_monthly,
+            #     ["int_l3_geo_home_location_id_monthly",
+            #      "int_l3_geo_work_location_id_monthly"
+            #      ],
+            #     "geo_home_work_list_imsi_stg"
+            # ),
+            # ### runnig flag == ุ7.2
+            # node(
+            #     int_geo_work_location_id_monthly,
+            #     ["int_l3_geo_work_location_id_monthly",
+            #      "geo_home_work_list_imsi_stg"
+            #      ],
+            #     "int_work_location_id"  # In memory Dataframe
+            # ),
+            #
+            # ### runnig flag == ุ7
+            # node(
+            #     int_geo_home_location_id_monthly,
+            #     ["int_l3_geo_home_location_id_monthly"
+            #      ],
+            #     ["int_home_weekday_location_id",
+            #      "int_home_weekend_location_id"
+            #      ]
+            # ),
+            # ### runnig flag == ุ7.4
+            # node(
+            #     l3_geo_home_work_location_id_monthly,
+            #     ["int_home_weekday_location_id",
+            #      "int_home_weekend_location_id",
+            #      "int_work_location_id",
+            #      "params:l3_geo_home_work_location_id_monthly"
+            #      ],
+            #     "l3_geo_home_work_location_id_monthly"
+            # ),
 
             ### runnig flag == 6
-            # ### Home weekday city citizens
-            # node(
-            #     l3_geo_home_weekday_city_citizens_monthly,
-            #     ["l3_geo_home_work_location_id_monthly_for_l3_geo_home_weekday_city_citizens_monthly",
-            #      "l0_mst_cell_masterplan_for_l3_geo_home_weekday_city_citizens_monthly",
-            #      "params:l3_geo_home_weekday_city_citizens_monthly"
-            #      ],
-            #     "l3_geo_home_weekday_city_citizens_monthly"
-            # ),
+            ### Home weekday city citizens
+            node(
+                l3_geo_home_weekday_city_citizens_monthly,
+                ["l3_geo_home_work_location_id_monthly_for_l3_geo_home_weekday_city_citizens_monthly",
+                 "l0_mst_cell_masterplan_for_l3_geo_home_weekday_city_citizens_monthly",
+                 "params:l3_geo_home_weekday_city_citizens_monthly"
+                 ],
+                "l3_geo_home_weekday_city_citizens_monthly"
+            ),
 
             ### runnig flag == 11
             # ### Work area center average
