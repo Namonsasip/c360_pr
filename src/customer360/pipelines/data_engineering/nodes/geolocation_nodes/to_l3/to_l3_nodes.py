@@ -896,7 +896,7 @@ def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
 
     Home_Work = spark.sql("""
         SELECT 
-            A.DATE_ID AS event_partition_date ,
+            A.DATE_ID,
             A.IMSI,
             A.TOTAL_DATA_TRAFFIC_KB AS Home_traffic_KB,
             B.TOTAL_DATA_TRAFFIC_KB AS Work_traffic_KB,
@@ -904,11 +904,11 @@ def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
             D.TOTAL_DATA_TRAFFIC_KB AS Top2_location_traffic_KB
         FROM Home A 
         JOIN Work B
-        ON B.DATE_ID=A.DATE_ID AND A.IMSI = B.IMSI
+            ON B.DATE_ID=A.DATE_ID AND A.IMSI = B.IMSI
         JOIN Top1 C
-        ON C.DATE_ID=A.DATE_ID AND A.IMSI = C.IMSI
+            ON C.DATE_ID=A.DATE_ID AND A.IMSI = C.IMSI
         JOIN Top2 D
-        ON D.DATE_ID=A.DATE_ID AND D.IMSI = B.IMSI
+            ON D.DATE_ID=A.DATE_ID AND D.IMSI = B.IMSI
     """)
     Home_Work.createTempView('GEO_TEMP_04')
 
