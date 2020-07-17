@@ -72,7 +72,7 @@ def loyalty_number_of_points_balance(customer_prof: DataFrame
     input_df = input_df.withColumn("rnk", f.row_number().over(win))\
                        .where("rnk = 1")
 
-    merged_df = input_df.join(input_df_temp, ["start_of_month", "subscription_identifier"], how="left")
+    merged_df = input_df.join(input_df_temp, join_key, how="left")
     merged_df = merged_df.select("subscription_identifier"
                                             , "mobile_segment"
                                             , "points_balance_per_sub"
