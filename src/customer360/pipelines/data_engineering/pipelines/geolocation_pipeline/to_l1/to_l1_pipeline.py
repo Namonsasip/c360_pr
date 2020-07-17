@@ -68,10 +68,10 @@ def geo_to_l1_pipeline(**kwargs):
             node(
                 l1_call_location_home_work,
                 ["l0_geo_mst_cell_masterplan_current_for_l1_use_non_homework_features",
-                 "l0_geo_home_work_data_for_l1_use_non_homework_features",
+                 "l0_geo_home_work_data_for_l1_use_non_homework_features",  # l4 feature
                  "l0_profile_customer_profile_ma_for_l1_use_non_homework_features",
                  "l0_usage_sum_voice_location_daily_for_l1_homework_features",
-                 "l0_geo_top_visit_exclude_homework_for_l1_sum_voice_daily"
+                 "l0_geo_top_visit_exclude_homework_for_l1_sum_voice_daily"  # l4 feature
                  ],
                 "l1_geo_call_location_home_work_daily"
             ),
