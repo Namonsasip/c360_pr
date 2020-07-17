@@ -36,7 +36,7 @@ from cvm.src.treatments.treatment_features import (
     add_inactivity_days_num,
     add_other_sim_card_features,
 )
-from cvm.src.utils.utils import get_today, join_multiple
+from cvm.src.utils.utils import get_today, join_multiple, pick_one_per_subscriber
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as func
 
@@ -157,7 +157,7 @@ def get_treatments_propositions(
             ]
         )
     )
-    return treatments_propositions
+    return pick_one_per_subscriber(treatments_propositions)
 
 
 def update_history_with_treatments_propositions(
