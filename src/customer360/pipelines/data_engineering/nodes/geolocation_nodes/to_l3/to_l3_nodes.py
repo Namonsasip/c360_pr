@@ -721,6 +721,10 @@ def l3_data_traffic_home_work_fn(geo_mst_cell_masterplan,
             AND A.CI = B.CI
         GROUP BY 1,2
     """)
+
+    print('DEBUG : ------------------------------------------------> l3_data_traffic_home_work_fn')
+    GEO_TEMP_02.show(10)
+
     return GEO_TEMP_02
 
 def l3_data_traffic_top1_top2_fn(geo_mst_cell_masterplan,
@@ -774,6 +778,10 @@ def l3_data_traffic_top1_top2_fn(geo_mst_cell_masterplan,
             AND A.CI = B.CI
         GROUP BY 1,2
     """)
+
+    print('DEBUG : ------------------------------------------------> l3_data_traffic_top1_top2_fn')
+    GEO_TEMP_02.show(10)
+
     return GEO_TEMP_02
 
 def _geo_top_visit_exclude_homework(sum_duration, homework):
@@ -846,6 +854,15 @@ def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
     profile_customer_profile_ma = profile_customer_profile_ma.filter(F.to_date(F.col("partition_month").cast(StringType()), 'yyyyMM') <= min_value)
 
     geo_mst_cell_masterplan = get_max_date_from_master_data(geo_mst_cell_masterplan, 'partition_date')
+
+    print('DEBUG : ------------------------------------------------> (1)')
+    usage_sum_data_location_daily.show(10)
+
+    print('DEBUG : ------------------------------------------------> (1)')
+    profile_customer_profile_ma.show(10)
+
+    print('DEBUG : ------------------------------------------------> (1)')
+    geo_mst_cell_masterplan.show(10)
 
     if check_empty_dfs([usage_sum_data_location_daily, profile_customer_profile_ma]):
         return get_spark_empty_df()
