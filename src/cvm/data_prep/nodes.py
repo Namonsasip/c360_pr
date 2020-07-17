@@ -212,15 +212,15 @@ def subs_date_join(
         return df1.join(df2, keys, "left")
 
     old_sub_ids_joined = functools.reduce(
-        functools.partial(join_on, keys=["old_subscription_identifier", "key_date"]),
+        functools.partial(join_on, keys=["old_subscription_identifier"]),
         [users] + old_sub_id_tables,
     )
     sub_ids_joined = functools.reduce(
-        functools.partial(join_on, keys=["subscription_identifier", "key_date"]),
+        functools.partial(join_on, keys=["subscription_identifier"]),
         [users] + sub_id_tables,
     )
     joined = join_on(
-        old_sub_ids_joined, sub_ids_joined, keys=["subscription_identifier", "key_date"]
+        old_sub_ids_joined, sub_ids_joined, keys=["subscription_identifier"]
     ).drop("old_subscription_identifier")
     return pick_one_per_subscriber(joined)
 
