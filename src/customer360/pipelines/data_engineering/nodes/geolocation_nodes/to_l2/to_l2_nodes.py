@@ -301,16 +301,11 @@ def l2_the_favourite_locations_weekly(df):
     if check_empty_dfs([df]):
         return get_spark_empty_df()
 
-    print('DEBUG : ------------------------------------------------> (1)')
-    df.show(10)
-
     df = data_non_availability_and_missing_check(df=df, grouping="weekly",
                                                  par_col="event_partition_date",
                                                  target_table_name="l2_the_favourite_locations_weekly",
                                                  missing_data_check_flg='N')
 
-    print('DEBUG : ------------------------------------------------> (1)')
-    df.show(10)
 
     if check_empty_dfs([df]):
         return get_spark_empty_df()
@@ -333,9 +328,6 @@ def l2_the_favourite_locations_weekly(df):
     order by 2,1,3,4
     """
     l2 = spark.sql(sql_query)
-
-    print('DEBUG : ------------------------------------------------> l2_the_favourite_locations_weekly')
-    l2.show(10)
 
     return l2
 

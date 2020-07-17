@@ -16,7 +16,7 @@ def geo_to_l2_pipeline(**kwargs):
             #      ],
             #     "l2_geo_time_spent_by_location_weekly"
             # ),
-
+            #
             ### runnig flag == 8
             # node(
             #     l2_geo_area_from_ais_store_weekly,
@@ -25,7 +25,7 @@ def geo_to_l2_pipeline(**kwargs):
             #      ],
             #     "l2_geo_area_from_ais_store_weekly"
             # ),
-
+            #
             ### runnig flag == 1
             # node(
             #     l2_geo_area_from_competitor_store_weekly,
@@ -34,7 +34,7 @@ def geo_to_l2_pipeline(**kwargs):
             #      ],
             #     "l2_geo_area_from_competitor_store_weekly"
             # ),
-
+            #
             ### runnig flag == 10
             ###total_distance_km###
             # node(
@@ -44,7 +44,7 @@ def geo_to_l2_pipeline(**kwargs):
             #      ],
             #     "l2_geo_total_distance_km_weekly"
             # ),
-
+            #
             ### runnig flag == 6
             ###Number_of_base_station###
             # node(
@@ -55,15 +55,15 @@ def geo_to_l2_pipeline(**kwargs):
             #     "l2_geo_number_of_base_station_weekly"
             # ),
 
-            # ### runnig flag == 2
-            # ###feature_sum_voice_location###
-            # node(
-            #     l2_geo_call_home_work_location_weekly,
-            #     ["l1_geo_call_location_home_work_daily_for_l2_geo_call_location_home_work_weekly",
-            #      "params:l2_geo_call_location_home_work_weekly"
-            #      ],
-            #     "l2_geo_call_location_home_work_weekly"
-            # ),
+            ### runnig flag == 2
+            ###feature_sum_voice_location###
+            node(
+                l2_geo_call_home_work_location_weekly,
+                ["l1_geo_call_location_home_work_daily_for_l2_geo_call_location_home_work_weekly",  # No data from l1
+                 "params:l2_geo_call_location_home_work_weekly"
+                 ],
+                "l2_geo_call_location_home_work_weekly"
+            ),
 
             ### runnig flag == 7
             ##Top_3_cells_on_voice_usage###
@@ -74,7 +74,7 @@ def geo_to_l2_pipeline(**kwargs):
             #      ],
             #     "l2_geo_top3_cells_on_voice_usage"
             # ),
-
+            #
             ### runnig flag == 5
             # node(
             #     l2_geo_cust_subseqently_distance_weekly,
@@ -83,23 +83,24 @@ def geo_to_l2_pipeline(**kwargs):
             #      ],
             #     "l2_geo_cust_subseqently_distance_weekly"
             # ),
-
-            ### runnig flag == 9
+            #
+            # ### runnig flag == 9
             # ##distance_top_call###
             # node(
             #     l2_geo_distance_top_call,
             #     "l1_geo_distance_top_call",
             #     "l2_geo_distance_top_call"
             # ),
-
-            # 47 The favourite location
-            node(
-                l2_the_favourite_locations_weekly,
-                ["l1_the_favourite_locations_daily"],
-                "l2_the_favourite_locations_weekly"
-            ),
-
-            ### runnig flag == 3
+            #
+            # ### runnig flag == 11
+            # # 47 The favourite location
+            # node(
+            #     l2_the_favourite_locations_weekly,
+            #     ["l1_the_favourite_locations_daily"],
+            #     "l2_the_favourite_locations_weekly"
+            # ),
+            #
+            # ### runnig flag == 3
             # # 27 Same favourite location for weekend and weekday
             # node(
             #     l2_same_favourite_location_weekend_weekday_weekly,

@@ -111,14 +111,14 @@ def geo_to_l1_pipeline(**kwargs):
             #     "l1_geo_distance_top_call"
             # ),
             #
-            ##47 the_favourite_locations
-            node(
-                l1_the_favourite_locations_daily,
-                ["l0_usage_sum_data_location_daily_for_l1_the_favourite_locations",
-                 "l0_geo_mst_cell_masterplan_for_l1_the_favourite_locations"
-                 ],
-                "l1_the_favourite_locations_daily"
-            ),
+            # ##47 the_favourite_locations
+            # node(
+            #     l1_the_favourite_locations_daily,
+            #     ["l0_usage_sum_data_location_daily_for_l1_the_favourite_locations",
+            #      "l0_geo_mst_cell_masterplan_for_l1_the_favourite_locations"
+            #      ],
+            #     "l1_the_favourite_locations_daily"
+            # ),
             #
             # ## Number of Unique Cells Used ###
             # node(
