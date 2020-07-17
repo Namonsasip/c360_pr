@@ -103,7 +103,7 @@ def geo_to_l3_pipeline(**kwargs):
             #     "l3_geo_total_distance_km_monthly"
             # ),
 
-            ## runnig flag == 9
+            ## runnig flag == 9.1
             ###Traffic_fav_location###
             node(
                 l3_data_traffic_home_work_top1_top2,
@@ -117,17 +117,18 @@ def geo_to_l3_pipeline(**kwargs):
             ),
 
             # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> MUST FIX L0 HOME/WORK
-            ###feature_sum_voice_location###
-            node(
-                l3_call_location_home_work_monthly,
-                ["l0_geo_mst_cell_masterplan_current_for_l3_call_location_home_work_monthly",
-                 "l3_geo_home_work_location_id_monthly_for_l3_call_location_home_work_monthly",
-                 "l0_profile_customer_profile_ma_for_l3_call_location_home_work_monthly",
-                 "l0_usage_sum_voice_location_daily_for_l3_call_location_home_work_monthly",
-                 "l3_geo_top_visit_exclude_homework_for_l3_call_location_home_work_monthly"
-                 ],
-                "l3_geo_call_location_home_work_monthly"
-            ),
+            # ## runnig flag == 9.0
+            # ###feature_sum_voice_location###
+            # node(
+            #     l3_call_location_home_work_monthly,
+            #     ["l0_geo_mst_cell_masterplan_current_for_l3_call_location_home_work_monthly",
+            #      "l3_geo_home_work_location_id_monthly_for_l3_call_location_home_work_monthly",
+            #      "l0_profile_customer_profile_ma_for_l3_call_location_home_work_monthly",
+            #      "l0_usage_sum_voice_location_daily_for_l3_call_location_home_work_monthly",
+            #      "l3_geo_top_visit_exclude_homework_for_l3_call_location_home_work_monthly"
+            #      ],
+            #     "l3_geo_call_location_home_work_monthly"
+            # ),
 
             # ### runnig flag == 1
             # ##Top_3_cells_on_voice_usage###
