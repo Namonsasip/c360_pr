@@ -933,12 +933,20 @@ def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
             sum(Work_traffic_KB) as Work_traffic_KB,
             sum(Top1_location_traffic_KB) as Top1_location_traffic_KB,
             sum(Top2_location_traffic_KB) as Top2_location_traffic_KB,
-            ((Home_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Home_traffic_KB,
-            ((Work_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Work_traffic_KB,
-            ((Top1_location_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Top1_location_traffic_KB,
-            ((Top2_location_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Top2_location_traffic_KB
-        FROM  GEO_TEMP_04
-        group by imsi, start_of_month
+            sum(share_Home_traffic_KB) as share_Home_traffic_KB,
+            sum(share_Work_traffic_KB) as share_Work_traffic_KB,
+            sum(share_Top1_location_traffic_KB) as share_Top1_location_traffic_KB,
+            sum(share_Top2_location_traffic_KB) as share_Top2_location_traffic_KB
+        from select(
+                IMSI, start_of_month, Home_traffic_KB, Work_traffic_KB, Top1_location_traffic_KB, Top2_location_traffic_KB,
+                ((Home_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Home_traffic_KB,
+                ((Work_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Work_traffic_KB,
+                ((Top1_location_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Top1_location_traffic_KB,
+                ((Top2_location_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Top2_location_traffic_KB
+            FROM  GEO_TEMP_04
+            group by IMSI, start_of_month
+            )
+        group by IMSI, start_of_month
     """)
 
     print('DEBUG : ------------------------------------------------> l3_data_traffic_home_work_top1_top2')
