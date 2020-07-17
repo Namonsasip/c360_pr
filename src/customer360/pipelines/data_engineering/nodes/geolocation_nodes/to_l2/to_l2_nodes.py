@@ -206,29 +206,6 @@ def l2_geo_data_count_location_weekly(df,sql):
     return df
 
 
-###feature_sum_voice_location###
-def l2_geo_call_home_work_location_weekly(df,sql):
-    # ----- Data Availability Checks -----
-    if check_empty_dfs([df]):
-        return get_spark_empty_df()
-
-    df = data_non_availability_and_missing_check(df=df, grouping="weekly",
-                                                 par_col="event_partition_date",
-                                                 target_table_name="l2_geo_call_home_work_location_weekly",
-                                                 missing_data_check_flg='N')
-    if check_empty_dfs([df]):
-        return get_spark_empty_df()
-
-
-    l2_df = df.withColumn("start_of_week", F.to_date(F.date_trunc('week', "event_partition_date"))).drop( 'event_partition_date')
-    l2_df_2 =node_from_config(l2_df,sql)
-
-    print('DEBUG : ------------------------------------------------> l2_geo_call_home_work_location_weekly')
-    l2_df_2.show(10)
-
-    return l2_df_2
-
-
 ###Top_3_cells_on_voice_usage###
 def l2_geo_top3_cells_on_voice_usage(df,sql):
     # ----- Data Availability Checks -----

@@ -110,15 +110,17 @@ def geo_to_l3_pipeline(**kwargs):
             ),
 
             # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> MUST FIX L0 HOME/WORK
-            # ### runnig flag == 3
-            # ###feature_sum_voice_location###
-            # node(
-            #     l3_geo_call_location_home_work_monthly,
-            #     ["l1_geo_call_location_home_work_daily_for_l3_geo_call_location_home_work_monthly", # No data from l1
-            #      "params:l3_geo_call_location_home_work_monthly"
-            #      ],
-            #     "l3_geo_call_location_home_work_monthly"
-            # ),
+            ###feature_sum_voice_location###
+            node(
+                l3_call_location_home_work_monthly,
+                ["l0_geo_mst_cell_masterplan_current_for_l3_call_location_home_work",
+                 "l3_geo_home_work_location_id_monthly_for_l3_call_location_home_work_monthly",
+                 "l0_profile_customer_profile_ma_for_l3_call_location_home_work_monthly",
+                 "l0_usage_sum_voice_location_daily_for_l3_call_location_home_work_monthly",
+                 "l3_geo_top_visit_exclude_homework_monthly_for_l3_call_location_home_work_monthly"
+                 ],
+                "l3_geo_call_location_home_work_monthly"
+            ),
 
             # ### runnig flag == 1
             # ##Top_3_cells_on_voice_usage###

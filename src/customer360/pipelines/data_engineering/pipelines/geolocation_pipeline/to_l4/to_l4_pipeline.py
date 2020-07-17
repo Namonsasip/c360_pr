@@ -99,10 +99,10 @@ def geo_to_l4_pipeline(**kwargs):
             ###feature_sum_voice_location###
             node(
                 l4_rolling_window,
-                ["l2_geo_call_location_home_work_weekly_for_l4_geo_call_location_home_work_weekly",
-                 "params:l4_geo_call_home_work_location_weekly"
+                ["l3_geo_call_location_home_work_monthly",
+                 "params:l4_geo_call_home_work_location"
                  ],
-                "l4_geo_call_location_home_work_weekly"
+                "l4_geo_call_home_work_location"
             ),
 
             # Number of Unique Cells Used###

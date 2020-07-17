@@ -98,11 +98,11 @@ l4_geo_number_of_base_station:
 
 
 ###feature_sum_voice_location###
-l4_geo_call_home_work_location_weekly:
+l4_geo_call_home_work_location:
   partition_by: ["imsi"]
   feature_list:
     sum: ["call_count_location_home_weekday","call_count_location_work","call_count_location_top_1st","call_count_location_top_2nd"]
-  read_from: "l2"
+  read_from: "l3"
 
 
 ### Number of Unique Cells Used ###

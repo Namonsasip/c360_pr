@@ -143,29 +143,29 @@ l2_geo_number_of_base_station_weekly_for_l4_geo_number_of_base_station:
     lookback: '12'
 
 #-----------------feature_sum_voice_location------------------------------------------
-l2_geo_call_location_home_work_weekly:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l2_features/geo_call_location_home_work_weekly/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  save_args:
-    increment_flag: 'no'
-    mode: "overwrite"
-    partitionBy: "start_of_week"
-    read_layer: 'l1_daily'
-    target_layer: 'l2_weekly'
+#l2_geo_call_location_home_work_weekly:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  filepath: base_path/GEO/l2_features/geo_call_location_home_work_weekly/
+#  file_format: parquet
+#  metadata_table_path: 'metadata_path'
+#  save_args:
+#    increment_flag: 'no'
+#    mode: "overwrite"
+#    partitionBy: "start_of_week"
+#    read_layer: 'l1_daily'
+#    target_layer: 'l2_weekly'
 
-l2_geo_call_location_home_work_weekly_for_l4_geo_call_location_home_work_weekly:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l2_features/geo_call_location_home_work_weekly/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'no'
-    lookup_table_name: 'l4_geo_call_location_home_work_weekly'
-    read_layer: 'l2_weekly'
-    target_layer: 'l4_weekly'
-    lookback: '12'
+#l2_geo_call_location_home_work_weekly_for_l4_geo_call_location_home_work_weekly:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  filepath: base_path/GEO/l2_features/geo_call_location_home_work_weekly/
+#  file_format: parquet
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'no'
+#    lookup_table_name: 'l4_geo_call_location_home_work_weekly'
+#    read_layer: 'l2_weekly'
+#    target_layer: 'l4_weekly'
+#    lookback: '12'
 
 ###Top_3_cells_on_voice_usage###
 l2_geo_top3_cells_on_voice_usage:

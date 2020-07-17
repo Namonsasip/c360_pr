@@ -115,29 +115,6 @@ def l3_geo_total_distance_km_monthly(df,sql):
     return df
 
 
-###feature_sum_voice_location###
-def l3_geo_call_location_home_work_monthly(df,sql):
-    # ----- Data Availability Checks -----
-    if check_empty_dfs([df]):
-        return get_spark_empty_df()
-
-    df = data_non_availability_and_missing_check(df=df, grouping="monthly",
-                                                 par_col="event_partition_date",
-                                                 target_table_name="l3_geo_call_location_home_work_monthly",
-                                                 missing_data_check_flg='N')
-    if check_empty_dfs([df]):
-        return get_spark_empty_df()
-
-
-    l3_df = df.withColumn("start_of_month", F.to_date(F.date_trunc('month', "event_partition_date"))).drop( 'event_partition_date')
-    l3_df_2 = node_from_config(l3_df,sql)
-
-    print('DEBUG : ------------------------------------------------> l3_geo_call_location_home_work_monthly')
-    l3_df_2.show(10)
-
-    return l3_df_2
-
-
 ###Top_3_cells_on_voice_usage###
 def l3_geo_top3_cells_on_voice_usage(df,sql):
     # ----- Data Availability Checks -----
@@ -828,7 +805,7 @@ def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
         return get_spark_empty_df()
 
     usage_sum_data_location_daily = data_non_availability_and_missing_check(df=usage_sum_data_location_daily,
-                                                                            grouping="daily",
+                                                                            grouping="monthly",
                                                                             par_col="partition_date",
                                                                             target_table_name="l3_use_non_homework_features")
 
@@ -960,3 +937,201 @@ def l3_geo_use_Share_traffic_monthly(df, sql):
     l3_df_2.show(10)
 
     return l3_df_2
+
+
+###feature_sum_voice_location###
+def _homework_join_master_profile(cell_masterplan,geo_homework,profile_ma,Column_Name):
+    geo_homework.createOrReplaceTempView('geo_homework')
+    cell_masterplan.createOrReplaceTempView('cell_masterplan')
+    profile_ma.createOrReplaceTempView('profile_ma')
+
+    spark = get_spark_session()
+    df_temp_00 = spark.sql(f'''
+      select 
+        a.imsi,
+        a.{Column_Name}_location_id,
+        b.lac as {Column_Name}_lac,
+        b.ci as {Column_Name}_ci,
+        a.start_of_month
+      from geo_homework a
+      left join cell_masterplan b
+        on a.{Column_Name}_location_id = b.location_id
+      group by 1,2,3,4
+      ''')
+    df_temp_00.createOrReplaceTempView('temp_00')
+
+    df_temp_01 = spark.sql(f'''
+      select
+        a.imsi,
+        a.start_of_month,
+        b.access_method_num,
+        a.{Column_Name}_location_id,
+        a.{Column_Name}_lac,
+        a.{Column_Name}_ci
+      from temp_00 a
+      left join profile_ma b
+        on a.imsi = b.imsi and a.start_of_month = b.start_of_month
+      group by 1,2,3,4,5
+      ''')
+
+    return df_temp_01
+
+
+def _geo_top_visit_join_master_profile(cell_masterplan,geo_top_visit,profile_ma,Column_Name):
+    geo_top_visit.createOrReplaceTempView('geo_top_visit')
+    cell_masterplan.createOrReplaceTempView('cell_masterplan')
+    profile_ma.createOrReplaceTempView('profile_ma')
+
+    spark = get_spark_session()
+    df_temp_00 = spark.sql(f'''
+      select
+        a.imsi,
+        a.{Column_Name},
+        b.lac as {Column_Name}_lac,
+        b.ci as {Column_Name}_ci,
+        a.start_of_month
+      from geo_top_visit a
+      left join cell_masterplan b
+        on a.{Column_Name} = b.location_id
+      group by 1,2,3,4
+      ''')
+    df_temp_00.createOrReplaceTempView('temp_00')
+
+    df_temp_01 = spark.sql(f'''
+      select
+        a.imsi,
+        a.start_of_month,
+        b.access_method_num,
+        a.{Column_Name},
+        a.{Column_Name}_lac,
+        a.{Column_Name}_ci
+      from temp_00 a
+      left join profile_ma b
+        on a.imsi = b.imsi and a.start_of_month = b.start_of_month
+      group by 1,2,3,4,5
+      ''')
+
+    return df_temp_01
+
+
+def l3_call_location_home_work_monthly(cell_masterplan,geo_homework,profile_ma,usage_sum_voice,geo_top_visit_exc_homework):
+
+    # ----- Data Availability Checks -----
+    if check_empty_dfs([usage_sum_voice, cell_masterplan, geo_homework, profile_ma, geo_top_visit_exc_homework]):
+        return get_spark_empty_df()
+
+    usage_sum_voice = data_non_availability_and_missing_check(df=usage_sum_voice,
+                                                                            grouping="monthly",
+                                                                            par_col="partition_date",
+                                                                            target_table_name="l3_call_location_home_work_monthly")
+
+    profile_ma = data_non_availability_and_missing_check(df=profile_ma,
+                                                         grouping="monthly",
+                                                         par_col="partition_month",
+                                                         target_table_name="l3_call_location_home_work_monthly")
+
+    # geo_homework = data_non_availability_and_missing_check
+    # geo_top_visit_exc_homework = data_non_availability_and_missing_check
+
+    cell_masterplan = get_max_date_from_master_data(cell_masterplan, 'partition_date')
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            usage_sum_voice.select(
+                F.to_date(F.date_trunc('month', F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd'))).alias("max_date")),
+            profile_ma.select(
+                F.to_date(F.max(F.col("partition_month")).cast(StringType()), 'yyyyMM').alias("max_date")),
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    usage_sum_voice = usage_sum_voice.filter(
+        F.to_date(F.date_trunc("month", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))) <= min_value)
+
+    profile_ma = profile_ma.filter(F.to_date(F.col("partition_month").cast(StringType()), 'yyyyMM') <= min_value)
+
+    if check_empty_dfs([usage_sum_voice, profile_ma]):
+        return get_spark_empty_df()
+
+    # ----- Transformation -----
+    geo_homework = geo_homework.join(geo_top_visit_exc_homework,'imsi','full')
+
+    print('DEBUG : ------------------------------------------------> (1)')
+    geo_homework.show(10)
+
+    usage_sum_voice = usage_sum_voice.withColumn('start_of_month', F.to_date(F.date_trunc('month', F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd'))))
+    usage_sum_voice.createOrReplaceTempView('usage_voice')
+
+    _homework_join_master_profile(cell_masterplan,geo_homework,profile_ma,
+                                 "home_weekday").createOrReplaceTempView('home_weekday')
+    _homework_join_master_profile(cell_masterplan, geo_homework,profile_ma,
+                                 "work").createOrReplaceTempView('work')
+    _geo_top_visit_join_master_profile(cell_masterplan,geo_homework,profile_ma,
+                                 "top_location_1st").createOrReplaceTempView('top_location_1st')
+    _geo_top_visit_join_master_profile(cell_masterplan, geo_homework,profile_ma,
+                                 "top_location_2nd").createOrReplaceTempView('top_location_2nd')
+
+    spark = get_spark_session()
+    print('DEBUG : ------------------------------------------------> (2)')
+    spark.sql('''select * from home_weekday limit 10;''')
+    print('DEBUG : ------------------------------------------------> (3)')
+    spark.sql('''select * from work limit 10;''')
+    print('DEBUG : ------------------------------------------------> (4)')
+    spark.sql('''select * from top_location_1st limit 10;''')
+    print('DEBUG : ------------------------------------------------> (5)')
+    spark.sql('''select * from top_location_2nd limit 10;''')
+
+    def sum_voice_daily(df_temp_01):
+        spark = get_spark_session()
+        df_sum_voice = spark.sql(f'''
+          select
+            a.start_of_month
+            ,a.imsi
+            ,sum(b.no_of_call+b.no_of_inc) as call_count_location_{df_temp_01}  
+          from {df_temp_01} a
+          left join usage_voice b
+            on a.access_method_num = b.access_method_num
+            and a.start_of_month = b.start_of_month
+          where b.service_type in ('VOICE','VOLTE')
+            and a.{df_temp_01}_lac = b.lac
+             and a.{df_temp_01}_ci = b.ci
+          group by 1,2
+        ''')
+        return df_sum_voice
+
+    sum_voice_daily('home_weekday').createOrReplaceTempView('df_call_home_weekday')
+    sum_voice_daily('work').createOrReplaceTempView('df_call_work')
+    sum_voice_daily('top_location_1st').createOrReplaceTempView('df_call_top_1st')
+    sum_voice_daily('top_location_2nd').createOrReplaceTempView('df_call_top_2nd')
+
+    spark = get_spark_session()
+    print('DEBUG : ------------------------------------------------> (6)')
+    spark.sql('''select * from df_call_home_weekday limit 10;''')
+    print('DEBUG : ------------------------------------------------> (7)')
+    spark.sql('''select * from df_call_work limit 10;''')
+    print('DEBUG : ------------------------------------------------> (8)')
+    spark.sql('''select * from df_call_top_1st limit 10;''')
+    print('DEBUG : ------------------------------------------------> (9)')
+    spark.sql('''select * from df_call_top_2nd limit 10;''')
+
+    spark = get_spark_session()
+    df_sum_voice_daily = spark.sql('''
+        select
+            a.start_of_month as start_of_month
+            ,a.imsi
+            ,a.call_count_location_home_weekday  
+            ,b.call_count_location_work
+            ,c.call_count_location_top_location_1st as call_count_location_top_1st
+            ,d.call_count_location_top_location_2nd as call_count_location_top_2nd
+        from df_call_home_weekday a
+        join df_call_work b
+            on a.start_of_month = b.start_of_month and a.imsi = b.imsi
+        join df_call_top_1st c
+            on a.start_of_month = c.start_of_month and a.imsi = c.imsi
+        join df_call_top_2nd d
+            on a.start_of_month = d.start_of_month and a.imsi = d.imsi
+    ''')
+
+    print('DEBUG : ------------------------------------------------> (10)')
+    df_sum_voice_daily.show(10)
+
+    return df_sum_voice_daily

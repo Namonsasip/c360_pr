@@ -193,30 +193,16 @@ l0_geo_mst_cell_masterplan_current_for_l3_use_non_homework_features:
     target_layer: 'l3_monthly'
     lookback: '0'
     
-l0_geo_mst_cell_masterplan_current_for_l1_use_non_homework_features:
+l0_geo_mst_cell_masterplan_current_for_l3_call_location_home_work_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/GEO/geo_mst_cell_masterplan/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'no'
-    lookup_table_name: 'l1_use_non_homework_features'
+    lookup_table_name: 'l3_call_location_home_work_monthly'
     read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-    lookback: '0'
-
-#----------------------- geo_home_work_data_use_non_homework_features -------------------------
-l0_geo_home_work_data_for_l1_use_non_homework_features:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_home_work_location_id/  # Usage data on l4 that possible logic
-#  filepath: base_path/GEO/l4_features/geo_home_work_location_id/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'no'
-    lookup_table_name: 'l1_use_non_homework_features'
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
     lookback: '0'
 
 #----------------------- profile_customer_profile_ma_use_non_homework_features -------------------------
@@ -259,29 +245,16 @@ l0_geo_cust_cell_visit_time_daily_for_l1_geo_number_of_bs_used:
     lookback: '0'
 
 #----------------------- usage_sum_voice_location_homework_features -------------------------
-l0_usage_sum_voice_location_daily_for_l1_homework_features:
+l0_usage_sum_voice_location_daily_for_l3_call_location_home_work_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/USAGE/sample/usage_sum_voice_location_daily_runpipeline/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'no'
-    lookup_table_name: 'l1_homework_features'
+    lookup_table_name: 'l3_call_location_home_work_monthly'
     read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-    lookback: '0'
-
-#----------------------- geo_top_visit_exclude_homework_for_l1_sum_voice -------------------------
-l0_geo_top_visit_exclude_homework_for_l1_sum_voice_daily:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l4_features/geo_top_visit_exclude_homework/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'no'
-    lookup_table_name: 'l1_sum_voice_daily'
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
     lookback: '0'
 
 #----------------------- usage_sum_voice_location_daily_for_l1_geo_top3_cells_on_voice_usage -------------------------
@@ -324,16 +297,16 @@ l0_profile_customer_profile_ma_for_l1_geo_top3_cells_on_voice_usage:
     lookback: '0'
 
 #----------------------- profile_customer_profile_ma_for_l1_geo_call_location_home_work -------------------------
-l0_profile_customer_profile_ma_for_l1_use_non_homework_features:
+l0_profile_customer_profile_ma_for_l3_call_location_home_work_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/sample/profile_customer_profile_ma_runpipeline/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'no'
-    lookup_table_name: 'l1_geo_top3_cells_on_voice_usage'
+    lookup_table_name: 'l3_call_location_home_work_monthly'
     read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
     lookback: '0'
 
 #----------------------- usage_sum_data_location_daily_for_l1_the_favourite_locations -------------------------

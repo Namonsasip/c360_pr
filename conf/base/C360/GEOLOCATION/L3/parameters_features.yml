@@ -45,14 +45,14 @@ l3_geo_total_distance_km_monthly:
 #  granularity: "imsi,start_of_month"
 
 ###feature_sum_voice_location###
-l3_geo_call_location_home_work_monthly:
-  where_clause: ""
-  feature_list:
-    call_count_location_home_weekday: "sum(call_count_location_home_weekday)"
-    call_count_location_work: "sum(call_count_location_work)"
-    call_count_location_top_1st: "sum(call_count_location_top_1st)"
-    call_count_location_top_2nd: "sum(call_count_location_top_2nd)"
-  granularity: "imsi,start_of_month"
+#l3_geo_call_location_home_work_monthly:
+#  where_clause: ""
+#  feature_list:
+#    call_count_location_home_weekday: "sum(call_count_location_home_weekday)"
+#    call_count_location_work: "sum(call_count_location_work)"
+#    call_count_location_top_1st: "sum(call_count_location_top_1st)"
+#    call_count_location_top_2nd: "sum(call_count_location_top_2nd)"
+#  granularity: "imsi,start_of_month"
 
 ###Top_3_cells_on_voice_usage###
 l3_geo_top3_cells_on_voice_usage:
