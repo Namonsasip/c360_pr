@@ -49,9 +49,9 @@ def join_raw_features(sample_type: str) -> Pipeline:
     """
     inputs_to_join = [
         "cvm_users_list_{}",
+        "l4_usage_prepaid_postpaid_daily_features_{}",
         "l3_customer_profile_include_1mo_non_active_{}",
         "l4_daily_feature_topup_and_volume_{}",
-        "l4_usage_prepaid_postpaid_daily_features_{}",
         "l4_revenue_prepaid_ru_f_sum_revenue_by_service_monthly_{}",
         "l4_usage_postpaid_prepaid_weekly_features_sum_{}",
         "l4_touchpoints_to_call_center_features_{}",
