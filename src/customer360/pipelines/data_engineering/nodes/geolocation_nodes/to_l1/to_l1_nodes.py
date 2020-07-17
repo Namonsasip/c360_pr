@@ -802,8 +802,8 @@ def l1_the_favourite_locations_daily(usage_df_location,geo_df_masterplan):
             on b.lac = mp.lac
             and b.ci = mp.ci
         where mp.location_id is not NULL
-        GROUP BY b.mobile_no, b.date_id, mp.location_id, b.lac,b.ci, b.gprs_type,weektype,
-            mp.latitude, mp.longitude, b.start_of_week, b.start_of_month, 
+        GROUP BY b.mobile_no,b.date_id,mp.location_id,b.lac,b.ci,b.gprs_type,weektype,
+            mp.latitude,mp.longitude,b.start_of_week,b.start_of_month
         order by date_id
     """
     l1 = spark.sql(sql_l1_1)
