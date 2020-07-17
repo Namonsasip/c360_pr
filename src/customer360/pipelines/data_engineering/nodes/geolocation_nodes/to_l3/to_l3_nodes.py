@@ -1094,7 +1094,7 @@ def l3_call_location_home_work_monthly(cell_masterplan,geo_homework,profile_ma,u
         return get_spark_empty_df()
 
     # ----- Transformation -----
-    geo_homework = geo_homework.join(geo_top_visit_exc_homework,'imsi','full')
+    geo_homework = geo_homework.join(geo_top_visit_exc_homework,['imsi', 'start_of_month'],'full')
 
     print('DEBUG : ------------------------------------------------> (1)')
     geo_homework.show(10)
@@ -1104,12 +1104,16 @@ def l3_call_location_home_work_monthly(cell_masterplan,geo_homework,profile_ma,u
 
     _homework_join_master_profile(cell_masterplan,geo_homework,profile_ma,
                                  "home_weekday").createOrReplaceTempView('home_weekday')
+    print('DEBUG : ------------------------------------------------> (a)')
     _homework_join_master_profile(cell_masterplan, geo_homework,profile_ma,
                                  "work").createOrReplaceTempView('work')
+    print('DEBUG : ------------------------------------------------> (b)')
     _geo_top_visit_join_master_profile(cell_masterplan,geo_homework,profile_ma,
                                  "top_location_1st").createOrReplaceTempView('top_location_1st')
+    print('DEBUG : ------------------------------------------------> (c)')
     _geo_top_visit_join_master_profile(cell_masterplan, geo_homework,profile_ma,
                                  "top_location_2nd").createOrReplaceTempView('top_location_2nd')
+    print('DEBUG : ------------------------------------------------> (d)')
 
     spark = get_spark_session()
     print('DEBUG : ------------------------------------------------> (2)')
