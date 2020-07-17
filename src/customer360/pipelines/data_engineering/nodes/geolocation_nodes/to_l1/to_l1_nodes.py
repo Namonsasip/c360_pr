@@ -370,6 +370,10 @@ def l1_call_location_home_work(cell_masterplan,geo_homework,profile_ma,usage_sum
 
     # ----- Transformation -----
     geo_homework = geo_homework.join(geo_top_visit_exc_homework,'imsi','full')
+
+    print('DEBUG : ------------------------------------------------> (1)')
+    geo_homework.show(10)
+
     usage_sum_voice.createOrReplaceTempView('usage_voice')
     homework_join_master_profile(cell_masterplan,geo_homework,profile_ma,
                                  "home_weekday").createOrReplaceTempView('home_weekday')
@@ -379,6 +383,16 @@ def l1_call_location_home_work(cell_masterplan,geo_homework,profile_ma,usage_sum
                                  "top_location_1st").createOrReplaceTempView('top_location_1st')
     geo_top_visit_join_master_profile(cell_masterplan, geo_homework,profile_ma,
                                  "top_location_2nd").createOrReplaceTempView('top_location_2nd')
+
+    spark = get_spark_session()
+    print('DEBUG : ------------------------------------------------> (2)')
+    spark.sql('''select * from home_weekday limit 10;''')
+    print('DEBUG : ------------------------------------------------> (3)')
+    spark.sql('''select * from work limit 10;''')
+    print('DEBUG : ------------------------------------------------> (4)')
+    spark.sql('''select * from top_location_1st limit 10;''')
+    print('DEBUG : ------------------------------------------------> (5)')
+    spark.sql('''select * from top_location_2nd limit 10;''')
 
     def sum_voice_daily(df_temp_01):
         spark = get_spark_session()
@@ -403,6 +417,16 @@ def l1_call_location_home_work(cell_masterplan,geo_homework,profile_ma,usage_sum
     sum_voice_daily('top_location_2nd').createOrReplaceTempView('df_call_top_2nd')
 
     spark = get_spark_session()
+    print('DEBUG : ------------------------------------------------> (6)')
+    spark.sql('''select * from df_call_home_weekday limit 10;''')
+    print('DEBUG : ------------------------------------------------> (7)')
+    spark.sql('''select * from df_call_work limit 10;''')
+    print('DEBUG : ------------------------------------------------> (8)')
+    spark.sql('''select * from df_call_top_1st limit 10;''')
+    print('DEBUG : ------------------------------------------------> (9)')
+    spark.sql('''select * from df_call_top_2nd limit 10;''')
+
+    spark = get_spark_session()
     df_sum_voice_daily = spark.sql('''
         select
             a.event_partiiton_date as event_partition_date
@@ -419,6 +443,9 @@ def l1_call_location_home_work(cell_masterplan,geo_homework,profile_ma,usage_sum
         join df_call_top_2nd d
             on a.event_partiiton_date = d.event_partiiton_date and a.imsi = d.imsi
     ''')
+
+    print('DEBUG : ------------------------------------------------> (10)')
+    df_sum_voice_daily.show(10)
 
     return df_sum_voice_daily
 
