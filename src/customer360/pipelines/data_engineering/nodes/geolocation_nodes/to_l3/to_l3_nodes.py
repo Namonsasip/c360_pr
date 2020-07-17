@@ -1038,8 +1038,8 @@ def _geo_top_visit_join_master_profile(cell_masterplan,geo_top_visit,profile_ma,
       group by 1,2,3,4,5
       ''')
 
-    print('DEBUG : ------------------------------------------------> _geo_top_visit_join_master_profile (0)')
-    df_temp_00.show(10)
+    # print('DEBUG : ------------------------------------------------> _geo_top_visit_join_master_profile (0)')
+    # df_temp_00.show(10)
 
     df_temp_00.createOrReplaceTempView('temp_00')
 
@@ -1057,8 +1057,8 @@ def _geo_top_visit_join_master_profile(cell_masterplan,geo_top_visit,profile_ma,
       group by 1,2,3,4,5,6
       ''')
 
-    print('DEBUG : ------------------------------------------------> _geo_top_visit_join_master_profile (1)')
-    df_temp_01.show(10)
+    # print('DEBUG : ------------------------------------------------> _geo_top_visit_join_master_profile (1)')
+    # df_temp_01.show(10)
 
     return df_temp_01
 
@@ -1128,13 +1128,13 @@ def l3_call_location_home_work_monthly(cell_masterplan,geo_homework,profile_ma,u
 
     spark = get_spark_session()
     print('DEBUG : ------------------------------------------------> (2)')
-    spark.sql('''select * from home_weekday limit 10''')
+    spark.sql('''select * from home_weekday limit 10''').show()
     print('DEBUG : ------------------------------------------------> (3)')
-    spark.sql('''select * from work limit 10''')
+    spark.sql('''select * from work limit 10''').show()
     print('DEBUG : ------------------------------------------------> (4)')
-    spark.sql('''select * from top_location_1st limit 10''')
+    spark.sql('''select * from top_location_1st limit 10''').show()
     print('DEBUG : ------------------------------------------------> (5)')
-    spark.sql('''select * from top_location_2nd limit 10''')
+    spark.sql('''select * from top_location_2nd limit 10''').show()
 
     def sum_voice_daily(df_temp_01):
         spark = get_spark_session()
@@ -1161,13 +1161,13 @@ def l3_call_location_home_work_monthly(cell_masterplan,geo_homework,profile_ma,u
 
     spark = get_spark_session()
     print('DEBUG : ------------------------------------------------> (6)')
-    spark.sql('''select * from df_call_home_weekday limit 10''')
+    spark.sql('''select * from df_call_home_weekday limit 10''').show()
     print('DEBUG : ------------------------------------------------> (7)')
-    spark.sql('''select * from df_call_work limit 10''')
+    spark.sql('''select * from df_call_work limit 10''').show()
     print('DEBUG : ------------------------------------------------> (8)')
-    spark.sql('''select * from df_call_top_1st limit 10''')
+    spark.sql('''select * from df_call_top_1st limit 10''').show()
     print('DEBUG : ------------------------------------------------> (9)')
-    spark.sql('''select * from df_call_top_2nd limit 10''')
+    spark.sql('''select * from df_call_top_2nd limit 10''').show()
 
     spark = get_spark_session()
     df_sum_voice_daily = spark.sql('''
