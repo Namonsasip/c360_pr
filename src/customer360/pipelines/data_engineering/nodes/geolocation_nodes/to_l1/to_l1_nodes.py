@@ -153,9 +153,6 @@ def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit
     geo_cust_cell_visit_time.cache()
     geo_cust_cell_visit_time = add_start_of_week_and_month(geo_cust_cell_visit_time, "time_in")
 
-    print('DEBUG ------------------------------> (1)')
-    geo_cust_cell_visit_time.show(10)
-
     masterplan.createOrReplaceTempView("mst_cell_masterplan")
     shape.createOrReplaceTempView("mst_poi_shape")
 
@@ -178,8 +175,6 @@ def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit
     df.cache()
     df.createOrReplaceTempView('temp_geo_ais_shop')
 
-    print('DEBUG ------------------------------> (2)')
-    df.show(10)
     geo_cust_cell_visit_time.createOrReplaceTempView('geo_cust_cell_visit_time')
 
     df2 = ss.sql("""
@@ -200,9 +195,6 @@ def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit
     df2 = node_from_config(df2, sql)
     # df.unpersist()
     # df2.unpersist()
-
-    print('DEBUG ------------------------------> (3)')
-    df2.show(10)
 
     return df2
 
@@ -537,18 +529,11 @@ def l1_location_of_visit_ais_store_daily(shape,cust_cell_visit,sql):
         AND p2.LANDMARK_CAT_NAME_EN IN ('AIS')
      """)
 
-    print('DEBUG ------------------------------> (1)')
-    df.show(10)
-
-    # df.cache()
-
     # print("Start for check result from sql query statement")
     # df.count()
     # df.show()
 
     store_visit = node_from_config(df,sql)
-    print('DEBUG ------------------------------> (2)')
-    store_visit.show(10)
 
     return store_visit
 

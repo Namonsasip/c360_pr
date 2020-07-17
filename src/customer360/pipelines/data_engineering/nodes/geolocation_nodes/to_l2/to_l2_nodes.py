@@ -34,6 +34,9 @@ def l2_geo_time_spent_by_location_weekly(df,sql):
 
     # ----- Transformation -----
     df = massive_processing_time_spent_weekly(df,sql,"l2_geo_time_spent_by_location_weekly", 'start_of_week')
+    print('DEBUG : ------------------------------------------------> l2_geo_time_spent_by_location_weekly')
+    df.show(10)
+
     return df
 
 
@@ -51,30 +54,29 @@ def l2_geo_area_from_ais_store_weekly(df, sql):
 
     df = node_from_config(df, sql)
 
+    print('DEBUG : ------------------------------------------------> l2_geo_area_from_ais_store_weekly')
+    df.show(10)
+
     return df
 
 def l2_geo_area_from_competitor_store_weekly(df,sql):
     # ----- Data Availability Checks -----
     if check_empty_dfs([df]):
         return get_spark_empty_df()
-    # print('DEBUG ------------------------------> (1)')
-    # df.show(10)
 
     df = data_non_availability_and_missing_check(df=df, grouping="weekly",
                                                  par_col="event_partition_date",
                                                  target_table_name="l2_geo_area_from_competitor_store_weekly",
                                                  missing_data_check_flg='N')
 
-    # print('DEBUG ------------------------------> (2)')
-    # df.show(10)
-
     if check_empty_dfs([df]):
         return get_spark_empty_df()
 
 
-    df = node_from_config(df,sql)
-    # print('DEBUG ------------------------------> (3)')
-    # df.show(10)
+    df = node_from_config(df,sql
+
+    print('DEBUG : ------------------------------------------------> l2_geo_area_from_competitor_store_weekly')
+    df.show(10)
     return df
 
 
@@ -156,6 +158,10 @@ def l2_geo_total_distance_km_weekly(df: DataFrame, sql: dict):
 
     # return_df = expansion(return_df, sql)
     df = node_from_config(df, sql)
+
+    print('DEBUG : ------------------------------------------------> l2_geo_total_distance_km_weekly')
+    df.show(10)
+
     return df
 
 ###Traffic_fav_location###
@@ -192,6 +198,10 @@ def l2_geo_data_count_location_weekly(df,sql):
     L2_DF = df.withColumn("START_OF_WEEK", F.to_date(F.date_trunc('WEEK', "event_partition_date"))).drop(
         'event_partition_date')
     df = node_from_config(L2_DF, sql)
+
+    print('DEBUG : ------------------------------------------------> l2_geo_data_count_location_weekly')
+    df.show(10)
+
     return df
 
 
@@ -211,6 +221,10 @@ def l2_geo_call_home_work_location_weekly(df,sql):
 
     l2_df = df.withColumn("start_of_week", F.to_date(F.date_trunc('week', "event_partition_date"))).drop( 'event_partition_date')
     l2_df_2 =node_from_config(l2_df,sql)
+
+    print('DEBUG : ------------------------------------------------> l2_geo_call_home_work_location_weekly')
+    l2_df_2.show(10)
+
     return l2_df_2
 
 
@@ -247,6 +261,9 @@ def l2_geo_top3_cells_on_voice_usage(df,sql):
     df.cache()
     df = df.where("rnk <= 3")
 
+    print('DEBUG : ------------------------------------------------> l2_geo_top3_cells_on_voice_usage')
+    df.show(10)
+
     return df
 
 
@@ -270,6 +287,10 @@ def l2_geo_distance_top_call(df):
                 "string") == 'NaN', 0).otherwise(
             F.sqrt(F.avg(df.top_distance_km * df.top_distance_km) - F.pow(F.avg(df.top_distance_km), F.lit(2)))).alias(
             "sd_distance_top_call"),F.sum("top_distance_km").alias("sum_distance_top_call"))
+
+    print('DEBUG : ------------------------------------------------> l2_geo_distance_top_call')
+    l1_df1.show(10)
+
     return l1_df1
 
 
@@ -304,6 +325,10 @@ def l2_the_favourite_locations_weekly(df):
     order by 2,1,3,4
     """
     l2 = spark.sql(sql_query)
+
+    print('DEBUG : ------------------------------------------------> l2_the_favourite_locations_weekly')
+    l2.show(10)
+
     return l2
 
 
@@ -366,6 +391,10 @@ def l2_same_favourite_location_weekend_weekday_weekly(l0_geo_cust_cell_visit_tim
     l2 = spark.sql(sql_query)
     #l2.createOrReplaceTempView('l2')
     # print(" ========================= l2 ======================")
+
+    print('DEBUG : ------------------------------------------------> l2_same_favourite_location_weekend_weekday_weekly')
+    l2.show(10)
+
     return l2
 
 
