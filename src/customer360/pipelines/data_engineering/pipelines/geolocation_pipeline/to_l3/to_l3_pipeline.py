@@ -168,6 +168,7 @@ def geo_to_l3_pipeline(**kwargs):
             #      ]
             # ),
 
+            ### runnig flag == ุ7.1
             node(
                 int_geo_home_work_list_imsi_monthly,
                 ["int_l3_geo_home_location_id_monthly",
@@ -175,6 +176,7 @@ def geo_to_l3_pipeline(**kwargs):
                  ],
                 "geo_home_work_list_imsi_stg"
             ),
+            ### runnig flag == ุ7.2
             node(
                 int_geo_work_location_id_monthly,
                 ["int_l3_geo_work_location_id_monthly",
@@ -192,6 +194,7 @@ def geo_to_l3_pipeline(**kwargs):
                  "int_home_weekend_location_id"
                  ]
             ),
+            ### runnig flag == ุ7.4
             node(
                 l3_geo_home_work_location_id_monthly,
                 ["int_home_weekday_location_id",

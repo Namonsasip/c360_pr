@@ -92,7 +92,7 @@ l0_geo_cust_cell_visit_time_for_l1_geo_area_from_ais_store_daily:
 #----------------------- geo_cust_location_visit_hr_geo_work_area_center_average -------------------------
 l0_geo_cust_location_visit_hr_for_l3_geo_work_area_center_average_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/geo_cust_location_visit_hr/
+  filepath: base_path/GEO/sample/geo_cust_location_visit_hr_runpipeline/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
