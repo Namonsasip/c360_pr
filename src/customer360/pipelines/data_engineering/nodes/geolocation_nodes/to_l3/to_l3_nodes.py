@@ -1104,8 +1104,9 @@ def l3_call_location_home_work_monthly(cell_masterplan,geo_homework,profile_ma,u
     # ----- Transformation -----
     geo_homework = geo_homework.join(geo_top_visit_exc_homework,['imsi', 'start_of_month'],'full')
 
-    print('DEBUG : ------------------------------------------------> (1)')
-    geo_homework.show(10)
+    # Pass
+    # print('DEBUG : ------------------------------------------------> (1)')
+    geo_homework.printSchema()
 
     usage_sum_voice = usage_sum_voice.withColumn('start_of_month', F.to_date(F.date_trunc('month', F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))))
     usage_sum_voice.createOrReplaceTempView('usage_voice')
