@@ -103,21 +103,21 @@ def geo_to_l3_pipeline(**kwargs):
             #      ],
             #     "l3_geo_total_distance_km_monthly"
             # ),
-
-            ### runnig flag == 9.2
-            ###Traffic_fav_location###
-            node(
-                l3_data_traffic_home_work_top1_top2,
-                ["l0_geo_mst_cell_masterplan_current_for_l3_use_non_homework_features",
-                 "l3_geo_home_work_location_id_monthly_for_l3_data_traffic_home_work_top1_top2",
-                 "l0_profile_customer_profile_ma_for_l3_use_non_homework_features",
-                 "l0_usage_sum_data_location_daily_for_l3_use_non_homework_features",
-                 "l3_geo_time_spent_by_location_monthly_for_l3_data_traffic_home_work_top1_top2"
-                 ],
-                "l3_geo_use_traffic_home_work"
-
-            ),
-
+            #
+            # ### runnig flag == 9.2
+            # ###Traffic_fav_location###
+            # node(
+            #     l3_data_traffic_home_work_top1_top2,
+            #     ["l0_geo_mst_cell_masterplan_current_for_l3_use_non_homework_features",
+            #      "l3_geo_home_work_location_id_monthly_for_l3_data_traffic_home_work_top1_top2",
+            #      "l0_profile_customer_profile_ma_for_l3_use_non_homework_features",
+            #      "l0_usage_sum_data_location_daily_for_l3_use_non_homework_features",
+            #      "l3_geo_time_spent_by_location_monthly_for_l3_data_traffic_home_work_top1_top2"
+            #      ],
+            #     "l3_geo_use_traffic_home_work"
+            #
+            # ),
+            #
             ### runnig flag == 9.0
             ###feature_sum_voice_location###
             node(

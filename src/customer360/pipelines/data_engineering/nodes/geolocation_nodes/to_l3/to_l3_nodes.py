@@ -915,8 +915,8 @@ def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
     Home_Work = Home_Work.withColumn("start_of_month", F.to_date(F.date_trunc('month', "event_partition_date")))
     Home_Work.createTempView('GEO_TEMP_04')
 
-    print('DEBUG : ------------------------------------------------> (1)')
-    Home_Work.show(10)
+    # print('DEBUG : ------------------------------------------------> (1)')
+    # Home_Work.show(10)
 
     data_traffic_location = spark.sql("""
         SELECT
@@ -946,8 +946,8 @@ def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
         group by IMSI, start_of_month
     """)
 
-    print('DEBUG : ------------------------------------------------> l3_data_traffic_home_work_top1_top2')
-    log.info('test debug :---------')
+    # print('DEBUG : ------------------------------------------------> l3_data_traffic_home_work_top1_top2')
+    # log.info('test debug :---------')
     log.info(data_traffic_location.show(10))
     return data_traffic_location
 
@@ -1099,7 +1099,7 @@ def l3_call_location_home_work_monthly(cell_masterplan,geo_homework,profile_ma,u
     print('DEBUG : ------------------------------------------------> (1)')
     geo_homework.show(10)
 
-    usage_sum_voice = usage_sum_voice.withColumn('start_of_month', F.to_date(F.date_trunc('month', F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd'))))
+    usage_sum_voice = usage_sum_voice.withColumn('start_of_month', F.to_date(F.date_trunc('month', F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))))
     usage_sum_voice.createOrReplaceTempView('usage_voice')
 
     _homework_join_master_profile(cell_masterplan,geo_homework,profile_ma,
