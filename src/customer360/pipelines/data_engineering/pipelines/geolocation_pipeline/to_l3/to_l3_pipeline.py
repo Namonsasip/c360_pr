@@ -211,14 +211,14 @@ def geo_to_l3_pipeline(**kwargs):
             #     "l3_geo_home_weekday_city_citizens_monthly"
             # ),
 
-            ### Work area center average
-            node(
-                l3_geo_work_area_center_average_monthly,
-                ["l0_geo_cust_location_visit_hr_for_l3_geo_work_area_center_average_monthly",
-                 "l3_geo_home_work_location_id_monthly_for_l3_geo_work_area_center_average_monthly"
-                 ],
-                "l3_geo_work_area_center_average_monthly"
-            )
+            # ### Work area center average
+            # node(
+            #     l3_geo_work_area_center_average_monthly,
+            #     ["l0_geo_cust_location_visit_hr_for_l3_geo_work_area_center_average_monthly",
+            #      "l3_geo_home_work_location_id_monthly_for_l3_geo_work_area_center_average_monthly"
+            #      ],
+            #     "l3_geo_work_area_center_average_monthly"
+            # )
 
         ], name="geo_to_l3_pipeline"
     )
