@@ -15,7 +15,6 @@ conf = os.getenv("CONF", None)
 
 def sale_product_customer_master_on_top_features(sale_df: DataFrame,
                                  product_df: DataFrame,
-                                 customer_df: DataFrame,
                                  volume_feature_dict,
                                  name_feature_dict,
                                  exception_partitions_list) -> DataFrame:
@@ -31,7 +30,7 @@ def sale_product_customer_master_on_top_features(sale_df: DataFrame,
     """
 
     ################################# Start Implementing Data availability checks ###############################
-    if check_empty_dfs([sale_df, product_df, customer_df]):
+    if check_empty_dfs([sale_df, product_df]):
         return get_spark_empty_df()
 
     sale_df = data_non_availability_and_missing_check(
@@ -46,19 +45,12 @@ def sale_product_customer_master_on_top_features(sale_df: DataFrame,
         grouping="weekly", par_col="partition_date",
         target_table_name="l2_sales_number_and_volume_on_top_transaction_weekly")
 
-    customer_df = data_non_availability_and_missing_check(
-        df=customer_df,
-        grouping="weekly", par_col="start_of_week",
-        target_table_name="l2_sales_number_and_volume_on_top_transaction_weekly")
-
     min_value = union_dataframes_with_missing_cols(
         [
             sale_df.select(
                 f.max(f.to_date(f.date_trunc("week", f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd')))).alias("max_date")),
             product_df.select(
                 f.max(f.to_date(f.date_trunc("week", f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd')))).alias("max_date")),
-            customer_df.select(
-                f.max(f.col("start_of_week")).alias("max_date")),
         ]
     ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
 
@@ -66,9 +58,7 @@ def sale_product_customer_master_on_top_features(sale_df: DataFrame,
 
     product_df = product_df.filter(f.to_date(f.date_trunc("week", f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd'))) <= min_value)
 
-    customer_df = customer_df.filter(f.col("start_of_week") <= min_value)
-
-    if check_empty_dfs([sale_df, product_df, customer_df]):
+    if check_empty_dfs([sale_df, product_df]):
         return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
@@ -114,26 +104,12 @@ def sale_product_customer_master_on_top_features(sale_df: DataFrame,
     #joining volume and name feature to create one master feature table
     master_sales_features = master_volume_features.join(master_name_features, master_sales_features_join_cols, how='left')
 
-    customer_cols = ['subscription_identifier',
-                     'national_id_card',
-                     'start_of_week']
 
-    cust_join_cols = ['start_of_week', 'subscription_identifier']
-
-    customer_df = customer_df.select(customer_cols)
-    customer_df = customer_df.withColumn("rn", expr(
-        "row_number() over(partition by start_of_week,subscription_identifier order by start_of_week desc)"))
-    customer_df = customer_df.where("rn = 1")
-    customer_df = customer_df.drop("rn")
-
-    master_df = master_sales_features.join(customer_df, cust_join_cols, how='left')
-
-    return master_df
+    return master_sales_features
 
 
 def sale_product_customer_master_main_features(sale_df: DataFrame,
                                  product_df: DataFrame,
-                                 customer_df: DataFrame,
                                  volume_feature_dict,
                                  name_feature_dict,
                                  exception_partitions_list) -> DataFrame:
@@ -149,7 +125,7 @@ def sale_product_customer_master_main_features(sale_df: DataFrame,
     """
 
     ################################# Start Implementing Data availability checks ###############################
-    if check_empty_dfs([sale_df, product_df, customer_df]):
+    if check_empty_dfs([sale_df, product_df]):
         return get_spark_empty_df()
 
     sale_df = data_non_availability_and_missing_check(
@@ -164,11 +140,6 @@ def sale_product_customer_master_main_features(sale_df: DataFrame,
         grouping="weekly", par_col="partition_date",
         target_table_name="l2_sales_number_and_volume_main_transaction_weekly")
 
-    customer_df = data_non_availability_and_missing_check(
-        df=customer_df,
-        grouping="weekly", par_col="start_of_week",
-        target_table_name="l2_sales_number_and_volume_main_transaction_weekly")
-
     min_value = union_dataframes_with_missing_cols(
         [
             sale_df.select(
@@ -177,8 +148,6 @@ def sale_product_customer_master_main_features(sale_df: DataFrame,
                     "max_date")),
             product_df.select(
                 f.max(f.to_date(f.date_trunc("week", f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd')))).alias("max_date")),
-            customer_df.select(
-                f.max(f.col("start_of_week")).alias("max_date")),
         ]
     ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
 
@@ -187,9 +156,7 @@ def sale_product_customer_master_main_features(sale_df: DataFrame,
 
     product_df = product_df.filter(f.to_date(f.date_trunc("week", f.to_date(f.col("partition_date").cast(StringType()), 'yyyyMMdd'))) <= min_value)
 
-    customer_df = customer_df.filter(f.col("start_of_week") <= min_value)
-
-    if check_empty_dfs([sale_df, product_df, customer_df]):
+    if check_empty_dfs([sale_df, product_df]):
         return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
@@ -233,21 +200,7 @@ def sale_product_customer_master_main_features(sale_df: DataFrame,
     #joining volume and name feature to create one master feature table
     master_sales_features = master_volume_features.join(master_name_features, master_sales_features_join_cols, how='left')
 
-    customer_cols = ['subscription_identifier',
-                     'national_id_card',
-                     'start_of_week']
-
-    cust_join_cols = ['start_of_week','subscription_identifier']
-
-    customer_df = customer_df.select(customer_cols)
-    customer_df = customer_df.withColumn("rn", expr(
-        "row_number() over(partition by start_of_week,subscription_identifier order by start_of_week desc)"))
-    customer_df = customer_df.where("rn = 1")
-    customer_df = customer_df.drop("rn")
-
-    master_df = master_sales_features.join(customer_df, cust_join_cols, how='left')
-
-    return master_df
+    return master_sales_features
 
 
 
