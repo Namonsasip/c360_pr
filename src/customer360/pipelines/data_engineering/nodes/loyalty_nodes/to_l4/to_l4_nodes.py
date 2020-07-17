@@ -1,14 +1,8 @@
 import os
-
-import pyspark.sql.functions as f
-from pyspark.sql import DataFrame, Window
-from pyspark.sql.types import StringType
+from pyspark.sql import DataFrame
 
 from customer360.utilities.config_parser import l4_rolling_window
-from customer360.utilities.re_usable_functions import check_empty_dfs,  \
-    union_dataframes_with_missing_cols, gen_max_sql, execute_sql
-from customer360.utilities.spark_util import get_spark_empty_df
-
+from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, gen_max_sql, execute_sql
 conf = os.getenv("CONF", None)
 
 
