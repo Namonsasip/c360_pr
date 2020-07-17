@@ -120,7 +120,7 @@ def geo_to_l3_pipeline(**kwargs):
             ###feature_sum_voice_location###
             node(
                 l3_call_location_home_work_monthly,
-                ["l0_geo_mst_cell_masterplan_current_for_l3_call_location_home_work",
+                ["l0_geo_mst_cell_masterplan_current_for_l3_call_location_home_work_monthly",
                  "l3_geo_home_work_location_id_monthly_for_l3_call_location_home_work_monthly",
                  "l0_profile_customer_profile_ma_for_l3_call_location_home_work_monthly",
                  "l0_usage_sum_voice_location_daily_for_l3_call_location_home_work_monthly",
