@@ -850,7 +850,7 @@ def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
     ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
 
     usage_sum_data_location_daily = usage_sum_data_location_daily.filter(
-        F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+        F.to_date(F.date_trunc("month", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))) <= min_value)
     profile_customer_profile_ma = profile_customer_profile_ma.filter(F.to_date(F.col("partition_month").cast(StringType()), 'yyyyMM') <= min_value)
 
     geo_mst_cell_masterplan = get_max_date_from_master_data(geo_mst_cell_masterplan, 'partition_date')
