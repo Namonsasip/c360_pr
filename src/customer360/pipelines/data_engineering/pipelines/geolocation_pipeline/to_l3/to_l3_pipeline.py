@@ -8,6 +8,8 @@ from customer360.pipelines.data_engineering.nodes.geolocation_nodes.to_l3.to_l3_
 def geo_to_l3_pipeline(**kwargs):
     return Pipeline(
         [
+
+            ### runnig flag == 2
             node(
                 l3_geo_time_spent_by_location_monthly,
                 ["l1_geo_time_spent_by_location_daily_for_l3_geo_time_spent_by_location_monthly",
@@ -32,6 +34,7 @@ def geo_to_l3_pipeline(**kwargs):
                 "l3_geo_area_from_competitor_store_monthly"
             ),
 
+            ### runnig flag == 3
             ###total_distance_km###
             node(
                 l3_geo_total_distance_km_monthly,
@@ -60,15 +63,17 @@ def geo_to_l3_pipeline(**kwargs):
                 "l3_geo_use_traffic_home_work_monthly"
             ),
 
-            ###feature_sum_voice_location###
-            node(
-                l3_geo_call_location_home_work_monthly,
-                ["l1_geo_call_location_home_work_daily_for_l3_geo_call_location_home_work_monthly",
-                 "params:l3_geo_call_location_home_work_monthly"
-                 ],
-                "l3_geo_call_location_home_work_monthly"
-            ),
 
+            # ###feature_sum_voice_location###
+            # node(
+            #     l3_geo_call_location_home_work_monthly,
+            #     ["l1_geo_call_location_home_work_daily_for_l3_geo_call_location_home_work_monthly", # No data from l1
+            #      "params:l3_geo_call_location_home_work_monthly"
+            #      ],
+            #     "l3_geo_call_location_home_work_monthly"
+            # ),
+
+            ### runnig flag == 1
             ##Top_3_cells_on_voice_usage###
             node(
                 l3_geo_top3_cells_on_voice_usage,

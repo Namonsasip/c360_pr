@@ -45,6 +45,10 @@ def l3_geo_time_spent_by_location_monthly(df,sql):
         return get_spark_empty_df()
 
     df = massive_processing_monthly(df, sql, "l3_geo_time_spent_by_location_monthly", 'start_of_month')
+
+    print('DEBUG : ------------------------------------------------> l3_geo_time_spent_by_location_monthly')
+    df.show(10)
+
     return df
 
 
@@ -61,6 +65,10 @@ def l3_geo_area_from_ais_store_monthly(df,sql):
         return get_spark_empty_df()
 
     df = node_from_config(df, sql)
+
+    print('DEBUG : ------------------------------------------------> l3_geo_area_from_ais_store_monthly')
+    df.show(10)
+
     return df
 
 
@@ -78,6 +86,10 @@ def l3_geo_area_from_competitor_store_monthly(df,sql):
 
 
     df = node_from_config(df, sql)
+
+    print('DEBUG : ------------------------------------------------> l3_geo_area_from_competitor_store_monthly')
+    df.show(10)
+
     return df
 
 
@@ -96,6 +108,10 @@ def l3_geo_total_distance_km_monthly(df,sql):
 
 
     df = node_from_config(df, sql)
+
+    print('DEBUG : ------------------------------------------------> l3_geo_total_distance_km_monthly')
+    df.show(10)
+
     return df
 
 
@@ -115,6 +131,10 @@ def l3_geo_call_location_home_work_monthly(df,sql):
 
     l3_df = df.withColumn("start_of_month", F.to_date(F.date_trunc('month', "event_partition_date"))).drop( 'event_partition_date')
     l3_df_2 = node_from_config(l3_df,sql)
+
+    print('DEBUG : ------------------------------------------------> l3_geo_call_location_home_work_monthly')
+    l3_df_2.show(10)
+
     return l3_df_2
 
 
@@ -151,6 +171,9 @@ def l3_geo_top3_cells_on_voice_usage(df,sql):
     df.cache()
     df = df.where("rnk <= 3")
 
+    print('DEBUG : ------------------------------------------------> l3_geo_top3_cells_on_voice_usage')
+    df.show(10)
+
     return df
 
 
@@ -172,6 +195,10 @@ def l3_geo_distance_top_call(df):
         F.avg("top_distance_km").alias("avg_distance_top_call"),
         F.when(F.sqrt(F.avg(df.top_distance_km * df.top_distance_km) - F.pow(F.avg(df.top_distance_km),F.lit(2))).cast("string") == 'NaN', 0).otherwise(F.sqrt(F.avg(df.top_distance_km * df.top_distance_km) - F.pow(F.avg(df.top_distance_km),F.lit(2)))).alias("sd_distance_top_call"),
         F.sum("top_distance_km").alias("sum_distance_top_call"))
+
+    print('DEBUG : ------------------------------------------------> l3_geo_distance_top_call')
+    df.show(10)
+
     return df
 
 
@@ -207,6 +234,10 @@ def l3_the_favourite_locations_monthly(df):
     order by 2,1,3,4
     """
     l3 = spark.sql(sql_query)
+
+    print('DEBUG : ------------------------------------------------> l3_the_favourite_locations_monthly')
+    l3.show(10)
+
     return l3
 
 
@@ -773,6 +804,10 @@ def _geo_top_visit_exclude_homework(sum_duration, homework):
     rank3 = result.where('rank=3').withColumn('top_location_3rd', F.col('location_id')).drop('location_id', 'rank',
                                                                                              'sum_duration')
     df = rank1.join(rank2, ['imsi', 'start_of_month'], 'full').join(rank3, ['imsi', 'start_of_month'], 'full')
+
+    print('DEBUG : ------------------------------------------------> _geo_top_visit_exclude_homework')
+    df.show(10)
+
     return df
 
 def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
@@ -886,6 +921,9 @@ def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
     data_traffic_location = data_traffic_location.withColumn("start_of_week", F.to_date(F.date_trunc('week', "event_partition_date"))).drop('event_partition_date')
     data_traffic_location = data_traffic_location.withColumn("start_of_month", F.to_date(F.date_trunc('month', "event_partition_date"))).drop( 'event_partition_date')
 
+    print('DEBUG : ------------------------------------------------> l3_data_traffic_home_work_top1_top2')
+    data_traffic_location.show(10)
+
     return data_traffic_location
 
 
@@ -903,4 +941,8 @@ def l3_geo_use_Share_traffic_monthly(df, sql):
         return get_spark_empty_df()
 
     l3_df_2 = node_from_config(df, sql)
+
+    print('DEBUG : ------------------------------------------------> l3_geo_use_Share_traffic_monthly')
+    l3_df_2.show(10)
+
     return l3_df_2
