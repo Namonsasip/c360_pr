@@ -33,6 +33,13 @@ def geo_to_l4_pipeline(**kwargs):
                 "l4_geo_area_from_competitor_store"
             ),
 
+            node(
+                node_from_config,
+                ["l3_geo_top_visit_exclude_homework",
+                 "params:l4_geo_top_visit_exclude_homework"
+                 ],
+                "l4_geo_top_visit_exclude_homework"
+            ),
 
             ### HOME/WORK location id feature
             node(

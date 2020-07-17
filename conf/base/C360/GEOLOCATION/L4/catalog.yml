@@ -64,6 +64,20 @@ l4_geo_work_area_center_average:
     read_layer: 'l0_daily'
     target_layer: 'l4_monthly'
 
+
+#------------------------l4_geo_top_visit_exclude_homework-----------------------------------
+l4_geo_top_visit_exclude_homework:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l4_features/geo_top_visit_exclude_homework/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l3_monthly'
+    target_layer: 'l4_monthly'
+
 #---------------------l4_geo_home_weekday_city_citizens--------------------------------------
 l4_geo_home_weekday_city_citizens:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet

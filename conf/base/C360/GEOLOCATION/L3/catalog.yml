@@ -218,6 +218,7 @@ l3_geo_home_work_location_id_monthly_for_l3_geo_top_visit_exclude_homework:
     target_layer: 'l4_monthly'
     lookback: '3'
 
+
 #------------------------l3_geo_top_visit_exclude_homework-----------------------------------
 l3_geo_top_visit_exclude_homework:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -230,6 +231,12 @@ l3_geo_top_visit_exclude_homework:
     partitionBy: "start_of_month"
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l4_geo_top_visit_exclude_homework'
+    read_layer: 'l3_monthly'
+    target_layer: 'l4_monthly'
+    lookback: '3'
 
 #------------------------l3_geo_top_visit_exclude_homework_for_l3_data_traffic_home_work_top1_top2-----------------------------------
 l3_geo_home_work_location_id_monthly_for_l3_data_traffic_home_work_top1_top2:
