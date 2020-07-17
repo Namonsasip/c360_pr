@@ -103,7 +103,7 @@ def l1_geo_area_from_ais_store_daily(shape,masterplan,geo_cust_cell_visit_time,s
             cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) as distance_km
         from mst_poi_shape a,
             mst_cell_masterplan b
-        where   a.landmark_cat_name_en in ('ais')
+        where   a.landmark_cat_name_en in ('AIS')
         and cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) <= (0.5)
         group by 1,2,3,4
     """)
@@ -537,12 +537,19 @@ def l1_location_of_visit_ais_store_daily(shape,cust_cell_visit,sql):
         AND p2.LANDMARK_CAT_NAME_EN IN ('AIS')
      """)
 
-    df.cache()
+    print('DEBUG ------------------------------> (1)')
+    df.show(10)
+
+    # df.cache()
+
     # print("Start for check result from sql query statement")
     # df.count()
     # df.show()
 
     store_visit = node_from_config(df,sql)
+    print('DEBUG ------------------------------> (2)')
+    store_visit.show(10)
+
     return store_visit
 
 
