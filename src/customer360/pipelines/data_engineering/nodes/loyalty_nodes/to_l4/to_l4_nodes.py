@@ -24,7 +24,7 @@ def loyalty_build_weekly_features(input_df: DataFrame,
     first_df = l4_rolling_window(input_df, first_dict)
     second_df = l4_rolling_window(input_df, second_dict)
 
-    group_cols = ["subscription_identifier", "access_method_num", "national_id_card", "start_of_week"]
+    group_cols = ["subscription_identifier", "national_id_card", "start_of_week"]
 
     union_df = union_dataframes_with_missing_cols([first_df, second_df])
 
@@ -45,7 +45,7 @@ def l4_loyalty_point_balance_statuses_features(input_df: DataFrame,
     first_df = l4_rolling_window(input_df, first_dict)
     second_df = l4_rolling_window(input_df, second_dict)
 
-    group_cols = ["subscription_identifier", "access_method_num", "national_id_card", "start_of_month"]
+    group_cols = ["subscription_identifier", "national_id_card", "start_of_month"]
 
     union_df = union_dataframes_with_missing_cols([first_df, second_df])
 
