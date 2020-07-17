@@ -71,17 +71,17 @@ def geo_to_l1_pipeline(**kwargs):
             # ),
 
             # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> MUST FIX L0 HOME/WORK
-            # ###feature_sum_voice_location###
-            # node(
-            #     l1_call_location_home_work,
-            #     ["l0_geo_mst_cell_masterplan_current_for_l1_use_non_homework_features",
-            #      "l0_geo_home_work_data_for_l1_use_non_homework_features",
-            #      "l0_profile_customer_profile_ma_for_l1_use_non_homework_features",
-            #      "l0_usage_sum_voice_location_daily_for_l1_homework_features",
-            #      "l0_geo_top_visit_exclude_homework_for_l1_sum_voice_daily"
-            #      ],
-            #     "l1_geo_call_location_home_work_daily"
-            # ),
+            ###feature_sum_voice_location###
+            node(
+                l1_call_location_home_work,
+                ["l0_geo_mst_cell_masterplan_current_for_l1_use_non_homework_features",
+                 "l0_geo_home_work_data_for_l1_use_non_homework_features",
+                 "l0_profile_customer_profile_ma_for_l1_use_non_homework_features",
+                 "l0_usage_sum_voice_location_daily_for_l1_homework_features",
+                 "l0_geo_top_visit_exclude_homework_for_l1_sum_voice_daily"
+                 ],
+                "l1_geo_call_location_home_work_daily"
+            ),
 
             # ### runnig flag == 1
             # ###feature_AIS_store###
