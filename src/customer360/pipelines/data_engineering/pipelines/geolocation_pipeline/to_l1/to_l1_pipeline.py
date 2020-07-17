@@ -87,8 +87,8 @@ def geo_to_l1_pipeline(**kwargs):
             # ###feature_AIS_store###
             # node(
             #     l1_location_of_visit_ais_store_daily,
-            #     ["l0_mst_poi_shape_for_l1_geo_area_from_ais_store_daily",
-            #      "l0_geo_cust_cell_visit_time_for_l1_geo_time_spent_by_location_daily",
+            #     ["l0_mst_poi_shape_for_l1_location_of_visit_ais_store_daily",
+            #      "l0_geo_cust_cell_visit_time_for_l1_location_of_visit_ais_store_daily",
             #      "params:l1_location_of_visit_ais_store_daily"
             #      ],
             #     "l1_location_of_visit_ais_store_daily"
