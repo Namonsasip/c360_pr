@@ -941,7 +941,7 @@ def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
             group by IMSI, start_of_month ) a
         left join GEO_TEMP_04 b
             on a.IMSI = b.IMSI and a.start_of_month = b.start_of_month
-        group by IMSI, start_of_month
+        group by a.IMSI, a.start_of_month
     """)
 
     print('DEBUG : ------------------------------------------------> l3_data_traffic_home_work_top1_top2')
