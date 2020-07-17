@@ -6,7 +6,7 @@
 #----------------------- geo_time_spent_by_location -------------------------
 l0_geo_cust_cell_visit_time_for_l1_geo_time_spent_by_location_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/sample/geo_cust_cell_visit_time_runpipeline/
+  filepath: base_path/GEO/geo_cust_cell_visit_time/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -45,7 +45,7 @@ l0_mst_poi_shape_for_l1_location_of_visit_ais_store_daily:
 #----------------------- location_of_visit_ais_store -------------------------
 l0_geo_cust_cell_visit_time_for_l1_location_of_visit_ais_store_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/sample/geo_cust_cell_visit_time_runpipeline/
+  filepath: base_path/GEO/geo_cust_cell_visit_time/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -84,7 +84,7 @@ l0_mst_cell_masterplan_for_l3_geo_home_weekday_city_citizens_monthly:
 #----------------------- geo_cust_cell_visit_time_geo_area_from_ais_store -------------------------
 l0_geo_cust_cell_visit_time_for_l1_geo_area_from_ais_store_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/sample/geo_cust_cell_visit_time_runpipeline/
+  filepath: base_path/GEO/geo_cust_cell_visit_time/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -136,7 +136,7 @@ l0_mst_cell_masterplan_for_l1_geo_area_from_competitor_store_daily:
 #----------------------- geo_cust_cell_visit_time_geo_area_from_competitor_store -------------------------
 l0_geo_cust_cell_visit_time_for_l1_geo_area_from_competitor_store_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/sample/geo_cust_cell_visit_time_runpipeline/
+  filepath: base_path/GEO/geo_cust_cell_visit_time/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -149,7 +149,7 @@ l0_geo_cust_cell_visit_time_for_l1_geo_area_from_competitor_store_daily:
 #----------------------- geo_cust_cell_visit_time_geo_home_work_location_id -------------------------
 l0_geo_cust_cell_visit_time_for_int_l3_geo_home_work_location_id:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/sample/geo_cust_cell_visit_time_runpipeline/
+  filepath: base_path/GEO/geo_cust_cell_visit_time/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -162,7 +162,7 @@ l0_geo_cust_cell_visit_time_for_int_l3_geo_home_work_location_id:
 #----------------------- geo_cust_cell_visit_time_geo_cust_subseqently_distance -------------------------
 l0_geo_cust_cell_visit_time_for_l1_geo_cust_subseqently_distance_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/sample/geo_cust_cell_visit_time_runpipeline/
+  filepath: base_path/GEO/geo_cust_cell_visit_time/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -175,7 +175,7 @@ l0_geo_cust_cell_visit_time_for_l1_geo_cust_subseqently_distance_daily:
 #----------------------- geo_cust_cell_visit_time_simple_data -------------------------
 l0_geo_cust_cell_visit_time_for_l1_geo_total_distance_km_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/sample/geo_cust_cell_visit_time_runpipeline/
+  filepath: base_path/GEO/geo_cust_cell_visit_time/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -185,19 +185,19 @@ l0_geo_cust_cell_visit_time_for_l1_geo_total_distance_km_daily:
     target_layer: 'l1_daily'
     lookback: '0'
 
-#----------------------- geo_mst_cell_masterplan_current_use_yesn_homework_features -------------------------
-l0_geo_mst_cell_masterplan_current_for_l3_use_yesn_homework_features:
+#----------------------- geo_mst_cell_masterplan_current_use_non_homework_features -------------------------
+l0_geo_mst_cell_masterplan_current_for_l3_use_non_homework_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/GEO/geo_mst_cell_masterplan/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l3_use_yesn_homework_features'
+    lookup_table_name: 'l3_use_non_homework_features'
     read_layer: 'l0_daily'
     target_layer: 'l3_monthly'
     lookback: '0'
-    
+
 l0_geo_mst_cell_masterplan_current_for_l3_call_location_home_work_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/GEO/geo_mst_cell_masterplan/
@@ -210,28 +210,28 @@ l0_geo_mst_cell_masterplan_current_for_l3_call_location_home_work_monthly:
     target_layer: 'l3_monthly'
     lookback: '0'
 
-#----------------------- profile_customer_profile_ma_use_yesn_homework_features -------------------------
-l0_profile_customer_profile_ma_for_l3_use_yesn_homework_features:
+#----------------------- profile_customer_profile_ma_use_non_homework_features -------------------------
+l0_profile_customer_profile_ma_for_l3_use_non_homework_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/PROFILE/sample/profile_customer_profile_ma_runpipeline/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l3_use_yesn_homework_features'
+    lookup_table_name: 'l3_use_non_homework_features'
     read_layer: 'l0_monthly'
     target_layer: 'l3_monthly'
     lookback: '0'
 
-#----------------------- usage_sum_data_location_use_yesn_homework_features -------------------------
-l0_usage_sum_data_location_daily_for_l3_use_yesn_homework_features:
+#----------------------- usage_sum_data_location_use_non_homework_features -------------------------
+l0_usage_sum_data_location_daily_for_l3_use_non_homework_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/USAGE/sample/usage_sum_data_location_daily_runpipeline/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l3_use_yesn_homework_features'
+    lookup_table_name: 'l3_use_non_homework_features'
     read_layer: 'l0_daily'
     target_layer: 'l3_monthly'
     lookback: '0'
@@ -239,7 +239,7 @@ l0_usage_sum_data_location_daily_for_l3_use_yesn_homework_features:
 #----------------------- geo_cust_cell_visit_time_for_geo_number_of_bs_used -------------------------
 l0_geo_cust_cell_visit_time_daily_for_l1_geo_number_of_bs_used:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/sample/geo_cust_cell_visit_time_runpipeline/
+  filepath: base_path/GEO/geo_cust_cell_visit_time/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -317,7 +317,7 @@ l0_profile_customer_profile_ma_for_l3_call_location_home_work_monthly:
 #----------------------- usage_sum_data_location_daily_for_l1_the_favourite_locations -------------------------
 l0_usage_sum_data_location_daily_for_l1_the_favourite_locations:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/USAGE/sample/usage_sum_data_location_daily_runpipeline/
+  filepath: base_path/USAGE/usage_sum_data_location_daily/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -343,7 +343,7 @@ l0_geo_mst_cell_masterplan_for_l1_the_favourite_locations:
 #----------------------- geo_cust_cell_visit_time_for_l2_same_favourite_location -------------------------
 l0_geo_cust_cell_visit_time_for_l2_same_favourite_location_weekend_weekday:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/sample/geo_cust_cell_visit_time_runpipeline/
+  filepath: base_path/GEO/geo_cust_cell_visit_time/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -356,7 +356,7 @@ l0_geo_cust_cell_visit_time_for_l2_same_favourite_location_weekend_weekday:
 #----------------------- usage_sum_data_location_daily_for_l1_number_of_unique_cell -------------------------
 l0_usage_sum_data_location_daily_for_l1_number_of_unique_cell_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/USAGE/sample/usage_sum_data_location_daily_runpipeline/
+  filepath: base_path/USAGE/usage_sum_data_location_daily/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
