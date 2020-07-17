@@ -172,6 +172,8 @@ def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit
     df.cache()
     df.createOrReplaceTempView('temp_geo_ais_shop')
 
+    print('DEBUG ------------------------------> (1)')
+    df.show(10)
     geo_cust_cell_visit_time.createOrReplaceTempView('geo_cust_cell_visit_time')
 
     df2 = ss.sql("""
@@ -187,11 +189,14 @@ def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit
         where a.location_id = b.location_id 
         group by 1,2,3,4
     """)
-    df2.cache()
+    # df2.cache()
 
     df2 = node_from_config(df2, sql)
-    df.unpersist()
-    df2.unpersist()
+    # df.unpersist()
+    # df2.unpersist()
+
+    print('DEBUG ------------------------------> (2)')
+    df2.show(10)
 
     return df2
 
