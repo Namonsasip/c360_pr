@@ -912,6 +912,8 @@ def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
     """)
 
     Home_Work = Home_Work.withColumn("event_partition_date", F.to_date(Home_Work.DATE_ID.cast(DateType()), "yyyyMMdd"))
+    # Home_Work = Home_Work.withColumn("start_of_week", F.to_date(F.date_trunc('week', "event_partition_date")))
+    Home_Work = Home_Work.withColumn("start_of_month", F.to_date(F.date_trunc('month', "event_partition_date")))
     Home_Work.createTempView('GEO_TEMP_04')
 
     print('DEBUG : ------------------------------------------------> (1)')
@@ -919,21 +921,19 @@ def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
 
     data_traffic_location = spark.sql("""
         SELECT 
-            event_partition_date,
             IMSI,
-            Home_traffic_KB,
-            Work_traffic_KB,
-            Top1_location_traffic_KB,
-            Top2_location_traffic_KB,
+            start_of_month,
+            sum(Home_traffic_KB) as Home_traffic_KB,
+            sum(Work_traffic_KB) as Work_traffic_KB,
+            sum(Top1_location_traffic_KB) as Top1_location_traffic_KB,
+            sum(Top2_location_traffic_KB) as Top2_location_traffic_KB,
             ((Home_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Home_traffic_KB,
             ((Work_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Work_traffic_KB,
             ((Top1_location_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Top1_location_traffic_KB,
             ((Top2_location_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Top2_location_traffic_KB
         FROM  GEO_TEMP_04
+        group by imsi, start_of_month
     """)
-
-    data_traffic_location = data_traffic_location.withColumn("start_of_week", F.to_date(F.date_trunc('week', "event_partition_date"))).drop('event_partition_date')
-    data_traffic_location = data_traffic_location.withColumn("start_of_month", F.to_date(F.date_trunc('month', "event_partition_date"))).drop( 'event_partition_date')
 
     print('DEBUG : ------------------------------------------------> l3_data_traffic_home_work_top1_top2')
     log.info('test debug :---------')

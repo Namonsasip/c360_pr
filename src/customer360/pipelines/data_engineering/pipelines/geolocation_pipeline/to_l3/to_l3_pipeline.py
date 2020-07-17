@@ -109,15 +109,6 @@ def geo_to_l3_pipeline(**kwargs):
                 "l3_geo_use_traffic_home_work"
             ),
 
-            ### runnig flag == 10
-            # node(
-            #     l3_geo_use_Share_traffic_monthly,
-            #     ["l3_geo_use_traffic_home_work",
-            #      "params:l3_geo_use_traffic_home_work_weekly"
-            #      ],
-            #     "l3_geo_use_traffic_home_work_monthly"
-            # ),
-
             # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> MUST FIX L0 HOME/WORK
             # ### runnig flag == 3
             # ###feature_sum_voice_location###

@@ -31,18 +31,18 @@ l3_geo_total_distance_km_monthly:
   granularity: "imsi,start_of_month"
 
 ###Traffic_fav_location###
-l3_geo_use_traffic_home_work_weekly:
-  where_clause: ""
-  feature_list:
-    Home_traffic_KB: "sum(Home_traffic_KB)"
-    Work_traffic_KB: "sum(Work_traffic_KB)"
-    Top1_location_traffic_KB: "sum(Top1_location_traffic_KB)"
-    Top2_location_traffic_KB: "sum(Top2_location_traffic_KB)"
-    share_Home_traffic_KB: "(sum(Home_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_location_traffic_KB)+sum(Top2_location_traffic_KB))"
-    share_Work_traffic_KB: "(sum(Work_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_location_traffic_KB)+sum(Top2_location_traffic_KB))"
-    share_Top1_location_traffic_KB: "(sum(Top1_location_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_location_traffic_KB)+sum(Top2_location_traffic_KB))"
-    share_Top2_location_traffic_KB: "(sum(Top2_location_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_location_traffic_KB)+sum(Top2_location_traffic_KB))"
-  granularity: "imsi,start_of_month"
+#l3_geo_use_traffic_home_work_weekly:
+#  where_clause: ""
+#  feature_list:
+#    Home_traffic_KB: "sum(Home_traffic_KB)"
+#    Work_traffic_KB: "sum(Work_traffic_KB)"
+#    Top1_location_traffic_KB: "sum(Top1_location_traffic_KB)"
+#    Top2_location_traffic_KB: "sum(Top2_location_traffic_KB)"
+#    share_Home_traffic_KB: "(sum(Home_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_location_traffic_KB)+sum(Top2_location_traffic_KB))"
+#    share_Work_traffic_KB: "(sum(Work_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_location_traffic_KB)+sum(Top2_location_traffic_KB))"
+#    share_Top1_location_traffic_KB: "(sum(Top1_location_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_location_traffic_KB)+sum(Top2_location_traffic_KB))"
+#    share_Top2_location_traffic_KB: "(sum(Top2_location_traffic_KB)*100)/(sum(Home_traffic_KB)+sum(Work_traffic_KB)+sum(Top1_location_traffic_KB)+sum(Top2_location_traffic_KB))"
+#  granularity: "imsi,start_of_month"
 
 ###feature_sum_voice_location###
 l3_geo_call_location_home_work_monthly:
