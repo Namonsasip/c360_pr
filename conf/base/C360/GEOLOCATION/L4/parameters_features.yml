@@ -44,6 +44,15 @@ l4_geo_home_work_location_id:
     work_longitude: "work_longitude"
   granularity: ""
 
+l4_geo_top_visit_exclude_homework:
+  where_clause: ""
+  feature_list:
+    imsi: "imsi"
+    start_of_month: "start_of_month"
+    top_location_1st: "top_location_1st"
+    top_location_2nd: "top_location_2nd"
+    top_location_3rd: "top_location_3rd"
+  granularity: ""
 
 l4_geo_home_weekday_city_citizens:
   where_clause: ""

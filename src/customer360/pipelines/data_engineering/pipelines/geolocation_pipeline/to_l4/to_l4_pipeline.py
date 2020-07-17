@@ -34,9 +34,9 @@ def geo_to_l4_pipeline(**kwargs):
             ),
 
             node(
-                l4_geo_top_visit_exclude_homework,
-                ["l3_geo_time_spent_by_location_monthly_for_l4_geo_top_visit_exclude_homework",
-                 "l3_geo_home_work_location_id_monthly_for_l4_geo_top_visit_exclude_homework"
+                node_from_config,
+                ["l3_geo_top_visit_exclude_homework",
+                 "params:l4_geo_top_visit_exclude_homework"
                  ],
                 "l4_geo_top_visit_exclude_homework"
             ),
