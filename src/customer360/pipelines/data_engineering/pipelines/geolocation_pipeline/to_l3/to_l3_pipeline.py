@@ -2,7 +2,57 @@ from kedro.pipeline import Pipeline, node
 from customer360.utilities.config_parser import *
 from customer360.pipelines.data_engineering.nodes.geolocation_nodes.to_l3.to_l3_nodes import *
 
-
+# Note that 6,9 Use data from HOME/WORK l3
+# Then we will crate 'geo_to_l3_home_wor_kpipeline' for run before 'geo_to_l3_pipeline'
+# =====================================================================================
+# def geo_to_l3_home_wor_kpipeline(**kwargs):
+#     return Pipeline(
+#         [
+#             ### Home and Work Feature
+#             node(
+#                 massive_processing_for_home_work,
+#                 ["l0_geo_cust_cell_visit_time_for_int_l3_geo_home_work_location_id",
+#                  "params:int_l3_geo_home_location_id_monthly",
+#                  "params:int_l3_geo_work_location_id_monthly"
+#                  ],
+#                 ["int_l3_geo_home_location_id_monthly",
+#                  "int_l3_geo_work_location_id_monthly"
+#                  ]
+#             ),
+#             node(
+#                 int_geo_home_work_list_imsi_monthly,
+#                 ["int_l3_geo_home_location_id_monthly",
+#                  "int_l3_geo_work_location_id_monthly"
+#                  ],
+#                 "geo_home_work_list_imsi_stg"
+#             ),
+#             node(
+#                 int_geo_work_location_id_monthly,
+#                 ["int_l3_geo_work_location_id_monthly",
+#                  "geo_home_work_list_imsi_stg"
+#                  ],
+#                 "int_work_location_id"  # In memory Dataframe
+#             ),
+#             node(
+#                 int_geo_home_location_id_monthly,
+#                 ["int_l3_geo_home_location_id_monthly"
+#                  ],
+#                 ["int_home_weekday_location_id",
+#                  "int_home_weekend_location_id"
+#                  ]
+#             ),
+#             node(
+#                 l3_geo_home_work_location_id_monthly,
+#                 ["int_home_weekday_location_id",
+#                  "int_home_weekend_location_id",
+#                  "int_work_location_id",
+#                  "params:l3_geo_home_work_location_id_monthly"
+#                  ],
+#                 "l3_geo_home_work_location_id_monthly"
+#             )
+#
+#         ], name="geo_to_l3_home_wor_kpipeline"
+#     )
 
 
 def geo_to_l3_pipeline(**kwargs):
@@ -115,39 +165,39 @@ def geo_to_l3_pipeline(**kwargs):
             #      ]
             # ),
 
-            node(
-                int_geo_home_work_list_imsi_monthly,
-                ["int_l3_geo_home_location_id_monthly",
-                 "int_l3_geo_work_location_id_monthly"
-                 ],
-                "geo_home_work_list_imsi_stg"
-            ),
-            node(
-                int_geo_work_location_id_monthly,
-                ["int_l3_geo_work_location_id_monthly",
-                 "geo_home_work_list_imsi_stg"
-                 ],
-                "int_work_location_id"  # In memory Dataframe
-            ),
-
-            ### runnig flag == ุ7
-            node(
-                int_geo_home_location_id_monthly,
-                ["int_l3_geo_home_location_id_monthly"
-                 ],
-                ["int_home_weekday_location_id",
-                 "int_home_weekend_location_id"
-                 ]
-            ),
-            node(
-                l3_geo_home_work_location_id_monthly,
-                ["int_home_weekday_location_id",
-                 "int_home_weekend_location_id",
-                 "int_work_location_id",
-                 "params:l3_geo_home_work_location_id_monthly"
-                 ],
-                "l3_geo_home_work_location_id_monthly"
-            ),
+            # node(
+            #     int_geo_home_work_list_imsi_monthly,
+            #     ["int_l3_geo_home_location_id_monthly",
+            #      "int_l3_geo_work_location_id_monthly"
+            #      ],
+            #     "geo_home_work_list_imsi_stg"
+            # ),
+            # node(
+            #     int_geo_work_location_id_monthly,
+            #     ["int_l3_geo_work_location_id_monthly",
+            #      "geo_home_work_list_imsi_stg"
+            #      ],
+            #     "int_work_location_id"  # In memory Dataframe
+            # ),
+            #
+            # ### runnig flag == ุ7
+            # node(
+            #     int_geo_home_location_id_monthly,
+            #     ["int_l3_geo_home_location_id_monthly"
+            #      ],
+            #     ["int_home_weekday_location_id",
+            #      "int_home_weekend_location_id"
+            #      ]
+            # ),
+            # node(
+            #     l3_geo_home_work_location_id_monthly,
+            #     ["int_home_weekday_location_id",
+            #      "int_home_weekend_location_id",
+            #      "int_work_location_id",
+            #      "params:l3_geo_home_work_location_id_monthly"
+            #      ],
+            #     "l3_geo_home_work_location_id_monthly"
+            # ),
 
             ### runnig flag == 6
             # ### Home weekday city citizens
