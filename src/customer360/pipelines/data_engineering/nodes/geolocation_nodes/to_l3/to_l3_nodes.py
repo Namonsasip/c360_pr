@@ -993,6 +993,10 @@ def _homework_join_master_profile(cell_masterplan,geo_homework,profile_ma,Column
         on a.{Column_Name}_location_id = b.location_id
       group by 1,2,3,4,5
       ''')
+
+    print('DEBUG : ------------------------------------------------> _homework_join_master_profile (0)')
+    df_temp_00.show(10)
+
     df_temp_00.createOrReplaceTempView('temp_00')
 
     df_temp_01 = spark.sql(f'''
@@ -1009,7 +1013,7 @@ def _homework_join_master_profile(cell_masterplan,geo_homework,profile_ma,Column
       group by 1,2,3,4,5,6
       ''')
 
-    print('DEBUG : ------------------------------------------------> _homework_join_master_profile')
+    print('DEBUG : ------------------------------------------------> _homework_join_master_profile (1)')
     df_temp_01.show(10)
 
     return df_temp_01
@@ -1033,6 +1037,10 @@ def _geo_top_visit_join_master_profile(cell_masterplan,geo_top_visit,profile_ma,
         on a.{Column_Name} = b.location_id
       group by 1,2,3,4,5
       ''')
+
+    print('DEBUG : ------------------------------------------------> _geo_top_visit_join_master_profile (0)')
+    df_temp_00.show(10)
+
     df_temp_00.createOrReplaceTempView('temp_00')
 
     df_temp_01 = spark.sql(f'''
@@ -1049,7 +1057,7 @@ def _geo_top_visit_join_master_profile(cell_masterplan,geo_top_visit,profile_ma,
       group by 1,2,3,4,5,6
       ''')
 
-    print('DEBUG : ------------------------------------------------> _geo_top_visit_join_master_profile')
+    print('DEBUG : ------------------------------------------------> _geo_top_visit_join_master_profile (1)')
     df_temp_01.show(10)
 
     return df_temp_01
