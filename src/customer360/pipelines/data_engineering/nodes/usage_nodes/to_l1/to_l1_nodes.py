@@ -266,6 +266,29 @@ def usage_data_postpaid_pipeline(input_df, sql) -> DataFrame:
     return return_df
 
 
+def usage_data_postpaid_roaming(input_df, sql) -> DataFrame:
+    """
+    :return:
+    """
+
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
+                                                       target_table_name="l1_usage_data_postpaid_roaming")
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    ################################# End Implementing Data availability checks ###############################
+    input_df = input_df.withColumn("ir_gprs_call_uplink_vol", F.col("ir_gprs_call_uplink_vol")/F.lit(1024)) \
+                       .withColumn("ir_gprs_call_downlink_vol", F.col("ir_gprs_call_downlink_vol")/F.lit(1024))
+
+    return_df = massive_processing(input_df, sql, "l1_usage_data_postpaid_roaming")
+    return return_df
+
+
 def build_data_for_prepaid_postpaid_vas(prepaid: DataFrame
                                         , postpaid: DataFrame) -> DataFrame:
     """
@@ -306,6 +329,7 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
                                    l1_usage_ru_a_gprs_cbs_usage_daily_stg: DataFrame,
                                    l1_usage_ru_a_vas_postpaid_usg_daily_stg: DataFrame,
                                    l1_usage_ru_a_vas_postpaid_prepaid_daily_stg: DataFrame,
+                                   l1_usage_data_postpaid_roaming_stg: DataFrame,
                                    l1_customer_profile_union_daily_feature: DataFrame,
                                    # exception_partition_of_l1_usage_outgoing_call_relation_sum_daily_stg=None,
                                    # exception_partition_of_l1_usage_incoming_call_relation_sum_daily_stg=None,
@@ -320,6 +344,7 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
     :param l1_usage_ru_a_vas_postpaid_usg_daily_stg:
     :param l1_usage_ru_a_vas_postpaid_prepaid_daily_stg:
     :param l1_customer_profile_union_daily_feature:
+    :param l1_usage_data_postpaid_roaming_stg:
     :return:
     """
 
@@ -328,7 +353,8 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
                         l1_usage_outgoing_call_relation_sum_ir_daily_stg,
                         l1_usage_incoming_call_relation_sum_ir_daily_stg,
                         l1_usage_ru_a_gprs_cbs_usage_daily_stg, l1_usage_ru_a_vas_postpaid_usg_daily_stg,
-                        l1_usage_ru_a_vas_postpaid_prepaid_daily_stg, l1_customer_profile_union_daily_feature]):
+                        l1_usage_ru_a_vas_postpaid_prepaid_daily_stg, l1_customer_profile_union_daily_feature,
+                        l1_usage_data_postpaid_roaming_stg]):
         return get_spark_empty_df()
 
     # l1_usage_outgoing_call_relation_sum_daily_stg = data_non_availability_and_missing_check(
@@ -388,6 +414,7 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
             l1_usage_ru_a_gprs_cbs_usage_daily_stg.select(F.max(F.col("event_partition_date")).alias("max_date")),
             l1_usage_ru_a_vas_postpaid_usg_daily_stg.select(F.max(F.col("event_partition_date")).alias("max_date")),
             l1_usage_ru_a_vas_postpaid_prepaid_daily_stg.select(F.max(F.col("event_partition_date")).alias("max_date")),
+            l1_usage_data_postpaid_roaming_stg.select(F.max(F.col("event_partition_date")).alias("max_date")),
             l1_customer_profile_union_daily_feature.select(F.max(F.col("event_partition_date")).alias("max_date"))
         ]
     ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
@@ -397,10 +424,12 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
         l1_usage_outgoing_call_relation_sum_daily_stg, l1_usage_incoming_call_relation_sum_daily_stg,
         l1_usage_outgoing_call_relation_sum_ir_daily_stg, l1_usage_incoming_call_relation_sum_ir_daily_stg,
         l1_usage_ru_a_gprs_cbs_usage_daily_stg, l1_usage_ru_a_vas_postpaid_usg_daily_stg,
-        l1_usage_ru_a_vas_postpaid_prepaid_daily_stg
+        l1_usage_ru_a_vas_postpaid_prepaid_daily_stg, l1_usage_data_postpaid_roaming_stg
     ])
 
     union_df = union_df.filter(F.col("event_partition_date") <= min_value)
+
+
 
     if check_empty_dfs([union_df]):
         return get_spark_empty_df()
@@ -422,6 +451,8 @@ def merge_all_dataset_to_one_table(l1_usage_outgoing_call_relation_sum_daily_stg
                 ]
 
     join_cols = ['access_method_num', 'event_partition_date', "start_of_week", "start_of_month"]
+    l1_customer_profile_union_daily_feature = l1_customer_profile_union_daily_feature\
+        .where("charge_type in ('Pre-paid', 'Post-paid') ")
 
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = union_df

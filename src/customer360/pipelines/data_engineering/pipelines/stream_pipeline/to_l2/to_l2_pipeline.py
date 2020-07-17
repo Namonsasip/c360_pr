@@ -417,6 +417,17 @@ def streaming_to_l2_pipeline(**kwargs):
                  "params:l2_streaming_fav_tv_show_by_episode_watched"],
                 "l2_streaming_fav_tv_show_by_episode_watched"
             ),
+            #fav tv_show_by_share_of_completed_episodes
+            node(
+                streaming_to_l2_fav_tv_show_by_share_of_completed_episodes,
+                ["int_l0_streaming_vimmi_table_for_l2_streaming_fav_tv_show_by_share_of_completed_episodes",
+                 "l3_streaming_series_title_master",
+                 "params:int_l2_streaming_share_of_completed_episodes_features",
+                 "params:int_l2_streaming_share_of_completed_episodes_ratio_features",
+                 "params:l2_streaming_fav_tv_show_by_share_of_completed_episodes"],
+                "l2_streaming_fav_tv_show_by_share_of_completed_episodes"
+
+            ),
             # number of visit and volume of download traffic
             node(
                 dac_for_streaming_to_l2_pipeline_from_l1,

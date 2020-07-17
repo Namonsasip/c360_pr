@@ -33,33 +33,30 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 
-from customer360.pipelines.data_engineering.nodes.digital_nodes.to_l2 import build_digital_l2_weekly_features
+from customer360.pipelines.data_engineering.nodes.digital_nodes.to_l1.to_l1_nodes import build_digital_l1_daily_features
 
 
-def digital_to_l2_pipeline(**kwargs):
+def digital_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                build_digital_l2_weekly_features,
+                build_digital_l1_daily_features,
                 [
-                    "l1_digital_cxenxse_site_traffic_daily",
-                    "l1_digital_cxenxse_site_traffic_popular_host_daily",
-                    "l1_digital_cxenxse_site_traffic_popular_postalcode_daily",
-                    "l1_digital_cxenxse_site_traffic_popular_referrerquery_daily",
-                    "l1_digital_cxenxse_site_traffic_popular_referrerhost_daily",
-                    "params:l2_digital_cxenxse_site_traffic_weekly",
-                    "params:l2_digital_cxenxse_site_traffic_popular_host_weekly",
-                    "params:l2_digital_cxenxse_site_traffic_popular_postalcode_weekly",
-                    "params:l2_digital_cxenxse_site_traffic_popular_referrerquery_weekly",
-                    "params:l2_digital_cxenxse_site_traffic_popular_referrerhost_weekly"
-                ],
+                 "l0_digital_cxenxse_site_traffic",
+                 "l1_customer_profile_union_daily_feature_for_l1_digital_cxenxse_site_traffic_daily",
+                 "params:l1_digital_cxenxse_site_traffic_daily",
+                 "params:l1_digital_cxenxse_site_traffic_popular_host_daily",
+                 "params:l1_digital_cxenxse_site_traffic_popular_postalcode_daily",
+                 "params:l1_digital_cxenxse_site_traffic_popular_referrerquery_daily",
+                 "params:l1_digital_cxenxse_site_traffic_popular_referrerhost_daily"
+                 ],
                 [
-                 "l2_digital_cxenxse_site_traffic_weekly",
-                 "l2_digital_cxenxse_site_traffic_popular_host_weekly",
-                 "l2_digital_cxenxse_site_traffic_popular_postalcode_weekly",
-                 "l2_digital_cxenxse_site_traffic_popular_referrerquery_weekly",
-                 "l2_digital_cxenxse_site_traffic_popular_referrerhost_weekly"
+                 "l1_digital_cxenxse_site_traffic_daily",
+                 "l1_digital_cxenxse_site_traffic_popular_host_daily",
+                 "l1_digital_cxenxse_site_traffic_popular_postalcode_daily",
+                 "l1_digital_cxenxse_site_traffic_popular_referrerquery_daily",
+                 "l1_digital_cxenxse_site_traffic_popular_referrerhost_daily"
                 ]
             ),
-        ], name="digital_to_l2_pipeline"
+        ], name="digital_to_l1_pipeline"
     )

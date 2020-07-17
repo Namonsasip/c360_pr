@@ -1,5 +1,5 @@
 from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
-from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check
+from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check, union_dataframes_with_missing_cols
 
 from pyspark.sql import DataFrame, functions as f
 
@@ -30,6 +30,23 @@ def union_daily_cust_profile(
         return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            cust_pre.select(
+                f.max(f.col("partition_date")).alias("max_date")),
+            cust_post.select(
+                f.max(f.col("partition_date")).alias("max_date")),
+            cust_non_mobile.select(
+                f.max(f.col("partition_date")).alias("max_date")),
+        ]
+    ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    cust_pre = cust_pre.filter(f.col("partition_date") <= min_value)
+
+    cust_post = cust_post.filter(f.col("partition_date") <= min_value)
+
+    cust_non_mobile = cust_non_mobile.filter(f.col("partition_date") <= min_value)
 
     # Getting unique data from pre-paid
     cust_pre = cust_pre.withColumn("rn", f.expr(

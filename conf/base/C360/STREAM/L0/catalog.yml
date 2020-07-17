@@ -38,6 +38,17 @@ l0_streaming_ru_a_onair_vimmi_usage_daily_for_multiple_outputs:
     target_layer: 'l1_daily'
     lookback: '0'
 
+l0_streaming_ru_a_onair_vimmi_usage_daily_for_series_title_master:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/STREAM/stream_ru_a_onair_vimmi_usage_daily/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'no'
+#    lookup_table_name: 'l3_streaming_series_title_master'
+#    read_layer: 'l0_daily'
+#    target_layer: 'l3_monthly'
+#    lookback: '0'
 
 #l0_streaming_ru_a_onair_vimmi_usage_daily_for_int_l1_streaming_content_type_features:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
