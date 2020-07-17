@@ -728,9 +728,6 @@ def l3_data_traffic_home_work_fn(geo_mst_cell_masterplan,
         GROUP BY 1,2
     """)
 
-    print('DEBUG : ------------------------------------------------> l3_data_traffic_home_work_fn')
-    GEO_TEMP_02.show(10)
-
     return GEO_TEMP_02
 
 def l3_data_traffic_top1_top2_fn(geo_mst_cell_masterplan,
@@ -785,8 +782,6 @@ def l3_data_traffic_top1_top2_fn(geo_mst_cell_masterplan,
         GROUP BY 1,2
     """)
 
-    print('DEBUG : ------------------------------------------------> l3_data_traffic_top1_top2_fn')
-    GEO_TEMP_02.show(10)
 
     return GEO_TEMP_02
 
@@ -819,8 +814,6 @@ def _geo_top_visit_exclude_homework(sum_duration, homework):
                                                                                              'sum_duration')
     df = rank1.join(rank2, ['imsi', 'start_of_month'], 'full').join(rank3, ['imsi', 'start_of_month'], 'full')
 
-    print('DEBUG : ------------------------------------------------> _geo_top_visit_exclude_homework')
-    df.show(10)
 
     return df
 
@@ -927,8 +920,8 @@ def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
 
     data_traffic_location = spark.sql("""
         SELECT
-            IMSI,
-            start_of_month,
+            a.IMSI,
+            a.start_of_month,
             sum(Home_traffic_KB) as Home_traffic_KB,
             sum(Work_traffic_KB) as Work_traffic_KB,
             sum(Top1_location_traffic_KB) as Top1_location_traffic_KB,
@@ -940,16 +933,14 @@ def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
         from ( select
                 IMSI,
                 start_of_month,
-                Home_traffic_KB,
-                Work_traffic_KB,
-                Top1_location_traffic_KB,
-                Top2_location_traffic_KB,
                 ((Home_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Home_traffic_KB,
                 ((Work_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Work_traffic_KB,
                 ((Top1_location_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Top1_location_traffic_KB,
                 ((Top2_location_traffic_KB*100)/(Home_traffic_KB+Work_traffic_KB+Top1_location_traffic_KB+Top2_location_traffic_KB)) AS share_Top2_location_traffic_KB
             FROM  GEO_TEMP_04
-            group by IMSI, start_of_month )
+            group by IMSI, start_of_month ) a
+        left join GEO_TEMP_04 b
+            on a.IMSI = b.IMSI and a.start_of_month = b.start_of_month
         group by IMSI, start_of_month
     """)
 
@@ -1016,6 +1007,9 @@ def _homework_join_master_profile(cell_masterplan,geo_homework,profile_ma,Column
       group by 1,2,3,4,5
       ''')
 
+    print('DEBUG : ------------------------------------------------> _homework_join_master_profile')
+    df_temp_01.show(10)
+
     return df_temp_01
 
 
@@ -1052,6 +1046,9 @@ def _geo_top_visit_join_master_profile(cell_masterplan,geo_top_visit,profile_ma,
         on a.imsi = b.imsi and a.start_of_month = b.start_of_month
       group by 1,2,3,4,5
       ''')
+
+    print('DEBUG : ------------------------------------------------> _geo_top_visit_join_master_profile')
+    df_temp_01.show(10)
 
     return df_temp_01
 
