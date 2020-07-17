@@ -171,7 +171,7 @@ def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit
             cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) as distance_km
         from mst_poi_shape a,
             mst_cell_masterplan b
-        where   a.landmark_cat_name_en in ('true','dtac')
+        where   a.landmark_cat_name_en in ('TRUE','DTAC')
         and cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) <= (0.5)
         group by 1,2,3,4
     """)
