@@ -1111,6 +1111,8 @@ def l3_call_location_home_work_monthly(cell_masterplan,geo_homework,profile_ma,u
     usage_sum_voice = usage_sum_voice.withColumn('start_of_month', F.to_date(F.date_trunc('month', F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))))
     usage_sum_voice.createOrReplaceTempView('usage_voice')
 
+    profile_ma = profile_ma.withColumn('start_of_month', F.to_date(F.date_trunc('month', F.to_date(F.col("partition_month").cast(StringType()), 'yyyyMM'))))
+
     _homework_join_master_profile(cell_masterplan,geo_homework,profile_ma,
                                  "home_weekday").createOrReplaceTempView('home_weekday')
     print('DEBUG : ------------------------------------------------> (a)')
