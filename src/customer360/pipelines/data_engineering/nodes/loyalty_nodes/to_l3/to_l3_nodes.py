@@ -64,15 +64,15 @@ def loyalty_number_of_points_balance(customer_prof: DataFrame
                                           "else crm_subscription_id end")))
 
     input_df_temp = input_df.filter(f.col("register_date").isNotNull())\
-                            .groupBy("mobile_no", "start_of_month")\
+                            .groupBy("subscription_identifier", "start_of_month")\
                             .agg(f.max("response_date").alias("loyalty_register_program_points_date"))
 
-    win = Window.partitionBy("mobile_no", "start_of_month").orderBy(f.col("response_date").desc())
+    win = Window.partitionBy("subscription_identifier", "start_of_month").orderBy(f.col("response_date").desc())
 
     input_df = input_df.withColumn("rnk", f.row_number().over(win))\
                        .where("rnk = 1")
 
-    merged_df = input_df.join(input_df_temp, ["start_of_month", "mobile_no"], how="left")
+    merged_df = input_df.join(input_df_temp, join_key, how="left")
     merged_df = merged_df.select("subscription_identifier"
                                             , "mobile_segment"
                                             , "points_balance_per_sub"

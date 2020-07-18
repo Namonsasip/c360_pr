@@ -1,14 +1,8 @@
 import os
-
-import pyspark.sql.functions as f
-from pyspark.sql import DataFrame, Window
-from pyspark.sql.types import StringType
+from pyspark.sql import DataFrame
 
 from customer360.utilities.config_parser import l4_rolling_window
-from customer360.utilities.re_usable_functions import check_empty_dfs,  \
-    union_dataframes_with_missing_cols, gen_max_sql, execute_sql
-from customer360.utilities.spark_util import get_spark_empty_df
-
+from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, gen_max_sql, execute_sql
 conf = os.getenv("CONF", None)
 
 
@@ -24,7 +18,7 @@ def loyalty_build_weekly_features(input_df: DataFrame,
     first_df = l4_rolling_window(input_df, first_dict)
     second_df = l4_rolling_window(input_df, second_dict)
 
-    group_cols = ["subscription_identifier", "access_method_num", "national_id_card", "start_of_week"]
+    group_cols = ["subscription_identifier", "start_of_week"]
 
     union_df = union_dataframes_with_missing_cols([first_df, second_df])
 
@@ -45,7 +39,7 @@ def l4_loyalty_point_balance_statuses_features(input_df: DataFrame,
     first_df = l4_rolling_window(input_df, first_dict)
     second_df = l4_rolling_window(input_df, second_dict)
 
-    group_cols = ["subscription_identifier", "access_method_num", "national_id_card", "start_of_month"]
+    group_cols = ["subscription_identifier", "start_of_month"]
 
     union_df = union_dataframes_with_missing_cols([first_df, second_df])
 
