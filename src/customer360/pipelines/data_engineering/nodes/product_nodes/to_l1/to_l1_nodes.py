@@ -227,29 +227,35 @@ def dac_product_customer_promotion_for_daily(postpaid_df: DataFrame,
                                              ) -> list:
 
     # ################################# Start Implementing Data availability checks ###############################
-    if check_empty_dfs([postpaid_df, prepaid_main_df, prepaid_ontop_df, customer_profile_df, prepaid_product_master_df, prepaid_product_ontop_df]):
-        return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df()]
+    if check_empty_dfs([postpaid_df, prepaid_main_df, prepaid_ontop_df, customer_profile_df, prepaid_product_master_df,
+                        prepaid_product_ontop_df]):
+        return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
+                get_spark_empty_df(), get_spark_empty_df()]
 
     postpaid_df = data_non_availability_and_missing_check(
-        df=postpaid_df,grouping="weekly", par_col="partition_date", target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid")
+        df=postpaid_df,grouping="weekly", par_col="partition_date",
+        target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid")
 
     prepaid_main_df = data_non_availability_and_missing_check(
-        df=prepaid_main_df, grouping="weekly", par_col="partition_date", target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid", missing_data_check_flg="Y")
-
-    # prepaid_ontop_df = data_non_availability_and_missing_check(
-    #     df=prepaid_ontop_df, grouping="weekly", par_col="partition_date", target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid", missing_data_check_flg="Y")
+        df=prepaid_main_df, grouping="weekly", par_col="partition_date",
+        target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid")
 
     customer_profile_df = data_non_availability_and_missing_check(
-        df=customer_profile_df, grouping="weekly", par_col="event_partition_date", target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid", missing_data_check_flg="Y")
+        df=customer_profile_df, grouping="weekly", par_col="event_partition_date",
+        target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid")
 
     prepaid_product_master_df = data_non_availability_and_missing_check(
-        df=prepaid_product_master_df, grouping="weekly", par_col="partition_date", target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid")
+        df=prepaid_product_master_df, grouping="weekly", par_col="partition_date",
+        target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid")
 
     prepaid_product_ontop_df = data_non_availability_and_missing_check(
-        df=prepaid_product_ontop_df, grouping="weekly", par_col="partition_date", target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid")
+        df=prepaid_product_ontop_df, grouping="weekly", par_col="partition_date",
+        target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid")
 
-    if check_empty_dfs([postpaid_df, prepaid_main_df, prepaid_ontop_df, customer_profile_df, prepaid_product_master_df, prepaid_product_ontop_df]):
-        return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df()]
+    if check_empty_dfs([postpaid_df, prepaid_main_df, prepaid_ontop_df, customer_profile_df, prepaid_product_master_df,
+                        prepaid_product_ontop_df]):
+        return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
+                get_spark_empty_df(), get_spark_empty_df()]
 
     ################################# End Implementing Data availability checks ###############################
 
@@ -287,8 +293,10 @@ def dac_product_customer_promotion_for_daily(postpaid_df: DataFrame,
     prepaid_product_master_df.drop(*drop_cols)
     prepaid_product_ontop_df.drop(*drop_cols)
 
-    if check_empty_dfs([postpaid_df, prepaid_main_df, prepaid_ontop_df, customer_profile_df, prepaid_product_master_df, prepaid_product_ontop_df]):
-        return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df()]
+    if check_empty_dfs([postpaid_df, prepaid_main_df, prepaid_ontop_df, customer_profile_df, prepaid_product_master_df,
+                        prepaid_product_ontop_df]):
+        return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
+                get_spark_empty_df(), get_spark_empty_df()]
 
     return [postpaid_df, prepaid_main_df, prepaid_ontop_df, customer_profile_df, prepaid_product_master_df,
             prepaid_product_ontop_df]
@@ -321,7 +329,8 @@ def l1_prepaid_postpaid_processing(prepaid_main_df: DataFrame,
                                    main_master_promotion_df: DataFrame,
                                    ontop_master_promotion_df: DataFrame) -> DataFrame:
 
-    if check_empty_dfs([prepaid_main_df, prepaid_ontop_df, postpaid_df, customer_profile_df, main_master_promotion_df, ontop_master_promotion_df]):
+    if check_empty_dfs([prepaid_main_df, prepaid_ontop_df, postpaid_df, customer_profile_df, main_master_promotion_df,
+                        ontop_master_promotion_df]):
         return get_spark_empty_df()
 
     prepaid_main_df = prepaid_main_df.alias("prepaid_main_df")
