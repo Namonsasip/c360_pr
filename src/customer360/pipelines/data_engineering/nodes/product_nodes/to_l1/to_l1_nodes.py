@@ -573,7 +573,7 @@ def l1_build_product(
         int_l1_product_active_customer_promotion_features: dict
 ) -> DataFrame:
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs[product_df]:
+    if check_empty_dfs([product_df]):
         return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
 
