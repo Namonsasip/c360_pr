@@ -543,7 +543,6 @@ def data_non_availability_and_missing_check(df, grouping, par_col, target_table_
                         F.expr("CASE WHEN No_of_actual_partitions = No_of_partitions_in_src THEN 'N' ELSE 'Y' END"))
 
         logging.info("check matrix: {}".format(check_matrix.collect()))
-        #print("check matrix:", check_matrix.collect())
 
         # Checking missing partitions:
         data_partition_missing_flag = check_matrix.select('data_partition_missing_flag').collect()[
@@ -559,42 +558,35 @@ def data_non_availability_and_missing_check(df, grouping, par_col, target_table_
                 .withColumn("actual_total_partitions", F.expr("date_add(tgt_max_date, daysToAdd*7)")).filter(
                 "daysToAdd != 0").drop("daysToAdd", "tgt_max_date")
 
-            logging.info("actual weekly partitions in source data: {}".format(actual_total_partitions.collect()))
-            #print("actual_total_partitions:", actual_total_partitions.collect())
+            logging.info("actual weekly partitions in source data required: {}".format(actual_total_partitions.collect()))
             missing_partitions = actual_total_partitions.join(actual_src_partitions,
                                                               actual_total_partitions['actual_total_partitions'] ==
                                                               actual_src_partitions['actual_src_partitions'],
                                                               how='left')
             if exception_partitions is None or exception_partitions == []:
                 logging.info("No exception_partitions found")
-                #print("No exception_partitions found")
                 missing_partitions = missing_partitions.filter(
                     (F.col('actual_src_partitions').isNull())).withColumnRenamed("actual_total_partitions",
                                                                                  "missing_partitions")
             else:
                 logging.info("exception_partitions found as: {} ".format(exception_partitions))
-                #print("exception_partitions found:", exception_partitions)
                 missing_partitions = missing_partitions.filter((F.col('actual_src_partitions').isNull()) & (
                     ~F.col('actual_total_partitions').isin(exception_partitions))) \
                     .withColumnRenamed("actual_total_partitions", "missing_partitions")
 
-
             logging.info("Data is not found in source for these weekly partitions: {}".format(missing_partitions.select("missing_partitions").collect()))
-            #print("missing partitions:", missing_partitions.select("missing_partitions").collect())
 
             min_missing_partition = missing_partitions.select(F.min(F.col("missing_partitions")).alias("min_missing_partition")).collect()[
                 0].min_missing_partition
 
             if min_missing_partition is None:
                 logging.info("No missing partitions found after considering the exception partitions")
-                #print("No missing partitions found after excemption check")
             else:
                 logging.info("Getting the data before missing weekly partitions from source dataframe for further processing")
                 df = df.filter(F.col("start_of_week_new") < min_missing_partition)
 
         else:
             logging.info("No missing weekly partitions found")
-            #print("No missing partitions found")
 
         if missing_data_check_flg.upper() == 'Y':
             logging.info("checking for missing data partitions within weekly partition because missing_data_check_flg is Y")
@@ -602,19 +594,16 @@ def data_non_availability_and_missing_check(df, grouping, par_col, target_table_
                 countDistinct(F.col(par_col)).alias("count_of_data_partitions"))
             if exception_partitions is None or exception_partitions == []:
                 logging.info("No exception_partitions found")
-                #print("No exception_partitions found")
                 missing_data_partition = missing_data_partition.filter(F.col("count_of_data_partitions") != 7).select(
                     F.min(F.col("start_of_week_new")).alias("start_of_week_new")).collect()[0].start_of_week_new
             else:
                 logging.info("Exception partition found as : {}".format(exception_partitions))
-                #print("Exception partition found:", exception_partitions)
                 missing_data_partition = missing_data_partition.filter((F.col("count_of_data_partitions") != 7) & (
                     ~F.col('start_of_week_new').isin(exception_partitions))).select(
                     F.min(F.col("start_of_week_new")).alias("start_of_week_new")).collect()[0].start_of_week_new
 
             if missing_data_partition is None or missing_data_partition == [] or missing_data_partition == '':
                 logging.info("No missing data partitions found within weekly partitions")
-                #print("No missing data partitions found")
                 df = df
             else:
                 logging.info("Few data partitions are not found in source data for these weekly partitions: {}".format(
