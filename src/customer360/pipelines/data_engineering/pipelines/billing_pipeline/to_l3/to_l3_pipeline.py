@@ -8,12 +8,12 @@ def billing_l1_to_l3_pipeline(**kwargs):
         [
 
             # Monthly top up count and top up volume pre-paid
-            node(
-                billing_topup_count_and_volume_node_monthly,
-                ["l1_billing_and_payments_daily_topup_and_volume_for_l3_billing_and_payments_monthly_topup_and_volume",
-                 "params:l3_billing_and_payment_feature_top_up_and_count_monthly"],
-                "l3_billing_and_payments_monthly_topup_and_volume"
-            ),
+            # node(
+            #     billing_topup_count_and_volume_node_monthly,
+            #     ["l1_billing_and_payments_daily_topup_and_volume_for_l3_billing_and_payments_monthly_topup_and_volume",
+            #      "params:l3_billing_and_payment_feature_top_up_and_count_monthly"],
+            #     "l3_billing_and_payments_monthly_topup_and_volume"
+            # ),
 
 
             # Monthly arpu of roaming post-paid
@@ -25,12 +25,12 @@ def billing_l1_to_l3_pipeline(**kwargs):
             ),
 
             # Monthly before top up balance feature pre-paid
-            node(
-                billing_before_topup_balance_node_monthly,
-                ["l1_billing_and_payments_daily_before_top_up_balance_for_l3_billing_and_payments_monthly_before_top_up_balance",
-                 "params:l3_billing_and_payment_before_top_up_balance_monthly"],
-                "l3_billing_and_payments_monthly_before_top_up_balance"
-            ),
+            # node(
+            #     billing_before_topup_balance_node_monthly,
+            #     ["l1_billing_and_payments_daily_before_top_up_balance_for_l3_billing_and_payments_monthly_before_top_up_balance",
+            #      "params:l3_billing_and_payment_before_top_up_balance_monthly"],
+            #     "l3_billing_and_payments_monthly_before_top_up_balance"
+            # ),
 
             # Monthly top up channels feature pre-paid
             node(
@@ -100,12 +100,12 @@ def billing_l1_to_l3_pipeline(**kwargs):
             ),
 
             # Monthly time since last top up feature pre-paid
-            node(
-                billing_time_since_last_topup_node_monthly,
-                ["l1_billing_and_payments_daily_time_since_last_top_up_for_l3_billing_and_payments_monthly_time_since_last_top_up",
-                 "params:l3_time_since_last_top_up"],
-                "l3_billing_and_payments_monthly_time_since_last_top_up"
-            ),
+            # node(
+            #     billing_time_since_last_topup_node_monthly,
+            #     ["l1_billing_and_payments_daily_time_since_last_top_up_for_l3_billing_and_payments_monthly_time_since_last_top_up",
+            #      "params:l3_time_since_last_top_up"],
+            #     "l3_billing_and_payments_monthly_time_since_last_top_up"
+            # ),
 
             # Monthly last 3 top up volume pre-paid
             node(
