@@ -33,7 +33,14 @@ def gen_max_sql(data_frame, table_name, group):
     final_str = "select {0}, {1} {2} {3} group by {4}".format(grp_str, all_cols, "from", table_name, grp_str)
     return final_str
 
+
 def union_dataframes_with_missing_cols(df_input_or_list, *args):
+    """
+
+    :param df_input_or_list:
+    :param args:
+    :return:
+    """
     if type(df_input_or_list) is list:
         df_list = df_input_or_list
     elif type(df_input_or_list) is DataFrame:
