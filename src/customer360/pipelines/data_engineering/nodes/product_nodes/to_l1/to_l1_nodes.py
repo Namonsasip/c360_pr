@@ -575,15 +575,6 @@ def l1_build_product(
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs[product_df]:
         return get_spark_empty_df()
-
-    product_df = data_non_availability_and_missing_check(
-        df=product_df,
-        grouping="daily", par_col="partition_date",
-        target_table_name="l1_product_active_customer_promotion_features_daily",
-        missing_data_check_flg='Y')
-
-    if check_empty_dfs[product_df]:
-        return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
 
     # Comment out because single dataframe:
