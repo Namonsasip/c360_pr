@@ -219,7 +219,7 @@ def billing_arpu_roaming_node_monthly(input_df, sql) -> DataFrame:
 
     ################################# End Implementing Data availability checks ###############################
 
-    return_df = massive_processing_monthly(input_df, sql, "l3_billing_monthly_rpu_roaming")
+    return_df = massive_processing_monthly(input_df, sql, "l3_billing_and_payments_monthly_rpu_roaming")
     return return_df
 
 
