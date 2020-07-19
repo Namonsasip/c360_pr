@@ -519,7 +519,7 @@ def billing_time_diff_between_topups_monthly(customer_profile_df, input_df, sql)
     customer_prof = derives_in_customer_profile(customer_profile_df) \
         .where("charge_type = 'Pre-paid' and cust_active_this_month = 'Y'")
 
-    customer_profile_df = data_non_availability_and_missing_check(df=customer_profile_df, grouping="monthly",
+    customer_profile_df = data_non_availability_and_missing_check(df=customer_prof, grouping="monthly",
                                                                   par_col="start_of_month",
                                                                   target_table_name="l3_billing_and_payments_monthly_topup_time_diff")
 
