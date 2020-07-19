@@ -9,7 +9,7 @@ def product_to_l4_pipeline(**kwargs):
             node(rolling_window_product,
                  [
                      "l2_product_activated_deactivated_features_weekly",
-                     "params:l4_product_activated_deactivated_features_first"
+                     "params:l4_product_activated_deactivated_features_first",
                      "params:l4_product_activated_deactivated_features_second"
                  ],
                  "int_l4_product_activated_deactivated_features"
