@@ -481,10 +481,10 @@ def billing_last_topup_channel_monthly(input_df, customer_df, recharge_type, sql
     return_df = process_last_topup_channel(recharge_data_with_topup_channel, customer_df, sql,
                                            "l3_billing_and_payments_monthly_last_top_up_channel")
 
-    return_df = return_df.withColumn("rn", expr(
-        "row_number() over(partition by start_of_month,access_method_num,register_date order by register_date desc)"))
-
-    return_df = return_df.filter("rn = 1").drop("rn")
+    # return_df = return_df.withColumn("rn", expr(
+    #     "row_number() over(partition by start_of_month,access_method_num,register_date order by register_date desc)"))
+    #
+    # return_df = return_df.filter("rn = 1").drop("rn")
 
     return return_df
 
