@@ -133,21 +133,21 @@ def billing_l0_to_l3_pipeline(**kwargs):
     return Pipeline(
         [
 
-            # Join monthly billing data with customer profile
-            node(
-                billing_rpu_data_with_customer_profile,
-                ["l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_rpu",
-                 "l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3_billing_and_payments_monthly_rpu"],
-                "billing_monthly_data"
-            ),
-
-            # Monthly arpu vas,gprs,voice feature pre-paid,post-paid both
-            node(
-                billing_arpu_node_monthly,
-                ["billing_monthly_data",
-                 "params:l3_billing_and_payment_revenue_per_user_monthly"],
-                "l3_billing_and_payments_monthly_rpu"
-            ),
+            # # Join monthly billing data with customer profile
+            # node(
+            #     billing_rpu_data_with_customer_profile,
+            #     ["l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_rpu",
+            #      "l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3_billing_and_payments_monthly_rpu"],
+            #     "billing_monthly_data"
+            # ),
+            #
+            # # Monthly arpu vas,gprs,voice feature pre-paid,post-paid both
+            # node(
+            #     billing_arpu_node_monthly,
+            #     ["billing_monthly_data",
+            #      "params:l3_billing_and_payment_revenue_per_user_monthly"],
+            #     "l3_billing_and_payments_monthly_rpu"
+            # ),
 
             # Monthly time difference between top ups pre-paid
             node(
