@@ -673,8 +673,8 @@ def billing_statement_hist_data_with_customer_profile(customer_prof, billing_his
     customer_prof = derives_in_customer_profile(customer_prof) \
         .where("charge_type = 'Post-paid' and cust_active_this_month = 'Y'")
 
-    customer_prof = customer_prof.withColumn("cnt", expr(
-        "count(access_method_num) over (partition by start_of_month ,billing_account_no order by billing_account_no)"))
+    # customer_prof = customer_prof.withColumn("cnt", expr(
+    #     "count(access_method_num) over (partition by start_of_month ,billing_account_no order by billing_account_no)"))
 
     customer_prof = data_non_availability_and_missing_check(df=customer_prof, grouping="monthly",
                                                             par_col="start_of_month",
