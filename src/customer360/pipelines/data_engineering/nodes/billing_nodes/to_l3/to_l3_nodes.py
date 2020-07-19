@@ -582,7 +582,7 @@ def billing_data_joined(billing_monthly, payment_daily, target_table_name: str):
     billing_monthly = billing_monthly.filter(f.col("start_of_month") <= min_value)
 
     payment_daily = payment_daily.withColumn("rn", expr(
-        "row_number() over(partition by partition_month_new,account_identifier,billing_statement_identifier,bill_seq_no order by partition_date desc)"))
+        "row_number() over(partition by start_of_month,account_identifier,billing_statement_identifier,bill_seq_no order by partition_date desc)"))
     payment_daily = payment_daily.filter("rn = 1").drop("rn")
 
     ################################# End Implementing Data availability checks ###############################
