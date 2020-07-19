@@ -467,7 +467,7 @@ def billing_last_topup_channel_monthly(input_df, customer_df, recharge_type, sql
         .where("charge_type = 'Pre-paid' and cust_active_this_month = 'Y'")
 
     customer_df = data_non_availability_and_missing_check(df=customer_df, grouping="monthly",
-                                                          par_col="partition_month",
+                                                          par_col="start_of_month",
                                                           target_table_name="l3_billing_and_payments_monthly_last_top_up_channel")
 
     if check_empty_dfs([input_df, customer_df]):
