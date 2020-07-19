@@ -8,123 +8,123 @@ def billing_l1_to_l3_pipeline(**kwargs):
         [
 
             # Monthly top up count and top up volume pre-paid
-            # node(
-            #     billing_topup_count_and_volume_node_monthly,
-            #     ["l1_billing_and_payments_daily_topup_and_volume_for_l3_billing_and_payments_monthly_topup_and_volume",
-            #      "params:l3_billing_and_payment_feature_top_up_and_count_monthly"],
-            #     "l3_billing_and_payments_monthly_topup_and_volume"
-            # ),
+            node(
+                billing_topup_count_and_volume_node_monthly,
+                ["l1_billing_and_payments_daily_topup_and_volume_for_l3_billing_and_payments_monthly_topup_and_volume",
+                 "params:l3_billing_and_payment_feature_top_up_and_count_monthly"],
+                "l3_billing_and_payments_monthly_topup_and_volume"
+            ),
 
 
             # Monthly arpu of roaming post-paid
-            # node(
-            #     billing_arpu_roaming_node_monthly,
-            #     ["l1_billing_and_payments_daily_rpu_roaming_for_l3_billing_and_payments_monthly_rpu_roaming",
-            #      "params:l3_billing_and_payment_feature_rpu_roaming_monthly"],
-            #     "l3_billing_and_payments_monthly_rpu_roaming"
-            # ),
+            node(
+                billing_arpu_roaming_node_monthly,
+                ["l1_billing_and_payments_daily_rpu_roaming_for_l3_billing_and_payments_monthly_rpu_roaming",
+                 "params:l3_billing_and_payment_feature_rpu_roaming_monthly"],
+                "l3_billing_and_payments_monthly_rpu_roaming"
+            ),
 
             # Monthly before top up balance feature pre-paid
-            # node(
-            #     billing_before_topup_balance_node_monthly,
-            #     ["l1_billing_and_payments_daily_before_top_up_balance_for_l3_billing_and_payments_monthly_before_top_up_balance",
-            #      "params:l3_billing_and_payment_before_top_up_balance_monthly"],
-            #     "l3_billing_and_payments_monthly_before_top_up_balance"
-            # ),
+            node(
+                billing_before_topup_balance_node_monthly,
+                ["l1_billing_and_payments_daily_before_top_up_balance_for_l3_billing_and_payments_monthly_before_top_up_balance",
+                 "params:l3_billing_and_payment_before_top_up_balance_monthly"],
+                "l3_billing_and_payments_monthly_before_top_up_balance"
+            ),
 
             # Monthly top up channels feature pre-paid
-            # node(
-            #     billing_topup_channels_node_monthly,
-            #     ["l1_billing_and_payments_daily_top_up_channels_for_l3_billing_and_payments_monthly_top_up_channels",
-            #      "params:l3_billing_and_payment_top_up_channels_monthly"],
-            #     "l3_billing_and_payments_monthly_top_up_channels"
-            # ),
+            node(
+                billing_topup_channels_node_monthly,
+                ["l1_billing_and_payments_daily_top_up_channels_for_l3_billing_and_payments_monthly_top_up_channels",
+                 "params:l3_billing_and_payment_top_up_channels_monthly"],
+                "l3_billing_and_payments_monthly_top_up_channels"
+            ),
 
             # Monthly most popular top up channel feature pre-paid
-            # node(
-            #     top_up_channel_joined_data_for_monthly_most_popular_top_up_channel,
-            #     ["l1_billing_and_payments_daily_most_popular_top_up_channel_for_l3_billing_and_payments_monthly_most_popular_top_up_channel",
-            #      "l0_billing_topup_type_for_l3_billing_and_payments_monthly_most_popular_top_up_channel"],
-            #     "l3_billing_and_payments_monthly_most_popular_top_up_channel_1"
-            # ),
-            # node(
-            #     node_from_config,
-            #     ["l3_billing_and_payments_monthly_most_popular_top_up_channel_1",
-            #      "params:l3_popular_topup_channel"],
-            #     "l3_billing_and_payments_monthly_most_popular_top_up_channel_2"
-            # ),
-            # node(
-            #     billing_most_popular_topup_channel_monthly,
-            #     ["l3_billing_and_payments_monthly_most_popular_top_up_channel_2",
-            #      "params:l3_most_popular_topup_channel"],
-            #     "l3_billing_and_payments_monthly_most_popular_top_up_channel"
-            # ),
+            node(
+                top_up_channel_joined_data_for_monthly_most_popular_top_up_channel,
+                ["l1_billing_and_payments_daily_most_popular_top_up_channel_for_l3_billing_and_payments_monthly_most_popular_top_up_channel",
+                 "l0_billing_topup_type_for_l3_billing_and_payments_monthly_most_popular_top_up_channel"],
+                "l3_billing_and_payments_monthly_most_popular_top_up_channel_1"
+            ),
+            node(
+                node_from_config,
+                ["l3_billing_and_payments_monthly_most_popular_top_up_channel_1",
+                 "params:l3_popular_topup_channel"],
+                "l3_billing_and_payments_monthly_most_popular_top_up_channel_2"
+            ),
+            node(
+                billing_most_popular_topup_channel_monthly,
+                ["l3_billing_and_payments_monthly_most_popular_top_up_channel_2",
+                 "params:l3_most_popular_topup_channel"],
+                "l3_billing_and_payments_monthly_most_popular_top_up_channel"
+            ),
 
 
             # Monthly popular top up day feature pre-paid
-            # node(
-            #     copy_df_for_l3_billing_and_payments_monthly_popular_topup_day,
-            #     "l1_billing_and_payments_daily_popular_topup_day_for_l3_billing_and_payments_monthly_popular_topup_day",
-            #     "int_l3_billing_and_payments_monthly_popular_topup_day_1"
-            # ),
-            # node(
-            #     node_from_config,
-            #     ["int_l3_billing_and_payments_monthly_popular_topup_day_1",
-            #      "params:l3_popular_topup_day_ranked"],
-            #     "l3_billing_and_payments_monthly_popular_topup_day_1"
-            # ),
-            # node(
-            #     billing_popular_topup_day_monthly,
-            #     ["l3_billing_and_payments_monthly_popular_topup_day_1",
-            #      "params:l3_popular_topup_day"],
-            #     "l3_billing_and_payments_monthly_popular_topup_day"
-            # ),
+            node(
+                copy_df_for_l3_billing_and_payments_monthly_popular_topup_day,
+                "l1_billing_and_payments_daily_popular_topup_day_for_l3_billing_and_payments_monthly_popular_topup_day",
+                "int_l3_billing_and_payments_monthly_popular_topup_day_1"
+            ),
+            node(
+                node_from_config,
+                ["int_l3_billing_and_payments_monthly_popular_topup_day_1",
+                 "params:l3_popular_topup_day_ranked"],
+                "l3_billing_and_payments_monthly_popular_topup_day_1"
+            ),
+            node(
+                billing_popular_topup_day_monthly,
+                ["l3_billing_and_payments_monthly_popular_topup_day_1",
+                 "params:l3_popular_topup_day"],
+                "l3_billing_and_payments_monthly_popular_topup_day"
+            ),
 
             # Monthly popular top up hour feature pre-paid
-            # node(
-            #     copy_df_for_l3_billing_and_payments_monthly_popular_topup_hour,
-            #     "l1_billing_and_payments_daily_popular_topup_day_for_l3_billing_and_payments_monthly_popular_topup_hour",
-            #     "int_l3_billing_and_payments_monthly_popular_topup_hour_1"
-            # ),
-            # node(
-            #     node_from_config,
-            #     ["int_l3_billing_and_payments_monthly_popular_topup_hour_1",
-            #      "params:l3_popular_topup_hour_ranked"],
-            #     "l3_billing_and_payments_monthly_popular_topup_hour_1"
-            # ),
-            # node(
-            #     billing_popular_topup_hour_monthly,
-            #     ["l3_billing_and_payments_monthly_popular_topup_hour_1",
-            #      "params:l3_popular_topup_hour"],
-            #     "l3_billing_and_payments_monthly_popular_topup_hour"
-            # ),
+            node(
+                copy_df_for_l3_billing_and_payments_monthly_popular_topup_hour,
+                "l1_billing_and_payments_daily_popular_topup_day_for_l3_billing_and_payments_monthly_popular_topup_hour",
+                "int_l3_billing_and_payments_monthly_popular_topup_hour_1"
+            ),
+            node(
+                node_from_config,
+                ["int_l3_billing_and_payments_monthly_popular_topup_hour_1",
+                 "params:l3_popular_topup_hour_ranked"],
+                "l3_billing_and_payments_monthly_popular_topup_hour_1"
+            ),
+            node(
+                billing_popular_topup_hour_monthly,
+                ["l3_billing_and_payments_monthly_popular_topup_hour_1",
+                 "params:l3_popular_topup_hour"],
+                "l3_billing_and_payments_monthly_popular_topup_hour"
+            ),
 
             # Monthly time since last top up feature pre-paid
-            # node(
-            #     billing_time_since_last_topup_node_monthly,
-            #     ["l1_billing_and_payments_daily_time_since_last_top_up_for_l3_billing_and_payments_monthly_time_since_last_top_up",
-            #      "params:l3_time_since_last_top_up"],
-            #     "l3_billing_and_payments_monthly_time_since_last_top_up"
-            # ),
+            node(
+                billing_time_since_last_topup_node_monthly,
+                ["l1_billing_and_payments_daily_time_since_last_top_up_for_l3_billing_and_payments_monthly_time_since_last_top_up",
+                 "params:l3_time_since_last_top_up"],
+                "l3_billing_and_payments_monthly_time_since_last_top_up"
+            ),
 
             # Monthly last 3 top up volume pre-paid
-            # node(
-            #     copy_df_for_l3_billing_and_payments_monthly_last_three_topup_volume,
-            #     "l1_billing_and_payments_daily_time_since_last_top_up_for_l3_billing_and_payments_monthly_last_three_topup_volume",
-            #     "int_l3_billing_and_payments_monthly_last_three_topup_volume_1"
-            # ),
-            # node(
-            #     node_from_config,
-            #     ["int_l3_billing_and_payments_monthly_last_three_topup_volume_1",
-            #      "params:l3_last_three_topup_volume_ranked"],
-            #     "l3_billing_and_payments_monthly_last_three_topup_volume_1"
-            # ),
-            # node(
-            #     billing_last_three_topup_volume_monthly,
-            #     ["l3_billing_and_payments_monthly_last_three_topup_volume_1",
-            #      "params:l3_last_three_topup_volume"],
-            #     "l3_billing_and_payments_monthly_last_three_topup_volume"
-            # ),
+            node(
+                copy_df_for_l3_billing_and_payments_monthly_last_three_topup_volume,
+                "l1_billing_and_payments_daily_time_since_last_top_up_for_l3_billing_and_payments_monthly_last_three_topup_volume",
+                "int_l3_billing_and_payments_monthly_last_three_topup_volume_1"
+            ),
+            node(
+                node_from_config,
+                ["int_l3_billing_and_payments_monthly_last_three_topup_volume_1",
+                 "params:l3_last_three_topup_volume_ranked"],
+                "l3_billing_and_payments_monthly_last_three_topup_volume_1"
+            ),
+            node(
+                billing_last_three_topup_volume_monthly,
+                ["l3_billing_and_payments_monthly_last_three_topup_volume_1",
+                 "params:l3_last_three_topup_volume"],
+                "l3_billing_and_payments_monthly_last_three_topup_volume"
+            ),
         ]
     )
 
