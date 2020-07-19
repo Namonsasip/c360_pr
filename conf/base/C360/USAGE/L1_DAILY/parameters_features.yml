@@ -415,8 +415,7 @@ l1_usage_incoming_call_relation_sum_daily:
     usg_incoming_evening_time_call: "sum(case when service_type IN ('VOICE')
                                        AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_successful_call else 0 end)"
 
-    usg_incoming_evening_time_call_duration: "sum(case when service_type IN ('VOICE') hour_id IN (19, 20, 21, 22, 23, 0)
-     THEN total_durations else 0 end)"
+    usg_incoming_evening_time_call_duration: "sum(case when service_type IN ('VOICE') AND hour_id IN (19, 20, 21, 22, 23, 0) THEN total_durations else 0 end)"
 
     usg_incoming_weekday_number_calls: "sum(case when service_type IN ('VOICE')
                                         AND date_format(day_id, 'EEEE') NOT IN ('Saturday', 'Sunday')
