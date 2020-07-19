@@ -6,12 +6,14 @@ from src.customer360.pipelines.data_engineering.nodes.product_nodes.to_l4.to_l4_
 def product_to_l4_pipeline(**kwargs):
     return Pipeline(
         [
-            node(
-                l4_rolling_window,
-                ["l2_product_activated_deactivated_features_weekly",
-                 "params:l4_product_activated_deactivated_features"],
-                "int_l4_product_activated_deactivated_features"
-            ),
+            node(rolling_window_product,
+                 [
+                     "l2_product_activated_deactivated_features_weekly",
+                     "params:l4_product_activated_deactivated_features_first"
+                     "params:l4_product_activated_deactivated_features_second"
+                 ],
+                 "int_l4_product_activated_deactivated_features"
+                 ),
             node(
                 add_l4_product_ratio_features,
                 ["int_l4_product_activated_deactivated_features"],
