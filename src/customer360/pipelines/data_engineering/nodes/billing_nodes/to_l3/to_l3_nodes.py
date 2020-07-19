@@ -463,6 +463,9 @@ def billing_last_topup_channel_monthly(input_df, customer_df, recharge_type, sql
                                                        target_table_name="l3_billing_and_payments_monthly_last_top_up_channel",
                                                        missing_data_check_flg='Y')
 
+    customer_df = derives_in_customer_profile(customer_df) \
+        .where("charge_type = 'Pre-paid' and cust_active_this_month = 'Y'")
+
     customer_df = data_non_availability_and_missing_check(df=customer_df, grouping="monthly",
                                                           par_col="partition_month",
                                                           target_table_name="l3_billing_and_payments_monthly_last_top_up_channel")
@@ -476,8 +479,7 @@ def billing_last_topup_channel_monthly(input_df, customer_df, recharge_type, sql
                                                                                                   recharge_type)
     recharge_data_with_topup_channel = recharge_data_with_topup_channel.withColumn('start_of_month', F.to_date(
         F.date_trunc('month', input_df.recharge_date)))
-    customer_df = derives_in_customer_profile(customer_df) \
-        .where("charge_type = 'Pre-paid' and cust_active_this_month = 'Y'")
+
     return_df = process_last_topup_channel(recharge_data_with_topup_channel, customer_df, sql,
                                            "l3_billing_and_payments_monthly_last_top_up_channel")
 
