@@ -595,7 +595,8 @@ def billing_data_joined(billing_monthly, payment_daily, target_table_name: str):
                                      (billing_monthly.billing_statement_seq_no == payment_daily.bill_seq_no), 'left')
 
     output_df = output_df.drop(payment_daily.billing_statement_identifier) \
-        .drop(payment_daily.account_identifier)
+        .drop(payment_daily.account_identifier) \
+        .drop(payment_daily.start_of_month)
 
     return output_df
 
