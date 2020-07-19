@@ -184,21 +184,21 @@ def billing_l0_to_l3_pipeline(**kwargs):
             # ),
 
 
-            # Join monthly billing statement hist data with customer profile
-            node(
-                billing_statement_hist_data_with_customer_profile,
-                ["l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_bill_volume",
-                 "l0_billing_statement_history_monthly_for_l3_billing_and_payments_monthly_bill_volume", "params:l3_billing_and_payments_monthly_bill_volume_tbl"],
-                "billing_stat_hist_monthly_data"
-            ),
-
-            # Monthly volume of bill and roaming bills post-paid
-            node(
-                billing_volume_of_bills_and_roaming_bills_monthly,
-                ["billing_stat_hist_monthly_data",
-                 "params:l3_bill_volume"],
-                "l3_billing_and_payments_monthly_bill_volume"
-            ),
+            # # Join monthly billing statement hist data with customer profile
+            # node(
+            #     billing_statement_hist_data_with_customer_profile,
+            #     ["l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_bill_volume",
+            #      "l0_billing_statement_history_monthly_for_l3_billing_and_payments_monthly_bill_volume", "params:l3_billing_and_payments_monthly_bill_volume_tbl"],
+            #     "billing_stat_hist_monthly_data"
+            # ),
+            #
+            # # Monthly volume of bill and roaming bills post-paid
+            # node(
+            #     billing_volume_of_bills_and_roaming_bills_monthly,
+            #     ["billing_stat_hist_monthly_data",
+            #      "params:l3_bill_volume"],
+            #     "l3_billing_and_payments_monthly_bill_volume"
+            # ),
 
             node(
                 billing_statement_hist_data_with_customer_profile,
