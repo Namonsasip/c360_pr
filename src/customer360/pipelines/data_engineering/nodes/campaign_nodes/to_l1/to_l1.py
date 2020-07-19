@@ -10,26 +10,35 @@ from pyspark.sql.types import *
 conf = os.getenv("CONF", None)
 
 
-def pre_process_df(data_frame: DataFrame,
-                   contacts_ma_small: DataFrame) -> [DataFrame, DataFrame]:
+def pre_process_df(data_frame: DataFrame) -> [DataFrame, DataFrame]:
     """
 
     :param data_frame:
-    :param contacts_ma_small:
-    :param contacts_ussd_small:
     :return:
     """
     # below lines are to prepare channels
 
     data_frame = data_frame.withColumnRenamed("campaign_child_code", "child_campaign_code")
-    ma_join_cols = ['subscription_identifier', "contact_date", 'child_campaign_code']
-    contacts_ma_small = contacts_ma_small\
-        .select("subscription_identifier", "child_campaign_code", "contact_date", "channel_identifier").distinct()
 
-    data_frame = data_frame.join(contacts_ma_small, ma_join_cols, how="left")
+    #############  cut off process ma to join pre + post    #############
 
-    data_frame = data_frame.withColumn("campaign_channel", F.coalesce(F.col("channel_identifier"),
+    # ma_join_cols = ['subscription_identifier', "contact_date", 'child_campaign_code']
+    # contacts_ma_small = contacts_ma_small\
+    #     .select("subscription_identifier", "child_campaign_code", "contact_date", "channel_identifier").distinct()
+    #
+    # data_frame = data_frame.join(contacts_ma_small, ma_join_cols, how="left")
+
+    #############  cut off process ma to join pre + post    #############
+
+    data_frame = data_frame.withColumn("campaign_channel", F.coalesce(F.col("contact_channel"),
                                                                       F.col("campaign_channel")))
+    #############  filter condition for support call center feature    #############
+    data_frame = data_frame.withColumn("status_khun_wijittra", F.expr \
+        ("case when lower(campaign_channel) not like '%phone%'   then 1 \
+        when lower(campaign_channel)  like '%phone%' and  contact_status_success_yn = 'Y' then 1 \
+                                              ELSE 0 END"))
+
+    data_frame = data_frame.filter((F.col("status_khun_wijittra")) != 0)
 
     # Above logic ends here
     all_count_grp_cols = ['subscription_identifier', "contact_date",
@@ -110,12 +119,11 @@ def pre_process_df(data_frame: DataFrame,
     return final_df, campaign_channel_top_df
 
 
-def massive_processing(post_paid, prepaid, contacts_ma,
+def massive_processing(post_paid, prepaid,
                        dict_1, dict_2) -> [DataFrame, DataFrame]:
     """
     :param post_paid:
     :param prepaid:
-    :param contacts_ma:
     :param dict_1:
     :param dict_2:
     :return:
@@ -125,7 +133,9 @@ def massive_processing(post_paid, prepaid, contacts_ma,
     # This is recently added by K.Wijitra request
     unioned_df = unioned_df.filter(F.lower(F.col("contact_status")) != 'unqualified')
 
-    output_df_1, output_df_2 = pre_process_df(unioned_df, contacts_ma)
+    # output_df_1, output_df_2 = pre_process_df(unioned_df, contacts_ma)
+
+    output_df_1, output_df_2 = pre_process_df(unioned_df)
 
     output_df_1 = node_from_config(output_df_1, dict_1)
     output_df_2 = node_from_config(output_df_2, dict_2)
@@ -135,14 +145,12 @@ def massive_processing(post_paid, prepaid, contacts_ma,
 
 def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
                                              prepaid: DataFrame,
-                                             contacts_ma: DataFrame,
                                              cust_prof: DataFrame,
                                              dictionary_obj: dict,
                                              dictionary_obj_2: dict) -> [DataFrame, DataFrame]:
     """
     :param postpaid:
     :param prepaid:
-    :param contacts_ma:
     :param cust_prof:
     :param dictionary_obj:
     :param dictionary_obj_2:
@@ -150,7 +158,7 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
     """
 
     ################################# Start Implementing Data availability checks ###############################
-    if check_empty_dfs([postpaid, prepaid, contacts_ma, cust_prof]):
+    if check_empty_dfs([postpaid, prepaid,  cust_prof]):
         return [get_spark_empty_df(), get_spark_empty_df()]
 
     postpaid = data_non_availability_and_missing_check(df=postpaid, grouping="daily", par_col="partition_date",
@@ -159,13 +167,12 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
     prepaid = data_non_availability_and_missing_check(df=prepaid, grouping="daily", par_col="partition_date",
                                                       target_table_name="l1_campaign_post_pre_daily")
 
-    contacts_ma = data_non_availability_and_missing_check(df=contacts_ma, grouping="daily", par_col="partition_date",
-                                                          target_table_name="l1_campaign_post_pre_daily")
 
     cust_prof = data_non_availability_and_missing_check(df=cust_prof, grouping="daily", par_col="event_partition_date",
                                                         target_table_name="l1_campaign_post_pre_daily")
 
-    if check_empty_dfs([postpaid, prepaid, contacts_ma, cust_prof]):
+    # if check_empty_dfs([postpaid, prepaid, contacts_ma, cust_prof]):
+    if check_empty_dfs([postpaid, prepaid, cust_prof]):
         return [get_spark_empty_df(), get_spark_empty_df()]
 
     min_value = union_dataframes_with_missing_cols(
@@ -173,8 +180,6 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
             postpaid.select(
                 F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
             prepaid.select(
-                F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
-            contacts_ma.select(
                 F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd').alias("max_date")),
             cust_prof.select(
                 F.max(F.col("event_partition_date")).alias("max_date")),
@@ -185,7 +190,7 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
 
     prepaid = prepaid.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
 
-    contacts_ma = contacts_ma.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
+
 
     cust_prof = cust_prof.filter(F.col("event_partition_date") <= min_value)
     cust_prof = cust_prof.select("access_method_num", "subscription_identifier", "old_subscription_identifier",
@@ -193,8 +198,8 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
 
     ################################# End Implementing Data availability checks ###############################
 
-    first_df, second_df = massive_processing(postpaid, prepaid, contacts_ma , dictionary_obj, dictionary_obj_2)
 
+    first_df, second_df = massive_processing(postpaid, prepaid,  dictionary_obj, dictionary_obj_2)
     join_cols = ["old_subscription_identifier", "event_partition_date"]
 
     first_df = first_df.join(cust_prof, join_cols, how='inner')
