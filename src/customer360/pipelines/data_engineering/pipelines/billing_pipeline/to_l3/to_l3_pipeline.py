@@ -133,55 +133,55 @@ def billing_l0_to_l3_pipeline(**kwargs):
     return Pipeline(
         [
 
-            # # Join monthly billing data with customer profile
-            # node(
-            #     billing_rpu_data_with_customer_profile,
-            #     ["l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_rpu",
-            #      "l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3_billing_and_payments_monthly_rpu"],
-            #     "billing_monthly_data"
-            # ),
-            #
-            # # Monthly arpu vas,gprs,voice feature pre-paid,post-paid both
-            # node(
-            #     billing_arpu_node_monthly,
-            #     ["billing_monthly_data",
-            #      "params:l3_billing_and_payment_revenue_per_user_monthly"],
-            #     "l3_billing_and_payments_monthly_rpu"
-            # ),
-            #
-            # # Monthly time difference between top ups pre-paid
-            # node(
-            #     copy_df_for_l3_billing_and_payments_monthly_topup_time_diff,
-            #     "l0_billing_and_payments_rt_t_recharge_daily_for_l3_billing_and_payments_monthly_topup_time_diff",
-            #     "Int_l3_billing_and_payments_monthly_topup_diff_time_intermediate"
-            # ),
-            # node(
-            #     node_from_config,
-            #     ["Int_l3_billing_and_payments_monthly_topup_diff_time_intermediate",
-            #      "params:l3_billing_and_payment_feature_time_diff_bw_topups_monthly_intermdeiate"],
-            #     "l3_billing_and_payments_monthly_topup_diff_time_intermediate"
-            # ),
-            # node(
-            #     billing_time_diff_between_topups_monthly,
-            #     ["l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_topup_time_diff",
-            #      "l3_billing_and_payments_monthly_topup_diff_time_intermediate",
-            #      "params:l3_billing_and_payment_feature_time_diff_bw_topups_monthly"],
-            #     "l3_billing_and_payments_monthly_topup_time_diff"
-            # ),
-
-            # Monthly automated payment feature post-paid
+            # Join monthly billing data with customer profile
             node(
-                bill_payment_daily_data_with_customer_profile,
-                ["l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_automated_payments",
-                 "l0_billing_pc_t_payment_daily_for_l3_billing_and_payments_monthly_automated_payments"],
-                "l3_billing_monthly_automated_payments_1"
+                billing_rpu_data_with_customer_profile,
+                ["l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_rpu",
+                 "l0_customer_profile_profile_drm_t_active_profile_customer_journey_monthly_for_l3_billing_and_payments_monthly_rpu"],
+                "billing_monthly_data"
+            ),
+
+            # Monthly arpu vas,gprs,voice feature pre-paid,post-paid both
+            node(
+                billing_arpu_node_monthly,
+                ["billing_monthly_data",
+                 "params:l3_billing_and_payment_revenue_per_user_monthly"],
+                "l3_billing_and_payments_monthly_rpu"
+            ),
+
+            # Monthly time difference between top ups pre-paid
+            node(
+                copy_df_for_l3_billing_and_payments_monthly_topup_time_diff,
+                "l0_billing_and_payments_rt_t_recharge_daily_for_l3_billing_and_payments_monthly_topup_time_diff",
+                "Int_l3_billing_and_payments_monthly_topup_diff_time_intermediate"
             ),
             node(
                 node_from_config,
-                ["l3_billing_monthly_automated_payments_1",
-                 "params:l3_automated_flag"],
-                "l3_billing_and_payments_monthly_automated_payments"
+                ["Int_l3_billing_and_payments_monthly_topup_diff_time_intermediate",
+                 "params:l3_billing_and_payment_feature_time_diff_bw_topups_monthly_intermdeiate"],
+                "l3_billing_and_payments_monthly_topup_diff_time_intermediate"
             ),
+            node(
+                billing_time_diff_between_topups_monthly,
+                ["l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_topup_time_diff",
+                 "l3_billing_and_payments_monthly_topup_diff_time_intermediate",
+                 "params:l3_billing_and_payment_feature_time_diff_bw_topups_monthly"],
+                "l3_billing_and_payments_monthly_topup_time_diff"
+            ),
+
+            # # Monthly automated payment feature post-paid
+            # node(
+            #     bill_payment_daily_data_with_customer_profile,
+            #     ["l3_customer_profile_include_1mo_non_active_for_l3_billing_and_payments_monthly_automated_payments",
+            #      "l0_billing_pc_t_payment_daily_for_l3_billing_and_payments_monthly_automated_payments"],
+            #     "l3_billing_monthly_automated_payments_1"
+            # ),
+            # node(
+            #     node_from_config,
+            #     ["l3_billing_monthly_automated_payments_1",
+            #      "params:l3_automated_flag"],
+            #     "l3_billing_and_payments_monthly_automated_payments"
+            # ),
 
 
             # # Join monthly billing statement hist data with customer profile
