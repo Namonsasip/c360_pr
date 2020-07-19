@@ -280,9 +280,7 @@ l4_sales_main_transaction_sixth:
       "campaign_batch_pcm_other_volume_of_data_activation_main_transaction",
       "campaign_batch_pcm_other_number_of_voice_activation_main_transaction",
       "campaign_batch_pcm_other_volume_of_voice_activation_main_transaction",
-      "campaign_batch_pcm_other_number_of_sms_activation_main_transaction",
-      "campaign_batch_pcm_other_volume_of_sms_activation_main_transaction",
-      "campaign_batch_pcm_other_number_of_vas_activation_main_transaction",
-      "campaign_batch_pcm_other_volume_of_vas_activation_main_transaction",
+      "campaign_batch_pcm_other_number_of_voice_data_activation_main_transaction",
+      "campaign_batch_pcm_other_volume_of_voice_data_activation_main_transaction"
     ]
   read_from: "l2"
