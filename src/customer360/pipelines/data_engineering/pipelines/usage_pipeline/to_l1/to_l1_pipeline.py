@@ -118,14 +118,14 @@ def usage_to_l1_pipeline(**kwargs):
                  ],
                 "l1_usage_outgoing_call_relation_sum_daily"
             ),
-            node(
-                usage_incoming_call_pipeline,
-                ["l0_usage_call_relation_sum_daily_incoming",
-                 "l1_usage_favourite_number_master",
-                 "params:l1_usage_incoming_call_relation_sum_daily",
-                 "params:exception_partition_list_for_l0_usage_call_relation_sum_daily_incoming"],
-                "l1_usage_incoming_call_relation_sum_daily"
-            ),
+            # node(
+            #     usage_incoming_call_pipeline,
+            #     ["l0_usage_call_relation_sum_daily_incoming",
+            #      "l1_usage_favourite_number_master",
+            #      "params:l1_usage_incoming_call_relation_sum_daily",
+            #      "params:exception_partition_list_for_l0_usage_call_relation_sum_daily_incoming"],
+            #     "l1_usage_incoming_call_relation_sum_daily"
+            # ),
             node(merge_all_dataset_to_one_table, [
                 'l1_usage_outgoing_call_relation_sum_daily', 'l1_usage_incoming_call_relation_sum_daily',
                 'l1_usage_outgoing_call_relation_sum_ir_daily', 'l1_usage_incoming_call_relation_sum_ir_daily',
