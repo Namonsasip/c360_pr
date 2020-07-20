@@ -60,14 +60,12 @@ def build_digital_l3_monthly_features(cxense_user_profile: DataFrame,
         .withColumn("device_brand", f.when(f.col("groups") == "device-brand", f.col("item")).otherwise(f.lit(None)))
 
     # This code will populate a subscriber id to the data set.
-    cust_df_cols = ["subscription_identifier", "access_method_num", "start_of_month"]
     join_key = ['access_method_num', 'start_of_month']
-
-    cust_df = cust_df.select(cust_df_cols)
     cust_df = cust_df.withColumn("rn", expr(
         "row_number() over(partition by start_of_month,access_method_num order by "
         "start_of_month desc, mobile_status_date desc)")) \
-        .where("rn = 1")
+        .where("rn = 1")\
+        .select("subscription_identifier", "access_method_num", "start_of_month")
 
     final_df = cust_df.join(cxense_user_profile, join_key)
 
