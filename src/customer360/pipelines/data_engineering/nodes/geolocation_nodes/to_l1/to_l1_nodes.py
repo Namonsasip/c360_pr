@@ -50,6 +50,22 @@ def massive_processing_with_l1_geo_area_from_ais_store_daily(shape, masterplan, 
     masterplan = get_max_date_from_master_data(masterplan, 'partition_date')
     shape = get_max_date_from_master_data(shape, 'partition_month')
     # ----- Transformation -----
+    masterplan.createOrReplaceTempView("mst_cell_masterplan")
+    shape.createOrReplaceTempView("mst_poi_shape")
+
+    ss = get_spark_session()
+    df = ss.sql("""
+        select 
+            a.landmark_sub_name_en,
+            b.location_id,
+            b.location_name,
+            cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) as distance_km
+        from mst_poi_shape a,
+            mst_cell_masterplan b
+        where   a.landmark_cat_name_en in ('AIS')
+        and cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) <= (0.5)
+        group by 1,2,3,4
+    """)
 
     if check_empty_dfs([geo_cust_cell_visit_time]):
         return get_spark_empty_df()
@@ -73,11 +89,11 @@ def massive_processing_with_l1_geo_area_from_ais_store_daily(shape, masterplan, 
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         small_df = data_frame.filter(f.col('partition_date').isin(*[curr_item]))
-        output_df = l1_geo_area_from_ais_store_daily(shape, masterplan, small_df, sql)
+        output_df = l1_geo_area_from_ais_store_daily(df, small_df, sql)
         CNTX.catalog.save(sql["output_catalog"], output_df)
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(f.col('partition_date').isin(*[first_item]))
-    return_df = l1_geo_area_from_ais_store_daily(shape, masterplan, return_df, sql)
+    return_df = l1_geo_area_from_ais_store_daily(df, return_df, sql)
     return return_df
 
 
@@ -100,6 +116,26 @@ def massive_processing_with_l1_geo_area_from_competitor_store_daily(shape,master
         return get_spark_empty_df()
 
     # ----- Transformation -----
+    masterplan.createOrReplaceTempView("mst_cell_masterplan")
+    shape.createOrReplaceTempView("mst_poi_shape")
+
+    masterplan.show(10)
+    shape.show(10)
+
+    ss = get_spark_session()
+    df = ss.sql("""
+        select 
+            a.landmark_sub_name_en,
+            b.location_id,
+            b.location_name,
+            cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) as distance_km
+        from mst_poi_shape a,
+            mst_cell_masterplan b
+        where   a.landmark_cat_name_en in ('TRUE','DTAC')
+        and cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) <= (0.5)
+        group by 1,2,3,4
+    """)
+
     def divide_chunks(l, n):
         # looping till length l
         for i in range(0, len(l), n):
@@ -119,11 +155,11 @@ def massive_processing_with_l1_geo_area_from_competitor_store_daily(shape,master
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         small_df = data_frame.filter(f.col('partition_date').isin(*[curr_item]))
-        output_df = l1_geo_area_from_competitor_store_daily(shape, masterplan, small_df, sql)
+        output_df = l1_geo_area_from_competitor_store_daily(df, small_df, sql)
         CNTX.catalog.save(sql["output_catalog"], output_df)
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(f.col('partition_date').isin(*[first_item]))
-    return_df = l1_geo_area_from_competitor_store_daily(shape, masterplan, return_df, sql)
+    return_df = l1_geo_area_from_competitor_store_daily(df, return_df, sql)
     return return_df
 
 
@@ -163,25 +199,9 @@ def l1_geo_time_spent_by_location_daily(df,sql):
     return return_df
 
 
-def l1_geo_area_from_ais_store_daily(shape, masterplan, geo_cust_cell_visit_time, sql):
+def l1_geo_area_from_ais_store_daily(df, geo_cust_cell_visit_time, sql):
     geo_cust_cell_visit_time  = add_start_of_week_and_month(geo_cust_cell_visit_time, "time_in")
-    masterplan.createOrReplaceTempView("mst_cell_masterplan")
-    shape.createOrReplaceTempView("mst_poi_shape")
-
     ss = get_spark_session()
-    df = ss.sql("""
-        select 
-            a.landmark_sub_name_en,
-            b.location_id,
-            b.location_name,
-            cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) as distance_km
-        from mst_poi_shape a,
-            mst_cell_masterplan b
-        where   a.landmark_cat_name_en in ('AIS')
-        and cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) <= (0.5)
-        group by 1,2,3,4
-    """)
-    df.cache()
     df.createOrReplaceTempView('temp_geo_ais_shop')
 
     geo_cust_cell_visit_time.createOrReplaceTempView('geo_cust_cell_visit_time')
@@ -199,38 +219,19 @@ def l1_geo_area_from_ais_store_daily(shape, masterplan, geo_cust_cell_visit_time
         where a.location_id = b.location_id 
         group by 1,2,3,4
     """)
-    df2.cache()
+
     df2 = node_from_config(df2,sql)
-    df.unpersist()
-    df2.unpersist()
+
     return df2
 
 
-def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit_time,sql):
+def l1_geo_area_from_competitor_store_daily(df,geo_cust_cell_visit_time,sql):
 
-    geo_cust_cell_visit_time.cache()
+
     geo_cust_cell_visit_time = add_start_of_week_and_month(geo_cust_cell_visit_time, "time_in")
 
-    masterplan.createOrReplaceTempView("mst_cell_masterplan")
-    shape.createOrReplaceTempView("mst_poi_shape")
 
-    masterplan.show(10)
-    shape.show(10)
 
-    ss = get_spark_session()
-    df = ss.sql("""
-        select 
-            a.landmark_sub_name_en,
-            b.location_id,
-            b.location_name,
-            cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) as distance_km
-        from mst_poi_shape a,
-            mst_cell_masterplan b
-        where   a.landmark_cat_name_en in ('TRUE','DTAC')
-        and cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) <= (0.5)
-        group by 1,2,3,4
-    """)
-    df.cache()
     df.createOrReplaceTempView('temp_geo_ais_shop')
 
     geo_cust_cell_visit_time.createOrReplaceTempView('geo_cust_cell_visit_time')
@@ -248,11 +249,9 @@ def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit
         where a.location_id = b.location_id 
         group by 1,2,3,4
     """)
-    # df2.cache()
+
 
     df2 = node_from_config(df2, sql)
-    # df.unpersist()
-    # df2.unpersist()
 
     return df2
 
