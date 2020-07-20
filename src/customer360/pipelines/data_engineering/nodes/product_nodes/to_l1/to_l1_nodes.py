@@ -269,8 +269,7 @@ def dac_product_customer_promotion_for_daily(postpaid_df: DataFrame,
         [
             postpaid_df.select(F.max(F.col("start_of_week")).alias("max_date")),
             prepaid_main_df.select(F.max(F.col("start_of_week")).alias("max_date")),
-            # Comment out because data only available from June 10 2020:
-            # prepaid_ontop_df.select(F.max(F.col("start_of_week")).alias("max_date")),
+            prepaid_ontop_df.select(F.max(F.col("start_of_week")).alias("max_date")),
             customer_profile_df.select(F.max(F.col("start_of_week")).alias("max_date")),
             prepaid_product_master_df.select(F.max(F.col("start_of_week")).alias("max_date")),
             prepaid_product_ontop_df.select(F.max(F.col("start_of_week")).alias("max_date")),
@@ -279,8 +278,7 @@ def dac_product_customer_promotion_for_daily(postpaid_df: DataFrame,
 
     postpaid_df = postpaid_df.filter(F.col("start_of_week") <= min_value)
     prepaid_main_df = prepaid_main_df.filter(F.col("start_of_week") <= min_value)
-    # Comment out because data only available from June 10 2020:
-    # prepaid_ontop_df = prepaid_ontop_df.filter(F.col("start_of_week") <= min_value)
+    prepaid_ontop_df = prepaid_ontop_df.filter(F.col("start_of_week") <= min_value)
     customer_profile_df = customer_profile_df.filter(F.col("start_of_week") <= min_value)
     prepaid_product_master_df = prepaid_product_master_df.filter(F.col("start_of_week") <= min_value)
     prepaid_product_ontop_df = prepaid_product_ontop_df.filter(F.col("start_of_week") <= min_value)
@@ -577,11 +575,6 @@ def l1_build_product(
         return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
 
-    # Comment out because single dataframe:
-    # min_value = union_dataframes_with_missing_cols([
-    #     product_df.select(F.max(F.col("partition_date")).alias("max_date")),
-    # ]).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
-    # product_df = product_df.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
 
     partition_cols = ["access_method_num",
                       "event_partition_date",
