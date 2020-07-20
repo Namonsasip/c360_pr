@@ -262,7 +262,7 @@ def billing_l0_to_l3_pipeline(**kwargs):
                 "l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume"
             ),
 
-            # Monthly last top up channel pre-paid
+            #Monthly last top up channel pre-paid
             node(
                 billing_last_topup_channel_monthly,
                 ["l0_billing_and_payments_rt_t_recharge_daily_for_l3_billing_and_payments_monthly_last_top_up_channel",
