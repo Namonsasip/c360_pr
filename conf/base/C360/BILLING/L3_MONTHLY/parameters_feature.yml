@@ -129,8 +129,8 @@ l3_automated_flag:
 l3_bill_volume:
   where_clause: ""
   feature_list:
-    payments_bill_volume: "sum(bill_stmt_tot_invoiced_amt)/cnt"
-    payments_roaming_bill_volume: "sum(bill_stmt_tot_net_ir_mrkp_amt)/cnt"
+    payments_bill_volume: "sum(bill_stmt_tot_invoiced_amt)"
+    payments_roaming_bill_volume: "sum(bill_stmt_tot_net_ir_mrkp_amt)"
   granularity: "start_of_month,subscription_identifier"
 
 l3_missed_bills:

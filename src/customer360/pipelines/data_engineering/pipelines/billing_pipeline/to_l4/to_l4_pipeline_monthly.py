@@ -40,7 +40,7 @@ def billing_to_l4_pipeline_monthly(**kwargs):
             node(
                 billing_statement_hist_data_with_customer_profile,
                 ["l3_customer_profile_include_1mo_non_active_for_l4_billing_statement_history_billshock",
-                 "l0_billing_statement_history_monthly_for_l4_billing_statement_history_billshock","l4_billing_statement_history_billshock_tbl"],
+                 "l0_billing_statement_history_monthly_for_l4_billing_statement_history_billshock","params:l4_billing_statement_history_billshock_tbl"],
                 "billing_stat_hist_monthly_data"
             ),
 
