@@ -100,6 +100,7 @@ from .pipelines.data_engineering.pipelines.device_pipeline import (
     device_to_l4_pipeline,
 )
 from .pipelines.data_engineering.pipelines.digital_pipeline import (
+    digital_to_l1_pipeline,
     digital_to_l2_pipeline,
     digital_to_l3_pipeline,
     digital_to_l4_monthly_pipeline,
@@ -224,6 +225,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "device_to_l1_pipeline": device_to_l1_pipeline(),
         "device_to_l2_pipeline": device_to_l2_pipeline(),
         "device_to_l4_pipeline": device_to_l4_pipeline(),
+        "digital_to_l1_pipeline": digital_to_l1_pipeline(),
         "digital_to_l2_pipeline": digital_to_l2_pipeline(),
         "digital_to_l3_pipeline": digital_to_l3_pipeline(),
         "digital_to_l4_monthly_pipeline": digital_to_l4_monthly_pipeline(),
