@@ -296,10 +296,10 @@ def massive_processing_for_home_work(
     if check_empty_dfs(input_df):
         return get_spark_empty_df()
 
-    df = data_non_availability_and_missing_check(df=input_df, grouping="monthly",
-                                                 par_col="partition_date",
-                                                 target_table_name="l3_geo_home_work_location_id_monthly",
-                                                 missing_data_check_flg='N')
+    input_df = data_non_availability_and_missing_check(df=input_df, grouping="monthly",
+                                                       par_col="partition_date",
+                                                       target_table_name="l3_geo_home_work_location_id_monthly",
+                                                       missing_data_check_flg='N')
     if check_empty_dfs(input_df):
         return get_spark_empty_df()
     # ----- Transformation -----
@@ -310,8 +310,7 @@ def massive_processing_for_home_work(
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    partition_num_per_job = config_home.get("partition_num_per_job", 1)
-    mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
+    mvv_new = list(__divide_chunks(mvv_array, 5))
     add_list = mvv_new
 
     #Set first dataframe to merge
@@ -409,7 +408,7 @@ def massive_processing_for_home_work(
 
 def _int_l4_geo_home_location_id_monthly(df, config):
     # Add column week_type
-    df = df.withColumn('week_type', F.when(((F.dayofweek(F.col('event_partition_date')) == 1) & (F.dayofweek(F.col('event_partition_date')) == 7)), 'weekend')
+    df = df.withColumn('week_type', F.when(((F.dayofweek(F.col('event_partition_date')) == 1) | (F.dayofweek(F.col('event_partition_date')) == 7)), 'weekend')
                                                                              .otherwise('weekday').cast(StringType()))
     df = node_from_config(df, config)
 
@@ -440,7 +439,7 @@ def int_geo_work_location_id_monthly(work_monthly, list_imsi):
         .select('imsi', 'start_of_month', 'location_id', 'latitude', 'longitude', 'duration_3m', 'days_3m')
 
 
-    w_work_num_row = Window().partitionBy('imsi', 'location_id', 'start_of_month').orderBy(F.col('duration_3m').desc(), F.col('days_3m').desc())
+    w_work_num_row = Window().partitionBy('imsi', 'start_of_month').orderBy(F.col('duration_3m').desc(), F.col('days_3m').desc())
     work_last_3m = work_last_3m.withColumn('row_num', F.row_number().over(w_work_num_row))
     work_last_3m = work_last_3m.where('row_num = 1').drop('row_num')
 
@@ -458,7 +457,7 @@ def int_geo_home_location_id_monthly(home_monthly):
     home_last_3m = home_last_3m.dropDuplicates(['imsi', 'week_type', 'start_of_month', 'location_id', 'duration_3m', 'days_3m'])\
         .select('imsi', 'start_of_month', 'week_type', 'location_id', 'latitude', 'longitude', 'duration_3m', 'days_3m')
 
-    w_num_row = Window().partitionBy('imsi', 'location_id', 'week_type', 'start_of_month').orderBy(F.col('duration_3m').desc(), F.col('days_3m').desc())
+    w_num_row = Window().partitionBy('imsi', 'week_type', 'start_of_month').orderBy(F.col('duration_3m').desc(), F.col('days_3m').desc())
     home_last_3m = home_last_3m.withColumn('row_num', F.row_number().over(w_num_row))
 
     home_last_3m = home_last_3m.where('row_num = 1').drop('row_num')
