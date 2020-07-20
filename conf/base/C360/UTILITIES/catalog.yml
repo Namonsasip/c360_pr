@@ -30,4 +30,4 @@ util_ops_report:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "event_partition_date"
+    partitionBy: "ops_report_updated_date"
