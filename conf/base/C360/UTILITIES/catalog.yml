@@ -26,7 +26,7 @@ util_audit_metadata_table:
 util_ops_report:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: util_path/UTILITIES/c360_ops_report/
+  filepath: util_path/UTILITIES/util_ops_report/
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
