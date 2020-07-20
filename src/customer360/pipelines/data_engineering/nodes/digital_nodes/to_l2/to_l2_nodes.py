@@ -1,8 +1,4 @@
-import pyspark.sql.functions as f
-from pyspark.sql.functions import expr
 from pyspark.sql import DataFrame
-from pyspark.sql.types import StringType
-
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check
 from src.customer360.utilities.spark_util import get_spark_empty_df
@@ -42,7 +38,7 @@ def build_digital_l2_weekly_features(cxense_site_traffic: DataFrame,
 
     cxense_site_traffic = data_non_availability_and_missing_check(
         df=cxense_site_traffic, grouping="weekly",
-        par_col="start_of_week",
+        par_col="event_partition_date",
         target_table_name="l2_digital_cxenxse_site_traffic_weekly",
         missing_data_check_flg='Y',
         exception_partitions=exception_partition_list_for_l1_digital_cxenxse_site_traffic_daily
@@ -50,7 +46,7 @@ def build_digital_l2_weekly_features(cxense_site_traffic: DataFrame,
 
     l1_digital_cxenxse_site_traffic_popular_host_daily = data_non_availability_and_missing_check(
         df=l1_digital_cxenxse_site_traffic_popular_host_daily, grouping="weekly",
-        par_col="start_of_week",
+        par_col="event_partition_date",
         target_table_name="l2_digital_cxenxse_site_traffic_popular_host_weekly",
         missing_data_check_flg='Y',
         exception_partitions=exception_partition_list_for_l1_digital_cxenxse_site_traffic_daily
@@ -58,7 +54,7 @@ def build_digital_l2_weekly_features(cxense_site_traffic: DataFrame,
 
     l1_digital_cxenxse_site_traffic_popular_postalcode_daily =  data_non_availability_and_missing_check(
         df=l1_digital_cxenxse_site_traffic_popular_postalcode_daily, grouping="weekly",
-        par_col="start_of_week",
+        par_col="event_partition_date",
         target_table_name="l1_digital_cxenxse_site_traffic_popular_postalcode_daily",
         missing_data_check_flg='Y',
         exception_partitions=exception_partition_list_for_l1_digital_cxenxse_site_traffic_daily
@@ -66,7 +62,7 @@ def build_digital_l2_weekly_features(cxense_site_traffic: DataFrame,
 
     l1_digital_cxenxse_site_traffic_popular_referrerquery_daily =  data_non_availability_and_missing_check(
         df=l1_digital_cxenxse_site_traffic_popular_referrerquery_daily, grouping="weekly",
-        par_col="start_of_week",
+        par_col="event_partition_date",
         target_table_name="l2_digital_cxenxse_site_traffic_popular_referrerquery_weekly",
         missing_data_check_flg='Y',
         exception_partitions=exception_partition_list_for_l1_digital_cxenxse_site_traffic_daily
@@ -74,7 +70,7 @@ def build_digital_l2_weekly_features(cxense_site_traffic: DataFrame,
 
     l1_digital_cxenxse_site_traffic_popular_referrerhost_daily =  data_non_availability_and_missing_check(
         df=l1_digital_cxenxse_site_traffic_popular_referrerhost_daily, grouping="weekly",
-        par_col="start_of_week",
+        par_col="event_partition_date",
         target_table_name="l2_digital_cxenxse_site_traffic_popular_referrerhost_weekly",
         missing_data_check_flg='Y',
         exception_partitions=exception_partition_list_for_l1_digital_cxenxse_site_traffic_daily
