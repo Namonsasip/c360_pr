@@ -1,8 +1,5 @@
 import pyspark.sql.functions as f
-from pyspark.sql.functions import expr
 from pyspark.sql import DataFrame
-from pyspark.sql.types import StringType
-
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import check_empty_dfs, data_non_availability_and_missing_check \
     , add_event_week_and_month_from_yyyymmdd, union_dataframes_with_missing_cols
@@ -69,7 +66,7 @@ def build_digital_l1_daily_features(cxense_site_traffic: DataFrame,
 
     cust_df_cols = ['access_method_num', 'event_partition_date', 'start_of_week', 'start_of_month',
                     'subscription_identifier']
-    join_cols = ['access_method_num', 'start_of_week', 'event_partition_date', 'start_of_week', 'start_of_month']
+    join_cols = ['access_method_num', 'event_partition_date', 'start_of_week', 'start_of_month']
 
     cxense_site_traffic = cxense_site_traffic \
         .withColumnRenamed("mobile_no", "access_method_num") \
