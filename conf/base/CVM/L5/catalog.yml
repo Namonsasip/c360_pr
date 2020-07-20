@@ -77,7 +77,7 @@ treatments_deployed:
 # table for ATL to BTL mapping
 ard_btl_offer_mapping:
   type: kedro.contrib.io.pyspark.SparkDataSet
-  filepath: /mnt/customer360-cvm/ard_btl_offer_mapping.csv
+  filepath: /mnt/customer360-cvm/ard_btl_offer_mapping_20200720.csv
   file_format: csv
   load_args:
     header: True

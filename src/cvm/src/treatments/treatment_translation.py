@@ -41,15 +41,15 @@ def package_translation(
 
     # Fill the unavailable BTL with ATL
     df_mapping = df_mapping.withColumn(
-        "MAID_BTL_PRICE",
-        func.when(func.col("MAID_BTL_PRICE").isNull(), func.col("MAID_ATL")).otherwise(
-            func.col("MAID_BTL_PRICE")
+        "MAID_BTL_DISC_10",
+        func.when(func.col("MAID_BTL_DISC_10").isNull(), func.col("MAID_ATL")).otherwise(
+            func.col("MAID_BTL_DISC_10")
         ),
     )
     df_mapping = df_mapping.withColumn(
-        "DESC_BTL_PRICE",
-        func.when(func.col("DESC_BTL_PRICE").isNull(), func.col("du_offer")).otherwise(
-            func.col("DESC_BTL_PRICE")
+        "DESC_BTL_DISC_10",
+        func.when(func.col("DESC_BTL_DISC_10").isNull(), func.col("du_offer")).otherwise(
+            func.col("DESC_BTL_DISC_10")
         ),
     )
     df_mapping = df_mapping.withColumnRenamed("du_offer", "offer")
@@ -92,7 +92,7 @@ def package_translation(
     df_out = df_join.withColumn(
         "offer_id",
         when(col("offer_map") == "ATL", col("MAID_ATL")).when(
-            col("offer_map") == "BTL_PRICE", col("MAID_BTL_PRICE")
+            col("offer_map") == "BTL_DISC_10", col("MAID_BTL_DISC_10")
         ),
     )
     df_out = df_out.withColumn(
