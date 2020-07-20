@@ -1164,7 +1164,9 @@ def create_use_case_campaign_mapping_table(
     campaign_ard_churn_mck_master: DataFrame,
 ) -> DataFrame:
     campaign_ard_churn_mck_master = (
-        campaign_ard_churn_mck_master.groupby("use_case", "campaign_code","macrosegment")
+        campaign_ard_churn_mck_master.groupby(
+            "use_case", "campaign_code", "macrosegment"
+        )
         .agg(F.count("*"))
         .selectExpr(
             "macrosegment as campaign_project_group",
@@ -1331,21 +1333,27 @@ def create_campaign_view_report_input(
     date_from,
     date_to,
 ) -> DataFrame:
+    # Test
+    # mock_report_running_date = (datetime.now() + timedelta(hours=7)).strftime(
+    #     "%Y-%m-%d"
+    # )
+    # l0_campaign_tracking_contact_list_pre_full_load = catalog.load(
+    #     "l0_campaign_tracking_contact_list_pre_full_load"
+    # )
+    # l0_campaign_history_master_active = catalog.load(
+    #     "l0_campaign_history_master_active"
+    # )
+    # use_case_campaign_mapping = catalog.load("use_case_campaign_mapping")
+    # reporting_kpis = catalog.load("reporting_kpis")
+    # date_from = datetime.strptime(mock_report_running_date, "%Y-%m-%d") + timedelta(
+    #     days=-50
+    # )
+    # date_to = datetime.strptime(mock_report_running_date, "%Y-%m-%d")
+
     l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.filter(
         F.col("contact_date").between(date_from, date_to)
     )
-    # Select every campaign by using latest information we has
-    # TODO Modify to join campaign master with campaign transaction based on master date
-    # TODO Set re-run process in case master table might be delay
 
-    l0_campaign_history_master_active_present = l0_campaign_history_master_active.groupby(
-        "child_code"
-    ).agg(
-        F.max("month_id").alias("month_id")
-    )
-    l0_campaign_history_master_active = l0_campaign_history_master_active.join(
-        l0_campaign_history_master_active_present, ["child_code", "month_id"], "inner"
-    )
     # only select relavant columns for report
     # TODO in the future more column might be use as the business required
     l0_campaign_history_master_active = l0_campaign_history_master_active.selectExpr(
@@ -1518,10 +1526,8 @@ def create_campaign_view_report_input(
     )
 
     mapping_tbl = use_case_campaign_mapping.selectExpr(
-        "campaign_project_group",
         "campaign_child_code",
         "target_group as defined_campaign_target_group",
-        "usecase",
     )
     campaign_view_report_input = l0_campaign_tracking_contact_list_pre_full_load.join(
         reporting_kpis_1d_after,
@@ -1565,6 +1571,13 @@ def create_campaign_view_report_input(
 def create_aggregate_campaign_view_features(
     campaign_view_report_input: DataFrame, date_to, date_from, aggregate_period,
 ) -> DataFrame:
+    # aggregate_period = [7, 30]
+    # mock_report_running_date = (datetime.now() + timedelta(hours=7)).strftime(
+    #     "%Y-%m-%d"
+    # )
+    # date_to = datetime.strptime(mock_report_running_date, "%Y-%m-%d")
+    # date_from = datetime.strptime(mock_report_running_date, "%Y-%m-%d")
+    # campaign_view_report_input = catalog.load("campaign_view_report_input_tbl")
     spark = get_spark_session()
     # Create all date within running period to make sure that every campaign has record
     # for each day even if the value is 0, so that we could show in the report.
@@ -1599,7 +1612,7 @@ def create_aggregate_campaign_view_features(
         "ontop_voice_number_of_transaction_30_day_after",
         "ontop_voice_total_net_tariff_30_day_after",
         "all_ppu_charge_30_day_after",
-        "top_up_value_30day_after",
+        "top_up_value_30_day_after",
         "total_revenue_30_day_after",
         "total_number_ontop_purchase_30_day_after",
         # 1D Feature before
@@ -1676,8 +1689,10 @@ def create_aggregate_campaign_view_features(
             F.when(F.col("response_integer") == 1, F.col("subscription_identifier"))
         ).alias("n_subscriber_accepted"),
     ]
-    exprs.append([F.avg(x).alias(x) for x in columns_to_avg])
-    exprs.append([F.sum(x).alias(x) for x in columns_to_sum])
+    for column in columns_to_avg:
+        exprs.append(F.avg(column).alias(column))
+    for column in columns_to_sum:
+        exprs.append(F.sum(column).alias(column))
     aggregate_campaign_view_features = campaign_view_report_input.groupBy(
         [
             "campaign_child_code",
@@ -1757,6 +1772,16 @@ def create_campaign_view_report(
     date_to,
 ) -> DataFrame:
     spark = get_spark_session()
+    l0_campaign_tracking_contact_list_pre_full_load = catalog.load("l0_campaign_tracking_contact_list_pre_full_load")
+    mock_report_running_date = (datetime.now() + timedelta(hours=7)).strftime(
+        "%Y-%m-%d"
+    )
+    date_from = datetime.strptime(mock_report_running_date, "%Y-%m-%d")
+    +timedelta(days=-10)
+    date_to = datetime.strptime(mock_report_running_date, "%Y-%m-%d")
+    aggregate_campaign_view_features_tbl = catalog.load(
+        "aggregate_campaign_view_features_tbl"
+    )
     l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.filter(
         F.col("contact_date").between(date_from, date_to)
     )
