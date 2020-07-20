@@ -5,6 +5,7 @@ import os
 
 running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 
+
 def build_ops_report_dataset(data_frame: DataFrame) -> DataFrame:
     """
     :param data_frame:
