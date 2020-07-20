@@ -119,8 +119,7 @@ def massive_processing_with_l1_geo_area_from_competitor_store_daily(shape,master
     masterplan.createOrReplaceTempView("mst_cell_masterplan")
     shape.createOrReplaceTempView("mst_poi_shape")
 
-    masterplan.show(10)
-    shape.show(10)
+
 
     ss = get_spark_session()
     df = ss.sql("""
