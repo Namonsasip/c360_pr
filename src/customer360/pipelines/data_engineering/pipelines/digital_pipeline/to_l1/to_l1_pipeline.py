@@ -33,7 +33,7 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 
-from customer360.pipelines.data_engineering.nodes.digital_nodes.to_l1.to_l1_nodes import build_digital_l1_daily_features
+from customer360.pipelines.data_engineering.nodes.digital_nodes.to_l1 import build_digital_l1_daily_features
 
 
 def digital_to_l1_pipeline(**kwargs):
