@@ -537,10 +537,9 @@ def l1_location_of_visit_ais_store_daily(shape,cust_cell_visit,sql):
     return store_visit
 
 
-###Top_3_cells_on_voice_usage###
-def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
-    usage_df=usage_df.filter('partition_date >= 20191101 and partition_date <= 20191130')
-    profile_df=profile_df.filter('partition_month >= 201911')
+def massive_processing_with_l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
+    usage_df = usage_df.filter('partition_date >= 20191101 and partition_date <= 20191130')
+    profile_df = profile_df.filter('partition_month >= 201911')
     # exception_partitions=['20191106']
     # ----- Data Availability Checks -----
     if check_empty_dfs([usage_df, geo_df, profile_df]):
@@ -569,16 +568,45 @@ def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
         ]
     ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
 
-
     usage_df = usage_df.filter(
-        F.to_date(F.date_trunc("month", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))) <= min_value)
+        F.to_date(
+            F.date_trunc("month", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))) <= min_value)
 
     profile_df = profile_df.filter(F.to_date(F.col("partition_month").cast(StringType()), 'yyyyMM') <= min_value)
-
 
     if check_empty_dfs([usage_df, profile_df]):
         return get_spark_empty_df()
 
+    # ----- Transformation -----
+    def divide_chunks(l, n):
+        # looping till length l
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    ss = get_spark_session()
+    CNTX = load_context(Path.cwd(), env=conf)
+    data_frame = usage_df
+    dates_list = data_frame.select('partition_date').distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+    mvv_new = list(divide_chunks(mvv_array, 5))
+    add_list = mvv_new
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        small_df = data_frame.filter(f.col('partition_date').isin(*[curr_item]))
+        output_df = l1_geo_top3_cells_on_voice_usage(small_df, geo_df, profile_df)
+        CNTX.catalog.save("l1_geo_top3_cells_on_voice_usage", output_df)
+    logging.info("Final date to run for {0}".format(str(first_item)))
+    return_df = data_frame.filter(f.col('partition_date').isin(*[first_item]))
+    return_df = l1_geo_top3_cells_on_voice_usage(return_df, geo_df, profile_df)
+    return return_df
+
+
+###Top_3_cells_on_voice_usage###
+def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
     # ----- Transformation -----
     ### config
     spark = get_spark_session()
@@ -586,20 +614,10 @@ def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
     ### add partition_date
     l0_df_usage1 = usage_df.withColumn("event_partition_date",F.to_date(usage_df.date_id.cast(DateType()), "yyyyMMdd"))
 
-    ### last_date
-    geo_last_date = geo_df.agg(F.max("partition_date")).collect()[0][0]
-    # geo_last_date = "20200612"
-    profile_last_date = profile_df.agg(F.max("partition_month")).collect()[0][0]
-
-    ### where
-    l0_df_geo1 = geo_df.where("partition_date = '" + str(geo_last_date) + "'")
-    # l0_df_geo1 = spark.read.parquet("dbfs:/mnt/customer360-blob-data/C360/GEO/geo_mst_cell_masterplan/partition_date=" + str(geo_last_date) + "/")
-    l0_df_profile1 = profile_df.where("partition_month = '" + str(profile_last_date) + "'")
-
     # create temp
     l0_df_usage1.createOrReplaceTempView('usage_sum_voice_location_daily')
-    l0_df_geo1.createOrReplaceTempView('geo_mst_cell_masterplan')
-    l0_df_profile1.createOrReplaceTempView('profile_customer_profile_ma')
+    geo_df.createOrReplaceTempView('geo_mst_cell_masterplan')
+    profile_df.createOrReplaceTempView('profile_customer_profile_ma')
 
     ### spark_sql
     sql_query = """
@@ -715,9 +733,8 @@ def l1_geo_number_of_bs_used(geo_cust_cell, sql):
     return df
 
 
-# 47 l1_the_favourite_locations_daily ====================
-def l1_the_favourite_locations_daily(usage_df_location,geo_df_masterplan):
-    usage_df_location=usage_df_location.filter('partition_date >= 20191101 and partition_date <= 20191130')
+def massive_processing_with_l1_the_favourite_locations_daily(usage_df_location,geo_df_masterplan):
+    usage_df_location = usage_df_location.filter('partition_date >= 20191101 and partition_date <= 20191130')
     # ----- Data Availability Checks -----
     if check_empty_dfs([usage_df_location, geo_df_masterplan]):
         return get_spark_empty_df()
@@ -733,6 +750,36 @@ def l1_the_favourite_locations_daily(usage_df_location,geo_df_masterplan):
     if check_empty_dfs([usage_df_location]):
         return get_spark_empty_df()
 
+    # ----- Transformation -----
+    def divide_chunks(l, n):
+        # looping till length l
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    ss = get_spark_session()
+    CNTX = load_context(Path.cwd(), env=conf)
+    data_frame = usage_df_location
+    dates_list = data_frame.select('partition_date').distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+    mvv_new = list(divide_chunks(mvv_array, 5))
+    add_list = mvv_new
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        small_df = data_frame.filter(f.col('partition_date').isin(*[curr_item]))
+        output_df = l1_the_favourite_locations_daily(small_df,geo_df_masterplan)
+        CNTX.catalog.save("l1_the_favourite_locations_daily", output_df)
+    logging.info("Final date to run for {0}".format(str(first_item)))
+    return_df = data_frame.filter(f.col('partition_date').isin(*[first_item]))
+    return_df = l1_the_favourite_locations_daily(return_df,geo_df_masterplan)
+    return return_df
+
+
+# 47 l1_the_favourite_locations_daily ====================
+def l1_the_favourite_locations_daily(usage_df_location,geo_df_masterplan):
     # ----- Transformation -----
     ### config
     spark = get_spark_session()
@@ -830,10 +877,9 @@ def massive_processing_time_spent_daily(data_frame: DataFrame, sql, output_df_ca
     return return_df
 
 
-def l1_number_of_unique_cell_daily(usage_sum_data_location):
-    usage_sum_data_location=usage_sum_data_location.filter('partition_date >= 20191101 and partition_date <= 20191130')
-    # .filter('partition_month >= 201911')
-    # exception_partitions=['20191106']
+def massive_processing_with_l1_number_of_unique_cell_daily(usage_sum_data_location):
+    usage_sum_data_location = usage_sum_data_location.filter(
+        'partition_date >= 20191101 and partition_date <= 20191130')
     # ----- Data Availability Checks -----
     if check_empty_dfs([usage_sum_data_location]):
         return get_spark_empty_df()
@@ -846,7 +892,35 @@ def l1_number_of_unique_cell_daily(usage_sum_data_location):
 
     if check_empty_dfs([usage_sum_data_location]):
         return get_spark_empty_df()
+    # ----- Transformation -----
+    def divide_chunks(l, n):
+        # looping till length l
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
 
+    ss = get_spark_session()
+    CNTX = load_context(Path.cwd(), env=conf)
+    data_frame = usage_sum_data_location
+    dates_list = data_frame.select('partition_date').distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+    mvv_new = list(divide_chunks(mvv_array, 5))
+    add_list = mvv_new
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        small_df = data_frame.filter(f.col('partition_date').isin(*[curr_item]))
+        output_df = l1_number_of_unique_cell_daily(small_df)
+        CNTX.catalog.save("l1_number_of_unique_cell_daily", output_df)
+    logging.info("Final date to run for {0}".format(str(first_item)))
+    return_df = data_frame.filter(f.col('partition_date').isin(*[first_item]))
+    return_df = l1_number_of_unique_cell_daily(return_df)
+    return return_df
+
+
+def l1_number_of_unique_cell_daily(usage_sum_data_location):
     # ----- Transformation -----
     spark = get_spark_session()
     usage_sum_data_location = usage_sum_data_location.withColumn("event_partition_date",F.to_date(usage_sum_data_location.date_id))

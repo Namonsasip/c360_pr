@@ -77,7 +77,7 @@ def geo_to_l1_pipeline(**kwargs):
 
             ##Top_3_cells_on_voice_usage###
             node(
-                l1_geo_top3_cells_on_voice_usage,
+                massive_processing_with_l1_geo_top3_cells_on_voice_usage,
                 ["l0_usage_sum_voice_location_daily_for_l1_geo_top3_cells_on_voice_usage",
                  "l0_geo_mst_cell_masterplan_for_l1_geo_top3_cells_on_voice_usage",
                  "l0_profile_customer_profile_ma_for_l1_geo_top3_cells_on_voice_usage"
@@ -94,7 +94,7 @@ def geo_to_l1_pipeline(**kwargs):
 
             ##47 the_favourite_locations
             node(
-                l1_the_favourite_locations_daily,
+                massive_processing_with_l1_the_favourite_locations_daily,
                 ["l0_usage_sum_data_location_daily_for_l1_the_favourite_locations",
                  "l0_geo_mst_cell_masterplan_for_l1_the_favourite_locations"
                  ],
@@ -103,7 +103,7 @@ def geo_to_l1_pipeline(**kwargs):
 
             ## Number of Unique Cells Used ###
             node(
-                l1_number_of_unique_cell_daily,
+                massive_processing_with_l1_number_of_unique_cell_daily,
                 ["l0_usage_sum_data_location_daily_for_l1_number_of_unique_cell_daily"
                  ],
                 "l1_number_of_unique_cell_daily"
