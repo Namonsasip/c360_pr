@@ -568,6 +568,7 @@ def _union_prepaid_postpaid(postpaid_df: DataFrame, prepaid_df: DataFrame) -> Da
 
 def l1_build_product(
         product_df: DataFrame,
+        product_enforce_order_df: DataFrame,  # Unused dataframe simply used to enforce Kedro pipeline run order
         int_l1_product_active_customer_promotion_features: dict
 ) -> DataFrame:
     ################################# Start Implementing Data availability checks #############################

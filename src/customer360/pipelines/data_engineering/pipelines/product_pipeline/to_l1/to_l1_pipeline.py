@@ -41,6 +41,7 @@ def product_to_l1_pipeline(**kwargs):
             node(
                 l1_build_product,
                 ["l1_product_active_customer_promotion_features_prepaid_postpaid_for_l1_product_active_customer_promotion_features_daily",
+                 "l1_product_active_customer_promotion_features_prepaid_postpaid",
                  "params:int_l1_product_active_customer_promotion_features"],
                 "int_l1_product_active_customer_promotion_features_temp"
             ),
