@@ -75,7 +75,7 @@ def massive_processing_with_l1_geo_area_from_ais_store_daily(shape, masterplan, 
         for i in range(0, len(l), n):
             yield l[i:i + n]
 
-    ss = get_spark_session()
+
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = geo_cust_cell_visit_time
     dates_list = data_frame.select('partition_date').distinct().collect()
@@ -141,7 +141,7 @@ def massive_processing_with_l1_geo_area_from_competitor_store_daily(shape,master
         for i in range(0, len(l), n):
             yield l[i:i + n]
 
-    ss = get_spark_session()
+
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = geo_cust_cell_visit_time
     dates_list = data_frame.select('partition_date').distinct().collect()
@@ -229,7 +229,7 @@ def l1_geo_area_from_competitor_store_daily(df,geo_cust_cell_visit_time,sql):
 
 
     geo_cust_cell_visit_time = add_start_of_week_and_month(geo_cust_cell_visit_time, "time_in")
-
+    ss = get_spark_session()
 
 
     df.createOrReplaceTempView('temp_geo_ais_shop')
