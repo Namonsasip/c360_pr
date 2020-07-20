@@ -91,8 +91,8 @@ def package_translation(
 
     df_out = df_join.withColumn(
         "offer_id",
-        when(col("offer_map") == "ATL", col("MAID_ATL")).when(
-            col("offer_map") == "BTL_DISC_10", col("MAID_BTL_DISC_10")
+        when((col("MAID_ATL").isNotNull()) & (col("offer_map") == "ATL"), col("MAID_ATL")).when(
+            (col("MAID_BTL_DISC_10").isNotNull()) & (col("offer_map") == "BTL_DISC_10"), col("MAID_BTL_DISC_10")
         ),
     )
     df_out = df_out.withColumn(
