@@ -17,7 +17,7 @@ from pyspark.sql.types import *
 
 from customer360.utilities.re_usable_functions import add_start_of_week_and_month, union_dataframes_with_missing_cols, \
     execute_sql, add_event_week_and_month_from_yyyymmdd, __divide_chunks, check_empty_dfs, \
-    data_non_availability_and_missing_check
+    data_non_availability_and_missing_check, l1_massive_processing
 from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 
 conf = os.getenv("CONF", "base")
@@ -257,6 +257,48 @@ def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit
     return df2
 
 
+def massive_processing_with_l1_geo_total_distance_km_daily(l0_df, sql):
+    l0_df = l0_df.filter('partition_date >= 20191101 and partition_date <= 20191130')
+    # ----- Data Availability Checks -----
+    if check_empty_dfs([l0_df]):
+        return get_spark_empty_df()
+
+    l0_df = data_non_availability_and_missing_check(df=l0_df,
+                                                    grouping="daily",
+                                                    par_col="partition_date",
+                                                    target_table_name="l1_geo_total_distance_km_daily")
+
+    if check_empty_dfs([l0_df]):
+        return get_spark_empty_df()
+
+    # ----- Transformation -----
+    def divide_chunks(l, n):
+        # looping till length l
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    ss = get_spark_session()
+    CNTX = load_context(Path.cwd(), env=conf)
+    data_frame = l0_df
+    dates_list = data_frame.select('partition_date').distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+    mvv_new = list(divide_chunks(mvv_array, 2))
+    add_list = mvv_new
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        small_df = data_frame.filter(f.col('partition_date').isin(*[curr_item]))
+        output_df = l1_geo_total_distance_km_daily(small_df, sql)
+        CNTX.catalog.save(sql["output_catalog"], output_df)
+    logging.info("Final date to run for {0}".format(str(first_item)))
+    return_df = data_frame.filter(f.col('partition_date').isin(*[first_item]))
+    return_df = l1_geo_total_distance_km_daily(return_df, sql)
+    return return_df
+
+
 ###total_distance_km###
 def l1_geo_total_distance_km_daily(l0_df, sql):
     l0_df=l0_df.filter('partition_date >= 20191101 and partition_date <= 20191130')
@@ -323,22 +365,49 @@ def l1_geo_total_distance_km_daily(l0_df, sql):
     return l1_df2
 
 
-def l1_geo_cust_subseqently_distance(cell_visit, sql):
-    cell_visit=cell_visit.filter('partition_date >= 20191101 and partition_date <= 20191130')
-    # .filter('partition_month >= 201911')
-    # exception_partitions=['20191106']
+def massive_processing_with_l1_geo_cust_subseqently_distance(cell_visit, sql):
+    cell_visit = cell_visit.filter('partition_date >= 20191101 and partition_date <= 20191130')
     # ----- Data Availability Checks -----
     if check_empty_dfs([cell_visit]):
         return get_spark_empty_df()
 
     cell_visit = data_non_availability_and_missing_check(df=cell_visit,
-                                                              grouping="daily",
-                                                              par_col="partition_date",
-                                                              target_table_name="l1_geo_cust_subseqently_distance")
+                                                         grouping="daily",
+                                                         par_col="partition_date",
+                                                         target_table_name="l1_geo_cust_subseqently_distance")
 
     if check_empty_dfs([cell_visit]):
         return get_spark_empty_df()
 
+    # ----- Transformation -----
+    def divide_chunks(l, n):
+        # looping till length l
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    ss = get_spark_session()
+    CNTX = load_context(Path.cwd(), env=conf)
+    data_frame = cell_visit
+    dates_list = data_frame.select('partition_date').distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+    mvv_new = list(divide_chunks(mvv_array, 2))
+    add_list = mvv_new
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        small_df = data_frame.filter(f.col('partition_date').isin(*[curr_item]))
+        output_df = l1_geo_cust_subseqently_distance(small_df, sql)
+        CNTX.catalog.save(sql["output_catalog"], output_df)
+    logging.info("Final date to run for {0}".format(str(first_item)))
+    return_df = data_frame.filter(f.col('partition_date').isin(*[first_item]))
+    return_df = l1_geo_cust_subseqently_distance(return_df, sql)
+    return return_df
+
+
+def l1_geo_cust_subseqently_distance(cell_visit, sql):
     # ----- Transformation -----
     # Drop unneeded column
     cell_visit = cell_visit.drop('cell_id', 'time_out', 'hour_in', 'hour_out')
@@ -387,25 +456,53 @@ def l1_geo_cust_subseqently_distance(cell_visit, sql):
 
     return df
 
-###feature_AIS_store###
-def l1_location_of_visit_ais_store_daily(shape,cust_cell_visit,sql):
-    cust_cell_visit=cust_cell_visit.filter('partition_date >= 20191101 and partition_date <= 20191130')
-    # .filter('partition_month >= 201911')
-    # exception_partitions=['20191106']
+
+def massive_processing_with_l1_location_of_visit_ais_store_daily(shape,cust_cell_visit,sql):
+    cust_cell_visit = cust_cell_visit.filter('partition_date >= 20191101 and partition_date <= 20191130')
     # ----- Data Availability Checks -----
     if check_empty_dfs([cust_cell_visit, shape]):
         return get_spark_empty_df()
 
     cust_cell_visit = data_non_availability_and_missing_check(df=cust_cell_visit,
-                                                         grouping="daily",
-                                                         par_col="partition_date",
-                                                         target_table_name="l1_location_of_visit_ais_store_daily")
+                                                              grouping="daily",
+                                                              par_col="partition_date",
+                                                              target_table_name="l1_location_of_visit_ais_store_daily")
 
     shape = get_max_date_from_master_data(shape, 'partition_month')
 
     if check_empty_dfs([cust_cell_visit]):
         return get_spark_empty_df()
 
+    # ----- Transformation -----
+    def divide_chunks(l, n):
+        # looping till length l
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    ss = get_spark_session()
+    CNTX = load_context(Path.cwd(), env=conf)
+    data_frame = cust_cell_visit
+    dates_list = data_frame.select('partition_date').distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+    mvv_new = list(divide_chunks(mvv_array, 2))
+    add_list = mvv_new
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        small_df = data_frame.filter(f.col('partition_date').isin(*[curr_item]))
+        output_df = l1_location_of_visit_ais_store_daily(shape,small_df,sql)
+        CNTX.catalog.save(sql["output_catalog"], output_df)
+    logging.info("Final date to run for {0}".format(str(first_item)))
+    return_df = data_frame.filter(f.col('partition_date').isin(*[first_item]))
+    return_df = l1_location_of_visit_ais_store_daily(shape,return_df,sql)
+    return return_df
+
+
+###feature_AIS_store###
+def l1_location_of_visit_ais_store_daily(shape,cust_cell_visit,sql):
     # ----- Transformation -----
     shape.cache()
     store_shape = shape.where('landmark_cat_name_en like "%AIS%"')
@@ -435,10 +532,6 @@ def l1_location_of_visit_ais_store_daily(shape,cust_cell_visit,sql):
         AND p2.PARTITION_NAME = 'INTERNAL'
         AND p2.LANDMARK_CAT_NAME_EN IN ('AIS')
      """)
-
-    # print("Start for check result from sql query statement")
-    # df.count()
-    # df.show()
 
     store_visit = node_from_config(df,sql)
 
@@ -556,10 +649,6 @@ def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
 
 ###distance_top_call###
 def l1_geo_distance_top_call(df):
-    # .filter('partition_date >= 20191101 and partition_date <= 20191130')
-    # .filter('partition_month >= 201911')
-    # exception_partitions=['20191106']
-
     # ----- Data Availability Checks -----
     if check_empty_dfs([df]):
         return get_spark_empty_df()
@@ -622,15 +711,14 @@ def l1_geo_number_of_bs_used(geo_cust_cell, sql):
     # ----- Transformation -----
     geo_cust_cell = geo_cust_cell.withColumn("event_partition_date", F.to_date(F.col('partition_date').cast(StringType()), 'yyyyMMdd'))
     geo_cust_cell = geo_cust_cell.drop('partition_date')
-    df = node_from_config(geo_cust_cell, sql)
+    # df = node_from_config(geo_cust_cell, sql)
+    df = l1_massive_processing(geo_cust_cell, sql)
     return df
 
 
 # 47 l1_the_favourite_locations_daily ====================
 def l1_the_favourite_locations_daily(usage_df_location,geo_df_masterplan):
     usage_df_location=usage_df_location.filter('partition_date >= 20191101 and partition_date <= 20191130')
-    # .filter('partition_month >= 201911')
-    # exception_partitions=['20191106']
     # ----- Data Availability Checks -----
     if check_empty_dfs([usage_df_location, geo_df_masterplan]):
         return get_spark_empty_df()

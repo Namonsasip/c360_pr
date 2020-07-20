@@ -17,28 +17,28 @@ def geo_to_l1_pipeline(**kwargs):
 
             ),
 
-            node(
-                l1_geo_area_from_ais_store_daily,
-                ["l0_mst_poi_shape_for_l1_geo_area_from_ais_store_daily",
-                 "l0_mst_cell_masterplan_for_l1_geo_area_from_ais_store_daily",
-                 "l0_geo_cust_cell_visit_time_for_l1_geo_area_from_ais_store_daily",
-                 "params:l1_area_from_ais_store_daily"
-                 ],
-                "l1_geo_area_from_ais_store_daily"
-            ),
+            # node(
+            #     l1_geo_area_from_ais_store_daily,
+            #     ["l0_mst_poi_shape_for_l1_geo_area_from_ais_store_daily",
+            #      "l0_mst_cell_masterplan_for_l1_geo_area_from_ais_store_daily",
+            #      "l0_geo_cust_cell_visit_time_for_l1_geo_area_from_ais_store_daily",
+            #      "params:l1_area_from_ais_store_daily"
+            #      ],
+            #     "l1_geo_area_from_ais_store_daily"
+            # ),
+            #
+            # node(
+            #     l1_geo_area_from_competitor_store_daily,
+            #     ["l0_mst_poi_shape_for_l1_geo_area_from_competitor_store_daily",
+            #      "l0_mst_cell_masterplan_for_l1_geo_area_from_competitor_store_daily",
+            #      "l0_geo_cust_cell_visit_time_for_l1_geo_area_from_competitor_store_daily",
+            #      "params:l1_area_from_competitor_store_daily"
+            #      ],
+            #     "l1_geo_area_from_competitor_store_daily"
+            # ),
 
             node(
-                l1_geo_area_from_competitor_store_daily,
-                ["l0_mst_poi_shape_for_l1_geo_area_from_competitor_store_daily",
-                 "l0_mst_cell_masterplan_for_l1_geo_area_from_competitor_store_daily",
-                 "l0_geo_cust_cell_visit_time_for_l1_geo_area_from_competitor_store_daily",
-                 "params:l1_area_from_competitor_store_daily"
-                 ],
-                "l1_geo_area_from_competitor_store_daily"
-            ),
-
-            node(
-                l1_geo_cust_subseqently_distance,
+                massive_processing_with_l1_geo_cust_subseqently_distance,
                 ["l0_geo_cust_cell_visit_time_for_l1_geo_cust_subseqently_distance_daily",
                  "params:l1_geo_cust_subseqently_distance_daily"
                  ],
@@ -46,11 +46,12 @@ def geo_to_l1_pipeline(**kwargs):
             ),
 
             ###total_distance_km###
-            node(l1_geo_total_distance_km_daily,
-                 ["l0_geo_cust_cell_visit_time_for_l1_geo_total_distance_km_daily",
-                  "params:l1_geo_total_distance_km_daily"
-                  ],
-                 "l1_geo_total_distance_km_daily"
+            node(
+                massive_processing_with_l1_geo_total_distance_km_daily,
+                ["l0_geo_cust_cell_visit_time_for_l1_geo_total_distance_km_daily",
+                "params:l1_geo_total_distance_km_daily"
+                ],
+                "l1_geo_total_distance_km_daily"
             ),
 
 
