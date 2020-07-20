@@ -4,9 +4,9 @@
 
 l0_billing_statement_history_monthly_for_l3_customer_profile_billing_level_volume_of_active_contracts:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_statement_history/
+  filepath: base_path/BILLING/billing_statement_history/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
    increment_flag: 'yes'
    lookup_table_name: 'l3_customer_profile_billing_level_volume_of_active_contracts'
@@ -17,9 +17,9 @@ l0_billing_statement_history_monthly_for_l3_customer_profile_billing_level_volum
 
 l0_billing_statement_history_monthly_for_l3_billing_and_payments_monthly_bill_volume:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_statement_history/
+  filepath: base_path/BILLING/billing_statement_history/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
    increment_flag: 'yes'
    lookup_table_name: 'l3_billing_and_payments_monthly_bill_volume'
@@ -30,9 +30,9 @@ l0_billing_statement_history_monthly_for_l3_billing_and_payments_monthly_bill_vo
 
 l0_billing_statement_history_monthly_for_l3_billing_and_payments_monthly_missed_bills:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_statement_history/
+  filepath: base_path/BILLING/billing_statement_history/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
    increment_flag: 'yes'
    lookup_table_name: 'l3_billing_and_payments_monthly_missed_bills'
@@ -43,9 +43,9 @@ l0_billing_statement_history_monthly_for_l3_billing_and_payments_monthly_missed_
 
 l0_billing_statement_history_monthly_for_l3_billing_and_payments_monthly_overdue_bills:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_statement_history/
+  filepath: base_path/BILLING/billing_statement_history/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
    increment_flag: 'yes'
    lookup_table_name: 'l3_billing_and_payments_monthly_overdue_bills'
@@ -56,9 +56,9 @@ l0_billing_statement_history_monthly_for_l3_billing_and_payments_monthly_overdue
 
 l0_billing_statement_history_monthly_for_l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_statement_history/
+  filepath: base_path/BILLING/billing_statement_history/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
    increment_flag: 'yes'
    lookup_table_name: 'l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume'
@@ -69,9 +69,9 @@ l0_billing_statement_history_monthly_for_l3_billing_and_payments_monthly_last_ov
 
 l0_billing_statement_history_monthly_for_l4_billing_statement_history_billshock:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_statement_history/
+  filepath: base_path/BILLING/billing_statement_history/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
    increment_flag: 'yes'
    lookup_table_name: 'l4_billing_statement_history_billshock'
@@ -82,9 +82,9 @@ l0_billing_statement_history_monthly_for_l4_billing_statement_history_billshock:
 
 l0_billing_and_payments_rt_t_recharge_daily_for_l1_billing_and_payments_daily_topup_and_volume:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_rt_t_recharge_daily/
+  filepath: base_path/BILLING/billing_rt_t_recharge_daily/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_billing_and_payments_daily_topup_and_volume'
@@ -96,9 +96,9 @@ l0_billing_and_payments_rt_t_recharge_daily_for_l1_billing_and_payments_daily_to
 
 l0_billing_ir_a_usg_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/USAGE/usage_ir_a_usg_daily/
+  filepath: base_path/USAGE/usage_ir_a_usg_daily/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_billing_and_payments_daily_rpu_roaming'
@@ -109,9 +109,9 @@ l0_billing_ir_a_usg_daily:
 
 l0_billing_sa_t_account_recharge_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_sa_t_account_recharge/
+  filepath: base_path/BILLING/billing_sa_t_account_recharge/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_billing_and_payments_daily_before_top_up_balance'
@@ -123,9 +123,9 @@ l0_billing_sa_t_account_recharge_daily:
 
 l0_billing_and_payments_rt_t_recharge_daily_for_l1_billing_and_payments_daily_top_up_channels:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_rt_t_recharge_daily/
+  filepath: base_path/BILLING/billing_rt_t_recharge_daily/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_billing_and_payments_daily_top_up_channels'
@@ -136,9 +136,9 @@ l0_billing_and_payments_rt_t_recharge_daily_for_l1_billing_and_payments_daily_to
 
 l0_billing_and_payments_rt_t_recharge_daily_for_l1_billing_and_payments_daily_most_popular_top_up_channel:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_rt_t_recharge_daily/
+  filepath: base_path/BILLING/billing_rt_t_recharge_daily/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_billing_and_payments_daily_most_popular_top_up_channel'
@@ -150,9 +150,9 @@ l0_billing_and_payments_rt_t_recharge_daily_for_l1_billing_and_payments_daily_mo
 
 l0_billing_and_payments_rt_t_recharge_daily_for_l1_billing_and_payments_daily_popular_topup_day:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_rt_t_recharge_daily/
+  filepath: base_path/BILLING/billing_rt_t_recharge_daily/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_billing_and_payments_daily_popular_topup_day'
@@ -164,9 +164,9 @@ l0_billing_and_payments_rt_t_recharge_daily_for_l1_billing_and_payments_daily_po
 
 l0_billing_and_payments_rt_t_recharge_daily_for_l1_billing_and_payments_daily_time_since_last_top_up:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_rt_t_recharge_daily/
+  filepath: base_path/BILLING/billing_rt_t_recharge_daily/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l1_billing_and_payments_daily_time_since_last_top_up'
@@ -178,9 +178,9 @@ l0_billing_and_payments_rt_t_recharge_daily_for_l1_billing_and_payments_daily_ti
 
 l0_billing_and_payments_rt_t_recharge_daily_for_l2_billing_and_payments_weekly_topup_time_diff:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_rt_t_recharge_daily/
+  filepath: base_path/BILLING/billing_rt_t_recharge_daily/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_billing_and_payments_weekly_topup_time_diff'
@@ -192,9 +192,9 @@ l0_billing_and_payments_rt_t_recharge_daily_for_l2_billing_and_payments_weekly_t
 
 l0_billing_and_payments_rt_t_recharge_daily_for_l2_billing_and_payments_weekly_last_top_up_channel:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_rt_t_recharge_daily/
+  filepath: base_path/BILLING/billing_rt_t_recharge_daily/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_billing_and_payments_weekly_last_top_up_channel'
@@ -205,9 +205,9 @@ l0_billing_and_payments_rt_t_recharge_daily_for_l2_billing_and_payments_weekly_l
 
 l0_billing_topup_type_for_l2_billing_and_payments_weekly_last_top_up_channel:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_recharge_topup_event_type/
+  filepath: base_path/BILLING/billing_recharge_topup_event_type/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_billing_and_payments_weekly_last_top_up_channel'
@@ -216,14 +216,26 @@ l0_billing_topup_type_for_l2_billing_and_payments_weekly_last_top_up_channel:
     lookback: '0'
 
 
-l0_billing_topup_type_for_l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate:
+#l0_billing_topup_type_for_l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  filepath: base_path/BILLING/billing_recharge_topup_event_type/
+#  file_format: parquet
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'yes'
+#    lookup_table_name: 'l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate'
+#    read_layer: 'l0_weekly'
+#    target_layer: 'l2_weekly'
+#    lookback: '0'
+
+l0_billing_topup_type_for_l2_billing_and_payments_weekly_most_popular_top_up_channel:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_recharge_topup_event_type/
+  filepath: base_path/BILLING/billing_recharge_topup_event_type/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate'
+    lookup_table_name: 'l2_billing_and_payments_weekly_most_popular_top_up_channel'
     read_layer: 'l0_weekly'
     target_layer: 'l2_weekly'
     lookback: '0'
@@ -231,9 +243,9 @@ l0_billing_topup_type_for_l2_billing_and_payments_weekly_most_popular_top_up_cha
 
 l0_billing_topup_type_for_l3_billing_and_payments_monthly_most_popular_top_up_channel:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_recharge_topup_event_type/
+  filepath: base_path/BILLING/billing_recharge_topup_event_type/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'full_load'
     lookup_table_name: 'l3_billing_and_payments_monthly_most_popular_top_up_channel'
@@ -244,9 +256,9 @@ l0_billing_topup_type_for_l3_billing_and_payments_monthly_most_popular_top_up_ch
 
 l0_billing_topup_type_for_l3_billing_and_payments_monthly_last_top_up_channel:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_recharge_topup_event_type/
+  filepath: base_path/BILLING/billing_recharge_topup_event_type/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'full_load'
     lookup_table_name: 'l3_billing_and_payments_monthly_last_top_up_channel'
@@ -255,11 +267,24 @@ l0_billing_topup_type_for_l3_billing_and_payments_monthly_last_top_up_channel:
     lookback: '0'
 
 
+#l0_billing_topup_type_for_l1_billing_and_payments_daily_top_up_channels:
+#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+#  filepath: base_path/BILLING/billing_recharge_topup_event_type/
+#  file_format: parquet
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'full_load'
+#    lookup_table_name: 'l3_billing_and_payments_monthly_last_top_up_channel'
+#    read_layer: 'l0_weekly'
+#    target_layer: 'l1_daily'
+#    lookback: '0'
+
+
 l0_billing_and_payments_rt_t_recharge_daily_for_l3_billing_and_payments_monthly_topup_time_diff:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_rt_t_recharge_daily/
+  filepath: base_path/BILLING/billing_rt_t_recharge_daily/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_billing_and_payments_monthly_topup_time_diff'
@@ -270,9 +295,9 @@ l0_billing_and_payments_rt_t_recharge_daily_for_l3_billing_and_payments_monthly_
 
 l0_billing_and_payments_rt_t_recharge_daily_for_l3_billing_and_payments_monthly_last_top_up_channel:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_rt_t_recharge_daily/
+  filepath: base_path/BILLING/billing_rt_t_recharge_daily/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_billing_and_payments_monthly_last_top_up_channel'
@@ -284,9 +309,9 @@ l0_billing_and_payments_rt_t_recharge_daily_for_l3_billing_and_payments_monthly_
 
 l0_billing_pc_t_payment_daily_for_l3_billing_and_payments_monthly_automated_payments:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_pc_t_payment/
+  filepath: base_path/BILLING/billing_pc_t_payment/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_billing_and_payments_monthly_automated_payments'
@@ -297,9 +322,9 @@ l0_billing_pc_t_payment_daily_for_l3_billing_and_payments_monthly_automated_paym
 
 l0_billing_pc_t_payment_daily_for_l3_billing_and_payments_monthly_missed_bills:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_pc_t_payment/
+  filepath: base_path/BILLING/billing_pc_t_payment/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_billing_and_payments_monthly_missed_bills'
@@ -310,9 +335,9 @@ l0_billing_pc_t_payment_daily_for_l3_billing_and_payments_monthly_missed_bills:
 
 l0_billing_pc_t_payment_daily_for_l3_billing_and_payments_monthly_overdue_bills:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_pc_t_payment/
+  filepath: base_path/BILLING/billing_pc_t_payment/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_billing_and_payments_monthly_overdue_bills'
@@ -323,9 +348,9 @@ l0_billing_pc_t_payment_daily_for_l3_billing_and_payments_monthly_overdue_bills:
 
 l0_billing_pc_t_payment_daily_for_l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/BILLING/billing_pc_t_payment/
+  filepath: base_path/BILLING/billing_pc_t_payment/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_billing_and_payments_monthly_last_overdue_bill_days_ago_and_volume'

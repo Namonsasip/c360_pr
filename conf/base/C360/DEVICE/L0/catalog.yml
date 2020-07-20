@@ -1,22 +1,22 @@
 ## This dataset is at daily level
 #l0_devices_summary_customer_handset:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: /mnt/customer360-blob-data/C360/DEVICE/device_summary_customer_handset_daily/
+#  filepath: base_path/DEVICE/device_summary_customer_handset_daily/
 #  file_format: parquet
 
 ## This dataset is weekly level
 #l0_devices_handset_configurations:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: /mnt/customer360-blob-data/C360/DEVICE/device_migrate_m_3g_handset_feature/
+#  filepath: base_path/DEVICE/device_migrate_m_3g_handset_feature/
 #  file_format: parquet
 
 
 # This dataset is at daily level
 l0_devices_summary_customer_handset:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/DEVICE/device_summary_customer_handset_daily/
+  filepath: base_path/DEVICE/device_summary_customer_handset_daily/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
    increment_flag: 'yes'
    lookup_table_name: 'l1_devices_summary_customer_handset_daily'
@@ -28,9 +28,9 @@ l0_devices_summary_customer_handset:
 # This dataset is weekly level
 l0_devices_handset_configurations:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/DEVICE/device_migrate_m_3g_handset_feature/
+  filepath: base_path/DEVICE/device_migrate_m_3g_handset_feature/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_device_summary_with_config_weekly'

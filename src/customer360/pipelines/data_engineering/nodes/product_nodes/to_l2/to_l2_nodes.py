@@ -13,7 +13,7 @@ def get_activated_deactivated_features(
         prepaid_main_master_df,
         prepaid_ontop_master_df,
         postpaid_main_master_df,
-        postpaid_ontop_master_df,
+        postpaid_ontop_master_df
 ) -> DataFrame:
     spark = get_spark_session()
 
@@ -84,7 +84,7 @@ def get_activated_deactivated_features(
     result_df = spark.sql("""
         with enriched_cust_promo_df as (
             select
-                cp_df.crm_subscription_id as subscription_identifier,
+                cp_df.crm_subscription_id as old_subscription_identifier,
                 cp_df.promo_end_dttm as promo_end_dttm,
                 cp_df.promo_status_end_dttm as promo_status_end_dttm,
                 cp_df.promo_start_dttm as promo_start_dttm,
@@ -137,9 +137,10 @@ def get_activated_deactivated_features(
                 on ontop_df.promotion_code = cp_df.promo_cd
                 and ontop_df.partition_date = cp_df.partition_date
         ),
+        -- Intermediate activate/deactivate type of features (see confluence for feature dictionary)
         int_act_deact_features as (
             select 
-                subscription_identifier, 
+                old_subscription_identifier, 
                 start_of_week,
                 
                 sum(case when 
@@ -358,7 +359,7 @@ def get_activated_deactivated_features(
                     then 1 else 0 end) as product_deactivated_package_due_to_expired_reason
                     
             from enriched_cust_promo_df
-            group by subscription_identifier, start_of_week
+            group by old_subscription_identifier, start_of_week
         )
         select
             *,
@@ -369,6 +370,18 @@ def get_activated_deactivated_features(
             product_activated_one_off_voice_ontop_packages/product_activated_rolling_voice_ontop_packages as product_ratio_of_activated_one_off_to_rolling_voice_ontop
         from int_act_deact_features
     """)
+
+    # left join with cust profile on old_subscription_identifier
+    # because of the subscription_identifier contains new logic
+    # result_df = (weekly_cust_prof_df
+    #              .select("access_method_num",
+    #                      "national_id_card",
+    #                      "old_subscription_identifier",
+    #                      "subscription_identifier",
+    #                      "start_of_week")
+    #              .join(result_df,
+    #                    on=["old_subscription_identifier", "start_of_week"],
+    #                    how="left"))
 
     return result_df
 
@@ -382,7 +395,9 @@ def get_product_package_promotion_group_tariff_weekly(source_df: DataFrame) -> D
         return get_spark_empty_df()
 
     source_df = source_df.withColumn("start_of_week",
-                                     F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd'))
+                                     F.lit(source_df.agg(
+                                         F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd')
+                                     ).collect()[0][0]))
 
     source_df = source_df.select("start_of_week", "promotion_group_tariff", "package_id").distinct()
 

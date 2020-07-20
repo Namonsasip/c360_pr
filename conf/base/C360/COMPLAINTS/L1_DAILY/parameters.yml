@@ -7,3 +7,8 @@ l1_complaints_call_to_competitor_features_tbl: "l1_complaints_call_to_competitor
 l1_complaints_nps_after_call_tbl: "l1_complaints_nps_after_call"
 l1_complaints_nps_after_chatbot_tbl: "l1_complaints_nps_after_chatbot"
 l1_complaints_nps_after_store_visit_tbl: "l1_complaints_nps_after_store_visit"
+
+exception_partition_list_for_l0_usage_call_relation_sum_daily: ['2019-12-01']
+exception_partition_list_for_l0_complaints_acc_atsr_outbound_daily: ['2019-08-01']
+exception_partition_list_for_l0_complaints_acc_ai_chatbot_survey_daily: ['2019-08-01']
+exception_partition_list_for_l0_complaints_acc_qmt_csi_daily: ['2019-08-01']

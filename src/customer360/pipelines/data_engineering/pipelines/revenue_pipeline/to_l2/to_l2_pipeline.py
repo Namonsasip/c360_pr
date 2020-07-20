@@ -40,7 +40,9 @@ def revenue_to_l2_pipeline(**kwargs):
         [
             node(build_revenue_l2_layer,
                  ["l1_revenue_prepaid_pru_f_usage_multi_daily_for_l2_revenue_prepaid_pru_f_usage_multi_weekly",
-                  "params:l2_revenue_prepaid_weekly"],
+                  "params:l2_revenue_prepaid_weekly",
+                  "params:exception_partition_list_for_l1_revenue_prepaid_pru_f_usage_multi_daily_for_l2_revenue_prepaid_pru_f_usage_multi_weekly"
+                  ],
                  "l2_revenue_prepaid_pru_f_usage_multi_weekly"
                  ),
 

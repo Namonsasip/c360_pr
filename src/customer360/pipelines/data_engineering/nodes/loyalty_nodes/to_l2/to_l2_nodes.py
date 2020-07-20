@@ -13,11 +13,13 @@ conf = os.getenv("CONF", None)
 
 
 def build_loyalty_number_of_services_weekly(l1_loyalty_number_of_services_daily: DataFrame,
+                                            exception_partitions: list,
                                             l0_loyalty_priv_project: DataFrame,
                                             l0_loyalty_priv_category: DataFrame,
                                             l2_loyalty_number_of_services_weekly: dict) -> DataFrame:
     """
     :param l1_loyalty_number_of_services_daily:
+    :param exception_partitions:
     :param l0_loyalty_priv_project:
     :param l0_loyalty_priv_category:
     :param l2_loyalty_number_of_services_weekly:
@@ -28,10 +30,14 @@ def build_loyalty_number_of_services_weekly(l1_loyalty_number_of_services_daily:
                         l0_loyalty_priv_category]):
         return get_spark_empty_df()
 
-    input_df = data_non_availability_and_missing_check(df=l1_loyalty_number_of_services_daily, grouping="weekly",
-                                                       par_col="event_partition_date",
-                                                       target_table_name="l2_loyalty_number_of_services_weekly",
-                                                       missing_data_check_flg='Y')
+    input_df = data_non_availability_and_missing_check(
+        df=l1_loyalty_number_of_services_daily, grouping="weekly",
+        par_col="event_partition_date",
+        target_table_name="l2_loyalty_number_of_services_weekly",
+        missing_data_check_flg='Y',
+        exception_partitions=exception_partitions)
+
+    input_df = input_df.filter(f.col("flag_with_orignal_data").isNotNull())
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -59,11 +65,13 @@ def build_loyalty_number_of_services_weekly(l1_loyalty_number_of_services_daily:
 
 
 def build_loyalty_number_of_rewards_redeemed_weekly(l1_loyalty_number_of_rewards_redeemed_daily: DataFrame,
+                                                    exception_partitions: list,
                                                     l0_loyalty_priv_project: DataFrame,
                                                     l0_loyalty_priv_category: DataFrame,
                                                     l2_loyalty_number_of_rewards_redeemed_weekly: dict) -> DataFrame:
     """
     :param l1_loyalty_number_of_rewards_redeemed_daily:
+    :param exception_partitions:
     :param l0_loyalty_priv_project:
     :param l0_loyalty_priv_category:
     :param l2_loyalty_number_of_services_weekly:
@@ -74,12 +82,15 @@ def build_loyalty_number_of_rewards_redeemed_weekly(l1_loyalty_number_of_rewards
                         l0_loyalty_priv_category]):
         return get_spark_empty_df()
 
-    input_df = data_non_availability_and_missing_check(df=l1_loyalty_number_of_rewards_redeemed_daily,
-                                                       grouping="weekly",
-                                                       par_col="event_partition_date",
-                                                       target_table_name="l2_loyalty_number_of_rewards_redeemed_weekly",
-                                                       missing_data_check_flg='Y')
+    input_df = data_non_availability_and_missing_check(
+        df=l1_loyalty_number_of_rewards_redeemed_daily,
+        grouping="weekly",
+        par_col="event_partition_date",
+        target_table_name="l2_loyalty_number_of_rewards_redeemed_weekly",
+        missing_data_check_flg='Y',
+        exception_partitions=exception_partitions)
 
+    input_df = input_df.filter(f.col("flag_with_orignal_data").isNotNull())
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
@@ -108,14 +119,16 @@ def build_loyalty_number_of_rewards_redeemed_weekly(l1_loyalty_number_of_rewards
 
 
 def build_loyalty_number_of_points_spend_weekly(l1_loyalty_number_of_points_spend_daily: DataFrame,
+                                                exception_partitions: list,
                                                 l0_loyalty_priv_project: DataFrame,
                                                 l0_loyalty_priv_category: DataFrame,
                                                 l2_loyalty_number_of_rewards_redeemed_weekly: dict) -> DataFrame:
     """
-    :param l1_loyalty_number_of_rewards_redeemed_daily:
+    :param l1_loyalty_number_of_points_spend_daily:
+    :param exception_partitions:
     :param l0_loyalty_priv_project:
     :param l0_loyalty_priv_category:
-    :param l2_loyalty_number_of_services_weekly:
+    :param l2_loyalty_number_of_rewards_redeemed_weekly:
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
@@ -123,11 +136,15 @@ def build_loyalty_number_of_points_spend_weekly(l1_loyalty_number_of_points_spen
                         l0_loyalty_priv_category]):
         return get_spark_empty_df()
 
-    input_df = data_non_availability_and_missing_check(df=l1_loyalty_number_of_points_spend_daily,
-                                                       grouping="weekly",
-                                                       par_col="event_partition_date",
-                                                       target_table_name="l2_loyalty_number_of_points_spend_weekly",
-                                                       missing_data_check_flg='Y')
+    input_df = data_non_availability_and_missing_check(
+        df=l1_loyalty_number_of_points_spend_daily,
+        grouping="weekly",
+        par_col="event_partition_date",
+        target_table_name="l2_loyalty_number_of_points_spend_weekly",
+        missing_data_check_flg='Y',
+        exception_partitions=exception_partitions)
+
+    input_df = input_df.filter(f.col("flag_with_orignal_data").isNotNull())
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -153,4 +170,3 @@ def build_loyalty_number_of_points_spend_weekly(l1_loyalty_number_of_points_spen
     return_df = node_from_config(return_df, l2_loyalty_number_of_rewards_redeemed_weekly)
 
     return return_df
-

@@ -28,7 +28,6 @@
 import logging
 from typing import Any, Dict
 
-from cvm.data_prep.nodes import add_macrosegments
 from cvm.src.report.kpis_build import (
     add_arpus,
     add_inactivity,
@@ -36,9 +35,10 @@ from cvm.src.report.kpis_build import (
     add_status,
 )
 from cvm.src.utils.utils import get_today
-from cvm.treatments.nodes import prepare_microsegments
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as func
+
+from src.cvm.src.report.kpis_build import add_prepaid_no_activity_daily
 
 
 def prepare_users(
@@ -55,51 +55,16 @@ def prepare_users(
     today = get_today(parameters)
     df = (
         customer_groups.filter(
-            "target_group in ('TG_2020_CVM_V2', 'CG_2020_CVM_V2', 'BAU_2020_CVM_V2')"
+            "target_group in ('TG_2020_CVM_V2', 'CG_2020_CVM_V2', 'BAU_2020_CVM_V2', "
+            "'TG', 'CG', 'BAU')"
         )
-        .select(["crm_sub_id", "target_group"])
+        .select(["crm_sub_id", "target_group", "analytic_id", "register_date"])
         .distinct()
         .withColumn("key_date", func.lit(today))
         .withColumnRenamed("crm_sub_id", "old_subscription_identifier")
         .join(sub_id_mapping, on="old_subscription_identifier")
     )
     return df
-
-
-def add_micro_macro(
-    raw_features: DataFrame, reve: DataFrame, parameters: Dict[str, Any],
-) -> DataFrame:
-    """ Adds microsegment and macrosegment to C360 joined features table.
-
-    Args:
-        raw_features: Table with users to add microsegments to and pre - preprocessing
-            features.
-        reve: Table with monthly revenue. Assumes using l3 profile table.
-        parameters: parameters defined in parameters.yml.
-    """
-
-    macro_added = add_macrosegments(raw_features, parameters)
-    micro_macro_added = prepare_microsegments(
-        macro_added, reve, parameters, reduce_cols=False
-    )
-    return micro_macro_added
-
-
-def filter_out_micro_macro(all_features: DataFrame) -> DataFrame:
-    """ Pick only microsegments and macrosegments from table with all features.
-
-    Args:
-        all_features: table with raw features, macrosegments and microsegments.
-    """
-    cols_to_pick = [
-        "subscription_identifier",
-        "ard_macrosegment",
-        "churn_macrosegment",
-        "ard_microsegment",
-        "churn_microsegment",
-        "target_group",
-    ]
-    return all_features.select(cols_to_pick)
 
 
 def build_daily_kpis(
@@ -110,10 +75,12 @@ def build_daily_kpis(
     profile_table: DataFrame,
     usage: DataFrame,
     parameters: Dict[str, Any],
+    prepaid_no_activity_daily: DataFrame,
 ) -> DataFrame:
     """ Build daily kpis table.
 
     Args:
+        prepaid_no_activity_daily: cloud table with lack of activity for prepaid.
         network_churn: table with users that churned, not from C360.
         microsegments: table with macrosegments and microsegments.
         parameters: parameters defined in parameters.yml.
@@ -127,6 +94,9 @@ def build_daily_kpis(
     if "key_date" in users_report.columns:
         users_report = users_report.drop("key_date")
     df = add_arpus(users_report, reve, report_parameters["min_date"])
+    df = add_prepaid_no_activity_daily(
+        prepaid_no_activity_daily, df, report_parameters["min_date"]
+    )
     df = add_status(df, profile_table)
     df = df.join(microsegments, on="subscription_identifier")
     df = add_network_churn(network_churn, df)

@@ -4,10 +4,17 @@ _spark_parquet: &spark_parquet
   save_args:
     mode: "overwrite"
 
+# users list sample
+active_users_sample_fe:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_active_users_sample_fe/
+
+# users used to train on
 cvm_users_list_fe:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_cvm_users_list_fe/
 
+# inputs samples
 l3_customer_profile_include_1mo_non_active_fe:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l3_customer_profile_include_1mo_non_active_fe/
@@ -28,9 +35,14 @@ l4_usage_postpaid_prepaid_weekly_features_sum_fe:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_usage_postpaid_prepaid_weekly_features_sum_fe/
 
-l2_touchpoints_nim_work_features_fe:
+l4_touchpoints_to_call_center_features_fe:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l2_touchpoints_nim_work_features_fe/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_l4_touchpoints_to_call_center_features_fe/
+
+# features created in data preparation phase
+raw_features_fe:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_raw_features_fe/
 
 ard_targets_fe:
   <<: *spark_parquet
@@ -40,17 +52,35 @@ churn_targets_fe:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_churn_targets_fe/
 
-features_targets_fe:
+macrosegments_fe:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_features_targets_fe/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_macrosegments_fe/
 
-features_macrosegments_fe:
+# training preparation phase
+training_features_fe:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_features_macrosegments_fe/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_fe_features_fe/
 
-sample_preprocessed_fe:
+train_sample_fe:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_sample_preprocessed_fe/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_train_sample_fe/
+
+test_sample_fe:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_test_sample_fe/
+
+# preprocessing
+train_sample_preprocessed_fe:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_train_sample_preprocessed_fe/
+
+test_sample_preprocessed_fe:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_test_sample_preprocessed_fe/
+
+test_sample_predictions_fe:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_test_sample_predictions_fe/
 
 preprocessing_pipeline_fe:
   type: datasets.ml_pipeline.MLPipeline

@@ -1,7 +1,7 @@
 #l2_billing_and_payments_weekly_topup_and_volume:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/billing_and_payments_weekly_topup_and_volume/
+#  filepath: base_path/BILLING/l2_features/billing_and_payments_weekly_topup_and_volume/
 #  save_args:
 #    partitionBy: ["start_of_week"]
 #    mode: "overwrite"
@@ -9,8 +9,8 @@
 l2_billing_and_payments_weekly_topup_and_volume:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/l2_billing_and_payments_weekly_topup_and_volume/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_topup_and_volume/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     partitionBy: "start_of_week"
@@ -22,8 +22,8 @@ l2_billing_and_payments_weekly_topup_and_volume:
 l2_billing_and_payments_weekly_topup_and_volume_for_l4_billing_rolling_window_topup_and_volume:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/l2_billing_and_payments_weekly_topup_and_volume/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_topup_and_volume/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l4_billing_rolling_window_topup_and_volume'
@@ -34,7 +34,7 @@ l2_billing_and_payments_weekly_topup_and_volume_for_l4_billing_rolling_window_to
 #l2_billing_and_payments_weekly_topup_time_diff:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/billing_and_payments_weekly_topup_time_diff/
+#  filepath: base_path/BILLING/l2_features/billing_and_payments_weekly_topup_time_diff/
 #  save_args:
 #    partitionBy: ["start_of_week"]
 #    mode: "overwrite"
@@ -42,8 +42,8 @@ l2_billing_and_payments_weekly_topup_and_volume_for_l4_billing_rolling_window_to
 l2_billing_and_payments_weekly_topup_time_diff:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/l2_billing_and_payments_weekly_topup_time_diff/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_topup_time_diff/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     partitionBy: "start_of_week"
@@ -56,8 +56,8 @@ l2_billing_and_payments_weekly_topup_time_diff:
 l2_billing_and_payments_weekly_topup_time_diff_for_l4_billing_rolling_window_time_diff_bw_top_ups:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/l2_billing_and_payments_weekly_topup_time_diff/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_topup_time_diff/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l4_billing_rolling_window_time_diff_bw_top_ups'
@@ -70,7 +70,7 @@ l2_billing_and_payments_weekly_topup_time_diff_for_l4_billing_rolling_window_tim
 #l2_billing_weekly_rpu_roaming:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/billing_and_payments_weekly_rpu_roaming/
+#  filepath: base_path/BILLING/l2_features/billing_and_payments_weekly_rpu_roaming/
 #  save_args:
 #    partitionBy: ["start_of_week"]
 #    mode: "overwrite"
@@ -79,8 +79,8 @@ l2_billing_and_payments_weekly_topup_time_diff_for_l4_billing_rolling_window_tim
 l2_billing_and_payments_weekly_rpu_roaming:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/l2_billing_and_payments_weekly_rpu_roaming/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_rpu_roaming/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     partitionBy: "start_of_week"
@@ -92,8 +92,8 @@ l2_billing_and_payments_weekly_rpu_roaming:
 l2_billing_and_payments_weekly_rpu_roaming_for_l4_billing_rolling_window_rpu_roaming:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/l2_billing_and_payments_weekly_rpu_roaming/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_rpu_roaming/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l4_billing_rolling_window_rpu_roaming'
@@ -105,7 +105,7 @@ l2_billing_and_payments_weekly_rpu_roaming_for_l4_billing_rolling_window_rpu_roa
 #l2_billing_and_payments_weekly_before_top_up_balance:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/billing_and_payments_before_top_up_balance/
+#  filepath: base_path/BILLING/l2_features/billing_and_payments_before_top_up_balance/
 #  save_args:
 #    partitionBy: ["start_of_week"]
 #    mode: "overwrite"
@@ -113,8 +113,8 @@ l2_billing_and_payments_weekly_rpu_roaming_for_l4_billing_rolling_window_rpu_roa
 l2_billing_and_payments_weekly_before_top_up_balance:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/l2_billing_and_payments_weekly_before_top_up_balance/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_before_top_up_balance/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     partitionBy: "start_of_week"
@@ -126,8 +126,8 @@ l2_billing_and_payments_weekly_before_top_up_balance:
 l2_billing_and_payments_weekly_before_top_up_balance_for_l4_billing_rolling_window_before_top_up_balance:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/l2_billing_and_payments_weekly_before_top_up_balance/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_before_top_up_balance/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l4_billing_rolling_window_before_top_up_balance'
@@ -139,7 +139,7 @@ l2_billing_and_payments_weekly_before_top_up_balance_for_l4_billing_rolling_wind
 #l2_billing_and_payments_weekly_top_up_channels:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/billing_and_payments_top_up_channels/
+#  filepath: base_path/BILLING/l2_features/billing_and_payments_top_up_channels/
 #  save_args:
 #    partitionBy: ["start_of_week"]
 #    mode: "overwrite"
@@ -147,8 +147,8 @@ l2_billing_and_payments_weekly_before_top_up_balance_for_l4_billing_rolling_wind
 l2_billing_and_payments_weekly_top_up_channels:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/l2_billing_and_payments_weekly_top_up_channels/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_top_up_channels/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     partitionBy: "start_of_week"
@@ -161,8 +161,8 @@ l2_billing_and_payments_weekly_top_up_channels:
 l2_billing_and_payments_weekly_top_up_channels_for_l4_billing_rolling_window_top_up_channels:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/l2_billing_and_payments_weekly_top_up_channels/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_top_up_channels/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l4_billing_rolling_window_top_up_channels'
@@ -174,7 +174,7 @@ l2_billing_and_payments_weekly_top_up_channels_for_l4_billing_rolling_window_top
 #l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/billing_and_payments_most_popular_top_up_channel_intermediate/
+#  filepath: base_path/BILLING/l2_features/billing_and_payments_most_popular_top_up_channel_intermediate/
 #  save_args:
 #    partitionBy: ["start_of_week"]
 #    mode: "overwrite"
@@ -182,8 +182,8 @@ l2_billing_and_payments_weekly_top_up_channels_for_l4_billing_rolling_window_top
 l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     partitionBy: "start_of_week"
@@ -196,8 +196,8 @@ l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate:
 l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate_for_l2_billing_and_payments_weekly_most_popular_top_up_channel:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_billing_and_payments_weekly_most_popular_top_up_channel'
@@ -210,8 +210,8 @@ l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate_for_l2_b
 l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate_for_l4_billing_rolling_window_most_popular_topup_channel:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l4_billing_rolling_window_most_popular_topup_channel'
@@ -225,7 +225,7 @@ l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate_for_l4_b
 #l2_billing_and_payments_weekly_most_popular_top_up_channel:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/l2_billing_and_payments_weekly_most_popular_top_up_channel/
+#  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_most_popular_top_up_channel/
 #  save_args:
 #    partitionBy: ["start_of_week"]
 #    mode: "overwrite"
@@ -233,20 +233,20 @@ l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate_for_l4_b
 l2_billing_and_payments_weekly_most_popular_top_up_channel:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/l2_billing_and_payments_weekly_most_popular_top_up_channel/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_most_popular_top_up_channel/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     partitionBy: "start_of_week"
     mode: "overwrite"
-    read_layer: 'l2_weekly'
+    read_layer: 'l2_daily'
     target_layer: 'l2_weekly'
 
 
 #l2_billing_and_payments_weekly_last_top_up_channel:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/billing_and_payments_last_top_up_channel/
+#  filepath: base_path/BILLING/l2_features/billing_and_payments_last_top_up_channel/
 #  save_args:
 #    partitionBy: ["start_of_week"]
 #    mode: "overwrite"
@@ -255,8 +255,8 @@ l2_billing_and_payments_weekly_most_popular_top_up_channel:
 l2_billing_and_payments_weekly_last_top_up_channel:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/l2_billing_and_payments_weekly_last_top_up_channel/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_last_top_up_channel/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     partitionBy: "start_of_week"
@@ -269,7 +269,7 @@ l2_billing_and_payments_weekly_last_top_up_channel:
 #l2_billing_and_payments_weekly_popular_topup_day_intermediate:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/billing_and_payments_popular_topup_day_intermediate/
+#  filepath: base_path/BILLING/l2_features/billing_and_payments_popular_topup_day_intermediate/
 #  save_args:
 #    partitionBy: ["start_of_week"]
 #    mode: "overwrite"
@@ -278,8 +278,8 @@ l2_billing_and_payments_weekly_last_top_up_channel:
 l2_billing_and_payments_weekly_popular_topup_day_intermediate:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/l2_billing_and_payments_weekly_popular_topup_day_intermediate/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_popular_topup_day_intermediate/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     partitionBy: "start_of_week"
@@ -292,8 +292,8 @@ l2_billing_and_payments_weekly_popular_topup_day_intermediate:
 l2_billing_and_payments_weekly_popular_topup_day_intermediate_for_l2_billing_and_payments_weekly_popular_topup_day:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/l2_billing_and_payments_weekly_popular_topup_day_intermediate/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_popular_topup_day_intermediate/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_billing_and_payments_weekly_popular_topup_day'
@@ -305,8 +305,8 @@ l2_billing_and_payments_weekly_popular_topup_day_intermediate_for_l2_billing_and
 l2_billing_and_payments_weekly_popular_topup_day_intermediate_for_l4_rolling_window_popular_topup_day:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/l2_billing_and_payments_weekly_popular_topup_day_intermediate/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_popular_topup_day_intermediate/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l4_rolling_window_popular_topup_day'
@@ -319,7 +319,7 @@ l2_billing_and_payments_weekly_popular_topup_day_intermediate_for_l4_rolling_win
 #l2_billing_and_payments_weekly_popular_topup_day:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/billing_and_payments_popular_topup_day/
+#  filepath: base_path/BILLING/l2_features/billing_and_payments_popular_topup_day/
 #  save_args:
 #    partitionBy: ["start_of_week"]
 #    mode: "overwrite"
@@ -327,13 +327,13 @@ l2_billing_and_payments_weekly_popular_topup_day_intermediate_for_l4_rolling_win
 l2_billing_and_payments_weekly_popular_topup_day:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/l2_billing_and_payments_weekly_popular_topup_day/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_popular_topup_day/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     partitionBy: "start_of_week"
     mode: "overwrite"
-    read_layer: 'l2_weekly'
+    read_layer: 'l1_daily'
     target_layer: 'l2_weekly'
 
 
@@ -341,7 +341,7 @@ l2_billing_and_payments_weekly_popular_topup_day:
 #l2_billing_and_payments_weekly_popular_topup_hour_intermediate:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/billing_and_payments_popular_topup_hour_intermediate/
+#  filepath: base_path/BILLING/l2_features/billing_and_payments_popular_topup_hour_intermediate/
 #  save_args:
 #    partitionBy: ["start_of_week"]
 #    mode: "overwrite"
@@ -349,8 +349,8 @@ l2_billing_and_payments_weekly_popular_topup_day:
 l2_billing_and_payments_weekly_popular_topup_hour_intermediate:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/l2_billing_and_payments_weekly_popular_topup_hour_intermediate/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_popular_topup_hour_intermediate/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     partitionBy: "start_of_week"
@@ -363,8 +363,8 @@ l2_billing_and_payments_weekly_popular_topup_hour_intermediate:
 l2_billing_and_payments_weekly_popular_topup_hour_intermediate_for_l2_billing_and_payments_weekly_popular_topup_hour:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/l2_billing_and_payments_weekly_popular_topup_hour_intermediate/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_popular_topup_hour_intermediate/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_billing_and_payments_weekly_popular_topup_hour'
@@ -377,8 +377,8 @@ l2_billing_and_payments_weekly_popular_topup_hour_intermediate_for_l2_billing_an
 l2_billing_and_payments_weekly_popular_topup_hour_intermediate_for_l4_rolling_window_popular_topup_hour:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/l2_billing_and_payments_weekly_popular_topup_hour_intermediate/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_popular_topup_hour_intermediate/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l4_rolling_window_popular_topup_hour'
@@ -392,7 +392,7 @@ l2_billing_and_payments_weekly_popular_topup_hour_intermediate_for_l4_rolling_wi
 #l2_billing_and_payments_weekly_popular_topup_hour:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/billing_and_payments_popular_topup_hour/
+#  filepath: base_path/BILLING/l2_features/billing_and_payments_popular_topup_hour/
 #  save_args:
 #    partitionBy: ["start_of_week"]
 #    mode: "overwrite"
@@ -401,13 +401,13 @@ l2_billing_and_payments_weekly_popular_topup_hour_intermediate_for_l4_rolling_wi
 l2_billing_and_payments_weekly_popular_topup_hour:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/l2_billing_and_payments_weekly_popular_topup_hour/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_popular_topup_hour/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     partitionBy: "start_of_week"
     mode: "overwrite"
-    read_layer: 'l2_weekly'
+    read_layer: 'l1_daily'
     target_layer: 'l2_weekly'
 
 
@@ -415,7 +415,7 @@ l2_billing_and_payments_weekly_popular_topup_hour:
 #l2_billing_and_payments_weekly_time_since_last_top_up:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/billing_and_payments_time_since_last_top_up/
+#  filepath: base_path/BILLING/l2_features/billing_and_payments_time_since_last_top_up/
 #  save_args:
 #    partitionBy: ["start_of_week"]
 #    mode: "overwrite"
@@ -423,8 +423,8 @@ l2_billing_and_payments_weekly_popular_topup_hour:
 l2_billing_and_payments_weekly_time_since_last_top_up:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/l2_billing_and_payments_weekly_time_since_last_top_up/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_time_since_last_top_up/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     partitionBy: "start_of_week"
@@ -437,7 +437,7 @@ l2_billing_and_payments_weekly_time_since_last_top_up:
 #l2_billing_and_payments_weekly_last_three_topup_volume:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/billing_and_payments_last_three_topup_volume/
+#  filepath: base_path/BILLING/l2_features/billing_and_payments_last_three_topup_volume/
 #  save_args:
 #    partitionBy: ["start_of_week"]
 #    mode: "overwrite"
@@ -445,8 +445,8 @@ l2_billing_and_payments_weekly_time_since_last_top_up:
 l2_billing_and_payments_weekly_last_three_topup_volume:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l2_features/l2_billing_and_payments_weekly_last_three_topup_volume/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l2_features/l2_billing_and_payments_weekly_last_three_topup_volume/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     partitionBy: "start_of_week"

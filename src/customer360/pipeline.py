@@ -32,8 +32,7 @@ from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l1.to_
     billing_to_l1_pipeline,
 )
 from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l2.to_l2_pipeline import (
-    billing_to_l2_intermediate_pipeline,
-    billing_to_l2_pipeline,
+     billing_to_l2_pipeline,
 )
 from customer360.pipelines.data_engineering.pipelines.billing_pipeline.to_l3.to_l3_pipeline import (
     billing_l1_to_l3_pipeline,
@@ -51,38 +50,37 @@ from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.
 from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l3.to_l3_pipeline import (
     customer_profile_to_l3_pipeline,
     customer_profile_billing_level_to_l3_pipeline,
-    unioned_customer_profile_to_l3_pipeline,
+    unioned_customer_profile_to_l3_pipeline
 )
-from customer360.pipelines.data_engineering.pipelines.customer_profile_pipeline.to_l4.to_l4_pipeline import (
-    customer_profile_to_l4_pipeline,
-)
+from cvm.customer_id.pipeline import create_customer_id
 from cvm.data_prep.pipeline import (
     training_data_prepare,
     scoring_data_prepare,
-    extract_features,
-    rfe_only,
-    join_raw_features,
-    create_cvm_microsegments,
-    create_prediction_sample,
-)
+    create_cvm_important_columns)
 from cvm.sample_inputs.pipeline import (
-    create_users_from_tg,
-    create_users_from_active,
-    create_sub_id_mapping_pipeline,
     prepare_input_tables,
-)
+    create_sub_id_mapping_pipeline)
 from cvm.modelling.pipeline import train_model, score_model
 from cvm.preprocessing.pipeline import preprocessing_fit, preprocessing_transform
 from cvm.report.pipeline import prepare_user_microsegments, create_kpis, run_report
 from cvm.treatments.pipeline import generate_treatments
+from nba.backtesting.backtesting_pipeline import create_nba_backtesting_pipeline
+from nba.gender_age_imputation.gender_age_imputation_pipeline import \
+    create_nba_gender_age_imputation_pipeline
 from nba.model_input.model_input_pipeline import create_nba_model_input_pipeline
 from nba.models.models_pipeline import create_nba_models_pipeline
+from nba.pcm_scoring.pcm_scoring_pipeline import create_nba_pcm_scoring_pipeline
+from nba.personnas_clustering.personnas_clustering_pipeline import create_nba_personnas_clustering_pipeline
+from nba.report.pipelines.campaign_importance_volume_pipeline import (
+    campaign_importance_volume,
+)
+from nba.report.pipelines.report_pipeline import create_use_case_view_report_data
 from .pipelines.data_engineering.pipelines.campaign_pipeline import (
     campaign_to_l1_pipeline,
     campaign_to_l2_pipeline,
     campaign_to_l3_pipeline,
     campaign_to_l4_pipeline,
-    campaign_to_l4_ranking_pipeline,
+    campaign_to_l4_ranking_pipeline
 )
 
 from .pipelines.data_engineering.pipelines.complaints_pipeline.to_l1.to_l1_pipeline import (
@@ -112,8 +110,9 @@ from .pipelines.data_engineering.pipelines.digital_pipeline import (
 from .pipelines.data_engineering.pipelines.loyalty_pipeline import (
     loyalty_to_l1_pipeline,
     loyalty_to_l2_pipeline,
-    loyalty_to_l4_pipeline,
     loyalty_to_l3_pipeline,
+    loyalty_to_l4_weekly_pipeline,
+    loyalty_to_l4_monthly_pipeline
 )
 from .pipelines.data_engineering.pipelines.network_pipeline.to_l1.to_l1_pipeline import (
     network_to_l1_pipeline,
@@ -145,17 +144,18 @@ from .pipelines.data_engineering.pipelines.revenue_pipeline import (
     revenue_to_l4_weekly_pipeline,
 )
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l1.to_l1_pipeline import (
-    streaming_to_l1_pipeline,
-    streaming_to_l1_intermediate_pipeline,
+    streaming_to_l1_onair_vimmi_pipeline, streaming_to_l1_soc_mobile_data_pipeline,
+    streaming_to_l1_session_duration_pipeline
 )
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l2.to_l2_pipeline import (
-    streaming_to_l2_pipeline,
+    streaming_to_l2_intermediate_pipeline, streaming_to_l2_pipeline, streaming_to_l2_session_duration_pipeline
 )
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l3.to_l3_pipeline import (
-    streaming_to_l3_pipeline,
+    streaming_to_l3_pipeline, streaming_to_l3_session_duration_pipeline
 )
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l4.to_l4_pipeline import (
     streaming_l2_to_l4_pipeline,
+    streaming_l2_to_l4_session_duration_pipeline,
     streaming_l1_to_l4_pipeline,
 )
 from .pipelines.data_engineering.pipelines.touchpoints_pipeline.to_l1.to_l1_pipeline import (
@@ -173,38 +173,36 @@ from .pipelines.data_engineering.pipelines.touchpoints_pipeline.to_l4.to_l4_pipe
 
 from .pipelines.data_engineering.pipelines.usage_pipeline import (
     usage_to_l1_pipeline,
+    usage_create_master_data_for_favourite_feature,
     usage_to_l2_pipeline,
     usage_to_l3_pipeline,
     usage_to_l4_pipeline,
     usage_to_l4_daily_pipeline,
 )
+from data_quality.pipeline import (
+    data_quality_pipeline,
+    subscription_id_sampling_pipeline,
+    threshold_analysis_pipeline
+)
+
+from .pipelines.data_engineering.pipelines.sales_pipeline.to_l2.to_l2_pipeline import (
+    sales_to_l2_pipeline,
+)
+
+from .pipelines.data_engineering.pipelines.sales_pipeline.to_l4.to_l4_weekly_pipeline import (
+    sales_to_l4_pipeline,
+)
 
 from .pipelines.data_engineering.pipelines.util_pipeline import (
-    lineage_dependency_pipeline,
-    ops_report_pipeline,
+    lineage_dependency_pipeline, ops_report_pipeline
 )
 
 
 def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
 
     return {
-        # "__default__": usage_to_l1_pipeline()
-        # + usage_to_l2_pipeline()
-        # + usage_to_l4_pipeline()
-        # + customer_profile_to_l3_pipeline()
-        # + customer_profile_to_l4_pipeline()
-        # + customer_profile_billing_level_to_l3_pipeline()
-        # + billing_to_l1_pipeline()
-        # + billing_to_l2_pipeline()
-        # + billing_to_l3_pipeline()
-        # + billing_to_l4_pipeline_daily()
-        # + billing_to_l4_pipeline_weekly()
-        # + billing_to_l4_pipeline_monthly()
-        # + revenue_to_l3_pipeline()
-        # + revenue_to_l4_pipeline()
-        # + device_to_l1_pipeline(),
-        # + device_to_l2_pipeline()
-        # + device_to_l4_pipeline()
+        "usage_to_l1_pipeline": usage_to_l1_pipeline(),
+        "usage_create_master_data_for_favourite_feature": usage_create_master_data_for_favourite_feature(),
         "usage_to_l4_daily_pipeline": usage_to_l4_daily_pipeline(),
         "usage_to_l2_pipeline": usage_to_l2_pipeline(),
         "usage_to_l3_pipeline": usage_to_l3_pipeline(),
@@ -214,12 +212,10 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "customer_profile_to_l3_pipeline": customer_profile_to_l3_pipeline(),
         "unioned_customer_profile_to_l3_pipeline": unioned_customer_profile_to_l3_pipeline(),
         "customer_profile_billing_level_to_l3_pipeline": customer_profile_billing_level_to_l3_pipeline(),
-        "customer_profile_to_l4_pipeline": customer_profile_to_l4_pipeline(),
-        "usage_to_l1_pipeline": usage_to_l1_pipeline(),
         "billing_to_l1_pipeline": billing_to_l1_pipeline(),
         "billing_l0_to_l3_pipeline": billing_l0_to_l3_pipeline(),
         "billing_l1_to_l3_pipeline": billing_l1_to_l3_pipeline(),
-        "billing_to_l2_intermediate_pipeline": billing_to_l2_intermediate_pipeline(),
+       # "billing_to_l2_intermediate_pipeline": billing_to_l2_intermediate_pipeline(),
         "billing_to_l2_pipeline": billing_to_l2_pipeline(),
         "billing_to_l4_pipeline_monthly": billing_to_l4_pipeline_monthly(),
         "billing_to_l4_pipeline_weekly": billing_to_l4_pipeline_weekly(),
@@ -233,12 +229,16 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "digital_to_l4_monthly_pipeline": digital_to_l4_monthly_pipeline(),
         "digital_to_l4_weekly_pipeline": digital_to_l4_weekly_pipeline(),
         "digital_to_l4_weekly_favourite_pipeline": digital_to_l4_weekly_favourite_pipeline(),
-        # "device_to_l3_pipeline": device_to_l3_pipeline(),
-        "streaming_to_l1_intermediate_pipeline": streaming_to_l1_intermediate_pipeline(),
-        "streaming_to_l1_pipeline": streaming_to_l1_pipeline(),
+        "streaming_to_l1_onair_vimmi_pipeline": streaming_to_l1_onair_vimmi_pipeline(),
+        "streaming_to_l1_soc_mobile_data_pipeline": streaming_to_l1_soc_mobile_data_pipeline(),
+        "streaming_to_l1_session_duration_pipeline": streaming_to_l1_session_duration_pipeline(),
+        "streaming_to_l2_intermediate_pipeline": streaming_to_l2_intermediate_pipeline(),
         "streaming_to_l2_pipeline": streaming_to_l2_pipeline(),
+        "streaming_to_l2_session_duration_pipeline": streaming_to_l2_session_duration_pipeline(),
         "streaming_to_l3_pipeline": streaming_to_l3_pipeline(),
+        "streaming_to_l3_session_duration_pipeline": streaming_to_l3_session_duration_pipeline(),
         "streaming_l1_to_l4_pipeline": streaming_l1_to_l4_pipeline(),
+        "streaming_l2_to_l4_session_duration_pipeline": streaming_l2_to_l4_session_duration_pipeline(),
         "streaming_l2_to_l4_pipeline": streaming_l2_to_l4_pipeline(),
         "revenue_to_l1_pipeline": revenue_to_l1_pipeline(),
         "revenue_to_l2_pipeline": revenue_to_l2_pipeline(),
@@ -261,8 +261,9 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "campaign_to_l4_ranking_pipeline": campaign_to_l4_ranking_pipeline(),
         "loyalty_to_l1_pipeline": loyalty_to_l1_pipeline(),
         "loyalty_to_l2_pipeline": loyalty_to_l2_pipeline(),
-        "loyalty_to_l4_pipeline": loyalty_to_l4_pipeline(),
         "loyalty_to_l3_pipeline": loyalty_to_l3_pipeline(),
+        "loyalty_to_l4_weekly_pipeline": loyalty_to_l4_weekly_pipeline(),
+        "loyalty_to_l4_monthly_pipeline": loyalty_to_l4_monthly_pipeline(),
         "network_to_l1_pipeline": network_to_l1_pipeline(),
         "network_to_l2_pipeline": network_to_l2_pipeline(),
         "network_to_l3_pipeline": network_to_l3_pipeline(),
@@ -270,18 +271,22 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "product_to_l1_pipeline": product_to_l1_pipeline(),
         "product_to_l2_pipeline": product_to_l2_pipeline(),
         "product_to_l4_pipeline": product_to_l4_pipeline(),
+        "sales_to_l2_pipeline": sales_to_l2_pipeline(),
+        "sales_to_l4_pipeline": sales_to_l4_pipeline(),
         "lineage_dependency_pipeline": lineage_dependency_pipeline(),
         "ops_report_pipeline": ops_report_pipeline(),
-        # "de": data_engineering_pipeline,
     }
 
 
 def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
     return {
         "cvm_treatments": generate_treatments("scoring"),
-        "cvm_full_training": training_data_prepare
-        + preprocessing_fit()
-        + train_model(),
+        "cvm_full_training": (
+            prepare_input_tables("training")
+            + training_data_prepare("training")
+            + preprocessing_fit()
+            + train_model()
+        ),
         "cvm_full_scoring": (
             prepare_input_tables("scoring")
             + scoring_data_prepare("scoring")
@@ -296,18 +301,40 @@ def create_cvm_pipeline(**kwargs) -> Dict[str, Pipeline]:
             + score_model("scoring_experiment")
             + generate_treatments("scoring_experiment")
         ),
-        "cvm_full_features_extraction": extract_features,
-        "cvm_rfe_only": rfe_only,
+        "cvm_full_features_extraction": (
+            prepare_input_tables("fe")
+            + training_data_prepare("fe")
+            + create_cvm_important_columns()
+        ),
+        "cvm_customer_id": create_customer_id(),
+        "cvm_rfe_only": create_cvm_important_columns(),
         "cvm_prepare_report_micro": prepare_user_microsegments(),
         "cvm_create_kpis": create_kpis(),
         "cvm_create_report": run_report(),
         "cvm_sample_inputs": prepare_input_tables("scoring"),
-        "cvm_test": generate_treatments("scoring"),
+        "cvm_create_sub_id_mapping": create_sub_id_mapping_pipeline(),
     }
 
 
 def create_nba_pipeline(**kwargs) -> Dict[str, Pipeline]:
-    return {}
+    return {
+        "__default__": create_use_case_view_report_data()
+        + create_nba_model_input_pipeline()
+        + create_nba_models_pipeline()
+        + campaign_importance_volume()
+        + create_nba_backtesting_pipeline()
+        + create_nba_pcm_scoring_pipeline()
+        + create_nba_gender_age_imputation_pipeline()
+        + create_nba_personnas_clustering_pipeline()
+    }
+
+
+def create_dq_pipeline(**kwargs) -> Dict[str, Pipeline]:
+    return {
+        "data_quality_pipeline": data_quality_pipeline(),
+        "subscription_id_sampling_pipeline": subscription_id_sampling_pipeline(),
+        "threshold_analysis_pipeline": threshold_analysis_pipeline(),
+    }
 
 
 def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
@@ -323,6 +350,7 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         create_c360_pipeline(**kwargs).items(),
         create_cvm_pipeline(**kwargs).items(),
         create_nba_pipeline(**kwargs).items(),
+        create_dq_pipeline(**kwargs).items()
     ):
         # If many pipelines have nodes under the same modular
         # pipeline, combine the results

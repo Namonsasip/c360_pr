@@ -1,7 +1,7 @@
 churn_ard_report_input_table:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/NBA/churn_ard_report_input_table
+  filepath: /mnt/customer360-blob-data/NBA/churn_ard_report_input_table/
   save_args:
     mode: "overwrite"
     partitionBy: ["join_date"]
@@ -32,7 +32,7 @@ daily_kpis_by_group_report:
 
 plot_daily_kpis_by_group_report:
   type: kedro.io.PartitionedDataSet
-  path: data/nba_churn_ard_report/daily_kpis_by_group_report
+  path: data/nba_churn_ard_report/daily_kpis_by_group_report/
   filename_suffix: ".png"
   dataset: datasets.plotnine_local.PlotninePNGLocalDataSet
 
@@ -55,6 +55,47 @@ reporting_kpis:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
   filepath: /mnt/customer360-blob-data/C360/NBA/reporting_kpis_tbl/
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["join_date"]
+
+reporting_kpis_input:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/reporting_kpis_input/
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["join_date"]
+
+#create_campaign_view_report
+campaign_view_report_tbl:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/campaign_view_report_tbl/
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["contact_date"]
+
+distinct_aggregate_campaign_feature_tbl:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/distinct_aggregate_campaign_feature_tbl/
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["join_date"]
+
+general_marketing_performance_report_tbl:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/general_marketing_performance_report_tbl/
+  save_args:
+    mode: "overwrite"
+    partitionBy: ["join_date"]
+
+gcg_ngcg_performance_report_tbl:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/gcg_ngcg_performance_report_tbl/
   save_args:
     mode: "overwrite"
     partitionBy: ["join_date"]

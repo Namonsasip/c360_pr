@@ -40,7 +40,8 @@ def usage_to_l2_pipeline(**kwargs):
         [
             node(build_usage_l2_layer,
                  ["l1_usage_postpaid_prepaid_daily_for_l2_postpaid_prepaid_weekly",
-                  "params:l2_usage_postpaid_prepaid_weekly"],
+                  "params:l2_usage_postpaid_prepaid_weekly",
+                  "params:exception_partition_list_for_l1_usage_postpaid_prepaid_daily_for_l2_postpaid_prepaid_weekly"],
                  "l2_usage_postpaid_prepaid_weekly"
                  ),
 

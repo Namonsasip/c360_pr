@@ -1,7 +1,36 @@
 # How tos
 
-### How to run code?
-Use main-kedro notebook.
+### How to explore the code?
+Imagine you ask yourself 'how is scoring performed?' or 'when microsegments are created?'.
+To answer these question the best way is to check it in the code or documentation.
+Since we use `kedro` to keep track of the pipelines, the code follows specific structure.
+
+The projects code is organized into pipelines. Pipeline is set of nodes (functions) and data
+(could parquet tables, csv files, etc). All pipelines are stored in `src/customer360/pipeline.py`.
+
+![](.images/04_howtos_images/d03a0d86.png)
+
+To check the details of chosen pipeline right click on interesting part of code and 
+choose `Go To` → `Declaration or Usages`.  
+
+![](.images/04_howtos_images/b490d3fc.png)
+
+Now you should be transferred to declaration of used function.
+Below nodes are listed. Node consists of function used, inputs, outputs and node name.
+
+![](.images/04_howtos_images/5418e550.png)
+
+Node names can be used to run single nodes. Inputs and outputs refer to catalog names 
+of dataset.
+
+Let's look at the example, this is the definition of pipeline called `preprocessing_fit`.
+It consists of two nodes. Every node has 4 arguments: function used,
+catalog names of inputs, catalog names of outputs and a node name.
+Let’s see the details of `pipeline_fit` function using `Go To` → `Declaration or Usages`.
+
+![](.images/04_howtos_images/32740055.png)
+
+We can see the details of fitting the preprocessing pipeline.
 
 ### How to modify microsegments?
 Microsegments are built using the definition in file `conf/base/CVM/L5/parameters_microsegments.yml`.
@@ -49,14 +78,21 @@ For example, daily revenue tables are listed in `conf/base/C360/REVENUE/L1_DAILY
 
 ![](.images/04_howtos_images/5c506852.png)
 
+Datasets used in our use case can be accessed in `conf/base/CVM/L5`.
+
+![](.images/04_howtos_images/16a59123.png)
+
+Each entry is a datasets. The first line is the catalog name of the dataset.
+ The same one as used in pipelines. Paths are included below.
+
 ### How to select input for model training?
 Inputs are listed in `cvm.data_prep.pipeline.join_raw_features`. To add a new one add 
 catalog name of desired dataset to sampling procedure and supply the sample to mentioned function.
 
 ### How to edit target for model training?
 Targets following `churn` and `ard` logic are parametrized in `conf/base/CVM/L5/parameters_targets.yml`.
-
-![](.images/04_howtos_images/cd317e48.png)
+![](.images/04_howtos_images/b3a52883.png)
+![](.images/04_howtos_images/15812f00.png)
 
 You can add 17 days churn with 15 days blindspot by modifying the mentioned file.
 If you want to extend the targets logic modify functions building the targets: 
@@ -148,3 +184,30 @@ Open `04_howtos.md` and modify the file.
 Use git to push the changes.
 
 ![](.images/04_howtos_images/ba4b4102.png)
+
+### How to update 
+#### For generation and saving of YAML 
+1. Receive the excel / CSV from team
+2. Save the CSV in the same folder as your python notebook
+3. Open the `convert to yaml.ipynb`, and make sure the `pandas.read_csv("XXXXX.csv")` is updated   
+4. Run the commands to generate your desired yaml file
+
+
+#### For saving treatment rules into the code base before daily scoring
+1. Checkout to `cvm/master` (or relevant CVM model branch) on your git
+1. Navigate to `conf\base\CVM\L5\parameters_treatment_rules.yml`
+1. Delete and replace the Churn / ARD treatment rules section only
+1. Commit the changes ( Ctrl + K ) using the label, `[treatments] Update rules xxxx `, 
+where xxx could denote `ARD / Churn, date yyyymmdd, for reason`
+1. Push the changes 
+1. (optional) Check that changes have been pushed to repository
+
+Treatment rules in the yaml file starts with churn, then ARD as below
+![](.images/04_howtos_images/7e40b55e.png)
+
+Pro tip: 
+- Use `Ctrl Shift -` to collapse all
+- Use `Ctrl Shift +` to expand all
+- Point your cursor on the collapse tree to quickly inspect it's contents
+ 
+ ![](.images/04_howtos_images/0d21435b.png)

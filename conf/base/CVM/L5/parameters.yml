@@ -1,8 +1,14 @@
 # sampling parameter
 training:
   train_share: 0.9 # the rest is validation set
-  subscription_id_hash_suffix: 'a' # '' for all users
-  chosen_date: '2019-10-01' # '' for most recent data
+  subscription_id_hash_suffix:  # '' for all users
+  - '00'
+  - '01'
+  - '02'
+  - '03'
+  - '04'
+  - '05'
+  chosen_date: '2019-12-01' # '' for most recent data
   stages:
     - filter_users
     - take_last_date
@@ -75,15 +81,39 @@ volatility_length: 5
 # how often should the scoring microsegments be updated
 microsegments_update_cadence: 30
 
+# if "yes" then macrosegments and microsegments are forced to be recalculated
+# use when changing the microsegments or macrosegments
+force_micro_macrosegments_recalculation: 'no'
+
 # pai parameters
 pai_runs_path: '/dbfs/mnt/customer360-blob-data/cvm/pai01/runs'
 pai_artifacts_path: '/dbfs/mnt/customer360-blob-data/cvm/pai01/artifacts'
-pai_experiment_name: 'force_call_center'
+pai_experiment_name: 'internal_churn_02'
 
 # path used to create temp copies for refreshments
 refresh_temp_path: '/dbfs/mnt/customer360-blob-data/C360/CVM/l5_cvm_temp/'
+
+# path used for checkpoints
+checkpoint_path: '/dbfs/mnt/customer360-blob-data/C360/CVM/l5_cvm_checkpoint/'
 
 # dbfs logs path
 logs_path:
   output_path_template: '/dbfs/mnt/customer360-blob-data/cvm/logs/logs_{}'
   output_path_date_format: '%Y%m%d%H%M%S'
+
+# weights used to create customer id
+customer_id_weights:
+  zipcode: 6
+  age: 4
+  handset_imei: 9
+  home_weekday_location_id: 9
+  home_weekend_location_id: 8.5
+  work_location_id: 8.5
+  strong_national_id_card: 30
+  weak_national_id_card: 4
+
+# threshold for customer connections
+customer_id_thresholds:
+  customer_id_high_certainty: 25
+  customer_id_medium_certainty: 10
+  customer_id_low_certainty: 1

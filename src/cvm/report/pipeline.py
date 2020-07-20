@@ -45,9 +45,9 @@ def sample_report_inputs() -> Pipeline:
 
     nodes_list = [
         node(
-            create_sample_dataset,
-            [dataset_name, "parameters", "params:" + sample_type],
-            dataset_name + "_" + sample_type,
+            func=create_sample_dataset,
+            inputs=[dataset_name, "parameters", "params:" + sample_type],
+            outputs=dataset_name + "_" + sample_type,
             name="sample_" + dataset_name + "_" + sample_type,
         )
         for dataset_name in datasets_to_sample
@@ -61,9 +61,9 @@ def prepare_users_report() -> Pipeline:
     return Pipeline(
         [
             node(
-                prepare_users,
-                ["cvm_prepaid_customer_groups", "sub_id_mapping", "parameters"],
-                "users_report",
+                func=prepare_users,
+                inputs=["cvm_prepaid_customer_groups", "sub_id_mapping", "parameters"],
+                outputs="users_report",
                 name="create_users_report",
             )
         ]
@@ -75,8 +75,8 @@ def join_features() -> Pipeline:
     return Pipeline(
         [
             node(
-                subs_date_join,
-                [
+                func=subs_date_join,
+                inputs=[
                     "parameters",
                     "users_report",
                     "l4_daily_feature_topup_and_volume_report",
@@ -85,7 +85,7 @@ def join_features() -> Pipeline:
                     "l4_usage_prepaid_postpaid_daily_features_report",
                     "l4_usage_postpaid_prepaid_weekly_features_sum_report",
                 ],
-                "features_report",
+                outputs="features_report",
                 name="join_report_features",
             ),
             node(
@@ -93,6 +93,7 @@ def join_features() -> Pipeline:
                 inputs=[
                     "parameters",
                     "features_report",
+                    "l3_customer_profile_include_1mo_non_active_report",
                     "l3_customer_profile_include_1mo_non_active",
                     "microsegments_macrosegments_history_input_scoring",
                 ],
@@ -111,8 +112,8 @@ def create_kpis() -> Pipeline:
     return Pipeline(
         [
             node(
-                build_daily_kpis,
-                [
+                func=build_daily_kpis,
+                inputs=[
                     "users_report",
                     "users_micro_macro_only",
                     "network_churn",
@@ -120,8 +121,9 @@ def create_kpis() -> Pipeline:
                     "l1_customer_profile_union_daily_feature",
                     "l4_usage_prepaid_postpaid_daily_features",
                     "parameters",
+                    "prepaid_no_activity_daily",
                 ],
-                "daily_kpis",
+                outputs="daily_kpis",
                 name="build_daily_kpis",
             )
         ]

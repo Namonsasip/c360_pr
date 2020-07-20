@@ -1,20 +1,22 @@
 l4_digital_cxenzxse_user_profile_monthly_features:
-  partition_by: ["subscription_identifier"]
+  partition_by: ["subscription_identifier", "access_method_num", "national_id_card"]
   feature_list:
-    min: ['digital_number_of_device_brands', 'digital_number_of_distinct_device_type']
+    min: ['digital_number_of_device_brands', 'digital_number_of_distinct_device_type',
+    "digital_number_of_distinct_device_brands", "digital_number_of_device_type"]
     max: ['digital_number_of_device_brands', 'digital_is_device_brands_apple', 'digital_is_device_brands_samsung',
     'digital_is_device_brands_huwaei', 'digital_is_device_brands_oppo', 'digital_number_of_distinct_device_type',
     'digital_is_device_mobile', 'digital_is_device_tablet', 'digital_is_device_desktop', 'digital_is_ais_mpay_used',
     'digital_is_my_ais_app_used', 'digital_is_serenade', 'digital_is_device_brands_ais', 'digital_is_device_brands_dtac',
-    'digital_is_device_brands_true'
+    'digital_is_device_brands_true', "digital_number_of_distinct_device_brands", "digital_number_of_device_type"
     ]
     sum: []
-    avg: ['digital_number_of_device_brands', 'digital_number_of_distinct_device_type']
+    avg: ['digital_number_of_device_brands', 'digital_number_of_distinct_device_type',
+          "digital_number_of_distinct_device_brands", "digital_number_of_device_type"]
     stddev: []
   read_from: "l3"
 
 l4_digital_cxenxse_site_traffic_weekly_features:
-  partition_by: ["subscription_identifier"]
+  partition_by: ["subscription_identifier", "access_method_num", "national_id_card"]
   feature_list:
     min: []
     max: []
@@ -27,8 +29,8 @@ l4_digital_cxenxse_site_traffic_weekly_features:
   read_from: "l2"
 
 l4_digital_cxenxse_site_traffic_popular_host_weekly_int:
-  partition_by: ["subscription_identifier", "host"]
-  ranked_lookup_enable_flag: 'yes'
+  partition_by: ["subscription_identifier", "access_method_num", "national_id_card", "host"]
+  ranked_lookup_enable_flag: 'no'
   fix_dimension_cols: "subscription_identifier,start_of_week"
   target_dimension_col: "host"
   feature_list:
@@ -39,15 +41,15 @@ l4_digital_cxenxse_site_traffic_popular_host_weekly_features:
   where_clause: ""
   feature_column:
     fav_host: "host"
-  partition_by: ["subscription_identifier", "start_of_week"]
+  partition_by: ["subscription_identifier", "access_method_num", "national_id_card", "start_of_week"]
   order_by_column_prefix: "sum_digital_popular_host"
   read_from: "l2"
   to_join: True
 
 l4_digital_cxenxse_site_traffic_popular_postalcode_weekly_int:
-  partition_by: ["subscription_identifier", "postalcode"]
-  ranked_lookup_enable_flag: 'yes'
-  fix_dimension_cols: "subscription_identifier,start_of_week"
+  partition_by: ["subscription_identifier", "access_method_num", "national_id_card", "postalcode"]
+  ranked_lookup_enable_flag: 'no`'
+  fix_dimension_cols: "subscription_identifier, access_method_num, national_id_card,start_of_week"
   target_dimension_col: "postalcode"
   feature_list:
     sum: ["digital_popular_postalcode"]
@@ -57,15 +59,15 @@ l4_digital_cxenxse_site_traffic_popular_postalcode_weekly_features:
   where_clause: ""
   feature_column:
     fav_postalcode: "postalcode"
-  partition_by: ["subscription_identifier", "start_of_week"]
+  partition_by: ["subscription_identifier", "access_method_num", "national_id_card", "start_of_week"]
   order_by_column_prefix: "sum_digital_popular_postalcode"
   read_from: "l2"
   to_join: True
 
 l4_digital_cxenxse_site_traffic_popular_referrerquery_weekly_int:
-  partition_by: ["subscription_identifier", "referrerquery"]
-  ranked_lookup_enable_flag: 'yes'
-  fix_dimension_cols: "subscription_identifier,start_of_week"
+  partition_by: ["subscription_identifier", "access_method_num", "national_id_card", "referrerquery"]
+  ranked_lookup_enable_flag: 'no'
+  fix_dimension_cols: "subscription_identifier, access_method_num, national_id_card,start_of_week"
   target_dimension_col: "referrerquery"
   feature_list:
     sum: ["digital_popular_referrerquery"]
@@ -75,15 +77,15 @@ l4_digital_cxenxse_site_traffic_popular_referrerquery_weekly_features:
   where_clause: ""
   feature_column:
     fav_referrerquery: "referrerquery"
-  partition_by: ["subscription_identifier", "start_of_week"]
+  partition_by: ["subscription_identifier", "access_method_num", "national_id_card", "start_of_week"]
   order_by_column_prefix: "sum_digital_popular_referrerquery"
   read_from: "l2"
   to_join: True
 
 l4_digital_cxenxse_site_traffic_popular_referrerhost_weekly_int:
-  partition_by: ["subscription_identifier", "referrerhost"]
-  ranked_lookup_enable_flag: 'yes'
-  fix_dimension_cols: "subscription_identifier,start_of_week"
+  partition_by: ["subscription_identifier", "access_method_num", "national_id_card", "referrerhost"]
+  ranked_lookup_enable_flag: 'no'
+  fix_dimension_cols: "subscription_identifier, access_method_num, national_id_card,start_of_week"
   target_dimension_col: "referrerhost"
   feature_list:
     sum: ["digital_popular_referrerhost"]
@@ -93,7 +95,7 @@ l4_digital_cxenxse_site_traffic_popular_referrerhost_weekly_features:
   where_clause: ""
   feature_column:
     fav_referrerhost: "referrerhost"
-  partition_by: ["subscription_identifier", "start_of_week"]
+  partition_by: ["subscription_identifier", "access_method_num", "national_id_card", "start_of_week"]
   order_by_column_prefix: "sum_digital_popular_referrerhost"
   read_from: "l2"
   to_join: True

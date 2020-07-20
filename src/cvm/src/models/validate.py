@@ -54,27 +54,6 @@ def get_auc(true_val, pred_score):
     return metrics_to_return
 
 
-def get_tpr_fpr(true_val, pred_score, thresholds=None):
-    if thresholds is None:
-        thresholds = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
-    metrics_to_return = {}
-    fpr, tpr, roc_thresholds = metrics.roc_curve(true_val, pred_score)
-
-    def get_threshold_index(all_thresholds, threshold_chosen):
-        thresholds_greater = [thr for thr in all_thresholds if thr > threshold_chosen]
-        return len(thresholds_greater) - 1
-
-    for threshold in thresholds:
-        threshold_index = get_threshold_index(roc_thresholds, threshold)
-        metrics_to_return["fpr_{}".format(str(threshold))] = round_to_float(
-            fpr[threshold_index]
-        )
-        metrics_to_return["tpr_{}".format(str(threshold))] = round_to_float(
-            tpr[threshold_index]
-        )
-    return metrics_to_return
-
-
 def get_precision_recall_per_percentile(
     true_val, pred_score,
 ):
@@ -256,6 +235,7 @@ def log_pai_rf(
             pai.log_model(rf_model)
             pai.log_features(rf_model.feature_names, rf_model.feature_importances_)
             models_metrics["features_num"] = len(rf_model.feature_names)
+            models_metrics["sample_size"] = rf_model.sample_size
         pai.log_metrics(models_metrics)
         pai.log_artifacts({"precision_recall_table": precision_recall_table})
         pai.log_artifacts({"ROC": roc_plot})

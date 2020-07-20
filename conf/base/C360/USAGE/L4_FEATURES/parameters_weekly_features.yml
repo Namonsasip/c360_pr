@@ -1,7 +1,26 @@
 l4_usage_postpaid_prepaid_weekly_features_min:
-  partition_by: ["subscription_identifier"]
+  partition_by: ["subscription_identifier","access_method_num","national_id_card"]
   feature_list:
     min: [
+          'usg_outgoing_favourite_numbers_call_duration_sum',
+          'usg_outgoing_favourite_numbers_local_call_duration_sum',
+          'usg_outgoing_favourite_numbers_number_of_calls_sum',
+          'usg_outgoing_favourite_numbers_local_number_of_calls_sum',
+          'usg_outgoing_favourite_numbers_sms_number_sum',
+          'usg_outgoing_favourite_numbers_local_sms_number_sum',
+          'usg_incoming_favourite_numbers_call_duration_sum',
+          'usg_incoming_favourite_numbers_local_call_duration_sum',
+          'usg_incoming_favourite_numbers_number_of_calls_sum',
+          'usg_incoming_favourite_numbers_local_number_of_calls_sum',
+          'usg_incoming_favourite_numbers_sms_number_sum',
+          'usg_incoming_favourite_numbers_local_sms_number_sum',
+          'usg_outgoing_favourite_numbers_roaming_call_duration_sum',
+          'usg_outgoing_favourite_numbers_roaming_number_of_calls_sum',
+          'usg_outgoing_favourite_numbers_roaming_sms_number_sum',
+          'usg_incoming_favourite_numbers_roaming_call_duration_sum',
+          'usg_incoming_favourite_numbers_roaming_number_of_calls_sum',
+          'usg_incoming_favourite_numbers_roaming_sms_number_sum',
+
           'usg_outgoing_night_time_calls_duration_sum',
           'usg_outgoing_morning_time_calls_duration_sum',
           'usg_incoming_night_time_call_duration_sum',
@@ -218,9 +237,27 @@ l4_usage_postpaid_prepaid_weekly_features_min:
   read_from: "l2"
 
 l4_usage_postpaid_prepaid_weekly_features_max:
-  partition_by: ["subscription_identifier"]
+  partition_by: ["subscription_identifier","access_method_num","national_id_card"]
   feature_list:
     max: [
+          'usg_outgoing_favourite_numbers_call_duration_sum',
+          'usg_outgoing_favourite_numbers_local_call_duration_sum',
+          'usg_outgoing_favourite_numbers_number_of_calls_sum',
+          'usg_outgoing_favourite_numbers_local_number_of_calls_sum',
+          'usg_outgoing_favourite_numbers_sms_number_sum',
+          'usg_outgoing_favourite_numbers_local_sms_number_sum',
+          'usg_incoming_favourite_numbers_call_duration_sum',
+          'usg_incoming_favourite_numbers_local_call_duration_sum',
+          'usg_incoming_favourite_numbers_number_of_calls_sum',
+          'usg_incoming_favourite_numbers_local_number_of_calls_sum',
+          'usg_incoming_favourite_numbers_sms_number_sum',
+          'usg_incoming_favourite_numbers_local_sms_number_sum',
+          'usg_outgoing_favourite_numbers_roaming_call_duration_sum',
+          'usg_outgoing_favourite_numbers_roaming_number_of_calls_sum',
+          'usg_outgoing_favourite_numbers_roaming_sms_number_sum',
+          'usg_incoming_favourite_numbers_roaming_call_duration_sum',
+          'usg_incoming_favourite_numbers_roaming_number_of_calls_sum',
+          'usg_incoming_favourite_numbers_roaming_sms_number_sum',
           'usg_outgoing_night_time_calls_duration_sum',
           'usg_outgoing_morning_time_calls_duration_sum',
           'usg_incoming_night_time_call_duration_sum',
@@ -449,9 +486,45 @@ l4_usage_postpaid_prepaid_weekly_features_max:
 
 
 l4_usage_postpaid_prepaid_weekly_features_avg:
-  partition_by: ["subscription_identifier"]
+  partition_by: ["subscription_identifier","access_method_num","national_id_card"]
   feature_list:
     avg: [
+          'usg_outgoing_relative_favourite_numbers_call_duration_avg',
+          'usg_outgoing_relative_favourite_numbers_local_call_duration_avg',
+          'usg_outgoing_relative_favourite_numbers_number_of_calls_avg',
+          'usg_outgoing_relative_favourite_numbers_local_number_of_calls_avg',
+          'usg_outgoing_relative_favourite_numbers_sms_number_avg',
+          'usg_outgoing_relative_favourite_numbers_local_sms_number_avg',
+          'usg_incoming_relative_favourite_numbers_call_duration_avg',
+          'usg_incoming_relative_favourite_numbers_local_call_duration_avg',
+          'usg_incoming_relative_favourite_numbers_number_of_calls_avg',
+          'usg_incoming_relative_favourite_numbers_local_number_of_calls_avg',
+          'usg_incoming_relative_favourite_numbers_sms_number_avg',
+          'usg_incoming_relative_favourite_numbers_local_sms_number_avg',
+          'usg_outgoing_relative_numbers_roaming_call_duration_avg',
+          'usg_outgoing_relative_numbers_roaming_number_of_calls_avg',
+          'usg_outgoing_relative_favourite_numbers_roaming_sms_number_avg',
+          'usg_incoming_relative_numbers_roaming_call_duration_avg',
+          'usg_incoming_relative_numbers_roaming_number_of_calls_avg',
+          'usg_incoming_relative_favourite_numbers_roaming_sms_number_avg',
+          'usg_outgoing_favourite_numbers_call_duration_sum',
+          'usg_outgoing_favourite_numbers_local_call_duration_sum',
+          'usg_outgoing_favourite_numbers_number_of_calls_sum',
+          'usg_outgoing_favourite_numbers_local_number_of_calls_sum',
+          'usg_outgoing_favourite_numbers_sms_number_sum',
+          'usg_outgoing_favourite_numbers_local_sms_number_sum',
+          'usg_incoming_favourite_numbers_call_duration_sum',
+          'usg_incoming_favourite_numbers_local_call_duration_sum',
+          'usg_incoming_favourite_numbers_number_of_calls_sum',
+          'usg_incoming_favourite_numbers_local_number_of_calls_sum',
+          'usg_incoming_favourite_numbers_sms_number_sum',
+          'usg_incoming_favourite_numbers_local_sms_number_sum',
+          'usg_outgoing_favourite_numbers_roaming_call_duration_sum',
+          'usg_outgoing_favourite_numbers_roaming_number_of_calls_sum',
+          'usg_outgoing_favourite_numbers_roaming_sms_number_sum',
+          'usg_incoming_favourite_numbers_roaming_call_duration_sum',
+          'usg_incoming_favourite_numbers_roaming_number_of_calls_sum',
+          'usg_incoming_favourite_numbers_roaming_sms_number_sum',
           'usg_outgoing_night_time_calls_duration_sum',
           'usg_outgoing_morning_time_calls_duration_sum',
           'usg_incoming_night_time_call_duration_sum',
@@ -877,9 +950,28 @@ l4_usage_postpaid_prepaid_weekly_features_avg:
   read_from: "l2"
 
 l4_usage_postpaid_prepaid_weekly_features_sum:
-  partition_by: ["subscription_identifier"]
+  partition_by: ["subscription_identifier","access_method_num","national_id_card"]
   feature_list:
-    sum: ['usg_outgoing_night_time_calls_duration_sum',
+    sum: [
+          'usg_outgoing_favourite_numbers_call_duration_sum',
+          'usg_outgoing_favourite_numbers_local_call_duration_sum',
+          'usg_outgoing_favourite_numbers_number_of_calls_sum',
+          'usg_outgoing_favourite_numbers_local_number_of_calls_sum',
+          'usg_outgoing_favourite_numbers_sms_number_sum',
+          'usg_outgoing_favourite_numbers_local_sms_number_sum',
+          'usg_incoming_favourite_numbers_call_duration_sum',
+          'usg_incoming_favourite_numbers_local_call_duration_sum',
+          'usg_incoming_favourite_numbers_number_of_calls_sum',
+          'usg_incoming_favourite_numbers_local_number_of_calls_sum',
+          'usg_incoming_favourite_numbers_sms_number_sum',
+          'usg_incoming_favourite_numbers_local_sms_number_sum',
+          'usg_outgoing_favourite_numbers_roaming_call_duration_sum',
+          'usg_outgoing_favourite_numbers_roaming_number_of_calls_sum',
+          'usg_outgoing_favourite_numbers_roaming_sms_number_sum',
+          'usg_incoming_favourite_numbers_roaming_call_duration_sum',
+          'usg_incoming_favourite_numbers_roaming_number_of_calls_sum',
+          'usg_incoming_favourite_numbers_roaming_sms_number_sum',
+          'usg_outgoing_night_time_calls_duration_sum',
           'usg_outgoing_morning_time_calls_duration_sum',
           'usg_incoming_night_time_call_duration_sum',
           'usg_incoming_morning_time_call_duration_sum',

@@ -2,8 +2,8 @@
 l3_digital_cxenxse_user_profile_monthly:
   where_clause: ""
   feature_list:
-    digital_number_of_device_brands: "sum(case WHEN groups = 'device-brand' AND lower(item) IS NOT NULL
-                                       THEN 1 ELSE 0 END)"
+    digital_number_of_device_brands: "count(device_brand)"
+    digital_number_of_distinct_device_brands: "count(Distinct device_brand)"
     digital_is_device_brands_apple: "max(case WHEN groups = 'device-brand' AND lower(item) = 'apple'
                                        THEN 1 ELSE 0 END)"
     digital_is_device_brands_samsung: "max(case WHEN groups = 'device-brand' AND lower(item) = 'samsung'
@@ -19,6 +19,7 @@ l3_digital_cxenxse_user_profile_monthly:
     digital_is_device_brands_true: "max(case WHEN groups = 'device-brand' AND lower(item) = 'true'
                                        THEN 1 ELSE 0 END)"
     digital_number_of_distinct_device_type: "count(Distinct device_type)"
+    digital_number_of_device_type: "count(device_type)"
 
     digital_is_device_mobile: "max(case WHEN lower(device_type) = 'mobile' THEN 1 ELSE 0 END)"
 
@@ -32,131 +33,4 @@ l3_digital_cxenxse_user_profile_monthly:
 
     digital_is_serenade: "max(case WHEN groups = 'ais-serenade-flag' AND lower(item) = 'y' THEN 1 ELSE 0 END)"
 
-  granularity: "access_method_num,start_of_month"
-
-## Digital active time per browser
-#l3_digital_cxenxse_site_traffic_browser_active_time_monthly:
-#  where_clause: ""
-#  feature_list:
-#    digital_site_traffic_browser_rank: "row_number() over (partition by access_method_num, browser, start_of_month
-#                                                                                    order by count(browser) desc)"
-#    digital_site_traffic_active_time_per_browser: "sum(activetime)"
-#  granularity: "access_method_num,browser,start_of_month"
-#
-#l3_digital_cxenxse_site_traffic_browser_active_time_top_3_monthly:
-#  where_clause: "where digital_site_traffic_browser_rank <= 3"
-#  feature_list:
-#    access_method_num: access_method_num
-#    start_of_month: start_of_month
-#    browser_rank: digital_site_traffic_browser_rank
-#    site_traffic_browser: browser
-#    digital_site_traffic_active_time_per_browser: digital_site_traffic_active_time_per_browser
-#  granularity: ""
-#
-## Digital Favorite url
-#l3_digital_cxenxse_site_traffic_favorite_url_monthly:
-#  where_clause: ""
-#  feature_list:
-#    digital_site_traffic_url_rank: "row_number() over (partition by access_method_num, url, start_of_month
-#                                                                                        order by count(url) desc)"
-#  granularity: "access_method_num,url,start_of_month"
-#
-#l3_digital_cxenxse_site_traffic_favorite_url_rank_1_monthly:
-#  where_clause: "digital_site_traffic_url_rank = 1"
-#  feature_list:
-#    access_method_num: access_method_num
-#    digital_site_traffic_url_rank: digital_site_traffic_url_rank
-#    favorite_url: url
-#    start_of_month: start_of_month
-#  granularity: ""
-#
-## Digital Favorite postalcode
-#l3_digital_cxenxse_site_traffic_favorite_postalcode_monthly:
-#  where_clause: ""
-#  feature_list:
-#    digital_site_traffic_postalcode_rank: "row_number() over (partition by access_method_num, postalcode , start_of_month
-#                                                                                        order by count(postalcode) desc)"
-#  granularity: "access_method_num,postalcode,start_of_month"
-#
-#l3_digital_cxenxse_site_traffic_favorite_postalcode_rank_1_monthly:
-#  where_clause: "digital_site_traffic_postalcode_rank = 1"
-#  feature_list:
-#    access_method_num: access_method_num
-#    digital_site_traffic_postalcode_rank: digital_site_traffic_postalcode_rank
-#    favorite_postalcode: postalcode
-#    start_of_month: start_of_month
-#  granularity: ""
-#
-## Digital Favorite referrerquery
-#l3_digital_cxenxse_site_traffic_favorite_referrerquery_monthly:
-#  where_clause: ""
-#  feature_list:
-#    digital_site_traffic_referrerquery_rank: "row_number() over (partition by access_method_num, referrerquery , start_of_month
-#                                                                                        order by count(referrerquery) desc)"
-#  granularity: "access_method_num,referrerquery,start_of_month"
-#
-#l3_digital_cxenxse_site_traffic_favorite_referrerquery_rank_1_monthly:
-#  where_clause: "digital_site_traffic_referrerquery_rank = 1"
-#  feature_list:
-#    access_method_num: access_method_num
-#    digital_site_traffic_referrerquery_rank: digital_site_traffic_referrerquery_rank
-#    favorite_referrerquery: referrerquery
-#    start_of_month: start_of_month
-#  granularity: ""
-#
-## Digital Active Time  per Refferer Social Network Top 5
-#l3_digital_cxenxse_site_traffic_refferer_social_network_active_time_monthly:
-#  where_clause: ""
-#  feature_list:
-#    digital_site_traffic_referrer_social_network_rank: "row_number() over (partition by access_method_num, referrersocialnetwork, start_of_month
-#                                                                                    order by count(referrersocialnetwork) desc)"
-#    digital_site_traffic_active_time_per_referrer_social_network: "sum(activetime)"
-#  granularity: "access_method_num,referrersocialnetwork,start_of_month"
-#
-#l3_digital_cxenxse_site_traffic_refferer_social_network_active_time_top_5_monthly:
-#  where_clause: "where digital_site_traffic_referrer_social_network_rank <= 5"
-#  feature_list:
-#    access_method_num: access_method_num
-#    start_of_month: start_of_month
-#    referrer_social_network_rank: digital_site_traffic_referrer_social_network_rank
-#    site_traffic_referrer_social_network: referrersocialnetwork
-#    digital_site_traffic_active_time_per_referrer_social_network: digital_site_traffic_active_time_per_referrer_social_network
-#  granularity: ""
-#
-## Digital Active Time  per Refferer Search Engine Top 5
-#l3_digital_cxenxse_site_traffic_refferer_search_engine_active_time_monthly:
-#  where_clause: ""
-#  feature_list:
-#    digital_site_traffic_referrer_search_engine: "row_number() over (partition by access_method_num, referrersearchengine, start_of_month
-#                                                                                    order by count(referrersearchengine) desc)"
-#    digital_site_traffic_active_time_per_referrer_search_engine: "sum(activetime)"
-#  granularity: "access_method_num,referrersearchengine,start_of_month"
-#
-#l3_digital_cxenxse_site_traffic_refferer_search_engine_active_time_top_5_monthly:
-#  where_clause: "where digital_site_traffic_referrer_search_engine <= 5"
-#  feature_list:
-#    access_method_num: access_method_num
-#    start_of_month: start_of_month
-#    referrer_search_engine_rank: digital_site_traffic_referrer_search_engine
-#    site_traffic_referrer_search_engine: referrersearchengine
-#    digital_site_traffic_active_time_per_referrer_search_engine: digital_site_traffic_active_time_per_referrer_search_engine
-#  granularity: ""
-#
-## Digital Active Time  per Refferer Host Class Top 5
-#l3_digital_cxenxse_site_traffic_refferer_host_class_active_time_monthly:
-#  where_clause: ""
-#  feature_list:
-#    digital_site_traffic_referrer_host_class: "row_number() over (partition by access_method_num, referrerhostclass, start_of_month
-#                                                                                    order by count(referrerhostclass) desc)"
-#    digital_site_traffic_active_time_per_referrer_host_class: "sum(activetime)"
-#  granularity: "access_method_num,referrerhostclass,start_of_month"
-#
-#l3_digital_cxenxse_site_traffic_refferer_host_class_active_time_top_5_monthly:
-#  where_clause: "where digital_site_traffic_referrer_host_class <= 5"
-#  feature_list:
-#    access_method_num: access_method_num
-#    start_of_month: start_of_month
-#    referrer_host_class_rank: digital_site_traffic_referrer_host_class
-#    site_traffic_referrer_host_class: referrerhostclass
-#    digital_site_traffic_active_time_per_referrer_host_class: digital_site_traffic_active_time_per_referrer_host_class
-#  granularity: ""
+  granularity: "access_method_num, start_of_month"

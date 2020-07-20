@@ -1,65 +1,29 @@
-#l2_device_handset_summary_with_configuration_weekly:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/DEVICE/l2_features/device_handset_summary_with_configuration/
-#  save_args:
-#    partitionBy: ["start_of_week"]
-#    mode: "overwrite"
-#
-#l2_device_most_used_intermediate_weekly:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/DEVICE/l2_features/device_most_used_intermediate/
-#  save_args:
-#    partitionBy: ["start_of_week"]
-#    mode: "overwrite"
-#
-#l2_device_most_used_weekly:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/DEVICE/l2_features/device_most_used/
-#  save_args:
-#    partitionBy: ["start_of_week"]
-#    mode: "overwrite"
-#
-#
-#l2_previous_device_handset_summary_with_configuration_weekly:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/DEVICE/l2_features/previous_device_handset_summary_with_configuration/
-#  save_args:
-#    partitionBy: ["start_of_week"]
-#    mode: "overwrite"
-#
-#l2_device_number_of_phone_updates_weekly:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/DEVICE/l2_features/device_number_of_phone_updates/
-#  save_args:
-#    partitionBy: ["start_of_week"]
-#    mode: "overwrite"
-
-
-
-
-#l2_device_summary_with_config_weekly:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/DEVICE/l2_features/l2_device_summary_with_config_weekly/
-#  save_args:
-#    partitionBy: ["start_of_week"]
-#    mode: "overwrite"
-
-
-
 
 l2_device_summary_with_config_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/DEVICE/l2_features/l2_device_summary_with_config_weekly/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/DEVICE/l2_features/l2_device_summary_with_config_weekly/
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
+    lookup_table_name: 'l4_device_summary_features'
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
+    lookback: '12'
+  save_args:
+    increment_flag: 'yes'
+    partitionBy: "start_of_week"
+    mode: "overwrite"
+    read_layer: 'l1_daily'
+    target_layer: 'l2_weekly'
+
+l2_device_summary_with_config_weekly_full_load:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: base_path/DEVICE/l2_features/l2_device_summary_with_config_weekly/
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'no'
     lookup_table_name: 'l4_device_summary_features'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'

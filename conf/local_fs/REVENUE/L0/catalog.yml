@@ -14,3 +14,9 @@ l0_revenue_prepaid_pru_f_usage_multi_daily:
   filepath: data/L0/REVENUE/revenue_pru_f_usage_multi/
   type: kedro.contrib.io.pyspark.SparkDataSet
   file_format: "parquet"
+
+# CUSTOMER PROMOTION - PRE PAID MAIN
+l0_revenue_sa_t_package_trans_for_l0_revenue_prepaid_main_product_customer_promotion_daily:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  filepath: data/L0/PRODUCT/product_revenue_revenue_sa_t_package_trans/
+  file_format: "parquet"

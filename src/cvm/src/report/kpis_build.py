@@ -112,6 +112,10 @@ def add_inactivity(
     return (
         users_dates.join(usage, on=key_columns, how="left")
         .withColumn(new_col_name, new_col_when)
+        .withColumn(
+            "last_activity_date_is_null",
+            func.when(last_action_date_is_null, 1).otherwise(0),
+        )
         .drop(last_action_date_col)
     )
 
@@ -155,3 +159,40 @@ def add_network_churn(network_churn: DataFrame, users: DataFrame) -> DataFrame:
         .withColumn("reactive", func.coalesce(func.col("reactive"), func.lit(0)))
     )
     return users
+
+
+def add_prepaid_no_activity_daily(
+    prepaid_no_activity_daily: DataFrame, users: DataFrame, min_date: str
+) -> DataFrame:
+    """ Adds lack of activity columns based on `prepaid_no_activity_daily` table.
+
+    Args:
+        prepaid_no_activity_daily: table with daily markers for lack of activity for
+            prepaid users.
+        users: table to extend with no activity columns.
+        min_date: minimal date of report.
+    """
+    cols_to_pick = [
+        "in_no_activity_n_days",
+        "no_activity_n_days",
+        "out_no_activity_n_days",
+        "analytic_id",
+        "register_date",
+        "date_id",
+    ]
+
+    def is_positive(col_name):
+        """ Return 1 if `col_name` is positive, 0 otherwise."""
+        return func.when(func.col(col_name) > 0, 1).otherwise(0)
+
+    no_activity = (
+        prepaid_no_activity_daily.select(cols_to_pick)
+        .withColumnRenamed("date_id", "key_date")
+        .filter("key_date >= '{}'".format(min_date))
+        .withColumn("prepaid_no_activity", is_positive("no_activity_n_days"))
+        .withColumn("prepaid_no_activity_in", is_positive("in_no_activity_n_days"))
+        .withColumn("prepaid_no_activity_out", is_positive("out_no_activity_n_days"))
+    )
+    return users.join(
+        no_activity, on=["analytic_id", "register_date", "key_date"], how="left"
+    )

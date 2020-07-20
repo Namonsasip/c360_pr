@@ -32,11 +32,11 @@ from typing import Any, Callable, Dict
 import pandas as pd
 from cvm.src.utils.list_operations import list_intersection, list_sub
 from cvm.src.utils.list_targets import list_targets
+from cvm.src.utils.utils import pick_one_per_subscriber
 from pyspark import SparkContext
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as func
 from pyspark.sql.types import DoubleType
-from sklearn.ensemble import RandomForestClassifier
 
 
 def pyspark_predict_sklearn(
@@ -125,8 +125,7 @@ def pyspark_predict_sklearn(
     cols_to_pick = list_intersection(
         key_columns + segments_columns + pred_cols + target_cols, joined_tables.columns
     )
-
-    return joined_tables.select(cols_to_pick).distinct()
+    return pick_one_per_subscriber(joined_tables.select(cols_to_pick))
 
 
 def pyspark_predict_rf(
@@ -147,35 +146,3 @@ def pyspark_predict_rf(
         return rf_model.predict_proba(pd_df)[:, 1]
 
     return pyspark_predict_sklearn(df, rf_models, parameters, _rf_prediction_function)
-
-
-def predict_rf_pandas(
-    df: DataFrame,
-    rf_models: Dict[str, RandomForestClassifier],
-    parameters: Dict[str, Any],
-) -> pd.Series:
-    """ Runs predictions on given DataFrame using saved models.
-
-    Args:
-        df: DataFrame to predict on.
-        rf_models: Random Forest models used for prediction, one per target.
-        parameters: parameters defined in parameters.yml.
-    Returns:
-        Pandas DataFrame of scores and targets.
-    """
-
-    target_cols = list_targets(parameters)
-    key_columns = parameters["key_columns"]
-    segments_columns = parameters["segment_columns"]
-    log = logging.getLogger(__name__)
-    feature_cols = list_sub(df.columns, target_cols + key_columns + segments_columns)
-    pd_df = df.select(feature_cols).toPandas()
-    predictions = df.select(target_cols + key_columns).toPandas()
-
-    for target_chosen in target_cols:
-        log.info("Creating {} predictions.".format(target_chosen))
-        chosen_model = rf_models[target_chosen]
-        preds_col_name = target_chosen + "_pred"
-        predictions[preds_col_name] = chosen_model.predict_proba(pd_df)[:, 1]
-
-    return predictions

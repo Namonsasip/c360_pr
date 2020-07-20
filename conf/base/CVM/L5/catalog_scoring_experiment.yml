@@ -77,7 +77,7 @@ prediction_sample_preprocessed_scoring_experiment:
 # propensities
 propensity_scores_scoring_experiment:
   <<: *spark_parquet
-  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_propensity_scores/
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_propensity_scores_scoring_experiment/
 
 # features for treatments
 treatments_features_scoring_experiment:

@@ -9,6 +9,8 @@ l1_complaints_call_to_competitor_features:
   join_column_with_cust_profile:
     access_method_num: caller_no
     event_partition_date: event_partition_date
+  output_catalog: "l1_complaints_call_to_competitor_features"
+  partition_num_per_job: 30
 
 l1_complaints_nps_after_call:
   feature_list:
@@ -20,7 +22,8 @@ l1_complaints_nps_after_call:
   join_column_with_cust_profile:
     access_method_num: mobile_no
     event_partition_date: event_partition_date
-
+  output_catalog: "l1_complaints_nps_after_call"
+  partition_num_per_job: 30
 
 l1_complaints_nps_after_chatbot:
   feature_list:
@@ -32,6 +35,8 @@ l1_complaints_nps_after_chatbot:
   join_column_with_cust_profile:
     access_method_num: mobile_number
     event_partition_date: event_partition_date
+  output_catalog: "l1_complaints_nps_after_chatbot"
+  partition_num_per_job: 30
 
 
 l1_complaints_nps_after_store_visit:
@@ -44,6 +49,8 @@ l1_complaints_nps_after_store_visit:
   join_column_with_cust_profile:
     access_method_num: access_metod_num
     event_partition_date: event_partition_date
+  output_catalog: "l1_complaints_nps_after_store_visit"
+  partition_num_per_job: 30
 
 l1_complaints_time_to_resolve_complaint:
   feature_list:

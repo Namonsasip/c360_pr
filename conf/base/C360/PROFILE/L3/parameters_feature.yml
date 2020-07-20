@@ -5,7 +5,7 @@ int_l3_customer_profile_basic_features:
     # this is mandatory for joining to union_features table
     access_method_num: "access_method_num"
     register_date: "register_date"
-    subscription_identifier: "crm_sub_id"
+    old_subscription_identifier: "crm_sub_id"
     charge_type: "charge_type"
     partition_month: "to_date(cast(partition_month as STRING), 'yyyyMM')"
     last_month: "add_months(to_date(cast(partition_month as STRING), 'yyyyMM'), -1)"
@@ -20,17 +20,17 @@ int_l3_customer_profile_basic_features:
 #                                    to_date(contract_start_month))"  # wrong formula
     mobile_segment: "mobile_segment"
     serenade_flag: "case when lower(charge_type) = 'pre-paid' then
-                            case when mobile_segment = 'MS_CLASSIC' then 'N' else 'Y' end
-                      else case when lower(mobile_segment) like 'classic%'
-                                      or lower(mobile_segment) like 'standard%'
-                                      or lower(mobile_segment) like 'prospect%'
-                                      then 'N' else 'Y' end
+                            case when lower(mobile_segment) like 'classic%'
+                                                                  or lower(mobile_segment) like 'standard%'
+                                                                  or lower(mobile_segment) like 'prospect%'
+                                                                  then 'N' else 'Y' end
+                      else case when mobile_segment = 'MS_CLASSIC' then 'N' else 'Y' end
                       end"
     network_type: "network_type"
     acquisition_channel: "order_channel_new"
     subscriber_tenure: "months_between(last_day(to_date(cast(partition_month as STRING), 'yyyyMM')), to_date(register_date))"
     activation_region: "first_act_region"
-    city_of_residence: "crm_most_usage_region"
+    province_of_residence: "crm_most_usage_province"
     current_package_name: "main_promo_name"
     current_package_id: "main_promo_id"
     moc_cust_type: "moc_cust_type"
@@ -49,7 +49,7 @@ l3_customer_profile_billing_level_features:
     start_of_month: "max(to_date(cast(partition_month as String),'yyyyMM'))"
     number_of_mobile_devices: "sum(case when imei is not null then 1 else 0 end)"
     number_of_mobile_sims: "sum(case when sim_serial_no is not null then 1 else 0 end)"
-    number_of_active_contracts: "count(*)"
+    number_of_active_contracts: "sum(case when contract_end_yn = 'N' then 1 else 0 end)"
   granularity: "ba_id, partition_month"
 
 

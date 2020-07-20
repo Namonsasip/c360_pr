@@ -3,95 +3,95 @@
 microsegments:
   churn:
     positive_arpu_m1:
-      - "churn_macrosegment == 'positive_arpu'"
+      - "churn_macrosegment in ('positive_arpu_1sc', 'positive_arpu_2_4sc', 'positive_arpu_5sc')"
       - "sum_rev_arpu_total_revenue_monthly_last_month > 150"
       - "arpu_dynamic >= 1"
     positive_arpu_m2:
-      - "churn_macrosegment == 'positive_arpu'"
+      - "churn_macrosegment in ('positive_arpu_1sc', 'positive_arpu_2_4sc', 'positive_arpu_5sc')"
       - "sum_rev_arpu_total_revenue_monthly_last_month > 150"
       - "arpu_dynamic < 1"
       - "arpu_data_share >= 0.8"
     positive_arpu_m3:
-      - "churn_macrosegment == 'positive_arpu'"
+      - "churn_macrosegment in ('positive_arpu_1sc', 'positive_arpu_2_4sc', 'positive_arpu_5sc')"
       - "sum_rev_arpu_total_revenue_monthly_last_month > 150"
       - "arpu_dynamic < 1"
       - "arpu_data_share < 0.8"
     positive_arpu_m4:
-      - "churn_macrosegment == 'positive_arpu'"
+      - "churn_macrosegment in ('positive_arpu_1sc', 'positive_arpu_2_4sc', 'positive_arpu_5sc')"
       - "sum_rev_arpu_total_revenue_monthly_last_month <= 150"
       - "sum_rev_arpu_total_revenue_monthly_last_month > 30"
       - "arpu_data_share >= 0.8"
     positive_arpu_m5:
-      - "churn_macrosegment == 'positive_arpu'"
+      - "churn_macrosegment in ('positive_arpu_1sc', 'positive_arpu_2_4sc', 'positive_arpu_5sc')"
       - "sum_rev_arpu_total_revenue_monthly_last_month <= 150"
       - "sum_rev_arpu_total_revenue_monthly_last_month > 30"
       - "arpu_data_share < 0.8"
       - "sum_payments_top_ups_daily_last_ninety_day >= 1"
     positive_arpu_m6:
-      - "churn_macrosegment == 'positive_arpu'"
+      - "churn_macrosegment in ('positive_arpu_1sc', 'positive_arpu_2_4sc', 'positive_arpu_5sc')"
       - "sum_rev_arpu_total_revenue_monthly_last_month <= 150"
       - "sum_rev_arpu_total_revenue_monthly_last_month > 30"
       - "arpu_data_share < 0.8"
       - "sum_payments_top_ups_daily_last_ninety_day < 1"
     positive_arpu_m7:
-      - "churn_macrosegment == 'positive_arpu'"
+      - "churn_macrosegment in ('positive_arpu_1sc', 'positive_arpu_2_4sc', 'positive_arpu_5sc')"
       - "sum_rev_arpu_total_revenue_monthly_last_month < 30"
       - "arpu_data_share >= 0.8"
     positive_arpu_m8:
-      - "churn_macrosegment == 'positive_arpu'"
+      - "churn_macrosegment in ('positive_arpu_1sc', 'positive_arpu_2_4sc', 'positive_arpu_5sc')"
       - "sum_rev_arpu_total_revenue_monthly_last_month < 30"
       - "arpu_data_share < 0.8"
       - "arpu_data_share > 0"
     positive_arpu_m9:
-      - "churn_macrosegment == 'positive_arpu'"
+      - "churn_macrosegment in ('positive_arpu_1sc', 'positive_arpu_2_4sc', 'positive_arpu_5sc')"
       - "sum_rev_arpu_total_revenue_monthly_last_month < 30"
       - "arpu_data_share <= 0"
       - "sum_payments_top_ups_daily_last_ninety_day >= 1"
     positive_arpu_m10:
-      - "churn_macrosegment == 'positive_arpu'"
+      - "churn_macrosegment in ('positive_arpu_1sc', 'positive_arpu_2_4sc', 'positive_arpu_5sc')"
       - "sum_rev_arpu_total_revenue_monthly_last_month < 30"
       - "arpu_data_share <= 0"
       - "sum_payments_top_ups_daily_last_ninety_day < 1"
     zero_arpu_m1:
-      - "churn_macrosegment == 'zero_arpu'"
+      - "churn_macrosegment in ('zero_arpu_1sc', 'zero_arpu_2_4sc', 'zero_arpu_5sc')"
       - "action_in_last_10days == 1"
       - "sum_payments_top_ups_daily_last_ninety_day >= 1.5"
       - "sum_usg_total_data_volume_sum_weekly_last_twelve_week > 30000000"
     zero_arpu_m2:
-      - "churn_macrosegment == 'zero_arpu'"
+      - "churn_macrosegment in ('zero_arpu_1sc', 'zero_arpu_2_4sc', 'zero_arpu_5sc')"
       - "action_in_last_10days == 1"
       - "sum_payments_top_ups_daily_last_ninety_day >= 1.5"
       - "sum_usg_total_data_volume_sum_weekly_last_twelve_week <= 30000000"
     zero_arpu_m3:
-      - "churn_macrosegment == 'zero_arpu'"
+      - "churn_macrosegment in ('zero_arpu_1sc', 'zero_arpu_2_4sc', 'zero_arpu_5sc')"
       - "action_in_last_10days == 1"
       - "sum_payments_top_ups_daily_last_ninety_day < 1.5"
       - "sum_usg_incoming_number_calls_sum_weekly_last_twelve_week >= 80"
       - "sum_usg_total_data_volume_sum_weekly_last_twelve_week > 30000000"
     zero_arpu_m4:
-      - "churn_macrosegment == 'zero_arpu'"
+      - "churn_macrosegment in ('zero_arpu_1sc', 'zero_arpu_2_4sc', 'zero_arpu_5sc')"
       - "action_in_last_10days == 1"
       - "sum_payments_top_ups_daily_last_ninety_day < 1.5"
       - "sum_usg_incoming_number_calls_sum_weekly_last_twelve_week >= 80"
       - "sum_usg_total_data_volume_sum_weekly_last_twelve_week <= 30000000"
     zero_arpu_m5:
-      - "churn_macrosegment == 'zero_arpu'"
+      - "churn_macrosegment in ('zero_arpu_1sc', 'zero_arpu_2_4sc', 'zero_arpu_5sc')"
       - "action_in_last_10days == 1"
       - "sum_payments_top_ups_daily_last_ninety_day < 1.5"
       - "sum_usg_incoming_number_calls_sum_weekly_last_twelve_week < 80"
       - "sum_usg_total_data_volume_sum_weekly_last_twelve_week > 30000000"
     zero_arpu_m6:
-      - "churn_macrosegment == 'zero_arpu'"
+      - "churn_macrosegment in ('zero_arpu_1sc', 'zero_arpu_2_4sc', 'zero_arpu_5sc')"
       - "action_in_last_10days == 1"
       - "sum_payments_top_ups_daily_last_ninety_day < 1.5"
       - "sum_usg_incoming_number_calls_sum_weekly_last_twelve_week < 80"
       - "sum_usg_total_data_volume_sum_weekly_last_twelve_week <= 30000000"
     zero_arpu_m7:
-      - "churn_macrosegment == 'zero_arpu'"
+      - "churn_macrosegment in ('zero_arpu_1sc', 'zero_arpu_2_4sc', 'zero_arpu_5sc')"
       - "action_in_last_10days == 0"
       - "sum_usg_total_data_volume_sum_weekly_last_twelve_week > 30000000"
     zero_arpu_m8:
-      - "churn_macrosegment == 'zero_arpu'"
+      - "churn_macrosegment in ('zero_arpu_1sc', 'zero_arpu_2_4sc', 'zero_arpu_5sc')"
       - "action_in_last_10days == 0"
       - "sum_usg_total_data_volume_sum_weekly_last_twelve_week <= 30000000"
   ard:

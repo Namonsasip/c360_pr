@@ -64,7 +64,7 @@ treatments_chosen_history_input:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_treatments_chosen_history/
 
-# The same as above - used when the dataset is both an input and output of a node
+# the same as above - used when the dataset is both an input and output of a node
 treatments_chosen_history_output:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_treatments_chosen_history/
@@ -85,3 +85,18 @@ ard_btl_offer_mapping:
   save_args:
     sep: ','
     header: True
+
+# connection edges
+customer_id_edges:
+  <<: *spark_parquet
+  filepath: /dbfs/mnt/customer360-cvm/customer_id_edges3
+
+# customer ids
+customer_ids:
+  <<: *spark_parquet
+  filepath: /dbfs/mnt/customer360-cvm/customer_ids2
+
+# geolocation data
+geo_home_work_location_id:
+  <<: *spark_parquet
+  filepath: /dbfs/mnt/customer360-blob-output/C360/GEO/l4_features/geo_home_work_location_id/

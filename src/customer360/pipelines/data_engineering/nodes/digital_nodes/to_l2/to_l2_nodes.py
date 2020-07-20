@@ -1,4 +1,5 @@
 import pyspark.sql.functions as f
+from pyspark.sql.functions import expr
 from pyspark.sql import DataFrame
 from pyspark.sql.types import StringType
 
@@ -36,10 +37,8 @@ def build_digital_l2_weekly_features(cxense_site_traffic: DataFrame,
 
     cust_df = data_non_availability_and_missing_check(
         df=cust_df, grouping="weekly",
-        par_col="event_partition_date",
-        target_table_name="l2_digital_cxenxse_site_traffic_weekly",
-        missing_data_check_flg='Y'
-    )
+        par_col="start_of_week",
+        target_table_name="l2_digital_cxenxse_site_traffic_weekly")
 
     if check_empty_dfs([cxense_site_traffic, cust_df]):
         return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df()
@@ -47,16 +46,19 @@ def build_digital_l2_weekly_features(cxense_site_traffic: DataFrame,
 
     ################################# End Implementing Data availability checks ###############################
 
-    cust_df_cols = ['access_method_num', 'start_of_week', 'subscription_identifier']
+    cust_df_cols = ['access_method_num', 'start_of_week', 'subscription_identifier', "national_id_card"]
     join_cols = ['access_method_num', 'start_of_week']
-    cxense_site_traffic = cxense_site_traffic.withColumnRenamed("hash_id", "access_method_num") \
+    cxense_site_traffic = cxense_site_traffic.withColumnRenamed("mobile_no", "access_method_num") \
         .withColumn("partition_date", f.col("partition_date").cast(StringType())) \
         .withColumn("start_of_week", f.to_date(f.date_trunc('week', f.to_date(f.col("partition_date"), 'yyyyMMdd'))))
 
-    cust_df = cust_df.select(cust_df_cols).drop_duplicates(subset=["subscription_identifier", "start_of_week"])
+    cust_df = cust_df.select(cust_df_cols)
+    cust_df = cust_df.withColumn("rn", expr(
+        "row_number() over(partition by start_of_week,access_method_num order by start_of_week desc)"))
+    cust_df = cust_df.where("rn = 1")
+    cust_df = cust_df.drop("rn")
 
     cxense_site_traffic = cxense_site_traffic.join(cust_df, join_cols)
-    # cxense_site_traffic = cxense_site_traffic.withColumn("subscription_identifier", f.lit('ABCD'))
 
     weekly_features = node_from_config(cxense_site_traffic, weekly_dict)
     popular_url = node_from_config(cxense_site_traffic, popular_url_dict)

@@ -432,7 +432,7 @@ class TestUnitBilling:
         random.seed(100)
         random_list2 = [random.randint(1, 10) * 100 for iTemp in range(0, len(dummy_date))]
         df = spark.createDataFrame(zip(dummy_date, random_list2, random_list2, random_list2),
-                                   schema=['temp', 'bill_stmt_tot_balance_due_amt', 'bill_stmt_tot_invoiced_amt',
+                                   schema=['temp', 'bill_stmt_tot_net_revenue_amt', 'bill_stmt_tot_invoiced_amt',
                                            'bill_stmt_tot_net_ir_mrkp_amt']) \
             .withColumn("access_method_num", F.lit(1)) \
             .withColumn("billing_stmt_period_eff_date", F.to_date('temp', 'dd-MM-yyyy')) \
@@ -557,7 +557,7 @@ class TestUnitBilling:
                 0]) == 123
         assert \
             (l4_billing_statement_history_billshock.where("start_of_month = '2019-01-01'").select(
-                "bill_stmt_tot_balance_due_amt").collect()[0][
+                "bill_stmt_tot_net_revenue_amt").collect()[0][
                 0]) == 300
         assert \
             (l4_billing_statement_history_billshock.where("start_of_month = '2019-01-01'").select(

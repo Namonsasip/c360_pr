@@ -29,6 +29,7 @@ import logging
 from typing import Any, Dict
 
 import pyspark.sql.functions as func
+from cvm.src.utils.utils import get_today
 from pyspark.sql import DataFrame, Window
 
 
@@ -162,3 +163,53 @@ def add_other_sim_card_features(
     )
 
     return df
+
+
+def add_churn_ard_optimizer_features(
+    df: DataFrame, propensities: DataFrame, parameters: Dict[str, Any],
+) -> DataFrame:
+    """ Adds estimated churn / ard campaign return.
+
+    Args:
+        df: table with users
+        propensities: users propensities
+        parameters: parameters defined in parameters.yml
+    """
+    logging.getLogger(__name__).info("Adding optimization")
+    optimization_parameters = parameters["use_case_optimize"]
+    ard_cost = optimization_parameters["ard_cost"]
+    churn_cost = optimization_parameters["churn_cost"]
+    costs = (
+        propensities.withColumn(
+            "optimizer_churn_cost", churn_cost * func.col("churn60_pred")
+        )
+        .withColumn("optimizer_ard_cost", ard_cost * func.col("dilution2_pred"))
+        .select(
+            ["subscription_identifier", "optimizer_churn_cost", "optimizer_ard_cost"]
+        )
+    )
+    df = df.join(costs, on="subscription_identifier", how="left").fillna(
+        {"optimizer_churn_cost": 0, "optimizer_ard_cost": 0}
+    )
+    return df
+
+
+def add_inactivity_days_num(df: DataFrame, parameters: Dict[str, Any]) -> DataFrame:
+    """ Adds `inactivity_days_num` feature used to filter users.
+
+    Args:
+        parameters: parameters defined in parameters.yml
+        df: treatment features, must contain `last_activity_date`.
+    """
+    logging.getLogger(__name__).info("Adding inactivity days number")
+    today = get_today(parameters)
+    value_cap = 90
+    last_activity_col = func.col("last_activity_date")
+    date_difference = func.datediff(func.lit(today), last_activity_col)
+    date_difference_capped = func.when(
+        date_difference >= value_cap, value_cap
+    ).otherwise(date_difference)
+    inactivity_col = func.when(last_activity_col.isNull(), value_cap).otherwise(
+        date_difference_capped
+    )
+    return df.withColumn("inactivity_days_num", inactivity_col)

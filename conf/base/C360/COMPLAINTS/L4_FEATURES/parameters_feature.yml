@@ -1,5 +1,5 @@
 l4_complaints_call_to_competitor_features:
-  partition_by: ["subscription_identifier"]
+  partition_by: ["access_method_num", "national_id_card", "subscription_identifier"]
   feature_list:
     sum: ["complaints_call_to_dtac_count",
           "complaints_call_to_dtac_duration_sum",

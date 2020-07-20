@@ -10,7 +10,7 @@ from customer360.utilities.re_usable_functions import check_empty_dfs, \
 conf = os.getenv("CONF", None)
 
 
-def build_revenue_l2_layer(data_frame: DataFrame, dict_obj: dict) -> DataFrame:
+def build_revenue_l2_layer(data_frame: DataFrame, dict_obj: dict, exception_partition=None) -> DataFrame:
     """
     :param data_frame:
     :param dict_obj:
@@ -25,7 +25,7 @@ def build_revenue_l2_layer(data_frame: DataFrame, dict_obj: dict) -> DataFrame:
                                                          par_col="event_partition_date",
                                                          target_table_name="l2_revenue_prepaid_pru_f_usage_multi_weekly",
                                                          missing_data_check_flg='Y',
-                                                         exception_partitions=['2019-08-26'])
+                                                         exception_partitions=exception_partition)
 
     if check_empty_dfs([data_frame]):
         return data_frame
@@ -47,7 +47,7 @@ def build_revenue_l2_layer(data_frame: DataFrame, dict_obj: dict) -> DataFrame:
     mvv_new = list(divide_chunks(mvv_array, 5))
     add_list = mvv_new
 
-    first_item = add_list[0]
+    first_item = add_list[-1]
 
     add_list.remove(first_item)
     for curr_item in add_list:
