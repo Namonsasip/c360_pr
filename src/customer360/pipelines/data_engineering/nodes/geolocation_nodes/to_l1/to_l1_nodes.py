@@ -36,6 +36,97 @@ def get_max_date_from_master_data(input_df: DataFrame, par_col='partition_date')
     return input_df
 
 
+def massive_processing_with_l1_geo_area_from_ais_store_daily(shape, masterplan, geo_cust_cell_visit_time, sql):
+    geo_cust_cell_visit_time=geo_cust_cell_visit_time.filter('partition_date >= 20191101 and partition_date <= 20191130')
+    # ----- Data Availability Checks -----
+    if check_empty_dfs([geo_cust_cell_visit_time, shape, masterplan]):
+        return get_spark_empty_df()
+
+    geo_cust_cell_visit_time = data_non_availability_and_missing_check(df=geo_cust_cell_visit_time,
+                                                                       grouping="daily",
+                                                                       par_col="partition_date",
+                                                                       target_table_name="l1_geo_area_from_ais_store_daily")
+
+    masterplan = get_max_date_from_master_data(masterplan, 'partition_date')
+    shape = get_max_date_from_master_data(shape, 'partition_month')
+    # ----- Transformation -----
+
+    if check_empty_dfs([geo_cust_cell_visit_time]):
+        return get_spark_empty_df()
+
+    def divide_chunks(l, n):
+        # looping till length l
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    ss = get_spark_session()
+    CNTX = load_context(Path.cwd(), env=conf)
+    data_frame = geo_cust_cell_visit_time
+    dates_list = data_frame.select('partition_date').distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+    mvv_new = list(divide_chunks(mvv_array, 2))
+    add_list = mvv_new
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        small_df = data_frame.filter(f.col('partition_date').isin(*[curr_item]))
+        output_df = l1_geo_area_from_ais_store_daily(shape, masterplan, small_df, sql)
+        CNTX.catalog.save(sql["output_catalog"], output_df)
+    logging.info("Final date to run for {0}".format(str(first_item)))
+    return_df = data_frame.filter(f.col('partition_date').isin(*[first_item]))
+    return_df = l1_geo_area_from_ais_store_daily(shape, masterplan, return_df, sql)
+    return return_df
+
+
+def massive_processing_with_l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit_time,sql):
+    geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter(
+        'partition_date >= 20191101 and partition_date <= 20191130')
+    # ----- Data Availability Checks -----
+    if check_empty_dfs([geo_cust_cell_visit_time, shape, masterplan]):
+        return get_spark_empty_df()
+
+    geo_cust_cell_visit_time = data_non_availability_and_missing_check(df=geo_cust_cell_visit_time,
+                                                                       grouping="daily",
+                                                                       par_col="partition_date",
+                                                                       target_table_name="l1_geo_area_from_competitor_store_daily")
+
+    masterplan = get_max_date_from_master_data(masterplan, 'partition_date')
+    shape = get_max_date_from_master_data(shape, 'partition_month')
+
+    if check_empty_dfs([geo_cust_cell_visit_time]):
+        return get_spark_empty_df()
+
+    # ----- Transformation -----
+    def divide_chunks(l, n):
+        # looping till length l
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    ss = get_spark_session()
+    CNTX = load_context(Path.cwd(), env=conf)
+    data_frame = geo_cust_cell_visit_time
+    dates_list = data_frame.select('partition_date').distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+    mvv_new = list(divide_chunks(mvv_array, 2))
+    add_list = mvv_new
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        small_df = data_frame.filter(f.col('partition_date').isin(*[curr_item]))
+        output_df = l1_geo_area_from_competitor_store_daily(shape, masterplan, small_df, sql)
+        CNTX.catalog.save(sql["output_catalog"], output_df)
+    logging.info("Final date to run for {0}".format(str(first_item)))
+    return_df = data_frame.filter(f.col('partition_date').isin(*[first_item]))
+    return_df = l1_geo_area_from_competitor_store_daily(shape, masterplan, return_df, sql)
+    return return_df
+
+
 def l1_geo_time_spent_by_location_daily(df,sql):
     df = df.filter('partition_date >= 20191101 and partition_date <= 20191130')
     # df = df.filter('partition_date >= 20190801 and partition_date<=20191031')
@@ -73,26 +164,7 @@ def l1_geo_time_spent_by_location_daily(df,sql):
 
 
 def l1_geo_area_from_ais_store_daily(shape, masterplan, geo_cust_cell_visit_time, sql):
-    geo_cust_cell_visit_time=geo_cust_cell_visit_time.filter('partition_date >= 20191101 and partition_date <= 20191130')
-    # geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20200301')
-    # ----- Data Availability Checks -----
-    if check_empty_dfs([geo_cust_cell_visit_time, shape, masterplan]):
-        return get_spark_empty_df()
-
-    geo_cust_cell_visit_time = data_non_availability_and_missing_check(df=geo_cust_cell_visit_time,
-                                                                       grouping="daily",
-                                                                       par_col="partition_date",
-                                                                       target_table_name="l1_geo_area_from_ais_store_daily")
-
-    masterplan = get_max_date_from_master_data(masterplan, 'partition_date')
-    shape = get_max_date_from_master_data(shape, 'partition_month')
-
-    if check_empty_dfs([geo_cust_cell_visit_time]):
-        return get_spark_empty_df()
-
-    # ----- Transformation -----
     geo_cust_cell_visit_time  = add_start_of_week_and_month(geo_cust_cell_visit_time, "time_in")
-
     masterplan.createOrReplaceTempView("mst_cell_masterplan")
     shape.createOrReplaceTempView("mst_poi_shape")
 
@@ -135,24 +207,7 @@ def l1_geo_area_from_ais_store_daily(shape, masterplan, geo_cust_cell_visit_time
 
 
 def l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit_time,sql):
-    geo_cust_cell_visit_time=geo_cust_cell_visit_time.filter('partition_date >= 20191101 and partition_date <= 20191130')
-    # geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20200301')
-    # ----- Data Availability Checks -----
-    if check_empty_dfs([geo_cust_cell_visit_time, shape, masterplan]):
-        return get_spark_empty_df()
 
-    geo_cust_cell_visit_time = data_non_availability_and_missing_check(df=geo_cust_cell_visit_time,
-                                                                       grouping="daily",
-                                                                       par_col="partition_date",
-                                                                       target_table_name="l1_geo_area_from_competitor_store_daily")
-
-    masterplan = get_max_date_from_master_data(masterplan, 'partition_date')
-    shape = get_max_date_from_master_data(shape, 'partition_month')
-
-    if check_empty_dfs([geo_cust_cell_visit_time]):
-        return get_spark_empty_df()
-
-    # ----- Transformation -----
     geo_cust_cell_visit_time.cache()
     geo_cust_cell_visit_time = add_start_of_week_and_month(geo_cust_cell_visit_time, "time_in")
 

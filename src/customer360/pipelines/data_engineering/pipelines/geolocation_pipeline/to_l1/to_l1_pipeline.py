@@ -112,3 +112,29 @@ def geo_to_l1_pipeline(**kwargs):
     )
 
 
+def geo_to_l1_area_pipeline(**kwargs):
+    return Pipeline(
+        [
+
+            node(
+                massive_processing_with_l1_geo_area_from_ais_store_daily,
+                ["l0_mst_poi_shape_for_l1_geo_area_from_ais_store_daily",
+                 "l0_mst_cell_masterplan_for_l1_geo_area_from_ais_store_daily",
+                 "l0_geo_cust_cell_visit_time_for_l1_geo_area_from_ais_store_daily",
+                 "params:l1_area_from_ais_store_daily"
+                 ],
+                "l1_geo_area_from_ais_store_daily"
+            ),
+
+            node(
+                massive_processing_with_l1_geo_area_from_competitor_store_daily,
+                ["l0_mst_poi_shape_for_l1_geo_area_from_competitor_store_daily",
+                 "l0_mst_cell_masterplan_for_l1_geo_area_from_competitor_store_daily",
+                 "l0_geo_cust_cell_visit_time_for_l1_geo_area_from_competitor_store_daily",
+                 "params:l1_area_from_competitor_store_daily"
+                 ],
+                "l1_geo_area_from_competitor_store_daily"
+            )
+
+        ], name="geo_to_l1_area_pipeline"
+    )
