@@ -66,7 +66,7 @@ def massive_processing_with_l1_geo_area_from_ais_store_daily(shape, masterplan, 
         and cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) <= (0.5)
         group by 1,2,3,4
     """)
-
+    df.cache()
     if check_empty_dfs([geo_cust_cell_visit_time]):
         return get_spark_empty_df()
 
@@ -94,6 +94,7 @@ def massive_processing_with_l1_geo_area_from_ais_store_daily(shape, masterplan, 
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(f.col('partition_date').isin(*[first_item]))
     return_df = l1_geo_area_from_ais_store_daily(df, return_df, sql)
+    df.unpersist()
     return return_df
 
 
@@ -134,6 +135,7 @@ def massive_processing_with_l1_geo_area_from_competitor_store_daily(shape,master
         and cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) <= (0.5)
         group by 1,2,3,4
     """)
+    df.cache()
 
     def divide_chunks(l, n):
         # looping till length l
@@ -159,6 +161,7 @@ def massive_processing_with_l1_geo_area_from_competitor_store_daily(shape,master
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(f.col('partition_date').isin(*[first_item]))
     return_df = l1_geo_area_from_competitor_store_daily(df, return_df, sql)
+    df.unpersist()
     return return_df
 
 
