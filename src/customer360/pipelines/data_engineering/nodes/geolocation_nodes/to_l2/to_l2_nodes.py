@@ -336,22 +336,51 @@ def l2_the_favourite_locations_weekly(df):
     return l2
 
 
+def massive_processing_with_l2_same_favourite_location_weekend_weekday_weekly(l0_geo_cust_cell_visit_time_df):
+    l0_geo_cust_cell_visit_time_df = l0_geo_cust_cell_visit_time_df.filter(
+        'partition_date >= 20191101 and partition_date <= 20191130')
+
+    if check_empty_dfs([l0_geo_cust_cell_visit_time_df]):
+        return get_spark_empty_df()
+
+    l0_geo_cust_cell_visit_time_df = data_non_availability_and_missing_check(df=l0_geo_cust_cell_visit_time_df,
+                                                                             grouping="weekly",
+                                                                             par_col="partition_date",
+                                                                             target_table_name="l2_same_favourite_location_weekend_weekday",
+                                                                             missing_data_check_flg='N')
+
+    if check_empty_dfs([l0_geo_cust_cell_visit_time_df]):
+        return get_spark_empty_df()
+    # ----- Transformation -----
+    def divide_chunks(l, n):
+        # looping till length l
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    ss = get_spark_session()
+    CNTX = load_context(Path.cwd(), env=conf)
+    data_frame = l0_geo_cust_cell_visit_time_df
+    dates_list = data_frame.select('partition_date').distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+    mvv_new = list(divide_chunks(mvv_array, 2))
+    add_list = mvv_new
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        small_df = data_frame.filter(f.col('partition_date').isin(*[curr_item]))
+        output_df = l2_same_favourite_location_weekend_weekday_weekly(small_df)
+        CNTX.catalog.save("l2_same_favourite_location_weekend_weekday_weekly", output_df)
+    logging.info("Final date to run for {0}".format(str(first_item)))
+    return_df = data_frame.filter(f.col('partition_date').isin(*[first_item]))
+    return_df = l2_same_favourite_location_weekend_weekday_weekly(return_df)
+    return return_df
+
+
 # 27 Same favourite location for weekend and weekday
 def l2_same_favourite_location_weekend_weekday_weekly(l0_geo_cust_cell_visit_time_df: DataFrame):
-    l0_geo_cust_cell_visit_time_df=l0_geo_cust_cell_visit_time_df.filter('partition_date >= 20191101 and partition_date <= 20191130')
-
-    if check_empty_dfs([l0_geo_cust_cell_visit_time_df]):
-        return get_spark_empty_df()
-
-    l0_geo_cust_cell_visit_time_df = data_non_availability_and_missing_check(df=l0_geo_cust_cell_visit_time_df, grouping="weekly",
-                                                 par_col="partition_date",
-                                                 target_table_name="l2_same_favourite_location_weekend_weekday",
-                                                 missing_data_check_flg='N')
-
-
-    if check_empty_dfs([l0_geo_cust_cell_visit_time_df]):
-        return get_spark_empty_df()
-
     ### config
     spark = get_spark_session()
 
