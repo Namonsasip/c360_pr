@@ -60,28 +60,28 @@ def usage_create_master_data_for_favourite_feature(**kwargs):
 def usage_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
-            node(
-                usage_outgoing_ir_call_pipeline,
-                ["l0_usage_call_relation_sum_ir_daily_outgoing",
-                 "l1_usage_favourite_number_master",
-                 "params:l1_usage_outgoing_call_relation_sum_ir_daily"],
-                "l1_usage_outgoing_call_relation_sum_ir_daily"
-            ),
-            node(
-                usage_incoming_ir_call_pipeline,
-                ["l0_usage_call_relation_sum_ir_daily_incoming",
-                 "l1_usage_favourite_number_master",
-                 "params:l1_usage_incoming_call_relation_sum_ir_daily"],
-                "l1_usage_incoming_call_relation_sum_ir_daily"
-            ),
+            # node(
+            #     usage_outgoing_ir_call_pipeline,
+            #     ["l0_usage_call_relation_sum_ir_daily_outgoing",
+            #      "l1_usage_favourite_number_master",
+            #      "params:l1_usage_outgoing_call_relation_sum_ir_daily"],
+            #     "l1_usage_outgoing_call_relation_sum_ir_daily"
+            # ),
+            # node(
+            #     usage_incoming_ir_call_pipeline,
+            #     ["l0_usage_call_relation_sum_ir_daily_incoming",
+            #      "l1_usage_favourite_number_master",
+            #      "params:l1_usage_incoming_call_relation_sum_ir_daily"],
+            #     "l1_usage_incoming_call_relation_sum_ir_daily"
+            # ),
 
-            node(
-                usage_data_prepaid_pipeline,
-                ["l0_usage_ru_a_gprs_cbs_usage_daily",
-                 "params:l1_usage_ru_a_gprs_cbs_usage_daily",
-                 "params:exception_partition_list_for_l0_usage_ru_a_gprs_cbs_usage_daily"],
-                "l1_usage_ru_a_gprs_cbs_usage_daily"
-            ),
+            # node(
+            #     usage_data_prepaid_pipeline,
+            #     ["l0_usage_ru_a_gprs_cbs_usage_daily",
+            #      "params:l1_usage_ru_a_gprs_cbs_usage_daily",
+            #      "params:exception_partition_list_for_l0_usage_ru_a_gprs_cbs_usage_daily"],
+            #     "l1_usage_ru_a_gprs_cbs_usage_daily"
+            # ),
 
             node(
                 usage_data_postpaid_pipeline,
@@ -109,23 +109,23 @@ def usage_to_l1_pipeline(**kwargs):
                 'l1_usage_ru_a_vas_postpaid_prepaid_daily'
             ),
 
-            node(
-                usage_outgoing_call_pipeline,
-                ["l0_usage_call_relation_sum_daily_outgoing",
-                 "l1_usage_favourite_number_master",
-                 "params:l1_usage_outgoing_call_relation_sum_daily",
-                 "params:exception_partition_list_for_l0_usage_call_relation_sum_daily_outgoing"
-                 ],
-                "l1_usage_outgoing_call_relation_sum_daily"
-            ),
-            node(
-                usage_incoming_call_pipeline,
-                ["l0_usage_call_relation_sum_daily_incoming",
-                 "l1_usage_favourite_number_master",
-                 "params:l1_usage_incoming_call_relation_sum_daily",
-                 "params:exception_partition_list_for_l0_usage_call_relation_sum_daily_incoming"],
-                "l1_usage_incoming_call_relation_sum_daily"
-            ),
+            # node(
+            #     usage_outgoing_call_pipeline,
+            #     ["l0_usage_call_relation_sum_daily_outgoing",
+            #      "l1_usage_favourite_number_master",
+            #      "params:l1_usage_outgoing_call_relation_sum_daily",
+            #      "params:exception_partition_list_for_l0_usage_call_relation_sum_daily_outgoing"
+            #      ],
+            #     "l1_usage_outgoing_call_relation_sum_daily"
+            # ),
+            # node(
+            #     usage_incoming_call_pipeline,
+            #     ["l0_usage_call_relation_sum_daily_incoming",
+            #      "l1_usage_favourite_number_master",
+            #      "params:l1_usage_incoming_call_relation_sum_daily",
+            #      "params:exception_partition_list_for_l0_usage_call_relation_sum_daily_incoming"],
+            #     "l1_usage_incoming_call_relation_sum_daily"
+            # ),
             node(merge_all_dataset_to_one_table, [
                 'l1_usage_outgoing_call_relation_sum_daily', 'l1_usage_incoming_call_relation_sum_daily',
                 'l1_usage_outgoing_call_relation_sum_ir_daily', 'l1_usage_incoming_call_relation_sum_ir_daily',
