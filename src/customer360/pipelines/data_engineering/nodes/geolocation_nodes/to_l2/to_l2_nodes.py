@@ -403,14 +403,12 @@ def l2_same_favourite_location_weekend_weekday_weekly(l0_geo_cust_cell_visit_tim
     l2_geo = spark.sql(sql_query)
     l2_geo.createOrReplaceTempView('l2_geo')
     #print(" ========================= l2_geo ======================")
-    #l2_geo.show()
 
     # where weekday seelcted
     sql_query = """select * from l2_geo where weektype = "weekday" """
     l2_geo_1 = spark.sql(sql_query)
     l2_geo_1.createOrReplaceTempView('l2_geo_1')
     #print(" ========================= l2_geo_1 ======================")
-    #l2_geo_1.show()
 
     # where weekend seelcted
     sql_query = """select * from l2_geo where weektype = "weekend" """
@@ -418,8 +416,6 @@ def l2_same_favourite_location_weekend_weekday_weekly(l0_geo_cust_cell_visit_tim
     l2_geo_2 = spark.sql(sql_query)
     l2_geo_2.createOrReplaceTempView('l2_geo_2')
     #print(" ========================= l2_geo_2 ======================")
-    #l2_geo_2.show()
-    #exit(2)
 
     # Join weekday & weeekend & added Row_number desc
     sql_query = """ select 
@@ -440,7 +436,6 @@ def l2_same_favourite_location_weekend_weekday_weekly(l0_geo_cust_cell_visit_tim
     # print(" ========================= l2 ======================")
 
     print('DEBUG : ------------------------------------------------> l2_same_favourite_location_weekend_weekday_weekly')
-    l2.show(10)
 
     return l2
 
