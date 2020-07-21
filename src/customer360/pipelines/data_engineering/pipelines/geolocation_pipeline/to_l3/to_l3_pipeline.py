@@ -118,18 +118,18 @@ def geo_to_l3_pipeline(**kwargs):
             #
             # ),
             #
-            ### runnig flag == 9.0
-            ###feature_sum_voice_location###
-            node(
-                l3_call_location_home_work_monthly,
-                ["l0_geo_mst_cell_masterplan_current_for_l3_call_location_home_work_monthly",
-                 "l3_geo_home_work_location_id_monthly_for_l3_call_location_home_work_monthly",
-                 "l0_profile_customer_profile_ma_for_l3_call_location_home_work_monthly",
-                 "l0_usage_sum_voice_location_daily_for_l3_call_location_home_work_monthly",
-                 "l3_geo_top_visit_exclude_homework_for_l3_call_location_home_work_monthly"
-                 ],
-                "l3_geo_call_location_home_work_monthly"
-            ),
+            # ### runnig flag == 9.0
+            # ###feature_sum_voice_location###
+            # node(
+            #     l3_call_location_home_work_monthly,
+            #     ["l0_geo_mst_cell_masterplan_current_for_l3_call_location_home_work_monthly",
+            #      "l3_geo_home_work_location_id_monthly_for_l3_call_location_home_work_monthly",
+            #      "l0_profile_customer_profile_ma_for_l3_call_location_home_work_monthly",
+            #      "l0_usage_sum_voice_location_daily_for_l3_call_location_home_work_monthly",
+            #      "l3_geo_top_visit_exclude_homework_for_l3_call_location_home_work_monthly"
+            #      ],
+            #     "l3_geo_call_location_home_work_monthly"
+            # ),
 
             # ### runnig flag == 1
             # ##Top_3_cells_on_voice_usage###
@@ -181,15 +181,15 @@ def geo_to_l3_pipeline(**kwargs):
                 "l3_geo_home_weekday_city_citizens_monthly"
             ),
 
-            ## runnig flag == 11
-            ### Work area center average
-            node(
-                l3_geo_work_area_center_average_monthly,
-                ["l0_geo_cust_location_visit_hr_for_l3_geo_work_area_center_average_monthly",
-                 "l3_geo_home_work_location_id_monthly_for_l3_geo_work_area_center_average_monthly"
-                 ],
-                "l3_geo_work_area_center_average_monthly"
-            )
+            # ## runnig flag == 11
+            # ### Work area center average
+            # node(
+            #     l3_geo_work_area_center_average_monthly,
+            #     ["l0_geo_cust_location_visit_hr_for_l3_geo_work_area_center_average_monthly",
+            #      "l3_geo_home_work_location_id_monthly_for_l3_geo_work_area_center_average_monthly"
+            #      ],
+            #     "l3_geo_work_area_center_average_monthly"
+            # )
 
         ], name="geo_to_l3_pipeline"
     )
