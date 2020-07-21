@@ -51,6 +51,7 @@ l4_campaign_postpaid_prepaid_features_first:
     ]
   read_from: "l2"
 
+
 l4_campaign_postpaid_prepaid_features_second:
   partition_by: ["subscription_identifier"]
   feature_list:
