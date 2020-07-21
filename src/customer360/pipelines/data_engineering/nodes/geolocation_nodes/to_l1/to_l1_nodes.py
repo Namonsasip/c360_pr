@@ -729,7 +729,6 @@ def l1_geo_number_of_bs_used(geo_cust_cell, sql):
 
     # ----- Transformation -----
     geo_cust_cell = geo_cust_cell.withColumn("event_partition_date", F.to_date(F.col('partition_date').cast(StringType()), 'yyyyMMdd'))
-    geo_cust_cell = geo_cust_cell.drop('partition_date')
     # df = node_from_config(geo_cust_cell, sql)
     df = l1_massive_processing(geo_cust_cell, sql)
     return df
