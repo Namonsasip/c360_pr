@@ -33,7 +33,6 @@ from typing import Any, Dict, Tuple
 
 import pandas
 import pytz
-
 from cvm.src.treatments.deploy_treatments import deploy_contact, prepare_campaigns_table
 from cvm.src.treatments.treatment_translation import package_translation
 from cvm.src.treatments.treatments_build import (
@@ -124,7 +123,7 @@ def produce_treatments_translated(
         parameters, treatments_history, treatments_features, users
     )
     treatments_propositions = treatments_propositions.cache()
-    if parameters["skip_pref_pack_translation"] == "yes":
+    if parameters["treatment_output"]["skip_pref_pack_translation"] == "yes":
         treatments_propositions_translated = treatments_propositions
     else:
         treatments_propositions_translated = package_translation(
