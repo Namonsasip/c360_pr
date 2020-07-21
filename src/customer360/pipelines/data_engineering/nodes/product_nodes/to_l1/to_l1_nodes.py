@@ -9,6 +9,7 @@ from pyspark.sql import functions as F
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
     data_non_availability_and_missing_check, node_from_config
 from src.customer360.utilities.re_usable_functions import add_event_week_and_month_from_yyyymmdd
+from src.customer360.utilities.re_usable_functions import l1_massive_processing
 
 conf = os.getenv("CONF", None)
 
@@ -300,8 +301,14 @@ def dac_product_customer_promotion_for_daily(postpaid_df: DataFrame,
             prepaid_product_ontop_df]
 
 
-def dac_product_fbb_a_customer_promotion_current_for_daily(input_df) -> DataFrame:
+def dac_product_fbb_a_customer_promotion_current_for_daily(input_df: DataFrame,
+                                                           feature_dict: dict,
+                                                           customer_df: DataFrame
+                                                           ) -> DataFrame:
     """
+    :param input_df:
+    :param feature_dict:
+    :param customer_df:
     :return:
     """
 
@@ -309,15 +316,18 @@ def dac_product_fbb_a_customer_promotion_current_for_daily(input_df) -> DataFram
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
-    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
-                                            target_table_name="l1_product_active_fbb_customer_features_daily")
+    input_df = data_non_availability_and_missing_check(
+        df=input_df,
+        grouping="daily",
+        par_col="partition_date",
+        target_table_name="l1_product_active_fbb_customer_features_daily")
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
-
-    return input_df
+    return_df = l1_massive_processing(input_df, feature_dict, customer_df)
+    return return_df
 
 
 def l1_prepaid_postpaid_processing(prepaid_main_df: DataFrame,
@@ -368,7 +378,7 @@ def l1_prepaid_postpaid_processing(prepaid_main_df: DataFrame,
     mvv_array = [row[0] for row in dates_list]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
-    mvv_array = list(divide_chunks(mvv_array, 10))
+    mvv_array = list(divide_chunks(mvv_array, 30))
     add_list = mvv_array
     first_item = add_list[-1]
     add_list.remove(first_item)
