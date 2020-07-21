@@ -76,10 +76,10 @@ l0_mst_cell_masterplan_for_l3_geo_home_weekday_city_citizens_monthly:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'no'
-    lookup_table_name: 'l3_geo_home_weekday_city_citizens_monthly'
-    read_layer: 'l0_daily'
-    target_layer: 'l3_monthly'
-    lookback: '0'
+#    lookup_table_name: 'l3_geo_home_weekday_city_citizens_monthly'
+#    read_layer: 'l0_daily'
+#    target_layer: 'l3_monthly'
+#    lookback: '0'
 
 #----------------------- geo_cust_cell_visit_time_geo_area_from_ais_store -------------------------
 l0_geo_cust_cell_visit_time_for_l1_geo_area_from_ais_store_daily:
