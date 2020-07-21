@@ -128,16 +128,19 @@ def massive_processing(post_paid: DataFrame,
     """
     # data_set_1, data_set_2
     unioned_df = union_dataframes_with_missing_cols(post_paid, prepaid)
-    unioned_df = add_start_of_week_and_month(input_df=unioned_df, date_column='contact_date')\
-                 .drop("subscription_identifier")
+    unioned_df = add_start_of_week_and_month(input_df=unioned_df, date_column='contact_date') \
+        .withColumnRenamed("mobile_no", "access_method_num") \
+        .drop("subscription_identifier")
     # This is recently added by K.Wijitra request
+
     unioned_df = unioned_df.filter(F.lower(F.col("contact_status")) != 'unqualified')
-    unioned_df = cust_prof.select("event_partition_date", "access_method_num", "subscription_identifier",
-                                  "start_of_week", "start_of_month")\
+
+    joined = cust_prof.select("event_partition_date", "access_method_num", "subscription_identifier",
+                                  "start_of_week", "start_of_month") \
         .join(unioned_df, ["access_method_num", "event_partition_date", "start_of_week", "start_of_month"])
 
-    unioned_df = unioned_df.drop("event_partition_date", "start_of_week", "start_of_month")
-    output_df_1, output_df_2 = pre_process_df(unioned_df)
+    joined = joined.drop("event_partition_date", "start_of_week", "start_of_month")
+    output_df_1, output_df_2 = pre_process_df(joined)
 
     output_df_1 = node_from_config(output_df_1, dict_1)
     output_df_2 = node_from_config(output_df_2, dict_2)
@@ -160,7 +163,7 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
     """
 
     ################################# Start Implementing Data availability checks ###############################
-    if check_empty_dfs([postpaid, prepaid,  cust_prof]):
+    if check_empty_dfs([postpaid, prepaid, cust_prof]):
         return [get_spark_empty_df(), get_spark_empty_df()]
 
     postpaid = data_non_availability_and_missing_check(df=postpaid, grouping="daily", par_col="partition_date",
@@ -194,6 +197,6 @@ def cam_post_channel_with_highest_conversion(postpaid: DataFrame,
     cust_prof = cust_prof.filter(F.col("event_partition_date") <= min_value)
 
     ################################# End Implementing Data availability checks ###############################
-    first_df, second_df = massive_processing(postpaid, prepaid, cust_prof,  dictionary_obj, dictionary_obj_2)
+    first_df, second_df = massive_processing(postpaid, prepaid, cust_prof, dictionary_obj, dictionary_obj_2)
 
     return [first_df, second_df]
