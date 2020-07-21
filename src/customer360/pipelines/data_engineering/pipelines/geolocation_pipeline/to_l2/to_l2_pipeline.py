@@ -3,8 +3,6 @@ from customer360.utilities.config_parser import *
 from customer360.pipelines.data_engineering.nodes.geolocation_nodes.to_l2.to_l2_nodes import *
 
 
-
-
 def geo_to_l2_pipeline(**kwargs):
     return Pipeline(
         [
@@ -88,8 +86,15 @@ def geo_to_l2_pipeline(**kwargs):
                 l2_the_favourite_locations_weekly,
                 ["l1_the_favourite_locations_daily"],
                 "l2_the_favourite_locations_weekly"
-            ),
+            )
 
+        ], name="geo_to_l2_pipeline"
+    )
+
+
+def geo_to_l2_same_favourite_pipeline(**kwargs):
+    return Pipeline(
+        [
             ### runnig flag == 3
             # 27 Same favourite location for weekend and weekday
             node(
@@ -97,7 +102,6 @@ def geo_to_l2_pipeline(**kwargs):
                 ["l0_geo_cust_cell_visit_time_for_l2_same_favourite_location_weekend_weekday"],
                 "l2_same_favourite_location_weekend_weekday_weekly"
             )
-
-        ], name="geo_to_l2_pipeline"
+        ], name="geo_to_l2_same_favourite_pipeline"
     )
 

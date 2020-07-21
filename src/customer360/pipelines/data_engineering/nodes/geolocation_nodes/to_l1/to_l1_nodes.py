@@ -226,9 +226,8 @@ def l1_geo_area_from_ais_store_daily(df, geo_cust_cell_visit_time, sql):
             a.start_of_month,
             sum(duration) as duration,
             count(1) as num_of_times_per_day 
-        from geo_cust_cell_visit_time a
-        left join temp_geo_ais_shop b 
-        on a.location_id = b.location_id 
+        from geo_cust_cell_visit_time a, temp_geo_ais_shop b 
+        where a.location_id = b.location_id 
         group by 1,2,3,4
     """)  # Fix same of crossJoin
 
@@ -253,9 +252,8 @@ def l1_geo_area_from_competitor_store_daily(df,geo_cust_cell_visit_time,sql):
             a.start_of_month,
             sum(duration) as duration,
             count(1) as num_of_times_per_day 
-        from geo_cust_cell_visit_time a
-        left join temp_geo_ais_shop b
-        on a.location_id = b.location_id 
+        from geo_cust_cell_visit_time a, temp_geo_ais_shop b
+        where a.location_id = b.location_id 
         group by 1,2,3,4
     """)
 

@@ -103,33 +103,6 @@ def geo_to_l3_pipeline(**kwargs):
             #      ],
             #     "l3_geo_total_distance_km_monthly"
             # ),
-            #
-            # ### runnig flag == 9.2
-            # ###Traffic_fav_location###
-            # node(
-            #     l3_data_traffic_home_work_top1_top2,
-            #     ["l0_geo_mst_cell_masterplan_current_for_l3_use_non_homework_features",
-            #      "l3_geo_home_work_location_id_monthly_for_l3_data_traffic_home_work_top1_top2",
-            #      "l0_profile_customer_profile_ma_for_l3_use_non_homework_features",
-            #      "l0_usage_sum_data_location_daily_for_l3_use_non_homework_features",
-            #      "l3_geo_time_spent_by_location_monthly_for_l3_data_traffic_home_work_top1_top2"
-            #      ],
-            #     "l3_geo_use_traffic_home_work"
-            #
-            # ),
-            #
-            # ### runnig flag == 9.0
-            # ###feature_sum_voice_location###
-            # node(
-            #     l3_call_location_home_work_monthly,
-            #     ["l0_geo_mst_cell_masterplan_current_for_l3_call_location_home_work_monthly",
-            #      "l3_geo_home_work_location_id_monthly_for_l3_call_location_home_work_monthly",
-            #      "l0_profile_customer_profile_ma_for_l3_call_location_home_work_monthly",
-            #      "l0_usage_sum_voice_location_daily_for_l3_call_location_home_work_monthly",
-            #      "l3_geo_top_visit_exclude_homework_for_l3_call_location_home_work_monthly"
-            #      ],
-            #     "l3_geo_call_location_home_work_monthly"
-            # ),
 
             # ### runnig flag == 1
             # ##Top_3_cells_on_voice_usage###
@@ -156,40 +129,63 @@ def geo_to_l3_pipeline(**kwargs):
             #     ["l1_the_favourite_locations_daily"],
             #     "l3_the_favourite_locations_monthly"
             # ),
-            #
-            # ### runnig flag == 4
-            # ### Home and Work Feature
+
+            # ### runnig flag == 6
+            # ### Home weekday city citizens
             # node(
-            #     massive_processing_for_home_work,
-            #     ["l0_geo_cust_cell_visit_time_for_int_l3_geo_home_work_location_id",
-            #      "params:int_l3_geo_home_location_id_monthly",
-            #      "params:int_l3_geo_work_location_id_monthly"
+            #     l3_geo_home_weekday_city_citizens_monthly,
+            #     ["l3_geo_home_work_location_id_monthly_for_l3_geo_home_weekday_city_citizens_monthly",
+            #      "l0_mst_cell_masterplan_for_l3_geo_home_weekday_city_citizens_monthly",
+            #      "params:l3_geo_home_weekday_city_citizens_monthly"
             #      ],
-            #     ["int_l3_geo_home_location_id_monthly",
-            #      "int_l3_geo_work_location_id_monthly"
-            #      ]
+            #     "l3_geo_home_weekday_city_citizens_monthly"
             # ),
 
-            ### runnig flag == 6
-            ### Home weekday city citizens
+            ## runnig flag == 11
+            ### Work area center average
             node(
-                l3_geo_home_weekday_city_citizens_monthly,
-                ["l3_geo_home_work_location_id_monthly_for_l3_geo_home_weekday_city_citizens_monthly",
-                 "l0_mst_cell_masterplan_for_l3_geo_home_weekday_city_citizens_monthly",
-                 "params:l3_geo_home_weekday_city_citizens_monthly"
+                l3_geo_work_area_center_average_monthly,
+                ["l0_geo_cust_location_visit_hr_for_l3_geo_work_area_center_average_monthly",
+                 "l3_geo_home_work_location_id_monthly_for_l3_geo_work_area_center_average_monthly"
                  ],
-                "l3_geo_home_weekday_city_citizens_monthly"
-            ),
-
-            # ## runnig flag == 11
-            # ### Work area center average
-            # node(
-            #     l3_geo_work_area_center_average_monthly,
-            #     ["l0_geo_cust_location_visit_hr_for_l3_geo_work_area_center_average_monthly",
-            #      "l3_geo_home_work_location_id_monthly_for_l3_geo_work_area_center_average_monthly"
-            #      ],
-            #     "l3_geo_work_area_center_average_monthly"
-            # )
+                "l3_geo_work_area_center_average_monthly"
+            )
 
         ], name="geo_to_l3_pipeline"
     )
+
+
+def geo_to_l3_pipeline(**kwargs):
+    return Pipeline(
+        [
+            ### runnig flag == 9.2
+            ###Traffic_fav_location###
+            node(
+                l3_data_traffic_home_work_top1_top2,
+                ["l0_geo_mst_cell_masterplan_current_for_l3_use_non_homework_features",
+                 "l3_geo_home_work_location_id_monthly_for_l3_data_traffic_home_work_top1_top2",
+                 "l0_profile_customer_profile_ma_for_l3_use_non_homework_features",
+                 "l0_usage_sum_data_location_daily_for_l3_use_non_homework_features",
+                 "l3_geo_time_spent_by_location_monthly_for_l3_data_traffic_home_work_top1_top2"
+                 ],
+                "l3_geo_use_traffic_home_work"
+
+            ),
+
+            ### runnig flag == 9.0
+            ###feature_sum_voice_location###
+            node(
+                l3_call_location_home_work_monthly,
+                ["l0_geo_mst_cell_masterplan_current_for_l3_call_location_home_work_monthly",
+                 "l3_geo_home_work_location_id_monthly_for_l3_call_location_home_work_monthly",
+                 "l0_profile_customer_profile_ma_for_l3_call_location_home_work_monthly",
+                 "l0_usage_sum_voice_location_daily_for_l3_call_location_home_work_monthly",
+                 "l3_geo_top_visit_exclude_homework_for_l3_call_location_home_work_monthly"
+                 ],
+                "l3_geo_call_location_home_work_monthly"
+            )
+
+        ], name="geo_to_l3_pipeline"
+    )
+
+
