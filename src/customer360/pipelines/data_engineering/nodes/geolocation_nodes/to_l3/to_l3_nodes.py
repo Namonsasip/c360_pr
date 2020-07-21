@@ -1178,13 +1178,13 @@ def l3_call_location_home_work_monthly(cell_masterplan,geo_homework,profile_ma,u
             ,c.call_count_location_top_location_1st as call_count_location_top_1st
             ,d.call_count_location_top_location_2nd as call_count_location_top_2nd
         from df_call_home_weekday a
-        join df_call_work b
+        full outer join df_call_work b
             on a.start_of_month = b.start_of_month and a.imsi = b.imsi
-        join df_call_top_1st c
+        full outer join df_call_top_1st c
             on a.start_of_month = c.start_of_month and a.imsi = c.imsi
-        join df_call_top_2nd d
+        full outer join df_call_top_2nd d
             on a.start_of_month = d.start_of_month and a.imsi = d.imsi
-    ''')
+    ''')  # Change join(inner) --> full outer join 20200721
 
     print('DEBUG : ------------------------------------------------> (10)')
     df_sum_voice_daily.show(10)
