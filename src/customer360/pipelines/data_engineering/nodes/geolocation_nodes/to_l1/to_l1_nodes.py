@@ -1,5 +1,5 @@
 import pyspark.sql.functions as f
-from pyspark.sql import DataFrame
+from pyspark.sql import DataFrame, Column
 from pyspark.sql import functions as F
 from pyspark.sql import types as T
 from pyspark.sql.types import *
@@ -36,6 +36,16 @@ def get_max_date_from_master_data(input_df: DataFrame, par_col='partition_date')
     return input_df
 
 
+def distance_callculate_statement(first_lat: str, first_long: str, second_lat: str, second_long: str) -> Column:
+    return (
+            F.acos(
+                F.cos(F.radians(90 - F.col(first_lat))) * F.cos(F.radians(90 - F.col(second_lat))) + \
+                F.sin(F.radians(90 - F.col(first_lat))) * F.sin(F.radians(90 - F.col(second_lat))) * \
+                F.cos(F.radians(F.col(first_long) - F.col(second_long)))
+            ) * 6371
+    ).cast('double')
+
+
 def massive_processing_with_l1_geo_area_from_ais_store_daily(shape, masterplan, geo_cust_cell_visit_time, sql):
     geo_cust_cell_visit_time=geo_cust_cell_visit_time.filter('partition_date >= 20191101 and partition_date <= 20191130')
     # ----- Data Availability Checks -----
@@ -65,8 +75,13 @@ def massive_processing_with_l1_geo_area_from_ais_store_daily(shape, masterplan, 
         where   a.landmark_cat_name_en in ('AIS')
         and cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) <= (0.5)
         group by 1,2,3,4
-    """)
-    df.cache()
+    """)  # Fix this cossJoin --> left outer join
+
+    # join_df = master_df.join(shape_df, [master_df.location_id != shape_df.geo_shape_id], 'inner') \
+    #     .select('landmark_sub_name_en', 'location_id', 'location_name',
+    #             distance_callculate_statement('landmark_latitude', 'landmark_longitude', 'latitude', 'longitude').alias(
+    #                 'distance_km')).filter('distance_km <= 0.5')
+
     if check_empty_dfs([geo_cust_cell_visit_time]):
         return get_spark_empty_df()
 
@@ -82,7 +97,7 @@ def massive_processing_with_l1_geo_area_from_ais_store_daily(shape, masterplan, 
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
-    mvv_new = list(divide_chunks(mvv_array, 2))
+    mvv_new = list(divide_chunks(mvv_array, 5))  # Changed 2 --> 5 20200721
     add_list = mvv_new
     first_item = add_list[-1]
     add_list.remove(first_item)
@@ -94,7 +109,6 @@ def massive_processing_with_l1_geo_area_from_ais_store_daily(shape, masterplan, 
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(f.col('partition_date').isin(*[first_item]))
     return_df = l1_geo_area_from_ais_store_daily(df, return_df, sql)
-    df.unpersist()
     return return_df
 
 
@@ -135,7 +149,6 @@ def massive_processing_with_l1_geo_area_from_competitor_store_daily(shape,master
         and cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) <= (0.5)
         group by 1,2,3,4
     """)
-    df.cache()
 
     def divide_chunks(l, n):
         # looping till length l
@@ -149,7 +162,7 @@ def massive_processing_with_l1_geo_area_from_competitor_store_daily(shape,master
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
-    mvv_new = list(divide_chunks(mvv_array, 2))
+    mvv_new = list(divide_chunks(mvv_array, 5))  # Changed 2 --> 5 20200721
     add_list = mvv_new
     first_item = add_list[-1]
     add_list.remove(first_item)
@@ -161,7 +174,6 @@ def massive_processing_with_l1_geo_area_from_competitor_store_daily(shape,master
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(f.col('partition_date').isin(*[first_item]))
     return_df = l1_geo_area_from_competitor_store_daily(df, return_df, sql)
-    df.unpersist()
     return return_df
 
 
@@ -169,7 +181,6 @@ def l1_geo_time_spent_by_location_daily(df,sql):
     df = df.filter('partition_date >= 20191101 and partition_date <= 20191130')
     # df = df.filter('partition_date >= 20190801 and partition_date<=20191031')
     # df = add_start_of_week_and_month(df, "time_in")
-    # df.cache()
 
     # ----- Data Availability Checks -----
     if check_empty_dfs([df]):
@@ -196,7 +207,6 @@ def l1_geo_time_spent_by_location_daily(df,sql):
     group by imsi, location_id, event_partition_date, start_of_week, start_of_month
     """
     return_df = massive_processing_time_spent_daily(df, sql, "l1_geo_time_spent_by_location_daily", 'partition_date')
-    # df.unpersist()
 
     return return_df
 
@@ -216,11 +226,11 @@ def l1_geo_area_from_ais_store_daily(df, geo_cust_cell_visit_time, sql):
             a.start_of_month,
             sum(duration) as duration,
             count(1) as num_of_times_per_day 
-        from geo_cust_cell_visit_time a,
-        temp_geo_ais_shop b 
-        where a.location_id = b.location_id 
+        from geo_cust_cell_visit_time a
+        left join temp_geo_ais_shop b 
+        on a.location_id = b.location_id 
         group by 1,2,3,4
-    """)
+    """)  # Fix same of crossJoin
 
     df2 = node_from_config(df2,sql)
 
@@ -228,11 +238,8 @@ def l1_geo_area_from_ais_store_daily(df, geo_cust_cell_visit_time, sql):
 
 
 def l1_geo_area_from_competitor_store_daily(df,geo_cust_cell_visit_time,sql):
-
-
     geo_cust_cell_visit_time = add_start_of_week_and_month(geo_cust_cell_visit_time, "time_in")
     ss = get_spark_session()
-
 
     df.createOrReplaceTempView('temp_geo_ais_shop')
 
@@ -246,12 +253,11 @@ def l1_geo_area_from_competitor_store_daily(df,geo_cust_cell_visit_time,sql):
             a.start_of_month,
             sum(duration) as duration,
             count(1) as num_of_times_per_day 
-        from geo_cust_cell_visit_time a,
-            temp_geo_ais_shop b 
-        where a.location_id = b.location_id 
+        from geo_cust_cell_visit_time a
+        left join temp_geo_ais_shop b
+        on a.location_id = b.location_id 
         group by 1,2,3,4
     """)
-
 
     df2 = node_from_config(df2, sql)
 
@@ -357,7 +363,6 @@ def l1_geo_total_distance_km_daily(l0_df, sql):
         order by a.imsi,a.time_in,a.event_partition_date
     """
     l1_df1 = spark.sql(sql_query1)
-    l1_df1.cache()
     l1_df1 = l1_df1.withColumn("start_of_week", F.to_date(F.date_trunc('week', l1_df1.event_partition_date)))
     l1_df1 = l1_df1.withColumn("start_of_month", F.to_date(F.date_trunc('month', l1_df1.event_partition_date)))
 
@@ -505,12 +510,10 @@ def massive_processing_with_l1_location_of_visit_ais_store_daily(shape,cust_cell
 ###feature_AIS_store###
 def l1_location_of_visit_ais_store_daily(shape,cust_cell_visit,sql):
     # ----- Transformation -----
-    shape.cache()
     store_shape = shape.where('landmark_cat_name_en like "%AIS%"')
     store_shape.createOrReplaceTempView('geo_mst_lm_poi_shape')
 
     max_date = cust_cell_visit.selectExpr('max(partition_date)').collect()[0][0]
-    cust_cell_visit.cache()
     cust_cell_visit = cust_cell_visit.where('partition_date='+str(max_date))
     cust_cell_visit = cust_cell_visit.withColumn("event_partition_date",
                                        F.to_date(F.col('partition_date').cast(StringType()), 'yyyyMMdd'))
@@ -656,8 +659,6 @@ def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
             and longitude is not null
     """
     l1_df1 = spark.sql(sql_query1)
-    l1_df.cache()
-    l1_df1.cache()
     l1_df1 = l1_df1.withColumn("start_of_week", F.to_date(F.date_trunc('week', l1_df1.event_partition_date)))
     l1_df1 = l1_df1.withColumn("start_of_month", F.to_date(F.date_trunc('month', l1_df1.event_partition_date)))
     # l1_df2 = node_from_config(l1_df1, sql)
@@ -706,7 +707,6 @@ def l1_geo_distance_top_call(df):
         order by 1,3,4,5
     """
     l1_df = spark.sql(sql_query)
-    l1_df.cache()
 
     return l1_df
 
