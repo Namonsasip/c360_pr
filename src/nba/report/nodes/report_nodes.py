@@ -1367,14 +1367,14 @@ def create_campaign_view_report_input(
     )
     l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.selectExpr(
         "subscription_identifier",
-        "register_date",
+        "date(register_date) as register_date",
         "campaign_type as campaign_treatment_type",
         "campaign_group",
         "response_type",
         "campaign_channel",
         "campaign_child_code",
         "campaign_name",
-        "contact_date",
+        "date(contact_date) as contact_date",
         "contact_control_group",
         "response",
         "response_date",
@@ -1393,7 +1393,7 @@ def create_campaign_view_report_input(
     )
 
     reporting_kpis = reporting_kpis.drop("timestamp",)
-    reporting_kpis = reporting_kpis.withColumnRenamed("join_date", "contact_date")
+    reporting_kpis = reporting_kpis.selectExpr("*", "date(join_date) as contact_date")
 
     ######## Create campaign view report input data
     # This part of code is computationally expensive,
@@ -1410,7 +1410,7 @@ def create_campaign_view_report_input(
 
     reporting_kpis_before = reporting_kpis.selectExpr(
         "subscription_identifier",
-        "register_date",
+        "date(register_date) as register_date",
         "contact_date",
         "target_group as use_case_control_group",
         "ontop_data_number_of_transaction_1_day as ontop_data_number_of_transaction_1_day_before",
@@ -1447,7 +1447,7 @@ def create_campaign_view_report_input(
 
     reporting_kpis_7d_before = reporting_kpis.selectExpr(
         "subscription_identifier",
-        "register_date",
+        "date(register_date) as register_date",
         "date_add(contact_date,-10) as contact_date",
         "CASE WHEN no_activity_n_days >= 5 THEN 1 ELSE 0 END as dormant_5_day_7d_before",
         "CASE WHEN no_activity_n_days >= 7 THEN 1 ELSE 0 END as dormant_7_day_7d_before",
@@ -1458,7 +1458,7 @@ def create_campaign_view_report_input(
     )
     reporting_kpis_30d_before = reporting_kpis.selectExpr(
         "subscription_identifier",
-        "register_date",
+        "date(register_date) as register_date",
         "date_add(contact_date,-33) as contact_date",
         "CASE WHEN no_activity_n_days >= 5 THEN 1 ELSE 0 END as dormant_5_day_30d_before",
         "CASE WHEN no_activity_n_days >= 7 THEN 1 ELSE 0 END as dormant_7_day_30d_before",
@@ -1469,7 +1469,7 @@ def create_campaign_view_report_input(
     )
     reporting_kpis_1d_after = reporting_kpis.selectExpr(
         "subscription_identifier",
-        "register_date",
+        "date(register_date) as register_date",
         "date_add(contact_date,4) as contact_date",
         "ontop_data_number_of_transaction_1_day as ontop_data_number_of_transaction_1_day_after",
         "ontop_data_total_net_tariff_1_day as ontop_data_total_net_tariff_1_day_after",
@@ -1488,7 +1488,7 @@ def create_campaign_view_report_input(
     )
     reporting_kpis_7d_after = reporting_kpis.selectExpr(
         "subscription_identifier",
-        "register_date",
+        "date(register_date) as register_date",
         "date_add(contact_date,10) as contact_date",
         "ontop_data_number_of_transaction_7_day as ontop_data_number_of_transaction_7_day_after",
         "ontop_data_total_net_tariff_7_day as ontop_data_total_net_tariff_7_day_after",
@@ -1507,7 +1507,7 @@ def create_campaign_view_report_input(
     )
     reporting_kpis_30d_after = reporting_kpis.selectExpr(
         "subscription_identifier",
-        "register_date",
+        "date(register_date) as register_date",
         "date_add(contact_date,33) as contact_date",
         "ontop_data_number_of_transaction_30_day as ontop_data_number_of_transaction_30_day_after",
         "ontop_data_total_net_tariff_30_day as ontop_data_total_net_tariff_30_day_after",
@@ -1526,8 +1526,7 @@ def create_campaign_view_report_input(
     )
 
     mapping_tbl = use_case_campaign_mapping.selectExpr(
-        "campaign_child_code",
-        "target_group as defined_campaign_target_group",
+        "campaign_child_code", "target_group as defined_campaign_target_group",
     )
     campaign_view_report_input = l0_campaign_tracking_contact_list_pre_full_load.join(
         reporting_kpis_1d_after,
@@ -1575,8 +1574,12 @@ def create_aggregate_campaign_view_features(
     # mock_report_running_date = (datetime.now() + timedelta(hours=7)).strftime(
     #     "%Y-%m-%d"
     # )
-    # date_to = datetime.strptime(mock_report_running_date, "%Y-%m-%d")
-    # date_from = datetime.strptime(mock_report_running_date, "%Y-%m-%d")
+    # date_from = datetime.strptime(mock_report_running_date, "%Y-%m-%d") + timedelta(
+    #     days=-30
+    # )
+    # date_to = datetime.strptime(mock_report_running_date, "%Y-%m-%d") + timedelta(
+    #     days=-20
+    # )
     # campaign_view_report_input = catalog.load("campaign_view_report_input_tbl")
     spark = get_spark_session()
     # Create all date within running period to make sure that every campaign has record
@@ -1772,16 +1775,21 @@ def create_campaign_view_report(
     date_to,
 ) -> DataFrame:
     spark = get_spark_session()
-    l0_campaign_tracking_contact_list_pre_full_load = catalog.load("l0_campaign_tracking_contact_list_pre_full_load")
-    mock_report_running_date = (datetime.now() + timedelta(hours=7)).strftime(
-        "%Y-%m-%d"
-    )
-    date_from = datetime.strptime(mock_report_running_date, "%Y-%m-%d")
-    +timedelta(days=-10)
-    date_to = datetime.strptime(mock_report_running_date, "%Y-%m-%d")
-    aggregate_campaign_view_features_tbl = catalog.load(
-        "aggregate_campaign_view_features_tbl"
-    )
+    # l0_campaign_tracking_contact_list_pre_full_load = catalog.load(
+    #     "l0_campaign_tracking_contact_list_pre_full_load"
+    # )
+    # mock_report_running_date = (datetime.now() + timedelta(hours=7)).strftime(
+    #     "%Y-%m-%d"
+    # )
+    # date_from = datetime.strptime(mock_report_running_date, "%Y-%m-%d") + timedelta(
+    #     days=-30
+    # )
+    # date_to = datetime.strptime(mock_report_running_date, "%Y-%m-%d") + timedelta(
+    #     days=-20
+    # )
+    # aggregate_campaign_view_features_tbl = catalog.load(
+    #     "aggregate_campaign_view_features_tbl"
+    # )
     l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.filter(
         F.col("contact_date").between(date_from, date_to)
     )
