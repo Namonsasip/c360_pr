@@ -18,14 +18,14 @@ def geo_to_l1_pipeline(**kwargs):
             ),
 
 
-            ###Number_of_base_station###
-            node(
-                l1_geo_number_of_bs_used,
-                ["l0_geo_cust_cell_visit_time_daily_for_l1_geo_number_of_bs_used",
-                 "params:l1_geo_data_count_location_id"
-                 ],
-                "l1_geo_number_of_bs_used"
-            ),
+            # ###Number_of_base_station###
+            # node(
+            #     l1_geo_number_of_bs_used,
+            #     ["l0_geo_cust_cell_visit_time_daily_for_l1_geo_number_of_bs_used",
+            #      "params:l1_geo_data_count_location_id"
+            #      ],
+            #     "l1_geo_number_of_bs_used"
+            # ),
 
             ### runnig flag == 1
             ###feature_AIS_store###
