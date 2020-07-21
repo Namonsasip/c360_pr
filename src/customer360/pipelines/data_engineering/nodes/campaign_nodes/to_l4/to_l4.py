@@ -12,23 +12,22 @@ conf = os.getenv("CONF", None)
 
 
 def build_campaign_weekly_features(input_df: DataFrame,
-                                   min: dict,
-                                   max: dict,
-                                   sum: dict,
-                                   avg: dict) -> DataFrame:
+                                   first_dict: dict,
+                                   second_dict: dict,
+                                   third_dict: dict,
+                                   fourth_dict: dict) -> DataFrame:
     """
     :param input_df:
-    :param min:
-    :param max:
-    :param sum:
-    :param avg:
+    :param first_dict:
+    :param second_dict:
+    :param third_dict:
+    :param fourth_dict:
     :return:
     """
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
     CNTX = load_context(Path.cwd(), env=conf)
-    group_cols = ["subscription_identifier", "start_of_week"]
 
     metadata = CNTX.catalog.load("util_audit_metadata_table")
     max_date = metadata.filter(F.col("table_name") == "l4_campaign_postpaid_prepaid_features") \
@@ -38,29 +37,29 @@ def build_campaign_weekly_features(input_df: DataFrame,
 
     input_df = input_df.cache()
 
-    min_df = l4_rolling_window(input_df, min)
-    min_df = min_df.filter(F.col("start_of_week") > max_date)
-    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_min", min_df)
+    first_df = l4_rolling_window(input_df, first_dict)
+    first_df = first_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_first", first_df)
 
-    max_df = l4_rolling_window(input_df, max)
-    max_df = max_df.filter(F.col("start_of_week") > max_date)
-    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_max", max_df)
+    second_df = l4_rolling_window(input_df, second_dict)
+    second_df = second_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_second", second_df)
 
-    sum_df = l4_rolling_window(input_df, sum)
-    sum_df = sum_df.filter(F.col("start_of_week") > max_date)
-    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_sum", sum_df)
+    third_df = l4_rolling_window(input_df, third_dict)
+    third_df = third_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_third", third_df)
 
-    avg_df = l4_rolling_window(input_df, avg)
-    avg_df = avg_df.filter(F.col("start_of_week") > max_date)
-    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_avg", avg_df)
+    fourth_df = l4_rolling_window(input_df, fourth_dict)
+    fourth_df = fourth_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_fourth", fourth_df)
 
-    min_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_min")
-    max_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_max")
-    sum_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_sum")
-    avg_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_avg")
+    first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_first")
+    second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_second")
+    third_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_third")
+    fourth_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_fourth")
 
     group_cols = ["subscription_identifier", "start_of_week"]
-    merged_df = union_dataframes_with_missing_cols(min_df, max_df, sum_df, avg_df)
+    merged_df = union_dataframes_with_missing_cols(first_df, second_df, third_df, fourth_df)
     sql_query = gen_max_sql(merged_df, "test_table", group_cols)
 
     return_df = execute_sql(merged_df, "test_table", sql_query)
