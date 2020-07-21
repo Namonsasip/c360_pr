@@ -125,5 +125,5 @@ def geo_to_l1_pipeline_test_custer(**kwargs):
                 "l1_geo_cust_subseqently_distance_daily"
             ),
 
-        ], name="geo_to_l1_area_pipeline"
+        ], name="geo_to_l1_pipeline_test_custer"
     )
