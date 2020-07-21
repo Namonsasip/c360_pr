@@ -1,4 +1,4 @@
-l4_campaign_postpaid_prepaid_features:
+l4_campaign_postpaid_prepaid_features_min:
   partition_by: ["subscription_identifier"]
   feature_list:
     min: [
@@ -46,6 +46,11 @@ l4_campaign_postpaid_prepaid_features:
       'campaign_total_retention_eligible_by_myais_app_sum',
       'campaign_total_retention_success_by_myais_app_sum',
     ]
+  read_from: "l2"
+
+l4_campaign_postpaid_prepaid_features_max:
+  partition_by: ["subscription_identifier"]
+  feature_list:
     max: [  'campaign_last_communication_date_max'
       ,     'campaign_overall_count_sum'
       ,     'campaign_total_by_call_center_sum'
@@ -92,6 +97,11 @@ l4_campaign_postpaid_prepaid_features:
       ,     'campaign_total_retention_success_by_myais_app_sum'
 
     ]
+  read_from: "l2"
+
+l4_campaign_postpaid_prepaid_features_sum:
+  partition_by: ["subscription_identifier"]
+  feature_list:
     sum: [
        'campaign_overall_count_sum'
       ,'campaign_total_by_call_center_sum'
@@ -138,6 +148,11 @@ l4_campaign_postpaid_prepaid_features:
       ,'campaign_total_retention_success_by_myais_app_sum'
 
     ]
+  read_from: "l2"
+
+l4_campaign_postpaid_prepaid_features_avg:
+  partition_by: ["subscription_identifier"]
+  feature_list:
     avg: [
        'campaign_overall_count_sum'
       ,'campaign_total_by_call_center_sum'
