@@ -23,7 +23,7 @@ def loyalty_to_l1_pipeline(**kwargs):
                 loyalty_number_of_rewards_redeemed_for_each_category,
                 ["l1_customer_profile_union_daily_feature_for_l1_loyalty_number_of_rewards",
                  "l0_loyalty_drm_t_aunjai_point_collection_daily_for_l1_loyalty_number_of_rewards"],
-                "l1_loyalty_number_of_rewards_redeemed_daily"
+                "l1_loyalty_number_of_rewards_daily"
             ),
 
             # Number of points spend for each category
@@ -32,20 +32,6 @@ def loyalty_to_l1_pipeline(**kwargs):
                 ["l1_customer_profile_union_daily_feature_for_l1_loyalty_number_of_points_spend",
                  "l0_loyalty_priv_point_transaction"],
                 "l1_loyalty_number_of_points_spend_daily"
-            ),
-
-            # Number of points balance
-            node(
-                loyalty_number_of_points_balance,
-                ["l1_customer_profile_union_daily_feature_for_l1_loyalty_priv_point_ba_daily"
-                    , "l0_loyalty_drm_t_aunjai_point_collection_daily_for_l1_loyalty_priv_point_ba_daily"
-                    , "l0_loyalty_priv_point_bonus_ba"
-                    , "l0_loyalty_priv_point_ba"
-                 ],
-                ["l1_loyalty_drm_t_aunjai_point_collection_with_customers_for_point_bal_daily"
-                    , "l1_loyalty_priv_point_bonus_ba_daily"
-                    , "l1_loyalty_priv_point_ba_daily"
-                 ]
             ),
 
         ]

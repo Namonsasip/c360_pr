@@ -65,19 +65,19 @@ def build_campaign_l3_layer(l1_campaign_post_pre_fbb_daily: DataFrame,
     mvv_new = list(divide_chunks(mvv_array, 5))
     add_list = mvv_new
 
-    first_item = add_list[0]
+    first_item = add_list[-1]
 
     add_list.remove(first_item)
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         small_df = data_frame.filter(F.col("start_of_month").isin(*[curr_item]))
-        top_campaign_df = l1_campaign_top_channel_daily.filter(F.col("start_of_week").isin(*[curr_item]))
+        top_campaign_df = l1_campaign_top_channel_daily.filter(F.col("start_of_month").isin(*[curr_item]))
         output_df_1 = expansion(small_df, dictObj_1)
         output_df_2 = expansion(top_campaign_df, dictObj_2)
         CNTX.catalog.save("l3_campaign_postpaid_prepaid_monthly", output_df_1)
         CNTX.catalog.save("l3_campaign_top_channel_monthly", output_df_2)
 
-    small_df = data_frame.filter(F.col("start_of_week").isin(*[first_item]))
+    small_df = data_frame.filter(F.col("start_of_month").isin(*[first_item]))
     top_campaign_df = l1_campaign_top_channel_daily.filter(F.col("start_of_month").isin(*[first_item]))
     first_return_df = expansion(small_df, dictObj_1)
     second_return_df = expansion(top_campaign_df, dictObj_2)

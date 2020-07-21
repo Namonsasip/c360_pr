@@ -25,62 +25,39 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import logging
-from typing import Any, Dict, List
 
-from cvm.src.features.parametrized_features import build_feature_from_parameters
-from cvm.src.utils.list_targets import list_targets
-from cvm.src.utils.utils import get_clean_important_variables, impute_from_parameters
-from pyspark.sql import DataFrame
+import pyspark.sql.functions as func
+from pyspark.sql import DataFrame, Window
 
 
-def generate_macrosegments(
-    raw_features: DataFrame, parameters: Dict[str, Any]
-) -> DataFrame:
-    """ Setup macrosegments table.
+def add_number_of_simcards(df: DataFrame, recent_profile: DataFrame,) -> DataFrame:
+    """ Augment the given dataset with `number_of_simcards_for_national_id` feature.
 
     Args:
-        raw_features: DataFrame with all features.
-        parameters: parameters defined in parameters.yml.
-    Returns:
-        Input DataFrame with extra column marking macrosegment.
+        df: dataset to augment.
+        recent_profile: profile table for last date.
     """
 
-    logging.info("Defining macrosegments")
-    raw_features = impute_from_parameters(raw_features, parameters)
-    macrosegments_defs = parameters["macrosegments"]
-    for use_case in macrosegments_defs:
-        raw_features = build_feature_from_parameters(
-            raw_features, use_case + "_macrosegment", macrosegments_defs[use_case]
-        )
-    macrosegment_cols = [use_case + "_macrosegment" for use_case in macrosegments_defs]
-    cols_to_pick = macrosegment_cols + ["subscription_identifier"]
+    national_card_id_partition = Window.partitionBy("national_id_card")
+    simcard_count = func.count("*").over(national_card_id_partition)
+    simcard_count_df = (
+        recent_profile.filter("national_id_card is not null")
+        .withColumn("number_of_simcards_for_national_id", simcard_count)
+        .select(["subscription_identifier", "number_of_simcards_for_national_id"])
+        .distinct()
+    )
+    return df.join(simcard_count_df, on="subscription_identifier", how="left").fillna(
+        {"number_of_simcards_for_national_id": 1}
+    )
 
-    return raw_features.select(cols_to_pick)
 
-
-def filter_important_only(
-    df: DataFrame,
-    important_param: List[Any],
-    parameters: Dict[str, Any],
-    include_targets: bool,
+def add_macrosegments_features(
+    raw_features: DataFrame, recent_profile: DataFrame,
 ) -> DataFrame:
-    """ Filters out columns from a given table. Leaves only important columns and
-    key columns.
+    """ Adds features needed for macrosegments definition.
 
     Args:
-        include_targets: should targets be picked.
-        df: table to be filtered.
-        important_param: List of important columns.
-        parameters: parameters defined in parameters.yml.
+        raw_features: joined C360 features.
+        recent_profile: profile table for last date.
     """
-    keys = parameters["key_columns"]
-    segments = parameters["segment_columns"]
-    must_have_features = parameters["must_have_features"]
-    targets = list_targets(parameters)
-    important_param = get_clean_important_variables(important_param, parameters)
-    cols_to_leave = keys + segments + must_have_features + important_param
-    if include_targets:
-        cols_to_leave += targets
-    cols_to_leave = list(set(cols_to_leave))
-    return df.select(cols_to_leave)
+    return add_number_of_simcards(raw_features, recent_profile)

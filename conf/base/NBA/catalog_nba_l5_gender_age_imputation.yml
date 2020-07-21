@@ -1,0 +1,31 @@
+l5_all_subscribers_master_table_spine:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_all_subscribers_master_table_spine/
+  save_args:
+    mode: "overwrite"
+
+l5_all_subscribers_master_table:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_all_subscribers_master_table/
+  save_args:
+    mode: "overwrite"
+
+l5_gender_age_imputation_master_with_clusters:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_gender_age_imputation_master_with_clusters/
+  save_args:
+    mode: "overwrite"
+
+l5_gender_age_imputed:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_gender_age_imputed/
+  save_args:
+    mode: "overwrite"
+
+l5_gender_age_imputation_clustering_summary_report:
+  type: kedro.io.CSVLocalDataSet
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_gender_age_imputation_clustering_summary_report.csv

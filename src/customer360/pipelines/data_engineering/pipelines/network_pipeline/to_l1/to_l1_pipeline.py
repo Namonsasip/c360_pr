@@ -85,7 +85,7 @@ def network_to_l1_pipeline(**kwargs):
             ),
 
             node(
-                builld_network_data_cqi,
+                build_network_data_cqi,
                 ["l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi",
                  "params:l1_network_data_cqi",
                  "l1_customer_profile_union_daily_feature_for_l1_network_data_cqi"],
@@ -130,6 +130,22 @@ def network_to_l1_pipeline(**kwargs):
                  "params:l1_network_volte_cqi",
                  "l1_customer_profile_union_daily_feature_for_l1_network_volte_cqi"],
                 "l1_network_volte_cqi"
-            )
+            ),
+
+            node(
+                build_network_user_cqi,
+                ["l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi",
+                 "params:l1_network_user_cqi",
+                 "l1_customer_profile_union_daily_feature_for_l1_network_user_cqi"],
+                "l1_network_user_cqi"
+            ),
+
+            node(
+                build_network_file_transfer_cqi,
+                ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_fileaccess_1day_for_l1_network_file_transfer_cqi",
+                 "params:l1_network_file_transfer_cqi",
+                 "l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi"],
+                "l1_network_file_transfer_cqi"
+            ),
         ]
     )

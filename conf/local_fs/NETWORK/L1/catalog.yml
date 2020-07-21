@@ -260,6 +260,59 @@ l1_network_volte_cqi_for_l2_network_volte_cqi:
     target_layer: 'l2_weekly'
     lookback: '0'
 
+l1_network_user_cqi:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: data/L1_DAILY/NETWORK/l1_network_user_cqi/
+  save_args:
+    partitionBy: ["event_partition_date"]
+    mode: "overwrite"
+    increment_flag: 'no'
+    lookup_table_name: 'l1_network_user_cqi'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+l1_network_user_cqi_for_l2_network_user_cqi:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: data/L1_DAILY/NETWORK/l1_network_user_cqi/
+  load_args:
+    partitionBy: ["event_partition_date"]
+    mode: "overwrite"
+    increment_flag: 'no'
+    lookup_table_name: 'l2_network_user_cqi'
+    read_layer: 'l1_daily'
+    target_layer: 'l2_weekly'
+    lookback: '0'
+
+l1_network_file_transfer_cqi_for_l2_network_file_transfer_cqi:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: data/L1_DAILY/NETWORK/l1_network_file_transfer_cqi/
+  load_args:
+    partitionBy: ["event_partition_date"]
+    mode: "overwrite"
+    increment_flag: 'no'
+    lookup_table_name: 'l2_network_file_transfer_cqi'
+    read_layer: 'l1_daily'
+    target_layer: 'l2_weekly'
+    lookback: '0'
+
+l1_network_file_transfer_cqi:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: data/L1_DAILY/NETWORK/l1_network_file_transfer_cqi/
+  save_args:
+    partitionBy: ["event_partition_date"]
+    mode: "overwrite"
+    increment_flag: 'no'
+    lookup_table_name: 'l1_network_file_transfer_cqi'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+
 ## For L1->L3 Catalog
 l1_network_voice_features_for_l3_network_voice_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -387,6 +440,32 @@ l1_network_volte_cqi_for_l3_network_volte_cqi:
     mode: "overwrite"
     increment_flag: 'no'
     lookup_table_name: 'l3_network_volte_cqi'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+l1_network_user_cqi_for_l3_network_user_cqi:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: data/L1_DAILY/NETWORK/l1_network_user_cqi/
+  load_args:
+    partitionBy: ["event_partition_date"]
+    mode: "overwrite"
+    increment_flag: 'no'
+    lookup_table_name: 'l3_network_user_cqi'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+l1_network_file_transfer_cqi_for_l3_network_file_transfer_cqi:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: data/L1_DAILY/NETWORK/l1_network_file_transfer_cqi/
+  load_args:
+    partitionBy: ["event_partition_date"]
+    mode: "overwrite"
+    increment_flag: 'no'
+    lookup_table_name: 'l3_network_file_transfer_cqi'
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
     lookback: '0'

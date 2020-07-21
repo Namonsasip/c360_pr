@@ -13,6 +13,42 @@ distinct_child_code_contact_response:
     write_mode: insert
 
 
+#Eligible subscribers for PCM campaigns
+pcm_candidate:
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: "delta"
+    filepath: "/mnt/customer360-blob-output/databases/nba_dev/pcm_candidate"
+    save_args:
+        mode: "error"
+
+#Data upsell use case model output
+l0_data_upsell_model_output_atl:
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: "csv"
+    filepath: "/mnt/cvm02/cvm_output/MCK/DATAUP/PCM/DATA_UPSELL_PCM_20*"
+    load_args:
+        sep: "|"
+    save_args:
+        mode: "error"
+
+l0_data_upsell_model_output_btl:
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: "csv"
+    filepath: "/mnt/cvm02/cvm_output/MCK/DATAUP/PCM/DATA_UPSELL_PCM_BTL*"
+    load_args:
+        sep: "|"
+    save_args:
+        mode: "error"
+
+l0_predormancy_model:
+    type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+    file_format: "csv"
+    filepath: "/mnt/cvm02/cvm_output/PREDORMANCY_PPS2/**"
+    load_args:
+        sep: "|"
+    save_args:
+        mode: "error"
+
 # List of non-tracking campaign [adhoc]
 campaign_not_tracking_response:
     type: datasets.spark_hive_dataset.SparkHiveDataSet

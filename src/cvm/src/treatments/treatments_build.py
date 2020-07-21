@@ -28,14 +28,15 @@
 import logging
 from typing import Any, Dict
 
-import pandas
 from cvm.src.targets.churn_targets import add_days
 from cvm.src.treatments.rules import MultipleTreatments
 from cvm.src.treatments.treatment_features import (
     add_call_center_features,
+    add_churn_ard_optimizer_features,
+    add_inactivity_days_num,
     add_other_sim_card_features,
 )
-from cvm.src.utils.utils import get_today, join_multiple
+from cvm.src.utils.utils import get_today, join_multiple, pick_one_per_subscriber
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as func
 
@@ -89,6 +90,10 @@ def treatments_featurize(
         propensities_with_features, recent_profile, main_packs, parameters
     )
     treatments_features = add_call_center_features(treatments_features)
+    treatments_features = add_churn_ard_optimizer_features(
+        treatments_features, propensities, parameters
+    )
+    treatments_features = add_inactivity_days_num(treatments_features, parameters)
     return treatments_features
 
 
@@ -112,6 +117,7 @@ def get_treatments_propositions(
     """
     # create treatments propositions
     recently_contacted = get_recently_contacted(parameters, treatments_history)
+    # apply treatment rules
     treatments = MultipleTreatments(parameters["treatment_rules"])
     treatments_propositions = treatments.apply_treatments(
         treatments_features, recently_contacted
@@ -146,7 +152,7 @@ def get_treatments_propositions(
             ]
         )
     )
-    return treatments_propositions
+    return pick_one_per_subscriber(treatments_propositions)
 
 
 def update_history_with_treatments_propositions(
@@ -179,22 +185,3 @@ def update_history_with_treatments_propositions(
             )
         )
         return treatments_history
-
-
-def serve_treatments_chosen(
-    treatments_propositions: DataFrame, parameters: Dict[str, Any],
-) -> pandas.DataFrame:
-    """ Saves the csv with treatments basing on the recent entries in treatments
-    history.
-
-    Args:
-        treatments_propositions: Table with history of treatments.
-        parameters: parameters defined in parameters.yml.
-    """
-
-    treatments_df = treatments_propositions.filter("campaign_code != 'no_treatment'")
-    today = get_today(parameters)
-    if treatments_df.count() == 0:
-        raise Exception(f"No treatments found for {today}")
-    treatments_df = treatments_df.withColumn("date", func.lit(today))
-    return treatments_df.toPandas()

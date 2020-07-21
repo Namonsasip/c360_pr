@@ -1,7 +1,3 @@
-treatment_sizes:
-  ard: 48000
-  churn: 30000
-
 # how often can person be targeted - in days
 treatment_cadence: 7
 
@@ -26,3 +22,11 @@ treatment_package_rec:
 package_btl_mapping:
   z1_notest_ard_d20d10: 'BTL_DISC_10'
   z2_notest_ard_d10: 'ATL'
+
+# assumptions for ard / churn optimizer
+use_case_optimize:
+  ard_cost: 60
+  churn_cost: 300
+
+# how many days of inactivity does it take to not target somebody
+dormancy_threshold: 15

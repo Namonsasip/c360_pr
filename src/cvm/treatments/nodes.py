@@ -33,11 +33,7 @@ from typing import Any, Dict, Tuple
 
 import pandas
 import pytz
-from cvm.src.features.microsegments import (
-    add_microsegment_features,
-    add_volatility_scores,
-    define_microsegments,
-)
+
 from cvm.src.treatments.deploy_treatments import deploy_contact, prepare_campaigns_table
 from cvm.src.treatments.treatment_translation import package_translation
 from cvm.src.treatments.treatments_build import (
@@ -46,30 +42,6 @@ from cvm.src.treatments.treatments_build import (
     update_history_with_treatments_propositions,
 )
 from pyspark.sql import DataFrame
-
-
-def prepare_microsegments(
-    raw_features: DataFrame,
-    reve: DataFrame,
-    parameters: Dict[str, Any],
-    reduce_cols: bool = True,
-) -> DataFrame:
-    """ Add microsegments columns.
-
-    Args:
-        reduce_cols: should columns be reduced only to key columns, microsegment and
-            microsegments.
-        raw_features: Table with users to add microsegments to and pre - preprocessing
-            features.
-        reve: Table with monthly revenue. Assumes using l3 profile table.
-        parameters: parameters defined in parameters.yml.
-    """
-
-    vol = add_volatility_scores(raw_features, reve, parameters)
-    micro_features = add_microsegment_features(raw_features, parameters).join(
-        vol, "subscription_identifier"
-    )
-    return define_microsegments(micro_features, parameters, reduce_cols)
 
 
 def create_treatments_features(

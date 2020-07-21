@@ -1,6 +1,6 @@
 #l4_billing_statement_history_billshock:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: /mnt/customer360-blob-output/C360/BILLING/l4_features/billing_and_payments_billshock/
+#  filepath: base_path/BILLING/l4_features/billing_and_payments_billshock/
 #  file_format: parquet
 #  save_args:
 #    partitionBy: ["start_of_month"]
@@ -9,9 +9,9 @@
 
 l4_billing_statement_history_billshock:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l4_features/l4_billing_statement_history_billshock/
+  filepath: base_path/BILLING/l4_features/l4_billing_statement_history_billshock/
   file_format: parquet
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -23,7 +23,7 @@ l4_billing_statement_history_billshock:
 #l4_billing_rolling_window_topup_and_volume:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/BILLING/l4_features/billing_rolling_window_topup_and_volume/
+#  filepath: base_path/BILLING/l4_features/billing_rolling_window_topup_and_volume/
 #  save_args:
 #    mode: "overwrite"
 #    partitionBy: ["start_of_week"]
@@ -32,8 +32,8 @@ l4_billing_statement_history_billshock:
 l4_billing_rolling_window_topup_and_volume:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l4_features/l4_billing_rolling_window_topup_and_volume/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l4_features/l4_billing_rolling_window_topup_and_volume/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -46,7 +46,7 @@ l4_billing_rolling_window_topup_and_volume:
 #l4_daily_feature_topup_and_volume:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/BILLING/l4_features/daily_topup_and_volume/
+#  filepath: base_path/BILLING/l4_features/daily_topup_and_volume/
 #  save_args:
 #    mode: "overwrite"
 #    partitionBy: ["event_partition_date"]
@@ -55,8 +55,8 @@ l4_billing_rolling_window_topup_and_volume:
 l4_daily_feature_topup_and_volume:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l4_features/l4_daily_feature_topup_and_volume/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l4_features/l4_daily_feature_topup_and_volume/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -69,7 +69,7 @@ l4_daily_feature_topup_and_volume:
 #l4_billing_rolling_window_rpu:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/BILLING/l4_features/billing_rolling_window_rpu/
+#  filepath: base_path/BILLING/l4_features/billing_rolling_window_rpu/
 #  save_args:
 #    mode: "overwrite"
 #    partitionBy: ["start_of_month"]
@@ -78,8 +78,8 @@ l4_daily_feature_topup_and_volume:
 l4_billing_rolling_window_rpu:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l4_features/l4_billing_rolling_window_rpu/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l4_features/l4_billing_rolling_window_rpu/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -92,7 +92,7 @@ l4_billing_rolling_window_rpu:
 #l4_billing_rolling_window_rpu_roaming:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/BILLING/l4_features/billing_rolling_window_rpu_roaming/
+#  filepath: base_path/BILLING/l4_features/billing_rolling_window_rpu_roaming/
 #  save_args:
 #    mode: "overwrite"
 #    partitionBy: ["start_of_week"]
@@ -101,8 +101,8 @@ l4_billing_rolling_window_rpu:
 l4_billing_rolling_window_rpu_roaming:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l4_features/l4_billing_rolling_window_rpu_roaming/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l4_features/l4_billing_rolling_window_rpu_roaming/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -115,7 +115,7 @@ l4_billing_rolling_window_rpu_roaming:
 #l4_billing_rolling_window_time_diff_bw_top_ups:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/BILLING/l4_features/billing_rolling_window_time_diff_bw_top_ups/
+#  filepath: base_path/BILLING/l4_features/billing_rolling_window_time_diff_bw_top_ups/
 #  save_args:
 #    mode: "overwrite"
 #    partitionBy: ["start_of_week"]
@@ -124,8 +124,8 @@ l4_billing_rolling_window_rpu_roaming:
 l4_billing_rolling_window_time_diff_bw_top_ups:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l4_features/l4_billing_rolling_window_time_diff_bw_top_ups/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l4_features/l4_billing_rolling_window_time_diff_bw_top_ups/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -137,7 +137,7 @@ l4_billing_rolling_window_time_diff_bw_top_ups:
 #l4_billing_rolling_window_before_top_up_balance:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/BILLING/l4_features/billing_and_payments_before_top_up_balance/
+#  filepath: base_path/BILLING/l4_features/billing_and_payments_before_top_up_balance/
 #  save_args:
 #    mode: "overwrite"
 #    partitionBy: ["start_of_week"]
@@ -145,8 +145,8 @@ l4_billing_rolling_window_time_diff_bw_top_ups:
 l4_billing_rolling_window_before_top_up_balance:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l4_features/l4_billing_rolling_window_before_top_up_balance/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l4_features/l4_billing_rolling_window_before_top_up_balance/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -158,7 +158,7 @@ l4_billing_rolling_window_before_top_up_balance:
 #l4_billing_rolling_window_top_up_channels:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/BILLING/l4_features/billing_and_payments_top_up_channels/
+#  filepath: base_path/BILLING/l4_features/billing_and_payments_top_up_channels/
 #  save_args:
 #    partitionBy: ["start_of_week"]
 #    mode: "overwrite"
@@ -166,8 +166,8 @@ l4_billing_rolling_window_before_top_up_balance:
 l4_billing_rolling_window_top_up_channels:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l4_features/l4_billing_rolling_window_top_up_channels/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l4_features/l4_billing_rolling_window_top_up_channels/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -179,7 +179,7 @@ l4_billing_rolling_window_top_up_channels:
 #l4_billing_rolling_window_bill_volume:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/BILLING/l4_features/billing_and_payments_monthly_bill_volume/
+#  filepath: base_path/BILLING/l4_features/billing_and_payments_monthly_bill_volume/
 #  save_args:
 #    partitionBy: ["start_of_month"]
 #    mode: "overwrite"
@@ -188,8 +188,8 @@ l4_billing_rolling_window_top_up_channels:
 l4_billing_rolling_window_bill_volume:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l4_features/l4_billing_rolling_window_bill_volume/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l4_features/l4_billing_rolling_window_bill_volume/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -201,7 +201,7 @@ l4_billing_rolling_window_bill_volume:
 #l4_billing_rolling_window_most_popular_topup_channel:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/BILLING/l4_features/billing_and_payments_monthly_most_popular_topup_channel/
+#  filepath: base_path/BILLING/l4_features/billing_and_payments_monthly_most_popular_topup_channel/
 #  save_args:
 #    partitionBy: ["start_of_week"]
 #    mode: "overwrite"
@@ -210,8 +210,8 @@ l4_billing_rolling_window_bill_volume:
 l4_billing_rolling_window_most_popular_topup_channel:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l4_features/l4_billing_rolling_window_most_popular_topup_channel/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l4_features/l4_billing_rolling_window_most_popular_topup_channel/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -223,7 +223,7 @@ l4_billing_rolling_window_most_popular_topup_channel:
 #l4_rolling_window_missed_bills:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/BILLING/l4_features/billing_and_payments_missed_bills/
+#  filepath: base_path/BILLING/l4_features/billing_and_payments_missed_bills/
 #  save_args:
 #    partitionBy: ["start_of_month"]
 #    mode: "overwrite"
@@ -232,8 +232,8 @@ l4_billing_rolling_window_most_popular_topup_channel:
 l4_rolling_window_billing_and_payments_missed_bills:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l4_features/l4_rolling_window_billing_and_payments_missed_bills/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l4_features/l4_rolling_window_billing_and_payments_missed_bills/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -245,7 +245,7 @@ l4_rolling_window_billing_and_payments_missed_bills:
 #l4_rolling_window_popular_topup_day:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/BILLING/l4_features/billing_and_payments_popular_topup_day/
+#  filepath: base_path/BILLING/l4_features/billing_and_payments_popular_topup_day/
 #  save_args:
 #    partitionBy: ["start_of_week"]
 #    mode: "overwrite"
@@ -253,8 +253,8 @@ l4_rolling_window_billing_and_payments_missed_bills:
 l4_rolling_window_popular_topup_day:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l4_features/l4_rolling_window_popular_topup_day/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l4_features/l4_rolling_window_popular_topup_day/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -267,7 +267,7 @@ l4_rolling_window_popular_topup_day:
 #l4_rolling_window_popular_topup_hour:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/BILLING/l4_features/billing_and_payments_popular_topup_hour/
+#  filepath: base_path/BILLING/l4_features/billing_and_payments_popular_topup_hour/
 #  save_args:
 #    partitionBy: ["start_of_week"]
 #    mode: "overwrite"
@@ -276,8 +276,8 @@ l4_rolling_window_popular_topup_day:
 l4_rolling_window_popular_topup_hour:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l4_features/l4_rolling_window_popular_topup_hour/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l4_features/l4_rolling_window_popular_topup_hour/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"
@@ -289,7 +289,7 @@ l4_rolling_window_popular_topup_hour:
 #l4_rolling_window_overdue_bills:
 #  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
 #  file_format: "parquet"
-#  filepath: /mnt/customer360-blob-output/C360/BILLING/l4_features/billing_and_payments_overdue_bills/
+#  filepath: base_path/BILLING/l4_features/billing_and_payments_overdue_bills/
 #  save_args:
 #    partitionBy: ["start_of_month"]
 #    mode: "overwrite"
@@ -298,8 +298,8 @@ l4_rolling_window_popular_topup_hour:
 l4_rolling_window_billing_and_payments_overdue_bills:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  filepath: /mnt/customer360-blob-output/C360/BILLING/l4_features/l4_rolling_window_billing_and_payments_overdue_bills/
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  filepath: base_path/BILLING/l4_features/l4_rolling_window_billing_and_payments_overdue_bills/
+  metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
     mode: "overwrite"

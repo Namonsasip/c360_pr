@@ -24,13 +24,14 @@ def merge_all_usage_outputs(df1: DataFrame, df2: DataFrame, df3: DataFrame, df4:
     CNTX = load_context(Path.cwd(), env=conf)
     dates_list = df1.select('start_of_week').distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
     join_key = ["subscription_identifier", "start_of_week"]
 
     mvv_new = list(divide_chunks(mvv_array, 5))
     add_list = mvv_new
 
-    first_item = add_list[0]
+    first_item = add_list[-1]
 
     add_list.remove(first_item)
     for curr_item in add_list:

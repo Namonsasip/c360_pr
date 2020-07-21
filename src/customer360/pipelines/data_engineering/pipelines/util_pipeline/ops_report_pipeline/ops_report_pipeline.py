@@ -8,8 +8,8 @@ def build_ops_report_dataset(data_frame: DataFrame) -> DataFrame:
     :param data_frame:
     :return:
     """
-    ops_report = data_frame.where("table_name not like '%l4%'")
-    ops_report = ops_report.where("table_name not in ('int_l0_streaming_vimmi_table')")
+    # ops_report = data_frame.where("table_name not like '%l4%'")
+    ops_report = data_frame.where("table_name not in ('int_l0_streaming_vimmi_table')")
 
     # Finding the latest record of every dataset based on updated_on and target_max_data_load_date column.
     ops_report = ops_report.withColumn("rn", f.expr(
@@ -28,7 +28,12 @@ def build_ops_report_dataset(data_frame: DataFrame) -> DataFrame:
         .withColumnRenamed("target_max_data_load_date", "Latest_Data_Partition_Available") \
         .withColumn("Data_Refresh_Freq", f.when(f.lower(f.col("Feature_Layer")) == 'l1_features', "daily").when(
         f.lower(f.col("Feature_Layer")) == 'l2_features', "weekly").when(
-        f.lower(f.col("Feature_Layer")) == 'l3_features', "monthly").otherwise("No_frequency_defined")) \
+        f.lower(f.col("Feature_Layer")) == 'l3_features', "monthly").when(
+        (f.lower(f.col("Feature_Layer")) == 'l4_features') & (f.col("target_layer").like("%l4_daily%")), "daily").when(
+        (f.lower(f.col("Feature_Layer")) == 'l4_features') & (f.col("target_layer").like("%l4_weekly%")),
+        "weekly").when(
+        (f.lower(f.col("Feature_Layer")) == 'l4_features') & (f.col("target_layer").like("%l4_monthly%")),
+        "monthly").otherwise("No_frequency_defined")) \
         .withColumn("Data_Latency", f.when((f.col("Data_Refresh_Freq") == 'daily'),
                                            f.datediff(f.current_date(), f.col("Latest_Data_Partition_Available"))).when(
         (f.col("Data_Refresh_Freq") == 'weekly'),
@@ -40,11 +45,11 @@ def build_ops_report_dataset(data_frame: DataFrame) -> DataFrame:
         .withColumnRenamed("table_path", "Dataset_Path") \
         .withColumn("Need_Supervision", f.when(
         (f.col("Data_Refresh_Freq") == 'daily') & (f.col("Days_Since_Last_Refresh") > 1) & (
-                    f.col("Is_Data_Refresh_Today") == 'N'), "Y").when(
+                f.col("Is_Data_Refresh_Today") == 'N'), "Y").when(
         (f.col("Data_Refresh_Freq") == 'weekly') & (f.col("Days_Since_Last_Refresh") > 7) & (
-                    f.col("Is_Data_Refresh_Today") == 'N'), "Y").when(
+                f.col("Is_Data_Refresh_Today") == 'N'), "Y").when(
         (f.col("Data_Refresh_Freq") == 'monthly') & (f.col("Days_Since_Last_Refresh") > 31) & (
-                    f.col("Is_Data_Refresh_Today") == 'N'), "Y").otherwise("N")) \
+                f.col("Is_Data_Refresh_Today") == 'N'), "Y").otherwise("N")) \
         .withColumn("ops_report_updated_date", f.current_date())
 
     ops_report = ops_report.select("Domain_Name", "Feature_Layer", "Dataset_Name", "Last_Data_Refresh_Date",

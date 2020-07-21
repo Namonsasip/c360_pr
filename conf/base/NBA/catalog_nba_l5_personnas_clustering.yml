@@ -1,0 +1,42 @@
+l5_customer_ids:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-cvm/customer_ids2
+  save_args:
+    mode: "overwrite"
+
+l5_all_subscribers_master_table_customer_level:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_all_subscribers_master_table_customer_level/
+  save_args:
+    mode: "overwrite"
+
+l5_personnas_clustering_master:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_personnas_clustering_master/
+  save_args:
+    mode: "overwrite"
+
+l5_personnas_clustering_master_customer_level:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  file_format: "parquet"
+  filepath: /mnt/customer360-blob-data/C360/NBA/l5_personnas_clustering_master_customer_level/
+  save_args:
+    mode: "overwrite"
+
+personnas_clustering_model:
+  type: kedro.io.PickleLocalDataSet
+  filepath: /dbfs/mnt/customer360-blob-data/C360/NBA/personnas_clustering/ml_pipeline.pickle
+
+l5_personnas_clustering_summary:
+  type: kedro.io.CSVLocalDataSet
+  filepath: data/L5/NBA/l5_personnas_clustering_summary.csv
+
+clustering_propensities:
+  type: kedro.contrib.io.pyspark.SparkDataSet
+  file_format: "parquet"
+  save_args:
+    mode: "overwrite"
+  filepath: /mnt/customer360-blob-data/C360/CVM/l5_cvm_propensity_scores_march_scoring/

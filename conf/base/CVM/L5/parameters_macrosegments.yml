@@ -15,7 +15,21 @@ macrosegments:
       - "sum_rev_arpu_total_revenue_monthly_last_month < 50"
       - "subscriber_tenure < 12"
   churn:
-    positive_arpu:
+    positive_arpu_1sc:
       - "sum_rev_arpu_total_revenue_monthly_last_month > 0"
-    zero_arpu:
+      - "number_of_simcards_for_national_id == 1"
+    zero_arpu_1sc:
       - "sum_rev_arpu_total_revenue_monthly_last_month == 0"
+      - "number_of_simcards_for_national_id == 1"
+    positive_arpu_2_4sc:
+      - "sum_rev_arpu_total_revenue_monthly_last_month > 0"
+      - "number_of_simcards_for_national_id in (2, 3, 4)"
+    zero_arpu_2_4sc:
+      - "sum_rev_arpu_total_revenue_monthly_last_month == 0"
+      - "number_of_simcards_for_national_id in (2, 3, 4)"
+    positive_arpu_5sc:
+      - "sum_rev_arpu_total_revenue_monthly_last_month > 0"
+      - "number_of_simcards_for_national_id >= 5"
+    zero_arpu_5sc:
+      - "sum_rev_arpu_total_revenue_monthly_last_month == 0"
+      - "number_of_simcards_for_national_id >= 5"

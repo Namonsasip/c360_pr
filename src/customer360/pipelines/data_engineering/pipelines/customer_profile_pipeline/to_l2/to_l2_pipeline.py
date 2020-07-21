@@ -36,7 +36,8 @@ def customer_profile_to_l2_pipeline(**kwargs):
         [
             node(
                 union_weekly_cust_profile,
-                ["l1_customer_profile_union_daily_feature_for_l2_customer_profile_union_weekly_feature"],
+                ["l1_customer_profile_union_daily_feature_for_l2_customer_profile_union_weekly_feature",
+                 "params:exception_partition_list_for_l1_customer_profile_union_daily_feature_for_l2_customer_profile_union_weekly_feature"],
                 "l2_customer_profile_union_weekly_feature"
             ),
         ]

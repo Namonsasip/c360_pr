@@ -1,9 +1,9 @@
 
 l0_digital_cxenxse_user_profile_monthly:
-  filepath: /mnt/customer360-blob-data/C360/ONLINE/online_cxense_user_profile/
+  filepath: base_path/DIGITAL/online_cxense_user_profile/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_digital_cxenxse_user_profile_monthly'
@@ -12,10 +12,10 @@ l0_digital_cxenxse_user_profile_monthly:
     lookback: '0'
 
 l0_digital_cxenxse_site_traffic:
-  filepath: /mnt/customer360-blob-data/C360/ONLINE/online_cxense_traffic/
+  filepath: base_path/DIGITAL/online_cxense_traffic/
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: "parquet"
-  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_digital_cxenxse_site_traffic_weekly'

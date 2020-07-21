@@ -550,6 +550,33 @@ l1_customer_profile_union_daily_feature_for_l1_network_volte_cqi:
     target_layer: 'l1_daily'
     lookback: '0'
 
+
+l1_customer_profile_union_daily_feature_for_l1_network_user_cqi:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: data/L1_DAILY/PROFILE/l1_customer_profile_union_daily_feature/
+  file_format: "parquet"
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_network_user_cqi'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+
+l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: data/L1_DAILY/PROFILE/l1_customer_profile_union_daily_feature/
+  file_format: "parquet"
+  metadata_table_path: '/mnt/customer360-blob-output/C360/metadata_table/'
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l1_network_file_transfer_cqi'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
+
 l1_customer_profile_union_daily_features_for_revenue_daily:
   type: kedro.contrib.io.pyspark.SparkDataSet
   filepath: data/L1_DAILY/PROFILE/l1_customer_profile_union_daily_feature/

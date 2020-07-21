@@ -1,5 +1,2 @@
-# Parameters for the example pipeline. Feel free to delete these once you
-# remove the example pipeline from pipeline.py and the example nodes in
-# `src/pipelines/`
-
-
+l4_sales_number_and_volume_on_top_transaction_weekly: "l4_sales_number_and_volume_on_top_transaction_weekly"
+l4_sales_number_and_volume_main_transaction_weekly: "l4_sales_number_and_volume_main_transaction_weekly"

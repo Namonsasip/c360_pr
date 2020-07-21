@@ -27,7 +27,7 @@
 # limitations under the License.
 
 import logging
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
 from cvm.src.utils.utils import get_today
@@ -88,7 +88,7 @@ def filter_latest_date(
     return df
 
 
-def filter_users(df: DataFrame, subscription_id_hash_suffix: str) -> DataFrame:
+def filter_users(df: DataFrame, subscription_id_hash_suffix: List[str]) -> DataFrame:
     """ Create dev sample of given table basing on users' subscription_identifiers.
 
     Args:
@@ -99,25 +99,35 @@ def filter_users(df: DataFrame, subscription_id_hash_suffix: str) -> DataFrame:
     """
 
     log = logging.getLogger(__name__)
-    log.info(f"Filtering users, suffix chosen '{subscription_id_hash_suffix}'")
 
     if subscription_id_hash_suffix is None:
         return df
+    if not isinstance(subscription_id_hash_suffix, list):
+        subscription_id_hash_suffix = [subscription_id_hash_suffix]
 
     if "subscription_identifier" not in df.columns:
         raise Exception("Column subscription_identifier not found.")
 
-    suffix_length = len(subscription_id_hash_suffix)
+    suffixes_in_quotes = [
+        "'{}'".format(suffix) for suffix in subscription_id_hash_suffix
+    ]
+    suffixes_sql = "(" + ", ".join(suffixes_in_quotes) + ")"
+    log.info(f"Filtering users, suffixes chosen: {suffixes_sql}")
+    suffix_length = len(subscription_id_hash_suffix[0])
     df = (
+        # add a hash
         df.withColumn(
             "sub_id_hash", func.sha2(func.col("subscription_identifier"), 256)
         )
+        # add a hash suffix
         .withColumn(
             "sub_id_hash_suffix",
             func.col("sub_id_hash").substr(-suffix_length, suffix_length),
         )
-        .filter("sub_id_hash_suffix == '{}'".format(subscription_id_hash_suffix))
-        .drop(*["sub_id_hash", "sub_id_hash_suffix"])
+        # run the filter
+        .filter("sub_id_hash_suffix in {}".format(suffixes_sql)).drop(
+            *["sub_id_hash", "sub_id_hash_suffix"]
+        )
     )
 
     return df

@@ -1,5 +1,5 @@
 l4_network_voice_features:
-  partition_by: ["subscription_identifier"]
+  partition_by: ["subscription_identifier","access_method_num","national_id_card","start_of_week"]
   feature_list:
     sum: ["network_drop_call_count",
           "network_drop_call_in_3g_count",
@@ -11,7 +11,7 @@ l4_network_voice_features:
   read_from: "l2"
 
 l4_network_good_and_bad_cells_features:
-  partition_by: ["subscription_identifier"]
+  partition_by: ["subscription_identifier","access_method_num","national_id_card","start_of_week"]
   read_from: "l2"
   feature_list:
     sum: ["network_sum_of_good_cells",
@@ -21,14 +21,14 @@ l4_network_good_and_bad_cells_features:
           "network_total_transaction_bad_cells"]
 
 l4_network_share_of_3g_time_in_total_time:
-  partition_by: ["subscription_identifier"]
+  partition_by: ["subscription_identifier","access_method_num","national_id_card","start_of_week"]
   read_from: "l2"
   feature_list:
     sum: ["network_total_3g_time",
           "network_total_time"]
 
 l4_network_data_traffic_features:
-  partition_by: ["subscription_identifier"]
+  partition_by: ["subscription_identifier","access_method_num","national_id_card","start_of_week"]
   read_from: "l2"
   feature_list:
     sum: ["network_total_3g_traffic",
@@ -36,37 +36,49 @@ l4_network_data_traffic_features:
           "network_total_traffic"]
 
 l4_network_data_cqi:
-  partition_by: ["subscription_identifier"]
+  partition_by: ["subscription_identifier","access_method_num","national_id_card","start_of_week"]
   read_from: "l2"
   feature_list:
     avg: ["network_data_cqi"]
 
 l4_network_im_cqi:
-  partition_by: ["subscription_identifier"]
+  partition_by: ["subscription_identifier","access_method_num","national_id_card","start_of_week"]
   read_from: "l2"
   feature_list:
     avg: ["network_cei_im_qoe"]
 
 l4_network_streaming_cqi:
-  partition_by: ["subscription_identifier"]
+  partition_by: ["subscription_identifier","access_method_num","national_id_card","start_of_week"]
   read_from: "l2"
   feature_list:
     avg: ["network_cei_stream_qoe"]
 
 l4_network_web_cqi:
-  partition_by: ["subscription_identifier"]
+  partition_by: ["subscription_identifier","access_method_num","national_id_card","start_of_week"]
   read_from: "l2"
   feature_list:
     avg: ["network_cei_web_qoe"]
 
 l4_network_voip_cqi:
-  partition_by: ["subscription_identifier"]
+  partition_by: ["subscription_identifier","access_method_num","national_id_card","start_of_week"]
   read_from: "l2"
   feature_list:
     avg: ["network_cei_voip_qoe"]
 
 l4_network_volte_cqi:
-  partition_by: ["subscription_identifier"]
+  partition_by: ["subscription_identifier","access_method_num","national_id_card","start_of_week"]
   read_from: "l2"
   feature_list:
     avg: ["network_cei_volte_qoe"]
+
+l4_network_user_cqi:
+  partition_by: ["subscription_identifier","access_method_num","national_id_card","start_of_week"]
+  read_from: "l2"
+  feature_list:
+    avg: ["network_cei_user_qoe"]
+
+l4_network_file_transfer_cqi:
+  partition_by: ["subscription_identifier","access_method_num","national_id_card","start_of_week"]
+  read_from: "l2"
+  feature_list:
+    avg: ["network_cei_file_transfer_qoe"]

@@ -69,5 +69,17 @@ def network_to_l4_pipeline(**kwargs):
                  "params:l4_network_volte_cqi"],
                 "l4_network_volte_cqi"
             ),
+            node(
+                l4_rolling_window,
+                ["l2_network_user_cqi",
+                 "params:l4_network_user_cqi"],
+                "l4_network_user_cqi"
+            ),
+            node(
+                l4_rolling_window,
+                ["l2_network_file_transfer_cqi",
+                 "params:l4_network_file_transfer_cqi"],
+                "l4_network_file_transfer_cqi"
+            ),
         ]
     )

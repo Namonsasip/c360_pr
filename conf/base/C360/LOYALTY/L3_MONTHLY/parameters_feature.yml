@@ -1,10 +1,12 @@
-
 l3_loyalty_point_balance_statuses_monthly:
   where_clause: ""
   feature_list:
-    loyalty_points_total_balance: "max(final_points)"
-    loyalty_points_last_modified_date: "max(modified_date)"
-    loyalty_points_last_expired_date: "max(expired_date)"
+    loyalty_points_total_balance: "max(points_balance_per_sub)"
+    loyalty_points_expired_current_year: "max(point_expire_curr_year)"
+    loyalty_points_expired_next_year: "max(point_expire_next_year)"
+    loyalty_points_last_modified_date: "max(max_modified_date)"
+    loyalty_points_last_expired_date: "max(max_expire_date)"
+    loyalty_is_status_classic: "max(CASE WHEN lower(mobile_segment) = 'classic' THEN 1 ELSE 0 END)"
     loyalty_is_status_emerald: "max(CASE WHEN lower(mobile_segment) = 'emerald' THEN 1 ELSE 0 END)"
     loyalty_is_status_gold: "max(CASE WHEN lower(mobile_segment) = 'gold' THEN 1 ELSE 0 END)"
     loyalty_is_status_platinum: "max(CASE WHEN lower(mobile_segment) = 'platinum' THEN 1 ELSE 0 END)"
@@ -12,5 +14,6 @@ l3_loyalty_point_balance_statuses_monthly:
     loyalty_is_status_prospect_platinum: "max(CASE WHEN lower(mobile_segment) = 'prospect platinum' THEN 1 ELSE 0 END)"
     loyalty_is_status_prospect_gold: "max(CASE WHEN lower(mobile_segment) = 'prospect gold' THEN 1 ELSE 0 END)"
     loyalty_is_status_platinum_plus: "max(CASE WHEN lower(mobile_segment) = 'platinum plus' THEN 1 ELSE 0 END)"
-    loyalty_last_mobile_status_date: "max(mobile_status_date)"
-  granularity: "start_of_month, subscription_identifier"
+    # loyalty_last_mobile_status_date: "max(mobile_status_date)"
+    loyalty_register_program_points_date: "min(loyalty_register_program_points_date)"
+  granularity: "start_of_month,access_method_num,subscription_identifier,national_id_card"

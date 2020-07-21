@@ -9,7 +9,7 @@ from pyspark.sql import functions as F
 from customer360.utilities.config_parser import node_from_config
 from src.customer360.utilities.spark_util import get_spark_empty_df
 from customer360.utilities.re_usable_functions import check_empty_dfs, \
-    data_non_availability_and_missing_check
+    data_non_availability_and_missing_check, union_dataframes_with_missing_cols
 from pyspark.sql.types import StringType
 
 conf = os.getenv("CONF", None)
@@ -32,9 +32,23 @@ def massive_processing_with_customer(input_df: DataFrame
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
                                                        target_table_name="l1_revenue_prepaid_pru_f_usage_multi_daily")
 
+    input_df = input_df.withColumn("overlap_date", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))
+
     customer_df = data_non_availability_and_missing_check(df=customer_df, grouping="daily",
                                                           par_col="event_partition_date",
                                                           target_table_name="l1_revenue_prepaid_pru_f_usage_multi_daily")
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            input_df.select(
+                F.max(F.col("overlap_date")).alias("max_date")),
+            customer_df.select(
+                F.max(F.col("event_partition_date")).alias("max_date")),
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    input_df = input_df.filter(F.col("overlap_date") <= min_value).drop("overlap_date")
+    customer_df = customer_df.filter(F.col("event_partition_date") <= min_value)
 
     if check_empty_dfs([input_df, customer_df]):
         return get_spark_empty_df()
@@ -57,9 +71,19 @@ def massive_processing_with_customer(input_df: DataFrame
 
     mvv_new = list(divide_chunks(mvv_array, 5))
     add_list = mvv_new
-    customer_df = customer_df.where("charge_type = 'Pre-paid'") \
-        .select("access_method_num", "subscription_identifier", "event_partition_date", "start_of_week")
-    first_item = add_list[0]
+
+    sel_cols = ['access_method_num',
+                'event_partition_date',
+                "subscription_identifier",
+                "start_of_week",
+                "start_of_month",
+                "national_id_card"
+                ]
+    join_cols = ['access_method_num', 'event_partition_date', "start_of_week", "start_of_month"]
+
+    customer_df = customer_df.where("charge_type = 'Pre-paid'").select(sel_cols)
+
+    first_item = add_list[-1]
 
     add_list.remove(first_item)
     for curr_item in add_list:
@@ -68,7 +92,7 @@ def massive_processing_with_customer(input_df: DataFrame
             .drop_duplicates(subset=["access_method_num", "partition_date"])
         small_cus_df = customer_df.filter(F.col("event_partition_date").isin(*[curr_item]))
         output_df = node_from_config(small_df, sql)
-        output_df = small_cus_df.join(output_df, ["access_method_num", "event_partition_date", "start_of_week"], "left")
+        output_df = small_cus_df.join(output_df, join_cols, "left")
         CNTX.catalog.save("l1_revenue_prepaid_pru_f_usage_multi_daily", output_df)
 
     logging.info("Final date to run for {0}".format(str(first_item)))
@@ -76,5 +100,5 @@ def massive_processing_with_customer(input_df: DataFrame
         .drop_duplicates(subset=["access_method_num", "partition_date"])
     return_df = node_from_config(return_df, sql)
     small_cus_df = customer_df.filter(F.col("event_partition_date").isin(*[first_item]))
-    return_df = small_cus_df.join(return_df, ["access_method_num", "event_partition_date", "start_of_week"], "left")
+    return_df = small_cus_df.join(return_df, join_cols, "left")
     return return_df

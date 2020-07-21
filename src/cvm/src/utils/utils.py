@@ -26,44 +26,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import functools
-import string
 from datetime import datetime
-from random import random
 from typing import Any, Callable, Dict, List
 
-import pandas
 import pytz
+
+import pyspark.sql.functions as func
 from customer360.utilities.spark_util import get_spark_session
 from cvm.src.utils.list_targets import list_targets
-from pyspark.sql import DataFrame
-
-
-def map_over_deep_dict(
-    deep_dict: Dict, fun: Callable, pass_dict_key: bool = False
-) -> Dict:
-    """ Iterates over dictionary of dictionaries.
-
-    Args:
-        deep_dict: dictionary of dictionaries with arguments in leaf nodes.
-        fun: function to map on deep_dict.
-        pass_dict_key: should dictionary keys be passed as arguments to fun.
-    Returns:
-        Dictionary of dictionaries with mapped values in leaves.
-    """
-
-    def _iter_deeper(sub_dict_or_arg, *args):
-        if type(sub_dict_or_arg) is dict:
-            to_return = {}
-            for k in sub_dict_or_arg:
-                to_return[k] = _iter_deeper(sub_dict_or_arg[k], (*args, k))
-        else:
-            if pass_dict_key:
-                to_return = fun(sub_dict_or_arg, *args)
-            else:
-                to_return = fun(sub_dict_or_arg)
-        return to_return
-
-    return _iter_deeper(deep_dict, ())
+from pyspark.sql import DataFrame, Window
 
 
 def iterate_over_usecases_macrosegments_targets(
@@ -106,11 +77,6 @@ def iterate_over_usecases_macrosegments_targets(
     return fun_vals
 
 
-def random_word(length=16):
-    letters = string.ascii_lowercase
-    return "".join(random.choice(letters) for i in range(length))
-
-
 def get_clean_important_variables(
     important_param: List[Any], parameters: Dict[str, Any],
 ) -> List[Any]:
@@ -142,49 +108,6 @@ def impute_from_parameters(df: DataFrame, parameters: Dict[str, Any],) -> DataFr
         if col_name in df.columns
     }
     return df.fillna(default_values_to_apply)
-
-
-def df_to_list(df: DataFrame) -> List[Any]:
-    """ Converts one column DataFrame into list.
-
-    Args:
-        df: one column DataFrame
-    """
-    return df.rdd.flatMap(lambda x: x).collect()
-
-
-def return_column_as_list(df: DataFrame, colname: str, distinct: bool = False) -> List:
-    """ Return column of DataFrame as list.
-
-    Args:
-        df: Input DataFrame.
-        colname: name of column to return.
-        distinct: should distinct values be returned.
-    """
-    if colname not in df.columns:
-        raise Exception(f"Column {colname} not found")
-    df = df.select(colname)
-    if distinct:
-        df = df.distinct()
-    return df_to_list(df)
-
-
-def pyspark_to_pandas(df, n_partitions=None):
-    """
-    Returns the contents of `df` as a local `pandas.DataFrame` in a speedy
-    fashion. The DataFrame is repartitioned if `n_partitions` is passed.
-    """
-
-    def _map_to_pandas(rdds):
-        """ Needs to be here due to pickling issues """
-        return [pandas.DataFrame(list(rdds))]
-
-    if n_partitions is not None:
-        df = df.repartition(n_partitions)
-    df_pandas = df.rdd.mapPartitions(_map_to_pandas).collect()
-    df_pandas = pandas.concat(df_pandas)
-    df_pandas.columns = df.columns
-    return df_pandas
 
 
 def return_none_if_missing(d: Dict, key: str) -> Any:
@@ -251,3 +174,24 @@ def refresh_parquet(df: DataFrame, parameters: Dict[str, Any],) -> DataFrame:
     temp_path = parameters["refresh_temp_path"]
     df.write.mode("overwrite").parquet(temp_path)
     return get_spark_session().read.parquet(temp_path)
+
+
+def pick_one_per_subscriber(
+    df: DataFrame, col_name: str = "subscription_identifier"
+) -> DataFrame:
+    """ Some inputs have more then one row per `subscription_identifier`. This function
+    picks only one row for such cases.
+
+    Args:
+        df: table to filter rows for.
+        col_name: col_name to make unique.
+    """
+    order_col = [column_name for column_name in df.columns if column_name != col_name][
+        0
+    ]
+    order_win = Window.partitionBy(col_name).orderBy(order_col)
+    return (
+        df.withColumn("row_no", func.row_number().over(order_win))
+        .filter("row_no == 1")
+        .drop("row_no")
+    )

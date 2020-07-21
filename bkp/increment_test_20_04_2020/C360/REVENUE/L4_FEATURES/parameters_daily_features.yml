@@ -1,9 +1,0 @@
-
-l4_revenue_prepaid_daily_features:
-  partition_by: ["subscription_identifier"]
-  feature_list:
-    avg: ['rev_arpu_total_net_rev']
-    sum: ['rev_arpu_total_net_rev']
-    max: ['rev_arpu_total_net_rev']
-    min: ['rev_arpu_total_net_rev']
-  read_from: "l1"

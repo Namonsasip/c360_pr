@@ -30,7 +30,7 @@ from typing import Any, Dict, List
 
 import pyspark.sql.functions as func
 from cvm.src.utils.list_operations import list_sub
-from cvm.src.utils.utils import return_none_if_missing
+from cvm.src.utils.utils import pick_one_per_subscriber, return_none_if_missing
 from pyspark.sql import DataFrame, Window
 
 
@@ -68,30 +68,6 @@ def verify_treatment(treatment_dict: Dict[str, Any]):
     ]
     for rule in rules:
         verify_rule(rule)
-
-
-class UsersBlacklist:
-    """ Keep score of who was already picked for treatment / rule"""
-
-    def __init__(self):
-        self.blacklisted_users = None
-
-    def add(self, df: DataFrame = None):
-        """Add users to blacklist"""
-        if df is not None:
-            to_add = df.select("subscription_identifier").distinct()
-            if self.blacklisted_users is None:
-                self.blacklisted_users = to_add
-            else:
-                self.blacklisted_users = self.blacklisted_users.union(to_add).distinct()
-
-    def drop_blacklisted(self, df: DataFrame):
-        if self.blacklisted_users is None:
-            return df
-        else:
-            return df.join(
-                self.blacklisted_users, on="subscription_identifier", how="left_anti"
-            )
 
 
 class Rule:
@@ -369,4 +345,4 @@ class MultipleTreatments:
         logging.info("Applying treatments")
         for treatment in self.treatments:
             df = treatment.apply_treatment(df)
-        return df.filter("campaign_code is not null")
+        return pick_one_per_subscriber(df.filter("campaign_code is not null"))

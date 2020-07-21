@@ -11,11 +11,12 @@ def loyalty_to_l3_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                build_loyalty_point_balance_statuses_monthly,
-                ["l1_loyalty_drm_t_aunjai_point_collection_with_customers_for_point_bal_daily",
-                 "l1_loyalty_priv_point_bonus_ba_daily",
-                 "l1_loyalty_priv_point_ba_daily",
-                 "params:l3_loyalty_point_balance_statuses_monthly"],
+                loyalty_number_of_points_balance,
+                [
+                 "l3_customer_profile_union_monthly_feature_for_l3_loyalty_point_balance_statuses_monthly",
+                 "l0_loyalty_drm_s_aunjai_register_distinct_sub_monthly_for_l3_loyalty_point_balance_statuses_monthly",
+                 "params:l3_loyalty_point_balance_statuses_monthly"
+                ],
                 "l3_loyalty_point_balance_statuses_monthly"
             ),
 

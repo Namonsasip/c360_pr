@@ -29,7 +29,7 @@ def usage_merge_all_data(l2_usage_call_relation_sum_weekly: DataFrame,
     return final_df
 
 
-def build_usage_l2_layer(data_frame: DataFrame, dict_obj: dict) -> DataFrame:
+def build_usage_l2_layer(data_frame: DataFrame, dict_obj: dict, exception_partition=None) -> DataFrame:
     """
     :param data_frame:
     :param dict_obj:
@@ -44,7 +44,7 @@ def build_usage_l2_layer(data_frame: DataFrame, dict_obj: dict) -> DataFrame:
                                                          par_col="event_partition_date",
                                                          target_table_name="l2_usage_postpaid_prepaid_weekly",
                                                          missing_data_check_flg='Y',
-                                                         exception_partitions=['2019-07-29'])
+                                                         exception_partitions=exception_partition)
 
     if check_empty_dfs([data_frame]):
         return get_spark_empty_df()
@@ -63,10 +63,10 @@ def build_usage_l2_layer(data_frame: DataFrame, dict_obj: dict) -> DataFrame:
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 5))
+    mvv_new = list(divide_chunks(mvv_array, 2))
     add_list = mvv_new
 
-    first_item = add_list[0]
+    first_item = add_list[-1]
 
     add_list.remove(first_item)
     for curr_item in add_list:

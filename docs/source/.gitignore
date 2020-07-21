@@ -1,0 +1,3 @@
+# ignore built cvm rst
+cvm*rst
+modules.rst

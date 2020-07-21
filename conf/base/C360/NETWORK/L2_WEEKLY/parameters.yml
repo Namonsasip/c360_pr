@@ -1,0 +1,18 @@
+# L1 -> L2
+
+# Monday before 1-Jan-20
+exception_partition_list_for_l1_network_voice_features_for_l2_network_voice_features: ['2019-12-30']
+# Monday before 23-Jan-20
+exception_partition_list_for_l1_network_web_cqi_for_l2_network_web_cqi: ['2020-01-20']
+# Monday before 1-Aug-19
+exception_partition_list_for_l1_network_data_cqi_for_l2_network_data_cqi: ['2019-07-29']
+# Monday before 1-Nov-19
+exception_partition_list_for_l1_network_share_of_3g_time_in_total_time_for_l2_network_share_of_3g_time_in_total_time: ['2019-10-28']
+# Monday before 1-Nov-19
+exception_partition_list_for_l1_network_data_traffic_features_for_l2_network_data_traffic_features: ['2019-10-28']
+
+
+# L1 -> L2 (L1 not processed so using L0)
+
+# Monday before 1-Aug-19
+exception_partition_list_for_l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi: ['2019-07-29']

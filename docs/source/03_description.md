@@ -341,6 +341,39 @@ in agreed paths.
 
 
 ## Report submodule
+We have the scoring, we have the treatments, we use all of that to send campaigns to users.
+It would be very nice if we could check the impact of the campaigns sent.
+
+Every day pipeline called `cvm_create_report` is run to create statistics used to 
+observe, track and assess the impact. To track churn multiple metrics are used.
+These include churn defined using the `network_pru_a_churn_sub_daily` table and 
+churn defined as some predefined number of days of inactivity.
+You can change the lengths of inactivities in `conf/base/CVM/L5/parameters_report.yml`.
+
+![](.images/03_description_images/0c1b0b6d.png)
+
+To make computation faster only data entries added after`min_date` are used.
+
+`cvm_create_report` pipeline sources the data and updates table saved in 
+`dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_daily_kpis/`.
+On top of churn statistics the table includes:
+- crm_sub_id
+- new sub id, that is access method number and registration date
+- target group - before and after reshuffle
+- revenue data
+  - total
+  - voice
+  - data
+- subscription status
+- macrosegments for ard and churn
+- microsegments for ard and churn
+
+The table is used in notebooks like this [one](https://southeastasia.azuredatabricks.net/?o=334552184297553#notebook/266775204939146/command/2247608900692205)
+to create graphs and reports showing the impact.
+
+![](.images/03_description_images/f038268c.png)
+
+![](.images/03_description_images/e7d7625d.png)
 
 ### KPIs to be tracked
 
@@ -364,4 +397,54 @@ Scoring experiment sets are described in `conf/base/CVM/L5/catalog_scoring_exper
 These are output path for a scoring experiment sets.
 To run scoring experiment use pipeline `cvm_full_scoring_experiment` from `src/customer360/pipeline.py`.
 
+## Customer ID
+We have a lot of MSISDNs in our datasets. 
+We know very well that some users have more then one MSISDN.
+Some analysis would benefit from customer-wide view approach compared to MSISDN view.
 
+### Overall description
+C360 come as an input.
+We assume that some MSISDs form "customers for sure"™.
+I will use that term later on.
+We have to start with something.
+Some clever approach clusters rest of MSISDNs yielding groups of MSISDNs of a single customer.
+`customer_id` is assigned based on that.
+Some of the assumed customers are set aside to test validity of approach.
+
+### Input data
+Data used:
+ - age
+ - gender
+ - place of registration 
+ - dual sim
+ - work location
+ - weekday home location
+ - weekend home location
+ - phones imei
+ - national card id
+
+### Fuzzy logic
+For each pair of subscription identifiers (that could be prepaid sim, postpaid sim or fixed line) we ask the question:
+Are these subscriptions belonging to the same customer?
+
+Positive answer to that question is called 'connection'.
+
+To answer that we compare the data for each of the subscriptions.
+Every pair starts with no connection.
+If they have the same value of a given feature (eg same IMEI) connection strength is increased by a certain amount.
+
+After comparing every feature we check whether the connection is strong enough.
+If it is then these subcriptions are the same customer.
+
+Customer is defined as connected component (google connected component, its a graph theory term) of connections.
+
+### Naive Bayes
+What is the role of the naive bayes here?
+We dont know what is more important. Is it IMEI or work location?
+We need a way to quantify it - this is what we use the naive bayes classifier for.
+
+We create a dataset of pairs of subscriptions. Some are belonging to the same assumed customer, some are not.
+We train naive bayes classifier and look at its parameters.
+Naive bayes classifier's parameters are log probabilities changes induces by featuers (checkout the equations on wiki).
+These are used to come up with some weights for connection part of the exercise.
+You can look up codes [here](https://southeastasia.azuredatabricks.net/?o=334552184297553#notebook/3124525284980348/command/3124525284980349).
