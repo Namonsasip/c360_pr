@@ -47,10 +47,10 @@ features_for_dq:
 #    - feature: "*"
 
 ## NBA Features
-  l4_billing_rolling_window_topup_and_volume:
-    - feature: sum_payments_top_ups_last_week
-    - feature: sum_payments_top_ups_last_four_week
-    - feature: sum_payments_top_ups_last_twelve_week
+#  l4_billing_rolling_window_topup_and_volume:
+#    - feature: sum_payments_top_ups_last_week
+#    - feature: sum_payments_top_ups_last_four_week
+#    - feature: sum_payments_top_ups_last_twelve_week
 #  l4_billing_rolling_window_rpu:
 #    - feature: sum_payments_arpu_last_month
 #    - feature: sum_payments_arpu_last_three_month
