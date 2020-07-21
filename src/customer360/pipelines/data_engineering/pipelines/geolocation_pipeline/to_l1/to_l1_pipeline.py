@@ -8,23 +8,6 @@ def geo_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
 
-            node(
-                l1_geo_time_spent_by_location_daily,
-                ["l0_geo_cust_cell_visit_time_for_l1_geo_time_spent_by_location_daily",
-                 "params:l1_geo_time_spent_by_location_daily"
-                 ],
-                "l1_geo_time_spent_by_location_daily"
-
-            ),
-
-            node(
-                massive_processing_with_l1_geo_cust_subseqently_distance,
-                ["l0_geo_cust_cell_visit_time_for_l1_geo_cust_subseqently_distance_daily",
-                 "params:l1_geo_cust_subseqently_distance_daily"
-                 ],
-                "l1_geo_cust_subseqently_distance_daily"
-            ),
-
             ###total_distance_km###
             node(
                 massive_processing_with_l1_geo_total_distance_km_daily,
@@ -116,6 +99,31 @@ def geo_to_l1_area_pipeline(**kwargs):
                  ],
                 "l1_geo_area_from_competitor_store_daily"
             )
+
+        ], name="geo_to_l1_area_pipeline"
+    )
+
+
+def geo_to_l1_pipeline_test_custer(**kwargs):
+    return Pipeline(
+        [
+
+            node(
+                l1_geo_time_spent_by_location_daily,
+                ["l0_geo_cust_cell_visit_time_for_l1_geo_time_spent_by_location_daily",
+                 "params:l1_geo_time_spent_by_location_daily"
+                 ],
+                "l1_geo_time_spent_by_location_daily"
+
+            ),
+
+            node(
+                massive_processing_with_l1_geo_cust_subseqently_distance,
+                ["l0_geo_cust_cell_visit_time_for_l1_geo_cust_subseqently_distance_daily",
+                 "params:l1_geo_cust_subseqently_distance_daily"
+                 ],
+                "l1_geo_cust_subseqently_distance_daily"
+            ),
 
         ], name="geo_to_l1_area_pipeline"
     )
