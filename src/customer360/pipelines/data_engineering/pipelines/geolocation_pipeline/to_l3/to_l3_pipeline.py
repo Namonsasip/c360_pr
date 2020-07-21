@@ -130,16 +130,16 @@ def geo_to_l3_pipeline(**kwargs):
             #     "l3_the_favourite_locations_monthly"
             # ),
 
-            # ### runnig flag == 6
-            # ### Home weekday city citizens
-            # node(
-            #     l3_geo_home_weekday_city_citizens_monthly,
-            #     ["l3_geo_home_work_location_id_monthly_for_l3_geo_home_weekday_city_citizens_monthly",
-            #      "l0_mst_cell_masterplan_for_l3_geo_home_weekday_city_citizens_monthly",
-            #      "params:l3_geo_home_weekday_city_citizens_monthly"
-            #      ],
-            #     "l3_geo_home_weekday_city_citizens_monthly"
-            # ),
+            ### runnig flag == 6
+            ### Home weekday city citizens
+            node(
+                l3_geo_home_weekday_city_citizens_monthly,
+                ["l3_geo_home_work_location_id_monthly_for_l3_geo_home_weekday_city_citizens_monthly",
+                 "l0_mst_cell_masterplan_for_l3_geo_home_weekday_city_citizens_monthly",
+                 "params:l3_geo_home_weekday_city_citizens_monthly"
+                 ],
+                "l3_geo_home_weekday_city_citizens_monthly"
+            ),
 
             ## runnig flag == 11
             ### Work area center average
@@ -155,7 +155,7 @@ def geo_to_l3_pipeline(**kwargs):
     )
 
 
-def geo_to_l3_pipeline(**kwargs):
+def geo_to_l3_pipeline_call_data(**kwargs):
     return Pipeline(
         [
             ### runnig flag == 9.2
@@ -185,7 +185,7 @@ def geo_to_l3_pipeline(**kwargs):
                 "l3_geo_call_location_home_work_monthly"
             )
 
-        ], name="geo_to_l3_pipeline"
+        ], name="geo_to_l3_pipeline_call_data"
     )
 
 

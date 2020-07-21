@@ -289,7 +289,7 @@ def massive_processing_with_l1_geo_total_distance_km_daily(l0_df, sql):
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
-    mvv_new = list(divide_chunks(mvv_array, 2))
+    mvv_new = list(divide_chunks(mvv_array, 5))
     add_list = mvv_new
     first_item = add_list[-1]
     add_list.remove(first_item)
@@ -396,7 +396,7 @@ def massive_processing_with_l1_geo_cust_subseqently_distance(cell_visit, sql):
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
-    mvv_new = list(divide_chunks(mvv_array, 2))
+    mvv_new = list(divide_chunks(mvv_array, 5))
     add_list = mvv_new
     first_item = add_list[-1]
     add_list.remove(first_item)
@@ -857,7 +857,7 @@ def massive_processing_time_spent_daily(data_frame: DataFrame, sql, output_df_ca
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
-    mvv_new = list(divide_chunks(mvv_array, 2))
+    mvv_new = list(divide_chunks(mvv_array, 5))
     add_list = mvv_new
     first_item = add_list[-1]
     add_list.remove(first_item)
