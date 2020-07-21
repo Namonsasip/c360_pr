@@ -566,7 +566,7 @@ def l3_geo_work_area_center_average_monthly(visti_hr, home_work):
     ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
 
     visti_hr = visti_hr.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
-    home_work = home_work.filter(F.col("partition_month") <= min_value)
+    home_work = home_work.filter(F.col("start_of_month") <= min_value)
 
 
     if check_empty_dfs([visti_hr, home_work]):
