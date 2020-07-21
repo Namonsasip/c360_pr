@@ -98,7 +98,7 @@ def geo_to_l2_same_favourite_pipeline(**kwargs):
             ### runnig flag == 3
             # 27 Same favourite location for weekend and weekday
             node(
-                l2_same_favourite_location_weekend_weekday_weekly,
+                massive_processing_with_l2_same_favourite_location_weekend_weekday_weekly,
                 ["l0_geo_cust_cell_visit_time_for_l2_same_favourite_location_weekend_weekday"],
                 "l2_same_favourite_location_weekend_weekday_weekly"
             )
