@@ -25,7 +25,7 @@ l4_touchpoints_from_call_center_features:
           "touchpoints_duration_of_calls_from_cc_sum"]
   read_from: "l2"
 
-l4_touchpoints_nim_work_features:
+l4_touchpoints_nim_work_features_first:
   partition_by: ["subscription_identifier"]
   feature_list:
     sum: ["touchpoints_num_of_commercial_question_with_cc_sum",
@@ -38,15 +38,7 @@ l4_touchpoints_nim_work_features:
           "touchpoints_num_of_claims_with_chatbot_sum",
           "touchpoints_num_of_consultation_with_chatbot_sum",
           "touchpoints_num_of_chatbot_visit_sum",
-          "touchpoints_num_of_days_with_chatbot_sum",
-          "touchpoints_num_of_commercial_question_with_ais_app_sum",
-          "touchpoints_num_of_claims_with_ais_app_sum",
-          "touchpoints_num_of_consultation_with_ais_app_sum",
-          "touchpoints_num_of_days_with_ais_app_sum",
-          "touchpoints_num_of_days_with_cc_call_sum",
-          "touchpoints_num_of_commercial_question_online_sum",
-          "touchpoints_num_of_claims_with_online_sum",
-          "touchpoints_num_of_consultation_online_sum"]
+          ]
     avg: ["touchpoints_num_of_commercial_question_with_cc_sum",
           "touchpoints_num_of_claims_with_cc_sum",
           "touchpoints_num_of_consultation_with_cc_sum",
@@ -57,15 +49,7 @@ l4_touchpoints_nim_work_features:
           "touchpoints_num_of_claims_with_chatbot_sum",
           "touchpoints_num_of_consultation_with_chatbot_sum",
           "touchpoints_num_of_chatbot_visit_sum",
-          "touchpoints_num_of_days_with_chatbot_sum",
-          "touchpoints_num_of_commercial_question_with_ais_app_sum",
-          "touchpoints_num_of_claims_with_ais_app_sum",
-          "touchpoints_num_of_consultation_with_ais_app_sum",
-          "touchpoints_num_of_days_with_ais_app_sum",
-          "touchpoints_num_of_days_with_cc_call_sum",
-          "touchpoints_num_of_commercial_question_online_sum",
-          "touchpoints_num_of_claims_with_online_sum",
-          "touchpoints_num_of_consultation_online_sum"]
+          ]
     min: ["touchpoints_num_of_commercial_question_with_cc_sum",
           "touchpoints_num_of_claims_with_cc_sum",
           "touchpoints_num_of_consultation_with_cc_sum",
@@ -76,15 +60,7 @@ l4_touchpoints_nim_work_features:
           "touchpoints_num_of_claims_with_chatbot_sum",
           "touchpoints_num_of_consultation_with_chatbot_sum",
           "touchpoints_num_of_chatbot_visit_sum",
-          "touchpoints_num_of_days_with_chatbot_sum",
-          "touchpoints_num_of_commercial_question_with_ais_app_sum",
-          "touchpoints_num_of_claims_with_ais_app_sum",
-          "touchpoints_num_of_consultation_with_ais_app_sum",
-          "touchpoints_num_of_days_with_ais_app_sum",
-          "touchpoints_num_of_days_with_cc_call_sum",
-          "touchpoints_num_of_commercial_question_online_sum",
-          "touchpoints_num_of_claims_with_online_sum",
-          "touchpoints_num_of_consultation_online_sum"]
+          ]
     max: ["touchpoints_num_of_commercial_question_with_cc_sum",
           "touchpoints_num_of_claims_with_cc_sum",
           "touchpoints_num_of_consultation_with_cc_sum",
@@ -95,16 +71,54 @@ l4_touchpoints_nim_work_features:
           "touchpoints_num_of_claims_with_chatbot_sum",
           "touchpoints_num_of_consultation_with_chatbot_sum",
           "touchpoints_num_of_chatbot_visit_sum",
-          "touchpoints_num_of_days_with_chatbot_sum",
-          "touchpoints_num_of_commercial_question_with_ais_app_sum",
-          "touchpoints_num_of_claims_with_ais_app_sum",
-          "touchpoints_num_of_consultation_with_ais_app_sum",
-          "touchpoints_num_of_days_with_ais_app_sum",
-          "touchpoints_num_of_days_with_cc_call_sum",
-          "touchpoints_num_of_commercial_question_online_sum",
-          "touchpoints_num_of_claims_with_online_sum",
-          "touchpoints_num_of_consultation_online_sum"]
+          ]
   read_from: "l2"
+
+
+l4_touchpoints_nim_work_features_second:
+      partition_by: ["subscription_identifier"]
+      feature_list:
+            sum: [
+                  "touchpoints_num_of_days_with_chatbot_sum",
+                  "touchpoints_num_of_commercial_question_with_ais_app_sum",
+                  "touchpoints_num_of_claims_with_ais_app_sum",
+                  "touchpoints_num_of_consultation_with_ais_app_sum",
+                  "touchpoints_num_of_days_with_ais_app_sum",
+                  "touchpoints_num_of_days_with_cc_call_sum",
+                  "touchpoints_num_of_commercial_question_online_sum",
+                  "touchpoints_num_of_claims_with_online_sum",
+                  "touchpoints_num_of_consultation_online_sum"]
+            avg: [
+                  "touchpoints_num_of_days_with_chatbot_sum",
+                  "touchpoints_num_of_commercial_question_with_ais_app_sum",
+                  "touchpoints_num_of_claims_with_ais_app_sum",
+                  "touchpoints_num_of_consultation_with_ais_app_sum",
+                  "touchpoints_num_of_days_with_ais_app_sum",
+                  "touchpoints_num_of_days_with_cc_call_sum",
+                  "touchpoints_num_of_commercial_question_online_sum",
+                  "touchpoints_num_of_claims_with_online_sum",
+                  "touchpoints_num_of_consultation_online_sum"]
+            min: [
+                  "touchpoints_num_of_days_with_chatbot_sum",
+                  "touchpoints_num_of_commercial_question_with_ais_app_sum",
+                  "touchpoints_num_of_claims_with_ais_app_sum",
+                  "touchpoints_num_of_consultation_with_ais_app_sum",
+                  "touchpoints_num_of_days_with_ais_app_sum",
+                  "touchpoints_num_of_days_with_cc_call_sum",
+                  "touchpoints_num_of_commercial_question_online_sum",
+                  "touchpoints_num_of_claims_with_online_sum",
+                  "touchpoints_num_of_consultation_online_sum"]
+            max: [
+                  "touchpoints_num_of_days_with_chatbot_sum",
+                  "touchpoints_num_of_commercial_question_with_ais_app_sum",
+                  "touchpoints_num_of_claims_with_ais_app_sum",
+                  "touchpoints_num_of_consultation_with_ais_app_sum",
+                  "touchpoints_num_of_days_with_ais_app_sum",
+                  "touchpoints_num_of_days_with_cc_call_sum",
+                  "touchpoints_num_of_commercial_question_online_sum",
+                  "touchpoints_num_of_claims_with_online_sum",
+                  "touchpoints_num_of_consultation_online_sum"]
+      read_from: "l2"
 
 l4_touchpoints_ivr_features:
   partition_by: ["subscription_identifier"]
