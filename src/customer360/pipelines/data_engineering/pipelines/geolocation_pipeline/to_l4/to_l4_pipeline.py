@@ -125,7 +125,7 @@ def geo_to_l4_pipeline(**kwargs):
             ),
             node(
                 l4_geo_most_AIS_store_visit,
-                ["l1_location_of_visit_ais_store_daily_for_l4_location_of_last_visit_ais_store",
+                ["l1_location_of_visit_ais_store_daily_for_l4_location_of_most_visit_ais_store",
                  "params:l4_geo_most_AIS_store_visit"
                  ],
                 "l4_geo_most_AIS_store_visit"
@@ -140,8 +140,8 @@ def geo_to_l4_pipeline(**kwargs):
             ),
             node(
                 l4_geo_store_close_to_work,
-                ["l4_geo_home_work_location_id",
-                "l0_mst_poi_shape_for_l1_geo_area_from_ais_store_daily",
+                ["l3_geo_home_work_location_id_monthly_for_l4_geo_home_work_location_id",
+                 "l0_mst_poi_shape_for_l1_geo_area_from_ais_store_daily",
                  "params:l4_geo_store_close_to_work"
                  ],
                 "l4_geo_store_close_to_work"

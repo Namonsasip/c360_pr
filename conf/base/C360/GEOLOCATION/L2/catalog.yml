@@ -18,7 +18,7 @@ l2_geo_time_spent_by_location_weekly_for_l4_geo_time_spent_by_location:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l4_geo_time_spent_by_location'
+    lookup_table_name: 'geo_time_spent_by_location'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
     lookback: '12'
@@ -43,7 +43,7 @@ l2_geo_area_from_ais_store_weekly_for_l4_geo_area_from_ais_store:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l4_area_from_ais_store'
+    lookup_table_name: 'geo_area_from_ais_store'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
     lookback: '12'
@@ -68,7 +68,7 @@ l2_geo_area_from_competitor_store_weekly_for_l4_geo_area_from_competitor_store:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l4_area_from_competitor_store'
+    lookup_table_name: 'geo_area_from_competitor_store'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
     lookback: '12'
@@ -112,7 +112,7 @@ l2_geo_total_distance_km_weekly_for_l4_geo_total_distance_km:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l4_geo_total_distance_km'
+    lookup_table_name: 'geo_total_distance_km'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
     lookback: '12'
@@ -137,7 +137,7 @@ l2_geo_number_of_base_station_weekly_for_l4_geo_number_of_base_station:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l4_number_of_base_station'
+    lookup_table_name: 'geo_number_of_base_station'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
     lookback: '12'
@@ -181,7 +181,7 @@ l2_geo_top3_cells_on_voice_usage:
     target_layer: 'l2_weekly'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l4_geo_top3_cells_on_voice_usage'
+    lookup_table_name: 'geo_top3_cells_on_voice_usage'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
     lookback: '12'
@@ -194,7 +194,7 @@ l2_geo_distance_top_call:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l4_geo_distance_top_call'
+    lookup_table_name: 'geo_distance_top_call'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
     lookback: '12'
@@ -232,12 +232,16 @@ l2_same_favourite_location_weekend_weekday_weekly:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l2_same_favourite_location_weekend_weekday_weekly'
     read_layer: 'l0_daily'
     target_layer: 'l2_weekly'
     mode: "overwrite"
     partitionBy: "start_of_week"
-
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l4_same_favourite_location_weekend_weekday_weekly'
+    read_layer: 'l2_weekly'
+    target_layer: 'l4_weekly'
+    lookback: '0'
 
 l2_geo_cust_subseqently_distance_weekly_for_l4_geo_cust_subseqently_distance:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -246,7 +250,7 @@ l2_geo_cust_subseqently_distance_weekly_for_l4_geo_cust_subseqently_distance:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l4_geo_cust_subseqently_distance'
+    lookup_table_name: 'geo_cust_subseqently_distance'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
     lookback: '12'
