@@ -304,19 +304,6 @@ def massive_processing_with_l1_geo_total_distance_km_daily(l0_df, sql):
 
 ###total_distance_km###
 def l1_geo_total_distance_km_daily(l0_df, sql):
-    l0_df=l0_df.filter('partition_date >= 20191101 and partition_date <= 20191130')
-    # ----- Data Availability Checks -----
-    if check_empty_dfs([l0_df]):
-        return get_spark_empty_df()
-
-    l0_df = data_non_availability_and_missing_check(df=l0_df,
-                                                    grouping="daily",
-                                                    par_col="partition_date",
-                                                    target_table_name="l1_geo_total_distance_km_daily")
-
-    if check_empty_dfs([l0_df]):
-        return get_spark_empty_df()
-
     # ----- Transformation -----
     # Get spark session
     spark = get_spark_session()
