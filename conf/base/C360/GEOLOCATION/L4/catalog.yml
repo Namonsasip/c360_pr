@@ -442,7 +442,7 @@ l4_the_second_frequently_location_4g:
 #------------------------Number of used most frequent-----------------------------------
 l4_geo_from_number_of_used_most_frequent_weekdays:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l4_features/geo_from_number_of_used_most_frequent_weekdays
+  filepath: base_path/GEO/l4_features/geo_from_number_of_used_most_frequent_weekdays/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -454,7 +454,7 @@ l4_geo_from_number_of_used_most_frequent_weekdays:
 
 l4_geo_from_number_of_used_most_frequent_weekends:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l4_features/geo_from_number_of_used_most_frequent_weekends
+  filepath: base_path/GEO/l4_features/geo_from_number_of_used_most_frequent_weekends/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -467,7 +467,7 @@ l4_geo_from_number_of_used_most_frequent_weekends:
 #-------------------------Number of used most frequent top five----------------------------------
 l4_geo_number_most_frequent_top_five:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_number_most_frequent_top_five
+  filepath: /mnt/customer360-blob-output/C360/GEO/l4_features/geo_number_most_frequent_top_five/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -479,7 +479,7 @@ l4_geo_number_most_frequent_top_five:
 
 l4_geo_number_most_frequent_top_five_weekdays:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l4_features/geo_number_most_frequent_top_five_weekdays
+  filepath: base_path/GEO/l4_features/geo_number_most_frequent_top_five_weekdays/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -491,7 +491,7 @@ l4_geo_number_most_frequent_top_five_weekdays:
 
 l4_geo_number_most_frequent_top_five_weekends:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l4_features/geo_number_most_frequent_top_five_weekends
+  filepath: base_path/GEO/l4_features/geo_number_most_frequent_top_five_weekends/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -503,7 +503,7 @@ l4_geo_number_most_frequent_top_five_weekends:
 
 l4_geo_call_home_work_location:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l4_features/l4_geo_call_home_work_location
+  filepath: base_path/GEO/l4_features/l4_geo_call_home_work_location/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:

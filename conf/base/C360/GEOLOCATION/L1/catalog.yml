@@ -346,14 +346,218 @@ l1_the_favourite_locations_daily:
   filepath: base_path/GEO/l1_features/l1_the_favourite_locations/
   file_format: parquet
   metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l1_the_favourite_locations_daily'
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-    lookback: '0'
   save_args:
     mode: "overwrite"
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'the_favourite_locations_weekly'
+    read_layer: 'l1_daily'
+    target_layer: 'l2_weekly'
+    lookback: '0'
+
+l1_the_favourite_locations_daily_for_l4_geo_number_most_frequent_weekday:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l1_features/the_favourite_locations_daily/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'geo_from_number_of_used_most_frequent_weekdays'
+    read_layer: 'l1_daily'
+    target_layer: 'l4_daily'
+    lookback: '0'
+
+l1_the_favourite_locations_daily_for_l4_geo_number_most_frequent_weekend:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l1_features/the_favourite_locations_daily/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'geo_from_number_of_used_most_frequent_weekends'
+    read_layer: 'l1_daily'
+    target_layer: 'l4_daily'
+    lookback: '0'
+
+l1_the_favourite_locations_daily_for_l4_geo_number_most_frequent_top_five_weekend:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l1_features/the_favourite_locations_daily/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'geo_number_most_frequent_top_five_weekends'
+    read_layer: 'l1_daily'
+    target_layer: 'l4_daily'
+    lookback: '0'
+
+l1_the_favourite_locations_daily_for_l4_geo_number_most_frequent_top_five_weekday:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l1_features/the_favourite_locations_daily/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'geo_number_most_frequent_top_five_weekdays'
+    read_layer: 'l1_daily'
+    target_layer: 'l4_daily'
+    lookback: '0'
+
+l1_the_favourite_locations_daily_for_the_second_frequently_location_4g:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l1_features/the_favourite_locations_daily/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'geo_number_most_frequent_top_five_weekdays'
+    read_layer: 'l1_daily'
+    target_layer: 'l4_daily'
+    lookback: '0'
+
+l1_the_favourite_locations_daily_for_l4_the_second_frequently_location:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l1_features/the_favourite_locations_daily/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'the_second_frequently_location'
+    read_layer: 'l1_daily'
+    target_layer: 'l4_daily'
+    lookback: '0'
+
+l1_the_favourite_locations_daily_for_l4_the_second_frequently_location_weekends_4g:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l1_features/the_favourite_locations_daily/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'the_second_frequently_location_weekends_4g'
+    read_layer: 'l1_daily'
+    target_layer: 'l4_daily'
+    lookback: '0'
+
+l1_the_favourite_locations_daily_for_l4_the_second_frequently_location_weekends:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l1_features/the_favourite_locations_daily/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'the_second_frequently_location_weekends'
+    read_layer: 'l1_daily'
+    target_layer: 'l4_daily'
+    lookback: '0'
+
+l1_the_favourite_locations_daily_for_l4_the_second_frequently_location_weekdays_4g:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l1_features/the_favourite_locations_daily/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'the_second_frequently_location_weekdays_4g'
+    read_layer: 'l1_daily'
+    target_layer: 'l4_daily'
+    lookback: '0'
+
+l1_the_favourite_locations_daily_for_l4_the_second_frequently_location_weekdays:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l1_features/the_favourite_locations_daily/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'the_second_frequently_location_weekdays'
+    read_layer: 'l1_daily'
+    target_layer: 'l4_daily'
+    lookback: '0'
+
+l1_the_favourite_locations_daily_for_l4_the_most_frequently_location_4g:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l1_features/the_favourite_locations_daily/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'the_most_frequently_location_4g'
+    read_layer: 'l1_daily'
+    target_layer: 'l4_daily'
+    lookback: '0'
+
+l1_the_favourite_locations_daily_for_l4_the_most_frequently_location:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l1_features/the_favourite_locations_daily/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'the_most_frequently_location'
+    read_layer: 'l1_daily'
+    target_layer: 'l4_daily'
+    lookback: '0'
+
+l1_the_favourite_locations_daily_for_l4_the_most_frequently_location_weekends_4g:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l1_features/the_most_frequently_location_weekends_4g/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'the_most_frequently_location'
+    read_layer: 'l1_daily'
+    target_layer: 'l4_daily'
+    lookback: '0'
+
+l1_the_favourite_locations_daily_for_l4_the_most_frequently_location_weekends:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l1_features/the_most_frequently_location_weekends/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'the_most_frequently_location'
+    read_layer: 'l1_daily'
+    target_layer: 'l4_daily'
+    lookback: '0'
+
+l1_the_favourite_locations_daily_for_l4_the_most_frequently_location_weekdays_4g:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l1_features/the_most_frequently_location_weekdays_4g/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'the_most_frequently_location'
+    read_layer: 'l1_daily'
+    target_layer: 'l4_daily'
+    lookback: '0'
+
+l1_the_favourite_locations_daily_for_l4_the_most_frequently_location_weekdays:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l1_features/the_most_frequently_location_weekdays/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'the_most_frequently_location'
+    read_layer: 'l1_daily'
+    target_layer: 'l4_daily'
+    lookback: '0'
+
+l1_the_favourite_locations_daily_for_l4_the_favourite_locations_daily:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l1_features/the_favourite_locations_daily/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'the_most_frequently_location'
+    read_layer: 'l1_daily'
+    target_layer: 'l4_daily'
+    lookback: '0'
