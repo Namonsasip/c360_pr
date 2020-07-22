@@ -217,7 +217,7 @@ l0_profile_customer_profile_ma_for_l3_use_non_homework_features:
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l3_use_non_homework_features'
     read_layer: 'l0_monthly'
     target_layer: 'l3_monthly'
