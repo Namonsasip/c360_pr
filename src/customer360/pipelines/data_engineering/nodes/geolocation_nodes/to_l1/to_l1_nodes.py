@@ -541,7 +541,6 @@ def l1_location_of_visit_ais_store_daily(shape,cust_cell_visit,sql):
 def massive_processing_with_l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
     usage_df = usage_df.filter('partition_date >= 20191101 and partition_date <= 20191130')
     profile_df = profile_df.filter('partition_month >= 201911')
-    # exception_partitions=['20191106']
     # ----- Data Availability Checks -----
     if check_empty_dfs([usage_df, geo_df, profile_df]):
         return get_spark_empty_df()
@@ -710,7 +709,6 @@ def l1_geo_distance_top_call(df):
 def l1_geo_number_of_bs_used(geo_cust_cell, sql):
     geo_cust_cell=geo_cust_cell.filter('partition_date >= 20191101 and partition_date <= 20191130')
     # .filter('partition_month >= 201911')
-    # exception_partitions=['20191106']
     # ----- Data Availability Checks -----
     if check_empty_dfs([geo_cust_cell]):
         return get_spark_empty_df()
@@ -740,7 +738,7 @@ def massive_processing_with_l1_the_favourite_locations_daily(usage_df_location,g
                                                                 grouping="daily",
                                                                 par_col="partition_date",
                                                                 target_table_name="l1_the_favourite_locations_daily",
-                                                                exception_partitions=['20191106'])
+                                                                exception_partitions=['2019-11-06'])
 
     geo_df_masterplan = get_max_date_from_master_data(geo_df_masterplan, 'partition_date')
 
@@ -885,7 +883,7 @@ def massive_processing_with_l1_number_of_unique_cell_daily(usage_sum_data_locati
                                                                       grouping="daily",
                                                                       par_col="partition_date",
                                                                       target_table_name="l1_number_of_unique_cell_daily",
-                                                                      exception_partitions=['20191106'])
+                                                                      exception_partitions=['2019-11-06'])
 
     if check_empty_dfs([usage_sum_data_location]):
         return get_spark_empty_df()

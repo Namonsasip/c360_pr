@@ -23,7 +23,6 @@ running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 def l2_geo_time_spent_by_location_weekly(df,sql):
     # .filter('partition_date >= 20191101 and partition_date <= 20191130')
     # .filter('partition_month >= 201911')
-    # exception_partitions=['20191106']
     # ----- Data Availability Checks -----
     if check_empty_dfs([df]):
         return get_spark_empty_df()
@@ -46,7 +45,6 @@ def l2_geo_time_spent_by_location_weekly(df,sql):
 def l2_geo_area_from_ais_store_weekly(df, sql):
     # .filter('partition_date >= 20191101 and partition_date <= 20191130')
     # .filter('partition_month >= 201911')
-    # exception_partitions=['20191106']
     # ----- Data Availability Checks -----
     if check_empty_dfs([df]):
         return get_spark_empty_df()
@@ -68,7 +66,6 @@ def l2_geo_area_from_ais_store_weekly(df, sql):
 def l2_geo_area_from_competitor_store_weekly(df,sql):
     # .filter('partition_date >= 20191101 and partition_date <= 20191130')
     # .filter('partition_month >= 201911')
-    # exception_partitions=['20191106']
     # ----- Data Availability Checks -----
     if check_empty_dfs([df]):
         return get_spark_empty_df()
@@ -93,7 +90,6 @@ def l2_geo_area_from_competitor_store_weekly(df,sql):
 def l2_geo_cust_subseqently_distance_weekly(df, sql):
     # .filter('partition_date >= 20191101 and partition_date <= 20191130')
     # .filter('partition_month >= 201911')
-    # exception_partitions=['20191106']
     if check_empty_dfs([df]):
         return get_spark_empty_df()
 
@@ -159,7 +155,6 @@ def l2_geo_cust_subseqently_distance_weekly(df, sql):
 def l2_geo_total_distance_km_weekly(df: DataFrame, sql: dict):
     # .filter('partition_date >= 20191101 and partition_date <= 20191130')
     # .filter('partition_month >= 201911')
-    # exception_partitions=['20191106']
     # ----- Data Availability Checks -----
     if check_empty_dfs([df]):
         return get_spark_empty_df()
@@ -202,7 +197,6 @@ def l2_geo_total_distance_km_weekly(df: DataFrame, sql: dict):
 def l2_geo_data_count_location_weekly(df,sql):
     # .filter('partition_date >= 20191101 and partition_date <= 20191130')
     # .filter('partition_month >= 201911')
-    # exception_partitions=['20191106']
     # ----- Data Availability Checks -----
     if check_empty_dfs([df]):
         return get_spark_empty_df()
@@ -228,7 +222,6 @@ def l2_geo_data_count_location_weekly(df,sql):
 def l2_geo_top3_cells_on_voice_usage(df,sql):
     # .filter('partition_date >= 20191101 and partition_date <= 20191130')
     # .filter('partition_month >= 201911')
-    # exception_partitions=['20191106']
     # ----- Data Availability Checks -----
     if check_empty_dfs([df]):
         return get_spark_empty_df()
@@ -270,7 +263,6 @@ def l2_geo_top3_cells_on_voice_usage(df,sql):
 def l2_geo_distance_top_call(df):
     # .filter('partition_date >= 20191101 and partition_date <= 20191130')
     # .filter('partition_month >= 201911')
-    # exception_partitions=['20191106']
     # ----- Data Availability Checks -----
     if check_empty_dfs([df]):
         return get_spark_empty_df()
@@ -300,7 +292,6 @@ def l2_geo_distance_top_call(df):
 def l2_the_favourite_locations_weekly(df):
     # .filter('partition_date >= 20191101 and partition_date <= 20191130')
     # .filter('partition_month >= 201911')
-    # exception_partitions=['20191106']
     # ----- Data Availability Checks -----
     if check_empty_dfs([df]):
         return get_spark_empty_df()
