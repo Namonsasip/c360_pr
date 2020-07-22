@@ -14,12 +14,31 @@ from pyspark.sql.types import DateType
 from customer360.utilities.spark_util import get_spark_session
 
 
+def drop_data_by_date(date_from, date_to, table, key_col):
+    spark = get_spark_session()
+    spark.sql(
+        "DELETE FROM "
+        + table
+        + " WHERE date('"
+        + key_col
+        + "') >= date('"
+        + date_from.strftime("%Y-%m-%d")
+        + "') AND date'("
+        + key_col
+        + "') <= date('"
+        + date_to.strftime("%Y-%m-%d")
+        + "')"
+    )
+    spark.sql("REFRESH TABLE " + table)
+
+
 def create_report_campaign_tracking_table(
     cvm_prepaid_customer_groups: DataFrame,
     l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
     use_case_campaign_mapping: DataFrame,
     date_from: datetime,
     date_to: datetime,
+    drop_update_table=False,
 ) -> DataFrame:
     """
     Args:
@@ -27,10 +46,19 @@ def create_report_campaign_tracking_table(
         l0_campaign_tracking_contact_list_pre_full_load: C360 l0 campaign response data
         use_case_campaign_mapping: campaign child code mapping table of each usecase
         report_create_campaign_tracking_table_parameters: parameters use to create campaign tracking table
-        day: day string #TODO make dynamic
+        day: day string
     Returns: DataFrame of campaign data for report making
     """
-    # reduce data period to 90 days #TODO change to proper number
+    spark = get_spark_session()
+    # Drop data for update
+    if drop_update_table:
+        drop_data_by_date(
+            date_from=date_from,
+            date_to=date_to,
+            table="nba_dev.campaign_response_input_table",
+            key_col="contact_date",
+        )
+    # reduce data period to 90 days
     campaign_tracking_sdf_filter = l0_campaign_tracking_contact_list_pre_full_load.filter(
         F.col("contact_date").between(date_from, date_to)
     )
@@ -72,7 +100,19 @@ def create_report_campaign_tracking_table(
     df_cvm_campaign_tracking = df_cvm_campaign_tracking.withColumn(
         "response_integer", F.when(F.col("response") == "Y", 1).otherwise(0)
     )
-
+    if not drop_update_table:
+        df_cvm_campaign_tracking.createOrReplaceTempView("temp_view_load")
+        spark.sql("DROP TABLE IF EXISTS nba_dev.campaign_response_input_table")
+        spark.sql(
+            """CREATE TABLE nba_dev.campaign_response_input_table 
+            USING DELTA 
+            PARTITIONED BY (contact_date) 
+            AS 
+            SELECT * FROM temp_view_load"""
+        )
+    else:
+        df_cvm_campaign_tracking.write.format("delta").mode("append").partitionBy("contact_date").saveAsTable(
+            "nba_dev.campaign_response_input_table")
     return df_cvm_campaign_tracking
 
 
@@ -86,6 +126,7 @@ def create_input_data_for_reporting_kpis(
     prepaid_no_activity_daily: DataFrame,
     date_from: datetime,
     date_to: datetime,
+    drop_update_table=False,
 ) -> DataFrame:
     """
 
@@ -104,7 +145,13 @@ def create_input_data_for_reporting_kpis(
 
     """
     spark = get_spark_session()
-
+    if drop_update_table:
+        drop_data_by_date(
+            date_from=date_from,
+            date_to=date_to,
+            table="nba_dev.reporting_kpis_input",
+            key_col="join_date",
+        )
     # Create date period dataframe that will be use in cross join
     # to create main table for features aggregation
     df_date_period = spark.sql(
@@ -236,7 +283,19 @@ def create_input_data_for_reporting_kpis(
         .join(prepaid_no_activity_daily, join_keys, "left")
     )
     sdf_reporting_kpis_input = sdf_reporting_kpis_input.dropDuplicates(join_keys)
-
+    if not drop_update_table:
+        sdf_reporting_kpis_input.createOrReplaceTempView("temp_view_load")
+        spark.sql("DROP TABLE IF EXISTS nba_dev.reporting_kpis_input")
+        spark.sql(
+            """CREATE TABLE nba_dev.reporting_kpis_input 
+            USING DELTA 
+            PARTITIONED BY (join_date) 
+            AS 
+            SELECT * FROM temp_view_load"""
+        )
+    else:
+        sdf_reporting_kpis_input.write.format("delta").mode("append").partitionBy("join_date").saveAsTable(
+            "nba_dev.reporting_kpis_input")
     return sdf_reporting_kpis_input
 
 
