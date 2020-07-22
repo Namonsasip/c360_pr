@@ -27,9 +27,8 @@
 # limitations under the License.
 
 from kedro.pipeline import Pipeline, node
-
 from customer360.utilities.config_parser import l4_rolling_window
-from customer360.pipelines.data_engineering.nodes.touchpoints_nodes.to_l4 import build_touchpoints_weekly_features
+from customer360.pipelines.data_engineering.nodes.touchpoints_nodes.to_l4 import *
 
 
 def touchpoints_to_l4_pipeline(**kwargs):
@@ -48,7 +47,7 @@ def touchpoints_to_l4_pipeline(**kwargs):
                 "l4_touchpoints_from_call_center_features"
             ),
             node(
-                build_touchpoints_weekly_features,
+                build_l4_touchpoints_nim_work_features,
                 ["l2_touchpoints_nim_work_features",
                  "params:l4_touchpoints_nim_work_features_first",
                  "params:l4_touchpoints_nim_work_features_second"
@@ -56,7 +55,7 @@ def touchpoints_to_l4_pipeline(**kwargs):
                 "l4_touchpoints_nim_work_features"
             ),
             node(
-                build_touchpoints_weekly_features,
+                build_l4_touchpoints_ivr_features,
                 ["l2_touchpoints_ivr_features",
                  "params:l4_touchpoints_ivr_features_first",
                  "params:l4_touchpoints_ivr_features_second",
