@@ -107,7 +107,7 @@ l2_geo_total_distance_km_weekly:
 
 l2_geo_total_distance_km_weekly_for_l4_geo_total_distance_km:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l2_features/geo_total_distance_km_weekly/
+  filepath: base_path/GEO/l2_features/l2_geo_total_distance_km_weekly/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -133,7 +133,7 @@ l2_geo_number_of_base_station_weekly:
 l2_geo_number_of_base_station_weekly_for_l4_geo_number_of_base_station:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
-  filepath: base_path/GEO/l2_features/geo_number_of_base_station_weekly/
+  filepath: base_path/GEO/l2_features/l2_geo_number_of_base_station_weekly/
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
