@@ -38,44 +38,45 @@ def build_campaign_weekly_features(input_df: DataFrame,
 
     CNTX = load_context(Path.cwd(), env=conf)
 
-    # metadata = CNTX.catalog.load("util_audit_metadata_table")
-    # max_date = metadata.filter(F.col("table_name") == "l4_campaign_postpaid_prepaid_features") \
-    #     .select(F.max(F.col("target_max_data_load_date")).alias("max_date")) \
-    #     .withColumn("max_date", F.coalesce(F.col("max_date"), F.to_date(F.lit('1970-01-01'), 'yyyy-MM-dd'))) \
-    #     .collect()[0].max_date
+    metadata = CNTX.catalog.load("util_audit_metadata_table")
+    max_date = metadata.filter(F.col("table_name") == "l4_campaign_postpaid_prepaid_features") \
+        .select(F.max(F.col("target_max_data_load_date")).alias("max_date")) \
+        .withColumn("max_date", F.coalesce(F.col("max_date"), F.to_date(F.lit('1970-01-01'), 'yyyy-MM-dd'))) \
+        .withColumn("max_date", F.date_sub(F.col("max_date"), 65)) \
+        .collect()[0].max_date
 
     input_df = input_df.cache()
 
     first_first_df = l4_rolling_window(input_df, first_first_dict)
-    #first_df = first_df.filter(F.col("start_of_week") > max_date)
+    first_first_df = first_first_df.filter(F.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_first_first", first_first_df)
 
     first_second_df = l4_rolling_window(input_df, first_second_dict)
-    #first_df = first_df.filter(F.col("start_of_week") > max_date)
+    first_second_df = first_second_df.filter(F.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_first_second", first_second_df)
 
     second_first_df = l4_rolling_window(input_df, second_first_dict)
-    #second_df = second_df.filter(F.col("start_of_week") > max_date)
+    second_first_df = second_first_df.filter(F.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_second_first", second_first_df)
 
     second_second_df = l4_rolling_window(input_df, second_second_dict)
-    #second_df = second_df.filter(F.col("start_of_week") > max_date)
+    second_second_df = second_second_df.filter(F.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_second_second", second_second_df)
 
     third_first_df = l4_rolling_window(input_df, third_first_dict)
-    #third_df = third_df.filter(F.col("start_of_week") > max_date)
+    third_first_df = third_first_df.filter(F.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_third_first", third_first_df)
 
     third_second_df = l4_rolling_window(input_df, third_second_dict)
-    #third_df = third_df.filter(F.col("start_of_week") > max_date)
+    third_second_df = third_second_df.filter(F.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_third_second", third_second_df)
 
     fourth_first_df = l4_rolling_window(input_df, fourth_first_dict)
-    #fourth_df = fourth_df.filter(F.col("start_of_week") > max_date)
+    fourth_first_df = fourth_first_df.filter(F.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_fourth_first", fourth_first_df)
 
     fourth_second_df = l4_rolling_window(input_df, fourth_second_dict)
-    #fourth_df = fourth_df.filter(F.col("start_of_week") > max_date)
+    fourth_second_df = fourth_second_df.filter(F.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_fourth_second", fourth_second_df)
 
     first_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_first_first")
