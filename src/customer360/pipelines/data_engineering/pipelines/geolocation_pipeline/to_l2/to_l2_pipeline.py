@@ -6,7 +6,7 @@ from customer360.pipelines.data_engineering.nodes.geolocation_nodes.to_l2.to_l2_
 def geo_to_l2_pipeline(**kwargs):
     return Pipeline(
         [
-            # ### WAITING
+            # ### FINISH
             # ## runnig flag == 4
             # node(
             #     l2_geo_time_spent_by_location_weekly,
@@ -16,7 +16,7 @@ def geo_to_l2_pipeline(**kwargs):
             #     "l2_geo_time_spent_by_location_weekly"
             # ),
 
-            # ### WAITING
+            # ### FINISH
             # ## runnig flag == 8
             # node(
             #     l2_geo_area_from_ais_store_weekly,
@@ -26,7 +26,7 @@ def geo_to_l2_pipeline(**kwargs):
             #     "l2_geo_area_from_ais_store_weekly"
             # ),
 
-            # ### WAITING
+            # ### FINISH
             # ## runnig flag == 1
             # node(
             #     l2_geo_area_from_competitor_store_weekly,
