@@ -7,12 +7,10 @@ churn_ard_report_input_table:
     partitionBy: ["join_date"]
 
 campaign_response_input_table:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/NBA/campaign_response_input_table/
-  save_args:
-    mode: "overwrite"
-    partitionBy: ["contact_date"]
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: nba_dev
+  table: campaign_response_input_table
+  write_mode: overwrite
 
 use_case_view_report_table:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -60,12 +58,10 @@ reporting_kpis:
     partitionBy: ["join_date"]
 
 reporting_kpis_input:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/NBA/reporting_kpis_input/
-  save_args:
-    mode: "overwrite"
-    partitionBy: ["join_date"]
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: nba_dev
+  table: reporting_kpis_input
+  write_mode: overwrite
 
 campaign_view_report_tbl:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet

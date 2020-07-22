@@ -76,37 +76,40 @@ def create_use_case_view_report_data() -> Pipeline:
             #         create_report_campaign_tracking_table,
             #         date_from=start_date_input,
             #         date_to=mock_report_running_date,
+            #         drop_update_table=True,
             #     ),
             #     {
             #         "cvm_prepaid_customer_groups": "cvm_prepaid_customer_groups",
             #         "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
             #         "use_case_campaign_mapping": "use_case_campaign_mapping",
             #     },
-            #     "campaign_response_input_table",
+            #     "unused_memory_campaign_response_input_table",
             #     name="campaign_response_input_table",
             #     tags=["campaign_response_input_table",],
             # ),
-            # node(
-            #     partial(
-            #         create_input_data_for_reporting_kpis,
-            #         date_from=start_date_input,  # TODO make dynamic
-            #         date_to=datetime.strptime(
-            #             mock_report_running_date, "%Y-%m-%d"
-            #         ),  # TODO make dynamic
-            #     ),
-            #     inputs={
-            #         "cvm_prepaid_customer_groups": "cvm_prepaid_customer_groups",
-            #         "dm42_promotion_prepaid": "dm42_promotion_prepaid",
-            #         "dm43_promotion_prepaid": "dm43_promotion_prepaid",
-            #         "dm01_fin_top_up": "dm01_fin_top_up",
-            #         "dm15_mobile_usage_aggr_prepaid": "dm15_mobile_usage_aggr_prepaid",
-            #         "dm07_sub_clnt_info": "dm07_sub_clnt_info",
-            #         "prepaid_no_activity_daily": "prepaid_no_activity_daily",
-            #     },
-            #     outputs="reporting_kpis_input",
-            #     name="create_input_data_for_reporting_kpis",
-            #     tags=["create_input_data_for_reporting_kpis"],
-            # ),
+            node(
+                partial(
+                    create_input_data_for_reporting_kpis,
+                    date_from=start_date_input,
+                    date_to=datetime.strptime(
+                        mock_report_running_date, "%Y-%m-%d"
+                    ),
+                    drop_update_table=True,
+                ),
+                inputs={
+                    "cvm_prepaid_customer_groups": "cvm_prepaid_customer_groups",
+                    "dm42_promotion_prepaid": "dm42_promotion_prepaid",
+                    "dm43_promotion_prepaid": "dm43_promotion_prepaid",
+                    "dm01_fin_top_up": "dm01_fin_top_up",
+                    "dm15_mobile_usage_aggr_prepaid": "dm15_mobile_usage_aggr_prepaid",
+                    "dm07_sub_clnt_info": "dm07_sub_clnt_info",
+                    "prepaid_no_activity_daily": "prepaid_no_activity_daily",
+                },
+                outputs="unused_memory_reporting_kpis_input",
+                name="create_input_data_for_reporting_kpis",
+                tags=["create_input_data_for_reporting_kpis"],
+            ),
+            # TODO Continue working to replace delta table on reporting kpis node
             # node(
             #     partial(
             #         node_reporting_kpis,
@@ -189,57 +192,57 @@ def create_use_case_view_report_data() -> Pipeline:
             #     name="create_general_marketing_performance_report",
             #     tags=["create_general_marketing_performance_report"],
             # ),
-            node(
-                partial(
-                    create_campaign_view_report_input,
-                    # -50 day because reporting kpi future data need
-                    date_from=datetime.strptime(mock_report_running_date, "%Y-%m-%d")
-                    + timedelta(days=-50),
-                    # until present day we ran
-                    date_to=datetime.strptime(mock_report_running_date, "%Y-%m-%d"),
-                ),
-                inputs={
-                    "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
-                    "l0_campaign_history_master_active": "campaign_history_master_active",
-                    "use_case_campaign_mapping": "use_case_campaign_mapping",
-                    "reporting_kpis": "reporting_kpis",
-                },
-                outputs="campaign_view_report_input_tbl",
-                name="create_campaign_view_report_input",
-                tags=["create_campaign_view_report_input","create_campaign_view_report"],
-            ),
-            node(
-                partial(
-                    create_aggregate_campaign_view_features,
-                    # -50 day because reporting kpi future data need
-                    date_from=datetime.strptime(mock_report_running_date, "%Y-%m-%d")
-                    + timedelta(days=-50),
-                    # until present day we ran
-                    date_to=datetime.strptime(mock_report_running_date, "%Y-%m-%d"),
-                    aggregate_period=[7, 30],
-                ),
-                inputs={"campaign_view_report_input": "campaign_view_report_input_tbl",},
-                outputs="aggregate_campaign_view_features_tbl",
-                name="create_aggregate_campaign_view_features",
-                tags=["create_aggregate_campaign_view_features","create_campaign_view_report"],
-            ),
-            node(
-                partial(
-                    create_campaign_view_report,
-                    # -50 day because reporting kpi future data need
-                    date_from=datetime.strptime(mock_report_running_date, "%Y-%m-%d")
-                    + timedelta(days=-50),
-                    # until present day we ran
-                    date_to=datetime.strptime(mock_report_running_date, "%Y-%m-%d"),
-                ),
-                inputs={
-                    "aggregate_campaign_view_features_tbl": "aggregate_campaign_view_features_tbl",
-                    "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
-                },
-                outputs="campaign_view_report_tbl",
-                name="create_campaign_view_report",
-                tags=["create_campaign_view_report"],
-            ),
+            # node(
+            #     partial(
+            #         create_campaign_view_report_input,
+            #         # -50 day because reporting kpi future data need
+            #         date_from=datetime.strptime(mock_report_running_date, "%Y-%m-%d")
+            #         + timedelta(days=-50),
+            #         # until present day we ran
+            #         date_to=datetime.strptime(mock_report_running_date, "%Y-%m-%d"),
+            #     ),
+            #     inputs={
+            #         "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
+            #         "l0_campaign_history_master_active": "campaign_history_master_active",
+            #         "use_case_campaign_mapping": "use_case_campaign_mapping",
+            #         "reporting_kpis": "reporting_kpis",
+            #     },
+            #     outputs="campaign_view_report_input_tbl",
+            #     name="create_campaign_view_report_input",
+            #     tags=["create_campaign_view_report_input","create_campaign_view_report"],
+            # ),
+            # node(
+            #     partial(
+            #         create_aggregate_campaign_view_features,
+            #         # -50 day because reporting kpi future data need
+            #         date_from=datetime.strptime(mock_report_running_date, "%Y-%m-%d")
+            #         + timedelta(days=-50),
+            #         # until present day we ran
+            #         date_to=datetime.strptime(mock_report_running_date, "%Y-%m-%d"),
+            #         aggregate_period=[7, 30],
+            #     ),
+            #     inputs={"campaign_view_report_input": "campaign_view_report_input_tbl",},
+            #     outputs="aggregate_campaign_view_features_tbl",
+            #     name="create_aggregate_campaign_view_features",
+            #     tags=["create_aggregate_campaign_view_features","create_campaign_view_report"],
+            # ),
+            # node(
+            #     partial(
+            #         create_campaign_view_report,
+            #         # -50 day because reporting kpi future data need
+            #         date_from=datetime.strptime(mock_report_running_date, "%Y-%m-%d")
+            #         + timedelta(days=-50),
+            #         # until present day we ran
+            #         date_to=datetime.strptime(mock_report_running_date, "%Y-%m-%d"),
+            #     ),
+            #     inputs={
+            #         "aggregate_campaign_view_features_tbl": "aggregate_campaign_view_features_tbl",
+            #         "l0_campaign_tracking_contact_list_pre_full_load": "l0_campaign_tracking_contact_list_pre_full_load",
+            #     },
+            #     outputs="campaign_view_report_tbl",
+            #     name="create_campaign_view_report",
+            #     tags=["create_campaign_view_report"],
+            # ),
         ],
         tags=["churn_ard_report"],
     )
