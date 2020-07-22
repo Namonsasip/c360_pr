@@ -134,9 +134,9 @@ def produce_treatments_translated(
             offer_mapping,
             parameters,
         )
-    treatments_history = update_history_with_treatments_propositions(
-        treatments_propositions_translated, treatments_history, parameters
-    )
+    # treatments_history = update_history_with_treatments_propositions(
+    #     treatments_propositions_translated, treatments_history, parameters
+    # )
     return treatments_propositions_translated.toPandas(), treatments_history
 
 
