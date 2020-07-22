@@ -133,7 +133,7 @@ l4_geo_use_traffic_home_work_most:
 #----------------------Number_of_base_station-------------------------------------
 l4_geo_number_of_base_station:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: /mnt/customer360-blob-data/C360/GEO/l4_features/geo_number_of_base_station/
+  filepath: base_path/GEO/l4_features/geo_number_of_base_station/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -221,7 +221,7 @@ l4_geo_store_close_to_work:
 #---------------------------op_3_cells_on_voice_usage--------------------------------
 l4_geo_top3_cells_on_voice_usage:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l4_features/geo_top3_cells_on_voice_usage/
+  filepath: base_path/GEO/l4_features/l4_geo_home_work_location_id/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
