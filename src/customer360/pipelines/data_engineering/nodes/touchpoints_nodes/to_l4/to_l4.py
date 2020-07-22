@@ -16,7 +16,7 @@ def build_touchpoints_weekly_features(input_df: DataFrame,
                                       second_dict: dict) -> DataFrame:
     """
     :param input_df:
-    :param first__dict:
+    :param first_dict:
     :param second_dict:
     :return:
     """
