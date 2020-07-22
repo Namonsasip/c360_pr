@@ -95,7 +95,7 @@ l2_geo_cust_subseqently_distance_weekly:
 #-------------------------total_distance_km----------------------------------
 l2_geo_total_distance_km_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l2_features/geo_total_distance_km_weekly/
+  filepath: base_path/GEO/l2_features/l2_geo_total_distance_km_weekly/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -121,7 +121,7 @@ l2_geo_total_distance_km_weekly_for_l4_geo_total_distance_km:
 l2_geo_number_of_base_station_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   file_format: parquet
-  filepath: base_path/GEO/l2_features/geo_number_of_base_station_weekly/
+  filepath: base_path/GEO/l2_features/l2_geo_number_of_base_station_weekly/
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'yes'
@@ -170,7 +170,7 @@ l2_geo_number_of_base_station_weekly_for_l4_geo_number_of_base_station:
 ###Top_3_cells_on_voice_usage###
 l2_geo_top3_cells_on_voice_usage:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l2_features/geo_top3_cells_on_voice_usage/
+  filepath: base_path/GEO/l2_features/l2_geo_top3_cells_on_voice_usage/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -189,7 +189,7 @@ l2_geo_top3_cells_on_voice_usage:
 #------------------------distance_top_call-----------------------------------
 l2_geo_distance_top_call:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l2_features/geo_distance_top_call/
+  filepath: base_path/GEO/l2_features/l2_geo_distance_top_call/
   file_format:  parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -227,7 +227,7 @@ l2_the_favourite_locations_weekly:
 #---------------------27 Same favourite location for weekend and weekday--------------------------------------
 l2_same_favourite_location_weekend_weekday_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l2_features/same_favourite_location_weekend_weekday_weekly/
+  filepath: base_path/GEO/l2_features/l2_same_favourite_location_weekend_weekday/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -245,7 +245,7 @@ l2_same_favourite_location_weekend_weekday_weekly:
 
 l2_geo_cust_subseqently_distance_weekly_for_l4_geo_cust_subseqently_distance:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l2_features/geo_cust_subseqently_distance_weekly/
+  filepath: base_path/GEO/l2_features/l2_geo_cust_subseqently_distance_weekly/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
