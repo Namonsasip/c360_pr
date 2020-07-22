@@ -193,7 +193,7 @@ l0_geo_mst_cell_masterplan_current_for_l3_use_non_homework_features:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l3_use_non_homework_features'
+    lookup_table_name: 'geo_use_traffic_most_location'
     read_layer: 'l0_daily'
     target_layer: 'l3_monthly'
     lookback: '0'
@@ -205,7 +205,7 @@ l0_geo_mst_cell_masterplan_current_for_l3_call_location_home_work_monthly:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'no'
-    lookup_table_name: 'l3_call_location_home_work_monthly'
+    lookup_table_name: 'geo_call_location_home_work_monthly'
     read_layer: 'l0_daily'
     target_layer: 'l3_monthly'
     lookback: '0'
@@ -218,7 +218,7 @@ l0_profile_customer_profile_ma_for_l3_use_non_homework_features:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'no'
-    lookup_table_name: 'l3_use_non_homework_features'
+    lookup_table_name: 'geo_use_traffic_most_location'
     read_layer: 'l0_monthly'
     target_layer: 'l3_monthly'
     lookback: '0'
@@ -231,7 +231,7 @@ l0_usage_sum_data_location_daily_for_l3_use_non_homework_features:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l3_use_non_homework_features'
+    lookup_table_name: 'geo_use_traffic_most_location'
     read_layer: 'l0_daily'
     target_layer: 'l3_monthly'
     lookback: '0'
@@ -257,7 +257,7 @@ l0_usage_sum_voice_location_daily_for_l3_call_location_home_work_monthly:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'no'
-    lookup_table_name: 'l3_call_location_home_work_monthly'
+    lookup_table_name: 'geo_call_location_home_work_monthly'
     read_layer: 'l0_daily'
     target_layer: 'l3_monthly'
     lookback: '0'
@@ -309,7 +309,7 @@ l0_profile_customer_profile_ma_for_l3_call_location_home_work_monthly:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'no'
-    lookup_table_name: 'l3_call_location_home_work_monthly'
+    lookup_table_name: 'geo_call_location_home_work_monthly'
     read_layer: 'l0_daily'
     target_layer: 'l3_monthly'
     lookback: '0'
