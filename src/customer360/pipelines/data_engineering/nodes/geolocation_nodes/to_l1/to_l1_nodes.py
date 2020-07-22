@@ -75,7 +75,7 @@ def massive_processing_with_l1_geo_area_from_ais_store_daily(shape, masterplan, 
         where   a.landmark_cat_name_en in ('AIS')
         and cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) <= (0.5)
         group by 1,2,3,4
-    """)  # Fix this cossJoin --> left outer join
+    """)  # Fix this cossJoin --> left outer join --> Sould use this statement by Kun Good
 
     # join_df = master_df.join(shape_df, [master_df.location_id != shape_df.geo_shape_id], 'inner') \
     #     .select('landmark_sub_name_en', 'location_id', 'location_name',
@@ -148,7 +148,7 @@ def massive_processing_with_l1_geo_area_from_competitor_store_daily(shape,master
         where   a.landmark_cat_name_en in ('TRUE','DTAC')
         and cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) <= (0.5)
         group by 1,2,3,4
-    """)
+    """)  # Fix this cossJoin --> left outer join --> Sould use this statement by Kun Good
 
     def divide_chunks(l, n):
         # looping till length l
@@ -179,8 +179,6 @@ def massive_processing_with_l1_geo_area_from_competitor_store_daily(shape,master
 
 def l1_geo_time_spent_by_location_daily(df,sql):
     df = df.filter('partition_date >= 20191101 and partition_date <= 20191130')
-    # df = df.filter('partition_date >= 20190801 and partition_date<=20191031')
-    # df = add_start_of_week_and_month(df, "time_in")
 
     # ----- Data Availability Checks -----
     if check_empty_dfs([df]):
@@ -229,7 +227,7 @@ def l1_geo_area_from_ais_store_daily(df, geo_cust_cell_visit_time, sql):
         from geo_cust_cell_visit_time a, temp_geo_ais_shop b 
         where a.location_id = b.location_id 
         group by 1,2,3,4
-    """)  # Fix same of crossJoin
+    """)  # It will be inner join
 
     df2 = node_from_config(df2,sql)
 
@@ -255,7 +253,7 @@ def l1_geo_area_from_competitor_store_daily(df,geo_cust_cell_visit_time,sql):
         from geo_cust_cell_visit_time a, temp_geo_ais_shop b
         where a.location_id = b.location_id 
         group by 1,2,3,4
-    """)
+    """)  # It will be inner join
 
     df2 = node_from_config(df2, sql)
 
