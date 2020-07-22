@@ -83,16 +83,16 @@ def geo_to_l4_pipeline(**kwargs):
             #     "l4_geo_total_distance_km"
             # ),
 
-            ### WAIT
-            ###Traffic_fav_location###
-            node(
-                l4_Share_traffic,
-                ["l3_geo_use_traffic_home_work_for_l4_geo_use_traffic_home_work_most",
-                "params:int_l4_geo_use_traffic_home_work_weekly",
-                "params:l4_geo_use_traffic_home_work_weekly"
-                 ],
-                "l4_geo_use_traffic_home_work_most"
-            ),
+            # ### WAIT (have issue in job 1384)
+            # ###Traffic_fav_location###
+            # node(
+            #     l4_Share_traffic,
+            #     ["l3_geo_use_traffic_home_work_for_l4_geo_use_traffic_home_work_most",
+            #     "params:int_l4_geo_use_traffic_home_work_weekly",
+            #     "params:l4_geo_use_traffic_home_work_weekly"
+            #      ],
+            #     "l4_geo_use_traffic_home_work_most"
+            # ),
 
             # ###Number_of_base_station###
             # node(
