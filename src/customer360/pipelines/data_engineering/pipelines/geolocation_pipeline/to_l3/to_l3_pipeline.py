@@ -113,6 +113,7 @@ def geo_to_l3_pipeline(**kwargs):
             #     "l3_the_favourite_locations_monthly"
             # ),
 
+            ### ISSUE: data does not have on month 201911
             ## runnig flag == 11
             ### Work area center average
             node(

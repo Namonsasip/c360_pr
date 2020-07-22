@@ -17,7 +17,7 @@ def geo_to_l1_pipeline(**kwargs):
                 "l1_geo_total_distance_km_daily"
             ),
 
-
+            # ### FINISH
             # ###Number_of_base_station###
             # node(
             #     l1_geo_number_of_bs_used,
@@ -64,6 +64,7 @@ def geo_to_l1_pipeline(**kwargs):
                 "l1_the_favourite_locations_daily"
             ),
 
+            ### FINISH 20191101 - 20191105
             ## Number of Unique Cells Used ###
             node(
                 massive_processing_with_l1_number_of_unique_cell_daily,
@@ -80,6 +81,7 @@ def geo_to_l1_area_pipeline(**kwargs):
     return Pipeline(
         [
 
+            ### FINISH
             node(
                 massive_processing_with_l1_geo_area_from_ais_store_daily,
                 ["l0_mst_poi_shape_for_l1_geo_area_from_ais_store_daily",
@@ -90,6 +92,7 @@ def geo_to_l1_area_pipeline(**kwargs):
                 "l1_geo_area_from_ais_store_daily"
             ),
 
+            ### FINISH
             node(
                 massive_processing_with_l1_geo_area_from_competitor_store_daily,
                 ["l0_mst_poi_shape_for_l1_geo_area_from_competitor_store_daily",
@@ -108,6 +111,7 @@ def geo_to_l1_pipeline_test_custer(**kwargs):
     return Pipeline(
         [
 
+            ### FINISH
             node(
                 l1_geo_time_spent_by_location_daily,
                 ["l0_geo_cust_cell_visit_time_for_l1_geo_time_spent_by_location_daily",
@@ -117,6 +121,7 @@ def geo_to_l1_pipeline_test_custer(**kwargs):
 
             ),
 
+            ### FINISH
             node(
                 massive_processing_with_l1_geo_cust_subseqently_distance,
                 ["l0_geo_cust_cell_visit_time_for_l1_geo_cust_subseqently_distance_daily",
