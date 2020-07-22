@@ -193,6 +193,7 @@ def du_tailor_score():
             END as data_speed""",
         "DATE_ADD(partition_date,-2) as start_of_week",
     )
+    # TODO make master ontop dynamic to prediction date
     agg_master_ontop = (
         master_ontop_weekly_fixed.where("start_of_week = date('2020-07-13')")
         .groupby(
@@ -275,10 +276,13 @@ def du_tailor_score():
     )
     l5_du_scored_info = l5_du_scored.join(model_offer_info, ["model_name"], "left")
     l4_data_ontop_package_preference.show()
+    # TODO Make package preference score dynamic according to prediction date
     l5_du_scored_offer_preference = l5_du_scored_info.selectExpr("*", "date(register_date) as register_date_d").drop(
         "register_date"
     ).withColumnRenamed("register_date_d", "register_date").join(
-        l4_data_ontop_package_preference, ["old_subscription_identifier","access_method_num","register_date"], "left"
+        l4_data_ontop_package_preference.where("start_of_week = date('2020-06-29')"), ["old_subscription_identifier","access_method_num","register_date"], "left"
     )
-    l5_du_scored_offer_preference.createOrReplaceTempView("tmp_load_view")
+
+    l5_du_scored_offer_preference.write.format("delta").mode("append").partitionBy("start_of_week").saveAsTable(
+        "prod_dataupsell.du_offer_score_with_package_preference")
 
