@@ -119,12 +119,19 @@ def produce_treatments_translated(
         package_preference: product of package preference with propensity table.
         offer_mapping: offer ATL to BTL mapping.
     """
+    log = logging.getLogger(__name__)
     treatments_propositions = get_treatments_propositions(
         parameters, treatments_history, treatments_features, users
     )
     treatments_propositions = treatments_propositions.cache()
+    log.info(
+        "Treatments assigned before translation: {}".format(
+            treatments_propositions.count()
+        )
+    )
     if parameters["treatment_output"]["skip_pref_pack_translation"] == "yes":
         treatments_propositions_translated = treatments_propositions
+        log.info("Translation skipped")
     else:
         treatments_propositions_translated = package_translation(
             treatments_propositions,
@@ -132,6 +139,11 @@ def produce_treatments_translated(
             package_preference,
             offer_mapping,
             parameters,
+        )
+        log.info(
+            "Treatments assigned after translation: {}".format(
+                treatments_propositions_translated.count()
+            )
         )
     treatments_history = update_history_with_treatments_propositions(
         treatments_propositions_translated, treatments_history, parameters
