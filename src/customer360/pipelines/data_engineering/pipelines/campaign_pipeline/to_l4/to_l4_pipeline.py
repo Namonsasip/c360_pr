@@ -44,10 +44,14 @@ def campaign_to_l4_pipeline(**kwargs):
             node(
                 build_campaign_weekly_features,
                 ["l2_campaign_postpaid_prepaid_weekly",
-                 "params:l4_campaign_postpaid_prepaid_features_first",
-                 "params:l4_campaign_postpaid_prepaid_features_second",
-                 "params:l4_campaign_postpaid_prepaid_features_third",
-                 "params:l4_campaign_postpaid_prepaid_features_fourth",
+                 "params:l4_campaign_postpaid_prepaid_features_first_first",
+                 "params:l4_campaign_postpaid_prepaid_features_first_second",
+                 "params:l4_campaign_postpaid_prepaid_features_second_first",
+                 "params:l4_campaign_postpaid_prepaid_features_second_second",
+                 "params:l4_campaign_postpaid_prepaid_features_third_first",
+                 "params:l4_campaign_postpaid_prepaid_features_third_second",
+                 "params:l4_campaign_postpaid_prepaid_features_fourth_first",
+                 "params:l4_campaign_postpaid_prepaid_features_fourth_second",
                  ],
                 "l4_campaign_postpaid_prepaid_int"
 
