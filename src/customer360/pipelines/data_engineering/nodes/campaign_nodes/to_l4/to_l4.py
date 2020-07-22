@@ -12,16 +12,25 @@ conf = os.getenv("CONF", None)
 
 
 def build_campaign_weekly_features(input_df: DataFrame,
-                                   first_dict: dict,
-                                   second_dict: dict,
-                                   third_dict: dict,
-                                   fourth_dict: dict) -> DataFrame:
+                                   first_first_dict: dict,
+                                   first_second_dict: dict,
+                                   second_first_dict: dict,
+                                   second_second_dict: dict,
+                                   third_first_dict: dict,
+                                   third_second_dict: dict,
+                                   fourth_first_dict: dict,
+                                   fourth_second_dict: dict
+                                   ) -> DataFrame:
     """
     :param input_df:
-    :param first_dict:
-    :param second_dict:
-    :param third_dict:
-    :param fourth_dict:
+    :param first_first_dict:
+    :param first_second_dict:
+    :param second_first_dict:
+    :param second_second_dict:
+    :param third_first_dict:
+    :param third_second_dict:
+    :param fourth_first_dict:
+    :param fourth_second_dict:
     :return:
     """
     if check_empty_dfs([input_df]):
@@ -29,37 +38,61 @@ def build_campaign_weekly_features(input_df: DataFrame,
 
     CNTX = load_context(Path.cwd(), env=conf)
 
-    metadata = CNTX.catalog.load("util_audit_metadata_table")
-    max_date = metadata.filter(F.col("table_name") == "l4_campaign_postpaid_prepaid_features") \
-        .select(F.max(F.col("target_max_data_load_date")).alias("max_date")) \
-        .withColumn("max_date", F.coalesce(F.col("max_date"), F.to_date(F.lit('1970-01-01'), 'yyyy-MM-dd'))) \
-        .collect()[0].max_date
+    # metadata = CNTX.catalog.load("util_audit_metadata_table")
+    # max_date = metadata.filter(F.col("table_name") == "l4_campaign_postpaid_prepaid_features") \
+    #     .select(F.max(F.col("target_max_data_load_date")).alias("max_date")) \
+    #     .withColumn("max_date", F.coalesce(F.col("max_date"), F.to_date(F.lit('1970-01-01'), 'yyyy-MM-dd'))) \
+    #     .collect()[0].max_date
 
     input_df = input_df.cache()
 
-    first_df = l4_rolling_window(input_df, first_dict)
-    first_df = first_df.filter(F.col("start_of_week") > max_date)
-    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_first", first_df)
+    first_first_df = l4_rolling_window(input_df, first_first_dict)
+    #first_df = first_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_first_first", first_first_df)
 
-    second_df = l4_rolling_window(input_df, second_dict)
-    second_df = second_df.filter(F.col("start_of_week") > max_date)
-    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_second", second_df)
+    first_second_df = l4_rolling_window(input_df, first_second_dict)
+    #first_df = first_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_first_second", first_second_df)
 
-    third_df = l4_rolling_window(input_df, third_dict)
-    third_df = third_df.filter(F.col("start_of_week") > max_date)
-    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_third", third_df)
+    second_first_df = l4_rolling_window(input_df, second_first_dict)
+    #second_df = second_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_second_first", second_first_df)
 
-    fourth_df = l4_rolling_window(input_df, fourth_dict)
-    fourth_df = fourth_df.filter(F.col("start_of_week") > max_date)
-    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_fourth", fourth_df)
+    second_second_df = l4_rolling_window(input_df, second_second_dict)
+    #second_df = second_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_second_second", second_second_df)
 
-    first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_first")
-    second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_second")
-    third_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_third")
-    fourth_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_fourth")
+    third_first_df = l4_rolling_window(input_df, third_first_dict)
+    #third_df = third_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_third_first", third_first_df)
+
+    third_second_df = l4_rolling_window(input_df, third_second_dict)
+    #third_df = third_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_third_second", third_second_df)
+
+    fourth_first_df = l4_rolling_window(input_df, fourth_first_dict)
+    #fourth_df = fourth_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_fourth_first", fourth_first_df)
+
+    fourth_second_df = l4_rolling_window(input_df, fourth_second_dict)
+    #fourth_df = fourth_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_campaign_postpaid_prepaid_features_fourth_second", fourth_second_df)
+
+    first_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_first_first")
+    first_second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_first_second")
+    second_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_second_first")
+    second_second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_second_second")
+    third_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_third_first")
+    third_second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_third_second")
+    fourth_first_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_fourth_first")
+    fourth_second_df = CNTX.catalog.load("l4_campaign_postpaid_prepaid_features_fourth_second")
+
 
     group_cols = ["subscription_identifier", "start_of_week"]
-    merged_df = union_dataframes_with_missing_cols(first_df, second_df, third_df, fourth_df)
+
+    merged_df = union_dataframes_with_missing_cols(first_first_df, first_second_df, second_first_df, second_second_df,
+                                                   third_first_df, third_second_df, fourth_first_df, fourth_second_df)
+
     sql_query = gen_max_sql(merged_df, "test_table", group_cols)
 
     return_df = execute_sql(merged_df, "test_table", sql_query)
