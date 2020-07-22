@@ -364,7 +364,7 @@ def massive_processing_with_l2_same_favourite_location_weekend_weekday_weekly(l0
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
-    mvv_new = list(divide_chunks(mvv_array, 2))
+    mvv_new = list(divide_chunks(mvv_array, 10))
     add_list = mvv_new
     first_item = add_list[-1]
     add_list.remove(first_item)
@@ -458,7 +458,7 @@ def massive_processing_time_spent_weekly(data_frame: DataFrame, sql, output_df_c
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
-    mvv_new = list(divide_chunks(mvv_array, 2))
+    mvv_new = list(divide_chunks(mvv_array, 5))
     add_list = mvv_new
     first_item = add_list[-1]
     add_list.remove(first_item)
