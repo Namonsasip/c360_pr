@@ -201,7 +201,7 @@ def l1_geo_time_spent_by_location_daily(df,sql):
             event_partition_date,
             start_of_week,
             start_of_month
-    from geo_cust_cell_visit_time
+    from geo_cust_location_visit_hr
     group by imsi, location_id, event_partition_date, start_of_week, start_of_month
     """
     return_df = massive_processing_time_spent_daily(df, sql, "l1_geo_time_spent_by_location_daily", 'partition_date')
