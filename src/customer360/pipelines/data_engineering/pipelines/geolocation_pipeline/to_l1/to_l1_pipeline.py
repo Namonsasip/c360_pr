@@ -115,7 +115,7 @@ def geo_to_l1_pipeline_test_custer(**kwargs):
             ### FINISH
             node(
                 l1_geo_time_spent_by_location_daily,
-                ["l0_geo_cust_cell_visit_time_for_l1_geo_time_spent_by_location_daily",
+                ["l0_geo_cust_location_visit_hr_for_l1_geo_time_spent_by_location_daily",
                  "params:l1_geo_time_spent_by_location_daily"
                  ],
                 "l1_geo_time_spent_by_location_daily"
