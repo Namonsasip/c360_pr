@@ -539,6 +539,7 @@ def l3_geo_home_weekday_city_citizens_monthly(home_work_location_id, master, sql
 
 
 def l3_geo_work_area_center_average_monthly(visti_hr, home_work):
+    # visti_hr
     # ----- Data Availability Checks -----
     if check_empty_dfs([visti_hr, home_work]):
         return get_spark_empty_df()

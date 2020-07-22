@@ -9,29 +9,29 @@ def geo_to_l4_pipeline(**kwargs):
     return Pipeline(
         [
 
-            # node(
-            #     l4_rolling_window,
-            #     ["l2_geo_time_spent_by_location_weekly_for_l4_geo_time_spent_by_location",
-            #      "params:l4_geo_time_spent_by_location"
-            #      ],
-            #     "l4_geo_time_spent_by_location"
-            # ),
+            node(
+                l4_rolling_window,
+                ["l2_geo_time_spent_by_location_weekly_for_l4_geo_time_spent_by_location",
+                 "params:l4_geo_time_spent_by_location"
+                 ],
+                "l4_geo_time_spent_by_location"
+            ),
 
-            # node(
-            #     l4_rolling_window,
-            #     ["l2_geo_area_from_ais_store_weekly_for_l4_geo_area_from_ais_store",
-            #      "params:l4_area_from_ais_store"
-            #      ],
-            #     "l4_geo_area_from_ais_store"
-            # ),
+            node(
+                l4_rolling_window,
+                ["l2_geo_area_from_ais_store_weekly_for_l4_geo_area_from_ais_store",
+                 "params:l4_area_from_ais_store"
+                 ],
+                "l4_geo_area_from_ais_store"
+            ),
 
-            # node(
-            #     l4_rolling_window,
-            #     ["l2_geo_area_from_competitor_store_weekly_for_l4_geo_area_from_competitor_store",
-            #      "params:l4_area_from_competitor_store"
-            #      ],
-            #     "l4_geo_area_from_competitor_store"
-            # ),
+            node(
+                l4_rolling_window,
+                ["l2_geo_area_from_competitor_store_weekly_for_l4_geo_area_from_competitor_store",
+                 "params:l4_area_from_competitor_store"
+                 ],
+                "l4_geo_area_from_competitor_store"
+            ),
 
             node(
                 node_from_config,
@@ -156,14 +156,15 @@ def geo_to_l4_pipeline(**kwargs):
                 "l4_geo_top3_cells_on_voice_usage"
             ),
 
-            ### Work area center average
-            node(
-                node_from_config,
-                ["l3_geo_work_area_center_average_monthly",
-                 "params:l4_geo_work_area_center_average"
-                 ],
-                "l4_geo_work_area_center_average"
-            ),
+            # ### ISSUE: flow L3 data does not have on month 201911
+            # ### Work area center average
+            # node(
+            #     node_from_config,
+            #     ["l3_geo_work_area_center_average_monthly",
+            #      "params:l4_geo_work_area_center_average"
+            #      ],
+            #     "l4_geo_work_area_center_average"
+            # ),
 
             ##distance_top_call###
             node(

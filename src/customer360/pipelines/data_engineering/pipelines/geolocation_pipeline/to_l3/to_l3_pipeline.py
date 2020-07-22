@@ -84,15 +84,15 @@ def geo_to_l3_pipeline(**kwargs):
             #     "l3_geo_area_from_competitor_store_monthly"
             # ),
 
-            ### runnig flag == 3
-            ###total_distance_km###
-            # node(
-            #     l3_geo_total_distance_km_monthly,
-            #     ["l1_geo_total_distance_km_daily_for_l3_geo_total_distance_km_monthly",
-            #      "params:l3_geo_total_distance_km_monthly"
-            #      ],
-            #     "l3_geo_total_distance_km_monthly"
-            # ),
+            ## runnig flag == 3
+            ##total_distance_km###
+            node(
+                l3_geo_total_distance_km_monthly,
+                ["l1_geo_total_distance_km_daily_for_l3_geo_total_distance_km_monthly",
+                 "params:l3_geo_total_distance_km_monthly"
+                 ],
+                "l3_geo_total_distance_km_monthly"
+            ),
 
             ### runnig flag == 1
             ##Top_3_cells_on_voice_usage###
@@ -104,21 +104,21 @@ def geo_to_l3_pipeline(**kwargs):
                 "l3_geo_top3_cells_on_voice_usage"
             ),
 
-            ### runnig flag == 12
-            # ##distance_top_call###
-            # node(
-            #     l3_geo_distance_top_call,
-            #     "l1_geo_distance_top_call",
-            #     "l3_geo_distance_top_call"
-            # ),
+            ## runnig flag == 12
+            ##distance_top_call###
+            node(
+                l3_geo_distance_top_call,
+                "l1_geo_distance_top_call",
+                "l3_geo_distance_top_call"
+            ),
 
-            ### runnig flag == 5
-            # # 47 The favourite location
-            # node(
-            #     l3_the_favourite_locations_monthly,
-            #     ["l1_the_favourite_locations_daily"],
-            #     "l3_the_favourite_locations_monthly"
-            # ),
+            ## runnig flag == 5
+            # 47 The favourite location
+            node(
+                l3_the_favourite_locations_monthly,
+                ["l1_the_favourite_locations_daily"],
+                "l3_the_favourite_locations_monthly"
+            ),
 
             # ### ISSUE: data does not have on month 201911
             # ## runnig flag == 11
