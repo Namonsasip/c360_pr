@@ -175,17 +175,17 @@ def geo_to_l3_pipeline_call_data(**kwargs):
 def geo_to_l3_pipeline_interim(**kwargs):
     return Pipeline(
         [
-            # ### FINISH
-            # ### runnig flag == 6
-            # ### Home weekday city citizens
-            # node(
-            #     l3_geo_home_weekday_city_citizens_monthly,
-            #     ["l3_geo_home_work_location_id_monthly_for_l3_geo_home_weekday_city_citizens_monthly",
-            #      "l0_mst_cell_masterplan_for_l3_geo_home_weekday_city_citizens_monthly",
-            #      "params:l3_geo_home_weekday_city_citizens_monthly"
-            #      ],
-            #     "l3_geo_home_weekday_city_citizens_monthly"
-            # ),
+            ### FINISH
+            ### runnig flag == 6
+            ### Home weekday city citizens
+            node(
+                l3_geo_home_weekday_city_citizens_monthly,
+                ["l3_geo_home_work_location_id_monthly_for_l3_geo_home_weekday_city_citizens_monthly",
+                 "l0_mst_cell_masterplan_for_l3_geo_home_weekday_city_citizens_monthly",
+                 "params:l3_geo_home_weekday_city_citizens_monthly"
+                 ],
+                "l3_geo_home_weekday_city_citizens_monthly"
+            ),
 
             # ### FINISH
             # ## runnig flag == 2

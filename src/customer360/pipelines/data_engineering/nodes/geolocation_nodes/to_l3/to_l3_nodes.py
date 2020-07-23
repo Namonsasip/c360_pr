@@ -517,8 +517,7 @@ def l3_geo_home_weekday_city_citizens_monthly(home_work_location_id, master, sql
     # Join Home and master
     home_location_id_master = home_work_location_id.join(master,
                                                          [
-                                                             home_work_location_id.home_weekday_location_id == master.location_id,
-                                                             home_work_location_id.start_of_month == master.start_of_month],
+                                                             home_work_location_id.home_weekday_location_id == master.location_id],
                                                          'left').select(home_work_location_id.start_of_month, 'imsi',
                                                                         'home_weekday_location_id', 'region_name',
                                                                         'province_name', 'district_name',
