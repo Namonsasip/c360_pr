@@ -339,7 +339,7 @@ def geo_to_l4_pipeline(**kwargs):
 def geo_to_l4_pipeline_interim(**kwargs):
     return Pipeline(
         [
-            ### WAIT
+            ### FINISH
             # 27 Same favourite location for weekend and weekday
             node(
                 l4_same_favourite_location_weekend_weekday_weekly,
