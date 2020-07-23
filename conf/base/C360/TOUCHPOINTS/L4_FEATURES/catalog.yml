@@ -69,6 +69,7 @@ l4_touchpoints_nim_work_features_first:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
+    mode: "overwrite"
 
 l4_touchpoints_nim_work_features_second:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -77,6 +78,7 @@ l4_touchpoints_nim_work_features_second:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
+    mode: "overwrite"
 
 l4_touchpoints_nim_work_features_third:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -85,6 +87,7 @@ l4_touchpoints_nim_work_features_third:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
+    mode: "overwrite"
 
 
 l4_touchpoints_ivr_features:
@@ -106,6 +109,7 @@ l4_touchpoints_ivr_features_first:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
+    mode: "overwrite"
 
 l4_touchpoints_ivr_features_second:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -114,4 +118,5 @@ l4_touchpoints_ivr_features_second:
   metadata_table_path: 'metadata_path'
   save_args:
     increment_flag: 'no'
+    mode: "overwrite"
 
