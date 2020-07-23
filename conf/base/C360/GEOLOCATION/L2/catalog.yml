@@ -227,7 +227,7 @@ l2_the_favourite_locations_weekly:
 #---------------------27 Same favourite location for weekend and weekday--------------------------------------
 l2_same_favourite_location_weekend_weekday_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l2_features/l2_same_favourite_location_weekend_weekday/
+  filepath: base_path/GEO/l2_features/same_favourite_location_weekend_weekday_weekly/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
