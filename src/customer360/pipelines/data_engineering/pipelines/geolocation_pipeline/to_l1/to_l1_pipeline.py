@@ -58,14 +58,14 @@ def geo_to_l1_pipeline(**kwargs):
                 "l1_the_favourite_locations_daily"
             ),
 
-            ### FINISH 20191101 - 20191105
-            ## Number of Unique Cells Used ###
-            node(
-                massive_processing_with_l1_number_of_unique_cell_daily,
-                ["l0_usage_sum_data_location_daily_for_l1_number_of_unique_cell_daily"
-                 ],
-                "l1_number_of_unique_cell_daily"
-            )
+            # ### FINISH
+            # ## Number of Unique Cells Used ###
+            # node(
+            #     massive_processing_with_l1_number_of_unique_cell_daily,
+            #     ["l0_usage_sum_data_location_daily_for_l1_number_of_unique_cell_daily"
+            #      ],
+            #     "l1_number_of_unique_cell_daily"
+            # )
 
         ], name="geo_to_l1_pipeline"
     )

@@ -114,14 +114,15 @@ def geo_to_l4_pipeline(**kwargs):
             #     "l4_geo_call_home_work_location"
             # ),
 
-            # # Number of Unique Cells Used###
-            # node(
-            #     l4_geo_number_unique_cell_used,
-            #     ["l1_number_of_unique_cell_daily_for_l4_number_of_unique_cell_weekly"
-            #      ],
-            #     "l4_geo_number_unique_cell_used"
-            # ),
-            #
+            ### WAIT
+            # Number of Unique Cells Used###
+            node(
+                l4_geo_number_unique_cell_used,
+                ["l1_number_of_unique_cell_daily_for_l4_number_of_unique_cell_weekly"
+                 ],
+                "l4_geo_number_unique_cell_used"
+            ),
+
             #
             # ##feature_AIS_store###
             # node(
@@ -138,22 +139,26 @@ def geo_to_l4_pipeline(**kwargs):
             #      ],
             #     "l4_geo_most_AIS_store_visit"
             # ),
-            # node(
-            #     l4_geo_store_close_to_home,
-            #     ["l4_geo_home_work_location_id",
-            #      "l0_mst_poi_shape_for_l1_geo_area_from_ais_store_daily",
-            #      "params:l4_geo_store_close_to_home"
-            #      ],
-            #     "l4_geo_store_close_to_home"
-            # ),
-            # node(
-            #     l4_geo_store_close_to_work,
-            #     ["l3_geo_home_work_location_id_monthly_for_l4_geo_home_work_location_id",
-            #      "l0_mst_poi_shape_for_l1_geo_area_from_ais_store_daily",
-            #      "params:l4_geo_store_close_to_work"
-            #      ],
-            #     "l4_geo_store_close_to_work"
-            # ),
+
+            ### WAIT
+            node(
+                l4_geo_store_close_to_home,
+                ["l3_geo_home_work_location_id_monthly_for_l4_geo_store_close_to_home",
+                 "l0_mst_poi_shape",
+                 "params:l4_geo_store_close_to_home"
+                 ],
+                "l4_geo_store_close_to_home"
+            ),
+
+            ### WAIT
+            node(
+                l4_geo_store_close_to_work,
+                ["l3_geo_home_work_location_id_monthly_for_l4_geo_store_close_to_work",
+                 "l0_mst_poi_shape",
+                 "params:l4_geo_store_close_to_work"
+                 ],
+                "l4_geo_store_close_to_work"
+            ),
 
             # ### WAIT
             # ##Top_3_cells_on_voice_usage###
