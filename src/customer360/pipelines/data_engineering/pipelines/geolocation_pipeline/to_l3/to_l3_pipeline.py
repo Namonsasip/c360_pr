@@ -198,16 +198,16 @@ def geo_to_l3_pipeline_interim(**kwargs):
             #     "l3_geo_distance_top_call"
             # ),
 
-            ### WAIT
-            ### runnig flag == 1
-            ##Top_3_cells_on_voice_usage###
-            node(
-                l3_geo_top3_cells_on_voice_usage,
-                ["l1_geo_top3_cells_on_voice_usage_for_l3_geo_top3_cells_on_voice_usage",
-                 "params:l3_geo_top3_cells_on_voice_usage"
-                 ],
-                "l3_geo_top3_cells_on_voice_usage"
-            ),
+            # ### FINISH
+            # ### runnig flag == 1
+            # ##Top_3_cells_on_voice_usage###
+            # node(
+            #     l3_geo_top3_cells_on_voice_usage,
+            #     ["l1_geo_top3_cells_on_voice_usage_for_l3_geo_top3_cells_on_voice_usage",
+            #      "params:l3_geo_top3_cells_on_voice_usage"
+            #      ],
+            #     "l3_geo_top3_cells_on_voice_usage"
+            # ),
 
         ], name="geo_to_l3_pipeline_interim"
     )
