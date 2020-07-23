@@ -339,12 +339,21 @@ def geo_to_l4_pipeline(**kwargs):
 def geo_to_l4_pipeline_interim(**kwargs):
     return Pipeline(
         [
-            ### FINISH
-            # 27 Same favourite location for weekend and weekday
+            # ### FINISH
+            # # 27 Same favourite location for weekend and weekday
+            # node(
+            #     l4_same_favourite_location_weekend_weekday_weekly,
+            #     ["l2_same_favourite_location_weekend_weekday_weekly"],
+            #     "l4_same_favourite_location_weekend_weekday_weekly"
+            # ),
+
+            ### WAIT
+            # Number of Unique Cells Used###
             node(
-                l4_same_favourite_location_weekend_weekday_weekly,
-                ["l2_same_favourite_location_weekend_weekday_weekly"],
-                "l4_same_favourite_location_weekend_weekday_weekly"
+                l4_geo_number_unique_cell_used,
+                ["l1_number_of_unique_cell_daily_for_l4_number_of_unique_cell_weekly"
+                 ],
+                "l4_geo_number_unique_cell_used"
             ),
 
         ], name="geo_to_l4_pipeline_interim"
