@@ -94,15 +94,15 @@ def geo_to_l4_pipeline(**kwargs):
             #     "l4_geo_use_traffic_home_work_most"
             # ),
 
-            ### WAIT
-            ###Number_of_base_station###
-            node(
-                l4_rolling_window,
-                ["l2_geo_number_of_base_station_weekly_for_l4_geo_number_of_base_station",
-                 "params:l4_geo_number_of_base_station"
-                 ],
-                "l4_geo_number_of_base_station"
-            ),
+            # ### FINISH
+            # ###Number_of_base_station###
+            # node(
+            #     l4_rolling_window,
+            #     ["l2_geo_number_of_base_station_weekly_for_l4_geo_number_of_base_station",
+            #      "params:l4_geo_number_of_base_station"
+            #      ],
+            #     "l4_geo_number_of_base_station"
+            # ),
 
             # ### FINISH
             # ###feature_sum_voice_location###
