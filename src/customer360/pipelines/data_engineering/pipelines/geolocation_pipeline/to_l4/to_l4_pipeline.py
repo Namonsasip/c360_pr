@@ -160,16 +160,6 @@ def geo_to_l4_pipeline(**kwargs):
                 "l4_geo_store_close_to_work"
             ),
 
-            ### WAIT
-            ##Top_3_cells_on_voice_usage###
-            node(
-                l4_rolling_window,
-                ["l2_geo_top3_cells_on_voice_usage",
-                 "params:l4_geo_top3_cells_on_voice_usage"
-                 ],
-                "l4_geo_top3_cells_on_voice_usage"
-            ),
-
             # ### ISSUE: flow L3 data does not have on month 201911
             # ### Work area center average
             # node(
@@ -347,13 +337,23 @@ def geo_to_l4_pipeline_interim(**kwargs):
             #     "l4_same_favourite_location_weekend_weekday_weekly"
             # ),
 
+            # ### FINISH
+            # # Number of Unique Cells Used###
+            # node(
+            #     l4_geo_number_unique_cell_used,
+            #     ["l1_number_of_unique_cell_daily_for_l4_number_of_unique_cell_weekly"
+            #      ],
+            #     "l4_geo_number_unique_cell_used"
+            # ),
+
             ### WAIT
-            # Number of Unique Cells Used###
+            ##Top_3_cells_on_voice_usage###
             node(
-                l4_geo_number_unique_cell_used,
-                ["l1_number_of_unique_cell_daily_for_l4_number_of_unique_cell_weekly"
+                l4_rolling_window,
+                ["l2_geo_top3_cells_on_voice_usage",
+                 "params:l4_geo_top3_cells_on_voice_usage"
                  ],
-                "l4_geo_number_unique_cell_used"
+                "l4_geo_top3_cells_on_voice_usage"
             ),
 
         ], name="geo_to_l4_pipeline_interim"
