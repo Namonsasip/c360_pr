@@ -6,6 +6,7 @@ from customer360.utilities.re_usable_functions import check_empty_dfs, \
 from customer360.utilities.re_usable_functions import l1_massive_processing, union_dataframes_with_missing_cols
 from customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 from typing import List
+from pyspark.sql.types  import *
 
 
 def build_network_voice_features(int_l1_network_voice_features: DataFrame,
