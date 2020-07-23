@@ -95,27 +95,27 @@ def geo_to_l2_pipeline_interim(**kwargs):
             #     "l2_geo_distance_top_call"
             # ),
 
-            # ### WAIT
-            # ## runnig flag == 7
-            # # Top_3_cells_on_voice_usage###
-            # node(
-            #     l2_geo_top3_cells_on_voice_usage,
-            #     ["l1_geo_top3_cells_on_voice_usage",
-            #      "params:l2_geo_top3_cells_on_voice_usage"
-            #      ],
-            #     "l2_geo_top3_cells_on_voice_usage"
-            # ),
-
             ### WAIT
-            ## runnig flag == 6
-            ##Number_of_base_station###
+            ## runnig flag == 7
+            # Top_3_cells_on_voice_usage###
             node(
-                l2_geo_data_count_location_weekly,
-                ["l1_geo_number_of_bs_used",
-                 "params:l2_geo_number_of_base_station_weekly"
+                l2_geo_top3_cells_on_voice_usage,
+                ["l1_geo_top3_cells_on_voice_usage_for_l2_geo_top3_cells_on_voice_usage",
+                 "params:l2_geo_top3_cells_on_voice_usage"
                  ],
-                "l2_geo_number_of_base_station_weekly"
+                "l2_geo_top3_cells_on_voice_usage"
             ),
+
+            # ### FINISH
+            # ## runnig flag == 6
+            # ##Number_of_base_station###
+            # node(
+            #     l2_geo_data_count_location_weekly,
+            #     ["l1_geo_number_of_bs_used",
+            #      "params:l2_geo_number_of_base_station_weekly"
+            #      ],
+            #     "l2_geo_number_of_base_station_weekly"
+            # ),
 
         ], name="geo_to_l2_pipeline_interim"
     )
