@@ -46,26 +46,6 @@ def geo_to_l2_pipeline(**kwargs):
                 "l2_geo_total_distance_km_weekly"
             ),
 
-            ## runnig flag == 6
-            ##Number_of_base_station###
-            node(
-                l2_geo_data_count_location_weekly,
-                ["l1_geo_number_of_bs_used",
-                 "params:l2_geo_number_of_base_station_weekly"
-                 ],
-                "l2_geo_number_of_base_station_weekly"
-            ),
-
-            ## runnig flag == 7
-            #Top_3_cells_on_voice_usage###
-            node(
-                l2_geo_top3_cells_on_voice_usage,
-                ["l1_geo_top3_cells_on_voice_usage",
-                 "params:l2_geo_top3_cells_on_voice_usage"
-                 ],
-                "l2_geo_top3_cells_on_voice_usage"
-            ),
-
             ## runnig flag == 5
             node(
                 l2_geo_cust_subseqently_distance_weekly,
@@ -105,12 +85,36 @@ def geo_to_l2_same_favourite_pipeline(**kwargs):
 def geo_to_l2_pipeline_interim(**kwargs):
     return Pipeline(
         [
-            ### runnig flag == 9
-            ##distance_top_call###
+
+            # ### FINISH
+            # ### runnig flag == 9
+            # ##distance_top_call###
+            # node(
+            #     l2_geo_distance_top_call,
+            #     "l1_geo_distance_top_call",
+            #     "l2_geo_distance_top_call"
+            # ),
+
+            ### WAIT
+            ## runnig flag == 7
+            # Top_3_cells_on_voice_usage###
             node(
-                l2_geo_distance_top_call,
-                "l1_geo_distance_top_call",
-                "l2_geo_distance_top_call"
+                l2_geo_top3_cells_on_voice_usage,
+                ["l1_geo_top3_cells_on_voice_usage",
+                 "params:l2_geo_top3_cells_on_voice_usage"
+                 ],
+                "l2_geo_top3_cells_on_voice_usage"
+            ),
+
+            ### WAIT
+            ## runnig flag == 6
+            ##Number_of_base_station###
+            node(
+                l2_geo_data_count_location_weekly,
+                ["l1_geo_number_of_bs_used",
+                 "params:l2_geo_number_of_base_station_weekly"
+                 ],
+                "l2_geo_number_of_base_station_weekly"
             ),
 
         ], name="geo_to_l2_pipeline_interim"

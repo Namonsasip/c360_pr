@@ -83,25 +83,26 @@ def geo_to_l4_pipeline(**kwargs):
             #     "l4_geo_total_distance_km"
             # ),
 
-            ### WAIT (have issue in job 1384)unique_cel
-            ###Traffic_fav_location###
-            node(
-                l4_Share_traffic,
-                ["l3_geo_use_traffic_home_work_for_l4_geo_use_traffic_home_work_most",
-                "params:int_l4_geo_use_traffic_home_work_weekly",
-                "params:l4_geo_use_traffic_home_work_weekly"
-                 ],
-                "l4_geo_use_traffic_home_work_most"
-            ),
-
-            # ###Number_of_base_station###
+            # ### FINISH
+            # ###Traffic_fav_location###
             # node(
-            #     l4_rolling_window,
-            #     ["l2_geo_number_of_base_station_weekly_for_l4_geo_number_of_base_station",
-            #      "params:l4_geo_number_of_base_station"
+            #     l4_Share_traffic,
+            #     ["l3_geo_use_traffic_home_work_for_l4_geo_use_traffic_home_work_most",
+            #     "params:int_l4_geo_use_traffic_home_work_weekly",
+            #     "params:l4_geo_use_traffic_home_work_weekly"
             #      ],
-            #     "l4_geo_number_of_base_station"
+            #     "l4_geo_use_traffic_home_work_most"
             # ),
+
+            ### WAIT
+            ###Number_of_base_station###
+            node(
+                l4_rolling_window,
+                ["l2_geo_number_of_base_station_weekly_for_l4_geo_number_of_base_station",
+                 "params:l4_geo_number_of_base_station"
+                 ],
+                "l4_geo_number_of_base_station"
+            ),
 
             # ### FINISH
             # ###feature_sum_voice_location###
@@ -153,15 +154,16 @@ def geo_to_l4_pipeline(**kwargs):
             #      ],
             #     "l4_geo_store_close_to_work"
             # ),
-            #
-            # ##Top_3_cells_on_voice_usage###
-            # node(
-            #     l4_rolling_window,
-            #     ["l2_geo_top3_cells_on_voice_usage",
-            #      "params:l4_geo_top3_cells_on_voice_usage"
-            #      ],
-            #     "l4_geo_top3_cells_on_voice_usage"
-            # ),
+
+            ### WAIT
+            ##Top_3_cells_on_voice_usage###
+            node(
+                l4_rolling_window,
+                ["l2_geo_top3_cells_on_voice_usage",
+                 "params:l4_geo_top3_cells_on_voice_usage"
+                 ],
+                "l4_geo_top3_cells_on_voice_usage"
+            ),
 
             # ### ISSUE: flow L3 data does not have on month 201911
             # ### Work area center average
@@ -173,14 +175,15 @@ def geo_to_l4_pipeline(**kwargs):
             #     "l4_geo_work_area_center_average"
             # ),
 
-            ##distance_top_call###
-            node(
-                l4_rolling_window_de,
-                ["l2_geo_distance_top_call",
-                 "params:l4_geo_distance_top_call"
-                 ],
-                "l4_geo_distance_top_call"
-            ),
+            # ### FINISH
+            # ##distance_top_call###
+            # node(
+            #     l4_rolling_window_de,
+            #     ["l2_geo_distance_top_call",
+            #      "params:l4_geo_distance_top_call"
+            #      ],
+            #     "l4_geo_distance_top_call"
+            # ),
 
             # ###Distance between nearest store and most visited store###
             # node(
