@@ -18,32 +18,32 @@ def geo_to_l4_pipeline(**kwargs):
                 "l4_geo_time_spent_by_location"
             ),
 
-            ### WAIT
-            node(
-                l4_rolling_window,
-                ["l2_geo_area_from_ais_store_weekly_for_l4_geo_area_from_ais_store",
-                 "params:l4_area_from_ais_store"
-                 ],
-                "l4_geo_area_from_ais_store"
-            ),
+            # ### FINISH
+            # node(
+            #     l4_rolling_window,
+            #     ["l2_geo_area_from_ais_store_weekly_for_l4_geo_area_from_ais_store",
+            #      "params:l4_area_from_ais_store"
+            #      ],
+            #     "l4_geo_area_from_ais_store"
+            # ),
 
-            ### WAIT
-            node(
-                l4_rolling_window,
-                ["l2_geo_area_from_competitor_store_weekly_for_l4_geo_area_from_competitor_store",
-                 "params:l4_area_from_competitor_store"
-                 ],
-                "l4_geo_area_from_competitor_store"
-            ),
+            # ### FINISH
+            # node(
+            #     l4_rolling_window,
+            #     ["l2_geo_area_from_competitor_store_weekly_for_l4_geo_area_from_competitor_store",
+            #      "params:l4_area_from_competitor_store"
+            #      ],
+            #     "l4_geo_area_from_competitor_store"
+            # ),
 
-            ### WAIT
-            node(
-                node_from_config,
-                ["l3_geo_top_visit_exclude_homework",
-                 "params:l4_geo_top_visit_exclude_homework"
-                 ],
-                "l4_geo_top_visit_exclude_homework"
-            ),
+            # ### FINISH
+            # node(
+            #     node_from_config,
+            #     ["l3_geo_top_visit_exclude_homework",
+            #      "params:l4_geo_top_visit_exclude_homework"
+            #      ],
+            #     "l4_geo_top_visit_exclude_homework"
+            # ),
 
             # ### FINISH
             # ### HOME/WORK location id feature
@@ -103,15 +103,15 @@ def geo_to_l4_pipeline(**kwargs):
             #     "l4_geo_number_of_base_station"
             # ),
 
-            ### WAIT
-            ###feature_sum_voice_location###
-            node(
-                l4_rolling_window,
-                ["l3_geo_call_location_home_work_monthly",
-                 "params:l4_geo_call_home_work_location"
-                 ],
-                "l4_geo_call_home_work_location"
-            ),
+            # ### FINISH
+            # ###feature_sum_voice_location###
+            # node(
+            #     l4_rolling_window,
+            #     ["l3_geo_call_location_home_work_monthly",
+            #      "params:l4_geo_call_home_work_location"
+            #      ],
+            #     "l4_geo_call_home_work_location"
+            # ),
 
             # # Number of Unique Cells Used###
             # node(
