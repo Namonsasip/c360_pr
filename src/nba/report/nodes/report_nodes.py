@@ -1954,9 +1954,11 @@ def create_aggregate_campaign_view_features(
             SELECT * FROM temp_view_load"""
         )
     else:
-        aggregate_campaign_view_features.write.format("delta").mode("append").partitionBy(
-            "contact_date"
-        ).saveAsTable("nba_dev.aggregate_campaign_view_features_tbl")
+        aggregate_campaign_view_features.write.format("delta").mode(
+            "append"
+        ).partitionBy("contact_date").saveAsTable(
+            "nba_dev.aggregate_campaign_view_features_tbl"
+        )
     return aggregate_campaign_view_features
 
 
@@ -1965,7 +1967,7 @@ def create_campaign_view_report(
     l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
     date_from,
     date_to,
-drop_update_table=False,
+    drop_update_table=False,
 ) -> DataFrame:
     # l0_campaign_tracking_contact_list_pre_full_load = catalog.load(
     #     "l0_campaign_tracking_contact_list_pre_full_load"
@@ -1974,14 +1976,13 @@ drop_update_table=False,
     #     "%Y-%m-%d"
     # )
     # date_from = datetime.strptime(mock_report_running_date, "%Y-%m-%d") + timedelta(
-    #     days=-30
+    #     days=-50
     # )
-    # date_to = datetime.strptime(mock_report_running_date, "%Y-%m-%d") + timedelta(
-    #     days=-20
-    # )
+    # date_to = datetime.strptime(mock_report_running_date, "%Y-%m-%d")
     # aggregate_campaign_view_features_tbl = catalog.load(
     #     "aggregate_campaign_view_features_tbl"
     # )
+    # drop_update_table = False
     spark = get_spark_session()
     if drop_update_table:
         drop_data_by_date(
@@ -2034,6 +2035,25 @@ ON f_no.campaign_child_code = main.campaign_child_code"""
     daily_cmp_table_control = aggregate_campaign_view_features.where(
         "contact_control_group = 'Control group'"
     )
+    expr = [
+        "campaign_child_code",
+        "campaign_name",
+        "campaign_type",
+        "campaign_sub_type",
+        "campaign_category",
+        "offer_category",
+        "offer_type",
+        "effort_condition",
+        "campaign_treatment_type",
+        "campaign_group",
+        "response_type",
+        "campaign_channel",
+        "contact_control_group",
+        "contact_date",
+        "defined_campaign_target_group",
+        "usecase",
+    ]
+
     for col in daily_cmp_table_contacted.columns:
         if col not in (
             "campaign_child_code",
@@ -2053,9 +2073,16 @@ ON f_no.campaign_child_code = main.campaign_child_code"""
             "defined_campaign_target_group",
             "usecase",
         ):
-            daily_cmp_table_contacted = daily_cmp_table_contacted.withColumnRenamed(
-                col, col + "_Targeted"
-            )
+
+            expr.append(col + " as " + col + "_Targeted")
+    daily_cmp_table_contacted = daily_cmp_table_contacted.selectExpr(expr)
+    expr_control = [
+        "campaign_child_code",
+        "contact_control_group",
+        "contact_date",
+        "defined_campaign_target_group",
+        "usecase",
+    ]
     for col in daily_cmp_table_control.columns:
         if col not in (
             "campaign_child_code",
@@ -2064,16 +2091,24 @@ ON f_no.campaign_child_code = main.campaign_child_code"""
             "defined_campaign_target_group",
             "usecase",
         ):
-            daily_cmp_table_control = daily_cmp_table_control.withColumnRenamed(
-                col, col + "_Not_Targeted"
-            )
-
+            expr_control.append(col + " as " + col + "_Not_Targeted")
+    daily_cmp_table_control = daily_cmp_table_control.selectExpr(expr_control)
     daily_cmp_table_contacted = daily_cmp_table_contacted.withColumnRenamed(
         "contact_control_group", "contact_group_flag_value"
     )
     daily_cmp_table_control = daily_cmp_table_control.withColumnRenamed(
         "contact_control_group", "control_group_flag_value"
     )
+
+    known_control_group_with_different_campaign_id = {"200623-11": "200623-12"}
+    for key, value in known_control_group_with_different_campaign_id.items():
+        print(key, value)
+        daily_cmp_table_control = daily_cmp_table_control.withColumn(
+            "campaign_child_code",
+            F.when(F.col("campaign_child_code") == value, key).otherwise(
+                F.col("campaign_child_code")
+            ),
+        )
     campaign_view_report = daily_cmp_table_contacted.join(
         daily_cmp_table_control,
         [
@@ -2088,7 +2123,7 @@ ON f_no.campaign_child_code = main.campaign_child_code"""
         campaign_tracking_yn, ["campaign_child_code"], "left"
     )
     if not drop_update_table:
-        aggregate_campaign_view_features.createOrReplaceTempView("temp_view_load")
+        campaign_view_report.createOrReplaceTempView("temp_view_load")
         spark.sql("DROP TABLE IF EXISTS nba_dev.campaign_view_report_tbl")
         spark.sql(
             """CREATE TABLE nba_dev.campaign_view_report_tbl 
@@ -2098,7 +2133,7 @@ ON f_no.campaign_child_code = main.campaign_child_code"""
             SELECT * FROM temp_view_load"""
         )
     else:
-        aggregate_campaign_view_features.write.format("delta").mode("append").partitionBy(
+        campaign_view_report.write.format("delta").mode("append").partitionBy(
             "contact_date"
         ).saveAsTable("nba_dev.campaign_view_report_tbl")
     return campaign_view_report
