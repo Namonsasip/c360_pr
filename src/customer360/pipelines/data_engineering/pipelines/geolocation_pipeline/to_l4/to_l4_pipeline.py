@@ -200,14 +200,6 @@ def geo_to_l4_pipeline(**kwargs):
             #     "l4_geo_range_from_most_visited"
             # ),
 
-            ### WAIT
-            # 27 Same favourite location for weekend and weekday
-            node(
-                l4_same_favourite_location_weekend_weekday_weekly,
-                ["l2_same_favourite_location_weekend_weekday_weekly"],
-                "l4_same_favourite_location_weekend_weekday_weekly"
-            ),
-
             # ###47 the_favourite_locations###
             # node(
             #     l4_the_favourite_locations_daily,
@@ -344,4 +336,16 @@ def geo_to_l4_pipeline(**kwargs):
     )
 
 
+def geo_to_l4_pipeline_interim(**kwargs):
+    return Pipeline(
+        [
+            ### WAIT
+            # 27 Same favourite location for weekend and weekday
+            node(
+                l4_same_favourite_location_weekend_weekday_weekly,
+                ["l2_same_favourite_location_weekend_weekday_weekly"],
+                "l4_same_favourite_location_weekend_weekday_weekly"
+            ),
 
+        ], name="geo_to_l4_pipeline_interim"
+    )
