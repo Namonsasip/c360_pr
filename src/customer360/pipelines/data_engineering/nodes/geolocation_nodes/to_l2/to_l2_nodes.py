@@ -210,9 +210,6 @@ def l2_geo_data_count_location_weekly(df,sql):
         .drop('event_partition_date')
     df = node_from_config(L2_DF, sql)
 
-    print('DEBUG : ------------------------------------------------> l2_geo_data_count_location_weekly')
-    df.show(10)
-
     return df
 
 
