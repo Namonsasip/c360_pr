@@ -9,14 +9,14 @@ def geo_to_l4_pipeline(**kwargs):
     return Pipeline(
         [
 
-            ### WAIT
-            node(
-                l4_rolling_window,
-                ["l2_geo_time_spent_by_location_weekly_for_l4_geo_time_spent_by_location",
-                 "params:l4_geo_time_spent_by_location"
-                 ],
-                "l4_geo_time_spent_by_location"
-            ),
+            # ### FINISH
+            # node(
+            #     l4_rolling_window,
+            #     ["l2_geo_time_spent_by_location_weekly_for_l4_geo_time_spent_by_location",
+            #      "params:l4_geo_time_spent_by_location"
+            #      ],
+            #     "l4_geo_time_spent_by_location"
+            # ),
 
             # ### FINISH
             # node(
@@ -55,15 +55,15 @@ def geo_to_l4_pipeline(**kwargs):
             #     "l4_geo_home_work_location_id"
             # ),
 
-            ### WAIT
-            ### Home weekday city citizens
-            node(
-                node_from_config,
-                ["l3_geo_home_weekday_city_citizens_monthly",
-                 "params:l4_geo_home_weekday_city_citizens"
-                 ],
-                "l4_geo_home_weekday_city_citizens"
-            ),
+            # ### FINISH
+            # ### Home weekday city citizens
+            # node(
+            #     node_from_config,
+            #     ["l3_geo_home_weekday_city_citizens_monthly",
+            #      "params:l4_geo_home_weekday_city_citizens"
+            #      ],
+            #     "l4_geo_home_weekday_city_citizens"
+            # ),
 
             # ### CUST subsequently distance
             # node(
@@ -83,16 +83,16 @@ def geo_to_l4_pipeline(**kwargs):
             #     "l4_geo_total_distance_km"
             # ),
 
-            # ### WAIT (have issue in job 1384)
-            # ###Traffic_fav_location###
-            # node(
-            #     l4_Share_traffic,
-            #     ["l3_geo_use_traffic_home_work_for_l4_geo_use_traffic_home_work_most",
-            #     "params:int_l4_geo_use_traffic_home_work_weekly",
-            #     "params:l4_geo_use_traffic_home_work_weekly"
-            #      ],
-            #     "l4_geo_use_traffic_home_work_most"
-            # ),
+            ### WAIT (have issue in job 1384)unique_cel
+            ###Traffic_fav_location###
+            node(
+                l4_Share_traffic,
+                ["l3_geo_use_traffic_home_work_for_l4_geo_use_traffic_home_work_most",
+                "params:int_l4_geo_use_traffic_home_work_weekly",
+                "params:l4_geo_use_traffic_home_work_weekly"
+                 ],
+                "l4_geo_use_traffic_home_work_most"
+            ),
 
             # ###Number_of_base_station###
             # node(
@@ -173,15 +173,15 @@ def geo_to_l4_pipeline(**kwargs):
             #     "l4_geo_work_area_center_average"
             # ),
 
-            # ##distance_top_call###
-            # node(
-            #     l4_rolling_window_de,
-            #     ["l2_geo_distance_top_call",
-            #      "params:l4_geo_distance_top_call"
-            #      ],
-            #     "l4_geo_distance_top_call"
-            # ),
-            #
+            ##distance_top_call###
+            node(
+                l4_rolling_window_de,
+                ["l2_geo_distance_top_call",
+                 "params:l4_geo_distance_top_call"
+                 ],
+                "l4_geo_distance_top_call"
+            ),
+
             # ###Distance between nearest store and most visited store###
             # node(
             #     l4_geo_range_from_most_visited,

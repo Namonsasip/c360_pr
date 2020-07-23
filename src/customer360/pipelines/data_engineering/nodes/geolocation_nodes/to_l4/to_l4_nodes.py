@@ -39,14 +39,14 @@ def l4_Share_traffic(df, ini_work_week,work_week):
                                                                                       'Top2_location_traffic_KB')
     sql_query = """
         select *,
-            sum_{0}_monthly_last_month * 100 / {4} as share_Home_traffic_KB_last_month,
-            sum_{1}_monthly_last_month * 100 / {4} as
-            sum_{2}_monthly_last_month * 100 / {4} as
-            sum_{3}_monthly_last_month * 100 / {4} as
-            sum_{0}_monthly_last_three_month * 100 / {5} as
-            sum_{1}_monthly_last_three_month * 100 / {5} as
-            sum_{2}_monthly_last_three_month * 100 / {5} as
-            sum_{3}_monthly_last_three_month * 100 / {5} as
+            sum_{0}_monthly_last_month * 100 / {4} as share_{0}_last_month,
+            sum_{1}_monthly_last_month * 100 / {4} as share_{1}_last_month,
+            sum_{2}_monthly_last_month * 100 / {4} as share_{2}_last_month,
+            sum_{3}_monthly_last_month * 100 / {4} as share_{3}_last_month,
+            sum_{0}_monthly_last_three_month * 100 / {5} as share_{0}_last_three_month,
+            sum_{1}_monthly_last_three_month * 100 / {5} as share_{1}_last_three_month,
+            sum_{2}_monthly_last_three_month * 100 / {5} as share_{2}_last_three_month,
+            sum_{3}_monthly_last_three_month * 100 / {5} as share_{3}_last_three_month
         from GEO_TEMP_00
     """.format('Home_traffic_KB', 'Work_traffic_KB', 'Top1_location_traffic_KB', 'Top2_location_traffic_KB',
                total_last_month, total_last_three_month)

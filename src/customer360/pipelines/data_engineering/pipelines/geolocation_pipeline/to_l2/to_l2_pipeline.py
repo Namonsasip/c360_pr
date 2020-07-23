@@ -75,14 +75,6 @@ def geo_to_l2_pipeline(**kwargs):
                 "l2_geo_cust_subseqently_distance_weekly"
             ),
 
-            ### runnig flag == 9
-            ##distance_top_call###
-            node(
-                l2_geo_distance_top_call,
-                "l1_geo_distance_top_call",
-                "l2_geo_distance_top_call"
-            ),
-
             ### runnig flag == 11
             # 47 The favourite location
             node(
@@ -108,4 +100,20 @@ def geo_to_l2_same_favourite_pipeline(**kwargs):
             )
         ], name="geo_to_l2_same_favourite_pipeline"
     )
+
+
+def geo_to_l2_pipeline_interim(**kwargs):
+    return Pipeline(
+        [
+            ### runnig flag == 9
+            ##distance_top_call###
+            node(
+                l2_geo_distance_top_call,
+                "l1_geo_distance_top_call",
+                "l2_geo_distance_top_call"
+            ),
+
+        ], name="geo_to_l2_pipeline_interim"
+    )
+
 
