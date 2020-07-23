@@ -223,7 +223,7 @@ l4_geo_store_close_to_work:
 #---------------------------op_3_cells_on_voice_usage--------------------------------
 l4_geo_top3_cells_on_voice_usage:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l4_features/l4_geo_home_work_location_id/
+  filepath: base_path/GEO/l4_features/l4_geo_top3_cells_on_voice_usage/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:

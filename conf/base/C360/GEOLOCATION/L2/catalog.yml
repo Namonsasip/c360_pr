@@ -181,7 +181,7 @@ l2_geo_top3_cells_on_voice_usage:
     target_layer: 'l2_weekly'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'geo_top3_cells_on_voice_usage'
+    lookup_table_name: 'l4_geo_top3_cells_on_voice_usage'
     read_layer: 'l2_weekly'
     target_layer: 'l4_weekly'
     lookback: '12'
