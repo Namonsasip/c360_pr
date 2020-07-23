@@ -155,15 +155,15 @@ def geo_to_l4_pipeline(**kwargs):
             #     "l4_geo_store_close_to_work"
             # ),
 
-            ### WAIT
-            ##Top_3_cells_on_voice_usage###
-            node(
-                l4_rolling_window,
-                ["l2_geo_top3_cells_on_voice_usage",
-                 "params:l4_geo_top3_cells_on_voice_usage"
-                 ],
-                "l4_geo_top3_cells_on_voice_usage"
-            ),
+            # ### WAIT
+            # ##Top_3_cells_on_voice_usage###
+            # node(
+            #     l4_rolling_window,
+            #     ["l2_geo_top3_cells_on_voice_usage",
+            #      "params:l4_geo_top3_cells_on_voice_usage"
+            #      ],
+            #     "l4_geo_top3_cells_on_voice_usage"
+            # ),
 
             # ### ISSUE: flow L3 data does not have on month 201911
             # ### Work area center average
