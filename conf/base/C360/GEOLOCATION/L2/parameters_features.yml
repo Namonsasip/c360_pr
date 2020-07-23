@@ -53,7 +53,7 @@ l2_geo_number_of_base_station_weekly:
     sum_count_location_id: "sum(data_count_location_id)"
     sum_count_distinct_location_id: "sum(data_count_distinct_location_id)"
     sum_count_cell_id: "sum(data_count_cell_id)"
-  granularity: "imsi,start_of_week"
+  granularity: "imsi, start_of_week"
 
 ###feature_sum_voice_location###
 l2_geo_call_location_home_work_weekly:

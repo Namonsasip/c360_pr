@@ -195,8 +195,6 @@ def l2_geo_total_distance_km_weekly(df: DataFrame, sql: dict):
 
 ###Number_of_base_station###
 def l2_geo_data_count_location_weekly(df,sql):
-    # .filter('partition_date >= 20191101 and partition_date <= 20191130')
-    # .filter('partition_month >= 201911')
     # ----- Data Availability Checks -----
     if check_empty_dfs([df]):
         return get_spark_empty_df()
@@ -208,8 +206,8 @@ def l2_geo_data_count_location_weekly(df,sql):
     if check_empty_dfs([df]):
         return get_spark_empty_df()
 
-    L2_DF = df.withColumn("START_OF_WEEK", F.to_date(F.date_trunc('WEEK', "event_partition_date"))).drop(
-        'event_partition_date')
+    L2_DF = df.withColumn("start_of_week", F.to_date(F.date_trunc('week', "event_partition_date")))\
+        .drop('event_partition_date')
     df = node_from_config(L2_DF, sql)
 
     print('DEBUG : ------------------------------------------------> l2_geo_data_count_location_weekly')
