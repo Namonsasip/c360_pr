@@ -13,11 +13,14 @@ conf = os.getenv("CONF", None)
 
 def build_l4_touchpoints_nim_work_features(input_df: DataFrame,
                                            first_dict: dict,
-                                           second_dict: dict) -> DataFrame:
+                                           second_dict: dict,
+                                           third_dict: dict
+                                           ) -> DataFrame:
     """
     :param input_df:
     :param first_dict:
     :param second_dict:
+    :param third_dict:
     :return:
     """
     if check_empty_dfs([input_df]):
@@ -40,12 +43,17 @@ def build_l4_touchpoints_nim_work_features(input_df: DataFrame,
     second_df = second_df.filter(F.col("start_of_week") > max_date)
     CNTX.catalog.save("l4_touchpoints_nim_work_features_second", second_df)
 
+    third_df = l4_rolling_window(input_df, third_dict)
+    third_df = third_df.filter(F.col("start_of_week") > max_date)
+    CNTX.catalog.save("l4_touchpoints_nim_work_features_third", third_df)
+
     first_df = CNTX.catalog.load("l4_touchpoints_nim_work_features_first")
     second_df = CNTX.catalog.load("l4_touchpoints_nim_work_features_second")
+    third_df = CNTX.catalog.load("l4_touchpoints_nim_work_features_third")
 
     group_cols = ["subscription_identifier", "start_of_week"]
 
-    merged_df = union_dataframes_with_missing_cols(first_df, second_df)
+    merged_df = union_dataframes_with_missing_cols(first_df, second_df, third_df)
     sql_query = gen_max_sql(merged_df, "test_table", group_cols)
 
     return_df = execute_sql(merged_df, "test_table", sql_query)

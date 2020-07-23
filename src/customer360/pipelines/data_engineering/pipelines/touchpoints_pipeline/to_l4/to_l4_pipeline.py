@@ -50,7 +50,8 @@ def touchpoints_to_l4_pipeline(**kwargs):
                 build_l4_touchpoints_nim_work_features,
                 ["l2_touchpoints_nim_work_features",
                  "params:l4_touchpoints_nim_work_features_first",
-                 "params:l4_touchpoints_nim_work_features_second"
+                 "params:l4_touchpoints_nim_work_features_second",
+                 "params:l4_touchpoints_nim_work_features_third"
                  ],
                 "l4_touchpoints_nim_work_features"
             ),
