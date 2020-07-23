@@ -272,8 +272,8 @@ def du_tailor_score():
             "rework_macro_product as model_name",
             "Macro_product_Offer_type as offer_Macro_product_type"
         )
-        .groupby("macro_product", "offer_package_name_report", "model_name","offer_Macro_product_type")
-        .agg(F.count("*").alias("CNT"))
+        .groupby("macro_product", "model_name","offer_Macro_product_type")
+        .agg(F.count("*").alias("CNT"),F.first("offer_package_name_report").alias("offer_package_name_report"))
         .drop("CNT")
         .join(agg_master_ontop, ["offer_package_name_report"], "left")
     )
