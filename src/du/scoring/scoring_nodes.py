@@ -106,6 +106,7 @@ def l5_du_scored(
 
 
 def du_tailor_score():
+    spark = get_spark_session()
     l5_du_scored = catalog.load("l5_du_scored")
     mapping_for_model_training = catalog.load("mapping_for_model_training")
     l0_product_pru_m_ontop_master_for_weekly_full_load = catalog.load(
@@ -206,7 +207,7 @@ def du_tailor_score():
             "duration",
             "data_speed",
         )
-        .agg(F.count("*").alias("CNT"))
+        .agg(F.count("*").alias("CNT"),F.max("price_inc_vat").alias("price_inc_vat"))
         .drop("CNT")
     )
     agg_master_ontop = agg_master_ontop.selectExpr(
@@ -217,6 +218,7 @@ def du_tailor_score():
         "data_quota_mb as offer_data_quota_mb",
         "duration as offer_duration",
         "data_speed as offer_data_speed",
+        "price_inc_vat as offer_price_inc_vat"
     )
 
     atl_campaign_mapping = mapping_for_model_training.where(
@@ -268,14 +270,14 @@ def du_tailor_score():
             "macro_product",
             "Package_name as offer_package_name_report",
             "rework_macro_product as model_name",
+            "Macro_product_Offer_type as offer_Macro_product_type"
         )
-        .groupby("macro_product", "offer_package_name_report", "model_name")
+        .groupby("macro_product", "offer_package_name_report", "model_name","offer_Macro_product_type")
         .agg(F.count("*").alias("CNT"))
         .drop("CNT")
         .join(agg_master_ontop, ["offer_package_name_report"], "left")
     )
     l5_du_scored_info = l5_du_scored.join(model_offer_info, ["model_name"], "left")
-    l4_data_ontop_package_preference.show()
     # TODO Make package preference score dynamic according to prediction date
     l5_du_scored_offer_preference = (
         l5_du_scored_info.selectExpr("*", "date(register_date) as register_date_d")
@@ -289,7 +291,7 @@ def du_tailor_score():
             "left",
         )
     )
-
+    spark.sql("DROP TABLE IF EXISTS prod_dataupsell.du_offer_score_with_package_preference")
     l5_du_scored_offer_preference.write.format("delta").mode("append").partitionBy(
         "start_of_week"
     ).saveAsTable("prod_dataupsell.du_offer_score_with_package_preference")
