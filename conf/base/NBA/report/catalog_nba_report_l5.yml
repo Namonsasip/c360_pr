@@ -57,14 +57,6 @@ reporting_kpis_input:
   table: reporting_kpis_input
   write_mode: overwrite
 
-campaign_view_report_tbl:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/NBA/campaign_view_report_tbl/
-  save_args:
-    mode: "overwrite"
-    partitionBy: ["contact_date"]
-
 distinct_aggregate_campaign_feature_tbl:
   type: datasets.spark_hive_dataset.SparkHiveDataSet
   database: nba_dev
@@ -92,9 +84,13 @@ campaign_view_report_input_tbl:
   write_mode: overwrite
 
 aggregate_campaign_view_features_tbl:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/NBA/aggregate_campaign_view_features_input_tbl/
-  save_args:
-    mode: "overwrite"
-    partitionBy: ["contact_date"]
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: nba_dev
+  table: aggregate_campaign_view_features_tbl
+  write_mode: overwrite
+
+campaign_view_report_tbl:
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: nba_dev
+  table: campaign_view_report_tbl
+  write_mode: overwrite
