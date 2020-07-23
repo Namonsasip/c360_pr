@@ -189,21 +189,21 @@ def geo_to_l3_pipeline_interim(**kwargs):
             #     "l3_geo_top_visit_exclude_homework"
             # ),
 
-            ### WAIT
-            ## runnig flag == 12
-            ##distance_top_call###
-            node(
-                l3_geo_distance_top_call,
-                "l1_geo_distance_top_call_for_l3_geo_distance_top_call",
-                "l3_geo_distance_top_call"
-            ),
+            # ### FINISH
+            # ## runnig flag == 12
+            # ##distance_top_call###
+            # node(
+            #     l3_geo_distance_top_call,
+            #     "l1_geo_distance_top_call_for_l3_geo_distance_top_call",
+            #     "l3_geo_distance_top_call"
+            # ),
 
             ### WAIT
             ### runnig flag == 1
             ##Top_3_cells_on_voice_usage###
             node(
                 l3_geo_top3_cells_on_voice_usage,
-                ["l1_geo_top3_cells_on_voice_usage",
+                ["l1_geo_top3_cells_on_voice_usage_for_l3_geo_top3_cells_on_voice_usage",
                  "params:l3_geo_top3_cells_on_voice_usage"
                  ],
                 "l3_geo_top3_cells_on_voice_usage"

@@ -145,7 +145,7 @@ def l3_geo_total_distance_km_monthly(df,sql):
 
 
 ###Top_3_cells_on_voice_usage###
-def l3_geo_top3_cells_on_voice_usage(df,sql):
+def l3_geo_top3_cells_on_voice_usage(df, sql):
     # ----- Data Availability Checks -----
     if check_empty_dfs([df]):
         return get_spark_empty_df()
@@ -174,7 +174,6 @@ def l3_geo_top3_cells_on_voice_usage(df,sql):
         from top3_cells_on_voice_usage
         """
     df = spark.sql(sql_query)
-    df.cache()
     df = df.where("rnk <= 3")
 
     print('DEBUG : ------------------------------------------------> l3_geo_top3_cells_on_voice_usage')

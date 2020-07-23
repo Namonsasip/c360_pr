@@ -59,7 +59,7 @@ l3_geo_top3_cells_on_voice_usage:
   where_clause: ""
   feature_list:
     total_call: "sum(total_call)"
-  granularity: "imsi,latitude,longitude,start_of_month"
+  granularity: "imsi, latitude, longitude, start_of_month"
 
 ###distance_top_call###
 l3_geo_distance_top_call:

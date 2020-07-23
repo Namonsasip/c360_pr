@@ -38,17 +38,6 @@ def geo_to_l1_pipeline(**kwargs):
                 "l1_location_of_visit_ais_store_daily"
             ),
 
-            # ### FINISH
-            # ##Top_3_cells_on_voice_usage###
-            # node(
-            #     massive_processing_with_l1_geo_top3_cells_on_voice_usage,
-            #     ["l0_usage_sum_voice_location_daily_for_l1_geo_top3_cells_on_voice_usage",
-            #      "l0_geo_mst_cell_masterplan_for_l1_geo_top3_cells_on_voice_usage",
-            #      "l0_profile_customer_profile_ma_for_l1_geo_top3_cells_on_voice_usage"
-            #      ],
-            #     "l1_geo_top3_cells_on_voice_usage"
-            # ),
-
             ##47 the_favourite_locations
             node(
                 massive_processing_with_l1_the_favourite_locations_daily,
