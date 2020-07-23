@@ -58,10 +58,10 @@ l4_geo_home_weekday_city_citizens:
   where_clause: ""
   feature_list:
     start_of_month: "start_of_month"
-    home_weekday_region_name: "region_name"
-    home_weekday_province_name: "province_name"
-    home_weekday_district_name: "district_name"
-    home_weekday_sub_district_name: "sub_district_name"
+    home_weekday_region_name: "home_weekday_region_name"
+    home_weekday_province_name: "home_weekday_province_name"
+    home_weekday_district_name: "home_weekday_district_name"
+    home_weekday_sub_district_name: "home_weekday_sub_district_name"
     citizens: "citizens"
   granularity: ""
 
