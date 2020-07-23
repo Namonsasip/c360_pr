@@ -192,8 +192,8 @@ l1_geo_number_of_bs_used:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l2_geo_number_of_base_station_weekly'
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
+    read_layer: 'l1_daily'
+    target_layer: 'l2_weekly'
     lookback: '0'
   save_args:
     increment_flag: 'yes'
