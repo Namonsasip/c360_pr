@@ -189,14 +189,14 @@ def geo_to_l3_pipeline_interim(**kwargs):
             #     "l3_geo_top_visit_exclude_homework"
             # ),
 
-            # ### FINISH
-            # ## runnig flag == 12
-            # ##distance_top_call###
-            # node(
-            #     l3_geo_distance_top_call,
-            #     "l1_geo_distance_top_call_for_l3_geo_distance_top_call",
-            #     "l3_geo_distance_top_call"
-            # ),
+            ### FINISH
+            ## runnig flag == 12
+            ##distance_top_call###
+            node(
+                l3_geo_distance_top_call,
+                "l1_geo_distance_top_call_for_l3_geo_distance_top_call",
+                "l3_geo_distance_top_call"
+            ),
 
             # ### FINISH
             # ### runnig flag == 1
