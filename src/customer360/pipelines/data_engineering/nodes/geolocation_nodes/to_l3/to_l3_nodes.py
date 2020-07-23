@@ -176,9 +176,6 @@ def l3_geo_top3_cells_on_voice_usage(df, sql):
     df = spark.sql(sql_query)
     df = df.where("rnk <= 3")
 
-    print('DEBUG : ------------------------------------------------> l3_geo_top3_cells_on_voice_usage')
-    df.show(10)
-
     return df
 
 
@@ -200,9 +197,6 @@ def l3_geo_distance_top_call(df):
         F.avg("top_distance_km").alias("avg_distance_top_call"),
         F.when(F.sqrt(F.avg(df.top_distance_km * df.top_distance_km) - F.pow(F.avg(df.top_distance_km),F.lit(2))).cast("string") == 'NaN', 0).otherwise(F.sqrt(F.avg(df.top_distance_km * df.top_distance_km) - F.pow(F.avg(df.top_distance_km),F.lit(2)))).alias("sd_distance_top_call"),
         F.sum("top_distance_km").alias("sum_distance_top_call"))
-
-    print('DEBUG : ------------------------------------------------> l3_geo_distance_top_call')
-    df.show(10)
 
     return df
 
