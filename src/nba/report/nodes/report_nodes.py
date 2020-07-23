@@ -111,8 +111,9 @@ def create_report_campaign_tracking_table(
             SELECT * FROM temp_view_load"""
         )
     else:
-        df_cvm_campaign_tracking.write.format("delta").mode("append").partitionBy("contact_date").saveAsTable(
-            "nba_dev.campaign_response_input_table")
+        df_cvm_campaign_tracking.write.format("delta").mode("append").partitionBy(
+            "contact_date"
+        ).saveAsTable("nba_dev.campaign_response_input_table")
     return df_cvm_campaign_tracking
 
 
@@ -294,8 +295,9 @@ def create_input_data_for_reporting_kpis(
             SELECT * FROM temp_view_load"""
         )
     else:
-        sdf_reporting_kpis_input.write.format("delta").mode("append").partitionBy("join_date").saveAsTable(
-            "nba_dev.reporting_kpis_input")
+        sdf_reporting_kpis_input.write.format("delta").mode("append").partitionBy(
+            "join_date"
+        ).saveAsTable("nba_dev.reporting_kpis_input")
     return sdf_reporting_kpis_input
 
 
@@ -304,6 +306,7 @@ def node_reporting_kpis(
     date_from: datetime,
     date_to: datetime,
     arpu_days_agg_periods: List[int],
+    drop_update_table=False,
 ):
     """
     Args:
@@ -314,7 +317,14 @@ def node_reporting_kpis(
 
     Returns: dataFrame of aggregated features for campaign report tracking
     """
-
+    spark = get_spark_session()
+    if drop_update_table:
+        drop_data_by_date(
+            date_from=date_from,
+            date_to=date_to,
+            table="nba_dev.reporting_kpis",
+            key_col="join_date",
+        )
     # Convert date column to timestamp for window function
     # Should be change if date format can be use
     covered_history_date_from = date_from - timedelta(45)
@@ -384,7 +394,20 @@ def node_reporting_kpis(
     df_reporting_kpis = df_reporting_kpis.filter(
         F.col("join_date").between(date_from, date_to)
     )
-
+    if not drop_update_table:
+        df_reporting_kpis.createOrReplaceTempView("temp_view_load")
+        spark.sql("DROP TABLE IF EXISTS nba_dev.reporting_kpis")
+        spark.sql(
+            """CREATE TABLE nba_dev.reporting_kpis 
+            USING DELTA 
+            PARTITIONED BY (join_date) 
+            AS 
+            SELECT * FROM temp_view_load"""
+        )
+    else:
+        df_reporting_kpis.write.format("delta").mode("append").partitionBy(
+            "join_date"
+        ).saveAsTable("nba_dev.reporting_kpis")
     return df_reporting_kpis
 
 
@@ -452,6 +475,9 @@ def create_use_case_view_report(
     day_list: List[str],
     aggregate_period: List[int],
     dormant_days_agg_periods: List[int],
+    date_from,
+    date_to,
+    drop_update_table=False,
 ) -> DataFrame:
     """
     This function create use case view report.
@@ -477,6 +503,13 @@ def create_use_case_view_report(
     # aggregate_period = [1,7,30]
     # dormant_days_agg_periods = [5,7,14,30,60,90]
     spark = get_spark_session()
+    if drop_update_table:
+        drop_data_by_date(
+            date_from=date_from,
+            date_to=date_to,
+            table="nba_dev.use_case_view_report_table",
+            key_col="contact_date",
+        )
     cvm_prepaid_customer_groups = cvm_prepaid_customer_groups.selectExpr(
         "analytic_id",
         "date(register_date) as register_date",
@@ -780,6 +813,20 @@ def create_use_case_view_report(
         else:
             df_use_case_view_report_all = df_use_case_view_report
         iterate_count = iterate_count + 1
+    if not drop_update_table:
+        df_use_case_view_report_all.createOrReplaceTempView("temp_view_load")
+        spark.sql("DROP TABLE IF EXISTS nba_dev.use_case_view_report_table")
+        spark.sql(
+            """CREATE TABLE nba_dev.use_case_view_report_table 
+            USING DELTA 
+            PARTITIONED BY (contact_date) 
+            AS 
+            SELECT * FROM temp_view_load"""
+        )
+    else:
+        df_use_case_view_report_all.write.format("delta").mode("append").partitionBy(
+            "contact_date"
+        ).saveAsTable("nba_dev.use_case_view_report_table")
     return df_use_case_view_report_all
 
 
@@ -803,18 +850,27 @@ def daterange(start_date, end_date):
 
 def create_distinct_aggregate_campaign_feature(
     l0_campaign_tracking_contact_list_pre_full_load: DataFrame,
+    date_from,
+    date_to,
+    drop_update_table=False,
 ) -> DataFrame:
-    day = "2020-05-01"
     # l0_campaign_tracking_contact_list_pre_full_load = catalog.load("l0_campaign_tracking_contact_list_pre_full_load")
     spark = get_spark_session()
-    start_day = datetime.date(datetime.strptime(day, "%Y-%m-%d")) - timedelta(31)
-    start_day_data = datetime.date(datetime.strptime(day, "%Y-%m-%d")) - timedelta(60)
+    start_day_data = date_from - timedelta(60)
+
+    if drop_update_table:
+        drop_data_by_date(
+            date_from=date_from,
+            date_to=date_to,
+            table="nba_dev.distinct_aggregate_campaign_feature_tbl",
+            key_col="join_date",
+        )
 
     l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.selectExpr(
         "*", "date(contact_date) as join_date"
     ).filter(
         F.col("join_date").between(
-            start_day_data, datetime.date(datetime.strptime(day, "%Y-%m-%d"))
+            start_day_data, date_to
         )
     )
     campaign_child_tbl = (
@@ -859,7 +915,7 @@ ON f_no.campaign_child_code = main.campaign_child_code"""
     distinct_campaign_features_daily = (
         distinct_campaign_kpis.filter(
             F.col("join_date").between(
-                start_day, datetime.date(datetime.strptime(day, "%Y-%m-%d"))
+                date_from, date_to
             )
         )
         .groupby("join_date")
@@ -876,7 +932,7 @@ ON f_no.campaign_child_code = main.campaign_child_code"""
         )
     )
     iterate_distinct = 0
-    for d in list(daterange(start_day.strftime("%Y-%m-%d"), day)):
+    for d in list(daterange(date_from.strftime("%Y-%m-%d"), date_to.strftime("%Y-%m-%d"))):
         d_str = d.strftime("%Y-%m-%d")
         start_window = d - timedelta(6)
         tmp = (
@@ -919,6 +975,20 @@ ON f_no.campaign_child_code = main.campaign_child_code"""
     distinct_campaign_features = distinct_campaign_features_daily.join(
         distinct_campaign_features_weekly, ["join_date"], "left"
     )
+    if not drop_update_table:
+        distinct_campaign_features.createOrReplaceTempView("temp_view_load")
+        spark.sql("DROP TABLE IF EXISTS nba_dev.distinct_aggregate_campaign_feature_tbl")
+        spark.sql(
+            """CREATE TABLE nba_dev.distinct_aggregate_campaign_feature_tbl 
+            USING DELTA 
+            PARTITIONED BY (join_date) 
+            AS 
+            SELECT * FROM temp_view_load"""
+        )
+    else:
+        distinct_campaign_features.write.format("delta").mode("append").partitionBy(
+            "join_date"
+        ).saveAsTable("nba_dev.distinct_aggregate_campaign_feature_tbl")
     return distinct_campaign_features
 
 
@@ -929,9 +999,10 @@ def create_general_marketing_performance_report(
     prepaid_no_activity_daily: DataFrame,
     aggregate_period: List[int],
     dormant_days_agg_periods: List[int],
-    day,
+        date_from,
+        date_to,
+        drop_update_table=False,
 ) -> DataFrame:
-    spark = get_spark_session()
     # prepaid_no_activity_daily = catalog.load("prepaid_no_activity_daily")
     # l0_campaign_tracking_contact_list_pre_full_load = catalog.load(
     #     "l0_campaign_tracking_contact_list_pre_full_load"
@@ -944,14 +1015,23 @@ def create_general_marketing_performance_report(
     # dormant_days_agg_periods = [5, 7, 14, 30, 45, 60, 90]
     # day = "2020-04-28"
 
-    start_day = datetime.date(datetime.strptime(day, "%Y-%m-%d")) - timedelta(90)
-    start_day_data = datetime.date(datetime.strptime(day, "%Y-%m-%d")) - timedelta(100)
+    spark = get_spark_session()
+
+    if drop_update_table:
+        drop_data_by_date(
+            date_from=date_from,
+            date_to=date_to,
+            table="nba_dev.general_marketing_performance_report_tbl",
+            key_col="join_date",
+        )
+
+    start_day_data = date_from - timedelta(30)
 
     l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.selectExpr(
         "*", "date(contact_date) as join_date"
     ).filter(
         F.col("join_date").between(
-            start_day_data, datetime.date(datetime.strptime(day, "%Y-%m-%d"))
+            start_day_data, date_to
         )
     )
     campaign_child_tbl = (
@@ -1038,7 +1118,7 @@ ON f_no.campaign_child_code = main.campaign_child_code"""
 
     reporting_kpis = reporting_kpis.filter(
         F.col("join_date").between(
-            start_day_data, datetime.date(datetime.strptime(day, "%Y-%m-%d"))
+            start_day_data, date_to
         )
     )
     active_sub_kpis = reporting_kpis.where("no_activity_n_days = 0").selectExpr(
@@ -1098,13 +1178,13 @@ ON f_no.campaign_child_code = main.campaign_child_code"""
     )
     spine_table = reporting_kpis_agg.filter(
         F.col("join_date").between(
-            start_day, datetime.date(datetime.strptime(day, "%Y-%m-%d"))
+            date_from, date_to
         )
     )
     spine_table = spine_table.join(
         inactivity_kpis_agg.filter(
             F.col("join_date").between(
-                start_day, datetime.date(datetime.strptime(day, "%Y-%m-%d"))
+                date_from, date_to
             )
         ),
         ["join_date"],
@@ -1113,7 +1193,7 @@ ON f_no.campaign_child_code = main.campaign_child_code"""
     spine_table = spine_table.join(
         active_sub_kpis_agg.filter(
             F.col("join_date").between(
-                start_day, datetime.date(datetime.strptime(day, "%Y-%m-%d"))
+                date_from, date_to
             )
         ),
         ["join_date"],
@@ -1208,11 +1288,20 @@ ON f_no.campaign_child_code = main.campaign_child_code"""
 
     spine_table = spine_table.join(total_sub_last_week, ["join_date"], "left")
 
-    # spine_table.repartition(1).write.format("com.databricks.spark.csv").option(
-    #     "header", "true"
-    # ).save(
-    #     "/mnt/data-exploration-blob/ds-storage/users/thansiy/general_overview_report_20200508_6"
-    # )
+    if not drop_update_table:
+        spine_table.createOrReplaceTempView("temp_view_load")
+        spark.sql("DROP TABLE IF EXISTS nba_dev.general_marketing_performance_report_tbl")
+        spark.sql(
+            """CREATE TABLE nba_dev.general_marketing_performance_report_tbl 
+            USING DELTA 
+            PARTITIONED BY (join_date) 
+            AS 
+            SELECT * FROM temp_view_load"""
+        )
+    else:
+        spine_table.write.format("delta").mode("append").partitionBy(
+            "join_date"
+        ).saveAsTable("nba_dev.general_marketing_performance_report_tbl")
     return spine_table
 
 
@@ -1276,7 +1365,7 @@ def create_use_case_campaign_mapping_table(
 
 
 def store_historical_usecase_view_report(use_case_view_report_table) -> DataFrame:
-
+    spark = get_spark_session()
     group_by_campaign_group_tbl = use_case_view_report_table.groupby(
         ["target_group", "contact_date"]
     ).agg(
@@ -1381,6 +1470,16 @@ def store_historical_usecase_view_report(use_case_view_report_table) -> DataFram
     group_by_campaign_group_tbl = group_by_campaign_group_tbl.withColumnRenamed(
         "target_group", "campaign_control_group"
     ).withColumnRenamed("contact_date", "report_date")
+
+    group_by_campaign_group_tbl.createOrReplaceTempView("temp_view_load")
+    spark.sql("DROP TABLE IF EXISTS nba_dev.historical_use_case_view_report_table")
+    spark.sql(
+        """CREATE TABLE nba_dev.historical_use_case_view_report_table 
+        USING DELTA 
+        PARTITIONED BY (report_date) 
+        AS 
+        SELECT * FROM temp_view_load"""
+    )
     return group_by_campaign_group_tbl
 
 
@@ -1391,7 +1490,9 @@ def create_campaign_view_report_input(
     reporting_kpis: DataFrame,
     date_from,
     date_to,
+drop_update_table=False,
 ) -> DataFrame:
+    # TODO remove test code
     # Test
     # mock_report_running_date = (datetime.now() + timedelta(hours=7)).strftime(
     #     "%Y-%m-%d"
@@ -1408,6 +1509,15 @@ def create_campaign_view_report_input(
     #     days=-50
     # )
     # date_to = datetime.strptime(mock_report_running_date, "%Y-%m-%d")
+    spark = get_spark_session()
+
+    if drop_update_table:
+        drop_data_by_date(
+            date_from=date_from,
+            date_to=date_to,
+            table="nba_dev.campaign_view_report_input_tbl",
+            key_col="contact_date",
+        )
 
     l0_campaign_tracking_contact_list_pre_full_load = l0_campaign_tracking_contact_list_pre_full_load.filter(
         F.col("contact_date").between(date_from, date_to)
@@ -1622,7 +1732,20 @@ def create_campaign_view_report_input(
     campaign_view_report_input = campaign_view_report_input.join(
         mapping_tbl, ["campaign_child_code"], "left",
     )
-
+    if not drop_update_table:
+        campaign_view_report_input.createOrReplaceTempView("temp_view_load")
+        spark.sql("DROP TABLE IF EXISTS nba_dev.campaign_view_report_input_tbl")
+        spark.sql(
+            """CREATE TABLE nba_dev.campaign_view_report_input_tbl 
+            USING DELTA 
+            PARTITIONED BY (contact_date) 
+            AS 
+            SELECT * FROM temp_view_load"""
+        )
+    else:
+        campaign_view_report_input.write.format("delta").mode("append").partitionBy(
+            "contact_date"
+        ).saveAsTable("nba_dev.campaign_view_report_input_tbl")
     return campaign_view_report_input
 
 
