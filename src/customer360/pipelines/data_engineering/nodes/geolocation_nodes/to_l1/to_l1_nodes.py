@@ -564,9 +564,6 @@ def massive_processing_with_l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,pro
     if check_empty_dfs([usage_df, profile_df]):
         return get_spark_empty_df()
 
-    usage_df.distinct('partition_date').show()
-    profile_df.distinct('partition_month').show()
-
     # ----- Transformation -----
     def divide_chunks(l, n):
         # looping till length l
