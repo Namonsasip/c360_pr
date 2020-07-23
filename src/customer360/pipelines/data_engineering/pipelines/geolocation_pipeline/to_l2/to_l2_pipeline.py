@@ -95,16 +95,16 @@ def geo_to_l2_pipeline_interim(**kwargs):
             #     "l2_geo_distance_top_call"
             # ),
 
-            ### WAIT
-            ## runnig flag == 7
-            # Top_3_cells_on_voice_usage###
-            node(
-                l2_geo_top3_cells_on_voice_usage,
-                ["l1_geo_top3_cells_on_voice_usage",
-                 "params:l2_geo_top3_cells_on_voice_usage"
-                 ],
-                "l2_geo_top3_cells_on_voice_usage"
-            ),
+            # ### WAIT
+            # ## runnig flag == 7
+            # # Top_3_cells_on_voice_usage###
+            # node(
+            #     l2_geo_top3_cells_on_voice_usage,
+            #     ["l1_geo_top3_cells_on_voice_usage",
+            #      "params:l2_geo_top3_cells_on_voice_usage"
+            #      ],
+            #     "l2_geo_top3_cells_on_voice_usage"
+            # ),
 
             ### WAIT
             ## runnig flag == 6
