@@ -527,7 +527,7 @@ def l1_location_of_visit_ais_store_daily(shape,cust_cell_visit,sql):
 
 def massive_processing_with_l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
     usage_df = usage_df.filter('partition_date >= 20191101 and partition_date <= 20191130')
-    profile_df = profile_df.filter('partition_month >= 201911')
+    profile_df = profile_df.filter('partition_month = 201911')
     # ----- Data Availability Checks -----
     if check_empty_dfs([usage_df, geo_df, profile_df]):
         return get_spark_empty_df()
@@ -540,7 +540,7 @@ def massive_processing_with_l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,pro
     profile_df = data_non_availability_and_missing_check(df=profile_df,
                                                          grouping="monthly",
                                                          par_col="partition_month",
-                                                         target_table_name="L1_usage_sum_data_location_daily_data_profile_customer_profile_ma")
+                                                         target_table_name="l1_geo_top3_cells_on_voice_usage")
 
     geo_df = get_max_date_from_master_data(geo_df, 'partition_date')
 
@@ -563,6 +563,9 @@ def massive_processing_with_l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,pro
 
     if check_empty_dfs([usage_df, profile_df]):
         return get_spark_empty_df()
+
+    usage_df.distinct('partition_date').show()
+    profile_df.distinct('partition_month').show()
 
     # ----- Transformation -----
     def divide_chunks(l, n):
@@ -593,13 +596,13 @@ def massive_processing_with_l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,pro
 
 
 ###Top_3_cells_on_voice_usage###
-def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
+def l1_geo_top3_cells_on_voice_usage(usage_df, geo_df, profile_df):
     # ----- Transformation -----
     ### config
     spark = get_spark_session()
 
     ### add partition_date
-    l0_df_usage1 = usage_df.withColumn("event_partition_date",F.to_date(usage_df.date_id.cast(DateType()), "yyyyMMdd"))
+    l0_df_usage1 = usage_df.withColumn("event_partition_date", F.to_date(usage_df.date_id.cast(DateType()), "yyyyMMdd"))
 
     # create temp
     l0_df_usage1.createOrReplaceTempView('usage_sum_voice_location_daily')
@@ -622,7 +625,6 @@ def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
             and a.ci = b.ci
         where service_type in ('VOICE','VOLTE')
         group by 1,2,3,5
-        order by 1,2,3,5
     """
     l1_df = spark.sql(sql_query)
     l1_df.createOrReplaceTempView('L4_temp_table')
@@ -644,7 +646,6 @@ def l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
     l1_df1 = l1_df1.withColumn("start_of_week", F.to_date(F.date_trunc('week', l1_df1.event_partition_date)))
     l1_df1 = l1_df1.withColumn("start_of_month", F.to_date(F.date_trunc('month', l1_df1.event_partition_date)))
     # l1_df2 = node_from_config(l1_df1, sql)
-
 
     return l1_df1
 

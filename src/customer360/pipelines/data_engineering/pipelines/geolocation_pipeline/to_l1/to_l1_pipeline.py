@@ -112,23 +112,34 @@ def geo_to_l1_pipeline_test_custer(**kwargs):
     return Pipeline(
         [
 
-            ### FINISH
-            node(
-                l1_geo_time_spent_by_location_daily,
-                ["l0_geo_cust_location_visit_hr_for_l1_geo_time_spent_by_location_daily",
-                 "params:l1_geo_time_spent_by_location_daily"
-                 ],
-                "l1_geo_time_spent_by_location_daily"
+            # ### FINISH
+            # node(
+            #     l1_geo_time_spent_by_location_daily,
+            #     ["l0_geo_cust_location_visit_hr_for_l1_geo_time_spent_by_location_daily",
+            #      "params:l1_geo_time_spent_by_location_daily"
+            #      ],
+            #     "l1_geo_time_spent_by_location_daily"
+            #
+            # ),
+            #
+            # ### FINISH
+            # node(
+            #     massive_processing_with_l1_geo_cust_subseqently_distance,
+            #     ["l0_geo_cust_cell_visit_time_for_l1_geo_cust_subseqently_distance_daily",
+            #      "params:l1_geo_cust_subseqently_distance_daily"
+            #      ],
+            #     "l1_geo_cust_subseqently_distance_daily"
+            # ),
 
-            ),
-
             ### FINISH
+            ##Top_3_cells_on_voice_usage###
             node(
-                massive_processing_with_l1_geo_cust_subseqently_distance,
-                ["l0_geo_cust_cell_visit_time_for_l1_geo_cust_subseqently_distance_daily",
-                 "params:l1_geo_cust_subseqently_distance_daily"
+                massive_processing_with_l1_geo_top3_cells_on_voice_usage,
+                ["l0_usage_sum_voice_location_daily_for_l1_geo_top3_cells_on_voice_usage",
+                 "l0_geo_mst_cell_masterplan_for_l1_geo_top3_cells_on_voice_usage",
+                 "l0_profile_customer_profile_ma_for_l1_geo_top3_cells_on_voice_usage"
                  ],
-                "l1_geo_cust_subseqently_distance_daily"
+                "l1_geo_top3_cells_on_voice_usage"
             ),
 
         ], name="geo_to_l1_pipeline_test_custer"
