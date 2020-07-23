@@ -31,8 +31,8 @@ l0_mst_poi_shape_for_l1_geo_area_from_ais_store_daily:
 
 l0_mst_poi_shape:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-    filepath: base_path/GEO/geo_mst_lm_poi_shape/
-    file_format: parquet
+  filepath: base_path/GEO/geo_mst_lm_poi_shape/
+  file_format: parquet
 
 #----------------------- mst_poi_shape_geo_area_for_location_of_visit_ais_store -------------------------
 l0_mst_poi_shape_for_l1_location_of_visit_ais_store_daily:

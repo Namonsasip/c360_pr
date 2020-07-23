@@ -165,12 +165,12 @@ def l3_geo_top3_cells_on_voice_usage(df, sql):
     df.createOrReplaceTempView('top3_cells_on_voice_usage')
     sql_query = """
         select
-        imsi
-        ,latitude
-        ,longitude
-        ,total_call
-        ,row_number() over (partition by imsi,start_of_month order by total_call desc) as rnk
-        ,start_of_month
+            imsi
+            ,latitude
+            ,longitude
+            ,total_call
+            ,start_of_month
+            ,row_number() over (partition by imsi, start_of_month order by total_call desc) as rnk
         from top3_cells_on_voice_usage
         """
     df = spark.sql(sql_query)
