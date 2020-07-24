@@ -212,13 +212,13 @@ def l4_geo_store_close_to_work(home_work, locations, sql):
     df2 = spark.sql("""
             select imsi,
                 work_location_id,
+                start_of_month,
                 MIN(CAST((ACOS(COS(RADIANS(90-LANDMARK_LATITUDE))*COS(RADIANS(90-WORK_LATITUDE))+SIN(RADIANS(90-LANDMARK_LATITUDE))*SIN(RADIANS(90-WORK_LATITUDE))*COS(RADIANS(LANDMARK_LONGITUDE - WORK_LONGITUDE)))*6371) AS DECIMAL(13,2))) AS range_from_work,
                 first(landmark_name_th) as branch,
-                first(geo_shape_id) as branch_location_id,
-                start_of_month
+                first(geo_shape_id) as branch_location_id
             from home_work_ais_store
             where CAST((ACOS(COS(RADIANS(90-LANDMARK_LATITUDE))*COS(RADIANS(90-WORK_LATITUDE))+SIN(RADIANS(90-LANDMARK_LATITUDE))*SIN(RADIANS(90-WORK_LATITUDE))*COS(RADIANS(LANDMARK_LONGITUDE - WORK_LONGITUDE)))*6371) AS DECIMAL(13,2)) <= 100
-            group by 1,2
+            group by 1,2,3
         """)
     # df2.cache()
     out = node_from_config(df2, sql)
