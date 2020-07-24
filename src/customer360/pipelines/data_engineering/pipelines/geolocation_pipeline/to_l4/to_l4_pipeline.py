@@ -343,3 +343,19 @@ def geo_to_l4_pipeline(**kwargs):
     )
 
 
+def geo_to_l4_pipeline_interim(**kwargs):
+    return Pipeline(
+        [
+
+            ### WAIT
+            node(
+                l4_geo_store_close_to_work,
+                ["l3_geo_home_work_location_id_monthly_for_l4_geo_store_close_to_work",
+                 "l0_mst_poi_shape",
+                 "params:l4_geo_store_close_to_work"
+                 ],
+                "l4_geo_store_close_to_work"
+            ),
+
+        ], name="geo_to_l4_pipeline"
+    )
