@@ -132,6 +132,16 @@ def geo_to_l4_pipeline(**kwargs):
 
             ### FINISH
             node(
+                l4_geo_store_close_to_work,
+                ["l3_geo_home_work_location_id_monthly_for_l4_geo_store_close_to_work",
+                 "l0_mst_poi_shape",
+                 "params:l4_geo_store_close_to_work"
+                 ],
+                "l4_geo_store_close_to_work"
+            ),
+
+            ### FINISH
+            node(
                 l4_geo_store_close_to_home,
                 ["l3_geo_home_work_location_id_monthly_for_l4_geo_store_close_to_home",
                  "l0_mst_poi_shape",
@@ -337,24 +347,6 @@ def geo_to_l4_pipeline(**kwargs):
                  "params:l4_geo_top3_cells_on_voice_usage"
                  ],
                 "l4_geo_top3_cells_on_voice_usage"
-            ),
-
-        ], name="geo_to_l4_pipeline"
-    )
-
-
-def geo_to_l4_pipeline_interim(**kwargs):
-    return Pipeline(
-        [
-
-            ### WAIT
-            node(
-                l4_geo_store_close_to_work,
-                ["l3_geo_home_work_location_id_monthly_for_l4_geo_store_close_to_work",
-                 "l0_mst_poi_shape",
-                 "params:l4_geo_store_close_to_work"
-                 ],
-                "l4_geo_store_close_to_work"
             ),
 
         ], name="geo_to_l4_pipeline"
