@@ -285,16 +285,9 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "ops_report_pipeline": ops_report_pipeline(),
         "geo_to_l3_home_work_pipeline": geo_to_l3_home_work_pipeline(),
         "geo_to_l1_pipeline": geo_to_l1_pipeline(),
-        "geo_to_l1_area_pipeline": geo_to_l1_area_pipeline(),
-        "geo_to_l1_pipeline_test_custer": geo_to_l1_pipeline_test_custer(),
         "geo_to_l2_pipeline": geo_to_l2_pipeline(),
-        "geo_to_l2_same_favourite_pipeline": geo_to_l2_same_favourite_pipeline(),
-        "geo_to_l2_pipeline_interim": geo_to_l2_pipeline_interim(),
-        "geo_to_l3_pipeline_call_data": geo_to_l3_pipeline_call_data(),
-        "geo_to_l3_pipeline_interim": geo_to_l3_pipeline_interim(),
         "geo_to_l3_pipeline": geo_to_l3_pipeline(),
-        "geo_to_l4_pipeline": geo_to_l4_pipeline(),
-        "geo_to_l4_pipeline_interim": geo_to_l4_pipeline_interim()
+        "geo_to_l4_pipeline": geo_to_l4_pipeline()
     }
 
 

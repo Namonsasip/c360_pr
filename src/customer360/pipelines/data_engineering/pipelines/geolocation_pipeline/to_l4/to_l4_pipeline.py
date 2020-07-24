@@ -9,61 +9,61 @@ def geo_to_l4_pipeline(**kwargs):
     return Pipeline(
         [
 
-            # ### FINISH
-            # node(
-            #     l4_rolling_window,
-            #     ["l2_geo_time_spent_by_location_weekly_for_l4_geo_time_spent_by_location",
-            #      "params:l4_geo_time_spent_by_location"
-            #      ],
-            #     "l4_geo_time_spent_by_location"
-            # ),
+            ### FINISH
+            node(
+                l4_rolling_window,
+                ["l2_geo_time_spent_by_location_weekly_for_l4_geo_time_spent_by_location",
+                 "params:l4_geo_time_spent_by_location"
+                 ],
+                "l4_geo_time_spent_by_location"
+            ),
 
-            # ### FINISH
-            # node(
-            #     l4_rolling_window,
-            #     ["l2_geo_area_from_ais_store_weekly_for_l4_geo_area_from_ais_store",
-            #      "params:l4_area_from_ais_store"
-            #      ],
-            #     "l4_geo_area_from_ais_store"
-            # ),
+            ### FINISH
+            node(
+                l4_rolling_window,
+                ["l2_geo_area_from_ais_store_weekly_for_l4_geo_area_from_ais_store",
+                 "params:l4_area_from_ais_store"
+                 ],
+                "l4_geo_area_from_ais_store"
+            ),
 
-            # ### FINISH
-            # node(
-            #     l4_rolling_window,
-            #     ["l2_geo_area_from_competitor_store_weekly_for_l4_geo_area_from_competitor_store",
-            #      "params:l4_area_from_competitor_store"
-            #      ],
-            #     "l4_geo_area_from_competitor_store"
-            # ),
+            ### FINISH
+            node(
+                l4_rolling_window,
+                ["l2_geo_area_from_competitor_store_weekly_for_l4_geo_area_from_competitor_store",
+                 "params:l4_area_from_competitor_store"
+                 ],
+                "l4_geo_area_from_competitor_store"
+            ),
 
-            # ### FINISH
-            # node(
-            #     node_from_config,
-            #     ["l3_geo_top_visit_exclude_homework",
-            #      "params:l4_geo_top_visit_exclude_homework"
-            #      ],
-            #     "l4_geo_top_visit_exclude_homework"
-            # ),
+            ### FINISH
+            node(
+                node_from_config,
+                ["l3_geo_top_visit_exclude_homework",
+                 "params:l4_geo_top_visit_exclude_homework"
+                 ],
+                "l4_geo_top_visit_exclude_homework"
+            ),
 
-            # ### FINISH
-            # ### HOME/WORK location id feature
-            # node(
-            #     node_from_config,
-            #     ["l3_geo_home_work_location_id_monthly",
-            #      "params:l4_geo_home_work_location_id"
-            #      ],
-            #     "l4_geo_home_work_location_id"
-            # ),
+            ### FINISH
+            ### HOME/WORK location id feature
+            node(
+                node_from_config,
+                ["l3_geo_home_work_location_id_monthly",
+                 "params:l4_geo_home_work_location_id"
+                 ],
+                "l4_geo_home_work_location_id"
+            ),
 
-            # ### FINISH
-            # ### Home weekday city citizens
-            # node(
-            #     node_from_config,
-            #     ["l3_geo_home_weekday_city_citizens_monthly",
-            #      "params:l4_geo_home_weekday_city_citizens"
-            #      ],
-            #     "l4_geo_home_weekday_city_citizens"
-            # ),
+            ### FINISH
+            ### Home weekday city citizens
+            node(
+                node_from_config,
+                ["l3_geo_home_weekday_city_citizens_monthly",
+                 "params:l4_geo_home_weekday_city_citizens"
+                 ],
+                "l4_geo_home_weekday_city_citizens"
+            ),
 
             # ### CUST subsequently distance
             # node(
@@ -83,36 +83,36 @@ def geo_to_l4_pipeline(**kwargs):
             #     "l4_geo_total_distance_km"
             # ),
 
-            # ### FINISH
-            # ###Traffic_fav_location###
-            # node(
-            #     l4_Share_traffic,
-            #     ["l3_geo_use_traffic_home_work_for_l4_geo_use_traffic_home_work_most",
-            #     "params:int_l4_geo_use_traffic_home_work_weekly",
-            #     "params:l4_geo_use_traffic_home_work_weekly"
-            #      ],
-            #     "l4_geo_use_traffic_home_work_most"
-            # ),
+            ### FINISH
+            ###Traffic_fav_location###
+            node(
+                l4_Share_traffic,
+                ["l3_geo_use_traffic_home_work_for_l4_geo_use_traffic_home_work_most",
+                "params:int_l4_geo_use_traffic_home_work_weekly",
+                "params:l4_geo_use_traffic_home_work_weekly"
+                 ],
+                "l4_geo_use_traffic_home_work_most"
+            ),
 
-            # ### FINISH
-            # ###Number_of_base_station###
-            # node(
-            #     l4_rolling_window,
-            #     ["l2_geo_number_of_base_station_weekly_for_l4_geo_number_of_base_station",
-            #      "params:l4_geo_number_of_base_station"
-            #      ],
-            #     "l4_geo_number_of_base_station"
-            # ),
+            ### FINISH
+            ###Number_of_base_station###
+            node(
+                l4_rolling_window,
+                ["l2_geo_number_of_base_station_weekly_for_l4_geo_number_of_base_station",
+                 "params:l4_geo_number_of_base_station"
+                 ],
+                "l4_geo_number_of_base_station"
+            ),
 
-            # ### FINISH
-            # ###feature_sum_voice_location###
-            # node(
-            #     l4_rolling_window,
-            #     ["l3_geo_call_location_home_work_monthly",
-            #      "params:l4_geo_call_home_work_location"
-            #      ],
-            #     "l4_geo_call_home_work_location"
-            # ),
+            ### FINISH
+            ###feature_sum_voice_location###
+            node(
+                l4_rolling_window,
+                ["l3_geo_call_location_home_work_monthly",
+                 "params:l4_geo_call_home_work_location"
+                 ],
+                "l4_geo_call_home_work_location"
+            ),
 
             # ##feature_AIS_store###
             # node(
@@ -130,45 +130,45 @@ def geo_to_l4_pipeline(**kwargs):
             #     "l4_geo_most_AIS_store_visit"
             # ),
 
-            # ### FINISH
-            # node(
-            #     l4_geo_store_close_to_home,
-            #     ["l3_geo_home_work_location_id_monthly_for_l4_geo_store_close_to_home",
-            #      "l0_mst_poi_shape",
-            #      "params:l4_geo_store_close_to_home"
-            #      ],
-            #     "l4_geo_store_close_to_home"
-            # ),
-
-            ### WAIT
+            ### FINISH
             node(
-                l4_geo_store_close_to_work,
-                ["l3_geo_home_work_location_id_monthly_for_l4_geo_store_close_to_work",
+                l4_geo_store_close_to_home,
+                ["l3_geo_home_work_location_id_monthly_for_l4_geo_store_close_to_home",
                  "l0_mst_poi_shape",
-                 "params:l4_geo_store_close_to_work"
+                 "params:l4_geo_store_close_to_home"
                  ],
-                "l4_geo_store_close_to_work"
+                "l4_geo_store_close_to_home"
             ),
 
-            # ### ISSUE: flow L3 data does not have on month 201911
-            # ### Work area center average
+            # ### WAIT
             # node(
-            #     node_from_config,
-            #     ["l3_geo_work_area_center_average_monthly",
-            #      "params:l4_geo_work_area_center_average"
+            #     l4_geo_store_close_to_work,
+            #     ["l3_geo_home_work_location_id_monthly_for_l4_geo_store_close_to_work",
+            #      "l0_mst_poi_shape",
+            #      "params:l4_geo_store_close_to_work"
             #      ],
-            #     "l4_geo_work_area_center_average"
+            #     "l4_geo_store_close_to_work"
             # ),
 
-            # ### FINISH
-            # ##distance_top_call###
-            # node(
-            #     l4_rolling_window_de,
-            #     ["l2_geo_distance_top_call",
-            #      "params:l4_geo_distance_top_call"
-            #      ],
-            #     "l4_geo_distance_top_call"
-            # ),
+            ### ISSUE: flow L3 data does not have on month 201911
+            ### Work area center average
+            node(
+                node_from_config,
+                ["l3_geo_work_area_center_average_monthly",
+                 "params:l4_geo_work_area_center_average"
+                 ],
+                "l4_geo_work_area_center_average"
+            ),
+
+            ### FINISH
+            ##distance_top_call###
+            node(
+                l4_rolling_window_de,
+                ["l2_geo_distance_top_call",
+                 "params:l4_geo_distance_top_call"
+                 ],
+                "l4_geo_distance_top_call"
+            ),
 
             # ###Distance between nearest store and most visited store###
             # node(
@@ -310,41 +310,36 @@ def geo_to_l4_pipeline(**kwargs):
             #      "params:l4_area_from_number_of_used_most_frequent_weekends"
             #      ],
             #     "l4_geo_from_number_of_used_most_frequent_weekends"
-            # )
+            # ),
+
+            ### FINISH
+            # 27 Same favourite location for weekend and weekday
+            node(
+                l4_same_favourite_location_weekend_weekday_weekly,
+                ["l2_same_favourite_location_weekend_weekday_weekly"],
+                "l4_same_favourite_location_weekend_weekday_weekly"
+            ),
+
+            ### FINISH
+            # Number of Unique Cells Used###
+            node(
+                l4_geo_number_unique_cell_used,
+                ["l1_number_of_unique_cell_daily_for_l4_number_of_unique_cell_weekly"
+                 ],
+                "l4_geo_number_unique_cell_used"
+            ),
+
+            ### FINISH
+            ##Top_3_cells_on_voice_usage###
+            node(
+                l4_rolling_window,
+                ["l2_geo_top3_cells_on_voice_usage",
+                 "params:l4_geo_top3_cells_on_voice_usage"
+                 ],
+                "l4_geo_top3_cells_on_voice_usage"
+            ),
 
         ], name="geo_to_l4_pipeline"
     )
 
 
-def geo_to_l4_pipeline_interim(**kwargs):
-    return Pipeline(
-        [
-            # ### FINISH
-            # # 27 Same favourite location for weekend and weekday
-            # node(
-            #     l4_same_favourite_location_weekend_weekday_weekly,
-            #     ["l2_same_favourite_location_weekend_weekday_weekly"],
-            #     "l4_same_favourite_location_weekend_weekday_weekly"
-            # ),
-
-            # ### FINISH
-            # # Number of Unique Cells Used###
-            # node(
-            #     l4_geo_number_unique_cell_used,
-            #     ["l1_number_of_unique_cell_daily_for_l4_number_of_unique_cell_weekly"
-            #      ],
-            #     "l4_geo_number_unique_cell_used"
-            # ),
-
-            # ### FINISH
-            # ##Top_3_cells_on_voice_usage###
-            # node(
-            #     l4_rolling_window,
-            #     ["l2_geo_top3_cells_on_voice_usage",
-            #      "params:l4_geo_top3_cells_on_voice_usage"
-            #      ],
-            #     "l4_geo_top3_cells_on_voice_usage"
-            # ),
-
-        ], name="geo_to_l4_pipeline_interim"
-    )
