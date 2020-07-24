@@ -9,6 +9,7 @@ from pyspark.sql import functions as F
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
     data_non_availability_and_missing_check, node_from_config
 from src.customer360.utilities.re_usable_functions import add_event_week_and_month_from_yyyymmdd
+from src.customer360.utilities.re_usable_functions import l1_massive_processing
 
 conf = os.getenv("CONF", None)
 
@@ -269,8 +270,7 @@ def dac_product_customer_promotion_for_daily(postpaid_df: DataFrame,
         [
             postpaid_df.select(F.max(F.col("start_of_week")).alias("max_date")),
             prepaid_main_df.select(F.max(F.col("start_of_week")).alias("max_date")),
-            # Comment out because data only available from June 10 2020:
-            # prepaid_ontop_df.select(F.max(F.col("start_of_week")).alias("max_date")),
+            prepaid_ontop_df.select(F.max(F.col("start_of_week")).alias("max_date")),
             customer_profile_df.select(F.max(F.col("start_of_week")).alias("max_date")),
             prepaid_product_master_df.select(F.max(F.col("start_of_week")).alias("max_date")),
             prepaid_product_ontop_df.select(F.max(F.col("start_of_week")).alias("max_date")),
@@ -279,8 +279,7 @@ def dac_product_customer_promotion_for_daily(postpaid_df: DataFrame,
 
     postpaid_df = postpaid_df.filter(F.col("start_of_week") <= min_value)
     prepaid_main_df = prepaid_main_df.filter(F.col("start_of_week") <= min_value)
-    # Comment out because data only available from June 10 2020:
-    # prepaid_ontop_df = prepaid_ontop_df.filter(F.col("start_of_week") <= min_value)
+    prepaid_ontop_df = prepaid_ontop_df.filter(F.col("start_of_week") <= min_value)
     customer_profile_df = customer_profile_df.filter(F.col("start_of_week") <= min_value)
     prepaid_product_master_df = prepaid_product_master_df.filter(F.col("start_of_week") <= min_value)
     prepaid_product_ontop_df = prepaid_product_ontop_df.filter(F.col("start_of_week") <= min_value)
@@ -302,8 +301,14 @@ def dac_product_customer_promotion_for_daily(postpaid_df: DataFrame,
             prepaid_product_ontop_df]
 
 
-def dac_product_fbb_a_customer_promotion_current_for_daily(input_df) -> DataFrame:
+def dac_product_fbb_a_customer_promotion_current_for_daily(input_df: DataFrame,
+                                                           feature_dict: dict,
+                                                           customer_df: DataFrame
+                                                           ) -> DataFrame:
     """
+    :param input_df:
+    :param feature_dict:
+    :param customer_df:
     :return:
     """
 
@@ -311,15 +316,18 @@ def dac_product_fbb_a_customer_promotion_current_for_daily(input_df) -> DataFram
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
-    input_df = data_non_availability_and_missing_check(df=input_df, grouping="daily", par_col="partition_date",
-                                            target_table_name="l1_product_active_fbb_customer_features_daily")
+    input_df = data_non_availability_and_missing_check(
+        df=input_df,
+        grouping="daily",
+        par_col="partition_date",
+        target_table_name="l1_product_active_fbb_customer_features_daily")
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
-
-    return input_df
+    return_df = l1_massive_processing(input_df, feature_dict, customer_df)
+    return return_df
 
 
 def l1_prepaid_postpaid_processing(prepaid_main_df: DataFrame,
@@ -370,7 +378,7 @@ def l1_prepaid_postpaid_processing(prepaid_main_df: DataFrame,
     mvv_array = [row[0] for row in dates_list]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
-    mvv_array = list(divide_chunks(mvv_array, 10))
+    mvv_array = list(divide_chunks(mvv_array, 30))
     add_list = mvv_array
     first_item = add_list[-1]
     add_list.remove(first_item)
@@ -577,11 +585,6 @@ def l1_build_product(
         return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
 
-    # Comment out because single dataframe:
-    # min_value = union_dataframes_with_missing_cols([
-    #     product_df.select(F.max(F.col("partition_date")).alias("max_date")),
-    # ]).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
-    # product_df = product_df.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
 
     partition_cols = ["access_method_num",
                       "event_partition_date",

@@ -78,11 +78,8 @@ def get_activated_deactivated_features(
     result_df = spark.sql("""
         with enriched_cust_promo_df as (
             select
-                cp_df.old_subscription_identifier,
                 cp_df.subscription_identifier,
-                cp_df.event_partition_date,
                 cp_df.start_of_week,
-                cp_df.start_of_month,
                 cp_df.promo_end_dttm as promo_end_dttm,
                 cp_df.promo_status_end_dttm as promo_status_end_dttm,
                 cp_df.promo_start_dttm as promo_start_dttm,
@@ -380,10 +377,10 @@ def get_product_package_promotion_group_tariff_weekly(source_df: DataFrame) -> D
     if check_empty_dfs([source_df]):
         return get_spark_empty_df()
 
-    source_df = source_df.withColumn("start_of_week",
-                                     F.lit(source_df.agg(
-                                         F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd')
-                                     ).collect()[0][0]))
+    source_df = source_df.withColumn(
+        "start_of_week",
+        F.to_date(F.date_trunc("week", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd')))
+    )
 
     source_df = source_df.select("start_of_week", "promotion_group_tariff", "package_id").distinct()
 
