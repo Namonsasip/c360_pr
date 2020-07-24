@@ -191,15 +191,20 @@ def l4_geo_store_close_to_home(home_work, locations, sql):
 
 def l4_geo_store_close_to_work(home_work, locations, sql):
     # home_work.cache()
-    month_id = home_work.selectExpr('max(start_of_month)').collect()[0][0]
-    home_work = home_work.where(F.col('start_of_month') == str(month_id))
+    # month_id = home_work.selectExpr('max(start_of_month)').collect()[0][0]
+    # home_work = home_work.where(F.col('start_of_month') == str(month_id))
     home_work.createOrReplaceTempView('home_work_location')
     spark = get_spark_session()
     # locations = spark.read.parquet("dbfs:/mnt/customer360-blob-data/C360/GEO/geo_mst_lm_poi_shape")
     locations.createOrReplaceTempView('MST_LM_POI_SHAPE')
     df = spark.sql("""
-                select A.*,B.landmark_name_th,B.landmark_latitude,B.landmark_longitude,B.geo_shape_id
-                from home_work_location A cross join mst_lm_poi_shape B
+                select A.*
+                ,B.landmark_name_th
+                ,B.landmark_latitude
+                ,B.landmark_longitude
+                ,B.geo_shape_id
+                from home_work_location A 
+                cross join mst_lm_poi_shape B
                 where B.landmark_cat_name_en = 'AIS'
             """)
     df.createOrReplaceTempView('home_work_ais_store')
@@ -209,12 +214,13 @@ def l4_geo_store_close_to_work(home_work, locations, sql):
                 work_location_id,
                 MIN(CAST((ACOS(COS(RADIANS(90-LANDMARK_LATITUDE))*COS(RADIANS(90-WORK_LATITUDE))+SIN(RADIANS(90-LANDMARK_LATITUDE))*SIN(RADIANS(90-WORK_LATITUDE))*COS(RADIANS(LANDMARK_LONGITUDE - WORK_LONGITUDE)))*6371) AS DECIMAL(13,2))) AS range_from_work,
                 first(landmark_name_th) as branch,
-                first(geo_shape_id) as branch_location_id
+                first(geo_shape_id) as branch_location_id,
+                start_of_month
             from home_work_ais_store
             where CAST((ACOS(COS(RADIANS(90-LANDMARK_LATITUDE))*COS(RADIANS(90-WORK_LATITUDE))+SIN(RADIANS(90-LANDMARK_LATITUDE))*SIN(RADIANS(90-WORK_LATITUDE))*COS(RADIANS(LANDMARK_LONGITUDE - WORK_LONGITUDE)))*6371) AS DECIMAL(13,2)) <= 100
             group by 1,2
         """)
-    df2.cache()
+    # df2.cache()
     out = node_from_config(df2, sql)
     return out
 
