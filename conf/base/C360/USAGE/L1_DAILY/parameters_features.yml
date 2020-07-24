@@ -822,7 +822,7 @@ l1_usage_data_postpaid_roaming:
     usg_incoming_roaming_data_volume_2G_3G: "sum(case when ir_call_type_group_code = '3G'
     then ir_gprs_call_downlink_vol else 0 end)"
 
-  granularity: "access_method_num, date_id"
+  granularity: "access_method_number, date_id"
   event_date_column: "date(date_id)"
 
 
