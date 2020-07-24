@@ -13,7 +13,7 @@ def geo_to_l1_pipeline_to_run():
                 ],
                 "l1_geo_total_distance_km_daily"
             ),
-        ]
+        ] , name="geo_to_l1_pipeline_to_run"
     )
 
 def geo_to_l1_pipeline(**kwargs):
