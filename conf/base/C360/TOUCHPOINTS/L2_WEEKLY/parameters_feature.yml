@@ -8,7 +8,7 @@ l2_touchpoints_to_call_center_features:
           "touchpoints_duration_of_calls_on_cc"]
     min: ["touchpoints_number_of_calls_on_cc",
           "touchpoints_duration_of_calls_on_cc"]
-  granularity: "access_method_num, national_id_card, subscription_identifier, start_of_week"
+  granularity: "subscription_identifier, start_of_week"
   partition_num_per_job: 90
   output_catalog: "l2_touchpoints_to_call_center_features"
 
@@ -23,7 +23,7 @@ l2_touchpoints_from_call_center_features:
           "touchpoints_duration_of_calls_from_cc"]
     min: ["touchpoints_number_of_calls_from_cc",
           "touchpoints_duration_of_calls_from_cc"]
-  granularity: "access_method_num, national_id_card, subscription_identifier, start_of_week"
+  granularity: "subscription_identifier, start_of_week"
   partition_num_per_job: 90
   output_catalog: "l2_touchpoints_from_call_center_features"
 
@@ -48,7 +48,7 @@ l2_touchpoints_nim_work_features:
           "touchpoints_num_of_commercial_question_online",
           "touchpoints_num_of_claims_with_online",
           "touchpoints_num_of_consultation_online"]
-  granularity: "access_method_num, national_id_card, subscription_identifier, start_of_week"
+  granularity: "subscription_identifier, start_of_week"
   partition_num_per_job: 90
   output_catalog: "l2_touchpoints_nim_work_features"
 
@@ -94,6 +94,6 @@ l2_touchpoints_ivr_features:
           "touchpoints_night_calls",
           "touchpoints_distinct_languages_chosen",
           "touchpoints_unsuccesful_connect_tuxedo"]
-  granularity: "access_method_num, national_id_card, subscription_identifier, start_of_week"
+  granularity: "subscription_identifier, start_of_week"
   partition_num_per_job: 90
   output_catalog: "l2_touchpoints_ivr_features"

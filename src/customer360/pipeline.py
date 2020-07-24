@@ -100,25 +100,19 @@ from .pipelines.data_engineering.pipelines.device_pipeline import (
     device_to_l4_pipeline,
 )
 from .pipelines.data_engineering.pipelines.digital_pipeline import (
+    digital_to_l1_pipeline,
     digital_to_l2_pipeline,
     digital_to_l3_pipeline,
     digital_to_l4_monthly_pipeline,
     digital_to_l4_weekly_pipeline,
     digital_to_l4_weekly_favourite_pipeline,
 )
-
-from .pipelines.data_engineering.pipelines.geolocation_pipeline.to_l1.to_l1_pipeline import *
-from .pipelines.data_engineering.pipelines.geolocation_pipeline.to_l2.to_l2_pipeline import *
-from .pipelines.data_engineering.pipelines.geolocation_pipeline.to_l3.to_l3_pipeline import *
-from .pipelines.data_engineering.pipelines.geolocation_pipeline.to_l4.to_l4_pipeline import *
-
 from .pipelines.data_engineering.pipelines.loyalty_pipeline import (
     loyalty_to_l1_pipeline,
     loyalty_to_l2_pipeline,
     loyalty_to_l3_pipeline,
     loyalty_to_l4_weekly_pipeline,
     loyalty_to_l4_monthly_pipeline
-
 )
 from .pipelines.data_engineering.pipelines.network_pipeline.to_l1.to_l1_pipeline import (
     network_to_l1_pipeline,
@@ -203,7 +197,7 @@ from .pipelines.data_engineering.pipelines.util_pipeline import (
     lineage_dependency_pipeline, ops_report_pipeline
 )
 
-
+from .pipelines.data_engineering.pipelines.predictive_pipeline.to_l4.to_l4_pipeline import predictive_to_l4_pipeline
 
 def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
 
@@ -231,6 +225,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "device_to_l1_pipeline": device_to_l1_pipeline(),
         "device_to_l2_pipeline": device_to_l2_pipeline(),
         "device_to_l4_pipeline": device_to_l4_pipeline(),
+        "digital_to_l1_pipeline": digital_to_l1_pipeline(),
         "digital_to_l2_pipeline": digital_to_l2_pipeline(),
         "digital_to_l3_pipeline": digital_to_l3_pipeline(),
         "digital_to_l4_monthly_pipeline": digital_to_l4_monthly_pipeline(),
@@ -281,6 +276,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "product_to_l4_pipeline": product_to_l4_pipeline(),
         "sales_to_l2_pipeline": sales_to_l2_pipeline(),
         "sales_to_l4_pipeline": sales_to_l4_pipeline(),
+        "predictive_to_l4_pipeline": predictive_to_l4_pipeline(),
         "lineage_dependency_pipeline": lineage_dependency_pipeline(),
         "ops_report_pipeline": ops_report_pipeline(),
         "geo_to_l3_home_work_pipeline": geo_to_l3_home_work_pipeline(),

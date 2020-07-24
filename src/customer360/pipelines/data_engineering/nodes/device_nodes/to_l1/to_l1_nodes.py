@@ -50,8 +50,3 @@ def generate_l1_layer(device_df: DataFrame
     final_df = final_df.filter(f.col("subscription_identifier").isNotNull()).distinct()
 
     return final_df
-
-def copy(df):
-    final_df = df
-
-    return final_df
