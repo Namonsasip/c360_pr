@@ -314,7 +314,7 @@ def billing_top_up_channels_weekly(input_df, sql, exception_partition=None) -> D
 def billing_popular_topup_day_weekly(input_df, sql1, sql2, exception_partition=None) -> DataFrame:
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df]):
-        return get_spark_empty_df()
+        return [get_spark_empty_df(), get_spark_empty_df()]
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="weekly", par_col="event_partition_date",
                                                        target_table_name="l2_billing_and_payments_weekly_popular_topup_day",
@@ -322,7 +322,7 @@ def billing_popular_topup_day_weekly(input_df, sql1, sql2, exception_partition=N
                                                        exception_partitions=exception_partition)
 
     if check_empty_dfs([input_df]):
-        return get_spark_empty_df()
+        return [get_spark_empty_df(), get_spark_empty_df()]
 
     ################################# End Implementing Data availability checks ###############################
     [final_temp_df, final_df] = massive_processing_weekly_2(input_df, sql1, sql2, "l2_billing_and_payments_weekly_popular_topup_day_intermediate",
@@ -355,7 +355,7 @@ def billing_popular_topup_day_weekly(input_df, sql1, sql2, exception_partition=N
 def billing_popular_topup_hour_weekly(input_df, sql1, sql2, exception_partition=None) -> DataFrame:
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df]):
-        return get_spark_empty_df()
+        return [get_spark_empty_df(), get_spark_empty_df()]
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="weekly", par_col="event_partition_date",
                                                        target_table_name="l2_billing_and_payments_weekly_popular_topup_hour",
@@ -363,7 +363,7 @@ def billing_popular_topup_hour_weekly(input_df, sql1, sql2, exception_partition=
                                                        exception_partitions=exception_partition)
 
     if check_empty_dfs([input_df]):
-        return get_spark_empty_df()
+        return [get_spark_empty_df(), get_spark_empty_df()]
 
     ################################# End Implementing Data availability checks ###############################
 
@@ -562,7 +562,7 @@ def recharge_data_with_customer_profile_joined(customer_prof, recharge_data):
 def billing_most_popular_top_up_channel_weekly(input_df, topup_type_ref, sql1, sql2, exception_partition=None):
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df]):
-        return get_spark_empty_df()
+        return [get_spark_empty_df(), get_spark_empty_df()]
 
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="weekly", par_col="event_partition_date",
                                                        target_table_name="l2_billing_and_payments_weekly_most_popular_top_up_channel",
@@ -570,7 +570,7 @@ def billing_most_popular_top_up_channel_weekly(input_df, topup_type_ref, sql1, s
                                                        exception_partitions=exception_partition)
 
     if check_empty_dfs([input_df]):
-        return get_spark_empty_df()
+        return [get_spark_empty_df(),get_spark_empty_df()]
 
     ################################# End Implementing Data availability checks ###############################
 
