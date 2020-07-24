@@ -23,7 +23,7 @@ def drop_data_by_date(date_from, date_to, table, key_col):
         + key_col
         + "') >= date('"
         + date_from.strftime("%Y-%m-%d")
-        + "') AND date'("
+        + "') AND date('"
         + key_col
         + "') <= date('"
         + date_to.strftime("%Y-%m-%d")
@@ -69,8 +69,27 @@ def create_report_campaign_tracking_table(
         "response",
         "date(contact_date) as contact_date",
         "date(response_date) as response_date",
+        "date(update_date) as update_date",
     )
 
+    # Select latest L0 transaction from campaign data
+    latest_transaction = campaign_tracking_sdf_filter.groupby(
+        "subscription_identifier",
+        "register_date",
+        "campaign_child_code",
+        "contact_date",
+    ).agg(F.max("update_date").alias("update_date"))
+    campaign_tracking_sdf_filter = campaign_tracking_sdf_filter.join(
+        latest_transaction,
+        [
+            "subscription_identifier",
+            "register_date",
+            "campaign_child_code",
+            "contact_date",
+            "update_date",
+        ],
+        "inner",
+    ).drop("update_date")
     # TODO Modify report process to be able to recognize difference version of sampling
     cvm_prepaid_customer_groups = cvm_prepaid_customer_groups.selectExpr(
         "analytic_id",
@@ -118,6 +137,8 @@ def create_report_campaign_tracking_table(
 
 
 def create_input_data_for_reporting_kpis(
+    l1_customer_profile_union_daily_feature_full_load: DataFrame,
+    l0_churn_status_daily: DataFrame,
     cvm_prepaid_customer_groups: DataFrame,
     dm42_promotion_prepaid: DataFrame,
     dm43_promotion_prepaid: DataFrame,
@@ -164,6 +185,7 @@ def create_input_data_for_reporting_kpis(
     cvm_prepaid_customer_groups = cvm_prepaid_customer_groups.selectExpr(
         "analytic_id",
         "date(register_date) as register_date",
+        "date(created_date) as event_partition_date",
         "crm_sub_id as subscription_identifier",
         """CASE WHEN target_group = 'BAU_2020_CVM_V2' THEN 'BAU' 
         WHEN target_group = 'TG_2020_CVM_V2' THEN 'TG'
@@ -171,6 +193,20 @@ def create_input_data_for_reporting_kpis(
         ELSE 'old' END AS target_group""",
         "date(created_date) as control_group_created_date",
     ).where("target_group != 'old'")
+
+    #
+    l1_customer_profile_union_daily_feature_full_load = l1_customer_profile_union_daily_feature_full_load.selectExpr(
+        "old_subscription_identifier as subscription_identifier",
+        "access_method_num",
+        "date(register_date) as register_date",
+        "date(event_partition_date) as event_partition_date",
+        "subscription_status",
+    )
+    cvm_prepaid_customer_groups = cvm_prepaid_customer_groups.join(
+        l1_customer_profile_union_daily_feature_full_load.drop("subscription_status"),
+        ["subscription_identifier", "register_date", "event_partition_date",],
+        "inner",
+    ).drop("event_partition_date")
     # Only use the latest profile data
     max_ddate = (
         dm07_sub_clnt_info.agg({"ddate": "max"}).collect()[0][0].strftime("%Y-%m-%d")
@@ -192,6 +228,7 @@ def create_input_data_for_reporting_kpis(
     cvm_prepaid_customer_groups = cvm_prepaid_customer_groups.selectExpr(
         "analytic_id",
         "register_date",
+        "access_method_num",
         "subscription_identifier",
         "COALESCE(target_group, 'default') as target_group",
         "control_group_created_date",
@@ -200,6 +237,25 @@ def create_input_data_for_reporting_kpis(
     # Cross join all customer in sandbox control group with date period
     df_customer_date_period = cvm_prepaid_customer_groups.crossJoin(
         F.broadcast(df_date_period)
+    )
+
+    # Filter daily churn data
+    customer_churn_daily = l0_churn_status_daily.selectExpr(
+        "access_method_num",
+        "date(register_date) as register_date",
+        "churn_type",
+        "date(day_code) as join_date",
+    )
+
+    l1_customer_profile_union_daily_feature_full_load_cap = l1_customer_profile_union_daily_feature_full_load.filter(
+        F.col("event_partition_date").between(date_from, date_to)
+    )
+
+    customer_profile_daily = l1_customer_profile_union_daily_feature_full_load_cap.selectExpr(
+        "subscription_identifier",
+        "date(register_date) as register_date",
+        "date(event_partition_date) as join_date",
+        "subscription_status",
     )
 
     # Filter data-sources on recent period to minimize computation waste
@@ -282,6 +338,16 @@ def create_input_data_for_reporting_kpis(
         .join(dm01_fin_top_up_filtered, join_keys, "left")
         .join(dm15_mobile_usage_aggr_prepaid_filtered, join_keys, "left")
         .join(prepaid_no_activity_daily, join_keys, "left")
+    )
+    sdf_reporting_kpis_input = sdf_reporting_kpis_input.join(
+        customer_churn_daily,
+        ["access_method_num", "register_date", "join_date"],
+        "left",
+    )
+    sdf_reporting_kpis_input = sdf_reporting_kpis_input.join(
+        customer_profile_daily,
+        ["subscription_identifier", "register_date", "join_date"],
+        "left",
     )
     sdf_reporting_kpis_input = sdf_reporting_kpis_input.dropDuplicates(join_keys)
     if not drop_update_table:
@@ -494,15 +560,16 @@ def create_use_case_view_report(
     Returns: DataFrame of use case view report, contain all use case report currently support ARD and CHURN
     """
 
-    # use_case_campaign_mapping = catalog.load("use_case_campaign_mapping")
-    # cvm_prepaid_customer_groups = catalog.load("cvm_prepaid_customer_groups")
-    # campaign_response_input_table = catalog.load("campaign_response_input_table")
-    # reporting_kpis = catalog.load("reporting_kpis")
-    # reporting_kpis_input = catalog.load("reporting_kpis_input")
-    # day_list = ["2020-02-01","2020-02-02"]
-    # aggregate_period = [1,7,30]
-    # dormant_days_agg_periods = [5,7,14,30,60,90]
+    use_case_campaign_mapping = catalog.load("use_case_campaign_mapping")
+    cvm_prepaid_customer_groups = catalog.load("cvm_prepaid_customer_groups")
+    campaign_response_input_table = catalog.load("campaign_response_input_table")
+    reporting_kpis = catalog.load("reporting_kpis")
+    reporting_kpis_input = catalog.load("reporting_kpis_input")
+    day_list = ["2020-02-01", "2020-02-02"]
+    aggregate_period = [7, 30]
+    dormant_days_agg_periods = [5, 7, 14, 30, 60, 90]
     spark = get_spark_session()
+    day = ["2020-07-13"]
     if drop_update_table:
         drop_data_by_date(
             date_from=date_from,
@@ -552,8 +619,80 @@ def create_use_case_view_report(
             "contact_date",
             "target_group",
         ]
+        # Create Churn Reactive report KPI
+        inactive_tm1 = reporting_kpis_input.where(
+            "subscription_identifier is not null"
+        ).selectExpr(
+            "subscription_identifier",
+            "register_date",
+            "date_add(join_date,1) as contact_date",
+            "no_activity_n_days as no_activity_n_days_tm1",
+        )
+        inactive_t0 = reporting_kpis_input.where(
+            "subscription_identifier is not null"
+        ).selectExpr(
+            "subscription_identifier",
+            "register_date",
+            "join_date as contact_date",
+            "no_activity_n_days as no_activity_n_days_t0",
+        )
+        inactive_t4 = reporting_kpis_input.where(
+            "subscription_identifier is not null"
+        ).selectExpr(
+            "subscription_identifier",
+            "register_date",
+            "date_add(join_date,-3) as contact_date",
+            "no_activity_n_days as no_activity_n_days_t4",
+        )
+        reactive_input = inactive_tm1.join(
+            inactive_t0,
+            ["subscription_identifier", "register_date", "contact_date"],
+            "left",
+        ).join(
+            inactive_t4,
+            ["subscription_identifier", "register_date", "contact_date"],
+            "left",
+        )
+        reactive_kpi = reactive_input.selectExpr(
+            "subscription_identifier",
+            "register_date",
+            "contact_date",
+            """CASE WHEN no_activity_n_days_tm1 >= 1 AND no_activity_n_days_tm1 <= 7 AND no_activity_n_days_t0 == 0 
+                    THEN 1 ELSE 0 END AS reactive_1_7_contact_p0""",
+            """CASE WHEN no_activity_n_days_tm1 >= 1 AND no_activity_n_days_tm1 <= 15 AND no_activity_n_days_t0 == 0 
+                    THEN 1 ELSE 0 END AS reactive_1_15_contact_p0""",
+            """CASE WHEN no_activity_n_days_tm1 >= 1 AND no_activity_n_days_tm1 <= 30 AND no_activity_n_days_t0 == 0 
+                    THEN 1 ELSE 0 END AS reactive_1_30_contact_p0""",
+            """CASE WHEN no_activity_n_days_tm1 >= 1 AND no_activity_n_days_tm1 <= 7 AND 
+                    no_activity_n_days_tm1 > no_activity_n_days_t4
+                    THEN 1 ELSE 0 END AS reactive_1_7_contact_p4""",
+            """CASE WHEN no_activity_n_days_tm1 >= 1 AND no_activity_n_days_tm1 <= 15 AND 
+                    no_activity_n_days_tm1 > no_activity_n_days_t4
+                    THEN 1 ELSE 0 END AS reactive_1_15_contact_p4""",
+            """CASE WHEN no_activity_n_days_tm1 >= 1 AND no_activity_n_days_tm1 <= 30 AND 
+                    no_activity_n_days_tm1 > no_activity_n_days_t4
+                    THEN 1 ELSE 0 END AS reactive_1_30_contact_p4""",
+        )
+        # create Churn report KPI
+        churn_kpi = reporting_kpis_input.selectExpr(
+            "subscription_identifier",
+            "register_date",
+            "date(join_date) as contact_date",
+            "CASE WHEN churn_type is not NULL THEN 1 ELSE 0 END AS churn_sub_yn_integer",
+            "CASE WHEN subscription_status is NULL THEN 1 ELSE 0 END AS churned_integer",
+        )
 
-        # Create campaign features
+        campaign_response_input_df = campaign_response_input_table.join(
+            churn_kpi,
+            ["subscription_identifier", "register_date", "contact_date"],
+            "left",
+        )
+        campaign_response_input_df = campaign_response_input_df.join(
+            reactive_kpi,
+            ["subscription_identifier", "register_date", "contact_date"],
+            "left",
+        )
+        # Create campaign based features
         expr = [
             F.sum("response_integer").alias("n_campaign_accepted"),
             F.count("*").alias("n_campaign_sent"),
@@ -561,8 +700,50 @@ def create_use_case_view_report(
             F.countDistinct(
                 F.when(F.col("response_integer") == 1, F.col("subscription_identifier"))
             ).alias("n_subscriber_accepted"),
+            F.countDistinct(
+                F.when(
+                    F.col("churn_sub_yn_integer") == 1,
+                    F.col("subscription_identifier"),
+                )
+            ).alias("n_subscriber_targeted_churned"),
+            F.countDistinct(
+                F.when(
+                    F.col("reactive_1_7_contact_p0") == 1,
+                    F.col("subscription_identifier"),
+                )
+            ).alias("n_subscriber_reactive_1_7_contact_p0"),
+            F.countDistinct(
+                F.when(
+                    F.col("reactive_1_15_contact_p0") == 1,
+                    F.col("subscription_identifier"),
+                )
+            ).alias("n_subscriber_reactive_1_15_contact_p0"),
+            F.countDistinct(
+                F.when(
+                    F.col("reactive_1_30_contact_p0") == 1,
+                    F.col("subscription_identifier"),
+                )
+            ).alias("n_subscriber_reactive_1_30_contact_p0"),
+            F.countDistinct(
+                F.when(
+                    F.col("reactive_1_7_contact_p4") == 1,
+                    F.col("subscription_identifier"),
+                )
+            ).alias("n_subscriber_reactive_1_7_contact_p4"),
+            F.countDistinct(
+                F.when(
+                    F.col("reactive_1_15_contact_p4") == 1,
+                    F.col("subscription_identifier"),
+                )
+            ).alias("n_subscriber_reactive_1_15_contact_p4"),
+            F.countDistinct(
+                F.when(
+                    F.col("reactive_1_30_contact_p4") == 1,
+                    F.col("subscription_identifier"),
+                )
+            ).alias("n_subscriber_reactive_1_30_contact_p4"),
         ]
-        df_campaign_aggregate_input = campaign_response_input_table.groupBy(
+        df_campaign_aggregate_input = campaign_response_input_df.groupBy(
             campaign_group_by
         ).agg(*expr)
         df_campaign_aggregate_input = df_usecases_period.join(
@@ -1864,7 +2045,7 @@ def create_aggregate_campaign_view_features(
     ]
     exprs = [
         F.count("*").alias("n_campaign_sent"),
-        F.count("response_integer").alias("n_campaign_accepted"),
+        F.sum("response_integer").alias("n_campaign_accepted"),
         F.countDistinct("subscription_identifier").alias("n_subscriber_targeted"),
         F.countDistinct(
             F.when(F.col("response_integer") == 1, F.col("subscription_identifier"))
