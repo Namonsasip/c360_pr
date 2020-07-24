@@ -796,13 +796,13 @@ def l1_the_favourite_locations_daily(usage_df_location,geo_df_masterplan):
             ,sum(b.no_of_call) as all_no_of_call
             ,sum(b.vol_downlink_kb+b.vol_uplink_kb) as all_usage_data_kb
             ,case 
-                when lower(b.gprs_type) like "3G%" then sum(b.vol_uplink_kb+b.vol_downlink_kb)
+                when lower(b.gprs_type) like "3g%" then sum(b.vol_uplink_kb+b.vol_downlink_kb)
                 else 0 end as vol_3g
             ,case
-                when lower(b.gprs_type) like "4G%" then sum(b.vol_uplink_kb+b.vol_downlink_kb)
+                when lower(b.gprs_type) like "4g%" then sum(b.vol_uplink_kb+b.vol_downlink_kb)
                 else 0 end as vol_4g
             ,case
-                when lower(b.gprs_type) like "5G%" then sum(b.vol_uplink_kb+b.vol_downlink_kb) 
+                when lower(b.gprs_type) like "5g%" then sum(b.vol_uplink_kb+b.vol_downlink_kb) 
                 else 0 end as vol_5g
         from sum_data_location b  
         left join geo_mst_cell_masterplan mp
