@@ -1,6 +1,6 @@
 from pyspark.sql import DataFrame, Window
 from pyspark.sql import functions as F
-from customer360.utilities.config_parser import node_from_config, expansion
+from customer360.utilities.config_parser import node_from_config
 from kedro.context.context import load_context
 from pathlib import Path
 import logging, os
@@ -585,7 +585,7 @@ def streaming_favourite_start_hour_of_day_func(
         output_col = curr_dict["output_col"]
         curr_item = input_with_application.\
             filter(F.lower(F.col("application_name")).isin(filter_query))
-        curr_item = curr_item.agg(["msisdn","hour","start_of_month"]).agg(F.sum("dw_kbyte").alias("download"))
+        curr_item = curr_item.groupBy(["msisdn","hour","start_of_month"]).agg(F.sum("dw_kbyte").alias("download"))
         curr_item = curr_item.withColumn("rnk", F.row_number().over(win)).where("rnk = 1")
         curr_item = curr_item.select(F.col("msisdn").alias("access_method_num"),
                                      F.col("hour").alias(output_col),
@@ -599,6 +599,123 @@ def streaming_favourite_start_hour_of_day_func(
     merged_df = execute_sql(union_df, 'tmp_table_name', final_df_str)
 
     merged_df = cust_df.select("access_method_num", "subscription_identifier", "start_of_month")\
+        .join(merged_df, ["access_method_num", "start_of_month"]) \
+        .drop("access_method_num")
+
+    return merged_df
+
+
+def streaming_favourite_location_features_func(
+        input_df: DataFrame,
+        master_application: DataFrame,
+        cust_profile_df: DataFrame,
+        geo_mster_plan: DataFrame) -> DataFrame:
+    """
+    :param input_df:
+    :param master_application:
+    :param cust_profile_df:
+    :param geo_mster_plan:
+    :return:
+    """
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df, master_application]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(
+        df=input_df, grouping="monthly", par_col="partition_date",
+        missing_data_check_flg='Y',
+        target_table_name="l3_streaming_favourite_start_time_hour_of_day")
+
+    cust_profile_df = data_non_availability_and_missing_check(
+        df=cust_profile_df, grouping="monthly", par_col="start_of_month",
+        target_table_name="l3_streaming_favourite_start_time_hour_of_day")
+
+    if check_empty_dfs([input_df, master_application]):
+        return get_spark_empty_df()
+    ################################# End Implementing Data availability checks ###############################
+    w_recent_partition = Window.partitionBy("application_id").orderBy(F.col("partition_month").desc())
+
+    master_application = master_application \
+        .withColumn("rank", F.row_number().over(w_recent_partition)) \
+        .where(F.col("rank") == 1) \
+        .withColumnRenamed("application_id", "application")
+
+    geo_master_plan_max = geo_mster_plan.agg(F.max("partition_date").alias("partition_date"))
+    geo_master_plan = geo_mster_plan.join(geo_master_plan_max, ["partition_date"])\
+        .select("soc_cgi_hex", "location_id")
+
+    cust_df = cust_profile_df.withColumn("rn", F.expr(
+        "row_number() over(partition by start_of_month,access_method_num order by "
+        "start_of_month desc, mobile_status_date desc)")) \
+        .where("rn = 1") \
+        .select("subscription_identifier", "access_method_num", "start_of_month")
+
+    input_with_application = input_df.join(master_application, ["application"])
+    input_with_application = add_event_week_and_month_from_yyyymmdd(input_with_application, "partition_date") \
+        .drop("event_partition_date", "start_of_week")
+
+    input_with_application_grouped = input_with_application.\
+        groupBy(["msisdn", "start_of_month", "application_name", "LAST_SAI_CGI_ECGI"])\
+        .agg(F.sum("L4_DW_THROUGHPUT").alias("download"))
+
+    merged_df = input_with_application_grouped.\
+        join(geo_master_plan, input_with_application_grouped.LAST_SAI_CGI_ECGI == geo_master_plan.soc_cgi_hex)
+
+    dictionary = [{'filter_condition': "youtube,youtube_go,youtubebyclick",
+                   'output_col': 'fav_youtube_streaming_base_station_id'},
+                  {'filter_condition': "trueid",
+                   'output_col': 'fav_trueid_streaming_base_station_id'},
+                  {'filter_condition': "truevisions",
+                   'output_col': 'fav_truevisions_streaming_base_station_id'},
+                  {'filter_condition': "monomaxx",
+                   'output_col': 'fav_monomaxx_streaming_base_station_id'},
+                  {'filter_condition': "qqlive",
+                   'output_col': 'fav_qqlive_streaming_base_station_id'},
+                  {'filter_condition': "facebook",
+                   'output_col': 'fav_facebook_streaming_base_station_id'},
+                  {'filter_condition': "linetv",
+                   'output_col': 'fav_linetv_streaming_base_station_id'},
+                  {'filter_condition': "ais_play",
+                   'output_col': 'fav_ais_play_streaming_base_station_id'},
+                  {'filter_condition': "netflix",
+                   'output_col': 'fav_netflix_streaming_base_station_id'},
+                  {'filter_condition': "viu,viutv",
+                   'output_col': 'fav_viu_streaming_base_station_id'},
+                  {'filter_condition': "iflix",
+                   'output_col': 'fav_iflix_streaming_base_station_id'},
+                  {'filter_condition': "spotify",
+                   'output_col': 'fav_spotify_streaming_base_station_id'},
+                  {'filter_condition': "jooxmusic",
+                   'output_col': 'fav_jooxmusic_streaming_base_station_id'},
+                  {'filter_condition': "twitchtv",
+                   'output_col': 'fav_twitchtv_streaming_base_station_id'},
+                  {'filter_condition': "bigo",
+                   'output_col': 'fav_bigo_streaming_base_station_id'},
+                  {'filter_condition': "valve_steam",
+                   'output_col': 'fav_valve_steam_streaming_base_station_id'}]
+
+    final_dfs = []
+    win = Window.partitionBy(["msisdn", "start_of_month"]).orderBy(F.col("download").desc())
+    for curr_dict in dictionary:
+        filter_query = curr_dict["filter_condition"].split(",")
+        output_col = curr_dict["output_col"]
+        curr_item = merged_df. \
+            filter(F.lower(F.col("application_name")).isin(filter_query))
+        curr_item = curr_item.groupBy(["msisdn", "location_id", "start_of_month"])\
+            .agg(F.sum("download").alias("download"))
+        curr_item = curr_item.withColumn("rnk", F.row_number().over(win)).where("rnk = 1")
+        curr_item = curr_item.select(F.col("msisdn").alias("access_method_num"),
+                                     F.col("location_id").alias(output_col),
+                                     "start_of_month")
+        final_dfs.append(curr_item)
+
+    union_df = union_dataframes_with_missing_cols(final_dfs)
+    group_cols = ["access_method_num", "start_of_month"]
+
+    final_df_str = gen_max_sql(union_df, 'tmp_table_name', group_cols)
+    merged_df = execute_sql(union_df, 'tmp_table_name', final_df_str)
+
+    merged_df = cust_df.select("access_method_num", "subscription_identifier", "start_of_month") \
         .join(merged_df, ["access_method_num", "start_of_month"]) \
         .drop("access_method_num")
 

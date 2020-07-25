@@ -210,6 +210,25 @@ def streaming_favourite_start_hour_of_day(**kwargs):
     )
 
 
+def streaming_favourite_location_features(**kwargs):
+    return Pipeline(
+        [
+
+            node(
+                streaming_favourite_location_features_func,
+                [
+                    "l0_streaming_soc_mobile_app_daily_for_l3_streaming_favourite_location_features",
+                    "l0_mobile_app_master",
+                    "l3_customer_profile_union_monthly_feature_for_l3_streaming_favourite_location_features",
+                    "l0_geo_mst_cell_masterplan_current_for_l3_streaming_favourite_location_features"
+
+                ],
+                "l3_streaming_favourite_location_features"
+            )
+        ], name="streaming_favourite_location_features"
+    )
+
+
 def streaming_to_l3_session_duration_pipeline(**kwargs):
     return Pipeline(
         [
