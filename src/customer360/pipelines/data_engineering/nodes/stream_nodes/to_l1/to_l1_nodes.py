@@ -8,7 +8,7 @@ from kedro.context.context import load_context
 
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
-    data_non_availability_and_missing_check, add_start_of_week_and_month, add_event_week_and_month_from_yyyymmdd
+    data_non_availability_and_missing_check, add_event_week_and_month_from_yyyymmdd
 from src.customer360.utilities.spark_util import get_spark_empty_df
 
 conf = os.getenv("CONF", None)
@@ -167,11 +167,10 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
     sel_cols = ['access_method_num',
                 'event_partition_date',
                 "subscription_identifier",
-                "register_date",
                 "start_of_week",
                 "start_of_month",
                 ]
-    join_cols = ['access_method_num', 'event_partition_date', "start_of_week", "start_of_month", "register_date"]
+    join_cols = ['access_method_num', 'event_partition_date', "start_of_week", "start_of_month"]
 
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = input_df
@@ -227,7 +226,7 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
         # TV Show features
         selective_df = joined_data_with_cust.\
             select("subscription_identifier", "event_partition_date", "start_of_week", "start_of_month",
-                   "access_method_num", "register_date", "content_group", "title", "series_title")
+                   "access_method_num", "content_group", "title", "series_title")
         CNTX.catalog.save("int_l0_streaming_vimmi_table", selective_df)
 
         # share_of_completed_episodes feature
@@ -291,7 +290,7 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
     # TV Show features
     selective_df = joined_data_with_cust. \
         select("subscription_identifier", "event_partition_date", "start_of_week", "start_of_month",
-               "access_method_num", "register_date", "content_group", "title", "series_title")
+               "access_method_num", "content_group", "title", "series_title")
 
     # share_of_completed_episodes feature
     int_l1_streaming_share_of_completed_episodes_features = node_from_config(selective_df,
@@ -370,7 +369,6 @@ def stream_process_soc_mobile_data(input_data: DataFrame,
     sel_cols = ['access_method_num',
                 'event_partition_date',
                 "subscription_identifier",
-                "register_date",
                 "start_of_week",
                 "start_of_month",
                 ]
