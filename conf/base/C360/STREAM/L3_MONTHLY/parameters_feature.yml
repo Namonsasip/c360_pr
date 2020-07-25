@@ -286,7 +286,7 @@ l3_streaming_visit_count_and_download_traffic_feature:
               "unique_number_of_day_visit_linetv_video",
               "unique_number_of_day_visit_ais_play_video",
               "unique_number_of_day_visit_netflix_video",
-              "unique_number_of_day_visit_hooq_video",
+              "unique_number_of_day_visit_viu_video",
               "unique_number_of_day_visit_iflix_video",
               "unique_number_of_day_visit_spotify_music",
               "unique_number_of_day_visit_joox_music",
@@ -299,7 +299,7 @@ l3_streaming_visit_count_and_download_traffic_feature:
               "download_kb_traffic_linetv_video",
               "download_kb_traffic_ais_play_video",
               "download_kb_traffic_netflix_video",
-              "download_kb_traffic_hooq_video",
+              "download_kb_traffic_viu_video",
               "download_kb_traffic_iflix_video",
               "download_kb_traffic_spotify_music",
               "download_kb_traffic_joox_music",
@@ -324,7 +324,7 @@ int_l3_streaming_sum_per_day:
               "unique_number_of_day_visit_linetv_video",
               "unique_number_of_day_visit_ais_play_video",
               "unique_number_of_day_visit_netflix_video",
-              "unique_number_of_day_visit_hooq_video",
+              "unique_number_of_day_visit_viu_video",
               "unique_number_of_day_visit_iflix_video",
               "unique_number_of_day_visit_spotify_music",
               "unique_number_of_day_visit_joox_music",
@@ -338,7 +338,7 @@ int_l3_streaming_sum_per_day:
               "download_kb_traffic_linetv_video",
               "download_kb_traffic_ais_play_video",
               "download_kb_traffic_netflix_video",
-              "download_kb_traffic_hooq_video",
+              "download_kb_traffic_viu_video",
               "download_kb_traffic_iflix_video",
               "download_kb_traffic_spotify_music",
               "download_kb_traffic_joox_music",
@@ -361,7 +361,7 @@ int_l3_streaming_ranked_of_day_per_month:
     download_kb_traffic_linetv_video_sum: "download_kb_traffic_linetv_video_sum"
     download_kb_traffic_ais_play_video_sum: "download_kb_traffic_ais_play_video_sum"
     download_kb_traffic_netflix_video_sum: "download_kb_traffic_netflix_video_sum"
-    download_kb_traffic_hooq_video_sum: "download_kb_traffic_hooq_video_sum"
+    download_kb_traffic_viu_video_sum: "download_kb_traffic_viu_video_sum"
     download_kb_traffic_iflix_video_sum: "download_kb_traffic_iflix_video_sum"
     download_kb_traffic_spotify_music_sum: "download_kb_traffic_spotify_music_sum"
     download_kb_traffic_joox_music_sum: "download_kb_traffic_joox_music_sum"
@@ -380,8 +380,8 @@ int_l3_streaming_ranked_of_day_per_month:
       date(register_date), start_of_month order by download_kb_traffic_ais_play_video_sum desc)"
     netflix_video_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
       date(register_date), start_of_month order by download_kb_traffic_netflix_video_sum desc)"
-    hooq_video_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-      date(register_date), start_of_month order by download_kb_traffic_hooq_video_sum desc)"
+    viu_video_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
+      date(register_date), start_of_month order by download_kb_traffic_viu_video_sum desc)"
     iflix_video_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
       date(register_date), start_of_month order by download_kb_traffic_iflix_video_sum desc)"
     spotify_music_by_download_rank: "row_number() over (partition by subscription_identifier, access_method_num,
@@ -407,7 +407,7 @@ l3_streaming_session_duration_feature:
         sum_session_duration_linetv_video: "sum(sum_session_duration_linetv_video)"
         sum_session_duration_ais_play_video: "sum(sum_session_duration_ais_play_video)"
         sum_session_duration_netflix_video: "sum(sum_session_duration_netflix_video)"
-        sum_session_duration_hooq_video: "sum(sum_session_duration_hooq_video)"
+        sum_session_duration_viu_video: "sum(sum_session_duration_viu_video)"
         sum_session_duration_iflix_video: "sum(sum_session_duration_iflix_video)"
 
         sum_session_duration_spotify_music: "sum(sum_session_duration_spotify_music)"
@@ -423,7 +423,7 @@ l3_streaming_session_duration_feature:
         max_session_duration_linetv_video: "max(max_session_duration_linetv_video)"
         max_session_duration_ais_play_video: "max(max_session_duration_ais_play_video)"
         max_session_duration_netflix_video: "max(max_session_duration_netflix_video)"
-        max_session_duration_hooq_video: "max(max_session_duration_hooq_video)"
+        max_session_duration_viu_video: "max(max_session_duration_viu_video)"
         max_session_duration_iflix_video: "max(max_session_duration_iflix_video)"
 
         max_session_duration_spotify_music: "max(max_session_duration_spotify_music)"
@@ -439,7 +439,7 @@ l3_streaming_session_duration_feature:
         min_session_duration_linetv_video: "min(min_session_duration_linetv_video)"
         min_session_duration_ais_play_video: "min(min_session_duration_ais_play_video)"
         min_session_duration_netflix_video: "min(min_session_duration_netflix_video)"
-        min_session_duration_hooq_video: "min(min_session_duration_hooq_video)"
+        min_session_duration_viu_video: "min(min_session_duration_viu_video)"
         min_session_duration_iflix_video: "min(min_session_duration_iflix_video)"
 
         min_session_duration_spotify_music: "min(min_session_duration_spotify_music)"
@@ -455,7 +455,7 @@ l3_streaming_session_duration_feature:
         avg_session_duration_per_day_linetv_video: "sum(sum_session_duration_linetv_video)/dayofmonth(last_day(start_of_month))"
         avg_session_duration_per_day_ais_play_video: "sum(sum_session_duration_ais_play_video)/dayofmonth(last_day(start_of_month))"
         avg_session_duration_per_day_netflix_video: "sum(sum_session_duration_netflix_video)/dayofmonth(last_day(start_of_month))"
-        avg_session_duration_per_day_hooq_video: "sum(sum_session_duration_hooq_video)/dayofmonth(last_day(start_of_month))"
+        avg_session_duration_per_day_viu_video: "sum(sum_session_duration_viu_video)/dayofmonth(last_day(start_of_month))"
         avg_session_duration_per_day_iflix_video: "sum(sum_session_duration_iflix_video)/dayofmonth(last_day(start_of_month))"
 
         avg_session_duration_per_day_spotify_music: "sum(sum_session_duration_spotify_music)/dayofmonth(last_day(start_of_month))"
