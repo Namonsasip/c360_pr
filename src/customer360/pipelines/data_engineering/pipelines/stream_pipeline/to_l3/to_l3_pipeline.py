@@ -80,8 +80,10 @@ def streaming_to_l3_pipeline(**kwargs):
                      "int_l0_streaming_vimmi_table_for_l3_streaming_fav_tv_show_by_episode_watched",
                      "params:int_l3_streaming_tv_show_features",
                      "params:l3_streaming_fav_tv_show_by_episode_watched",
+                     "params:int_l3_streaming_genre",
+                     "params:l3_streaming_fav_genre",
                   ],
-                 "l3_streaming_fav_tv_show_by_episode_watched"
+                 ["l3_streaming_fav_tv_show_by_episode_watched", "l3_streaming_fav_genre"]
                  ),
 
             # # fav video service by download traffic/visit count

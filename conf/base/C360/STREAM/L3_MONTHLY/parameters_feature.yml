@@ -104,6 +104,15 @@ int_l3_streaming_tv_show_features:
     # we group directly from source and join with customer profile below
     granularity: "subscription_identifier, start_of_month, series_title"
 
+int_l3_streaming_genre:
+  where_clause: "where lower(content_group) = 'movie'"
+  feature_list:
+    num_of_episode_watched_rank: "row_number() over (partition by subscription_identifier,
+         start_of_month order by count(distinct title) desc)"
+
+  # we group directly from source and join with customer profile below
+  granularity: "subscription_identifier, start_of_month, genre"
+
 l3_streaming_fav_tv_show_by_episode_watched:
     where_clause: "where num_of_episode_watched_rank = 1"
     feature_list:
@@ -112,6 +121,15 @@ l3_streaming_fav_tv_show_by_episode_watched:
         start_of_month: "start_of_month"
     granularity: ""
     output_catalog: "l3_streaming_fav_tv_show_by_episode_watched"
+
+l3_streaming_fav_genre:
+  where_clause: "where num_of_episode_watched_rank = 1"
+  feature_list:
+    subscription_identifier: subscription_identifier
+    fav_genre: "genre"
+    start_of_month: "start_of_month"
+  granularity: ""
+  output_catalog: "l3_streaming_fav_genre"
 
 
  # Fav service by download traffic (reused for music, video, and esport)

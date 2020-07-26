@@ -252,17 +252,21 @@ def streaming_to_l3_tv_channel_type_features(input_df: DataFrame,
 
 def streaming_streaming_fav_tv_show_by_episode_watched_features(
         input_df: DataFrame,
-        int_l3_streaming_tv_show_features_dict,
-        l3_streaming_fav_tv_show_by_episode_watched_dict) -> DataFrame:
+        int_l3_streaming_tv_show_features_dict: dict,
+        l3_streaming_fav_tv_show_by_episode_watched_dict: dict,
+        int_l3_streaming_genre_dict: dict,
+        l3_streaming_genre_dict: dict) -> [DataFrame, DataFrame]:
     """
     :param input_df:
     :param int_l3_streaming_tv_show_features_dict:
     :param l3_streaming_fav_tv_show_by_episode_watched_dict:
+    :param int_l3_streaming_genre_dict:
+    :param l3_streaming_genre_dict:
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_df]):
-        return get_spark_empty_df()
+        return [get_spark_empty_df(), get_spark_empty_df()]
 
     input_df = data_non_availability_and_missing_check(
         df=input_df, grouping="monthly", par_col="event_partition_date",
@@ -271,8 +275,7 @@ def streaming_streaming_fav_tv_show_by_episode_watched_features(
         exception_partitions=["2020-04-01"])
 
     if check_empty_dfs([input_df]):
-        return get_spark_empty_df()
-
+        return [get_spark_empty_df(), get_spark_empty_df()]
     ################################# End Implementing Data availability checks ###############################
 
     def divide_chunks(l, n):
@@ -303,6 +306,12 @@ def streaming_streaming_fav_tv_show_by_episode_watched_features(
         CNTX.catalog.save(l3_streaming_fav_tv_show_by_episode_watched_dict["output_catalog"],
                           l3_streaming_fav_tv_show_by_episode_watched)
 
+        int_l3_streaming_genre_features = node_from_config(small_df, int_l3_streaming_genre_dict)
+
+        l3_streaming_genre = node_from_config(int_l3_streaming_genre_features, l3_streaming_genre_dict)
+        CNTX.catalog.save(l3_streaming_genre_dict["output_catalog"],
+                          l3_streaming_genre)
+
     logging.info("Final date to run for {0}".format(str(first_item)))
     small_df = data_frame.filter(F.col("start_of_month").isin(*[first_item]))
     int_l3_streaming_tv_show_features = node_from_config(small_df, int_l3_streaming_tv_show_features_dict)
@@ -310,7 +319,11 @@ def streaming_streaming_fav_tv_show_by_episode_watched_features(
     l3_streaming_fav_tv_show_by_episode_watched = node_from_config(int_l3_streaming_tv_show_features,
                                                                    l3_streaming_fav_tv_show_by_episode_watched_dict)
 
-    return l3_streaming_fav_tv_show_by_episode_watched
+    int_l3_streaming_genre_features = node_from_config(small_df, int_l3_streaming_genre_dict)
+
+    l3_streaming_genre = node_from_config(int_l3_streaming_genre_features, l3_streaming_genre_dict)
+
+    return [l3_streaming_fav_tv_show_by_episode_watched, l3_streaming_genre]
 
 
 def streaming_fav_service_download_traffic_visit_count(
