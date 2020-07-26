@@ -475,7 +475,7 @@ def streaming_to_l3_fav_tv_show_by_share_of_completed_episodes(
                           l3_streaming_fav_tv_show_by_share_of_completed_episodes)
 
     logging.info("Final date to run for {0}".format(str(first_item)))
-    small_df = data_frame.filter(F.col("start_of_week").isin(*[curr_item]))
+    small_df = data_frame.filter(F.col("start_of_week").isin(*[first_item]))
     selective_df = small_df. \
         select("subscription_identifier", "start_of_week",
                "access_method_num", "register_date", "content_group", "title", "series_title")
@@ -819,6 +819,106 @@ def streaming_favourite_location_features_func(
         curr_item = curr_item.select(F.col("msisdn").alias("access_method_num"),
                                      F.col("location_id").alias(output_col),
                                      "start_of_month")
+        final_dfs.append(curr_item)
+
+    union_df = union_dataframes_with_missing_cols(final_dfs)
+    group_cols = ["access_method_num", "start_of_month"]
+
+    final_df_str = gen_max_sql(union_df, 'tmp_table_name', group_cols)
+    merged_df = execute_sql(union_df, 'tmp_table_name', final_df_str)
+
+    merged_df = cust_df.select("access_method_num", "subscription_identifier", "start_of_month") \
+        .join(merged_df, ["access_method_num", "start_of_month"]) \
+        .drop("access_method_num")
+
+    return merged_df
+
+
+def streaming_favourite_quality_features_func(
+        input_df: DataFrame,
+        master_application: DataFrame,
+        cust_profile_df: DataFrame) -> DataFrame:
+    """
+    :param input_df:
+    :param master_application:
+    :param cust_profile_df:
+    :return:
+    """
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df, master_application]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(
+        df=input_df, grouping="monthly", par_col="partition_date",
+        missing_data_check_flg='Y',
+        target_table_name="l3_streaming_app_quality_features")
+
+    cust_profile_df = data_non_availability_and_missing_check(
+        df=cust_profile_df, grouping="monthly", par_col="start_of_month",
+        target_table_name="l3_streaming_app_quality_features")
+
+    if check_empty_dfs([input_df, master_application]):
+        return get_spark_empty_df()
+    ################################# End Implementing Data availability checks ###############################
+    w_recent_partition = Window.partitionBy("application_id").orderBy(F.col("partition_month").desc())
+
+    master_application = master_application \
+        .withColumn("rank", F.row_number().over(w_recent_partition)) \
+        .where(F.col("rank") == 1) \
+        .withColumnRenamed("application_id", "application")
+
+    cust_df = cust_profile_df.withColumn("rn", F.expr(
+        "row_number() over(partition by start_of_month,access_method_num order by "
+        "start_of_month desc, mobile_status_date desc)")) \
+        .where("rn = 1") \
+        .select("subscription_identifier", "access_method_num", "start_of_month")
+
+    input_with_application = input_df.join(master_application, ["application"])
+    input_with_application = add_event_week_and_month_from_yyyymmdd(input_with_application, "partition_date") \
+        .drop("event_partition_date", "start_of_week")
+
+
+    dictionary = [{'filter_condition': "youtube,youtube_go,youtubebyclick",
+                   'output_col': 'avg_streaming_quality_youtube'},
+                  {'filter_condition': "trueid",
+                   'output_col': 'avg_streaming_quality_trueid'},
+                  {'filter_condition': "truevisions",
+                   'output_col': 'avg_streaming_quality_truevisions'},
+                  {'filter_condition': "monomaxx",
+                   'output_col': 'avg_streaming_quality_monomaxx'},
+                  {'filter_condition': "qqlive",
+                   'output_col': 'avg_streaming_quality_qqlive'},
+                  {'filter_condition': "ais_play",
+                   'output_col': 'avg_streaming_quality_ais_play'},
+                  {'filter_condition': "netflix",
+                   'output_col': 'avg_streaming_quality_netflix'},
+                  {'filter_condition': "viu,viutv",
+                   'output_col': 'avg_streaming_quality_viu'},
+                  {'filter_condition': "iflix",
+                   'output_col': 'avg_streaming_quality_iflix'},
+                  {'filter_condition': "spotify",
+                   'output_col': 'avg_streaming_quality_spotify'},
+                  {'filter_condition': "jooxmusic",
+                   'output_col': 'avg_streaming_quality_jooxmusic'},
+                  {'filter_condition': "twitchtv",
+                   'output_col': 'avg_streaming_quality_twitchtv'},
+                  {'filter_condition': "bigo",
+                   'output_col': 'avg_streaming_quality_bigo'},
+                  {'filter_condition': "valve_steam",
+                   'output_col': 'avg_streaming_quality_valve_steam'}]
+
+    final_dfs = []
+    for curr_dict in dictionary:
+        filter_query = curr_dict["filter_condition"].split(",")
+        output_col = curr_dict["output_col"]
+        curr_item = input_with_application. \
+            filter(F.lower(F.col("application_name")).isin(filter_query))
+        curr_item = curr_item.withColumn("calc_column", F.col("streaming_dw_packets") /
+                                         (((F.col("STREAMING_Download_DELAY") * 1000 * 8) / 1024) / 1024))
+
+        curr_item = curr_item.groupBy(["msisdn", "start_of_month"]) \
+            .agg(F.avg("calc_column").alias(output_col))\
+            .withColumnRenamed("msisdn", "access_method_num")
         final_dfs.append(curr_item)
 
     union_df = union_dataframes_with_missing_cols(final_dfs)

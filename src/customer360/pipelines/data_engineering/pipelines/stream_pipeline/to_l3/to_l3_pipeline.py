@@ -33,8 +33,7 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 
-from customer360.utilities.config_parser import node_from_config, expansion
-from customer360.utilities.re_usable_functions import l3_massive_processing
+from customer360.utilities.config_parser import  expansion
 from customer360.pipelines.data_engineering.nodes.stream_nodes.to_l3.to_l3_nodes import *
 
 
@@ -227,7 +226,7 @@ def streaming_traffic_consumption_time_based_features(**kwargs):
     )
 
 
-def streaming_favourite_location_features(**kwargs):
+def streaming_favourite_location_quality_features(**kwargs):
     return Pipeline(
         [
 
@@ -241,9 +240,20 @@ def streaming_favourite_location_features(**kwargs):
 
                 ],
                 "l3_streaming_favourite_location_features"
+            ),
+            node(
+                streaming_favourite_quality_features_func,
+                [
+                    "l0_streaming_sdr_sub_app_hourly_for_l3_streaming_app_quality_features",
+                    "l0_mobile_app_master",
+                    "l3_customer_profile_union_monthly_feature_for_l3_streaming_app_quality_features",
+                ],
+                "l3_streaming_app_quality_features"
             )
-        ], name="streaming_favourite_location_features"
+        ], name="streaming_favourite_location_quality_features"
     )
+
+
 
 
 def streaming_to_l3_session_duration_pipeline(**kwargs):
