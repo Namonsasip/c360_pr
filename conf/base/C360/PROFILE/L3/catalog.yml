@@ -261,3 +261,15 @@ l3_customer_profile_union_monthly_feature_for_l3_streaming_favourite_location_fe
     read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
     lookback: '0'
+
+l3_customer_profile_union_monthly_feature_for_l3_streaming_traffic_consumption_time_based_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/l3_features/l3_customer_profile_union_monthly_feature/
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_streaming_traffic_consumption_time_based_features'
+    read_layer: 'l3_monthly'
+    target_layer: 'l3_monthly'
+    lookback: '0'

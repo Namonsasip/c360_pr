@@ -210,6 +210,23 @@ def streaming_favourite_start_hour_of_day(**kwargs):
     )
 
 
+def streaming_traffic_consumption_time_based_features(**kwargs):
+    return Pipeline(
+        [
+
+            node(
+                streaming_traffic_consumption_time_based_features_func,
+                [
+                    "l0_streaming_sdr_sub_app_hourly_for_l3_streaming_traffic_consumption_time_based_features",
+                    "l0_mobile_app_master",
+                    "l3_customer_profile_union_monthly_feature_for_l3_streaming_traffic_consumption_time_based_features"
+                ],
+                "l3_streaming_traffic_consumption_time_based_features"
+            )
+        ], name="streaming_traffic_consumption_time_based_features"
+    )
+
+
 def streaming_favourite_location_features(**kwargs):
     return Pipeline(
         [

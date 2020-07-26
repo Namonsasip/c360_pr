@@ -226,7 +226,7 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
         # TV Show features
         selective_df = joined_data_with_cust.\
             select("subscription_identifier", "event_partition_date", "start_of_week", "start_of_month",
-                   "access_method_num", "content_group", "title", "series_title")
+                   "access_method_num", "content_group", "title", "series_title", "genre")
         CNTX.catalog.save("int_l0_streaming_vimmi_table", selective_df)
 
         # share_of_completed_episodes feature
