@@ -192,7 +192,7 @@ def streaming_to_l3_pipeline(**kwargs):
     )
 
 
-def streaming_favourite_start_hour_of_day(**kwargs):
+def streaming_to_l3_favourite_start_hour_of_day(**kwargs):
     return Pipeline(
         [
 
@@ -209,7 +209,7 @@ def streaming_favourite_start_hour_of_day(**kwargs):
     )
 
 
-def streaming_traffic_consumption_time_based_features(**kwargs):
+def streaming_to_l3_traffic_consumption_time_based_features(**kwargs):
     return Pipeline(
         [
 
@@ -226,7 +226,7 @@ def streaming_traffic_consumption_time_based_features(**kwargs):
     )
 
 
-def streaming_favourite_location_quality_features(**kwargs):
+def streaming_to_l3_favourite_location_quality_features(**kwargs):
     return Pipeline(
         [
 
@@ -252,8 +252,6 @@ def streaming_favourite_location_quality_features(**kwargs):
             )
         ], name="streaming_favourite_location_quality_features"
     )
-
-
 
 
 def streaming_to_l3_session_duration_pipeline(**kwargs):
