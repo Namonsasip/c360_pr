@@ -151,7 +151,9 @@ from .pipelines.data_engineering.pipelines.stream_pipeline.to_l2.to_l2_pipeline 
     streaming_to_l2_intermediate_pipeline, streaming_to_l2_pipeline, streaming_to_l2_session_duration_pipeline
 )
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l3.to_l3_pipeline import (
-    streaming_to_l3_pipeline, streaming_to_l3_session_duration_pipeline, streaming_series_title_master
+    streaming_to_l3_pipeline, streaming_to_l3_session_duration_pipeline, streaming_series_title_master,
+    streaming_to_l3_favourite_start_hour_of_day, streaming_to_l3_traffic_consumption_time_based_features,
+    streaming_to_l3_favourite_location_quality_features
 )
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l4.to_l4_pipeline import (
     streaming_l2_to_l4_pipeline,
@@ -239,6 +241,10 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "streaming_to_l2_session_duration_pipeline": streaming_to_l2_session_duration_pipeline(),
         "streaming_series_title_master": streaming_series_title_master(),
         "streaming_to_l3_pipeline": streaming_to_l3_pipeline(),
+        "streaming_to_l3_favourite_start_hour_of_day": streaming_to_l3_favourite_start_hour_of_day(),
+        "streaming_to_l3_traffic_consumption_time_based_features":
+            streaming_to_l3_traffic_consumption_time_based_features(),
+        "streaming_to_l3_favourite_location_quality_features": streaming_to_l3_favourite_location_quality_features(),
         "streaming_to_l3_session_duration_pipeline": streaming_to_l3_session_duration_pipeline(),
         "streaming_l1_to_l4_pipeline": streaming_l1_to_l4_pipeline(),
         "streaming_l2_to_l4_session_duration_pipeline": streaming_l2_to_l4_session_duration_pipeline(),

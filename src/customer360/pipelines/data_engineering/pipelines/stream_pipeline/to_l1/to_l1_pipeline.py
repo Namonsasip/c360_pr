@@ -135,7 +135,7 @@ def streaming_to_l1_session_duration_pipeline(**kwargs):
             node(
                 application_duration,
                 ["int_l0_streaming_soc_mobile_app_daily_for_l1_streaming_session_duration_feature",
-                 "l0_mobile_app_master_for_l1_streaming_session_duration_feature"],
+                 "l0_mobile_app_master"],
                 "int_l0_streaming_soc_mobile_app_daily_for_l1_streaming_session_duration_feature_application"
             ),
             node(
