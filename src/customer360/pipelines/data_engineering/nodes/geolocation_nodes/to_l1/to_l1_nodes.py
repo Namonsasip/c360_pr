@@ -819,6 +819,16 @@ def l1_the_favourite_locations_daily(usage_df_location,geo_df_masterplan):
 
     return l1
 
+
+def sum_usage_date_statement(input_params: str) -> Column:
+    return (
+        F.when(
+            F.lower(F.col('gprs_type')).like("{}%".format(input_params)),
+            F.sum(F.col('vol_uplink_kb') + F.col('vol_downlink_kb'))
+        ).otherwise(0)
+    ).alias('vol_{}'.format(input_params))
+
+
 def l1_the_favourite_locations_daily_rework(input_df: DataFrame, master_df: DataFrame) -> DataFrame:
     """
     input_df: usage_sum_data_location_daily
@@ -832,7 +842,7 @@ def l1_the_favourite_locations_daily_rework(input_df: DataFrame, master_df: Data
     |+++0VA.070...|2020-05-25| 5905|    40118|    3GGSN|  weekday|       1.0|         0.0|   0.00|  0.00|  0.00|  0.00|            144|
     """
     # Add event_partition_date column to DataFrame
-    input_df = input_df.withColumn("event_partition_date", event_partition_date_statement('partition_date', 'yyyyMMdd'))
+    input_df = input_df.withColumn("event_partition_date", F.to_date(input_df.date_id.cast(DateType()), "yyyyMMdd"))
     input_df = input_df.withColumn('week_type', week_type_statement('event_partition_date'))
 
     w_unique_location = Window.partitionBy('lac', 'ci', 'date_id', 'week_type')
