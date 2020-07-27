@@ -109,3 +109,4 @@ l1_complaints_traffic_to_dtac_web_resources:
     access_method_num: mobile_no
     event_partition_date: event_partition_date
   output_catalog: "l1_complaints_traffic_to_dtac_web_resources"
+  partition_num_per_job: 30
