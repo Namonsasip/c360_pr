@@ -108,3 +108,4 @@ l1_complaints_traffic_to_dtac_web_resources:
   join_column_with_cust_profile:
     access_method_num: mobile_no
     event_partition_date: event_partition_date
+  output_catalog: "l1_complaints_traffic_to_dtac_web_resources"
