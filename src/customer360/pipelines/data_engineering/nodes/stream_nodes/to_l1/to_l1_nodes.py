@@ -115,8 +115,8 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
                                     int_l1_streaming_share_of_completed_episodes_features_dict: dict,
                                     int_l1_streaming_share_of_completed_episodes_ratio_features_dict: dict,
                                     l1_streaming_fav_tv_show_by_share_of_completed_episodes_dict: dict,
-                                    ) -> [DataFrame, DataFrame, DataFrame, DataFrame, DataFrame, DataFrame, DataFrame, DataFrame
-    , DataFrame]:
+                                    ) -> [DataFrame, DataFrame, DataFrame, DataFrame, DataFrame, DataFrame, DataFrame,
+                                          DataFrame, DataFrame]:
     """
 
     :param vimmi_usage_daily:
