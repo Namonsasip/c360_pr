@@ -469,7 +469,7 @@ def streaming_to_l3_fav_tv_show_by_share_of_completed_episodes(
 
         int_l3_streaming_share_of_completed_episodes_ratio_features_temp = \
             int_l3_streaming_share_of_completed_episodes_features.join(
-                streaming_series_title_master, on="series_title", how="left outer")
+                streaming_series_title_master, on="series_title", how="left")
 
         int_l3_streaming_share_of_completed_episodes_ratio_features_temp = \
             int_l3_streaming_share_of_completed_episodes_ratio_features_temp.withColumn(
@@ -499,7 +499,7 @@ def streaming_to_l3_fav_tv_show_by_share_of_completed_episodes(
 
     int_l3_streaming_share_of_completed_episodes_ratio_features_temp = \
         int_l3_streaming_share_of_completed_episodes_features.join(streaming_series_title_master,
-                                                                   on="series_title", how="left outer")
+                                                                   on="series_title", how="left")
     int_l3_streaming_share_of_completed_episodes_ratio_features_temp = \
         int_l3_streaming_share_of_completed_episodes_ratio_features_temp.withColumn(
             "share_of_completed_episodes",
