@@ -123,8 +123,6 @@ def join_with_master_package(
         ]
     ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
 
-    logging.info("JOIN function - Minimum value: ", min_value)
-
     grouped_cust_promo_df = grouped_cust_promo_df.filter(F.col("event_partition_date") <= min_value)
     grouped_cust_promo_df.createOrReplaceTempView("grouped_cust_promo_df")
 
@@ -237,27 +235,22 @@ def dac_product_customer_promotion_for_daily(postpaid_df: DataFrame,
         return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
                 get_spark_empty_df(), get_spark_empty_df()]
 
-    logging.info("DAC function - postpaid")
     postpaid_df = data_non_availability_and_missing_check(
         df=postpaid_df,grouping="weekly", par_col="partition_date",
         target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid")
 
-    logging.info("DAC function - pre-paid main")
     prepaid_main_df = data_non_availability_and_missing_check(
         df=prepaid_main_df, grouping="weekly", par_col="partition_date",
         target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid")
 
-    logging.info("DAC function - customer profile")
     customer_profile_df = data_non_availability_and_missing_check(
         df=customer_profile_df, grouping="weekly", par_col="event_partition_date",
         target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid")
 
-    logging.info("DAC function - pre-paid main")
     prepaid_product_master_df = data_non_availability_and_missing_check(
         df=prepaid_product_master_df, grouping="weekly", par_col="partition_date",
         target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid")
 
-    logging.info("DAC function - pre-paid on-top")
     prepaid_product_ontop_df = data_non_availability_and_missing_check(
         df=prepaid_product_ontop_df, grouping="weekly", par_col="partition_date",
         target_table_name="l1_product_active_customer_promotion_features_prepaid_postpaid")
@@ -285,8 +278,6 @@ def dac_product_customer_promotion_for_daily(postpaid_df: DataFrame,
             prepaid_product_ontop_df.select(F.max(F.col("start_of_week")).alias("max_date")),
         ]
     ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
-
-    logging.info("DAC function - Minimum value: ", min_value)
 
     postpaid_df = postpaid_df.filter(F.col("start_of_week") <= min_value)
     prepaid_main_df = prepaid_main_df.filter(F.col("start_of_week") <= min_value)
