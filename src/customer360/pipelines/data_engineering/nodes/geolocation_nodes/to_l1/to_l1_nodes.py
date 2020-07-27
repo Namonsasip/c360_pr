@@ -858,6 +858,13 @@ def l1_the_favourite_locations_daily_rework(input_df: DataFrame, master_df: Data
         sum_usage_date_statement('5g')
     ).withColumn('number_customer', F.approx_count_distinct('mobile_no').over(w_unique_location))
 
+    # Clear master table
+    # master_df = get_max_date_from_master_data(master_df, 'partition_date')
+    # output_df = output_df.join(master_df, [output_df.lac == master_df.lac, output_df.ci == output_df.ci], 'left')\
+    #     .select('mobile_no', 'date_id', master_df.location_id, output_df.lac, output_df.ci, master_df.latitude,
+    #             master_df.longitude, 'gprs_type', 'week_type', 'no_of_call', 'total_minute', 'vol_all', 'vol_3g',
+    #             'vol_4g', 'vol_5g', 'number_customer').dropDuplicates()
+
     return output_df
 
 def massive_processing_time_spent_daily(data_frame: DataFrame, sql, output_df_catalog, partition_col) -> DataFrame:
