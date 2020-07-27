@@ -819,6 +819,35 @@ def l1_the_favourite_locations_daily(usage_df_location,geo_df_masterplan):
 
     return l1
 
+def l1_the_favourite_locations_daily_rework(input_df: DataFrame, master_df: DataFrame) -> DataFrame:
+    """
+    input_df: usage_sum_data_location_daily
+    output_df: usage_sum_data_location_daily
+    +-------------+----------+-----+---------+---------+---------+----------+------------+-------+------+------+------+---------------+
+    | mobile_no   | date_id  | lac |       ci|gprs_type|week_type|no_of_call|total_minute|vol_all|vol_3g|vol_4g|vol_5g|number_customer|
+    +-------------+----------+-----+---------+---------+---------+----------+------------+-------+------+------+------+---------------+
+    |+++0VA.070...|2020-05-25|23088|350365113|    4GLTE|  weekday|       2.0|         2.0|   0.00|  0.00|  0.00|  0.00|              1|
+    |+++0VA.070...|2020-05-25| 5905|    52111|    3GGSN|  weekday|       1.0|         0.0|   0.00|  0.00|  0.00|  0.00|            113|
+    |+++0VA.070...|2020-05-25| 5905|    40117|    3GGSN|  weekday|       1.0|         0.0|   0.00|  0.00|  0.00|  0.00|             12|
+    |+++0VA.070...|2020-05-25| 5905|    40118|    3GGSN|  weekday|       1.0|         0.0|   0.00|  0.00|  0.00|  0.00|            144|
+    """
+    # Add event_partition_date column to DataFrame
+    input_df = input_df.withColumn("event_partition_date", event_partition_date_statement('partition_date', 'yyyyMMdd'))
+    input_df = input_df.withColumn('week_type', week_type_statement('event_partition_date'))
+
+    w_unique_location = Window.partitionBy('lac', 'ci', 'date_id', 'week_type')
+
+    output_df = input_df.groupBy('mobile_no', 'event_partition_date', 'lac', 'ci', 'gprs_type', 'week_type').agg(
+        F.sum('no_of_call').alias('no_of_call'),
+        F.sum('total_minute').alias('total_minute'),
+        F.sum(F.col('vol_downlink_kb') + F.col('vol_uplink_kb')).alias('vol_all'),
+        sum_usage_date_statement('3g'),
+        sum_usage_date_statement('4g'),
+        sum_usage_date_statement('5g')
+    ).withColumn('number_customer', F.approx_count_distinct('mobile_no').over(w_unique_location))
+
+    return output_df
+
 def massive_processing_time_spent_daily(data_frame: DataFrame, sql, output_df_catalog, partition_col) -> DataFrame:
     """
     :param data_frame:
