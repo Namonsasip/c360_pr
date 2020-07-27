@@ -41,8 +41,8 @@ def streaming_series_title_master(**kwargs):
     return Pipeline(
         [
             node(series_title_master,
-                 ["l0_streaming_ru_a_onair_vimmi_usage_daily_for_series_title_master"],
-                 ["l3_streaming_series_title_master"]
+                 "l0_streaming_ru_a_onair_vimmi_usage_daily_for_series_title_master",
+                 "l3_streaming_series_title_master"
                  ),
 
         ]
