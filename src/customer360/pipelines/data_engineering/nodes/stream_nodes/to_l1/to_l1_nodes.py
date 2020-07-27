@@ -181,7 +181,7 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_array = list(divide_chunks(mvv_array, 200))
+    mvv_array = list(divide_chunks(mvv_array, 100))
     add_list = mvv_array
 
     first_item = add_list[-1]
@@ -295,7 +295,7 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
     # TV Show features
     selective_df = joined_data_with_cust. \
         select("subscription_identifier", "event_partition_date", "start_of_week", "start_of_month",
-               "access_method_num", "content_group", "title", "series_title")
+               "access_method_num", "content_group", "title", "series_title", "genre")
 
     # share_of_completed_episodes feature
     int_l1_streaming_share_of_completed_episodes_features = node_from_config(
@@ -391,7 +391,7 @@ def stream_process_soc_mobile_data(input_data: DataFrame,
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_array = list(divide_chunks(mvv_array, 200))
+    mvv_array = list(divide_chunks(mvv_array, 100))
     add_list = mvv_array
 
     first_item = add_list[-1]

@@ -13,7 +13,7 @@ int_l1_streaming_share_of_completed_episodes_ratio_features:
     where_clause: ""
     feature_list:
         episode_watched_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-        event_partition_date, start_of_week, start_of_month order by share_of_completed_episodes desc)"
+        event_partition_date, start_of_week, start_of_month order by sum(share_of_completed_episodes) desc)"
 
 
     granularity: "subscription_identifier, access_method_num,
