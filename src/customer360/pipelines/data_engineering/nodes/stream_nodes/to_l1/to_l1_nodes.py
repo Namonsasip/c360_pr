@@ -322,9 +322,8 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
             int_l1_streaming_tv_channel_features,
             l1_streaming_fav_tv_channel_by_volume_df, l1_streaming_fav_tv_channel_by_duration_df,
             selective_df,
-            l1_streaming_fav_tv_show_by_episode_watched,
-            l1_streaming_fav_tv_show_by_share_of_completed_episodes
-            ]
+            l1_streaming_fav_tv_show_by_share_of_completed_episodes,
+            l1_streaming_fav_tv_show_by_episode_watched]
 
 
 def stream_process_soc_mobile_data(input_data: DataFrame,

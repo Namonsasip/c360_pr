@@ -66,17 +66,17 @@ def streaming_to_l1_onair_vimmi_pipeline(**kwargs):
                   ],
                  [
                   # Content Type Features
-                  "int_l1_streaming_content_type_features", "int_l1_streaming_tv_channel_features",
-                  "l1_streaming_fav_content_group_by_volume",
-                  # TV Channel features
+                  "int_l1_streaming_content_type_features", "l1_streaming_fav_content_group_by_volume",
                   "l1_streaming_fav_content_group_by_duration",
+                  # TV Channel features
+                  "int_l1_streaming_tv_channel_features",
                   "l1_streaming_fav_tv_channel_by_volume", "l1_streaming_fav_tv_channel_by_duration",
                   # TV Show features
                   "int_l0_streaming_vimmi_table",
+                  #fav tv_show_by_share_of_completed_episodes
+                  "l1_streaming_fav_tv_show_by_share_of_completed_episodes",
                   # Favorite Episode
                   "l1_streaming_fav_tv_show_by_episode_watched",
-                  #fav tv_show_by_share_of_completed_episodes
-                  "l1_streaming_fav_tv_show_by_share_of_completed_episodes"
                   ]
                  ),
 
