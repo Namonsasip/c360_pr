@@ -741,3 +741,226 @@ def build_network_file_transfer_cqi(
                                       l1_network_file_transfer_cqi,
                                       cust_df)
     return return_df
+
+#New requirement for Network
+def build_network_cei_voice_qoe_incoming(
+        voice_1day: DataFrame,
+        volte_1day: DataFrame,
+        call_leg_sip: DataFrame,
+        cust_df: DataFrame,
+        l1_network_cei_voice_qoe_incoming_dict: dict) -> DataFrame:
+
+    """
+
+    :param l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day:
+    :param l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day:
+    :param l1_customer_profile_union_daily_feature:
+    :param l1_network_cei_voice_qoe_outgoing_dict:
+    :return:
+    """
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs(
+            [voice_1day, volte_1day, call_leg_sip, cust_df]):
+        return get_spark_empty_df()
+
+    voice_1day = data_non_availability_and_missing_check(df=voice_1day, grouping="daily", par_col="partition_date",
+                                                         target_table_name="l1_network_cei_voice_qoe_incoming")
+
+    volte_1day = data_non_availability_and_missing_check(df=volte_1day, grouping="daily", par_col="partition_date",
+                                                         target_table_name="l1_network_cei_voice_qoe_incoming_outgoing")
+
+    call_leg_sip = data_non_availability_and_missing_check(df=call_leg_sip, grouping="daily", par_col="partition_date",
+                                                           target_table_name="l1_network_cei_voice_qoe_incoming")
+
+    cust_df = data_non_availability_and_missing_check(df=cust_df, grouping="daily", par_col="event_partition_date",
+                                                      target_table_name="l1_network_cei_voice_qoe_incoming_outgoing")
+
+    if check_empty_dfs(
+            [voice_1day, volte_1day, call_leg_sip, cust_df]):
+        return get_spark_empty_df()
+    ################################# End Implementing Data availability checks ###############################
+    voice_1day = voice_1day.withColumn(
+        "event_partition_date", f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd')).drop(
+        "partition_date")
+    volte_1day = volte_1day.withColumn(
+        "event_partition_date", f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd')).drop(
+        "partition_date")
+
+    call_leg_sip = call_leg_sip.withColumn(
+        "event_partition_date", f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd')).drop(
+        "partition_date")
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            voice_1day.select(f.max(f.col("event_partition_date")).alias("max_date")),
+            volte_1day.select(f.max(f.col("event_partition_date")).alias("max_date")),
+            call_leg_sip.select(f.max(f.col("event_partition_date")).alias("max_date")),
+            cust_df.select(f.max(f.col("event_partition_date")).alias("max_date")),
+        ]
+    ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    voice_1day = voice_1day.filter(f.col("event_partition_date") <= min_value)
+
+    volte_1day = volte_1day.filter(f.col("event_partition_date") <= min_value)
+
+    call_leg_sip = call_leg_sip.filter(f.col("event_partition_date") <= min_value)
+
+    cust_df = cust_df.filter(f.col("event_partition_date") <= min_value)
+
+    # voice column derivation
+    voice_1day = voice_1day.select("CEI_VOICE_PAGING_SUCCESS_RATE", "CEI_VOICE_PERCEIVED_CALL_DROP_RATE", "msisdn",
+                                   "event_partition_date")
+    voice_1day = voice_1day.groupBy("msisdn", "event_partition_date").agg(
+        f.sum(f.col("CEI_VOICE_PAGING_SUCCESS_RATE")).alias("CEI_VOICE_PAGING_SUCCESS_RATE"),
+        f.sum(f.col("CEI_VOICE_PERCEIVED_CALL_DROP_RATE")).alias("CEI_VOICE_PERCEIVED_CALL_DROP_RATE"))
+
+    # volte column derivation
+    volte_1day = volte_1day.select("CEI_VOLTE_VOICE_MT_DROP_TIMES", "CEI_VOLTE_VOICE_MT_ANSWER_TIMES", "msisdn",
+                                   "event_partition_date")
+    volte_1day = volte_1day.groupBy("msisdn", "event_partition_date").agg(
+        f.sum(f.col("CEI_VOLTE_VOICE_MT_DROP_TIMES")).alias("CEI_VOLTE_VOICE_MT_DROP_TIMES"),
+        f.sum(f.col("CEI_VOLTE_VOICE_MT_ANSWER_TIMES")).alias("CEI_VOLTE_VOICE_MT_ANSWER_TIMES"))
+
+    # volte paging success rate column derivation from call_leg_sip dataset
+    call_leg_sip = call_leg_sip.select("ACCESS_TYPE", "P_CSCF_ID", "SERVICE_TYPE", "ALERTING_TIME", "ANSWER_TIME", "IMPU_TEL_URI", "event_partition_date")
+    call_leg_sip = call_leg_sip.withColumn("VOLTE_MT_CONN_FAIL_TIMES", f.expr(
+        "case when (ACCESS_TYPE in (1,2,43) and P_CSCF_ID is not null and SERVICE_TYPE = 0 and ALERTING_TIME is null and ANSWER_TIME is null ) then 1 else 0 end")) \
+        .withColumn("VOLTE_MT_REQ_TIMES", f.expr(
+        "case when (ACCESS_TYPE in (1,2,43) and P_CSCF_ID is not null and SERVICE_TYPE = 0) then 1 else 0 end"))
+
+    call_leg_sip = call_leg_sip.groupBy("IMPU_TEL_URI", "event_partition_date").agg(
+        f.sum(f.col("VOLTE_MT_CONN_FAIL_TIMES")).alias("VOLTE_MT_CONN_FAIL_TIMES"),
+        f.sum(f.col("VOLTE_MT_REQ_TIMES")).alias("VOLTE_MT_REQ_TIMES"))
+
+    call_leg_sip = call_leg_sip.withColumnRenamed("IMPU_TEL_URI", "msisdn")
+
+
+    #join volte and call leg sip
+    volte_joined = volte_1day.join(call_leg_sip, on=["msisdn", "event_partition_date"], how="inner")
+
+    volte_joined = volte_joined.withColumn("VOLTE_PAGING_SUCCESS_RATE", f.expr(" 100 - ((VOLTE_MT_CONN_FAIL_TIMES * 100)/ VOLTE_MT_REQ_TIMES)")) \
+                                .withColumn("VOLTE_CALL_DROP_RATE", f.expr(" (CEI_VOLTE_VOICE_MT_DROP_TIMES * 100)/ CEI_VOLTE_VOICE_MT_ANSWER_TIMES "))
+
+
+    #join voice and volte for final feature derivation
+    join_key_between_network_df = ['event_partition_date', 'msisdn']
+    joined_df = voice_1day.join(
+        volte_joined, on=join_key_between_network_df, how='inner')
+
+    return_df = l1_massive_processing(joined_df,
+                                      l1_network_cei_voice_qoe_incoming_dict, cust_df)
+
+    return return_df
+
+
+def build_network_cei_voice_qoe_outgoing(
+        voice_1day: DataFrame,
+        volte_1day: DataFrame,
+        cust_df: DataFrame,
+        l1_network_cei_voice_qoe_outgoing_dict: dict) -> DataFrame:
+
+    """
+
+    :param l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day:
+    :param l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day:
+    :param l1_customer_profile_union_daily_feature:
+    :param l1_network_cei_voice_qoe_outgoing_dict:
+    :return:
+    """
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([voice_1day, volte_1day, cust_df]):
+        return get_spark_empty_df()
+
+    voice_1day = data_non_availability_and_missing_check(df=voice_1day, grouping="daily", par_col="partition_date",
+                                                         target_table_name="l1_network_cei_voice_qoe_incoming_outgoing")
+
+    volte_1day = data_non_availability_and_missing_check(df=volte_1day, grouping="daily", par_col="partition_date",
+                                                         target_table_name="l1_network_cei_voice_qoe_incoming_outgoing")
+
+    cust_df = data_non_availability_and_missing_check(df=cust_df, grouping="daily", par_col="event_partition_date",
+                                                      target_table_name="l1_network_cei_voice_qoe_incoming_outgoing")
+
+    if check_empty_dfs([voice_1day, volte_1day, cust_df]):
+        return get_spark_empty_df()
+    ################################# End Implementing Data availability checks ###############################
+    voice_1day = voice_1day.withColumn(
+        "event_partition_date", f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd')).drop(
+        "partition_date")
+    volte_1day = volte_1day.withColumn(
+        "event_partition_date", f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd')).drop(
+        "partition_date")
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            voice_1day.select(f.max(f.col("event_partition_date")).alias("max_date")),
+            volte_1day.select(f.max(f.col("event_partition_date")).alias("max_date")),
+            cust_df.select(f.max(f.col("event_partition_date")).alias("max_date")),
+        ]
+    ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    voice_1day = voice_1day.filter(f.col("event_partition_date") <= min_value)
+
+    volte_1day = volte_1day.filter(f.col("event_partition_date") <= min_value)
+
+    cust_df = cust_df.filter(f.col("event_partition_date") <= min_value)
+
+    voice_1day = voice_1day.select("CEI_VOICE_PERCEIVED_CALL_SUCCESS_RATE", "CEI_VOICE_PERCEIVED_CALL_DROP_RATE", "msisdn", "event_partition_date")
+    voice_1day = voice_1day.groupBy("msisdn", "event_partition_date").agg(
+        f.sum(f.col("CEI_VOICE_PERCEIVED_CALL_SUCCESS_RATE")).alias("CEI_VOICE_PERCEIVED_CALL_SUCCESS_RATE"),
+        f.sum(f.col("CEI_VOICE_PERCEIVED_CALL_DROP_RATE")).alias("CEI_VOICE_PERCEIVED_CALL_DROP_RATE"))
+
+    volte_1day = volte_1day.select("CEI_VOLTE_MO_CONN_RATE", "CEI_VOLTE_CALL_DROP_RATE", "msisdn", "event_partition_date")
+    volte_1day = volte_1day.groupBy("msisdn", "event_partition_date").agg(
+        f.sum(f.col("CEI_VOLTE_MO_CONN_RATE")).alias("CEI_VOLTE_MO_CONN_RATE"),
+        f.sum(f.col("CEI_VOLTE_CALL_DROP_RATE")).alias("CEI_VOLTE_CALL_DROP_RATE"))
+
+    join_key_between_network_df = ['event_partition_date', 'msisdn']
+    joined_df = voice_1day.join(volte_1day, on=join_key_between_network_df, how='inner')
+
+    return_df = l1_massive_processing(joined_df,
+                                      l1_network_cei_voice_qoe_outgoing_dict, cust_df)
+
+    return return_df
+
+
+def build_network_voice_data_features(
+        input_df: DataFrame,
+        l1_customer_profile_union_daily_feature: DataFrame,
+        feature_dict: dict,
+        target_table) -> DataFrame:
+    """
+
+    :param l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day:
+    :param l1_customer_profile_union_daily_feature:
+    :param l1_network_cei_voice_qoe_outgoing_dict:
+    :return:
+    """
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs(
+            [input_df,l1_customer_profile_union_daily_feature]):
+        return get_spark_empty_df()
+
+    input_df = \
+        data_non_availability_and_missing_check(
+            df=input_df, grouping="daily",
+            par_col="partition_date",
+            target_table_name=target_table)
+
+    cust_df = data_non_availability_and_missing_check(
+        df=l1_customer_profile_union_daily_feature, grouping="daily",
+        par_col="event_partition_date",
+        target_table_name=target_table)
+
+    # Min function is not required as driving table is network and join is based on that
+
+    if check_empty_dfs(
+            [input_df, cust_df]):
+        return get_spark_empty_df()
+    ################################# End Implementing Data availability checks ###############################
+
+    return_df = l1_massive_processing(input_df,
+                                      feature_dict, cust_df)
+
+    return return_df
+
+#New requirement for Network

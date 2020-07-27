@@ -84,13 +84,13 @@ def network_to_l1_pipeline(**kwargs):
                 "l1_network_data_traffic_features"
             ),
 
-            node(
-                build_network_data_cqi,
-                ["l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi",
-                 "params:l1_network_data_cqi",
-                 "l1_customer_profile_union_daily_feature_for_l1_network_data_cqi"],
-                "l1_network_data_cqi"
-            ),
+            # node(
+            #     build_network_data_cqi,
+            #     ["l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi",
+            #      "params:l1_network_data_cqi",
+            #      "l1_customer_profile_union_daily_feature_for_l1_network_data_cqi"],
+            #     "l1_network_data_cqi"
+            # ),
 
             node(
                 build_network_im_cqi,
@@ -147,5 +147,84 @@ def network_to_l1_pipeline(**kwargs):
                  "l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi"],
                 "l1_network_file_transfer_cqi"
             ),
+            # New requirement for Network
+            node(
+                build_network_cei_voice_qoe_incoming,
+                [
+                    "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_cei_voice_qoe_incoming",
+                    "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_cei_voice_qoe_incoming",
+                    "l0_network_xdr_cs_cdr_ims_mt_call_leg_sip_for_l1_network_cei_voice_qoe_incoming",
+                    "l1_customer_profile_union_daily_feature_for_l1_network_cei_voice_qoe_incoming",
+                    "params:l1_network_cei_voice_qoe_incoming"],
+                "l1_network_cei_voice_qoe_incoming"
+            ),
+            node(
+                build_network_cei_voice_qoe_outgoing,
+                ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_cei_voice_qoe_outgoing",
+                 "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_cei_voice_qoe_outgoing",
+                 "l1_customer_profile_union_daily_feature_for_l1_network_cei_voice_qoe_outgoing",
+                 "params:l1_network_cei_voice_qoe_outgoing"],
+                "l1_network_cei_voice_qoe_outgoing"
+            ),
+            node(
+                build_network_voice_data_features,
+                ["l0_network_sdr_dyn_cea_cei_voiceqoe_usr_1day_for_l1_network_voice_cei",
+                 "l1_customer_profile_union_daily_feature_for_l1_network_voice_cei",
+                 "params:l1_network_voice_cei",
+                 "params:l1_network_voice_cei_tbl"],
+                "l1_network_voice_cei"
+            ),
+            node(
+                build_network_voice_data_features,
+                ["l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cei",
+                 "l1_customer_profile_union_daily_feature_for_l1_network_data_cei",
+                 "params:l1_network_data_cei",
+                 "params:l1_network_data_cei_tbl"],
+                "l1_network_data_cei"
+            ),
+            node(
+                node_from_config,
+                [
+                    "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_failed_outgoing_call_attempt_and_call_drop_3g",
+                    "params:int_l1_network_failed_outgoing_call_attempt_and_call_drop_3g"
+                ],
+                "int_l1_network_failed_outgoing_call_attempt_and_call_drop_3g"
+            ),
+            node(
+                build_network_voice_data_features,
+                [
+                    "int_l1_network_failed_outgoing_call_attempt_and_call_drop_3g",
+                    "l1_customer_profile_union_daily_feature_for_l1_network_failed_outgoing_call_attempt_and_call_drop_3g",
+                    "params:l1_network_failed_outgoing_call_attempt_and_call_drop_3g",
+                    "params:l1_network_failed_outgoing_call_attempt_and_call_drop_3g_tbl"],
+                "l1_network_failed_outgoing_call_attempt_and_call_drop_3g"
+            ),
+            node(
+                node_from_config,
+                [
+                    "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_failed_incoming_call_attempt_and_call_drop_4g",
+                    "params:int_l1_network_failed_incoming_call_attempt_and_call_drop_4g"
+                ],
+                "int_l1_network_failed_incoming_call_attempt_and_call_drop_4g"
+            ),
+            node(
+                build_network_voice_data_features,
+                [
+                    "int_l1_network_failed_incoming_call_attempt_and_call_drop_4g",
+                    "l1_customer_profile_union_daily_feature_for_l1_network_failed_incoming_call_attempt_and_call_drop_4g",
+                    "params:l1_network_failed_incoming_call_attempt_and_call_drop_4g",
+                    "params:l1_network_failed_incoming_call_attempt_and_call_drop_4g_tbl"],
+                "l1_network_failed_incoming_call_attempt_and_call_drop_4g"
+            ),
+            node(
+                build_network_voice_data_features,
+                [
+                    "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_start_delay_and_success_rate_features",
+                    "l1_customer_profile_union_daily_feature_for_l1_network_start_delay_and_success_rate_features",
+                    "params:l1_network_start_delay_and_success_rate_features",
+                    "params:l1_network_start_delay_and_success_rate_features_tbl"],
+                "l1_network_start_delay_and_success_rate_features"
+            ),
+            # New requirement for Network
         ]
     )
