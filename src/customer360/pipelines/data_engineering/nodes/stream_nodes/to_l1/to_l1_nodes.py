@@ -298,11 +298,12 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
                "access_method_num", "content_group", "title", "series_title")
 
     # share_of_completed_episodes feature
-    int_l1_streaming_share_of_completed_episodes_features = node_from_config(selective_df,
-                                                                 int_l1_streaming_share_of_completed_episodes_features_dict)
+    int_l1_streaming_share_of_completed_episodes_features = node_from_config(
+        selective_df, int_l1_streaming_share_of_completed_episodes_features_dict)
 
-    int_l1_streaming_share_of_completed_episodes_ratio_features_temp = int_l1_streaming_share_of_completed_episodes_features.join(
-        streaming_series_title_master, on="series_title", how="left")
+    int_l1_streaming_share_of_completed_episodes_ratio_features_temp = \
+        int_l1_streaming_share_of_completed_episodes_features.join(
+            streaming_series_title_master, on="series_title", how="left")
     int_l1_streaming_share_of_completed_episodes_ratio_features_temp = \
         int_l1_streaming_share_of_completed_episodes_ratio_features_temp.withColumn(
             "share_of_completed_episodes",
