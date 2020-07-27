@@ -9,6 +9,7 @@ from src.customer360.utilities.spark_util import get_spark_empty_df, get_spark_s
 
 conf = os.getenv("CONF", None)
 
+
 def generate_l2_fav_streaming_day(input_df: DataFrame, app_list: list):
     """
     :param input_df:
