@@ -160,7 +160,6 @@ def network_to_l1_pipeline(**kwargs):
                  "l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi"],
                 "l1_network_file_transfer_cqi"
             ),
-            # New requirement for Network
             node(
                 build_network_cei_voice_qoe_incoming,
                 [
@@ -249,6 +248,5 @@ def network_to_l1_pipeline(**kwargs):
                 ],
                 "l1_network_failed_calls_home_location"
             )
-            # New requirement for Network
         ]
     )
