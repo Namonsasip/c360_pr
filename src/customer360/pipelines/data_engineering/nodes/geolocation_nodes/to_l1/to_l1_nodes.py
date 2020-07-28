@@ -492,6 +492,9 @@ def massive_processing_with_l1_location_of_visit_ais_store_daily(shape,cust_cell
 
 ###feature_AIS_store###
 def l1_location_of_visit_ais_store_daily(shape,cust_cell_visit,sql):
+    #shape is master table
+    shape = get_max_date_from_master_data(shape, 'partition_month')
+
     # ----- Transformation -----
     store_shape = shape.where('landmark_cat_name_en like "%AIS%"')
     store_shape.createOrReplaceTempView('geo_mst_lm_poi_shape')

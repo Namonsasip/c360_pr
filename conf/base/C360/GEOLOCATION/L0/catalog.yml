@@ -39,13 +39,13 @@ l0_mst_poi_shape_for_l1_location_of_visit_ais_store_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/GEO/geo_mst_lm_poi_shape/
   file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l1_location_of_visit_ais_store_daily'
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-    lookback: '0'
+#  metadata_table_path: 'metadata_path'
+#  load_args:
+#    increment_flag: 'yes'
+#    lookup_table_name: 'l1_location_of_visit_ais_store_daily'
+#    read_layer: 'l0_daily'
+#    target_layer: 'l1_daily'
+#    lookback: '0'
 
 #----------------------- location_of_visit_ais_store -------------------------
 l0_geo_cust_cell_visit_time_for_l1_location_of_visit_ais_store_daily:
