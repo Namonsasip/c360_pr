@@ -8,6 +8,19 @@ def network_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
             node(
+                build_geo_home_work_location_master,
+                ["l4_geo_home_work_location_id_master_for_l1_network_failed_calls_home_location",
+                 "l0_geo_mst_cell_masterplan_for_l1_network_failed_calls_home_location"],
+                "l1_network_geo_home_work_location_master"
+            ),
+        ]
+    )
+
+
+def network_to_l1_pipeline(**kwargs):
+    return Pipeline(
+        [
+            node(
                 node_from_config,
                 ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_voice_features",
                  "params:int_l1_network_voice_features"],
@@ -191,7 +204,7 @@ def network_to_l1_pipeline(**kwargs):
                 "int_l1_network_failed_outgoing_call_attempt_and_call_drop_3g"
             ),
             node(
-                build_network_voice_data_features,
+                build_network_lookback_voice_data_features,
                 [
                     "int_l1_network_failed_outgoing_call_attempt_and_call_drop_3g",
                     "l1_customer_profile_union_daily_feature_for_l1_network_failed_outgoing_call_attempt_and_call_drop_3g",
@@ -208,7 +221,7 @@ def network_to_l1_pipeline(**kwargs):
                 "int_l1_network_failed_incoming_call_attempt_and_call_drop_4g"
             ),
             node(
-                build_network_voice_data_features,
+                build_network_lookback_voice_data_features,
                 [
                     "int_l1_network_failed_incoming_call_attempt_and_call_drop_4g",
                     "l1_customer_profile_union_daily_feature_for_l1_network_failed_incoming_call_attempt_and_call_drop_4g",
@@ -225,6 +238,17 @@ def network_to_l1_pipeline(**kwargs):
                     "params:l1_network_start_delay_and_success_rate_features_tbl"],
                 "l1_network_start_delay_and_success_rate_features"
             ),
+            node(
+                build_network_failed_calls_home_location,
+                [
+                    "l1_network_geo_home_work_location_master",
+                    "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_failed_calls_home_location",
+                    "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_failed_calls_home_location",
+                    "l1_customer_profile_union_daily_feature_for_l1_network_failed_calls_home_location",
+                    "params:l1_network_failed_calls_home_location"
+                ],
+                "l1_network_failed_calls_home_location"
+            )
             # New requirement for Network
         ]
     )

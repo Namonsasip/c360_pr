@@ -800,4 +800,16 @@ l1_customer_profile_union_daily_feature_for_l1_network_start_delay_and_success_r
     target_layer: 'l1_daily'
     lookback: '0'
 
+l1_customer_profile_union_daily_feature_for_l1_network_failed_calls_home_location:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/l1_features/l1_customer_profile_union_daily_feature/
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_network_failed_calls_home_location'
+    read_layer: 'l1_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
+
 #New requirement for Network

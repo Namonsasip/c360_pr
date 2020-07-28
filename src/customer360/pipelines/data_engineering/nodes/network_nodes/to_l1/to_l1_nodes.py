@@ -5,8 +5,81 @@ from customer360.utilities.re_usable_functions import check_empty_dfs, \
     data_non_availability_and_missing_check
 from customer360.utilities.re_usable_functions import l1_massive_processing, union_dataframes_with_missing_cols
 from customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
-from typing import List
-from pyspark.sql.types  import *
+from kedro.context import load_context
+from pathlib import Path
+from pyspark.sql.types import *
+from customer360.utilities.config_parser import node_from_config
+import logging
+import os
+
+conf = os.getenv("CONF", "base")
+
+
+def __divide_chunks(l, n):
+    # looping till length l
+    for i in range(0, len(l), n):
+        yield l[i:i + n]
+
+
+def l1_network_lookback_massive_processing(
+        input_df,
+        config,
+        source_partition_col="partition_date",
+        sql_generator_func=node_from_config,
+        cust_profile_df=None,
+        cust_profile_join_func=None
+) -> DataFrame:
+
+    CNTX = load_context(Path.cwd(), env=conf)
+    data_frame = input_df
+    dates_list = data_frame.select(source_partition_col).distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+
+    partition_num_per_job = config.get("partition_num_per_job", 1)
+    mvv_new = list(__divide_chunks(mvv_array, partition_num_per_job))
+    add_list = mvv_new
+
+    first_item = add_list[-1]
+
+    add_list.remove(first_item)
+
+    target_table_name = config["output_catalog"]
+    metadata = CNTX.catalog.load("util_audit_metadata_table")
+    max_date = metadata.filter(f.col("table_name") == target_table_name) \
+        .select(f.max(f.col("target_max_data_load_date")).alias("max_date")) \
+        .withColumn("max_date", f.coalesce(f.col("max_date"), f.to_date(f.lit('1970-01-01'), 'yyyy-MM-dd'))) \
+        .collect()[0].max_date
+
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        small_df = data_frame.filter(f.col(source_partition_col).isin(*[curr_item]))
+
+        output_df = sql_generator_func(small_df, config)
+
+        if cust_profile_df is not None:
+            output_df = cust_profile_join_func(input_df=output_df,
+                                               cust_profile_df=cust_profile_df,
+                                               config=config,
+                                               current_item=curr_item)
+
+        output_df = output_df.filter(f.col("event_partition_date") > max_date)
+        CNTX.catalog.save(config["output_catalog"], output_df)
+
+    logging.info("Final date to run for {0}".format(str(first_item)))
+    return_df = data_frame.filter(f.col(source_partition_col).isin(*[first_item]))
+    return_df = sql_generator_func(return_df, config)
+
+    if cust_profile_df is not None:
+        return_df = cust_profile_join_func(input_df=return_df,
+                                           cust_profile_df=cust_profile_df,
+                                           config=config,
+                                           current_item=first_item)
+
+    return_df = return_df.filter(f.col("event_partition_date") > max_date)
+
+    return return_df
 
 
 def build_network_voice_features(int_l1_network_voice_features: DataFrame,
@@ -742,6 +815,7 @@ def build_network_file_transfer_cqi(
                                       cust_df)
     return return_df
 
+
 #New requirement for Network
 def build_network_cei_voice_qoe_incoming(
         voice_1day: DataFrame,
@@ -927,7 +1001,7 @@ def build_network_voice_data_features(
         input_df: DataFrame,
         l1_customer_profile_union_daily_feature: DataFrame,
         feature_dict: dict,
-        target_table) -> DataFrame:
+        target_table: str) -> DataFrame:
     """
 
     :param l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day:
@@ -937,7 +1011,7 @@ def build_network_voice_data_features(
     """
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs(
-            [input_df,l1_customer_profile_union_daily_feature]):
+            [input_df, l1_customer_profile_union_daily_feature]):
         return get_spark_empty_df()
 
     input_df = \
@@ -960,6 +1034,170 @@ def build_network_voice_data_features(
 
     return_df = l1_massive_processing(input_df,
                                       feature_dict, cust_df)
+
+    return return_df
+
+
+def build_network_lookback_voice_data_features(
+        input_df: DataFrame,
+        l1_customer_profile_union_daily_feature: DataFrame,
+        feature_dict: dict,
+        target_table: str) -> DataFrame:
+    """
+
+    :param l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day:
+    :param l1_customer_profile_union_daily_feature:
+    :param l1_network_cei_voice_qoe_outgoing_dict:
+    :return:
+    """
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs(
+            [input_df, l1_customer_profile_union_daily_feature]):
+        return get_spark_empty_df()
+
+    input_df = \
+        data_non_availability_and_missing_check(
+            df=input_df, grouping="daily",
+            par_col="partition_date",
+            target_table_name=target_table)
+
+    cust_df = data_non_availability_and_missing_check(
+        df=l1_customer_profile_union_daily_feature, grouping="daily",
+        par_col="event_partition_date",
+        target_table_name=target_table)
+
+    # Min function is not required as driving table is network and join is based on that
+
+    if check_empty_dfs(
+            [input_df, cust_df]):
+        return get_spark_empty_df()
+    ################################# End Implementing Data availability checks ###############################
+
+    return_df = l1_network_lookback_massive_processing(input_df, feature_dict, cust_df)
+
+    return return_df
+
+
+def build_geo_home_work_location_master(
+        work_home_location_master: DataFrame,
+        geo_cell_master: DataFrame ) -> DataFrame:
+    """
+
+    :param work_home_location_master:
+    :param geo_cell_master:
+    :return:
+    """
+    #Work home location master
+    work_home_location_master = work_home_location_master.select("imsi", "home_weekend_location_id", "start_of_month")
+    work_home_location_master_max_partition_date = \
+    work_home_location_master.select(f.max(f.col("start_of_month")).alias("max_date")).collect()[0].max_date
+
+    work_home_location_master = work_home_location_master.filter(f.col("start_of_month") >= work_home_location_master_max_partition_date)
+    work_home_location_master = work_home_location_master.drop("start_of_month").withColumnRenamed("home_weekend_location_id",
+                                                                                   "location_id")
+
+
+    #Geo cellplan master
+    geo_cell_master = geo_cell_master.select("soc_cgi_hex", "location_id", "partition_date")
+    geo_cell_master_max_partition_date = geo_cell_master.select(f.max(f.col("partition_date")).alias("max_date")).collect()[0].max_date
+
+    geo_cell_master = geo_cell_master.filter(f.col("partition_date") >= geo_cell_master_max_partition_date)
+    geo_cell_master = geo_cell_master.drop("partition_date")
+
+    joined_geo = geo_cell_master.join(work_home_location_master, on=["location_id"], how="inner")
+
+    return joined_geo
+
+
+def build_network_failed_calls_home_location(
+        geo_work_home_location_master: DataFrame,
+        voice_1day: DataFrame,
+        volte_1day: DataFrame,
+        cust_df: DataFrame,
+        l1_network_failed_calls_home_location_dict: dict) -> DataFrame:
+
+    """
+
+    :param l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day:
+    :param l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day:
+    :param l1_customer_profile_union_daily_feature:
+    :param l1_network_cei_voice_qoe_outgoing_dict:
+    :return:
+    """
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([voice_1day, volte_1day, cust_df]):
+        return get_spark_empty_df()
+
+    voice_1day = data_non_availability_and_missing_check(df=voice_1day, grouping="daily", par_col="partition_date",
+                                                         target_table_name="l1_network_failed_calls_home_location")
+
+    volte_1day = data_non_availability_and_missing_check(df=volte_1day, grouping="daily", par_col="partition_date",
+                                                         target_table_name="l1_network_failed_calls_home_location")
+
+    cust_df = data_non_availability_and_missing_check(df=cust_df, grouping="daily", par_col="event_partition_date",
+                                                      target_table_name="l1_network_failed_calls_home_location")
+
+    if check_empty_dfs([voice_1day, volte_1day, cust_df]):
+        return get_spark_empty_df()
+    ################################# End Implementing Data availability checks ###############################
+    voice_1day = voice_1day.withColumn(
+        "event_partition_date", f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd')).drop(
+        "partition_date")
+    volte_1day = volte_1day.withColumn(
+        "event_partition_date", f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd')).drop(
+        "partition_date")
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            voice_1day.select(f.max(f.col("event_partition_date")).alias("max_date")),
+            volte_1day.select(f.max(f.col("event_partition_date")).alias("max_date")),
+            cust_df.select(f.max(f.col("event_partition_date")).alias("max_date")),
+        ]
+    ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    voice_1day = voice_1day.filter(f.col("event_partition_date") <= min_value)
+
+    volte_1day = volte_1day.filter(f.col("event_partition_date") <= min_value)
+
+    cust_df = cust_df.filter(f.col("event_partition_date") <= min_value)
+
+
+    #Voice daily
+    voice_1day = voice_1day.select("imsi", "msisdn", "cs_cgi", "access_type_id", "CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MOC",
+                         "CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MTC", "event_partition_date")
+    voice_1day = voice_1day.withColumn("CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MOC", f.expr("case when access_type_id = 1 then CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MOC else 0 end")) \
+        .withColumn("CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MTC", f.expr("case when access_type_id = 1 then CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MTC else 0 end")) \
+        .withColumnRenamed("cs_cgi", "soc_cgi_hex") \
+        .drop("access_type_id")
+
+    #Voice joined with geo
+    voice_geo = voice_1day.join(geo_work_home_location_master, on=["imsi", "soc_cgi_hex"], how="inner")
+    voice_geo = voice_geo.drop("imsi", "soc_cgi_hex")
+
+    voice_geo = voice_geo.groupBy("msisdn", "event_partition_date").agg(
+        f.sum(f.col("CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MOC")).alias("CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MOC"),
+        f.sum(f.col("CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MTC")).alias("CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MTC"))
+
+
+
+    #volte daily
+    volte_1day = volte_1day.select("imsi", "msisdn", "cgisai", "CEI_VOLTE_VOICE_MT_DROP_TIMES", "CEI_VOLTE_VOICE_MO_DROP_TIMES",
+                                   "event_partition_date")
+    volte_1day = volte_1day.withColumnRenamed("cgisai", "soc_cgi_hex")
+
+    #volte joined with geo
+    volte_geo = volte_1day.join(geo_work_home_location_master, on=["imsi", "soc_cgi_hex"], how="inner")
+    volte_geo = volte_geo.drop("imsi", "soc_cgi_hex")
+
+    volte_geo = volte_geo.groupBy("msisdn", "event_partition_date").agg(
+        f.sum(f.col("CEI_VOLTE_VOICE_MT_DROP_TIMES")).alias("CEI_VOLTE_VOICE_MT_DROP_TIMES"),
+        f.sum(f.col("CEI_VOLTE_VOICE_MO_DROP_TIMES")).alias("CEI_VOLTE_VOICE_MO_DROP_TIMES"))
+
+    join_key_between_network_df = ['event_partition_date', 'msisdn']
+    joined_df = voice_geo.join(volte_geo, on=join_key_between_network_df, how='inner')
+
+    return_df = l1_massive_processing(joined_df,
+                                      l1_network_failed_calls_home_location_dict, cust_df)
 
     return return_df
 
