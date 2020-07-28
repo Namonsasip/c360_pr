@@ -1105,6 +1105,8 @@ def build_geo_home_work_location_master(
     geo_cell_master = geo_cell_master.drop("partition_date")
 
     joined_geo = geo_cell_master.join(work_home_location_master, on=["location_id"], how="inner")
+    joined_geo = joined_geo.withColumn("rn", f.expr("row_number over(partition by imsi, location_id, soc_cgi_hex order by imsi)"))
+    joined_geo = joined_geo.where("rn = 1").drop("rn")
 
     return joined_geo
 
