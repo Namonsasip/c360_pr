@@ -4,7 +4,7 @@ from customer360.pipelines.data_engineering.nodes.network_nodes.to_l1.to_l1_node
 from customer360.utilities.config_parser import *
 
 
-def network_to_l1_pipeline(**kwargs):
+def network_geo_home_work_location_master_to_l1_pipeline(**kwargs):
     return Pipeline(
         [
             node(
