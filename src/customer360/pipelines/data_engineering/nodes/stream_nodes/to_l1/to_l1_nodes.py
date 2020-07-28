@@ -387,6 +387,7 @@ def stream_process_soc_mobile_data(input_data: DataFrame,
     data_frame = input_df
     data_frame = data_frame.withColumnRenamed("mobile_no", "access_method_num")
     data_frame = add_event_week_and_month_from_yyyymmdd(data_frame, "partition_date")
+    ## Ankit remove the below line
     data_frame = data_frame.where("event_partition_date < '2020-06-02'")
     dates_list = data_frame.select('event_partition_date').distinct().collect()
     mvv_array = [row[0] for row in dates_list]
