@@ -71,7 +71,7 @@ l4_streaming_fav_tv_channel_by_duration:
 
 int_l4_streaming_tv_show_features_1:
   # group directly from the source and join with customer profile below
-  partition_by: ["access_method_num","series_title"]
+  partition_by: ["subscription_identifier","series_title"]
   ranked_lookup_enable_flag: 'No'
   fix_dimension_cols: "subscription_identifier,start_of_week"
   target_dimension_col: "series_title"
