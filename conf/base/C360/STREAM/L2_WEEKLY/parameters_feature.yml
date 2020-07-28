@@ -126,10 +126,9 @@ int_l2_streaming_service_feature: &int_l2_streaming_service_feature
         sum_download_kb_traffic: "sum(sum_download_kb_traffic)"
 
         visit_count: "sum(visit_count)"
-        visit_count_rank: "row_number() over (partition by subscription_identifier, access_method_num,
-                            date(register_date), start_of_week
-                           order by sum(visit_count) desc)"
-    granularity: "subscription_identifier, access_method_num,  date(register_date), start_of_week, application"
+        visit_count_rank: "row_number() over (partition by subscription_identifier, start_of_week
+        order by sum(visit_count) desc)"
+    granularity: "subscription_identifier, start_of_week, application"
     partition_num_per_job: 5
 
 int_l2_streaming_video_service_feature:
@@ -301,32 +300,32 @@ int_l2_streaming_ranked_of_day_per_week:
     download_kb_traffic_mixer_esport_sum: "download_kb_traffic_mixer_esport_sum"
     download_kb_traffic_steamtv_esport_sum: "download_kb_traffic_steamtv_esport_sum"
 
-    youtube_video_by_download_rank: "row_number() over (partition by access_method_num, 
-     subscription_identifier, start_of_week order by download_kb_traffic_youtube_video_sum desc)"
-    facebook_video_by_download_rank: "row_number() over (partition by access_method_num, 
-    subscription_identifier, start_of_week order by download_kb_traffic_facebook_video_sum desc)"
-    linetv_video_by_download_rank: "row_number() over (partition by access_method_num, 
-    subscription_identifier, start_of_week order by download_kb_traffic_linetv_video_sum desc)"
-    ais_play_video_by_download_rank: "row_number() over (partition by access_method_num, 
-    subscription_identifier, start_of_week order by download_kb_traffic_ais_play_video_sum desc)"
-    netflix_video_by_download_rank: "row_number() over (partition by access_method_num, 
-    subscription_identifier, start_of_week order by download_kb_traffic_netflix_video_sum desc)"
-    viu_video_by_download_rank: "row_number() over (partition by access_method_num,
-     subscription_identifier, start_of_week order by download_kb_traffic_viu_video_sum desc)"
-    iflix_video_by_download_rank: "row_number() over (partition by access_method_num, 
-    subscription_identifier, start_of_week order by download_kb_traffic_iflix_video_sum desc)"
-    spotify_music_by_download_rank: "row_number() over (partition by access_method_num, 
-    subscription_identifier, start_of_week order by download_kb_traffic_spotify_music_sum desc)"
-    joox_music_by_download_rank: "row_number() over (partition by access_method_num, 
-    subscription_identifier, start_of_week order by download_kb_traffic_joox_music_sum desc)"
-    twitch_esport_by_download_rank: "row_number() over (partition by access_method_num, 
-    subscription_identifier, start_of_week order by download_kb_traffic_twitch_esport_sum desc)"
-    bigo_esport_by_download_rank: "row_number() over (partition by access_method_num, 
-    subscription_identifier, start_of_week order by download_kb_traffic_bigo_esport_sum desc)"
-    mixer_esport_by_download_rank: "row_number() over (partition by access_method_num, 
-    subscription_identifier, start_of_week order by download_kb_traffic_mixer_esport_sum desc)"
-    steamtv_esport_by_download_rank: "row_number() over (partition by access_method_num, 
-    subscription_identifier, start_of_week order by download_kb_traffic_steamtv_esport_sum desc)"
+    youtube_video_by_download_rank: "row_number() over (partition by subscription_identifier,
+    start_of_week order by download_kb_traffic_youtube_video_sum desc)"
+    facebook_video_by_download_rank: "row_number() over (partition by subscription_identifier,
+     start_of_week order by download_kb_traffic_facebook_video_sum desc)"
+    linetv_video_by_download_rank: "row_number() over (partition by subscription_identifier,
+     start_of_week order by download_kb_traffic_linetv_video_sum desc)"
+    ais_play_video_by_download_rank: "row_number() over (partition by subscription_identifier,
+     start_of_week order by download_kb_traffic_ais_play_video_sum desc)"
+    netflix_video_by_download_rank: "row_number() over (partition by subscription_identifier,
+     start_of_week order by download_kb_traffic_netflix_video_sum desc)"
+    viu_video_by_download_rank: "row_number() over (partition by  subscription_identifier,
+     start_of_week order by download_kb_traffic_viu_video_sum desc)"
+    iflix_video_by_download_rank: "row_number() over (partition by subscription_identifier,
+     start_of_week order by download_kb_traffic_iflix_video_sum desc)"
+    spotify_music_by_download_rank: "row_number() over (partition by subscription_identifier,
+     start_of_week order by download_kb_traffic_spotify_music_sum desc)"
+    joox_music_by_download_rank: "row_number() over (partition by subscription_identifier,
+     start_of_week order by download_kb_traffic_joox_music_sum desc)"
+    twitch_esport_by_download_rank: "row_number() over (partition by subscription_identifier,
+     start_of_week order by download_kb_traffic_twitch_esport_sum desc)"
+    bigo_esport_by_download_rank: "row_number() over (partition by subscription_identifier,
+     start_of_week order by download_kb_traffic_bigo_esport_sum desc)"
+    mixer_esport_by_download_rank: "row_number() over (partition by subscription_identifier,
+     start_of_week order by download_kb_traffic_mixer_esport_sum desc)"
+    steamtv_esport_by_download_rank: "row_number() over (partition by subscription_identifier,
+     start_of_week order by download_kb_traffic_steamtv_esport_sum desc)"
   granularity: ""
 
 l2_streaming_session_duration_feature:
