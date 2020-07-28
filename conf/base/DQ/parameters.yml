@@ -47,10 +47,10 @@ features_for_dq:
 #    - feature: "*"
 
 ## NBA Features
-  l4_billing_rolling_window_topup_and_volume:
-    - feature: sum_payments_top_ups_last_week
-    - feature: sum_payments_top_ups_last_four_week
-    - feature: sum_payments_top_ups_last_twelve_week
+#  l4_billing_rolling_window_topup_and_volume:
+#    - feature: sum_payments_top_ups_last_week
+#    - feature: sum_payments_top_ups_last_four_week
+#    - feature: sum_payments_top_ups_last_twelve_week
 #  l4_billing_rolling_window_rpu:
 #    - feature: sum_payments_arpu_last_month
 #    - feature: sum_payments_arpu_last_three_month
@@ -88,8 +88,8 @@ features_for_dq:
 #    - feature: sum_payments_top_up_vol_by_epos_weekly_last_twelve_week
 #    - feature: sum_payments_top_ups_by_rom_weekly_last_twelve_week
 #    - feature: sum_payments_top_up_vol_by_rom_weekly_last_twelve_week
-  l4_daily_feature_topup_and_volume:
-    - feature: '*'
+#  l4_daily_feature_topup_and_volume:
+#    - feature: '*'
 #  l4_campaign_postpaid_prepaid_features:
 #    - feature: sum_campaign_overall_count_sum_weekly_last_week
 #    - feature: sum_campaign_overall_count_sum_weekly_last_two_week
