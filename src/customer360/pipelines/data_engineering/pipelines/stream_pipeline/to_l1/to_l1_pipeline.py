@@ -107,13 +107,15 @@ def streaming_to_l1_soc_mobile_data_pipeline(**kwargs):
                   # # number of visit and volume of download traffic
                   "params:l1_streaming_visit_count_and_download_traffic_feature"
                   ],
-                 ["int_l1_streaming_video_service_feature", "l1_streaming_fav_video_service_by_download_feature",
-                  "l1_streaming_2nd_fav_video_service_by_download_feature",
-                  "int_l1_streaming_music_service_feature", "l1_streaming_fav_music_service_by_download_feature",
-                  "l1_streaming_2nd_fav_music_service_by_download_feature",
+                 [
+                 # "int_l1_streaming_video_service_feature", "l1_streaming_fav_video_service_by_download_feature",
+                 #  "l1_streaming_2nd_fav_video_service_by_download_feature",
+                 #  "int_l1_streaming_music_service_feature", "l1_streaming_fav_music_service_by_download_feature",
+                 #  "l1_streaming_2nd_fav_music_service_by_download_feature",
                   "int_l1_streaming_esport_service_feature", "l1_streaming_fav_esport_service_by_download_feature",
                   "l1_streaming_2nd_fav_esport_service_by_download_feature",
-                  "l1_streaming_visit_count_and_download_traffic_feature"]
+                  # "l1_streaming_visit_count_and_download_traffic_feature"
+                  ]
                  ),
 
         ]
