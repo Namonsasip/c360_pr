@@ -26,10 +26,10 @@ l1_network_voice_features:
     network_drop_call_count: drop_call_count
     #network_drop_call_in_3g_count: drop_call_in_3g_count
     #network_change_of_drop_call_in_3g: "drop_call_in_3g_count/lag(drop_call_in_3g_count, 1, 0)
-                                    over (partition by msisdn order by event_partition_date asc)"
+    #                                over (partition by msisdn order by event_partition_date asc)"
     #network_drop_call_in_4g_count: drop_call_in_4g_count
     #network_change_of_drop_call_in_4g: "drop_call_in_4g_count/lag(drop_call_in_4g_count, 1, 0)
-                                    over (partition by msisdn order by event_partition_date asc)"
+    #                                over (partition by msisdn order by event_partition_date asc)"
     network_total_call_count: total_call_count
    # network_failed_incoming_call_attempt: failed_incoming_call_attempt
    # network_failed_outgoing_call_attempt: failed_outgoing_call_attempt
