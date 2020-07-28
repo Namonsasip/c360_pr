@@ -158,6 +158,7 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
     #             get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
     #             get_spark_empty_df()]
     input_df = vimmi_usage_daily
+
     #
     # ################################# End Implementing Data availability checks ###############################
     def divide_chunks(l, n):
@@ -225,7 +226,7 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
                           l1_streaming_fav_tv_channel_by_duration_df)
 
         # TV Show features
-        selective_df = joined_data_with_cust.\
+        selective_df = joined_data_with_cust. \
             select("subscription_identifier", "event_partition_date", "start_of_week", "start_of_month",
                    "access_method_num", "content_group", "title", "series_title", "genre")
         CNTX.catalog.save("int_l0_streaming_vimmi_table", selective_df)
@@ -343,7 +344,6 @@ def stream_process_soc_mobile_data(input_data: DataFrame,
                                    l1_streaming_visit_count_and_download_traffic_feature_dict: dict
                                    ) -> [DataFrame, DataFrame, DataFrame, DataFrame, DataFrame,
                                          DataFrame, DataFrame, DataFrame, DataFrame, DataFrame]:
-
     ################################# Start Implementing Data availability checks #############################
     if check_empty_dfs([input_data, cust_profile_df]):
         return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
@@ -390,7 +390,7 @@ def stream_process_soc_mobile_data(input_data: DataFrame,
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_array = list(divide_chunks(mvv_array, 70))
+    mvv_array = list(divide_chunks(mvv_array, 20))
     add_list = mvv_array
 
     first_item = add_list[-1]
@@ -489,10 +489,12 @@ def stream_process_soc_mobile_data(input_data: DataFrame,
         joined_data_with_cust,
         l1_streaming_visit_count_and_download_traffic_feature_dict)
 
-    return [int_l1_streaming_video_service_feature, l1_streaming_fav_video_service_by_download_feature,
-            l1_streaming_2nd_fav_video_service_by_download_feature,
-            int_l1_streaming_music_service_feature, l1_streaming_fav_music_service_by_download_feature,
-            l1_streaming_2nd_fav_music_service_by_download_feature,
-            int_l1_streaming_esport_service_feature, l1_streaming_fav_esport_service_by_download_feature,
-            l1_streaming_2nd_fav_esport_service_by_download_feature,
-            l1_streaming_visit_count_and_download_traffic_feature]
+    return [
+        int_l1_streaming_video_service_feature, l1_streaming_fav_video_service_by_download_feature,
+        l1_streaming_2nd_fav_video_service_by_download_feature,
+        int_l1_streaming_music_service_feature, l1_streaming_fav_music_service_by_download_feature,
+        l1_streaming_2nd_fav_music_service_by_download_feature,
+        int_l1_streaming_esport_service_feature, l1_streaming_fav_esport_service_by_download_feature,
+        l1_streaming_2nd_fav_esport_service_by_download_feature,
+        l1_streaming_visit_count_and_download_traffic_feature
+    ]
