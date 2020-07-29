@@ -136,30 +136,29 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
     :return:
     """
     # ################################# Start Implementing Data availability checks #############################
-    # if check_empty_dfs([vimmi_usage_daily, customer_df]):
-    #     return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
-    #             get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
-    #             get_spark_empty_df()]
-    #
-    # input_df = data_non_availability_and_missing_check(
-    #     df=vimmi_usage_daily,
-    #     grouping="daily",
-    #     par_col="partition_date",
-    #     target_table_name="l1_streaming_fav_tv_show_by_episode_watched")
-    #
-    # customer_df = data_non_availability_and_missing_check(
-    #     df=customer_df,
-    #     grouping="daily",
-    #     par_col="event_partition_date",
-    #     target_table_name="l1_streaming_fav_tv_show_by_episode_watched")
-    #
-    # if check_empty_dfs([input_df, customer_df]):
-    #     return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
-    #             get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
-    #             get_spark_empty_df()]
-    input_df = vimmi_usage_daily
+    if check_empty_dfs([vimmi_usage_daily, customer_df]):
+        return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
+                get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
+                get_spark_empty_df()]
 
-    #
+    input_df = data_non_availability_and_missing_check(
+        df=vimmi_usage_daily,
+        grouping="daily",
+        par_col="partition_date",
+        target_table_name="l1_streaming_fav_tv_show_by_episode_watched")
+
+    customer_df = data_non_availability_and_missing_check(
+        df=customer_df,
+        grouping="daily",
+        par_col="event_partition_date",
+        target_table_name="l1_streaming_fav_tv_show_by_episode_watched")
+
+    if check_empty_dfs([input_df, customer_df]):
+        return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
+                get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
+                get_spark_empty_df()]
+
+
     # ################################# End Implementing Data availability checks ###############################
     def divide_chunks(l, n):
         # looping till length l
