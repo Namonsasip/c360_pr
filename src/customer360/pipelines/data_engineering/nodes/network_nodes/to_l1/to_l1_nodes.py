@@ -100,10 +100,10 @@ def build_network_voice_features(int_l1_network_voice_features: DataFrame,
                                                        par_col="event_partition_date",
                                                        target_table_name="l1_network_voice_features")
 
-    l1_customer_profile_union_daily_feature_for_l1_network_voice_features = data_non_availability_and_missing_check(
-        df=l1_customer_profile_union_daily_feature_for_l1_network_voice_features, grouping="daily",
-        par_col="event_partition_date",
-        target_table_name="l1_network_voice_features")
+    # l1_customer_profile_union_daily_feature_for_l1_network_voice_features = data_non_availability_and_missing_check(
+    #     df=l1_customer_profile_union_daily_feature_for_l1_network_voice_features, grouping="daily",
+    #     par_col="event_partition_date",
+    #     target_table_name="l1_network_voice_features")
 
     # Min function is not required as driving table is network and join is based on that
 
@@ -515,10 +515,10 @@ def build_network_data_cqi(
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs(
-            [l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi,
-             l1_customer_profile_union_daily_feature_for_l1_network_data_cqi]):
-        return get_spark_empty_df()
+    # if check_empty_dfs(
+    #         [l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi,
+    #          l1_customer_profile_union_daily_feature_for_l1_network_data_cqi]):
+    #     return get_spark_empty_df()
 
     l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi = \
         data_non_availability_and_missing_check(
@@ -533,8 +533,8 @@ def build_network_data_cqi(
 
     # Min function is not required as driving table is network and join is based on that
 
-    if check_empty_dfs([l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi, l1_customer_profile_union_daily_feature_for_l1_network_data_cqi]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi, l1_customer_profile_union_daily_feature_for_l1_network_data_cqi]):
+    #     return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
 
     return_df = l1_massive_processing(l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi,
@@ -592,10 +592,10 @@ def build_network_streaming_cqi(
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs(
-            [l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_streaming_cqi,
-             l1_customer_profile_union_daily_feature_for_l1_network_streaming_cqi]):
-        return get_spark_empty_df()
+    # if check_empty_dfs(
+    #         [l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_streaming_cqi,
+    #          l1_customer_profile_union_daily_feature_for_l1_network_streaming_cqi]):
+    #     return get_spark_empty_df()
 
     l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_streaming_cqi = \
         data_non_availability_and_missing_check(
@@ -603,20 +603,20 @@ def build_network_streaming_cqi(
             par_col="partition_date",
             target_table_name="l1_network_streaming_cqi")
 
-    cust_df = data_non_availability_and_missing_check(
-        df=l1_customer_profile_union_daily_feature_for_l1_network_streaming_cqi, grouping="daily",
-        par_col="event_partition_date",
-        target_table_name="l1_network_streaming_cqi")
+    # l1_customer_profile_union_daily_feature_for_l1_network_streaming_cqi = data_non_availability_and_missing_check(
+    #     df=l1_customer_profile_union_daily_feature_for_l1_network_streaming_cqi, grouping="daily",
+    #     par_col="event_partition_date",
+    #     target_table_name="l1_network_streaming_cqi")
 
     # Min function is not required as driving table is network and join is based on that
 
-    if check_empty_dfs([l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_streaming_cqi, cust_df]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_streaming_cqi, l1_customer_profile_union_daily_feature_for_l1_network_streaming_cqi]):
+    #     return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
 
     return_df = l1_massive_processing(l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_streaming_cqi,
                                       l1_network_streaming_cqi,
-                                      cust_df)
+                                      l1_customer_profile_union_daily_feature_for_l1_network_streaming_cqi)
     return return_df
 
 
@@ -632,10 +632,10 @@ def build_network_web_cqi(
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs(
-            [l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi,
-             l1_customer_profile_union_daily_feature_for_l1_network_web_cqi]):
-        return get_spark_empty_df()
+    # if check_empty_dfs(
+    #         [l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi,
+    #          l1_customer_profile_union_daily_feature_for_l1_network_web_cqi]):
+    #     return get_spark_empty_df()
 
     l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi = \
         data_non_availability_and_missing_check(
@@ -643,20 +643,20 @@ def build_network_web_cqi(
             par_col="partition_date",
             target_table_name="l1_network_web_cqi")
 
-    cust_df = data_non_availability_and_missing_check(
-        df=l1_customer_profile_union_daily_feature_for_l1_network_web_cqi, grouping="daily",
-        par_col="event_partition_date",
-        target_table_name="l1_network_web_cqi")
+    # l1_customer_profile_union_daily_feature_for_l1_network_web_cqi = data_non_availability_and_missing_check(
+    #     df=l1_customer_profile_union_daily_feature_for_l1_network_web_cqi, grouping="daily",
+    #     par_col="event_partition_date",
+    #     target_table_name="l1_network_web_cqi")
 
     # Min function is not required as driving table is network and join is based on that
 
-    if check_empty_dfs([l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi, cust_df]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi, l1_customer_profile_union_daily_feature_for_l1_network_web_cqi]):
+    #     return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
 
     return_df = l1_massive_processing(l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi,
                                       l1_network_web_cqi,
-                                      cust_df)
+                                      l1_customer_profile_union_daily_feature_for_l1_network_web_cqi)
     return return_df
 
 
@@ -749,10 +749,10 @@ def build_network_user_cqi(
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs(
-            [l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi,
-             l1_customer_profile_union_daily_feature_for_l1_network_user_cqi]):
-        return get_spark_empty_df()
+    # if check_empty_dfs(
+    #         [l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi,
+    #          l1_customer_profile_union_daily_feature_for_l1_network_user_cqi]):
+    #     return get_spark_empty_df()
 
     l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi = \
         data_non_availability_and_missing_check(
@@ -760,20 +760,20 @@ def build_network_user_cqi(
             par_col="partition_date",
             target_table_name="l1_network_user_cqi")
 
-    cust_df = data_non_availability_and_missing_check(
-        df=l1_customer_profile_union_daily_feature_for_l1_network_user_cqi, grouping="daily",
-        par_col="event_partition_date",
-        target_table_name="l1_network_user_cqi")
+    # l1_customer_profile_union_daily_feature_for_l1_network_user_cqi = data_non_availability_and_missing_check(
+    #     df=l1_customer_profile_union_daily_feature_for_l1_network_user_cqi, grouping="daily",
+    #     par_col="event_partition_date",
+    #     target_table_name="l1_network_user_cqi")
 
     # Min function is not required as driving table is network and join is based on that
 
-    if check_empty_dfs([l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi, cust_df]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi, l1_customer_profile_union_daily_feature_for_l1_network_user_cqi]):
+    #     return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
 
     return_df = l1_massive_processing(l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi,
                                       l1_network_user_cqi,
-                                      cust_df)
+                                      l1_customer_profile_union_daily_feature_for_l1_network_user_cqi)
     return return_df
 
 
