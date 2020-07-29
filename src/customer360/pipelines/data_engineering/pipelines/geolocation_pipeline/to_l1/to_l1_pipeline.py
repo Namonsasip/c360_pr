@@ -16,6 +16,14 @@ def geo_to_l1_pipeline_to_run():
                 "l1_location_of_visit_ais_store_daily"
             ),
 
+
+        ] , name="geo_to_l1_pipeline_to_run"
+    )
+
+def geo_to_l1_pipeline(**kwargs):
+    return Pipeline(
+        [
+            ## FINISH
             ##47 the_favourite_locations
             node(
                 massive_processing_with_l1_the_favourite_locations_daily,
@@ -24,14 +32,6 @@ def geo_to_l1_pipeline_to_run():
                  ],
                 "l1_the_favourite_locations_daily"
             ),
-        ] , name="geo_to_l1_pipeline_to_run"
-    )
-
-def geo_to_l1_pipeline(**kwargs):
-    return Pipeline(
-        [
-
-
 
             ### FINISH
             ###Number_of_base_station###
