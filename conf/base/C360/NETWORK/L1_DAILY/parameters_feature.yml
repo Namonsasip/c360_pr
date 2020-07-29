@@ -315,7 +315,7 @@ l1_network_start_delay_and_success_rate_features:
 
 l1_network_failed_calls_home_location:
   feature_list:
-    network_failed_calls_home_location: "(CEI_VOLTE_VOICE_MT_DROP_TIMES + CEI_VOLTE_VOICE_MO_DROP_TIMES + CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MOC + CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MTC)"
+    network_failed_calls_home_location: "sum(CEI_VOLTE_VOICE_MT_DROP_TIMES + CEI_VOLTE_VOICE_MO_DROP_TIMES + CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MOC + CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MTC)"
   granularity: "msisdn, event_partition_date"
   event_date_column: event_partition_date
   output_catalog: "l1_network_failed_calls_home_location"
