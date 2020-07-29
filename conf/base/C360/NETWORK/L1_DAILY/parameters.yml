@@ -4,3 +4,14 @@ l1_network_data_cei_tbl: "l1_network_data_cei"
 l1_network_failed_outgoing_call_attempt_and_call_drop_3g_tbl: "l1_network_failed_outgoing_call_attempt_and_call_drop_3g"
 l1_network_failed_incoming_call_attempt_and_call_drop_4g_tbl: "l1_network_failed_incoming_call_attempt_and_call_drop_4g"
 l1_network_start_delay_and_success_rate_features_tbl: "l1_network_start_delay_and_success_rate_features"
+
+exception_partition_for_l1_network_user_cqi: ['20200310','20200311','20200322','20200411','20200412','20200430']
+exception_partitions_for_l1_network_data_cei: ['20200213','20200309','20200310','20200313','20200322','20200411','20200412','20200430']
+exception_partitions_list_for_l1_network_file_transfer_cqi: ['20200311','20200412','20200430']
+exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day: ['20200311','20200322','20200412','20200430']
+exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day: ['20200126','20200311','20200412','20200430']
+exception_partition_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day: ['20200126','20200311','20200412','20200430']
+exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day: ['20200126','20200311','20200412','20200430']
+exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day: ['20200126','20200311','20200412','20200430']
+exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day: ['20200301','20200311','20200412','20200430','20200507']
+exception_partitions_list_for_network_sdr_dyn_cea_cei_voiceqoe_usr_1day: ['20200213','20200311','20200322','20200411','20200412','20200424','20200430','20200511']
