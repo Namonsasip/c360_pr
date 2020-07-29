@@ -92,9 +92,9 @@ def build_network_voice_features(int_l1_network_voice_features: DataFrame,
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs(
-            [int_l1_network_voice_features, l1_customer_profile_union_daily_feature_for_l1_network_voice_features]):
-        return get_spark_empty_df()
+    # if check_empty_dfs(
+    #         [int_l1_network_voice_features, l1_customer_profile_union_daily_feature_for_l1_network_voice_features]):
+    #     return get_spark_empty_df()
 
     input_df = data_non_availability_and_missing_check(df=int_l1_network_voice_features, grouping="daily",
                                                        par_col="event_partition_date",
@@ -107,8 +107,8 @@ def build_network_voice_features(int_l1_network_voice_features: DataFrame,
 
     # Min function is not required as driving table is network and join is based on that
 
-    if check_empty_dfs([input_df, cust_df]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([input_df, cust_df]):
+    #     return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
 
     return_df = l1_massive_processing(int_l1_network_voice_features,
@@ -433,10 +433,10 @@ def build_network_share_of_3g_time_in_total_time(
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs(
-            [l0_usage_sum_voice_location_daily_for_l1_network_share_of_3g_time_in_total_time,
-             l1_customer_profile_union_daily_feature_for_l1_network_share_of_3g_time_in_total_time]):
-        return get_spark_empty_df()
+    # if check_empty_dfs(
+    #         [l0_usage_sum_voice_location_daily_for_l1_network_share_of_3g_time_in_total_time,
+    #          l1_customer_profile_union_daily_feature_for_l1_network_share_of_3g_time_in_total_time]):
+    #     return get_spark_empty_df()
 
     l0_usage_sum_voice_location_daily_for_l1_network_share_of_3g_time_in_total_time = \
         data_non_availability_and_missing_check(
@@ -451,8 +451,8 @@ def build_network_share_of_3g_time_in_total_time(
 
     # Min function is not required as driving table is network and join is based on that
 
-    if check_empty_dfs([l0_usage_sum_voice_location_daily_for_l1_network_share_of_3g_time_in_total_time, cust_df]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([l0_usage_sum_voice_location_daily_for_l1_network_share_of_3g_time_in_total_time, cust_df]):
+    #     return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
 
     return_df = l1_massive_processing(l0_usage_sum_voice_location_daily_for_l1_network_share_of_3g_time_in_total_time,
@@ -473,10 +473,10 @@ def build_network_data_traffic_features(
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs(
-            [int_l1_network_data_traffic_features,
-             l1_customer_profile_union_daily_feature_for_l1_network_data_traffic_features]):
-        return get_spark_empty_df()
+    # if check_empty_dfs(
+    #         [int_l1_network_data_traffic_features,
+    #          l1_customer_profile_union_daily_feature_for_l1_network_data_traffic_features]):
+    #     return get_spark_empty_df()
 
     int_l1_network_data_traffic_features = int_l1_network_data_traffic_features.\
         drop("event_partition_date", "start_of_month", "start_of_week")
@@ -494,8 +494,8 @@ def build_network_data_traffic_features(
 
     # Min function is not required as driving table is network and join is based on that
 
-    if check_empty_dfs([int_l1_network_data_traffic_features, cust_df]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([int_l1_network_data_traffic_features, cust_df]):
+    #     return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
 
     return_df = l1_massive_processing(int_l1_network_data_traffic_features,
@@ -553,10 +553,10 @@ def build_network_im_cqi(l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs(
-            [l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi,
-             l1_customer_profile_union_daily_feature_for_l1_network_im_cqi]):
-        return get_spark_empty_df()
+    # if check_empty_dfs(
+    #         [l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi,
+    #          l1_customer_profile_union_daily_feature_for_l1_network_im_cqi]):
+    #     return get_spark_empty_df()
 
     l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi = \
         data_non_availability_and_missing_check(
@@ -571,8 +571,8 @@ def build_network_im_cqi(l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_
 
     # Min function is not required as driving table is network and join is based on that
 
-    if check_empty_dfs([l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi, cust_df]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi, cust_df]):
+    #     return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
 
     return_df = l1_massive_processing(l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_im_cqi,
@@ -671,10 +671,10 @@ def build_network_voip_cqi(
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs(
-            [l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi,
-             l1_customer_profile_union_daily_feature_for_l1_network_voip_cqi]):
-        return get_spark_empty_df()
+    # if check_empty_dfs(
+    #         [l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi,
+    #          l1_customer_profile_union_daily_feature_for_l1_network_voip_cqi]):
+    #     return get_spark_empty_df()
 
     l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi = \
         data_non_availability_and_missing_check(
@@ -689,8 +689,8 @@ def build_network_voip_cqi(
 
     # Min function is not required as driving table is network and join is based on that
 
-    if check_empty_dfs([l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi, cust_df]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi, cust_df]):
+    #     return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
 
     return_df = l1_massive_processing(l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_voip_cqi,
@@ -710,10 +710,10 @@ def build_network_volte_cqi(
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs(
-            [l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_volte_cqi,
-             l1_customer_profile_union_daily_feature_for_l1_network_volte_cqi]):
-        return get_spark_empty_df()
+    # if check_empty_dfs(
+    #         [l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_volte_cqi,
+    #          l1_customer_profile_union_daily_feature_for_l1_network_volte_cqi]):
+    #     return get_spark_empty_df()
 
     l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_volte_cqi = \
         data_non_availability_and_missing_check(
@@ -728,8 +728,8 @@ def build_network_volte_cqi(
 
     # Min function is not required as driving table is network and join is based on that
 
-    if check_empty_dfs([l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_volte_cqi, cust_df]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_volte_cqi, cust_df]):
+    #     return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
 
     return_df = l1_massive_processing(l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_volte_cqi,
@@ -788,10 +788,10 @@ def build_network_file_transfer_cqi(
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs(
-            [l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi,
-             l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi]):
-        return get_spark_empty_df()
+    # if check_empty_dfs(
+    #         [l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi,
+    #          l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi]):
+    #     return get_spark_empty_df()
 
     l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi = \
         data_non_availability_and_missing_check(
@@ -806,8 +806,8 @@ def build_network_file_transfer_cqi(
 
     # Min function is not required as driving table is network and join is based on that
 
-    if check_empty_dfs([l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi, cust_df]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi, cust_df]):
+    #     return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
 
     return_df = l1_massive_processing(l0_network_sdr_dyn_cea_cei_qoe_usr_fileaccess_1day_for_l1_network_file_transfer_cqi,
@@ -942,8 +942,8 @@ def build_network_cei_voice_qoe_outgoing(
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([voice_1day, volte_1day, cust_df]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([voice_1day, volte_1day, cust_df]):
+    #     return get_spark_empty_df()
 
     voice_1day = data_non_availability_and_missing_check(df=voice_1day, grouping="daily", par_col="partition_date",
                                                          target_table_name="l1_network_cei_voice_qoe_incoming_outgoing")
@@ -954,8 +954,8 @@ def build_network_cei_voice_qoe_outgoing(
     cust_df = data_non_availability_and_missing_check(df=cust_df, grouping="daily", par_col="event_partition_date",
                                                       target_table_name="l1_network_cei_voice_qoe_incoming_outgoing")
 
-    if check_empty_dfs([voice_1day, volte_1day, cust_df]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([voice_1day, volte_1day, cust_df]):
+    #     return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
     voice_1day = voice_1day.withColumn(
         "event_partition_date", f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd')).drop(
@@ -1010,9 +1010,9 @@ def build_network_voice_data_features(
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs(
-            [input_df, l1_customer_profile_union_daily_feature]):
-        return get_spark_empty_df()
+    # if check_empty_dfs(
+    #         [input_df, l1_customer_profile_union_daily_feature]):
+    #     return get_spark_empty_df()
 
     input_df = \
         data_non_availability_and_missing_check(
@@ -1027,9 +1027,9 @@ def build_network_voice_data_features(
 
     # Min function is not required as driving table is network and join is based on that
 
-    if check_empty_dfs(
-            [input_df, cust_df]):
-        return get_spark_empty_df()
+    # if check_empty_dfs(
+    #         [input_df, cust_df]):
+    #     return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
 
     return_df = l1_massive_processing(input_df,
@@ -1051,9 +1051,9 @@ def build_network_lookback_voice_data_features(
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs(
-            [input_df, l1_customer_profile_union_daily_feature]):
-        return get_spark_empty_df()
+    # if check_empty_dfs(
+    #         [input_df, l1_customer_profile_union_daily_feature]):
+    #     return get_spark_empty_df()
 
     input_df = \
         data_non_availability_and_missing_check(
@@ -1068,9 +1068,9 @@ def build_network_lookback_voice_data_features(
 
     # Min function is not required as driving table is network and join is based on that
 
-    if check_empty_dfs(
-            [input_df, cust_df]):
-        return get_spark_empty_df()
+    # if check_empty_dfs(
+    #         [input_df, cust_df]):
+    #     return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
 
     return_df = l1_network_lookback_massive_processing(input_df, feature_dict, cust_df)
@@ -1127,8 +1127,8 @@ def build_network_failed_calls_home_location(
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([voice_1day, volte_1day, cust_df]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([voice_1day, volte_1day, cust_df]):
+    #     return get_spark_empty_df()
 
     voice_1day = data_non_availability_and_missing_check(df=voice_1day, grouping="daily", par_col="partition_date",
                                                          target_table_name="l1_network_failed_calls_home_location")
@@ -1139,8 +1139,8 @@ def build_network_failed_calls_home_location(
     cust_df = data_non_availability_and_missing_check(df=cust_df, grouping="daily", par_col="event_partition_date",
                                                       target_table_name="l1_network_failed_calls_home_location")
 
-    if check_empty_dfs([voice_1day, volte_1day, cust_df]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([voice_1day, volte_1day, cust_df]):
+    #     return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
     voice_1day = voice_1day.withColumn(
         "event_partition_date", f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd')).drop(

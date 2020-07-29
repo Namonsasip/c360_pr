@@ -35,45 +35,45 @@ def network_to_l1_pipeline(**kwargs):
                 "l1_network_voice_features"
             ),
 
-            node(build_network_good_and_bad_cells_features, [
-                "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features",
-                "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features",
-                "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features",
-                "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features",
-                "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features",
-                "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features",
+            # node(build_network_good_and_bad_cells_features, [
+            #     "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features",
+            #     "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features",
+            #     "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features",
+            #     "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features",
+            #     "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features",
+            #     "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features",
+            #
+            #     "l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features",
+            #     "l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features",
+            #
+            #     "l1_customer_profile_union_daily_feature_for_l1_network_good_and_bad_cells_features",
+            #     "params:l1_network_good_and_bad_cells_features",
+            # ], "l1_network_good_and_bad_cells_features"),
 
-                "l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features",
-                "l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features",
-
-                "l1_customer_profile_union_daily_feature_for_l1_network_good_and_bad_cells_features",
-                "params:l1_network_good_and_bad_cells_features",
-            ], "l1_network_good_and_bad_cells_features"),
-
-            # node(
-            #     get_good_and_bad_cells_for_each_customer,
-            #     ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features",
-            #      "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features",
-            #      "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features",
-            #      "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features",
-            #      "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features",
-            #      "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features"],
-            #     "int_l1_network_good_and_bad_cells_features"
-            # ),
-            # node(
-            #     get_transaction_on_good_and_bad_cells,
-            #     ["int_l1_network_good_and_bad_cells_features",
-            #      "l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features",
-            #      "l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features"],
-            #     "int_l1_network_get_transaction_on_good_and_bad_cells"
-            # ),
-            # node(
-            #     l1_massive_processing,
-            #     ["int_l1_network_get_transaction_on_good_and_bad_cells",
-            #      "params:l1_network_good_and_bad_cells_features",
-            #      "l1_customer_profile_union_daily_feature_for_l1_network_good_and_bad_cells_features"],
-            #     "l1_network_good_and_bad_cells_features"
-            # ),
+            ## node(
+            ##     get_good_and_bad_cells_for_each_customer,
+            ##     ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features",
+            ##      "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features",
+            ##      "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features",
+            ##      "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features",
+            ##      "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features",
+            ##      "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features"],
+            ##     "int_l1_network_good_and_bad_cells_features"
+            ## ),
+            ## node(
+            ##     get_transaction_on_good_and_bad_cells,
+            ##     ["int_l1_network_good_and_bad_cells_features",
+            ##      "l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features",
+            ##      "l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features"],
+            ##     "int_l1_network_get_transaction_on_good_and_bad_cells"
+            ## ),
+            ## node(
+            ##     l1_massive_processing,
+            ##     ["int_l1_network_get_transaction_on_good_and_bad_cells",
+            ##      "params:l1_network_good_and_bad_cells_features",
+            ##      "l1_customer_profile_union_daily_feature_for_l1_network_good_and_bad_cells_features"],
+            ##     "l1_network_good_and_bad_cells_features"
+            ## ),
 
             node(
                 build_network_share_of_3g_time_in_total_time,
@@ -83,12 +83,12 @@ def network_to_l1_pipeline(**kwargs):
                 "l1_network_share_of_3g_time_in_total_time"
             ),
 
-            node(
-                node_from_config,
-                ["l0_usage_sum_data_location_daily_for_l1_network_data_traffic_features",
-                 "params:int_l1_network_data_traffic_features"],
-                "int_l1_network_data_traffic_features"
-            ),
+            # node(
+            #     node_from_config,
+            #     ["l0_usage_sum_data_location_daily_for_l1_network_data_traffic_features",
+            #      "params:int_l1_network_data_traffic_features"],
+            #     "int_l1_network_data_traffic_features"
+            # ),
             node(
                 build_network_data_traffic_features,
                 ["int_l1_network_data_traffic_features",
@@ -97,13 +97,13 @@ def network_to_l1_pipeline(**kwargs):
                 "l1_network_data_traffic_features"
             ),
 
-            # node(
-            #     build_network_data_cqi,
-            #     ["l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi",
-            #      "params:l1_network_data_cqi",
-            #      "l1_customer_profile_union_daily_feature_for_l1_network_data_cqi"],
-            #     "l1_network_data_cqi"
-            # ),
+            ## node(
+            ##     build_network_data_cqi,
+            ##     ["l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cqi",
+            ##      "params:l1_network_data_cqi",
+            ##      "l1_customer_profile_union_daily_feature_for_l1_network_data_cqi"],
+            ##     "l1_network_data_cqi"
+            ## ),
 
             node(
                 build_network_im_cqi,
@@ -113,21 +113,21 @@ def network_to_l1_pipeline(**kwargs):
                 "l1_network_im_cqi"
             ),
 
-            node(
-                build_network_streaming_cqi,
-                ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_streaming_cqi",
-                 "params:l1_network_streaming_cqi",
-                 "l1_customer_profile_union_daily_feature_for_l1_network_streaming_cqi"],
-                "l1_network_streaming_cqi"
-            ),
+            # node(
+            #     build_network_streaming_cqi,
+            #     ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_streaming_cqi",
+            #      "params:l1_network_streaming_cqi",
+            #      "l1_customer_profile_union_daily_feature_for_l1_network_streaming_cqi"],
+            #     "l1_network_streaming_cqi"
+            # ),
 
-            node(
-                build_network_web_cqi,
-                ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi",
-                 "params:l1_network_web_cqi",
-                 "l1_customer_profile_union_daily_feature_for_l1_network_web_cqi"],
-                "l1_network_web_cqi"
-            ),
+            # node(
+            #     build_network_web_cqi,
+            #     ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_web_cqi",
+            #      "params:l1_network_web_cqi",
+            #      "l1_customer_profile_union_daily_feature_for_l1_network_web_cqi"],
+            #     "l1_network_web_cqi"
+            # ),
 
             node(
                 build_network_voip_cqi,
@@ -145,13 +145,13 @@ def network_to_l1_pipeline(**kwargs):
                 "l1_network_volte_cqi"
             ),
 
-            node(
-                build_network_user_cqi,
-                ["l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi",
-                 "params:l1_network_user_cqi",
-                 "l1_customer_profile_union_daily_feature_for_l1_network_user_cqi"],
-                "l1_network_user_cqi"
-            ),
+            # node(
+            #     build_network_user_cqi,
+            #     ["l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi",
+            #      "params:l1_network_user_cqi",
+            #      "l1_customer_profile_union_daily_feature_for_l1_network_user_cqi"],
+            #     "l1_network_user_cqi"
+            # ),
 
             node(
                 build_network_file_transfer_cqi,
@@ -160,16 +160,16 @@ def network_to_l1_pipeline(**kwargs):
                  "l1_customer_profile_union_daily_feature_for_l1_network_file_transfer_cqi"],
                 "l1_network_file_transfer_cqi"
             ),
-            node(
-                build_network_cei_voice_qoe_incoming,
-                [
-                    "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_cei_voice_qoe_incoming",
-                    "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_cei_voice_qoe_incoming",
-                    "l0_network_xdr_cs_cdr_ims_mt_call_leg_sip_for_l1_network_cei_voice_qoe_incoming",
-                    "l1_customer_profile_union_daily_feature_for_l1_network_cei_voice_qoe_incoming",
-                    "params:l1_network_cei_voice_qoe_incoming"],
-                "l1_network_cei_voice_qoe_incoming"
-            ),
+            # node(
+            #     build_network_cei_voice_qoe_incoming,
+            #     [
+            #         "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_cei_voice_qoe_incoming",
+            #         "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_cei_voice_qoe_incoming",
+            #         "l0_network_xdr_cs_cdr_ims_mt_call_leg_sip_for_l1_network_cei_voice_qoe_incoming",
+            #         "l1_customer_profile_union_daily_feature_for_l1_network_cei_voice_qoe_incoming",
+            #         "params:l1_network_cei_voice_qoe_incoming"],
+            #     "l1_network_cei_voice_qoe_incoming"
+            # ),
             node(
                 build_network_cei_voice_qoe_outgoing,
                 ["l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_cei_voice_qoe_outgoing",
@@ -186,14 +186,14 @@ def network_to_l1_pipeline(**kwargs):
                  "params:l1_network_voice_cei_tbl"],
                 "l1_network_voice_cei"
             ),
-            node(
-                build_network_voice_data_features,
-                ["l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cei",
-                 "l1_customer_profile_union_daily_feature_for_l1_network_data_cei",
-                 "params:l1_network_data_cei",
-                 "params:l1_network_data_cei_tbl"],
-                "l1_network_data_cei"
-            ),
+            # node(
+            #     build_network_voice_data_features,
+            #     ["l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cei",
+            #      "l1_customer_profile_union_daily_feature_for_l1_network_data_cei",
+            #      "params:l1_network_data_cei",
+            #      "params:l1_network_data_cei_tbl"],
+            #     "l1_network_data_cei"
+            # ),
             node(
                 node_from_config,
                 [
