@@ -5,8 +5,8 @@ int_l3_network_voice_features:
     network_drop_call_in_3g_count: sum(network_drop_call_in_3g_count)
     network_drop_call_in_4g_count: sum(network_drop_call_in_4g_count)
     network_total_call_count: sum(network_total_call_count)
-    network_failed_incoming_call_attempt: sum(network_failed_incoming_call_attempt)
-    network_failed_outgoing_call_attempt: sum(network_failed_outgoing_call_attempt)
+    #network_failed_incoming_call_attempt: sum(network_failed_incoming_call_attempt)
+    #network_failed_outgoing_call_attempt: sum(network_failed_outgoing_call_attempt)
     network_share_of_drop_calls: sum(network_drop_call_count)/sum(network_total_call_count)
   granularity: "subscription_identifier, start_of_month"
 

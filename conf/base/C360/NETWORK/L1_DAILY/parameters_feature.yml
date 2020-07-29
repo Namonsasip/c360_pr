@@ -10,8 +10,8 @@ int_l1_network_voice_features:
     drop_call_in_4g_count: "sum(case when char_length(cs_cgi) = 12 then
                         (cei_voice_voice_drops_after_answers_moc + cei_voice_voice_drops_after_answers_mtc) else 0 end)"
     total_call_count: "sum(cei_voice_call_proceeding_times)"
-    failed_incoming_call_attempt: "sum(moc_attempt_counter_drill_id)"
-    failed_outgoing_call_attempt: "sum(mtc_attempt_counter_drill_id)"
+    #failed_incoming_call_attempt: "sum(moc_attempt_counter_drill_id)"
+    #failed_outgoing_call_attempt: "sum(mtc_attempt_counter_drill_id)"
   granularity: "msisdn, partition_date"
   event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
 
