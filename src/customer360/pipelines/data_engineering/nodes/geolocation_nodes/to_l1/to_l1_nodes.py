@@ -823,26 +823,29 @@ def l1_the_favourite_locations_daily(usage_df_location,geo_df_masterplan):
     return l1
 
 
-def sum_usage_date_statement(input_params: str) -> Column:
-    return (
-        F.when(
-            F.lower(F.col('gprs_type')).like("{}%".format(input_params)),
-            F.sum(F.col('vol_uplink_kb') + F.col('vol_downlink_kb'))
-        ).otherwise(0)
-    ).alias('vol_{}'.format(input_params))
-
-
 def l1_the_favourite_locations_daily_rework(input_df: DataFrame, master_df: DataFrame) -> DataFrame:
     """
     input_df: usage_sum_data_location_daily
     output_df: usage_sum_data_location_daily
-    +-------------+----------+-----+---------+---------+---------+----------+------------+-------+------+------+------+---------------+
-    | mobile_no   | date_id  | lac |       ci|gprs_type|week_type|no_of_call|total_minute|vol_all|vol_3g|vol_4g|vol_5g|number_customer|
-    +-------------+----------+-----+---------+---------+---------+----------+------------+-------+------+------+------+---------------+
-    |+++0VA.070...|2020-05-25|23088|350365113|    4GLTE|  weekday|       2.0|         2.0|   0.00|  0.00|  0.00|  0.00|              1|
-    |+++0VA.070...|2020-05-25| 5905|    52111|    3GGSN|  weekday|       1.0|         0.0|   0.00|  0.00|  0.00|  0.00|            113|
-    |+++0VA.070...|2020-05-25| 5905|    40117|    3GGSN|  weekday|       1.0|         0.0|   0.00|  0.00|  0.00|  0.00|             12|
-    |+++0VA.070...|2020-05-25| 5905|    40118|    3GGSN|  weekday|       1.0|         0.0|   0.00|  0.00|  0.00|  0.00|            144|
+    +-------------+----------+-----+---------+---------+---------+----------+------------+-------+------+------+------+
+    | mobile_no   | date_id  | lac |       ci|gprs_type|week_type|no_of_call|total_minute|vol_all|vol_3g|vol_4g|vol_5g|
+    +-------------+----------+-----+---------+---------+---------+----------+------------+-------+------+------+------+
+    |+++0VA.070...|2020-05-25|23088|350365113|    4GLTE|  weekday|       2.0|         2.0|   0.00|  0.00|  0.00|  0.00|
+    |+++0VA.070...|2020-05-25| 5905|    52111|    3GGSN|  weekday|       1.0|         0.0|   0.00|  0.00|  0.00|  0.00|
+    |+++0VA.070...|2020-05-25| 5905|    40117|    3GGSN|  weekday|       1.0|         0.0|   0.00|  0.00|  0.00|  0.00|
+    |+++0VA.070...|2020-05-25| 5905|    40118|    3GGSN|  weekday|       1.0|         0.0|   0.00|  0.00|  0.00|  0.00|
+    output_df: with master_df
+    +------------+---------+----------+
+    | location_id| latitude| longitude|
+    +------------+---------+----------+
+    output_df: with groupBy
+    +-------------+----------+-----+---------+---------+----------+------------+-------+------+------+------+---------------+
+    | mobile_no   | date_id  | lac |       ci|week_type|no_of_call|total_minute|vol_all|vol_3g|vol_4g|vol_5g|number_customer|
+    +-------------+----------+-----+---------+---------+----------+------------+-------+------+------+------+---------------+
+    |+++0VA.070...|2020-05-25|23088|350365113|  weekday|       2.0|         2.0|   0.00|  0.00|  0.00|  0.00|              1|
+    |+++0VA.070...|2020-05-25| 5905|    52111|  weekday|       1.0|         0.0|   0.00|  0.00|  0.00|  0.00|            113|
+    |+++0VA.070...|2020-05-25| 5905|    40117|  weekday|       1.0|         0.0|   0.00|  0.00|  0.00|  0.00|             12|
+    |+++0VA.070...|2020-05-25| 5905|    40118|  weekday|       1.0|         0.0|   0.00|  0.00|  0.00|  0.00|            144|
     """
     # Add event_partition_date column to DataFrame
     input_df = input_df.withColumn("event_partition_date", F.to_date(input_df.date_id.cast(DateType()), "yyyyMMdd"))
@@ -850,7 +853,14 @@ def l1_the_favourite_locations_daily_rework(input_df: DataFrame, master_df: Data
         ((F.dayofweek(F.col('event_partition_date')) == 1) | (F.dayofweek(F.col('event_partition_date')) == 7)),
         'weekend').otherwise('weekday'))
 
-    w_unique_location = Window.partitionBy('lac', 'ci', 'date_id', 'week_type')
+
+    def sum_usage_date_statement(input_params: str) -> Column:
+        return (
+            F.when(
+                F.lower(F.col('gprs_type')).like("{}%".format(input_params)),
+                F.sum(F.col('vol_uplink_kb') + F.col('vol_downlink_kb'))
+            ).otherwise(0)
+        ).alias('vol_{}'.format(input_params))
 
     output_df = input_df.groupBy('mobile_no', 'event_partition_date', 'lac', 'ci', 'gprs_type', 'week_type').agg(
         F.sum('no_of_call').alias('no_of_call'),
@@ -859,16 +869,31 @@ def l1_the_favourite_locations_daily_rework(input_df: DataFrame, master_df: Data
         sum_usage_date_statement('3g'),
         sum_usage_date_statement('4g'),
         sum_usage_date_statement('5g')
-    ).withColumn('number_customer', F.approx_count_distinct('mobile_no').over(w_unique_location))
+    )
 
     # Clear master table
     # master_df = get_max_date_from_master_data(master_df, 'partition_date')
     # output_df = output_df.join(master_df, [output_df.lac == master_df.lac, output_df.ci == output_df.ci], 'left')\
     #     .select('mobile_no', 'date_id', master_df.location_id, output_df.lac, output_df.ci, master_df.latitude,
     #             master_df.longitude, 'gprs_type', 'week_type', 'no_of_call', 'total_minute', 'vol_all', 'vol_3g',
-    #             'vol_4g', 'vol_5g', 'number_customer').dropDuplicates()
+    #             'vol_4g', 'vol_5g').dropDuplicates()
+
+    w_unique_location = Window.partitionBy('lac', 'ci', 'date_id', 'week_type')
+
+    # GroupBy
+    output_df = output_df.groupBy('mobile_no', 'event_partition_date', 'lac', 'ci', 'week_type'
+                                  # ,'location_id', 'latitude', 'longitude'
+                                  ).agg(
+        F.sum('no_of_call').alias('no_of_call'),
+        F.sum('total_minute').alias('total_minute'),
+        F.sum('vol_all').alias('vol_all'),
+        F.sum('vol_3g').alias('vol_3g'),
+        F.sum('vol_4g').alias('vol_4g'),
+        F.sum('vol_5g').alias('vol_5g')
+    ).withColumn('number_customer', F.approx_count_distinct('mobile_no').over(w_unique_location))
 
     return output_df
+
 
 def massive_processing_time_spent_daily(data_frame: DataFrame, sql, output_df_catalog, partition_col) -> DataFrame:
     """
