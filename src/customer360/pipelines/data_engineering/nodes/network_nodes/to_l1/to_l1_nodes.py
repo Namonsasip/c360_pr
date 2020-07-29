@@ -902,15 +902,13 @@ def build_network_cei_voice_qoe_incoming(
     #     return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
     voice_1day = voice_1day.withColumn(
-        "event_partition_date", f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd')).drop(
-        "partition_date")
+        "event_partition_date", f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd'))
+
     volte_1day = volte_1day.withColumn(
-        "event_partition_date", f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd')).drop(
-        "partition_date")
+        "event_partition_date", f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd'))
 
     call_leg_sip = call_leg_sip.withColumn(
-        "event_partition_date", f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd')).drop(
-        "partition_date")
+        "event_partition_date", f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd'))
 
     min_value = union_dataframes_with_missing_cols(
         [
@@ -931,26 +929,26 @@ def build_network_cei_voice_qoe_incoming(
 
     # voice column derivation
     voice_1day = voice_1day.select("CEI_VOICE_PAGING_SUCCESS_RATE", "CEI_VOICE_PERCEIVED_CALL_DROP_RATE", "msisdn",
-                                   "event_partition_date")
-    voice_1day = voice_1day.groupBy("msisdn", "event_partition_date").agg(
+                                   "event_partition_date", "partition_date")
+    voice_1day = voice_1day.groupBy("msisdn", "event_partition_date", "partition_date").agg(
         f.sum(f.col("CEI_VOICE_PAGING_SUCCESS_RATE")).alias("CEI_VOICE_PAGING_SUCCESS_RATE"),
         f.sum(f.col("CEI_VOICE_PERCEIVED_CALL_DROP_RATE")).alias("CEI_VOICE_PERCEIVED_CALL_DROP_RATE"))
 
     # volte column derivation
     volte_1day = volte_1day.select("CEI_VOLTE_VOICE_MT_DROP_TIMES", "CEI_VOLTE_VOICE_MT_ANSWER_TIMES", "msisdn",
-                                   "event_partition_date")
-    volte_1day = volte_1day.groupBy("msisdn", "event_partition_date").agg(
+                                   "event_partition_date", "partition_date")
+    volte_1day = volte_1day.groupBy("msisdn", "event_partition_date", "partition_date").agg(
         f.sum(f.col("CEI_VOLTE_VOICE_MT_DROP_TIMES")).alias("CEI_VOLTE_VOICE_MT_DROP_TIMES"),
         f.sum(f.col("CEI_VOLTE_VOICE_MT_ANSWER_TIMES")).alias("CEI_VOLTE_VOICE_MT_ANSWER_TIMES"))
 
     # volte paging success rate column derivation from call_leg_sip dataset
-    call_leg_sip = call_leg_sip.select("ACCESS_TYPE", "P_CSCF_ID", "SERVICE_TYPE", "ALERTING_TIME", "ANSWER_TIME", "IMPU_TEL_URI", "event_partition_date")
+    call_leg_sip = call_leg_sip.select("ACCESS_TYPE", "P_CSCF_ID", "SERVICE_TYPE", "ALERTING_TIME", "ANSWER_TIME", "IMPU_TEL_URI", "event_partition_date", "partition_date")
     call_leg_sip = call_leg_sip.withColumn("VOLTE_MT_CONN_FAIL_TIMES", f.expr(
         "case when (ACCESS_TYPE in (1,2,43) and P_CSCF_ID is not null and SERVICE_TYPE = 0 and ALERTING_TIME is null and ANSWER_TIME is null ) then 1 else 0 end")) \
         .withColumn("VOLTE_MT_REQ_TIMES", f.expr(
         "case when (ACCESS_TYPE in (1,2,43) and P_CSCF_ID is not null and SERVICE_TYPE = 0) then 1 else 0 end"))
 
-    call_leg_sip = call_leg_sip.groupBy("IMPU_TEL_URI", "event_partition_date").agg(
+    call_leg_sip = call_leg_sip.groupBy("IMPU_TEL_URI", "event_partition_date", "partition_date").agg(
         f.sum(f.col("VOLTE_MT_CONN_FAIL_TIMES")).alias("VOLTE_MT_CONN_FAIL_TIMES"),
         f.sum(f.col("VOLTE_MT_REQ_TIMES")).alias("VOLTE_MT_REQ_TIMES"))
 
@@ -958,14 +956,14 @@ def build_network_cei_voice_qoe_incoming(
 
 
     #join volte and call leg sip
-    volte_joined = volte_1day.join(call_leg_sip, on=["msisdn", "event_partition_date"], how="inner")
+    volte_joined = volte_1day.join(call_leg_sip, on=["msisdn", "event_partition_date", "partition_date"], how="inner")
 
     volte_joined = volte_joined.withColumn("VOLTE_PAGING_SUCCESS_RATE", f.expr(" 100 - ((VOLTE_MT_CONN_FAIL_TIMES * 100)/ VOLTE_MT_REQ_TIMES)")) \
                                 .withColumn("VOLTE_CALL_DROP_RATE", f.expr(" (CEI_VOLTE_VOICE_MT_DROP_TIMES * 100)/ CEI_VOLTE_VOICE_MT_ANSWER_TIMES "))
 
 
     #join voice and volte for final feature derivation
-    join_key_between_network_df = ['event_partition_date', 'msisdn']
+    join_key_between_network_df = ['event_partition_date', 'msisdn', 'partition_date']
     joined_df = voice_1day.join(
         volte_joined, on=join_key_between_network_df, how='inner')
 
@@ -1011,11 +1009,9 @@ def build_network_cei_voice_qoe_outgoing(
     #     return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
     voice_1day = voice_1day.withColumn(
-        "event_partition_date", f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd')).drop(
-        "partition_date")
+        "event_partition_date", f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd'))
     volte_1day = volte_1day.withColumn(
-        "event_partition_date", f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd')).drop(
-        "partition_date")
+        "event_partition_date", f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd'))
 
     min_value = union_dataframes_with_missing_cols(
         [
@@ -1031,17 +1027,17 @@ def build_network_cei_voice_qoe_outgoing(
 
     cust_df = cust_df.filter(f.col("event_partition_date") <= min_value)
 
-    voice_1day = voice_1day.select("CEI_VOICE_PERCEIVED_CALL_SUCCESS_RATE", "CEI_VOICE_PERCEIVED_CALL_DROP_RATE", "msisdn", "event_partition_date")
-    voice_1day = voice_1day.groupBy("msisdn", "event_partition_date").agg(
+    voice_1day = voice_1day.select("CEI_VOICE_PERCEIVED_CALL_SUCCESS_RATE", "CEI_VOICE_PERCEIVED_CALL_DROP_RATE", "msisdn", "event_partition_date", "partition_date")
+    voice_1day = voice_1day.groupBy("msisdn", "event_partition_date", "partition_date").agg(
         f.sum(f.col("CEI_VOICE_PERCEIVED_CALL_SUCCESS_RATE")).alias("CEI_VOICE_PERCEIVED_CALL_SUCCESS_RATE"),
         f.sum(f.col("CEI_VOICE_PERCEIVED_CALL_DROP_RATE")).alias("CEI_VOICE_PERCEIVED_CALL_DROP_RATE"))
 
-    volte_1day = volte_1day.select("CEI_VOLTE_MO_CONN_RATE", "CEI_VOLTE_CALL_DROP_RATE", "msisdn", "event_partition_date")
-    volte_1day = volte_1day.groupBy("msisdn", "event_partition_date").agg(
+    volte_1day = volte_1day.select("CEI_VOLTE_MO_CONN_RATE", "CEI_VOLTE_CALL_DROP_RATE", "msisdn", "event_partition_date", "partition_date")
+    volte_1day = volte_1day.groupBy("msisdn", "event_partition_date", "partition_date").agg(
         f.sum(f.col("CEI_VOLTE_MO_CONN_RATE")).alias("CEI_VOLTE_MO_CONN_RATE"),
         f.sum(f.col("CEI_VOLTE_CALL_DROP_RATE")).alias("CEI_VOLTE_CALL_DROP_RATE"))
 
-    join_key_between_network_df = ['event_partition_date', 'msisdn']
+    join_key_between_network_df = ['event_partition_date', 'msisdn', 'partition_date']
     joined_df = voice_1day.join(volte_1day, on=join_key_between_network_df, how='inner')
 
     return_df = l1_massive_processing(joined_df,
@@ -1208,11 +1204,10 @@ def build_network_failed_calls_home_location(
     #     return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
     voice_1day = voice_1day.withColumn(
-        "event_partition_date", f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd')).drop(
-        "partition_date")
+        "event_partition_date", f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd'))
+
     volte_1day = volte_1day.withColumn(
-        "event_partition_date", f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd')).drop(
-        "partition_date")
+        "event_partition_date", f.to_date((f.col("partition_date")).cast(StringType()), 'yyyyMMdd'))
 
     min_value = union_dataframes_with_missing_cols(
         [
@@ -1231,7 +1226,7 @@ def build_network_failed_calls_home_location(
 
     #Voice daily
     voice_1day = voice_1day.select("imsi", "msisdn", "cs_cgi", "access_type_id", "CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MOC",
-                         "CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MTC", "event_partition_date")
+                         "CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MTC", "event_partition_date", "partition_date")
     voice_1day = voice_1day.withColumn("CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MOC", f.expr("case when access_type_id = 1 then CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MOC else 0 end")) \
         .withColumn("CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MTC", f.expr("case when access_type_id = 1 then CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MTC else 0 end")) \
         .withColumnRenamed("cs_cgi", "soc_cgi_hex") \
@@ -1241,7 +1236,7 @@ def build_network_failed_calls_home_location(
     voice_geo = voice_1day.join(geo_work_home_location_master, on=["imsi", "soc_cgi_hex"], how="inner")
     voice_geo = voice_geo.drop("imsi", "soc_cgi_hex")
 
-    voice_geo = voice_geo.groupBy("msisdn", "event_partition_date").agg(
+    voice_geo = voice_geo.groupBy("msisdn", "event_partition_date", "partition_date").agg(
         f.sum(f.col("CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MOC")).alias("CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MOC"),
         f.sum(f.col("CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MTC")).alias("CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MTC"))
 
@@ -1249,18 +1244,18 @@ def build_network_failed_calls_home_location(
 
     #volte daily
     volte_1day = volte_1day.select("imsi", "msisdn", "cgisai", "CEI_VOLTE_VOICE_MT_DROP_TIMES", "CEI_VOLTE_VOICE_MO_DROP_TIMES",
-                                   "event_partition_date")
+                                   "event_partition_date", "partition_date")
     volte_1day = volte_1day.withColumnRenamed("cgisai", "soc_cgi_hex")
 
     #volte joined with geo
     volte_geo = volte_1day.join(geo_work_home_location_master, on=["imsi", "soc_cgi_hex"], how="inner")
     volte_geo = volte_geo.drop("imsi", "soc_cgi_hex")
 
-    volte_geo = volte_geo.groupBy("msisdn", "event_partition_date").agg(
+    volte_geo = volte_geo.groupBy("msisdn", "event_partition_date", "partition_date").agg(
         f.sum(f.col("CEI_VOLTE_VOICE_MT_DROP_TIMES")).alias("CEI_VOLTE_VOICE_MT_DROP_TIMES"),
         f.sum(f.col("CEI_VOLTE_VOICE_MO_DROP_TIMES")).alias("CEI_VOLTE_VOICE_MO_DROP_TIMES"))
 
-    join_key_between_network_df = ['event_partition_date', 'msisdn']
+    join_key_between_network_df = ['event_partition_date', 'msisdn', 'partition_date']
     joined_df = voice_geo.join(volte_geo, on=join_key_between_network_df, how='inner')
 
     return_df = l1_massive_processing(joined_df,
