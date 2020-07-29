@@ -32,7 +32,7 @@ streaming_app:
   - "linetv_video"
   - "ais_play_video"
   - "netflix_video"
-  - "hooq_video"
+  - "viu_video"
   - "iflix_video"
   - "spotify_music"
   - "joox_music"

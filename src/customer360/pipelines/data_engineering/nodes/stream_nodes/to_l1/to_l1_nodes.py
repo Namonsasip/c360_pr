@@ -8,7 +8,7 @@ from kedro.context.context import load_context
 
 from customer360.utilities.config_parser import node_from_config
 from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
-    data_non_availability_and_missing_check, add_start_of_week_and_month, add_event_week_and_month_from_yyyymmdd
+    data_non_availability_and_missing_check, add_event_week_and_month_from_yyyymmdd
 from src.customer360.utilities.spark_util import get_spark_empty_df
 
 conf = os.getenv("CONF", None)
@@ -115,8 +115,8 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
                                     int_l1_streaming_share_of_completed_episodes_features_dict: dict,
                                     int_l1_streaming_share_of_completed_episodes_ratio_features_dict: dict,
                                     l1_streaming_fav_tv_show_by_share_of_completed_episodes_dict: dict,
-                                    ) -> [DataFrame, DataFrame, DataFrame, DataFrame, DataFrame, DataFrame, DataFrame, DataFrame
-    , DataFrame]:
+                                    ) -> [DataFrame, DataFrame, DataFrame, DataFrame, DataFrame, DataFrame, DataFrame,
+                                          DataFrame, DataFrame]:
     """
 
     :param vimmi_usage_daily:
@@ -136,27 +136,29 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
     :return:
     """
     # ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([vimmi_usage_daily, customer_df]):
-        return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
-                get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
-                get_spark_empty_df()]
+    # if check_empty_dfs([vimmi_usage_daily, customer_df]):
+    #     return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
+    #             get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
+    #             get_spark_empty_df()]
+    #
+    # input_df = data_non_availability_and_missing_check(
+    #     df=vimmi_usage_daily,
+    #     grouping="daily",
+    #     par_col="partition_date",
+    #     target_table_name="l1_streaming_fav_tv_show_by_episode_watched")
+    #
+    # customer_df = data_non_availability_and_missing_check(
+    #     df=customer_df,
+    #     grouping="daily",
+    #     par_col="event_partition_date",
+    #     target_table_name="l1_streaming_fav_tv_show_by_episode_watched")
+    #
+    # if check_empty_dfs([input_df, customer_df]):
+    #     return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
+    #             get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
+    #             get_spark_empty_df()]
+    input_df = vimmi_usage_daily
 
-    input_df = data_non_availability_and_missing_check(
-        df=vimmi_usage_daily,
-        grouping="daily",
-        par_col="partition_date",
-        target_table_name="l1_streaming_fav_tv_show_by_episode_watched")
-
-    customer_df = data_non_availability_and_missing_check(
-        df=customer_df,
-        grouping="daily",
-        par_col="event_partition_date",
-        target_table_name="l1_streaming_fav_tv_show_by_episode_watched")
-
-    if check_empty_dfs([input_df, customer_df]):
-        return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
-                get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
-                get_spark_empty_df()]
     #
     # ################################# End Implementing Data availability checks ###############################
     def divide_chunks(l, n):
@@ -167,11 +169,10 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
     sel_cols = ['access_method_num',
                 'event_partition_date',
                 "subscription_identifier",
-                "register_date",
                 "start_of_week",
                 "start_of_month",
                 ]
-    join_cols = ['access_method_num', 'event_partition_date', "start_of_week", "start_of_month", "register_date"]
+    join_cols = ['access_method_num', 'event_partition_date', "start_of_week", "start_of_month"]
 
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = input_df
@@ -181,7 +182,7 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_array = list(divide_chunks(mvv_array, 3))
+    mvv_array = list(divide_chunks(mvv_array, 70))
     add_list = mvv_array
 
     first_item = add_list[-1]
@@ -225,19 +226,23 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
                           l1_streaming_fav_tv_channel_by_duration_df)
 
         # TV Show features
-        selective_df = joined_data_with_cust.\
+        selective_df = joined_data_with_cust. \
             select("subscription_identifier", "event_partition_date", "start_of_week", "start_of_month",
-                   "access_method_num", "register_date", "content_group", "title", "series_title")
+                   "access_method_num", "content_group", "title", "series_title", "genre")
         CNTX.catalog.save("int_l0_streaming_vimmi_table", selective_df)
 
         # share_of_completed_episodes feature
-        int_l1_streaming_share_of_completed_episodes_features = node_from_config(selective_df,
-                                                                     int_l1_streaming_share_of_completed_episodes_features_dict)
+        int_l1_streaming_share_of_completed_episodes_features = node_from_config(
+            selective_df, int_l1_streaming_share_of_completed_episodes_features_dict)
 
-        int_l1_streaming_share_of_completed_episodes_ratio_features_temp = int_l1_streaming_share_of_completed_episodes_features.join(
-            streaming_series_title_master, on="series_title", how="left outer")
-        int_l1_streaming_share_of_completed_episodes_ratio_features_temp = int_l1_streaming_share_of_completed_episodes_ratio_features_temp.withColumn(
-            "share_of_completed_episodes", (f.col("episode_watched_count") / f.coalesce(f.col("total_episode_count"), f.lit(1))))
+        int_l1_streaming_share_of_completed_episodes_ratio_features_temp = \
+            int_l1_streaming_share_of_completed_episodes_features.join(
+                streaming_series_title_master, on="series_title", how="left")
+
+        int_l1_streaming_share_of_completed_episodes_ratio_features_temp = \
+            int_l1_streaming_share_of_completed_episodes_ratio_features_temp.withColumn(
+                "share_of_completed_episodes", (f.col("episode_watched_count") /
+                                                f.coalesce(f.col("total_episode_count"), f.lit(1))))
 
         int_l1_streaming_share_of_completed_episodes_ratio_features = node_from_config(
             int_l1_streaming_share_of_completed_episodes_ratio_features_temp,
@@ -291,16 +296,19 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
     # TV Show features
     selective_df = joined_data_with_cust. \
         select("subscription_identifier", "event_partition_date", "start_of_week", "start_of_month",
-               "access_method_num", "register_date", "content_group", "title", "series_title")
+               "access_method_num", "content_group", "title", "series_title", "genre")
 
     # share_of_completed_episodes feature
-    int_l1_streaming_share_of_completed_episodes_features = node_from_config(selective_df,
-                                                                 int_l1_streaming_share_of_completed_episodes_features_dict)
+    int_l1_streaming_share_of_completed_episodes_features = node_from_config(
+        selective_df, int_l1_streaming_share_of_completed_episodes_features_dict)
 
-    int_l1_streaming_share_of_completed_episodes_ratio_features_temp = int_l1_streaming_share_of_completed_episodes_features.join(
-        streaming_series_title_master, on="series_title", how="left outer")
-    int_l1_streaming_share_of_completed_episodes_ratio_features_temp = int_l1_streaming_share_of_completed_episodes_ratio_features_temp.withColumn(
-        "share_of_completed_episodes", (f.col("episode_watched_count") / f.coalesce(f.col("total_episode_count"), f.lit(1))))
+    int_l1_streaming_share_of_completed_episodes_ratio_features_temp = \
+        int_l1_streaming_share_of_completed_episodes_features.join(
+            streaming_series_title_master, on="series_title", how="left")
+    int_l1_streaming_share_of_completed_episodes_ratio_features_temp = \
+        int_l1_streaming_share_of_completed_episodes_ratio_features_temp.withColumn(
+            "share_of_completed_episodes",
+            (f.col("episode_watched_count") / f.coalesce(f.col("total_episode_count"), f.lit(1))))
 
     int_l1_streaming_share_of_completed_episodes_ratio_features = node_from_config(
         int_l1_streaming_share_of_completed_episodes_ratio_features_temp,
@@ -315,9 +323,8 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
             int_l1_streaming_tv_channel_features,
             l1_streaming_fav_tv_channel_by_volume_df, l1_streaming_fav_tv_channel_by_duration_df,
             selective_df,
-            l1_streaming_fav_tv_show_by_episode_watched,
-            l1_streaming_fav_tv_show_by_share_of_completed_episodes
-            ]
+            l1_streaming_fav_tv_show_by_share_of_completed_episodes,
+            l1_streaming_fav_tv_show_by_episode_watched]
 
 
 def stream_process_soc_mobile_data(input_data: DataFrame,
@@ -337,29 +344,30 @@ def stream_process_soc_mobile_data(input_data: DataFrame,
                                    l1_streaming_visit_count_and_download_traffic_feature_dict: dict
                                    ) -> [DataFrame, DataFrame, DataFrame, DataFrame, DataFrame,
                                          DataFrame, DataFrame, DataFrame, DataFrame, DataFrame]:
-
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([input_data, cust_profile_df]):
-        return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
-                get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
-                get_spark_empty_df(), get_spark_empty_df()]
-
-    input_df = data_non_availability_and_missing_check(
-        df=input_data,
-        grouping="daily",
-        par_col="partition_date",
-        target_table_name="l1_streaming_visit_count_and_download_traffic_feature")
-
-    customer_df = data_non_availability_and_missing_check(
-        df=cust_profile_df,
-        grouping="daily",
-        par_col="event_partition_date",
-        target_table_name="l1_streaming_visit_count_and_download_traffic_feature")
-
-    if check_empty_dfs([input_df, customer_df]):
-        return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
-                get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
-                get_spark_empty_df(), get_spark_empty_df()]
+    # if check_empty_dfs([input_data, cust_profile_df]):
+    #     return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
+    #             get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
+    #             get_spark_empty_df(), get_spark_empty_df()]
+    #
+    # input_df = data_non_availability_and_missing_check(
+    #     df=input_data,
+    #     grouping="daily",
+    #     par_col="partition_date",
+    #     target_table_name="l1_streaming_visit_count_and_download_traffic_feature")
+    #
+    # customer_df = data_non_availability_and_missing_check(
+    #     df=cust_profile_df,
+    #     grouping="daily",
+    #     par_col="event_partition_date",
+    #     target_table_name="l1_streaming_visit_count_and_download_traffic_feature")
+    input_df = input_data
+    customer_df = cust_profile_df
+    #
+    # if check_empty_dfs([input_df, customer_df]):
+    #     return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
+    #             get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
+    #             get_spark_empty_df(), get_spark_empty_df()]
 
     # ################################# End Implementing Data availability checks ###############################
     def divide_chunks(l, n):
@@ -370,7 +378,6 @@ def stream_process_soc_mobile_data(input_data: DataFrame,
     sel_cols = ['access_method_num',
                 'event_partition_date',
                 "subscription_identifier",
-                "register_date",
                 "start_of_week",
                 "start_of_month",
                 ]
@@ -380,12 +387,14 @@ def stream_process_soc_mobile_data(input_data: DataFrame,
     data_frame = input_df
     data_frame = data_frame.withColumnRenamed("mobile_no", "access_method_num")
     data_frame = add_event_week_and_month_from_yyyymmdd(data_frame, "partition_date")
+    ## Ankit remove the below line
+    data_frame = data_frame.where("event_partition_date < '2020-06-02'")
     dates_list = data_frame.select('event_partition_date').distinct().collect()
     mvv_array = [row[0] for row in dates_list]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_array = list(divide_chunks(mvv_array, 3))
+    mvv_array = list(divide_chunks(mvv_array, 10))
     add_list = mvv_array
 
     first_item = add_list[-1]
@@ -484,10 +493,12 @@ def stream_process_soc_mobile_data(input_data: DataFrame,
         joined_data_with_cust,
         l1_streaming_visit_count_and_download_traffic_feature_dict)
 
-    return [int_l1_streaming_video_service_feature, l1_streaming_fav_video_service_by_download_feature,
-            l1_streaming_2nd_fav_video_service_by_download_feature,
-            int_l1_streaming_music_service_feature, l1_streaming_fav_music_service_by_download_feature,
-            l1_streaming_2nd_fav_music_service_by_download_feature,
-            int_l1_streaming_esport_service_feature, l1_streaming_fav_esport_service_by_download_feature,
-            l1_streaming_2nd_fav_esport_service_by_download_feature,
-            l1_streaming_visit_count_and_download_traffic_feature]
+    return [
+        int_l1_streaming_video_service_feature, l1_streaming_fav_video_service_by_download_feature,
+        l1_streaming_2nd_fav_video_service_by_download_feature,
+        int_l1_streaming_music_service_feature, l1_streaming_fav_music_service_by_download_feature,
+        l1_streaming_2nd_fav_music_service_by_download_feature,
+        int_l1_streaming_esport_service_feature, l1_streaming_fav_esport_service_by_download_feature,
+        l1_streaming_2nd_fav_esport_service_by_download_feature,
+        l1_streaming_visit_count_and_download_traffic_feature
+    ]
