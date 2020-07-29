@@ -8,7 +8,7 @@ def geo_to_l1_pipeline_to_run():
             ### runnig flag == 1
             ###feature_AIS_store###
             node(
-                l1_location_of_visit_ais_store_daily,
+                massive_processing_with_l1_location_of_visit_ais_store_daily,
                 ["l0_mst_poi_shape_for_l1_location_of_visit_ais_store_daily",
                  "l0_geo_cust_cell_visit_time_for_l1_location_of_visit_ais_store_daily",
                  "params:l1_location_of_visit_ais_store_daily"
