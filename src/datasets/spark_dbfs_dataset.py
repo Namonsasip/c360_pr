@@ -506,6 +506,15 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                 "select * from src_data where {0} > date_sub(date_sub(date_sub(date(date_trunc('week', to_date(cast('{1}' as String)))),- 7*(1)), 1), 7*({2}))".format(
                     filter_col, tgt_filter_date, lookback_fltr))
 
+            elif read_layer.lower() == "l2_weekly_read_custom_lookback" and target_layer.lower() == 'l4_weekly_write_custom_lookback':
+                filter_col = "start_of_week"
+                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
+                print("filter_col:", filter_col)
+                print("lookback_fltr:", lookback_fltr)
+                src_incremental_data = spark.sql(
+                    "select * from src_data where {0} > date_sub(date(date_trunc('week', to_date(cast('{1}' as String)))), 7*({2}))".format(
+                        filter_col, tgt_filter_date, lookback_fltr))
+
             elif read_layer.lower() == "l2_weekly" and target_layer.lower() == 'l4_weekly':
                 filter_col = "start_of_week"
                 lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "12"
@@ -521,15 +530,6 @@ class SparkDataSet(DefaultArgumentsMixIn, AbstractVersionedDataSet):
                     src_incremental_data = spark.sql(
                     "select * from src_data where {0} > date_sub(date(date_trunc('week', to_date(cast('{1}' as String)))), 7*({2}))".format(
                     filter_col, tgt_filter_date, lookback_fltr))
-
-            elif read_layer.lower() == "l2_weekly_read_custom_lookback" and target_layer.lower() == 'l4_weekly_write_custom_lookback':
-                filter_col = "start_of_week"
-                lookback_fltr = lookback if ((lookback is not None) and (lookback != "") and (lookback != '')) else "0"
-                print("filter_col:", filter_col)
-                print("lookback_fltr:", lookback_fltr)
-                src_incremental_data = spark.sql(
-                    "select * from src_data where {0} > date_sub(date(date_trunc('week', to_date(cast('{1}' as String)))), 7*({2}))".format(
-                        filter_col, tgt_filter_date, lookback_fltr))
 
             elif read_layer.lower() == "l4_weekly" and target_layer.lower() == 'l4_weekly':
                 filter_col = "start_of_week"
