@@ -40,7 +40,7 @@ l1_network_voice_features:
   join_column_with_cust_profile:
     access_method_num: msisdn
     event_partition_date: event_partition_date
-  partition_num_per_job: 7
+  partition_num_per_job: 30
 
 
 l1_network_good_and_bad_cells_features:
@@ -59,7 +59,7 @@ l1_network_good_and_bad_cells_features:
   join_column_with_cust_profile:
     access_method_num: access_method_num
     event_partition_date: event_partition_date
-  partition_num_per_job: 7
+  partition_num_per_job: 30
 
 l1_network_share_of_3g_time_in_total_time:
   feature_list:
@@ -129,7 +129,7 @@ l1_network_im_cqi:
   join_column_with_cust_profile:
     access_method_num: msisdn
     event_partition_date: event_partition_date
-  partition_num_per_job: 7
+  partition_num_per_job: 30
 
 l1_network_streaming_cqi:
   feature_list:
@@ -142,7 +142,7 @@ l1_network_streaming_cqi:
   join_column_with_cust_profile:
     access_method_num: msisdn
     event_partition_date: event_partition_date
-  partition_num_per_job: 7
+  partition_num_per_job: 30
 
 l1_network_web_cqi:
   feature_list:
@@ -155,7 +155,7 @@ l1_network_web_cqi:
   join_column_with_cust_profile:
     access_method_num: msisdn
     event_partition_date: event_partition_date
-  partition_num_per_job: 7
+  partition_num_per_job: 30
 
 l1_network_voip_cqi:
   feature_list:
@@ -168,7 +168,7 @@ l1_network_voip_cqi:
   join_column_with_cust_profile:
     access_method_num: msisdn
     event_partition_date: event_partition_date
-  partition_num_per_job: 7
+  partition_num_per_job: 30
 
 l1_network_volte_cqi:
   feature_list:
@@ -181,7 +181,7 @@ l1_network_volte_cqi:
   join_column_with_cust_profile:
     access_method_num: msisdn
     event_partition_date: event_partition_date
-  partition_num_per_job: 7
+  partition_num_per_job: 30
 
 l1_network_user_cqi:
   feature_list:
@@ -194,7 +194,7 @@ l1_network_user_cqi:
   join_column_with_cust_profile:
     access_method_num: msisdn
     event_partition_date: event_partition_date
-  partition_num_per_job: 7
+  partition_num_per_job: 30
 
 l1_network_file_transfer_cqi:
   feature_list:
@@ -207,7 +207,7 @@ l1_network_file_transfer_cqi:
   join_column_with_cust_profile:
     access_method_num: msisdn
     event_partition_date: event_partition_date
-  partition_num_per_job: 7
+  partition_num_per_job: 30
 
 #New requirement for Network
 l1_network_cei_voice_qoe_incoming:
@@ -219,7 +219,7 @@ l1_network_cei_voice_qoe_incoming:
   join_column_with_cust_profile:
     access_method_num: msisdn
     event_partition_date: event_partition_date
-  partition_num_per_job: 14
+  partition_num_per_job: 30
 
 l1_network_cei_voice_qoe_outgoing:
   feature_list:
@@ -230,7 +230,7 @@ l1_network_cei_voice_qoe_outgoing:
   join_column_with_cust_profile:
     access_method_num: msisdn
     event_partition_date: event_partition_date
-  partition_num_per_job: 14
+  partition_num_per_job: 30
 
 l1_network_voice_cei:
   feature_list:
@@ -241,7 +241,7 @@ l1_network_voice_cei:
   join_column_with_cust_profile:
     access_method_num: msisdn
     event_partition_date: event_partition_date
-  partition_num_per_job: 14
+  partition_num_per_job: 30
 
 l1_network_data_cei:
   feature_list:
@@ -252,7 +252,7 @@ l1_network_data_cei:
   join_column_with_cust_profile:
     access_method_num: msisdn
     event_partition_date: event_partition_date
-  partition_num_per_job: 14
+  partition_num_per_job: 30
 
 int_l1_network_failed_outgoing_call_attempt_and_call_drop_3g:
   feature_list:
@@ -274,7 +274,7 @@ l1_network_failed_outgoing_call_attempt_and_call_drop_3g:
   join_column_with_cust_profile:
     access_method_num: msisdn
     event_partition_date: event_partition_date
-  partition_num_per_job: 14
+  partition_num_per_job: 30
 
 
 int_l1_network_failed_incoming_call_attempt_and_call_drop_4g:
@@ -298,7 +298,7 @@ l1_network_failed_incoming_call_attempt_and_call_drop_4g:
   join_column_with_cust_profile:
     access_method_num: msisdn
     event_partition_date: event_partition_date
-  partition_num_per_job: 14
+  partition_num_per_job: 30
 
 l1_network_start_delay_and_success_rate_features:
   feature_list:
@@ -310,7 +310,7 @@ l1_network_start_delay_and_success_rate_features:
   join_column_with_cust_profile:
     access_method_num: msisdn
     event_partition_date: event_partition_date
-  partition_num_per_job: 14
+  partition_num_per_job: 30
 
 
 l1_network_failed_calls_home_location:
@@ -322,4 +322,4 @@ l1_network_failed_calls_home_location:
   join_column_with_cust_profile:
     access_method_num: msisdn
     event_partition_date: event_partition_date
-  partition_num_per_job: 14
+  partition_num_per_job: 30
