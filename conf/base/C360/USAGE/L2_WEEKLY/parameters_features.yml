@@ -4,6 +4,10 @@ l2_usage_postpaid_prepaid_weekly:
   feature_list:
     sum: [
       # New Favorite Features
+      'usg_outgoing_afternoon_time_call_duration',
+      'usg_incoming_afternoon_time_call_duration',
+      'usg_outgoing_evening_time_call_duration',
+      'usg_incoming_evening_time_call_duration',
       'usg_incoming_offnet_local_calls_duration',
       'usg_outgoing_favourite_numbers_call_duration',
       'usg_outgoing_favourite_numbers_local_call_duration',
@@ -545,4 +549,4 @@ l2_usage_postpaid_prepaid_weekly:
       'usg_total_data_volume',
       "usg_vas_total_number_of_call"
     ]
-  granularity: "subscription_identifier,access_method_num,start_of_week"
+  granularity: "subscription_identifier,start_of_week"

@@ -1,2 +1,2 @@
-from .to_l2_nodes import build_digital_l2_weekly_features
+from .to_l1_nodes import build_digital_l1_daily_features
 

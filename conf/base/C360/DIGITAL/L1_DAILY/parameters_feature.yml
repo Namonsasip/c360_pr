@@ -8,41 +8,50 @@ l1_digital_cxenxse_site_traffic_daily:
     digital_time_spent_browser_opera: "sum(CASE WHEN lower(browser) = 'opera' THEN activetime ELSE 0 END)"
     digital_time_spent_referrersocialnetwork_facebook: "sum(CASE WHEN lower(referrersocialnetwork) = 'facebook'
                                                         THEN activetime ELSE 0 END)"
+    digital_time_spent_referrerhostclass_social:  "sum(CASE WHEN lower(referrerhostclass) = 'social' THEN
+    activetime ELSE 0 END)"
     digital_time_spent_referrerhostclass_other: "sum(CASE WHEN lower(referrerhostclass) = 'other'
                                                         THEN activetime ELSE 0 END)"
     digital_time_spent_referrerhostclass_direct: "sum(CASE WHEN lower(referrerhostclass) = 'direct'
                                                         THEN activetime ELSE 0 END)"
     digital_time_spent_referrerhostclass_internal: "sum(CASE WHEN lower(referrerhostclass) = 'internal'
                                                         THEN activetime ELSE 0 END)"
-    digital_time_spent_referrerhostclass_social: "sum(CASE WHEN lower(referrerhostclass) = 'social'
+    digital_time_spent_referrersearch_engine_internal: "sum(CASE WHEN lower(referrersearchengine) = 'internal'
+                                                        THEN activetime ELSE 0 END)"
+    digital_time_spent_referrersearch_engine_other: "sum(CASE WHEN lower(referrersearchengine) = 'other'
+                                                        THEN activetime ELSE 0 END)"
+    digital_time_spent_referrersearch_engine_google: "sum(CASE WHEN lower(referrersearchengine) = 'google'
                                                         THEN activetime ELSE 0 END)"
 
     digital_is_explorer: "max(CASE WHEN digital_is_explorer = 1 THEN 1 ELSE 0 END)"
 
     digital_is_serenade: "max(digital_is_serenade)"
 
-  granularity: "subscription_identifier, access_method_num, event_partition_date"
+  granularity: "subscription_identifier, access_method_num, event_partition_date, start_of_week, start_of_month"
 
 l1_digital_cxenxse_site_traffic_popular_host_daily:
   where_clause: ""
   feature_list:
     digital_popular_host: "sum(activetime)"
-  granularity: "subscription_identifier, access_method_num, host, event_partition_date"
+  granularity: "subscription_identifier, access_method_num, host, event_partition_date, start_of_week, start_of_month"
 
 l1_digital_cxenxse_site_traffic_popular_postalcode_daily:
   where_clause: ""
   feature_list:
     digital_popular_postalcode: "count(subscription_identifier)"
-  granularity: "subscription_identifier, access_method_num, postalcode, event_partition_date"
+  granularity: "subscription_identifier, access_method_num, postalcode, event_partition_date, start_of_week,
+   start_of_month"
 
 l1_digital_cxenxse_site_traffic_popular_referrerquery_daily:
   where_clause: ""
   feature_list:
     digital_popular_referrerquery: "count(subscription_identifier)"
-  granularity: "subscription_identifier, access_method_num, referrerquery, event_partition_date"
+  granularity: "subscription_identifier, access_method_num, referrerquery, event_partition_date, start_of_week,
+   start_of_month"
 
 l1_digital_cxenxse_site_traffic_popular_referrerhost_daily:
   where_clause: ""
   feature_list:
     digital_popular_referrerhost: "count(subscription_identifier)"
-  granularity: "subscription_identifier, access_method_num, referrerhost, event_partition_date"
+  granularity: "subscription_identifier, access_method_num, referrerhost, event_partition_date, start_of_week,
+   start_of_month"

@@ -78,13 +78,8 @@ def get_activated_deactivated_features(
     result_df = spark.sql("""
         with enriched_cust_promo_df as (
             select
-                cp_df.old_subscription_identifier,
-                cp_df.access_method_num,
-                cp_df.national_id_card,
                 cp_df.subscription_identifier,
-                cp_df.event_partition_date,
                 cp_df.start_of_week,
-                cp_df.start_of_month,
                 cp_df.promo_end_dttm as promo_end_dttm,
                 cp_df.promo_status_end_dttm as promo_status_end_dttm,
                 cp_df.promo_start_dttm as promo_start_dttm,
@@ -138,10 +133,7 @@ def get_activated_deactivated_features(
         -- Intermediate activate/deactivate type of features (see confluence for feature dictionary)
         int_act_deact_features as (
             select 
-                access_method_num,
                 subscription_identifier,
-                national_id_card,
-                old_subscription_identifier, 
                 start_of_week,
                 
                 sum(case when 
@@ -362,7 +354,7 @@ def get_activated_deactivated_features(
                     then 1 else 0 end) as product_deactivated_package_due_to_expired_reason
                         
             from enriched_cust_promo_df
-            group by access_method_num, subscription_identifier, national_id_card, old_subscription_identifier, start_of_week
+            group by subscription_identifier, start_of_week
         )
         select
             *,
@@ -385,10 +377,10 @@ def get_product_package_promotion_group_tariff_weekly(source_df: DataFrame) -> D
     if check_empty_dfs([source_df]):
         return get_spark_empty_df()
 
-    source_df = source_df.withColumn("start_of_week",
-                                     F.lit(source_df.agg(
-                                         F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd')
-                                     ).collect()[0][0]))
+    source_df = source_df.withColumn(
+        "start_of_week",
+        F.to_date(F.date_trunc("week", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd')))
+    )
 
     source_df = source_df.select("start_of_week", "promotion_group_tariff", "package_id").distinct()
 

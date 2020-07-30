@@ -79,7 +79,7 @@ def billing_to_l2_pipeline(**kwargs):
                     "params:l2_most_popular_topup_channel",
                     "params:exception_partition_list_for_l1_billing_and_payments_daily_most_popular_top_up_channel_for_l2_billing_and_payments_weekly_most_popular_top_up_channel"
                 ],
-                "l2_billing_and_payments_weekly_most_popular_top_up_channel"
+                ["l2_billing_and_payments_weekly_most_popular_top_up_channel_intermediate", "l2_billing_and_payments_weekly_most_popular_top_up_channel"]
             ),
 
             # Weekly last top up channel pre-paid
@@ -110,7 +110,7 @@ def billing_to_l2_pipeline(**kwargs):
                     "params:l2_popular_topup_day_2",
                     "params:exception_partition_list_for_l1_billing_and_payments_daily_popular_topup_day_for_l2_billing_and_payments_weekly_popular_topup_day"
                 ],
-                "l2_billing_and_payments_weekly_popular_topup_day"
+                ["l2_billing_and_payments_weekly_popular_topup_day_intermediate", "l2_billing_and_payments_weekly_popular_topup_day"]
             ),
 
             # node(
@@ -128,7 +128,7 @@ def billing_to_l2_pipeline(**kwargs):
                     "params:l2_popular_topup_hour_2",
                     "params:exception_partition_list_for_l1_billing_and_payments_daily_popular_topup_day_for_l2_billing_and_payments_weekly_popular_topup_hour"
                 ],
-                "l2_billing_and_payments_weekly_popular_topup_hour"
+                ["l2_billing_and_payments_weekly_popular_topup_hour_intermediate", "l2_billing_and_payments_weekly_popular_topup_hour"]
             ),
 
             # Weekly time since last top up  pre-paid

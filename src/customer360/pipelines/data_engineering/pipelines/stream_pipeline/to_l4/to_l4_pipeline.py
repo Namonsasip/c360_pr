@@ -255,6 +255,12 @@ def streaming_l2_to_l4_pipeline(**kwargs):
                  "params:streaming_app"],
                 None
             ),
+            node(
+                node_from_config,
+                ["l2_streaming_fav_tv_show_by_share_of_completed_episodes",
+                 "params:l4_streaming_fav_tv_show_by_share_of_completed_episodes"],
+                "l4_streaming_fav_tv_show_by_share_of_completed_episodes"
+            )
         ], name="streaming_l2_to_l4_pipeline"
     )
 

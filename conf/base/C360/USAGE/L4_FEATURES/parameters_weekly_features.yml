@@ -1,5 +1,5 @@
 l4_usage_postpaid_prepaid_weekly_features_min:
-  partition_by: ["subscription_identifier","access_method_num"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     min: [
           'usg_incoming_offnet_local_calls_duration_sum',
@@ -238,7 +238,7 @@ l4_usage_postpaid_prepaid_weekly_features_min:
   read_from: "l2"
 
 l4_usage_postpaid_prepaid_weekly_features_max:
-  partition_by: ["subscription_identifier","access_method_num"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     max: [
           'usg_incoming_offnet_local_calls_duration_sum',
@@ -488,7 +488,7 @@ l4_usage_postpaid_prepaid_weekly_features_max:
 
 
 l4_usage_postpaid_prepaid_weekly_features_avg:
-  partition_by: ["subscription_identifier","access_method_num"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     avg: [
          'usg_incoming_offnet_local_calls_duration_sum',
@@ -953,9 +953,13 @@ l4_usage_postpaid_prepaid_weekly_features_avg:
   read_from: "l2"
 
 l4_usage_postpaid_prepaid_weekly_features_sum:
-  partition_by: ["subscription_identifier","access_method_num"]
+  partition_by: ["subscription_identifier"]
   feature_list:
     sum: [
+          'usg_outgoing_afternoon_time_call_duration_sum',
+          'usg_incoming_afternoon_time_call_duration_sum',
+          'usg_outgoing_evening_time_call_duration_sum',
+          'usg_incoming_evening_time_call_duration_sum',
           'usg_incoming_offnet_local_calls_duration_sum',
           'usg_outgoing_favourite_numbers_call_duration_sum',
           'usg_outgoing_favourite_numbers_local_call_duration_sum',

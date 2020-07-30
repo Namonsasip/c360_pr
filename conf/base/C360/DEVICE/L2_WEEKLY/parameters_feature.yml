@@ -47,4 +47,4 @@ l2_device_summary_with_config:
                           then 1 else 0 end)"
     device_iotvehicle: "max(case when lower(handset_type) in ('iot-vehicle') then 1 else 0 end)"
     device_unknown: "max(case when lower(handset_type) is null then 1 else 0 end)"
-  granularity: "subscription_identifier, access_method_num, start_of_week"
+  granularity: "subscription_identifier, start_of_week"
