@@ -966,6 +966,7 @@ def build_network_cei_voice_qoe_incoming(
     join_key_between_network_df = ['event_partition_date', 'msisdn', 'partition_date']
     joined_df = voice_1day.join(
         volte_joined, on=join_key_between_network_df, how='inner')
+    joined_df = joined_df.drop('event_partition_date')
 
     return_df = l1_massive_processing(joined_df,
                                       l1_network_cei_voice_qoe_incoming_dict, cust_df)
@@ -1039,6 +1040,7 @@ def build_network_cei_voice_qoe_outgoing(
 
     join_key_between_network_df = ['event_partition_date', 'msisdn', 'partition_date']
     joined_df = voice_1day.join(volte_1day, on=join_key_between_network_df, how='inner')
+    joined_df = joined_df.drop('event_partition_date')
 
     return_df = l1_massive_processing(joined_df,
                                       l1_network_cei_voice_qoe_outgoing_dict, cust_df)
@@ -1257,6 +1259,7 @@ def build_network_failed_calls_home_location(
 
     join_key_between_network_df = ['event_partition_date', 'msisdn', 'partition_date']
     joined_df = voice_geo.join(volte_geo, on=join_key_between_network_df, how='inner')
+    joined_df = joined_df.drop('event_partition_date')
 
     return_df = l1_massive_processing(joined_df,
                                       l1_network_failed_calls_home_location_dict, cust_df)
