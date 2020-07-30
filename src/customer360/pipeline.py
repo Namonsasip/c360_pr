@@ -201,6 +201,13 @@ from .pipelines.data_engineering.pipelines.util_pipeline import (
 
 from .pipelines.data_engineering.pipelines.predictive_pipeline.to_l4.to_l4_pipeline import predictive_to_l4_pipeline
 
+from .pipelines.data_engineering.pipelines.geolocation_pipeline.to_l1.to_l1_pipeline import *
+from .pipelines.data_engineering.pipelines.geolocation_pipeline.to_l2.to_l2_pipeline import *
+from .pipelines.data_engineering.pipelines.geolocation_pipeline.to_l3.to_l3_pipeline import *
+from .pipelines.data_engineering.pipelines.geolocation_pipeline.to_l4.to_l4_pipeline import *
+
+
+
 def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
 
     return {
@@ -285,6 +292,12 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "predictive_to_l4_pipeline": predictive_to_l4_pipeline(),
         "lineage_dependency_pipeline": lineage_dependency_pipeline(),
         "ops_report_pipeline": ops_report_pipeline(),
+        "geo_to_l3_home_work_pipeline": geo_to_l3_home_work_pipeline(),
+        "geo_to_l1_pipeline_to_run":geo_to_l1_pipeline_to_run(),
+        "geo_to_l1_pipeline": geo_to_l1_pipeline(),
+        "geo_to_l2_pipeline": geo_to_l2_pipeline(),
+        "geo_to_l3_pipeline": geo_to_l3_pipeline(),
+        "geo_to_l4_pipeline": geo_to_l4_pipeline()
     }
 
 
