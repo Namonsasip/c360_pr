@@ -25,7 +25,6 @@ def generate_l2_fav_streaming_day(input_df: DataFrame, app_list: list):
     for each_app in app_list:
         df = spark.sql("""
             select
-                access_method_num, 
                 subscription_identifier,
                 start_of_week,
                 day_of_week as fav_{each_app}_streaming_day_of_week,
@@ -115,7 +114,7 @@ def streaming_to_l2_content_type_features(input_df: DataFrame,
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 4))
+    mvv_new = list(divide_chunks(mvv_array, 10))
     add_list = mvv_new
 
     first_item = add_list[-1]
@@ -192,7 +191,7 @@ def streaming_to_l2_tv_channel_type_features(input_df: DataFrame,
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 4))
+    mvv_new = list(divide_chunks(mvv_array, 10))
     add_list = mvv_new
 
     first_item = add_list[-1]
@@ -272,7 +271,7 @@ def streaming_to_l2_tv_channel_features(input_df: DataFrame,
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 4))
+    mvv_new = list(divide_chunks(mvv_array, 10))
     add_list = mvv_new
 
     first_item = add_list[-1]
@@ -367,7 +366,7 @@ def streaming_to_l2_music_service_by_download(input_df: DataFrame,
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 4))
+    mvv_new = list(divide_chunks(mvv_array, 10))
     add_list = mvv_new
 
     first_item = add_list[-1]
@@ -463,7 +462,7 @@ def streaming_to_l2_esoprt_service_by_download(input_df: DataFrame,
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 4))
+    mvv_new = list(divide_chunks(mvv_array, 10))
     add_list = mvv_new
 
     first_item = add_list[-1]
@@ -554,7 +553,7 @@ def streaming_streaming_ranked_of_day_per_week(input_df: DataFrame,
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 4))
+    mvv_new = list(divide_chunks(mvv_array, 10))
     add_list = mvv_new
 
     first_item = add_list[-1]
@@ -627,7 +626,7 @@ def streaming_to_l2_fav_tv_show_by_share_of_completed_episodes(
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 4))
+    mvv_new = list(divide_chunks(mvv_array, 10))
     add_list = mvv_new
 
     first_item = add_list[-1]

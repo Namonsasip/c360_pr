@@ -39,7 +39,6 @@ def generate_l3_fav_streaming_day(input_df, app_list):
     for each_app in app_list:
         df = spark.sql("""
             select
-                access_method_num, 
                 subscription_identifier,
                 start_of_month,
                 day_of_week as fav_{each_app}_streaming_day_of_week,
