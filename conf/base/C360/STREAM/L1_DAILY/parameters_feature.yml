@@ -145,7 +145,7 @@ int_l1_streaming_video_service_feature:
         event_partition_date, start_of_week,start_of_month order by sum(download_kb) desc)"
         sum_download_kb_traffic: "sum(download_kb)"
         visit_count: "1" # counting active days
-    granularity: "subscription_identifier, access_method_num, date(register_date),
+    granularity: "subscription_identifier, access_method_num,
                   event_partition_date, start_of_week, start_of_month, application"
     output_catalog: "int_l1_streaming_video_service_feature"
 
