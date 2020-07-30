@@ -344,30 +344,27 @@ def stream_process_soc_mobile_data(input_data: DataFrame,
                                    ) -> [DataFrame, DataFrame, DataFrame, DataFrame, DataFrame,
                                          DataFrame, DataFrame, DataFrame, DataFrame, DataFrame]:
     ################################# Start Implementing Data availability checks #############################
-    # if check_empty_dfs([input_data, cust_profile_df]):
-    #     return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
-    #             get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
-    #             get_spark_empty_df(), get_spark_empty_df()]
-    #
-    # input_df = data_non_availability_and_missing_check(
-    #     df=input_data,
-    #     grouping="daily",
-    #     par_col="partition_date",
-    #     target_table_name="l1_streaming_visit_count_and_download_traffic_feature")
-    #
-    # customer_df = data_non_availability_and_missing_check(
-    #     df=cust_profile_df,
-    #     grouping="daily",
-    #     par_col="event_partition_date",
-    #     target_table_name="l1_streaming_visit_count_and_download_traffic_feature")
-    #
-    # if check_empty_dfs([input_df, customer_df]):
-    #     return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
-    #             get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
-    #             get_spark_empty_df(), get_spark_empty_df()]
+    if check_empty_dfs([input_data, cust_profile_df]):
+        return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
+                get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
+                get_spark_empty_df(), get_spark_empty_df()]
 
-    input_df = input_data
-    customer_df = cust_profile_df
+    input_df = data_non_availability_and_missing_check(
+        df=input_data,
+        grouping="daily",
+        par_col="partition_date",
+        target_table_name="l1_streaming_visit_count_and_download_traffic_feature")
+
+    customer_df = data_non_availability_and_missing_check(
+        df=cust_profile_df,
+        grouping="daily",
+        par_col="event_partition_date",
+        target_table_name="l1_streaming_visit_count_and_download_traffic_feature")
+
+    if check_empty_dfs([input_df, customer_df]):
+        return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
+                get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(),
+                get_spark_empty_df(), get_spark_empty_df()]
 
     # ################################# End Implementing Data availability checks ###############################
     def divide_chunks(l, n):
