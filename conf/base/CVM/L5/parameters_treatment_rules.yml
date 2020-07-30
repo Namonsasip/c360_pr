@@ -67,389 +67,343 @@ treatment_rules:
 
 ### churn exploration treatment starts here
   ### high priority churn targets (tests and business drivers)
-  a1_internal_churn_treatment:
-    order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
-    rules:
-      1a901404-ddb3-44e6-af0c-06c313f42769:
-        campaign_code: 200612-13
-        conditions:
-        - churn_microsegment in ('positive_arpu_m4','positive_arpu_m5','positive_arpu_m6')
-        - internal_churner_2_4_6 == 1
-        limit_per_code: 20
-        variant: 2
-      89a63d5f-02c4-4db3-90f8-30a8220f9959:
-        campaign_code: 200612-15
-        conditions:
-        - churn_microsegment in ('zero_arpu_m1','zero_arpu_m2','zero_arpu_m3','zero_arpu_m4','zero_arpu_m5','zero_arpu_m6','zero_arpu_m7','zero_arpu_m8')
-        - internal_churner_2_4_6 == 1
-        limit_per_code: 20
-        variant: 2
-      9bbd328b-84d6-458a-ae65-4bbae09d12b0:
-        campaign_code: 200612-14
-        conditions:
-        - churn_microsegment in ('positive_arpu_m7','positive_arpu_m8','positive_arpu_m9','positive_arpu_m10')
-        - internal_churner_2_4_6 == 1
-        limit_per_code: 100
-        variant: 1
-      b2d60970-fb56-48d7-8571-13d3bd3de8cd:
-        campaign_code: 200612-15
-        conditions:
-        - churn_microsegment in ('positive_arpu_m7','positive_arpu_m8','positive_arpu_m9','positive_arpu_m10')
-        - internal_churner_2_4_6 == 1
-        limit_per_code: 20
-        variant: 2
-      d9d3c375-7a41-405a-8e39-89ad18d7d0ae:
-        campaign_code: 200612-10
-        conditions:
-        - churn_microsegment in ('positive_arpu_m1','positive_arpu_m2','positive_arpu_m3')
-        - internal_churner_2_4_6 == 1
-        limit_per_code: 100
-        variant: 1
-      e89f967d-f7a1-4680-b0ec-122b5674f37e:
-        campaign_code: 200612-14
-        conditions:
-        - churn_microsegment in ('zero_arpu_m1','zero_arpu_m2','zero_arpu_m3','zero_arpu_m4','zero_arpu_m5','zero_arpu_m6','zero_arpu_m7','zero_arpu_m8')
-        - internal_churner_2_4_6 == 1
-        limit_per_code: 100
-        variant: 1
-      f579ffff-2ad0-4388-8304-1e903b39dbf4:
-        campaign_code: 200612-11
-        conditions:
-        - churn_microsegment in ('positive_arpu_m1','positive_arpu_m2','positive_arpu_m3')
-        - internal_churner_2_4_6 == 1
-        limit_per_code: 20
-        variant: 2
-      ff81a029-1c6e-44d8-9316-ab96fdd963b5:
-        campaign_code: 200612-12
-        conditions:
-        - churn_microsegment in ('positive_arpu_m4','positive_arpu_m5','positive_arpu_m6')
-        - internal_churner_2_4_6 == 1
-        limit_per_code: 100
-        variant: 1
-    treatment_name: a1_internal_churn_treatment
-    treatment_size: 300
-    use_case: churn
-  a2_call_centre_treatment:
-    order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
-    rules:
-      23a2fe4d-9769-4192-9e43-d8ede16f435f:
-        campaign_code: 200612-19
-        conditions:
-        - call_centre_persona == 'anomaly_detected'
-        limit_per_code: 100
-        variant: 1
-      266d51e3-0963-4dee-a2c5-5c8205dabef4:
-        campaign_code: 200612-18
-        conditions:
-        - call_centre_persona == 'problem_resolved_or_follow_up'
-        limit_per_code: 20
-        variant: 2
-      2a11cebd-d7bb-4341-bf86-f8ee61209393:
-        campaign_code: 200612-16
-        conditions:
-        - call_centre_persona == 'unsatisfied'
-        limit_per_code: 100
-        variant: 1
-      6e3076fc-6557-4a76-ace8-fc8adc9299c5:
-        campaign_code: 200612-16
-        conditions:
-        - call_centre_persona == 'problem_resolved_or_follow_up'
-        limit_per_code: 100
-        variant: 1
-      7e8842f4-6ee8-4480-8195-be6a0b1cc074:
-        campaign_code: 200612-18
-        conditions:
-        - call_centre_persona == 'unsatisfied'
-        limit_per_code: 20
-        variant: 2
-      fbb77e07-54fe-4b69-a962-04ea11733c34:
-        campaign_code: 200612-21
-        conditions:
-        - call_centre_persona == 'anomaly_detected'
-        limit_per_code: 20
-        variant: 2
-    treatment_name: a2_call_centre_treatment
-    treatment_size: 300
-    use_case: churn
-  treatment_AB_test_churn_positive_arpu_m2:
-    order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
-    rules:
-      01647b99-9696-40c6-85d2-84b0594b1a53:
-        campaign_code: 200625-6
-        conditions:
-        - churn_microsegment == 'positive_arpu_m2'
-        limit_per_code: 500
-        variant: 2
-      0f2b8fc3-b2c3-4347-b450-a493319a026d:
-        campaign_code: 200625-8
-        conditions:
-        - churn_microsegment == 'positive_arpu_m2'
-        limit_per_code: 500
-        variant: 4
-      597dc0ee-63dc-4eb7-924f-ff3059895b7a:
-        campaign_code: 200625-7
-        conditions:
-        - churn_microsegment == 'positive_arpu_m2'
-        limit_per_code: 500
-        variant: 3
-      d72e43c6-5479-46ac-b7f3-4a12a799631c:
-        campaign_code: 200625-5
-        conditions:
-        - churn_microsegment == 'positive_arpu_m2'
-        limit_per_code: 500
-        variant: 1
-    treatment_name: treatment_AB_test_churn_positive_arpu_m2
-    treatment_size: 5500
-    use_case: churn
-  treatment_AB_test_churn_positive_arpu_m4:
-    order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
-    rules:
-      3490acfe-1201-4e09-9394-776ffc0f0a87:
-        campaign_code: 200625-12
-        conditions:
-        - churn_microsegment == 'positive_arpu_m4'
-        limit_per_code: 500
-        variant: 4
-      3fdf8e56-3392-4b09-94fc-0a78d8ae1f7e:
-        campaign_code: 200625-11
-        conditions:
-        - churn_microsegment == 'positive_arpu_m4'
-        limit_per_code: 500
-        variant: 3
-      cafbd34f-9346-470f-bfe4-79117f7bdf90:
-        campaign_code: 200625-9
-        conditions:
-        - churn_microsegment == 'positive_arpu_m4'
-        limit_per_code: 500
-        variant: 1
-      eebe8838-3b35-4a39-81ce-02a6740990d8:
-        campaign_code: 200625-10
-        conditions:
-        - churn_microsegment == 'positive_arpu_m4'
-        limit_per_code: 500
-        variant: 2
-    treatment_name: treatment_AB_test_churn_positive_arpu_m4
-    treatment_size: 5500
-    use_case: churn
-  treatment_AB_test_churn_positive_arpu_m5:
-    order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
-    rules:
-      b30fb573-4c86-451a-9479-81fd72f567b6:
-        campaign_code: 200625-14
-        conditions:
-        - churn_microsegment == 'positive_arpu_m5'
-        limit_per_code: 500
-        variant: 2
-      ca38835d-ecf7-4ef6-87e8-f07ded9bc54f:
-        campaign_code: 200625-15
-        conditions:
-        - churn_microsegment == 'positive_arpu_m5'
-        limit_per_code: 500
-        variant: 3
-      f5c38432-2707-4576-9987-3ca2f3b9a5b8:
-        campaign_code: 200625-13
-        conditions:
-        - churn_microsegment == 'positive_arpu_m5'
-        limit_per_code: 500
-        variant: 1
-    treatment_name: treatment_AB_test_churn_positive_arpu_m5
-    treatment_size: 5500
-    use_case: churn
-  treatment_no_test_churn_positive_arpu:
-    order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
-    rules:
-      15cd2785-b3d4-482c-8720-a6872e0d5e6e:
-        campaign_code: 200407-28
-        conditions:
-        - churn_microsegment == 'positive_arpu_m6'
-        limit_per_code: 140
-        variant: 2
-      36ddcfd7-3d0e-4dfa-b6a0-bb6d6c96b7d7:
-        campaign_code: 200407-11
-        conditions:
-        - churn_microsegment == 'positive_arpu_m7'
-        limit_per_code: 1400
-        variant: 1
-      52cff718-4b52-43ac-99eb-2da1a07b1d21:
-        campaign_code: 200407-10
-        conditions:
-        - churn_microsegment == 'positive_arpu_m6'
-        limit_per_code: 1400
-        variant: 1
-      62ef7ed2-fe66-408d-b894-18c9d8a20351:
-        campaign_code: 200407-5
-        conditions:
-        - churn_microsegment == 'positive_arpu_m1'
-        limit_per_code: 1400
-        variant: 1
-      7a0627de-9705-4f29-a3ce-1ebfaa24c809:
-        campaign_code: 200407-25
-        conditions:
-        - churn_microsegment == 'positive_arpu_m3'
-        limit_per_code: 140
-        variant: 2
-      8c3f7103-0c08-49fc-b8bf-09f174d27517:
-        campaign_code: 200407-13
-        conditions:
-        - churn_microsegment == 'positive_arpu_m9'
-        limit_per_code: 1400
-        variant: 1
-      95f91932-1caa-4e2c-9b5e-6e0930dd776b:
-        campaign_code: 200407-12
-        conditions:
-        - churn_microsegment == 'positive_arpu_m8'
-        limit_per_code: 1400
-        variant: 1
-      998b1c16-666c-4d9a-bc46-cc72a658514a:
-        campaign_code: 200407-7
-        conditions:
-        - churn_microsegment == 'positive_arpu_m3'
-        limit_per_code: 1400
-        variant: 1
-      9e332107-f21b-4b87-873b-03819a0f580e:
-        campaign_code: 200407-31
-        conditions:
-        - churn_microsegment == 'positive_arpu_m9'
-        limit_per_code: 140
-        variant: 2
-      b50e2d79-b072-43ba-8bd8-a5871d79e9cd:
-        campaign_code: 200407-32
-        conditions:
-        - churn_microsegment == 'positive_arpu_m10'
-        limit_per_code: 140
-        variant: 2
-      d1eb00f7-06e9-478d-a289-6ae3604f0b31:
-        campaign_code: 200407-30
-        conditions:
-        - churn_microsegment == 'positive_arpu_m8'
-        limit_per_code: 140
-        variant: 2
-      d796f40a-b9d4-4bf6-8229-9b65812444cb:
-        campaign_code: 200407-23
-        conditions:
-        - churn_microsegment == 'positive_arpu_m1'
-        limit_per_code: 140
-        variant: 2
-      dabfec44-c0d2-4269-bc9a-bfad311cf232:
-        campaign_code: 200407-29
-        conditions:
-        - churn_microsegment == 'positive_arpu_m7'
-        limit_per_code: 140
-        variant: 2
-      f7e9a956-b340-4abe-aadf-98ec09be8e08:
-        campaign_code: 200407-14
-        conditions:
-        - churn_microsegment == 'positive_arpu_m10'
-        limit_per_code: 1400
-        variant: 1
-    treatment_name: treatment_no_test_churn_positive_arpu
-    treatment_size: 5850
-    use_case: churn
-  treatment_no_test_churn_zero_arpu:
-    order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
-    rules:
-      1f189457-7dda-4da6-9602-fc887e729598:
-        campaign_code: 200407-21
-        conditions:
-        - churn_microsegment == 'zero_arpu_m7'
-        limit_per_code: 11300
-        variant: 1
-      284fb7b7-525c-4049-ad4e-686efd35c1fe:
-        campaign_code: 200407-19
-        conditions:
-        - churn_microsegment == 'zero_arpu_m5'
-        limit_per_code: 11300
-        variant: 1
-      2966ef5c-3a59-4c2c-85a5-92ded3554f86:
-        campaign_code: 200407-35
-        conditions:
-        - churn_microsegment == 'zero_arpu_m3'
-        limit_per_code: 1130
-        variant: 2
-      41d0aad5-e5cc-4d15-8d9a-ea93a89de129:
-        campaign_code: 200407-37
-        conditions:
-        - churn_microsegment == 'zero_arpu_m5'
-        limit_per_code: 1130
-        variant: 2
-      58683df1-a05e-4be3-9572-245ca9bb94a9:
-        campaign_code: 200407-39
-        conditions:
-        - churn_microsegment == 'zero_arpu_m7'
-        limit_per_code: 1130
-        variant: 2
-      7699548d-333a-4034-a215-3ab3de0df1e4:
-        campaign_code: 200407-17
-        conditions:
-        - churn_microsegment == 'zero_arpu_m3'
-        limit_per_code: 11300
-        variant: 1
-      78ccb58c-cc5d-4783-9aa7-98a15ea75020:
-        campaign_code: 200407-36
-        conditions:
-        - churn_microsegment == 'zero_arpu_m4'
-        limit_per_code: 1130
-        variant: 2
-      78df4fb2-dd5a-41d0-b379-7244082396f4:
-        campaign_code: 200407-33
-        conditions:
-        - churn_microsegment == 'zero_arpu_m1'
-        limit_per_code: 1130
-        variant: 2
-      7eede3aa-c019-44d4-a27c-947535fdf632:
-        campaign_code: 200407-40
-        conditions:
-        - churn_microsegment == 'zero_arpu_m8'
-        limit_per_code: 1130
-        variant: 2
-      7feace36-c078-4d17-8c69-8c598cb490c3:
-        campaign_code: 200407-34
-        conditions:
-        - churn_microsegment == 'zero_arpu_m2'
-        limit_per_code: 1130
-        variant: 2
-      92e34393-ece1-4e56-8218-63df0dec6e3b:
-        campaign_code: 200407-15
-        conditions:
-        - churn_microsegment == 'zero_arpu_m1'
-        limit_per_code: 11300
-        variant: 1
-      b5a5c976-995b-4e82-934b-ff062c7247f0:
-        campaign_code: 200407-22
-        conditions:
-        - churn_microsegment == 'zero_arpu_m8'
-        limit_per_code: 11300
-        variant: 1
-      e0e1003b-c632-4ec0-bd5c-a9d26b9738ee:
-        campaign_code: 200407-38
-        conditions:
-        - churn_microsegment == 'zero_arpu_m6'
-        limit_per_code: 1130
-        variant: 2
-      ecc8ed69-015c-429e-b947-464e7b040d0f:
-        campaign_code: 200407-16
-        conditions:
-        - churn_microsegment == 'zero_arpu_m2'
-        limit_per_code: 11300
-        variant: 1
-      faab5828-1e67-42f1-99e4-bd9286fe5a39:
-        campaign_code: 200407-20
-        conditions:
-        - churn_microsegment == 'zero_arpu_m6'
-        limit_per_code: 11300
-        variant: 1
-      fae12be6-1177-4282-9069-afbe93f9bc39:
-        campaign_code: 200407-18
-        conditions:
-        - churn_microsegment == 'zero_arpu_m4'
-        limit_per_code: 11300
-        variant: 1
-    treatment_name: treatment_no_test_churn_zero_arpu
-    treatment_size: 27000
-    use_case: churn
+  treatment_rules:
+    a1_internal_churn_treatment:
+      order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
+      rules:
+        1795e401-c513-4401-9ec3-8822a8b29127:
+          campaign_code: 200612-13
+          conditions:
+            - churn_microsegment in ('positive_arpu_m4','positive_arpu_m5','positive_arpu_m6')
+            - internal_churner_2_4_6 == 1
+          limit_per_code: 20
+          variant: 2
+        861d4958-28c6-42db-bb40-10bfe2bba450:
+          campaign_code: 200612-10
+          conditions:
+            - churn_microsegment in ('positive_arpu_m1','positive_arpu_m2','positive_arpu_m3')
+            - internal_churner_2_4_6 == 1
+          limit_per_code: 100
+          variant: 1
+        b2f9c00d-1ad1-4122-ad88-8d961c422066:
+          campaign_code: 200612-12
+          conditions:
+            - churn_microsegment in ('positive_arpu_m4','positive_arpu_m5','positive_arpu_m6')
+            - internal_churner_2_4_6 == 1
+          limit_per_code: 100
+          variant: 1
+        b76eb379-4be8-41e6-a73f-268c40647d48:
+          campaign_code: 200612-15
+          conditions:
+            - churn_microsegment in ('zero_arpu_m1','zero_arpu_m2','zero_arpu_m3','zero_arpu_m4','zero_arpu_m5','zero_arpu_m6','zero_arpu_m7','zero_arpu_m8')
+            - internal_churner_2_4_6 == 1
+          limit_per_code: 20
+          variant: 2
+        c54e4e0a-614e-4da4-8dd1-44759b39da76:
+          campaign_code: 200612-14
+          conditions:
+            - churn_microsegment in ('zero_arpu_m1','zero_arpu_m2','zero_arpu_m3','zero_arpu_m4','zero_arpu_m5','zero_arpu_m6','zero_arpu_m7','zero_arpu_m8')
+            - internal_churner_2_4_6 == 1
+          limit_per_code: 100
+          variant: 1
+        d8cac073-e3f8-4d5b-87ac-db03688e2b2e:
+          campaign_code: 200612-14
+          conditions:
+            - churn_microsegment in ('positive_arpu_m7','positive_arpu_m8','positive_arpu_m9','positive_arpu_m10')
+            - internal_churner_2_4_6 == 1
+          limit_per_code: 100
+          variant: 1
+        ed58f200-1958-4621-b0bc-6e5dc6e357a5:
+          campaign_code: 200612-15
+          conditions:
+            - churn_microsegment in ('positive_arpu_m7','positive_arpu_m8','positive_arpu_m9','positive_arpu_m10')
+            - internal_churner_2_4_6 == 1
+          limit_per_code: 20
+          variant: 2
+        f2ed5dc5-bea3-4801-af1e-3e7273c80ccd:
+          campaign_code: 200612-11
+          conditions:
+            - churn_microsegment in ('positive_arpu_m1','positive_arpu_m2','positive_arpu_m3')
+            - internal_churner_2_4_6 == 1
+          limit_per_code: 20
+          variant: 2
+      treatment_name: a1_internal_churn_treatment
+      treatment_size: 300
+      use_case: churn
+    a2_call_centre_treatment:
+      order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
+      rules:
+        2fd813ca-e3e0-4551-aff4-dc9f582f3ede:
+          campaign_code: 200612-18
+          conditions:
+            - call_centre_persona == 'unsatisfied'
+          limit_per_code: 20
+          variant: 2
+        5325b693-0356-4b90-80bd-e8f3a2cb796f:
+          campaign_code: 200612-16
+          conditions:
+            - call_centre_persona == 'unsatisfied'
+          limit_per_code: 100
+          variant: 1
+        5b355138-31a3-450c-923a-c33ee676f0eb:
+          campaign_code: 200612-18
+          conditions:
+            - call_centre_persona == 'problem_resolved_or_follow_up'
+          limit_per_code: 20
+          variant: 2
+        c003b553-427e-45ba-9043-2114efa2559c:
+          campaign_code: 200612-19
+          conditions:
+            - call_centre_persona == 'anomaly_detected'
+          limit_per_code: 100
+          variant: 1
+        d31f7c5f-8f84-4c54-9119-29537fe8c3c5:
+          campaign_code: 200612-16
+          conditions:
+            - call_centre_persona == 'problem_resolved_or_follow_up'
+          limit_per_code: 100
+          variant: 1
+        f6a4c8eb-942c-4096-b740-fd9556136a38:
+          campaign_code: 200612-21
+          conditions:
+            - call_centre_persona == 'anomaly_detected'
+          limit_per_code: 20
+          variant: 2
+      treatment_name: a2_call_centre_treatment
+      treatment_size: 300
+      use_case: churn
+    treatment_no_test_churn_positive_arpu:
+      order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
+      rules:
+        055b8ac3-f81a-4f2c-b57f-c9a4d4429b57:
+          campaign_code: 200407-5
+          conditions:
+            - churn_microsegment == 'positive_arpu_m1'
+          limit_per_code: 1800
+          variant: 1
+        137e4bf4-a891-4323-95cb-5fd462445863:
+          campaign_code: 200407-24
+          conditions:
+            - churn_microsegment == 'positive_arpu_m2'
+          limit_per_code: 180
+          variant: 2
+        482261f6-c6c8-44bd-910d-1c5cecd50548:
+          campaign_code: 200407-28
+          conditions:
+            - churn_microsegment == 'positive_arpu_m6'
+          limit_per_code: 180
+          variant: 2
+        51838f24-535a-4aa6-bb58-c918c76e3b5e:
+          campaign_code: 200407-9
+          conditions:
+            - churn_microsegment == 'positive_arpu_m5'
+          limit_per_code: 1800
+          variant: 1
+        5fc1cf7b-7151-46ef-9db6-88359fe13b47:
+          campaign_code: 200407-13
+          conditions:
+            - churn_microsegment == 'positive_arpu_m9'
+          limit_per_code: 1800
+          variant: 1
+        6c0b1c06-65ad-4a69-aab5-67ea1324a85b:
+          campaign_code: 200407-23
+          conditions:
+            - churn_microsegment == 'positive_arpu_m1'
+          limit_per_code: 180
+          variant: 2
+        6f77dccd-a823-49a6-8d44-a4bc9bcbbf5c:
+          campaign_code: 200407-7
+          conditions:
+            - churn_microsegment == 'positive_arpu_m3'
+          limit_per_code: 1800
+          variant: 1
+        7649ebae-e176-4b1f-96a7-bd3bd426593c:
+          campaign_code: 200407-25
+          conditions:
+            - churn_microsegment == 'positive_arpu_m3'
+          limit_per_code: 180
+          variant: 2
+        7aa5bed1-bb57-40e4-af0a-d209098e0715:
+          campaign_code: 200407-10
+          conditions:
+            - churn_microsegment == 'positive_arpu_m6'
+          limit_per_code: 1800
+          variant: 1
+        829a3cec-f472-4cdb-a88a-31853cbc343f:
+          campaign_code: 200407-27
+          conditions:
+            - churn_microsegment == 'positive_arpu_m5'
+          limit_per_code: 180
+          variant: 2
+        a0a89ed7-8865-488e-b50a-0bf786b9c38e:
+          campaign_code: 200407-31
+          conditions:
+            - churn_microsegment == 'positive_arpu_m9'
+          limit_per_code: 180
+          variant: 2
+        aa14ac9e-6274-4abc-9def-64569fd50bf7:
+          campaign_code: 200407-12
+          conditions:
+            - churn_microsegment == 'positive_arpu_m8'
+          limit_per_code: 1800
+          variant: 1
+        c7ff74e3-2ef6-4a5b-8c64-b3c6f9ea07d9:
+          campaign_code: 200407-14
+          conditions:
+            - churn_microsegment == 'positive_arpu_m10'
+          limit_per_code: 1800
+          variant: 1
+        d43d9347-cbda-4006-b347-da7a1f43a336:
+          campaign_code: 200407-6
+          conditions:
+            - churn_microsegment == 'positive_arpu_m2'
+          limit_per_code: 1800
+          variant: 1
+        e373d50e-701a-4635-8a95-625f391b1efa:
+          campaign_code: 200407-32
+          conditions:
+            - churn_microsegment == 'positive_arpu_m10'
+          limit_per_code: 180
+          variant: 2
+        e85a1bfa-157d-404d-a178-431dceb61d1a:
+          campaign_code: 200407-11
+          conditions:
+            - churn_microsegment == 'positive_arpu_m7'
+          limit_per_code: 1800
+          variant: 1
+        eba55099-7314-4cbe-8048-196b49810d05:
+          campaign_code: 200407-29
+          conditions:
+            - churn_microsegment == 'positive_arpu_m7'
+          limit_per_code: 180
+          variant: 2
+        ed0638b0-6e96-4197-aa2e-e35fbfc539ae:
+          campaign_code: 200407-30
+          conditions:
+            - churn_microsegment == 'positive_arpu_m8'
+          limit_per_code: 180
+          variant: 2
+        f3951106-fb0b-4d50-af79-12ed91641948:
+          campaign_code: 200407-8
+          conditions:
+            - churn_microsegment == 'positive_arpu_m4'
+          limit_per_code: 1800
+          variant: 1
+        fb3935bb-77a0-4e2f-9b3d-f5f917b168ee:
+          campaign_code: 200407-26
+          conditions:
+            - churn_microsegment == 'positive_arpu_m4'
+          limit_per_code: 180
+          variant: 2
+      treatment_name: treatment_no_test_churn_positive_arpu
+      treatment_size: 10800
+      use_case: churn
+    treatment_no_test_churn_zero_arpu:
+      order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
+      rules:
+        10c968e6-4c20-493b-a924-7aba3e7a49a2:
+          campaign_code: 200407-17
+          conditions:
+            - churn_microsegment == 'zero_arpu_m3'
+          limit_per_code: 11300
+          variant: 1
+        1bf8840b-4b50-46e4-bdf3-30c2c112869f:
+          campaign_code: 200407-40
+          conditions:
+            - churn_microsegment == 'zero_arpu_m8'
+          limit_per_code: 1130
+          variant: 2
+        3a4b664b-52ad-4510-aadd-66b387d94667:
+          campaign_code: 200407-19
+          conditions:
+            - churn_microsegment == 'zero_arpu_m5'
+          limit_per_code: 11300
+          variant: 1
+        5939a434-60a2-4c8c-9623-61a01abebc41:
+          campaign_code: 200407-15
+          conditions:
+            - churn_microsegment == 'zero_arpu_m1'
+          limit_per_code: 11300
+          variant: 1
+        6708226d-3efd-4b29-8168-dfb31ddd7216:
+          campaign_code: 200407-38
+          conditions:
+            - churn_microsegment == 'zero_arpu_m6'
+          limit_per_code: 1130
+          variant: 2
+        75e00f1c-821e-43b7-abbf-4ab3f3fe5f48:
+          campaign_code: 200407-18
+          conditions:
+            - churn_microsegment == 'zero_arpu_m4'
+          limit_per_code: 11300
+          variant: 1
+        9a748a80-ce29-441a-9466-ace14488bdf4:
+          campaign_code: 200407-37
+          conditions:
+            - churn_microsegment == 'zero_arpu_m5'
+          limit_per_code: 1130
+          variant: 2
+        a36c3ab1-0d72-42c2-9e12-4d773b6e46c6:
+          campaign_code: 200407-35
+          conditions:
+            - churn_microsegment == 'zero_arpu_m3'
+          limit_per_code: 1130
+          variant: 2
+        aae88400-7365-48e0-aee9-1d22926f7d6a:
+          campaign_code: 200407-39
+          conditions:
+            - churn_microsegment == 'zero_arpu_m7'
+          limit_per_code: 1130
+          variant: 2
+        b5216bc8-da76-4b84-a2ce-5bc86dc2edec:
+          campaign_code: 200407-21
+          conditions:
+            - churn_microsegment == 'zero_arpu_m7'
+          limit_per_code: 11300
+          variant: 1
+        c032fc4f-36d2-4780-b03a-8b1199903209:
+          campaign_code: 200407-16
+          conditions:
+            - churn_microsegment == 'zero_arpu_m2'
+          limit_per_code: 11300
+          variant: 1
+        d6d5a8cb-5298-4357-a001-871c7e3e0133:
+          campaign_code: 200407-22
+          conditions:
+            - churn_microsegment == 'zero_arpu_m8'
+          limit_per_code: 11300
+          variant: 1
+        e2c581e5-ea55-45f7-86ae-3f4ef903db2c:
+          campaign_code: 200407-36
+          conditions:
+            - churn_microsegment == 'zero_arpu_m4'
+          limit_per_code: 1130
+          variant: 2
+        e310513f-e4a2-4488-b277-0e22727ba2bc:
+          campaign_code: 200407-20
+          conditions:
+            - churn_microsegment == 'zero_arpu_m6'
+          limit_per_code: 11300
+          variant: 1
+        f8987576-5285-44bd-a699-414caa4d0d1b:
+          campaign_code: 200407-34
+          conditions:
+            - churn_microsegment == 'zero_arpu_m2'
+          limit_per_code: 1130
+          variant: 2
+        ff769e86-f3ed-499d-ab42-080c237df2e5:
+          campaign_code: 200407-33
+          conditions:
+            - churn_microsegment == 'zero_arpu_m1'
+          limit_per_code: 1130
+          variant: 2
+      treatment_name: treatment_no_test_churn_zero_arpu
+      treatment_size: 27000
+      use_case: churn
 
 
-### ARD exploration treatment starts here
+
+  ### ARD exploration treatment starts here
   ### ARD TESTS
   z1_notest_ard_d20d10_h_arpu_l_tenure:
     order_policy: dilution1_pred + dilution2_pred
