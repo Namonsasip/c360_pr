@@ -49,7 +49,7 @@ def dac_for_streaming_to_l2_pipeline_from_l1(input_df: DataFrame, target_table_n
     input_df = data_non_availability_and_missing_check(df=input_df, grouping="weekly", par_col="event_partition_date",
                                                        target_table_name=target_table_name,
                                                        missing_data_check_flg='Y',
-                                                       exception_partitions=["2020-01-27"])
+                                                       exception_partitions=["2020-04-27"])
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -96,7 +96,7 @@ def streaming_to_l2_content_type_features(input_df: DataFrame,
         df=input_df, grouping="weekly", par_col="event_partition_date",
         missing_data_check_flg='Y',
         target_table_name=l2_streaming_fav_content_group_by_duration_dict["output_catalog"],
-        exception_partitions=["2020-01-27"])
+        exception_partitions=["2020-04-27"])
 
     if check_empty_dfs([input_df]):
         return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df()]
@@ -173,7 +173,7 @@ def streaming_to_l2_tv_channel_type_features(input_df: DataFrame,
         df=input_df, grouping="weekly", par_col="event_partition_date",
         missing_data_check_flg='Y',
         target_table_name=l2_streaming_fav_tv_channel_by_duration_dict["output_catalog"],
-        exception_partitions=["2020-01-27"])
+        exception_partitions=["2020-04-27"])
 
     if check_empty_dfs([input_df]):
         return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df()]
@@ -253,7 +253,7 @@ def streaming_to_l2_tv_channel_features(input_df: DataFrame,
         df=input_df, grouping="weekly", par_col="event_partition_date",
         missing_data_check_flg='Y',
         target_table_name=l2_streaming_fav_video_service_by_visit_count_feature_dict["output_catalog"],
-        exception_partitions=["2020-01-27"])
+        exception_partitions=["2020-04-27"])
 
     if check_empty_dfs([input_df]):
         return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df()]
@@ -348,7 +348,7 @@ def streaming_to_l2_music_service_by_download(input_df: DataFrame,
         df=input_df, grouping="weekly", par_col="event_partition_date",
         missing_data_check_flg='Y',
         target_table_name=l2_streaming_fav_music_service_by_visit_count_feature_dict["output_catalog"],
-        exception_partitions=["2020-01-27"])
+        exception_partitions=["2020-04-27"])
 
     if check_empty_dfs([input_df]):
         return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df()]
@@ -444,7 +444,7 @@ def streaming_to_l2_esoprt_service_by_download(input_df: DataFrame,
         df=input_df, grouping="weekly", par_col="event_partition_date",
         missing_data_check_flg='Y',
         target_table_name=l2_streaming_fav_esport_service_by_visit_count_feature_dict["output_catalog"],
-        exception_partitions=["2020-01-27"])
+        exception_partitions=["2020-04-27"])
 
     if check_empty_dfs([input_df]):
         return [get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df(), get_spark_empty_df()]
@@ -535,7 +535,7 @@ def streaming_streaming_ranked_of_day_per_week(input_df: DataFrame,
         df=input_df, grouping="weekly", par_col="event_partition_date",
         missing_data_check_flg='Y',
         target_table_name=int_l2_streaming_sum_per_day_dict["output_catalog"],
-        exception_partitions=["2020-01-27"])
+        exception_partitions=["2020-04-27"])
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
@@ -608,7 +608,7 @@ def streaming_to_l2_fav_tv_show_by_share_of_completed_episodes(
         df=vimmi_usage_daily, grouping="weekly", par_col="event_partition_date",
         missing_data_check_flg='Y',
         target_table_name=l2_streaming_fav_tv_show_by_share_of_completed_episodes_dict["output_catalog"],
-        exception_partitions=["2020-01-27"])
+        exception_partitions=["2020-04-27"])
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
