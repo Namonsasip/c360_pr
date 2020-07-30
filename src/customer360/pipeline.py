@@ -80,7 +80,6 @@ from du.models.models_pipeline import(create_du_models_pipeline,
 )
 
 from du.experiment.group_manage_pipeline import(create_du_test_group_pipeline,
-        update_du_test_group_pipeline,
 )
 from du.scoring.scoring_pipeline import(
 create_du_scoring_pipeline,
