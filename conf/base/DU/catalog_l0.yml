@@ -59,3 +59,9 @@ l5_sanity_du_pre_experiment3_20200725:
     filepath: /mnt/customer360-blob-data/C360/NBA/l5_sanity_du_pre_experiment3_20200725/
     save_args:
         mode: "overwrite"
+
+l0_du_pre_experiment3_groups:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_dataupsell
+    table: l0_du_pre_experiment3_groups
+    write_mode: overwrite

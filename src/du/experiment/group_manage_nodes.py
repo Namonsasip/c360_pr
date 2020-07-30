@@ -10,6 +10,7 @@ from pyspark.sql import DataFrame
 from pyspark.sql import Window
 from pyspark.sql import functions as F
 from pyspark.sql.types import DateType
+from customer360.utilities.spark_util import get_spark_session
 
 
 def create_prepaid_test_groups(
@@ -442,12 +443,144 @@ def create_sanity_check_for_random_test_group(
     pdf_sanity_check.to_csv(csv_file_path, index=False)
     return sanity_checking_features
 
-    def update_du_control_group():
-        l0_du_pre_experiment3_20200725.selectExpr(
-            "subscription_identifier as old_subscription_identifier",
-            "date(register_date) as register_date",
+
+def update_du_control_group(
+    l0_du_pre_experiment3_groups,
+    l0_customer_profile_profile_customer_profile_pre_current_full_load,
+    sampling_rate,
+    test_group_name,
+    test_group_flag,
+):
+    # spark = get_spark_session()
+    # l0_du_pre_experiment3_20200725.selectExpr(
+    #     "subscription_identifier as old_subscription_identifier",
+    #     "date(register_date) as register_date",
+    #     "group_name",
+    #     "group_flag",
+    #     "date('2020-07-25') as control_group_created_date",
+    # ).createOrReplaceTempView("temp_view_load")
+    # spark.sql("DROP TABLE IF EXISTS prod_dataupsell.l0_du_pre_experiment3_groups")
+    # spark.sql(
+    #     """CREATE TABLE prod_dataupsell.l0_du_pre_experiment3_groups
+    #     USING DELTA
+    #     PARTITIONED BY (control_group_created_date)
+    #     AS
+    #     SELECT * FROM temp_view_load"""
+    # )
+    # l0_du_pre_experiment3_groups = catalog.load("l0_du_pre_experiment3_groups")
+    #
+    # sampling_rate = [0.8, 0.022, 0.086, 0.003, 0.086, 0.003]
+    # test_group_name = [
+    #     "ATL_TG",
+    #     "ATL_CG",
+    #     "BTL1_TG",
+    #     "BTL1_CG",
+    #     "BTL2_TG",
+    #     "BTL2_CG",
+    # ]
+    # test_group_flag = [
+    #     "ATL_TG",
+    #     "ATL_CG",
+    #     "BTL1_TG",
+    #     "BTL1_CG",
+    #     "BTL2_TG",
+    #     "BTL2_CG",
+    # ]
+    # l0_customer_profile_profile_customer_profile_pre_current_full_load = catalog.load(
+    #     "l0_customer_profile_profile_customer_profile_pre_current_full_load"
+    # )
+
+    max_date = (
+        l0_customer_profile_profile_customer_profile_pre_current_full_load.withColumn(
+            "G", F.lit(1)
+        )
+        .groupby("G")
+        .agg(F.max("partition_date").alias("max_partition_date"))
+        .collect()
+    )
+    prepaid_customer_profile_latest = l0_customer_profile_profile_customer_profile_pre_current_full_load.where(
+        "partition_date = " + str(max_date[0][1])
+    )
+    prepaid_customer_profile_latest = prepaid_customer_profile_latest.selectExpr(
+        "subscription_identifier as old_subscription_identifier",
+        "mobile_status",
+        "date(register_date) as register_date",
+        "service_month",
+        "age",
+        "gender",
+        "mobile_segment",
+        "promotion_name",
+        "product_type",
+        "promotion_group_tariff",
+        "vip_flag",
+        "royal_family_flag",
+        "staff_promotion_flag",
+        "smartphone_flag",
+    )
+    old_prepaid_sub = l0_du_pre_experiment3_groups.select(
+        "old_subscription_identifier", "register_date"
+    )
+    new_prepaid_sub = prepaid_customer_profile_latest.join(
+        old_prepaid_sub, ["old_subscription_identifier", "register_date"], "leftanti"
+    )
+
+    gomo = new_prepaid_sub.where(
+        "promotion_group_tariff = 'GOMO' OR promotion_group_tariff = 'NU Mobile' "
+    )
+    gomo = gomo.select("old_subscription_identifier", "register_date")
+    simtofly = new_prepaid_sub.where("promotion_group_tariff = 'SIM 2 Fly'")
+    simtofly = simtofly.select("old_subscription_identifier", "register_date")
+    vip_rf = new_prepaid_sub.where("vip_flag = 'Y' OR royal_family_flag = 'Y'")
+    vip_rf = vip_rf.select("old_subscription_identifier", "register_date")
+    vip_rf_simtofly_gomo = (
+        gomo.union(simtofly)
+        .union(vip_rf)
+        .dropDuplicates(["old_subscription_identifier", "register_date"])
+    )
+    default_customer = new_prepaid_sub.join(
+        vip_rf_simtofly_gomo,
+        ["old_subscription_identifier", "register_date"],
+        "leftanti",
+    )
+    default_customer = default_customer.select(
+        "old_subscription_identifier", "register_date"
+    )
+    groups = default_customer.randomSplit(sampling_rate)
+    test_groups = vip_rf_simtofly_gomo.withColumn(
+        "group_name", F.lit("vip_rf_simtofly_gomo")
+    ).withColumn("group_flag", F.lit("V"))
+    iterate_n = 0
+    for g in groups:
+        test_groups = test_groups.union(
+            g.withColumn("group_name", F.lit(test_group_name[iterate_n])).withColumn(
+                "group_flag", F.lit(test_group_flag[iterate_n])
+            )
+        )
+        iterate_n += 1
+    test_groups = test_groups.join(
+        new_prepaid_sub, ["old_subscription_identifier", "register_date"], "inner",
+    )
+    max_control_group_created_date = (
+        l0_du_pre_experiment3_groups.withColumn("G", F.lit(1))
+        .groupby("G")
+        .agg(F.max("control_group_created_date"))
+        .collect()
+    )
+    if (
+        datetime.strptime(str(max_date[0][1]), "%Y%m%d")
+        > max_control_group_created_date[0][1]
+    ):
+        test_groups.selectExpr(
+            "old_subscription_identifier",
+            "register_date",
             "group_name",
             "group_flag",
-            "date('2020-07-25') as control_group_created_date",
-        ).show()
-        return df
+            "date('"
+            + datetime.strptime(str(max_date[0][1]), "%Y%m%d").strftime("%Y-%m-%d")
+            + "') as control_group_created_date",
+        ).write.format("delta").mode("append").partitionBy(
+            "control_group_created_date"
+        ).saveAsTable(
+            "prod_dataupsell.l0_du_pre_experiment3_groups"
+        )
+    return test_groups
