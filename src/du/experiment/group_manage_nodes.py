@@ -17,6 +17,7 @@ def create_prepaid_test_groups(
     sampling_rate,
     test_group_name,
     test_group_flag,
+    partition_date_str,
 ) -> DataFrame:
     # l0_customer_profile_profile_customer_profile_pre_current_full_load = catalog.load(
     #     "l0_customer_profile_profile_customer_profile_pre_current_full_load"
@@ -36,7 +37,7 @@ def create_prepaid_test_groups(
     #     "partition_date = " + str(max_date[0][1]) + ""
     # )
     prepaid_customer_profile_latest = l0_customer_profile_profile_customer_profile_pre_current_full_load.where(
-        "partition_date = 20200705"
+        "partition_date = " + partition_date_str
     )
     prepaid_customer_profile_latest = prepaid_customer_profile_latest.select(
         "subscription_identifier",
@@ -55,7 +56,9 @@ def create_prepaid_test_groups(
         "smartphone_flag",
         "partition_date",
     )
-    gomo = prepaid_customer_profile_latest.where("promotion_group_tariff = 'GOMO' OR promotion_group_tariff = 'NU Mobile' ")
+    gomo = prepaid_customer_profile_latest.where(
+        "promotion_group_tariff = 'GOMO' OR promotion_group_tariff = 'NU Mobile' "
+    )
     gomo = gomo.select("subscription_identifier", "register_date")
     simtofly = prepaid_customer_profile_latest.where(
         "promotion_group_tariff = 'SIM 2 Fly'"
@@ -65,7 +68,11 @@ def create_prepaid_test_groups(
         "vip_flag = 'Y' OR royal_family_flag = 'Y'"
     )
     vip_rf = vip_rf.select("subscription_identifier", "register_date")
-    vip_rf_simtofly_gomo = gomo.union(simtofly).union(vip_rf).dropDuplicates(["subscription_identifier", "register_date"])
+    vip_rf_simtofly_gomo = (
+        gomo.union(simtofly)
+        .union(vip_rf)
+        .dropDuplicates(["subscription_identifier", "register_date"])
+    )
     default_customer = prepaid_customer_profile_latest.join(
         vip_rf_simtofly_gomo, ["subscription_identifier", "register_date"], "leftanti"
     )
@@ -91,11 +98,13 @@ def create_prepaid_test_groups(
     )
     return test_groups
 
+
 def create_postpaid_test_groups(
     l0_customer_profile_profile_customer_profile_post_current_full_load: DataFrame,
     sampling_rate,
     test_group_name,
     test_group_flag,
+    partition_date_str,
 ) -> DataFrame:
     # l0_customer_profile_profile_customer_profile_post_current_full_load = catalog.load(
     #     "l0_customer_profile_profile_customer_profile_post_current_full_load"
@@ -115,7 +124,7 @@ def create_postpaid_test_groups(
     #     "partition_date = " + str(max_date[0][1]) + ""
     # )
     postpaid_customer_profile_latest = l0_customer_profile_profile_customer_profile_post_current_full_load.where(
-        "partition_date = 20200705"
+        "partition_date = " + partition_date_str
     )
     postpaid_customer_profile_latest = postpaid_customer_profile_latest.selectExpr(
         "subscription_identifier",
@@ -132,14 +141,12 @@ def create_postpaid_test_groups(
         "smartphone_flag",
         "partition_date",
     )
-    vip = postpaid_customer_profile_latest.where(
-        "vip_flag NOT IN ('NNN')"
-    )
-    rf = postpaid_customer_profile_latest.where(
-        "royal_family_flag NOT IN ('NNN')"
-    )
+    vip = postpaid_customer_profile_latest.where("vip_flag NOT IN ('NNN')")
+    rf = postpaid_customer_profile_latest.where("royal_family_flag NOT IN ('NNN')")
     vip_rf = vip.union(rf)
-    vip_rf = vip_rf.select("subscription_identifier", "register_date").dropDuplicates(["subscription_identifier", "register_date"])
+    vip_rf = vip_rf.select("subscription_identifier", "register_date").dropDuplicates(
+        ["subscription_identifier", "register_date"]
+    )
     default_customer = postpaid_customer_profile_latest.join(
         vip_rf, ["subscription_identifier", "register_date"], "leftanti"
     )
@@ -147,9 +154,9 @@ def create_postpaid_test_groups(
         "subscription_identifier", "register_date"
     )
     groups = default_customer.randomSplit(sampling_rate)
-    test_groups = vip_rf.withColumn(
-        "group_name", F.lit("vip_rf")
-    ).withColumn("group_flag", F.lit("V"))
+    test_groups = vip_rf.withColumn("group_name", F.lit("vip_rf")).withColumn(
+        "group_flag", F.lit("V")
+    )
     iterate_n = 0
     for g in groups:
         test_groups = test_groups.union(
@@ -165,6 +172,7 @@ def create_postpaid_test_groups(
     )
     return test_groups
 
+
 def create_sanity_check_for_random_test_group(
     df_test_group: DataFrame,
     l3_customer_profile_include_1mo_non_active: DataFrame,
@@ -179,16 +187,21 @@ def create_sanity_check_for_random_test_group(
     # l3_usage_postpaid_prepaid_monthly = catalog.load(
     #     "l3_usage_postpaid_prepaid_monthly"
     # )
-
-    # df_test_group = catalog.load("l0_test_groups_experiment4_30062020")
+    #
+    # df_test_group = catalog.load("l0_gcg_pre_20200725")
     # group_name_column = "group_name"
     # group_flag_column = "group_flag"
+    df_test_group = df_test_group.drop("age").withColumnRenamed(
+        "subscription_identifier", "old_subscription_identifier"
+    )
     l3_customer_profile_include_1mo_non_active = l3_customer_profile_include_1mo_non_active.selectExpr(
-        "old_subscription_identifier as subscription_identifier",
+        "old_subscription_identifier",
+        "subscription_identifier",
         "access_method_num",
         "register_date",
         "charge_type",
-        "city_of_residence",
+        "age",
+        "activation_region",
         "cust_active_this_month",
         "norms_net_revenue",
         "date(partition_month) as partition_month",
@@ -204,58 +217,78 @@ def create_sanity_check_for_random_test_group(
         "partition_month = date('" + str(max_date[0][1]) + "')"
     )
 
+    max_date_usage = (
+        l3_usage_postpaid_prepaid_monthly.withColumn("G", F.lit(1))
+        .groupby("G")
+        .agg(F.max("start_of_month").alias("max_start_of_month"))
+        .collect()
+    )
+
     l3_usage_postpaid_prepaid_monthly = l3_usage_postpaid_prepaid_monthly.where(
-        "start_of_month = date('2020-05-01')"
+        "start_of_month = date('" + str(max_date_usage[0][1]) + "')"
     )
     sanity_checking_features = df_test_group.join(
         monthly_customer_profile_latest,
-        ["subscription_identifier", "register_date"],
+        ["old_subscription_identifier", "register_date"],
         "left",
     )
+
+    sanity_checking_features = (
+        sanity_checking_features.withColumn(
+            "age_less_than_25", F.when(F.col("age") < 25, 1).otherwise(0)
+        )
+        .withColumn(
+            "age_25_45",
+            F.when((F.col("age") >= 25) & (F.col("age") <= 45), 1).otherwise(0),
+        )
+        .withColumn("age_more_than_45", F.when(F.col("age") > 45, 1).otherwise(0))
+        .withColumn("age_is_null", F.when(F.col("age").isNull(), 1).otherwise(0))
+    )
+
     sanity_checking_features = (
         sanity_checking_features.withColumn(
             "city_of_residence_XU",
-            F.when(F.col("city_of_residence") == "XU", 1).otherwise(0),
+            F.when(F.col("activation_region") == "XU", 1).otherwise(0),
         )
         .withColumn(
             "city_of_residence_SL",
-            F.when(F.col("city_of_residence") == "SL", 1).otherwise(0),
+            F.when(F.col("activation_region") == "SL", 1).otherwise(0),
         )
         .withColumn(
             "city_of_residence_NL",
-            F.when(F.col("city_of_residence") == "NL", 1).otherwise(0),
+            F.when(F.col("activation_region") == "NL", 1).otherwise(0),
         )
         .withColumn(
             "city_of_residence_XL",
-            F.when(F.col("city_of_residence") == "XL", 1).otherwise(0),
+            F.when(F.col("activation_region") == "XL", 1).otherwise(0),
         )
         .withColumn(
             "city_of_residence_CN",
-            F.when(F.col("city_of_residence") == "CN", 1).otherwise(0),
+            F.when(F.col("activation_region") == "CN", 1).otherwise(0),
         )
         .withColumn(
             "city_of_residence_SU",
-            F.when(F.col("city_of_residence") == "SU", 1).otherwise(0),
+            F.when(F.col("activation_region") == "SU", 1).otherwise(0),
         )
         .withColumn(
             "city_of_residence_NU",
-            F.when(F.col("city_of_residence") == "NU", 1).otherwise(0),
+            F.when(F.col("activation_region") == "NU", 1).otherwise(0),
         )
         .withColumn(
             "city_of_residence_CW",
-            F.when(F.col("city_of_residence") == "CW", 1).otherwise(0),
+            F.when(F.col("activation_region") == "CW", 1).otherwise(0),
         )
         .withColumn(
             "city_of_residence_CE",
-            F.when(F.col("city_of_residence") == "CE", 1).otherwise(0),
+            F.when(F.col("activation_region") == "CE", 1).otherwise(0),
         )
         .withColumn(
             "city_of_residence_CB",
-            F.when(F.col("city_of_residence") == "CB", 1).otherwise(0),
+            F.when(F.col("activation_region") == "CB", 1).otherwise(0),
         )
         .withColumn(
             "city_of_residence_null",
-            F.when(F.col("city_of_residence").isNull(), 1).otherwise(0),
+            F.when(F.col("activation_region").isNull(), 1).otherwise(0),
         )
     )
 
@@ -265,12 +298,12 @@ def create_sanity_check_for_random_test_group(
 
     sanity_checking_features = sanity_checking_features.join(
         l3_usage_postpaid_prepaid_monthly.selectExpr(
-            "access_method_num",
+            "subscription_identifier",
             "usg_total_data_volume_sum/1000000 as usg_total_data_volume_sum_mb",
             "usg_outgoing_total_call_duration_sum",
             "usg_incoming_total_call_duration_sum",
         ),
-        ["access_method_num"],
+        ["subscription_identifier"],
         "left",
     )
     sanity_checking_features = sanity_checking_features.withColumn(
@@ -319,24 +352,20 @@ def create_sanity_check_for_random_test_group(
 
     sanity_checking_features = (
         sanity_checking_features.withColumn(
-            "Service_month_range_0_3", F.when(F.col("service_month") <= 3, 1).otherwise(0),
+            "Service_month_range_0_3",
+            F.when(F.col("service_month") <= 3, 1).otherwise(0),
         )
         .withColumn(
             "Service_month_range_3_18",
             F.when(
-                (F.col("service_month") > 3) & (F.col("service_month") <= 18),
-                1,
+                (F.col("service_month") > 3) & (F.col("service_month") <= 18), 1,
             ).otherwise(0),
         )
-            .withColumn(
+        .withColumn(
             "Service_month_range_18_up",
-            F.when(
-                (F.col("service_month") > 18),
-                1,
-            ).otherwise(0),
+            F.when((F.col("service_month") > 18), 1,).otherwise(0),
         )
     )
-
 
     pdf_sanity_check = (
         sanity_checking_features.groupby(group_name_column, group_flag_column)
@@ -366,6 +395,10 @@ def create_sanity_check_for_random_test_group(
             F.sum("city_of_residence_CW").alias("sum_city_of_residence_CW"),
             F.sum("city_of_residence_CE").alias("sum_city_of_residence_CE"),
             F.sum("city_of_residence_null").alias("sum_city_of_residence_null"),
+            F.sum("age_less_than_25").alias("sum_age_less_than_25"),
+            F.sum("age_25_45").alias("sum_age_25_45"),
+            F.sum("age_more_than_45").alias("sum_age_more_than_45"),
+            F.sum("age_is_null").alias("sum_age_is_null"),
             F.sum("smartphone_integer").alias("sum_smartphone_user"),
             F.sum("data_user").alias("sum_data_user"),
         )
@@ -397,6 +430,10 @@ def create_sanity_check_for_random_test_group(
             "(sum_city_of_residence_CW/TOTAL_SUB) AS percent_city_of_residence_CW",
             "(sum_city_of_residence_CE/TOTAL_SUB) AS percent_city_of_residence_CE",
             "(sum_city_of_residence_null/TOTAL_SUB) AS percent_city_of_residence_null",
+            "(sum_age_less_than_25/TOTAL_SUB) as percent_age_less_than_25",
+            "(sum_age_25_45/TOTAL_SUB) as percent_age_25_45",
+            "(sum_age_more_than_45/TOTAL_SUB) as percent_age_more_than_45",
+            "(sum_age_is_null/TOTAL_SUB) as percent_age_is_null",
             "(sum_smartphone_user/TOTAL_SUB) AS percent_smartphone_penetration",
             "(sum_data_user/TOTAL_SUB) AS percent_data_user",
         )
@@ -404,3 +441,13 @@ def create_sanity_check_for_random_test_group(
     )
     pdf_sanity_check.to_csv(csv_file_path, index=False)
     return sanity_checking_features
+
+    def update_du_control_group():
+        l0_du_pre_experiment3_20200725.selectExpr(
+            "subscription_identifier as old_subscription_identifier",
+            "date(register_date) as register_date",
+            "group_name",
+            "group_flag",
+            "date('2020-07-25') as control_group_created_date",
+        ).show()
+        return df
