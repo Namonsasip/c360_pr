@@ -151,7 +151,9 @@ from .pipelines.data_engineering.pipelines.stream_pipeline.to_l2.to_l2_pipeline 
     streaming_to_l2_intermediate_pipeline, streaming_to_l2_pipeline, streaming_to_l2_session_duration_pipeline
 )
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l3.to_l3_pipeline import (
-    streaming_to_l3_pipeline, streaming_to_l3_session_duration_pipeline, streaming_series_title_master
+    streaming_to_l3_pipeline, streaming_to_l3_session_duration_pipeline, streaming_series_title_master,
+    streaming_to_l3_favourite_start_hour_of_day, streaming_to_l3_traffic_consumption_time_based_features,
+    streaming_to_l3_favourite_location_quality_features
 )
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l4.to_l4_pipeline import (
     streaming_l2_to_l4_pipeline,
@@ -199,6 +201,13 @@ from .pipelines.data_engineering.pipelines.util_pipeline import (
 
 from .pipelines.data_engineering.pipelines.predictive_pipeline.to_l4.to_l4_pipeline import predictive_to_l4_pipeline
 
+from .pipelines.data_engineering.pipelines.geolocation_pipeline.to_l1.to_l1_pipeline import *
+from .pipelines.data_engineering.pipelines.geolocation_pipeline.to_l2.to_l2_pipeline import *
+from .pipelines.data_engineering.pipelines.geolocation_pipeline.to_l3.to_l3_pipeline import *
+from .pipelines.data_engineering.pipelines.geolocation_pipeline.to_l4.to_l4_pipeline import *
+
+
+
 def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
 
     return {
@@ -239,6 +248,10 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "streaming_to_l2_session_duration_pipeline": streaming_to_l2_session_duration_pipeline(),
         "streaming_series_title_master": streaming_series_title_master(),
         "streaming_to_l3_pipeline": streaming_to_l3_pipeline(),
+        "streaming_to_l3_favourite_start_hour_of_day": streaming_to_l3_favourite_start_hour_of_day(),
+        "streaming_to_l3_traffic_consumption_time_based_features":
+            streaming_to_l3_traffic_consumption_time_based_features(),
+        "streaming_to_l3_favourite_location_quality_features": streaming_to_l3_favourite_location_quality_features(),
         "streaming_to_l3_session_duration_pipeline": streaming_to_l3_session_duration_pipeline(),
         "streaming_l1_to_l4_pipeline": streaming_l1_to_l4_pipeline(),
         "streaming_l2_to_l4_session_duration_pipeline": streaming_l2_to_l4_session_duration_pipeline(),
@@ -280,6 +293,12 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "predictive_to_l4_pipeline": predictive_to_l4_pipeline(),
         "lineage_dependency_pipeline": lineage_dependency_pipeline(),
         "ops_report_pipeline": ops_report_pipeline(),
+        "geo_to_l3_home_work_pipeline": geo_to_l3_home_work_pipeline(),
+        "geo_to_l1_pipeline_to_run":geo_to_l1_pipeline_to_run(),
+        "geo_to_l1_pipeline": geo_to_l1_pipeline(),
+        "geo_to_l2_pipeline": geo_to_l2_pipeline(),
+        "geo_to_l3_pipeline": geo_to_l3_pipeline(),
+        "geo_to_l4_pipeline": geo_to_l4_pipeline()
     }
 
 

@@ -7,10 +7,10 @@ l2_complaints_nps_scoring_tbl: "l2_complaints_nps_scoring"
 l2_complaints_nps_after_call_tbl: "l2_complaints_nps_after_call"
 l2_complaints_nps_after_store_visit_tbl: "l2_complaints_nps_after_store_visit"
 l2_complaints_nps_after_chatbot_tbl: "l2_complaints_nps_after_chatbot"
-l2_complaints_traffic_to_dtac_web_resources_tbl: "l2_complaints_traffic_to_dtac_web_resources_tbl"
+l2_complaints_traffic_to_dtac_web_resources_tbl: "l2_complaints_traffic_to_dtac_web_resources"
 
 exception_partition_list_for_l1_complaints_call_to_competitor_features: ["2020-01-27"]
 exception_partition_list_for_l1_complaints_nps_after_call: ["2020-01-27"]
 exception_partition_list_for_l1_complaints_nps_after_chatbot: ["2020-01-27"]
 exception_partition_list_for_l1_complaints_nps_after_store_visit: ["2020-01-27"]
-exception_partition_list_for_l2_complaints_traffic_to_dtac_web_resources: ["2020-01-27"]
+exception_partition_list_for_l2_complaints_traffic_to_dtac_web_resources: ["2020-01-27", '2020-03-30', '2020-04-27']

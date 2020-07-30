@@ -828,18 +828,9 @@ l2_streaming_fav_netflix_video_streaming_day_of_week_feature:
     read_layer: 'l2_weekly'
     target_layer: 'l2_weekly'
 
-
-#l2_streaming_fav_hooq_video_streaming_day_of_week_feature:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: dbfs:/mnt/customer360-blob-data/C360/STREAM/l2_features/l2_streaming_fav_hooq_video_streaming_day_of_week_feature/
-#  file_format: parquet
-#  save_args:
-#    mode: "overwrite"
-#    partitionBy: ["start_of_week"]
-
-l2_streaming_fav_hooq_video_streaming_day_of_week_feature:
+l2_streaming_fav_viu_video_streaming_day_of_week_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: data/L2_WEEKLY/STREAM/l2_streaming_fav_hooq_video_streaming_day_of_week_feature/
+  filepath: data/L2_WEEKLY/STREAM/l2_streaming_fav_viu_video_streaming_day_of_week_feature/
   file_format: parquet
   metadata_table_path: '/mnt/customer360-blob-data/C360/metadata_table/'
   save_args:

@@ -238,15 +238,51 @@ l3_customer_profile_billing_level_volume_of_active_contracts:
     read_layer: 'l0_monthly'
     target_layer: 'l3_monthly'
 
-
-l3_customer_profile_include_1mo_non_active_for_l3_streaming_fav_tv_show_by_episode_watched:
+l3_customer_profile_union_monthly_feature_for_l3_streaming_favourite_start_time_hour_of_day:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/PROFILE/l3_features/l3_customer_profile_include_1mo_non_active/
+  filepath: base_path/PROFILE/l3_features/l3_customer_profile_union_monthly_feature/
   file_format: "parquet"
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l3_billing_and_payments_monthly_overdue_bills'
-    read_layer: 'l3_monthly_customer_profile'
+    lookup_table_name: 'l3_streaming_favourite_start_time_hour_of_day'
+    read_layer: 'l3_monthly'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+l3_customer_profile_union_monthly_feature_for_l3_streaming_favourite_location_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/l3_features/l3_customer_profile_union_monthly_feature/
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_streaming_favourite_location_features'
+    read_layer: 'l3_monthly'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+l3_customer_profile_union_monthly_feature_for_l3_streaming_app_quality_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/l3_features/l3_customer_profile_union_monthly_feature/
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_streaming_app_quality_features'
+    read_layer: 'l3_monthly'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+
+l3_customer_profile_union_monthly_feature_for_l3_streaming_traffic_consumption_time_based_features:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/PROFILE/l3_features/l3_customer_profile_union_monthly_feature/
+  file_format: "parquet"
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_streaming_traffic_consumption_time_based_features'
+    read_layer: 'l3_monthly'
     target_layer: 'l3_monthly'
     lookback: '0'

@@ -108,6 +108,7 @@ cloud_on_prim_path_conversion:
     target_path_on_cloud_prefix: "/mnt/customer360-blob-output/C360/GEO"
     target_path_on_prem_prefix: "/projects/prod/c360/data/GEO"
 
+
 metadata_path:
     on_cloud_metadata: '/mnt/customer360-blob-output/C360/UTILITIES/metadata_table'
     on_premise_metadata: '/projects/prod/c360/data/UTILITIES/metadata_table'
