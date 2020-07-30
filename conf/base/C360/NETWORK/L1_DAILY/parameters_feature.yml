@@ -214,7 +214,7 @@ l1_network_cei_voice_qoe_incoming:
   feature_list:
     network_cei_voice_qoe_incoming: "sum(((0.15 * CEI_VOICE_PAGING_SUCCESS_RATE) + 0.65*(100 - CEI_VOICE_PERCEIVED_CALL_DROP_RATE) ) + ((0.15 * VOLTE_PAGING_SUCCESS_RATE) +  0.65*(100 - VOLTE_CALL_DROP_RATE)))/(2 * 0.8)"
   granularity: "msisdn, partition_date"
-  event_date_column: event_partition_date
+  event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
   output_catalog: "l1_network_cei_voice_qoe_incoming"
   join_column_with_cust_profile:
     access_method_num: msisdn
@@ -225,7 +225,7 @@ l1_network_cei_voice_qoe_outgoing:
   feature_list:
     network_cei_voice_qoe_outgoing: "sum(((0.15 * CEI_VOICE_PERCEIVED_CALL_SUCCESS_RATE) + 0.65*(100 - CEI_VOICE_PERCEIVED_CALL_DROP_RATE)) + ((0.15 * CEI_VOLTE_MO_CONN_RATE) +  0.65 * (100 - CEI_VOLTE_CALL_DROP_RATE)))/(2 * 0.8)"
   granularity: "msisdn, partition_date"
-  event_date_column: event_partition_date
+  event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
   output_catalog: "l1_network_cei_voice_qoe_outgoing"
   join_column_with_cust_profile:
     access_method_num: msisdn
@@ -317,7 +317,7 @@ l1_network_failed_calls_home_location:
   feature_list:
     network_failed_calls_home_location: "sum(CEI_VOLTE_VOICE_MT_DROP_TIMES + CEI_VOLTE_VOICE_MO_DROP_TIMES + CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MOC + CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MTC)"
   granularity: "msisdn, partition_date"
-  event_date_column: event_partition_date
+  event_date_column: "to_date(cast(partition_date as string), 'yyyyMMdd')"
   output_catalog: "l1_network_failed_calls_home_location"
   join_column_with_cust_profile:
     access_method_num: msisdn
