@@ -196,7 +196,8 @@ from .pipelines.data_engineering.pipelines.sales_pipeline.to_l4.to_l4_weekly_pip
 )
 
 from .pipelines.data_engineering.pipelines.util_pipeline import (
-    lineage_dependency_pipeline, ops_report_pipeline, metadata_backup_pipeline
+    lineage_dependency_pipeline, ops_report_pipeline,
+    #metadata_backup_pipeline
 )
 
 from .pipelines.data_engineering.pipelines.predictive_pipeline.to_l4.to_l4_pipeline import predictive_to_l4_pipeline
