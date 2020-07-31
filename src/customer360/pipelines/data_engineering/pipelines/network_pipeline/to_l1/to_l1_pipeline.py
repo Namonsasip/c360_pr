@@ -161,14 +161,14 @@ def network_to_l1_pipeline(**kwargs):
             #     "l1_network_volte_cqi"
             # ),
 
-            node(
-                build_network_user_cqi,
-                ["l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi",
-                 "params:l1_network_user_cqi",
-                 "l1_customer_profile_union_daily_feature_for_l1_network_user_cqi",
-                 "params:exception_partition_for_l1_network_user_cqi"],
-                "l1_network_user_cqi"
-            ),
+            # node(
+            #     build_network_user_cqi,
+            #     ["l0_network_sdr_dyn_cea_cei_cei_usr_1day_for_l1_network_user_cqi",
+            #      "params:l1_network_user_cqi",
+            #      "l1_customer_profile_union_daily_feature_for_l1_network_user_cqi",
+            #      "params:exception_partition_for_l1_network_user_cqi"],
+            #     "l1_network_user_cqi"
+            # ),
 
             # node(
             #     build_network_file_transfer_cqi,
@@ -209,15 +209,15 @@ def network_to_l1_pipeline(**kwargs):
             #      "params:exception_partitions_list_for_network_sdr_dyn_cea_cei_voiceqoe_usr_1day"],
             #     "l1_network_voice_cei"
             # ),
-            node(
-                build_network_voice_data_features,
-                ["l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cei",
-                 "l1_customer_profile_union_daily_feature_for_l1_network_data_cei",
-                 "params:l1_network_data_cei",
-                 "params:l1_network_data_cei_tbl",
-                 "params:exception_partitions_for_l1_network_data_cei"],
-                "l1_network_data_cei"
-            ),
+            # node(
+            #     build_network_voice_data_features,
+            #     ["l0_network_sdr_dyn_cea_cei_dataqoe_usr_1day_for_l1_network_data_cei",
+            #      "l1_customer_profile_union_daily_feature_for_l1_network_data_cei",
+            #      "params:l1_network_data_cei",
+            #      "params:l1_network_data_cei_tbl",
+            #      "params:exception_partitions_for_l1_network_data_cei"],
+            #     "l1_network_data_cei"
+            # ),
             # node(
             #     node_from_config,
             #     [
