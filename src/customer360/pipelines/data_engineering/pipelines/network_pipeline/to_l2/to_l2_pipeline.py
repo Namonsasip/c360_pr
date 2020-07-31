@@ -22,12 +22,12 @@ def network_to_l2_pipeline(**kwargs):
                 "l2_network_voice_features"
             ),
 
-            node(
-                build_l2_network_good_and_bad_cells_features,
-                ["l1_network_good_and_bad_cells_features_for_l2_network_good_and_bad_cells_features",
-                 "params:l2_network_good_and_bad_cells_features"],
-                "l2_network_good_and_bad_cells_features"
-            ),
+            # node(
+            #     build_l2_network_good_and_bad_cells_features,
+            #     ["l1_network_good_and_bad_cells_features_for_l2_network_good_and_bad_cells_features",
+            #      "params:l2_network_good_and_bad_cells_features"],
+            #     "l2_network_good_and_bad_cells_features"
+            # ),
             node(
                 build_l2_network_share_of_3g_time_in_total_time,
                 ["l1_network_share_of_3g_time_in_total_time_for_l2_network_share_of_3g_time_in_total_time",
