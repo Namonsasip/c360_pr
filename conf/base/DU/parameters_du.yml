@@ -15,10 +15,9 @@ du_model_scoring_group_column: model_name
 du_acceptance_model_tag: binary
 du_arpu_model_tag: regression
 
-
 du_regression_clip_target_quantiles_arpuu: [0.05, 0.95]
-du_mlflow_model_version_prediction: 2
-du_mlflow_model_version_training: 3
+du_mlflow_model_version_prediction: 4
+du_mlflow_model_version_training: 4
 
 du_model_model_params:
    n_jobs: 1
@@ -39,7 +38,7 @@ du_extra_tag_columns_pai:
   - Discount_predefine_range
 
 du_model_input_features:
-  l5_nba_customer_profile:
+  l5_du_customer_profile:
     - subscription_status
     - age
     - gender
@@ -161,13 +160,13 @@ du_model_input_features:
     - sum_rev_arpu_total_others_net_tariff_rev_ppu_monthly_last_month
     - sum_rev_arpu_total_ir_net_tariff_rev_ppu_monthly_last_month
     - sum_rev_arpu_total_idd_net_tariff_rev_ppu_monthly_last_month
-  l4_streaming_visit_count_and_download_traffic_feature:
-    - sum_download_kb_traffic_youtube_video_sum_weekly_last_twelve_week
-    - sum_download_kb_traffic_facebook_video_sum_weekly_last_week
-    - sum_download_kb_traffic_facebook_video_sum_weekly_last_twelve_week
-    - sum_download_kb_traffic_linetv_video_sum_weekly_last_week
-    - sum_download_kb_traffic_ais_play_video_sum_weekly_last_week
-    - sum_download_kb_traffic_netflix_video_sum_weekly_last_week
+#  l4_streaming_visit_count_and_download_traffic_feature:
+#    - sum_download_kb_traffic_youtube_video_sum_weekly_last_twelve_week
+#    - sum_download_kb_traffic_facebook_video_sum_weekly_last_week
+#    - sum_download_kb_traffic_facebook_video_sum_weekly_last_twelve_week
+#    - sum_download_kb_traffic_linetv_video_sum_weekly_last_week
+#    - sum_download_kb_traffic_ais_play_video_sum_weekly_last_week
+#    - sum_download_kb_traffic_netflix_video_sum_weekly_last_week
   l4_usage_prepaid_postpaid_daily_features:
     - sum_usg_incoming_total_call_duration_daily_last_ninety_day
     - sum_usg_incoming_total_call_duration_daily_last_seven_day
@@ -209,117 +208,41 @@ du_model_input_features:
     - sum_usg_outgoing_total_sms_sum_weekly_last_week
     - sum_usg_outgoing_total_sms_sum_weekly_last_four_week
     - sum_usg_outgoing_total_sms_sum_weekly_last_twelve_week
-  l4_product_activated_deactivated_features:
-    - sum_product_total_activated_ontop_package_price_weekly_last_week
-    - sum_product_total_activated_ontop_package_price_weekly_last_two_week
-    - sum_product_total_activated_ontop_package_price_weekly_last_four_week
-    - sum_product_total_activated_ontop_package_price_weekly_last_twelve_week
-    - sum_product_total_activated_main_package_price_weekly_last_week
-    - sum_product_total_activated_main_package_price_weekly_last_two_week
-    - sum_product_total_activated_main_package_price_weekly_last_four_week
-    - sum_product_total_activated_main_package_price_weekly_last_twelve_week
-    - sum_product_deactivated_data_ontop_packages_weekly_last_week
-    - sum_product_deactivated_data_ontop_packages_weekly_last_two_week
-    - sum_product_deactivated_data_ontop_packages_weekly_last_four_week
-    - sum_product_deactivated_data_ontop_packages_weekly_last_twelve_week
-    - sum_product_deactivated_voice_ontop_packages_weekly_last_week
-    - sum_product_deactivated_voice_ontop_packages_weekly_last_two_week
-    - sum_product_deactivated_voice_ontop_packages_weekly_last_four_week
-    - sum_product_deactivated_voice_ontop_packages_weekly_last_twelve_week
-    - sum_product_deactivated_data_volume_gb_ontop_packages_weekly_last_week
-    - sum_product_deactivated_data_volume_gb_ontop_packages_weekly_last_two_week
-    - sum_product_deactivated_data_volume_gb_ontop_packages_weekly_last_four_week
-    - sum_product_deactivated_data_volume_gb_ontop_packages_weekly_last_twelve_week
-    - sum_product_deactivated_voice_minutes_ontop_packages_weekly_last_week
-    - sum_product_deactivated_voice_minutes_ontop_packages_weekly_last_two_week
-    - sum_product_deactivated_voice_minutes_ontop_packages_weekly_last_four_week
-    - sum_product_deactivated_voice_minutes_ontop_packages_weekly_last_twelve_week
-    - sum_product_deactivated_oneoff_bundle_ontop_packages_weekly_last_week
-    - sum_product_deactivated_oneoff_bundle_ontop_packages_weekly_last_two_week
-    - sum_product_deactivated_oneoff_bundle_ontop_packages_weekly_last_four_week
-    - sum_product_deactivated_oneoff_bundle_ontop_packages_weekly_last_twelve_week
-    - sum_product_deactivated_one_off_data_ontop_packages_weekly_last_week
-    - sum_product_deactivated_one_off_data_ontop_packages_weekly_last_two_week
-    - sum_product_deactivated_one_off_data_ontop_packages_weekly_last_four_week
-    - sum_product_deactivated_one_off_data_ontop_packages_weekly_last_twelve_week
-    - sum_product_deactivated_one_off_voice_ontop_packages_weekly_last_week
-    - sum_product_deactivated_one_off_voice_ontop_packages_weekly_last_two_week
-    - sum_product_deactivated_one_off_voice_ontop_packages_weekly_last_four_week
-    - sum_product_deactivated_one_off_voice_ontop_packages_weekly_last_twelve_week
-    - sum_product_activated_data_ontop_packages_weekly_last_week
-    - sum_product_activated_data_ontop_packages_weekly_last_two_week
-    - sum_product_activated_data_ontop_packages_weekly_last_four_week
-    - sum_product_activated_data_ontop_packages_weekly_last_twelve_week
-    - sum_product_activated_voice_ontop_packages_weekly_last_week
-    - sum_product_activated_voice_ontop_packages_weekly_last_two_week
-    - sum_product_activated_voice_ontop_packages_weekly_last_four_week
-    - sum_product_activated_voice_ontop_packages_weekly_last_twelve_week
-    - sum_product_activated_data_volume_gb_ontop_packages_weekly_last_week
-    - sum_product_activated_data_volume_gb_ontop_packages_weekly_last_two_week
-    - sum_product_activated_data_volume_gb_ontop_packages_weekly_last_four_week
-    - sum_product_activated_data_volume_gb_ontop_packages_weekly_last_twelve_week
-    - sum_product_activated_voice_minutes_ontop_packages_weekly_last_week
-    - sum_product_activated_voice_minutes_ontop_packages_weekly_last_two_week
-    - sum_product_activated_voice_minutes_ontop_packages_weekly_last_four_week
-    - sum_product_activated_voice_minutes_ontop_packages_weekly_last_twelve_week
-    - sum_product_activated_oneoff_bundle_ontop_packages_weekly_last_week
-    - sum_product_activated_oneoff_bundle_ontop_packages_weekly_last_two_week
-    - sum_product_activated_oneoff_bundle_ontop_packages_weekly_last_four_week
-    - sum_product_activated_oneoff_bundle_ontop_packages_weekly_last_twelve_week
-    - sum_product_activated_one_off_data_ontop_packages_weekly_last_week
-    - sum_product_activated_one_off_data_ontop_packages_weekly_last_two_week
-    - sum_product_activated_one_off_data_ontop_packages_weekly_last_four_week
-    - sum_product_activated_one_off_data_ontop_packages_weekly_last_twelve_week
-    - sum_product_activated_one_off_voice_ontop_packages_weekly_last_week
-    - sum_product_activated_one_off_voice_ontop_packages_weekly_last_two_week
-    - sum_product_activated_one_off_voice_ontop_packages_weekly_last_four_week
-    - sum_product_activated_one_off_voice_ontop_packages_weekly_last_twelve_week
-    - sum_product_last_activated_main_data_promo_price_weekly_last_week
-    - sum_product_last_activated_main_data_promo_price_weekly_last_two_week
-    - sum_product_last_activated_main_data_promo_price_weekly_last_four_week
-    - sum_product_last_activated_main_data_promo_price_weekly_last_twelve_week
-    - sum_product_last_activated_main_voice_promo_price_weekly_last_week
-    - sum_product_last_activated_main_voice_promo_price_weekly_last_two_week
-    - sum_product_last_activated_main_voice_promo_price_weekly_last_four_week
-    - sum_product_last_activated_main_voice_promo_price_weekly_last_twelve_week
-    - sum_product_activated_vas_packages_weekly_last_week
-    - sum_product_activated_vas_packages_weekly_last_two_week
-    - sum_product_activated_vas_packages_weekly_last_four_week
-    - sum_product_activated_vas_packages_weekly_last_twelve_week
-    - sum_product_total_activated_vas_packages_price_weekly_last_week
-    - sum_product_total_activated_vas_packages_price_weekly_last_two_week
-    - sum_product_total_activated_vas_packages_price_weekly_last_four_week
-    - sum_product_total_activated_vas_packages_price_weekly_last_twelve_week
-    - sum_product_last_activated_vas_price_weekly_last_week
-    - sum_product_last_activated_vas_price_weekly_last_two_week
-    - sum_product_last_activated_vas_price_weekly_last_four_week
-    - sum_product_last_activated_vas_price_weekly_last_twelve_week
-    - sum_product_last_activated_vas_promo_name_weekly_last_week
-    - sum_product_last_activated_vas_promo_name_weekly_last_two_week
-    - sum_product_last_activated_vas_promo_name_weekly_last_four_week
-    - sum_product_last_activated_vas_promo_name_weekly_last_twelve_week
-    - sum_product_deactivated_package_due_to_expired_reason_weekly_last_week
-    - sum_product_deactivated_package_due_to_expired_reason_weekly_last_two_week
-    - sum_product_deactivated_package_due_to_expired_reason_weekly_last_four_week
-    - sum_product_deactivated_package_due_to_expired_reason_weekly_last_twelve_week
+  l4_macro_product_purchase_feature_weekly_key_fixed:
+    - number_of_transaction_fixed_speed_BTL_2_week
+    - number_of_transaction_fixed_speed_ATL_2_week
+    - number_of_transaction_full_speed_ATL_2_week
+    - total_net_tariff_fixed_speed_BTL_2_week
+    - total_net_tariff_fixed_speed_ATL_2_week
+    - total_net_tariff_full_speed_ATL_2_week
+    - number_of_transaction_fixed_speed_BTL_4_week
+    - number_of_transaction_full_speed_BTL_4_week
+    - number_of_transaction_fixed_speed_ATL_4_week
+    - number_of_transaction_full_speed_ATL_4_week
+    - total_net_tariff_fixed_speed_BTL_4_week
+    - total_net_tariff_fixed_speed_ATL_4_week
+    - total_net_tariff_full_speed_ATL_4_week
+    - number_of_transaction_1_day_validity_2_week
+    - number_of_transaction_7_day_validity_2_week
+    - number_of_transaction_30_day_validity_2_week
+    - total_net_tariff_1_day_validity_2_week
+    - total_net_tariff_7_day_validity_2_week
+    - total_net_tariff_30_day_validity_2_week
+    - number_of_transaction_1_day_validity_4_week
+    - number_of_transaction_7_day_validity_4_week
+    - number_of_transaction_30_day_validity_4_week
+    - total_net_tariff_1_day_validity_4_week
+    - total_net_tariff_7_day_validity_4_week
+    - total_net_tariff_30_day_validity_4_week
 
 #   - day_of_week
 #   - day_of_month
 du_model_explanatory_features:
    - age
    - subscriber_tenure
-   - charge_type_numeric
    - mobile_segment_numeric
    - subscription_status_numeric
    - norms_net_revenue
-   - sum_payments_arpu_last_month
-   - sum_payments_arpu_last_three_month
-   - sum_payments_arpu_gprs_last_month
-   - sum_payments_arpu_gprs_last_three_month
-   - sum_payments_arpu_vas_last_month
-   - sum_payments_arpu_vas_last_three_month
-   - sum_payments_arpu_voice_last_month
-   - sum_payments_arpu_voice_last_three_month
    - sum_payments_before_top_up_balance_weekly_last_week
    - sum_payments_before_top_up_balance_weekly_last_four_week
    - sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_twelve_week
@@ -354,3 +277,34 @@ du_model_explanatory_features:
    - sum_usg_incoming_local_data_volume_2G_3G_sum_weekly_last_four_week
    - sum_usg_incoming_local_data_volume_4G_sum_weekly_last_four_week
    - sum_usg_outgoing_total_call_duration_sum_weekly_last_week
+   - number_of_transaction_fixed_speed_BTL_2_week
+   - number_of_transaction_fixed_speed_ATL_2_week
+   - number_of_transaction_full_speed_ATL_2_week
+   - total_net_tariff_fixed_speed_BTL_2_week
+   - total_net_tariff_fixed_speed_ATL_2_week
+   - total_net_tariff_full_speed_ATL_2_week
+   - number_of_transaction_fixed_speed_BTL_4_week
+   - number_of_transaction_full_speed_BTL_4_week
+   - number_of_transaction_fixed_speed_ATL_4_week
+   - number_of_transaction_full_speed_ATL_4_week
+   - total_net_tariff_fixed_speed_BTL_4_week
+   - total_net_tariff_fixed_speed_ATL_4_week
+   - total_net_tariff_full_speed_ATL_4_week
+   - number_of_transaction_1_day_validity_2_week
+   - number_of_transaction_7_day_validity_2_week
+   - number_of_transaction_30_day_validity_2_week
+   - total_net_tariff_1_day_validity_2_week
+   - total_net_tariff_7_day_validity_2_week
+   - total_net_tariff_30_day_validity_2_week
+   - number_of_transaction_1_day_validity_4_week
+   - number_of_transaction_7_day_validity_4_week
+   - number_of_transaction_30_day_validity_4_week
+   - total_net_tariff_1_day_validity_4_week
+   - total_net_tariff_7_day_validity_4_week
+   - total_net_tariff_30_day_validity_4_week
+#   - sum_download_kb_traffic_youtube_video_sum_weekly_last_twelve_week
+#   - sum_download_kb_traffic_facebook_video_sum_weekly_last_week
+#   - sum_download_kb_traffic_facebook_video_sum_weekly_last_twelve_week
+#   - sum_download_kb_traffic_linetv_video_sum_weekly_last_week
+#   - sum_download_kb_traffic_ais_play_video_sum_weekly_last_week
+#   - sum_download_kb_traffic_netflix_video_sum_weekly_last_week
