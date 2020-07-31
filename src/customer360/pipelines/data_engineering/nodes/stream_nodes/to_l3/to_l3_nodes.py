@@ -558,9 +558,10 @@ def streaming_favourite_start_hour_of_day_func(
     input_with_application = add_event_week_and_month_from_yyyymmdd(input_with_application, "partition_date")\
         .drop("event_partition_date", "start_of_week")
 
-    def process_massive_processing(data_frame: DataFrame) -> DataFrame:
+    def process_massive_processing(data_frame: DataFrame, customer_prof: DataFrame) -> DataFrame:
         """
         :param data_frame:
+        :param customer_prof:
         :return:
         """
         dictionary = [{'filter_condition': "youtube,youtube_go,youtubebyclick",
@@ -601,7 +602,7 @@ def streaming_favourite_start_hour_of_day_func(
         for curr_dict in dictionary:
             filter_query = curr_dict["filter_condition"].split(",")
             output_col = curr_dict["output_col"]
-            curr_item = input_with_application.\
+            curr_item = data_frame.\
                 filter(F.lower(F.col("application_name")).isin(filter_query))
             curr_item = curr_item.groupBy(["msisdn","hour","start_of_month"]).agg(F.sum("dw_kbyte").alias("download"))
             curr_item = curr_item.withColumn("rnk", F.row_number().over(win)).where("rnk = 1")
@@ -616,7 +617,7 @@ def streaming_favourite_start_hour_of_day_func(
         final_df_str = gen_max_sql(union_df, 'tmp_table_name', group_cols)
         merged_df = execute_sql(union_df, 'tmp_table_name', final_df_str)
 
-        merged_df = cust_df.select("access_method_num", "subscription_identifier", "start_of_month")\
+        merged_df = customer_prof.select("access_method_num", "subscription_identifier", "start_of_month")\
             .join(merged_df, ["access_method_num", "start_of_month"]) \
             .drop("access_method_num")
 
@@ -630,7 +631,8 @@ def streaming_favourite_start_hour_of_day_func(
     CNTX = load_context(Path.cwd(), env=conf)
     for curr_item in dates_list:
         logging.info("Running for {0}".format(curr_item))
-        return_df = process_massive_processing(input_with_application.filter(F.col("start_of_month") == curr_item))
+        return_df = process_massive_processing(input_with_application.filter(F.col("start_of_month") == curr_item)
+                                               , cust_df)
         CNTX.catalog.save("l3_streaming_favourite_start_time_hour_of_day", return_df)
 
     return None
