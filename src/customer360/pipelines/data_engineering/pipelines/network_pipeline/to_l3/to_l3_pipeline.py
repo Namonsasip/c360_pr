@@ -19,12 +19,12 @@ def network_to_l3_pipeline(**kwargs):
                 "l3_network_voice_features"
             ),
 
-            node(
-                build_l3_network_good_and_bad_cells_features,
-                ["l1_network_good_and_bad_cells_features_for_l3_network_good_and_bad_cells_features",
-                 "params:l3_network_good_and_bad_cells_features"],
-                "l3_network_good_and_bad_cells_features"
-            ),
+            # node(
+            #     build_l3_network_good_and_bad_cells_features,
+            #     ["l1_network_good_and_bad_cells_features_for_l3_network_good_and_bad_cells_features",
+            #      "params:l3_network_good_and_bad_cells_features"],
+            #     "l3_network_good_and_bad_cells_features"
+            # ),
             node(
                 build_l3_network_share_of_3g_time_in_total_time,
                 ["l1_network_share_of_3g_time_in_total_time_for_l3_network_share_of_3g_time_in_total_time",

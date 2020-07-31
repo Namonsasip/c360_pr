@@ -13,12 +13,12 @@ def network_to_l4_pipeline(**kwargs):
                 "l4_network_voice_features"
             ),
 
-            node(
-                l4_rolling_window,
-                ["l2_network_good_and_bad_cells_features",
-                 "params:l4_network_good_and_bad_cells_features"],
-                "l4_network_good_and_bad_cells_features"
-            ),
+            # node(
+            #     l4_rolling_window,
+            #     ["l2_network_good_and_bad_cells_features",
+            #      "params:l4_network_good_and_bad_cells_features"],
+            #     "l4_network_good_and_bad_cells_features"
+            # ),
             node(
                 l4_rolling_window,
                 ["l2_network_share_of_3g_time_in_total_time",
