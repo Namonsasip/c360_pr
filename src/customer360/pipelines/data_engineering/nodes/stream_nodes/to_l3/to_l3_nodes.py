@@ -536,7 +536,7 @@ def streaming_favourite_start_hour_of_day_func(
     #     df=cust_profile_df, grouping="monthly", par_col="start_of_month",
     #     target_table_name="l3_streaming_favourite_start_time_hour_of_day")
 
-    ## TO DO NEED TO REMOVE THIS
+    # TO DO NEED TO REMOVE THIS
     input_df = input_df.where("partition_date < 20200701")
 
     if check_empty_dfs([input_df, master_application]):
@@ -611,7 +611,8 @@ def streaming_favourite_start_hour_of_day_func(
 
     w_recent_partition = Window.partitionBy("application_id").orderBy(F.col("partition_month").desc())
     max_master_application = master_application.\
-        select("partition_month").agg(F.max(F.col("partition_month")).alias("partition_month"))
+        select("partition_month").groupBy("partition_month")\
+        .agg(F.max(F.col("partition_month")).alias("partition_month"))
 
     master_application = master_application.join(max_master_application, ["partition_month"])\
         .withColumn("rank", F.row_number().over(w_recent_partition))\
