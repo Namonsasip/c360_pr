@@ -140,7 +140,7 @@ def streaming_to_l3_content_type_features(input_df: DataFrame,
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 2))
+    mvv_new = list(divide_chunks(mvv_array, 3))
     add_list = mvv_new
 
     first_item = add_list[-1]
@@ -213,7 +213,7 @@ def streaming_to_l3_tv_channel_type_features(input_df: DataFrame,
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 2))
+    mvv_new = list(divide_chunks(mvv_array, 3))
     add_list = mvv_new
 
     first_item = add_list[-1]
@@ -289,7 +289,7 @@ def streaming_streaming_fav_tv_show_by_episode_watched_features(
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 2))
+    mvv_new = list(divide_chunks(mvv_array, 3))
     add_list = mvv_new
 
     first_item = add_list[-1]
@@ -366,7 +366,7 @@ def streaming_fav_service_download_traffic_visit_count(
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 2))
+    mvv_new = list(divide_chunks(mvv_array, 3))
     add_list = mvv_new
 
     first_item = add_list[-1]
@@ -444,12 +444,12 @@ def streaming_to_l3_fav_tv_show_by_share_of_completed_episodes(
 
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = input_df
-    dates_list = data_frame.select('start_of_week').distinct().collect()
+    dates_list = data_frame.select('start_of_month').distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 4))
+    mvv_new = list(divide_chunks(mvv_array, 3))
     add_list = mvv_new
 
     first_item = add_list[-1]
@@ -457,10 +457,9 @@ def streaming_to_l3_fav_tv_show_by_share_of_completed_episodes(
     add_list.remove(first_item)
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
-        small_df = data_frame.filter(F.col("start_of_week").isin(*[curr_item]))
+        small_df = data_frame.filter(F.col("start_of_month").isin(*[curr_item]))
         selective_df = small_df. \
-            select("subscription_identifier", "start_of_week",
-                   "access_method_num", "register_date", "content_group", "title", "series_title")
+            select("subscription_identifier", "start_of_month", "content_group", "title", "series_title")
 
         # share_of_completed_episodes feature
         int_l3_streaming_share_of_completed_episodes_features = node_from_config(
@@ -487,10 +486,9 @@ def streaming_to_l3_fav_tv_show_by_share_of_completed_episodes(
                           l3_streaming_fav_tv_show_by_share_of_completed_episodes)
 
     logging.info("Final date to run for {0}".format(str(first_item)))
-    small_df = data_frame.filter(F.col("start_of_week").isin(*[first_item]))
+    small_df = data_frame.filter(F.col("start_of_month").isin(*[first_item]))
     selective_df = small_df. \
-        select("subscription_identifier", "start_of_week",
-               "access_method_num", "register_date", "content_group", "title", "series_title")
+        select("subscription_identifier", "start_of_month", "content_group", "title", "series_title")
 
     # share_of_completed_episodes feature
     int_l3_streaming_share_of_completed_episodes_features = node_from_config(
