@@ -459,8 +459,7 @@ def streaming_to_l3_fav_tv_show_by_share_of_completed_episodes(
         logging.info("running for dates {0}".format(str(curr_item)))
         small_df = data_frame.filter(F.col("start_of_week").isin(*[curr_item]))
         selective_df = small_df. \
-            select("subscription_identifier", "start_of_week",
-                   "access_method_num", "register_date", "content_group", "title", "series_title")
+            select("subscription_identifier", "start_of_week", "content_group", "title", "series_title")
 
         # share_of_completed_episodes feature
         int_l3_streaming_share_of_completed_episodes_features = node_from_config(
@@ -489,8 +488,7 @@ def streaming_to_l3_fav_tv_show_by_share_of_completed_episodes(
     logging.info("Final date to run for {0}".format(str(first_item)))
     small_df = data_frame.filter(F.col("start_of_week").isin(*[first_item]))
     selective_df = small_df. \
-        select("subscription_identifier", "start_of_week",
-               "access_method_num", "register_date", "content_group", "title", "series_title")
+        select("subscription_identifier", "start_of_week", "content_group", "title", "series_title")
 
     # share_of_completed_episodes feature
     int_l3_streaming_share_of_completed_episodes_features = node_from_config(
