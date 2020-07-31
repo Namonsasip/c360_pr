@@ -36,7 +36,9 @@ def network_to_l1_pipeline(**kwargs):
             #     "l1_network_voice_features"
             # ),
 
-            node(build_network_good_and_bad_cells_features, [
+            node(
+                build_network_good_and_bad_cells_features,
+                [
                 "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features",
                 "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features",
                 "l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features",
@@ -55,7 +57,9 @@ def network_to_l1_pipeline(**kwargs):
                 "params:exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day",
                 "params:exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day",
                 "params:exception_partition_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day"
-            ], "l1_network_good_and_bad_cells_features"),
+                ],
+                "l1_network_good_and_bad_cells_features"
+            ),
 
             ## node(
             ##     get_good_and_bad_cells_for_each_customer,
