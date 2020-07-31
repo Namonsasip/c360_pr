@@ -610,9 +610,8 @@ def streaming_favourite_start_hour_of_day_func(
 
 
     w_recent_partition = Window.partitionBy("application_id").orderBy(F.col("partition_month").desc())
-    max_master_application = master_application.\
-        select("partition_month").groupBy("partition_month")\
-        .agg(F.max(F.col("partition_month")).alias("partition_month"))
+    max_master_application = master_application.select("partition_month")\
+        .agg(F.max("partition_month").alias("partition_month"))
 
     master_application = master_application.join(max_master_application, ["partition_month"])\
         .withColumn("rank", F.row_number().over(w_recent_partition))\
