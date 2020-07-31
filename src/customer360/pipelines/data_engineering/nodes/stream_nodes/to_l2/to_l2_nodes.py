@@ -45,10 +45,10 @@ def dac_for_streaming_to_l2_pipeline_from_l1(input_df: DataFrame, target_table_n
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
-    input_df = data_non_availability_and_missing_check(df=input_df, grouping="weekly", par_col="event_partition_date",
-                                                       target_table_name=target_table_name,
-                                                       missing_data_check_flg='Y',
-                                                       exception_partitions=["2020-04-27"])
+    # input_df = data_non_availability_and_missing_check(df=input_df, grouping="weekly", par_col="event_partition_date",
+    #                                                    target_table_name=target_table_name,
+    #                                                    missing_data_check_flg='Y',
+    #                                                    exception_partitions=["2020-04-27"])
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
