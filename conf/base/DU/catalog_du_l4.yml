@@ -10,3 +10,15 @@ l4_data_ontop_package_preference:
     table: l4_data_ontop_package_preference
     write_mode: overwrite
 
+l4_macro_product_purchase_feature_weekly:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_dataupsell
+    table: l4_macro_product_purchase_feature_weekly
+    write_mode: overwrite
+
+
+l4_macro_product_purchase_feature_weekly_key_fixed:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_dataupsell
+    table: l4_macro_product_purchase_feature_weekly_key_fixed
+    write_mode: overwrite

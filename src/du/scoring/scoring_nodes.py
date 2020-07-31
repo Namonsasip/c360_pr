@@ -34,9 +34,6 @@ def l5_scoring_profile(
         F.col("aux_date_order") == 1
     ).drop("aux_date_order")
     df_latest_sub_id_mapping = df_latest_sub_id_mapping.select(
-        "old_subscription_identifier",
-        "access_method_num",
-        "register_date",
         "subscription_identifier",
         "charge_type",
     )
@@ -52,7 +49,7 @@ def l5_du_scored(
     model_group_column: str,
     explanatory_features,
     acceptance_model_tag: str,
-    mlflow_model_version: str,
+    mlflow_model_version,
     arpu_model_tag: str,
     pai_runs_uri: str,
     pai_artifacts_uri: str,
@@ -69,10 +66,10 @@ def l5_du_scored(
     # model_group_column = "model_name"
     all_run_data = mlflow.search_runs(
         experiment_ids=mlflow_experiment_id,
-        filter_string="params.model_objective='binary' AND params.Able_to_model = 'True' AND params.Version="
-        + str(mlflow_model_version),
+        filter_string="params.model_objective='binary' AND params.Able_to_model = 'True' AND params.Version='"
+        + str(mlflow_model_version) + "'",
         run_view_type=1,
-        max_results=100,
+        max_results=200,
         order_by=None,
     )
     all_run_data[model_group_column] = all_run_data["tags.mlflow.runName"]
