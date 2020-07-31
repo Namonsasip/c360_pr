@@ -542,21 +542,6 @@ def streaming_favourite_start_hour_of_day_func(
     if check_empty_dfs([input_df, master_application]):
         return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
-    w_recent_partition = Window.partitionBy("application_id").orderBy(F.col("partition_month").desc())
-    master_application = master_application\
-        .withColumn("rank", F.row_number().over(w_recent_partition))\
-        .where(F.col("rank") == 1)\
-        .withColumnRenamed("application_id", "application")
-
-    cust_df = cust_profile_df.withColumn("rn", F.expr(
-        "row_number() over(partition by start_of_month,access_method_num order by "
-        "start_of_month desc, mobile_status_date desc)")) \
-        .where("rn = 1") \
-        .select("subscription_identifier", "access_method_num", "start_of_month")
-
-    input_with_application = input_df.join(master_application, ["application"])
-    input_with_application = add_event_week_and_month_from_yyyymmdd(input_with_application, "partition_date")\
-        .drop("event_partition_date", "start_of_week")
 
     def process_massive_processing(data_frame: DataFrame, customer_prof: DataFrame) -> DataFrame:
         """
@@ -602,7 +587,7 @@ def streaming_favourite_start_hour_of_day_func(
         for curr_dict in dictionary:
             filter_query = curr_dict["filter_condition"].split(",")
             output_col = curr_dict["output_col"]
-            curr_item = data_frame.\
+            curr_item = data_frame. \
                 filter(F.lower(F.col("application_name")).isin(filter_query))
             curr_item = curr_item.groupBy(["msisdn","hour","start_of_month"]).agg(F.sum("dw_kbyte").alias("download"))
             curr_item = curr_item.withColumn("rnk", F.row_number().over(win)).where("rnk = 1")
@@ -617,11 +602,28 @@ def streaming_favourite_start_hour_of_day_func(
         final_df_str = gen_max_sql(union_df, 'tmp_table_name', group_cols)
         merged_df = execute_sql(union_df, 'tmp_table_name', final_df_str)
 
-        merged_df = customer_prof.select("access_method_num", "subscription_identifier", "start_of_month")\
+        merged_df = customer_prof.select("access_method_num", "subscription_identifier", "start_of_month") \
             .join(merged_df, ["access_method_num", "start_of_month"]) \
             .drop("access_method_num")
 
         return merged_df
+
+
+    w_recent_partition = Window.partitionBy("application_id").orderBy(F.col("partition_month").desc())
+    master_application = master_application\
+        .withColumn("rank", F.row_number().over(w_recent_partition))\
+        .where(F.col("rank") == 1)\
+        .withColumnRenamed("application_id", "application")
+
+    cust_df = cust_profile_df.withColumn("rn", F.expr(
+        "row_number() over(partition by start_of_month,access_method_num order by "
+        "start_of_month desc, mobile_status_date desc)")) \
+        .where("rn = 1") \
+        .select("subscription_identifier", "access_method_num", "start_of_month")
+
+    input_with_application = input_df.join(master_application, ["application"])
+    input_with_application = add_event_week_and_month_from_yyyymmdd(input_with_application, "partition_date")\
+        .drop("event_partition_date", "start_of_week")
 
     dates_list = input_with_application.select("start_of_month").distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
