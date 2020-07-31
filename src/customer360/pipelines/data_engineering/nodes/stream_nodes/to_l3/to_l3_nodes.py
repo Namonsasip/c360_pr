@@ -516,7 +516,7 @@ def streaming_to_l3_fav_tv_show_by_share_of_completed_episodes(
 def streaming_favourite_start_hour_of_day_func(
         input_df: DataFrame,
         master_application: DataFrame,
-        cust_profile_df: DataFrame) -> DataFrame:
+        cust_profile_df: DataFrame):
     """
     :param input_df:
     :param master_application:
@@ -527,14 +527,17 @@ def streaming_favourite_start_hour_of_day_func(
     if check_empty_dfs([input_df, master_application]):
         return get_spark_empty_df()
 
-    input_df = data_non_availability_and_missing_check(
-        df=input_df, grouping="monthly", par_col="partition_date",
-        missing_data_check_flg='Y',
-        target_table_name="l3_streaming_favourite_start_time_hour_of_day")
+    # input_df = data_non_availability_and_missing_check(
+    #     df=input_df, grouping="monthly", par_col="partition_date",
+    #     missing_data_check_flg='Y',
+    #     target_table_name="l3_streaming_favourite_start_time_hour_of_day")
+    #
+    # cust_profile_df = data_non_availability_and_missing_check(
+    #     df=cust_profile_df, grouping="monthly", par_col="start_of_month",
+    #     target_table_name="l3_streaming_favourite_start_time_hour_of_day")
 
-    cust_profile_df = data_non_availability_and_missing_check(
-        df=cust_profile_df, grouping="monthly", par_col="start_of_month",
-        target_table_name="l3_streaming_favourite_start_time_hour_of_day")
+    ## TO DO NEED TO REMOVE THIS
+    input_df = input_df.where("partition_date < 20200701")
 
     if check_empty_dfs([input_df, master_application]):
         return get_spark_empty_df()
@@ -555,64 +558,82 @@ def streaming_favourite_start_hour_of_day_func(
     input_with_application = add_event_week_and_month_from_yyyymmdd(input_with_application, "partition_date")\
         .drop("event_partition_date", "start_of_week")
 
-    dictionary = [{'filter_condition': "youtube,youtube_go,youtubebyclick",
-                   'output_col': 'fav_youtube_streaming_hour_of_day'},
-                  {'filter_condition': "trueid",
-                   'output_col': 'fav_trueid_streaming_hour_of_day'},
-                  {'filter_condition': "truevisions",
-                   'output_col': 'fav_truevisions_streaming_hour_of_day'},
-                  {'filter_condition': "monomaxx",
-                   'output_col': 'fav_monomaxx_streaming_hour_of_day'},
-                  {'filter_condition': "qqlive",
-                   'output_col': 'fav_qqlive_streaming_hour_of_day'},
-                  {'filter_condition': "facebook",
-                   'output_col': 'fav_facebook_streaming_hour_of_day'},
-                  {'filter_condition': "linetv",
-                   'output_col': 'fav_linetv_streaming_hour_of_day'},
-                  {'filter_condition': "ais_play",
-                   'output_col': 'fav_ais_play_streaming_hour_of_day'},
-                  {'filter_condition': "netflix",
-                   'output_col': 'fav_netflix_streaming_hour_of_day'},
-                  {'filter_condition': "viu,viutv",
-                   'output_col': 'fav_viu_streaming_hour_of_day'},
-                  {'filter_condition': "iflix",
-                   'output_col': 'fav_iflix_streaming_hour_of_day'},
-                  {'filter_condition': "spotify",
-                   'output_col': 'fav_spotify_streaming_hour_of_day'},
-                  {'filter_condition': "jooxmusic",
-                   'output_col': 'fav_jooxmusic_streaming_hour_of_day'},
-                  {'filter_condition': "twitchtv",
-                   'output_col': 'fav_twitchtv_streaming_hour_of_day'},
-                  {'filter_condition': "bigo",
-                   'output_col': 'fav_bigo_streaming_hour_of_day'},
-                  {'filter_condition': "valve_steam",
-                   'output_col': 'fav_valve_steam_streaming_hour_of_day'}]
+    def process_massive_processing(data_frame: DataFrame) -> DataFrame:
+        """
+        :param data_frame:
+        :return:
+        """
+        dictionary = [{'filter_condition': "youtube,youtube_go,youtubebyclick",
+                       'output_col': 'fav_youtube_streaming_hour_of_day'},
+                      {'filter_condition': "trueid",
+                       'output_col': 'fav_trueid_streaming_hour_of_day'},
+                      {'filter_condition': "truevisions",
+                       'output_col': 'fav_truevisions_streaming_hour_of_day'},
+                      {'filter_condition': "monomaxx",
+                       'output_col': 'fav_monomaxx_streaming_hour_of_day'},
+                      {'filter_condition': "qqlive",
+                       'output_col': 'fav_qqlive_streaming_hour_of_day'},
+                      {'filter_condition': "facebook",
+                       'output_col': 'fav_facebook_streaming_hour_of_day'},
+                      {'filter_condition': "linetv",
+                       'output_col': 'fav_linetv_streaming_hour_of_day'},
+                      {'filter_condition': "ais_play",
+                       'output_col': 'fav_ais_play_streaming_hour_of_day'},
+                      {'filter_condition': "netflix",
+                       'output_col': 'fav_netflix_streaming_hour_of_day'},
+                      {'filter_condition': "viu,viutv",
+                       'output_col': 'fav_viu_streaming_hour_of_day'},
+                      {'filter_condition': "iflix",
+                       'output_col': 'fav_iflix_streaming_hour_of_day'},
+                      {'filter_condition': "spotify",
+                       'output_col': 'fav_spotify_streaming_hour_of_day'},
+                      {'filter_condition': "jooxmusic",
+                       'output_col': 'fav_jooxmusic_streaming_hour_of_day'},
+                      {'filter_condition': "twitchtv",
+                       'output_col': 'fav_twitchtv_streaming_hour_of_day'},
+                      {'filter_condition': "bigo",
+                       'output_col': 'fav_bigo_streaming_hour_of_day'},
+                      {'filter_condition': "valve_steam",
+                       'output_col': 'fav_valve_steam_streaming_hour_of_day'}]
 
-    final_dfs = []
-    win = Window.partitionBy(["msisdn","start_of_month"]).orderBy(F.col("download").desc())
-    for curr_dict in dictionary:
-        filter_query = curr_dict["filter_condition"].split(",")
-        output_col = curr_dict["output_col"]
-        curr_item = input_with_application.\
-            filter(F.lower(F.col("application_name")).isin(filter_query))
-        curr_item = curr_item.groupBy(["msisdn","hour","start_of_month"]).agg(F.sum("dw_kbyte").alias("download"))
-        curr_item = curr_item.withColumn("rnk", F.row_number().over(win)).where("rnk = 1")
-        curr_item = curr_item.select(F.col("msisdn").alias("access_method_num"),
-                                     F.col("hour").alias(output_col),
-                                     "start_of_month")
-        final_dfs.append(curr_item)
+        final_dfs = []
+        win = Window.partitionBy(["msisdn","start_of_month"]).orderBy(F.col("download").desc())
+        for curr_dict in dictionary:
+            filter_query = curr_dict["filter_condition"].split(",")
+            output_col = curr_dict["output_col"]
+            curr_item = input_with_application.\
+                filter(F.lower(F.col("application_name")).isin(filter_query))
+            curr_item = curr_item.groupBy(["msisdn","hour","start_of_month"]).agg(F.sum("dw_kbyte").alias("download"))
+            curr_item = curr_item.withColumn("rnk", F.row_number().over(win)).where("rnk = 1")
+            curr_item = curr_item.select(F.col("msisdn").alias("access_method_num"),
+                                         F.col("hour").alias(output_col),
+                                         "start_of_month")
+            final_dfs.append(curr_item)
 
-    union_df = union_dataframes_with_missing_cols(final_dfs)
-    group_cols = ["access_method_num", "start_of_month"]
+        union_df = union_dataframes_with_missing_cols(final_dfs)
+        group_cols = ["access_method_num", "start_of_month"]
 
-    final_df_str = gen_max_sql(union_df, 'tmp_table_name', group_cols)
-    merged_df = execute_sql(union_df, 'tmp_table_name', final_df_str)
+        final_df_str = gen_max_sql(union_df, 'tmp_table_name', group_cols)
+        merged_df = execute_sql(union_df, 'tmp_table_name', final_df_str)
 
-    merged_df = cust_df.select("access_method_num", "subscription_identifier", "start_of_month")\
-        .join(merged_df, ["access_method_num", "start_of_month"]) \
-        .drop("access_method_num")
+        merged_df = cust_df.select("access_method_num", "subscription_identifier", "start_of_month")\
+            .join(merged_df, ["access_method_num", "start_of_month"]) \
+            .drop("access_method_num")
 
-    return merged_df
+        return merged_df
+
+    dates_list = input_with_application.select("start_of_month").distinct().collect()
+    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+
+    CNTX = load_context(Path.cwd(), env=conf)
+    for curr_item in dates_list:
+        logging.info("Running for {0}".format(curr_item))
+        return_df = process_massive_processing(input_with_application.filter(F.col("start_of_month") == curr_item))
+        CNTX.catalog.save("l3_streaming_favourite_start_time_hour_of_day", return_df)
+
+    return None
 
 
 def streaming_traffic_consumption_time_based_features_func(
