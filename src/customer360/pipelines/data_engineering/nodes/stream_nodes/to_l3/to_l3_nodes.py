@@ -140,7 +140,7 @@ def streaming_to_l3_content_type_features(input_df: DataFrame,
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 2))
+    mvv_new = list(divide_chunks(mvv_array, 3))
     add_list = mvv_new
 
     first_item = add_list[-1]
@@ -213,7 +213,7 @@ def streaming_to_l3_tv_channel_type_features(input_df: DataFrame,
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 2))
+    mvv_new = list(divide_chunks(mvv_array, 3))
     add_list = mvv_new
 
     first_item = add_list[-1]
@@ -289,7 +289,7 @@ def streaming_streaming_fav_tv_show_by_episode_watched_features(
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 2))
+    mvv_new = list(divide_chunks(mvv_array, 3))
     add_list = mvv_new
 
     first_item = add_list[-1]
@@ -366,7 +366,7 @@ def streaming_fav_service_download_traffic_visit_count(
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 2))
+    mvv_new = list(divide_chunks(mvv_array, 3))
     add_list = mvv_new
 
     first_item = add_list[-1]
@@ -449,7 +449,7 @@ def streaming_to_l3_fav_tv_show_by_share_of_completed_episodes(
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(divide_chunks(mvv_array, 4))
+    mvv_new = list(divide_chunks(mvv_array, 3))
     add_list = mvv_new
 
     first_item = add_list[-1]
