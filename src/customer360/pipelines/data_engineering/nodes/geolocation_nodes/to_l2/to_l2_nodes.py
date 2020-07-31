@@ -321,7 +321,7 @@ def l2_the_favourite_locations_weekly(df):
 
 
 def massive_processing_with_l2_same_favourite_location_weekend_weekday_weekly(l0_geo_cust_cell_visit_time_df):
-    l0_geo_cust_cell_visit_time_df = l0_geo_cust_cell_visit_time_df.filter('partition_date >= 20200601 and partition_date <= 20200630')
+    l0_geo_cust_cell_visit_time_df = l0_geo_cust_cell_visit_time_df.filter('partition_date >= 20200401 and partition_date <= 20200627')
 
     if check_empty_dfs([l0_geo_cust_cell_visit_time_df]):
         return get_spark_empty_df()

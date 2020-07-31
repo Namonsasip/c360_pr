@@ -281,7 +281,7 @@ def massive_processing_for_home_work(
         source_partition_col="partition_date"
 ):
     # filter
-    input_df = input_df.filter('partition_date >= 20200601 and partition_date <= 20200630')
+    input_df = input_df.filter('partition_date >= 20200401 and partition_date <= 20200627')
 
     CNTX = load_context(Path.cwd(), env=os.getenv("CONF", "base"))
 
@@ -531,7 +531,7 @@ def l3_geo_home_weekday_city_citizens_monthly(home_work_location_id, master, sql
 
 
 def l3_geo_work_area_center_average_monthly(visti_hr, home_work):
-    visti_hr = visti_hr.filter('partition_date >= 20200601 and partition_date <= 20200630')
+    visti_hr = visti_hr.filter('partition_date >= 20200401 and partition_date <= 20200627')
 
     # ----- Data Availability Checks -----
     if check_empty_dfs([visti_hr, home_work]):
@@ -815,8 +815,8 @@ def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
                                         profile_customer_profile_ma,
                                         usage_sum_data_location_daily,
                                         geo_exclude_home_work):
-    profile_customer_profile_ma = profile_customer_profile_ma.filter('partition_month >= 202006')
-    usage_sum_data_location_daily = usage_sum_data_location_daily.filter('partition_date >= 20200601 and partition_date <= 20200630')
+    profile_customer_profile_ma = profile_customer_profile_ma.filter('partition_month >= 202004')
+    usage_sum_data_location_daily = usage_sum_data_location_daily.filter('partition_date >= 20200401 and partition_date <= 20200627')
     # ----- Data Availability Checks -----
     if check_empty_dfs([usage_sum_data_location_daily, profile_customer_profile_ma, geo_mst_cell_masterplan, geo_home_work_data, geo_exclude_home_work]):
         return get_spark_empty_df()
@@ -1060,8 +1060,8 @@ def _geo_top_visit_join_master_profile(cell_masterplan,geo_top_visit,profile_ma,
 
 
 def l3_call_location_home_work_monthly(cell_masterplan,geo_homework,profile_ma,usage_sum_voice,geo_top_visit_exc_homework):
-    profile_ma = profile_ma.filter('partition_month >= 202006')
-    usage_sum_voice = usage_sum_voice.filter('partition_date >= 20200601 and partition_date <= 20200630')
+    profile_ma = profile_ma.filter('partition_month >= 202004')
+    usage_sum_voice = usage_sum_voice.filter('partition_date >= 20200401 and partition_date <= 20200627')
     # ----- Data Availability Checks -----
     if check_empty_dfs([usage_sum_voice, cell_masterplan, geo_homework, profile_ma, geo_top_visit_exc_homework]):
         return get_spark_empty_df()

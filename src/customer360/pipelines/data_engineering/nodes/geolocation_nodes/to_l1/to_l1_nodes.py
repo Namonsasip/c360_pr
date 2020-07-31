@@ -47,7 +47,7 @@ def distance_callculate_statement(first_lat: str, first_long: str, second_lat: s
 
 
 def massive_processing_with_l1_geo_area_from_ais_store_daily(shape, masterplan, geo_cust_cell_visit_time, sql):
-    geo_cust_cell_visit_time=geo_cust_cell_visit_time.filter('partition_date >= 20200601 and partition_date <= 20200630')
+    geo_cust_cell_visit_time=geo_cust_cell_visit_time.filter('partition_date >= 20200401 and partition_date <= 20200627')
     # ----- Data Availability Checks -----
     if check_empty_dfs([geo_cust_cell_visit_time, shape, masterplan]):
         return get_spark_empty_df()
@@ -113,8 +113,7 @@ def massive_processing_with_l1_geo_area_from_ais_store_daily(shape, masterplan, 
 
 
 def massive_processing_with_l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit_time,sql):
-    geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter(
-        'partition_date >= 20191101 and partition_date <= 20191130')
+    geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20200401 and partition_date <= 20200627')
     # ----- Data Availability Checks -----
     if check_empty_dfs([geo_cust_cell_visit_time, shape, masterplan]):
         return get_spark_empty_df()
@@ -178,7 +177,7 @@ def massive_processing_with_l1_geo_area_from_competitor_store_daily(shape,master
 
 
 def l1_geo_time_spent_by_location_daily(df,sql):
-    df = df.filter('partition_date >= 20200601 and partition_date <= 20200630')
+    df = df.filter('partition_date >= 20200401 and partition_date <= 20200627')
 
     # ----- Data Availability Checks -----
     if check_empty_dfs([df]):
@@ -261,7 +260,7 @@ def l1_geo_area_from_competitor_store_daily(df,geo_cust_cell_visit_time,sql):
 
 
 def massive_processing_with_l1_geo_total_distance_km_daily(l0_df, sql):
-    l0_df = l0_df.filter('partition_date >= 20200601 and partition_date <= 20200630')
+    l0_df = l0_df.filter('partition_date >= 20200401 and partition_date <= 20200627')
     # ----- Data Availability Checks -----
     if check_empty_dfs([l0_df]):
         return get_spark_empty_df()
@@ -355,7 +354,7 @@ def l1_geo_total_distance_km_daily(l0_df, sql):
 
 
 def massive_processing_with_l1_geo_cust_subseqently_distance(cell_visit, sql):
-    cell_visit = cell_visit.filter('partition_date >= 20200601 and partition_date <= 20200630')
+    cell_visit = cell_visit.filter('partition_date >= 20200401 and partition_date <= 20200627')
     # ----- Data Availability Checks -----
     if check_empty_dfs([cell_visit]):
         return get_spark_empty_df()
@@ -446,8 +445,8 @@ def l1_geo_cust_subseqently_distance(cell_visit, sql):
     return df
 
 
-def massive_processing_with_l1_location_of_visit_ais_store_daily(shape,cust_cell_visit,sql):
-    cust_cell_visit = cust_cell_visit.filter('partition_date >= 20200601 and partition_date <= 20200630')
+def massive_processing_with_l1_location_of_visit_ais_store_daily(shape, cust_cell_visit, sql):
+    cust_cell_visit = cust_cell_visit.filter('partition_date >= 20200401 and partition_date <= 20200627')
     # ----- Data Availability Checks -----
     if check_empty_dfs([cust_cell_visit, shape]):
         return get_spark_empty_df()
@@ -529,7 +528,7 @@ def l1_location_of_visit_ais_store_daily(shape,cust_cell_visit,sql):
 
 
 def massive_processing_with_l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
-    usage_df = usage_df.filter('partition_date >= 20200601 and partition_date <= 20200630')
+    usage_df = usage_df.filter('partition_date >= 20200401 and partition_date <= 20200627')
     profile_df = profile_df.filter('partition_month = 201911')
     # ----- Data Availability Checks -----
     if check_empty_dfs([usage_df, geo_df, profile_df]):
@@ -695,7 +694,7 @@ def l1_geo_distance_top_call(df):
 
 
 def l1_geo_number_of_bs_used(geo_cust_cell, sql):
-    geo_cust_cell=geo_cust_cell.filter('partition_date >= 20200601 and partition_date <= 20200630')
+    geo_cust_cell=geo_cust_cell.filter('partition_date >= 20200401 and partition_date <= 20200627')
     # .filter('partition_month >= 201911')
     # ----- Data Availability Checks -----
     if check_empty_dfs([geo_cust_cell]):
@@ -717,7 +716,7 @@ def l1_geo_number_of_bs_used(geo_cust_cell, sql):
 
 
 def massive_processing_with_l1_the_favourite_locations_daily(usage_df_location,geo_df_masterplan):
-    usage_df_location = usage_df_location.filter('partition_date >= 20200601 and partition_date <= 20200630')
+    usage_df_location = usage_df_location.filter('partition_date >= 20200401 and partition_date <= 20200627')
     # ----- Data Availability Checks -----
     if check_empty_dfs([usage_df_location, geo_df_masterplan]):
         return get_spark_empty_df()
