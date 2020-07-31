@@ -610,10 +610,18 @@ def streaming_favourite_start_hour_of_day_func(
 
 
     w_recent_partition = Window.partitionBy("application_id").orderBy(F.col("partition_month").desc())
-    master_application = master_application\
+    max_master_application = master_application.\
+        select("partition_month").agg(F.max(F.col("partition_month")).alias("partition_month"))
+
+    master_application = master_application.join(max_master_application, ["partition_month"])\
         .withColumn("rank", F.row_number().over(w_recent_partition))\
         .where(F.col("rank") == 1)\
         .withColumnRenamed("application_id", "application")
+
+    application_list = ["youtube", "youtube_go", "youtubebyclick", "trueid", "truevisions", "monomaxx",
+                        "qqlive", "facebook", "linetv", "ais_play", "netflix", "viu", "viutv", "iflix",
+                        "spotify", "jooxmusic", "twitchtv", "bigo", "valve_steam"]
+    master_application = master_application.filter(F.lower(F.col("application")).isin(application_list))
 
     cust_df = cust_profile_df.withColumn("rn", F.expr(
         "row_number() over(partition by start_of_month,access_method_num order by "
