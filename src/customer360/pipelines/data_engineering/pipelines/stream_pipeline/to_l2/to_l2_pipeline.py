@@ -107,87 +107,21 @@ def streaming_to_l2_intermediate_pipeline(**kwargs):
                  ),
             # # fav video service by download traffic/visit count
             # # TV Channel features
-            # node(streaming_to_l2_music_service_by_download,
+            # node(streaming_to_l2_esoprt_service_by_download,
             #      [
-            #          "int_l1_streaming_music_service_feature_for_int_l2_streaming_music_service_feature",
-            #          "params:int_l2_streaming_music_service_feature",
-            #          "params:l2_streaming_fav_music_service_by_download_feature",
-            #          "params:l2_streaming_2nd_fav_music_service_by_download_feature",
-            #          "params:l2_streaming_fav_music_service_by_visit_count_feature"
+            #          "int_l1_streaming_esport_service_feature_for_int_l2_streaming_esport_service_feature",
+            #          "params:int_l2_streaming_esport_service_feature",
+            #          "params:l2_streaming_fav_esport_service_by_download_feature",
+            #          "params:l2_streaming_2nd_fav_esport_service_by_download_feature",
+            #          "params:l2_streaming_fav_esport_service_by_visit_count_feature"
             #      ],
             #      [
-            #          "int_l2_streaming_music_service_feature",
-            #          "l2_streaming_fav_music_service_by_download_feature",
-            #          "l2_streaming_2nd_fav_music_service_by_download_feature",
-            #          "l2_streaming_fav_music_service_by_visit_count_feature"
+            #          "int_l2_streaming_esport_service_feature",
+            #          "l2_streaming_fav_esport_service_by_download_feature",
+            #          "l2_streaming_2nd_fav_esport_service_by_download_feature",
+            #          "l2_streaming_fav_esport_service_by_visit_count_feature"
             #      ]
             #      ),
-            # # # fav esport service by download traffic/visit count
-            # node(
-            #     dac_for_streaming_to_l2_pipeline_from_l1,
-            #     ["int_l1_streaming_esport_service_feature_for_int_l2_streaming_esport_service_feature",
-            #      "params:int_l2_streaming_esport_service_feature_tbl"],
-            #     "intermediate_int_l2_streaming_esport_service_feature"
-            # ),
-            # node(
-            #     l2_massive_processing,
-            #     ["intermediate_int_l2_streaming_esport_service_feature",
-            #      "params:int_l2_streaming_esport_service_feature"],
-            #     "int_l2_streaming_esport_service_feature"
-            # ),
-            # node(
-            #     dac_for_streaming_to_l2_pipeline_from_l2,
-            #     ["int_l2_streaming_esport_service_feature_for_l2_streaming_fav_esport_service_by_download_feature",
-            #      "params:l2_streaming_fav_esport_service_by_download_feature_tbl"],
-            #     "intermediate_l2_streaming_fav_esport_service_by_download_feature"
-            # ),
-            # node(
-            #     node_from_config,
-            #     ["intermediate_l2_streaming_fav_esport_service_by_download_feature",
-            #      "params:l2_streaming_fav_service_by_download_feature"],
-            #     "l2_streaming_fav_esport_service_by_download_feature"
-            # ),
-            #
-            # node(
-            #     dac_for_streaming_to_l2_pipeline_from_l2,
-            #     ["int_l2_streaming_esport_service_feature_for_l2_streaming_2nd_fav_esport_service_by_download_feature",
-            #      "params:l2_streaming_2nd_fav_esport_service_by_download_feature_tbl"],
-            #     "intermediate_l2_streaming_2nd_fav_esport_service_by_download_feature"
-            # ),
-            # node(
-            #     node_from_config,
-            #     ["intermediate_l2_streaming_2nd_fav_esport_service_by_download_feature",
-            #      "params:l2_streaming_2nd_fav_service_by_download_feature"],
-            #     "l2_streaming_2nd_fav_esport_service_by_download_feature"
-            # ),
-            #
-            # node(
-            #     dac_for_streaming_to_l2_pipeline_from_l2,
-            #     ["int_l2_streaming_esport_service_feature_for_l2_streaming_fav_esport_service_by_visit_count_feature",
-            #      "params:l2_streaming_fav_esport_service_by_visit_count_feature_tbl"],
-            #     "intermediate_l2_streaming_fav_esport_service_by_visit_count_feature"
-            # ),
-            # node(
-            #     node_from_config,
-            #     ["intermediate_l2_streaming_fav_esport_service_by_visit_count_feature",
-            #      "params:l2_streaming_fav_service_by_visit_count_feature"],
-            #     "l2_streaming_fav_esport_service_by_visit_count_feature"
-            # ),
-            node(streaming_to_l2_esoprt_service_by_download,
-                 [
-                     "int_l1_streaming_esport_service_feature_for_int_l2_streaming_esport_service_feature",
-                     "params:int_l2_streaming_esport_service_feature",
-                     "params:l2_streaming_fav_esport_service_by_download_feature",
-                     "params:l2_streaming_2nd_fav_esport_service_by_download_feature",
-                     "params:l2_streaming_fav_esport_service_by_visit_count_feature"
-                 ],
-                 [
-                     "int_l2_streaming_esport_service_feature",
-                     "l2_streaming_fav_esport_service_by_download_feature",
-                     "l2_streaming_2nd_fav_esport_service_by_download_feature",
-                     "l2_streaming_fav_esport_service_by_visit_count_feature"
-                 ]
-                 ),
             # # Favourite streaming day of week
             # # get sum per day of week
             # # rank of day per week
