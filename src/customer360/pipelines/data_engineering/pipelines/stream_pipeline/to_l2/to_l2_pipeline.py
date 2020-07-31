@@ -41,70 +41,19 @@ from customer360.pipelines.data_engineering.nodes.stream_nodes.to_l2.to_l2_nodes
 def streaming_to_l2_intermediate_pipeline(**kwargs):
     return Pipeline(
         [
-            # Content Type Features
-            # node(streaming_to_l2_content_type_features,
+            # # TV Channel features
+            # node(streaming_to_l2_tv_channel_type_features,
             #      [
-            #          "int_l1_streaming_content_type_features_for_int_l2_streaming_content_type_features",
-            #          "params:int_l2_streaming_content_type_features",
-            #          "params:l2_streaming_fav_content_group_by_volume",
-            #          "params:l2_streaming_fav_content_group_by_duration"],
+            #          "int_l1_streaming_tv_channel_features_for_int_l2_streaming_tv_channel_features",
+            #          "params:int_l2_streaming_tv_channel_features",
+            #          "params:l2_streaming_fav_tv_channel_by_volume",
+            #          "params:l2_streaming_fav_tv_channel_by_duration"],
             #      [
-            #          "int_l2_streaming_content_type_features",
-            #          "l2_streaming_fav_content_group_by_volume",
-            #          "l2_streaming_fav_content_group_by_duration"
+            #          "int_l2_streaming_tv_channel_features",
+            #          "l2_streaming_fav_tv_channel_by_volume",
+            #          "l2_streaming_fav_tv_channel_by_duration"
             #      ]
             #      ),
-            # # TV Channel features
-            # node(
-            #     dac_for_streaming_to_l2_pipeline_from_l1,
-            #     ["int_l1_streaming_tv_channel_features_for_int_l2_streaming_tv_channel_features",
-            #      "params:int_l2_streaming_tv_channel_features_tbl"],
-            #     "intermediate_int_l2_streaming_tv_channel_features"
-            # ),
-            # node(
-            #     l2_massive_processing,
-            #     ["intermediate_int_l2_streaming_tv_channel_features",
-            #      "params:int_l2_streaming_tv_channel_features", ],
-            #     "int_l2_streaming_tv_channel_features"
-            # ),
-            # node(
-            #     dac_for_streaming_to_l2_pipeline_from_l2,
-            #     ["int_l2_streaming_tv_channel_features_for_l2_streaming_fav_tv_channel_by_volume",
-            #      "params:l2_streaming_fav_tv_channel_by_volume_tbl"],
-            #     "intermediate_l2_streaming_fav_tv_channel_by_volume"
-            # ),
-            # node(
-            #     node_from_config,
-            #     ["intermediate_l2_streaming_fav_tv_channel_by_volume",
-            #      "params:l2_streaming_fav_tv_channel_by_volume"],
-            #     "l2_streaming_fav_tv_channel_by_volume"
-            # ),
-            #
-            # node(
-            #     dac_for_streaming_to_l2_pipeline_from_l2,
-            #     ["int_l2_streaming_tv_channel_features_for_l2_streaming_fav_tv_channel_by_duration",
-            #      "params:l2_streaming_fav_tv_channel_by_duration_tbl"],
-            #     "intermediate_l2_streaming_fav_tv_channel_by_duration"
-            # ),
-            # node(
-            #     node_from_config,
-            #     ["intermediate_l2_streaming_fav_tv_channel_by_duration",
-            #      "params:l2_streaming_fav_tv_channel_by_duration"],
-            #     "l2_streaming_fav_tv_channel_by_duration"
-            # ),
-            # # TV Channel features
-            node(streaming_to_l2_tv_channel_type_features,
-                 [
-                     "int_l1_streaming_tv_channel_features_for_int_l2_streaming_tv_channel_features",
-                     "params:int_l2_streaming_tv_channel_features",
-                     "params:l2_streaming_fav_tv_channel_by_volume",
-                     "params:l2_streaming_fav_tv_channel_by_duration"],
-                 [
-                     "int_l2_streaming_tv_channel_features",
-                     "l2_streaming_fav_tv_channel_by_volume",
-                     "l2_streaming_fav_tv_channel_by_duration"
-                 ]
-                 ),
             # # fav video service by download traffic/visit count
             # # TV Channel features
             # node(streaming_to_l2_esoprt_service_by_download,
