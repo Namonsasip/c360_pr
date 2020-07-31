@@ -2,7 +2,7 @@ import pyspark.sql.functions as f
 from pyspark.sql import DataFrame
 
 from customer360.utilities.re_usable_functions import check_empty_dfs, \
-    data_non_availability_and_missing_check
+    data_non_availability_and_missing_check, _l1_join_with_customer_profile
 from customer360.utilities.re_usable_functions import l1_massive_processing, union_dataframes_with_missing_cols
 from customer360.utilities.spark_util import get_spark_empty_df, get_spark_session
 from kedro.context import load_context
@@ -25,11 +25,13 @@ def __divide_chunks(l, n):
 def l1_network_lookback_massive_processing(
         input_df,
         config,
+        cust_profile_df,
         source_partition_col="partition_date",
         sql_generator_func=node_from_config,
-        cust_profile_df=None,
-        cust_profile_join_func=None
+        cust_profile_join_func=_l1_join_with_customer_profile
 ) -> DataFrame:
+    # if check_empty_dfs([input_df, cust_profile_df]):
+    #     return get_spark_empty_df()
 
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = input_df
@@ -59,11 +61,10 @@ def l1_network_lookback_massive_processing(
 
         output_df = sql_generator_func(small_df, config)
 
-        if cust_profile_df is not None:
-            output_df = cust_profile_join_func(input_df=output_df,
-                                               cust_profile_df=cust_profile_df,
-                                               config=config,
-                                               current_item=curr_item)
+        output_df = cust_profile_join_func(input_df=output_df,
+                                           cust_profile_df=cust_profile_df,
+                                           config=config,
+                                           current_item=curr_item)
 
         output_df = output_df.filter(f.col("event_partition_date") > max_date)
         CNTX.catalog.save(config["output_catalog"], output_df)
