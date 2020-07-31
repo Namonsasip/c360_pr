@@ -1229,7 +1229,7 @@ def build_network_failed_calls_home_location(
 
     #Voice daily
     voice_1day = voice_1day.select("imsi", "msisdn", "cs_cgi", "access_type_id", "CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MOC",
-                         "CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MTC", "event_partition_date", "partition_date")
+                         "CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MTC", "partition_date")
     voice_1day = voice_1day.withColumn("CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MOC", f.expr("case when access_type_id = 1 then CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MOC else 0 end")) \
         .withColumn("CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MTC", f.expr("case when access_type_id = 1 then CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MTC else 0 end")) \
         .withColumnRenamed("cs_cgi", "soc_cgi_hex") \
@@ -1239,7 +1239,7 @@ def build_network_failed_calls_home_location(
     voice_geo = voice_1day.join(geo_work_home_location_master, on=["imsi", "soc_cgi_hex"], how="inner")
     voice_geo = voice_geo.drop("imsi", "soc_cgi_hex")
 
-    voice_geo = voice_geo.groupBy("msisdn", "event_partition_date", "partition_date").agg(
+    voice_geo = voice_geo.groupBy("msisdn", "partition_date").agg(
         f.sum(f.col("CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MOC")).alias("CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MOC"),
         f.sum(f.col("CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MTC")).alias("CEI_VOICE_VOICE_DROPS_AFTER_ANSWERS_MTC"))
 
@@ -1247,20 +1247,19 @@ def build_network_failed_calls_home_location(
 
     #volte daily
     volte_1day = volte_1day.select("imsi", "msisdn", "cgisai", "CEI_VOLTE_VOICE_MT_DROP_TIMES", "CEI_VOLTE_VOICE_MO_DROP_TIMES",
-                                   "event_partition_date", "partition_date")
+                                    "partition_date")
     volte_1day = volte_1day.withColumnRenamed("cgisai", "soc_cgi_hex")
 
     #volte joined with geo
     volte_geo = volte_1day.join(geo_work_home_location_master, on=["imsi", "soc_cgi_hex"], how="inner")
     volte_geo = volte_geo.drop("imsi", "soc_cgi_hex")
 
-    volte_geo = volte_geo.groupBy("msisdn", "event_partition_date", "partition_date").agg(
+    volte_geo = volte_geo.groupBy("msisdn", "partition_date").agg(
         f.sum(f.col("CEI_VOLTE_VOICE_MT_DROP_TIMES")).alias("CEI_VOLTE_VOICE_MT_DROP_TIMES"),
         f.sum(f.col("CEI_VOLTE_VOICE_MO_DROP_TIMES")).alias("CEI_VOLTE_VOICE_MO_DROP_TIMES"))
 
-    join_key_between_network_df = ['event_partition_date', 'msisdn', 'partition_date']
+    join_key_between_network_df = ['msisdn', 'partition_date']
     joined_df = voice_geo.join(volte_geo, on=join_key_between_network_df, how='inner')
-    joined_df = joined_df.drop('event_partition_date')
 
     return_df = l1_massive_processing(joined_df,
                                       l1_network_failed_calls_home_location_dict, cust_df)
