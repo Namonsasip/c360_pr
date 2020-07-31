@@ -67,7 +67,6 @@ treatment_rules:
 
 ### churn exploration treatment starts here
   ### high priority churn targets (tests and business drivers)
-  treatment_rules:
     a1_internal_churn_treatment:
       order_policy: churn5_pred + churn15_pred + churn30_pred + churn45_pred + churn60_pred
       rules:
