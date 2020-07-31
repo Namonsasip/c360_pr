@@ -629,7 +629,7 @@ def streaming_favourite_start_hour_of_day_func(
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
     CNTX = load_context(Path.cwd(), env=conf)
-    for curr_item in dates_list:
+    for curr_item in mvv_array:
         logging.info("Running for {0}".format(curr_item))
         return_df = process_massive_processing(input_with_application.filter(F.col("start_of_month") == curr_item)
                                                , cust_df)
