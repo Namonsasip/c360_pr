@@ -205,7 +205,7 @@ def streaming_to_l3_favourite_start_hour_of_day(**kwargs):
                     "l0_mobile_app_master",
                     "l3_customer_profile_union_monthly_feature_for_l3_streaming_favourite_start_time_hour_of_day"
                 ],
-                "l3_streaming_favourite_start_time_hour_of_day"
+                None
             )
         ], name="streaming_favourite_start_hour_of_day"
     )
