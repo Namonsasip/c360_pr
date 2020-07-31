@@ -349,48 +349,14 @@ def streaming_to_l2_intermediate_pipeline(**kwargs):
             # # Favourite streaming day of week
             # # get sum per day of week
             # # rank of day per week
-            # node(
-            #     dac_for_streaming_to_l2_pipeline_from_l1,
-            #     ["l1_streaming_visit_count_and_download_traffic_feature_for_int_l2_streaming_sum_per_day",
-            #      "params:int_l2_streaming_sum_per_day_tbl"],
-            #     "intermediate_int_l2_streaming_sum_per_day"
-            # ),
-            # node(
-            #     l2_massive_processing_with_expansion,
-            #     ["intermediate_int_l2_streaming_sum_per_day",
-            #      "params:int_l2_streaming_sum_per_day"],
-            #     "int_l2_streaming_sum_per_day"
-            # node(
-            #     dac_for_streaming_to_l2_pipeline_from_l2,
-            #     ["int_l2_streaming_sum_per_day_for_l2_streaming_fav_youtube_video_streaming_day_of_week_feature",
-            #      "params:l2_streaming_fav_youtube_video_streaming_day_of_week_feature_tbl"],
-            #     "intermediate_int_l2_streaming_ranked_of_day_per_week"
-            # ),
-            # node(
-            #     node_from_config,
-            #     ["intermediate_int_l2_streaming_ranked_of_day_per_week",
-            #      "params:int_l2_streaming_ranked_of_day_per_week"],
-            #     "int_l2_streaming_ranked_of_day_per_week"
-            # ),
-            # # generate all the tables inside
-            # node(
-            #     generate_l2_fav_streaming_day,
-            #     ["int_l2_streaming_ranked_of_day_per_week",
-            #      "params:streaming_app"],
-            #     None
-            #     # "l2_streaming_fav_youtube_video_streaming_day_of_week_feature"
-            # ),
-            # # Favourite streaming day of week
-            # # get sum per day of week
-            # # rank of day per week
-            node(streaming_streaming_ranked_of_day_per_week,
-                 [
-                     "l1_streaming_visit_count_and_download_traffic_feature_for_int_l2_streaming_sum_per_day",
-                     "params:int_l2_streaming_sum_per_day",
-                     "params:int_l2_streaming_ranked_of_day_per_week",
-                     "params:streaming_app"
-
-                  ], "int_l2_streaming_sum_per_day")
+            # node(streaming_streaming_ranked_of_day_per_week,
+            #      [
+            #          "l1_streaming_visit_count_and_download_traffic_feature_for_int_l2_streaming_sum_per_day",
+            #          "params:int_l2_streaming_sum_per_day",
+            #          "params:int_l2_streaming_ranked_of_day_per_week",
+            #          "params:streaming_app"
+            #
+            #       ], "int_l2_streaming_sum_per_day")
         ]
     )
 
