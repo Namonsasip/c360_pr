@@ -63,16 +63,16 @@ def streaming_to_l3_pipeline(**kwargs):
                 ["l3_streaming_fav_content_group_by_volume", "l3_streaming_fav_content_group_by_duration"]
             ),
 
-            # # # TV Channel features
-            # node(
-            #     streaming_to_l3_tv_channel_type_features,
-            #     ["int_l1_streaming_tv_channel_features_for_l3_streaming_fav_tv_channel",
-            #      "params:int_l3_streaming_tv_channel_features",
-            #      "params:l3_streaming_fav_tv_channel_by_volume",
-            #      "params:l3_streaming_fav_tv_channel_by_duration",
-            #      ],
-            #     ["l3_streaming_fav_tv_channel_by_volume", "l3_streaming_fav_tv_channel_by_duration"]
-            # ),
+            # # TV Channel features
+            node(
+                streaming_to_l3_tv_channel_type_features,
+                ["int_l1_streaming_tv_channel_features_for_l3_streaming_fav_tv_channel",
+                 "params:int_l3_streaming_tv_channel_features",
+                 "params:l3_streaming_fav_tv_channel_by_volume",
+                 "params:l3_streaming_fav_tv_channel_by_duration",
+                 ],
+                ["l3_streaming_fav_tv_channel_by_volume", "l3_streaming_fav_tv_channel_by_duration"]
+            ),
 
             # # TV show features
             node(streaming_streaming_fav_tv_show_by_episode_watched_features,
@@ -86,21 +86,21 @@ def streaming_to_l3_pipeline(**kwargs):
                  ["l3_streaming_fav_tv_show_by_episode_watched", "l3_streaming_fav_genre"]
                  ),
 
-            # # # fav video service by download traffic/visit count
-            # node(streaming_fav_service_download_traffic_visit_count,
-            #      [
-            #          "int_l1_streaming_video_service_feature_for_l3_streaming_fav_video_service_feature",
-            #          "params:int_l3_streaming_service_feature",
-            #          "params:l3_streaming_fav_video_service_by_download_feature",
-            #          "params:l3_streaming_2nd_fav_video_service_by_download_feature",
-            #          "params:l3_streaming_fav_video_service_by_visit_count_feature"
-            #       ],
-            #      [
-            #          "l3_streaming_fav_video_service_by_download_feature",
-            #          "l3_streaming_2nd_fav_video_service_by_download_feature",
-            #          "l3_streaming_fav_video_service_by_visit_count_feature"
-            #       ]
-            #      ),
+            # # fav video service by download traffic/visit count
+            node(streaming_fav_service_download_traffic_visit_count,
+                 [
+                     "int_l1_streaming_video_service_feature_for_l3_streaming_fav_video_service_feature",
+                     "params:int_l3_streaming_service_feature",
+                     "params:l3_streaming_fav_video_service_by_download_feature",
+                     "params:l3_streaming_2nd_fav_video_service_by_download_feature",
+                     "params:l3_streaming_fav_video_service_by_visit_count_feature"
+                  ],
+                 [
+                     "l3_streaming_fav_video_service_by_download_feature",
+                     "l3_streaming_2nd_fav_video_service_by_download_feature",
+                     "l3_streaming_fav_video_service_by_visit_count_feature"
+                  ]
+                 ),
 
             # # fav music service by download traffic/visit count
             node(streaming_fav_service_download_traffic_visit_count,
@@ -118,21 +118,21 @@ def streaming_to_l3_pipeline(**kwargs):
                  ]
                  ),
 
-            # # fav esport service by download traffic/visit count
-            # node(streaming_fav_service_download_traffic_visit_count,
-            #      [
-            #          "int_l1_streaming_esport_service_feature_for_l3_streaming_fav_esport_service_feature",
-            #          "params:int_l3_streaming_service_feature",
-            #          "params:l3_streaming_fav_esport_service_by_download_feature",
-            #          "params:l3_streaming_2nd_fav_esport_service_by_download_feature",
-            #          "params:l3_streaming_fav_esport_service_by_visit_count_feature"
-            #      ],
-            #      [
-            #          "l3_streaming_fav_esport_service_by_download_feature",
-            #          "l3_streaming_2nd_fav_esport_service_by_download_feature",
-            #          "l3_streaming_fav_esport_service_by_visit_count_feature"
-            #      ]
-            #      ),
+            # fav esport service by download traffic/visit count
+            node(streaming_fav_service_download_traffic_visit_count,
+                 [
+                     "int_l1_streaming_esport_service_feature_for_l3_streaming_fav_esport_service_feature",
+                     "params:int_l3_streaming_service_feature",
+                     "params:l3_streaming_fav_esport_service_by_download_feature",
+                     "params:l3_streaming_2nd_fav_esport_service_by_download_feature",
+                     "params:l3_streaming_fav_esport_service_by_visit_count_feature"
+                 ],
+                 [
+                     "l3_streaming_fav_esport_service_by_download_feature",
+                     "l3_streaming_2nd_fav_esport_service_by_download_feature",
+                     "l3_streaming_fav_esport_service_by_visit_count_feature"
+                 ]
+                 ),
 
             # number of visit and volume of download traffic
             node(
