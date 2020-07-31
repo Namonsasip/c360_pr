@@ -225,11 +225,11 @@ def build_network_good_and_bad_cells_features(
             target_table_name="l1_network_good_and_bad_cells_features",
             exception_partitions=exception_partition_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day)
 
-    l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features = \
-        data_non_availability_and_missing_check(
-            df=l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features, grouping="daily",
-            par_col="partition_date",
-            target_table_name="l1_network_good_and_bad_cells_features")
+    # l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features = \
+    #     data_non_availability_and_missing_check(
+    #         df=l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features, grouping="daily",
+    #         par_col="partition_date",
+    #         target_table_name="l1_network_good_and_bad_cells_features")
 
     l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features = \
         data_non_availability_and_missing_check(
@@ -272,8 +272,8 @@ def build_network_good_and_bad_cells_features(
                 f.max(f.col("partition_date")).alias("max_date")),
             l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features.select(
                 f.max(f.col("partition_date")).alias("max_date")),
-            l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features.select(
-                f.max(f.col("partition_date")).alias("max_date")),
+            # l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features.select(
+            #     f.max(f.col("partition_date")).alias("max_date")),
             l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features.select(
                 f.max(f.col("partition_date")).alias("max_date")),
         ]
@@ -297,9 +297,9 @@ def build_network_good_and_bad_cells_features(
     l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features = \
         l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features \
             .filter(f.col("partition_date") <= min_value)
-    l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features = \
-        l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features \
-            .filter(f.col("partition_date") <= min_value)
+    # l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features = \
+    #     l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features \
+    #         .filter(f.col("partition_date") <= min_value)
     l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features = \
         l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features \
             .filter(f.col("partition_date") <= min_value)
@@ -314,6 +314,12 @@ def build_network_good_and_bad_cells_features(
         l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features,
         l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features
     )
+
+    l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features_max_partition_date = \
+    l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features.select(f.max(f.col("partition_date")).alias("max_date")).collect()[0].max_date
+
+    l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features = \
+        l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features.filter(f.col("partition_date") >= l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features_max_partition_date)
 
     get_transaction_on_good_and_bad_cells_df = get_transaction_on_good_and_bad_cells(
         get_good_and_bad_cells_for_each_customer_df,
