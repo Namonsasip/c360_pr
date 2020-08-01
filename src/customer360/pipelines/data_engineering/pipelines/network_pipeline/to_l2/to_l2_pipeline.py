@@ -65,13 +65,13 @@ def network_to_l2_pipeline(**kwargs):
                  "params:exception_partition_list_for_l2_network_streaming_cqi"],
                 "l2_network_streaming_cqi"
             ),
-            node(
-                build_l2_network_web_cqi,
-                ["l1_network_web_cqi_for_l2_network_web_cqi",
-                 "params:l2_network_web_cqi",
-                 "params:exception_partition_list_for_l1_network_web_cqi_for_l2_network_web_cqi"],
-                "l2_network_web_cqi"
-            ),
+            # node(
+            #     build_l2_network_web_cqi,
+            #     ["l1_network_web_cqi_for_l2_network_web_cqi",
+            #      "params:l2_network_web_cqi",
+            #      "params:exception_partition_list_for_l1_network_web_cqi_for_l2_network_web_cqi"],
+            #     "l2_network_web_cqi"
+            # ),
             # node(
             #     build_l2_network_voip_cqi,
             #     ["l1_network_voip_cqi_for_l2_network_voip_cqi",
@@ -118,26 +118,26 @@ def network_to_l2_pipeline(**kwargs):
                 ],
                 "l2_network_cei_voice_qoe_outgoing"
             ),
-            node(
-                build_l2_network_features,
-                [
-                    "l1_network_voice_cei_for_l2_network_voice_cei",
-                    "params:l2_network_voice_cei",
-                    "params:l2_network_voice_cei_tbl",
-                    "params:exception_partition_list_for_l2_network_voice_cei"
-                ],
-                "l2_network_voice_cei"
-            ),
-            node(
-                build_l2_network_features,
-                [
-                    "l1_network_data_cei_for_l2_network_data_cei",
-                    "params:l2_network_data_cei",
-                    "params:l2_network_data_cei_tbl",
-                    "params:exception_partition_list_for_l2_network_data_cei"
-                ],
-                "l2_network_data_cei"
-            ),
+            # node(
+            #     build_l2_network_features,
+            #     [
+            #         "l1_network_voice_cei_for_l2_network_voice_cei",
+            #         "params:l2_network_voice_cei",
+            #         "params:l2_network_voice_cei_tbl",
+            #         "params:exception_partition_list_for_l2_network_voice_cei"
+            #     ],
+            #     "l2_network_voice_cei"
+            # ),
+            # node(
+            #     build_l2_network_features,
+            #     [
+            #         "l1_network_data_cei_for_l2_network_data_cei",
+            #         "params:l2_network_data_cei",
+            #         "params:l2_network_data_cei_tbl",
+            #         "params:exception_partition_list_for_l2_network_data_cei"
+            #     ],
+            #     "l2_network_data_cei"
+            # ),
             # node(
             #     build_l2_network_features_lookback,
             #     [
