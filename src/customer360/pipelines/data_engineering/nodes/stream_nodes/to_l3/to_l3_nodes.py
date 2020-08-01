@@ -589,7 +589,7 @@ def streaming_favourite_start_hour_of_day_func(
             output_col = curr_dict["output_col"]
             curr_item = data_frame. \
                 filter(F.lower(F.col("application_name")).isin(filter_query))
-            curr_item = curr_item.groupBy(["msisdn","hour","start_of_month"]).agg(F.sum("dw_kbyte").alias("download"))
+            curr_item = curr_item.groupBy(["msisdn", "hour", "start_of_month"]).agg(F.sum("dw_kbyte").alias("download"))
             curr_item = curr_item.withColumn("rnk", F.row_number().over(win)).where("rnk = 1")
             curr_item = curr_item.select(F.col("msisdn").alias("access_method_num"),
                                          F.col("hour").alias(output_col),
@@ -622,6 +622,9 @@ def streaming_favourite_start_hour_of_day_func(
                         "qqlive", "facebook", "linetv", "ais_play", "netflix", "viu", "viutv", "iflix",
                         "spotify", "jooxmusic", "twitchtv", "bigo", "valve_steam"]
     master_application = master_application.filter(F.lower(F.col("application_name")).isin(application_list))
+
+    input_df = input_df.groupBy(["msisdn", "partition_date", "hour", "application"])\
+        .agg(F.sum("dw_kbyte").alias("dw_kbyte"))
 
     input_with_application = input_df.join(master_application, ["application"])
     input_with_application = add_event_week_and_month_from_yyyymmdd(input_with_application, "partition_date")\
