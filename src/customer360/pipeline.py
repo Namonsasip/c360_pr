@@ -247,7 +247,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "streaming_to_l2_session_duration_pipeline": streaming_to_l2_session_duration_pipeline(),
         "streaming_series_title_master": streaming_series_title_master(),
         "streaming_to_l3_pipeline": streaming_to_l3_pipeline(),
-        "streaming_to_l3_sdr_sub_app_hourly_features": streaming_to_l3_sdr_sub_app_time_based_features(),
+        "streaming_to_l3_sdr_sub_app_time_based_features": streaming_to_l3_sdr_sub_app_time_based_features(),
         "streaming_to_l3_favourite_location_features": streaming_to_l3_favourite_location_features(),
         "streaming_to_l3_session_duration_pipeline": streaming_to_l3_session_duration_pipeline(),
         "streaming_l1_to_l4_pipeline": streaming_l1_to_l4_pipeline(),
