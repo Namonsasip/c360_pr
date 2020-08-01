@@ -623,34 +623,33 @@ def streaming_favourite_start_hour_of_day_func(
                         "spotify", "jooxmusic", "twitchtv", "bigo", "valve_steam"]
     master_application = master_application.filter(F.lower(F.col("application_name")).isin(application_list))
 
-    input_df = input_df.groupBy(["msisdn", "partition_date", "hour", "application"])\
-        .agg(F.sum("dw_kbyte").alias("dw_kbyte"))
+    # input_df = input_df.groupBy(["msisdn", "partition_date", "hour", "application"])\
+    #     .agg(F.sum("dw_kbyte").alias("dw_kbyte"))
 
     input_with_application = input_df.join(master_application, ["application"])
     input_with_application = add_event_week_and_month_from_yyyymmdd(input_with_application, "partition_date")\
         .drop("event_partition_date", "start_of_week")
 
-    dates_list = input_with_application.select("start_of_month").distinct().collect()
-    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
-    mvv_array = sorted(mvv_array)
-    logging.info("Dates to run for {0}".format(str(mvv_array)))
+    # dates_list = input_with_application.select("start_of_month").distinct().collect()
+    # mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+    # mvv_array = sorted(mvv_array)
+    # logging.info("Dates to run for {0}".format(str(mvv_array)))
+    #
+    # CNTX = load_context(Path.cwd(), env=conf)
+    # for curr_item in mvv_array:
+    #     logging.info("Running for {0}".format(curr_item))
 
-    CNTX = load_context(Path.cwd(), env=conf)
-    for curr_item in mvv_array:
-        logging.info("Running for {0}".format(curr_item))
-
-        cust_df = cust_profile_df.filter(F.col("start_of_month") == curr_item)\
-            .withColumn("rn", F.expr(
+    cust_df = cust_profile_df.withColumn("rn", F.expr(
             "row_number() over(partition by start_of_month,access_method_num order by "
             "start_of_month desc, mobile_status_date desc)")) \
             .where("rn = 1") \
             .select("subscription_identifier", "access_method_num", "start_of_month")
 
-        input_with_application_curr = input_with_application.filter(F.col("start_of_month") == curr_item)
-        return_df = process_massive_processing(input_with_application_curr, cust_df)
-        CNTX.catalog.save("l3_streaming_favourite_start_time_hour_of_day", return_df)
+        # input_with_application_curr = input_with_application.filter(F.col("start_of_month") == curr_item)
+    return_df = process_massive_processing(input_with_application, cust_df)
+    #CNTX.catalog.save("l3_streaming_favourite_start_time_hour_of_day", return_df)
 
-    return None
+    return return_df
 
 
 def streaming_traffic_consumption_time_based_features_func(
