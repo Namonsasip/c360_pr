@@ -33,12 +33,12 @@ def network_to_l4_pipeline(**kwargs):
                 "l4_network_data_traffic_features"
             ),
 
-            node(
-                l4_rolling_window,
-                ["l2_network_data_cqi",
-                 "params:l4_network_data_cqi"],
-                "l4_network_data_cqi"
-            ),
+            ## node(
+            ##     l4_rolling_window,
+            ##     ["l2_network_data_cqi",
+            ##      "params:l4_network_data_cqi"],
+            ##     "l4_network_data_cqi"
+            ## ),
             # node(
             #     l4_rolling_window,
             #     ["l2_network_im_cqi",
