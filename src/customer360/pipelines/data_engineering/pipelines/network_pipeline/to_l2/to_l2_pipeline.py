@@ -72,13 +72,13 @@ def network_to_l2_pipeline(**kwargs):
                  "params:exception_partition_list_for_l1_network_web_cqi_for_l2_network_web_cqi"],
                 "l2_network_web_cqi"
             ),
-            node(
-                build_l2_network_voip_cqi,
-                ["l1_network_voip_cqi_for_l2_network_voip_cqi",
-                 "params:l2_network_voip_cqi",
-                 "params:exception_partition_list_for_l2_network_voip_cqi"],
-                "l2_network_voip_cqi"
-            ),
+            # node(
+            #     build_l2_network_voip_cqi,
+            #     ["l1_network_voip_cqi_for_l2_network_voip_cqi",
+            #      "params:l2_network_voip_cqi",
+            #      "params:exception_partition_list_for_l2_network_voip_cqi"],
+            #     "l2_network_voip_cqi"
+            # ),
             node(
                 build_l2_network_volte_cqi,
                 ["l1_network_volte_cqi_for_l2_network_volte_cqi",
@@ -138,17 +138,17 @@ def network_to_l2_pipeline(**kwargs):
                 ],
                 "l2_network_data_cei"
             ),
-            node(
-                build_l2_network_features_lookback,
-                [
-                    "l1_network_failed_outgoing_call_attempt_and_call_drop_3g_for_l2_network_failed_outgoing_call_attempt_and_call_drop_3g",
-                    "params:int_l2_network_failed_outgoing_call_attempt_and_call_drop_3g",
-                    "params:l2_network_failed_outgoing_call_attempt_and_call_drop_3g",
-                    "params:l2_network_failed_outgoing_call_attempt_and_call_drop_3g_tbl",
-                    "params:exception_partition_list_for_l2_network_failed_outgoing_call_attempt_and_call_drop_3g"
-                ],
-                "l2_network_failed_outgoing_call_attempt_and_call_drop_3g"
-            ),
+            # node(
+            #     build_l2_network_features_lookback,
+            #     [
+            #         "l1_network_failed_outgoing_call_attempt_and_call_drop_3g_for_l2_network_failed_outgoing_call_attempt_and_call_drop_3g",
+            #         "params:int_l2_network_failed_outgoing_call_attempt_and_call_drop_3g",
+            #         "params:l2_network_failed_outgoing_call_attempt_and_call_drop_3g",
+            #         "params:l2_network_failed_outgoing_call_attempt_and_call_drop_3g_tbl",
+            #         "params:exception_partition_list_for_l2_network_failed_outgoing_call_attempt_and_call_drop_3g"
+            #     ],
+            #     "l2_network_failed_outgoing_call_attempt_and_call_drop_3g"
+            # ),
             node(
                 build_l2_network_features_lookback,
                 [
@@ -160,16 +160,16 @@ def network_to_l2_pipeline(**kwargs):
                 ],
                 "l2_network_failed_incoming_call_attempt_and_call_drop_4g"
             ),
-            node(
-                build_l2_network_features,
-                [
-                    "l1_network_start_delay_and_success_rate_features_for_l2_network_start_delay_and_success_rate_features",
-                    "params:l2_network_start_delay_and_success_rate_features",
-                    "params:l2_network_start_delay_and_success_rate_features_tbl",
-                    "params:exception_partition_list_for_l2_network_start_delay_and_success_rate_features"
-                ],
-                "l2_network_start_delay_and_success_rate_features"
-            ),
+            # node(
+            #     build_l2_network_features,
+            #     [
+            #         "l1_network_start_delay_and_success_rate_features_for_l2_network_start_delay_and_success_rate_features",
+            #         "params:l2_network_start_delay_and_success_rate_features",
+            #         "params:l2_network_start_delay_and_success_rate_features_tbl",
+            #         "params:exception_partition_list_for_l2_network_start_delay_and_success_rate_features"
+            #     ],
+            #     "l2_network_start_delay_and_success_rate_features"
+            # ),
             node(
                 build_l2_network_features,
                 [
