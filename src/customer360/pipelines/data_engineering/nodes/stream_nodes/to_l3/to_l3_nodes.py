@@ -538,7 +538,6 @@ def streaming_favourite_start_hour_of_day_func(
 
     # TO DO NEED TO REMOVE THIS
     input_df = input_df.where("partition_date < 20200701")
-    input_df.select("partition_date").distinct().show()
 
     if check_empty_dfs([input_df, master_application]):
         return get_spark_empty_df()
@@ -631,6 +630,9 @@ def streaming_favourite_start_hour_of_day_func(
     input_with_application = input_df.join(master_application, ["application"])
     input_with_application = add_event_week_and_month_from_yyyymmdd(input_with_application, "partition_date")\
         .drop("event_partition_date", "start_of_week")
+
+    input_with_application = input_with_application.select("msisdn", "start_of_month", "application_name",
+                                                           "hour", "dw_kbyte")
 
     CNTX = load_context(Path.cwd(), env=conf)
     CNTX.catalog.save("l3_streaming_favourite_start_time_hour_of_day_temp_1", input_with_application)
