@@ -2,8 +2,8 @@ int_l3_network_voice_features:
   feature_list:
     network_cei_voice_qoe: avg(network_cei_voice_qoe)
     network_drop_call_count: sum(network_drop_call_count)
-    network_drop_call_in_3g_count: sum(network_drop_call_in_3g_count)
-    network_drop_call_in_4g_count: sum(network_drop_call_in_4g_count)
+    #network_drop_call_in_3g_count: sum(network_drop_call_in_3g_count)
+    #network_drop_call_in_4g_count: sum(network_drop_call_in_4g_count)
     network_total_call_count: sum(network_total_call_count)
     #network_failed_incoming_call_attempt: sum(network_failed_incoming_call_attempt)
     #network_failed_outgoing_call_attempt: sum(network_failed_outgoing_call_attempt)
