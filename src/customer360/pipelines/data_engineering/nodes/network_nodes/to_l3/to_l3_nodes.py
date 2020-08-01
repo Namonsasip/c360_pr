@@ -33,7 +33,7 @@ def build_l3_network_voice_features(
             par_col="event_partition_date",
             target_table_name="l3_network_voice_features",
             missing_data_check_flg='Y',
-            exception_partitions=['2020-01-01'])
+            exception_partitions=['2020-01-01', '2020-03-01', '2020-04-01'])
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
