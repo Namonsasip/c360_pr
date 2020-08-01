@@ -28,13 +28,13 @@ def network_to_l2_pipeline(**kwargs):
             #      "params:l2_network_good_and_bad_cells_features"],
             #     "l2_network_good_and_bad_cells_features"
             # ),
-            node(
-                build_l2_network_share_of_3g_time_in_total_time,
-                ["l1_network_share_of_3g_time_in_total_time_for_l2_network_share_of_3g_time_in_total_time",
-                 "params:l2_network_share_of_3g_time_in_total_time",
-                 "params:exception_partition_list_for_l1_network_share_of_3g_time_in_total_time_for_l2_network_share_of_3g_time_in_total_time"],
-                "l2_network_share_of_3g_time_in_total_time"
-            ),
+            # node(
+            #     build_l2_network_share_of_3g_time_in_total_time,
+            #     ["l1_network_share_of_3g_time_in_total_time_for_l2_network_share_of_3g_time_in_total_time",
+            #      "params:l2_network_share_of_3g_time_in_total_time",
+            #      "params:exception_partition_list_for_l1_network_share_of_3g_time_in_total_time_for_l2_network_share_of_3g_time_in_total_time"],
+            #     "l2_network_share_of_3g_time_in_total_time"
+            # ),
 
             node(
                 build_l2_network_data_traffic_features,
@@ -44,13 +44,13 @@ def network_to_l2_pipeline(**kwargs):
                 "l2_network_data_traffic_features"
             ),
 
-            node(
-                build_l2_network_data_cqi,
-                ["l1_network_data_cqi_for_l2_network_data_cqi",
-                 "params:l2_network_data_cqi",
-                 "params:exception_partition_list_for_l1_network_data_cqi_for_l2_network_data_cqi"],
-                "l2_network_data_cqi"
-            ),
+            ## node(
+            ##     build_l2_network_data_cqi,
+            ##     ["l1_network_data_cqi_for_l2_network_data_cqi",
+            ##      "params:l2_network_data_cqi",
+            ##      "params:exception_partition_list_for_l1_network_data_cqi_for_l2_network_data_cqi"],
+            ##     "l2_network_data_cqi"
+            ## ),
             node(
                 build_l2_network_im_cqi,
                 ["l1_network_im_cqi_for_l2_network_im_cqi",
@@ -149,17 +149,17 @@ def network_to_l2_pipeline(**kwargs):
             #     ],
             #     "l2_network_failed_outgoing_call_attempt_and_call_drop_3g"
             # ),
-            node(
-                build_l2_network_features_lookback,
-                [
-                    "l1_network_failed_incoming_call_attempt_and_call_drop_4g_for_l2_network_failed_incoming_call_attempt_and_call_drop_4g",
-                    "params:int_l2_network_failed_incoming_call_attempt_and_call_drop_4g",
-                    "params:l2_network_failed_incoming_call_attempt_and_call_drop_4g",
-                    "params:l2_network_failed_incoming_call_attempt_and_call_drop_4g_tbl",
-                    "params:exception_partition_list_for_l2_network_failed_incoming_call_attempt_and_call_drop_4g"
-                ],
-                "l2_network_failed_incoming_call_attempt_and_call_drop_4g"
-            ),
+            # node(
+            #     build_l2_network_features_lookback,
+            #     [
+            #         "l1_network_failed_incoming_call_attempt_and_call_drop_4g_for_l2_network_failed_incoming_call_attempt_and_call_drop_4g",
+            #         "params:int_l2_network_failed_incoming_call_attempt_and_call_drop_4g",
+            #         "params:l2_network_failed_incoming_call_attempt_and_call_drop_4g",
+            #         "params:l2_network_failed_incoming_call_attempt_and_call_drop_4g_tbl",
+            #         "params:exception_partition_list_for_l2_network_failed_incoming_call_attempt_and_call_drop_4g"
+            #     ],
+            #     "l2_network_failed_incoming_call_attempt_and_call_drop_4g"
+            # ),
             # node(
             #     build_l2_network_features,
             #     [
@@ -170,15 +170,15 @@ def network_to_l2_pipeline(**kwargs):
             #     ],
             #     "l2_network_start_delay_and_success_rate_features"
             # ),
-            node(
-                build_l2_network_features,
-                [
-                    "l1_network_failed_calls_home_location_for_l2_network_failed_calls_home_location",
-                    "params:l2_network_failed_calls_home_location",
-                    "params:l2_network_failed_calls_home_location_tbl",
-                    "params:exception_partition_list_for_l2_network_failed_calls_home_location"
-                ],
-                "l2_network_failed_calls_home_location"
-            )
+            # node(
+            #     build_l2_network_features,
+            #     [
+            #         "l1_network_failed_calls_home_location_for_l2_network_failed_calls_home_location",
+            #         "params:l2_network_failed_calls_home_location",
+            #         "params:l2_network_failed_calls_home_location_tbl",
+            #         "params:exception_partition_list_for_l2_network_failed_calls_home_location"
+            #     ],
+            #     "l2_network_failed_calls_home_location"
+            # )
         ]
     )

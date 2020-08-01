@@ -39,12 +39,12 @@ def network_to_l3_pipeline(**kwargs):
                 "l3_network_data_traffic_features"
             ),
 
-            node(
-                build_l3_network_data_cqi,
-                ["l1_network_data_cqi_for_l3_network_data_cqi",
-                 "params:l3_network_data_cqi"],
-                "l3_network_data_cqi"
-            ),
+            ## node(
+            ##     build_l3_network_data_cqi,
+            ##     ["l1_network_data_cqi_for_l3_network_data_cqi",
+            ##      "params:l3_network_data_cqi"],
+            ##     "l3_network_data_cqi"
+            ## ),
             node(
                 build_l3_network_im_cqi,
                 ["l1_network_im_cqi_for_l3_network_im_cqi",
