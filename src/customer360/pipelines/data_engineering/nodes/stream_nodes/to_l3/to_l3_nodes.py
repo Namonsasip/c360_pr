@@ -538,6 +538,7 @@ def streaming_favourite_start_hour_of_day_func(
 
     # TO DO NEED TO REMOVE THIS
     input_df = input_df.where("partition_date < 20200701")
+    input_df.select("partition_date").distinct().show()
 
     if check_empty_dfs([input_df, master_application]):
         return get_spark_empty_df()
