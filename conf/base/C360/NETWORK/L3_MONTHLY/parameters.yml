@@ -24,7 +24,7 @@ exception_partition_list_for_l1_network_volte_cqi_for_l3_network_volte_cqi: ['20
 # Start of month before 20-Jan-20
 exception_partition_list_for_l1_network_file_transfer_cqi_for_l3_network_file_transfer_cqi: ['2020-01-01','2020-03-01','2020-04-01']
 
-exception_partition_list_for_l3_network_cei_voice_qoe_incoming: ['2020-01-01','2020-03-01','2020-04-01']
+exception_partition_list_for_l3_network_cei_voice_qoe_incoming: ['2020-01-01','2020-03-01','2020-04-01','2020-07-01']
 exception_partition_list_for_l3_network_cei_voice_qoe_outgoing: ['2020-01-01','2020-03-01','2020-04-01']
 exception_partition_list_for_l3_network_voice_cei: ['2020-01-01','2020-02-01','2020-03-01','2020-04-01','2020-05-01']
 exception_partition_list_for_l3_network_data_cei: ['2020-01-01','2020-02-01','2020-03-01','2020-04-01','2020-05-01']
