@@ -6,14 +6,20 @@ def network_to_l3_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                node_from_config,
+                dac_for_voice_features,
                 ["l1_network_voice_features_for_l3_network_voice_features",
+                 "params:exception_partition_list_for_l1_network_voice_features_for_l3_network_voice_features"],
+                "int_l1_network_voice_features_for_l3_network_voice_features"
+            ),
+            node(
+                node_from_config,
+                ["int_l1_network_voice_features_for_l3_network_voice_features",
                  "params:int_l3_network_voice_features"],
                 "int_l3_network_voice_features"
             ),
 
             node(
-                build_l3_network_voice_features,
+                node_from_config,
                 ["int_l3_network_voice_features",
                  "params:l3_network_voice_features"],
                 "l3_network_voice_features"

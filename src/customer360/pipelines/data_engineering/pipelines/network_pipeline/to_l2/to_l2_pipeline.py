@@ -8,17 +8,22 @@ def network_to_l2_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                node_from_config,
+                dac_for_voice_features,
                 ["l1_network_voice_features_for_l2_network_voice_features",
+                 "params:exception_partition_list_for_l1_network_voice_features_for_l2_network_voice_features"],
+                "int_l1_network_voice_features_for_l2_network_voice_features"
+            ),
+            node(
+                node_from_config,
+                ["int_l1_network_voice_features_for_l2_network_voice_features",
                  "params:int_l2_network_voice_features"],
                 "int_l2_network_voice_features"
             ),
 
             node(
-                build_l2_network_voice_features,
+                node_from_config,
                 ["int_l2_network_voice_features",
-                 "params:l2_network_voice_features",
-                 "params:exception_partition_list_for_l1_network_voice_features_for_l2_network_voice_features"],
+                 "params:l2_network_voice_features"],
                 "l2_network_voice_features"
             ),
 
@@ -86,13 +91,13 @@ def network_to_l2_pipeline(**kwargs):
             #      "params:exception_partition_list_for_l2_network_volte_cqi"],
             #     "l2_network_volte_cqi"
             # ),
-            node(
-                build_l2_network_user_cqi,
-                ["l1_network_user_cqi_for_l2_network_user_cqi",
-                 "params:l2_network_user_cqi",
-                 "params:exception_partition_list_for_l2_network_user_cqi"],
-                "l2_network_user_cqi"
-            ),
+            # node(
+            #     build_l2_network_user_cqi,
+            #     ["l1_network_user_cqi_for_l2_network_user_cqi",
+            #      "params:l2_network_user_cqi",
+            #      "params:exception_partition_list_for_l2_network_user_cqi"],
+            #     "l2_network_user_cqi"
+            # ),
             # node(
             #     build_l2_network_file_transfer_cqi,
             #     ["l1_network_file_transfer_cqi_for_l2_network_file_transfer_cqi",
@@ -100,14 +105,14 @@ def network_to_l2_pipeline(**kwargs):
             #      "params:exception_partition_list_for_l2_network_file_transfer_cqi"],
             #     "l2_network_file_transfer_cqi"
             # ),
-            node(
-                build_l2_network_features,
-                ["l1_network_cei_voice_qoe_incoming_for_l2_network_cei_voice_qoe_incoming",
-                 "params:l2_network_cei_voice_qoe_incoming",
-                 "params:l2_network_cei_voice_qoe_incoming_tbl",
-                 "params:exception_partition_list_for_l2_network_cei_voice_qoe_incoming"],
-                "l2_network_cei_voice_qoe_incoming"
-            ),
+            # node(
+            #     build_l2_network_features,
+            #     ["l1_network_cei_voice_qoe_incoming_for_l2_network_cei_voice_qoe_incoming",
+            #      "params:l2_network_cei_voice_qoe_incoming",
+            #      "params:l2_network_cei_voice_qoe_incoming_tbl",
+            #      "params:exception_partition_list_for_l2_network_cei_voice_qoe_incoming"],
+            #     "l2_network_cei_voice_qoe_incoming"
+            # ),
             # node(
             #     build_l2_network_features,
             #     [

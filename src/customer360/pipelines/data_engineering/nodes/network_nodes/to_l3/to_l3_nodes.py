@@ -13,13 +13,12 @@ from pathlib import Path
 conf = os.getenv("CONF", "base")
 
 
-def build_l3_network_voice_features(
+def dac_for_voice_features(
         input_df: DataFrame,
-        parameter: dict) -> DataFrame:
+        exception_partitions: List[str]) -> DataFrame:
     """
-
     :param input_df:
-    :param parameter:
+    :param exception_partitions:
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
@@ -33,15 +32,44 @@ def build_l3_network_voice_features(
             par_col="event_partition_date",
             target_table_name="l3_network_voice_features",
             missing_data_check_flg='Y',
-            exception_partitions=['2020-01-01', '2020-03-01', '2020-04-01'])
+            exception_partitions=exception_partitions)
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
 
-    return_df = node_from_config(input_df, parameter)
+    return input_df
 
-    return return_df
+
+# def build_l3_network_voice_features(
+#         input_df: DataFrame,
+#         parameter: dict) -> DataFrame:
+#     """
+#
+#     :param input_df:
+#     :param parameter:
+#     :return:
+#     """
+#     ################################# Start Implementing Data availability checks #############################
+#     if check_empty_dfs(
+#             [input_df]):
+#         return get_spark_empty_df()
+#
+#     input_df = \
+#         data_non_availability_and_missing_check(
+#             df=input_df, grouping="monthly",
+#             par_col="event_partition_date",
+#             target_table_name="l3_network_voice_features",
+#             missing_data_check_flg='Y',
+#             exception_partitions=['2020-01-01', '2020-03-01', '2020-04-01'])
+#
+#     if check_empty_dfs([input_df]):
+#         return get_spark_empty_df()
+#     ################################# End Implementing Data availability checks ###############################
+#
+#     return_df = node_from_config(input_df, parameter)
+#
+#     return return_df
 
 
 def build_l3_network_good_and_bad_cells_features(
