@@ -56,16 +56,16 @@ def generate_l3_fav_streaming_day(input_df, app_list):
 
 def dac_for_streaming_to_l3_pipeline_from_l1(input_df: DataFrame, target_table_name: str):
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([input_df]):
-        return get_spark_empty_df()
-
-    input_df = data_non_availability_and_missing_check(df=input_df, grouping="monthly", par_col="event_partition_date",
-                                                       target_table_name=target_table_name,
-                                                       missing_data_check_flg='Y',
-                                                       exception_partitions=["2020-04-01"])
-
-    if check_empty_dfs([input_df]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([input_df]):
+    #     return get_spark_empty_df()
+    #
+    # input_df = data_non_availability_and_missing_check(df=input_df, grouping="monthly", par_col="event_partition_date",
+    #                                                    target_table_name=target_table_name,
+    #                                                    missing_data_check_flg='Y',
+    #                                                    exception_partitions=["2020-04-01"])
+    #
+    # if check_empty_dfs([input_df]):
+    #     return get_spark_empty_df()
 
     ################################# End Implementing Data availability checks ###############################
 
@@ -528,7 +528,6 @@ def streaming_favourite_start_hour_of_day_func(
         target_table_name="l3_streaming_traffic_consumption_time_based_features")
     if check_empty_dfs([input_df]):
         return None
-    # input_df = input_df.where("event_partition_date < '2020-06-01'")
     ################################# End Implementing Data availability checks ###############################
     def process_massive_processing_favourite_hour(data_frame: DataFrame):
         """
