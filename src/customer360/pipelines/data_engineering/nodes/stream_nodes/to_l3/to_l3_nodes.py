@@ -528,6 +528,7 @@ def streaming_favourite_start_hour_of_day_func(
     #     target_table_name="l3_streaming_favourite_start_time_hour_of_day")
     # if check_empty_dfs([input_df]):
     #     return None
+    input_df = input_df.where("event_partition_date < 2020-06-01")
     ################################# End Implementing Data availability checks ###############################
 
     # def process_massive_processing(data_frame: DataFrame, customer_prof: DataFrame) -> DataFrame:
