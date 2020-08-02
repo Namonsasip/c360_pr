@@ -40,6 +40,23 @@ from customer360.pipelines.data_engineering.nodes.stream_nodes.to_l1.to_l1_nodes
 def streaming_to_l1_onair_vimmi_pipeline(**kwargs):
     return Pipeline(
         [
+            node(
+                build_streaming_sdr_sub_app_hourly_for_l3_monthly,
+                [
+                    "l0_streaming_sdr_sub_app_hourly_for_l1_streaming_sdr_sub_app_hourly",
+                    "l0_mobile_app_master",
+                    "l1_customer_profile_union_daily_feature_for_l1_streaming_sdr_sub_app_hourly"
+                    ],
+                "l1_streaming_sdr_sub_app_hourly"
+            )
+        ]
+    )
+
+
+
+def streaming_to_l1_onair_vimmi_pipeline(**kwargs):
+    return Pipeline(
+        [
             node(stream_process_ru_a_onair_vimmi,
                  ["l0_streaming_ru_a_onair_vimmi_usage_daily_for_multiple_outputs",
                   "l1_customer_profile_union_daily_feature_for_l1_streaming_fav_tv_show_by_episode_watched",
