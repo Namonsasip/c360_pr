@@ -554,6 +554,7 @@ def build_streaming_sdr_sub_app_hourly_for_l3_monthly(input_df: DataFrame,
 
     CNTX = load_context(Path.cwd(), env=conf)
     data_frame = input_df
+    data_frame = data_frame.withColumnRenamed("msisdn", "access_method_num")
     data_frame = add_event_week_and_month_from_yyyymmdd(data_frame, "partition_date")
     dates_list = data_frame.select('event_partition_date').distinct().collect()
     mvv_array = [row[0] for row in dates_list]
@@ -576,7 +577,7 @@ def build_streaming_sdr_sub_app_hourly_for_l3_monthly(input_df: DataFrame,
                         (((f.col("STREAMING_Download_DELAY") * 1000 * 8) / 1024) / 1024))
 
         return_df = return_df.select("access_method_num", "subscription_identifier", "event_partition_date",
-                                     "start_of_month", "application_name", "application_group",
+                                     "start_of_month", "start_of_week", "application_name", "application_group",
                                      "dw_kbyte", "streaming_quality")
 
         CNTX.catalog.save("l1_streaming_sdr_sub_app_hourly", return_df)
@@ -591,7 +592,7 @@ def build_streaming_sdr_sub_app_hourly_for_l3_monthly(input_df: DataFrame,
                     (((f.col("STREAMING_Download_DELAY") * 1000 * 8) / 1024) / 1024))
 
     return_df = return_df.select("access_method_num", "subscription_identifier", "event_partition_date",
-                                 "start_of_month", "application_name", "application_group",
+                                 "start_of_month", "start_of_week", "application_name", "application_group",
                                  "dw_kbyte", "streaming_quality")
 
     return return_df
