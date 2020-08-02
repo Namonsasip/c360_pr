@@ -920,7 +920,7 @@ def massive_processing_time_spent_daily(data_frame: DataFrame, sql, output_df_ca
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         small_df = data_frame.filter(f.col(partition_col).isin(*[curr_item]))
-        small_df = add_start_of_week_and_month(small_df, "time_in")
+        small_df = add_start_of_week_and_month(small_df, partition_col)
         small_df.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
         output_df = ss.sql(sql)
         CNTX.catalog.save(output_df_catalog, output_df)
