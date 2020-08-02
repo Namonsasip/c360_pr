@@ -948,10 +948,18 @@ def streaming_favourite_quality_features_func(
     ################################# End Implementing Data availability checks ###############################
     w_recent_partition = Window.partitionBy("application_id").orderBy(F.col("partition_month").desc())
 
-    master_application = master_application \
+    max_master_application = master_application.select("partition_month") \
+        .agg(F.max("partition_month").alias("partition_month"))
+    master_application = master_application.join(max_master_application, ["partition_month"]) \
         .withColumn("rank", F.row_number().over(w_recent_partition)) \
         .where(F.col("rank") == 1) \
         .withColumnRenamed("application_id", "application")
+
+    application = ["youtube","youtube_go", "youtubebyclick", "trueid", "truevisions", "monomaxx", "qqlive",
+                   "linetv", "ais_play", "netflix", "viu", "viutv", "iflix", "spotify", "jooxmusic",
+                   "twitchtv", "bigo", "valve_steam"]
+
+    master_application = master_application.filter(F.lower(F.col("application_name")).isin(application))
 
     cust_df = cust_profile_df.withColumn("rn", F.expr(
         "row_number() over(partition by start_of_month,access_method_num order by "
