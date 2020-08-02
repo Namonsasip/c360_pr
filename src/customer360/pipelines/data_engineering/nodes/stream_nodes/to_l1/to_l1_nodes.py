@@ -567,7 +567,7 @@ def build_streaming_sdr_sub_app_hourly_for_l3_monthly(input_df: DataFrame,
     add_list.remove(first_item)
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
-        filtered_input_df = input_df.filter(f.col("event_partition_date").isin(*[curr_item]))
+        filtered_input_df = data_frame.filter(f.col("event_partition_date").isin(*[curr_item]))
         customer_filtered_df = cust_profile_df.filter(f.col("event_partition_date").isin(*[curr_item]))
 
         return_df = filtered_input_df.join(master_application, ["application"])
@@ -582,7 +582,7 @@ def build_streaming_sdr_sub_app_hourly_for_l3_monthly(input_df: DataFrame,
         CNTX.catalog.save("l1_streaming_sdr_sub_app_hourly", return_df)
 
     logging.info("running for dates {0}".format(str(curr_item)))
-    filtered_input_df = input_df.filter(f.col("event_partition_date").isin(*[first_item]))
+    filtered_input_df = data_frame.filter(f.col("event_partition_date").isin(*[first_item]))
     customer_filtered_df = cust_profile_df.filter(f.col("event_partition_date").isin(*[first_item]))
 
     return_df = filtered_input_df.join(master_application, ["application"])
@@ -591,7 +591,7 @@ def build_streaming_sdr_sub_app_hourly_for_l3_monthly(input_df: DataFrame,
                     (((f.col("STREAMING_Download_DELAY") * 1000 * 8) / 1024) / 1024))
 
     return_df = return_df.select("access_method_num", "subscription_identifier", "event_partition_date",
-                                     "start_of_month", "application_name", "application_group",
-                                     "dw_kbyte", "streaming_quality")
+                                 "start_of_month", "application_name", "application_group",
+                                 "dw_kbyte", "streaming_quality")
 
     return return_df
