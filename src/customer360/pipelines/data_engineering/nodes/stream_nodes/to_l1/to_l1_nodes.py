@@ -497,3 +497,102 @@ def stream_process_soc_mobile_data(input_data: DataFrame,
         l1_streaming_2nd_fav_esport_service_by_download_feature,
         l1_streaming_visit_count_and_download_traffic_feature
     ]
+
+
+def build_streaming_sdr_sub_app_hourly_for_l3_monthly(input_df: DataFrame,
+                                                      master_df: DataFrame,
+                                                      cust_profile_df: DataFrame) -> DataFrame:
+    """
+    :param input_df:
+    :param master_df:
+    :param cust_profile_df:
+    :return:
+    """
+    ################################# Start Implementing Data availability checks #############################
+    # if check_empty_dfs([input_df, cust_profile_df]):
+    #     return get_spark_empty_df()
+    #
+    # input_df = data_non_availability_and_missing_check(
+    #     df=input_df,
+    #     grouping="daily",
+    #     par_col="partition_date",
+    #     target_table_name="l1_streaming_sdr_sub_app_hourly")
+    #
+    # cust_profile_df = data_non_availability_and_missing_check(
+    #     df=cust_profile_df,
+    #     grouping="daily",
+    #     par_col="event_partition_date",
+    #     target_table_name="l1_streaming_sdr_sub_app_hourly")
+    #
+    # if check_empty_dfs([input_df, cust_profile_df]):
+    #     return get_spark_empty_df()
+
+    input_df = input_df.where("partition_date > 20200430 and partition_date < 20200701")
+    # ################################# End Implementing Data availability checks ###############################
+
+    w_recent_partition = Window.partitionBy("application_id").orderBy(f.col("partition_month").desc())
+    max_master_application = master_df.select("partition_month") \
+        .agg(f.max("partition_month").alias("partition_month"))
+
+    master_application = master_df.join(max_master_application, ["partition_month"]) \
+        .withColumn("rank", f.row_number().over(w_recent_partition)) \
+        .where(f.col("rank") == 1) \
+        .withColumnRenamed("application_id", "application")
+
+    def divide_chunks(l, n):
+        # looping till length l
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    sel_cols = ['access_method_num',
+                'event_partition_date',
+                "subscription_identifier",
+                "start_of_week",
+                "start_of_month",
+                ]
+    join_cols = ['access_method_num', 'event_partition_date', "start_of_week", "start_of_month"]
+
+    CNTX = load_context(Path.cwd(), env=conf)
+    data_frame = input_df
+    data_frame = data_frame.withColumnRenamed("msisdn", "access_method_num")
+    data_frame = add_event_week_and_month_from_yyyymmdd(data_frame, "partition_date")
+    dates_list = data_frame.select('event_partition_date').distinct().collect()
+    mvv_array = [row[0] for row in dates_list]
+    mvv_array = sorted(mvv_array)
+    logging.info("Dates to run for {0}".format(str(mvv_array)))
+
+    mvv_array = list(divide_chunks(mvv_array, 5))
+    add_list = mvv_array
+
+    first_item = add_list[-1]
+    add_list.remove(first_item)
+    for curr_item in add_list:
+        logging.info("running for dates {0}".format(str(curr_item)))
+        filtered_input_df = data_frame.filter(f.col("event_partition_date").isin(*[curr_item]))
+        customer_filtered_df = cust_profile_df.filter(f.col("event_partition_date").isin(*[curr_item]))
+
+        return_df = filtered_input_df.join(master_application, ["application"])
+        return_df = return_df.join(customer_filtered_df.select(sel_cols), join_cols)\
+            .withColumn("streaming_quality", f.col("streaming_dw_packets") /
+                        (((f.col("STREAMING_Download_DELAY") * 1000 * 8) / 1024) / 1024))
+
+        return_df = return_df.select("access_method_num", "subscription_identifier", "event_partition_date",
+                                     "start_of_month", "start_of_week", "application_name", "application_group",
+                                     "dw_kbyte", "streaming_quality")
+
+        CNTX.catalog.save("l1_streaming_sdr_sub_app_hourly", return_df)
+
+    logging.info("running for dates {0}".format(str(first_item)))
+    filtered_input_df = data_frame.filter(f.col("event_partition_date").isin(*[first_item]))
+    customer_filtered_df = cust_profile_df.filter(f.col("event_partition_date").isin(*[first_item]))
+
+    return_df = filtered_input_df.join(master_application, ["application"])
+    return_df = return_df.join(customer_filtered_df.select(sel_cols), join_cols) \
+        .withColumn("streaming_quality", f.col("streaming_dw_packets") /
+                    (((f.col("STREAMING_Download_DELAY") * 1000 * 8) / 1024) / 1024))
+
+    return_df = return_df.select("access_method_num", "subscription_identifier", "event_partition_date",
+                                 "start_of_month", "start_of_week", "application_name", "application_group",
+                                 "dw_kbyte", "streaming_quality")
+
+    return return_df
