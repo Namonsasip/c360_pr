@@ -509,25 +509,24 @@ def build_streaming_sdr_sub_app_hourly_for_l3_monthly(input_df: DataFrame,
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
-    # if check_empty_dfs([input_df, cust_profile_df]):
-    #     return get_spark_empty_df()
-    #
-    # input_df = data_non_availability_and_missing_check(
-    #     df=input_df,
-    #     grouping="daily",
-    #     par_col="partition_date",
-    #     target_table_name="l1_streaming_sdr_sub_app_hourly")
-    #
-    # cust_profile_df = data_non_availability_and_missing_check(
-    #     df=cust_profile_df,
-    #     grouping="daily",
-    #     par_col="event_partition_date",
-    #     target_table_name="l1_streaming_sdr_sub_app_hourly")
-    #
-    # if check_empty_dfs([input_df, cust_profile_df]):
-    #     return get_spark_empty_df()
+    if check_empty_dfs([input_df, cust_profile_df]):
+        return get_spark_empty_df()
 
-    input_df = input_df.where("partition_date > 20200430 and partition_date < 20200701")
+    input_df = data_non_availability_and_missing_check(
+        df=input_df,
+        grouping="daily",
+        par_col="partition_date",
+        target_table_name="l1_streaming_sdr_sub_app_hourly")
+
+    cust_profile_df = data_non_availability_and_missing_check(
+        df=cust_profile_df,
+        grouping="daily",
+        par_col="event_partition_date",
+        target_table_name="l1_streaming_sdr_sub_app_hourly")
+
+    if check_empty_dfs([input_df, cust_profile_df]):
+        return get_spark_empty_df()
+
     # ################################# End Implementing Data availability checks ###############################
 
     w_recent_partition = Window.partitionBy("application_id").orderBy(f.col("partition_month").desc())
@@ -574,7 +573,7 @@ def build_streaming_sdr_sub_app_hourly_for_l3_monthly(input_df: DataFrame,
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_array = list(divide_chunks(mvv_array, 1))
+    mvv_array = list(divide_chunks(mvv_array, 2))
     add_list = mvv_array
 
     first_item = add_list[-1]
