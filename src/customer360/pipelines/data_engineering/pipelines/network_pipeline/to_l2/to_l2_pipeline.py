@@ -7,32 +7,33 @@ from customer360.pipelines.data_engineering.nodes.network_nodes.to_l2.to_l2_node
 def network_to_l2_pipeline(**kwargs):
     return Pipeline(
         [
-            node(
-                dac_for_voice_features,
-                ["l1_network_voice_features_for_l2_network_voice_features",
-                 "params:exception_partition_list_for_l1_network_voice_features_for_l2_network_voice_features"],
-                "int_l1_network_voice_features_for_l2_network_voice_features"
-            ),
-            node(
-                node_from_config,
-                ["int_l1_network_voice_features_for_l2_network_voice_features",
-                 "params:int_l2_network_voice_features"],
-                "int_l2_network_voice_features"
-            ),
-
-            node(
-                node_from_config,
-                ["int_l2_network_voice_features",
-                 "params:l2_network_voice_features"],
-                "l2_network_voice_features"
-            ),
-
             # node(
-            #     build_l2_network_good_and_bad_cells_features,
-            #     ["l1_network_good_and_bad_cells_features_for_l2_network_good_and_bad_cells_features",
-            #      "params:l2_network_good_and_bad_cells_features"],
-            #     "l2_network_good_and_bad_cells_features"
+            #     dac_for_voice_features,
+            #     ["l1_network_voice_features_for_l2_network_voice_features",
+            #      "params:exception_partition_list_for_l1_network_voice_features_for_l2_network_voice_features"],
+            #     "int_l1_network_voice_features_for_l2_network_voice_features"
             # ),
+            # node(
+            #     node_from_config,
+            #     ["int_l1_network_voice_features_for_l2_network_voice_features",
+            #      "params:int_l2_network_voice_features"],
+            #     "int_l2_network_voice_features"
+            # ),
+            #
+            # node(
+            #     node_from_config,
+            #     ["int_l2_network_voice_features",
+            #      "params:l2_network_voice_features"],
+            #     "l2_network_voice_features"
+            # ),
+
+            node(
+                build_l2_network_good_and_bad_cells_features,
+                ["l1_network_good_and_bad_cells_features_for_l2_network_good_and_bad_cells_features",
+                 "params:l2_network_good_and_bad_cells_features",
+                 "params:exception_partitions_for_l2_network_good_and_bad_cells_features"],
+                "l2_network_good_and_bad_cells_features"
+            ),
             # node(
             #     build_l2_network_share_of_3g_time_in_total_time,
             #     ["l1_network_share_of_3g_time_in_total_time_for_l2_network_share_of_3g_time_in_total_time",

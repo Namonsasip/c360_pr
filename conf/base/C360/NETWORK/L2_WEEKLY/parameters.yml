@@ -40,4 +40,5 @@ exception_partition_list_for_l2_network_failed_outgoing_call_attempt_and_call_dr
 exception_partition_list_for_l2_network_failed_incoming_call_attempt_and_call_drop_4g: ['2020-01-27','2020-03-09','2020-04-06','2020-04-27']
 exception_partition_list_for_l2_network_start_delay_and_success_rate_features: ['2020-01-27','2020-03-09','2020-04-06','2020-04-27']
 exception_partition_list_for_l2_network_failed_calls_home_location: ['2020-01-27','2020-03-09','2020-04-06','2020-04-27']
+exception_partitions_for_l2_network_good_and_bad_cells_features: ['2020-01-27','2020-03-09','2020-03-16','2020-04-06','2020-04-27','2020-05-04']
 
