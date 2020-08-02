@@ -825,10 +825,18 @@ def streaming_favourite_location_features_func(
     ################################# End Implementing Data availability checks ###############################
     w_recent_partition = Window.partitionBy("application_id").orderBy(F.col("partition_month").desc())
 
-    master_application = master_application \
+    max_master_application = master_application.select("partition_month") \
+        .agg(F.max("partition_month").alias("partition_month"))
+    master_application = master_application.join(max_master_application, ["partition_month"]) \
         .withColumn("rank", F.row_number().over(w_recent_partition)) \
         .where(F.col("rank") == 1) \
         .withColumnRenamed("application_id", "application")
+
+    application = ["youtube","youtube_go", "youtubebyclick", "trueid", "truevisions", "monomaxx", "qqlive",
+                   "facebook", "linetv", "ais_play", "netflix", "viu", "viutv", "iflix", "spotify", "jooxmusic",
+                   "twitchtv", "bigo", "valve_steam"]
+
+    master_application = master_application.filter(F.lower(F.col("application_name")).isin(application))
 
     geo_master_plan_max = geo_mster_plan.agg(F.max("partition_date").alias("partition_date"))
     geo_master_plan = geo_mster_plan.join(geo_master_plan_max, ["partition_date"])\
