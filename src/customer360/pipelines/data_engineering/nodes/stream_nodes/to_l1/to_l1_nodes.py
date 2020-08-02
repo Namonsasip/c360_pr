@@ -573,12 +573,8 @@ def build_streaming_sdr_sub_app_hourly_for_l3_monthly(input_df: DataFrame,
 
         return_df = filtered_input_df.join(master_application, ["application"])
         return_df = return_df.join(customer_filtered_df.select(sel_cols), join_cols)\
-            .withColumn("streaming_quality", f.col("streaming_dw_packets") /
-                        (((f.col("STREAMING_Download_DELAY") * 1000 * 8) / 1024) / 1024))
-
-        return_df = return_df.select("access_method_num", "subscription_identifier", "event_partition_date",
-                                     "start_of_month", "start_of_week", "application_name", "application_group",
-                                     "dw_kbyte", "streaming_quality")
+            .select("access_method_num", "subscription_identifier", "event_partition_date",
+                    "start_of_month", "start_of_week", "application_name", "application_group", "dw_kbyte")
 
         CNTX.catalog.save("l1_streaming_sdr_sub_app_hourly", return_df)
 
@@ -588,11 +584,7 @@ def build_streaming_sdr_sub_app_hourly_for_l3_monthly(input_df: DataFrame,
 
     return_df = filtered_input_df.join(master_application, ["application"])
     return_df = return_df.join(customer_filtered_df.select(sel_cols), join_cols) \
-        .withColumn("streaming_quality", f.col("streaming_dw_packets") /
-                    (((f.col("STREAMING_Download_DELAY") * 1000 * 8) / 1024) / 1024))
-
-    return_df = return_df.select("access_method_num", "subscription_identifier", "event_partition_date",
-                                 "start_of_month", "start_of_week", "application_name", "application_group",
-                                 "dw_kbyte", "streaming_quality")
+        .select("access_method_num", "subscription_identifier", "event_partition_date",
+                "start_of_month", "start_of_week", "application_name", "application_group", "dw_kbyte")
 
     return return_df
