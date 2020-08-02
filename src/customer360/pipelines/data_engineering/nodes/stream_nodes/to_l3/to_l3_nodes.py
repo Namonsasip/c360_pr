@@ -520,17 +520,14 @@ def streaming_favourite_start_hour_of_day_func(
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([input_df]):
-        return None
-
+    # if check_empty_dfs([input_df]):
+    #     return None
     # input_df = data_non_availability_and_missing_check(
-    #     df=input_df, grouping="monthly", par_col="partition_date",
+    #     df=input_df, grouping="monthly", par_col="event_partition_date",
     #     missing_data_check_flg='Y',
     #     target_table_name="l3_streaming_favourite_start_time_hour_of_day")
-    input_df = input_df.where("event_partition_date < '2020-06-01'")
-
-    if check_empty_dfs([input_df]):
-        return None
+    # if check_empty_dfs([input_df]):
+    #     return None
     ################################# End Implementing Data availability checks ###############################
 
     # def process_massive_processing(data_frame: DataFrame, customer_prof: DataFrame) -> DataFrame:
@@ -619,9 +616,10 @@ def streaming_favourite_start_hour_of_day_func(
         )
                        )
 
-        grouped = input_with_application.\
-            groupBy(["subscription_identifier", "application_group", "day_type", "time_of_day", "start_of_month"]).\
-            agg(F.sum(F.col("dw_kbytes")).alias("download"))
+        weekend_type = ['Saturday', 'Sunday']
+        input_with_application = input_with_application.\
+            withColumn("day_type", F.when(F.date_format("event_partition_date", 'EEEE').isin(weekend_type),
+                       F.lit("Weekend")).otherwise(F.lit('Weekday')))
 
         final_dfs = []
         for curr_time_type in ["morning", "afternoon", "evening", "night"]:
@@ -629,12 +627,12 @@ def streaming_favourite_start_hour_of_day_func(
                 v_time_type = curr_time_type
                 v_app_group = app_group_type
                 final_col = "share_of_{}_streaming_usage_{}_by_total".format(v_time_type, app_group_type)
-                filtered = grouped.filter(F.col("application_group") == v_app_group)
+                filtered = input_with_application.filter(F.col("application_group") == v_app_group)
                 filtered_agg = filtered.groupBy(["subscription_identifier", "start_of_month"])\
-                    .agg(F.sum("download").alias("main_download"))
+                    .agg(F.sum("dw_kbyte").alias("main_download"))
 
                 curr_time_type_agg = filtered.filter(F.col("time_of_day") == v_time_type) \
-                    .groupBy(["subscription_identifier", "start_of_month"]).agg(F.sum("download").alias("download"))
+                    .groupBy(["subscription_identifier", "start_of_month"]).agg(F.sum("dw_kbyte").alias("download"))
 
                 final_df = filtered_agg.join(curr_time_type_agg, ["subscription_identifier", "start_of_month"])\
                     .withColumn(final_col, F.col("download") / F.col("main_download"))\
@@ -646,12 +644,12 @@ def streaming_favourite_start_hour_of_day_func(
                 v_time_type = curr_time_type
                 v_app_group = app_group_type
                 final_col = "share_of_{}_streaming_usage_{}_by_total".format(v_time_type, app_group_type)
-                filtered = grouped.filter(F.col("application_group") == v_app_group)
+                filtered = input_with_application.filter(F.col("application_group") == v_app_group)
                 filtered_agg = filtered.groupBy(["subscription_identifier", "start_of_month"])\
-                    .agg(F.sum("download").alias("main_download"))
+                    .agg(F.sum("dw_kbyte").alias("main_download"))
 
                 curr_time_type_agg = filtered.filter(F.col("day_type") == v_time_type)\
-                    .groupBy(["subscription_identifier", "start_of_month"]).agg(F.sum("download").alias("download"))
+                    .groupBy(["subscription_identifier", "start_of_month"]).agg(F.sum("dw_kbyte").alias("download"))
 
                 final_df = filtered_agg.join(curr_time_type_agg, ["subscription_identifier", "start_of_month"])\
                     .withColumn(final_col, F.col("download") / F.col("main_download"))\
@@ -676,8 +674,8 @@ def streaming_favourite_start_hour_of_day_func(
                         "qqlive", "facebook", "linetv", "ais_play", "netflix", "viu", "viutv", "iflix",
                         "spotify", "jooxmusic", "twitchtv", "bigo", "valve_steam"]
 
-    input_df_hour_based = input_df.filter(F.lower(F.col("application_name")).isin(application_list))
-    process_massive_processing_favourite_hour(input_df_hour_based)
+    #input_df_hour_based = input_df.filter(F.lower(F.col("application_name")).isin(application_list))
+    #process_massive_processing_favourite_hour(input_df_hour_based)
 
     application_group = ["videoplayers_editors", "music_audio", "game"]
     input_df_group = input_df.filter(F.lower(F.col("application_group")).isin(application_group))
