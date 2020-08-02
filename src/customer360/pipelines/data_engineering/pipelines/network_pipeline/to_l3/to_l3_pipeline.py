@@ -58,13 +58,13 @@ def network_to_l3_pipeline(**kwargs):
                  "params:exception_partition_list_for_l1_network_im_cqi_for_l3_network_im_cqi"],
                 "l3_network_im_cqi"
             ),
-            node(
-                build_l3_network_streaming_cqi,
-                ["l1_network_streaming_cqi_for_l3_network_streaming_cqi",
-                 "params:l3_network_streaming_cqi",
-                 "params:exception_partition_list_for_l1_network_streaming_cqi_for_l3_network_streaming_cqi"],
-                "l3_network_streaming_cqi"
-            ),
+            # node(
+            #     build_l3_network_streaming_cqi,
+            #     ["l1_network_streaming_cqi_for_l3_network_streaming_cqi",
+            #      "params:l3_network_streaming_cqi",
+            #      "params:exception_partition_list_for_l1_network_streaming_cqi_for_l3_network_streaming_cqi"],
+            #     "l3_network_streaming_cqi"
+            # ),
             node(
                 build_l3_network_web_cqi,
                 ["l1_network_web_cqi_for_l3_network_web_cqi",
@@ -79,13 +79,13 @@ def network_to_l3_pipeline(**kwargs):
                  "params:exception_partition_list_for_l1_network_voip_cqi_for_l3_network_voip_cqi"],
                 "l3_network_voip_cqi"
             ),
-            node(
-                build_l3_network_volte_cqi,
-                ["l1_network_volte_cqi_for_l3_network_volte_cqi",
-                 "params:l3_network_volte_cqi",
-                 "params:exception_partition_list_for_l1_network_volte_cqi_for_l3_network_volte_cqi"],
-                "l3_network_volte_cqi"
-            ),
+            # node(
+            #     build_l3_network_volte_cqi,
+            #     ["l1_network_volte_cqi_for_l3_network_volte_cqi",
+            #      "params:l3_network_volte_cqi",
+            #      "params:exception_partition_list_for_l1_network_volte_cqi_for_l3_network_volte_cqi"],
+            #     "l3_network_volte_cqi"
+            # ),
             node(
                 build_l3_network_user_cqi,
                 ["l1_network_user_cqi_for_l3_network_user_cqi",
@@ -110,36 +110,36 @@ def network_to_l3_pipeline(**kwargs):
                 ],
                 "l3_network_cei_voice_qoe_incoming"
             ),
-            node(
-                build_l3_network_features,
-                [
-                    "l1_network_cei_voice_qoe_outgoing_for_l3_network_cei_voice_qoe_outgoing",
-                    "params:l3_network_cei_voice_qoe_outgoing",
-                    "params:l3_network_cei_voice_qoe_outgoing_tbl",
-                    "params:exception_partition_list_for_l3_network_cei_voice_qoe_outgoing"
-                ],
-                "l3_network_cei_voice_qoe_outgoing"
-            ),
-            node(
-                build_l3_network_features,
-                [
-                    "l1_network_voice_cei_for_l3_network_voice_cei",
-                    "params:l3_network_voice_cei",
-                    "params:l3_network_voice_cei_tbl",
-                    "params:exception_partition_list_for_l3_network_voice_cei"
-                ],
-                "l3_network_voice_cei"
-            ),
-            node(
-                build_l3_network_features,
-                [
-                    "l1_network_data_cei_for_l3_network_data_cei",
-                    "params:l3_network_data_cei",
-                    "params:l3_network_data_cei_tbl",
-                    "params:exception_partition_list_for_l3_network_data_cei"
-                ],
-                "l3_network_data_cei"
-            ),
+            # node(
+            #     build_l3_network_features,
+            #     [
+            #         "l1_network_cei_voice_qoe_outgoing_for_l3_network_cei_voice_qoe_outgoing",
+            #         "params:l3_network_cei_voice_qoe_outgoing",
+            #         "params:l3_network_cei_voice_qoe_outgoing_tbl",
+            #         "params:exception_partition_list_for_l3_network_cei_voice_qoe_outgoing"
+            #     ],
+            #     "l3_network_cei_voice_qoe_outgoing"
+            # ),
+            # node(
+            #     build_l3_network_features,
+            #     [
+            #         "l1_network_voice_cei_for_l3_network_voice_cei",
+            #         "params:l3_network_voice_cei",
+            #         "params:l3_network_voice_cei_tbl",
+            #         "params:exception_partition_list_for_l3_network_voice_cei"
+            #     ],
+            #     "l3_network_voice_cei"
+            # ),
+            # node(
+            #     build_l3_network_features,
+            #     [
+            #         "l1_network_data_cei_for_l3_network_data_cei",
+            #         "params:l3_network_data_cei",
+            #         "params:l3_network_data_cei_tbl",
+            #         "params:exception_partition_list_for_l3_network_data_cei"
+            #     ],
+            #     "l3_network_data_cei"
+            # ),
             node(
                 build_l3_network_features_lookback,
                 [
@@ -162,25 +162,25 @@ def network_to_l3_pipeline(**kwargs):
                 ],
                 "l3_network_failed_incoming_call_attempt_and_call_drop_4g"
             ),
-            node(
-                build_l3_network_features,
-                [
-                    "l1_network_start_delay_and_success_rate_features_for_l3_network_start_delay_and_success_rate_features",
-                    "params:l3_network_start_delay_and_success_rate_features",
-                    "params:l3_network_start_delay_and_success_rate_features_tbl",
-                    "params:exception_partition_list_for_l3_network_start_delay_and_success_rate_features"
-                ],
-                "l3_network_start_delay_and_success_rate_features"
-            ),
-            node(
-                build_l3_network_features,
-                [
-                    "l1_network_failed_calls_home_location_for_l3_network_failed_calls_home_location",
-                    "params:l3_network_failed_calls_home_location",
-                    "params:l3_network_failed_calls_home_location_tbl",
-                    "params:exception_partition_list_for_l3_network_failed_calls_home_location"
-                ],
-                "l3_network_failed_calls_home_location"
-            )
+            # node(
+            #     build_l3_network_features,
+            #     [
+            #         "l1_network_start_delay_and_success_rate_features_for_l3_network_start_delay_and_success_rate_features",
+            #         "params:l3_network_start_delay_and_success_rate_features",
+            #         "params:l3_network_start_delay_and_success_rate_features_tbl",
+            #         "params:exception_partition_list_for_l3_network_start_delay_and_success_rate_features"
+            #     ],
+            #     "l3_network_start_delay_and_success_rate_features"
+            # ),
+            # node(
+            #     build_l3_network_features,
+            #     [
+            #         "l1_network_failed_calls_home_location_for_l3_network_failed_calls_home_location",
+            #         "params:l3_network_failed_calls_home_location",
+            #         "params:l3_network_failed_calls_home_location_tbl",
+            #         "params:exception_partition_list_for_l3_network_failed_calls_home_location"
+            #     ],
+            #     "l3_network_failed_calls_home_location"
+            # )
         ]
     )
