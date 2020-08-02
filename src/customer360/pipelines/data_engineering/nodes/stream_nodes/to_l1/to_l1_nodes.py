@@ -588,7 +588,7 @@ def build_streaming_sdr_sub_app_hourly_for_l3_monthly(input_df: DataFrame,
         return_df = return_df.join(customer_filtered_df.select(sel_cols), join_cols)\
 
         return_df = return_df.\
-            groupBy(["subscription_identifier", "event_partition_date", "start_of_month", "application_name",
+            groupBy(["subscription_identifier", "event_partition_date", "start_of_month", "hour", "application_name",
                      "application_group"]).agg(f.sum(f.col("dw_kbyte")).alias("dw_kbyte"))
 
         CNTX.catalog.save("l1_streaming_sdr_sub_app_hourly", return_df)
@@ -602,7 +602,7 @@ def build_streaming_sdr_sub_app_hourly_for_l3_monthly(input_df: DataFrame,
     return_df = return_df.join(customer_filtered_df.select(sel_cols), join_cols) \
 
     return_df = return_df. \
-        groupBy(["subscription_identifier", "event_partition_date", "start_of_month", "application_name",
+        groupBy(["subscription_identifier", "event_partition_date", "start_of_month", "hour", "application_name",
                  "application_group"]).agg(f.sum(f.col("dw_kbyte")).alias("dw_kbyte"))
 
     return return_df
