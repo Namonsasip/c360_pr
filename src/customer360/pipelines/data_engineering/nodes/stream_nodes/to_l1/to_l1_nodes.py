@@ -527,7 +527,6 @@ def build_streaming_sdr_sub_app_hourly_for_l3_monthly(input_df: DataFrame,
     # if check_empty_dfs([input_df, cust_profile_df]):
     #     return get_spark_empty_df()
 
-    input_df = input_df.where("partition_date > 20200430 and partition_date < 20200701")
     # ################################# End Implementing Data availability checks ###############################
 
     w_recent_partition = Window.partitionBy("application_id").orderBy(f.col("partition_month").desc())
@@ -538,6 +537,19 @@ def build_streaming_sdr_sub_app_hourly_for_l3_monthly(input_df: DataFrame,
         .withColumn("rank", f.row_number().over(w_recent_partition)) \
         .where(f.col("rank") == 1) \
         .withColumnRenamed("application_id", "application")
+
+    print(master_application.count())
+
+    application_list = ["youtube", "youtube_go", "youtubebyclick", "trueid", "truevisions", "monomaxx",
+                    "qqlive", "facebook", "linetv", "ais_play", "netflix", "viu", "viutv", "iflix",
+                    "spotify", "jooxmusic", "twitchtv", "bigo", "valve_steam"]
+
+    application_group = ["videoplayers_editors", "music_audio", "game"]
+
+    master_application = master_application.filter(f.lower(f.col("application_name")).isin(application_list) |
+                                                   f.lower(f.col("application_group")).isin(application_group))
+
+    print(master_application.count())
 
     def divide_chunks(l, n):
         # looping till length l
@@ -561,7 +573,7 @@ def build_streaming_sdr_sub_app_hourly_for_l3_monthly(input_df: DataFrame,
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_array = list(divide_chunks(mvv_array, 5))
+    mvv_array = list(divide_chunks(mvv_array, 3))
     add_list = mvv_array
 
     first_item = add_list[-1]
@@ -573,26 +585,23 @@ def build_streaming_sdr_sub_app_hourly_for_l3_monthly(input_df: DataFrame,
 
         return_df = filtered_input_df.join(master_application, ["application"])
         return_df = return_df.join(customer_filtered_df.select(sel_cols), join_cols)\
-            .withColumn("streaming_quality", f.col("streaming_dw_packets") /
-                        (((f.col("STREAMING_Download_DELAY") * 1000 * 8) / 1024) / 1024))
 
-        return_df = return_df.select("access_method_num", "subscription_identifier", "event_partition_date",
-                                     "start_of_month", "start_of_week", "application_name", "application_group",
-                                     "dw_kbyte", "streaming_quality")
+        return_df = return_df.\
+            groupBy(["subscription_identifier", "event_partition_date", "start_of_month", "hour", "application_name",
+                     "application_group"]).agg(f.sum(f.col("dw_kbyte")).alias("dw_kbyte"))
 
         CNTX.catalog.save("l1_streaming_sdr_sub_app_hourly", return_df)
 
     logging.info("running for dates {0}".format(str(first_item)))
+
     filtered_input_df = data_frame.filter(f.col("event_partition_date").isin(*[first_item]))
     customer_filtered_df = cust_profile_df.filter(f.col("event_partition_date").isin(*[first_item]))
 
     return_df = filtered_input_df.join(master_application, ["application"])
     return_df = return_df.join(customer_filtered_df.select(sel_cols), join_cols) \
-        .withColumn("streaming_quality", f.col("streaming_dw_packets") /
-                    (((f.col("STREAMING_Download_DELAY") * 1000 * 8) / 1024) / 1024))
 
-    return_df = return_df.select("access_method_num", "subscription_identifier", "event_partition_date",
-                                 "start_of_month", "start_of_week", "application_name", "application_group",
-                                 "dw_kbyte", "streaming_quality")
+    return_df = return_df. \
+        groupBy(["subscription_identifier", "event_partition_date", "start_of_month", "hour", "application_name",
+                 "application_group"]).agg(f.sum(f.col("dw_kbyte")).alias("dw_kbyte"))
 
     return return_df
