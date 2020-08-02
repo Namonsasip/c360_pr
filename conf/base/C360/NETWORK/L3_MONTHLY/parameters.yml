@@ -24,7 +24,7 @@ exception_partition_list_for_l1_network_volte_cqi_for_l3_network_volte_cqi: ['20
 # Start of month before 20-Jan-20
 exception_partition_list_for_l1_network_file_transfer_cqi_for_l3_network_file_transfer_cqi: ['2020-01-01','2020-03-01','2020-04-01']
 
-exception_partition_list_for_l3_network_cei_voice_qoe_incoming: ['2020-01-01','2020-03-01','2020-04-01']
+exception_partition_list_for_l3_network_cei_voice_qoe_incoming: ['2020-01-01','2020-03-01','2020-04-01','2020-07-01']
 exception_partition_list_for_l3_network_cei_voice_qoe_outgoing: ['2020-01-01','2020-03-01','2020-04-01']
 exception_partition_list_for_l3_network_voice_cei: ['2020-01-01','2020-02-01','2020-03-01','2020-04-01','2020-05-01']
 exception_partition_list_for_l3_network_data_cei: ['2020-01-01','2020-02-01','2020-03-01','2020-04-01','2020-05-01']
@@ -32,3 +32,4 @@ exception_partition_list_for_l3_network_failed_outgoing_call_attempt_and_call_dr
 exception_partition_list_for_l3_network_failed_incoming_call_attempt_and_call_drop_4g: ['2020-01-01','2020-03-01','2020-04-01']
 exception_partition_list_for_l3_network_start_delay_and_success_rate_features: ['2020-01-01','2020-03-01','2020-04-01']
 exception_partition_list_for_l3_network_failed_calls_home_location: ['2020-01-01','2020-03-01','2020-04-01']
+exception_partition_list_for_l1_network_voice_features_for_l3_network_voice_features: ['2020-01-01', '2020-03-01', '2020-04-01']

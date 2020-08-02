@@ -13,14 +13,11 @@ from pathlib import Path
 conf = os.getenv("CONF", "base")
 
 
-def build_l2_network_voice_features(
+def dac_for_voice_features(
         input_df: DataFrame,
-        parameter: dict,
         exception_partitions: List[str]) -> DataFrame:
-
     """
     :param input_df:
-    :param parameter:
     :param exception_partitions:
     :return:
     """
@@ -41,9 +38,24 @@ def build_l2_network_voice_features(
         return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
 
-    return_df = node_from_config(input_df, parameter)
+    return input_df
 
-    return return_df
+# def build_l2_network_voice_features(
+#         input_df: DataFrame,
+#         parameter: dict) -> DataFrame:
+#
+#     """
+#     :param input_df:
+#     :param parameter:
+#     :return:
+#     """
+#     if check_empty_dfs(
+#             [input_df]):
+#         return get_spark_empty_df()
+#
+#     return_df = node_from_config(input_df, parameter)
+#
+#     return return_df
 
 
 def build_l2_network_good_and_bad_cells_features(
