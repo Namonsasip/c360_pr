@@ -733,6 +733,7 @@ def streaming_favourite_location_features_func(
         .where("rn = 1") \
         .select("subscription_identifier", "access_method_num", "start_of_month")
 
+    input_df = input_df.withColumnRenamed("app_id", "application")
     input_with_application = input_df.join(master_application, ["application"])
     input_with_application = add_event_week_and_month_from_yyyymmdd(input_with_application, "partition_date") \
         .drop("event_partition_date", "start_of_week")
@@ -852,6 +853,7 @@ def streaming_favourite_quality_features_func(
         .where("rn = 1") \
         .select("subscription_identifier", "access_method_num", "start_of_month")
 
+    input_df = input_df.withColumnRenamed("app_id", "application")
     input_with_application = input_df.join(master_application, ["application"])
     input_with_application = add_event_week_and_month_from_yyyymmdd(input_with_application, "partition_date") \
         .drop("event_partition_date", "start_of_week")
