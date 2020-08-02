@@ -527,9 +527,10 @@ def streaming_favourite_start_hour_of_day_func(
     #     df=input_df, grouping="monthly", par_col="event_partition_date",
     #     missing_data_check_flg='Y',
     #     target_table_name="l3_streaming_favourite_start_time_hour_of_day")
-    CNTX = load_context(Path.cwd(), env=conf)
-    input_df_new = CNTX.catalog.load("l1_streaming_sdr_sub_app_hourly")
-    input_df = input_df_new.where("event_partition_date < '2020-06-01'")
+    from customer360.utilities.spark_util import get_spark_session
+    spark  = get_spark_session()
+    input_df = spark.read.parquet("/mnt/customer360-blob-output/C360/STREAM/l1_features/l1_streaming_sdr_sub_app_hourly/")
+    input_df = input_df.where("event_partition_date < '2020-06-01'")
 
     if check_empty_dfs([input_df]):
         return None
