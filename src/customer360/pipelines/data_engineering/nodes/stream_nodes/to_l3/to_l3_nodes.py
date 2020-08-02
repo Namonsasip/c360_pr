@@ -524,7 +524,7 @@ def streaming_favourite_start_hour_of_day_func(
         return None
 
     # input_df = data_non_availability_and_missing_check(
-    #     df=input_df, grouping="monthly", par_col="partition_date",
+    #     df=input_df, grouping="monthly", par_col="event_partition_date",
     #     missing_data_check_flg='Y',
     #     target_table_name="l3_streaming_favourite_start_time_hour_of_day")
     input_df = input_df.where("event_partition_date < '2020-06-01'")
@@ -619,6 +619,11 @@ def streaming_favourite_start_hour_of_day_func(
         )
                        )
 
+        weekend_type = ['Saturday', 'Sunday']
+        input_with_application = input_with_application.\
+            withColumn("day_type", F.when(F.date_format("event_partition_date", 'EEEE').isin(weekend_type),
+                       F.lit("Weekend")).otherwise(F.lit('Weekday')))
+
         grouped = input_with_application.\
             groupBy(["subscription_identifier", "application_group", "day_type", "time_of_day", "start_of_month"]).\
             agg(F.sum(F.col("dw_kbytes")).alias("download"))
@@ -676,8 +681,8 @@ def streaming_favourite_start_hour_of_day_func(
                         "qqlive", "facebook", "linetv", "ais_play", "netflix", "viu", "viutv", "iflix",
                         "spotify", "jooxmusic", "twitchtv", "bigo", "valve_steam"]
 
-    input_df_hour_based = input_df.filter(F.lower(F.col("application_name")).isin(application_list))
-    process_massive_processing_favourite_hour(input_df_hour_based)
+    #input_df_hour_based = input_df.filter(F.lower(F.col("application_name")).isin(application_list))
+    #process_massive_processing_favourite_hour(input_df_hour_based)
 
     application_group = ["videoplayers_editors", "music_audio", "game"]
     input_df_group = input_df.filter(F.lower(F.col("application_group")).isin(application_group))
