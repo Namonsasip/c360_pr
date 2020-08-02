@@ -621,17 +621,13 @@ def streaming_favourite_start_hour_of_day_func(
             withColumn("day_type", F.when(F.date_format("event_partition_date", 'EEEE').isin(weekend_type),
                        F.lit("Weekend")).otherwise(F.lit('Weekday')))
 
-        grouped = input_with_application.\
-            groupBy(["subscription_identifier", "application_group", "day_type", "time_of_day", "start_of_month"]).\
-            agg(F.sum(F.col("dw_kbyte")).alias("download"))
-
         final_dfs = []
         for curr_time_type in ["morning", "afternoon", "evening", "night"]:
             for app_group_type in ["videoplayers_editors", "music_audio", "game"]:
                 v_time_type = curr_time_type
                 v_app_group = app_group_type
                 final_col = "share_of_{}_streaming_usage_{}_by_total".format(v_time_type, app_group_type)
-                filtered = grouped.filter(F.col("application_group") == v_app_group)
+                filtered = input_with_application.filter(F.col("application_group") == v_app_group)
                 filtered_agg = filtered.groupBy(["subscription_identifier", "start_of_month"])\
                     .agg(F.sum("download").alias("main_download"))
 
@@ -648,7 +644,7 @@ def streaming_favourite_start_hour_of_day_func(
                 v_time_type = curr_time_type
                 v_app_group = app_group_type
                 final_col = "share_of_{}_streaming_usage_{}_by_total".format(v_time_type, app_group_type)
-                filtered = grouped.filter(F.col("application_group") == v_app_group)
+                filtered = input_with_application.filter(F.col("application_group") == v_app_group)
                 filtered_agg = filtered.groupBy(["subscription_identifier", "start_of_month"])\
                     .agg(F.sum("download").alias("main_download"))
 
