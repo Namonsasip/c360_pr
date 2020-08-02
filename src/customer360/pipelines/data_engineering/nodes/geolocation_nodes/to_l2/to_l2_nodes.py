@@ -14,10 +14,10 @@ from customer360.utilities.re_usable_functions import add_start_of_week_and_mont
     data_non_availability_and_missing_check
 from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 
-conf = os.getenv("CONF", "base")
-run_mode = os.getenv("DATA_AVAILABILITY_CHECKS", None)
-log = logging.getLogger(__name__)
-running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
+conf = os.getenv("CONF", None)
+# run_mode = os.getenv("DATA_AVAILABILITY_CHECKS", None)
+# log = logging.getLogger(__name__)
+# running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 
 
 def l2_geo_time_spent_by_location_weekly(df,sql):
