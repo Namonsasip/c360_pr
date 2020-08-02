@@ -289,14 +289,7 @@ def streaming_l1_to_l4_pipeline(**kwargs):
                  "params:int_l4_streaming_tv_show_features_1"],
                 "int_l4_streaming_tv_show_features_1"
             ),
-            # # group it per week because we read directly from L1
-            # node(
-            #     l2_massive_processing,  # Since we are directly reading from L1, we can use this method
-            #     ["int_l4_streaming_tv_show_features_1",
-            #      "params:int_l4_streaming_tv_show_features_2",
-            #      "l1_customer_profile_union_daily_feature_for_l4_streaming_fav_tv_show_by_episode_watched"],
-            #     "int_l4_streaming_tv_show_features_2"
-            # ),
+
             node(
                 node_from_config,
                 [
