@@ -693,20 +693,20 @@ def streaming_favourite_location_features_func(
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([input_df, master_application]):
-        return get_spark_empty_df()
-
-    input_df = data_non_availability_and_missing_check(
-        df=input_df, grouping="monthly", par_col="partition_date",
-        missing_data_check_flg='Y',
-        target_table_name="l3_streaming_favourite_location_features")
-
-    cust_profile_df = data_non_availability_and_missing_check(
-        df=cust_profile_df, grouping="monthly", par_col="start_of_month",
-        target_table_name="l3_streaming_favourite_location_features")
-
-    if check_empty_dfs([input_df, master_application]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([input_df, master_application]):
+    #     return get_spark_empty_df()
+    #
+    # input_df = data_non_availability_and_missing_check(
+    #     df=input_df, grouping="monthly", par_col="partition_date",
+    #     missing_data_check_flg='Y',
+    #     target_table_name="l3_streaming_favourite_location_features")
+    #
+    # cust_profile_df = data_non_availability_and_missing_check(
+    #     df=cust_profile_df, grouping="monthly", par_col="start_of_month",
+    #     target_table_name="l3_streaming_favourite_location_features")
+    #
+    # if check_empty_dfs([input_df, master_application]):
+    #     return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
     w_recent_partition = Window.partitionBy("application_id").orderBy(F.col("partition_month").desc())
 
@@ -816,20 +816,20 @@ def streaming_favourite_quality_features_func(
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([input_df, master_application]):
-        return get_spark_empty_df()
-
-    input_df = data_non_availability_and_missing_check(
-        df=input_df, grouping="monthly", par_col="partition_date",
-        missing_data_check_flg='Y',
-        target_table_name="l3_streaming_app_quality_features")
-
-    cust_profile_df = data_non_availability_and_missing_check(
-        df=cust_profile_df, grouping="monthly", par_col="start_of_month",
-        target_table_name="l3_streaming_app_quality_features")
-
-    if check_empty_dfs([input_df, master_application]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([input_df, master_application]):
+    #     return get_spark_empty_df()
+    #
+    # input_df = data_non_availability_and_missing_check(
+    #     df=input_df, grouping="monthly", par_col="partition_date",
+    #     missing_data_check_flg='Y',
+    #     target_table_name="l3_streaming_app_quality_features")
+    #
+    # cust_profile_df = data_non_availability_and_missing_check(
+    #     df=cust_profile_df, grouping="monthly", par_col="start_of_month",
+    #     target_table_name="l3_streaming_app_quality_features")
+    #
+    # if check_empty_dfs([input_df, master_application]):
+    #     return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
     w_recent_partition = Window.partitionBy("application_id").orderBy(F.col("partition_month").desc())
 
