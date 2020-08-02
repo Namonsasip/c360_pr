@@ -99,6 +99,7 @@ def l5_du_scored(
         **kwargs,
     )
     # df_master_scored = df_master_scored.join(df_master, on=primary_key_columns, how="left")
+    df_master_scored.write.format("delta").mode("overwrite").saveAsTable("prod_dataupsell.l5_du_scored")
     return df_master_scored
 
 

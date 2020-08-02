@@ -45,11 +45,11 @@ def drop_partition(start_date, end_date, table, partition_key):
         )
         print("Dropping partition = " + drop_date)
         stmt = (
-            "ALTER TABLE "
+            "DELETE FROM "
             + table
-            + " DROP IF EXISTS partition("
+            + "WHERE date('"
             + partition_key
-            + "='"
+            + "') = date('"
             + drop_date
             + "')"
         )
@@ -92,7 +92,7 @@ def save_folded_package(start_date, end_date, table, partition_key):
         + end_date.strftime("%Y-%m-%d")
         + "')"
     )
-    sdf.write.format("parquet").mode("append").partitionBy(partition_key).saveAsTable(
+    sdf.write.format("delta").mode("append").partitionBy(partition_key).saveAsTable(
         table + "_tmp_fold"
     )
 
@@ -396,10 +396,20 @@ def create_daily_ontop_pack(
     # Return union between one day on-top and multiple day on-top in daily aggregated
     # Kedro doesn't write output as hive table, which make it harder for us to manage partitioned table
     # We consider to manually save to hive table then update catalog accordingly
-    output.write.format("parquet").mode("append").partitionBy(
-        "partition_date"
-    ).saveAsTable("prod_dataupsell." + hive_table)
+
     # Since we are not using Kedro save function, we can return any spark DataFrame as unused memory dataset
+    if not drop_replace_partition:
+        output.createOrReplaceTempView("temp_view_load")
+        spark.sql("DROP TABLE IF EXISTS prod_dataupsell."+hive_table)
+        spark.sql("""CREATE TABLE prod_dataupsell."""+hive_table+"""
+                    USING DELTA
+                    PARTITIONED BY (partition_date)
+                    AS
+                    SELECT * FROM temp_view_load""")
+    else:
+        output.write.format("delta").mode("append").partitionBy(
+            "partition_date"
+        ).saveAsTable("prod_dataupsell." + hive_table)
     return ontop_pack
 
 
@@ -425,7 +435,7 @@ def create_aggregate_ontop_package_preference_input(
 
     """
     import datetime
-
+    spark = get_spark_session()
     if start_date is None:
         start_date = datetime.datetime.now() + datetime.timedelta(days=-40)
     end_date = datetime.datetime.now()
@@ -536,9 +546,18 @@ def create_aggregate_ontop_package_preference_input(
             )
         i = False
     # Manually save DataFrame to hive table
-    final_spine_table.write.format("parquet").mode("append").partitionBy(
-        "start_of_week"
-    ).saveAsTable("prod_dataupsell." + hive_table)
+    if not drop_replace_partition:
+        final_spine_table.createOrReplaceTempView("temp_view_load")
+        spark.sql("DROP TABLE IF EXISTS prod_dataupsell."+hive_table)
+        spark.sql("""CREATE TABLE prod_dataupsell."""+hive_table+"""
+                    USING DELTA
+                    PARTITIONED BY (start_of_week)
+                    AS
+                    SELECT * FROM temp_view_load""")
+    else:
+        final_spine_table.write.format("delta").mode("append").partitionBy(
+            "start_of_week"
+        ).saveAsTable("prod_dataupsell." + hive_table)
     return final_spine_table
 
 
@@ -573,7 +592,7 @@ def create_ontop_package_preference(
 
     """
     import datetime
-
+    spark = get_spark_session()
     end_date = datetime.datetime.now()
     if start_date is None:
         start_date = datetime.datetime.now() + datetime.timedelta(days=-40)
@@ -691,7 +710,16 @@ def create_ontop_package_preference(
         i = False
 
     # Save output table
-    output_data_ontop.write.format("parquet").mode("append").partitionBy(
-        "start_of_week"
-    ).saveAsTable("prod_dataupsell." + hive_table)
+    if not drop_replace_partition:
+        output_data_ontop.createOrReplaceTempView("temp_view_load")
+        spark.sql("DROP TABLE IF EXISTS prod_dataupsell."+hive_table)
+        spark.sql("""CREATE TABLE prod_dataupsell."""+hive_table+"""
+                    USING DELTA
+                    PARTITIONED BY (start_of_week)
+                    AS
+                    SELECT * FROM temp_view_load""")
+    else:
+        output_data_ontop.write.format("delta").mode("append").partitionBy(
+            "start_of_week"
+        ).saveAsTable("prod_dataupsell." + hive_table)
     return output_data_ontop

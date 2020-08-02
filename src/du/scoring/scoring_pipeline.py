@@ -3,7 +3,11 @@ from kedro.pipeline import Pipeline, node
 from du.scoring.scoring_nodes import l5_scoring_profile, l5_du_scored
 
 from nba.pcm_scoring.pcm_scoring_nodes import join_c360_features_latest_date
-from nba.model_input.model_input_nodes import node_l5_nba_master_table,node_l5_nba_customer_profile
+from nba.model_input.model_input_nodes import (
+    node_l5_nba_master_table,
+    node_l5_nba_customer_profile,
+)
+from du.model_input.model_input_nodes import fix_analytic_id_key
 
 from du.models.package_prefer_nodes import (
     create_daily_ontop_pack,
@@ -17,42 +21,42 @@ import datetime
 def create_package_preference_pipeline() -> Pipeline:
     return Pipeline(
         [
-            # node(
-            #     partial(
-            #         create_daily_ontop_pack,
-            #         hive_table="l1_data_ontop_purchase_daily_hive",
-            #         start_date=None,
-            #         end_date=None,
-            #         drop_replace_partition=False,
-            #     ),
-            #     inputs={
-            #         "l0_product_pru_m_ontop_master_for_weekly_full_load": "l0_product_pru_m_ontop_master_for_weekly_full_load",
-            #         "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
-            #         "ontop_pack": "dm42_promotion_prepaid",
-            #         "usage_feature": "dm15_mobile_usage_aggr_prepaid",
-            #     },
-            #     outputs="unused_memory_dataset_1",
-            #     name="l1_data_ontop_purchase_daily",
-            #     tags=["package_preference_data","l1_data_ontop_purchase_daily"],
-            # ),
-            # node(
-            #     partial(
-            #         create_aggregate_ontop_package_preference_input,
-            #         hive_table="l4_data_ontop_purchase_week_hive_aggregate_feature",
-            #         aggregate_periods=[90, 60, 30],
-            #         start_date=None,
-            #         drop_replace_partition=False,
-            #     ),
-            #     inputs={
-            #         "l1_data_ontop_purchase_daily": "l1_data_ontop_purchase_daily_hive",
-            #     },
-            #     outputs="unused_memory_dataset_2",
-            #     name="l4_data_ontop_purchase_week_hive_aggregate_feature",
-            #     tags=[
-            #         "package_preference_data",
-            #         "l4_data_ontop_purchase_week_hive_aggregate_feature",
-            #     ],
-            # ),
+            node(
+                partial(
+                    create_daily_ontop_pack,
+                    hive_table="l1_data_ontop_purchase_daily_hive",
+                    start_date=None,
+                    end_date=None,
+                    drop_replace_partition=False,
+                ),
+                inputs={
+                    "l0_product_pru_m_ontop_master_for_weekly_full_load": "l0_product_pru_m_ontop_master_for_weekly_full_load",
+                    "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
+                    "ontop_pack": "dm42_promotion_prepaid",
+                    "usage_feature": "dm15_mobile_usage_aggr_prepaid",
+                },
+                outputs="unused_memory_dataset_1",
+                name="l1_data_ontop_purchase_daily",
+                tags=["package_preference_data", "l1_data_ontop_purchase_daily"],
+            ),
+            node(
+                partial(
+                    create_aggregate_ontop_package_preference_input,
+                    hive_table="l4_data_ontop_purchase_week_hive_aggregate_feature",
+                    aggregate_periods=[90, 60, 30],
+                    start_date=None,
+                    drop_replace_partition=False,
+                ),
+                inputs={
+                    "l1_data_ontop_purchase_daily": "l1_data_ontop_purchase_daily_hive",
+                },
+                outputs="unused_memory_dataset_2",
+                name="l4_data_ontop_purchase_week_hive_aggregate_feature",
+                tags=[
+                    "package_preference_data",
+                    "l4_data_ontop_purchase_week_hive_aggregate_feature",
+                ],
+            ),
             node(
                 partial(
                     create_ontop_package_preference,
@@ -76,24 +80,35 @@ def create_package_preference_pipeline() -> Pipeline:
 def create_du_scoring_pipeline() -> Pipeline:
     return Pipeline(
         [
-            node(
-                node_l5_nba_customer_profile,
-                inputs={
-                    "l3_customer_profile_include_1mo_non_active": "l3_customer_profile_include_1mo_non_active",
-                },
-                outputs="l5_du_customer_profile",
-                name="l5_du_customer_profile",
-                tags=["l5_du_customer_profile"],
-            ),
-            node(
-                l5_scoring_profile,
-                inputs={
-                    "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
-                },
-                outputs="l5_du_eligible_sub_to_score",
-                name="l5_scoring_profile",
-                tags=["l5_scoring_profile"],
-            ),
+            # node(
+            #     node_l5_nba_customer_profile,
+            #     inputs={
+            #         "l3_customer_profile_include_1mo_non_active": "l3_customer_profile_include_1mo_non_active",
+            #     },
+            #     outputs="l5_du_customer_profile",
+            #     name="l5_du_customer_profile",
+            #     tags=["l5_du_customer_profile"],
+            # ),
+            # node(
+            #     l5_scoring_profile,
+            #     inputs={
+            #         "l1_customer_profile_union_daily_feature_full_load": "l1_customer_profile_union_daily_feature_full_load",
+            #     },
+            #     outputs="l5_du_eligible_sub_to_score",
+            #     name="l5_scoring_profile",
+            #     tags=["l5_scoring_profile"],
+            # ),
+            # node(
+            #     fix_analytic_id_key,
+            #     inputs={
+            #         "l4_macro_product_purchase_feature_weekly": "l4_macro_product_purchase_feature_weekly",
+            #         "l3_customer_profile_include_1mo_non_active": "l3_customer_profile_include_1mo_non_active",
+            #         "dm07_sub_clnt_info": "dm07_sub_clnt_info",
+            #     },
+            #     outputs="unused_memory_fix_id",
+            #     name="fix_l4_analytic_id",
+            #     tags=["fix_l4_analytic_id"],
+            # ),
             node(
                 join_c360_features_latest_date,
                 inputs={
@@ -112,7 +127,7 @@ def create_du_scoring_pipeline() -> Pipeline:
                     # "l4_streaming_visit_count_and_download_traffic_feature": "l4_streaming_visit_count_and_download_traffic_feature",
                     "l4_usage_prepaid_postpaid_daily_features": "l4_usage_prepaid_postpaid_daily_features",
                     "l4_usage_postpaid_prepaid_weekly_features_sum": "l4_usage_postpaid_prepaid_weekly_features_sum",
-                    "l4_macro_product_purchase_feature_weekly_key_fixed":"l4_macro_product_purchase_feature_weekly_key_fixed",
+                    "l4_macro_product_purchase_feature_weekly_key_fixed": "l4_macro_product_purchase_feature_weekly_key_fixed",
                 },
                 outputs="l5_du_scoring_master",
                 name="l5_du_scoring_master",
@@ -132,7 +147,7 @@ def create_du_scoring_pipeline() -> Pipeline:
                     "pai_artifacts_uri": "params:nba_pai_artifacts_uri",
                     "scoring_chunk_size": "params:du_scoring_chunk_size",
                 },
-                outputs="l5_du_scored",
+                outputs="unused_memory_du_scored",
                 name="l5_du_scored",
                 tags=["l5_du_scored"],
             ),

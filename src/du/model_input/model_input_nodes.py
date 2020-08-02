@@ -300,72 +300,48 @@ def node_l5_du_master_table_chunk_debug_acceptance(
     return l5_du_master_table_chunk_debug, pdf_extra_pai_metrics
 
 
-def fix_analytic_key(target_table, l3_customer_profile_include_1mo_non_active,dm07_sub_clnt_info):
-    l3_customer_profile_include_1mo_non_active = catalog.load(
-        "l3_customer_profile_include_1mo_non_active"
+def fix_analytic_id_key(
+    l4_macro_product_purchase_feature_weekly,
+    l3_customer_profile_include_1mo_non_active,
+    dm07_sub_clnt_info,
+):
+    # l3_customer_profile_include_1mo_non_active = catalog.load(
+    #     "l3_customer_profile_include_1mo_non_active"
+    # )
+    # target_table = catalog.load("l4_macro_product_purchase_feature_weekly")
+    # dm07_sub_clnt_info = catalog.load("dm07_sub_clnt_info")
+    spark = get_spark_session()
+    dm07_sub_clnt_info = dm07_sub_clnt_info.selectExpr(
+        "crm_sub_id as old_subscription_identifier",
+        "activation_date as register_date",
+        "analytic_id",
     )
-    target_table = catalog.load("l4_macro_product_purchase_feature_weekly")
-    dm07_sub_clnt_info = catalog.load("dm07_sub_clnt_info")
-
-    dm07_sub_clnt_info = dm07_sub_clnt_info.selectExpr("crm_sub_id as old_subscription_identifier","activation_date as register_date","analytic_id")
     l3_customer_profile_include_1mo_non_active = l3_customer_profile_include_1mo_non_active.selectExpr(
         "subscription_identifier",
         "old_subscription_identifier",
         "date(register_date) as register_date",
     )
-    analytic_sub = dm07_sub_clnt_info.groupby("old_subscription_identifier","register_date","analytic_id").agg(F.count("*").alias("CNT")).drop("CNT")
-    mck_sub = l3_customer_profile_include_1mo_non_active.groupby("subscription_identifier","old_subscription_identifier","register_date").agg(F.count("*").alias("CNT")).drop("CNT")
-    fixed_key = analytic_sub.join(mck_sub,["old_subscription_identifier","register_date"],"inner")
-    col_to_agg = ['number_of_transaction_fixed_speed_BTL_2_week',
- 'number_of_transaction_full_speed_BTL_2_week',
- 'number_of_transaction_fixed_speed_ATL_2_week',
- 'number_of_transaction_full_speed_ATL_2_week',
- 'total_net_tariff_fixed_speed_BTL_2_week',
- 'total_net_tariff_full_speed_BTL_2_week',
- 'total_net_tariff_fixed_speed_ATL_2_week',
- 'total_net_tariff_full_speed_ATL_2_week',
- 'number_of_transaction_fixed_speed_BTL_1_week',
- 'number_of_transaction_full_speed_BTL_1_week',
- 'number_of_transaction_fixed_speed_ATL_1_week',
- 'number_of_transaction_full_speed_ATL_1_week',
- 'total_net_tariff_fixed_speed_BTL_1_week',
- 'total_net_tariff_full_speed_BTL_1_week',
- 'total_net_tariff_fixed_speed_ATL_1_week',
- 'total_net_tariff_full_speed_ATL_1_week',
- 'number_of_transaction_fixed_speed_BTL_4_week',
- 'number_of_transaction_full_speed_BTL_4_week',
- 'number_of_transaction_fixed_speed_ATL_4_week',
- 'number_of_transaction_full_speed_ATL_4_week',
- 'total_net_tariff_fixed_speed_BTL_4_week',
- 'total_net_tariff_full_speed_BTL_4_week',
- 'total_net_tariff_fixed_speed_ATL_4_week',
- 'total_net_tariff_full_speed_ATL_4_week',
- 'number_of_transaction_1_day_validity_2_week',
- 'number_of_transaction_7_day_validity_2_week',
- 'number_of_transaction_30_day_validity_2_week',
- 'total_net_tariff_1_day_validity_2_week',
- 'total_net_tariff_7_day_validity_2_week',
- 'total_net_tariff_30_day_validity_2_week',
- 'number_of_transaction_1_day_validity_1_week',
- 'number_of_transaction_7_day_validity_1_week',
- 'number_of_transaction_30_day_validity_1_week',
- 'total_net_tariff_1_day_validity_1_week',
- 'total_net_tariff_7_day_validity_1_week',
- 'total_net_tariff_30_day_validity_1_week',
- 'number_of_transaction_1_day_validity_4_week',
- 'number_of_transaction_7_day_validity_4_week',
- 'number_of_transaction_30_day_validity_4_week',
- 'total_net_tariff_1_day_validity_4_week',
- 'total_net_tariff_7_day_validity_4_week',
- 'total_net_tariff_30_day_validity_4_week']
-    expr = []
-    for cols in col_to_agg:
-        expr.append(F.sum(cols).alias(cols))
-    fixed_target_table = target_table.groupby("analytic_id","register_date","start_of_week").agg(*expr)
-
-    fixed_target_table.join(fixed_key,["analytic_id","register_date"],"inner").write.format("delta").mode("overwrite").partitionBy(
-            "start_of_week"
-        ).saveAsTable(
-            "prod_dataupsell.l4_macro_product_purchase_feature_weekly_key_fixed"
+    analytic_sub = (
+        dm07_sub_clnt_info.groupby(
+            "old_subscription_identifier", "register_date", "analytic_id"
         )
-
+        .agg(F.count("*").alias("CNT"))
+        .drop("CNT")
+    )
+    mck_sub = (
+        l3_customer_profile_include_1mo_non_active.groupby(
+            "subscription_identifier", "old_subscription_identifier", "register_date"
+        )
+        .agg(F.count("*").alias("CNT"))
+        .drop("CNT")
+    )
+    fixed_key = analytic_sub.join(
+        mck_sub, ["old_subscription_identifier", "register_date"], "inner"
+    )
+    spark.sql("DROP TABLE IF EXISTS prod_dataupsell.l4_macro_product_purchase_feature_weekly_key_fixed")
+    l4_macro_product_purchase_feature_weekly.join(
+        fixed_key, ["analytic_id", "register_date"], "inner"
+    ).write.format("delta").mode("overwrite").partitionBy("start_of_week").saveAsTable(
+        "prod_dataupsell.l4_macro_product_purchase_feature_weekly_key_fixed"
+    )
+    return l4_macro_product_purchase_feature_weekly
