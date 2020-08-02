@@ -520,13 +520,15 @@ def streaming_favourite_start_hour_of_day_func(
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([input_df]):
-        return None
+    # if check_empty_dfs([input_df]):
+    #     return None
 
     # input_df = data_non_availability_and_missing_check(
     #     df=input_df, grouping="monthly", par_col="event_partition_date",
     #     missing_data_check_flg='Y',
     #     target_table_name="l3_streaming_favourite_start_time_hour_of_day")
+    CNTX = load_context(Path.cwd(), env=conf)
+    input_df = CNTX.catalog.load("l1_streaming_sdr_sub_app_hourly")
     input_df = input_df.where("event_partition_date < '2020-06-01'")
 
     if check_empty_dfs([input_df]):
