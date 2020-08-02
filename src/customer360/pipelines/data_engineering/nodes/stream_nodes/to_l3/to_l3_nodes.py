@@ -646,7 +646,7 @@ def streaming_favourite_start_hour_of_day_func(
                 final_col = "share_of_{}_streaming_usage_{}_by_total".format(v_time_type, app_group_type)
                 filtered = input_with_application.filter(F.col("application_group") == v_app_group)
                 filtered_agg = filtered.groupBy(["subscription_identifier", "start_of_month"])\
-                    .agg(F.sum("download").alias("main_download"))
+                    .agg(F.sum("dw_kbyte").alias("main_download"))
 
                 curr_time_type_agg = filtered.filter(F.col("day_type") == v_time_type)\
                     .groupBy(["subscription_identifier", "start_of_month"]).agg(F.sum("dw_kbyte").alias("download"))
