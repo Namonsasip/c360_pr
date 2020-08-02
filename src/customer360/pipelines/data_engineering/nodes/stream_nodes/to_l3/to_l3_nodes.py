@@ -522,18 +522,12 @@ def streaming_favourite_start_hour_of_day_func(
     ################################# Start Implementing Data availability checks #############################
     # if check_empty_dfs([input_df]):
     #     return None
-
     # input_df = data_non_availability_and_missing_check(
     #     df=input_df, grouping="monthly", par_col="event_partition_date",
     #     missing_data_check_flg='Y',
     #     target_table_name="l3_streaming_favourite_start_time_hour_of_day")
-    from customer360.utilities.spark_util import get_spark_session
-    spark  = get_spark_session()
-    input_df = spark.read.parquet("/mnt/customer360-blob-output/C360/STREAM/l1_features/l1_streaming_sdr_sub_app_hourly/")
-    input_df = input_df.where("event_partition_date < '2020-06-01'")
-
-    if check_empty_dfs([input_df]):
-        return None
+    # if check_empty_dfs([input_df]):
+    #     return None
     ################################# End Implementing Data availability checks ###############################
 
     # def process_massive_processing(data_frame: DataFrame, customer_prof: DataFrame) -> DataFrame:
