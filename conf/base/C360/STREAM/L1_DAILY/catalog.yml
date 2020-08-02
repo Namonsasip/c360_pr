@@ -182,6 +182,12 @@ l1_streaming_sdr_sub_app_hourly:
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_streaming_favourite_start_time_hour_of_day'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
 
 
 int_l0_streaming_vimmi_table_for_l2_streaming_fav_tv_show_by_episode_watched:
