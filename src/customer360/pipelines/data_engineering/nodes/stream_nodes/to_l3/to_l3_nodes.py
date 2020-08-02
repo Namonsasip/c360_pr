@@ -527,7 +527,7 @@ def streaming_favourite_start_hour_of_day_func(
     #     df=input_df, grouping="monthly", par_col="partition_date",
     #     missing_data_check_flg='Y',
     #     target_table_name="l3_streaming_favourite_start_time_hour_of_day")
-    input_df = input_df.where("event_partition_date < 2020-06-01")
+    input_df = input_df.where("event_partition_date < '2020-06-01'")
 
     if check_empty_dfs([input_df]):
         return None
