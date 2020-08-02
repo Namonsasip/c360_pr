@@ -623,7 +623,7 @@ def streaming_favourite_start_hour_of_day_func(
 
         grouped = input_with_application.\
             groupBy(["subscription_identifier", "application_group", "day_type", "time_of_day", "start_of_month"]).\
-            agg(F.sum(F.col("dw_kbytes")).alias("download"))
+            agg(F.sum(F.col("dw_kbyte")).alias("download"))
 
         final_dfs = []
         for curr_time_type in ["morning", "afternoon", "evening", "night"]:
