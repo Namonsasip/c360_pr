@@ -573,7 +573,7 @@ def build_streaming_sdr_sub_app_hourly_for_l3_monthly(input_df: DataFrame,
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_array = list(divide_chunks(mvv_array, 2))
+    mvv_array = list(divide_chunks(mvv_array, 3))
     add_list = mvv_array
 
     first_item = add_list[-1]
