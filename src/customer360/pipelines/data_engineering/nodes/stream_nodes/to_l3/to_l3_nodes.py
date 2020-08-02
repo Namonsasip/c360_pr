@@ -514,18 +514,14 @@ def streaming_to_l3_fav_tv_show_by_share_of_completed_episodes(
 
 
 def streaming_favourite_start_hour_of_day_func(
-        input_df: DataFrame,
-        master_application: DataFrame,
-        cust_profile_df: DataFrame):
+        input_df: DataFrame) -> None:
     """
     :param input_df:
-    :param master_application:
-    :param cust_profile_df:
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([input_df, master_application]):
-        return get_spark_empty_df()
+    if check_empty_dfs([input_df]):
+        return None
 
     # input_df = data_non_availability_and_missing_check(
     #     df=input_df, grouping="monthly", par_col="partition_date",
@@ -536,17 +532,14 @@ def streaming_favourite_start_hour_of_day_func(
     #     df=cust_profile_df, grouping="monthly", par_col="start_of_month",
     #     target_table_name="l3_streaming_favourite_start_time_hour_of_day")
 
-    # TO DO NEED TO REMOVE THIS
-    input_df = input_df.where("partition_date < 20200701")
-
-    if check_empty_dfs([input_df, master_application]):
-        return get_spark_empty_df()
+    if check_empty_dfs([input_df]):
+        return None
     ################################# End Implementing Data availability checks ###############################
 
-    def process_massive_processing(data_frame: DataFrame, customer_prof: DataFrame) -> DataFrame:
+    # def process_massive_processing(data_frame: DataFrame, customer_prof: DataFrame) -> DataFrame:
+    def process_massive_processing_favourite_hour(data_frame: DataFrame):
         """
         :param data_frame:
-        :param customer_prof:
         :return:
         """
         dictionary = [{'filter_condition': "youtube,youtube_go,youtubebyclick",
@@ -583,7 +576,8 @@ def streaming_favourite_start_hour_of_day_func(
                        'output_col': 'fav_valve_steam_streaming_hour_of_day'}]
 
         final_dfs = []
-        win = Window.partitionBy(["msisdn","start_of_month"]).orderBy(F.col("download").desc())
+        # win = Window.partitionBy(["msisdn","start_of_month"]).orderBy(F.col("download").desc())
+        win = Window.partitionBy(["subscription_identifier", "start_of_month"]).orderBy(F.col("download").desc())
         for curr_dict in dictionary:
             filter_query = curr_dict["filter_condition"].split(",")
             output_col = curr_dict["output_col"]
@@ -591,175 +585,219 @@ def streaming_favourite_start_hour_of_day_func(
                 filter(F.lower(F.col("application_name")).isin(filter_query))
             curr_item = curr_item.groupBy(["msisdn", "hour", "start_of_month"]).agg(F.sum("dw_kbyte").alias("download"))
             curr_item = curr_item.withColumn("rnk", F.row_number().over(win)).where("rnk = 1")
-            curr_item = curr_item.select(F.col("msisdn").alias("access_method_num"),
+
+            curr_item = curr_item.select("subscription_identifier",
                                          F.col("hour").alias(output_col),
                                          "start_of_month")
+
             final_dfs.append(curr_item)
 
         union_df = union_dataframes_with_missing_cols(final_dfs)
-        CNTX = load_context(Path.cwd(), env=conf)
-        CNTX.catalog.save("l3_streaming_favourite_start_time_hour_of_day_temp_2", union_df)
-
-        union_df = CNTX.catalog.load("l3_streaming_favourite_start_time_hour_of_day_temp_2")
-        group_cols = ["access_method_num", "start_of_month"]
+        group_cols = ["subscription_identifier", "start_of_month"]
 
         final_df_str = gen_max_sql(union_df, 'tmp_table_name', group_cols)
         merged_df = execute_sql(union_df, 'tmp_table_name', final_df_str)
 
-        merged_df = customer_prof.select("access_method_num", "subscription_identifier", "start_of_month") \
-            .join(merged_df, ["access_method_num", "start_of_month"]) \
-            .drop("access_method_num")
+        CNTX = load_context(Path.cwd(), env=conf)
+        CNTX.catalog.save("l3_streaming_favourite_start_time_hour_of_day", merged_df)
 
-        return merged_df
+        return None
+
+    def process_massive_processing_application_group(data_frame: DataFrame):
+        """
+        :param data_frame:
+        :return:
+        """
+        morning = [7, 8, 9, 10, 11, 12]
+        afternoon = [13, 14, 15, 16, 17, 18]
+        evening = [19, 20, 21, 22, 23, 0]
+
+        input_with_application = data_frame.\
+            withColumn("time_of_day", F.when(F.col("hour").isin(morning), F.lit("morning")).
+                       otherwise(
+            F.when(F.col("hour").isin(afternoon), F.lit("afternoon")).
+                otherwise(F.when(F.col("hour").isin(evening), F.lit("evening")).
+                          otherwise(F.lit("night"))
+                          )
+        )
+                       )
+
+        grouped = input_with_application.\
+            groupBy(["subscription_identifier", "application_group", "day_type", "time_of_day", "start_of_month"]).\
+            agg(F.sum(F.col("dw_kbytes")).alias("download"))
+
+        final_dfs = []
+        for curr_time_type in ["morning", "afternoon", "evening", "night"]:
+            for app_group_type in ["videoplayers_editors", "music_audio", "game"]:
+                v_time_type = curr_time_type
+                v_app_group = app_group_type
+                final_col = "share_of_{}_streaming_usage_{}_by_total".format(v_time_type, app_group_type)
+                filtered = grouped.filter(F.col("application_group") == v_app_group)
+                filtered_agg = filtered.groupBy(["subscription_identifier", "start_of_month"])\
+                    .agg(F.sum("download").alias("main_download"))
+
+                curr_time_type_agg = filtered.filter(F.col("time_of_day") == v_time_type) \
+                    .groupBy(["subscription_identifier", "start_of_month"]).agg(F.sum("download").alias("download"))
+
+                final_df = filtered_agg.join(curr_time_type_agg, ["subscription_identifier", "start_of_month"])\
+                    .withColumn(final_col, F.col("download") / F.col("main_download"))\
+                    .drop("download", "main_download")
+                final_dfs.append(final_df)
+
+        for curr_time_type in ["weekend", "weekday"]:
+            for app_group_type in ["videoplayers_editors", "music_audio", "game"]:
+                v_time_type = curr_time_type
+                v_app_group = app_group_type
+                final_col = "share_of_{}_streaming_usage_{}_by_total".format(v_time_type, app_group_type)
+                filtered = grouped.filter(F.col("application_group") == v_app_group)
+                filtered_agg = filtered.groupBy(["subscription_identifier", "start_of_month"])\
+                    .agg(F.sum("download").alias("main_download"))
+
+                curr_time_type_agg = filtered.filter(F.col("day_type") == v_time_type)\
+                    .groupBy(["subscription_identifier", "start_of_month"]).agg(F.sum("download").alias("download"))
+
+                final_df = filtered_agg.join(curr_time_type_agg, ["subscription_identifier", "start_of_month"])\
+                    .withColumn(final_col, F.col("download") / F.col("main_download"))\
+                    .drop("download", "main_download")
+                final_dfs.append(final_df)
+
+        union_df = union_dataframes_with_missing_cols(final_dfs)
+
+        group_cols = ["subscription_identifier", "start_of_month"]
+
+        final_df_str = gen_max_sql(union_df, 'tmp_table_name', group_cols)
+        merged_df = execute_sql(union_df, 'tmp_table_name', final_df_str)
+
+        CNTX = load_context(Path.cwd(), env=conf)
+        CNTX.catalog.save("l3_streaming_traffic_consumption_time_based_features", merged_df)
+
+        return None
 
 
-    w_recent_partition = Window.partitionBy("application_id").orderBy(F.col("partition_month").desc())
-    max_master_application = master_application.select("partition_month")\
-        .agg(F.max("partition_month").alias("partition_month"))
-
-    master_application = master_application.join(max_master_application, ["partition_month"])\
-        .withColumn("rank", F.row_number().over(w_recent_partition))\
-        .where(F.col("rank") == 1)\
-        .withColumnRenamed("application_id", "application")
 
     application_list = ["youtube", "youtube_go", "youtubebyclick", "trueid", "truevisions", "monomaxx",
                         "qqlive", "facebook", "linetv", "ais_play", "netflix", "viu", "viutv", "iflix",
                         "spotify", "jooxmusic", "twitchtv", "bigo", "valve_steam"]
-    master_application = master_application.filter(F.lower(F.col("application_name")).isin(application_list))
 
-    input_with_application = input_df.join(master_application, ["application"])
-    input_with_application = add_event_week_and_month_from_yyyymmdd(input_with_application, "partition_date")\
-        .drop("event_partition_date", "start_of_week")
+    input_df_hour_based = input_df.filter(F.lower(F.col("application_name")).isin(application_list))
+    process_massive_processing_favourite_hour(input_df_hour_based)
 
-    input_with_application = input_with_application.select("msisdn", "start_of_month", "application_name",
-                                                           "hour", "dw_kbyte")
-
-    CNTX = load_context(Path.cwd(), env=conf)
-    CNTX.catalog.save("l3_streaming_favourite_start_time_hour_of_day_temp_1", input_with_application)
-
-    input_with_application = CNTX.catalog.load("l3_streaming_favourite_start_time_hour_of_day_temp_1")
-
-    cust_df = cust_profile_df.withColumn("rn", F.expr(
-            "row_number() over(partition by start_of_month,access_method_num order by "
-            "start_of_month desc, mobile_status_date desc)")) \
-            .where("rn = 1") \
-            .select("subscription_identifier", "access_method_num", "start_of_month")
-
-    return_df = process_massive_processing(input_with_application, cust_df)
-
-    return return_df
+    application_group = ["videoplayers_editors", "music_audio", "game"]
+    input_df_group = input_df.filter(F.lower(F.col("application_group")).isin(application_group))
+    process_massive_processing_application_group(input_df_group)
+    return None
 
 
-def streaming_traffic_consumption_time_based_features_func(
-        input_df: DataFrame,
-        master_application: DataFrame,
-        cust_profile_df: DataFrame) -> DataFrame:
-    """
-    :param input_df:
-    :param master_application:
-    :param cust_profile_df:
-    :return:
-    """
-    ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([input_df, master_application]):
-        return get_spark_empty_df()
-
-    input_df = data_non_availability_and_missing_check(
-        df=input_df, grouping="monthly", par_col="partition_date",
-        missing_data_check_flg='Y',
-        target_table_name="l3_streaming_traffic_consumption_time_based_features")
-
-    cust_profile_df = data_non_availability_and_missing_check(
-        df=cust_profile_df, grouping="monthly", par_col="start_of_month",
-        target_table_name="l3_streaming_traffic_consumption_time_based_features")
-
-    if check_empty_dfs([input_df, master_application]):
-        return get_spark_empty_df()
-    ################################# End Implementing Data availability checks ###############################
-    w_recent_partition = Window.partitionBy("application_id").orderBy(F.col("partition_month").desc())
-    master_application = master_application \
-        .withColumn("rank", F.row_number().over(w_recent_partition)) \
-        .where(F.col("rank") == 1) \
-        .withColumnRenamed("application_id", "application")
-
-    cust_df = cust_profile_df.withColumn("rn", F.expr(
-        "row_number() over(partition by start_of_month,access_method_num order by "
-        "start_of_month desc, mobile_status_date desc)")) \
-        .where("rn = 1") \
-        .select("subscription_identifier", "access_method_num", "start_of_month")
-
-    input_with_application = input_df.join(master_application, ["application"])
-
-    input_with_application = add_event_week_and_month_from_yyyymmdd(input_with_application, "partition_date"). \
-        withColumn("day_type",
-                   F.when(F.date_format(F.col("event_partition_date"), 'EEEE').isin(['Sunday', 'Saturday']),
-                          F.lit("weekend")).otherwise(F.lit("weekday")))\
-        .drop("event_partition_date", "start_of_week")
-
-    morning = [7, 8, 9, 10, 11, 12]
-    afternoon = [13, 14, 15, 16, 17, 18]
-    evening = [19, 20, 21, 22, 23, 0]
-
-    input_with_application = input_with_application.\
-        withColumn("time_of_day", F.when(F.col("hour").isin(morning), F.lit("morning")).
-                   otherwise(
-        F.when(F.col("hour").isin(afternoon), F.lit("afternoon")).
-            otherwise(F.when(F.col("hour").isin(evening), F.lit("evening")).
-                      otherwise(F.lit("night"))
-                      )
-    )
-                   )
-
-    grouped = input_with_application.\
-        groupBy(["msisdn", "application_group", "day_type", "time_of_day", "start_of_month"]).\
-        agg(F.sum(F.col("dw_kbytes")).alias("download"))
-
-    final_dfs = []
-    for curr_time_type in ["morning", "afternoon", "evening", "night"]:
-        for app_group_type in ["videoplayers_editors", "music_audio", "game"]:
-            v_time_type = curr_time_type
-            v_app_group = app_group_type
-            final_col = "share_of_{}_streaming_usage_{}_by_total".format(v_time_type, app_group_type)
-            filtered = grouped.filter(F.col("application_group") == v_app_group)
-            filtered_agg = filtered.groupBy(["msisdn", "start_of_month"]).agg(F.sum("download").alias("main_download"))
-
-            curr_time_type_agg = filtered.filter(F.col("time_of_day") == v_time_type)\
-                .groupBy(["msisdn", "start_of_month"]).agg(F.sum("download").alias("download"))
-
-            final_df = filtered_agg.join(curr_time_type_agg, ["msisdn", "start_of_month"])\
-                .withColumn(final_col, F.col("download") / F.col("main_download"))\
-                .drop("download", "main_download")
-            final_dfs.append(final_df)
-
-    for curr_time_type in ["weekend", "weekday"]:
-        for app_group_type in ["videoplayers_editors", "music_audio", "game"]:
-            v_time_type = curr_time_type
-            v_app_group = app_group_type
-            final_col = "share_of_{}_streaming_usage_{}_by_total".format(v_time_type, app_group_type)
-            filtered = grouped.filter(F.col("application_group") == v_app_group)
-            filtered_agg = filtered.groupBy(["msisdn", "start_of_month"]).agg(F.sum("download").alias("main_download"))
-
-            curr_time_type_agg = filtered.filter(F.col("day_type") == v_time_type) \
-                .groupBy(["msisdn", "start_of_month"]).agg(F.sum("download").alias("download"))
-
-            final_df = filtered_agg.join(curr_time_type_agg, ["msisdn", "start_of_month"]) \
-                .withColumn(final_col, F.col("download") / F.col("main_download")) \
-                .drop("download", "main_download")
-            final_dfs.append(final_df)
-
-    union_df = union_dataframes_with_missing_cols(final_dfs)\
-        .withColumnRenamed("msisdn", "access_method_num")
-
-    group_cols = ["access_method_num", "start_of_month"]
-
-    final_df_str = gen_max_sql(union_df, 'tmp_table_name', group_cols)
-    merged_df = execute_sql(union_df, 'tmp_table_name', final_df_str)
-
-    merged_df = cust_df.select("access_method_num", "subscription_identifier", "start_of_month") \
-        .join(merged_df, ["access_method_num", "start_of_month"]) \
-        .drop("access_method_num")
-
-    return merged_df
+# def streaming_traffic_consumption_time_based_features_func(
+#         input_df: DataFrame,
+#         master_application: DataFrame,
+#         cust_profile_df: DataFrame) -> DataFrame:
+#     """
+#     :param input_df:
+#     :param master_application:
+#     :param cust_profile_df:
+#     :return:
+#     """
+#     ################################# Start Implementing Data availability checks #############################
+#     if check_empty_dfs([input_df, master_application]):
+#         return get_spark_empty_df()
+#
+#     input_df = data_non_availability_and_missing_check(
+#         df=input_df, grouping="monthly", par_col="partition_date",
+#         missing_data_check_flg='Y',
+#         target_table_name="l3_streaming_traffic_consumption_time_based_features")
+#
+#     cust_profile_df = data_non_availability_and_missing_check(
+#         df=cust_profile_df, grouping="monthly", par_col="start_of_month",
+#         target_table_name="l3_streaming_traffic_consumption_time_based_features")
+#
+#     if check_empty_dfs([input_df, master_application]):
+#         return get_spark_empty_df()
+#     ################################# End Implementing Data availability checks ###############################
+#     w_recent_partition = Window.partitionBy("application_id").orderBy(F.col("partition_month").desc())
+#     master_application = master_application \
+#         .withColumn("rank", F.row_number().over(w_recent_partition)) \
+#         .where(F.col("rank") == 1) \
+#         .withColumnRenamed("application_id", "application")
+#
+#     cust_df = cust_profile_df.withColumn("rn", F.expr(
+#         "row_number() over(partition by start_of_month,access_method_num order by "
+#         "start_of_month desc, mobile_status_date desc)")) \
+#         .where("rn = 1") \
+#         .select("subscription_identifier", "access_method_num", "start_of_month")
+#
+#     input_with_application = input_df.join(master_application, ["application"])
+#
+#     input_with_application = add_event_week_and_month_from_yyyymmdd(input_with_application, "partition_date"). \
+#         withColumn("day_type",
+#                    F.when(F.date_format(F.col("event_partition_date"), 'EEEE').isin(['Sunday', 'Saturday']),
+#                           F.lit("weekend")).otherwise(F.lit("weekday")))\
+#         .drop("event_partition_date", "start_of_week")
+#
+#     morning = [7, 8, 9, 10, 11, 12]
+#     afternoon = [13, 14, 15, 16, 17, 18]
+#     evening = [19, 20, 21, 22, 23, 0]
+#
+#     input_with_application = input_with_application.\
+#         withColumn("time_of_day", F.when(F.col("hour").isin(morning), F.lit("morning")).
+#                    otherwise(
+#         F.when(F.col("hour").isin(afternoon), F.lit("afternoon")).
+#             otherwise(F.when(F.col("hour").isin(evening), F.lit("evening")).
+#                       otherwise(F.lit("night"))
+#                       )
+#     )
+#                    )
+#
+#     grouped = input_with_application.\
+#         groupBy(["msisdn", "application_group", "day_type", "time_of_day", "start_of_month"]).\
+#         agg(F.sum(F.col("dw_kbytes")).alias("download"))
+#
+#     final_dfs = []
+#     for curr_time_type in ["morning", "afternoon", "evening", "night"]:
+#         for app_group_type in ["videoplayers_editors", "music_audio", "game"]:
+#             v_time_type = curr_time_type
+#             v_app_group = app_group_type
+#             final_col = "share_of_{}_streaming_usage_{}_by_total".format(v_time_type, app_group_type)
+#             filtered = grouped.filter(F.col("application_group") == v_app_group)
+#             filtered_agg = filtered.groupBy(["msisdn", "start_of_month"]).agg(F.sum("download").alias("main_download"))
+#
+#             curr_time_type_agg = filtered.filter(F.col("time_of_day") == v_time_type)\
+#                 .groupBy(["msisdn", "start_of_month"]).agg(F.sum("download").alias("download"))
+#
+#             final_df = filtered_agg.join(curr_time_type_agg, ["msisdn", "start_of_month"])\
+#                 .withColumn(final_col, F.col("download") / F.col("main_download"))\
+#                 .drop("download", "main_download")
+#             final_dfs.append(final_df)
+#
+#     for curr_time_type in ["weekend", "weekday"]:
+#         for app_group_type in ["videoplayers_editors", "music_audio", "game"]:
+#             v_time_type = curr_time_type
+#             v_app_group = app_group_type
+#             final_col = "share_of_{}_streaming_usage_{}_by_total".format(v_time_type, app_group_type)
+#             filtered = grouped.filter(F.col("application_group") == v_app_group)
+#             filtered_agg = filtered.groupBy(["msisdn", "start_of_month"]).agg(F.sum("download").alias("main_download"))
+#
+#             curr_time_type_agg = filtered.filter(F.col("day_type") == v_time_type) \
+#                 .groupBy(["msisdn", "start_of_month"]).agg(F.sum("download").alias("download"))
+#
+#             final_df = filtered_agg.join(curr_time_type_agg, ["msisdn", "start_of_month"]) \
+#                 .withColumn(final_col, F.col("download") / F.col("main_download")) \
+#                 .drop("download", "main_download")
+#             final_dfs.append(final_df)
+#
+#     union_df = union_dataframes_with_missing_cols(final_dfs)\
+#         .withColumnRenamed("msisdn", "access_method_num")
+#
+#     group_cols = ["access_method_num", "start_of_month"]
+#
+#     final_df_str = gen_max_sql(union_df, 'tmp_table_name', group_cols)
+#     merged_df = execute_sql(union_df, 'tmp_table_name', final_df_str)
+#
+#     merged_df = cust_df.select("access_method_num", "subscription_identifier", "start_of_month") \
+#         .join(merged_df, ["access_method_num", "start_of_month"]) \
+#         .drop("access_method_num")
+#
+#     return merged_df
 
 
 def streaming_favourite_location_features_func(

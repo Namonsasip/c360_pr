@@ -199,32 +199,18 @@ def streaming_to_l3_sdr_sub_app_time_based_features(**kwargs):
         [
 
             node(
-                streaming_favourite_start_hour_of_day_func,
-                [
-                    "l0_streaming_sdr_sub_app_hourly_for_l3_streaming_favourite_start_time_hour_of_day",
-                    "l0_mobile_app_master",
-                    "l3_customer_profile_union_monthly_feature_for_l3_streaming_favourite_start_time_hour_of_day"
-                ],
-                "l3_streaming_favourite_start_time_hour_of_day"
+                streaming_favourite_start_hour_of_day_func, "l1_streaming_sdr_sub_app_hourly",
+                None
             ),
-            node(
-                streaming_traffic_consumption_time_based_features_func,
-                [
-                    "l0_streaming_sdr_sub_app_hourly_for_l3_streaming_traffic_consumption_time_based_features",
-                    "l0_mobile_app_master",
-                    "l3_customer_profile_union_monthly_feature_for_l3_streaming_traffic_consumption_time_based_features"
-                ],
-                "l3_streaming_traffic_consumption_time_based_features"
-            ),
-            node(
-                streaming_favourite_quality_features_func,
-                [
-                    "l0_streaming_sdr_sub_app_hourly_for_l3_streaming_app_quality_features",
-                    "l0_mobile_app_master",
-                    "l3_customer_profile_union_monthly_feature_for_l3_streaming_app_quality_features",
-                ],
-                "l3_streaming_app_quality_features"
-            )
+            # node(
+            #     streaming_traffic_consumption_time_based_features_func,
+            #     [
+            #         "l0_streaming_sdr_sub_app_hourly_for_l3_streaming_traffic_consumption_time_based_features",
+            #         "l0_mobile_app_master",
+            #         "l3_customer_profile_union_monthly_feature_for_l3_streaming_traffic_consumption_time_based_features"
+            #     ],
+            #     "l3_streaming_traffic_consumption_time_based_features"
+            # ),
         ], name="streaming_to_l3_sdr_sub_app_time_based_features"
     )
 
@@ -243,6 +229,15 @@ def streaming_to_l3_favourite_location_features(**kwargs):
 
                 ],
                 "l3_streaming_favourite_location_features"
+            ),
+            node(
+                streaming_favourite_quality_features_func,
+                [
+                    "l0_streaming_soc_mobile_app_daily_for_l3_streaming_app_quality_features",
+                    "l0_mobile_app_master",
+                    "l3_customer_profile_union_monthly_feature_for_l3_streaming_app_quality_features",
+                ],
+                "l3_streaming_app_quality_features"
             )
         ], name="streaming_to_l3_favourite_location_features"
     )
