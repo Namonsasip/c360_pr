@@ -74,11 +74,12 @@ def dac_for_voice_features(
 
 def build_l3_network_good_and_bad_cells_features(
         input_df: DataFrame,
-        parameter: dict) -> DataFrame:
+        parameter: dict,
+        exception_partitions: List[str]) -> DataFrame:
     """
-
     :param input_df:
     :param parameter:
+    :param exception_partitions:
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
@@ -92,7 +93,7 @@ def build_l3_network_good_and_bad_cells_features(
             par_col="event_partition_date",
             target_table_name="l3_network_good_and_bad_cells_features",
             missing_data_check_flg='Y',
-            exception_partitions=['2020-01-01'])
+            exception_partitions=exception_partitions)
 
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
