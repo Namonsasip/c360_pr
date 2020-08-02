@@ -20,10 +20,10 @@ from customer360.utilities.re_usable_functions import add_start_of_week_and_mont
     data_non_availability_and_missing_check, l1_massive_processing
 from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 
-conf = os.getenv("CONF", "base")
-run_mode = os.getenv("DATA_AVAILABILITY_CHECKS", None)
-log = logging.getLogger(__name__)
-running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
+# conf = os.getenv("CONF", "base")
+# run_mode = os.getenv("DATA_AVAILABILITY_CHECKS", None)
+# log = logging.getLogger(__name__)
+# running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 
 
 def get_max_date_from_master_data(input_df: DataFrame, par_col='partition_date'):
