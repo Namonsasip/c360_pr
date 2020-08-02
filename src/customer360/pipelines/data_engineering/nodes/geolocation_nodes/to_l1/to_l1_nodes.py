@@ -933,8 +933,7 @@ def massive_processing_time_spent_daily(data_frame: DataFrame, sql, output_df_ca
 
 
 def massive_processing_with_l1_number_of_unique_cell_daily(usage_sum_data_location):
-    usage_sum_data_location = usage_sum_data_location.filter(
-        'partition_date >= 20191101 and partition_date <= 20191130')
+    usage_sum_data_location = usage_sum_data_location.filter('partition_date >= 20200401 and partition_date <= 20200627')
     # ----- Data Availability Checks -----
     if check_empty_dfs([usage_sum_data_location]):
         return get_spark_empty_df()
