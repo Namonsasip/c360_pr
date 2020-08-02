@@ -527,10 +527,7 @@ def streaming_favourite_start_hour_of_day_func(
     #     df=input_df, grouping="monthly", par_col="partition_date",
     #     missing_data_check_flg='Y',
     #     target_table_name="l3_streaming_favourite_start_time_hour_of_day")
-    #
-    # cust_profile_df = data_non_availability_and_missing_check(
-    #     df=cust_profile_df, grouping="monthly", par_col="start_of_month",
-    #     target_table_name="l3_streaming_favourite_start_time_hour_of_day")
+    input_df = input_df.where("event_partition_date < '2020-06-01'")
 
     if check_empty_dfs([input_df]):
         return None
@@ -576,14 +573,14 @@ def streaming_favourite_start_hour_of_day_func(
                        'output_col': 'fav_valve_steam_streaming_hour_of_day'}]
 
         final_dfs = []
-        # win = Window.partitionBy(["msisdn","start_of_month"]).orderBy(F.col("download").desc())
         win = Window.partitionBy(["subscription_identifier", "start_of_month"]).orderBy(F.col("download").desc())
         for curr_dict in dictionary:
             filter_query = curr_dict["filter_condition"].split(",")
             output_col = curr_dict["output_col"]
             curr_item = data_frame. \
                 filter(F.lower(F.col("application_name")).isin(filter_query))
-            curr_item = curr_item.groupBy(["msisdn", "hour", "start_of_month"]).agg(F.sum("dw_kbyte").alias("download"))
+            curr_item = curr_item.groupBy(["subscription_identifier", "hour", "start_of_month"])\
+                .agg(F.sum("dw_kbyte").alias("download"))
             curr_item = curr_item.withColumn("rnk", F.row_number().over(win)).where("rnk = 1")
 
             curr_item = curr_item.select("subscription_identifier",
