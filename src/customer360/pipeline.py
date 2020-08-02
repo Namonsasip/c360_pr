@@ -145,7 +145,7 @@ from .pipelines.data_engineering.pipelines.revenue_pipeline import (
 )
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l1.to_l1_pipeline import (
     streaming_to_l1_onair_vimmi_pipeline, streaming_to_l1_soc_mobile_data_pipeline,
-    streaming_to_l1_session_duration_pipeline
+    streaming_to_l1_session_duration_pipeline, streaming_sdr_sub_app_hourly_daily_for_l3_monthly
 )
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l2.to_l2_pipeline import (
     streaming_to_l2_intermediate_pipeline, streaming_to_l2_pipeline, streaming_to_l2_session_duration_pipeline
@@ -247,6 +247,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "streaming_to_l2_session_duration_pipeline": streaming_to_l2_session_duration_pipeline(),
         "streaming_series_title_master": streaming_series_title_master(),
         "streaming_to_l3_pipeline": streaming_to_l3_pipeline(),
+        "streaming_sdr_sub_app_hourly_daily_for_l3_monthly": streaming_sdr_sub_app_hourly_daily_for_l3_monthly(),
         "streaming_to_l3_sdr_sub_app_time_based_features": streaming_to_l3_sdr_sub_app_time_based_features(),
         "streaming_to_l3_favourite_location_features": streaming_to_l3_favourite_location_features(),
         "streaming_to_l3_session_duration_pipeline": streaming_to_l3_session_duration_pipeline(),

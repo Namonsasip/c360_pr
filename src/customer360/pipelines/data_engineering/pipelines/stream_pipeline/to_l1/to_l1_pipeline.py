@@ -37,7 +37,7 @@ from customer360.utilities.re_usable_functions import l1_massive_processing
 from customer360.pipelines.data_engineering.nodes.stream_nodes.to_l1.to_l1_nodes import *
 
 
-def streaming_to_l1_onair_vimmi_pipeline(**kwargs):
+def streaming_sdr_sub_app_hourly_daily_for_l3_monthly(**kwargs):
     return Pipeline(
         [
             node(
@@ -51,7 +51,6 @@ def streaming_to_l1_onair_vimmi_pipeline(**kwargs):
             )
         ]
     )
-
 
 
 def streaming_to_l1_onair_vimmi_pipeline(**kwargs):
