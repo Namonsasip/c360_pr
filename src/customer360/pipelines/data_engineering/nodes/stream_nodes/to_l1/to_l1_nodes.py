@@ -582,7 +582,7 @@ def build_streaming_sdr_sub_app_hourly_for_l3_monthly(input_df: DataFrame,
 
         CNTX.catalog.save("l1_streaming_sdr_sub_app_hourly", return_df)
 
-    logging.info("running for dates {0}".format(str(curr_item)))
+    logging.info("running for dates {0}".format(str(first_item)))
     filtered_input_df = data_frame.filter(f.col("event_partition_date").isin(*[first_item]))
     customer_filtered_df = cust_profile_df.filter(f.col("event_partition_date").isin(*[first_item]))
 
