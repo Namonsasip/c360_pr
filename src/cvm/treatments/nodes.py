@@ -102,7 +102,6 @@ def produce_treatments_translated(
     parameters: Dict[str, Any],
     treatments_features: DataFrame,
     users: DataFrame,
-    user_mapping: DataFrame,
     package_preference: DataFrame,
     offer_mapping: DataFrame,
 ) -> Tuple[DataFrame, DataFrame]:
@@ -135,7 +134,6 @@ def produce_treatments_translated(
     else:
         treatments_propositions_translated = package_translation(
             treatments_propositions,
-            user_mapping,
             package_preference,
             offer_mapping,
             parameters,
@@ -145,9 +143,9 @@ def produce_treatments_translated(
                 treatments_propositions_translated.count()
             )
         )
-    treatments_history = update_history_with_treatments_propositions(
-        treatments_propositions_translated, treatments_history, parameters
-    )
+    # treatments_history = update_history_with_treatments_propositions(
+    #     treatments_propositions_translated, treatments_history, parameters
+    # )
     return treatments_propositions_translated.toPandas(), treatments_history
 
 

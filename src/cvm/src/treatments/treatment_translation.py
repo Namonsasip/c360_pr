@@ -7,7 +7,6 @@ from pyspark.sql.functions import col, when
 
 def package_translation(
     df_contact: DataFrame,
-    df_map_id: DataFrame,
     df_package: DataFrame,
     df_mapping: DataFrame,
     parameters: Dict[str, Any],
@@ -16,7 +15,6 @@ def package_translation(
 
     Args:
         df_contact: treatment_chosen generated for send campaign.
-        df_map_id: customer profile contain analytic_id and crm_sub_id.
         df_package: product of package preference with propensity table.
         df_mapping: offer ATL to BTL mapping.
         parameters: parameters defined in parameters.yml.
@@ -25,19 +23,13 @@ def package_translation(
         df_out: result treatment table with package_preference offer overwritten.
 
     """
-    # Get latest data from customer profile and prepare data
-    date_filter = df_map_id.selectExpr("MAX(ddate)").collect()[0][0]
-    df_map_id = df_map_id.filter("ddate == '{}'".format(date_filter)).selectExpr(
-        "analytic_id",
-        "activation_date as register_date",
-        "crm_sub_id as old_subscription_identifier",
-    )
-    df_package = df_package.withColumnRenamed("activation_date", "register_date")
+    # df_package = df_package.withColumnRenamed("activation_date", "register_date")
+    df_package = df_package.filter("offer_Macro_product_type != 'BTL'")
 
     # Join table
-    df_join = df_contact.join(df_map_id, ["old_subscription_identifier"], "left_outer")
-    df_join = df_join.join(df_package, ["analytic_id", "register_date"], "left_outer")
-    df_join = df_join.withColumnRenamed("offer_Price", "offer_price")
+    # df_join = df_contact.join(df_map_id, ["old_subscription_identifier"], "left_outer")
+    df_join = df_contact.join(df_package, ["subscription_identifier"], "left_outer")
+    # df_join = df_join.withColumnRenamed("offer_Price", "offer_price")
 
     # Fill the unavailable BTL with ATL
     df_mapping = df_mapping.withColumn(
@@ -52,31 +44,25 @@ def package_translation(
             func.col("DESC_BTL_DISC_10")
         ),
     )
-    df_mapping = df_mapping.withColumnRenamed("du_offer", "offer")
+    # df_mapping = df_mapping.withColumnRenamed("offer_package_name_report", "offer")
 
-    # Constrain to limit new subs from receiving unlimited data package
-    df_join = df_join.filter(
-        "(register_date < '2019-02-01') OR offer_package_group != 'Fix UL'"
-    )
+    # # Constrain to limit new subs from receiving unlimited data package (temporary disable)
+    # df_join = df_join.filter(
+    #     "(register_date < '2019-02-01') OR offer_package_group != 'Fix UL'"
+    # )
+
     # Prepare package preference table with anti down-sell rules
     offer_cond = (
         "(" + " AND ".join(parameters["treatment_package_rec"]["condition"]) + ")"
     )
     df_join = df_join.filter(offer_cond)
-    window = Window.partitionBy("analytic_id", "register_date").orderBy(
-        func.col("prob_calibrated_cmp").desc()
-    )
-    df_join = df_join.select(
-        "*",
-        func.max(func.col("prob_calibrated_cmp"))
-        .over(window)
-        .alias("max_prob_calibrated_cmp"),
-    )
-    df_join = df_join.filter("prob_calibrated_cmp == max_prob_calibrated_cmp")
+    window = Window.partitionBy('subscription_identifier').orderBy(func.col('propensity').desc())
+    df_join = df_join.select('*', func.max(func.col('propensity')).over(window).alias('max_propensity'))
+    df_join = df_join.filter("propensity == max_propensity")
 
     # Mapping package preference offer with available MAID
-    df_join = df_join.join(df_mapping, ["offer"], "left_outer")
-    df_join = df_join.filter("MAID_ATL IS NOT NULL").drop("max_prob_calibrated_cmp")
+    df_join = df_join.join(df_mapping, ["offer_package_name_report"], "left_outer")
+    df_join = df_join.filter("MAID_ATL IS NOT NULL").drop("max_propensity")
 
     # Get package type according to treatment_name
     df_join = df_join.withColumn("offer_map", func.lit(None))
