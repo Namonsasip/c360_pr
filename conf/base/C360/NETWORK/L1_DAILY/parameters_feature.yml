@@ -47,7 +47,7 @@ l1_network_good_and_bad_cells_features:
   feature_list:
     access_method_num: access_method_num
     network_sum_of_good_cells: sum_of_good_cells
-    network_sum_of_bad_cells: sum_of_good_cells
+    network_sum_of_bad_cells: sum_of_bad_cells
     network_cell_id_count: cell_id_count
     network_share_of_good_cells: share_of_good_cells
     network_share_of_bad_cells: share_of_bad_cells
