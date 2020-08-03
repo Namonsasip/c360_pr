@@ -40,7 +40,7 @@ def package_translation(
     )
     df_mapping = df_mapping.withColumn(
         "DESC_BTL_DISC_10",
-        func.when(func.col("DESC_BTL_DISC_10").isNull(), func.col("du_offer")).otherwise(
+        func.when(func.col("DESC_BTL_DISC_10").isNull(), func.col("offer_package_name_report")).otherwise(
             func.col("DESC_BTL_DISC_10")
         ),
     )
