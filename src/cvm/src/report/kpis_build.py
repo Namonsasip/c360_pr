@@ -26,18 +26,61 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import logging
+from typing import Any, Dict
 
+import pandas
 import pyspark.sql.functions as func
+from cvm.src.report.report_features import (
+    add_prepaid_sub_id,
+    get_all_dates_between,
+    timestamp_to_date,
+)
 from cvm.src.utils.prepare_key_columns import prepare_key_columns
-from pyspark.sql import DataFrame
+from cvm.src.utils.utils import drop_duplicated_columns
+from pyspark.sql import DataFrame, Window
+
+from src.customer360.utilities.spark_util import get_spark_session
 
 
-def add_arpus(users_report: DataFrame, reve: DataFrame, min_date: str,) -> DataFrame:
+def add_l0_arpu(df: DataFrame, l0_arpu: DataFrame) -> DataFrame:
+    """ Add arpu based on l0 greenplum data.
+
+    Args:
+        df: table to join arpu to.
+        l0_arpu: l0 greenplum arpu data.
+    """
+    logging.getLogger(__name__).info("Adding l0 arpu")
+    reve_col = "total_net_tariff_revenue"
+    arpu = (
+        add_prepaid_sub_id(l0_arpu)
+        .withColumn("key_date", timestamp_to_date("day_id"))
+        .select(["subscription_identifier", "key_date", reve_col])
+        .withColumnRenamed(reve_col, "total_net_revenue_tariff_revenue_from_l0")
+    )
+    return df.join(arpu, on=["subscription_identifier", "key_date"], how="left")
+
+
+def prepare_users_dates(
+    users_report: DataFrame, parameters: Dict[str, Any]
+) -> DataFrame:
+    """ Prepare list of users and dates to populate.
+
+    Args:
+        users_report: list of users.
+        parameters: parameters defined in parameters.yml.
+    """
+    min_date = parameters["build_report"]["min_date"]
+    max_date = parameters["build_report"]["max_date"]
+    dates = get_all_dates_between(min_date, max_date)
+    return users_report.crossJoin(dates)
+
+
+def add_arpus(df: DataFrame, reve: DataFrame, min_date: str,) -> DataFrame:
     """ Adds a column with daily revenues for given time range. Imputes the data with
         0 if needed.
 
     Args:
-        users_report: table with users to create report for.
+        df: table with users to create report for.
         reve: table with daily arpus.
         min_date: minimum date of report.
     """
@@ -51,15 +94,9 @@ def add_arpus(users_report: DataFrame, reve: DataFrame, min_date: str,) -> DataF
         "rev_arpu_voice",
         "rev_arpu_data_rev",
     ]
-    reve = (
-        prepare_key_columns(reve)
-        .select(key_columns + reve_to_pick)
-        .filter("key_date >= '{}'".format(min_date))
-    )
+    reve = prepare_key_columns(reve).select(key_columns + reve_to_pick)
     filling_dict = {reve: 0 for reve in reve_to_pick}
-    return users_report.join(reve, on="subscription_identifier", how="left").fillna(
-        filling_dict
-    )
+    return df.join(reve, on=key_columns, how="left").fillna(filling_dict)
 
 
 def add_status(users_dates: DataFrame, profile_table: DataFrame,) -> DataFrame:
@@ -110,7 +147,7 @@ def add_inactivity(
         .filter("key_date >= '{}'".format(min_date))
     )
     return (
-        users_dates.join(usage, on=key_columns, how="left")
+        drop_duplicated_columns(users_dates.join(usage, on=key_columns, how="left"))
         .withColumn(new_col_name, new_col_when)
         .withColumn(
             "last_activity_date_is_null",
@@ -195,4 +232,87 @@ def add_prepaid_no_activity_daily(
     )
     return users.join(
         no_activity, on=["analytic_id", "register_date", "key_date"], how="left"
+    )
+
+
+def create_contacts_table(
+    campaign_codes_to_groups_mapping: pandas.DataFrame,
+    campaign_tracking_contact_list_pre: DataFrame,
+    min_date: str,
+    max_date: str,
+    v2_switch_date: str,
+) -> DataFrame:
+    """ Creates table listing ard, churn, bau campaign contacts and responses between
+    given dates.
+
+    Args:
+        v2_switch_date: when TG/CG groups were switched to V2.
+        campaign_codes_to_groups_mapping: table with campaign codes and tags.
+        campaign_tracking_contact_list_pre: table with contacts and responses.
+        min_date: minimum date.
+        max_date: maximum date.
+
+    """
+    # prepare campaign_codes_to_groups_mapping
+    campaign_codes_mapping = (
+        get_spark_session()
+        .createDataFrame(campaign_codes_to_groups_mapping)
+        .withColumnRenamed("CHILD_CODE", "campaign_code")
+        .withColumnRenamed("TAG", "campaign_code_tag")
+    )
+
+    # nullify treatment groups before/after the change date
+    after_switch = func.col("key_date") >= v2_switch_date
+    old_target_group = func.col("target_group").isin(["BAU", "CG", "TG"])
+    new_target_group = func.col("target_group").isin(
+        ["BAU_2020_CVM_V2", "CG_2020_CVM_V2", "TG_2020_CVM_V2"]
+    )
+    target_group_switched = (
+        func.when(after_switch & new_target_group, func.col("target_group"))
+        .when(~after_switch & old_target_group, func.col("target_group"))
+        .otherwise(func.lit(None))
+    )
+    # prepare campaign_tracking_contact_list_pre
+    contacts = (
+        # take care of dates
+        campaign_tracking_contact_list_pre.withColumn(
+            "contact_date", func.date_format(func.col("contact_date"), "yyyy-MM-dd")
+        )
+        .filter("contact_date >= '{}'".format(min_date))
+        .filter("contact_date <= '{}'".format(max_date))
+        # take care of campaign codes
+        .withColumnRenamed("campaign_child_code", "campaign_code")
+        .join(campaign_codes_mapping, on="campaign_code")
+        # take care of sub id
+        .withColumnRenamed("subscription_identifier", "old_subscription_identifier")
+        # add switched target group
+        .withColumn("target_group_switched", target_group_switched)
+        # limit columns
+        .select(
+            [
+                "contact_date",
+                "response",
+                "campaign_code",
+                "campaign_code_tag",
+                "old_subscription_identifier",
+            ]
+        )
+    )
+
+    return contacts
+
+
+def get_most_recent_micro_macrosegment(microsegments_history: DataFrame) -> DataFrame:
+    """ Return microsegments and macrosegments for every user found in
+    `microsegments_history`. If more then one returns the most recent one.
+
+    Args:
+        microsegments_history: table with microsegments and macrosegments assignment
+        history.
+    """
+    time_order = Window.partitionBy("subscription_identifier").orderBy("key_date")
+    return (
+        microsegments_history.withColumn("rn", func.row_number().over(time_order))
+        .filter("rn == 1")
+        .drop("rn")
     )

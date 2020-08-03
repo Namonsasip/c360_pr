@@ -29,9 +29,8 @@ import functools
 from datetime import datetime
 from typing import Any, Callable, Dict, List
 
-import pytz
-
 import pyspark.sql.functions as func
+import pytz
 from customer360.utilities.spark_util import get_spark_session
 from cvm.src.utils.list_targets import list_targets
 from pyspark.sql import DataFrame, Window
@@ -195,3 +194,25 @@ def pick_one_per_subscriber(
         .filter("row_no == 1")
         .drop("row_no")
     )
+
+
+def drop_duplicated_columns(df: DataFrame) -> DataFrame:
+    """  Drops duplicated columns.
+
+    Args:
+        df: table to drop columns from.
+    """
+    output_columns = []
+    duplicated_columns = []
+
+    for i in range(len(df.columns)):
+        if df.columns[i] not in output_columns:
+            output_columns.append(df.columns[i])
+        else:
+            duplicated_columns.append(i)
+
+    df = df.toDF(*[str(i) for i in range(len(df.columns))])
+    for duplicated_column in duplicated_columns:
+        df = df.drop(str(duplicated_column))
+
+    return df.toDF(*output_columns)

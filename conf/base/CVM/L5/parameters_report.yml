@@ -1,5 +1,6 @@
 build_report:
-  min_date: '2020-03-01'
+  min_date: '2020-04-10'
+  max_date: '2020-07-10'
   inactivity_lengths:
     - 1
     - 7
@@ -7,3 +8,27 @@ build_report:
     - 30
     - 60
     - 90
+  uplift_period: 14
+  not_contacted_users_base_date: '2020-06-20'
+  v2_switch_date: '2020-06-22'
+  kpis_to_summarize:
+   - rev_arpu_total_net_rev
+   - rev_arpu_voice
+   - rev_arpu_data_rev
+   - in_no_activity_n_days
+   - no_activity_n_days
+   - out_no_activity_n_days
+   - prepaid_no_activity
+   - prepaid_no_activity_in
+   - prepaid_no_activity_out
+   - inactive_1_days
+   - last_activity_date_is_null
+   - inactive_7_days
+   - inactive_14_days
+   - inactive_30_days
+   - inactive_60_days
+   - inactive_90_days
+   - network_churn
+   - status_SA
+   - total_net_revenue_tariff_revenue_from_l0
+

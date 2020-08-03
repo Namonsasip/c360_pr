@@ -40,6 +40,27 @@ users_micro_macro_only:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_users_micro_macro_only/
 
+# child code campaigns tags - used to tell if campaigns is a bau one
+child_code_tags:
+  type: kedro.io.csv_local.CSVLocalDataSet
+  filepath: /dbfs/mnt/customer360-blob-data/cvm/child_code_tags.csv
+
+# output table with daily kpis
 daily_kpis:
   <<: *spark_parquet
   filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_daily_kpis/
+
+# contacts only
+contacts_only:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_contacts_only/
+
+# statistics including contact information
+contact_kpis:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_contacts_kpis/
+
+# statistics including contact information
+contact_kpis_summarized:
+  <<: *spark_parquet
+  filepath: dbfs:/mnt/customer360-blob-data/C360/CVM/l5_cvm_contact_kpis_summarized/

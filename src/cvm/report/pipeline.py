@@ -25,10 +25,18 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from cvm.data_prep.nodes import get_micro_macrosegments, subs_date_join
-from cvm.report.nodes import build_daily_kpis, prepare_users
+from cvm.data_prep.nodes import subs_date_join
+from cvm.report.nodes import (
+    build_contacts_table,
+    build_daily_kpis,
+    create_contact_kpis,
+    prepare_users,
+)
 from cvm.sample_inputs.nodes import create_sample_dataset
+from cvm.src.report.kpis_build import get_most_recent_micro_macrosegment
 from kedro.pipeline import Pipeline, node
+
+from src.cvm.report.nodes import summarize_contact_kpis
 
 
 def sample_report_inputs() -> Pipeline:
@@ -89,18 +97,9 @@ def join_features() -> Pipeline:
                 name="join_report_features",
             ),
             node(
-                func=get_micro_macrosegments,
-                inputs=[
-                    "parameters",
-                    "features_report",
-                    "l3_customer_profile_include_1mo_non_active_report",
-                    "l3_customer_profile_include_1mo_non_active",
-                    "microsegments_macrosegments_history_input_scoring",
-                ],
-                outputs=[
-                    "microsegments_macrosegments_history_output_scoring",
-                    "users_micro_macro_only",
-                ],
+                func=get_most_recent_micro_macrosegment,
+                inputs="microsegments_macrosegments_history_input_scoring",
+                outputs="users_micro_macro_only",
                 name="prepare_micro_macro",
             ),
         ]
@@ -122,10 +121,41 @@ def create_kpis() -> Pipeline:
                     "l4_usage_prepaid_postpaid_daily_features",
                     "parameters",
                     "prepaid_no_activity_daily",
+                    "l0_revenue_prepaid_pru_f_usage_multi_daily",
                 ],
                 outputs="daily_kpis",
                 name="build_daily_kpis",
             )
+        ]
+    )
+
+
+def create_kpis_around_contacts() -> Pipeline:
+    """ Creates kpis for time periods around contacts"""
+    return Pipeline(
+        [
+            node(
+                func=build_contacts_table,
+                inputs=[
+                    "child_code_tags",
+                    "l0_campaign_tracking_contact_list_pre_full_load",
+                    "parameters",
+                ],
+                outputs="contacts_only",
+                name="list_contacts",
+            ),
+            node(
+                func=create_contact_kpis,
+                inputs=["daily_kpis", "contacts_only", "users_report", "parameters"],
+                outputs="contact_kpis",
+                name="create_contact_kpis",
+            ),
+            node(
+                func=summarize_contact_kpis,
+                inputs=["contact_kpis", "parameters"],
+                outputs="contact_kpis_summarized",
+                name="summarize_contact_kpis",
+            ),
         ]
     )
 
@@ -137,4 +167,4 @@ def prepare_user_microsegments() -> Pipeline:
 
 def run_report() -> Pipeline:
     """ Prepares data and creates kpis"""
-    return prepare_user_microsegments() + create_kpis()
+    return prepare_user_microsegments() + create_kpis() + create_kpis_around_contacts()
