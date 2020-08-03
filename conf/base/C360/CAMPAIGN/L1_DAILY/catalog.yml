@@ -26,8 +26,8 @@ l1_campaign_post_pre_daily_for_l3_campaign_postpaid_prepaid_monthly:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_campaign_postpaid_prepaid_monthly'
-    read_layer: 'l1_daily_campaign'
-    target_layer: 'l3_monthly_campaign'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
     lookback: '2'
 
 l1_campaign_top_channel_daily:
@@ -56,6 +56,6 @@ l1_campaign_top_channel_daily_for_l3_campaign_top_channel_monthly:
   load_args:
     increment_flag: 'yes'
     lookup_table_name: 'l3_campaign_postpaid_prepaid_monthly'
-    read_layer: 'l1_daily_campaign'
-    target_layer: 'l3_monthly_campaign'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
     lookback: '2'
