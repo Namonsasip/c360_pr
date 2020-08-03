@@ -40,24 +40,6 @@ def dac_for_voice_features(
 
     return input_df
 
-# def build_l2_network_voice_features(
-#         input_df: DataFrame,
-#         parameter: dict) -> DataFrame:
-#
-#     """
-#     :param input_df:
-#     :param parameter:
-#     :return:
-#     """
-#     if check_empty_dfs(
-#             [input_df]):
-#         return get_spark_empty_df()
-#
-#     return_df = node_from_config(input_df, parameter)
-#
-#     return return_df
-
-
 def build_l2_network_good_and_bad_cells_features(
         input_df: DataFrame,
         parameter: dict,

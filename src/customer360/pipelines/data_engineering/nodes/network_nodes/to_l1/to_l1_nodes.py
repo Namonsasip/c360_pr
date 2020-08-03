@@ -162,124 +162,115 @@ def build_network_good_and_bad_cells_features(
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
-    # if check_empty_dfs(
-    #         [l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features,
-    #          l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features,
-    #          l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features,
-    #          l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features,
-    #          l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features,
-    #          l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features,
-    #
-    #          l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features,
-    #          l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features,
-    #
-    #          l1_customer_profile_union_daily_feature_for_l1_network_good_and_bad_cells_features,
-    #          ]):
-    #     return get_spark_empty_df()
+    if check_empty_dfs(
+            [l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features,
+             l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features,
+             l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features,
+             l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features,
+             l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features,
+             l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features,
 
-    # l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features = \
-    #     data_non_availability_and_missing_check(
-    #         df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features,
-    #         grouping="daily",
-    #         par_col="partition_date",
-    #         target_table_name="l1_network_good_and_bad_cells_features",
-    #         exception_partitions=exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day)
-    #
-    # l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features = \
-    #     data_non_availability_and_missing_check(
-    #         df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features,
-    #         grouping="daily",
-    #         par_col="partition_date",
-    #         target_table_name="l1_network_good_and_bad_cells_features",
-    #         exception_partitions=exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day)
-    #
-    # l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features = \
-    #     data_non_availability_and_missing_check(
-    #         df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features,
-    #         grouping="daily",
-    #         par_col="partition_date",
-    #         target_table_name="l1_network_good_and_bad_cells_features",
-    #         exception_partitions=exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day)
-    #
-    # l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features = \
-    #     data_non_availability_and_missing_check(
-    #         df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features,
-    #         grouping="daily",
-    #         par_col="partition_date",
-    #         target_table_name="l1_network_good_and_bad_cells_features",
-    #         exception_partitions=exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day)
-    #
-    # l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features = \
-    #     data_non_availability_and_missing_check(
-    #         df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features,
-    #         grouping="daily",
-    #         par_col="partition_date",
-    #         target_table_name="l1_network_good_and_bad_cells_features",
-    #         exception_partitions=exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day)
-    #
-    # l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features = \
-    #     data_non_availability_and_missing_check(
-    #         df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features,
-    #         grouping="daily",
-    #         par_col="partition_date",
-    #         target_table_name="l1_network_good_and_bad_cells_features",
-    #         exception_partitions=exception_partition_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day)
+             l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features,
+             l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features,
 
-    ## l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features = \
-    ##     data_non_availability_and_missing_check(
-    ##         df=l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features, grouping="daily",
-    ##         par_col="partition_date",
-    ##         target_table_name="l1_network_good_and_bad_cells_features")
+             l1_customer_profile_union_daily_feature_for_l1_network_good_and_bad_cells_features,
+             ]):
+        return get_spark_empty_df()
 
-    # l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features = \
-    #     data_non_availability_and_missing_check(
-    #         df=l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features, grouping="daily",
-    #         par_col="partition_date",
-    #         target_table_name="l1_network_good_and_bad_cells_features")
+    l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features = \
+        data_non_availability_and_missing_check(
+            df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features,
+            grouping="daily",
+            par_col="partition_date",
+            target_table_name="l1_network_good_and_bad_cells_features",
+            exception_partitions=exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day)
 
-    # l1_customer_profile_union_daily_feature_for_l1_network_good_and_bad_cells_features = \
-    #     data_non_availability_and_missing_check(
-    #         df=l1_customer_profile_union_daily_feature_for_l1_network_good_and_bad_cells_features, grouping="daily",
-    #         par_col="even_partition_date",
-    #         target_table_name="l1_network_good_and_bad_cells_features")
+    l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features = \
+        data_non_availability_and_missing_check(
+            df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features,
+            grouping="daily",
+            par_col="partition_date",
+            target_table_name="l1_network_good_and_bad_cells_features",
+            exception_partitions=exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day)
 
-    # if check_empty_dfs(
-    #         [l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features,
-    #          l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features,
-    #          l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features,
-    #          l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features,
-    #          l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features,
-    #          l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features,
-    #
-    #          l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features,
-    #          l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features,
-    #
-    #          l1_customer_profile_union_daily_feature_for_l1_network_good_and_bad_cells_features]):
-    #     return get_spark_empty_df()
+    l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features = \
+        data_non_availability_and_missing_check(
+            df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features,
+            grouping="daily",
+            par_col="partition_date",
+            target_table_name="l1_network_good_and_bad_cells_features",
+            exception_partitions=exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day)
+
+    l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features = \
+        data_non_availability_and_missing_check(
+            df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features,
+            grouping="daily",
+            par_col="partition_date",
+            target_table_name="l1_network_good_and_bad_cells_features",
+            exception_partitions=exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day)
+
+    l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features = \
+        data_non_availability_and_missing_check(
+            df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features,
+            grouping="daily",
+            par_col="partition_date",
+            target_table_name="l1_network_good_and_bad_cells_features",
+            exception_partitions=exception_partitions_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day)
+
+    l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features = \
+        data_non_availability_and_missing_check(
+            df=l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features,
+            grouping="daily",
+            par_col="partition_date",
+            target_table_name="l1_network_good_and_bad_cells_features",
+            exception_partitions=exception_partition_list_for_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day)
+
+    l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features = \
+        data_non_availability_and_missing_check(
+            df=l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features, grouping="daily",
+            par_col="partition_date",
+            target_table_name="l1_network_good_and_bad_cells_features")
+
+    l1_customer_profile_union_daily_feature_for_l1_network_good_and_bad_cells_features = \
+        data_non_availability_and_missing_check(
+            df=l1_customer_profile_union_daily_feature_for_l1_network_good_and_bad_cells_features, grouping="daily",
+            par_col="even_partition_date",
+            target_table_name="l1_network_good_and_bad_cells_features")
+
+    if check_empty_dfs(
+            [l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features,
+             l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features,
+             l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features,
+             l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features,
+             l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features,
+             l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features,
+
+             l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features,
+             l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features,
+
+             l1_customer_profile_union_daily_feature_for_l1_network_good_and_bad_cells_features]):
+        return get_spark_empty_df()
 
     # For min custoner check is not required as it will be a left join to customer from driving table
-    # min_value = union_dataframes_with_missing_cols(
-    #     [
-    #         l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features.select(
-    #             f.max(f.col("partition_date")).alias("max_date")),
-    #         l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features.select(
-    #             f.max(f.col("partition_date")).alias("max_date")),
-    #         l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features.select(
-    #             f.max(f.col("partition_date")).alias("max_date")),
-    #         l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features.select(
-    #             f.max(f.col("partition_date")).alias("max_date")),
-    #         l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features.select(
-    #             f.max(f.col("partition_date")).alias("max_date")),
-    #         l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features.select(
-    #             f.max(f.col("partition_date")).alias("max_date")),
-    #         # l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features.select(
-    #         #     f.max(f.col("partition_date")).alias("max_date")),
-    #         l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features.select(
-    #             f.max(f.col("partition_date")).alias("max_date")),
-    #     ]
-    # ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
+    min_value = union_dataframes_with_missing_cols(
+        [
+            l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features.select(
+                f.max(f.col("partition_date")).alias("max_date")),
+            l0_network_sdr_dyn_cea_cei_qoe_cell_usr_stream_1day_for_l1_network_good_and_bad_cells_features.select(
+                f.max(f.col("partition_date")).alias("max_date")),
+            l0_network_sdr_dyn_cea_cei_qoe_cell_usr_web_1day_for_l1_network_good_and_bad_cells_features.select(
+                f.max(f.col("partition_date")).alias("max_date")),
+            l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voip_1day_for_l1_network_good_and_bad_cells_features.select(
+                f.max(f.col("partition_date")).alias("max_date")),
+            l0_network_sdr_dyn_cea_cei_qoe_cell_usr_volte_1day_for_l1_network_good_and_bad_cells_features.select(
+                f.max(f.col("partition_date")).alias("max_date")),
+            l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features.select(
+                f.max(f.col("partition_date")).alias("max_date")),
+            l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features.select(
+                f.max(f.col("partition_date")).alias("max_date")),
+        ]
+    ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
 
-    min_value = '20200401'
 
     l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features = \
         l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features \
@@ -299,9 +290,6 @@ def build_network_good_and_bad_cells_features(
     l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features = \
         l0_network_sdr_dyn_cea_cei_qoe_cell_usr_voice_1day_for_l1_network_good_and_bad_cells_features \
             .filter(f.col("partition_date") <= min_value)
-    # l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features = \
-    #     l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features \
-    #         .filter(f.col("partition_date") <= min_value)
     l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features = \
         l0_usage_sum_voice_location_daily_for_l1_network_good_and_bad_cells_features \
             .filter(f.col("partition_date") <= min_value)
