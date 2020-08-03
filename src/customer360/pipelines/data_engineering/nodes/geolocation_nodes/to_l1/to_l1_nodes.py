@@ -921,13 +921,13 @@ def massive_processing_time_spent_daily(data_frame: DataFrame, sql, output_df_ca
         logging.info("running for dates {0}".format(str(curr_item)))
         small_df = data_frame.filter(f.col(partition_col).isin(*[curr_item]))
         small_df = add_event_week_and_month_from_yyyymmdd(small_df, partition_col)
-        small_df.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
+        small_df.createOrReplaceTempView('geo_cust_location_visit_hr')
         output_df = ss.sql(sql)
         CNTX.catalog.save(output_df_catalog, output_df)
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(f.col(partition_col).isin(*[first_item]))
     return_df = add_event_week_and_month_from_yyyymmdd(return_df, partition_col)
-    return_df.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
+    return_df.createOrReplaceTempView('geo_cust_location_visit_hr')
     return_df = ss.sql(sql)
     return return_df
 
