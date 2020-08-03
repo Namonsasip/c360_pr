@@ -25,6 +25,7 @@ def package_translation(
     """
     # df_package = df_package.withColumnRenamed("activation_date", "register_date")
     df_package = df_package.filter("offer_Macro_product_type != 'BTL'")
+    df_package = df_package.drop("old_subscription_identifier") # drop redundant column
 
     # Join table
     # df_join = df_contact.join(df_map_id, ["old_subscription_identifier"], "left_outer")
