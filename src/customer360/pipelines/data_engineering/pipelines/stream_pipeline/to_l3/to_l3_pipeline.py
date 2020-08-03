@@ -33,7 +33,7 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 
 from kedro.pipeline import Pipeline, node
 
-from customer360.utilities.config_parser import  expansion
+from customer360.utilities.config_parser import expansion
 from customer360.pipelines.data_engineering.nodes.stream_nodes.to_l3.to_l3_nodes import *
 
 
@@ -118,7 +118,7 @@ def streaming_to_l3_pipeline(**kwargs):
                  ]
                  ),
 
-            # # fav esport service by download traffic/visit count
+            # fav esport service by download traffic/visit count
             node(streaming_fav_service_download_traffic_visit_count,
                  [
                      "int_l1_streaming_esport_service_feature_for_l3_streaming_fav_esport_service_feature",
@@ -194,41 +194,19 @@ def streaming_to_l3_pipeline(**kwargs):
     )
 
 
-def streaming_to_l3_favourite_start_hour_of_day(**kwargs):
+def streaming_to_l3_sdr_sub_app_time_based_features(**kwargs):
     return Pipeline(
         [
 
             node(
-                streaming_favourite_start_hour_of_day_func,
-                [
-                    "l0_streaming_sdr_sub_app_hourly_for_l3_streaming_favourite_start_time_hour_of_day",
-                    "l0_mobile_app_master",
-                    "l3_customer_profile_union_monthly_feature_for_l3_streaming_favourite_start_time_hour_of_day"
-                ],
-                "l3_streaming_favourite_start_time_hour_of_day"
-            )
-        ], name="streaming_favourite_start_hour_of_day"
+                streaming_favourite_start_hour_of_day_func, "l1_streaming_sdr_sub_app_hourly",
+                None
+            ),
+        ], name="streaming_to_l3_sdr_sub_app_time_based_features"
     )
 
 
-def streaming_to_l3_traffic_consumption_time_based_features(**kwargs):
-    return Pipeline(
-        [
-
-            node(
-                streaming_traffic_consumption_time_based_features_func,
-                [
-                    "l0_streaming_sdr_sub_app_hourly_for_l3_streaming_traffic_consumption_time_based_features",
-                    "l0_mobile_app_master",
-                    "l3_customer_profile_union_monthly_feature_for_l3_streaming_traffic_consumption_time_based_features"
-                ],
-                "l3_streaming_traffic_consumption_time_based_features"
-            )
-        ], name="streaming_traffic_consumption_time_based_features"
-    )
-
-
-def streaming_to_l3_favourite_location_quality_features(**kwargs):
+def streaming_to_l3_favourite_location_features(**kwargs):
     return Pipeline(
         [
 
@@ -246,13 +224,13 @@ def streaming_to_l3_favourite_location_quality_features(**kwargs):
             node(
                 streaming_favourite_quality_features_func,
                 [
-                    "l0_streaming_sdr_sub_app_hourly_for_l3_streaming_app_quality_features",
+                    "l0_streaming_soc_mobile_app_daily_for_l3_streaming_app_quality_features",
                     "l0_mobile_app_master",
                     "l3_customer_profile_union_monthly_feature_for_l3_streaming_app_quality_features",
                 ],
                 "l3_streaming_app_quality_features"
             )
-        ], name="streaming_favourite_location_quality_features"
+        ], name="streaming_to_l3_favourite_location_features"
     )
 
 

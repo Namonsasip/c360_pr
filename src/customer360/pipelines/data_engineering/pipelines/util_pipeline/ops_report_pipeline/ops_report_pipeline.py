@@ -73,7 +73,6 @@ def ops_report_pipeline(**kwargs):
     return Pipeline(
         [
 
-            # Top up count and top up volume feature pre-paid
             node(
                 build_ops_report_dataset,
                 'util_audit_metadata_table',
