@@ -115,7 +115,7 @@ from .pipelines.data_engineering.pipelines.loyalty_pipeline import (
     loyalty_to_l4_monthly_pipeline
 )
 from .pipelines.data_engineering.pipelines.network_pipeline.to_l1.to_l1_pipeline import (
-    network_to_l1_pipeline,
+    network_to_l1_pipeline, network_geo_home_work_location_master_to_l1_pipeline
 )
 from .pipelines.data_engineering.pipelines.network_pipeline.to_l2.to_l2_pipeline import (
     network_to_l2_pipeline,
@@ -145,15 +145,14 @@ from .pipelines.data_engineering.pipelines.revenue_pipeline import (
 )
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l1.to_l1_pipeline import (
     streaming_to_l1_onair_vimmi_pipeline, streaming_to_l1_soc_mobile_data_pipeline,
-    streaming_to_l1_session_duration_pipeline
+    streaming_to_l1_session_duration_pipeline, streaming_sdr_sub_app_hourly_daily_for_l3_monthly
 )
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l2.to_l2_pipeline import (
     streaming_to_l2_intermediate_pipeline, streaming_to_l2_pipeline, streaming_to_l2_session_duration_pipeline
 )
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l3.to_l3_pipeline import (
     streaming_to_l3_pipeline, streaming_to_l3_session_duration_pipeline, streaming_series_title_master,
-    streaming_to_l3_favourite_start_hour_of_day, streaming_to_l3_traffic_consumption_time_based_features,
-    streaming_to_l3_favourite_location_quality_features
+    streaming_to_l3_sdr_sub_app_time_based_features, streaming_to_l3_favourite_location_features,
 )
 from .pipelines.data_engineering.pipelines.stream_pipeline.to_l4.to_l4_pipeline import (
     streaming_l2_to_l4_pipeline,
@@ -196,7 +195,7 @@ from .pipelines.data_engineering.pipelines.sales_pipeline.to_l4.to_l4_weekly_pip
 )
 
 from .pipelines.data_engineering.pipelines.util_pipeline import (
-    lineage_dependency_pipeline, ops_report_pipeline
+    lineage_dependency_pipeline, ops_report_pipeline, metadata_backup_pipeline
 )
 
 from .pipelines.data_engineering.pipelines.predictive_pipeline.to_l4.to_l4_pipeline import predictive_to_l4_pipeline
@@ -225,7 +224,6 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "billing_to_l1_pipeline": billing_to_l1_pipeline(),
         "billing_l0_to_l3_pipeline": billing_l0_to_l3_pipeline(),
         "billing_l1_to_l3_pipeline": billing_l1_to_l3_pipeline(),
-       # "billing_to_l2_intermediate_pipeline": billing_to_l2_intermediate_pipeline(),
         "billing_to_l2_pipeline": billing_to_l2_pipeline(),
         "billing_to_l4_pipeline_monthly": billing_to_l4_pipeline_monthly(),
         "billing_to_l4_pipeline_weekly": billing_to_l4_pipeline_weekly(),
@@ -248,10 +246,9 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "streaming_to_l2_session_duration_pipeline": streaming_to_l2_session_duration_pipeline(),
         "streaming_series_title_master": streaming_series_title_master(),
         "streaming_to_l3_pipeline": streaming_to_l3_pipeline(),
-        "streaming_to_l3_favourite_start_hour_of_day": streaming_to_l3_favourite_start_hour_of_day(),
-        "streaming_to_l3_traffic_consumption_time_based_features":
-            streaming_to_l3_traffic_consumption_time_based_features(),
-        "streaming_to_l3_favourite_location_quality_features": streaming_to_l3_favourite_location_quality_features(),
+        "streaming_sdr_sub_app_hourly_daily_for_l3_monthly": streaming_sdr_sub_app_hourly_daily_for_l3_monthly(),
+        "streaming_to_l3_sdr_sub_app_time_based_features": streaming_to_l3_sdr_sub_app_time_based_features(),
+        "streaming_to_l3_favourite_location_features": streaming_to_l3_favourite_location_features(),
         "streaming_to_l3_session_duration_pipeline": streaming_to_l3_session_duration_pipeline(),
         "streaming_l1_to_l4_pipeline": streaming_l1_to_l4_pipeline(),
         "streaming_l2_to_l4_session_duration_pipeline": streaming_l2_to_l4_session_duration_pipeline(),
@@ -281,6 +278,7 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "loyalty_to_l4_weekly_pipeline": loyalty_to_l4_weekly_pipeline(),
         "loyalty_to_l4_monthly_pipeline": loyalty_to_l4_monthly_pipeline(),
         "network_to_l1_pipeline": network_to_l1_pipeline(),
+        "network_geo_home_work_location_master_to_l1_pipeline": network_geo_home_work_location_master_to_l1_pipeline(),
         "network_to_l2_pipeline": network_to_l2_pipeline(),
         "network_to_l3_pipeline": network_to_l3_pipeline(),
         "network_to_l4_pipeline": network_to_l4_pipeline(),
@@ -297,7 +295,8 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "geo_to_l1_pipeline": geo_to_l1_pipeline(),
         "geo_to_l2_pipeline": geo_to_l2_pipeline(),
         "geo_to_l3_pipeline": geo_to_l3_pipeline(),
-        "geo_to_l4_pipeline": geo_to_l4_pipeline()
+        "geo_to_l4_pipeline": geo_to_l4_pipeline(),
+        "metadata_backup_pipeline": metadata_backup_pipeline()
     }
 
 
