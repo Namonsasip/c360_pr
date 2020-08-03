@@ -41,4 +41,4 @@ util_metadata_backup:
   save_args:
     increment_flag: 'no'
     mode: "overwrite"
-    partitionBy: "metadata_table_backup_date , table_name"
+    partitionBy: ["metadata_table_backup_date , table_name"]
