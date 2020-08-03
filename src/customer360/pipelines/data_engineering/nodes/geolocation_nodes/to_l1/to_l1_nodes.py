@@ -176,7 +176,7 @@ def massive_processing_with_l1_geo_area_from_competitor_store_daily(shape,master
     return return_df
 
 
-def l1_geo_time_spent_by_location_daily(df,sql):
+def l1_geo_time_spent_by_location_daily(df, sql):
     df = df.filter('partition_date >= 20200401 and partition_date <= 20200627')
 
     # ----- Data Availability Checks -----
@@ -920,13 +920,13 @@ def massive_processing_time_spent_daily(data_frame: DataFrame, sql, output_df_ca
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         small_df = data_frame.filter(f.col(partition_col).isin(*[curr_item]))
-        small_df = add_start_of_week_and_month(small_df, partition_col)
+        small_df = add_event_week_and_month_from_yyyymmdd(small_df, partition_col)
         small_df.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
         output_df = ss.sql(sql)
         CNTX.catalog.save(output_df_catalog, output_df)
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(f.col(partition_col).isin(*[first_item]))
-    return_df = add_start_of_week_and_month(return_df, "time_in")
+    return_df = add_event_week_and_month_from_yyyymmdd(return_df, partition_col)
     return_df.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
     return_df = ss.sql(sql)
     return return_df
