@@ -5,7 +5,7 @@ l4_streaming_fav_tv_show_by_share_of_completed_episodes:
      start_of_week: start_of_week
      fav_tv_show_by_share_of_completed_episodes_current_week: fav_tv_show_by_share_of_completed_episodes
      fav_tv_show_by_share_of_completed_episodes_last_week: "lag() over(partition by subscription_identifier,
-                                                            start_of_week order by start_of_week desc)"
+                                                            start_of_week order by start_of_week)"
   granularity: ""
 
 
