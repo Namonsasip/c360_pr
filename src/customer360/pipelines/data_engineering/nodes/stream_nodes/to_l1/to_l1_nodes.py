@@ -538,8 +538,6 @@ def build_streaming_sdr_sub_app_hourly_for_l3_monthly(input_df: DataFrame,
         .where(f.col("rank") == 1) \
         .withColumnRenamed("application_id", "application")
 
-    print(master_application.count())
-
     application_list = ["youtube", "youtube_go", "youtubebyclick", "trueid", "truevisions", "monomaxx",
                     "qqlive", "facebook", "linetv", "ais_play", "netflix", "viu", "viutv", "iflix",
                     "spotify", "jooxmusic", "twitchtv", "bigo", "valve_steam"]
@@ -548,8 +546,6 @@ def build_streaming_sdr_sub_app_hourly_for_l3_monthly(input_df: DataFrame,
 
     master_application = master_application.filter(f.lower(f.col("application_name")).isin(application_list) |
                                                    f.lower(f.col("application_group")).isin(application_group))
-
-    print(master_application.count())
 
     def divide_chunks(l, n):
         # looping till length l
