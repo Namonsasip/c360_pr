@@ -181,7 +181,7 @@ def stream_process_ru_a_onair_vimmi(vimmi_usage_daily: DataFrame,
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_array = list(divide_chunks(mvv_array, 15))
+    mvv_array = list(divide_chunks(mvv_array, 5))
     add_list = mvv_array
 
     first_item = add_list[-1]
@@ -389,7 +389,7 @@ def stream_process_soc_mobile_data(input_data: DataFrame,
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_array = list(divide_chunks(mvv_array, 15))
+    mvv_array = list(divide_chunks(mvv_array, 5))
     add_list = mvv_array
 
     first_item = add_list[-1]
