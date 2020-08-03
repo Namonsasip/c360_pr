@@ -279,7 +279,7 @@ def build_network_good_and_bad_cells_features(
     #     ]
     # ).select(f.min(f.col("max_date")).alias("min_date")).collect()[0].min_date
 
-    min_value = '20200726'
+    min_value = '20200301'
 
     l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features = \
         l0_network_sdr_dyn_cea_cei_qoe_cell_usr_im_1day_for_l1_network_good_and_bad_cells_features \
