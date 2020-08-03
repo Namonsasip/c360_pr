@@ -43,105 +43,105 @@ from customer360.pipelines.data_engineering.nodes.stream_nodes.to_l4.to_l4_nodes
 def streaming_l2_to_l4_pipeline(**kwargs):
     return Pipeline(
         [
-            # # # this will calculate sum per content_group
-            # node(
-            #     streaming_two_output_function,
-            #         [
-            #             "int_l2_streaming_content_type_features_for_int_l4_streaming_content_type_features",
-            #             "params:int_l4_streaming_content_type_features",
-            #             "params:l4_streaming_fav_content_group_by_volume",
-            #             "params:l4_streaming_fav_content_group_by_duration",
-            #         ],
-            #      [
-            #          "l4_streaming_fav_content_group_by_volume", "l4_streaming_fav_content_group_by_duration"
-            #      ]
-            #      ),
-            #
-            # # # TV Channel features
-            # node(
-            #     streaming_two_output_function,
-            #     [
-            #         "int_l2_streaming_tv_channel_features_for_int_l4_streaming_tv_channel_features",
-            #         "params:int_l4_streaming_tv_channel_features",
-            #         "params:l4_streaming_fav_tv_channel_by_volume",
-            #         "params:l4_streaming_fav_tv_channel_by_duration",
-            #     ],
-            #     [
-            #         "l4_streaming_fav_tv_channel_by_volume", "l4_streaming_fav_tv_channel_by_duration"
-            #     ]
-            # ),
-            #
-            # # # fav video service feature
-            # node(
-            #     streaming_three_output_function,
-            #     [
-            #         "int_l2_streaming_video_service_feature_for_int_l4_streaming_video_service_feature",
-            #         "params:int_l4_streaming_service_feature",
-            #         "params:l4_streaming_fav_service_by_download_feature",
-            #         "params:l4_streaming_2nd_fav_service_by_download_feature",
-            #         "params:l4_streaming_fav_service_by_visit_count_feature",
-            #     ],
-            #     [
-            #         "l4_streaming_fav_video_service_by_download_feature",
-            #         "l4_streaming_2nd_fav_video_service_by_download_feature",
-            #         "l4_streaming_fav_video_service_by_visit_count_feature"
-            #     ]
-            # ),
-            # # fav music service feature
-            # node(
-            #     streaming_three_output_function,
-            #     [
-            #         "int_l2_streaming_music_service_feature_for_int_l4_streaming_music_service_feature",
-            #         "params:int_l4_streaming_service_feature",
-            #         "params:l4_streaming_fav_service_by_download_feature",
-            #         "params:l4_streaming_2nd_fav_service_by_download_feature",
-            #         "params:l4_streaming_fav_service_by_visit_count_feature",
-            #     ],
-            #     [
-            #         "l4_streaming_fav_music_service_by_download_feature",
-            #         "l4_streaming_2nd_fav_music_service_by_download_feature",
-            #         "l4_streaming_fav_music_service_by_visit_count_feature"
-            #     ]
-            # ),
-            #
-            # # # fav esport service feature
-            # node(
-            #     streaming_three_output_function,
-            #     [
-            #         "int_l2_streaming_esport_service_feature_for_int_l4_streaming_music_service_feature",
-            #         "params:int_l4_streaming_service_feature",
-            #         "params:l4_streaming_fav_service_by_download_feature",
-            #         "params:l4_streaming_2nd_fav_service_by_download_feature",
-            #         "params:l4_streaming_fav_service_by_visit_count_feature",
-            #     ],
-            #     [
-            #         "l4_streaming_fav_esport_service_by_download_feature",
-            #         "l4_streaming_2nd_fav_esport_service_by_download_feature",
-            #         "l4_streaming_fav_esport_service_by_visit_count_feature"
-            #     ]
-            # ),
-            #
-            # node(
-            #     l4_rolling_window,
-            #     [
-            #         "l2_streaming_visit_count_and_download_traffic_feature_for_l4_streaming_visit_count_and_download_traffic_feature",
-            #         "params:l4_streaming_visit_count_and_download_traffic_feature"],
-            #     "l4_streaming_visit_count_and_download_traffic_feature"
-            # ),
-            #
-            # node(
-            #     l4_rolling_window,
-            #     ["int_l2_streaming_sum_per_day_for_l4_streaming_fav_youtube_video_streaming_day_of_week_feature",
-            #      "params:int_l4_streaming_download_traffic_per_day_of_week"],
-            #     "int_l4_streaming_download_traffic_per_day_of_week"
-            # ),
-            # node(
-            #     generate_l4_fav_streaming_day,
-            #     ["int_l4_streaming_download_traffic_per_day_of_week",
-            #      "params:int_l4_streaming_ranked_of_day_per_rolling_week",
-            #      "params:streaming_app"],
-            #     None
-            # ),
+            # # this will calculate sum per content_group
+            node(
+                streaming_two_output_function,
+                    [
+                        "int_l2_streaming_content_type_features_for_int_l4_streaming_content_type_features",
+                        "params:int_l4_streaming_content_type_features",
+                        "params:l4_streaming_fav_content_group_by_volume",
+                        "params:l4_streaming_fav_content_group_by_duration",
+                    ],
+                 [
+                     "l4_streaming_fav_content_group_by_volume", "l4_streaming_fav_content_group_by_duration"
+                 ]
+                 ),
+
+            # # TV Channel features
+            node(
+                streaming_two_output_function,
+                [
+                    "int_l2_streaming_tv_channel_features_for_int_l4_streaming_tv_channel_features",
+                    "params:int_l4_streaming_tv_channel_features",
+                    "params:l4_streaming_fav_tv_channel_by_volume",
+                    "params:l4_streaming_fav_tv_channel_by_duration",
+                ],
+                [
+                    "l4_streaming_fav_tv_channel_by_volume", "l4_streaming_fav_tv_channel_by_duration"
+                ]
+            ),
+
+            # # fav video service feature
+            node(
+                streaming_three_output_function,
+                [
+                    "int_l2_streaming_video_service_feature_for_int_l4_streaming_video_service_feature",
+                    "params:int_l4_streaming_service_feature",
+                    "params:l4_streaming_fav_service_by_download_feature",
+                    "params:l4_streaming_2nd_fav_service_by_download_feature",
+                    "params:l4_streaming_fav_service_by_visit_count_feature",
+                ],
+                [
+                    "l4_streaming_fav_video_service_by_download_feature",
+                    "l4_streaming_2nd_fav_video_service_by_download_feature",
+                    "l4_streaming_fav_video_service_by_visit_count_feature"
+                ]
+            ),
+            # fav music service feature
+            node(
+                streaming_three_output_function,
+                [
+                    "int_l2_streaming_music_service_feature_for_int_l4_streaming_music_service_feature",
+                    "params:int_l4_streaming_service_feature",
+                    "params:l4_streaming_fav_service_by_download_feature",
+                    "params:l4_streaming_2nd_fav_service_by_download_feature",
+                    "params:l4_streaming_fav_service_by_visit_count_feature",
+                ],
+                [
+                    "l4_streaming_fav_music_service_by_download_feature",
+                    "l4_streaming_2nd_fav_music_service_by_download_feature",
+                    "l4_streaming_fav_music_service_by_visit_count_feature"
+                ]
+            ),
+
+            # # fav esport service feature
+            node(
+                streaming_three_output_function,
+                [
+                    "int_l2_streaming_esport_service_feature_for_int_l4_streaming_music_service_feature",
+                    "params:int_l4_streaming_service_feature",
+                    "params:l4_streaming_fav_service_by_download_feature",
+                    "params:l4_streaming_2nd_fav_service_by_download_feature",
+                    "params:l4_streaming_fav_service_by_visit_count_feature",
+                ],
+                [
+                    "l4_streaming_fav_esport_service_by_download_feature",
+                    "l4_streaming_2nd_fav_esport_service_by_download_feature",
+                    "l4_streaming_fav_esport_service_by_visit_count_feature"
+                ]
+            ),
+
+            node(
+                l4_rolling_window,
+                [
+                    "l2_streaming_visit_count_and_download_traffic_feature_for_l4_streaming_visit_count_and_download_traffic_feature",
+                    "params:l4_streaming_visit_count_and_download_traffic_feature"],
+                "l4_streaming_visit_count_and_download_traffic_feature"
+            ),
+
+            node(
+                l4_rolling_window,
+                ["int_l2_streaming_sum_per_day_for_l4_streaming_fav_youtube_video_streaming_day_of_week_feature",
+                 "params:int_l4_streaming_download_traffic_per_day_of_week"],
+                "int_l4_streaming_download_traffic_per_day_of_week"
+            ),
+            node(
+                generate_l4_fav_streaming_day,
+                ["int_l4_streaming_download_traffic_per_day_of_week",
+                 "params:int_l4_streaming_ranked_of_day_per_rolling_week",
+                 "params:streaming_app"],
+                None
+            ),
             node(
                 node_from_config,
                 ["l2_streaming_fav_tv_show_by_share_of_completed_episodes",
