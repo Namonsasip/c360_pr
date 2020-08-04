@@ -24,7 +24,7 @@ def package_translation(
 
     """
     df_package = df_package.filter("offer_Macro_product_type != 'BTL'")
-    df_package = df_package.drop("old_subscription_identifier") # drop redundant column
+    df_package = df_package.drop("old_subscription_identifier")  # drop redundant column
 
     # Join table
     df_join = df_contact.join(df_package, ["subscription_identifier"], "left_outer")
@@ -72,12 +72,15 @@ def package_translation(
             ).otherwise(col("offer_map")),
         )
 
-    df_out = df_join.withColumn(
+    df_final = df_join.withColumn(
         "offer_id",
         when((col("MAID_ATL").isNotNull()) & (col("offer_map") == "ATL"), col("MAID_ATL")).when(
             (col("MAID_BTL_DISC_10").isNotNull()) & (col("offer_map") == "BTL_DISC_10"), col("MAID_BTL_DISC_10")
         ),
     )
+    df_final = df_final.select('subscription_identifier', 'offer_id')
+    df_out = df_contact.join(df_final, ['subscription_identifier'], 'left_outer')
+
     df_out = df_out.withColumn(
         "campaign_code",
         when(col("offer_id").isNotNull(), col("offer_id")).otherwise(
