@@ -20,8 +20,8 @@ cvm_customer_groups:
   filepath: /mnt/customer360-cvm/cvm_prepaid_customer_groups
 
 # recommend product from data upsell table
-experiment_data_upsell_final_score:
+data_upsell_offer_with_package_preference:
     type: datasets.spark_hive_dataset.SparkHiveDataSet
     database: prod_dataupsell
-    table: experiment_data_upsell_final_score
+    table: du_offer_score_with_package_preference
     write_mode: overwrite

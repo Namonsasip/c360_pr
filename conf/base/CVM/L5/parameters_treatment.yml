@@ -4,7 +4,7 @@ treatment_cadence: 7
 # write output for ard and churn
 treatment_output:
   skip_sending: 'no' # 'yes' skips sending treatments and skips history updates, anything else allows
-  skip_pref_pack_translation: 'yes' # 'yes' skips translation of preferential packages
+  skip_pref_pack_translation: 'no' # 'yes' skips translation of preferential packages
   ard:
     output_path_template: '/dbfs/mnt/customer360-blob-output/CVM_OUTPUT/cvm_prepaid_ard_output/New_CVM_ARD1_{}.csv'
     output_path_date_format: '%Y%m%d%H%M%S'
@@ -15,8 +15,8 @@ treatment_output:
 # anti down-sell rules for package recommend table
 treatment_package_rec:
   condition:
-    - offer_price > preferred_package_price
-    - offer_speed_kbps > preferred_speed_number
+    - price_inc_vat_90_days < offer_price_inc_vat
+    - data_speed_90_days < offer_data_speed
 
 # treatment ATL to BTL mapping
 package_btl_mapping:
