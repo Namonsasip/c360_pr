@@ -1094,7 +1094,7 @@ def score_du_models(
     df_scored = df_master_necessary_columns.groupby("model_name", "partition").apply(
         predict_pandas_udf
     )
-    # df_scored = df_scored.drop("partition").join(df_master,["du_spine_primary_key","model_name"],"left")
+    df_scored = df_scored.drop("partition").join(df_master_necessary_columns,["du_spine_primary_key","model_name"],"left")
     return df_scored
     # # For Testing Purpose, Leave as comment for Later Test
     # df_master = catalog.load("l5_du_scoring_master")
