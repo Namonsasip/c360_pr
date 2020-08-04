@@ -12,12 +12,6 @@ l5_du_scoring_master:
   save_args:
     mode: "overwrite"
 
-l5_du_scored:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  file_format: "parquet"
-  filepath: /mnt/customer360-blob-data/C360/DU/l5_du_scored/
-  save_args:
-    mode: "overwrite"
 
 l5_experiment4_eligible_upsell:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -25,3 +19,9 @@ l5_experiment4_eligible_upsell:
   filepath: /mnt/customer360-blob-data/C360/DU/l5_experiment4_eligible_upsell/
   save_args:
     mode: "overwrite"
+
+l5_du_scored:
+    type: datasets.spark_hive_dataset.SparkHiveDataSet
+    database: prod_dataupsell
+    table: l5_du_scored
+    write_mode: overwrite
