@@ -707,24 +707,11 @@ def streaming_favourite_location_features_func(
     if check_empty_dfs([input_df, master_application]):
         return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
-    w_recent_partition = Window.partitionBy("application_id").orderBy(F.col("partition_month").desc())
-
-    max_master_application = master_application.select("partition_month") \
-        .agg(F.max("partition_month").alias("partition_month"))
-    master_application = master_application.join(max_master_application, ["partition_month"]) \
-        .withColumn("rank", F.row_number().over(w_recent_partition)) \
-        .where(F.col("rank") == 1) \
-        .withColumnRenamed("application_id", "application")
-
     application = ["youtube", "youtube_go", "youtubebyclick", "trueid", "truevisions", "monomaxx", "qqlive",
                    "facebook", "linetv", "ais_play", "netflix", "viu", "viutv", "iflix", "spotify", "jooxmusic",
                    "twitchtv", "bigo", "valve_steam"]
 
     master_application = master_application.filter(F.lower(F.col("application_name")).isin(application))
-
-    geo_master_plan_max = geo_mster_plan.agg(F.max("partition_date").alias("partition_date"))
-    geo_master_plan = geo_mster_plan.join(geo_master_plan_max, ["partition_date"])\
-        .select("soc_cgi_hex", "location_id")
 
     cust_df = cust_profile_df.withColumn("rn", F.expr(
         "row_number() over(partition by start_of_month,access_method_num order by "
@@ -736,13 +723,6 @@ def streaming_favourite_location_features_func(
     input_with_application = input_df.join(master_application, ["application"])
     input_with_application = add_event_week_and_month_from_yyyymmdd(input_with_application, "partition_date") \
         .drop("event_partition_date", "start_of_week")
-
-    input_with_application_grouped = input_with_application.\
-        groupBy(["msisdn", "start_of_month", "application_name", "LAST_SAI_CGI_ECGI"])\
-        .agg(F.sum("L4_DW_THROUGHPUT").alias("download"))
-
-    merged_df = input_with_application_grouped.\
-        join(geo_master_plan, input_with_application_grouped.LAST_SAI_CGI_ECGI == geo_master_plan.soc_cgi_hex)
 
     dictionary = [{'filter_condition': "youtube,youtube_go,youtubebyclick",
                    'output_col': 'fav_youtube_streaming_base_station_id'},
@@ -778,29 +758,25 @@ def streaming_favourite_location_features_func(
                    'output_col': 'fav_valve_steam_streaming_base_station_id'}]
 
     final_dfs = []
-    win = Window.partitionBy(["msisdn", "start_of_month"]).orderBy(F.col("download").desc())
+    win = Window.partitionBy(["subscription_identifier", "start_of_month"]).orderBy(F.col("download").desc())
     for curr_dict in dictionary:
         filter_query = curr_dict["filter_condition"].split(",")
         output_col = curr_dict["output_col"]
-        curr_item = merged_df. \
+        curr_item = input_with_application. \
             filter(F.lower(F.col("application_name")).isin(filter_query))
-        curr_item = curr_item.groupBy(["msisdn", "location_id", "start_of_month"])\
+        curr_item = curr_item.groupBy(["subscription_identifier", "location_id", "start_of_month"])\
             .agg(F.sum("download").alias("download"))
         curr_item = curr_item.withColumn("rnk", F.row_number().over(win)).where("rnk = 1")
-        curr_item = curr_item.select(F.col("msisdn").alias("access_method_num"),
+        curr_item = curr_item.select("subscription_identifier",
                                      F.col("location_id").alias(output_col),
                                      "start_of_month")
         final_dfs.append(curr_item)
 
     union_df = union_dataframes_with_missing_cols(final_dfs)
-    group_cols = ["access_method_num", "start_of_month"]
+    group_cols = ["subscription_identifier", "start_of_month"]
 
     final_df_str = gen_max_sql(union_df, 'tmp_table_name', group_cols)
     merged_df = execute_sql(union_df, 'tmp_table_name', final_df_str)
-
-    merged_df = cust_df.select("access_method_num", "subscription_identifier", "start_of_month") \
-        .join(merged_df, ["access_method_num", "start_of_month"]) \
-        .drop("access_method_num")
 
     return merged_df
 
@@ -812,16 +788,16 @@ def streaming_favourite_quality_features_func(
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
-    # if check_empty_dfs([input_df]):
-    #     return get_spark_empty_df()
-    #
-    # input_df = data_non_availability_and_missing_check(
-    #     df=input_df, grouping="monthly", par_col="event_partition_date",
-    #     missing_data_check_flg='Y',
-    #     target_table_name="l3_streaming_app_quality_features")
-    #
-    # if check_empty_dfs([input_df]):
-    #     return get_spark_empty_df()
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(
+        df=input_df, grouping="monthly", par_col="event_partition_date",
+        missing_data_check_flg='Y',
+        target_table_name="l3_streaming_app_quality_features")
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
 
     dictionary = [{'filter_condition': "youtube,youtube_go,youtubebyclick",

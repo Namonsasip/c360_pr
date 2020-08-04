@@ -210,21 +210,15 @@ def streaming_to_l3_favourite_location_features(**kwargs):
     return Pipeline(
         [
 
-            # node(
-            #     streaming_favourite_location_features_func,
-            #     [
-            #         "l0_streaming_soc_mobile_app_daily_for_l3_streaming_favourite_location_features",
-            #         "l0_mobile_app_master",
-            #         "l3_customer_profile_union_monthly_feature_for_l3_streaming_favourite_location_features",
-            #         "l0_geo_mst_cell_masterplan_current_for_l3_streaming_favourite_location_features"
-            #
-            #     ],
-            #     "l3_streaming_favourite_location_features"
-            # ),
             node(
-                streaming_favourite_quality_features_func, "l1_streaming_app_quality_features",
-                "l3_streaming_app_quality_features"
-            )
+                streaming_favourite_location_features_func,
+                "l0_streaming_soc_mobile_app_daily_for_l3_streaming_favourite_location_features",
+                "l3_streaming_favourite_location_features"
+            ),
+            # node(
+            #     streaming_favourite_quality_features_func, "l1_streaming_app_quality_features",
+            #     "l3_streaming_app_quality_features"
+            # )
         ], name="streaming_to_l3_favourite_location_features"
     )
 

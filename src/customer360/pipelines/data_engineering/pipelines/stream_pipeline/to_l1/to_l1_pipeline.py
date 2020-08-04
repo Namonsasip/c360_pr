@@ -49,14 +49,24 @@ def streaming_sdr_sub_app_hourly_daily_for_l3_monthly(**kwargs):
             #         ],
             #     "l1_streaming_sdr_sub_app_hourly"
             # ),
+            # node(
+            #     build_streaming_ufdr_streaming_quality_for_l3_monthly,
+            #     [
+            #         "l0_streaming_soc_mobile_app_daily_for_l1_streaming_app_quality_features",
+            #         "l0_mobile_app_master",
+            #         "l1_customer_profile_union_daily_feature_for_l1_streaming_app_quality_features"
+            #     ],
+            #     "l1_streaming_app_quality_features"
+            # ),
             node(
-                build_streaming_ufdr_streaming_quality_for_l3_monthly,
+                build_streaming_ufdr_streaming_favourite_base_station_for_l3_monthly,
                 [
-                    "l0_streaming_soc_mobile_app_daily_for_l1_streaming_app_quality_features",
+                    "l0_streaming_soc_mobile_app_daily_for_l1_streaming_base_station_features",
                     "l0_mobile_app_master",
-                    "l1_customer_profile_union_daily_feature_for_l1_streaming_app_quality_features"
+                    "l0_geo_mst_cell_masterplan_current_for_l1_streaming_base_station_features",
+                    "l1_customer_profile_union_daily_feature_for_l1_streaming_base_station_features"
                 ],
-                "l1_streaming_app_quality_features"
+                "l1_streaming_base_station_features"
             ),
         ]
     )
