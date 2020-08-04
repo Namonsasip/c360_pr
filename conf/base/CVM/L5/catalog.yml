@@ -38,6 +38,10 @@ treatments_chosen_test:
   type: kedro.io.csv_local.CSVLocalDataSet
   filepath: /dbfs/mnt/customer360-cvm/treatments_chosen_test.csv
 
+treatments_chosen_test_new:
+  type: kedro.io.csv_local.CSVLocalDataSet
+  filepath: /dbfs/mnt/customer360-cvm/treatments_chosen_test_new.csv
+
 treatments_chosen_spark:
   type: kedro.contrib.io.pyspark.SparkDataSet
   filepath: /mnt/customer360-cvm/treatments_chosen.csv

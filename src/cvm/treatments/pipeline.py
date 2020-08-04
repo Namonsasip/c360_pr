@@ -31,6 +31,7 @@ from src.cvm.treatments.nodes import (
     copy_logs_to_dbfs,
     create_treatments_features,
     deploy_treatments,
+    produce_treatments_only_translated,
     produce_treatments_translated,
 )
 
@@ -71,7 +72,18 @@ def generate_treatments(sample_type: str) -> Pipeline:
                     "data_upsell_offer_with_package_preference",
                     "ard_btl_offer_mapping",
                 ],
-                ["treatments_chosen", "treatments_chosen_history_output"],
+                ["treatments_chosen_test_new", "treatments_chosen_history_output"],
+                name="produce_treatments_translated",
+            ),
+            node(
+                produce_treatments_only_translated,
+                [
+                    "treatments_chosen_spark",
+                    "parameters",
+                    "data_upsell_offer_with_package_preference",
+                    "ard_btl_offer_mapping",
+                ],
+                ["treatments_chosen_test_new", "treatments_chosen_history_output"],
                 name="produce_treatments_translated",
             ),
             node(
