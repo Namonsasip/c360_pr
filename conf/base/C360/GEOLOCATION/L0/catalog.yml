@@ -381,7 +381,7 @@ l0_geo_mst_cell_masterplan_current_for_l1_network_good_and_bad_cells_features:
     increment_flag: 'no'
 
 
-l0_geo_mst_cell_masterplan_current_for_l3_streaming_favourite_location_features:
+l0_geo_mst_cell_masterplan_current_for_l1_streaming_base_station_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: /mnt/customer360-blob-data/C360/GEO/geo_mst_cell_masterplan/
   file_format: parquet
