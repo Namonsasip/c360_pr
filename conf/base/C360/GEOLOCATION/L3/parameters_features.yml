@@ -72,27 +72,6 @@ l3_geo_distance_top_call:
     sum_distance_top_call: "sum(sum_distance_top_call)"
   granularity: "imsi,start_of_month"
 
-
-#int_l3_geo_home_location_id_monthly:
-#  where_clause: "where duration != 0 and ((hour_in >= 18) or (hour_in < 18 and hour_out > 18) or (hour_in < 6 and hour_out > 6) or (hour_out <=6))"
-#  feature_list:
-#    duration: "sum(case when hour_in < 18 and hour_out > 18 then cast(to_unix_timestamp(time_out) as long) - (cast(to_unix_timestamp(event_partition_date) as long) + 64800)
-#                  when hour_in < 6 and hour_out > 6 then (cast(to_unix_timestamp(event_partition_date) as long) + 21600) - cast(to_unix_timestamp(time_out) as long)
-#                  else duration end)"
-#    days: "approx_count_distinct(event_partition_date)"
-#  granularity: "imsi, location_id, latitude, longitude, week_type, start_of_month"
-#  output_catalog: "int_l3_geo_home_location_id_monthly"
-#
-#int_l3_geo_work_location_id_monthly:
-#  where_clause: "where duration != 0 and (((hour_in >= 8 and hour_in < 18) and hour_out <= 18) or ((hour_in >= 8 and hour_in < 18) and hour_out > 18))"
-#  feature_list:
-#    duration: "sum(case when ((hour_in >= 8) and (hour_in < 18)) and (hour_out > 18)
-#                  then (cast(to_unix_timestamp(event_partition_date) as long) + 64800) - (cast(to_timestamp(time_in) as long))
-#                  else duration end)"
-#    days: "approx_count_distinct(event_partition_date)"
-#  granularity: "imsi, location_id, latitude, longitude, start_of_month"
-#  output_catalog: "int_l3_geo_work_location_id_monthly"
-
 int_l3_geo_home_location_id_monthly:
   where_clause: "where duration != 0 and (hour >= 18 or hour <= 6)"
   feature_list:
@@ -108,7 +87,7 @@ int_l3_geo_work_location_id_monthly:
     duration: "sum(duration)"
     days: "sum(days)"
     incident: "approx_count_distinct(hour)"
-  granularity: "imsi, location_id, latitude, longitude, partition_weektype, start_of_month"
+  granularity: "imsi, location_id, latitude, longitude, start_of_month"
   output_catalog: "int_l3_geo_work_location_id_monthly"
 
 #l3_geo_home_work_location_id_monthly:

@@ -17,39 +17,117 @@ from customer360.utilities.re_usable_functions import add_start_of_week_and_mont
 from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 
 conf = os.getenv("CONF", None)
+
+
 # run_mode = os.getenv("DATA_AVAILABILITY_CHECKS", None)
 # log = logging.getLogger(__name__)
 # running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 
-def l3_geo_top_visit_exclude_homework(sum_duration, homework):
-    win = Window().partitionBy('imsi').orderBy(F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
-    sum_duration_3mo = sum_duration.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd")).withColumn(
-        "Sum", F.sum("sum_duration").over(win))
 
-    result = sum_duration_3mo.join(homework, [sum_duration_3mo.imsi == homework.imsi,
-                                              sum_duration_3mo.location_id == homework.home_weekday_location_id,
-                                              sum_duration_3mo.start_of_month == homework.start_of_month],
-                                   'left').select(sum_duration_3mo.imsi, 'location_id', 'sum_duration',
-                                                  sum_duration_3mo.start_of_month)
-    result = result.join(homework,
-                         [result.imsi == homework.imsi, result.location_id == homework.home_weekend_location_id,
-                          result.start_of_month == homework.start_of_month],
-                         'left').select(result.imsi, 'location_id', 'sum_duration', result.start_of_month)
-    result = result.join(homework,
-                         [result.imsi == homework.imsi, result.location_id == homework.work_location_id,
-                          result.start_of_month == homework.start_of_month],
-                         'left').select(result.imsi, 'location_id', 'sum_duration', result.start_of_month)
-    win = Window.partitionBy("start_of_month", "imsi").orderBy(F.col("sum_duration").desc(), F.col("location_id"))
-    result = result.withColumn("rank", F.row_number().over(win))
+def l3_geo_top3_visit_exclude_homework_monthly(input_df: DataFrame, homework_df: DataFrame) -> DataFrame:
+    """
+    Args:
+        input_df: geo_cust_location_monthly_hr
+        +-----+-----+-------------+----------+-----------+----------+------+-----------------+--------------------+
+        | imsi| hour| location_id | latitude | longitude | duration | days | partition_month | partition_weektype |
+        +-----+-----+-------------+----------+-----------+----------+------+-----------------+--------------------+
+        homework_df:
 
-    rank1 = result.where('rank=1').withColumn('top_location_1st', F.col('location_id')).drop('location_id', 'rank',
-                                                                                             'sum_duration')
-    rank2 = result.where('rank=2').withColumn('top_location_2nd', F.col('location_id')).drop('location_id', 'rank',
-                                                                                             'sum_duration')
-    rank3 = result.where('rank=3').withColumn('top_location_3rd', F.col('location_id')).drop('location_id', 'rank',
-                                                                                             'sum_duration')
-    df = rank1.join(rank2, ['imsi', 'start_of_month'], 'full').join(rank3, ['imsi', 'start_of_month'], 'full')
-    return df
+    Returns:
+
+    """
+    if check_empty_dfs([input_df, homework_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df,
+                                                       grouping="monthly",
+                                                       par_col="partition_month",
+                                                       target_table_name="l3_geo_top_visit_exclude_homework_monthly",
+                                                       missing_data_check_flg='N')
+
+    homework_df = data_non_availability_and_missing_check(df=homework_df,
+                                                          grouping="monthly",
+                                                          par_col="start_of_month",
+                                                          target_table_name="l3_geo_top_visit_exclude_homework_monthly",
+                                                          missing_data_check_flg='N')
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            input_df.select(F.max(
+                F.to_date(
+                    F.date_trunc('month', F.to_date((F.col('partition_month')).cast(StringType()), 'yyyyMM')))
+            ).alias("max_date")),
+            homework_df.select(F.max(F.col("start_of_month")).alias("max_date"))
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    input_df = input_df.filter(F.col("start_of_month") <= min_value)
+    homework_df = homework_df.filter(F.col("start_of_month") <= min_value)
+
+    if check_empty_dfs([input_df, homework_df]):
+        return get_spark_empty_df()
+
+    input_df = input_df.withColumn("start_of_month", F.to_date(
+        F.date_trunc('month', F.to_date((F.col('partition_month')).cast(StringType()), 'yyyyMM'))))
+
+    win = Window().partitionBy('imsi', 'location_id') \
+        .orderBy(F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
+
+    # input_3m_df = input_df.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd")).withColumn(
+    #     "Sum", F.sum("sum_duration").over(win))
+    input_3m_df = input_df.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd")) \
+        .withColumn("duration_3m", F.sum("duration").over(win)) \
+        .withColumn("days_3m", F.sum('days').over(win))
+
+    win2 = Window().partitionBy('imsi', 'start_of_month') \
+        .orderBy(F.col('location_id').asc(), F.col('duration_3m').desc(), F.col('days_3m').desc())
+
+    input_3m_df = input_3m_df.withColumn('row_num', F.row_number().over(win2))
+    input_3m_df = input_3m_df.where('row_num <= 6').drop('row_num')
+
+    result_df = input_3m_df.join(homework_df,
+                                 (input_3m_df.imsi == homework_df.imsi) &
+                                 (input_3m_df.start_of_month == homework_df.start_of_month) &
+                                 (
+                                         (input_3m_df.location_id != homework_df.work_location_id) |
+                                         (input_3m_df.location_id != homework_df.home_location_id_weekday) |
+                                         (input_3m_df.location_id != homework_df.home_location_id_weekend)
+                                 ), 'inner').select(
+        input_df.imsi, input_df.start_of_month, input_df.location_id, 'duration_3m', 'days_3m')
+
+    result_df = result_df.withColumn('row_num', F.row_number().over(win2)).where('row_num <= 3')
+
+    result_df = result_df.groupBy('imsi', 'start_of_month') \
+        .agg(F.max(F.when((F.col('row_num') == 1), F.col('location'))).alias('top_location_1st'),
+             F.max(F.when((F.col('row_num') == 2), F.col('location'))).alias('top_location_2st'),
+             F.max(F.when((F.col('row_num') == 3), F.col('location'))).alias('top_location_3st')
+             )
+    # result = sum_duration_3mo.join(homework, [sum_duration_3mo.imsi == homework.imsi,
+    #                                           sum_duration_3mo.location_id == homework.home_weekday_location_id,
+    #                                           sum_duration_3mo.start_of_month == homework.start_of_month],
+    #                                'left').select(sum_duration_3mo.imsi, 'location_id', 'sum_duration',
+    #                                               sum_duration_3mo.start_of_month)
+    # result = result.join(homework,
+    #                      [result.imsi == homework.imsi, result.location_id == homework.home_weekend_location_id,
+    #                       result.start_of_month == homework.start_of_month],
+    #                      'left').select(result.imsi, 'location_id', 'sum_duration', result.start_of_month)
+    # result = result.join(homework,
+    #                      [result.imsi == homework.imsi, result.location_id == homework.work_location_id,
+    #                       result.start_of_month == homework.start_of_month],
+    #                      'left').select(result.imsi, 'location_id', 'sum_duration', result.start_of_month)
+    #
+    # win = Window.partitionBy("start_of_month", "imsi").orderBy(F.col("sum_duration").desc(), F.col("location_id"))
+    # result = result.withColumn("rank", F.row_number().over(win))
+    #
+    # rank1 = result.where('rank=1').withColumn('top_location_1st', F.col('location_id')).drop('location_id', 'rank',
+    #                                                                                          'sum_duration')
+    # rank2 = result.where('rank=2').withColumn('top_location_2nd', F.col('location_id')).drop('location_id', 'rank',
+    #                                                                                          'sum_duration')
+    # rank3 = result.where('rank=3').withColumn('top_location_3rd', F.col('location_id')).drop('location_id', 'rank',
+    #                                                                                          'sum_duration')
+    # df = rank1.join(rank2, ['imsi', 'start_of_month'], 'full').join(rank3, ['imsi', 'start_of_month'], 'full')
+    return result_df
+
 
 def get_max_date_from_master_data(input_df: DataFrame, par_col='partition_date'):
     # Get max date of partition column
@@ -61,7 +139,7 @@ def get_max_date_from_master_data(input_df: DataFrame, par_col='partition_date')
     return input_df
 
 
-def l3_geo_time_spent_by_location_monthly(df,sql):
+def l3_geo_time_spent_by_location_monthly(df, sql):
     # ----- Data Availability Checks -----
     if check_empty_dfs([df]):
         return get_spark_empty_df()
@@ -81,7 +159,7 @@ def l3_geo_time_spent_by_location_monthly(df,sql):
     return df
 
 
-def l3_geo_area_from_ais_store_monthly(df,sql):
+def l3_geo_area_from_ais_store_monthly(df, sql):
     # ----- Data Availability Checks -----
     if check_empty_dfs([df]):
         return get_spark_empty_df()
@@ -101,7 +179,7 @@ def l3_geo_area_from_ais_store_monthly(df,sql):
     return df
 
 
-def l3_geo_area_from_competitor_store_monthly(df,sql):
+def l3_geo_area_from_competitor_store_monthly(df, sql):
     # ----- Data Availability Checks -----
     if check_empty_dfs([df]):
         return get_spark_empty_df()
@@ -113,7 +191,6 @@ def l3_geo_area_from_competitor_store_monthly(df,sql):
     if check_empty_dfs([df]):
         return get_spark_empty_df()
 
-
     df = node_from_config(df, sql)
 
     print('DEBUG : ------------------------------------------------> l3_geo_area_from_competitor_store_monthly')
@@ -123,7 +200,7 @@ def l3_geo_area_from_competitor_store_monthly(df,sql):
 
 
 ###total_distance_km###
-def l3_geo_total_distance_km_monthly(df,sql):
+def l3_geo_total_distance_km_monthly(df, sql):
     # ----- Data Availability Checks -----
     if check_empty_dfs([df]):
         return get_spark_empty_df()
@@ -134,7 +211,6 @@ def l3_geo_total_distance_km_monthly(df,sql):
                                                  missing_data_check_flg='N')
     if check_empty_dfs([df]):
         return get_spark_empty_df()
-
 
     df = node_from_config(df, sql)
 
@@ -156,7 +232,6 @@ def l3_geo_top3_cells_on_voice_usage(df, sql):
                                                  missing_data_check_flg='N')
     if check_empty_dfs([df]):
         return get_spark_empty_df()
-
 
     ### config
     spark = get_spark_session()
@@ -195,11 +270,13 @@ def l3_geo_distance_top_call(df):
         F.max("top_distance_km").alias("max_distance_top_call"),
         F.min("top_distance_km").alias("min_distance_top_call"),
         F.avg("top_distance_km").alias("avg_distance_top_call"),
-        F.when(F.sqrt(F.avg(df.top_distance_km * df.top_distance_km) - F.pow(F.avg(df.top_distance_km),F.lit(2))).cast("string") == 'NaN', 0).otherwise(F.sqrt(F.avg(df.top_distance_km * df.top_distance_km) - F.pow(F.avg(df.top_distance_km),F.lit(2)))).alias("sd_distance_top_call"),
+        F.when(F.sqrt(F.avg(df.top_distance_km * df.top_distance_km) - F.pow(F.avg(df.top_distance_km), F.lit(2))).cast(
+            "string") == 'NaN', 0).otherwise(
+            F.sqrt(F.avg(df.top_distance_km * df.top_distance_km) - F.pow(F.avg(df.top_distance_km), F.lit(2)))).alias(
+            "sd_distance_top_call"),
         F.sum("top_distance_km").alias("sum_distance_top_call"))
 
     return df
-
 
 
 # 47 The favourite location
@@ -214,7 +291,6 @@ def l3_the_favourite_locations_monthly(df):
                                                  missing_data_check_flg='N')
     if check_empty_dfs([df]):
         return get_spark_empty_df()
-
 
     ### config
     spark = get_spark_session()
@@ -310,7 +386,7 @@ def massive_processing_for_int_home_work_monthly(input_df: DataFrame, config_hom
     mvv_new = list(__divide_chunks(mvv_array, 1))
     add_list = mvv_new
 
-    #Set first dataframe to merge
+    # Set first dataframe to merge
     if len(add_list) != 1:
         last_item = add_list[0]
         logging.info("First date to run for {0}".format(str(last_item)))
@@ -353,8 +429,8 @@ def massive_processing_for_int_home_work_monthly(input_df: DataFrame, config_hom
 
         output_df_work = node_from_config(small_df, config_work)
         CNTX.catalog.save(config_work["output_catalog"], output_df_work)
-        output_df_home = node_from_config(small_df, config_work)
-        CNTX.catalog.save(config_work["output_catalog"], output_df_home)
+        output_df_home = node_from_config(small_df, config_home)
+        CNTX.catalog.save(config_home["output_catalog"], output_df_home)
 
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(F.col('partition_month').isin(*[first_item]))
@@ -370,20 +446,19 @@ def massive_processing_for_int_home_work_monthly(input_df: DataFrame, config_hom
 
 
 def int_geo_work_location_id_monthly(work_monthly: DataFrame) -> DataFrame:
-    w_work = Window().partitionBy('imsi', 'location_id')\
-        .orderBy(F.col("Month").cast("long"))\
+    w_work = Window().partitionBy('imsi', 'location_id') \
+        .orderBy(F.col("Month").cast("long")) \
         .rangeBetween(-(86400 * 89), 0)
 
-    work_last_3m = work_monthly.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd"))\
-        .withColumn("duration_3m", F.sum("duration").over(w_work))\
+    work_last_3m = work_monthly.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd")) \
+        .withColumn("duration_3m", F.sum("duration").over(w_work)) \
         .withColumn("days_3m", F.sum('days').over(w_work))
 
-    work_last_3m = work_last_3m.dropDuplicates(['imsi', 'start_of_month', 'location_id', 'duration_3m', 'days_3m'])\
+    work_last_3m = work_last_3m.dropDuplicates(['imsi', 'start_of_month', 'location_id', 'duration_3m', 'days_3m']) \
         .select('imsi', 'start_of_month', 'location_id', 'latitude', 'longitude', 'duration_3m', 'days_3m')
 
-
-    w_work_num_row = Window().partitionBy('imsi', 'start_of_month')\
-        .orderBy(F.col('duration_3m').desc(), F.col('days_3m').desc())
+    w_work_num_row = Window().partitionBy('imsi', 'start_of_month') \
+        .orderBy(F.col('location_id').asc(), F.col('duration_3m').desc(), F.col('days_3m').desc())
 
     work_last_3m = work_last_3m.withColumn('row_num', F.row_number().over(w_work_num_row))
     work_last_3m = work_last_3m.where('row_num = 1').drop('row_num')
@@ -396,32 +471,27 @@ def int_geo_work_location_id_monthly(work_monthly: DataFrame) -> DataFrame:
 
 
 def int_geo_home_location_id_monthly(home_monthly: DataFrame) -> DataFrame:
-    w_home = Window().partitionBy('imsi', 'location_id', 'partition_weektype')\
-        .orderBy(F.col("Month").cast("long"))\
+    w_home = Window().partitionBy('imsi', 'location_id', 'partition_weektype') \
+        .orderBy(F.col("Month").cast("long")) \
         .rangeBetween(-(86400 * 89), 0)
 
-    home_last_3m = home_monthly.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd"))\
-        .withColumn("duration_3m", F.sum("duration").over(w_home))\
+    home_last_3m = home_monthly.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd")) \
+        .withColumn("duration_3m", F.sum("duration").over(w_home)) \
         .withColumn("days_3m", F.sum('days').over(w_home))
 
-    home_last_3m = home_last_3m.dropDuplicates(['imsi', 'partition_weektype', 'start_of_month', 'location_id',
-                                                'duration_3m', 'days_3m'])\
-        .select('imsi', 'start_of_month', 'week_type', 'location_id', 'latitude', 'longitude', 'duration_3m',
-                'days_3m')
+    home_last_3m = home_last_3m.select('imsi', 'start_of_month', 'partition_weektype', 'location_id', 'latitude',
+                                       'longitude', 'duration_3m', 'days_3m').dropDuplicates()
 
-    w_num_row = Window().partitionBy('imsi', 'partition_weektype', 'start_of_month')\
-        .orderBy(F.col('duration_3m').desc(), F.col('days_3m').desc())
+    w_num_row = Window().partitionBy('imsi', 'partition_weektype', 'start_of_month') \
+        .orderBy(F.col('location_id').asc(), F.col('duration_3m').desc(), F.col('days_3m').desc())
     home_last_3m = home_last_3m.withColumn('row_num', F.row_number().over(w_num_row))
     home_last_3m = home_last_3m.where('row_num = 1').drop('row_num')
-    home_last_3m = home_last_3m.orderBy('imsi', 'week_type', 'start_of_month', ascending=False)\
-        .select('imsi', 'start_of_month', F.col('partition_weektype').alias('week_type'),
-                'location_id', 'latitude', 'longitude')
 
-    home_last_3m = home_last_3m.groupBy('imsi', 'start_of_month')\
-        .agg(F.max(F.when((F.col('week_type') == 'weekday'), F.col('location'))).alias('home_location_weekday'),
+    home_last_3m = home_last_3m.groupBy('imsi', 'start_of_month') \
+        .agg(F.max(F.when((F.col('week_type') == 'weekday'), F.col('location'))).alias('home_location_id_weekday'),
              F.max(F.when((F.col('week_type') == 'weekday'), F.col('latitude'))).alias('home_latitude_weekday'),
              F.max(F.when((F.col('week_type') == 'weekday'), F.col('longitude'))).alias('home_longitude_weekday'),
-             F.max(F.when((F.col('week_type') == 'weekend'), F.col('location'))).alias('home_location_weekend'),
+             F.max(F.when((F.col('week_type') == 'weekend'), F.col('location'))).alias('home_location_id_weekend'),
              F.max(F.when((F.col('week_type') == 'weekend'), F.col('latitude'))).alias('home_latitude_weekend'),
              F.max(F.when((F.col('week_type') == 'weekend'), F.col('longitude'))).alias('home_longitude_weekend')
              )
@@ -430,7 +500,7 @@ def int_geo_home_location_id_monthly(home_monthly: DataFrame) -> DataFrame:
 
 
 def l3_geo_home_work_location_id_monthly(home_df: DataFrame, work_df: DataFrame) -> DataFrame:
-    if check_empty_dfs(home_df, work_df):
+    if check_empty_dfs([home_df, work_df]):
         return get_spark_empty_df()
 
     home_df = data_non_availability_and_missing_check(df=home_df,
@@ -455,7 +525,7 @@ def l3_geo_home_work_location_id_monthly(home_df: DataFrame, work_df: DataFrame)
     home_df = home_df.filter(F.col("start_of_month") <= min_value)
     work_df = work_df.filter(F.col("start_of_month") <= min_value)
 
-    if check_empty_dfs(home_df, work_df):
+    if check_empty_dfs([home_df, work_df]):
         return get_spark_empty_df()
 
     home_df = home_df.select('imsi', 'start_of_month').distinct()
@@ -464,10 +534,10 @@ def l3_geo_home_work_location_id_monthly(home_df: DataFrame, work_df: DataFrame)
 
     final_df = list_imsi.join(home_df, ['imsi', 'start_of_month'], 'left').select(
         list_imsi.start_of_month, list_imsi.imsi,
-        'home_location_weekday',
+        'home_location_id_weekday',
         'home_latitude_weekday',
         'home_longitude_weekday',
-        'home_location_weekend',
+        'home_location_id_weekend',
         'home_latitude_weekend',
         'home_longitude_weekend'
     )
@@ -477,10 +547,10 @@ def l3_geo_home_work_location_id_monthly(home_df: DataFrame, work_df: DataFrame)
         'work_location_id',
         'work_latitude',
         'work_longitude',
-        'home_location_weekday',
+        'home_location_id_weekday',
         'home_latitude_weekday',
         'home_longitude_weekday',
-        'home_location_weekend',
+        'home_location_id_weekend',
         'home_latitude_weekend',
         'home_longitude_weekend'
     )
@@ -566,7 +636,6 @@ def l3_geo_work_area_center_average_monthly(visti_hr, home_work):
     visti_hr = visti_hr.filter(F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd') <= min_value)
     home_work = home_work.filter(F.col("start_of_month") <= min_value)
 
-
     if check_empty_dfs([visti_hr, home_work]):
         return get_spark_empty_df()
     # ----- Transformation -----
@@ -603,7 +672,8 @@ def l3_geo_work_area_center_average_monthly(visti_hr, home_work):
 
     # Drop duplicate
     visit_hr_agg_monthly_3month = visit_hr_agg_monthly_3month \
-        .drop_duplicates(subset=['imsi', 'start_of_month', 'location_id', 'latitude', 'longitude', '3_duration', '3_incident', '3_days']) \
+        .drop_duplicates(
+        subset=['imsi', 'start_of_month', 'location_id', 'latitude', 'longitude', '3_duration', '3_incident', '3_days']) \
         .select('imsi', 'start_of_month', 'location_id', 'latitude', 'longitude', '3_duration', '3_incident', '3_days')
 
     visit_hr_agg_monthly_3month = visit_hr_agg_monthly_3month.withColumnRenamed('3_duration', 'duration') \
@@ -677,7 +747,6 @@ def l3_data_traffic_home_work_fn(geo_mst_cell_masterplan,
                                  profile_customer_profile_ma,
                                  usage_sum_data_location_daily,
                                  HOME_WORK_WEEKDAY_LOCATION_ID):
-
     ###TABLE###
     spark = get_spark_session()
 
@@ -685,14 +754,14 @@ def l3_data_traffic_home_work_fn(geo_mst_cell_masterplan,
     geo_home_work_data.createOrReplaceTempView('LOCATION_HOMEWORK_NEW_1')
     profile_customer_profile_ma.createOrReplaceTempView('PROFILE_CUSTOMER_PROFILE_MA')
     usage_sum_data_location_daily.createOrReplaceTempView('USAGE_SUM_DATA_LOCATION_DAILY')
-    #TEMP1#
+    # TEMP1#
     GEO_TEMP_00 = spark.sql("""
         SELECT
             B.IMSI,
             A.CI,
             A.LAC
         FROM GEO_MST_CELL_MASTERPLAN A,LOCATION_HOMEWORK_NEW_1 B
-        WHERE A.LOCATION_ID=B."""+str(HOME_WORK_WEEKDAY_LOCATION_ID)+"""
+        WHERE A.LOCATION_ID=B.""" + str(HOME_WORK_WEEKDAY_LOCATION_ID) + """
     """)
 
     GEO_TEMP_00.createOrReplaceTempView('GEO_TEMP_00')
@@ -726,6 +795,7 @@ def l3_data_traffic_home_work_fn(geo_mst_cell_masterplan,
     """)
 
     return GEO_TEMP_02
+
 
 def l3_data_traffic_top1_top2_fn(geo_mst_cell_masterplan,
                                  geo_home_work_data,
@@ -739,14 +809,14 @@ def l3_data_traffic_top1_top2_fn(geo_mst_cell_masterplan,
     geo_home_work_data.createOrReplaceTempView('LOCATION_HOMEWORK_NEW_1')
     profile_customer_profile_ma.createOrReplaceTempView('PROFILE_CUSTOMER_PROFILE_MA')
     usage_sum_data_location_daily.createOrReplaceTempView('USAGE_SUM_DATA_LOCATION_DAILY')
-    #TEMP1#
+    # TEMP1#
     GEO_TEMP_00 = spark.sql("""
         SELECT
             B.IMSI,
             A.CI,
             A.LAC
         FROM GEO_MST_CELL_MASTERPLAN A,LOCATION_HOMEWORK_NEW_1 B
-        WHERE A.LOCATION_ID=B."""+str(HOME_WORK_WEEKDAY_LOCATION_ID)+"""
+        WHERE A.LOCATION_ID=B.""" + str(HOME_WORK_WEEKDAY_LOCATION_ID) + """
     """)
 
     GEO_TEMP_00.createOrReplaceTempView('GEO_TEMP_00')
@@ -779,8 +849,8 @@ def l3_data_traffic_top1_top2_fn(geo_mst_cell_masterplan,
         GROUP BY 1,2
     """)
 
-
     return GEO_TEMP_02
+
 
 def _geo_top_visit_exclude_homework(sum_duration, homework):
     win = Window().partitionBy('imsi').orderBy(F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
@@ -811,8 +881,8 @@ def _geo_top_visit_exclude_homework(sum_duration, homework):
                                                                                              'sum_duration')
     df = rank1.join(rank2, ['imsi', 'start_of_month'], 'full').join(rank3, ['imsi', 'start_of_month'], 'full')
 
-
     return df
+
 
 def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
                                         geo_home_work_data,
@@ -820,17 +890,18 @@ def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
                                         usage_sum_data_location_daily,
                                         geo_exclude_home_work):
     profile_customer_profile_ma = profile_customer_profile_ma.filter('partition_month >= 202004')
-    usage_sum_data_location_daily = usage_sum_data_location_daily.filter('partition_date >= 20200401 and partition_date <= 20200627')
+    usage_sum_data_location_daily = usage_sum_data_location_daily.filter(
+        'partition_date >= 20200401 and partition_date <= 20200627')
     # ----- Data Availability Checks -----
-    if check_empty_dfs([usage_sum_data_location_daily, profile_customer_profile_ma, geo_mst_cell_masterplan, geo_home_work_data, geo_exclude_home_work]):
+    if check_empty_dfs(
+            [usage_sum_data_location_daily, profile_customer_profile_ma, geo_mst_cell_masterplan, geo_home_work_data,
+             geo_exclude_home_work]):
         return get_spark_empty_df()
-
 
     usage_sum_data_location_daily = data_non_availability_and_missing_check(df=usage_sum_data_location_daily,
                                                                             grouping="monthly",
                                                                             par_col="partition_date",
                                                                             target_table_name="l3_use_non_homework_features")
-
 
     profile_customer_profile_ma = data_non_availability_and_missing_check(df=profile_customer_profile_ma,
                                                                           grouping="monthly",
@@ -849,8 +920,10 @@ def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
     ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
 
     usage_sum_data_location_daily = usage_sum_data_location_daily.filter(
-        F.to_date(F.date_trunc("month", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))) <= min_value)
-    profile_customer_profile_ma = profile_customer_profile_ma.filter(F.to_date(F.col("partition_month").cast(StringType()), 'yyyyMM') <= min_value)
+        F.to_date(
+            F.date_trunc("month", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))) <= min_value)
+    profile_customer_profile_ma = profile_customer_profile_ma.filter(
+        F.to_date(F.col("partition_month").cast(StringType()), 'yyyyMM') <= min_value)
 
     geo_mst_cell_masterplan = get_max_date_from_master_data(geo_mst_cell_masterplan, 'partition_date')
 
@@ -875,22 +948,22 @@ def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
     l3_data_traffic_home_work_fn(geo_mst_cell_masterplan,
                                  geo_home_work_data,
                                  profile_customer_profile_ma,
-                                 usage_sum_data_location_daily,"HOME_WEEKDAY_LOCATION_ID")\
+                                 usage_sum_data_location_daily, "HOME_WEEKDAY_LOCATION_ID") \
         .createOrReplaceTempView('Home')
     l3_data_traffic_home_work_fn(geo_mst_cell_masterplan,
                                  geo_home_work_data,
                                  profile_customer_profile_ma,
-                                 usage_sum_data_location_daily,"WORK_LOCATION_ID")\
+                                 usage_sum_data_location_daily, "WORK_LOCATION_ID") \
         .createOrReplaceTempView('Work')
     l3_data_traffic_top1_top2_fn(geo_mst_cell_masterplan,
                                  geo_exclude_home_work,
                                  profile_customer_profile_ma,
-                                 usage_sum_data_location_daily, "TOP_LOCATION_1ST")\
+                                 usage_sum_data_location_daily, "TOP_LOCATION_1ST") \
         .createOrReplaceTempView('Top1')
     l3_data_traffic_top1_top2_fn(geo_mst_cell_masterplan,
                                  geo_exclude_home_work,
                                  profile_customer_profile_ma,
-                                 usage_sum_data_location_daily, "TOP_LOCATION_2ND")\
+                                 usage_sum_data_location_daily, "TOP_LOCATION_2ND") \
         .createOrReplaceTempView('Top2')
 
     Home_Work = spark.sql("""
@@ -952,7 +1025,6 @@ def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
     return data_traffic_location
 
 
-
 ###Traffic_fav_location###
 def l3_geo_use_Share_traffic_monthly(df, sql):
     # ----- Data Availability Checks -----
@@ -975,7 +1047,7 @@ def l3_geo_use_Share_traffic_monthly(df, sql):
 
 
 ###feature_sum_voice_location###
-def _homework_join_master_profile(cell_masterplan,geo_homework,profile_ma,Column_Name):
+def _homework_join_master_profile(cell_masterplan, geo_homework, profile_ma, Column_Name):
     geo_homework.createOrReplaceTempView('geo_homework')
     cell_masterplan.createOrReplaceTempView('cell_masterplan')
     profile_ma.createOrReplaceTempView('profile_ma')
@@ -1019,7 +1091,7 @@ def _homework_join_master_profile(cell_masterplan,geo_homework,profile_ma,Column
     return df_temp_01
 
 
-def _geo_top_visit_join_master_profile(cell_masterplan,geo_top_visit,profile_ma,Column_Name):
+def _geo_top_visit_join_master_profile(cell_masterplan, geo_top_visit, profile_ma, Column_Name):
     geo_top_visit.createOrReplaceTempView('geo_top_visit')
     cell_masterplan.createOrReplaceTempView('cell_masterplan')
     profile_ma.createOrReplaceTempView('profile_ma')
@@ -1063,7 +1135,8 @@ def _geo_top_visit_join_master_profile(cell_masterplan,geo_top_visit,profile_ma,
     return df_temp_01
 
 
-def l3_call_location_home_work_monthly(cell_masterplan,geo_homework,profile_ma,usage_sum_voice,geo_top_visit_exc_homework):
+def l3_call_location_home_work_monthly(cell_masterplan, geo_homework, profile_ma, usage_sum_voice,
+                                       geo_top_visit_exc_homework):
     profile_ma = profile_ma.filter('partition_month >= 202004')
     usage_sum_voice = usage_sum_voice.filter('partition_date >= 20200401 and partition_date <= 20200627')
     # ----- Data Availability Checks -----
@@ -1071,9 +1144,9 @@ def l3_call_location_home_work_monthly(cell_masterplan,geo_homework,profile_ma,u
         return get_spark_empty_df()
 
     usage_sum_voice = data_non_availability_and_missing_check(df=usage_sum_voice,
-                                                                            grouping="monthly",
-                                                                            par_col="partition_date",
-                                                                            target_table_name="l3_call_location_home_work_monthly")
+                                                              grouping="monthly",
+                                                              par_col="partition_date",
+                                                              target_table_name="l3_call_location_home_work_monthly")
 
     profile_ma = data_non_availability_and_missing_check(df=profile_ma,
                                                          grouping="monthly",
@@ -1088,14 +1161,17 @@ def l3_call_location_home_work_monthly(cell_masterplan,geo_homework,profile_ma,u
     min_value = union_dataframes_with_missing_cols(
         [
             usage_sum_voice.select(
-                F.to_date(F.date_trunc('month', F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd'))).alias("max_date")),
+                F.to_date(F.date_trunc('month',
+                                       F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd'))).alias(
+                    "max_date")),
             profile_ma.select(
                 F.to_date(F.max(F.col("partition_month")).cast(StringType()), 'yyyyMM').alias("max_date")),
         ]
     ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
 
     usage_sum_voice = usage_sum_voice.filter(
-        F.to_date(F.date_trunc("month", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))) <= min_value)
+        F.to_date(
+            F.date_trunc("month", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))) <= min_value)
 
     profile_ma = profile_ma.filter(F.to_date(F.col("partition_month").cast(StringType()), 'yyyyMM') <= min_value)
 
@@ -1103,28 +1179,30 @@ def l3_call_location_home_work_monthly(cell_masterplan,geo_homework,profile_ma,u
         return get_spark_empty_df()
 
     # ----- Transformation -----
-    geo_homework = geo_homework.join(geo_top_visit_exc_homework,['imsi', 'start_of_month'],'full')
+    geo_homework = geo_homework.join(geo_top_visit_exc_homework, ['imsi', 'start_of_month'], 'full')
 
     # Pass
     # print('DEBUG : ------------------------------------------------> (1)')
     # geo_homework.printSchema()
 
-    usage_sum_voice = usage_sum_voice.withColumn('start_of_month', F.to_date(F.date_trunc('month', F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))))
+    usage_sum_voice = usage_sum_voice.withColumn('start_of_month', F.to_date(
+        F.date_trunc('month', F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))))
     usage_sum_voice.createOrReplaceTempView('usage_voice')
 
-    profile_ma = profile_ma.withColumn('start_of_month', F.to_date(F.date_trunc('month', F.to_date(F.col("partition_month").cast(StringType()), 'yyyyMM'))))
+    profile_ma = profile_ma.withColumn('start_of_month', F.to_date(
+        F.date_trunc('month', F.to_date(F.col("partition_month").cast(StringType()), 'yyyyMM'))))
 
-    _homework_join_master_profile(cell_masterplan,geo_homework,profile_ma,
-                                 "home_weekday").createOrReplaceTempView('home_weekday')
+    _homework_join_master_profile(cell_masterplan, geo_homework, profile_ma,
+                                  "home_weekday").createOrReplaceTempView('home_weekday')
     # print('DEBUG : ------------------------------------------------> (a)')
-    _homework_join_master_profile(cell_masterplan, geo_homework,profile_ma,
-                                 "work").createOrReplaceTempView('work')
+    _homework_join_master_profile(cell_masterplan, geo_homework, profile_ma,
+                                  "work").createOrReplaceTempView('work')
     # print('DEBUG : ------------------------------------------------> (b)')
-    _geo_top_visit_join_master_profile(cell_masterplan,geo_homework,profile_ma,
-                                 "top_location_1st").createOrReplaceTempView('top_location_1st')
+    _geo_top_visit_join_master_profile(cell_masterplan, geo_homework, profile_ma,
+                                       "top_location_1st").createOrReplaceTempView('top_location_1st')
     # print('DEBUG : ------------------------------------------------> (c)')
-    _geo_top_visit_join_master_profile(cell_masterplan, geo_homework,profile_ma,
-                                 "top_location_2nd").createOrReplaceTempView('top_location_2nd')
+    _geo_top_visit_join_master_profile(cell_masterplan, geo_homework, profile_ma,
+                                       "top_location_2nd").createOrReplaceTempView('top_location_2nd')
     print('DEBUG : ------------------------------------------------> (d)')
 
     spark = get_spark_session()

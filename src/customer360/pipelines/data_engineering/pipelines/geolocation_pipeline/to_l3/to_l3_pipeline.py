@@ -21,23 +21,23 @@ def geo_to_l3_home_work_pipeline(**kwargs):
             ),
             ### WAIT
             node(
-                int_geo_work_location_id_monthly,
-                ["int_l3_geo_work_location_id_monthly"
-                 ],
-                "l3_geo_work_location_id_monthly"
-            ),
-            ### WAIT
-            node(
                 int_geo_home_location_id_monthly,
                 ["int_l3_geo_home_location_id_monthly"
                  ],
-                "l3_geo_home_location_id_monthly"
+                "int_l3_geo_home_location_id_last3_monthly"
+            ),
+            ### WAIT
+            node(
+                int_geo_work_location_id_monthly,
+                ["int_l3_geo_work_location_id_monthly"
+                 ],
+                "int_l3_geo_work_location_id_last3_monthly"
             ),
             ### WAIT
             node(
                 l3_geo_home_work_location_id_monthly,
-                ["l3_geo_home_location_id_monthly",
-                 "l3_geo_work_location_id_monthly"
+                ["int_l3_geo_home_location_id_last3_monthly",
+                 "int_l3_geo_work_location_id_last3_monthly"
                  ],
                 "l3_geo_home_work_location_id_monthly"
             ),
@@ -124,9 +124,9 @@ def geo_to_l3_pipeline(**kwargs):
             ### FINISH
             ## runnig flag == 9.1
             node(
-                l3_geo_top_visit_exclude_homework,
-                ["l3_geo_time_spent_by_location_monthly_for_l3_geo_top_visit_exclude_homework",
-                 "l3_geo_home_work_location_id_monthly_for_l3_geo_top_visit_exclude_homework"
+                l3_geo_top3_visit_exclude_homework_monthly,
+                ["l0_geo_cust_location_monthly_hr_for_l3_geo_top_visit_exclude_homework_monthly",
+                 "l3_geo_home_work_location_id_monthly_for_l3_geo_top3_visit_exclude_homework_monthly"
                  ],
                 "l3_geo_top_visit_exclude_homework"
             ),
