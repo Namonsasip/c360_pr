@@ -23,14 +23,11 @@ def package_translation(
         df_out: result treatment table with package_preference offer overwritten.
 
     """
-    # df_package = df_package.withColumnRenamed("activation_date", "register_date")
     df_package = df_package.filter("offer_Macro_product_type != 'BTL'")
     df_package = df_package.drop("old_subscription_identifier") # drop redundant column
 
     # Join table
-    # df_join = df_contact.join(df_map_id, ["old_subscription_identifier"], "left_outer")
     df_join = df_contact.join(df_package, ["subscription_identifier"], "left_outer")
-    # df_join = df_join.withColumnRenamed("offer_Price", "offer_price")
 
     # Fill the unavailable BTL with ATL
     df_mapping = df_mapping.withColumn(
@@ -45,7 +42,6 @@ def package_translation(
             func.col("DESC_BTL_DISC_10")
         ),
     )
-    # df_mapping = df_mapping.withColumnRenamed("offer_package_name_report", "offer")
 
     # # Constrain to limit new subs from receiving unlimited data package (temporary disable)
     # df_join = df_join.filter(
