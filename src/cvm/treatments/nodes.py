@@ -114,7 +114,6 @@ def produce_treatments_translated(
             featurizer.
         parameters: parameters defined in parameters.yml.
         treatments_history: table with history of treatments.
-        user_mapping: customer profile contain analytic_id and crm_sub_id.
         package_preference: product of package preference with propensity table.
         offer_mapping: offer ATL to BTL mapping.
     """
@@ -147,44 +146,6 @@ def produce_treatments_translated(
         treatments_propositions_translated, treatments_history, parameters
     )
     return treatments_propositions_translated.toPandas(), treatments_history
-
-
-def produce_treatments_only_translated(
-        treatments_propositions,
-        parameters: Dict[str, Any],
-        package_preference: DataFrame,
-        offer_mapping: DataFrame,
-) -> DataFrame:
-    """  Generates treatments and updated treatments history.
-
-    Args:
-        treatments_propositions: treatments_chosen daily.
-        parameters: parameters defined in parameters.yml.
-        package_preference: product of package preference with propensity table.
-        offer_mapping: offer ATL to BTL mapping.
-    """
-    log = logging.getLogger(__name__)
-    log.info(
-        "Treatments assigned before translation: {}".format(
-            treatments_propositions.count()
-        )
-    )
-    if parameters["treatment_output"]["skip_pref_pack_translation"] == "yes":
-        treatments_propositions_translated = treatments_propositions
-        log.info("Translation skipped")
-    else:
-        treatments_propositions_translated = package_translation(
-            treatments_propositions,
-            package_preference,
-            offer_mapping,
-            parameters,
-        )
-        log.info(
-            "Treatments assigned after translation: {}".format(
-                treatments_propositions_translated.count()
-            )
-        )
-    return treatments_propositions_translated.toPandas()
 
 
 def deploy_treatments(
