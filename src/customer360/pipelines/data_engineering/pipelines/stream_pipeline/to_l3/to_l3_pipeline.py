@@ -215,10 +215,10 @@ def streaming_to_l3_favourite_location_features(**kwargs):
                 "l1_streaming_base_station_features",
                 "l3_streaming_favourite_location_features"
             ),
-            # node(
-            #     streaming_favourite_quality_features_func, "l1_streaming_app_quality_features",
-            #     "l3_streaming_app_quality_features"
-            # )
+            node(
+                streaming_favourite_quality_features_func, "l1_streaming_app_quality_features",
+                "l3_streaming_app_quality_features"
+            )
         ], name="streaming_to_l3_favourite_location_features"
     )
 
