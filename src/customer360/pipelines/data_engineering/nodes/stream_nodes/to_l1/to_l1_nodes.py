@@ -677,8 +677,8 @@ def build_streaming_ufdr_streaming_quality_for_l3_monthly(input_df: DataFrame,
 
 def build_streaming_ufdr_streaming_favourite_base_station_for_l3_monthly(input_df: DataFrame,
                                                                          master_df: DataFrame,
-                                                                         cust_profile_df: DataFrame,
-                                                                         geo_master_plan: DataFrame) -> DataFrame:
+                                                                         geo_master_plan: DataFrame,
+                                                                         cust_profile_df: DataFrame) -> DataFrame:
     """
     :param input_df:
     :param master_df:
