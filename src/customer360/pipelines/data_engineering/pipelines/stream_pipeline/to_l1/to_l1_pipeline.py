@@ -40,15 +40,15 @@ from customer360.pipelines.data_engineering.nodes.stream_nodes.to_l1.to_l1_nodes
 def streaming_sdr_sub_app_hourly_daily_for_l3_monthly(**kwargs):
     return Pipeline(
         [
-            node(
-                build_streaming_sdr_sub_app_hourly_for_l3_monthly,
-                [
-                    "l0_streaming_sdr_sub_app_hourly_for_l1_streaming_sdr_sub_app_hourly",
-                    "l0_mobile_app_master",
-                    "l1_customer_profile_union_daily_feature_for_l1_streaming_sdr_sub_app_hourly"
-                    ],
-                "l1_streaming_sdr_sub_app_hourly"
-            ),
+            # node(
+            #     build_streaming_sdr_sub_app_hourly_for_l3_monthly,
+            #     [
+            #         "l0_streaming_sdr_sub_app_hourly_for_l1_streaming_sdr_sub_app_hourly",
+            #         "l0_mobile_app_master",
+            #         "l1_customer_profile_union_daily_feature_for_l1_streaming_sdr_sub_app_hourly"
+            #         ],
+            #     "l1_streaming_sdr_sub_app_hourly"
+            # ),
             node(
                 build_streaming_ufdr_streaming_quality_for_l3_monthly,
                 [
