@@ -93,9 +93,6 @@ def l5_du_scored(
         df_master=df_master_upsell,
         primary_key_columns=[
             "subscription_identifier",
-            "old_subscription_identifier",
-            "access_method_num",
-            "register_date",
         ],
         model_group_column=model_group_column,
         models_to_score={
@@ -109,7 +106,7 @@ def l5_du_scored(
         mlflow_model_version=mlflow_model_version,
         **kwargs,
     )
-    # df_master_scored = df_master_scored.join(df_master, on=primary_key_columns, how="left")
+    df_master_scored = df_master_scored.join(df_master, ["subscription_identifier"], how="left")
     df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
         "prod_dataupsell.l5_du_scored"
     )
