@@ -16,8 +16,8 @@ du_acceptance_model_tag: binary
 du_arpu_model_tag: regression
 
 du_regression_clip_target_quantiles_arpuu: [0.05, 0.95]
-du_mlflow_model_version_prediction: 7
-du_mlflow_model_version_training: 7
+du_mlflow_model_version_prediction: 8
+du_mlflow_model_version_training: 8
 
 du_model_model_params:
    n_jobs: 1
@@ -93,43 +93,43 @@ du_model_input_features:
     - sum_payments_top_ups_daily_last_seven_day
     - sum_payments_top_ups_daily_last_thirty_day
     - sum_payments_top_ups_daily_last_ninety_day
-  l4_campaign_postpaid_prepaid_features:
-    - sum_campaign_overall_count_sum_weekly_last_week
-    - sum_campaign_overall_count_sum_weekly_last_two_week
-    - sum_campaign_overall_count_sum_weekly_last_four_week
-    - sum_campaign_overall_count_sum_weekly_last_twelve_week
-    - sum_campaign_total_by_call_center_sum_weekly_last_week
-    - sum_campaign_total_by_call_center_sum_weekly_last_twelve_week
-    - sum_campaign_total_eligible_by_call_center_sum_weekly_last_week
-    - sum_campaign_total_eligible_by_call_center_sum_weekly_last_twelve_week
-    - sum_campaign_total_success_by_call_center_sum_weekly_last_week
-    - sum_campaign_total_success_by_call_center_sum_weekly_last_twelve_week
-    - sum_campaign_total_by_sms_sum_weekly_last_week
-    - sum_campaign_total_by_sms_sum_weekly_last_twelve_week
-    - sum_campaign_total_eligible_by_sms_sum_weekly_last_week
-    - sum_campaign_total_eligible_by_sms_sum_weekly_last_twelve_week
-    - sum_campaign_total_success_by_sms_sum_weekly_last_week
-    - sum_campaign_total_success_by_sms_sum_weekly_last_twelve_week
-    - sum_campaign_total_upsell_xsell_by_sms_sum_weekly_last_week
-    - sum_campaign_total_upsell_xsell_by_sms_sum_weekly_last_twelve_week
-    - sum_campaign_total_upsell_xsell_eligible_by_sms_sum_weekly_last_week
-    - sum_campaign_total_upsell_xsell_eligible_by_sms_sum_weekly_last_twelve_week
-    - sum_campaign_total_upsell_xsell_success_by_sms_sum_weekly_last_week
-    - sum_campaign_total_upsell_xsell_success_by_sms_sum_weekly_last_twelve_week
-    - sum_campaign_total_others_by_sms_sum_weekly_last_week
-    - sum_campaign_total_others_by_sms_sum_weekly_last_twelve_week
-    - sum_campaign_total_others_eligible_by_sms_sum_weekly_last_week
-    - sum_campaign_total_others_eligible_by_sms_sum_weekly_last_twelve_week
-    - sum_campaign_total_others_success_by_sms_sum_weekly_last_week
-    - sum_campaign_total_others_success_by_sms_sum_weekly_last_twelve_week
-    - sum_campaign_total_retention_by_sms_sum_weekly_last_week
-    - sum_campaign_total_retention_by_sms_sum_weekly_last_twelve_week
-    - sum_campaign_total_retention_eligible_by_sms_sum_weekly_last_week
-    - sum_campaign_total_retention_eligible_by_sms_sum_weekly_last_twelve_week
-    - sum_campaign_total_retention_success_by_sms_sum_weekly_last_week
-    - sum_campaign_total_retention_success_by_sms_sum_weekly_last_twelve_week
-    - sum_campaign_total_upsell_xsell_by_myais_app_sum_weekly_last_week
-    - sum_campaign_total_upsell_xsell_by_myais_app_sum_weekly_last_twelve_week
+#  l4_campaign_postpaid_prepaid_features:
+#    - sum_campaign_overall_count_sum_weekly_last_week
+#    - sum_campaign_overall_count_sum_weekly_last_two_week
+#    - sum_campaign_overall_count_sum_weekly_last_four_week
+#    - sum_campaign_overall_count_sum_weekly_last_twelve_week
+#    - sum_campaign_total_by_call_center_sum_weekly_last_week
+#    - sum_campaign_total_by_call_center_sum_weekly_last_twelve_week
+#    - sum_campaign_total_eligible_by_call_center_sum_weekly_last_week
+#    - sum_campaign_total_eligible_by_call_center_sum_weekly_last_twelve_week
+#    - sum_campaign_total_success_by_call_center_sum_weekly_last_week
+#    - sum_campaign_total_success_by_call_center_sum_weekly_last_twelve_week
+#    - sum_campaign_total_by_sms_sum_weekly_last_week
+#    - sum_campaign_total_by_sms_sum_weekly_last_twelve_week
+#    - sum_campaign_total_eligible_by_sms_sum_weekly_last_week
+#    - sum_campaign_total_eligible_by_sms_sum_weekly_last_twelve_week
+#    - sum_campaign_total_success_by_sms_sum_weekly_last_week
+#    - sum_campaign_total_success_by_sms_sum_weekly_last_twelve_week
+#    - sum_campaign_total_upsell_xsell_by_sms_sum_weekly_last_week
+#    - sum_campaign_total_upsell_xsell_by_sms_sum_weekly_last_twelve_week
+#    - sum_campaign_total_upsell_xsell_eligible_by_sms_sum_weekly_last_week
+#    - sum_campaign_total_upsell_xsell_eligible_by_sms_sum_weekly_last_twelve_week
+#    - sum_campaign_total_upsell_xsell_success_by_sms_sum_weekly_last_week
+#    - sum_campaign_total_upsell_xsell_success_by_sms_sum_weekly_last_twelve_week
+#    - sum_campaign_total_others_by_sms_sum_weekly_last_week
+#    - sum_campaign_total_others_by_sms_sum_weekly_last_twelve_week
+#    - sum_campaign_total_others_eligible_by_sms_sum_weekly_last_week
+#    - sum_campaign_total_others_eligible_by_sms_sum_weekly_last_twelve_week
+#    - sum_campaign_total_others_success_by_sms_sum_weekly_last_week
+#    - sum_campaign_total_others_success_by_sms_sum_weekly_last_twelve_week
+#    - sum_campaign_total_retention_by_sms_sum_weekly_last_week
+#    - sum_campaign_total_retention_by_sms_sum_weekly_last_twelve_week
+#    - sum_campaign_total_retention_eligible_by_sms_sum_weekly_last_week
+#    - sum_campaign_total_retention_eligible_by_sms_sum_weekly_last_twelve_week
+#    - sum_campaign_total_retention_success_by_sms_sum_weekly_last_week
+#    - sum_campaign_total_retention_success_by_sms_sum_weekly_last_twelve_week
+#    - sum_campaign_total_upsell_xsell_by_myais_app_sum_weekly_last_week
+#    - sum_campaign_total_upsell_xsell_by_myais_app_sum_weekly_last_twelve_week
   l4_device_summary_features:
     - sum_device_most_used_handset_apple_weekly_last_week
     - sum_device_most_used_handset_oppo_weekly_last_week
@@ -258,8 +258,8 @@ du_model_input_features:
     - total_net_tariff_30_day_validity_4_week
 
 du_model_explanatory_features:
-#   - day_of_week
-#   - day_of_month
+   - day_of_week
+   - day_of_month
    - age
    - subscriber_tenure
    - charge_type_numeric
@@ -279,12 +279,12 @@ du_model_explanatory_features:
    - sum_payments_top_up_vol_by_digital_online_self_service_weekly_last_twelve_week
    - sum_payments_top_ups_by_rom_weekly_last_twelve_week
    - sum_payments_top_up_vol_by_rom_weekly_last_twelve_week
-   - sum_campaign_overall_count_sum_weekly_last_week
-   - sum_campaign_overall_count_sum_weekly_last_four_week
-   - sum_campaign_overall_count_sum_weekly_last_twelve_week
-   - sum_campaign_total_by_sms_sum_weekly_last_week
-   - sum_campaign_total_by_sms_sum_weekly_last_twelve_week
-   - sum_campaign_total_others_by_sms_sum_weekly_last_week
+#   - sum_campaign_overall_count_sum_weekly_last_week
+#   - sum_campaign_overall_count_sum_weekly_last_four_week
+#   - sum_campaign_overall_count_sum_weekly_last_twelve_week
+#   - sum_campaign_total_by_sms_sum_weekly_last_week
+#   - sum_campaign_total_by_sms_sum_weekly_last_twelve_week
+#   - sum_campaign_total_others_by_sms_sum_weekly_last_week
    - max_device_high_range_weekly_last_week
    - max_device_low_range_weekly_last_week
    - sum_rev_arpu_total_revenue_monthly_last_month
@@ -338,31 +338,31 @@ du_model_explanatory_features:
 #   - sum_usg_incoming_data_volume_2G_3G_sum_weekly_last_four_week
 #   - sum_usg_incoming_data_volume_4G_sum_weekly_last_four_week
 #   - sum_usg_outgoing_total_call_duration_sum_weekly_last_week
-#   - number_of_transaction_fixed_speed_BTL_2_week
-#   - number_of_transaction_fixed_speed_ATL_2_week
-#   - number_of_transaction_full_speed_ATL_2_week
-#   - total_net_tariff_fixed_speed_BTL_2_week
-#   - total_net_tariff_fixed_speed_ATL_2_week
-#   - total_net_tariff_full_speed_ATL_2_week
-#   - number_of_transaction_fixed_speed_BTL_4_week
-#   - number_of_transaction_full_speed_BTL_4_week
-#   - number_of_transaction_fixed_speed_ATL_4_week
-#   - number_of_transaction_full_speed_ATL_4_week
-#   - total_net_tariff_fixed_speed_BTL_4_week
-#   - total_net_tariff_fixed_speed_ATL_4_week
-#   - total_net_tariff_full_speed_ATL_4_week
-#   - number_of_transaction_1_day_validity_2_week
-#   - number_of_transaction_7_day_validity_2_week
-#   - number_of_transaction_30_day_validity_2_week
-#   - total_net_tariff_1_day_validity_2_week
-#   - total_net_tariff_7_day_validity_2_week
-#   - total_net_tariff_30_day_validity_2_week
-#   - number_of_transaction_1_day_validity_4_week
-#   - number_of_transaction_7_day_validity_4_week
-#   - number_of_transaction_30_day_validity_4_week
-#   - total_net_tariff_1_day_validity_4_week
-#   - total_net_tariff_7_day_validity_4_week
-#   - total_net_tariff_30_day_validity_4_week
+   - number_of_transaction_fixed_speed_BTL_2_week
+   - number_of_transaction_fixed_speed_ATL_2_week
+   - number_of_transaction_full_speed_ATL_2_week
+   - total_net_tariff_fixed_speed_BTL_2_week
+   - total_net_tariff_fixed_speed_ATL_2_week
+   - total_net_tariff_full_speed_ATL_2_week
+   - number_of_transaction_fixed_speed_BTL_4_week
+   - number_of_transaction_full_speed_BTL_4_week
+   - number_of_transaction_fixed_speed_ATL_4_week
+   - number_of_transaction_full_speed_ATL_4_week
+   - total_net_tariff_fixed_speed_BTL_4_week
+   - total_net_tariff_fixed_speed_ATL_4_week
+   - total_net_tariff_full_speed_ATL_4_week
+   - number_of_transaction_1_day_validity_2_week
+   - number_of_transaction_7_day_validity_2_week
+   - number_of_transaction_30_day_validity_2_week
+   - total_net_tariff_1_day_validity_2_week
+   - total_net_tariff_7_day_validity_2_week
+   - total_net_tariff_30_day_validity_2_week
+   - number_of_transaction_1_day_validity_4_week
+   - number_of_transaction_7_day_validity_4_week
+   - number_of_transaction_30_day_validity_4_week
+   - total_net_tariff_1_day_validity_4_week
+   - total_net_tariff_7_day_validity_4_week
+   - total_net_tariff_30_day_validity_4_week
 #
 #   - sum_download_kb_traffic_youtube_video_sum_weekly_last_twelve_week
 #   - sum_download_kb_traffic_facebook_video_sum_weekly_last_week

@@ -1001,7 +1001,7 @@ def score_du_models(
     pai_artifacts_uri: str,
     explanatory_features: List[str],
     mlflow_model_version: int,
-    scoring_chunk_size: int = 500000,
+    scoring_chunk_size: int = 300000,
 ) -> pyspark.sql.DataFrame:
     spark = get_spark_session()
     # Define schema for the udf.
@@ -1096,7 +1096,7 @@ def score_du_models(
     )
 
     return df_scored
-    #  # For Testing Purpose, Leave as comment for Later Test
+    # # For Testing Purpose, Leave as comment for Later Test
     # df_master = catalog.load("l5_du_scoring_master")
     # explanatory_features = catalog.load("params:du_model_explanatory_features")
     # df_master_scored = score_du_models(
@@ -1118,7 +1118,7 @@ def score_du_models(
     #
     # all_run_data = mlflow.search_runs(
     #     experiment_ids=mlflow_experiment_id,
-    #     filter_string="params.model_objective='binary' AND params.Able_to_model = 'True' AND params.Version=1",
+    #     filter_string="params.model_objective='binary' AND params.Able_to_model = 'True' AND params.Version=7",
     #     run_view_type=1,
     #     max_results=100,
     #     order_by=None,
@@ -1145,7 +1145,7 @@ def score_du_models(
     #     experiment_ids=mlflow_experiment_id,
     #     filter_string="params.model_objective='"
     #                   + current_tag
-    #                   + "' AND params.Version=2 AND tags.mlflow.runName ='"
+    #                   + "' AND params.Version=8 AND tags.mlflow.runName ='"
     #                   + current_model_group
     #                   + "'",
     #     run_view_type=1,
@@ -1154,7 +1154,7 @@ def score_du_models(
     # )
     # current_model = mlflowlightgbm.load_model(mlflow_run.artifact_uri.values[0])
     #
-    # df_master_verysmall = df_master.withColumn("model_name",F.lit("Data_NonStop_4Mbps_1_ATL")).limit(100)
+    # df_master_verysmall = df_master.select(explanatory_features).withColumn("model_name",F.lit("Data_NonStop_4Mbps_1_ATL")).limit(300000)
     # pdf = df_master_verysmall.toPandas()
     # explanatory_features.sort()
     #
