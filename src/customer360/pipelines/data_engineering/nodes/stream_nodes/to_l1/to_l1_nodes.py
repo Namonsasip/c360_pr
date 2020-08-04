@@ -687,23 +687,23 @@ def build_streaming_ufdr_streaming_favourite_base_station_for_l3_monthly(input_d
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([input_df, cust_profile_df, geo_master_plan]):
-        return get_spark_empty_df()
-
-    input_df = data_non_availability_and_missing_check(
-        df=input_df,
-        grouping="daily",
-        par_col="partition_date",
-        target_table_name="l1_streaming_base_station_features")
-
-    cust_profile_df = data_non_availability_and_missing_check(
-        df=cust_profile_df,
-        grouping="daily",
-        par_col="event_partition_date",
-        target_table_name="l1_streaming_base_station_features")
-
-    if check_empty_dfs([input_df, cust_profile_df, geo_master_plan]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([input_df, cust_profile_df, geo_master_plan]):
+    #     return get_spark_empty_df()
+    #
+    # input_df = data_non_availability_and_missing_check(
+    #     df=input_df,
+    #     grouping="daily",
+    #     par_col="partition_date",
+    #     target_table_name="l1_streaming_base_station_features")
+    #
+    # cust_profile_df = data_non_availability_and_missing_check(
+    #     df=cust_profile_df,
+    #     grouping="daily",
+    #     par_col="event_partition_date",
+    #     target_table_name="l1_streaming_base_station_features")
+    #
+    # if check_empty_dfs([input_df, cust_profile_df, geo_master_plan]):
+    #     return get_spark_empty_df()
 
     # ################################# End Implementing Data availability checks ###############################
 
