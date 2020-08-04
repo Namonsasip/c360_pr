@@ -665,10 +665,15 @@ def build_streaming_ufdr_streaming_quality_for_l3_monthly(input_df: DataFrame,
     return_df = data_frame.join(master_application, ["application"])
 
     return_df = return_df.join(cust_profile_df.select(sel_cols), join_cols)
+    return_df.show()
     return_df - return_df.withColumn("calc_column", f.col("streaming_dw_packets") /
                                                  (((f.col("STREAMING_Download_DELAY") * f.lit(1000) * f.lit(8)) / f.lit(1024)) / f.lit(1024)))
 
+    return_df.show()
+
     return_df = return_df.select("subscription_identifier", "access_method_num", "event_partition_date",
                                  "start_of_month", "application_name", "application_group", "calc_column")
+    return_df.show()
+
 
     return return_df
