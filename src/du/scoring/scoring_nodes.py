@@ -17,6 +17,7 @@ from pyspark.sql.types import (
     FloatType,
     StringType,
 )
+import datetime
 
 # get latest available daily profile from c360 feature
 def l5_scoring_profile(
@@ -34,12 +35,21 @@ def l5_scoring_profile(
         F.col("aux_date_order") == 1
     ).drop("aux_date_order")
     df_latest_sub_id_mapping = df_latest_sub_id_mapping.select(
-        "subscription_identifier",
-        "charge_type",
+        "subscription_identifier", "charge_type",
     )
     df_latest_sub_id_mapping = df_latest_sub_id_mapping.where(
         "charge_type = 'Pre-paid'"
     ).drop("charge_type")
+
+    df_latest_sub_id_mapping = (
+        df_latest_sub_id_mapping.withColumn(
+            "today", F.lit(datetime.datetime.date(datetime.datetime.now()))
+        )
+        .withColumn("day_of_week", F.dayofweek("today"))
+        .withColumn("day_of_month", F.dayofmonth("today"))
+        .drop("today")
+    )
+
     return df_latest_sub_id_mapping
 
 
@@ -67,7 +77,8 @@ def l5_du_scored(
     all_run_data = mlflow.search_runs(
         experiment_ids=mlflow_experiment_id,
         filter_string="params.model_objective='binary' AND params.Able_to_model = 'True' AND params.Version='"
-        + str(mlflow_model_version) + "'",
+        + str(mlflow_model_version)
+        + "'",
         run_view_type=1,
         max_results=200,
         order_by=None,
@@ -99,11 +110,16 @@ def l5_du_scored(
         **kwargs,
     )
     # df_master_scored = df_master_scored.join(df_master, on=primary_key_columns, how="left")
-    df_master_scored.write.format("delta").mode("overwrite").saveAsTable("prod_dataupsell.l5_du_scored")
+    df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
+        "prod_dataupsell.l5_du_scored"
+    )
     return df_master_scored
 
 
-def du_tailor_score():
+def du_join_preference(l5_du_scored: DataFrame,
+                       mapping_for_model_training: DataFrame,
+                       l0_product_pru_m_ontop_master_for_weekly_full_load: DataFrame,
+                       ):
     spark = get_spark_session()
     l5_du_scored = catalog.load("l5_du_scored")
     mapping_for_model_training = catalog.load("mapping_for_model_training")
@@ -193,6 +209,7 @@ def du_tailor_score():
         "DATE_ADD(partition_date,-2) as start_of_week",
     )
     # TODO make master ontop dynamic to prediction date
+    max_master_date = master_ontop_weekly_fixed.withColumn("G",F.lit(1)).groupby("G").agg(F.max("start_of_week"))
     agg_master_ontop = (
         master_ontop_weekly_fixed.where("start_of_week = date('2020-07-13')")
         .groupby(
@@ -205,7 +222,7 @@ def du_tailor_score():
             "duration",
             "data_speed",
         )
-        .agg(F.count("*").alias("CNT"),F.max("price_inc_vat").alias("price_inc_vat"))
+        .agg(F.count("*").alias("CNT"), F.max("price_inc_vat").alias("price_inc_vat"))
         .drop("CNT")
     )
     agg_master_ontop = agg_master_ontop.selectExpr(
@@ -216,7 +233,7 @@ def du_tailor_score():
         "data_quota_mb as offer_data_quota_mb",
         "duration as offer_duration",
         "data_speed as offer_data_speed",
-        "price_inc_vat as offer_price_inc_vat"
+        "price_inc_vat as offer_price_inc_vat",
     )
 
     atl_campaign_mapping = mapping_for_model_training.where(
@@ -268,10 +285,13 @@ def du_tailor_score():
             "macro_product",
             "Package_name as offer_package_name_report",
             "rework_macro_product as model_name",
-            "Macro_product_Offer_type as offer_Macro_product_type"
+            "Macro_product_Offer_type as offer_Macro_product_type",
         )
-        .groupby("macro_product", "model_name","offer_Macro_product_type")
-        .agg(F.count("*").alias("CNT"),F.first("offer_package_name_report").alias("offer_package_name_report"))
+        .groupby("macro_product", "model_name", "offer_Macro_product_type")
+        .agg(
+            F.count("*").alias("CNT"),
+            F.first("offer_package_name_report").alias("offer_package_name_report"),
+        )
         .drop("CNT")
         .join(agg_master_ontop, ["offer_package_name_report"], "left")
     )
@@ -289,7 +309,9 @@ def du_tailor_score():
             "left",
         )
     )
-    spark.sql("DROP TABLE IF EXISTS prod_dataupsell.du_offer_score_with_package_preference")
+    spark.sql(
+        "DROP TABLE IF EXISTS prod_dataupsell.du_offer_score_with_package_preference"
+    )
     l5_du_scored_offer_preference.write.format("delta").mode("append").partitionBy(
         "start_of_week"
     ).saveAsTable("prod_dataupsell.du_offer_score_with_package_preference")
