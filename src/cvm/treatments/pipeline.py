@@ -83,8 +83,8 @@ def generate_treatments(sample_type: str) -> Pipeline:
                     "data_upsell_offer_with_package_preference",
                     "ard_btl_offer_mapping",
                 ],
-                ["treatments_chosen_test_new", "treatments_chosen_history_output"],
-                name="produce_treatments_translated",
+                ["treatments_chosen_test_new"],
+                name="produce_treatments_only_translated",
             ),
             node(
                 deploy_treatments,
