@@ -8,12 +8,12 @@ from nba.model_input.model_input_nodes import (
     node_l5_nba_customer_profile,
 )
 from du.model_input.model_input_nodes import fix_analytic_id_key
+from du.models.models_nodes import validate_model_scoring
 
 from du.models.package_prefer_nodes import (
     create_daily_ontop_pack,
     create_aggregate_ontop_package_preference_input,
     create_ontop_package_preference,
-    validate_model_scoring,
 )
 from functools import partial
 import datetime
