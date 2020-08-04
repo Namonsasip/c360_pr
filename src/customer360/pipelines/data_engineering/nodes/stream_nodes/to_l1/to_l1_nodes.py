@@ -745,12 +745,10 @@ def build_streaming_ufdr_streaming_favourite_base_station_for_l3_monthly(input_d
     return_df = return_df.join(cust_profile_df.select(sel_cols), join_cols)
 
     return_df = return_df. \
-        groupBy(["subscription_identifier", "access_method_num", "start_of_month", "application_name",
-                 "LAST_SAI_CGI_ECGI"]).agg(f.sum("L4_DW_THROUGHPUT").alias("download"))
+        groupBy(["subscription_identifier", "access_method_num", "event_partition_date", "start_of_month",
+                 "application_name", "LAST_SAI_CGI_ECGI"]).agg(f.sum("L4_DW_THROUGHPUT").alias("download"))
 
-    return_df = return_df.select("subscription_identifier", "access_method_num", "event_partition_date",
-                                 "start_of_month", "application_name", "application_group", "download",
-                                 f.col("LAST_SAI_CGI_ECGI").alias("soc_cgi_hex"))
+    return_df = return_df.withColumnRenamed("LAST_SAI_CGI_ECGI", "soc_cgi_hex")
 
     return_df = return_df.join(geo_master_plan, ["soc_cgi_hex"])
 
