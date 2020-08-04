@@ -103,7 +103,7 @@ def l5_du_scored(
     df_master_scored = score_du_models(
         df_master=df_master_upsell,
         primary_key_columns=[
-            "du_spine_primary_key",
+            "subscription_identifier",
         ],
         model_group_column=model_group_column,
         models_to_score={
