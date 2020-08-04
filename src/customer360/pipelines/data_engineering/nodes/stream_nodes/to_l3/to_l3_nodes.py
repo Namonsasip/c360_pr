@@ -812,16 +812,16 @@ def streaming_favourite_quality_features_func(
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([input_df]):
-        return get_spark_empty_df()
-
-    input_df = data_non_availability_and_missing_check(
-        df=input_df, grouping="monthly", par_col="event_partition_date",
-        missing_data_check_flg='Y',
-        target_table_name="l3_streaming_app_quality_features")
-
-    if check_empty_dfs([input_df]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([input_df]):
+    #     return get_spark_empty_df()
+    #
+    # input_df = data_non_availability_and_missing_check(
+    #     df=input_df, grouping="monthly", par_col="event_partition_date",
+    #     missing_data_check_flg='Y',
+    #     target_table_name="l3_streaming_app_quality_features")
+    #
+    # if check_empty_dfs([input_df]):
+    #     return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
 
     dictionary = [{'filter_condition': "youtube,youtube_go,youtubebyclick",
