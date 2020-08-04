@@ -152,17 +152,17 @@ l0_geo_cust_cell_visit_time_for_l1_geo_area_from_competitor_store_daily:
     lookback: '0'
 
 #----------------------- geo_cust_cell_visit_time_geo_home_work_location_id -------------------------
-l0_geo_cust_cell_visit_time_for_int_l3_geo_home_work_location_id:
+l0_geo_cust_location_monthly_hr_for_int_l3_geo_home_work_location_id:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/geo_cust_cell_visit_time/
+  filepath: base_path/GEO/geo_cust_location_monthly_hr/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
-    increment_flag: 'yes'
+    increment_flag: 'no'
     lookup_table_name: 'l3_geo_home_work_location_id_monthly'
-    read_layer: 'l0_daily'
+    read_layer: 'l0_monthly'
     target_layer: 'l3_monthly'
-    lookback: '90'
+    lookback: '0'
 
 #----------------------- geo_cust_cell_visit_time_geo_cust_subseqently_distance -------------------------
 l0_geo_cust_cell_visit_time_for_l1_geo_cust_subseqently_distance_daily:

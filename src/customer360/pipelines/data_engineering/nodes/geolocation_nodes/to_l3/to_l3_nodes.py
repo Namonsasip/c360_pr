@@ -273,15 +273,18 @@ def massive_processing_monthly(data_frame: DataFrame, sql, output_df_catalog, pa
     return return_df
 
 
-# Set function for massive process: Daily --> Monthly
-def massive_processing_for_home_work(
-        input_df,
-        config_home,
-        config_work,
-        source_partition_col="partition_date"
-):
-    # filter
-    input_df = input_df.filter('partition_date >= 20200401 and partition_date <= 20200627')
+def massive_processing_for_int_home_work_monthly(input_df: DataFrame, config_home: str, config_work: str
+                                                 ) -> DataFrame:
+    """
+    Args:
+        input_df: geo_cust_location_monthly_hr
+            +-----+-----+-------------+----------+-----------+----------+------+-----------------+--------------------+
+            | imsi| hour| location_id | latitude | longitude | duration | days | partition_month | partition_weektype |
+            +-----+-----+-------------+----------+-----------+----------+------+-----------------+--------------------+
+        config_home:
+        config_work:
+    Returns:
+    """
 
     CNTX = load_context(Path.cwd(), env=os.getenv("CONF", "base"))
 
@@ -289,8 +292,9 @@ def massive_processing_for_home_work(
     if check_empty_dfs(input_df):
         return get_spark_empty_df()
 
-    input_df = data_non_availability_and_missing_check(df=input_df, grouping="monthly",
-                                                       par_col="partition_date",
+    input_df = data_non_availability_and_missing_check(df=input_df,
+                                                       grouping="monthly",
+                                                       par_col="partition_month",
                                                        target_table_name="l3_geo_home_work_location_id_monthly",
                                                        missing_data_check_flg='N')
     if check_empty_dfs(input_df):
@@ -298,132 +302,78 @@ def massive_processing_for_home_work(
     # ----- Transformation -----
 
     data_frame = input_df
-    dates_list = data_frame.select(source_partition_col).distinct().collect()
+    dates_list = data_frame.select('partition_month').distinct().collect()
     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
     mvv_array = sorted(mvv_array)
     logging.info("Dates to run for {0}".format(str(mvv_array)))
 
-    mvv_new = list(__divide_chunks(mvv_array, 5))
+    mvv_new = list(__divide_chunks(mvv_array, 1))
     add_list = mvv_new
 
     #Set first dataframe to merge
     if len(add_list) != 1:
         last_item = add_list[0]
         logging.info("First date to run for {0}".format(str(last_item)))
-        small_df_last = data_frame.filter(F.col(source_partition_col).isin(*[last_item]))
+        small_df_last = data_frame.filter(F.col('partition_month').isin(*[last_item]))
 
-        # Add 2 columns: event_partition_date, start_of_month
-        small_df_last = small_df_last.withColumn("event_partition_date", F.to_date(F.col("partition_date").cast(StringType()),'yyyyMMdd'))
-        small_df_last = small_df_last.withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col("event_partition_date"))))
-
+        # Add a column: start_of_month
+        small_df_last = small_df_last.withColumn("start_of_month", F.to_date(
+            F.date_trunc('month', F.to_date((F.col('partition_month')).cast(StringType()), 'yyyyMM'))))
         # Work
-        output_df_work = _int_l4_geo_work_location_id_monthly(small_df_last, config_work)
+        output_df_work = node_from_config(small_df_last, config_work)
         CNTX.catalog.save(config_work["output_catalog"], output_df_work)
 
         # Home
-        output_df_home = _int_l4_geo_home_location_id_monthly(small_df_last, config_home)
+        output_df_home = node_from_config(small_df_last, config_home)
         CNTX.catalog.save(config_home["output_catalog"], output_df_home)
         add_list.remove(last_item)
+
     elif len(add_list) == 1:
         last_item = add_list[0]
-        small_df_last = data_frame.filter(F.col(source_partition_col).isin(*[last_item]))
+        small_df_last = data_frame.filter(F.col('partition_month').isin(*[last_item]))
 
-        # Add 2 columns: event_partition_date, start_of_month
-        small_df_last = small_df_last.withColumn("event_partition_date",
-                                                 F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))
-        small_df_last = small_df_last.withColumn("start_of_month",
-                                                 F.to_date(F.date_trunc('month', F.col("event_partition_date"))))
+        # Add a column: start_of_month
+        small_df_last = small_df_last.withColumn("start_of_month", F.to_date(
+            F.date_trunc('month', F.to_date((F.col('partition_month')).cast(StringType()), 'yyyyMM'))))
 
-        # Work
-        output_df_work = _int_l4_geo_work_location_id_monthly(small_df_last, config_work)
-
-        # Home
-        output_df_home = _int_l4_geo_home_location_id_monthly(small_df_last, config_home)
+        output_df_work = node_from_config(small_df_last, config_work)
+        output_df_home = node_from_config(small_df_last, config_home)
 
         return [output_df_home, output_df_work]
 
     first_item = add_list[-1]
-
     add_list.remove(first_item)
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
-        small_df = data_frame.filter(F.col(source_partition_col).isin(*[curr_item]))
+        small_df = data_frame.filter(F.col('partition_month').isin(*[curr_item]))
 
-        # Add 2 columns: event_partition_date, start_of_month
-        small_df = small_df.withColumn("event_partition_date", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))
-        small_df = small_df.withColumn("start_of_month", F.to_date(F.date_trunc('month', F.col("event_partition_date"))))
+        # Add a columns: start_of_month
+        small_df = small_df.withColumn("start_of_month", F.to_date(
+            F.date_trunc('month', F.to_date((F.col('partition_month')).cast(StringType()), 'yyyyMM'))))
 
-        # Work
-        after_output_df_work = CNTX.catalog.load(config_work["output_catalog"])
-        output_df_work = _int_l4_geo_work_location_id_monthly(small_df, config_work)
-        output_df_work = output_df_work.select(after_output_df_work.columns)
-        output_df_work_union = after_output_df_work.union(output_df_work)
-        output_df_work_union = output_df_work_union.groupBy("imsi", "location_id", "latitude", "longitude", "start_of_month")\
-            .agg(F.sum("duration").alias("duration"), F.sum("days").alias("days"))
-        CNTX.catalog.save(config_work["output_catalog"], output_df_work_union)
-
-        # Home
-        after_output_df_home = CNTX.catalog.load(config_home["output_catalog"])
-        output_df_home = _int_l4_geo_home_location_id_monthly(small_df, config_home)
-        output_df_home = output_df_home.select(after_output_df_home.columns)
-        output_df_home_union = after_output_df_home.union(output_df_home)
-        output_df_home_union = output_df_home_union.groupBy("imsi", "location_id", "latitude", "longitude", "week_type", "start_of_month")\
-            .agg(F.sum("duration").alias("duration"), F.sum("days").alias("days"))
-        CNTX.catalog.save(config_home["output_catalog"], output_df_home_union)
-
+        output_df_work = node_from_config(small_df, config_work)
+        CNTX.catalog.save(config_work["output_catalog"], output_df_work)
+        output_df_home = node_from_config(small_df, config_work)
+        CNTX.catalog.save(config_work["output_catalog"], output_df_home)
 
     logging.info("Final date to run for {0}".format(str(first_item)))
-    return_df = data_frame.filter(F.col(source_partition_col).isin(*[first_item]))
-    # Add 2 columns: event_partition_date, start_of_month
-    return_df = return_df.withColumn("event_partition_date",
-                                             F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))
-    return_df = return_df.withColumn("start_of_month",
-                                             F.to_date(F.date_trunc('month', F.col("event_partition_date"))))
-    # Work
-    after_output_df_work = CNTX.catalog.load(config_work["output_catalog"])
-    output_df_work = _int_l4_geo_work_location_id_monthly(return_df, config_work)
-    output_df_work = output_df_work.select(after_output_df_work.columns)
-    output_df_work_union = after_output_df_work.union(output_df_work)
-    output_df_work_union = output_df_work_union.groupBy("imsi", "location_id", "latitude", "longitude",
-                                                        "start_of_month") \
-        .agg(F.sum("duration").alias("duration"), F.sum("days").alias("days"))
+    return_df = data_frame.filter(F.col('partition_month').isin(*[first_item]))
 
-    # Home
-    after_output_df_home = CNTX.catalog.load(config_home["output_catalog"])
-    output_df_home = _int_l4_geo_home_location_id_monthly(return_df, config_home)
-    output_df_home = output_df_home.select(after_output_df_home.columns)
-    output_df_home_union = after_output_df_home.union(output_df_home)
-    output_df_home_union = output_df_home_union.groupBy("imsi", "location_id", "latitude", "longitude", "week_type",
-                                                        "start_of_month") \
-        .agg(F.sum("duration").alias("duration"), F.sum("days").alias("days"))
+    # Add a columns: start_of_month
+    return_df = return_df.withColumn("start_of_month", F.to_date(
+        F.date_trunc('month', F.to_date((F.col('partition_month')).cast(StringType()), 'yyyyMM'))))
 
-    return [output_df_home_union, output_df_work_union]
+    output_df_work = node_from_config(return_df, config_work)
+    output_df_home = node_from_config(return_df, config_home)
 
-def _int_l4_geo_home_location_id_monthly(df, config):
-    # Add column week_type
-    df = df.withColumn('week_type', F.when(((F.dayofweek(F.col('event_partition_date')) == 1) | (F.dayofweek(F.col('event_partition_date')) == 7)), 'weekend')
-                                                                             .otherwise('weekday').cast(StringType()))
-    df = node_from_config(df, config)
-
-    return df
+    return [output_df_work, output_df_home]
 
 
-def _int_l4_geo_work_location_id_monthly(df, config):
-    df = node_from_config(df, config)
-    return df
+def int_geo_work_location_id_monthly(work_monthly: DataFrame) -> DataFrame:
+    w_work = Window().partitionBy('imsi', 'location_id')\
+        .orderBy(F.col("Month").cast("long"))\
+        .rangeBetween(-(86400 * 89), 0)
 
-
-def int_geo_home_work_list_imsi_monthly(home_monthly, work_monthly):
-    list_imsi_work = work_monthly.select('imsi', 'start_of_month').distinct()
-    list_imsi_home = home_monthly.select('imsi', 'start_of_month').distinct()
-    list_imsi = list_imsi_work.union(list_imsi_home).distinct()
-
-    return list_imsi
-
-
-def int_geo_work_location_id_monthly(work_monthly, list_imsi):
-    # Work
-    w_work = Window().partitionBy('imsi', 'location_id').orderBy(F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
     work_last_3m = work_monthly.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd"))\
         .withColumn("duration_3m", F.sum("duration").over(w_work))\
         .withColumn("days_3m", F.sum('days').over(w_work))
@@ -432,57 +382,111 @@ def int_geo_work_location_id_monthly(work_monthly, list_imsi):
         .select('imsi', 'start_of_month', 'location_id', 'latitude', 'longitude', 'duration_3m', 'days_3m')
 
 
-    w_work_num_row = Window().partitionBy('imsi', 'start_of_month').orderBy(F.col('duration_3m').desc(), F.col('days_3m').desc())
+    w_work_num_row = Window().partitionBy('imsi', 'start_of_month')\
+        .orderBy(F.col('duration_3m').desc(), F.col('days_3m').desc())
+
     work_last_3m = work_last_3m.withColumn('row_num', F.row_number().over(w_work_num_row))
     work_last_3m = work_last_3m.where('row_num = 1').drop('row_num')
-
-    work_last_3m = list_imsi.join(work_last_3m, ['imsi', 'start_of_month'], 'left').select(list_imsi.imsi, list_imsi.start_of_month, 'location_id', 'latitude', 'longitude')
+    work_last_3m = work_last_3m.select('imsi', 'start_of_month',
+                                       (F.col('location_id').alias('work_location_id')),
+                                       (F.col('latitude').alias('work_latitude')),
+                                       (F.col('longitude').alias('work_longitude')))
 
     return work_last_3m
 
 
-def int_geo_home_location_id_monthly(home_monthly):
-    # Home weekday & weekend
-    w_home = Window().partitionBy('imsi', 'location_id', 'week_type').orderBy(F.col("Month").cast("long")).rangeBetween(-(86400 * 89), 0)
+def int_geo_home_location_id_monthly(home_monthly: DataFrame) -> DataFrame:
+    w_home = Window().partitionBy('imsi', 'location_id', 'partition_weektype')\
+        .orderBy(F.col("Month").cast("long"))\
+        .rangeBetween(-(86400 * 89), 0)
+
     home_last_3m = home_monthly.withColumn("Month", F.to_timestamp("start_of_month", "yyyy-MM-dd"))\
         .withColumn("duration_3m", F.sum("duration").over(w_home))\
         .withColumn("days_3m", F.sum('days').over(w_home))
-    home_last_3m = home_last_3m.dropDuplicates(['imsi', 'week_type', 'start_of_month', 'location_id', 'duration_3m', 'days_3m'])\
-        .select('imsi', 'start_of_month', 'week_type', 'location_id', 'latitude', 'longitude', 'duration_3m', 'days_3m')
 
-    w_num_row = Window().partitionBy('imsi', 'week_type', 'start_of_month').orderBy(F.col('duration_3m').desc(), F.col('days_3m').desc())
+    home_last_3m = home_last_3m.dropDuplicates(['imsi', 'partition_weektype', 'start_of_month', 'location_id',
+                                                'duration_3m', 'days_3m'])\
+        .select('imsi', 'start_of_month', 'week_type', 'location_id', 'latitude', 'longitude', 'duration_3m',
+                'days_3m')
+
+    w_num_row = Window().partitionBy('imsi', 'partition_weektype', 'start_of_month')\
+        .orderBy(F.col('duration_3m').desc(), F.col('days_3m').desc())
     home_last_3m = home_last_3m.withColumn('row_num', F.row_number().over(w_num_row))
-
     home_last_3m = home_last_3m.where('row_num = 1').drop('row_num')
-    home_last_3m_weekday = home_last_3m.where("week_type = 'weekday'").select('imsi', 'start_of_month', (F.col('location_id').alias('home_weekday_location_id')),
-                                                                                               (F.col('latitude').alias('home_weekday_latitude')),
-                                                                                               (F.col('longitude').alias('home_weekday_longitude')))
-    home_last_3m_weekend = home_last_3m.where("week_type = 'weekend'").select('imsi', 'start_of_month',
-                                                                                               (F.col('location_id').alias('home_weekend_location_id')),
-                                                                                               (F.col('latitude').alias('home_weekend_latitude')),
-                                                                                               (F.col('longitude').alias('home_weekend_longitude')))
-    return [home_last_3m_weekday, home_last_3m_weekend]
+    home_last_3m = home_last_3m.orderBy('imsi', 'week_type', 'start_of_month', ascending=False)\
+        .select('imsi', 'start_of_month', F.col('partition_weektype').alias('week_type'),
+                'location_id', 'latitude', 'longitude')
+
+    home_last_3m = home_last_3m.groupBy('imsi', 'start_of_month')\
+        .agg(F.max(F.when((F.col('week_type') == 'weekday'), F.col('location'))).alias('home_location_weekday'),
+             F.max(F.when((F.col('week_type') == 'weekday'), F.col('latitude'))).alias('home_latitude_weekday'),
+             F.max(F.when((F.col('week_type') == 'weekday'), F.col('longitude'))).alias('home_longitude_weekday'),
+             F.max(F.when((F.col('week_type') == 'weekend'), F.col('location'))).alias('home_location_weekend'),
+             F.max(F.when((F.col('week_type') == 'weekend'), F.col('latitude'))).alias('home_latitude_weekend'),
+             F.max(F.when((F.col('week_type') == 'weekend'), F.col('longitude'))).alias('home_longitude_weekend')
+             )
+
+    return home_last_3m
 
 
-def l3_geo_home_work_location_id_monthly(home_last_3m_weekday, home_last_3m_weekend, work_last_3m, sql):
-    home_work = work_last_3m.join(home_last_3m_weekday, ['imsi', 'start_of_month'], 'left').select(
-        work_last_3m.start_of_month, work_last_3m.imsi,
-        'home_weekday_location_id', 'home_weekday_latitude',
-        'home_weekday_longitude', 'location_id', 'latitude',
-        'longitude')
+def l3_geo_home_work_location_id_monthly(home_df: DataFrame, work_df: DataFrame) -> DataFrame:
+    if check_empty_dfs(home_df, work_df):
+        return get_spark_empty_df()
 
-    home_work_final = home_work.join(home_last_3m_weekend, ['imsi', 'start_of_month'], 'left').select(
-        home_work.start_of_month, home_work.imsi,
-        'home_weekday_location_id',
-        'home_weekday_latitude', 'home_weekday_longitude',
-        'home_weekend_location_id',
-        'home_weekend_latitude', 'home_weekend_longitude',
-        (F.col('location_id').alias('work_location_id')),
-        (F.col('latitude').alias('work_latitude')),
-        (F.col('longitude').alias('work_longitude')))
+    home_df = data_non_availability_and_missing_check(df=home_df,
+                                                      grouping="monthly",
+                                                      par_col="start_of_month",
+                                                      target_table_name="l3_geo_home_work_location_id_monthly",
+                                                      missing_data_check_flg='N')
 
-    df = node_from_config(home_work_final, sql)
-    return df
+    work_df = data_non_availability_and_missing_check(df=work_df,
+                                                      grouping="monthly",
+                                                      par_col="start_of_month",
+                                                      target_table_name="l3_geo_home_work_location_id_monthly",
+                                                      missing_data_check_flg='N')
+
+    min_value = union_dataframes_with_missing_cols(
+        [
+            home_df.select(F.max(F.col("start_of_month")).alias("max_date")),
+            work_df.select(F.max(F.col("start_of_month")).alias("max_date"))
+        ]
+    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
+
+    home_df = home_df.filter(F.col("start_of_month") <= min_value)
+    work_df = work_df.filter(F.col("start_of_month") <= min_value)
+
+    if check_empty_dfs(home_df, work_df):
+        return get_spark_empty_df()
+
+    home_df = home_df.select('imsi', 'start_of_month').distinct()
+    work_df = work_df.select('imsi', 'start_of_month').distinct()
+    list_imsi = home_df.union(work_df).distinct()
+
+    final_df = list_imsi.join(home_df, ['imsi', 'start_of_month'], 'left').select(
+        list_imsi.start_of_month, list_imsi.imsi,
+        'home_location_weekday',
+        'home_latitude_weekday',
+        'home_longitude_weekday',
+        'home_location_weekend',
+        'home_latitude_weekend',
+        'home_longitude_weekend'
+    )
+
+    final_df = final_df.join(work_df, ['imsi', 'start_of_month'], 'left').select(
+        final_df.start_of_month, final_df.imsi,
+        'work_location_id',
+        'work_latitude',
+        'work_longitude',
+        'home_location_weekday',
+        'home_latitude_weekday',
+        'home_longitude_weekday',
+        'home_location_weekend',
+        'home_latitude_weekend',
+        'home_longitude_weekend'
+    )
+
+    return final_df
+
 
 def l3_geo_home_weekday_city_citizens_monthly(home_work_location_id, master, sql):
     # ----- Data Availability Checks -----
