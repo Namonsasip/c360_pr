@@ -96,6 +96,6 @@ def package_translation(
         "campaign_code",
         "date",
         "treatment_name",
-    )
+    ).dropDuplicates()
 
     return df_out
