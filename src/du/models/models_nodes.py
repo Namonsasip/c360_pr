@@ -1096,70 +1096,133 @@ def score_du_models(
     )
 
     return df_scored
-    # # For Testing Purpose, Leave as comment for Later Test
+    # For Testing Purpose, Leave as comment for Later Test
+    df_master = catalog.load("l5_du_scoring_master")
+    explanatory_features = catalog.load("params:du_model_explanatory_features")
+    df_master_scored = score_du_models(
+        df_master=df_master,
+        primary_key_columns=["access_method_num"],
+        model_group_column="model_name",
+        models_to_score={"binary": "propensity", "regression": "arpu_uplift",},
+        scoring_chunk_size=500000,
+        mlflow_model_version=8,
+        explanatory_features=explanatory_features,
+        pai_runs_uri="pai_runs_uri",
+        pai_artifacts_uri="pai_artifacts_uri",
+    )
+
+    mlflow_path = "/Shared/data_upsell/lightgbm"
+    if mlflow.get_experiment_by_name(mlflow_path) is None:
+        mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
+    else:
+        mlflow_experiment_id = mlflow.get_experiment_by_name(mlflow_path).experiment_id
+
+    all_run_data = mlflow.search_runs(
+        experiment_ids=mlflow_experiment_id,
+        filter_string="params.model_objective='binary' AND params.Able_to_model = 'True' AND params.Version=8",
+        run_view_type=1,
+        max_results=200,
+        order_by=None,
+    )
+
+    df_master = catalog.load("l5_du_scoring_master")
+    primary_key_columns = ["access_method_num"]
+    model_group_column = "model_name"
+    explanatory_features = catalog.load("params:du_model_explanatory_features")
+    df_master.withColumn(model_group_column, F.lit("1")).withColumn(
+        "partition", F.lit("1")
+    ).select(
+        model_group_column,
+        "partition",
+        *(  # Don't add model group column twice in case it's a PK column
+            list(set(primary_key_columns) - set([model_group_column]))
+            + explanatory_features
+        ),
+    )
+    current_model_group = "Data_NonStop_4Mbps_1_ATL"
+    current_tag = "regression"
+    prediction_colname = "propensity"
+    mlflow_run = mlflow.search_runs(
+        experiment_ids=mlflow_experiment_id,
+        filter_string="params.model_objective='"
+                      + current_tag
+                      + "' AND params.Version=8 AND tags.mlflow.runName ='"
+                      + current_model_group
+                      + "'",
+        run_view_type=1,
+        max_results=1,
+        order_by=None,
+    )
+    current_model = mlflowlightgbm.load_model(mlflow_run.artifact_uri.values[0])
+
+    df_master_verysmall = df_master.select(explanatory_features).withColumn("model_name",F.lit("Data_NonStop_4Mbps_1_ATL")).limit(300000)
+    pdf = df_master_verysmall.toPandas()
+    explanatory_features.sort()
+
+    X = pdf[explanatory_features]
+    pd_results = pd.DataFrame()
+    pd_results[prediction_colname] = current_model.predict(
+        X, num_threads=1, n_jobs=1
+    )
+
+
+def validate_model_scoring(df_master,
+                           explanatory_features,
+                           current_tag = "binary"):
     # df_master = catalog.load("l5_du_scoring_master")
     # explanatory_features = catalog.load("params:du_model_explanatory_features")
-    # df_master_scored = score_du_models(
-    #     df_master=df_master,
-    #     primary_key_columns=["access_method_num"],
-    #     model_group_column="model_name",
-    #     models_to_score={"binary": "propensity", "regression": "arpu_uplift",},
-    #     scoring_chunk_size=500000,
-    #     explanatory_features=explanatory_features,
-    #     pai_runs_uri="pai_runs_uri",
-    #     pai_artifacts_uri="pai_artifacts_uri",
-    # )
-    #
-    # mlflow_path = "/Shared/data_upsell/lightgbm"
-    # if mlflow.get_experiment_by_name(mlflow_path) is None:
-    #     mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
-    # else:
-    #     mlflow_experiment_id = mlflow.get_experiment_by_name(mlflow_path).experiment_id
-    #
-    # all_run_data = mlflow.search_runs(
-    #     experiment_ids=mlflow_experiment_id,
-    #     filter_string="params.model_objective='binary' AND params.Able_to_model = 'True' AND params.Version=7",
-    #     run_view_type=1,
-    #     max_results=100,
-    #     order_by=None,
-    # )
-    #
-    # df_master = catalog.load("l5_du_scoring_master")
-    # primary_key_columns = ["access_method_num"]
-    # model_group_column = "model_name"
-    # explanatory_features = catalog.load("params:du_model_explanatory_features")
-    # df_master.withColumn(model_group_column, F.lit("1")).withColumn(
-    #     "partition", F.lit("1")
-    # ).select(
-    #     model_group_column,
-    #     "partition",
-    #     *(  # Don't add model group column twice in case it's a PK column
-    #         list(set(primary_key_columns) - set([model_group_column]))
-    #         + explanatory_features
-    #     ),
-    # )
-    # current_model_group = "Data_NonStop_4Mbps_1_ATL"
-    # current_tag = "regression"
-    # prediction_colname = "propensity"
-    # mlflow_run = mlflow.search_runs(
-    #     experiment_ids=mlflow_experiment_id,
-    #     filter_string="params.model_objective='"
-    #                   + current_tag
-    #                   + "' AND params.Version=8 AND tags.mlflow.runName ='"
-    #                   + current_model_group
-    #                   + "'",
-    #     run_view_type=1,
-    #     max_results=1,
-    #     order_by=None,
-    # )
-    # current_model = mlflowlightgbm.load_model(mlflow_run.artifact_uri.values[0])
-    #
-    # df_master_verysmall = df_master.select(explanatory_features).withColumn("model_name",F.lit("Data_NonStop_4Mbps_1_ATL")).limit(300000)
-    # pdf = df_master_verysmall.toPandas()
-    # explanatory_features.sort()
-    #
-    # X = pdf[explanatory_features]
-    # pd_results = pd.DataFrame()
-    # pd_results[prediction_colname] = current_model.predict(
-    #     X, num_threads=1, n_jobs=1
-    # )
+    mlflow_path = "/Shared/data_upsell/lightgbm"
+    if mlflow.get_experiment_by_name(mlflow_path) is None:
+        mlflow_experiment_id = mlflow.create_experiment(mlflow_path)
+    else:
+        mlflow_experiment_id = mlflow.get_experiment_by_name(mlflow_path).experiment_id
+
+    all_run_data = mlflow.search_runs(
+        experiment_ids=mlflow_experiment_id,
+        filter_string="params.model_objective='binary' AND params.Able_to_model = 'True' AND params.Version=8",
+        run_view_type=1,
+        max_results=200,
+        order_by=None,
+    )
+    primary_key_columns = ["access_method_num"]
+    model_group_column = "model_name"
+
+    df_master.withColumn(model_group_column, F.lit("1")).withColumn(
+        "partition", F.lit("1")
+    ).select(
+        model_group_column,
+        "partition",
+        *(  # Don't add model group column twice in case it's a PK column
+            list(set(primary_key_columns) - set([model_group_column]))
+            + explanatory_features
+        ),
+    )
+    pd_results = pd.DataFrame()
+    for m in all_run_data["tags.mlflow.runName"].values:
+        current_model_group = m
+        prediction_colname = "propensity"
+        mlflow_run = mlflow.search_runs(
+            experiment_ids=mlflow_experiment_id,
+            filter_string="params.model_objective='"
+                          + current_tag
+                          + "' AND params.Version=8 AND tags.mlflow.runName ='"
+                          + current_model_group
+                          + "'",
+            run_view_type=1,
+            max_results=1,
+            order_by=None,
+        )
+        try:
+            current_model = mlflowlightgbm.load_model(mlflow_run.artifact_uri.values[0])
+            df_master_verysmall = df_master.select(explanatory_features).withColumn("model_name", F.lit(current_model_group
+            )).limit(5000)
+            pdf = df_master_verysmall.toPandas()
+            explanatory_features.sort()
+            X = pdf[explanatory_features]
+            pd_results[current_model_group] = current_model.predict(
+            X, num_threads=1, n_jobs=1
+            )
+            print("Passed:",m)
+        except:
+            print("Failed:",m)
+    return df_master_verysmall
