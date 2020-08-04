@@ -613,23 +613,23 @@ def build_streaming_ufdr_streaming_quality_for_l3_monthly(input_df: DataFrame,
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([input_df, cust_profile_df]):
-        return get_spark_empty_df()
-
-    input_df = data_non_availability_and_missing_check(
-        df=input_df,
-        grouping="daily",
-        par_col="partition_date",
-        target_table_name="l1_streaming_app_quality_features")
-
-    cust_profile_df = data_non_availability_and_missing_check(
-        df=cust_profile_df,
-        grouping="daily",
-        par_col="event_partition_date",
-        target_table_name="l1_streaming_app_quality_features")
-
-    if check_empty_dfs([input_df, cust_profile_df]):
-        return get_spark_empty_df()
+    # if check_empty_dfs([input_df, cust_profile_df]):
+    #     return get_spark_empty_df()
+    #
+    # input_df = data_non_availability_and_missing_check(
+    #     df=input_df,
+    #     grouping="daily",
+    #     par_col="partition_date",
+    #     target_table_name="l1_streaming_app_quality_features")
+    #
+    # cust_profile_df = data_non_availability_and_missing_check(
+    #     df=cust_profile_df,
+    #     grouping="daily",
+    #     par_col="event_partition_date",
+    #     target_table_name="l1_streaming_app_quality_features")
+    #
+    # if check_empty_dfs([input_df, cust_profile_df]):
+    #     return get_spark_empty_df()
 
     # ################################# End Implementing Data availability checks ###############################
 
