@@ -680,50 +680,23 @@ def streaming_favourite_start_hour_of_day_func(
 
 
 def streaming_favourite_location_features_func(
-        input_df: DataFrame,
-        master_application: DataFrame,
-        cust_profile_df: DataFrame,
-        geo_mster_plan: DataFrame) -> DataFrame:
+        input_df: DataFrame) -> DataFrame:
     """
     :param input_df:
-    :param master_application:
-    :param cust_profile_df:
-    :param geo_mster_plan:
     :return:
     """
     ################################# Start Implementing Data availability checks #############################
-    if check_empty_dfs([input_df, master_application]):
+    if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
     input_df = data_non_availability_and_missing_check(
-        df=input_df, grouping="monthly", par_col="partition_date",
+        df=input_df, grouping="monthly", par_col="event_partition_date",
         missing_data_check_flg='Y',
         target_table_name="l3_streaming_favourite_location_features")
 
-    cust_profile_df = data_non_availability_and_missing_check(
-        df=cust_profile_df, grouping="monthly", par_col="start_of_month",
-        target_table_name="l3_streaming_favourite_location_features")
-
-    if check_empty_dfs([input_df, master_application]):
+    if check_empty_dfs([input_df]):
         return get_spark_empty_df()
     ################################# End Implementing Data availability checks ###############################
-    application = ["youtube", "youtube_go", "youtubebyclick", "trueid", "truevisions", "monomaxx", "qqlive",
-                   "facebook", "linetv", "ais_play", "netflix", "viu", "viutv", "iflix", "spotify", "jooxmusic",
-                   "twitchtv", "bigo", "valve_steam"]
-
-    master_application = master_application.filter(F.lower(F.col("application_name")).isin(application))
-
-    cust_df = cust_profile_df.withColumn("rn", F.expr(
-        "row_number() over(partition by start_of_month,access_method_num order by "
-        "start_of_month desc, mobile_status_date desc)")) \
-        .where("rn = 1") \
-        .select("subscription_identifier", "access_method_num", "start_of_month")
-
-    input_df = input_df.withColumnRenamed("app_id", "application")
-    input_with_application = input_df.join(master_application, ["application"])
-    input_with_application = add_event_week_and_month_from_yyyymmdd(input_with_application, "partition_date") \
-        .drop("event_partition_date", "start_of_week")
-
     dictionary = [{'filter_condition': "youtube,youtube_go,youtubebyclick",
                    'output_col': 'fav_youtube_streaming_base_station_id'},
                   {'filter_condition': "trueid",
@@ -762,7 +735,7 @@ def streaming_favourite_location_features_func(
     for curr_dict in dictionary:
         filter_query = curr_dict["filter_condition"].split(",")
         output_col = curr_dict["output_col"]
-        curr_item = input_with_application. \
+        curr_item = input_df. \
             filter(F.lower(F.col("application_name")).isin(filter_query))
         curr_item = curr_item.groupBy(["subscription_identifier", "location_id", "start_of_month"])\
             .agg(F.sum("download").alias("download"))

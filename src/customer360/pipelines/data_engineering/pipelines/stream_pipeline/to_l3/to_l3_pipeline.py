@@ -212,7 +212,7 @@ def streaming_to_l3_favourite_location_features(**kwargs):
 
             node(
                 streaming_favourite_location_features_func,
-                "l0_streaming_soc_mobile_app_daily_for_l3_streaming_favourite_location_features",
+                "l1_streaming_base_station_features",
                 "l3_streaming_favourite_location_features"
             ),
             # node(
