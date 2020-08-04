@@ -154,7 +154,7 @@ def produce_treatments_only_translated(
         parameters: Dict[str, Any],
         package_preference: DataFrame,
         offer_mapping: DataFrame,
-) -> Tuple[DataFrame, DataFrame]:
+) -> DataFrame:
     """  Generates treatments and updated treatments history.
 
     Args:
