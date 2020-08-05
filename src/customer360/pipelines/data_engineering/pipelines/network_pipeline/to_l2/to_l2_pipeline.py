@@ -50,13 +50,6 @@ def network_to_l2_pipeline(**kwargs):
                 "l2_network_data_traffic_features"
             ),
 
-            ## node(
-            ##     build_l2_network_data_cqi,
-            ##     ["l1_network_data_cqi_for_l2_network_data_cqi",
-            ##      "params:l2_network_data_cqi",
-            ##      "params:exception_partition_list_for_l1_network_data_cqi_for_l2_network_data_cqi"],
-            ##     "l2_network_data_cqi"
-            ## ),
             node(
                 build_l2_network_im_cqi,
                 ["l1_network_im_cqi_for_l2_network_im_cqi",

@@ -10,6 +10,7 @@ conf = os.getenv("CONF", None)
 
 def generate_dependency_dataset():
     """
+    Purpose: To generate the lineage datasets for dependency information
     :param project_context:
     :return:
     """
