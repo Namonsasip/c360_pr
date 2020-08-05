@@ -29,7 +29,6 @@ conf = os.getenv("CONF", None)
 def get_max_date_from_master_data(input_df: DataFrame, par_col='partition_date'):
     # Get max date of partition column
     max_date = input_df.selectExpr('max({0})'.format(par_col)).collect()[0][0]
-
     # Set the latest master DataFrame
     input_df = input_df.where('{0}='.format(par_col) + str(max_date))
 
@@ -43,7 +42,7 @@ def distance_callculate_statement(first_lat: str, first_long: str, second_lat: s
                 F.sin(F.radians(90 - F.col(first_lat))) * F.sin(F.radians(90 - F.col(second_lat))) * \
                 F.cos(F.radians(F.col(first_long) - F.col(second_long)))
             ) * 6371
-    ).cast('double')
+    ).cast(DecimalType(13,2))
 
 
 def l1_geo_mst_location_near_shop_master(master_df: DataFrame, shape_df: DataFrame) -> DataFrame:
@@ -61,36 +60,44 @@ def l1_geo_mst_location_near_shop_master(master_df: DataFrame, shape_df: DataFra
     master_df = get_max_date_from_master_data(master_df, 'partition_date')
     shape_df = get_max_date_from_master_data(shape_df, 'partition_month')
 
-    ss = get_spark_session()
-    master_df.createOrReplaceTempView("mst_cell_masterplan")
-    shape_df.createOrReplaceTempView("mst_poi_shape")
-    output_df = ss.sql("""
-            select 
-                a.landmark_sub_name_en,
-                b.location_id,
-                b.location_name,
-                cast(
-                    (acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+
-                    sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*
-                    cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)
-                    ) as distance_km
-            from mst_poi_shape a,
-                mst_cell_masterplan b
-            where   a.landmark_cat_name_en in ('AIS')
-            and cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+
-                sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*
-                cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) <= (0.5)
-            group by 1,2,3,4
-    """)
+    # ss = get_spark_session()
+    # master_df.createOrReplaceTempView("mst_cell_masterplan")
+    # shape_df.createOrReplaceTempView("mst_poi_shape")
+    # output_df = ss.sql("""
+    #         select
+    #             a.landmark_sub_name_en,
+    #             b.location_id,
+    #             b.location_name,
+    #             cast(
+    #                 (acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+
+    #                 sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*
+    #                 cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)
+    #                 ) as distance_km
+    #         from mst_poi_shape a,
+    #             mst_cell_masterplan b
+    #         where   a.landmark_cat_name_en in ('AIS', 'DTAC', 'TRUE')
+    #         and cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+
+    #             sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*
+    #             cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) <= (0.5)
+    #         group by 1,2,3,4
+    # """)
 
     # Pyspark version: Prove in
     # https://adb-334552184297553.13.azuredatabricks.net/?o=334552184297553#notebook/2101000251613420/command/3846088851487352
-    # output_df = master_df.crossJoin(shape_df)\
-    #     .select('landmark_sub_name_en', 'location_id', 'location_name',
-    #             distance_callculate_statement('landmark_latitude', 'landmark_longitude', 'latitude', 'longitude')
-    #             .alias('distance_km'))\
-    #     .where("landmark_cat_name_en in ('AIS') and distance_km <= (0.5)")\
-    #     .dropDuplicates()
+    output_df = master_df.crossJoin(shape_df)\
+        .select('landmark_sub_name_en', 'location_id', 'location_name',
+                distance_callculate_statement('landmark_latitude', 'landmark_longitude', 'latitude', 'longitude')
+                .alias('distance_km'))\
+        .where("landmark_cat_name_en in ('AIS', 'DTAC', 'TRUE') and distance_km <= (0.5)")\
+        .dropDuplicates()
+
+    return output_df
+
+
+def l1_geo_time_spent_by_store_daily(timespent_df: DataFrame, master_df: DataFrame) -> DataFrame:
+    output_df = timespent_df.join(master_df, ['location_id'], 'left')\
+        .select('imsi', 'event_partition_date', 'start_of_week', 'start_of_month', timespent_df.location_id,
+                'duration', 'num_visit', 'landmark_cat_name_en')
 
     return output_df
 
@@ -595,7 +602,7 @@ def l1_location_of_visit_ais_store_daily(shape,cust_cell_visit,sql):
         AND p2.LANDMARK_CAT_NAME_EN IN ('AIS')
      """)
 
-    store_visit = node_from_config(df,sql)
+    # store_visit = node_from_config(df,sql)
 
     return store_visit
 

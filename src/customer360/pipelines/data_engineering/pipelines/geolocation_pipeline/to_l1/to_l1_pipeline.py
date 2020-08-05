@@ -25,7 +25,24 @@ def geo_to_l1_pipeline_to_run():
                 "l1_geo_count_visit_by_location_daily"
             ),
 
-        ] , name="geo_to_l1_pipeline_to_run"
+        ], name="geo_to_l1_pipeline_to_run"
+    )
+
+
+def geo_to_l1_pipeline_to_run2():
+    return Pipeline(
+        [
+            ### WAIT
+            node(
+                l1_geo_time_spent_by_store_daily,
+                ["l1_geo_time_spent_by_location_daily_for_l1_geo_time_spent_by_store_daily",
+                 "l1_geo_mst_location_near_shop_master",
+                 "params:l1_geo_time_spent_by_store_daily"
+                 ],
+                "l1_geo_time_spent_by_store_daily"
+            ),
+
+        ], name="geo_to_l1_pipeline_to_run2"
     )
 
 
@@ -41,8 +58,7 @@ def geo_to_l1_pipeline_master():
                 "l1_geo_mst_location_near_shop_master"
             ),
 
-
-        ] , name="geo_to_l1_pipeline_master"
+        ], name="geo_to_l1_pipeline_master"
     )
 
 
@@ -107,36 +123,36 @@ def geo_to_l1_pipeline(**kwargs):
                 "l1_geo_distance_top_call"
             ),
 
-            ### FINISH
-            node(
-                massive_processing_with_l1_geo_area_from_ais_store_daily,
-                ["l0_mst_poi_shape_for_l1_geo_area_from_ais_store_daily",
-                 "l0_mst_cell_masterplan_for_l1_geo_area_from_ais_store_daily",
-                 "l0_geo_cust_cell_visit_time_for_l1_geo_area_from_ais_store_daily",
-                 "params:l1_area_from_ais_store_daily"
-                 ],
-                "l1_geo_area_from_ais_store_daily"
-            ),
+            # ### CHANGE --> l1_geo_time_spent_by_store_daily
+            # node(
+            #     massive_processing_with_l1_geo_area_from_ais_store_daily,
+            #     ["l0_mst_poi_shape_for_l1_geo_area_from_ais_store_daily",
+            #      "l0_mst_cell_masterplan_for_l1_geo_area_from_ais_store_daily",
+            #      "l0_geo_cust_cell_visit_time_for_l1_geo_area_from_ais_store_daily",
+            #      "params:l1_area_from_ais_store_daily"
+            #      ],
+            #     "l1_geo_area_from_ais_store_daily"
+            # ),
+            #
+            # ### CHANGE --> l1_geo_time_spent_by_store_daily
+            # node(
+            #     massive_processing_with_l1_geo_area_from_competitor_store_daily,
+            #     ["l0_mst_poi_shape_for_l1_geo_area_from_competitor_store_daily",
+            #      "l0_mst_cell_masterplan_for_l1_geo_area_from_competitor_store_daily",
+            #      "l0_geo_cust_cell_visit_time_for_l1_geo_area_from_competitor_store_daily",
+            #      "params:l1_area_from_competitor_store_daily"
+            #      ],
+            #     "l1_geo_area_from_competitor_store_daily"
+            # ),
 
-            ### FINISH
-            node(
-                massive_processing_with_l1_geo_area_from_competitor_store_daily,
-                ["l0_mst_poi_shape_for_l1_geo_area_from_competitor_store_daily",
-                 "l0_mst_cell_masterplan_for_l1_geo_area_from_competitor_store_daily",
-                 "l0_geo_cust_cell_visit_time_for_l1_geo_area_from_competitor_store_daily",
-                 "params:l1_area_from_competitor_store_daily"
-                 ],
-                "l1_geo_area_from_competitor_store_daily"
-            ),
-
-            #FINISH
-            ###total_distance_km###
-            node(
-                massive_processing_with_l1_geo_total_distance_km_daily,
-                ["l0_geo_cust_cell_visit_time_for_l1_geo_total_distance_km_daily",
-                 "params:l1_geo_total_distance_km_daily"
-                 ],
-                "l1_geo_total_distance_km_daily"
-            ),
+            # ### CHANGE --> l1_geo_cust_subseqently_distance
+            # ###total_distance_km###
+            # node(
+            #     massive_processing_with_l1_geo_total_distance_km_daily,
+            #     ["l0_geo_cust_cell_visit_time_for_l1_geo_total_distance_km_daily",
+            #      "params:l1_geo_total_distance_km_daily"
+            #      ],
+            #     "l1_geo_total_distance_km_daily"
+            # ),
         ], name="geo_to_l1_pipeline"
     )
