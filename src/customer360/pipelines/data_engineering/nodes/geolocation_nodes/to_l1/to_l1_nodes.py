@@ -46,41 +46,11 @@ def distance_callculate_statement(first_lat: str, first_long: str, second_lat: s
 
 
 def l1_geo_mst_location_near_shop_master(master_df: DataFrame, shape_df: DataFrame) -> DataFrame:
-    """
-    Args:
-        master_df:
-        shape_df:
-
-    Returns:
-        output_df:
-    """
     if check_empty_dfs([master_df, shape_df]):
         return get_spark_empty_df()
 
     master_df = get_max_date_from_master_data(master_df, 'partition_date')
     shape_df = get_max_date_from_master_data(shape_df, 'partition_month')
-
-    # ss = get_spark_session()
-    # master_df.createOrReplaceTempView("mst_cell_masterplan")
-    # shape_df.createOrReplaceTempView("mst_poi_shape")
-    # output_df = ss.sql("""
-    #         select
-    #             a.landmark_sub_name_en,
-    #             b.location_id,
-    #             b.location_name,
-    #             cast(
-    #                 (acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+
-    #                 sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*
-    #                 cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)
-    #                 ) as distance_km
-    #         from mst_poi_shape a,
-    #             mst_cell_masterplan b
-    #         where   a.landmark_cat_name_en in ('AIS', 'DTAC', 'TRUE')
-    #         and cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+
-    #             sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*
-    #             cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) <= (0.5)
-    #         group by 1,2,3,4
-    # """)
 
     # Pyspark version: Prove in
     # https://adb-334552184297553.13.azuredatabricks.net/?o=334552184297553#notebook/2101000251613420/command/3846088851487352
@@ -90,6 +60,18 @@ def l1_geo_mst_location_near_shop_master(master_df: DataFrame, shape_df: DataFra
                 .alias('distance_km'))\
         .where("landmark_cat_name_en in ('AIS', 'DTAC', 'TRUE') and distance_km <= (0.5)")\
         .dropDuplicates()
+
+    return output_df
+
+
+def l1_geo_mst_location_ais_shop_master(shape_df: DataFrame) -> DataFrame:
+    if check_empty_dfs([shape_df]):
+        return get_spark_empty_df()
+
+    shape_df = get_max_date_from_master_data(shape_df, 'partition_month')
+
+    # output_df = shape_df.filter("landmark_cat_name_en in ('AIS', 'DTAC', 'TRUE')")
+    output_df = shape_df.filter("landmark_cat_name_en = 'AIS'")
 
     return output_df
 
@@ -123,134 +105,134 @@ def l1_geo_count_visit_by_location_daily(input_df: DataFrame, config: str) -> Da
     return output_df
 
 
-def massive_processing_with_l1_geo_area_from_ais_store_daily(shape, masterplan, geo_cust_cell_visit_time, sql):
-    geo_cust_cell_visit_time=geo_cust_cell_visit_time.filter('partition_date >= 20200401 and partition_date <= 20200627')
-    # ----- Data Availability Checks -----
-    if check_empty_dfs([geo_cust_cell_visit_time, shape, masterplan]):
-        return get_spark_empty_df()
-
-    geo_cust_cell_visit_time = data_non_availability_and_missing_check(df=geo_cust_cell_visit_time,
-                                                                       grouping="daily",
-                                                                       par_col="partition_date",
-                                                                       target_table_name="l1_geo_area_from_ais_store_daily")
-
-    masterplan = get_max_date_from_master_data(masterplan, 'partition_date')
-    shape = get_max_date_from_master_data(shape, 'partition_month')
-    # ----- Transformation -----
-    masterplan.createOrReplaceTempView("mst_cell_masterplan")
-    shape.createOrReplaceTempView("mst_poi_shape")
-
-    ss = get_spark_session()
-    df = ss.sql("""
-        select 
-            a.landmark_sub_name_en,
-            b.location_id,
-            b.location_name,
-            cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) as distance_km
-        from mst_poi_shape a,
-            mst_cell_masterplan b
-        where   a.landmark_cat_name_en in ('AIS')
-        and cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) <= (0.5)
-        group by 1,2,3,4
-    """)  # Fix this cossJoin --> left outer join --> Sould use this statement by Kun Good
-
-    # join_df = master_df.join(shape_df, [master_df.location_id != shape_df.geo_shape_id], 'inner') \
-    #     .select('landmark_sub_name_en', 'location_id', 'location_name',
-    #             distance_callculate_statement('landmark_latitude', 'landmark_longitude', 'latitude', 'longitude').alias(
-    #                 'distance_km')).filter('distance_km <= 0.5')
-
-    if check_empty_dfs([geo_cust_cell_visit_time]):
-        return get_spark_empty_df()
-
-    def divide_chunks(l, n):
-        # looping till length l
-        for i in range(0, len(l), n):
-            yield l[i:i + n]
-
-
-    CNTX = load_context(Path.cwd(), env=conf)
-    data_frame = geo_cust_cell_visit_time
-    dates_list = data_frame.select('partition_date').distinct().collect()
-    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
-    mvv_array = sorted(mvv_array)
-    logging.info("Dates to run for {0}".format(str(mvv_array)))
-    mvv_new = list(divide_chunks(mvv_array, 5))  # Changed 2 --> 5 20200721
-    add_list = mvv_new
-    first_item = add_list[-1]
-    add_list.remove(first_item)
-    for curr_item in add_list:
-        logging.info("running for dates {0}".format(str(curr_item)))
-        small_df = data_frame.filter(f.col('partition_date').isin(*[curr_item]))
-        output_df = l1_geo_area_from_ais_store_daily(df, small_df, sql)
-        CNTX.catalog.save(sql["output_catalog"], output_df)
-    logging.info("Final date to run for {0}".format(str(first_item)))
-    return_df = data_frame.filter(f.col('partition_date').isin(*[first_item]))
-    return_df = l1_geo_area_from_ais_store_daily(df, return_df, sql)
-    return return_df
-
-
-def massive_processing_with_l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit_time,sql):
-    geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20200401 and partition_date <= 20200627')
-    # ----- Data Availability Checks -----
-    if check_empty_dfs([geo_cust_cell_visit_time, shape, masterplan]):
-        return get_spark_empty_df()
-
-    geo_cust_cell_visit_time = data_non_availability_and_missing_check(df=geo_cust_cell_visit_time,
-                                                                       grouping="daily",
-                                                                       par_col="partition_date",
-                                                                       target_table_name="l1_geo_area_from_competitor_store_daily")
-
-    masterplan = get_max_date_from_master_data(masterplan, 'partition_date')
-    shape = get_max_date_from_master_data(shape, 'partition_month')
-
-    if check_empty_dfs([geo_cust_cell_visit_time]):
-        return get_spark_empty_df()
-
-    # ----- Transformation -----
-    masterplan.createOrReplaceTempView("mst_cell_masterplan")
-    shape.createOrReplaceTempView("mst_poi_shape")
+# def massive_processing_with_l1_geo_area_from_ais_store_daily(shape, masterplan, geo_cust_cell_visit_time, sql):
+#     geo_cust_cell_visit_time=geo_cust_cell_visit_time.filter('partition_date >= 20200401 and partition_date <= 20200627')
+#     # ----- Data Availability Checks -----
+#     if check_empty_dfs([geo_cust_cell_visit_time, shape, masterplan]):
+#         return get_spark_empty_df()
+#
+#     geo_cust_cell_visit_time = data_non_availability_and_missing_check(df=geo_cust_cell_visit_time,
+#                                                                        grouping="daily",
+#                                                                        par_col="partition_date",
+#                                                                        target_table_name="l1_geo_area_from_ais_store_daily")
+#
+#     masterplan = get_max_date_from_master_data(masterplan, 'partition_date')
+#     shape = get_max_date_from_master_data(shape, 'partition_month')
+#     # ----- Transformation -----
+#     masterplan.createOrReplaceTempView("mst_cell_masterplan")
+#     shape.createOrReplaceTempView("mst_poi_shape")
+#
+#     ss = get_spark_session()
+#     df = ss.sql("""
+#         select
+#             a.landmark_sub_name_en,
+#             b.location_id,
+#             b.location_name,
+#             cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) as distance_km
+#         from mst_poi_shape a,
+#             mst_cell_masterplan b
+#         where   a.landmark_cat_name_en in ('AIS')
+#         and cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) <= (0.5)
+#         group by 1,2,3,4
+#     """)  # Fix this cossJoin --> left outer join --> Sould use this statement by Kun Good
+#
+#     # join_df = master_df.join(shape_df, [master_df.location_id != shape_df.geo_shape_id], 'inner') \
+#     #     .select('landmark_sub_name_en', 'location_id', 'location_name',
+#     #             distance_callculate_statement('landmark_latitude', 'landmark_longitude', 'latitude', 'longitude').alias(
+#     #                 'distance_km')).filter('distance_km <= 0.5')
+#
+#     if check_empty_dfs([geo_cust_cell_visit_time]):
+#         return get_spark_empty_df()
+#
+#     def divide_chunks(l, n):
+#         # looping till length l
+#         for i in range(0, len(l), n):
+#             yield l[i:i + n]
+#
+#
+#     CNTX = load_context(Path.cwd(), env=conf)
+#     data_frame = geo_cust_cell_visit_time
+#     dates_list = data_frame.select('partition_date').distinct().collect()
+#     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+#     mvv_array = sorted(mvv_array)
+#     logging.info("Dates to run for {0}".format(str(mvv_array)))
+#     mvv_new = list(divide_chunks(mvv_array, 5))  # Changed 2 --> 5 20200721
+#     add_list = mvv_new
+#     first_item = add_list[-1]
+#     add_list.remove(first_item)
+#     for curr_item in add_list:
+#         logging.info("running for dates {0}".format(str(curr_item)))
+#         small_df = data_frame.filter(f.col('partition_date').isin(*[curr_item]))
+#         output_df = l1_geo_area_from_ais_store_daily(df, small_df, sql)
+#         CNTX.catalog.save(sql["output_catalog"], output_df)
+#     logging.info("Final date to run for {0}".format(str(first_item)))
+#     return_df = data_frame.filter(f.col('partition_date').isin(*[first_item]))
+#     return_df = l1_geo_area_from_ais_store_daily(df, return_df, sql)
+#     return return_df
 
 
-
-    ss = get_spark_session()
-    df = ss.sql("""
-        select 
-            a.landmark_sub_name_en,
-            b.location_id,
-            b.location_name,
-            cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) as distance_km
-        from mst_poi_shape a,
-            mst_cell_masterplan b
-        where   a.landmark_cat_name_en in ('TRUE','DTAC')
-        and cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) <= (0.5)
-        group by 1,2,3,4
-    """)  # Fix this cossJoin --> left outer join --> Sould use this statement by Kun Good
-
-    def divide_chunks(l, n):
-        # looping till length l
-        for i in range(0, len(l), n):
-            yield l[i:i + n]
-
-
-    CNTX = load_context(Path.cwd(), env=conf)
-    data_frame = geo_cust_cell_visit_time
-    dates_list = data_frame.select('partition_date').distinct().collect()
-    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
-    mvv_array = sorted(mvv_array)
-    logging.info("Dates to run for {0}".format(str(mvv_array)))
-    mvv_new = list(divide_chunks(mvv_array, 5))  # Changed 2 --> 5 20200721
-    add_list = mvv_new
-    first_item = add_list[-1]
-    add_list.remove(first_item)
-    for curr_item in add_list:
-        logging.info("running for dates {0}".format(str(curr_item)))
-        small_df = data_frame.filter(f.col('partition_date').isin(*[curr_item]))
-        output_df = l1_geo_area_from_competitor_store_daily(df, small_df, sql)
-        CNTX.catalog.save(sql["output_catalog"], output_df)
-    logging.info("Final date to run for {0}".format(str(first_item)))
-    return_df = data_frame.filter(f.col('partition_date').isin(*[first_item]))
-    return_df = l1_geo_area_from_competitor_store_daily(df, return_df, sql)
-    return return_df
+# def massive_processing_with_l1_geo_area_from_competitor_store_daily(shape,masterplan,geo_cust_cell_visit_time,sql):
+#     geo_cust_cell_visit_time = geo_cust_cell_visit_time.filter('partition_date >= 20200401 and partition_date <= 20200627')
+#     # ----- Data Availability Checks -----
+#     if check_empty_dfs([geo_cust_cell_visit_time, shape, masterplan]):
+#         return get_spark_empty_df()
+#
+#     geo_cust_cell_visit_time = data_non_availability_and_missing_check(df=geo_cust_cell_visit_time,
+#                                                                        grouping="daily",
+#                                                                        par_col="partition_date",
+#                                                                        target_table_name="l1_geo_area_from_competitor_store_daily")
+#
+#     masterplan = get_max_date_from_master_data(masterplan, 'partition_date')
+#     shape = get_max_date_from_master_data(shape, 'partition_month')
+#
+#     if check_empty_dfs([geo_cust_cell_visit_time]):
+#         return get_spark_empty_df()
+#
+#     # ----- Transformation -----
+#     masterplan.createOrReplaceTempView("mst_cell_masterplan")
+#     shape.createOrReplaceTempView("mst_poi_shape")
+#
+#
+#
+#     ss = get_spark_session()
+#     df = ss.sql("""
+#         select
+#             a.landmark_sub_name_en,
+#             b.location_id,
+#             b.location_name,
+#             cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) as distance_km
+#         from mst_poi_shape a,
+#             mst_cell_masterplan b
+#         where   a.landmark_cat_name_en in ('TRUE','DTAC')
+#         and cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) <= (0.5)
+#         group by 1,2,3,4
+#     """)  # Fix this cossJoin --> left outer join --> Sould use this statement by Kun Good
+#
+#     def divide_chunks(l, n):
+#         # looping till length l
+#         for i in range(0, len(l), n):
+#             yield l[i:i + n]
+#
+#
+#     CNTX = load_context(Path.cwd(), env=conf)
+#     data_frame = geo_cust_cell_visit_time
+#     dates_list = data_frame.select('partition_date').distinct().collect()
+#     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+#     mvv_array = sorted(mvv_array)
+#     logging.info("Dates to run for {0}".format(str(mvv_array)))
+#     mvv_new = list(divide_chunks(mvv_array, 5))  # Changed 2 --> 5 20200721
+#     add_list = mvv_new
+#     first_item = add_list[-1]
+#     add_list.remove(first_item)
+#     for curr_item in add_list:
+#         logging.info("running for dates {0}".format(str(curr_item)))
+#         small_df = data_frame.filter(f.col('partition_date').isin(*[curr_item]))
+#         output_df = l1_geo_area_from_competitor_store_daily(df, small_df, sql)
+#         CNTX.catalog.save(sql["output_catalog"], output_df)
+#     logging.info("Final date to run for {0}".format(str(first_item)))
+#     return_df = data_frame.filter(f.col('partition_date').isin(*[first_item]))
+#     return_df = l1_geo_area_from_competitor_store_daily(df, return_df, sql)
+#     return return_df
 
 
 def l1_geo_time_spent_by_location_daily(input_df, config):
@@ -288,152 +270,152 @@ def l1_geo_time_spent_by_location_daily(input_df, config):
     return return_df
 
 
-def l1_geo_area_from_ais_store_daily(df, geo_cust_cell_visit_time, sql):
-    geo_cust_cell_visit_time  = add_start_of_week_and_month(geo_cust_cell_visit_time, "time_in")
-    ss = get_spark_session()
-    df.createOrReplaceTempView('temp_geo_ais_shop')
-
-    geo_cust_cell_visit_time.createOrReplaceTempView('geo_cust_cell_visit_time')
-
-    df2 = ss.sql("""
-        select 
-            a.imsi,
-            a.event_partition_date,
-            a.start_of_week,
-            a.start_of_month,
-            sum(duration) as duration,
-            count(1) as num_of_times_per_day 
-        from geo_cust_cell_visit_time a, temp_geo_ais_shop b 
-        where a.location_id = b.location_id 
-        group by 1,2,3,4
-    """)  # It will be inner join
-
-    df2 = node_from_config(df2,sql)
-
-    return df2
-
-
-def l1_geo_area_from_competitor_store_daily(df,geo_cust_cell_visit_time,sql):
-    geo_cust_cell_visit_time = add_start_of_week_and_month(geo_cust_cell_visit_time, "time_in")
-    ss = get_spark_session()
-
-    df.createOrReplaceTempView('temp_geo_ais_shop')
-
-    geo_cust_cell_visit_time.createOrReplaceTempView('geo_cust_cell_visit_time')
-
-    df2 = ss.sql("""
-        select 
-            a.imsi,
-            a.event_partition_date,
-            a.start_of_week,
-            a.start_of_month,
-            sum(duration) as duration,
-            count(1) as num_of_times_per_day 
-        from geo_cust_cell_visit_time a, temp_geo_ais_shop b
-        where a.location_id = b.location_id 
-        group by 1,2,3,4
-    """)  # It will be inner join
-
-    df2 = node_from_config(df2, sql)
-
-    return df2
+# def l1_geo_area_from_ais_store_daily(df, geo_cust_cell_visit_time, sql):
+#     geo_cust_cell_visit_time  = add_start_of_week_and_month(geo_cust_cell_visit_time, "time_in")
+#     ss = get_spark_session()
+#     df.createOrReplaceTempView('temp_geo_ais_shop')
+#
+#     geo_cust_cell_visit_time.createOrReplaceTempView('geo_cust_cell_visit_time')
+#
+#     df2 = ss.sql("""
+#         select
+#             a.imsi,
+#             a.event_partition_date,
+#             a.start_of_week,
+#             a.start_of_month,
+#             sum(duration) as duration,
+#             count(1) as num_of_times_per_day
+#         from geo_cust_cell_visit_time a, temp_geo_ais_shop b
+#         where a.location_id = b.location_id
+#         group by 1,2,3,4
+#     """)  # It will be inner join
+#
+#     df2 = node_from_config(df2,sql)
+#
+#     return df2
 
 
-def massive_processing_with_l1_geo_total_distance_km_daily(l0_df, sql):
-    l0_df = l0_df.filter('partition_date >= 20200401 and partition_date <= 20200627')
-    # ----- Data Availability Checks -----
-    if check_empty_dfs([l0_df]):
-        return get_spark_empty_df()
-
-    l0_df = data_non_availability_and_missing_check(df=l0_df,
-                                                    grouping="daily",
-                                                    par_col="partition_date",
-                                                    target_table_name="l1_geo_total_distance_km_daily")
-
-    if check_empty_dfs([l0_df]):
-        return get_spark_empty_df()
-
-    # ----- Transformation -----
-    def divide_chunks(l, n):
-        # looping till length l
-        for i in range(0, len(l), n):
-            yield l[i:i + n]
-
-    ss = get_spark_session()
-    CNTX = load_context(Path.cwd(), env=conf)
-    data_frame = l0_df
-    dates_list = data_frame.select('partition_date').distinct().collect()
-    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
-    mvv_array = sorted(mvv_array)
-    logging.info("Dates to run for {0}".format(str(mvv_array)))
-    mvv_new = list(divide_chunks(mvv_array, 1))
-    add_list = mvv_new
-    first_item = add_list[-1]
-    add_list.remove(first_item)
-    for curr_item in add_list:
-        logging.info("running for dates {0}".format(str(curr_item)))
-        small_df = data_frame.filter(f.col('partition_date').isin(*[curr_item]))
-        output_df = l1_geo_total_distance_km_daily(small_df, sql)
-        CNTX.catalog.save(sql["output_catalog"], output_df)
-    logging.info("Final date to run for {0}".format(str(first_item)))
-    return_df = data_frame.filter(f.col('partition_date').isin(*[first_item]))
-    return_df = l1_geo_total_distance_km_daily(return_df, sql)
-    return return_df
+# def l1_geo_area_from_competitor_store_daily(df,geo_cust_cell_visit_time,sql):
+#     geo_cust_cell_visit_time = add_start_of_week_and_month(geo_cust_cell_visit_time, "time_in")
+#     ss = get_spark_session()
+#
+#     df.createOrReplaceTempView('temp_geo_ais_shop')
+#
+#     geo_cust_cell_visit_time.createOrReplaceTempView('geo_cust_cell_visit_time')
+#
+#     df2 = ss.sql("""
+#         select
+#             a.imsi,
+#             a.event_partition_date,
+#             a.start_of_week,
+#             a.start_of_month,
+#             sum(duration) as duration,
+#             count(1) as num_of_times_per_day
+#         from geo_cust_cell_visit_time a, temp_geo_ais_shop b
+#         where a.location_id = b.location_id
+#         group by 1,2,3,4
+#     """)  # It will be inner join
+#
+#     df2 = node_from_config(df2, sql)
+#
+#     return df2
 
 
-###total_distance_km###
-def l1_geo_total_distance_km_daily(l0_df, sql):
-    # ----- Transformation -----
-    # Get spark session
-    spark = get_spark_session()
-
-    # Source Table
-    l0_df1 = l0_df.withColumn("event_partition_date", F.to_date(l0_df.time_in.cast(DateType()), "yyyyMMdd")).drop("partition_date")
-
-    l0_df1.createOrReplaceTempView('geo_cust_cell_visit_time')
-    sql_query = """
-        select
-            imsi
-            ,time_in
-            ,latitude
-            ,longitude
-            ,event_partition_date
-            ,row_number() over (partition by imsi,event_partition_date order by time_in) as row_num
-        from geo_cust_cell_visit_time
-        order by imsi,time_in,event_partition_date
-    """
-    l1_df = spark.sql(sql_query)
-    l1_df.createOrReplaceTempView('geo_cust_cell_visit_time_row_num')
-    sql_query1 = """
-        select
-            a.imsi
-            ,a.time_in
-            ,a.latitude as latitude_start
-            ,a.longitude as longitude_start
-            ,b.latitude as latitude_end
-            ,b.longitude as longitude_end
-            ,case 
-                when b.latitude is null and b.longitude is null then 0 
-                else cast((acos(cos(radians(90-a.latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.latitude))*sin(radians(90-b.latitude))*cos(radians(a.longitude - b.longitude)))*6371) as decimal(13,2)) 
-            end as total_distance_km
-            ,a.event_partition_date
-        from geo_cust_cell_visit_time_row_num a
-        left join geo_cust_cell_visit_time_row_num b
-        on a.imsi = b.imsi
-        and a.event_partition_date = b.event_partition_date
-        and a.row_num = b.row_num-1
-        order by a.imsi,a.time_in,a.event_partition_date
-    """
-    l1_df1 = spark.sql(sql_query1)
-    l1_df1 = l1_df1.withColumn("start_of_week", F.to_date(F.date_trunc('week', l1_df1.event_partition_date)))
-    l1_df1 = l1_df1.withColumn("start_of_month", F.to_date(F.date_trunc('month', l1_df1.event_partition_date)))
-
-    l1_df2 = node_from_config(l1_df1, sql)
-
-    return l1_df2
+# def massive_processing_with_l1_geo_total_distance_km_daily(l0_df, sql):
+#     l0_df = l0_df.filter('partition_date >= 20200401 and partition_date <= 20200627')
+#     # ----- Data Availability Checks -----
+#     if check_empty_dfs([l0_df]):
+#         return get_spark_empty_df()
+#
+#     l0_df = data_non_availability_and_missing_check(df=l0_df,
+#                                                     grouping="daily",
+#                                                     par_col="partition_date",
+#                                                     target_table_name="l1_geo_total_distance_km_daily")
+#
+#     if check_empty_dfs([l0_df]):
+#         return get_spark_empty_df()
+#
+#     # ----- Transformation -----
+#     def divide_chunks(l, n):
+#         # looping till length l
+#         for i in range(0, len(l), n):
+#             yield l[i:i + n]
+#
+#     ss = get_spark_session()
+#     CNTX = load_context(Path.cwd(), env=conf)
+#     data_frame = l0_df
+#     dates_list = data_frame.select('partition_date').distinct().collect()
+#     mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
+#     mvv_array = sorted(mvv_array)
+#     logging.info("Dates to run for {0}".format(str(mvv_array)))
+#     mvv_new = list(divide_chunks(mvv_array, 1))
+#     add_list = mvv_new
+#     first_item = add_list[-1]
+#     add_list.remove(first_item)
+#     for curr_item in add_list:
+#         logging.info("running for dates {0}".format(str(curr_item)))
+#         small_df = data_frame.filter(f.col('partition_date').isin(*[curr_item]))
+#         output_df = l1_geo_total_distance_km_daily(small_df, sql)
+#         CNTX.catalog.save(sql["output_catalog"], output_df)
+#     logging.info("Final date to run for {0}".format(str(first_item)))
+#     return_df = data_frame.filter(f.col('partition_date').isin(*[first_item]))
+#     return_df = l1_geo_total_distance_km_daily(return_df, sql)
+#     return return_df
 
 
-def massive_processing_with_l1_geo_cust_subseqently_distance(cell_visit, sql):
+# ###total_distance_km###
+# def l1_geo_total_distance_km_daily(l0_df, sql):
+#     # ----- Transformation -----
+#     # Get spark session
+#     spark = get_spark_session()
+#
+#     # Source Table
+#     l0_df1 = l0_df.withColumn("event_partition_date", F.to_date(l0_df.time_in.cast(DateType()), "yyyyMMdd")).drop("partition_date")
+#
+#     l0_df1.createOrReplaceTempView('geo_cust_cell_visit_time')
+#     sql_query = """
+#         select
+#             imsi
+#             ,time_in
+#             ,latitude
+#             ,longitude
+#             ,event_partition_date
+#             ,row_number() over (partition by imsi,event_partition_date order by time_in) as row_num
+#         from geo_cust_cell_visit_time
+#         order by imsi,time_in,event_partition_date
+#     """
+#     l1_df = spark.sql(sql_query)
+#     l1_df.createOrReplaceTempView('geo_cust_cell_visit_time_row_num')
+#     sql_query1 = """
+#         select
+#             a.imsi
+#             ,a.time_in
+#             ,a.latitude as latitude_start
+#             ,a.longitude as longitude_start
+#             ,b.latitude as latitude_end
+#             ,b.longitude as longitude_end
+#             ,case
+#                 when b.latitude is null and b.longitude is null then 0
+#                 else cast((acos(cos(radians(90-a.latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.latitude))*sin(radians(90-b.latitude))*cos(radians(a.longitude - b.longitude)))*6371) as decimal(13,2))
+#             end as total_distance_km
+#             ,a.event_partition_date
+#         from geo_cust_cell_visit_time_row_num a
+#         left join geo_cust_cell_visit_time_row_num b
+#         on a.imsi = b.imsi
+#         and a.event_partition_date = b.event_partition_date
+#         and a.row_num = b.row_num-1
+#         order by a.imsi,a.time_in,a.event_partition_date
+#     """
+#     l1_df1 = spark.sql(sql_query1)
+#     l1_df1 = l1_df1.withColumn("start_of_week", F.to_date(F.date_trunc('week', l1_df1.event_partition_date)))
+#     l1_df1 = l1_df1.withColumn("start_of_month", F.to_date(F.date_trunc('month', l1_df1.event_partition_date)))
+#
+#     l1_df2 = node_from_config(l1_df1, sql)
+#
+#     return l1_df2
+
+
+def massive_processing_with_l1_geo_total_distance_km_daily(cell_visit, sql):
     cell_visit = cell_visit.filter('partition_date >= 20200401 and partition_date <= 20200627')
     # ----- Data Availability Checks -----
     if check_empty_dfs([cell_visit]):
@@ -467,15 +449,15 @@ def massive_processing_with_l1_geo_cust_subseqently_distance(cell_visit, sql):
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         small_df = data_frame.filter(f.col('partition_date').isin(*[curr_item]))
-        output_df = l1_geo_cust_subseqently_distance(small_df, sql)
+        output_df = l1_geo_total_distance_km_daily(small_df, sql)
         CNTX.catalog.save(sql["output_catalog"], output_df)
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(f.col('partition_date').isin(*[first_item]))
-    return_df = l1_geo_cust_subseqently_distance(return_df, sql)
+    return_df = l1_geo_total_distance_km_daily(return_df, sql)
     return return_df
 
 
-def l1_geo_cust_subseqently_distance(cell_visit, sql):
+def l1_geo_total_distance_km_daily(cell_visit: DataFrame, sql) -> DataFrame:
     # ----- Transformation -----
     # Drop unneeded column
     cell_visit = cell_visit.drop('cell_id', 'time_out', 'hour_in', 'hour_out')
@@ -490,7 +472,8 @@ def l1_geo_cust_subseqently_distance(cell_visit, sql):
     w_lead = Window().partitionBy('imsi', 'event_partition_date').orderBy('time_in')
 
     # Merge cell_visit table
-    cell_visit = cell_visit.withColumn('location_id_next', F.lead('location_id', 1).over(w_lead)).select('imsi', 'time_in', 'location_id_next', 'location_id', 'latitude', 'longitude', 'event_partition_date')
+    cell_visit = cell_visit.withColumn('location_id_next', F.lead('location_id', 1).over(w_lead))\
+        .select('imsi', 'time_in', 'location_id_next', 'location_id', 'latitude', 'longitude', 'event_partition_date')
     cell_visit = cell_visit.filter('location_id_next != location_id')
     cell_visit = cell_visit.drop('location_id_next')
 
@@ -500,35 +483,29 @@ def l1_geo_cust_subseqently_distance(cell_visit, sql):
 
     # Calculate distance
     cell_visit_distance = cell_visit_lat_long.withColumn('distance_km',
-                                                         F.when(cell_visit_lat_long.latitude_next.isNull(),
-                                                                0.00).otherwise(
-                                                             (F.acos(F.cos(
-                                                                 F.radians(90 - cell_visit_lat_long.latitude)) * F.cos(
-                                                                 F.radians(
-                                                                     90 - cell_visit_lat_long.latitude_next)) + F.sin(
-                                                                 F.radians(90 - cell_visit_lat_long.latitude)) * F.sin(
-                                                                 F.radians(
-                                                                     90 - cell_visit_lat_long.latitude_next)) * F.cos(
-                                                                 F.radians(
-                                                                     cell_visit_lat_long.longitude_next - cell_visit_lat_long.longitude))) * 6371).cast(
-                                                                 'double')))
+                                                         F.when(cell_visit_lat_long.latitude_next.isNull(), 0.00)
+                                                         .otherwise(
+                                                             distance_callculate_statement('latitude',
+                                                                                           'longitude',
+                                                                                           'latitude_next',
+                                                                                           'longitude_next')))
 
     cell_visit_distance =cell_visit_distance.drop('latitude_next').drop('longitude_next')
 
     # Sum of distance group by imsi, start_of_month
-    df = cell_visit_distance.groupBy('imsi', 'event_partition_date') \
+    output_df = cell_visit_distance.groupBy('imsi', 'event_partition_date') \
         .agg({'distance_km':'sum'}).withColumnRenamed('sum(distance_km)', 'distance_km') \
         .select('imsi', 'event_partition_date', 'distance_km')
 
     # df = node_from_config(cell_visit_distance, sql)
 
-    return df
+    return output_df
 
 
-def massive_processing_with_l1_location_of_visit_ais_store_daily(shape, cust_cell_visit, sql):
-    cust_cell_visit = cust_cell_visit.filter('partition_date >= 20200401 and partition_date <= 20200627')
+def massive_processing_with_l1_location_of_visit_ais_store_daily(cust_visit_df, shape_df, sql):
+    cust_cell_visit = cust_visit_df.filter('partition_date >= 20200401 and partition_date <= 20200627')
     # ----- Data Availability Checks -----
-    if check_empty_dfs([cust_cell_visit, shape]):
+    if check_empty_dfs([cust_cell_visit, shape_df]):
         return get_spark_empty_df()
 
     cust_cell_visit = data_non_availability_and_missing_check(df=cust_cell_visit,
@@ -536,7 +513,7 @@ def massive_processing_with_l1_location_of_visit_ais_store_daily(shape, cust_cel
                                                               par_col="partition_date",
                                                               target_table_name="l1_location_of_visit_ais_store_daily")
 
-    shape = get_max_date_from_master_data(shape, 'partition_month')
+    shape_df = get_max_date_from_master_data(shape_df, 'partition_month')
 
     if check_empty_dfs([cust_cell_visit]):
         return get_spark_empty_df()
@@ -561,31 +538,25 @@ def massive_processing_with_l1_location_of_visit_ais_store_daily(shape, cust_cel
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
         small_df = data_frame.filter(f.col('partition_date').isin(*[curr_item]))
-        output_df = l1_location_of_visit_ais_store_daily(shape,small_df,sql)
+        output_df = l1_location_of_visit_ais_store_daily(shape_df, small_df,sql)
         CNTX.catalog.save(sql["output_catalog"], output_df)
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(f.col('partition_date').isin(*[first_item]))
-    return_df = l1_location_of_visit_ais_store_daily(shape,return_df,sql)
+    return_df = l1_location_of_visit_ais_store_daily(shape_df, return_df,sql)
     return return_df
 
 
-###feature_AIS_store###
-def l1_location_of_visit_ais_store_daily(shape,cust_cell_visit,sql):
-    #shape is master table
-    shape = get_max_date_from_master_data(shape, 'partition_month')
-
+def l1_visit_ais_store_by_location_daily(shape_df: DataFrame, cust_visit: DataFrame, sql) -> DataFrame:
     # ----- Transformation -----
-    store_shape = shape.where('landmark_cat_name_en like "%AIS%"')
-    store_shape.createOrReplaceTempView('geo_mst_lm_poi_shape')
-
-    max_date = cust_cell_visit.selectExpr('max(partition_date)').collect()[0][0]
-    cust_cell_visit = cust_cell_visit.where('partition_date='+str(max_date))
-    cust_cell_visit = cust_cell_visit.withColumn("event_partition_date",
+    shape_df.createOrReplaceTempView('geo_mst_lm_poi_shape')
+    cust_visit = cust_visit.withColumn("event_partition_date",
                                        F.to_date(F.col('partition_date').cast(StringType()), 'yyyyMMdd'))
-    cust_cell_visit.createOrReplaceTempView('geo_cust_cell_visit_time')
+
+    cust_visit.createOrReplaceTempView('geo_cust_cell_visit_time')
+
     # Get spark session
     spark = get_spark_session()
-    df = spark.sql("""
+    output_df = spark.sql("""
         SELECT DISTINCT 
             imsi,
             p1.location_id,
@@ -594,17 +565,13 @@ def l1_location_of_visit_ais_store_daily(shape,cust_cell_visit,sql):
             landmark_latitude,
             landmark_longitude,
             time_in,
-            substr(partition_date,0,6) as partition_month,
             event_partition_date
-        FROM geo_cust_cell_visit_time p1 join geo_mst_lm_poi_shape  p2
+        FROM geo_cust_cell_visit_time p1
+        join geo_mst_lm_poi_shape  p2
         WHERE p1.location_id =  p2.geo_shape_id
-        AND p2.PARTITION_NAME = 'INTERNAL'
-        AND p2.LANDMARK_CAT_NAME_EN IN ('AIS')
      """)
 
-    # store_visit = node_from_config(df,sql)
-
-    return store_visit
+    return output_df
 
 
 def massive_processing_with_l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):

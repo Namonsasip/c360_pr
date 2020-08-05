@@ -25,6 +25,16 @@ def geo_to_l1_pipeline_to_run():
                 "l1_geo_count_visit_by_location_daily"
             ),
 
+            ### WAIT
+            node(
+                massive_processing_with_l1_geo_total_distance_km_daily,
+                ["l0_geo_cust_cell_visit_time_for_l1_geo_total_distance_km_daily",
+                 "params:l1_geo_total_distance_km_daily"
+                 ],
+                "l1_geo_total_distance_km_daily"
+            ),
+
+
         ], name="geo_to_l1_pipeline_to_run"
     )
 
@@ -42,6 +52,16 @@ def geo_to_l1_pipeline_to_run2():
                 "l1_geo_time_spent_by_store_daily"
             ),
 
+            ### WAIT
+            node(
+                massive_processing_with_l1_location_of_visit_ais_store_daily,
+                ["l0_geo_cust_cell_visit_time_for_l1_location_of_visit_ais_store_daily",
+                 "l1_geo_mst_location_ais_shop_master",
+                 "params:l1_location_of_visit_ais_store_daily"
+                 ],
+                "l1_location_of_visit_ais_store_daily"
+            ),
+
         ], name="geo_to_l1_pipeline_to_run2"
     )
 
@@ -49,7 +69,7 @@ def geo_to_l1_pipeline_to_run2():
 def geo_to_l1_pipeline_master():
     return Pipeline(
         [
-            ### runnig flag == 1
+            ### WAIT
             node(
                 l1_geo_mst_location_near_shop_master,
                 ["l0_geo_mst_cell_masterplan_master",
@@ -57,6 +77,14 @@ def geo_to_l1_pipeline_master():
                  ],
                 "l1_geo_mst_location_near_shop_master"
             ),
+
+            ### WAIT
+            node(
+                l1_geo_mst_location_ais_shop_master,
+                ["l0_geo_mst_lm_poi_shape_master"
+                 ],
+                "l1_geo_mst_location_ais_shop_master"
+            )
 
         ], name="geo_to_l1_pipeline_master"
     )
@@ -75,17 +103,6 @@ def geo_to_l1_pipeline(**kwargs):
                 "l1_the_favourite_locations_daily"
             ),
 
-            ### runnig flag == 1
-            ###feature_AIS_store###
-            node(
-                massive_processing_with_l1_location_of_visit_ais_store_daily,
-                ["l0_mst_poi_shape_for_l1_location_of_visit_ais_store_daily",
-                 "l0_geo_cust_cell_visit_time_for_l1_location_of_visit_ais_store_daily",
-                 "params:l1_location_of_visit_ais_store_daily"
-                 ],
-                "l1_location_of_visit_ais_store_daily"
-            ),
-
             ### FINISH
             ## Number of Unique Cells Used ###
             node(
@@ -93,15 +110,6 @@ def geo_to_l1_pipeline(**kwargs):
                 ["l0_usage_sum_data_location_daily_for_l1_number_of_unique_cell_daily"
                  ],
                 "l1_number_of_unique_cell_daily"
-            ),
-
-            ### FINISH
-            node(
-                massive_processing_with_l1_geo_cust_subseqently_distance,
-                ["l0_geo_cust_cell_visit_time_for_l1_geo_cust_subseqently_distance_daily",
-                 "params:l1_geo_cust_subseqently_distance_daily"
-                 ],
-                "l1_geo_cust_subseqently_distance_daily"
             ),
 
             ### FINISH
