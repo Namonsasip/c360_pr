@@ -205,8 +205,9 @@ def int_l1_geo_top3_voice_location_daily(usagevoice_df: DataFrame,
 
     return output_df
 
+
 def l1_geo_top3_voice_location_daily(input_df: DataFrame, config_param: str) -> DataFrame:
-    output_df = input_df.select('access_method_num', 'event_partition_date', 'start_of_week', 'start_of_month')
+    output_df = input_df.select('access_method_num', 'event_partition_date', 'start_of_week', 'start_of_month',)
 
     # Calculate max distance sum(dis(1,2), dis(1,3))
     sql_query = """
@@ -237,6 +238,17 @@ def massive_processing_with_l1_geo_visit_ais_store_location_daily(cust_visit_df:
                                                                   shape_df: DataFrame,
                                                                   config_param: str
                                                                   ) -> DataFrame:
+    if check_empty_dfs([cust_visit_df]):
+        return get_spark_empty_df()
+
+    cust_visit_df = data_non_availability_and_missing_check(df=cust_visit_df,
+                                                            grouping="daily",
+                                                            par_col="partition_date",
+                                                            target_table_name="l1_geo_visit_ais_store_location_daily")
+
+    if check_empty_dfs([cust_visit_df]):
+        return get_spark_empty_df()
+
     output_df = _massive_processing_with_join_daily(cust_visit_df,
                                                     shape_df,
                                                     config_param,
@@ -293,7 +305,7 @@ def massive_processing_with_l1_geo_total_distance_km_daily(cust_visit_df: DataFr
     cust_visit_df = data_non_availability_and_missing_check(df=cust_visit_df,
                                                             grouping="daily",
                                                             par_col="partition_date",
-                                                            target_table_name="l1_geo_count_visit_by_location_daily")
+                                                            target_table_name="l1_geo_total_distance_km_daily")
 
     if check_empty_dfs([cust_visit_df]):
         return get_spark_empty_df()
