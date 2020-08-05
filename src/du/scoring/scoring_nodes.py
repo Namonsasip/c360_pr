@@ -102,9 +102,7 @@ def l5_du_scored(
 
     df_master_scored = score_du_models(
         df_master=df_master_upsell,
-        primary_key_columns=[
-            "subscription_identifier",
-        ],
+        primary_key_columns=["subscription_identifier",],
         model_group_column=model_group_column,
         models_to_score={
             acceptance_model_tag: "propensity",
@@ -117,24 +115,51 @@ def l5_du_scored(
         mlflow_model_version=mlflow_model_version,
         **kwargs,
     )
-    #df_master_scored = df_master_scored.join(df_master_upsell, ["du_spine_primary_key"], how="left")
+    # df_master_scored = df_master_scored.join(df_master_upsell, ["du_spine_primary_key"], how="left")
     df_master_scored.write.format("delta").mode("overwrite").saveAsTable(
         "prod_dataupsell.l5_du_scored"
     )
     return df_master_scored
 
 
-def du_join_preference(l5_du_scored: DataFrame,
-                       mapping_for_model_training: DataFrame,
-                       l0_product_pru_m_ontop_master_for_weekly_full_load: DataFrame,
-                       ):
+def du_join_preference(
+    l5_du_scored: DataFrame,
+    mapping_for_model_training: DataFrame,
+    l0_product_pru_m_ontop_master_for_weekly_full_load: DataFrame,
+    l5_du_scoring_master: DataFrame,
+    l4_data_ontop_package_preference: DataFrame,
+):
     spark = get_spark_session()
-    l5_du_scored = catalog.load("l5_du_scored")
-    mapping_for_model_training = catalog.load("mapping_for_model_training")
-    l0_product_pru_m_ontop_master_for_weekly_full_load = catalog.load(
-        "l0_product_pru_m_ontop_master_for_weekly_full_load"
+    # l5_du_scored = catalog.load("l5_du_scored")
+    # l5_du_scoring_master = catalog.load("l5_du_scoring_master")
+    #
+    # mapping_for_model_training = catalog.load("mapping_for_model_training")
+    # l0_product_pru_m_ontop_master_for_weekly_full_load = catalog.load(
+    #     "l0_product_pru_m_ontop_master_for_weekly_full_load"
+    # )
+    # l4_data_ontop_package_preference = catalog.load("l4_data_ontop_package_preference")
+
+    l5_du_scored = l5_du_scored.withColumn(
+        "scoring_day", F.lit(datetime.datetime.date(datetime.datetime.now()))
     )
-    l4_data_ontop_package_preference = catalog.load("l4_data_ontop_package_preference")
+    l5_du_scoring_master = l5_du_scoring_master.selectExpr(
+        "subscription_identifier",
+        "old_subscription_identifier",
+        "access_method_num",
+        "register_date",
+        "day_of_week",
+        "day_of_month",
+        "subscription_status",
+        "age",
+        "subscriber_tenure",
+        "sum_rev_arpu_total_revenue_monthly_last_month",
+        "sum_rev_arpu_total_revenue_monthly_last_three_month",
+        "sum_rev_arpu_total_gprs_net_revenue_monthly_last_month",
+        "sum_rev_arpu_total_gprs_net_tariff_rev_mth_monthly_last_month"
+    )
+
+    l5_du_scored = l5_du_scored.join(l5_du_scoring_master,["subscription_identifier"],"left")
+
     # Only Select Pre-paid Charge type, Convert partition_date to date format
     master_ontop_weekly = (
         l0_product_pru_m_ontop_master_for_weekly_full_load.where(
@@ -216,10 +241,16 @@ def du_join_preference(l5_du_scored: DataFrame,
             END as data_speed""",
         "DATE_ADD(partition_date,-2) as start_of_week",
     )
-    # TODO make master ontop dynamic to prediction date
-    max_master_date = master_ontop_weekly_fixed.withColumn("G",F.lit(1)).groupby("G").agg(F.max("start_of_week"))
+    max_master_date = (
+        master_ontop_weekly_fixed.withColumn("G", F.lit(1))
+        .groupby("G")
+        .agg(F.max("start_of_week"))
+        .collect()
+    )
+
+
     agg_master_ontop = (
-        master_ontop_weekly_fixed.where("start_of_week = date('2020-07-13')")
+        master_ontop_weekly_fixed.where("start_of_week = date('" + datetime.datetime.strftime(max_master_date[0][1],"%Y-%m-%d") + "')")
         .groupby(
             "package_name_report",
             "package_type",
@@ -304,22 +335,29 @@ def du_join_preference(l5_du_scored: DataFrame,
         .join(agg_master_ontop, ["offer_package_name_report"], "left")
     )
     l5_du_scored_info = l5_du_scored.join(model_offer_info, ["model_name"], "left")
-    # TODO Make package preference score dynamic according to prediction date
+
+    max_package_preference_date = (
+        l4_data_ontop_package_preference.withColumn("G", F.lit(1))
+        .groupby("G")
+        .agg(F.max("start_of_week"))
+        .collect()
+    )
     l5_du_scored_offer_preference = (
         l5_du_scored_info.selectExpr("*", "date(register_date) as register_date_d")
         .drop("register_date")
         .withColumnRenamed("register_date_d", "register_date")
         .join(
-            l4_data_ontop_package_preference.where(
-                "start_of_week = date('2020-06-29')"
+            l4_data_ontop_package_preference.drop("access_method_num").where(
+                "start_of_week = date('" + datetime.datetime.strftime(max_package_preference_date[0][1],"%Y-%m-%d") + "')"
             ),
-            ["old_subscription_identifier", "access_method_num", "register_date"],
+            ["old_subscription_identifier", "register_date"],
             "left",
         )
     )
-    spark.sql(
-        "DROP TABLE IF EXISTS prod_dataupsell.du_offer_score_with_package_preference"
-    )
+    # spark.sql(
+    #     "DROP TABLE IF EXISTS prod_dataupsell.du_offer_score_with_package_preference"
+    # )
     l5_du_scored_offer_preference.write.format("delta").mode("append").partitionBy(
-        "start_of_week"
+        "scoring_day"
     ).saveAsTable("prod_dataupsell.du_offer_score_with_package_preference")
+    return l5_du_scored_offer_preference

@@ -46,17 +46,17 @@ l5_sanity_checking_gcg_post_20200725:
     save_args:
         mode: "overwrite"
 
-l0_du_pre_experiment3_20200725:
+l0_du_pre_experiment3_20200801:
     type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
     file_format: "parquet"
-    filepath: /mnt/customer360-blob-data/C360/DU/l0_du_pre_experiment3_20200725/
+    filepath: /mnt/customer360-blob-data/C360/DU/l0_du_pre_experiment3_20200801/
     save_args:
         mode: "overwrite"
 
-l5_sanity_du_pre_experiment3_20200725:
+l5_sanity_du_pre_experiment3_20200801:
     type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
     file_format: "parquet"
-    filepath: /mnt/customer360-blob-data/C360/NBA/l5_sanity_du_pre_experiment3_20200725/
+    filepath: /mnt/customer360-blob-data/C360/NBA/l5_sanity_du_pre_experiment3_20200801/
     save_args:
         mode: "overwrite"
 
@@ -65,3 +65,4 @@ l0_du_pre_experiment3_groups:
     database: prod_dataupsell
     table: l0_du_pre_experiment3_groups
     write_mode: overwrite
+
