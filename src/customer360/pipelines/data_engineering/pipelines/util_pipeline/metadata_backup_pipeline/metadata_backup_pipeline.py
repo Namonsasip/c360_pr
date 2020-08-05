@@ -9,6 +9,7 @@ running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 
 def build_metadata_backup(metadata_table: DataFrame) -> DataFrame:
     """
+    Purpose: To create the backup of metadata table.
     :param metadata_table:
     :return:
     """
