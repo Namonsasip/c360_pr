@@ -1,4 +1,3 @@
-import pyspark.sql.functions as f
 from pyspark.sql import DataFrame
 from pyspark.sql.types import *
 from pyspark.sql import functions as F
@@ -34,6 +33,10 @@ def l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, homework_df: DataF
         homework_df:
 
     Returns:
+        result_df:
+        +-----+---------------+------------------+------------------+------------------+
+        | imsi| start_of_month| top_location_1st | top_location_2st | top_location_3st |
+        +-----+---------------+------------------+------------------+------------------+
 
     """
     if check_empty_dfs([input_df, homework_df]):
@@ -134,7 +137,7 @@ def get_max_date_from_master_data(input_df: DataFrame, par_col='partition_date')
     max_date = input_df.selectExpr('max({0})'.format(par_col)).collect()[0][0]
 
     # Set the latest master DataFrame
-    input_df = input_df.where('{0}='.format(par_col) + str(max_date))
+    input_df = input_df.where('{0}={1}'.format(par_col, str(max_date)))
 
     return input_df
 

@@ -1,3 +1,14 @@
+###Number_of_base_station###
+l1_geo_count_visit_by_location_daily:
+  where_clause: ""
+  feature_list:
+    count_location_id: "count(location_id)"
+    count_distinct_location_id: "count(distinct location_id)"
+    count_cell_id: "count(cell_id)"
+  granularity: "imsi, event_partition_date"
+  output_catalog: "l1_geo_count_visit_by_location_daily"
+  partition_num_per_job: 5
+
 l1_geo_time_spent_by_location_daily:
   where_clause: ""
   feature_list:
@@ -36,17 +47,6 @@ l1_geo_total_distance_km_daily:
     sum_distance_km: "sum(total_distance_km)"
   granularity: "imsi,event_partition_date,start_of_week,start_of_month"
   output_catalog: "l1_geo_total_distance_km_daily"
-
-###Number_of_base_station###
-l1_geo_data_count_location_id:
-  where_clause: ""
-  feature_list:
-    data_count_location_id: "COUNT(LOCATION_ID)"
-    data_count_distinct_location_id: "COUNT(DISTINCT LOCATION_ID)"
-    data_count_cell_id: "COUNT(CELL_ID)"
-  granularity: "imsi, event_partition_date"
-  output_catalog: "l1_geo_number_of_bs_used"
-  partition_num_per_job: 2
 
 
 ###Number of Unique Cells Used###

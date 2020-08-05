@@ -5,20 +5,47 @@ from customer360.pipelines.data_engineering.nodes.geolocation_nodes.to_l1.to_l1_
 def geo_to_l1_pipeline_to_run():
     return Pipeline(
         [
-            ### runnig flag == 1
-            ###feature_AIS_store###
+
+            ### WAIT
             node(
-                massive_processing_with_l1_location_of_visit_ais_store_daily,
-                ["l0_mst_poi_shape_for_l1_location_of_visit_ais_store_daily",
-                 "l0_geo_cust_cell_visit_time_for_l1_location_of_visit_ais_store_daily",
+                l1_geo_time_spent_by_location_daily,
+                ["l0_geo_cust_location_visit_hr_for_l1_geo_time_spent_by_location_daily",
+                 "params:l1_geo_time_spent_by_location_daily"
+                 ],
+                "l1_geo_time_spent_by_location_daily"
+
+            ),
+
+            ### WAIT
+            node(
+                l1_geo_count_visit_by_location_daily,
+                ["l0_geo_cust_cell_visit_time_daily_for_l1_geo_count_visit_by_location_daily",
+                 "params:l1_geo_count_visit_by_location_daily"
+                 ],
+                "l1_geo_count_visit_by_location_daily"
+            ),
+
+        ] , name="geo_to_l1_pipeline_to_run"
+    )
+
+
+def geo_to_l1_pipeline_master():
+    return Pipeline(
+        [
+            ### runnig flag == 1
+            node(
+                l1_geo_mst_location_near_poi,
+                ["l0_geo_mst_cell_masterplan_master",
+                 "l0_geo_mst_lm_poi_shape_master",
                  "params:l1_location_of_visit_ais_store_daily"
                  ],
                 "l1_location_of_visit_ais_store_daily"
             ),
 
 
-        ] , name="geo_to_l1_pipeline_to_run"
+        ] , name="geo_to_l1_pipeline_master"
     )
+
 
 def geo_to_l1_pipeline(**kwargs):
     return Pipeline(
@@ -33,17 +60,16 @@ def geo_to_l1_pipeline(**kwargs):
                 "l1_the_favourite_locations_daily"
             ),
 
-            ### FINISH
-            ###Number_of_base_station###
+            ### runnig flag == 1
+            ###feature_AIS_store###
             node(
-                l1_geo_number_of_bs_used,
-                ["l0_geo_cust_cell_visit_time_daily_for_l1_geo_number_of_bs_used",
-                 "params:l1_geo_data_count_location_id"
+                massive_processing_with_l1_location_of_visit_ais_store_daily,
+                ["l0_mst_poi_shape_for_l1_location_of_visit_ais_store_daily",
+                 "l0_geo_cust_cell_visit_time_for_l1_location_of_visit_ais_store_daily",
+                 "params:l1_location_of_visit_ais_store_daily"
                  ],
-                "l1_geo_number_of_bs_used"
+                "l1_location_of_visit_ais_store_daily"
             ),
-
-
 
             ### FINISH
             ## Number of Unique Cells Used ###
@@ -52,16 +78,6 @@ def geo_to_l1_pipeline(**kwargs):
                 ["l0_usage_sum_data_location_daily_for_l1_number_of_unique_cell_daily"
                  ],
                 "l1_number_of_unique_cell_daily"
-            ),
-
-            ### FINISH
-            node(
-                l1_geo_time_spent_by_location_daily,
-                ["l0_geo_cust_location_visit_hr_for_l1_geo_time_spent_by_location_daily",
-                 "params:l1_geo_time_spent_by_location_daily"
-                 ],
-                "l1_geo_time_spent_by_location_daily"
-
             ),
 
             ### FINISH

@@ -46,6 +46,67 @@ def distance_callculate_statement(first_lat: str, first_long: str, second_lat: s
     ).cast('double')
 
 
+def l1_geo_mst_location_near_poi(master_df: DataFrame, shape_df: DataFrame) -> DataFrame:
+    """
+    Args:
+        master_df:
+        shape_df:
+
+    Returns:
+        output_df:
+    """
+    if check_empty_dfs([master_df, shape_df]):
+        return get_spark_empty_df()
+
+    master_df = get_max_date_from_master_data(master_df, 'partition_date')
+    shape_df = get_max_date_from_master_data(shape_df, 'partition_month')
+
+    ss = get_spark_session()
+    master_df.createOrReplaceTempView("mst_cell_masterplan")
+    shape_df.createOrReplaceTempView("mst_poi_shape")
+    output_df = ss.sql("""
+            select 
+                a.landmark_sub_name_en,
+                b.location_id,
+                b.location_name,
+                cast(
+                    (acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+
+                    sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*
+                    cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)
+                    ) as distance_km
+            from mst_poi_shape a,
+                mst_cell_masterplan b
+            where   a.landmark_cat_name_en in ('AIS')
+            and cast((acos(cos(radians(90-a.landmark_latitude))*cos(radians(90-b.latitude))+
+                sin(radians(90-a.landmark_latitude))*sin(radians(90-b.latitude))*
+                cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) <= (0.5)
+            group by 1,2,3,4
+    """)
+
+    return output_df
+
+
+def l1_geo_count_visit_by_location_daily(input_df: DataFrame, config: str) -> DataFrame:
+    input_df= input_df.filter('partition_date >= 20200401 and partition_date <= 20200627')
+    # ----- Data Availability Checks -----
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(df=input_df,
+                                                       grouping="daily",
+                                                       par_col="partition_date",
+                                                       target_table_name="l1_geo_count_visit_by_location_daily")
+
+    if check_empty_dfs([input_df]):
+        return get_spark_empty_df()
+
+    # ----- Transformation -----
+    input_df = input_df.withColumn("event_partition_date",
+                                   F.to_date(F.col('partition_date').cast(StringType()), 'yyyyMMdd'))
+    output_df = l1_massive_processing(input_df, config)
+    return output_df
+
+
 def massive_processing_with_l1_geo_area_from_ais_store_daily(shape, masterplan, geo_cust_cell_visit_time, sql):
     geo_cust_cell_visit_time=geo_cust_cell_visit_time.filter('partition_date >= 20200401 and partition_date <= 20200627')
     # ----- Data Availability Checks -----
@@ -693,26 +754,26 @@ def l1_geo_distance_top_call(df):
     return l1_df
 
 
-def l1_geo_number_of_bs_used(geo_cust_cell, sql):
-    geo_cust_cell=geo_cust_cell.filter('partition_date >= 20200401 and partition_date <= 20200627')
-    # .filter('partition_month >= 201911')
-    # ----- Data Availability Checks -----
-    if check_empty_dfs([geo_cust_cell]):
-        return get_spark_empty_df()
-
-    geo_cust_cell = data_non_availability_and_missing_check(df=geo_cust_cell,
-                                                 grouping="daily",
-                                                 par_col="partition_date",
-                                                 target_table_name="l1_geo_number_of_bs_used")
-
-    if check_empty_dfs([geo_cust_cell]):
-        return get_spark_empty_df()
-
-    # ----- Transformation -----
-    geo_cust_cell = geo_cust_cell.withColumn("event_partition_date", F.to_date(F.col('partition_date').cast(StringType()), 'yyyyMMdd'))
-    # df = node_from_config(geo_cust_cell, sql)
-    df = l1_massive_processing(geo_cust_cell, sql)
-    return df
+# def l1_geo_number_of_bs_used(geo_cust_cell, sql):
+#     geo_cust_cell=geo_cust_cell.filter('partition_date >= 20200401 and partition_date <= 20200627')
+#     # .filter('partition_month >= 201911')
+#     # ----- Data Availability Checks -----
+#     if check_empty_dfs([geo_cust_cell]):
+#         return get_spark_empty_df()
+#
+#     geo_cust_cell = data_non_availability_and_missing_check(df=geo_cust_cell,
+#                                                  grouping="daily",
+#                                                  par_col="partition_date",
+#                                                  target_table_name="l1_geo_number_of_bs_used")
+#
+#     if check_empty_dfs([geo_cust_cell]):
+#         return get_spark_empty_df()
+#
+#     # ----- Transformation -----
+#     geo_cust_cell = geo_cust_cell.withColumn("event_partition_date", F.to_date(F.col('partition_date').cast(StringType()), 'yyyyMMdd'))
+#     # df = node_from_config(geo_cust_cell, sql)
+#     df = l1_massive_processing(geo_cust_cell, sql)
+#     return df
 
 
 def massive_processing_with_l1_the_favourite_locations_daily(usage_df_location,geo_df_masterplan):
