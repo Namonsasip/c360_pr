@@ -8,7 +8,7 @@ def geo_to_l1_pipeline_to_run():
 
             ### WAIT
             node(
-                l1_geo_time_spent_by_location_daily,
+                massive_processing_with_l1_geo_time_spent_by_location_daily,
                 ["l0_geo_cust_location_visit_hr_for_l1_geo_time_spent_by_location_daily",
                  "params:l1_geo_time_spent_by_location_daily"
                  ],
@@ -18,7 +18,7 @@ def geo_to_l1_pipeline_to_run():
 
             ### WAIT
             node(
-                l1_geo_count_visit_by_location_daily,
+                massive_processing_with_l1_geo_count_visit_by_location_daily,
                 ["l0_geo_cust_cell_visit_time_daily_for_l1_geo_count_visit_by_location_daily",
                  "params:l1_geo_count_visit_by_location_daily"
                  ],
@@ -54,12 +54,12 @@ def geo_to_l1_pipeline_to_run2():
 
             ### WAIT
             node(
-                massive_processing_with_l1_location_of_visit_ais_store_daily,
-                ["l0_geo_cust_cell_visit_time_for_l1_location_of_visit_ais_store_daily",
+                massive_processing_with_l1_geo_visit_ais_store_location_daily,
+                ["l0_geo_cust_cell_visit_time_for_l1_geo_visit_ais_store_location_daily",
                  "l1_geo_mst_location_ais_shop_master",
-                 "params:l1_location_of_visit_ais_store_daily"
+                 "params:l1_geo_visit_ais_store_location_daily"
                  ],
-                "l1_location_of_visit_ais_store_daily"
+                "l1_geo_visit_ais_store_location_daily"
             ),
 
         ], name="geo_to_l1_pipeline_to_run2"
@@ -131,36 +131,5 @@ def geo_to_l1_pipeline(**kwargs):
                 "l1_geo_distance_top_call"
             ),
 
-            # ### CHANGE --> l1_geo_time_spent_by_store_daily
-            # node(
-            #     massive_processing_with_l1_geo_area_from_ais_store_daily,
-            #     ["l0_mst_poi_shape_for_l1_geo_area_from_ais_store_daily",
-            #      "l0_mst_cell_masterplan_for_l1_geo_area_from_ais_store_daily",
-            #      "l0_geo_cust_cell_visit_time_for_l1_geo_area_from_ais_store_daily",
-            #      "params:l1_area_from_ais_store_daily"
-            #      ],
-            #     "l1_geo_area_from_ais_store_daily"
-            # ),
-            #
-            # ### CHANGE --> l1_geo_time_spent_by_store_daily
-            # node(
-            #     massive_processing_with_l1_geo_area_from_competitor_store_daily,
-            #     ["l0_mst_poi_shape_for_l1_geo_area_from_competitor_store_daily",
-            #      "l0_mst_cell_masterplan_for_l1_geo_area_from_competitor_store_daily",
-            #      "l0_geo_cust_cell_visit_time_for_l1_geo_area_from_competitor_store_daily",
-            #      "params:l1_area_from_competitor_store_daily"
-            #      ],
-            #     "l1_geo_area_from_competitor_store_daily"
-            # ),
-
-            # ### CHANGE --> l1_geo_cust_subseqently_distance
-            # ###total_distance_km###
-            # node(
-            #     massive_processing_with_l1_geo_total_distance_km_daily,
-            #     ["l0_geo_cust_cell_visit_time_for_l1_geo_total_distance_km_daily",
-            #      "params:l1_geo_total_distance_km_daily"
-            #      ],
-            #     "l1_geo_total_distance_km_daily"
-            # ),
         ], name="geo_to_l1_pipeline"
     )

@@ -1,11 +1,10 @@
-###Number_of_base_station###
 l1_geo_count_visit_by_location_daily:
   where_clause: ""
   feature_list:
     count_location_id: "count(location_id)"
     count_distinct_location_id: "count(distinct location_id)"
     count_cell_id: "count(cell_id)"
-  granularity: "imsi, event_partition_date"
+  granularity: "imsi, event_partition_date, start_of_week, start_of_month"
   output_catalog: "l1_geo_count_visit_by_location_daily"
   partition_num_per_job: 5
 
@@ -14,7 +13,16 @@ l1_geo_time_spent_by_location_daily:
   feature_list:
     duration: "sum(duration)"
     num_visit: "count(imsi)"
-  granularity: "imsi,location_id,event_partition_date,start_of_week,start_of_month"
+  granularity: "imsi, location_id, event_partition_date, start_of_week, start_of_month"
+  output_catalog: "l1_geo_time_spent_by_location_daily"
+  partition_num_per_job: 5
+
+l1_location_of_visit_ais_store_daily:
+  where_clause: ""
+  feature_list:
+  granularity:  ""
+  output_catalog: "l1_location_of_visit_ais_store_daily"
+  partition_num_per_job: 5
 
 
 #=======================================================================
@@ -58,20 +66,6 @@ l1_geo_number_unique_cell_id:
     data_num_unique_cell: "durations_num"
   granularity: "event_partition_date"
 
-####feature_AIS_store###
-#l1_location_of_visit_ais_store_daily:
-#  where_clause: ""
-#  feature_list:
-#    imsi: "imsi"
-#    store_location_id:  "location_id"
-#    store_name: "landmark_name_th"
-#    store_category: "landmark_sub_name_en"
-#    store_latitude: "landmark_latitude"
-#    store_longitude:  "landmark_longitude"
-#    last_visit: "time_in"
-#    partition_month:  "partition_month"
-#    event_partition_date: "event_partition_date"
-#  granularity:  ""
 
 
 

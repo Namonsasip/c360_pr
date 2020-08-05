@@ -40,17 +40,18 @@ l0_geo_cust_cell_visit_time_daily_for_l1_geo_count_visit_by_location_daily:
     target_layer: 'l1_daily'
     lookback: '0'
 
-#l0_geo_cust_cell_visit_time_daily_for_l1_geo_number_of_bs_used:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/GEO/geo_cust_cell_visit_time/
-#  file_format: parquet
-#  metadata_table_path: 'metadata_path'
-#  load_args:
-#    increment_flag: 'yes'
-#    lookup_table_name: 'geo_number_of_bs_used'
-#    read_layer: 'l0_daily'
-#    target_layer: 'l1_daily'
-#    lookback: '0'
+#----------------------- l1_geo_visit_ais_store_location_daily -------------------------
+l0_geo_cust_cell_visit_time_for_l1_geo_visit_ais_store_location_daily:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/geo_cust_cell_visit_time/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l1_geo_visit_ais_store_location_daily'
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+    lookback: '0'
 
 #----------------------- l3_geo_home_work_location_id_monthly -------------------------
 l0_geo_cust_location_monthly_hr_for_int_l3_geo_home_work_location_id:
@@ -79,64 +80,6 @@ l0_geo_cust_location_monthly_hr_for_l3_geo_top3_visit_exclude_hw_monthly:
     lookback: '0'
 #============================================================================ tag := New
 
-
-#----------------------- mst_poi_shape_geo_area_from_ais_store_daily -------------------------
-l0_mst_poi_shape_for_l1_geo_area_from_ais_store_daily:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/geo_mst_lm_poi_shape/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-#  load_args:
-#    increment_flag: 'yes'
-#    lookup_table_name: 'geo_area_from_ais_store_daily'
-#    read_layer: 'l0_daily'
-#    target_layer: 'l1_daily'
-#    lookback: '0'
-
-l0_mst_poi_shape:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/geo_mst_lm_poi_shape/
-  file_format: parquet
-
-#----------------------- mst_poi_shape_geo_area_for_location_of_visit_ais_store -------------------------
-l0_mst_poi_shape_for_l1_location_of_visit_ais_store_daily:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/geo_mst_lm_poi_shape/
-  file_format: parquet
-#  metadata_table_path: 'metadata_path'
-#  load_args:
-#    increment_flag: 'yes'
-#    lookup_table_name: 'l1_location_of_visit_ais_store_daily'
-#    read_layer: 'l0_daily'
-#    target_layer: 'l1_daily'
-#    lookback: '0'
-
-#----------------------- location_of_visit_ais_store -------------------------
-l0_geo_cust_cell_visit_time_for_l1_location_of_visit_ais_store_daily:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/geo_cust_cell_visit_time/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l1_location_of_visit_ais_store_daily'
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-    lookback: '0'
-
-#----------------------- mst_cell_masterplan_geo_area_from_ais_store -------------------------
-l0_mst_cell_masterplan_for_l1_geo_area_from_ais_store_daily:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/geo_mst_cell_masterplan/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-#  load_args:
-#    increment_flag: 'no'
-#    lookup_table_name: 'geo_area_from_ais_store_daily'
-#    read_layer: 'l0_daily'
-#    target_layer: 'l1_daily'
-#    lookback: '0'
-
 #----------------------- mst_cell_masterplan_geo_home_weekday_city_citizens -------------------------
 l0_mst_cell_masterplan_for_l3_geo_home_weekday_city_citizens_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -145,23 +88,7 @@ l0_mst_cell_masterplan_for_l3_geo_home_weekday_city_citizens_monthly:
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'no'
-#    lookup_table_name: 'l3_geo_home_weekday_city_citizens_monthly'
-#    read_layer: 'l0_daily'
-#    target_layer: 'l3_monthly'
-#    lookback: '0'
 
-#----------------------- geo_cust_cell_visit_time_geo_area_from_ais_store -------------------------
-l0_geo_cust_cell_visit_time_for_l1_geo_area_from_ais_store_daily:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/geo_cust_cell_visit_time/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'geo_area_from_ais_store_daily'
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-    lookback: '0'
 
 #----------------------- geo_cust_location_visit_hr_geo_work_area_center_average -------------------------
 l0_geo_cust_location_visit_hr_for_l3_geo_work_area_center_average_monthly:
@@ -175,45 +102,6 @@ l0_geo_cust_location_visit_hr_for_l3_geo_work_area_center_average_monthly:
     read_layer: 'l0_daily'
     target_layer: 'l3_monthly'
     lookback: '0'
-
-#----------------------- mst_poi_shape_geo_area_from_competitor_store -------------------------
-#l0_mst_poi_shape_for_l1_geo_area_from_competitor_store_daily:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/GEO/geo_mst_lm_poi_shape/
-#  file_format: parquet
-#  metadata_table_path: 'metadata_path'
-#  load_args:
-#    increment_flag: 'yes'
-#    lookup_table_name: 'geo_area_from_competitor_store_daily'
-#    read_layer: 'l0_daily'
-#    target_layer: 'l1_daily'
-#    lookback: '0'
-
-#----------------------- mst_cell_masterplan_geo_area_from_competitor_store -------------------------
-#l0_mst_cell_masterplan_for_l1_geo_area_from_competitor_store_daily:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/GEO/geo_mst_cell_masterplan/
-#  file_format: parquet
-#  metadata_table_path: 'metadata_path'
-#  load_args:
-#    increment_flag: 'yes'
-#    lookup_table_name: 'geo_area_from_competitor_store_daily'
-#    read_layer: 'l0_daily'
-#    target_layer: 'l1_daily'
-#    lookback: '0'
-
-#----------------------- geo_cust_cell_visit_time_geo_area_from_competitor_store -------------------------
-#l0_geo_cust_cell_visit_time_for_l1_geo_area_from_competitor_store_daily:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/GEO/geo_cust_cell_visit_time/
-#  file_format: parquet
-#  metadata_table_path: 'metadata_path'
-#  load_args:
-#    increment_flag: 'yes'
-#    lookup_table_name: 'geo_area_from_competitor_store_daily'
-#    read_layer: 'l0_daily'
-#    target_layer: 'l1_daily'
-#    lookback: '0'
 
 
 #----------------------- geo_cust_cell_visit_time_geo_cust_subseqently_distance -------------------------
