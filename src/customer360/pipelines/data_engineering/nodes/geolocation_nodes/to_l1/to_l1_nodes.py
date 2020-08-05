@@ -46,7 +46,7 @@ def distance_callculate_statement(first_lat: str, first_long: str, second_lat: s
     ).cast('double')
 
 
-def l1_geo_mst_location_near_poi(master_df: DataFrame, shape_df: DataFrame) -> DataFrame:
+def l1_geo_mst_location_near_shop_master(master_df: DataFrame, shape_df: DataFrame) -> DataFrame:
     """
     Args:
         master_df:
@@ -82,6 +82,15 @@ def l1_geo_mst_location_near_poi(master_df: DataFrame, shape_df: DataFrame) -> D
                 cos(radians(a.landmark_longitude - b.longitude)))*6371) as decimal(13,2)) <= (0.5)
             group by 1,2,3,4
     """)
+
+    # Pyspark version: Prove in
+    # https://adb-334552184297553.13.azuredatabricks.net/?o=334552184297553#notebook/2101000251613420/command/3846088851487352
+    # output_df = master_df.crossJoin(shape_df)\
+    #     .select('landmark_sub_name_en', 'location_id', 'location_name',
+    #             distance_callculate_statement('landmark_latitude', 'landmark_longitude', 'latitude', 'longitude')
+    #             .alias('distance_km'))\
+    #     .where("landmark_cat_name_en in ('AIS') and distance_km <= (0.5)")\
+    #     .dropDuplicates()
 
     return output_df
 
@@ -237,34 +246,37 @@ def massive_processing_with_l1_geo_area_from_competitor_store_daily(shape,master
     return return_df
 
 
-def l1_geo_time_spent_by_location_daily(df, sql):
-    df = df.filter('partition_date >= 20200401 and partition_date <= 20200627')
+def l1_geo_time_spent_by_location_daily(input_df, config):
+    input_df = input_df.filter('partition_date >= 20200401 and partition_date <= 20200627')
 
     # ----- Data Availability Checks -----
-    if check_empty_dfs([df]):
+    if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
-    df = data_non_availability_and_missing_check(df=df,
-                                                 grouping="daily",
-                                                 par_col="partition_date",
-                                                 target_table_name="l1_geo_time_spent_by_location_daily")
+    input_df = data_non_availability_and_missing_check(df=input_df,
+                                                       grouping="daily",
+                                                       par_col="partition_date",
+                                                       target_table_name="l1_geo_time_spent_by_location_daily")
 
-    if check_empty_dfs([df]):
+    if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
     # ----- Transformation -----
-    sql = """
-        select 
-            imsi,
-            location_id,
-            sum(duration) as sum_duration,
-            event_partition_date,
-            start_of_week,
-            start_of_month
-    from geo_cust_location_visit_hr
-    group by imsi, location_id, event_partition_date, start_of_week, start_of_month
-    """
-    return_df = massive_processing_time_spent_daily(df, sql, "l1_geo_time_spent_by_location_daily", 'partition_date')
+    # sql = """
+    #     select
+    #         imsi,
+    #         location_id,
+    #         sum(duration) as duration,
+    #         event_partition_date,
+    #         start_of_week,
+    #         start_of_month
+    #     from geo_cust_location_visit_hr
+    #     group by imsi, location_id, event_partition_date, start_of_week, start_of_month
+    # """
+    return_df = massive_processing_time_spent_daily(input_df,
+                                                    config,
+                                                    "l1_geo_time_spent_by_location_daily",
+                                                    'partition_date')
 
     return return_df
 
@@ -982,14 +994,16 @@ def massive_processing_time_spent_daily(data_frame: DataFrame, sql, output_df_ca
         logging.info("running for dates {0}".format(str(curr_item)))
         small_df = data_frame.filter(f.col(partition_col).isin(*[curr_item]))
         small_df = add_event_week_and_month_from_yyyymmdd(small_df, partition_col)
-        small_df.createOrReplaceTempView('geo_cust_location_visit_hr')
-        output_df = ss.sql(sql)
+        # small_df.createOrReplaceTempView('geo_cust_location_visit_hr')
+        # output_df = ss.sql(sql)
+        output_df = node_from_config(small_df, sql)
         CNTX.catalog.save(output_df_catalog, output_df)
     logging.info("Final date to run for {0}".format(str(first_item)))
     return_df = data_frame.filter(f.col(partition_col).isin(*[first_item]))
     return_df = add_event_week_and_month_from_yyyymmdd(return_df, partition_col)
-    return_df.createOrReplaceTempView('geo_cust_location_visit_hr')
-    return_df = ss.sql(sql)
+    # return_df.createOrReplaceTempView('geo_cust_location_visit_hr')
+    # return_df = ss.sql(sql)
+    return_df = node_from_config(return_df, sql)
     return return_df
 
 

@@ -34,12 +34,11 @@ def geo_to_l1_pipeline_master():
         [
             ### runnig flag == 1
             node(
-                l1_geo_mst_location_near_poi,
+                l1_geo_mst_location_near_shop_master,
                 ["l0_geo_mst_cell_masterplan_master",
-                 "l0_geo_mst_lm_poi_shape_master",
-                 "params:l1_location_of_visit_ais_store_daily"
+                 "l0_geo_mst_lm_poi_shape_master"
                  ],
-                "l1_location_of_visit_ais_store_daily"
+                "l1_geo_mst_location_near_shop_master"
             ),
 
 
