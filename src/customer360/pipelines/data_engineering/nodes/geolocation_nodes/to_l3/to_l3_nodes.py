@@ -24,7 +24,7 @@ conf = os.getenv("CONF", None)
 # running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 
 
-def l3_geo_top3_visit_exclude_homework_monthly(input_df: DataFrame, homework_df: DataFrame) -> DataFrame:
+def l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, homework_df: DataFrame) -> DataFrame:
     """
     Args:
         input_df: geo_cust_location_monthly_hr

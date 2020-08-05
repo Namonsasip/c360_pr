@@ -1,3 +1,112 @@
+## Last Update for recheck
+#--------------------------l3_geo_home_work_location_id---------------------------------
+int_l3_geo_home_location_id_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l3_features/int_l3_geo_home_location_id_monthly/
+  file_format: parquet
+
+int_l3_geo_work_location_id_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l3_features/int_l3_geo_work_location_id_monthly/
+  file_format: parquet
+
+int_l3_geo_work_location_id_last3_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l3_features/l3_geo_work_location_id_monthly/
+  file_format: parquet
+
+int_l3_geo_home_location_id_last3_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l3_features/l3_geo_home_location_id_monthly/
+  file_format: parquet
+
+l3_geo_home_work_location_id_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l3_features/l3_geo_home_work_location_id_monthly/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l0_monthly'
+    target_layer: 'l3_monthly'
+#  load_args:
+#    increment_flag: 'yes'
+#    lookup_table_name: 'l4_geo_home_work_location_id'
+#    read_layer: 'l3_monthly'
+#    target_layer: 'l4_monthly'
+#    lookback: '3'
+
+l3_geo_home_work_location_id_monthly_for_l3_geo_top3_visit_exclude_hw_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l3_features/l3_geo_home_work_location_id_monthly/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'l3_geo_top3_visit_exclude_hw_monthly'
+    read_layer: 'l3_monthly'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
+l3_geo_home_work_location_id_monthly_for_l4_geo_home_work_location_id:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l3_features/l3_geo_home_work_location_id_monthly/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'l4_geo_home_work_location_id'
+    read_layer: 'l3_monthly'
+    target_layer: 'l4_monthly'
+    lookback: '3'
+
+l3_geo_home_work_location_id_monthly_for_l4_geo_store_close_to_home:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l3_features/l3_geo_home_work_location_id_monthly/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'geo_store_close_to_home'
+    read_layer: 'l3_monthly'
+    target_layer: 'l4_monthly'
+    lookback: '3'
+
+l3_geo_home_work_location_id_monthly_for_l4_geo_store_close_to_work:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l3_features/l3_geo_home_work_location_id_monthly/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'geo_store_close_to_work'
+    read_layer: 'l3_monthly'
+    target_layer: 'l4_monthly'
+    lookback: '3'
+
+#------------------------l3_geo_top3_visit_exclude_hw_monthly-----------------------------------
+l3_geo_top3_visit_exclude_hw_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l3_features/l3_geo_top3_visit_exclude_hw_monthly/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'no'
+    mode: "overwrite"
+    partitionBy: "start_of_month"
+    read_layer: 'l3_monthly'
+    target_layer: 'l3_monthly'
+  load_args:
+    increment_flag: 'no'
+    lookup_table_name: 'geo_top_visit_exclude_homework'
+    read_layer: 'l3_monthly'
+    target_layer: 'l4_monthly'
+    lookback: '3'
+
+#====================================================================================================
+
 #-----------------------l3_geo_time_spent_by_location_monthly------------------------------------
 l3_geo_time_spent_by_location_monthly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -156,114 +265,6 @@ l3_the_favourite_locations_monthly:
     partitionBy: "start_of_month"
     read_layer: 'l1_daily'
     target_layer: 'l3_monthly'
-
-#--------------------------l3_geo_home_work_location_id---------------------------------
-int_l3_geo_home_location_id_monthly:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l3_features/int_l3_geo_home_location_id_monthly/
-  file_format: parquet
-
-int_l3_geo_work_location_id_monthly:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l3_features/int_l3_geo_work_location_id_monthly/
-  file_format: parquet
-
-int_l3_geo_work_location_id_last3_monthly:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l3_features/l3_geo_work_location_id_monthly/
-  file_format: parquet
-
-int_l3_geo_home_location_id_last3_monthly:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l3_features/l3_geo_home_location_id_monthly/
-  file_format: parquet
-
-l3_geo_home_work_location_id_monthly:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l3_features/l3_geo_home_work_location_id_monthly/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  save_args:
-    increment_flag: 'yes'
-    mode: "overwrite"
-    partitionBy: "start_of_month"
-    read_layer: 'l0_monthly'
-    target_layer: 'l3_monthly'
-#  load_args:
-#    increment_flag: 'yes'
-#    lookup_table_name: 'l4_geo_home_work_location_id'
-#    read_layer: 'l3_monthly'
-#    target_layer: 'l4_monthly'
-#    lookback: '3'
-
-l3_geo_home_work_location_id_monthly_for_l3_geo_top3_visit_exclude_homework_monthly:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l3_features/l3_geo_home_work_location_id_monthly/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'l3_geo_top3_visit_exclude_homework_monthly'
-    read_layer: 'l3_monthly'
-    target_layer: 'l3_monthly'
-    lookback: '3'
-
-l3_geo_home_work_location_id_monthly_for_l4_geo_home_work_location_id:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l3_features/l3_geo_home_work_location_id_monthly/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'no'
-    lookup_table_name: 'l4_geo_home_work_location_id'
-    read_layer: 'l3_monthly'
-    target_layer: 'l4_monthly'
-    lookback: '3'
-
-l3_geo_home_work_location_id_monthly_for_l4_geo_store_close_to_home:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l3_features/l3_geo_home_work_location_id_monthly/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'no'
-    lookup_table_name: 'geo_store_close_to_home'
-    read_layer: 'l3_monthly'
-    target_layer: 'l4_monthly'
-    lookback: '3'
-
-l3_geo_home_work_location_id_monthly_for_l4_geo_store_close_to_work:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l3_features/l3_geo_home_work_location_id_monthly/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'no'
-    lookup_table_name: 'geo_store_close_to_work'
-    read_layer: 'l3_monthly'
-    target_layer: 'l4_monthly'
-    lookback: '3'
-
-
-#------------------------l3_geo_top_visit_exclude_homework-----------------------------------
-l3_geo_top_visit_exclude_homework:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l3_features/geo_top_visit_exclude_homework/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  save_args:
-    increment_flag: 'no'
-    mode: "overwrite"
-    partitionBy: "start_of_month"
-    read_layer: 'l3_monthly'
-    target_layer: 'l3_monthly'
-  load_args:
-    increment_flag: 'no'
-    lookup_table_name: 'geo_top_visit_exclude_homework'
-    read_layer: 'l3_monthly'
-    target_layer: 'l4_monthly'
-    lookback: '3'
-
 
 #----------------------- l3_call_location_home_work_monthly -------------------------
 l3_call_location_home_work_monthly:
