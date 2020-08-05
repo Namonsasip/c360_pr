@@ -24,40 +24,22 @@ l1_location_of_visit_ais_store_daily:
   output_catalog: "l1_location_of_visit_ais_store_daily"
   partition_num_per_job: 5
 
-
-#=======================================================================
-
-l1_area_from_ais_store_daily:
+l1_geo_top3_voice_location_daily:
   where_clause: ""
   feature_list:
-    duration: "first_value(DURATION)"
-    num_of_times: "first_value(NUM_OF_TIMES_PER_DAY)"
-  granularity: "imsi,event_partition_date,start_of_week,start_of_month"
-  output_catalog: "l1_geo_area_from_ais_store_daily"
+  granularity:  ""
+  output_catalog: "l1_geo_top3_voice_location_daily"
+  partition_num_per_job: 5
 
-l1_area_from_competitor_store_daily:
-  where_clause: ""
-  feature_list:
-    duration: "first_value(DURATION)"
-    num_of_times: "first_value(NUM_OF_TIMES_PER_DAY)"
-  granularity: "imsi,event_partition_date,start_of_week,start_of_month"
-  output_catalog: "l1_geo_area_from_competitor_store_daily"
-
-l1_geo_cust_subseqently_distance_daily:
-  where_clause: ""
-  feature_list:
-    distance_km: "sum(distance_km)"
-  granularity: "imsi, event_partition_date"
-  output_catalog: "l1_geo_cust_subseqently_distance_daily"
-
-###total_distance_km###
 l1_geo_total_distance_km_daily:
   where_clause: ""
   feature_list:
-    sum_distance_km: "sum(total_distance_km)"
-  granularity: "imsi,event_partition_date,start_of_week,start_of_month"
+    distance_km: ""
+  granularity: ""
   output_catalog: "l1_geo_total_distance_km_daily"
+  partition_num_per_job: 5
 
+#=======================================================================
 
 ###Number of Unique Cells Used###
 l1_geo_number_unique_cell_id:

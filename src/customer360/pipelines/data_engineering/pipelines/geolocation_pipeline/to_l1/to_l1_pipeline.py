@@ -62,6 +62,25 @@ def geo_to_l1_pipeline_to_run2():
                 "l1_geo_visit_ais_store_location_daily"
             ),
 
+            ### WAIT
+            node(
+                massive_processing_with_int_l1_geo_top3_voice_location_daily,
+                ["l0_usage_sum_voice_location_daily_for_l1_geo_top3_cells_on_voice_usage",
+                 "l0_geo_mst_cell_masterplan_master",
+                 "params:int_l1_geo_top3_voice_location_daily"
+                 ],
+                "int_l1_geo_top3_voice_location_daily"
+            ),
+
+            ### WAIT
+            node(
+                l1_geo_top3_voice_location_daily,
+                ["int_l1_geo_top3_voice_location_daily",
+                 "params:int_l1_geo_top3_voice_location_daily"
+                 ],
+                "l1_geo_top3_voice_location_daily"
+            ),
+
         ], name="geo_to_l1_pipeline_to_run2"
     )
 
@@ -112,24 +131,7 @@ def geo_to_l1_pipeline(**kwargs):
                 "l1_number_of_unique_cell_daily"
             ),
 
-            ### FINISH
-            ##Top_3_cells_on_voice_usage###
-            node(
-                massive_processing_with_l1_geo_top3_cells_on_voice_usage,
-                ["l0_usage_sum_voice_location_daily_for_l1_geo_top3_cells_on_voice_usage",
-                 "l0_geo_mst_cell_masterplan_for_l1_geo_top3_cells_on_voice_usage",
-                 "l0_profile_customer_profile_ma_for_l1_geo_top3_cells_on_voice_usage"
-                 ],
-                "l1_geo_top3_cells_on_voice_usage"
-            ),
 
-            ### FINISH
-            ##distance_top_call###
-            node(
-                l1_geo_distance_top_call,
-                "l1_geo_top3_cells_on_voice_usage",
-                "l1_geo_distance_top_call"
-            ),
 
         ], name="geo_to_l1_pipeline"
     )

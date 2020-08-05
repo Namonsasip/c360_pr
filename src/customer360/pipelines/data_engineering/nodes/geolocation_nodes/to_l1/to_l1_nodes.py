@@ -2,23 +2,17 @@ from pyspark.sql import DataFrame, Column, Window
 from pyspark.sql import functions as F
 from pyspark.sql.types import *
 
-from customer360.pipelines.data_engineering.nodes.usage_nodes.to_l1.to_l1_nodes import gen_max_sql
 from customer360.utilities.config_parser import node_from_config
 from kedro.context.context import load_context
 from pathlib import Path
 import logging
 import os
-import statistics
 
-from customer360.utilities.re_usable_functions import add_start_of_week_and_month, union_dataframes_with_missing_cols, \
-    execute_sql, add_event_week_and_month_from_yyyymmdd, __divide_chunks, check_empty_dfs, \
+from customer360.utilities.re_usable_functions import add_event_week_and_month_from_yyyymmdd, check_empty_dfs, \
     data_non_availability_and_missing_check
 from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 
 conf = os.getenv("CONF", None)
-# run_mode = os.getenv("DATA_AVAILABILITY_CHECKS", None)
-# log = logging.getLogger(__name__)
-# running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 
 
 def get_max_date_from_master_data(input_df: DataFrame, par_col='partition_date'):
@@ -185,10 +179,64 @@ def l1_geo_visit_ais_store_location_daily(cust_visit: DataFrame, shape_df: DataF
     return output_df
 
 
+def int_l1_geo_top3_voice_location_daily(usagevoice_df: DataFrame,
+                                         master_df: DataFrame,
+                                         config_param: str) -> DataFrame:
+    join_df = usagevoice_df.join(master_df, ['lac', 'ci'], 'left').where("service_type in ('VOICE','VOLTE')") \
+        .groupBy('access_method_num', 'location_id', 'latitude', 'longitude',
+                 'event_partition_date', 'start_of_week', 'start_of_month') \
+        .agg(F.sum(F.col('no_of_call') + F.col('no_of_inc')).alias('total_call'))
+
+    win = Window().partitionBy('access_method_num', 'event_partition_date', 'start_of_week', 'start_of_month') \
+        .orderBy(F.col('total_call').desc())
+
+    output_df = join_df.withColumn('rank', F.row_number().over(win)).where('rank <= 3')
+    output_df = output_df.groupBy('access_method_num', 'event_partition_date', 'start_of_week', 'start_of_month') \
+        .agg(F.max(F.when((F.col('rank') == 1), F.col('location'))).alias('top_voice_location_1st'),
+             F.max(F.when((F.col('rank') == 1), F.col('location'))).alias('top_voice_latitude_1st'),
+             F.max(F.when((F.col('rank') == 1), F.col('location'))).alias('top_voice_longitude_1st'),
+             F.max(F.when((F.col('rank') == 2), F.col('location'))).alias('top_voice_location_2st'),
+             F.max(F.when((F.col('rank') == 1), F.col('location'))).alias('top_voice_latitude_2st'),
+             F.max(F.when((F.col('rank') == 1), F.col('location'))).alias('top_voice_longitude_2st'),
+             F.max(F.when((F.col('rank') == 3), F.col('location'))).alias('top_voice_location_3st'),
+             F.max(F.when((F.col('rank') == 1), F.col('location'))).alias('top_voice_latitude_3st'),
+             F.max(F.when((F.col('rank') == 1), F.col('location'))).alias('top_voice_longitude_3st')
+             )
+
+    return output_df
+
+def l1_geo_top3_voice_location_daily(input_df: DataFrame, config_param: str) -> DataFrame:
+    output_df = input_df.select('access_method_num', 'event_partition_date', 'start_of_week', 'start_of_month')
+
+    # Calculate max distance sum(dis(1,2), dis(1,3))
+    sql_query = """
+            select
+                a.imsi
+                ,case
+                    when b.latitude is null and b.longitude is null then 0 
+                    else cast((acos(cos(radians(90-a.latitude))*
+                        cos(radians(90-b.latitude))+sin(radians(90-a.latitude))*
+                        sin(radians(90-b.latitude))*cos(radians(a.longitude - b.longitude)))*6371) as decimal(13,2)) 
+                    end as top_distance_km
+                ,a.event_partition_date
+                ,a.start_of_week
+                ,a.start_of_month
+            from geo_top3_cells_on_voice_usage a
+            left join geo_top3_cells_on_voice_usage b
+                on a.imsi = b.imsi
+                and a.event_partition_date = b.event_partition_date
+                and b.rnk >= 2
+            where a.rnk = 1
+            order by 1,3,4,5
+        """
+
+    return output_df
+
+
 def massive_processing_with_l1_geo_visit_ais_store_location_daily(cust_visit_df: DataFrame,
-                                                                 shape_df: DataFrame,
-                                                                 config_param: str
-                                                                 ) -> DataFrame:
+                                                                  shape_df: DataFrame,
+                                                                  config_param: str
+                                                                  ) -> DataFrame:
     output_df = _massive_processing_with_join_daily(cust_visit_df,
                                                     shape_df,
                                                     config_param,
@@ -256,190 +304,51 @@ def massive_processing_with_l1_geo_total_distance_km_daily(cust_visit_df: DataFr
     return output_df
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def massive_processing_with_l1_geo_top3_cells_on_voice_usage(usage_df,geo_df,profile_df):
-    usage_df = usage_df.filter('partition_date >= 20200401 and partition_date <= 20200627')
-    profile_df = profile_df.filter('partition_month = 201911')
-    # ----- Data Availability Checks -----
-    if check_empty_dfs([usage_df, geo_df, profile_df]):
+def massive_processing_with_int_l1_geo_top3_voice_location_daily(usagevoice_df: DataFrame,
+                                                                 master_df: DataFrame,
+                                                                 config_param: str
+                                                                 ) -> DataFrame:
+    if check_empty_dfs([usagevoice_df, master_df]):
         return get_spark_empty_df()
 
-    usage_df = data_non_availability_and_missing_check(df=usage_df,
-                                                       grouping="daily",
-                                                       par_col="partition_date",
-                                                       target_table_name="l1_geo_top3_cells_on_voice_usage")
+    usagevoice_df = data_non_availability_and_missing_check(df=usagevoice_df,
+                                                            grouping="daily",
+                                                            par_col="partition_date",
+                                                            target_table_name="l1_geo_top3_voice_location_daily")
 
-    profile_df = data_non_availability_and_missing_check(df=profile_df,
-                                                         grouping="monthly",
-                                                         par_col="partition_month",
-                                                         target_table_name="l1_geo_top3_cells_on_voice_usage")
-
-    geo_df = get_max_date_from_master_data(geo_df, 'partition_date')
-
-    min_value = union_dataframes_with_missing_cols(
-        [
-            usage_df.select(
-                F.to_date(F.date_trunc('month',
-                                       F.to_date(F.max(F.col("partition_date")).cast(StringType()), 'yyyyMMdd'))).alias(
-                    "max_date")),
-            profile_df.select(
-                F.to_date(F.max(F.col("partition_month")).cast(StringType()), 'yyyyMM').alias("max_date")),
-        ]
-    ).select(F.min(F.col("max_date")).alias("min_date")).collect()[0].min_date
-
-    usage_df = usage_df.filter(
-        F.to_date(
-            F.date_trunc("month", F.to_date(F.col("partition_date").cast(StringType()), 'yyyyMMdd'))) <= min_value)
-
-    profile_df = profile_df.filter(F.to_date(F.col("partition_month").cast(StringType()), 'yyyyMM') <= min_value)
-
-    if check_empty_dfs([usage_df, profile_df]):
+    if check_empty_dfs([usagevoice_df]):
         return get_spark_empty_df()
 
-    # ----- Transformation -----
-    def divide_chunks(l, n):
-        # looping till length l
-        for i in range(0, len(l), n):
-            yield l[i:i + n]
-
-    ss = get_spark_session()
-    CNTX = load_context(Path.cwd(), env=conf)
-    data_frame = usage_df
-    dates_list = data_frame.select('partition_date').distinct().collect()
-    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
-    mvv_array = sorted(mvv_array)
-    logging.info("Dates to run for {0}".format(str(mvv_array)))
-    mvv_new = list(divide_chunks(mvv_array, 5))
-    add_list = mvv_new
-    first_item = add_list[-1]
-    add_list.remove(first_item)
-    for curr_item in add_list:
-        logging.info("running for dates {0}".format(str(curr_item)))
-        small_df = data_frame.filter(F.col('partition_date').isin(*[curr_item]))
-        output_df = l1_geo_top3_cells_on_voice_usage(small_df, geo_df, profile_df)
-        CNTX.catalog.save("l1_geo_top3_cells_on_voice_usage", output_df)
-    logging.info("Final date to run for {0}".format(str(first_item)))
-    return_df = data_frame.filter(F.col('partition_date').isin(*[first_item]))
-    return_df = l1_geo_top3_cells_on_voice_usage(return_df, geo_df, profile_df)
-    return return_df
+    output_df = _massive_processing_with_join_daily(usagevoice_df,
+                                                    master_df,
+                                                    config_param,
+                                                    int_l1_geo_top3_voice_location_daily)
+    return output_df
 
 
-###Top_3_cells_on_voice_usage###
-def l1_geo_top3_cells_on_voice_usage(usage_df, geo_df, profile_df):
-    # ----- Transformation -----
-    ### config
-    spark = get_spark_session()
-
-    ### add partition_date
-    l0_df_usage1 = usage_df.withColumn("event_partition_date", F.to_date(usage_df.date_id.cast(DateType()), "yyyyMMdd"))
-
-    # create temp
-    l0_df_usage1.createOrReplaceTempView('usage_sum_voice_location_daily')
-    geo_df.createOrReplaceTempView('geo_mst_cell_masterplan')
-    profile_df.createOrReplaceTempView('profile_customer_profile_ma')
-
-    ### spark_sql
-    sql_query = """
-        select
-            c.imsi
-            ,b.latitude
-            ,b.longitude
-            ,sum(a.no_of_call+a.no_of_inc) as total_call
-            ,a.event_partition_date
-        from usage_sum_voice_location_daily a
-        join profile_customer_profile_ma c
-            on a.access_method_num = c.access_method_num
-        left join geo_mst_cell_masterplan b
-            on a.lac = b.lac
-            and a.ci = b.ci
-        where service_type in ('VOICE','VOLTE')
-        group by 1,2,3,5
-    """
-    l1_df = spark.sql(sql_query)
-    l1_df.createOrReplaceTempView('L4_temp_table')
-
-    sql_query1 = """
-        select
-            imsi
-            ,latitude
-            ,longitude
-            ,total_call
-            ,row_number() over (partition by imsi,event_partition_date order by total_call desc) as rnk
-            ,event_partition_date
-        from L4_temp_table
-        where imsi is not null
-            and latitude is not null 
-            and longitude is not null
-    """
-    l1_df1 = spark.sql(sql_query1)
-    l1_df1 = l1_df1.withColumn("start_of_week", F.to_date(F.date_trunc('week', l1_df1.event_partition_date)))
-    l1_df1 = l1_df1.withColumn("start_of_month", F.to_date(F.date_trunc('month', l1_df1.event_partition_date)))
-    # l1_df2 = node_from_config(l1_df1, sql)
-
-    return l1_df1
 
 
-###distance_top_call###
-def l1_geo_distance_top_call(df):
-    # ----- Data Availability Checks -----
-    if check_empty_dfs([df]):
-        return get_spark_empty_df()
 
-    df = data_non_availability_and_missing_check(df=df,
-                                                 grouping="daily",
-                                                 par_col="event_partition_date",
-                                                 target_table_name="l1_geo_distance_top_call")
 
-    if check_empty_dfs([df]):
-        return get_spark_empty_df()
 
-    # ----- Transformation -----
-    ### config
-    spark = get_spark_session()
 
-    # create temp
-    df.createOrReplaceTempView('geo_top3_cells_on_voice_usage')
 
-    sql_query = """
-        select
-            a.imsi
-            ,case
-                when b.latitude is null and b.longitude is null then 0 
-                else cast((acos(cos(radians(90-a.latitude))*cos(radians(90-b.latitude))+sin(radians(90-a.latitude))*sin(radians(90-b.latitude))*cos(radians(a.longitude - b.longitude)))*6371) as decimal(13,2)) 
-                end as top_distance_km
-            ,a.event_partition_date
-            ,a.start_of_week
-            ,a.start_of_month
-        from geo_top3_cells_on_voice_usage a
-        left join geo_top3_cells_on_voice_usage b
-            on a.imsi = b.imsi
-            and a.event_partition_date = b.event_partition_date
-            and b.rnk >= 2
-        where a.rnk = 1
-        order by 1,3,4,5
-    """
-    l1_df = spark.sql(sql_query)
 
-    return l1_df
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def massive_processing_with_l1_the_favourite_locations_daily(usage_df_location,geo_df_masterplan):
