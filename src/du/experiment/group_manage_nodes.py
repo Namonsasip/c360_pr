@@ -451,22 +451,23 @@ def update_du_control_group(
     test_group_name,
     test_group_flag,
 ):
-    # spark = get_spark_session()
-    # l0_du_pre_experiment3_20200725.selectExpr(
-    #     "subscription_identifier as old_subscription_identifier",
-    #     "date(register_date) as register_date",
-    #     "group_name",
-    #     "group_flag",
-    #     "date('2020-07-25') as control_group_created_date",
-    # ).createOrReplaceTempView("temp_view_load")
-    # spark.sql("DROP TABLE IF EXISTS prod_dataupsell.l0_du_pre_experiment3_groups")
-    # spark.sql(
-    #     """CREATE TABLE prod_dataupsell.l0_du_pre_experiment3_groups
-    #     USING DELTA
-    #     PARTITIONED BY (control_group_created_date)
-    #     AS
-    #     SELECT * FROM temp_view_load"""
-    # )
+    spark = get_spark_session()
+    l0_du_pre_experiment3_20200801= catalog.load("l0_du_pre_experiment3_20200801")
+    l0_du_pre_experiment3_20200801.selectExpr(
+        "subscription_identifier as old_subscription_identifier",
+        "date(register_date) as register_date",
+        "group_name",
+        "group_flag",
+        "date('2020-08-01') as control_group_created_date",
+    ).createOrReplaceTempView("temp_view_load")
+    spark.sql("DROP TABLE IF EXISTS prod_dataupsell.l0_du_pre_experiment3_groups")
+    spark.sql(
+        """CREATE TABLE prod_dataupsell.l0_du_pre_experiment3_groups
+        USING DELTA
+        PARTITIONED BY (control_group_created_date)
+        AS
+        SELECT * FROM temp_view_load"""
+    )
     # l0_du_pre_experiment3_groups = catalog.load("l0_du_pre_experiment3_groups")
     #
     # sampling_rate = [0.8, 0.022, 0.086, 0.003, 0.086, 0.003]

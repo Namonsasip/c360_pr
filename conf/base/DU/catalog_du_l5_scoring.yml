@@ -25,3 +25,21 @@ l5_du_scored:
     database: prod_dataupsell
     table: l5_du_scored
     write_mode: overwrite
+
+l5_du_offer_score_with_package_preference:
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: prod_dataupsell
+  table: du_offer_score_with_package_preference
+  write_mode: overwrite
+
+l5_du_offer_score_optimal_offer:
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: prod_dataupsell
+  table: du_offer_score_optimal_offer
+  write_mode: overwrite
+
+l5_du_offer_daily_eligible_list:
+  type: datasets.spark_hive_dataset.SparkHiveDataSet
+  database: prod_dataupsell
+  table: du_offer_daily_eligible_list
+  write_mode: overwrite
