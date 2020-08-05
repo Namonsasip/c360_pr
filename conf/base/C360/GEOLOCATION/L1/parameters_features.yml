@@ -24,13 +24,6 @@ l1_location_of_visit_ais_store_daily:
   output_catalog: "l1_location_of_visit_ais_store_daily"
   partition_num_per_job: 5
 
-l1_geo_top3_voice_location_daily:
-  where_clause: ""
-  feature_list:
-  granularity:  ""
-  output_catalog: "l1_geo_top3_voice_location_daily"
-  partition_num_per_job: 5
-
 l1_geo_total_distance_km_daily:
   where_clause: ""
   feature_list:
@@ -39,14 +32,29 @@ l1_geo_total_distance_km_daily:
   output_catalog: "l1_geo_total_distance_km_daily"
   partition_num_per_job: 5
 
-#=======================================================================
-
-###Number of Unique Cells Used###
-l1_geo_number_unique_cell_id:
+int_l1_geo_top3_voice_location_daily:
   where_clause: ""
   feature_list:
-    data_num_unique_cell: "durations_num"
-  granularity: "event_partition_date"
+  granularity:  ""
+  output_catalog: "int_l1_geo_top3_voice_location_daily"
+  partition_num_per_job: 5
+
+l1_geo_top3_voice_location_daily:
+  where_clause: ""
+  feature_list:
+  granularity:  ""
+  output_catalog: "l1_geo_top3_voice_location_daily"
+  partition_num_per_job: 5
+
+l1_geo_data_session_location_daily:
+  where_clause: ""
+  feature_list:
+  granularity:  ""
+  output_catalog: "l1_geo_data_session_location_daily"
+  partition_num_per_job: 5
+
+
+
 
 
 

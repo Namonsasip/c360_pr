@@ -2,6 +2,7 @@ from kedro.pipeline import Pipeline, node
 
 from customer360.pipelines.data_engineering.nodes.geolocation_nodes.to_l1.to_l1_nodes import *
 
+
 def geo_to_l1_pipeline_to_run():
     return Pipeline(
         [
@@ -39,9 +40,34 @@ def geo_to_l1_pipeline_to_run():
     )
 
 
-def geo_to_l1_pipeline_to_run2():
+def geo_to_l1_pipeline_master():
     return Pipeline(
         [
+            ### WAIT
+            node(
+                l1_geo_mst_location_near_shop_master,
+                ["l0_geo_mst_cell_masterplan_master",
+                 "l0_geo_mst_lm_poi_shape_master"
+                 ],
+                "l1_geo_mst_location_near_shop_master"
+            ),
+
+            ### WAIT
+            node(
+                l1_geo_mst_location_ais_shop_master,
+                ["l0_geo_mst_lm_poi_shape_master"
+                 ],
+                "l1_geo_mst_location_ais_shop_master"
+            )
+
+        ], name="geo_to_l1_pipeline_master"
+    )
+
+
+def geo_to_l1_pipeline(**kwargs):
+    return Pipeline(
+        [
+
             ### WAIT
             node(
                 l1_geo_time_spent_by_store_daily,
@@ -74,63 +100,22 @@ def geo_to_l1_pipeline_to_run2():
 
             ### WAIT
             node(
-                l1_geo_top3_voice_location_daily,
+                massive_processing_with_l1_geo_top3_voice_location_daily,
                 ["int_l1_geo_top3_voice_location_daily",
                  "params:int_l1_geo_top3_voice_location_daily"
                  ],
                 "l1_geo_top3_voice_location_daily"
             ),
 
-        ], name="geo_to_l1_pipeline_to_run2"
-    )
-
-
-def geo_to_l1_pipeline_master():
-    return Pipeline(
-        [
             ### WAIT
             node(
-                l1_geo_mst_location_near_shop_master,
-                ["l0_geo_mst_cell_masterplan_master",
-                 "l0_geo_mst_lm_poi_shape_master"
+                massive_processing_with_l1_geo_data_session_location_daily,
+                ["l0_usage_sum_data_location_daily_for_l1_geo_top3_cells_on_voice_usage",
+                 "l0_geo_mst_cell_masterplan_master",
+                 "params:l1_geo_data_session_location_daily"
                  ],
-                "l1_geo_mst_location_near_shop_master"
+                "l1_geo_data_session_location_daily"
             ),
-
-            ### WAIT
-            node(
-                l1_geo_mst_location_ais_shop_master,
-                ["l0_geo_mst_lm_poi_shape_master"
-                 ],
-                "l1_geo_mst_location_ais_shop_master"
-            )
-
-        ], name="geo_to_l1_pipeline_master"
-    )
-
-
-def geo_to_l1_pipeline(**kwargs):
-    return Pipeline(
-        [
-            ## FINISH
-            ##47 the_favourite_locations
-            node(
-                massive_processing_with_l1_the_favourite_locations_daily,
-                ["l0_usage_sum_data_location_daily_for_l1_the_favourite_locations",
-                 "l0_geo_mst_cell_masterplan_for_l1_the_favourite_locations"
-                 ],
-                "l1_the_favourite_locations_daily"
-            ),
-
-            ### FINISH
-            ## Number of Unique Cells Used ###
-            node(
-                massive_processing_with_l1_number_of_unique_cell_daily,
-                ["l0_usage_sum_data_location_daily_for_l1_number_of_unique_cell_daily"
-                 ],
-                "l1_number_of_unique_cell_daily"
-            ),
-
 
 
         ], name="geo_to_l1_pipeline"

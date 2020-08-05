@@ -293,7 +293,6 @@ def create_c360_pipeline(**kwargs) -> Dict[str, Pipeline]:
         "geo_to_l3_home_work_pipeline": geo_to_l3_home_work_pipeline(),
         "geo_to_l1_pipeline_master": geo_to_l1_pipeline_master(),
         "geo_to_l1_pipeline_to_run":geo_to_l1_pipeline_to_run(),
-        "geo_to_l1_pipeline_to_run2":geo_to_l1_pipeline_to_run2(),
         "geo_to_l1_pipeline": geo_to_l1_pipeline(),
         "geo_to_l2_pipeline": geo_to_l2_pipeline(),
         "geo_to_l3_pipeline": geo_to_l3_pipeline(),

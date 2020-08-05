@@ -23,30 +23,6 @@ l1_geo_time_spent_by_location_daily_for_l1_geo_time_spent_by_store_daily:
     target_layer: 'l1_daily'
     lookback: '0'
 
-l1_geo_time_spent_by_location_daily_for_l2_geo_time_spent_by_location_weekly:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l1_features/geo_time_spent_by_location_daily/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'geo_time_spent_by_location_weekly'
-    read_layer: 'l1_daily'
-    target_layer: 'l2_weekly'
-    lookback: '0'
-
-l1_geo_time_spent_by_location_daily_for_l3_geo_time_spent_by_location_monthly:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l1_features/geo_time_spent_by_location_daily/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  load_args:
-    increment_flag: 'yes'
-    lookup_table_name: 'geo_time_spent_by_location_monthly'
-    read_layer: 'l1_daily'
-    target_layer: 'l3_monthly'
-    lookback: '0'
-
 #----------------------- l1_geo_count_visit_by_location_daily -------------------------
 l1_geo_count_visit_by_location_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -79,15 +55,16 @@ l1_geo_mst_location_near_shop_master:
   filepath: base_path/GEO/l1_features/l1_geo_mst_location_near_shop_master/
   file_format: parquet
 
+#----------------------- l1_geo_mst_location_ais_shop_master -------------------------
 l1_geo_mst_location_ais_shop_master:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/GEO/l1_features/l1_geo_mst_location_ais_shop_master/
   file_format: parquet
 
-#----------------------- l1_geo_area_from_ais_store_daily -------------------------
-l1_geo_area_from_ais_store_daily:
+#----------------------- l1_geo_visit_ais_store_location_daily -------------------------
+l1_geo_visit_ais_store_location_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l1_features/geo_area_from_ais_store_daily/
+  filepath: base_path/GEO/l1_features/l1_geo_visit_ais_store_location_daily/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   save_args:
@@ -96,6 +73,87 @@ l1_geo_area_from_ais_store_daily:
     partitionBy: "event_partition_date"
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
+
+#----------------------- l1_geo_total_distance_km_daily -------------------------
+l1_geo_total_distance_km_daily:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l1_features/l1_geo_total_distance_km_daily/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+
+#----------------------- l1_geo_top3_voice_location_daily -------------------------
+int_l1_geo_top3_voice_location_daily:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l1_features/int_l1_geo_top3_voice_location_daily/
+  file_format: parquet
+
+l1_geo_top3_voice_location_daily:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l1_features/l1_geo_top3_voice_location_daily/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+
+#----------------------- l1_geo_data_session_location_daily -------------------------
+l1_geo_data_session_location_daily:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l1_features/l1_geo_data_session_location_daily/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  save_args:
+    increment_flag: 'yes'
+    mode: "overwrite"
+    partitionBy: "event_partition_date"
+    read_layer: 'l0_daily'
+    target_layer: 'l1_daily'
+
+#=============================================================================================================
+#=============================================================================================================
+#=============================================================================================================
+#=============================================================================================================
+
+
+
+
+
+
+
+
+l1_geo_time_spent_by_location_daily_for_l2_geo_time_spent_by_location_weekly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l1_features/geo_time_spent_by_location_daily/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'geo_time_spent_by_location_weekly'
+    read_layer: 'l1_daily'
+    target_layer: 'l2_weekly'
+    lookback: '0'
+
+l1_geo_time_spent_by_location_daily_for_l3_geo_time_spent_by_location_monthly:
+  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
+  filepath: base_path/GEO/l1_features/geo_time_spent_by_location_daily/
+  file_format: parquet
+  metadata_table_path: 'metadata_path'
+  load_args:
+    increment_flag: 'yes'
+    lookup_table_name: 'geo_time_spent_by_location_monthly'
+    read_layer: 'l1_daily'
+    target_layer: 'l3_monthly'
+    lookback: '0'
+
 
 l1_geo_area_from_ais_store_daily_for_l2_geo_area_from_ais_store_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -158,19 +216,6 @@ l1_geo_area_from_competitor_store_daily_for_l3_geo_area_from_competitor_store_mo
     target_layer: 'l3_monthly'
     lookback: '0'
 
-#----------------------- l1_geo_total_distance_km -------------------------
-l1_geo_total_distance_km_daily:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l1_features/geo_total_distance_km_daily/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  save_args:
-    increment_flag: 'yes'
-    mode: "overwrite"
-    partitionBy: "event_partition_date"
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-
 l1_geo_total_distance_km_daily_for_l2_geo_total_distance_km_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/GEO/l1_features/geo_total_distance_km_daily/
@@ -195,43 +240,6 @@ l1_geo_total_distance_km_daily_for_l3_geo_total_distance_km_monthly:
     target_layer: 'l3_monthly'
     lookback: '0'
 
-#----------------------- l1_geo_use_traffic_home_work -------------------------
-#l1_geo_use_traffic_home_work:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/GEO/l1_features/geo_use_traffic_most_location/
-#  file_format: parquet
-#  metadata_table_path: 'metadata_path'
-#  save_args:
-#    increment_flag: 'yes'
-#    mode: "overwrite"
-#    partitionBy: "event_partition_date"
-#    read_layer: 'l0_daily'
-#    target_layer: 'l1_daily'
-
-#l1_geo_use_traffic_home_work_for_l2_geo_use_traffic_home_work_weekly:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/GEO/l1_features/geo_use_traffic_most_location/
-#  file_format: parquet
-#  metadata_table_path: 'metadata_path'
-#  load_args:
-#    increment_flag: 'yes'
-#    lookup_table_name: 'l2_geo_use_traffic_home_work_weekly'
-#    read_layer: 'l1_daily'
-#    target_layer: 'l2_weekly'
-#    lookback: '0'
-
-#l1_geo_use_traffic_home_work_weekly_for_l3_geo_use_traffic_home_work_monthly:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/GEO/l1_features/geo_use_traffic_most_location/
-#  file_format: parquet
-#  metadata_table_path: 'metadata_path'
-#  load_args:
-#    increment_flag: 'yes'
-#    lookup_table_name: 'l3_geo_use_traffic_home_work_monthly'
-#    read_layer: 'l1_daily'
-#    target_layer: 'l3_monthly'
-#    lookback: '0'
-
 #----------------------- l1_geo_number_of_bs_used -------------------------
 l1_geo_number_of_bs_used:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
@@ -251,19 +259,6 @@ l1_geo_number_of_bs_used:
     read_layer: 'l0_daily'
     target_layer: 'l1_daily'
 
-#----------------------- l1_geo_cust_subseqently_distance -------------------------
-l1_geo_cust_subseqently_distance_daily:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l1_features/geo_cust_subseqently_distance_daily/
-  file_format: parquet
-  metadata_table_path: 'metadata_path'
-  save_args:
-    increment_flag: 'yes'
-    mode: "overwrite"
-    partitionBy: "event_partition_date"
-    read_layer: 'l0_daily'
-    target_layer: 'l1_daily'
-
 l1_geo_cust_subseqently_distance_daily_for_l2_geo_cust_subseqently_distance_weekly:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/GEO/l1_features/geo_cust_subseqently_distance_daily/
@@ -274,32 +269,6 @@ l1_geo_cust_subseqently_distance_daily_for_l2_geo_cust_subseqently_distance_week
     lookup_table_name: 'l2_geo_cust_subseqently_distance_weekly'
     read_layer: 'l1_daily'
     target_layer: 'l2_weekly'
-
-#----------------------- l1_geo_call_location_home_work -------------------------
-
-#l1_geo_call_location_home_work_daily_for_l2_geo_call_location_home_work_weekly:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/GEO/l1_features/geo_call_location_home_work_daily/
-#  file_format: parquet
-#  metadata_table_path: 'metadata_path'
-#  load_args:
-#    increment_flag: 'yes'
-#    lookup_table_name: 'l2_geo_call_location_home_work_weekly'
-#    read_layer: 'l1_daily'
-#    target_layer: 'l2_weekly'
-#    lookback: '0'
-#
-#l1_geo_call_location_home_work_daily_for_l3_geo_call_location_home_work_monthly:
-#  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-#  filepath: base_path/GEO/l1_features/geo_call_location_home_work_daily/
-#  file_format: parquet
-#  metadata_table_path: 'metadata_path'
-#  load_args:
-#    increment_flag: 'yes'
-#    lookup_table_name: 'l3_geo_call_location_home_work_monthly'
-#    read_layer: 'l1_daily'
-#    target_layer: 'l3_monthly'
-#    lookback: '30'
 
 #----------------------- l1_number_of_unique_cell -------------------------
 l1_number_of_unique_cell_daily:

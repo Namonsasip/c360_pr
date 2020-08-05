@@ -102,33 +102,10 @@ def l3_geo_top3_visit_exclude_hw_monthly(input_df: DataFrame, homework_df: DataF
 
     result_df = result_df.groupBy('imsi', 'start_of_month') \
         .agg(F.max(F.when((F.col('row_num') == 1), F.col('location'))).alias('top_location_1st'),
-             F.max(F.when((F.col('row_num') == 2), F.col('location'))).alias('top_location_2st'),
-             F.max(F.when((F.col('row_num') == 3), F.col('location'))).alias('top_location_3st')
+             F.max(F.when((F.col('row_num') == 2), F.col('location'))).alias('top_location_2nd'),
+             F.max(F.when((F.col('row_num') == 3), F.col('location'))).alias('top_location_3rd')
              )
-    # result = sum_duration_3mo.join(homework, [sum_duration_3mo.imsi == homework.imsi,
-    #                                           sum_duration_3mo.location_id == homework.home_weekday_location_id,
-    #                                           sum_duration_3mo.start_of_month == homework.start_of_month],
-    #                                'left').select(sum_duration_3mo.imsi, 'location_id', 'sum_duration',
-    #                                               sum_duration_3mo.start_of_month)
-    # result = result.join(homework,
-    #                      [result.imsi == homework.imsi, result.location_id == homework.home_weekend_location_id,
-    #                       result.start_of_month == homework.start_of_month],
-    #                      'left').select(result.imsi, 'location_id', 'sum_duration', result.start_of_month)
-    # result = result.join(homework,
-    #                      [result.imsi == homework.imsi, result.location_id == homework.work_location_id,
-    #                       result.start_of_month == homework.start_of_month],
-    #                      'left').select(result.imsi, 'location_id', 'sum_duration', result.start_of_month)
-    #
-    # win = Window.partitionBy("start_of_month", "imsi").orderBy(F.col("sum_duration").desc(), F.col("location_id"))
-    # result = result.withColumn("rank", F.row_number().over(win))
-    #
-    # rank1 = result.where('rank=1').withColumn('top_location_1st', F.col('location_id')).drop('location_id', 'rank',
-    #                                                                                          'sum_duration')
-    # rank2 = result.where('rank=2').withColumn('top_location_2nd', F.col('location_id')).drop('location_id', 'rank',
-    #                                                                                          'sum_duration')
-    # rank3 = result.where('rank=3').withColumn('top_location_3rd', F.col('location_id')).drop('location_id', 'rank',
-    #                                                                                          'sum_duration')
-    # df = rank1.join(rank2, ['imsi', 'start_of_month'], 'full').join(rank3, ['imsi', 'start_of_month'], 'full')
+
     return result_df
 
 
