@@ -601,3 +601,155 @@ def build_streaming_sdr_sub_app_hourly_for_l3_monthly(input_df: DataFrame,
                  "application_group"]).agg(f.sum(f.col("dw_kbyte")).alias("dw_kbyte"))
 
     return return_df
+
+
+def build_streaming_ufdr_streaming_quality_for_l3_monthly(input_df: DataFrame,
+                                                          master_df: DataFrame,
+                                                          cust_profile_df: DataFrame) -> DataFrame:
+    """
+    :param input_df:
+    :param master_df:
+    :param cust_profile_df:
+    :return:
+    """
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df, cust_profile_df]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(
+        df=input_df,
+        grouping="daily",
+        par_col="partition_date",
+        target_table_name="l1_streaming_app_quality_features")
+
+    cust_profile_df = data_non_availability_and_missing_check(
+        df=cust_profile_df,
+        grouping="daily",
+        par_col="event_partition_date",
+        target_table_name="l1_streaming_app_quality_features")
+
+    if check_empty_dfs([input_df, cust_profile_df]):
+        return get_spark_empty_df()
+
+    # ################################# End Implementing Data availability checks ###############################
+
+    w_recent_partition = Window.partitionBy("application_id").orderBy(f.col("partition_month").desc())
+    max_master_application = master_df.select("partition_month") \
+        .agg(f.max("partition_month").alias("partition_month"))
+
+    master_application = master_df.join(max_master_application, ["partition_month"]) \
+        .withColumn("rank", f.row_number().over(w_recent_partition)) \
+        .where(f.col("rank") == 1) \
+        .withColumnRenamed("application_id", "application")
+
+    application_list = ["youtube", "youtube_go", "youtubebyclick", "trueid", "truevisions", "monomaxx", "qqlive",
+                        "linetv", "ais_play", "netflix", "viu", "viutv", "iflix", "spotify", "jooxmusic",
+                        "twitchtv", "bigo", "valve_steam"]
+
+    master_application = master_application.filter(f.lower(f.col("application_name")).isin(application_list))
+
+    sel_cols = ['access_method_num',
+                'event_partition_date',
+                "subscription_identifier",
+                "start_of_week",
+                "start_of_month",
+                ]
+    join_cols = ['access_method_num', 'event_partition_date', "start_of_week", "start_of_month"]
+
+    data_frame = input_df
+    data_frame = data_frame.withColumnRenamed("msisdn", "access_method_num") \
+                           .withColumnRenamed("app_id", "application")
+
+    data_frame = add_event_week_and_month_from_yyyymmdd(data_frame, "partition_date")
+
+    return_df = data_frame.join(master_application, ["application"])
+
+    return_df = return_df.join(cust_profile_df.select(sel_cols), join_cols)
+    return_df = return_df.withColumn("calc_column",
+                f.col("streaming_dw_packets") /
+                (((f.col("STREAMING_Download_DELAY") * f.lit(1000) * f.lit(8)) / f.lit(1024)) / f.lit(1024)))
+
+    return_df = return_df.select("subscription_identifier", "access_method_num", "event_partition_date",
+                                 "start_of_month", "application_name", "application_group", "calc_column")
+
+    return return_df
+
+
+def build_streaming_ufdr_streaming_favourite_base_station_for_l3_monthly(input_df: DataFrame,
+                                                                         master_df: DataFrame,
+                                                                         geo_master_plan: DataFrame,
+                                                                         cust_profile_df: DataFrame) -> DataFrame:
+    """
+    :param input_df:
+    :param master_df:
+    :param cust_profile_df:
+    :param geo_master_plan:
+    :return:
+    """
+    ################################# Start Implementing Data availability checks #############################
+    if check_empty_dfs([input_df, cust_profile_df, geo_master_plan]):
+        return get_spark_empty_df()
+
+    input_df = data_non_availability_and_missing_check(
+        df=input_df,
+        grouping="daily",
+        par_col="partition_date",
+        target_table_name="l1_streaming_base_station_features")
+
+    cust_profile_df = data_non_availability_and_missing_check(
+        df=cust_profile_df,
+        grouping="daily",
+        par_col="event_partition_date",
+        target_table_name="l1_streaming_base_station_features")
+
+    if check_empty_dfs([input_df, cust_profile_df, geo_master_plan]):
+        return get_spark_empty_df()
+
+    # ################################# End Implementing Data availability checks ###############################
+
+    w_recent_partition = Window.partitionBy("application_id").orderBy(f.col("partition_month").desc())
+    max_master_application = master_df.select("partition_month") \
+        .agg(f.max("partition_month").alias("partition_month"))
+
+    master_application = master_df.join(max_master_application, ["partition_month"]) \
+        .withColumn("rank", f.row_number().over(w_recent_partition)) \
+        .where(f.col("rank") == 1) \
+        .withColumnRenamed("application_id", "application")
+
+    application_list = ["youtube", "youtube_go", "youtubebyclick", "trueid", "truevisions", "monomaxx", "qqlive",
+                        "facebook", "linetv", "ais_play", "netflix", "viu", "viutv", "iflix", "spotify", "jooxmusic",
+                        "twitchtv", "bigo", "valve_steam"]
+
+    master_application = master_application.filter(f.lower(f.col("application_name")).isin(application_list))
+
+    geo_master_plan_max = geo_master_plan.agg(f.max("partition_date").alias("partition_date"))
+    geo_master_plan = geo_master_plan.join(geo_master_plan_max, ["partition_date"]) \
+        .select("soc_cgi_hex", "location_id")
+
+    sel_cols = ['access_method_num',
+                'event_partition_date',
+                "subscription_identifier",
+                "start_of_week",
+                "start_of_month",
+                ]
+    join_cols = ['access_method_num', 'event_partition_date', "start_of_week", "start_of_month"]
+
+    data_frame = input_df
+    data_frame = data_frame.withColumnRenamed("msisdn", "access_method_num") \
+        .withColumnRenamed("app_id", "application")
+
+    data_frame = add_event_week_and_month_from_yyyymmdd(data_frame, "partition_date")
+
+    return_df = data_frame.join(master_application, ["application"])
+
+    return_df = return_df.join(cust_profile_df.select(sel_cols), join_cols)
+
+    return_df = return_df. \
+        groupBy(["subscription_identifier", "access_method_num", "event_partition_date", "start_of_month",
+                 "application_name", "LAST_SAI_CGI_ECGI"]).agg(f.sum("L4_DW_THROUGHPUT").alias("download"))
+
+    return_df = return_df.withColumnRenamed("LAST_SAI_CGI_ECGI", "soc_cgi_hex")
+
+    return_df = return_df.join(geo_master_plan, ["soc_cgi_hex"])
+
+    return return_df

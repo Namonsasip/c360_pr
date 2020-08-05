@@ -64,7 +64,7 @@ l0_mobile_app_master:
 
 l0_streaming_soc_mobile_app_daily_for_l1_streaming_session_duration_feature:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/stream_ufdr_streaming/ # TODO: Change to real path provided by AIS
+  filepath: base_path/STREAM/stream_ufdr_streaming/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
@@ -74,16 +74,16 @@ l0_streaming_soc_mobile_app_daily_for_l1_streaming_session_duration_feature:
     target_layer: 'l1_daily'
     lookback: '0'
 
-l0_streaming_soc_mobile_app_daily_for_l3_streaming_favourite_location_features:
+l0_streaming_soc_mobile_app_daily_for_l1_streaming_base_station_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/STREAM/stream_ufdr_streaming/ # TODO: Change to real path provided by AIS
+  filepath: base_path/STREAM/stream_ufdr_streaming/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l3_streaming_favourite_location_features'
+    lookup_table_name: 'l1_streaming_base_station_features'
     read_layer: 'l0_daily'
-    target_layer: 'l3_monthly'
+    target_layer: 'l1_daily'
     lookback: '0'
 
 l0_streaming_sdr_sub_app_hourly_for_l1_streaming_sdr_sub_app_hourly:
@@ -98,15 +98,15 @@ l0_streaming_sdr_sub_app_hourly_for_l1_streaming_sdr_sub_app_hourly:
     target_layer: 'l1_daily'
     lookback: '0'
 
-l0_streaming_soc_mobile_app_daily_for_l3_streaming_app_quality_features:
+l0_streaming_soc_mobile_app_daily_for_l1_streaming_app_quality_features:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/STREAM/stream_ufdr_streaming/
   file_format: parquet
   metadata_table_path: 'metadata_path'
   load_args:
     increment_flag: 'yes'
-    lookup_table_name: 'l3_streaming_app_quality_features'
+    lookup_table_name: 'l1_streaming_app_quality_features'
     read_layer: 'l0_daily'
-    target_layer: 'l3_monthly'
+    target_layer: 'l1_daily'
     lookback: '0'
 
