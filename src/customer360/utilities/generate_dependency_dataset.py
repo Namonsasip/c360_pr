@@ -31,11 +31,11 @@ def generate_dependency_dataset():
         if type(catalog._data_sets[data_set]).__name__ == "SparkDbfsDataSet":
             parent_path = get_path(data_set)
             lookup_name = catalog._data_sets[data_set].__getattribute__("_lookup_table_name")
-            if lookup_name and lookup_name != 'int_l1_streaming_sum_per_day':
+            if lookup_name:
                 try:
                     child_path = get_path(lookup_name)
                 except Exception as e:
-                    child_path = get_path(lookup_name + '@save')
+                    print("could not find the child path for {}".format(lookup_name))
         # This is to create two columns with dependency DFS
         all_list_dependency.append((parent_path, child_path))
 

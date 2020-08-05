@@ -37,18 +37,6 @@ from src.customer360.pipelines.data_engineering.nodes.complaints_nodes.to_l3.to_
 def complaints_to_l3_pipeline(**kwargs):
     return Pipeline(
         [
-            # node(
-            #     dac_for_complaints_to_l3_pipeline_from_l1,
-            #     ["l1_complaints_call_to_competitor_features_for_l3_complaints_call_to_competitor_features",
-            #      "params:l3_complaints_call_to_competitor_features_tbl"],
-            #     "int_l1_complaints_call_to_competitor_features_for_l3_complaints_call_to_competitor_features"
-            # ),
-            # node(
-            #     node_from_config,
-            #     ["int_l1_complaints_call_to_competitor_features_for_l3_complaints_call_to_competitor_features",
-            #      "params:l3_complaints_call_to_competitor_features"],
-            #     "l3_complaints_call_to_competitor_features"
-            # ),
 
             node(
                 run_for_complaints_to_l3_pipeline_from_l1,
@@ -60,18 +48,6 @@ def complaints_to_l3_pipeline(**kwargs):
                 "l3_complaints_call_to_competitor_features"
             ),
 
-            # node(
-            #     dac_for_complaints_to_l3_pipeline_from_l1,
-            #     ["l1_complaints_nps_after_call_for_l3_complaints_nps_after_call",
-            #      "params:l3_complaints_nps_after_call_tbl"],
-            #     "int_l1_complaints_nps_after_call_for_l3_complaints_nps_after_call"
-            # ),
-            # node(
-            #     node_from_config,
-            #     ["int_l1_complaints_nps_after_call_for_l3_complaints_nps_after_call",
-            #      "params:l3_complaints_nps_scoring"],
-            #     "l3_complaints_nps_after_call"
-            # ),
             node(
                 run_for_complaints_to_l3_pipeline_from_l1,
                 ["l1_complaints_nps_after_call_for_l3_complaints_nps_after_call",
@@ -82,40 +58,6 @@ def complaints_to_l3_pipeline(**kwargs):
                 "l3_complaints_nps_after_call"
             ),
 
-            # node(
-            #     dac_for_complaints_to_l3_pipeline_from_l1,
-            #     ["l1_complaints_nps_after_chatbot_for_l3_complaints_nps_after_chatbot",
-            #      "params:l3_complaints_nps_after_chatbot_tbl"],
-            #     "int_l1_complaints_nps_after_chatbot_for_l3_complaints_nps_after_chatbot"
-            # ),
-            # node(
-            #     node_from_config,
-            #     ["int_l1_complaints_nps_after_chatbot_for_l3_complaints_nps_after_chatbot",
-            #      "params:l3_complaints_nps_scoring"],
-            #     "l3_complaints_nps_after_chatbot"
-            # ),
-            # node(
-            #     run_for_complaints_to_l3_pipeline_from_l1,
-            #     ["l1_complaints_nps_after_chatbot_for_l3_complaints_nps_after_chatbot",
-            #      "params:l3_complaints_nps_after_chatbot_tbl",
-            #      "params:l3_complaints_nps_scoring",
-            #      "params:exception_partition_list_for_monthly_l1_complaints_nps_after_chatbot"
-            #      ],
-            #     "l3_complaints_nps_after_chatbot"
-            # ),
-
-            # node(
-            #     dac_for_complaints_to_l3_pipeline_from_l1,
-            #     ["l1_complaints_nps_after_store_visit_for_l3_complaints_nps_after_store_visit",
-            #      "params:l3_complaints_nps_after_store_visit_tbl"],
-            #     "int_l1_complaints_nps_after_store_visit_for_l3_complaints_nps_after_store_visit"
-            # ),
-            # node(
-            #     node_from_config,
-            #     ["int_l1_complaints_nps_after_store_visit_for_l3_complaints_nps_after_store_visit",
-            #      "params:l3_complaints_nps_scoring"],
-            #     "l3_complaints_nps_after_store_visit"
-            # )
             node(
                 run_for_complaints_to_l3_pipeline_from_l1,
                 ["l1_complaints_nps_after_store_visit_for_l3_complaints_nps_after_store_visit",
