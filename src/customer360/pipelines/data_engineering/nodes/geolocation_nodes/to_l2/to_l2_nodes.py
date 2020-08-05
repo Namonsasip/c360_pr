@@ -15,9 +15,6 @@ from customer360.utilities.re_usable_functions import add_start_of_week_and_mont
 from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 
 conf = os.getenv("CONF", None)
-# run_mode = os.getenv("DATA_AVAILABILITY_CHECKS", None)
-# log = logging.getLogger(__name__)
-# running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 
 
 def l2_geo_time_spent_by_location_weekly(df,sql):
@@ -370,55 +367,49 @@ def l2_same_favourite_location_weekend_weekday_weekly(l0_geo_cust_cell_visit_tim
     # Assign day_of_week to weekday or weekend
     geo_df = l0_geo_cust_cell_visit_time_df.withColumn("start_of_week", F.to_date(F.date_trunc('week', "time_in"))) \
         .withColumn("start_of_month", F.to_date(F.date_trunc('month', "time_in")))
-    #print(" ========================= geo_df ======================")
-
     geo_df.createOrReplaceTempView('geo_df')
 
     sql_query = """
-    select 
-    imsi,
-    start_of_week, 
-    case when dayofweek(time_in) = 2 or dayofweek(time_in) = 3 or dayofweek(time_in) = 4 or dayofweek(time_in) = 5 \
-    or dayofweek(time_in) = 6 then "weekday" else "weekend" end as weektype,location_id,sum(duration) as duration_sumtime \
-    from geo_df where imsi is not NULL 
-    group by 1,2,3,4 
-    order by 1,2,3,4,5 desc"""
+        select 
+            imsi,
+            start_of_week, 
+            case when dayofweek(time_in) = 2 or dayofweek(time_in) = 3 or dayofweek(time_in) = 4 or dayofweek(time_in) = 5 \
+                or dayofweek(time_in) = 6 then "weekday" else "weekend" end as weektype,
+            location_id,
+            sum(duration) as duration_sumtime \
+        from geo_df where imsi is not NULL 
+        group by 1,2,3,4 
+        order by 1,2,3,4,5 desc
+    """
     l2_geo = spark.sql(sql_query)
     l2_geo.createOrReplaceTempView('l2_geo')
-    #print(" ========================= l2_geo ======================")
 
     # where weekday seelcted
     sql_query = """select * from l2_geo where weektype = "weekday" """
     l2_geo_1 = spark.sql(sql_query)
     l2_geo_1.createOrReplaceTempView('l2_geo_1')
-    #print(" ========================= l2_geo_1 ======================")
 
     # where weekend seelcted
     sql_query = """select * from l2_geo where weektype = "weekend" """
-    #l2_geo_2.createOrReplaceTempView('l2_geo_2')
     l2_geo_2 = spark.sql(sql_query)
     l2_geo_2.createOrReplaceTempView('l2_geo_2')
-    #print(" ========================= l2_geo_2 ======================")
 
     # Join weekday & weeekend & added Row_number desc
-    sql_query = """ select 
-    a.imsi
-    ,a.start_of_week
-    ,a.location_id
-    ,sum(a.duration_sumtime) as duration_sum
-    ,ROW_NUMBER() OVER(PARTITION BY a.imsi,a.start_of_week ORDER BY sum(a.duration_sumtime) desc) as ROW
-    from l2_geo_1 as a
-    left join l2_geo_2 as b
-    on a.imsi = b.imsi and
-    a.location_id = b.location_id
-    group by 1,2,3
-	order by 1,2,3,4,5 desc
+    sql_query = """
+        select 
+            a.imsi
+            ,a.start_of_week
+            ,a.location_id
+            ,sum(a.duration_sumtime) as duration_sum
+            ,ROW_NUMBER() OVER(PARTITION BY a.imsi,a.start_of_week ORDER BY sum(a.duration_sumtime) desc) as ROW
+        from l2_geo_1 as a
+        left join l2_geo_2 as b
+            on a.imsi = b.imsi and
+            a.location_id = b.location_id
+        group by 1,2,3
+        order by 1,2,3,4,5 desc
 	"""
     l2 = spark.sql(sql_query)
-    #l2.createOrReplaceTempView('l2')
-    # print(" ========================= l2 ======================")
-
-    print('DEBUG : ------------------------------------------------> l2_same_favourite_location_weekend_weekday_weekly')
 
     return l2
 
