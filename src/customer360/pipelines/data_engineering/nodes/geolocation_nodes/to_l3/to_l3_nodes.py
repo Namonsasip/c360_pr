@@ -7,8 +7,6 @@ from pathlib import Path
 from pyspark.sql import Window
 import logging
 import os
-from pyspark.sql import types as T
-import statistics
 
 from customer360.utilities.re_usable_functions import add_start_of_week_and_month, union_dataframes_with_missing_cols, \
     execute_sql, add_event_week_and_month_from_yyyymmdd, __divide_chunks, check_empty_dfs, \
@@ -121,216 +119,6 @@ def get_max_date_from_master_data(input_df: DataFrame, par_col='partition_date')
     input_df = input_df.where('{0}={1}'.format(par_col, str(max_date)))
 
     return input_df
-
-
-def l3_geo_time_spent_by_location_monthly(df, sql):
-    # ----- Data Availability Checks -----
-    if check_empty_dfs([df]):
-        return get_spark_empty_df()
-
-    df = data_non_availability_and_missing_check(df=df, grouping="monthly",
-                                                 par_col="event_partition_date",
-                                                 target_table_name="l3_geo_time_spent_by_location_monthly",
-                                                 missing_data_check_flg='N')
-    if check_empty_dfs([df]):
-        return get_spark_empty_df()
-
-    df = massive_processing_monthly(df, sql, "l3_geo_time_spent_by_location_monthly", 'start_of_month')
-
-    print('DEBUG : ------------------------------------------------> l3_geo_time_spent_by_location_monthly')
-    df.show(10)
-
-    return df
-
-
-def l3_geo_area_from_ais_store_monthly(df, sql):
-    # ----- Data Availability Checks -----
-    if check_empty_dfs([df]):
-        return get_spark_empty_df()
-
-    df = data_non_availability_and_missing_check(df=df, grouping="monthly",
-                                                 par_col="event_partition_date",
-                                                 target_table_name="l3_geo_area_from_ais_store_monthly",
-                                                 missing_data_check_flg='N')
-    if check_empty_dfs([df]):
-        return get_spark_empty_df()
-
-    df = node_from_config(df, sql)
-
-    print('DEBUG : ------------------------------------------------> l3_geo_area_from_ais_store_monthly')
-    df.show(10)
-
-    return df
-
-
-def l3_geo_area_from_competitor_store_monthly(df, sql):
-    # ----- Data Availability Checks -----
-    if check_empty_dfs([df]):
-        return get_spark_empty_df()
-
-    df = data_non_availability_and_missing_check(df=df, grouping="monthly",
-                                                 par_col="event_partition_date",
-                                                 target_table_name="l3_geo_area_from_competitor_store_monthly",
-                                                 missing_data_check_flg='N')
-    if check_empty_dfs([df]):
-        return get_spark_empty_df()
-
-    df = node_from_config(df, sql)
-
-    print('DEBUG : ------------------------------------------------> l3_geo_area_from_competitor_store_monthly')
-    df.show(10)
-
-    return df
-
-
-###total_distance_km###
-def l3_geo_total_distance_km_monthly(df, sql):
-    # ----- Data Availability Checks -----
-    if check_empty_dfs([df]):
-        return get_spark_empty_df()
-
-    df = data_non_availability_and_missing_check(df=df, grouping="monthly",
-                                                 par_col="event_partition_date",
-                                                 target_table_name="l3_geo_total_distance_km_monthly",
-                                                 missing_data_check_flg='N')
-    if check_empty_dfs([df]):
-        return get_spark_empty_df()
-
-    df = node_from_config(df, sql)
-
-    print('DEBUG : ------------------------------------------------> l3_geo_total_distance_km_monthly')
-    df.show(10)
-
-    return df
-
-
-###Top_3_cells_on_voice_usage###
-def l3_geo_top3_cells_on_voice_usage(df, sql):
-    # ----- Data Availability Checks -----
-    if check_empty_dfs([df]):
-        return get_spark_empty_df()
-
-    df = data_non_availability_and_missing_check(df=df, grouping="monthly",
-                                                 par_col="event_partition_date",
-                                                 target_table_name="l3_geo_top3_cells_on_voice_usage",
-                                                 missing_data_check_flg='N')
-    if check_empty_dfs([df]):
-        return get_spark_empty_df()
-
-    ### config
-    spark = get_spark_session()
-
-    df = node_from_config(df, sql)
-    df.createOrReplaceTempView('top3_cells_on_voice_usage')
-    sql_query = """
-        select
-            imsi
-            ,latitude
-            ,longitude
-            ,total_call
-            ,start_of_month
-            ,row_number() over (partition by imsi, start_of_month order by total_call desc) as rnk
-        from top3_cells_on_voice_usage
-        """
-    df = spark.sql(sql_query)
-    df = df.where("rnk <= 3")
-
-    return df
-
-
-def l3_geo_distance_top_call(df):
-    # ----- Data Availability Checks -----
-    if check_empty_dfs([df]):
-        return get_spark_empty_df()
-
-    df = data_non_availability_and_missing_check(df=df, grouping="monthly",
-                                                 par_col="event_partition_date",
-                                                 target_table_name="l3_geo_distance_top_call",
-                                                 missing_data_check_flg='N')
-    if check_empty_dfs([df]):
-        return get_spark_empty_df()
-
-    df = df.groupBy("imsi", "start_of_month").agg(
-        F.max("top_distance_km").alias("max_distance_top_call"),
-        F.min("top_distance_km").alias("min_distance_top_call"),
-        F.avg("top_distance_km").alias("avg_distance_top_call"),
-        F.when(F.sqrt(F.avg(df.top_distance_km * df.top_distance_km) - F.pow(F.avg(df.top_distance_km), F.lit(2))).cast(
-            "string") == 'NaN', 0).otherwise(
-            F.sqrt(F.avg(df.top_distance_km * df.top_distance_km) - F.pow(F.avg(df.top_distance_km), F.lit(2)))).alias(
-            "sd_distance_top_call"),
-        F.sum("top_distance_km").alias("sum_distance_top_call"))
-
-    return df
-
-
-# 47 The favourite location
-def l3_the_favourite_locations_monthly(df):
-    # ----- Data Availability Checks -----
-    if check_empty_dfs([df]):
-        return get_spark_empty_df()
-
-    df = data_non_availability_and_missing_check(df=df, grouping="monthly",
-                                                 par_col="event_partition_date",
-                                                 target_table_name="l3_the_favourite_locations_monthly",
-                                                 missing_data_check_flg='N')
-    if check_empty_dfs([df]):
-        return get_spark_empty_df()
-
-    ### config
-    spark = get_spark_session()
-    df.createOrReplaceTempView('l1_df_the_favourite_location_daily')
-    sql_query = """
-    select
-    mobile_no
-    ,start_of_month
-    ,lac	
-    ,ci
-    ,sum(vol_3g) as vol_3g
-    ,sum(vol_4g) as vol_4g
-    ,sum(vol_5g) as vol_5g
-    from l1_df_the_favourite_location_daily
-    group by 1,2,3,4
-    order by 2,1,3,4
-    """
-    l3 = spark.sql(sql_query)
-
-    print('DEBUG : ------------------------------------------------> l3_the_favourite_locations_monthly')
-    l3.show(10)
-
-    return l3
-
-
-def massive_processing_monthly(data_frame: DataFrame, sql, output_df_catalog, partition_col) -> DataFrame:
-    """
-    :param data_frame:
-    :param dict_obj:
-    :return:
-    """
-
-    def divide_chunks(l, n):
-        # looping till length l
-        for i in range(0, len(l), n):
-            yield l[i:i + n]
-
-    CNTX = load_context(Path.cwd(), env=conf)
-    data_frame = data_frame
-    dates_list = data_frame.select(partition_col).distinct().collect()
-    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
-    mvv_array = sorted(mvv_array)
-    logging.info("Dates to run for {0}".format(str(mvv_array)))
-    mvv_new = list(divide_chunks(mvv_array, 1))
-    add_list = mvv_new
-    first_item = add_list[-1]
-    add_list.remove(first_item)
-    for curr_item in add_list:
-        logging.info("running for dates {0}".format(str(curr_item)))
-        small_df = data_frame.filter(f.col(partition_col).isin(*[curr_item]))
-        small_df = node_from_config(small_df, sql)
-        CNTX.catalog.save(output_df_catalog, small_df)
-    logging.info("Final date to run for {0}".format(str(first_item)))
-    return_df = data_frame.filter(f.col(partition_col).isin(*[first_item]))
-    return_df = node_from_config(return_df, sql)
-    return return_df
 
 
 def massive_processing_for_int_home_work_monthly(input_df: DataFrame, config_home: str, config_work: str
@@ -656,9 +444,8 @@ def l3_geo_work_area_center_average_monthly(visti_hr, home_work):
 
     # Drop duplicate
     visit_hr_agg_monthly_3month = visit_hr_agg_monthly_3month \
-        .drop_duplicates(
-        subset=['imsi', 'start_of_month', 'location_id', 'latitude', 'longitude', '3_duration', '3_incident', '3_days']) \
-        .select('imsi', 'start_of_month', 'location_id', 'latitude', 'longitude', '3_duration', '3_incident', '3_days')
+        .select('imsi', 'start_of_month', 'location_id', 'latitude', 'longitude', '3_duration', '3_incident', '3_days')\
+        .drop_duplicates()
 
     visit_hr_agg_monthly_3month = visit_hr_agg_monthly_3month.withColumnRenamed('3_duration', 'duration') \
         .withColumnRenamed('3_incident', 'incident') \
@@ -723,6 +510,42 @@ def l3_geo_work_area_center_average_monthly(visti_hr, home_work):
         .select(work_center_average_diff.imsi, work_center_average_diff.start_of_month, 'work_avg_latitude',
                 'work_avg_longitude', 'distance_difference', 'radius')
     return work_final
+
+
+def l3_geo_use_traffic_favorite_location_monthly(data_df: DataFrame,
+                                                 homework_df: DataFrame,
+                                                 top3visit_df: DataFrame,
+                                                 param_config: str) -> DataFrame:
+    # Use column: vol_all and call_traffic
+    return None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ###Traffic_fav_location###
@@ -917,16 +740,6 @@ def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
 
     ### where
     spark = get_spark_session()
-    # profile_customer_profile_ma_A = profile_customer_profile_ma.agg(F.max("partition_date")).collect()[0][0]
-    # profile_customer_profile_ma = profile_customer_profile_ma.where("partition_date = '" + str(profile_customer_profile_ma_A) + "'")
-
-    # profile_last_date = profile_customer_profile_ma.agg(F.max("partition_month")).collect()[0][0]
-    # profile_customer_profile_ma = profile_customer_profile_ma.where("partition_month = '"+str(profile_last_date)+"'")
-    # geo_home_work_last_date = geo_home_work_data.agg(F.max("start_of_month")).collect()[0][0]
-    # geo_home_work_data = geo_home_work_data.where("start_of_month = '" + str(geo_home_work_last_date)+"'")
-    # geo_exclude_home_work_last_date = geo_exclude_home_work.agg(F.max("start_of_month")).collect()[0][0]
-    # geo_exclude_home_work = geo_exclude_home_work.where("start_of_month = '" + str(geo_exclude_home_work_last_date)+"'")
-
     geo_exclude_home_work = _geo_top_visit_exclude_homework(geo_exclude_home_work, geo_home_work_data)
 
     l3_data_traffic_home_work_fn(geo_mst_cell_masterplan,
@@ -968,7 +781,6 @@ def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
     """)
 
     Home_Work = Home_Work.withColumn("event_partition_date", F.to_date(Home_Work.DATE_ID.cast(DateType()), "yyyyMMdd"))
-    # Home_Work = Home_Work.withColumn("start_of_week", F.to_date(F.date_trunc('week', "event_partition_date")))
     Home_Work = Home_Work.withColumn("start_of_month", F.to_date(F.date_trunc('month', "event_partition_date")))
     Home_Work.createTempView('GEO_TEMP_04')
 
@@ -1005,7 +817,6 @@ def l3_data_traffic_home_work_top1_top2(geo_mst_cell_masterplan,
 
     # print('DEBUG : ------------------------------------------------> l3_data_traffic_home_work_top1_top2')
     # log.info('test debug :---------')
-    log.info(data_traffic_location.show(10))
     return data_traffic_location
 
 
