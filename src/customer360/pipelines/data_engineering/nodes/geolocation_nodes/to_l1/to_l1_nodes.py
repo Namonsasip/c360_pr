@@ -198,14 +198,14 @@ def int_l1_geo_top3_voice_location_daily(usagevoice_df: DataFrame,
     output_df = join_df.withColumn('rank', F.row_number().over(win)).where('rank <= 3')
     output_df = output_df.groupBy('access_method_num', 'event_partition_date', 'start_of_week', 'start_of_month') \
         .agg(F.max(F.when((F.col('rank') == 1), F.col('location'))).alias('top_voice_location_1st'),
-             F.max(F.when((F.col('rank') == 1), F.col('location'))).alias('top_voice_latitude_1st'),
-             F.max(F.when((F.col('rank') == 1), F.col('location'))).alias('top_voice_longitude_1st'),
+             F.max(F.when((F.col('rank') == 1), F.col('latitude'))).alias('top_voice_latitude_1st'),
+             F.max(F.when((F.col('rank') == 1), F.col('longitude'))).alias('top_voice_longitude_1st'),
              F.max(F.when((F.col('rank') == 2), F.col('location'))).alias('top_voice_location_2nd'),
-             F.max(F.when((F.col('rank') == 1), F.col('location'))).alias('top_voice_latitude_2nd'),
-             F.max(F.when((F.col('rank') == 1), F.col('location'))).alias('top_voice_longitude_2nd'),
+             F.max(F.when((F.col('rank') == 2), F.col('latitude'))).alias('top_voice_latitude_2nd'),
+             F.max(F.when((F.col('rank') == 2), F.col('longitude'))).alias('top_voice_longitude_2nd'),
              F.max(F.when((F.col('rank') == 3), F.col('location'))).alias('top_voice_location_3rd'),
-             F.max(F.when((F.col('rank') == 1), F.col('location'))).alias('top_voice_latitude_3rd'),
-             F.max(F.when((F.col('rank') == 1), F.col('location'))).alias('top_voice_longitude_3rd')
+             F.max(F.when((F.col('rank') == 3), F.col('latitude'))).alias('top_voice_latitude_3rd'),
+             F.max(F.when((F.col('rank') == 3), F.col('longitude'))).alias('top_voice_longitude_3rd')
              )
 
     return output_df
