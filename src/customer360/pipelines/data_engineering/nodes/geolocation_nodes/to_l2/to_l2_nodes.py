@@ -53,9 +53,7 @@ def l2_geo_count_visit_by_location_weekly(input_df: DataFrame, param_config: str
     return output_df
 
 
-def l2_geo_time_spent_by_location_weekly(df,sql):
-    # .filter('partition_date >= 20200601 and partition_date <= 20200630')
-    # .filter('partition_month >= 201911')
+def l2_geo_time_spent_by_location_weekly(df, sql):
     # ----- Data Availability Checks -----
     if check_empty_dfs([df]):
         return get_spark_empty_df()
@@ -160,7 +158,6 @@ def l2_geo_total_distance_km_weekly(input_df: DataFrame, param_config: str) -> D
                                            'left') \
         .select(df_finish_week.imsi, df_finish_week.start_of_week, df_finish_week.distance_km,
                 df_finish_week.weekday_distance_km, df_week_type.distance_km.alias('weekend_distance_km'))
-    # | imsi | start_of_week | distance_km | weekday_distance_km | weekend_distance_km |
 
     df = df_finish_week_2.groupBy('imsi', 'start_of_week', 'distance_km', 'weekday_distance_km', 'weekend_distance_km') \
         .agg({'imsi': 'count'}).withColumnRenamed('count(imsi)', 'count_row') \

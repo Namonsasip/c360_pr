@@ -9,6 +9,22 @@ def geo_to_l2_pipeline(**kwargs):
 
             ### WAIT
             node(
+                l2_geo_time_spent_by_location_weekly,
+                ["l1_geo_time_spent_by_location_daily",
+                 "params:l2_geo_time_spent_by_location_weekly"
+                 ],
+                "l2_geo_time_spent_by_location_weekly"
+            ),
+            # node(
+            #     l2_geo_time_spent_by_location_weekly,
+            #     ["l1_geo_time_spent_by_location_daily_for_l2_geo_time_spent_by_location_weekly",
+            #      "params:l2_geo_time_spent_by_location_weekly"
+            #      ],
+            #     "l2_geo_time_spent_by_location_weekly"
+            # ),
+
+            ### WAIT
+            node(
                 l2_geo_time_spent_by_store_weekly,
                 ["l1_geo_time_spent_by_store_daily",
                  "params:l2_geo_time_spent_by_store_weekly"
@@ -104,26 +120,6 @@ def geo_to_l2_pipeline(**kwargs):
             #===========================================================================================
 
 
-
-
-
-
-
-
-
-
-
-
-
-            ### FINISH
-            ## runnig flag == 4
-            node(
-                l2_geo_time_spent_by_location_weekly,
-                ["l1_geo_time_spent_by_location_daily_for_l2_geo_time_spent_by_location_weekly",
-                 "params:l2_geo_time_spent_by_location_weekly"
-                 ],
-                "l2_geo_time_spent_by_location_weekly"
-            ),
 
             ### FINISH
             ### runnig flag == 9
