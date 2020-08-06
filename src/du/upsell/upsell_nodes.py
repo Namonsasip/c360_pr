@@ -335,7 +335,7 @@ def generate_daily_eligible_list(
 
 
 def create_target_list_file(l5_du_offer_daily_eligible_list: DataFrame, list_date):
-    #l5_du_offer_daily_eligible_list = catalog.load("l5_du_offer_daily_eligible_list")
+    # l5_du_offer_daily_eligible_list = catalog.load("l5_du_offer_daily_eligible_list")
     max_day = (
         l5_du_offer_daily_eligible_list.withColumn("G", F.lit(1))
         .groupby("G")
@@ -394,7 +394,8 @@ def create_target_list_file(l5_du_offer_daily_eligible_list: DataFrame, list_dat
     to_blacklist = l5_du_offer_daily_eligible_list_latest.selectExpr(
         "*",
         (
-            """CASE WHEN (campaign_child_code LIKE 'DataOTC.12%' OR campaign_child_code LIKE 'DataOTC.9%') THEN date_add(date('"""
+            """CASE WHEN (campaign_child_code LIKE 'DataOTC.12%' OR campaign_child_code LIKE 'DataOTC.9%') 
+            THEN date_add(date('"""
             + list_date.strftime("%Y-%m-%d")
             + """'),15) 
         WHEN (campaign_child_code LIKE 'DataOTC.8%' OR campaign_child_code LIKE 'DataOTC.28%') THEN  date_add(date('"""
@@ -405,4 +406,4 @@ def create_target_list_file(l5_du_offer_daily_eligible_list: DataFrame, list_dat
     to_blacklist.write.format("delta").mode("append").partitionBy(
         "scoring_day"
     ).saveAsTable("prod_dataupsell.du_offer_blacklist")
-    return
+    return to_blacklist
