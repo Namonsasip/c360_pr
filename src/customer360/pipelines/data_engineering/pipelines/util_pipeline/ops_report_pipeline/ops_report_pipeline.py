@@ -8,6 +8,7 @@ running_environment = os.getenv("RUNNING_ENVIRONMENT", "on_cloud")
 
 def build_ops_report_dataset(data_frame: DataFrame) -> DataFrame:
     """
+    Purpose: To build the C360 operational reports
     :param data_frame:
     :return:
     """

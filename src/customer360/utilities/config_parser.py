@@ -7,9 +7,14 @@ from pyspark.sql.functions import concat_ws,explode
 from functools import reduce
 
 # Query generator class
+
+
 class QueryGenerator:
 
-    # accept table_name as string, table_params as dict
+    """
+    Purpose: This class is used to generate the queries from configurations.
+             It accepts table_name as string, table_params as dict
+    """
     @staticmethod
     def aggregate(table_name, table_params, column_function, **kwargs):
         try:
@@ -83,6 +88,11 @@ class QueryGenerator:
 
 
 def __get_l4_time_granularity_column(read_from):
+    """
+    Purpose: To get the time granularity column for each layer.
+    :param read_from:
+    :return:
+    """
     if read_from is None:
         raise ValueError("read_from is mandatory. Please specify either 'l1', 'l2', or 'l3'")
 
@@ -99,6 +109,12 @@ def __get_l4_time_granularity_column(read_from):
 
 
 def union_dataframes_with_missing_cols(df_input_or_list, *args):
+    """
+    Purpose: This is used to perform union of dataframes( both homogeneous/ heterogeneous)
+    :param df_input_or_list:
+    :param args:
+    :return:
+    """
     if type(df_input_or_list) is list:
         df_list = df_input_or_list
     elif type(df_input_or_list) is DataFrame:
@@ -120,6 +136,12 @@ def union_dataframes_with_missing_cols(df_input_or_list, *args):
 
 
 def _get_full_data(src_data, fea_dict):
+    """
+    Purpose: This is used to get the missing partition entries in data.
+    :param src_data:
+    :param fea_dict:
+    :return:
+    """
 
     if len(src_data.head(1)) == 0:
         return src_data
@@ -200,6 +222,7 @@ def _get_full_data(src_data, fea_dict):
 
 def l4_rolling_window(input_df: DataFrame, config: dict):
     """
+    Purpose: This is used to generate trend features using rolling window analytics function.
     :param input_df:
     :param config:
     :return:
@@ -324,6 +347,13 @@ def create_daily_lookback_window(
         partition_column,
         order_by_column="event_partition_date"
 ):
+    """
+    Purpose: This is used to generate the daily lookback window queries.
+    :param num_of_days:
+    :param partition_column:
+    :param order_by_column:
+    :return:
+    """
     max_seconds_in_day = 24 * 60 * 60
 
     window_statement = create_window_statement(
@@ -341,6 +371,13 @@ def create_monthly_lookback_window(
         partition_column,
         order_by_column="start_of_month"
 ):
+    """
+    Purpose: This is used to generate the monthly lookback window queries.
+    :param num_of_month:
+    :param partition_column:
+    :param order_by_column:
+    :return:
+    """
     max_seconds_in_month = 31 * 24 * 60 * 60
 
     window_statement = create_window_statement(
@@ -358,6 +395,13 @@ def create_weekly_lookback_window(
         partition_column,
         order_by_column="start_of_week"
 ):
+    """
+    Purpose: This is used to generate the weekly lookback window queries.
+    :param num_of_week:
+    :param partition_column:
+    :param order_by_column:
+    :return:
+    """
     seconds_in_week = 7 * 24 * 60 * 60
 
     window_statement = create_window_statement(
@@ -376,6 +420,14 @@ def create_window_statement(
         start_interval,
         end_interval
 ):
+    """
+    Purpose: This is used to generate the sql window statements.
+    :param partition_column:
+    :param order_by_column:
+    :param start_interval:
+    :param end_interval:
+    :return:
+    """
     return """
             partition by {partition_column} 
             order by cast(cast({order_by_column} as timestamp) as long) asc
@@ -388,6 +440,7 @@ def create_window_statement(
 
 def node_from_config(input_df: DataFrame, config: dict) -> DataFrame:
     """
+    Purpose: This is used to automatically generate features using configurations
     :param input_df:
     :param config:
     :return:
@@ -411,6 +464,7 @@ def node_from_config(input_df: DataFrame, config: dict) -> DataFrame:
 
 def expansion(input_df, config) -> DataFrame:
     """
+    Purpose: This is an extended version of node_from_config function
     This function will expand the base feature based on parameters
     :param input_df:
     :param config:
@@ -438,6 +492,12 @@ def expansion(input_df, config) -> DataFrame:
 
 
 def customUnion(df1, df2):
+    """
+    Purpose: To perform union of 2 dataframes.
+    :param df1:
+    :param df2:
+    :return:
+    """
     cols1 = df1.columns
     cols2 = df2.columns
     total_cols = sorted(cols1 + list(set(cols2) - set(cols1)))
@@ -457,6 +517,12 @@ def __generate_l4_rolling_ranked_column(
         input_df,
         config
 ) -> DataFrame:
+    """
+    Purpose: This is used to generate the ranked rolling window features.
+    :param input_df:
+    :param config:
+    :return:
+    """
 
     if len(input_df.head(1)) == 0:
         return input_df
@@ -601,6 +667,13 @@ def __construct_null_safe_join_condition(
         left_alias='left',
         right_alias='right'
 ):
+    """
+    Purpose: To perform the null safe joins
+    :param column_list:
+    :param left_alias:
+    :param right_alias:
+    :return:
+    """
     join_condition = (F.col("{}.{}".format(left_alias, column_list[0]))
                       .eqNullSafe(F.col("{}.{}".format(right_alias, column_list[0]))))
 
@@ -615,6 +688,12 @@ def __construct_null_safe_join_condition(
 
 
 def join_l4_rolling_ranked_table(result_df, config):
+    """
+    Purpose: To perform the joins for rolling ranked table.
+    :param result_df:
+    :param config:
+    :return:
+    """
 
     for _, df in result_df.items():
         if len(df.head(1)) == 0:
@@ -651,6 +730,12 @@ def __generate_l4_filtered_ranked_table(
         ranked_df,
         config
 ):
+    """
+    Purpose: To generate the filtered ranked tables
+    :param ranked_df:
+    :param config:
+    :return:
+    """
     result_df = {}
     read_from = config["read_from"]
 
@@ -682,6 +767,12 @@ def l4_rolling_ranked_window(
         input_df,
         config
 ) -> Dict[str, DataFrame]:
+    """
+    Purpose: To generate the rolling ranked window features.
+    :param input_df:
+    :param config:
+    :return:
+    """
 
     if len(input_df.head(1)) == 0:
         return input_df

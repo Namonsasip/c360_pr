@@ -234,7 +234,7 @@ def build_network_good_and_bad_cells_features(
     l1_customer_profile_union_daily_feature_for_l1_network_good_and_bad_cells_features = \
         data_non_availability_and_missing_check(
             df=l1_customer_profile_union_daily_feature_for_l1_network_good_and_bad_cells_features, grouping="daily",
-            par_col="even_partition_date",
+            par_col="event_partition_date",
             target_table_name="l1_network_good_and_bad_cells_features")
 
     if check_empty_dfs(
