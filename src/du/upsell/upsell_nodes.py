@@ -241,23 +241,25 @@ def create_tg_cg_list(
 
 
 def generate_daily_eligible_list(
-    l5_du_offer_score_optimal_offer,
-    l0_du_pre_experiment3_groups,
+    l5_du_offer_score_optimal_offer: DataFrame,
+    l0_du_pre_experiment3_groups: DataFrame,
+    l5_du_offer_blacklist: DataFrame,
     du_campaign_offer_atl_target,
     du_campaign_offer_btl1_target,
     du_campaign_offer_btl2_target,
     du_campaign_offer_btl3_target,
     du_control_campaign_child_code,
 ):
-    # l5_du_offer_score_optimal_offer = catalog.load("l5_du_offer_score_optimal_offer")
-    # l0_du_pre_experiment3_groups = catalog.load("l0_du_pre_experiment3_groups")
-    # du_campaign_offer_atl_target = catalog.load("params:du_campaign_offer_atl_target")
-    # du_campaign_offer_btl1_target = catalog.load("params:du_campaign_offer_btl1_target")
-    # du_campaign_offer_btl2_target = catalog.load("params:du_campaign_offer_btl2_target")
-    # du_campaign_offer_btl3_target = catalog.load("params:du_campaign_offer_btl3_target")
-    # du_control_campaign_child_code = catalog.load(
-    #     "params:du_control_campaign_child_code"
-    # )
+    l5_du_offer_blacklist = catalog.load("l5_du_offer_blacklist")
+    l5_du_offer_score_optimal_offer = catalog.load("l5_du_offer_score_optimal_offer")
+    l0_du_pre_experiment3_groups = catalog.load("l0_du_pre_experiment3_groups")
+    du_campaign_offer_atl_target = catalog.load("params:du_campaign_offer_atl_target")
+    du_campaign_offer_btl1_target = catalog.load("params:du_campaign_offer_btl1_target")
+    du_campaign_offer_btl2_target = catalog.load("params:du_campaign_offer_btl2_target")
+    du_campaign_offer_btl3_target = catalog.load("params:du_campaign_offer_btl3_target")
+    du_control_campaign_child_code = catalog.load(
+        "params:du_control_campaign_child_code"
+    )
     max_day = (
         l5_du_offer_score_optimal_offer.withColumn("G", F.lit(1))
         .groupby("G")
@@ -278,7 +280,17 @@ def generate_daily_eligible_list(
         ["old_subscription_identifier", "register_date"],
         "inner",
     )
-    # TODO Remove people who get blacklisted
+    # Get latest blacklist end date of individual subscriber
+    all_blacklisted_sub = l5_du_offer_blacklist.groupby("subscription_identifier").agg(
+        F.max("black_listed_end_date").alias("blacklisted_end_date")
+    )
+    # Create blacklisted flag for anyone who still within the period of campaign offer period
+    all_offer = all_offer.join(all_blacklisted_sub, ["subscription_identifier"], "left").selectExpr(
+        "*", """CASE WHEN blacklisted_end_date >= scoring_day THEN 1 ELSE 0 END AS blacklisted"""
+    )
+    # Filter only people who are not blacklisted
+    all_offer = all_offer.where("blacklisted = 0")
+
     ATL_contact, ATL_control = create_tg_cg_list(
         "ATL_TG",
         "ATL_CG",
