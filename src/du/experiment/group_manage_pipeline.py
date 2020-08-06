@@ -6,7 +6,7 @@ from du.experiment.group_manage_nodes import (
     create_prepaid_test_groups,
     create_sanity_check_for_random_test_group,
     create_postpaid_test_groups,
-    update_du_control_group
+    update_du_control_group,
 )
 
 partition_date_str = "20200801"
@@ -85,7 +85,16 @@ def create_du_test_group_pipeline() -> Pipeline:
             node(
                 partial(
                     create_prepaid_test_groups,
-                    sampling_rate=[0.389, 0.022, 0.086, 0.003, 0.086, 0.003, 0.389, 0.022],
+                    sampling_rate=[
+                        0.389,
+                        0.022,
+                        0.086,
+                        0.003,
+                        0.086,
+                        0.003,
+                        0.389,
+                        0.022,
+                    ],
                     test_group_name=[
                         "ATL_TG",
                         "ATL_CG",
