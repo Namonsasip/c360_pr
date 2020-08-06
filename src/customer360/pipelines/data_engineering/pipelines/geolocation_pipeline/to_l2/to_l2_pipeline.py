@@ -117,27 +117,12 @@ def geo_to_l2_pipeline(**kwargs):
             #      ],
             #     "l2_geo_top3_cells_on_voice_usage"
             # ),
-            #===========================================================================================
-
-
-
-            ### FINISH
-            ### runnig flag == 9
-            ##distance_top_call###
-            node(
-                l2_geo_distance_top_call,
-                "l1_geo_distance_top_call",
-                "l2_geo_distance_top_call"
-            ),
-
-            ### FINISH
-            ### runnig flag == 3
-            # 27 Same favourite location for weekend and weekday
-            node(
-                massive_processing_with_l2_same_favourite_location_weekend_weekday_weekly,
-                ["l0_geo_cust_cell_visit_time_for_l2_same_favourite_location_weekend_weekday"],
-                "l2_same_favourite_location_weekend_weekday_weekly"
-            )
+            # ##distance_top_call###
+            # node(
+            #     l2_geo_distance_top_call,
+            #     "l1_geo_distance_top_call",
+            #     "l2_geo_distance_top_call"
+            # ),
 
         ], name="geo_to_l2_pipeline"
     )

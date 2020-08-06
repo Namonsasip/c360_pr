@@ -22,7 +22,7 @@ def get_max_date_from_master_data(input_df: DataFrame, par_col='partition_date')
     return input_df
 
 
-def distance_callculate_statement(first_lat: str, first_long: str, second_lat: str, second_long: str) -> Column:
+def distance_calculate_statement(first_lat: str, first_long: str, second_lat: str, second_long: str) -> Column:
     return (
             F.acos(
                 F.cos(F.radians(90 - F.col(first_lat))) * F.cos(F.radians(90 - F.col(second_lat))) + \
@@ -43,7 +43,7 @@ def l1_geo_mst_location_near_shop_master(master_df: DataFrame, shape_df: DataFra
     # https://adb-334552184297553.13.azuredatabricks.net/?o=334552184297553#notebook/2101000251613420/command/3846088851487352
     output_df = master_df.crossJoin(shape_df) \
         .select('landmark_sub_name_en', 'location_id', 'location_name',
-                distance_callculate_statement('landmark_latitude', 'landmark_longitude', 'latitude', 'longitude')
+                distance_calculate_statement('landmark_latitude', 'landmark_longitude', 'latitude', 'longitude')
                 .alias('distance_km')) \
         .where("landmark_cat_name_en in ('AIS', 'DTAC', 'TRUE') and distance_km <= (0.5)") \
         .dropDuplicates()
@@ -159,7 +159,7 @@ def l1_geo_total_distance_km_daily(cell_visit: DataFrame, sql) -> DataFrame:
     cell_visit_distance = cell_visit_lat_long.withColumn('distance_km',
                                                          F.when(cell_visit_lat_long.latitude_next.isNull(), 0.00)
                                                          .otherwise(
-                                                             distance_callculate_statement('latitude',
+                                                             distance_calculate_statement('latitude',
                                                                                            'longitude',
                                                                                            'latitude_next',
                                                                                            'longitude_next')))

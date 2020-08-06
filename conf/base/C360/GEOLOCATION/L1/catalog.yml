@@ -112,11 +112,6 @@ l1_geo_total_distance_km_daily:
     lookback: '0'
 
 #----------------------- l1_geo_top3_voice_location_daily -------------------------
-int_l1_geo_top3_voice_location_daily:
-  type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
-  filepath: base_path/GEO/l1_features/int_l1_geo_top3_voice_location_daily/
-  file_format: parquet
-
 l1_geo_top3_voice_location_daily:
   type: datasets.spark_dbfs_dataset.SparkDbfsDataSet
   filepath: base_path/GEO/l1_features/l1_geo_top3_voice_location_daily/

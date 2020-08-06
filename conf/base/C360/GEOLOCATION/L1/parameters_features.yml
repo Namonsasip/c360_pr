@@ -32,13 +32,6 @@ l1_geo_total_distance_km_daily:
   output_catalog: "l1_geo_total_distance_km_daily"
   partition_num_per_job: 5
 
-int_l1_geo_top3_voice_location_daily:
-  where_clause: ""
-  feature_list:
-  granularity:  ""
-  output_catalog: "int_l1_geo_top3_voice_location_daily"
-  partition_num_per_job: 5
-
 l1_geo_top3_voice_location_daily:
   where_clause: ""
   feature_list:

@@ -1,5 +1,4 @@
-import pyspark.sql.functions as f
-from pyspark.sql import DataFrame, Window
+from pyspark.sql import DataFrame, Column, Window
 from pyspark.sql import functions as F
 from pyspark.sql.types import *
 from customer360.utilities.config_parser import node_from_config
@@ -8,12 +7,21 @@ from pathlib import Path
 import logging
 import os
 
-from customer360.utilities.re_usable_functions import add_start_of_week_and_month, union_dataframes_with_missing_cols, \
-    execute_sql, add_event_week_and_month_from_yyyymmdd, __divide_chunks, check_empty_dfs, \
+from customer360.utilities.re_usable_functions import union_dataframes_with_missing_cols, check_empty_dfs, \
     data_non_availability_and_missing_check
 from customer360.utilities.spark_util import get_spark_session, get_spark_empty_df
 
 conf = os.getenv("CONF", None)
+
+
+def distance_calculate_statement(first_lat: str, first_long: str, second_lat: str, second_long: str) -> Column:
+    return (
+            F.acos(
+                F.cos(F.radians(90 - F.col(first_lat))) * F.cos(F.radians(90 - F.col(second_lat))) + \
+                F.sin(F.radians(90 - F.col(first_lat))) * F.sin(F.radians(90 - F.col(second_lat))) * \
+                F.cos(F.radians(F.col(first_long) - F.col(second_long)))
+            ) * 6371
+    ).cast(DecimalType(13, 2))
 
 
 def l2_geo_time_spent_by_store_weekly(input_df: DataFrame, param_config: str) -> DataFrame:
@@ -232,47 +240,6 @@ def l2_geo_top3_voice_location_weekly(input_df: DataFrame, param_config: str) ->
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
-    output_df = node_from_config(input_df, param_config)
-    return output_df
-
-
-# def l2_geo_top3_cells_on_voice_usage(df,sql):
-#     # ----- Data Availability Checks -----
-#     if check_empty_dfs([df]):
-#         return get_spark_empty_df()
-#
-#     df = data_non_availability_and_missing_check(df=df, grouping="weekly",
-#                                                  par_col="event_partition_date",
-#                                                  target_table_name="l2_geo_top3_cells_on_voice_usage",
-#                                                  missing_data_check_flg='N')
-#     if check_empty_dfs([df]):
-#         return get_spark_empty_df()
-#
-#
-#     ### config
-#     spark = get_spark_session()
-#
-#     df = node_from_config(df, sql)
-#     df.createOrReplaceTempView('top3_cells_on_voice_usage')
-#     sql_query = """
-#     select
-#     imsi
-#     ,latitude
-#     ,longitude
-#     ,total_call
-#     ,row_number() over (partition by imsi,start_of_week order by total_call desc) as rnk
-#     ,start_of_week
-#     from top3_cells_on_voice_usage
-#     """
-#     df = spark.sql(sql_query)
-#     df.cache()
-#     df = df.where("rnk <= 3")
-#
-#     print('DEBUG : ------------------------------------------------> l2_geo_top3_cells_on_voice_usage')
-#     df.show(10)
-#
-#     return df
-
     win = Window().partitionBy('access_method_num', 'event_partition_date', 'start_of_week', 'start_of_month') \
         .orderBy(F.col('total_call').desc())
 
@@ -297,12 +264,12 @@ def l1_geo_top3_voice_location_daily(input_df: DataFrame, config_param: str) -> 
                                 'top_voice_location_1st', 'top_voice_location_2nd', 'top_voice_location_3rd',
                                 (F.when(F.col('top_voice_latitude_1st').isNull(), 0).otherwise(
                                     F.when(F.col('top_voice_latitude_2nd').isNull(), 0).otherwise(
-                                        distance_callculate_statement('top_voice_latitude_1st',
+                                        distance_calculate_statement('top_voice_latitude_1st',
                                                                       'top_voice_latitude_1st',
                                                                       'top_voice_latitude_2nd',
                                                                       'top_voice_latitude_2nd')) +
                                     F.when(F.col('top_voice_latitude_3rd').isNull(), 0).otherwise(
-                                        distance_callculate_statement('top_voice_latitude_1st',
+                                        distance_calculate_statement('top_voice_latitude_1st',
                                                                       'top_voice_latitude_1st',
                                                                       'top_voice_latitude_3rd',
                                                                       'top_voice_latitude_3rd'))
@@ -336,103 +303,6 @@ def l1_geo_top3_voice_location_daily(input_df: DataFrame, config_param: str) -> 
 #     return l1_df1
 
 
-def massive_processing_with_l2_same_favourite_location_weekend_weekday_weekly(l0_geo_cust_cell_visit_time_df):
-    l0_geo_cust_cell_visit_time_df = l0_geo_cust_cell_visit_time_df.filter('partition_date >= 20200401 and partition_date <= 20200627')
-
-    if check_empty_dfs([l0_geo_cust_cell_visit_time_df]):
-        return get_spark_empty_df()
-
-    l0_geo_cust_cell_visit_time_df = data_non_availability_and_missing_check(df=l0_geo_cust_cell_visit_time_df,
-                                                                             grouping="weekly",
-                                                                             par_col="partition_date",
-                                                                             target_table_name="l2_same_favourite_location_weekend_weekday",
-                                                                             missing_data_check_flg='N')
-
-    if check_empty_dfs([l0_geo_cust_cell_visit_time_df]):
-        return get_spark_empty_df()
-    # ----- Transformation -----
-    def divide_chunks(l, n):
-        # looping till length l
-        for i in range(0, len(l), n):
-            yield l[i:i + n]
-
-    ss = get_spark_session()
-    CNTX = load_context(Path.cwd(), env=conf)
-    data_frame = l0_geo_cust_cell_visit_time_df
-    dates_list = data_frame.select('partition_date').distinct().collect()
-    mvv_array = [row[0] for row in dates_list if row[0] != "SAMPLING"]
-    mvv_array = sorted(mvv_array)
-    logging.info("Dates to run for {0}".format(str(mvv_array)))
-    mvv_new = list(divide_chunks(mvv_array, 10))
-    add_list = mvv_new
-    first_item = add_list[-1]
-    add_list.remove(first_item)
-    for curr_item in add_list:
-        logging.info("running for dates {0}".format(str(curr_item)))
-        small_df = data_frame.filter(f.col('partition_date').isin(*[curr_item]))
-        output_df = l2_same_favourite_location_weekend_weekday_weekly(small_df)
-        CNTX.catalog.save("l2_same_favourite_location_weekend_weekday_weekly", output_df)
-    logging.info("Final date to run for {0}".format(str(first_item)))
-    return_df = data_frame.filter(f.col('partition_date').isin(*[first_item]))
-    return_df = l2_same_favourite_location_weekend_weekday_weekly(return_df)
-    return return_df
-
-
-# 27 Same favourite location for weekend and weekday
-def l2_same_favourite_location_weekend_weekday_weekly(l0_geo_cust_cell_visit_time_df: DataFrame):
-    ### config
-    spark = get_spark_session()
-
-    # Assign day_of_week to weekday or weekend
-    geo_df = l0_geo_cust_cell_visit_time_df.withColumn("start_of_week", F.to_date(F.date_trunc('week', "time_in"))) \
-        .withColumn("start_of_month", F.to_date(F.date_trunc('month', "time_in")))
-    geo_df.createOrReplaceTempView('geo_df')
-
-    sql_query = """
-        select 
-            imsi,
-            start_of_week, 
-            case when dayofweek(time_in) = 2 or dayofweek(time_in) = 3 or dayofweek(time_in) = 4 or dayofweek(time_in) = 5 \
-                or dayofweek(time_in) = 6 then "weekday" else "weekend" end as weektype,
-            location_id,
-            sum(duration) as duration_sumtime \
-        from geo_df where imsi is not NULL 
-        group by 1,2,3,4 
-        order by 1,2,3,4,5 desc
-    """
-    l2_geo = spark.sql(sql_query)
-    l2_geo.createOrReplaceTempView('l2_geo')
-
-    # where weekday seelcted
-    sql_query = """select * from l2_geo where weektype = "weekday" """
-    l2_geo_1 = spark.sql(sql_query)
-    l2_geo_1.createOrReplaceTempView('l2_geo_1')
-
-    # where weekend seelcted
-    sql_query = """select * from l2_geo where weektype = "weekend" """
-    l2_geo_2 = spark.sql(sql_query)
-    l2_geo_2.createOrReplaceTempView('l2_geo_2')
-
-    # Join weekday & weeekend & added Row_number desc
-    sql_query = """
-        select 
-            a.imsi
-            ,a.start_of_week
-            ,a.location_id
-            ,sum(a.duration_sumtime) as duration_sum
-            ,ROW_NUMBER() OVER(PARTITION BY a.imsi,a.start_of_week ORDER BY sum(a.duration_sumtime) desc) as ROW
-        from l2_geo_1 as a
-        left join l2_geo_2 as b
-            on a.imsi = b.imsi and
-            a.location_id = b.location_id
-        group by 1,2,3
-        order by 1,2,3,4,5 desc
-	"""
-    l2 = spark.sql(sql_query)
-
-    return l2
-
-
 def massive_processing_time_spent_weekly(data_frame: DataFrame, sql, output_df_catalog, partition_col) -> DataFrame:
     """
     :param data_frame:
@@ -457,14 +327,14 @@ def massive_processing_time_spent_weekly(data_frame: DataFrame, sql, output_df_c
     add_list.remove(first_item)
     for curr_item in add_list:
         logging.info("running for dates {0}".format(str(curr_item)))
-        small_df = data_frame.filter(f.col(partition_col).isin(*[curr_item]))
+        small_df = data_frame.filter(F.col(partition_col).isin(*[curr_item]))
         small_df = node_from_config(small_df, sql)
         # small_df = add_start_of_week_and_month(small_df, "time_in")
         # small_df.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
         # output_df = ss.sql(sql)
         CNTX.catalog.save(output_df_catalog, small_df)
     logging.info("Final date to run for {0}".format(str(first_item)))
-    return_df = data_frame.filter(f.col(partition_col).isin(*[first_item]))
+    return_df = data_frame.filter(F.col(partition_col).isin(*[first_item]))
     return_df = node_from_config(return_df, sql)
     # return_df = add_start_of_week_and_month(return_df, "time_in")
     # return_df.createOrReplaceTempView('GEO_CUST_CELL_VISIT_TIME')
