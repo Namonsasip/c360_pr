@@ -76,6 +76,7 @@ def create_du_upsell_pipeline() -> Pipeline:
                     "du_control_campaign_child_code": "params:du_control_campaign_child_code",
                     "l5_du_offer_score_optimal_offer": "l5_du_offer_score_optimal_offer",
                     "l0_du_pre_experiment3_groups": "l0_du_pre_experiment3_groups",
+                    "l5_du_offer_blacklist":"l5_du_offer_blacklist",
                 },
                 outputs="unused_optimal_upsell_2",
                 name="generate_daily_eligible_list",
