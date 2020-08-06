@@ -273,51 +273,67 @@ def l2_geo_top3_voice_location_weekly(input_df: DataFrame, param_config: str) ->
 #
 #     return df
 
+    win = Window().partitionBy('access_method_num', 'event_partition_date', 'start_of_week', 'start_of_month') \
+        .orderBy(F.col('total_call').desc())
 
-###Traffic_fav_location###
-# def   l2_geo_use_traffic_home_work_weekly(df, sql):
+    output_df = join_df.withColumn('rank', F.row_number().over(win)).where('rank <= 3')
+    output_df = output_df.groupBy('access_method_num', 'event_partition_date', 'start_of_week', 'start_of_month') \
+        .agg(F.max(F.when((F.col('rank') == 1), F.col('location'))).alias('top_voice_location_1st'),
+             F.max(F.when((F.col('rank') == 1), F.col('latitude'))).alias('top_voice_latitude_1st'),
+             F.max(F.when((F.col('rank') == 1), F.col('longitude'))).alias('top_voice_longitude_1st'),
+             F.max(F.when((F.col('rank') == 2), F.col('location'))).alias('top_voice_location_2nd'),
+             F.max(F.when((F.col('rank') == 2), F.col('latitude'))).alias('top_voice_latitude_2nd'),
+             F.max(F.when((F.col('rank') == 2), F.col('longitude'))).alias('top_voice_longitude_2nd'),
+             F.max(F.when((F.col('rank') == 3), F.col('location'))).alias('top_voice_location_3rd'),
+             F.max(F.when((F.col('rank') == 3), F.col('latitude'))).alias('top_voice_latitude_3rd'),
+             F.max(F.when((F.col('rank') == 3), F.col('longitude'))).alias('top_voice_longitude_3rd')
+             )
+
+    return output_df
+
+
+def l1_geo_top3_voice_location_daily(input_df: DataFrame, config_param: str) -> DataFrame:
+    output_df = input_df.select('access_method_num', 'event_partition_date', 'start_of_week', 'start_of_month',
+                                'top_voice_location_1st', 'top_voice_location_2nd', 'top_voice_location_3rd',
+                                (F.when(F.col('top_voice_latitude_1st').isNull(), 0).otherwise(
+                                    F.when(F.col('top_voice_latitude_2nd').isNull(), 0).otherwise(
+                                        distance_callculate_statement('top_voice_latitude_1st',
+                                                                      'top_voice_latitude_1st',
+                                                                      'top_voice_latitude_2nd',
+                                                                      'top_voice_latitude_2nd')) +
+                                    F.when(F.col('top_voice_latitude_3rd').isNull(), 0).otherwise(
+                                        distance_callculate_statement('top_voice_latitude_1st',
+                                                                      'top_voice_latitude_1st',
+                                                                      'top_voice_latitude_3rd',
+                                                                      'top_voice_latitude_3rd'))
+                                )).alias('total_distance_km')
+                                )
+
+# def l2_geo_distance_top_call(df):
 #     # ----- Data Availability Checks -----
 #     if check_empty_dfs([df]):
 #         return get_spark_empty_df()
 #
 #     df = data_non_availability_and_missing_check(df=df, grouping="weekly",
 #                                                  par_col="event_partition_date",
-#                                                  target_table_name="l2_geo_use_traffic_home_work_weekly",
+#                                                  target_table_name="l2_geo_top3_cells_on_voice_usage",
 #                                                  missing_data_check_flg='N')
 #     if check_empty_dfs([df]):
 #         return get_spark_empty_df()
 #
+#     l1_df1 = df.groupBy("imsi", "start_of_week").agg(
+#         F.max("top_distance_km").alias("max_distance_top_call"),
+#         F.min("top_distance_km").alias("min_distance_top_call"),
+#         F.avg("top_distance_km").alias("avg_distance_top_call"), F.when(
+#             F.sqrt(F.avg(df.top_distance_km * df.top_distance_km) - F.pow(F.avg(df.top_distance_km), F.lit(2))).cast(
+#                 "string") == 'NaN', 0).otherwise(
+#             F.sqrt(F.avg(df.top_distance_km * df.top_distance_km) - F.pow(F.avg(df.top_distance_km), F.lit(2)))).alias(
+#             "sd_distance_top_call"),F.sum("top_distance_km").alias("sum_distance_top_call"))
 #
-#     l2_df = df.withColumn("start_of_week", F.to_date(F.date_trunc('week', "event_partition_date"))).drop('event_partition_date')
-#     l2_df_2 = node_from_config(l2_df, sql)
-#     return l2_df_2
-
-
-def l2_geo_distance_top_call(df):
-    # ----- Data Availability Checks -----
-    if check_empty_dfs([df]):
-        return get_spark_empty_df()
-
-    df = data_non_availability_and_missing_check(df=df, grouping="weekly",
-                                                 par_col="event_partition_date",
-                                                 target_table_name="l2_geo_top3_cells_on_voice_usage",
-                                                 missing_data_check_flg='N')
-    if check_empty_dfs([df]):
-        return get_spark_empty_df()
-
-    l1_df1 = df.groupBy("imsi", "start_of_week").agg(
-        F.max("top_distance_km").alias("max_distance_top_call"),
-        F.min("top_distance_km").alias("min_distance_top_call"),
-        F.avg("top_distance_km").alias("avg_distance_top_call"), F.when(
-            F.sqrt(F.avg(df.top_distance_km * df.top_distance_km) - F.pow(F.avg(df.top_distance_km), F.lit(2))).cast(
-                "string") == 'NaN', 0).otherwise(
-            F.sqrt(F.avg(df.top_distance_km * df.top_distance_km) - F.pow(F.avg(df.top_distance_km), F.lit(2)))).alias(
-            "sd_distance_top_call"),F.sum("top_distance_km").alias("sum_distance_top_call"))
-
-    print('DEBUG : ------------------------------------------------> l2_geo_distance_top_call')
-    l1_df1.show(10)
-
-    return l1_df1
+#     print('DEBUG : ------------------------------------------------> l2_geo_distance_top_call')
+#     l1_df1.show(10)
+#
+#     return l1_df1
 
 
 def massive_processing_with_l2_same_favourite_location_weekend_weekday_weekly(l0_geo_cust_cell_visit_time_df):

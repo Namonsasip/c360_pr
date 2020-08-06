@@ -184,49 +184,16 @@ def l1_geo_visit_ais_store_location_daily(cust_visit: DataFrame, shape_df: DataF
     return output_df
 
 
-def int_l1_geo_top3_voice_location_daily(usagevoice_df: DataFrame,
-                                         master_df: DataFrame,
-                                         config_param: str) -> DataFrame:
-    join_df = usagevoice_df.join(master_df, ['lac', 'ci'], 'left').where("service_type in ('VOICE','VOLTE')") \
+def l1_geo_top3_voice_location_daily(usagevoice_df: DataFrame, master_df: DataFrame, config_param: str) -> DataFrame:
+    join_df = usagevoice_df.join(master_df, ['lac', 'ci'], 'left')\
+        .where("service_type in ('VOICE','VOLTE')") \
         .groupBy('access_method_num', 'location_id', 'latitude', 'longitude',
-                 'event_partition_date', 'start_of_week', 'start_of_month') \
-        .agg(F.sum(F.col('no_of_call') + F.col('no_of_inc')).alias('total_call'))
+                 'event_partition_date', 'start_of_week', 'start_of_month').agg(
+        F.sum(F.col('no_of_call') + F.col('no_of_inc')).alias('total_call'),
+        F.sum(F.col())
+    )
 
-    win = Window().partitionBy('access_method_num', 'event_partition_date', 'start_of_week', 'start_of_month') \
-        .orderBy(F.col('total_call').desc())
-
-    output_df = join_df.withColumn('rank', F.row_number().over(win)).where('rank <= 3')
-    output_df = output_df.groupBy('access_method_num', 'event_partition_date', 'start_of_week', 'start_of_month') \
-        .agg(F.max(F.when((F.col('rank') == 1), F.col('location'))).alias('top_voice_location_1st'),
-             F.max(F.when((F.col('rank') == 1), F.col('latitude'))).alias('top_voice_latitude_1st'),
-             F.max(F.when((F.col('rank') == 1), F.col('longitude'))).alias('top_voice_longitude_1st'),
-             F.max(F.when((F.col('rank') == 2), F.col('location'))).alias('top_voice_location_2nd'),
-             F.max(F.when((F.col('rank') == 2), F.col('latitude'))).alias('top_voice_latitude_2nd'),
-             F.max(F.when((F.col('rank') == 2), F.col('longitude'))).alias('top_voice_longitude_2nd'),
-             F.max(F.when((F.col('rank') == 3), F.col('location'))).alias('top_voice_location_3rd'),
-             F.max(F.when((F.col('rank') == 3), F.col('latitude'))).alias('top_voice_latitude_3rd'),
-             F.max(F.when((F.col('rank') == 3), F.col('longitude'))).alias('top_voice_longitude_3rd')
-             )
-
-    return output_df
-
-
-def l1_geo_top3_voice_location_daily(input_df: DataFrame, config_param: str) -> DataFrame:
-    output_df = input_df.select('access_method_num', 'event_partition_date', 'start_of_week', 'start_of_month',
-                                'top_voice_location_1st', 'top_voice_location_2nd', 'top_voice_location_3rd',
-                                (F.when(F.col('top_voice_latitude_1st').isNull(), 0).otherwise(
-                                    F.when(F.col('top_voice_latitude_2nd').isNull(), 0).otherwise(
-                                        distance_callculate_statement('top_voice_latitude_1st',
-                                                                      'top_voice_latitude_1st',
-                                                                      'top_voice_latitude_2nd',
-                                                                      'top_voice_latitude_2nd')) +
-                                    F.when(F.col('top_voice_latitude_3rd').isNull(), 0).otherwise(
-                                        distance_callculate_statement('top_voice_latitude_1st',
-                                                                      'top_voice_latitude_1st',
-                                                                      'top_voice_latitude_3rd',
-                                                                      'top_voice_latitude_3rd'))
-                                )).alias('total_distance_km')
-                                )
+    return join_df
 
     # Calculate max distance sum(dis(1,2), dis(1,3))
     # sql_query = """
@@ -249,8 +216,6 @@ def l1_geo_top3_voice_location_daily(input_df: DataFrame, config_param: str) -> 
     #         where a.rnk = 1
     #         order by 1,3,4,5
     #     """
-    return output_df
-
 
 def l1_geo_data_session_location_daily(input_df: DataFrame, master_df: DataFrame) -> DataFrame:
     """
@@ -405,7 +370,7 @@ def massive_processing_with_l1_geo_total_distance_km_daily(cust_visit_df: DataFr
     return output_df
 
 
-def massive_processing_with_int_l1_geo_top3_voice_location_daily(usagevoice_df: DataFrame,
+def massive_processing_with_l1_geo_top3_voice_location_daily(usagevoice_df: DataFrame,
                                                                  master_df: DataFrame,
                                                                  config_param: str
                                                                  ) -> DataFrame:
@@ -416,33 +381,14 @@ def massive_processing_with_int_l1_geo_top3_voice_location_daily(usagevoice_df: 
                                                             grouping="daily",
                                                             par_col="partition_date",
                                                             target_table_name="l1_geo_top3_voice_location_daily")
-
+    master_df = get_max_date_from_master_data(master_df, 'partition_date')
     if check_empty_dfs([usagevoice_df]):
         return get_spark_empty_df()
 
     output_df = _massive_processing_with_join_daily(usagevoice_df,
                                                     master_df,
                                                     config_param,
-                                                    int_l1_geo_top3_voice_location_daily)
-    return output_df
-
-
-def massive_processing_with_l1_geo_top3_voice_location_daily(input_df: DataFrame, config_param: str) -> DataFrame:
-    if check_empty_dfs([input_df]):
-        return get_spark_empty_df()
-
-    input_df = data_non_availability_and_missing_check(df=input_df,
-                                                       grouping="daily",
-                                                       par_col="event_partition_date",
-                                                       target_table_name="l1_geo_top3_voice_location_daily")
-
-    if check_empty_dfs([input_df]):
-        return get_spark_empty_df()
-
-    output_df = _massive_processing_daily(input_df,
-                                          config_param,
-                                          l1_geo_total_distance_km_daily,
-                                          add_col=False)
+                                                    l1_geo_top3_voice_location_daily)
     return output_df
 
 
@@ -457,12 +403,12 @@ def massive_processing_with_l1_geo_data_session_location_daily(usagedata_df: Dat
                                                            grouping="daily",
                                                            par_col="partition_date",
                                                            target_table_name="l1_geo_data_session_location_daily")
-
+    master_df = get_max_date_from_master_data(master_df, 'partition_date')
     if check_empty_dfs([usagedata_df]):
         return get_spark_empty_df()
 
     output_df = _massive_processing_with_join_daily(usagedata_df,
                                                     master_df,
                                                     config_param,
-                                                    int_l1_geo_top3_voice_location_daily)
+                                                    l1_geo_data_session_location_daily)
     return output_df

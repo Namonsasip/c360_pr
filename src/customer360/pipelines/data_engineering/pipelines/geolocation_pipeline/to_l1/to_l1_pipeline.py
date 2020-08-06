@@ -90,19 +90,10 @@ def geo_to_l1_pipeline(**kwargs):
 
             ### WAIT
             node(
-                massive_processing_with_int_l1_geo_top3_voice_location_daily,
+                massive_processing_with_l1_geo_top3_voice_location_daily,
                 ["l0_usage_sum_voice_location_daily_for_l1_geo_top3_cells_on_voice_usage",
                  "l0_geo_mst_cell_masterplan_master",
-                 "params:int_l1_geo_top3_voice_location_daily"
-                 ],
-                "int_l1_geo_top3_voice_location_daily"
-            ),
-
-            ### WAIT
-            node(
-                massive_processing_with_l1_geo_top3_voice_location_daily,
-                ["int_l1_geo_top3_voice_location_daily",
-                 "params:int_l1_geo_top3_voice_location_daily"
+                 "params:l1_geo_top3_voice_location_daily"
                  ],
                 "l1_geo_top3_voice_location_daily"
             ),
