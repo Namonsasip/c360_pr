@@ -69,11 +69,6 @@ def unioned_customer_profile_to_l3_pipeline(**kwargs):
                 ["l1_customer_profile_union_daily_feature_for_l3_customer_profile_union_monthly_feature"],
                 "l3_customer_profile_union_monthly_feature"
             ),
-            # node(
-            #     add_last_month_unioned_inactive_user,
-            #     ["l3_customer_profile_union_monthly_feature"],
-            #     "l3_customer_profile_union_monthly_feature_include_1mo_non_active"
-            # )
         ]
     )
 
