@@ -47,7 +47,7 @@ def drop_partition(start_date, end_date, table, partition_key):
         stmt = (
             "DELETE FROM "
             + table
-            + "WHERE date('"
+            + " WHERE date('"
             + partition_key
             + "') = date('"
             + drop_date
