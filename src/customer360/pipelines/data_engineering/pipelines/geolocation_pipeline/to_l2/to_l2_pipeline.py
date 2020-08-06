@@ -103,8 +103,15 @@ def geo_to_l2_pipeline(**kwargs):
 
             ### WAIT
             node(
-                l2_geo_top3_voice_location_weekly,
+                int_l2_geo_top3_voice_location_weekly,
                 ["l1_geo_top3_voice_location_daily",
+                 "params:int_l2_geo_top3_voice_location_weekly"
+                 ],
+                "int_l2_geo_top3_voice_location_weekly"
+            ),
+            node(
+                l2_geo_top3_voice_location_weekly,
+                ["int_l2_geo_top3_voice_location_weekly",
                  "params:l2_geo_top3_voice_location_weekly"
                  ],
                 "l2_geo_top3_voice_location_weekly"

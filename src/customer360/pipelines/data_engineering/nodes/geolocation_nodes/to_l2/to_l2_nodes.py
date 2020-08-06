@@ -54,7 +54,7 @@ def l2_geo_count_visit_by_location_weekly(input_df: DataFrame, param_config: str
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
-    output_df = input_df.withColumn("start_of_week", F.to_date(F.date_trunc('week', "event_partition_date")))\
+    output_df = input_df.withColumn("start_of_week", F.to_date(F.date_trunc('week', "event_partition_date"))) \
         .drop('event_partition_date')
     output_df = node_from_config(output_df, param_config)
 
@@ -66,7 +66,7 @@ def l2_geo_time_spent_by_location_weekly(df, sql):
     if check_empty_dfs([df]):
         return get_spark_empty_df()
 
-    df = data_non_availability_and_missing_check(df=df,grouping="weekly",
+    df = data_non_availability_and_missing_check(df=df, grouping="weekly",
                                                  par_col="event_partition_date",
                                                  target_table_name="l2_geo_time_spent_by_location_weekly",
                                                  missing_data_check_flg='N')
@@ -74,56 +74,11 @@ def l2_geo_time_spent_by_location_weekly(df, sql):
         return get_spark_empty_df()
 
     # ----- Transformation -----
-    df = massive_processing_time_spent_weekly(df,sql,"l2_geo_time_spent_by_location_weekly", 'start_of_week')
+    df = massive_processing_time_spent_weekly(df, sql, "l2_geo_time_spent_by_location_weekly", 'start_of_week')
     print('DEBUG : ------------------------------------------------> l2_geo_time_spent_by_location_weekly')
     df.show(10)
 
     return df
-
-
-# def l2_geo_area_from_ais_store_weekly(df, sql):
-#     # .filter('partition_date >= 20200601 and partition_date <= 20200630')
-#     # .filter('partition_month >= 201911')
-#     # ----- Data Availability Checks -----
-#     if check_empty_dfs([df]):
-#         return get_spark_empty_df()
-#
-#     df = data_non_availability_and_missing_check(df=df, grouping="weekly",
-#                                                  par_col="event_partition_date",
-#                                                  target_table_name="l2_geo_area_from_ais_store_weekly",
-#                                                  missing_data_check_flg='N')
-#     if check_empty_dfs([df]):
-#         return get_spark_empty_df()
-#
-#     df = node_from_config(df, sql)
-#
-#     print('DEBUG : ------------------------------------------------> l2_geo_area_from_ais_store_weekly')
-#     df.show(10)
-#
-#     return df
-#
-# def l2_geo_area_from_competitor_store_weekly(df,sql):
-#     # .filter('partition_date >= 20200601 and partition_date <= 20200630')
-#     # .filter('partition_month >= 201911')
-#     # ----- Data Availability Checks -----
-#     if check_empty_dfs([df]):
-#         return get_spark_empty_df()
-#
-#     df = data_non_availability_and_missing_check(df=df, grouping="weekly",
-#                                                  par_col="event_partition_date",
-#                                                  target_table_name="l2_geo_area_from_competitor_store_weekly",
-#                                                  missing_data_check_flg='N')
-#
-#     if check_empty_dfs([df]):
-#         return get_spark_empty_df()
-#
-#
-#     df = node_from_config(df,sql)
-#
-#     print('DEBUG : ------------------------------------------------> l2_geo_area_from_competitor_store_weekly')
-#     df.show(10)
-#
-#     return df
 
 
 def l2_geo_total_distance_km_weekly(input_df: DataFrame, param_config: str) -> DataFrame:
@@ -141,8 +96,8 @@ def l2_geo_total_distance_km_weekly(input_df: DataFrame, param_config: str) -> D
     # Add week_type
     df = input_df.withColumn("week_type", F.when(
         (F.dayofweek('event_partition_date') == 1) | (F.dayofweek('event_partition_date') == 7), 'weekend') \
-                                                                  .otherwise('weekday').cast(StringType())
-                                                                  )
+                             .otherwise('weekday').cast(StringType())
+                             )
 
     # start_of_week, weekday= , weekend=
     df_week_type = df.groupBy('imsi', 'start_of_week', 'week_type') \
@@ -191,44 +146,8 @@ def l2_geo_data_session_location_weekly(input_df: DataFrame, param_config: str) 
     output_df = node_from_config(input_df, param_config)
     return output_df
 
-# ### 47 l2_the_favourite_locations_daily ====================\
-# def l2_the_favourite_locations_weekly(df):
-#     # ----- Data Availability Checks -----
-#     if check_empty_dfs([df]):
-#         return get_spark_empty_df()
-#
-#     df = data_non_availability_and_missing_check(df=df, grouping="weekly",
-#                                                  par_col="event_partition_date",
-#                                                  target_table_name="l2_the_favourite_locations_weekly",
-#                                                  missing_data_check_flg='N')
-#
-#
-#     if check_empty_dfs([df]):
-#         return get_spark_empty_df()
-#
-#
-#     ### config
-#     spark = get_spark_session()
-#     df.createOrReplaceTempView('l1_df_the_favourite_location_daily')
-#     sql_query = """
-#     select
-#     mobile_no
-#     ,start_of_week
-#     ,lac
-#     ,ci
-#     ,sum(vol_3g) as vol_3g
-#     ,sum(vol_4g) as vol_4g
-#     ,sum(vol_5g) as vol_5g
-#     from l1_df_the_favourite_location_daily
-#     group by 1,2,3,4
-#     order by 2,1,3,4
-#     """
-#     l2 = spark.sql(sql_query)
-#
-#     return l2
 
-
-def l2_geo_top3_voice_location_weekly(input_df: DataFrame, param_config: str) -> DataFrame:
+def int_l2_geo_top3_voice_location_weekly(input_df: DataFrame, param_config: str) -> DataFrame:
     if check_empty_dfs([input_df]):
         return get_spark_empty_df()
 
@@ -243,7 +162,7 @@ def l2_geo_top3_voice_location_weekly(input_df: DataFrame, param_config: str) ->
     win = Window().partitionBy('access_method_num', 'event_partition_date', 'start_of_week', 'start_of_month') \
         .orderBy(F.col('total_call').desc())
 
-    output_df = join_df.withColumn('rank', F.row_number().over(win)).where('rank <= 3')
+    output_df = input_df.withColumn('rank', F.row_number().over(win)).where('rank <= 3')
     output_df = output_df.groupBy('access_method_num', 'event_partition_date', 'start_of_week', 'start_of_month') \
         .agg(F.max(F.when((F.col('rank') == 1), F.col('location'))).alias('top_voice_location_1st'),
              F.max(F.when((F.col('rank') == 1), F.col('latitude'))).alias('top_voice_latitude_1st'),
@@ -259,48 +178,24 @@ def l2_geo_top3_voice_location_weekly(input_df: DataFrame, param_config: str) ->
     return output_df
 
 
-def l1_geo_top3_voice_location_daily(input_df: DataFrame, config_param: str) -> DataFrame:
-    output_df = input_df.select('access_method_num', 'event_partition_date', 'start_of_week', 'start_of_month',
-                                'top_voice_location_1st', 'top_voice_location_2nd', 'top_voice_location_3rd',
-                                (F.when(F.col('top_voice_latitude_1st').isNull(), 0).otherwise(
-                                    F.when(F.col('top_voice_latitude_2nd').isNull(), 0).otherwise(
-                                        distance_calculate_statement('top_voice_latitude_1st',
-                                                                      'top_voice_latitude_1st',
-                                                                      'top_voice_latitude_2nd',
-                                                                      'top_voice_latitude_2nd')) +
-                                    F.when(F.col('top_voice_latitude_3rd').isNull(), 0).otherwise(
-                                        distance_calculate_statement('top_voice_latitude_1st',
-                                                                      'top_voice_latitude_1st',
-                                                                      'top_voice_latitude_3rd',
-                                                                      'top_voice_latitude_3rd'))
-                                )).alias('total_distance_km')
-                                )
+def l2_geo_top3_voice_location_weekly(input_df: DataFrame, config_param: str) -> DataFrame:
+    output_df = input_df.withColumn('distance_2nd_voice_location', F.when((F.col('top_voice_latitude_1st').isNull()) |
+                                                                          (F.col('top_voice_latitude_2nd').isNull()), 0)
+                                    .otherwise(distance_calculate_statement('top_voice_latitude_1st',
+                                                                            'top_voice_latitude_1st',
+                                                                            'top_voice_latitude_2nd',
+                                                                            'top_voice_latitude_2nd'))) \
+        .withColumn('distance_3rd_voice_location', F.when((F.col('top_voice_latitude_1st').isNull()) |
+                                                          (F.col('top_voice_latitude_3rd').isNull()), 0)
+                    .otherwise(distance_calculate_statement('top_voice_latitude_1st',
+                                                            'top_voice_latitude_1st',
+                                                            'top_voice_latitude_3rd',
+                                                            'top_voice_latitude_3rd')))\
+        .select('access_method_num', 'event_partition_date', 'start_of_week', 'start_of_month',
+                'top_voice_location_1st', 'top_voice_location_2nd', 'top_voice_location_3rd',
+                'distance_2nd_voice_location', 'distance_3rd_voice_location')
 
-# def l2_geo_distance_top_call(df):
-#     # ----- Data Availability Checks -----
-#     if check_empty_dfs([df]):
-#         return get_spark_empty_df()
-#
-#     df = data_non_availability_and_missing_check(df=df, grouping="weekly",
-#                                                  par_col="event_partition_date",
-#                                                  target_table_name="l2_geo_top3_cells_on_voice_usage",
-#                                                  missing_data_check_flg='N')
-#     if check_empty_dfs([df]):
-#         return get_spark_empty_df()
-#
-#     l1_df1 = df.groupBy("imsi", "start_of_week").agg(
-#         F.max("top_distance_km").alias("max_distance_top_call"),
-#         F.min("top_distance_km").alias("min_distance_top_call"),
-#         F.avg("top_distance_km").alias("avg_distance_top_call"), F.when(
-#             F.sqrt(F.avg(df.top_distance_km * df.top_distance_km) - F.pow(F.avg(df.top_distance_km), F.lit(2))).cast(
-#                 "string") == 'NaN', 0).otherwise(
-#             F.sqrt(F.avg(df.top_distance_km * df.top_distance_km) - F.pow(F.avg(df.top_distance_km), F.lit(2)))).alias(
-#             "sd_distance_top_call"),F.sum("top_distance_km").alias("sum_distance_top_call"))
-#
-#     print('DEBUG : ------------------------------------------------> l2_geo_distance_top_call')
-#     l1_df1.show(10)
-#
-#     return l1_df1
+    return output_df
 
 
 def massive_processing_time_spent_weekly(data_frame: DataFrame, sql, output_df_catalog, partition_col) -> DataFrame:
