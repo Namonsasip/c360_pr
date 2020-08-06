@@ -250,16 +250,16 @@ def generate_daily_eligible_list(
     du_campaign_offer_btl3_target,
     du_control_campaign_child_code,
 ):
-    l5_du_offer_blacklist = catalog.load("l5_du_offer_blacklist")
-    l5_du_offer_score_optimal_offer = catalog.load("l5_du_offer_score_optimal_offer")
-    l0_du_pre_experiment3_groups = catalog.load("l0_du_pre_experiment3_groups")
-    du_campaign_offer_atl_target = catalog.load("params:du_campaign_offer_atl_target")
-    du_campaign_offer_btl1_target = catalog.load("params:du_campaign_offer_btl1_target")
-    du_campaign_offer_btl2_target = catalog.load("params:du_campaign_offer_btl2_target")
-    du_campaign_offer_btl3_target = catalog.load("params:du_campaign_offer_btl3_target")
-    du_control_campaign_child_code = catalog.load(
-        "params:du_control_campaign_child_code"
-    )
+    # l5_du_offer_blacklist = catalog.load("l5_du_offer_blacklist")
+    # l5_du_offer_score_optimal_offer = catalog.load("l5_du_offer_score_optimal_offer")
+    # l0_du_pre_experiment3_groups = catalog.load("l0_du_pre_experiment3_groups")
+    # du_campaign_offer_atl_target = catalog.load("params:du_campaign_offer_atl_target")
+    # du_campaign_offer_btl1_target = catalog.load("params:du_campaign_offer_btl1_target")
+    # du_campaign_offer_btl2_target = catalog.load("params:du_campaign_offer_btl2_target")
+    # du_campaign_offer_btl3_target = catalog.load("params:du_campaign_offer_btl3_target")
+    # du_control_campaign_child_code = catalog.load(
+    #     "params:du_control_campaign_child_code"
+    # )
     max_day = (
         l5_du_offer_score_optimal_offer.withColumn("G", F.lit(1))
         .groupby("G")
